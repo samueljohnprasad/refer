@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, ScrollView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../store';
+import { registerThunk } from '@/store/authThunks';
 
 // Placeholder for logo
 const Logo = () => (
@@ -15,17 +18,41 @@ export default function AuthScreen() {
   const [tab, setTab] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [role, setRole] = useState(roles[0]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  // Redux state
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error, user } = useSelector((state: RootState) => state.auth);
 
-  // Placeholder handlers
+  const [localError, setLocalError] = useState('');
+
+  // After successful registration, reset form and tab
+  React.useEffect(() => {
+    if (user) {
+      setTab('login');
+      setEmail('');
+      setPassword('');
+      setFirstName('');
+      setLastName('');
+      setRole(roles[0]);
+      setLocalError('');
+    }
+  }, [user]);
+
   const handleAuth = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setError('Invalid credentials (demo)');
-    }, 1000);
+    setLocalError('');
+    if (tab === 'signup') {
+      if (!email || !password || !firstName || !lastName) {
+        setLocalError('Please fill all fields');
+        return;
+      }
+      dispatch(registerThunk({ email, password, firstName, lastName }));
+      // Success will be handled by navigator (user state)
+    } else {
+      // Placeholder login logic
+      setLocalError('Login not implemented');
+    }
   };
 
   return (
@@ -70,23 +97,39 @@ export default function AuthScreen() {
             accessibilityLabel="Password Input"
           />
           {tab === 'signup' && (
-            <View style={styles.roleContainer}>
-              <Text style={styles.label}>Select Role:</Text>
-              <View style={styles.roleRow}>
-                {roles.map(r => (
-                  <TouchableOpacity
-                    key={r}
-                    style={[styles.roleButton, role === r && styles.roleButtonActive]}
-                    onPress={() => setRole(r)}
-                    accessibilityLabel={`Select ${r}`}
-                  >
-                    <Text style={role === r ? styles.roleTextActive : styles.roleText}>{r}</Text>
-                  </TouchableOpacity>
-                ))}
+            <>
+              <TextInput
+                style={styles.input}
+                placeholder="First Name"
+                value={firstName}
+                onChangeText={setFirstName}
+                accessibilityLabel="First Name Input"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Last Name"
+                value={lastName}
+                onChangeText={setLastName}
+                accessibilityLabel="Last Name Input"
+              />
+              <View style={styles.roleContainer}>
+                <Text style={styles.label}>Select Role:</Text>
+                <View style={styles.roleRow}>
+                  {roles.map(r => (
+                    <TouchableOpacity
+                      key={r}
+                      style={[styles.roleButton, role === r && styles.roleButtonActive]}
+                      onPress={() => setRole(r)}
+                      accessibilityLabel={`Select ${r}`}
+                    >
+                      <Text style={role === r ? styles.roleTextActive : styles.roleText}>{r}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
-            </View>
+            </>
           )}
-          {error ? <Text style={styles.error}>{error}</Text> : null}
+          {(localError || error) ? <Text style={styles.error}>{localError || error}</Text> : null}
           <TouchableOpacity
             style={styles.submitButton}
             onPress={handleAuth}

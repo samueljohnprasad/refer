@@ -6,6 +6,9 @@ trigger: always_on
 
 These rules apply to both frontend (React Native/React) and backend (Node.js) codebases.
 
+
+strictly use typescript everywhere, for every variable assignment, function params , function return, explicitly write the types.
+
 ## 1. SOLID Principles
 - Follow SOLID principles for object-oriented and functional code:
   - **S**ingle Responsibility: Each module/class/function should have one responsibility.
