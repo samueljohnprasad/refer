@@ -1,0 +1,8 @@
+2025-06-17 00:37:48 [ERROR]: 400 - Please provide a valid email address, Password must be at least 8 characters long, First name is required, Last name is required - /api/auth/register - POST - ::1 
+2025-06-17 00:38:11 [ERROR]: 400 - First name is required, Last name is required - /api/auth/register - POST - ::1 
+2025-06-17 00:39:00 [INFO]: Email service initialized 
+2025-06-17 00:39:01 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-17 00:48:41 [INFO]: Email service initialized 
+2025-06-17 00:48:41 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
