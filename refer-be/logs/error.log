@@ -48,3 +48,11 @@
     at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
 2025-06-17 02:59:08 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
     at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-17 04:06:21 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-18 00:13:42 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-18 00:26:32 [ERROR]: 401 - Invalid email or password - /api/auth/login - POST - ::1 
+2025-06-18 00:27:46 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-18 01:05:51 [ERROR]: 401 - Invalid email or password - /api/auth/login - POST - ::1 

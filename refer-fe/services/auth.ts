@@ -1,13 +1,11 @@
 import api from './api';
 
-export interface RegisterPayload {
+export interface LoginPayload {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
 }
 
-export interface RegisterResponse {
+export interface AuthResponse {
   token: string;
   user: {
     id: string;
@@ -21,7 +19,20 @@ export interface RegisterResponse {
   success: boolean;
 }
 
+export interface RegisterPayload extends LoginPayload {
+  firstName: string;
+  lastName: string;
+}
+
+export type RegisterResponse = AuthResponse;
+export type LoginResponse = AuthResponse;
+
 export async function registerUser(payload: RegisterPayload): Promise<RegisterResponse> {
   const res = await api.post<{data: RegisterResponse}>('/auth/register', payload);
+  return res.data.data;
+}
+
+export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
+  const res = await api.post<{data: LoginResponse}>('/auth/login', payload);
   return res.data.data;
 }

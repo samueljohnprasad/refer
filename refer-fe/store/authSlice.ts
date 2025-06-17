@@ -1,5 +1,10 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { registerUser, RegisterPayload, RegisterResponse } from '../services/auth';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { 
+  RegisterPayload, 
+  RegisterResponse, 
+  LoginResponse,
+  LoginPayload 
+} from '../services/auth';
 import { saveAuth, loadAuth, clearAuth, StoredAuth } from '../services/authStorage';
 import { User } from '../types/User';
 
@@ -20,7 +25,7 @@ const initialState: AuthState = {
 };
 
 // Thunks are now defined in authThunks.ts
-import { registerThunk, initAuth } from './authThunks';
+import { registerThunk, loginThunk, initAuth } from './authThunks';
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -32,34 +37,56 @@ const authSlice = createSlice({
       clearAuth();
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
+    // Register cases
     builder
-      .addCase(registerThunk.pending, state => {
+      .addCase(registerThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerThunk.fulfilled, (state: AuthState, action: PayloadAction<RegisterResponse>) => {
+      .addCase(registerThunk.fulfilled, (state, action: PayloadAction<RegisterResponse>) => {
         state.loading = false;
         state.token = action.payload.token;
         state.user = action.payload.user;
         state.error = null;
         state.initialized = true;
-        // No AsyncStorage side-effects here
         console.log('[registerThunk.fulfilled reducer] payload:', action.payload);
       })
-      .addCase(registerThunk.rejected, (state: AuthState, action: PayloadAction<any>) => {
+      .addCase(registerThunk.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload || 'Registration failed';
-      })
-      .addCase(initAuth.fulfilled, (state: AuthState, action: PayloadAction<StoredAuth>) => {
-        console.log('[initAuth.fulfilled reducer] payload:', action.payload);
-        state.token = action.payload.token;
-        state.user = action.payload.user ?? null;
         state.initialized = true;
       })
-      .addDefaultCase((state) => {
-        // Defensive: never allow state to become undefined
-        return state ?? initialState;
+      
+      // Login cases
+      .addCase(loginThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginThunk.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.error = null;
+        state.initialized = true;
+        console.log('[loginThunk.fulfilled reducer] payload:', action.payload);
+      })
+      .addCase(loginThunk.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload || 'Login failed';
+        state.initialized = true;
+      })
+      
+      // Init auth case
+      .addCase(initAuth.fulfilled, (state, action: PayloadAction<StoredAuth>) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.initialized = true;
+      })
+      .addCase(initAuth.rejected, (state) => {
+        state.loading = false;
+        state.initialized = true;
       });
   },
 });

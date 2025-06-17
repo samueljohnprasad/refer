@@ -8,6 +8,7 @@ These rules apply to both frontend (React Native/React) and backend (Node.js) co
 
 
 strictly use typescript everywhere, for every variable assignment, function params , function return, explicitly write the types.
+dont use any type.
 
 ## 1. SOLID Principles
 - Follow SOLID principles for object-oriented and functional code:

@@ -1,6 +1,20 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { registerUser, RegisterPayload, RegisterResponse } from '../services/auth';
+import { 
+  registerUser, 
+  RegisterPayload, 
+  RegisterResponse, 
+  loginUser, 
+  LoginPayload, 
+  LoginResponse 
+} from '../services/auth';
 import { saveAuth, loadAuth, StoredAuth } from '../services/authStorage';
+interface ApiError {
+    response?: {
+      data?: {
+        message?: string;
+      };
+    };
+  }
 
 export const registerThunk = createAsyncThunk<
   RegisterResponse,
@@ -11,8 +25,26 @@ export const registerThunk = createAsyncThunk<
     const res: RegisterResponse = await registerUser(payload);
     await saveAuth({ token: res.token, user: res.user });
     return res;
-  } catch (e: any) {
-    return rejectWithValue(e?.response?.data?.message || 'Registration failed');
+  } catch (error) {
+    const apiError = error as ApiError;
+
+    return rejectWithValue(apiError?.response?.data?.message || 'Registration failed');
+  }
+});
+
+export const loginThunk = createAsyncThunk<
+  LoginResponse,
+  LoginPayload,
+  { rejectValue: string }
+>('auth/login', async (payload: LoginPayload, { rejectWithValue }): Promise<LoginResponse | any> => {
+  try {
+    const res: LoginResponse = await loginUser(payload);
+    await saveAuth({ token: res.token, user: res.user });
+    return res;
+  } catch (error) {
+    const apiError = error as ApiError;
+
+    return rejectWithValue(apiError?.response?.data?.message || 'Login failed');
   }
 });
 
