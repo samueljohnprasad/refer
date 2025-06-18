@@ -8,6 +8,10 @@ import rateLimit from 'express-rate-limit';
 
 // Import routes
 import authRoutes from './routes/auth.routes';
+import jobRoutes from './routes/job.routes';
+
+// Import jobs
+import { setupCloseExpiredJobsJob } from './jobs/closeExpiredJobs.job';
 
 // Swagger imports
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -57,6 +61,10 @@ app.use('/api', limiter);
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/jobs', jobRoutes);
+
+// Start cron jobs
+setupCloseExpiredJobsJob();
 
 // Health check endpoint
 app.get('/health', (req, res) => {
