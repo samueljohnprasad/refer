@@ -13,7 +13,8 @@ import "react-native-reanimated";
 // Import our custom ThemeProvider
 import { ThemeProvider } from "../context/ThemeContext";
 import { useTheme } from "../context/ThemeContext";
-import { TouchableOpacity, View, StyleSheet , Text} from "react-native";
+import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
+import ThemeToggle from "@/components/Toggle/ThemeToggle";
 import store, { persistor } from "@/store";
 import { logout } from "@/store/authSlice";
 
@@ -110,13 +111,16 @@ function RootLayoutNav() {
 
     return (
         <NavigationThemeProvider value={navigationTheme}>
-            <TouchableOpacity
-                style={styles.logoutButton}
-                onPress={() => dispatch(logout())}
-                accessibilityLabel="Logout"
-            >
-                <Text style={styles.logoutText}>Logout</Text>
-            </TouchableOpacity>{" "}
+            <View style={styles.headerControls}>
+                <ThemeToggle showLabel={false} />
+                <TouchableOpacity
+                    style={styles.logoutButton}
+                    onPress={() => dispatch(logout())}
+                    accessibilityLabel="Logout"
+                >
+                    <Text style={styles.logoutText}>Logout</Text>
+                </TouchableOpacity>
+            </View>
             <Stack>
                 <Stack.Screen
                     name="(tabs)"
@@ -131,11 +135,16 @@ function RootLayoutNav() {
     );
 }
 const styles = StyleSheet.create({
-    logoutButton: {
+    headerControls: {
         position: "absolute",
         top: 40,
         right: 20,
         zIndex: 100,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+    },
+    logoutButton: {
         backgroundColor: "#fff",
         borderRadius: 20,
         paddingHorizontal: 16,
