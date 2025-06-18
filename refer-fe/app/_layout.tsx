@@ -77,6 +77,8 @@ function RootLayoutNav() {
     const { isDarkMode, theme } = useTheme();
     const dispatch = useDispatch();
     const { user } = useAuth();
+    // Get theme-based styles
+    const styles = useLayoutStyles();
 
     // Map our theme to React Navigation theme
     const navigationTheme = isDarkMode
@@ -134,29 +136,34 @@ function RootLayoutNav() {
         </NavigationThemeProvider>
     );
 }
-const styles = StyleSheet.create({
-    headerControls: {
-        position: "absolute",
-        top: 40,
-        right: 20,
-        zIndex: 100,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-    },
-    logoutButton: {
-        backgroundColor: "#fff",
-        borderRadius: 20,
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    logoutText: {
-        color: "#007AFF",
-        fontWeight: "bold",
-        fontSize: 16,
-    },
-});
+// Create a style hook that incorporates theme values
+const useLayoutStyles = () => {
+    const { theme } = useTheme();
+    
+    return StyleSheet.create({
+        headerControls: {
+            position: "absolute",
+            top: theme.spacing.xl,
+            right: theme.spacing.lg,
+            zIndex: 100,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: theme.spacing.sm,
+        },
+        logoutButton: {
+            backgroundColor: theme.colors.card,
+            borderRadius: theme.borderRadius.md,
+            paddingHorizontal: theme.spacing.md,
+            paddingVertical: theme.spacing.sm,
+            shadowColor: theme.mode === 'dark' ? '#000' : '#000',
+            shadowOpacity: 0.1,
+            shadowRadius: theme.borderRadius.sm,
+            elevation: 2,
+        },
+        logoutText: {
+            color: theme.colors.primary,
+            fontWeight: "bold",
+            fontSize: theme.typography.fontSize.md,
+        },
+    });
+};
