@@ -22,7 +22,7 @@ export async function saveAuth(auth: StoredAuth): Promise<void> {
 export async function loadAuth(): Promise<StoredAuth> {
   const tokenStr: string | null = await AsyncStorage.getItem('token');
   const userStr: string | null = await AsyncStorage.getItem('user');
-  let user: Record<string, unknown> | null = null;
+  let user: User | null = null;
   try {
     user = userStr ? JSON.parse(userStr) : null;
   } catch {
