@@ -1,13 +1,13 @@
 import '../tamagui-web.css'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useColorScheme } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { useFonts } from 'expo-font'
 import { SplashScreen, Stack } from 'expo-router'
 import { Provider } from './Provider'
-import { useTheme } from 'tamagui'
+import { Text, useTheme, Spinner } from 'tamagui'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -27,21 +27,34 @@ export default function RootLayout() {
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   })
+  const [hydrated, setHydrated] = useState<boolean>(false)
 
   useEffect(() => {
-    if (interLoaded || interError) {
-      // Hide the splash screen after the fonts have loaded (or an error was returned) and the UI is ready.
+    // Hydration logic: set hydrated to true after mount (client-side)
+    setHydrated(true)
+  }, [])
+
+  useEffect(() => {
+    if ((interLoaded || interError) && hydrated) {
+      // Hide the splash screen after the fonts and hydration are ready
       SplashScreen.hideAsync()
     }
-  }, [interLoaded, interError])
+  }, [interLoaded, interError, hydrated])
 
-  if (!interLoaded && !interError) {
-    return null
+  if ((!interLoaded && !interError) || !hydrated) {
+    // Show a loader while waiting for fonts or hydration
+    return (
+      <Providers>
+        <Spinner size="large" color="$blue10" />
+      </Providers>
+    )
   }
 
   return (
     <Providers>
-      <RootLayoutNav />
+      <Suspense fallback={<Spinner size="large" color="$blue10" />}>
+        <RootLayoutNav />
+      </Suspense>
     </Providers>
   )
 }
