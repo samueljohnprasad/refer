@@ -161,6 +161,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
             }
           >
             <EditProfileButton onPress={() => setEditProfileModalVisible(true)}>
+              <Ionicons name="pencil-outline" size={16} color="#37352f" />
               <ButtonText>Edit Profile</ButtonText>
             </EditProfileButton>
           </ButtonsContainer>
@@ -278,203 +279,216 @@ const styles = StyleSheet.create({
   },
 });
 
-// Styled Components
+// Notion-like styled components
 const CoverImageContainer = styled.View`
   width: 100%;
-  height: 180px;
+  height: 200px;
   position: relative;
+  margin-bottom: 24px;
 `;
 
 const CoverImage = styled.Image`
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
 `;
 
 const ProfileHeaderContainer = styled.View`
-    padding: 0 20px;
-    position: relative;
-    flex-direction: ${Platform.OS === "web" &&
-    typeof window !== "undefined" &&
-    window.innerWidth > 768
-        ? "row"
-        : "column"};
-    align-items: ${Platform.OS === "web" &&
-    typeof window !== "undefined" &&
-    window.innerWidth > 768
-        ? "flex-end"
-        : "center"};
+  padding: 0 24px;
+  margin-bottom: 32px;
+  position: relative;
+  flex-direction: ${Platform.OS === 'web' && typeof window !== 'undefined' && window.innerWidth > 768 ? 'row' : 'column'};
+  align-items: ${Platform.OS === 'web' && typeof window !== 'undefined' && window.innerWidth > 768 ? 'flex-start' : 'center'};
 `;
 
 const ProfileImageWrapper = styled.View`
-  width: 100px;
-  height: 100px;
-  border-radius: 50px;
-  border-width: 3px;
-  border-color: #ffffff;
+  width: 110px;
+  height: 110px;
+  border-radius: 8px;
   overflow: hidden;
-  margin-top: -50px;
+  margin-top: -55px;
   background-color: #ffffff;
-  ${Platform.OS === 'android' ? 'elevation: 4;' : `
-    shadowColor: #000000;
-    shadowOffset: 0px 2px;
+  ${Platform.OS === 'android' ? 'elevation: 1;' : `
+    shadowColor: rgba(0, 0, 0, 0.08);
+    shadowOffset: 0px 1px;
     shadowOpacity: 0.2;
-    shadowRadius: 5px;
+    shadowRadius: 2px;
   `}
 `;
 
 const ProfileImage = styled.Image`
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 `;
 
 const ProfileInfoContainer = styled.View`
-    padding: 10px 0;
+  padding: 10px 0;
 `;
 
 const ProfileName = styled.Text`
-    font-size: 22px;
-    font-weight: 700;
-    color: #333333;
+  font-size: 32px;
+  font-weight: 700;
+  color: #37352f;
+  letter-spacing: -0.4px;
 `;
 
 const UsernameText = styled.Text`
-    font-size: 16px;
-    color: #666666;
-    margin-top: 4px;
+  font-size: 16px;
+  color: #787774;
+  margin-top: 2px;
 `;
 
 const LocationText = styled.Text`
-    font-size: 14px;
-    color: #666666;
-    margin-left: 4px;
+  font-size: 14px;
+  color: #787774;
+  margin-left: 4px;
 `;
 
 const WebsiteText = styled.Text`
-    font-size: 14px;
-    color: #0077b5;
-    margin-left: 4px;
+  font-size: 14px;
+  color: #2382de;
+  margin-left: 4px;
+  text-decoration: underline;
+  text-decoration-color: #e1e1e0;
 `;
 
 const ButtonsContainer = styled.View`
-    margin-top: 10px;
-    margin-left: auto;
+  margin-top: 16px;
+  margin-left: auto;
+  flex-direction: row;
 `;
 
 const EditProfileButton = styled.TouchableOpacity`
-    background-color: #0077b5;
-    padding: 10px 20px;
-    border-radius: 25px;
-    align-items: center;
-    justify-content: center;
+  background-color: #f7f6f3;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border-width: 1px;
+  border-color: #e1e1e0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
 `;
 
 const ButtonText = styled.Text`
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 600;
+  color: #37352f;
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 6px;
 `;
 
 const Section = styled.View`
-    padding: 16px 20px;
-    border-bottom-width: 1px;
-    border-bottom-color: #eeeeee;
+  padding: 16px 24px 24px 24px;
+  margin-bottom: 10px;
 `;
 
 const SectionTitle = styled.Text`
-    font-size: 18px;
-    font-weight: 600;
-    color: #333333;
-    margin-bottom: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #37352f;
+  margin-bottom: 16px;
+  letter-spacing: -0.4px;
 `;
 
 const BioText = styled.Text`
-    font-size: 16px;
-    line-height: 22px;
-    color: #444444;
+  font-size: 16px;
+  line-height: 24px;
+  color: #37352f;
 `;
 
 const StatsContainer = styled.View`
-    flex-direction: row;
-    justify-content: space-between;
+  flex-direction: row;
+  background-color: #f7f6f3;
+  border-radius: 4px;
+  padding: 16px;
+  margin-top: 12px;
 `;
 
 const StatItem = styled.View`
-    align-items: center;
-    flex: 1;
+  align-items: center;
+  flex: 1;
 `;
 
 const StatValue = styled.Text`
-    font-size: 20px;
-    font-weight: 700;
-    color: #333333;
+  font-size: 22px;
+  font-weight: 600;
+  color: #37352f;
 `;
 
 const StatLabel = styled.Text`
-    font-size: 14px;
-    color: #666666;
-    margin-top: 4px;
+  font-size: 14px;
+  color: #787774;
+  margin-top: 4px;
 `;
 
 const SkillsContainer = styled.View`
-    flex-direction: row;
-    flex-wrap: wrap;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 8px;
 `;
 
 const SkillTag = styled.View`
-    background-color: #e8f4fc;
-    padding: 8px 12px;
-    border-radius: 20px;
-    margin-right: 8px;
-    margin-bottom: 8px;
+  background-color: #f1f1ef;
+  padding: 6px 10px;
+  border-radius: 3px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  border-width: 1px;
+  border-color: #e1e1e0;
 `;
 
 const SkillText = styled.Text`
-    color: #0077b5;
-    font-size: 14px;
+  color: #37352f;
+  font-size: 14px;
 `;
 
 const ExperienceItem = styled.View`
-    margin-bottom: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom-width: 1px;
+  border-bottom-color: #f1f1ef;
 `;
 
 const ExperienceRole = styled.Text`
-    font-size: 16px;
-    font-weight: 600;
-    color: #333333;
+  font-size: 16px;
+  font-weight: 600;
+  color: #37352f;
 `;
 
 const ExperienceCompany = styled.Text`
-    font-size: 15px;
-    color: #555555;
-    margin-top: 2px;
+  font-size: 15px;
+  color: #37352f;
+  margin-top: 2px;
 `;
 
 const ExperienceDuration = styled.Text`
-    font-size: 14px;
-    color: #777777;
-    margin-top: 2px;
+  font-size: 14px;
+  color: #787774;
+  margin-top: 4px;
 `;
 
 const EducationItem = styled.View`
-    margin-bottom: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom-width: 1px;
+  border-bottom-color: #f1f1ef;
 `;
 
 const EducationDegree = styled.Text`
-    font-size: 16px;
-    font-weight: 600;
-    color: #333333;
+  font-size: 16px;
+  font-weight: 600;
+  color: #37352f;
 `;
 
 const EducationInstitution = styled.Text`
-    font-size: 15px;
-    color: #555555;
-    margin-top: 2px;
+  font-size: 15px;
+  color: #37352f;
+  margin-top: 2px;
 `;
 
 const EducationYear = styled.Text`
-    font-size: 14px;
-    color: #777777;
-    margin-top: 2px;
+  font-size: 14px;
+  color: #787774;
+  margin-top: 4px;
 `;
 
 export default ProfileView;

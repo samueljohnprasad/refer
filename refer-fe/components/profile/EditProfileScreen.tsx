@@ -97,7 +97,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
       <Header>
         <HeaderTitle>Edit Profile</HeaderTitle>
         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-          <Ionicons name="close-outline" size={28} color="#333" />
+          <Ionicons name="close-outline" size={24} color="#37352f" />
         </TouchableOpacity>
         <SaveButton onPress={() => onSave(formData)}>
           <SaveButtonText>Save</SaveButtonText>
@@ -214,7 +214,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
                       placeholder="E.g. JavaScript, React, UI Design"
                     />
                     <RemoveButton onPress={() => handleRemoveSkill(index)}>
-                      <Ionicons name="close-circle" size={22} color="#ff3b30" />
+                      <Ionicons name="close" size={18} color="#787774" />
                     </RemoveButton>
                   </SkillInputContainer>
                 ))}
@@ -346,7 +346,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#ffffff',
   },
   closeButton: {
     position: 'absolute',
@@ -355,6 +355,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flex: 1,
+    backgroundColor: '#ffffff',
   }
 });
 
@@ -365,14 +366,14 @@ const Header = styled.View`
   justify-content: center;
   background-color: #ffffff;
   border-bottom-width: 1px;
-  border-bottom-color: #eaeaea;
+  border-bottom-color: #f1f1ef;
   position: relative;
 `;
 
 const HeaderTitle = styled.Text`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  color: #333333;
+  color: #37352f;
 `;
 
 const SaveButton = styled.TouchableOpacity`
@@ -380,12 +381,12 @@ const SaveButton = styled.TouchableOpacity`
   right: 16px;
   top: 16px;
   padding: 6px 12px;
-  background-color: #0077B5;
-  border-radius: 20px;
+  background-color: transparent;
+  border-radius: 3px;
 `;
 
 const SaveButtonText = styled.Text`
-  color: #ffffff;
+  color: #2382de;
   font-size: 14px;
   font-weight: 600;
 `;
@@ -393,72 +394,65 @@ const SaveButtonText = styled.Text`
 const SectionTabs = styled.View`
   flex-direction: row;
   background-color: #ffffff;
+  padding: 0 20px;
   border-bottom-width: 1px;
-  border-bottom-color: #eaeaea;
+  border-bottom-color: #f1f1ef;
 `;
 
 const SectionTab = styled.TouchableOpacity<{ active: boolean }>`
   flex: 1;
-  padding: 14px 0;
+  padding: 12px 0;
   align-items: center;
-  border-bottom-width: 2px;
-  border-bottom-color: ${props => props.active ? '#0077B5' : 'transparent'};
+  border-bottom-width: 1px;
+  border-bottom-color: ${props => props.active ? '#37352f' : 'transparent'};
+  margin: 0 4px;
 `;
 
 const SectionTabText = styled.Text<{ active: boolean }>`
   font-size: 14px;
-  color: ${props => props.active ? '#0077B5' : '#666666'};
-  font-weight: ${props => props.active ? '600' : '400'};
+  color: ${props => props.active ? '#37352f' : '#787774'};
+  font-weight: ${props => props.active ? '500' : '400'};
 `;
 
 const Section = styled.View`
-  margin: 16px;
+  margin: 16px 24px;
   background-color: #ffffff;
-  border-radius: 8px;
-  ${Platform.OS === 'ios' ? `
-    shadowColor: #000000;
-    shadowOffset: 0px 1px;
-    shadowOpacity: 0.05;
-    shadowRadius: 3px;
-  ` : `
-    elevation: 2;
-  `}
 `;
 
 const SectionContent = styled.View`
-  padding: 16px;
+  padding: 8px 0;
 `;
 
 const InputGroup = styled.View`
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 `;
 
 const InputLabel = styled.Text`
   font-size: 14px;
   font-weight: 500;
-  color: #666666;
-  margin-bottom: 6px;
+  color: #787774;
+  margin-bottom: 8px;
 `;
 
 const StyledInput = styled.TextInput`
-  background-color: #f5f5f5;
-  padding: 12px 16px;
-  border-radius: 6px;
+  background-color: #ffffff;
+  padding: 10px 8px;
+  border-radius: 3px;
   font-size: 16px;
-  color: #333333;
+  color: #37352f;
   border-width: 1px;
-  border-color: #e0e0e0;
+  border-color: #e1e1e0;
 `;
 
 const StyledTextarea = styled.TextInput`
-  background-color: #f5f5f5;
-  padding: 12px 16px;
-  border-radius: 6px;
+  background-color: #ffffff;
+  padding: 10px 8px;
+  border-radius: 3px;
   font-size: 16px;
-  color: #333333;
+  color: #37352f;
   border-width: 1px;
-  border-color: #e0e0e0;
-  height: 100px;
+  border-color: #e1e1e0;
+  height: 120px;
   ${Platform.OS === 'android' ? `
     textAlignVertical: top;
   ` : ''}
@@ -468,16 +462,16 @@ const AddButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  background-color: #f0f7fb;
-  border-radius: 6px;
+  padding: 8px;
+  background-color: #f7f6f3;
+  border-radius: 3px;
   border-width: 1px;
-  border-color: #d0e6f2;
-  margin-top: 8px;
+  border-color: #e1e1e0;
+  margin-top: 12px;
 `;
 
 const AddButtonText = styled.Text`
-  color: #0077B5;
+  color: #37352f;
   font-size: 14px;
   font-weight: 500;
   margin-left: 8px;
@@ -491,13 +485,13 @@ const SkillInputContainer = styled.View`
 
 const SkillInput = styled.TextInput`
   flex: 1;
-  background-color: #f5f5f5;
-  padding: 12px 16px;
-  border-radius: 6px;
+  background-color: #ffffff;
+  padding: 10px 8px;
+  border-radius: 3px;
   font-size: 16px;
-  color: #333333;
+  color: #37352f;
   border-width: 1px;
-  border-color: #e0e0e0;
+  border-color: #e1e1e0;
   margin-right: 10px;
 `;
 
@@ -515,32 +509,30 @@ const EducationItem = styled.View`
 
 const Divider = styled.View`
   height: 1px;
-  background-color: #eaeaea;
+  background-color: #f1f1ef;
   margin: 16px 0;
 `;
 
 const ImageSection = styled.View`
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   position: relative;
+  background-color: #f7f6f3;
+  padding: 20px;
+  border-radius: 3px;
+  border-width: 1px;
+  border-color: #e1e1e0;
 `;
 
 const ProfileImageContainer = styled.View`
   width: 100px;
   height: 100px;
-  border-radius: 50px;
+  border-radius: 8px;
   overflow: hidden;
   margin-bottom: 16px;
-  border-width: 3px;
-  border-color: #ffffff;
-  ${Platform.OS === 'android' ? `
-    elevation: 2;
-  ` : `
-    shadowColor: #000000;
-    shadowOffset: 0px 2px;
-    shadowOpacity: 0.1;
-    shadowRadius: 3px;
-  `}
+  border-width: 1px;
+  border-color: #e1e1e0;
+  background-color: #ffffff;
 `;
 
 const ProfileImage = styled.Image`
@@ -552,8 +544,8 @@ const ChangeImageButton = styled.TouchableOpacity`
   position: absolute;
   bottom: 0;
   right: 0;
-  background-color: rgba(0, 119, 181, 0.8);
-  border-radius: 20px;
+  background-color: rgba(55, 53, 47, 0.65);
+  border-radius: 3px;
   padding: 6px 10px;
   flex-direction: row;
   align-items: center;
@@ -573,8 +565,8 @@ const CoverImagePreview = styled.Image`
 `;
 
 const CoverImageButton = styled.TouchableOpacity`
-  background-color: rgba(0, 119, 181, 0.8);
-  border-radius: 20px;
+  background-color: rgba(55, 53, 47, 0.65);
+  border-radius: 3px;
   padding: 6px 12px;
   flex-direction: row;
   align-items: center;
