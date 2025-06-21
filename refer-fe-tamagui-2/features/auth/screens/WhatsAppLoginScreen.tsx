@@ -38,26 +38,26 @@ export const WhatsAppLoginScreen: React.FC<WhatsAppLoginScreenProps> = ({
 
   return (
     <YStack
-      padding="$5"
-      maxWidth={500}
+      p="$5"
+      maxW={500}
       width="100%"
       mx="auto"
       space="$4"
       flex={1}
     >
-      <XStack alignItems="center" marginBottom="$2">
+      <XStack style={{ alignItems: "center" }} mb="$2">
         <Button
           icon={ArrowLeft}
           size="$3"
-          marginRight="$2"
+          mr="$2"
           onPress={onBackToMainLogin}
-          backgroundColor="transparent"
-          borderRadius="$4"
+          bg="transparent"
+          style={{ borderRadius: 16 }}
         />
         <H2>Login with WhatsApp</H2>
       </XStack>
 
-      <Paragraph color="$gray11" marginBottom="$4">
+      <Paragraph style={{ color: "#999" }} mb="$4">
         Enter your WhatsApp number to receive authentication message
       </Paragraph>
 
@@ -72,8 +72,8 @@ export const WhatsAppLoginScreen: React.FC<WhatsAppLoginScreenProps> = ({
           testID="whatsapp-input"
         />
 
-        <YStack space="$2" marginTop="$2">
-          <Text color="$gray10" fontSize="$2">
+        <YStack space="$2" mt="$2">
+          <Text style={{ color: "#999", fontSize: 12 }}>
             We'll send a WhatsApp message with a verification link to this number
           </Text>
         </YStack>
@@ -81,11 +81,11 @@ export const WhatsAppLoginScreen: React.FC<WhatsAppLoginScreenProps> = ({
         <Button
           size="$4"
           theme="blue"
-          marginVertical="$5"
+          my="$5"
           onPress={handleLogin}
           disabled={isLoading}
           icon={isLoading ? undefined : ArrowRight}
-          borderRadius="$4"
+          style={{ borderRadius: 16 }}
         >
           {isLoading ? "Processing..." : "Continue with WhatsApp"}
         </Button>

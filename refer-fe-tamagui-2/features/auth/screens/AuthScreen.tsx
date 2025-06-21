@@ -200,7 +200,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
   };
 
   return (
-    <YStack flex={1} backgroundColor="$background">
+    <YStack flex={1} bg="$background">
       {renderCurrentScreen()}
     </YStack>
   );

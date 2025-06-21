@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, YStack, XStack, H2, Paragraph, Text, Form } from "tamagui";
 import { InputField } from "../components/InputField";
 import { AuthFormValues } from "../types";
-import { Mail, Lock, ArrowRight } from "@tamagui/lucide-icons";
+import { ArrowRight } from "@tamagui/lucide-icons";
 
 interface LoginScreenProps {
   onLogin: (values: AuthFormValues) => void;
@@ -52,16 +52,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
   return (
     <YStack
-      padding="$5"
-      maxWidth={500}
+      p="$5"
       width="100%"
       mx="auto"
       space="$4"
       flex={1}
+      style={{ maxWidth: 500 }}
     >
-      <YStack space="$2" marginBottom="$4">
+      <YStack space="$2" mb="$4">
         <H2>Welcome back</H2>
-        <Paragraph color="$gray11">Log in to your account</Paragraph>
+        <Paragraph style={{ color: "#999" }}>Log in to your account</Paragraph>
       </YStack>
 
       <Form onSubmit={handleSubmit}>
@@ -85,11 +85,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           testID="login-password-input"
         />
 
-        <YStack alignItems="flex-end" marginBottom="$4">
+        <YStack mb="$4" style={{ alignItems: "flex-end" }}>
           <Text
-            color="$blue10"
-            fontSize="$3"
-            fontWeight="500"
+            style={{ 
+              color: "#3B82F6",
+              fontSize: 14,
+              fontWeight: "500"
+            }}
             onPress={() => {}}
           >
             Forgot password?
@@ -99,55 +101,57 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         <Button
           size="$4"
           theme="blue"
-          marginVertical="$3"
+          my="$3"
           onPress={handleSubmit}
           disabled={isLoading}
           icon={isLoading ? undefined : ArrowRight}
-          borderRadius="$4"
+          style={{ borderRadius: 16 }}
         >
           {isLoading ? "Signing in..." : "Sign In"}
         </Button>
       </Form>
 
-      <YStack space="$4" marginTop="$4">
-        <Text textAlign="center" color="$gray11">
+      <YStack space="$4" mt="$4">
+        <Text style={{ color: "#999", textAlign: "center" }}>
           Or continue with
         </Text>
         
-        <XStack space="$3" justifyContent="center">
+        <XStack space="$3" justify="center">
           <Button
             size="$4"
             flex={1}
-            borderColor="$gray6"
+            borderColor="$borderColor"
             borderWidth={1}
-            backgroundColor="transparent"
+            bg="transparent"
             onPress={onPhoneLoginClick}
-            borderRadius="$4"
+            style={{ borderRadius: 16 }}
           >
             Phone
           </Button>
           <Button
             size="$4"
             flex={1}
-            borderColor="$gray6"
+            borderColor="$borderColor"
             borderWidth={1}
-            backgroundColor="transparent"
+            bg="transparent"
             onPress={onWhatsAppLoginClick}
-            borderRadius="$4"
+            style={{ borderRadius: 16 }}
           >
             WhatsApp
           </Button>
         </XStack>
       </YStack>
 
-      <YStack marginTop="auto" alignItems="center" paddingVertical="$4">
+      <YStack mt="auto" py="$4" style={{ alignItems: "center", justifyContent: "center" }}>
         <XStack>
-          <Text color="$gray11">Don't have an account?</Text>
+          <Text style={{ color: "#999" }}>Don't have an account?</Text>
           <Text
-            color="$blue10"
-            fontWeight="500"
+            style={{
+              color: "#3B82F6",
+              fontWeight: "500",
+              marginLeft: 8
+            }}
             onPress={onSignupClick}
-            marginLeft="$2"
           >
             Sign up
           </Text>

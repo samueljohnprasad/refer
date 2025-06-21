@@ -59,16 +59,16 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({
 
   return (
     <YStack
-      padding="$5"
-      maxWidth={500}
+      p="$5"
+      maxW={500}
       width="100%"
       mx="auto"
       space="$4"
       flex={1}
     >
-      <YStack space="$2" marginBottom="$4">
+      <YStack space="$2" mb="$4">
         <H2>Create an account</H2>
-        <Paragraph color="$gray11">Sign up to get started</Paragraph>
+        <Paragraph style={{ color: "#999" }}>Sign up to get started</Paragraph>
       </YStack>
 
       <Form onSubmit={handleSubmit}>
@@ -105,55 +105,57 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({
         <Button
           size="$4"
           theme="blue"
-          marginVertical="$3"
+          my="$3"
           onPress={handleSubmit}
           disabled={isLoading}
           icon={isLoading ? undefined : ArrowRight}
-          borderRadius="$4"
+          style={{ borderRadius: 16 }}
         >
           {isLoading ? "Creating account..." : "Create Account"}
         </Button>
       </Form>
 
-      <YStack space="$4" marginTop="$4">
-        <Text textAlign="center" color="$gray11">
+      <YStack space="$4" mt="$4">
+        <Text style={{ textAlign: "center", color: "#999" }}>
           Or sign up with
         </Text>
         
-        <XStack space="$3" justifyContent="center">
+        <XStack space="$3" justify="center">
           <Button
             size="$4"
             flex={1}
-            borderColor="$gray6"
+            borderColor="$borderColor"
             borderWidth={1}
-            backgroundColor="transparent"
+            bg="transparent"
             onPress={onPhoneSignupClick}
-            borderRadius="$4"
+            style={{ borderRadius: 16 }}
           >
             Phone
           </Button>
           <Button
             size="$4"
             flex={1}
-            borderColor="$gray6"
+            borderColor="$borderColor"
             borderWidth={1}
-            backgroundColor="transparent"
+            bg="transparent"
             onPress={onWhatsAppSignupClick}
-            borderRadius="$4"
+            style={{ borderRadius: 16 }}
           >
             WhatsApp
           </Button>
         </XStack>
       </YStack>
 
-      <YStack marginTop="auto" alignItems="center" paddingVertical="$4">
+      <YStack mt="auto" p="$4" style={{ alignItems: "center" }}>
         <XStack>
-          <Text color="$gray11">Already have an account?</Text>
+          <Text style={{ color: "#999" }}>Already have an account?</Text>
           <Text
-            color="$blue10"
-            fontWeight="500"
+            style={{
+              color: "#3B82F6",
+              fontWeight: "500",
+              marginLeft: 8
+            }}
             onPress={onLoginClick}
-            marginLeft="$2"
           >
             Sign in
           </Text>
