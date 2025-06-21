@@ -9,6 +9,7 @@ import rateLimit from 'express-rate-limit';
 // Import routes
 import authRoutes from './routes/auth.routes';
 import jobRoutes from './routes/job.routes';
+import profileRoutes from './routes/profile.routes';
 
 // Import jobs
 import { setupCloseExpiredJobsJob } from './jobs/closeExpiredJobs.job';
@@ -62,6 +63,7 @@ app.use('/api', limiter);
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
+app.use('/api/profiles', profileRoutes);
 
 // Start cron jobs
 setupCloseExpiredJobsJob();
