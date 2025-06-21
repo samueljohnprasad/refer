@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ScrollView, ActivityIndicator, StyleSheet, Animated, Easing, PanResponder } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
@@ -47,6 +47,7 @@ const TabsContainer = styled.View<{ theme: ThemeInterface }>`
     theme.mode === 'dark' ? theme.colors.card : '#f2f2f2'};
   border-radius: ${({ theme }) => theme.borderRadius.sm}px;
   overflow: hidden;
+  position: relative;
 `;
 
 const Tab = styled.TouchableOpacity<{ active: boolean; theme: ThemeInterface }>`
@@ -166,6 +167,12 @@ export default function AuthScreen() {
       backgroundColor: theme.colors.background,
       minHeight: '100%',
       paddingTop: '7%',
+    },
+    tabIndicator: {
+      position: 'absolute',
+      bottom: 0,
+      height: 2,
+      backgroundColor: '#007AFF', // Your active color
     }
   });
   
@@ -173,6 +180,31 @@ export default function AuthScreen() {
     ? !!email && !!password 
     : !!email && !!password && !!firstName && !!lastName;
     
+  const [fadeAnim] = useState(new Animated.Value(1));
+  const [indicatorAnim] = useState(new Animated.Value(tab === 'login' ? 0 : 1));
+  const [tabWidth, setTabWidth] = useState(0);
+
+  const handleTabChange = (newTab: 'login' | 'signup') => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 150,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start(() => {
+      Animated.spring(indicatorAnim, {
+        toValue: newTab === 'login' ? 0 : 1,
+        useNativeDriver: true,
+      }).start();
+      setTab(newTab);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 150,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
   return (
     <StyledSafeAreaView>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
@@ -182,8 +214,9 @@ export default function AuthScreen() {
         <TabsContainer>
           <Tab
             active={tab === 'login'}
-            onPress={() => setTab('login')}
+            onPress={() => handleTabChange('login')}
             accessibilityLabel="Login Tab"
+            onLayout={e => setTabWidth(e.nativeEvent.layout.width)}
           >
             <TabText active={tab === 'login'}>
               Login
@@ -191,99 +224,115 @@ export default function AuthScreen() {
           </Tab>
           <Tab
             active={tab === 'signup'}
-            onPress={() => setTab('signup')}
+            onPress={() => handleTabChange('signup')}
             accessibilityLabel="Sign Up Tab"
           >
             <TabText active={tab === 'signup'}>
               Sign Up
             </TabText>
           </Tab>
+          <Animated.View 
+            style={[ 
+              styles.tabIndicator,
+              {
+                width: tabWidth,
+                transform: [{
+                  translateX: indicatorAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, tabWidth]
+                  })
+                }]
+              }
+            ]} 
+          />
         </TabsContainer>
 
         {/* Form */}
-        <FormContainer>
-          <Heading3 style={{ marginBottom: theme.spacing.md }}>
-            {isLoginForm ? 'Welcome Back' : 'Create Account'}
-          </Heading3>
-          
-          {!isLoginForm && (
-            <>
-              <Input
-                placeholder="First Name"
-                value={firstName}
-                onChangeText={setFirstName}
-                autoCapitalize="words"
-                editable={!loading}
-                isFullWidth
-              />
-              <Input
-                placeholder="Last Name"
-                value={lastName}
-                onChangeText={setLastName}
-                autoCapitalize="words"
-                editable={!loading}
-                isFullWidth
-              />
-            </>
-          )}
-          
-          <Input
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            autoComplete="email"
-            editable={!loading}
-            isFullWidth
-          />
-          
-          <Input
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            editable={!loading}
-            isFullWidth
-          />
-          
-          {(localError || error) ? <ErrorText>{localError || error}</ErrorText> : null}
-          
-          <ActionButton
-            variant="primary"
-            onPress={handleAuth}
-            disabled={loading || !isFormValid}
-            isLoading={loading}
-            isFullWidth
-            accessibilityLabel={tab === 'login' ? 'Login Button' : 'Sign Up Button'}
-          >
-            {isLoginForm ? 'Login' : 'Sign Up'}
-          </ActionButton>
-          
-          <ActionButton
-            variant="outline"
-            isFullWidth
-            accessibilityLabel="Continue with WhatsApp"
-          >
-            Continue with WhatsApp
-          </ActionButton>
-          
-          <ActionButton
-            variant="outline"
-            isFullWidth
-            accessibilityLabel="Continue with Phone"
-          >
-            Continue with Phone
-          </ActionButton>
-          
-          {tab === 'login' && (
-            <ForgotPasswordLink accessibilityLabel="Forgot Password">
-              <Typography color={theme.colors.primary} weight="bold">
-                Forgot password?
-              </Typography>
-            </ForgotPasswordLink>
-          )}
-        </FormContainer>
+        <Animated.View style={{ opacity: fadeAnim, width: '100%' }}>
+          <FormContainer>
+            <Heading3 style={{ marginBottom: theme.spacing.md }}>
+              {isLoginForm ? 'Welcome Back' : 'Create Account'}
+            </Heading3>
+            
+            {!isLoginForm && (
+              <>
+                <Input
+                  placeholder="First Name"
+                  value={firstName}
+                  onChangeText={setFirstName}
+                  autoCapitalize="words"
+                  editable={!loading}
+                  isFullWidth
+                />
+                <Input
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChangeText={setLastName}
+                  autoCapitalize="words"
+                  editable={!loading}
+                  isFullWidth
+                />
+              </>
+            )}
+            
+            <Input
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoComplete="email"
+              editable={!loading}
+              isFullWidth
+            />
+            
+            <Input
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              editable={!loading}
+              isFullWidth
+            />
+            
+            {(localError || error) ? <ErrorText>{localError || error}</ErrorText> : null}
+            
+            <ActionButton
+              variant="primary"
+              onPress={handleAuth}
+              disabled={loading || !isFormValid}
+              isLoading={loading}
+              isFullWidth
+              accessibilityLabel={tab === 'login' ? 'Login Button' : 'Sign Up Button'}
+            >
+              {isLoginForm ? 'Login' : 'Sign Up'}
+            </ActionButton>
+            
+            <ActionButton
+              variant="outline"
+              isFullWidth
+              accessibilityLabel="Continue with WhatsApp"
+            >
+              Continue with WhatsApp
+            </ActionButton>
+            
+            <ActionButton
+              variant="outline"
+              isFullWidth
+              accessibilityLabel="Continue with Phone"
+            >
+              Continue with Phone
+            </ActionButton>
+            
+            {tab === 'login' && (
+              <ForgotPasswordLink accessibilityLabel="Forgot Password">
+                <Typography color={theme.colors.primary} weight="bold">
+                  Forgot password?
+                </Typography>
+              </ForgotPasswordLink>
+            )}
+          </FormContainer>
+        </Animated.View>
         
         <LegalText>
           By continuing, you agree to our <LinkText>Terms</LinkText> and <LinkText>Privacy Policy</LinkText>.
@@ -292,5 +341,3 @@ export default function AuthScreen() {
     </StyledSafeAreaView>
   );
 }
-
-

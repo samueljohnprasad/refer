@@ -37,12 +37,15 @@ const InputContainer = styled.View<{
     padding-horizontal: ${({ theme }) => theme.spacing.sm}px;
 `;
 
+import { Platform } from 'react-native';
+
 const StyledInput = styled.TextInput<{ theme: ThemeInterface }>`
     flex: 1;
     color: ${({ theme }) => theme.colors.text};
     font-size: ${({ theme }) => theme.typography.fontSize.md}px;
     padding-vertical: ${({ theme }) => theme.spacing.sm}px;
 `;
+
 
 const Label = styled.Text<{ hasError: boolean; theme: ThemeInterface }>`
     font-weight: 500;
@@ -83,6 +86,12 @@ export const Input: React.FC<InputProps> = ({
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const hasError: boolean = !!error;
 
+    const webFocusStyle = Platform.OS === 'web' && isFocused ? {
+        outline: 'none',
+        borderColor: '#007aff',
+        boxShadow: '0 0 0 2px rgba(0,122,255,0.15)'
+    } : {};
+
     return (
         <Container isFullWidth={isFullWidth}>
             {label && <Label hasError={hasError}>{label}</Label>}
@@ -90,12 +99,13 @@ export const Input: React.FC<InputProps> = ({
             <InputContainer
                 isFocused={isFocused}
                 hasError={hasError}
+                theme={theme}
             >
                 {leftIcon && (
                     <IconContainer isLeft={true}>{leftIcon}</IconContainer>
                 )}
-
                 <StyledInput
+                    style={[style, webFocusStyle]}
                     placeholderTextColor={
                         theme.mode === "dark" ? "#777777" : "#999999"
                     }
