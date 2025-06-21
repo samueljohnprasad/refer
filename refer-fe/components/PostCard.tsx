@@ -65,6 +65,20 @@ const TypeText = styled.Text`
   font-weight: bold;
 `;
 
+const ContentContainer = styled.View`
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+`;
+
+const HeaderContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
 const UserContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
@@ -149,17 +163,32 @@ const SkillsContainer = styled.View`
   margin-bottom: 4px;
 `;
 
-const SkillBadge = styled.View`
-  background-color: ${props => props.theme.colors.background};
-  padding: 4px 8px;
+interface SkillBadgeProps {
+  index: number;
+}
+
+const SkillBadge = styled.View<SkillBadgeProps>`
+  background-color: ${props => {
+    // Alternate colors for visual interest
+    const colors = [
+      props.theme.colors.primary + '20',  // Primary with 20% opacity
+      props.theme.colors.secondary + '20', // Secondary with 20% opacity
+      props.theme.colors.info + '20',      // Info with 20% opacity
+    ];
+    return colors[props.index % colors.length];
+  }};
+  padding: 6px 10px;
   border-radius: 16px;
-  margin-right: 4px;
-  margin-bottom: 4px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  border-width: 1px;
+  border-color: ${props => props.theme.colors.border};
 `;
 
 const SkillText = styled.Text`
   font-size: ${props => props.theme.typography.fontSize.xs}px;
   color: ${props => props.theme.colors.text};
+  font-weight: 500;
 `;
 
 const Divider = styled.View`
@@ -174,6 +203,16 @@ const FooterContainer = styled.View`
   justify-content: space-between;
   align-items: center;
   margin-top: 8px;
+`;
+
+const IconContainer = styled.View`
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background-color: ${props => props.theme.colors.background};
+  justify-content: center;
+  align-items: center;
+  margin-right: 8px;
 `;
 
 export default function PostCard({ post, onPress }: PostCardProps) {
@@ -196,13 +235,22 @@ export default function PostCard({ post, onPress }: PostCardProps) {
       </TypeBadge>
       
       <UserContainer>
-        <UserText>{post.user}</UserText>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <IconContainer>
+            <FontAwesome 
+              name={isJobSeeker ? "user" : "building"} 
+              size={16} 
+              color={theme.colors.primary} 
+            />
+          </IconContainer>
+          <UserText>{post.user}</UserText>
+        </View>
         <TimeText>{post.createdAt}</TimeText>
       </UserContainer>
       
       {isJobSeeker ? (
         // Job Seeker post content
-        <>
+        <ContentContainer>
           {jobSeekerPost?.resume && (
             <ResumeText>
               <FontAwesome name="file-pdf-o" size={14} color={theme.colors.text} /> {jobSeekerPost.resume}
@@ -216,7 +264,7 @@ export default function PostCard({ post, onPress }: PostCardProps) {
           {jobSeekerPost?.skills && jobSeekerPost.skills.length > 0 && (
             <SkillsContainer>
               {jobSeekerPost.skills.map((skill, index) => (
-                <SkillBadge key={`${post.id}-skill-${index}`}>
+                <SkillBadge key={`${post.id}-skill-${index}`} index={index}>
                   <SkillText>{skill}</SkillText>
                 </SkillBadge>
               ))}
@@ -232,10 +280,10 @@ export default function PostCard({ post, onPress }: PostCardProps) {
               /> {jobSeekerPost.privacy}
             </PrivacyText>
           )}
-        </>
+        </ContentContainer>
       ) : (
         // Referrer post content
-        <>
+        <ContentContainer>
           {referrerPost?.company && (
             <CompanyText>
               <FontAwesome name="building" size={14} color={theme.colors.primary} /> {referrerPost.company}
@@ -243,7 +291,17 @@ export default function PostCard({ post, onPress }: PostCardProps) {
           )}
           
           {referrerPost?.role && (
-            <RoleText>{referrerPost.role}</RoleText>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <View style={{ 
+                backgroundColor: theme.colors.primary + '20',
+                paddingHorizontal: 10,
+                paddingVertical: 4,
+                borderRadius: 4,
+                marginRight: 8
+              }}>
+                <RoleText>{referrerPost.role}</RoleText>
+              </View>
+            </View>
           )}
           
           {referrerPost?.description && (
@@ -258,25 +316,60 @@ export default function PostCard({ post, onPress }: PostCardProps) {
               /> {referrerPost.status}
             </StatusText>
           )}
-        </>
+        </ContentContainer>
       )}
       
       <Divider />
       
       <FooterContainer>
         {daysLeft !== null && (
-          <ExpiryText isExpiringSoon={daysLeft <= 7}>
-            <FontAwesome name="calendar" size={12} /> Expires in {daysLeft} day{daysLeft === 1 ? '' : 's'}
-          </ExpiryText>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ 
+              backgroundColor: daysLeft <= 7 ? theme.colors.error + '20' : theme.colors.border,
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+              borderRadius: 12,
+              flexDirection: 'row',
+              alignItems: 'center'
+            }}>
+              <FontAwesome 
+                name="calendar" 
+                size={12} 
+                color={daysLeft <= 7 ? theme.colors.error : theme.colors.text} 
+                style={{ marginRight: 4 }}
+              /> 
+              <ExpiryText isExpiringSoon={daysLeft <= 7}>
+                Expires in {daysLeft} day{daysLeft === 1 ? '' : 's'}
+              </ExpiryText>
+            </View>
+          </View>
         )}
         
-        <TouchableOpacity>
-          <FontAwesome 
-            name="share-square-o" 
-            size={16} 
-            color={theme.colors.primary} 
-          />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity style={{ 
+            width: 32, 
+            height: 32, 
+            borderRadius: 16,
+            backgroundColor: theme.colors.primary + '10',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginLeft: 8
+          }}>
+            <FontAwesome name="share-square-o" size={16} color={theme.colors.primary} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={{ 
+            width: 32, 
+            height: 32, 
+            borderRadius: 16,
+            backgroundColor: theme.colors.primary + '10',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginLeft: 8
+          }}>
+            <FontAwesome name="bookmark-o" size={16} color={theme.colors.primary} />
+          </TouchableOpacity>
+        </View>
       </FooterContainer>
     </Card>
   );
