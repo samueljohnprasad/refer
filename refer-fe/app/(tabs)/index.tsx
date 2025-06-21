@@ -3,10 +3,10 @@ import { View, Text, FlatList, TouchableOpacity, RefreshControl, SafeAreaView } 
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-
 import { useTheme } from '../../context/ThemeContext';
 import PostCard from '@/components/PostCard';
 import { ThemeInterface } from '@/constants/theme';
+import SwipeableTabs from '@/components/common/SwipeableTabs';
 
 // Define post types
 type JobSeekerPost = {
@@ -188,13 +188,57 @@ export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState<'jobSeeker' | 'referrer'>('jobSeeker');
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = React.useCallback((): void => {
     setRefreshing(true);
     // In a real app, fetch new data here
     setTimeout(() => {
       setRefreshing(false);
     }, 1500);
   }, []);
+
+  const jobSeekerList = (
+    <FlatList<JobSeekerPost>
+      data={jobSeekerPosts}
+      keyExtractor={(item: JobSeekerPost) => item.id}
+      renderItem={({ item }) => <PostCard post={item} />}
+      contentContainerStyle={{ padding: 16, paddingTop: 8 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[theme.colors.primary]}
+          tintColor={theme.colors.primary}
+        />
+      }
+      ListEmptyComponent={
+        <View style={{ padding: 32, alignItems: 'center' }}>
+          <Text style={{ color: theme.colors.text }}>No job seeker posts found</Text>
+        </View>
+      }
+    />
+  );
+
+  const referrerList = (
+    <FlatList<ReferrerPost>
+      data={referrerPosts}
+      keyExtractor={(item: ReferrerPost) => item.id}
+      renderItem={({ item }) => <PostCard post={item} />}
+      contentContainerStyle={{ padding: 16, paddingTop: 8 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[theme.colors.primary]}
+          tintColor={theme.colors.primary}
+        />
+      }
+      ListEmptyComponent={
+        <View style={{ padding: 32, alignItems: 'center' }}>
+          <Text style={{ color: theme.colors.text }}>No referrer posts found</Text>
+        </View>
+      }
+    />
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>

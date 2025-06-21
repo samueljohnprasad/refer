@@ -4,6 +4,7 @@ import { AppError } from './error.middleware';
 
 // Middleware to validate request data against schema
 export const validate = (schema: Joi.ObjectSchema) => {
+  console.log('validate middleware called')
   return (req: Request, res: Response, next: NextFunction) => {
     const { error } = schema.validate(req.body, { 
       abortEarly: false,

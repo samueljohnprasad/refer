@@ -1,8 +1,11 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { API_URL } from '../constants/api';
 import { getToken } from './authStorage';
+import { Platform } from 'react-native';
 
 /**
+ * ifconfig | grep inet
+ * ipconfig getifaddr en0
  * Centralized API service that handles all HTTP requests
  * Manages JWT authentication in a single place
  */
@@ -11,8 +14,10 @@ class ApiService {
   private token: string | null = null;
   
   constructor() {
+    const baseURL =  Platform.OS === 'android' ? 'http://10.0.2.2:5000/api' : Platform.OS === 'ios'
+    ? 'http://192.168.31.5:5000/api' : API_URL;
     this.instance = axios.create({
-      baseURL: API_URL,
+      baseURL,
       headers: {
         'Content-Type': 'application/json',
       },

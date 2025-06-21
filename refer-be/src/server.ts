@@ -58,6 +58,9 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+app.use('/hello', (req, res) => {
+  res.send('Hello World!');
+})
 app.use('/api', limiter);
 
 // Routes
@@ -77,7 +80,7 @@ app.get('/health', (req, res) => {
 app.use(errorHandler);
 
 // Start server
-app.listen(port, () => {
+app.listen(port,  () => {
   console.log(`Server running on port ${port} in ${process.env.NODE_ENV} mode`);
 });
 

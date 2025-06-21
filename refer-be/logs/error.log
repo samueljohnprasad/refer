@@ -116,3 +116,4 @@
 2025-06-21 21:56:55 [ERROR]: 401 - Invalid email or password - /api/auth/login - POST - ::1 
 2025-06-21 21:56:59 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
     at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-22 00:05:57 [ERROR]: 401 - Not authorized to access this route - /api/profiles/me - GET - ::1 
