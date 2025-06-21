@@ -6,7 +6,7 @@ import { useTheme } from '../context/ThemeContext';
 import { ThemeInterface } from '../constants/theme';
 
 // Define the types for Job Seeker and Referrer posts
-type JobSeekerPost = {
+export type JobSeekerPost = {
   id: string;
   type: string;
   user: string;
@@ -18,7 +18,7 @@ type JobSeekerPost = {
   createdAt: string;
 };
 
-type ReferrerPost = {
+export type ReferrerPost = {
   id: string;
   type: string;
   user: string;
@@ -30,7 +30,7 @@ type ReferrerPost = {
   createdAt: string;
 };
 
-type Post = JobSeekerPost | ReferrerPost;
+export type Post = JobSeekerPost | ReferrerPost;
 
 interface PostCardProps {
   post: Post;
