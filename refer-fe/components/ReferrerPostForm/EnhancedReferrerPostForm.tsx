@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Switch, Alert, ActivityIndicator } from 'react-native';
+import LogoUploader from './LogoUploader';
 import PostPreview from './PostPreview';
 import styled from 'styled-components/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -17,6 +18,9 @@ type FormData = {
   skills: string[];
   expiryDays: number;
   status: 'Active' | 'Draft';
+  salaryRange: string;
+  remote: boolean;
+  logoUrl: string;
 };
 
 interface ValidationState {
@@ -217,7 +221,10 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
     experienceLevel: 'Mid-level',
     skills: [],
     expiryDays: 30,
-    status: 'Draft'
+    status: 'Draft',
+    salaryRange: '',
+    remote: false,
+    logoUrl: ''
   });
   
   // Validation state
@@ -401,6 +408,11 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
         <SectionTitle>Company Information</SectionTitle>
         <FieldDescription>This information helps job seekers find your company.</FieldDescription>
         
+        <LogoUploader 
+          onImageSelected={(uri) => handleInputChange('logoUrl', uri)}
+          currentImage={formData.logoUrl}
+        />
+        
         <FormLabel>Company Name*</FormLabel>
         <FormInput
           placeholder="Enter company name"
@@ -431,9 +443,36 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
         
         <FormLabel>Location</FormLabel>
         <FormInput
-          placeholder="e.g. Remote, New York, Hybrid"
+          placeholder="e.g. New York, San Francisco, etc."
           value={formData.location}
           onChangeText={(text) => handleInputChange('location', text)}
+          placeholderTextColor={theme.colors.text + '80'}
+        />
+        
+        <SwitchContainer>
+          <View>
+            <FormLabel>Remote Available</FormLabel>
+            <Text style={{ 
+              fontSize: theme.typography.fontSize.xs, 
+              color: theme.colors.text, 
+              opacity: 0.6 
+            }}>
+              This position can be worked remotely
+            </Text>
+          </View>
+          <Switch
+            value={formData.remote}
+            onValueChange={(value) => handleInputChange('remote', value)}
+            trackColor={{ false: theme.colors.border, true: theme.colors.primary + '80' }}
+            thumbColor={formData.remote ? theme.colors.primary : theme.colors.text + '40'}
+          />
+        </SwitchContainer>
+        
+        <FormLabel>Salary Range</FormLabel>
+        <FormInput
+          placeholder="e.g. $80,000 - $120,000 per year"
+          value={formData.salaryRange}
+          onChangeText={(text) => handleInputChange('salaryRange', text)}
           placeholderTextColor={theme.colors.text + '80'}
         />
         

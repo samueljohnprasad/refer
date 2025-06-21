@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Share, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../../context/ThemeContext';
@@ -15,6 +15,8 @@ interface PostPreviewProps {
     experienceLevel: string;
     skills: string[];
     expiryDays: number;
+    salaryRange?: string;
+    remote?: boolean;
   };
   onClose: () => void;
 }
@@ -151,6 +153,47 @@ const FooterContainer = styled.View`
   border-top-color: ${props => props.theme.colors.border};
 `;
 
+const ActionRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 12px;
+`;
+
+const ActionButton = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background-color: ${props => props.theme.colors.background};
+  border-width: 1px;
+  border-color: ${props => props.theme.colors.border};
+  margin-left: 4px;
+  margin-right: 4px;
+  flex: 1;
+`;
+
+const ActionText = styled.Text`
+  color: ${props => props.theme.colors.text};
+  font-size: ${props => props.theme.typography.fontSize.sm}px;
+  margin-left: 6px;
+`;
+
+const Badge = styled.View`
+  background-color: ${props => props.theme.colors.primary};
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const BadgeText = styled.Text`
+  color: white;
+  font-size: ${props => props.theme.typography.fontSize.xs}px;
+  font-weight: bold;
+`;
+
 const Button = styled.TouchableOpacity`
   background-color: ${props => props.theme.colors.primary};
   padding: 12px 16px;
@@ -166,6 +209,7 @@ const ButtonText = styled.Text`
 
 export default function PostPreview({ data, onClose }: PostPreviewProps) {
   const { theme } = useTheme();
+  const [sharing, setSharing] = useState(false);
   const today = new Date();
   const expiryDate = new Date(today);
   expiryDate.setDate(today.getDate() + data.expiryDays);
@@ -180,6 +224,36 @@ export default function PostPreview({ data, onClose }: PostPreviewProps) {
   };
 
   const firstLetter = data.company.charAt(0).toUpperCase();
+  
+  // Share post function
+  const handleShare = async () => {
+    setSharing(true);
+    
+    try {
+      const message = ` 
+🔥 Referral Opportunity 🔥
+
+Company: ${data.company}
+Role: ${data.role}
+Location: ${data.location || 'Flexible'}
+Experience: ${data.experienceLevel}
+${data.salaryRange ? `Salary Range: ${data.salaryRange}` : ''}
+
+${data.remote ? '✅ Remote work available' : ''}
+
+Apply through ReferNet to get a direct referral!
+      `;
+
+      const result = await Share.share({
+        message,
+        title: `Referral Opportunity at ${data.company}`,
+      });
+    } catch (error) {
+      Alert.alert('Error', 'Failed to share post');
+    } finally {
+      setSharing(false);
+    }
+  };
 
   return (
     <ModalOverlay>
@@ -206,7 +280,14 @@ export default function PostPreview({ data, onClose }: PostPreviewProps) {
             </CompanyIcon>
             <View>
               <CompanyName>{data.company}</CompanyName>
-              <RoleText>{data.role}</RoleText>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <RoleText>{data.role}</RoleText>
+                {data.remote && (
+                  <Badge>
+                    <BadgeText>REMOTE</BadgeText>
+                  </Badge>
+                )}
+              </View>
             </View>
           </CompanyHeader>
           
@@ -248,6 +329,14 @@ export default function PostPreview({ data, onClose }: PostPreviewProps) {
           <Divider />
           
           <View>
+            {data.salaryRange && (
+              <InfoRow>
+                <FontAwesome name="money" size={14} color={theme.colors.success} />
+                <InfoText style={{ color: theme.colors.success, fontWeight: 'bold' }}>
+                  {data.salaryRange}
+                </InfoText>
+              </InfoRow>
+            )}
             <InfoRow>
               <FontAwesome name="calendar" size={14} color={theme.colors.text} />
               <InfoText>Posted on {formatDate(today)}</InfoText>
@@ -260,6 +349,23 @@ export default function PostPreview({ data, onClose }: PostPreviewProps) {
         </PreviewContent>
         
         <FooterContainer>
+          <ActionRow>
+            <ActionButton onPress={handleShare}>
+              <FontAwesome name="share-alt" size={16} color={theme.colors.primary} />
+              <ActionText>{sharing ? 'Sharing...' : 'Share'}</ActionText>
+            </ActionButton>
+            
+            <ActionButton>
+              <FontAwesome name="bookmark-o" size={16} color={theme.colors.primary} />
+              <ActionText>Save</ActionText>
+            </ActionButton>
+            
+            <ActionButton>
+              <FontAwesome name="pencil" size={16} color={theme.colors.primary} />
+              <ActionText>Edit</ActionText>
+            </ActionButton>
+          </ActionRow>
+          
           <Button onPress={onClose}>
             <ButtonText>Close Preview</ButtonText>
           </Button>
