@@ -49,7 +49,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                 p="$3"
                 style={{ borderRadius: 16 }}
                 testID={testID}
-                placeholderTextColor="$gray8"
+                // placeholderTextColor="$gray8"
             />
             {error && (
                 <Text
