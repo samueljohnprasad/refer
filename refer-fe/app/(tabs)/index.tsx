@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
     View,
     Text,
@@ -13,6 +13,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useTheme } from "../../context/ThemeContext";
 import PostCard from "@/components/PostCard";
 import GroupedPostList from "@/components/GroupedPostList";
+import FilterBar, { FilterConfig, SortOption } from "@/components/FilterBar";
 import { ThemeInterface } from "@/constants/theme";
 import SwipeableTabs from "@/components/common/SwipeableTabs";
 
@@ -40,6 +41,7 @@ type ReferrerPost = {
     status: string;
     expiresAt: number;
     createdAt: string;
+    skills: string[];
 };
 
 type Post = JobSeekerPost | ReferrerPost;
@@ -137,6 +139,7 @@ const referrerPosts: ReferrerPost[] = [
         createdAt: new Date(
             new Date().setDate(new Date().getDate() - 1)
         ).toISOString(), // 1 day ago (NEW)
+        skills: ["React", "JavaScript", "TypeScript", "Redux"],
     },
     {
         id: "5",
@@ -151,6 +154,7 @@ const referrerPosts: ReferrerPost[] = [
         createdAt: new Date(
             new Date().setDate(new Date().getDate() - 7)
         ).toISOString(), // 7 days ago
+        skills: ["Python", "PyTorch", "Machine Learning", "Data Science"],
     },
     {
         id: "6",
@@ -165,6 +169,7 @@ const referrerPosts: ReferrerPost[] = [
         createdAt: new Date(
             new Date().setDate(new Date().getDate() - 2)
         ).toISOString(), // 2 days ago (NEW)
+        skills: ["Kubernetes", "Docker", "CI/CD", "AWS", "DevOps"],
     },
 ];
 
@@ -250,6 +255,27 @@ export default function HomeScreen() {
         "jobSeeker"
     );
     const [refreshing, setRefreshing] = useState(false);
+    const [filterConfig, setFilterConfig] = useState<FilterConfig>({
+        query: "",
+        sortBy: "newest",
+        categories: [],
+        skills: [],
+    });
+
+    // Extract all available categories from posts
+    const availableCategories = useMemo(() => {
+        const categories = jobSeekerPosts.map((post) => post.category);
+        return Array.from(new Set(categories)).filter(Boolean);
+    }, [jobSeekerPosts]);
+
+    // Extract all available skills from posts
+    const availableSkills = useMemo(() => {
+        const skills = [
+            ...jobSeekerPosts.flatMap((post) => post.skills),
+            ...referrerPosts.flatMap((post) => post.skills || []),
+        ];
+        return Array.from(new Set(skills)).filter(Boolean);
+    }, [jobSeekerPosts, referrerPosts]);
 
     const onRefresh = React.useCallback((): void => {
         setRefreshing(true);
@@ -259,10 +285,143 @@ export default function HomeScreen() {
         }, 1500);
     }, []);
 
+    // Filter posts based on the current filter configuration
+    const filteredJobSeekerPosts = useMemo(() => {
+        return jobSeekerPosts.filter((post) => {
+            // Text search
+            if (
+                filterConfig.query &&
+                !(
+                    post.interest
+                        .toLowerCase()
+                        .includes(filterConfig.query.toLowerCase()) ||
+                    post.skills.some((skill) =>
+                        skill
+                            .toLowerCase()
+                            .includes(filterConfig.query.toLowerCase())
+                    ) ||
+                    post.category
+                        ?.toLowerCase()
+                        .includes(filterConfig.query.toLowerCase())
+                )
+            ) {
+                return false;
+            }
+
+            // Category filter
+            if (
+                filterConfig.categories.length > 0 &&
+                !filterConfig.categories.includes(post.category)
+            ) {
+                return false;
+            }
+
+            // Skills filter
+            if (
+                filterConfig.skills.length > 0 &&
+                !post.skills.some((skill) =>
+                    filterConfig.skills.includes(skill)
+                )
+            ) {
+                return false;
+            }
+
+            return true;
+        });
+    }, [jobSeekerPosts, filterConfig]);
+
+    // Filter referrer posts
+    const filteredReferrerPosts = useMemo(() => {
+        return referrerPosts.filter((post) => {
+            // Text search
+            if (
+                filterConfig.query &&
+                !(
+                    post.description
+                        .toLowerCase()
+                        .includes(filterConfig.query.toLowerCase()) ||
+                    post.role
+                        .toLowerCase()
+                        .includes(filterConfig.query.toLowerCase()) ||
+                    post.company
+                        .toLowerCase()
+                        .includes(filterConfig.query.toLowerCase()) ||
+                    post.skills?.some((skill) =>
+                        skill
+                            .toLowerCase()
+                            .includes(filterConfig.query.toLowerCase())
+                    )
+                )
+            ) {
+                return false;
+            }
+
+            // Skills filter
+            if (
+                filterConfig.skills.length > 0 &&
+                !post.skills?.some((skill) =>
+                    filterConfig.skills.includes(skill)
+                )
+            ) {
+                return false;
+            }
+
+            return true;
+        });
+    }, [referrerPosts, filterConfig]);
+
+    // Sort posts based on the sort option
+    const sortPosts = useCallback(
+        <T extends Post>(posts: T[]): T[] => {
+            const sortedPosts = [...posts];
+
+            switch (filterConfig.sortBy) {
+                case "newest":
+                    return sortedPosts.sort((a, b) => {
+                        const dateA = new Date(a.createdAt).getTime();
+                        const dateB = new Date(b.createdAt).getTime();
+                        return dateB - dateA; // Newest first
+                    });
+
+                case "popular":
+                    // In a real app, this would sort by popularity metrics
+                    // For now, we'll just use a mock implementation
+                    return sortedPosts.sort((a, b) => {
+                        // Mock popularity based on skills count
+                        const popularityA = a.skills?.length || 0;
+                        const popularityB = b.skills?.length || 0;
+                        return popularityB - popularityA;
+                    });
+
+                case "expiring":
+                    return sortedPosts.sort((a, b) => {
+                        const expiryA = a.expiresAt;
+                        const expiryB = b.expiresAt;
+                        return expiryA - expiryB; // Soonest expiry first
+                    });
+
+                default:
+                    return sortedPosts;
+            }
+        },
+        [filterConfig.sortBy]
+    );
+
+    // Apply sorting
+    const sortedJobSeekerPosts = useMemo(
+        () => sortPosts(filteredJobSeekerPosts),
+        [filteredJobSeekerPosts, sortPosts]
+    );
+
+    const sortedReferrerPosts = useMemo(
+        () => sortPosts(filteredReferrerPosts),
+        [filteredReferrerPosts, sortPosts]
+    );
+
     // Group job seeker posts by category
     const groupedJobSeekerPosts = useMemo(() => {
         // Group by category
-        const groupByCategory = jobSeekerPosts.reduce<
+        const groupByCategory = sortedJobSeekerPosts.reduce<
             Record<string, JobSeekerPost[]>
         >((groups, post) => {
             const category = post.category || "Uncategorized";
@@ -279,12 +438,12 @@ export default function HomeScreen() {
             data: posts,
             id: `category-${category}`,
         }));
-    }, [jobSeekerPosts]);
+    }, [sortedJobSeekerPosts]);
 
     // Group referrer posts by company
     const groupedReferrerPosts = useMemo(() => {
         // Group by company
-        const groupByCompany = referrerPosts.reduce<
+        const groupByCompany = sortedReferrerPosts.reduce<
             Record<string, ReferrerPost[]>
         >((groups, post) => {
             const company = post.company || "Other";
@@ -301,7 +460,7 @@ export default function HomeScreen() {
             data: posts,
             id: `company-${company}`,
         }));
-    }, [referrerPosts]);
+    }, [sortedReferrerPosts]);
 
     // Render job seeker posts with grouping
     const jobSeekerList = (
@@ -381,9 +540,13 @@ export default function HomeScreen() {
                 </TabButton>
             </TabContainer>
 
-            <View style={{ flex: 1 }}>
-                {activeTab === "jobSeeker" ? jobSeekerList : referrerList}
-            </View>
+            <FilterBar
+                availableCategories={availableCategories}
+                availableSkills={availableSkills}
+                onFilterChange={setFilterConfig}
+                initialConfig={filterConfig}
+            />
+
             <FlatList<Post>
                 data={
                     activeTab === "jobSeeker" ? jobSeekerPosts : referrerPosts
