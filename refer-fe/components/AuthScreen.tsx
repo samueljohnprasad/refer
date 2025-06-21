@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, ScrollView, ActivityIndicator, StyleSheet, Animated, Easing, PanResponder } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
 import { registerThunk, loginThunk } from '@/store/authThunks';
@@ -9,87 +8,11 @@ import styled from 'styled-components/native';
 import { Button } from '../styles/components/Button';
 import { Input } from '../styles/components/Input';
 import { Typography, Heading3 } from '../styles/components/Typography';
-import { Card } from '../styles/components/Card';
-import { getShadow } from '../styles/utils/styleUtils';
 import { ThemeInterface } from '../constants/theme';
+import { LogoContainer, LogoText, StyledSafeAreaView, TabsContainer, Tab, TabText, FormContainer, ErrorText, ForgotPasswordLink, LegalText, LinkText } from './styles/AuthScreen.styles';
+import { AuthTab, UserRole } from './constants/User';
 
-// Styled components
-const LogoContainer = styled.View<{ theme: ThemeInterface }>`
-  align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.lg}px;
-`;
 
-const LogoText = styled.Text<{ theme: ThemeInterface }>`
-  font-size: ${({ theme }) => theme.typography.fontSize.xxl + 8}px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.colors.primary};
-`;
-
-const StyledSafeAreaView = styled(SafeAreaView)<{ theme: ThemeInterface }>`
-  flex: 1;
-  background-color: ${({ theme }) => theme.colors.background};
-`;
-
-const FormContainer = styled.View<{ theme: ThemeInterface }>`
-  width: 100%;
-  max-width: 400px;
-  align-self: center;
-  border-radius: ${({ theme }) => theme.borderRadius.md}px;
-  padding: ${({ theme }) => theme.spacing.lg}px;
-  background-color: ${({ theme }) => theme.colors.card};
-  margin-bottom: ${({ theme }) => theme.spacing.md}px;
-`;
-
-const TabsContainer = styled.View<{ theme: ThemeInterface }>`
-  flex-direction: row;
-  margin-bottom: ${({ theme }) => theme.spacing.lg}px;
-  background-color: ${({ theme }) => 
-    theme.mode === 'dark' ? theme.colors.card : '#f2f2f2'};
-  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
-  overflow: hidden;
-  position: relative;
-`;
-
-const Tab = styled.TouchableOpacity<{ active: boolean; theme: ThemeInterface }>`
-  padding: ${({ theme }) => theme.spacing.md}px;
-  border-bottom-width: 2px;
-  border-bottom-color: ${({ active, theme }) =>
-    active ? theme.colors.primary : 'transparent'};
-`;
-
-const TabText = styled.Text<{ active: boolean; theme: ThemeInterface }>`
-  font-size: ${({ theme }) => theme.typography.fontSize.md}px;
-  font-weight: ${({ active }) => (active ? '700' : '600')};
-  color: ${({ active, theme }) => 
-    active ? theme.colors.primary : theme.mode === 'dark' ? '#BBBBBB' : '#666'};
-`;
-
-const ErrorText = styled.Text<{ theme: ThemeInterface }>`
-  color: ${({ theme }) => theme.colors.error};
-  margin-bottom: ${({ theme }) => theme.spacing.xs}px;
-  text-align: center;
-`;
-
-const ActionButton = styled(Button)<{ fullWidth?: boolean }>`
-  margin-bottom: ${({ theme }) => theme.spacing.sm}px;
-  width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
-`;
-
-const ForgotPasswordLink = styled.TouchableOpacity<{ theme: ThemeInterface }>`
-  margin-top: ${({ theme }) => theme.spacing.sm}px;
-`;
-
-const LegalText = styled(Typography)<{ theme: ThemeInterface }>`
-  margin-top: ${({ theme }) => theme.spacing.md}px;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#BBBBBB' : '#888'};
-  font-size: ${({ theme }) => theme.typography.fontSize.xs}px;
-  text-align: center;
-`;
-
-const LinkText = styled.Text<{ theme: ThemeInterface }>`
-  color: ${({ theme }) => theme.colors.primary};
-  text-decoration-line: underline;
-`;
 
 // Placeholder for logo
 const Logo = () => {
@@ -101,15 +24,19 @@ const Logo = () => {
   );
 };
 
-const roles = ['Job Seeker', 'Referrer', 'Both'];
+
+const ActionButton = styled(Button)<{ fullWidth?: boolean; theme: ThemeInterface }>`
+  margin-bottom: ${({ theme }) => theme.spacing.sm}px;
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
+`;
 
 export default function AuthScreen() {
-  const [tab, setTab] = useState<'login' | 'signup'>('login');
+  const [tab, setTab] = useState<AuthTab>(AuthTab.Login);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [role, setRole] = useState(roles[0]);
+  const [role, setRole] = useState<UserRole>(UserRole.JobSeeker);
   // Redux state
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, user } = useSelector((state: RootState) => state.auth);
@@ -123,7 +50,7 @@ export default function AuthScreen() {
       setPassword('');
       setFirstName('');
       setLastName('');
-      setRole(roles[0]);
+      setRole(UserRole.JobSeeker);
       setLocalError('');
     }
   }, [user]);
@@ -135,12 +62,12 @@ export default function AuthScreen() {
     }
   }, [error]);
 
-  const isLoginForm = tab === 'login';
+  const isLoginForm = tab === AuthTab.Login;
 
   const handleAuth = () => {
     setLocalError('');
     
-    if (tab === 'login') {
+    if (tab === AuthTab.Login) {
       if (!email || !password) {
         setLocalError('Please enter both email and password');
         return;
@@ -181,10 +108,10 @@ export default function AuthScreen() {
     : !!email && !!password && !!firstName && !!lastName;
     
   const [fadeAnim] = useState(new Animated.Value(1));
-  const [indicatorAnim] = useState(new Animated.Value(tab === 'login' ? 0 : 1));
+  const [indicatorAnim] = useState(new Animated.Value(tab === AuthTab.Login ? 0 : 1));
   const [tabWidth, setTabWidth] = useState(0);
 
-  const handleTabChange = (newTab: 'login' | 'signup') => {
+  const handleTabChange = (newTab: AuthTab) => {
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 150,
@@ -192,7 +119,7 @@ export default function AuthScreen() {
       useNativeDriver: true,
     }).start(() => {
       Animated.spring(indicatorAnim, {
-        toValue: newTab === 'login' ? 0 : 1,
+        toValue: newTab === AuthTab.Login ? 0 : 1,
         useNativeDriver: true,
       }).start();
       setTab(newTab);
@@ -213,21 +140,21 @@ export default function AuthScreen() {
         {/* Tabs */}
         <TabsContainer>
           <Tab
-            active={tab === 'login'}
-            onPress={() => handleTabChange('login')}
+            active={tab === AuthTab.Login}
+            onPress={() => handleTabChange(AuthTab.Login)}
             accessibilityLabel="Login Tab"
             onLayout={e => setTabWidth(e.nativeEvent.layout.width)}
           >
-            <TabText active={tab === 'login'}>
+            <TabText active={tab === AuthTab.Login}>
               Login
             </TabText>
           </Tab>
           <Tab
-            active={tab === 'signup'}
-            onPress={() => handleTabChange('signup')}
+            active={tab === AuthTab.Signup}
+            onPress={() => handleTabChange(AuthTab.Signup)}
             accessibilityLabel="Sign Up Tab"
           >
-            <TabText active={tab === 'signup'}>
+            <TabText active={tab === AuthTab.Signup}>
               Sign Up
             </TabText>
           </Tab>
@@ -251,10 +178,10 @@ export default function AuthScreen() {
         <Animated.View style={{ opacity: fadeAnim, width: '100%' }}>
           <FormContainer>
             <Heading3 style={{ marginBottom: theme.spacing.md }}>
-              {isLoginForm ? 'Welcome Back' : 'Create Account'}
+              {tab === AuthTab.Login ? 'Welcome Back' : 'Create Account'}
             </Heading3>
             
-            {!isLoginForm && (
+            {tab !== AuthTab.Login && (
               <>
                 <Input
                   placeholder="First Name"
@@ -303,9 +230,9 @@ export default function AuthScreen() {
               disabled={loading || !isFormValid}
               isLoading={loading}
               isFullWidth
-              accessibilityLabel={tab === 'login' ? 'Login Button' : 'Sign Up Button'}
+              accessibilityLabel={tab === AuthTab.Login ? 'Login Button' : 'Sign Up Button'}
             >
-              {isLoginForm ? 'Login' : 'Sign Up'}
+              {tab === AuthTab.Login ? 'Login' : 'Sign Up'}
             </ActionButton>
             
             <ActionButton
@@ -324,7 +251,7 @@ export default function AuthScreen() {
               Continue with Phone
             </ActionButton>
             
-            {tab === 'login' && (
+            {tab === AuthTab.Login && (
               <ForgotPasswordLink accessibilityLabel="Forgot Password">
                 <Typography color={theme.colors.primary} weight="bold">
                   Forgot password?

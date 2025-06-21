@@ -13,11 +13,6 @@
     - [ ] Integrate with backend auth API
     - [ ] Show loading and success/error states
     - [ ] Write unit tests for auth components
-- [ ] Role selection during signup (Job Seeker, Referrer, Both)
-    - [ ] Add role selection UI to signup flow
-    - [ ] Store selected role in state
-    - [ ] Pass role to backend on signup
-    - [ ] Display current role in user profile
 - [ ] Show verified badge in UI if company email used
     - [ ] Detect verified status from user profile API
     - [ ] Display badge in navbar/profile
@@ -29,22 +24,88 @@
     - [ ] Show current privacy status
 
 ### 2. Resume & Profile
-- [ ] Resume upload form
-    - [ ] Design resume upload UI
-    - [ ] Implement file input and drag-and-drop
-    - [ ] Show upload progress and error handling
-    - [ ] Integrate with backend upload endpoint
-    - [ ] Display uploaded resume link/status
-- [ ] Resume builder UI (basic placeholder)
-    - [ ] Create resume builder form (basic fields)
-    - [ ] Add save and preview buttons
-    - [ ] Integrate with backend resume builder API
-    - [ ] Show validation and error messages
-- [ ] Profile page with resume visibility controls
-    - [ ] Design profile page layout
-    - [ ] Display user info and resume link
-    - [ ] Add visibility control toggle for resume
-    - [ ] Integrate with backend profile API
+- [ ] User Profile Implementation
+    - [ ] Profile Page Layout
+        - [ ] Design responsive profile page with header, info sections
+        - [ ] Create profile header with avatar, name, and basic info
+        - [ ] Add edit profile button and action menu
+        - [ ] Implement tabbed interface for different profile sections
+    - [ ] Personal Information Section
+        - [ ] Display user's full name, email, phone
+        - [ ] Show verified badge for company email
+        - [ ] Add edit mode with form validation
+        - [ ] Integrate with profile update API
+    - [ ] Professional Details
+        - [ ] Display current company and position
+        - [ ] Show work experience timeline
+        - [ ] Add education history
+        - [ ] Include skills and endorsements section
+    - [ ] Profile Completion
+        - [ ] Add profile completion progress indicator
+        - [ ] Show missing required fields
+        - [ ] Add prompts to complete profile
+
+- [ ] Resume Management
+    - [ ] Resume upload form
+        - [ ] Design resume upload UI with drag-and-drop
+        - [ ] Support multiple file formats (PDF, DOCX)
+        - [ ] Show upload progress and error handling
+        - [ ] Integrate with backend upload endpoint
+        - [ ] Display uploaded resume with preview option
+    - [ ] Resume builder UI
+        - [ ] Create multi-step resume builder form
+        - [ ] Add sections for experience, education, skills
+        - [ ] Include template selection
+        - [ ] Add preview mode
+        - [ ] Save draft functionality
+        - [ ] Integrate with backend resume builder API
+
+- [ ] Profile Settings
+    - [ ] Privacy Settings
+        - [ ] Add privacy controls for profile visibility
+        - [ ] Implement toggle for public/private profile
+        - [ ] Add option to hide specific sections
+        - [ ] Integrate with backend privacy API
+    - [ ] Notification Preferences
+        - [ ] Add notification settings section
+        - [ ] Include email notification toggles
+        - [ ] Add in-app notification preferences
+        - [ ] Save preferences to backend
+
+- [ ] Profile View Modes
+    - [ ] Edit Mode
+        - [ ] Implement inline editing for profile fields
+        - [ ] Add form validation
+        - [ ] Show save/cancel buttons
+        - [ ] Handle loading and error states
+    - [ ] Public View
+        - [ ] Design public profile layout
+        - [ ] Hide private information based on privacy settings
+        - [ ] Custom Profile URLs
+            - [ ] Implement username-based URLs (refernet.com/username)
+            - [ ] Add username validation and availability check
+            - [ ] Create username setup/change flow
+            - [ ] Handle legacy profile IDs for backward compatibility
+        - [ ] Shareable Profile Links
+            - [ ] Add copy link button with feedback
+            - [ ] Support social sharing options
+            - [ ] Add QR code generation for profile link
+            - [ ] Track link shares and views
+        - [ ] User Status
+            - [ ] Show 'Last Active' status
+            - [ ] Add online/offline indicator
+            - [ ] Implement 'Active Now' status for recent activity
+            - [ ] Add privacy control for activity status
+        - [ ] Public profile access control
+            - [ ] Allow viewing without login
+            - [ ] Respect user's privacy settings
+            - [ ] Show limited profile for non-logged-in users
+            - [ ] Add signup/login prompts for contact actions
+        - [ ] Public contact options
+            - [ ] Add contact form for public users
+            - [ ] Show available contact methods
+            - [ ] Implement rate limiting for public access
+            - [ ] Add reporting mechanism for abuse
 
 ### 3. Job & Referral Posts
 - [ ] Job seeker post creation form

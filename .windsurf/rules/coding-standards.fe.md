@@ -5,6 +5,7 @@ trigger: always_on
 # Frontend Coding Standards (React Native + TypeScript, Mobile & Web)
 
 ## Compatibility (Web & Mobile)
+-Component Composition: Build complex UIs from simple, composable components
 - Use only libraries and components that are fully compatible with both React Native and React Native Web.
 - Prefer universal component libraries such as **NativeBase** 
 - For styling, use **styled-components/native** or **NativeWind** (utility-first, Tailwind-compatible, works on web and mobile).
@@ -16,6 +17,9 @@ trigger: always_on
 - Use cross-platform gesture and animation libraries: **react-native-gesture-handler** and **react-native-reanimated** (both support web).
 - For accessibility, use **@react-native-aria** for primitives that work across platforms.
 - Document any incompatibilities or required workarounds in the codebase.
+- use only styled components with centralized theme
+- dont not use inline styling and style sheet
+- always add types in types related file and same for styled components as well
 
 ## Project Structure
 - Use feature-based folder structure for scalability.

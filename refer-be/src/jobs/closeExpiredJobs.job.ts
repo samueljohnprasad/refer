@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import { JobService } from '../services/job.service';
-import logger from '../utils/logger';
+import { logger } from '../utils/logger';
 
 /**
  * Job to close expired job posts
