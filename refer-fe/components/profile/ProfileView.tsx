@@ -1,9 +1,10 @@
-import React from "react";
-import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity, Platform, ActivityIndicator } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity, Platform, ActivityIndicator, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 import { useWindowDimensions } from "react-native";
 import { ProfileViewProps, IProfileData } from "./types";
+import EditProfileScreen from "./EditProfileScreen";
 
 // Types are imported from ./types.ts
 
@@ -16,6 +17,9 @@ const ProfileView: React.FC<ProfileViewProps> = ({
  }) => {
   const dimensions = useWindowDimensions();
   const isSmallScreen = dimensions.width < 768;
+  
+  // State to control the edit profile modal visibility
+  const [editProfileModalVisible, setEditProfileModalVisible] = useState<boolean>(false);
   
   // Default mock data that will be used if no profileData is provided
   const mockData: IProfileData = {
@@ -77,11 +81,33 @@ const ProfileView: React.FC<ProfileViewProps> = ({
     );
   }
 
+  // Function to handle profile save (just UI, no actual functionality)
+  const handleSaveProfile = (updatedData: IProfileData) => {
+    console.log('Profile data to be saved:', updatedData);
+    setEditProfileModalVisible(false);
+    // This would typically dispatch an action to update the profile in Redux
+  };
+
   return (
-    <ScrollView 
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
+    <>
+      {/* Edit Profile Modal */}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={editProfileModalVisible}
+        onRequestClose={() => setEditProfileModalVisible(false)}
+      >
+        <EditProfileScreen 
+          profileData={profileData}
+          onClose={() => setEditProfileModalVisible(false)}
+          onSave={handleSaveProfile}
+        />
+      </Modal>
+      
+      <ScrollView 
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+      >
       {/* Cover Photo */}
       <CoverImageContainer>
         <CoverImage
@@ -134,7 +160,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
               isSmallScreen ? styles.buttonsContainerMobile : {}
             }
           >
-            <EditProfileButton>
+            <EditProfileButton onPress={() => setEditProfileModalVisible(true)}>
               <ButtonText>Edit Profile</ButtonText>
             </EditProfileButton>
           </ButtonsContainer>
@@ -203,6 +229,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
         ))}
       </Section>
     </ScrollView>
+    </>
   );
 };
 
