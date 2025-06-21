@@ -1,8 +1,106 @@
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { API_URL } from '../constants/api';
 
-const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Change to LAN IP if testing on device
-  // You can add headers, interceptors, etc. here
-});
+/**
+ * Centralized API service that handles all HTTP requests
+ * Manages JWT authentication in a single place
+ */
+class ApiService {
+  private instance: AxiosInstance;
+  private token: string | null = null;
+  
+  constructor() {
+    this.instance = axios.create({
+      baseURL: API_URL,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      timeout: 10000, // 10 seconds
+    });
+    
+    // Request interceptor for adding auth token
+    this.instance.interceptors.request.use(
+      (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+        // Add authorization header with JWT if available
+        if (this.token) {
+          config.headers = config.headers || {};
+          config.headers.Authorization = `Bearer ${this.token}`;
+        }
+        return config;
+      },
+      (error: AxiosError): Promise<AxiosError> => {
+        return Promise.reject(error);
+      }
+    );
+    
+    // Response interceptor for handling common errors
+    this.instance.interceptors.response.use(
+      (response: AxiosResponse): AxiosResponse => response,
+      (error: AxiosError): Promise<AxiosError> => {
+        // Handle 401 Unauthorized responses
+        if (error.response && error.response.status === 401) {
+          // Could dispatch a logout action or redirect to login
+          console.error('Authentication error');
+        }
+        return Promise.reject(error);
+      }
+    );
+  }
+  
+  /**
+   * Set the JWT token for all subsequent requests
+   */
+  public setToken(token: string | null): void {
+    this.token = token;
+  }
+  
+  /**
+   * Clear the JWT token
+   */
+  public clearToken(): void {
+    this.token = null;
+  }
+  
+  /**
+   * GET request
+   */
+  public get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return this.instance.get<T>(url, config)
+      .then(response => response.data);
+  }
+  
+  /**
+   * POST request
+   */
+  public post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    return this.instance.post<T>(url, data, config)
+      .then(response => response.data);
+  }
+  
+  /**
+   * PUT request
+   */
+  public put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    return this.instance.put<T>(url, data, config)
+      .then(response => response.data);
+  }
+  
+  /**
+   * DELETE request
+   */
+  public delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return this.instance.delete<T>(url, config)
+      .then(response => response.data);
+  }
+  
+  /**
+   * Get raw Axios instance (use sparingly)
+   */
+  public getAxiosInstance(): AxiosInstance {
+    return this.instance;
+  }
+}
 
+// Create and export a singleton instance
+const api = new ApiService();
 export default api;

@@ -1,14 +1,9 @@
-import axios from "axios";
 import { Profile, ProfileFormData } from "../types/profile.types";
 import api from "./api";
 
-// Set auth token for API calls
+// Set auth token using the centralized API service
 export const setAuthToken = (token: string | null): void => {
-    if (token) {
-        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    } else {
-        delete api.defaults.headers.common["Authorization"];
-    }
+    api.setToken(token);
 };
 
 /**
@@ -16,8 +11,8 @@ export const setAuthToken = (token: string | null): void => {
  */
 export const getUserProfile = async (): Promise<Profile> => {
     try {
-        const response = await api.get("/profiles/me");
-        return response.data.data;
+        const response = await api.get<{success: boolean, data: Profile}>("/profiles/me");
+        return response.data;
     } catch (error) {
         throw error;
     }
@@ -30,8 +25,8 @@ export const getProfileByUsername = async (
     username: string
 ): Promise<Profile> => {
     try {
-        const response = await api.get(`/profiles/username/${username}`);
-        return response.data.data;
+        const response = await api.get<{success: boolean, data: Profile}>(`/profiles/username/${username}`);
+        return response.data;
     } catch (error) {
         throw error;
     }
@@ -44,8 +39,8 @@ export const updateProfile = async (
     profileData: ProfileFormData
 ): Promise<Profile> => {
     try {
-        const response = await api.put("/profiles", profileData);
-        return response.data.data;
+        const response = await api.put<{success: boolean, data: Profile}>("/profiles", profileData);
+        return response.data;
     } catch (error) {
         throw error;
     }
@@ -58,8 +53,8 @@ export const checkUsernameAvailability = async (
     username: string
 ): Promise<boolean> => {
     try {
-        const response = await api.get(`/profiles/username/${username}/check`);
-        return response.data.available;
+        const response = await api.get<{success: boolean, available: boolean}>(`/profiles/username/${username}/check`);
+        return response.available;
     } catch (error) {
         throw error;
     }
