@@ -12,8 +12,11 @@ const UserSchema = new Schema<IUserDocument>(
   {
     email: {
       type: String,
-      required: true,
+      required: function() {
+        return !this.phone; // Only require email if phone is not provided
+      },
       unique: true,
+      sparse: true, // Allow multiple null values for unique index
       trim: true,
       lowercase: true,
     },
@@ -28,6 +31,10 @@ const UserSchema = new Schema<IUserDocument>(
       type: String,
       trim: true,
       sparse: true, // Allow null/undefined values to be unique
+      required: function() {
+        return !this.email; // Only require phone if email is not provided
+      },
+      index: { unique: true, sparse: true }, // Add unique sparse index
     },
     firstName: {
       type: String,
@@ -150,26 +157,32 @@ const UserSchema = new Schema<IUserDocument>(
   }
 );
 
-// Pre-save hook to hash the password
+// Pre-save hook for validation and password hashing
 UserSchema.pre('save', async function (next) {
   const user = this;
   
-  // Only hash the password if it has been modified (or is new)
-  if (!user.isModified('password')) return next();
-  
-  try {
-    // Generate a salt
-    const salt = await bcrypt.genSalt(10);
-    
-    // Hash the password using the new salt
-    const hash = await bcrypt.hash(user.password as string, salt);
-    
-    // Replace the plaintext password with the hash
-    user.password = hash;
-    next();
-  } catch (error) {
-    return next(error as Error);
+  // Ensure at least one of email or phone is provided
+  if (!user.email && !user.phone) {
+    return next(new Error('Either email or phone number is required'));
   }
+  
+  // Only hash the password if it has been modified (or is new)
+  if (user.isModified('password') && user.password) {
+    try {
+      // Generate a salt
+      const salt = await bcrypt.genSalt(10);
+      
+      // Hash the password using the new salt
+      const hash = await bcrypt.hash(user.password, salt);
+      
+      // Replace the plaintext password with the hash
+      user.password = hash;
+    } catch (error) {
+      return next(error as Error);
+    }
+  }
+  
+  next();
 });
 
 // Method to compare password for login

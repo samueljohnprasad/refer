@@ -10,7 +10,9 @@ import {
   resetPassword, 
   getCurrentUser,
   updateRole,
-  updatePrivacySettings
+  updatePrivacySettings,
+  sendOTP,
+  verifyOTP
 } from '../controllers/auth.controller';
 import { protect } from '../middlewares/auth.middleware';
 import { validate } from '../middlewares/validation.middleware';
@@ -26,6 +28,91 @@ import {
 } from '../utils/validation.schemas';
 
 const router = express.Router();
+
+/**
+ * @openapi
+ * /auth/send-otp:
+ *   post:
+ *     summary: Send OTP to email or phone
+ *     description: Sends a one-time password (OTP) to the provided email or phone number
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *               phone:
+ *                 type: string
+ *                 description: User's phone number (for WhatsApp)
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Verification code sent successfully
+ */
+router.post('/send-otp', sendOTP);
+
+/**
+ * @openapi
+ * /auth/verify-otp:
+ *   post:
+ *     summary: Verify OTP
+ *     description: Verifies the OTP sent to the user's email or phone
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - otp
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *               phone:
+ *                 type: string
+ *                 description: User's phone number (for WhatsApp)
+ *               otp:
+ *                 type: string
+ *                 description: The OTP code to verify
+ *     responses:
+ *       200:
+ *         description: OTP verified successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Verification successful
+ *       400:
+ *         description: Invalid OTP or request
+ *       401:
+ *         description: Invalid or expired OTP
+ */
+router.post('/verify-otp', verifyOTP);
 
 /**
  * @openapi

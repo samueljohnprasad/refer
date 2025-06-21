@@ -3,26 +3,37 @@ import { UserRole } from '../types/user.types';
 
 // Register validation schema
 export const registerSchema = Joi.object({
-  email: Joi.string().email().required().messages({
+  email: Joi.string().email().allow('', null).messages({
     'string.email': 'Please provide a valid email address',
-    'any.required': 'Email is required',
+    'string.empty': 'Email cannot be empty',
   }),
-  password: Joi.string().min(8).required().messages({
-    'string.min': 'Password must be at least 8 characters long',
-    'any.required': 'Password is required',
+  password: Joi.string().min(8).when('email', {
+    is: Joi.string().required(),
+    then: Joi.required().messages({
+      'any.required': 'Password is required when email is provided',
+      'string.min': 'Password must be at least 8 characters long',
+      'string.empty': 'Password cannot be empty',
+    })
   }),
   firstName: Joi.string().required().messages({
     'any.required': 'First name is required',
+    'string.empty': 'First name cannot be empty',
   }),
   lastName: Joi.string().required().messages({
     'any.required': 'Last name is required',
+    'string.empty': 'Last name cannot be empty',
   }),
-  phone: Joi.string().allow('', null),
-  company: Joi.string().allow('', null),
+  phone: Joi.string().pattern(/^[0-9+\-\s()]*$/).allow('', null).messages({
+    'string.pattern.base': 'Please provide a valid phone number',
+    'string.empty': 'Phone number cannot be empty',
+  }),
+  company: Joi.string().allow('', null).default(null),
   companyEmail: Joi.string().email().allow('', null).messages({
     'string.email': 'Please provide a valid company email address',
   }),
   role: Joi.string().valid(...Object.values(UserRole)).default(UserRole.JOB_SEEKER),
+}).or('email', 'phone').messages({
+  'object.missing': 'Either email or phone number is required',
 });
 
 // Login validation schema
