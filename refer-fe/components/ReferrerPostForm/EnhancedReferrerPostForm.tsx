@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Switch, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Switch, Alert, ActivityIndicator } from 'react-native';
+import PostPreview from './PostPreview';
 import styled from 'styled-components/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../../context/ThemeContext';
@@ -17,6 +18,13 @@ type FormData = {
   expiryDays: number;
   status: 'Active' | 'Draft';
 };
+
+interface ValidationState {
+  company: { valid: boolean; message: string | null };
+  role: { valid: boolean; message: string | null };
+  description: { valid: boolean; message: string | null };
+  skills: { valid: boolean; message: string | null };
+}
 
 interface ReferrerPostFormProps {
   onSubmit?: (data: FormData) => void;
@@ -214,7 +222,28 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
   
   // Validation state
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const [validationState, setValidationState] = useState<ValidationState>({
+    company: { valid: false, message: null },
+    role: { valid: false, message: null },
+    description: { valid: false, message: null },
+    skills: { valid: false, message: null }
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [formCompletion, setFormCompletion] = useState(0);
+  
+  // Calculate form completion percentage
+  useEffect(() => {
+    let completedFields = 0;
+    let totalRequiredFields = 4; // company, role, description, skills
+    
+    if (formData.company.trim()) completedFields++;
+    if (formData.role.trim()) completedFields++;
+    if (formData.description.trim().length >= 20) completedFields++;
+    if (formData.skills.length > 0) completedFields++;
+    
+    setFormCompletion((completedFields / totalRequiredFields) * 100);
+  }, [formData]);
   
   // Sample skills for selection
   const availableSkills = [
@@ -226,7 +255,7 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
   const experienceLevels = ['Entry-level', 'Mid-level', 'Senior', 'Lead', 'Management'];
   const expiryOptions = [7, 14, 30, 60, 90];
   
-  // Update form data
+  // Update form data and validate in real-time
   const handleInputChange = (field: keyof FormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
@@ -234,6 +263,46 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
+    
+    // Validate field in real-time
+    validateField(field, value);
+  };
+  
+  // Validate a specific field
+  const validateField = (field: keyof FormData, value: any): boolean => {
+    let isValid = true;
+    let message = null;
+    
+    switch (field) {
+      case 'company':
+        isValid = value.trim().length > 0;
+        message = isValid ? null : 'Company name is required';
+        break;
+      case 'role':
+        isValid = value.trim().length > 0;
+        message = isValid ? null : 'Job role is required';
+        break;
+      case 'description':
+        if (!value.trim()) {
+          isValid = false;
+          message = 'Description is required';
+        } else if (value.length < 20) {
+          isValid = false;
+          message = 'Description should be at least 20 characters';
+        }
+        break;
+      case 'skills':
+        isValid = value.length > 0;
+        message = isValid ? null : 'Select at least one skill';
+        break;
+    }
+    
+    setValidationState(prev => ({
+      ...prev,
+      [field]: { valid: isValid, message }
+    }));
+    
+    return isValid;
   };
   
   // Toggle skill selection
@@ -273,9 +342,24 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
     return Object.keys(newErrors).length === 0;
   };
   
-  // Submit handler
-  const handleSubmit = (status: 'Active' | 'Draft') => {
+  // Toggle preview mode
+  const handleTogglePreview = (): void => {
+    // Validate form before showing preview
     const isValid = validateForm();
+    if (isValid) {
+      setShowPreview(!showPreview);
+    } else {
+      Alert.alert(
+        'Form Incomplete',
+        'Please fill out all required fields before previewing.',
+        [{ text: 'OK' }]
+      );
+    }
+  };
+  
+  // Submit handler
+  const handleSubmit = (status: 'Active' | 'Draft'): void => {
+    const isValid = status === 'Active' ? validateForm() : true;
     
     if (isValid) {
       setIsSubmitting(true);
@@ -323,8 +407,13 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
           value={formData.company}
           onChangeText={(text) => handleInputChange('company', text)}
           placeholderTextColor={theme.colors.text + '80'}
+          style={{ 
+            borderColor: validationState.company.valid ? 
+              theme.colors.success + '80' : 
+              (validationState.company.message ? theme.colors.error : theme.colors.border) 
+          }}
         />
-        {errors.company && <FormError>{errors.company}</FormError>}
+        {validationState.company.message && <FormError>{validationState.company.message}</FormError>}
         
         <FormLabel>Job Role*</FormLabel>
         <FormInput
@@ -332,8 +421,13 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
           value={formData.role}
           onChangeText={(text) => handleInputChange('role', text)}
           placeholderTextColor={theme.colors.text + '80'}
+          style={{ 
+            borderColor: validationState.role.valid ? 
+              theme.colors.success + '80' : 
+              (validationState.role.message ? theme.colors.error : theme.colors.border) 
+          }}
         />
-        {errors.role && <FormError>{errors.role}</FormError>}
+        {validationState.role.message && <FormError>{validationState.role.message}</FormError>}
         
         <FormLabel>Location</FormLabel>
         <FormInput
@@ -365,10 +459,26 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
           onChangeText={(text) => handleInputChange('description', text)}
           multiline={true}
           numberOfLines={4}
-          style={{ height: 120, textAlignVertical: 'top' }}
+          style={{
+            height: 120, 
+            textAlignVertical: 'top',
+            borderColor: validationState.description.valid ? 
+              theme.colors.success + '80' : 
+              (validationState.description.message ? theme.colors.error : theme.colors.border)
+          }}
           placeholderTextColor={theme.colors.text + '80'}
         />
-        {errors.description && <FormError>{errors.description}</FormError>}
+        {formData.description.length > 0 && (
+          <Text style={{ 
+            fontSize: theme.typography.fontSize.xs, 
+            color: formData.description.length >= 20 ? theme.colors.success : theme.colors.text,
+            marginTop: 4,
+            alignSelf: 'flex-end'
+          }}>
+            {formData.description.length}/20 characters
+          </Text>
+        )}
+        {validationState.description.message && <FormError>{validationState.description.message}</FormError>}
         
         <FormLabel>Experience Level</FormLabel>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 8, marginBottom: 16 }}>
@@ -395,7 +505,7 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
             </SkillTag>
           ))}
         </SkillsContainer>
-        {errors.skills && <FormError>{errors.skills}</FormError>}
+        {validationState.skills.message && <FormError>{validationState.skills.message}</FormError>}
       </FormSection>
       
       <Divider />
@@ -449,15 +559,38 @@ export default function EnhancedReferrerPostForm({ onSubmit }: ReferrerPostFormP
           <FontAwesome name="save" size={16} color={theme.colors.text} style={{ marginRight: 8 }} />
           <ButtonText>Save as Draft</ButtonText>
         </FormButton>
+        
+        <FormButton 
+          onPress={handleTogglePreview}
+          style={{ flex: 1, marginHorizontal: 8 }}
+        >
+          <FontAwesome name="eye" size={16} color={theme.colors.text} style={{ marginRight: 8 }} />
+          <ButtonText>Preview</ButtonText>
+        </FormButton>
+        
         <FormButton 
           primary 
           onPress={() => handleSubmit('Active')} 
           style={{ flex: 1, marginLeft: 8 }}
+          disabled={formCompletion < 100 || isSubmitting}
         >
-          <FontAwesome name="paper-plane" size={16} color="white" style={{ marginRight: 8 }} />
-          <ButtonText primary>Publish Post</ButtonText>
+          {isSubmitting ? (
+            <ActivityIndicator size="small" color="white" />
+          ) : (
+            <>
+              <FontAwesome name="paper-plane" size={16} color="white" style={{ marginRight: 8 }} />
+              <ButtonText primary>Publish Post</ButtonText>
+            </>
+          )}
         </FormButton>
       </ButtonContainer>
+      
+      {showPreview && (
+        <PostPreview 
+          data={formData}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
     </FormContainer>
   );
 }
