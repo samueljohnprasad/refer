@@ -45,6 +45,7 @@ export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
     const response = await api.post<{success: boolean, data: LoginResponse}>('/auth/login', payload);
     // Set the token in our centralized API service after successful login
     if (response.data?.token) {
+      console.log("Setting auth token", response.data.token);
       api.setToken(response.data.token);
     }
     return response.data;

@@ -25,6 +25,20 @@ export async function saveAuth(auth: StoredAuth): Promise<void> {
     await AsyncStorage.removeItem('user');
   }
 }
+export async function getToken(): Promise<string | null> {
+  return await AsyncStorage.getItem('token');
+}
+
+export async function getUser(): Promise<User | null> {
+  const userStr: string | null = await AsyncStorage.getItem('user');
+  let user: User | null = null;
+  try {
+    user = userStr ? JSON.parse(userStr) : null;
+  } catch {
+    user = null;
+  }
+  return user;
+}
 
 export async function loadAuth(): Promise<StoredAuth> {
   const tokenStr: string | null = await AsyncStorage.getItem('token');

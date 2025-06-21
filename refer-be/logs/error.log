@@ -56,3 +56,63 @@
 2025-06-18 00:27:46 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
     at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
 2025-06-18 01:05:51 [ERROR]: 401 - Invalid email or password - /api/auth/login - POST - ::1 
+2025-06-21 20:08:55 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-21 20:11:49 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-21 20:14:47 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-21 20:20:15 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-21 20:24:41 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-21 20:39:19 [ERROR]: Registration error: User validation failed: username: Path `username` is required. ValidationError: User validation failed: username: Path `username` is required.
+    at model.Document.invalidate (/Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3352:32)
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3113:17
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/schemaType.js:1407:9
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-06-21 20:39:19 [ERROR]: 500 - Internal Server Error - /api/auth/register - POST - ::1 
+2025-06-21 20:39:27 [ERROR]: Registration error: User validation failed: username: Path `username` is required. ValidationError: User validation failed: username: Path `username` is required.
+    at model.Document.invalidate (/Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3352:32)
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3113:17
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/schemaType.js:1407:9
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-06-21 20:39:27 [ERROR]: 500 - Internal Server Error - /api/auth/register - POST - ::1 
+2025-06-21 20:43:38 [ERROR]: Registration error: User validation failed: username: Path `username` is required. ValidationError: User validation failed: username: Path `username` is required.
+    at model.Document.invalidate (/Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3352:32)
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3113:17
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/schemaType.js:1407:9
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-06-21 20:43:38 [ERROR]: 500 - Internal Server Error - /api/auth/register - POST - ::1 
+2025-06-21 20:43:54 [ERROR]: Registration error: User validation failed: username: Path `username` is required. ValidationError: User validation failed: username: Path `username` is required.
+    at model.Document.invalidate (/Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3352:32)
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3113:17
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/schemaType.js:1407:9
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-06-21 20:43:54 [ERROR]: 500 - Internal Server Error - /api/auth/register - POST - ::1 
+2025-06-21 20:43:57 [ERROR]: Registration error: User validation failed: username: Path `username` is required. ValidationError: User validation failed: username: Path `username` is required.
+    at model.Document.invalidate (/Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3352:32)
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3113:17
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/schemaType.js:1407:9
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-06-21 20:43:57 [ERROR]: 500 - Internal Server Error - /api/auth/register - POST - ::1 
+2025-06-21 20:45:01 [ERROR]: Registration error: User validation failed: username: Path `username` is required. ValidationError: User validation failed: username: Path `username` is required.
+    at model.Document.invalidate (/Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3352:32)
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/document.js:3113:17
+    at /Users/samuelprasad/Desktop/refer/refer-be/node_modules/mongoose/lib/schemaType.js:1407:9
+    at processTicksAndRejections (node:internal/process/task_queues:85:11)
+2025-06-21 20:45:01 [ERROR]: 500 - Internal Server Error - /api/auth/register - POST - ::1 
+2025-06-21 20:47:09 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-21 21:32:50 [ERROR]: 401 - Invalid email or password - /api/auth/login - POST - ::1 
+2025-06-21 21:32:56 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-21 21:43:36 [ERROR]: 401 - Invalid email or password - /api/auth/login - POST - ::1 
+2025-06-21 21:43:40 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-21 21:51:13 [ERROR]: 404 - User not found - /api/profiles/me - GET - ::1 
+2025-06-21 21:51:25 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+2025-06-21 21:56:55 [ERROR]: 401 - Invalid email or password - /api/auth/login - POST - ::1 
+2025-06-21 21:56:59 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)

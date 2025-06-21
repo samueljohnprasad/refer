@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { JobService } from '../services/job.service';
-import { validate } from '../middleware/validate';
+import { validate } from '../middlewares/validate';
 import { createJobPostSchema, jobQuerySchema, updateJobPostSchema } from '../validations/job.validation';
 import { JobQueryParams } from '../types/job.types';
 

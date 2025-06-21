@@ -4,6 +4,30 @@ trigger: always_on
 
 # Frontend Coding Standards (React Native + TypeScript, Mobile & Web)
 
+##Presentation Layer (Presentational Component) Rules:
+-Only handle UI rendering and layout.
+ 
+- Receive all data and actions via props.
+
+- Avoid direct data fetching or global state access.
+
+- No side effects or logic-heavy code.
+
+- Be stateless or have only UI-local state.
+
+## Container Layer (Container Component) Rules:
+- Handle data fetching and business logic.
+
+-Manage and transform state using hooks or Redux.
+
+-Pass data and callbacks down to presentational components.
+
+-Encapsulate side effects like API calls or subscriptions.
+
+-Do not contain any markup beyond what’s necessary to compose children.
+
+
+
 ## Compatibility (Web & Mobile)
 -Component Composition: Build complex UIs from simple, composable components
 - Use only libraries and components that are fully compatible with both React Native and React Native Web.

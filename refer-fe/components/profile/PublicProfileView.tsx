@@ -37,7 +37,6 @@ const PublicProfileView: React.FC<PublicProfileViewProps> = ({ profile }: Public
       <ProfileHeader>
         <ProfileAvatar>
           {/* If you have an avatar image, use it here instead */}
-          <AvatarText>{profile.username.charAt(0).toUpperCase()}</AvatarText>
         </ProfileAvatar>
         
         <HeaderContent>
@@ -143,24 +142,28 @@ const PublicProfileView: React.FC<PublicProfileViewProps> = ({ profile }: Public
 
 // Styled Components - using explicit values to avoid token errors
 const Container = styled.View`
-  padding: 16px;
-  background-color: white;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0px 2px 10px rgba(0,0,0,0.06);
+  elevation: 2;
+  margin: 16px;
 `;
 
 const ProfileHeader = styled.View`
   flex-direction: row;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 `;
 
 const ProfileAvatar = styled.View`
   width: 80px;
   height: 80px;
   border-radius: 40px;
-  background-color: #007bff;
+  background-color: #e0e7ef;
   align-items: center;
   justify-content: center;
-  margin-right: 16px;
+  margin-right: 20px;
 `;
 
 const AvatarText = styled.Text`
@@ -174,15 +177,15 @@ const HeaderContent = styled.View`
 `;
 
 const ProfileName = styled.Text`
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
-  color: #333333;
-  margin-bottom: 4px;
+  color: #222;
+  margin-bottom: 2px;
 `;
 
 const ProfileHeadline = styled.Text`
-  font-size: 16px;
-  color: #666666;
+  font-size: 15px;
+  color: #666;
   margin-bottom: 8px;
 `;
 
@@ -205,15 +208,15 @@ const Section = styled.View`
 `;
 
 const SectionTitle = styled.Text`
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
-  color: #333333;
+  color: #222;
   margin-bottom: 8px;
 `;
 
 const SectionContent = styled.Text`
-  font-size: 16px;
-  color: #444444;
+  font-size: 15px;
+  color: #444;
   line-height: 22px;
 `;
 
@@ -223,16 +226,16 @@ const SkillsContainer = styled.View`
 `;
 
 const SkillChip = styled.View`
-  background-color: #f1f1f1;
-  border-radius: 16px;
-  padding: 8px 12px;
+  background-color: #e6f0fa;
+  border-radius: 14px;
+  padding: 6px 12px;
   margin-right: 8px;
   margin-bottom: 8px;
 `;
 
 const SkillText = styled.Text`
-  color: #333333;
-  font-size: 14px;
+  color: #2176ae;
+  font-size: 13px;
 `;
 
 const SocialLinksContainer = styled.View`
@@ -244,10 +247,18 @@ const SocialButton = styled.TouchableOpacity`
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  background-color: #f1f1f1;
+  background-color: #e6f0fa;
   align-items: center;
   justify-content: center;
   margin-right: 12px;
+  transition: background-color 0.2s;
+
+  &:active {
+    background-color: #cfe0fc;
+  }
+  &:hover {
+    background-color: #cfe0fc;
+  }
 `;
 
 const ContactItem = styled.View`
@@ -266,16 +277,16 @@ const ShareProfileButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   align-self: flex-end;
-  padding: 8px 12px;
-  background-color: #f1f1f1;
+  padding: 8px 14px;
+  background-color: #e6f0fa;
   border-radius: 20px;
   margin-bottom: 16px;
 `;
 
 const ShareButtonText = styled.Text`
-  color: #007bff;
+  color: #2176ae;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   margin-left: 4px;
 `;
 
@@ -290,6 +301,7 @@ const ProfileFooter = styled.View`
 const UsernameText = styled.Text`
   font-size: 14px;
   color: #999999;
+  font-style: italic;
 `;
 
 export default PublicProfileView;

@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { API_URL } from '../constants/api';
+import { getToken } from './authStorage';
 
 /**
  * Centralized API service that handles all HTTP requests
@@ -18,11 +19,16 @@ class ApiService {
       timeout: 10000, // 10 seconds
     });
     
+    this.loadToken();
+
+    
     // Request interceptor for adding auth token
     this.instance.interceptors.request.use(
       (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+        console.log('Adding auth token', this.token);
         // Add authorization header with JWT if available
         if (this.token) {
+          console.log("Adding auth token", this.token);
           config.headers = config.headers || {};
           config.headers.Authorization = `Bearer ${this.token}`;
         }
@@ -91,6 +97,16 @@ class ApiService {
   public delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
     return this.instance.delete<T>(url, config)
       .then(response => response.data);
+  }
+
+  private async loadToken() {
+    try {
+      this.token = await getToken();
+      console.log('Loaded token from storage:', this.token);
+    } catch (error) {
+      console.error('Failed to load token from storage:', error);
+      this.token = null;
+    }
   }
   
   /**

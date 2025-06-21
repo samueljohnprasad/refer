@@ -153,9 +153,24 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
   };
   
   return (
-    <Container>
+    <AnimatedContainer entering={FadeIn.duration(500)}>
+      <LinearGradient
+        colors={['#2176ae', '#34c759']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{ paddingTop: 32, paddingBottom: 24, alignItems: 'center', justifyContent: 'center' }}
+      >
+        <AvatarContainer>
+          <AvatarInitials>
+            {('profile.fullName && profile.fullName'.split(' ').map((n: string) => n[0]).join('').slice(0,2).toUpperCase())
+              || (profile.username ? 'samuel prasad'.slice(0,2).toUpperCase() : 'U')}
+          </AvatarInitials>
+        </AvatarContainer>
+        <NameText>{profile.fullName || 'Your Name'}</NameText>
+        <UsernameText>@{profile.username}</UsernameText>
+      </LinearGradient>
       <SectionTitle>Edit Your Profile</SectionTitle>
-      
+      <Divider />
       {/* Username section with availability check */}
       <FormGroup>
         <Label>Username* (required)</Label>
@@ -176,7 +191,7 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
           <ErrorText>{validationErrors.username}</ErrorText>
         )}
       </FormGroup>
-      
+      <Divider />
       {/* Basic information */}
       <FormGroup>
         <Label>Full Name</Label>
@@ -186,7 +201,7 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
           placeholder="Enter your full name"
         />
       </FormGroup>
-      
+      <Divider />
       <FormGroup>
         <Label>Headline</Label>
         <Input
@@ -195,7 +210,7 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
           placeholder="Your professional headline"
         />
       </FormGroup>
-      
+      <Divider />
       <FormGroup>
         <Label>Email</Label>
         <Input
@@ -209,7 +224,7 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
           <ErrorText>{validationErrors.contactEmail}</ErrorText>
         )}
       </FormGroup>
-      
+      <Divider />
       <FormGroup>
         <Label>Location</Label>
         <Input
@@ -218,7 +233,7 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
           placeholder="City, Country"
         />
       </FormGroup>
-      
+      <Divider />
       {/* About you */}
       <SectionTitle>About You</SectionTitle>
       
@@ -245,8 +260,10 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
           style={{ textAlignVertical: 'top' }}
         />
       </FormGroup>
-      
+      <Divider />
       {/* Skills section */}
+      <SectionTitle>Skills</SectionTitle>
+      
       <FormGroup>
         <Label>Skills</Label>
         <SkillInputContainer>
@@ -271,7 +288,7 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
           ))}
         </SkillsContainer>
       </FormGroup>
-      
+      <Divider />
       {/* Social links */}
       <SectionTitle>Social Links</SectionTitle>
       
@@ -326,7 +343,7 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
           <ErrorText>{validationErrors['socialLinks.website']}</ErrorText>
         )}
       </FormGroup>
-      
+      <Divider />
       {/* Privacy settings */}
       <SectionTitle>Privacy Settings</SectionTitle>
       
@@ -372,7 +389,7 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
           When turned off, your profile will not be visible to others
         </PrivacyHelpText>
       </FormGroup>
-      
+      <Divider />
       {/* Success message */}
       {isSaveSuccessful && (
         <SuccessMessage>Profile updated successfully!</SuccessMessage>
@@ -383,33 +400,111 @@ const EditProfileView: React.FC<EditProfileViewProps> = ({ profile }: EditProfil
       
       {/* Save and Cancel buttons */}
       <ButtonContainer>
-        <SaveButton onPress={handleSubmit} disabled={isLoading}>
-          {isLoading ? (
-            <ActivityIndicator color="#ffffff" size="small" />
-          ) : (
-            <SaveButtonText>Save Profile</SaveButtonText>
-          )}
-        </SaveButton>
-      </ButtonContainer>
-    </Container>
+  <SaveButton
+    onPress={handleSubmit}
+    disabled={isLoading}
+    aria-label="Save Profile"
+  >
+    <LinearGradient
+      colors={["#2176ae", "#34c759"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={{ width: '100%', paddingVertical: 14, paddingHorizontal: 20, alignItems: 'center', borderRadius: 10 }}
+    >
+      {isLoading ? (
+        <ActivityIndicator color="#ffffff" size="small" />
+      ) : (
+        <SaveButtonText>Save Profile</SaveButtonText>
+      )}
+    </LinearGradient>
+  </SaveButton>
+</ButtonContainer>
+    </AnimatedContainer>
   );
 };
 
 // Styled components
-const Container = styled.View`
-  padding: 16px;
+import { LinearGradient } from 'expo-linear-gradient';
+import Animated, { FadeIn } from 'react-native-reanimated';
+
+const AnimatedContainer = Animated.createAnimatedComponent(styled.View`
+  padding: 0px;
+  background-color: #fff;
+  border-radius: 18px;
+  box-shadow: 0px 4px 24px rgba(30, 60, 120, 0.07);
+  border: 1px solid rgba(34, 60, 120, 0.07);
+  elevation: 3;
+  margin: 16px;
+  overflow: hidden;
+`);
+
+const HeaderGradient = styled(LinearGradient).attrs({
+  colors: ['#2176ae', '#34c759'],
+  start: { x: 0, y: 0 },
+  end: { x: 1, y: 0 },
+})`
+  padding: 32px 0 24px 0;
+  align-items: center;
+  justify-content: center;
+`;
+
+const AvatarContainer = styled.View`
+  width: 88px;
+  height: 88px;
+  border-radius: 44px;
+  background-color: #fff;
+  align-items: center;
+  justify-content: center;
+  border-width: 3px;
+  border-color: #e6f0fa;
+  elevation: 4;
+  margin-bottom: 12px;
+  margin-top: -44px;
+  shadow-color: #2176ae;
+  shadow-opacity: 0.10;
+  shadow-radius: 8px;
+`;
+
+const AvatarInitials = styled.Text`
+  font-size: 36px;
+  font-weight: bold;
+  color: #2176ae;
+`;
+
+const NameText = styled.Text`
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 2px;
+`;
+
+const UsernameText = styled.Text`
+  font-size: 15px;
+  color: #e0e7ef;
+  font-style: italic;
+  margin-bottom: 4px;
+`;
+
+const Divider = styled.View`
+  height: 1px;
+  background-color: #f1f1f1;
+  margin: 18px 0 12px 0;
 `;
 
 const SectionTitle = styled.Text`
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
-  margin-bottom: 16px;
+  color: #222;
+  margin-bottom: 8px;
   margin-top: 8px;
-  color: #333333;
+  letter-spacing: 0.2px;
 `;
 
 const FormGroup = styled.View`
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom-width: 1px;
+  border-bottom-color: #f1f1f1;
 `;
 
 const Label = styled.Text`
@@ -452,14 +547,14 @@ const TextArea = styled.TextInput`
 
 const ErrorText = styled.Text`
   color: #ff3b30;
-  font-size: 12px;
+  font-size: 13px;
   margin-top: 4px;
 `;
 
 const SuccessMessage = styled.Text`
   color: #34c759;
-  font-size: 14px;
-  margin: 8px 0;
+  font-size: 15px;
+  margin: 10px 0;
   text-align: center;
 `;
 
@@ -552,22 +647,27 @@ const PrivacyHelpText = styled.Text`
 const ButtonContainer = styled.View`
   flex-direction: row;
   justify-content: center;
-  margin-top: 20px;
-  margin-bottom: 30px;
+  margin-top: 32px;
+  margin-bottom: 36px;
 `;
 
 const SaveButton = styled.TouchableOpacity<{ disabled?: boolean }>`
-  background-color: ${(props) => (props.disabled ? '#cccccc' : '#007bff')};
-  padding: 14px 20px;
-  border-radius: 8px;
   width: 100%;
   align-items: center;
+  border-radius: 10px;
+  overflow: hidden;
+  elevation: 2;
+  margin-top: 8px;
+  box-shadow: 0px 2px 10px rgba(33, 118, 174, 0.08);
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
 `;
+
 
 const SaveButtonText = styled.Text`
   color: white;
   font-size: 16px;
   font-weight: bold;
+  letter-spacing: 0.5px;
 `;
 
 export default EditProfileView;

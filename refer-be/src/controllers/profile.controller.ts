@@ -8,6 +8,7 @@ import User from '../models/user.model';
  */
 export const getUserProfile = async (req: Request, res: Response): Promise<void> => {
   try {
+    console.log('user getUserProfile', req.user);
     const profile = await Profile.findOne({ user: req.user?._id });
 
     if (!profile) {
@@ -48,25 +49,14 @@ export const getProfileByUsername = async (req: Request, res: Response): Promise
       return;
     }
 
-    // Check if profile is public
-    if (!profile.privacySettings?.isPublicProfile) {
-      res.status(403).json({
-        success: false,
-        message: 'This profile is private',
-      });
-      return;
-    }
+
 
     // Filter private information based on privacy settings
     const publicProfile = {
-      username: profile.username,
-      fullName: profile.fullName,
       headline: profile.headline,
       summary: profile.summary,
       skills: profile.skills,
       experience: profile.experience,
-      // Only include fields based on privacy settings
-      contactEmail: profile.privacySettings?.showEmail ? profile.contactEmail : undefined,
       location: profile.privacySettings?.showLocation ? profile.location : undefined,
       socialLinks: profile.privacySettings?.showSocialLinks ? profile.socialLinks : undefined,
     };
@@ -93,12 +83,10 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
 
     const {
       username,
-      fullName,
       headline,
       summary,
       experience,
       skills,
-      contactEmail,
       location,
       socialLinks,
       privacySettings,
@@ -106,7 +94,7 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
 
     // If username is being updated, check if it's already taken
     if (username) {
-      const existingProfile = await Profile.findOne({
+      const existingProfile = await User.findOne({
         username: username.toLowerCase(),
         user: { $ne: userId },
       });
@@ -125,13 +113,10 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
       { user: userId },
       {
         $set: {
-          username: username?.toLowerCase(),
-          fullName,
           headline,
           summary,
           experience,
           skills,
-          contactEmail,
           location,
           socialLinks,
           privacySettings,
