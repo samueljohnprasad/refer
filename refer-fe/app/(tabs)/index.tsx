@@ -263,8 +263,7 @@ export default function HomeScreen() {
           onPress={() => {
             // Navigate to the appropriate post creation screen
             if (activeTab === 'jobSeeker') {
-              // Would navigate to job seeker post creation when implemented
-              alert('Job seeker post creation coming soon!');
+              router.push('/create-job-post' as any);
             } else {
               router.push('/create-referrer-post' as any);
             }
