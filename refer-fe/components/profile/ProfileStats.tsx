@@ -60,11 +60,6 @@ const Container = styled.View`
   border-radius: ${props => props.theme.borderRadius.md}px;
   margin: 16px;
   padding: 16px;
-  shadow-color: #000;
-  shadow-offset: 0px 2px;
-  shadow-opacity: 0.1;
-  shadow-radius: 3px;
-  elevation: 2;
 `;
 
 const StatsRow = styled.View`

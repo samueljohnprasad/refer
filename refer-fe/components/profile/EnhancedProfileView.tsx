@@ -11,8 +11,135 @@ import {
   ProfileExperience,
   ProfileEducation,
   ProfileResume,
-  ProfilePrivacySettings
+  ProfilePrivacySettings,
+  ProfileSocial,
+  ProfileEndorsements,
+  ProfileConnections
 } from './index';
+
+// Mock endorsements data
+const mockEndorsements = [
+  {
+    skillId: '1',
+    skillName: 'React Native',
+    count: 32,
+    endorsers: [
+      {
+        id: '101',
+        name: 'Emily Johnson',
+        image: 'https://randomuser.me/api/portraits/women/44.jpg',
+        title: 'Senior Developer',
+        company: 'TechCorp',
+        relationship: 'Colleague',
+        date: 'May 2023'
+      },
+      {
+        id: '102',
+        name: 'David Chen',
+        image: 'https://randomuser.me/api/portraits/men/46.jpg',
+        title: 'Tech Lead',
+        company: 'InnovateSoft',
+        relationship: 'Manager',
+        date: 'Mar 2023'
+      }
+    ]
+  },
+  {
+    skillId: '2',
+    skillName: 'TypeScript',
+    count: 28,
+    endorsers: [
+      {
+        id: '103',
+        name: 'Sarah Miller',
+        image: 'https://randomuser.me/api/portraits/women/25.jpg',
+        title: 'Frontend Developer',
+        company: 'WebSolutions',
+        relationship: 'Colleague',
+        date: 'Jun 2023'
+      }
+    ]
+  },
+  {
+    skillId: '3',
+    skillName: 'JavaScript',
+    count: 26,
+    endorsers: []
+  },
+  {
+    skillId: '4',
+    skillName: 'Redux',
+    count: 21,
+    endorsers: []
+  }
+];
+
+// Mock connections data
+const mockConnections = [
+  {
+    id: '201',
+    name: 'Jennifer Lee',
+    image: 'https://randomuser.me/api/portraits/women/12.jpg',
+    title: 'UX Designer',
+    company: 'DesignHub',
+    mutualConnections: 5,
+    isConnected: true
+  },
+  {
+    id: '202',
+    name: 'Robert Taylor',
+    image: 'https://randomuser.me/api/portraits/men/32.jpg',
+    title: 'Product Manager',
+    company: 'TechCorp',
+    mutualConnections: 3,
+    isConnected: true
+  },
+  {
+    id: '203',
+    name: 'Michelle Wong',
+    image: 'https://randomuser.me/api/portraits/women/33.jpg',
+    title: 'Frontend Developer',
+    company: 'WebSolutions',
+    mutualConnections: 7,
+    isConnected: true
+  },
+  {
+    id: '204',
+    name: 'James Peterson',
+    image: 'https://randomuser.me/api/portraits/men/44.jpg',
+    title: 'Backend Developer',
+    company: 'DataCo',
+    mutualConnections: 2,
+    isConnected: false
+  },
+  {
+    id: '205',
+    name: 'Lisa Garcia',
+    image: 'https://randomuser.me/api/portraits/women/55.jpg',
+    title: 'DevOps Engineer',
+    company: 'CloudTech',
+    mutualConnections: 0,
+    isConnected: false
+  },
+  {
+    id: '206',
+    name: 'Daniel Kim',
+    image: 'https://randomuser.me/api/portraits/men/66.jpg',
+    title: 'Mobile Developer',
+    company: 'AppWorks',
+    mutualConnections: 4,
+    isConnected: true
+  },
+  {
+    id: '207',
+    name: 'Emma Thompson',
+    image: 'https://randomuser.me/api/portraits/women/77.jpg',
+    title: 'UI Designer',
+    company: 'CreativeStudio',
+    mutualConnections: 1,
+    isConnected: true
+  }
+];
 
 // Types for user profile data
 interface UserProfile {
@@ -236,6 +363,21 @@ const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
     onShowAlert?.(`Privacy setting ${setting} changed to ${value}`);
   };
 
+  const handleEndorseSkill = (skillId: string, message: string) => {
+    // Mock alert for skill endorsement
+    onShowAlert?.('Endorsement submitted successfully');
+  };
+
+  const handleConnectUser = (userId: string) => {
+    // Mock alert for user connection
+    onShowAlert?.('Connection request sent');
+  };
+
+  const handleViewProfile = (userId: string) => {
+    // Mock alert for viewing user profile
+    onShowAlert?.(`Viewing profile ID: ${userId}`);
+  };
+
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -287,6 +429,17 @@ const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
               completionPercentage={profile.profileCompletionPercentage}
             />
 
+            <ProfileEndorsements
+              endorsements={mockEndorsements}
+              onEndorse={handleEndorseSkill}
+            />
+
+            <ProfileConnections
+              connections={mockConnections}
+              onConnect={handleConnectUser}
+              onViewProfile={handleViewProfile}
+            />
+
             <ProfileSkills
               skills={profile.skills}
               editable={isEditable}
@@ -309,6 +462,12 @@ const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
               onUploadResume={handleUploadResume}
               onViewResume={handleViewResume}
             />
+            
+            <ProfileSocial
+              username={profile.username}
+              userId={profile.id}
+              profileUrl={`https://refernet.com/profile/${profile.username}`}
+            />
           </>
         ) : (
           <ProfilePrivacySettings
@@ -319,6 +478,15 @@ const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
       </ScrollView>
     </Container>
   );
+};
+
+// Fix styling issues with shadow and elevation by using inline styles
+const shadowStyle = {
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 3,
+  elevation: 2
 };
 
 const Container = styled.View`

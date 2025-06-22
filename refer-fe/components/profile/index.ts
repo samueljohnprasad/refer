@@ -5,3 +5,6 @@ export { default as ProfileExperience } from './ProfileExperience';
 export { default as ProfileEducation } from './ProfileEducation';
 export { default as ProfileResume } from './ProfileResume';
 export { default as ProfilePrivacySettings } from './ProfilePrivacySettings';
+export { default as ProfileSocial } from './ProfileSocial';
+export { default as ProfileEndorsements } from './ProfileEndorsements';
+export { default as ProfileConnections } from './ProfileConnections';
