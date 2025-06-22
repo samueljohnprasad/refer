@@ -114,7 +114,7 @@ function RootLayoutNav() {
     return (
         <NavigationThemeProvider value={navigationTheme}>
             <View style={styles.headerControls}>
-                <ThemeToggle showLabel={false} />
+                {/* <ThemeToggle showLabel={false} /> */}
                 <TouchableOpacity
                     style={styles.logoutButton}
                     onPress={() => dispatch(logout())}
@@ -159,6 +159,8 @@ const useLayoutStyles = () => {
             shadowOpacity: 0.1,
             shadowRadius: theme.borderRadius.sm,
             elevation: 2,
+            marginRight: 100,
+            marginTop: -20,
         },
         logoutText: {
             color: theme.colors.primary,

@@ -16,6 +16,7 @@ import GroupedPostList from "@/components/GroupedPostList";
 import FilterBar, { FilterConfig, SortOption } from "@/components/FilterBar";
 import { ThemeInterface } from "@/constants/theme";
 import SwipeableTabs from "@/components/common/SwipeableTabs";
+import ReferralModal from "@/components/ReferralModal";
 
 // Define post types
 type JobSeekerPost = {
@@ -262,6 +263,19 @@ export default function HomeScreen() {
         skills: [],
     });
 
+    const [isReferralModalVisible, setReferralModalVisible] = useState(false);
+    const [selectedPostForReferral, setSelectedPostForReferral] = useState<JobSeekerPost | null>(null);
+
+    const handleOpenReferralModal = (post: JobSeekerPost) => {
+        setSelectedPostForReferral(post);
+        setReferralModalVisible(true);
+    };
+
+    const handleCloseReferralModal = () => {
+        setReferralModalVisible(false);
+        setSelectedPostForReferral(null);
+    };
+
     // Extract all available categories from posts
     const availableCategories = useMemo(() => {
         const categories = jobSeekerPosts.map((post) => post.category);
@@ -486,6 +500,11 @@ export default function HomeScreen() {
         <SafeAreaView
             style={{ flex: 1, backgroundColor: theme.colors.background }}
         >
+            <ReferralModal 
+                visible={isReferralModalVisible}
+                onClose={handleCloseReferralModal}
+                post={selectedPostForReferral}
+            />
             <HeaderContainer>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <FontAwesome
@@ -549,10 +568,19 @@ export default function HomeScreen() {
 
             <FlatList<Post>
                 data={
-                    activeTab === "jobSeeker" ? jobSeekerPosts : referrerPosts
+                    activeTab === "jobSeeker" ? sortedJobSeekerPosts : sortedReferrerPosts
                 }
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <PostCard post={item} />}
+                renderItem={({ item }) => (
+                    <PostCard 
+                        post={item} 
+                        onRefer={
+                            item.type === 'Job Seeker' 
+                                ? () => handleOpenReferralModal(item as JobSeekerPost) 
+                                : undefined
+                        }
+                    />
+                )}
                 contentContainerStyle={{ padding: 16, paddingTop: 8 }}
                 refreshControl={
                     <RefreshControl

@@ -5,6 +5,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../context/ThemeContext';
 import ReferrerPostDetail from './ReferrerPostDetail';
 import { ThemeInterface } from '../constants/theme';
+import { useRouter } from 'expo-router';
+import Reanimated, { useSharedValue, withSequence, withSpring } from 'react-native-reanimated';
 
 // Define the types for Job Seeker and Referrer posts
 export type JobSeekerPost = {
@@ -36,6 +38,7 @@ export type Post = JobSeekerPost | ReferrerPost;
 interface PostCardProps {
   post: Post;
   onPress?: () => void;
+  onRefer?: (post: JobSeekerPost) => void;
 }
 
 const Card = styled.TouchableOpacity`
@@ -256,9 +259,11 @@ const IconContainer = styled.View`
   margin-right: 8px;
 `;
 
-export default function PostCard({ post, onPress }: PostCardProps) {
+export default function PostCard({ post, onPress, onRefer }: PostCardProps) {
   const { theme } = useTheme();
+  const router = useRouter();
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
   
   const daysLeft = post.expiresAt ? Math.ceil((post.expiresAt - Date.now()) / (1000 * 60 * 60 * 24)) : null;
   const isExpiringSoon = daysLeft !== null && daysLeft <= 7;
@@ -280,12 +285,19 @@ export default function PostCard({ post, onPress }: PostCardProps) {
     return Math.floor(seconds) + "s ago";
   };
 
+  const handleSavePress = () => {
+    setIsSaved(!isSaved);
+    // Add API call logic here in a real app
+  };
+
   const handleDetailPress = () => {
     setDetailVisible(true);
   };
 
   const handleRefer = () => {
-    console.log(`Referring user for post: ${post.id}`);
+    if (post.type === 'Job Seeker' && onRefer) {
+      onRefer(post as JobSeekerPost);
+    }
   };
 
   const handleApply = () => {
@@ -338,9 +350,11 @@ export default function PostCard({ post, onPress }: PostCardProps) {
         
         <FooterContainer>
           <FooterButtonsContainer>
-            <IconContainer>
-              <FontAwesome name="bookmark-o" size={16} color={theme.colors.text} />
-            </IconContainer>
+            <TouchableOpacity onPress={handleSavePress}>
+              <IconContainer>
+                <FontAwesome name={isSaved ? "bookmark" : "bookmark-o"} size={16} color={theme.colors.text} />
+              </IconContainer>
+            </TouchableOpacity>
             <IconContainer>
               <FontAwesome name="share-alt" size={16} color={theme.colors.text} />
             </IconContainer>
@@ -382,9 +396,9 @@ export default function PostCard({ post, onPress }: PostCardProps) {
               </StatusText>
           </FooterButtonsContainer>
 
-          <ApplyButton onPress={handleApply}>
+          <ApplyButton onPress={() => setDetailVisible(true)}>
             <FontAwesome name="paper-plane" size={14} color="white" />
-            <ApplyButtonText>Apply</ApplyButtonText>
+            <ApplyButtonText>Details</ApplyButtonText>
           </ApplyButton>
         </FooterContainer>
 
