@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../context/ThemeContext';
@@ -16,6 +16,15 @@ import {
   ProfileEndorsements,
   ProfileConnections
 } from './index';
+
+import {
+  ProfilePersonalEditModal,
+  ProfileSkillsEditModal,
+  ProfileExperienceEditModal,
+  ProfileEducationEditModal,
+  ProfilePhotosEditModal,
+  ProfileResumeEditModal
+} from './modals';
 
 // Mock endorsements data
 const mockEndorsements = [
@@ -210,6 +219,18 @@ interface EnhancedProfileViewProps {
   onShowAlert?: (message: string) => void;
 }
 
+// Define all the modal states type
+type ModalState = {
+  personal: boolean;
+  photos: boolean;
+  skills: boolean;
+  newExperience: boolean;
+  editExperience: boolean;
+  newEducation: boolean;
+  editEducation: boolean;
+  resume: boolean;
+};
+
 const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
   userData,
   isEditable = true,
@@ -220,7 +241,23 @@ const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
 }) => {
   const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState<'profile' | 'settings'>('profile');
-
+  
+  // Track all modal visibility states
+  const [modalState, setModalState] = useState<ModalState>({
+    personal: false,
+    photos: false,
+    skills: false,
+    newExperience: false,
+    editExperience: false,
+    newEducation: false,
+    editEducation: false,
+    resume: false
+  });
+  
+  // Track which item is being edited
+  const [currentExperience, setCurrentExperience] = useState<any>(null);
+  const [currentEducation, setCurrentEducation] = useState<any>(null);
+  
   // Mock data for demonstration
   const mockUserData: UserProfile = {
     id: '1',
@@ -310,8 +347,18 @@ const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
     }
   };
 
-  // Use provided user data or fallback to mock data
-  const profile = userData || mockUserData;
+  // Track profile data changes
+  const [profileData, setProfileData] = useState<UserProfile>(userData || mockUserData);
+
+  // Keep profile data updated when userData changes (from props)
+  useEffect(() => {
+    if (userData) {
+      setProfileData(userData);
+    }
+  }, [userData]);
+  
+  // Use the local state for profile data
+  const profile = profileData;
 
   if (isLoading) {
     return (
@@ -334,33 +381,196 @@ const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
     );
   }
 
+  // Modal open/close handlers
+  const openModal = (modalName: keyof ModalState) => {
+    setModalState(prev => ({ ...prev, [modalName]: true }));
+  };
+  
+  const closeModal = (modalName: keyof ModalState) => {
+    setModalState(prev => ({ ...prev, [modalName]: false }));
+  };
+  
+  // Edit handlers
   const handleEditProfile = () => {
-    if (onEditProfile) {
-      onEditProfile();
-    } else {
-      // Mock alert for editing profile
-      onShowAlert?.('Edit profile feature is not implemented yet');
-    }
+    openModal('personal');
   };
-
-  const handleUploadResume = () => {
-    // Mock alert for uploading resume
-    onShowAlert?.('Resume upload feature is not implemented yet');
+  
+  const handleEditPhotos = () => {
+    openModal('photos');
   };
-
-  const handleViewResume = () => {
-    // Mock alert for viewing resume
-    onShowAlert?.('Resume view feature is not implemented yet');
-  };
-
+  
   const handleAddSkill = () => {
-    // Mock alert for adding skills
-    onShowAlert?.('Add skill feature is not implemented yet');
+    openModal('skills');
   };
-
+  
+  const handleEditSkill = (skill: any) => {
+    openModal('skills');
+  };
+  
+  const handleAddExperience = () => {
+    setCurrentExperience(null);
+    openModal('newExperience');
+  };
+  
+  const handleEditExperience = (experience: any) => {
+    setCurrentExperience(experience);
+    openModal('editExperience');
+  };
+  
+  const handleAddEducation = () => {
+    setCurrentEducation(null);
+    openModal('newEducation');
+  };
+  
+  const handleEditEducation = (education: any) => {
+    setCurrentEducation(education);
+    openModal('editEducation');
+  };
+  
+  const handleUploadResume = () => {
+    openModal('resume');
+  };
+  
+  const handleViewResume = (resume: any) => {
+    // Mock implementation of viewing resume
+    Alert.alert(
+      'View Resume',
+      'Opening resume in PDF viewer...',
+      [{ text: 'OK', onPress: () => console.log('Resume viewed') }]
+    );
+  };
+  
   const handlePrivacyChange = (setting: keyof UserProfile['privacySettings'], value: boolean) => {
-    // Mock alert for privacy changes
-    onShowAlert?.(`Privacy setting ${setting} changed to ${value}`);
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      privacySettings: {
+        ...prev.privacySettings,
+        [setting]: value
+      }
+    }));
+    
+    onShowAlert?.(`Privacy setting ${setting} updated`);
+  };
+  
+  // Save handlers
+  const handleSavePersonalInfo = (data: any) => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      name: data.name,
+      bio: data.bio,
+      company: data.company,
+      position: data.position,
+      location: data.location,
+      website: data.website
+    }));
+    
+    closeModal('personal');
+    onShowAlert?.('Personal info updated successfully');
+  };
+  
+  const handleSavePhotos = (photos: any) => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      profileImage: photos.profileImage,
+      coverImage: photos.coverImage
+    }));
+    
+    closeModal('photos');
+    onShowAlert?.('Profile photos updated successfully');
+  };
+  
+  const handleSaveSkills = (skills: any[]) => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      skills: skills
+    }));
+    
+    closeModal('skills');
+    onShowAlert?.('Skills updated successfully');
+  };
+  
+  const handleSaveNewExperience = (experience: any) => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      experience: [...prev.experience, experience]
+    }));
+    
+    closeModal('newExperience');
+    onShowAlert?.('Experience added successfully');
+  };
+  
+  const handleSaveEditExperience = (updatedExperience: any) => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      experience: prev.experience.map((exp: any) => 
+        exp.id === updatedExperience.id ? updatedExperience : exp
+      )
+    }));
+    
+    closeModal('editExperience');
+    onShowAlert?.('Experience updated successfully');
+  };
+  
+  const handleDeleteExperience = (id: string) => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      experience: prev.experience.filter(exp => exp.id !== id)
+    }));
+    
+    closeModal('editExperience');
+    onShowAlert?.('Experience deleted successfully');
+  };
+  
+  const handleSaveNewEducation = (education: any) => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      education: [...prev.education, education]
+    }));
+    
+    closeModal('newEducation');
+    onShowAlert?.('Education added successfully');
+  };
+  
+  const handleSaveEditEducation = (updatedEducation: any) => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      education: prev.education.map((edu: any) => 
+        edu.id === updatedEducation.id ? updatedEducation : edu
+      )
+    }));
+    
+    closeModal('editEducation');
+    onShowAlert?.('Education updated successfully');
+  };
+  
+  const handleDeleteEducation = (id: string) => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      education: prev.education.filter(edu => edu.id !== id)
+    }));
+    
+    closeModal('editEducation');
+    onShowAlert?.('Education deleted successfully');
+  };
+  
+  const handleSaveResume = (resume: any) => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      resume: resume
+    }));
+    
+    closeModal('resume');
+    onShowAlert?.('Resume updated successfully');
+  };
+  
+  const handleDeleteResume = () => {
+    setProfileData((prev: UserProfile) => ({
+      ...prev,
+      resume: undefined
+    }));
+    
+    closeModal('resume');
+    onShowAlert?.('Resume deleted successfully');
   };
 
   const handleEndorseSkill = (skillId: string, message: string) => {
@@ -381,19 +591,20 @@ const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <ProfileHeader
-          name={profile.name}
-          username={profile.username}
-          bio={profile.bio}
-          company={profile.company}
-          position={profile.position}
-          location={profile.location}
-          website={profile.website}
-          profileImage={profile.profileImage}
-          coverImage={profile.coverImage}
-          isVerified={profile.isVerified}
-          onEditProfile={handleEditProfile}
-        />
+            <ProfileHeader
+              name={profile.name}
+              username={profile.username}
+              bio={profile.bio}
+              company={profile.company}
+              position={profile.position}
+              location={profile.location}
+              website={profile.website}
+              profileImage={profile.profileImage}
+              coverImage={profile.coverImage}
+              isVerified={profile.isVerified}
+              onEditProfile={handleEditProfile}
+              onEditPhotos={handleEditPhotos}
+            />
 
         <TabsContainer>
           <TabButton 
@@ -449,11 +660,15 @@ const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
             <ProfileExperience
               experiences={profile.experience}
               editable={isEditable}
+              onAddExperience={handleAddExperience}
+              onEditExperience={handleEditExperience}
             />
 
             <ProfileEducation
               education={profile.education}
               editable={isEditable}
+              onAddEducation={handleAddEducation}
+              onEditEducation={handleEditEducation}
             />
 
             <ProfileResume
@@ -476,6 +691,76 @@ const EnhancedProfileView: React.FC<EnhancedProfileViewProps> = ({
           />
         )}
       </ScrollView>
+      
+      {/* Edit Modals */}
+      <ProfilePersonalEditModal
+        visible={modalState.personal}
+        onClose={() => closeModal('personal')}
+        userData={{
+          name: profile.name,
+          bio: profile.bio,
+          company: profile.company,
+          position: profile.position,
+          location: profile.location,
+          website: profile.website
+        }}
+        onSave={handleSavePersonalInfo}
+      />
+      
+      <ProfilePhotosEditModal
+        visible={modalState.photos}
+        onClose={() => closeModal('photos')}
+        photos={{
+          profileImage: profile.profileImage,
+          coverImage: profile.coverImage
+        }}
+        onSave={handleSavePhotos}
+      />
+      
+      <ProfileSkillsEditModal
+        visible={modalState.skills}
+        onClose={() => closeModal('skills')}
+        skills={profile.skills}
+        onSave={handleSaveSkills}
+      />
+      
+      <ProfileExperienceEditModal
+        visible={modalState.newExperience}
+        onClose={() => closeModal('newExperience')}
+        isNew={true}
+        onSave={handleSaveNewExperience}
+      />
+      
+      <ProfileExperienceEditModal
+        visible={modalState.editExperience}
+        onClose={() => closeModal('editExperience')}
+        experience={currentExperience}
+        onSave={handleSaveEditExperience}
+        onDelete={handleDeleteExperience}
+      />
+      
+      <ProfileEducationEditModal
+        visible={modalState.newEducation}
+        onClose={() => closeModal('newEducation')}
+        isNew={true}
+        onSave={handleSaveNewEducation}
+      />
+      
+      <ProfileEducationEditModal
+        visible={modalState.editEducation}
+        onClose={() => closeModal('editEducation')}
+        education={currentEducation}
+        onSave={handleSaveEditEducation}
+        onDelete={handleDeleteEducation}
+      />
+      
+      <ProfileResumeEditModal
+        visible={modalState.resume}
+        onClose={() => closeModal('resume')}
+        resume={profile.resume}
+        onSave={handleSaveResume}
+        onDelete={handleDeleteResume}
+      />
     </Container>
   );
 };

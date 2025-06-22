@@ -14,8 +14,9 @@ interface ProfileHeaderProps {
   website?: string;
   profileImage: string;
   coverImage: string;
-  isVerified?: boolean;
+  isVerified: boolean;
   onEditProfile?: () => void;
+  onEditPhotos?: () => void;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -28,8 +29,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   website,
   profileImage,
   coverImage,
-  isVerified = false,
-  onEditProfile
+  isVerified,
+  onEditProfile,
+  onEditPhotos
 }) => {
   const { theme } = useTheme();
   
@@ -42,6 +44,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <EditButton onPress={onEditProfile} style={{ position: 'absolute', top: 16, right: 16 }}>
           <Ionicons name="pencil-outline" size={18} color="#fff" />
         </EditButton>
+        
+        {onEditPhotos && (
+          <EditPhotoButton onPress={onEditPhotos}>
+            <Ionicons name="camera" size={20} color="white" />
+          </EditPhotoButton>
+        )}
       </CoverImageContainer>
       
       {/* Profile Info Section */}
@@ -249,6 +257,20 @@ const SecondaryButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   margin-right: 8px;
+`;
+
+const EditPhotoButton = styled.TouchableOpacity`
+  position: absolute;
+  bottom: -24px;
+  left: 90px;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background-color: ${props => props.theme.colors.primary};
+  justify-content: center;
+  align-items: center;
+  border-width: 2px;
+  border-color: white;
 `;
 
 const EditButton = styled.TouchableOpacity`
