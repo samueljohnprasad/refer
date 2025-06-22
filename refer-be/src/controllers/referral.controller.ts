@@ -4,7 +4,7 @@ import { sendPushNotification } from '../services/notification.service';
 import User from '../models/user.model';
 
 export class ReferralController {
-  static createReferral = async (req: Request, res: Response) => {
+  static createReferral = async (req: Request, res: Response): Promise<void> => {
     try {
       const { postId, message } = req.body;
       const referrerId = req.user.id;
@@ -12,14 +12,16 @@ export class ReferralController {
       // 1. Fetch the job post to get the owner's ID
       const post = await JobService.getJobPostById(postId);
       if (!post) {
-        return res.status(404).json({ success: false, message: 'Post not found' });
+        res.status(404).json({ success: false, message: 'Post not found' });
+        return;
       }
       const postOwnerId = post.user.toString();
 
       // 2. Fetch the referrer's user object to get their name
       const referrer = await User.findById(referrerId).select('username');
       if (!referrer) {
-        return res.status(404).json({ success: false, message: 'Referrer not found' });
+        res.status(404).json({ success: false, message: 'Referrer not found' });
+        return;
       }
 
       // TODO: Save the referral to the database

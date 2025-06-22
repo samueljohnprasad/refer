@@ -30,6 +30,7 @@ const ModalOverlay = styled.View`
   justify-content: center;
   align-items: center;
   padding: 16px;
+  z-index: 1000;
 `;
 
 const PreviewContainer = styled.View`

@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
+import api from './api';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import api from './api';
 
 // This is the configuration for how notifications should behave when the app is in the foreground.
 Notifications.setNotificationHandler({

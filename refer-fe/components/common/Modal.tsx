@@ -24,17 +24,6 @@ const ModalContainer = styled(Reanimated.View)`
     background-color: ${props => props.theme.colors.card};
     border-radius: 15px;
     padding: 20px;
-    ${Platform.select({
-        ios: `
-            shadow-color: #000;
-            shadow-offset: { width: 0, height: 4 };
-            shadow-opacity: 0.3;
-            shadow-radius: 4.65;
-        `,
-        android: `
-            elevation: 8;
-        `,
-    })}
 `;
 
 const HeaderContainer = styled(Reanimated.View)`
@@ -92,6 +81,18 @@ export default function Modal({ visible, onClose, title, children }: ModalProps)
         transform: [{ translateY: headerTranslateY.value }],
     }));
 
+    const shadowStyle = Platform.select({
+        ios: {
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4.65,
+        },
+        android: {
+            elevation: 8,
+        },
+    });
+
     return (
         <RNModal
             transparent={true}
@@ -100,7 +101,7 @@ export default function Modal({ visible, onClose, title, children }: ModalProps)
         >
             <Reanimated.View style={[{ flex: 1 }, overlayStyle]}>
                  <ModalOverlay>
-                    <ModalContainer style={containerStyle}>
+                    <ModalContainer style={[containerStyle, shadowStyle]}>
                         <HeaderContainer style={headerStyle}>
                             <Title>{title}</Title>
                             <CloseButton onPress={onClose}>

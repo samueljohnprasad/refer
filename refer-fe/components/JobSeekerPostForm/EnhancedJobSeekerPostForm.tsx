@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Switch, Alert, ActivityIndicator } from 'react-native';
-import styled from 'styled-components/native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Switch, Alert, ActivityIndicator, Animated } from 'react-native';
+import styled, { css } from 'styled-components/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../../context/ThemeContext';
 import ResumeUploader from './ResumeUploader';
@@ -28,7 +28,9 @@ interface ValidationState {
 }
 
 interface JobSeekerPostFormProps {
-  onSubmit?: (data: FormData) => void;
+  onSubmit?: (data: FormData, isDraft?: boolean) => void;
+  isSubmitting?: boolean;
+  isDraftSubmitting?: boolean;
 }
 
 // Styled components
@@ -245,10 +247,82 @@ const ProgressPercentage = styled.Text<{ complete: boolean }>`
   margin-left: 12px;
 `;
 
-export default function EnhancedJobSeekerPostForm({ onSubmit }: JobSeekerPostFormProps) {
+// Stepper component
+const StepperContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${props => props.theme.spacing.xl}px;
+`;
+
+const Step = styled.View<{ active: boolean; completed: boolean }>`
+  align-items: center;
+  flex: 1;
+`;
+
+const StepIndicator = styled.View<{ active: boolean; completed: boolean }>`
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background-color: ${props => props.completed ? props.theme.colors.primary : (props.active ? props.theme.colors.primary : props.theme.colors.border)};
+  justify-content: center;
+  align-items: center;
+  border-width: 2px;
+  border-color: ${props => props.active || props.completed ? props.theme.colors.primary : props.theme.colors.border};
+`;
+
+const StepLabel = styled.Text<{ active: boolean; completed: boolean }>`
+  font-size: ${props => props.theme.typography.fontSize.xs}px;
+  color: ${props => props.active || props.completed ? props.theme.colors.primary : props.theme.colors.text};
+  margin-top: ${props => props.theme.spacing.xs}px;
+  font-weight: ${props => props.active ? 'bold' : 'normal'};
+`;
+
+const StepConnector = styled.View<{ completed: boolean }>`
+  height: 2px;
+  flex: 1;
+  background-color: ${props => props.completed ? props.theme.colors.primary : props.theme.colors.border};
+  margin-bottom: 20px; /* Aligns with the center of the step circle */
+`;
+
+const FormStepContainer = styled(Animated.View)`
+  width: 100%;
+`;
+
+const steps = ['Basics', 'Details', 'Privacy & Finish'];
+
+const Stepper = ({ currentStep }: { currentStep: number }) => {
   const { theme } = useTheme();
+  return (
+    <StepperContainer>
+      {steps.map((step, index) => (
+        <React.Fragment key={index}>
+          <Step active={index === currentStep} completed={index < currentStep}>
+            <StepIndicator active={index === currentStep} completed={index < currentStep}>
+              {index < currentStep ? (
+                <FontAwesome name="check" size={16} color="white" />
+              ) : (
+                <Text style={{ color: index === currentStep ? 'white' : theme.colors.text }}>{index + 1}</Text>
+              )}
+            </StepIndicator>
+            <StepLabel active={index === currentStep} completed={index < currentStep}>{step}</StepLabel>
+          </Step>
+          {index < steps.length - 1 && <StepConnector completed={index < currentStep} />}
+        </React.Fragment>
+      ))}
+    </StepperContainer>
+  );
+};
+
+export default function EnhancedJobSeekerPostForm({ 
+  onSubmit, 
+  isSubmitting = false, 
+  isDraftSubmitting = false 
+}: JobSeekerPostFormProps) {
+  const { theme } = useTheme();
+  const [currentStep, setCurrentStep] = useState(0);
+  const slideAnim = useRef(new Animated.Value(0)).current;
   
-  // Form state
   const [formData, setFormData] = useState<FormData>({
     title: '',
     interestStatement: '',
@@ -257,49 +331,73 @@ export default function EnhancedJobSeekerPostForm({ onSubmit }: JobSeekerPostFor
     education: '',
     resumeFile: '',
     privacyOption: 'Public',
-    expiryDays: 180 // Default of 6 months as per requirements
+    expiryDays: 30,
   });
   
-  // Validation state
-  const [validationState, setValidationState] = useState<ValidationState>({
+  const [validation, setValidation] = useState<ValidationState>({
     title: { valid: false, message: null },
     interestStatement: { valid: false, message: null },
-    skills: { valid: false, message: null }
+    skills: { valid: true, message: null },
   });
   
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [formCompletion, setFormCompletion] = useState(0);
+  const [progress, setProgress] = useState(0);
   
-  // Sample skills for selection
   const availableSkills = [
     'React', 'React Native', 'TypeScript', 'JavaScript', 'Node.js',
     'AWS', 'Python', 'Java', 'C#', 'DevOps', 'Product Management',
     'UX Design', 'UI Design', 'Marketing', 'Sales', 'Data Science'
   ];
   
-  // Calculate form completion percentage
   useEffect(() => {
-    let completedFields = 0;
-    let totalRequiredFields = 4; // title, interestStatement, skills, privacyOption
-    
-    if (formData.title.trim()) completedFields++;
-    if (formData.interestStatement.trim().length >= 50) completedFields++;
-    if (formData.skills.length > 0) completedFields++;
-    if (formData.resumeFile) completedFields++;
-    
-    setFormCompletion((completedFields / totalRequiredFields) * 100);
+    const totalFields = 5;
+    let filledFields = 0;
+    if (formData.title.trim()) filledFields++;
+    if (formData.interestStatement.trim()) filledFields++;
+    if (formData.skills.length > 0) filledFields++;
+    if (formData.experience.trim()) filledFields++;
+    if (formData.education.trim()) filledFields++;
+    setProgress(Math.round((filledFields / totalFields) * 100));
   }, [formData]);
   
-  // Update form data and validate in real-time
   const handleInputChange = (field: keyof FormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     validateField(field, value);
   };
   
-  // Validate a specific field
+  const validateStep1 = () => {
+    const titleValid = validateField('title', formData.title);
+    const statementValid = validateField('interestStatement', formData.interestStatement);
+    return titleValid && statementValid;
+  };
+  
+  const validateStep2 = () => {
+    return validateField('skills', formData.skills);
+  };
+  
+  const handleNext = () => {
+    let isValid = false;
+    if (currentStep === 0) {
+      isValid = validateStep1();
+    } else if (currentStep === 1) {
+      isValid = validateStep2();
+    }
+
+    if (isValid) {
+      if (currentStep < steps.length - 1) {
+        setCurrentStep(prev => prev + 1);
+      }
+    }
+  };
+  
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);
+    }
+  };
+  
   const validateField = (field: keyof FormData, value: any): boolean => {
-    if (!(field in validationState)) return true;
+    if (!(field in validation)) return true;
     
     let isValid = true;
     let message = null;
@@ -324,7 +422,7 @@ export default function EnhancedJobSeekerPostForm({ onSubmit }: JobSeekerPostFor
         break;
     }
     
-    setValidationState(prev => ({
+    setValidation(prev => ({
       ...prev,
       [field]: { valid: isValid, message }
     }));
@@ -332,7 +430,6 @@ export default function EnhancedJobSeekerPostForm({ onSubmit }: JobSeekerPostFor
     return isValid;
   };
   
-  // Toggle skill selection
   const toggleSkill = (skill: string) => {
     const updatedSkills = formData.skills.includes(skill)
       ? formData.skills.filter(s => s !== skill)
@@ -341,262 +438,232 @@ export default function EnhancedJobSeekerPostForm({ onSubmit }: JobSeekerPostFor
     handleInputChange('skills', updatedSkills);
   };
   
-  // Validate form
   const validateForm = (): boolean => {
-    const fields: (keyof ValidationState)[] = ['title', 'interestStatement', 'skills'];
-    let isValid = true;
-    
-    fields.forEach(field => {
-      if (!validateField(field, formData[field])) {
-        isValid = false;
-      }
-    });
-    
-    if (!formData.resumeFile) {
-      Alert.alert('Missing Resume', 'Please upload your resume before submitting');
-      return false;
-    }
-    
-    return isValid;
+    const isStep1Valid = validateStep1();
+    const isStep2Valid = validateStep2();
+
+    return isStep1Valid && isStep2Valid;
   };
   
-  // Toggle preview mode
   const handleTogglePreview = (): void => {
-    const isValid = validateForm();
-    
-    if (isValid) {
-      setShowPreview(!showPreview);
-    } else {
-      Alert.alert(
-        'Form Incomplete',
-        'Please fill out all required fields before previewing.',
-        [{ text: 'OK' }]
-      );
-    }
+    setShowPreview(true);
   };
   
-  // Submit handler
   const handleSubmit = (asDraft: boolean): void => {
-    const isValid = !asDraft ? validateForm() : true;
-    
-    if (isValid) {
-      setIsSubmitting(true);
-      
-      // Call onSubmit with form data
-      onSubmit?.(formData);
-      
-      // In a real app, this would be a call to the backend
-      setTimeout(() => {
-        setIsSubmitting(false);
-        Alert.alert(
-          asDraft ? 'Draft Saved' : 'Post Published',
-          asDraft 
-            ? 'Your post draft has been saved. You can edit and publish it later.' 
-            : 'Your job seeker post has been published successfully!',
-          [{ text: 'OK' }]
-        );
-      }, 1000);
+    if (validateForm() || asDraft) {
+      onSubmit?.(formData, asDraft);
     }
   };
   
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 0:
+        return (
+            <FormStepContainer>
+                <FormSection>
+                  <HeaderRow>
+                    <IconContainer>
+                      <FontAwesome name="briefcase" size={16} color={theme.colors.primary} />
+                    </IconContainer>
+                    <SectionTitle>The Basics</SectionTitle>
+                  </HeaderRow>
+                  <FieldDescription>Start with the headline for your post.</FieldDescription>
+                  <FormLabel>Post Title</FormLabel>
+                  <FormInput
+                    placeholder="e.g., Senior Frontend Developer looking for new role"
+                    value={formData.title}
+                    onChangeText={text => handleInputChange('title', text)}
+                    maxLength={100}
+                  />
+                  {!validation.title.valid && <FormError>{validation.title.message}</FormError>}
+                  
+                  <FormLabel>Interest Statement</FormLabel>
+                  <FieldDescription>
+                    What are you passionate about? What kind of role or company are you looking for?
+                  </FieldDescription>
+                  <FormInput
+                    placeholder="Describe your interests and what you're looking for..."
+                    value={formData.interestStatement}
+                    onChangeText={text => handleInputChange('interestStatement', text)}
+                    multiline
+                    numberOfLines={4}
+                    maxLength={500}
+                    style={{ height: 120, textAlignVertical: 'top' }}
+                  />
+                  {!validation.interestStatement.valid && <FormError>{validation.interestStatement.message}</FormError>}
+                </FormSection>
+            </FormStepContainer>
+        );
+      case 1:
+        return (
+          <FormStepContainer>
+            <FormSection>
+              <HeaderRow>
+                <IconContainer>
+                  <FontAwesome name="cogs" size={16} color={theme.colors.primary} />
+                </IconContainer>
+                <SectionTitle>Your Skills & Experience</SectionTitle>
+              </HeaderRow>
+              <FieldDescription>Highlight your expertise and background.</FieldDescription>
+              <FormLabel>Top 5 Skills</FormLabel>
+              <SkillsContainer>
+                {['React', 'TypeScript', 'Node.js', 'GraphQL', 'UI/UX Design', 'Product Management', 'Agile', 'DevOps'].map(skill => (
+                  <SkillTag
+                    key={skill}
+                    selected={formData.skills.includes(skill)}
+                    onPress={() => toggleSkill(skill)}
+                  >
+                    <SkillText selected={formData.skills.includes(skill)}>{skill}</SkillText>
+                  </SkillTag>
+                ))}
+              </SkillsContainer>
+              {!validation.skills.valid && <FormError>{validation.skills.message}</FormError>}
+
+              <Divider />
+
+              <FormLabel>Experience Summary</FormLabel>
+              <FormInput
+                placeholder="Summarize your key work experience..."
+                value={formData.experience}
+                onChangeText={text => handleInputChange('experience', text)}
+                multiline
+                numberOfLines={4}
+                maxLength={500}
+                style={{ height: 120, textAlignVertical: 'top' }}
+              />
+
+              <FormLabel>Education</FormLabel>
+              <FormInput
+                placeholder="e.g., B.S. in Computer Science from University of Example"
+                value={formData.education}
+                onChangeText={text => handleInputChange('education', text)}
+                maxLength={100}
+              />
+            </FormSection>
+            <Divider />
+            <FormSection>
+                <FormLabel>Upload Your Resume (Optional)</FormLabel>
+                <FieldDescription>
+                  Your resume will only be shared with referrers you match with.
+                </FieldDescription>
+                <ResumeUploader onFileSelected={(file) => handleInputChange('resumeFile', file)} />
+            </FormSection>
+          </FormStepContainer>
+        );
+      case 2:
+        return (
+          <FormStepContainer>
+            <FormSection>
+              <HeaderRow>
+                <IconContainer>
+                  <FontAwesome name="shield" size={16} color={theme.colors.primary} />
+                </IconContainer>
+                <SectionTitle>Privacy & Settings</SectionTitle>
+              </HeaderRow>
+
+              <PrivacySelector
+                selectedOption={formData.privacyOption}
+                onOptionSelected={option => handleInputChange('privacyOption', option)}
+              />
+            </FormSection>
+            <Divider />
+            <FormSection>
+              <FormLabel>Post Expiry</FormLabel>
+              <FieldDescription>Set how long your post will be visible.</FieldDescription>
+              <ExpiryOptions>
+                {[7, 14, 30, 60].map(days => (
+                  <ExpiryOption
+                    key={days}
+                    selected={formData.expiryDays === days}
+                    onPress={() => handleInputChange('expiryDays', days)}
+                  >
+                    <ExpiryText selected={formData.expiryDays === days}>{days} days</ExpiryText>
+                  </ExpiryOption>
+                ))}
+              </ExpiryOptions>
+            </FormSection>
+          </FormStepContainer>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <FormContainer>
-      <HeaderRow>
-        <IconContainer>
-          <FontAwesome name="search" size={16} color={theme.colors.primary} />
-        </IconContainer>
-        <FormTitle>Create Job Seeker Post</FormTitle>
-      </HeaderRow>
-      
-      <InfoText>
-        Create a post to help referrers find you and recommend you for positions that match your skills.
-      </InfoText>
-      
-      <ProgressContainer>
-        <ProgressBarContainer>
-          <ProgressBarLabel>Form Completion</ProgressBarLabel>
-          <ProgressBarTrack>
-            <ProgressBarFill percentage={formCompletion} />
-          </ProgressBarTrack>
-        </ProgressBarContainer>
-        <ProgressPercentage complete={formCompletion === 100}>
-          {formCompletion}%
-        </ProgressPercentage>
-      </ProgressContainer>
-      
-      <Divider />
-      
-      <FormSection>
-        <SectionTitle>Basic Information</SectionTitle>
+    <ScrollView>
+      <FormContainer>
+        {showPreview && <PostPreview data={formData} onClose={() => setShowPreview(false)} />}
+
+        <Stepper currentStep={currentStep} />
         
-        <FormLabel>Title*</FormLabel>
-        <FormInput
-          placeholder="e.g. Senior React Developer seeking new opportunities"
-          value={formData.title}
-          onChangeText={(text) => handleInputChange('title', text)}
-          placeholderTextColor={theme.colors.text + '80'}
-          style={{ 
-            borderColor: validationState.title.valid ? 
-              theme.colors.success + '80' : 
-              (validationState.title.message ? theme.colors.error : theme.colors.border) 
-          }}
-        />
-        {validationState.title.message && <FormError>{validationState.title.message}</FormError>}
-        
-        <ResumeUploader 
-          onFileSelected={(uri) => handleInputChange('resumeFile', uri)}
-          currentFile={formData.resumeFile}
-        />
-      </FormSection>
-      
-      <Divider />
-      
-      <FormSection>
-        <SectionTitle>Skills & Interest</SectionTitle>
-        
-        <FormLabel>Interest Statement*</FormLabel>
-        <FieldDescription>
-          Describe what you're looking for and why you would be a good fit (minimum 50 characters)
-        </FieldDescription>
-        <FormInput
-          placeholder="Share what type of role you're looking for and why you're interested"
-          value={formData.interestStatement}
-          onChangeText={(text) => handleInputChange('interestStatement', text)}
-          multiline={true}
-          numberOfLines={4}
-          style={{
-            height: 120, 
-            textAlignVertical: 'top',
-            borderColor: validationState.interestStatement.valid ? 
-              theme.colors.success + '80' : 
-              (validationState.interestStatement.message ? theme.colors.error : theme.colors.border)
-          }}
-          placeholderTextColor={theme.colors.text + '80'}
-        />
-        {formData.interestStatement.length > 0 && (
-          <Text style={{ 
-            fontSize: theme.typography.fontSize.xs, 
-            color: formData.interestStatement.length >= 50 ? theme.colors.success : theme.colors.text,
-            marginTop: 4,
-            alignSelf: 'flex-end'
-          }}>
-            {formData.interestStatement.length}/50 characters
-          </Text>
-        )}
-        {validationState.interestStatement.message && <FormError>{validationState.interestStatement.message}</FormError>}
-        
-        <FormLabel>Skills*</FormLabel>
-        <FieldDescription>
-          Select skills that highlight your expertise (select at least one)
-        </FieldDescription>
-        <SkillsContainer>
-          {availableSkills.map((skill) => (
-            <SkillTag 
-              key={skill}
-              selected={formData.skills.includes(skill)}
-              onPress={() => toggleSkill(skill)}
-            >
-              <SkillText selected={formData.skills.includes(skill)}>{skill}</SkillText>
-            </SkillTag>
-          ))}
-        </SkillsContainer>
-        {validationState.skills.message && <FormError>{validationState.skills.message}</FormError>}
-        
-        <FormLabel>Experience (Optional)</FormLabel>
-        <FormInput
-          placeholder="Briefly describe your relevant experience"
-          value={formData.experience}
-          onChangeText={(text) => handleInputChange('experience', text)}
-          multiline={true}
-          numberOfLines={3}
-          style={{ height: 80, textAlignVertical: 'top' }}
-          placeholderTextColor={theme.colors.text + '80'}
-        />
-        
-        <FormLabel>Education (Optional)</FormLabel>
-        <FormInput
-          placeholder="Briefly describe your education background"
-          value={formData.education}
-          onChangeText={(text) => handleInputChange('education', text)}
-          multiline={true}
-          numberOfLines={2}
-          style={{ height: 60, textAlignVertical: 'top' }}
-          placeholderTextColor={theme.colors.text + '80'}
-        />
-      </FormSection>
-      
-      <Divider />
-      
-      <FormSection>
-        <SectionTitle>Post Settings</SectionTitle>
-        
-        <PrivacySelector 
-          selectedOption={formData.privacyOption}
-          onOptionSelected={(option) => handleInputChange('privacyOption', option)}
-        />
-        
-        <FormLabel>Post Expiration</FormLabel>
-        <FieldDescription>After this period, your post will no longer be visible in feeds</FieldDescription>
-        <ExpiryOptions>
-          {[30, 60, 90, 180, 365].map((days) => (
-            <ExpiryOption
-              key={days}
-              selected={formData.expiryDays === days}
-              onPress={() => handleInputChange('expiryDays', days)}
-            >
-              <ExpiryText selected={formData.expiryDays === days}>
-                {days === 30 ? '1 month' : 
-                 days === 60 ? '2 months' : 
-                 days === 90 ? '3 months' : 
-                 days === 180 ? '6 months' : '1 year'}
-              </ExpiryText>
-            </ExpiryOption>
-          ))}
-        </ExpiryOptions>
-      </FormSection>
-      
-      <Divider />
-      
-      <ButtonContainer>
-        <FormButton 
-          onPress={() => handleSubmit(true)} 
-          style={{ flex: 1, marginRight: 8 }}
-        >
-          <FontAwesome name="save" size={16} color={theme.colors.text} style={{ marginRight: 8 }} />
-          <ButtonText>Save as Draft</ButtonText>
-        </FormButton>
-        
-        <FormButton 
-          onPress={handleTogglePreview}
-          style={{ flex: 1, marginHorizontal: 8 }}
-        >
-          <FontAwesome name="eye" size={16} color={theme.colors.text} style={{ marginRight: 8 }} />
-          <ButtonText>Preview</ButtonText>
-        </FormButton>
-        
-        <FormButton 
-          primary 
-          onPress={() => handleSubmit(false)} 
-          style={{ flex: 1, marginLeft: 8 }}
-          disabled={formCompletion < 100 || isSubmitting}
-        >
-          {isSubmitting ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <>
-              <FontAwesome name="paper-plane" size={16} color="white" style={{ marginRight: 8 }} />
-              <ButtonText primary>Publish Post</ButtonText>
-            </>
+        <ProgressContainer>
+          <ProgressBarContainer>
+            <ProgressBarLabel>Profile Completion</ProgressBarLabel>
+            <ProgressBarTrack>
+              <ProgressBarFill percentage={progress} />
+            </ProgressBarTrack>
+          </ProgressBarContainer>
+          <ProgressPercentage complete={progress === 100}>
+            {progress}%
+          </ProgressPercentage>
+        </ProgressContainer>
+
+        <Divider />
+
+        {renderStepContent()}
+
+        <ButtonContainer>
+          {currentStep > 0 && (
+            <FormButton onPress={handleBack} disabled={isSubmitting || isDraftSubmitting}>
+              <FontAwesome name="arrow-left" size={16} color={theme.colors.text} style={{ marginRight: 8 }} />
+              <ButtonText>Back</ButtonText>
+            </FormButton>
           )}
-        </FormButton>
-      </ButtonContainer>
-      
-      {showPreview && (
-        <PostPreview 
-          data={formData}
-          onClose={() => setShowPreview(false)}
-        />
-      )}
-    </FormContainer>
+          
+          <View style={{ flex: 1, alignItems: 'flex-end' }}>
+            {currentStep < steps.length - 1 ? (
+              <FormButton onPress={handleNext} primary>
+                <ButtonText primary>Next</ButtonText>
+                <FontAwesome name="arrow-right" size={16} color={'white'} style={{ marginLeft: 8 }} />
+              </FormButton>
+            ) : (
+              <FormButton
+                onPress={() => handleSubmit(false)}
+                primary
+                disabled={isSubmitting || isDraftSubmitting}
+              >
+                {isSubmitting ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <>
+                    <FontAwesome name="check" size={16} color="white" style={{ marginRight: 8 }} />
+                    <ButtonText primary>Submit Post</ButtonText>
+                  </>
+                )}
+              </FormButton>
+            )}
+          </View>
+        </ButtonContainer>
+
+        <Divider />
+        
+        <ButtonContainer>
+            <FormButton onPress={handleTogglePreview} disabled={isSubmitting || isDraftSubmitting}>
+              <FontAwesome name="eye" size={16} color={theme.colors.text} style={{ marginRight: 8 }} />
+              <ButtonText>Preview</ButtonText>
+            </FormButton>
+            <FormButton onPress={() => handleSubmit(true)} disabled={isSubmitting || isDraftSubmitting}>
+                {isDraftSubmitting ? (
+                  <ActivityIndicator size="small" color={theme.colors.text} />
+                ) : (
+                  <>
+                    <FontAwesome name="save" size={16} color={theme.colors.text} style={{ marginRight: 8 }} />
+                    <ButtonText>Save as Draft</ButtonText>
+                  </>
+                )}
+            </FormButton>
+        </ButtonContainer>
+      </FormContainer>
+    </ScrollView>
   );
 }

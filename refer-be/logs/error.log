@@ -117,3 +117,10 @@
 2025-06-21 21:56:59 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
     at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
 2025-06-22 00:05:57 [ERROR]: 401 - Not authorized to access this route - /api/profiles/me - GET - ::1 
+2025-06-23 01:45:43 [ERROR]: 404 - User not found - /api/notifications - GET - ::ffff:192.168.31.5 
+2025-06-23 01:46:41 [ERROR]: 404 - User not found - /api/notifications - GET - ::ffff:192.168.31.5 
+2025-06-23 01:53:07 [ERROR]: 404 - User not found - /api/notifications - GET - ::ffff:192.168.31.5 
+2025-06-23 01:55:43 [ERROR]: 404 - User not found - /api/notifications - GET - ::ffff:192.168.31.5 
+2025-06-23 01:55:57 [ERROR]: 404 - User not found - /api/notifications - GET - ::ffff:192.168.31.5 
+2025-06-23 02:08:16 [ERROR]: 404 - User not found - /api/notifications - GET - ::ffff:192.168.31.5 
+2025-06-23 02:15:04 [ERROR]: 404 - User not found - /api/notifications - GET - ::ffff:192.168.31.5 

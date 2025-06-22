@@ -9,7 +9,7 @@ export const sendPushNotification = async (
   userId: string,
   title: string,
   body: string,
-  data?: object
+  data?: Record<string, unknown>
 ) => {
   try {
     const user = await User.findById(userId);

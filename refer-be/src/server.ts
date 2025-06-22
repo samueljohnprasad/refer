@@ -9,6 +9,7 @@ import rateLimit from 'express-rate-limit';
 // Import routes
 import authRoutes from './routes/auth.routes';
 import jobRoutes from './routes/job.routes';
+import jobSeekerPostRoutes from './routes/jobSeekerPost.routes';
 import profileRoutes from './routes/profile.routes';
 import referralRoutes from './routes/referral.routes';
 import notificationRoutes from './routes/notification.routes';
@@ -68,6 +69,7 @@ app.use('/api', limiter);
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
+app.use('/api/job-seeker-posts', jobSeekerPostRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/referrals', referralRoutes);
 app.use('/api/notifications', notificationRoutes);
