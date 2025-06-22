@@ -1,12 +1,14 @@
-import React, { useEffect, useMemo } from "react";
-import { StyleSheet, View, Text, ScrollView } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { StyleSheet, View, Text, ScrollView, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
-import ProfileView from '../../components/profile/ProfileView';
 import { router } from "expo-router";
+import { useTheme } from "../../context/ThemeContext";
+import EnhancedProfileView from '../../components/profile/EnhancedProfileView';
 
 export default function ProfileScreen() {
     const dispatch = useDispatch<AppDispatch>();
+    const { theme } = useTheme();
     const { user, token, loading, error } = useSelector((state: RootState) => state.auth);
     
     // Redirect to auth if not logged in
@@ -73,12 +75,19 @@ export default function ProfileScreen() {
         );
     }
 
+    // Function to handle showing alerts from the profile view
+    const handleShowAlert = (message: string) => {
+        Alert.alert('ReferNet', message);
+    };
+
     return (
-        <View style={styles.container}>
-            <ProfileView 
-                profileData={profileData} 
-                isLoading={loading} 
-                error={error} 
+        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+            <EnhancedProfileView 
+                userData={profileData as any}
+                isEditable={true}
+                isLoading={loading}
+                error={error}
+                onShowAlert={handleShowAlert}
             />
         </View>
     );
@@ -87,7 +96,6 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
     },
     loadingText: {
         fontSize: 16,
