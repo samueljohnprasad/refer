@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../context/ThemeContext';
+import ReferrerPostDetail from './ReferrerPostDetail';
 import { ThemeInterface } from '../constants/theme';
 
 // Define the types for Job Seeker and Referrer posts
@@ -205,6 +206,31 @@ const FooterContainer = styled.View`
   margin-top: 8px;
 `;
 
+const FooterButtonsContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+const ApplyButton = styled.TouchableOpacity`
+  background-color: ${props => props.theme.colors.primary};
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 8px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+`;
+
+const ApplyButtonText = styled.Text`
+  color: white;
+  font-weight: bold;
+  font-size: ${props => props.theme.typography.fontSize.sm}px;
+  margin-left: 4px;
+`;
+
 const IconContainer = styled.View`
   width: 32px;
   height: 32px;
@@ -217,6 +243,7 @@ const IconContainer = styled.View`
 
 export default function PostCard({ post, onPress }: PostCardProps) {
   const { theme } = useTheme();
+  const [detailVisible, setDetailVisible] = useState<boolean>(false);
   
   // Calculate days left for expiration
   const daysLeft = post.expiresAt ? Math.ceil((post.expiresAt - Date.now()) / (1000 * 60 * 60 * 24)) : null;
@@ -227,9 +254,32 @@ export default function PostCard({ post, onPress }: PostCardProps) {
   // Safely cast post based on type check
   const jobSeekerPost = isJobSeeker ? (post as JobSeekerPost) : null;
   const referrerPost = !isJobSeeker ? (post as ReferrerPost) : null;
+  
+  const handleDetailPress = () => {
+    if (!isJobSeeker) {
+      setDetailVisible(true);
+    } else if (onPress) {
+      // For job seeker posts, use the provided onPress handler
+      onPress();
+    }
+  };
+  
+  const handleApply = () => {
+    // This would typically have API integration
+    console.log('Application submitted for:', post.id);
+  };
 
   return (
-    <Card onPress={onPress} activeOpacity={0.7}>
+    <>
+      {!isJobSeeker && referrerPost && (
+        <ReferrerPostDetail
+          visible={detailVisible}
+          post={referrerPost}
+          onClose={() => setDetailVisible(false)}
+          onApply={handleApply}
+        />
+      )}
+      <Card onPress={handleDetailPress} activeOpacity={0.7}>
       <TypeBadge isJobSeeker={isJobSeeker}>
         <TypeText>{post.type}</TypeText>
       </TypeBadge>
@@ -345,7 +395,20 @@ export default function PostCard({ post, onPress }: PostCardProps) {
           </View>
         )}
         
-        <View style={{ flexDirection: 'row' }}>
+        <FooterButtonsContainer>
+          {!isJobSeeker && (
+            <ApplyButton 
+              activeOpacity={0.8}
+              onPress={(e) => {
+                e.stopPropagation();
+                setDetailVisible(true);
+              }}
+            >
+              <FontAwesome name="paper-plane" size={14} color="white" />
+              <ApplyButtonText>Apply</ApplyButtonText>
+            </ApplyButton>
+          )}
+          
           <TouchableOpacity style={{ 
             width: 32, 
             height: 32, 
@@ -353,7 +416,7 @@ export default function PostCard({ post, onPress }: PostCardProps) {
             backgroundColor: theme.colors.primary + '10',
             justifyContent: 'center',
             alignItems: 'center',
-            marginLeft: 8
+            marginRight: 8
           }}>
             <FontAwesome name="share-square-o" size={16} color={theme.colors.primary} />
           </TouchableOpacity>
@@ -365,12 +428,12 @@ export default function PostCard({ post, onPress }: PostCardProps) {
             backgroundColor: theme.colors.primary + '10',
             justifyContent: 'center',
             alignItems: 'center',
-            marginLeft: 8
           }}>
             <FontAwesome name="bookmark-o" size={16} color={theme.colors.primary} />
           </TouchableOpacity>
-        </View>
+        </FooterButtonsContainer>
       </FooterContainer>
     </Card>
+    </>
   );
 }
