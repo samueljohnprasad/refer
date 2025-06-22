@@ -175,3 +175,34 @@ export const checkUsernameAvailability = async (req: Request, res: Response): Pr
     });
   }
 };
+
+/**
+ * Add a push notification token to the user's profile
+ */
+export const addPushToken = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?._id;
+    const { token } = req.body;
+
+    if (!token) {
+      res.status(400).json({ success: false, message: 'Token is required' });
+      return;
+    }
+
+    // Add the token to the user's pushTokens array if it doesn't already exist
+    await User.findByIdAndUpdate(userId, {
+      $addToSet: { pushTokens: token },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Push token saved successfully',
+    });
+  } catch (error) {
+    console.error('Error adding push token:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+};

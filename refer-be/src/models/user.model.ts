@@ -1,11 +1,13 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { IUser, UserRole, BadgeType } from '../types/user.types';
+import { AppError } from '../middlewares/error.middleware';
 
 // Extend IUser with Document for Mongoose
 export interface IUserDocument extends IUser, Document {
   username: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
+  pushTokens: string[];
 }
 
 // Create User Schema
@@ -153,6 +155,10 @@ const UserSchema = new Schema<IUserDocument>(
     },
     lastLogin: {
       type: Date,
+    },
+    pushTokens: {
+      type: [String],
+      default: [],
     },
   },
   {

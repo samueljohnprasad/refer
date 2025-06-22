@@ -59,3 +59,33 @@ export const checkUsernameAvailability = async (
         throw error;
     }
 };
+
+export const getMyProfile = async () => {
+    try {
+        const response = await api.get('/profiles/me');
+        return response.data.data;
+    } catch (error) {
+        console.error('Error fetching profile:', error);
+        throw error;
+    }
+};
+
+export const updateMyProfile = async (profileData: any) => {
+    try {
+        const response = await api.put('/profiles', profileData);
+        return response.data.data;
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        throw error;
+    }
+};
+
+export const savePushToken = async (token: string) => {
+    try {
+        const response = await api.post('/profiles/push-token', { token });
+        return response.data;
+    } catch (error) {
+        console.error('Error saving push token:', error);
+        // We don't want to throw here, as it's not a critical failure
+    }
+};

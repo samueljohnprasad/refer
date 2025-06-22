@@ -17,6 +17,7 @@ import FilterBar, { FilterConfig, SortOption } from "@/components/FilterBar";
 import { ThemeInterface } from "@/constants/theme";
 import SwipeableTabs from "@/components/common/SwipeableTabs";
 import ReferralModal from "@/components/ReferralModal";
+import { useNotifications } from "@/hooks/useNotifications";
 
 // Define post types
 type JobSeekerPost = {
@@ -234,6 +235,25 @@ const CreatePostButton = styled.TouchableOpacity`
     align-items: center;
 `;
 
+const NotificationBadge = styled.View`
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    background-color: ${props => props.theme.colors.error};
+    border-radius: 12px;
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid ${props => props.theme.colors.card};
+`;
+
+const BadgeText = styled.Text`
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+`;
+
 // EmptyState component for when there are no posts
 const EmptyState = styled.View`
     align-items: center;
@@ -252,6 +272,7 @@ const EmptyStateText = styled.Text`
 export default function HomeScreen() {
     const { theme, isDarkMode } = useTheme();
     const router = useRouter();
+    const { unreadCount } = useNotifications();
     const [activeTab, setActiveTab] = useState<"jobSeeker" | "referrer">(
         "jobSeeker"
     );
@@ -515,29 +536,43 @@ export default function HomeScreen() {
                     />
                     <HeaderTitle>ReferNet Feed</HeaderTitle>
                 </View>
-                <CreatePostButton
-                    style={{
-                        shadowColor: theme.colors.primary,
-                        shadowOpacity: 0.4,
-                        shadowRadius: 8,
-                        shadowOffset: { width: 0, height: 3 },
-                        elevation: 5,
-                    }}
-                    onPress={() => {
-                        // Navigate to the appropriate post creation screen
-                        if (activeTab === "jobSeeker") {
-                            router.push("/create-job-post" as any);
-                        } else {
-                            router.push("/create-referrer-post" as any);
-                        }
-                    }}
-                >
-                    <FontAwesome
-                        name="plus"
-                        size={20}
-                        color="white"
-                    />
-                </CreatePostButton>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => router.push('/notifications' as any)} style={{ marginRight: 16 }}>
+                        <FontAwesome
+                            name="bell"
+                            size={24}
+                            color={theme.colors.text}
+                        />
+                        {unreadCount > 0 && (
+                            <NotificationBadge>
+                                <BadgeText>{unreadCount}</BadgeText>
+                            </NotificationBadge>
+                        )}
+                    </TouchableOpacity>
+                    <CreatePostButton
+                        style={{
+                            shadowColor: theme.colors.primary,
+                            shadowOpacity: 0.4,
+                            shadowRadius: 8,
+                            shadowOffset: { width: 0, height: 3 },
+                            elevation: 5,
+                        }}
+                        onPress={() => {
+                            // Navigate to the appropriate post creation screen
+                            if (activeTab === "jobSeeker") {
+                                router.push("/create-job-post" as any);
+                            } else {
+                                router.push("/create-referrer-post" as any);
+                            }
+                        }}
+                    >
+                        <FontAwesome
+                            name="plus"
+                            size={20}
+                            color="white"
+                        />
+                    </CreatePostButton>
+                </View>
             </HeaderContainer>
 
             <TabContainer>
