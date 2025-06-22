@@ -231,6 +231,21 @@ const ApplyButtonText = styled.Text`
   margin-left: 4px;
 `;
 
+const ReferButton = styled.TouchableOpacity`
+  background-color: ${props => props.theme.colors.secondary};
+  padding: 8px 16px;
+  border-radius: 8px;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const ReferButtonText = styled.Text`
+  color: white;
+  font-weight: bold;
+  font-size: ${props => props.theme.typography.fontSize.sm}px;
+  margin-left: 6px;
+`;
+
 const IconContainer = styled.View`
   width: 32px;
   height: 32px;
@@ -245,195 +260,149 @@ export default function PostCard({ post, onPress }: PostCardProps) {
   const { theme } = useTheme();
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
   
-  // Calculate days left for expiration
   const daysLeft = post.expiresAt ? Math.ceil((post.expiresAt - Date.now()) / (1000 * 60 * 60 * 24)) : null;
-  
-  // Check if post is job seeker type
-  const isJobSeeker = post.type === 'Job Seeker';
-  
-  // Safely cast post based on type check
-  const jobSeekerPost = isJobSeeker ? (post as JobSeekerPost) : null;
-  const referrerPost = !isJobSeeker ? (post as ReferrerPost) : null;
-  
-  const handleDetailPress = () => {
-    if (!isJobSeeker) {
-      setDetailVisible(true);
-    } else if (onPress) {
-      // For job seeker posts, use the provided onPress handler
-      onPress();
-    }
+  const isExpiringSoon = daysLeft !== null && daysLeft <= 7;
+
+  const getTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    let interval = seconds / 31536000;
+    if (interval > 1) return Math.floor(interval) + "y ago";
+    interval = seconds / 2592000;
+    if (interval > 1) return Math.floor(interval) + "m ago";
+    interval = seconds / 86400;
+    if (interval > 1) return Math.floor(interval) + "d ago";
+    interval = seconds / 3600;
+    if (interval > 1) return Math.floor(interval) + "h ago";
+    interval = seconds / 60;
+    if (interval > 1) return Math.floor(interval) + "m ago";
+    return Math.floor(seconds) + "s ago";
   };
-  
+
+  const handleDetailPress = () => {
+    setDetailVisible(true);
+  };
+
+  const handleRefer = () => {
+    console.log(`Referring user for post: ${post.id}`);
+  };
+
   const handleApply = () => {
-    // This would typically have API integration
     console.log('Application submitted for:', post.id);
   };
 
-  return (
-    <>
-      {!isJobSeeker && referrerPost && (
-        <ReferrerPostDetail
-          visible={detailVisible}
-          post={referrerPost}
-          onClose={() => setDetailVisible(false)}
-          onApply={handleApply}
-        />
-      )}
-      <Card onPress={handleDetailPress} activeOpacity={0.7}>
-      <TypeBadge isJobSeeker={isJobSeeker}>
-        <TypeText>{post.type}</TypeText>
-      </TypeBadge>
-      
-      <UserContainer>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <IconContainer>
+  if (post.type === 'Job Seeker') {
+    const jobSeekerPost = post as JobSeekerPost;
+    return (
+      <Card onPress={onPress} activeOpacity={0.7}>
+        <TypeBadge isJobSeeker>
+          <TypeText>{jobSeekerPost.type}</TypeText>
+        </TypeBadge>
+        
+        <ContentContainer>
+          <UserContainer>
+            <UserText>{jobSeekerPost.user}</UserText>
+            <TimeText>{getTimeAgo(jobSeekerPost.createdAt)}</TimeText>
+          </UserContainer>
+          <ResumeText>
+            <FontAwesome name="file-text-o" size={14} color={theme.colors.text} />
+            {' '}{jobSeekerPost.resume}
+          </ResumeText>
+          <DescriptionText>{jobSeekerPost.interest}</DescriptionText>
+          
+          <PrivacyText>
             <FontAwesome 
-              name={isJobSeeker ? "user" : "building"} 
-              size={16} 
-              color={theme.colors.primary} 
+              name={jobSeekerPost.privacy === 'Public' ? 'globe' : 'lock'} 
+              size={14} 
+              color={theme.colors.text} 
             />
-          </IconContainer>
-          <UserText>{post.user}</UserText>
-        </View>
-        <TimeText>{post.createdAt}</TimeText>
-      </UserContainer>
-      
-      {isJobSeeker ? (
-        // Job Seeker post content
-        <ContentContainer>
-          {jobSeekerPost?.resume && (
-            <ResumeText>
-              <FontAwesome name="file-pdf-o" size={14} color={theme.colors.text} /> {jobSeekerPost.resume}
-            </ResumeText>
-          )}
-          
-          {jobSeekerPost?.interest && (
-            <DescriptionText>{jobSeekerPost.interest}</DescriptionText>
-          )}
-          
-          {jobSeekerPost?.skills && jobSeekerPost.skills.length > 0 && (
-            <SkillsContainer>
-              {jobSeekerPost.skills.map((skill, index) => (
-                <SkillBadge key={`${post.id}-skill-${index}`} index={index}>
-                  <SkillText>{skill}</SkillText>
-                </SkillBadge>
-              ))}
-            </SkillsContainer>
-          )}
-          
-          {jobSeekerPost?.privacy && (
-            <PrivacyText>
-              <FontAwesome 
-                name={jobSeekerPost.privacy === 'Public' ? 'globe' : 'lock'} 
-                size={12} 
-                color={theme.colors.text} 
-              /> {jobSeekerPost.privacy}
-            </PrivacyText>
+            {' '}{jobSeekerPost.privacy}
+          </PrivacyText>
+
+          {jobSeekerPost.skills && jobSeekerPost.skills.length > 0 && (
+            <>
+              <Divider />
+              <SkillsContainer>
+                {jobSeekerPost.skills.map((skill, index) => (
+                  <SkillBadge key={`${post.id}-skill-${index}`} index={index}>
+                    <SkillText>{skill}</SkillText>
+                  </SkillBadge>
+                ))}
+              </SkillsContainer>
+            </>
           )}
         </ContentContainer>
-      ) : (
-        // Referrer post content
+
+        <Divider />
+        
+        <FooterContainer>
+          <FooterButtonsContainer>
+            <IconContainer>
+              <FontAwesome name="bookmark-o" size={16} color={theme.colors.text} />
+            </IconContainer>
+            <IconContainer>
+              <FontAwesome name="share-alt" size={16} color={theme.colors.text} />
+            </IconContainer>
+          </FooterButtonsContainer>
+
+          <ReferButton onPress={handleRefer}>
+            <FontAwesome name="send" size={14} color="white" />
+            <ReferButtonText>Refer</ReferButtonText>
+          </ReferButton>
+        </FooterContainer>
+      </Card>
+    );
+  }
+
+  if (post.type === 'Referrer') {
+    const referrerPost = post as ReferrerPost;
+    return (
+      <Card onPress={handleDetailPress} activeOpacity={0.7}>
+        <TypeBadge isJobSeeker={false}>
+          <TypeText>{referrerPost.type}</TypeText>
+        </TypeBadge>
+
         <ContentContainer>
-          {referrerPost?.company && (
-            <CompanyText>
-              <FontAwesome name="building" size={14} color={theme.colors.primary} /> {referrerPost.company}
-            </CompanyText>
-          )}
-          
-          {referrerPost?.role && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-              <View style={{ 
-                backgroundColor: theme.colors.primary + '20',
-                paddingHorizontal: 10,
-                paddingVertical: 4,
-                borderRadius: 4,
-                marginRight: 8
-              }}>
-                <RoleText>{referrerPost.role}</RoleText>
-              </View>
-            </View>
-          )}
-          
-          {referrerPost?.description && (
-            <DescriptionText>{referrerPost.description}</DescriptionText>
-          )}
-          
-          {referrerPost?.status && (
-            <StatusText isActive={referrerPost.status.toLowerCase() === 'active'}>
-              <FontAwesome 
-                name={referrerPost.status.toLowerCase() === 'active' ? 'check-circle' : 'clock-o'} 
-                size={14} 
-              /> {referrerPost.status}
-            </StatusText>
-          )}
+          <UserContainer>
+            <UserText>{referrerPost.user}</UserText>
+            <TimeText>{getTimeAgo(referrerPost.createdAt)}</TimeText>
+          </UserContainer>
+          <CompanyText>{referrerPost.company}</CompanyText>
+          <RoleText>{referrerPost.role}</RoleText>
+          <DescriptionText>{referrerPost.description}</DescriptionText>
         </ContentContainer>
-      )}
-      
-      <Divider />
-      
-      <FooterContainer>
+        
+        <Divider />
+
+        <FooterContainer>
+          <FooterButtonsContainer>
+             <StatusText isActive={referrerPost.status === 'Active'}>
+                {referrerPost.status}
+              </StatusText>
+          </FooterButtonsContainer>
+
+          <ApplyButton onPress={handleApply}>
+            <FontAwesome name="paper-plane" size={14} color="white" />
+            <ApplyButtonText>Apply</ApplyButtonText>
+          </ApplyButton>
+        </FooterContainer>
+
         {daysLeft !== null && (
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={{ 
-              backgroundColor: daysLeft <= 7 ? theme.colors.error + '20' : theme.colors.border,
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-              borderRadius: 12,
-              flexDirection: 'row',
-              alignItems: 'center'
-            }}>
-              <FontAwesome 
-                name="calendar" 
-                size={12} 
-                color={daysLeft <= 7 ? theme.colors.error : theme.colors.text} 
-                style={{ marginRight: 4 }}
-              /> 
-              <ExpiryText isExpiringSoon={daysLeft <= 7}>
-                Expires in {daysLeft} day{daysLeft === 1 ? '' : 's'}
-              </ExpiryText>
-            </View>
-          </View>
+          <ExpiryText isExpiringSoon={isExpiringSoon}>
+            <FontAwesome name="clock-o" size={12} color={isExpiringSoon ? theme.colors.error : theme.colors.text} />
+            {' '}Expires in {daysLeft} day{daysLeft === 1 ? '' : 's'}
+          </ExpiryText>
         )}
         
-        <FooterButtonsContainer>
-          {!isJobSeeker && (
-            <ApplyButton 
-              activeOpacity={0.8}
-              onPress={(e) => {
-                e.stopPropagation();
-                setDetailVisible(true);
-              }}
-            >
-              <FontAwesome name="paper-plane" size={14} color="white" />
-              <ApplyButtonText>Apply</ApplyButtonText>
-            </ApplyButton>
-          )}
-          
-          <TouchableOpacity style={{ 
-            width: 32, 
-            height: 32, 
-            borderRadius: 16,
-            backgroundColor: theme.colors.primary + '10',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginRight: 8
-          }}>
-            <FontAwesome name="share-square-o" size={16} color={theme.colors.primary} />
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={{ 
-            width: 32, 
-            height: 32, 
-            borderRadius: 16,
-            backgroundColor: theme.colors.primary + '10',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-            <FontAwesome name="bookmark-o" size={16} color={theme.colors.primary} />
-          </TouchableOpacity>
-        </FooterButtonsContainer>
-      </FooterContainer>
-    </Card>
-    </>
-  );
+        <ReferrerPostDetail 
+          post={referrerPost} 
+          visible={detailVisible}
+          onClose={() => setDetailVisible(false)}
+        />
+      </Card>
+    );
+  }
+
+  return null;
 }
