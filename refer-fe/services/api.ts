@@ -14,7 +14,8 @@ class ApiService {
   private token: string | null = null;
   
   constructor() {
-    const baseURL = 'http://localhost:5000/api';
+    const baseURL =  Platform.OS === 'android' ? 'http://10.0.2.2:5000/api' : Platform.OS === 'ios'
+    ? 'http://192.168.31.5:5000/api' : API_URL;
     this.instance = axios.create({
       baseURL,
       headers: {
@@ -28,7 +29,7 @@ class ApiService {
     // Request interceptor for adding auth token
     this.instance.interceptors.request.use(
       (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-        console.log('Making request to:', config.baseURL + config.url);
+        console.log('Making request to:', (config.baseURL||'') + (config.url||''));
         // Add authorization header with JWT if available
         if (this.token) {
           console.log("Adding auth token", this.token);
