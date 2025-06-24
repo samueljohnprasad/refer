@@ -82,7 +82,9 @@ export const updateMyProfile = async (profileData: any) => {
 
 export const savePushToken = async (token: string) => {
     try {
+        console.log('Saving push token to backend:', token);
         const response = await api.post('/profiles/push-token', { token });
+        console.log('Push token save response:', response.data);
         return response.data;
     } catch (error) {
         console.error('Error saving push token:', error);

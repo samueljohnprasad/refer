@@ -1,16 +1,28 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { ExternalLink } from './ExternalLink';
 import { MonoText } from './StyledText';
 import { Text, View } from './Themed';
 
 import Colors from '@/constants/Colors';
+import { useLayoutStyles } from '@/app/_layout';
+import { useDispatch } from 'react-redux';
+import { logout } from '@/store/authSlice';
 
 export default function EditScreenInfo({ path }: { path: string }) {
+  const dispatch = useDispatch();
+  const logoutStyles= useLayoutStyles();
   return (
     <View>
       <View style={styles.getStartedContainer}>
+      <TouchableOpacity
+                    style={logoutStyles.logoutButton}
+                    onPress={() => dispatch(logout())}
+                    accessibilityLabel="Logout"
+                >
+                  <Text style={logoutStyles.logoutText}>Logout</Text>
+              </TouchableOpacity>
         <Text
           style={styles.getStartedText}
           lightColor="rgba(0,0,0,0.8)"

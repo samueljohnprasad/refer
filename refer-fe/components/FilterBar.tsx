@@ -13,8 +13,8 @@ export type FilterConfig = {
 };
 
 interface FilterBarProps {
-  availableCategories: string[];
-  availableSkills: string[];
+  availableCategories?: string[];
+  availableSkills?: string[];
   onFilterChange: (config: FilterConfig) => void;
   initialConfig?: FilterConfig;
 }

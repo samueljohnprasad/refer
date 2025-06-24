@@ -1,11 +1,14 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
-import { Pressable, View } from 'react-native';
+import { Pressable, Text, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '../../context/ThemeContext';
 import ThemeToggle from '../../components/Toggle/ThemeToggle';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { logout } from '@/store/authSlice';
+import { useDispatch } from 'react-redux';
+import { useLayoutStyles } from '../_layout';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -37,6 +40,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
             <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
+             
               <ThemeToggle showLabel={false} />
               <Link href="/modal" asChild>
                 <Pressable>

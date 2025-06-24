@@ -13,4 +13,13 @@ router.post(
     ReferralController.createReferral
 );
 
+// @route   POST /api/v1/referrals/test-notification
+// @desc    Test notification sending (for debugging)
+// @access  Private
+router.post(
+    '/test-notification',
+    protect,
+    ReferralController.testNotification
+);
+
 export default router; 

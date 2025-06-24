@@ -113,16 +113,6 @@ function RootLayoutNav() {
 
     return (
         <NavigationThemeProvider value={navigationTheme}>
-            <View style={styles.headerControls}>
-                {/* <ThemeToggle showLabel={false} /> */}
-                <TouchableOpacity
-                    style={styles.logoutButton}
-                    onPress={() => dispatch(logout())}
-                    accessibilityLabel="Logout"
-                >
-                    <Text style={styles.logoutText}>Logout</Text>
-                </TouchableOpacity>
-            </View>
             <Stack>
                 <Stack.Screen
                     name="(tabs)"
@@ -137,7 +127,7 @@ function RootLayoutNav() {
     );
 }
 // Create a style hook that incorporates theme values
-const useLayoutStyles = () => {
+export const useLayoutStyles = () => {
     const { theme } = useTheme();
     
     return StyleSheet.create({
@@ -159,8 +149,8 @@ const useLayoutStyles = () => {
             shadowOpacity: 0.1,
             shadowRadius: theme.borderRadius.sm,
             elevation: 2,
-            marginRight: 100,
-            marginTop: -20,
+            marginRight: 80,
+            marginTop: 0,
         },
         logoutText: {
             color: theme.colors.primary,

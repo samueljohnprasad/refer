@@ -60,44 +60,59 @@ export class JobSeekerPostService {
    * Get job seeker posts with pagination and filters
    */
   static async getJobSeekerPosts(query: JobSeekerPostQueryParams) {
-    const { page = 1, limit = 10, status, privacyOption, skills, userId } = query;
-    const skip = (page - 1) * limit;
+    try {
+      console.log('getJobSeekerPosts called with query:', JSON.stringify(query, null, 2));
+      
+      const { page = 1, limit = 10, status, privacyOption, skills, userId } = query;
+      const skip = (page - 1) * limit;
 
-    // Build filter object
-    const filter: any = {};
-    
-    if (status) filter.status = status;
-    if (privacyOption) filter.privacyOption = privacyOption;
-    if (userId) filter.user = new Types.ObjectId(userId);
-    
-    // Only show public posts unless user is requesting their own posts
-    if (!userId) {
-      filter.privacyOption = 'Public';
-      filter.status = 'active';
-      filter.expiresAt = { $gt: new Date() };
-    }
+      // Build filter object
+      const filter: any = {};
+      
+      // Temporarily simplified filter for debugging
+      // if (status) filter.status = status;
+      // if (privacyOption) filter.privacyOption = privacyOption;
+      // if (userId) filter.user = new Types.ObjectId(userId);
+      
+      // Only show public posts unless user is requesting their own posts
+      // if (!userId) {
+      //   filter.privacyOption = 'Public';
+      //   filter.status = 'active';
+      //   filter.expiresAt = { $gt: new Date() };
+      // }
 
-    if (skills && skills.length > 0) {
-      filter.skills = { $in: skills };
-    }
+      // if (skills && skills.length > 0) {
+      //   filter.skills = { $in: skills };
+      // }
 
-    const posts = await JobSeekerPost.find(filter)
-      .populate('user', 'firstName lastName username')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+      console.log('Filter:', JSON.stringify(filter, null, 2));
 
-    const total = await JobSeekerPost.countDocuments(filter);
+      // First, let's check if there are any posts at all
+      const totalPosts = await JobSeekerPost.countDocuments({});
+      console.log('Total posts in database:', totalPosts);
 
-    return {
-      posts,
-      pagination: {
+      const posts = await JobSeekerPost.find(filter)
+        // .populate('user', 'firstName lastName username') // Temporarily removed
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(); // Use lean() for better performance
+
+      const total = await JobSeekerPost.countDocuments(filter);
+
+      console.log(`Found ${posts.length} posts out of ${total} total`);
+
+      return {
+        posts,
         page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
-      },
-    };
+        totalPages: Math.ceil(total / limit),
+        totalPosts: total,
+      };
+    } catch (error) {
+      console.error('Error in getJobSeekerPosts:', error);
+      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+      throw error;
+    }
   }
 
   /**

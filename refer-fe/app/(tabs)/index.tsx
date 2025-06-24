@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     RefreshControl,
     SafeAreaView,
     FlatList,
+    ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
 import styled from "styled-components/native";
@@ -13,167 +14,17 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useTheme } from "../../context/ThemeContext";
 import PostCard from "@/components/PostCard";
 import GroupedPostList from "@/components/GroupedPostList";
-import FilterBar, { FilterConfig, SortOption } from "@/components/FilterBar";
+import FilterBar, { FilterConfig } from "@/components/FilterBar";
 import { ThemeInterface } from "@/constants/theme";
 import SwipeableTabs from "@/components/common/SwipeableTabs";
 import ReferralModal from "@/components/ReferralModal";
 import { useNotifications } from "@/hooks/useNotifications";
+import { jobSeekerPostService } from "@/services/jobSeekerPost.service";
+import { Post, JobSeekerPost, ReferrerPost } from "@/types/posts";
 
-// Define post types
-type JobSeekerPost = {
-    id: string;
-    type: string;
-    user: string;
-    resume: string;
-    interest: string;
-    privacy: string;
-    skills: string[];
-    expiresAt: number;
-    createdAt: string;
-    category: string;
-};
+// Local types are removed
 
-type ReferrerPost = {
-    id: string;
-    type: string;
-    user: string;
-    company: string;
-    role: string;
-    description: string;
-    status: string;
-    expiresAt: number;
-    createdAt: string;
-    skills: string[];
-};
-
-type Post = JobSeekerPost | ReferrerPost;
-
-// Dummy data for demonstration
-const jobSeekerPosts: JobSeekerPost[] = [
-    {
-        id: "1",
-        type: "Job Seeker",
-        user: "Alice Johnson",
-        resume: "Full Stack Developer.pdf",
-        interest:
-            "Looking for frontend development roles in React/React Native",
-        privacy: "Public",
-        skills: ["React", "TypeScript", "Node.js", "MongoDB"],
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30, // 30 days
-        createdAt: new Date(
-            new Date().setDate(new Date().getDate() - 5)
-        ).toISOString(), // 5 days ago
-        category: "Software Development",
-    },
-    {
-        id: "2",
-        type: "Job Seeker",
-        user: "Michael Chen",
-        resume: "Data_Engineer_Resume.pdf",
-        interest:
-            "Seeking data engineering positions with expertise in ETL pipelines",
-        privacy: "Public",
-        skills: ["Python", "SQL", "Spark", "AWS", "Airflow"],
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 15, // 15 days
-        createdAt: new Date(
-            new Date().setDate(new Date().getDate() - 1)
-        ).toISOString(), // 1 day ago (NEW)
-        category: "Data Science",
-    },
-    {
-        id: "3",
-        type: "Job Seeker",
-        user: "Sarah Williams",
-        resume: "UX_Designer_Portfolio.pdf",
-        interest:
-            "UX/UI Designer with focus on user research and accessibility",
-        privacy: "Anonymous",
-        skills: ["Figma", "User Research", "Wireframing", "Prototyping"],
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 45, // 45 days
-        createdAt: new Date(
-            new Date().setDate(new Date().getDate() - 2)
-        ).toISOString(), // 2 days ago (NEW)
-        category: "Design",
-    },
-    {
-        id: "4",
-        type: "Job Seeker",
-        user: "David Lee",
-        resume: "Senior_Frontend_Developer_Resume.pdf",
-        interest:
-            "Senior Frontend Developer with expertise in React and Node.js",
-        privacy: "Public",
-        skills: ["React", "TypeScript", "Node.js", "MongoDB"],
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 20, // 20 days
-        createdAt: new Date(
-            new Date().setDate(new Date().getDate() - 10)
-        ).toISOString(), // 10 days ago
-        category: "Software Development",
-    },
-    {
-        id: "5",
-        type: "Job Seeker",
-        user: "Jessica Kim",
-        resume: "Machine_Learning_Engineer_Resume.pdf",
-        interest:
-            "Machine Learning Engineer with expertise in PyTorch and computer vision",
-        privacy: "Private",
-        skills: ["Python", "PyTorch", "Computer Vision", "Machine Learning"],
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 10, // 10 days
-        createdAt: new Date(
-            new Date().setDate(new Date().getDate() - 3)
-        ).toISOString(), // 3 days ago
-        category: "Data Science",
-    },
-];
-
-const referrerPosts: ReferrerPost[] = [
-    {
-        id: "4",
-        type: "Referrer",
-        user: "David Lee",
-        company: "TechCorp",
-        role: "Senior Frontend Developer",
-        description:
-            "Looking to refer experienced React developers for our team",
-        status: "Active",
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 20, // 20 days
-        createdAt: new Date(
-            new Date().setDate(new Date().getDate() - 1)
-        ).toISOString(), // 1 day ago (NEW)
-        skills: ["React", "JavaScript", "TypeScript", "Redux"],
-    },
-    {
-        id: "5",
-        type: "Referrer",
-        user: "Jessica Kim",
-        company: "DataWorks Inc.",
-        role: "Machine Learning Engineer",
-        description:
-            "Offering referrals for ML engineers with PyTorch experience",
-        status: "Active",
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 10, // 10 days
-        createdAt: new Date(
-            new Date().setDate(new Date().getDate() - 7)
-        ).toISOString(), // 7 days ago
-        skills: ["Python", "PyTorch", "Machine Learning", "Data Science"],
-    },
-    {
-        id: "6",
-        type: "Referrer",
-        user: "Robert Garcia",
-        company: "CloudScale",
-        role: "DevOps Engineer",
-        description:
-            "Referring candidates with experience in Kubernetes and CI/CD pipelines",
-        status: "Active",
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 25, // 25 days
-        createdAt: new Date(
-            new Date().setDate(new Date().getDate() - 2)
-        ).toISOString(), // 2 days ago (NEW)
-        skills: ["Kubernetes", "Docker", "CI/CD", "AWS", "DevOps"],
-    },
-];
+const referrerPosts: ReferrerPost[] = []; // Keep for now, will be replaced by API data
 
 type TabProps = {
     active: boolean;
@@ -276,6 +127,10 @@ export default function HomeScreen() {
     const [activeTab, setActiveTab] = useState<"jobSeeker" | "referrer">(
         "jobSeeker"
     );
+    const [jobSeekerPosts, setJobSeekerPosts] = useState<JobSeekerPost[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
     const [refreshing, setRefreshing] = useState(false);
     const [filterConfig, setFilterConfig] = useState<FilterConfig>({
         query: "",
@@ -287,6 +142,27 @@ export default function HomeScreen() {
     const [isReferralModalVisible, setReferralModalVisible] = useState(false);
     const [selectedPostForReferral, setSelectedPostForReferral] = useState<JobSeekerPost | null>(null);
 
+    const fetchJobSeekerPosts = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { posts } = await jobSeekerPostService.getJobSeekerPosts();
+            console.log('sdfsdfdfsdfdsfdsfsd',posts);
+            setJobSeekerPosts(posts);
+        } catch (err) {
+            setError("Failed to fetch job seeker posts. Please try again.");
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (activeTab === "jobSeeker") {
+            fetchJobSeekerPosts();
+        }
+    }, [activeTab, fetchJobSeekerPosts]);
+
     const handleOpenReferralModal = (post: JobSeekerPost) => {
         setSelectedPostForReferral(post);
         setReferralModalVisible(true);
@@ -297,16 +173,15 @@ export default function HomeScreen() {
         setSelectedPostForReferral(null);
     };
 
-    // Extract all available categories from posts
+    // This logic needs to be updated once referrer posts are fetched from the backend
     const availableCategories = useMemo(() => {
-        const categories = jobSeekerPosts.map((post) => post.category);
+        const categories = jobSeekerPosts.map((post) => post.title || '');
         return Array.from(new Set(categories)).filter(Boolean);
     }, [jobSeekerPosts]);
 
-    // Extract all available skills from posts
     const availableSkills = useMemo(() => {
         const skills = [
-            ...jobSeekerPosts.flatMap((post) => post.skills),
+            ...jobSeekerPosts.flatMap((post) => post.skills || []),
             ...referrerPosts.flatMap((post) => post.skills || []),
         ];
         return Array.from(new Set(skills)).filter(Boolean);
@@ -314,96 +189,40 @@ export default function HomeScreen() {
 
     const onRefresh = React.useCallback((): void => {
         setRefreshing(true);
-        // In a real app, fetch new data here
-        setTimeout(() => {
-            setRefreshing(false);
-        }, 1500);
-    }, []);
+        if (activeTab === 'jobSeeker') {
+            fetchJobSeekerPosts().finally(() => setRefreshing(false));
+        } else {
+            // Placeholder for refreshing referrer posts
+            setTimeout(() => setRefreshing(false), 1500);
+        }
+    }, [activeTab, fetchJobSeekerPosts]);
 
-    // Filter posts based on the current filter configuration
     const filteredJobSeekerPosts = useMemo(() => {
         return jobSeekerPosts.filter((post) => {
-            // Text search
             if (
                 filterConfig.query &&
                 !(
-                    post.interest
-                        .toLowerCase()
-                        .includes(filterConfig.query.toLowerCase()) ||
-                    post.skills.some((skill) =>
-                        skill
-                            .toLowerCase()
-                            .includes(filterConfig.query.toLowerCase())
-                    ) ||
-                    post.category
-                        ?.toLowerCase()
-                        .includes(filterConfig.query.toLowerCase())
+                    post.interestStatement?.toLowerCase().includes(filterConfig.query.toLowerCase()) ||
+                    post.skills?.some((skill) => skill.toLowerCase().includes(filterConfig.query.toLowerCase())) ||
+                    post.title?.toLowerCase().includes(filterConfig.query.toLowerCase())
                 )
             ) {
                 return false;
             }
-
-            // Category filter
-            if (
-                filterConfig.categories.length > 0 &&
-                !filterConfig.categories.includes(post.category)
-            ) {
+            if (filterConfig.categories.length > 0 && !filterConfig.categories.includes(post.title || '')) {
                 return false;
             }
-
-            // Skills filter
-            if (
-                filterConfig.skills.length > 0 &&
-                !post.skills.some((skill) =>
-                    filterConfig.skills.includes(skill)
-                )
-            ) {
+            if (filterConfig.skills.length > 0 && !post.skills?.some((skill) => filterConfig.skills.includes(skill))) {
                 return false;
             }
-
             return true;
         });
     }, [jobSeekerPosts, filterConfig]);
 
-    // Filter referrer posts
     const filteredReferrerPosts = useMemo(() => {
-        return referrerPosts.filter((post) => {
-            // Text search
-            if (
-                filterConfig.query &&
-                !(
-                    post.description
-                        .toLowerCase()
-                        .includes(filterConfig.query.toLowerCase()) ||
-                    post.role
-                        .toLowerCase()
-                        .includes(filterConfig.query.toLowerCase()) ||
-                    post.company
-                        .toLowerCase()
-                        .includes(filterConfig.query.toLowerCase()) ||
-                    post.skills?.some((skill) =>
-                        skill
-                            .toLowerCase()
-                            .includes(filterConfig.query.toLowerCase())
-                    )
-                )
-            ) {
-                return false;
-            }
-
-            // Skills filter
-            if (
-                filterConfig.skills.length > 0 &&
-                !post.skills?.some((skill) =>
-                    filterConfig.skills.includes(skill)
-                )
-            ) {
-                return false;
-            }
-
-            return true;
-        });
-    }, [referrerPosts, filterConfig]);
+        // This will be empty until referrer posts are fetched
+        return referrerPosts;
+    }, [filterConfig]);
 
     // Sort posts based on the sort option
     const sortPosts = useCallback(
@@ -413,28 +232,16 @@ export default function HomeScreen() {
             switch (filterConfig.sortBy) {
                 case "newest":
                     return sortedPosts.sort((a, b) => {
-                        const dateA = new Date(a.createdAt).getTime();
-                        const dateB = new Date(b.createdAt).getTime();
-                        return dateB - dateA; // Newest first
+                        const dateA = new Date(a.createdAt || '').getTime();
+                        const dateB = new Date(b.createdAt || '').getTime();
+                        return dateB - dateA;
                     });
-
-                case "popular":
-                    // In a real app, this would sort by popularity metrics
-                    // For now, we'll just use a mock implementation
-                    return sortedPosts.sort((a, b) => {
-                        // Mock popularity based on skills count
-                        const popularityA = a.skills?.length || 0;
-                        const popularityB = b.skills?.length || 0;
-                        return popularityB - popularityA;
-                    });
-
                 case "expiring":
                     return sortedPosts.sort((a, b) => {
-                        const expiryA = a.expiresAt;
-                        const expiryB = b.expiresAt;
-                        return expiryA - expiryB; // Soonest expiry first
+                        const expiryA = new Date(a.expiresAt || '').getTime();
+                        const expiryB = new Date(b.expiresAt || '').getTime();
+                        return expiryA - expiryB;
                     });
-
                 default:
                     return sortedPosts;
             }
@@ -455,19 +262,14 @@ export default function HomeScreen() {
 
     // Group job seeker posts by category
     const groupedJobSeekerPosts = useMemo(() => {
-        // Group by category
-        const groupByCategory = sortedJobSeekerPosts.reduce<
-            Record<string, JobSeekerPost[]>
-        >((groups, post) => {
-            const category = post.category || "Uncategorized";
+        const groupByCategory = sortedJobSeekerPosts.reduce<Record<string, JobSeekerPost[]>>((groups, post) => {
+            const category = post.title || "Uncategorized";
             if (!groups[category]) {
                 groups[category] = [];
             }
             groups[category].push(post);
             return groups;
         }, {});
-
-        // Convert to section format
         return Object.entries(groupByCategory).map(([category, posts]) => ({
             title: category,
             data: posts,
@@ -475,26 +277,9 @@ export default function HomeScreen() {
         }));
     }, [sortedJobSeekerPosts]);
 
-    // Group referrer posts by company
     const groupedReferrerPosts = useMemo(() => {
-        // Group by company
-        const groupByCompany = sortedReferrerPosts.reduce<
-            Record<string, ReferrerPost[]>
-        >((groups, post) => {
-            const company = post.company || "Other";
-            if (!groups[company]) {
-                groups[company] = [];
-            }
-            groups[company].push(post);
-            return groups;
-        }, {});
-
-        // Convert to section format
-        return Object.entries(groupByCompany).map(([company, posts]) => ({
-            title: company,
-            data: posts,
-            id: `company-${company}`,
-        }));
+        // This will be empty
+        return [];
     }, [sortedReferrerPosts]);
 
     // Render job seeker posts with grouping
@@ -516,6 +301,10 @@ export default function HomeScreen() {
             emptyMessage="No referrer posts found"
         />
     );
+
+    const isJobSeekerPost = (post: Post): post is JobSeekerPost => {
+        return 'interestStatement' in post;
+    };
 
     return (
         <SafeAreaView
@@ -601,50 +390,62 @@ export default function HomeScreen() {
                 initialConfig={filterConfig}
             />
 
-            <FlatList<Post>
-                data={
-                    activeTab === "jobSeeker" ? sortedJobSeekerPosts : sortedReferrerPosts
-                }
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <PostCard 
-                        post={item} 
-                        onRefer={
-                            item.type === 'Job Seeker' 
-                                ? () => handleOpenReferralModal(item as JobSeekerPost) 
-                                : undefined
-                        }
+            {loading && activeTab === 'jobSeeker' ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                </View>
+            ) : error && activeTab === 'jobSeeker' ? (
+                 <EmptyState>
+                    <FontAwesome
+                        name="exclamation-triangle"
+                        size={50}
+                        color={theme.colors.error}
+                        style={{ opacity: 0.8 }}
                     />
-                )}
-                contentContainerStyle={{ padding: 16, paddingTop: 8 }}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        colors={[theme.colors.primary]}
-                        tintColor={theme.colors.primary}
-                    />
-                }
-                ListEmptyComponent={
-                    <EmptyState>
-                        <FontAwesome
-                            name={
-                                activeTab === "jobSeeker"
-                                    ? "user-circle"
-                                    : "building"
-                            }
-                            size={50}
-                            color={theme.colors.text}
-                            style={{ opacity: 0.5 }}
+                    <EmptyStateText style={{color: theme.colors.error}}>
+                        {error}
+                    </EmptyStateText>
+                </EmptyState>
+            ) : (
+                <FlatList
+                    data={activeTab === "jobSeeker" ? (sortedJobSeekerPosts as Post[]) : (sortedReferrerPosts as Post[])}
+                    keyExtractor={(item) => isJobSeekerPost(item) ? item._id || '' : item.id || ''}
+                    renderItem={({ item }) => (
+                        <PostCard 
+                            post={item} 
+                            onRefer={isJobSeekerPost(item) ? () => handleOpenReferralModal(item) : undefined}
                         />
-                        <EmptyStateText>
-                            {activeTab === "jobSeeker"
-                                ? "No job seeker posts yet. Be the first to post!"
-                                : "No referrer posts available. Check back later or create one!"}
-                        </EmptyStateText>
-                    </EmptyState>
-                }
-            />
+                    )}
+                    contentContainerStyle={{ padding: 16, paddingTop: 8 }}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            colors={[theme.colors.primary]}
+                            tintColor={theme.colors.primary}
+                        />
+                    }
+                    ListEmptyComponent={
+                        <EmptyState>
+                            <FontAwesome
+                                name={
+                                    activeTab === "jobSeeker"
+                                        ? "user-circle"
+                                        : "building"
+                                }
+                                size={50}
+                                color={theme.colors.text}
+                                style={{ opacity: 0.5 }}
+                            />
+                            <EmptyStateText>
+                                {activeTab === "jobSeeker"
+                                    ? "No job seeker posts yet. Be the first to post!"
+                                    : "No referrer posts available. Check back later or create one!"}
+                            </EmptyStateText>
+                        </EmptyState>
+                    }
+                />
+            )}
         </SafeAreaView>
     );
 }

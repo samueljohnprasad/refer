@@ -14,8 +14,7 @@ class ApiService {
   private token: string | null = null;
   
   constructor() {
-    const baseURL =  Platform.OS === 'android' ? 'http://10.0.2.2:5000/api' : Platform.OS === 'ios'
-    ? 'http://192.168.31.5:5000/api' : API_URL;
+    const baseURL = 'http://localhost:5000/api';
     this.instance = axios.create({
       baseURL,
       headers: {
@@ -26,11 +25,10 @@ class ApiService {
     
     this.loadToken();
 
-    
     // Request interceptor for adding auth token
     this.instance.interceptors.request.use(
       (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-        console.log('Adding auth token', this.token);
+        console.log('Making request to:', config.baseURL + config.url);
         // Add authorization header with JWT if available
         if (this.token) {
           console.log("Adding auth token", this.token);
@@ -40,14 +38,19 @@ class ApiService {
         return config;
       },
       (error: AxiosError): Promise<AxiosError> => {
+        console.error('Request interceptor error:', error);
         return Promise.reject(error);
       }
     );
     
     // Response interceptor for handling common errors
     this.instance.interceptors.response.use(
-      (response: AxiosResponse): AxiosResponse => response,
+      (response: AxiosResponse): AxiosResponse => {
+        console.log('Response received:', response.status, response.config.url);
+        return response;
+      },
       (error: AxiosError): Promise<AxiosError> => {
+        console.error('Response error:', error.response?.status, error.message, error.config?.url);
         // Handle 401 Unauthorized responses
         if (error.response && error.response.status === 401) {
           // Could dispatch a logout action or redirect to login

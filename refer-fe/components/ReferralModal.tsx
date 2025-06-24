@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 import { useTheme } from '@/context/ThemeContext';
-import { JobSeekerPost } from './PostCard';
+import { JobSeekerPost } from '@/types/posts';
 import { createReferral } from '@/services/referral.service';
 import Modal from './common/Modal';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -64,7 +64,7 @@ export default function ReferralModal({ visible, onClose, post }: ReferralModalP
         setIsSubmitted(false);
 
         try {
-            await createReferral({ postId: post.id, message: referralMessage });
+            await createReferral({ postId: post._id || '', message: referralMessage });
             setIsSubmitted(true);
 
             setTimeout(() => {

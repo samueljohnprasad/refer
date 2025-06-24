@@ -53,19 +53,28 @@ export class JobSeekerPostController {
   static getJobSeekerPosts = [
     validate(jobSeekerPostQuerySchema, 'query'),
     async (req: Request, res: Response) => {
-      const query = req.query as unknown as JobSeekerPostQueryParams;
-      const userId = req.user?.id; // Optional, for getting user's own posts
-      
-      if (userId) {
-        query.userId = userId;
+      try {
+        const query = req.query as unknown as JobSeekerPostQueryParams;
+        const userId = req.user?.id; // Optional, for getting user's own posts
+        
+        if (userId) {
+          query.userId = userId;
+        }
+        
+        const result = await JobSeekerPostService.getJobSeekerPosts(query);
+        
+        res.json({
+          success: true,
+          ...result,
+        });
+      } catch (error) {
+        console.error('Error in getJobSeekerPosts controller:', error);
+        res.status(500).json({
+          success: false,
+          message: 'Internal server error',
+          error: error instanceof Error ? error.message : 'Unknown error'
+        });
       }
-      
-      const result = await JobSeekerPostService.getJobSeekerPosts(query);
-      
-      res.json({
-        success: true,
-        ...result,
-      });
     },
   ];
 

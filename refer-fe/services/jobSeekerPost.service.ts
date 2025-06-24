@@ -1,24 +1,19 @@
 import api from './api';
+import { JobSeekerPost } from '@/types/posts';
 
-export interface JobSeekerPost {
-  _id: string;
-  user: {
-    _id: string;
-    firstName: string;
-    lastName: string;
-    username: string;
-  };
-  title: string;
-  interestStatement: string;
-  skills: string[];
-  experience: string;
-  education: string;
-  resumeFile?: string;
-  privacyOption: 'Public' | 'Private' | 'Anonymous';
-  expiresAt: string;
-  status: 'active' | 'expired' | 'draft';
-  createdAt: string;
-  updatedAt: string;
+export type { JobSeekerPost };
+
+export interface JobSeekerPostResponse {
+  success: boolean;
+  data: JobSeekerPost;
+}
+
+export interface GetJobSeekerPostsResponse {
+  success: boolean;
+  posts: JobSeekerPost[];
+  page: number;
+  totalPages: number;
+  totalPosts: number;
 }
 
 export interface CreateJobSeekerPostData {
@@ -58,30 +53,22 @@ class JobSeekerPostService {
    * Create a new job seeker post
    */
   async createJobSeekerPost(data: CreateJobSeekerPostData): Promise<JobSeekerPost> {
-    const response = await api.post<{ data: JobSeekerPost }>(`${this.baseUrl}`, data);
-    return response.data;
+    const response = await api.post<JobSeekerPostResponse>(`${this.baseUrl}`, data);
+    return response.data.data;
   }
 
   /**
    * Create a draft job seeker post
    */
   async createDraftJobSeekerPost(data: Partial<CreateJobSeekerPostData>): Promise<JobSeekerPost> {
-    const response = await api.post<{ data: JobSeekerPost }>(`${this.baseUrl}/draft`, data);
-    return response.data;
+    const response = await api.post<JobSeekerPostResponse>(`${this.baseUrl}/draft`, data);
+    return response.data.data;
   }
 
   /**
    * Get job seeker posts with pagination and filters
    */
-  async getJobSeekerPosts(params?: JobSeekerPostQueryParams): Promise<{
-    posts: JobSeekerPost[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      pages: number;
-    };
-  }> {
+  async getJobSeekerPosts(params?: JobSeekerPostQueryParams): Promise<GetJobSeekerPostsResponse> {
     const queryParams = new URLSearchParams();
     
     if (params?.page) queryParams.append('page', params.page.toString());
@@ -92,8 +79,8 @@ class JobSeekerPostService {
       params.skills.forEach(skill => queryParams.append('skills', skill));
     }
 
-    const response = await api.get(`${this.baseUrl}?${queryParams.toString()}`);
-    return response as any;
+    const response = await api.get<GetJobSeekerPostsResponse>(`${this.baseUrl}?${queryParams.toString()}`);
+    return response;
   }
 
   /**
