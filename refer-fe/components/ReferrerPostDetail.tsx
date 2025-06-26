@@ -23,6 +23,8 @@ import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../context/ThemeContext";
 import Modal from "./common/Modal";
 import { ReferrerPost } from "@/types/posts";
+import AnimatedCheckmark from "./common/AnimatedCheckmark";
+import { useToast } from "../context/ToastContext";
 
 interface ReferrerPostDetailProps {
     visible: boolean;
@@ -38,9 +40,17 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
     onApply,
 }) => {
     const { theme } = useTheme();
+    const { showToast } = useToast();
     const [isApplying, setIsApplying] = useState<boolean>(false);
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
     const [isSaved, setIsSaved] = useState<boolean>(false);
+    
+    // Application process steps
+    const [applicationSteps, setApplicationSteps] = useState({
+        applicationReceived: false,
+        referrerNotified: false,
+        resumeShared: false
+    });
     
     // Animation values
     const loadingProgress = useSharedValue(0);
@@ -82,30 +92,50 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
     const handleApply = (): void => {
         applyButtonScale.value = withSequence(
             withTiming(0.95, { duration: 100 }),
-            withTiming(1, { duration: 100 })
+            withSpring(1)
         );
         
         setIsApplying(true);
         setIsSubmitted(false);
         
-        // Simulate API call
+        // Simulate application process with step-by-step animations
+        // Step 1: Application received
         setTimeout(() => {
-            setIsSubmitted(true);
-
-            // Show success for a moment before closing
+            setApplicationSteps(prev => ({ ...prev, applicationReceived: true }));
+            showToast('Application received', 'success', 1500);
+            
+            // Step 2: Referrer notified
             setTimeout(() => {
-            Alert.alert(
-                "Application Submitted",
-                    "Your application has been sent. The referrer will be notified."
-                );
-                onClose();
-                // Reset states after closing
+                setApplicationSteps(prev => ({ ...prev, referrerNotified: true }));
+                showToast('Referrer has been notified', 'info', 1500);
+                
+                // Step 3: Resume shared
                 setTimeout(() => {
-                    setIsApplying(false);
-                    setIsSubmitted(false);
-                }, 300)
-            }, 1200);
-        }, 2000);
+                    setApplicationSteps(prev => ({ ...prev, resumeShared: true }));
+                    setIsSubmitted(true);
+                    showToast('Resume shared with hiring team', 'success', 1500);
+                    
+                    // Show success for a moment before closing
+                    setTimeout(() => {
+                        Alert.alert(
+                            "Application Submitted",
+                            "Your application has been sent and the referrer has been notified."
+                        );
+                        onClose();
+                        // Reset states after closing
+                        setTimeout(() => {
+                            setIsApplying(false);
+                            setIsSubmitted(false);
+                            setApplicationSteps({
+                                applicationReceived: false,
+                                referrerNotified: false,
+                                resumeShared: false
+                            });
+                        }, 300);
+                    }, 1200);
+                }, 1500);
+            }, 1500);
+        }, 1000);
     };
 
     // Animated styles
@@ -133,12 +163,7 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
             width: `${interpolate(loadingProgress.value, [0, 1], [0, 100])}%`,
     }));
     
-    const handleSharePress = () => {
-        shareButtonScale.value = withSequence(
-            withTiming(0.9, { duration: 100 }),
-            withTiming(1, { duration: 100 })
-        );
-    };
+    // Removed duplicate handleSharePress function since we have a better implementation below
     
     const handleSavePress = () => {
         saveButtonScale.value = withSequence(
@@ -146,7 +171,27 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
             withSpring(1)
         );
         setIsSaved(!isSaved);
+        
+        // Show toast notification with appropriate message
+        if (!isSaved) {
+            showToast('Post saved to your favorites', 'success', 2000, 'bookmark');
+        } else {
+            showToast('Post removed from your favorites', 'info', 2000, 'bookmark-o');
+        }
+        
         // In a real app, you would also make an API call here to save the post
+    };
+    
+    const handleSharePress = () => {
+        shareButtonScale.value = withSequence(
+            withTiming(0.9, { duration: 100 }),
+            withSpring(1)
+        );
+        
+        // Show toast for share action
+        showToast('Sharing options opened', 'info', 1500, 'share');
+        
+        // In a real app, you would open a share dialog here
     };
 
     return (
@@ -229,38 +274,36 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
                         <Section>
                             <SectionTitle>What to Expect</SectionTitle>
                             <ExpectationCard>
+                                {/* Application process with animated checkmarks */}
                                 <ExpectationItem>
-                                    <ExpectationIcon>
-                                        <FontAwesome
-                                            name="check"
-                                            size={14}
-                                            color={theme.colors.success}
-                                        />
-                                    </ExpectationIcon>
+                                    <AnimatedCheckmark 
+                                        completed={isApplying && applicationSteps.applicationReceived} 
+                                        size={24} 
+                                        delay={500}
+                                        color={theme.colors.success} 
+                                    />
                                     <ExpectationText>
                                         Direct referral to hiring team
                                     </ExpectationText>
                                 </ExpectationItem>
                                 <ExpectationItem>
-                                    <ExpectationIcon>
-                                        <FontAwesome
-                                            name="check"
-                                            size={14}
-                                            color={theme.colors.success}
-                                        />
-                                    </ExpectationIcon>
+                                    <AnimatedCheckmark 
+                                        completed={isApplying && applicationSteps.referrerNotified} 
+                                        size={24} 
+                                        delay={500}
+                                        color={theme.colors.success} 
+                                    />
                                     <ExpectationText>
                                         Resume will be reviewed within 48 hours
                                     </ExpectationText>
                                 </ExpectationItem>
                                 <ExpectationItem>
-                                    <ExpectationIcon>
-                                        <FontAwesome
-                                            name="check"
-                                            size={14}
-                                            color={theme.colors.success}
-                                        />
-                                    </ExpectationIcon>
+                                    <AnimatedCheckmark 
+                                        completed={isApplying && applicationSteps.resumeShared} 
+                                        size={24} 
+                                        delay={500}
+                                        color={theme.colors.success} 
+                                    />
                                     <ExpectationText>
                                         Chat directly with the referrer
                                     </ExpectationText>
@@ -472,18 +515,11 @@ const ExpectationCard = styled.View`
 const ExpectationItem = styled.View`
     flex-direction: row;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    padding-left: 8px;
 `;
 
-const ExpectationIcon = styled.View`
-    width: 24px;
-    height: 24px;
-    border-radius: 12px;
-    background-color: ${(props) => props.theme.colors.success + "20"};
-    justify-content: center;
-    align-items: center;
-    margin-right: 12px;
-`;
+
 
 const ExpectationText = styled.Text`
     font-size: 15px;

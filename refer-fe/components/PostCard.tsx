@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Image } from "react-native";
+import DoubleTapWrapper from "./common/DoubleTapWrapper";
+import { useToast } from "../context/ToastContext";
 import styled from 'styled-components/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useTheme } from '../context/ThemeContext';
 import { ThemeInterface } from '../constants/theme';
 import { useRouter } from 'expo-router';
-import Reanimated, { useSharedValue, withSequence, withSpring } from 'react-native-reanimated';
+import Reanimated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSequence,
+  withSpring
+} from 'react-native-reanimated';
 import { Post, JobSeekerPost, ReferrerPost } from '@/types/posts';
 
 interface PostCardProps {
@@ -14,6 +22,7 @@ interface PostCardProps {
   onRefer?: (post: JobSeekerPost) => void;
 }
 
+// Revert back to TouchableOpacity since wrapping with DoubleTapWrapper below
 const Card = styled.TouchableOpacity`
   background-color: ${props => props.theme.colors.card};
   border-radius: ${props => props.theme.borderRadius.lg}px;
@@ -252,8 +261,10 @@ const isReferrerPost = (post: Post): post is ReferrerPost => {
 export default function PostCard({ post, onPress, onRefer }: PostCardProps) {
   const { theme } = useTheme();
   const router = useRouter();
-  const [isReferrerDetailVisible, setReferrerDetailVisible] = useState(false);
+  const [referrerDetailVisible, setReferrerDetailVisible] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const saveAnimation = useSharedValue(1);
+  const { showToast } = useToast();
   
   const getTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -272,8 +283,36 @@ export default function PostCard({ post, onPress, onRefer }: PostCardProps) {
     return `${Math.floor(seconds)} seconds ago`;
   };
 
-  const handleSavePress = () => {
+  const handleDetailViewPress = () => {
     router.push(`/post/${(post as any)._id}`);
+  };
+  
+  const handleSavePress = () => {
+    // Animate the save button
+    saveAnimation.value = withSequence(
+      withTiming(0.8, { duration: 100 }),
+      withSpring(1, { damping: 15 })
+    );
+    
+    // Toggle saved state
+    setIsSaved((prev) => !prev);
+    
+    // Show toast notification with appropriate message
+    if (!isSaved) {
+      showToast(
+        'Post saved to your favorites', 
+        'success', 
+        2500, 
+        'bookmark'
+      );
+    } else {
+      showToast(
+        'Post removed from your favorites', 
+        'info', 
+        2500, 
+        'bookmark-o'
+      );
+    }
   };
 
   const handleDetailPress = () => {
@@ -336,9 +375,23 @@ export default function PostCard({ post, onPress, onRefer }: PostCardProps) {
     );
   };
 
+  const saveButtonStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: saveAnimation.value }]
+  }));
+
+  const buttonStyle = useAnimatedStyle(() => ({
+    // Add styles here
+  }));
+
   return (
     <Reanimated.View style={[{ transform: [{ scale: saveAnimation }] }]}>
-      <Card onPress={onPress} activeOpacity={0.8}>
+      <DoubleTapWrapper
+        onSingleTap={onPress}
+        onDoubleTap={handleSavePress}
+        feedbackEnabled={!isSaved}
+        style={{ width: '100%' }}
+      >
+        <Card onPress={onPress} activeOpacity={0.8}>
         <HeaderContainer>
           <TypeBadge isJobSeeker={isJobSeekerPost(post)}>
             <TypeText>
@@ -368,11 +421,18 @@ export default function PostCard({ post, onPress, onRefer }: PostCardProps) {
             )}
           </FooterButtonsContainer>
           
-          <TouchableOpacity onPress={handleSavePress}>
-            <FontAwesome name="bookmark-o" size={22} color={theme.colors.text} />
+                    <TouchableOpacity onPress={handleSavePress}>
+            <Reanimated.View style={saveButtonStyle}>
+              <FontAwesome 
+                name={isSaved ? "bookmark" : "bookmark-o"} 
+                size={22} 
+                color={theme.colors.text} 
+              />
+            </Reanimated.View>
           </TouchableOpacity>
         </FooterContainer>
       </Card>
+      </DoubleTapWrapper>
     </Reanimated.View>
   );
 }

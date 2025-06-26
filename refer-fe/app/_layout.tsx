@@ -17,6 +17,7 @@ import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import ThemeToggle from "@/components/Toggle/ThemeToggle";
 import store, { persistor } from "@/store";
 import { logout } from "@/store/authSlice";
+import { ToastProvider } from "../context/ToastContext";
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -65,7 +66,9 @@ export default function RootLayout() {
                 persistor={persistor}
             >
                 <ThemeProvider>
-                    <RootLayoutNav />
+                    <ToastProvider>
+                        <RootLayoutNav />
+                    </ToastProvider>
                 </ThemeProvider>
             </PersistGate>
         </Provider>
