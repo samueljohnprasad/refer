@@ -15,6 +15,7 @@ import Reanimated, {
   withSpring
 } from 'react-native-reanimated';
 import { Post, JobSeekerPost, ReferrerPost } from '@/types/posts';
+import ResponsiveText from "./common/ResponsiveText";
 
 interface PostCardProps {
   post: Post;
@@ -368,9 +369,31 @@ export default function PostCard({ post, onPress, onRefer }: PostCardProps) {
 
     return (
       <ContentContainer>
-        <CompanyText>{post.company}</CompanyText>
-        <RoleText>{post.role}</RoleText>
-        <DescriptionText>{post.description}</DescriptionText>
+                <ResponsiveText 
+                  content={post.company || ''}
+                  baseSize={18}
+                  minSize={14}
+                  maxSize={20}
+                  bold
+                  numberOfLines={1}
+                  customStyle={{ marginBottom: 2 }}
+                />
+                <ResponsiveText 
+                  content={post.role || ''}
+                  baseSize={16}
+                  minSize={13}
+                  maxSize={18}
+                  numberOfLines={1}
+                  customStyle={{ color: theme.colors.text, marginBottom: 6 }}
+                />
+        <ResponsiveText 
+                  content={post.description || ''}
+                  baseSize={14}
+                  minSize={12}
+                  scaleRatio={0.1}
+                  numberOfLines={2}
+                  customStyle={{ color: theme.colors.secondary, marginTop: 4, opacity: 0.8 }}
+                />
       </ContentContainer>
     );
   };

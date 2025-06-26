@@ -24,6 +24,8 @@ import { useTheme } from "../context/ThemeContext";
 import Modal from "./common/Modal";
 import { ReferrerPost } from "@/types/posts";
 import AnimatedCheckmark from "./common/AnimatedCheckmark";
+import ResponsiveText from "./common/ResponsiveText";
+import StepProgressTracker, { Step } from "./common/StepProgressTracker";
 import { useToast } from "../context/ToastContext";
 
 interface ReferrerPostDetailProps {
@@ -46,11 +48,36 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
     const [isSaved, setIsSaved] = useState<boolean>(false);
     
     // Application process steps
-    const [applicationSteps, setApplicationSteps] = useState({
-        applicationReceived: false,
-        referrerNotified: false,
-        resumeShared: false
-    });
+    const [applicationSteps, setApplicationSteps] = useState([
+        { 
+            id: "application", 
+            title: "Application Received", 
+            description: "Your application has been submitted successfully", 
+            completed: false,
+            icon: "paper-plane" 
+        },
+        { 
+            id: "referrer", 
+            title: "Referrer Notified", 
+            description: "The referrer has been notified of your interest", 
+            completed: false,
+            icon: "bell" 
+        },
+        { 
+            id: "resume", 
+            title: "Resume Shared", 
+            description: "Your resume has been shared with the hiring team", 
+            completed: false,
+            icon: "file-text-o" 
+        },
+        { 
+            id: "interview", 
+            title: "Ready for Interview", 
+            description: "You're now in the queue for interviews", 
+            completed: false,
+            icon: "calendar-check-o" 
+        }
+    ]);
     
     // Animation values
     const loadingProgress = useSharedValue(0);
@@ -101,38 +128,49 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
         // Simulate application process with step-by-step animations
         // Step 1: Application received
         setTimeout(() => {
-            setApplicationSteps(prev => ({ ...prev, applicationReceived: true }));
+            setApplicationSteps(prev => prev.map((step, index) => 
+                index === 0 ? { ...step, completed: true } : step
+            ));
             showToast('Application received', 'success', 1500);
             
             // Step 2: Referrer notified
             setTimeout(() => {
-                setApplicationSteps(prev => ({ ...prev, referrerNotified: true }));
+                setApplicationSteps(prev => prev.map((step, index) => 
+                    index === 1 ? { ...step, completed: true } : step
+                ));
                 showToast('Referrer has been notified', 'info', 1500);
                 
                 // Step 3: Resume shared
                 setTimeout(() => {
-                    setApplicationSteps(prev => ({ ...prev, resumeShared: true }));
-                    setIsSubmitted(true);
+                    setApplicationSteps(prev => prev.map((step, index) => 
+                        index === 2 ? { ...step, completed: true } : step
+                    ));
                     showToast('Resume shared with hiring team', 'success', 1500);
                     
-                    // Show success for a moment before closing
+                    // Step 4: Ready for interview
                     setTimeout(() => {
-                        Alert.alert(
-                            "Application Submitted",
-                            "Your application has been sent and the referrer has been notified."
-                        );
-                        onClose();
-                        // Reset states after closing
+                        setApplicationSteps(prev => prev.map((step, index) => 
+                            index === 3 ? { ...step, completed: true } : step
+                        ));
+                        setIsSubmitted(true);
+                        showToast('Ready for interviews!', 'success', 1500);
+                        
+                        // Show success for a moment before closing
                         setTimeout(() => {
-                            setIsApplying(false);
-                            setIsSubmitted(false);
-                            setApplicationSteps({
-                                applicationReceived: false,
-                                referrerNotified: false,
-                                resumeShared: false
-                            });
-                        }, 300);
-                    }, 1200);
+                            Alert.alert(
+                                "Application Submitted",
+                                "Your application has been processed and you're now in the interview queue!"
+                            );
+                            
+                            // Reset states after closing
+                            setTimeout(() => {
+                                setIsApplying(false);
+                                setIsSubmitted(false);
+                                setApplicationSteps(prev => prev.map(step => ({ ...step, completed: false })));
+                                onClose();
+                            }, 300);
+                        }, 1500);
+                    }, 1500);
                 }, 1500);
             }, 1500);
         }, 1000);
@@ -231,14 +269,28 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
                                         color={theme.colors.primary}
                                     />
                                 </CompanyIconContainer>
-                                <CompanyName>{post.company}</CompanyName>
+                                <ResponsiveText
+                                    content={post.company || ''}
+                                    baseSize={16}
+                                    minSize={14}
+                                    numberOfLines={1}
+                                    customStyle={{ color: theme.colors.primary, marginBottom: 8 }}
+                                />
                             </CompanyContainer>
                         </Section>
 
                         <Section>
                             <SectionTitle>Role</SectionTitle>
                             <RoleContainer>
-                                <RoleText>{post.role}</RoleText>
+                                <ResponsiveText
+                                    content={post.role || ''}
+                                    baseSize={18}
+                                    minSize={15}
+                                    maxSize={22}
+                                    bold
+                                    numberOfLines={2}
+                                    customStyle={{ marginBottom: 8 }}
+                                />
                                 <Reanimated.View style={[{
                                     backgroundColor: post.status.toLowerCase() === "active" 
                                         ? theme.colors.success 
@@ -267,47 +319,28 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
                         <Section>
                             <SectionTitle>Description</SectionTitle>
                             <DescriptionText>
-                                {post.description}
+                                <ResponsiveText
+                                    content={post.description || ''}
+                                    baseSize={15}
+                                    minSize={13}
+                                    scaleRatio={0.05}
+                                    customStyle={{ lineHeight: 22, marginTop: 4 }}
+                                />
                             </DescriptionText>
                         </Section>
 
                         <Section>
-                            <SectionTitle>What to Expect</SectionTitle>
-                            <ExpectationCard>
-                                {/* Application process with animated checkmarks */}
-                                <ExpectationItem>
-                                    <AnimatedCheckmark 
-                                        completed={isApplying && applicationSteps.applicationReceived} 
-                                        size={24} 
-                                        delay={500}
-                                        color={theme.colors.success} 
-                                    />
-                                    <ExpectationText>
-                                        Direct referral to hiring team
-                                    </ExpectationText>
-                                </ExpectationItem>
-                                <ExpectationItem>
-                                    <AnimatedCheckmark 
-                                        completed={isApplying && applicationSteps.referrerNotified} 
-                                        size={24} 
-                                        delay={500}
-                                        color={theme.colors.success} 
-                                    />
-                                    <ExpectationText>
-                                        Resume will be reviewed within 48 hours
-                                    </ExpectationText>
-                                </ExpectationItem>
-                                <ExpectationItem>
-                                    <AnimatedCheckmark 
-                                        completed={isApplying && applicationSteps.resumeShared} 
-                                        size={24} 
-                                        delay={500}
-                                        color={theme.colors.success} 
-                                    />
-                                    <ExpectationText>
-                                        Chat directly with the referrer
-                                    </ExpectationText>
-                                </ExpectationItem>
+                            <SectionTitle>Application Process</SectionTitle>
+                            <ExpectationCard style={{ padding: 16 }}>
+                                {/* Application process with StepProgressTracker */}
+                                <StepProgressTracker
+                                    steps={applicationSteps}
+                                    activeColor={theme.colors.success}
+                                    inactiveColor={theme.colors.border}
+                                    showConnectingLines={true}
+                                    animated={isApplying}
+                                    stepDelay={500}
+                                />
                             </ExpectationCard>
                         </Section>
 
