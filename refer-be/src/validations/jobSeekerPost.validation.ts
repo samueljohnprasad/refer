@@ -57,9 +57,19 @@ export const jobSeekerPostQuerySchema = Joi.object({
   limit: Joi.number().integer().min(1).max(100).default(10),
   status: Joi.string().valid('active', 'expired', 'draft'),
   privacyOption: Joi.string().valid('Public', 'Private', 'Anonymous'),
+  query: Joi.string().allow('').optional(),
+  categories: Joi.alternatives().try(
+    Joi.array().items(Joi.string()),
+    Joi.string().allow('').custom((value, helpers) => {
+      if (typeof value === 'string') {
+        return value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+      }
+      return value;
+    })
+  ).optional(),
   skills: Joi.alternatives().try(
     Joi.array().items(Joi.string()),
-    Joi.string().custom((value, helpers) => {
+    Joi.string().allow('').custom((value, helpers) => {
       if (typeof value === 'string') {
         return value.split(',').map(s => s.trim()).filter(s => s.length > 0);
       }
@@ -67,4 +77,5 @@ export const jobSeekerPostQuerySchema = Joi.object({
     })
   ).optional(),
   userId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/),
+  sortBy: Joi.string().valid('newest', 'popular', 'expiring'),
 }); 

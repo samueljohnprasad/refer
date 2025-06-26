@@ -44,6 +44,7 @@ export interface JobSeekerPostQueryParams {
   status?: 'active' | 'expired' | 'draft';
   privacyOption?: 'Public' | 'Private' | 'Anonymous';
   skills?: string[];
+  sortBy?: 'newest' | 'popular' | 'expiring';
 }
 
 class JobSeekerPostService {
@@ -54,7 +55,7 @@ class JobSeekerPostService {
    */
   async createJobSeekerPost(data: CreateJobSeekerPostData): Promise<JobSeekerPost> {
     const response = await api.post<JobSeekerPostResponse>(`${this.baseUrl}`, data);
-    return response.data.data;
+    return response.data;
   }
 
   /**
@@ -62,7 +63,7 @@ class JobSeekerPostService {
    */
   async createDraftJobSeekerPost(data: Partial<CreateJobSeekerPostData>): Promise<JobSeekerPost> {
     const response = await api.post<JobSeekerPostResponse>(`${this.baseUrl}/draft`, data);
-    return response.data.data;
+    return response.data;
   }
 
   /**
@@ -78,6 +79,7 @@ class JobSeekerPostService {
     if (params?.skills) {
       params.skills.forEach(skill => queryParams.append('skills', skill));
     }
+    if (params?.sortBy) queryParams.append('sortBy', params.sortBy);
 
     const response = await api.get<GetJobSeekerPostsResponse>(`${this.baseUrl}?${queryParams.toString()}`);
     return response;

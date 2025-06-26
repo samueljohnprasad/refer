@@ -1,6 +1,6 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
+import { Link, Tabs, useRouter } from 'expo-router';
 import { Pressable, Text, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '../../context/ThemeContext';
@@ -9,6 +9,8 @@ import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { logout } from '@/store/authSlice';
 import { useDispatch } from 'react-redux';
 import { useLayoutStyles } from '../_layout';
+import ReferNetHeader from '@/components/ReferNetHeader';
+import { useNotifications } from '@/hooks/useNotifications';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -20,6 +22,15 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const { theme, isDarkMode } = useTheme();
+  const router = useRouter();
+  const { unreadCount } = useNotifications();
+
+  const handleBell = () => {
+    router.push('/notifications');
+  };
+  const handleInfo = () => {
+    router.push('/modal');
+  };
 
   return (
     <Tabs
@@ -29,33 +40,19 @@ export default function TabLayout() {
         tabBarStyle: { backgroundColor: theme.colors.card },
         headerStyle: { backgroundColor: theme.colors.card },
         headerTintColor: theme.colors.text,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
+        headerShown: true,
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerRight: () => (
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
-             
-              <ThemeToggle showLabel={false} />
-              <Link href="/modal" asChild>
-                <Pressable>
-                  {({ pressed }) => (
-                    <FontAwesome
-                      name="info-circle"
-                      size={25}
-                      color={theme.colors.text}
-                      style={{ marginLeft: 15, opacity: pressed ? 0.5 : 1 }}
-                    />
-                  )}
-                </Pressable>
-              </Link>
-            </View>
+          headerTitle: () => (
+            <ReferNetHeader
+              onBell={handleBell}
+              onInfo={handleInfo}
+              unreadCount={unreadCount}
+            />
           ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
       <Tabs.Screen

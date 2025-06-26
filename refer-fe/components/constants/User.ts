@@ -7,5 +7,4 @@ export enum AuthTab {
 export enum UserRole {
   JobSeeker = 'Job Seeker',
   Referrer = 'Referrer',
-  Both = 'Both'
 }

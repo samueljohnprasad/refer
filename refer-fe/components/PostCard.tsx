@@ -292,23 +292,21 @@ export default function PostCard({ post, onPress, onRefer }: PostCardProps) {
 
     return (
       <ContentContainer>
-        <RoleText>{post.title}</RoleText>
-        <InterestText>"{post.interestStatement}"</InterestText>
-        
-        <Divider />
-        
-        <UserContainer>
+         <UserContainer>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <FontAwesome name="user-circle" size={18} color={theme.colors.text} style={{ opacity: 0.8 }} />
             <UserText style={{ marginLeft: 8 }}>
               {post.privacy === 'anonymous' ? 'Anonymous User' : `${post.user?.firstName} ${post.user?.lastName}`}
             </UserText>
           </View>
-          <PrivacyText>
-            <FontAwesome name="lock" size={12} style={{ marginRight: 4 }}/> {post?.privacy?.charAt(0).toUpperCase() + (post?.privacy?.slice(1) || '')}
-          </PrivacyText>
         </UserContainer>
 
+        <Divider />
+
+        <RoleText>{post.title}</RoleText>
+        <InterestText>"{post.interestStatement}"</InterestText>
+      
+        
         <SkillsContainer>
           {post?.skills?.slice(0, 4).map((skill, index) => (
             <SkillBadge key={index} index={index}>

@@ -21,8 +21,8 @@ import Reanimated, {
 import styled from "styled-components/native";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../context/ThemeContext";
-import { ReferrerPost } from "./PostCard";
 import Modal from "./common/Modal";
+import { ReferrerPost } from "@/types/posts";
 
 interface ReferrerPostDetailProps {
     visible: boolean;
@@ -54,7 +54,7 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
     if (!post) return null;
 
     const daysLeft = post.expiresAt
-        ? Math.ceil((post.expiresAt - Date.now()) / (1000 * 60 * 60 * 24))
+        ? Math.ceil((new Date(post.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
         : null;
         
     useEffect(() => {
@@ -94,8 +94,8 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
 
             // Show success for a moment before closing
             setTimeout(() => {
-                Alert.alert(
-                    "Application Submitted",
+            Alert.alert(
+                "Application Submitted",
                     "Your application has been sent. The referrer will be notified."
                 );
                 onClose();
@@ -110,27 +110,27 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
 
     // Animated styles
     const userInfoStyle = useAnimatedStyle(() => ({
-        opacity: userInfoOpacity.value
+            opacity: userInfoOpacity.value
     }));
     
     const statusBadgeStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: pulseAnim.value }]
+            transform: [{ scale: pulseAnim.value }]
     }));
     
     const applyButtonStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: applyButtonScale.value }]
+            transform: [{ scale: applyButtonScale.value }]
     }));
     
     const shareButtonStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: shareButtonScale.value }]
+            transform: [{ scale: shareButtonScale.value }]
     }));
     
     const saveButtonStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: saveButtonScale.value }]
+            transform: [{ scale: saveButtonScale.value }]
     }));
     
     const progressStyle = useAnimatedStyle(() => ({
-        width: `${interpolate(loadingProgress.value, [0, 1], [0, 100])}%`,
+            width: `${interpolate(loadingProgress.value, [0, 1], [0, 100])}%`,
     }));
     
     const handleSharePress = () => {
@@ -155,157 +155,157 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
             onClose={onClose}
             title="Referrer Post"
         >
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <Reanimated.View style={[{
-                    flexDirection: 'row' as const,
-                    alignItems: 'center' as const,
-                    marginBottom: 16,
-                }, userInfoStyle]}>
-                    <UserAvatar>
-                        <FontAwesome
-                            name="user"
-                            size={26}
-                            color={theme.colors.primary}
-                        />
-                    </UserAvatar>
-                    <UserInfoContent>
-                        <UserName>{post.user}</UserName>
-                        <PostTime>Posted on {new Date(post.createdAt).toLocaleDateString()}</PostTime>
-                    </UserInfoContent>
-                </Reanimated.View>
-
-                <Divider />
-
-                <Section>
-                    <SectionTitle>Company</SectionTitle>
-                    <CompanyContainer>
-                        <CompanyIconContainer>
-                            <FontAwesome
-                                name="building"
-                                size={20}
-                                color={theme.colors.primary}
-                            />
-                        </CompanyIconContainer>
-                        <CompanyName>{post.company}</CompanyName>
-                    </CompanyContainer>
-                </Section>
-
-                <Section>
-                    <SectionTitle>Role</SectionTitle>
-                    <RoleContainer>
-                        <RoleText>{post.role}</RoleText>
+                    <ScrollView showsVerticalScrollIndicator={false}>
                         <Reanimated.View style={[{
-                            backgroundColor: post.status.toLowerCase() === "active" 
-                                ? theme.colors.success 
-                                : theme.colors.warning,
-                            paddingVertical: 6,
-                            paddingHorizontal: 10,
-                            borderRadius: 16,
                             flexDirection: 'row' as const,
                             alignItems: 'center' as const,
-                        }, statusBadgeStyle]}>
-                            <FontAwesome
-                                name={
-                                    post.status.toLowerCase() ===
-                                    "active"
-                                        ? "check-circle"
-                                        : "clock-o"
-                                }
-                                size={14}
-                                color="white"
-                            />
-                            <StatusText>{post.status}</StatusText>
+                            marginBottom: 16,
+                        }, userInfoStyle]}>
+                            <UserAvatar>
+                                <FontAwesome
+                                    name="user"
+                                    size={26}
+                                    color={theme.colors.primary}
+                                />
+                            </UserAvatar>
+                            <UserInfoContent>
+                                <UserName>{post.user}</UserName>
+                        <PostTime>Posted on {new Date(post.createdAt).toLocaleDateString()}</PostTime>
+                            </UserInfoContent>
                         </Reanimated.View>
-                    </RoleContainer>
-                </Section>
 
-                <Section>
-                    <SectionTitle>Description</SectionTitle>
-                    <DescriptionText>
-                        {post.description}
-                    </DescriptionText>
-                </Section>
+                        <Divider />
 
-                <Section>
-                    <SectionTitle>What to Expect</SectionTitle>
-                    <ExpectationCard>
-                        <ExpectationItem>
-                            <ExpectationIcon>
+                        <Section>
+                            <SectionTitle>Company</SectionTitle>
+                            <CompanyContainer>
+                                <CompanyIconContainer>
+                                    <FontAwesome
+                                        name="building"
+                                        size={20}
+                                        color={theme.colors.primary}
+                                    />
+                                </CompanyIconContainer>
+                                <CompanyName>{post.company}</CompanyName>
+                            </CompanyContainer>
+                        </Section>
+
+                        <Section>
+                            <SectionTitle>Role</SectionTitle>
+                            <RoleContainer>
+                                <RoleText>{post.role}</RoleText>
+                                <Reanimated.View style={[{
+                                    backgroundColor: post.status.toLowerCase() === "active" 
+                                        ? theme.colors.success 
+                                        : theme.colors.warning,
+                                    paddingVertical: 6,
+                                    paddingHorizontal: 10,
+                                    borderRadius: 16,
+                                    flexDirection: 'row' as const,
+                                    alignItems: 'center' as const,
+                                }, statusBadgeStyle]}>
+                                    <FontAwesome
+                                        name={
+                                            post.status.toLowerCase() ===
+                                            "active"
+                                                ? "check-circle"
+                                                : "clock-o"
+                                        }
+                                        size={14}
+                                        color="white"
+                                    />
+                                    <StatusText>{post.status}</StatusText>
+                                </Reanimated.View>
+                            </RoleContainer>
+                        </Section>
+
+                        <Section>
+                            <SectionTitle>Description</SectionTitle>
+                            <DescriptionText>
+                                {post.description}
+                            </DescriptionText>
+                        </Section>
+
+                        <Section>
+                            <SectionTitle>What to Expect</SectionTitle>
+                            <ExpectationCard>
+                                <ExpectationItem>
+                                    <ExpectationIcon>
+                                        <FontAwesome
+                                            name="check"
+                                            size={14}
+                                            color={theme.colors.success}
+                                        />
+                                    </ExpectationIcon>
+                                    <ExpectationText>
+                                        Direct referral to hiring team
+                                    </ExpectationText>
+                                </ExpectationItem>
+                                <ExpectationItem>
+                                    <ExpectationIcon>
+                                        <FontAwesome
+                                            name="check"
+                                            size={14}
+                                            color={theme.colors.success}
+                                        />
+                                    </ExpectationIcon>
+                                    <ExpectationText>
+                                        Resume will be reviewed within 48 hours
+                                    </ExpectationText>
+                                </ExpectationItem>
+                                <ExpectationItem>
+                                    <ExpectationIcon>
+                                        <FontAwesome
+                                            name="check"
+                                            size={14}
+                                            color={theme.colors.success}
+                                        />
+                                    </ExpectationIcon>
+                                    <ExpectationText>
+                                        Chat directly with the referrer
+                                    </ExpectationText>
+                                </ExpectationItem>
+                            </ExpectationCard>
+                        </Section>
+
+                        <Section>
+                            <SectionTitle>Expiration</SectionTitle>
+                            <ExpiryInfoCard
+                                isExpiringSoon={
+                                    daysLeft !== null && daysLeft <= 7
+                                }
+                            >
                                 <FontAwesome
-                                    name="check"
-                                    size={14}
-                                    color={theme.colors.success}
+                                    name="calendar"
+                                    size={16}
+                                    color={
+                                        daysLeft && daysLeft <= 7
+                                            ? theme.colors.error
+                                            : theme.colors.primary
+                                    }
                                 />
-                            </ExpectationIcon>
-                            <ExpectationText>
-                                Direct referral to hiring team
-                            </ExpectationText>
-                        </ExpectationItem>
-                        <ExpectationItem>
-                            <ExpectationIcon>
-                                <FontAwesome
-                                    name="check"
-                                    size={14}
-                                    color={theme.colors.success}
-                                />
-                            </ExpectationIcon>
-                            <ExpectationText>
-                                Resume will be reviewed within 48 hours
-                            </ExpectationText>
-                        </ExpectationItem>
-                        <ExpectationItem>
-                            <ExpectationIcon>
-                                <FontAwesome
-                                    name="check"
-                                    size={14}
-                                    color={theme.colors.success}
-                                />
-                            </ExpectationIcon>
-                            <ExpectationText>
-                                Chat directly with the referrer
-                            </ExpectationText>
-                        </ExpectationItem>
-                    </ExpectationCard>
-                </Section>
+                                <ExpiryText
+                                    isExpiringSoon={
+                                        daysLeft !== null && daysLeft <= 7
+                                    }
+                                >
+                                    {daysLeft !== null
+                                        ? `Expires in ${daysLeft} day${
+                                              daysLeft === 1 ? "" : "s"
+                                          }`
+                                        : "No expiration set"}
+                                </ExpiryText>
+                            </ExpiryInfoCard>
+                        </Section>
 
-                <Section>
-                    <SectionTitle>Expiration</SectionTitle>
-                    <ExpiryInfoCard
-                        isExpiringSoon={
-                            daysLeft !== null && daysLeft <= 7
-                        }
-                    >
-                        <FontAwesome
-                            name="calendar"
-                            size={16}
-                            color={
-                                daysLeft && daysLeft <= 7
-                                    ? theme.colors.error
-                                    : theme.colors.primary
-                            }
-                        />
-                        <ExpiryText
-                            isExpiringSoon={
-                                daysLeft !== null && daysLeft <= 7
-                            }
-                        >
-                            {daysLeft !== null
-                                ? `Expires in ${daysLeft} day${
-                                      daysLeft === 1 ? "" : "s"
-                                  }`
-                                : "No expiration set"}
-                        </ExpiryText>
-                    </ExpiryInfoCard>
-                </Section>
-
-                <ActionSection>
-                    <Reanimated.View style={applyButtonStyle}>
-                        <ApplyButton
-                            disabled={isApplying}
-                            isApplying={isApplying}
-                            onPress={handleApply}
-                        >
-                        {isApplying ? (
+                        <ActionSection>
+                            <Reanimated.View style={applyButtonStyle}>
+                                <ApplyButton
+                                    disabled={isApplying}
+                                    isApplying={isApplying}
+                                    onPress={handleApply}
+                                >
+                                {isApplying ? (
                             isSubmitted ? (
                                 <>
                                     <FontAwesome name="check" size={16} color="white" style={{ marginRight: 8 }} />
@@ -315,51 +315,51 @@ const ReferrerPostDetail: React.FC<ReferrerPostDetailProps> = ({
                                 <>
                                     <ActivityIndicator size="small" color="white" style={{ marginRight: 8 }} />
                                     <ApplyButtonText>Sending Application...</ApplyButtonText>
-                                </>
+                                    </>
                             )
-                        ) : (
-                            <>
-                                <FontAwesome 
-                                    name="paper-plane" 
-                                    size={16} 
-                                    color="white" 
-                                    style={{ marginRight: 8 }}
-                                />
-                                <ApplyButtonText>
-                                    Apply For Referral
-                                </ApplyButtonText>
-                            </>
-                        )}
-                        </ApplyButton>
-                    </Reanimated.View>
-                    <ButtonRow>
-                        <Reanimated.View style={shareButtonStyle}>
-                            <SecondaryButton onPress={handleSharePress}>
-                            <FontAwesome
-                                name="share"
-                                size={16}
-                                color={theme.colors.primary}
-                            />
-                            <SecondaryButtonText>
-                                Share
-                            </SecondaryButtonText>
-                            </SecondaryButton>
-                        </Reanimated.View>
-                        <Reanimated.View style={saveButtonStyle}>
-                            <SecondaryButton onPress={handleSavePress}>
-                            <FontAwesome
+                                ) : (
+                                    <>
+                                        <FontAwesome 
+                                            name="paper-plane" 
+                                            size={16} 
+                                            color="white" 
+                                            style={{ marginRight: 8 }}
+                                        />
+                                        <ApplyButtonText>
+                                            Apply For Referral
+                                        </ApplyButtonText>
+                                    </>
+                                )}
+                                </ApplyButton>
+                            </Reanimated.View>
+                            <ButtonRow>
+                                <Reanimated.View style={shareButtonStyle}>
+                                    <SecondaryButton onPress={handleSharePress}>
+                                    <FontAwesome
+                                        name="share"
+                                        size={16}
+                                        color={theme.colors.primary}
+                                    />
+                                    <SecondaryButtonText>
+                                        Share
+                                    </SecondaryButtonText>
+                                    </SecondaryButton>
+                                </Reanimated.View>
+                                <Reanimated.View style={saveButtonStyle}>
+                                    <SecondaryButton onPress={handleSavePress}>
+                                    <FontAwesome
                                 name={isSaved ? "bookmark" : "bookmark-o"}
-                                size={16}
-                                color={theme.colors.primary}
-                            />
-                            <SecondaryButtonText>
+                                        size={16}
+                                        color={theme.colors.primary}
+                                    />
+                                    <SecondaryButtonText>
                                 {isSaved ? "Saved" : "Save"}
-                            </SecondaryButtonText>
-                            </SecondaryButton>
-                        </Reanimated.View>
-                    </ButtonRow>
-                </ActionSection>
-            </ScrollView>
+                                    </SecondaryButtonText>
+                                    </SecondaryButton>
+                                </Reanimated.View>
+                            </ButtonRow>
+                        </ActionSection>
+                    </ScrollView>
         </Modal>
     );
 };
@@ -525,8 +525,8 @@ interface ApplyButtonProps {
 }
 
 const ApplyButton = styled.TouchableOpacity<ApplyButtonProps>`
-    background-color: ${(props) => 
-        props.isApplying 
+    background-color: ${(props) =>
+        props.isApplying
             ? props.theme.colors.primary
             : props.theme.colors.primary
     };

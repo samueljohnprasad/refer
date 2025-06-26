@@ -63,7 +63,7 @@ export class JobSeekerPostService {
     try {
       console.log('getJobSeekerPosts called with query:', JSON.stringify(query, null, 2));
       
-      const { page = 1, limit = 10, status, privacyOption, skills, userId } = query;
+      const { page = 1, limit = 10, status, privacyOption, skills, userId, sortBy } = query;
       const skip = (page - 1) * limit;
 
       // Build filter object
@@ -85,15 +85,25 @@ export class JobSeekerPostService {
       //   filter.skills = { $in: skills };
       // }
 
+      // Determine sort order
+      let sort: any = { createdAt: -1 };
+      if (sortBy === 'expiring') {
+        sort = { expiresAt: 1 };
+      } else if (sortBy === 'popular') {
+        // If you have a 'views' or 'referrals' field, use it. Otherwise fallback to createdAt
+        sort = { referrals: -1, createdAt: -1 };
+      } // else default to newest
+
       console.log('Filter:', JSON.stringify(filter, null, 2));
+      console.log('Sort:', JSON.stringify(sort, null, 2));
 
       // First, let's check if there are any posts at all
       const totalPosts = await JobSeekerPost.countDocuments({});
       console.log('Total posts in database:', totalPosts);
 
       const posts = await JobSeekerPost.find(filter)
-        // .populate('user', 'firstName lastName username') // Temporarily removed
-        .sort({ createdAt: -1 })
+        .populate('user', 'firstName lastName username')
+        .sort(sort)
         .skip(skip)
         .limit(limit)
         .lean(); // Use lean() for better performance

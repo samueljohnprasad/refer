@@ -44,4 +44,5 @@ export interface JobSeekerPostQueryParams {
   privacyOption?: 'Public' | 'Private' | 'Anonymous';
   skills?: string[];
   userId?: string;
+  sortBy?: 'newest' | 'popular' | 'expiring';
 } 

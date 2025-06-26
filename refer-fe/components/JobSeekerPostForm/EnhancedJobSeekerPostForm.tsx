@@ -458,35 +458,35 @@ export default function EnhancedJobSeekerPostForm({
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
-        return (
+  return (
             <FormStepContainer>
                 <FormSection>
-                  <HeaderRow>
-                    <IconContainer>
+      <HeaderRow>
+        <IconContainer>
                       <FontAwesome name="briefcase" size={16} color={theme.colors.primary} />
-                    </IconContainer>
+        </IconContainer>
                     <SectionTitle>The Basics</SectionTitle>
-                  </HeaderRow>
+      </HeaderRow>
                   <FieldDescription>Start with the headline for your post.</FieldDescription>
                   <FormLabel>Post Title</FormLabel>
-                  <FormInput
+        <FormInput
                     placeholder="e.g., Senior Frontend Developer looking for new role"
-                    value={formData.title}
+          value={formData.title}
                     onChangeText={text => handleInputChange('title', text)}
                     maxLength={100}
                   />
                   {!validation.title.valid && <FormError>{validation.title.message}</FormError>}
-                  
+        
                   <FormLabel>Interest Statement</FormLabel>
-                  <FieldDescription>
+        <FieldDescription>
                     What are you passionate about? What kind of role or company are you looking for?
-                  </FieldDescription>
-                  <FormInput
+        </FieldDescription>
+        <FormInput
                     placeholder="Describe your interests and what you're looking for..."
-                    value={formData.interestStatement}
+          value={formData.interestStatement}
                     onChangeText={text => handleInputChange('interestStatement', text)}
                     multiline
-                    numberOfLines={4}
+          numberOfLines={4}
                     maxLength={500}
                     style={{ height: 120, textAlignVertical: 'top' }}
                   />
@@ -506,41 +506,41 @@ export default function EnhancedJobSeekerPostForm({
               </HeaderRow>
               <FieldDescription>Highlight your expertise and background.</FieldDescription>
               <FormLabel>Top 5 Skills</FormLabel>
-              <SkillsContainer>
+        <SkillsContainer>
                 {['React', 'TypeScript', 'Node.js', 'GraphQL', 'UI/UX Design', 'Product Management', 'Agile', 'DevOps'].map(skill => (
-                  <SkillTag
-                    key={skill}
-                    selected={formData.skills.includes(skill)}
-                    onPress={() => toggleSkill(skill)}
-                  >
-                    <SkillText selected={formData.skills.includes(skill)}>{skill}</SkillText>
-                  </SkillTag>
-                ))}
-              </SkillsContainer>
+            <SkillTag 
+              key={skill}
+              selected={formData.skills.includes(skill)}
+              onPress={() => toggleSkill(skill)}
+            >
+              <SkillText selected={formData.skills.includes(skill)}>{skill}</SkillText>
+            </SkillTag>
+          ))}
+        </SkillsContainer>
               {!validation.skills.valid && <FormError>{validation.skills.message}</FormError>}
 
               <Divider />
-
+        
               <FormLabel>Experience Summary</FormLabel>
-              <FormInput
+        <FormInput
                 placeholder="Summarize your key work experience..."
-                value={formData.experience}
+          value={formData.experience}
                 onChangeText={text => handleInputChange('experience', text)}
                 multiline
                 numberOfLines={4}
                 maxLength={500}
                 style={{ height: 120, textAlignVertical: 'top' }}
-              />
-
+        />
+        
               <FormLabel>Education</FormLabel>
-              <FormInput
+        <FormInput
                 placeholder="e.g., B.S. in Computer Science from University of Example"
-                value={formData.education}
+          value={formData.education}
                 onChangeText={text => handleInputChange('education', text)}
                 maxLength={100}
-              />
-            </FormSection>
-            <Divider />
+        />
+      </FormSection>
+      <Divider />
             <FormSection>
                 <FormLabel>Upload Your Resume (Optional)</FormLabel>
                 <FieldDescription>
@@ -553,35 +553,35 @@ export default function EnhancedJobSeekerPostForm({
       case 2:
         return (
           <FormStepContainer>
-            <FormSection>
+      <FormSection>
               <HeaderRow>
                 <IconContainer>
                   <FontAwesome name="shield" size={16} color={theme.colors.primary} />
                 </IconContainer>
                 <SectionTitle>Privacy & Settings</SectionTitle>
               </HeaderRow>
-
-              <PrivacySelector
-                selectedOption={formData.privacyOption}
+        
+        <PrivacySelector 
+          selectedOption={formData.privacyOption}
                 onOptionSelected={option => handleInputChange('privacyOption', option)}
-              />
+        />
             </FormSection>
             <Divider />
             <FormSection>
               <FormLabel>Post Expiry</FormLabel>
               <FieldDescription>Set how long your post will be visible.</FieldDescription>
-              <ExpiryOptions>
+        <ExpiryOptions>
                 {[7, 14, 30, 60].map(days => (
-                  <ExpiryOption
-                    key={days}
-                    selected={formData.expiryDays === days}
-                    onPress={() => handleInputChange('expiryDays', days)}
-                  >
+            <ExpiryOption
+              key={days}
+              selected={formData.expiryDays === days}
+              onPress={() => handleInputChange('expiryDays', days)}
+            >
                     <ExpiryText selected={formData.expiryDays === days}>{days} days</ExpiryText>
-                  </ExpiryOption>
-                ))}
-              </ExpiryOptions>
-            </FormSection>
+            </ExpiryOption>
+          ))}
+        </ExpiryOptions>
+      </FormSection>
           </FormStepContainer>
         );
       default:
@@ -607,17 +607,17 @@ export default function EnhancedJobSeekerPostForm({
             {progress}%
           </ProgressPercentage>
         </ProgressContainer>
-
-        <Divider />
+      
+      <Divider />
 
         {renderStepContent()}
-
-        <ButtonContainer>
+      
+      <ButtonContainer>
           {currentStep > 0 && (
             <FormButton onPress={handleBack} disabled={isSubmitting || isDraftSubmitting}>
               <FontAwesome name="arrow-left" size={16} color={theme.colors.text} style={{ marginRight: 8 }} />
               <ButtonText>Back</ButtonText>
-            </FormButton>
+        </FormButton>
           )}
           
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
@@ -625,17 +625,17 @@ export default function EnhancedJobSeekerPostForm({
               <FormButton onPress={handleNext} primary>
                 <ButtonText primary>Next</ButtonText>
                 <FontAwesome name="arrow-right" size={16} color={'white'} style={{ marginLeft: 8 }} />
-              </FormButton>
+        </FormButton>
             ) : (
-              <FormButton
+        <FormButton 
                 onPress={() => handleSubmit(false)}
-                primary
+          primary 
                 disabled={isSubmitting || isDraftSubmitting}
-              >
-                {isSubmitting ? (
-                  <ActivityIndicator size="small" color="white" />
-                ) : (
-                  <>
+        >
+          {isSubmitting ? (
+            <ActivityIndicator size="small" color="white" />
+          ) : (
+            <>
                     <FontAwesome name="check" size={16} color="white" style={{ marginRight: 8 }} />
                     <ButtonText primary>Submit Post</ButtonText>
                   </>
@@ -659,11 +659,11 @@ export default function EnhancedJobSeekerPostForm({
                   <>
                     <FontAwesome name="save" size={16} color={theme.colors.text} style={{ marginRight: 8 }} />
                     <ButtonText>Save as Draft</ButtonText>
-                  </>
-                )}
-            </FormButton>
-        </ButtonContainer>
-      </FormContainer>
+            </>
+          )}
+        </FormButton>
+      </ButtonContainer>
+    </FormContainer>
     </ScrollView>
   );
 }

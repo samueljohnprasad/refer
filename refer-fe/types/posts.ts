@@ -40,4 +40,15 @@ export interface ReferrerPost {
 }
 
 // A union type for any kind of post in the feed
-export type Post = JobSeekerPost | ReferrerPost; 
+export type Post = JobSeekerPost | ReferrerPost;
+
+export enum TabType {
+  JobSeeker = 'jobSeeker',
+  Referrer = 'referrer',
+}
+
+export enum SortOption {
+  Newest = 'newest',
+  Popular = 'popular',
+  Expiring = 'expiring',
+} 

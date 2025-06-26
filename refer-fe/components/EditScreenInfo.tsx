@@ -9,6 +9,7 @@ import Colors from '@/constants/Colors';
 import { useLayoutStyles } from '@/app/_layout';
 import { useDispatch } from 'react-redux';
 import { logout } from '@/store/authSlice';
+import ThemeToggle from './Toggle/ThemeToggle';
 
 export default function EditScreenInfo({ path }: { path: string }) {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
                 >
                   <Text style={logoutStyles.logoutText}>Logout</Text>
               </TouchableOpacity>
+              <ThemeToggle showLabel={false} />
         <Text
           style={styles.getStartedText}
           lightColor="rgba(0,0,0,0.8)"

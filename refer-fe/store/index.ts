@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import authReducer from './authSlice';
 import profileReducer from './profileSlice';
+import { apiSlice } from '../services/apiSlice';
 
 const authPersistConfig = {
   key: 'auth',
@@ -19,10 +20,13 @@ const profilePersistConfig = {
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   profile: persistReducer(profilePersistConfig, profileReducer),
+  [apiSlice.reducerPath]: apiSlice.reducer,
 });
 
 export const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
 export const persistor = persistStore(store);

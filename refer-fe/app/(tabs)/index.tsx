@@ -7,20 +7,20 @@ import {
     SafeAreaView,
     FlatList,
     ActivityIndicator,
+    Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
 import styled from "styled-components/native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useTheme } from "../../context/ThemeContext";
 import PostCard from "@/components/PostCard";
-import GroupedPostList from "@/components/GroupedPostList";
 import FilterBar, { FilterConfig } from "@/components/FilterBar";
-import { ThemeInterface } from "@/constants/theme";
 import SwipeableTabs from "@/components/common/SwipeableTabs";
 import ReferralModal from "@/components/ReferralModal";
 import { useNotifications } from "@/hooks/useNotifications";
 import { jobSeekerPostService } from "@/services/jobSeekerPost.service";
-import { Post, JobSeekerPost, ReferrerPost } from "@/types/posts";
+import { Post, JobSeekerPost, ReferrerPost, TabType, SortOption } from "@/types/posts";
+import { useGetJobSeekerPostsQuery } from '@/services/apiSlice';
 
 // Local types are removed
 
@@ -30,60 +30,88 @@ type TabProps = {
     active: boolean;
 };
 
+const TabContainer = styled.View`
+    flex-direction: row;
+    margin: 16px 16px 24px 16px;
+    border-radius: 12px;
+    background-color: ${(props) => props.theme.colors.card};
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.04);
+    elevation: 2;
+    overflow: hidden;
+`;
+
 const TabButton = styled.TouchableOpacity<TabProps>`
     flex: 1;
-    padding: 12px;
+    padding: 14px 0;
     justify-content: center;
     align-items: center;
     background-color: ${(props) =>
-        props.active ? props.theme.colors.primary : props.theme.colors.card};
-    border-radius: 8px;
-    margin: 0 4px;
-    border-width: ${(props) => (props.active ? 0 : 1)}px;
-    border-color: ${(props) => props.theme.colors.border};
+        props.active ? props.theme.colors.primary : 'transparent'};
+    border-radius: 12px;
+    transition: background-color 0.2s;
 `;
 
 const TabText = styled.Text<TabProps>`
     font-size: 16px;
-    font-weight: ${(props) => (props.active ? "bold" : "normal")};
-    color: ${(props) => (props.active ? "white" : props.theme.colors.text)};
+    font-weight: ${(props) => (props.active ? 'bold' : '600')};
+    color: ${(props) =>
+        props.active ? 'white' : props.theme.colors.primary};
+    transition: color 0.2s;
 `;
 
-const TabContainer = styled.View`
-    flex-direction: row;
-    margin: 8px 16px 16px 16px;
-    border-radius: 8px;
-    overflow: hidden;
-    padding: 4px;
-    background-color: ${(props) => props.theme.colors.background};
+const PlusButtonContainer = styled.View`
+    align-items: center;
+    margin: -18px 0 4px 0;
+`;
+
+const FabContainer = styled.View`
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    z-index: 100;
+`;
+
+const CreatePostButton = styled.TouchableOpacity<{ pressed: boolean }>`
+    width: 56px;
+    height: 56px;
+    border-radius: 28px;
+    background-color: ${(props) => props.theme.colors.primary};
+    justify-content: center;
+    align-items: center;
+    border-width: 2px;
+    border-color: rgba(255,255,255,0.7);
+    shadow-color: #000;
+    shadow-opacity: 0.15;
+    shadow-radius: 8px;
+    shadow-offset: 0px 4px;
+    elevation: 6;
+    transform: scale(${props => (props.pressed ? 0.93 : 1)});
 `;
 
 const HeaderContainer = styled.View`
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
-    padding-left: 16px;
-    padding-right: 16px;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    justify-content: space-between;
+    padding: 16px;
+    background-color: ${(props) => props.theme.colors.card};
     border-bottom-width: 1px;
     border-bottom-color: ${(props) => props.theme.colors.border};
-    background-color: ${(props) => props.theme.colors.card};
+`;
+
+const LeftSection = styled.View`
+    flex-direction: row;
+    align-items: center;
+`;
+
+const RightSection = styled.View`
+    flex-direction: row;
+    align-items: center;
 `;
 
 const HeaderTitle = styled.Text`
     font-size: 24px;
     font-weight: bold;
     color: ${(props) => props.theme.colors.text};
-`;
-
-const CreatePostButton = styled.TouchableOpacity`
-    width: 44px;
-    height: 44px;
-    border-radius: 22px;
-    background-color: ${(props) => props.theme.colors.primary};
-    justify-content: center;
-    align-items: center;
 `;
 
 const NotificationBadge = styled.View`
@@ -120,48 +148,119 @@ const EmptyStateText = styled.Text`
     text-align: center;
 `;
 
+const isJobSeekerPost = (post: Post): post is JobSeekerPost => {
+    return 'interestStatement' in post;
+};
+
+interface PostListContentProps {
+    posts: Post[];
+    isLoading: boolean;
+    error: any;
+    refreshing: boolean;
+    isFetching: boolean;
+    onRefresh: () => void;
+    onRefer: ((post: JobSeekerPost) => void) | undefined;
+    activeTab: TabType;
+    theme: any;
+}
+
+const PostListContent: React.FC<PostListContentProps> = ({ 
+    posts, 
+    isLoading, 
+    error, 
+    refreshing, 
+    isFetching,
+    onRefresh,
+    onRefer,
+    activeTab,
+    theme 
+}) => {
+    if (isLoading && activeTab === TabType.JobSeeker) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={theme.colors.primary} />
+            </View>
+        );
+    }
+
+    if (error && activeTab === TabType.JobSeeker) {
+        return (
+            <EmptyState>
+                <FontAwesome
+                    name="exclamation-triangle"
+                    size={50}
+                    color={theme.colors.error}
+                    style={{ opacity: 0.8 }}
+                />
+                <EmptyStateText style={{color: theme.colors.error}}>
+                    {error?.toString()}
+                </EmptyStateText>
+            </EmptyState>
+        );
+    }
+
+    return (
+        <FlatList
+            data={posts}
+            keyExtractor={(item) => {
+                if (isJobSeekerPost(item)) {
+                    return item._id || String(Math.random());
+                }
+                return item.id || String(Math.random());
+            }}
+            renderItem={({ item }) => (
+                <PostCard 
+                    post={item} 
+                    onRefer={isJobSeekerPost(item) ? onRefer : undefined}
+                />
+            )}
+            contentContainerStyle={{ padding: 16, paddingTop: 8 }}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing || isFetching}
+                    onRefresh={onRefresh}
+                    colors={[theme.colors.primary]}
+                    tintColor={theme.colors.primary}
+                />
+            }
+            ListEmptyComponent={
+                <EmptyState>
+                    <FontAwesome
+                        name={activeTab === TabType.JobSeeker ? "user-circle" : "building"}
+                        size={50}
+                        color={theme.colors.text}
+                        style={{ opacity: 0.5 }}
+                    />
+                    <EmptyStateText>
+                        {activeTab === TabType.JobSeeker
+                            ? "No job seeker posts yet. Be the first to post!"
+                            : "No referrer posts available. Check back later or create one!"}
+                    </EmptyStateText>
+                </EmptyState>
+            }
+        />
+    );
+};
+
 export default function HomeScreen() {
     const { theme, isDarkMode } = useTheme();
     const router = useRouter();
     const { unreadCount } = useNotifications();
-    const [activeTab, setActiveTab] = useState<"jobSeeker" | "referrer">(
-        "jobSeeker"
-    );
-    const [jobSeekerPosts, setJobSeekerPosts] = useState<JobSeekerPost[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
+    const [activeTab, setActiveTab] = useState<TabType>(TabType.JobSeeker);
     const [refreshing, setRefreshing] = useState(false);
     const [filterConfig, setFilterConfig] = useState<FilterConfig>({
         query: "",
-        sortBy: "newest",
+        sortBy: SortOption.Newest,
         categories: [],
         skills: [],
     });
 
     const [isReferralModalVisible, setReferralModalVisible] = useState(false);
     const [selectedPostForReferral, setSelectedPostForReferral] = useState<JobSeekerPost | null>(null);
+    const [plusPressed, setPlusPressed] = useState(false);
 
-    const fetchJobSeekerPosts = useCallback(async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { posts } = await jobSeekerPostService.getJobSeekerPosts();
-            console.log('sdfsdfdfsdfdsfdsfsd',posts);
-            setJobSeekerPosts(posts);
-        } catch (err) {
-            setError("Failed to fetch job seeker posts. Please try again.");
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (activeTab === "jobSeeker") {
-            fetchJobSeekerPosts();
-        }
-    }, [activeTab, fetchJobSeekerPosts]);
+    const { data, isLoading, error, refetch, isFetching } = useGetJobSeekerPostsQuery(filterConfig, { skip: activeTab !== TabType.JobSeeker });
+    const jobSeekerPosts = data?.posts || [];
 
     const handleOpenReferralModal = (post: JobSeekerPost) => {
         setSelectedPostForReferral(post);
@@ -189,13 +288,13 @@ export default function HomeScreen() {
 
     const onRefresh = React.useCallback((): void => {
         setRefreshing(true);
-        if (activeTab === 'jobSeeker') {
-            fetchJobSeekerPosts().finally(() => setRefreshing(false));
+        if (activeTab === TabType.JobSeeker) {
+            refetch();
+            setRefreshing(false);
         } else {
-            // Placeholder for refreshing referrer posts
             setTimeout(() => setRefreshing(false), 1500);
         }
-    }, [activeTab, fetchJobSeekerPosts]);
+    }, [activeTab, refetch]);
 
     const filteredJobSeekerPosts = useMemo(() => {
         return jobSeekerPosts.filter((post) => {
@@ -230,13 +329,13 @@ export default function HomeScreen() {
             const sortedPosts = [...posts];
 
             switch (filterConfig.sortBy) {
-                case "newest":
+                case SortOption.Newest:
                     return sortedPosts.sort((a, b) => {
                         const dateA = new Date(a.createdAt || '').getTime();
                         const dateB = new Date(b.createdAt || '').getTime();
                         return dateB - dateA;
                     });
-                case "expiring":
+                case SortOption.Expiring:
                     return sortedPosts.sort((a, b) => {
                         const expiryA = new Date(a.expiresAt || '').getTime();
                         const expiryB = new Date(b.expiresAt || '').getTime();
@@ -282,29 +381,58 @@ export default function HomeScreen() {
         return [];
     }, [sortedReferrerPosts]);
 
-    // Render job seeker posts with grouping
-    const jobSeekerList = (
-        <GroupedPostList
-            sections={groupedJobSeekerPosts}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            emptyMessage="No job seeker posts found"
-        />
-    );
-
-    // Render referrer posts with grouping
-    const referrerList = (
-        <GroupedPostList
-            sections={groupedReferrerPosts}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            emptyMessage="No referrer posts found"
-        />
-    );
-
-    const isJobSeekerPost = (post: Post): post is JobSeekerPost => {
-        return 'interestStatement' in post;
-    };
+    const tabs = [
+        {
+            key: 'jobSeekers',
+            title: 'Job Seekers',
+            component: (
+                <View style={{ flex: 1 }}>
+                    <FilterBar
+                        availableCategories={availableCategories}
+                        availableSkills={availableSkills}
+                        onFilterChange={setFilterConfig}
+                        initialConfig={filterConfig}
+                    />
+                    <PostListContent
+                        posts={sortedJobSeekerPosts}
+                        isLoading={isLoading}
+                        error={error}
+                        refreshing={refreshing}
+                        isFetching={isFetching}
+                        onRefresh={onRefresh}
+                        onRefer={handleOpenReferralModal}
+                        activeTab={TabType.JobSeeker}
+                        theme={theme}
+                    />
+                </View>
+            ),
+        },
+        {
+            key: 'referrers',
+            title: 'Referrers',
+            component: (
+                <View style={{ flex: 1 }}>
+                    <FilterBar
+                        availableCategories={availableCategories}
+                        availableSkills={availableSkills}
+                        onFilterChange={setFilterConfig}
+                        initialConfig={filterConfig}
+                    />
+                    <PostListContent
+                        posts={sortedReferrerPosts}
+                        isLoading={false}
+                        error={null}
+                        refreshing={refreshing}
+                        isFetching={false}
+                        onRefresh={onRefresh}
+                        onRefer={undefined}
+                        activeTab={TabType.Referrer}
+                        theme={theme}
+                    />
+                </View>
+            ),
+        },
+    ];
 
     return (
         <SafeAreaView
@@ -315,137 +443,29 @@ export default function HomeScreen() {
                 onClose={handleCloseReferralModal}
                 post={selectedPostForReferral}
             />
-            <HeaderContainer>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <FontAwesome
-                        name="feed"
-                        size={22}
-                        color={theme.colors.primary}
-                        style={{ marginRight: 10 }}
-                    />
-                    <HeaderTitle>ReferNet Feed</HeaderTitle>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={() => router.push('/notifications' as any)} style={{ marginRight: 16 }}>
-                        <FontAwesome
-                            name="bell"
-                            size={24}
-                            color={theme.colors.text}
-                        />
-                        {unreadCount > 0 && (
-                            <NotificationBadge>
-                                <BadgeText>{unreadCount}</BadgeText>
-                            </NotificationBadge>
-                        )}
-                    </TouchableOpacity>
-                    <CreatePostButton
-                        style={{
-                            shadowColor: theme.colors.primary,
-                            shadowOpacity: 0.4,
-                            shadowRadius: 8,
-                            shadowOffset: { width: 0, height: 3 },
-                            elevation: 5,
-                        }}
-                        onPress={() => {
-                            // Navigate to the appropriate post creation screen
-                            if (activeTab === "jobSeeker") {
-                                router.push("/create-job-post" as any);
-                            } else {
-                                router.push("/create-referrer-post" as any);
-                            }
-                        }}
-                    >
-                        <FontAwesome
-                            name="plus"
-                            size={20}
-                            color="white"
-                        />
-                    </CreatePostButton>
-                </View>
-            </HeaderContainer>
-
-            <TabContainer>
-                <TabButton
-                    active={activeTab === "jobSeeker"}
-                    onPress={() => setActiveTab("jobSeeker")}
-                >
-                    <TabText active={activeTab === "jobSeeker"}>
-                        Job Seekers
-                    </TabText>
-                </TabButton>
-                <TabButton
-                    active={activeTab === "referrer"}
-                    onPress={() => setActiveTab("referrer")}
-                >
-                    <TabText active={activeTab === "referrer"}>
-                        Referrers
-                    </TabText>
-                </TabButton>
-            </TabContainer>
-
-            <FilterBar
-                availableCategories={availableCategories}
-                availableSkills={availableSkills}
-                onFilterChange={setFilterConfig}
-                initialConfig={filterConfig}
+            
+            <SwipeableTabs
+                tabs={tabs}
+                initialTab={activeTab === TabType.JobSeeker ? 0 : 1}
             />
 
-            {loading && activeTab === 'jobSeeker' ? (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ActivityIndicator size="large" color={theme.colors.primary} />
-                </View>
-            ) : error && activeTab === 'jobSeeker' ? (
-                 <EmptyState>
-                    <FontAwesome
-                        name="exclamation-triangle"
-                        size={50}
-                        color={theme.colors.error}
-                        style={{ opacity: 0.8 }}
-                    />
-                    <EmptyStateText style={{color: theme.colors.error}}>
-                        {error}
-                    </EmptyStateText>
-                </EmptyState>
-            ) : (
-                <FlatList
-                    data={activeTab === "jobSeeker" ? (sortedJobSeekerPosts as Post[]) : (sortedReferrerPosts as Post[])}
-                    keyExtractor={(item) => isJobSeekerPost(item) ? item._id || '' : item.id || ''}
-                    renderItem={({ item }) => (
-                        <PostCard 
-                            post={item} 
-                            onRefer={isJobSeekerPost(item) ? () => handleOpenReferralModal(item) : undefined}
-                        />
-                    )}
-                    contentContainerStyle={{ padding: 16, paddingTop: 8 }}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={onRefresh}
-                            colors={[theme.colors.primary]}
-                            tintColor={theme.colors.primary}
-                        />
-                    }
-                    ListEmptyComponent={
-                        <EmptyState>
-                            <FontAwesome
-                                name={
-                                    activeTab === "jobSeeker"
-                                        ? "user-circle"
-                                        : "building"
-                                }
-                                size={50}
-                                color={theme.colors.text}
-                                style={{ opacity: 0.5 }}
-                            />
-                            <EmptyStateText>
-                                {activeTab === "jobSeeker"
-                                    ? "No job seeker posts yet. Be the first to post!"
-                                    : "No referrer posts available. Check back later or create one!"}
-                            </EmptyStateText>
-                        </EmptyState>
-                    }
-                />
-            )}
+            <FabContainer>
+                <CreatePostButton
+                    pressed={plusPressed}
+                    activeOpacity={0.8}
+                    onPressIn={() => setPlusPressed(true)}
+                    onPressOut={() => setPlusPressed(false)}
+                    onPress={() => {
+                        if (activeTab === TabType.JobSeeker) {
+                            router.push("/create-job-post" as any);
+                        } else {
+                            router.push("/create-referrer-post" as any);
+                        }
+                    }}
+                >
+                    <FontAwesome name="plus" size={28} color="white" />
+                </CreatePostButton>
+            </FabContainer>
         </SafeAreaView>
     );
 }
