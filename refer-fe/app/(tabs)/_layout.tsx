@@ -26,7 +26,7 @@ export default function TabLayout() {
   const { unreadCount } = useNotifications();
 
   const handleBell = () => {
-    router.push('/notifications');
+    router.push('/notifications' as any);
   };
   const handleInfo = () => {
     router.push('/modal');

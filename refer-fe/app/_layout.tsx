@@ -158,7 +158,7 @@ export const useLayoutStyles = () => {
         logoutText: {
             color: theme.colors.primary,
             fontWeight: "bold",
-            fontSize: theme.typography.fontSize.md,
+            fontSize: theme.typography.fontSize.base,
         },
     });
 };

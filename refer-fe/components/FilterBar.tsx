@@ -10,6 +10,9 @@ export type FilterConfig = {
   sortBy: SortOption;
   categories: string[];
   skills: string[];
+  experienceLevel?: string;
+  workType?: string;
+  showExpired?: boolean;
 };
 
 interface FilterBarProps {
@@ -199,11 +202,11 @@ export default function FilterBar({
     
     if (text.length > 1) {
       // Generate suggestions from skills and categories
-      const skillSuggestions = availableSkills.filter(skill => 
+      const skillSuggestions = (availableSkills || []).filter(skill => 
         skill.toLowerCase().includes(text.toLowerCase())
       );
       
-      const categorySuggestions = availableCategories.filter(category => 
+      const categorySuggestions = (availableCategories || []).filter(category => 
         category.toLowerCase().includes(text.toLowerCase())
       );
       
@@ -298,7 +301,7 @@ export default function FilterBar({
           <FilterSection>
             <SectionTitle>Categories</SectionTitle>
             <ChipsContainer>
-              {availableCategories.map(category => (
+              {(availableCategories || []).map(category => (
                 <Chip 
                   key={category} 
                   selected={selectedCategories.includes(category)}
@@ -315,7 +318,7 @@ export default function FilterBar({
           <FilterSection>
             <SectionTitle>Skills</SectionTitle>
             <ChipsContainer>
-              {availableSkills.map(skill => (
+              {(availableSkills || []).map(skill => (
                 <Chip 
                   key={skill} 
                   selected={selectedSkills.includes(skill)}

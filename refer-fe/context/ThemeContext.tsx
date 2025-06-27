@@ -57,11 +57,33 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setIsDarkMode(prevMode => !prevMode);
   };
   
-  const theme = isDarkMode ? darkTheme : lightTheme;
+  // Get the base theme
+  const baseTheme = isDarkMode ? darkTheme : lightTheme;
+  
+  // Adapt theme to match what styled-components expects by adding backward compatibility properties
+  const adaptedTheme = {
+    ...baseTheme,
+    typography: {
+      ...baseTheme.typography,
+      fontFamily: {
+        ...baseTheme.typography.fontFamily,
+        // Add these aliases for backward compatibility with styled-components DefaultTheme
+        regular: baseTheme.typography.fontFamily.primary,
+        medium: baseTheme.typography.fontFamily.primary,
+        bold: baseTheme.typography.fontFamily.primary
+      },
+      fontSize: {
+        ...baseTheme.typography.fontSize,
+        // Add missing properties that DefaultTheme expects
+        md: baseTheme.typography.fontSize.base, // Map 'base' to 'md'
+        xxl: baseTheme.typography.fontSize['2xl'] // Map '2xl' to 'xxl'
+      }
+    }
+  };
   
   return (
-    <ThemeContext.Provider value={{ theme, isDarkMode, toggleTheme }}>
-      <StyledThemeProvider theme={theme}>
+    <ThemeContext.Provider value={{ theme: baseTheme, isDarkMode, toggleTheme }}>
+      <StyledThemeProvider theme={adaptedTheme}>
         {children}
       </StyledThemeProvider>
     </ThemeContext.Provider>

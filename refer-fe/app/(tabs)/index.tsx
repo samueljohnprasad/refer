@@ -21,6 +21,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { jobSeekerPostService } from "@/services/jobSeekerPost.service";
 import { Post, JobSeekerPost, ReferrerPost, TabType, SortOption } from "@/types/posts";
 import { useGetJobSeekerPostsQuery } from '@/services/apiSlice';
+import DesktopFeedContainer from "@/components/desktop/DesktopFeedContainer";
 
 // Local types are removed
 
@@ -244,6 +245,8 @@ const PostListContent: React.FC<PostListContentProps> = ({
 
 export default function HomeScreen() {
     const { theme, isDarkMode } = useTheme();
+    const { width: screenWidth } = Dimensions.get('window');
+    const isDesktop = screenWidth >= theme.breakpoints.lg;
     const router = useRouter();
     const { unreadCount } = useNotifications();
     const [activeTab, setActiveTab] = useState<TabType>(TabType.JobSeeker);
@@ -266,6 +269,11 @@ export default function HomeScreen() {
         setSelectedPostForReferral(post);
         setReferralModalVisible(true);
     };
+    
+    // If desktop, render desktop version
+    if (isDesktop) {
+        return <DesktopFeedContainer onRefer={handleOpenReferralModal} />;
+    }
 
     const handleCloseReferralModal = () => {
         setReferralModalVisible(false);
