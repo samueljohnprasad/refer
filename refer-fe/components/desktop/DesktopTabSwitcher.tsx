@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components/native";
 import { TabType } from "../../types/posts";
+import { EnhancedThemeInterface } from "../../constants/enhancedTheme";
 
 interface DesktopTabSwitcherProps {
     activeTab: TabType;
     onTabChange: (tab: TabType) => void;
     jobSeekerCount: number;
     referrerCount: number;
+    theme: EnhancedThemeInterface;
 }
 
 const Container = styled.View`
@@ -42,6 +44,7 @@ const DesktopTabSwitcher: React.FC<DesktopTabSwitcherProps> = ({
     onTabChange,
     jobSeekerCount,
     referrerCount,
+    theme,
 }) => {
     return (
         <Container>

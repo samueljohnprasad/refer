@@ -2,10 +2,10 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components/native';
-import { lightTheme, darkTheme, ThemeInterface } from '../constants/theme';
+import { lightTheme, darkTheme, EnhancedThemeInterface } from '../constants/enhancedTheme';
 
 type ThemeContextType = {
-  theme: ThemeInterface;
+  theme: EnhancedThemeInterface;
   isDarkMode: boolean;
   toggleTheme: () => void;
 };

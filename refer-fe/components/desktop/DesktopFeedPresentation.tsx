@@ -3,7 +3,7 @@ import { View, ScrollView, RefreshControl, ActivityIndicator } from 'react-nativ
 import styled from 'styled-components/native';
 import { Post, TabType } from '../../types/posts';
 import { FilterConfig } from '../FilterBar';
-import { ThemeInterface } from '../../constants/theme';
+import { EnhancedThemeInterface } from '../../constants/enhancedTheme';
 import DesktopSearchHeader from './DesktopSearchHeader';
 import DesktopFilterBar from './DesktopFilterBar';
 import DesktopJobCard from './DesktopJobCard';
@@ -35,30 +35,30 @@ interface DesktopFeedPresentationProps {
   onRefer: (post: Post) => void;
   
   // Theme
-  theme: ThemeInterface;
+  theme: EnhancedThemeInterface;
   isDesktop: boolean;
 }
 
 const Container = styled.View`
   flex: 1;
-  background-color: #F8F9FA;
+  background-color: ${props => props.theme.colors.background};
   max-width: 1400px;
   align-self: center;
   width: 100%;
 `;
 
 const Header = styled.View`
-  background-color: #FFFFFF;
+  background-color: ${props => props.theme.colors.card};
   border-bottom-width: 1px;
-  border-bottom-color: #E5E7EB;
-  padding: 20px 24px;
+  border-bottom-color: ${props => props.theme.colors.border};
+  padding: ${props => props.theme.spacing['2xl']}px ${props => props.theme.spacing['3xl']}px;
 `;
 
 const MainContent = styled.View`
   flex: 1;
   flex-direction: row;
-  padding: 24px;
-  gap: 24px;
+  padding: ${props => props.theme.spacing['3xl']}px;
+  gap: ${props => props.theme.spacing['3xl']}px;
 `;
 
 const LeftColumn = styled.View`
@@ -80,9 +80,10 @@ const JobsHeader = styled.View`
 `;
 
 const JobsCount = styled.Text`
-  font-size: 18px;
-  font-weight: 600;
-  color: #111827;
+  font-size: ${props => props.theme.typography.fontSize.xl}px;
+  font-weight: ${props => props.theme.typography.fontWeight.semibold};
+  color: ${props => props.theme.colors.text};
+  font-family: ${props => props.theme.typography.fontFamily.primary};
 `;
 
 const SortBy = styled.View`

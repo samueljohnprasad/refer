@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Modal, FlatList } from 'react-native';
 import styled from 'styled-components/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { ThemeInterface } from '../../constants/theme';
+import { EnhancedThemeInterface } from '../../constants/enhancedTheme';
 import { FilterConfig } from '../FilterBar';
 
 interface DesktopFilterBarProps {
@@ -10,35 +10,37 @@ interface DesktopFilterBarProps {
   availableCategories: string[];
   availableSkills: string[];
   onFilterChange: (config: FilterConfig) => void;
-  theme: ThemeInterface;
+  theme: EnhancedThemeInterface;
 }
 
 const Container = styled.View`
   flex-direction: row;
   align-items: center;
-  gap: 8px;
+  gap: ${props => props.theme.spacing.md}px;
   flex-wrap: wrap;
 `;
 
 const FilterButton = styled.TouchableOpacity<{ isActive?: boolean }>`
   flex-direction: row;
   align-items: center;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: ${props => props.theme.spacing.md}px ${props => props.theme.spacing.lg}px;
+  border-radius: ${props => props.theme.borderRadius.md}px;
   border-width: 1px;
-  border-color: ${props => props.isActive ? '#0066CC' : '#E5E7EB'};
-  background-color: ${props => props.isActive ? '#E6F3FF' : '#FFFFFF'};
+  border-color: ${props => props.isActive ? props.theme.colors.primary : props.theme.colors.border};
+  background-color: ${props => props.isActive ? props.theme.colors.primaryLight : props.theme.colors.card};
   min-height: 36px;
 `;
 
 const FilterButtonText = styled.Text<{ isActive?: boolean }>`
-  font-size: 14px;
-  color: ${props => props.isActive ? '#0066CC' : '#374151'};
-  margin-right: 4px;
+  font-size: ${props => props.theme.typography.fontSize.md}px;
+  font-family: ${props => props.theme.typography.fontFamily.primary};
+  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  color: ${props => props.isActive ? props.theme.colors.primary : props.theme.colors.text};
+  margin-right: ${props => props.theme.spacing.xs}px;
 `;
 
 const FilterIcon = styled.View`
-  margin-left: 4px;
+  margin-left: ${props => props.theme.spacing.xs}px;
 `;
 
 const ModalOverlay = styled.View`

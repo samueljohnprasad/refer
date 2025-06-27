@@ -62,17 +62,29 @@ export interface ThemeInterface {
       bold: number;
       extrabold: number;
     };
+    lineHeight: {
+      tight: number;
+      normal: number;
+      relaxed: number;
+    };
   };
   borderRadius: {
+    xs: number;
     sm: number;
     md: number;
     lg: number;
     xl: number;
+    '2xl': number;
+    full: number;
   };
   shadows: {
+    xs: string;
     sm: string;
     md: string;
     lg: string;
+    xl: string;
+    '2xl': string;
+    inner: string;
   };
   breakpoints: {
     sm: number;
@@ -86,32 +98,33 @@ export interface ThemeInterface {
 export const lightTheme: ThemeInterface = {
   mode: 'light',
   colors: {
-    primary: '#0066CC', // Main brand color, used for primary actions
-    primaryDark: '#003D7A', // Hover states and emphasis
+    primary: '#0066CC', // Main brand color - professional blue
+    primaryDark: '#0052A3', // Hover states and emphasis
     primaryLight: '#E6F3FF', // Background highlights
-    secondary: '#00A86B', // Success states, positive actions
-    accent: '#6B46C1', // Accent color
-    background: '#FFFFFF', // Primary background
-    backgroundSecondary: '#F8F9FA', // Secondary background
-    card: '#FFFFFF', // Card/box background
-    text: '#000000', // High contrast text
-    textSecondary: '#4B5563', // Secondary text color
-    border: '#E5E7EB', // Border color
-    notification: '#FF4D4F', // Badge/notification color
-    success: '#00A86B', // Success color
-    error: '#FF4D4F', // Error color
-    warning: '#F59E0B', // Warning color
-    info: '#0066CC', // Info color
+    secondary: '#10B981', // Success states, positive actions - modern green
+    accent: '#8B5CF6', // Accent color - modern purple
+    background: '#FAFBFC', // Primary background - slightly warmer white
+    backgroundSecondary: '#F8FAFC', // Secondary background
+    card: '#FFFFFF', // Card/box background - pure white for contrast
+    text: '#0F172A', // High contrast text - professional dark
+    textSecondary: '#64748B', // Secondary text color - balanced gray
+    border: '#E2E8F0', // Border color - softer than pure gray
+    notification: '#EF4444', // Badge/notification color - modern red
+    success: '#10B981', // Success color - consistent with secondary
+    error: '#EF4444', // Error color - modern red
+    warning: '#F59E0B', // Warning color - vibrant amber
+    info: '#0EA5E9', // Info color - bright blue
     neutral: {
-      100: '#FFFFFF', // White
-      200: '#F8F9FA', // Light Gray
-      300: '#F3F4F6', // Lighter Gray
-      400: '#E5E7EB', // Light Medium Gray
-      500: '#D1D5DB', // Medium Gray
-      600: '#9CA3AF', // Medium Dark Gray
-      700: '#6B7280', // Dark Gray
-      800: '#374151', // Very Dark Gray
-      900: '#111827', // Near Black
+      50: '#F8FAFC',  // Lightest background
+      100: '#F1F5F9', // Very light gray
+      200: '#E2E8F0', // Light gray borders
+      300: '#CBD5E1', // Medium light gray
+      400: '#94A3B8', // Medium gray
+      500: '#64748B', // Balanced gray text
+      600: '#475569', // Dark gray text
+      700: '#334155', // Very dark gray
+      800: '#1E293B', // Near black
+      900: '#0F172A', // Darkest text
     },
   },
   spacing: {
@@ -164,9 +177,13 @@ export const lightTheme: ThemeInterface = {
     xl: 12, // For larger components
   },
   shadows: {
-    sm: '0 1px 2px rgba(0, 0, 0, 0.05)',
+    xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+    sm: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
   },
   breakpoints: {
     sm: 640, // Mobile landscape
