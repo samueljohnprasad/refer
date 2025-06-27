@@ -45,7 +45,7 @@ export default function ReferNetHeader({ onBell, onInfo, unreadCount }: ReferNet
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <LeftSection>
         <FontAwesome name="rss" size={28} color={theme.colors.primary} style={{ marginRight: 10 }} />
-        <HeaderTitle>ReferNet Feed</HeaderTitle>
+        <HeaderTitle>ReferMe Feed</HeaderTitle>
       </LeftSection>
       <TouchableOpacity onPress={onBell} style={{ marginLeft: 16 }}>
         <FontAwesome name="bell" size={24} color={theme.colors.text} />

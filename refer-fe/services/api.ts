@@ -14,8 +14,7 @@ class ApiService {
   private token: string | null = null;
   
   constructor() {
-    const baseURL =  Platform.OS === 'android' ? 'http://10.0.2.2:5000/api' : Platform.OS === 'ios'
-    ? 'http://192.168.31.5:5000/api' : API_URL;
+    const baseURL = API_URL;
     this.instance = axios.create({
       baseURL,
       headers: {
