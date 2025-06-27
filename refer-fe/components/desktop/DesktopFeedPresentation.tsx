@@ -41,24 +41,24 @@ interface DesktopFeedPresentationProps {
 
 const Container = styled.View`
   flex: 1;
-  background-color: ${props => props.theme.colors.background};
+  background-color: #F8F9FA;
   max-width: 1400px;
   align-self: center;
   width: 100%;
 `;
 
 const Header = styled.View`
-  background-color: ${props => props.theme.colors.card};
+  background-color: #FFFFFF;
   border-bottom-width: 1px;
-  border-bottom-color: ${props => props.theme.colors.border};
-  padding: ${props => props.theme.spacing.lg}px;
+  border-bottom-color: #E5E7EB;
+  padding: 20px 24px;
 `;
 
 const MainContent = styled.View`
   flex: 1;
   flex-direction: row;
-  padding: ${props => props.theme.spacing.lg}px;
-  gap: ${props => props.theme.spacing.lg}px;
+  padding: 24px;
+  gap: 24px;
 `;
 
 const LeftColumn = styled.View`
@@ -76,37 +76,37 @@ const JobsHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${props => props.theme.spacing.lg}px;
+  margin-bottom: 20px;
 `;
 
 const JobsCount = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.lg}px;
-  font-weight: ${props => props.theme.typography.fontWeight.semibold};
-  color: ${props => props.theme.colors.text};
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
 `;
 
 const SortBy = styled.View`
   flex-direction: row;
   align-items: center;
-  gap: ${props => props.theme.spacing.sm}px;
+  gap: 8px;
 `;
 
 const SortLabel = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  color: ${props => props.theme.colors.textSecondary};
+  font-size: 14px;
+  color: #6B7280;
 `;
 
 const SortButton = styled.TouchableOpacity`
-  padding: ${props => props.theme.spacing.sm}px ${props => props.theme.spacing.md}px;
-  border-radius: ${props => props.theme.borderRadius.md}px;
+  padding: 8px 12px;
+  border-radius: 6px;
   border-width: 1px;
-  border-color: ${props => props.theme.colors.border};
-  background-color: ${props => props.theme.colors.card};
+  border-color: #E5E7EB;
+  background-color: #FFFFFF;
 `;
 
 const SortButtonText = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  color: ${props => props.theme.colors.text};
+  font-size: 14px;
+  color: #374151;
 `;
 
 const JobsList = styled.ScrollView`
@@ -117,7 +117,7 @@ const LoadingContainer = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  padding: ${props => props.theme.spacing['3xl']}px;
+  padding: 32px;
 `;
 
 const ErrorContainer = styled.View`
@@ -147,24 +147,24 @@ const EmptyStateText = styled.Text`
 `;
 
 const RightSidebar = styled.View`
-  background-color: ${props => props.theme.colors.card};
-  border-radius: ${props => props.theme.borderRadius.lg}px;
+  background-color: #FFFFFF;
+  border-radius: 8px;
   border-width: 1px;
-  border-color: ${props => props.theme.colors.border};
-  padding: ${props => props.theme.spacing.lg}px;
+  border-color: #E5E7EB;
+  padding: 20px;
   height: fit-content;
 `;
 
 const SidebarTitle = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.lg}px;
-  font-weight: ${props => props.theme.typography.fontWeight.semibold};
-  color: ${props => props.theme.colors.text};
-  margin-bottom: ${props => props.theme.spacing.md}px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 12px;
 `;
 
 const SidebarContent = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  color: ${props => props.theme.colors.textSecondary};
+  font-size: 14px;
+  color: #6B7280;
   line-height: 20px;
 `;
 

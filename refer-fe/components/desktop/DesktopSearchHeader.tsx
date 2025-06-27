@@ -15,45 +15,45 @@ interface DesktopSearchHeaderProps {
 const Container = styled.View`
   flex-direction: row;
   align-items: center;
-  gap: ${props => props.theme.spacing.md}px;
+  gap: 12px;
 `;
 
 const SearchSection = styled.View`
   flex: 2;
   flex-direction: row;
   align-items: center;
-  background-color: ${props => props.theme.colors.background};
-  border-radius: ${props => props.theme.borderRadius.md}px;
+  background-color: #FFFFFF;
+  border-radius: 6px;
   border-width: 1px;
-  border-color: ${props => props.theme.colors.border};
-  padding: ${props => props.theme.spacing.sm}px ${props => props.theme.spacing.md}px;
+  border-color: #D1D5DB;
+  padding: 8px 12px;
   min-height: 48px;
 `;
 
 const SearchIcon = styled.View`
-  margin-right: ${props => props.theme.spacing.sm}px;
+  margin-right: 8px;
 `;
 
 const SearchInput = styled.TextInput`
   flex: 1;
-  font-size: ${props => props.theme.typography.fontSize.base}px;
-  color: ${props => props.theme.colors.text};
-  margin-right: ${props => props.theme.spacing.sm}px;
+  font-size: 16px;
+  color: #111827;
+  margin-right: 8px;
 `;
 
 const SearchTag = styled.View`
-  background-color: ${props => props.theme.colors.primary};
-  border-radius: ${props => props.theme.borderRadius.sm}px;
-  padding: ${props => props.theme.spacing.xs}px ${props => props.theme.spacing.sm}px;
+  background-color: #0066CC;
+  border-radius: 4px;
+  padding: 4px 8px;
   flex-direction: row;
   align-items: center;
-  margin-right: ${props => props.theme.spacing.xs}px;
+  margin-right: 6px;
 `;
 
 const SearchTagText = styled.Text`
   color: white;
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  margin-right: ${props => props.theme.spacing.xs}px;
+  font-size: 14px;
+  margin-right: 4px;
 `;
 
 const RemoveTagButton = styled.TouchableOpacity`
@@ -69,28 +69,28 @@ const LocationSection = styled.View`
   flex: 1;
   flex-direction: row;
   align-items: center;
-  background-color: ${props => props.theme.colors.background};
-  border-radius: ${props => props.theme.borderRadius.md}px;
+  background-color: #FFFFFF;
+  border-radius: 6px;
   border-width: 1px;
-  border-color: ${props => props.theme.colors.border};
-  padding: ${props => props.theme.spacing.sm}px ${props => props.theme.spacing.md}px;
+  border-color: #D1D5DB;
+  padding: 8px 12px;
   min-height: 48px;
 `;
 
 const LocationIcon = styled.View`
-  margin-right: ${props => props.theme.spacing.sm}px;
+  margin-right: 8px;
 `;
 
 const LocationInput = styled.TextInput`
   flex: 1;
-  font-size: ${props => props.theme.typography.fontSize.base}px;
-  color: ${props => props.theme.colors.text};
+  font-size: 16px;
+  color: #111827;
 `;
 
 const SearchButton = styled.TouchableOpacity`
-  background-color: ${props => props.theme.colors.primary};
-  border-radius: ${props => props.theme.borderRadius.md}px;
-  padding: ${props => props.theme.spacing.sm}px ${props => props.theme.spacing.lg}px;
+  background-color: #0066CC;
+  border-radius: 6px;
+  padding: 12px 20px;
   min-height: 48px;
   justify-content: center;
   align-items: center;
@@ -99,8 +99,8 @@ const SearchButton = styled.TouchableOpacity`
 
 const SearchButtonText = styled.Text`
   color: white;
-  font-size: ${props => props.theme.typography.fontSize.base}px;
-  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 const DesktopSearchHeader: React.FC<DesktopSearchHeaderProps> = ({

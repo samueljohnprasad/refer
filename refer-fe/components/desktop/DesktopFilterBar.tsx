@@ -16,29 +16,29 @@ interface DesktopFilterBarProps {
 const Container = styled.View`
   flex-direction: row;
   align-items: center;
-  gap: ${props => props.theme.spacing.sm}px;
+  gap: 8px;
   flex-wrap: wrap;
 `;
 
 const FilterButton = styled.TouchableOpacity<{ isActive?: boolean }>`
   flex-direction: row;
   align-items: center;
-  padding: ${props => props.theme.spacing.sm}px ${props => props.theme.spacing.md}px;
-  border-radius: ${props => props.theme.borderRadius.md}px;
+  padding: 8px 12px;
+  border-radius: 6px;
   border-width: 1px;
-  border-color: ${props => props.isActive ? props.theme.colors.primary : props.theme.colors.border};
-  background-color: ${props => props.isActive ? props.theme.colors.primaryLight : props.theme.colors.card};
+  border-color: ${props => props.isActive ? '#0066CC' : '#E5E7EB'};
+  background-color: ${props => props.isActive ? '#E6F3FF' : '#FFFFFF'};
   min-height: 36px;
 `;
 
 const FilterButtonText = styled.Text<{ isActive?: boolean }>`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  color: ${props => props.isActive ? props.theme.colors.primary : props.theme.colors.text};
-  margin-right: ${props => props.theme.spacing.xs}px;
+  font-size: 14px;
+  color: ${props => props.isActive ? '#0066CC' : '#374151'};
+  margin-right: 4px;
 `;
 
 const FilterIcon = styled.View`
-  margin-left: ${props => props.theme.spacing.xs}px;
+  margin-left: 4px;
 `;
 
 const ModalOverlay = styled.View`
@@ -102,50 +102,50 @@ const CheckIcon = styled.View`
 const AppliedJobsButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  padding: ${props => props.theme.spacing.sm}px ${props => props.theme.spacing.md}px;
-  background-color: ${props => props.theme.colors.card};
-  border-radius: ${props => props.theme.borderRadius.md}px;
+  padding: 8px 12px;
+  background-color: #FFFFFF;
+  border-radius: 6px;
   border-width: 1px;
-  border-color: ${props => props.theme.colors.border};
+  border-color: #E5E7EB;
   margin-left: auto;
 `;
 
 const AppliedJobsText = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  color: ${props => props.theme.colors.text};
-  margin-right: ${props => props.theme.spacing.xs}px;
+  font-size: 14px;
+  color: #374151;
+  margin-right: 4px;
 `;
 
 const ReferredJobsButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  padding: ${props => props.theme.spacing.sm}px ${props => props.theme.spacing.md}px;
-  background-color: ${props => props.theme.colors.card};
-  border-radius: ${props => props.theme.borderRadius.md}px;
+  padding: 8px 12px;
+  background-color: #FFFFFF;
+  border-radius: 6px;
   border-width: 1px;
-  border-color: ${props => props.theme.colors.border};
+  border-color: #E5E7EB;
 `;
 
 const ReferredJobsText = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  color: ${props => props.theme.colors.text};
-  margin-right: ${props => props.theme.spacing.xs}px;
+  font-size: 14px;
+  color: #374151;
+  margin-right: 4px;
 `;
 
 const SavedSearchButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  padding: ${props => props.theme.spacing.sm}px ${props => props.theme.spacing.md}px;
-  background-color: ${props => props.theme.colors.card};
-  border-radius: ${props => props.theme.borderRadius.md}px;
+  padding: 8px 12px;
+  background-color: #FFFFFF;
+  border-radius: 6px;
   border-width: 1px;
-  border-color: ${props => props.theme.colors.border};
+  border-color: #E5E7EB;
 `;
 
 const SavedSearchText = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  color: ${props => props.theme.colors.text};
-  margin-right: ${props => props.theme.spacing.xs}px;
+  font-size: 14px;
+  color: #374151;
+  margin-right: 4px;
 `;
 
 const DesktopFilterBar: React.FC<DesktopFilterBarProps> = ({
@@ -349,33 +349,40 @@ const DesktopFilterBar: React.FC<DesktopFilterBarProps> = ({
   };
 
   return (
-    <Container theme={theme}>
-      <FilterButton theme={theme} onPress={() => handleFilterPress('workType')}>
-        <FilterButtonText theme={theme}>{getWorkTypeLabel()}</FilterButtonText>
-        <FilterIcon theme={theme}>
+    <Container>
+      <FilterButton onPress={() => handleFilterPress('all')}>
+        <FilterButtonText>All</FilterButtonText>
+      </FilterButton>
+
+      <FilterButton onPress={() => handleFilterPress('workType')}>
+        <FilterButtonText>{getWorkTypeLabel()}</FilterButtonText>
+        <FilterIcon>
           <FontAwesome name="chevron-down" size={12} color={theme.colors.textSecondary} />
         </FilterIcon>
       </FilterButton>
 
-      <FilterButton theme={theme} onPress={() => handleFilterPress('experienceLevel')}>
-        <FilterButtonText theme={theme}>{getExperienceLevelLabel()}</FilterButtonText>
-        <FilterIcon theme={theme}>
+      <FilterButton onPress={() => handleFilterPress('experienceLevel')}>
+        <FilterButtonText>{getExperienceLevelLabel()}</FilterButtonText>
+        <FilterIcon>
+          <FontAwesome name="chevron-down" size={12} color={theme.colors.textSecondary} />
+        </FilterIcon>
+      </FilterButton>
+
+      <FilterButton onPress={() => handleFilterPress('education')}>
+        <FilterButtonText>Required Education</FilterButtonText>
+        <FilterIcon>
           <FontAwesome name="chevron-down" size={12} color={theme.colors.textSecondary} />
         </FilterIcon>
       </FilterButton>
 
       <FilterButton 
-        theme={theme} 
         isActive={filterConfig.skills.length > 0}
         onPress={() => handleFilterPress('skills')}
       >
-        <FilterButtonText 
-          theme={theme} 
-          isActive={filterConfig.skills.length > 0}
-        >
+        <FilterButtonText isActive={filterConfig.skills.length > 0}>
           Skills{filterConfig.skills.length > 0 ? ` (${filterConfig.skills.length})` : ''}
         </FilterButtonText>
-        <FilterIcon theme={theme}>
+        <FilterIcon>
           <FontAwesome 
             name="chevron-down" 
             size={12} 
@@ -384,17 +391,17 @@ const DesktopFilterBar: React.FC<DesktopFilterBarProps> = ({
         </FilterIcon>
       </FilterButton>
 
-      <AppliedJobsButton theme={theme}>
-        <AppliedJobsText theme={theme}>Applied Jobs</AppliedJobsText>
+      <AppliedJobsButton>
+        <AppliedJobsText>Applied Jobs</AppliedJobsText>
       </AppliedJobsButton>
 
-      <ReferredJobsButton theme={theme}>
-        <ReferredJobsText theme={theme}>Referred Jobs</ReferredJobsText>
+      <ReferredJobsButton>
+        <ReferredJobsText>Referred Jobs</ReferredJobsText>
       </ReferredJobsButton>
 
-      <SavedSearchButton theme={theme}>
+      <SavedSearchButton>
         <FontAwesome name="bookmark" size={14} color={theme.colors.textSecondary} />
-        <SavedSearchText theme={theme}>Saved Searches</SavedSearchText>
+        <SavedSearchText>Saved Searches</SavedSearchText>
       </SavedSearchButton>
 
       {renderModal()}

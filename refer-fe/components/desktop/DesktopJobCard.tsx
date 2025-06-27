@@ -13,34 +13,36 @@ interface DesktopJobCardProps {
 }
 
 const Card = styled.View`
-  background-color: ${props => props.theme.colors.card};
-  border-radius: ${props => props.theme.borderRadius.lg}px;
+  background-color: #FFFFFF;
+  border-radius: 8px;
   border-width: 1px;
-  border-color: ${props => props.theme.colors.border};
-  margin-bottom: ${props => props.theme.spacing.md}px;
+  border-color: #E5E7EB;
+  margin-bottom: 16px;
   overflow: hidden;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 `;
 
 const CardHeader = styled.View`
   flex-direction: row;
-  padding: ${props => props.theme.spacing.lg}px;
+  padding: 20px;
   align-items: flex-start;
-  gap: ${props => props.theme.spacing.md}px;
+  gap: 16px;
 `;
 
 const CompanyLogo = styled.View`
-  width: 48px;
-  height: 48px;
-  border-radius: ${props => props.theme.borderRadius.md}px;
-  background-color: ${props => props.theme.colors.primary};
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background-color: #0066CC;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 `;
 
 const CompanyLogoText = styled.Text`
   color: white;
-  font-size: ${props => props.theme.typography.fontSize.lg}px;
-  font-weight: ${props => props.theme.typography.fontWeight.bold};
+  font-size: 20px;
+  font-weight: 700;
 `;
 
 const JobInfo = styled.View`
@@ -48,47 +50,49 @@ const JobInfo = styled.View`
 `;
 
 const JobTitle = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.lg}px;
-  font-weight: ${props => props.theme.typography.fontWeight.semibold};
-  color: ${props => props.theme.colors.text};
-  margin-bottom: ${props => props.theme.spacing.xs}px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+  line-height: 24px;
 `;
 
 const CompanyName = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  color: ${props => props.theme.colors.textSecondary};
-  margin-bottom: ${props => props.theme.spacing.sm}px;
+  font-size: 14px;
+  color: #6B7280;
+  margin-bottom: 8px;
 `;
 
 const JobDescription = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  color: ${props => props.theme.colors.text};
+  font-size: 14px;
+  color: #374151;
   line-height: 20px;
-  margin-bottom: ${props => props.theme.spacing.md}px;
+  margin-bottom: 12px;
 `;
 
 const JobMeta = styled.View`
   flex-direction: row;
   align-items: center;
-  gap: ${props => props.theme.spacing.md}px;
-  margin-bottom: ${props => props.theme.spacing.md}px;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 `;
 
 const MetaItem = styled.View`
   flex-direction: row;
   align-items: center;
-  gap: ${props => props.theme.spacing.xs}px;
+  gap: 6px;
 `;
 
 const MetaText = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  color: ${props => props.theme.colors.textSecondary};
+  font-size: 14px;
+  color: #6B7280;
 `;
 
 const Salary = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.base}px;
-  font-weight: ${props => props.theme.typography.fontWeight.semibold};
-  color: ${props => props.theme.colors.text};
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
 `;
 
 const ExpandButton = styled.TouchableOpacity`
@@ -199,41 +203,41 @@ const CardFooter = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: ${props => props.theme.spacing.md}px ${props => props.theme.spacing.lg}px;
+  padding: 16px 20px;
   border-top-width: 1px;
-  border-top-color: ${props => props.theme.colors.border};
-  gap: ${props => props.theme.spacing.md}px;
+  border-top-color: #F3F4F6;
+  gap: 16px;
 `;
 
 const TimeAgo = styled.Text`
-  font-size: ${props => props.theme.typography.fontSize.xs}px;
-  color: ${props => props.theme.colors.textSecondary};
+  font-size: 12px;
+  color: #9CA3AF;
 `;
 
 const ButtonsContainer = styled.View`
   flex-direction: row;
-  gap: ${props => props.theme.spacing.sm}px;
+  gap: 8px;
 `;
 
 const ActionButton = styled.TouchableOpacity<{ variant: 'primary' | 'secondary' }>`
   background-color: ${props => 
-    props.variant === 'primary' ? props.theme.colors.primary : 'transparent'};
+    props.variant === 'primary' ? '#0066CC' : 'transparent'};
   border-width: 1px;
-  border-color: ${props => props.theme.colors.primary};
-  border-radius: ${props => props.theme.borderRadius.md}px;
-  padding: ${props => props.theme.spacing.sm}px ${props => props.theme.spacing.lg}px;
+  border-color: #0066CC;
+  border-radius: 6px;
+  padding: 10px 16px;
   flex-direction: row;
   align-items: center;
-  gap: ${props => props.theme.spacing.xs}px;
-  min-width: 80px;
+  gap: 6px;
+  min-width: 90px;
   justify-content: center;
 `;
 
 const ActionButtonText = styled.Text<{ variant: 'primary' | 'secondary' }>`
-  font-size: ${props => props.theme.typography.fontSize.sm}px;
-  font-weight: ${props => props.theme.typography.fontWeight.medium};
+  font-size: 14px;
+  font-weight: 500;
   color: ${props => 
-    props.variant === 'primary' ? 'white' : props.theme.colors.primary};
+    props.variant === 'primary' ? 'white' : '#0066CC'};
 `;
 
 const DesktopJobCard: React.FC<DesktopJobCardProps> = ({
