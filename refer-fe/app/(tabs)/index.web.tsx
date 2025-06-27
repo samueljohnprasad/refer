@@ -16,7 +16,8 @@ const Container = styled.View`
 const DesktopHomeScreen: React.FC = () => {
   const { theme } = useTheme();
   const { width: screenWidth } = Dimensions.get('window');
-  const isDesktop = screenWidth >= theme.breakpoints.lg;
+  // For web version, we always want to show desktop UI
+  const isDesktop = true; // Force desktop mode for web
   
   const [selectedPost, setSelectedPost] = useState<JobSeekerPost | null>(null);
   const [isReferralModalVisible, setIsReferralModalVisible] = useState<boolean>(false);
