@@ -183,13 +183,13 @@ export const enhancedLightTheme: EnhancedThemeInterface = {
   
   typography: {
     fontFamily: {
-      primary: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      secondary: '"SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
-      mono: '"JetBrains Mono", "Fira Code", monospace',
+      primary: 'Inter',
+      secondary: 'System',  // Using system font since SF Pro Display requires manual installation
+      mono: 'JetBrainsMono',
       // Backward compatibility
-      regular: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      medium: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      bold: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      regular: 'Inter',
+      medium: 'Inter-Medium',
+      bold: 'Inter-Bold',
     },
     fontSize: {
       xs: 11,   // Small metadata

@@ -186,6 +186,7 @@ const DesktopFeed: React.FC = () => {
           <Text style={{ 
             fontSize: theme.typography.fontSize.lg, 
             fontWeight: '600', 
+            fontFamily: theme.typography.fontFamily.primary,
             color: theme.colors.text,
             marginBottom: theme.spacing.xs
           }}>
@@ -409,7 +410,8 @@ const DesktopFeed: React.FC = () => {
           }}>
             <Text style={{ 
               fontSize: theme.typography.fontSize.lg, 
-              fontWeight: '600', 
+              fontWeight: '600',
+              fontFamily: theme.typography.fontFamily.regular,
               color: theme.colors.text 
             }}>
               {sampleJobs.length} Jobs Found

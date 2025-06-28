@@ -141,40 +141,48 @@ export const lightTheme: ThemeInterface = {
   },
   typography: {
     fontFamily: {
-      primary: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', // System fonts
-      secondary: 'Inter, sans-serif', // Secondary font
-      mono: '"Courier New", Courier, monospace', // For code
+      primary: 'System',
+      secondary: 'Inter',
+      mono: 'JetBrainsMono',
       // Backward compatibility properties
-      regular: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      medium: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      bold: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      regular: 'System',
+      medium: 'Inter-Medium',
+      bold: 'Inter-Bold',
     },
     fontSize: {
-      xs: 12, // Small labels, captions
-      sm: 14, // Body text, descriptions
-      md: 15, // Medium text
-      base: 16, // Default text size (keep for compatibility)
-      lg: 18, // Job titles, important text
-      xl: 20, // Section headers
-      xxl: 22, // Extra large text
-      '2xl': 24, // Page titles
-      '3xl': 30, // Large headers
-      '4xl': 36, // Hero text
+      xs: 12,
+      sm: 14,
+      md: 15,
+      base: 16,
+      lg: 18,
+      xl: 20,
+      xxl: 22,
+      '2xl': 24,
+      '3xl': 30,
+      '4xl': 36,
     },
     fontWeight: {
       light: 300,
-      normal: 400, // Default body text
-      medium: 500, // Company names, labels
-      semibold: 600, // Job titles, emphasis
-      bold: 700, // Headers
-      extrabold: 800, // Strong emphasis
+      normal: 400,
+      medium: 500,
+      semibold: 600,
+      bold: 700,
+      extrabold: 800,
+    },
+    lineHeight: {
+      tight: 1.2,
+      normal: 1.4,
+      relaxed: 1.6,
     }
   },
   borderRadius: {
+    xs: 2,
     sm: 4,
-    md: 6, // For inputs
-    lg: 8, // For cards
-    xl: 12, // For larger components
+    md: 6,
+    lg: 8,
+    xl: 12,
+    '2xl': 16,
+    full: 9999,
   },
   shadows: {
     xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
@@ -239,45 +247,57 @@ export const darkTheme: ThemeInterface = {
   },
   typography: {
     fontFamily: {
-      primary: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', // System fonts
-      secondary: 'Inter, sans-serif', // Secondary font
-      mono: '"Courier New", Courier, monospace', // For code
+      primary: 'System',
+      secondary: 'Inter',
+      mono: 'JetBrainsMono',
       // Backward compatibility properties
-      regular: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      medium: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-      bold: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      regular: 'System',
+      medium: 'Inter-Medium',
+      bold: 'Inter-Bold',
     },
     fontSize: {
-      xs: 12, // Small labels, captions
-      sm: 14, // Body text, descriptions
-      md: 15, // Medium text
-      base: 16, // Default text size (keep for compatibility)
-      lg: 18, // Job titles, important text
-      xl: 20, // Section headers
-      xxl: 22, // Extra large text
-      '2xl': 24, // Page titles
-      '3xl': 30, // Large headers
-      '4xl': 36, // Hero text
+      xs: 12,
+      sm: 14,
+      md: 15,
+      base: 16,
+      lg: 18,
+      xl: 20,
+      xxl: 22,
+      '2xl': 24,
+      '3xl': 30,
+      '4xl': 36,
     },
     fontWeight: {
       light: 300,
-      normal: 400, // Default body text
-      medium: 500, // Company names, labels
-      semibold: 600, // Job titles, emphasis
-      bold: 700, // Headers
-      extrabold: 800, // Strong emphasis
+      normal: 400,
+      medium: 500,
+      semibold: 600,
+      bold: 700,
+      extrabold: 800,
+    },
+    lineHeight: {
+      tight: 1.2,
+      normal: 1.4,
+      relaxed: 1.6,
     }
   },
   borderRadius: {
+    xs: 2,
     sm: 4,
-    md: 6, // For inputs
-    lg: 8, // For cards
-    xl: 12, // For larger components
+    md: 6,
+    lg: 8,
+    xl: 12,
+    '2xl': 16,
+    full: 9999,
   },
   shadows: {
+    xs: '0 1px 2px rgba(0, 0, 0, 0.25)',
     sm: '0 1px 2px rgba(0, 0, 0, 0.25)',
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.35), 0 4px 6px -2px rgba(0, 0, 0, 0.2)',
+    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.35), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
+    '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
+    inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.2)',
   },
   breakpoints: {
     sm: 640, // Mobile landscape
