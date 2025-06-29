@@ -1,15 +1,18 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { StyleSheet, View, Text, ScrollView, Alert } from "react-native";
+import { StyleSheet, View, Text, ScrollView, Alert, useWindowDimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
 import { router } from "expo-router";
 import { useTheme } from "../../context/ThemeContext";
 import EnhancedProfileView from '../../components/profile/EnhancedProfileView';
+import DesktopProfilePage from '../../components/desktop/DesktopProfilePage';
 
 export default function ProfileScreen() {
     const dispatch = useDispatch<AppDispatch>();
     const { theme } = useTheme();
     const { user, token, loading, error } = useSelector((state: RootState) => state.auth);
+    const dimensions = useWindowDimensions();
+    const isDesktop = dimensions.width >= 1024;
     
     // Redirect to auth if not logged in
     useEffect(() => {
@@ -79,6 +82,16 @@ export default function ProfileScreen() {
     const handleShowAlert = (message: string) => {
         Alert.alert('ReferNet', message);
     };
+
+    // Render desktop or mobile profile based on screen size
+    if (isDesktop) {
+        return (
+            <DesktopProfilePage 
+                username={user?.email?.split('@')[0] || 'user'}
+                isOwnProfile={true}
+            />
+        );
+    }
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background }]}>

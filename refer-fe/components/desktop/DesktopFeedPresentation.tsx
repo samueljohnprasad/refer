@@ -8,6 +8,7 @@ import DesktopSearchHeader from './DesktopSearchHeader';
 import DesktopFilterBar from './DesktopFilterBar';
 import DesktopJobCard from './DesktopJobCard';
 import DesktopTabSwitcher from './DesktopTabSwitcher';
+import DesktopJobListHeader from './DesktopJobListHeader';
 
 interface DesktopFeedPresentationProps {
   // Data props
@@ -241,6 +242,11 @@ const DesktopFeedPresentation: React.FC<DesktopFeedPresentationProps> = ({
         showsVerticalScrollIndicator={true}
         contentContainerStyle={{ paddingBottom: theme.spacing.xl }}
       >
+        <DesktopJobListHeader 
+          jobCount={posts.length}
+          onSortChange={(sortType) => console.log('Sort by:', sortType)}
+          theme={theme}
+        />
         {posts.map((post, index) => (
           <DesktopJobCard
             key={('_id' in post ? post._id : post.id) || index}
@@ -248,6 +254,7 @@ const DesktopFeedPresentation: React.FC<DesktopFeedPresentationProps> = ({
             onApply={() => onApply(post)}
             onRefer={() => onRefer(post)}
             theme={theme}
+            index={index}
           />
         ))}
       </JobsList>
@@ -278,16 +285,6 @@ const DesktopFeedPresentation: React.FC<DesktopFeedPresentationProps> = ({
 
       <MainContent theme={theme}>
         <LeftColumn>
-          <JobsHeader theme={theme}>
-            <JobsCount theme={theme}>{jobsCountText}</JobsCount>
-            <SortBy theme={theme}>
-              <SortLabel theme={theme}>Sort by</SortLabel>
-              <SortButton theme={theme}>
-                <SortButtonText theme={theme}>Most Recent</SortButtonText>
-              </SortButton>
-            </SortBy>
-          </JobsHeader>
-
           <DesktopTabSwitcher
             activeTab={activeTab}
             onTabChange={onTabChange}
