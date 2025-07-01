@@ -6,7 +6,7 @@ import { EnhancedThemeInterface } from '../../constants/enhancedTheme';
 import { router } from 'expo-router';
 
 interface DesktopNavigationHeaderProps {
-  currentPage: 'feed' | 'profile' | 'messages' | 'notifications';
+  currentPage: 'feed' | 'profile' | 'messages' | 'notifications' | 'referrals';
   theme: EnhancedThemeInterface;
   onNavigate?: (page: string) => void;
 }
@@ -98,6 +98,9 @@ const DesktopNavigationHeader: React.FC<DesktopNavigationHeaderProps> = ({
         case 'profile':
           router.push('/(tabs)/profile');
           break;
+        case 'referrals':
+          router.push('/(tabs)/referrals');
+          break;
         default:
           console.log(`Navigate to ${page}`);
       }
@@ -106,6 +109,7 @@ const DesktopNavigationHeader: React.FC<DesktopNavigationHeaderProps> = ({
 
   const navigationItems = [
     { key: 'feed', label: 'Jobs', icon: 'work' },
+    { key: 'referrals', label: 'Referrals', icon: 'group-work' },
     { key: 'messages', label: 'Messages', icon: 'message' },
     { key: 'notifications', label: 'Notifications', icon: 'notifications' },
     { key: 'network', label: 'Network', icon: 'people' }

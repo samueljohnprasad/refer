@@ -124,3 +124,5 @@
 2025-06-23 01:55:57 [ERROR]: 404 - User not found - /api/notifications - GET - ::ffff:192.168.31.5 
 2025-06-23 02:08:16 [ERROR]: 404 - User not found - /api/notifications - GET - ::ffff:192.168.31.5 
 2025-06-23 02:15:04 [ERROR]: 404 - User not found - /api/notifications - GET - ::ffff:192.168.31.5 
+2025-06-29 04:55:35 [ERROR]: Failed to send email getaddrinfo ENOTFOUND smtp.example.com Error: getaddrinfo ENOTFOUND smtp.example.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:119:26)
