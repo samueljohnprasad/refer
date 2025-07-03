@@ -177,7 +177,7 @@ const DesktopFeed: React.FC = () => {
     <View style={jobCardStyle}>
       <View style={cardHeaderStyle}>
         <View style={companyLogoStyle}>
-          <Text style={{ color: 'white', fontSize: theme.typography.fontSize.lg, fontWeight: '700' }}>
+          <Text style={{ color: 'white', fontSize: theme.typography.fontSize.lg, fontWeight: 700 }}>
             {item.company.charAt(0)}
           </Text>
         </View>
@@ -185,7 +185,6 @@ const DesktopFeed: React.FC = () => {
         <View style={jobInfoStyle}>
           <Text style={{ 
             fontSize: theme.typography.fontSize.lg, 
-            fontWeight: '600', 
             fontFamily: theme.typography.fontFamily.primary,
             color: theme.colors.text,
             marginBottom: theme.spacing.xs
@@ -236,7 +235,6 @@ const DesktopFeed: React.FC = () => {
             </View>
             <Text style={{ 
               fontSize: theme.typography.fontSize.base, 
-              fontWeight: '600', 
               color: theme.colors.text 
             }}>
               {item.salary}
@@ -268,7 +266,7 @@ const DesktopFeed: React.FC = () => {
             <FontAwesome name="send" size={14} color="white" />
             <Text style={{ 
               fontSize: theme.typography.fontSize.sm, 
-              fontWeight: '500', 
+              fontWeight: 500, 
               color: 'white' 
             }}>
               Apply
@@ -291,7 +289,7 @@ const DesktopFeed: React.FC = () => {
             <FontAwesome name="share" size={14} color={theme.colors.primary} />
             <Text style={{ 
               fontSize: theme.typography.fontSize.sm, 
-              fontWeight: '500', 
+              fontWeight: 500, 
               color: theme.colors.primary 
             }}>
               Refer
@@ -379,7 +377,7 @@ const DesktopFeed: React.FC = () => {
             <Text style={{ 
               color: 'white', 
               fontSize: theme.typography.fontSize.base, 
-              fontWeight: '500' 
+              fontWeight: 500 
             }}>
               Search
             </Text>
@@ -410,7 +408,6 @@ const DesktopFeed: React.FC = () => {
           }}>
             <Text style={{ 
               fontSize: theme.typography.fontSize.lg, 
-              fontWeight: '600',
               fontFamily: theme.typography.fontFamily.regular,
               color: theme.colors.text 
             }}>
@@ -461,7 +458,6 @@ const DesktopFeed: React.FC = () => {
           }}>
             <Text style={{ 
               fontSize: theme.typography.fontSize.lg, 
-              fontWeight: '600', 
               color: theme.colors.text,
               marginBottom: theme.spacing.md
             }}>
