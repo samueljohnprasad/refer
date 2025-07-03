@@ -60,6 +60,7 @@ export const register = async (req: Request, res: Response, next: NextFunction):
         platformUpdates: true,
       },
     });
+    console.log('User created:', user);
 
     // Send verification email
     await sendVerificationEmail(email, verificationToken);
@@ -408,11 +409,12 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 // Get current user
 export const getCurrentUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const user = await User.findById(req.user.id);
+    // Use req.user, which is populated by authenticate middleware from JWT token
+    const user = req.user;
+    console.log('user getCurrentUser', user);
 
     if (!user) {
-      next(new AppError('User not found', 404));
-      return;
+      return next(new AppError('User not found', 404));
     }
 
     res.status(200).json({

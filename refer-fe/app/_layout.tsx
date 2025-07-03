@@ -17,6 +17,7 @@ import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import ThemeToggle from "@/components/Toggle/ThemeToggle";
 import store, { persistor } from "@/store";
 import { logout } from "@/store/authSlice";
+import { ToastProvider } from "../context/ToastContext";
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -37,7 +38,11 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
     const [loaded, error] = useFonts({
-        SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+        'SpaceMono': require('../assets/fonts/SpaceMono-Regular.ttf'),
+        'Inter': require('../assets/fonts/Inter-Regular.ttf'),
+        'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
+        'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
+        'JetBrainsMono': require('../assets/fonts/JetBrainsMono-Regular.ttf'),
         ...FontAwesome.font,
     });
 
@@ -65,7 +70,9 @@ export default function RootLayout() {
                 persistor={persistor}
             >
                 <ThemeProvider>
-                    <RootLayoutNav />
+                    <ToastProvider>
+                        <RootLayoutNav />
+                    </ToastProvider>
                 </ThemeProvider>
             </PersistGate>
         </Provider>
@@ -113,16 +120,6 @@ function RootLayoutNav() {
 
     return (
         <NavigationThemeProvider value={navigationTheme}>
-            <View style={styles.headerControls}>
-                <ThemeToggle showLabel={false} />
-                <TouchableOpacity
-                    style={styles.logoutButton}
-                    onPress={() => dispatch(logout())}
-                    accessibilityLabel="Logout"
-                >
-                    <Text style={styles.logoutText}>Logout</Text>
-                </TouchableOpacity>
-            </View>
             <Stack>
                 <Stack.Screen
                     name="(tabs)"
@@ -137,7 +134,7 @@ function RootLayoutNav() {
     );
 }
 // Create a style hook that incorporates theme values
-const useLayoutStyles = () => {
+export const useLayoutStyles = () => {
     const { theme } = useTheme();
     
     return StyleSheet.create({
@@ -159,11 +156,13 @@ const useLayoutStyles = () => {
             shadowOpacity: 0.1,
             shadowRadius: theme.borderRadius.sm,
             elevation: 2,
+            marginRight: 80,
+            marginTop: 0,
         },
         logoutText: {
             color: theme.colors.primary,
             fontWeight: "bold",
-            fontSize: theme.typography.fontSize.md,
+            fontSize: theme.typography.fontSize.base,
         },
     });
 };

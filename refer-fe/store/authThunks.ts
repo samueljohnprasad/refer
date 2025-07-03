@@ -8,6 +8,9 @@ import {
   LoginResponse 
 } from '../services/auth';
 import { saveAuth, loadAuth, StoredAuth } from '../services/authStorage';
+import { registerForPushNotificationsAsync } from '../services/notification.service';
+import { savePushToken } from '../services/profile.service';
+
 interface ApiError {
     response?: {
       data?: {
@@ -40,6 +43,18 @@ export const loginThunk = createAsyncThunk<
   try {
     const res: LoginResponse = await loginUser(payload);
     await saveAuth({ token: res.token, user: res.user });
+
+    // Register for push notifications after successful login
+    try {
+      const pushToken = await registerForPushNotificationsAsync();
+      if (pushToken) {
+        await savePushToken(pushToken);
+      }
+    } catch (e) {
+      console.error('Failed to register for push notifications', e);
+      // Do not block login flow if push notifications fail
+    }
+
     return res;
   } catch (error) {
     const apiError = error as ApiError;

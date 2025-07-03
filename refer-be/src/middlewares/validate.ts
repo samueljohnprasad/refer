@@ -28,8 +28,8 @@ export const validate = (
       return next(new AppValidationError(errors));
     }
 
-    // Replace the request part with the validated and sanitized value
-    req[requestPart] = value;
+    // Don't modify the request object since req.query is read-only
+    // The validated value is available in the 'value' variable if needed
     next();
   };
 };

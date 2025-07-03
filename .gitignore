@@ -1,0 +1,8 @@
+# node_modules
+# yarn.lock
+# package-lock.json
+# dist
+# logs
+# logs/combined.log
+# logs/error.log
+# ../node_modules

@@ -9,6 +9,10 @@ import rateLimit from 'express-rate-limit';
 // Import routes
 import authRoutes from './routes/auth.routes';
 import jobRoutes from './routes/job.routes';
+import jobSeekerPostRoutes from './routes/jobSeekerPost.routes';
+import profileRoutes from './routes/profile.routes';
+import referralRoutes from './routes/referral.routes';
+import notificationRoutes from './routes/notification.routes';
 
 // Import jobs
 import { setupCloseExpiredJobsJob } from './jobs/closeExpiredJobs.job';
@@ -57,11 +61,18 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+app.use('/hello', (req, res) => {
+  res.send('Hello World!');
+})
 app.use('/api', limiter);
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
+app.use('/api/job-seeker-posts', jobSeekerPostRoutes);
+app.use('/api/profiles', profileRoutes);
+app.use('/api/referrals', referralRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Start cron jobs
 setupCloseExpiredJobsJob();
@@ -75,7 +86,7 @@ app.get('/health', (req, res) => {
 app.use(errorHandler);
 
 // Start server
-app.listen(port, () => {
+app.listen(port,  () => {
   console.log(`Server running on port ${port} in ${process.env.NODE_ENV} mode`);
 });
 
