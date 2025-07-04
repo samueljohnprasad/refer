@@ -9,7 +9,10 @@ import React from "react";
 
 export default function Root({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      style={{ overflowY: "scroll", overscrollBehaviorY: "none" }}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
