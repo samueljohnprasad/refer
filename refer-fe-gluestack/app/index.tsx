@@ -6,6 +6,7 @@ import Logo from "@/assets/Icons/Logo";
 import { Box } from "@/components/ui/box";
 import { FlatList, ScrollView } from "react-native";
 import { Text } from "@/components/ui/text";
+import SideNav from "@/components/custom/SideNav";
 
 const FeatureCard = ({ iconSvg: IconSvg, name, desc }: any) => {
   return (
@@ -30,10 +31,16 @@ export default function Home() {
   return (
     <Box className="w-full h-full">
       <Box className="lg:w-[1200px] w-full min-h-screen mx-auto flex font-body flex-row  ">
-        <Box className="w-[212px] flex-col flex-shrink-0 fixed h-screen pb-2 lg:flex justify-between hidden"></Box>
-        <Box className="w-full lg:pl-[212px]  border-primaryBorder flex flex-row border-r border-primaryBorder">
-          <Box className="lg:w-[640px]  w-full h-full  pt-14 pb-20 lg:border-r lg:border-l box-border">
-            <Box className="h-14 z-60   border-b border-primaryBorder box-border lg:max-w-[638px] lg:w-[638px] fixed top-0 bg-gray-00  py-4  sm:px-6 lg:left-auto lg:right-auto flex items-center hidden lg:flex justify-center left-12 right-12 px-2"></Box>
+        <Box className="w-[212px] flex-col flex-shrink-0 fixed  h-screen pb-2 lg:flex justify-between hidden z-50">
+          <SideNav />
+        </Box>
+        <Box className="w-full lg:pl-[212px] border-primaryBorder flex flex-row border-r border-primaryBorder pointer-events-none">
+          <Box className="lg:w-[640px] w-full h-full pt-14 pb-20 lg:border-r lg:border-l box-border pointer-events-auto">
+            <Box className="h-14 z-60    lg:max-w-[638px] lg:w-[638px] fixed top-0 bg-gray-00 lg:left-auto lg:right-auto  items-center hidden lg:flex justify-center left-12 right-12 ">
+              <Box className="w-full h-full">
+                <Box className="w-full h-full border-b border-primaryBorder px-2  py-4  sm:px-6 "></Box>
+              </Box>
+            </Box>
 
             <FlatList
               className="px-6"
@@ -48,8 +55,8 @@ export default function Home() {
               )}
             />
           </Box>
-          <Box className="relative ">
-            <Box className=" h-14 lg:w-[349px] w-full z-50  lg:border-b border-primaryBorder  -mt-px fixed top-0 bg-gray-00 lg:px-6 flex-shrink-0  ">
+          <Box className="relative pointer-events-auto">
+            <Box className=" h-14 lg:w-[349px] w-full z-50  lg:border-b border-primaryBorder   fixed top-0 bg-gray-00 lg:px-6 flex-shrink-0  ">
               <Box className="flex items-center justify-between w-full lg:px-0 px-4 py-3">
                 search bar
               </Box>
