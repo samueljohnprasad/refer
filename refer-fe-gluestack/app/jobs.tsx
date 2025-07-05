@@ -1,11 +1,11 @@
 import React from "react";
 import { Box } from "@/components/ui/box";
-import { HomeContent } from "@/components/content";
+import { JobsContent } from "@/components/content";
 
-export default function Home() {
+export default function JobsPage() {
   return (
     <Box className="flex-1">
-      <HomeContent />
+      <JobsContent />
     </Box>
   );
 }

@@ -1,11 +1,11 @@
 import React from "react";
 import { Box } from "@/components/ui/box";
-import { HomeContent } from "@/components/content";
+import { NetworkContent } from "@/components/content";
 
-export default function Home() {
+export default function NetworkPage() {
   return (
     <Box className="flex-1">
-      <HomeContent />
+      <NetworkContent />
     </Box>
   );
 }
