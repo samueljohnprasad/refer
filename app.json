@@ -17,7 +17,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.gluestack.expoapp"
+      "bundleIdentifier": "com.gluestack.expoapp",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -33,7 +34,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true

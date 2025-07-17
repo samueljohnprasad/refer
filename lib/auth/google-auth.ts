@@ -67,7 +67,7 @@ export class GoogleAuthService {
         redirectTo: Linking.createURL('/(tabs)/profile'),
         queryParams: {
           access_type: 'offline',
-          prompt: 'consent',
+          // prompt: 'consent',
         },
       },
     });
