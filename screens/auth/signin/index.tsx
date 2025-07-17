@@ -38,6 +38,8 @@ import { GoogleIcon } from "./assets/icons/google";
 import { Pressable } from "@/components/ui/pressable";
 import useRouter from "@unitools/router";
 import { AuthLayout } from "../layout";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
+import { useAuth } from "@/context/AuthContext";
 
 const USERS = [
   {
@@ -72,6 +74,8 @@ const LoginWithLeftBackground = () => {
     resolver: zodResolver(loginSchema),
   });
   const toast = useToast();
+  const router = useRouter();
+  const { signInWithGoogle, loading, error, user } = useAuth();
   const [validated, setValidated] = useState({
     emailValid: true,
     passwordValid: true,
@@ -111,7 +115,42 @@ const LoginWithLeftBackground = () => {
     Keyboard.dismiss();
     handleSubmit(onSubmit)();
   };
-  const router = useRouter();
+  
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      toast.show({
+        placement: "bottom right",
+        render: ({ id }) => {
+          return (
+            <Toast nativeID={id} variant="accent" action="success">
+              <ToastTitle>Signed in with Google successfully!</ToastTitle>
+            </Toast>
+          );
+        },
+      });
+      // Navigate to main app
+      router.push("/(tabs)/jobs");
+    } catch (err) {
+      toast.show({
+        placement: "bottom right",
+        render: ({ id }) => {
+          return (
+            <Toast nativeID={id} variant="accent" action="error">
+              <ToastTitle>Google Sign-In failed. Please try again.</ToastTitle>
+            </Toast>
+          );
+        },
+      });
+    }
+  };
+  
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (user) {
+      router.push("/(tabs)/jobs");
+    }
+  }, [user, router]);
   return (
     <VStack className="max-w-[440px] w-full" space="md">
       <VStack className="md:items-center" space="md">
@@ -255,17 +294,10 @@ const LoginWithLeftBackground = () => {
           <Button className="w-full" onPress={handleSubmit(onSubmit)}>
             <ButtonText className="font-medium">Log in</ButtonText>
           </Button>
-          <Button
-            variant="outline"
-            action="secondary"
-            className="w-full gap-1"
-            onPress={() => {}}
-          >
-            <ButtonText className="font-medium">
-              Continue with Google
-            </ButtonText>
-            <ButtonIcon as={GoogleIcon} />
-          </Button>
+          <GoogleSignInButton 
+            onPress={handleGoogleSignIn}
+            disabled={loading}
+          />
         </VStack>
         <HStack className="self-center" space="sm">
           <Text size="md">Don't have an account?</Text>
