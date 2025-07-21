@@ -1,14 +1,14 @@
 import React from "react";
-import Gradient from "@/assets/Icons/Gradient";
-import DocumentData from "@/assets/Icons/DocumentData";
-import LightBulbPerson from "@/assets/Icons/LightbulbPerson";
-import Rocket from "@/assets/Icons/Rocket";
-import Logo from "@/assets/Icons/Logo";
 import { Box } from "@/components/ui/box";
-import { ScrollView } from "react-native";
 import { Text } from "@/components/ui/text";
-
-import { Link } from "expo-router";
+import MovingGradientBackground from "@/screens/components/MovingGradientBackground";
+import { VStack } from "@/components/ui/vstack";
+import { Button, ButtonText } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
+import { BottomSheet, BottomSheetTrigger } from "@/components/ui/botton-sheet";
+import SignInBottomSheet from "@/screens/components/SignInBottomSheet";
+import { useAuth } from "@/context/AuthContext";
+import HomeScreen from "../screens/home";
 
 const FeatureCard = ({ iconSvg: IconSvg, name, desc }: any) => {
   return (
@@ -30,56 +30,47 @@ const FeatureCard = ({ iconSvg: IconSvg, name, desc }: any) => {
 };
 
 export default function Home() {
+  const { user, session } = useAuth();
+
+  if (session) return <HomeScreen />;
   return (
-    <Box className="flex-1 bg-black h-[100vh]">
-      <ScrollView
+    <VStack className="flex-1 bg-black h-[100vh] justify-center">
+      <MovingGradientBackground />
+      {/* <ScrollView
         style={{ height: "100%" }}
         contentContainerStyle={{ flexGrow: 1 }}
-      >
-        <Box className="absolute h-[500px] w-[500px] lg:w-[700px] lg:h-[700px]">
-          <Gradient />
-        </Box>
-        <Box className="flex flex-1 items-center my-16 mx-5 lg:my-24 lg:mx-32">
-          <Box className="gap-10 base:flex-col sm:flex-row justify-between sm:w-[80%] md:flex-1">
-            <Box className="bg-background-template py-2 px-6 rounded-full items-center flex-column md:flex-row md:self-start">
-              <Text className="text-typography-white font-normal">
-                Get started by editing
-              </Text>
-              <Text className="text-typography-white font-medium ml-2">
-                ./App.tsx
-              </Text>
-            </Box>
-            <Link href="/tabs/">
-              <Box className="bg-background-template py-2 px-6 rounded-full items-center flex-column sm:flex-row md:self-start">
-                <Text className="text-typography-white font-normal">
-                  Explore Tab Navigation
-                </Text>
-              </Box>
-            </Link>
-          </Box>
-          <Box className="flex-1 justify-center items-center h-[20px] w-[300px] lg:h-[160px] lg:w-[400px]">
-            <Logo />
-          </Box>
+      ></ScrollView> */}
 
-          <Box className="flex-column md:flex-row">
-            <FeatureCard
-              iconSvg={DocumentData}
-              name="Docs"
-              desc="Find in-depth information about gluestack features and API."
-            />
-            <FeatureCard
-              iconSvg={LightBulbPerson}
-              name="Learn"
-              desc="Learn about gluestack in an interactive course with quizzes!"
-            />
-            <FeatureCard
-              iconSvg={Rocket}
-              name="Deploy"
-              desc="Instantly drop your gluestack site to a shareable URL with vercel."
-            />
-          </Box>
-        </Box>
-      </ScrollView>
-    </Box>
+      <BottomSheet>
+        <VStack
+          className=" flex-1 p-2 md:max-w-[440px] lg:max-w-[640px] xl:max-w-[840px] w-full h-full items-center justify-center"
+          space="xl"
+        >
+          <VStack>
+            <Heading size="3xl" className="text-center">
+              Welcome to Mentor Health
+            </Heading>
+            <Text size="sm" className="font-bold text-center text-outline-500">
+              Your AI wellbeing Coach
+            </Text>
+          </VStack>
+
+          <Button
+            variant="solid"
+            action="primary"
+            size="xl"
+            className="flex items-center font-semibold border w-full rounded-full py-2 drop-shadow-sm shadow-primary-500 hover:shadow-primary-500 hover:scale-95 transition-all duration-300"
+          >
+            <ButtonText>Get Started</ButtonText>
+          </Button>
+
+          <BottomSheetTrigger>
+            <Text className="text-center">I already have an account</Text>
+          </BottomSheetTrigger>
+
+          <SignInBottomSheet />
+        </VStack>
+      </BottomSheet>
+    </VStack>
   );
 }
