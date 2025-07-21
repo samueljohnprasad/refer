@@ -4,9 +4,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 
+const isReactNative =
+  typeof navigator !== "undefined" && navigator.product === "ReactNative";
+const isBrowser = typeof window !== "undefined";
+
+const storage = isReactNative
+  ? AsyncStorage
+  : isBrowser
+  ? window.localStorage
+  : {
+      getItem: async () => null,
+      setItem: async () => {},
+      removeItem: async () => {},
+    };
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    storage: AsyncStorage,
+    storage,
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false, // Enable URL session detection for OAuth

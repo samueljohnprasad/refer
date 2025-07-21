@@ -9,6 +9,7 @@ import { BottomSheet, BottomSheetTrigger } from "@/components/ui/botton-sheet";
 import SignInBottomSheet from "@/screens/components/SignInBottomSheet";
 import { useAuth } from "@/context/AuthContext";
 import HomeScreen from "../screens/home";
+import { Spinner } from "@/components/ui/spinner";
 
 const FeatureCard = ({ iconSvg: IconSvg, name, desc }: any) => {
   return (
@@ -30,9 +31,22 @@ const FeatureCard = ({ iconSvg: IconSvg, name, desc }: any) => {
 };
 
 export default function Home() {
-  const { user, session } = useAuth();
+  const { user, session, loading } = useAuth();
+
+  if (loading)
+    return (
+      <Box className="flex-1 items-center justify-center flex">
+        <Text className="text-typography-white font-medium ml-2 text-xl">
+          hello
+        </Text>
+        <Box className="flex-1 bg-black/50 items-center justify-center flex fixed inset-0 z-50 before:starting:backdrop-blur-0 before:absolute before:inset-0 before:bg-gray-200/50 before:backdrop-blur-[1px] before:transition before:duration-250 dark:before:bg-black/50 before:starting:opacity-0">
+          <Spinner />
+        </Box>
+      </Box>
+    );
 
   if (session) return <HomeScreen />;
+
   return (
     <VStack className="flex-1 bg-black h-[100vh] justify-center">
       <MovingGradientBackground />

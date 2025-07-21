@@ -46,6 +46,11 @@ export default () => {
         backgroundColor: "transparent",
         alignItems: "flex-end",
         borderRadius: 16,
+        elevation: 20,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.3,
+        shadowRadius: 15,
       }}
       handleStyle={{ display: "none" }}
       backgroundStyle={{
@@ -54,6 +59,7 @@ export default () => {
         alignItems: "flex-end",
       }}
       bottomInset={0}
+      enablePanDownToClose
     >
       <BottomSheetContent
         style={{
@@ -63,7 +69,6 @@ export default () => {
           borderBottomEndRadius: 16,
           height: 370,
           paddingHorizontal: 12,
-          elevation: 0,
         }}
       >
         <VStack
@@ -78,7 +83,7 @@ export default () => {
         >
           <AnimatedLinearGradient
             className="rounded-2xl"
-            colors={["#bdebf8", "#bdebf8"]}
+            colors={["#f0efed", "#bdebf8"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             locations={[0, 1]}
