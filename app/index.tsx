@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
 import MovingGradientBackground from "@/screens/components/MovingGradientBackground";
@@ -8,8 +8,9 @@ import { Heading } from "@/components/ui/heading";
 import { BottomSheet, BottomSheetTrigger } from "@/components/ui/botton-sheet";
 import SignInBottomSheet from "@/screens/components/SignInBottomSheet";
 import { useAuth } from "@/context/AuthContext";
-import HomeScreen from "../screens/home";
+import { useRouter } from "expo-router";
 import { Spinner } from "@/components/ui/spinner";
+import FirefliesParticles from "@/components/ui/FirefliesParticles";
 
 const FeatureCard = ({ iconSvg: IconSvg, name, desc }: any) => {
   return (
@@ -32,6 +33,14 @@ const FeatureCard = ({ iconSvg: IconSvg, name, desc }: any) => {
 
 export default function Home() {
   const { user, session, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session) {
+      // Redirect to tabs layout when authenticated
+      router.replace("/tabs");
+    }
+  }, [session, router]);
 
   if (loading)
     return (
@@ -45,11 +54,15 @@ export default function Home() {
       </Box>
     );
 
-  if (session) return <HomeScreen />;
+  if (session) {
+    return null; // This will be very brief while the router does its work
+  }
 
   return (
     <VStack className="flex-1 bg-black h-[100vh] justify-center">
       <MovingGradientBackground />
+      <FirefliesParticles eveningOnly={false} fireflyCount={22} />
+
       {/* <ScrollView
         style={{ height: "100%" }}
         contentContainerStyle={{ flexGrow: 1 }}

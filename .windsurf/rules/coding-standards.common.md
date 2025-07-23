@@ -6,8 +6,8 @@ trigger: always_on
 
 These rules apply to both frontend (React Native/React) 
 
-
-strictly use typescript everywhere, for every variable assignment, function params , function return, explicitly write the types.
+- always write logic in resuable hooks, composable, maintainable, readable, extensionable
+- strictly use typescript everywhere, for every variable assignment, function params , function return, explicitly write the types.
 dont use any type.
 
 ## 1. SOLID Principles

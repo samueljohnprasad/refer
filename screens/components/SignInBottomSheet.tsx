@@ -11,6 +11,7 @@ import { Heading } from "@/components/ui/heading";
 import { useRouter } from "expo-router";
 import { performOAuth } from "@/lib/auth/google-auth";
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
+import FirefliesParticles from "@/components/ui/FirefliesParticles";
 
 export default () => {
   const snapPoints = useMemo(() => ["50%"], []);
@@ -71,6 +72,8 @@ export default () => {
           paddingHorizontal: 12,
         }}
       >
+        <FirefliesParticles eveningOnly={false} fireflyCount={12} />
+
         <VStack
           className="flex-1 bg-green rounded-2xl h-full px-6 "
           space="4xl"

@@ -4,6 +4,9 @@ trigger: always_on
 
 # Frontend Coding Standards (React Native + TypeScript, Mobile & Web)
 
+
+every thing you code should be coded in a resuable way, modular, clean, seperation of concern.
+
 ##Presentation Layer (Presentational Component) Rules:
 -Only handle UI rendering and layout.
  

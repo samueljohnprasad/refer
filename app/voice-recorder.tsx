@@ -1,312 +1,104 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Animated } from "react-native";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   StatusBar,
-  Dimensions,
 } from "react-native";
-import {
-  useAudioRecorder,
-  AudioModule,
-  RecordingPresets,
-  setAudioModeAsync,
-  useAudioRecorderState,
-  useAudioPlayer,
-} from "expo-audio";
+import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
-import { LinearGradient } from "expo-linear-gradient";
-import ReanimatedView, {
-  FadeInUp,
-  FadeOutDown,
-  SlideInUp,
-  SlideOutDown,
-} from "react-native-reanimated";
 
-const { width } = Dimensions.get("window");
+import ReanimatedView, { FadeInUp, FadeOutDown } from "react-native-reanimated";
+import BreathingBackground from "@/components/ui/BreathingBackground";
+import { useWaveformBars } from "@/hooks/useWaveformBars";
+import { useRippleAnimation } from "@/hooks/useRippleAnimation";
+import GentleProgressRing from "@/components/ui/GentleProgressRing";
+import VoiceRecorderModal from "@/components/modals/VoiceRecorderModal";
+import MicControl from "@/components/ui/MicControl";
+import MindfulBackground from "@/components/ui/MindfulBackground";
 
 export default function VoiceRecorderScreen(): JSX.Element {
-  // Recorder and audio state hooks MUST come first
-  const audioRecorder: ReturnType<typeof useAudioRecorder> = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
-  const recorderState = useAudioRecorderState(audioRecorder);
-  const [recordingUri, setRecordingUri] = useState<string | null>(null);
-  const audioPlayer = useAudioPlayer(recordingUri ?? undefined);
   const toast = useToast();
-  const [isPlaying, setIsPlaying] = useState(false);
 
-  // Animated ripple setup
-  const rippleScale = useRef<Animated.Value>(new Animated.Value(1)).current;
-  const rippleOpacity = useRef<Animated.Value>(new Animated.Value(0.5)).current;
+  const {
+    isRecording,
+    isPaused,
+    isPlaying,
+    recordingUri,
+    recordingDuration,
+    startRecording: startRecordingHook,
+    pauseRecording: pauseRecordingHook,
+    resumeRecording: resumeRecordingHook,
+    stopRecording: stopRecordingHook,
+    play: playHook,
+    pause: pauseHook,
+    clear: clearRecordingHook,
+    permissionGranted,
+  } = useVoiceRecorder();
 
-  // Waveform animation setup
-  const waveformBars = useRef<Animated.Value[]>(
-    Array.from({ length: 8 }, () => new Animated.Value(0.2))
-  ).current;
+  // Animated ripple + waveform hooks
+  const { scale: rippleScale, opacity: rippleOpacity } =
+    useRippleAnimation(isRecording);
+  const waveformBars = useWaveformBars(isRecording);
 
-  // Particle system for floating dots and sparkles
-  const particleCount = 32;
-  const particles = useRef<{
-    x: Animated.Value;
-    y: Animated.Value;
-    opacity: Animated.Value;
-    scale: Animated.Value;
-    type: 'dot' | 'sparkle';
-  }[]>(
-    Array.from({ length: particleCount }, (_, i) => ({
-      x: new Animated.Value(Math.random() * width),
-      y: new Animated.Value(Math.random() * 600),
-      opacity: new Animated.Value(Math.random() * 0.4 + 0.3), // More visible: 0.3-0.7
-      scale: new Animated.Value(Math.random() * 0.8 + 0.6), // Larger: 0.6-1.4
-      type: i % 3 === 0 ? 'sparkle' : 'dot',
-    }))
-  ).current;
+  const [recorderOpen, setRecorderOpen] = useState(false);
 
-  useEffect(() => {
-    let animation: Animated.CompositeAnimation | null = null;
-    
-    if (recorderState.isRecording) {
-      // Start pulsing
-      const pulse = () => {
-        rippleScale.setValue(1);
-        rippleOpacity.setValue(0.5);
-        animation = Animated.parallel([
-          Animated.timing(rippleScale, {
-            toValue: 2.5,
-            duration: 1200,
-            useNativeDriver: true,
-          }),
-          Animated.timing(rippleOpacity, {
-            toValue: 0,
-            duration: 1200,
-            useNativeDriver: true,
-          }),
-        ]);
-        animation.start(({ finished }) => {
-          if (finished && recorderState.isRecording) {
-            pulse();
-          }
-        });
-      };
-      pulse();
-    } else {
-      // Reset ripple
-      rippleScale.setValue(1);
-      rippleOpacity.setValue(0);
-      if (animation) animation?.stop?.();
-    }
-    return () => {
-      if (animation) animation?.stop?.();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recorderState.isRecording]);
+  // Helper functions
+  const formatDuration = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
-  // Waveform animation effect
-  useEffect(() => {
-    let waveformInterval: number | null = null;
-    
-    if (recorderState.isRecording) {
-      const animateWaveform = () => {
-        const animations = waveformBars.map((bar: Animated.Value, index: number) => {
-          const randomHeight = Math.random() * 0.8 + 0.2; // Random height between 0.2 and 1.0
-          const delay = index * 50; // Stagger the animations
-          
-          return Animated.timing(bar, {
-            toValue: randomHeight,
-            duration: 150 + Math.random() * 100, // Vary animation duration
-            delay,
-            useNativeDriver: false,
-          });
-        });
-        
-        Animated.parallel(animations).start();
-      };
-      
-      // Start immediate animation
-      animateWaveform();
-      
-      // Set interval for continuous animation
-      waveformInterval = setInterval(animateWaveform, 200) as number;
-    } else {
-      // Reset bars to minimum height when not recording
-      const resetAnimations = waveformBars.map((bar: Animated.Value) => 
-        Animated.timing(bar, {
-          toValue: 0.2,
-          duration: 300,
-          useNativeDriver: false,
-        })
-      );
-      
-      Animated.parallel(resetAnimations).start();
-    }
-    
-    return () => {
-      if (waveformInterval) {
-        clearInterval(waveformInterval);
-      }
-    };
-  }, [recorderState.isRecording, waveformBars]);
-
-  // Particle animation effect
-  useEffect(() => {
-    const animateParticles = () => {
-      particles.forEach((particle, index) => {
-        const initialY = Math.random() * 600;
-        const floatAnimation = Animated.loop(
-          Animated.sequence([
-            Animated.timing(particle.y, {
-              toValue: initialY - 20,
-              duration: 3000 + Math.random() * 2000,
-              useNativeDriver: true,
-            }),
-            Animated.timing(particle.y, {
-              toValue: initialY + 40,
-              duration: 3000 + Math.random() * 2000,
-              useNativeDriver: true,
-            }),
-          ])
-        );
-
-        const fadeAnimation = Animated.loop(
-          Animated.sequence([
-            Animated.timing(particle.opacity, {
-              toValue: 0.2,
-              duration: 2000 + Math.random() * 1000,
-              useNativeDriver: true,
-            }),
-            Animated.timing(particle.opacity, {
-              toValue: 0.8,
-              duration: 2000 + Math.random() * 1000,
-              useNativeDriver: true,
-            }),
-          ])
-        );
-
-        const scaleAnimation = Animated.loop(
-          Animated.sequence([
-            Animated.timing(particle.scale, {
-              toValue: 0.5,
-              duration: 1500 + Math.random() * 1000,
-              useNativeDriver: true,
-            }),
-            Animated.timing(particle.scale, {
-              toValue: 1.2,
-              duration: 1500 + Math.random() * 1000,
-              useNativeDriver: true,
-            }),
-          ])
-        );
-
-        floatAnimation.start();
-        fadeAnimation.start();
-        if (particle.type === 'sparkle') {
-          scaleAnimation.start();
-        }
-      });
-    };
-
-    animateParticles();
-  }, [particles]);
+  const getProgressValue = (): number => {
+    // For demo: progress based on duration (resets every 60 seconds)
+    const maxDuration = 300; // 5 minutes max for gentle progress
+    return Math.min(recordingDuration / maxDuration, 1);
+  };
 
   useEffect(() => {
-    (async () => {
-      const status = await AudioModule.requestRecordingPermissionsAsync();
-      if (!status.granted) {
-        toast.show({
-          placement: "bottom right",
-          render: ({ id }) => {
-            return (
-              <Toast nativeID={id} variant="solid" action="error">
-                <ToastTitle>
-                  Permission to access microphone was denied
-                </ToastTitle>
-              </Toast>
-            );
-          },
-        });
-      }
-
-      setAudioModeAsync({
-        playsInSilentMode: true,
-        allowsRecording: true,
-      });
-    })();
-  }, []);
-
-  const startRecording = async () => {
-    try {
-      console.log("Starting recording..");
-      await audioRecorder.prepareToRecordAsync();
-      audioRecorder.record();
-      console.log("Recording started");
-    } catch (error) {
-      console.error("Failed to start recording:", error);
+    if (permissionGranted === false) {
       toast.show({
         placement: "bottom right",
         render: ({ id }) => (
           <Toast nativeID={id} variant="solid" action="error">
-            <ToastTitle>Failed to start recording</ToastTitle>
+            <ToastTitle>Permission to access microphone was denied</ToastTitle>
           </Toast>
         ),
       });
     }
+  }, [permissionGranted, toast]);
+
+  const startRecording = async (): Promise<void> => {
+    await startRecordingHook();
   };
 
-  const stopRecording = async () => {
-    try {
-      console.log("Stopping recording..");
-      await audioRecorder.stop();
-      const uri = audioRecorder.uri;
-      console.log("Recording stopped, URI:", uri);
-      setRecordingUri(uri);
-    } catch (error) {
-      console.error("Failed to stop recording:", error);
-    }
+  const pauseRecording = async (): Promise<void> => {
+    await pauseRecordingHook();
   };
 
-  const playSound = async () => {
-    if (!recordingUri) return;
-
-    try {
-      console.log("Playing Sound");
-      setIsPlaying(true);
-      audioPlayer.play();
-
-      const unsubscribe = audioPlayer.addListener(
-        "playbackStatusUpdate",
-        (status) => {
-          if (status.isLoaded && status.didJustFinish) {
-            setIsPlaying(false);
-            unsubscribe?.remove();
-          }
-        }
-      );
-    } catch (error) {
-      console.error("Error playing sound:", error);
-      Alert.alert("Error", "Failed to play recording");
-      setIsPlaying(false);
-    }
+  const resumeRecording = async (): Promise<void> => {
+    await resumeRecordingHook();
   };
 
-  const stopSound = async () => {
-    try {
-      audioPlayer.pause();
-      setIsPlaying(false);
-    } catch (error) {
-      console.error("Error stopping sound:", error);
-    }
+  const stopRecording = async (): Promise<void> => {
+    await stopRecordingHook();
   };
 
-  const clearRecording = () => {
-    setRecordingUri(null);
-    setIsPlaying(false);
-    if (audioPlayer) {
-      audioPlayer.pause();
-    }
+  const playSound = async (): Promise<void> => {
+    await playHook();
+  };
+
+  const stopSound = async (): Promise<void> => {
+    await pauseHook();
+  };
+
+  const clearRecording = (): void => {
+    clearRecordingHook();
   };
 
   return (
@@ -316,33 +108,17 @@ export default function VoiceRecorderScreen(): JSX.Element {
         backgroundColor="transparent"
         translucent
       />
-      <LinearGradient
-        colors={["#E8F5E8", "#F0F9FF", "#FEF3C7"]}
-        style={styles.gradientBackground}
-      >
-        {/* Particle Effects */}
-        <View style={styles.particleContainer}>
-          {particles.map((particle, index) => (
-            <Animated.View
-              key={index}
-              style={[
-                styles.particle,
-                particle.type === 'sparkle' ? styles.sparkle : styles.dot,
-                {
-                  transform: [
-                    { translateX: particle.x },
-                    { translateY: particle.y },
-                    { scale: particle.scale },
-                  ],
-                  opacity: particle.opacity,
-                },
-              ]}
-            />
-          ))}
-        </View>
+
+      <MindfulBackground>
         <ReanimatedView.View
-          entering={FadeInUp.duration(1200).springify().damping(20).stiffness(80)}
-          exiting={FadeOutDown.duration(800).springify().damping(18).stiffness(60)}
+          entering={FadeInUp.duration(1200)
+            .springify()
+            .damping(20)
+            .stiffness(80)}
+          exiting={FadeOutDown.duration(800)
+            .springify()
+            .damping(18)
+            .stiffness(60)}
           style={styles.safeArea}
         >
           <SafeAreaView style={styles.safeAreaInner}>
@@ -361,7 +137,11 @@ export default function VoiceRecorderScreen(): JSX.Element {
             </View>
 
             <ReanimatedView.View
-              entering={FadeInUp.delay(400).duration(1000).springify().damping(25).stiffness(60)}
+              entering={FadeInUp.delay(400)
+                .duration(1000)
+                .springify()
+                .damping(25)
+                .stiffness(60)}
               style={styles.journalCard}
             >
               <Text style={styles.journalQuestion}>
@@ -369,40 +149,63 @@ export default function VoiceRecorderScreen(): JSX.Element {
               </Text>
 
               <View style={styles.recordingSection}>
-                {!recorderState.isRecording && !recordingUri && (
+                {!isRecording && !isPaused && !recordingUri && (
                   <Text style={styles.tapToRecord}>
                     Tap to record entry or type
                   </Text>
                 )}
 
-                {recorderState.isRecording && (
+                {(isRecording || isPaused) && (
                   <View style={styles.recordingIndicator}>
-                    <View style={styles.pulsingDot} />
-                    <Text style={styles.recordingText}>Recording...</Text>
-                    
-                    {/* Live Waveform */}
-                    <View style={styles.waveformContainer}>
-                      {waveformBars.map((barHeight: Animated.Value, index: number) => (
-                        <Animated.View
-                          key={index}
-                          style={[
-                            styles.waveformBar,
-                            {
-                              height: barHeight.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [4, 32], // Min 4px, Max 32px height
-                              }),
-                            },
-                          ]}
-                        />
-                      ))}
-                    </View>
+                    {/* Gentle Progress Ring with Timer */}
+                    <GentleProgressRing
+                      progress={getProgressValue()}
+                      size={120}
+                      strokeWidth={4}
+                      backgroundColor="rgba(232, 213, 255, 0.2)"
+                      progressColor="#E8D5FF"
+                    >
+                      <View style={styles.timerContainer}>
+                        <Text style={styles.timerText}>
+                          {formatDuration(recordingDuration)}
+                        </Text>
+                        <Text style={styles.statusText}>
+                          {isPaused ? "Paused" : "Recording"}
+                        </Text>
+                      </View>
+                    </GentleProgressRing>
+
+                    {/* Live Waveform (only when actively recording) */}
+                    {isRecording && (
+                      <View style={styles.waveformContainer}>
+                        {waveformBars.map(
+                          (barHeight: Animated.Value, index: number) => (
+                            <Animated.View
+                              key={index}
+                              style={[
+                                styles.waveformBar,
+                                {
+                                  height: barHeight.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [4, 32], // Min 4px, Max 32px height
+                                  }),
+                                },
+                              ]}
+                            />
+                          )
+                        )}
+                      </View>
+                    )}
                   </View>
                 )}
 
                 {recordingUri && (
                   <View style={styles.recordingComplete}>
-                    <Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={24}
+                      color="#4ECDC4"
+                    />
                     <Text style={styles.recordingCompleteText}>
                       Recording saved!
                     </Text>
@@ -433,21 +236,41 @@ export default function VoiceRecorderScreen(): JSX.Element {
           <TouchableOpacity
             style={[
               styles.recordButton,
-              recorderState.isRecording && styles.recordingActive,
+              (isRecording || isPaused) && styles.recordingActive,
             ]}
             onPress={
-              recorderState.isRecording ? stopRecording : startRecording
+              isRecording
+                ? pauseRecording
+                : isPaused
+                ? resumeRecording
+                : startRecording
             }
             activeOpacity={0.8}
           >
             <Ionicons
-              name={recorderState.isRecording ? "stop" : "mic"}
+              name={isRecording ? "pause" : isPaused ? "play" : "mic"}
               size={32}
-              color={recorderState.isRecording ? "#FF6B6B" : "#2D3748"}
+              color={isRecording || isPaused ? "#FF6B6B" : "#2D3748"}
             />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.typeButton}>
+          {/* Stop button (when recording or paused) */}
+          {(isRecording || isPaused) && (
+            <TouchableOpacity
+              style={styles.stopButton}
+              onPress={stopRecording}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="stop" size={24} color="#FF6B6B" />
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity
+            onPress={() => {
+              setRecorderOpen(true);
+            }}
+            style={styles.typeButton}
+          >
             <Ionicons name="create" size={20} color="#6B73FF" />
             <Text style={styles.controlButtonText}>Type</Text>
           </TouchableOpacity>
@@ -482,7 +305,29 @@ export default function VoiceRecorderScreen(): JSX.Element {
             </View>
           </View>
         )}
-      </LinearGradient>
+        <VoiceRecorderModal
+          visible={recorderOpen}
+          onRequestClose={() => setRecorderOpen(false)}
+        >
+          <BreathingBackground
+            brightness={isRecording ? 1.3 : isPaused ? 0.8 : 1}
+          >
+            <MicControl
+              isRecording={isRecording}
+              isPaused={isPaused}
+              durationSeconds={recordingDuration}
+              onToggleRecord={
+                isRecording
+                  ? pauseRecording
+                  : isPaused
+                  ? resumeRecording
+                  : startRecording
+              }
+              onStop={stopRecording}
+            />
+          </BreathingBackground>
+        </VoiceRecorderModal>
+      </MindfulBackground>
     </View>
   );
 }
@@ -585,6 +430,23 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginBottom: 16,
   },
+  timerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  timerText: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#2D3748",
+    marginBottom: 4,
+  },
+  statusText: {
+    fontSize: 12,
+    color: "#A0AEC0",
+    fontWeight: "500",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
   waveformContainer: {
     flexDirection: "row",
     alignItems: "flex-end",
@@ -600,22 +462,22 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   particleContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    pointerEvents: 'none',
+    pointerEvents: "none",
   },
   particle: {
-    position: 'absolute',
+    position: "absolute",
   },
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#E8D5FF', // Soft lavender
-    shadowColor: '#E8D5FF',
+    backgroundColor: "#E8D5FF", // Soft lavender
+    shadowColor: "#E8D5FF",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.6,
     shadowRadius: 3,
@@ -624,13 +486,13 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#F0E6FF', // Lighter lavender
-    shadowColor: '#E8D5FF',
+    backgroundColor: "#F0E6FF", // Lighter lavender
+    shadowColor: "#E8D5FF",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 1,
     shadowRadius: 4,
     borderWidth: 1,
-    borderColor: 'rgba(232, 213, 255, 0.4)',
+    borderColor: "rgba(232, 213, 255, 0.4)",
   },
   recordingComplete: {
     flexDirection: "row",
@@ -695,6 +557,23 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 107, 107, 0.1)",
     borderWidth: 2,
     borderColor: "#FF6B6B",
+  },
+  stopButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginLeft: 16,
   },
   playbackContainer: {
     backgroundColor: "rgba(255, 255, 255, 0.8)",

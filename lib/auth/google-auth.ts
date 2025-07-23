@@ -67,8 +67,8 @@ const performOAuth = async (router?: any) => {
     if (result.type === "success" && result.url) {
       try {
         await createSessionFromUrl(result.url);
-        // Navigate to dashboard screen once session stored
-        router?.replace("/");
+        // Navigate to tabs layout after successful login
+        router?.replace("/tabs");
       } catch (parseError) {
         console.error("Error parsing redirect URL:", parseError);
       }
