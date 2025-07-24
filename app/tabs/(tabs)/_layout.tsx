@@ -3,7 +3,6 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
-import { BlurView } from "expo-blur";
 import { Platform } from "react-native";
 
 function TabBarIcon(props: {
@@ -15,12 +14,12 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const theme = useSeasonalTheme();
-  
+
   // Create mindful color mappings from seasonal theme
   const primaryColor = theme.gradient[0]; // Use first gradient color as primary
   const accentColor = theme.particleSparkle; // Use sparkle color as accent
   const secondaryColor = theme.particleDot; // Use dot color as secondary
-  
+
   return (
     <Tabs
       screenOptions={{
@@ -28,36 +27,25 @@ export default function TabLayout() {
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
         tabBarStyle: {
-          position: 'absolute',
+          position: "absolute",
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: Platform.OS === 'ios' ? 'transparent' : `${primaryColor}15`,
+          backgroundColor:
+            Platform.OS === "ios" ? "transparent" : `${primaryColor}15`,
           borderTopWidth: 0,
           elevation: 0,
           shadowOpacity: 0,
-          paddingBottom: Platform.OS === 'ios' ? 30 : 10,
+          paddingBottom: Platform.OS === "ios" ? 30 : 10,
           paddingTop: 10,
-          height: Platform.OS === 'ios' ? 90 : 70,
+          height: Platform.OS === "ios" ? 90 : 70,
         },
-        tabBarBackground: () => Platform.OS === 'ios' ? (
-          <BlurView
-            intensity={80}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              backgroundColor: `${primaryColor}20`,
-            }}
-          />
-        ) : null,
+
         tabBarActiveTintColor: accentColor,
         tabBarInactiveTintColor: `${secondaryColor}80`,
         tabBarLabelStyle: {
           fontSize: 12,
-          fontWeight: '600',
+          fontWeight: "600",
           marginBottom: 4,
         },
         tabBarIconStyle: {
@@ -85,12 +73,15 @@ export default function TabLayout() {
         options={{
           title: "Record",
           headerShown: false, // Hide header for voice recorder
-          tabBarIcon: ({ color }) => <TabBarIcon name="microphone" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="microphone" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="tab3"
         options={{
+          headerShown: false,
           title: "Insights",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="bar-chart" color={color} />

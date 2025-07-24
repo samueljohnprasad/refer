@@ -40,9 +40,6 @@ export default function VoiceRecorderScreen(): JSX.Element {
     permissionGranted,
   } = useVoiceRecorder();
 
-  // Animated ripple + waveform hooks
-  const { scale: rippleScale, opacity: rippleOpacity } =
-    useRippleAnimation(isRecording);
   const waveformBars = useWaveformBars(isRecording);
 
   const [recorderOpen, setRecorderOpen] = useState(false);
@@ -221,18 +218,6 @@ export default function VoiceRecorderScreen(): JSX.Element {
             <Text style={styles.controlButtonText}>Prompts</Text>
           </TouchableOpacity>
 
-          <Animated.View
-            style={[
-              styles.rippleContainer,
-              {
-                opacity: rippleOpacity,
-                transform: [{ scale: rippleScale }],
-              },
-            ]}
-            pointerEvents="none"
-          >
-            {/* Empty view for ripple */}
-          </Animated.View>
           <TouchableOpacity
             style={[
               styles.recordButton,
@@ -276,7 +261,7 @@ export default function VoiceRecorderScreen(): JSX.Element {
           </TouchableOpacity>
         </View>
 
-        {recordingUri && (
+        {/* {recordingUri && (
           <View style={styles.playbackContainer}>
             <View style={styles.playbackControls}>
               <TouchableOpacity
@@ -304,7 +289,7 @@ export default function VoiceRecorderScreen(): JSX.Element {
               </TouchableOpacity>
             </View>
           </View>
-        )}
+        )} */}
         <VoiceRecorderModal
           visible={recorderOpen}
           onRequestClose={() => setRecorderOpen(false)}
@@ -509,7 +494,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginBottom: 40,
+    marginBottom: 120,
   },
   promptsButton: {
     alignItems: "center",
@@ -524,18 +509,6 @@ const styles = StyleSheet.create({
     color: "#6B73FF",
     marginTop: 4,
     fontWeight: "500",
-  },
-  rippleContainer: {
-    position: "absolute",
-    left: "50%",
-    top: "50%",
-    width: 100,
-    height: 100,
-    marginLeft: -50,
-    marginTop: -50,
-    borderRadius: 50,
-    backgroundColor: "#FF6B6B", // pastel red ripple
-    zIndex: 0,
   },
   recordButton: {
     width: 80,

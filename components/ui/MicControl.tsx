@@ -6,12 +6,10 @@ import {
   Text,
   Dimensions,
   Animated,
-  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Path } from "react-native-svg";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 import GentleProgressRing from "@/components/ui/GentleProgressRing";
@@ -44,14 +42,9 @@ const MicControl: React.FC<MicControlProps> = ({
   onStop,
 }) => {
   const { width } = Dimensions.get("window");
-  const insets = useSafeAreaInsets();
   
   // Get theme colors using reusable hook
   const activeTheme = useSeasonalTheme();
-  
-  // Calculate tab bar height to avoid overlap
-  const tabBarHeight = Platform.OS === 'ios' ? 90 : 70;
-  const bottomOffset = tabBarHeight + 20; // Tab bar height + extra padding
   
   // Gentle heartbeat animation
   const heartbeatScale = useRef(new Animated.Value(1)).current;
@@ -181,16 +174,7 @@ const MicControl: React.FC<MicControlProps> = ({
   };
 
   return (
-    <View 
-      style={[
-        styles.container, 
-        { 
-          width,
-          bottom: bottomOffset, // Dynamic positioning to avoid tab bar
-        }
-      ]} 
-      pointerEvents="box-none"
-    >
+    <View style={[styles.container, { width }]}>
       {/* Wave-shaped background with theme colors and flowing animation */}
       <Svg
         height={PANEL_HEIGHT}
@@ -372,7 +356,7 @@ const styles = StyleSheet.create({
   container: {
     height: PANEL_HEIGHT,
     position: "absolute",
-    // bottom positioning is now dynamic via props to avoid tab bar overlap
+    bottom: 20,  // Move up for better visibility
     alignItems: "center",
     paddingTop: 32,
     paddingHorizontal: 20,
