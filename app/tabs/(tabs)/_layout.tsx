@@ -96,10 +96,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="profile/profile"
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile/[id]"
+        options={{
+          href: null, // This hides it from the tab bar
+          headerShown: true,
         }}
       />
     </Tabs>
