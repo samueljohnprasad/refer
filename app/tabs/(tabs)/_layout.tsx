@@ -62,10 +62,17 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="journal"
+        name="journal/journal"
         options={{
           title: "Journal",
           tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="journal/[id]"
+        options={{
+          href: null, // This hides it from the tab bar
+          headerShown: true,
         }}
       />
       <Tabs.Screen
