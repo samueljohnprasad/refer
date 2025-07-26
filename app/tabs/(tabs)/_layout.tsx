@@ -54,7 +54,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
@@ -62,14 +62,14 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="tab1"
+        name="journal"
         options={{
           title: "Journal",
           tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="tab2"
+        name="record"
         options={{
           title: "Record",
           headerShown: false, // Hide header for voice recorder
@@ -79,7 +79,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="tab3"
+        name="insights"
         options={{
           headerShown: false,
           title: "Insights",
@@ -89,7 +89,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="tab4"
+        name="profile"
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
