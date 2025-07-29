@@ -17,7 +17,8 @@ export default function TabLayout() {
 
   // Create mindful color mappings from seasonal theme
   const primaryColor = theme.gradient[0]; // Use first gradient color as primary
-  const accentColor = theme.particleSparkle; // Use sparkle color as accent
+  // Use a darker, more readable color for active tab items
+  const accentColor = theme.particleDot; // Active tint uses dot color for better contrast
   const secondaryColor = theme.particleDot; // Use dot color as secondary
 
   return (
@@ -31,8 +32,8 @@ export default function TabLayout() {
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor:
-            Platform.OS === "ios" ? "transparent" : `${primaryColor}15`,
+          // backgroundColor:
+          //   Platform.OS === "ios" ? "transparent" : `${primaryColor}15`,
           borderTopWidth: 0,
           elevation: 0,
           shadowOpacity: 0,
@@ -42,7 +43,7 @@ export default function TabLayout() {
         },
 
         tabBarActiveTintColor: accentColor,
-        tabBarInactiveTintColor: `${secondaryColor}80`,
+        tabBarInactiveTintColor: `${secondaryColor}60`,
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "600",

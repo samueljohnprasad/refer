@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { StyleSheet, View, ScrollView, Image, Pressable, Switch } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Image,
+  Pressable,
+  Switch,
+} from "react-native";
 import { View as ThemedView } from "@/components/Themed";
 import { Text } from "@/components/ui/text";
 import { Heading } from "@/components/ui/heading";
@@ -26,10 +33,10 @@ const SettingItem: React.FC<SettingItemProps> = ({
   hasToggle,
   toggled,
   onToggleChange,
-  onPress
+  onPress,
 }) => {
   return (
-    <Pressable 
+    <Pressable
       style={({ pressed }) => [styles.settingItem, pressed && styles.pressed]}
       onPress={onPress}
     >
@@ -44,8 +51,8 @@ const SettingItem: React.FC<SettingItemProps> = ({
         <Switch
           value={toggled}
           onValueChange={onToggleChange}
-          trackColor={{ false: '#d1d1d1', true: '#86c5da' }}
-          thumbColor={toggled ? '#0096c7' : '#f4f3f4'}
+          trackColor={{ false: "#d1d1d1", true: "#86c5da" }}
+          thumbColor={toggled ? "#0096c7" : "#f4f3f4"}
         />
       )}
       {!hasToggle && <Feather name="chevron-right" size={20} color="#a0a0a0" />}
@@ -56,36 +63,34 @@ const SettingItem: React.FC<SettingItemProps> = ({
 const ProfileScreen = () => {
   const insets = useSafeAreaInsets();
   const activeTheme = useSeasonalTheme();
-  
+
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [reminders, setReminders] = useState(true);
-  
+
   // Mock user data
   const userData = {
     name: "Alex Johnson",
     email: "alex.johnson@example.com",
     joined: "July 2025",
     journalCount: 22,
-    streakDays: 7
+    streakDays: 7,
   };
 
   return (
     <ThemedView style={styles.container}>
-      <FirefliesParticles fireflyCount={10} />
-      
       <Stack.Screen
         options={{
           headerShown: true,
           title: "Profile",
           headerStyle: {
-            backgroundColor: '#f8f9fa',
+            backgroundColor: "#f8f9fa",
           },
           headerShadowVisible: false,
         }}
       />
-      
-      <ScrollView 
+
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -93,14 +98,14 @@ const ProfileScreen = () => {
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <View style={styles.profileImageContainer}>
-            <Image 
+            <Image
               source={{ uri: "https://randomuser.me/api/portraits/men/32.jpg" }}
               style={styles.profileImage}
             />
           </View>
           <Heading style={styles.userName}>{userData.name}</Heading>
           <Text style={styles.userEmail}>{userData.email}</Text>
-          
+
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{userData.journalCount}</Text>
@@ -118,67 +123,67 @@ const ProfileScreen = () => {
             </View>
           </View>
         </View>
-        
+
         {/* Settings Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Preferences</Text>
-          
-          <SettingItem 
+
+          <SettingItem
             icon="moon"
-            title="Dark Mode" 
-            hasToggle 
+            title="Dark Mode"
+            hasToggle
             toggled={darkMode}
             onToggleChange={setDarkMode}
           />
-          
-          <SettingItem 
+
+          <SettingItem
             icon="bell"
-            title="Notifications" 
+            title="Notifications"
             subtitle="Receive updates about your journal"
-            hasToggle 
+            hasToggle
             toggled={notifications}
             onToggleChange={setNotifications}
           />
-          
-          <SettingItem 
+
+          <SettingItem
             icon="clock"
-            title="Daily Reminder" 
+            title="Daily Reminder"
             subtitle="Set time to journal daily"
-            hasToggle 
+            hasToggle
             toggled={reminders}
             onToggleChange={setReminders}
           />
         </View>
-        
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Account</Text>
-          
-          <SettingItem 
+
+          <SettingItem
             icon="user"
-            title="Edit Profile" 
-            onPress={() => console.log('Edit Profile pressed')}
+            title="Edit Profile"
+            onPress={() => console.log("Edit Profile pressed")}
           />
-          
-          <SettingItem 
+
+          <SettingItem
             icon="shield"
-            title="Privacy Settings" 
-            onPress={() => console.log('Privacy Settings pressed')}
+            title="Privacy Settings"
+            onPress={() => console.log("Privacy Settings pressed")}
           />
-          
-          <SettingItem 
+
+          <SettingItem
             icon="help-circle"
-            title="Help & Support" 
-            onPress={() => console.log('Help pressed')}
+            title="Help & Support"
+            onPress={() => console.log("Help pressed")}
           />
-          
-          <SettingItem 
+
+          <SettingItem
             icon="info"
-            title="About" 
+            title="About"
             subtitle="Version 1.0.0"
-            onPress={() => console.log('About pressed')}
+            onPress={() => console.log("About pressed")}
           />
         </View>
-        
+
         <Pressable style={styles.logoutButton}>
           <Text style={styles.logoutButtonText}>Sign Out</Text>
         </Pressable>
@@ -190,7 +195,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
   },
   scrollView: {
     flex: 1,
@@ -201,16 +206,16 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   profileHeader: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 30,
   },
   profileImageContainer: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -223,66 +228,66 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: 4,
-    color: '#2c3e50',
+    color: "#2c3e50",
   },
   userEmail: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: "#7f8c8d",
     marginBottom: 24,
   },
   statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    backgroundColor: "white",
     borderRadius: 12,
     paddingVertical: 16,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
   statItem: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
   },
   statDivider: {
     width: 1,
-    height: '80%',
-    backgroundColor: '#e0e0e0',
+    height: "80%",
+    backgroundColor: "#e0e0e0",
   },
   statValue: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#2c3e50',
+    fontWeight: "600",
+    color: "#2c3e50",
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
-    color: '#7f8c8d',
+    color: "#7f8c8d",
   },
   section: {
     marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#2c3e50',
+    fontWeight: "600",
+    color: "#2c3e50",
     marginBottom: 12,
     marginLeft: 4,
   },
   settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     borderRadius: 12,
     marginBottom: 10,
     padding: 16,
     elevation: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
@@ -295,9 +300,9 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#f0f4f8',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f0f4f8",
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 14,
   },
   settingContent: {
@@ -305,26 +310,26 @@ const styles = StyleSheet.create({
   },
   settingTitle: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#2c3e50',
+    fontWeight: "500",
+    color: "#2c3e50",
   },
   settingSubtitle: {
     fontSize: 13,
-    color: '#7f8c8d',
+    color: "#7f8c8d",
     marginTop: 2,
   },
   logoutButton: {
-    backgroundColor: '#f8d7da',
+    backgroundColor: "#f8d7da",
     paddingVertical: 16,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
     marginBottom: 30,
   },
   logoutButtonText: {
-    color: '#e74c3c',
+    color: "#e74c3c",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
 

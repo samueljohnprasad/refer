@@ -10,13 +10,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // Mood emoji mapping with colors
 const moodEmoji: Record<string, { emoji: string; color: string }> = {
-  happy: { emoji: '😊', color: '#FFD700' },
-  sad: { emoji: '😢', color: '#4682B4' },
-  neutral: { emoji: '😐', color: '#A9A9A9' },
-  excited: { emoji: '🤩', color: '#FF69B4' },
-  anxious: { emoji: '😰', color: '#9370DB' },
-  grateful: { emoji: '🙏', color: '#32CD32' },
-  tired: { emoji: '😴', color: '#1E90FF' }
+  happy: { emoji: "😊", color: "#FFD700" },
+  sad: { emoji: "😢", color: "#4682B4" },
+  neutral: { emoji: "😐", color: "#A9A9A9" },
+  excited: { emoji: "🤩", color: "#FF69B4" },
+  anxious: { emoji: "😰", color: "#9370DB" },
+  grateful: { emoji: "🙏", color: "#32CD32" },
+  tired: { emoji: "😴", color: "#1E90FF" },
 };
 
 export default function JournalDetailScreen() {
@@ -32,13 +32,13 @@ export default function JournalDetailScreen() {
       setLoading(true);
       try {
         const { data } = await getJournalEntries();
-        const foundJournal = data.find(entry => entry.id === id);
-        
+        const foundJournal = data.find((entry) => entry.id === id);
+
         if (foundJournal) {
           setJournal(foundJournal);
         }
       } catch (error) {
-        console.error('Error fetching journal:', error);
+        console.error("Error fetching journal:", error);
       } finally {
         setLoading(false);
       }
@@ -49,7 +49,9 @@ export default function JournalDetailScreen() {
     }
   }, [id]);
 
-  const mood = journal?.mood_status ? moodEmoji[journal.mood_status] : { emoji: '📝', color: '#9E9E9E' };
+  const mood = journal?.mood_status
+    ? moodEmoji[journal.mood_status]
+    : { emoji: "📝", color: "#9E9E9E" };
 
   if (loading) {
     return (
@@ -69,34 +71,37 @@ export default function JournalDetailScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <FirefliesParticles fireflyCount={15} />
-      
       <Stack.Screen
         options={{
           title: "Journal Entry",
           headerShown: true,
         }}
       />
-      
+
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[
           styles.contentContainer,
-          { paddingTop: insets.top + 16 }
+          { paddingTop: insets.top },
         ]}
       >
         <View style={styles.headerContainer}>
           <Text style={styles.date}>
-            {format(new Date(journal.created_at), 'MMMM d, yyyy • h:mm a')}
+            {format(new Date(journal.created_at), "MMMM d, yyyy • h:mm a")}
           </Text>
-          
-          <View style={[styles.moodContainer, { backgroundColor: `${mood.color}30` }]}>
+
+          <View
+            style={[
+              styles.moodContainer,
+              { backgroundColor: `${mood.color}30` },
+            ]}
+          >
             <Text style={styles.moodEmoji}>{mood.emoji}</Text>
           </View>
         </View>
 
-        <Text style={styles.title}>{journal.title}</Text>
-        
+        <Text className="text-2xl font-bold mb-4">{journal.title}</Text>
+
         <View style={styles.contentBox}>
           <Text style={styles.content}>{journal.content}</Text>
         </View>
@@ -104,7 +109,8 @@ export default function JournalDetailScreen() {
         <View style={styles.metadataContainer}>
           {journal.updated_at !== journal.created_at && (
             <Text style={styles.updatedText}>
-              Last edited: {format(new Date(journal.updated_at), 'MMMM d, yyyy • h:mm a')}
+              Last edited:{" "}
+              {format(new Date(journal.updated_at), "MMMM d, yyyy • h:mm a")}
             </Text>
           )}
         </View>
@@ -116,11 +122,11 @@ export default function JournalDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
   },
   centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   scrollView: {
     flex: 1,
@@ -130,37 +136,37 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   date: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   moodContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   moodEmoji: {
     fontSize: 20,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 24,
-    color: '#2c3e50',
+    color: "#2c3e50",
   },
   contentBox: {
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
     borderRadius: 12,
     padding: 20,
     marginBottom: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -169,18 +175,18 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 16,
     lineHeight: 24,
-    color: '#333',
+    color: "#333",
   },
   metadataContainer: {
     marginTop: 20,
   },
   updatedText: {
     fontSize: 12,
-    color: '#999',
-    fontStyle: 'italic',
+    color: "#999",
+    fontStyle: "italic",
   },
   errorText: {
     fontSize: 18,
-    color: '#e74c3c',
-  }
+    color: "#e74c3c",
+  },
 });

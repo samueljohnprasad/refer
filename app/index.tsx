@@ -54,14 +54,10 @@ export default function Home() {
       </Box>
     );
 
-  if (session) {
-    return null; // This will be very brief while the router does its work
-  }
-
   return (
     <VStack className="flex-1 bg-black h-[100vh] justify-center">
       <MovingGradientBackground />
-      <FirefliesParticles eveningOnly={false} fireflyCount={22} />
+      {/* <FirefliesParticles eveningOnly={false} fireflyCount={22} /> */}
 
       {/* <ScrollView
         style={{ height: "100%" }}
