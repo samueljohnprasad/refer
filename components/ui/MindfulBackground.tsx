@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { View, Animated, Dimensions } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { useSeasonalTheme } from "../../hooks/useSeasonalTheme";
+import AnimatedLinearGradient from "@/screens/components/AnimatedLinearGradient";
 
 const { width } = Dimensions.get("window");
 
@@ -9,16 +9,18 @@ interface MindfulBackgroundProps {
   children: React.ReactNode;
   particleCount?: number;
   enableDayNightMode?: boolean;
+  enableParticles?: boolean;
 }
 
 const MindfulBackground: React.FC<MindfulBackgroundProps> = ({
   children,
   particleCount = 32,
   enableDayNightMode = true,
+  enableParticles = true,
 }) => {
   // Get theme colors using reusable hook
   const seasonalTheme = useSeasonalTheme();
-  
+
   // Use seasonal theme or fallback to default day theme if day/night is disabled
   const activeTheme = enableDayNightMode ? seasonalTheme : seasonalTheme;
 
@@ -92,7 +94,7 @@ const MindfulBackground: React.FC<MindfulBackgroundProps> = ({
         );
 
         floatAnimation.start();
-        
+
         fadeAnimation.start();
         if (particle.type === "sparkle") {
           scaleAnimation.start();
@@ -104,48 +106,49 @@ const MindfulBackground: React.FC<MindfulBackgroundProps> = ({
   }, [particles]);
 
   return (
-    <LinearGradient
+    <AnimatedLinearGradient
       colors={activeTheme.gradient}
       style={styles.gradientBackground}
     >
       {/* Particle Effects */}
-      <View style={styles.particleContainer}>
-        {particles.map((particle, index) => (
-          <Animated.View
-            key={index}
-            style={[
-              styles.particle,
-              particle.type === "sparkle"
-                ? [
-                    styles.sparkle,
-                    {
-                      backgroundColor: activeTheme.particleSparkle,
-                      shadowColor: activeTheme.particleDot,
-                    },
-                  ]
-                : [
-                    styles.dot,
-                    {
-                      backgroundColor: activeTheme.particleDot,
-                      shadowColor: activeTheme.particleDot,
-                    },
+      {enableParticles && (
+        <View style={styles.particleContainer}>
+          {particles.map((particle, index) => (
+            <Animated.View
+              key={index}
+              style={[
+                styles.particle,
+                particle.type === "sparkle"
+                  ? [
+                      styles.sparkle,
+                      {
+                        backgroundColor: activeTheme.particleSparkle,
+                        shadowColor: activeTheme.particleDot,
+                      },
+                    ]
+                  : [
+                      styles.dot,
+                      {
+                        backgroundColor: activeTheme.particleDot,
+                        shadowColor: activeTheme.particleDot,
+                      },
+                    ],
+                {
+                  transform: [
+                    { translateX: particle.x },
+                    { translateY: particle.y },
+                    { scale: particle.scale },
                   ],
-              {
-                transform: [
-                  { translateX: particle.x },
-                  { translateY: particle.y },
-                  { scale: particle.scale },
-                ],
-                opacity: particle.opacity,
-              },
-            ]}
-          />
-        ))}
-      </View>
-
+                  opacity: particle.opacity,
+                },
+              ]}
+            />
+          ))}
+        </View>
+      )}
       {/* Content */}
       {children}
-    </LinearGradient>
+    </AnimatedLinearGradient>
   );
 };
 

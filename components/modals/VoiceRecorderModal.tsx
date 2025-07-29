@@ -23,9 +23,10 @@ const VoiceRecorderModal: React.FC<VoiceRecorderModalProps> = ({
 }) => {
   return (
     <Modal
-      animationType="slide"
-      presentationStyle="fullScreen"
+      animationType="fade"
+      presentationStyle="overFullScreen"
       visible={visible}
+      transparent
       onRequestClose={onRequestClose}
     >
       {children}

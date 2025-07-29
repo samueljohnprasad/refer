@@ -133,7 +133,7 @@ export const BottomSheetPortal = ({
     <GorhomBottomSheet
       ref={bottomSheetRef}
       snapPoints={snapPoints}
-      index={-1}
+      index={1}
       backdropComponent={renderBackdrop}
       onChange={handleSheetChanges}
       handleComponent={DragIndicator}
