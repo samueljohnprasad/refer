@@ -15,7 +15,6 @@ import {
   Easing,
   interpolate,
 } from 'react-native-reanimated';
-import LottieView from 'lottie-react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import styled from 'styled-components/native';
@@ -273,7 +272,7 @@ const AudioJournalScreen: React.FC = () => {
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                     >
-                    <LottieView
+                    {/* <LottieView
                       source={require('./glow-animation.json')} // Placeholder for Lottie file
                       autoPlay
                       loop
@@ -282,7 +281,7 @@ const AudioJournalScreen: React.FC = () => {
                         width: 100,
                         height: 100,
                       }}
-                    />
+                    /> */}
                     <Icon 
                       name={isRecording.value ? "square" : "mic"} 
                       size={32} 

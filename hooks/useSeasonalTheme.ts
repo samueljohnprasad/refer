@@ -19,7 +19,7 @@ export const useSeasonalTheme = ():
   const isDayMode = currentHour >= 6 && currentHour < 19; // 6 AM to 7 PM is day mode
 
   // Get current month for seasonal theming
-  const currentMonth = 0; // 0-11
+  const currentMonth = 10; // 0-11
 
   // Return the active theme
   const activeTheme = isDayMode

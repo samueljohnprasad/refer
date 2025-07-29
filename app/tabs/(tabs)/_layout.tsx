@@ -32,8 +32,8 @@ export default function TabLayout() {
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor:
-            Platform.OS === "ios" ? "transparent" : `${primaryColor}15`,
+          // backgroundColor:
+          //   Platform.OS === "ios" ? "transparent" : `${primaryColor}15`,
           borderTopWidth: 0,
           elevation: 0,
           shadowOpacity: 0,

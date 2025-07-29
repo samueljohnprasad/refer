@@ -12,7 +12,7 @@ import MindfulBackground from "@/components/ui/MindfulBackground";
 
 export default function Tab2() {
   return (
-    <MindfulBackground enableParticles={false}>
+    <MindfulBackground>
       <AudioRecorderProvider>
         <VoiceRecorderScreen />
       </AudioRecorderProvider>

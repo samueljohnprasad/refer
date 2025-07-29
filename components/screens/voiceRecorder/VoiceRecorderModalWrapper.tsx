@@ -13,6 +13,8 @@ import {
 import { Button, ButtonText } from "@/components/ui/button";
 import { Box } from "@/components/ui/box";
 import MindfulBackground from "@/components/ui/MindfulBackground";
+import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
+import { DurationType } from "@simform_solutions/react-native-audio-waveform/lib/constants";
 
 const stateBasedDetails = {
   [PlayerState.paused]: {
@@ -40,6 +42,7 @@ const VoiceRecorderModalWrapper = ({
   const [recoderCurrentState, setRecoderCurrentState] = useState<
     RecorderState | undefined
   >();
+  const activeTheme = useSeasonalTheme();
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
   const ref = useRef<IWaveformRef>(null);
   const ref2 = useRef<IWaveformRef>(null);
@@ -50,6 +53,7 @@ const VoiceRecorderModalWrapper = ({
     stopAllWaveFormExtractors,
     stopAllPlayers,
     stopPlayersAndExtractors,
+    onCurrentDuration,
   } = useAudioPlayer();
 
   useEffect(() => {
@@ -81,14 +85,21 @@ const VoiceRecorderModalWrapper = ({
     await ref.current?.resumeRecord();
   };
 
-  console.log("isRecording", isRecording, ref2.current?.currentState);
+  console.log(
+    "isRecording",
+    isRecording,
+    ref2.current?.currentState,
+    onCurrentDuration((result) => {
+      console.log("resultttt", result);
+    })
+  );
 
   return (
     <VoiceRecorderModal
       visible={recorderOpen}
       onRequestClose={() => setRecorderOpen(false)}
     >
-      <MindfulBackground >
+      <MindfulBackground particlesType="fireflies">
         <SafeAreaView className="flex-1 flex  justify-center">
           {/* <PlaybackControls
             isPlaying={isRecording}
@@ -99,10 +110,11 @@ const VoiceRecorderModalWrapper = ({
           /> */}
           <Box className="w-full">
             <Waveform
+              key={"player1"}
               showsHorizontalScrollIndicator={true}
               candleHeightScale={18}
               mode="live"
-              waveColor="lightblue"
+              waveColor={activeTheme.particleDot}
               ref={ref}
               candleSpace={4}
               candleWidth={6}
