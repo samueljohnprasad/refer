@@ -8,6 +8,7 @@ import {
   Dimensions,
   Animated,
   PanResponder,
+  Easing,
 } from "react-native";
 import { View as ThemedView } from "@/components/Themed";
 import { Text } from "@/components/ui/text";
@@ -54,21 +55,22 @@ const TaskItem: React.FC<TaskItemProps> = ({ text, completed, onToggle }) => {
 
   return (
     <Pressable onPress={handlePress}>
-      <Animated.View style={[
-        styles.taskItem, 
-        { 
-          transform: [{ scale: breatheAnim }],
-          opacity: fadeAnim
-        }
-      ]}>
-        <Animated.View style={[
-          styles.checkbox,
-          completed && styles.checkboxCompleted,
-        ]}>
+      <Animated.View
+        style={[
+          styles.taskItem,
+          {
+            transform: [{ scale: breatheAnim }],
+            opacity: fadeAnim,
+          },
+        ]}
+      >
+        <Animated.View
+          style={[styles.checkbox, completed && styles.checkboxCompleted]}
+        >
           {completed && (
-            <Animated.View 
+            <Animated.View
               style={{
-                transform: [{ scale: breatheAnim }]
+                transform: [{ scale: breatheAnim }],
               }}
             >
               <Feather name="check" size={14} color="#fff" />
@@ -76,7 +78,9 @@ const TaskItem: React.FC<TaskItemProps> = ({ text, completed, onToggle }) => {
           )}
         </Animated.View>
         <View style={{ flex: 1 }}>
-          <Text style={[styles.taskText, completed && styles.taskTextCompleted]}>
+          <Text
+            style={[styles.taskText, completed && styles.taskTextCompleted]}
+          >
             {text}
           </Text>
         </View>
@@ -94,7 +98,13 @@ interface DayButtonProps {
   onPress: () => void;
 }
 
-const DayButton: React.FC<DayButtonProps> = ({ day, dayName, isSelected, isToday, onPress }) => {
+const DayButton: React.FC<DayButtonProps> = ({
+  day,
+  dayName,
+  isSelected,
+  isToday,
+  onPress,
+}) => {
   const rippleAnim = useRef(new Animated.Value(1)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
 
@@ -133,28 +143,37 @@ const DayButton: React.FC<DayButtonProps> = ({ day, dayName, isSelected, isToday
 
   return (
     <Pressable onPress={handlePress}>
-      <Animated.View style={[
-        styles.dayBox,
-        isSelected && styles.dayBoxActive,
-        {
-          transform: [{ scale: rippleAnim }],
-          opacity: glowAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0.8, 1]
-          })
-        }
-      ]}>
-        <Animated.View style={{
-          opacity: glowAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0.7, 1]
-          })
-        }}>
+      <Animated.View
+        style={[
+          styles.dayBox,
+          isSelected && styles.dayBoxActive,
+          {
+            transform: [{ scale: rippleAnim }],
+            opacity: glowAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.8, 1],
+            }),
+          },
+        ]}
+      >
+        <Animated.View
+          style={{
+            opacity: glowAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.7, 1],
+            }),
+          }}
+        >
           <Text style={[styles.dayName, isSelected && styles.dayNameActive]}>
             {dayName}
           </Text>
-          <Text style={[styles.dayNumberText, isSelected && styles.dayNumberTextActive]}>
-            {format(day, 'd')}
+          <Text
+            style={[
+              styles.dayNumberText,
+              isSelected && styles.dayNumberTextActive,
+            ]}
+          >
+            {format(day, "d")}
           </Text>
         </Animated.View>
         {isToday && !isSelected && <View style={styles.todayIndicator} />}
@@ -177,11 +196,17 @@ const DailyNotesScreen = () => {
 
   // Content swipe animation
   const contentSlideAnim = useRef(new Animated.Value(0)).current;
+  // Opacity animation for mindful cross-fade
+  const contentOpacityAnim = useRef(new Animated.Value(1)).current;
+  // Day label animation values
+  const dayLabelOpacityAnim = useRef(new Animated.Value(1)).current;
+  const dayLabelTranslateAnim = useRef(new Animated.Value(0)).current;
 
   // Gesture-driven pan responder for week navigation
   const panResponder = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gestureState) => Math.abs(gestureState.dx) > 10,
+      onMoveShouldSetPanResponder: (_, gestureState) =>
+        Math.abs(gestureState.dx) > 10,
       onPanResponderMove: (_, gestureState) => {
         weekSlideAnim.setValue(gestureState.dx / 50); // create subtle move effect
       },
@@ -206,18 +231,43 @@ const DailyNotesScreen = () => {
 
   // Helper to move date by offset without stale closure issues
   const changeDateBy = (offset: number) => {
-    // Reset slide animation before and after change to avoid sticking
-    contentSlideAnim.setValue(0);
-
-    setSelectedDate(prev => {
-      const newDate = addDays(prev, offset);
-      setCurrentWeekView(newDate);
-      return newDate;
+    // Animate week header slide to match arrow behavior
+    const direction = offset > 0 ? 1 : -1;
+    Animated.timing(weekSlideAnim, {
+      toValue: direction,
+      duration: 350,
+      useNativeDriver: true,
+    }).start(() => {
+      Animated.timing(weekSlideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
     });
+    // Gently fade out, change date, then fade back in
+    Animated.timing(contentOpacityAnim, {
+      toValue: 0.15,
+      duration: 180,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: true,
+    }).start(() => {
+      // Once faded, update date
+      setSelectedDate((prev) => {
+        const newDate = addDays(prev, offset);
+        setCurrentWeekView(newDate);
+        return newDate;
+      });
 
-    // Ensure animation value is reset on next frame
-    requestAnimationFrame(() => {
+      // Reset slide value to avoid sticking
       contentSlideAnim.setValue(0);
+
+      // Fade content back in
+      Animated.timing(contentOpacityAnim, {
+        toValue: 1,
+        duration: 300,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }).start();
     });
   };
 
@@ -225,11 +275,13 @@ const DailyNotesScreen = () => {
   const goToNextDateContent = () => changeDateBy(1);
 
   // Pan responder for content area
-  const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+  const clamp = (value: number, min: number, max: number) =>
+    Math.min(Math.max(value, min), max);
 
   const contentPanResponder = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dx) > Math.abs(g.dy) && Math.abs(g.dx) > 10,
+      onMoveShouldSetPanResponder: (_, g) =>
+        Math.abs(g.dx) > Math.abs(g.dy) && Math.abs(g.dx) > 10,
 
       onPanResponderMove: (_, g) => {
         // Directly use dx, but clamp for safety
@@ -237,14 +289,14 @@ const DailyNotesScreen = () => {
       },
       onPanResponderRelease: (_, g) => {
         const absDx = Math.abs(g.dx);
-        const direction = g.dx > 0 ? 'right' : 'left';
+        const direction = g.dx > 0 ? "right" : "left";
 
         // Decide and change date BEFORE animating back to center
         if (absDx > 60) {
-          if (direction === 'left') {
-            goToPreviousDateContent();
-          } else {
+          if (direction === "left") {
             goToNextDateContent();
+          } else {
+            goToPreviousDateContent();
           }
         }
 
@@ -265,13 +317,49 @@ const DailyNotesScreen = () => {
       onPanResponderTerminationRequest: () => false,
     })
   ).current;
-  
+
   // Calculate week based on current week view (not selected date)
   const weekStart = startOfWeek(currentWeekView, { weekStartsOn: 0 }); // Sunday
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-  
-  const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-  
+
+  const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+  // Animate day label with breath-like motion
+  useEffect(() => {
+    // Start from slightly faded and elevated
+    dayLabelOpacityAnim.setValue(0.7);
+    dayLabelTranslateAnim.setValue(6);
+
+    // Gentle breath-in animation (like inhale)
+    const breathIn = Animated.parallel([
+      Animated.timing(dayLabelOpacityAnim, {
+        toValue: 1,
+        duration: 900, // Slower for serenity
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
+      }),
+      Animated.timing(dayLabelTranslateAnim, {
+        toValue: 0,
+        duration: 1100, // Slight stagger for organic feel
+        easing: Easing.out(Easing.sin),
+        useNativeDriver: true,
+      }),
+    ]);
+
+    // Subtle breath-out (like exhale) - more subtle
+    const breathOut = Animated.parallel([
+      Animated.timing(dayLabelOpacityAnim, {
+        toValue: 0.95, // Slight fade on settle
+        duration: 300,
+        delay: 200, // Pause at peak
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+    ]);
+
+    Animated.sequence([breathIn, breathOut]).start();
+  }, [selectedDate]);
+
   // Week navigation functions with gentle transitions
   const goToPreviousWeek = () => {
     Animated.timing(weekSlideAnim, {
@@ -279,7 +367,7 @@ const DailyNotesScreen = () => {
       duration: 400,
       useNativeDriver: true,
     }).start(() => {
-      setCurrentWeekView(prev => addDays(prev, -7));
+      setCurrentWeekView((prev) => addDays(prev, -7));
       Animated.timing(weekSlideAnim, {
         toValue: 0,
         duration: 300,
@@ -287,14 +375,14 @@ const DailyNotesScreen = () => {
       }).start();
     });
   };
-  
+
   const goToNextWeek = () => {
     Animated.timing(weekSlideAnim, {
       toValue: 1,
       duration: 400,
       useNativeDriver: true,
     }).start(() => {
-      setCurrentWeekView(prev => addDays(prev, 7));
+      setCurrentWeekView((prev) => addDays(prev, 7));
       Animated.timing(weekSlideAnim, {
         toValue: 0,
         duration: 300,
@@ -302,7 +390,7 @@ const DailyNotesScreen = () => {
       }).start();
     });
   };
-  
+
   const selectDate = (date: Date) => {
     setSelectedDate(date);
     // Also update the week view to center on the selected date
@@ -313,7 +401,7 @@ const DailyNotesScreen = () => {
   const selectDateWithAnimation = (date: Date) => {
     selectDate(date);
   };
-  
+
   // Calendar modal functions with gentle animations
   const openCalendar = () => {
     setShowCalendarModal(true);
@@ -331,7 +419,7 @@ const DailyNotesScreen = () => {
       }),
     ]).start();
   };
-  
+
   const closeCalendar = () => {
     Animated.parallel([
       Animated.timing(modalScaleAnim, {
@@ -348,23 +436,27 @@ const DailyNotesScreen = () => {
       setShowCalendarModal(false);
     });
   };
-  
+
   const selectDateFromCalendar = (date: Date) => {
     setSelectedDate(date);
     // Also update the week view to center on the selected date
     setCurrentWeekView(date);
     setShowCalendarModal(false);
   };
-  
+
   // Mock tasks data with state
   const [tasks, setTasks] = useState([
     { id: 1, text: "Sign up for Clover", completed: true },
-    { id: 2, text: "Read through the Getting Started pages in the sidebar", completed: false },
+    {
+      id: 2,
+      text: "Read through the Getting Started pages in the sidebar",
+      completed: false,
+    },
   ]);
 
   const toggleTask = (taskId: number) => {
-    setTasks(prevTasks => 
-      prevTasks.map(task => 
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
         task.id === taskId ? { ...task, completed: !task.completed } : task
       )
     );
@@ -388,19 +480,28 @@ const DailyNotesScreen = () => {
           <Pressable style={styles.calendarIcon} onPress={openCalendar}>
             <Feather name="calendar" size={20} color="#000" />
           </Pressable>
-          
+
           <View style={styles.navigationContainer}>
             <Pressable style={styles.navButton} onPress={goToPreviousWeek}>
               <Feather name="chevron-left" size={24} color="#000" />
             </Pressable>
-            
-            <Text style={styles.todayText}>{isToday(selectedDate) ? 'Today' : format(selectedDate, 'EEEE')}</Text>
-            
+
+            <Animated.View
+              style={{
+                opacity: dayLabelOpacityAnim,
+                transform: [{ translateY: dayLabelTranslateAnim }],
+              }}
+            >
+              <Text style={styles.todayText}>
+                {isToday(selectedDate) ? "Today" : format(selectedDate, "EEEE")}
+              </Text>
+            </Animated.View>
+
             <Pressable style={styles.navButton} onPress={goToNextWeek}>
               <Feather name="chevron-right" size={24} color="#000" />
             </Pressable>
           </View>
-          
+
           <Pressable style={styles.moreButton}>
             <Feather name="more-horizontal" size={24} color="#000" />
           </Pressable>
@@ -408,24 +509,30 @@ const DailyNotesScreen = () => {
 
         {/* Week View */}
         <View style={styles.weekContainer} {...panResponder.panHandlers}>
-          <Animated.View style={[
-            styles.weekRow,
-            {
-              transform: [{
-                translateX: weekSlideAnim.interpolate({
+          <Animated.View
+            style={[
+              styles.weekRow,
+              {
+                transform: [
+                  {
+                    translateX: weekSlideAnim.interpolate({
+                      inputRange: [-1, 0, 1],
+                      outputRange: [-10, 0, 10],
+                    }),
+                  },
+                ],
+                opacity: weekSlideAnim.interpolate({
                   inputRange: [-1, 0, 1],
-                  outputRange: [-10, 0, 10],
-                })
-              }],
-              opacity: weekSlideAnim.interpolate({
-                inputRange: [-1, 0, 1],
-                outputRange: [0.3, 1, 0.3],
-              })
-            }
-          ]}>
+                  outputRange: [0.3, 1, 0.3],
+                }),
+              },
+            ]}
+          >
             {weekDays.map((day, index) => {
               const isTodayDate = isToday(day);
-              const isSelectedDay = format(day, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
+              const isSelectedDay =
+                format(day, "yyyy-MM-dd") ===
+                format(selectedDate, "yyyy-MM-dd");
               return (
                 <DayButton
                   key={`day-${index}`}
@@ -439,7 +546,7 @@ const DailyNotesScreen = () => {
             })}
           </Animated.View>
         </View>
-        
+
         {/* Edge-to-edge divider */}
         <View style={styles.weekDivider} />
 
@@ -448,6 +555,7 @@ const DailyNotesScreen = () => {
           style={[
             styles.mainContent,
             {
+              opacity: contentOpacityAnim,
               transform: [
                 {
                   translateX: contentSlideAnim,
@@ -458,14 +566,25 @@ const DailyNotesScreen = () => {
           {...contentPanResponder.panHandlers}
         >
           <View style={styles.dateHeader}>
-            <Text style={styles.dayLabel}>{format(selectedDate, 'EEEE').toUpperCase()} • {isToday(selectedDate) ? 'TODAY' : format(selectedDate, 'EEEE').toUpperCase()}</Text>
-            <Text style={styles.dateText}>{format(selectedDate, 'MMM d, yyyy')}</Text>
+            <Text style={styles.dayLabel}>
+              {format(selectedDate, "EEEE").toUpperCase()} •{" "}
+              {isToday(selectedDate)
+                ? "TODAY"
+                : format(selectedDate, "EEEE").toUpperCase()}
+            </Text>
+            <Text style={styles.dateText}>
+              {format(selectedDate, "MMM d, yyyy")}
+            </Text>
           </View>
 
           <Text style={styles.title}>These are your Daily Notes.</Text>
-          
+
           <Text style={styles.description}>
-            Think of them as a calendar you can write on. Everyday you get a fresh doc. Use it to plan tasks or jot down notes throughout your day. Any tasks you don't complete will automatically roll over to the next day. Try it out for a few days! It's a great habit to keep you focused and prioritized.
+            Think of them as a calendar you can write on. Everyday you get a
+            fresh doc. Use it to plan tasks or jot down notes throughout your
+            day. Any tasks you don't complete will automatically roll over to
+            the next day. Try it out for a few days! It's a great habit to keep
+            you focused and prioritized.
           </Text>
 
           <Text style={styles.tasksIntro}>
@@ -485,7 +604,7 @@ const DailyNotesScreen = () => {
           </View>
         </Animated.View>
       </ScrollView>
-      
+
       {/* Calendar Modal */}
       <Modal
         visible={showCalendarModal}
@@ -493,23 +612,27 @@ const DailyNotesScreen = () => {
         animationType="fade"
         onRequestClose={closeCalendar}
       >
-        <Animated.View style={[styles.modalOverlay, { opacity: modalOpacityAnim }]}>
+        <Animated.View
+          style={[styles.modalOverlay, { opacity: modalOpacityAnim }]}
+        >
           <Pressable style={styles.modalBackdrop} onPress={closeCalendar} />
-          <Animated.View style={[
-            styles.calendarModal,
-            {
-              transform: [{ scale: modalScaleAnim }],
-              opacity: modalOpacityAnim,
-            }
-          ]}>
+          <Animated.View
+            style={[
+              styles.calendarModal,
+              {
+                transform: [{ scale: modalScaleAnim }],
+                opacity: modalOpacityAnim,
+              },
+            ]}
+          >
             <View style={styles.calendarHeader}>
               <Text style={styles.calendarTitle}>Select Date</Text>
               <Pressable style={styles.closeButton} onPress={closeCalendar}>
                 <Feather name="x" size={24} color="#000" />
               </Pressable>
             </View>
-            
-            <CalendarPicker 
+
+            <CalendarPicker
               selectedDate={selectedDate}
               onDateSelect={selectDateFromCalendar}
             />
@@ -526,28 +649,39 @@ interface CalendarPickerProps {
   onDateSelect: (date: Date) => void;
 }
 
-const CalendarPicker: React.FC<CalendarPickerProps> = ({ selectedDate, onDateSelect }) => {
+const CalendarPicker: React.FC<CalendarPickerProps> = ({
+  selectedDate,
+  onDateSelect,
+}) => {
   const [currentMonth, setCurrentMonth] = useState(selectedDate);
-  
+
   // Get days in current month
-  const startOfCurrentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-  const endOfCurrentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+  const startOfCurrentMonth = new Date(
+    currentMonth.getFullYear(),
+    currentMonth.getMonth(),
+    1
+  );
+  const endOfCurrentMonth = new Date(
+    currentMonth.getFullYear(),
+    currentMonth.getMonth() + 1,
+    0
+  );
   const startDate = startOfWeek(startOfCurrentMonth, { weekStartsOn: 0 });
   const endDate = addDays(endOfCurrentMonth, 6 - endOfCurrentMonth.getDay());
-  
+
   const days = [];
   let current = startDate;
   while (current <= endDate) {
     days.push(current);
     current = addDays(current, 1);
   }
-  
+
   const goToPreviousMonth = () => {
-    setCurrentMonth(prev => addDays(prev, -30));
+    setCurrentMonth((prev) => addDays(prev, -30));
   };
-  
+
   const goToNextMonth = () => {
-    setCurrentMonth(prev => addDays(prev, 30));
+    setCurrentMonth((prev) => addDays(prev, 30));
   };
 
   return (
@@ -556,24 +690,29 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({ selectedDate, onDateSel
         <Pressable style={styles.monthNavButton} onPress={goToPreviousMonth}>
           <Feather name="chevron-left" size={20} color="#000" />
         </Pressable>
-        <Text style={styles.monthTitle}>{format(currentMonth, 'MMMM yyyy')}</Text>
+        <Text style={styles.monthTitle}>
+          {format(currentMonth, "MMMM yyyy")}
+        </Text>
         <Pressable style={styles.monthNavButton} onPress={goToNextMonth}>
           <Feather name="chevron-right" size={20} color="#000" />
         </Pressable>
       </View>
-      
+
       <View style={styles.weekDaysHeader}>
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <Text key={day} style={styles.weekDayLabel}>{day}</Text>
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          <Text key={day} style={styles.weekDayLabel}>
+            {day}
+          </Text>
         ))}
       </View>
-      
+
       <View style={styles.daysGrid}>
         {days.map((day, index) => {
           const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
           const isTodayDate = isToday(day);
-          const isSelected = format(day, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
-          
+          const isSelected =
+            format(day, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd");
+
           return (
             <Pressable
               key={index}
@@ -584,13 +723,15 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({ selectedDate, onDateSel
               ]}
               onPress={() => onDateSelect(day)}
             >
-              <Text style={[
-                styles.dayCellText,
-                !isCurrentMonth && styles.otherMonthText,
-                isSelected && styles.selectedDayText,
-                isTodayDate && !isSelected && styles.todayDayText,
-              ]}>
-                {format(day, 'd')}
+              <Text
+                style={[
+                  styles.dayCellText,
+                  !isCurrentMonth && styles.otherMonthText,
+                  isSelected && styles.selectedDayText,
+                  isTodayDate && !isSelected && styles.todayDayText,
+                ]}
+              >
+                {format(day, "d")}
               </Text>
             </Pressable>
           );
@@ -669,6 +810,11 @@ const styles = StyleSheet.create({
   },
   dayBoxActive: {
     backgroundColor: "#007AFF",
+    padding: 10,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   dayName: {
     fontSize: 12,
@@ -810,7 +956,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     margin: 20,
-    width: Dimensions.get('window').width - 40,
+    width: Dimensions.get("window").width - 40,
     maxHeight: "80%",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
