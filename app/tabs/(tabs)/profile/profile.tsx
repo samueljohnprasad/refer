@@ -15,6 +15,7 @@ import { Text } from "@/components/ui/text";
 import { Feather } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import { format, startOfWeek, addDays, isToday } from "date-fns";
+import { MentalHealthProfileContainer } from "@/components/mentalHealth/MentalHealthProfileContainer";
 
 interface TaskItemProps {
   text: string;
@@ -444,24 +445,6 @@ const DailyNotesScreen = () => {
     setShowCalendarModal(false);
   };
 
-  // Mock tasks data with state
-  const [tasks, setTasks] = useState([
-    { id: 1, text: "Sign up for Clover", completed: true },
-    {
-      id: 2,
-      text: "Read through the Getting Started pages in the sidebar",
-      completed: false,
-    },
-  ]);
-
-  const toggleTask = (taskId: number) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
-
   return (
     <ThemedView style={styles.container}>
       <Stack.Screen
@@ -577,30 +560,14 @@ const DailyNotesScreen = () => {
             </Text>
           </View>
 
-          <Text style={styles.title}>These are your Daily Notes.</Text>
-
-          <Text style={styles.description}>
-            Think of them as a calendar you can write on. Everyday you get a
-            fresh doc. Use it to plan tasks or jot down notes throughout your
-            day. Any tasks you don't complete will automatically roll over to
-            the next day. Try it out for a few days! It's a great habit to keep
-            you focused and prioritized.
-          </Text>
-
-          <Text style={styles.tasksIntro}>
-            We've gone ahead and created a few tasks to help you get started.
-          </Text>
-
-          {/* Tasks */}
-          <View style={styles.tasksContainer}>
-            {tasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                text={task.text}
-                completed={task.completed}
-                onToggle={() => toggleTask(task.id)}
-              />
-            ))}
+          {/* Mental Health Journal Dashboard */}
+          <View style={styles.mentalHealthSection}>
+            <MentalHealthProfileContainer
+              selectedDate={selectedDate}
+              onRefresh={() => {
+                // Optional refresh logic for mental health data
+              }}
+            />
           </View>
         </Animated.View>
       </ScrollView>
@@ -871,13 +838,6 @@ const styles = StyleSheet.create({
     color: "#000",
     lineHeight: 42,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#000",
-    marginBottom: 16,
-    lineHeight: 32,
-  },
   description: {
     fontSize: 16,
     color: "#666",
@@ -921,6 +881,23 @@ const styles = StyleSheet.create({
   taskTextCompleted: {
     color: "#999",
     textDecorationLine: "line-through",
+  },
+  // Mental Health Section Styles
+  mentalHealthSection: {
+    paddingTop: 8,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#000",
+    marginBottom: 8,
+    lineHeight: 32,
+  },
+  sectionDescription: {
+    fontSize: 16,
+    color: "#666",
+    lineHeight: 24,
+    marginBottom: 24,
   },
   todayIndicator: {
     position: "absolute",
