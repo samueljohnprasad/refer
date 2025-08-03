@@ -331,10 +331,11 @@ const InsightsScreen: React.FC = () => {
           {/* Chart Area with soft background */}
           <View style={styles.chartWrapper}>
             <VictoryChart
-              width={screenWidth - 40}
-              height={280}
-              padding={{ left: 4, top: 4, right: 4, bottom: 40 }}
+              width={screenWidth - 32}
+              height={300}
+              padding={{ left: 0, top: 40, right: 0, bottom: 40 }}
               domain={{ x: [-0.5, 6.5], y: [0.5, 3.5] }}
+              domainPadding={{ x: 20 }}
             >
               {/* Soft background area */}
               {/* <VictoryArea
@@ -431,13 +432,16 @@ const InsightsScreen: React.FC = () => {
                 style={{
                   axis: { stroke: "transparent" },
                   tickLabels: {
-                    fontSize: 14,
+                    fontSize: 12,
                     fill: "#9CA3AF",
                     fontFamily: "System",
                     fontWeight: "500",
                   },
                   grid: { stroke: "transparent" },
                 }}
+                dependentAxis={false}
+                standalone={false}
+                tickValues={[0, 1, 2, 3, 4, 5, 6]}
                 tickFormat={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
               />
             </VictoryChart>
@@ -579,10 +583,10 @@ const styles = StyleSheet.create({
   chartWrapper: {
     position: "relative",
     backgroundColor: "#FFFBEB", // Soft cream background for chart area
-    marginHorizontal: 4,
+    marginHorizontal: 8,
     marginVertical: 4,
     borderRadius: 16,
-    overflow: "hidden",
+    overflow: "visible",
   },
   currentMoodIndicator: {
     position: "absolute",
