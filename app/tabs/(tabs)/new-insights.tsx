@@ -19,6 +19,8 @@ import {
   VictoryLabel,
 } from "victory-native";
 import { Feather } from "@expo/vector-icons";
+import { useAuth } from "@/context/AuthContext";
+import { Button, ButtonText } from "@/components/ui/button";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -97,6 +99,8 @@ class InsightsApiService {
 }
 
 const InsightsScreen: React.FC = () => {
+  const { signOut } = useAuth();
+
   const [selectedPeriod, setSelectedPeriod] = useState<string>("This week");
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [moodData, setMoodData] = useState<MoodDataPoint[]>([]);
@@ -447,7 +451,7 @@ const InsightsScreen: React.FC = () => {
             </VictoryChart>
 
             {/* Current mood indicator */}
-            {/* {currentDayData && (
+            {currentDayData && (
               <View style={styles.currentMoodIndicator}>
                 <View
                   style={[
@@ -466,13 +470,21 @@ const InsightsScreen: React.FC = () => {
                   />
                 </View>
               </View>
-            )} */}
+            )}
           </View>
 
           {/* Dynamic insights text */}
           <View style={styles.insightsTextContainer}>
             <Text style={styles.insightsText}>{insights}</Text>
           </View>
+          <Button
+            variant="solid"
+            action="primary"
+            size="xl"
+            className="flex items-center font-semibold border w-full rounded-full py-2 drop-shadow-sm shadow-primary-500 hover:shadow-primary-500 hover:scale-95 transition-all duration-300"
+          >
+            <ButtonText onPress={signOut}>Sign out</ButtonText>
+          </Button>
         </Animated.View>
       </Animated.View>
     </SafeAreaView>
