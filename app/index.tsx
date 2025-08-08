@@ -8,7 +8,7 @@ import { Heading } from "@/components/ui/heading";
 import { BottomSheet, BottomSheetTrigger } from "@/components/ui/botton-sheet";
 import SignInBottomSheet from "@/screens/components/SignInBottomSheet";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "expo-router";
+import { router, useRouter } from "expo-router";
 import { Spinner } from "@/components/ui/spinner";
 import FirefliesParticles from "@/components/ui/FirefliesParticles";
 
@@ -32,68 +32,76 @@ const FeatureCard = ({ iconSvg: IconSvg, name, desc }: any) => {
 };
 
 export default function Home() {
-  const { user, session, loading } = useAuth();
+  const { session, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (session) {
+    if (!loading && session) {
       // Redirect to tabs layout when authenticated
       router.replace("/tabs");
     }
-  }, [session, router]);
+  }, [session, router,loading]);
 
-  if (loading)
+
+  // Show loading state
+  if (loading) {
     return (
-      <Box className="flex-1 items-center justify-center flex">
-        <Text className="text-typography-white font-medium ml-2 text-xl">
-          hello
-        </Text>
+      <Box className="flex-1 items-center justify-center">
         <Box className="flex-1 bg-black/50 items-center justify-center flex fixed inset-0 z-50 before:starting:backdrop-blur-0 before:absolute before:inset-0 before:bg-gray-200/50 before:backdrop-blur-[1px] before:transition before:duration-250 dark:before:bg-black/50 before:starting:opacity-0">
           <Spinner />
         </Box>
       </Box>
     );
+  }
 
-  return (
-    <VStack className="flex-1 bg-black h-[100vh] justify-center">
-      <MovingGradientBackground />
-      {/* <FirefliesParticles eveningOnly={false} fireflyCount={22} /> */}
+  // If no session, show the home page content
+  if (!session) {
+    return (
+      <VStack className="flex-1 bg-black h-[100vh] justify-center">
+        <MovingGradientBackground />
+        {/* <FirefliesParticles eveningOnly={false} fireflyCount={22} /> */}
 
-      {/* <ScrollView
-        style={{ height: "100%" }}
-        contentContainerStyle={{ flexGrow: 1 }}
-      ></ScrollView> */}
+        {/* <ScrollView
+          style={{ height: "100%" }}
+          contentContainerStyle={{ flexGrow: 1 }}
+        ></ScrollView> */}
 
-      <BottomSheet>
-        <VStack
-          className=" flex-1 p-2 md:max-w-[440px] lg:max-w-[640px] xl:max-w-[840px] w-full h-full items-center justify-center"
-          space="xl"
-        >
-          <VStack>
-            <Heading size="3xl" className="text-center">
-              Welcome to Mentor Health
-            </Heading>
-            <Text size="sm" className="font-bold text-center text-outline-500">
-              Your AI wellbeing Coach
-            </Text>
-          </VStack>
-
-          <Button
-            variant="solid"
-            action="primary"
-            size="xl"
-            className="flex items-center font-semibold border w-full rounded-full py-2 drop-shadow-sm shadow-primary-500 hover:shadow-primary-500 hover:scale-95 transition-all duration-300"
+        <BottomSheet>
+          <VStack
+            className=" flex-1 p-2 md:max-w-[440px] lg:max-w-[640px] xl:max-w-[840px] w-full h-full items-center justify-center"
+            space="xl"
           >
-            <ButtonText>Get Started</ButtonText>
-          </Button>
+            <VStack>
+              <Heading size="3xl" className="text-center">
+                Welcome to - App title
+              </Heading>
+              <Text
+                size="sm"
+                className="font-bold text-center text-outline-500"
+              >
+                sub title
+              </Text>
+            </VStack>
 
-          <BottomSheetTrigger>
-            <Text className="text-center">I already have an account</Text>
-          </BottomSheetTrigger>
+            <Button
+              variant="solid"
+              action="primary"
+              size="xl"
+              className="flex items-center font-semibold border w-full rounded-full py-2 drop-shadow-sm shadow-primary-500 hover:shadow-primary-500 hover:scale-95 transition-all duration-300"
+            >
+              <ButtonText>Get Started</ButtonText>
+            </Button>
 
-          <SignInBottomSheet />
-        </VStack>
-      </BottomSheet>
-    </VStack>
-  );
+            <BottomSheetTrigger>
+              <Text className="text-center">I already have an account</Text>
+            </BottomSheetTrigger>
+
+            <SignInBottomSheet />
+          </VStack>
+        </BottomSheet>
+      </VStack>
+    );
+  }
+
+  return null;
 }

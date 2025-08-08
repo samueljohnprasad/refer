@@ -24,7 +24,6 @@ const MindfulBackground: React.FC<MindfulBackgroundProps> = ({
 }) => {
   // Get theme colors using reusable hook
   const seasonalTheme = useSeasonalTheme();
-  console.log("sdfsd", particlesType);
 
   return (
     <AnimatedLinearGradient colors={seasonalTheme.gradient} style={{ flex: 1 }}>

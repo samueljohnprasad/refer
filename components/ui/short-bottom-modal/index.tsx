@@ -18,16 +18,6 @@ const ShortBottomModal: React.FC<ShortBottomModalProps> = ({ children }) => {
       index={-1}
       android_keyboardInputMode="adjustResize"
       style={{ padding: 0, marginHorizontal: 0 }}
-      containerStyle={{
-        backgroundColor: "transparent",
-        alignItems: "flex-end",
-        borderRadius: 16,
-        elevation: 20,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.3,
-        shadowRadius: 15,
-      }}
       handleStyle={{ display: "none" }}
       backgroundStyle={{
         borderRadius: 16,

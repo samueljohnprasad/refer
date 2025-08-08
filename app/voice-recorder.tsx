@@ -15,12 +15,12 @@ import BreathingBackground from "@/components/ui/BreathingBackground";
 import VoiceRecorderModal from "@/components/modals/VoiceRecorderModal";
 import MindfulBackground from "@/components/ui/MindfulBackground";
 import { Box } from "@/components/ui/box";
-import HeaderBar from "@/components/screens/voiceRecorder/HeaderBar";
-import PromptCard from "@/components/screens/voiceRecorder/PromptCard";
-import JournalHeaderSection from "@/components/screens/voiceRecorder/JournalHeaderSection";
-import PlaybackControls from "@/components/screens/voiceRecorder/PlaybackControls";
+import HeaderBar from "@/screens/voiceRecorder/HeaderBar";
+import PromptCard from "@/screens/voiceRecorder/PromptCard";
+import JournalHeaderSection from "@/screens/voiceRecorder/JournalHeaderSection";
+import PlaybackControls from "@/screens/voiceRecorder/PlaybackControls";
 import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
-import VoiceRecorderModalWrapper from "@/components/screens/voiceRecorder/VoiceRecorderModalWrapper";
+import VoiceRecorderModalWrapper from "@/screens/voiceRecorder/VoiceRecorderModalWrapper";
 import { atom, useAtom } from "jotai";
 export const recorderOpenAtom = atom(false);
 
