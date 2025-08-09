@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import Svg, { Path, Defs, LinearGradient, Stop } from "react-native-svg";
+import Svg, { Path, Defs, LinearGradient, Stop, Circle } from "react-native-svg";
 import { JournalEntries } from "@/types/journal";
 
 interface MoodTrendVisualizationProps {
@@ -202,14 +202,14 @@ const MoodTrendVisualization: React.FC<MoodTrendVisualizationProps> = ({
         {moodPoints.map((point, index) => (
           <React.Fragment key={`${point.date}-${index}`}>
             {/* Glow effect */}
-            <circle
+            <Circle
               cx={point.x}
               cy={point.y}
               r="8"
               fill="rgba(5, 150, 105, 0.1)"
             />
             {/* Main dot */}
-            <circle
+            <Circle
               cx={point.x}
               cy={point.y}
               r="4"
