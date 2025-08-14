@@ -15,6 +15,7 @@ import { Box } from "@/components/ui/box";
 import MindfulBackground from "@/components/ui/MindfulBackground";
 import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
 import { DurationType } from "@simform_solutions/react-native-audio-waveform/lib/constants";
+import { transcribeAudio } from "@/network/transcribeAudio";
 
 const stateBasedDetails = {
   [PlayerState.paused]: {
@@ -71,10 +72,26 @@ const VoiceRecorderModalWrapper = ({
     await ref.current?.startRecord();
   };
 
+  const uploadAndTranscribe = async (uri: string) => {
+    try {
+      // Step 1: Upload audio file to AssemblyAI
+      const audioData = await fetch(uri);
+      const audioBlob = await audioData.toString();
+      const transcripts = await transcribeAudio(
+        "AIzaSyCfc4bT2M0K4z3mVjvra2T-VV65ZtWr7cM",
+        audioBlob
+      );
+      console.log("transcripts", transcripts);
+    } catch (error) {
+      console.error("Error transcribing audio:", error);
+    }
+  };
+
   const handleStopRecording = async () => {
     const path = await ref.current?.stopRecord();
     if (!path) return Alert.alert("Error", "Failed to stop recording");
     setRecordingUri(path);
+    uploadAndTranscribe(path);
   };
 
   const handlePauseRecording = async () => {
