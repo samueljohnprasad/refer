@@ -9,13 +9,11 @@ import {
 import { Calendar } from "react-native-calendars";
 import { LinearGradient } from "expo-linear-gradient";
 import { VStack } from "@/components/ui/vstack";
-import { HStack } from "@/components/ui/hstack";
-import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
 import { Box } from "@/components/ui/box";
 import { JournalEntries } from "@/types/journal";
 import { MoodTrendVisualization } from "./MoodTrendVisualization";
 import { BlurView } from "expo-blur";
+import { Text } from "../Themed";
 
 const { width: screenWidth } = Dimensions.get("window");
 

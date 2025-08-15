@@ -10,8 +10,7 @@ import {
   PanResponder,
   Easing,
 } from "react-native";
-import { View as ThemedView } from "@/components/Themed";
-import { Text } from "@/components/ui/text";
+import { Text, View as ThemedView } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import { format, startOfWeek, addDays, isToday } from "date-fns";
