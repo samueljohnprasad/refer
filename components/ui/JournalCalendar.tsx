@@ -26,7 +26,7 @@ interface JournalCalendarProps {
 // Ultra-clean minimalist day component
 const MinimalistDayComponent: React.FC<{
   date: any;
-  state: string;
+  state?: string;
   moodEmoji: JSX.Element | undefined;
   hasEntry: boolean;
   onPress: (dateString: string, hasEntry: boolean) => void;
