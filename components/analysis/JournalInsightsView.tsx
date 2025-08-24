@@ -1,11 +1,14 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, ScrollView, StyleSheet, Animated, Easing, Platform } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, Animated, Easing, Platform, TouchableOpacity, Image, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Box } from '@/components/ui/box';
 import { Card } from '@/components/ui/card';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
 import { TextAnalysisResult } from '@/utils/textAnalysisService';
 import { useSeasonalTheme } from '@/hooks/useSeasonalTheme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface EmotionBarProps {
   emotion: string;
@@ -98,13 +101,13 @@ const EmotionBar: React.FC<EmotionBarProps> = ({ emotion, value, color }) => {
 interface JournalInsightsViewProps {
   transcripts: string[];
   analysisResult: TextAnalysisResult;
+  onClose?: () => void;
+  onEdit?: () => void;
 }
 
-const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({ 
-  transcripts, 
-  analysisResult
-}) => {
+const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({ transcripts, analysisResult, onClose, onEdit }) => {
   const activeTheme = useSeasonalTheme();
+  const insets = useSafeAreaInsets();
   
   // Animation values for premium entrance animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -236,47 +239,176 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
     }
   };
   
-  return (
+  // Format current date for display
+  const now = new Date();
+  const formattedTime = now.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
+
+  // Count words in transcripts
+  const wordCount = transcripts.join(' ').split(/\s+/).filter((word: string) => word.length > 0).length || 0;
+
+  // Render feeling tags
+  const renderFeelingTags = () => {
+    const feelings = [
+      { emoji: '😫', label: 'Unwell' },
+      { emoji: '😔', label: 'Pain' }
+    ];
+    
+    return (
+      <>
+        <Text className="text-gray-400 uppercase text-xs mt-6 mb-2">FEELINGS</Text>
+        <HStack className="flex-wrap">
+          {feelings.map((feeling, index) => (
+            <Box 
+              key={index}
+              className="bg-white mr-2 mb-2 rounded-full px-4 py-2 flex-row items-center"
+              style={{ 
+                borderWidth: 0.2, 
+                borderColor: 'rgba(0,0,0,0.1)',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 1,
+                elevation: 1,
+              }}
+            >
+              <Text className="mr-2 text-base">{feeling.emoji}</Text>
+              <Text className="text-gray-700">{feeling.label}</Text>
+            </Box>
+          ))}
+        </HStack>
+      </>
+    );
+  };
   
-    <ScrollView className="flex-1 bg-gray-50/60" contentContainerStyle={{paddingBottom: 80}}>
-      <Box className="px-4 py-6 pb-16">
-        {/* Transcript Card - Enhanced */}
-        <Animated.View style={[styles.cardContainer, getAnimatedStyle(0)]}>  
-          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[{borderWidth: 0.5, borderColor: 'rgba(230,230,235,0.3)'}, styles.premiumCard]}>
+  // Render photos section
+  const renderPhotosSection = () => {
+    return (
+      <>
+        <Text className="text-gray-400 uppercase text-xs mt-6 mb-2">PHOTOS TO REMEMBER</Text>
+        <TouchableOpacity 
+          className="bg-white h-20 w-20 rounded-lg items-center justify-center"
+          style={{ 
+            borderWidth: 0.2, 
+            borderColor: 'rgba(0,0,0,0.1)',
+          }}
+        >
+          <AntDesign name="plus" size={24} color="#999" />
+        </TouchableOpacity>
+      </>
+    );
+  };
+
+  // Render transcript section
+  const renderTranscriptSection = () => {
+    return (
+      <>
+        <Text className="text-gray-400 uppercase text-xs mt-6 mb-2">
+          TRANSCRIPT ({wordCount} words)
+        </Text>
+        <VStack className="mt-1">
+          {transcripts.map((text, index) => (
+            <Text key={index} className="text-gray-800 text-base leading-6 mb-2">
+              {text}
+            </Text>
+          ))}
+        </VStack>
+      </>
+    );
+  };
+  
+  // Render audio controls
+  const renderAudioControls = () => {
+    return (
+      <Box 
+        style={styles.audioControls}
+        className="w-full absolute bottom-0 px-5 pt-3"
+      >
+        <Box className="w-full flex-row items-center justify-center">
+          <TouchableOpacity 
+            className="bg-black h-14 w-14 rounded-full items-center justify-center mr-3"
+            style={{ shadowColor: '#000', shadowOffset: {width: 0, height: 2}, shadowOpacity: 0.2, shadowRadius: 4 }}
+          >
+            <AntDesign name="caretright" size={24} color="white" />
+          </TouchableOpacity>
+          
+          <Box className="flex-1 h-10 justify-center">
+            <Box className="h-[1px] bg-gray-300" />
+            <Box className="h-6 w-20 bg-gray-800 absolute opacity-40" />
+            
+            <Text className="absolute right-0 text-gray-500 text-xs">
+              00:05
+            </Text>
+          </Box>
+        </Box>
+        
+        {/* Bottom pill indicator */}
+        <Box className="w-full items-center pt-4">
+          <Box className="w-10 h-1 bg-gray-800 rounded-full opacity-20" />
+        </Box>
+      </Box>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Header with Close, Title and Edit */}
+      <Box className="px-5 pt-2 pb-3 flex-row items-center justify-between">
+        <TouchableOpacity 
+          onPress={onClose}
+          className="w-10 h-10 rounded-full bg-white items-center justify-center"
+          style={{ borderWidth: 0.2, borderColor: 'rgba(0,0,0,0.1)' }}
+        >
+          <Text className="text-2xl font-light">×</Text>
+        </TouchableOpacity>
+        
+        <Box className="items-center">
+          <Text className="text-lg font-semibold">Today</Text>
+          <Text className="text-sm text-gray-400">{formattedTime}</Text>
+        </Box>
+        
+        <TouchableOpacity 
+          onPress={onEdit}
+          className="w-16 h-10 rounded-full bg-white items-center justify-center"
+          style={{ borderWidth: 0.2, borderColor: 'rgba(0,0,0,0.1)' }}
+        >
+          <Text className="font-medium">Edit</Text>
+        </TouchableOpacity>
+      </Box>
+      
+      <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 80 }}>
+        {/* Emoji/Avatar */}
+        <Box className="items-center mt-4 mb-3">
+          <View style={styles.emojiContainer}>
+            <Text style={styles.emoji}>😑</Text>
+            <Box className="absolute bottom-0 right-0 bg-white rounded-full p-1 border border-gray-100">
+              <View style={{ width: 10, height: 10 }} />
+            </Box>
+          </View>
+        </Box>
+        
+        {/* Title with emojis */}
+        <Text className="text-3xl font-bold text-center mb-4">
+          {analysisResult.summary?.slice(0, 30)}... <Text>🤢😅</Text>
+        </Text>
+        
+        {/* Feeling Tags */}
+        {renderFeelingTags()}
+        
+        {/* Photos Section */}
+        {renderPhotosSection()}
+        
+        {/* Transcript Section */}
+        {renderTranscriptSection()}
+        
+        {/* Sentiment Analysis Card */}
+        <Animated.View style={[styles.cardContainer, getAnimatedStyle(2)]}>  
+          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[styles.premiumCard]}>
             <HStack className="items-center mb-3">
               <Box className="w-[0.5px] h-6 rounded-full bg-blue-500 mr-2" />
-              <Text className="text-lg text-gray-800" style={{ letterSpacing: -0.4, fontWeight: '500' as any }}>Your Journal</Text>
-            </HStack>
-            <Box className="p-6 rounded-2xl" style={{backgroundColor: '#fafafa', borderWidth: 0.5, borderColor: 'rgba(225,225,235,0.4)', ...styles.innerShadow}}>
-              {transcripts.map((transcript, index) => (
-                <Text key={index} className="text-gray-700 leading-relaxed mb-3 font-normal" style={getTypographyStyle('body')}>
-                  {transcript}
-                </Text>
-              ))}
-            </Box>
-          </Card>
-        </Animated.View>
-        
-        {/* Summary Card - Enhanced */}
-        <Animated.View style={[styles.cardContainer, getAnimatedStyle(1)]}>
-          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[{borderWidth: 0.5, borderColor: 'rgba(230,230,235,0.3)'}, styles.premiumCard]}>
-            <HStack className="items-center mb-3">
-              <Box className="w-[0.5px] h-6 rounded-full bg-green-500 mr-2" />
-              <Text className="text-lg text-gray-800" style={{ letterSpacing: -0.4, fontWeight: '500' as any }}>Summary</Text>
-            </HStack>
-            <Box className="p-4 rounded-xl" style={{backgroundColor: 'rgba(248,251,255,0.8)', borderWidth: 0.5, borderColor: 'rgba(225,230,250,0.25)', ...styles.innerShadow}}>
-              <Text className="text-gray-700 leading-relaxed italic" style={{ letterSpacing: 0.2, lineHeight: 24, fontWeight: '400' as any, opacity: 0.85 }}>
-                {analysisResult.summary}
-              </Text>
-            </Box>
-          </Card>
-        </Animated.View>
-        
-        {/* Sentiment Analysis - Enhanced */}
-        <Animated.View style={[styles.cardContainer, getAnimatedStyle(2)]}>
-          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[{borderWidth: 0.5, borderColor: 'rgba(230,230,235,0.3)'}, styles.premiumCard]}>
-            <HStack className="items-center mb-3">
-              <Box className="w-[0.5px] h-6 rounded-full bg-purple-500 mr-2" />
               <Text className="text-lg text-gray-800" style={{ letterSpacing: -0.4, fontWeight: '500' as any }}>Sentiment</Text>
             </HStack>
             <HStack className="items-center justify-between mb-1">
@@ -318,7 +450,7 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
         
         {/* Emotions Analysis - Enhanced */}
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(3)]}>
-          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[{borderWidth: 0.5, borderColor: 'rgba(230,230,235,0.3)'}, styles.premiumCard]}>
+          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[styles.premiumCard]}>
             <HStack className="items-center mb-3">
               <Box className="w-[0.5px] h-6 rounded-full bg-red-500 mr-2" />
               <Text className="text-lg text-gray-800" style={{ letterSpacing: -0.4, fontWeight: '500' as any }}>Emotions</Text>
@@ -357,7 +489,7 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
         
         {/* Topics - Enhanced */}
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(4)]}>
-          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[{borderWidth: 0.5, borderColor: 'rgba(230,230,235,0.3)'}, styles.premiumCard]}>
+          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[styles.premiumCard]}>
             <HStack className="items-center mb-3">
               <Box className="w-[0.5px] h-6 rounded-full bg-yellow-500 mr-2" />
               <Text className="text-lg text-gray-800" style={{ letterSpacing: -0.4, fontWeight: '500' as any }}>Key Topics</Text>
@@ -414,7 +546,7 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
         
         {/* Insights - Enhanced */}
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(5)]}>
-          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[{borderWidth: 0.5, borderColor: 'rgba(230,230,235,0.3)'}, styles.premiumCard]}>
+          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[styles.premiumCard]}>
             <HStack className="items-center mb-3">
               <Box className="w-[0.5px] h-6 rounded-full bg-indigo-500 mr-2" />
               <Text className="text-lg text-gray-800" style={{ letterSpacing: -0.4, fontWeight: '500' as any }}>Insights</Text>
@@ -460,7 +592,7 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
         
         {/* Action Items - Enhanced */}
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(6)]}>
-          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[{borderWidth: 0.5, borderColor: 'rgba(230,230,235,0.3)'}, styles.premiumCard]}>
+          <Card className="mb-6 p-5 rounded-2xl bg-white" style={[styles.premiumCard]}>
             <HStack className="items-center mb-3">
               <Box className="w-[0.5px] h-6 rounded-full bg-green-500 mr-2" />
               <Text className="text-lg text-gray-800" style={{ letterSpacing: -0.4, fontWeight: '500' as any }}>Suggested Actions</Text>
@@ -471,7 +603,7 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
               backdropFilter: Platform.OS === 'web' ? 'blur(15px)' : undefined 
             }}>
               <VStack className="space-y-4">
-                {analysisResult.actionItems?.map((action, index) => (
+                {analysisResult.actionItems?.map((action: string, index: number) => (
                   <Animated.View
                     key={index}
                     style={{
@@ -510,73 +642,140 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
             </Box>
           </Card>
         </Animated.View>
-      </Box>
-    </ScrollView>
+      </ScrollView>
+      
+      {/* Audio Controls */}
+      {renderAudioControls()}
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F3EE',
+    borderRadius: 30,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: '#F5F3EE',
+    borderRadius: 30,
+  },
   cardContainer: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 2,
-    // For web platforms
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  premiumCard: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    borderColor: 'rgba(230,230,235,0.4)',
     ...(Platform.OS === 'web' ? {
       boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02)',
       transition: 'all 0.2s ease-in-out'
     } : {})
   },
-  // Ultra premium card with refined ultra-thin shadows for depth
-  premiumCard: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.02,
-    shadowRadius: 10,
-    elevation: 1,
-    borderColor: 'rgba(230,230,235,0.4)',
-    // For web platforms - ultra-thin layered shadows for premium look
-    ...(Platform.OS === 'web' ? {
-      boxShadow: '0 8px 20px -5px rgba(0, 0, 0, 0.01), 0 1px 2px rgba(0, 0, 0, 0.003), 0 15px 30px -15px rgba(50, 50, 93, 0.01)',
-      transition: 'all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)'
-    } : {})
-  },
-  // Ultra-thin inner shadow for inset elements
   innerShadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.005,
     shadowRadius: 1,
     elevation: 0,
-    // For web platforms
     ...(Platform.OS === 'web' ? {
       boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.005), inset 0 0 1px rgba(0, 0, 0, 0.003)'
     } : {})
   },
-  // Ultra-thin sentiment meter with minimal glow
-  sentimentMeter: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.02,
-    shadowRadius: 3,
-    elevation: 1,
-    // Extra light shadows for web only
-    ...(Platform.OS === 'web' ? {
-      boxShadow: '0 4px 8px -5px rgba(0, 0, 0, 0.02), 0 0 1px rgba(0, 0, 0, 0.005)'
-    } : {})
+  audioControls: {
+    height: 80,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#F5F3EE',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    borderTopWidth: 0.5,
+    borderTopColor: 'rgba(0,0,0,0.05)',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 2,
+      },
+      web: {
+        boxShadow: '0 -1px 3px rgba(0,0,0,0.03)'
+      }
+    })
   },
-  // Animated progress bar
-  progressBar: {
-    height: 10,
-    borderRadius: 5,
-    overflow: 'hidden',
+  emojiContainer: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: '#FFD699',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+      web: {
+        boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+      }
+    })
+  },
+  emoji: {
+    fontSize: 36,
+    lineHeight: 40,
   },
   // Web-specific ultra-thin hover effects applied dynamically via useHoverStyle
   cardHoverActive: Platform.OS === 'web' ? {
     transform: 'translateY(-1px) scale(1.003)',
     boxShadow: '0 10px 25px -8px rgba(0, 0, 0, 0.015), 0 2px 4px -2px rgba(0, 0, 0, 0.008)'
   } : {},
+  playButton: {
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  progressTime: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+    textAlign: 'right',
+  },
+  progressContainer: {
+    flex: 1,
+    marginHorizontal: 15
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    borderRadius: 2,
+    overflow: 'hidden'
+  },
+  progressFill: {
+    height: '100%',
+    width: '30%',
+    backgroundColor: '#3182CE',
+    borderRadius: 2,
+  },
 });
 
 export default JournalInsightsView;
