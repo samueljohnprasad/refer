@@ -6,6 +6,7 @@ import {
   Text,
   Dimensions,
   Animated,
+  Pressable,
 } from "react-native";
 import { Box } from "./box";
 import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
@@ -46,6 +47,8 @@ export interface MicControlViewProps {
  * MicControlView - Pure presenter component for mic control UI
  * Receives all data and callbacks via props, handles only rendering
  */
+const { width, height } = Dimensions.get("window");
+
 const MicControlView: React.FC<MicControlViewProps> = ({
   isRecording,
   isPaused,
@@ -58,102 +61,111 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   waveFlow,
   formattedDuration,
 }) => {
-  const { width } = Dimensions.get("window");
   const activeTheme = useSeasonalTheme();
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
   return (
     <BottomSheet>
-      <View style={[styles.container, { width: width }]}>
-        <Box className="backdrop-blur-md w-full  ">
-          {/* Top section with timer and breathing guide */}
-          <View style={styles.timerSection}>
-            <Text style={styles.timer}>{formattedDuration}</Text>
-          </View>
-          <HStack className="justify-center items-center gap-10">
-            {isPaused && (
-              <Animated.View
-                style={[
-                  {
-                    opacity: breathingOpacity.interpolate({
-                      inputRange: [0.6, 1],
-                      outputRange: [0.8, 1],
-                    }),
-                  },
-                ]}
-              >
-                <BottomSheetTrigger>
-                  {/* <Ionicons name="checkmark-circle" size={20} color="#EF4444" /> */}
-                  <Close />
-                </BottomSheetTrigger>
-              </Animated.View>
-            )}
-
-            {/* Main mic button with modern design */}
-            <Animated.View
-              style={[
-                styles.buttonContainer,
-                {
-                  transform: [{ scale: heartbeatScale }],
-                },
-              ]}
-              className="flex items-center justify-center"
-            >
-              {/* Outer glow ring for recording state */}
-              {isRecording && (
+      {isRecording && (
+        <Pressable
+          onPress={() => onToggleRecord()}
+          style={[styles.containerStop, { width: width / 2 }]}
+        ></Pressable>
+      )}
+      {!isRecording && (
+        <View style={[styles.container, { width: width }]}>
+          <Box className="backdrop-blur-md w-full  ">
+            {/* Top section with timer and breathing guide */}
+            {/* <View style={styles.timerSection}>
+    <Text style={styles.timer}>{formattedDuration}</Text>
+  </View> */}
+            <HStack className="justify-center items-center gap-10">
+              {isPaused && (
                 <Animated.View
                   style={[
-                    styles.outerGlow,
                     {
-                      backgroundColor: `${activeTheme.particleDot}20`,
-                      transform: [{ scale: glowScale }],
-                      opacity: breathingOpacity,
-                    },
-                  ]}
-                />
-              )}
-              <TouchableOpacity
-                style={styles.mainButtonWrapper}
-                onPress={onToggleRecord}
-                activeOpacity={0.9}
-              >
-                <View
-                  style={[
-                    styles.simpleButton,
-                    {
-                      backgroundColor: isRecording
-                        ? activeTheme.particleDot
-                        : activeTheme.particleSparkle,
-                      shadowColor: activeTheme.particleDot,
+                      opacity: breathingOpacity.interpolate({
+                        inputRange: [0.6, 1],
+                        outputRange: [0.8, 1],
+                      }),
                     },
                   ]}
                 >
-                  {isRecording ? <Mike /> : <Stop />}
-                </View>
-              </TouchableOpacity>
-            </Animated.View>
+                  <BottomSheetTrigger>
+                    {/* <Ionicons name="checkmark-circle" size={20} color="#EF4444" /> */}
+                    <Close />
+                  </BottomSheetTrigger>
+                </Animated.View>
+              )}
 
-            {isPaused && (
+              {/* Main mic button with modern design */}
+
               <Animated.View
                 style={[
+                  styles.buttonContainer,
                   {
-                    opacity: breathingOpacity.interpolate({
-                      inputRange: [0.6, 1],
-                      outputRange: [0.8, 1],
-                    }),
+                    transform: [{ scale: heartbeatScale }],
                   },
                 ]}
+                className="flex items-center justify-center"
               >
-                <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
-                  <View>
-                    {/* <Ionicons name="checkmark-circle" size={20} color="#EF4444" /> */}
-                    <Check />
+                {/* Outer glow ring for recording state */}
+                {isRecording && (
+                  <Animated.View
+                    style={[
+                      styles.outerGlow,
+                      {
+                        backgroundColor: `${activeTheme.particleDot}20`,
+                        transform: [{ scale: glowScale }],
+                        opacity: breathingOpacity,
+                      },
+                    ]}
+                  />
+                )}
+                <TouchableOpacity
+                  style={styles.mainButtonWrapper}
+                  onPress={onToggleRecord}
+                  activeOpacity={0.9}
+                >
+                  <View
+                    style={[
+                      styles.simpleButton,
+                      {
+                        backgroundColor: isRecording
+                          ? activeTheme.particleDot
+                          : activeTheme.particleSparkle,
+                        shadowColor: activeTheme.particleDot,
+                      },
+                    ]}
+                  >
+                    {isRecording ? <Stop /> : <Mike />}
                   </View>
                 </TouchableOpacity>
               </Animated.View>
-            )}
-          </HStack>
-        </Box>
-      </View>
+
+              {isPaused && (
+                <Animated.View
+                  style={[
+                    {
+                      opacity: breathingOpacity.interpolate({
+                        inputRange: [0.6, 1],
+                        outputRange: [0.8, 1],
+                      }),
+                    },
+                  ]}
+                >
+                  <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
+                    <View>
+                      {/* <Ionicons name="checkmark-circle" size={20} color="#EF4444" /> */}
+                      <Check />
+                    </View>
+                  </TouchableOpacity>
+                </Animated.View>
+              )}
+            </HStack>
+          </Box>
+        </View>
+      )}
+
       <ShortBottomModal>
         <Center>
           <Button onPress={() => setRecorderOpen(false)}>
@@ -168,6 +180,15 @@ const MicControlView: React.FC<MicControlViewProps> = ({
 const PANEL_HEIGHT = 200;
 
 const styles = StyleSheet.create({
+  containerStop: {
+    height: PANEL_HEIGHT,
+    position: "absolute",
+    top: height / 1.7,
+    transform: [{ translateX: width / 4 }],
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    borderRadius: "50%",
+  },
   container: {
     height: PANEL_HEIGHT,
     position: "absolute",

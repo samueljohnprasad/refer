@@ -1,7 +1,5 @@
 import React from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import VoiceRecorderScreen from "@/app/voice-recorder";
 
 export interface VoiceRecorderModalProps {
   /** Whether the modal is visible */

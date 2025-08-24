@@ -16,6 +16,9 @@ import MindfulBackground from "@/components/ui/MindfulBackground";
 import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
 import { DurationType } from "@simform_solutions/react-native-audio-waveform/lib/constants";
 import { transcribeAudio } from "@/network/transcribeAudio";
+import MindfulGradient, {
+  GradientPosition,
+} from "../components/MindfulGradient";
 
 const stateBasedDetails = {
   [PlayerState.paused]: {
@@ -49,6 +52,8 @@ const VoiceRecorderModalWrapper = ({
   const ref2 = useRef<IWaveformRef>(null);
   const isRecording = recoderCurrentState === RecorderState.recording;
   const isPaused = recoderCurrentState === RecorderState.paused;
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [position, setPosition] = useState<GradientPosition>("top");
 
   const {
     stopAllWaveFormExtractors,
@@ -70,6 +75,7 @@ const VoiceRecorderModalWrapper = ({
 
   const handleStartRecording = async () => {
     await ref.current?.startRecord();
+    setIsSpeaking(true);
   };
 
   const uploadAndTranscribe = async (uri: string) => {
@@ -92,14 +98,17 @@ const VoiceRecorderModalWrapper = ({
     if (!path) return Alert.alert("Error", "Failed to stop recording");
     setRecordingUri(path);
     uploadAndTranscribe(path);
+    setIsSpeaking(false);
   };
 
   const handlePauseRecording = async () => {
     await ref.current?.pauseRecord();
+    setIsSpeaking(false);
   };
 
   const handleResumeRecording = async () => {
     await ref.current?.resumeRecord();
+    setIsSpeaking(true);
   };
 
   console.log(
@@ -116,8 +125,8 @@ const VoiceRecorderModalWrapper = ({
       visible={recorderOpen}
       onRequestClose={() => setRecorderOpen(false)}
     >
-      <MindfulBackground particlesType="fireflies">
-        <SafeAreaView className="flex-1 flex  justify-center">
+      <MindfulBackground>
+        <SafeAreaView className="flex-1 flex  justify-start">
           {/* <PlaybackControls
             isPlaying={isRecording}
             onPlay={() => startRecord?.()}
@@ -125,13 +134,17 @@ const VoiceRecorderModalWrapper = ({
             onClear={() => stopRecord?.()}
             recordingUri={recordingUri}
           /> */}
-          <Box className="w-full">
+          <MindfulGradient position={position} isSpeaking={isSpeaking} />
+          {/* <Button onPress={() => setIsSpeaking(!isSpeaking)}>
+            <ButtonText>{isSpeaking ? "Stop" : "Start"}</ButtonText>
+          </Button> */}
+          <Box className="w-full " style={{ height: 200 }}>
             <Waveform
               key={"player1"}
               showsHorizontalScrollIndicator={true}
-              candleHeightScale={18}
+              candleHeightScale={12}
               mode="live"
-              waveColor={activeTheme.particleDot}
+              waveColor={activeTheme.highlight}
               ref={ref}
               candleSpace={4}
               candleWidth={6}
@@ -140,6 +153,7 @@ const VoiceRecorderModalWrapper = ({
               }}
             />
           </Box>
+
           <MicControlContainer
             isRecording={isRecording}
             isPaused={isPaused}
