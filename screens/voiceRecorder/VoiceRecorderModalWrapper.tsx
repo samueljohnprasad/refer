@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Alert, Platform } from "react-native";
+import { View, Text, SafeAreaView, Alert, Platform, Animated, Easing } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import VoiceRecorderModal from "@/components/modals/VoiceRecorderModal";
 import BreathingBackground from "@/components/ui/BreathingBackground";
@@ -23,7 +23,9 @@ import MindfulGradient, {
 import { Buffer } from "buffer";
 import ProcessingStageIndicator from "@/components/analysis/ProcessingStageIndicator";
 import JournalInsightsView from "@/components/analysis/JournalInsightsView";
+import AnimatedProcessingIndicator from "@/components/analysis/AnimatedProcessingIndicator";
 import { analyzeText, AnalysisProgress, TextAnalysisResult } from "@/utils/textAnalysisService";
+import { format } from "date-fns";
 
 const stateBasedDetails = {
   [PlayerState.paused]: {
@@ -57,6 +59,12 @@ const VoiceRecorderModalWrapper = ({
   const [analysisProgress, setAnalysisProgress] = useState<AnalysisProgress | null>(null);
   const [analysisResult, setAnalysisResult] = useState<TextAnalysisResult | null>(null);
   const [showInsights, setShowInsights] = useState(false);
+  const [currentTimestamp, setCurrentTimestamp] = useState<string>('');
+  
+  // Animation values
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
   
   const ref = useRef<IWaveformRef>(null);
   const ref2 = useRef<IWaveformRef>(null);
@@ -88,14 +96,67 @@ const VoiceRecorderModalWrapper = ({
     setIsSpeaking(true);
   };
 
+  // Setup animations between states
+  const runTransitionAnimations = useCallback((toInsights: boolean = false) => {
+    // Fade out current content
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.ease,
+    }).start(() => {
+      // After fade out, update state and fade back in
+      if (toInsights) {
+        setShowInsights(true);
+      }
+      
+      // Slide and fade in new content
+      slideAnim.setValue(50);
+      opacityAnim.setValue(0);
+      
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 400,
+          delay: 100,
+          useNativeDriver: true,
+          easing: Easing.out(Easing.ease),
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+          easing: Easing.out(Easing.ease),
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+          easing: Easing.ease,
+        }),
+      ]).start();
+    });
+  }, [fadeAnim, slideAnim, opacityAnim]);
+  
   const handleAnalysisProgress = useCallback((progress: AnalysisProgress) => {
+    // Update timestamp for loading screen
+    if (progress.stage === 'analyzing' || progress.stage === 'generating-insights') {
+      setCurrentTimestamp(format(new Date(), 'MMMM d • h:mm a'));
+    }
+    
+    // Transition between different stages
+    if (progress.stage !== analysisProgress?.stage) {
+      runTransitionAnimations();
+    }
+    
     setAnalysisProgress(progress);
     
     if (progress.stage === 'complete' && progress.result) {
       setAnalysisResult(progress.result);
-      setShowInsights(true);
+      // Use animation before showing insights
+      runTransitionAnimations(true);
     }
-  }, []);
+  }, [analysisProgress, runTransitionAnimations]);
 
   const uploadAndTranscribe = async (uri: string) => {
     try {
@@ -163,11 +224,28 @@ const VoiceRecorderModalWrapper = ({
   };
   
   const handleResetRecording = () => {
-    setShowInsights(false);
-    setAnalysisResult(null);
-    setAnalysisProgress(null);
-    setTranscripts([]);
-    setRecordingUri(null);
+    // Use animation to transition out
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.ease,
+    }).start(() => {
+      // Reset all states after fade out
+      setShowInsights(false);
+      setAnalysisResult(null);
+      setAnalysisProgress(null);
+      setTranscripts([]);
+      setRecordingUri(null);
+      
+      // Fade back in
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.ease),
+      }).start();
+    });
   };
 
   const handlePauseRecording = async () => {
@@ -226,25 +304,41 @@ const VoiceRecorderModalWrapper = ({
               
               {/* Processing Stages */}
               {analysisProgress && (
-                <Box className="px-4 pt-10 flex-1">
-                  <Text className="text-2xl font-bold text-center mb-6">
-                    {analysisProgress.stage === 'error' ? 'Processing Error' : 'Processing Journal'}
-                  </Text>
-                  
-                  <ProcessingStageIndicator progress={analysisProgress} />
-                  
-                  {/* Error state actions */}
-                  {analysisProgress.stage === 'error' && (
-                    <Box className="items-center mt-8">
-                      <Button 
-                        onPress={handleResetRecording}
-                        className="bg-blue-500 px-6"
-                      >
-                        <ButtonText>Try Again</ButtonText>
-                      </Button>
+                <Animated.View
+                  style={[
+                    { flex: 1, paddingTop: 40, alignItems: 'center', justifyContent: 'center' },
+                    { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }
+                  ]}
+                >
+                  {analysisProgress.stage === 'error' ? (
+                    // Error state
+                    <Box className="px-4 flex-1">
+                      <Text className="text-2xl font-bold text-center mb-6">Processing Error</Text>
+                      <ProcessingStageIndicator progress={analysisProgress} />
+                      <Box className="items-center mt-8">
+                        <Button 
+                          onPress={handleResetRecording}
+                          className="bg-blue-500 px-6"
+                        >
+                          <ButtonText>Try Again</ButtonText>
+                        </Button>
+                      </Box>
                     </Box>
+                  ) : analysisProgress.stage === 'transcribing' ? (
+                    // Transcribing state - show indicator with progress bar
+                    <Box className="px-4 w-full max-w-md">
+                      <ProcessingStageIndicator progress={analysisProgress} />
+                    </Box>
+                  ) : (
+                    // Analysis states with premium animated design (analyzing, generating-insights)
+                    <AnimatedProcessingIndicator 
+                      message={analysisProgress.stage === 'analyzing' ? 
+                        'Analyzing emotions' : 
+                        'Generating insights'}
+                      timestamp={currentTimestamp}
+                    />
                   )}
-                </Box>
+                </Animated.View>
               )}
               
               {/* Recording Controls */}
@@ -267,9 +361,14 @@ const VoiceRecorderModalWrapper = ({
               )}
             </>
           ) : (
-            // Insights View
-            <Box className="flex-1">
-              <Box className="flex-row justify-between items-center px-4 py-3 bg-white/90">
+            // Insights View with animations
+            <Animated.View 
+              style={[
+                { flex: 1 },
+                { opacity: opacityAnim }
+              ]}
+            >
+              <Box className="flex-row justify-between items-center px-4 py-3 bg-white/90 shadow-sm">
                 <Text className="text-xl font-bold">Journal Analysis</Text>
                 <Button 
                   onPress={handleResetRecording} 
@@ -280,12 +379,16 @@ const VoiceRecorderModalWrapper = ({
               </Box>
               
               {analysisResult && (
-                <JournalInsightsView 
-                  transcripts={transcripts} 
-                  analysisResult={analysisResult} 
-                />
+                <Animated.View
+                  style={[{ flex: 1, transform: [{ translateY: slideAnim }] }]}
+                >
+                  <JournalInsightsView 
+                    transcripts={transcripts} 
+                    analysisResult={analysisResult} 
+                  />
+                </Animated.View>
               )}
-            </Box>
+            </Animated.View>
           )}
         </SafeAreaView>
       </MindfulBackground>

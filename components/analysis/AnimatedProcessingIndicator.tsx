@@ -1,0 +1,204 @@
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, Animated, Easing, Platform } from 'react-native';
+import { Box } from '@/components/ui/box';
+import { useSeasonalTheme } from '@/hooks/useSeasonalTheme';
+
+interface AnimatedProcessingIndicatorProps {
+  message: string;
+  timestamp?: string;
+}
+
+const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = ({ 
+  message, 
+  timestamp 
+}) => {
+  const activeTheme = useSeasonalTheme();
+  
+  // Animation values
+  const pulseAnim = new Animated.Value(1);
+  const dotAnim = new Animated.Value(0);
+  const floatAnim = new Animated.Value(0);
+  const opacityAnim = new Animated.Value(0);
+  
+  // Start animations when component mounts
+  useEffect(() => {
+    // Fade in
+    Animated.timing(opacityAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+    
+    // Pulse animation
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.15,
+          duration: 1500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 1500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+    
+    // Floating animation
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(floatAnim, {
+          toValue: -10,
+          duration: 2000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(floatAnim, {
+          toValue: 0,
+          duration: 2000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+    
+    // Animated dots
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(dotAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: false,
+          easing: Easing.linear,
+        }),
+        Animated.timing(dotAnim, {
+          toValue: 2,
+          duration: 600,
+          useNativeDriver: false,
+          easing: Easing.linear,
+        }),
+        Animated.timing(dotAnim, {
+          toValue: 3,
+          duration: 600,
+          useNativeDriver: false,
+          easing: Easing.linear,
+        }),
+        Animated.timing(dotAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+          easing: Easing.linear,
+        }),
+      ])
+    ).start();
+  }, []);
+
+  // Interpolate animations
+  const dotInterpolation = dotAnim.interpolate({
+    inputRange: [0, 1, 2, 3],
+    outputRange: ['', '.', '..', '...']
+  });
+
+  const bgColorLight = `${activeTheme.highlight}10`;
+  const bgColorIntense = `${activeTheme.highlight}30`;
+  
+  return (
+    <Animated.View style={[
+      styles.container,
+      { opacity: opacityAnim }
+    ]}>
+      {timestamp && (
+        <Animated.Text style={[
+          styles.timestamp,
+          { opacity: 0.7 }
+        ]}>
+          {timestamp}
+        </Animated.Text>
+      )}
+      
+      <Animated.Text style={[
+        styles.message,
+        { 
+          transform: [{ translateY: floatAnim }],
+          color: Platform.OS === 'web' ? '#333' : '#333',
+        }
+      ]}>
+        {message}
+        <Animated.Text>
+          {dotInterpolation}
+        </Animated.Text>
+      </Animated.Text>
+      
+      <Animated.View style={[
+        styles.indicatorContainer,
+        {
+          transform: [{ scale: pulseAnim }],
+        }
+      ]}>
+        <Box
+          className="rounded-full overflow-hidden"
+          style={{
+            width: 80,
+            height: 80,
+            backgroundColor: bgColorLight,
+          } as any}
+        >
+          <Animated.View
+            style={[
+              StyleSheet.absoluteFill,
+              styles.innerCircle,
+              {
+                backgroundColor: activeTheme.highlight,
+                opacity: 0.4,
+                transform: [
+                  { scale: pulseAnim }
+                ],
+              }
+            ]}
+          />
+        </Box>
+      </Animated.View>
+    </Animated.View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+  },
+  indicatorContainer: {
+    marginTop: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timestamp: {
+    fontSize: 16,
+    color: '#9CA3AF', // gray-400
+    marginBottom: 48,
+    fontWeight: '500',
+    letterSpacing: 0.5,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
+  },
+  message: {
+    fontSize: 36,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#111827', // gray-900
+    letterSpacing: -0.5,
+    lineHeight: 44,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
+    maxWidth: '80%',
+  },
+  innerCircle: {
+    borderRadius: 100,
+  },
+});
+
+export default AnimatedProcessingIndicator;
