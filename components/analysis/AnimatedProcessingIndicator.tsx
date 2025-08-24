@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Animated, Easing, Platform } from 'react-native';
 import { Box } from '@/components/ui/box';
 import { useSeasonalTheme } from '@/hooks/useSeasonalTheme';
+import { CloudIcon, BrainIcon, LightBulbIcon } from '@/assets/Icons';
 
 interface AnimatedProcessingIndicatorProps {
   message: string;
   timestamp?: string;
+  iconType?: 'cloud' | 'brain' | 'lightbulb';
 }
 
 const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = ({ 
   message, 
-  timestamp 
+  timestamp,
+  iconType = 'brain' // Default icon is brain
 }) => {
   const activeTheme = useSeasonalTheme();
   
@@ -110,6 +113,17 @@ const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = 
           transform: [{ scale: pulseAnim }],
         }
       ]}>
+        {/* Icon above the pulsing circle */}
+        <Animated.View style={[styles.iconContainer]}>
+          {iconType === 'cloud' ? (
+            <CloudIcon size={28} color={activeTheme.highlight} />
+          ) : iconType === 'lightbulb' ? (
+            <LightBulbIcon size={28} color={activeTheme.highlight} />
+          ) : (
+            <BrainIcon size={28} color={activeTheme.highlight} />
+          )}
+        </Animated.View>
+        
         <Box
           className="rounded-full overflow-hidden"
           style={{
@@ -149,6 +163,11 @@ const styles = StyleSheet.create({
     marginTop: 60,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  iconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
   },
   timestamp: {
     fontSize: 16,

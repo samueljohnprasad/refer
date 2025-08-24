@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Alert, Platform, Animated, Easing } from "react-native";
+import { View, Text, SafeAreaView, Alert, Platform, Animated, Easing, StyleSheet } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import VoiceRecorderModal from "@/components/modals/VoiceRecorderModal";
 import BreathingBackground from "@/components/ui/BreathingBackground";
@@ -11,6 +11,7 @@ import {
   type IWaveformRef,
 } from "@simform_solutions/react-native-audio-waveform";
 import { Button, ButtonText } from "@/components/ui/button";
+import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Box } from "@/components/ui/box";
 import { ScrollView } from "@/components/ui/scroll-view";
 import MindfulBackground from "@/components/ui/MindfulBackground";
@@ -139,24 +140,36 @@ const VoiceRecorderModalWrapper = ({
   }, [fadeAnim, slideAnim, opacityAnim]);
   
   const handleAnalysisProgress = useCallback((progress: AnalysisProgress) => {
-    // Update timestamp for loading screen
-    if (progress.stage === 'analyzing' || progress.stage === 'generating-insights') {
+    // Only update timestamp once when entering a stage
+    if ((progress.stage === 'analyzing' || progress.stage === 'generating-insights') && 
+        progress.stage !== analysisProgress?.stage) {
       setCurrentTimestamp(format(new Date(), 'MMMM d • h:mm a'));
     }
     
-    // Transition between different stages
+    // Only animate transitions between different stages, not on every progress update
     if (progress.stage !== analysisProgress?.stage) {
+      console.log(`Stage transition: ${analysisProgress?.stage || 'none'} -> ${progress.stage}`);
       runTransitionAnimations();
+    }
+    
+    // Prevent unnecessary state updates if only progress percentage changed
+    if (progress.stage === analysisProgress?.stage && 
+        progress.message === analysisProgress?.message && 
+        progress.progress === analysisProgress?.progress) {
+      console.log('Skipping identical progress update');
+      return;
     }
     
     setAnalysisProgress(progress);
     
     if (progress.stage === 'complete' && progress.result) {
+      console.log('Analysis complete, showing insights');
       setAnalysisResult(progress.result);
-      // Use animation before showing insights
+      // Use animation before showing insights (only once)
       runTransitionAnimations(true);
     }
   }, [analysisProgress, runTransitionAnimations]);
+
 
   const uploadAndTranscribe = async (uri: string) => {
     try {
@@ -325,10 +338,32 @@ const VoiceRecorderModalWrapper = ({
                       </Box>
                     </Box>
                   ) : analysisProgress.stage === 'transcribing' ? (
-                    // Transcribing state - show indicator with progress bar
-                    <Box className="px-4 w-full max-w-md">
-                      <ProcessingStageIndicator progress={analysisProgress} />
-                    </Box>
+                    // Enhanced premium transcribing UI
+                    <Animated.View style={[styles.animatedContainer]}>                      
+                      <Box className="items-center justify-center">
+                        <AnimatedProcessingIndicator 
+                          message="Converting speech to text" 
+                          timestamp={currentTimestamp || format(new Date(), 'MMMM d • h:mm a')}
+                          iconType="cloud"
+                        />
+                        
+                        {/* Progress Indicator below animation */}
+                        <Box className="px-6 w-full mt-6 max-w-xs">
+                          <Progress 
+                            value={analysisProgress.progress} 
+                            max={100} 
+                            className="h-1.5 rounded-full overflow-hidden bg-gray-200/60"
+                          >
+                            <ProgressFilledTrack 
+                              className="bg-blue-400"
+                            />
+                          </Progress>
+                          <Text className="text-center text-sm text-gray-500 mt-2">
+                            {analysisProgress.message}
+                          </Text>
+                        </Box>
+                      </Box>
+                    </Animated.View>
                   ) : (
                     // Analysis states with premium animated design (analyzing, generating-insights)
                     <AnimatedProcessingIndicator 
@@ -395,5 +430,13 @@ const VoiceRecorderModalWrapper = ({
     </VoiceRecorderModal>
   );
 };
+
+const styles = StyleSheet.create({
+  animatedContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+});
 
 export default VoiceRecorderModalWrapper;
