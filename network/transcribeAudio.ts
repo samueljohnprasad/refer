@@ -37,7 +37,7 @@ export async function transcribeAudio(
   base64Audio: string
 ): Promise<string[]> {
   const url = `https://speech.googleapis.com/v1/speech:recognize?key=${apiKey}`;
-
+  console.log("base64Audio", base64Audio);
   const payload: SpeechRecognitionRequest = {
     config: {
       encoding: "MP3",

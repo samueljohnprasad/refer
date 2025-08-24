@@ -19,6 +19,7 @@ import { transcribeAudio } from "@/network/transcribeAudio";
 import MindfulGradient, {
   GradientPosition,
 } from "../components/MindfulGradient";
+import { Buffer } from "buffer";
 
 const stateBasedDetails = {
   [PlayerState.paused]: {
@@ -82,10 +83,11 @@ const VoiceRecorderModalWrapper = ({
     try {
       // Step 1: Upload audio file to AssemblyAI
       const audioData = await fetch(uri);
-      const audioBlob = await audioData.toString();
+      const audioBlob = await audioData.arrayBuffer();
+      const base64Audio = Buffer.from(audioBlob).toString("base64");
       const transcripts = await transcribeAudio(
         "AIzaSyCfc4bT2M0K4z3mVjvra2T-VV65ZtWr7cM",
-        audioBlob
+        base64Audio
       );
       console.log("transcripts", transcripts);
     } catch (error) {
