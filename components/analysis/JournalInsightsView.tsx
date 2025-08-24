@@ -65,16 +65,19 @@ const EmotionBar: React.FC<EmotionBarProps> = ({ emotion, value, color }) => {
       <HStack className="justify-between mb-2">
         <HStack className="items-center">
           <Text className="w-6 mr-2 text-lg">{getEmotionIcon()}</Text>
-          <Text className="text-sm font-medium text-gray-700 tracking-wide capitalize">{emotion}</Text>
+          <Text className="text-sm text-gray-700 tracking-wide capitalize" style={{ fontWeight: '450' as any }}>{emotion}</Text>
         </HStack>
-        <Text className="text-sm font-bold" style={{color}}>{percentage}</Text>
+        <Text className="text-sm" style={{color, fontWeight: '500' as any}}>{percentage}</Text>
       </HStack>
       <Box 
-        className="h-2.5 w-full bg-gray-100 rounded-full overflow-hidden shadow-inner"
+        className="h-1.5 w-full bg-gray-50 rounded-full overflow-hidden"
         style={{
-          backgroundColor: '#f5f5f7',
-          borderWidth: 1,
-          borderColor: '#e1e1e8'
+          backgroundColor: '#fafafa',
+          borderWidth: 0.5,
+          borderColor: '#eaebef',
+          ...(Platform.OS === 'web' ? {
+            boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)'
+          } : {})
         } as any}>
         <Animated.View 
           style={{
@@ -221,29 +224,33 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
   const getTypographyStyle = (type: 'heading' | 'subheading' | 'body' | 'caption') => {
     switch (type) {
       case 'heading':
-        return { letterSpacing: -0.5, fontWeight: '700' as any, lineHeight: 28 };
+        return { letterSpacing: -0.6, fontWeight: '600' as any, lineHeight: 28 };
       case 'subheading':
-        return { letterSpacing: -0.3, fontWeight: '600' as any, lineHeight: 24 };
+        return { letterSpacing: -0.4, fontWeight: '500' as any, lineHeight: 24 };
       case 'body':
-        return { letterSpacing: 0.1, lineHeight: 22 };
+        return { letterSpacing: 0.1, lineHeight: 23, opacity: 0.9 };
       case 'caption':
-        return { letterSpacing: 0.2, lineHeight: 16, opacity: 0.8 };
+        return { letterSpacing: 0.2, lineHeight: 16, opacity: 0.7 };
       default:
         return {};
     }
   };
   
   return (
-    <ScrollView className="flex-1 bg-gray-50" contentContainerStyle={{paddingBottom: 80}}>
+  
+    <ScrollView className="flex-1 bg-gray-50/60" contentContainerStyle={{paddingBottom: 80}}>
       <Box className="px-5 py-8 pb-16">
         {/* Transcript Card - Enhanced */}
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(0)]}>  
-          <Card className="mb-6 p-5 rounded-xl bg-white shadow-sm border border-gray-100">
+          <Card className="mb-8 p-6 rounded-3xl bg-white" style={[{
+              borderWidth: 0.5,
+              ...styles.premiumCard
+            }]}>
             <HStack className="items-center mb-3">
-              <Box className="w-1 h-7 rounded-full bg-blue-500 mr-2" />
-              <Text className="text-lg font-semibold text-gray-800" style={{ letterSpacing: -0.2 }}>Your Journal</Text>
+              <Box className="w-[1px] h-7 rounded-full bg-blue-500 mr-2.5" />
+              <Text className="text-lg text-gray-800" style={{ letterSpacing: -0.4, fontWeight: '500' as any }}>Your Journal</Text>
             </HStack>
-            <Box className="p-6 rounded-2xl" style={{backgroundColor: '#f9f9fc', borderWidth: 1, borderColor: '#e8e8ef', ...styles.innerShadow}}>
+            <Box className="p-6 rounded-2xl" style={{backgroundColor: '#fafafa', borderWidth: 0.5, borderColor: 'rgba(225,225,235,0.4)', ...styles.innerShadow}}>
               {transcripts.map((transcript, index) => (
                 <Text key={index} className="text-gray-700 leading-relaxed mb-3 font-normal" style={getTypographyStyle('body')}>
                   {transcript}
@@ -257,11 +264,11 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(1)]}>
           <Card className="mb-8 p-6 rounded-3xl bg-white border border-gray-100/30" style={[styles.premiumCard]}>
             <HStack className="items-center mb-5">
-              <Box className="w-1 h-7 rounded-full bg-green-500 mr-2" />
-              <Text className="text-xl font-semibold text-gray-800 tracking-tight" style={{ letterSpacing: -0.4, fontWeight: '600' as any }}>Summary</Text>
+              <Box className="w-[1px] h-7 rounded-full bg-green-500 mr-2.5" />
+              <Text className="text-xl text-gray-800 tracking-tight" style={{ letterSpacing: -0.6, fontWeight: '500' as any }}>Summary</Text>
             </HStack>
-            <Box className="p-5 rounded-xl" style={{backgroundColor: '#f0f7ff', borderWidth: 1, borderColor: '#d8e8fc', ...styles.innerShadow}}>
-              <Text className="text-gray-700 leading-relaxed font-normal italic" style={{ letterSpacing: 0.2, lineHeight: 24 }}>
+            <Box className="p-5 rounded-xl" style={{backgroundColor: 'rgba(248,251,255,0.8)', borderWidth: 0.5, borderColor: 'rgba(225,230,250,0.35)', ...styles.innerShadow}}>
+              <Text className="text-gray-700 leading-relaxed italic" style={{ letterSpacing: 0.2, lineHeight: 24, fontWeight: '400' as any }}>
                 {analysisResult.summary}
               </Text>
             </Box>
@@ -272,24 +279,38 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(2)]}>
           <Card className="mb-8 p-6 rounded-3xl bg-white border border-gray-100/30" style={[styles.premiumCard]}>
             <HStack className="items-center mb-5">
-              <Box className="w-1 h-7 rounded-full bg-purple-500 mr-2" />
-              <Text className="text-xl font-semibold text-gray-800 tracking-tight" style={{ letterSpacing: -0.4, fontWeight: '600' as any }}>Sentiment</Text>
+              <Box className="w-[2px] h-7 rounded-full bg-purple-500 mr-2.5" />
+              <Text className="text-xl text-gray-800 tracking-tight" style={{ letterSpacing: -0.6, fontWeight: '500' as any }}>Sentiment</Text>
             </HStack>
             <HStack className="items-center justify-between mb-1">
-              <Box className="p-4 rounded-lg bg-gray-50 border border-gray-100">
+              <Box 
+                className="p-6 mb-2 rounded-xl bg-white/95" 
+                style={{
+                  borderWidth: 0.5,
+                  borderColor: 'rgba(230,230,235,0.35)',
+                  backdropFilter: Platform.OS === 'web' ? 'blur(12px)' : undefined,
+                  borderRadius: 12
+                }}>
                 <Text 
-                  className="text-xl font-bold capitalize" 
-                  style={{ color: getSentimentColor() }}
+                  className="text-xl capitalize" 
+                  style={{ color: getSentimentColor(), fontWeight: '500' as any, letterSpacing: -0.3 }}
                 >
                   {analysisResult.sentiment.label}
                 </Text>
-                <Text className="text-xs text-gray-500 mt-1">Overall Mood</Text>
+                <Text className="text-xs text-gray-500 mt-1" style={{ letterSpacing: 0.2, opacity: 0.8 }}>Overall Mood</Text>
               </Box>
               <Box 
-                className="h-24 w-24 rounded-full border-4 items-center justify-center shadow-inner"
-                style={{ borderColor: getSentimentColor(), backgroundColor: `${getSentimentColor()}10` }}
+                className="h-24 w-24 rounded-full items-center justify-center"
+                style={{ 
+                  borderWidth: 0.5, 
+                  borderColor: getSentimentColor(), 
+                  backgroundColor: `${getSentimentColor()}05`,
+                  ...(Platform.OS === 'web' ? {
+                    boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)'
+                  } : {})
+                }}
               >
-                <Text className="text-2xl font-bold" style={{ letterSpacing: -0.5, color: getSentimentColor() }}>
+                <Text className="text-2xl" style={{ letterSpacing: -0.7, fontWeight: '500' as any, color: getSentimentColor() }}>
                   {Math.round((analysisResult.sentiment.score + 1) * 50)}
                 </Text>
                 <Text className="text-xs text-gray-500">Score</Text>
@@ -302,10 +323,15 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(3)]}>
           <Card className="mb-8 p-6 rounded-3xl bg-white border border-gray-100/30" style={[styles.premiumCard]}>
             <HStack className="items-center mb-5">
-              <Box className="w-1 h-7 rounded-full bg-red-500 mr-2" />
-              <Text className="text-xl font-semibold text-gray-800 tracking-tight" style={{ letterSpacing: -0.4, fontWeight: '600' as any }}>Emotions</Text>
+              <Box className="w-[2px] h-7 rounded-full bg-red-500 mr-2.5" />
+              <Text className="text-xl text-gray-800 tracking-tight" style={{ letterSpacing: -0.6, fontWeight: '500' as any }}>Emotions</Text>
             </HStack>
-            <Box className="p-5 bg-gray-50/80 rounded-xl border border-gray-100/70" style={{ backdropFilter: Platform.OS === 'web' ? 'blur(8px)' : undefined }}>
+            <Box 
+                className="p-5 bg-gray-50/70 rounded-xl" style={{ 
+                  backdropFilter: Platform.OS === 'web' ? 'blur(12px)' : undefined,
+                  borderWidth: 0.5,
+                  borderColor: 'rgba(230,230,235,0.4)'
+                }}>
               <VStack className="space-y-3">
                 {Object.entries(analysisResult.emotions).map(([emotion, value], index) => (
                   <Animated.View 
@@ -315,7 +341,7 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
                       transform: [{ 
                         translateX: fadeAnim.interpolate({
                           inputRange: [0, 1],
-                          outputRange: [10 * (index + 1), 0]
+                          outputRange: [8 * (index + 1), 0]
                         })
                       }] 
                     }}
@@ -336,10 +362,15 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(4)]}>
           <Card className="mb-8 p-6 rounded-3xl bg-white border border-gray-100/30" style={[styles.premiumCard]}>
             <HStack className="items-center mb-5">
-              <Box className="w-1 h-7 rounded-full bg-yellow-500 mr-2" />
-              <Text className="text-xl font-semibold text-gray-800 tracking-tight" style={{ letterSpacing: -0.4, fontWeight: '600' as any }}>Key Topics</Text>
+              <Box className="w-[2px] h-7 rounded-full bg-yellow-500 mr-2.5" />
+              <Text className="text-xl text-gray-800 tracking-tight" style={{ letterSpacing: -0.6, fontWeight: '500' as any }}>Key Topics</Text>
             </HStack>
-            <Box className="p-5 bg-gray-50/80 rounded-xl border border-gray-100/70" style={{ backdropFilter: Platform.OS === 'web' ? 'blur(8px)' : undefined }}>
+            <Box className="p-1.5 rounded-xl px-4 mr-2 mb-2" style={{ 
+                  backgroundColor: 'rgba(248,248,252,0.8)',
+                  backdropFilter: Platform.OS === 'web' ? 'blur(12px)' : undefined,
+                  borderWidth: 0.5,
+                  borderColor: 'rgba(230,230,235,0.4)'
+                }}>
               <HStack className="flex-wrap">
                 {analysisResult.topics.map((topic, index) => {
                   const hueRotate = (index * 40) % 360;
@@ -357,12 +388,13 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
                       }}
                     >
                       <Box 
-                        className="px-4 py-2.5 m-1 rounded-full bg-blue-50 border border-blue-100"
+                        className="px-3.5 py-2 m-1 rounded-full"
                         style={{ 
-                          backgroundColor: `hsl(${hueRotate}, 85%, 95%)`,
-                          borderColor: `hsl(${hueRotate}, 70%, 85%)`,
+                          backgroundColor: `hsl(${hueRotate}, 85%, 97%)`,
+                          borderWidth: 0.5,
+                          borderColor: `hsl(${hueRotate}, 70%, 90%)`,
                           ...(Platform.OS === 'web' ? {
-                            boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                            boxShadow: '0 1px 2px rgba(0,0,0,0.01)',
                             transition: 'all 0.2s ease'
                           } : {})
                         }}
@@ -386,8 +418,8 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(5)]}>
           <Card className="mb-8 p-6 rounded-3xl bg-white border border-gray-100/30" style={[styles.premiumCard]}>
             <HStack className="items-center mb-5">
-              <Box className="w-1 h-7 rounded-full bg-indigo-500 mr-2" />
-              <Text className="text-xl font-semibold text-gray-800 tracking-tight" style={{ letterSpacing: -0.4, fontWeight: '600' as any }}>Insights</Text>
+              <Box className="w-[2px] h-7 rounded-full bg-indigo-500 mr-2.5" />
+              <Text className="text-xl text-gray-800 tracking-tight" style={{ letterSpacing: -0.6, fontWeight: '500' as any }}>Insights</Text>
             </HStack>
             <Box className="p-0 rounded-lg">
               <VStack className="space-y-3">
@@ -405,16 +437,20 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
                     }}
                   >
                     <Box 
-                      className="p-4 rounded-lg bg-indigo-50 border-l-4"
-                      style={{ borderColor: activeTheme.highlight }}
+                      className="p-4 rounded-lg bg-indigo-50/70"
+                      style={{ 
+                        borderLeftWidth: 2,
+                        borderColor: activeTheme.highlight,
+                        borderRadius: 8
+                      }}
                     >
                       <HStack className="items-center mb-1">
-                        <Box className="w-6 h-6 rounded-full bg-indigo-100 items-center justify-center mr-2">
-                          <Text className="text-xs font-bold text-indigo-600">{index + 1}</Text>
+                        <Box className="w-5 h-5 rounded-full bg-indigo-50 items-center justify-center mr-2" style={{ borderWidth: 0.5, borderColor: 'rgba(80,70,200,0.15)' }}>
+                          <Text className="text-xs text-indigo-600" style={{ fontWeight: '500' as any }}>{index + 1}</Text>
                         </Box>
-                        <Text className="text-sm font-medium text-indigo-800">Key Insight</Text>
+                        <Text className="text-sm text-indigo-800" style={{ fontWeight: '450' as any, letterSpacing: -0.2 }}>Key Insight</Text>
                       </HStack>
-                      <Text className="text-gray-700 ml-8">{insight}</Text>
+                      <Text className="text-gray-700 ml-8" style={{ lineHeight: 21, opacity: 0.92 }}>{insight}</Text>
                     </Box>
                   </Animated.View>
                 ))}
@@ -427,10 +463,14 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
         <Animated.View style={[styles.cardContainer, getAnimatedStyle(6)]}>
           <Card className="mb-8 p-6 rounded-3xl bg-white border border-gray-100/30" style={[styles.premiumCard]}>
             <HStack className="items-center mb-5">
-              <Box className="w-1 h-7 rounded-full bg-green-500 mr-2" />
-              <Text className="text-xl font-semibold text-gray-800 tracking-tight" style={{ letterSpacing: -0.4, fontWeight: '600' as any }}>Suggested Actions</Text>
+              <Box className="w-[1px] h-7 rounded-full bg-green-500 mr-2.5" />
+              <Text className="text-xl text-gray-800 tracking-tight" style={{ letterSpacing: -0.6, fontWeight: '500' as any }}>Suggested Actions</Text>
             </HStack>
-            <Box className="p-5 bg-green-50/40 rounded-xl border border-green-100/50" style={{ backdropFilter: Platform.OS === 'web' ? 'blur(8px)' : undefined }}>
+            <Box className="p-5 bg-gray-50/40 rounded-xl" style={{ 
+              borderWidth: 0.5, 
+              borderColor: 'rgba(225,225,230,0.3)', 
+              backdropFilter: Platform.OS === 'web' ? 'blur(15px)' : undefined 
+            }}>
               <VStack className="space-y-4">
                 {analysisResult.actionItems?.map((action, index) => (
                   <Animated.View
@@ -445,14 +485,24 @@ const JournalInsightsView: React.FC<JournalInsightsViewProps> = ({
                       }]
                     }}
                   >
-                    <HStack key={index} className="items-center space-x-3 p-2 bg-white rounded-lg shadow-sm border border-gray-100">
+                    <HStack key={index} className="items-center space-x-3 p-2 bg-white rounded-lg" style={{
+                      borderWidth: 0.5,
+                      borderColor: 'rgba(228,228,233,0.5)',
+                      ...(Platform.OS === 'web' ? {
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.01)'
+                      } : {})
+                    }}>
                       <Box 
-                        className="w-10 h-10 rounded-full items-center justify-center"
-                        style={{ backgroundColor: `${activeTheme.highlight}20` }}
+                        className="w-8 h-8 rounded-full items-center justify-center"
+                        style={{ 
+                          backgroundColor: `${activeTheme.highlight}10`,
+                          borderWidth: 0.5,
+                          borderColor: `${activeTheme.highlight}30`
+                        }}
                       >
-                        <Text className="font-bold text-green-700">{index + 1}</Text>
+                        <Text className="text-green-700" style={{ fontSize: 12, fontWeight: '500' as any }}>{index + 1}</Text>
                       </Box>
-                      <Text className="text-gray-700 flex-1 font-medium" style={{ letterSpacing: 0.1, lineHeight: 20 }}>{action}</Text>
+                      <Text className="text-gray-700 flex-1" style={{ letterSpacing: 0.1, lineHeight: 20, fontWeight: '450' as any }}>{action}</Text>
                     </HStack>
                   </Animated.View>
                 ))}
@@ -478,44 +528,42 @@ const styles = StyleSheet.create({
       transition: 'all 0.2s ease-in-out'
     } : {})
   },
-  // Ultra premium card with layered shadows for depth
+  // Ultra premium card with refined ultra-thin shadows for depth
   premiumCard: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 3,
-    borderColor: 'rgba(255,255,255,0.95)',
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    // For web platforms - layered shadows for premium look
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 1,
+    borderColor: 'rgba(230,230,235,0.4)',
+    // For web platforms - ultra-thin layered shadows for premium look
     ...(Platform.OS === 'web' ? {
-      boxShadow: '0 8px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.01), 0 20px 40px -20px rgba(50, 50, 93, 0.06)',
-      transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'
+      boxShadow: '0 10px 25px -6px rgba(0, 0, 0, 0.015), 0 1px 2px rgba(0, 0, 0, 0.005), 0 20px 40px -20px rgba(50, 50, 93, 0.02)',
+      transition: 'all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)'
     } : {})
   },
-  // Refined inner shadow for inset elements
+  // Ultra-thin inner shadow for inset elements
   innerShadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowOpacity: 0.01,
+    shadowRadius: 1,
+    elevation: 0,
     // For web platforms
     ...(Platform.OS === 'web' ? {
-      boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.03)'
+      boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.01), inset 0 0 2px rgba(0, 0, 0, 0.005)'
     } : {})
   },
-  // Enhanced sentiment meter with subtle glow
+  // Ultra-thin sentiment meter with minimal glow
   sentimentMeter: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 2,
-    // For web platforms
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.02,
+    shadowRadius: 3,
+    elevation: 1,
+    // Extra light shadows for web only
     ...(Platform.OS === 'web' ? {
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)'
+      boxShadow: '0 4px 8px -5px rgba(0, 0, 0, 0.02), 0 0 1px rgba(0, 0, 0, 0.005)'
     } : {})
   },
   // Animated progress bar
@@ -524,10 +572,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     overflow: 'hidden',
   },
-  // Web-specific styles that are applied dynamically via useHoverStyle
+  // Web-specific ultra-thin hover effects applied dynamically via useHoverStyle
   cardHoverActive: Platform.OS === 'web' ? {
-    transform: 'translateY(-2px)',
-    boxShadow: '0 14px 28px rgba(0, 0, 0, 0.05), 0 10px 10px rgba(0, 0, 0, 0.02)'
+    transform: 'translateY(-1px) scale(1.003)',
+    boxShadow: '0 10px 25px -8px rgba(0, 0, 0, 0.015), 0 2px 4px -2px rgba(0, 0, 0, 0.008)'
   } : {},
 });
 
