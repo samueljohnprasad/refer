@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Animated, Easing, Platform } from 'react-native';
 import { Box } from '@/components/ui/box';
 import { useSeasonalTheme } from '@/hooks/useSeasonalTheme';
@@ -16,7 +16,8 @@ const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = 
   
   // Animation values
   const pulseAnim = new Animated.Value(1);
-  const dotAnim = new Animated.Value(0);
+  // Dots handled with simple state cycling instead of Animated interpolation
+  const [dotState, setDotState] = useState<string>('');
   const floatAnim = new Animated.Value(0);
   const opacityAnim = new Animated.Value(0);
   
@@ -65,45 +66,19 @@ const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = 
       ])
     ).start();
     
-    // Animated dots
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(dotAnim, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: false,
-          easing: Easing.linear,
-        }),
-        Animated.timing(dotAnim, {
-          toValue: 2,
-          duration: 600,
-          useNativeDriver: false,
-          easing: Easing.linear,
-        }),
-        Animated.timing(dotAnim, {
-          toValue: 3,
-          duration: 600,
-          useNativeDriver: false,
-          easing: Easing.linear,
-        }),
-        Animated.timing(dotAnim, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: false,
-          easing: Easing.linear,
-        }),
-      ])
-    ).start();
+    // Cycle dotState every 500ms to show trailing dots
+    const interval = setInterval(() => {
+      setDotState((prev) => (prev.length >= 3 ? '' : prev + '.'));
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
-  // Interpolate animations
-  const dotInterpolation = dotAnim.interpolate({
-    inputRange: [0, 1, 2, 3],
-    outputRange: ['', '.', '..', '...']
-  });
+  // dotState already provides the trailing dots string
 
   const bgColorLight = `${activeTheme.highlight}10`;
-  const bgColorIntense = `${activeTheme.highlight}30`;
   
   return (
     <Animated.View style={[
@@ -126,10 +101,7 @@ const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = 
           color: Platform.OS === 'web' ? '#333' : '#333',
         }
       ]}>
-        {message}
-        <Animated.Text>
-          {dotInterpolation}
-        </Animated.Text>
+        {`${message}${dotState}`}
       </Animated.Text>
       
       <Animated.View style={[
