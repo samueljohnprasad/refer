@@ -1,4 +1,13 @@
-import { View, Text, SafeAreaView, Alert, Platform, Animated, Easing, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Alert,
+  Platform,
+  Animated,
+  Easing,
+  StyleSheet,
+} from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import VoiceRecorderModal from "@/components/modals/VoiceRecorderModal";
 import BreathingBackground from "@/components/ui/BreathingBackground";
@@ -13,10 +22,7 @@ import {
 import { Button, ButtonText } from "@/components/ui/button";
 import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Box } from "@/components/ui/box";
-import { ScrollView } from "@/components/ui/scroll-view";
-import MindfulBackground from "@/components/ui/MindfulBackground";
 import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
-import { DurationType } from "@simform_solutions/react-native-audio-waveform/lib/constants";
 import { transcribeAudio } from "@/network/transcribeAudio";
 import MindfulGradient, {
   GradientPosition,
@@ -25,8 +31,13 @@ import { Buffer } from "buffer";
 import ProcessingStageIndicator from "@/components/analysis/ProcessingStageIndicator";
 import JournalInsightsView from "@/components/analysis/JournalInsightsView";
 import AnimatedProcessingIndicator from "@/components/analysis/AnimatedProcessingIndicator";
-import { analyzeText, AnalysisProgress, TextAnalysisResult } from "@/utils/textAnalysisService";
+import {
+  analyzeText,
+  AnalysisProgress,
+  TextAnalysisResult,
+} from "@/utils/textAnalysisService";
 import { format } from "date-fns";
+import MindfulBackground from "@/components/ui/MindfulBackground";
 
 const stateBasedDetails = {
   [PlayerState.paused]: {
@@ -57,16 +68,18 @@ const VoiceRecorderModalWrapper = ({
   const activeTheme = useSeasonalTheme();
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
   const [transcripts, setTranscripts] = useState<string[]>([]);
-  const [analysisProgress, setAnalysisProgress] = useState<AnalysisProgress | null>(null);
-  const [analysisResult, setAnalysisResult] = useState<TextAnalysisResult | null>(null);
+  const [analysisProgress, setAnalysisProgress] =
+    useState<AnalysisProgress | null>(null);
+  const [analysisResult, setAnalysisResult] =
+    useState<TextAnalysisResult | null>(null);
   const [showInsights, setShowInsights] = useState(false);
-  const [currentTimestamp, setCurrentTimestamp] = useState<string>('');
-  
+  const [currentTimestamp, setCurrentTimestamp] = useState<string>("");
+
   // Animation values
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
-  
+
   const ref = useRef<IWaveformRef>(null);
   const ref2 = useRef<IWaveformRef>(null);
   const isRecording = recoderCurrentState === RecorderState.recording;
@@ -97,114 +110,128 @@ const VoiceRecorderModalWrapper = ({
     setIsSpeaking(true);
   };
 
-  // Setup animations between states
-  const runTransitionAnimations = useCallback((toInsights: boolean = false) => {
-    // Fade out current content
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-      easing: Easing.ease,
-    }).start(() => {
-      // After fade out, update state and fade back in
-      if (toInsights) {
-        setShowInsights(true);
-      }
-      
-      // Slide and fade in new content
-      slideAnim.setValue(50);
-      opacityAnim.setValue(0);
-      
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 400,
-          delay: 100,
-          useNativeDriver: true,
-          easing: Easing.out(Easing.ease),
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 500,
-          useNativeDriver: true,
-          easing: Easing.out(Easing.ease),
-        }),
-        Animated.timing(opacityAnim, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-          easing: Easing.ease,
-        }),
-      ]).start();
-    });
-  }, [fadeAnim, slideAnim, opacityAnim]);
-  
-  const handleAnalysisProgress = useCallback((progress: AnalysisProgress) => {
-    // Only update timestamp once when entering a stage
-    if ((progress.stage === 'analyzing' || progress.stage === 'generating-insights') && 
-        progress.stage !== analysisProgress?.stage) {
-      setCurrentTimestamp(format(new Date(), 'MMMM d • h:mm a'));
-    }
-    
-    // Only animate transitions between different stages, not on every progress update
-    if (progress.stage !== analysisProgress?.stage) {
-      console.log(`Stage transition: ${analysisProgress?.stage || 'none'} -> ${progress.stage}`);
-      runTransitionAnimations();
-    }
-    
-    // Prevent unnecessary state updates if only progress percentage changed
-    if (progress.stage === analysisProgress?.stage && 
-        progress.message === analysisProgress?.message && 
-        progress.progress === analysisProgress?.progress) {
-      console.log('Skipping identical progress update');
-      return;
-    }
-    
-    setAnalysisProgress(progress);
-    
-    if (progress.stage === 'complete' && progress.result) {
-      console.log('Analysis complete, showing insights');
-      setAnalysisResult(progress.result);
-          // Ensure we set showInsights to true and then animate
-      setShowInsights(true);
-      // Use animation for smooth transition to insights
-      runTransitionAnimations(true);
-    }
-  }, [analysisProgress, runTransitionAnimations]);
+  // Transition helper used for non-insight stage changes
+  const runTransitionAnimations = useCallback(() => {
+    // Fade / slide existing processing indicator in
+    fadeAnim.setValue(0);
+    slideAnim.setValue(50);
 
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.ease),
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.ease),
+      }),
+    ]).start();
+  }, [fadeAnim, slideAnim]);
+
+  // Play entrance animation once insights view is mounted
+  useEffect(() => {
+    if (!showInsights) return;
+
+    slideAnim.setValue(50);
+    opacityAnim.setValue(0);
+
+    Animated.parallel([
+      Animated.timing(opacityAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.ease),
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.ease),
+      }),
+    ]).start();
+  }, [showInsights, opacityAnim, slideAnim]);
+
+  const handleAnalysisProgress = useCallback(
+    (progress: AnalysisProgress) => {
+      // Only update timestamp once when entering a stage
+      if (
+        (progress.stage === "analyzing" ||
+          progress.stage === "generating-insights") &&
+        progress.stage !== analysisProgress?.stage
+      ) {
+        setCurrentTimestamp(format(new Date(), "MMMM d • h:mm a"));
+      }
+
+      // Only animate transitions between different stages, not on every progress update
+      if (progress.stage !== analysisProgress?.stage) {
+        console.log(
+          `Stage transition: ${analysisProgress?.stage || "none"} -> ${
+            progress.stage
+          }`
+        );
+        runTransitionAnimations();
+      }
+
+      // Prevent unnecessary state updates if only progress percentage changed
+      if (
+        progress.stage === analysisProgress?.stage &&
+        progress.message === analysisProgress?.message &&
+        progress.progress === analysisProgress?.progress
+      ) {
+        console.log("Skipping identical progress update");
+        return;
+      }
+
+      setAnalysisProgress(progress);
+
+      if (progress.stage === "complete" && progress.result) {
+        console.log("Analysis complete, showing insights");
+        setAnalysisResult(progress.result);
+        // Ensure we set showInsights to true and then animate
+        setShowInsights(true);
+        // Entrance animation will start automatically via useEffect
+        runTransitionAnimations();
+      }
+    },
+    [analysisProgress, runTransitionAnimations]
+  );
 
   const uploadAndTranscribe = async (uri: string) => {
     try {
       // Reset states
       setShowInsights(false);
       setAnalysisResult(null);
-      
+
       // Start with transcribing stage
       setAnalysisProgress({
-        stage: 'transcribing',
+        stage: "transcribing",
         progress: 0,
-        message: 'Preparing audio for transcription...'
+        message: "Preparing audio for transcription...",
       });
-      
+
       // Step 1: Upload audio file to AssemblyAI
       const audioData = await fetch(uri);
       const audioBlob = await audioData.arrayBuffer();
       const base64Audio = Buffer.from(audioBlob).toString("base64");
-      
+
       setAnalysisProgress({
-        stage: 'transcribing',
+        stage: "transcribing",
         progress: 50,
-        message: 'Converting speech to text...'
+        message: "Converting speech to text...",
       });
-      
+
       const transcriptResults = await transcribeAudio(
         "AIzaSyCfc4bT2M0K4z3mVjvra2T-VV65ZtWr7cM",
         base64Audio
       );
-      
+
       console.log("Transcripts:", transcriptResults);
       setTranscripts(transcriptResults);
-      
+
       // If we have transcripts, analyze them
       if (transcriptResults.length > 0) {
         // Join all transcripts into a single text for analysis
@@ -213,19 +240,21 @@ const VoiceRecorderModalWrapper = ({
         await analyzeText(fullText, handleAnalysisProgress);
       } else {
         setAnalysisProgress({
-          stage: 'error',
+          stage: "error",
           progress: 100,
-          message: 'No speech detected in recording',
-          error: 'Unable to transcribe audio. Please try recording again with clearer speech.'
+          message: "No speech detected in recording",
+          error:
+            "Unable to transcribe audio. Please try recording again with clearer speech.",
         });
       }
     } catch (error) {
       console.error("Error processing audio:", error);
       setAnalysisProgress({
-        stage: 'error',
+        stage: "error",
         progress: 100,
-        message: 'Error processing audio',
-        error: error instanceof Error ? error.message : 'An unknown error occurred'
+        message: "Error processing audio",
+        error:
+          error instanceof Error ? error.message : "An unknown error occurred",
       });
     }
   };
@@ -237,7 +266,7 @@ const VoiceRecorderModalWrapper = ({
     uploadAndTranscribe(path);
     setIsSpeaking(false);
   };
-  
+
   const handleResetRecording = () => {
     // Use animation to transition out
     Animated.timing(fadeAnim, {
@@ -247,12 +276,14 @@ const VoiceRecorderModalWrapper = ({
       easing: Easing.ease,
     }).start(() => {
       // Reset all states after fade out
-      setShowInsights(false);
-      setAnalysisResult(null);
+      requestAnimationFrame(() => {
+        setShowInsights(false);
+        setAnalysisResult(null);
+      });
       setAnalysisProgress(null);
       setTranscripts([]);
       setRecordingUri(null);
-      
+
       // Fade back in
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -285,7 +316,7 @@ const VoiceRecorderModalWrapper = ({
           handleResetRecording();
         } else {
           Alert.alert(
-            "Recording in Progress", 
+            "Recording in Progress",
             "Stop recording before closing",
             [{ text: "OK" }]
           );
@@ -293,161 +324,174 @@ const VoiceRecorderModalWrapper = ({
       }}
     >
       <MindfulBackground>
-        <SafeAreaView className="flex-1">
-          {!showInsights ? (
-            <>
-              <MindfulGradient position={position} isSpeaking={isSpeaking} />
-              
-              {/* Recording Waveform */}
-              {!analysisProgress && (
-                <Box className="w-full mb-4" style={{ height: 200 }}>
-                  <Waveform
-                    key={"player1"}
-                    showsHorizontalScrollIndicator={true}
-                    candleHeightScale={12}
-                    mode="live"
-                    waveColor={activeTheme.highlight}
-                    ref={ref}
-                    candleSpace={4}
-                    candleWidth={6}
-                    onRecorderStateChange={(recorderState) => {
-                      setRecoderCurrentState(recorderState);
-                    }}
-                  />
-                </Box>
-              )}
-              
-              {/* Processing Stages */}
-              {analysisProgress && (
-                <Animated.View
-                  style={[
-                    { flex: 1, paddingTop: 40, alignItems: 'center', justifyContent: 'center' },
-                    { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }
-                  ]}
-                >
-                  {analysisProgress.stage === 'error' ? (
-                    // Error state
-                    <Box className="px-4 flex-1">
-                      <Text className="text-2xl font-bold text-center mb-6">Processing Error</Text>
-                      <ProcessingStageIndicator progress={analysisProgress} />
-                      <Box className="items-center mt-8">
-                        <Button 
-                          onPress={handleResetRecording}
-                          className="bg-blue-500 px-6"
+      <SafeAreaView className="flex-1">
+        {!showInsights ? (
+          <>
+            <MindfulGradient position={position} isSpeaking={isSpeaking} />
+
+            {/* Recording Waveform */}
+            {!analysisProgress && (
+              <Box className="w-full mb-4" style={{ height: 200 }}>
+                <Waveform
+                  key={"player1"}
+                  showsHorizontalScrollIndicator={true}
+                  candleHeightScale={12}
+                  mode="live"
+                  waveColor={activeTheme.highlight}
+                  ref={ref}
+                  candleSpace={4}
+                  candleWidth={6}
+                  onRecorderStateChange={(recorderState) => {
+                    setRecoderCurrentState(recorderState);
+                  }}
+                />
+              </Box>
+            )}
+
+            {/* Processing Stages */}
+            {analysisProgress && (
+              <Animated.View
+                style={[
+                  {
+                    flex: 1,
+                    paddingTop: 40,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  },
+                  { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+                ]}
+              >
+                {analysisProgress.stage === "error" ? (
+                  // Error state
+                  <Box className="px-4 flex-1">
+                    <Text className="text-2xl font-bold text-center mb-6">
+                      Processing Error
+                    </Text>
+                    <ProcessingStageIndicator progress={analysisProgress} />
+                    <Box className="items-center mt-8">
+                      <Button
+                        onPress={handleResetRecording}
+                        className="bg-blue-500 px-6"
+                      >
+                        <ButtonText>Try Again</ButtonText>
+                      </Button>
+                    </Box>
+                  </Box>
+                ) : analysisProgress.stage === "transcribing" ? (
+                  // Enhanced premium transcribing UI
+                  <Animated.View style={[styles.animatedContainer]}>
+                    <Box className="items-center justify-center">
+                      <AnimatedProcessingIndicator
+                        message="Converting speech to text"
+                        timestamp={
+                          currentTimestamp ||
+                          format(new Date(), "MMMM d • h:mm a")
+                        }
+                        iconType="cloud"
+                      />
+
+                      {/* Progress Indicator below animation */}
+                      <Box className="px-6 w-full mt-6 max-w-xs">
+                        <Progress
+                          value={analysisProgress.progress}
+                          max={100}
+                          className="h-1.5 rounded-full overflow-hidden bg-gray-200/60"
                         >
-                          <ButtonText>Try Again</ButtonText>
-                        </Button>
+                          <ProgressFilledTrack className="bg-blue-400" />
+                        </Progress>
+                        <Text className="text-center text-sm text-gray-500 mt-2">
+                          {analysisProgress.message}
+                        </Text>
                       </Box>
                     </Box>
-                  ) : analysisProgress.stage === 'transcribing' ? (
-                    // Enhanced premium transcribing UI
-                    <Animated.View style={[styles.animatedContainer]}>                      
-                      <Box className="items-center justify-center">
-                        <AnimatedProcessingIndicator 
-                          message="Converting speech to text" 
-                          timestamp={currentTimestamp || format(new Date(), 'MMMM d • h:mm a')}
-                          iconType="cloud"
-                        />
-                        
-                        {/* Progress Indicator below animation */}
-                        <Box className="px-6 w-full mt-6 max-w-xs">
-                          <Progress 
-                            value={analysisProgress.progress} 
-                            max={100} 
-                            className="h-1.5 rounded-full overflow-hidden bg-gray-200/60"
-                          >
-                            <ProgressFilledTrack 
-                              className="bg-blue-400"
-                            />
-                          </Progress>
-                          <Text className="text-center text-sm text-gray-500 mt-2">
-                            {analysisProgress.message}
-                          </Text>
-                        </Box>
-                      </Box>
-                    </Animated.View>
-                  ) : (
-                    // Analysis states with premium animated design (analyzing, generating-insights)
-                    <AnimatedProcessingIndicator 
-                      message={analysisProgress.stage === 'analyzing' ? 
-                        'Analyzing emotions' : 
-                        'Generating insights'}
-                      timestamp={currentTimestamp}
-                    />
-                  )}
-                </Animated.View>
-              )}
-              
-              {/* Recording Controls */}
-              {!analysisProgress && (
-                <MicControlContainer
-                  isRecording={isRecording}
-                  isPaused={isPaused}
-                  durationSeconds={1}
-                  onToggleRecord={
-                    isRecording
-                      ? () => handlePauseRecording()
-                      : isPaused
-                      ? () => {
-                          handleResumeRecording();
-                        }
-                      : () => handleStartRecording()
-                  }
-                  onStop={handleStopRecording}
-                />
-              )}
-            </>
-          ) : (
-            // Enhanced Premium Insights View with animations
-            <Animated.View 
-              style={[
-                { flex: 1 },
-                { opacity: opacityAnim }
-              ]}
-            >
-              <Box className="flex-row justify-between items-center px-4 py-3 bg-white/90 shadow-sm">
-                <Box className="flex-row items-center">
-                  <Text className="text-xl font-bold text-gray-800">Journal Analysis</Text>
-                  <Box className="ml-2 px-2 py-1 rounded-full bg-blue-100">
-                    <Text className="text-xs font-semibold text-blue-600">Premium</Text>
-                  </Box>
-                </Box>
-                <Button 
-                  onPress={handleResetRecording} 
-                  className="bg-gray-100 px-4 rounded-full"
-                >
-                  <ButtonText className="text-gray-800">New Journal</ButtonText>
-                </Button>
-              </Box>
-              
-              {/* Always render the JournalInsightsView when showInsights is true */}
-              <Animated.View
-                style={[{ 
-                  flex: 1, 
-                  transform: [{ translateY: slideAnim }] 
-                }]}
-              >
-                {analysisResult && (
-                  <JournalInsightsView 
-                    transcripts={transcripts} 
-                    analysisResult={analysisResult} 
+                  </Animated.View>
+                ) : (
+                  // Analysis states with premium animated design (analyzing, generating-insights)
+                  <AnimatedProcessingIndicator
+                    message={
+                      analysisProgress.stage === "analyzing"
+                        ? "Analyzing emotions"
+                        : "Generating insights"
+                    }
+                    timestamp={currentTimestamp}
                   />
                 )}
-                
-                {/* Fallback content if analysisResult is somehow null */}
-                {!analysisResult && showInsights && (
-                  <Box className="flex-1 items-center justify-center p-4">
-                    <Text className="text-xl font-semibold text-gray-700 mb-2">Analysis Complete</Text>
-                    <Text className="text-base text-gray-600 text-center">
-                      Your journal has been analyzed, but we couldn't generate insights.
-                      Please try recording again for better results.
-                    </Text>
-                  </Box>
-                )}
               </Animated.View>
+            )}
+
+            {/* Recording Controls */}
+            {!analysisProgress && (
+              <MicControlContainer
+                isRecording={isRecording}
+                isPaused={isPaused}
+                durationSeconds={1}
+                onToggleRecord={
+                  isRecording
+                    ? () => handlePauseRecording()
+                    : isPaused
+                    ? () => {
+                        handleResumeRecording();
+                      }
+                    : () => handleStartRecording()
+                }
+                onStop={handleStopRecording}
+              />
+            )}
+          </>
+        ) : (
+          // Enhanced Premium Insights View with animations
+          <Animated.View style={[{ flex: 1 }, { opacity: opacityAnim }]}>
+            <Box className="flex-row justify-between items-center px-4 py-3 bg-white/90 shadow-sm">
+              <Box className="flex-row items-center">
+                <Text className="text-xl font-bold text-gray-800">
+                  Journal Analysis
+                </Text>
+                <Box className="ml-2 px-2 py-1 rounded-full bg-blue-100">
+                  <Text className="text-xs font-semibold text-blue-600">
+                    Premium
+                  </Text>
+                </Box>
+              </Box>
+              <Button
+                onPress={handleResetRecording}
+                className="bg-gray-100 px-4 rounded-full"
+              >
+                <ButtonText className="text-gray-800">New Journal</ButtonText>
+              </Button>
+            </Box>
+
+            {/* Always render the JournalInsightsView when showInsights is true */}
+            <Animated.View
+              style={[
+                {
+                  flex: 1,
+                  transform: [{ translateY: slideAnim }],
+                },
+              ]}
+            >
+              {analysisResult && (
+                <JournalInsightsView
+                  transcripts={transcripts}
+                  analysisResult={analysisResult}
+                />
+              )}
+
+              {/* Fallback content if analysisResult is somehow null */}
+              {!analysisResult && showInsights && (
+                <Box className="flex-1 items-center justify-center p-4">
+                  <Text className="text-xl font-semibold text-gray-700 mb-2">
+                    Analysis Complete
+                  </Text>
+                  <Text className="text-base text-gray-600 text-center">
+                    Your journal has been analyzed, but we couldn't generate
+                    insights. Please try recording again for better results.
+                  </Text>
+                </Box>
+              )}
             </Animated.View>
-          )}
-        </SafeAreaView>
+          </Animated.View>
+        )}
+      </SafeAreaView>
       </MindfulBackground>
     </VoiceRecorderModal>
   );
@@ -456,9 +500,9 @@ const VoiceRecorderModalWrapper = ({
 const styles = StyleSheet.create({
   animatedContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
 export default VoiceRecorderModalWrapper;

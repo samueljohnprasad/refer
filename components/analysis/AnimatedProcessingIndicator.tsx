@@ -1,29 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Animated, Easing, Platform } from 'react-native';
-import { Box } from '@/components/ui/box';
-import { useSeasonalTheme } from '@/hooks/useSeasonalTheme';
-import { CloudIcon, BrainIcon, LightBulbIcon } from '@/assets/Icons';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Animated,
+  Easing,
+  Platform,
+} from "react-native";
+import { Box } from "@/components/ui/box";
+import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
 
 interface AnimatedProcessingIndicatorProps {
   message: string;
   timestamp?: string;
-  iconType?: 'cloud' | 'brain' | 'lightbulb';
 }
 
-const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = ({ 
-  message, 
-  timestamp,
-  iconType = 'brain' // Default icon is brain
-}) => {
+const AnimatedProcessingIndicator: React.FC<
+  AnimatedProcessingIndicatorProps
+> = ({ message, timestamp }) => {
   const activeTheme = useSeasonalTheme();
-  
+
   // Animation values
   const pulseAnim = new Animated.Value(1);
-  // Dots handled with simple state cycling instead of Animated interpolation
-  const [dotState, setDotState] = useState<string>('');
+  // Trailing dots state handled via simple interval
+  const [dotState, setDotState] = useState<string>("");
   const floatAnim = new Animated.Value(0);
   const opacityAnim = new Animated.Value(0);
-  
+
   // Start animations when component mounts
   useEffect(() => {
     // Fade in
@@ -32,7 +35,7 @@ const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = 
       duration: 800,
       useNativeDriver: true,
     }).start();
-    
+
     // Pulse animation
     Animated.loop(
       Animated.sequence([
@@ -50,7 +53,7 @@ const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = 
         }),
       ])
     ).start();
-    
+
     // Floating animation
     Animated.loop(
       Animated.sequence([
@@ -68,69 +71,57 @@ const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = 
         }),
       ])
     ).start();
-    
+
     // Cycle dotState every 500ms to show trailing dots
     const interval = setInterval(() => {
-      setDotState((prev) => (prev.length >= 3 ? '' : prev + '.'));
+      setDotState((prev) => (prev.length >= 3 ? "" : prev + "."));
     }, 500);
 
-    return () => {
-      clearInterval(interval);
-    };
+    // Clear interval on unmount
+    return () => clearInterval(interval);
   }, []);
 
-  // dotState already provides the trailing dots string
-
-  const bgColorLight = `${activeTheme.highlight}10`;
   
+  const bgColorLight = `${activeTheme.highlight}10`;
+  const bgColorIntense = `${activeTheme.highlight}30`;
+
   return (
-    <Animated.View style={[
-      styles.container,
-      { opacity: opacityAnim }
-    ]}>
+    <Animated.View style={[styles.container, { opacity: opacityAnim }]}>
       {timestamp && (
-        <Animated.Text style={[
-          styles.timestamp,
-          { opacity: 0.7 }
-        ]}>
+        <Animated.Text style={[styles.timestamp, { opacity: 0.7 }]}>
           {timestamp}
         </Animated.Text>
       )}
-      
-      <Animated.Text style={[
-        styles.message,
-        { 
-          transform: [{ translateY: floatAnim }],
-          color: Platform.OS === 'web' ? '#333' : '#333',
-        }
-      ]}>
+
+      <Animated.Text
+        style={[
+          styles.message,
+          {
+            transform: [{ translateY: floatAnim }],
+            color: Platform.OS === "web" ? "#333" : "#333",
+          },
+        ]}
+      >
         {`${message}${dotState}`}
       </Animated.Text>
-      
-      <Animated.View style={[
-        styles.indicatorContainer,
-        {
-          transform: [{ scale: pulseAnim }],
-        }
-      ]}>
-        {/* Icon above the pulsing circle */}
-        <Animated.View style={[styles.iconContainer]}>
-          {iconType === 'cloud' ? (
-            <CloudIcon size={28} color={activeTheme.highlight} />
-          ) : iconType === 'lightbulb' ? (
-            <LightBulbIcon size={28} color={activeTheme.highlight} />
-          ) : (
-            <BrainIcon size={28} color={activeTheme.highlight} />
-          )}
-        </Animated.View>
-        
+
+      <Animated.View
+        style={[
+          styles.indicatorContainer,
+          {
+            transform: [{ scale: pulseAnim }],
+          },
+        ]}
+      >
         <Box
           className="rounded-full overflow-hidden"
-          style={{
-            width: 80,
-            height: 80,
-            backgroundColor: bgColorLight,
-          } as any}
+          style={
+            {
+              width: 80,
+              height: 80,
+              backgroundColor: bgColorLight,
+            } as any
+          }
         >
           <Animated.View
             style={[
@@ -139,10 +130,8 @@ const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = 
               {
                 backgroundColor: activeTheme.highlight,
                 opacity: 0.4,
-                transform: [
-                  { scale: pulseAnim }
-                ],
-              }
+                transform: [{ scale: pulseAnim }],
+              },
             ]}
           />
         </Box>
@@ -154,38 +143,33 @@ const AnimatedProcessingIndicator: React.FC<AnimatedProcessingIndicatorProps> = 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 40,
   },
   indicatorContainer: {
     marginTop: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
   timestamp: {
     fontSize: 16,
-    color: '#9CA3AF', // gray-400
+    color: "#9CA3AF", // gray-400
     marginBottom: 48,
-    fontWeight: '500',
+    fontWeight: "500",
     letterSpacing: 0.5,
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
+    fontFamily: Platform.OS === "ios" ? "System" : "Roboto",
   },
   message: {
     fontSize: 36,
-    fontWeight: '600',
-    textAlign: 'center',
-    color: '#111827', // gray-900
+    fontWeight: "600",
+    textAlign: "center",
+    color: "#111827", // gray-900
     letterSpacing: -0.5,
     lineHeight: 44,
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
-    maxWidth: '80%',
+    fontFamily: Platform.OS === "ios" ? "System" : "Roboto",
+    maxWidth: "80%",
   },
   innerCircle: {
     borderRadius: 100,

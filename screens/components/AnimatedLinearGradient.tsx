@@ -1,10 +1,12 @@
 import React from "react";
-import { Animated } from "react-native";
 import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
 
-// Create an animated version of LinearGradient with proper typing
-const AnimatedLinearGradient = Animated.createAnimatedComponent(
-  LinearGradient
-) as unknown as React.ComponentType<LinearGradientProps>;
+/**
+ * Simplified wrapper that avoids Animated.createAnimatedComponent
+ * to prevent React Native warning on useInsertionEffect scheduling.
+ */
+const AnimatedLinearGradient: React.FC<LinearGradientProps> = (props) => (
+  <LinearGradient {...props} />
+);
 
 export default AnimatedLinearGradient;

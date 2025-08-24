@@ -7,7 +7,8 @@ import { Text } from "@/components/ui/text";
 import { Pressable } from "react-native";
 import { ModalType } from "@/types/journal";
 
-export const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
+// Avoid Animated.createAnimatedComponent to prevent useInsertionEffect warning
+const FadeView = Animated.View;
 
 interface ModalAnimationValues {
   blurAnim: Animated.Value;
@@ -54,29 +55,27 @@ export const AnimatedModal: React.FC<AnimatedModalProps> = ({
           },
         ]}
       >
-        <AnimatedBlurView
-          intensity={contentBlurAnim as unknown as number}
-          style={styles.contentBlur}
-          tint="light"
-        >
-          <VStack space="lg" style={styles.innerModalContent}>
-            <Heading size="lg" className="font-bold text-center">
-              {title}
-            </Heading>
-            <Pressable
-              style={styles.actionButton}
-              onPress={() => {
-                // TODO: integrate navigation or further logic here
-                onClose();
-              }}
-            >
-              <Text className="text-white font-semibold">{buttonText}</Text>
-            </Pressable>
-            <Pressable onPress={onClose}>
-              <Text className="text-gray-500 mt-4">Cancel</Text>
-            </Pressable>
-          </VStack>
-        </AnimatedBlurView>
+        <BlurView intensity={100} style={styles.contentBlur} tint="light">
+          <Animated.View style={{ opacity: contentBlurAnim }}>
+            <VStack space="lg" style={styles.innerModalContent}>
+              <Heading size="lg" className="font-bold text-center">
+                {title}
+              </Heading>
+              <Pressable
+                style={styles.actionButton}
+                onPress={() => {
+                  // TODO: integrate navigation or further logic here
+                  onClose();
+                }}
+              >
+                <Text className="text-white font-semibold">{buttonText}</Text>
+              </Pressable>
+              <Pressable onPress={onClose}>
+                <Text className="text-gray-500 mt-4">Cancel</Text>
+              </Pressable>
+            </VStack>
+          </Animated.View>
+        </BlurView>
       </Animated.View>
     );
   };
@@ -88,13 +87,11 @@ export const AnimatedModal: React.FC<AnimatedModalProps> = ({
       visible={visible}
       onRequestClose={onRequestClose}
     >
-      <AnimatedBlurView
-        intensity={blurAnim as unknown as number}
-        style={styles.modalBlur}
-        tint="light"
-      >
-        {renderModalContent()}
-      </AnimatedBlurView>
+      <BlurView style={styles.modalBlur} tint="light">
+        <Animated.View style={{ flex: 1, opacity: blurAnim }}>
+          {renderModalContent()}
+        </Animated.View>
+      </BlurView>
     </Modal>
   );
 };

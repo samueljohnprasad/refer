@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from "react";
 import { View, Animated, Dimensions } from "react-native";
-import AnimatedLinearGradient from "@/screens/components/AnimatedLinearGradient";
 import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
 
 type DropletsParticlesProps = {

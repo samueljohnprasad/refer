@@ -1,8 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Animated } from "react-native";
 import Svg, { Circle } from "react-native-svg";
-
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export interface GentleProgressRingProps {
   /** Progress value between 0 and 1 */
@@ -34,22 +32,29 @@ export const GentleProgressRing: React.FC<GentleProgressRingProps> = ({
   opacity = 0.8,
   children,
 }) => {
-  const animatedProgress = useRef(new Animated.Value(0)).current;
+    // Use Animated.Value for smooth progress updates without wrapping Circle in Animated component
+  const progressAnim = useRef(new Animated.Value(progress)).current;
+  const [internalProgress, setInternalProgress] = useState(progress);
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
 
+    // Animate on prop changes
   useEffect(() => {
-    Animated.timing(animatedProgress, {
+    const animation = Animated.timing(progressAnim, {
       toValue: progress,
       duration: 600,
       useNativeDriver: false,
-    }).start();
-  }, [progress, animatedProgress]);
+    });
+    animation.start();
+    const id = progressAnim.addListener(({ value }) => {
+      setInternalProgress(value);
+    });
+    return () => {
+      progressAnim.removeListener(id);
+    };
+  }, [progress, progressAnim]);
 
-  const strokeDashoffset = animatedProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [circumference, 0],
-  });
+  const strokeDashoffset = circumference * (1 - internalProgress);
 
   return (
     <View
@@ -73,7 +78,7 @@ export const GentleProgressRing: React.FC<GentleProgressRingProps> = ({
         />
 
         {/* Progress circle */}
-        <AnimatedCircle
+        <Circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
@@ -81,7 +86,7 @@ export const GentleProgressRing: React.FC<GentleProgressRingProps> = ({
           strokeWidth={strokeWidth}
           fill="transparent"
           strokeDasharray={`${circumference} ${circumference}`}
-          strokeDashoffset={strokeDashoffset as unknown as number}
+          strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
