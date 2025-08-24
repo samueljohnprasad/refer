@@ -4,3 +4,8 @@ export * from "./Laugh";
 export * from "./Sad";
 export * from "./Angry";
 export * from "./Lost";
+export * from "./BrainIcon";
+export * from "./LightBulbIcon";
+export * from "./CloudIcon";
+export * from "./CheckIcon";
+export * from "./XIcon";
