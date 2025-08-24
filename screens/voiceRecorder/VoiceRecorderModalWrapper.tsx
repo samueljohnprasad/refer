@@ -165,7 +165,9 @@ const VoiceRecorderModalWrapper = ({
     if (progress.stage === 'complete' && progress.result) {
       console.log('Analysis complete, showing insights');
       setAnalysisResult(progress.result);
-      // Use animation before showing insights (only once)
+          // Ensure we set showInsights to true and then animate
+      setShowInsights(true);
+      // Use animation for smooth transition to insights
       runTransitionAnimations(true);
     }
   }, [analysisProgress, runTransitionAnimations]);
@@ -396,7 +398,7 @@ const VoiceRecorderModalWrapper = ({
               )}
             </>
           ) : (
-            // Insights View with animations
+            // Enhanced Premium Insights View with animations
             <Animated.View 
               style={[
                 { flex: 1 },
@@ -404,25 +406,45 @@ const VoiceRecorderModalWrapper = ({
               ]}
             >
               <Box className="flex-row justify-between items-center px-4 py-3 bg-white/90 shadow-sm">
-                <Text className="text-xl font-bold">Journal Analysis</Text>
+                <Box className="flex-row items-center">
+                  <Text className="text-xl font-bold text-gray-800">Journal Analysis</Text>
+                  <Box className="ml-2 px-2 py-1 rounded-full bg-blue-100">
+                    <Text className="text-xs font-semibold text-blue-600">Premium</Text>
+                  </Box>
+                </Box>
                 <Button 
                   onPress={handleResetRecording} 
-                  className="bg-gray-100 px-4"
+                  className="bg-gray-100 px-4 rounded-full"
                 >
                   <ButtonText className="text-gray-800">New Journal</ButtonText>
                 </Button>
               </Box>
               
-              {analysisResult && (
-                <Animated.View
-                  style={[{ flex: 1, transform: [{ translateY: slideAnim }] }]}
-                >
+              {/* Always render the JournalInsightsView when showInsights is true */}
+              <Animated.View
+                style={[{ 
+                  flex: 1, 
+                  transform: [{ translateY: slideAnim }] 
+                }]}
+              >
+                {analysisResult && (
                   <JournalInsightsView 
                     transcripts={transcripts} 
                     analysisResult={analysisResult} 
                   />
-                </Animated.View>
-              )}
+                )}
+                
+                {/* Fallback content if analysisResult is somehow null */}
+                {!analysisResult && showInsights && (
+                  <Box className="flex-1 items-center justify-center p-4">
+                    <Text className="text-xl font-semibold text-gray-700 mb-2">Analysis Complete</Text>
+                    <Text className="text-base text-gray-600 text-center">
+                      Your journal has been analyzed, but we couldn't generate insights.
+                      Please try recording again for better results.
+                    </Text>
+                  </Box>
+                )}
+              </Animated.View>
             </Animated.View>
           )}
         </SafeAreaView>
