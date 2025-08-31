@@ -191,7 +191,7 @@ export const DailyStatisticsView: React.FC<DailyStatisticsViewProps> = ({
         )}
       </View>
 
-      {/* AI Summary */}
+      {/* AI Summary
       <View className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 mb-4 shadow-sm">
         <View className="flex-row items-center mb-3">
           <View className="w-8 h-8 bg-blue-100 rounded-full items-center justify-center mr-3">
@@ -209,15 +209,13 @@ export const DailyStatisticsView: React.FC<DailyStatisticsViewProps> = ({
             Generated with care • Confidential & private
           </Text>
         </View>
-      </View>
+      </View> */}
 
-      {/* Simple Mood Chart */}
-      <View className="bg-white rounded-2xl mb-6 p-6 shadow-sm">
+      {/* <View className="bg-white rounded-2xl mb-6 p-6 shadow-sm">
         <Text className="text-lg font-semibold text-gray-800 mb-4">
           Recent Mood Pattern
         </Text>
         <View className="space-y-3">
-          {/* Mood Bar */}
           <View>
             <View className="flex-row justify-between items-center mb-1">
               <Text className="text-sm text-gray-600">Mood</Text>
@@ -232,7 +230,6 @@ export const DailyStatisticsView: React.FC<DailyStatisticsViewProps> = ({
               />
             </View>
           </View>
-          {/* Stress Bar */}
           <View>
             <View className="flex-row justify-between items-center mb-1">
               <Text className="text-sm text-gray-600">Stress</Text>
@@ -248,7 +245,7 @@ export const DailyStatisticsView: React.FC<DailyStatisticsViewProps> = ({
             </View>
           </View>
         </View>
-      </View>
+      </View> */}
     </ScrollView>
   );
 };

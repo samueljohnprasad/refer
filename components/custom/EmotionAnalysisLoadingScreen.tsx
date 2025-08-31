@@ -2,14 +2,14 @@
 
 import type React from "react";
 import { useEffect, useRef } from "react";
-import { Text, Animated, ColorValue } from "react-native";
+import { Text, Animated, type ColorValue } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ProcessingPhase } from "./helpers";
 import { LinearGradient } from "expo-linear-gradient";
+import useEmotionsAnalysis from "@/screens/hooks/useEmotionsAnalysis";
 
 interface EmotionAnalysisLoadingScreenProps {
-  timestamp?: string;
-  currentPhase?: ProcessingPhase;
+  onAnalysisCompleted: (transcripts: string[]) => void;
+  recordingUri: string;
 }
 
 export const gradientColors = {
@@ -22,43 +22,90 @@ export const gradientColors = {
 
 const EmotionAnalysisLoadingScreen: React.FC<
   EmotionAnalysisLoadingScreenProps
-> = ({ timestamp, currentPhase = ProcessingPhase.TRANSCRIBING }) => {
+> = ({ onAnalysisCompleted, recordingUri }) => {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const orbitAnim = useRef(new Animated.Value(0)).current;
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+  const orbit2Anim = useRef(new Animated.Value(0)).current;
+  const orbit3Anim = useRef(new Animated.Value(0)).current;
+
+  const { processingPhase } = useEmotionsAnalysis({
+    uri: recordingUri,
+    onAnalysisCompleted,
+  });
 
   useEffect(() => {
     const fadeInAnimation = Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 600,
+      duration: 800,
       useNativeDriver: true,
     });
 
     const pulseAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
-          toValue: 0.8,
-          duration: 1200,
+          toValue: 1.15,
+          duration: 2000,
           useNativeDriver: true,
         }),
         Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 1200,
+          toValue: 0.95,
+          duration: 2000,
           useNativeDriver: true,
         }),
       ])
     );
 
+    const orbitAnimation = Animated.loop(
+      Animated.timing(orbitAnim, {
+        toValue: 1,
+        duration: 4000,
+        useNativeDriver: true,
+      })
+    );
+
+    const orbit2Animation = Animated.loop(
+      Animated.timing(orbit2Anim, {
+        toValue: 1,
+        duration: 6000,
+        useNativeDriver: true,
+      })
+    );
+
+    const orbit3Animation = Animated.loop(
+      Animated.timing(orbit3Anim, {
+        toValue: 1,
+        duration: 8000,
+        useNativeDriver: true,
+      })
+    );
+
+    const rotateAnimation = Animated.loop(
+      Animated.timing(rotateAnim, {
+        toValue: 1,
+        duration: 12000,
+        useNativeDriver: true,
+      })
+    );
+
     fadeInAnimation.start();
     pulseAnimation.start();
+    orbitAnimation.start();
+    orbit2Animation.start();
+    orbit3Animation.start();
+    rotateAnimation.start();
 
     return () => {
       pulseAnimation.stop();
+      orbitAnimation.stop();
+      orbit2Animation.stop();
+      orbit3Animation.stop();
+      rotateAnimation.stop();
     };
-  }, [pulseAnim, fadeAnim]);
+  }, [pulseAnim, fadeAnim, orbitAnim, orbit2Anim, orbit3Anim, rotateAnim]);
 
   const formatTimestamp = (): string => {
-    if (timestamp) return timestamp;
-
     const now = new Date();
     const month = now.toLocaleDateString("en-US", { month: "long" });
     const day = now.getDate();
@@ -71,11 +118,31 @@ const EmotionAnalysisLoadingScreen: React.FC<
     return `${month} ${day} • ${time}`;
   };
 
+  const rotateInterpolate = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"],
+  });
+
+  const orbitInterpolate = orbitAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"],
+  });
+
+  const orbit2Interpolate = orbit2Anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "-360deg"],
+  });
+
+  const orbit3Interpolate = orbit3Anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"],
+  });
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <LinearGradient
         colors={
-          gradientColors.pink as [ColorValue, ColorValue, ...ColorValue[]]
+          gradientColors.blue as [ColorValue, ColorValue, ...ColorValue[]]
         }
         style={{
           position: "absolute",
@@ -97,12 +164,12 @@ const EmotionAnalysisLoadingScreen: React.FC<
       >
         <Text
           style={{
-            color: "#64748b",
-            fontSize: 16,
+            color: "#475569",
+            fontSize: 15,
             fontWeight: "500",
-            marginBottom: 48,
+            marginBottom: 56,
             textAlign: "center",
-            letterSpacing: 0.5,
+            letterSpacing: 0.3,
           }}
         >
           {formatTimestamp()}
@@ -110,46 +177,133 @@ const EmotionAnalysisLoadingScreen: React.FC<
 
         <Text
           style={{
-            color: "#0f172a",
-            fontSize: 28,
+            color: "#1e293b",
+            fontSize: 26,
             fontWeight: "600",
-            marginBottom: 64,
+            marginBottom: 72,
             textAlign: "center",
-            letterSpacing: -0.5,
-            lineHeight: 36,
+            letterSpacing: -0.3,
+            lineHeight: 32,
           }}
         >
-          {currentPhase}
+          {processingPhase}
         </Text>
 
         <Animated.View
           style={{
-            width: 80,
-            height: 80,
-            borderRadius: 40,
-            backgroundColor: "#3b82f6",
-            transform: [{ scale: pulseAnim }],
-            shadowColor: "#3b82f6",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 8,
-            elevation: 6,
-          }}
-        />
-
-        <Text
-          style={{
-            color: "#64748b",
-            fontSize: 14,
-            fontWeight: "400",
-            marginTop: 48,
-            textAlign: "center",
-            letterSpacing: 0.3,
-            lineHeight: 20,
+            position: "relative",
+            width: 120,
+            height: 120,
+            justifyContent: "center",
+            alignItems: "center",
+            transform: [{ rotate: rotateInterpolate }],
           }}
         >
-          Analyzing your emotional patterns...
-        </Text>
+          <Animated.View
+            style={{
+              position: "absolute",
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              backgroundColor: "rgba(59, 130, 246, 0.12)",
+              transform: [{ scale: pulseAnim }],
+            }}
+          />
+
+          <Animated.View
+            style={{
+              position: "absolute",
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              backgroundColor: "#3b82f6",
+              transform: [{ scale: pulseAnim }],
+              shadowColor: "#3b82f6",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
+              elevation: 6,
+            }}
+          />
+
+          <Animated.View
+            style={{
+              position: "absolute",
+              width: 60,
+              height: 60,
+              transform: [{ rotate: orbitInterpolate }],
+            }}
+          >
+            <Animated.View
+              style={{
+                position: "absolute",
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: "#60a5fa",
+                top: 0,
+                left: 26,
+                shadowColor: "#60a5fa",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.4,
+                shadowRadius: 4,
+                elevation: 3,
+              }}
+            />
+          </Animated.View>
+
+          <Animated.View
+            style={{
+              position: "absolute",
+              width: 80,
+              height: 80,
+              transform: [{ rotate: orbit2Interpolate }],
+            }}
+          >
+            <Animated.View
+              style={{
+                position: "absolute",
+                width: 6,
+                height: 6,
+                borderRadius: 3,
+                backgroundColor: "#8b5cf6",
+                top: 0,
+                left: 37,
+                shadowColor: "#8b5cf6",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.4,
+                shadowRadius: 3,
+                elevation: 2,
+              }}
+            />
+          </Animated.View>
+
+          <Animated.View
+            style={{
+              position: "absolute",
+              width: 100,
+              height: 100,
+              transform: [{ rotate: orbit3Interpolate }],
+            }}
+          >
+            <Animated.View
+              style={{
+                position: "absolute",
+                width: 5,
+                height: 5,
+                borderRadius: 2.5,
+                backgroundColor: "#10b981",
+                top: 0,
+                left: 47.5,
+                shadowColor: "#10b981",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.3,
+                shadowRadius: 2,
+                elevation: 1,
+              }}
+            />
+          </Animated.View>
+        </Animated.View>
       </Animated.View>
     </SafeAreaView>
   );

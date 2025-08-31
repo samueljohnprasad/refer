@@ -15,6 +15,7 @@ import { Feather } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import { format, startOfWeek, addDays, isToday } from "date-fns";
 import { MentalHealthProfileContainer } from "@/components/mentalHealth/MentalHealthProfileContainer";
+import { StatusBar } from "expo-status-bar";
 
 interface TaskItemProps {
   text: string;
@@ -451,7 +452,7 @@ const DailyNotesScreen = () => {
           headerShown: false,
         }}
       />
-
+      <StatusBar style="dark" />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}

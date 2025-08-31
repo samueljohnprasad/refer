@@ -26,7 +26,7 @@ const PlusIcon = () => (
 const PlayIcon = () => <View style={styles.playTriangle} />;
 
 export default function HealthTrackerr() {
-  return <HealthTracker />;
+  return <HealthTracker transcripts={[]} />;
 }
 
 const styles = StyleSheet.create({

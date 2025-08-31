@@ -3,11 +3,11 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const XIcon = () => (
   <View style={styles.iconContainer}>
@@ -18,18 +18,27 @@ const XIcon = () => (
 
 const PlayIcon = () => <View style={styles.playTriangle} />;
 
-export default function HealthTracker() {
+interface HealthTrackerProps {
+  transcripts: string[];
+  onClose: () => void;
+}
+
+export default function HealthTracker({
+  transcripts,
+  onClose,
+}: HealthTrackerProps) {
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.container}>
-        <StatusBar barStyle="dark-content" />
-        <LinearGradient
-          colors={["#f0f9ff", "#faf5ff", "#fed7aa"]}
-          style={styles.gradient}
-        >
+    <LinearGradient
+      colors={["#f0f9ff", "#faf5ff", "#fed7aa"]}
+      style={styles.gradient}
+    >
+      <SafeAreaView edges={["top"]} className="flex-1">
+        <ScrollView style={styles.container}>
+          <StatusBar barStyle="dark-content" />
+
           {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity style={styles.headerButton}>
+            <TouchableOpacity style={styles.headerButton} onPress={onClose}>
               <XIcon />
             </TouchableOpacity>
             <View style={styles.headerCenter}>
@@ -40,7 +49,6 @@ export default function HealthTracker() {
               <Text style={styles.editButtonText}>Edit</Text>
             </TouchableOpacity>
           </View>
-
           <LinearGradient
             colors={["rgba(255, 255, 255, 0.8)", "rgba(240, 249, 255, 0.6)"]}
             style={styles.avatarGradient}
@@ -89,8 +97,11 @@ export default function HealthTracker() {
           <View style={styles.flowingSection}>
             <Text style={styles.sectionLabel}>TRANSCRIPT (9 words)</Text>
             <View style={styles.transcriptFlow}>
-              <Text style={styles.transcriptLine}>I am not feeling good.</Text>
-              <Text style={styles.transcriptLine}>My stomach is hurting.</Text>
+              {transcripts.map((transcript, index) => (
+                <Text key={index} style={styles.transcriptLine}>
+                  {transcript}
+                </Text>
+              ))}
             </View>
           </View>
 
@@ -125,21 +136,16 @@ export default function HealthTracker() {
               </View>
             </View>
           </View>
-
-          {/* Home Indicator */}
-          <View style={styles.homeIndicatorContainer}>
-            <View style={styles.homeIndicator} />
-          </View>
-        </LinearGradient>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f9ff",
+    // backgroundColor: "#f0f9ff",
   },
   gradient: {
     flex: 1,
