@@ -14,6 +14,7 @@ import "../global.css";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import { AuthProvider } from "@/context/AuthContext";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -67,7 +68,9 @@ function RootLayoutNav() {
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
-            <Slot />
+            <KeyboardProvider>
+              <Slot />
+            </KeyboardProvider>
           </ThemeProvider>
         </GluestackUIProvider>
       </GestureHandlerRootView>

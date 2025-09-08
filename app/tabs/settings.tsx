@@ -1,6 +1,7 @@
-import Paywall from "@/screens/paywall/Paywall";
 import SettingsScreen from "@/screens/SettingsScreen/SettingsScreen";
 
-export default function HealthTrackerr() {
+const index = () => {
   return <SettingsScreen />;
-}
+};
+
+export default index;

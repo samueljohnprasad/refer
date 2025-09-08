@@ -4,6 +4,7 @@ import { Tabs } from "expo-router";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
 import { Platform } from "react-native";
+import DailyNotesHeader from "@/screens/daily-journal/DailyNotesHeader";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -24,7 +25,9 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        // Disable the static render of the header on web
+        tabBarHideOnKeyboard: true,
+        animation: "fade",
+        // Disable the static rendrer of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
         tabBarStyle: {
@@ -66,6 +69,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="journal/index"
         options={{
+          headerShown: true,
+          header: () => <DailyNotesHeader />,
           title: "Journal",
           tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
         }}

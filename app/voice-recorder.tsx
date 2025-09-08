@@ -22,7 +22,7 @@ import PlaybackControls from "@/screens/voiceRecorder/PlaybackControls";
 import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
 import VoiceRecorderModalWrapper from "@/screens/voiceRecorder/VoiceRecorderModalWrapper";
 import { atom, useAtom } from "jotai";
-export const recorderOpenAtom = atom(false);
+import { recorderOpenAtom } from "@/screens/voiceRecorder/helpers";
 
 export default function VoiceRecorderScreen(): JSX.Element {
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
@@ -71,10 +71,7 @@ export default function VoiceRecorderScreen(): JSX.Element {
           </TouchableOpacity>
         </View>
 
-        <VoiceRecorderModalWrapper
-          recorderOpen={recorderOpen}
-          setRecorderOpen={() => setRecorderOpen(false)}
-        />
+        <VoiceRecorderModalWrapper />
       </MindfulBackground>
     </View>
   );

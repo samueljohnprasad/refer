@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { View, Animated, Dimensions } from "react-native";
+import { View, Animated, Dimensions, ViewStyle, StyleProp } from "react-native";
 import { useSeasonalTheme } from "../../hooks/useSeasonalTheme";
 import AnimatedLinearGradient from "@/screens/components/AnimatedLinearGradient";
 import DropletsParticles from "./DropletsParticles";
@@ -8,6 +8,7 @@ import RosePetalParticles from "./RosePetalParticles";
 import ButterflyRelease from "./ButterflyRelease";
 
 interface MindfulBackgroundProps {
+  style?: StyleProp<ViewStyle>;
   children: React.ReactNode;
   particlesType?: "drops" | "fireflies" | "rose" | "butterfly";
 }
@@ -21,12 +22,18 @@ const particles = {
 const MindfulBackground: React.FC<MindfulBackgroundProps> = ({
   children,
   particlesType,
+  style,
 }) => {
   // Get theme colors using reusable hook
   const seasonalTheme = useSeasonalTheme();
 
   return (
-    <AnimatedLinearGradient colors={seasonalTheme.gradient} style={{ flex: 1 }}>
+    <AnimatedLinearGradient
+      colors={seasonalTheme.gradient}
+      style={[style, { flex: 1 }]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
       {particlesType && particles[particlesType]}
       {children}
     </AnimatedLinearGradient>

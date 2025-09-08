@@ -9,12 +9,13 @@ import { Text } from "@/components/ui/text";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AudioRecorderProvider } from "@siteed/expo-audio-studio";
 import MindfulBackground from "@/components/ui/MindfulBackground";
+import DiscoveryScreen from "@/screens/DiscoveryScreen/DiscoveryScreen";
 
 export default function Tab2() {
   return (
     <MindfulBackground>
       <AudioRecorderProvider>
-        <VoiceRecorderScreen />
+        <DiscoveryScreen />
       </AudioRecorderProvider>
     </MindfulBackground>
   );

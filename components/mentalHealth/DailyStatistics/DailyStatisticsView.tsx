@@ -133,12 +133,12 @@ export const DailyStatisticsView: React.FC<DailyStatisticsViewProps> = ({
       </View>
 
       {/* Dominant Emotions */}
-      <View className="bg-white rounded-2xl  mb-4 p-6 shadow-sm">
-        <Text className="text-lg font-semibold text-gray-800 mb-4">
+      {/* <View className="bg-white rounded-2xl  mb-4 p-6 shadow-sm"> */}
+      {/* <Text className="text-lg font-semibold text-gray-800 mb-4">
           Today's Emotions
-        </Text>
+        </Text> */}
 
-        <View className="flex-row flex-wrap">
+      {/* <View className="flex-row flex-wrap">
           {dailyStats.dominantEmotions.map((emotion, index) => (
             <View
               key={emotion}
@@ -149,10 +149,10 @@ export const DailyStatisticsView: React.FC<DailyStatisticsViewProps> = ({
               </Text>
             </View>
           ))}
-        </View>
+        </View> */}
 
-        {/* Simple Emotion Distribution */}
-        {dailyStats.emotionDistribution.length > 0 && (
+      {/* Simple Emotion Distribution */}
+      {/* {dailyStats.emotionDistribution.length > 0 && (
           <View className="mt-4">
             <Text className="text-sm font-medium text-gray-700 mb-2">
               Emotion Distribution
@@ -188,8 +188,7 @@ export const DailyStatisticsView: React.FC<DailyStatisticsViewProps> = ({
               ))}
             </View>
           </View>
-        )}
-      </View>
+        )} */}
 
       {/* AI Summary
       <View className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 mb-4 shadow-sm">

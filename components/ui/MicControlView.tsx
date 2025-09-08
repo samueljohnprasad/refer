@@ -14,13 +14,13 @@ import Check from "@/assets/Icons/Check";
 import Close from "@/assets/Icons/Close";
 import Mike from "@/assets/Icons/Mike";
 import Stop from "@/assets/Icons/Stop";
-import { recorderOpenAtom } from "@/app/voice-recorder";
 import { useAtom } from "jotai";
 import { HStack } from "./hstack";
 import { BottomSheet, BottomSheetTrigger } from "./botton-sheet";
 import ShortBottomModal from "./short-bottom-modal";
 import { Button, ButtonText } from "./button";
 import { Center } from "./center";
+import { recorderOpenAtom } from "@/screens/voiceRecorder/helpers";
 
 // Props interface for the presenter component
 export interface MicControlViewProps {

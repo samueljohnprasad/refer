@@ -9,6 +9,7 @@ import { ModalType } from "@/types/journal";
 import { useModalAnimation } from "@/hooks/useModalAnimation";
 import MindfulBackground from "@/components/ui/MindfulBackground";
 import { Box } from "@/components/ui/box";
+import JournalCalendarScreen from "@/screens/JournalCalendarScreen/JournalCalendarScreen";
 
 export default function Home() {
   const activeTheme = useSeasonalTheme();
@@ -23,33 +24,34 @@ export default function Home() {
   });
 
   return (
-    <MindfulBackground>
-      <Box className="p-3 mt-20">
-        <JournalCalendar
-          journalEntries={journalEntries}
-          getMoodEmoji={getMoodEmoji}
-          onDatePress={(date: string, hasEntry: boolean): void => {
-            if (hasEntry) {
-              setModalType("view");
-              setModalVisible(true);
-            } else {
-              setModalType("add");
-              setModalVisible(true);
-            }
-          }}
-        />
-        <AnimatedModal
-          visible={modalVisible}
-          modalType={modalType}
-          animationValues={animationValues}
-          onClose={() => {
-            closeModal();
-          }}
-          onRequestClose={() => {
-            closeModal();
-          }}
-        />
-      </Box>
-    </MindfulBackground>
+    <JournalCalendarScreen />
+    // <MindfulBackground>
+    //   <Box className="p-3 mt-20">
+    //     <JournalCalendar
+    //       journalEntries={journalEntries}
+    //       getMoodEmoji={getMoodEmoji}
+    //       onDatePress={(date: string, hasEntry: boolean): void => {
+    //         if (hasEntry) {
+    //           setModalType("view");
+    //           setModalVisible(true);
+    //         } else {
+    //           setModalType("add");
+    //           setModalVisible(true);
+    //         }
+    //       }}
+    //     />
+    //     <AnimatedModal
+    //       visible={modalVisible}
+    //       modalType={modalType}
+    //       animationValues={animationValues}
+    //       onClose={() => {
+    //         closeModal();
+    //       }}
+    //       onRequestClose={() => {
+    //         closeModal();
+    //       }}
+    //     />
+    //   </Box>
+    // </MindfulBackground>
   );
 }

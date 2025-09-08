@@ -3,16 +3,13 @@ import VoiceRecorderModal from "@/components/modals/VoiceRecorderModal";
 import VoiceRecorder from "./VoiceRecorder";
 import EmotionAnalysisLoadingScreen from "@/components/custom/EmotionAnalysisLoadingScreen";
 import HealthTracker from "@/components/custom/HealthTrackert";
+import { useAtom } from "jotai";
+import { recorderOpenAtom } from "./helpers";
 
-type VoiceRecorderModalWrapperProps = {
-  recorderOpen: boolean;
-  setRecorderOpen: (open: boolean) => void;
-};
+type VoiceRecorderModalWrapperProps = {};
 
-const VoiceRecorderModalWrapper = ({
-  recorderOpen,
-  setRecorderOpen,
-}: VoiceRecorderModalWrapperProps) => {
+const VoiceRecorderModalWrapper = ({}: VoiceRecorderModalWrapperProps) => {
+  const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
   const [stepper, setStepper] = useState(0);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
   const [transcripts, setTranscripts] = useState<string[] | null>(null);
