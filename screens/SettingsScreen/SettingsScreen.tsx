@@ -14,19 +14,19 @@ Enhancements:
 9. Added 'Reminders & Scheduling' option for daily/weekly notifications.
 */
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
   Switch,
   Platform,
   Pressable,
   Linking,
   Button,
   useWindowDimensions,
+  Animated,
 } from "react-native";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import Svg, { Circle, Path } from "react-native-svg";
@@ -48,7 +48,8 @@ export default function SettingsScreen() {
   const [remindersEnabled, setRemindersEnabled] = useState(false);
   const { height } = useWindowDimensions();
   const headerHeight = useHeaderHeight();
-
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const [upgradeY, setUpgradeY] = useState<number | null>(null);
   const handleToggle = (
     setter: React.Dispatch<React.SetStateAction<boolean>>,
     value: boolean
@@ -98,7 +99,41 @@ export default function SettingsScreen() {
                 >
                   <Ionicons name="arrow-back" size={20} color="#FFF" />
                 </TouchableOpacity>
+
                 <Text style={styles.headerTitle}>Settings</Text>
+                {upgradeY !== null && (
+                  <Animated.View
+                    style={{
+                      position: "absolute",
+                      right: 16,
+                      bottom: 16,
+                      opacity: scrollY.interpolate({
+                        inputRange: [upgradeY + 20, upgradeY + 20 + 40],
+                        outputRange: [0, 1],
+                        extrapolate: "clamp",
+                      }),
+                    }}
+                  >
+                    <Pressable
+                      android_ripple={{ color: "#6D4AFF" }}
+                      onPress={() => router.push("/tabs/paywall")}
+                      style={{ borderRadius: 24, overflow: "hidden" }}
+                    >
+                      <LinearGradient
+                        colors={["#7C5CFF", "#9C7CFF"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={[
+                          styles.upgradeButton,
+                          { paddingVertical: 8, paddingHorizontal: 14 },
+                        ]}
+                      >
+                        <Text style={styles.upgradeText}>Upgrade</Text>
+                      </LinearGradient>
+                    </Pressable>
+                  </Animated.View>
+                )}
+
                 <View style={{ width: 36 }} />
               </BlurView>
             );
@@ -119,9 +154,14 @@ export default function SettingsScreen() {
           <View style={{ width: 36 }} />
         </BlurView> */}
 
-        <ScrollView
+        <Animated.ScrollView
           contentContainerStyle={{ marginTop: headerHeight }}
           showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
         >
           {/* Promo Card */}
           <View style={styles.promoCard}>
@@ -131,12 +171,12 @@ export default function SettingsScreen() {
                 AI Insights, Weekly Summaries,{"\n"}Advanced Dashboard,{"\n"}
                 Longer Recordings, and more.
               </Text>
-              <MyMenu />
+              {/* <MyMenu /> */}
               {/* <MyContextMenu /> */}
-              <BlurModal />
-              <Link href="/tabs/pages/BlurModal" asChild>
+              {/* <BlurModal /> */}
+              {/* <Link href="/tabs/pages/BlurModal" asChild>
                 <Button title="Open Menuu" />
-              </Link>
+              </Link> */}
               {/* <Button
                 title="Open Menuu"
                 onPress={() => {
@@ -154,6 +194,7 @@ export default function SettingsScreen() {
                   overflow: "hidden",
                   alignSelf: "flex-start",
                 }}
+                onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)}
               >
                 <LinearGradient
                   colors={["#7C5CFF", "#9C7CFF"]}
@@ -323,7 +364,7 @@ export default function SettingsScreen() {
               </View>
             </View>
           </View>
-        </ScrollView>
+        </Animated.ScrollView>
       </View>
     </SafeAreaView>
   );
