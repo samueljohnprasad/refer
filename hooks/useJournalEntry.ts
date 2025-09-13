@@ -26,7 +26,6 @@ export interface UseJournalEntryReturn {
   shufflePrompt: () => void;
 
   currentRecommendation: Recommendation;
-  badges: BadgeItem[];
 }
 
 export const useJournalEntry = (): UseJournalEntryReturn => {
@@ -107,16 +106,6 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
     return moodRecommendations[selectedMood] ?? moodRecommendations["🙂"];
   }, [moodRecommendations, selectedMood]);
 
-  const badges: BadgeItem[] = useMemo(
-    () => [
-      { id: 1, title: "7-Day Streak", icon: "🔥", achieved: true },
-      { id: 2, title: "30 Entries", icon: "📔", achieved: false },
-      { id: 3, title: "Mood Master", icon: "🌈", achieved: true },
-      { id: 4, title: "Consistency Pro", icon: "⭐", achieved: false },
-    ],
-    []
-  );
-
   return {
     moods,
     selectedMood,
@@ -124,6 +113,5 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
     currentPrompt,
     shufflePrompt,
     currentRecommendation,
-    badges,
   };
 };

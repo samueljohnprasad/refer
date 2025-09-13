@@ -148,7 +148,9 @@ export default function JournalCalendarScreen() {
           <View style={styles.topBarBlur}>
             <View style={styles.topRow}>
               <TouchableOpacity
-                onPress={() => router.back()}
+                onPress={() => {
+                  router.push("/tabs/pages/Compdisplay");
+                }}
                 style={styles.iconCircle}
                 activeOpacity={0.8}
               >
