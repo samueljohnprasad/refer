@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -18,6 +18,10 @@ import LottieView from "lottie-react-native";
 import { girlMeditationBlue, manRocket } from "@/assets/lottie";
 import { useRouter } from "expo-router";
 import { Box } from "@/components/ui/box";
+import BlurModal from "../components/BlurModal";
+import { EntryDetailModal } from "@/components/mentalHealth/EntryModal/EntryDetailModal";
+import type { MoodEntry } from "@/types/mentalHealth";
+import { useCalendarEntries } from "@/hooks/useCalendarEntries";
 
 const { width, height } = Dimensions.get("window");
 
@@ -48,6 +52,14 @@ const emojiColors = {
 export default function JournalCalendarScreen() {
   // Animated value for streak progress bar
   const progressAnim = useRef(new Animated.Value(0)).current;
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedEntries, setSelectedEntries] = useState<MoodEntry[]>([]);
+  const [detailVisible, setDetailVisible] = useState<boolean>(false);
+  const [selectedEntry, setSelectedEntry] = useState<MoodEntry | null>(null);
+  const [monthDate, setMonthDate] = useState<Date>(new Date("2025-08-01"));
+
+  const { markedDays, getEntriesForDate } = useCalendarEntries(monthDate);
 
   // Animated values for counting streak and XP numbers
   const streakAnim = useRef(new Animated.Value(0)).current;
@@ -88,6 +100,32 @@ export default function JournalCalendarScreen() {
     outputRange: ["0", "200"],
   });
   const router = useRouter();
+
+  const handleAddEntry = (): void => {
+    setModalVisible(false);
+    // Navigate to voice recorder screen
+    router.push("/voice-recorder");
+  };
+
+  const handleSelectEntry = (entry: MoodEntry): void => {
+    setSelectedEntry(entry);
+    setModalVisible(false);
+    setDetailVisible(true);
+  };
+
+  const formatDateLabel = (dateStr: string): string => {
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch {
+      return dateStr;
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -237,6 +275,10 @@ export default function JournalCalendarScreen() {
           <View style={styles.calendarCard}>
             <Calendar
               current={"2025-08-01"}
+              onMonthChange={(m) => {
+                const next = new Date(`${m.year}-${String(m.month).padStart(2, "0")}-01`);
+                setMonthDate(next);
+              }}
               theme={{
                 calendarBackground: "#fff",
                 textSectionTitleColor: "#8F8F8F",
@@ -252,15 +294,6 @@ export default function JournalCalendarScreen() {
               dayComponent={({ date, state }) => {
                 if (!date) return null;
 
-                // Pre-marked emoji days
-                const markedDays: Record<string, string> = {
-                  "2025-08-02": "😊",
-                  "2025-08-05": "😎",
-                  "2025-08-07": "🙂",
-                  "2025-08-14": "😁",
-                  "2025-08-20": "🤔",
-                  "2025-08-27": "😴",
-                };
                 const emoji = markedDays[date.dateString as string];
                 const bgColor = emoji
                   ? emojiColors[emoji as keyof typeof emojiColors] ||
@@ -269,7 +302,7 @@ export default function JournalCalendarScreen() {
 
                 // Scale animation for press interaction
                 const scaleAnim = useRef(new Animated.Value(1)).current;
-                const handlePress = () => {
+                const handlePress = (): void => {
                   Animated.sequence([
                     Animated.timing(scaleAnim, {
                       toValue: 1.2,
@@ -282,6 +315,10 @@ export default function JournalCalendarScreen() {
                       useNativeDriver: true,
                     }),
                   ]).start();
+                  const ds = date.dateString as string;
+                  setSelectedDate(ds);
+                  setSelectedEntries(getEntriesForDate(ds));
+                  setModalVisible(true);
                 };
 
                 return (
@@ -371,6 +408,21 @@ export default function JournalCalendarScreen() {
           {/* Badges header */}
           <Text style={styles.badgesHeading}>Badges</Text>
         </BlurView>
+        <BlurModal
+          visible={modalVisible}
+          onClose={() => {
+            setModalVisible(false);
+          }}
+          dateLabel={selectedDate ? formatDateLabel(selectedDate) : undefined}
+          onAddEntry={handleAddEntry}
+          entries={selectedEntries}
+          onSelectEntry={handleSelectEntry}
+        />
+        <EntryDetailModal
+          entry={selectedEntry}
+          isVisible={detailVisible}
+          onClose={() => setDetailVisible(false)}
+        />
       </ScrollView>
     </SafeAreaView>
   );

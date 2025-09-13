@@ -1,39 +1,107 @@
-import { Modal, View, Button, StyleSheet } from "react-native";
+import {
+  Modal,
+  View,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { BlurView } from "expo-blur";
-import { useState } from "react";
 import Animated, { FadeInLeft } from "react-native-reanimated";
-import { router } from "expo-router";
+import type { MoodEntry } from "@/types/mentalHealth";
 
-export default function BlurModal() {
-  const [visible, setVisible] = useState(false);
+interface BlurModalProps {
+  visible: boolean;
+  onClose: () => void;
+  dateLabel?: string;
+  onAddEntry?: () => void;
+  entries?: MoodEntry[];
+  onSelectEntry?: (entry: MoodEntry) => void;
+}
 
+export default function BlurModal({
+  visible,
+  onClose,
+  dateLabel,
+  onAddEntry,
+  entries = [],
+  onSelectEntry,
+}: BlurModalProps) {
   return (
     <>
-      <Button
+      {/* <Button
         title="Open Menu"
         onPress={() => {
           console.log("Open Menu");
           router.push("/tabs/pages/BlurModal");
         }}
-      />
+      /> */}
 
       <Modal transparent visible={visible} animationType="fade">
         <BlurView
-          intensity={40}
-          // tint="dark"
-          style={{ flex: 1, justifyContent: "flex-start" }}
+          intensity={10}
+          style={{
+            flex: 1,
+            justifyContent: "flex-start",
+            paddingHorizontal: 16,
+            marginTop: 80,
+          }}
         >
-          <View
-            style={{
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              padding: 20,
-              marginTop: 60,
-            }}
-          >
-            <Animated.View entering={FadeInLeft.duration(200).delay(300)}>
-              <Button title="Close" onPress={() => setVisible(false)} />
-            </Animated.View>
+          <View style={[styles.card]}>
+            {/* <Animated.View
+              entering={FadeInLeft.duration(220).delay(180)}
+              style={styles.card}
+            > */}
+            <Text style={styles.title}>Selected Day</Text>
+            {dateLabel ? (
+              <Text style={styles.subtitle}>{dateLabel}</Text>
+            ) : null}
+
+            <View style={{ height: 12 }} />
+
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.primaryBtn}
+              onPress={onAddEntry ?? onClose}
+            >
+              <Text style={styles.primaryText}>Add Entry</Text>
+            </TouchableOpacity>
+
+            {entries.length > 0 ? (
+              <View style={{ marginTop: 12 }}>
+                <Text style={styles.listHeader}>Entries</Text>
+                <ScrollView style={{ maxHeight: 220 }}>
+                  {entries.map((e) => (
+                    <TouchableOpacity
+                      key={e.id}
+                      style={styles.entryRow}
+                      onPress={() => onSelectEntry && onSelectEntry(e)}
+                      activeOpacity={0.9}
+                      accessibilityLabel={`Open ${e.aiTitle}`}
+                    >
+                      <View style={styles.entryEmojiWrap}>
+                        <Text style={{ fontSize: 18 }}>📝</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.entryTitle}>{e.aiTitle}</Text>
+                        <Text style={styles.entryMeta}>
+                          {new Date(e.timestamp).toLocaleTimeString("en-US", {
+                            hour: "numeric",
+                            minute: "2-digit",
+                          })}
+                        </Text>
+                      </View>
+                      <Text style={styles.chevron}>›</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            ) : null}
+
+            <View style={{ height: 6 }} />
+            <Button title="Close" onPress={onClose} />
+            {/* </Animated.View> */}
           </View>
         </BlurView>
       </Modal>
@@ -42,6 +110,45 @@ export default function BlurModal() {
 }
 
 const styles = StyleSheet.create({
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "rgba(15,23,42,0.08)",
+  },
+  title: { fontSize: 18, fontWeight: "800", color: "#0F172A" },
+  subtitle: { marginTop: 2, color: "#475569", fontWeight: "600" },
+  primaryBtn: {
+    backgroundColor: "#FFD24A",
+    paddingVertical: 12,
+    borderRadius: 28,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.06)",
+    marginTop: 12,
+  },
+  primaryText: { fontWeight: "800", color: "#111827" },
+  listHeader: { fontWeight: "800", color: "#0F172A", marginBottom: 6 },
+  entryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: "rgba(0,0,0,0.06)",
+  },
+  entryEmojiWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F1F5F9",
+    marginRight: 10,
+  },
+  entryTitle: { fontWeight: "700", color: "#0F172A" },
+  entryMeta: { color: "#64748B", fontWeight: "600", marginTop: 2 },
+  chevron: { fontSize: 22, color: "#0F172A", marginLeft: 8 },
   upgradeButton: {
     borderRadius: 28,
     overflow: "hidden",
