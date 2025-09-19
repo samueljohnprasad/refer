@@ -21,7 +21,7 @@ const storage = isReactNative
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     storage,
-    autoRefreshToken: true,
+    // autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false, // Enable URL session detection for OAuth
   },

@@ -29,7 +29,8 @@ export interface JournalEntryViewProps {
   currentRecommendation: Recommendation;
 }
 
-const JournalEntryView: React.FC<JournalEntryViewProps> = ({
+const 
+JournalEntryView: React.FC<JournalEntryViewProps> = ({
   moods,
   selectedMood,
   setSelectedMood,

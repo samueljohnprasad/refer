@@ -6,9 +6,10 @@ import { Text, Animated, type ColorValue } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import useEmotionsAnalysis from "@/screens/hooks/useEmotionsAnalysis";
+import { AnalysisCompletedType } from "@/screens/hooks/useEmotionsAnalysis";
 
 interface EmotionAnalysisLoadingScreenProps {
-  onAnalysisCompleted: (transcripts: string[]) => void;
+  onAnalysisCompleted: (data: AnalysisCompletedType) => void;
   recordingUri: string;
 }
 

@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import VoiceRecorderModal from "@/components/modals/VoiceRecorderModal";
 import VoiceRecorder from "./VoiceRecorder";
 import EmotionAnalysisLoadingScreen from "@/components/custom/EmotionAnalysisLoadingScreen";
-import HealthTracker from "@/components/custom/HealthTrackert";
 import { useAtom } from "jotai";
 import { recorderOpenAtom } from "./helpers";
+import { defaultInsights, InsightsType } from "@/network/genAi";
+import JournalEntryScreen from "../JournalEntryScreen";
 
 type VoiceRecorderModalWrapperProps = {};
 
@@ -13,11 +14,14 @@ const VoiceRecorderModalWrapper = ({}: VoiceRecorderModalWrapperProps) => {
   const [stepper, setStepper] = useState(0);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
   const [transcripts, setTranscripts] = useState<string[] | null>(null);
+  const [insights, setInsights] = useState<InsightsType>(defaultInsights);
+
   const onClose = () => {
     setRecorderOpen(false);
     setStepper(0);
     setRecordingUri(null);
     setTranscripts(null);
+    setInsights(defaultInsights);
   };
   return (
     <VoiceRecorderModal visible={recorderOpen} onRequestClose={onClose}>
@@ -33,14 +37,19 @@ const VoiceRecorderModalWrapper = ({}: VoiceRecorderModalWrapperProps) => {
       {stepper === 1 && recordingUri && (
         <EmotionAnalysisLoadingScreen
           recordingUri={recordingUri}
-          onAnalysisCompleted={(transcripts) => {
+          onAnalysisCompleted={({ transcripts, insights }) => {
             setTranscripts(transcripts);
+            setInsights(insights);
             setStepper(2);
           }}
         />
       )}
       {stepper === 2 && (
-        <HealthTracker transcripts={transcripts || []} onClose={onClose} />
+        // <HealthTracker transcripts={transcripts || []} onClose={onClose} />
+        <JournalEntryScreen
+          insights={insights}
+          transcripts={transcripts || []}
+        />
       )}
     </VoiceRecorderModal>
   );

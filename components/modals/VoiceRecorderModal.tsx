@@ -32,11 +32,4 @@ const VoiceRecorderModal: React.FC<VoiceRecorderModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-  },
-});
-
 export default VoiceRecorderModal;

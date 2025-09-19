@@ -3,19 +3,47 @@ import React, { useEffect } from "react";
 import { transcribeAudio } from "@/network/transcribeAudio";
 import { Buffer } from "buffer";
 import { ProcessingPhase } from "@/components/custom/helpers";
+import { supabase } from "@/lib/supabase";
+import { getInsights, InsightsType } from "@/network/genAi";
+
+export type AnalysisCompletedType = {
+  transcripts: string[];
+  insights: InsightsType;
+};
 
 const useEmotionsAnalysis = ({
   uri,
   onAnalysisCompleted,
 }: {
   uri: string;
-  onAnalysisCompleted: (transcripts: string[]) => void;
+  onAnalysisCompleted: (data: AnalysisCompletedType) => void;
 }) => {
-  const [loading, setLoading] = React.useState(true);
   const [transcripts, setTranscripts] = React.useState<string[] | null>([]);
   const [processingPhase, setProcessingPhase] = React.useState<ProcessingPhase>(
     ProcessingPhase.TRANSCRIBING
   );
+
+  const callJournalFunction = async () => {
+    try {
+      const user = await supabase.auth.getUser();
+      const auth = supabase.auth.getSession();
+      const token = await auth.then((res) => res.data.session?.access_token);
+      const { data, error } = await supabase.functions.invoke(
+        "process-journal",
+        {
+          body: { userId: user.data.user?.id, name: "Today I felt happy." },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (error) console.error(error);
+      else console.log("datadatadata", data);
+    } catch (error) {
+      console.error("Error calling journal function:", error);
+    }
+  };
 
   const uploadAndTranscribe = async () => {
     try {
@@ -40,18 +68,21 @@ const useEmotionsAnalysis = ({
     const fetch = async () => {
       const transcripts = await uploadAndTranscribe();
       setProcessingPhase(ProcessingPhase.ANALYZING_EMOTIONS);
+      const insights = await getInsights(transcripts.join(" "));
+      console.log("insightsinsights", insights);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setProcessingPhase(ProcessingPhase.GENERATING_INSIGHTS);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setProcessingPhase(ProcessingPhase.FINALIZING);
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      onAnalysisCompleted(transcripts);
+      onAnalysisCompleted({ transcripts, insights });
     };
     fetch();
   }, []);
 
   return {
     processingPhase,
+    transcripts,
   };
 };
 

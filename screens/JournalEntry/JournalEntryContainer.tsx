@@ -3,8 +3,12 @@ import JournalEntryView from "./JournalEntryView";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 
 const JournalEntryContainer: React.FC = () => {
-  const { moods, selectedMood, setSelectedMood, currentRecommendation } =
-    useJournalEntry();
+  const {
+    moods,
+    selectedMood,
+    setSelectedMood,
+    currentRecommendation,
+  } = useJournalEntry();
 
   return (
     <JournalEntryView

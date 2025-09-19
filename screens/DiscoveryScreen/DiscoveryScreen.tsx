@@ -47,7 +47,7 @@ export default function DiscoveryScreen() {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        <Box>
+        <View>
           <View style={styles.headerRow}>
             <View style={styles.titleRow}>
               <View style={styles.pillDot} />
@@ -76,7 +76,7 @@ export default function DiscoveryScreen() {
               <Text style={styles.progressText}>0/100 XP</Text>
             </View>
           </View>
-        </Box>
+        </View>
 
         {/* Prompt card */}
         <View
