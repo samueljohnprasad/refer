@@ -82,7 +82,6 @@ export default function TabLayout() {
           name="journal/index"
           options={{
             headerShown: true,
-            header: () => <DailyNotesHeader />,
             title: "Journal",
             tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
           }}

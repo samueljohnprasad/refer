@@ -1,19 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import {
   StyleSheet,
   View,
-  ScrollView,
   Pressable,
   Modal,
   Dimensions,
   Animated,
   PanResponder,
-  Easing,
 } from "react-native";
-import { Text, View as ThemedView } from "@/components/Themed";
+import { Text } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
 import { format, startOfWeek, addDays, isToday } from "date-fns";
-import { Box } from "@/components/ui/box";
 import {
   currentWeekViewAtom,
   selectedDateAtom,
@@ -21,6 +18,7 @@ import {
 } from "./atoms";
 import { useAtom } from "jotai";
 import { CalendarPicker, DayButton } from ".";
+import { useCalendarExpandDrag } from "@/hooks/useCalendarExpandDrag";
 
 const { height } = Dimensions.get("window"); // get screen height
 const twentyPercentHeight = height * 0.2;
@@ -34,8 +32,21 @@ const DailyNotesHeader = () => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
   const weekSlideAnim = useRef(new Animated.Value(0)).current;
-  const dayLabelOpacityAnim = useRef(new Animated.Value(1)).current;
-  const dayLabelTranslateAnim = useRef(new Animated.Value(0)).current;
+
+  // Vertical expand/collapse for inline calendar
+  const CALENDAR_EXPANDED_HEIGHT = 360;
+  const { progress, panHandlers: verticalPanHandlers, collapse, toggle } =
+    useCalendarExpandDrag({ expandedHeight: CALENDAR_EXPANDED_HEIGHT, snapThreshold: 0.35 });
+  const headerHeightAnim = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [twentyPercentHeight, CALENDAR_EXPANDED_HEIGHT],
+  });
+  const headerControlsOpacity = progress.interpolate({
+    inputRange: [0, 0.03, 0.08],
+    outputRange: [1, 0.2, 0],
+  });
+  // Anchor for handle initial Y (below week row); animate absolute handle position from there
+  const dragAnchorTopAnim = useRef(new Animated.Value(0)).current;
 
   const closeCalendar = () => {
     Animated.parallel([
@@ -96,13 +107,13 @@ const DailyNotesHeader = () => {
     Animated.timing(weekSlideAnim, {
       toValue: -1,
       duration: 400,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(() => {
       setCurrentWeekView((prev) => addDays(prev, -7));
       Animated.timing(weekSlideAnim, {
         toValue: 0,
         duration: 300,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }).start();
     });
   };
@@ -112,13 +123,13 @@ const DailyNotesHeader = () => {
     Animated.timing(weekSlideAnim, {
       toValue: 1,
       duration: 400,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(() => {
       setCurrentWeekView((prev) => addDays(prev, 7));
       Animated.timing(weekSlideAnim, {
         toValue: 0,
         duration: 300,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }).start();
     });
   };
@@ -141,7 +152,7 @@ const DailyNotesHeader = () => {
           // Return to center if not enough swipe distance
           Animated.spring(weekSlideAnim, {
             toValue: 0,
-            useNativeDriver: true,
+            useNativeDriver: false,
             friction: 6,
           }).start();
         }
@@ -149,16 +160,17 @@ const DailyNotesHeader = () => {
     })
   ).current;
   return (
-    <Box
-      style={{
-        backgroundColor: "#9F8CFF",
-        height: twentyPercentHeight,
-        justifyContent: "flex-end",
-      }}
+    <Animated.View
+      style={[
+        styles.headerContainer,
+        {
+          height: headerHeightAnim,
+        },
+      ]}
     >
       {/* Calendar Header */}
-      <View style={styles.calendarHeader}>
-        <Pressable style={styles.calendarIcon} onPress={openCalendar}>
+      <Animated.View style={[styles.calendarHeader, { opacity: headerControlsOpacity }]}>
+        <Pressable style={styles.calendarIcon} onPress={toggle} onLongPress={openCalendar}>
           <Feather name="calendar" size={24} color="white" />
         </Pressable>
 
@@ -177,7 +189,7 @@ const DailyNotesHeader = () => {
         <Pressable style={styles.moreButton}>
           <Feather name="more-horizontal" size={24} color="#fff" />
         </Pressable>
-      </View>
+      </Animated.View>
 
       {/* Week View */}
       <View style={styles.weekContainer} {...panResponder.panHandlers}>
@@ -192,11 +204,29 @@ const DailyNotesHeader = () => {
                     outputRange: [-10, 0, 10],
                   }),
                 },
+                {
+                  translateY: progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, -8],
+                  }),
+                },
+                {
+                  scale: progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, 0.98],
+                  }),
+                },
               ],
-              opacity: weekSlideAnim.interpolate({
-                inputRange: [-1, 0, 1],
-                outputRange: [0.3, 1, 0.3],
-              }),
+              opacity: Animated.multiply(
+                weekSlideAnim.interpolate({
+                  inputRange: [-1, 0, 1],
+                  outputRange: [0.3, 1, 0.3],
+                }),
+                progress.interpolate({
+                  inputRange: [0, 0.05, 0.15],
+                  outputRange: [1, 0, 0],
+                })
+              ),
             },
           ]}
         >
@@ -217,6 +247,74 @@ const DailyNotesHeader = () => {
           })}
         </Animated.View>
       </View>
+      {/* Invisible anchor to capture the initial handle position just below the week */}
+      <View
+        pointerEvents="none"
+        style={styles.dragAnchorPlaceholder}
+        onLayout={(e) => {
+          const { y, height } = e.nativeEvent.layout;
+          // place handle a little below the placeholder for spacing
+          dragAnchorTopAnim.setValue(y + height / 2 - 2);
+        }}
+      />
+      <Animated.View
+        style={[
+          styles.inlineCalendarContainer,
+          {
+            height: progress.interpolate({ inputRange: [0, 1], outputRange: [0, CALENDAR_EXPANDED_HEIGHT] }),
+            opacity: progress.interpolate({ inputRange: [0, 0.05, 0.15, 1], outputRange: [0, 0, 1, 1] }),
+          },
+        ]}
+        pointerEvents="auto"
+        {...verticalPanHandlers}
+      >
+        <CalendarPicker
+          selectedDate={selectedDate}
+          onDateSelect={(date: Date) => {
+            selectDateFromCalendar(date);
+            collapse();
+          }}
+          withHeader={false}
+        />
+        {/* Bottom handle shown when calendar is expanded, to collapse by dragging up */}
+        <Animated.View
+          style={[
+            styles.bottomHandleWrapper,
+            {
+              opacity: progress.interpolate({ inputRange: [0, 0.2, 0.35, 1], outputRange: [0, 0, 1, 1] }),
+            },
+          ]}
+          pointerEvents="box-none"
+        >
+          <Animated.View
+            {...verticalPanHandlers}
+            style={styles.bottomHandleBar}
+          />
+        </Animated.View>
+      </Animated.View>
+      {/* Absolute overlay handle that moves down with expanding calendar */}
+      <Animated.View
+        style={[
+          styles.handleOverlay,
+          {
+            top: Animated.add(
+              dragAnchorTopAnim,
+              progress.interpolate({ inputRange: [0, 1], outputRange: [0, CALENDAR_EXPANDED_HEIGHT] })
+            ),
+          },
+        ]}
+        pointerEvents="box-none"
+      >
+        <Animated.View
+          {...verticalPanHandlers}
+          style={[
+            styles.dragHandle,
+            {
+              opacity: progress.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+            },
+          ]}
+        />
+      </Animated.View>
       <Modal
         visible={showCalendarModal}
         transparent={true}
@@ -250,11 +348,16 @@ const DailyNotesHeader = () => {
           </Animated.View>
         </Animated.View>
       </Modal>
-    </Box>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: "#9F8CFF",
+    justifyContent: "flex-end",
+    position: "relative",
+  },
   modalBackdrop: {
     position: "absolute",
     top: 0,
@@ -281,6 +384,46 @@ const styles = StyleSheet.create({
   weekRow: {
     flexDirection: "row",
     width: "100%",
+  },
+  dragAnchorPlaceholder: {
+    height: 16,
+  },
+  dragHandle: {
+    width: 48,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: "rgba(255,255,255,0.9)",
+  },
+  handleOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    zIndex: 10,
+  },
+  inlineCalendarContainer: {
+    position: "absolute",
+    top: 45,
+    left: 0,
+    right: 0,
+    zIndex: 20,
+    overflow: "hidden",
+    paddingHorizontal: 12,
+    paddingBottom: 8,
+    backgroundColor: "#9F8CFF",
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+  },
+  bottomHandleWrapper: {
+    alignItems: "center",
+    paddingTop: 8,
+    paddingBottom: 10,
+  },
+  bottomHandleBar: {
+    width: 48,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: "#E5E7EB",
   },
   calendarModal: {
     backgroundColor: "#fff",

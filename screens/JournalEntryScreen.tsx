@@ -9,11 +9,11 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { FeelingsType, InsightsType } from "@/network/genAi";
-import { router, Stack } from "expo-router";
 import { AnimatedBlurView } from "@/components/ui/AnimatedModal";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSaveJournal } from "@/hooks/useSaveJournal";
 import Animated, {
   Easing,
   interpolate,
@@ -34,6 +34,7 @@ interface JournalEntryScreenProps {
 }
 export default function JournalEntryScreen({
   insights,
+  transcripts,
 }: JournalEntryScreenProps) {
   // const initialTags = [
   //   { label: "Gratitude", emoji: "🌸", colors: ["#FFE5EC", "#FFD6E8"] },
@@ -41,7 +42,8 @@ export default function JournalEntryScreen({
   //   { label: "Happiness", emoji: "💡", colors: ["#E6FFE5", "#D6FFD6"] },
   // ];
   const { height } = useWindowDimensions();
-  const headerHeight = useHeaderHeight();
+  const toast = useToast();
+  const { saveJournal, saving } = useSaveJournal();
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState("😊");
@@ -283,6 +285,50 @@ export default function JournalEntryScreen({
     ]);
   };
 
+  const handleContinue = async (): Promise<void> => {
+    try {
+      // const title: string = insights?.title?.trim() || "Untitled Entry";
+      // const content: string = (journalText || insights?.enrichedTranscript || "").trim();
+      // const aiInsights: string = insights?.aiInsights || "";
+      // const moodScore: number | undefined = insights?.moodScore;
+      // const mainEmoji: string | undefined = insights?.mainEmoji;
+      // const suggestedTags: string[] = insights?.suggestedTags || [];
+      // const growthAreas: string[] = insights?.growthAreas || [];
+      // const positiveInsights: string[] = insights?.positiveInsights || [];
+
+      await saveJournal({
+        title: insights?.title,
+        enrichedTranscript: journalText,
+        aiInsights: insights?.aiInsights,
+        moodScore: insights?.moodScore,
+        mainEmoji: insights?.mainEmoji,
+        feelings: tags,
+        suggestedTags: insights?.suggestedTags,
+        growthAreas: insights?.growthAreas,
+        positiveInsights: insights?.positiveInsights,
+      });
+
+      toast.show({
+        placement: "bottom right",
+        render: ({ id }) => (
+          <Toast nativeID={id} variant="solid" action="success">
+            <ToastTitle>Journal saved</ToastTitle>
+          </Toast>
+        ),
+      });
+    } catch (error) {
+      console.error("Failed to save journal:", error);
+      toast.show({
+        placement: "bottom right",
+        render: ({ id }) => (
+          <Toast nativeID={id} variant="solid" action="error">
+            <ToastTitle>Failed to save journal</ToastTitle>
+          </Toast>
+        ),
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
       <AnimatedBlurView
@@ -495,8 +541,14 @@ export default function JournalEntryScreen({
 
       {/* Sticky Bottom Button */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.continueButton}>
-          <Text style={styles.continueText}>Continue</Text>
+        <TouchableOpacity
+          style={[styles.continueButton, saving && { opacity: 0.6 }]}
+          onPress={handleContinue}
+          disabled={saving}
+        >
+          <Text style={styles.continueText}>
+            {saving ? "Saving…" : "Continue"}
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

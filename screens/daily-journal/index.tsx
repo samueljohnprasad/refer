@@ -24,6 +24,7 @@ import {
   showCalendarModalAtom,
 } from "./atoms";
 import DailyNotesHeader from "./DailyNotesHeader";
+import header from "react-native-calendars/src/calendar/header";
 
 interface TaskItemProps {
   text: string;
@@ -323,6 +324,9 @@ const DailyNotesScreen = () => {
         showsVerticalScrollIndicator={false}
       >
         {/* <DailyNotesHeader /> */}
+        <Stack.Screen
+          options={{ header: () => <DailyNotesHeader />, headerShown: true }}
+        />
 
         {/* Date and Content */}
         <Animated.View
@@ -360,11 +364,15 @@ const DailyNotesScreen = () => {
 interface CalendarPickerProps {
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
+  withHeader?: boolean; // optional header for standalone usage
+  edgeToEdge?: boolean; // remove top margin and horizontal padding when true
 }
 
 export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   selectedDate,
   onDateSelect,
+  withHeader,
+  edgeToEdge,
 }) => {
   const [currentMonth, setCurrentMonth] = useState(selectedDate);
 
@@ -398,7 +406,10 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   };
 
   return (
-    <View style={styles.calendarPicker}>
+    <View style={[styles.calendarPicker, edgeToEdge && { marginTop: 0, paddingHorizontal: 0 }] }>
+      {withHeader ? (
+        <Stack.Screen options={{ header: () => <DailyNotesHeader /> }} />
+      ) : null}
       <View style={styles.monthHeader}>
         <Pressable style={styles.monthNavButton} onPress={goToPreviousMonth}>
           <Feather name="chevron-left" size={20} color="#000" />
