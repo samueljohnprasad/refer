@@ -12,9 +12,9 @@ export interface CalendarDragHook {
   progress: Animated.Value; // 0 -> collapsed (week), 1 -> expanded (month)
   isExpanded: boolean;
   panHandlers: PanResponderInstance['panHandlers'];
-  expand: () => void;
-  collapse: () => void;
-  toggle: () => void;
+  expand: (onDone?: () => void) => void;
+  collapse: (onDone?: () => void) => void;
+  toggle: (onDone?: () => void) => void;
 }
 
 const DEFAULTS: Required<Omit<CalendarDragConfig, 'initialExpanded'>> = {
@@ -36,26 +36,27 @@ export function useCalendarExpandDrag(config?: CalendarDragConfig): CalendarDrag
   const clamp = (val: number, min: number, max: number): number => Math.max(min, Math.min(max, val));
 
   const animateTo = useCallback(
-    (toValue: number) => {
+    (toValue: number, onDone?: () => void) => {
       Animated.timing(progress, {
         toValue,
         duration: animationDurationMs,
         useNativeDriver: false, // height interpolation uses layout values; keep false
       }).start(() => {
         setIsExpanded(toValue === 1);
+        onDone?.();
       });
     },
     [animationDurationMs, progress]
   );
 
-  const expand = useCallback(() => animateTo(1), [animateTo]);
-  const collapse = useCallback(() => animateTo(0), [animateTo]);
-  const toggle = useCallback(() => {
+  const expand = useCallback((onDone?: () => void) => animateTo(1, onDone), [animateTo]);
+  const collapse = useCallback((onDone?: () => void) => animateTo(0, onDone), [animateTo]);
+  const toggle = useCallback((onDone?: () => void) => {
     progress.stopAnimation((val) => {
       if (val >= 0.5) {
-        collapse();
+        collapse(onDone);
       } else {
-        expand();
+        expand(onDone);
       }
     });
   }, [collapse, expand, progress]);

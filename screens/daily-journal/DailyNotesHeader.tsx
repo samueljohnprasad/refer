@@ -36,14 +36,18 @@ const DailyNotesHeader = () => {
   // Vertical expand/collapse for inline calendar
   const CALENDAR_EXPANDED_HEIGHT = 360;
   const { progress, panHandlers: verticalPanHandlers, collapse, toggle } =
-    useCalendarExpandDrag({ expandedHeight: CALENDAR_EXPANDED_HEIGHT, snapThreshold: 0.35 });
+    useCalendarExpandDrag({ expandedHeight: CALENDAR_EXPANDED_HEIGHT, snapThreshold: 0.35, animationDurationMs: 500 });
   const headerHeightAnim = progress.interpolate({
     inputRange: [0, 1],
     outputRange: [twentyPercentHeight, CALENDAR_EXPANDED_HEIGHT],
   });
   const headerControlsOpacity = progress.interpolate({
-    inputRange: [0, 0.03, 0.08],
-    outputRange: [1, 0.2, 0],
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+  const weekHeaderOpacity = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
   });
   // Anchor for handle initial Y (below week row); animate absolute handle position from there
   const dragAnchorTopAnim = useRef(new Animated.Value(0)).current;
@@ -170,7 +174,7 @@ const DailyNotesHeader = () => {
     >
       {/* Calendar Header */}
       <Animated.View style={[styles.calendarHeader, { opacity: headerControlsOpacity }]}>
-        <Pressable style={styles.calendarIcon} onPress={toggle} onLongPress={openCalendar}>
+        <Pressable style={styles.calendarIcon} onPress={() => toggle()} onLongPress={openCalendar}>
           <Feather name="calendar" size={24} color="white" />
         </Pressable>
 
@@ -222,10 +226,7 @@ const DailyNotesHeader = () => {
                   inputRange: [-1, 0, 1],
                   outputRange: [0.3, 1, 0.3],
                 }),
-                progress.interpolate({
-                  inputRange: [0, 0.05, 0.15],
-                  outputRange: [1, 0, 0],
-                })
+                weekHeaderOpacity
               ),
             },
           ]}
@@ -271,8 +272,10 @@ const DailyNotesHeader = () => {
         <CalendarPicker
           selectedDate={selectedDate}
           onDateSelect={(date: Date) => {
-            selectDateFromCalendar(date);
-            collapse();
+            // First collapse smoothly, then update date so header morph feels natural
+            collapse(() => {
+              selectDate(date);
+            });
           }}
           withHeader={false}
         />
