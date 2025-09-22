@@ -15,6 +15,9 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import { AuthProvider } from "@/context/AuthContext";
 import { KeyboardProvider } from "react-native-keyboard-controller";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -68,9 +71,11 @@ function RootLayoutNav() {
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
-            <KeyboardProvider>
-              <Slot />
-            </KeyboardProvider>
+            <QueryClientProvider client={queryClient}>
+              <KeyboardProvider>
+                <Slot />
+              </KeyboardProvider>
+            </QueryClientProvider>
           </ThemeProvider>
         </GluestackUIProvider>
       </GestureHandlerRootView>

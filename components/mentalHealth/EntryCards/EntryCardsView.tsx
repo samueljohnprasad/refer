@@ -1,14 +1,15 @@
 import React from "react";
 import { View, ScrollView, Pressable, Animated } from "react-native";
 import { Text } from "@/components/ui/text";
-import { MoodEntry } from "@/types/mentalHealth";
 import { format } from "date-fns";
 import { Feather } from "@expo/vector-icons";
+import { InsightsTypeResponse } from "../types";
+import BlurModal from "@/screens/components/BlurModal";
 
 interface EntryCardsViewProps {
-  entries: MoodEntry[];
+  entries: InsightsTypeResponse[];
   isLoading: boolean;
-  onEntryPress: (entry: MoodEntry) => void;
+  onEntryPress: (entry: InsightsTypeResponse) => void;
   onRefresh?: () => void;
 }
 
@@ -129,7 +130,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 };
 
 interface EntryCardProps {
-  entry: MoodEntry;
+  entry: InsightsTypeResponse;
   onPress: () => void;
   index: number;
 }
@@ -147,24 +148,6 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
       useNativeDriver: true,
     }).start();
   }, [index]);
-
-  const handlePressIn = (): void => {
-    Animated.spring(scaleAnim, {
-      toValue: 0.96,
-      useNativeDriver: true,
-      friction: 8,
-      tension: 200,
-    }).start();
-  };
-
-  const handlePressOut = (): void => {
-    Animated.spring(scaleAnim, {
-      toValue: 1,
-      useNativeDriver: true,
-      friction: 8,
-      tension: 200,
-    }).start();
-  };
 
   const getMoodEmoji = (mood: string): string => {
     const moodEmojis: Record<string, string> = {
@@ -202,13 +185,9 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
   };
 
   return (
-    <Pressable
-      onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-    >
+    <Pressable onPress={onPress}>
       <Animated.View
-        className="bg-white rounded-2xl p-4  shadow-sm mb-3 border-l-4 border-blue-400"
+        className="bg-white rounded-2xl p-4  shadow-sm mb-3"
         style={{
           transform: [{ scale: scaleAnim }],
           opacity: fadeAnim,
@@ -218,39 +197,37 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
         <View className="flex-row items-start justify-between mb-3">
           <View className="flex-1 mr-3">
             <Text className="text-base font-semibold text-gray-800 mb-1">
-              {entry.aiTitle}
+              {entry.title}
             </Text>
             <View className="flex-row items-center">
               <Text className="text-sm text-gray-500">
-                {format(entry.timestamp, "h:mm a")}
+                {format(new Date(), "h:mm a")}
               </Text>
               <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
-              <Feather
+              {/* <Feather
                 name={getEntryTypeIcon(entry.entryType) as any}
                 size={12}
                 color="#6B7280"
-              />
-              {entry.entryType === "voice" && entry.duration && (
+              /> */}
+              {/* {entry.entryType === "voice" && entry.duration && (
                 <>
                   <Text className="text-sm text-gray-500 ml-1">
                     {formatDuration(entry.duration)}
                   </Text>
                 </>
-              )}
+              )} */}
             </View>
           </View>
 
           <View className="items-end">
-            <Text className="text-2xl mb-1">
-              {getMoodEmoji(entry.primaryMood)}
-            </Text>
+            <Text className="text-2xl mb-1">{entry.mainEmoji}</Text>
             <View
               className={`px-2 py-1 rounded-full ${getMoodIntensityColor(
-                entry.moodIntensity
+                entry.moodScore || 0
               )}`}
             >
               <Text className="text-xs font-medium">
-                {entry.moodIntensity}/10
+                {entry.moodScore || 0}/10
               </Text>
             </View>
           </View>
@@ -258,34 +235,34 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
 
         {/* Excerpt */}
         <Text className="text-gray-700 text-sm leading-5 mb-3">
-          {entry.excerpt}
+          {entry.enrichedTranscript?.substring(0, 100) + "..."}
         </Text>
 
         {/* Emotion Tags */}
         <View className="flex-row flex-wrap mb-3">
-          {entry.emotions.slice(0, 3).map((emotion, idx) => (
+          {(entry.feelings || []).map((emotion, idx) => (
             <View
               key={`${emotion}-${idx}`}
               className="bg-blue-50 rounded-full px-2 py-1 mr-2 mb-1"
             >
               <Text className="text-blue-700 text-xs font-medium capitalize">
-                {emotion}
+                {emotion.emoji} {emotion.name}
               </Text>
             </View>
           ))}
-          {entry.emotions.length > 3 && (
+          {/* {entry.emotions.length > 3 && (
             <View className="bg-gray-100 rounded-full px-2 py-1">
               <Text className="text-gray-600 text-xs">
                 +{entry.emotions.length - 3} more
               </Text>
             </View>
-          )}
+          )} */}
         </View>
 
         {/* Footer */}
         <View className="flex-row items-center justify-between pt-2 border-t border-gray-100">
           <Text className="text-xs text-gray-500 capitalize">
-            {entry.primaryMood} mood
+            {entry.mainEmoji} mood
           </Text>
           <View className="flex-row items-center">
             <Text className="text-xs text-gray-500 mr-1">

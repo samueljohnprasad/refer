@@ -27,6 +27,7 @@ import {
   Button,
   useWindowDimensions,
   Animated,
+  Modal,
 } from "react-native";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import Svg, { Circle, Path } from "react-native-svg";
@@ -40,6 +41,8 @@ import { AnimatedBlurView } from "@/components/ui/AnimatedModal";
 import { BlurView } from "expo-blur";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
+import NameEditScreen from "../EditName";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -49,6 +52,13 @@ export default function SettingsScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = useHeaderHeight();
   const scrollY = useRef(new Animated.Value(0)).current;
+  const { user, session, loading, signOut } = useAuth();
+
+  const [showModal, setShowModal] = useState({
+    modalType: "",
+    showModal: false,
+  });
+
   const [upgradeY, setUpgradeY] = useState<number | null>(null);
   const handleToggle = (
     setter: React.Dispatch<React.SetStateAction<boolean>>,
@@ -58,9 +68,9 @@ export default function SettingsScreen() {
     setter(value);
   };
 
-  const handlePress = () => {
+  const handlePress = (type: string) => {
     Haptics.selectionAsync();
-    router.back();
+    setShowModal({ modalType: type, showModal: true });
   };
 
   const handleRateUs = () => {
@@ -95,7 +105,7 @@ export default function SettingsScreen() {
                 <TouchableOpacity
                   style={styles.backBtn}
                   activeOpacity={0.7}
-                  onPress={handlePress}
+                  onPress={() => router.back()}
                 >
                   <Ionicons name="arrow-back" size={20} color="#FFF" />
                 </TouchableOpacity>
@@ -249,7 +259,9 @@ export default function SettingsScreen() {
             <TouchableOpacity
               style={styles.rowItem}
               activeOpacity={0.7}
-              onPress={handlePress}
+              onPress={() => {
+                handlePress("edit-name");
+              }}
             >
               <View style={[styles.leftIcon, { backgroundColor: "#FECACA" }]}>
                 <Feather name="user" size={20} color="#EF4444" />
@@ -263,7 +275,10 @@ export default function SettingsScreen() {
             <TouchableOpacity
               style={styles.rowItem}
               activeOpacity={0.7}
-              onPress={handlePress}
+              onPress={() => {
+                // handlePress("language");
+                signOut();
+              }}
             >
               <View style={[styles.leftIcon, { backgroundColor: "#BFDBFE" }]}>
                 <Feather name="globe" size={20} color="#3B82F6" />
@@ -298,7 +313,9 @@ export default function SettingsScreen() {
             <TouchableOpacity
               style={styles.rowItem}
               activeOpacity={0.7}
-              onPress={handlePress}
+              onPress={() => {
+                handlePress("contact-support");
+              }}
             >
               <View style={[styles.leftIcon, { backgroundColor: "#CFFAFE" }]}>
                 <Feather name="message-square" size={20} color="#06B6D4" />
@@ -329,7 +346,9 @@ export default function SettingsScreen() {
             <TouchableOpacity
               style={styles.rowItem}
               activeOpacity={0.7}
-              onPress={handlePress}
+              onPress={() => {
+                handlePress("copy-id");
+              }}
             >
               <View style={[styles.leftIcon, { backgroundColor: "#E0F2FE" }]}>
                 <Feather name="copy" size={20} color="#0284C7" />
@@ -343,7 +362,9 @@ export default function SettingsScreen() {
             <TouchableOpacity
               style={styles.rowItem}
               activeOpacity={0.7}
-              onPress={handlePress}
+              onPress={() => {
+                handlePress("terms-of-use");
+              }}
             >
               <View style={[styles.leftIcon, { backgroundColor: "#F3E8FF" }]}>
                 <Feather name="file-text" size={20} color="#9333EA" />
@@ -366,6 +387,15 @@ export default function SettingsScreen() {
           </View>
         </Animated.ScrollView>
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showModal.showModal}
+      >
+        <NameEditScreen
+          setShowModal={() => setShowModal({ showModal: false, modalType: "" })}
+        />
+      </Modal>
     </SafeAreaView>
   );
 }

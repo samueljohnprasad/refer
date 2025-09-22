@@ -18,95 +18,74 @@ interface BlurModalProps {
   onAddEntry?: () => void;
   entries?: MoodEntry[];
   onSelectEntry?: (entry: MoodEntry) => void;
+  children?: React.ReactNode;
 }
 
-export default function BlurModal({
-  visible,
-  onClose,
-  dateLabel,
-  onAddEntry,
-  entries = [],
-  onSelectEntry,
-}: BlurModalProps) {
+export default function BlurModal({ visible, children }: BlurModalProps) {
   return (
-    <>
-      {/* <Button
-        title="Open Menu"
-        onPress={() => {
-          console.log("Open Menu");
-          router.push("/tabs/pages/BlurModal");
+    <Modal transparent visible={visible} animationType="fade">
+      <BlurView
+        intensity={10}
+        style={{
+          flex: 1,
+          justifyContent: "flex-start",
         }}
-      /> */}
-
-      <Modal transparent visible={visible} animationType="fade">
-        <BlurView
-          intensity={10}
-          style={{
-            flex: 1,
-            justifyContent: "flex-start",
-            paddingHorizontal: 16,
-            marginTop: 80,
-          }}
-        >
-          <View style={[styles.card]}>
-            {/* <Animated.View
-              entering={FadeInLeft.duration(220).delay(180)}
-              style={styles.card}
-            > */}
-            <Text style={styles.title}>Selected Day</Text>
-            {dateLabel ? (
-              <Text style={styles.subtitle}>{dateLabel}</Text>
-            ) : null}
-
-            <View style={{ height: 12 }} />
-
-            <TouchableOpacity
-              activeOpacity={0.9}
-              style={styles.primaryBtn}
-              onPress={onAddEntry ?? onClose}
-            >
-              <Text style={styles.primaryText}>Add Entry</Text>
-            </TouchableOpacity>
-
-            {entries.length > 0 ? (
-              <View style={{ marginTop: 12 }}>
-                <Text style={styles.listHeader}>Entries</Text>
-                <ScrollView style={{ maxHeight: 220 }}>
-                  {entries.map((e) => (
-                    <TouchableOpacity
-                      key={e.id}
-                      style={styles.entryRow}
-                      onPress={() => onSelectEntry && onSelectEntry(e)}
-                      activeOpacity={0.9}
-                      accessibilityLabel={`Open ${e.aiTitle}`}
-                    >
-                      <View style={styles.entryEmojiWrap}>
-                        <Text style={{ fontSize: 18 }}>📝</Text>
-                      </View>
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.entryTitle}>{e.aiTitle}</Text>
-                        <Text style={styles.entryMeta}>
-                          {new Date(e.timestamp).toLocaleTimeString("en-US", {
-                            hour: "numeric",
-                            minute: "2-digit",
-                          })}
-                        </Text>
-                      </View>
-                      <Text style={styles.chevron}>›</Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            ) : null}
-
-            <View style={{ height: 6 }} />
-            <Button title="Close" onPress={onClose} />
-            {/* </Animated.View> */}
-          </View>
-        </BlurView>
-      </Modal>
-    </>
+      >
+        {children}
+      </BlurView>
+    </Modal>
   );
+}
+
+{
+  /* <View style={[styles.card]}>
+  <Text style={styles.title}>Selected Day</Text>
+  {dateLabel ? <Text style={styles.subtitle}>{dateLabel}</Text> : null}
+
+  <View style={{ height: 12 }} />
+
+  <TouchableOpacity
+    activeOpacity={0.9}
+    style={styles.primaryBtn}
+    onPress={onAddEntry ?? onClose}
+  >
+    <Text style={styles.primaryText}>Add Entry</Text>
+  </TouchableOpacity>
+
+  {entries.length > 0 ? (
+    <View style={{ marginTop: 12 }}>
+      <Text style={styles.listHeader}>Entries</Text>
+      <ScrollView style={{ maxHeight: 220 }}>
+        {entries.map((e) => (
+          <TouchableOpacity
+            key={e.id}
+            style={styles.entryRow}
+            onPress={() => onSelectEntry && onSelectEntry(e)}
+            activeOpacity={0.9}
+            accessibilityLabel={`Open ${e.aiTitle}`}
+          >
+            <View style={styles.entryEmojiWrap}>
+              <Text style={{ fontSize: 18 }}>📝</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.entryTitle}>{e.aiTitle}</Text>
+              <Text style={styles.entryMeta}>
+                {new Date(e.timestamp).toLocaleTimeString("en-US", {
+                  hour: "numeric",
+                  minute: "2-digit",
+                })}
+              </Text>
+            </View>
+            <Text style={styles.chevron}>›</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
+  ) : null}
+
+  <View style={{ height: 6 }} />
+  <Button title="Close" onPress={onClose} />
+</View>; */
 }
 
 const styles = StyleSheet.create({

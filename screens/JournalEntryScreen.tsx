@@ -31,10 +31,12 @@ const AnimatedTouchableOpacity =
 interface JournalEntryScreenProps {
   insights?: InsightsType;
   transcripts?: string[];
+  onClose?: () => void;
 }
 export default function JournalEntryScreen({
   insights,
   transcripts,
+  onClose,
 }: JournalEntryScreenProps) {
   // const initialTags = [
   //   { label: "Gratitude", emoji: "🌸", colors: ["#FFE5EC", "#FFD6E8"] },
@@ -271,6 +273,7 @@ export default function JournalEntryScreen({
       setJournalText(backupState.journalText);
       setIsEditing(false);
     }
+    onClose?.();
   };
 
   const removeTag = (index: number) => {
@@ -287,15 +290,6 @@ export default function JournalEntryScreen({
 
   const handleContinue = async (): Promise<void> => {
     try {
-      // const title: string = insights?.title?.trim() || "Untitled Entry";
-      // const content: string = (journalText || insights?.enrichedTranscript || "").trim();
-      // const aiInsights: string = insights?.aiInsights || "";
-      // const moodScore: number | undefined = insights?.moodScore;
-      // const mainEmoji: string | undefined = insights?.mainEmoji;
-      // const suggestedTags: string[] = insights?.suggestedTags || [];
-      // const growthAreas: string[] = insights?.growthAreas || [];
-      // const positiveInsights: string[] = insights?.positiveInsights || [];
-
       await saveJournal({
         title: insights?.title,
         enrichedTranscript: journalText,
@@ -430,7 +424,7 @@ export default function JournalEntryScreen({
       <View style={{ flex: 1 }}>
         <ScrollView
           contentContainerStyle={[styles.scroll]}
-          showsVerticalScrollIndicator={false}
+          // showsVerticalScrollIndicator={false}
         >
           {/* Mood + Journal Summary (Yellow Card) */}
           <Animated.View style={[styles.moodRow, moodCardStyle]}>
@@ -540,7 +534,7 @@ export default function JournalEntryScreen({
       </View>
 
       {/* Sticky Bottom Button */}
-      <View style={styles.footer}>
+      {/* <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.continueButton, saving && { opacity: 0.6 }]}
           onPress={handleContinue}
@@ -550,14 +544,14 @@ export default function JournalEntryScreen({
             {saving ? "Saving…" : "Continue"}
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#fff" },
-  scroll: { padding: 18, paddingBottom: 100, flex: 1 },
+  scroll: { padding: 18, flex: 1 },
   backBtn: {
     width: 40,
     height: 40,

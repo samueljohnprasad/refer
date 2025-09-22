@@ -4,8 +4,6 @@ import {
   View,
   ScrollView,
   Pressable,
-  Modal,
-  Dimensions,
   Animated,
   PanResponder,
   Easing,
@@ -14,90 +12,13 @@ import { Text, View as ThemedView } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import { format, startOfWeek, addDays, isToday } from "date-fns";
-import { MentalHealthProfileContainer } from "@/components/mentalHealth/MentalHealthProfileContainer";
-import { StatusBar } from "expo-status-bar";
-import { Box } from "@/components/ui/box";
-import { atom, useAtom } from "jotai";
 import {
-  currentWeekViewAtom,
-  selectedDateAtom,
-  showCalendarModalAtom,
-} from "./atoms";
+  MentalHealthProfileContainer,
+  useMentalHealthData,
+} from "@/components/mentalHealth/MentalHealthProfileContainer";
+import { useAtom } from "jotai";
+import { currentWeekViewAtom, selectedDateAtom } from "./atoms";
 import DailyNotesHeader from "./DailyNotesHeader";
-import header from "react-native-calendars/src/calendar/header";
-
-interface TaskItemProps {
-  text: string;
-  completed: boolean;
-  onToggle?: () => void;
-}
-
-const TaskItem: React.FC<TaskItemProps> = ({ text, completed, onToggle }) => {
-  const breatheAnim = useRef(new Animated.Value(1)).current;
-  const fadeAnim = useRef(new Animated.Value(1)).current;
-
-  useEffect(() => {
-    // Gentle fade animation for completed tasks
-    Animated.timing(fadeAnim, {
-      toValue: completed ? 0.6 : 1,
-      duration: 600,
-      useNativeDriver: true,
-    }).start();
-  }, [completed]);
-
-  const handlePress = () => {
-    // Gentle breathing-like animation
-    Animated.sequence([
-      Animated.timing(breatheAnim, {
-        toValue: 1.02,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(breatheAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    onToggle?.();
-  };
-
-  return (
-    <Pressable onPress={handlePress}>
-      <Animated.View
-        style={[
-          styles.taskItem,
-          {
-            transform: [{ scale: breatheAnim }],
-            opacity: fadeAnim,
-          },
-        ]}
-      >
-        <Animated.View
-          style={[styles.checkbox, completed && styles.checkboxCompleted]}
-        >
-          {completed && (
-            <Animated.View
-              style={{
-                transform: [{ scale: breatheAnim }],
-              }}
-            >
-              <Feather name="check" size={14} color="#fff" />
-            </Animated.View>
-          )}
-        </Animated.View>
-        <View style={{ flex: 1 }}>
-          <Text
-            style={[styles.taskText, completed && styles.taskTextCompleted]}
-          >
-            {text}
-          </Text>
-        </View>
-      </Animated.View>
-    </Pressable>
-  );
-};
 
 // Animated Day Button Component
 interface DayButtonProps {
@@ -176,10 +97,7 @@ const DailyNotesScreen = () => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   // State for current week view (independent of selected date)
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
-  // State for calendar modal
-  const [showCalendarModal, setShowCalendarModal] = useAtom(
-    showCalendarModalAtom
-  );
+
   // Animation values
   const weekSlideAnim = useRef(new Animated.Value(0)).current;
 
@@ -406,7 +324,12 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   };
 
   return (
-    <View style={[styles.calendarPicker, edgeToEdge && { marginTop: 0, paddingHorizontal: 0 }] }>
+    <View
+      style={[
+        styles.calendarPicker,
+        edgeToEdge && { marginTop: 0, paddingHorizontal: 0 },
+      ]}
+    >
       {withHeader ? (
         <Stack.Screen options={{ header: () => <DailyNotesHeader /> }} />
       ) : null}

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import {
   SafeAreaView,
   View,
@@ -58,6 +59,7 @@ export default function JournalCalendarScreen() {
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
   const [selectedEntry, setSelectedEntry] = useState<MoodEntry | null>(null);
   const [monthDate, setMonthDate] = useState<Date>(new Date("2025-08-01"));
+  const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
 
   const { markedDays, getEntriesForDate } = useCalendarEntries(monthDate);
 
@@ -207,7 +209,7 @@ export default function JournalCalendarScreen() {
 
           {/* Greeting text */}
           <Text style={styles.greeting}>
-            Hi, Sam <Text style={styles.wave}>👋</Text>
+            Hi, {isLoadingProfile ? '...' : userProfile?.displayName || 'there'} <Text style={styles.wave}>👋</Text>
           </Text>
 
           {/* Streak card with animated progress bar */}

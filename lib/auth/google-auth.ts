@@ -56,7 +56,12 @@ const performOAuth = async (router?: any) => {
       },
     });
     if (error) throw error;
-
+    if (data) {
+      console.log("User data:", data);
+      // await supabase
+      //   .from("profiles")
+      //   .insert([{ id: user.id, username: "new_user" }]);
+    }
     console.log("OAuth URL:", data?.url);
     const result = await WebBrowser.openAuthSessionAsync(
       data.url, // The URL from Supabase
