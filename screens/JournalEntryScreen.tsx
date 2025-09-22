@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
+  StyleSheet,
   TextInput,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  Modal,
   useWindowDimensions,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
@@ -421,10 +426,13 @@ export default function JournalEntryScreen({
         </AnimatedTouchableOpacity>
       </AnimatedBlurView>
 
-      <View style={{ flex: 1 }}>
+      <View style={styles.contentContainer}>
         <ScrollView
-          contentContainerStyle={[styles.scroll]}
-          // showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scroll}
+          showsVerticalScrollIndicator={true}
+          bounces={true}
+          alwaysBounceVertical={true}
+          keyboardShouldPersistTaps="handled"
         >
           {/* Mood + Journal Summary (Yellow Card) */}
           <Animated.View style={[styles.moodRow, moodCardStyle]}>
@@ -534,24 +542,48 @@ export default function JournalEntryScreen({
       </View>
 
       {/* Sticky Bottom Button */}
-      {/* <View style={styles.footer}>
+      <View style={styles.stickyButtonContainer}>
         <TouchableOpacity
           style={[styles.continueButton, saving && { opacity: 0.6 }]}
           onPress={handleContinue}
           disabled={saving}
+          activeOpacity={0.8}
         >
           <Text style={styles.continueText}>
             {saving ? "Saving…" : "Continue"}
           </Text>
         </TouchableOpacity>
-      </View> */}
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#fff" },
-  scroll: { padding: 18, flex: 1 },
+  stickyButtonContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#fff",
+    padding: 20,
+    paddingBottom: 30,
+    borderTopWidth: 1,
+    borderTopColor: "#f1f5f9",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  scroll: {
+    padding: 24,
+    paddingBottom: 120, // Extra space for the sticky button
+    flexGrow: 1, // Ensure content can grow beyond the screen
+  },
+  contentContainer: {
+    flex: 1, // Take up all available space
+  },
   backBtn: {
     width: 40,
     height: 40,
@@ -583,63 +615,69 @@ const styles = StyleSheet.create({
   moodRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFD24A",
+    padding: 20,
     borderRadius: 16,
-    padding: 18,
-    marginBottom: 18,
+    marginBottom: 24,
+    backgroundColor: "#FFE08A",
   },
   moodEmoji: { fontSize: 34 },
 
   tagsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 16,
-    alignItems: "center",
+    marginBottom: 24,
+    gap: 8,
   },
   tagChip: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 20,
     paddingVertical: 8,
-    paddingHorizontal: 16,
-    marginRight: 8,
-    marginBottom: 6,
-    gap: 6,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    marginRight: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.05)',
   },
   tagText: { fontSize: 15, color: "#111" },
-
-  summaryTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#111",
-    marginBottom: 6,
-  },
-  summaryText: { fontSize: 16, color: "#111", lineHeight: 22 },
 
   cardLarge: {
     backgroundColor: "#F9FAFB",
     borderRadius: 16,
-    padding: 22,
-    marginBottom: 18,
+    padding: 20,
+    marginBottom: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 8,
-    color: "#111",
+    color: "#0F172A",
+    marginBottom: 12,
+    marginLeft: 8,
   },
-  cardText: { fontSize: 16, lineHeight: 24, color: "#444" },
+  cardText: {
+    fontSize: 16,
+    lineHeight: 26,
+    color: "#334155",
+    letterSpacing: 0.2,
+  },
 
   insightRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
-    gap: 6,
+    marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.05)',
   },
 
   footer: {
     position: "absolute",
-    bottom: 100,
+    bottom: 50,
     left: 0,
     right: 0,
     backgroundColor: "#fff",
@@ -648,10 +686,15 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
   },
   continueButton: {
-    backgroundColor: "#FFD24A",
-    borderRadius: 12,
-    paddingVertical: 16,
+    backgroundColor: "#7C5CFF",
+    borderRadius: 14,
+    padding: 18,
     alignItems: "center",
+    shadowColor: "#7C5CFF",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 3,
   },
   continueText: { fontSize: 18, fontWeight: "700", color: "#111" },
   emojiRowOverlay: {
