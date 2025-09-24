@@ -229,6 +229,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
               <Image
                 source={emotions[entry.mainEmoji as Emotion]}
                 className="w-10 h-10"
+                alt={entry.mainEmoji}
               />
             </Text>
             {/* <View
