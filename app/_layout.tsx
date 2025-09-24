@@ -12,7 +12,7 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { Slot } from "expo-router";
 import "../global.css";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import { AuthProvider } from "@/context/AuthContext";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

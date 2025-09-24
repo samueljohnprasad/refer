@@ -1,10 +1,12 @@
 import React from "react";
-import { View, ScrollView, Pressable, Animated } from "react-native";
+import { ScrollView, Pressable, Animated, View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { format } from "date-fns";
 import { Feather } from "@expo/vector-icons";
 import { InsightsTypeResponse } from "../types";
 import BlurModal from "@/screens/components/BlurModal";
+import { Emotion, emotions, great } from "@/assets/emojis";
+import { Image } from "@/components/ui/image";
 
 interface EntryCardsViewProps {
   entries: InsightsTypeResponse[];
@@ -21,11 +23,11 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <View className="px-4">
-        <Text className="text-lg font-semibold text-gray-800 mb-4">
+      <View>
+        <Text className="text-lg font-semibold text-gray-800">
           Journal Entries
         </Text>
-        <View className="space-y-3">
+        <View className="gap-3">
           {[1, 2, 3].map((i) => (
             <View
               key={i}
@@ -100,8 +102,8 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   };
 
   return (
-    <View>
-      <View className="flex-row items-center justify-between mb-4">
+    <View className="gap-4">
+      <View className="flex-row items-center justify-between">
         <Text className="text-lg font-semibold text-gray-800">
           Journal Entries ({entries.length})
         </Text>
@@ -115,7 +117,10 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         )}
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} className="space-y-3 ">
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerClassName="gap-3"
+      >
         {entries.map((entry, index) => (
           <EntryCard
             key={entry.id}
@@ -187,7 +192,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
   return (
     <Pressable onPress={onPress}>
       <Animated.View
-        className="bg-white rounded-2xl p-4  shadow-sm mb-3"
+        className="bg-white rounded-2xl p-4  shadow-sm"
         style={{
           transform: [{ scale: scaleAnim }],
           opacity: fadeAnim,
@@ -220,16 +225,21 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
           </View>
 
           <View className="items-end">
-            <Text className="text-2xl mb-1">{entry.mainEmoji}</Text>
-            <View
+            <Text className="text-2xl mb-1">
+              <Image
+                source={emotions[entry.mainEmoji as Emotion]}
+                className="w-10 h-10"
+              />
+            </Text>
+            {/* <View
               className={`px-2 py-1 rounded-full ${getMoodIntensityColor(
                 entry.moodScore || 0
               )}`}
             >
               <Text className="text-xs font-medium">
-                {entry.moodScore || 0}/10
+                {entry.moodScore || 0}/5
               </Text>
-            </View>
+            </View> */}
           </View>
         </View>
 

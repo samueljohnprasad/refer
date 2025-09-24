@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -7,17 +7,21 @@ import {
   StyleSheet,
   TextInput,
   ActivityIndicator,
-  KeyboardAvoidingView,
   Platform,
   Keyboard,
-  Modal,
+  KeyboardEvent,
   useWindowDimensions,
+  useColorScheme,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { FeelingsType, InsightsType } from "@/network/genAi";
 import { AnimatedBlurView } from "@/components/ui/AnimatedModal";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "@/constants/Colors";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { useSaveJournal } from "@/hooks/useSaveJournal";
 import Animated, {
   Easing,
@@ -29,6 +33,9 @@ import Animated, {
   withDelay,
   withSpring,
   withTiming,
+  FadeIn,
+  FadeOut,
+  Layout,
 } from "react-native-reanimated";
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
@@ -49,6 +56,7 @@ export default function JournalEntryScreen({
   //   { label: "Happiness", emoji: "💡", colors: ["#E6FFE5", "#D6FFD6"] },
   // ];
   const { height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const toast = useToast();
   const { saveJournal, saving } = useSaveJournal();
 
@@ -62,6 +70,24 @@ export default function JournalEntryScreen({
   const editProgress = useSharedValue(0);
   const editProgressDelayed = useSharedValue(0);
   const moodProgress = useSharedValue(0);
+  const [footerHeight, setFooterHeight] = useState<number>(0);
+  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
+  const [isInsightsOpen, setIsInsightsOpen] = useState<boolean>(false);
+  const colorScheme = useColorScheme();
+
+  const formattedDateTime = useMemo<string>(() => {
+    const now = new Date();
+    const date = now.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+    const time = now.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    return `${date} • ${time}`;
+  }, []);
 
   useEffect(() => {
     const config = {
@@ -82,6 +108,26 @@ export default function JournalEntryScreen({
     });
   }, [isEditing]);
 
+  useEffect((): (() => void) => {
+    const showEvent =
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent =
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+
+    const onShow = (e: KeyboardEvent): void => {
+      setKeyboardHeight(e.endCoordinates.height);
+    };
+    const onHide = (): void => setKeyboardHeight(0);
+
+    const subShow = Keyboard.addListener(showEvent, onShow);
+    const subHide = Keyboard.addListener(hideEvent, onHide);
+
+    return () => {
+      subShow.remove();
+      subHide.remove();
+    };
+  }, []);
+
   const backIconStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
       editProgress.value,
@@ -100,6 +146,27 @@ export default function JournalEntryScreen({
       },
     ],
   }));
+
+  // Collapsible AI Insights chevron animation
+  const insightsOpen = useSharedValue(0);
+  const insightsChevronStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        rotate: `${interpolate(insightsOpen.value, [0, 1], [0, 180])}deg`,
+      },
+    ],
+  }));
+
+  const toggleInsights = (): void => {
+    setIsInsightsOpen((prev) => {
+      const next = !prev;
+      insightsOpen.value = withTiming(next ? 1 : 0, {
+        duration: 220,
+        easing: Easing.bezier(0.22, 1, 0.36, 1),
+      });
+      return next;
+    });
+  };
 
   // Emoji morph animation: single emoji -> 5 emoji selector
   const singleEmojiStyle = useAnimatedStyle(() => ({
@@ -194,58 +261,58 @@ export default function JournalEntryScreen({
     ],
   }));
 
-  const btnBgStyle = useAnimatedStyle(() => ({
-    // Keep the button background consistent in both modes to avoid
-    // perceived icon opacity differences against changing contrast.
-    backgroundColor: "#6A4AF5",
-  }));
+  // Button background now handled via NativeWind classes for consistency
 
-  const moodCardStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(
-      moodProgress.value,
-      [0, 1],
-      ["#FFD24A", "#FFE08A"]
-    ),
-    transform: [
-      {
-        translateY: interpolate(
-          moodProgress.value,
-          [0, 1],
-          [0, -4],
-          Extrapolation.CLAMP
-        ),
-      },
-      {
-        scale: interpolate(
-          moodProgress.value,
-          [0, 1],
-          [1, 1.02],
-          Extrapolation.CLAMP
-        ),
-      },
-    ],
-    shadowColor: "#000",
-    shadowOpacity: interpolate(
-      moodProgress.value,
-      [0, 1],
-      [0.08, 0.16],
-      Extrapolation.CLAMP
-    ),
-    shadowRadius: interpolate(
-      moodProgress.value,
-      [0, 1],
-      [4, 8],
-      Extrapolation.CLAMP
-    ),
-    shadowOffset: { width: 0, height: 2 },
-    // Android elevation
-    elevation: interpolate(
-      moodProgress.value,
-      [0, 1],
-      [0, 4],
-      Extrapolation.CLAMP
-    ) as unknown as number,
-  }));
+  const moodCardStyle = useAnimatedStyle(() => {
+    const startColor = colorScheme === "dark" ? "#6A5100" : "#FFD24A";
+    const endColor = colorScheme === "dark" ? "#7F6300" : "#FFE08A";
+    return {
+      backgroundColor: interpolateColor(
+        moodProgress.value,
+        [0, 1],
+        [startColor, endColor]
+      ),
+      transform: [
+        {
+          translateY: interpolate(
+            moodProgress.value,
+            [0, 1],
+            [0, -4],
+            Extrapolation.CLAMP
+          ),
+        },
+        {
+          scale: interpolate(
+            moodProgress.value,
+            [0, 1],
+            [1, 1.02],
+            Extrapolation.CLAMP
+          ),
+        },
+      ],
+      shadowColor: "#000",
+      shadowOpacity: interpolate(
+        moodProgress.value,
+        [0, 1],
+        [0.08, 0.16],
+        Extrapolation.CLAMP
+      ),
+      shadowRadius: interpolate(
+        moodProgress.value,
+        [0, 1],
+        [4, 8],
+        Extrapolation.CLAMP
+      ),
+      shadowOffset: { width: 0, height: 2 },
+      // Android elevation
+      elevation: interpolate(
+        moodProgress.value,
+        [0, 1],
+        [0, 4],
+        Extrapolation.CLAMP
+      ) as unknown as number,
+    };
+  });
   const [backupState, setBackupState] = useState<{
     selectedEmoji: string;
     tags: FeelingsType[];
@@ -287,9 +354,16 @@ export default function JournalEntryScreen({
   };
 
   const addTag = () => {
+    const lightGradient = ["#EEE", "#DDD"] as const;
+    const darkGradient = ["#2E2E2E", "#3A3A3A"] as const;
     setTags([
       ...tags,
-      { name: "New Tag", emoji: "🆕", colorsGradient: ["#EEE", "#DDD"] },
+      {
+        name: "New Tag",
+        emoji: "🆕",
+        colorsGradient:
+          colorScheme === "dark" ? [...darkGradient] : [...lightGradient],
+      },
     ]);
   };
 
@@ -329,10 +403,14 @@ export default function JournalEntryScreen({
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["bottom"]}>
+    <SafeAreaView
+      style={styles.safeArea}
+      className="flex-1 bg-background-light dark:bg-background-dark"
+      edges={["bottom"]}
+    >
       <AnimatedBlurView
         intensity={50}
-        tint="light"
+        tint={colorScheme === "dark" ? "dark" : "light"}
         style={[
           styles.headerRow,
           {
@@ -346,7 +424,7 @@ export default function JournalEntryScreen({
         ]}
       >
         <AnimatedTouchableOpacity
-          style={[styles.backBtn, btnBgStyle]}
+          className="w-10 h-10 rounded-full items-center justify-center bg-accent"
           activeOpacity={0.7}
           onPress={handleClose}
         >
@@ -383,11 +461,13 @@ export default function JournalEntryScreen({
             <Feather name="x" size={22} color="#fff" />
           </Animated.View>
         </AnimatedTouchableOpacity>
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerDate}>Sept 3, 2025 • 10:42 AM</Text>
+        <View className="flex-1 items-center">
+          <Text className="text-base font-extrabold text-typography-900 dark:text-typography-50">
+            {formattedDateTime}
+          </Text>
         </View>
         <AnimatedTouchableOpacity
-          style={[styles.backBtn, btnBgStyle]}
+          className="w-10 h-10 rounded-full items-center justify-center bg-accent"
           activeOpacity={0.7}
           onPress={isEditing ? handleDone : handleEdit}
         >
@@ -426,33 +506,42 @@ export default function JournalEntryScreen({
         </AnimatedTouchableOpacity>
       </AnimatedBlurView>
 
-      <View style={styles.contentContainer}>
+      <View style={styles.contentContainer} className="flex-1">
         <ScrollView
-          contentContainerStyle={styles.scroll}
+          contentContainerStyle={[
+            styles.scroll,
+            { paddingBottom: Math.max(footerHeight + 16, 120) },
+          ]}
           showsVerticalScrollIndicator={true}
           bounces={true}
           alwaysBounceVertical={true}
           keyboardShouldPersistTaps="handled"
         >
           {/* Mood + Journal Summary (Yellow Card) */}
-          <Animated.View style={[styles.moodRow, moodCardStyle]}>
+          <Animated.View
+            style={[moodCardStyle]}
+            className="flex-row items-center p-5 rounded-2xl mb-6 shadow-soft-1"
+          >
             {/* Single emoji (fades/scales out) */}
             <Animated.Text
-              className="mr-4"
-              style={[styles.moodEmoji, singleEmojiStyle]}
+              className="mr-4 text-[34px]"
+              style={[singleEmojiStyle]}
             >
               {selectedEmoji}
             </Animated.Text>
 
             {/* Summary (fades out) */}
             <Animated.View style={[{ flex: 1 }, summaryStyle]}>
-              <Text style={styles.summaryText}>{insights?.title}</Text>
+              <Text className="text-lg font-bold text-typography-900 dark:text-typography-50">
+                {insights?.title}
+              </Text>
             </Animated.View>
 
             {/* 5-emoji selector overlay (fades/scales in) */}
             <Animated.View
               pointerEvents={isEditing ? "auto" : "none"}
-              style={[styles.emojiRowOverlay, emojiRowStyle]}
+              style={[emojiRowStyle]}
+              className="absolute left-[18px] right-[18px] top-[18px] flex-row justify-between items-center"
             >
               {mainEmotions.map((emo, idx) => (
                 <TouchableOpacity
@@ -473,85 +562,136 @@ export default function JournalEntryScreen({
           </Animated.View>
 
           {/* Tags */}
-          <View style={styles.tagsRow}>
+          <View className="flex-row flex-wrap mb-6 gap-2">
             {tags.map((tag, index) => (
-              <View
+              <Animated.View
                 key={index}
                 style={[
-                  styles.tagChip,
-                  { backgroundColor: tag.colorsGradient?.[0] || "#E5F1FF" },
+                  tag.colorsGradient?.[0]
+                    ? { backgroundColor: tag.colorsGradient[0] }
+                    : undefined,
                 ]}
+                className="flex-row items-center py-2 px-3 rounded-full mr-2 mb-2 border border-outline-100 dark:border-outline-800 bg-background-100 dark:bg-background-800"
+                entering={FadeIn.springify().damping(16)}
+                exiting={FadeOut.duration(140)}
+                layout={Layout.springify().stiffness(180)}
               >
-                <Text style={styles.tagText}>
+                <Text className="text-[15px] text-typography-900 dark:text-typography-50">
                   {tag.emoji} {tag.name}
                 </Text>
                 {isEditing && (
                   <TouchableOpacity onPress={() => removeTag(index)}>
-                    <Feather name="x-circle" size={16} color="#555" />
+                    <Feather
+                      name="x-circle"
+                      size={16}
+                      color={
+                        colorScheme === "dark"
+                          ? Colors.dark.icon
+                          : Colors.light.icon
+                      }
+                    />
                   </TouchableOpacity>
                 )}
-              </View>
+              </Animated.View>
             ))}
             {isEditing && (
               <TouchableOpacity
                 onPress={addTag}
-                style={[styles.tagChip, { backgroundColor: "#EEE" }]}
+                className="flex-row items-center py-2 px-3 rounded-full mr-2 mb-2 border border-outline-100 dark:border-outline-800 bg-background-100 dark:bg-background-800"
               >
-                <Text style={styles.tagText}>＋ Add Tag</Text>
+                <Text className="text-[15px] text-typography-900 dark:text-typography-50">
+                  ＋ Add Tag
+                </Text>
               </TouchableOpacity>
             )}
           </View>
 
           {/* Journal Content */}
-          <View style={styles.cardLarge}>
-            <Text style={styles.cardTitle}>Journal Content</Text>
+          <View className="bg-background-50 dark:bg-background-900 rounded-2xl p-5 mb-6 shadow-soft-1">
+            <Text className="text-lg font-semibold text-typography-900 dark:text-typography-50 mb-3 ml-2">
+              Journal Content
+            </Text>
             {isEditing ? (
               <TextInput
-                style={[
-                  styles.cardText,
-                  {
-                    borderWidth: 1,
-                    borderColor: "#ddd",
-                    borderRadius: 8,
-                    padding: 8,
-                  },
-                ]}
+                className="text-base leading-6 text-typography-600 dark:text-typography-300 tracking-[0.2px] border border-outline-200 dark:border-outline-700 rounded-lg p-2"
                 multiline
                 value={journalText || ""}
-                onChangeText={(text) => {
-                  console.log("text", text);
-                  setJournalText(text);
-                }}
+                onChangeText={(text) => setJournalText(text)}
               />
             ) : (
-              <Text style={styles.cardText}>
+              <Text className="text-base leading-6 text-typography-600 dark:text-typography-300 tracking-[0.2px]">
                 {insights?.enrichedTranscript || ""}
               </Text>
             )}
           </View>
 
           {/* AI Insights */}
-          <View style={styles.cardLarge}>
-            <View style={styles.insightRow}>
-              <Feather name="eye" size={22} color="#7B61FF" />
-              <Text style={styles.cardTitle}>AI Insights</Text>
-            </View>
-            <Text style={styles.cardText}>{insights?.aiInsights || ""}</Text>
+          <View className="bg-background-50 dark:bg-background-900 rounded-2xl p-5 mb-6 shadow-soft-1">
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel="Toggle AI Insights"
+              activeOpacity={0.8}
+              onPress={toggleInsights}
+              className="flex-row items-center mb-4 pb-3 border-b border-outline-100 dark:border-outline-800 justify-between"
+            >
+              <View className="flex-row items-center">
+                <Feather name="eye" size={22} color="#7B61FF" />
+                <Text className="text-lg font-semibold text-typography-900 dark:text-typography-50 ml-2">
+                  AI Insights
+                </Text>
+              </View>
+              <Animated.View style={insightsChevronStyle} className="p-1">
+                <Feather
+                  name="chevron-down"
+                  size={18}
+                  color={
+                    colorScheme === "dark"
+                      ? Colors.dark.text
+                      : Colors.light.text
+                  }
+                />
+              </Animated.View>
+            </TouchableOpacity>
+            {isInsightsOpen && (
+              <Animated.View
+                entering={FadeIn.duration(150)}
+                exiting={FadeOut.duration(120)}
+                layout={Layout.springify().damping(20).stiffness(180)}
+              >
+                <Text className="text-base leading-6 text-typography-600 dark:text-typography-300 tracking-[0.2px]">
+                  {insights?.aiInsights || ""}
+                </Text>
+              </Animated.View>
+            )}
           </View>
         </ScrollView>
       </View>
 
       {/* Sticky Bottom Button */}
-      <View style={styles.stickyButtonContainer}>
+      <View
+        style={[{ bottom: keyboardHeight, paddingBottom: 16 + insets.bottom }]}
+        className="absolute left-0 right-0 bg-background-light dark:bg-background-dark p-5 border-t border-outline-100 dark:border-outline-800 shadow-soft-2"
+        onLayout={({ nativeEvent }) =>
+          setFooterHeight(nativeEvent.layout.height)
+        }
+      >
         <TouchableOpacity
-          style={[styles.continueButton, saving && { opacity: 0.6 }]}
+          style={[saving && { opacity: 0.6 }]}
+          className="bg-accent rounded-xl p-4 items-center shadow-soft-2"
           onPress={handleContinue}
           disabled={saving}
           activeOpacity={0.8}
         >
-          <Text style={styles.continueText}>
-            {saving ? "Saving…" : "Continue"}
-          </Text>
+          <View className="flex-row items-center justify-center">
+            {saving && (
+              <View className="mr-2">
+                <ActivityIndicator color="#fff" size="small" />
+              </View>
+            )}
+            <Text className="text-typography-white text-lg font-bold">
+              {saving ? "Saving…" : "Continue"}
+            </Text>
+          </View>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -559,23 +699,8 @@ export default function JournalEntryScreen({
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#fff" },
-  stickyButtonContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#fff",
-    padding: 20,
-    paddingBottom: 30,
-    borderTopWidth: 1,
-    borderTopColor: "#f1f5f9",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 5,
-  },
+  safeArea: { flex: 1 },
+
   scroll: {
     padding: 24,
     paddingBottom: 120, // Extra space for the sticky button
@@ -584,126 +709,12 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1, // Take up all available space
   },
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#7C5CFF",
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#0F172A",
-  },
+
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  headerCenter: { flex: 1, alignItems: "center" },
-  headerDate: { fontSize: 18, fontWeight: "700", color: "#111" },
-  iconCircle: {
-    backgroundColor: "#7B61FF",
-    borderRadius: 24,
-    padding: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
 
-  moodRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 20,
-    borderRadius: 16,
-    marginBottom: 24,
-    backgroundColor: "#FFE08A",
-  },
   moodEmoji: { fontSize: 34 },
-
-  tagsRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginBottom: 24,
-    gap: 8,
-  },
-  tagChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    marginRight: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.05)',
-  },
-  tagText: { fontSize: 15, color: "#111" },
-
-  cardLarge: {
-    backgroundColor: "#F9FAFB",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#0F172A",
-    marginBottom: 12,
-    marginLeft: 8,
-  },
-  cardText: {
-    fontSize: 16,
-    lineHeight: 26,
-    color: "#334155",
-    letterSpacing: 0.2,
-  },
-
-  insightRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
-  },
-
-  footer: {
-    position: "absolute",
-    bottom: 50,
-    left: 0,
-    right: 0,
-    backgroundColor: "#fff",
-    padding: 16,
-    borderTopWidth: 1,
-    borderColor: "#eee",
-  },
-  continueButton: {
-    backgroundColor: "#7C5CFF",
-    borderRadius: 14,
-    padding: 18,
-    alignItems: "center",
-    shadowColor: "#7C5CFF",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  continueText: { fontSize: 18, fontWeight: "700", color: "#111" },
-  emojiRowOverlay: {
-    position: "absolute",
-    left: 18,
-    right: 18,
-    top: 18,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
 });

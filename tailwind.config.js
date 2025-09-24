@@ -3,7 +3,11 @@ import gluestackPlugin from "@gluestack-ui/nativewind-utils/tailwind-plugin";
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "class",
-  content: ["app/**/*.{tsx,jsx,ts,js}", "components/**/*.{tsx,jsx,ts,js}"],
+  content: [
+    "app/**/*.{tsx,jsx,ts,js}",
+    "components/**/*.{tsx,jsx,ts,js}",
+    "screens/**/*.{tsx,jsx,ts,js}",
+  ],
   presets: [require("nativewind/preset")],
   safelist: [
     {
@@ -14,6 +18,22 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Custom colors
+        'accent': {
+          DEFAULT: '#7B61FF',
+          50: 'rgba(123, 97, 255, 0.05)',
+          100: 'rgba(123, 97, 255, 0.1)',
+          200: 'rgba(123, 97, 255, 0.2)',
+          300: 'rgba(123, 97, 255, 0.3)',
+          400: 'rgba(123, 97, 255, 0.4)',
+          500: 'rgba(123, 97, 255, 0.5)',
+          600: 'rgba(123, 97, 255, 0.6)',
+          700: 'rgba(123, 97, 255, 0.7)',
+          800: 'rgba(123, 97, 255, 0.8)',
+          900: 'rgba(123, 97, 255, 0.9)',
+          950: 'rgba(123, 97, 255, 0.95)',
+        },
+        // Theme colors
         primary: {
           0: "rgb(var(--color-primary-0)/<alpha-value>)",
           50: "rgb(var(--color-primary-50)/<alpha-value>)",
