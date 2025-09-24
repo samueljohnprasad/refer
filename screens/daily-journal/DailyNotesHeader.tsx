@@ -5,7 +5,6 @@ import {
   Pressable,
   Dimensions,
   Animated,
-  PanResponder,
 } from "react-native";
 import { Text } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
@@ -14,6 +13,7 @@ import { currentWeekViewAtom, selectedDateAtom } from "./atoms";
 import { useAtom } from "jotai";
 import { CalendarPicker, DayButton } from ".";
 import { useCalendarExpandDrag } from "@/hooks/useCalendarExpandDrag";
+import { useWeekNavigation } from "@/hooks/useWeekNavigation";
 
 const { height } = Dimensions.get("window"); // get screen height
 const twentyPercentHeight = height * 0.2;
@@ -21,7 +21,14 @@ const twentyPercentHeight = height * 0.2;
 const DailyNotesHeader = () => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
-  const weekSlideAnim = useRef(new Animated.Value(0)).current;
+  const { weekSlideAnim, panHandlers, goToPreviousWeek, goToNextWeek } =
+    useWeekNavigation({
+      setCurrentWeek: setCurrentWeekView,
+      durationEnterMs: 400,
+      durationReturnMs: 300,
+      swipeTriggerDx: 50,
+      slideDivisor: 50,
+    });
 
   // Vertical expand/collapse for inline calendar
   const CALENDAR_EXPANDED_HEIGHT = 360;
@@ -37,7 +44,7 @@ const DailyNotesHeader = () => {
   });
   const headerHeightAnim = progress.interpolate({
     inputRange: [0, 1],
-    outputRange: [twentyPercentHeight, CALENDAR_EXPANDED_HEIGHT],
+    outputRange: [twentyPercentHeight, CALENDAR_EXPANDED_HEIGHT + 50],
   });
   const headerControlsOpacity = progress.interpolate({
     inputRange: [0, 1],
@@ -56,71 +63,12 @@ const DailyNotesHeader = () => {
     setCurrentWeekView(date);
   };
 
-  // Animated date selection function
-  const selectDateWithAnimation = (date: Date) => {
-    selectDate(date);
-  };
-
   const weekStart = startOfWeek(currentWeekView, { weekStartsOn: 0 }); // Sunday
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  // Week navigation functions with gentle transitions
-  const goToPreviousWeek = () => {
-    Animated.timing(weekSlideAnim, {
-      toValue: -1,
-      duration: 400,
-      useNativeDriver: false,
-    }).start(() => {
-      setCurrentWeekView((prev) => addDays(prev, -7));
-      Animated.timing(weekSlideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
-    });
-  };
+  // Week navigation handled by useWeekNavigation hook
 
-  // Gesture-driven pan responder for week navigation
-  const goToNextWeek = () => {
-    Animated.timing(weekSlideAnim, {
-      toValue: 1,
-      duration: 400,
-      useNativeDriver: false,
-    }).start(() => {
-      setCurrentWeekView((prev) => addDays(prev, 7));
-      Animated.timing(weekSlideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
-    });
-  };
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gestureState) =>
-        Math.abs(gestureState.dx) > 10,
-      onPanResponderMove: (_, gestureState) => {
-        weekSlideAnim.setValue(gestureState.dx / 50); // create subtle move effect
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dx < -50) {
-          // Swipe left → next week
-          goToNextWeek();
-        } else if (gestureState.dx > 50) {
-          // Swipe right → previous week
-          goToPreviousWeek();
-        } else {
-          // Return to center if not enough swipe distance
-          Animated.spring(weekSlideAnim, {
-            toValue: 0,
-            useNativeDriver: false,
-            friction: 6,
-          }).start();
-        }
-      },
-    })
-  ).current;
+  // Pan gesture handlers are provided by useWeekNavigation
   return (
     <Animated.View
       style={[
@@ -156,7 +104,7 @@ const DailyNotesHeader = () => {
       </Animated.View>
 
       {/* Week View */}
-      <View style={styles.weekContainer} {...panResponder.panHandlers}>
+      <View style={styles.weekContainer} {...panHandlers}>
         <Animated.View
           style={[
             styles.weekRow,
@@ -232,8 +180,6 @@ const DailyNotesHeader = () => {
             }),
           },
         ]}
-        pointerEvents="auto"
-        {...verticalPanHandlers}
       >
         <CalendarPicker
           selectedDate={selectedDate}
@@ -245,53 +191,17 @@ const DailyNotesHeader = () => {
           }}
           withHeader={false}
         />
-        {/* Bottom handle shown when calendar is expanded, to collapse by dragging up */}
-        <Animated.View
-          style={[
-            styles.bottomHandleWrapper,
-            {
-              opacity: progress.interpolate({
-                inputRange: [0, 0.2, 0.35, 1],
-                outputRange: [0, 0, 1, 1],
-              }),
-            },
-          ]}
-          pointerEvents="box-none"
-        >
-          <Animated.View
-            {...verticalPanHandlers}
-            style={styles.bottomHandleBar}
-          />
-        </Animated.View>
       </Animated.View>
       {/* Absolute overlay handle that moves down with expanding calendar */}
-      <Animated.View
-        style={[
-          styles.handleOverlay,
-          {
-            top: Animated.add(
-              dragAnchorTopAnim,
-              progress.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, CALENDAR_EXPANDED_HEIGHT],
-              })
-            ),
-          },
-        ]}
-        pointerEvents="box-none"
-      >
-        <Animated.View
-          {...verticalPanHandlers}
-          style={[
-            styles.dragHandle,
-            {
-              opacity: progress.interpolate({
-                inputRange: [0, 1],
-                outputRange: [1, 0],
-              }),
-            },
-          ]}
-        />
+      {/* Today tag - shows when a non-today date is selected */}
+      {!isToday(selectedDate) && (
+        <Animated.View style={[styles.todayPill]} pointerEvents="none">
+          <View style={styles.todayPillPointer} />
+          <Text style={styles.todayPillText}>Today</Text>
+        </Animated.View>
+      )}
+      <Animated.View style={[styles.handleOverlay]} pointerEvents="box-none">
+        <Animated.View {...verticalPanHandlers} style={[styles.dragHandle]} />
       </Animated.View>
     </Animated.View>
   );
@@ -325,13 +235,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 0,
     width: "100%",
+    position: "relative",
   },
   weekRow: {
     flexDirection: "row",
     width: "100%",
   },
   dragAnchorPlaceholder: {
-    height: 16,
+    height: 8,
   },
   dragHandle: {
     width: 48,
@@ -359,17 +270,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
   },
-  bottomHandleWrapper: {
-    alignItems: "center",
-    paddingTop: 8,
-    paddingBottom: 10,
-  },
-  bottomHandleBar: {
-    width: 48,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: "#E5E7EB",
-  },
+
   calendarModal: {
     backgroundColor: "#fff",
     borderRadius: 16,
@@ -417,6 +318,35 @@ const styles = StyleSheet.create({
     padding: 4,
     marginLeft: 0,
     marginRight: 8,
+  },
+  todayPill: {
+    position: "absolute",
+    right: 0,
+    bottom: -10,
+    backgroundColor: "#8B5CF6", // purple-500
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    flexDirection: "row",
+    alignItems: "center",
+    zIndex: 100,
+  },
+  todayPillPointer: {
+    width: 0,
+    height: 0,
+    borderStyle: "solid",
+    borderTopWidth: 6,
+    borderBottomWidth: 6,
+    borderRightWidth: 8,
+    borderTopColor: "transparent",
+    borderBottomColor: "transparent",
+    borderRightColor: "#6D28D9", // darker purple pointer
+    marginRight: 6,
+  },
+  todayPillText: {
+    color: "#fff",
+    fontWeight: "600",
   },
 });
 
