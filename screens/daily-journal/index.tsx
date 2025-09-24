@@ -284,6 +284,7 @@ interface CalendarPickerProps {
   onDateSelect: (date: Date) => void;
   withHeader?: boolean; // optional header for standalone usage
   edgeToEdge?: boolean; // remove top margin and horizontal padding when true
+  visible?: boolean; // when toggled true, resets view to selectedDate's month
 }
 
 export const CalendarPicker: React.FC<CalendarPickerProps> = ({
@@ -291,8 +292,21 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   onDateSelect,
   withHeader,
   edgeToEdge,
+  visible,
 }) => {
   const [currentMonth, setCurrentMonth] = useState(selectedDate);
+
+  // Keep the calendar's visible month in sync with the externally selected date
+  useEffect(() => {
+    setCurrentMonth(selectedDate);
+  }, [selectedDate]);
+
+  // When the calendar becomes visible (e.g., expanded), ensure it shows the selected date's month
+  useEffect(() => {
+    if (visible) {
+      setCurrentMonth(selectedDate);
+    }
+  }, [visible, selectedDate]);
 
   // Get days in current month
   const startOfCurrentMonth = new Date(

@@ -1,11 +1,5 @@
 import React, { useRef } from "react";
-import {
-  StyleSheet,
-  View,
-  Pressable,
-  Dimensions,
-  Animated,
-} from "react-native";
+import { StyleSheet, View, Pressable, Dimensions, Animated } from "react-native";
 import { Text } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
 import { format, startOfWeek, addDays, isToday } from "date-fns";
@@ -14,6 +8,7 @@ import { useAtom } from "jotai";
 import { CalendarPicker, DayButton } from ".";
 import { useCalendarExpandDrag } from "@/hooks/useCalendarExpandDrag";
 import { useWeekNavigation } from "@/hooks/useWeekNavigation";
+import { TodayPill } from "@/components/dailyJournal/TodayPill";
 
 const { height } = Dimensions.get("window"); // get screen height
 const twentyPercentHeight = height * 0.2;
@@ -21,7 +16,7 @@ const twentyPercentHeight = height * 0.2;
 const DailyNotesHeader = () => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
-  const { weekSlideAnim, panHandlers, goToPreviousWeek, goToNextWeek } =
+  const { weekSlideAnim, panHandlers, goToPreviousWeek, goToNextWeek, animateToWeekOf } =
     useWeekNavigation({
       setCurrentWeek: setCurrentWeekView,
       durationEnterMs: 400,
@@ -34,6 +29,7 @@ const DailyNotesHeader = () => {
   const CALENDAR_EXPANDED_HEIGHT = 360;
   const {
     progress,
+    isExpanded,
     panHandlers: verticalPanHandlers,
     collapse,
     toggle,
@@ -68,6 +64,12 @@ const DailyNotesHeader = () => {
   const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   // Week navigation handled by useWeekNavigation hook
 
+  const handleGoToToday = async (): Promise<void> => {
+    const today = new Date();
+    await animateToWeekOf(today, currentWeekView);
+    selectDate(today);
+  };
+
   // Pan gesture handlers are provided by useWeekNavigation
   return (
     <Animated.View
@@ -87,15 +89,15 @@ const DailyNotesHeader = () => {
         </Pressable>
 
         <View style={styles.navigationContainer}>
-          <Pressable style={styles.navButton} onPress={goToPreviousWeek}>
+          {/* <Pressable style={styles.navButton} onPress={goToPreviousWeek}>
             <Feather name="chevron-left" size={24} color="#fff" />
-          </Pressable>
+          </Pressable> */}
 
-          <Text style={styles.todayText}>AI Journal</Text>
+          <Text style={styles.todayText}>{format(selectedDate, 'MMM dd, yyyy')}</Text>
 
-          <Pressable style={styles.navButton} onPress={goToNextWeek}>
+          {/* <Pressable style={styles.navButton} onPress={goToNextWeek}>
             <Feather name="chevron-right" size={24} color="#fff" />
-          </Pressable>
+          </Pressable> */}
         </View>
 
         <Pressable style={styles.moreButton}>
@@ -183,6 +185,7 @@ const DailyNotesHeader = () => {
       >
         <CalendarPicker
           selectedDate={selectedDate}
+          visible={isExpanded}
           onDateSelect={(date: Date) => {
             // First collapse smoothly, then update date so header morph feels natural
             collapse(() => {
@@ -192,14 +195,9 @@ const DailyNotesHeader = () => {
           withHeader={false}
         />
       </Animated.View>
+      {/* Today tag - animated reusable component */}
+      <TodayPill visible={!isToday(selectedDate)} onPress={handleGoToToday} />
       {/* Absolute overlay handle that moves down with expanding calendar */}
-      {/* Today tag - shows when a non-today date is selected */}
-      {!isToday(selectedDate) && (
-        <Animated.View style={[styles.todayPill]} pointerEvents="none">
-          <View style={styles.todayPillPointer} />
-          <Text style={styles.todayPillText}>Today</Text>
-        </Animated.View>
-      )}
       <Animated.View style={[styles.handleOverlay]} pointerEvents="box-none">
         <Animated.View {...verticalPanHandlers} style={[styles.dragHandle]} />
       </Animated.View>
@@ -318,35 +316,6 @@ const styles = StyleSheet.create({
     padding: 4,
     marginLeft: 0,
     marginRight: 8,
-  },
-  todayPill: {
-    position: "absolute",
-    right: 0,
-    bottom: -10,
-    backgroundColor: "#8B5CF6", // purple-500
-    borderTopLeftRadius: 16,
-    borderBottomLeftRadius: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    flexDirection: "row",
-    alignItems: "center",
-    zIndex: 100,
-  },
-  todayPillPointer: {
-    width: 0,
-    height: 0,
-    borderStyle: "solid",
-    borderTopWidth: 6,
-    borderBottomWidth: 6,
-    borderRightWidth: 8,
-    borderTopColor: "transparent",
-    borderBottomColor: "transparent",
-    borderRightColor: "#6D28D9", // darker purple pointer
-    marginRight: 6,
-  },
-  todayPillText: {
-    color: "#fff",
-    fontWeight: "600",
   },
 });
 

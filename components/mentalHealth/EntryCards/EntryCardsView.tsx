@@ -45,7 +45,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
   if (entries.length === 0) {
     return (
-      <View className="px-4">
+      <View>
         <View className="flex-row items-center justify-between mb-4">
           <Text className="text-lg font-semibold text-gray-800">
             Journal Entries

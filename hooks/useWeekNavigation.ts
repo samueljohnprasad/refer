@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { Animated, PanResponder, type GestureResponderHandlers } from 'react-native';
-import { addDays } from 'date-fns';
+import { addDays, differenceInCalendarWeeks, isSameWeek } from 'date-fns';
 
 // Generic SetStateAction type compatible with React/Jotai setters
 export type SetStateAction<T> = T | ((prev: T) => T);
@@ -13,13 +13,15 @@ export interface UseWeekNavigationOptions {
   durationReturnMs?: number; // duration for snapping back to center
   swipeTriggerDx?: number; // distance threshold to trigger week change
   slideDivisor?: number; // divisor to reduce dx effect in onPanResponderMove
+  weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6; // for week calculations (default Sunday)
 }
 
 export interface UseWeekNavigationResult {
   weekSlideAnim: Animated.Value;
   panHandlers: GestureResponderHandlers;
-  goToPreviousWeek: () => void;
-  goToNextWeek: () => void;
+  goToPreviousWeek: () => Promise<void>;
+  goToNextWeek: () => Promise<void>;
+  animateToWeekOf: (targetDate: Date, currentWeek: Date) => Promise<void>;
 }
 
 /**
@@ -35,39 +37,42 @@ export const useWeekNavigation = (
     durationReturnMs = 300,
     swipeTriggerDx = 50,
     slideDivisor = 50,
+    weekStartsOn = 0,
   } = options;
 
   const weekSlideAnim = useRef(new Animated.Value(0)).current;
 
-  const goToPreviousWeek = useCallback(() => {
-    Animated.timing(weekSlideAnim, {
-      toValue: -1,
-      duration: durationEnterMs,
-      useNativeDriver: false,
-    }).start(() => {
-      setCurrentWeek((prev: Date) => addDays(prev, -7));
+  const animateStep = useCallback((toValue: number, deltaDays: number): Promise<void> => {
+    return new Promise((resolve) => {
       Animated.timing(weekSlideAnim, {
-        toValue: 0,
-        duration: durationReturnMs,
+        toValue,
+        duration: durationEnterMs,
         useNativeDriver: false,
-      }).start();
+      }).start(() => {
+        setCurrentWeek((prev: Date) => addDays(prev, deltaDays));
+        Animated.timing(weekSlideAnim, {
+          toValue: 0,
+          duration: durationReturnMs,
+          useNativeDriver: false,
+        }).start(() => resolve());
+      });
     });
   }, [durationEnterMs, durationReturnMs, setCurrentWeek, weekSlideAnim]);
 
-  const goToNextWeek = useCallback(() => {
-    Animated.timing(weekSlideAnim, {
-      toValue: 1,
-      duration: durationEnterMs,
-      useNativeDriver: false,
-    }).start(() => {
-      setCurrentWeek((prev: Date) => addDays(prev, 7));
-      Animated.timing(weekSlideAnim, {
-        toValue: 0,
-        duration: durationReturnMs,
-        useNativeDriver: false,
-      }).start();
-    });
-  }, [durationEnterMs, durationReturnMs, setCurrentWeek, weekSlideAnim]);
+  const goToPreviousWeek = useCallback(() => animateStep(-1, -7), [animateStep]);
+  const goToNextWeek = useCallback(() => animateStep(1, 7), [animateStep]);
+
+  const animateToWeekOf = useCallback(async (targetDate: Date, currentWeek: Date): Promise<void> => {
+    if (isSameWeek(currentWeek, targetDate, { weekStartsOn })) return;
+    const diff = differenceInCalendarWeeks(targetDate, currentWeek, { weekStartsOn });
+    const steps = Math.abs(diff);
+    const stepFn = diff > 0 ? goToNextWeek : goToPreviousWeek;
+    for (let i = 0; i < steps; i += 1) {
+      // await each step to maintain smooth sequential animation
+      // eslint-disable-next-line no-await-in-loop
+      await stepFn();
+    }
+  }, [goToNextWeek, goToPreviousWeek, weekStartsOn]);
 
   const panResponder = useMemo(
     () =>
@@ -99,5 +104,6 @@ export const useWeekNavigation = (
     panHandlers: panResponder.panHandlers,
     goToPreviousWeek,
     goToNextWeek,
+    animateToWeekOf,
   };
 };
