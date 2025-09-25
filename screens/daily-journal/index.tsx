@@ -52,7 +52,7 @@ export const DayButton: React.FC<DayButtonProps> = ({
   };
 
   return (
-    <Pressable style={{ flex: 1 }} onPress={handlePress}>
+    <Pressable onPress={handlePress}>
       <Animated.View
         style={[
           styles.dayBox,
@@ -282,7 +282,6 @@ const DailyNotesScreen = () => {
 interface CalendarPickerProps {
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
-  withHeader?: boolean; // optional header for standalone usage
   edgeToEdge?: boolean; // remove top margin and horizontal padding when true
   visible?: boolean; // when toggled true, resets view to selectedDate's month
 }
@@ -290,7 +289,6 @@ interface CalendarPickerProps {
 export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   selectedDate,
   onDateSelect,
-  withHeader,
   edgeToEdge,
   visible,
 }) => {
@@ -344,9 +342,6 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
         edgeToEdge && { marginTop: 0, paddingHorizontal: 0 },
       ]}
     >
-      {withHeader ? (
-        <Stack.Screen options={{ header: () => <DailyNotesHeader /> }} />
-      ) : null}
       <View style={styles.monthHeader}>
         <Pressable style={styles.monthNavButton} onPress={goToPreviousMonth}>
           <Feather name="chevron-left" size={20} color="#000" />
@@ -394,6 +389,33 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
               >
                 {format(day, "d")}
               </Text>
+              <View
+                style={{
+                  width: 16,
+                  height: 16,
+                  borderRadius: 8,
+                  borderWidth: 1,
+                  borderColor: "#ccc",
+                  borderStyle: "dashed",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 2,
+                  shadowColor: "#000",
+                  shadowOpacity: 0.1,
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowRadius: 3,
+                  elevation: 2,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 8,
+                    color: "#ccc",
+                  }}
+                >
+                  {"＋"}
+                </Text>
+              </View>
             </Pressable>
           );
         })}
@@ -617,7 +639,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   monthNavButton: {
     padding: 8,
@@ -629,7 +651,7 @@ const styles = StyleSheet.create({
   },
   weekDaysHeader: {
     flexDirection: "row",
-    marginBottom: 8,
+    marginBottom: 4,
   },
   weekDayLabel: {
     flex: 1,
@@ -650,6 +672,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 8,
     marginVertical: 2,
+    gap: 4,
   },
   selectedDayCell: {
     backgroundColor: "#007AFF",

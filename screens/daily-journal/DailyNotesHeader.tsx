@@ -1,5 +1,11 @@
 import React, { useRef } from "react";
-import { StyleSheet, View, Pressable, Dimensions, Animated } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  Dimensions,
+  Animated,
+} from "react-native";
 import { Text } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
 import { format, startOfWeek, addDays, isToday } from "date-fns";
@@ -9,21 +15,28 @@ import { CalendarPicker, DayButton } from ".";
 import { useCalendarExpandDrag } from "@/hooks/useCalendarExpandDrag";
 import { useWeekNavigation } from "@/hooks/useWeekNavigation";
 import { TodayPill } from "@/components/dailyJournal/TodayPill";
+import { MoodBadge } from "@/components/dailyJournal/MoodBadge";
+import { Box } from "@/components/ui/box";
 
 const { height } = Dimensions.get("window"); // get screen height
-const twentyPercentHeight = height * 0.2;
+const twentyPercentHeight = height * 0.24;
 
 const DailyNotesHeader = () => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
-  const { weekSlideAnim, panHandlers, goToPreviousWeek, goToNextWeek, animateToWeekOf } =
-    useWeekNavigation({
-      setCurrentWeek: setCurrentWeekView,
-      durationEnterMs: 400,
-      durationReturnMs: 300,
-      swipeTriggerDx: 50,
-      slideDivisor: 50,
-    });
+  const {
+    weekSlideAnim,
+    panHandlers,
+    goToPreviousWeek,
+    goToNextWeek,
+    animateToWeekOf,
+  } = useWeekNavigation({
+    setCurrentWeek: setCurrentWeekView,
+    durationEnterMs: 400,
+    durationReturnMs: 300,
+    swipeTriggerDx: 50,
+    slideDivisor: 50,
+  });
 
   // Vertical expand/collapse for inline calendar
   const CALENDAR_EXPANDED_HEIGHT = 360;
@@ -93,7 +106,9 @@ const DailyNotesHeader = () => {
             <Feather name="chevron-left" size={24} color="#fff" />
           </Pressable> */}
 
-          <Text style={styles.todayText}>{format(selectedDate, 'MMM dd, yyyy')}</Text>
+          <Text style={styles.todayText}>
+            {format(selectedDate, "MMM dd, yyyy")}
+          </Text>
 
           {/* <Pressable style={styles.navButton} onPress={goToNextWeek}>
             <Feather name="chevron-right" size={24} color="#fff" />
@@ -146,14 +161,22 @@ const DailyNotesHeader = () => {
             const isSelectedDay =
               format(day, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd");
             return (
-              <DayButton
-                key={`day-${index}`}
-                day={day}
-                dayName={dayNames[index]}
-                isSelected={isSelectedDay}
-                isToday={isTodayDate}
-                onPress={() => selectDate(day)}
-              />
+              <View className="flex-1 gap-8 mb-4" key={index}>
+                <DayButton
+                  day={day}
+                  dayName={dayNames[index]}
+                  isSelected={isSelectedDay}
+                  isToday={isTodayDate}
+                  onPress={() => selectDate(day)}
+                />
+                <View style={styles.moodItem}>
+                  <MoodBadge
+                    emoji={isSelectedDay ? "😄" : ""}
+                    active={isSelectedDay}
+                    size={28}
+                  />
+                </View>
+              </View>
             );
           })}
         </Animated.View>
@@ -192,7 +215,6 @@ const DailyNotesHeader = () => {
               selectDate(date);
             });
           }}
-          withHeader={false}
         />
       </Animated.View>
       {/* Today tag - animated reusable component */}
@@ -238,6 +260,17 @@ const styles = StyleSheet.create({
   weekRow: {
     flexDirection: "row",
     width: "100%",
+  },
+  moodRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 8,
+  },
+  moodItem: {
+    flex: 1,
+    alignItems: "center",
   },
   dragAnchorPlaceholder: {
     height: 8,

@@ -209,7 +209,8 @@ export default function JournalCalendarScreen() {
 
           {/* Greeting text */}
           <Text style={styles.greeting}>
-            Hi, {isLoadingProfile ? '...' : userProfile?.displayName || 'there'} <Text style={styles.wave}>👋</Text>
+            Hi, {isLoadingProfile ? "..." : userProfile?.displayName || "there"}{" "}
+            <Text style={styles.wave}>👋</Text>
           </Text>
 
           {/* Streak card with animated progress bar */}
@@ -225,12 +226,7 @@ export default function JournalCalendarScreen() {
                       size={28}
                       color="#FF6A3D"
                     />
-                    <Animated.Text style={styles.streakNumber}>
-                      {streakAnim.interpolate({
-                        inputRange: [0, 2],
-                        outputRange: ["0", "2"],
-                      })}
-                    </Animated.Text>
+                    <Animated.Text style={styles.streakNumber}>2</Animated.Text>
                   </View>
                 </View>
 
@@ -276,9 +272,15 @@ export default function JournalCalendarScreen() {
           {/* Calendar section */}
           <View style={styles.calendarCard}>
             <Calendar
-              current={"2025-08-01"}
+              // horizontal
+              firstDay={0}
+              showSixWeeks={true}
+              hideExtraDays={true}
+              current={"2025-09-25"}
               onMonthChange={(m) => {
-                const next = new Date(`${m.year}-${String(m.month).padStart(2, "0")}-01`);
+                const next = new Date(
+                  `${m.year}-${String(m.month).padStart(2, "0")}-01`
+                );
                 setMonthDate(next);
               }}
               theme={{
@@ -375,8 +377,6 @@ export default function JournalCalendarScreen() {
                   </TouchableOpacity>
                 );
               }}
-              hideExtraDays={true}
-              firstDay={1}
             />
           </View>
 
@@ -508,7 +508,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: "#fff",
     borderRadius: 18,
-    padding: 14,
+    // padding: 14,
+    paddingVertical: 14,
     shadowColor: "#000",
     shadowOpacity: 0.03,
     shadowOffset: { width: 0, height: 6 },
