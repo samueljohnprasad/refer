@@ -47,19 +47,21 @@ const useFetchMoods = () => {
     return moodMapData;
   }
 
+  const startKey = calenderVisibleDates?.visibleStartDate
+    ? format(new Date(calenderVisibleDates.visibleStartDate), "yyyy-MM-dd")
+    : null;
+  const endKey = calenderVisibleDates?.visibleEndDate
+    ? format(new Date(calenderVisibleDates.visibleEndDate), "yyyy-MM-dd")
+    : null;
+
   const query = useQuery({
-    queryKey: [
-      user?.id,
-      !calenderVisibleDates?.visibleEndDate,
-      !calenderVisibleDates?.visibleStartDate,
-    ],
+    queryKey: ["daily-moods", user?.id, startKey, endKey],
     queryFn: fetchMonthlyMoods,
-    staleTime: 60_000,
-    gcTime: 5 * 60_000,
-    enabled:
-      !!user?.id &&
-      !!calenderVisibleDates?.visibleEndDate &&
-      !!calenderVisibleDates?.visibleStartDate,
+    staleTime: 5 * 60_000,
+    gcTime: 10 * 60_000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    enabled: !!user?.id && !!startKey && !!endKey,
   });
 
   return query;

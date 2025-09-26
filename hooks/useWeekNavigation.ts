@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useRef } from 'react';
-import { Animated, PanResponder, type GestureResponderHandlers } from 'react-native';
+import { useCallback, useMemo } from 'react';
+import { PanResponder, type GestureResponderHandlers } from 'react-native';
 import { addDays, differenceInCalendarWeeks, isSameWeek } from 'date-fns';
+import { useSharedValue, withTiming, runOnJS, type SharedValue } from 'react-native-reanimated';
 
 // Generic SetStateAction type compatible with React/Jotai setters
 export type SetStateAction<T> = T | ((prev: T) => T);
@@ -17,7 +18,7 @@ export interface UseWeekNavigationOptions {
 }
 
 export interface UseWeekNavigationResult {
-  weekSlideAnim: Animated.Value;
+  weekSlideAnim: SharedValue<number>;
   panHandlers: GestureResponderHandlers;
   goToPreviousWeek: () => Promise<void>;
   goToNextWeek: () => Promise<void>;
@@ -40,24 +41,27 @@ export const useWeekNavigation = (
     weekStartsOn = 0,
   } = options;
 
-  const weekSlideAnim = useRef(new Animated.Value(0)).current;
+  const weekSlideAnim = useSharedValue<number>(0);
+
+  // Update helper defined on JS thread to avoid passing functions through runOnJS
+  const updateWeekByDelta = useCallback((deltaDays: number): void => {
+    setCurrentWeek((prev: Date) => addDays(prev, deltaDays));
+  }, [setCurrentWeek]);
 
   const animateStep = useCallback((toValue: number, deltaDays: number): Promise<void> => {
     return new Promise((resolve) => {
-      Animated.timing(weekSlideAnim, {
-        toValue,
-        duration: durationEnterMs,
-        useNativeDriver: false,
-      }).start(() => {
-        setCurrentWeek((prev: Date) => addDays(prev, deltaDays));
-        Animated.timing(weekSlideAnim, {
-          toValue: 0,
-          duration: durationReturnMs,
-          useNativeDriver: false,
-        }).start(() => resolve());
+      weekSlideAnim.value = withTiming(toValue, { duration: durationEnterMs }, (finished?: boolean) => {
+        if (finished) {
+          runOnJS(updateWeekByDelta)(deltaDays);
+          weekSlideAnim.value = withTiming(0, { duration: durationReturnMs }, () => {
+            runOnJS(resolve)();
+          });
+        } else {
+          runOnJS(resolve)();
+        }
       });
     });
-  }, [durationEnterMs, durationReturnMs, setCurrentWeek, weekSlideAnim]);
+  }, [durationEnterMs, durationReturnMs, updateWeekByDelta, weekSlideAnim]);
 
   const goToPreviousWeek = useCallback(() => animateStep(-1, -7), [animateStep]);
   const goToNextWeek = useCallback(() => animateStep(1, 7), [animateStep]);
@@ -80,7 +84,7 @@ export const useWeekNavigation = (
         onMoveShouldSetPanResponder: (_, gestureState) =>
           Math.abs(gestureState.dx) > 10,
         onPanResponderMove: (_, gestureState) => {
-          weekSlideAnim.setValue(gestureState.dx / slideDivisor);
+          weekSlideAnim.value = gestureState.dx / slideDivisor;
         },
         onPanResponderRelease: (_, gestureState) => {
           if (gestureState.dx < -swipeTriggerDx) {
@@ -88,11 +92,7 @@ export const useWeekNavigation = (
           } else if (gestureState.dx > swipeTriggerDx) {
             goToPreviousWeek();
           } else {
-            Animated.spring(weekSlideAnim, {
-              toValue: 0,
-              useNativeDriver: false,
-              friction: 6,
-            }).start();
+            weekSlideAnim.value = withTiming(0, { duration: durationReturnMs });
           }
         },
       }),

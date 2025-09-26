@@ -1,23 +1,23 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Pressable,
-  Animated,
-  PanResponder,
-  Easing,
-} from "react-native";
-import { Text, View as ThemedView } from "@/components/Themed";
-import { Feather } from "@expo/vector-icons";
+import React, { useCallback, useEffect, useMemo, memo } from "react";
+import { StyleSheet, View, ScrollView, Pressable } from "react-native";
+import { Text } from "@/components/Themed";
 import { Stack } from "expo-router";
-import { format, startOfWeek, addDays, isToday } from "date-fns";
+import { format, addDays } from "date-fns";
 import { MentalHealthProfileContainer } from "@/components/mentalHealth/MentalHealthProfileContainer";
 import { useAtom } from "jotai";
 import { currentWeekViewAtom, selectedDateAtom } from "./atoms";
 import DailyNotesHeader from "./DailyNotesHeader";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Animated, {
+  Easing,
+  interpolate,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 // Animated Day Button Component
 interface DayButtonProps {
@@ -28,51 +28,41 @@ interface DayButtonProps {
   onPress: () => void;
 }
 
-export const DayButton: React.FC<DayButtonProps> = ({
+const DayButtonComponent: React.FC<DayButtonProps> = ({
   day,
   dayName,
   isSelected,
   isToday,
   onPress,
 }) => {
-  const glowAnim = useRef(new Animated.Value(0)).current;
+  const glow = useSharedValue<number>(0);
 
   useEffect(() => {
-    // Gentle glow animation for selected state
-    Animated.timing(glowAnim, {
-      toValue: isSelected ? 1 : 0,
+    // Gentle glow animation for selected state (on UI thread)
+    glow.value = withTiming(isSelected ? 1 : 0, {
       duration: 500,
-      useNativeDriver: true,
-    }).start();
+      easing: Easing.out(Easing.quad),
+    });
   }, [isSelected]);
 
-  const handlePress = () => {
+  const outerAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(glow.value, [0, 1], [0.8, 1]),
+  }));
+
+  const innerAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(glow.value, [0, 1], [0.7, 1]),
+  }));
+
+  const handlePress = (): void => {
     onPress();
   };
 
   return (
     <Pressable onPress={handlePress}>
       <Animated.View
-        style={[
-          styles.dayBox,
-          isSelected && styles.dayBoxActive,
-          {
-            opacity: glowAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0.8, 1],
-            }),
-          },
-        ]}
+        style={[styles.dayBox, isSelected && styles.dayBoxActive, outerAnimatedStyle]}
       >
-        <Animated.View
-          style={{
-            opacity: glowAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0.7, 1],
-            }),
-          }}
-          className="flex flex-col items-center"
-        >
+        <Animated.View style={innerAnimatedStyle} className="flex flex-col items-center">
           <Text style={[styles.dayName, isSelected && styles.dayNameActive]}>
             {dayName}
           </Text>
@@ -91,148 +81,102 @@ export const DayButton: React.FC<DayButtonProps> = ({
   );
 };
 
-const DailyNotesScreen = () => {
+// Memoize to prevent re-rendering of unchanged days during header/calendar animations
+const areDayButtonPropsEqual = (
+  prev: Readonly<DayButtonProps>,
+  next: Readonly<DayButtonProps>
+): boolean => {
+  return (
+    prev.isSelected === next.isSelected &&
+    prev.isToday === next.isToday &&
+    prev.day.getTime() === next.day.getTime() &&
+    prev.dayName === next.dayName
+    // Intentionally ignoring onPress reference to avoid re-renders due to new function identity
+  );
+};
+
+export const DayButton = memo(DayButtonComponent, areDayButtonPropsEqual);
+
+const DailyNotesScreen: React.FC = () => {
   // State for selected date
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   // State for current week view (independent of selected date)
-  const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
-  const headerHeight = useHeaderHeight();
+  const [, setCurrentWeekView] = useAtom(currentWeekViewAtom);
+  // Shared values for content animations (UI thread)
+  const contentTranslateX = useSharedValue<number>(0);
+  const contentOpacity = useSharedValue<number>(1);
 
-  // Animation values
-  const weekSlideAnim = useRef(new Animated.Value(0)).current;
-
-  // Content swipe animation
-  const contentSlideAnim = useRef(new Animated.Value(0)).current;
-  // Opacity animation for mindful cross-fade
-  const contentOpacityAnim = useRef(new Animated.Value(1)).current;
-  // Day label animation values
-  const dayLabelOpacityAnim = useRef(new Animated.Value(1)).current;
-  const dayLabelTranslateAnim = useRef(new Animated.Value(0)).current;
+  // Animated styles
+  const contentAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: contentOpacity.value,
+    transform: [{ translateX: contentTranslateX.value }],
+  }));
 
   // Helper to move date by offset without stale closure issues
-  const changeDateBy = (offset: number) => {
-    // Animate week header slide to match arrow behavior
-    const direction = offset > 0 ? 1 : -1;
-    Animated.timing(weekSlideAnim, {
-      toValue: direction,
-      duration: 350,
-      useNativeDriver: true,
-    }).start(() => {
-      Animated.timing(weekSlideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    });
-    // Gently fade out, change date, then fade back in
-    Animated.timing(contentOpacityAnim, {
-      toValue: 0.15,
-      duration: 180,
-      easing: Easing.out(Easing.quad),
-      useNativeDriver: true,
-    }).start(() => {
-      // Once faded, update date
-      setSelectedDate((prev) => {
-        const newDate = addDays(prev, offset);
-        setCurrentWeekView(newDate);
-        return newDate;
-      });
+  const updateDateFromTs = useCallback((ts: number): void => {
+    const newDate = new Date(ts);
+    setSelectedDate(newDate);
+    setCurrentWeekView(newDate);
+  }, [setSelectedDate, setCurrentWeekView]);
 
-      // Reset slide value to avoid sticking
-      contentSlideAnim.setValue(0);
-
-      // Fade content back in
-      Animated.timing(contentOpacityAnim, {
-        toValue: 1,
-        duration: 300,
-        easing: Easing.out(Easing.quad),
-        useNativeDriver: true,
-      }).start();
-    });
+  const changeDateBy = (offset: number): void => {
+    // Pre-compute the target date timestamp on JS thread and pass to worklet as a primitive
+    const targetTs: number = addDays(selectedDate, offset).getTime();
+    // Gently fade out, change date on JS thread, then fade back in (all driven by UI thread)
+    contentOpacity.value = withTiming(
+      0.15,
+      { duration: 180, easing: Easing.out(Easing.quad) },
+      (finished?: boolean) => {
+        if (finished) {
+          runOnJS(updateDateFromTs)(targetTs);
+          // Reset translation on UI thread
+          contentTranslateX.value = 0;
+          // Fade back in
+          contentOpacity.value = withTiming(1, {
+            duration: 300,
+            easing: Easing.out(Easing.quad),
+          });
+        }
+      }
+    );
   };
 
-  const goToPreviousDateContent = () => changeDateBy(-1);
-  const goToNextDateContent = () => changeDateBy(1);
+  const goToPreviousDateContent = (): void => changeDateBy(-1);
+  const goToNextDateContent = (): void => changeDateBy(1);
 
-  // Pan responder for content area
-  const clamp = (value: number, min: number, max: number) =>
+  // Pan gesture for content area (RN Gesture Handler + Reanimated)
+  const clamp = (value: number, min: number, max: number): number =>
     Math.min(Math.max(value, min), max);
 
-  const contentPanResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (_, g) =>
-        Math.abs(g.dx) > Math.abs(g.dy) && Math.abs(g.dx) > 10,
+  const contentPanGesture = useMemo(
+    () =>
+      Gesture.Pan()
+        .minDistance(10)
+        .activeOffsetY([-12, 12])
+        .onUpdate((g) => {
+          contentTranslateX.value = clamp(g.translationX, -120, 120);
+        })
+        .onEnd((g) => {
+          const absDx = Math.abs(g.translationX);
+          const direction = g.translationX > 0 ? "right" : "left";
 
-      onPanResponderMove: (_, g) => {
-        // Directly use dx, but clamp for safety
-        contentSlideAnim.setValue(clamp(g.dx, -120, 120));
-      },
-      onPanResponderRelease: (_, g) => {
-        const absDx = Math.abs(g.dx);
-        const direction = g.dx > 0 ? "right" : "left";
-
-        // Decide and change date BEFORE animating back to center
-        if (absDx > 60) {
-          if (direction === "left") {
-            goToNextDateContent();
-          } else {
-            goToPreviousDateContent();
+          if (absDx > 60) {
+            if (direction === "left") {
+              runOnJS(goToNextDateContent)();
+            } else {
+              runOnJS(goToPreviousDateContent)();
+            }
           }
-        }
 
-        // Return content smoothly to center
-        Animated.spring(contentSlideAnim, {
-          toValue: 0,
-          useNativeDriver: true,
-          friction: 6,
-        }).start();
-      },
-      onPanResponderTerminate: () => {
-        Animated.spring(contentSlideAnim, {
-          toValue: 0,
-          useNativeDriver: true,
-          friction: 6,
-        }).start();
-      },
-      onPanResponderTerminationRequest: () => false,
-    })
-  ).current;
+          contentTranslateX.value = withSpring(0, { damping: 16, stiffness: 180 });
+        })
+        .onFinalize(() => {
+          contentTranslateX.value = withSpring(0, { damping: 16, stiffness: 180 });
+        }),
+    [goToNextDateContent, goToPreviousDateContent]
+  );
 
-  // Animate day label with breath-like motion
-  useEffect(() => {
-    // Start from slightly faded and elevated
-    dayLabelOpacityAnim.setValue(0.7);
-    dayLabelTranslateAnim.setValue(6);
-
-    // Gentle breath-in animation (like inhale)
-    const breathIn = Animated.parallel([
-      Animated.timing(dayLabelOpacityAnim, {
-        toValue: 1,
-        duration: 900, // Slower for serenity
-        easing: Easing.inOut(Easing.ease),
-        useNativeDriver: true,
-      }),
-      Animated.timing(dayLabelTranslateAnim, {
-        toValue: 0,
-        duration: 1100, // Slight stagger for organic feel
-        easing: Easing.out(Easing.sin),
-        useNativeDriver: true,
-      }),
-    ]);
-
-    // Subtle breath-out (like exhale) - more subtle
-    const breathOut = Animated.parallel([
-      Animated.timing(dayLabelOpacityAnim, {
-        toValue: 0.95, // Slight fade on settle
-        duration: 300,
-        delay: 200, // Pause at peak
-        easing: Easing.out(Easing.quad),
-        useNativeDriver: true,
-      }),
-    ]);
-
-    Animated.sequence([breathIn, breathOut]).start();
-  }, [selectedDate]);
+  // Removed unused day label animation for performance
 
   return (
     <SafeAreaView edges={["bottom"]} style={styles.container}>
@@ -246,20 +190,8 @@ const DailyNotesScreen = () => {
           showsVerticalScrollIndicator={false}
         >
           {/* Date and Content */}
-          <Animated.View
-            style={[
-              styles.mainContent,
-              {
-                opacity: contentOpacityAnim,
-                transform: [
-                  {
-                    translateX: contentSlideAnim,
-                  },
-                ],
-              },
-            ]}
-            {...contentPanResponder.panHandlers}
-          >
+          <GestureDetector gesture={contentPanGesture}>
+            <Animated.View style={[styles.mainContent, contentAnimatedStyle]}>
             {/* Mental Health Journal Dashboard */}
             <View style={styles.mentalHealthSection}>
               <MentalHealthProfileContainer
@@ -269,7 +201,8 @@ const DailyNotesScreen = () => {
                 }}
               />
             </View>
-          </Animated.View>
+            </Animated.View>
+          </GestureDetector>
         </ScrollView>
       </View>
 
