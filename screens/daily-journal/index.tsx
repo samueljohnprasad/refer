@@ -145,16 +145,16 @@ const DailyNotesScreen: React.FC = () => {
   const goToNextDateContent = (): void => changeDateBy(1);
 
   // Pan gesture for content area (RN Gesture Handler + Reanimated)
-  const clamp = (value: number, min: number, max: number): number =>
-    Math.min(Math.max(value, min), max);
-
   const contentPanGesture = useMemo(
     () =>
       Gesture.Pan()
         .minDistance(10)
         .activeOffsetY([-12, 12])
         .onUpdate((g) => {
-          contentTranslateX.value = clamp(g.translationX, -120, 120);
+          let tx = g.translationX;
+          if (tx < -120) tx = -120;
+          else if (tx > 120) tx = 120;
+          contentTranslateX.value = tx;
         })
         .onEnd((g) => {
           const absDx = Math.abs(g.translationX);

@@ -32,7 +32,7 @@ const DailyNotesHeader = () => {
   const { data: moodMap } = useFetchMoods();
 
   // Vertical expand/collapse for inline calendar (Reanimated on UI thread)
-  const CALENDAR_EXPANDED_HEIGHT = 360;
+  const CALENDAR_EXPANDED_HEIGHT = 400;
   const { progress, isExpanded, expand, collapse, toggle, gesture } =
     useCalendarExpandReanimated({
       expandedHeight: CALENDAR_EXPANDED_HEIGHT,
@@ -90,7 +90,7 @@ const DailyNotesHeader = () => {
     : new Date();
 
   const selectedDateLabel = isSelectedDateValid
-    ? format(selectedDate, "MMM dd, yyyy")
+    ? format(selectedDate, "MMM, yyyy")
     : "";
   const selectedDateStr = isSelectedDateValid
     ? format(selectedDate, "yyyy-MM-dd")

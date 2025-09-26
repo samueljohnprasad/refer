@@ -41,7 +41,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
           <Feather name="chevron-left" size={20} color="#000" />
         </Pressable>
         <Text style={styles.monthTitle}>
-          {format(currentMonth, "MMMM yyyy")}
+          {format(currentMonth, "MMM yyyy")}
         </Text>
         <Pressable style={styles.monthNavButton} onPress={goToNextMonth}>
           <Feather name="chevron-right" size={20} color="#000" />
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 0,
   },
   monthNavButton: {
     padding: 8,
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   weekDaysHeader: {
     flexDirection: "row",
-    marginBottom: 4,
+    marginBottom: 0,
   },
   weekDayLabel: {
     flex: 1,
@@ -120,20 +120,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "500",
     color: "#666",
-    paddingVertical: 8,
+    paddingVertical: 4,
   },
   daysGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
+    // gap: 2,
   },
   dayCell: {
     width: "14.28%",
+    height: "14.28%",
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
-    marginVertical: 2,
-    gap: 4,
+    // marginVertical: 6,
+    // paddingVertical: 4,
+    gap: 2,
+    // backgroundColor: "#007AFF",
   },
   selectedDayCell: {
     backgroundColor: "#007AFF",
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E3F2FD",
   },
   dayCellText: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "500",
     color: "#000",
   },
