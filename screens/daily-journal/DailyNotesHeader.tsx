@@ -11,12 +11,12 @@ import { Feather } from "@expo/vector-icons";
 import { format, startOfWeek, addDays, isToday } from "date-fns";
 import { currentWeekViewAtom, selectedDateAtom } from "./atoms";
 import { useAtom } from "jotai";
-import { CalendarPicker, DayButton } from ".";
+import { DayButton } from ".";
 import { useCalendarExpandDrag } from "@/hooks/useCalendarExpandDrag";
 import { useWeekNavigation } from "@/hooks/useWeekNavigation";
 import { TodayPill } from "@/components/dailyJournal/TodayPill";
 import { MoodBadge } from "@/components/dailyJournal/MoodBadge";
-import { Box } from "@/components/ui/box";
+import { CalendarPicker } from "./CalendarPicker";
 
 const { height } = Dimensions.get("window"); // get screen height
 const twentyPercentHeight = height * 0.24;
@@ -24,13 +24,7 @@ const twentyPercentHeight = height * 0.24;
 const DailyNotesHeader = () => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
-  const {
-    weekSlideAnim,
-    panHandlers,
-    goToPreviousWeek,
-    goToNextWeek,
-    animateToWeekOf,
-  } = useWeekNavigation({
+  const { weekSlideAnim, panHandlers, animateToWeekOf } = useWeekNavigation({
     setCurrentWeek: setCurrentWeekView,
     durationEnterMs: 400,
     durationReturnMs: 300,
@@ -102,17 +96,9 @@ const DailyNotesHeader = () => {
         </Pressable>
 
         <View style={styles.navigationContainer}>
-          {/* <Pressable style={styles.navButton} onPress={goToPreviousWeek}>
-            <Feather name="chevron-left" size={24} color="#fff" />
-          </Pressable> */}
-
           <Text style={styles.todayText}>
             {format(selectedDate, "MMM dd, yyyy")}
           </Text>
-
-          {/* <Pressable style={styles.navButton} onPress={goToNextWeek}>
-            <Feather name="chevron-right" size={24} color="#fff" />
-          </Pressable> */}
         </View>
 
         <Pressable style={styles.moreButton}>

@@ -8,6 +8,8 @@ import {
   type ViewStyle,
 } from "react-native";
 import { Text } from "../Themed";
+import { Image } from "../ui/image";
+import { great } from "@/assets/emojis";
 
 export type MoodBadgeProps = {
   emoji?: string; // if undefined, show placeholder state
@@ -41,9 +43,14 @@ export const MoodBadge: React.FC<MoodBadgeProps> = ({
         }}
       >
         {emoji && (
-          <RNText style={{ fontSize: size * 0.65, lineHeight: size * 0.8 }}>
-            {emoji}
-          </RNText>
+          // <RNText style={{ fontSize: size * 0.65, lineHeight: size * 0.8 }}>
+          //   {emoji}
+          // </RNText>
+          <Image
+            source={great}
+            className="w-6 h-6"
+            alt={emoji}
+          />
         )}
         {!emoji && <Text>+</Text>}
       </View>
