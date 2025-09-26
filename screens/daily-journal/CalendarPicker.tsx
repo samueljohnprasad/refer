@@ -1,7 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { format, isToday, isSameMonth, isSameDay } from "date-fns";
-import { useEffect, useMemo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useMemo } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
+import { Text } from "@/components/Themed";
 import useCalendarMonth from "./hooks/useCalendarMonth";
 import MoodBadge from "@/components/dailyJournal/MoodBadge";
 
@@ -38,13 +39,13 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
     >
       <View style={styles.monthHeader}>
         <Pressable style={styles.monthNavButton} onPress={goToPreviousMonth}>
-          <Feather name="chevron-left" size={20} color="#000" />
+          <Feather name="chevron-left" size={20} color="#fff" />
         </Pressable>
         <Text style={styles.monthTitle}>
           {format(currentMonth, "MMM yyyy")}
         </Text>
         <Pressable style={styles.monthNavButton} onPress={goToNextMonth}>
-          <Feather name="chevron-right" size={20} color="#000" />
+          <Feather name="chevron-right" size={20} color="#fff" />
         </Pressable>
       </View>
 
@@ -66,24 +67,37 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
           return (
             <Pressable
               key={format(day, "yyyy-MM-dd")}
-              style={[
-                styles.dayCell,
-                isSelected && styles.selectedDayCell,
-                isTodayDate && !isSelected && styles.todayDayCell,
-              ]}
+              style={[styles.dayCell]}
               onPress={(): void => onDateSelect(day)}
+              accessibilityRole="button"
+              accessibilityLabel={`Select ${format(day, "EEEE, MMM d, yyyy")}`}
             >
-              <Text
+              <View
                 style={[
-                  styles.dayCellText,
-                  !inCurrentMonth && styles.otherMonthText,
-                  isSelected && styles.selectedDayText,
-                  isTodayDate && !isSelected && styles.todayDayText,
+                  styles.dayCellInside,
+                  isSelected && styles.selectedDayCell,
+                  isTodayDate && !isSelected && styles.todayDayCell,
                 ]}
               >
-                {format(day, "d")}
-              </Text>
-              <MoodBadge moodscore={mood} size={28} />
+                <Text
+                  style={[
+                    styles.dayCellText,
+                    !inCurrentMonth && styles.otherMonthText,
+                    isSelected && styles.selectedDayText,
+                    isTodayDate && !isSelected && styles.todayDayText,
+                  ]}
+                >
+                  {format(day, "d")}
+                </Text>
+                <View
+                  style={[
+                    styles.moodWrapper,
+                    !inCurrentMonth && styles.moodDimmed,
+                  ]}
+                >
+                  <MoodBadge moodscore={mood} size={20} />
+                </View>
+              </View>
             </Pressable>
           );
         })}
@@ -94,7 +108,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
 const styles = StyleSheet.create({
   calendarPicker: {
-    marginTop: 16,
+    marginTop: 8,
   },
   monthHeader: {
     flexDirection: "row",
@@ -106,9 +120,9 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   monthTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000",
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#FFFFFF",
   },
   weekDaysHeader: {
     flexDirection: "row",
@@ -118,14 +132,13 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     fontSize: 12,
-    fontWeight: "500",
-    color: "#666",
-    paddingVertical: 4,
+    fontWeight: "600",
+    color: "#EDE9FF",
+    paddingVertical: 6,
   },
   daysGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    // gap: 2,
   },
   dayCell: {
     width: "14.28%",
@@ -133,32 +146,44 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 8,
-    // marginVertical: 6,
-    // paddingVertical: 4,
+    padding: 2,
+  },
+  dayCellInside: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 12,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     gap: 2,
-    // backgroundColor: "#007AFF",
   },
   selectedDayCell: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#7B61FF",
   },
   todayDayCell: {
-    backgroundColor: "#E3F2FD",
+    backgroundColor: "rgba(255,255,255,0.12)",
+    borderColor: "rgba(255,255,255,0.65)",
   },
   dayCellText: {
-    fontSize: 12,
-    fontWeight: "500",
-    color: "#000",
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#FFFFFF",
   },
   selectedDayText: {
     color: "#fff",
     fontWeight: "600",
   },
   todayDayText: {
-    color: "#007AFF",
-    fontWeight: "600",
+    color: "#fff",
+    fontWeight: "700",
   },
   otherMonthText: {
-    color: "#ccc",
+    color: "#C7BDF9",
+  },
+  moodWrapper: {
+    marginTop: 2,
+  },
+  moodDimmed: {
+    opacity: 0.4,
   },
 });
