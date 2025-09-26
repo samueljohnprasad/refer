@@ -60,9 +60,17 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   return (
     <Pressable onPress={handlePress}>
       <Animated.View
-        style={[styles.dayBox, isSelected && styles.dayBoxActive, outerAnimatedStyle]}
+        style={[
+          styles.dayBox,
+          isSelected && styles.dayBoxActive,
+          isToday && !isSelected && styles.dayBoxToday,
+          outerAnimatedStyle,
+        ]}
       >
-        <Animated.View style={innerAnimatedStyle} className="flex flex-col items-center">
+        <Animated.View
+          style={[innerAnimatedStyle]}
+          className="flex flex-col items-center"
+        >
           <Text style={[styles.dayName, isSelected && styles.dayNameActive]}>
             {dayName}
           </Text>
@@ -75,7 +83,6 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
             {format(day, "d")}
           </Text>
         </Animated.View>
-        {isToday && !isSelected && <View style={styles.todayIndicator} />}
       </Animated.View>
     </Pressable>
   );
@@ -113,11 +120,14 @@ const DailyNotesScreen: React.FC = () => {
   }));
 
   // Helper to move date by offset without stale closure issues
-  const updateDateFromTs = useCallback((ts: number): void => {
-    const newDate = new Date(ts);
-    setSelectedDate(newDate);
-    setCurrentWeekView(newDate);
-  }, [setSelectedDate, setCurrentWeekView]);
+  const updateDateFromTs = useCallback(
+    (ts: number): void => {
+      const newDate = new Date(ts);
+      setSelectedDate(newDate);
+      setCurrentWeekView(newDate);
+    },
+    [setSelectedDate, setCurrentWeekView]
+  );
 
   const changeDateBy = (offset: number): void => {
     // Pre-compute the target date timestamp on JS thread and pass to worklet as a primitive
@@ -168,10 +178,16 @@ const DailyNotesScreen: React.FC = () => {
             }
           }
 
-          contentTranslateX.value = withSpring(0, { damping: 16, stiffness: 180 });
+          contentTranslateX.value = withSpring(0, {
+            damping: 16,
+            stiffness: 180,
+          });
         })
         .onFinalize(() => {
-          contentTranslateX.value = withSpring(0, { damping: 16, stiffness: 180 });
+          contentTranslateX.value = withSpring(0, {
+            damping: 16,
+            stiffness: 180,
+          });
         }),
     [goToNextDateContent, goToPreviousDateContent]
   );
@@ -185,25 +201,27 @@ const DailyNotesScreen: React.FC = () => {
         options={{ header: () => <DailyNotesHeader />, headerShown: true }}
       />
       <View style={{ flex: 1 }}>
-        <ScrollView
-          // contentContainerStyle={[styles.content, { paddingTop: 0 }]}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Date and Content */}
-          <GestureDetector gesture={contentPanGesture}>
+        <GestureDetector gesture={contentPanGesture}>
+          <ScrollView
+            style={{ flex: 1 }}
+            // contentContainerStyle={[styles.content, { paddingTop: 0 }]}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Date and Content */}
+
             <Animated.View style={[styles.mainContent, contentAnimatedStyle]}>
-            {/* Mental Health Journal Dashboard */}
-            <View style={styles.mentalHealthSection}>
-              <MentalHealthProfileContainer
-                selectedDate={selectedDate}
-                onRefresh={() => {
-                  // Optional refresh logic for mental health data
-                }}
-              />
-            </View>
+              {/* Mental Health Journal Dashboard */}
+              <View style={styles.mentalHealthSection}>
+                <MentalHealthProfileContainer
+                  selectedDate={selectedDate}
+                  onRefresh={() => {
+                    // Optional refresh logic for mental health data
+                  }}
+                />
+              </View>
             </Animated.View>
-          </GestureDetector>
-        </ScrollView>
+          </ScrollView>
+        </GestureDetector>
       </View>
 
       {/* Calendar Modal */}
@@ -267,20 +285,24 @@ const styles = StyleSheet.create({
   dayBox: {
     alignItems: "center",
     paddingVertical: 6,
-    borderRadius: 8,
+    borderRadius: 12,
   },
   dayBoxActive: {
-    backgroundColor: "#007AFF",
-    padding: 10,
+    backgroundColor: "#7B61FF",
+    borderRadius: 12,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
   },
+  dayBoxToday: {
+    backgroundColor: "rgba(255,255,255,0.12)",
+    borderRadius: 12,
+  },
   dayName: {
     fontSize: 12,
     fontWeight: "500",
-    color: "#fff",
+    color: "#EDE9FF",
     letterSpacing: 0.5,
     marginBottom: 2,
   },

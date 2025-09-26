@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   pill: {
     position: 'absolute',
     right: 0,
-    bottom: -10,
+    bottom: -14,
     borderTopLeftRadius: 16,
     borderBottomLeftRadius: 16,
     paddingHorizontal: 10,

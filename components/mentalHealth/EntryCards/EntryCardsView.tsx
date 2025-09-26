@@ -227,7 +227,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
             <Text className="text-2xl mb-1">
               <Image
                 source={emotions[entry.mainEmoji as Emotion]}
-                className="w-10 h-10"
+                className="w-6 h-6"
                 alt={entry.mainEmoji}
               />
             </Text>

@@ -56,9 +56,22 @@ export const MoodBadge: React.FC<MoodBadgeProps> = ({
           // <RNText style={{ fontSize: size * 0.65, lineHeight: size * 0.8 }}>
           //   {emoji}
           // </RNText>
-          <Image source={moodEmoji} className="w-6 h-6" alt={"moodEmoji"} />
+          <Image
+            source={moodEmoji}
+            alt={"moodEmoji"}
+            style={{
+              width: diameter,
+              height: diameter,
+            }}
+            width={diameter}
+            height={diameter}
+          />
         )}
-        {!moodEmoji && <Text>+</Text>}
+        {!moodEmoji && (
+          <Text className="color-slate-700" style={{ color: "#334155" }}>
+            +
+          </Text>
+        )}
       </View>
     </Animated.View>
   );

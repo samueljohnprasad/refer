@@ -10,7 +10,10 @@ import { TodayPill } from "@/components/dailyJournal/TodayPill";
 import { MoodBadge } from "@/components/dailyJournal/MoodBadge";
 import { CalendarPicker } from "./CalendarPicker";
 import useFetchMoods from "@/components/mentalHealth/hooks/useFetchMoods";
-import Animated, { interpolate, useAnimatedStyle } from "react-native-reanimated";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
 import { useCalendarExpandReanimated } from "@/hooks/useCalendarExpandReanimated";
 import { DayButton } from ".";
@@ -67,11 +70,7 @@ const DailyNotesHeader = () => {
   const weekSlideAnimatedStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        translateX: interpolate(
-          weekSlideAnim.value,
-          [-1, 0, 1],
-          [-10, 0, 10]
-        ),
+        translateX: interpolate(weekSlideAnim.value, [-1, 0, 1], [-10, 0, 10]),
       },
     ],
     opacity: interpolate(weekSlideAnim.value, [-1, 0, 1], [0.3, 1, 0.3]),
@@ -134,7 +133,7 @@ const DailyNotesHeader = () => {
         <Animated.View style={[styles.weekRow, weekHeaderAnimatedStyle]}>
           <Animated.View
             style={[
-              { display: "flex", flex: 1, flexDirection: "row" },
+              { display: "flex", flex: 1, flexDirection: "row", gap: 6 },
               weekSlideAnimatedStyle,
             ]}
           >
@@ -146,7 +145,7 @@ const DailyNotesHeader = () => {
 
               const mood = moodMap?.get(format(day, "yyyy-MM-dd"));
               return (
-                <View className="flex-1 gap-8 mb-4" key={index}>
+                <View className="flex-1 gap-6 mb-6" key={index}>
                   <DayButton
                     day={day}
                     dayName={dayNames[index]}
