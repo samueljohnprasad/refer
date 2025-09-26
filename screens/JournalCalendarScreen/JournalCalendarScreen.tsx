@@ -17,6 +17,7 @@ import { Calendar } from "react-native-calendars";
 import { BlurView } from "expo-blur";
 import LottieView from "lottie-react-native";
 import { girlMeditationBlue, manRocket } from "@/assets/lottie";
+import { format } from "date-fns";
 import { useRouter } from "expo-router";
 import { Box } from "@/components/ui/box";
 import BlurModal from "../components/BlurModal";
@@ -107,6 +108,10 @@ export default function JournalCalendarScreen() {
     setModalVisible(false);
     // Navigate to voice recorder screen
     router.push("/voice-recorder");
+  };
+
+  const handleNextMonth = (): void => {
+    setMonthDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
   };
 
   const handleSelectEntry = (entry: MoodEntry): void => {
@@ -278,7 +283,7 @@ export default function JournalCalendarScreen() {
               firstDay={0}
               showSixWeeks={true}
               hideExtraDays={true}
-              current={"2025-09-25"}
+              current={format(monthDate, "yyyy-MM-dd")}
               onMonthChange={(m) => {
                 const next = new Date(
                   `${m.year}-${String(m.month).padStart(2, "0")}-01`
@@ -287,24 +292,23 @@ export default function JournalCalendarScreen() {
               }}
               theme={{
                 calendarBackground: "#fff",
-                textSectionTitleColor: "#8F8F8F",
-                monthTextColor: "#222",
+                textSectionTitleColor: "#94A3B8",
+                monthTextColor: "#111827",
                 textMonthFontWeight: "700",
                 textMonthFontSize: 20,
                 todayTextColor: PALETTE.purple,
                 selectedDayBackgroundColor: PALETTE.purple,
                 selectedDayTextColor: "#fff",
-                arrowColor: "#6B6B6B",
+                arrowColor: "#6B7280",
               }}
               // Custom day cell rendering
               dayComponent={({ date, state }) => {
                 if (!date) return null;
 
                 const emoji = markedDays[date.dateString as string];
-                const bgColor = emoji
-                  ? emojiColors[emoji as keyof typeof emojiColors] ||
-                    PALETTE.purple
-                  : PALETTE.grey;
+                const isSelected = selectedDate === date.dateString;
+                const isDisabled = state === "disabled";
+                const isTodayDate = state === "today";
 
                 // Scale animation for press interaction
                 const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -333,7 +337,7 @@ export default function JournalCalendarScreen() {
                       style={{
                         alignItems: "center",
                         justifyContent: "center",
-                        width: 46,
+                        width: 44,
                         height: 56,
                         transform: [{ scale: scaleAnim }],
                       }}
@@ -344,34 +348,38 @@ export default function JournalCalendarScreen() {
                           width: 32,
                           height: 32,
                           borderRadius: 16,
-                          borderWidth: 1,
-                          borderColor: "#ccc",
-                          borderStyle: "dashed",
                           alignItems: "center",
                           justifyContent: "center",
                           marginBottom: 2,
-                          shadowColor: "#000",
-                          shadowOpacity: 0.1,
-                          shadowOffset: { width: 0, height: 2 },
-                          shadowRadius: 3,
-                          elevation: 2,
+                          backgroundColor: isSelected
+                            ? PALETTE.purple
+                            : isTodayDate
+                            ? "rgba(123,97,255,0.15)"
+                            : "transparent",
+                          borderWidth: isSelected ? 0 : 1,
+                          borderColor: isTodayDate ? PALETTE.purple : "#E5E7EB",
                         }}
                       >
-                        <Text
-                          style={{
-                            fontSize: emoji ? 18 : 16,
-                            color: "#ccc",
-                          }}
-                        >
-                          {emoji ? emoji : "＋"}
-                        </Text>
+                        {emoji ? (
+                          <Text style={{ fontSize: 18 }}>{emoji}</Text>
+                        ) : (
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              color: isSelected ? "#fff" : "#94A3B8",
+                              fontWeight: "700",
+                            }}
+                          >
+                            +
+                          </Text>
+                        )}
                       </View>
                       {/* Date number below the circle */}
                       <Text
                         style={{
                           fontSize: 12,
-                          color: state === "disabled" ? "#ccc" : "#000",
-                        }}
+                          color: isDisabled ? "#C7BFE7" : "#111827",
+                          }}
                       >
                         {date.day}
                       </Text>
@@ -400,12 +408,12 @@ export default function JournalCalendarScreen() {
 
           {/* Bottom action buttons */}
           <View style={styles.actionRow}>
-            <TouchableOpacity style={styles.addButton} activeOpacity={0.85}>
-              <Text style={styles.addText}>+ Add Entry</Text>
+            <TouchableOpacity style={styles.primaryButton} activeOpacity={0.85} onPress={handleAddEntry}>
+              <Text style={styles.primaryButtonText}>Add Entry</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.nextButton} activeOpacity={0.85}>
-              <Text style={styles.nextText}>Next Month</Text>
+            <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.85} onPress={handleNextMonth}>
+              <Text style={styles.secondaryButtonText}>Next Month</Text>
             </TouchableOpacity>
           </View>
 
@@ -446,11 +454,7 @@ const styles = StyleSheet.create({
     width: width,
     backgroundColor: "#fff",
     padding: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 12 },
-    shadowRadius: 24,
-    elevation: 6,
+    paddingBottom: 100,
   },
   topBarBlur: {
     borderRadius: 18,
@@ -510,13 +514,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: "#fff",
     borderRadius: 18,
-    // padding: 14,
-    paddingVertical: 14,
-    shadowColor: "#000",
-    shadowOpacity: 0.03,
-    shadowOffset: { width: 0, height: 6 },
-    shadowRadius: 12,
-    elevation: 2,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: "#EEF2FF",
   },
 
   xpCard: {
@@ -541,27 +541,27 @@ const styles = StyleSheet.create({
 
   actionRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: 12,
     marginTop: 18,
   },
-  addButton: {
-    backgroundColor: PALETTE.yellow,
+  primaryButton: {
     flex: 1,
-    marginRight: 8,
-    paddingVertical: 14,
-    borderRadius: 28,
-    alignItems: "center",
-  },
-  addText: { fontWeight: "700", color: "#111", fontSize: 16 },
-  nextButton: {
     backgroundColor: PALETTE.purple,
-    flex: 1,
-    marginLeft: 8,
     paddingVertical: 14,
-    borderRadius: 28,
+    borderRadius: 16,
     alignItems: "center",
   },
-  nextText: { fontWeight: "700", color: "#fff", fontSize: 16 },
+  primaryButtonText: { fontWeight: "700", color: "#fff", fontSize: 16 },
+  secondaryButton: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingVertical: 14,
+    borderRadius: 16,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  secondaryButtonText: { fontWeight: "700", color: "#111827", fontSize: 16 },
 
   badgesHeading: {
     marginTop: 18,

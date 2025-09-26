@@ -18,6 +18,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 // Animated Day Button Component
 interface DayButtonProps {
@@ -107,6 +108,8 @@ export const DayButton = memo(DayButtonComponent, areDayButtonPropsEqual);
 const DailyNotesScreen: React.FC = () => {
   // State for selected date
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
+  const tabBarHeight = useBottomTabBarHeight();
+
   // State for current week view (independent of selected date)
   const [, setCurrentWeekView] = useAtom(currentWeekViewAtom);
   // Shared values for content animations (UI thread)
@@ -195,7 +198,7 @@ const DailyNotesScreen: React.FC = () => {
   // Removed unused day label animation for performance
 
   return (
-    <SafeAreaView edges={["bottom"]} style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       {/* <DailyNotesHeader /> */}
       <Stack.Screen
         options={{ header: () => <DailyNotesHeader />, headerShown: true }}
@@ -209,7 +212,13 @@ const DailyNotesScreen: React.FC = () => {
           >
             {/* Date and Content */}
 
-            <Animated.View style={[styles.mainContent, contentAnimatedStyle]}>
+            <Animated.View
+              style={[
+                styles.mainContent,
+                contentAnimatedStyle,
+                { paddingBottom: tabBarHeight },
+              ]}
+            >
               {/* Mental Health Journal Dashboard */}
               <View style={styles.mentalHealthSection}>
                 <MentalHealthProfileContainer
@@ -403,7 +412,7 @@ const styles = StyleSheet.create({
   // Mental Health Section Styles
   mentalHealthSection: {
     paddingTop: 20,
-    paddingBottom: 60,
+    paddingBottom: 0,
   },
   sectionTitle: {
     fontSize: 24,

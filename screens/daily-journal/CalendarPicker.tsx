@@ -75,8 +75,8 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
               <View
                 style={[
                   styles.dayCellInside,
-                  isSelected && styles.selectedDayCell,
                   isTodayDate && !isSelected && styles.todayDayCell,
+                  isSelected && styles.selectedDayCell,
                 ]}
               >
                 <Text
@@ -147,11 +147,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 2,
+    // borderRadius: 12,
   },
   dayCellInside: {
     width: "100%",
     height: "100%",
-    borderRadius: 12,
+    // borderRadius: 12,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -159,15 +160,17 @@ const styles = StyleSheet.create({
   },
   selectedDayCell: {
     backgroundColor: "#7B61FF",
+    borderRadius: 12,
   },
   todayDayCell: {
     backgroundColor: "rgba(255,255,255,0.12)",
-    borderColor: "rgba(255,255,255,0.65)",
+    borderRadius: 12,
   },
   dayCellText: {
     fontSize: 13,
     fontWeight: "600",
     color: "#FFFFFF",
+    borderRadius: 12,
   },
   selectedDayText: {
     color: "#fff",

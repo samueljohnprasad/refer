@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, View, Pressable, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  Dimensions,
+  Platform,
+} from "react-native";
 import { Text } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
 import { format, startOfWeek, addDays, isToday, isValid } from "date-fns";
@@ -17,9 +23,11 @@ import Animated, {
 import { GestureDetector } from "react-native-gesture-handler";
 import { useCalendarExpandReanimated } from "@/hooks/useCalendarExpandReanimated";
 import { DayButton } from ".";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const { height } = Dimensions.get("window"); // get screen height
-const twentyPercentHeight = height * 0.24;
+const { height } = Dimensions.get("window");
+const isIso = Platform.OS === "ios";
+const twentyPercentHeight = height * (isIso ? 0.24 : 0.19);
 
 const DailyNotesHeader = () => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
@@ -31,6 +39,7 @@ const DailyNotesHeader = () => {
     swipeTriggerDx: 50,
     slideDivisor: 50,
   });
+  const insets = useSafeAreaInsets();
 
   const { data: moodMap } = useFetchMoods();
 
@@ -167,7 +176,11 @@ const DailyNotesHeader = () => {
         </Animated.View>
       </View>
       <Animated.View
-        style={[styles.inlineCalendarContainer, inlineCalendarAnimatedStyle]}
+        style={[
+          styles.inlineCalendarContainer,
+          inlineCalendarAnimatedStyle,
+          { top: isIso ? 45 : 10 },
+        ]}
       >
         <CalendarPicker
           moodMap={moodMap}

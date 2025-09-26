@@ -2,9 +2,7 @@ import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { useSeasonalTheme } from "@/hooks/useSeasonalTheme";
 import { Platform, StyleSheet } from "react-native";
-import DailyNotesHeader from "@/screens/daily-journal/DailyNotesHeader";
 import { BlurView } from "expo-blur";
 
 function TabBarIcon(props: {
@@ -15,13 +13,9 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const theme = useSeasonalTheme();
-
-  // Create mindful color mappings from seasonal theme
-  const primaryColor = theme.gradient[0]; // Use first gradient color as primary
-  // Use a darker, more readable color for active tab items
-  const accentColor = theme.particleDot; // Active tint uses dot color for better contrast
-  const secondaryColor = theme.particleDot; // Use dot color as secondary
+  // Design system colors
+  const accentColor = "#7B61FF"; // brand purple
+  const inactiveColor = "#94A3B8"; // slate-400-ish
 
   return (
     <>
@@ -31,7 +25,7 @@ export default function TabLayout() {
             return (
               <BlurView
                 tint="light"
-                intensity={80}
+                intensity={60}
                 style={StyleSheet.absoluteFill}
               />
             );
@@ -43,29 +37,26 @@ export default function TabLayout() {
           headerShown: useClientOnlyValue(false, true),
           tabBarStyle: {
             position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            // backgroundColor:
-            //   Platform.OS === "ios" ? "transparent" : `${primaryColor}15`,
-            borderTopWidth: 0,
+            backgroundColor: Platform.OS === "ios" ? "transparent" : "#FFFFFF",
+
+            // backgroundColor: "#FFFFFF",
+            borderTopWidth: 1,
+            borderTopColor: "#EEF2FF",
             elevation: 0,
             shadowOpacity: 0,
             paddingBottom: Platform.OS === "ios" ? 30 : 10,
-            paddingTop: 10,
+            paddingTop: 8,
             height: Platform.OS === "ios" ? 90 : 70,
-            // backgroundColor: "transparent",
           },
-
           tabBarActiveTintColor: accentColor,
-          tabBarInactiveTintColor: `${secondaryColor}60`,
+          tabBarInactiveTintColor: inactiveColor,
           tabBarLabelStyle: {
             fontSize: 12,
             fontWeight: "600",
-            marginBottom: 4,
+            marginBottom: 2,
           },
           tabBarIconStyle: {
-            marginBottom: -4,
+            marginBottom: -2,
           },
         }}
       >
