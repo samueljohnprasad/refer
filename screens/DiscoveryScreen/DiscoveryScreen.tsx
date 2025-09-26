@@ -42,9 +42,12 @@ export default function DiscoveryScreen() {
   const tabBarHeight = useBottomTabBarHeight();
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
+    <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView
-        contentContainerStyle={styles.container}
+        contentContainerStyle={[
+          styles.container,
+          { paddingBottom: Math.max(24, tabBarHeight + 16) },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         <View>
@@ -71,18 +74,17 @@ export default function DiscoveryScreen() {
             accessibilityRole="progressbar"
             accessibilityLabel="Experience progress"
           >
+            <View style={styles.progressHeader}>
+              <Text style={styles.progressLabel}>0/100 XP</Text>
+            </View>
             <View style={styles.progressTrack}>
               <View style={[styles.progressFill, { width: "74%" }]} />
-              <Text style={styles.progressText}>0/100 XP</Text>
             </View>
           </View>
         </View>
 
         {/* Prompt card */}
-        <View
-          style={[styles.cardShadow, { marginBottom: tabBarHeight - 32 }]}
-          className="  flex-1"
-        >
+        <View style={[styles.cardShadow]} className="  flex-1">
           <LinearGradient
             colors={[COLORS.skyA, COLORS.skyB]}
             start={{ x: 0, y: 0 }}
@@ -196,11 +198,11 @@ function CircleAction({
 const shadowCard = Platform.select({
   ios: {
     shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
   },
-  android: { elevation: 6 },
+  android: { elevation: 0 },
 });
 
 const styles = StyleSheet.create({
@@ -208,7 +210,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 18,
     paddingTop: 8,
-    paddingBottom: 28,
+    paddingBottom: 0,
     flex: 1,
   },
   headerRow: {
@@ -236,24 +238,28 @@ const styles = StyleSheet.create({
 
   // slimmer progress
   progressWrap: { marginTop: 8, marginBottom: 14 },
+  progressHeader: {
+    marginBottom: 6,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  progressLabel: {
+    color: "#64748B",
+    fontSize: 12,
+    fontWeight: "700",
+  },
   progressTrack: {
-    height: 12,
-    backgroundColor: "#F3EFE6",
-    borderRadius: 10,
+    height: 8,
+    backgroundColor: "#F3F4F6",
+    borderRadius: 6,
     overflow: "hidden",
     justifyContent: "center",
   },
   progressFill: {
     height: "100%",
     backgroundColor: COLORS.accent,
-    borderRadius: 10,
-  },
-  progressText: {
-    position: "absolute",
-    alignSelf: "center",
-    color: COLORS.ink,
-    fontSize: 11,
-    fontWeight: "800",
+    borderRadius: 6,
   },
 
   cardShadow: { ...shadowCard, borderRadius: 26 },
