@@ -37,7 +37,7 @@ export async function transcribeAudio(
   base64Audio: string
 ): Promise<string[]> {
   const url = `https://speech.googleapis.com/v1/speech:recognize?key=${apiKey}`;
-  console.log("base64Audio", base64Audio);
+  // console.log("base64Audio", base64Audio);
   const payload: SpeechRecognitionRequest = {
     config: {
       encoding: "MP3",
@@ -60,17 +60,17 @@ export async function transcribeAudio(
       }
     );
 
-    const transcripts = response.data.results.map(
+    const transcripts = response.data?.results?.map(
       (result) => result.alternatives[0]?.transcript || ""
     );
 
-    return transcripts;
+    return transcripts || [];
   } catch (error: any) {
     console.error(
       "Error calling Speech-to-Text API:",
       error.response?.data || error.message
     );
-    throw error;
+    return [];
   }
 }
 

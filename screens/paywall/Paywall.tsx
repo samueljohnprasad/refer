@@ -66,7 +66,7 @@ const Paywall = () => {
           //   backgroundColor: "red"
           showsVerticalScrollIndicator={false}
         >
-          <Box className="flex flex-col gap-4 bg-slate-400">
+          <Box className="flex flex-col gap-4 ">
             <FeatureRow
               icon={<Ionicons name="star" size={18} color="#f6c73b" />}
               tint="#fff7df"

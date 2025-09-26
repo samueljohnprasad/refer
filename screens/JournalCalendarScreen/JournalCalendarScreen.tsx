@@ -181,6 +181,8 @@ export default function JournalCalendarScreen() {
       <ScrollView
         // contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
+        nestedScrollEnabled={true}
+        contentInsetAdjustmentBehavior="automatic"
       >
         {/* Outer panel container */}
         <BlurView intensity={50} tint="light" style={styles.panel}>

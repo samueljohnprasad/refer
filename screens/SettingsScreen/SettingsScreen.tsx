@@ -165,13 +165,18 @@ export default function SettingsScreen() {
         </BlurView> */}
 
         <Animated.ScrollView
-          contentContainerStyle={{ marginTop: headerHeight }}
+          contentContainerStyle={[
+            styles.scrollViewContent,
+            { paddingTop: headerHeight, paddingBottom: 24 }
+          ]}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          nestedScrollEnabled={true}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: false }
           )}
+          contentInsetAdjustmentBehavior="automatic"
         >
           {/* Promo Card */}
           <View style={styles.promoCard}>
@@ -402,6 +407,10 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F8F8FF" },
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingHorizontal: 16,
+  },
   surface: {
     flex: 1,
     // backgroundColor: "#F7F6FF",

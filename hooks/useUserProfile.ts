@@ -17,8 +17,9 @@ export const useUserProfile = () => {
         .from("profiles")
         .select("display_name")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
+      console.log("data userProfile", data, error, user.id);
       if (error) {
         throw error;
       }
@@ -71,7 +72,7 @@ export const useUpdateDisplayName = () => {
       return { displayName: displayName.trim() };
     },
     onSuccess: (data) => {
-    //   queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      //   queryClient.invalidateQueries({ queryKey: ["userProfile"] });
       // Update the cache directly
       queryClient.setQueryData(["userProfile"], (oldData: any) => {
         return {
