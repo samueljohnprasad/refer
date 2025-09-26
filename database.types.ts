@@ -14,27 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
-      daily_statistics: {
+      daily_moods: {
         Row: {
-          ai_summary: string | null
-          created_at: string
-          id: number
-          mood_score: number | null
-          user_id: string | null
+          day: string
+          mood_avg: number
+          mood_count: number
+          mood_sum: number
+          user_id: string
         }
         Insert: {
-          ai_summary?: string | null
-          created_at?: string
-          id?: number
-          mood_score?: number | null
-          user_id?: string | null
+          day: string
+          mood_avg?: number
+          mood_count?: number
+          mood_sum?: number
+          user_id: string
         }
         Update: {
-          ai_summary?: string | null
-          created_at?: string
-          id?: number
-          mood_score?: number | null
-          user_id?: string | null
+          day?: string
+          mood_avg?: number
+          mood_count?: number
+          mood_sum?: number
+          user_id?: string
         }
         Relationships: []
       }
@@ -50,6 +50,7 @@ export type Database = {
           mainEmoji: string | null
           moodScore: number | null
           positiveInsights: string[] | null
+          selected_date: string | null
           suggestedTags: string[] | null
           summary: string | null
           title: string | null
@@ -66,6 +67,7 @@ export type Database = {
           mainEmoji?: string | null
           moodScore?: number | null
           positiveInsights?: string[] | null
+          selected_date?: string | null
           suggestedTags?: string[] | null
           summary?: string | null
           title?: string | null
@@ -82,10 +84,50 @@ export type Database = {
           mainEmoji?: string | null
           moodScore?: number | null
           positiveInsights?: string[] | null
+          selected_date?: string | null
           suggestedTags?: string[] | null
           summary?: string | null
           title?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          age: number | null
+          avatar_url: string | null
+          created_at: string | null
+          display_name: string | null
+          full_name: string | null
+          gender: string | null
+          id: string
+          onboarding_completed: boolean | null
+          subscription_plan: string | null
+          trial_ends_at: string | null
+        }
+        Insert: {
+          age?: number | null
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          onboarding_completed?: boolean | null
+          subscription_plan?: string | null
+          trial_ends_at?: string | null
+        }
+        Update: {
+          age?: number | null
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          onboarding_completed?: boolean | null
+          subscription_plan?: string | null
+          trial_ends_at?: string | null
         }
         Relationships: []
       }
@@ -111,40 +153,15 @@ export type Database = {
           id?: number
           user_id?: string | null
         }
-        Relationships: []
-      }
-      user_profiles: {
-        Row: {
-          age: number | null
-          created_at: string | null
-          display_name: string | null
-          gender: string | null
-          id: string
-          onboarding_completed: boolean | null
-          subscription_plan: string | null
-          trial_ends_at: string | null
-        }
-        Insert: {
-          age?: number | null
-          created_at?: string | null
-          display_name?: string | null
-          gender?: string | null
-          id?: string
-          onboarding_completed?: boolean | null
-          subscription_plan?: string | null
-          trial_ends_at?: string | null
-        }
-        Update: {
-          age?: number | null
-          created_at?: string | null
-          display_name?: string | null
-          gender?: string | null
-          id?: string
-          onboarding_completed?: boolean | null
-          subscription_plan?: string | null
-          trial_ends_at?: string | null
-        }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -154,7 +171,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      app_permission: "channels.delete" | "messages.delete"
+      app_role: "admin" | "moderator"
+      user_status: "ONLINE" | "OFFLINE"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -281,6 +300,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_permission: ["channels.delete", "messages.delete"],
+      app_role: ["admin", "moderator"],
+      user_status: ["ONLINE", "OFFLINE"],
+    },
   },
 } as const

@@ -17,6 +17,7 @@ export type InsightsType = {
   title?: string;
   enrichedTranscript?: string;
   aiInsights?: string;
+  created_at?: string;
 };
 
 export const defaultInsights: InsightsType = {

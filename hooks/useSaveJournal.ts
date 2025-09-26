@@ -11,10 +11,8 @@ export interface JournalEntryRow extends InsightsType {
 }
 
 const formatDateKey = (date: Date): string => {
-  // Convert to local date YYYY-MM-DD
-  const tz = date.getTimezoneOffset() * 60000;
-  const local = new Date(date.getTime() - tz);
-  return local.toISOString().slice(0, 10);
+  // Returns ISO 8601 string with timezone (e.g., "2025-09-25T18:32:20.000Z")
+  return date.toISOString();
 };
 
 export const useSaveJournal = () => {
@@ -47,7 +45,6 @@ export const useSaveJournal = () => {
           .select()
           .single();
 
-        console.log("errorerror", error, data);
         if (error) throw error;
         return data as JournalEntryRow;
       } catch (error) {

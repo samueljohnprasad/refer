@@ -17,6 +17,7 @@ import { useWeekNavigation } from "@/hooks/useWeekNavigation";
 import { TodayPill } from "@/components/dailyJournal/TodayPill";
 import { MoodBadge } from "@/components/dailyJournal/MoodBadge";
 import { CalendarPicker } from "./CalendarPicker";
+import useFetchMoods from "@/components/mentalHealth/hooks/useFetchMoods";
 
 const { height } = Dimensions.get("window"); // get screen height
 const twentyPercentHeight = height * 0.24;
@@ -31,6 +32,8 @@ const DailyNotesHeader = () => {
     swipeTriggerDx: 50,
     slideDivisor: 50,
   });
+
+  const { data: moodMap } = useFetchMoods();
 
   // Vertical expand/collapse for inline calendar
   const CALENDAR_EXPANDED_HEIGHT = 360;
@@ -146,6 +149,8 @@ const DailyNotesHeader = () => {
             const isTodayDate = isToday(day);
             const isSelectedDay =
               format(day, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd");
+
+            const mood = moodMap?.get(format(day, "yyyy-MM-dd"));
             return (
               <View className="flex-1 gap-8 mb-4" key={index}>
                 <DayButton
@@ -157,7 +162,7 @@ const DailyNotesHeader = () => {
                 />
                 <View style={styles.moodItem}>
                   <MoodBadge
-                    emoji={isSelectedDay ? "😄" : ""}
+                    moodscore={mood}
                     active={isSelectedDay}
                     size={28}
                   />
@@ -193,6 +198,7 @@ const DailyNotesHeader = () => {
         ]}
       >
         <CalendarPicker
+          moodMap={moodMap}
           selectedDate={selectedDate}
           visible={isExpanded}
           onDateSelect={(date: Date) => {

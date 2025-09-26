@@ -1,18 +1,9 @@
 import { Feather } from "@expo/vector-icons";
-import {
-  addMonths,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  eachDayOfInterval,
-  format,
-  isToday,
-  isSameMonth,
-  isSameDay,
-} from "date-fns";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { format, isToday, isSameMonth, isSameDay } from "date-fns";
+import { useEffect, useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import useCalendarMonth from "./hooks/useCalendarMonth";
+import MoodBadge from "@/components/dailyJournal/MoodBadge";
 
 // Calendar Picker Component
 interface CalendarPickerProps {
@@ -20,6 +11,7 @@ interface CalendarPickerProps {
   onDateSelect: (date: Date) => void;
   edgeToEdge?: boolean; // remove top margin and horizontal padding when true
   visible?: boolean; // when toggled true, resets view to selectedDate's month
+  moodMap: Map<string, number> | undefined;
 }
 
 export const CalendarPicker: React.FC<CalendarPickerProps> = ({
@@ -27,62 +19,15 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
   onDateSelect,
   edgeToEdge,
   visible,
+  moodMap,
 }) => {
-  const [currentMonth, setCurrentMonth] = useState<Date>(
-    startOfMonth(selectedDate)
-  );
+  const { currentMonth, days, goToPreviousMonth, goToNextMonth } =
+    useCalendarMonth({ selectedDate, visible, weekStartsOn: 0 });
 
   const WEEKDAY_LABELS: ReadonlyArray<string> = useMemo(
     () => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const,
     []
   );
-
-  // Keep the calendar's visible month in sync with the externally selected date
-  useEffect((): void => {
-    setCurrentMonth(startOfMonth(selectedDate));
-  }, [selectedDate]);
-
-  // When the calendar becomes visible (e.g., expanded), ensure it shows the selected date's month
-  useEffect((): void => {
-    if (visible) {
-      setCurrentMonth(startOfMonth(selectedDate));
-    }
-  }, [visible, selectedDate]);
-
-  const getVisibleDates = useCallback(
-    (currentMonth: Date) => {
-      const visibleStart = startOfWeek(startOfMonth(currentMonth), {
-        weekStartsOn: 0,
-      });
-      const visibleEnd = endOfWeek(endOfMonth(currentMonth), {
-        weekStartsOn: 0,
-      });
-      return { visibleStart, visibleEnd };
-    },
-    [currentMonth]
-  );
-
-  const getVisibleDatesMemo = useMemo(
-    () => getVisibleDates(currentMonth),
-    [currentMonth]
-  );
-
-  const days = useMemo<Date[]>((): Date[] => {
-    return eachDayOfInterval({
-      start: getVisibleDatesMemo.visibleStart,
-      end: getVisibleDatesMemo.visibleEnd,
-    });
-  }, [getVisibleDatesMemo.visibleEnd, getVisibleDatesMemo.visibleStart]);
-
-  const goToPreviousMonth = (): void => {
-    setCurrentMonth((prev: Date) => startOfMonth(addMonths(prev, -1)));
-    getVisibleDates(currentMonth);
-  };
-
-  const goToNextMonth = (): void => {
-    setCurrentMonth((prev: Date) => startOfMonth(addMonths(prev, 1)));
-    getVisibleDates(currentMonth);
-  };
 
   return (
     <View
@@ -116,6 +61,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
           const inCurrentMonth: boolean = isSameMonth(day, currentMonth);
           const isTodayDate: boolean = isToday(day);
           const isSelected: boolean = isSameDay(day, selectedDate);
+          const mood = moodMap?.get(format(day, "yyyy-MM-dd"));
 
           return (
             <Pressable
@@ -137,33 +83,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
               >
                 {format(day, "d")}
               </Text>
-              <View
-                style={{
-                  width: 16,
-                  height: 16,
-                  borderRadius: 8,
-                  borderWidth: 1,
-                  borderColor: "#ccc",
-                  borderStyle: "dashed",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: 2,
-                  shadowColor: "#000",
-                  shadowOpacity: 0.1,
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowRadius: 3,
-                  elevation: 2,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 8,
-                    color: "#ccc",
-                  }}
-                >
-                  {"＋"}
-                </Text>
-              </View>
+              <MoodBadge moodscore={mood} size={28} />
             </Pressable>
           );
         })}

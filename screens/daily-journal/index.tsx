@@ -12,13 +12,12 @@ import { Text, View as ThemedView } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import { format, startOfWeek, addDays, isToday } from "date-fns";
-import {
-  MentalHealthProfileContainer,
-  useMentalHealthData,
-} from "@/components/mentalHealth/MentalHealthProfileContainer";
+import { MentalHealthProfileContainer } from "@/components/mentalHealth/MentalHealthProfileContainer";
 import { useAtom } from "jotai";
 import { currentWeekViewAtom, selectedDateAtom } from "./atoms";
 import DailyNotesHeader from "./DailyNotesHeader";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Animated Day Button Component
 interface DayButtonProps {
@@ -97,6 +96,7 @@ const DailyNotesScreen = () => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   // State for current week view (independent of selected date)
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
+  const headerHeight = useHeaderHeight();
 
   // Animation values
   const weekSlideAnim = useRef(new Animated.Value(0)).current;
@@ -235,62 +235,57 @@ const DailyNotesScreen = () => {
   }, [selectedDate]);
 
   return (
-    <ThemedView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* <DailyNotesHeader /> */}
-        <Stack.Screen
-          options={{ header: () => <DailyNotesHeader />, headerShown: true }}
-        />
-
-        {/* Date and Content */}
-        <Animated.View
-          style={[
-            styles.mainContent,
-            {
-              opacity: contentOpacityAnim,
-              transform: [
-                {
-                  translateX: contentSlideAnim,
-                },
-              ],
-            },
-          ]}
-          {...contentPanResponder.panHandlers}
+    <SafeAreaView edges={["bottom"]} style={styles.container}>
+      {/* <DailyNotesHeader /> */}
+      <Stack.Screen
+        options={{ header: () => <DailyNotesHeader />, headerShown: true }}
+      />
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          // contentContainerStyle={[styles.content, { paddingTop: 0 }]}
+          showsVerticalScrollIndicator={false}
         >
-          {/* Mental Health Journal Dashboard */}
-          <View style={styles.mentalHealthSection}>
-            <MentalHealthProfileContainer
-              selectedDate={selectedDate}
-              onRefresh={() => {
-                // Optional refresh logic for mental health data
-              }}
-            />
-          </View>
-        </Animated.View>
-      </ScrollView>
+          {/* Date and Content */}
+          <Animated.View
+            style={[
+              styles.mainContent,
+              {
+                opacity: contentOpacityAnim,
+                transform: [
+                  {
+                    translateX: contentSlideAnim,
+                  },
+                ],
+              },
+            ]}
+            {...contentPanResponder.panHandlers}
+          >
+            {/* Mental Health Journal Dashboard */}
+            <View style={styles.mentalHealthSection}>
+              <MentalHealthProfileContainer
+                selectedDate={selectedDate}
+                onRefresh={() => {
+                  // Optional refresh logic for mental health data
+                }}
+              />
+            </View>
+          </Animated.View>
+        </ScrollView>
+      </View>
 
       {/* Calendar Modal */}
-    </ThemedView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 60,
     backgroundColor: "#f5f5f5",
   },
-  scrollView: {
-    flex: 1,
-  },
+  scrollView: {},
   content: {
-    // paddingHorizontal: 12,
-    paddingTop: 56,
-    paddingBottom: 32,
+    flex: 1,
   },
   calendarHeader: {
     flexDirection: "row",
@@ -386,8 +381,9 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     paddingHorizontal: 12,
-    paddingTop: 0,
     backgroundColor: "#f5f5f5",
+    // paddingTop: 56,
+    flex: 1,
   },
   dateHeader: {
     marginBottom: 24,
@@ -451,7 +447,8 @@ const styles = StyleSheet.create({
   },
   // Mental Health Section Styles
   mentalHealthSection: {
-    paddingTop: 8,
+    paddingTop: 20,
+    paddingBottom: 60,
   },
   sectionTitle: {
     fontSize: 24,

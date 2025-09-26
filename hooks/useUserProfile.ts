@@ -14,7 +14,7 @@ export const useUserProfile = () => {
       }
 
       const { data, error } = await supabase
-        .from("user_profiles")
+        .from("profiles")
         .select("display_name")
         .eq("id", user.id)
         .single();
@@ -55,7 +55,7 @@ export const useUpdateDisplayName = () => {
         throw new Error("User not authenticated");
       }
 
-      const { error } = await supabase.from("user_profiles").upsert(
+      const { error } = await supabase.from("profiles").upsert(
         {
           id: user.id,
           display_name: displayName.trim(),
@@ -64,6 +64,7 @@ export const useUpdateDisplayName = () => {
       );
 
       if (error) {
+        console.log(error);
         throw error;
       }
 

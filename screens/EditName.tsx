@@ -18,7 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { KeyboardToolbar } from "react-native-keyboard-controller";
 import { useGradualAnimation } from "@/hooks/useGradualAnimation";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
-import { useUpdateDisplayName } from "@/hooks/useUserProfile";
+import { useUpdateDisplayName, useUserProfile } from "@/hooks/useUserProfile";
 
 interface NameEditScreenProps {
   setShowModal: (show: boolean) => void;
@@ -28,7 +28,15 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
   const { height } = useGradualAnimation();
 
   const [name, setName] = useState("");
-  const { mutate: updateDisplayName, isPending: isUpdating } = useUpdateDisplayName();
+  const { mutate: updateDisplayName, isPending: isUpdating } =
+    useUpdateDisplayName();
+  const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+
+  useEffect(() => {
+    if (userProfile?.displayName) {
+      setName(userProfile.displayName);
+    }
+  }, [userProfile?.displayName]);
 
   const handleSave = () => {
     if (!name.trim()) {
@@ -41,31 +49,11 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
         setShowModal(false);
       },
       onError: (error: Error) => {
-        console.error('Error updating display name:', error);
+        console.error("Error updating display name:", error);
         Alert.alert("Error", "Failed to update name. Please try again.");
-      }
+      },
     });
   };
-
-  // Set initial name when the component mounts
-  useEffect(() => {
-    const fetchCurrentName = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data } = await supabase
-          .from('user_profiles')
-          .select('display_name')
-          .eq('id', user.id)
-          .single();
-        
-        if (data?.display_name) {
-          setName(data.display_name);
-        }
-      }
-    };
-
-    fetchCurrentName();
-  }, []);
 
   const keyboardPadding = useAnimatedStyle(() => {
     return {

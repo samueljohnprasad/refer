@@ -9,23 +9,33 @@ import {
 } from "react-native";
 import { Text } from "../Themed";
 import { Image } from "../ui/image";
-import { great } from "@/assets/emojis";
+import { bad, fine, good, great, terrible } from "@/assets/emojis";
 
 export type MoodBadgeProps = {
-  emoji?: string; // if undefined, show placeholder state
+  moodscore?: number;
   active?: boolean; // highlighted ring for selected day
   size?: number; // diameter of badge
   containerStyle?: StyleProp<ViewStyle>;
 };
 
+const moodEmojiMap = {
+  1: terrible,
+  2: bad,
+  3: fine,
+  4: good,
+  5: great,
+};
+
 export const MoodBadge: React.FC<MoodBadgeProps> = ({
-  emoji,
+  moodscore,
   size = 32,
   containerStyle,
 }) => {
   const diameter = size;
   const radius = diameter / 2;
-
+  const moodEmoji = moodscore
+    ? moodEmojiMap[moodscore as keyof typeof moodEmojiMap]
+    : null;
   return (
     <Animated.View
       style={[styles.wrapper, containerStyle]}
@@ -42,17 +52,13 @@ export const MoodBadge: React.FC<MoodBadgeProps> = ({
           backgroundColor: "rgba(0,0,0,0.06)",
         }}
       >
-        {emoji && (
+        {moodEmoji && (
           // <RNText style={{ fontSize: size * 0.65, lineHeight: size * 0.8 }}>
           //   {emoji}
           // </RNText>
-          <Image
-            source={great}
-            className="w-6 h-6"
-            alt={emoji}
-          />
+          <Image source={moodEmoji} className="w-6 h-6" alt={"moodEmoji"} />
         )}
-        {!emoji && <Text>+</Text>}
+        {!moodEmoji && <Text>+</Text>}
       </View>
     </Animated.View>
   );

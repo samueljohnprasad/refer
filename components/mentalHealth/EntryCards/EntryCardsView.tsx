@@ -117,10 +117,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         )}
       </View>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerClassName="gap-3"
-      >
+      <View className="gap-3">
         {entries.map((entry, index) => (
           <EntryCard
             key={entry.id}
@@ -129,7 +126,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
             index={index}
           />
         ))}
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -205,9 +202,11 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
               {entry.title}
             </Text>
             <View className="flex-row items-center">
-              <Text className="text-sm text-gray-500">
-                {format(new Date(), "h:mm a")}
-              </Text>
+              {entry.created_at && (
+                <Text className="text-sm text-gray-500">
+                  {format(new Date(entry.created_at), "h:mm a")}
+                </Text>
+              )}
               <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
               {/* <Feather
                 name={getEntryTypeIcon(entry.entryType) as any}
