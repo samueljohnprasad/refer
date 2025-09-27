@@ -118,6 +118,7 @@ const DailyNotesHeader = () => {
   // Pan gesture handlers are provided by useWeekNavigation
   return (
     <Animated.View
+      className="bg-violet-300"
       style={[styles.headerContainer, headerContainerAnimatedStyle]}
     >
       {/* Calendar Header */}
@@ -181,6 +182,7 @@ const DailyNotesHeader = () => {
           inlineCalendarAnimatedStyle,
           { top: isIso ? 45 : 10 },
         ]}
+        className="bg-violet-300"
       >
         <CalendarPicker
           moodMap={moodMap}
@@ -211,7 +213,7 @@ const DailyNotesHeader = () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: "#9F8CFF",
+    // backgroundColor: "#9F8CFF",
     justifyContent: "flex-end",
     position: "relative",
   },
@@ -279,7 +281,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     paddingHorizontal: 12,
     paddingBottom: 8,
-    backgroundColor: "#9F8CFF",
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
   },

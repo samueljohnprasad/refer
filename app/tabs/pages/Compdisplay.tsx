@@ -4,11 +4,15 @@ import useJournalEntryAnimations from "@/hooks/useJournalEntryAnimations";
 import TodayReflectionCard from "@/screens/JournalEntry/components/TodayReflectionCard";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import LevelProgressCard from "@/screens/JournalEntry/components/LevelProgressCard";
+import { startOfWeek, endOfWeek } from "date-fns";
+import WeeklyMoodChart from "@/components/mentalHealth/WeeklyMoodChart";
 
 const Compdisplay = () => {
   const { heroOpacity, heroTranslateY, sectionStyle } =
     useJournalEntryAnimations(2);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
+  const startOfWeekDate = startOfWeek(new Date(), { weekStartsOn: 0 });
+  const endOfWeekDate = endOfWeek(new Date(), { weekStartsOn: 0 });
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor: "#fff" }}>
       <Animated.View
@@ -24,6 +28,13 @@ const Compdisplay = () => {
       </Animated.View>
       <Animated.View style={sectionStyle(0)}>
         <LevelProgressCard xp={323} levelLabel="Gold" percent={34} />
+      </Animated.View>
+      <Animated.View style={sectionStyle(1)}>
+        <WeeklyMoodChart
+          startDate={startOfWeekDate}
+          endDate={endOfWeekDate}
+          title="This Week's Mood"
+        />
       </Animated.View>
     </View>
   );

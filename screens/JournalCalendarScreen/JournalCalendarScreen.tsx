@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import Svg, { Circle, Rect, Ellipse } from "react-native-svg";
-import { Calendar } from "react-native-calendars";
+import { Calendar, DateData } from "react-native-calendars";
 import { BlurView } from "expo-blur";
 import LottieView from "lottie-react-native";
 import { girlMeditationBlue, manRocket } from "@/assets/lottie";
@@ -111,7 +111,9 @@ export default function JournalCalendarScreen() {
   };
 
   const handleNextMonth = (): void => {
-    setMonthDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+    setMonthDate(
+      (prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1)
+    );
   };
 
   const handleSelectEntry = (entry: MoodEntry): void => {
@@ -279,12 +281,16 @@ export default function JournalCalendarScreen() {
           {/* Calendar section */}
           <View style={styles.calendarCard}>
             <Calendar
-              // horizontal
+              enableSwipeMonths
+              onVisibleMonthsChange={(months: DateData[]) => {
+                console.log("months", months);
+              }}
               firstDay={0}
               showSixWeeks={true}
-              hideExtraDays={true}
+              hideExtraDays={false}
               current={format(monthDate, "yyyy-MM-dd")}
               onMonthChange={(m) => {
+                console.log("onMonthChange", m);
                 const next = new Date(
                   `${m.year}-${String(m.month).padStart(2, "0")}-01`
                 );
@@ -337,20 +343,19 @@ export default function JournalCalendarScreen() {
                       style={{
                         alignItems: "center",
                         justifyContent: "center",
-                        width: 44,
-                        height: 56,
+                        // width: 44,
+                        // height: 56,
                         transform: [{ scale: scaleAnim }],
                       }}
                     >
                       {/* Circle container for emoji or plus */}
                       <View
                         style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: 16,
+                          width: 28,
+                          height: 28,
+                          borderRadius: 14,
                           alignItems: "center",
                           justifyContent: "center",
-                          marginBottom: 2,
                           backgroundColor: isSelected
                             ? PALETTE.purple
                             : isTodayDate
@@ -379,7 +384,7 @@ export default function JournalCalendarScreen() {
                         style={{
                           fontSize: 12,
                           color: isDisabled ? "#C7BFE7" : "#111827",
-                          }}
+                        }}
                       >
                         {date.day}
                       </Text>
@@ -408,11 +413,19 @@ export default function JournalCalendarScreen() {
 
           {/* Bottom action buttons */}
           <View style={styles.actionRow}>
-            <TouchableOpacity style={styles.primaryButton} activeOpacity={0.85} onPress={handleAddEntry}>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              activeOpacity={0.85}
+              onPress={handleAddEntry}
+            >
               <Text style={styles.primaryButtonText}>Add Entry</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.85} onPress={handleNextMonth}>
+            <TouchableOpacity
+              style={styles.secondaryButton}
+              activeOpacity={0.85}
+              onPress={handleNextMonth}
+            >
               <Text style={styles.secondaryButtonText}>Next Month</Text>
             </TouchableOpacity>
           </View>

@@ -8,6 +8,7 @@ import { useAtomValue } from "jotai";
 const useFetchMoods = () => {
   const { user } = useAuth();
   const calenderVisibleDates = useAtomValue(calenderVisibleDatesAtom);
+  console.log("calenderVisibleDates", calenderVisibleDates);
   async function fetchMonthlyMoods() {
     const moodMap = new Map<string, number>();
     if (
@@ -23,7 +24,6 @@ const useFetchMoods = () => {
 
     const endDate = new Date(calenderVisibleDates.visibleEndDate);
     endDate.setHours(23, 59, 59, 999);
-
     const { data, error } = await supabase
       .from("daily_moods")
       .select("day, mood_avg")
@@ -31,7 +31,7 @@ const useFetchMoods = () => {
       .gte("day", startDate.toISOString())
       .lt("day", endDate.toISOString())
       .order("day", { ascending: true });
-
+    console.log("datadatadata", data);
     if (error || !data) {
       console.error("Error fetching daily moods:", error);
       return moodMap;

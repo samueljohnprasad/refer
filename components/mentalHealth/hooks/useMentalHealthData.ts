@@ -30,7 +30,6 @@ export const useMentalHealthData = (selectedDate: Date) => {
         .order("created_at", { ascending: false })
         .overrideTypes<Array<{ feelings: FeelingsType[] }>>();
 
-      console.log("datadatadata", data, dateColErr);
       if (dateColErr || !data) throw dateColErr;
 
       const insightsResponse: InsightsTypeResponse[] = data.map((entry) => {

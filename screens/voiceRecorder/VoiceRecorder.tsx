@@ -1,4 +1,12 @@
-import { View, Text, SafeAreaView, Alert } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Alert,
+  Platform,
+  Linking,
+  PermissionsAndroid,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import MicControlContainer from "@/components/ui/MicControlContainer";
 import {
@@ -6,6 +14,9 @@ import {
   RecorderState,
   Waveform,
   useAudioPlayer,
+  useAudioPermission,
+  PermissionStatus,
+  UpdateFrequency,
   type IWaveformRef,
 } from "@simform_solutions/react-native-audio-waveform";
 import { Box } from "@/components/ui/box";
@@ -36,6 +47,24 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
     onCurrentDuration,
   } = useAudioPlayer();
 
+  // Microphone permission helpers (Android requires runtime permission)
+  const { checkHasAudioRecorderPermission, getAudioRecorderPermission } =
+    useAudioPermission();
+
+  // Fallback: Explicitly request Android RECORD_AUDIO via PermissionsAndroid
+  const ensureAndroidMicPermission = async (): Promise<boolean> => {
+    if (Platform.OS !== "android") return true;
+    try {
+      const status = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
+      );
+      return status === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.log("PermissionsAndroid.request error", err);
+      return false;
+    }
+  };
+
   const handleStopRecording = async () => {
     const path = await ref.current?.stopRecord();
     if (!path) return Alert.alert("Error", "Failed to stop recording");
@@ -53,10 +82,85 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
     setIsSpeaking(true);
   };
 
-  const handleStartRecording = async () => {
-    await ref.current?.startRecord();
-    setIsSpeaking(true);
+  const handleStartRecording = async (): Promise<void> => {
+    try {
+      // Ensure any players/extractors are stopped before starting a new recording
+      await stopPlayersAndExtractors();
+      await stopAllPlayers();
+      await stopAllWaveFormExtractors();
+
+      const hasPermission = await checkHasAudioRecorderPermission();
+
+      if (hasPermission === PermissionStatus.granted) {
+        const ok = await ref.current?.startRecord({
+          updateFrequency: UpdateFrequency.high,
+          ...(Platform.OS === "android" ? { useLegacy: true } : {}),
+        });
+        if (ok) {
+          setIsSpeaking(true);
+          return;
+        } else {
+          console.log("startRecord returned false (granted)");
+        }
+      }
+
+      if (hasPermission === PermissionStatus.undetermined) {
+        const status = await getAudioRecorderPermission();
+        if (status === PermissionStatus.granted) {
+          const ok = await ref.current?.startRecord({
+            updateFrequency: UpdateFrequency.high,
+            ...(Platform.OS === "android" ? { useLegacy: true } : {}),
+          });
+          if (ok) {
+            setIsSpeaking(true);
+            return;
+          } else {
+            console.log("startRecord returned false (post-request)");
+          }
+        }
+      }
+
+      if (hasPermission === PermissionStatus.denied && Platform.OS === "android") {
+        const granted = await ensureAndroidMicPermission();
+        if (granted) {
+          const ok = await ref.current?.startRecord({
+            updateFrequency: UpdateFrequency.high,
+            useLegacy: true,
+          });
+          if (ok) {
+            setIsSpeaking(true);
+            return;
+          }
+        }
+      }
+
+      Alert.alert(
+        "Microphone permission required",
+        "Please enable microphone access in Settings to start recording.",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Open Settings", onPress: () => Linking.openSettings() },
+        ]
+      );
+    } catch (e) {
+      console.log("handleStartRecording", e);
+      Alert.alert(
+        "Recording error",
+        "Unable to start recording. Please try again."
+      );
+    }
   };
+
+  // Preflight permission on mount for smoother UX (Android)
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "android") return;
+      const has = await checkHasAudioRecorderPermission();
+      if (has === PermissionStatus.undetermined) {
+        await getAudioRecorderPermission();
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     return () => {
