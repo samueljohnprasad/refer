@@ -68,7 +68,7 @@ function mixHex(a: string, b: string, t: number): string {
 
 // Helpers for 5-point scale rendering
 function toFiveScale(v10: number): number {
-  return v10 + 0.5; // clamp to 1..5 for display
+  return v10; // clamp to 1..5 for display
 }
 
 function colorForScore5(score5: number): string {
@@ -276,9 +276,17 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
                     const xMin: number = 0.5;
                     const xMax: number = totalDays + 0.5;
                     const t: number = (p.x - xMin) / (xMax - xMin); // 0..1
-                    const offset: string = `${Math.max(0, Math.min(1, t)) * 100}%`;
+                    const offset: string = `${
+                      Math.max(0, Math.min(1, t)) * 100
+                    }%`;
                     const color: string = colorForScore5(p.y);
-                    return <Stop key={`stop-${p.x}`} offset={offset} stopColor={color} />;
+                    return (
+                      <Stop
+                        key={`stop-${p.x}`}
+                        offset={offset}
+                        stopColor={color}
+                      />
+                    );
                   })}
               </LinearGradient>
             </Defs>
