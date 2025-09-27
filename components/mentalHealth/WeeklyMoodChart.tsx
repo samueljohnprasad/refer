@@ -20,6 +20,13 @@ import {
   MoodsMap,
 } from "@/components/mentalHealth/hooks/useFetchMoodsRange";
 import { emotions } from "@/assets/emojis";
+import {
+  MOOD_COLORS,
+  moodScoreToColor,
+  moodScoreToPale,
+  clampToMoodScore,
+  MOOD_PALE_COLORS,
+} from "@/constants/moodColors";
 
 export interface WeeklyMoodChartProps {
   startDate: Date; // inclusive
@@ -42,48 +49,28 @@ interface NumericPoint {
 type MoodLevel = "Terrible" | "Bad" | "Fine" | "Good" | "Great";
 
 const HEX = {
-  red: "#EF4444",
-  amber: "#F59E0B",
-  green: "#10B981",
   grid: "#EAF0F6",
 };
 
-function hexToRgb(hex: string): { r: number; g: number; b: number } {
-  const clean = hex.replace("#", "");
-  const bigint = parseInt(clean, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return { r, g, b };
-}
-
-function mixHex(a: string, b: string, t: number): string {
-  const ca = hexToRgb(a);
-  const cb = hexToRgb(b);
-  const r = Math.round(ca.r + (cb.r - ca.r) * t);
-  const g = Math.round(ca.g + (cb.g - ca.g) * t);
-  const b2 = Math.round(ca.b + (cb.b - ca.b) * t);
-  return `rgb(${r}, ${g}, ${b2})`;
-}
-
 // Helpers for 5-point scale rendering
 function toFiveScale(v10: number): number {
-  return v10; // clamp to 1..5 for display
+  return v10 + 0.5; // clamp to 1..5 for display
 }
 
-function colorForScore5(score5: number): string {
-  // Normalize 1..5 to 0..1 for gradient blending
-  const v = Math.max(0, Math.min(1, (score5 - 1) / 4));
-  if (v <= 0.5) return mixHex(HEX.red, HEX.amber, v / 0.5);
-  return mixHex(HEX.amber, HEX.green, (v - 0.5) / 0.5);
-}
-
-function levelForScore5(score5: number): MoodLevel {
-  if (score5 >= 4.5) return "Great";
-  if (score5 >= 3.5) return "Good";
-  if (score5 >= 2.5) return "Fine";
-  if (score5 >= 1.5) return "Bad";
-  return "Terrible";
+function moodLevelForScore(score: number): MoodLevel {
+  const s = clampToMoodScore(score);
+  switch (s) {
+    case 5:
+      return "Great";
+    case 4:
+      return "Good";
+    case 3:
+      return "Fine";
+    case 2:
+      return "Bad";
+    default:
+      return "Terrible";
+  }
 }
 
 function twoLetterDow(date: Date): string {
@@ -153,14 +140,15 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     numericPoints5.length > 0
       ? numericPoints5.reduce((s, p) => s + p.y, 0) / numericPoints5.length
       : 0;
-  const avgLabel: MoodLevel = levelForScore5(avg5);
+  const avgRounded = clampToMoodScore(avg5);
+  const avgLabel: MoodLevel = moodLevelForScore(avgRounded);
   const headerTitle: string = title;
   const headerSubtitle: string = `${format(startDate, "LLLL d")} - ${format(
     endDate,
     "d, yyyy"
   )}`;
   const chartHeight: number = 270;
-  const padding = { top: 10, bottom: 26, left: 10, right: 100 } as const;
+  const padding = { top: 10, bottom: 26, left: 10, right: 55 } as const;
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const onLayout = (e: LayoutChangeEvent): void => {
     setLayoutWidth(e.nativeEvent.layout.width);
@@ -170,14 +158,13 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   const byLevel: Record<MoodLevel, NumericPoint[]> = useMemo(() => {
     return numericPoints5.reduce<Record<MoodLevel, NumericPoint[]>>(
       (acc, p) => {
-        const lvl = levelForScore5(p.y);
+        const lvl: MoodLevel = moodLevelForScore(p.y);
         acc[lvl].push(p);
         return acc;
       },
       { Great: [], Good: [], Fine: [], Bad: [], Terrible: [] }
     );
   }, [numericPoints5]);
-  console.log("sdfsdfsd", byLevel);
   if (isLoading) {
     return (
       <View className="w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
@@ -238,7 +225,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
               width: 8,
               height: 8,
               borderRadius: 4,
-              backgroundColor: colorForScore5(avg5),
+              backgroundColor: moodScoreToColor(avgRounded),
               marginRight: 6,
             }}
           />
@@ -279,7 +266,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
                     const offset: string = `${
                       Math.max(0, Math.min(1, t)) * 100
                     }%`;
-                    const color: string = colorForScore5(p.y);
+                    const color: string = moodScoreToPale(p.y);
                     return (
                       <Stop
                         key={`stop-${p.x}`}
@@ -292,6 +279,8 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
             </Defs>
           )}
           <VictoryAxis
+            // dependentAxis
+            tickComponent={<View />}
             tickValues={xTickValues}
             tickFormat={xTickLabels}
             style={{
@@ -302,6 +291,8 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           />
           <VictoryAxis
             dependentAxis
+            axisComponent={<View />}
+            tickComponent={<View />}
             tickValues={[1, 2, 3, 4, 5]}
             style={{
               axis: { stroke: "#EEF2F7" },
@@ -333,7 +324,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
               size={5}
               style={{
                 data: {
-                  fill: colorForScore5(4.5),
+                  fill: MOOD_COLORS[5],
                   stroke: "#FFFFFF",
                   strokeWidth: 2,
                 },
@@ -350,7 +341,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
               size={5}
               style={{
                 data: {
-                  fill: colorForScore5(3.5),
+                  fill: MOOD_COLORS[4],
                   stroke: "#FFFFFF",
                   strokeWidth: 2,
                 },
@@ -364,7 +355,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
               size={5}
               style={{
                 data: {
-                  fill: colorForScore5(2.5),
+                  fill: MOOD_COLORS[3],
                   stroke: "#FFFFFF",
                   strokeWidth: 2,
                 },
@@ -378,7 +369,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
               size={5}
               style={{
                 data: {
-                  fill: colorForScore5(1.5),
+                  fill: MOOD_COLORS[2],
                   stroke: "#FFFFFF",
                   strokeWidth: 2,
                 },
@@ -392,7 +383,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
               size={5}
               style={{
                 data: {
-                  fill: colorForScore5(1),
+                  fill: MOOD_COLORS[1],
                   stroke: "#FFFFFF",
                   strokeWidth: 2,
                 },
@@ -417,12 +408,12 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
         >
           {(
             [
-              { key: "great", bg: "#DCFCE7" },
-              { key: "good", bg: "#E0F2FE" },
-              { key: "fine", bg: "#FEF3C7" },
-              { key: "bad", bg: "#FFEDD5" },
-              { key: "terrible", bg: "#FEE2E2" },
-            ] as Array<{ key: keyof typeof emotions; bg: string }>
+              { score: 5, key: "great" },
+              { score: 4, key: "good" },
+              { score: 3, key: "fine" },
+              { score: 2, key: "bad" },
+              { score: 1, key: "terrible" },
+            ] as const
           ).map((it) => (
             <View
               key={it.key}
@@ -430,7 +421,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
                 width: 28,
                 height: 28,
                 borderRadius: 14,
-                backgroundColor: it.bg,
+                backgroundColor: moodScoreToPale(it.score),
                 alignItems: "center",
                 justifyContent: "center",
                 shadowColor: "#000",
@@ -439,7 +430,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
               }}
             >
               <Image
-                source={emotions[it.key]}
+                source={emotions[it.key as keyof typeof emotions]}
                 style={{ width: 18, height: 18 }}
                 resizeMode="contain"
               />

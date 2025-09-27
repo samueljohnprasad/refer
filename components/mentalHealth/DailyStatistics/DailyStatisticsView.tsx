@@ -4,6 +4,7 @@ import { Text } from "@/components/ui/text";
 import { DailyStatistics } from "@/types/mentalHealth";
 // Simplified inline components for charts and cards
 import { Feather } from "@expo/vector-icons";
+import { moodScoreToColor, clampToMoodScore } from "@/constants/moodColors";
 
 interface DailyStatisticsViewProps {
   dailyStats: DailyStatistics | null;
@@ -46,10 +47,10 @@ export const DailyStatisticsView: React.FC<DailyStatisticsViewProps> = ({
     return moodEmojis[mood] || "😐";
   };
 
-  const getMoodScoreColor = (score: number): string => {
-    if (score >= 7) return "text-green-600";
-    if (score >= 5) return "text-yellow-600";
-    return "text-red-500";
+  const getMoodScoreHex = (score10: number): string => {
+    // Convert 0..10 to 1..5 and map to centralized color
+    const five = clampToMoodScore(Math.round(score10 / 2));
+    return moodScoreToColor(five);
   };
 
   const getStressLevelColor = (level: number): string => {
@@ -93,9 +94,8 @@ export const DailyStatisticsView: React.FC<DailyStatisticsViewProps> = ({
 
           <View className="items-end">
             <Text
-              className={`text-2xl font-bold ${getMoodScoreColor(
-                dailyStats.moodScore
-              )}`}
+              className={`text-2xl font-bold`}
+              style={{ color: getMoodScoreHex(dailyStats.moodScore) }}
             >
               {dailyStats.moodScore.toFixed(1)}
             </Text>

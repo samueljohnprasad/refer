@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Text } from '@/components/ui/text';
+import { moodScoreToColor, clampToMoodScore } from '@/constants/moodColors';
 
 interface MoodChartProps {
   moodScore: number;
@@ -16,11 +17,14 @@ export const MoodChart: React.FC<MoodChartProps> = ({
   // Create a simple visual representation of mood vs stress
   const moodPercentage = (moodScore / 10) * 100;
   const stressPercentage = (stressLevel / 10) * 100;
-  
-  const getMoodColor = (score: number): string => {
-    if (score >= 7) return '#10B981'; // green
-    if (score >= 5) return '#F59E0B'; // yellow
-    return '#EF4444'; // red
+
+  const toFiveMood = (score10: number): number => {
+    // Convert 0..10 mood score to 1..5 scale
+    return clampToMoodScore(Math.round(score10 / 2));
+  };
+
+  const getMoodColor = (score10: number): string => {
+    return moodScoreToColor(toFiveMood(score10));
   };
 
   const getStressColor = (level: number): string => {

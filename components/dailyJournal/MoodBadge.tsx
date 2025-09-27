@@ -10,6 +10,7 @@ import {
 import { Text } from "../Themed";
 import { Image } from "../ui/image";
 import { bad, fine, good, great, terrible } from "@/assets/emojis";
+import { moodScoreToPale, clampToMoodScore } from "@/constants/moodColors";
 
 export type MoodBadgeProps = {
   moodscore?: number;
@@ -36,6 +37,10 @@ export const MoodBadge: React.FC<MoodBadgeProps> = ({
   const moodEmoji = moodscore
     ? moodEmojiMap[moodscore as keyof typeof moodEmojiMap]
     : null;
+  const bgColor =
+    typeof moodscore === "number"
+      ? moodScoreToPale(clampToMoodScore(moodscore))
+      : "rgba(0,0,0,0.06)";
   return (
     <Animated.View
       style={[styles.wrapper, containerStyle]}
@@ -49,7 +54,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = ({
           borderRadius: radius,
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "rgba(0,0,0,0.06)",
+          backgroundColor: bgColor,
         }}
       >
         {moodEmoji && (

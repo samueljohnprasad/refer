@@ -35,7 +35,7 @@ export const useWeekNavigation = (
   const {
     setCurrentWeek,
     durationEnterMs = 400,
-    durationReturnMs = 300,
+    durationReturnMs = 100,
     swipeTriggerDx = 50,
     slideDivisor = 50,
     weekStartsOn = 0,
