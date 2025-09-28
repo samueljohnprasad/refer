@@ -4,15 +4,16 @@ import useJournalEntryAnimations from "@/hooks/useJournalEntryAnimations";
 import TodayReflectionCard from "@/screens/JournalEntry/components/TodayReflectionCard";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import LevelProgressCard from "@/screens/JournalEntry/components/LevelProgressCard";
-import { startOfWeek, endOfWeek } from "date-fns";
+import { startOfWeek, endOfWeek, sub } from "date-fns";
 import WeeklyMoodChart from "@/components/mentalHealth/WeeklyMoodChart";
 
 const Compdisplay = () => {
   const { heroOpacity, heroTranslateY, sectionStyle } =
     useJournalEntryAnimations(2);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
-  const startOfWeekDate = startOfWeek(new Date(), { weekStartsOn: 0 });
-  const endOfWeekDate = endOfWeek(new Date(), { weekStartsOn: 0 });
+  const yesterday = sub(new Date(), { days: 1 });
+  const startOfWeekDate = startOfWeek(yesterday, { weekStartsOn: 0 });
+  const endOfWeekDate = endOfWeek(yesterday, { weekStartsOn: 0 });
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor: "#fff" }}>
       <Animated.View

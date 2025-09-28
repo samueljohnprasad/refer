@@ -6,7 +6,7 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useColorScheme } from "@/components/useColorScheme";
 import { Slot } from "expo-router";
@@ -16,8 +16,15 @@ import { StyleSheet, Platform } from "react-native";
 import { AuthProvider } from "@/context/AuthContext";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PressablesConfig } from "pressto";
+import * as Haptics from "expo-haptics";
 
 const queryClient = new QueryClient();
+const globalPressableHandlers = {
+  onPress: () => {
+    Haptics.selectionAsync();
+  },
+};
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -65,20 +72,24 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <AuthProvider>
-      <GestureHandlerRootView style={StyleSheet.absoluteFill}>
-        <GluestackUIProvider mode={colorScheme === "dark" ? "dark" : "light"}>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <QueryClientProvider client={queryClient}>
-              <KeyboardProvider>
-                <Slot />
-              </KeyboardProvider>
-            </QueryClientProvider>
-          </ThemeProvider>
-        </GluestackUIProvider>
-      </GestureHandlerRootView>
-    </AuthProvider>
+    <Suspense>
+      <AuthProvider>
+        <GestureHandlerRootView style={StyleSheet.absoluteFill}>
+          <GluestackUIProvider mode={colorScheme === "dark" ? "dark" : "light"}>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <QueryClientProvider client={queryClient}>
+                <KeyboardProvider>
+                  <PressablesConfig globalHandlers={globalPressableHandlers}>
+                    <Slot />
+                  </PressablesConfig>
+                </KeyboardProvider>
+              </QueryClientProvider>
+            </ThemeProvider>
+          </GluestackUIProvider>
+        </GestureHandlerRootView>
+      </AuthProvider>
+    </Suspense>
   );
 }

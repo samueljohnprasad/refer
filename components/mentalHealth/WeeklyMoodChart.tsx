@@ -54,7 +54,7 @@ const HEX = {
 
 // Helpers for 5-point scale rendering
 function toFiveScale(v10: number): number {
-  return v10 + 0.5; // clamp to 1..5 for display
+  return v10; // clamp to 1..5 for display
 }
 
 function moodLevelForScore(score: number): MoodLevel {
@@ -304,7 +304,10 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           {/* Continuous line overlay */}
           <VictoryLine
             labelComponent={<View />}
-            data={numericPoints5}
+            data={numericPoints5.map((p) => ({
+              x: p.x,
+              y: p.y + 0.5,
+            }))}
             interpolation="cardinal"
             style={{
               data: {
@@ -320,7 +323,10 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           {byLevel.Great.length > 0 && (
             <VictoryScatter
               labelComponent={<View />}
-              data={byLevel.Great}
+              data={byLevel.Great.map((point) => ({
+                x: point.x,
+                y: point.y + 0.5,
+              }))}
               size={5}
               style={{
                 data: {
@@ -336,7 +342,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
               labelComponent={<View />}
               data={byLevel.Good.map((point) => ({
                 x: point.x,
-                y: point.y,
+                y: point.y + 0.5,
               }))}
               size={5}
               style={{
@@ -351,7 +357,10 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           {byLevel.Fine.length > 0 && (
             <VictoryScatter
               labelComponent={<View />}
-              data={byLevel.Fine}
+              data={byLevel.Fine.map((point) => ({
+                x: point.x,
+                y: point.y + 0.5,
+              }))}
               size={5}
               style={{
                 data: {
@@ -365,7 +374,10 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           {byLevel.Bad.length > 0 && (
             <VictoryScatter
               labelComponent={<View />}
-              data={byLevel.Bad}
+              data={byLevel.Bad.map((point) => ({
+                x: point.x,
+                y: point.y + 0.5,
+              }))}
               size={5}
               style={{
                 data: {
@@ -379,7 +391,10 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           {byLevel.Terrible.length > 0 && (
             <VictoryScatter
               labelComponent={<View />}
-              data={byLevel.Terrible}
+              data={byLevel.Terrible.map((point) => ({
+                x: point.x,
+                y: point.y + 0.5,
+              }))}
               size={5}
               style={{
                 data: {

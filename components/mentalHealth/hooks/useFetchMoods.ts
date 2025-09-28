@@ -8,7 +8,6 @@ import { useAtomValue } from "jotai";
 const useFetchMoods = () => {
   const { user } = useAuth();
   const calenderVisibleDates = useAtomValue(calenderVisibleDatesAtom);
-  console.log("calenderVisibleDates", calenderVisibleDates);
   async function fetchMonthlyMoods() {
     const moodMap = new Map<string, number>();
     if (
