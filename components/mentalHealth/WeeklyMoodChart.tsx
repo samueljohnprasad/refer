@@ -1,10 +1,21 @@
-import React, { useMemo, useState } from "react";
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 import {
   View,
   ActivityIndicator,
   LayoutChangeEvent,
   Image,
+  FlatList,
+  ViewToken,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from "react-native";
+import { Animated } from "react-native";
 import { Text } from "@/components/ui/text";
 import {
   VictoryAxis,
@@ -25,7 +36,6 @@ import {
   moodScoreToColor,
   moodScoreToPale,
   clampToMoodScore,
-  MOOD_PALE_COLORS,
 } from "@/constants/moodColors";
 
 export interface WeeklyMoodChartProps {
@@ -105,23 +115,281 @@ const buildChartData = (
   return points;
 };
 
+interface ChartPageProps {
+  startDate: Date;
+  endDate: Date;
+  width: number;
+  height: number;
+  padding: { top: number; bottom: number; left: number; right: number };
+}
+
+const ChartPage: React.FC<ChartPageProps> = React.memo(
+  ({ startDate, endDate, width, height, padding }) => {
+    const { data, isLoading } = useFetchMoodsRange({ startDate, endDate });
+
+    const points: ChartPoint[] = useMemo(
+      () => buildChartData(startDate, endDate, (data as MoodsMap) ?? new Map()),
+      [startDate, endDate, data]
+    );
+
+    const totalDays: number = points.length;
+    const numericPoints5: NumericPoint[] = useMemo(
+      () =>
+        points
+          .map((p, idx) =>
+            p.y !== null
+              ? { x: idx + 1, y: toFiveScale(p.y), label: p.x }
+              : null
+          )
+          .filter((p): p is NumericPoint => p !== null),
+      [points]
+    );
+
+    const xTickValues: number[] = useMemo(
+      () => Array.from({ length: totalDays }, (_, i) => i + 1),
+      [totalDays]
+    );
+    const xTickLabels: string[] = useMemo(
+      () => points.map((p) => p.x),
+      [points]
+    );
+
+    const hasData: boolean = numericPoints5.length > 0;
+
+    const byLevel: Record<MoodLevel, NumericPoint[]> = useMemo(() => {
+      return numericPoints5.reduce<Record<MoodLevel, NumericPoint[]>>(
+        (acc, p) => {
+          const lvl: MoodLevel = moodLevelForScore(p.y);
+          acc[lvl].push(p);
+          return acc;
+        },
+        { Great: [], Good: [], Fine: [], Bad: [], Terrible: [] }
+      );
+    }, [numericPoints5]);
+
+    const gradientId: string = `weeklyMoodLineGradient-${format(
+      startDate,
+      "yyyyMMdd"
+    )}`;
+
+    return (
+      <View style={{ width }}>
+        <View>
+          <VictoryChart
+            width={width || undefined}
+            height={height}
+            padding={padding}
+            domain={{ x: [0.5, totalDays + 0.5], y: [1, 6] }}
+            theme={VictoryTheme.material}
+          >
+            {width > 0 && hasData && (
+              <Defs>
+                <LinearGradient
+                  id={gradientId}
+                  x1={padding.left}
+                  y1={0}
+                  x2={width - padding.right}
+                  y2={0}
+                  gradientUnits="userSpaceOnUse"
+                >
+                  {numericPoints5
+                    .slice()
+                    .sort((a, b) => a.x - b.x)
+                    .map((p) => {
+                      const xMin: number = 0.5;
+                      const xMax: number = totalDays + 0.5;
+                      const t: number = (p.x - xMin) / (xMax - xMin);
+                      const offset: string = `${
+                        Math.max(0, Math.min(1, t)) * 100
+                      }%`;
+                      const color: string = moodScoreToPale(p.y);
+                      return (
+                        <Stop
+                          key={`stop-${p.x}`}
+                          offset={offset}
+                          stopColor={color}
+                        />
+                      );
+                    })}
+                </LinearGradient>
+              </Defs>
+            )}
+
+            <VictoryAxis
+              tickComponent={<View />}
+              tickValues={xTickValues}
+              tickFormat={xTickLabels}
+              style={{
+                axis: { stroke: "#EEF2F7" },
+                tickLabels: { fontSize: 11, padding: 10, fill: "#9AA4B2" },
+                grid: { stroke: "transparent" },
+              }}
+            />
+            <VictoryAxis
+              dependentAxis
+              axisComponent={<View />}
+              tickComponent={<View />}
+              tickValues={[1, 2, 3, 4, 5]}
+              style={{
+                axis: { stroke: "#EEF2F7" },
+                tickLabels: { fill: "transparent" },
+                grid: { stroke: HEX.grid, strokeDasharray: "4,8" },
+              }}
+            />
+
+            {hasData && (
+              <VictoryLine
+                labelComponent={<View />}
+                data={numericPoints5.map((p) => ({ x: p.x, y: p.y + 0.5 }))}
+                interpolation="cardinal"
+                style={{
+                  data: {
+                    stroke: width > 0 ? `url(#${gradientId})` : "#64748B",
+                    strokeWidth: 2,
+                    strokeLinecap: "round",
+                  },
+                }}
+              />
+            )}
+
+            {byLevel.Great.length > 0 && (
+              <VictoryScatter
+                labelComponent={<View />}
+                data={byLevel.Great.map((point) => ({
+                  x: point.x,
+                  y: point.y + 0.5,
+                }))}
+                size={5}
+                style={{
+                  data: {
+                    fill: MOOD_COLORS[5],
+                    stroke: "#FFFFFF",
+                    strokeWidth: 2,
+                  },
+                }}
+              />
+            )}
+            {byLevel.Good.length > 0 && (
+              <VictoryScatter
+                labelComponent={<View />}
+                data={byLevel.Good.map((point) => ({
+                  x: point.x,
+                  y: point.y + 0.5,
+                }))}
+                size={5}
+                style={{
+                  data: {
+                    fill: MOOD_COLORS[4],
+                    stroke: "#FFFFFF",
+                    strokeWidth: 2,
+                  },
+                }}
+              />
+            )}
+            {byLevel.Fine.length > 0 && (
+              <VictoryScatter
+                labelComponent={<View />}
+                data={byLevel.Fine.map((point) => ({
+                  x: point.x,
+                  y: point.y + 0.5,
+                }))}
+                size={5}
+                style={{
+                  data: {
+                    fill: MOOD_COLORS[3],
+                    stroke: "#FFFFFF",
+                    strokeWidth: 2,
+                  },
+                }}
+              />
+            )}
+            {byLevel.Bad.length > 0 && (
+              <VictoryScatter
+                labelComponent={<View />}
+                data={byLevel.Bad.map((point) => ({
+                  x: point.x,
+                  y: point.y + 0.5,
+                }))}
+                size={5}
+                style={{
+                  data: {
+                    fill: MOOD_COLORS[2],
+                    stroke: "#FFFFFF",
+                    strokeWidth: 2,
+                  },
+                }}
+              />
+            )}
+            {byLevel.Terrible.length > 0 && (
+              <VictoryScatter
+                labelComponent={<View />}
+                data={byLevel.Terrible.map((point) => ({
+                  x: point.x,
+                  y: point.y + 0.5,
+                }))}
+                size={5}
+                style={{
+                  data: {
+                    fill: MOOD_COLORS[1],
+                    stroke: "#FFFFFF",
+                    strokeWidth: 2,
+                  },
+                }}
+              />
+            )}
+          </VictoryChart>
+        </View>
+        {isLoading && (
+          <View
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ActivityIndicator />
+          </View>
+        )}
+      </View>
+    );
+  }
+);
+
 export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   startDate,
   endDate,
   title = "Mood Flow",
 }) => {
+  // Pager state for sliding weeks
+  const [weekIndex, setWeekIndex] = useState<number>(0);
+  const spanDays: number = differenceInCalendarDays(endDate, startDate) + 1;
+
+  const effectiveStartDate: Date = useMemo(
+    () => addDays(startDate, weekIndex * spanDays),
+    [startDate, weekIndex, spanDays]
+  );
+  const effectiveEndDate: Date = useMemo(
+    () => addDays(endDate, weekIndex * spanDays),
+    [endDate, weekIndex, spanDays]
+  );
+
   const { data, isLoading, isError } = useFetchMoodsRange({
-    startDate,
-    endDate,
+    startDate: effectiveStartDate,
+    endDate: effectiveEndDate,
   });
+
   const points: ChartPoint[] = useMemo(
     () =>
       buildChartData(
-        startDate,
-        endDate,
+        effectiveStartDate,
+        effectiveEndDate,
         (data as MoodsMap) ?? new Map<string, number>()
       ),
-    [startDate, endDate, data]
+    [effectiveStartDate, effectiveEndDate, data]
   );
   const totalDays: number = points.length;
 
@@ -131,11 +399,6 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       p.y !== null ? { x: idx + 1, y: toFiveScale(p.y), label: p.x } : null
     )
     .filter((p): p is NumericPoint => p !== null);
-  const xTickValues: number[] = Array.from(
-    { length: totalDays },
-    (_, i) => i + 1
-  );
-  const xTickLabels: string[] = points.map((p) => p.x);
   const avg5: number =
     numericPoints5.length > 0
       ? numericPoints5.reduce((s, p) => s + p.y, 0) / numericPoints5.length
@@ -143,10 +406,10 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   const avgRounded = clampToMoodScore(avg5);
   const avgLabel: MoodLevel = moodLevelForScore(avgRounded);
   const headerTitle: string = title;
-  const headerSubtitle: string = `${format(startDate, "LLLL d")} - ${format(
-    endDate,
-    "d, yyyy"
-  )}`;
+  const headerSubtitle: string = `${format(
+    effectiveStartDate,
+    "LLLL d"
+  )} - ${format(effectiveEndDate, "d, yyyy")}`;
   const chartHeight: number = 270;
   const padding = { top: 10, bottom: 26, left: 10, right: 55 } as const;
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
@@ -154,17 +417,73 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     setLayoutWidth(e.nativeEvent.layout.width);
   };
 
-  // Group points by mood level for dot colors
-  const byLevel: Record<MoodLevel, NumericPoint[]> = useMemo(() => {
-    return numericPoints5.reduce<Record<MoodLevel, NumericPoint[]>>(
-      (acc, p) => {
-        const lvl: MoodLevel = moodLevelForScore(p.y);
-        acc[lvl].push(p);
-        return acc;
-      },
-      { Great: [], Good: [], Fine: [], Bad: [], Terrible: [] }
-    );
-  }, [numericPoints5]);
+  // Animated FlatList pager (virtualized weeks)
+  type WeekOffset = number; // negative for past, positive for future
+  const PRELOAD_WEEKS: number = 52;
+  const CENTER_INDEX: number = PRELOAD_WEEKS;
+  const pages: WeekOffset[] = useMemo(
+    () =>
+      Array.from(
+        { length: PRELOAD_WEEKS * 2 + 1 },
+        (_, i) => i - PRELOAD_WEEKS
+      ),
+    []
+  );
+
+  const listRef = useRef<FlatList<WeekOffset> | null>(null);
+  const onViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      const v = viewableItems.find((vi) => vi.isViewable);
+      if (v?.index != null) {
+        const idx = v.index as number;
+        setWeekIndex(idx - CENTER_INDEX);
+      }
+    }
+  ).current;
+  const viewabilityConfig = useRef({
+    viewAreaCoveragePercentThreshold: 60,
+  }).current;
+
+  // Use an integer page width everywhere to avoid subpixel drift
+  const pageWidth: number = useMemo(
+    () => (layoutWidth > 0 ? Math.round(layoutWidth) : 0),
+    [layoutWidth]
+  );
+
+  const renderItem = useCallback(
+    ({ item }: { item: WeekOffset }) => (
+      <ChartPage
+        startDate={addDays(startDate, item * spanDays)}
+        endDate={addDays(endDate, item * spanDays)}
+        width={pageWidth}
+        height={chartHeight}
+        padding={padding}
+      />
+    ),
+    [startDate, endDate, spanDays, pageWidth, chartHeight, padding]
+  );
+
+  const keyExtractor = useCallback((item: WeekOffset) => `week-${item}`, []);
+  const getItemLayout = useCallback(
+    (_: ArrayLike<WeekOffset> | null | undefined, index: number) => ({
+      length: pageWidth,
+      offset: pageWidth * index,
+      index,
+    }),
+    [pageWidth]
+  );
+
+  const onMomentumScrollEnd = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>): void => {
+      if (pageWidth <= 0) return;
+      const x = e.nativeEvent.contentOffset.x;
+      const idx = Math.round(x / pageWidth);
+      // Clamp to exact page to eliminate any pixel drift
+      listRef.current?.scrollToIndex({ index: idx, animated: false });
+    },
+    [pageWidth]
+  );
+
   if (isLoading) {
     return (
       <View className="w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
@@ -175,28 +494,11 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       </View>
     );
   }
-
   if (isError) {
     return (
       <View className="w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
         <Text className="text-base font-semibold mb-2">{title}</Text>
         <Text className="text-red-500">Failed to load mood data.</Text>
-      </View>
-    );
-  }
-
-  if (numericPoints5.length === 0) {
-    return (
-      <View className="w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
-        <Text className="text-xl font-extrabold text-gray-800 text-center">
-          {headerTitle}
-        </Text>
-        <Text className="text-xs text-gray-500 text-center mt-1">
-          {headerSubtitle}
-        </Text>
-        <View className="py-8 items-center justify-center">
-          <Text className="text-gray-500">No entries yet for this range.</Text>
-        </View>
       </View>
     );
   }
@@ -209,7 +511,6 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
         shadowRadius: 20,
         shadowOffset: { width: 0, height: 6 },
       }}
-      onLayout={onLayout}
     >
       {/* Header */}
       <View className="flex-row items-center justify-between px-1">
@@ -236,176 +537,42 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
         </View>
       </View>
 
-      {/* Chart area */}
-      <View className="mt-3">
-        <VictoryChart
-          width={layoutWidth || undefined}
-          height={chartHeight}
-          padding={padding}
-          domain={{ x: [0.5, totalDays + 0.5], y: [1, 6] }}
-          theme={VictoryTheme.material}
-        >
-          {/* Gradient for line color transitions between moods */}
-          {layoutWidth > 0 && (
-            <Defs>
-              <LinearGradient
-                id="weeklyMoodLineGradient"
-                x1={padding.left}
-                y1={0}
-                x2={layoutWidth - padding.right}
-                y2={0}
-                gradientUnits="userSpaceOnUse"
-              >
-                {numericPoints5
-                  .slice()
-                  .sort((a, b) => a.x - b.x)
-                  .map((p) => {
-                    const xMin: number = 0.5;
-                    const xMax: number = totalDays + 0.5;
-                    const t: number = (p.x - xMin) / (xMax - xMin); // 0..1
-                    const offset: string = `${
-                      Math.max(0, Math.min(1, t)) * 100
-                    }%`;
-                    const color: string = moodScoreToPale(p.y);
-                    return (
-                      <Stop
-                        key={`stop-${p.x}`}
-                        offset={offset}
-                        stopColor={color}
-                      />
-                    );
-                  })}
-              </LinearGradient>
-            </Defs>
-          )}
-          <VictoryAxis
-            // dependentAxis
-            tickComponent={<View />}
-            tickValues={xTickValues}
-            tickFormat={xTickLabels}
-            style={{
-              axis: { stroke: "#EEF2F7" },
-              tickLabels: { fontSize: 11, padding: 10, fill: "#9AA4B2" },
-              grid: { stroke: "transparent" },
-            }}
+      {/* Chart area (swipeable) */}
+      <View className="mt-3 overflow-hidden" onLayout={onLayout}>
+        {layoutWidth === 0 ? (
+          <View style={{ height: chartHeight, alignItems: "center", justifyContent: "center" }}>
+            <ActivityIndicator />
+          </View>
+        ) : (
+          <Animated.FlatList
+            ref={listRef}
+            data={pages}
+            horizontal
+            pagingEnabled
+            snapToInterval={pageWidth}
+            snapToAlignment="start"
+            disableIntervalMomentum
+            // onMomentumScrollEnd={onMomentumScrollEnd}
+            scrollEventThrottle={16}
+            initialScrollIndex={CENTER_INDEX}
+            showsHorizontalScrollIndicator={false}
+            bounces={false}
+            overScrollMode="never"
+            decelerationRate="fast"
+            nestedScrollEnabled
+            hitSlop={{ left: 124, right: 124 }}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+            getItemLayout={getItemLayout}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewabilityConfig}
+            onScrollEndDrag={onMomentumScrollEnd}
+            windowSize={5}
+            maxToRenderPerBatch={3}
+            directionalLockEnabled
+            removeClippedSubviews={false}
           />
-          <VictoryAxis
-            dependentAxis
-            axisComponent={<View />}
-            tickComponent={<View />}
-            tickValues={[1, 2, 3, 4, 5]}
-            style={{
-              axis: { stroke: "#EEF2F7" },
-              tickLabels: { fill: "transparent" },
-              grid: { stroke: HEX.grid, strokeDasharray: "4,8" },
-            }}
-          />
-
-          {/* Continuous line overlay */}
-          <VictoryLine
-            labelComponent={<View />}
-            data={numericPoints5.map((p) => ({
-              x: p.x,
-              y: p.y + 0.5,
-            }))}
-            interpolation="cardinal"
-            style={{
-              data: {
-                stroke:
-                  layoutWidth > 0 ? "url(#weeklyMoodLineGradient)" : "#64748B",
-                strokeWidth: 2,
-                strokeLinecap: "round",
-              },
-            }}
-          />
-
-          {/* Dots per level to avoid style functions */}
-          {byLevel.Great.length > 0 && (
-            <VictoryScatter
-              labelComponent={<View />}
-              data={byLevel.Great.map((point) => ({
-                x: point.x,
-                y: point.y + 0.5,
-              }))}
-              size={5}
-              style={{
-                data: {
-                  fill: MOOD_COLORS[5],
-                  stroke: "#FFFFFF",
-                  strokeWidth: 2,
-                },
-              }}
-            />
-          )}
-          {byLevel.Good.length > 0 && (
-            <VictoryScatter
-              labelComponent={<View />}
-              data={byLevel.Good.map((point) => ({
-                x: point.x,
-                y: point.y + 0.5,
-              }))}
-              size={5}
-              style={{
-                data: {
-                  fill: MOOD_COLORS[4],
-                  stroke: "#FFFFFF",
-                  strokeWidth: 2,
-                },
-              }}
-            />
-          )}
-          {byLevel.Fine.length > 0 && (
-            <VictoryScatter
-              labelComponent={<View />}
-              data={byLevel.Fine.map((point) => ({
-                x: point.x,
-                y: point.y + 0.5,
-              }))}
-              size={5}
-              style={{
-                data: {
-                  fill: MOOD_COLORS[3],
-                  stroke: "#FFFFFF",
-                  strokeWidth: 2,
-                },
-              }}
-            />
-          )}
-          {byLevel.Bad.length > 0 && (
-            <VictoryScatter
-              labelComponent={<View />}
-              data={byLevel.Bad.map((point) => ({
-                x: point.x,
-                y: point.y + 0.5,
-              }))}
-              size={5}
-              style={{
-                data: {
-                  fill: MOOD_COLORS[2],
-                  stroke: "#FFFFFF",
-                  strokeWidth: 2,
-                },
-              }}
-            />
-          )}
-          {byLevel.Terrible.length > 0 && (
-            <VictoryScatter
-              labelComponent={<View />}
-              data={byLevel.Terrible.map((point) => ({
-                x: point.x,
-                y: point.y + 0.5,
-              }))}
-              size={5}
-              style={{
-                data: {
-                  fill: MOOD_COLORS[1],
-                  stroke: "#FFFFFF",
-                  strokeWidth: 2,
-                },
-              }}
-            />
-          )}
-        </VictoryChart>
+        )}
       </View>
 
       {/* Emoji rail on the right */}
