@@ -30,7 +30,6 @@ const useFetchMoods = () => {
       .gte("day", startDate.toISOString())
       .lt("day", endDate.toISOString())
       .order("day", { ascending: true });
-    console.log("datadatadata", data);
     if (error || !data) {
       console.error("Error fetching daily moods:", error);
       return moodMap;

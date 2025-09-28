@@ -11,7 +11,7 @@ const Compdisplay = () => {
   const { heroOpacity, heroTranslateY, sectionStyle } =
     useJournalEntryAnimations(2);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
-  const yesterday = sub(new Date(), { days: 1 });
+  const yesterday = sub(new Date(), { days: 0 });
   const startOfWeekDate = startOfWeek(yesterday, { weekStartsOn: 0 });
   const endOfWeekDate = endOfWeek(yesterday, { weekStartsOn: 0 });
   return (

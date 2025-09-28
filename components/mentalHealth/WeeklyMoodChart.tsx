@@ -419,27 +419,31 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
 
   // Animated FlatList pager (virtualized weeks)
   type WeekOffset = number; // negative for past, positive for future
-  const PRELOAD_WEEKS: number = 52;
-  const CENTER_INDEX: number = PRELOAD_WEEKS;
+  const PRELOAD_PAST_WEEKS: number = 52;
   const pages: WeekOffset[] = useMemo(
     () =>
       Array.from(
-        { length: PRELOAD_WEEKS * 2 + 1 },
-        (_, i) => i - PRELOAD_WEEKS
+        { length: PRELOAD_PAST_WEEKS + 1 },
+        (_, i) => i - PRELOAD_PAST_WEEKS
       ),
     []
   );
+  const CURRENT_INDEX: number = pages.length - 1; // index of offset 0 (current week)
 
   const listRef = useRef<FlatList<WeekOffset> | null>(null);
-  const onViewableItemsChanged = useRef(
+  const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       const v = viewableItems.find((vi) => vi.isViewable);
-      if (v?.index != null) {
-        const idx = v.index as number;
-        setWeekIndex(idx - CENTER_INDEX);
+      if (v) {
+        const offset: WeekOffset =
+          typeof v.item === "number"
+            ? (v.item as WeekOffset)
+            : (pages[v.index ?? CURRENT_INDEX] as WeekOffset);
+        setWeekIndex(offset);
       }
-    }
-  ).current;
+    },
+    [pages, CURRENT_INDEX]
+  );
   const viewabilityConfig = useRef({
     viewAreaCoveragePercentThreshold: 60,
   }).current;
@@ -540,7 +544,13 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       {/* Chart area (swipeable) */}
       <View className="mt-3 overflow-hidden" onLayout={onLayout}>
         {layoutWidth === 0 ? (
-          <View style={{ height: chartHeight, alignItems: "center", justifyContent: "center" }}>
+          <View
+            style={{
+              height: chartHeight,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <ActivityIndicator />
           </View>
         ) : (
@@ -554,7 +564,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
             disableIntervalMomentum
             // onMomentumScrollEnd={onMomentumScrollEnd}
             scrollEventThrottle={16}
-            initialScrollIndex={CENTER_INDEX}
+            initialScrollIndex={CURRENT_INDEX}
             showsHorizontalScrollIndicator={false}
             bounces={false}
             overScrollMode="never"
