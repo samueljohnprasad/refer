@@ -32,6 +32,7 @@ async function fetchMoodsInRange(
     .lt('day', endIso)
     .order('day', { ascending: true });
 
+  console.log('datadatadata', data);
   if (error || !data) {
     console.error('Error fetching daily moods:', error);
     return moodMap;

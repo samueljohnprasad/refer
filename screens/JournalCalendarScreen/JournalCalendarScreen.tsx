@@ -17,13 +17,14 @@ import { Calendar, DateData } from "react-native-calendars";
 import { BlurView } from "expo-blur";
 import LottieView from "lottie-react-native";
 import { girlMeditationBlue, manRocket } from "@/assets/lottie";
-import { format } from "date-fns";
+import { endOfWeek, format, startOfWeek, sub } from "date-fns";
 import { useRouter } from "expo-router";
 import { Box } from "@/components/ui/box";
 import BlurModal from "../components/BlurModal";
 import { EntryDetailModal } from "@/components/mentalHealth/EntryModal/EntryDetailModal";
 import type { MoodEntry } from "@/types/mentalHealth";
 import { useCalendarEntries } from "@/hooks/useCalendarEntries";
+import WeeklyMoodChart from "@/components/mentalHealth/WeeklyMoodChart";
 
 const { width, height } = Dimensions.get("window");
 
@@ -135,6 +136,10 @@ export default function JournalCalendarScreen() {
       return dateStr;
     }
   };
+
+  const yesterday = sub(new Date(), { days: 0 });
+  const startOfWeekDate = startOfWeek(yesterday, { weekStartsOn: 0 });
+  const endOfWeekDate = endOfWeek(yesterday, { weekStartsOn: 0 });
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -276,6 +281,14 @@ export default function JournalCalendarScreen() {
                 source={manRocket}
               />
             </View>
+          </View>
+
+          <View className="mt-5">
+            <WeeklyMoodChart
+              startDate={startOfWeekDate}
+              endDate={endOfWeekDate}
+              title="This Week's Mood"
+            />
           </View>
 
           {/* Calendar section */}
