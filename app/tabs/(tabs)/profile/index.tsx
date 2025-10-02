@@ -12,14 +12,29 @@ import { Heading } from "@/components/ui/heading";
 import { Icon } from "@/components/ui/icon";
 import { Center } from "@/components/ui/center";
 import { Modal } from "react-native";
-import { AirbnbFlipInteraction } from "@/screens/components/airbnb-flip-interaction";
+import { AirbnbFlipInteraction } from "@/screens/components/animations/airbnb-flip-interaction";
 import Animations from "../../pages/Animations";
+import AppOnboarding from "@/screens/OnboardingStepper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Example() {
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = React.useState(0);
   return (
-    <Center className="flex-1 justify-center items-center">
-      <Animations />
-    </Center>
+    <SafeAreaView
+      edges={["top"]}
+      className="flex-1 justify-center items-center"
+    >
+      {/* <Animations /> */}
+      <Button onPress={() => setShowModal(1)}>
+        <ButtonText>animations</ButtonText>
+      </Button>
+      <Button onPress={() => setShowModal(2)}>
+        <ButtonText>onboarding</ButtonText>
+      </Button>
+      <Modal visible={!!showModal}>
+        {showModal === 1 && <Animations />}
+        {showModal === 2 && <AppOnboarding />}
+      </Modal>
+    </SafeAreaView>
   );
 }

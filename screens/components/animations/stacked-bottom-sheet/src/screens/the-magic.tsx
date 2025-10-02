@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { Spiral } from '../../../spiral';
+import { Spiral } from "../../../spiral";
 
 const MagicScreen: React.FC<{
   height: number;

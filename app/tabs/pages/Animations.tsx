@@ -1,16 +1,18 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Button, ButtonText } from "@/components/ui/button";
-import { AirbnbFlipInteraction } from "@/screens/components/airbnb-flip-interaction";
-import { ParticlesButton } from "@/screens/components/particles-button";
-import { ComposableTextScreen } from "@/screens/components/composable-text";
-import { FluidTabInteraction } from "@/screens/components/fluid-tab-interaction";
-import { VerificationCodeFace } from "@/screens/components/verification-code-face";
-import { DeleteButton } from "@/screens/components/delete-button";
-import { IMessageStack } from "@/screens/components/imessage-stack";
-import { StackedBottomSheet } from "@/screens/components/stacked-bottom-sheet";
-import { VerificationCode } from "@/screens/components/verification-code";
-import { LoadingButton } from "@/screens/components/loading-button";
+import { AirbnbFlipInteraction } from "@/screens/components/animations/airbnb-flip-interaction";
+import { ParticlesButton } from "@/screens/components/animations/particles-button";
+import { ComposableTextScreen } from "@/screens/components/animations/composable-text";
+import { FluidTabInteraction } from "@/screens/components/animations/fluid-tab-interaction";
+import { VerificationCodeFace } from "@/screens/components/animations/verification-code-face";
+import { DeleteButton } from "@/screens/components/animations/delete-button";
+import { IMessageStack } from "@/screens/components/animations/imessage-stack";
+import { StackedBottomSheet } from "@/screens/components/animations/stacked-bottom-sheet";
+import { VerificationCode } from "@/screens/components/animations/verification-code";
+import { LoadingButton } from "@/screens/components/animations/loading-button";
+import { Steps } from "@/screens/components/animations/steps";
+import AnimatedFloatingInput from "@/screens/components/AnimatedFloatingInput";
 
 const comps = {
   0: "airbnb",
@@ -23,9 +25,12 @@ const comps = {
   7: "stacked-bottom-sheet",
   8: "verification-code",
   9: "loading-button",
+  10: "steps",
+  11: "animated-floating-input",
 };
 const Animations = () => {
   const [state, setState] = React.useState(0);
+  const [email, setEmail] = React.useState("");
   return (
     <View className="flex-1  relative w-full">
       <View className="gap-3 mt-20">
@@ -51,6 +56,16 @@ const Animations = () => {
       {state === 8 && <StackedBottomSheet />}
       {state === 9 && <VerificationCode />}
       {state === 10 && <LoadingButton />}
+      {state === 11 && <Steps />}
+      {state === 12 && (
+        <View className="mt-28">
+          <AnimatedFloatingInput
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+          />
+        </View>
+      )}
     </View>
   );
 };
