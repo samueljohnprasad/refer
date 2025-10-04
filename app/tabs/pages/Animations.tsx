@@ -12,7 +12,8 @@ import { StackedBottomSheet } from "@/screens/components/animations/stacked-bott
 import { VerificationCode } from "@/screens/components/animations/verification-code";
 import { LoadingButton } from "@/screens/components/animations/loading-button";
 import { Steps } from "@/screens/components/animations/steps";
-import AnimatedFloatingInput from "@/screens/components/AnimatedFloatingInput";
+import { NameInput } from "@/screens/components/animations/name-input";
+import NotificationsUI from "@/screens/components/NotificationsUI";
 
 const comps = {
   0: "airbnb",
@@ -26,16 +27,16 @@ const comps = {
   8: "verification-code",
   9: "loading-button",
   10: "steps",
-  11: "animated-floating-input",
+  11: "name-input",
+  12: "notifications",
 };
 const Animations = () => {
   const [state, setState] = React.useState(0);
-  const [email, setEmail] = React.useState("");
   return (
     <View className="flex-1  relative w-full">
       <View className="gap-3 mt-20">
         {!!!state &&
-          [...Array(20)].map((_, i) => (
+          [...Array(Object.keys(comps).length)].map((_, i) => (
             <Button key={i} onPress={() => setState(i + 1)}>
               <ButtonText>{comps[i as keyof typeof comps]}</ButtonText>
             </Button>
@@ -57,15 +58,8 @@ const Animations = () => {
       {state === 9 && <VerificationCode />}
       {state === 10 && <LoadingButton />}
       {state === 11 && <Steps />}
-      {state === 12 && (
-        <View className="mt-28">
-          <AnimatedFloatingInput
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Email"
-          />
-        </View>
-      )}
+      {state === 12 && <NameInput />}
+      {state === 13 && <NotificationsUI />}
     </View>
   );
 };

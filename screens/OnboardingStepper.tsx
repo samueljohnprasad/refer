@@ -20,6 +20,8 @@ import Animated, {
 import { ChevronLeft, ArrowRight } from "lucide-react-native";
 import { Emotion } from "@/assets/emojis";
 import EmotionsStepper from "@/components/onboarding/mood/EmotionsStepper";
+import { JournalOptions } from "@/screens/components/animations/steps/src/steps/journal-options/JournalOptions";
+import { JOURNALING_REASONS } from "@/constants/journaling";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -80,14 +82,7 @@ const moods: MoodDef[] = [
   },
 ];
 
-const journalingReasons = [
-  "Track my daily emotions",
-  "Build better habits",
-  "Reduce stress & anxiety",
-  "Personal growth",
-  "Improve relationships",
-  "Other",
-];
+const journalingReasons = Array.from(JOURNALING_REASONS);
 
 const moodOptions = ["😞", "😢", "😐", "🙂", "😄", "🥰", "😴", "😤", "🤔"];
 
@@ -234,30 +229,14 @@ export default function OnboardingScreen(): JSX.Element {
 
       case "options":
         return (
-          <Animated.View
-            entering={FadeIn.delay(200)}
-            style={styles.optionsContainer}
-          >
-            {journalingReasons.map((reason, index) => (
-              <Animated.View key={reason} entering={FadeIn.delay(index * 50)}>
-                <Pressable
-                  style={[
-                    styles.optionButton,
-                    formData.reason === reason && styles.optionButtonSelected,
-                  ]}
-                  onPress={() => setFormData({ ...formData, reason })}
-                >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      formData.reason === reason && styles.optionTextSelected,
-                    ]}
-                  >
-                    {reason}
-                  </Text>
-                </Pressable>
-              </Animated.View>
-            ))}
+          <Animated.View entering={FadeIn.delay(200)}>
+            <JournalOptions
+              reasons={journalingReasons}
+              selectedReason={formData.reason}
+              onSelect={(reason: string) =>
+                setFormData({ ...formData, reason })
+              }
+            />
           </Animated.View>
         );
 

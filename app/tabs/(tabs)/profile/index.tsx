@@ -6,7 +6,7 @@ import NameEditScreen from "@/screens/EditName";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Box } from "@/components/ui/box";
 
-import { Text } from "@/components/Themed";
+import { Text, View } from "@/components/Themed";
 import React from "react";
 import { Heading } from "@/components/ui/heading";
 import { Icon } from "@/components/ui/icon";
@@ -16,14 +16,12 @@ import { AirbnbFlipInteraction } from "@/screens/components/animations/airbnb-fl
 import Animations from "../../pages/Animations";
 import AppOnboarding from "@/screens/OnboardingStepper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Steps } from "@/screens/components/animations/steps";
 
 export default function Example() {
   const [showModal, setShowModal] = React.useState(0);
   return (
-    <SafeAreaView
-      edges={["top"]}
-      className="flex-1 justify-center items-center"
-    >
+    <View className="flex-1 justify-center items-center">
       {/* <Animations /> */}
       <Button onPress={() => setShowModal(1)}>
         <ButtonText>animations</ButtonText>
@@ -35,6 +33,6 @@ export default function Example() {
         {showModal === 1 && <Animations />}
         {showModal === 2 && <AppOnboarding />}
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }

@@ -35,6 +35,14 @@ export const MOOD_PALE_COLORS_ARR_200 = [
   "#bbf7d0",
   "#bfdbfe",
 ];
+
+export const MOOD_PALE_COLORS_ARR_100 = [
+  "#fee2e2",
+  "#ffedd5",
+  "#fef9c3",
+  "#dcfce7",
+  "#dbeafe",
+];
 export function clampToMoodScore(value: number): MoodScore {
   const v = Math.round(value);
   return Math.min(5, Math.max(1, v)) as unknown as MoodScore;
