@@ -21,18 +21,19 @@ import { Steps } from "@/screens/components/animations/steps";
 export default function Example() {
   const [showModal, setShowModal] = React.useState(0);
   return (
-    <View className="flex-1 justify-center items-center">
-      {/* <Animations /> */}
-      <Button onPress={() => setShowModal(1)}>
-        <ButtonText>animations</ButtonText>
-      </Button>
-      <Button onPress={() => setShowModal(2)}>
-        <ButtonText>onboarding</ButtonText>
-      </Button>
-      <Modal visible={!!showModal}>
-        {showModal === 1 && <Animations />}
-        {showModal === 2 && <AppOnboarding />}
-      </Modal>
-    </View>
+    // <View className="flex-1 justify-center items-center">
+    //   {/* <Animations /> */}
+    //   <Button onPress={() => setShowModal(1)}>
+    //     <ButtonText>animations</ButtonText>
+    //   </Button>
+    //   <Button onPress={() => setShowModal(2)}>
+    //     <ButtonText>onboarding</ButtonText>
+    //   </Button>
+    //   <Modal visible={!!showModal}>
+    //     {showModal === 1 && <Animations />}
+    //     {showModal === 2 && <AppOnboarding />}
+    //   </Modal>
+    // </View>
+    <Steps />
   );
 }

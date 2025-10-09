@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Pressable } from "react-native";
 import Animated, {
   FadeIn,
   interpolateColor,
@@ -13,7 +13,6 @@ import Animated, {
 
 import { Dots } from "./steps/dots";
 import { SplitButton } from "./steps/split-button";
-import { MOOD_PALE_COLORS_ARR_100 } from "@/constants/moodColors";
 import { Text } from "@/components/Themed";
 import { NameInput } from "../../name-input";
 import { KeyboardToolbar } from "react-native-keyboard-controller";
@@ -23,15 +22,17 @@ import { JournalOptions } from "./steps/journal-options/JournalOptions";
 import { JOURNALING_REASONS } from "@/constants/journaling";
 import { Demographics } from "./steps/demographics/Demographics";
 import type { Gender } from "./steps/demographics/Demographics";
+import { GreatCelebration } from "./steps/great/GreatCelebration";
+import { MOOD_PALE_COLORS_ARR_100 } from "@/constants/moodColors";
 
-type InputType = "name" | "birthday" | "options" | "reminder" | "";
+type InputType = "name" | "birthday" | "options" | "reminder" | "great";
 
 interface MoodDef {
   emoji: string;
   name: string;
   backgroundColor: string;
-  headline: string;
-  subtext: string;
+  headline?: string;
+  subtext?: string;
   inputType: InputType;
 }
 
@@ -81,10 +82,10 @@ const moods: MoodDef[] = [
   {
     emoji: "😄",
     name: "Great",
-    backgroundColor: "#CCE5FF",
-    headline: "Welcome to Great 🎉",
+    backgroundColor: "#FEF3E7",
+    headline: "",
     subtext: "",
-    inputType: "",
+    inputType: "great",
   },
 ];
 
@@ -232,6 +233,12 @@ const App = () => {
         );
       case "reminder":
         return <NotificationsUI />;
+      case "great":
+        return (
+          <View className="flex-1 w-full mt-24">
+            <GreatCelebration />
+          </View>
+        );
       default:
         return null;
     }
@@ -257,7 +264,6 @@ const App = () => {
               label: "Continue",
               labelColor: "white",
               onPress: () => {
-                // if (!canProceed()) return;
                 increaseActiveIndex();
                 setSplitted(true);
               },
@@ -278,15 +284,6 @@ const App = () => {
             rightAction={{
               label: rightLabel,
               labelColor: "white",
-              // icon: (
-              //   <Animated.View
-              //     entering={ScaleIconEnteringKeyframe}
-              //     exiting={ScaleIconExitingKeyframe}
-              //     style={styles.icon}
-              //   >
-              //     <Feather name="arrow-right" size={20} />
-              //   </Animated.View>
-              // ),
               iconVisible: true,
               onPress: () => {
                 // if (!canProceed()) return;
@@ -299,8 +296,9 @@ const App = () => {
             }}
           />
         </View>
-        <Animated.View style={keyboardPadding} />
+        <Animated.View style={keyboardPadding} pointerEvents="none" />
         <KeyboardToolbar
+          pointerEvents="none"
           content={<Text></Text>}
           showArrows={false}
           insets={{ left: 16, right: 0 }}

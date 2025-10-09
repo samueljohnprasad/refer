@@ -34,19 +34,20 @@ const Animations = () => {
   const [state, setState] = React.useState(0);
   return (
     <View className="flex-1  relative w-full">
-      <View className="gap-3 mt-20">
-        {!!!state &&
-          [...Array(Object.keys(comps).length)].map((_, i) => (
+      {!!!state && (
+        <View className="gap-3 mt-20">
+          {[...Array(Object.keys(comps).length)].map((_, i) => (
             <Button key={i} onPress={() => setState(i + 1)}>
               <ButtonText>{comps[i as keyof typeof comps]}</ButtonText>
             </Button>
           ))}
-      </View>
-      {!!state && (
+        </View>
+      )}
+      {/* {!!state && (
         <Button className="absolute top-14 z-10" onPress={() => setState(0)}>
           <ButtonText>airbnb</ButtonText>
         </Button>
-      )}
+      )} */}
       {state === 1 && <AirbnbFlipInteraction />}
       {state === 2 && <ParticlesButton />}
       {state === 3 && <ComposableTextScreen />}

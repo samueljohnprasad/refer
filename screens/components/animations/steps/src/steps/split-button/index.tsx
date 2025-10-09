@@ -1,10 +1,10 @@
-import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from "react-native";
 import Animated, {
   LinearTransition,
   useAnimatedStyle,
   withTiming,
-} from 'react-native-reanimated';
-import { PressableScale } from 'pressto';
+} from "react-native-reanimated";
+import { PressableScale } from "pressto";
 
 type SplitAction = {
   label: string;
@@ -67,7 +67,7 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
       width: withTiming(mainButtonWidth),
       marginLeft: withTiming(splitted ? gap : 0),
       backgroundColor: withTiming(
-        splitted ? rightAction.backgroundColor : mainAction.backgroundColor,
+        splitted ? rightAction.backgroundColor : mainAction.backgroundColor
       ),
     };
   }, [splitted]);
@@ -87,11 +87,12 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
   return (
     <View
       style={{
-        width: '100%',
+        width: "100%",
         height: ButtonHeight,
         paddingHorizontal,
-        flexDirection: 'row',
-      }}>
+        flexDirection: "row",
+      }}
+    >
       <PressableScale
         onPress={leftAction.onPress}
         style={[
@@ -100,7 +101,8 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
           },
           rLeftButtonStyle,
           styles.button,
-        ]}>
+        ]}
+      >
         <Animated.Text
           layout={leftAction.iconVisible ? LayoutTransitionDefault : undefined}
           numberOfLines={1}
@@ -110,14 +112,16 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
             {
               color: leftAction.labelColor,
             },
-          ]}>
+          ]}
+        >
           {leftAction.iconVisible && leftAction.icon}
           {leftAction.label}
         </Animated.Text>
       </PressableScale>
       <PressableScale
         onPress={splitted ? rightAction.onPress : mainAction.onPress}
-        style={[rMainButtonStyle, styles.button]}>
+        style={[rMainButtonStyle, styles.button]}
+      >
         <Animated.Text
           layout={mainAction.iconVisible ? LayoutTransitionDefault : undefined}
           style={[
@@ -126,7 +130,8 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
             {
               color: mainAction.labelColor,
             },
-          ]}>
+          ]}
+        >
           {mainAction.iconVisible && mainAction.icon}
           {mainAction.label}
         </Animated.Text>
@@ -138,7 +143,8 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
             {
               color: rightAction.labelColor,
             },
-          ]}>
+          ]}
+        >
           {rightAction.iconVisible && rightAction.icon}
           {rightAction.label}
         </Animated.Text>
@@ -150,18 +156,18 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
 const styles = StyleSheet.create({
   label: {
     fontSize: 18,
-    color: 'white',
-    position: 'absolute',
-    overflow: 'visible',
+    color: "white",
+    position: "absolute",
+    overflow: "visible",
     letterSpacing: 0.5,
-    fontFamily: 'SF-Pro-Rounded-Bold',
+    fontFamily: "SF-Pro-Rounded-Bold",
   },
   button: {
     height: ButtonHeight,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 30,
-    borderCurve: 'continuous',
-    flexDirection: 'row',
+    borderCurve: "continuous",
+    flexDirection: "row",
   },
 });

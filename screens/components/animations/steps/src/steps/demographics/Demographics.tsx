@@ -50,27 +50,6 @@ export const Demographics: React.FC<DemographicsProps> = ({
 
   return (
     <View className="w-full px-6 py-2 mb-8 relative">
-      {/* Decorative background */}
-      <Canvas
-        style={{ position: "absolute", left: 0, right: 0, top: 0, height: 140 }}
-        pointerEvents="none"
-      >
-        <Circle cx={40} cy={24} r={120} opacity={0.8}>
-          <RadialGradient
-            c={vec(40, 24)}
-            r={120}
-            colors={["rgba(99,102,241,0.20)", "rgba(99,102,241,0)"]}
-          />
-        </Circle>
-        <Circle cx={280} cy={8} r={100} opacity={0.8}>
-          <RadialGradient
-            c={vec(280, 8)}
-            r={100}
-            colors={["rgba(56,189,248,0.18)", "rgba(56,189,248,0)"]}
-          />
-        </Circle>
-      </Canvas>
-
       {(title || helperText) && (
         <Animated.View entering={FadeIn.duration(250)} className="mb-4">
           {title && (
