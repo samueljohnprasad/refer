@@ -2,7 +2,9 @@
 
 # dependencies
 node_modules/
-
+iOS/
+android/
+ios/
 # Expo
 .expo/
 dist/
@@ -14,6 +16,7 @@ expo-env.d.ts
 *.orig.*
 *.jks
 *.p8
+
 *.p12
 *.key
 *.mobileprovision
