@@ -28,6 +28,8 @@ import {
   scheduleDailyReminder,
   cancelReminder,
 } from "@/src/lib/notification-reminders";
+import { hydrateLocalFromSupabaseIfEmpty } from "@/src/network/reminders";
+import { atom, useAtom } from "jotai";
 
 type FeatherName = ComponentProps<typeof Feather>["name"];
 type MCName = ComponentProps<typeof MaterialCommunityIcons>["name"];
@@ -39,7 +41,8 @@ type MCName = ComponentProps<typeof MaterialCommunityIcons>["name"];
 type BaseItem = {
   id: string;
   title: string;
-  time: string;
+  hour: number;
+  minute: number;
 };
 
 type FeItem = BaseItem & { iconLib: "fe"; icon: FeatherName };
@@ -53,35 +56,34 @@ const DEFAULT_DATA: Item[] = [
     id: "1",
     title: "Morning",
     icon: "weather-sunset-up",
-    time: "09:01 AM",
+    hour: 9,
+    minute: 1,
     iconLib: "mc",
   },
-  { id: "2", title: "Day", icon: "sun", time: "02:30 PM", iconLib: "fe" },
+  { id: "2", title: "Day", icon: "sun", hour: 14, minute: 30, iconLib: "fe" },
   {
     id: "3",
     title: "Evening",
     icon: "weather-night",
-    time: "09:00 PM",
+    hour: 21,
+    minute: 0,
     iconLib: "mc",
   },
 ];
 
+type NotificationsUIProps = {};
+
+export const cfgAtom = atom<RemindersConfig>({});
 // Component: manages screen state, loads and saves reminders config,
 // schedules/cancels notifications, and reflects UI status.
-const NotificationsUI: React.FC = () => {
-  // items: the visible rows and their current times (what the user sees)
+const NotificationsUI: React.FC<NotificationsUIProps> = ({}) => {
   const [items, setItems] = useState<Item[]>(DEFAULT_DATA);
-  // selectedIds: which reminder rows are toggled ON (enabled)
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  // editingId: which row's time picker is currently open (null means closed)
+  // const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
-  // cfg: persisted configuration (enabled/time/notifId/title) from AsyncStorage
-  const [cfg, setCfg] = useState<RemindersConfig>({});
+  const [cfg, setCfg] = useAtom(cfgAtom);
   const openEdit = (id: string) => {
     setEditingId(id);
   };
-
-  console.log("cfg", cfg);
   const closeEdit = () => setEditingId(null);
 
   // On first mount: load saved reminder settings from storage, then
@@ -90,23 +92,22 @@ const NotificationsUI: React.FC = () => {
   useEffect(() => {
     let active = true;
     (async () => {
-      const stored = await loadRemindersConfig();
-      if (!Object.entries(stored).length) {
-      }
+      let stored = await loadRemindersConfig();
       if (!active) return;
+      // If local storage is empty, try hydrating from Supabase (single daily time)
+      if (Object.keys(stored).length === 0) {
+        // stored = await hydrateLocalFromSupabaseIfEmpty(stored, "1", "Morning");
+      }
       setCfg(stored);
       // Put saved times into the UI list so the user sees what was last chosen
       setItems((prev) =>
         prev.map((it) => {
           const c = stored[it.id];
-          return c?.time ? { ...it, time: c.time } : it;
+          return c?.hour
+            ? { ...it, hour: c.hour, minute: c.minute, enabled: c.enabled }
+            : it;
         })
       );
-      // Mark which rows should render as enabled (toggled ON)
-      const sel = new Set(
-        Object.keys(stored).filter((k) => stored[k]?.enabled)
-      );
-      setSelectedIds(sel);
     })();
     return () => {
       active = false;
@@ -122,97 +123,98 @@ const NotificationsUI: React.FC = () => {
   // 2) Save it to storage
   // 3) If this reminder is currently enabled, cancel the old schedule and
   //    immediately schedule a new daily notification at the new time.
-  const handleConfirm = (formatted: string) => {
+  const handleConfirm = ({
+    hour,
+    minute,
+  }: {
+    hour: number;
+    minute: number;
+  }) => {
     if (!editingId) return;
     const id = editingId;
     const it = items.find((x) => x.id === id) ?? null;
 
     // Update the UI list with the new time string (e.g., '09:30 PM')
     setItems((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, time: formatted } : p))
+      prev.map((p) => (p.id === id ? { ...p, hour, minute } : p))
     );
     setEditingId(null);
 
-    (async () => {
-      // Merge into our persisted config
-      let nextCfg: RemindersConfig = {
-        ...cfg,
-        [id]: {
-          ...(cfg[id] ?? {}),
-          time: formatted,
-          title: it?.title ?? cfg[id]?.title,
-          enabled: cfg[id]?.enabled ?? false,
-        },
-      };
+    // Merge into our persisted config
+    let nextCfg: RemindersConfig = {
+      ...cfg,
+      [id]: {
+        ...(cfg[id] ?? {}),
+        hour,
+        minute,
+        title: it?.title ?? cfg[id]?.title,
+        enabled: cfg[id]?.enabled ?? false,
+      },
+    };
+    setCfg(nextCfg);
 
-      // If enabled, reschedule to reflect the new time.
-      if (selectedIds.has(id)) {
-        await cancelReminder(cfg[id]?.notifId);
-        const newNotifId = await scheduleDailyReminder(
-          id,
-          it?.title ?? "Reminder",
-          formatted
-        );
-        nextCfg = {
-          ...nextCfg,
-          [id]: { ...nextCfg[id], notifId: newNotifId },
-        };
-      }
+    // If enabled, reschedule to reflect the new time.
+    // if (selectedIds.has(id)) {
+    //   await cancelReminder(cfg[id]?.notifId);
+    //   const newNotifId = await scheduleDailyReminder(
+    //     id,
+    //     it?.title ?? "Reminder",
+    //     { hour, minute }
+    //   );
+    //   nextCfg = {
+    //     ...nextCfg,
+    //     [id]: { ...nextCfg[id], notifId: newNotifId },
+    //   };
+    // }
 
-      // Persist to AsyncStorage so it survives app restarts.
-      setCfg(nextCfg);
-      await saveRemindersConfig(nextCfg);
-    })();
+    // Persist to AsyncStorage so it survives app restarts.
+    // await saveRemindersConfig(nextCfg);
   };
 
   // Toggle a reminder ON/OFF when the user taps the small circle:
   // - ON: ask for permission (if needed), schedule a daily notification,
   //       remember the new notifId, and persist.
   // - OFF: cancel the scheduled notification and persist.
-  const toggleSelected = (id: string) => {
+  const toggleSelected = async (id: string) => {
     const it = items.find((x) => x.id === id) ?? null;
     if (!it) return;
-    (async () => {
-      if (selectedIds.has(id)) {
-        // Turning OFF: cancel any existing schedule for this slot
-        await cancelReminder(cfg[id]?.notifId);
-        const nextCfg: RemindersConfig = {
-          ...cfg,
-          [id]: { ...(cfg[id] ?? {}), enabled: false },
-        };
-        setCfg(nextCfg);
-        await saveRemindersConfig(nextCfg);
-        setSelectedIds((prev) => {
-          const next = new Set(prev);
-          next.delete(id);
-          return next;
-        });
 
-        return;
-      }
-
-      // Turning ON: ensure the OS has granted notification permission
-      const granted = await ensureNotificationPermissions();
-      if (!granted) return;
-
-      // Schedule a daily notification at the selected time
-      const notifId = await scheduleDailyReminder(id, it.title, it.time);
+    const enabled = cfg[id]?.enabled ?? false;
+    if (enabled) {
+      // Turning OFF: cancel any existing schedule for this slot
+      // await cancelReminder(cfg[id]?.notifId);
       const nextCfg: RemindersConfig = {
         ...cfg,
-        [id]: { time: it.time, enabled: true, notifId, title: it.title },
+        [id]: { ...(cfg[id] ?? {}), enabled: false },
       };
       setCfg(nextCfg);
-      await saveRemindersConfig(nextCfg);
-      setSelectedIds((prev) => {
-        const next = new Set(prev);
-        next.add(id);
-        return next;
-      });
-    })();
+      // await saveRemindersConfig(nextCfg);
+      return;
+    }
+
+    // Turning ON: ensure the OS has granted notification permission
+    const granted = await ensureNotificationPermissions();
+    if (!granted) return;
+
+    // Schedule a daily notification at the selected time
+    // const notifId = await scheduleDailyReminder(id, it.title, {
+    //   hour: it.hour,
+    //   minute: it.minute,
+    // });
+    const nextCfg: RemindersConfig = {
+      ...cfg,
+      [id]: {
+        hour: it.hour,
+        minute: it.minute,
+        enabled: true,
+        title: it.title,
+      },
+    };
+    setCfg(nextCfg);
   };
 
   const renderItem: ListRenderItem<Item> = ({ item }) => {
-    const isSelected = selectedIds.has(item.id);
+    const isSelected = cfg[item.id]?.enabled;
     return (
       <View style={styles.card}>
         <View style={styles.leftRow}>
@@ -235,7 +237,9 @@ const NotificationsUI: React.FC = () => {
             style={styles.timePill}
             onPress={() => openEdit(item.id)}
           >
-            <Text style={styles.timeText}>{item.time}</Text>
+            <Text style={styles.timeText}>
+              {item.hour}:{item.minute}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => toggleSelected(item.id)}
@@ -281,7 +285,10 @@ const NotificationsUI: React.FC = () => {
         {/* Time Picker Modal (reusable) */}
         <TimePickerModal
           visible={!!editingId}
-          initial={currentEditingItem?.time}
+          initial={{
+            hour: currentEditingItem?.hour ?? 9,
+            minute: currentEditingItem?.minute ?? 0,
+          }}
           minuteStep={1}
           onCancel={closeEdit}
           onConfirm={handleConfirm}

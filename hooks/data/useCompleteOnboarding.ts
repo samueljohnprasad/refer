@@ -1,5 +1,6 @@
 import { OnBoardingFormData } from "@/src/components/steps/src";
 import { useAuth } from "@/src/context/AuthContext";
+import { RemindersConfig } from "@/src/lib/notification-reminders";
 import { supabase } from "@/src/network/auth/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback } from "react";
@@ -10,32 +11,47 @@ export const useCompleteOnboarding = () => {
   const { user } = useAuth();
 
   const markCompleted = useCallback(
-    async (onBoardingData: OnBoardingFormData): Promise<void> => {
-      await AsyncStorage.setItem(ONBOARDING_KEY, "true");
+    async (
+      onBoardingData: OnBoardingFormData & { cfg: RemindersConfig }
+    ): Promise<void> => {
       if (!user) return;
 
       console.log("onBoardingData", onBoardingData);
 
-      await supabase.from("profiles").upsert(
-        {
-          id: user.id,
-          onboarding_completed: true,
-          display_name: onBoardingData.name,
-          age_range: onBoardingData.ageRange,
-          gender: onBoardingData.gender,
-          reasons: onBoardingData.reasons,
-        },
-        { onConflict: "id" }
-      );
-
-     const { data, error } =   await supabase.from("user_preferences").upsert(
+      const { data, error } = await supabase.from("user_preferences").upsert(
         {
           user_id: user.id,
-          daily_reminder_enabled: onBoardingData.reminderEnabled,
-          daily_reminder_time: onBoardingData.reminderTime,
+          remainders: onBoardingData.cfg,
+          daily_reminder_enabled: true,
         },
         { onConflict: "user_id" }
       );
+
+      if (error) {
+        console.error("Error updating user preferences:", error);
+        throw error;
+      }
+
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .upsert(
+          {
+            id: user.id,
+            onboarding_completed: true,
+            display_name: onBoardingData.name,
+            age_range: onBoardingData.ageRange,
+            gender: onBoardingData.gender,
+            reasons: onBoardingData.reasons,
+          },
+          { onConflict: "id" }
+        );
+
+      if (profileError) {
+        console.error("Error updating profile:", profileError);
+        throw profileError;
+      }
+
+      await AsyncStorage.setItem(ONBOARDING_KEY, "true");
     },
     []
   );

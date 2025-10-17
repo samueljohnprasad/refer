@@ -7,13 +7,12 @@ dayjs.extend(customParseFormat);
 
 export type TimePickerModalProps = {
   visible: boolean;
-  initial?: string; // formatted as 'hh:mm A'
+  initial?: { hour: number; minute: number };
   // Allowed minute intervals per @react-native-community/datetimepicker
   minuteStep?: 1 | 2 | 3 | 4 | 5 | 6 | 10 | 12 | 15 | 20 | 30; // default 5
   title?: string;
   onCancel: () => void;
-  onConfirm: (formatted: string) => void; // returns 'hh:mm A'
-  onChange?: (formatted: string) => void; // live updates
+  onConfirm: ({ hour, minute }: { hour: number; minute: number }) => void;
 };
 export const TimePickerModal: React.FC<TimePickerModalProps> = ({
   visible,
@@ -22,21 +21,17 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = ({
   title = "Select time",
   onCancel,
   onConfirm,
-  onChange,
 }) => {
   // Build an initial Date from the 'hh:mm A' string (or fallback to now)
   const initialDate = useMemo(() => {
     if (initial) {
-      const d = dayjs(initial, "hh:mm A", true);
-      if (d.isValid()) {
-        const base = dayjs();
-        return base
-          .hour(d.hour())
-          .minute(d.minute())
-          .second(0)
-          .millisecond(0)
-          .toDate();
-      }
+      const base = dayjs();
+      return base
+        .hour(initial.hour)
+        .minute(initial.minute)
+        .second(0)
+        .millisecond(0)
+        .toDate();
     }
     return new Date();
   }, [initial]);
@@ -58,9 +53,9 @@ export const TimePickerModal: React.FC<TimePickerModalProps> = ({
       is24Hour={false}
       minuteInterval={minuteStep}
       onConfirm={(date: Date) => {
-        const formatted = dayjs(date).format("hh:mm A");
-        onChange?.(formatted);
-        onConfirm(formatted);
+        const hour = dayjs(date).hour();
+        const minute = dayjs(date).minute();
+        onConfirm({ hour, minute });
       }}
       onCancel={onCancel}
     />

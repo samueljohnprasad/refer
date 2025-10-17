@@ -1,4 +1,3 @@
-
 export type Json =
   | string
   | number
@@ -139,27 +138,24 @@ export type Database = {
         Row: {
           created_at: string
           daily_reminder_enabled: boolean | null
-          daily_reminder_hour: number | null
-          daily_reminder_min: number | null
           id: number
+          remainders: Json | null
           timezone: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string
           daily_reminder_enabled?: boolean | null
-          daily_reminder_hour?: number | null
-          daily_reminder_min?: number | null
           id?: number
+          remainders?: Json | null
           timezone?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string
           daily_reminder_enabled?: boolean | null
-          daily_reminder_hour?: number | null
-          daily_reminder_min?: number | null
           id?: number
+          remainders?: Json | null
           timezone?: string | null
           user_id?: string | null
         }

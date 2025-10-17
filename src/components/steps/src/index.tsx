@@ -8,7 +8,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-
+import { atom, useAtom } from "jotai";
 import { Dots } from "./steps/dots";
 import { SplitButton } from "./steps/split-button";
 import { Text } from "@/components/Themed";
@@ -24,6 +24,8 @@ import { useGradualAnimation } from "@/hooks/useGradualAnimation";
 import { JOURNALING_REASONS } from "@/constants/journaling";
 import { MOOD_PALE_COLORS_ARR_100 } from "@/constants/moodColors";
 import NotificationsUI from "../../NotificationsUI";
+import type { RemindersConfig } from "@/src/lib/notification-reminders";
+import { syncRemindersToSupabase } from "@/src/network/reminders";
 import { NameOnboard } from "../NameOnboard";
 type InputType = "name" | "birthday" | "options" | "reminder" | "great";
 
@@ -41,8 +43,6 @@ export interface OnBoardingFormData {
   ageRange?: AgeRange;
   gender?: Gender;
   reasons: string[];
-  reminderEnabled: boolean;
-  reminderTime: string;
 }
 
 const moods: MoodDef[] = [
@@ -121,6 +121,13 @@ type StepsAppProps = {
   onComplete?: (onBoardingData: OnBoardingFormData) => void;
 };
 
+export const onboardFormDataAtom = atom<OnBoardingFormData>({
+  name: "",
+  ageRange: undefined,
+  gender: undefined,
+  reasons: [],
+});
+
 const App = ({ onComplete }: StepsAppProps) => {
   const [currentStep, setCurrentStep] = useState<number>(0);
 
@@ -140,14 +147,8 @@ const App = ({ onComplete }: StepsAppProps) => {
     }
   }, [activeIndex]);
 
-  const [formData, setFormData] = useState<OnBoardingFormData>({
-    name: "",
-    ageRange: undefined,
-    gender: undefined,
-    reasons: [],
-    reminderEnabled: true,
-    reminderTime: "9:00 AM",
-  });
+  const [formData, setFormData] =
+    useAtom<OnBoardingFormData>(onboardFormDataAtom);
 
   useAnimatedReaction(
     () => activeIndex.value,
@@ -265,9 +266,8 @@ const App = ({ onComplete }: StepsAppProps) => {
             mainAction={{
               label: "Continue",
               labelColor: "white",
-              onPress: () => {
+              onPress: async () => {
                 if (isLastStep) {
-                  // finish onboarding
                   onComplete && onComplete(formData);
                   return;
                 }
@@ -292,7 +292,7 @@ const App = ({ onComplete }: StepsAppProps) => {
               label: rightLabel,
               labelColor: "white",
               iconVisible: true,
-              onPress: () => {
+              onPress: async () => {
                 // if (!canProceed()) return;
                 if (isLastStep) {
                   setSplitted(false);

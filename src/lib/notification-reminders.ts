@@ -14,20 +14,18 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
 
-// Data shape for reminder settings stored in AsyncStorage
+export type RemindersConfigItem = {
+  hour: number;
+  minute: number;
+  enabled: boolean;
+  // Identifier returned by scheduleNotificationAsync, used to cancel/reschedule
+  notifId?: string;
+  title?: string;
+};
 export type RemindersConfig = Record<
   // The reminder slot id (e.g., "1", "2", "3")
   string,
-  {
-    // Time string in 12-hour format as used by the UI, e.g., "09:01 AM"
-    time: string;
-    // Whether this reminder slot is enabled (toggle ON)
-    enabled: boolean;
-    // Identifier returned by scheduleNotificationAsync, used to cancel/reschedule
-    notifId?: string;
-    // Human-friendly title for the slot, shown in notifications ("Morning", etc.)
-    title?: string;
-  }
+  RemindersConfigItem
 >;
 
 // Where we store the entire reminders map in AsyncStorage
@@ -77,7 +75,8 @@ export async function ensureNotificationPermissions(): Promise<boolean> {
   return !!(
     req.granted ||
     (typeof (req as any).ios === "object" &&
-      (req as any).ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL)
+      (req as any).ios?.status ===
+        Notifications.IosAuthorizationStatus.PROVISIONAL)
   );
 }
 
@@ -86,7 +85,10 @@ export async function ensureNotificationPermissions(): Promise<boolean> {
 //  - '12:00 AM' -> { hour: 0, minute: 0 }
 //  - '12:00 PM' -> { hour: 12, minute: 0 }
 //  - '01:30 PM' -> { hour: 13, minute: 30 }
-export function parseHourMinute(time: string): { hour: number; minute: number } {
+export function parseHourMinute(time: string): {
+  hour: number;
+  minute: number;
+} {
   const d = dayjs(time.trim(), "hh:mm A", true); // strict format
   if (!d.isValid()) return { hour: 9, minute: 0 };
   return { hour: d.hour(), minute: d.minute() };
@@ -97,10 +99,10 @@ export function parseHourMinute(time: string): { hour: number; minute: number } 
 export async function scheduleDailyReminder(
   id: string,
   title: string,
-  time: string
+  time: { hour: number; minute: number }
 ): Promise<string> {
   await ensureAndroidChannel();
-  const { hour, minute } = parseHourMinute(time);
+  const { hour, minute } = time;
   const identifier = await Notifications.scheduleNotificationAsync({
     content: {
       title,
