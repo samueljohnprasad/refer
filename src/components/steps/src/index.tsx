@@ -145,7 +145,7 @@ const App = ({ onComplete }: StepsAppProps) => {
     ageRange: undefined,
     gender: undefined,
     reasons: [],
-    reminderEnabled: false,
+    reminderEnabled: true,
     reminderTime: "9:00 AM",
   });
 
@@ -201,7 +201,12 @@ const App = ({ onComplete }: StepsAppProps) => {
 
     switch (current?.inputType) {
       case "name":
-        return <NameOnboard />;
+        return (
+          <NameOnboard
+            name={formData.name}
+            setName={(name) => setFormData((prev) => ({ ...prev, name }))}
+          />
+        );
       case "birthday":
         return (
           <Demographics

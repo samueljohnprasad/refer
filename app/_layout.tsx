@@ -21,6 +21,7 @@ import * as Haptics from "expo-haptics";
 import { PressablesConfig } from "pressto";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import * as Notifications from "expo-notifications";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -36,6 +37,19 @@ export {
 } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
+
+// Configure how notifications behave while the app is in the foreground.
+// Without this, local notifications may be silent or not visible if the app
+// is open. Returning these flags makes foreground notifications noticeable.
+// Note: exact properties can be platform/version-specific.
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({

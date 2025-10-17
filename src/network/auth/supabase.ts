@@ -1,12 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Database } from "@/database.types";
+import { Platform } from "react-native";
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 
-const isReactNative =
-  typeof navigator !== "undefined" && navigator.product === "ReactNative";
+const isReactNative = Platform.OS === "ios" || Platform.OS === "android";
 const isBrowser = typeof window !== "undefined";
 
 const storage = isReactNative
@@ -22,7 +22,7 @@ const storage = isReactNative
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
     storage,
-    // autoRefreshToken: true,
+    autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false, // Enable URL session detection for OAuth
   },

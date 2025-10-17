@@ -32,6 +32,10 @@ export default function Home() {
     return <Redirect href="/screens/onboarding" />;
   }
 
+  if (session && onboarding.completed) {
+    return <Redirect href="/tabs/(tabs)/tab1" />;
+  }
+
   return (
     <VStack className="flex-1 h-[100vh] justify-center">
       <MovingGradientBackground />

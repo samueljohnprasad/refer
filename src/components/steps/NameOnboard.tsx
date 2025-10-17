@@ -1,31 +1,17 @@
-import React, { useRef, useState } from "react";
-import { Keyboard, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Animated, { useAnimatedStyle } from "react-native-reanimated";
-import { useGradualAnimation } from "@/hooks/useGradualAnimation";
+import Animated from "react-native-reanimated";
 import LottieView from "lottie-react-native";
 import { lendHand } from "@/assets/lottie";
 import NameInput from "../animations/name-input/NameInput";
 
-export const NameOnboard = () => {
-  const { height } = useGradualAnimation();
-  const [name, setName] = useState("");
-  const inputRef = useRef<TextInput>(null);
+type NameOnboardProps = {
+  name: string;
+  setName: (name: string) => void;
+};
 
-  const keyboardPadding = useAnimatedStyle(() => {
-    return {
-      height: height.value,
-    };
-  }, []);
-
-  const toggleKeyboard = () => {
-    if (Keyboard.isVisible()) {
-      Keyboard.dismiss();
-    } else {
-      inputRef.current?.focus();
-    }
-  };
-
+export const NameOnboard: React.FC<NameOnboardProps> = ({ name, setName }) => {
   return (
     <GestureHandlerRootView className="w-full">
       <View className="flex-1">
@@ -54,7 +40,6 @@ export const NameOnboard = () => {
             <Text style={styles.helper}>You can always change this later.</Text>
           )}
         </View>
-        <Animated.View style={keyboardPadding} />
       </View>
     </GestureHandlerRootView>
   );
