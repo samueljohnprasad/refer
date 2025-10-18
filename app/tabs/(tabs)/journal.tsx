@@ -1,12 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import DailyNotesScreen from "@/src/screens/DailyNotesScreen/DailyNotesScreen";
 
 const journal = () => {
-  return (
-    <View>
-      <Text>journal</Text>
-    </View>
-  );
+  return <DailyNotesScreen />;
 };
 
 export default journal;
