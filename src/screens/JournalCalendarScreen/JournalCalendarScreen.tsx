@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  SafeAreaView,
   View,
   Text,
   StyleSheet,
@@ -15,7 +14,7 @@ import Svg, { Circle, Rect, Ellipse } from "react-native-svg";
 import { Calendar, DateData } from "react-native-calendars";
 import { BlurView } from "expo-blur";
 import LottieView from "lottie-react-native";
-import { girlMeditationBlue, manRocket } from "@/assets/lottie";
+// import { girlMeditationBlue, manRocket } from "@/assets/lottie";
 import { endOfWeek, format, startOfWeek, sub } from "date-fns";
 import { useRouter } from "expo-router";
 import { Box } from "@/components/ui/box";
@@ -26,7 +25,8 @@ import { Box } from "@/components/ui/box";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import BlurModal from "@/src/components/BlurModal";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
-
+import { girlMeditationBlue } from "@/assets/lottie";
+import { SafeAreaView } from "@/components/ui/safe-area-view";
 const { width, height } = Dimensions.get("window");
 
 // Global color palette
@@ -58,13 +58,13 @@ export default function JournalCalendarScreen() {
   const progressAnim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-//   const [selectedEntries, setSelectedEntries] = useState<MoodEntry[]>([]);
+  //   const [selectedEntries, setSelectedEntries] = useState<MoodEntry[]>([]);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
-//   const [selectedEntry, setSelectedEntry] = useState<MoodEntry | null>(null);
+  //   const [selectedEntry, setSelectedEntry] = useState<MoodEntry | null>(null);
   const [monthDate, setMonthDate] = useState<Date>(new Date("2025-08-01"));
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
 
-//   const { markedDays, getEntriesForDate } = useCalendarEntries(monthDate);
+  //   const { markedDays, getEntriesForDate } = useCalendarEntries(monthDate);
 
   // Animated values for counting streak and XP numbers
   const streakAnim = useRef(new Animated.Value(0)).current;
@@ -118,11 +118,11 @@ export default function JournalCalendarScreen() {
     );
   };
 
-//   const handleSelectEntry = (entry: MoodEntry): void => {
-//     setSelectedEntry(entry);
-//     setModalVisible(false);
-//     setDetailVisible(true);
-//   };
+  //   const handleSelectEntry = (entry: MoodEntry): void => {
+  //     setSelectedEntry(entry);
+  //     setModalVisible(false);
+  //     setDetailVisible(true);
+  //   };
 
   const formatDateLabel = (dateStr: string): string => {
     try {
@@ -147,14 +147,14 @@ export default function JournalCalendarScreen() {
       {/* Background illustrations behind everything */}
       <View style={styles.illustrationLayer} pointerEvents="none">
         <Box style={{ marginTop: 40 }}>
-          {/* <LottieView
+          <LottieView
             autoPlay
             style={{
               width: 200,
               height: 200,
             }}
             source={girlMeditationBlue}
-          /> */}
+          />
         </Box>
         <Svg height={height} width={width}>
           {/* Light, playful faded shapes */}
@@ -215,7 +215,7 @@ export default function JournalCalendarScreen() {
               <TouchableOpacity
                 style={[styles.iconCircle, styles.iconCircleRight]}
                 activeOpacity={0.8}
-                // onPress={() => router.push("/tabs/settings")}
+                onPress={() => router.push("/tabs/screens/settings")}
               >
                 <Feather name="settings" size={20} color={PALETTE.white} />
               </TouchableOpacity>
@@ -348,7 +348,7 @@ export default function JournalCalendarScreen() {
                   ]).start();
                   const ds = date.dateString as string;
                   setSelectedDate(ds);
-                //   setSelectedEntries(getEntriesForDate(ds));
+                  //   setSelectedEntries(getEntriesForDate(ds));
                   setModalVisible(true);
                 };
 

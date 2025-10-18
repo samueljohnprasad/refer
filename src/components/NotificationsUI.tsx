@@ -30,6 +30,7 @@ import {
 } from "@/src/lib/notification-reminders";
 import { hydrateLocalFromSupabaseIfEmpty } from "@/src/network/reminders";
 import { atom, useAtom } from "jotai";
+import dayjs from "dayjs";
 
 type FeatherName = ComponentProps<typeof Feather>["name"];
 type MCName = ComponentProps<typeof MaterialCommunityIcons>["name"];
@@ -238,7 +239,7 @@ const NotificationsUI: React.FC<NotificationsUIProps> = ({}) => {
             onPress={() => openEdit(item.id)}
           >
             <Text style={styles.timeText}>
-              {item.hour}:{item.minute}
+              {dayjs().hour(item.hour).minute(item.minute).format("h:mm A")}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity

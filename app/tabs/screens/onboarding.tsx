@@ -21,7 +21,7 @@ export default function OnboardingScreen() {
     try {
       await markCompleted({ ...onBoardingData, cfg });
       await addNotifications();
-      router.replace("/tabs/(tabs)/tab1");
+      router.replace("/tabs/(tabs)/home");
     } catch (error) {
       console.error("Error completing onboarding:", error);
     }

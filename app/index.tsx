@@ -20,8 +20,8 @@ export default function Home() {
 
   if (loading || onboarding.loading) {
     return (
-      <Box className="flex-1 items-center justify-center">
-        <Box className="flex-1 bg-black/50 items-center justify-center flex fixed inset-0 z-50 before:starting:backdrop-blur-0 before:absolute before:inset-0 before:bg-gray-200/50 before:backdrop-blur-[1px] before:transition before:duration-250 dark:before:bg-black/50 before:starting:opacity-0">
+      <Box className="flex-1 w-full h-full items-center justify-center">
+        <Box className="flex-1 w-full h-full items-center justify-center flex fixed inset-0 z-50 before:starting:backdrop-blur-0 before:absolute before:inset-0 before:bg-gray-200/50 before:backdrop-blur-[1px] before:transition before:duration-250 dark:before:bg-black/50 before:starting:opacity-0">
           <Spinner />
         </Box>
       </Box>
@@ -29,7 +29,7 @@ export default function Home() {
   }
 
   if (session && !onboarding.completed) {
-    return <Redirect href="/screens/onboarding" />;
+    return <Redirect href="/tabs/screens/onboarding" />;
   }
 
   if (session && onboarding.completed) {
