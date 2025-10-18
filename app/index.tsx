@@ -33,7 +33,7 @@ export default function Home() {
   }
 
   if (session && onboarding.completed) {
-    return <Redirect href="/tabs/(tabs)/tab1" />;
+    return <Redirect href="/tabs/(tabs)/home" />;
   }
 
   return (
