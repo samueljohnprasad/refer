@@ -105,7 +105,7 @@ export default function SettingsScreen() {
                   >
                     <Pressable
                       android_ripple={{ color: "#6D4AFF" }}
-                    //   onPress={() => router.push("/tabs/paywall")}
+                      onPress={() => router.push("/tabs/screens/paywall")}
                       style={{ borderRadius: 24, overflow: "hidden" }}
                     >
                       <LinearGradient
@@ -181,7 +181,7 @@ export default function SettingsScreen() {
               <Pressable
                 android_ripple={{ color: "#6D4AFF" }}
                 onPress={() => {
-                //   router.push("/tabs/paywall");
+                  router.push("/tabs/screens/paywall");
                 }}
                 style={{
                   borderRadius: 28,

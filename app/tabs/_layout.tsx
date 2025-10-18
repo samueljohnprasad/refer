@@ -23,6 +23,17 @@ export default function AppLayout() {
           animationDuration: 500,
         }}
       />
+
+      <Stack.Screen
+        name="screens/paywall"
+        options={{
+          headerShown: false,
+          presentation: "containedModal",
+          title: "Paywall",
+          animation: "fade_from_bottom",
+          animationDuration: 500,
+        }}
+      />
     </Stack>
   );
 }
