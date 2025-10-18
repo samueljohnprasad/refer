@@ -1,5 +1,5 @@
 import React from "react";
-import SettingsScreen from "@/src/screens/JournalCalendarScreen/SettingsScreen/SettingsScreen";
+import SettingsScreen from "@/src/screens/SettingsScreen/SettingsScreen";
 
 const Settings = () => {
   return <SettingsScreen />;
