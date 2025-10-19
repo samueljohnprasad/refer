@@ -26,7 +26,7 @@ const moodEmojiMap = {
   5: great,
 };
 
-export const MoodBadge: React.FC<MoodBadgeProps> = ({
+export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(({
   moodscore,
   size = 32,
   containerStyle,
@@ -80,7 +80,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = ({
       </View>
     </Animated.View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   wrapper: {

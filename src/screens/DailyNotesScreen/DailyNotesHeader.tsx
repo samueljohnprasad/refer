@@ -1,10 +1,5 @@
-import React from "react";
-import {
-  View,
-  Pressable,
-  Dimensions,
-  Platform,
-} from "react-native";
+import React, { useMemo, useCallback } from "react";
+import { View, Pressable, Dimensions, Platform } from "react-native";
 import { Text } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
 import { format, startOfWeek, addDays, isToday, isValid } from "date-fns";
@@ -28,7 +23,11 @@ const { height } = Dimensions.get("window");
 const isIso = Platform.OS === "ios";
 const twentyPercentHeight = height * (isIso ? 0.24 : 0.19);
 
-const DailyNotesHeader = () => {
+// Move constants outside component to avoid recreation
+const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+const CALENDAR_EXPANDED_HEIGHT = 400;
+
+const DailyNotesHeader = React.memo(() => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
   const { weekSlideAnim, panHandlers, animateToWeekOf } = useWeekNavigation({
@@ -43,7 +42,6 @@ const DailyNotesHeader = () => {
   const { data: moodMap } = useFetchMoods();
 
   // Vertical expand/collapse for inline calendar (Reanimated on UI thread)
-  const CALENDAR_EXPANDED_HEIGHT = 400;
   const { progress, isExpanded, expand, collapse, toggle, gesture } =
     useCalendarExpandReanimated({
       expandedHeight: CALENDAR_EXPANDED_HEIGHT,
@@ -84,35 +82,64 @@ const DailyNotesHeader = () => {
     opacity: interpolate(weekSlideAnim.value, [-1, 0, 1], [0.3, 1, 0.3]),
   }));
 
-  const selectDate = (date: Date) => {
-    setSelectedDate(date);
-    // Also update the week view to center on the selected date
-    setCurrentWeekView(date);
-  };
+  const selectDate = useCallback(
+    (date: Date) => {
+      setSelectedDate(date);
+      // Also update the week view to center on the selected date
+      setCurrentWeekView(date);
+    },
+    [setSelectedDate, setCurrentWeekView]
+  );
 
   // Guard against any invalid dates to avoid RangeError from date-fns format
-  const isSelectedDateValid = isValid(selectedDate);
-  const currentWeekViewSafe = isValid(currentWeekView)
-    ? currentWeekView
-    : new Date();
+  const isSelectedDateValid = useMemo(
+    () => isValid(selectedDate),
+    [selectedDate]
+  );
+  const currentWeekViewSafe = useMemo(
+    () => (isValid(currentWeekView) ? currentWeekView : new Date()),
+    [currentWeekView]
+  );
 
-  const selectedDateLabel = isSelectedDateValid
-    ? format(selectedDate, "MMM, yyyy")
-    : "";
-  const selectedDateStr = isSelectedDateValid
-    ? format(selectedDate, "yyyy-MM-dd")
-    : "";
+  const selectedDateLabel = useMemo(
+    () => (isSelectedDateValid ? format(selectedDate, "MMM, yyyy") : ""),
+    [isSelectedDateValid, selectedDate]
+  );
+  const selectedDateStr = useMemo(
+    () => (isSelectedDateValid ? format(selectedDate, "yyyy-MM-dd") : ""),
+    [isSelectedDateValid, selectedDate]
+  );
 
-  const weekStart = startOfWeek(currentWeekViewSafe, { weekStartsOn: 0 }); // Sunday
-  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-  const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const weekStart = useMemo(
+    () => startOfWeek(currentWeekViewSafe, { weekStartsOn: 0 }),
+    [currentWeekViewSafe]
+  );
+
+  const weekDays = useMemo(
+    () => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)),
+    [weekStart]
+  );
+
+  // Memoize week days data to avoid recalculating format on every render
+  const weekDaysData = useMemo(() => {
+    return weekDays.map((day, index) => {
+      const dayStr = format(day, "yyyy-MM-dd");
+      return {
+        day,
+        dayStr,
+        dayName: DAY_NAMES[index],
+        isTodayDate: isToday(day),
+        isSelectedDay: selectedDateStr !== "" && dayStr === selectedDateStr,
+      };
+    });
+  }, [weekDays, selectedDateStr]);
   // Week navigation handled by useWeekNavigation hook
 
-  const handleGoToToday = async (): Promise<void> => {
+  const handleGoToToday = useCallback(async (): Promise<void> => {
     const today = new Date();
     await animateToWeekOf(today, currentWeekView);
     selectDate(today);
-  };
+  }, [animateToWeekOf, currentWeekView, selectDate]);
 
   // Pan gesture handlers are provided by useWeekNavigation
   return (
@@ -130,43 +157,42 @@ const DailyNotesHeader = () => {
         </Pressable>
 
         <View className="flex-row items-center justify-center flex-1">
-          <Text className="text-[17px] font-semibold text-white mx-4 text-center">{selectedDateLabel || ""}</Text>
+          <Text className="text-[17px] font-semibold text-white mx-4 text-center">
+            {selectedDateLabel || ""}
+          </Text>
         </View>
 
         <Pressable className="p-2" onPress={() => expand()}>
           <Feather name="more-horizontal" size={24} color="#fff" />
         </Pressable>
       </Animated.View>
-
       {/* Week View */}
       <View className="py-3 px-3 mb-0 w-full relative" {...panHandlers}>
-        <Animated.View className="flex-row w-full" style={[weekHeaderAnimatedStyle]}>
+        <Animated.View
+          className="flex-row w-full"
+          style={[weekHeaderAnimatedStyle]}
+        >
           <Animated.View
             style={[
               { display: "flex", flex: 1, flexDirection: "row", gap: 6 },
               weekSlideAnimatedStyle,
             ]}
           >
-            {weekDays.map((day, index) => {
-              const isTodayDate = isToday(day);
-              const isSelectedDay =
-                selectedDateStr !== "" &&
-                format(day, "yyyy-MM-dd") === selectedDateStr;
-
-              const mood = moodMap?.get(format(day, "yyyy-MM-dd"));
+            {weekDaysData.map((dayData, index) => {
+              const mood = moodMap?.get(dayData.dayStr);
               return (
-                <View className="flex-1 gap-4 mb-8" key={index}>
+                <View className="flex-1 gap-4 mb-8" key={dayData.dayStr}>
                   <DayButton
-                    day={day}
-                    dayName={dayNames[index]}
-                    isSelected={isSelectedDay}
-                    isToday={isTodayDate}
-                    onPress={() => selectDate(day)}
+                    day={dayData.day}
+                    dayName={dayData.dayName}
+                    isSelected={dayData.isSelectedDay}
+                    isToday={dayData.isTodayDate}
+                    onPress={() => selectDate(dayData.day)}
                   />
                   <View className="flex-1 items-center">
                     <MoodBadge
                       moodscore={mood}
-                      active={isSelectedDay}
+                      active={dayData.isSelectedDay}
                       size={28}
                     />
                   </View>
@@ -176,39 +202,43 @@ const DailyNotesHeader = () => {
           </Animated.View>
         </Animated.View>
       </View>
-      <Animated.View
-        className="absolute left-0 right-0 z-20 overflow-hidden px-3 pb-2 rounded-t-none bg-violet-300"
-        style={[
-          inlineCalendarAnimatedStyle,
-          { top: isIso ? 45 : 10 },
-        ]}
-      >
-        <CalendarPicker
-          moodMap={moodMap}
-          selectedDate={isSelectedDateValid ? selectedDate : new Date()}
-          visible={isExpanded}
-          onDateSelect={(date: Date) => {
-            // First collapse smoothly, then update date so header morph feels natural
-            collapse(() => {
-              selectDate(date);
-            });
-          }}
-        />
-      </Animated.View>
+      {/* Only render CalendarPicker when expanded or animating */}
+      {(isExpanded || progress.value > 0) && (
+        <Animated.View
+          className="absolute left-0 right-0 z-20 overflow-hidden px-3 pb-2 rounded-t-none bg-violet-300"
+          style={[inlineCalendarAnimatedStyle, { top: isIso ? 45 : 10 }]}
+        >
+          <CalendarPicker
+            moodMap={moodMap}
+            selectedDate={isSelectedDateValid ? selectedDate : new Date()}
+            visible={isExpanded}
+            onDateSelect={(date: Date) => {
+              // First collapse smoothly, then update date so header morph feels natural
+              collapse(() => {
+                selectDate(date);
+              });
+            }}
+          />
+        </Animated.View>
+      )}
       {/* Today tag - animated reusable component */}
       <TodayPill
         visible={isSelectedDateValid ? !isToday(selectedDate) : false}
         onPress={handleGoToToday}
       />
       {/* Absolute overlay handle that moves down with expanding calendar */}
-      <Animated.View className="absolute left-0 right-0 items-center z-10" pointerEvents="box-none">
+      <Animated.View
+        className="absolute left-0 right-0 items-center z-10"
+        pointerEvents="box-none"
+      >
         <GestureDetector gesture={gesture}>
           <View className="w-12 h-[5px] rounded bg-white/90" />
         </GestureDetector>
       </Animated.View>
     </Animated.View>
   );
-};
+});
 
+DailyNotesHeader.displayName = "DailyNotesHeader";
 
 export default DailyNotesHeader;
