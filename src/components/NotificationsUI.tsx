@@ -13,9 +13,9 @@ import {
   ListRenderItem,
 } from "react-native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import LottieView from "lottie-react-native";
+// import LottieView from "lottie-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { notification } from "@/assets/lottie";
+// import { notification } from "@/assets/lottie";
 import TimePickerModal from "./TimePickerModal";
 // Import the small notifications helper we wrote. It wraps Expo Notifications
 // to: request permissions, parse the time string, schedule/cancel reminders,
@@ -260,14 +260,14 @@ const NotificationsUI: React.FC<NotificationsUIProps> = ({}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.inner}>
-        <LottieView
+        {/* <LottieView
           autoPlay
           style={{
             width: 200,
             height: 200,
           }}
           source={notification}
-        />
+        /> */}
         {/* <Text style={styles.title}>Notifications</Text>
         <Text style={styles.subtitle}>
           Users who set reminders journal

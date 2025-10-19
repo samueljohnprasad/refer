@@ -7,6 +7,8 @@ export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(tabs)",
 };
+import { enableScreens } from "react-native-screens";
+enableScreens();
 
 import { Stack } from "expo-router";
 
@@ -20,7 +22,6 @@ export default function AppLayout() {
           headerShown: false,
           title: "Settings",
           animation: "fade",
-          animationDuration: 500,
         }}
       />
 
@@ -31,7 +32,6 @@ export default function AppLayout() {
           presentation: "containedModal",
           title: "Paywall",
           animation: "fade_from_bottom",
-          animationDuration: 500,
         }}
       />
     </Stack>

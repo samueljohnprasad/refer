@@ -1,5 +1,6 @@
 {
   "expo": {
+    "jsEngine": "hermes",
     "name": "starter-kit-expo",
     "slug": "starter-kit-expo",
     "version": "1.0.0",

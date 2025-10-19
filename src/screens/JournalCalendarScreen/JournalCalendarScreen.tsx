@@ -25,7 +25,7 @@ import { Box } from "@/components/ui/box";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import BlurModal from "@/src/components/BlurModal";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
-import { girlMeditationBlue } from "@/assets/lottie";
+// import { girlMeditationBlue } from "@/assets/lottie";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 const { width, height } = Dimensions.get("window");
 
@@ -147,14 +147,14 @@ export default function JournalCalendarScreen() {
       {/* Background illustrations behind everything */}
       <View style={styles.illustrationLayer} pointerEvents="none">
         <Box style={{ marginTop: 40 }}>
-          <LottieView
+          {/* <LottieView
             autoPlay
             style={{
               width: 200,
               height: 200,
             }}
             source={girlMeditationBlue}
-          />
+          /> */}
         </Box>
         <Svg height={height} width={width}>
           {/* Light, playful faded shapes */}

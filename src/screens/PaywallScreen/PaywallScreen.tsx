@@ -5,7 +5,7 @@ import { Text } from "@/components/ui/text";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
-import { singingContract } from "@/assets/lottie";
+// import { singingContract } from "@/assets/lottie";
 import { router } from "expo-router";
 import AnimatedLinearGradient from "@/src/components/AnimatedLinearGradient";
 import FeatureRow from "./FeatureRow";
@@ -26,14 +26,14 @@ const PaywallScreen = () => {
         <SafeAreaView edges={["top"]}>
           <View style={styles.headerRow}>
             {/* Illustration approximation: notebook + pencil */}
-            <LottieView
+            {/* <LottieView
               autoPlay
               style={{
                 width: 200,
                 height: 200,
               }}
               source={singingContract}
-            />
+            /> */}
 
             <View style={{ flex: 1 }}>
               <Text style={styles.title}>
