@@ -69,6 +69,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = ({
             }}
             width={diameter}
             height={diameter}
+            progressiveRenderingEnabled={true}
           />
         )}
         {!moodEmoji && (

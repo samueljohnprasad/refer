@@ -622,6 +622,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
                 source={emotions[it.key as keyof typeof emotions]}
                 style={{ width: 18, height: 18 }}
                 resizeMode="contain"
+                progressiveRenderingEnabled={true}
               />
             </View>
           ))}

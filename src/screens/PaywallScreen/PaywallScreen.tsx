@@ -181,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PaywallScreen;
+export default React.memo(PaywallScreen);

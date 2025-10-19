@@ -225,6 +225,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
                 source={emotions[entry.mainEmoji as Emotion]}
                 className="w-6 h-6"
                 alt={entry.mainEmoji}
+                progressiveRenderingEnabled={true}
               />
             </Text>
             {/* <View

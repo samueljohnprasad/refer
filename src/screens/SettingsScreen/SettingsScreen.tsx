@@ -23,7 +23,7 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import { useAuth } from "@/src/context/AuthContext";
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
 
-export default function SettingsScreen() {
+export default React.memo(function SettingsScreen() {
   const router = useRouter();
   const [notifications, setNotifications] = useState(true);
   const [passcodeEnabled, setPasscodeEnabled] = useState(false);
@@ -382,8 +382,7 @@ export default function SettingsScreen() {
       </Modal>
     </SafeAreaView>
   );
-}
-
+});
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F8F8FF" },
   scrollViewContent: {

@@ -8,20 +8,26 @@ export const unstable_settings = {
   initialRouteName: "(tabs)",
 };
 import { enableScreens } from "react-native-screens";
-enableScreens();
+enableScreens(true);
 
 import { Stack } from "expo-router";
 
 export default function AppLayout() {
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        animation: "none",
+      }}
+    >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="screens/settings"
         options={{
           headerShown: false,
           title: "Settings",
-          animation: "fade",
+          // animation: "fade",
+          freezeOnBlur: true,
+          animation: "none",
         }}
       />
 
@@ -31,7 +37,9 @@ export default function AppLayout() {
           headerShown: false,
           presentation: "containedModal",
           title: "Paywall",
-          animation: "fade_from_bottom",
+          // animation: "fade_from_bottom",
+          freezeOnBlur: true,
+          animation: "none",
         }}
       />
     </Stack>

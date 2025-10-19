@@ -126,6 +126,7 @@ const StatCard: React.FC<{ cfg: StatCardConfig; scale: number }> = ({
           <Image
             source={emotions[emoji as keyof typeof emotions]}
             style={{ width: 40 * scale, height: 40 * scale }}
+            progressiveRenderingEnabled={true}
           />
         </View>
 
