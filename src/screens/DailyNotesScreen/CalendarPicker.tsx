@@ -1,10 +1,14 @@
 import { Feather } from "@expo/vector-icons";
 import { format, isToday, isSameMonth, isSameDay } from "date-fns";
 import React, { useMemo, useCallback } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Text } from "@/components/Themed";
 import useCalendarMonth from "./hooks/useCalendarMonth";
 import MoodBadge from "@/src/components/MoodBadge";
+
+// Constants outside component to prevent recreation
+const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
+const DAY_CELL_STYLE = { width: '14.28%', aspectRatio: 1 } as const;
 
 // Calendar Picker Component
 interface CalendarPickerProps {
@@ -25,48 +29,80 @@ interface DayCellProps {
   onPress: () => void;
 }
 
-const DayCell = React.memo<DayCellProps>(({ day, inCurrentMonth, isTodayDate, isSelected, mood, onPress }) => {
-  const dayLabel = useMemo(() => format(day, "d"), [day]);
-  const accessibilityLabel = useMemo(() => `Select ${format(day, "EEEE, MMM d, yyyy")}`, [day]);
+const DayCell = React.memo<DayCellProps>(
+  ({ day, inCurrentMonth, isTodayDate, isSelected, mood, onPress }) => {
+    const dayLabel = format(day, "d");
 
-  return (
-    <Pressable
-      style={[styles.dayCell]}
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-    >
-      <View
-        style={[
-          styles.dayCellInside,
-          isTodayDate && !isSelected && styles.todayDayCell,
-          isSelected && styles.selectedDayCell,
-        ]}
+    // Memoize className strings to avoid recalculation
+    const containerClassName = useMemo(
+      () =>
+        `w-full h-full flex justify-center items-center gap-0.5 ${
+          isSelected ? 'bg-[#7B61FF] rounded-xl' : isTodayDate ? 'bg-white/12 rounded-xl' : ''
+        }`,
+      [isSelected, isTodayDate]
+    );
+
+    const textClassName = useMemo(
+      () =>
+        `text-[13px] font-semibold ${
+          !inCurrentMonth
+            ? 'text-[#C7BDF9]'
+            : isTodayDate && !isSelected
+            ? 'text-white font-bold'
+            : isSelected
+            ? 'text-white font-semibold'
+            : 'text-white'
+        }`,
+      [inCurrentMonth, isTodayDate, isSelected]
+    );
+
+    const moodClassName = useMemo(
+      () => `mt-0.5 ${!inCurrentMonth ? 'opacity-40' : ''}`,
+      [inCurrentMonth]
+    );
+
+    return (
+      <Pressable
+        className="justify-center items-center p-0.5"
+        style={DAY_CELL_STYLE}
+        onPress={onPress}
+        accessibilityRole="button"
       >
-        <Text
-          style={[
-            styles.dayCellText,
-            !inCurrentMonth && styles.otherMonthText,
-            isSelected && styles.selectedDayText,
-            isTodayDate && !isSelected && styles.todayDayText,
-          ]}
-        >
-          {dayLabel}
-        </Text>
-        <View
-          style={[
-            styles.moodWrapper,
-            !inCurrentMonth && styles.moodDimmed,
-          ]}
-        >
-          <MoodBadge moodscore={mood} size={20} />
+        <View className={containerClassName}>
+          <Text className={textClassName}>{dayLabel}</Text>
+          <View className={moodClassName}>
+            <MoodBadge moodscore={mood} size={20} />
+          </View>
         </View>
-      </View>
-    </Pressable>
-  );
-});
+      </Pressable>
+    );
+  },
+  // Custom comparison to prevent unnecessary re-renders
+  (prevProps, nextProps) => {
+    return (
+      prevProps.isSelected === nextProps.isSelected &&
+      prevProps.isTodayDate === nextProps.isTodayDate &&
+      prevProps.inCurrentMonth === nextProps.inCurrentMonth &&
+      prevProps.mood === nextProps.mood &&
+      prevProps.day.getTime() === nextProps.day.getTime()
+    );
+  }
+);
 
 DayCell.displayName = 'DayCell';
+
+// Memoized Week Header Component
+const WeekDayHeader = React.memo(() => (
+  <View className="flex-row mb-0">
+    {WEEKDAY_LABELS.map((day) => (
+      <Text key={day} className="flex-1 text-center text-xs font-semibold text-[#EDE9FF] py-1.5">
+        {day}
+      </Text>
+    ))}
+  </View>
+));
+
+WeekDayHeader.displayName = 'WeekDayHeader';
 
 export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(({
   selectedDate,
@@ -78,9 +114,10 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(({
   const { currentMonth, days, goToPreviousMonth, goToNextMonth } =
     useCalendarMonth({ selectedDate, visible, weekStartsOn: 0 });
 
-  const WEEKDAY_LABELS: ReadonlyArray<string> = useMemo(
-    () => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const,
-    []
+  // Memoize month title
+  const monthTitle = useMemo(
+    () => format(currentMonth, "MMM yyyy"),
+    [currentMonth]
   );
 
   // Pre-compute day data to avoid calculations in render loop
@@ -104,33 +141,22 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(({
   }, [daysData, onDateSelect]);
 
   return (
-    <View
-      style={[
-        styles.calendarPicker,
-        edgeToEdge && { marginTop: 0, paddingHorizontal: 0 },
-      ]}
-    >
-      <View style={styles.monthHeader}>
-        <Pressable style={styles.monthNavButton} onPress={goToPreviousMonth}>
+    <View className={edgeToEdge ? 'mt-0 px-0' : 'mt-2'}>
+      <View className="flex-row justify-between items-center mb-0">
+        <Pressable className="p-2" onPress={goToPreviousMonth}>
           <Feather name="chevron-left" size={20} color="#fff" />
         </Pressable>
-        <Text style={styles.monthTitle}>
-          {format(currentMonth, "MMM yyyy")}
+        <Text className="text-[20px] font-bold text-white">
+          {monthTitle}
         </Text>
-        <Pressable style={styles.monthNavButton} onPress={goToNextMonth}>
+        <Pressable className="p-2" onPress={goToNextMonth}>
           <Feather name="chevron-right" size={20} color="#fff" />
         </Pressable>
       </View>
 
-      <View style={styles.weekDaysHeader}>
-        {WEEKDAY_LABELS.map((day) => (
-          <Text key={day} style={styles.weekDayLabel}>
-            {day}
-          </Text>
-        ))}
-      </View>
+      <WeekDayHeader />
 
-      <View style={styles.daysGrid}>
+      <View className="flex-row flex-wrap">
         {daysData.map((dayData, index) => (
           <DayCell
             key={dayData.dayStr}
@@ -148,88 +174,3 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(({
 });
 
 CalendarPicker.displayName = 'CalendarPicker';
-
-const styles = StyleSheet.create({
-  calendarPicker: {
-    marginTop: 8,
-  },
-  monthHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 0,
-  },
-  monthNavButton: {
-    padding: 8,
-  },
-  monthTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
-  weekDaysHeader: {
-    flexDirection: "row",
-    marginBottom: 0,
-  },
-  weekDayLabel: {
-    flex: 1,
-    textAlign: "center",
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#EDE9FF",
-    paddingVertical: 6,
-  },
-  daysGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  dayCell: {
-    width: "14.28%",
-    height: "14.28%",
-    aspectRatio: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 2,
-    // borderRadius: 12,
-  },
-  dayCellInside: {
-    width: "100%",
-    height: "100%",
-    // borderRadius: 12,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 2,
-  },
-  selectedDayCell: {
-    backgroundColor: "#7B61FF",
-    borderRadius: 12,
-  },
-  todayDayCell: {
-    backgroundColor: "rgba(255,255,255,0.12)",
-    borderRadius: 12,
-  },
-  dayCellText: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    borderRadius: 12,
-  },
-  selectedDayText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  todayDayText: {
-    color: "#fff",
-    fontWeight: "700",
-  },
-  otherMonthText: {
-    color: "#C7BDF9",
-  },
-  moodWrapper: {
-    marginTop: 2,
-  },
-  moodDimmed: {
-    opacity: 0.4,
-  },
-});

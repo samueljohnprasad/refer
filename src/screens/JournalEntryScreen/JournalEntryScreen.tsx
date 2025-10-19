@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -37,15 +37,113 @@ import Animated, {
 import { FeelingsType, InsightsType } from "@/src/network/genAi";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 import { useSaveJournal } from "@/hooks/post/useSaveJournal";
+import { PALETTE } from "../JournalCalendarScreen/JournalCalendarScreen";
+
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
+
+// Constants outside component to prevent recreation
+const MAIN_EMOTIONS = ["😢", "😕", "🙂", "😄", "🤩"] as const;
+const ANIMATION_CONFIG = {
+  duration: 620,
+  easing: Easing.bezier(0.22, 1, 0.36, 1),
+} as const;
+
+const SPRING_CONFIG = {
+  damping: 18,
+  stiffness: 140,
+  mass: 0.9,
+} as const;
+
+const INSIGHTS_ANIMATION_CONFIG = {
+  duration: 220,
+  easing: Easing.bezier(0.22, 1, 0.36, 1),
+} as const;
+
+const LIGHT_GRADIENT = ["#EEE", "#DDD"] as const;
+const DARK_GRADIENT = ["#2E2E2E", "#3A3A3A"] as const;
 
 interface JournalEntryScreenProps {
   insights?: InsightsType;
   transcripts?: string[];
   onClose?: () => void;
 }
-export default function JournalEntryScreen({
+// Memoized Tag Component
+interface TagItemProps {
+  tag: FeelingsType;
+  index: number;
+  isEditing: boolean;
+  colorScheme: "light" | "dark" | null | undefined;
+  onRemove: (index: number) => void;
+}
+
+const TagItem = React.memo<TagItemProps>(
+  ({ tag, index, isEditing, colorScheme, onRemove }) => {
+    const handleRemove = useCallback(() => onRemove(index), [index, onRemove]);
+
+    return (
+      <Animated.View
+        style={[
+          tag.colorsGradient?.[0]
+            ? { backgroundColor: tag.colorsGradient[0] }
+            : undefined,
+        ]}
+        className="flex-row items-center py-2 px-3 rounded-full mr-2 mb-2 border border-outline-100 dark:border-outline-800 bg-background-100 dark:bg-background-800"
+        entering={FadeIn.springify().damping(16)}
+        exiting={FadeOut.duration(140)}
+        layout={Layout.springify().stiffness(180)}
+      >
+        <Text className="text-[15px] text-typography-900 dark:text-typography-50">
+          {tag.emoji} {tag.name}
+        </Text>
+        {isEditing && (
+          <TouchableOpacity onPress={handleRemove}>
+            <Feather
+              name="x-circle"
+              size={16}
+              color={
+                colorScheme === "dark" ? Colors.dark.icon : Colors.light.icon
+              }
+            />
+          </TouchableOpacity>
+        )}
+      </Animated.View>
+    );
+  }
+);
+
+TagItem.displayName = "TagItem";
+
+// Memoized Emoji Selector Component
+interface EmojiSelectorProps {
+  selectedEmoji: string;
+  onSelectEmoji: (emoji: string) => void;
+}
+
+const EmojiSelector = React.memo<EmojiSelectorProps>(
+  ({ selectedEmoji, onSelectEmoji }) => {
+    return (
+      <>
+        {MAIN_EMOTIONS.map((emo, idx) => (
+          <TouchableOpacity key={idx} onPress={() => onSelectEmoji(emo)}>
+            <Text
+              style={[
+                styles.moodEmoji,
+                selectedEmoji === emo && { fontSize: 40 },
+              ]}
+            >
+              {emo}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </>
+    );
+  }
+);
+
+EmojiSelector.displayName = "EmojiSelector";
+
+function JournalEntryScreen({
   insights,
   transcripts,
   onClose,
@@ -72,7 +170,7 @@ export default function JournalEntryScreen({
   const moodProgress = useSharedValue(0);
   const [footerHeight, setFooterHeight] = useState<number>(0);
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
-  const [isInsightsOpen, setIsInsightsOpen] = useState<boolean>(false);
+  const [isInsightsOpen, setIsInsightsOpen] = useState<boolean>(true);
   const colorScheme = useColorScheme();
 
   const formattedDateTime = useMemo<string>(() => {
@@ -90,23 +188,14 @@ export default function JournalEntryScreen({
   }, []);
 
   useEffect(() => {
-    const config = {
-      duration: 620,
-      easing: Easing.bezier(0.22, 1, 0.36, 1),
-    } as const;
-
-    editProgress.value = withTiming(isEditing ? 1 : 0, config);
+    editProgress.value = withTiming(isEditing ? 1 : 0, ANIMATION_CONFIG);
     editProgressDelayed.value = withDelay(
       120,
-      withTiming(isEditing ? 1 : 0, config)
+      withTiming(isEditing ? 1 : 0, ANIMATION_CONFIG)
     );
     // Mood card gets a gentle spring lift when entering edit mode
-    moodProgress.value = withSpring(isEditing ? 1 : 0, {
-      damping: 18,
-      stiffness: 140,
-      mass: 0.9,
-    });
-  }, [isEditing]);
+    moodProgress.value = withSpring(isEditing ? 1 : 0, SPRING_CONFIG);
+  }, [isEditing, editProgress, editProgressDelayed, moodProgress]);
 
   useEffect((): (() => void) => {
     const showEvent =
@@ -157,16 +246,13 @@ export default function JournalEntryScreen({
     ],
   }));
 
-  const toggleInsights = (): void => {
+  const toggleInsights = useCallback((): void => {
     setIsInsightsOpen((prev) => {
       const next = !prev;
-      insightsOpen.value = withTiming(next ? 1 : 0, {
-        duration: 220,
-        easing: Easing.bezier(0.22, 1, 0.36, 1),
-      });
+      insightsOpen.value = withTiming(next ? 1 : 0, INSIGHTS_ANIMATION_CONFIG);
       return next;
     });
-  };
+  }, [insightsOpen]);
 
   // Emoji morph animation: single emoji -> 5 emoji selector
   const singleEmojiStyle = useAnimatedStyle(() => ({
@@ -323,22 +409,20 @@ export default function JournalEntryScreen({
     journalText: "",
   });
 
-  const mainEmotions = ["😢", "😕", "🙂", "😄", "🤩"];
-
-  const handleEdit = () => {
+  const handleEdit = useCallback(() => {
     setBackupState({
       selectedEmoji,
       tags: tags,
       journalText,
     });
     setIsEditing(true);
-  };
+  }, [selectedEmoji, tags, journalText]);
 
-  const handleDone = () => {
+  const handleDone = useCallback(() => {
     setIsEditing(false);
-  };
+  }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (isEditing) {
       setSelectedEmoji(backupState.selectedEmoji);
       setTags(backupState.tags);
@@ -346,26 +430,27 @@ export default function JournalEntryScreen({
       setIsEditing(false);
     }
     onClose?.();
-  };
+  }, [isEditing, backupState, onClose]);
 
-  const removeTag = (index: number) => {
-    const newTags = tags.filter((_, i) => i !== index);
-    setTags(newTags);
-  };
+  const removeTag = useCallback((index: number) => {
+    setTags((prevTags) => prevTags.filter((_, i) => i !== index));
+  }, []);
 
-  const addTag = () => {
-    const lightGradient = ["#EEE", "#DDD"] as const;
-    const darkGradient = ["#2E2E2E", "#3A3A3A"] as const;
-    setTags([
-      ...tags,
+  const addTag = useCallback(() => {
+    setTags((prevTags) => [
+      ...prevTags,
       {
         name: "New Tag",
         emoji: "🆕",
         colorsGradient:
-          colorScheme === "dark" ? [...darkGradient] : [...lightGradient],
+          colorScheme === "dark" ? [...DARK_GRADIENT] : [...LIGHT_GRADIENT],
       },
     ]);
-  };
+  }, [colorScheme]);
+
+  const handleSelectEmoji = useCallback((emoji: string) => {
+    setSelectedEmoji(emoji);
+  }, []);
 
   const handleContinue = async (): Promise<void> => {
     try {
@@ -424,7 +509,7 @@ export default function JournalEntryScreen({
         ]}
       >
         <AnimatedTouchableOpacity
-          className="w-10 h-10 rounded-full items-center justify-center bg-accent"
+          className="w-10 h-10 rounded-full items-center justify-center bg-[#7B61FF]"
           activeOpacity={0.7}
           onPress={handleClose}
         >
@@ -442,7 +527,7 @@ export default function JournalEntryScreen({
               backIconStyle,
             ]}
           >
-            <Feather name="arrow-left" size={22} color="#FFF" />
+            <Feather name="arrow-left" size={20} color={PALETTE.white} />
           </Animated.View>
           <Animated.View
             style={[
@@ -467,7 +552,7 @@ export default function JournalEntryScreen({
           </Text>
         </View>
         <AnimatedTouchableOpacity
-          className="w-10 h-10 rounded-full items-center justify-center bg-accent"
+          className="w-10 h-10 rounded-full items-center justify-center bg-[#7B61FF]"
           activeOpacity={0.7}
           onPress={isEditing ? handleDone : handleEdit}
         >
@@ -543,56 +628,24 @@ export default function JournalEntryScreen({
               style={[emojiRowStyle]}
               className="absolute left-[18px] right-[18px] top-[18px] flex-row justify-between items-center"
             >
-              {mainEmotions.map((emo, idx) => (
-                <TouchableOpacity
-                  key={idx}
-                  onPress={() => setSelectedEmoji(emo)}
-                >
-                  <Text
-                    style={[
-                      styles.moodEmoji,
-                      selectedEmoji === emo && { fontSize: 40 },
-                    ]}
-                  >
-                    {emo}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+              <EmojiSelector
+                selectedEmoji={selectedEmoji}
+                onSelectEmoji={handleSelectEmoji}
+              />
             </Animated.View>
           </Animated.View>
 
           {/* Tags */}
           <View className="flex-row flex-wrap mb-6 gap-2">
             {tags.map((tag, index) => (
-              <Animated.View
+              <TagItem
                 key={index}
-                style={[
-                  tag.colorsGradient?.[0]
-                    ? { backgroundColor: tag.colorsGradient[0] }
-                    : undefined,
-                ]}
-                className="flex-row items-center py-2 px-3 rounded-full mr-2 mb-2 border border-outline-100 dark:border-outline-800 bg-background-100 dark:bg-background-800"
-                entering={FadeIn.springify().damping(16)}
-                exiting={FadeOut.duration(140)}
-                layout={Layout.springify().stiffness(180)}
-              >
-                <Text className="text-[15px] text-typography-900 dark:text-typography-50">
-                  {tag.emoji} {tag.name}
-                </Text>
-                {isEditing && (
-                  <TouchableOpacity onPress={() => removeTag(index)}>
-                    <Feather
-                      name="x-circle"
-                      size={16}
-                      color={
-                        colorScheme === "dark"
-                          ? Colors.dark.icon
-                          : Colors.light.icon
-                      }
-                    />
-                  </TouchableOpacity>
-                )}
-              </Animated.View>
+                tag={tag}
+                index={index}
+                isEditing={isEditing}
+                colorScheme={colorScheme}
+                onRemove={removeTag}
+              />
             ))}
             {isEditing && (
               <TouchableOpacity
@@ -677,7 +730,7 @@ export default function JournalEntryScreen({
       >
         <TouchableOpacity
           style={[saving && { opacity: 0.6 }]}
-          className="bg-accent rounded-xl p-4 items-center shadow-soft-2"
+          className="bg-[#FFD24A] rounded-xl p-4 items-center shadow-soft-2"
           onPress={handleContinue}
           disabled={saving}
           activeOpacity={0.8}
@@ -688,7 +741,7 @@ export default function JournalEntryScreen({
                 <ActivityIndicator color="#fff" size="small" />
               </View>
             )}
-            <Text className="text-typography-white text-lg font-bold">
+            <Text className="text-typography-black text-lg font-bold">
               {saving ? "Saving…" : "Continue"}
             </Text>
           </View>
@@ -718,3 +771,5 @@ const styles = StyleSheet.create({
 
   moodEmoji: { fontSize: 34 },
 });
+
+export default React.memo(JournalEntryScreen);

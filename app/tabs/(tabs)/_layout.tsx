@@ -31,7 +31,7 @@ export default function TabLayout() {
             );
           },
           tabBarHideOnKeyboard: true,
-          animation: "none",
+          animation: "fade",
           freezeOnBlur: true,
 
           // Disable the static rendrer of the header on web

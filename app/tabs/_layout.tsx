@@ -52,6 +52,16 @@ export default function AppLayout() {
           animation: "none",
         }}
       />
+
+      <Stack.Screen
+        name="screens/onboarding"
+        options={{
+          headerShown: false,
+          title: "Onboarding",
+          freezeOnBlur: true,
+          animation: "none",
+        }}
+      />
     </Stack>
   );
 }

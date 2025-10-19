@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
-// import LottieView from "lottie-react-native";
-// import { lendHand } from "@/assets/lottie";
+import LottieView from "lottie-react-native";
+import { lendHand } from "@/assets/lottie";
 import NameInput from "../animations/name-input/NameInput";
 
 type NameOnboardProps = {
@@ -16,14 +16,14 @@ export const NameOnboard: React.FC<NameOnboardProps> = ({ name, setName }) => {
     <GestureHandlerRootView className="w-full">
       <View className="flex-1">
         <View style={styles.container}>
-          {/* <LottieView
+          <LottieView
             autoPlay
             style={{
               width: 200,
               height: 200,
             }}
             source={lendHand}
-          /> */}
+          />
           <Animated.Text style={styles.title}>What's your name?</Animated.Text>
           <NameInput
             label="Enter your name"
