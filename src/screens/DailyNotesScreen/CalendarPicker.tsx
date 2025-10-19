@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { format, isToday, isSameMonth, isSameDay } from "date-fns";
-import { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Text } from "@/components/Themed";
 import useCalendarMonth from "./hooks/useCalendarMonth";
@@ -15,7 +15,60 @@ interface CalendarPickerProps {
   moodMap: Map<string, number> | undefined;
 }
 
-export const CalendarPicker: React.FC<CalendarPickerProps> = ({
+// Memoized Day Cell Component
+interface DayCellProps {
+  day: Date;
+  inCurrentMonth: boolean;
+  isTodayDate: boolean;
+  isSelected: boolean;
+  mood: number | undefined;
+  onPress: () => void;
+}
+
+const DayCell = React.memo<DayCellProps>(({ day, inCurrentMonth, isTodayDate, isSelected, mood, onPress }) => {
+  const dayLabel = useMemo(() => format(day, "d"), [day]);
+  const accessibilityLabel = useMemo(() => `Select ${format(day, "EEEE, MMM d, yyyy")}`, [day]);
+
+  return (
+    <Pressable
+      style={[styles.dayCell]}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+    >
+      <View
+        style={[
+          styles.dayCellInside,
+          isTodayDate && !isSelected && styles.todayDayCell,
+          isSelected && styles.selectedDayCell,
+        ]}
+      >
+        <Text
+          style={[
+            styles.dayCellText,
+            !inCurrentMonth && styles.otherMonthText,
+            isSelected && styles.selectedDayText,
+            isTodayDate && !isSelected && styles.todayDayText,
+          ]}
+        >
+          {dayLabel}
+        </Text>
+        <View
+          style={[
+            styles.moodWrapper,
+            !inCurrentMonth && styles.moodDimmed,
+          ]}
+        >
+          <MoodBadge moodscore={mood} size={20} />
+        </View>
+      </View>
+    </Pressable>
+  );
+});
+
+DayCell.displayName = 'DayCell';
+
+export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(({
   selectedDate,
   onDateSelect,
   edgeToEdge,
@@ -29,6 +82,26 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
     () => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const,
     []
   );
+
+  // Pre-compute day data to avoid calculations in render loop
+  const daysData = useMemo(() => {
+    return days.map((day: Date) => {
+      const dayStr = format(day, "yyyy-MM-dd");
+      return {
+        day,
+        dayStr,
+        inCurrentMonth: isSameMonth(day, currentMonth),
+        isTodayDate: isToday(day),
+        isSelected: isSameDay(day, selectedDate),
+        mood: moodMap?.get(dayStr),
+      };
+    });
+  }, [days, currentMonth, selectedDate, moodMap]);
+
+  // Create stable press handlers for each day
+  const dayPressHandlers = useMemo(() => {
+    return daysData.map((dayData) => () => onDateSelect(dayData.day));
+  }, [daysData, onDateSelect]);
 
   return (
     <View
@@ -58,53 +131,23 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = ({
       </View>
 
       <View style={styles.daysGrid}>
-        {days.map((day: Date) => {
-          const inCurrentMonth: boolean = isSameMonth(day, currentMonth);
-          const isTodayDate: boolean = isToday(day);
-          const isSelected: boolean = isSameDay(day, selectedDate);
-          const mood = moodMap?.get(format(day, "yyyy-MM-dd"));
-
-          return (
-            <Pressable
-              key={format(day, "yyyy-MM-dd")}
-              style={[styles.dayCell]}
-              onPress={(): void => onDateSelect(day)}
-              accessibilityRole="button"
-              accessibilityLabel={`Select ${format(day, "EEEE, MMM d, yyyy")}`}
-            >
-              <View
-                style={[
-                  styles.dayCellInside,
-                  isTodayDate && !isSelected && styles.todayDayCell,
-                  isSelected && styles.selectedDayCell,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.dayCellText,
-                    !inCurrentMonth && styles.otherMonthText,
-                    isSelected && styles.selectedDayText,
-                    isTodayDate && !isSelected && styles.todayDayText,
-                  ]}
-                >
-                  {format(day, "d")}
-                </Text>
-                <View
-                  style={[
-                    styles.moodWrapper,
-                    !inCurrentMonth && styles.moodDimmed,
-                  ]}
-                >
-                  <MoodBadge moodscore={mood} size={20} />
-                </View>
-              </View>
-            </Pressable>
-          );
-        })}
+        {daysData.map((dayData, index) => (
+          <DayCell
+            key={dayData.dayStr}
+            day={dayData.day}
+            inCurrentMonth={dayData.inCurrentMonth}
+            isTodayDate={dayData.isTodayDate}
+            isSelected={dayData.isSelected}
+            mood={dayData.mood}
+            onPress={dayPressHandlers[index]}
+          />
+        ))}
       </View>
     </View>
   );
-};
+});
+
+CalendarPicker.displayName = 'CalendarPicker';
 
 const styles = StyleSheet.create({
   calendarPicker: {

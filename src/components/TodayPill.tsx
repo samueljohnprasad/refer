@@ -16,7 +16,7 @@ export interface TodayPillProps {
   scaleFrom?: number;
 }
 
-export const TodayPill: React.FC<TodayPillProps> = ({
+export const TodayPill: React.FC<TodayPillProps> = React.memo(({
   visible,
   label = 'Today',
   onPress,
@@ -51,7 +51,7 @@ export const TodayPill: React.FC<TodayPillProps> = ({
       </Pressable>
     </Animated.View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   pill: {

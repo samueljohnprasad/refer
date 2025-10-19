@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import { View, Pressable, Dimensions, Platform } from "react-native";
 import { Text } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
@@ -48,6 +48,15 @@ const DailyNotesHeader = React.memo(() => {
       snapThreshold: 0.35,
       durationMs: 500,
     });
+
+  // Track if calendar was ever opened to keep it mounted for smooth animations
+  const [hasBeenExpanded, setHasBeenExpanded] = useState(false);
+
+  React.useEffect(() => {
+    if (isExpanded && !hasBeenExpanded) {
+      setHasBeenExpanded(true);
+    }
+  }, [isExpanded, hasBeenExpanded]);
 
   // Animated styles derived from shared progress
   const headerContainerAnimatedStyle = useAnimatedStyle(() => ({
@@ -130,10 +139,17 @@ const DailyNotesHeader = React.memo(() => {
         dayName: DAY_NAMES[index],
         isTodayDate: isToday(day),
         isSelectedDay: selectedDateStr !== "" && dayStr === selectedDateStr,
+        mood: moodMap?.get(dayStr), // Pre-fetch mood to avoid map lookup in render
       };
     });
-  }, [weekDays, selectedDateStr]);
-  // Week navigation handled by useWeekNavigation hook
+  }, [weekDays, selectedDateStr, moodMap]);
+
+  const dayPressHandlers = useCallback(
+    (dayData: any) => {
+      return () => selectDate(dayData.day);
+    },
+    [selectDate]
+  );
 
   const handleGoToToday = useCallback(async (): Promise<void> => {
     const today = new Date();
@@ -178,32 +194,29 @@ const DailyNotesHeader = React.memo(() => {
               weekSlideAnimatedStyle,
             ]}
           >
-            {weekDaysData.map((dayData, index) => {
-              const mood = moodMap?.get(dayData.dayStr);
-              return (
-                <View className="flex-1 gap-4 mb-8" key={dayData.dayStr}>
-                  <DayButton
-                    day={dayData.day}
-                    dayName={dayData.dayName}
-                    isSelected={dayData.isSelectedDay}
-                    isToday={dayData.isTodayDate}
-                    onPress={() => selectDate(dayData.day)}
+            {weekDaysData.map((dayData, index) => (
+              <View className="flex-1 gap-4 mb-8" key={dayData.dayStr}>
+                <DayButton
+                  day={dayData.day}
+                  dayName={dayData.dayName}
+                  isSelected={dayData.isSelectedDay}
+                  isToday={dayData.isTodayDate}
+                  onPress={dayPressHandlers(dayData)}
+                />
+                <View className="flex-1 items-center">
+                  <MoodBadge
+                    moodscore={dayData.mood}
+                    active={dayData.isSelectedDay}
+                    size={28}
                   />
-                  <View className="flex-1 items-center">
-                    <MoodBadge
-                      moodscore={mood}
-                      active={dayData.isSelectedDay}
-                      size={28}
-                    />
-                  </View>
                 </View>
-              );
-            })}
+              </View>
+            ))}
           </Animated.View>
         </Animated.View>
       </View>
-      {/* Only render CalendarPicker when expanded or animating */}
-      {(isExpanded || progress.value > 0) && (
+      {/* Only render CalendarPicker after first expansion for smooth animations */}
+      {hasBeenExpanded && (
         <Animated.View
           className="absolute left-0 right-0 z-20 overflow-hidden px-3 pb-2 rounded-t-none bg-violet-300"
           style={[inlineCalendarAnimatedStyle, { top: isIso ? 45 : 10 }]}
