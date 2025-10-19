@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   Dimensions,
@@ -143,10 +142,14 @@ export default function JournalCalendarScreen() {
   const endOfWeekDate = endOfWeek(yesterday, { weekStartsOn: 0 });
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView className="flex-1 bg-white">
       {/* Background illustrations behind everything */}
-      <View style={styles.illustrationLayer} pointerEvents="none">
-        <Box style={{ marginTop: 40 }}>
+      <View
+        className="absolute top-10 left-1/2 -translate-x-1/2 -z-10"
+        style={{ width: width, height: height }}
+        pointerEvents="none"
+      >
+        <Box className="mt-10">
           {/* <LottieView
             autoPlay
             style={{
@@ -192,28 +195,32 @@ export default function JournalCalendarScreen() {
       </View>
 
       <ScrollView
-        // contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
         contentInsetAdjustmentBehavior="automatic"
       >
         {/* Outer panel container */}
-        <BlurView intensity={50} tint="light" style={styles.panel}>
+        <BlurView
+          intensity={50}
+          tint="light"
+          className="bg-white p-4 pb-24"
+          style={{ width: width }}
+        >
           {/* Top bar with blur background */}
-          <View style={styles.topBarBlur}>
-            <View style={styles.topRow}>
+          <View className="rounded-2xl overflow-hidden mb-2.5 pl-0">
+            <View className="flex-row justify-between py-1.5">
               <TouchableOpacity
                 onPress={() => {
                   //   router.push("/tabs/pages/Compdisplay");
                 }}
-                style={styles.iconCircle}
+                className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
                 activeOpacity={0.8}
               >
                 <Feather name="arrow-left" size={20} color={PALETTE.white} />
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.iconCircle, styles.iconCircleRight]}
+                className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
                 activeOpacity={0.8}
                 onPress={() => router.push("/tabs/screens/settings")}
               >
@@ -223,56 +230,58 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* Greeting text */}
-          <Text style={styles.greeting}>
+          <Text className="text-[34px] font-bold mt-2 text-gray-900">
             Hi, {isLoadingProfile ? "..." : userProfile?.displayName || "there"}{" "}
-            <Text style={styles.wave}>👋</Text>
+            <Text className="text-3xl">👋</Text>
           </Text>
 
           {/* Streak card with animated progress bar */}
-          <View style={styles.streakCard}>
-            <View style={{ flex: 1 }}>
+          <View className="bg-[#FFD24A] rounded-2xl p-4 pr-0 flex-row items-center overflow-hidden mt-3">
+            <View className="flex-1">
               {/* Streak info */}
-              <View style={styles.streakRow}>
+              <View className="flex-row items-center justify-between">
                 <View>
-                  <Text style={styles.streakTitle}>Current Streak</Text>
-                  <View style={styles.streakValueRow}>
+                  <Text className="text-gray-900 text-base font-semibold">
+                    Current Streak
+                  </Text>
+                  <View className="flex-row items-center">
                     <MaterialIcons
                       name="local-fire-department"
                       size={28}
                       color="#FF6A3D"
                     />
-                    <Animated.Text style={styles.streakNumber}>2</Animated.Text>
+                    <Animated.Text className="text-[28px] font-extrabold ml-2">
+                      2
+                    </Animated.Text>
                   </View>
                 </View>
 
-                <View style={{ marginLeft: 18 }}>
-                  <Text style={[styles.streakTitle, { textAlign: "center" }]}>
+                <View className="ml-4.5">
+                  <Text className="text-gray-900 text-base font-semibold text-center">
                     Next Milestone
                   </Text>
-                  <Text style={[styles.streakNumber, { textAlign: "center" }]}>
+                  <Text className="text-[28px] font-extrabold text-center">
                     3
                   </Text>
                 </View>
               </View>
 
               {/* Animated progress bar */}
-              <View style={styles.progressTrack}>
+              <View className="h-3 bg-[#F0D97A] rounded-xl mt-3 overflow-hidden">
                 <Animated.View
-                  style={[
-                    styles.progressFill,
-                    {
-                      width: progressAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: ["0%", "100%"],
-                      }),
-                    },
-                  ]}
+                  className="h-full bg-[#60A6FF] rounded-lg"
+                  style={{
+                    width: progressAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ["0%", "100%"],
+                    }),
+                  }}
                 />
               </View>
             </View>
 
             {/* Illustration placeholder (SVG character) */}
-            <View style={styles.personIllustration}>
+            <View style={{ transform: [{ scaleX: -1 }] }}>
               {/* <LottieView
                 autoPlay
                 style={{
@@ -293,7 +302,7 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* Calendar section */}
-          <View style={styles.calendarCard}>
+          <View className="mt-5 bg-white rounded-2xl py-3 border border-indigo-50">
             <Calendar
               enableSwipeMonths
               onVisibleMonthsChange={(months: DateData[]) => {
@@ -355,22 +364,15 @@ export default function JournalCalendarScreen() {
                 return (
                   <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
                     <Animated.View
+                      className="items-center justify-center"
                       style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        // width: 44,
-                        // height: 56,
                         transform: [{ scale: scaleAnim }],
                       }}
                     >
                       {/* Circle container for emoji or plus */}
                       <View
+                        className="w-7 h-7 rounded-full items-center justify-center"
                         style={{
-                          width: 28,
-                          height: 28,
-                          borderRadius: 14,
-                          alignItems: "center",
-                          justifyContent: "center",
                           backgroundColor: isSelected
                             ? PALETTE.purple
                             : isTodayDate
@@ -381,13 +383,12 @@ export default function JournalCalendarScreen() {
                         }}
                       >
                         {emoji ? (
-                          <Text style={{ fontSize: 18 }}>{emoji}</Text>
+                          <Text className="text-lg">{emoji}</Text>
                         ) : (
                           <Text
+                            className="text-base font-bold"
                             style={{
-                              fontSize: 16,
                               color: isSelected ? "#fff" : "#94A3B8",
-                              fontWeight: "700",
                             }}
                           >
                             +
@@ -396,8 +397,8 @@ export default function JournalCalendarScreen() {
                       </View>
                       {/* Date number below the circle */}
                       <Text
+                        className="text-xs"
                         style={{
-                          fontSize: 12,
                           color: isDisabled ? "#C7BFE7" : "#111827",
                         }}
                       >
@@ -411,42 +412,44 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* XP progress card */}
-          <View style={styles.xpCard}>
-            <Animated.Text style={styles.xpTitle}>
+          <View className="bg-[#7B61FF] rounded-2xl mt-4.5 p-3 flex-row items-center">
+            <Animated.Text className="text-white text-lg font-bold flex-1">
               {xpAnim.interpolate({
                 inputRange: [0, 200],
                 outputRange: ["0 XP", "200 XP"],
               })}
             </Animated.Text>
-            <View style={styles.xpTrack}>
-              <View style={styles.xpFill} />
+            <View className="h-2.5 bg-[#FFD24A] rounded-full flex-[2] mx-2.5 overflow-hidden">
+              <View className="w-3/4 h-full bg-[#3B2DFB]" />
             </View>
-            <View style={styles.xpMascot}>
-              <Text style={{ fontSize: 26 }}>👩‍🎤</Text>
+            <View className="w-9 items-center">
+              <Text className="text-[26px]">👩‍🎤</Text>
             </View>
           </View>
 
           {/* Bottom action buttons */}
-          <View style={styles.actionRow}>
+          <View className="flex-row gap-3 mt-4.5">
             <TouchableOpacity
-              style={styles.primaryButton}
+              className="flex-1 bg-[#7B61FF] py-3.5 rounded-2xl items-center"
               activeOpacity={0.85}
               onPress={handleAddEntry}
             >
-              <Text style={styles.primaryButtonText}>Add Entry</Text>
+              <Text className="font-bold text-white text-base">Add Entry</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.secondaryButton}
+              className="flex-1 bg-white py-3.5 rounded-2xl items-center border border-gray-200"
               activeOpacity={0.85}
               onPress={handleNextMonth}
             >
-              <Text style={styles.secondaryButtonText}>Next Month</Text>
+              <Text className="font-bold text-gray-900 text-base">
+                Next Month
+              </Text>
             </TouchableOpacity>
           </View>
 
           {/* Badges header */}
-          <Text style={styles.badgesHeading}>Badges</Text>
+          <Text className="mt-4.5 text-lg font-bold text-gray-800">Badges</Text>
         </BlurView>
         <BlurModal visible={modalVisible} />
         {/* <EntryDetailModal
@@ -458,134 +461,3 @@ export default function JournalCalendarScreen() {
     </SafeAreaView>
   );
 }
-
-// StyleSheet definitions
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#fff" },
-  illustrationLayer: {
-    ...StyleSheet.absoluteFillObject,
-    top: 40,
-    left: "50%",
-    transform: [{ translateX: "-50%" }],
-    zIndex: -1,
-  },
-  panel: {
-    width: width,
-    backgroundColor: "#fff",
-    padding: 16,
-    paddingBottom: 100,
-  },
-  topBarBlur: {
-    borderRadius: 18,
-    overflow: "hidden",
-    marginBottom: 10,
-    paddingLeft: 0,
-  },
-  topRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 6,
-  },
-  iconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: PALETTE.purple,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  iconCircleRight: { backgroundColor: PALETTE.purple },
-  greeting: { fontSize: 34, fontWeight: "700", marginTop: 8, color: "#111" },
-  wave: { fontSize: 30 },
-  streakCard: {
-    backgroundColor: PALETTE.yellow,
-    borderRadius: 18,
-    padding: 16,
-    paddingRight: 0,
-    marginTop: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    overflow: "hidden",
-  },
-  streakRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  streakTitle: { color: "#111", fontSize: 16, fontWeight: "600" },
-  streakNumber: { fontSize: 28, fontWeight: "800", marginLeft: 8 },
-  streakValueRow: { flexDirection: "row", alignItems: "center" },
-  progressTrack: {
-    height: 12,
-    backgroundColor: "#F0D97A",
-    borderRadius: 12,
-    marginTop: 12,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: PALETTE.blue,
-    borderRadius: 8,
-  },
-  personIllustration: { transform: [{ scaleX: -1 }] },
-
-  calendarCard: {
-    marginTop: 20,
-    backgroundColor: "#fff",
-    borderRadius: 18,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: "#EEF2FF",
-  },
-
-  xpCard: {
-    backgroundColor: PALETTE.purple,
-    borderRadius: 18,
-    marginTop: 18,
-    padding: 12,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  xpTitle: { color: "#fff", fontSize: 18, fontWeight: "700", flex: 1 },
-  xpTrack: {
-    height: 10,
-    backgroundColor: "#FFD24A",
-    borderRadius: 10,
-    flex: 2,
-    marginHorizontal: 10,
-    overflow: "hidden",
-  },
-  xpFill: { width: "75%", height: "100%", backgroundColor: "#3B2DFB" },
-  xpMascot: { width: 36, alignItems: "center" },
-
-  actionRow: {
-    flexDirection: "row",
-    gap: 12,
-    marginTop: 18,
-  },
-  primaryButton: {
-    flex: 1,
-    backgroundColor: PALETTE.purple,
-    paddingVertical: 14,
-    borderRadius: 16,
-    alignItems: "center",
-  },
-  primaryButtonText: { fontWeight: "700", color: "#fff", fontSize: 16 },
-  secondaryButton: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingVertical: 14,
-    borderRadius: 16,
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-  },
-  secondaryButtonText: { fontWeight: "700", color: "#111827", fontSize: 16 },
-
-  badgesHeading: {
-    marginTop: 18,
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#222",
-  },
-});
