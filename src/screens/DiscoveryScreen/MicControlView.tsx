@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import {
   View,
   TouchableOpacity,
-  StyleSheet,
-  Text,
   Dimensions,
   Animated,
   Pressable,
@@ -45,6 +43,33 @@ export interface MicControlViewProps {
  * Receives all data and callbacks via props, handles only rendering
  */
 const { width, height } = Dimensions.get("window");
+const PANEL_HEIGHT = 200;
+
+// Constants to prevent recreation
+const CONTAINER_STOP_STYLE = {
+  width: width / 2,
+  height: PANEL_HEIGHT,
+  top: height / 1.7,
+  transform: [{ translateX: width / 4 }],
+} as const;
+
+const CONTAINER_STYLE = {
+  width: width,
+  height: PANEL_HEIGHT,
+  shadowColor: "rgba(0, 0, 0, 0.05)",
+  shadowOffset: { width: 0, height: -1 },
+  shadowOpacity: 0.1,
+  shadowRadius: 6,
+  elevation: 3,
+} as const;
+
+const MIC_BUTTON_SHADOW = {
+  shadowColor: "#EF4444",
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.15,
+  shadowRadius: 6,
+  elevation: 4,
+} as const;
 
 const MicControlView: React.FC<MicControlViewProps> = ({
   isRecording,
@@ -58,103 +83,88 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   waveFlow,
   formattedDuration,
 }) => {
-  // const activeTheme = useSeasonalTheme();
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
+
+  const handleDiscard = useCallback(() => {
+    setRecorderOpen(false);
+  }, [setRecorderOpen]);
+
+  const micButtonStyle = useMemo(
+    () => ({
+      backgroundColor: isRecording ? "#EF4444" : "#EF4444",
+      ...MIC_BUTTON_SHADOW,
+    }),
+    [isRecording]
+  );
+
+  const glowStyle = useMemo(
+    () => ({
+      backgroundColor: "#EF444420",
+      transform: [{ scale: glowScale }],
+      opacity: breathingOpacity,
+    }),
+    [glowScale, breathingOpacity]
+  );
+
+  const heartbeatTransform = useMemo(
+    () => ({
+      transform: [{ scale: heartbeatScale }],
+    }),
+    [heartbeatScale]
+  );
+
+  const pausedOpacityStyle = useMemo(
+    () => ({
+      opacity: breathingOpacity.interpolate({
+        inputRange: [0.6, 1],
+        outputRange: [0.8, 1],
+      }),
+    }),
+    [breathingOpacity]
+  );
+
   return (
     <BottomSheet>
       {isRecording && (
         <Pressable
-          onPress={() => onToggleRecord()}
-          style={[styles.containerStop, { width: width / 2 }]}
-        ></Pressable>
+          onPress={onToggleRecord}
+          style={CONTAINER_STOP_STYLE}
+          className="absolute justify-center bg-transparent rounded-full"
+        />
       )}
       {!isRecording && (
-        <View style={[styles.container, { width: width }]}>
-          <Box className="backdrop-blur-md w-full  ">
-            {/* Top section with timer and breathing guide */}
-            {/* <View style={styles.timerSection}>
-    <Text style={styles.timer}>{formattedDuration}</Text>
-  </View> */}
+        <View style={CONTAINER_STYLE} className="absolute bottom-[50px] items-center pt-8 px-5">
+          <Box className="backdrop-blur-md w-full">
             <HStack className="justify-center items-center gap-10">
               {isPaused && (
-                <Animated.View
-                  style={[
-                    {
-                      opacity: breathingOpacity.interpolate({
-                        inputRange: [0.6, 1],
-                        outputRange: [0.8, 1],
-                      }),
-                    },
-                  ]}
-                >
+                <Animated.View style={pausedOpacityStyle}>
                   <BottomSheetTrigger>
-                    {/* <Ionicons name="checkmark-circle" size={20} color="#EF4444" /> */}
                     <Feather name="mic" />
                   </BottomSheetTrigger>
                 </Animated.View>
               )}
 
               {/* Main mic button with modern design */}
-
-              <Animated.View
-                style={[
-                  styles.buttonContainer,
-                  {
-                    transform: [{ scale: heartbeatScale }],
-                  },
-                ]}
-                className="flex items-center justify-center"
-              >
+              <Animated.View style={heartbeatTransform} className="flex items-center justify-center mb-4">
                 {/* Outer glow ring for recording state */}
                 {isRecording && (
-                  <Animated.View
-                    style={[
-                      styles.outerGlow,
-                      {
-                        backgroundColor: "#EF444420",
-                        transform: [{ scale: glowScale }],
-                        opacity: breathingOpacity,
-                      },
-                    ]}
-                  />
+                  <Animated.View style={glowStyle} className="absolute w-[120px] h-[120px] rounded-full" />
                 )}
                 <TouchableOpacity
-                  style={styles.mainButtonWrapper}
+                  className="w-20 h-20 rounded-full justify-center items-center"
                   onPress={onToggleRecord}
                   activeOpacity={0.9}
                 >
-                  <View
-                    style={[
-                      styles.simpleButton,
-                      {
-                        backgroundColor: isRecording ? "#EF4444" : "#EF4444",
-                        shadowColor: "#EF4444",
-                      },
-                    ]}
-                  >
-                    {isRecording ? (
-                      <Feather name="mic" />
-                    ) : (
-                      <Feather name="mic" />
-                    )}
+                  <View style={micButtonStyle} className="w-20 h-20 rounded-full justify-center items-center">
+                    <Feather name="mic" />
                   </View>
                 </TouchableOpacity>
               </Animated.View>
 
               {isPaused && (
-                <Animated.View
-                  style={[
-                    {
-                      opacity: breathingOpacity.interpolate({
-                        inputRange: [0.6, 1],
-                        outputRange: [0.8, 1],
-                      }),
-                    },
-                  ]}
-                >
+                <Animated.View style={pausedOpacityStyle}>
                   <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
                     <View>
-                      {/* <Ionicons name="checkmark-circle" size={20} color="#EF4444" /> */}
                       <Check />
                     </View>
                   </TouchableOpacity>
@@ -167,7 +177,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
 
       <ShortBottomModal>
         <Center>
-          <Button onPress={() => setRecorderOpen(false)}>
+          <Button onPress={handleDiscard}>
             <ButtonText>Discard</ButtonText>
           </Button>
         </Center>
@@ -176,68 +186,4 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   );
 };
 
-const PANEL_HEIGHT = 200;
-
-const styles = StyleSheet.create({
-  containerStop: {
-    height: PANEL_HEIGHT,
-    position: "absolute",
-    top: height / 1.7,
-    transform: [{ translateX: width / 4 }],
-    justifyContent: "center",
-    backgroundColor: "transparent",
-    borderRadius: "50%",
-  },
-  container: {
-    height: PANEL_HEIGHT,
-    position: "absolute",
-    bottom: 50,
-    alignItems: "center",
-    paddingTop: 32,
-    paddingHorizontal: 20,
-    shadowColor: "rgba(0, 0, 0, 0.05)",
-    shadowOffset: { width: 0, height: -1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  timerSection: {
-    alignItems: "center",
-    marginBottom: 40,
-  },
-  timer: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "rgba(60, 60, 60, 0.9)",
-    letterSpacing: 0.5,
-  },
-  outerGlow: {
-    position: "absolute",
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-  },
-  buttonContainer: {
-    marginBottom: 16,
-  },
-  simpleButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 4,
-  },
-  mainButtonWrapper: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
-
-export default MicControlView;
+export default React.memo(MicControlView);

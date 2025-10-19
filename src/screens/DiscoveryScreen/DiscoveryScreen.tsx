@@ -1,11 +1,10 @@
 // DiscoveryScreen.tsx
 // Updated per request: removed bottom tabs, bigger mic, slimmer progress, fire for streak.
 
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   Platform,
@@ -22,6 +21,7 @@ import { router } from "expo-router";
 import { recorderOpenAtom } from "./helpers";
 import VoiceRecorderModalWrapper from "./VoiceRecorderModalWrapper";
 
+// Constants outside component to prevent recreation
 const COLORS = {
   ink: "#2E285A", // deep purple
   accent: "#F6C24B", // yellow (mic, progress)
@@ -32,84 +32,146 @@ const COLORS = {
   streak: "#FF7A2F", // fire/number
 };
 
-export default function DiscoveryScreen() {
+const GRADIENT_COLORS = [COLORS.skyA, COLORS.skyB] as const;
+const GRADIENT_START = { x: 0, y: 0 } as const;
+const GRADIENT_END = { x: 1, y: 1 } as const;
+
+const LOTTIE_STYLE = {
+  width: 200,
+  height: 200,
+} as const;
+
+const FIRE_ICON_STYLE = { marginLeft: 6 } as const;
+
+// Memoized Header Component
+const DiscoveryHeader = React.memo(() => (
+  <View className="flex-row items-center justify-between my-1.5">
+    <View className="flex-row items-center">
+      <View className="w-3.5 h-3.5 rounded-full bg-[#8D7BF7] mr-2.5" />
+      <Text className="text-[#2E285A] text-[22px] font-extrabold tracking-wide">
+        1st discovery
+      </Text>
+    </View>
+    <View className="flex-row items-center">
+      <Text className="text-[#FF7A2F] text-lg font-extrabold">4</Text>
+      <MaterialCommunityIcons
+        name="fire"
+        size={22}
+        color={COLORS.streak}
+        style={FIRE_ICON_STYLE}
+      />
+    </View>
+  </View>
+));
+
+DiscoveryHeader.displayName = "DiscoveryHeader";
+
+// Memoized Progress Bar Component
+interface ProgressBarProps {
+  progress: number;
+}
+
+const ProgressBar = React.memo<ProgressBarProps>(({ progress }) => (
+  <View
+    className="mt-2 mb-3.5"
+    accessible
+    accessibilityRole="progressbar"
+    accessibilityLabel="Experience progress"
+  >
+    <View className="mb-1.5 flex-row justify-between items-center">
+      <Text className="text-[#64748B] text-xs font-bold">0/100 XP</Text>
+    </View>
+    <View className="h-2 bg-[#F3F4F6] rounded-md overflow-hidden justify-center">
+      <View
+        className="h-full bg-[#F6C24B] rounded-md"
+        style={{ width: `${progress}%` }}
+      />
+    </View>
+  </View>
+));
+
+ProgressBar.displayName = "ProgressBar";
+
+// Memoized Prompt Card Content
+const PromptCardContent = React.memo(() => (
+  <Box>
+    <View className="flex-row justify-between items-center">
+      <Text className="text-[#2E285A] opacity-75 font-bold">
+        Journal · September 4
+      </Text>
+      <Feather name="rotate-cw" size={20} color={COLORS.ink} />
+    </View>
+    <Text className="mt-2.5 text-[#2E285A] text-[28px] font-black leading-[34px] tracking-wide">
+      What do you wish{"\n"}you had done{"\n"}differently today?
+    </Text>
+  </Box>
+));
+
+PromptCardContent.displayName = "PromptCardContent";
+
+// Memoized Illustration
+const Illustration = React.memo(() => (
+  <View className="justify-end items-center" pointerEvents="none">
+    <LottieView autoPlay style={LOTTIE_STYLE} source={girlMeditation} />
+  </View>
+));
+
+Illustration.displayName = "Illustration";
+
+function DiscoveryScreen() {
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
   const tabBarHeight = useBottomTabBarHeight();
 
+  const handleOpenRecorder = useCallback(() => {
+    setRecorderOpen(true);
+  }, [setRecorderOpen]);
+
+  const handleKeyboardPress = useCallback(() => {
+    // router.push("/tabs/journal-keyboard-entry");
+  }, []);
+
+  const scrollContentStyle = useMemo(
+    () => ({
+      paddingHorizontal: 18,
+      paddingTop: 8,
+      paddingBottom: Math.max(24, tabBarHeight + 16),
+      flexGrow: 1,
+    }),
+    [tabBarHeight]
+  );
+
+  const cardShadowStyle = useMemo(() => [shadowCard, { borderRadius: 26 }], []);
+
   return (
-    <SafeAreaView style={styles.safe} edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
       <ScrollView
-        contentContainerStyle={[
-          styles.container,
-          { paddingBottom: Math.max(24, tabBarHeight + 16) },
-        ]}
+        contentContainerStyle={scrollContentStyle}
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <View style={styles.headerRow}>
-            <View style={styles.titleRow}>
-              <View style={styles.pillDot} />
-              <Text style={styles.title}>1st discovery</Text>
-            </View>
-            {/* <CHANGE> fire icon for streak; kept orange count and flame icon */}
-            <View style={styles.counters}>
-              <Text style={styles.streakText}>4</Text>
-              <MaterialCommunityIcons
-                name="fire"
-                size={22}
-                color={COLORS.streak}
-                style={{ marginLeft: 6 }}
-              />
-            </View>
-          </View>
-
-          <View
-            style={styles.progressWrap}
-            accessible
-            accessibilityRole="progressbar"
-            accessibilityLabel="Experience progress"
-          >
-            <View style={styles.progressHeader}>
-              <Text style={styles.progressLabel}>0/100 XP</Text>
-            </View>
-            <View style={styles.progressTrack}>
-              <View style={[styles.progressFill, { width: "74%" }]} />
-            </View>
-          </View>
+          <DiscoveryHeader />
+          <ProgressBar progress={74} />
         </View>
 
         {/* Prompt card */}
-        <View style={[styles.cardShadow]} className="  flex-1">
+        <View style={cardShadowStyle} className="rounded-2xl flex-1">
           <LinearGradient
-            colors={[COLORS.skyA, COLORS.skyB]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.promptCard}
+            colors={GRADIENT_COLORS}
+            start={GRADIENT_START}
+            end={GRADIENT_END}
+            style={{
+              borderRadius: 26,
+              padding: 18,
+              overflow: "hidden",
+              minHeight: 260,
+              justifyContent: "space-between",
+              flex: 1,
+            }}
           >
-            <Box>
-              <View style={styles.cardTopRow}>
-                <Text style={styles.cardCaption}>Journal · September 4</Text>
-                <Feather name="rotate-cw" size={20} color={COLORS.ink} />
-              </View>
-              <Text style={styles.question}>
-                What do you wish{"\n"}you had done{"\n"}differently today?
-              </Text>
-            </Box>
+            <PromptCardContent />
+            <Illustration />
 
-            {/* illustration layer */}
-            <View style={styles.illustrationLayer} pointerEvents="none">
-              {/* <Image alt="image" size="2xl" source={thinking} /> */}
-              <LottieView
-                autoPlay
-                style={{
-                  width: 200,
-                  height: 200,
-                }}
-                source={girlMeditation}
-              />
-            </View>
-
-            <View style={[styles.actionsRow]}>
+            <View className="flex-row items-center justify-between px-[18px]">
               <CircleAction
                 key="menu"
                 size={72}
@@ -119,9 +181,7 @@ export default function DiscoveryScreen() {
 
               <CircleAction
                 key="mic"
-                onPress={() => {
-                  setRecorderOpen(true);
-                }}
+                onPress={handleOpenRecorder}
                 size={108}
                 bg={COLORS.accent}
                 elevation
@@ -130,9 +190,7 @@ export default function DiscoveryScreen() {
 
               <CircleAction
                 key="keyboard"
-                onPress={() => {
-                //   router.push("/tabs/journal-keyboard-entry");
-                }}
+                onPress={handleKeyboardPress}
                 size={72}
                 bg={COLORS.lavender}
                 icon={
@@ -147,48 +205,51 @@ export default function DiscoveryScreen() {
           </LinearGradient>
         </View>
 
-        {/* Actions */}
-
         <VoiceRecorderModalWrapper />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function CircleAction({
-  size,
-  bg,
-  icon,
-  elevation,
-  onPress,
-}: {
+// Memoized CircleAction Component
+interface CircleActionProps {
   size: number;
   bg: string;
   icon: React.ReactNode;
   elevation?: boolean;
   onPress?: () => void;
-}) {
-  return (
-    <TouchableOpacity
-      activeOpacity={0.85}
-      onPress={onPress}
-      style={[
+}
+
+const CircleAction = React.memo<CircleActionProps>(
+  ({ size, bg, icon, elevation, onPress }) => {
+    const buttonStyle = useMemo(
+      () => [
         {
           width: size,
           height: size,
           borderRadius: size / 2,
           backgroundColor: bg,
-          alignItems: "center",
-          justifyContent: "center",
           zIndex: elevation ? 2 : 1,
         },
-        elevation ? styles.actionCircleElevated : null,
-      ]}
-    >
-      {icon}
-    </TouchableOpacity>
-  );
-}
+        elevation ? shadowCard : null,
+      ],
+      [size, bg, elevation]
+    );
+
+    return (
+      <TouchableOpacity
+        activeOpacity={0.85}
+        onPress={onPress}
+        style={buttonStyle}
+        className="items-center justify-center"
+      >
+        {icon}
+      </TouchableOpacity>
+    );
+  }
+);
+
+CircleAction.displayName = "CircleAction";
 
 const shadowCard = Platform.select({
   ios: {
@@ -200,99 +261,4 @@ const shadowCard = Platform.select({
   android: { elevation: 0 },
 });
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.white },
-  container: {
-    paddingHorizontal: 18,
-    paddingTop: 8,
-    paddingBottom: 0,
-    flex: 1,
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginVertical: 6,
-  },
-  titleRow: { flexDirection: "row", alignItems: "center" },
-  pillDot: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: "#8D7BF7",
-    marginRight: 10,
-  },
-  title: {
-    color: COLORS.ink,
-    fontSize: 22,
-    fontWeight: "800",
-    letterSpacing: 0.2,
-  },
-  counters: { flexDirection: "row", alignItems: "center" },
-  streakText: { color: COLORS.streak, fontSize: 18, fontWeight: "800" },
-
-  // slimmer progress
-  progressWrap: { marginTop: 8, marginBottom: 14 },
-  progressHeader: {
-    marginBottom: 6,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  progressLabel: {
-    color: "#64748B",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  progressTrack: {
-    height: 8,
-    backgroundColor: "#F3F4F6",
-    borderRadius: 6,
-    overflow: "hidden",
-    justifyContent: "center",
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: COLORS.accent,
-    borderRadius: 6,
-  },
-
-  cardShadow: { ...shadowCard, borderRadius: 26 },
-  promptCard: {
-    borderRadius: 26,
-    paddingTop: 18,
-    paddingBlock: 18,
-    paddingHorizontal: 18,
-    overflow: "hidden",
-    minHeight: 260,
-    justifyContent: "space-between",
-    flex: 1,
-  },
-  cardTopRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  cardCaption: { color: COLORS.ink, opacity: 0.75, fontWeight: "700" },
-  question: {
-    marginTop: 10,
-    color: COLORS.ink,
-    fontSize: 28,
-    fontWeight: "900",
-    lineHeight: 34,
-    letterSpacing: 0.2,
-  },
-  illustrationLayer: {
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-
-  actionsRow: {
-    // marginTop: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 18,
-  },
-  actionCircleElevated: { ...shadowCard },
-});
+export default React.memo(DiscoveryScreen);

@@ -1,6 +1,45 @@
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useRef, useMemo, useCallback } from "react";
 import { Animated } from "react-native";
 import MicControlView from "./MicControlView";
+
+// Animation configuration constants
+const HEARTBEAT_CONFIG = {
+  toValue1: 1.05,
+  toValue2: 1,
+  duration: 800,
+  useNativeDriver: true,
+} as const;
+
+const BREATHING_CONFIG = {
+  toValue1: 1,
+  toValue2: 0.6,
+  duration: 2000,
+  useNativeDriver: true,
+} as const;
+
+const GLOW_CONFIG = {
+  toValue1: 1.15,
+  toValue2: 1,
+  duration: 1500,
+  useNativeDriver: true,
+} as const;
+
+const WAVE_CONFIG = {
+  toValue: 1,
+  duration: 2000,
+  useNativeDriver: false,
+} as const;
+
+const RESET_CONFIG = {
+  duration: 300,
+  useNativeDriver: true,
+} as const;
+
+const WAVE_RESET_CONFIG = {
+  toValue: 0,
+  duration: 300,
+  useNativeDriver: false,
+} as const;
 
 // Original props interface for the container
 export interface MicControlProps {
@@ -39,14 +78,14 @@ const MicControlContainer: React.FC<MicControlProps> = ({
       const heartbeat = Animated.loop(
         Animated.sequence([
           Animated.timing(heartbeatScale, {
-            toValue: 1.05,
-            duration: 800,
-            useNativeDriver: true,
+            toValue: HEARTBEAT_CONFIG.toValue1,
+            duration: HEARTBEAT_CONFIG.duration,
+            useNativeDriver: HEARTBEAT_CONFIG.useNativeDriver,
           }),
           Animated.timing(heartbeatScale, {
-            toValue: 1,
-            duration: 800,
-            useNativeDriver: true,
+            toValue: HEARTBEAT_CONFIG.toValue2,
+            duration: HEARTBEAT_CONFIG.duration,
+            useNativeDriver: HEARTBEAT_CONFIG.useNativeDriver,
           }),
         ])
       );
@@ -55,14 +94,14 @@ const MicControlContainer: React.FC<MicControlProps> = ({
       const breathing = Animated.loop(
         Animated.sequence([
           Animated.timing(breathingOpacity, {
-            toValue: 1,
-            duration: 2000,
-            useNativeDriver: true,
+            toValue: BREATHING_CONFIG.toValue1,
+            duration: BREATHING_CONFIG.duration,
+            useNativeDriver: BREATHING_CONFIG.useNativeDriver,
           }),
           Animated.timing(breathingOpacity, {
-            toValue: 0.6,
-            duration: 2000,
-            useNativeDriver: true,
+            toValue: BREATHING_CONFIG.toValue2,
+            duration: BREATHING_CONFIG.duration,
+            useNativeDriver: BREATHING_CONFIG.useNativeDriver,
           }),
         ])
       );
@@ -71,25 +110,21 @@ const MicControlContainer: React.FC<MicControlProps> = ({
       const glow = Animated.loop(
         Animated.sequence([
           Animated.timing(glowScale, {
-            toValue: 1.15,
-            duration: 1500,
-            useNativeDriver: true,
+            toValue: GLOW_CONFIG.toValue1,
+            duration: GLOW_CONFIG.duration,
+            useNativeDriver: GLOW_CONFIG.useNativeDriver,
           }),
           Animated.timing(glowScale, {
-            toValue: 1,
-            duration: 1500,
-            useNativeDriver: true,
+            toValue: GLOW_CONFIG.toValue2,
+            duration: GLOW_CONFIG.duration,
+            useNativeDriver: GLOW_CONFIG.useNativeDriver,
           }),
         ])
       );
 
       // Wave flowing animation
       const waveAnimation = Animated.loop(
-        Animated.timing(waveFlow, {
-          toValue: 1,
-          duration: 2000,
-          useNativeDriver: false,
-        })
+        Animated.timing(waveFlow, WAVE_CONFIG)
       );
 
       // Start all animations
@@ -109,27 +144,20 @@ const MicControlContainer: React.FC<MicControlProps> = ({
       // Reset animations to default state when not recording
       Animated.timing(heartbeatScale, {
         toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
+        ...RESET_CONFIG,
       }).start();
 
       Animated.timing(breathingOpacity, {
         toValue: 0.7,
-        duration: 300,
-        useNativeDriver: true,
+        ...RESET_CONFIG,
       }).start();
 
       Animated.timing(glowScale, {
         toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
+        ...RESET_CONFIG,
       }).start();
 
-      Animated.timing(waveFlow, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
+      Animated.timing(waveFlow, WAVE_RESET_CONFIG).start();
     }
   }, [isRecording, heartbeatScale, breathingOpacity, glowScale, waveFlow]);
 
@@ -169,4 +197,4 @@ const MicControlContainer: React.FC<MicControlProps> = ({
   );
 };
 
-export default MicControlContainer;
+export default React.memo(MicControlContainer);
