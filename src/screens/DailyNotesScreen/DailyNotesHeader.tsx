@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  StyleSheet,
   View,
   Pressable,
   Dimensions,
@@ -118,27 +117,30 @@ const DailyNotesHeader = () => {
   // Pan gesture handlers are provided by useWeekNavigation
   return (
     <Animated.View
-      className="bg-violet-300"
-      style={[styles.headerContainer, headerContainerAnimatedStyle]}
+      className="bg-violet-300 justify-end relative"
+      style={[headerContainerAnimatedStyle]}
     >
       {/* Calendar Header */}
-      <Animated.View style={[styles.calendarHeader]}>
-        <Pressable style={styles.calendarIcon} onPress={() => toggle()}>
+      <Animated.View
+        className="flex-row items-center justify-between mb-0 px-3"
+        style={[headerControlsAnimatedStyle]}
+      >
+        <Pressable className="p-1 ml-0 mr-2" onPress={() => toggle()}>
           <Feather name="calendar" size={24} color="white" />
         </Pressable>
 
-        <View style={styles.navigationContainer}>
-          <Text style={styles.todayText}>{selectedDateLabel || ""}</Text>
+        <View className="flex-row items-center justify-center flex-1">
+          <Text className="text-[17px] font-semibold text-white mx-4 text-center">{selectedDateLabel || ""}</Text>
         </View>
 
-        <Pressable style={styles.moreButton} onPress={() => expand()}>
+        <Pressable className="p-2" onPress={() => expand()}>
           <Feather name="more-horizontal" size={24} color="#fff" />
         </Pressable>
       </Animated.View>
 
       {/* Week View */}
-      <View style={styles.weekContainer} {...panHandlers}>
-        <Animated.View style={[styles.weekRow, weekHeaderAnimatedStyle]}>
+      <View className="py-3 px-3 mb-0 w-full relative" {...panHandlers}>
+        <Animated.View className="flex-row w-full" style={[weekHeaderAnimatedStyle]}>
           <Animated.View
             style={[
               { display: "flex", flex: 1, flexDirection: "row", gap: 6 },
@@ -161,7 +163,7 @@ const DailyNotesHeader = () => {
                     isToday={isTodayDate}
                     onPress={() => selectDate(day)}
                   />
-                  <View style={styles.moodItem}>
+                  <View className="flex-1 items-center">
                     <MoodBadge
                       moodscore={mood}
                       active={isSelectedDay}
@@ -175,12 +177,11 @@ const DailyNotesHeader = () => {
         </Animated.View>
       </View>
       <Animated.View
+        className="absolute left-0 right-0 z-20 overflow-hidden px-3 pb-2 rounded-t-none bg-violet-300"
         style={[
-          styles.inlineCalendarContainer,
           inlineCalendarAnimatedStyle,
           { top: isIso ? 45 : 10 },
         ]}
-        className="bg-violet-300"
       >
         <CalendarPicker
           moodMap={moodMap}
@@ -200,137 +201,14 @@ const DailyNotesHeader = () => {
         onPress={handleGoToToday}
       />
       {/* Absolute overlay handle that moves down with expanding calendar */}
-      <Animated.View style={[styles.handleOverlay]} pointerEvents="box-none">
+      <Animated.View className="absolute left-0 right-0 items-center z-10" pointerEvents="box-none">
         <GestureDetector gesture={gesture}>
-          <View style={[styles.dragHandle]} />
+          <View className="w-12 h-[5px] rounded bg-white/90" />
         </GestureDetector>
       </Animated.View>
     </Animated.View>
   );
 };
 
-const styles = StyleSheet.create({
-  headerContainer: {
-    // backgroundColor: "#9F8CFF",
-    justifyContent: "flex-end",
-    position: "relative",
-  },
-  modalBackdrop: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  navButton: {
-    padding: 6,
-  },
-  todayText: {
-    fontSize: 17,
-    fontWeight: "600",
-    color: "#fff",
-    marginHorizontal: 16,
-    textAlign: "center",
-  },
-  weekContainer: {
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    marginBottom: 0,
-    width: "100%",
-    position: "relative",
-  },
-  weekRow: {
-    flexDirection: "row",
-    width: "100%",
-  },
-  moodRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    marginTop: 8,
-  },
-  moodItem: {
-    flex: 1,
-    alignItems: "center",
-  },
-  dragAnchorPlaceholder: {
-    height: 8,
-  },
-  dragHandle: {
-    width: 48,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: "rgba(255,255,255,0.9)",
-  },
-  handleOverlay: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    alignItems: "center",
-    zIndex: 10,
-  },
-  inlineCalendarContainer: {
-    position: "absolute",
-    top: 45,
-    left: 0,
-    right: 0,
-    zIndex: 20,
-    overflow: "hidden",
-    paddingHorizontal: 12,
-    paddingBottom: 8,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-  },
-
-  calendarModal: {
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 20,
-    margin: 20,
-    width: Dimensions.get("window").width - 40,
-    maxHeight: "80%",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  calendarTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000",
-  },
-  closeButton: {
-    padding: 4,
-  },
-  navigationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  calendarHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 0,
-    paddingHorizontal: 12,
-  },
-  moreButton: {
-    padding: 8,
-  },
-  calendarIcon: {
-    padding: 4,
-    marginLeft: 0,
-    marginRight: 8,
-  },
-});
 
 export default DailyNotesHeader;
