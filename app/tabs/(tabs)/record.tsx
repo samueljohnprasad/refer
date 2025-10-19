@@ -1,12 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import DiscoveryScreen from "@/src/screens/DiscoveryScreen/DiscoveryScreen";
 
 const record = () => {
-  return (
-    <View>
-      <Text>record</Text>
-    </View>
-  );
+  return <DiscoveryScreen />;
 };
 
 export default record;
