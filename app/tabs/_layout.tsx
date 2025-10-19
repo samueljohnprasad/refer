@@ -42,6 +42,16 @@ export default function AppLayout() {
           animation: "none",
         }}
       />
+
+      <Stack.Screen
+        name="screens/compdisplay"
+        options={{
+          headerShown: false,
+          title: "Compdisplay",
+          freezeOnBlur: true,
+          animation: "none",
+        }}
+      />
     </Stack>
   );
 }

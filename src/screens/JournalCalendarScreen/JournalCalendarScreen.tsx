@@ -13,9 +13,8 @@ import Svg, { Circle, Rect, Ellipse } from "react-native-svg";
 import { Calendar, DateData } from "react-native-calendars";
 import { BlurView } from "expo-blur";
 import LottieView from "lottie-react-native";
-// import { girlMeditationBlue, manRocket } from "@/assets/lottie";
+import { girlMeditationBlue, manRocket } from "@/assets/lottie";
 import { endOfWeek, format, startOfWeek, sub } from "date-fns";
-import { useRouter } from "expo-router";
 import { Box } from "@/components/ui/box";
 // import { EntryDetailModal } from "@/components/mentalHealth/EntryModal/EntryDetailModal";
 // import type { MoodEntry } from "@/types/mentalHealth";
@@ -26,10 +25,11 @@ import BlurModal from "@/src/components/BlurModal";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
 // import { girlMeditationBlue } from "@/assets/lottie";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { router } from "expo-router";
 const { width, height } = Dimensions.get("window");
 
 // Global color palette
-const PALETTE = {
+export const PALETTE = {
   purple: "#7B61FF",
   lightPurple: "#DCD6FF",
   yellow: "#FFD24A",
@@ -56,18 +56,7 @@ export default function JournalCalendarScreen() {
   // Animated value for streak progress bar
   const progressAnim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  //   const [selectedEntries, setSelectedEntries] = useState<MoodEntry[]>([]);
-  const [detailVisible, setDetailVisible] = useState<boolean>(false);
-  //   const [selectedEntry, setSelectedEntry] = useState<MoodEntry | null>(null);
-  const [monthDate, setMonthDate] = useState<Date>(new Date("2025-08-01"));
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
-
-  //   const { markedDays, getEntriesForDate } = useCalendarEntries(monthDate);
-
-  // Animated values for counting streak and XP numbers
-  const streakAnim = useRef(new Animated.Value(0)).current;
-  const xpAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     // Animate progress bar fill on mount
@@ -76,66 +65,7 @@ export default function JournalCalendarScreen() {
       duration: 1200,
       useNativeDriver: false,
     }).start();
-
-    // Animate streak number count-up
-    Animated.timing(streakAnim, {
-      toValue: 2, // Current streak value
-      duration: 1000,
-      useNativeDriver: false,
-    }).start();
-
-    // Animate XP number count-up
-    Animated.timing(xpAnim, {
-      toValue: 200, // XP value
-      duration: 1200,
-      useNativeDriver: false,
-    }).start();
   }, []);
-
-  // Interpolate streak animated value to integer text
-  const streakValue = streakAnim.interpolate({
-    inputRange: [0, 2],
-    outputRange: ["0", "2"],
-  });
-
-  // Interpolate XP animated value to integer text
-  const xpValue = xpAnim.interpolate({
-    inputRange: [0, 200],
-    outputRange: ["0", "200"],
-  });
-  const router = useRouter();
-
-  const handleAddEntry = (): void => {
-    setModalVisible(false);
-    // Navigate to voice recorder screen
-    // router.push("/voice-recorder");
-  };
-
-  const handleNextMonth = (): void => {
-    setMonthDate(
-      (prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1)
-    );
-  };
-
-  //   const handleSelectEntry = (entry: MoodEntry): void => {
-  //     setSelectedEntry(entry);
-  //     setModalVisible(false);
-  //     setDetailVisible(true);
-  //   };
-
-  const formatDateLabel = (dateStr: string): string => {
-    try {
-      const d = new Date(dateStr);
-      return d.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    } catch {
-      return dateStr;
-    }
-  };
 
   const yesterday = sub(new Date(), { days: 0 });
   const startOfWeekDate = startOfWeek(yesterday, { weekStartsOn: 0 });
@@ -150,14 +80,14 @@ export default function JournalCalendarScreen() {
         pointerEvents="none"
       >
         <Box className="mt-10">
-          {/* <LottieView
+          <LottieView
             autoPlay
             style={{
               width: 200,
               height: 200,
             }}
             source={girlMeditationBlue}
-          /> */}
+          />
         </Box>
         <Svg height={height} width={width}>
           {/* Light, playful faded shapes */}
@@ -211,7 +141,7 @@ export default function JournalCalendarScreen() {
             <View className="flex-row justify-between py-1.5">
               <TouchableOpacity
                 onPress={() => {
-                  //   router.push("/tabs/pages/Compdisplay");
+                  router.push("/tabs/screens/compdisplay");
                 }}
                 className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
                 activeOpacity={0.8}
@@ -302,7 +232,7 @@ export default function JournalCalendarScreen() {
           </View>
 
           {/* Calendar section */}
-          <View className="mt-5 bg-white rounded-2xl py-3 border border-indigo-50">
+          {/* <View className="mt-5 bg-white rounded-2xl py-3 border border-indigo-50">
             <Calendar
               enableSwipeMonths
               onVisibleMonthsChange={(months: DateData[]) => {
@@ -369,7 +299,6 @@ export default function JournalCalendarScreen() {
                         transform: [{ scale: scaleAnim }],
                       }}
                     >
-                      {/* Circle container for emoji or plus */}
                       <View
                         className="w-7 h-7 rounded-full items-center justify-center"
                         style={{
@@ -395,7 +324,6 @@ export default function JournalCalendarScreen() {
                           </Text>
                         )}
                       </View>
-                      {/* Date number below the circle */}
                       <Text
                         className="text-xs"
                         style={{
@@ -409,47 +337,7 @@ export default function JournalCalendarScreen() {
                 );
               }}
             />
-          </View>
-
-          {/* XP progress card */}
-          <View className="bg-[#7B61FF] rounded-2xl mt-4.5 p-3 flex-row items-center">
-            <Animated.Text className="text-white text-lg font-bold flex-1">
-              {xpAnim.interpolate({
-                inputRange: [0, 200],
-                outputRange: ["0 XP", "200 XP"],
-              })}
-            </Animated.Text>
-            <View className="h-2.5 bg-[#FFD24A] rounded-full flex-[2] mx-2.5 overflow-hidden">
-              <View className="w-3/4 h-full bg-[#3B2DFB]" />
-            </View>
-            <View className="w-9 items-center">
-              <Text className="text-[26px]">👩‍🎤</Text>
-            </View>
-          </View>
-
-          {/* Bottom action buttons */}
-          <View className="flex-row gap-3 mt-4.5">
-            <TouchableOpacity
-              className="flex-1 bg-[#7B61FF] py-3.5 rounded-2xl items-center"
-              activeOpacity={0.85}
-              onPress={handleAddEntry}
-            >
-              <Text className="font-bold text-white text-base">Add Entry</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className="flex-1 bg-white py-3.5 rounded-2xl items-center border border-gray-200"
-              activeOpacity={0.85}
-              onPress={handleNextMonth}
-            >
-              <Text className="font-bold text-gray-900 text-base">
-                Next Month
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Badges header */}
-          <Text className="mt-4.5 text-lg font-bold text-gray-800">Badges</Text>
+          </View> */}
         </BlurView>
         <BlurModal visible={modalVisible} />
         {/* <EntryDetailModal
