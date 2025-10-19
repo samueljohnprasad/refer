@@ -31,7 +31,9 @@ export default function TabLayout() {
             );
           },
           tabBarHideOnKeyboard: true,
-          animation: "fade",
+          animation: "none",
+          freezeOnBlur: true,
+
           // Disable the static rendrer of the header on web
           // to prevent a hydration error in React Navigation v6.
           headerShown: useClientOnlyValue(false, true),
