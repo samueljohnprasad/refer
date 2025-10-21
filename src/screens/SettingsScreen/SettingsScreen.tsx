@@ -12,6 +12,9 @@ import {
   useWindowDimensions,
   Animated,
   Modal,
+  TextInput,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,21 +25,58 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useAuth } from "@/src/context/AuthContext";
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
+import { useStreakReminders } from "@/hooks/notifications/useStreakReminders";
+import { useBulkImportJournals } from "@/hooks/post/useBulkImportJournals";
+import { format, subDays } from "date-fns";
 
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
   const [notifications, setNotifications] = useState(true);
   const [passcodeEnabled, setPasscodeEnabled] = useState(false);
   const [remindersEnabled, setRemindersEnabled] = useState(false);
+  const [reminderTime, setReminderTime] = useState({ hour: 9, minute: 0 });
   const { height } = useWindowDimensions();
   const headerHeight = useHeaderHeight();
   const scrollY = useRef(new Animated.Value(0)).current;
   const { user, session, loading, signOut } = useAuth();
+  const { scheduleStreakReminder, cancelAllStreakReminders, requestNotificationPermissions } = useStreakReminders();
 
   const [showModal, setShowModal] = useState({
     modalType: "",
     showModal: false,
   });
+
+  // Bulk import state
+  const { bulkImport, importing, progress } = useBulkImportJournals();
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importDaysCount, setImportDaysCount] = useState("20");
+  const [importStartDate, setImportStartDate] = useState<Date>(subDays(new Date(), 20));
+
+  // Handle reminder toggle
+  const handleReminderToggle = async (enabled: boolean) => {
+    Haptics.selectionAsync();
+    
+    if (enabled) {
+      // Request permissions first
+      const hasPermission = await requestNotificationPermissions();
+      if (!hasPermission) {
+        alert("Please enable notifications in your device settings");
+        return;
+      }
+      
+      // Schedule reminder
+      await scheduleStreakReminder({
+        hour: reminderTime.hour,
+        minute: reminderTime.minute,
+        enabled: true,
+      });
+      setRemindersEnabled(true);
+    } else {
+      // Cancel all reminders
+      await cancelAllStreakReminders();
+      setRemindersEnabled(false);
+    }
+  };
 
   const [upgradeY, setUpgradeY] = useState<number | null>(null);
   const handleToggle = (
@@ -55,6 +95,22 @@ export default React.memo(function SettingsScreen() {
   const handleRateUs = () => {
     Haptics.selectionAsync();
     Linking.openURL("https://apps.apple.com/app/idYOUR_APP_ID");
+  };
+
+  const handleBulkImport = async () => {
+    const count = parseInt(importDaysCount);
+    if (isNaN(count) || count <= 0 || count > 20) {
+      Alert.alert("Invalid Count", "Please enter a number between 1 and 20");
+      return;
+    }
+
+    try {
+      await bulkImport(importStartDate, count);
+      Alert.alert("Success", `Successfully imported ${count} journal entries!`);
+      setShowImportModal(false);
+    } catch (error) {
+      Alert.alert("Error", `Failed to import journals: ${error}`);
+    }
   };
 
   return (
@@ -226,19 +282,34 @@ export default React.memo(function SettingsScreen() {
                 <Feather name="calendar" size={20} color="#22C55E" />
               </View>
               <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Reminders & Scheduling</Text>
+                <Text style={styles.itemTitle}>Daily Streak Reminder</Text>
                 <Text style={styles.itemSubtitle}>
-                  Daily or weekly reminders
+                  Get reminded at {reminderTime.hour}:{reminderTime.minute.toString().padStart(2, '0')}
                 </Text>
               </View>
               <Switch
                 value={remindersEnabled}
-                onValueChange={(val) => handleToggle(setRemindersEnabled, val)}
+                onValueChange={handleReminderToggle}
                 trackColor={{ true: "#7C5CFF", false: "#E6E6E6" }}
                 thumbColor={Platform.OS === "android" ? "#fff" : undefined}
                 ios_backgroundColor="#E6E6E6"
               />
             </View>
+
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => router.push("/achievements" as any)}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#FEF3C7" }]}>
+                <Feather name="award" size={20} color="#F59E0B" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Achievements</Text>
+                <Text style={styles.itemSubtitle}>View your badges</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+            </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.rowItem}
@@ -368,6 +439,24 @@ export default React.memo(function SettingsScreen() {
                 <Text style={styles.itemSubtitle}>Version 1.0.0 (Build 1)</Text>
               </View>
             </View>
+
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setShowImportModal(true);
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
+                <Feather name="download" size={20} color="#9333EA" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Bulk Import Journals</Text>
+                <Text style={styles.itemSubtitle}>Import sample data</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+            </TouchableOpacity>
           </View>
         </Animated.ScrollView>
       </View>
@@ -379,6 +468,88 @@ export default React.memo(function SettingsScreen() {
         <NameEditScreen
           setShowModal={() => setShowModal({ showModal: false, modalType: "" })}
         />
+      </Modal>
+
+      {/* Bulk Import Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showImportModal}
+        onRequestClose={() => !importing && setShowImportModal(false)}
+      >
+        <BlurView intensity={80} tint="dark" style={styles.modalOverlay}>
+          <View style={styles.importModalContent}>
+            <Text style={styles.modalTitle}>Bulk Import Journals</Text>
+            <Text style={styles.modalSubtitle}>
+              Import sample journal entries for testing
+            </Text>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Start Date</Text>
+              <View style={styles.dateDisplay}>
+                <Feather name="calendar" size={18} color="#7C5CFF" />
+                <Text style={styles.dateText}>
+                  {format(importStartDate, "MMM dd, yyyy")}
+                </Text>
+              </View>
+              <Text style={styles.inputHint}>
+                Entries will be created from this date forward
+              </Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Number of Days (1-20)</Text>
+              <TextInput
+                style={styles.input}
+                value={importDaysCount}
+                onChangeText={setImportDaysCount}
+                keyboardType="number-pad"
+                placeholder="20"
+                maxLength={2}
+                editable={!importing}
+              />
+              <Text style={styles.inputHint}>
+                {importDaysCount} {parseInt(importDaysCount) === 1 ? 'entry' : 'entries'} will be imported
+              </Text>
+            </View>
+
+            {importing && (
+              <View style={styles.progressContainer}>
+                <ActivityIndicator size="large" color="#7C5CFF" />
+                <Text style={styles.progressText}>
+                  Importing {progress.current} of {progress.total}...
+                </Text>
+              </View>
+            )}
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setShowImportModal(false)}
+                disabled={importing}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.modalButton, styles.importButton, importing && styles.importButtonDisabled]}
+                onPress={handleBulkImport}
+                disabled={importing}
+              >
+                <LinearGradient
+                  colors={importing ? ["#999", "#777"] : ["#7C5CFF", "#9C7CFF"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.importButtonGradient}
+                >
+                  <Text style={styles.importButtonText}>
+                    {importing ? "Importing..." : "Import"}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </BlurView>
       </Modal>
     </SafeAreaView>
   );
@@ -476,4 +647,120 @@ const styles = StyleSheet.create({
   rowText: { flex: 1 },
   itemTitle: { fontSize: 17, fontWeight: "700", color: "#0F172A" },
   itemSubtitle: { fontSize: 13, color: "#6B7280", marginTop: 2 },
+
+  // Bulk import modal styles
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  importModalContent: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    padding: 24,
+    width: "100%",
+    maxWidth: 400,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#0F172A",
+    marginBottom: 8,
+  },
+  modalSubtitle: {
+    fontSize: 15,
+    color: "#6B7280",
+    marginBottom: 24,
+  },
+  inputGroup: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#0F172A",
+    marginBottom: 8,
+  },
+  dateDisplay: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F8F8FF",
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E6E6E6",
+    gap: 10,
+  },
+  dateText: {
+    fontSize: 16,
+    color: "#0F172A",
+    fontWeight: "500",
+  },
+  input: {
+    backgroundColor: "#F8F8FF",
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E6E6E6",
+    fontSize: 16,
+    color: "#0F172A",
+  },
+  inputHint: {
+    fontSize: 13,
+    color: "#6B7280",
+    marginTop: 6,
+  },
+  progressContainer: {
+    alignItems: "center",
+    paddingVertical: 20,
+  },
+  progressText: {
+    fontSize: 15,
+    color: "#6B7280",
+    marginTop: 12,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 8,
+  },
+  modalButton: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  cancelButton: {
+    backgroundColor: "#F3F4F6",
+    paddingVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#6B7280",
+  },
+  importButton: {
+    overflow: "hidden",
+  },
+  importButtonDisabled: {
+    opacity: 0.6,
+  },
+  importButtonGradient: {
+    paddingVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 16,
+  },
+  importButtonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
 });

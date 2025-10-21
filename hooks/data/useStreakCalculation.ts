@@ -25,7 +25,7 @@ const getDaysDifference = (date1: string, date2: string): number => {
 
 /**
  * Core streak calculation logic
- * 
+ *
  * @param lastJournalDate - Last date user journaled (YYYY-MM-DD)
  * @param currentStreak - Current streak count
  * @param longestStreak - Longest streak ever achieved
@@ -116,7 +116,7 @@ export const shouldRemindAboutStreak = (
   }
 
   const todayDate = getTodayDate();
-  
+
   // Remind if user hasn't journaled today and has an active streak
   return lastJournalDate !== todayDate && currentStreak > 0;
 };
@@ -125,14 +125,14 @@ export const shouldRemindAboutStreak = (
  * Calculate next milestone for streak progress
  */
 export const getNextMilestone = (currentStreak: number): number => {
-  const milestones = [3, 7, 14, 30, 60, 90, 180, 365];
-  
+  const milestones = [3, 7, 14, 30, 45, 60, 75, 90, 180, 365];
+
   for (const milestone of milestones) {
     if (currentStreak < milestone) {
       return milestone;
     }
   }
-  
+
   // If past all milestones, next is +100
   return Math.ceil((currentStreak + 1) / 100) * 100;
 };
@@ -142,12 +142,15 @@ export const getNextMilestone = (currentStreak: number): number => {
  */
 export const getStreakProgress = (currentStreak: number): number => {
   const nextMilestone = getNextMilestone(currentStreak);
-  const previousMilestone = currentStreak === 0 ? 0 : 
-    getNextMilestone(currentStreak - 1) === nextMilestone ? 0 : 
-    getNextMilestone(currentStreak - 1);
-  
+  const previousMilestone =
+    currentStreak === 0
+      ? 0
+      : getNextMilestone(currentStreak - 1) === nextMilestone
+      ? 0
+      : getNextMilestone(currentStreak - 1);
+
   const range = nextMilestone - previousMilestone;
   const progress = currentStreak - previousMilestone;
-  
+
   return Math.min(Math.max((progress / range) * 100, 0), 100);
 };

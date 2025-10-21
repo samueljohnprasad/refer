@@ -1,14 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import AIInsightsScreen from "@/src/screens/AIInsightsScreen/AIInsightsScreen";
 
 const insights = () => {
-  return (
-    <View>
-      <Text>insights</Text>
-    </View>
-  );
+  return <AIInsightsScreen />;
 };
 
 export default insights;
-
-const styles = StyleSheet.create({});

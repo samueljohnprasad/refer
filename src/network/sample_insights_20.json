@@ -1,0 +1,522 @@
+[
+  {
+    "moodScore": 3,
+    "suggestedTags": ["work", "stress", "resilience"],
+    "growthAreas": ["work-life balance", "self-care"],
+    "positiveInsights": [
+      "You are learning from challenges",
+      "You recognize growth under pressure"
+    ],
+    "summary": "You’re feeling tired and overworked, but proud of your resilience and commitment to growth.",
+    "mainEmoji": "fine",
+    "feelings": [
+      {
+        "name": "tired",
+        "emoji": "😩",
+        "colorsGradient": ["#FFD6A5", "#FFADAD"]
+      },
+      {
+        "name": "hopeful",
+        "emoji": "🌅",
+        "colorsGradient": ["#A0E7E5", "#B4F8C8"]
+      }
+    ],
+    "title": "Exhausted Yet Growing",
+    "enrichedTranscript": "Today was exhausting 😓. So many meetings... I felt drained. But I reminded myself — I’m learning and growing 🌱.",
+    "aiInsights": "You’re developing emotional endurance. Recognizing hope in fatigue shows personal growth and perspective."
+  },
+  {
+    "moodScore": 5,
+    "suggestedTags": ["mindfulness", "nature", "peace"],
+    "growthAreas": ["consistency", "routine"],
+    "positiveInsights": [
+      "You found calm in nature",
+      "You value peaceful habits"
+    ],
+    "summary": "You felt grounded and at peace during your morning walk — a simple but powerful act of self-care.",
+    "mainEmoji": "great",
+    "feelings": [
+      {
+        "name": "peaceful",
+        "emoji": "☀️",
+        "colorsGradient": ["#C8FFD4", "#B8E1FF"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Morning Serenity",
+    "enrichedTranscript": "Walked by the river 🌊. The sunrise was breathtaking 🌅. I felt calm and centered.",
+    "aiInsights": "Your connection to nature helps you regulate stress and find emotional clarity."
+  },
+  {
+    "moodScore": 4,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 3: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "good",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 3",
+    "enrichedTranscript": "Entry 3: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 3 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 5,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 4: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "great",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 4",
+    "enrichedTranscript": "Entry 4: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 4 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 1,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 5: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "terrible",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 5",
+    "enrichedTranscript": "Entry 5: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 5 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 2,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 6: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "bad",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 6",
+    "enrichedTranscript": "Entry 6: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 6 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 3,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 7: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "fine",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 7",
+    "enrichedTranscript": "Entry 7: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 7 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 4,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 8: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "good",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 8",
+    "enrichedTranscript": "Entry 8: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 8 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 5,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 9: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "great",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 9",
+    "enrichedTranscript": "Entry 9: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 9 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 1,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 10: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "terrible",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 10",
+    "enrichedTranscript": "Entry 10: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 10 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 2,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 11: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "bad",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 11",
+    "enrichedTranscript": "Entry 11: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 11 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 3,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 12: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "fine",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 12",
+    "enrichedTranscript": "Entry 12: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 12 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 4,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 13: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "good",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 13",
+    "enrichedTranscript": "Entry 13: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 13 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 5,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 14: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "great",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 14",
+    "enrichedTranscript": "Entry 14: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 14 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 1,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 15: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "terrible",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 15",
+    "enrichedTranscript": "Entry 15: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 15 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 2,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 16: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "bad",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 16",
+    "enrichedTranscript": "Entry 16: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 16 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 3,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 17: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "fine",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 17",
+    "enrichedTranscript": "Entry 17: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 17 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 4,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 18: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "good",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 18",
+    "enrichedTranscript": "Entry 18: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 18 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 5,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 19: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "great",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 19",
+    "enrichedTranscript": "Entry 19: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 19 shows growing mindfulness and emotional maturity."
+  },
+  {
+    "moodScore": 1,
+    "suggestedTags": ["reflection", "growth", "emotion"],
+    "growthAreas": ["patience", "focus"],
+    "positiveInsights": [
+      "You’re aware of your emotions",
+      "You’re making steady progress"
+    ],
+    "summary": "Day 20: You reflected deeply on your emotions and are learning from experience.",
+    "mainEmoji": "terrible",
+    "feelings": [
+      {
+        "name": "thoughtful",
+        "emoji": "💭",
+        "colorsGradient": ["#C8FFD4", "#A0E7E5"]
+      },
+      {
+        "name": "grateful",
+        "emoji": "🙏",
+        "colorsGradient": ["#FFF1A6", "#FFD6A5"]
+      }
+    ],
+    "title": "Reflection Day 20",
+    "enrichedTranscript": "Entry 20: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
+    "aiInsights": "Entry 20 shows growing mindfulness and emotional maturity."
+  }
+]

@@ -6,6 +6,8 @@ import { useCallback, useState } from "react";
 import { getTodayDate } from "@/hooks/data/useStreakCalculation";
 import { useUpdateStreak } from "@/hooks/data/useUpdateStreak";
 import { useQueryClient } from "@tanstack/react-query";
+import { useCheckAchievements } from "@/hooks/data/useAchievements";
+import { useStreakReminders } from "@/hooks/notifications/useStreakReminders";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -23,6 +25,8 @@ export const useSaveJournal = () => {
   const { user } = useAuth();
   const [saving, setSaving] = useState<boolean>(false);
   const updateStreakMutation = useUpdateStreak();
+  const checkAchievementsMutation = useCheckAchievements();
+  const { sendMilestoneNotification } = useStreakReminders();
   const queryClient = useQueryClient();
 
   const saveJournal = useCallback(
@@ -56,7 +60,7 @@ export const useSaveJournal = () => {
 
         // Update streak after successful journal save
         try {
-          await updateStreakMutation.mutateAsync({
+          const streakResult = await updateStreakMutation.mutateAsync({
             userId: user.id,
             forceReset: false,
           });
@@ -65,6 +69,29 @@ export const useSaveJournal = () => {
           queryClient.invalidateQueries({ queryKey: ["userProfile"] });
           queryClient.invalidateQueries({ queryKey: ["journalEntries"] });
           queryClient.invalidateQueries({ queryKey: ["moods"] });
+
+          // Check for new achievements
+          try {
+            await checkAchievementsMutation.mutateAsync();
+            
+            // Send milestone notification based on current streak
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("current_streak")
+              .eq("id", user.id)
+              .single();
+            
+            const currentStreak = profile?.current_streak ?? 0;
+            
+            // Send notification for milestone streaks
+            const milestones = [1, 3, 7, 14, 30, 45, 60, 90, 100, 180, 365];
+            if (milestones.includes(currentStreak)) {
+              await sendMilestoneNotification(currentStreak);
+            }
+          } catch (achievementError) {
+            console.error("Error checking achievements:", achievementError);
+            // Don't fail if achievement check fails
+          }
         } catch (streakError) {
           console.error("Error updating streak:", streakError);
           // Don't fail the entire operation if streak update fails

@@ -140,17 +140,362 @@ export const getInsights = async (transcript: string) => {
   }
 };
 
-// config: {
-//     responseMimeType: "application/json",
-//     responseSchema: {
-//       type: "array",
-//       items: {
-//         type: "object",
-//         properties: {
-//           recipeName: { type: "string" },
-//           ingredients: { type: "array", items: { type: "string" } },
-//         },
-//         required: ["recipeName", "ingredients"],
-//       },
-//     },
-//   },
+export type AIRecommendation = {
+  title: string;
+  description: string;
+  category: 'mental_health' | 'productivity' | 'relationships' | 'self_care' | 'growth';
+  actionSteps: string[];
+  icon: string;
+  priority: 'high' | 'medium' | 'low';
+};
+
+export type WeeklySummary = {
+  weekStart: string;
+  weekEnd: string;
+  overallMood: number;
+  moodTrend: 'improving' | 'stable' | 'declining';
+  topEmotions: string[];
+  keyHighlights: string[];
+  growthAchievements: string[];
+  areasOfConcern: string[];
+  motivationalMessage: string;
+  nextWeekFocus: string[];
+  entriesCount: number;
+  streakDays: number;
+};
+
+export type MonthlySummary = {
+  month: string;
+  year: number;
+  overallMood: number;
+  moodTrend: 'improving' | 'stable' | 'declining';
+  topEmotions: string[];
+  monthlyHighlights: string[];
+  personalGrowth: string[];
+  challenges: string[];
+  achievements: string[];
+  recommendation: string;
+  nextMonthGoals: string[];
+  entriesCount: number;
+  consistencyScore: number;
+};
+
+export type GrowthInsight = {
+  insight: string;
+  category: string;
+  supportingEvidence: string[];
+  suggestion: string;
+  impactLevel: 'high' | 'medium' | 'low';
+};
+
+/**
+ * Generate personalized growth recommendations based on recent journal entries
+ */
+export const generateAIRecommendations = async (
+  entries: Array<{
+    enrichedTranscript: string;
+    moodScore: number;
+    feelings: any;
+    created_at: string;
+  }>
+): Promise<AIRecommendation[]> => {
+  try {
+    if (!entries || entries.length === 0) {
+      return [];
+    }
+
+    const entriesText = entries
+      .map(
+        (e, i) =>
+          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${e.enrichedTranscript}\n`
+      )
+      .join('\n---\n');
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: `Analyze these recent journal entries and provide personalized growth recommendations:\n\n${entriesText}\n\nGenerate 3-5 actionable recommendations.`,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              title: { type: 'string' },
+              description: { type: 'string' },
+              category: {
+                type: 'string',
+                enum: ['mental_health', 'productivity', 'relationships', 'self_care', 'growth'],
+              },
+              actionSteps: {
+                type: 'array',
+                items: { type: 'string' },
+              },
+              icon: { type: 'string' },
+              priority: {
+                type: 'string',
+                enum: ['high', 'medium', 'low'],
+              },
+            },
+            required: ['title', 'description', 'category', 'actionSteps', 'icon', 'priority'],
+          },
+        },
+      },
+    });
+
+    if (!response.text) return [];
+    return JSON.parse(response.text);
+  } catch (error) {
+    console.error('Error generating recommendations:', error);
+    return [];
+  }
+};
+
+/**
+ * Generate weekly summary from journal entries
+ */
+export const generateWeeklySummary = async (
+  entries: Array<{
+    enrichedTranscript: string;
+    moodScore: number;
+    feelings: any;
+    created_at: string;
+  }>,
+  weekStart: string,
+  weekEnd: string,
+  streakDays: number
+): Promise<WeeklySummary | null> => {
+  try {
+    if (!entries || entries.length === 0) {
+      return null;
+    }
+
+    const entriesText = entries
+      .map(
+        (e, i) =>
+          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${e.enrichedTranscript}\n`
+      )
+      .join('\n---\n');
+
+    const avgMood = entries.reduce((sum, e) => sum + (e.moodScore || 0), 0) / entries.length;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: `Generate a weekly summary for the week of ${weekStart} to ${weekEnd}. The user made ${entries.length} entries with an average mood of ${avgMood.toFixed(1)}/5 and maintained a ${streakDays} day streak.\n\nEntries:\n${entriesText}`,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: 'object',
+          properties: {
+            weekStart: { type: 'string' },
+            weekEnd: { type: 'string' },
+            overallMood: { type: 'number' },
+            moodTrend: {
+              type: 'string',
+              enum: ['improving', 'stable', 'declining'],
+            },
+            topEmotions: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            keyHighlights: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            growthAchievements: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            areasOfConcern: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            motivationalMessage: { type: 'string' },
+            nextWeekFocus: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            entriesCount: { type: 'integer' },
+            streakDays: { type: 'integer' },
+          },
+          required: [
+            'weekStart',
+            'weekEnd',
+            'overallMood',
+            'moodTrend',
+            'topEmotions',
+            'keyHighlights',
+            'motivationalMessage',
+          ],
+        },
+      },
+    });
+
+    if (!response.text) return null;
+    const summary = JSON.parse(response.text);
+    return {
+      ...summary,
+      entriesCount: entries.length,
+      streakDays,
+    };
+  } catch (error) {
+    console.error('Error generating weekly summary:', error);
+    return null;
+  }
+};
+
+/**
+ * Generate monthly summary
+ */
+export const generateMonthlySummary = async (
+  entries: Array<{
+    enrichedTranscript: string;
+    moodScore: number;
+    feelings: any;
+    created_at: string;
+  }>,
+  month: string,
+  year: number
+): Promise<MonthlySummary | null> => {
+  try {
+    if (!entries || entries.length === 0) {
+      return null;
+    }
+
+    const entriesText = entries
+      .slice(0, 30)
+      .map(
+        (e, i) =>
+          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${e.enrichedTranscript?.substring(0, 200)}...\n`
+      )
+      .join('\n---\n');
+
+    const avgMood = entries.reduce((sum, e) => sum + (e.moodScore || 0), 0) / entries.length;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: `Generate a monthly summary for ${month} ${year}. The user made ${entries.length} entries with an average mood of ${avgMood.toFixed(1)}/5.\n\nSample entries:\n${entriesText}`,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: 'object',
+          properties: {
+            month: { type: 'string' },
+            year: { type: 'integer' },
+            overallMood: { type: 'number' },
+            moodTrend: {
+              type: 'string',
+              enum: ['improving', 'stable', 'declining'],
+            },
+            topEmotions: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            monthlyHighlights: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            personalGrowth: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            challenges: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            achievements: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            recommendation: { type: 'string' },
+            nextMonthGoals: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            entriesCount: { type: 'integer' },
+            consistencyScore: { type: 'number' },
+          },
+          required: [
+            'month',
+            'year',
+            'overallMood',
+            'moodTrend',
+            'topEmotions',
+            'monthlyHighlights',
+            'recommendation',
+          ],
+        },
+      },
+    });
+
+    if (!response.text) return null;
+    const summary = JSON.parse(response.text);
+    return {
+      ...summary,
+      entriesCount: entries.length,
+    };
+  } catch (error) {
+    console.error('Error generating monthly summary:', error);
+    return null;
+  }
+};
+
+/**
+ * Detect patterns and generate deep growth insights
+ */
+export const generateGrowthInsights = async (
+  entries: Array<{
+    enrichedTranscript: string;
+    moodScore: number;
+    feelings: any;
+    created_at: string;
+  }>
+): Promise<GrowthInsight[]> => {
+  try {
+    if (!entries || entries.length < 5) {
+      return [];
+    }
+
+    const entriesText = entries
+      .slice(0, 20)
+      .map(
+        (e, i) =>
+          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${e.enrichedTranscript?.substring(0, 300)}...\n`
+      )
+      .join('\n---\n');
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: `Analyze these journal entries and identify deep patterns, recurring themes, and growth opportunities. Provide 3-5 actionable insights.\n\nEntries:\n${entriesText}`,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              insight: { type: 'string' },
+              category: { type: 'string' },
+              supportingEvidence: {
+                type: 'array',
+                items: { type: 'string' },
+              },
+              suggestion: { type: 'string' },
+              impactLevel: {
+                type: 'string',
+                enum: ['high', 'medium', 'low'],
+              },
+            },
+            required: ['insight', 'category', 'supportingEvidence', 'suggestion', 'impactLevel'],
+          },
+        },
+      },
+    });
+
+    if (!response.text) return [];
+    return JSON.parse(response.text);
+  } catch (error) {
+    console.error('Error generating growth insights:', error);
+    return [];
+  }
+};

@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          badge_color: string
+          category: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: number
+          name: string
+          requirement_type: string
+          requirement_value: number
+        }
+        Insert: {
+          badge_color: string
+          category: string
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: number
+          name: string
+          requirement_type: string
+          requirement_value: number
+        }
+        Update: {
+          badge_color?: string
+          category?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: number
+          name?: string
+          requirement_type?: string
+          requirement_value?: number
+        }
+        Relationships: []
+      }
       daily_moods: {
         Row: {
           day: string
@@ -150,19 +186,54 @@ export type Database = {
         Row: {
           created_at: string
           id: number
-          text: Json | null
+          text: string | null
         }
         Insert: {
           created_at?: string
           id?: number
-          text?: Json | null
+          text?: string | null
         }
         Update: {
           created_at?: string
           id?: number
-          text?: Json | null
+          text?: string | null
         }
         Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: number
+          id: number
+          is_claimed: boolean | null
+          progress: number | null
+          unlocked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          achievement_id: number
+          id?: number
+          is_claimed?: boolean | null
+          progress?: number | null
+          unlocked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          achievement_id?: number
+          id?: number
+          is_claimed?: boolean | null
+          progress?: number | null
+          unlocked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_preferences: {
         Row: {
@@ -201,7 +272,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_and_award_achievements: {
+        Args: { p_user_id: string }
+        Returns: {
+          newly_unlocked_achievement_id: number
+        }[]
+      }
     }
     Enums: {
       age_range_enum: "18_24" | "25_34" | "35_44" | "45_54" | "55_64" | "65+"

@@ -24,6 +24,8 @@ import { useUserProfile } from "@/hooks/data/useUserProfile";
 import BlurModal from "@/src/components/BlurModal";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
 import { getNextMilestone, getStreakProgress } from "@/hooks/data/useStreakCalculation";
+import { StreakRecoveryModal } from "@/src/components/StreakRecoveryModal";
+import { useCanRecoverStreak } from "@/hooks/data/useStreakRecovery";
 // import { girlMeditationBlue } from "@/assets/lottie";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
@@ -57,7 +59,9 @@ export default function JournalCalendarScreen() {
   // Animated value for streak progress bar
   const progressAnim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [showRecoveryModal, setShowRecoveryModal] = useState<boolean>(false);
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+  const { canRecover } = useCanRecoverStreak();
 
   const currentStreak = userProfile?.currentStreak ?? 0;
   const nextMilestone = getNextMilestone(currentStreak);
@@ -71,6 +75,13 @@ export default function JournalCalendarScreen() {
       useNativeDriver: false,
     }).start();
   }, [streakProgress]);
+
+  // Show recovery modal if streak can be recovered
+  useEffect(() => {
+    if (canRecover && !showRecoveryModal) {
+      setShowRecoveryModal(true);
+    }
+  }, [canRecover]);
 
   const yesterday = sub(new Date(), { days: 0 });
   const startOfWeekDate = startOfWeek(yesterday, { weekStartsOn: 0 });
@@ -351,6 +362,12 @@ export default function JournalCalendarScreen() {
           onClose={() => setDetailVisible(false)}
         /> */}
       </ScrollView>
+
+      {/* Streak Recovery Modal */}
+      <StreakRecoveryModal
+        visible={showRecoveryModal}
+        onClose={() => setShowRecoveryModal(false)}
+      />
     </SafeAreaView>
   );
 }

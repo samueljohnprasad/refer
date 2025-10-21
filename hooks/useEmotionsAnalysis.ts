@@ -48,18 +48,18 @@ const useEmotionsAnalysis = ({
     try {
       // Step 1: Read audio file using the new File API (works on both iOS and Android)
       console.log("uploadAndTranscribe, original uri:", uri);
-      
+
       // Ensure the URI is absolute (add file:// prefix if missing on Android)
       let absoluteUri = uri;
-      if (!uri.startsWith('file://') && !uri.startsWith('content://')) {
+      if (!uri.startsWith("file://") && !uri.startsWith("content://")) {
         absoluteUri = `file://${uri}`;
       }
       console.log("uploadAndTranscribe, absolute uri:", absoluteUri);
-      
+
       // Create a File instance from the absolute URI and read as base64
       const audioFile = new File(absoluteUri);
-      const base64Audio = await audioFile.base64();
-      
+      const base64Audio = audioFile.base64();
+
       console.log("Base64 audio length:", base64Audio.length, "characters");
       console.log("File exists:", audioFile.exists);
       console.log("File size:", audioFile.size, "bytes");
