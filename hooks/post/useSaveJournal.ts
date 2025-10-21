@@ -3,6 +3,9 @@ import { supabase } from "@/src/network/auth/supabase";
 import { InsightsType } from "@/src/network/genAi";
 import { Tables } from "@/types/types";
 import { useCallback, useState } from "react";
+import { getTodayDate } from "@/hooks/data/useStreakCalculation";
+import { useUpdateStreak } from "@/hooks/data/useUpdateStreak";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -19,6 +22,8 @@ const formatDateKey = (date: Date): string => {
 export const useSaveJournal = () => {
   const { user } = useAuth();
   const [saving, setSaving] = useState<boolean>(false);
+  const updateStreakMutation = useUpdateStreak();
+  const queryClient = useQueryClient();
 
   const saveJournal = useCallback(
     async (input: InsightsType): Promise<Tables<'journal_entries'>> => {
@@ -30,6 +35,7 @@ export const useSaveJournal = () => {
         const row = {
           user_id: user.id,
           created_at: formatDateKey(new Date()),
+          selected_date: getTodayDate(),
           title: input.title,
           enrichedTranscript: input.enrichedTranscript,
           aiInsights: input.aiInsights,
@@ -47,6 +53,23 @@ export const useSaveJournal = () => {
           .single();
 
         if (error) throw error;
+
+        // Update streak after successful journal save
+        try {
+          await updateStreakMutation.mutateAsync({
+            userId: user.id,
+            forceReset: false,
+          });
+          
+          // Invalidate queries to refresh UI
+          queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+          queryClient.invalidateQueries({ queryKey: ["journalEntries"] });
+          queryClient.invalidateQueries({ queryKey: ["moods"] });
+        } catch (streakError) {
+          console.error("Error updating streak:", streakError);
+          // Don't fail the entire operation if streak update fails
+        }
+
         return data;
       } catch (error) {
         console.error("Failed to save journal:", error);
@@ -55,7 +78,7 @@ export const useSaveJournal = () => {
         setSaving(false);
       }
     },
-    [user?.id]
+    [user?.id, updateStreakMutation, queryClient]
   );
 
   return { saveJournal, saving } as const;

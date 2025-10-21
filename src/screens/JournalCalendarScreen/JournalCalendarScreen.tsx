@@ -23,6 +23,7 @@ import { Box } from "@/components/ui/box";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import BlurModal from "@/src/components/BlurModal";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
+import { getNextMilestone, getStreakProgress } from "@/hooks/data/useStreakCalculation";
 // import { girlMeditationBlue } from "@/assets/lottie";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
@@ -58,14 +59,18 @@ export default function JournalCalendarScreen() {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
 
+  const currentStreak = userProfile?.currentStreak ?? 0;
+  const nextMilestone = getNextMilestone(currentStreak);
+  const streakProgress = getStreakProgress(currentStreak);
+
   useEffect(() => {
-    // Animate progress bar fill on mount
+    // Animate progress bar fill based on actual streak progress
     Animated.timing(progressAnim, {
-      toValue: 0.55, // 55% filled
+      toValue: streakProgress / 100, // Convert percentage to 0-1
       duration: 1200,
       useNativeDriver: false,
     }).start();
-  }, []);
+  }, [streakProgress]);
 
   const yesterday = sub(new Date(), { days: 0 });
   const startOfWeekDate = startOfWeek(yesterday, { weekStartsOn: 0 });
@@ -181,7 +186,7 @@ export default function JournalCalendarScreen() {
                       color="#FF6A3D"
                     />
                     <Animated.Text className="text-[28px] font-extrabold ml-2">
-                      2
+                      {isLoadingProfile ? "..." : currentStreak}
                     </Animated.Text>
                   </View>
                 </View>
@@ -191,7 +196,7 @@ export default function JournalCalendarScreen() {
                     Next Milestone
                   </Text>
                   <Text className="text-[28px] font-extrabold text-center">
-                    3
+                    {isLoadingProfile ? "..." : nextMilestone}
                   </Text>
                 </View>
               </View>

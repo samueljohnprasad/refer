@@ -6,6 +6,7 @@ import * as Linking from "expo-linking";
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import { supabase } from "../network/auth/supabase";
 import { createSessionFromUrl } from "../network/auth/google-auth";
+import { useCheckStreakOnLaunch } from "@/hooks/data/useUpdateStreak";
 
 interface AuthContextType {
   user: User | null;
@@ -38,6 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
+  const checkStreakMutation = useCheckStreakOnLaunch();
 
   useEffect(() => {
     // Listen for auth changes **including** the INITIAL_SESSION event which
@@ -55,6 +57,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Check streak on app launch
+        if (session?.user?.id) {
+          checkStreakMutation.mutate(session.user.id);
+        }
         return; // no further handling needed
       }
 
@@ -75,6 +82,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             </Toast>
           ),
         });
+        
+        // Check streak on sign in
+        if (session.user.id) {
+          checkStreakMutation.mutate(session.user.id);
+        }
       }
     });
 

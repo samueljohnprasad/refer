@@ -20,6 +20,7 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { router } from "expo-router";
 import { recorderOpenAtom } from "./helpers";
 import VoiceRecorderModalWrapper from "./VoiceRecorderModalWrapper";
+import { useUserProfile } from "@/hooks/data/useUserProfile";
 
 // Constants outside component to prevent recreation
 const COLORS = {
@@ -44,7 +45,12 @@ const LOTTIE_STYLE = {
 const FIRE_ICON_STYLE = { marginLeft: 6 } as const;
 
 // Memoized Header Component
-const DiscoveryHeader = React.memo(() => (
+interface DiscoveryHeaderProps {
+  currentStreak: number;
+  isLoading: boolean;
+}
+
+const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(({ currentStreak, isLoading }) => (
   <View className="flex-row items-center justify-between my-1.5">
     <View className="flex-row items-center">
       <View className="w-3.5 h-3.5 rounded-full bg-[#8D7BF7] mr-2.5" />
@@ -53,7 +59,9 @@ const DiscoveryHeader = React.memo(() => (
       </Text>
     </View>
     <View className="flex-row items-center">
-      <Text className="text-[#FF7A2F] text-lg font-extrabold">4</Text>
+      <Text className="text-[#FF7A2F] text-lg font-extrabold">
+        {isLoading ? "..." : currentStreak}
+      </Text>
       <MaterialCommunityIcons
         name="fire"
         size={22}
@@ -121,6 +129,9 @@ Illustration.displayName = "Illustration";
 function DiscoveryScreen() {
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
   const tabBarHeight = useBottomTabBarHeight();
+  const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+
+  const currentStreak = userProfile?.currentStreak ?? 0;
 
   const handleOpenRecorder = useCallback(() => {
     setRecorderOpen(true);
@@ -149,7 +160,7 @@ function DiscoveryScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <DiscoveryHeader />
+          <DiscoveryHeader currentStreak={currentStreak} isLoading={isLoadingProfile} />
           <ProgressBar progress={74} />
         </View>
 

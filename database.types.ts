@@ -97,12 +97,16 @@ export type Database = {
           age_range: Database["public"]["Enums"]["age_range_enum"] | null
           avatar_url: string | null
           created_at: string | null
+          current_streak: number | null
           display_name: string | null
           full_name: string | null
           gender: Database["public"]["Enums"]["gender_enum"] | null
           id: string
+          last_journal_date: string | null
+          longest_streak: number | null
           onboarding_completed: boolean | null
           reasons: string[] | null
+          streak_freeze_count: number | null
           subscription_plan: string | null
           trial_ends_at: string | null
         }
@@ -110,12 +114,16 @@ export type Database = {
           age_range?: Database["public"]["Enums"]["age_range_enum"] | null
           avatar_url?: string | null
           created_at?: string | null
+          current_streak?: number | null
           display_name?: string | null
           full_name?: string | null
           gender?: Database["public"]["Enums"]["gender_enum"] | null
           id?: string
+          last_journal_date?: string | null
+          longest_streak?: number | null
           onboarding_completed?: boolean | null
           reasons?: string[] | null
+          streak_freeze_count?: number | null
           subscription_plan?: string | null
           trial_ends_at?: string | null
         }
@@ -123,12 +131,16 @@ export type Database = {
           age_range?: Database["public"]["Enums"]["age_range_enum"] | null
           avatar_url?: string | null
           created_at?: string | null
+          current_streak?: number | null
           display_name?: string | null
           full_name?: string | null
           gender?: Database["public"]["Enums"]["gender_enum"] | null
           id?: string
+          last_journal_date?: string | null
+          longest_streak?: number | null
           onboarding_completed?: boolean | null
           reasons?: string[] | null
+          streak_freeze_count?: number | null
           subscription_plan?: string | null
           trial_ends_at?: string | null
         }
