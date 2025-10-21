@@ -134,36 +134,51 @@ export type Database = {
         }
         Relationships: []
       }
+      test: {
+        Row: {
+          created_at: string
+          id: number
+          text: Json | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          text?: Json | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          text?: Json | null
+        }
+        Relationships: []
+      }
       user_preferences: {
         Row: {
           created_at: string
           daily_reminder_enabled: boolean | null
-          id: number
           remainders: Json | null
           timezone: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
           daily_reminder_enabled?: boolean | null
-          id?: number
           remainders?: Json | null
           timezone?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           created_at?: string
           daily_reminder_enabled?: boolean | null
-          id?: number
           remainders?: Json | null
           timezone?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "user_preferences_user_id_fkey"
             columns: ["user_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },

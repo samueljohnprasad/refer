@@ -16,14 +16,14 @@ export const NameOnboard: React.FC<NameOnboardProps> = ({ name, setName }) => {
     <GestureHandlerRootView className="w-full">
       <View className="flex-1">
         <View style={styles.container}>
-          <LottieView
+          {/* <LottieView
             autoPlay
             style={{
               width: 200,
               height: 200,
             }}
             source={lendHand}
-          />
+          /> */}
           <Animated.Text style={styles.title}>What's your name?</Animated.Text>
           <NameInput
             label="Enter your name"

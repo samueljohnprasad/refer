@@ -3091,13 +3091,6 @@
     canvaskit-wasm "0.40.0"
     react-reconciler "0.31.0"
 
-"@simform_solutions/react-native-audio-waveform@^2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@simform_solutions/react-native-audio-waveform/-/react-native-audio-waveform-2.1.6.tgz#1426bd089db288eab7bb1ba37b9eef0ac2cdc5ed"
-  integrity sha512-eEjRyRa4Ixo0zTgG20cJqLXKwK2/dQOZgo1GDDckq4AQxV86biaOrmldnKmK8blVaBfDx8IbR6gWdVJQ12D4Bw==
-  dependencies:
-    lodash "^4.17.21"
-
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
   resolved "https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.27.8.tgz"
@@ -4852,6 +4845,11 @@ expo-asset@~12.0.9:
   dependencies:
     "@expo/image-utils" "^0.8.7"
     expo-constants "~18.0.9"
+
+expo-audio@~1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/expo-audio/-/expo-audio-1.0.13.tgz#e9e79fece878296560f5d2f5080562232d0629e0"
+  integrity sha512-Z91jMYv/BMpn5Dkyu204RyNl2EpXRx8HgScTYlwRRYewtfTH8NN+bwZQAApn33NwGhW1cIlcuG/XCAeJBr9l4Q==
 
 expo-auth-session@~7.0.8:
   version "7.0.8"

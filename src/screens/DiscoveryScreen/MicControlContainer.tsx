@@ -161,11 +161,6 @@ const MicControlContainer: React.FC<MicControlProps> = ({
     }
   }, [isRecording, heartbeatScale, breathingOpacity, glowScale, waveFlow]);
 
-  // ========================================================================
-  // Computed Values & Business Logic
-  // ========================================================================
-
-  // Format duration from seconds to MM:SS
   const formattedDuration = useMemo((): string => {
     const minutes = Math.floor(durationSeconds / 60);
     const seconds = durationSeconds % 60;
@@ -173,10 +168,6 @@ const MicControlContainer: React.FC<MicControlProps> = ({
       .toString()
       .padStart(2, "0")}`;
   }, [durationSeconds]);
-
-  // ========================================================================
-  // Render Presenter Component
-  // ========================================================================
 
   return (
     <MicControlView

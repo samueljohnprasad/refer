@@ -1,12 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import PlayingSounds from "@/src/components/audio/PlayingSounds";
 
 const profile = () => {
-  return (
-    <View>
-      <Text>profile</Text>
-    </View>
-  );
+  return <PlayingSounds />;
 };
 
 export default profile;
