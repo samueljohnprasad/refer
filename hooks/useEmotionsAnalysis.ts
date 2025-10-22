@@ -58,15 +58,12 @@ const useEmotionsAnalysis = ({
 
       // Create a File instance from the absolute URI and read as base64
       const audioFile = new File(absoluteUri);
-      const base64Audio = audioFile.base64();
+      const base64Audio = audioFile.base64Sync();
 
       console.log("Base64 audio length:", base64Audio.length, "characters");
       console.log("File exists:", audioFile.exists);
       console.log("File size:", audioFile.size, "bytes");
-      const { data, error } = await supabase.from("test").insert({
-        text: base64Audio,
-      });
-      if (error) console.error(error);
+
       const transcripts = await transcribeAudio(
         "AIzaSyCfc4bT2M0K4z3mVjvra2T-VV65ZtWr7cM",
         base64Audio

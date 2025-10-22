@@ -11,7 +11,6 @@ import {
 } from "date-fns";
 import { useAtom, useSetAtom } from "jotai";
 import { calenderVisibleDatesAtom } from "../atoms";
-import useFetchMoods from "@/components/mentalHealth/hooks/useFetchMoods";
 
 export interface UseCalendarMonthOptions {
   selectedDate: Date;

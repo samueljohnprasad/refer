@@ -4,6 +4,7 @@ import { Tabs } from "expo-router";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { Platform, StyleSheet } from "react-native";
 import { BlurView } from "expo-blur";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -18,7 +19,7 @@ export default function TabLayout() {
   const inactiveColor = "#94A3B8"; // slate-400-ish
 
   return (
-    <>
+    <BottomSheetModalProvider>
       <Tabs
         screenOptions={{
           tabBarBackground() {
@@ -108,6 +109,6 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
-    </>
+    </BottomSheetModalProvider>
   );
 }

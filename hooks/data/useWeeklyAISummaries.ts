@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, UseQueryOptions } from "@tanstack/react-query";
 import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/network/auth/supabase";
 import {
@@ -48,7 +48,10 @@ const fetchWeekEntries = async (userId: string, weekStart: Date) => {
  * Hook to get AI summary for a specific week
  * Returns cached data if available, null if not generated yet
  */
-export const useWeeklyAISummary = (weekDate?: Date) => {
+export const useWeeklyAISummary = (
+  weekDate?: Date,
+  options?: Partial<UseQueryOptions<WeeklyAISummaryRecord | null>>
+) => {
   const { user } = useAuth();
   const targetWeek = weekDate || subWeeks(new Date(), 1); // Default to previous week
   const weekNumber = getWeek(targetWeek, { weekStartsOn: 0 });
@@ -74,8 +77,9 @@ export const useWeeklyAISummary = (weekDate?: Date) => {
 
       return data as WeeklyAISummaryRecord | null;
     },
-    enabled: !!user?.id,
+    enabled: options?.enabled !== undefined ? options.enabled && !!user?.id : !!user?.id,
     staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    ...options,
   });
 };
 

@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useState } from "react";
 import { View, Pressable, Dimensions, Platform } from "react-native";
 import { Text } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
-import { format, startOfWeek, addDays, isToday, isValid } from "date-fns";
+import { format, startOfWeek, addDays, isToday, isValid, differenceInWeeks, addWeeks } from "date-fns";
 import { useAtom } from "jotai";
 import Animated, {
   interpolate,
@@ -88,7 +88,12 @@ const DailyNotesHeader = React.memo(() => {
         translateX: interpolate(weekSlideAnim.value, [-1, 0, 1], [-10, 0, 10]),
       },
     ],
-    opacity: interpolate(weekSlideAnim.value, [-1, 0, 1], [0.3, 1, 0.3]),
+    opacity: interpolate(
+      weekSlideAnim.value,
+      [-1, 0, 1],
+      [0.4, 1, 0.4],
+      "clamp" // Clamp to prevent going below 0.3
+    ),
   }));
 
   const selectDate = useCallback(
@@ -153,9 +158,26 @@ const DailyNotesHeader = React.memo(() => {
 
   const handleGoToToday = useCallback(async (): Promise<void> => {
     const today = new Date();
-    await animateToWeekOf(today, currentWeekView);
-    selectDate(today);
-  }, [animateToWeekOf, currentWeekView, selectDate]);
+    const weeksDifference = differenceInWeeks(today, currentWeekView);
+    const weeksAway = Math.abs(weeksDifference);
+    
+    if (weeksAway <= 3) {
+      // 3 weeks or less: animate all the way to today
+      await animateToWeekOf(today, currentWeekView);
+      selectDate(today);
+    } else {
+      // More than 3 weeks: animate 3 weeks toward today, then jump
+      const direction = weeksDifference > 0 ? 1 : -1; // Forward or backward
+      const intermediateDate = addWeeks(currentWeekView, 3 * direction);
+      
+      // Animate for 3 weeks
+      await animateToWeekOf(intermediateDate, currentWeekView);
+      
+      // Then jump instantly to today
+      selectDate(today);
+      setCurrentWeekView(today);
+    }
+  }, [animateToWeekOf, currentWeekView, selectDate, setCurrentWeekView]);
 
   // Pan gesture handlers are provided by useWeekNavigation
   return (
