@@ -5,6 +5,7 @@ trigger: always_on
 # Frontend Coding Standards (React Native + TypeScript, Mobile & Web)
 
 write code that is scalable for 50,000 users
+- always write code in tailwind css for styles
 
 every thing you code should be coded in a resuable way, modular, clean, seperation of concern.
 

@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient, UseQueryOptions } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/network/auth/supabase";
 import {
@@ -9,7 +14,14 @@ import {
   WeeklySummary,
   GrowthInsight,
 } from "@/src/network/genAi";
-import { getWeek, getYear, startOfWeek, endOfWeek, format, subWeeks } from "date-fns";
+import {
+  getWeek,
+  getYear,
+  startOfWeek,
+  endOfWeek,
+  format,
+  subWeeks,
+} from "date-fns";
 
 type WeeklyAISummaryRecord = {
   id: string;
@@ -77,7 +89,10 @@ export const useWeeklyAISummary = (
 
       return data as WeeklyAISummaryRecord | null;
     },
-    enabled: options?.enabled !== undefined ? options.enabled && !!user?.id : !!user?.id,
+    enabled:
+      options?.enabled !== undefined
+        ? options.enabled && !!user?.id
+        : !!user?.id,
     staleTime: 1000 * 60 * 60 * 24, // 24 hours
     ...options,
   });
@@ -111,7 +126,7 @@ export const useGenerateWeeklySummary = () => {
 
       // 1. Fetch journal entries for this week
       const entries = await fetchWeekEntries(user.id, weekStart);
-      
+
       if (entries.length === 0) {
         throw new Error("No journal entries found for this week");
       }
@@ -140,16 +155,19 @@ export const useGenerateWeeklySummary = () => {
         .single();
 
       // 3. Generate all AI insights in parallel
-      const [recommendations, weeklySummary, growthInsights] = await Promise.all([
-        generateAIRecommendations(validEntries),
-        generateWeeklySummary(
-          validEntries,
-          format(weekStart, "MMM dd, yyyy"),
-          format(weekEnd, "MMM dd, yyyy"),
-          profile?.current_streak || 0
-        ),
-        validEntries.length >= 5 ? generateGrowthInsights(validEntries) : Promise.resolve([]),
-      ]);
+      const [recommendations, weeklySummary, growthInsights] =
+        await Promise.all([
+          generateAIRecommendations(validEntries),
+          generateWeeklySummary(
+            validEntries,
+            format(weekStart, "MMM dd, yyyy"),
+            format(weekEnd, "MMM dd, yyyy"),
+            profile?.current_streak || 0
+          ),
+          validEntries.length >= 5
+            ? generateGrowthInsights(validEntries)
+            : Promise.resolve([]),
+        ]);
 
       console.log("AI insights generated successfully");
 
@@ -171,47 +189,17 @@ export const useGenerateWeeklySummary = () => {
 
       if (error) throw error;
 
-      console.log("AI summary stored in database");
-
       return data as WeeklyAISummaryRecord;
     },
     onSuccess: (data) => {
       // Invalidate and update cache
-      queryClient.invalidateQueries({ 
-        queryKey: ["weeklyAISummary", user?.id, data.year, data.week_number] 
+      queryClient.invalidateQueries({
+        queryKey: ["weeklyAISummary", user?.id, data.year, data.week_number],
       });
       queryClient.setQueryData(
         ["weeklyAISummary", user?.id, data.year, data.week_number],
         data
       );
     },
-  });
-};
-
-/**
- * Hook to get all weekly summaries for a user
- */
-export const useAllWeeklySummaries = (limit: number = 10) => {
-  const { user } = useAuth();
-
-  return useQuery({
-    queryKey: ["allWeeklySummaries", user?.id, limit],
-    queryFn: async () => {
-      if (!user?.id) throw new Error("Not authenticated");
-
-      const { data, error } = await supabase
-        .from("ai_weekly_summaries")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("year", { ascending: false })
-        .order("week_number", { ascending: false })
-        .limit(limit);
-
-      if (error) throw error;
-
-      return data as WeeklyAISummaryRecord[];
-    },
-    enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };

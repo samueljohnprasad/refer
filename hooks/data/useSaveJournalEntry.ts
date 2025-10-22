@@ -39,7 +39,8 @@ export const useSaveJournalEntry = () => {
         .insert({
           user_id: userId,
           title: insights.title || "Untitled Entry",
-          enrichedTranscript: insights.enrichedTranscript || transcripts.join(" "),
+          enrichedTranscript:
+            insights.enrichedTranscript || transcripts.join(" "),
           summary: insights.summary,
           moodScore: insights.moodScore,
           mainEmoji: insights.mainEmoji,
@@ -73,7 +74,7 @@ export const useSaveJournalEntry = () => {
             userId,
             forceReset: false,
           });
-          
+
           streakUpdated = true;
           newStreak = streakResult.current_streak;
         } catch (error) {
@@ -93,8 +94,6 @@ export const useSaveJournalEntry = () => {
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
       queryClient.invalidateQueries({ queryKey: ["journalEntries"] });
       queryClient.invalidateQueries({ queryKey: ["moods"] });
-      
-      console.log("Journal entry saved successfully:", data);
     },
     onError: (error) => {
       console.error("Failed to save journal entry:", error);

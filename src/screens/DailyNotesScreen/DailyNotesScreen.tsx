@@ -1,9 +1,26 @@
-import React, { useCallback, useEffect, useMemo, memo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  memo,
+  useRef,
+  useState,
+} from "react";
 import { StyleSheet, View, ScrollView, Pressable } from "react-native";
 import { Text } from "@/components/Themed";
 import { Stack } from "expo-router";
-import { format, addDays, startOfWeek, endOfWeek, isBefore, startOfDay } from "date-fns";
-import { useAtom } from "jotai";
+import {
+  format,
+  addDays,
+  startOfWeek,
+  endOfWeek,
+  isBefore,
+  startOfDay,
+  startOfMonth,
+  endOfMonth,
+  getWeek,
+} from "date-fns";
+import { useAtom, useSetAtom } from "jotai";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
   Easing,
@@ -17,12 +34,17 @@ import Animated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { currentWeekViewAtom, selectedDateAtom } from "./atoms";
+import {
+  currentWeekViewAtom,
+  selectedDateAtom,
+  calenderVisibleDatesAtom,
+} from "./atoms";
 import DailyNotesHeader from "./DailyNotesHeader";
 import { MentalHealthProfileContainer } from "./notes/MentalHealthProfileContainer";
 import { AIInsightsChip } from "@/src/components/ai/AIInsightsChip";
 import { AIInsightsModalBottomSheet } from "@/src/components/ai/AIInsightsModalBottomSheet";
 import { useWeeklyAISummary } from "@/hooks/data/useWeeklyAISummaries";
+import { formateDate_y_m_d } from "@/hooks/data/date";
 
 // Animated Day Button Component
 interface DayButtonProps {
@@ -116,31 +138,33 @@ const DailyNotesScreen: React.FC = () => {
 
   // State for current week view (independent of selected date)
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
-  
+
+  // Set calendar visible dates based on current week in view
+  const setCalenderVisibleDates = useSetAtom(calenderVisibleDatesAtom);
+
+  // Update calendar visible dates when week changes
+  useEffect(() => {
+    const monthStart = startOfMonth(currentWeekView);
+    const monthEnd = endOfMonth(currentWeekView);
+    const visibleStartDate = startOfWeek(monthStart, { weekStartsOn: 0 });
+    const visibleEndDate = endOfWeek(monthEnd, { weekStartsOn: 0 });
+
+    setCalenderVisibleDates({
+      visibleStartDate: formateDate_y_m_d(visibleStartDate),
+      visibleEndDate: formateDate_y_m_d(visibleEndDate),
+    });
+  }, [getWeek(currentWeekView)]);
+
   // Bottom sheet ref for AI insights
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  
-  // State to control when to fetch AI summary (lazy load)
-  const [shouldFetchAI, setShouldFetchAI] = useState(false);
-  
-  // Only fetch AI summary when modal is opened
-  const { data: weeklyAISummary, isLoading: isAILoading } = useWeeklyAISummary(
-    currentWeekView,
-    { enabled: shouldFetchAI }
-  );
-  
+
   // Check if current week is before today (past week)
   const isBeforeCurrentWeek = useMemo(() => {
     const today = startOfDay(new Date());
     const weekEndDate = endOfWeek(currentWeekView, { weekStartsOn: 0 });
     return isBefore(weekEndDate, today);
   }, [currentWeekView]);
-  
-  // Extract data for modal
-  const recommendations = weeklyAISummary?.recommendations || [];
-  const weeklySummary = weeklyAISummary?.weekly_summary ?? null;
-  const growthInsights = weeklyAISummary?.growth_insights || [];
-  
+
   // Format week dates for display
   const weekStart = useMemo(
     () => startOfWeek(currentWeekView, { weekStartsOn: 0 }),
@@ -152,7 +176,7 @@ const DailyNotesScreen: React.FC = () => {
   );
   const weekStartFormatted = format(weekStart, "MMM dd, yyyy");
   const weekEndFormatted = format(weekEnd, "MMM dd, yyyy");
-  
+
   // Shared values for content animations (UI thread)
   const contentTranslateX = useSharedValue<number>(0);
   const contentOpacity = useSharedValue<number>(1);
@@ -223,13 +247,13 @@ const DailyNotesScreen: React.FC = () => {
           }
 
           contentTranslateX.value = withSpring(0, {
-            damping: 16,
+            damping: 32,
             stiffness: 180,
           });
         })
         .onFinalize(() => {
           contentTranslateX.value = withSpring(0, {
-            damping: 16,
+            damping: 32,
             stiffness: 180,
           });
         }),
@@ -244,19 +268,19 @@ const DailyNotesScreen: React.FC = () => {
       <Stack.Screen
         options={{ header: () => <DailyNotesHeader />, headerShown: true }}
       />
-      <View style={{ flex: 1 }}>
+      <View className="flex-1 pt-3">
         {/* AI Insights Chip - Below header */}
         <AIInsightsChip
           visible={isBeforeCurrentWeek}
           onPress={() => {
-            setShouldFetchAI(true); // Trigger API call
+            // setShouldFetchAI(true); // Trigger API call
             bottomSheetRef.current?.present();
           }}
         />
 
         <GestureDetector gesture={contentPanGesture}>
           <ScrollView
-            style={{ flex: 1 }}
+            className="flex-1"
             // contentContainerStyle={[styles.content, { paddingTop: 0 }]}
             showsVerticalScrollIndicator={false}
           >
@@ -288,14 +312,8 @@ const DailyNotesScreen: React.FC = () => {
         ref={bottomSheetRef}
         weekStart={weekStartFormatted}
         weekEnd={weekEndFormatted}
-        recommendations={recommendations}
-        weeklySummary={weeklySummary}
-        growthInsights={growthInsights}
-        loading={isAILoading}
         onClose={() => {
           bottomSheetRef.current?.dismiss();
-          // Reset fetch trigger when closing
-          setShouldFetchAI(false);
         }}
       />
 

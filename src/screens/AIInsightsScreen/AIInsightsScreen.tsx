@@ -18,6 +18,7 @@ import {
   useGenerateWeeklySummary,
 } from "@/hooks/data/useWeeklyAISummaries";
 import { subWeeks, format } from "date-fns";
+import { AIInsightsContent } from "@/src/components/ai/AIInsightsContent";
 
 const priorityColors: Record<string, string> = {
   high: "#EF4444",
@@ -30,16 +31,19 @@ export default function AIInsightsScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const { data: profile } = useUserProfile();
-  
+
   // Get cached summary for previous week
-  const { data: cachedSummary, isLoading: loadingCached, refetch } = usePreviousWeekSummary();
+  const {
+    data: cachedSummary,
+    isLoading: loadingCached,
+    refetch,
+  } = usePreviousWeekSummary();
   const generateSummary = useGenerateWeeklySummary();
-  
+
   const previousWeek = subWeeks(new Date(), 1);
-  const hasSummary = !!cachedSummary;
-  const recommendations = cachedSummary?.recommendations || [];
   const weeklySummary = cachedSummary?.weekly_summary;
-  const growthInsights = cachedSummary?.growth_insights || [];
+  const recommendations = cachedSummary?.recommendations;
+  const growthInsights = cachedSummary?.growth_insights;
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -55,7 +59,6 @@ export default function AIInsightsScreen() {
     }
   };
 
-  const isLoading = loadingCached;
   const isGenerating = generateSummary.isPending;
 
   return (
@@ -126,7 +129,7 @@ export default function AIInsightsScreen() {
             </Text>
           </View>
 
-          {!hasSummary ? (
+          {!loadingCached && !cachedSummary && (
             <View style={styles.generateContainer}>
               <Text style={styles.generateIcon}>🤖</Text>
               <Text style={styles.generateTitle}>No AI Summary Yet</Text>
@@ -134,25 +137,30 @@ export default function AIInsightsScreen() {
                 Generate personalized AI insights for the week of{"\n"}
                 {format(previousWeek, "MMM dd, yyyy")}
               </Text>
-              
+
               <TouchableOpacity
                 style={styles.generateButton}
                 onPress={handleGenerateSummary}
                 disabled={isGenerating}
               >
                 <LinearGradient
-                  colors={isGenerating ? ["#999", "#777"] : ["#7B61FF", "#9C7CFF"]}
+                  colors={
+                    isGenerating ? ["#999", "#777"] : ["#7B61FF", "#9C7CFF"]
+                  }
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.generateButtonGradient}
                 >
-                  {isGenerating ? (
+                  {isGenerating && (
                     <ActivityIndicator size="small" color="#FFF" />
-                  ) : (
+                  )}
+                  {!isGenerating && (
                     <Feather name="zap" size={20} color="#FFF" />
                   )}
                   <Text style={styles.generateButtonText}>
-                    {isGenerating ? "Generating..." : "Get AI Insights for Past Week"}
+                    {isGenerating
+                      ? "Generating..."
+                      : "Get AI Insights for Past Week"}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
@@ -163,206 +171,21 @@ export default function AIInsightsScreen() {
                 </Text>
               )}
             </View>
-          ) : loadingCached ? (
+          )}
+          {loadingCached && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#7B61FF" />
             </View>
-          ) : recommendations && recommendations.length > 0 ? (
-            <>
-              <View style={styles.weekBadge}>
-                <Feather name="calendar" size={14} color="#7B61FF" />
-                <Text style={styles.weekBadgeText}>
-                  Week of {format(previousWeek, "MMM dd, yyyy")}
-                </Text>
-              </View>
-              {recommendations.map((rec, index) => (
-                <View key={index} style={styles.recommendationCard}>
-                  <View style={styles.recContent}>
-                  <View style={styles.recHeader}>
-                    <Text style={styles.recTitle}>{rec.title}</Text>
-                    <View
-                      style={[
-                        styles.priorityBadge,
-                        { backgroundColor: priorityColors[rec.priority] },
-                      ]}
-                    >
-                      <Text style={styles.priorityText}>
-                        {rec.priority.toUpperCase()}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <Text style={styles.recDescription}>{rec.description}</Text>
-
-                  <Text style={styles.actionStepsTitle}>Action Steps:</Text>
-                  {rec.actionSteps.map((step, idx) => (
-                    <View key={idx} style={styles.actionStep}>
-                      <Text style={styles.actionStepBullet}>•</Text>
-                      <Text style={styles.actionStepText}>{step}</Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            ))}
-            </>
-          ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyIcon}>📝</Text>
-              <Text style={styles.emptyText}>
-                No recommendations generated for this week
-              </Text>
-            </View>
+          )}
+          {!loadingCached && (
+            <AIInsightsContent
+              loading={isGenerating || loadingCached}
+              weeklySummary={weeklySummary || null}
+              recommendations={recommendations || []}
+              growthInsights={growthInsights || []}
+            />
           )}
         </View>
-
-        {/* Weekly Summary Section (only show if we have summary) */}
-        {hasSummary && weeklySummary && (
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>📊 Weekly Summary</Text>
-          </View>
-
-          <View style={styles.summaryCard}>
-            <Text style={styles.summaryPeriod}>
-              {weeklySummary.weekStart} - {weeklySummary.weekEnd}
-            </Text>
-
-            <View style={styles.moodTrendContainer}>
-              <Text style={styles.moodTrendLabel}>Mood Trend:</Text>
-              <View
-                style={[
-                  styles.moodTrendBadge,
-                  {
-                    backgroundColor:
-                      weeklySummary.moodTrend === "improving"
-                        ? "#10B981"
-                        : weeklySummary.moodTrend === "declining"
-                        ? "#EF4444"
-                        : "#F59E0B",
-                  },
-                ]}
-              >
-                <Text style={styles.moodTrendText}>
-                  {weeklySummary.moodTrend === "improving"
-                    ? "📈"
-                    : weeklySummary.moodTrend === "declining"
-                    ? "📉"
-                    : "➡️"}{" "}
-                  {weeklySummary.moodTrend}
-                </Text>
-              </View>
-            </View>
-
-            {weeklySummary.topEmotions &&
-              weeklySummary.topEmotions.length > 0 && (
-                <View style={styles.summarySection}>
-                  <Text style={styles.summarySubtitle}>Top Emotions</Text>
-                  <View style={styles.emotionTags}>
-                    {weeklySummary.topEmotions.map((emotion, idx) => (
-                      <View key={idx} style={styles.emotionTag}>
-                        <Text style={styles.emotionText}>{emotion}</Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-              )}
-
-            {weeklySummary.keyHighlights &&
-              weeklySummary.keyHighlights.length > 0 && (
-                <View style={styles.summarySection}>
-                  <Text style={styles.summarySubtitle}>
-                    ✨ Key Highlights
-                  </Text>
-                  {weeklySummary.keyHighlights.map((highlight, idx) => (
-                    <Text key={idx} style={styles.bulletPoint}>
-                      • {highlight}
-                    </Text>
-                  ))}
-                </View>
-              )}
-
-            {weeklySummary.motivationalMessage && (
-              <View style={styles.motivationalCard}>
-                <Text style={styles.motivationalIcon}>💪</Text>
-                <Text style={styles.motivationalText}>
-                  {weeklySummary.motivationalMessage}
-                </Text>
-              </View>
-            )}
-
-            {weeklySummary.nextWeekFocus &&
-              weeklySummary.nextWeekFocus.length > 0 && (
-                <View style={styles.summarySection}>
-                  <Text style={styles.summarySubtitle}>
-                    🎯 Next Week Focus
-                  </Text>
-                  {weeklySummary.nextWeekFocus.map((focus, idx) => (
-                    <Text key={idx} style={styles.bulletPoint}>
-                      • {focus}
-                    </Text>
-                  ))}
-                </View>
-              )}
-          </View>
-        </View>
-        )}
-
-        {/* Growth Insights Section (only show if we have insights) */}
-        {hasSummary && growthInsights && growthInsights.length > 0 && (
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>🌱 Deep Growth Insights</Text>
-          </View>
-
-          {growthInsights.map((insight, index) => (
-            <View key={index} style={styles.insightCard}>
-              <View style={styles.insightHeader}>
-                <Text style={styles.insightCategory}>{insight.category}</Text>
-                <View
-                  style={[
-                    styles.impactBadge,
-                    {
-                      backgroundColor:
-                        insight.impactLevel === "high"
-                          ? "#EF4444"
-                          : insight.impactLevel === "medium"
-                          ? "#F59E0B"
-                          : "#10B981",
-                    },
-                  ]}
-                >
-                  <Text style={styles.impactText}>
-                    {insight.impactLevel} impact
-                  </Text>
-                </View>
-              </View>
-
-              <Text style={styles.insightText}>{insight.insight}</Text>
-
-              <View style={styles.evidenceContainer}>
-                <Text style={styles.evidenceTitle}>Supporting Evidence:</Text>
-                {insight.supportingEvidence.map((evidence, idx) => (
-                  <Text key={idx} style={styles.evidenceText}>
-                    • {evidence}
-                  </Text>
-                ))}
-              </View>
-
-              <View style={styles.suggestionContainer}>
-                <Feather
-                  name="info"
-                  size={18}
-                  color="#F59E0B"
-                  style={{ marginTop: 2 }}
-                />
-                <Text style={styles.suggestionText}>
-                  {insight.suggestion}
-                </Text>
-              </View>
-            </View>
-          ))}
-        </View>
-        )}
       </ScrollView>
     </SafeAreaView>
   );

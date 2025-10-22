@@ -7,7 +7,7 @@ trigger: always_on
 write code that is scalable for 50,000 users
 
 These rules apply to both frontend (React Native/React) 
-
+- always write code in tailwind css for styles
 - always write logic in resuable hooks, composable, maintainable, readable, extensionable
 - strictly use typescript everywhere, for every variable assignment, function params , function return, explicitly write the types.
 dont use any type.

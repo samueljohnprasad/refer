@@ -2,7 +2,17 @@ import React, { useMemo, useCallback, useState } from "react";
 import { View, Pressable, Dimensions, Platform } from "react-native";
 import { Text } from "@/components/Themed";
 import { Feather } from "@expo/vector-icons";
-import { format, startOfWeek, addDays, isToday, isValid, differenceInWeeks, addWeeks } from "date-fns";
+import {
+  format,
+  startOfWeek,
+  addDays,
+  isToday,
+  isValid,
+  differenceInWeeks,
+  addWeeks,
+  startOfMonth,
+  isSameWeek,
+} from "date-fns";
 import { useAtom } from "jotai";
 import Animated, {
   interpolate,
@@ -129,6 +139,15 @@ const DailyNotesHeader = React.memo(() => {
     [currentWeekViewSafe]
   );
 
+  const currentMonthView = useMemo(
+    () =>
+      format(
+        startOfMonth(startOfWeek(currentWeekViewSafe, { weekStartsOn: 0 })),
+        "MMM, yyyy"
+      ),
+    [currentWeekViewSafe]
+  );
+
   const weekDays = useMemo(
     () => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)),
     [weekStart]
@@ -160,7 +179,7 @@ const DailyNotesHeader = React.memo(() => {
     const today = new Date();
     const weeksDifference = differenceInWeeks(today, currentWeekView);
     const weeksAway = Math.abs(weeksDifference);
-    
+
     if (weeksAway <= 3) {
       // 3 weeks or less: animate all the way to today
       await animateToWeekOf(today, currentWeekView);
@@ -169,15 +188,26 @@ const DailyNotesHeader = React.memo(() => {
       // More than 3 weeks: animate 3 weeks toward today, then jump
       const direction = weeksDifference > 0 ? 1 : -1; // Forward or backward
       const intermediateDate = addWeeks(currentWeekView, 3 * direction);
-      
+
       // Animate for 3 weeks
       await animateToWeekOf(intermediateDate, currentWeekView);
-      
+
       // Then jump instantly to today
       selectDate(today);
       setCurrentWeekView(today);
     }
   }, [animateToWeekOf, currentWeekView, selectDate, setCurrentWeekView]);
+
+  const showTodayPill = useMemo(() => {
+    const isSameW = isSameWeek(currentWeekViewSafe, new Date(), {
+      weekStartsOn: 0,
+    });
+    if (!isSameW) {
+      return true;
+    }
+
+    return isSelectedDateValid ? !isToday(selectedDate) : false;
+  }, [currentWeekViewSafe]);
 
   // Pan gesture handlers are provided by useWeekNavigation
   return (
@@ -196,7 +226,7 @@ const DailyNotesHeader = React.memo(() => {
 
         <View className="flex-row items-center justify-center flex-1">
           <Text className="text-[17px] font-semibold text-white mx-4 text-center">
-            {selectedDateLabel || ""}
+            {currentMonthView || ""}
           </Text>
         </View>
 
@@ -257,10 +287,7 @@ const DailyNotesHeader = React.memo(() => {
         </Animated.View>
       )}
       {/* Today tag - animated reusable component */}
-      <TodayPill
-        visible={isSelectedDateValid ? !isToday(selectedDate) : false}
-        onPress={handleGoToToday}
-      />
+      <TodayPill visible={showTodayPill} onPress={handleGoToToday} />
       {/* Absolute overlay handle that moves down with expanding calendar */}
       <Animated.View
         className="absolute left-0 right-0 items-center z-10"

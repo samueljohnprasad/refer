@@ -4,62 +4,69 @@ import { calenderVisibleDatesAtom } from "@/src/screens/DailyNotesScreen/atoms";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useAtomValue } from "jotai";
+import { formateDate_y_m_d } from "./date";
+
+type FetchMonthlyMoodsParams = {
+  userId?: string;
+  visibleStartDate?: string;
+  visibleEndDate?: string;
+};
+async function fetchMonthlyMoods({
+  userId,
+  visibleStartDate,
+  visibleEndDate,
+}: FetchMonthlyMoodsParams) {
+  const moodMap = new Map<string, number>();
+  if (!userId || !visibleEndDate || !visibleStartDate) {
+    return moodMap;
+  }
+
+  const startDate = new Date(visibleStartDate);
+  startDate.setHours(0, 0, 0, 0);
+
+  const endDate = new Date(visibleEndDate);
+  endDate.setHours(23, 59, 59, 999);
+  const { data, error } = await supabase
+    .from("daily_moods")
+    .select("day, mood_avg")
+    .eq("user_id", userId)
+    .gte("day", startDate.toISOString())
+    .lt("day", endDate.toISOString())
+    .order("day", { ascending: true });
+  if (error || !data) {
+    console.error("Error fetching daily moods:", error);
+    return moodMap;
+  }
+
+  const moodMapData = data.reduce((acc, mood) => {
+    const localDate = new Date(mood.day);
+    localDate.setHours(0, 0, 0, 0);
+    acc.set(formateDate_y_m_d(localDate), Math.round(mood.mood_avg));
+    return acc;
+  }, moodMap);
+
+  return moodMapData;
+}
 
 const useFetchMoods = () => {
   const { user } = useAuth();
-  const calenderVisibleDates = useAtomValue(calenderVisibleDatesAtom);
-  async function fetchMonthlyMoods() {
-    const moodMap = new Map<string, number>();
-    if (
-      !user?.id ||
-      !calenderVisibleDates?.visibleEndDate ||
-      !calenderVisibleDates?.visibleStartDate
-    ) {
-      return moodMap;
-    }
-
-    const startDate = new Date(calenderVisibleDates.visibleStartDate);
-    startDate.setHours(0, 0, 0, 0);
-
-    const endDate = new Date(calenderVisibleDates.visibleEndDate);
-    endDate.setHours(23, 59, 59, 999);
-    const { data, error } = await supabase
-      .from("daily_moods")
-      .select("day, mood_avg")
-      .eq("user_id", user?.id)
-      .gte("day", startDate.toISOString())
-      .lt("day", endDate.toISOString())
-      .order("day", { ascending: true });
-    if (error || !data) {
-      console.error("Error fetching daily moods:", error);
-      return moodMap;
-    }
-
-    const moodMapData = data.reduce((acc, mood) => {
-      const localDate = new Date(mood.day);
-      localDate.setHours(0, 0, 0, 0);
-      acc.set(format(localDate, "yyyy-MM-dd"), Math.round(mood.mood_avg));
-      return acc;
-    }, moodMap);
-
-    return moodMapData;
-  }
-
-  const startKey = calenderVisibleDates?.visibleStartDate
-    ? format(new Date(calenderVisibleDates.visibleStartDate), "yyyy-MM-dd")
-    : null;
-  const endKey = calenderVisibleDates?.visibleEndDate
-    ? format(new Date(calenderVisibleDates.visibleEndDate), "yyyy-MM-dd")
-    : null;
+  const { visibleStartDate, visibleEndDate } = useAtomValue(
+    calenderVisibleDatesAtom
+  );
 
   const query = useQuery({
-    queryKey: ["daily-moods", user?.id, startKey, endKey],
-    queryFn: fetchMonthlyMoods,
+    queryKey: ["daily-moods", user?.id, visibleStartDate, visibleEndDate],
+    queryFn: () =>
+      fetchMonthlyMoods({
+        userId: user?.id,
+        visibleStartDate,
+        visibleEndDate,
+      }),
     staleTime: 5 * 60_000,
     gcTime: 10 * 60_000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    enabled: !!user?.id && !!startKey && !!endKey,
+    enabled: !!user?.id && !!visibleStartDate && !!visibleEndDate,
   });
 
   return query;

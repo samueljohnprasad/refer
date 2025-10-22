@@ -4,8 +4,8 @@ trigger: always_on
 
 # Tech Stack Rules and Details
 
-write code that is scalable for 50,000 users
-
+- write code that is scalable for 50,000 users
+- always write code in tailwind css for styles
 
 This file documents the official tech stack and related rules for both the frontend and backend of the ReferNet project. All contributors must adhere to these choices unless a change is approved and documented here.
 

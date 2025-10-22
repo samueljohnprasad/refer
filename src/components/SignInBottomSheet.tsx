@@ -14,7 +14,6 @@ export default () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      console.log("Starting Google OAuth flow...");
       await performOAuth({ replace: router.replace });
     } catch (error) {
       console.error("Google Sign-In error:", error);

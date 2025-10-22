@@ -11,6 +11,7 @@ import {
 } from "date-fns";
 import { useAtom, useSetAtom } from "jotai";
 import { calenderVisibleDatesAtom } from "../atoms";
+import { formateDate_y_m_d } from "@/hooks/data/date";
 
 export interface UseCalendarMonthOptions {
   selectedDate: Date;
@@ -70,12 +71,15 @@ const useCalendarMonth = (
     setCurrentMonth((prev: Date) => startOfMonth(addMonths(prev, 1)));
   };
 
+  const visibleStartDate = formateDate_y_m_d(visibleStart);
+  const visibleEndDate = formateDate_y_m_d(visibleEnd);
+
   useEffect(() => {
     setCalenderVisibleDates({
-      visibleStartDate: visibleStart,
-      visibleEndDate: visibleEnd,
+      visibleStartDate,
+      visibleEndDate,
     });
-  }, [format(visibleStart, "yyyy-MM-dd"), format(visibleEnd, "yyyy-MM-dd")]);
+  }, [visibleStartDate, visibleEndDate]);
 
   return {
     currentMonth,
