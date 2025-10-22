@@ -17,8 +17,15 @@ import {
   usePreviousWeekSummary,
   useGenerateWeeklySummary,
 } from "@/hooks/data/useWeeklyAISummaries";
-import { subWeeks, format } from "date-fns";
+import { subWeeks, format, startOfWeek, endOfWeek } from "date-fns";
 import { AIInsightsContent } from "@/src/components/ai/AIInsightsContent";
+
+// Import new chart components
+import { EmotionRadarChart } from "@/src/components/charts/EmotionRadarChart";
+import { JournalingHeatmap } from "@/src/components/charts/JournalingHeatmap";
+import { MoodCorrelationMatrix } from "@/src/components/charts/MoodCorrelationMatrix";
+import { EmotionalGrowthTrajectory } from "@/src/components/charts/EmotionalGrowthTrajectory";
+import { MoodTriggersAnalysis } from "@/src/components/charts/MoodTriggersAnalysis";
 
 const priorityColors: Record<string, string> = {
   high: "#EF4444",
@@ -185,6 +192,108 @@ export default function AIInsightsScreen() {
               growthInsights={growthInsights || []}
             />
           )}
+        </View>
+
+        {/* Premium Chart Visualizations */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>
+              📊 Advanced Analytics
+            </Text>
+            <TouchableOpacity
+              style={styles.premiumBadge}
+              onPress={() => console.log("Show premium modal")}
+            >
+              <LinearGradient
+                colors={["#7B61FF", "#9C7CFF"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.premiumBadgeGradient}
+              >
+                <Feather name="star" size={12} color="#FFF" />
+                <Text style={styles.premiumBadgeText}>PREMIUM</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+
+          {/* Emotional Balance Radar Chart */}
+          <View style={styles.chartContainer}>
+            <EmotionRadarChart
+              startDate={subWeeks(new Date(), 4)}
+              endDate={new Date()}
+              premium={true}
+            />
+          </View>
+
+          {/* Journaling Consistency Heatmap */}
+          <View style={styles.chartContainer}>
+            <JournalingHeatmap
+              weeksToShow={12}
+              premium={true}
+              onDayPress={(date) => {
+                // Navigate to specific day's journal
+                console.log("Navigate to:", date);
+              }}
+            />
+          </View>
+
+          {/* Mood Pattern Correlation */}
+          <View style={styles.chartContainer}>
+            <MoodCorrelationMatrix
+              premium={true}
+              onInsightPress={(insight) => {
+                console.log("Insight pressed:", insight);
+              }}
+            />
+          </View>
+
+          {/* Emotional Growth Trajectory */}
+          <View style={styles.chartContainer}>
+            <EmotionalGrowthTrajectory
+              monthsToShow={6}
+              predictMonths={3}
+              premium={true}
+            />
+          </View>
+
+          {/* Mood Triggers Analysis */}
+          <View style={styles.chartContainer}>
+            <MoodTriggersAnalysis
+              premium={true}
+              onTriggerPress={(trigger) => {
+                console.log("Trigger pressed:", trigger);
+              }}
+            />
+          </View>
+
+          {/* Premium CTA */}
+          <TouchableOpacity
+            style={styles.premiumCTA}
+            onPress={() => {
+              // Show premium upgrade modal or navigate to subscription screen
+              console.log("Navigate to premium subscription");
+            }}
+          >
+            <LinearGradient
+              colors={["#7B61FF", "#9C7CFF"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.premiumCTAGradient}
+            >
+              <View style={styles.premiumCTAContent}>
+                <Text style={styles.premiumCTAIcon}>✨</Text>
+                <View style={styles.premiumCTATextContainer}>
+                  <Text style={styles.premiumCTATitle}>
+                    Unlock Full Analytics Suite
+                  </Text>
+                  <Text style={styles.premiumCTASubtitle}>
+                    Get personalized insights, predictive analytics, and unlimited AI analysis
+                  </Text>
+                </View>
+                <Feather name="chevron-right" size={24} color="#FFF" />
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -598,5 +707,63 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#0F172A",
     lineHeight: 21,
+  },
+  // New chart styles
+  chartContainer: {
+    marginBottom: 24,
+  },
+  premiumBadge: {
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  premiumBadgeGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    gap: 4,
+  },
+  premiumBadgeText: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#FFF",
+    letterSpacing: 0.5,
+  },
+  premiumCTA: {
+    marginTop: 32,
+    borderRadius: 20,
+    overflow: "hidden",
+    shadowColor: "#7B61FF",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  premiumCTAGradient: {
+    padding: 24,
+  },
+  premiumCTAContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  premiumCTAIcon: {
+    fontSize: 40,
+    marginRight: 16,
+  },
+  premiumCTATextContainer: {
+    flex: 1,
+    marginRight: 12,
+  },
+  premiumCTATitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#FFF",
+    marginBottom: 4,
+  },
+  premiumCTASubtitle: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.9)",
+    lineHeight: 20,
   },
 });
