@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import React, { useMemo } from "react";
+import { View, Text, ActivityIndicator } from "react-native";
 import {
   VictoryChart,
   VictoryTheme,
@@ -7,9 +7,9 @@ import {
   VictoryArea,
   VictoryLabel,
   VictoryContainer,
-} from 'victory-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { format, subDays } from 'date-fns';
+} from "victory-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { format, subDays } from "date-fns";
 
 interface EmotionData {
   emotion: string;
@@ -27,15 +27,21 @@ interface EmotionRadarChartProps {
 
 // 8 key emotional dimensions for comprehensive analysis
 const EMOTION_DIMENSIONS = [
-  'Joy', 'Gratitude', 'Confidence', 'Peace',
-  'Anxiety', 'Sadness', 'Anger', 'Fear'
+  "Joy",
+  "Gratitude",
+  "Confidence",
+  "Peace",
+  "Anxiety",
+  "Sadness",
+  "Anger",
+  "Fear",
 ];
 
 const CHART_COLORS = {
-  positive: ['#10B981', '#34D399'],
-  negative: ['#EF4444', '#F87171'],
-  neutral: ['#6B7280', '#9CA3AF'],
-  premium: ['#7B61FF', '#9C7CFF']
+  positive: ["#10B981", "#34D399"],
+  negative: ["#EF4444", "#F87171"],
+  neutral: ["#6B7280", "#9CA3AF"],
+  premium: ["#7B61FF", "#9C7CFF"],
 };
 
 export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
@@ -43,39 +49,41 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
   endDate,
   data,
   loading = false,
-  premium = false
+  premium = false,
 }) => {
   // Mock data for demonstration - replace with real data from your API
   const mockData: EmotionData[] = EMOTION_DIMENSIONS.map((emotion, idx) => ({
     emotion,
     score: Math.random() * 100,
-    count: Math.floor(Math.random() * 10) + 1
+    count: Math.floor(Math.random() * 10) + 1,
   }));
 
   const chartData = data || mockData;
 
   // Calculate emotional balance score
   const emotionalBalance = useMemo(() => {
-    const positiveEmotions = ['Joy', 'Gratitude', 'Confidence', 'Peace'];
-    const positiveScore = chartData
-      .filter(d => positiveEmotions.includes(d.emotion))
-      .reduce((sum, d) => sum + d.score, 0) / 4;
-    
-    const negativeScore = chartData
-      .filter(d => !positiveEmotions.includes(d.emotion))
-      .reduce((sum, d) => sum + d.score, 0) / 4;
-    
+    const positiveEmotions = ["Joy", "Gratitude", "Confidence", "Peace"];
+    const positiveScore =
+      chartData
+        .filter((d) => positiveEmotions.includes(d.emotion))
+        .reduce((sum, d) => sum + d.score, 0) / 4;
+
+    const negativeScore =
+      chartData
+        .filter((d) => !positiveEmotions.includes(d.emotion))
+        .reduce((sum, d) => sum + d.score, 0) / 4;
+
     return {
       positive: positiveScore,
       negative: negativeScore,
-      balance: positiveScore - negativeScore
+      balance: positiveScore - negativeScore,
     };
   }, [chartData]);
 
   // Prepare data for Victory chart
-  const radarData = chartData.map(d => ({
+  const radarData = chartData.map((d) => ({
     x: d.emotion,
-    y: d.score / 100 // Normalize to 0-1 for radar chart
+    y: d.score / 100, // Normalize to 0-1 for radar chart
   }));
 
   const maxValue = 1;
@@ -101,11 +109,11 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
           style={{
             paddingHorizontal: 12,
             paddingVertical: 6,
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             right: 0,
             borderBottomLeftRadius: 12,
-            zIndex: 10
+            zIndex: 10,
           }}
         >
           <Text className="text-white text-xs font-bold">PREMIUM</Text>
@@ -120,28 +128,33 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
               Emotional Balance
             </Text>
             <Text className="text-xs text-gray-500 mt-1">
-              {format(startDate, 'MMM d')} - {format(endDate, 'MMM d, yyyy')}
+              {format(startDate, "MMM d")} - {format(endDate, "MMM d, yyyy")}
             </Text>
           </View>
           <View className="items-end">
-            <Text className="text-2xl font-extrabold" 
-              style={{ 
-                color: emotionalBalance.balance > 0 ? '#10B981' : '#EF4444' 
+            <Text
+              className="text-2xl font-extrabold"
+              style={{
+                color: emotionalBalance.balance > 0 ? "#10B981" : "#EF4444",
               }}
             >
-              {emotionalBalance.balance > 0 ? '+' : ''}{emotionalBalance.balance.toFixed(0)}%
+              {emotionalBalance.balance > 0 ? "+" : ""}
+              {emotionalBalance.balance.toFixed(0)}%
             </Text>
             <Text className="text-xs text-gray-500">Balance Score</Text>
           </View>
         </View>
 
         {/* Insight Card */}
-        <View className="mt-4 p-3 rounded-2xl" style={{ backgroundColor: '#F9FAFB' }}>
+        <View
+          className="mt-4 p-3 rounded-2xl"
+          style={{ backgroundColor: "#F9FAFB" }}
+        >
           <Text className="text-sm font-semibold text-gray-700 mb-1">
             🎯 Key Insight
           </Text>
           <Text className="text-xs text-gray-600 leading-5">
-            {emotionalBalance.balance > 20 
+            {emotionalBalance.balance > 20
               ? "You're experiencing strong emotional balance with positive emotions dominating."
               : emotionalBalance.balance < -20
               ? "Your emotional state is challenging. Consider mindfulness exercises."
@@ -163,26 +176,26 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
           <VictoryPolarAxis
             dependentAxis
             style={{
-              axis: { stroke: 'none' },
-              grid: { 
-                stroke: '#E5E7EB', 
-                strokeDasharray: '2,4',
-                opacity: 0.5 
+              axis: { stroke: "none" },
+              grid: {
+                stroke: "#E5E7EB",
+                strokeDasharray: "2,4",
+                opacity: 0.5,
               },
-              tickLabels: { fill: 'transparent' }
+              tickLabels: { fill: "transparent" },
             }}
             tickValues={[0.2, 0.4, 0.6, 0.8, 1]}
           />
-          
+
           <VictoryPolarAxis
             style={{
-              axis: { stroke: 'none' },
-              grid: { stroke: '#E5E7EB', strokeWidth: 0.5 },
-              tickLabels: { 
-                fontSize: 11, 
-                fill: '#6B7280',
-                fontWeight: '500'
-              }
+              axis: { stroke: "none" },
+              grid: { stroke: "#E5E7EB", strokeWidth: 0.5 },
+              tickLabels: {
+                fontSize: 11,
+                fill: "#6B7280",
+                fontWeight: "500",
+              },
             }}
           />
 
@@ -190,15 +203,17 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
             data={radarData}
             style={{
               data: {
-                fill: premium ? 'rgba(123, 97, 255, 0.3)' : 'rgba(16, 185, 129, 0.3)',
-                stroke: premium ? '#7B61FF' : '#10B981',
+                fill: premium
+                  ? "rgba(123, 97, 255, 0.3)"
+                  : "rgba(16, 185, 129, 0.3)",
+                stroke: premium ? "#7B61FF" : "#10B981",
                 strokeWidth: 2,
               },
             }}
             interpolation="linear"
             animate={{
               duration: 1000,
-              onLoad: { duration: 500 }
+              onLoad: { duration: 500 },
             }}
           />
         </VictoryChart>
@@ -212,17 +227,27 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
               key={emotion.emotion}
               className="px-3 py-2 rounded-full flex-row items-center"
               style={{
-                backgroundColor: 
-                  ['Joy', 'Gratitude', 'Confidence', 'Peace'].includes(emotion.emotion)
-                    ? '#DCFCE7' : '#FEE2E2'
+                backgroundColor: [
+                  "Joy",
+                  "Gratitude",
+                  "Confidence",
+                  "Peace",
+                ].includes(emotion.emotion)
+                  ? "#DCFCE7"
+                  : "#FEE2E2",
               }}
             >
               <View
                 className="w-2 h-2 rounded-full mr-2"
                 style={{
-                  backgroundColor: 
-                    ['Joy', 'Gratitude', 'Confidence', 'Peace'].includes(emotion.emotion)
-                      ? '#10B981' : '#EF4444'
+                  backgroundColor: [
+                    "Joy",
+                    "Gratitude",
+                    "Confidence",
+                    "Peace",
+                  ].includes(emotion.emotion)
+                    ? "#10B981"
+                    : "#EF4444",
                 }}
               />
               <Text className="text-xs font-medium text-gray-700">
