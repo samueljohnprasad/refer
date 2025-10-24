@@ -155,6 +155,32 @@ export type EmotionRadarData = {
   count: number;
 };
 
+// New types for advanced charts
+export type EmotionalVolatilityData = {
+  date: string;
+  volatilityScore: number; // 0-100 (0 = very stable, 100 = very volatile)
+  moodSwings: number; // Number of mood swings that day
+  emotionalRange: number; // Difference between highest and lowest mood
+  stability: 'stable' | 'moderate' | 'volatile' | 'highly_volatile';
+  triggers: string[]; // What triggered volatility
+};
+
+export type CognitivePatternLink = {
+  source: string; // Source thought/emotion
+  target: string; // Target thought/emotion
+  value: number; // Strength of connection (0-100)
+  frequency: number; // How often this pattern occurs
+  type: 'positive' | 'negative' | 'neutral';
+};
+
+export type LifeDomainScore = {
+  domain: string; // e.g., 'Work', 'Relationships', 'Health', etc.
+  score: number; // 0-100
+  trend: 'improving' | 'stable' | 'declining';
+  attention_needed: boolean;
+  insights: string;
+};
+
 export type WeeklySummary = {
   weekStart: string;
   weekEnd: string;
@@ -170,6 +196,13 @@ export type WeeklySummary = {
   streakDays: number;
   emotionRadarData: EmotionRadarData[];
   emotionInsight: string;
+  // New advanced insights
+  emotionalVolatility: EmotionalVolatilityData[];
+  volatilityInsight: string;
+  cognitivePatterns: CognitivePatternLink[];
+  cognitiveInsight: string;
+  lifeDomainBalance: LifeDomainScore[];
+  lifeDomainInsight: string;
 };
 
 export type MonthlySummary = {
@@ -289,7 +322,7 @@ export const generateWeeklySummary = async (
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.0-flash',
-      contents: `Generate a weekly summary for the week of ${weekStart} to ${weekEnd}. The user made ${entries.length} entries with an average mood of ${avgMood.toFixed(1)}/5 and maintained a ${streakDays} day streak.\n\nEntries:\n${entriesText}\n\nIMPORTANT: Also analyze and score these 8 emotional dimensions based on the journal entries (0-100 scale):\n- Joy, Gratitude, Confidence, Peace (positive emotions)\n- Anxiety, Sadness, Anger, Fear (challenging emotions)\n\nFor each emotion, provide a score (0-100) representing how much this emotion was present in the week, and a count of how many entries mentioned this emotion.\n\nAdditionally, provide a personalized 'emotionInsight' (1-2 sentences) about their emotional balance based on the scores. Be specific about which emotions dominated and provide an actionable suggestion.`,
+      contents: `Generate a comprehensive weekly summary for the week of ${weekStart} to ${weekEnd}. The user made ${entries.length} entries with an average mood of ${avgMood.toFixed(1)}/5 and maintained a ${streakDays} day streak.\n\nEntries:\n${entriesText}\n\nIMPORTANT: Perform these advanced analyses:\n\n1. EMOTIONAL DIMENSIONS (8 emotions, 0-100 scale):\n- Joy, Gratitude, Confidence, Peace (positive)\n- Anxiety, Sadness, Anger, Fear (challenging)\nScore each based on presence in entries.\n\n2. EMOTIONAL VOLATILITY ANALYSIS:\nFor each day with entries, calculate:\n- Volatility score (0-100): how much emotions fluctuated\n- Number of mood swings\n- Emotional range (difference between highest/lowest)\n- Stability level and triggers\n\n3. COGNITIVE PATTERN FLOW:\nIdentify thought patterns and their connections:\n- How one emotion/thought leads to another\n- Pattern strength and frequency\n- Whether patterns are positive/negative\n\n4. LIFE DOMAIN BALANCE (score 0-100 each):\n- Work/Career\n- Relationships/Family\n- Health/Wellness\n- Personal Growth\n- Recreation/Hobbies\n- Spirituality/Purpose\nIdentify which domains need attention.\n\nProvide specific, actionable insights for each analysis.`,
       config: {
         responseMimeType: 'application/json',
         responseSchema: {
@@ -350,6 +383,90 @@ export const generateWeeklySummary = async (
               type: 'string',
               description: 'A personalized 1-2 sentence insight about the user\'s emotional balance based on the emotion scores. Be specific and actionable.'
             },
+            emotionalVolatility: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  date: { type: 'string' },
+                  volatilityScore: { 
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 100
+                  },
+                  moodSwings: { type: 'integer' },
+                  emotionalRange: { type: 'number' },
+                  stability: {
+                    type: 'string',
+                    enum: ['stable', 'moderate', 'volatile', 'highly_volatile']
+                  },
+                  triggers: {
+                    type: 'array',
+                    items: { type: 'string' }
+                  }
+                },
+                required: ['date', 'volatilityScore', 'moodSwings', 'emotionalRange', 'stability', 'triggers']
+              }
+            },
+            volatilityInsight: {
+              type: 'string',
+              description: 'Insight about emotional stability patterns and recommendations for managing volatility'
+            },
+            cognitivePatterns: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  source: { type: 'string' },
+                  target: { type: 'string' },
+                  value: {
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 100
+                  },
+                  frequency: { type: 'integer' },
+                  type: {
+                    type: 'string',
+                    enum: ['positive', 'negative', 'neutral']
+                  }
+                },
+                required: ['source', 'target', 'value', 'frequency', 'type']
+              }
+            },
+            cognitiveInsight: {
+              type: 'string',
+              description: 'Insight about thought patterns and how to break negative cycles or reinforce positive ones'
+            },
+            lifeDomainBalance: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  domain: {
+                    type: 'string',
+                    enum: ['Work/Career', 'Relationships', 'Health', 'Personal Growth', 'Recreation', 'Spirituality']
+                  },
+                  score: {
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 100
+                  },
+                  trend: {
+                    type: 'string',
+                    enum: ['improving', 'stable', 'declining']
+                  },
+                  attention_needed: { type: 'boolean' },
+                  insights: { type: 'string' }
+                },
+                required: ['domain', 'score', 'trend', 'attention_needed', 'insights']
+              },
+              minItems: 6,
+              maxItems: 6
+            },
+            lifeDomainInsight: {
+              type: 'string',
+              description: 'Overall insight about life balance and which areas need more attention'
+            },
           },
           required: [
             'weekStart',
@@ -361,6 +478,12 @@ export const generateWeeklySummary = async (
             'motivationalMessage',
             'emotionRadarData',
             'emotionInsight',
+            'emotionalVolatility',
+            'volatilityInsight',
+            'cognitivePatterns',
+            'cognitiveInsight',
+            'lifeDomainBalance',
+            'lifeDomainInsight',
           ],
         },
       },

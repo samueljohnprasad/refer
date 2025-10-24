@@ -28,12 +28,16 @@ import {
 import { subWeeks, format, startOfWeek, endOfWeek } from "date-fns";
 import { AIInsightsContent } from "@/src/components/ai/AIInsightsContent";
 
-// Import new chart components
+// Import chart components
 import { EmotionRadarChart } from "@/src/components/charts/EmotionRadarChart";
 import { JournalingHeatmap } from "@/src/components/charts/JournalingHeatmap";
 import { MoodCorrelationMatrix } from "@/src/components/charts/MoodCorrelationMatrix";
 import { EmotionalGrowthTrajectory } from "@/src/components/charts/EmotionalGrowthTrajectory";
 import { MoodTriggersAnalysis } from "@/src/components/charts/MoodTriggersAnalysis";
+// Import new advanced chart components
+import { EmotionalVolatilityIndex } from "@/src/components/charts/EmotionalVolatilityIndex";
+import { CognitivePatternFlow } from "@/src/components/charts/CognitivePatternFlow";
+import { LifeDomainBalanceWheel } from "@/src/components/charts/LifeDomainBalanceWheel";
 import { BlurView } from "expo-blur";
 
 const priorityColors: Record<string, string> = {
@@ -382,7 +386,7 @@ export default function AIInsightsScreen() {
           </View>
 
           {/* Journaling Consistency Heatmap */}
-          <View style={styles.chartContainer}>
+          {/* <View style={styles.chartContainer}>
             <JournalingHeatmap
               weeksToShow={12}
               premium={true}
@@ -391,34 +395,64 @@ export default function AIInsightsScreen() {
                 console.log("Navigate to:", date);
               }}
             />
-          </View>
+          </View> */}
 
           {/* Mood Pattern Correlation */}
-          <View style={styles.chartContainer}>
+          {/* <View style={styles.chartContainer}>
             <MoodCorrelationMatrix
               premium={true}
               onInsightPress={(insight) => {
                 console.log("Insight pressed:", insight);
               }}
             />
-          </View>
+          </View> */}
 
           {/* Emotional Growth Trajectory */}
-          <View style={styles.chartContainer}>
+          {/* <View style={styles.chartContainer}>
             <EmotionalGrowthTrajectory
               monthsToShow={6}
               predictMonths={3}
               premium={true}
             />
-          </View>
+          </View> */}
 
           {/* Mood Triggers Analysis */}
-          <View style={styles.chartContainer}>
+          {/* <View style={styles.chartContainer}>
             <MoodTriggersAnalysis
               premium={true}
               onTriggerPress={(trigger) => {
                 console.log("Trigger pressed:", trigger);
               }}
+            />
+          </View> */}
+
+          {/* NEW: Emotional Volatility Index */}
+          <View style={styles.chartContainer}>
+            <EmotionalVolatilityIndex
+              data={weeklySummary?.emotionalVolatility || []}
+              insight={weeklySummary?.volatilityInsight}
+              loading={loadingCached || isGenerating || !weeklySummary}
+              premium={true}
+            />
+          </View>
+
+          {/* NEW: Cognitive Pattern Flow */}
+          <View style={styles.chartContainer}>
+            <CognitivePatternFlow
+              data={weeklySummary?.cognitivePatterns || []}
+              insight={weeklySummary?.cognitiveInsight}
+              loading={loadingCached || isGenerating || !weeklySummary}
+              premium={true}
+            />
+          </View>
+
+          {/* NEW: Life Domain Balance Wheel */}
+          <View style={styles.chartContainer}>
+            <LifeDomainBalanceWheel
+              data={weeklySummary?.lifeDomainBalance || []}
+              insight={weeklySummary?.lifeDomainInsight}
+              loading={loadingCached || isGenerating || !weeklySummary}
+              premium={true}
             />
           </View>
 
