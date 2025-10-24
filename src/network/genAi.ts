@@ -149,6 +149,12 @@ export type AIRecommendation = {
   priority: 'high' | 'medium' | 'low';
 };
 
+export type EmotionRadarData = {
+  emotion: string;
+  score: number; // 0-100
+  count: number;
+};
+
 export type WeeklySummary = {
   weekStart: string;
   weekEnd: string;
@@ -162,6 +168,8 @@ export type WeeklySummary = {
   nextWeekFocus: string[];
   entriesCount: number;
   streakDays: number;
+  emotionRadarData: EmotionRadarData[];
+  emotionInsight: string;
 };
 
 export type MonthlySummary = {
@@ -281,7 +289,7 @@ export const generateWeeklySummary = async (
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.0-flash',
-      contents: `Generate a weekly summary for the week of ${weekStart} to ${weekEnd}. The user made ${entries.length} entries with an average mood of ${avgMood.toFixed(1)}/5 and maintained a ${streakDays} day streak.\n\nEntries:\n${entriesText}`,
+      contents: `Generate a weekly summary for the week of ${weekStart} to ${weekEnd}. The user made ${entries.length} entries with an average mood of ${avgMood.toFixed(1)}/5 and maintained a ${streakDays} day streak.\n\nEntries:\n${entriesText}\n\nIMPORTANT: Also analyze and score these 8 emotional dimensions based on the journal entries (0-100 scale):\n- Joy, Gratitude, Confidence, Peace (positive emotions)\n- Anxiety, Sadness, Anger, Fear (challenging emotions)\n\nFor each emotion, provide a score (0-100) representing how much this emotion was present in the week, and a count of how many entries mentioned this emotion.\n\nAdditionally, provide a personalized 'emotionInsight' (1-2 sentences) about their emotional balance based on the scores. Be specific about which emotions dominated and provide an actionable suggestion.`,
       config: {
         responseMimeType: 'application/json',
         responseSchema: {
@@ -317,6 +325,31 @@ export const generateWeeklySummary = async (
             },
             entriesCount: { type: 'integer' },
             streakDays: { type: 'integer' },
+            emotionRadarData: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  emotion: {
+                    type: 'string',
+                    enum: ['Joy', 'Gratitude', 'Confidence', 'Peace', 'Anxiety', 'Sadness', 'Anger', 'Fear']
+                  },
+                  score: {
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 100
+                  },
+                  count: { type: 'integer' }
+                },
+                required: ['emotion', 'score', 'count']
+              },
+              minItems: 8,
+              maxItems: 8
+            },
+            emotionInsight: { 
+              type: 'string',
+              description: 'A personalized 1-2 sentence insight about the user\'s emotional balance based on the emotion scores. Be specific and actionable.'
+            },
           },
           required: [
             'weekStart',
@@ -326,6 +359,8 @@ export const generateWeeklySummary = async (
             'topEmotions',
             'keyHighlights',
             'motivationalMessage',
+            'emotionRadarData',
+            'emotionInsight',
           ],
         },
       },

@@ -5,11 +5,9 @@ import {
   VictoryTheme,
   VictoryPolarAxis,
   VictoryArea,
-  VictoryLabel,
-  VictoryContainer,
 } from "victory-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { format, subDays } from "date-fns";
+import { format } from "date-fns";
 
 interface EmotionData {
   emotion: string;
@@ -21,6 +19,7 @@ interface EmotionRadarChartProps {
   startDate: Date;
   endDate: Date;
   data?: EmotionData[];
+  emotionInsight?: string;
   loading?: boolean;
   premium?: boolean;
 }
@@ -48,28 +47,30 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
   startDate,
   endDate,
   data,
+  emotionInsight,
   loading = false,
   premium = false,
 }) => {
-  // Mock data for demonstration - replace with real data from your API
-  const mockData: EmotionData[] = EMOTION_DIMENSIONS.map((emotion, idx) => ({
-    emotion,
-    score: Math.random() * 100,
-    count: Math.floor(Math.random() * 10) + 1,
-  }));
-
-  const chartData = data || mockData;
+  console.log("EmotionRadarChart", data, data?.length, loading);
 
   // Calculate emotional balance score
   const emotionalBalance = useMemo(() => {
+    if (!data || data.length === 0) {
+      return {
+        positive: 0,
+        negative: 0,
+        balance: 0,
+      };
+    }
+
     const positiveEmotions = ["Joy", "Gratitude", "Confidence", "Peace"];
     const positiveScore =
-      chartData
+      data
         .filter((d) => positiveEmotions.includes(d.emotion))
         .reduce((sum, d) => sum + d.score, 0) / 4;
 
     const negativeScore =
-      chartData
+      data
         .filter((d) => !positiveEmotions.includes(d.emotion))
         .reduce((sum, d) => sum + d.score, 0) / 4;
 
@@ -78,28 +79,46 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
       negative: negativeScore,
       balance: positiveScore - negativeScore,
     };
-  }, [chartData]);
+  }, [data]);
 
   // Prepare data for Victory chart
-  const radarData = chartData.map((d) => ({
-    x: d.emotion,
-    y: d.score / 100, // Normalize to 0-1 for radar chart
-  }));
+  const radarData = useMemo(() => {
+    if (!data || data.length === 0) return [];
+    return data.map((d) => ({
+      x: d.emotion,
+      y: d.score / 100, // Normalize to 0-1 for radar chart
+    }));
+  }, [data]);
 
   const maxValue = 1;
 
   if (loading) {
     return (
-      <View className="w-full rounded-3xl bg-white p-6 shadow-lg border border-gray-100">
+      <View>
+        <Text>Analyzing emotions...</Text>
+      </View>
+    );
+  }
+
+  // No data state
+  if (!data || data?.length === 0) {
+    return (
+      <View className="w-full rounded-3xl bg-white p-6 border border-gray-200">
         <View className="items-center justify-center py-20">
-          <ActivityIndicator size="large" color="#7B61FF" />
+          <Text className="text-6xl mb-4">📊</Text>
+          <Text className="text-lg font-bold text-gray-800 mb-2">
+            No Emotion Data Yet
+          </Text>
+          <Text className="text-sm text-gray-500 text-center px-4">
+            Start journaling this week to see your emotional balance insights
+          </Text>
         </View>
       </View>
     );
   }
 
   return (
-    <View className="w-full rounded-3xl bg-white shadow-lg border border-gray-100 overflow-hidden">
+    <View className="w-full rounded-3xl bg-white border border-gray-200 overflow-hidden">
       {/* Premium Badge */}
       {premium && (
         <LinearGradient
@@ -145,32 +164,30 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
           </View>
         </View>
 
-        {/* Insight Card */}
-        <View
-          className="mt-4 p-3 rounded-2xl"
-          style={{ backgroundColor: "#F9FAFB" }}
-        >
-          <Text className="text-sm font-semibold text-gray-700 mb-1">
-            🎯 Key Insight
-          </Text>
-          <Text className="text-xs text-gray-600 leading-5">
-            {emotionalBalance.balance > 20
-              ? "You're experiencing strong emotional balance with positive emotions dominating."
-              : emotionalBalance.balance < -20
-              ? "Your emotional state is challenging. Consider mindfulness exercises."
-              : "You're maintaining a balanced emotional state. Keep journaling!"}
-          </Text>
-        </View>
+        {/* AI-Generated Insight Card */}
+        {emotionInsight && (
+          <View
+            className="mt-4 p-3 rounded-2xl"
+            style={{ backgroundColor: "#F0F9FF" }}
+          >
+            <Text className="text-sm font-semibold text-blue-700 mb-1">
+              🤖 AI Insight
+            </Text>
+            <Text className="text-xs text-blue-600 leading-5">
+              {emotionInsight}
+            </Text>
+          </View>
+        )}
       </View>
 
       {/* Radar Chart */}
-      <View className="px-5 pb-5">
+      <View className="pb-5 pt-5">
         <VictoryChart
           polar
           theme={VictoryTheme.material}
           domain={{ y: [0, maxValue] }}
-          width={350}
-          height={350}
+          width={380}
+          height={380}
           padding={{ top: 40, bottom: 40, left: 40, right: 40 }}
         >
           <VictoryPolarAxis
@@ -192,9 +209,10 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
               axis: { stroke: "none" },
               grid: { stroke: "#E5E7EB", strokeWidth: 0.5 },
               tickLabels: {
-                fontSize: 11,
-                fill: "#6B7280",
-                fontWeight: "500",
+                fontSize: 12,
+                fill: "#374151",
+                fontWeight: "600",
+                textAnchor: "middle",
               },
             }}
           />
@@ -222,7 +240,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
       {/* Emotion Pills */}
       <View className="px-5 pb-5">
         <View className="flex-row flex-wrap gap-2">
-          {chartData.map((emotion) => (
+          {data.map((emotion) => (
             <View
               key={emotion.emotion}
               className="px-3 py-2 rounded-full flex-row items-center"

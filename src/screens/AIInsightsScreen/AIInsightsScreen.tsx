@@ -75,6 +75,10 @@ export default function AIInsightsScreen() {
           headerShown: true,
           headerTransparent: true,
           headerTitle: "AI Insights",
+          headerBlurEffect: "light", // <--- this enables native blur
+          headerTintColor: "#000",
+          headerTitleStyle: { fontWeight: "600" },
+
           headerLeft: () => (
             <TouchableOpacity
               style={styles.backButton}
@@ -197,9 +201,7 @@ export default function AIInsightsScreen() {
         {/* Premium Chart Visualizations */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
-              📊 Advanced Analytics
-            </Text>
+            <Text style={styles.sectionTitle}>📊 Advanced Analytics</Text>
             <TouchableOpacity
               style={styles.premiumBadge}
               onPress={() => console.log("Show premium modal")}
@@ -221,6 +223,13 @@ export default function AIInsightsScreen() {
             <EmotionRadarChart
               startDate={subWeeks(new Date(), 4)}
               endDate={new Date()}
+              data={weeklySummary?.emotionRadarData || []}
+              emotionInsight={weeklySummary?.emotionInsight}
+              loading={
+                loadingCached ||
+                isGenerating ||
+                !weeklySummary?.emotionRadarData?.length
+              }
               premium={true}
             />
           </View>
@@ -287,7 +296,8 @@ export default function AIInsightsScreen() {
                     Unlock Full Analytics Suite
                   </Text>
                   <Text style={styles.premiumCTASubtitle}>
-                    Get personalized insights, predictive analytics, and unlimited AI analysis
+                    Get personalized insights, predictive analytics, and
+                    unlimited AI analysis
                   </Text>
                 </View>
                 <Feather name="chevron-right" size={24} color="#FFF" />
