@@ -2,12 +2,20 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  useWindowDimensions,
 } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  interpolateColor,
+  interpolate,
+  Extrapolate,
+} from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
@@ -26,6 +34,7 @@ import { JournalingHeatmap } from "@/src/components/charts/JournalingHeatmap";
 import { MoodCorrelationMatrix } from "@/src/components/charts/MoodCorrelationMatrix";
 import { EmotionalGrowthTrajectory } from "@/src/components/charts/EmotionalGrowthTrajectory";
 import { MoodTriggersAnalysis } from "@/src/components/charts/MoodTriggersAnalysis";
+import { BlurView } from "expo-blur";
 
 const priorityColors: Record<string, string> = {
   high: "#EF4444",
@@ -36,6 +45,58 @@ const priorityColors: Record<string, string> = {
 export default function AIInsightsScreen() {
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
+  const scrollY = useSharedValue(0);
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+  });
+
+  // Animated header background color
+  const headerAnimatedStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      scrollY.value,
+      [0, 100, 150],
+      [
+        "rgba(123, 97, 255, 0)",
+        "rgba(123, 97, 255, 0.5)",
+        "rgba(123, 97, 255, 1)",
+      ]
+    );
+
+    return {
+      backgroundColor,
+    };
+  });
+
+  // Animated stats in header - fade in as card passes under
+  const headerStatsStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      scrollY.value,
+      [40, 90, 200],
+      [0, 0, 1],
+      Extrapolate.CLAMP
+    );
+
+    return {
+      opacity,
+    };
+  });
+
+  // Animated stats in card - fade out as it goes under header
+  const cardStatsStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      scrollY.value,
+      [40, 80, 100],
+      [1, 0.5, 0],
+      Extrapolate.CLAMP
+    );
+
+    return {
+      opacity,
+    };
+  });
 
   const { data: profile } = useUserProfile();
 
@@ -46,6 +107,7 @@ export default function AIInsightsScreen() {
     refetch,
   } = usePreviousWeekSummary();
   const generateSummary = useGenerateWeeklySummary();
+  const { height } = useWindowDimensions();
 
   const previousWeek = subWeeks(new Date(), 1);
   const weeklySummary = cachedSummary?.weekly_summary;
@@ -78,22 +140,107 @@ export default function AIInsightsScreen() {
           headerBlurEffect: "light", // <--- this enables native blur
           headerTintColor: "#000",
           headerTitleStyle: { fontWeight: "600" },
+          header: () => {
+            return (
+              <Animated.View
+                style={[
+                  {
+                    height: height * 0.14,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  },
+                  headerAnimatedStyle,
+                ]}
+              >
+                <BlurView
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                  }}
+                  intensity={50}
+                  tint="light"
+                />
 
-          headerLeft: () => (
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => router.back()}
-            >
-              <Feather name="arrow-left" size={20} color="#FFF" />
-            </TouchableOpacity>
-          ),
+                {/* Animated Stats in Header */}
+                <Animated.View
+                  style={[
+                    {
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-around",
+                      width: "100%",
+                      paddingHorizontal: 20,
+                      marginTop: 30,
+                    },
+                    headerStatsStyle,
+                  ]}
+                >
+                  <View style={{ alignItems: "center" }}>
+                    <Text
+                      style={{ fontSize: 20, fontWeight: "700", color: "#FFF" }}
+                    >
+                      {profile?.currentStreak || 0}
+                    </Text>
+                    <Text style={{ fontSize: 11, color: "#FFF", opacity: 0.9 }}>
+                      Day Streak
+                    </Text>
+                  </View>
+
+                  <View
+                    style={{
+                      width: 1,
+                      height: 30,
+                      backgroundColor: "#FFF",
+                      opacity: 0.3,
+                    }}
+                  />
+
+                  <View style={{ alignItems: "center" }}>
+                    <Text
+                      style={{ fontSize: 20, fontWeight: "700", color: "#FFF" }}
+                    >
+                      {weeklySummary?.entriesCount || 0}
+                    </Text>
+                    <Text style={{ fontSize: 11, color: "#FFF", opacity: 0.9 }}>
+                      This Week
+                    </Text>
+                  </View>
+
+                  <View
+                    style={{
+                      width: 1,
+                      height: 30,
+                      backgroundColor: "#FFF",
+                      opacity: 0.3,
+                    }}
+                  />
+
+                  <View style={{ alignItems: "center" }}>
+                    <Text
+                      style={{ fontSize: 20, fontWeight: "700", color: "#FFF" }}
+                    >
+                      {weeklySummary?.overallMood?.toFixed(1) || "0.0"}
+                    </Text>
+                    <Text style={{ fontSize: 11, color: "#FFF", opacity: 0.9 }}>
+                      Avg Mood
+                    </Text>
+                  </View>
+                </Animated.View>
+              </Animated.View>
+            );
+          },
         }}
       />
 
-      <ScrollView
+      <Animated.ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={scrollHandler}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
@@ -107,7 +254,7 @@ export default function AIInsightsScreen() {
             style={styles.gradientCard}
           >
             <Text style={styles.headerTitle}>Your Journey</Text>
-            <View style={styles.statsRow}>
+            <Animated.View style={[styles.statsRow, cardStatsStyle]}>
               <View style={styles.statItem}>
                 <Text style={styles.statValue}>
                   {profile?.currentStreak || 0}
@@ -128,7 +275,7 @@ export default function AIInsightsScreen() {
                 </Text>
                 <Text style={styles.statLabel}>Avg Mood</Text>
               </View>
-            </View>
+            </Animated.View>
           </LinearGradient>
         </View>
 
@@ -305,7 +452,7 @@ export default function AIInsightsScreen() {
             </LinearGradient>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 }

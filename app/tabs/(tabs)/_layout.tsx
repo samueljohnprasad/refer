@@ -93,7 +93,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="insights"
           options={{
-            headerShown: false,
+            headerShown: true,
             title: "Insights",
             tabBarIcon: ({ color }) => (
               <TabBarIcon name="bar-chart" color={color} />
