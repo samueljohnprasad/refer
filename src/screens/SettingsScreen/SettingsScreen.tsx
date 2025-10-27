@@ -299,6 +299,26 @@ export default React.memo(function SettingsScreen() {
             <TouchableOpacity
               style={styles.rowItem}
               activeOpacity={0.7}
+              onPress={() => {
+                Haptics.selectionAsync();
+                router.push("/tabs/screens/reminders" as any);
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
+                <MaterialCommunityIcons name="bell-ring" size={20} color="#A855F7" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Daily Reminders</Text>
+                <Text style={styles.itemSubtitle}>
+                  Customize multiple reminders
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
               onPress={() => router.push("/achievements" as any)}
             >
               <View style={[styles.leftIcon, { backgroundColor: "#FEF3C7" }]}>

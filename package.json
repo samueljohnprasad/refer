@@ -86,6 +86,7 @@
   },
   "private": true,
   "resolutions": {
-    "react-native-safe-area-context": "5.6.1"
+    "react-native-safe-area-context": "5.6.1",
+    "expo-constants":"18.0.10"
   }
 }

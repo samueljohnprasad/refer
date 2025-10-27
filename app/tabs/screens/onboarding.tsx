@@ -4,9 +4,9 @@ import { OnBoardingFormData } from "@/src/components/steps/src";
 import React, { useState } from "react";
 import { View } from "react-native";
 import { useRouter } from "expo-router";
-import { cfgAtom } from "@/src/components/NotificationsUI";
 import { useAtom } from "jotai";
 import useNotifications from "@/hooks/data/useNotifications";
+import { cfgAtom } from "@/src/components/notifications";
 
 export default function OnboardingScreen() {
   const router = useRouter();

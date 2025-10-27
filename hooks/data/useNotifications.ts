@@ -4,19 +4,21 @@ import {
   saveRemindersConfig,
   scheduleDailyReminder,
 } from "@/src/lib/notification-reminders";
-import { cfgAtom } from "@/src/components/NotificationsUI";
 import { useAtom } from "jotai";
 import * as Notifications from "expo-notifications";
+import { cfgAtom } from "@/src/components/notifications";
 
 const useNotifications = () => {
   const [cfg, setCfg] = useAtom(cfgAtom);
 
   const addNotification = async (id: string, cfgItem: RemindersConfigItem) => {
-    const { hour, minute, notifId, title } = cfgItem;
-    const newNotifId = await scheduleDailyReminder(id, title ?? "remainder", {
-      hour,
-      minute,
-    });
+    const { hour, minute, notifId, title, body } = cfgItem;
+    const newNotifId = await scheduleDailyReminder(
+      id,
+      title ?? "Reminder",
+      { hour, minute },
+      body
+    );
     const nextCfg = {
       ...cfg,
       [id]: { ...cfgItem, notifId: newNotifId },

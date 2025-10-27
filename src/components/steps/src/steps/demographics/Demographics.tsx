@@ -1,6 +1,11 @@
 import React from "react";
-import { View } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
+import { View, Pressable } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  interpolateColor,
+} from "react-native-reanimated";
 import { Text } from "@/components/ui/text";
 import {
   Radio,
@@ -46,122 +51,280 @@ export const Demographics: React.FC<DemographicsProps> = ({
     onSelectGender(value);
   };
 
+  // Get emoji for age range
+  const getAgeEmoji = (ageRange: string): string => {
+    const emojiMap: Record<string, string> = {
+      "18_24": "🎓",
+      "25_34": "💼",
+      "35_44": "🏆",
+      "45_54": "🌟",
+      "55_64": "🍷",
+      "65+": "👑",
+    };
+    return emojiMap[ageRange] || "✨";
+  };
+
+  // Get emoji for gender
+  const getGenderEmoji = (gender: string): string => {
+    const emojiMap: Record<string, string> = {
+      male: "👨",
+      female: "👩",
+      other: "🌈",
+      "prefer not to say": "💫",
+    };
+    return emojiMap[gender] || "✨";
+  };
+
   return (
-    <View className="w-full px-6 py-2 mb-8 relative">
+    <View className="w-full px-4 py-2 pb-6 relative">
+      {/* Premium Header */}
       {(title || helperText) && (
-        <Animated.View entering={FadeIn.duration(250)} className="mb-4">
-          {title && (
-            <Text className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-              {title}
-            </Text>
-          )}
-          {helperText && (
-            <Text className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-              {helperText}
-            </Text>
-          )}
-        </Animated.View>
+        <View className="mb-6 items-center">
+          <View
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              borderRadius: 16,
+              padding: 14,
+              borderWidth: 1,
+              borderColor: "rgba(0, 0, 0, 0.06)",
+            }}
+          >
+            {title && (
+              <Text className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1 text-center">
+                {title}
+              </Text>
+            )}
+            {helperText && (
+              <Text className="text-sm text-gray-600 dark:text-gray-400 text-center font-medium">
+                {helperText}
+              </Text>
+            )}
+          </View>
+        </View>
       )}
 
-      {/* Age Range */}
-      <Animated.View
-        entering={FadeIn.delay(100)}
-        className="bg-white/95 dark:bg-zinc-900/95 rounded-2xl border border-slate-200/80 dark:border-zinc-700 shadow-sm overflow-hidden mb-4"
-      >
-        <View className="px-4 pt-4 pb-2">
-          <View className="self-start mb-1 rounded-full border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1">
-            <Text className="text-[11px] font-medium text-indigo-700 dark:text-indigo-300 tracking-wider uppercase">
-              Age
-            </Text>
+      {/* Premium Age Range Section */}
+      <View className="mb-6">
+        <View className="mb-5">
+          <View
+            style={{
+              backgroundColor: "rgba(124, 58, 237, 0.05)",
+              borderRadius: 16,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              alignSelf: "center",
+              borderWidth: 1,
+              borderColor: "rgba(124, 58, 237, 0.1)",
+            }}
+          >
+            <View className="flex-row items-center">
+              <Text className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                Select your age
+              </Text>
+              <Text className="ml-3 text-xl">🎆</Text>
+            </View>
           </View>
         </View>
-        <View className="px-2 pb-3">
-          <RadioGroup value={selectedAgeRange} onChange={handleAgeChange}>
-            {ageRanges.map((range: AgeRangeOption, index: number) => {
-              const selected: boolean = selectedAgeRange === range.value;
-              return (
-                <Animated.View
-                  key={range.value}
-                  entering={FadeIn.duration(220).delay(120 + index * 40)}
-                  className="mx-1"
-                >
-                  <Radio
-                    value={range.value}
-                    className={[
-                      "px-2 py-2 rounded-xl border",
-                      selected
-                        ? "bg-indigo-50 dark:bg-indigo-950/30 border-indigo-300 dark:border-indigo-700"
-                        : "bg-transparent border-transparent",
-                    ].join(" ")}
-                  >
-                    <RadioIndicator
-                      className={
-                        selected ? "border-indigo-600" : "border-slate-300"
-                      }
-                      accessibilityState={{ checked: selected }}
-                    >
-                      <RadioIcon className="text-indigo-600" />
-                    </RadioIndicator>
-                    <RadioLabel className="ml-3 text-base text-slate-800 dark:text-slate-100">
-                      {range.label}
-                    </RadioLabel>
-                  </Radio>
-                </Animated.View>
-              );
-            })}
-          </RadioGroup>
+        <View className="flex-row flex-wrap justify-center gap-2">
+          {ageRanges.map((range: AgeRangeOption, index: number) => {
+            const selected: boolean = selectedAgeRange === range.value;
+            return (
+              <AgeRangeCard
+                key={range.value}
+                range={range}
+                selected={selected}
+                emoji={getAgeEmoji(range.value)}
+                index={index}
+                onSelect={() => handleAgeChange(range.value)}
+              />
+            );
+          })}
         </View>
-      </Animated.View>
+      </View>
 
-      {/* Gender */}
-      <Animated.View
-        entering={FadeIn.delay(150)}
-        className="bg-white/95 dark:bg-zinc-900/95 rounded-2xl border border-slate-200/80 dark:border-zinc-700 shadow-sm overflow-hidden"
-      >
-        <View className="px-4 pt-4 pb-2">
-          <View className="self-start mb-1 rounded-full border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/30 px-2.5 py-1">
-            <Text className="text-[11px] font-medium text-sky-700 dark:text-sky-300 tracking-wider uppercase">
-              Gender
-            </Text>
+      {/* Premium Gender Section */}
+      <View className="mb-4">
+        <View className="mb-5">
+          <View
+            style={{
+              backgroundColor: "rgba(59, 130, 246, 0.05)",
+              borderRadius: 16,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              alignSelf: "center",
+              borderWidth: 1,
+              borderColor: "rgba(59, 130, 246, 0.1)",
+            }}
+          >
+            <View className="flex-row items-center">
+              <Text className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                How do you identify?
+              </Text>
+              <Text className="ml-3 text-xl">🌈</Text>
+            </View>
           </View>
         </View>
-        <View className="px-2 pb-3">
-          <RadioGroup value={selectedGender} onChange={handleGenderChange}>
-            {genders.map((g: Gender, index: number) => {
-              const selected: boolean = selectedGender === g;
-              return (
-                <Animated.View
-                  key={g}
-                  entering={FadeIn.duration(220).delay(170 + index * 40)}
-                  className="mx-1"
-                >
-                  <Radio
-                    value={g}
-                    className={[
-                      "px-2 py-2 rounded-xl border",
-                      selected
-                        ? "bg-sky-50 dark:bg-sky-950/30 border-sky-300 dark:border-sky-700"
-                        : "bg-transparent border-transparent",
-                    ].join(" ")}
-                  >
-                    <RadioIndicator
-                      className={
-                        selected ? "border-sky-600" : "border-slate-300"
-                      }
-                      accessibilityState={{ checked: selected }}
-                    >
-                      <RadioIcon className="text-sky-600" />
-                    </RadioIndicator>
-                    <RadioLabel className="ml-3 text-base capitalize text-slate-800 dark:text-slate-100">
-                      {g}
-                    </RadioLabel>
-                  </Radio>
-                </Animated.View>
-              );
-            })}
-          </RadioGroup>
+        <View className="flex-row flex-wrap justify-center gap-2">
+          {genders.map((g: Gender, index: number) => {
+            const selected: boolean = selectedGender === g;
+            return (
+              <GenderCard
+                key={g}
+                gender={g}
+                selected={selected}
+                emoji={getGenderEmoji(g)}
+                index={index}
+                onSelect={() => handleGenderChange(g)}
+              />
+            );
+          })}
         </View>
-      </Animated.View>
+      </View>
     </View>
+  );
+};
+
+// Premium Age Range Card Component
+const AgeRangeCard: React.FC<{
+  range: AgeRangeOption;
+  selected: boolean;
+  emoji: string;
+  index: number;
+  onSelect: () => void;
+}> = ({ range, selected, emoji, index, onSelect }) => {
+  return (
+    <Pressable
+      onPress={onSelect}
+      style={{
+        paddingHorizontal: 16,
+        paddingVertical: 14,
+        minWidth: 110,
+        borderColor: selected ? "#7C3AED" : "rgba(203, 213, 225, 0.5)",
+        borderWidth: 2,
+      }}
+      className="bg-white rounded-2xl"
+    >
+      <View className="items-center rounded-2xl">
+        <View
+          style={{
+            backgroundColor: selected
+              ? "rgba(124, 58, 237, 0.08)"
+              : "transparent",
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 6,
+          }}
+        >
+          <Text className="text-3xl">{emoji}</Text>
+        </View>
+        <Text
+          className={`
+            text-sm font-bold
+            ${
+              selected
+                ? "text-purple-700 dark:text-purple-400"
+                : "text-gray-700 dark:text-gray-300"
+            }
+          `}
+        >
+          {range.label}
+        </Text>
+        {selected && (
+          <View
+            style={{
+              position: "absolute",
+              top: -8,
+              right: -8,
+              backgroundColor: "#7C3AED",
+              width: 24,
+              height: 24,
+              borderRadius: 12,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 14, fontWeight: "800" }}>
+              ✓
+            </Text>
+          </View>
+        )}
+      </View>
+    </Pressable>
+  );
+};
+
+// Premium Gender Card Component
+const GenderCard: React.FC<{
+  gender: string;
+  selected: boolean;
+  emoji: string;
+  index: number;
+  onSelect: () => void;
+}> = ({ gender, selected, emoji, index, onSelect }) => {
+  return (
+    <Pressable
+      onPress={onSelect}
+      style={{
+        paddingHorizontal: 16,
+        paddingVertical: 14,
+        borderRadius: 16,
+        borderWidth: 2.5,
+        minWidth: 110,
+        borderColor: selected ? "#3B82F6" : "rgba(203, 213, 225, 0.5)",
+      }}
+      className="bg-white"
+    >
+      <View className="items-center">
+        <View
+          style={{
+            backgroundColor: selected
+              ? "rgba(59, 130, 246, 0.08)"
+              : "transparent",
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 6,
+          }}
+        >
+          <Text className="text-3xl">{emoji}</Text>
+        </View>
+        <Text
+          className={`
+            text-sm font-bold capitalize
+            ${
+              selected
+                ? "text-blue-700 dark:text-blue-400"
+                : "text-gray-700 dark:text-gray-300"
+            }
+          `}
+        >
+          {gender}
+        </Text>
+        {selected && (
+          <View
+            style={{
+              position: "absolute",
+              top: -8,
+              right: -8,
+              backgroundColor: "#3B82F6",
+              width: 24,
+              height: 24,
+              borderRadius: 12,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 14, fontWeight: "800" }}>
+              ✓
+            </Text>
+          </View>
+        )}
+      </View>
+    </Pressable>
   );
 };

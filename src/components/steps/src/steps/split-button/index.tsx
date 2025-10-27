@@ -3,6 +3,8 @@ import Animated, {
   LinearTransition,
   useAnimatedStyle,
   withTiming,
+  withSpring,
+  Easing,
 } from "react-native-reanimated";
 import { PressableScale } from "pressto";
 
@@ -22,9 +24,9 @@ type SplitButtonProps = {
   rightAction: SplitAction;
 };
 
-const ButtonHeight = 60;
+const ButtonHeight = 64; // Slightly taller for premium feel
 
-const LayoutTransitionDefault = LinearTransition.duration(250);
+const LayoutTransitionDefault = LinearTransition.duration(300);
 
 export const SplitButton: React.FC<SplitButtonProps> = ({
   splitted,
@@ -46,15 +48,29 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
   const rLeftButtonStyle = useAnimatedStyle(() => {
     const leftButtonWidth = splitted ? LeftSplittedButtonWidth : 0;
     return {
-      width: withTiming(leftButtonWidth),
-      opacity: withTiming(splitted ? 1 : 0),
+      width: withTiming(leftButtonWidth, {
+        duration: 350,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      }),
+      opacity: withTiming(splitted ? 1 : 0, {
+        duration: 250,
+      }),
+      transform: [
+        {
+          scale: withSpring(splitted ? 1 : 0.95, {
+            damping: 15,
+            stiffness: 100,
+          }),
+        },
+      ],
     };
   }, [splitted]);
 
   const rLeftTextStyle = useAnimatedStyle(() => {
     return {
       opacity: withTiming(splitted ? 1 : 0, {
-        duration: 150,
+        duration: 200,
+        easing: Easing.inOut(Easing.ease),
       }),
     };
   }, [splitted]);
@@ -64,11 +80,25 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
       ? RightSplittedButtonWidth
       : LeftSplittedButtonWidth + RightSplittedButtonWidth;
     return {
-      width: withTiming(mainButtonWidth),
-      marginLeft: withTiming(splitted ? gap : 0),
+      width: withTiming(mainButtonWidth, {
+        duration: 350,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      }),
+      marginLeft: withTiming(splitted ? gap : 0, {
+        duration: 300,
+      }),
       backgroundColor: withTiming(
-        splitted ? rightAction.backgroundColor : mainAction.backgroundColor
+        splitted ? rightAction.backgroundColor : mainAction.backgroundColor,
+        { duration: 250 }
       ),
+      transform: [
+        {
+          scale: withSpring(1, {
+            damping: 15,
+            stiffness: 100,
+          }),
+        },
+      ],
     };
   }, [splitted]);
 
@@ -155,19 +185,32 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: 18,
+    fontSize: 17,
     color: "white",
     position: "absolute",
     overflow: "visible",
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
     fontFamily: "SF-Pro-Rounded-Bold",
+    fontWeight: "600",
   },
   button: {
     height: ButtonHeight,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 30,
+    borderRadius: 32,
     borderCurve: "continuous",
     flexDirection: "row",
+    // Premium shadows
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 8,
+    // Subtle border for depth
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
 });

@@ -2,12 +2,14 @@ import { useEffect } from "react";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
-import { shouldRemindAboutStreak, getTodayDate } from "@/hooks/data/useStreakCalculation";
+import {
+  shouldRemindAboutStreak,
+  getTodayDate,
+} from "@/hooks/data/useStreakCalculation";
 
 // Configure notification behavior
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
     shouldShowBanner: true,
@@ -45,7 +47,8 @@ export const useStreakReminders = () => {
       });
     }
 
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
     if (existingStatus !== "granted") {
@@ -96,7 +99,9 @@ export const useStreakReminders = () => {
       },
     });
 
-    console.log(`Streak reminder scheduled for ${schedule.hour}:${schedule.minute}`);
+    console.log(
+      `Streak reminder scheduled for ${schedule.hour}:${schedule.minute}`
+    );
   };
 
   /**
@@ -189,8 +194,9 @@ export const useStreakReminders = () => {
    * Cancel all streak reminder notifications
    */
   const cancelAllStreakReminders = async () => {
-    const notifications = await Notifications.getAllScheduledNotificationsAsync();
-    
+    const notifications =
+      await Notifications.getAllScheduledNotificationsAsync();
+
     for (const notification of notifications) {
       if (
         notification.content.data?.type === "streak-reminder" ||
@@ -207,7 +213,8 @@ export const useStreakReminders = () => {
    * Get all scheduled reminders
    */
   const getScheduledReminders = async () => {
-    const notifications = await Notifications.getAllScheduledNotificationsAsync();
+    const notifications =
+      await Notifications.getAllScheduledNotificationsAsync();
     return notifications.filter(
       (n) =>
         n.content.data?.type === "streak-reminder" ||

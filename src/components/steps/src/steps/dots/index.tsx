@@ -16,23 +16,29 @@ type DotsProps = {
 
 export const Dots: React.FC<DotsProps> = React.memo(
   ({ count, activeIndex, dotSize }) => {
-    const dotSpacing = 15;
+    const dotSpacing = 10;
     const externalSpacing = dotSpacing;
     const height = dotSize + 20;
 
     const rBarStyle = useAnimatedStyle(() => {
-      // Here we calculate the width of the bar based on the active index
-      // The maxWidth = (count) * dotSize + (count - 1) * dotSpacing + externalSpacing
-      // So by knowing the maxWidth, we can easily replace the count with (activeIndex + 1)
-      // and get the general formula for the activeWidth
+      // Calculate the width of the bar based on the active index
       const activeWidth =
         (activeIndex.value + 1) * dotSize +
         activeIndex.value * dotSpacing +
         externalSpacing;
 
       return {
-        // Spring animations, spring animations everywhere!
-        width: withSpring(activeWidth),
+        // Premium spring animation with custom config
+        width: withSpring(activeWidth, {
+          damping: 18,
+          stiffness: 120,
+          mass: 1,
+        }),
+        // Subtle opacity animation for smoothness
+        opacity: withSpring(0.95, {
+          damping: 20,
+          stiffness: 100,
+        }),
       };
     }, []);
 
@@ -92,5 +98,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#8B5CF6",
     borderRadius: 100,
     borderCurve: "continuous",
+    // Premium shadow for depth
+    shadowColor: "#8B5CF6",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
 });

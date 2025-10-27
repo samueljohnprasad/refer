@@ -21,6 +21,7 @@ export type RemindersConfigItem = {
   // Identifier returned by scheduleNotificationAsync, used to cancel/reschedule
   notifId?: string;
   title?: string;
+  body?: string;
 };
 export type RemindersConfig = Record<
   // The reminder slot id (e.g., "1", "2", "3")
@@ -99,14 +100,15 @@ export function parseHourMinute(time: string): {
 export async function scheduleDailyReminder(
   id: string,
   title: string,
-  time: { hour: number; minute: number }
+  time: { hour: number; minute: number },
+  body?: string
 ): Promise<string> {
   await ensureAndroidChannel();
   const { hour, minute } = time;
   const identifier = await Notifications.scheduleNotificationAsync({
     content: {
       title,
-      body: "Time to journal.",
+      body: body || "Time to journal.",
       sound: Platform.OS === "android" ? undefined : "default",
     },
     trigger: {
