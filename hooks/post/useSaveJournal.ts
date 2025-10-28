@@ -8,6 +8,7 @@ import { useUpdateStreak } from "@/hooks/data/useUpdateStreak";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCheckAchievements } from "@/hooks/data/useAchievements";
 import { useStreakReminders } from "@/hooks/notifications/useStreakReminders";
+import { format } from "date-fns";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -30,16 +31,17 @@ export const useSaveJournal = () => {
   const queryClient = useQueryClient();
 
   const saveJournal = useCallback(
-    async (input: InsightsType): Promise<Tables<'journal_entries'>> => {
+    async (input: InsightsType, customDate?: Date): Promise<Tables<'journal_entries'>> => {
       if (!user?.id) {
         throw new Error("Not authenticated");
       }
       setSaving(true);
       try {
+        const dateToUse = customDate || new Date();
         const row = {
           user_id: user.id,
           created_at: formatDateKey(new Date()),
-          selected_date: getTodayDate(),
+          selected_date: format(dateToUse, 'yyyy-MM-dd'),
           title: input.title,
           enrichedTranscript: input.enrichedTranscript,
           aiInsights: input.aiInsights,

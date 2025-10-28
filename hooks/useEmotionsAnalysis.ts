@@ -12,9 +12,11 @@ export type AnalysisCompletedType = {
 
 const useEmotionsAnalysis = ({
   uri,
+  journalText,
   onAnalysisCompleted,
 }: {
-  uri: string;
+  uri?: string;
+  journalText?: string;
   onAnalysisCompleted: (data: AnalysisCompletedType) => void;
 }) => {
   const [transcripts, setTranscripts] = React.useState<string[] | null>([]);
@@ -45,6 +47,11 @@ const useEmotionsAnalysis = ({
   };
 
   const uploadAndTranscribe = async () => {
+    if (!uri) {
+      console.error("No URI provided for transcription");
+      return [];
+    }
+    
     try {
       // Step 1: Read audio file using the new File API (works on both iOS and Android)
       console.log("uploadAndTranscribe, original uri:", uri);
@@ -83,8 +90,21 @@ const useEmotionsAnalysis = ({
 
   useEffect(() => {
     const fetch = async () => {
-      const transcripts = await uploadAndTranscribe();
-      setProcessingPhase(ProcessingPhase.ANALYZING_EMOTIONS);
+      let transcripts: string[] = [];
+      
+      // If journalText is provided, use it directly; otherwise transcribe audio
+      if (journalText) {
+        transcripts = [journalText];
+        setTranscripts(transcripts);
+        setProcessingPhase(ProcessingPhase.ANALYZING_EMOTIONS);
+      } else if (uri) {
+        transcripts = await uploadAndTranscribe();
+        setProcessingPhase(ProcessingPhase.ANALYZING_EMOTIONS);
+      } else {
+        console.error("No uri or journalText provided");
+        return;
+      }
+      
       const insights = await getInsights(transcripts.join(" "));
       console.log("insightsinsights", insights);
       await new Promise((resolve) => setTimeout(resolve, 2000));

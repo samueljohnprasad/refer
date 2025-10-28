@@ -67,6 +67,7 @@ interface JournalEntryScreenProps {
   insights?: InsightsType;
   transcripts?: string[];
   onClose?: () => void;
+  selectedDate?: Date;
 }
 // Memoized Tag Component
 interface TagItemProps {
@@ -147,6 +148,7 @@ function JournalEntryScreen({
   insights,
   transcripts,
   onClose,
+  selectedDate,
 }: JournalEntryScreenProps) {
   // const initialTags = [
   //   { label: "Gratitude", emoji: "🌸", colors: ["#FFE5EC", "#FFD6E8"] },
@@ -464,7 +466,7 @@ function JournalEntryScreen({
         suggestedTags: insights?.suggestedTags,
         growthAreas: insights?.growthAreas,
         positiveInsights: insights?.positiveInsights,
-      });
+      }, selectedDate);
 
       toast.show({
         placement: "bottom right",

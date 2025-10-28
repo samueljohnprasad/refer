@@ -1,7 +1,7 @@
 // DiscoveryScreen.tsx
 // Updated per request: removed bottom tabs, bigger mic, slimmer progress, fire for streak.
 
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useCallback, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -20,12 +20,15 @@ import { useAtom } from "jotai";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { router } from "expo-router";
-import { recorderOpenAtom } from "./helpers";
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import { recorderOpenAtom, keyboardJournalOpenAtom } from "./helpers";
 import VoiceRecorderModalWrapper from "./VoiceRecorderModalWrapper";
+import KeyboardJournalModalWrapper from "./KeyboardJournalModalWrapper";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import { format } from "date-fns";
 import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
+import { useJournalEntry } from "@/hooks/useJournalEntry";
 
 // Constants outside component to prevent recreation
 const COLORS = {
@@ -111,14 +114,32 @@ ProgressBar.displayName = "ProgressBar";
 interface PromptCardContentProps {
   selectedDate: Date;
   onDatePress: () => void;
+  prompt: string;
+  onShufflePrompt: () => void;
 }
 
 const PromptCardContent = React.memo<PromptCardContentProps>(
-  ({ selectedDate, onDatePress }) => {
+  ({ selectedDate, onDatePress, prompt, onShufflePrompt }) => {
+    const rotation = useSharedValue(0);
+    
     const formattedDate = useMemo(
       () => format(selectedDate, "MMMM d"),
       [selectedDate]
     );
+
+    const handleShuffle = useCallback(() => {
+      rotation.value = withSpring(rotation.value + 360, {
+        damping: 15,
+        stiffness: 150,
+      });
+      onShufflePrompt();
+    }, [onShufflePrompt, rotation]);
+
+    const rotateStyle = useAnimatedStyle(() => {
+      return {
+        transform: [{ rotate: `${rotation.value}deg` }],
+      };
+    });
 
     return (
       <Box>
@@ -128,10 +149,14 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
               Journal · {formattedDate}
             </Text>
           </Pressable>
-          <Feather name="rotate-cw" size={20} color={COLORS.ink} />
+          <Pressable onPress={handleShuffle} className="p-1">
+            <Animated.View style={rotateStyle}>
+              <Feather name="refresh-cw" size={20} color={COLORS.ink} />
+            </Animated.View>
+          </Pressable>
         </View>
         <Text className="mt-2.5 text-[#2E285A] text-[28px] font-black leading-[34px] tracking-wide">
-          What do you wish{"\n"}you had done{"\n"}differently today?
+          {prompt}
         </Text>
       </Box>
     );
@@ -151,10 +176,12 @@ Illustration.displayName = "Illustration";
 
 function DiscoveryScreen() {
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
+  const [, setKeyboardJournalOpen] = useAtom(keyboardJournalOpenAtom);
   const tabBarHeight = useBottomTabBarHeight();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isCalendarVisible, setIsCalendarVisible] = useState<boolean>(false);
+  const { currentPrompt, shufflePrompt } = useJournalEntry();
 
   const currentStreak = userProfile?.currentStreak ?? 0;
 
@@ -163,8 +190,8 @@ function DiscoveryScreen() {
   }, [setRecorderOpen]);
 
   const handleKeyboardPress = useCallback(() => {
-    // router.push("/tabs/journal-keyboard-entry");
-  }, []);
+    setKeyboardJournalOpen(true);
+  }, [setKeyboardJournalOpen]);
 
   const handleDatePress = useCallback(() => {
     setIsCalendarVisible(true);
@@ -223,6 +250,8 @@ function DiscoveryScreen() {
             <PromptCardContent
               selectedDate={selectedDate}
               onDatePress={handleDatePress}
+              prompt={currentPrompt}
+              onShufflePrompt={shufflePrompt}
             />
             <Illustration />
 
@@ -260,7 +289,8 @@ function DiscoveryScreen() {
           </LinearGradient>
         </View>
 
-        <VoiceRecorderModalWrapper />
+        <VoiceRecorderModalWrapper selectedDate={selectedDate} />
+        <KeyboardJournalModalWrapper selectedDate={selectedDate} />
       </ScrollView>
 
       {/* Calendar Modal */}

@@ -9,7 +9,9 @@ import useEmotionsAnalysis, { AnalysisCompletedType } from "@/hooks/useEmotionsA
 
 interface EmotionAnalysisLoadingScreenProps {
   onAnalysisCompleted: (data: AnalysisCompletedType) => void;
-  recordingUri: string;
+  recordingUri?: string | null;
+  journalText?: string | null;
+  selectedDate?: Date;
 }
 
 export const gradientColors = {
@@ -22,7 +24,7 @@ export const gradientColors = {
 
 const EmotionAnalysisLoadingScreen: React.FC<
   EmotionAnalysisLoadingScreenProps
-> = ({ onAnalysisCompleted, recordingUri }) => {
+> = ({ onAnalysisCompleted, recordingUri, journalText, selectedDate }) => {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const orbitAnim = useRef(new Animated.Value(0)).current;
@@ -31,9 +33,10 @@ const EmotionAnalysisLoadingScreen: React.FC<
   const orbit3Anim = useRef(new Animated.Value(0)).current;
 
   const { processingPhase } = useEmotionsAnalysis({
-    uri: recordingUri,
+    ...(recordingUri && { uri: recordingUri }),
+    ...(journalText && { journalText }),
     onAnalysisCompleted,
-  });
+  } as any);
 
   useEffect(() => {
     const fadeInAnimation = Animated.timing(fadeAnim, {
@@ -106,10 +109,10 @@ const EmotionAnalysisLoadingScreen: React.FC<
   }, [pulseAnim, fadeAnim, orbitAnim, orbit2Anim, orbit3Anim, rotateAnim]);
 
   const formatTimestamp = (): string => {
-    const now = new Date();
-    const month = now.toLocaleDateString("en-US", { month: "long" });
-    const day = now.getDate();
-    const time = now.toLocaleTimeString("en-US", {
+    const dateToUse = selectedDate || new Date();
+    const month = dateToUse.toLocaleDateString("en-US", { month: "long" });
+    const day = dateToUse.getDate();
+    const time = new Date().toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "2-digit",
       hour12: true,

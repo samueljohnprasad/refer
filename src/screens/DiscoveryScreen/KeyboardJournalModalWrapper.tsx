@@ -1,46 +1,51 @@
 import React, { useState } from "react";
 import { useAtom } from "jotai";
-import { recorderOpenAtom } from "./helpers";
+import { keyboardJournalOpenAtom } from "./helpers";
 import { defaultInsights, InsightsType } from "@/src/network/genAi";
 import VoiceRecorderModal from "./VoiceRecorderModal";
-import VoiceRecorder from "./VoiceRecorder";
+import KeyboardJournalScreen from "./KeyboardJournalScreen";
 import JournalEntryScreen from "../JournalEntryScreen/JournalEntryScreen";
 import EmotionAnalysisLoadingScreen from "./EmotionAnalysisLoadingScreen";
 
-type VoiceRecorderModalWrapperProps = {
+type KeyboardJournalModalWrapperProps = {
   selectedDate?: Date;
 };
 
-const VoiceRecorderModalWrapper = ({ selectedDate }: VoiceRecorderModalWrapperProps) => {
-  const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
+const KeyboardJournalModalWrapper: React.FC<KeyboardJournalModalWrapperProps> = ({
+  selectedDate,
+}) => {
+  const [journalOpen, setJournalOpen] = useAtom(keyboardJournalOpenAtom);
   const [stepper, setStepper] = useState(0);
-  const [recordingUri, setRecordingUri] = useState<string | null>(null);
+  const [journalText, setJournalText] = useState<string>("");
   const [transcripts, setTranscripts] = useState<string[] | null>(null);
   const [insights, setInsights] = useState<InsightsType>(defaultInsights);
+  const [currentSelectedDate, setCurrentSelectedDate] = useState<Date>(selectedDate || new Date());
 
   const onClose = () => {
-    setRecorderOpen(false);
+    setJournalOpen(false);
     setStepper(0);
-    setRecordingUri(null);
+    setJournalText("");
     setTranscripts(null);
     setInsights(defaultInsights);
   };
+
   return (
-    <VoiceRecorderModal visible={recorderOpen} onRequestClose={onClose}>
+    <VoiceRecorderModal visible={journalOpen} onRequestClose={onClose}>
       {stepper === 0 && (
-        <VoiceRecorder
-          onStop={(path) => {
-            setRecordingUri(path);
+        <KeyboardJournalScreen
+          selectedDate={currentSelectedDate}
+          onDateChange={(date) => setCurrentSelectedDate(date)}
+          onSubmit={(text) => {
+            setJournalText(text);
             setStepper(1);
-            // uploadAndTranscribe(path);
           }}
-          selectedDate={selectedDate}
+          onClose={onClose}
         />
       )}
-      {stepper === 1 && recordingUri && (
+      {stepper === 1 && (
         <EmotionAnalysisLoadingScreen
-          recordingUri={recordingUri}
-          selectedDate={selectedDate}
+          journalText={journalText}
+          selectedDate={currentSelectedDate}
           onAnalysisCompleted={({ transcripts, insights }) => {
             setTranscripts(transcripts);
             setInsights(insights);
@@ -49,15 +54,14 @@ const VoiceRecorderModalWrapper = ({ selectedDate }: VoiceRecorderModalWrapperPr
         />
       )}
       {stepper === 2 && (
-        // <HealthTracker transcripts={transcripts || []} onClose={onClose} />
         <JournalEntryScreen
           insights={insights}
           transcripts={transcripts || []}
-          selectedDate={selectedDate}
+          selectedDate={currentSelectedDate}
         />
       )}
     </VoiceRecorderModal>
   );
 };
 
-export default VoiceRecorderModalWrapper;
+export default KeyboardJournalModalWrapper;
