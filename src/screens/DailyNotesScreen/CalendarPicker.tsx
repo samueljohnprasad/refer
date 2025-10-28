@@ -7,14 +7,21 @@ import useCalendarMonth from "./hooks/useCalendarMonth";
 import MoodBadge from "@/src/components/MoodBadge";
 
 // Constants outside component to prevent recreation
-const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
-const DAY_CELL_STYLE = { width: '14.28%', aspectRatio: 1 } as const;
+const WEEKDAY_LABELS = [
+  "Sun",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+] as const;
+const DAY_CELL_STYLE = { width: "14.28%", aspectRatio: 1 } as const;
 
 // Calendar Picker Component
 interface CalendarPickerProps {
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
-  edgeToEdge?: boolean; // remove top margin and horizontal padding when true
   visible?: boolean; // when toggled true, resets view to selectedDate's month
   moodMap: Map<string, number> | undefined;
 }
@@ -37,7 +44,11 @@ const DayCell = React.memo<DayCellProps>(
     const containerClassName = useMemo(
       () =>
         `w-full h-full flex justify-center items-center gap-0.5 ${
-          isSelected ? 'bg-[#7B61FF] rounded-xl' : isTodayDate ? 'bg-white/12 rounded-xl' : ''
+          isSelected
+            ? "bg-[#7B61FF] rounded-xl"
+            : isTodayDate
+            ? "bg-white/12 rounded-xl"
+            : ""
         }`,
       [isSelected, isTodayDate]
     );
@@ -46,18 +57,18 @@ const DayCell = React.memo<DayCellProps>(
       () =>
         `text-[13px] font-semibold ${
           !inCurrentMonth
-            ? 'text-[#C7BDF9]'
+            ? "text-[#C7BDF9]"
             : isTodayDate && !isSelected
-            ? 'text-white font-bold'
+            ? "text-white font-bold"
             : isSelected
-            ? 'text-white font-semibold'
-            : 'text-white'
+            ? "text-white font-semibold"
+            : "text-white"
         }`,
       [inCurrentMonth, isTodayDate, isSelected]
     );
 
     const moodClassName = useMemo(
-      () => `mt-0.5 ${!inCurrentMonth ? 'opacity-40' : ''}`,
+      () => `mt-0.5 ${!inCurrentMonth ? "opacity-40" : ""}`,
       [inCurrentMonth]
     );
 
@@ -89,88 +100,85 @@ const DayCell = React.memo<DayCellProps>(
   }
 );
 
-DayCell.displayName = 'DayCell';
+DayCell.displayName = "DayCell";
 
 // Memoized Week Header Component
 const WeekDayHeader = React.memo(() => (
   <View className="flex-row mb-0">
     {WEEKDAY_LABELS.map((day) => (
-      <Text key={day} className="flex-1 text-center text-xs font-semibold text-[#EDE9FF] py-1.5">
+      <Text
+        key={day}
+        className="flex-1 text-center text-xs font-semibold text-[#EDE9FF] py-1.5"
+      >
         {day}
       </Text>
     ))}
   </View>
 ));
 
-WeekDayHeader.displayName = 'WeekDayHeader';
+WeekDayHeader.displayName = "WeekDayHeader";
 
-export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(({
-  selectedDate,
-  onDateSelect,
-  edgeToEdge,
-  visible,
-  moodMap,
-}) => {
-  const { currentMonth, days, goToPreviousMonth, goToNextMonth } =
-    useCalendarMonth({ selectedDate, visible, weekStartsOn: 0 });
+export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
+  ({ selectedDate, onDateSelect, visible, moodMap }) => {
+    const { currentMonth, days, goToPreviousMonth, goToNextMonth } =
+      useCalendarMonth({ selectedDate, visible, weekStartsOn: 0 });
 
-  // Memoize month title
-  const monthTitle = useMemo(
-    () => format(currentMonth, "MMM yyyy"),
-    [currentMonth]
-  );
+    // Memoize month title
+    const monthTitle = useMemo(
+      () => format(currentMonth, "MMM yyyy"),
+      [currentMonth]
+    );
 
-  // Pre-compute day data to avoid calculations in render loop
-  const daysData = useMemo(() => {
-    return days.map((day: Date) => {
-      const dayStr = format(day, "yyyy-MM-dd");
-      return {
-        day,
-        dayStr,
-        inCurrentMonth: isSameMonth(day, currentMonth),
-        isTodayDate: isToday(day),
-        isSelected: isSameDay(day, selectedDate),
-        mood: moodMap?.get(dayStr),
-      };
-    });
-  }, [days, currentMonth, selectedDate, moodMap]);
+    // Pre-compute day data to avoid calculations in render loop
+    const daysData = useMemo(() => {
+      return days.map((day: Date) => {
+        const dayStr = format(day, "yyyy-MM-dd");
+        return {
+          day,
+          dayStr,
+          inCurrentMonth: isSameMonth(day, currentMonth),
+          isTodayDate: isToday(day),
+          isSelected: isSameDay(day, selectedDate),
+          mood: moodMap?.get(dayStr),
+        };
+      });
+    }, [days, currentMonth, selectedDate, moodMap]);
 
-  // Create stable press handlers for each day
-  const dayPressHandlers = useMemo(() => {
-    return daysData.map((dayData) => () => onDateSelect(dayData.day));
-  }, [daysData, onDateSelect]);
+    // Create stable press handlers for each day
+    const dayPressHandlers = useMemo(() => {
+      return daysData.map((dayData) => () => onDateSelect(dayData.day));
+    }, [daysData, onDateSelect]);
 
-  return (
-    <View className={edgeToEdge ? 'mt-0 px-0' : 'mt-2'}>
-      <View className="flex-row justify-between items-center mb-0">
-        <Pressable className="p-2" onPress={goToPreviousMonth}>
-          <Feather name="chevron-left" size={20} color="#fff" />
-        </Pressable>
-        <Text className="text-[20px] font-bold text-white">
-          {monthTitle}
-        </Text>
-        <Pressable className="p-2" onPress={goToNextMonth}>
-          <Feather name="chevron-right" size={20} color="#fff" />
-        </Pressable>
+    return (
+      <View>
+        <View className="flex-row justify-between items-center mb-0">
+          <Pressable className="p-2" onPress={goToPreviousMonth}>
+            <Feather name="chevron-left" size={20} color="#fff" />
+          </Pressable>
+          <Text className="text-[20px] font-bold text-white">{monthTitle}</Text>
+          <Pressable className="p-2" onPress={goToNextMonth}>
+            <Feather name="chevron-right" size={20} color="#fff" />
+          </Pressable>
+        </View>
+
+        <WeekDayHeader />
+
+        <View className="flex-row flex-wrap">
+          {daysData.map((dayData, index) => (
+            <DayCell
+              key={dayData.dayStr}
+              day={dayData.day}
+              inCurrentMonth={dayData.inCurrentMonth}
+              isTodayDate={dayData.isTodayDate}
+              isSelected={dayData.isSelected}
+              mood={dayData.mood}
+              onPress={dayPressHandlers[index]}
+            />
+          ))}
+        </View>
       </View>
+    );
+  }
+);
 
-      <WeekDayHeader />
-
-      <View className="flex-row flex-wrap">
-        {daysData.map((dayData, index) => (
-          <DayCell
-            key={dayData.dayStr}
-            day={dayData.day}
-            inCurrentMonth={dayData.inCurrentMonth}
-            isTodayDate={dayData.isTodayDate}
-            isSelected={dayData.isSelected}
-            mood={dayData.mood}
-            onPress={dayPressHandlers[index]}
-          />
-        ))}
-      </View>
-    </View>
-  );
-});
-
-CalendarPicker.displayName = 'CalendarPicker';
+CalendarPicker.displayName = "CalendarPicker";

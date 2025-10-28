@@ -16,7 +16,6 @@ import Animated, {
 import { Text } from "@/components/ui/text";
 import { ArrowDown, ArrowUp, Sparkles, Star } from "lucide-react-native";
 import { emotions } from "@/assets/emojis";
-import LottieView from "lottie-react-native";
 
 export type Trend = "up" | "down";
 

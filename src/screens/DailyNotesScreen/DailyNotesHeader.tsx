@@ -19,7 +19,10 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { currentWeekViewAtom, selectedDateAtom } from "./atoms";
 import MoodBadge from "@/src/components/MoodBadge";
 import { DayButton } from "./DailyNotesScreen";
@@ -31,11 +34,11 @@ import TodayPill from "@/src/components/TodayPill";
 
 const { height } = Dimensions.get("window");
 const isIso = Platform.OS === "ios";
-const twentyPercentHeight = height * (isIso ? 0.24 : 0.19);
+const twentyPercentHeight = height * (isIso ? 0.16 : 0.16);
 
 // Move constants outside component to avoid recreation
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-const CALENDAR_EXPANDED_HEIGHT = 400;
+const CALENDAR_EXPANDED_HEIGHT = 330;
 
 const DailyNotesHeader = React.memo(() => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
@@ -73,7 +76,7 @@ const DailyNotesHeader = React.memo(() => {
     height: interpolate(
       progress.value,
       [0, 1],
-      [twentyPercentHeight, CALENDAR_EXPANDED_HEIGHT + 50]
+      [twentyPercentHeight, CALENDAR_EXPANDED_HEIGHT + 20]
     ),
   }));
   const headerControlsAnimatedStyle = useAnimatedStyle(() => ({
@@ -211,93 +214,95 @@ const DailyNotesHeader = React.memo(() => {
 
   // Pan gesture handlers are provided by useWeekNavigation
   return (
-    <Animated.View
-      className="bg-violet-300 justify-end relative"
-      style={[headerContainerAnimatedStyle]}
-    >
-      {/* Calendar Header */}
+    <SafeAreaView edges={["top"]} className="bg-violet-300">
       <Animated.View
-        className="flex-row items-center justify-between mb-0 px-3"
-        style={[headerControlsAnimatedStyle]}
+        className="bg-violet-300 justify-end relative"
+        style={[headerContainerAnimatedStyle]}
       >
-        <Pressable className="p-1 ml-0 mr-2" onPress={() => toggle()}>
-          <Feather name="calendar" size={24} color="white" />
-        </Pressable>
-
-        <View className="flex-row items-center justify-center flex-1">
-          <Text className="text-[17px] font-semibold text-white mx-4 text-center">
-            {currentMonthView || ""}
-          </Text>
-        </View>
-
-        <Pressable className="p-2" onPress={() => expand()}>
-          <Feather name="more-horizontal" size={24} color="#fff" />
-        </Pressable>
-      </Animated.View>
-      {/* Week View */}
-      <View className="py-3 px-3 mb-0 w-full relative" {...panHandlers}>
+        {/* Calendar Header */}
         <Animated.View
-          className="flex-row w-full"
-          style={[weekHeaderAnimatedStyle]}
+          className="flex-row items-center justify-between mb-0 px-3"
+          style={[headerControlsAnimatedStyle]}
         >
+          <Pressable className="p-1 ml-0 mr-2" onPress={() => toggle()}>
+            <Feather name="calendar" size={24} color="white" />
+          </Pressable>
+
+          <View className="flex-row items-center justify-center flex-1">
+            <Text className="text-[17px] font-semibold text-white mx-4 text-center">
+              {currentMonthView || ""}
+            </Text>
+          </View>
+
+          <Pressable className="p-2" onPress={() => expand()}>
+            <Feather name="more-horizontal" size={24} color="#fff" />
+          </Pressable>
+        </Animated.View>
+        {/* Week View */}
+        <View className="py-3 px-3 mb-0 w-full relative" {...panHandlers}>
           <Animated.View
-            style={[
-              { display: "flex", flex: 1, flexDirection: "row", gap: 6 },
-              weekSlideAnimatedStyle,
-            ]}
+            className="flex-row w-full"
+            style={[weekHeaderAnimatedStyle]}
           >
-            {weekDaysData.map((dayData, index) => (
-              <View className="flex-1 gap-4 mb-8" key={dayData.dayStr}>
-                <DayButton
-                  day={dayData.day}
-                  dayName={dayData.dayName}
-                  isSelected={dayData.isSelectedDay}
-                  isToday={dayData.isTodayDate}
-                  onPress={dayPressHandlers(dayData)}
-                />
-                <View className="flex-1 items-center">
-                  <MoodBadge
-                    moodscore={dayData.mood}
-                    active={dayData.isSelectedDay}
-                    size={28}
+            <Animated.View
+              style={[
+                { display: "flex", flex: 1, flexDirection: "row", gap: 6 },
+                weekSlideAnimatedStyle,
+              ]}
+            >
+              {weekDaysData.map((dayData, index) => (
+                <View className="flex-1 gap-4 mb-8" key={dayData.dayStr}>
+                  <DayButton
+                    day={dayData.day}
+                    dayName={dayData.dayName}
+                    isSelected={dayData.isSelectedDay}
+                    isToday={dayData.isTodayDate}
+                    onPress={dayPressHandlers(dayData)}
                   />
+                  <View className="flex-1 items-center">
+                    <MoodBadge
+                      moodscore={dayData.mood}
+                      active={dayData.isSelectedDay}
+                      size={28}
+                    />
+                  </View>
                 </View>
-              </View>
-            ))}
+              ))}
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
-      </View>
-      {/* Only render CalendarPicker after first expansion for smooth animations */}
-      {hasBeenExpanded && (
+        </View>
+        {/* Only render CalendarPicker after first expansion for smooth animations */}
+        {hasBeenExpanded && (
+          <Animated.View
+            className="absolute left-0 right-0 z-20 overflow-hidden px-3 pb-2 rounded-t-none bg-violet-300"
+            style={[inlineCalendarAnimatedStyle, { top: isIso ? 0 : 0 }]}
+          >
+            <CalendarPicker
+              moodMap={moodMap}
+              selectedDate={isSelectedDateValid ? selectedDate : new Date()}
+              visible={isExpanded}
+              onDateSelect={(date: Date) => {
+                // First collapse smoothly, then update date so header morph feels natural
+                collapse(() => {
+                  selectDate(date);
+                });
+              }}
+            />
+          </Animated.View>
+        )}
+        {/* Today tag - animated reusable component */}
+        <TodayPill visible={showTodayPill} onPress={handleGoToToday} />
+        {/* Absolute overlay handle that moves down with expanding calendar */}
         <Animated.View
-          className="absolute left-0 right-0 z-20 overflow-hidden px-3 pb-2 rounded-t-none bg-violet-300"
-          style={[inlineCalendarAnimatedStyle, { top: isIso ? 45 : 10 }]}
+          className="absolute left-0 right-0 items-center z-10"
+          pointerEvents="box-none"
         >
-          <CalendarPicker
-            moodMap={moodMap}
-            selectedDate={isSelectedDateValid ? selectedDate : new Date()}
-            visible={isExpanded}
-            onDateSelect={(date: Date) => {
-              // First collapse smoothly, then update date so header morph feels natural
-              collapse(() => {
-                selectDate(date);
-              });
-            }}
-          />
+          <GestureDetector gesture={gesture}>
+            <View className="w-12 h-[5px] rounded bg-white/90" />
+          </GestureDetector>
         </Animated.View>
-      )}
-      {/* Today tag - animated reusable component */}
-      <TodayPill visible={showTodayPill} onPress={handleGoToToday} />
-      {/* Absolute overlay handle that moves down with expanding calendar */}
-      <Animated.View
-        className="absolute left-0 right-0 items-center z-10"
-        pointerEvents="box-none"
-      >
-        <GestureDetector gesture={gesture}>
-          <View className="w-12 h-[5px] rounded bg-white/90" />
-        </GestureDetector>
       </Animated.View>
-    </Animated.View>
+    </SafeAreaView>
   );
 });
 

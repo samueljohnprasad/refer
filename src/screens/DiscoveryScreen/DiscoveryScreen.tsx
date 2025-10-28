@@ -1,13 +1,15 @@
 // DiscoveryScreen.tsx
 // Updated per request: removed bottom tabs, bigger mic, slimmer progress, fire for streak.
 
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   Platform,
+  Modal,
+  Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
@@ -21,6 +23,9 @@ import { router } from "expo-router";
 import { recorderOpenAtom } from "./helpers";
 import VoiceRecorderModalWrapper from "./VoiceRecorderModalWrapper";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
+import { format } from "date-fns";
+import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
+import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 
 // Constants outside component to prevent recreation
 const COLORS = {
@@ -50,27 +55,29 @@ interface DiscoveryHeaderProps {
   isLoading: boolean;
 }
 
-const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(({ currentStreak, isLoading }) => (
-  <View className="flex-row items-center justify-between my-1.5">
-    <View className="flex-row items-center">
-      <View className="w-3.5 h-3.5 rounded-full bg-[#8D7BF7] mr-2.5" />
-      <Text className="text-[#2E285A] text-[22px] font-extrabold tracking-wide">
-        1st discovery
-      </Text>
+const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(
+  ({ currentStreak, isLoading }) => (
+    <View className="flex-row items-center justify-between my-1.5">
+      <View className="flex-row items-center">
+        <View className="w-3.5 h-3.5 rounded-full bg-[#8D7BF7] mr-2.5" />
+        <Text className="text-[#2E285A] text-[22px] font-extrabold tracking-wide">
+          1st discovery
+        </Text>
+      </View>
+      <View className="flex-row items-center">
+        <Text className="text-[#FF7A2F] text-lg font-extrabold">
+          {isLoading ? "..." : currentStreak}
+        </Text>
+        <MaterialCommunityIcons
+          name="fire"
+          size={22}
+          color={COLORS.streak}
+          style={FIRE_ICON_STYLE}
+        />
+      </View>
     </View>
-    <View className="flex-row items-center">
-      <Text className="text-[#FF7A2F] text-lg font-extrabold">
-        {isLoading ? "..." : currentStreak}
-      </Text>
-      <MaterialCommunityIcons
-        name="fire"
-        size={22}
-        color={COLORS.streak}
-        style={FIRE_ICON_STYLE}
-      />
-    </View>
-  </View>
-));
+  )
+);
 
 DiscoveryHeader.displayName = "DiscoveryHeader";
 
@@ -101,26 +108,42 @@ const ProgressBar = React.memo<ProgressBarProps>(({ progress }) => (
 ProgressBar.displayName = "ProgressBar";
 
 // Memoized Prompt Card Content
-const PromptCardContent = React.memo(() => (
-  <Box>
-    <View className="flex-row justify-between items-center">
-      <Text className="text-[#2E285A] opacity-75 font-bold">
-        Journal · September 4
-      </Text>
-      <Feather name="rotate-cw" size={20} color={COLORS.ink} />
-    </View>
-    <Text className="mt-2.5 text-[#2E285A] text-[28px] font-black leading-[34px] tracking-wide">
-      What do you wish{"\n"}you had done{"\n"}differently today?
-    </Text>
-  </Box>
-));
+interface PromptCardContentProps {
+  selectedDate: Date;
+  onDatePress: () => void;
+}
+
+const PromptCardContent = React.memo<PromptCardContentProps>(
+  ({ selectedDate, onDatePress }) => {
+    const formattedDate = useMemo(
+      () => format(selectedDate, "MMMM d"),
+      [selectedDate]
+    );
+
+    return (
+      <Box>
+        <View className="flex-row justify-between items-center">
+          <Pressable onPress={onDatePress}>
+            <Text className="text-[#2E285A] opacity-75 font-bold">
+              Journal · {formattedDate}
+            </Text>
+          </Pressable>
+          <Feather name="rotate-cw" size={20} color={COLORS.ink} />
+        </View>
+        <Text className="mt-2.5 text-[#2E285A] text-[28px] font-black leading-[34px] tracking-wide">
+          What do you wish{"\n"}you had done{"\n"}differently today?
+        </Text>
+      </Box>
+    );
+  }
+);
 
 PromptCardContent.displayName = "PromptCardContent";
 
 // Memoized Illustration
 const Illustration = React.memo(() => (
   <View className="justify-end items-center" pointerEvents="none">
-    {/* <LottieView autoPlay style={LOTTIE_STYLE} source={girlMeditation} /> */}
+    <LottieView autoPlay style={LOTTIE_STYLE} source={girlMeditation} />
   </View>
 ));
 
@@ -130,6 +153,8 @@ function DiscoveryScreen() {
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
   const tabBarHeight = useBottomTabBarHeight();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [isCalendarVisible, setIsCalendarVisible] = useState<boolean>(false);
 
   const currentStreak = userProfile?.currentStreak ?? 0;
 
@@ -139,6 +164,19 @@ function DiscoveryScreen() {
 
   const handleKeyboardPress = useCallback(() => {
     // router.push("/tabs/journal-keyboard-entry");
+  }, []);
+
+  const handleDatePress = useCallback(() => {
+    setIsCalendarVisible(true);
+  }, []);
+
+  const handleDateSelect = useCallback((date: Date) => {
+    setSelectedDate(date);
+    setIsCalendarVisible(false);
+  }, []);
+
+  const handleCloseCalendar = useCallback(() => {
+    setIsCalendarVisible(false);
   }, []);
 
   const scrollContentStyle = useMemo(
@@ -160,7 +198,10 @@ function DiscoveryScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <DiscoveryHeader currentStreak={currentStreak} isLoading={isLoadingProfile} />
+          <DiscoveryHeader
+            currentStreak={currentStreak}
+            isLoading={isLoadingProfile}
+          />
           <ProgressBar progress={74} />
         </View>
 
@@ -179,7 +220,10 @@ function DiscoveryScreen() {
               flex: 1,
             }}
           >
-            <PromptCardContent />
+            <PromptCardContent
+              selectedDate={selectedDate}
+              onDatePress={handleDatePress}
+            />
             <Illustration />
 
             <View className="flex-row items-center justify-between px-[18px]">
@@ -218,6 +262,44 @@ function DiscoveryScreen() {
 
         <VoiceRecorderModalWrapper />
       </ScrollView>
+
+      {/* Calendar Modal */}
+      <Modal
+        visible={isCalendarVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCloseCalendar}
+      >
+        <AnimatedBlurView
+          intensity={40}
+          className="flex-1 justify-center items-center"
+        >
+          <Pressable
+            className="flex-1 bg-black/50 px-2 justify-center items-center"
+            onPress={handleCloseCalendar}
+          >
+            <Pressable
+              className="bg-violet-300 rounded-3xl p-4 w-full"
+              onPress={(e) => e.stopPropagation()}
+            >
+              <View className="flex-row justify-between items-center mb-4">
+                <Text className="text-white text-xl font-bold">
+                  Select Date
+                </Text>
+                <Pressable onPress={handleCloseCalendar} className="p-2">
+                  <Feather name="x" size={24} color="white" />
+                </Pressable>
+              </View>
+              <CalendarPicker
+                selectedDate={selectedDate}
+                onDateSelect={handleDateSelect}
+                visible={isCalendarVisible}
+                moodMap={undefined}
+              />
+            </Pressable>
+          </Pressable>
+        </AnimatedBlurView>
+      </Modal>
     </SafeAreaView>
   );
 }

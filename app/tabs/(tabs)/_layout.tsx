@@ -5,6 +5,7 @@ import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { Platform, StyleSheet } from "react-native";
 import { BlurView } from "expo-blur";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -17,7 +18,12 @@ export default function TabLayout() {
   // Design system colors
   const accentColor = "#7B61FF"; // brand purple
   const inactiveColor = "#94A3B8"; // slate-400-ish
+  // get system insets
+  const insets = useSafeAreaInsets();
 
+  // choose extra visual padding you want in addition to the safe area
+  const extraBottomPadding = Platform.OS === "ios" ? 12 : 6 + insets.bottom;
+  const tabHeightBase = Platform.OS === "ios" ? 90 : 70 + insets.bottom; // your original bases
   return (
     <BottomSheetModalProvider>
       <Tabs
@@ -47,9 +53,10 @@ export default function TabLayout() {
             borderTopColor: "#EEF2FF",
             elevation: 0,
             shadowOpacity: 0,
-            paddingBottom: Platform.OS === "ios" ? 30 : 10,
             paddingTop: 8,
-            height: Platform.OS === "ios" ? 90 : 70,
+
+            paddingBottom: extraBottomPadding,
+            height: tabHeightBase,
           },
           tabBarActiveTintColor: accentColor,
           tabBarInactiveTintColor: inactiveColor,

@@ -11,6 +11,7 @@ import AnimatedLinearGradient from "@/src/components/AnimatedLinearGradient";
 import FeatureRow from "./FeatureRow";
 import BuyCards from "./BuyCards";
 import { COLORS } from "./helpers";
+import { singingContract } from "@/assets/lottie";
 
 const PaywallScreen = () => {
   return (
@@ -26,14 +27,14 @@ const PaywallScreen = () => {
         <SafeAreaView edges={["top"]}>
           <View style={styles.headerRow}>
             {/* Illustration approximation: notebook + pencil */}
-            {/* <LottieView
+            <LottieView
               autoPlay
               style={{
                 width: 200,
                 height: 200,
               }}
               source={singingContract}
-            /> */}
+            />
 
             <View style={{ flex: 1 }}>
               <Text style={styles.title}>

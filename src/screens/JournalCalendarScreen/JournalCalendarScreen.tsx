@@ -23,7 +23,10 @@ import { Box } from "@/components/ui/box";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import BlurModal from "@/src/components/BlurModal";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
-import { getNextMilestone, getStreakProgress } from "@/hooks/data/useStreakCalculation";
+import {
+  getNextMilestone,
+  getStreakProgress,
+} from "@/hooks/data/useStreakCalculation";
 import { StreakRecoveryModal } from "@/src/components/StreakRecoveryModal";
 import { useCanRecoverStreak } from "@/hooks/data/useStreakRecovery";
 // import { girlMeditationBlue } from "@/assets/lottie";
@@ -96,14 +99,14 @@ export default function JournalCalendarScreen() {
         pointerEvents="none"
       >
         <Box className="mt-10">
-          {/* <LottieView
+          <LottieView
             autoPlay
             style={{
               width: 200,
               height: 200,
             }}
             source={girlMeditationBlue}
-          /> */}
+          />
         </Box>
         <Svg height={height} width={width}>
           {/* Light, playful faded shapes */}
@@ -228,14 +231,14 @@ export default function JournalCalendarScreen() {
 
             {/* Illustration placeholder (SVG character) */}
             <View style={{ transform: [{ scaleX: -1 }] }}>
-              {/* <LottieView
+              <LottieView
                 autoPlay
                 style={{
                   width: 100,
                   height: 60,
                 }}
                 source={manRocket}
-              /> */}
+              />
             </View>
           </View>
 
