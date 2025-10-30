@@ -28,6 +28,7 @@ export interface UseCalendarMonthReturn {
   days: Date[];
   goToPreviousMonth: () => void;
   goToNextMonth: () => void;
+  goToDate: (date: Date) => void;
 }
 
 const useCalendarMonth = (
@@ -71,6 +72,10 @@ const useCalendarMonth = (
     setCurrentMonth((prev: Date) => startOfMonth(addMonths(prev, 1)));
   };
 
+  const goToDate = (date: Date): void => {
+    setCurrentMonth(startOfMonth(date));
+  };
+
   const visibleStartDate = formateDate_y_m_d(visibleStart);
   const visibleEndDate = formateDate_y_m_d(visibleEnd);
 
@@ -89,6 +94,7 @@ const useCalendarMonth = (
     days,
     goToPreviousMonth,
     goToNextMonth,
+    goToDate,
   };
 };
 

@@ -25,9 +25,8 @@ export default function AppLayout() {
         options={{
           headerShown: false,
           title: "Settings",
-          // animation: "fade",
+          animation: "fade",
           freezeOnBlur: true,
-          animation: "none",
         }}
       />
 
@@ -37,9 +36,9 @@ export default function AppLayout() {
           headerShown: false,
           presentation: "containedModal",
           title: "Paywall",
-          // animation: "fade_from_bottom",
+          animation: "fade_from_bottom",
           freezeOnBlur: true,
-          animation: "none",
+          // animation: "none",
         }}
       />
 
@@ -49,7 +48,7 @@ export default function AppLayout() {
           headerShown: false,
           title: "Compdisplay",
           freezeOnBlur: true,
-          animation: "none",
+          animation: "fade",
         }}
       />
 
@@ -59,7 +58,7 @@ export default function AppLayout() {
           headerShown: false,
           title: "Onboarding",
           freezeOnBlur: true,
-          animation: "none",
+          animation: "fade",
         }}
       />
     </Stack>

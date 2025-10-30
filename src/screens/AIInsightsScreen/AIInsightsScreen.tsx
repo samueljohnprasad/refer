@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
@@ -27,17 +26,8 @@ import {
 } from "@/hooks/data/useWeeklyAISummaries";
 import { subWeeks, format, startOfWeek, endOfWeek } from "date-fns";
 import { AIInsightsContent } from "@/src/components/ai/AIInsightsContent";
-
-// Import chart components
-import { EmotionRadarChart } from "@/src/components/charts/EmotionRadarChart";
-import { JournalingHeatmap } from "@/src/components/charts/JournalingHeatmap";
-import { MoodCorrelationMatrix } from "@/src/components/charts/MoodCorrelationMatrix";
-import { EmotionalGrowthTrajectory } from "@/src/components/charts/EmotionalGrowthTrajectory";
-import { MoodTriggersAnalysis } from "@/src/components/charts/MoodTriggersAnalysis";
-// Import new advanced chart components
-import { EmotionalVolatilityIndex } from "@/src/components/charts/EmotionalVolatilityIndex";
-import { CognitivePatternFlow } from "@/src/components/charts/CognitivePatternFlow";
-import { LifeDomainBalanceWheel } from "@/src/components/charts/LifeDomainBalanceWheel";
+import { WeeklySummaryCard } from "@/src/components/ai/WeeklySummaryCard";
+import { AdvancedAnalyticsCharts } from "@/src/components/ai/AdvancedAnalyticsCharts";
 import { BlurView } from "expo-blur";
 
 const priorityColors: Record<string, string> = {
@@ -112,7 +102,7 @@ export default function AIInsightsScreen() {
   } = usePreviousWeekSummary();
   const generateSummary = useGenerateWeeklySummary();
   const { height } = useWindowDimensions();
-
+  console.log("cachedSummary", cachedSummary);
   const previousWeek = subWeeks(new Date(), 1);
   const weeklySummary = cachedSummary?.weekly_summary;
   const recommendations = cachedSummary?.recommendations;
@@ -135,7 +125,7 @@ export default function AIInsightsScreen() {
   const isGenerating = generateSummary.isPending;
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-[#F8F8FF]" edges={["bottom"]}>
       <Stack.Screen
         options={{
           headerShown: true,
@@ -170,65 +160,36 @@ export default function AIInsightsScreen() {
 
                 {/* Animated Stats in Header */}
                 <Animated.View
-                  style={[
-                    {
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-around",
-                      width: "100%",
-                      paddingHorizontal: 20,
-                      marginTop: 30,
-                    },
-                    headerStatsStyle,
-                  ]}
+                  style={[headerStatsStyle]}
+                  className="flex-row items-center justify-around w-full px-5 mt-8"
                 >
-                  <View style={{ alignItems: "center" }}>
-                    <Text
-                      style={{ fontSize: 20, fontWeight: "700", color: "#FFF" }}
-                    >
+                  <View className="items-center">
+                    <Text className="text-xl font-bold text-white">
                       {profile?.currentStreak || 0}
                     </Text>
-                    <Text style={{ fontSize: 11, color: "#FFF", opacity: 0.9 }}>
+                    <Text className="text-[11px] text-white opacity-90">
                       Day Streak
                     </Text>
                   </View>
 
-                  <View
-                    style={{
-                      width: 1,
-                      height: 30,
-                      backgroundColor: "#FFF",
-                      opacity: 0.3,
-                    }}
-                  />
+                  <View className="w-px h-8 bg-white opacity-30" />
 
-                  <View style={{ alignItems: "center" }}>
-                    <Text
-                      style={{ fontSize: 20, fontWeight: "700", color: "#FFF" }}
-                    >
+                  <View className="items-center">
+                    <Text className="text-xl font-bold text-white">
                       {weeklySummary?.entriesCount || 0}
                     </Text>
-                    <Text style={{ fontSize: 11, color: "#FFF", opacity: 0.9 }}>
+                    <Text className="text-[11px] text-white opacity-90">
                       This Week
                     </Text>
                   </View>
 
-                  <View
-                    style={{
-                      width: 1,
-                      height: 30,
-                      backgroundColor: "#FFF",
-                      opacity: 0.3,
-                    }}
-                  />
+                  <View className="w-px h-8 bg-white opacity-30" />
 
-                  <View style={{ alignItems: "center" }}>
-                    <Text
-                      style={{ fontSize: 20, fontWeight: "700", color: "#FFF" }}
-                    >
+                  <View className="items-center">
+                    <Text className="text-xl font-bold text-white">
                       {weeklySummary?.overallMood?.toFixed(1) || "0.0"}
                     </Text>
-                    <Text style={{ fontSize: 11, color: "#FFF", opacity: 0.9 }}>
+                    <Text className="text-[11px] text-white opacity-90">
                       Avg Mood
                     </Text>
                   </View>
@@ -240,8 +201,12 @@ export default function AIInsightsScreen() {
       />
 
       <Animated.ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.content}
+        className="flex-1"
+        contentContainerStyle={{
+          paddingTop: 120,
+          paddingHorizontal: 16,
+          paddingBottom: 24,
+        }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={scrollHandler}
@@ -250,58 +215,74 @@ export default function AIInsightsScreen() {
         }
       >
         {/* Header Stats */}
-        <View style={styles.headerCard}>
+        <View className="mb-6 rounded-3xl overflow-hidden shadow-lg">
           <LinearGradient
             colors={["#7B61FF", "#9C7CFF"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={styles.gradientCard}
+            style={{
+              paddingHorizontal: 24,
+              paddingVertical: 20,
+            }}
           >
-            <Text style={styles.headerTitle}>Your Journey</Text>
-            <Animated.View style={[styles.statsRow, cardStatsStyle]}>
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>
+            <Text className="text-[28px] font-extrabold text-white mb-6">
+              Your Journey
+            </Text>
+            <Animated.View
+              style={[cardStatsStyle]}
+              className="flex-row items-center justify-around"
+            >
+              <View className="items-center">
+                <Text className="text-[40px] font-extrabold text-white leading-tight">
                   {profile?.currentStreak || 0}
                 </Text>
-                <Text style={styles.statLabel}>Day Streak</Text>
+                <Text className="text-sm text-white/90 mt-2 font-medium">
+                  Day Streak
+                </Text>
               </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>
+              <View className="w-px h-14 bg-white/20" />
+              <View className="items-center">
+                <Text className="text-[40px] font-extrabold text-white leading-tight">
                   {weeklySummary?.entriesCount || 0}
                 </Text>
-                <Text style={styles.statLabel}>This Week</Text>
+                <Text className="text-sm text-white/90 mt-2 font-medium">
+                  This Week
+                </Text>
               </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>
+              <View className="w-px h-14 bg-white/20" />
+              <View className="items-center">
+                <Text className="text-[40px] font-extrabold text-white leading-tight">
                   {weeklySummary?.overallMood?.toFixed(1) || "0.0"}
                 </Text>
-                <Text style={styles.statLabel}>Avg Mood</Text>
+                <Text className="text-sm text-white/90 mt-2 font-medium">
+                  Avg Mood
+                </Text>
               </View>
             </Animated.View>
           </LinearGradient>
         </View>
 
         {/* AI Recommendations */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
+        <View className="mb-10">
+          <View className="flex-row justify-between items-center mb-5">
+            <Text className="text-[22px] font-extrabold text-[#0F172A] tracking-wide">
               🎯 AI Insights for Previous Week
             </Text>
           </View>
 
           {!loadingCached && !cachedSummary && (
-            <View style={styles.generateContainer}>
-              <Text style={styles.generateIcon}>🤖</Text>
-              <Text style={styles.generateTitle}>No AI Summary Yet</Text>
-              <Text style={styles.generateSubtitle}>
+            <View className="bg-white rounded-2xl p-10 items-center shadow-sm">
+              <Text className="text-[64px] mb-4">🤖</Text>
+              <Text className="text-[22px] font-bold text-[#0F172A] mb-2">
+                No AI Summary Yet
+              </Text>
+              <Text className="text-[15px] text-[#6B7280] text-center mb-6 leading-6">
                 Generate personalized AI insights for the week of{"\n"}
                 {format(previousWeek, "MMM dd, yyyy")}
               </Text>
 
               <TouchableOpacity
-                style={styles.generateButton}
+                className="rounded-2xl overflow-hidden w-full"
                 onPress={handleGenerateSummary}
                 disabled={isGenerating}
               >
@@ -311,7 +292,14 @@ export default function AIInsightsScreen() {
                   }
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
-                  style={styles.generateButtonGradient}
+                  className="flex-row items-center justify-center py-4 gap-2"
+                  style={{
+                    paddingVertical: 16,
+                    gap: 8,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
                   {isGenerating && (
                     <ActivityIndicator size="small" color="#FFF" />
@@ -319,7 +307,7 @@ export default function AIInsightsScreen() {
                   {!isGenerating && (
                     <Feather name="zap" size={20} color="#FFF" />
                   )}
-                  <Text style={styles.generateButtonText}>
+                  <Text className="text-base font-bold text-white">
                     {isGenerating
                       ? "Generating..."
                       : "Get AI Insights for Past Week"}
@@ -328,137 +316,56 @@ export default function AIInsightsScreen() {
               </TouchableOpacity>
 
               {isGenerating && (
-                <Text style={styles.generatingHint}>
+                <Text className="text-[13px] text-[#6B7280] mt-4 text-center italic">
                   Analyzing your journals with AI... This may take a minute.
                 </Text>
               )}
             </View>
           )}
           {loadingCached && (
-            <View style={styles.loadingContainer}>
+            <View className="p-10 items-center">
               <ActivityIndicator size="large" color="#7B61FF" />
             </View>
           )}
-          {!loadingCached && (
+        </View>
+
+        {/* Weekly Summary - Moved above charts */}
+        {cachedSummary && (
+          <WeeklySummaryCard weeklySummary={weeklySummary || null} />
+        )}
+
+        {/* Premium Chart Visualizations - Using Reusable Component */}
+        {cachedSummary && (
+          <AdvancedAnalyticsCharts
+            weeklySummary={weeklySummary || null}
+            loading={isGenerating}
+            showPremiumBadge={true}
+            showTitle={true}
+            onPremiumPress={() => console.log("Show premium modal")}
+          />
+        )}
+
+        {/* Recommendations and Growth Insights (Weekly Summary moved above) */}
+        <View className="mb-10">
+          {cachedSummary && (
             <AIInsightsContent
               loading={isGenerating || loadingCached}
-              weeklySummary={weeklySummary || null}
+              weeklySummary={null}
               recommendations={recommendations || []}
               growthInsights={growthInsights || []}
             />
           )}
-        </View>
-
-        {/* Premium Chart Visualizations */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>📊 Advanced Analytics</Text>
-            <TouchableOpacity
-              style={styles.premiumBadge}
-              onPress={() => console.log("Show premium modal")}
-            >
-              <LinearGradient
-                colors={["#7B61FF", "#9C7CFF"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.premiumBadgeGradient}
-              >
-                <Feather name="star" size={12} color="#FFF" />
-                <Text style={styles.premiumBadgeText}>PREMIUM</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-
-          {/* Emotional Balance Radar Chart */}
-          <View style={styles.chartContainer}>
-            <EmotionRadarChart
-              startDate={subWeeks(new Date(), 4)}
-              endDate={new Date()}
-              data={weeklySummary?.emotionRadarData || []}
-              emotionInsight={weeklySummary?.emotionInsight}
-              loading={
-                loadingCached ||
-                isGenerating ||
-                !weeklySummary?.emotionRadarData?.length
-              }
-              premium={true}
-            />
-          </View>
-
-          {/* Journaling Consistency Heatmap */}
-          {/* <View style={styles.chartContainer}>
-            <JournalingHeatmap
-              weeksToShow={12}
-              premium={true}
-              onDayPress={(date) => {
-                // Navigate to specific day's journal
-                console.log("Navigate to:", date);
-              }}
-            />
-          </View> */}
-
-          {/* Mood Pattern Correlation */}
-          {/* <View style={styles.chartContainer}>
-            <MoodCorrelationMatrix
-              premium={true}
-              onInsightPress={(insight) => {
-                console.log("Insight pressed:", insight);
-              }}
-            />
-          </View> */}
-
-          {/* Emotional Growth Trajectory */}
-          {/* <View style={styles.chartContainer}>
-            <EmotionalGrowthTrajectory
-              monthsToShow={6}
-              predictMonths={3}
-              premium={true}
-            />
-          </View> */}
-
-          {/* Mood Triggers Analysis */}
-          {/* <View style={styles.chartContainer}>
-            <MoodTriggersAnalysis
-              premium={true}
-              onTriggerPress={(trigger) => {
-                console.log("Trigger pressed:", trigger);
-              }}
-            />
-          </View> */}
-
-          {/* NEW: Emotional Volatility Index */}
-          <View style={styles.chartContainer}>
-            <EmotionalVolatilityIndex
-              data={weeklySummary?.emotionalVolatility || []}
-              insight={weeklySummary?.volatilityInsight}
-              loading={loadingCached || isGenerating || !weeklySummary}
-              premium={true}
-            />
-          </View>
-
-          {/* NEW: Cognitive Pattern Flow */}
-          <View style={styles.chartContainer}>
-            <CognitivePatternFlow
-              data={weeklySummary?.cognitivePatterns || []}
-              insight={weeklySummary?.cognitiveInsight}
-              loading={loadingCached || isGenerating || !weeklySummary}
-              premium={true}
-            />
-          </View>
-
-          {/* NEW: Life Domain Balance Wheel */}
-          <View style={styles.chartContainer}>
-            <LifeDomainBalanceWheel
-              data={weeklySummary?.lifeDomainBalance || []}
-              insight={weeklySummary?.lifeDomainInsight}
-              loading={loadingCached || isGenerating || !weeklySummary}
-              premium={true}
-            />
-          </View>
 
           {/* Premium CTA */}
           <TouchableOpacity
-            style={styles.premiumCTA}
+            className="mt-8 rounded-3xl overflow-hidden"
+            style={{
+              shadowColor: "#7B61FF",
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 0.3,
+              shadowRadius: 16,
+              elevation: 8,
+            }}
             onPress={() => {
               // Show premium upgrade modal or navigate to subscription screen
               console.log("Navigate to premium subscription");
@@ -468,20 +375,23 @@ export default function AIInsightsScreen() {
               colors={["#7B61FF", "#9C7CFF"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.premiumCTAGradient}
+              style={{
+                paddingHorizontal: 24,
+                paddingVertical: 20,
+              }}
             >
-              <View style={styles.premiumCTAContent}>
-                <Text style={styles.premiumCTAIcon}>✨</Text>
-                <View style={styles.premiumCTATextContainer}>
-                  <Text style={styles.premiumCTATitle}>
+              <View className="flex-row items-center justify-between">
+                <Text className="text-5xl mr-4">✨</Text>
+                <View className="flex-1 mr-3">
+                  <Text className="text-xl font-extrabold text-white mb-2">
                     Unlock Full Analytics Suite
                   </Text>
-                  <Text style={styles.premiumCTASubtitle}>
+                  <Text className="text-sm text-white/95 leading-5 font-medium">
                     Get personalized insights, predictive analytics, and
                     unlimited AI analysis
                   </Text>
                 </View>
-                <Feather name="chevron-right" size={24} color="#FFF" />
+                <Feather name="chevron-right" size={28} color="#FFF" />
               </View>
             </LinearGradient>
           </TouchableOpacity>
@@ -490,471 +400,3 @@ export default function AIInsightsScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F8F8FF",
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#7B61FF",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 16,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    paddingTop: 120,
-    paddingHorizontal: 16,
-    paddingBottom: 24,
-  },
-  headerCard: {
-    marginBottom: 24,
-    borderRadius: 20,
-    overflow: "hidden",
-  },
-  gradientCard: {
-    padding: 20,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#FFF",
-    marginBottom: 16,
-  },
-  statsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-  statItem: {
-    alignItems: "center",
-  },
-  statValue: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#FFF",
-  },
-  statLabel: {
-    fontSize: 12,
-    color: "#E9D5FF",
-    marginTop: 4,
-  },
-  statDivider: {
-    width: 1,
-    height: 40,
-    backgroundColor: "rgba(255,255,255,0.3)",
-  },
-  section: {
-    marginBottom: 40,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: "#0F172A",
-    letterSpacing: 0.3,
-  },
-  loadingContainer: {
-    padding: 40,
-    alignItems: "center",
-  },
-  // Generate Button Styles
-  generateContainer: {
-    backgroundColor: "#FFF",
-    borderRadius: 18,
-    padding: 40,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  generateIcon: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
-  generateTitle: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#0F172A",
-    marginBottom: 8,
-  },
-  generateSubtitle: {
-    fontSize: 15,
-    color: "#6B7280",
-    textAlign: "center",
-    marginBottom: 24,
-    lineHeight: 22,
-  },
-  generateButton: {
-    borderRadius: 16,
-    overflow: "hidden",
-    width: "100%",
-  },
-  generateButtonGradient: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 16,
-    gap: 10,
-  },
-  generateButtonText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FFF",
-  },
-  generatingHint: {
-    fontSize: 13,
-    color: "#6B7280",
-    marginTop: 16,
-    textAlign: "center",
-    fontStyle: "italic",
-  },
-  // Week Badge
-  weekBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
-    alignSelf: "flex-start",
-    marginBottom: 16,
-    gap: 6,
-  },
-  weekBadgeText: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#4B5563",
-  },
-  recommendationCard: {
-    backgroundColor: "#FFF",
-    borderRadius: 18,
-    padding: 20,
-    marginBottom: 16,
-    flexDirection: "row",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  recContent: {
-    flex: 1,
-  },
-  recHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 12,
-  },
-  recTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#0F172A",
-    flex: 1,
-    lineHeight: 24,
-  },
-  priorityBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 14,
-    marginLeft: 10,
-  },
-  priorityText: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: "#FFF",
-    letterSpacing: 0.5,
-  },
-  recDescription: {
-    fontSize: 15,
-    color: "#6B7280",
-    marginBottom: 20,
-    lineHeight: 22,
-  },
-  actionStepsTitle: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#0F172A",
-    marginBottom: 12,
-    marginTop: 2,
-  },
-  actionStep: {
-    flexDirection: "row",
-    marginBottom: 10,
-    alignItems: "flex-start",
-  },
-  actionStepBullet: {
-    fontSize: 16,
-    color: "#7B61FF",
-    marginRight: 10,
-    lineHeight: 22,
-  },
-  actionStepText: {
-    fontSize: 14,
-    color: "#4B5563",
-    flex: 1,
-    lineHeight: 22,
-  },
-  emptyState: {
-    backgroundColor: "#FFF",
-    borderRadius: 18,
-    padding: 48,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-  emptyIcon: {
-    fontSize: 56,
-    marginBottom: 16,
-  },
-  emptyText: {
-    fontSize: 15,
-    color: "#6B7280",
-    textAlign: "center",
-    lineHeight: 22,
-  },
-  // Summary Styles
-  summaryCard: {
-    backgroundColor: "#FFF",
-    borderRadius: 18,
-    padding: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  summaryPeriod: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: "#0F172A",
-    marginBottom: 20,
-  },
-  moodTrendContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  moodTrendLabel: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#4B5563",
-    marginRight: 12,
-  },
-  moodTrendBadge: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 18,
-  },
-  moodTrendText: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#FFF",
-    textTransform: "capitalize",
-  },
-  summarySection: {
-    marginBottom: 20,
-  },
-  summarySubtitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#0F172A",
-    marginBottom: 14,
-    marginTop: 2,
-  },
-  bulletPoint: {
-    fontSize: 14,
-    color: "#4B5563",
-    marginBottom: 8,
-    lineHeight: 22,
-    paddingLeft: 4,
-  },
-  emotionTags: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  emotionTag: {
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 18,
-  },
-  emotionText: {
-    fontSize: 13,
-    color: "#4B5563",
-    fontWeight: "500",
-  },
-  motivationalCard: {
-    backgroundColor: "#FFF9E5",
-    borderRadius: 14,
-    padding: 18,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 20,
-  },
-  motivationalIcon: {
-    fontSize: 28,
-    marginRight: 14,
-    marginTop: 2,
-  },
-  motivationalText: {
-    flex: 1,
-    fontSize: 15,
-    color: "#0F172A",
-    lineHeight: 22,
-    fontWeight: "500",
-  },
-  // Growth Insights
-  insightCard: {
-    backgroundColor: "#FFF",
-    borderRadius: 18,
-    padding: 20,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  insightHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  insightCategory: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#7B61FF",
-    textTransform: "uppercase",
-    letterSpacing: 0.8,
-  },
-  impactBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 14,
-  },
-  impactText: {
-    fontSize: 10,
-    fontWeight: "700",
-    color: "#FFF",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  insightText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#0F172A",
-    marginBottom: 16,
-    lineHeight: 24,
-  },
-  evidenceContainer: {
-    backgroundColor: "#F9FAFB",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  evidenceTitle: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#4B5563",
-    marginBottom: 12,
-  },
-  evidenceText: {
-    fontSize: 14,
-    color: "#6B7280",
-    marginBottom: 6,
-    lineHeight: 20,
-    paddingLeft: 4,
-  },
-  suggestionContainer: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    backgroundColor: "#FFFBEB",
-    borderRadius: 12,
-    padding: 16,
-    gap: 10,
-  },
-  suggestionText: {
-    flex: 1,
-    fontSize: 14,
-    color: "#0F172A",
-    lineHeight: 21,
-  },
-  // New chart styles
-  chartContainer: {
-    marginBottom: 24,
-  },
-  premiumBadge: {
-    borderRadius: 12,
-    overflow: "hidden",
-  },
-  premiumBadgeGradient: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    gap: 4,
-  },
-  premiumBadgeText: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: "#FFF",
-    letterSpacing: 0.5,
-  },
-  premiumCTA: {
-    marginTop: 32,
-    borderRadius: 20,
-    overflow: "hidden",
-    shadowColor: "#7B61FF",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
-  },
-  premiumCTAGradient: {
-    padding: 24,
-  },
-  premiumCTAContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  premiumCTAIcon: {
-    fontSize: 40,
-    marginRight: 16,
-  },
-  premiumCTATextContainer: {
-    flex: 1,
-    marginRight: 12,
-  },
-  premiumCTATitle: {
-    fontSize: 18,
-    fontWeight: "800",
-    color: "#FFF",
-    marginBottom: 4,
-  },
-  premiumCTASubtitle: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.9)",
-    lineHeight: 20,
-  },
-});

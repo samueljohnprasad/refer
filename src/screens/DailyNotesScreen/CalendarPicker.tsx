@@ -24,6 +24,7 @@ interface CalendarPickerProps {
   onDateSelect: (date: Date) => void;
   visible?: boolean; // when toggled true, resets view to selectedDate's month
   moodMap: Map<string, number> | undefined;
+  showMoodBadges?: boolean; // controls visibility of mood badges/+ icons
 }
 
 // Memoized Day Cell Component
@@ -34,10 +35,11 @@ interface DayCellProps {
   isSelected: boolean;
   mood: number | undefined;
   onPress: () => void;
+  showMoodBadge: boolean;
 }
 
 const DayCell = React.memo<DayCellProps>(
-  ({ day, inCurrentMonth, isTodayDate, isSelected, mood, onPress }) => {
+  ({ day, inCurrentMonth, isTodayDate, isSelected, mood, onPress, showMoodBadge }) => {
     const dayLabel = format(day, "d");
 
     // Memoize className strings to avoid recalculation
@@ -47,7 +49,7 @@ const DayCell = React.memo<DayCellProps>(
           isSelected
             ? "bg-[#7B61FF] rounded-xl"
             : isTodayDate
-            ? "bg-white/12 rounded-xl"
+            ? "bg-white rounded-xl"
             : ""
         }`,
       [isSelected, isTodayDate]
@@ -59,7 +61,7 @@ const DayCell = React.memo<DayCellProps>(
           !inCurrentMonth
             ? "text-[#C7BDF9]"
             : isTodayDate && !isSelected
-            ? "text-white font-bold"
+            ? "text-[#7B61FF] font-bold"
             : isSelected
             ? "text-white font-semibold"
             : "text-white"
@@ -81,9 +83,11 @@ const DayCell = React.memo<DayCellProps>(
       >
         <View className={containerClassName}>
           <Text className={textClassName}>{dayLabel}</Text>
-          <View className={moodClassName}>
-            <MoodBadge moodscore={mood} size={20} />
-          </View>
+          {showMoodBadge && (
+            <View className={moodClassName}>
+              <MoodBadge moodscore={mood} size={20} />
+            </View>
+          )}
         </View>
       </Pressable>
     );
@@ -95,6 +99,7 @@ const DayCell = React.memo<DayCellProps>(
       prevProps.isTodayDate === nextProps.isTodayDate &&
       prevProps.inCurrentMonth === nextProps.inCurrentMonth &&
       prevProps.mood === nextProps.mood &&
+      prevProps.showMoodBadge === nextProps.showMoodBadge &&
       prevProps.day.getTime() === nextProps.day.getTime()
     );
   }
@@ -119,8 +124,8 @@ const WeekDayHeader = React.memo(() => (
 WeekDayHeader.displayName = "WeekDayHeader";
 
 export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
-  ({ selectedDate, onDateSelect, visible, moodMap }) => {
-    const { currentMonth, days, goToPreviousMonth, goToNextMonth } =
+  ({ selectedDate, onDateSelect, visible, moodMap, showMoodBadges = true }) => {
+    const { currentMonth, days, goToPreviousMonth, goToNextMonth, goToDate } =
       useCalendarMonth({ selectedDate, visible, weekStartsOn: 0 });
 
     // Memoize month title
@@ -151,7 +156,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
 
     return (
       <View>
-        <View className="flex-row justify-between items-center mb-0">
+        <View className="flex-row justify-between items-center mb-2">
           <Pressable className="p-2" onPress={goToPreviousMonth}>
             <Feather name="chevron-left" size={20} color="#fff" />
           </Pressable>
@@ -173,6 +178,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
               isSelected={dayData.isSelected}
               mood={dayData.mood}
               onPress={dayPressHandlers[index]}
+              showMoodBadge={showMoodBadges}
             />
           ))}
         </View>

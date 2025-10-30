@@ -122,12 +122,12 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
       {/* Premium Badge */}
       {premium && (
         <LinearGradient
-          colors={CHART_COLORS.premium}
+          colors={["#7B61FF", "#9C7CFF"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={{
-            paddingHorizontal: 12,
-            paddingVertical: 6,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
             position: "absolute",
             top: 0,
             right: 0,
@@ -135,7 +135,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
             zIndex: 10,
           }}
         >
-          <Text className="text-white text-xs font-bold">PREMIUM</Text>
+          <Text className="text-white text-xs font-extrabold tracking-wider">PREMIUM</Text>
         </LinearGradient>
       )}
 
@@ -151,16 +151,23 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
             </Text>
           </View>
           <View className="items-end">
-            <Text
-              className="text-2xl font-extrabold"
+            <View 
+              className="px-3 py-1.5 rounded-lg"
               style={{
-                color: emotionalBalance.balance > 0 ? "#10B981" : "#EF4444",
+                backgroundColor: emotionalBalance.balance > 0 ? "#10B98120" : "#EF444420",
               }}
             >
-              {emotionalBalance.balance > 0 ? "+" : ""}
-              {emotionalBalance.balance.toFixed(0)}%
-            </Text>
-            <Text className="text-xs text-gray-500">Balance Score</Text>
+              <Text
+                className="text-3xl font-extrabold"
+                style={{
+                  color: emotionalBalance.balance > 0 ? "#10B981" : "#EF4444",
+                }}
+              >
+                {emotionalBalance.balance > 0 ? "+" : ""}
+                {emotionalBalance.balance.toFixed(0)}%
+              </Text>
+            </View>
+            <Text className="text-xs text-gray-500 mt-1.5 font-medium">Balance Score</Text>
           </View>
         </View>
 

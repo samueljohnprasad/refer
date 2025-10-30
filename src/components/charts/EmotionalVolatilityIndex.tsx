@@ -110,20 +110,20 @@ export const EmotionalVolatilityIndex: React.FC<
           colors={["#7B61FF", "#9C7CFF"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          className="rounded-2xl p-6"
+          className="rounded-2xl p-8 shadow-lg"
         >
           <View className="items-center">
-            <View className="w-16 h-16 bg-white/20 rounded-full items-center justify-center mb-4">
-              <Feather name="activity" size={32} color="#FFF" />
+            <View className="w-20 h-20 bg-white/30 rounded-full items-center justify-center mb-5">
+              <Feather name="activity" size={36} color="#FFF" />
             </View>
-            <Text className="text-white text-xl font-bold mb-2">
+            <Text className="text-white text-2xl font-extrabold mb-3">
               Emotional Volatility Index
             </Text>
-            <Text className="text-white/80 text-center text-sm mb-4">
+            <Text className="text-white/90 text-center text-base mb-5 leading-6 font-medium">
               Track your emotional stability patterns and identify triggers
             </Text>
-            <View className="bg-white/20 px-4 py-2 rounded-full">
-              <Text className="text-white font-medium">🔒 Premium Feature</Text>
+            <View className="bg-white/30 px-5 py-2.5 rounded-full">
+              <Text className="text-white font-bold text-sm">🔒 Premium Feature</Text>
             </View>
           </View>
         </LinearGradient>

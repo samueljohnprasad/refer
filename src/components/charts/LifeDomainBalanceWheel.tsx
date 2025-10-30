@@ -101,20 +101,20 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
           colors={['#7B61FF', '#9C7CFF']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          className="rounded-2xl p-6"
+          className="rounded-2xl p-8 shadow-lg"
         >
           <View className="items-center">
-            <View className="w-16 h-16 bg-white/20 rounded-full items-center justify-center mb-4">
-              <MaterialIcons name="donut-large" size={32} color="#FFF" />
+            <View className="w-20 h-20 bg-white/30 rounded-full items-center justify-center mb-5">
+              <MaterialIcons name="donut-large" size={36} color="#FFF" />
             </View>
-            <Text className="text-white text-xl font-bold mb-2">
+            <Text className="text-white text-2xl font-extrabold mb-3">
               Life Domain Balance Wheel
             </Text>
-            <Text className="text-white/80 text-center text-sm mb-4">
+            <Text className="text-white/90 text-center text-base mb-5 leading-6 font-medium">
               Visualize balance across all areas of your life
             </Text>
-            <View className="bg-white/20 px-4 py-2 rounded-full">
-              <Text className="text-white font-medium">🔒 Premium Feature</Text>
+            <View className="bg-white/30 px-5 py-2.5 rounded-full">
+              <Text className="text-white font-bold text-sm">🔒 Premium Feature</Text>
             </View>
           </View>
         </LinearGradient>
@@ -186,10 +186,16 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
             </Text>
           </View>
           <View className="items-end">
-            <Text className="text-2xl font-extrabold text-gray-800">
+            <Text 
+              className="text-3xl font-extrabold"
+              style={{
+                color: stats.balanceScore >= 70 ? '#10B981' : 
+                       stats.balanceScore >= 50 ? '#F59E0B' : '#EF4444'
+              }}
+            >
               {stats.balanceScore.toFixed(0)}%
             </Text>
-            <Text className="text-xs text-gray-500">Balance Score</Text>
+            <Text className="text-xs text-gray-500 font-medium">Balance Score</Text>
           </View>
         </View>
       </View>

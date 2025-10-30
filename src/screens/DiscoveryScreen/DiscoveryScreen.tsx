@@ -206,6 +206,12 @@ function DiscoveryScreen() {
     setIsCalendarVisible(false);
   }, []);
 
+  const handleTodayPress = useCallback(() => {
+    const today = new Date();
+    setSelectedDate(today);
+    setIsCalendarVisible(false);
+  }, []);
+
   const scrollContentStyle = useMemo(
     () => ({
       paddingHorizontal: 18,
@@ -313,9 +319,17 @@ function DiscoveryScreen() {
               onPress={(e) => e.stopPropagation()}
             >
               <View className="flex-row justify-between items-center mb-4">
-                <Text className="text-white text-xl font-bold">
-                  Select Date
-                </Text>
+                <View className="flex-row items-center gap-3">
+                  <Text className="text-white text-xl font-bold">
+                    Select Date
+                  </Text>
+                  <Pressable 
+                    onPress={handleTodayPress}
+                    className="bg-white/20 px-3 py-1.5 rounded-full"
+                  >
+                    <Text className="text-white text-xs font-semibold">Today</Text>
+                  </Pressable>
+                </View>
                 <Pressable onPress={handleCloseCalendar} className="p-2">
                   <Feather name="x" size={24} color="white" />
                 </Pressable>
@@ -325,6 +339,7 @@ function DiscoveryScreen() {
                 onDateSelect={handleDateSelect}
                 visible={isCalendarVisible}
                 moodMap={undefined}
+                showMoodBadges={false}
               />
             </Pressable>
           </Pressable>

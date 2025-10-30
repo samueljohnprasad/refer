@@ -38,7 +38,7 @@ const twentyPercentHeight = height * (isIso ? 0.16 : 0.16);
 
 // Move constants outside component to avoid recreation
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-const CALENDAR_EXPANDED_HEIGHT = 330;
+const CALENDAR_EXPANDED_HEIGHT = 350;
 
 const DailyNotesHeader = React.memo(() => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
