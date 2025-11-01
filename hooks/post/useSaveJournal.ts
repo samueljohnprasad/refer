@@ -6,7 +6,6 @@ import { useCallback, useState } from "react";
 import { getTodayDate } from "@/hooks/data/useStreakCalculation";
 import { useUpdateStreak } from "@/hooks/data/useUpdateStreak";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCheckAchievements } from "@/hooks/data/useAchievements";
 import { useStreakReminders } from "@/hooks/notifications/useStreakReminders";
 import { format } from "date-fns";
 
@@ -26,12 +25,14 @@ export const useSaveJournal = () => {
   const { user } = useAuth();
   const [saving, setSaving] = useState<boolean>(false);
   const updateStreakMutation = useUpdateStreak();
-  const checkAchievementsMutation = useCheckAchievements();
   const { sendMilestoneNotification } = useStreakReminders();
   const queryClient = useQueryClient();
 
   const saveJournal = useCallback(
-    async (input: InsightsType, customDate?: Date): Promise<Tables<'journal_entries'>> => {
+    async (
+      input: InsightsType,
+      customDate?: Date
+    ): Promise<Tables<"journal_entries">> => {
       if (!user?.id) {
         throw new Error("Not authenticated");
       }
@@ -41,7 +42,7 @@ export const useSaveJournal = () => {
         const row = {
           user_id: user.id,
           created_at: formatDateKey(new Date()),
-          selected_date: format(dateToUse, 'yyyy-MM-dd'),
+          selected_date: format(dateToUse, "yyyy-MM-dd"),
           title: input.title,
           enrichedTranscript: input.enrichedTranscript,
           aiInsights: input.aiInsights,
@@ -66,7 +67,7 @@ export const useSaveJournal = () => {
             userId: user.id,
             forceReset: false,
           });
-          
+
           // Invalidate queries to refresh UI
           queryClient.invalidateQueries({ queryKey: ["userProfile"] });
           queryClient.invalidateQueries({ queryKey: ["journalEntries"] });
@@ -74,17 +75,15 @@ export const useSaveJournal = () => {
 
           // Check for new achievements
           try {
-            await checkAchievementsMutation.mutateAsync();
-            
             // Send milestone notification based on current streak
             const { data: profile } = await supabase
               .from("profiles")
               .select("current_streak")
               .eq("id", user.id)
               .single();
-            
+
             const currentStreak = profile?.current_streak ?? 0;
-            
+
             // Send notification for milestone streaks
             const milestones = [1, 3, 7, 14, 30, 45, 60, 90, 100, 180, 365];
             if (milestones.includes(currentStreak)) {

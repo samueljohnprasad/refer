@@ -1,5 +1,6 @@
 ---
-trigger: always_on
+trigger: glob
+globs: *.ts, *.tsx, *.js, *.jsx
 ---
 
 # Tech Stack Rules and Details

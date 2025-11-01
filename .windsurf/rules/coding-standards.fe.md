@@ -1,5 +1,6 @@
 ---
-trigger: always_on
+trigger: glob
+globs: *.ts, *.tsx, *.js, *.jsx
 ---
 
 # Frontend Coding Standards (React Native + TypeScript, Mobile & Web)

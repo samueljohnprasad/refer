@@ -39,7 +39,11 @@ export default React.memo(function SettingsScreen() {
   const headerHeight = useHeaderHeight();
   const scrollY = useRef(new Animated.Value(0)).current;
   const { user, session, loading, signOut } = useAuth();
-  const { scheduleStreakReminder, cancelAllStreakReminders, requestNotificationPermissions } = useStreakReminders();
+  const {
+    scheduleStreakReminder,
+    cancelAllStreakReminders,
+    requestNotificationPermissions,
+  } = useStreakReminders();
 
   const [showModal, setShowModal] = useState({
     modalType: "",
@@ -50,12 +54,14 @@ export default React.memo(function SettingsScreen() {
   const { bulkImport, importing, progress } = useBulkImportJournals();
   const [showImportModal, setShowImportModal] = useState(false);
   const [importDaysCount, setImportDaysCount] = useState("20");
-  const [importStartDate, setImportStartDate] = useState<Date>(subDays(new Date(), 20));
+  const [importStartDate, setImportStartDate] = useState<Date>(
+    subDays(new Date(), 20)
+  );
 
   // Handle reminder toggle
   const handleReminderToggle = async (enabled: boolean) => {
     Haptics.selectionAsync();
-    
+
     if (enabled) {
       // Request permissions first
       const hasPermission = await requestNotificationPermissions();
@@ -63,7 +69,7 @@ export default React.memo(function SettingsScreen() {
         alert("Please enable notifications in your device settings");
         return;
       }
-      
+
       // Schedule reminder
       await scheduleStreakReminder({
         hour: reminderTime.hour,
@@ -284,7 +290,8 @@ export default React.memo(function SettingsScreen() {
               <View style={styles.rowText}>
                 <Text style={styles.itemTitle}>Daily Streak Reminder</Text>
                 <Text style={styles.itemSubtitle}>
-                  Get reminded at {reminderTime.hour}:{reminderTime.minute.toString().padStart(2, '0')}
+                  Get reminded at {reminderTime.hour}:
+                  {reminderTime.minute.toString().padStart(2, "0")}
                 </Text>
               </View>
               <Switch
@@ -305,28 +312,17 @@ export default React.memo(function SettingsScreen() {
               }}
             >
               <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
-                <MaterialCommunityIcons name="bell-ring" size={20} color="#A855F7" />
+                <MaterialCommunityIcons
+                  name="bell-ring"
+                  size={20}
+                  color="#A855F7"
+                />
               </View>
               <View style={styles.rowText}>
                 <Text style={styles.itemTitle}>Daily Reminders</Text>
                 <Text style={styles.itemSubtitle}>
                   Customize multiple reminders
                 </Text>
-              </View>
-              <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.rowItem}
-              activeOpacity={0.7}
-              onPress={() => router.push("/achievements" as any)}
-            >
-              <View style={[styles.leftIcon, { backgroundColor: "#FEF3C7" }]}>
-                <Feather name="award" size={20} color="#F59E0B" />
-              </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Achievements</Text>
-                <Text style={styles.itemSubtitle}>View your badges</Text>
               </View>
               <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
             </TouchableOpacity>
@@ -529,7 +525,9 @@ export default React.memo(function SettingsScreen() {
                 editable={!importing}
               />
               <Text style={styles.inputHint}>
-                {importDaysCount} {parseInt(importDaysCount) === 1 ? 'entry' : 'entries'} will be imported
+                {importDaysCount}{" "}
+                {parseInt(importDaysCount) === 1 ? "entry" : "entries"} will be
+                imported
               </Text>
             </View>
 
@@ -552,7 +550,11 @@ export default React.memo(function SettingsScreen() {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.modalButton, styles.importButton, importing && styles.importButtonDisabled]}
+                style={[
+                  styles.modalButton,
+                  styles.importButton,
+                  importing && styles.importButtonDisabled,
+                ]}
                 onPress={handleBulkImport}
                 disabled={importing}
               >

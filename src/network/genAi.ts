@@ -143,10 +143,15 @@ export const getInsights = async (transcript: string) => {
 export type AIRecommendation = {
   title: string;
   description: string;
-  category: 'mental_health' | 'productivity' | 'relationships' | 'self_care' | 'growth';
+  category:
+    | "mental_health"
+    | "productivity"
+    | "relationships"
+    | "self_care"
+    | "growth";
   actionSteps: string[];
   icon: string;
-  priority: 'high' | 'medium' | 'low';
+  priority: "high" | "medium" | "low";
 };
 
 export type EmotionRadarData = {
@@ -161,7 +166,7 @@ export type EmotionalVolatilityData = {
   volatilityScore: number; // 0-100 (0 = very stable, 100 = very volatile)
   moodSwings: number; // Number of mood swings that day
   emotionalRange: number; // Difference between highest and lowest mood
-  stability: 'stable' | 'moderate' | 'volatile' | 'highly_volatile';
+  stability: "stable" | "moderate" | "volatile" | "highly_volatile";
   triggers: string[]; // What triggered volatility
 };
 
@@ -170,13 +175,13 @@ export type CognitivePatternLink = {
   target: string; // Target thought/emotion
   value: number; // Strength of connection (0-100)
   frequency: number; // How often this pattern occurs
-  type: 'positive' | 'negative' | 'neutral';
+  type: "positive" | "negative" | "neutral";
 };
 
 export type LifeDomainScore = {
   domain: string; // e.g., 'Work', 'Relationships', 'Health', etc.
   score: number; // 0-100
-  trend: 'improving' | 'stable' | 'declining';
+  trend: "improving" | "stable" | "declining";
   attention_needed: boolean;
   insights: string;
 };
@@ -185,7 +190,7 @@ export type WeeklySummary = {
   weekStart: string;
   weekEnd: string;
   overallMood: number;
-  moodTrend: 'improving' | 'stable' | 'declining';
+  moodTrend: "improving" | "stable" | "declining";
   topEmotions: string[];
   keyHighlights: string[];
   growthAchievements: string[];
@@ -205,28 +210,12 @@ export type WeeklySummary = {
   lifeDomainInsight: string;
 };
 
-export type MonthlySummary = {
-  month: string;
-  year: number;
-  overallMood: number;
-  moodTrend: 'improving' | 'stable' | 'declining';
-  topEmotions: string[];
-  monthlyHighlights: string[];
-  personalGrowth: string[];
-  challenges: string[];
-  achievements: string[];
-  recommendation: string;
-  nextMonthGoals: string[];
-  entriesCount: number;
-  consistencyScore: number;
-};
-
 export type GrowthInsight = {
   insight: string;
   category: string;
   supportingEvidence: string[];
   suggestion: string;
-  impactLevel: 'high' | 'medium' | 'low';
+  impactLevel: "high" | "medium" | "low";
 };
 
 /**
@@ -248,37 +237,52 @@ export const generateAIRecommendations = async (
     const entriesText = entries
       .map(
         (e, i) =>
-          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${e.enrichedTranscript}\n`
+          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${
+            e.enrichedTranscript
+          }\n`
       )
-      .join('\n---\n');
+      .join("\n---\n");
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: "gemini-2.0-flash",
       contents: `Analyze these recent journal entries and provide personalized growth recommendations:\n\n${entriesText}\n\nGenerate 3-5 actionable recommendations.`,
       config: {
-        responseMimeType: 'application/json',
+        responseMimeType: "application/json",
         responseSchema: {
-          type: 'array',
+          type: "array",
           items: {
-            type: 'object',
+            type: "object",
             properties: {
-              title: { type: 'string' },
-              description: { type: 'string' },
+              title: { type: "string" },
+              description: { type: "string" },
               category: {
-                type: 'string',
-                enum: ['mental_health', 'productivity', 'relationships', 'self_care', 'growth'],
+                type: "string",
+                enum: [
+                  "mental_health",
+                  "productivity",
+                  "relationships",
+                  "self_care",
+                  "growth",
+                ],
               },
               actionSteps: {
-                type: 'array',
-                items: { type: 'string' },
+                type: "array",
+                items: { type: "string" },
               },
-              icon: { type: 'string' },
+              icon: { type: "string" },
               priority: {
-                type: 'string',
-                enum: ['high', 'medium', 'low'],
+                type: "string",
+                enum: ["high", "medium", "low"],
               },
             },
-            required: ['title', 'description', 'category', 'actionSteps', 'icon', 'priority'],
+            required: [
+              "title",
+              "description",
+              "category",
+              "actionSteps",
+              "icon",
+              "priority",
+            ],
           },
         },
       },
@@ -287,7 +291,7 @@ export const generateAIRecommendations = async (
     if (!response.text) return [];
     return JSON.parse(response.text);
   } catch (error) {
-    console.error('Error generating recommendations:', error);
+    console.error("Error generating recommendations:", error);
     return [];
   }
 };
@@ -314,176 +318,216 @@ export const generateWeeklySummary = async (
     const entriesText = entries
       .map(
         (e, i) =>
-          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${e.enrichedTranscript}\n`
+          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${
+            e.enrichedTranscript
+          }\n`
       )
-      .join('\n---\n');
+      .join("\n---\n");
 
-    const avgMood = entries.reduce((sum, e) => sum + (e.moodScore || 0), 0) / entries.length;
+    const avgMood =
+      entries.reduce((sum, e) => sum + (e.moodScore || 0), 0) / entries.length;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: `Generate a comprehensive weekly summary for the week of ${weekStart} to ${weekEnd}. The user made ${entries.length} entries with an average mood of ${avgMood.toFixed(1)}/5 and maintained a ${streakDays} day streak.\n\nEntries:\n${entriesText}\n\nIMPORTANT: Perform these advanced analyses:\n\n1. EMOTIONAL DIMENSIONS (8 emotions, 0-100 scale):\n- Joy, Gratitude, Confidence, Peace (positive)\n- Anxiety, Sadness, Anger, Fear (challenging)\nScore each based on presence in entries.\n\n2. EMOTIONAL VOLATILITY ANALYSIS:\nFor each day with entries, calculate:\n- Volatility score (0-100): how much emotions fluctuated\n- Number of mood swings\n- Emotional range (difference between highest/lowest)\n- Stability level and triggers\n\n3. COGNITIVE PATTERN FLOW:\nIdentify thought patterns and their connections:\n- How one emotion/thought leads to another\n- Pattern strength and frequency\n- Whether patterns are positive/negative\n\n4. LIFE DOMAIN BALANCE (score 0-100 each):\n- Work/Career\n- Relationships/Family\n- Health/Wellness\n- Personal Growth\n- Recreation/Hobbies\n- Spirituality/Purpose\nIdentify which domains need attention.\n\nProvide specific, actionable insights for each analysis.`,
+      model: "gemini-2.0-flash",
+      contents: `Generate a comprehensive weekly summary for the week of ${weekStart} to ${weekEnd}. The user made ${
+        entries.length
+      } entries with an average mood of ${avgMood.toFixed(
+        1
+      )}/5 and maintained a ${streakDays} day streak.\n\nEntries:\n${entriesText}\n\nIMPORTANT: Perform these advanced analyses:\n\n1. EMOTIONAL DIMENSIONS (8 emotions, 0-100 scale):\n- Joy, Gratitude, Confidence, Peace (positive)\n- Anxiety, Sadness, Anger, Fear (challenging)\nScore each based on presence in entries.\n\n2. EMOTIONAL VOLATILITY ANALYSIS:\nFor each day with entries, calculate:\n- Volatility score (0-100): how much emotions fluctuated\n- Number of mood swings\n- Emotional range (difference between highest/lowest)\n- Stability level and triggers\n\n3. COGNITIVE PATTERN FLOW:\nIdentify thought patterns and their connections:\n- How one emotion/thought leads to another\n- Pattern strength and frequency\n- Whether patterns are positive/negative\n\n4. LIFE DOMAIN BALANCE (score 0-100 each):\n- Work/Career\n- Relationships/Family\n- Health/Wellness\n- Personal Growth\n- Recreation/Hobbies\n- Spirituality/Purpose\nIdentify which domains need attention.\n\nProvide specific, actionable insights for each analysis.`,
       config: {
-        responseMimeType: 'application/json',
+        responseMimeType: "application/json",
         responseSchema: {
-          type: 'object',
+          type: "object",
           properties: {
-            weekStart: { type: 'string' },
-            weekEnd: { type: 'string' },
-            overallMood: { type: 'number' },
+            weekStart: { type: "string" },
+            weekEnd: { type: "string" },
+            overallMood: { type: "number" },
             moodTrend: {
-              type: 'string',
-              enum: ['improving', 'stable', 'declining'],
+              type: "string",
+              enum: ["improving", "stable", "declining"],
             },
             topEmotions: {
-              type: 'array',
-              items: { type: 'string' },
+              type: "array",
+              items: { type: "string" },
             },
             keyHighlights: {
-              type: 'array',
-              items: { type: 'string' },
+              type: "array",
+              items: { type: "string" },
             },
             growthAchievements: {
-              type: 'array',
-              items: { type: 'string' },
+              type: "array",
+              items: { type: "string" },
             },
             areasOfConcern: {
-              type: 'array',
-              items: { type: 'string' },
+              type: "array",
+              items: { type: "string" },
             },
-            motivationalMessage: { type: 'string' },
+            motivationalMessage: { type: "string" },
             nextWeekFocus: {
-              type: 'array',
-              items: { type: 'string' },
+              type: "array",
+              items: { type: "string" },
             },
-            entriesCount: { type: 'integer' },
-            streakDays: { type: 'integer' },
+            entriesCount: { type: "integer" },
+            streakDays: { type: "integer" },
             emotionRadarData: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'object',
+                type: "object",
                 properties: {
                   emotion: {
-                    type: 'string',
-                    enum: ['Joy', 'Gratitude', 'Confidence', 'Peace', 'Anxiety', 'Sadness', 'Anger', 'Fear']
+                    type: "string",
+                    enum: [
+                      "Joy",
+                      "Gratitude",
+                      "Confidence",
+                      "Peace",
+                      "Anxiety",
+                      "Sadness",
+                      "Anger",
+                      "Fear",
+                    ],
                   },
                   score: {
-                    type: 'number',
+                    type: "number",
                     minimum: 0,
-                    maximum: 100
+                    maximum: 100,
                   },
-                  count: { type: 'integer' }
+                  count: { type: "integer" },
                 },
-                required: ['emotion', 'score', 'count']
+                required: ["emotion", "score", "count"],
               },
               minItems: 8,
-              maxItems: 8
+              maxItems: 8,
             },
-            emotionInsight: { 
-              type: 'string',
-              description: 'A personalized 1-2 sentence insight about the user\'s emotional balance based on the emotion scores. Be specific and actionable.'
+            emotionInsight: {
+              type: "string",
+              description:
+                "A personalized 1-2 sentence insight about the user's emotional balance based on the emotion scores. Be specific and actionable.",
             },
             emotionalVolatility: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'object',
+                type: "object",
                 properties: {
-                  date: { type: 'string' },
-                  volatilityScore: { 
-                    type: 'number',
+                  date: { type: "string" },
+                  volatilityScore: {
+                    type: "number",
                     minimum: 0,
-                    maximum: 100
+                    maximum: 100,
                   },
-                  moodSwings: { type: 'integer' },
-                  emotionalRange: { type: 'number' },
+                  moodSwings: { type: "integer" },
+                  emotionalRange: { type: "number" },
                   stability: {
-                    type: 'string',
-                    enum: ['stable', 'moderate', 'volatile', 'highly_volatile']
+                    type: "string",
+                    enum: ["stable", "moderate", "volatile", "highly_volatile"],
                   },
                   triggers: {
-                    type: 'array',
-                    items: { type: 'string' }
-                  }
+                    type: "array",
+                    items: { type: "string" },
+                  },
                 },
-                required: ['date', 'volatilityScore', 'moodSwings', 'emotionalRange', 'stability', 'triggers']
-              }
+                required: [
+                  "date",
+                  "volatilityScore",
+                  "moodSwings",
+                  "emotionalRange",
+                  "stability",
+                  "triggers",
+                ],
+              },
             },
             volatilityInsight: {
-              type: 'string',
-              description: 'Insight about emotional stability patterns and recommendations for managing volatility'
+              type: "string",
+              description:
+                "Insight about emotional stability patterns and recommendations for managing volatility",
             },
             cognitivePatterns: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'object',
+                type: "object",
                 properties: {
-                  source: { type: 'string' },
-                  target: { type: 'string' },
+                  source: { type: "string" },
+                  target: { type: "string" },
                   value: {
-                    type: 'number',
+                    type: "number",
                     minimum: 0,
-                    maximum: 100
+                    maximum: 100,
                   },
-                  frequency: { type: 'integer' },
+                  frequency: { type: "integer" },
                   type: {
-                    type: 'string',
-                    enum: ['positive', 'negative', 'neutral']
-                  }
+                    type: "string",
+                    enum: ["positive", "negative", "neutral"],
+                  },
                 },
-                required: ['source', 'target', 'value', 'frequency', 'type']
-              }
+                required: ["source", "target", "value", "frequency", "type"],
+              },
             },
             cognitiveInsight: {
-              type: 'string',
-              description: 'Insight about thought patterns and how to break negative cycles or reinforce positive ones'
+              type: "string",
+              description:
+                "Insight about thought patterns and how to break negative cycles or reinforce positive ones",
             },
             lifeDomainBalance: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'object',
+                type: "object",
                 properties: {
                   domain: {
-                    type: 'string',
-                    enum: ['Work/Career', 'Relationships', 'Health', 'Personal Growth', 'Recreation', 'Spirituality']
+                    type: "string",
+                    enum: [
+                      "Work/Career",
+                      "Relationships",
+                      "Health",
+                      "Personal Growth",
+                      "Recreation",
+                      "Spirituality",
+                    ],
                   },
                   score: {
-                    type: 'number',
+                    type: "number",
                     minimum: 0,
-                    maximum: 100
+                    maximum: 100,
                   },
                   trend: {
-                    type: 'string',
-                    enum: ['improving', 'stable', 'declining']
+                    type: "string",
+                    enum: ["improving", "stable", "declining"],
                   },
-                  attention_needed: { type: 'boolean' },
-                  insights: { type: 'string' }
+                  attention_needed: { type: "boolean" },
+                  insights: { type: "string" },
                 },
-                required: ['domain', 'score', 'trend', 'attention_needed', 'insights']
+                required: [
+                  "domain",
+                  "score",
+                  "trend",
+                  "attention_needed",
+                  "insights",
+                ],
               },
               minItems: 6,
-              maxItems: 6
+              maxItems: 6,
             },
             lifeDomainInsight: {
-              type: 'string',
-              description: 'Overall insight about life balance and which areas need more attention'
+              type: "string",
+              description:
+                "Overall insight about life balance and which areas need more attention",
             },
           },
           required: [
-            'weekStart',
-            'weekEnd',
-            'overallMood',
-            'moodTrend',
-            'topEmotions',
-            'keyHighlights',
-            'motivationalMessage',
-            'emotionRadarData',
-            'emotionInsight',
-            'emotionalVolatility',
-            'volatilityInsight',
-            'cognitivePatterns',
-            'cognitiveInsight',
-            'lifeDomainBalance',
-            'lifeDomainInsight',
+            "weekStart",
+            "weekEnd",
+            "overallMood",
+            "moodTrend",
+            "topEmotions",
+            "keyHighlights",
+            "motivationalMessage",
+            "emotionRadarData",
+            "emotionInsight",
+            "emotionalVolatility",
+            "volatilityInsight",
+            "cognitivePatterns",
+            "cognitiveInsight",
+            "lifeDomainBalance",
+            "lifeDomainInsight",
           ],
         },
       },
@@ -497,103 +541,7 @@ export const generateWeeklySummary = async (
       streakDays,
     };
   } catch (error) {
-    console.error('Error generating weekly summary:', error);
-    return null;
-  }
-};
-
-/**
- * Generate monthly summary
- */
-export const generateMonthlySummary = async (
-  entries: Array<{
-    enrichedTranscript: string;
-    moodScore: number;
-    feelings: any;
-    created_at: string;
-  }>,
-  month: string,
-  year: number
-): Promise<MonthlySummary | null> => {
-  try {
-    if (!entries || entries.length === 0) {
-      return null;
-    }
-
-    const entriesText = entries
-      .slice(0, 30)
-      .map(
-        (e, i) =>
-          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${e.enrichedTranscript?.substring(0, 200)}...\n`
-      )
-      .join('\n---\n');
-
-    const avgMood = entries.reduce((sum, e) => sum + (e.moodScore || 0), 0) / entries.length;
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: `Generate a monthly summary for ${month} ${year}. The user made ${entries.length} entries with an average mood of ${avgMood.toFixed(1)}/5.\n\nSample entries:\n${entriesText}`,
-      config: {
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: 'object',
-          properties: {
-            month: { type: 'string' },
-            year: { type: 'integer' },
-            overallMood: { type: 'number' },
-            moodTrend: {
-              type: 'string',
-              enum: ['improving', 'stable', 'declining'],
-            },
-            topEmotions: {
-              type: 'array',
-              items: { type: 'string' },
-            },
-            monthlyHighlights: {
-              type: 'array',
-              items: { type: 'string' },
-            },
-            personalGrowth: {
-              type: 'array',
-              items: { type: 'string' },
-            },
-            challenges: {
-              type: 'array',
-              items: { type: 'string' },
-            },
-            achievements: {
-              type: 'array',
-              items: { type: 'string' },
-            },
-            recommendation: { type: 'string' },
-            nextMonthGoals: {
-              type: 'array',
-              items: { type: 'string' },
-            },
-            entriesCount: { type: 'integer' },
-            consistencyScore: { type: 'number' },
-          },
-          required: [
-            'month',
-            'year',
-            'overallMood',
-            'moodTrend',
-            'topEmotions',
-            'monthlyHighlights',
-            'recommendation',
-          ],
-        },
-      },
-    });
-
-    if (!response.text) return null;
-    const summary = JSON.parse(response.text);
-    return {
-      ...summary,
-      entriesCount: entries.length,
-    };
-  } catch (error) {
-    console.error('Error generating monthly summary:', error);
+    console.error("Error generating weekly summary:", error);
     return null;
   }
 };
@@ -618,33 +566,41 @@ export const generateGrowthInsights = async (
       .slice(0, 20)
       .map(
         (e, i) =>
-          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${e.enrichedTranscript?.substring(0, 300)}...\n`
+          `Entry ${i + 1} (${e.created_at}):\nMood: ${
+            e.moodScore
+          }/5\n${e.enrichedTranscript?.substring(0, 300)}...\n`
       )
-      .join('\n---\n');
+      .join("\n---\n");
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: "gemini-2.0-flash",
       contents: `Analyze these journal entries and identify deep patterns, recurring themes, and growth opportunities. Provide 3-5 actionable insights.\n\nEntries:\n${entriesText}`,
       config: {
-        responseMimeType: 'application/json',
+        responseMimeType: "application/json",
         responseSchema: {
-          type: 'array',
+          type: "array",
           items: {
-            type: 'object',
+            type: "object",
             properties: {
-              insight: { type: 'string' },
-              category: { type: 'string' },
+              insight: { type: "string" },
+              category: { type: "string" },
               supportingEvidence: {
-                type: 'array',
-                items: { type: 'string' },
+                type: "array",
+                items: { type: "string" },
               },
-              suggestion: { type: 'string' },
+              suggestion: { type: "string" },
               impactLevel: {
-                type: 'string',
-                enum: ['high', 'medium', 'low'],
+                type: "string",
+                enum: ["high", "medium", "low"],
               },
             },
-            required: ['insight', 'category', 'supportingEvidence', 'suggestion', 'impactLevel'],
+            required: [
+              "insight",
+              "category",
+              "supportingEvidence",
+              "suggestion",
+              "impactLevel",
+            ],
           },
         },
       },
@@ -653,7 +609,7 @@ export const generateGrowthInsights = async (
     if (!response.text) return [];
     return JSON.parse(response.text);
   } catch (error) {
-    console.error('Error generating growth insights:', error);
+    console.error("Error generating growth insights:", error);
     return [];
   }
 };

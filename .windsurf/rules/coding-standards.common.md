@@ -1,5 +1,6 @@
 ---
-trigger: always_on
+trigger: glob
+globs: *.ts, *.tsx, *.js, *.jsx
 ---
 
 # Common Coding Standards (FE & BE)
