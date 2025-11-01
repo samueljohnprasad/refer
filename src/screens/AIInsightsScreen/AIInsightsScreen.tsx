@@ -30,12 +30,6 @@ import { WeeklySummaryCard } from "@/src/components/ai/WeeklySummaryCard";
 import { AdvancedAnalyticsCharts } from "@/src/components/ai/AdvancedAnalyticsCharts";
 import { BlurView } from "expo-blur";
 
-const priorityColors: Record<string, string> = {
-  high: "#EF4444",
-  medium: "#F59E0B",
-  low: "#10B981",
-};
-
 export default function AIInsightsScreen() {
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
@@ -357,7 +351,7 @@ export default function AIInsightsScreen() {
           )}
 
           {/* Premium CTA */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             className="mt-8 rounded-3xl overflow-hidden"
             style={{
               shadowColor: "#7B61FF",
@@ -394,7 +388,7 @@ export default function AIInsightsScreen() {
                 <Feather name="chevron-right" size={28} color="#FFF" />
               </View>
             </LinearGradient>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </Animated.ScrollView>
     </SafeAreaView>

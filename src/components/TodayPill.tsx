@@ -1,7 +1,15 @@
-import React from 'react';
-import { Animated, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { Text } from '@/components/Themed';
-import useTodayPillAnimation from '@/hooks/animations/useTodayPillAnimation';
+import React from "react";
+import {
+  Animated,
+  Pressable,
+  StyleSheet,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
+import { Text } from "@/components/Themed";
+import useTodayPillAnimation from "@/hooks/animations/useTodayPillAnimation";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 export interface TodayPillProps {
   visible: boolean;
@@ -9,80 +17,74 @@ export interface TodayPillProps {
   onPress?: () => void;
   containerStyle?: StyleProp<ViewStyle>;
   backgroundColor?: string;
-  pointerColor?: string;
   textColor?: string;
   durationMs?: number;
   offsetX?: number;
   scaleFrom?: number;
 }
 
-export const TodayPill: React.FC<TodayPillProps> = React.memo(({
-  visible,
-  label = 'Today',
-  onPress,
-  containerStyle,
-  backgroundColor = '#8B5CF6', // purple-500
-  pointerColor = '#6D28D9', // darker purple pointer
-  textColor = '#ffffff',
-  durationMs,
-  offsetX,
-  scaleFrom,
-}) => {
-  const { animatedStyle, pointerEvents } = useTodayPillAnimation({
+export const TodayPill: React.FC<TodayPillProps> = React.memo(
+  ({
     visible,
+    label = "Today",
+    onPress,
+    containerStyle,
+    backgroundColor = "#8B5CF6", // purple-500
+    textColor = "#ffffff",
     durationMs,
     offsetX,
     scaleFrom,
-  });
+  }) => {
+    const { animatedStyle, pointerEvents } = useTodayPillAnimation({
+      visible,
+      durationMs,
+      offsetX,
+      scaleFrom,
+    });
 
-  return (
-    <Animated.View
-      style={[styles.pill, { backgroundColor }, containerStyle, animatedStyle]}
-      pointerEvents={pointerEvents}
-    >
-      <Pressable
-        onPress={onPress}
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        style={styles.row}
+    return (
+      <Animated.View
+        style={[
+          styles.pill,
+          { backgroundColor },
+          containerStyle,
+          animatedStyle,
+        ]}
+        pointerEvents={pointerEvents}
       >
-        <View style={[styles.pointer, { borderRightColor: pointerColor }]} />
-        <Text style={[styles.text, { color: textColor }]}>{label}</Text>
-      </Pressable>
-    </Animated.View>
-  );
-});
+        <Pressable
+          onPress={onPress}
+          accessibilityRole="button"
+          accessibilityLabel={label}
+          style={styles.row}
+        >
+          <MaterialCommunityIcons name="chevron-left" size={18} color="white" />
+          <Text style={[styles.text, { color: textColor }]}>{label}</Text>
+        </Pressable>
+      </Animated.View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   pill: {
-    position: 'absolute',
+    position: "absolute",
     right: 0,
     bottom: -14,
     borderTopLeftRadius: 16,
     borderBottomLeftRadius: 16,
     paddingHorizontal: 6,
     paddingVertical: 4,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     zIndex: 100,
   },
-  pointer: {
-    width: 0,
-    height: 0,
-    borderStyle: 'solid',
-    borderTopWidth: 6,
-    borderBottomWidth: 6,
-    borderRightWidth: 8,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    marginRight: 6,
-  },
   text: {
-    fontWeight: '600',
+    fontWeight: "600",
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 

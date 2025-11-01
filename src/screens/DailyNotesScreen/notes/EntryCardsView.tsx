@@ -69,48 +69,12 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
     );
   }
 
-  const getMoodEmoji = (mood: string): string => {
-    const moodEmojis: Record<string, string> = {
-      anxious: "😟",
-      calm: "😌",
-      hopeful: "🌟",
-      stressed: "😓",
-      peaceful: "🕊️",
-      grateful: "🙏",
-      sad: "😢",
-      excited: "🎉",
-      neutral: "😐",
-      confident: "💪",
-      overwhelmed: "🤯",
-      confused: "🤔",
-    };
-    return moodEmojis[mood] || "😐";
-  };
-
-  const getEntryTypeIcon = (type: "voice" | "text"): string => {
-    return type === "voice" ? "mic" : "edit-3";
-  };
-
-  const formatDuration = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
   return (
     <View className="gap-4">
       <View className="flex-row items-center justify-between">
         <Text className="text-lg font-semibold text-gray-800">
           Journal Entries ({entries.length})
         </Text>
-        {onRefresh && (
-          <Feather
-            name="refresh-cw"
-            size={20}
-            color="#6b7280"
-            onPress={onRefresh}
-          />
-        )}
       </View>
 
       <View className="gap-3">
@@ -146,41 +110,6 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
       useNativeDriver: true,
     }).start();
   }, [index]);
-
-  const getMoodEmoji = (mood: string): string => {
-    const moodEmojis: Record<string, string> = {
-      anxious: "😟",
-      calm: "😌",
-      hopeful: "🌟",
-      stressed: "😓",
-      peaceful: "🕊️",
-      grateful: "🙏",
-      sad: "😢",
-      excited: "🎉",
-      neutral: "😐",
-      confident: "💪",
-      overwhelmed: "🤯",
-      confused: "🤔",
-    };
-    return moodEmojis[mood] || "😐";
-  };
-
-  const getEntryTypeIcon = (type: "voice" | "text"): string => {
-    return type === "voice" ? "mic" : "edit-3";
-  };
-
-  const formatDuration = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  const getMoodIntensityColor = (intensity: number): string => {
-    if (intensity >= 8) return "bg-green-100 text-green-800";
-    if (intensity >= 6) return "bg-yellow-100 text-yellow-800";
-    if (intensity >= 4) return "bg-orange-100 text-orange-800";
-    return "bg-red-100 text-red-800";
-  };
 
   return (
     <Pressable onPress={onPress}>

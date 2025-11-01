@@ -22,7 +22,7 @@ function WeeklyCard({ onPress, isSelected }: WeeklyCardProps) {
     >
       <Text style={styles.weeklyLabel}>Weekly</Text>
       <Text style={styles.weeklyPrice}>
-        ₹400<Text style={styles.per}>/week</Text>
+        ₹100<Text style={styles.per}>/week</Text>
       </Text>
     </TouchableOpacity>
   );

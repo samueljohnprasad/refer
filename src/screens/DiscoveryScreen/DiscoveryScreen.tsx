@@ -1,7 +1,13 @@
 // DiscoveryScreen.tsx
 // Updated per request: removed bottom tabs, bigger mic, slimmer progress, fire for streak.
 
-import React, { useMemo, useCallback, useState, useRef } from "react";
+import React, {
+  useMemo,
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 import {
   View,
   Text,
@@ -12,15 +18,18 @@ import {
   Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Feather, Entypo } from "@expo/vector-icons";
 import { Box } from "@/components/ui/box";
 import LottieView from "lottie-react-native";
 import { girlMeditation } from "@/assets/lottie";
 import { useAtom } from "jotai";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { router } from "expo-router";
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { recorderOpenAtom, keyboardJournalOpenAtom } from "./helpers";
 import VoiceRecorderModalWrapper from "./VoiceRecorderModalWrapper";
 import KeyboardJournalModalWrapper from "./KeyboardJournalModalWrapper";
@@ -29,6 +38,7 @@ import { format } from "date-fns";
 import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
+import { useLocalSearchParams } from "expo-router";
 
 // Constants outside component to prevent recreation
 const COLORS = {
@@ -61,12 +71,7 @@ interface DiscoveryHeaderProps {
 const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(
   ({ currentStreak, isLoading }) => (
     <View className="flex-row items-center justify-between my-1.5">
-      <View className="flex-row items-center">
-        <View className="w-3.5 h-3.5 rounded-full bg-[#8D7BF7] mr-2.5" />
-        <Text className="text-[#2E285A] text-[22px] font-extrabold tracking-wide">
-          1st discovery
-        </Text>
-      </View>
+      <View className="flex-row items-center"></View>
       <View className="flex-row items-center">
         <Text className="text-[#FF7A2F] text-lg font-extrabold">
           {isLoading ? "..." : currentStreak}
@@ -84,33 +89,6 @@ const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(
 
 DiscoveryHeader.displayName = "DiscoveryHeader";
 
-// Memoized Progress Bar Component
-interface ProgressBarProps {
-  progress: number;
-}
-
-const ProgressBar = React.memo<ProgressBarProps>(({ progress }) => (
-  <View
-    className="mt-2 mb-3.5"
-    accessible
-    accessibilityRole="progressbar"
-    accessibilityLabel="Experience progress"
-  >
-    <View className="mb-1.5 flex-row justify-between items-center">
-      <Text className="text-[#64748B] text-xs font-bold">0/100 XP</Text>
-    </View>
-    <View className="h-2 bg-[#F3F4F6] rounded-md overflow-hidden justify-center">
-      <View
-        className="h-full bg-[#F6C24B] rounded-md"
-        style={{ width: `${progress}%` }}
-      />
-    </View>
-  </View>
-));
-
-ProgressBar.displayName = "ProgressBar";
-
-// Memoized Prompt Card Content
 interface PromptCardContentProps {
   selectedDate: Date;
   onDatePress: () => void;
@@ -121,7 +99,7 @@ interface PromptCardContentProps {
 const PromptCardContent = React.memo<PromptCardContentProps>(
   ({ selectedDate, onDatePress, prompt, onShufflePrompt }) => {
     const rotation = useSharedValue(0);
-    
+
     const formattedDate = useMemo(
       () => format(selectedDate, "MMMM d"),
       [selectedDate]
@@ -144,10 +122,27 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
     return (
       <Box>
         <View className="flex-row justify-between items-center">
-          <Pressable onPress={onDatePress}>
-            <Text className="text-[#2E285A] opacity-75 font-bold">
+          <Pressable
+            onPress={onDatePress}
+            className="flex-row items-center justify-center gap-1"
+          >
+            <Text className="text-[#2E285A] opacity-75 font-bold ">
               Journal · {formattedDate}
             </Text>
+            <View className="flex-col items-center p-0 m-0">
+              <Entypo
+                className=" p-0 m-0"
+                name="chevron-small-up"
+                size={12}
+                color={COLORS.ink}
+              />
+              <Entypo
+                className="p-0 m-0"
+                name="chevron-small-down"
+                size={12}
+                color={COLORS.ink}
+              />
+            </View>
           </Pressable>
           <Pressable onPress={handleShuffle} className="p-1">
             <Animated.View style={rotateStyle}>
@@ -179,7 +174,13 @@ function DiscoveryScreen() {
   const [, setKeyboardJournalOpen] = useAtom(keyboardJournalOpenAtom);
   const tabBarHeight = useBottomTabBarHeight();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+  const { date } = useLocalSearchParams<{ date: string }>();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  useEffect(() => {
+    setSelectedDate(date ? new Date(date) : new Date());
+  }, [date]);
+
   const [isCalendarVisible, setIsCalendarVisible] = useState<boolean>(false);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
 
@@ -235,7 +236,7 @@ function DiscoveryScreen() {
             currentStreak={currentStreak}
             isLoading={isLoadingProfile}
           />
-          <ProgressBar progress={74} />
+          {/* <ProgressBar progress={74} /> */}
         </View>
 
         {/* Prompt card */}
@@ -323,11 +324,13 @@ function DiscoveryScreen() {
                   <Text className="text-white text-xl font-bold">
                     Select Date
                   </Text>
-                  <Pressable 
+                  <Pressable
                     onPress={handleTodayPress}
                     className="bg-white/20 px-3 py-1.5 rounded-full"
                   >
-                    <Text className="text-white text-xs font-semibold">Today</Text>
+                    <Text className="text-white text-xs font-semibold">
+                      Today
+                    </Text>
                   </Pressable>
                 </View>
                 <Pressable onPress={handleCloseCalendar} className="p-2">

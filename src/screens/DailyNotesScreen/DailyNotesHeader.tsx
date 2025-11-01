@@ -31,6 +31,7 @@ import { useWeekNavigation } from "./hooks/useWeekNavigation";
 import useFetchMoods from "@/hooks/data/useFetchMoods";
 import useCalendarExpandReanimated from "./hooks/useCalendarExpandReanimated";
 import TodayPill from "@/src/components/TodayPill";
+import { router } from "expo-router";
 
 const { height } = Dimensions.get("window");
 const isIso = Platform.OS === "ios";
@@ -212,6 +213,15 @@ const DailyNotesHeader = React.memo(() => {
     return isSelectedDateValid ? !isToday(selectedDate) : false;
   }, [currentWeekViewSafe]);
 
+  const onEmojiPress = (day: Date, moodScore: number) => {
+    if (moodScore) return;
+    const date = day.toISOString();
+    router.push({
+      pathname: "/tabs/(tabs)/record",
+      params: { date },
+    });
+  };
+
   // Pan gesture handlers are provided by useWeekNavigation
   return (
     <SafeAreaView edges={["top"]} className="bg-violet-300">
@@ -250,7 +260,7 @@ const DailyNotesHeader = React.memo(() => {
                 weekSlideAnimatedStyle,
               ]}
             >
-              {weekDaysData.map((dayData, index) => (
+              {weekDaysData.map((dayData) => (
                 <View className="flex-1 gap-4 mb-8" key={dayData.dayStr}>
                   <DayButton
                     day={dayData.day}
@@ -264,6 +274,7 @@ const DailyNotesHeader = React.memo(() => {
                       moodscore={dayData.mood}
                       active={dayData.isSelectedDay}
                       size={28}
+                      onPress={() => onEmojiPress(dayData.day, dayData.mood)}
                     />
                   </View>
                 </View>

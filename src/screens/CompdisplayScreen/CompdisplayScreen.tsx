@@ -24,9 +24,6 @@ const CompdisplayScreen = () => {
   const { heroOpacity, heroTranslateY, sectionStyle } =
     useJournalEntryAnimations(2);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
-  const yesterday = sub(new Date(), { days: 0 });
-  const startOfWeekDate = startOfWeek(yesterday, { weekStartsOn: 0 });
-  const endOfWeekDate = endOfWeek(yesterday, { weekStartsOn: 0 });
   const insets = useSafeAreaInsets();
   const xpAnim = useRef(new Animated.Value(0)).current;
   // Animated values for counting streak and XP numbers
@@ -88,13 +85,6 @@ const CompdisplayScreen = () => {
       </Animated.View>
       <Animated.View style={sectionStyle(0)}>
         <LevelProgressCard xp={323} levelLabel="Gold" percent={34} />
-      </Animated.View>
-      <Animated.View style={sectionStyle(1)}>
-        <WeeklyMoodChart
-          startDate={startOfWeekDate}
-          endDate={endOfWeekDate}
-          title="This Week's Mood"
-        />
       </Animated.View>
 
       {/* XP progress card */}

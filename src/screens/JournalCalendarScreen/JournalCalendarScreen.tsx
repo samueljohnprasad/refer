@@ -8,12 +8,16 @@ import {
   Animated,
   Pressable,
 } from "react-native";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
+import {
+  Feather,
+  MaterialIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import Svg, { Circle, Rect, Ellipse } from "react-native-svg";
 import { Calendar, DateData } from "react-native-calendars";
 import { BlurView } from "expo-blur";
 import LottieView from "lottie-react-native";
-import { girlMeditationBlue, manRocket } from "@/assets/lottie";
+import { girlMeditationBlue } from "@/assets/lottie";
 import { endOfWeek, format, startOfWeek, sub } from "date-fns";
 import { Box } from "@/components/ui/box";
 // import { EntryDetailModal } from "@/components/mentalHealth/EntryModal/EntryDetailModal";
@@ -23,10 +27,7 @@ import { Box } from "@/components/ui/box";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import BlurModal from "@/src/components/BlurModal";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
-import {
-  getNextMilestone,
-  getStreakProgress,
-} from "@/hooks/data/useStreakCalculation";
+import { getNextMilestone } from "@/hooks/data/useStreakCalculation";
 import { StreakRecoveryModal } from "@/src/components/StreakRecoveryModal";
 import { useCanRecoverStreak } from "@/hooks/data/useStreakRecovery";
 // import { girlMeditationBlue } from "@/assets/lottie";
@@ -68,16 +69,15 @@ export default function JournalCalendarScreen() {
 
   const currentStreak = userProfile?.currentStreak ?? 0;
   const nextMilestone = getNextMilestone(currentStreak);
-  const streakProgress = getStreakProgress(currentStreak);
 
   useEffect(() => {
     // Animate progress bar fill based on actual streak progress
     Animated.timing(progressAnim, {
-      toValue: streakProgress / 100, // Convert percentage to 0-1
+      toValue: currentStreak / nextMilestone, // Convert percentage to 0-1
       duration: 1200,
       useNativeDriver: false,
     }).start();
-  }, [streakProgress]);
+  }, [currentStreak]);
 
   // Show recovery modal if streak can be recovered
   useEffect(() => {
@@ -160,12 +160,16 @@ export default function JournalCalendarScreen() {
             <View className="flex-row justify-between py-1.5">
               <TouchableOpacity
                 onPress={() => {
-                  router.push("/tabs/screens/compdisplay");
+                  router.push("/tabs/screens/paywall");
                 }}
                 className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
                 activeOpacity={0.8}
               >
-                <Feather name="arrow-left" size={20} color={PALETTE.white} />
+                <MaterialCommunityIcons
+                  name="star-four-points-outline"
+                  size={20}
+                  color={PALETTE.white}
+                />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -185,7 +189,7 @@ export default function JournalCalendarScreen() {
           </Text>
 
           {/* Streak card with animated progress bar */}
-          <View className="bg-[#FFD24A] rounded-2xl p-4 pr-0 flex-row items-center overflow-hidden mt-3">
+          <View className="bg-[#FFD24A] rounded-2xl p-4  flex-row items-center overflow-hidden mt-3">
             <View className="flex-1">
               {/* Streak info */}
               <View className="flex-row items-center justify-between">
@@ -227,18 +231,6 @@ export default function JournalCalendarScreen() {
                   }}
                 />
               </View>
-            </View>
-
-            {/* Illustration placeholder (SVG character) */}
-            <View style={{ transform: [{ scaleX: -1 }] }}>
-              <LottieView
-                autoPlay
-                style={{
-                  width: 100,
-                  height: 60,
-                }}
-                source={manRocket}
-              />
             </View>
           </View>
 

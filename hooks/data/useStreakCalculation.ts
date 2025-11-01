@@ -136,21 +136,3 @@ export const getNextMilestone = (currentStreak: number): number => {
   // If past all milestones, next is +100
   return Math.ceil((currentStreak + 1) / 100) * 100;
 };
-
-/**
- * Calculate progress percentage to next milestone
- */
-export const getStreakProgress = (currentStreak: number): number => {
-  const nextMilestone = getNextMilestone(currentStreak);
-  const previousMilestone =
-    currentStreak === 0
-      ? 0
-      : getNextMilestone(currentStreak - 1) === nextMilestone
-      ? 0
-      : getNextMilestone(currentStreak - 1);
-
-  const range = nextMilestone - previousMilestone;
-  const progress = currentStreak - previousMilestone;
-
-  return Math.min(Math.max((progress / range) * 100, 0), 100);
-};

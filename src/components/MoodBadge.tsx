@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Animated,
+  Easing,
   StyleSheet,
   View,
   type StyleProp,
@@ -10,12 +11,15 @@ import { bad, fine, good, great, terrible } from "@/assets/emojis";
 import { moodScoreToPale, clampToMoodScore } from "@/constants/moodColors";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/Themed";
+import { PressableOpacity, PressableScale } from "pressto";
+import { router } from "expo-router";
 
 export type MoodBadgeProps = {
   moodscore?: number;
   active?: boolean; // highlighted ring for selected day
   size?: number; // diameter of badge
   containerStyle?: StyleProp<ViewStyle>;
+  onPress?: () => void;
 };
 
 const moodEmojiMap = {
@@ -26,61 +30,58 @@ const moodEmojiMap = {
   5: great,
 };
 
-export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(({
-  moodscore,
-  size = 32,
-  containerStyle,
-}) => {
-  const diameter = size;
-  const radius = diameter / 2;
-  const moodEmoji = moodscore
-    ? moodEmojiMap[moodscore as keyof typeof moodEmojiMap]
-    : null;
-  const bgColor =
-    typeof moodscore === "number"
-      ? moodScoreToPale(clampToMoodScore(moodscore))
-      : "rgba(0,0,0,0.06)";
-  return (
-    <Animated.View
-      style={[styles.wrapper, containerStyle]}
-      pointerEvents="none"
-    >
-      <View style={styles.outer} />
-      <View
-        style={{
-          width: diameter,
-          height: diameter,
-          borderRadius: radius,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: bgColor,
-        }}
+export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
+  ({ moodscore, size = 32, containerStyle, onPress }) => {
+    const diameter = size;
+    const radius = diameter / 2;
+    const moodEmoji = moodscore
+      ? moodEmojiMap[moodscore as keyof typeof moodEmojiMap]
+      : null;
+    const bgColor =
+      typeof moodscore === "number"
+        ? moodScoreToPale(clampToMoodScore(moodscore))
+        : "rgba(0,0,0,0.06)";
+    return (
+      <PressableOpacity
+        style={{ width: diameter, height: diameter }}
+        onPress={onPress}
       >
-        {moodEmoji && (
-          // <RNText style={{ fontSize: size * 0.65, lineHeight: size * 0.8 }}>
-          //   {emoji}
-          // </RNText>
-          <Image
-            source={moodEmoji}
-            alt={"moodEmoji"}
+        <Animated.View style={[styles.wrapper, containerStyle]}>
+          <View style={styles.outer} />
+          <View
             style={{
               width: diameter,
               height: diameter,
+              borderRadius: radius,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: bgColor,
             }}
-            width={diameter}
-            height={diameter}
-            progressiveRenderingEnabled={true}
-          />
-        )}
-        {!moodEmoji && (
-          <Text className="color-slate-700" style={{ color: "#334155" }}>
-            +
-          </Text>
-        )}
-      </View>
-    </Animated.View>
-  );
-});
+          >
+            {moodEmoji && (
+              <Image
+                source={moodEmoji}
+                alt={"moodEmoji"}
+                style={{
+                  width: diameter,
+                  height: diameter,
+                }}
+                width={diameter}
+                height={diameter}
+                progressiveRenderingEnabled={true}
+              />
+            )}
+            {!moodEmoji && (
+              <Text className="color-slate-700" style={{ color: "#334155" }}>
+                +
+              </Text>
+            )}
+          </View>
+        </Animated.View>
+      </PressableOpacity>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   wrapper: {

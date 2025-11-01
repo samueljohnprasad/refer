@@ -79,7 +79,10 @@ function RootLayoutNav() {
     <Suspense fallback={<div>Loading...</div>}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <PressablesConfig globalHandlers={globalPressableHandlers}>
+          <PressablesConfig
+            globalHandlers={globalPressableHandlers}
+            animationType="spring"
+          >
             <GestureHandlerRootView style={StyleSheet.absoluteFill}>
               <GluestackUIProvider mode={colorMode}>
                 <ThemeProvider

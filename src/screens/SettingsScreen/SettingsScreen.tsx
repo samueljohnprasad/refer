@@ -266,7 +266,7 @@ export default React.memo(function SettingsScreen() {
 
           {/* Settings Group */}
           <View style={styles.cardGroup}>
-            <View style={styles.rowItem}>
+            {/* <View style={styles.rowItem}>
               <View style={[styles.leftIcon, { backgroundColor: "#FDE68A" }]}>
                 <Feather name="bell" size={20} color="#F59E0B" />
               </View>
@@ -281,7 +281,7 @@ export default React.memo(function SettingsScreen() {
                 thumbColor={Platform.OS === "android" ? "#fff" : undefined}
                 ios_backgroundColor="#E6E6E6"
               />
-            </View>
+            </View> */}
 
             <View style={styles.rowItem}>
               <View style={[styles.leftIcon, { backgroundColor: "#BBF7D0" }]}>
@@ -343,24 +343,7 @@ export default React.memo(function SettingsScreen() {
               <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.rowItem}
-              activeOpacity={0.7}
-              onPress={() => {
-                // handlePress("language");
-                signOut();
-              }}
-            >
-              <View style={[styles.leftIcon, { backgroundColor: "#BFDBFE" }]}>
-                <Feather name="globe" size={20} color="#3B82F6" />
-              </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Language</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
-            </TouchableOpacity>
-
-            <View style={styles.rowItem}>
+            {/* <View style={styles.rowItem}>
               <View style={[styles.leftIcon, { backgroundColor: "#DDD6FE" }]}>
                 <MaterialCommunityIcons
                   name="lock-outline"
@@ -379,7 +362,7 @@ export default React.memo(function SettingsScreen() {
                 thumbColor={Platform.OS === "android" ? "#fff" : undefined}
                 ios_backgroundColor="#E6E6E6"
               />
-            </View>
+            </View> */}
 
             <TouchableOpacity
               style={styles.rowItem}
@@ -410,26 +393,27 @@ export default React.memo(function SettingsScreen() {
               </View>
               <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
             </TouchableOpacity>
-          </View>
 
-          {/* Settings Group 2 */}
-          <View style={[styles.cardGroup, { marginTop: 14 }]}>
             <TouchableOpacity
               style={styles.rowItem}
               activeOpacity={0.7}
               onPress={() => {
-                handlePress("copy-id");
+                // handlePress("language");
+                signOut();
               }}
             >
-              <View style={[styles.leftIcon, { backgroundColor: "#E0F2FE" }]}>
-                <Feather name="copy" size={20} color="#0284C7" />
+              <View style={[styles.leftIcon, { backgroundColor: "#BFDBFE" }]}>
+                <Feather name="globe" size={20} color="#3B82F6" />
               </View>
               <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Copy My ID</Text>
+                <Text style={styles.itemTitle}>Sign Out</Text>
               </View>
               <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
             </TouchableOpacity>
+          </View>
 
+          {/* Settings Group 2 */}
+          <View style={[styles.cardGroup, { marginTop: 14 }]}>
             <TouchableOpacity
               style={styles.rowItem}
               activeOpacity={0.7}
