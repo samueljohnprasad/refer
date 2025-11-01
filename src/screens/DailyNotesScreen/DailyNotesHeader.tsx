@@ -213,7 +213,7 @@ const DailyNotesHeader = React.memo(() => {
     return isSelectedDateValid ? !isToday(selectedDate) : false;
   }, [currentWeekViewSafe]);
 
-  const onEmojiPress = (day: Date, moodScore: number) => {
+  const onEmojiPress = (day: Date, moodScore?: number) => {
     if (moodScore) return;
     const date = day.toISOString();
     router.push({
