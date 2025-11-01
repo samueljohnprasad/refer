@@ -16,7 +16,7 @@ const WEEKDAY_LABELS = [
   "Fri",
   "Sat",
 ] as const;
-const DAY_CELL_STYLE = { width: "14.28%", aspectRatio: 1 } as const;
+const DAY_CELL_STYLE = { width: "14.285%", aspectRatio: 1 } as const;
 
 // Calendar Picker Component
 interface CalendarPickerProps {
@@ -47,9 +47,9 @@ const DayCell = React.memo<DayCellProps>(
       () =>
         `w-full h-full flex justify-center items-center gap-0.5 ${
           isSelected
-            ? "bg-[#7B61FF] rounded-xl"
+            ? "bg-[#7B61FF] rounded-lg"
             : isTodayDate
-            ? "bg-white rounded-xl"
+            ? "bg-white/15 rounded-lg"
             : ""
         }`,
       [isSelected, isTodayDate]
@@ -57,26 +57,26 @@ const DayCell = React.memo<DayCellProps>(
 
     const textClassName = useMemo(
       () =>
-        `text-[13px] font-semibold ${
+        `text-[14px] font-medium ${
           !inCurrentMonth
-            ? "text-[#C7BDF9]"
+            ? "text-white/30"
             : isTodayDate && !isSelected
-            ? "text-[#7B61FF] font-bold"
+            ? "text-white font-semibold"
             : isSelected
             ? "text-white font-semibold"
-            : "text-white"
+            : "text-white/90"
         }`,
       [inCurrentMonth, isTodayDate, isSelected]
     );
 
     const moodClassName = useMemo(
-      () => `mt-0.5 ${!inCurrentMonth ? "opacity-40" : ""}`,
+      () => `mt-0.5 ${!inCurrentMonth ? "opacity-30" : ""}`,
       [inCurrentMonth]
     );
 
     return (
       <Pressable
-        className="justify-center items-center p-0.5"
+        className="justify-center items-center p-[2px]"
         style={DAY_CELL_STYLE}
         onPress={onPress}
         accessibilityRole="button"
@@ -85,7 +85,7 @@ const DayCell = React.memo<DayCellProps>(
           <Text className={textClassName}>{dayLabel}</Text>
           {showMoodBadge && (
             <View className={moodClassName}>
-              <MoodBadge moodscore={mood} size={20} />
+              <MoodBadge moodscore={mood} size={18} />
             </View>
           )}
         </View>
@@ -109,11 +109,11 @@ DayCell.displayName = "DayCell";
 
 // Memoized Week Header Component
 const WeekDayHeader = React.memo(() => (
-  <View className="flex-row mb-0">
+  <View className="flex-row mb-2">
     {WEEKDAY_LABELS.map((day) => (
       <Text
         key={day}
-        className="flex-1 text-center text-xs font-semibold text-[#EDE9FF] py-1.5"
+        className="flex-1 text-center text-[11px] font-semibold text-white/60 uppercase tracking-wider py-1"
       >
         {day}
       </Text>
@@ -155,20 +155,20 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
     }, [daysData, onDateSelect]);
 
     return (
-      <View>
-        <View className="flex-row justify-between items-center mb-2">
-          <Pressable className="p-2" onPress={goToPreviousMonth}>
-            <Feather name="chevron-left" size={20} color="#fff" />
+      <View className="px-1">
+        <View className="flex-row justify-between items-center mb-4">
+          <Pressable className="p-2 -ml-2" onPress={goToPreviousMonth}>
+            <Feather name="chevron-left" size={22} color="#fff" />
           </Pressable>
-          <Text className="text-[20px] font-bold text-white">{monthTitle}</Text>
-          <Pressable className="p-2" onPress={goToNextMonth}>
-            <Feather name="chevron-right" size={20} color="#fff" />
+          <Text className="text-[18px] font-semibold text-white tracking-wide">{monthTitle}</Text>
+          <Pressable className="p-2 -mr-2" onPress={goToNextMonth}>
+            <Feather name="chevron-right" size={22} color="#fff" />
           </Pressable>
         </View>
 
         <WeekDayHeader />
 
-        <View className="flex-row flex-wrap">
+        <View className="flex-row flex-wrap -mx-[2px]">
           {daysData.map((dayData, index) => (
             <DayCell
               key={dayData.dayStr}

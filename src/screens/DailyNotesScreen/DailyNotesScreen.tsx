@@ -67,17 +67,17 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   useEffect(() => {
     // Gentle glow animation for selected state (on UI thread)
     glow.value = withTiming(isSelected ? 1 : 0, {
-      duration: 500,
+      duration: 400,
       easing: Easing.out(Easing.quad),
     });
   }, [isSelected]);
 
   const outerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(glow.value, [0, 1], [0.8, 1]),
+    opacity: interpolate(glow.value, [0, 1], [0.85, 1]),
   }));
 
   const innerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(glow.value, [0, 1], [0.7, 1]),
+    opacity: interpolate(glow.value, [0, 1], [0.8, 1]),
   }));
 
   const handlePress = (): void => {
@@ -87,25 +87,26 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   return (
     <Pressable onPress={handlePress}>
       <Animated.View
-        style={[
-          styles.dayBox,
-          isSelected && styles.dayBoxActive,
-          isToday && !isSelected && styles.dayBoxToday,
-          outerAnimatedStyle,
-        ]}
+        className={`items-center py-1.5 px-1 rounded-xl ${
+          isSelected ? "bg-[#7B61FF]" : isToday && !isSelected ? "bg-white/10" : ""
+        }`}
+        style={[outerAnimatedStyle]}
       >
         <Animated.View
           style={[innerAnimatedStyle]}
           className="flex flex-col items-center"
         >
-          <Text style={[styles.dayName, isSelected && styles.dayNameActive]}>
+          <Text
+            className={`text-xs font-medium tracking-wider mb-0.5 ${
+              isSelected ? "text-white" : "text-[#EDE9FF]"
+            }`}
+          >
             {dayName}
           </Text>
           <Text
-            style={[
-              styles.dayNumberText,
-              isSelected && styles.dayNumberTextActive,
-            ]}
+            className={`text-base font-semibold ${
+              isSelected ? "text-white" : "text-white"
+            }`}
           >
             {format(day, "d")}
           </Text>
@@ -331,13 +332,6 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  calendarHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 0,
-    paddingHorizontal: 12,
-  },
   navigationContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -374,52 +368,6 @@ const styles = StyleSheet.create({
   weekRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  dayBox: {
-    alignItems: "center",
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  dayBoxActive: {
-    backgroundColor: "#7B61FF",
-    borderRadius: 12,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dayBoxToday: {
-    backgroundColor: "rgba(255,255,255,0.12)",
-    borderRadius: 12,
-  },
-  dayName: {
-    fontSize: 12,
-    fontWeight: "500",
-    color: "#EDE9FF",
-    letterSpacing: 0.5,
-    marginBottom: 2,
-  },
-  dayNameActive: {
-    color: "#fff",
-  },
-  dayNumber: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dayNumberActive: {
-    backgroundColor: "#007BFF",
-  },
-  dayNumberText: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#fff",
-  },
-  dayNumberTextActive: {
-    color: "#fff",
-    fontWeight: "600",
   },
   weekDivider: {
     height: 1,
