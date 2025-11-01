@@ -47,7 +47,7 @@ const performOAuth = async (router?: any) => {
       provider: "google",
       options: {
         skipBrowserRedirect: true,
-        redirectTo: "starterkitexpo://auth/callback", // Ensure Supabase keeps the dashboard path
+        redirectTo: "Happy://auth/callback", // Ensure Supabase keeps the dashboard path
         queryParams: {
           access_type: "offline",
           prompt: "select_account", // Force account selection to avoid cached sessions

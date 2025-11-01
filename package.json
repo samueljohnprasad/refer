@@ -1,5 +1,5 @@
 {
-  "name": "starter-kit-expo",
+  "name": "happy",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
@@ -46,7 +46,6 @@
     "expo-linking": "~8.0.8",
     "expo-notifications": "~0.32.12",
     "expo-router": "~6.0.13",
-    "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~3.0.8",
     "expo-system-ui": "~6.0.8",
     "expo-web-browser": "~15.0.7",
