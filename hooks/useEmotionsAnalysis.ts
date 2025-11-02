@@ -95,7 +95,6 @@ const useEmotionsAnalysis = ({
   useEffect(() => {
     const fetch = async () => {
       let transcripts: string[] = [];
-      let base64AudioText: string = "";
       // If journalText is provided, use it directly; otherwise transcribe audio
       if (journalText) {
         transcripts = [journalText];
