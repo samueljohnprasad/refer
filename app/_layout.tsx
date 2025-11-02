@@ -7,9 +7,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import BootSplash from "react-native-bootsplash";
-
-// import * as SplashScreen from "expo-splash-screen";
+import * as SplashScreen from "expo-splash-screen";
 import { Suspense, useEffect, useState } from "react";
 import { useColorScheme } from "@/components/useColorScheme";
 import { Slot, usePathname } from "expo-router";
@@ -38,7 +36,12 @@ export {
   ErrorBoundary,
 } from "expo-router";
 
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
+
+SplashScreen.preventAutoHideAsync();
 
 // Configure how notifications behave while the app is in the foreground.
 // Without this, local notifications may be silent or not visible if the app
@@ -65,22 +68,11 @@ export default function RootLayout() {
     if (error) throw error;
   }, [error]);
 
-  // useEffect(() => {
-  //   if (loaded) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [loaded]);
-
   useEffect(() => {
-    const init = async () => {
-      // …do multiple sync or async tasks
-    };
-
-    init().finally(async () => {
-      await BootSplash.hide({ fade: true });
-      console.log("BootSplash has been hidden successfully");
-    });
-  }, []);
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
 
   return <RootLayoutNav />;
 }

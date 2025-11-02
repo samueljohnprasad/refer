@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { getInsights, InsightsType } from "@/src/network/genAi";
 import { supabase } from "@/src/network/auth/supabase";
-import { transcribeAudio } from "@/src/network/transcribeAudio";
+import { callMyFunction, transcribeAudio } from "@/src/network/transcribeAudio";
 import { ProcessingPhase } from "@/src/screens/DiscoveryScreen/types";
 import { File } from "expo-file-system";
 
@@ -49,9 +49,9 @@ const useEmotionsAnalysis = ({
   const uploadAndTranscribe = async () => {
     if (!uri) {
       console.error("No URI provided for transcription");
-      return [];
+      return { transcripts: [], base64Audio: "" };
     }
-    
+
     try {
       // Step 1: Read audio file using the new File API (works on both iOS and Android)
       console.log("uploadAndTranscribe, original uri:", uri);
@@ -75,36 +75,41 @@ const useEmotionsAnalysis = ({
         "AIzaSyCfc4bT2M0K4z3mVjvra2T-VV65ZtWr7cM",
         base64Audio
       );
-
+      // const response = await callMyFunction(
+      //   "AIzaSyCfc4bT2M0K4z3mVjvra2T-VV65ZtWr7cM",
+      //   base64Audio
+      // );
+      // console.log("responseresponse edge", response);
       console.log("transcripts", transcripts);
       setTranscripts(transcripts);
-      return transcripts;
+      return { transcripts };
     } catch (error) {
       console.error("Error transcribing audio:", error);
       if (error instanceof Error) {
         console.error("Error details:", error.message);
       }
-      return [];
+      return { transcripts: [], base64Audio: "" };
     }
   };
 
   useEffect(() => {
     const fetch = async () => {
       let transcripts: string[] = [];
-      
+      let base64AudioText: string = "";
       // If journalText is provided, use it directly; otherwise transcribe audio
       if (journalText) {
         transcripts = [journalText];
         setTranscripts(transcripts);
         setProcessingPhase(ProcessingPhase.ANALYZING_EMOTIONS);
       } else if (uri) {
-        transcripts = await uploadAndTranscribe();
+        const { transcripts: t } = await uploadAndTranscribe();
+        transcripts = t;
         setProcessingPhase(ProcessingPhase.ANALYZING_EMOTIONS);
       } else {
         console.error("No uri or journalText provided");
         return;
       }
-      
+
       const insights = await getInsights(transcripts.join(" "));
       console.log("insightsinsights", insights);
       await new Promise((resolve) => setTimeout(resolve, 2000));

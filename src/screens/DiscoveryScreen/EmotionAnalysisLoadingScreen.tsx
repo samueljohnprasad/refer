@@ -5,7 +5,9 @@ import { useEffect, useRef } from "react";
 import { Text, Animated, type ColorValue } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import useEmotionsAnalysis, { AnalysisCompletedType } from "@/hooks/useEmotionsAnalysis";
+import useEmotionsAnalysis, {
+  AnalysisCompletedType,
+} from "@/hooks/useEmotionsAnalysis";
 
 interface EmotionAnalysisLoadingScreenProps {
   onAnalysisCompleted: (data: AnalysisCompletedType) => void;
@@ -36,7 +38,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
     ...(recordingUri && { uri: recordingUri }),
     ...(journalText && { journalText }),
     onAnalysisCompleted,
-  } as any);
+  });
 
   useEffect(() => {
     const fadeInAnimation = Animated.timing(fadeAnim, {

@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StyleSheet, View, ScrollView, Pressable } from "react-native";
+import { View, ScrollView, Pressable } from "react-native";
 import { Text } from "@/components/Themed";
 import { Stack } from "expo-router";
 import {
@@ -181,11 +181,15 @@ const DailyNotesScreen: React.FC = () => {
   // Shared values for content animations (UI thread)
   const contentTranslateX = useSharedValue<number>(0);
   const contentOpacity = useSharedValue<number>(1);
+  const contentScale = useSharedValue<number>(1);
 
-  // Animated styles
+  // Animated styles with smooth scale feedback
   const contentAnimatedStyle = useAnimatedStyle(() => ({
     opacity: contentOpacity.value,
-    transform: [{ translateX: contentTranslateX.value }],
+    transform: [
+      { translateX: contentTranslateX.value },
+      { scale: contentScale.value },
+    ],
   }));
 
   // Helper to move date by offset without stale closure issues
@@ -223,23 +227,40 @@ const DailyNotesScreen: React.FC = () => {
   const goToPreviousDateContent = (): void => changeDateBy(-1);
   const goToNextDateContent = (): void => changeDateBy(1);
 
-  // Pan gesture for content area (RN Gesture Handler + Reanimated)
+  // Enhanced pan gesture with better feedback
   const contentPanGesture = useMemo(
     () =>
       Gesture.Pan()
         .minDistance(10)
         .activeOffsetY([-12, 12])
+        .onBegin(() => {
+          contentScale.value = withSpring(0.98, {
+            damping: 15,
+            stiffness: 200,
+          });
+        })
         .onUpdate((g) => {
+          'worklet';
           let tx = g.translationX;
-          if (tx < -120) tx = -120;
-          else if (tx > 120) tx = 120;
+          const maxTranslate = 100;
+          if (tx < -maxTranslate) tx = -maxTranslate;
+          else if (tx > maxTranslate) tx = maxTranslate;
           contentTranslateX.value = tx;
+          
+          // Add subtle opacity change during swipe
+          const progress = Math.abs(tx) / maxTranslate;
+          contentOpacity.value = interpolate(
+            progress,
+            [0, 0.5, 1],
+            [1, 0.85, 0.7],
+            "clamp"
+          );
         })
         .onEnd((g) => {
           const absDx = Math.abs(g.translationX);
           const direction = g.translationX > 0 ? "right" : "left";
 
-          if (absDx > 60) {
+          if (absDx > 50) {
             if (direction === "left") {
               runOnJS(goToNextDateContent)();
             } else {
@@ -248,15 +269,25 @@ const DailyNotesScreen: React.FC = () => {
           }
 
           contentTranslateX.value = withSpring(0, {
-            damping: 32,
-            stiffness: 180,
+            damping: 20,
+            stiffness: 200,
+          });
+          contentOpacity.value = withSpring(1, {
+            damping: 15,
+            stiffness: 150,
+          });
+          contentScale.value = withSpring(1, {
+            damping: 15,
+            stiffness: 200,
           });
         })
         .onFinalize(() => {
           contentTranslateX.value = withSpring(0, {
-            damping: 32,
-            stiffness: 180,
+            damping: 20,
+            stiffness: 200,
           });
+          contentOpacity.value = withSpring(1);
+          contentScale.value = withSpring(1);
         }),
     [goToNextDateContent, goToPreviousDateContent]
   );
@@ -264,38 +295,38 @@ const DailyNotesScreen: React.FC = () => {
   // Removed unused day label animation for performance
 
   return (
-    <SafeAreaView edges={[]} style={styles.container}>
-      {/* <DailyNotesHeader /> */}
+    <SafeAreaView edges={[]} className="flex-1 bg-gray-50">
       <Stack.Screen
         options={{ header: () => <DailyNotesHeader />, headerShown: true }}
       />
-      <View className="flex-1 pt-3">
+      <View className="flex-1">
         {/* AI Insights Chip - Below header */}
-        <AIInsightsChip
-          visible={isBeforeCurrentWeek}
-          onPress={() => {
-            // setShouldFetchAI(true); // Trigger API call
-            bottomSheetRef.current?.present();
-          }}
-        />
+        <View className="pt-2 px-4 pb-1">
+          <AIInsightsChip
+            visible={isBeforeCurrentWeek}
+            onPress={() => {
+              bottomSheetRef.current?.present();
+            }}
+          />
+        </View>
 
         <GestureDetector gesture={contentPanGesture}>
           <ScrollView
             className="flex-1"
-            // contentContainerStyle={[styles.content, { paddingTop: 0 }]}
+            contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
+            accessible={true}
+            accessibilityLabel="Daily notes content"
           >
-            {/* Date and Content */}
-
             <Animated.View
+              className="flex-1 px-4 bg-gray-50"
               style={[
-                styles.mainContent,
                 contentAnimatedStyle,
-                { paddingBottom: tabBarHeight },
+                { paddingBottom: tabBarHeight + 20 },
               ]}
             >
               {/* Mental Health Journal Dashboard */}
-              <View style={styles.mentalHealthSection}>
+              <View className="pt-4 pb-2">
                 <MentalHealthProfileContainer
                   selectedDate={selectedDate}
                   onRefresh={() => {
@@ -323,152 +354,6 @@ const DailyNotesScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-  },
-  scrollView: {},
-  content: {
-    flex: 1,
-  },
-  navigationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-  },
-  navButton: {
-    padding: 6,
-  },
-  todayText: {
-    fontSize: 17,
-    fontWeight: "600",
-    color: "#fff",
-    marginHorizontal: 16,
-    textAlign: "center",
-  },
-  moreButton: {
-    padding: 8,
-  },
-
-  weekDaysRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 12,
-  },
-  weekDatesRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  dayContainer: {
-    alignItems: "center",
-    flex: 1,
-  },
-  weekRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  weekDivider: {
-    height: 1,
-    backgroundColor: "#e0e0e0",
-    marginHorizontal: -12,
-    marginBottom: 24,
-  },
-  mainContent: {
-    paddingHorizontal: 12,
-    backgroundColor: "#f5f5f5",
-    // paddingTop: 56,
-    flex: 1,
-  },
-  dateHeader: {
-    marginBottom: 24,
-  },
-  dayLabel: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#007AFF",
-    letterSpacing: 1,
-    marginBottom: 8,
-  },
-  dateText: {
-    fontSize: 36,
-    fontWeight: "700",
-    color: "#000",
-    lineHeight: 42,
-  },
-  description: {
-    fontSize: 16,
-    color: "#666",
-    lineHeight: 24,
-    marginBottom: 32,
-  },
-  tasksIntro: {
-    fontSize: 16,
-    color: "#666",
-    lineHeight: 24,
-    marginBottom: 24,
-  },
-  tasksContainer: {
-    gap: 16,
-  },
-  taskItem: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: "#ddd",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-    marginTop: 2,
-  },
-  checkboxCompleted: {
-    backgroundColor: "#007AFF",
-    borderColor: "#007AFF",
-  },
-  taskText: {
-    fontSize: 16,
-    color: "#000",
-    lineHeight: 24,
-    flex: 1,
-  },
-  taskTextCompleted: {
-    color: "#999",
-    textDecorationLine: "line-through",
-  },
-  // Mental Health Section Styles
-  mentalHealthSection: {
-    paddingTop: 20,
-    paddingBottom: 0,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#000",
-    marginBottom: 8,
-    lineHeight: 32,
-  },
-  sectionDescription: {
-    fontSize: 16,
-    color: "#666",
-    lineHeight: 24,
-    marginBottom: 24,
-  },
-  todayIndicator: {
-    position: "absolute",
-    bottom: -6,
-    left: "50%",
-    transform: [{ translateX: -2 }],
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "#007AFF",
-  },
-});
+// All styles have been converted to Tailwind CSS
 
 export default DailyNotesScreen;

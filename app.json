@@ -56,7 +56,18 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
       ],
-      ["react-native-bootsplash", { "assetsDir": "./assets/bootsplash" }]
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#232323",
+          "image": "./assets/icons/icon.png",
+          "dark": {
+            "image": "./assets/icons/icon.png",
+            "backgroundColor": "#000000"
+          },
+          "imageWidth": 100
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -64,7 +75,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "4c858cb1-074e-48d3-a701-b1a455467b2f"
+        "projectId": "5978aa13-bcb8-4ea7-8877-db1b20550a62"
       }
     }
   }

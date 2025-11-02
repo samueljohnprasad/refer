@@ -456,17 +456,20 @@ function JournalEntryScreen({
 
   const handleContinue = async (): Promise<void> => {
     try {
-      await saveJournal({
-        title: insights?.title,
-        enrichedTranscript: journalText,
-        aiInsights: insights?.aiInsights,
-        moodScore: insights?.moodScore,
-        mainEmoji: insights?.mainEmoji,
+      await saveJournal(
+        {
+          title: insights?.title,
+          enrichedTranscript: journalText,
+          aiInsights: insights?.aiInsights,
+          moodScore: insights?.moodScore,
+          mainEmoji: insights?.mainEmoji,
         feelings: tags,
-        suggestedTags: insights?.suggestedTags,
-        growthAreas: insights?.growthAreas,
-        positiveInsights: insights?.positiveInsights,
-      }, selectedDate);
+          suggestedTags: insights?.suggestedTags,
+          growthAreas: insights?.growthAreas,
+          positiveInsights: insights?.positiveInsights,
+        },
+        selectedDate
+      );
 
       toast.show({
         placement: "bottom right",

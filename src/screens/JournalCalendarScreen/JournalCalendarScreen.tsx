@@ -33,6 +33,7 @@ import { useCanRecoverStreak } from "@/hooks/data/useStreakRecovery";
 // import { girlMeditationBlue } from "@/assets/lottie";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
+import { EmotionLogger } from "@/src/components/EmotionLogger";
 const { width, height } = Dimensions.get("window");
 
 // Global color palette
@@ -64,6 +65,7 @@ export default function JournalCalendarScreen() {
   const progressAnim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [showRecoveryModal, setShowRecoveryModal] = useState<boolean>(false);
+  const [selectedEmotionDate, setSelectedEmotionDate] = useState<Date>(new Date());
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const { canRecover } = useCanRecoverStreak();
 
@@ -232,6 +234,17 @@ export default function JournalCalendarScreen() {
                 />
               </View>
             </View>
+          </View>
+
+          {/* Emotion Logger Component */}
+          <View className="mt-5">
+            <EmotionLogger
+              selectedDate={selectedEmotionDate}
+              onEmotionLogged={(emotionScore) => {
+                console.log("Emotion logged:", emotionScore);
+                // You can add logic here to refresh mood data if needed
+              }}
+            />
           </View>
 
           <View className="mt-5">

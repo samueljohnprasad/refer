@@ -35,11 +35,11 @@ import { router } from "expo-router";
 
 const { height } = Dimensions.get("window");
 const isIos = Platform.OS === "ios";
-const twentyPercentHeight = height * 0.15;
+const twentyPercentHeight = height * 0.16;
 
 // Move constants outside component to avoid recreation
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-const CALENDAR_EXPANDED_HEIGHT = 380;
+const CALENDAR_EXPANDED_HEIGHT = 410;
 
 const DailyNotesHeader = React.memo(() => {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
@@ -84,7 +84,7 @@ const DailyNotesHeader = React.memo(() => {
     opacity: interpolate(progress.value, [0, 1], [1, 0]),
   }));
   const weekHeaderAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0, 1], [1, 0]),
+    opacity: interpolate(progress.value, [0, 0.2, 1], [1, 0.5, 0]),
     transform: [
       { translateY: interpolate(progress.value, [0, 1], [0, -8]) },
       { scale: interpolate(progress.value, [0, 1], [1, 0.98]) },
@@ -95,7 +95,7 @@ const DailyNotesHeader = React.memo(() => {
     opacity: interpolate(progress.value, [0, 0.05, 0.15, 1], [0, 0, 1, 1]),
   }));
 
-  // Reanimated-driven slide/opacity for the week strip (no RN Animated)
+  // Reanimated-driven slide/opacity for the week strip with smoother transitions
   const weekSlideAnimatedStyle = useAnimatedStyle(() => ({
     transform: [
       {
@@ -104,9 +104,9 @@ const DailyNotesHeader = React.memo(() => {
     ],
     opacity: interpolate(
       weekSlideAnim.value,
-      [-1, 0, 1],
-      [0.4, 1, 0.4],
-      "clamp" // Clamp to prevent going below 0.3
+      [-1, -0.5, 0, 0.5, 1],
+      [0.3, 0.7, 1, 0.7, 0.3],
+      "clamp"
     ),
   }));
 
@@ -231,37 +231,43 @@ const DailyNotesHeader = React.memo(() => {
       >
         {/* Calendar Header */}
         <Animated.View
-          className="flex-row items-center justify-between mb-1 px-4"
+          className="flex-row items-center justify-between px-4 pb-1"
           style={[headerControlsAnimatedStyle]}
         >
-          <Pressable className="p-1.5" onPress={() => toggle()}>
-            <Feather name="calendar" size={22} color="white" />
+          <Pressable
+            className="p-2 -ml-1 rounded-lg active:bg-white/10"
+            onPress={() => toggle()}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Feather name="calendar" size={20} color="white" />
           </Pressable>
 
           <View className="flex-row items-center justify-center flex-1">
-            <Text className="text-[16px] font-semibold text-white tracking-wide text-center">
+            <Text className="text-base font-medium text-white tracking-wide text-center">
               {currentMonthView || ""}
             </Text>
           </View>
 
-          <Pressable className="p-1.5" onPress={() => expand()}>
-            <Feather name="more-horizontal" size={22} color="white" />
+          <Pressable
+            className="p-2 -mr-1 rounded-lg active:bg-white/10"
+            onPress={() => expand()}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Feather name="more-horizontal" size={20} color="white" />
           </Pressable>
         </Animated.View>
         {/* Week View */}
-        <View className="py-2 px-4 mb-0 w-full relative" {...panHandlers}>
+        <View className="px-4 pb-4 w-full relative" {...panHandlers}>
           <Animated.View
             className="flex-row w-full"
             style={[weekHeaderAnimatedStyle]}
           >
             <Animated.View
-              style={[
-                { display: "flex", flex: 1, flexDirection: "row", gap: 6 },
-                weekSlideAnimatedStyle,
-              ]}
+              className="flex flex-1 flex-row"
+              style={[{ gap: 5 }, weekSlideAnimatedStyle]}
             >
               {weekDaysData.map((dayData) => (
-                <View className="flex-1 gap-3 mb-6" key={dayData.dayStr}>
+                <View className="flex-1 gap-2.5 mb-8" key={dayData.dayStr}>
                   <DayButton
                     day={dayData.day}
                     dayName={dayData.dayName}
@@ -269,11 +275,11 @@ const DailyNotesHeader = React.memo(() => {
                     isToday={dayData.isTodayDate}
                     onPress={dayPressHandlers(dayData)}
                   />
-                  <View className="flex-1 items-center">
+                  <View className="flex-1 items-center mb-1">
                     <MoodBadge
                       moodscore={dayData.mood}
                       active={dayData.isSelectedDay}
-                      size={26}
+                      size={24}
                       onPress={() => onEmojiPress(dayData.day, dayData.mood)}
                     />
                   </View>
@@ -303,15 +309,17 @@ const DailyNotesHeader = React.memo(() => {
         )}
         {/* Today tag - animated reusable component */}
         <TodayPill visible={showTodayPill} onPress={handleGoToToday} />
-        {/* Absolute overlay handle that moves down with expanding calendar */}
-        <Animated.View
-          className="absolute left-0 right-0 items-center z-10"
+        {/* Drag handle for calendar expansion */}
+        <View
+          className="absolute bottom-1 left-0 right-0 items-center z-10"
           pointerEvents="box-none"
         >
           <GestureDetector gesture={gesture}>
-            <View className="w-12 h-1 rounded-full bg-white/80" />
+            <View className="py-1 px-8">
+              <View className="w-10 h-0.5 rounded-full bg-white/60" />
+            </View>
           </GestureDetector>
-        </Animated.View>
+        </View>
       </Animated.View>
     </SafeAreaView>
   );

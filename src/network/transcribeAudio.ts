@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { supabase } from "./auth/supabase";
 
 interface SpeechRecognitionConfig {
   encoding: "MP3" | "LINEAR16" | "FLAC";
@@ -30,6 +31,22 @@ interface SpeechRecognitionResponse {
   results: SpeechRecognitionResult[];
   totalBilledTime?: string;
   requestId?: string;
+}
+
+export async function callMyFunction(apiKey: string, base64Audio: string) {
+  const { data, error } = await supabase.functions.invoke(
+    "save-journal-ai-insights",
+    {
+      body: { apiKey, base64Audio },
+    }
+  );
+
+  if (error) {
+    console.error("Function invoke error:", error);
+    return "";
+  }
+
+  return data;
 }
 
 export async function transcribeAudio(

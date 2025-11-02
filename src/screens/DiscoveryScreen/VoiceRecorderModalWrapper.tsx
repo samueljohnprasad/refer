@@ -11,7 +11,9 @@ type VoiceRecorderModalWrapperProps = {
   selectedDate?: Date;
 };
 
-const VoiceRecorderModalWrapper = ({ selectedDate }: VoiceRecorderModalWrapperProps) => {
+const VoiceRecorderModalWrapper = ({
+  selectedDate,
+}: VoiceRecorderModalWrapperProps) => {
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
   const [stepper, setStepper] = useState(0);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
