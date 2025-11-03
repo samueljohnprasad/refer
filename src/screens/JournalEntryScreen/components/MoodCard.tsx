@@ -1,12 +1,14 @@
 import React from "react";
-import { Text } from "react-native";
+import { Text, View, Image } from "react-native";
 import Animated from "react-native-reanimated";
 import { MoodCardProps } from "../types";
 import { EmojiSelector } from "./EmojiSelector";
+import { EMOTION_IMAGES, EmotionType } from "../constants";
 
 /**
  * Presentational component for mood card
- * Displays selected emoji, title, and emoji selector in edit mode
+ * Displays selected emotion image, title, and emotion selector in edit mode
+ * Enhanced with pastel card design matching reference UI
  */
 export const MoodCard = React.memo<MoodCardProps>(
   ({
@@ -19,34 +21,42 @@ export const MoodCard = React.memo<MoodCardProps>(
     summaryStyle,
     emojiRowStyle,
   }: MoodCardProps) => {
+    const emotionImage = EMOTION_IMAGES[selectedEmoji as EmotionType];
+
     return (
       <Animated.View
         style={[moodCardStyle]}
-        className="flex-row items-center p-5 rounded-2xl mb-6 shadow-soft-1"
+        className="bg-amber-50 rounded-3xl p-6 mb-4"
       >
-        {/* Single emoji (fades/scales out) */}
-        <Animated.Text className="mr-4 text-[34px]" style={[singleEmojiStyle]}>
-          {selectedEmoji}
-        </Animated.Text>
-
-        {/* Summary (fades out) */}
-        <Animated.View style={[{ flex: 1 }, summaryStyle]}>
-          <Text className="text-lg font-bold text-typography-900 dark:text-typography-50">
-            {title}
-          </Text>
-        </Animated.View>
-
-        {/* 5-emoji selector overlay (fades/scales in) */}
-        <Animated.View
-          pointerEvents={isEditing ? "auto" : "none"}
-          style={[emojiRowStyle]}
-          className="absolute left-[18px] right-[18px] top-[18px] flex-row justify-between items-center"
-        >
-          <EmojiSelector
-            selectedEmoji={selectedEmoji}
-            onSelectEmoji={onSelectEmoji}
-          />
-        </Animated.View>
+        {!isEditing ? (
+          /* Display mode: Emotion Image + Title */
+          <View className="flex-row items-center gap-4 justify-start">
+            <Animated.View style={[singleEmojiStyle]}>
+              <Image
+                source={emotionImage}
+                className="w-10 h-10"
+                resizeMode="contain"
+              />
+            </Animated.View>
+            <Animated.View style={[{ flex: 1 }, summaryStyle]}>
+              <Text className="text-xl font-bold text-gray-900 leading-7">
+                {title}
+              </Text>
+            </Animated.View>
+          </View>
+        ) : (
+          /* Edit mode: Emotion selector */
+          <Animated.View
+            pointerEvents="auto"
+            style={[emojiRowStyle]}
+            className="flex-row justify-between items-center"
+          >
+            <EmojiSelector
+              selectedEmoji={selectedEmoji}
+              onSelectEmoji={onSelectEmoji}
+            />
+          </Animated.View>
+        )}
       </Animated.View>
     );
   }

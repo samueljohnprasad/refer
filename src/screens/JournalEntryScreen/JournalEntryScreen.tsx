@@ -1,40 +1,35 @@
 import React, { useState, useCallback } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { useSaveJournal } from "@/hooks/post/useSaveJournal";
+import { useRouter } from "expo-router";
 
 // Types and Constants
 import { JournalEntryScreenProps } from "./types";
-import { DEFAULT_EMOJI } from "./constants";
 
 // Custom Hooks
 import {
   useJournalEdit,
   useKeyboardHandler,
   useTags,
-  useJournalAnimations,
   useFormattedDateTime,
 } from "./hooks";
 
-// Presentational Components
+// Redesigned Components
 import {
-  JournalHeader,
-  MoodCard,
-  TagsList,
-  JournalContent,
-  AIInsightsSection,
-  SaveButton,
+  MinimalHeader,
+  MoodSelector,
+  ActivitySection,
+  FeelingsSection,
+  TranscriptSection,
+  ContinueButton,
 } from "./components";
 
 /**
- * JournalEntryScreen - Container component for journal entry functionality
- * 
- * Refactored Architecture:
- * - Custom hooks manage all business logic (editing, keyboard, tags, animations)
- * - Presentational components handle UI rendering
- * - Clear separation of concerns for maintainability and testing
- * - Scales efficiently for 50,000+ users
+ * JournalEntryScreen - Redesigned with ultra-clean, professional aesthetic
+ * Features soft gradients, minimal UI elements, and delightful interactions
  */
 const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   insights,
@@ -42,18 +37,33 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   onClose,
   selectedDate,
 }: JournalEntryScreenProps) => {
-  // Core dependencies
   const insets = useSafeAreaInsets();
   const toast = useToast();
   const { saveJournal, saving } = useSaveJournal();
-  
-  // Footer height state for scroll padding
-  const [footerHeight, setFooterHeight] = useState<number>(0);
-  
+  const router = useRouter();
+
+  // Mood gradient configurations (using light 100 level colors)
+  const MOOD_GRADIENTS: { [key: string]: string[] } = {
+    terrible: ["#FEE2E2", "#FED7D7"], // red-100 to red-100 lighter
+    bad: ["#FED7AA", "#FEF3C7"], // orange-100 to yellow-100
+    fine: ["#FEF3C7", "#FEFCE8"], // yellow-100 to yellow-50
+    good: ["#DCFCE7", "#F0FDF4"], // green-100 to green-50
+    great: ["#DBEAFE", "#EFF6FF"], // blue-100 to blue-50
+  };
+
+  // State
+  const [selectedMood, setSelectedMood] = useState<string>(
+    insights?.mainEmoji || "great"
+  );
+  const [activities, setActivities] = useState<string[]>(["watching movie"]);
+  const [feelings, setFeelings] = useState<string[]>(
+    insights?.feelings?.map((f) => f.name) || []
+  );
+
   // Formatted date/time
   const formattedDateTime: string = useFormattedDateTime();
-  
-  // Journal editing state and actions
+
+  // Journal editing state
   const {
     isEditing,
     selectedEmoji,
@@ -66,43 +76,52 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
     handleDone,
     handleClose: handleCloseEdit,
   } = useJournalEdit({
-    initialEmoji: DEFAULT_EMOJI,
+    initialEmoji: "great",
     initialTags: insights?.feelings || [],
-    initialText: insights?.enrichedTranscript || "",
+    initialText:
+      insights?.enrichedTranscript ||
+      "Hello, what's up? Today is a wonderful day. Like, now I'm watching a movie, Hindi movie.",
   });
-  
+
   // Keyboard handling
   const { keyboardHeight } = useKeyboardHandler();
-  
+
   // Tag operations
   const { removeTag, addTag } = useTags({ setTags });
-  
-  // Animation styles
-  const { animatedStyles } = useJournalAnimations({
-    isEditing,
-    isInsightsOpen: true,
-  });
-  
-  // Handle emoji selection
-  const handleSelectEmoji = useCallback((emoji: string): void => {
-    setSelectedEmoji(emoji);
-  }, [setSelectedEmoji]);
-  
-  // Handle close with edit cancellation
+
+  // Helper functions for feelings
+  const addFeelingString = (feeling: string): void => {
+    const newFeeling = {
+      name: feeling,
+      emoji: "😊",
+      colorsGradient: ["#FFD700", "#FFA500"],
+      intensity: 5,
+    };
+    setTags([...tags, newFeeling]);
+  };
+
+  const removeFeelingByIndex = (index: number): void => {
+    removeTag(index);
+  };
+
+  // Convert tags to strings for display
+  const feelingStrings: string[] = tags.map((tag) =>
+    typeof tag === "string" ? tag : tag.name
+  );
+
   const handleClose = useCallback((): void => {
     handleCloseEdit(onClose);
   }, [handleCloseEdit, onClose]);
-  
-  // Handle save journal
+
   const handleContinue = useCallback(async (): Promise<void> => {
     try {
       await saveJournal(
         {
-          title: insights?.title,
+          title: insights?.title || "Daily Reflections",
           enrichedTranscript: journalText,
           aiInsights: insights?.aiInsights,
           moodScore: insights?.moodScore,
-          mainEmoji: insights?.mainEmoji,
+          mainEmoji: selectedMood,
           feelings: tags,
           suggestedTags: insights?.suggestedTags,
           growthAreas: insights?.growthAreas,
@@ -112,17 +131,18 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
       );
 
       toast.show({
-        placement: "bottom right",
+        placement: "bottom",
         render: ({ id }) => (
           <Toast nativeID={id} variant="solid" action="success">
-            <ToastTitle>Journal saved</ToastTitle>
+            <ToastTitle>Journal saved successfully</ToastTitle>
           </Toast>
         ),
       });
+      onClose?.();
     } catch (error) {
       console.error("Failed to save journal:", error);
       toast.show({
-        placement: "bottom right",
+        placement: "bottom",
         render: ({ id }) => (
           <Toast nativeID={id} variant="solid" action="error">
             <ToastTitle>Failed to save journal</ToastTitle>
@@ -130,89 +150,95 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
         ),
       });
     }
-  }, [saveJournal, insights, journalText, tags, selectedDate, toast]);
+  }, [
+    saveJournal,
+    insights,
+    journalText,
+    tags,
+    selectedMood,
+    selectedDate,
+    toast,
+    router,
+  ]);
+
+  const currentGradient = MOOD_GRADIENTS[selectedMood] || MOOD_GRADIENTS.great;
 
   return (
-    <SafeAreaView
-      style={styles.safeArea}
-      className="flex-1 bg-background-light dark:bg-background-dark"
-      edges={["bottom"]}
+    <LinearGradient
+      colors={currentGradient as [string, string, ...string[]]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      className="flex-1"
+      style={{ flex: 1 }}
     >
-      <JournalHeader
-        isEditing={isEditing}
-        formattedDateTime={formattedDateTime}
-        colorScheme={null}
-        onClose={handleClose}
-        onEdit={handleEdit}
-        onDone={handleDone}
-        backIconStyle={animatedStyles.backIconStyle}
-        closeIconStyle={animatedStyles.closeIconStyle}
-      />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex-1"
+        style={{ paddingTop: insets.top }}
+      >
+        <MinimalHeader
+          isEditing={isEditing}
+          formattedDateTime={formattedDateTime}
+          onClose={handleClose}
+          onEdit={handleEdit}
+          onDone={handleDone}
+        />
 
-      <View style={styles.contentContainer} className="flex-1">
+        {isEditing && (
+          <MoodSelector
+            selectedMood={selectedMood}
+            onSelectMood={setSelectedMood}
+          />
+        )}
+
         <ScrollView
-          contentContainerStyle={[
-            styles.scroll,
-            { paddingBottom: Math.max(footerHeight + 16, 120) },
-          ]}
-          showsVerticalScrollIndicator={true}
+          className="flex-1 px-5"
+          showsVerticalScrollIndicator={false}
           bounces={true}
-          alwaysBounceVertical={true}
-          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 100 }}
         >
-          <MoodCard
-            selectedEmoji={selectedEmoji}
-            title={insights?.title || ""}
+          {!isEditing && (
+            <MoodSelector
+              selectedMood={selectedMood}
+              onSelectMood={setSelectedMood}
+              viewOnly={true}
+              title={insights?.title || "Daily Reflections"}
+            />
+          )}
+
+          <ActivitySection
+            activities={activities}
             isEditing={isEditing}
-            onSelectEmoji={handleSelectEmoji}
-            moodCardStyle={animatedStyles.moodCardStyle}
-            singleEmojiStyle={animatedStyles.singleEmojiStyle}
-            summaryStyle={animatedStyles.summaryStyle}
-            emojiRowStyle={animatedStyles.emojiRowStyle}
+            onAddActivity={(activity) =>
+              setActivities([...activities, activity])
+            }
+            onRemoveActivity={(index) =>
+              setActivities(activities.filter((_, i) => i !== index))
+            }
           />
 
-          <TagsList
-            tags={tags}
+          <FeelingsSection
+            feelings={feelingStrings}
             isEditing={isEditing}
-            colorScheme={null}
-            onRemove={removeTag}
-            onAdd={addTag}
+            onAddFeeling={addFeelingString}
+            onRemoveFeeling={removeFeelingByIndex}
           />
 
-          <JournalContent
+          <TranscriptSection
+            text={journalText}
             isEditing={isEditing}
-            journalText={journalText}
             onTextChange={setJournalText}
           />
-
-          <AIInsightsSection
-            aiInsights={insights?.aiInsights || ""}
-            colorScheme={null}
-          />
         </ScrollView>
-      </View>
 
-      <SaveButton
-        saving={saving}
-        keyboardHeight={keyboardHeight}
-        bottomInset={insets.bottom}
-        onSave={handleContinue}
-        onLayout={setFooterHeight}
-      />
-    </SafeAreaView>
+        <ContinueButton
+          onPress={handleContinue}
+          loading={saving}
+          isEditing={isEditing}
+        />
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: { flex: 1 },
-  scroll: {
-    padding: 24,
-    paddingBottom: 120,
-    flexGrow: 1,
-  },
-  contentContainer: {
-    flex: 1,
-  },
-});
 
 export default React.memo(JournalEntryScreen);

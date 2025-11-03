@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, useWindowDimensions } from "react-native"
 import Animated from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
-import { PALETTE } from "../../JournalCalendarScreen/JournalCalendarScreen";
 import { JournalHeaderProps } from "../types";
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
@@ -11,6 +10,7 @@ const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpaci
 /**
  * Presentational header component for journal entry screen
  * Displays date/time, back/close and edit/done buttons with animations
+ * Enhanced with cleaner design matching reference UI
  */
 export const JournalHeader = React.memo<JournalHeaderProps>(
   ({
@@ -24,13 +24,14 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
     closeIconStyle,
   }: JournalHeaderProps) => {
     const { height } = useWindowDimensions();
+    const headerHeight: number = Math.min(height * 0.14, 120);
 
     return (
       <AnimatedBlurView
         intensity={50}
         tint={colorScheme === "dark" ? "dark" : "light"}
         style={{
-          height: height * 0.14,
+          height: headerHeight,
           justifyContent: "space-between",
           alignItems: "flex-end",
           paddingHorizontal: 16,
@@ -58,7 +59,7 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
               backIconStyle,
             ]}
           >
-            <Feather name="arrow-left" size={20} color={PALETTE.white} />
+            <Feather name="arrow-left" size={20} color="#fff" />
           </Animated.View>
           <Animated.View
             style={[

@@ -4,26 +4,39 @@ import { JournalContentProps } from "../types";
 
 /**
  * Presentational component for journal content
- * Displays editable text area or read-only text
+ * Displays editable text area or read-only text as paragraph
+ * Enhanced with pastel card design matching reference UI
  */
 export const JournalContent = React.memo<JournalContentProps>(
   ({ isEditing, journalText, onTextChange }: JournalContentProps) => {
+
     return (
-      <View className="bg-background-50 dark:bg-background-900 rounded-2xl p-5 mb-6 shadow-soft-1">
-        <Text className="text-lg font-semibold text-typography-900 dark:text-typography-50 mb-3 ml-2">
-          Journal Content
-        </Text>
+      <View className="bg-violet-50 rounded-3xl p-6 mb-4 border border-violet-100">
         {isEditing ? (
-          <TextInput
-            className="text-base leading-6 text-typography-600 dark:text-typography-300 tracking-[0.2px] border border-outline-200 dark:border-outline-700 rounded-lg p-2"
-            multiline
-            value={journalText || ""}
-            onChangeText={onTextChange}
-          />
+          <>
+            <Text className="text-base font-semibold text-gray-700 mb-3">
+              Journal Content
+            </Text>
+            <TextInput
+              className="text-base leading-6 text-gray-900 border border-violet-200 rounded-xl p-4 min-h-[120px] bg-white"
+              multiline
+              value={journalText || ""}
+              onChangeText={onTextChange}
+              placeholder="Write your thoughts..."
+              placeholderTextColor="#9ca3af"
+            />
+          </>
         ) : (
-          <Text className="text-base leading-6 text-typography-600 dark:text-typography-300 tracking-[0.2px]">
-            {journalText || ""}
-          </Text>
+          /* Display mode: Content as paragraph */
+          journalText ? (
+            <Text className="text-base text-gray-900 leading-6">
+              {journalText}
+            </Text>
+          ) : (
+            <Text className="text-base text-gray-500">
+              No content yet
+            </Text>
+          )
         )}
       </View>
     );

@@ -6,11 +6,16 @@ import { TagItem } from "./TagItem";
 /**
  * Presentational component for tags list
  * Displays tags with add button in edit mode
+ * Enhanced with modern styling
  */
 export const TagsList = React.memo<TagsListProps>(
   ({ tags, isEditing, colorScheme, onRemove, onAdd }: TagsListProps) => {
+    if (tags.length === 0 && !isEditing) {
+      return null;
+    }
+
     return (
-      <View className="flex-row flex-wrap mb-6 gap-2">
+      <View className="flex-row flex-wrap mb-4 gap-2">
         {tags.map((tag, index) => (
           <TagItem
             key={index}
@@ -24,9 +29,11 @@ export const TagsList = React.memo<TagsListProps>(
         {isEditing && (
           <TouchableOpacity
             onPress={onAdd}
-            className="flex-row items-center py-2 px-3 rounded-full mr-2 mb-2 border border-outline-100 dark:border-outline-800 bg-background-100 dark:bg-background-800"
+            className="flex-row items-center py-2 px-4 rounded-full border-2 border-dashed border-gray-300 bg-white active:bg-gray-50"
+            accessibilityLabel="Add new tag"
+            accessibilityRole="button"
           >
-            <Text className="text-[15px] text-typography-900 dark:text-typography-50">
+            <Text className="text-sm font-medium text-gray-600">
               ＋ Add Tag
             </Text>
           </TouchableOpacity>

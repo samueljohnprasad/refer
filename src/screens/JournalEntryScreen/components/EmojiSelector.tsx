@@ -1,35 +1,40 @@
 import React from "react";
-import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Image, TouchableOpacity } from "react-native";
 import { EmojiSelectorProps } from "../types";
-import { MAIN_EMOTIONS } from "../constants";
+import { EMOTION_IMAGES, EMOTIONS_CONFIG, EmotionType } from "../constants";
 
 /**
- * Presentational component for emoji selection
- * Displays 5 mood emojis for selection
+ * Presentational component for emotion image selection
+ * Displays 5 mood emotion images for selection
+ * Uses emotion images from assets instead of emojis
  */
 export const EmojiSelector = React.memo<EmojiSelectorProps>(
   ({ selectedEmoji, onSelectEmoji }: EmojiSelectorProps) => {
     return (
       <>
-        {MAIN_EMOTIONS.map((emo: string, idx: number) => (
-          <TouchableOpacity key={idx} onPress={(): void => onSelectEmoji(emo)}>
-            <Text
-              style={[
-                styles.moodEmoji,
-                selectedEmoji === emo && { fontSize: 40 },
-              ]}
+        {EMOTIONS_CONFIG.map((emotion) => {
+          const isSelected: boolean = selectedEmoji === emotion.key;
+          return (
+            <TouchableOpacity
+              key={emotion.key}
+              onPress={(): void => onSelectEmoji(emotion.key)}
+              className={`p-1 rounded-full ${
+                isSelected ? "bg-white/30" : "active:bg-gray-100/20"
+              }`}
+              accessibilityLabel={`Select ${emotion.label} mood`}
+              accessibilityRole="button"
             >
-              {emo}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Image
+                source={EMOTION_IMAGES[emotion.key as EmotionType]}
+                className={isSelected ? "w-12 h-12" : "w-10 h-10"}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          );
+        })}
       </>
     );
   }
 );
 
 EmojiSelector.displayName = "EmojiSelector";
-
-const styles = StyleSheet.create({
-  moodEmoji: { fontSize: 34 },
-});

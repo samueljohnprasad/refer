@@ -36,6 +36,7 @@ export const useTags = ({ setTags }: UseTagsProps): UseTagsReturn => {
         emoji: DEFAULT_NEW_TAG.emoji,
         colorsGradient:
           colorScheme === "dark" ? [...DARK_GRADIENT] : [...LIGHT_GRADIENT],
+          intensity: 1,
       },
     ]);
   }, [colorScheme, setTags]);

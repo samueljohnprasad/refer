@@ -1,8 +1,6 @@
 import React from "react";
 import AIInsightsScreen from "@/src/screens/AIInsightsScreen/AIInsightsScreen";
 
-const insights = () => {
+export default function InsightsTab() {
   return <AIInsightsScreen />;
-};
-
-export default insights;
+}

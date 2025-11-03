@@ -1,6 +1,6 @@
-import JournalCalendarScreen from "@/src/screens/JournalCalendarScreen/JournalCalendarScreen";
 import React from "react";
+import JournalCalendarScreen from "@/src/screens/JournalCalendarScreen/JournalCalendarScreen";
 
-export default function Home() {
+export default function HomeTab() {
   return <JournalCalendarScreen />;
 }
