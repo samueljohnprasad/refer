@@ -6,11 +6,12 @@ import { Feather } from "@expo/vector-icons";
 import { InsightsTypeResponse } from "../types";
 import { Emotion, emotions, great } from "@/assets/emojis";
 import { Image } from "@/components/ui/image";
+import { Tables } from "@/types/types";
 
 interface EntryCardsViewProps {
-  entries: InsightsTypeResponse[];
+  entries: Tables<"journal_records">[];
   isLoading: boolean;
-  onEntryPress: (entry: InsightsTypeResponse) => void;
+  onEntryPress: (entry: Tables<"journal_records">) => void;
   onRefresh?: () => void;
 }
 
@@ -92,7 +93,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 };
 
 interface EntryCardProps {
-  entry: InsightsTypeResponse;
+  entry: Tables<"journal_records">;
   onPress: () => void;
   index: number;
 }
@@ -150,12 +151,12 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
 
           <View className="items-end">
             <Text className="text-2xl mb-1">
-              <Image
-                source={emotions[entry.mainEmoji as Emotion]}
+              {/* <Image
+                source={emotions[entry. as Emotion]}
                 className="w-6 h-6"
                 alt={entry.mainEmoji}
                 progressiveRenderingEnabled={true}
-              />
+              /> */}
             </Text>
             {/* <View
               className={`px-2 py-1 rounded-full ${getMoodIntensityColor(
@@ -171,12 +172,12 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
 
         {/* Excerpt */}
         <Text className="text-gray-700 text-sm leading-5 mb-3">
-          {entry.enrichedTranscript?.substring(0, 100) + "..."}
+          {entry.transcripts?.substring(0, 100) + "..."}
         </Text>
 
         {/* Emotion Tags */}
         <View className="flex-row flex-wrap mb-3">
-          {(entry.feelings || []).map((emotion, idx) => (
+          {/* {(entry. || []).map((emotion, idx) => (
             <View
               key={`${emotion}-${idx}`}
               className="bg-blue-50 rounded-full px-2 py-1 mr-2 mb-1"
@@ -185,7 +186,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
                 {emotion.emoji} {emotion.name}
               </Text>
             </View>
-          ))}
+          ))} */}
           {/* {entry.emotions.length > 3 && (
             <View className="bg-gray-100 rounded-full px-2 py-1">
               <Text className="text-gray-600 text-xs">
@@ -197,9 +198,9 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
 
         {/* Footer */}
         <View className="flex-row items-center justify-between pt-2 border-t border-gray-100">
-          <Text className="text-xs text-gray-500 capitalize">
+          {/* <Text className="text-xs text-gray-500 capitalize">
             {entry.mainEmoji} mood
-          </Text>
+          </Text> */}
           <View className="flex-row items-center">
             <Text className="text-xs text-gray-500 mr-1">
               Tap to view full entry

@@ -1,3 +1,4 @@
+import { Enums } from "@/types/types";
 import { GoogleGenAI } from "@google/genai";
 
 export type FeelingsType = {
@@ -13,7 +14,7 @@ export type InsightsType = {
   growthAreas?: string[];
   positiveInsights?: string[];
   summary?: string;
-  mainEmoji?: string;
+  mainEmoji?: Enums<"mood">;
   feelings?: FeelingsType[];
   title?: string;
   enrichedTranscript?: string;
@@ -39,7 +40,7 @@ export const defaultInsights: InsightsType = {
   growthAreas: [],
   positiveInsights: [],
   summary: "",
-  mainEmoji: "",
+  mainEmoji: undefined,
   feelings: [],
   title: "",
   enrichedTranscript: "",

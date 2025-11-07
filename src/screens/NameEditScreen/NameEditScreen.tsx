@@ -68,15 +68,15 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
           >
             <Ionicons name="chevron-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <View style={styles.progressDots}>
+          {/* <View style={styles.progressDots}>
             <View style={[styles.dot, { opacity: 0.8 }]} />
             <View style={[styles.dot, { opacity: 0.5 }]} />
             <View style={[styles.dot, { opacity: 0.3 }]} />
             <View style={[styles.dot, { opacity: 0.2 }]} />
-          </View>
-          <TouchableOpacity style={styles.iconButton}>
+          </View> */}
+          {/* <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="grid-outline" size={20} color="#fff" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* Main content */}

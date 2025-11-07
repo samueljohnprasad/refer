@@ -14,41 +14,55 @@ export type Database = {
   }
   public: {
     Tables: {
-      achievements: {
+      ai_weekly_summaries: {
         Row: {
-          badge_color: string
-          category: string
-          created_at: string | null
-          description: string
-          icon: string
-          id: number
-          name: string
-          requirement_type: string
-          requirement_value: number
+          generated_at: string | null
+          growth_insights: Json | null
+          id: string
+          recommendations: Json | null
+          updated_at: string | null
+          user_id: string
+          week_end: string
+          week_number: number
+          week_start: string
+          weekly_summary: Json | null
+          year: number
         }
         Insert: {
-          badge_color: string
-          category: string
-          created_at?: string | null
-          description: string
-          icon: string
-          id?: number
-          name: string
-          requirement_type: string
-          requirement_value: number
+          generated_at?: string | null
+          growth_insights?: Json | null
+          id?: string
+          recommendations?: Json | null
+          updated_at?: string | null
+          user_id: string
+          week_end: string
+          week_number: number
+          week_start: string
+          weekly_summary?: Json | null
+          year: number
         }
         Update: {
-          badge_color?: string
-          category?: string
-          created_at?: string | null
-          description?: string
-          icon?: string
-          id?: number
-          name?: string
-          requirement_type?: string
-          requirement_value?: number
+          generated_at?: string | null
+          growth_insights?: Json | null
+          id?: string
+          recommendations?: Json | null
+          updated_at?: string | null
+          user_id?: string
+          week_end?: string
+          week_number?: number
+          week_start?: string
+          weekly_summary?: Json | null
+          year?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ai_weekly_summaries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       daily_moods: {
         Row: {
@@ -73,6 +87,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      journal_ai_insights: {
+        Row: {
+          achievements: string[] | null
+          aiInsights: string | null
+          created_at: string
+          energyLevel: number | null
+          feelings: Json | null
+          id: number
+          journal_entry_id: number
+          sleepQuality: number | null
+          stressLevel: number | null
+          triggers: string[] | null
+          worries: string[] | null
+        }
+        Insert: {
+          achievements?: string[] | null
+          aiInsights?: string | null
+          created_at?: string
+          energyLevel?: number | null
+          feelings?: Json | null
+          id?: number
+          journal_entry_id: number
+          sleepQuality?: number | null
+          stressLevel?: number | null
+          triggers?: string[] | null
+          worries?: string[] | null
+        }
+        Update: {
+          achievements?: string[] | null
+          aiInsights?: string | null
+          created_at?: string
+          energyLevel?: number | null
+          feelings?: Json | null
+          id?: number
+          journal_entry_id?: number
+          sleepQuality?: number | null
+          stressLevel?: number | null
+          triggers?: string[] | null
+          worries?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_ai_insights_journal_entry_id_fkey"
+            columns: ["journal_entry_id"]
+            isOneToOne: false
+            referencedRelation: "journal_records"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       journal_entries: {
         Row: {
@@ -127,6 +191,92 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      journal_records: {
+        Row: {
+          created_at: string
+          duration_seconds: number | null
+          id: number
+          input_type: string | null
+          selected_date: string | null
+          title: string | null
+          transcripts: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number | null
+          id?: number
+          input_type?: string | null
+          selected_date?: string | null
+          title?: string | null
+          transcripts?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number | null
+          id?: number
+          input_type?: string | null
+          selected_date?: string | null
+          title?: string | null
+          transcripts?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      moods: {
+        Row: {
+          created_at: string
+          id: number
+          input_method: string | null
+          journal_entry_id: number | null
+          main_mood: Database["public"]["Enums"]["mood"] | null
+          selected_date: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          input_method?: string | null
+          journal_entry_id?: number | null
+          main_mood?: Database["public"]["Enums"]["mood"] | null
+          selected_date?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          input_method?: string | null
+          journal_entry_id?: number | null
+          main_mood?: Database["public"]["Enums"]["mood"] | null
+          selected_date?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moods_journal_entry_id_fkey"
+            columns: ["journal_entry_id"]
+            isOneToOne: false
+            referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "moods_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -184,56 +334,18 @@ export type Database = {
       }
       test: {
         Row: {
-          created_at: string
+          data: Json
           id: number
-          text: string | null
         }
         Insert: {
-          created_at?: string
+          data: Json
           id?: number
-          text?: string | null
         }
         Update: {
-          created_at?: string
+          data?: Json
           id?: number
-          text?: string | null
         }
         Relationships: []
-      }
-      user_achievements: {
-        Row: {
-          achievement_id: number
-          id: number
-          is_claimed: boolean | null
-          progress: number | null
-          unlocked_at: string | null
-          user_id: string
-        }
-        Insert: {
-          achievement_id: number
-          id?: number
-          is_claimed?: boolean | null
-          progress?: number | null
-          unlocked_at?: string | null
-          user_id: string
-        }
-        Update: {
-          achievement_id?: number
-          id?: number
-          is_claimed?: boolean | null
-          progress?: number | null
-          unlocked_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_achievements_achievement_id_fkey"
-            columns: ["achievement_id"]
-            isOneToOne: false
-            referencedRelation: "achievements"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       user_preferences: {
         Row: {
@@ -272,18 +384,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      check_and_award_achievements: {
-        Args: { p_user_id: string }
-        Returns: {
-          newly_unlocked_achievement_id: number
-        }[]
-      }
+      [_ in never]: never
     }
     Enums: {
       age_range_enum: "18_24" | "25_34" | "35_44" | "45_54" | "55_64" | "65+"
       app_permission: "channels.delete" | "messages.delete"
       app_role: "admin" | "moderator"
       gender_enum: "male" | "female" | "other"
+      mood: "terrible" | "bad" | "okay" | "good" | "great"
       subscription_plan_enum: "free" | "trial" | "weekly" | "monthly" | "yearly"
       user_status: "ONLINE" | "OFFLINE"
     }
@@ -417,6 +525,7 @@ export const Constants = {
       app_permission: ["channels.delete", "messages.delete"],
       app_role: ["admin", "moderator"],
       gender_enum: ["male", "female", "other"],
+      mood: ["terrible", "bad", "okay", "good", "great"],
       subscription_plan_enum: ["free", "trial", "weekly", "monthly", "yearly"],
       user_status: ["ONLINE", "OFFLINE"],
     },

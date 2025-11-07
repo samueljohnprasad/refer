@@ -34,6 +34,7 @@ import { useCanRecoverStreak } from "@/hooks/data/useStreakRecovery";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
+import { supabase } from "@/src/network/auth/supabase";
 const { width, height } = Dimensions.get("window");
 
 // Global color palette
@@ -65,7 +66,9 @@ export default function JournalCalendarScreen() {
   const progressAnim = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [showRecoveryModal, setShowRecoveryModal] = useState<boolean>(false);
-  const [selectedEmotionDate, setSelectedEmotionDate] = useState<Date>(new Date());
+  const [selectedEmotionDate, setSelectedEmotionDate] = useState<Date>(
+    new Date()
+  );
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const { canRecover } = useCanRecoverStreak();
 
@@ -73,6 +76,13 @@ export default function JournalCalendarScreen() {
   const nextMilestone = getNextMilestone(currentStreak);
 
   useEffect(() => {
+    const fetchToken = async () => {
+      const auth = supabase.auth.getSession();
+      const token = await auth.then((res) => res.data.session?.access_token);
+
+      console.log(token);
+    };
+    fetchToken();
     // Animate progress bar fill based on actual streak progress
     Animated.timing(progressAnim, {
       toValue: currentStreak / nextMilestone, // Convert percentage to 0-1

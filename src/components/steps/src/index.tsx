@@ -7,10 +7,8 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-  withSpring,
   withDelay,
   FadeIn,
-  FadeOut,
   withSequence,
   Easing,
 } from "react-native-reanimated";
@@ -29,10 +27,7 @@ import { AgeRange, Gender } from "@/types/types";
 import { useGradualAnimation } from "@/hooks/useGradualAnimation";
 import { JOURNALING_REASONS } from "@/constants/journaling";
 import NotificationsUI from "../../NotificationsUI";
-import type { RemindersConfig } from "@/src/lib/notification-reminders";
-import { syncRemindersToSupabase } from "@/src/network/reminders";
 import { NameOnboard } from "../NameOnboard";
-import { BlurView } from "expo-blur";
 type InputType = "name" | "birthday" | "options" | "reminder" | "great";
 
 interface MoodDef {
@@ -221,20 +216,6 @@ const App = ({ onComplete }: StepsAppProps) => {
       )
     );
   }, [currentStep]);
-
-  const headlineAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: floatingAnimation.value,
-      transform: [
-        {
-          translateY: withSpring(
-            floatingAnimation.value * 0 + (1 - floatingAnimation.value) * 20,
-            { damping: 15, stiffness: 100 }
-          ),
-        },
-      ],
-    };
-  });
 
   const renderInput = (): JSX.Element | null => {
     const current = moods[currentStep];

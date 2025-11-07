@@ -1,13 +1,7 @@
 // DiscoveryScreen.tsx
 // Updated per request: removed bottom tabs, bigger mic, slimmer progress, fire for streak.
 
-import React, {
-  useMemo,
-  useCallback,
-  useState,
-  useRef,
-  useEffect,
-} from "react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -30,7 +24,11 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { recorderOpenAtom, keyboardJournalOpenAtom } from "./helpers";
+import {
+  recorderOpenAtom,
+  keyboardJournalOpenAtom,
+  selectedDateDiscoveryAtom,
+} from "./helpers";
 import VoiceRecorderModalWrapper from "./VoiceRecorderModalWrapper";
 import KeyboardJournalModalWrapper from "./KeyboardJournalModalWrapper";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
@@ -175,7 +173,7 @@ function DiscoveryScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const { date } = useLocalSearchParams<{ date: string }>();
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useAtom(selectedDateDiscoveryAtom);
 
   useEffect(() => {
     setSelectedDate(date ? new Date(date) : new Date());
@@ -296,8 +294,8 @@ function DiscoveryScreen() {
           </LinearGradient>
         </View>
 
-        <VoiceRecorderModalWrapper selectedDate={selectedDate} />
-        <KeyboardJournalModalWrapper selectedDate={selectedDate} />
+        <VoiceRecorderModalWrapper />
+        <KeyboardJournalModalWrapper />
       </ScrollView>
 
       {/* Calendar Modal */}

@@ -33,9 +33,7 @@ import {
  */
 const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   insights,
-  transcripts,
   onClose,
-  selectedDate,
 }: JournalEntryScreenProps) => {
   const insets = useSafeAreaInsets();
   const toast = useToast();
@@ -78,9 +76,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   } = useJournalEdit({
     initialEmoji: "great",
     initialTags: insights?.feelings || [],
-    initialText:
-      insights?.enrichedTranscript ||
-      "Hello, what's up? Today is a wonderful day. Like, now I'm watching a movie, Hindi movie.",
+    initialText: insights?.enrichedTranscript || "no transcript available",
   });
 
   // Keyboard handling
@@ -115,20 +111,17 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
 
   const handleContinue = useCallback(async (): Promise<void> => {
     try {
-      await saveJournal(
-        {
-          title: insights?.title || "Daily Reflections",
-          enrichedTranscript: journalText,
-          aiInsights: insights?.aiInsights,
-          moodScore: insights?.moodScore,
-          mainEmoji: selectedMood,
-          feelings: tags,
-          suggestedTags: insights?.suggestedTags,
-          growthAreas: insights?.growthAreas,
-          positiveInsights: insights?.positiveInsights,
-        },
-        selectedDate
-      );
+      await saveJournal({
+        title: insights?.title || "Daily Reflections",
+        enrichedTranscript: journalText,
+        aiInsights: insights?.aiInsights,
+        moodScore: insights?.moodScore,
+        mainEmoji: selectedMood,
+        feelings: tags,
+        suggestedTags: insights?.suggestedTags,
+        growthAreas: insights?.growthAreas,
+        positiveInsights: insights?.positiveInsights,
+      });
 
       toast.show({
         placement: "bottom",
@@ -150,16 +143,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
         ),
       });
     }
-  }, [
-    saveJournal,
-    insights,
-    journalText,
-    tags,
-    selectedMood,
-    selectedDate,
-    toast,
-    router,
-  ]);
+  }, [saveJournal, insights, journalText, tags, selectedMood]);
 
   const currentGradient = MOOD_GRADIENTS[selectedMood] || MOOD_GRADIENTS.great;
 

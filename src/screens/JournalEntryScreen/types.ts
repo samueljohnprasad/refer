@@ -2,9 +2,7 @@ import { InsightsType, FeelingsType } from "@/src/network/genAi";
 
 export interface JournalEntryScreenProps {
   insights?: InsightsType;
-  transcripts?: string[];
   onClose?: () => void;
-  selectedDate?: Date;
 }
 
 export interface TagItemProps {

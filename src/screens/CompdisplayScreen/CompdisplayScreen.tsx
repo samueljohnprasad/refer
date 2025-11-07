@@ -6,18 +6,13 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useEffect, useRef } from "react";
-import { startOfWeek, endOfWeek, sub } from "date-fns";
-import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
 import useJournalEntryAnimations from "@/hooks/animations/useJournalEntryAnimations";
 import TodayReflectionCard from "@/src/components/TodayReflectionCard";
 import LevelProgressCard from "@/src/components/LevelProgressCard";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { PALETTE } from "../JournalCalendarScreen/JournalCalendarScreen";
 
 const CompdisplayScreen = () => {

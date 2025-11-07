@@ -1,13 +1,14 @@
 import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/network/auth/supabase";
 import { InsightsType } from "@/src/network/genAi";
-import { Tables } from "@/types/types";
 import { useCallback, useState } from "react";
-import { getTodayDate } from "@/hooks/data/useStreakCalculation";
 import { useUpdateStreak } from "@/hooks/data/useUpdateStreak";
 import { useQueryClient } from "@tanstack/react-query";
-import { useStreakReminders } from "@/hooks/notifications/useStreakReminders";
 import { format } from "date-fns";
+import { selectedDateDiscoveryAtom } from "@/src/screens/DiscoveryScreen/helpers";
+import { useAtomValue } from "jotai";
+import { Insert } from "@/types/types";
+import { formateDate_y_m_d } from "../data/date";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -16,89 +17,92 @@ export interface JournalEntryRow extends InsightsType {
   date: string;
 }
 
-const formatDateKey = (date: Date): string => {
-  // Returns ISO 8601 string with timezone (e.g., "2025-09-25T18:32:20.000Z")
-  return date.toISOString();
-};
-
 export const useSaveJournal = () => {
   const { user } = useAuth();
   const [saving, setSaving] = useState<boolean>(false);
   const updateStreakMutation = useUpdateStreak();
-  const { sendMilestoneNotification } = useStreakReminders();
   const queryClient = useQueryClient();
+  const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
 
   const saveJournal = useCallback(
-    async (
-      input: InsightsType,
-      customDate?: Date
-    ): Promise<Tables<"journal_entries">> => {
+    async (input: InsightsType): Promise<void> => {
       if (!user?.id) {
         throw new Error("Not authenticated");
       }
+
       setSaving(true);
       try {
-        const dateToUse = customDate || new Date();
-        const row = {
+        // const row = {
+        //   user_id: user.id,
+        //   created_at: formatDateKey(new Date()),
+        //   selected_date: format(dateToUse, "yyyy-MM-dd"),
+        //   title: input.title,
+        //   enrichedTranscript: input.enrichedTranscript,
+        //   aiInsights: input.aiInsights,
+        //   moodScore: input.moodScore ?? null,
+        //   mainEmoji: input.mainEmoji ?? null,
+        //   feelings: input.feelings,
+        //   suggestedTags: input.suggestedTags,
+        //   positiveInsights: input.positiveInsights,
+        // };
+        const journalRow: Insert<"journal_records"> = {
           user_id: user.id,
-          created_at: formatDateKey(new Date()),
-          selected_date: format(dateToUse, "yyyy-MM-dd"),
+          duration_seconds: 0,
+          transcripts: input.enrichedTranscript,
+          input_type: "voice",
           title: input.title,
-          enrichedTranscript: input.enrichedTranscript,
-          aiInsights: input.aiInsights,
-          moodScore: input.moodScore ?? null,
-          mainEmoji: input.mainEmoji ?? null,
-          feelings: input.feelings,
-          suggestedTags: input.suggestedTags,
-          positiveInsights: input.positiveInsights,
+          selected_date: formateDate_y_m_d(selectedDate),
         };
 
-        const { data, error } = await supabase
-          .from("journal_entries")
-          .insert(row)
+        const { data: journalData, error: journalError } = await supabase
+          .from("journal_records")
+          .insert(journalRow)
           .select()
           .single();
+        if (journalError) throw journalError;
 
-        if (error) throw error;
+        const aiInsights: Insert<"journal_ai_insights"> = {
+          journal_entry_id: journalData.id,
+          aiInsights: input.aiInsights,
+          feelings: input.feelings,
+          energyLevel: input.energyLevel,
+          stressLevel: input.stressLevel,
+          triggers: input.triggers,
+          worries: input.worries,
+          achievements: input.achievements,
+          sleepQuality: input.sleepQuality,
+        };
 
-        // Update streak after successful journal save
-        try {
-          const streakResult = await updateStreakMutation.mutateAsync({
-            userId: user.id,
-            forceReset: false,
-          });
+        const { data: insightsData, error: insightsError } = await supabase
+          .from("journal_ai_insights")
+          .insert(aiInsights)
+          .select()
+          .single();
+        if (insightsError) throw insightsError;
 
-          // Invalidate queries to refresh UI
-          queryClient.invalidateQueries({ queryKey: ["userProfile"] });
-          queryClient.invalidateQueries({ queryKey: ["journalEntries"] });
-          queryClient.invalidateQueries({ queryKey: ["moods"] });
+        const mood: Insert<"moods"> = {
+          user_id: user.id,
+          main_mood: input.mainEmoji,
+          selected_date: format(selectedDate, "yyyy-MM-dd"),
+          input_method: "journal",
+          journal_entry_id: journalData.id,
+        };
 
-          // Check for new achievements
-          try {
-            // Send milestone notification based on current streak
-            const { data: profile } = await supabase
-              .from("profiles")
-              .select("current_streak")
-              .eq("id", user.id)
-              .single();
+        const { error: moodError } = await supabase
+          .from("moods")
+          .insert(mood)
+          .select()
+          .single();
+        if (moodError) throw moodError;
 
-            const currentStreak = profile?.current_streak ?? 0;
+        const streakResult = await updateStreakMutation.mutateAsync({
+          userId: user.id,
+          forceReset: false,
+        });
 
-            // Send notification for milestone streaks
-            const milestones = [1, 3, 7, 14, 30, 45, 60, 90, 100, 180, 365];
-            if (milestones.includes(currentStreak)) {
-              await sendMilestoneNotification(currentStreak);
-            }
-          } catch (achievementError) {
-            console.error("Error checking achievements:", achievementError);
-            // Don't fail if achievement check fails
-          }
-        } catch (streakError) {
-          console.error("Error updating streak:", streakError);
-          // Don't fail the entire operation if streak update fails
-        }
-
-        return data;
+        queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+        queryClient.invalidateQueries({ queryKey: ["journal_records"] });
+        queryClient.invalidateQueries({ queryKey: ["journal_ai_insights"] });
       } catch (error) {
         console.error("Failed to save journal:", error);
         throw error;
@@ -106,8 +110,8 @@ export const useSaveJournal = () => {
         setSaving(false);
       }
     },
-    [user?.id, updateStreakMutation, queryClient]
+    [user?.id, updateStreakMutation, queryClient, selectedDate]
   );
 
-  return { saveJournal, saving } as const;
+  return { saveJournal, saving };
 };

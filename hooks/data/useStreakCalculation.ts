@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import dayjs from "dayjs";
 
 export interface StreakResult {
   newStreak: number;
@@ -10,17 +10,16 @@ export interface StreakResult {
  * Get today's date in YYYY-MM-DD format using device timezone
  */
 export const getTodayDate = (): string => {
-  return format(new Date(), "yyyy-MM-dd");
+  return dayjs().format("YYYY-MM-DD");
 };
 
 /**
  * Calculate the number of days between two dates
  */
 const getDaysDifference = (date1: string, date2: string): number => {
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-  const diffTime = Math.abs(d2.getTime() - d1.getTime());
-  return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const d1 = dayjs(date1);
+  const d2 = dayjs(date2);
+  return Math.abs(d2.diff(d1, 'day'));
 };
 
 /**

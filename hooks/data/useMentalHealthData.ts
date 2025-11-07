@@ -1,15 +1,15 @@
 import { useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { formatDate } from "date-fns";
 import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/network/auth/supabase";
-import { FeelingsType } from "@/src/network/genAi";
-import { InsightsTypeResponse } from "@/src/screens/DailyNotesScreen/types";
+import { formateDate_y_m_d } from "./date";
+import { TWO_HOUR } from "@/constants/Colors";
+import { Tables } from "@/types/types";
 
 // Custom hook for mental health data management (for potential reuse)
 export const useMentalHealthData = (selectedDate: Date) => {
   const { user } = useAuth();
-  const formattedDate = formatDate(selectedDate, "yyyy-MM-dd");
+  const formattedDate = formateDate_y_m_d(selectedDate);
 
   const loadData = useCallback(async () => {
     if (!user?.id) {
@@ -22,46 +22,28 @@ export const useMentalHealthData = (selectedDate: Date) => {
       end.setHours(23, 59, 59, 999);
 
       const { data, error: dateColErr } = await supabase
-        .from("journal_entries")
+        .from("journal_records")
         .select("*")
         .eq("user_id", user.id)
-        .gte("created_at", start.toISOString())
-        .lte("created_at", end.toISOString())
-        .order("created_at", { ascending: false })
-        .overrideTypes<Array<{ feelings: FeelingsType[] }>>();
+        .gte("selected_date", start.toISOString())
+        .lte("selected_date", end.toISOString())
+        .order("selected_date", { ascending: false });
 
       if (dateColErr || !data) throw dateColErr;
 
-      const insightsResponse: Array<InsightsTypeResponse> = data.map(
-        (entry) => {
-          return {
-            moodScore: entry.moodScore || 0,
-            aiInsights: entry.aiInsights || "",
-            positiveInsights: entry.positiveInsights || [],
-            suggestedTags: entry.suggestedTags || [],
-            summary: entry.summary || "",
-            title: entry.title || "",
-            mainEmoji: entry.mainEmoji || "",
-            feelings: entry.feelings,
-            enrichedTranscript: entry.enrichedTranscript || "",
-            created_at: entry.created_at,
-            id: entry.id,
-          };
-        }
-      );
-
-      return insightsResponse;
+      return data;
     } catch (err) {
       console.error("Error loading mental health data:", err);
       return [];
     }
   }, [user?.id, formattedDate]);
 
-  const query = useQuery({
+  
+  const query = useQuery<Tables<"journal_records">[]>({
     queryKey: [user?.id, formattedDate],
     queryFn: loadData,
-    staleTime: 60_000,
-    gcTime: 5 * 60_000,
+    staleTime: TWO_HOUR,
+    gcTime: TWO_HOUR,
     enabled: !!user?.id && !!formattedDate,
   });
   return query;

@@ -1,6 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/src/network/auth/supabase";
-import { calculateStreak, getTodayDate, isStreakBroken } from "./useStreakCalculation";
+import {
+  calculateStreak,
+  getTodayDate,
+  isStreakBroken,
+} from "./useStreakCalculation";
 
 interface UpdateStreakParams {
   userId: string;
@@ -25,7 +29,9 @@ export const useUpdateStreak = () => {
       // 1. Get current streak data from profile
       const { data: profile, error: fetchError } = await supabase
         .from("profiles")
-        .select("current_streak, longest_streak, last_journal_date, streak_freeze_count")
+        .select(
+          "current_streak, longest_streak, last_journal_date, streak_freeze_count"
+        )
         .eq("id", userId)
         .single();
 
@@ -110,55 +116,6 @@ export const useUpdateStreak = () => {
     },
     onError: (error) => {
       console.error("Failed to update streak:", error);
-    },
-  });
-};
-
-/**
- * Hook to use a streak freeze (premium feature)
- */
-export const useStreakFreeze = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (userId: string) => {
-      // 1. Get current data
-      const { data: profile, error: fetchError } = await supabase
-        .from("profiles")
-        .select("streak_freeze_count, subscription_plan")
-        .eq("id", userId)
-        .single();
-
-      if (fetchError) throw fetchError;
-
-      // 2. Check if user has premium
-      const isPremium = profile?.subscription_plan === "premium" || 
-                        profile?.subscription_plan === "pro";
-      
-      if (!isPremium) {
-        throw new Error("Streak freeze is a premium feature");
-      }
-
-      // 3. Check if user has freezes available
-      const freezeCount = profile?.streak_freeze_count ?? 0;
-      if (freezeCount <= 0) {
-        throw new Error("No streak freezes available");
-      }
-
-      // 4. Use one freeze
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({
-          streak_freeze_count: freezeCount - 1,
-        })
-        .eq("id", userId);
-
-      if (updateError) throw updateError;
-
-      return { freezesRemaining: freezeCount - 1 };
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
     },
   });
 };

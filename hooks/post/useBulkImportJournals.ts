@@ -61,7 +61,6 @@ export const useBulkImportJournals = () => {
 
         // Invalidate queries to refresh UI
         queryClient.invalidateQueries({ queryKey: ["userProfile"] });
-        queryClient.invalidateQueries({ queryKey: ["journalEntries"] });
         queryClient.invalidateQueries({ queryKey: ["moods"] });
 
         setProgress({ current: count, total: count });

@@ -7,24 +7,18 @@ import VoiceRecorder from "./VoiceRecorder";
 import JournalEntryScreen from "../JournalEntryScreen/JournalEntryScreen";
 import EmotionAnalysisLoadingScreen from "./EmotionAnalysisLoadingScreen";
 
-type VoiceRecorderModalWrapperProps = {
-  selectedDate?: Date;
-};
+type VoiceRecorderModalWrapperProps = {};
 
-const VoiceRecorderModalWrapper = ({
-  selectedDate,
-}: VoiceRecorderModalWrapperProps) => {
+const VoiceRecorderModalWrapper = () => {
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
   const [stepper, setStepper] = useState(0);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
-  const [transcripts, setTranscripts] = useState<string[] | null>(null);
   const [insights, setInsights] = useState<InsightsType>(defaultInsights);
 
   const onClose = () => {
     setRecorderOpen(false);
     setStepper(0);
     setRecordingUri(null);
-    setTranscripts(null);
     setInsights(defaultInsights);
   };
   return (
@@ -34,30 +28,19 @@ const VoiceRecorderModalWrapper = ({
           onStop={(path) => {
             setRecordingUri(path);
             setStepper(1);
-            // uploadAndTranscribe(path);
           }}
-          selectedDate={selectedDate}
         />
       )}
       {stepper === 1 && recordingUri && (
         <EmotionAnalysisLoadingScreen
           recordingUri={recordingUri}
-          selectedDate={selectedDate}
-          onAnalysisCompleted={({ transcripts, insights }) => {
-            setTranscripts(transcripts);
+          onAnalysisCompleted={({ insights }) => {
             setInsights(insights);
             setStepper(2);
           }}
         />
       )}
-      {stepper === 2 && (
-        // <HealthTracker transcripts={transcripts || []} onClose={onClose} />
-        <JournalEntryScreen
-          insights={insights}
-          transcripts={transcripts || []}
-          selectedDate={selectedDate}
-        />
-      )}
+      {stepper === 2 && <JournalEntryScreen insights={insights} />}
     </VoiceRecorderModal>
   );
 };

@@ -8,16 +8,22 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import { selectedDateDiscoveryAtom } from "./helpers";
+import { useAtomValue } from "jotai";
 
 interface VoiceRecorderProps {
   onStop: (uri: string) => void;
-  selectedDate?: Date;
 }
-const VoiceRecorder = ({ onStop, selectedDate }: VoiceRecorderProps) => {
+const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
   const rotation = useSharedValue(0);
+  const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
 
   const formattedDate = format(selectedDate || new Date(), "MMMM d, yyyy");
 
@@ -78,16 +84,16 @@ const VoiceRecorder = ({ onStop, selectedDate }: VoiceRecorderProps) => {
   const isPaused = recordingCurrentState === "paused";
 
   return (
-    <SafeAreaView className="flex-1 flex justify-start" edges={['top']}>
+    <SafeAreaView className="flex-1 flex justify-start" edges={["top"]}>
       <MindfulGradient position={"top"} isSpeaking={isSpeaking} />
-      
+
       {/* Date Header - Centered */}
       <View className="px-6 mt-80 pb-4 items-center">
         <Text className="text-[#1F2937] text-base font-semibold">
           {formattedDate}
         </Text>
       </View>
-      
+
       {/* Prompt Section - No Card, Just Text */}
       <View className="px-6 pb-8">
         <View className="flex-row justify-between items-start">
@@ -96,16 +102,16 @@ const VoiceRecorder = ({ onStop, selectedDate }: VoiceRecorderProps) => {
           </Text>
           <TouchableOpacity
             onPress={handleShufflePrompt}
-              className="p-1.5 bg-[#7B61FF]/10 rounded-full"
+            className="p-1.5 bg-[#7B61FF]/10 rounded-full"
             activeOpacity={0.7}
           >
             <Animated.View style={rotateStyle}>
-                <Feather name="refresh-cw" size={16} color="#7B61FF" />
+              <Feather name="refresh-cw" size={16} color="#7B61FF" />
             </Animated.View>
           </TouchableOpacity>
         </View>
       </View>
-      
+
       <Box className="w-full" style={{ height: 40 }}></Box>
       <MicControlContainer
         isRecording={isRecording}

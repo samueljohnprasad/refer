@@ -8,7 +8,7 @@ export const useUserProfile = () => {
     queryKey: ["userProfile"],
     queryFn: async () => {
       if (!user) {
-        return { 
+        return {
           displayName: "",
           currentStreak: 0,
           longestStreak: 0,
@@ -19,7 +19,9 @@ export const useUserProfile = () => {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("display_name, current_streak, longest_streak, last_journal_date, streak_freeze_count")
+        .select(
+          "display_name, current_streak, longest_streak, last_journal_date, streak_freeze_count"
+        )
         .eq("id", user.id)
         .maybeSingle();
 
@@ -42,7 +44,7 @@ export const useUserProfile = () => {
       }
       return failureCount < 2;
     },
-    staleTime: 1000 * 60, // 1 minute - refresh more frequently for streak updates
-    gcTime: 10 * 60 * 1000,
+    staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60,
   });
 };
