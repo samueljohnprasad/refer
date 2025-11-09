@@ -19,7 +19,7 @@ export const getTodayDate = (): string => {
 const getDaysDifference = (date1: string, date2: string): number => {
   const d1 = dayjs(date1);
   const d2 = dayjs(date2);
-  return Math.abs(d2.diff(d1, 'day'));
+  return Math.abs(d2.diff(d1, "day"));
 };
 
 /**
@@ -100,24 +100,6 @@ export const isStreakBroken = (
 
   // Streak is broken if more than 1 day has passed
   return daysDiff > 1;
-};
-
-/**
- * Check if user should be reminded about their streak
- * Returns true if user hasn't journaled today and has an active streak
- */
-export const shouldRemindAboutStreak = (
-  lastJournalDate: string | null,
-  currentStreak: number
-): boolean => {
-  if (!lastJournalDate || currentStreak === 0) {
-    return false; // No streak to remind about
-  }
-
-  const todayDate = getTodayDate();
-
-  // Remind if user hasn't journaled today and has an active streak
-  return lastJournalDate !== todayDate && currentStreak > 0;
 };
 
 /**

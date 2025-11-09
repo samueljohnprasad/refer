@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Switch,
   Platform,
@@ -15,6 +14,7 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  StyleSheet
 } from "react-native";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -25,12 +25,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useAuth } from "@/src/context/AuthContext";
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
-import { useStreakReminders } from "@/hooks/notifications/useStreakReminders";
 import { useBulkImportJournals } from "@/hooks/post/useBulkImportJournals";
 import { format, subDays } from "date-fns";
 import PrivacyPolicyModal from "@/src/components/modals/PrivacyPolicyModal";
 import TermsAndConditionsModal from "@/src/components/modals/TermsAndConditionsModal";
 import EraseDataConfirmationModal from "@/src/components/modals/EraseDataConfirmationModal";
+import SignOutConfirmationModal from "@/src/components/modals/SignOutConfirmationModal";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
 
 export default React.memo(function SettingsScreen() {
@@ -42,12 +42,7 @@ export default React.memo(function SettingsScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = useHeaderHeight();
   const scrollY = useRef(new Animated.Value(0)).current;
-  const { user, session, loading, signOut } = useAuth();
-  const {
-    scheduleStreakReminder,
-    cancelAllStreakReminders,
-    requestNotificationPermissions,
-  } = useStreakReminders();
+  const { signOut } = useAuth();
 
   const [showModal, setShowModal] = useState({
     modalType: "",
@@ -64,33 +59,8 @@ export default React.memo(function SettingsScreen() {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsAndConditions, setShowTermsAndConditions] = useState(false);
   const [showEraseDataModal, setShowEraseDataModal] = useState(false);
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const deleteUserDataMutation = useDeleteUser();
-
-  // Handle reminder toggle
-  const handleReminderToggle = async (enabled: boolean) => {
-    Haptics.selectionAsync();
-
-    if (enabled) {
-      // Request permissions first
-      const hasPermission = await requestNotificationPermissions();
-      if (!hasPermission) {
-        alert("Please enable notifications in your device settings");
-        return;
-      }
-
-      // Schedule reminder
-      await scheduleStreakReminder({
-        hour: reminderTime.hour,
-        minute: reminderTime.minute,
-        enabled: true,
-      });
-      setRemindersEnabled(true);
-    } else {
-      // Cancel all reminders
-      await cancelAllStreakReminders();
-      setRemindersEnabled(false);
-    }
-  };
 
   const [upgradeY, setUpgradeY] = useState<number | null>(null);
   const handleToggle = (
@@ -215,19 +185,6 @@ export default React.memo(function SettingsScreen() {
         }}
       />
       <View style={styles.surface}>
-        {/* Header */}
-        {/* <BlurView intensity={50} tint="dark" style={styles.headerRow}>
-          <TouchableOpacity
-            style={styles.backBtn}
-            activeOpacity={0.7}
-            onPress={handlePress}
-          >
-            <Ionicons name="arrow-back" size={20} color="#FFF" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Settings</Text>
-          <View style={{ width: 36 }} />
-        </BlurView> */}
-
         <Animated.ScrollView
           contentContainerStyle={[
             styles.scrollViewContent,
@@ -250,18 +207,6 @@ export default React.memo(function SettingsScreen() {
                 AI Insights, Weekly Summaries,{"\n"}Advanced Dashboard,{"\n"}
                 Longer Recordings, and more.
               </Text>
-              {/* <MyMenu /> */}
-              {/* <MyContextMenu /> */}
-              {/* <BlurModal /> */}
-              {/* <Link href="/tabs/pages/BlurModal" asChild>
-                <Button title="Open Menuu" />
-              </Link> */}
-              {/* <Button
-                title="Open Menuu"
-                onPress={() => {
-                  router.push("/tabs/pages/BlurModal");
-                }}
-              /> */}
 
               <Pressable
                 android_ripple={{ color: "#6D4AFF" }}
@@ -287,45 +232,7 @@ export default React.memo(function SettingsScreen() {
             </View>
           </View>
 
-          {/* Settings Group */}
           <View style={styles.cardGroup}>
-            {/* <View style={styles.rowItem}>
-              <View style={[styles.leftIcon, { backgroundColor: "#FDE68A" }]}>
-                <Feather name="bell" size={20} color="#F59E0B" />
-              </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Notifications</Text>
-                <Text style={styles.itemSubtitle}>Push alerts, reminders</Text>
-              </View>
-              <Switch
-                value={notifications}
-                onValueChange={(val) => handleToggle(setNotifications, val)}
-                trackColor={{ true: "#7C5CFF", false: "#E6E6E6" }}
-                thumbColor={Platform.OS === "android" ? "#fff" : undefined}
-                ios_backgroundColor="#E6E6E6"
-              />
-            </View> */}
-
-            <View style={styles.rowItem}>
-              <View style={[styles.leftIcon, { backgroundColor: "#BBF7D0" }]}>
-                <Feather name="calendar" size={20} color="#22C55E" />
-              </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Daily Streak Reminder</Text>
-                <Text style={styles.itemSubtitle}>
-                  Get reminded at {reminderTime.hour}:
-                  {reminderTime.minute.toString().padStart(2, "0")}
-                </Text>
-              </View>
-              <Switch
-                value={remindersEnabled}
-                onValueChange={handleReminderToggle}
-                trackColor={{ true: "#7C5CFF", false: "#E6E6E6" }}
-                thumbColor={Platform.OS === "android" ? "#fff" : undefined}
-                ios_backgroundColor="#E6E6E6"
-              />
-            </View>
-
             <TouchableOpacity
               style={styles.rowItem}
               activeOpacity={0.7}
@@ -416,23 +323,6 @@ export default React.memo(function SettingsScreen() {
               </View>
               <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
             </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.rowItem}
-              activeOpacity={0.7}
-              onPress={() => {
-                // handlePress("language");
-                signOut();
-              }}
-            >
-              <View style={[styles.leftIcon, { backgroundColor: "#BFDBFE" }]}>
-                <Feather name="globe" size={20} color="#3B82F6" />
-              </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Sign Out</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
-            </TouchableOpacity>
           </View>
 
           {/* Settings Group 2 */}
@@ -515,6 +405,22 @@ export default React.memo(function SettingsScreen() {
               <View style={styles.rowText}>
                 <Text style={styles.itemTitle}>Bulk Import Journals</Text>
                 <Text style={styles.itemSubtitle}>Import sample data</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setShowSignOutConfirm(true);
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#BFDBFE" }]}>
+                <Feather name="log-out" size={20} color="#3B82F6" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Sign Out</Text>
               </View>
               <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
             </TouchableOpacity>
@@ -637,6 +543,16 @@ export default React.memo(function SettingsScreen() {
         onClose={() => setShowEraseDataModal(false)}
         onConfirm={handleEraseDataConfirm}
         isDeleting={deleteUserDataMutation.isPending}
+      />
+
+      {/* Sign Out Confirmation Modal */}
+      <SignOutConfirmationModal
+        visible={showSignOutConfirm}
+        onClose={() => setShowSignOutConfirm(false)}
+        onConfirm={async () => {
+          await signOut();
+          setShowSignOutConfirm(false);
+        }}
       />
     </SafeAreaView>
   );
