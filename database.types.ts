@@ -185,27 +185,33 @@ export type Database = {
       }
       journal_records: {
         Row: {
+          bookmarked_at: string | null
           duration_seconds: number | null
           id: number
           input_type: string | null
+          is_bookmarked: boolean | null
           selected_date: string | null
           title: string | null
           transcripts: string | null
           user_id: string | null
         }
         Insert: {
+          bookmarked_at?: string | null
           duration_seconds?: number | null
           id?: number
           input_type?: string | null
+          is_bookmarked?: boolean | null
           selected_date?: string | null
           title?: string | null
           transcripts?: string | null
           user_id?: string | null
         }
         Update: {
+          bookmarked_at?: string | null
           duration_seconds?: number | null
           id?: number
           input_type?: string | null
+          is_bookmarked?: boolean | null
           selected_date?: string | null
           title?: string | null
           transcripts?: string | null

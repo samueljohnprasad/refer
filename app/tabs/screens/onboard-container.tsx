@@ -10,7 +10,6 @@ import { loadingLottie } from "@/assets/lottie";
 const OnboardContainer = () => {
   const onboarding = useOnboardingStatus();
   const { session, loading } = useAuth();
-  console.log("OnboardContainer", { onboarding, loading });
 
   if (onboarding.loading || loading) {
     return (

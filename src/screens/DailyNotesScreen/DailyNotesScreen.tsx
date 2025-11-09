@@ -136,9 +136,10 @@ const areDayButtonPropsEqual = (
 
 export const DayButton = memo(DayButtonComponent, areDayButtonPropsEqual);
 
-const DailyNotesScreen: React.FC = () => {
+const DailyNotesScreen = () => {
   // State for selected date
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
+  const [showBookmarksModal, setShowBookmarksModal] = useState<boolean>(false);
   const tabBarHeight = useBottomTabBarHeight();
 
   // State for current week view (independent of selected date)
@@ -301,7 +302,7 @@ const DailyNotesScreen: React.FC = () => {
   return (
     <SafeAreaView edges={[]} className="flex-1 bg-gray-50">
       <Stack.Screen
-        options={{ header: () => <DailyNotesHeader />, headerShown: true }}
+        options={{ header: () => <DailyNotesHeader onBookmarksPress={() => setShowBookmarksModal(true)} />, headerShown: true }}
       />
       <View className="flex-1">
         {/* AI Insights Chip - Below header */}
@@ -333,6 +334,8 @@ const DailyNotesScreen: React.FC = () => {
               <View className="pt-4 pb-2">
                 <MentalHealthProfileContainer
                   selectedDate={selectedDate}
+                  showBookmarksModal={showBookmarksModal}
+                  setShowBookmarksModal={setShowBookmarksModal}
                   onRefresh={() => {
                     // Optional refresh logic for mental health data
                   }}

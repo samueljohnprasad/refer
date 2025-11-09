@@ -1,7 +1,7 @@
 import React from "react";
-import { Pressable, Animated, View } from "react-native";
+import { Pressable, Animated, View, ActivityIndicator } from "react-native";
 import { Text } from "@/components/ui/text";
-import { format, intervalToDuration } from "date-fns";
+import { format, intervalToDuration, parseISO } from "date-fns";
 import { Feather } from "@expo/vector-icons";
 import { Tables } from "@/types/types";
 import {
@@ -17,14 +17,24 @@ interface EntryCardsViewProps {
   entries: JournalEntry[];
   isLoading: boolean;
   onEntryPress: (entry: JournalEntry) => void;
+  onDelete?: (entry: JournalEntry) => void;
+  onBookmark?: (entry: JournalEntry, isBookmarked: boolean) => void;
   onRefresh?: () => void;
+  showActions?: boolean;
+  bookmarkingId?: number | null;
+  showDateHeaders?: boolean;
 }
 
 export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   entries,
   isLoading,
   onEntryPress,
+  onDelete,
+  onBookmark,
   onRefresh,
+  showActions = true,
+  bookmarkingId = null,
+  showDateHeaders = false,
 }) => {
   if (isLoading) {
     return (
@@ -77,12 +87,31 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
       <View className="gap-3">
         {entries.map((entry, index) => (
-          <EntryCard
-            key={entry.id}
-            entry={entry}
-            onPress={() => onEntryPress(entry)}
-            index={index}
-          />
+          <View key={entry.id}>
+            {showDateHeaders && (
+              <Text className="text-sm font-semibold text-gray-600 mb-2">
+                {entry.selected_date
+                  ? `${format(parseISO(entry.selected_date), "MMM d, yyyy")} · ${format(
+                      parseISO(entry.selected_date),
+                      "EEE"
+                    )}`
+                  : "No Date"}
+              </Text>
+            )}
+            <EntryCard
+              entry={entry}
+              onPress={() => onEntryPress(entry)}
+              onDelete={onDelete ? () => onDelete(entry) : undefined}
+              onBookmark={
+                onBookmark
+                  ? (isBookmarked) => onBookmark(entry, isBookmarked)
+                  : undefined
+              }
+              showActions={showActions}
+              index={index}
+              isBookmarking={bookmarkingId === entry.id}
+            />
+          </View>
         ))}
       </View>
     </View>
@@ -92,10 +121,22 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 interface EntryCardProps {
   entry: JournalEntry;
   onPress: () => void;
+  onDelete?: () => void;
+  onBookmark?: (isBookmarked: boolean) => void;
+  showActions?: boolean;
   index: number;
+  isBookmarking?: boolean;
 }
 
-const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
+const EntryCard: React.FC<EntryCardProps> = ({
+  entry,
+  onPress,
+  onDelete,
+  onBookmark,
+  showActions = true,
+  index,
+  isBookmarking = false,
+}) => {
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -124,6 +165,19 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
   const feelings: FeelingsType[] = entry.journal_ai_insights
     ?.feelings as FeelingsType[];
 
+  // Get bookmark status from entry
+  const isBookmarked: boolean = entry.is_bookmarked || false;
+
+  const handleBookmarkPress = (e: { stopPropagation: () => void }): void => {
+    e.stopPropagation();
+    onBookmark?.(isBookmarked);
+  };
+
+  const handleDeletePress = (e: { stopPropagation: () => void }): void => {
+    e.stopPropagation();
+    onDelete?.();
+  };
+
   return (
     <Pressable onPress={onPress}>
       <Animated.View
@@ -135,7 +189,7 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
       >
         {/* Header */}
         <View className="flex-row items-start justify-between mb-3">
-          <View className="flex-1 mr-3">
+          <View className="flex-1">
             <Text className="text-base font-semibold text-gray-800 mb-1">
               {entry.title}
             </Text>
@@ -199,16 +253,45 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
 
         {/* Footer */}
         <View className="flex-row items-center justify-between pt-2 border-t border-gray-100">
-          {entry.moods?.main_mood && (
-            <Text className="text-xs text-gray-500 capitalize">
-              {entry.moods?.main_mood} mood
-            </Text>
-          )}
-          <View className="flex-row items-center">
-            <Text className="text-xs text-gray-500 mr-1">
-              Tap to view full entry
-            </Text>
-            <Feather name="chevron-right" size={14} color="#9CA3AF" />
+          <View className="flex-row items-center gap-2">
+            {entry.moods?.main_mood && (
+              <Text className="text-xs text-gray-500 capitalize">
+                {entry.moods?.main_mood} mood
+              </Text>
+            )}
+          </View>
+          <View className="flex-row items-center gap-2">
+            {showActions && (
+              <>
+                <Pressable
+                  onPress={handleBookmarkPress}
+                  className="w-9 h-9 items-center justify-center active:opacity-70"
+                  accessibilityLabel={
+                    isBookmarked ? "Remove bookmark" : "Bookmark"
+                  }
+                  disabled={isBookmarking}
+                >
+                  {isBookmarking ? (
+                    <ActivityIndicator size="small" color="#3B82F6" />
+                  ) : (
+                    <Feather
+                      name={isBookmarked ? "bookmark" : "bookmark"}
+                      size={18}
+                      color={isBookmarked ? "#3B82F6" : "grey"}
+                      fill={isBookmarked ? "#3B82F6" : "grey"}
+                    />
+                  )}
+                </Pressable>
+
+                <Pressable
+                  onPress={handleDeletePress}
+                  className="w-9 h-9 items-center justify-center active:opacity-70"
+                  accessibilityLabel="Delete journal"
+                >
+                  <Feather name="trash-2" size={18} color="grey" />
+                </Pressable>
+              </>
+            )}
           </View>
         </View>
       </Animated.View>
