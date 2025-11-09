@@ -8,6 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 
@@ -37,14 +38,31 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({
           {/* Modal Container */}
           <View className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
             {/* Header */}
-            <View className="bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-5 flex-row items-center justify-between">
-              <View className="flex-1">
-                <Text className="text-white text-2xl font-bold">
-                  Privacy Policy
-                </Text>
-                <Text className="text-white/80 text-sm mt-1">
-                  Last updated: November 2024
-                </Text>
+            <LinearGradient
+              colors={["#7C3AED", "#A855F7"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{
+                paddingHorizontal: 24,
+                paddingVertical: 20,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <View className="flex-row items-center flex-1 gap-3">
+                <View className="w-12 h-12 rounded-full bg-white/20 items-center justify-center">
+                  <Feather name="shield" size={24} color="#FFF" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-white text-2xl font-bold">
+                    Privacy Policy
+                  </Text>
+                  <Text className="text-white/80 text-sm mt-1">
+                    Last updated: November 2024
+                  </Text>
+                </View>
               </View>
               <Pressable
                 onPress={handleClose}
@@ -52,7 +70,7 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({
               >
                 <Feather name="x" size={20} color="#FFF" />
               </Pressable>
-            </View>
+            </LinearGradient>
 
             {/* Content */}
             <ScrollView
@@ -120,7 +138,8 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({
               {/* AI Processing */}
               <Section title="AI Processing & Analysis">
                 <Text className="text-gray-700 text-base leading-6 mb-3">
-                  We use artificial intelligence to provide personalized insights:
+                  We use artificial intelligence to provide personalized
+                  insights:
                 </Text>
                 <BulletPoint text="AI analysis is performed securely and privately" />
                 <BulletPoint text="Your journal data is used only to generate YOUR insights" />
@@ -222,7 +241,11 @@ interface SectionProps {
   isLast?: boolean;
 }
 
-const Section: React.FC<SectionProps> = ({ title, children, isLast = false }) => {
+const Section: React.FC<SectionProps> = ({
+  title,
+  children,
+  isLast = false,
+}) => {
   return (
     <View className={`${!isLast ? "mb-6" : ""}`}>
       <Text className="text-gray-900 text-lg font-bold mb-3">{title}</Text>

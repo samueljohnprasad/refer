@@ -29,6 +29,7 @@ import { useStreakReminders } from "@/hooks/notifications/useStreakReminders";
 import { useBulkImportJournals } from "@/hooks/post/useBulkImportJournals";
 import { format, subDays } from "date-fns";
 import PrivacyPolicyModal from "@/src/components/modals/PrivacyPolicyModal";
+import TermsAndConditionsModal from "@/src/components/modals/TermsAndConditionsModal";
 import EraseDataConfirmationModal from "@/src/components/modals/EraseDataConfirmationModal";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
 
@@ -61,6 +62,7 @@ export default React.memo(function SettingsScreen() {
     subDays(new Date(), 20)
   );
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [showTermsAndConditions, setShowTermsAndConditions] = useState(false);
   const [showEraseDataModal, setShowEraseDataModal] = useState(false);
   const deleteUserDataMutation = useDeleteUser();
 
@@ -439,7 +441,8 @@ export default React.memo(function SettingsScreen() {
               style={styles.rowItem}
               activeOpacity={0.7}
               onPress={() => {
-                handlePress("terms-of-use");
+                Haptics.selectionAsync();
+                setShowTermsAndConditions(true);
               }}
             >
               <View style={[styles.leftIcon, { backgroundColor: "#F3E8FF" }]}>
@@ -620,6 +623,12 @@ export default React.memo(function SettingsScreen() {
       <PrivacyPolicyModal
         visible={showPrivacyPolicy}
         onClose={() => setShowPrivacyPolicy(false)}
+      />
+
+      {/* Terms and Conditions Modal */}
+      <TermsAndConditionsModal
+        visible={showTermsAndConditions}
+        onClose={() => setShowTermsAndConditions(false)}
       />
 
       {/* Erase Data Confirmation Modal */}
