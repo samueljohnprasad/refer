@@ -57,13 +57,15 @@ export const useJournalEdit = ({
   const handleClose = useCallback(
     (onClose?: () => void): void => {
       if (isEditing) {
-        // Restore backup state if editing
+        // Restore backup state if editing and exit edit mode (don't close modal)
         setSelectedEmoji(backupState.selectedEmoji);
         setTags(backupState.tags);
         setJournalText(backupState.journalText);
         setIsEditing(false);
+      } else {
+        // Only close modal when not editing
+        onClose?.();
       }
-      onClose?.();
     },
     [isEditing, backupState]
   );

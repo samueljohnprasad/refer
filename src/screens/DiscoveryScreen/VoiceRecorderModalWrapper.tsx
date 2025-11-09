@@ -38,7 +38,7 @@ const VoiceRecorderModalWrapper = () => {
           }}
         />
       )}
-      {stepper === 2 && <JournalEntryScreen insights={insights} />}
+      {stepper === 2 && <JournalEntryScreen insights={insights} onClose={onClose} />}
     </VoiceRecorderModal>
   );
 };

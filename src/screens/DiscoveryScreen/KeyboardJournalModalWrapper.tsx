@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import { useAtom } from "jotai";
 import { keyboardJournalOpenAtom } from "./helpers";
-import { defaultInsights, InsightsType } from "@/src/network/genAi";
 import VoiceRecorderModal from "./VoiceRecorderModal";
 import KeyboardJournalScreen from "./KeyboardJournalScreen";
 import JournalEntryScreen from "../JournalEntryScreen/JournalEntryScreen";
 import EmotionAnalysisLoadingScreen from "./EmotionAnalysisLoadingScreen";
+import { JournalEntry } from "@/hooks/data/types";
 
 const KeyboardJournalModalWrapper: React.FC = () => {
   const [journalOpen, setJournalOpen] = useAtom(keyboardJournalOpenAtom);
   const [stepper, setStepper] = useState(0);
   const [journalText, setJournalText] = useState<string>("");
-  const [insights, setInsights] = useState<InsightsType>(defaultInsights);
+  const [insights, setInsights] = useState<JournalEntry>();
 
   const onClose = () => {
     setJournalOpen(false);
     setStepper(0);
     setJournalText("");
-    setInsights(defaultInsights);
+    setInsights(undefined);
   };
 
   return (
@@ -40,7 +40,9 @@ const KeyboardJournalModalWrapper: React.FC = () => {
           }}
         />
       )}
-      {stepper === 2 && <JournalEntryScreen insights={insights} />}
+      {stepper === 2 && (
+        <JournalEntryScreen insights={insights} onClose={onClose} />
+      )}
     </VoiceRecorderModal>
   );
 };

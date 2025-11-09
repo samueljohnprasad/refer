@@ -33,6 +33,7 @@ export const useSaveJournal = () => {
       setSaving(true);
       try {
         const journalRow: Insert<"journal_records"> = {
+          id: input.id,
           user_id: user.id,
           duration_seconds: 0,
           transcripts: input.transcripts,
@@ -43,7 +44,7 @@ export const useSaveJournal = () => {
 
         const { data: journalData, error: journalError } = await supabase
           .from("journal_records")
-          .insert(journalRow)
+          .upsert(journalRow, { onConflict: "id" })
           .select()
           .single();
         if (journalError) throw journalError;
@@ -62,7 +63,7 @@ export const useSaveJournal = () => {
 
         const { data: insightsData, error: insightsError } = await supabase
           .from("journal_ai_insights")
-          .insert(aiInsights)
+          .upsert(aiInsights, { onConflict: "journal_entry_id" })
           .select()
           .single();
         if (insightsError) throw insightsError;
@@ -77,7 +78,7 @@ export const useSaveJournal = () => {
 
         const { error: moodError } = await supabase
           .from("moods")
-          .insert(mood)
+          .upsert(mood, { onConflict: "journal_entry_id" })
           .select()
           .single();
         if (moodError) throw moodError;
@@ -87,9 +88,18 @@ export const useSaveJournal = () => {
           forceReset: false,
         });
 
-        const formattedDate = formateDate_y_m_d(selectedDate);
-        queryClient.invalidateQueries({
+        // Invalidate all related queries
+        const formattedDate: string = formateDate_y_m_d(selectedDate);
+
+        // Invalidate journals data for the specific date
+        await queryClient.invalidateQueries({
           queryKey: ["journals_data", user?.id, formattedDate],
+        });
+
+        // Invalidate mood-related queries
+        await queryClient.invalidateQueries({
+          queryKey: ["moods"],
+          refetchType: "active",
         });
       } catch (error) {
         console.error("Failed to save journal:", error);

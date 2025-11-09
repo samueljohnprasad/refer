@@ -6,34 +6,91 @@ interface CallMyFunctionParams {
   isAudio: boolean;
 }
 
+export class EdgeFunctionError extends Error {
+  constructor(
+    message: string,
+    public originalError?: Error,
+    public isNetworkError: boolean = false
+  ) {
+    super(message);
+    this.name = "EdgeFunctionError";
+  }
+}
+
 export async function callMyFunction({
   journal,
   isAudio,
-}: CallMyFunctionParams) {
-  const { data, error } = await supabase.functions.invoke<InsightsType>(
-    "save-journal-ai-insights",
-    {
-      body: { journal, isAudio },
-    }
-  );
+}: CallMyFunctionParams): Promise<InsightsType> {
+  try {
+    const { data, error } = await supabase.functions.invoke<InsightsType>(
+      "save-journal-ai-insights",
+      {
+        body: { journal, isAudio },
+      }
+    );
 
-  if (error || !data) {
-    console.error("Function invoke error:", error);
-    return null;
+    if (error) {
+      const errorMessage = error.message || "Unknown error occurred";
+      const isNetworkError =
+        errorMessage.includes("Network request failed") ||
+        errorMessage.includes("Failed to send a request");
+
+      console.error("[EdgeFunction] Error:", {
+        message: errorMessage,
+        isNetworkError,
+        fullError: error,
+      });
+
+      throw new EdgeFunctionError(
+        isNetworkError
+          ? "Unable to connect to server. Please check your internet connection and try again."
+          : `AI processing failed: ${errorMessage}`,
+        error as Error,
+        isNetworkError
+      );
+    }
+
+    if (!data) {
+      throw new EdgeFunctionError(
+        "No data received from AI processing. Please try again."
+      );
+    }
+
+    console.log("[EdgeFunction] Success:", data);
+    return data;
+  } catch (err) {
+    // Re-throw EdgeFunctionError
+    if (err instanceof EdgeFunctionError) {
+      throw err;
+    }
+    // Wrap unexpected errors
+    throw new EdgeFunctionError(
+      "Unexpected error during AI processing. Please try again.",
+      err as Error,
+      true
+    );
   }
-console.log("callMyFunction", data)
-  return data;
 }
 
-export async function deleteUserAuth() {
-  const { data, error } = await supabase.functions.invoke<InsightsType>(
-    "delete-user-auth"
-  );
+export async function deleteUserAuth(): Promise<InsightsType | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke<InsightsType>(
+      "delete-user-auth"
+    );
 
-  if (error || !data) {
-    console.error("Function invoke error:", error);
-    return null;
+    if (error) {
+      console.error("[EdgeFunction] Delete user error:", error);
+      throw new EdgeFunctionError(
+        "Failed to delete user. Please try again.",
+        error as Error
+      );
+    }
+
+    return data;
+  } catch (err) {
+    throw new EdgeFunctionError(
+      "Unexpected error during user deletion.",
+      err as Error
+    );
   }
-
-  return data;
 }

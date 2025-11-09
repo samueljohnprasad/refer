@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { useSaveJournal } from "@/hooks/post/useSaveJournal";
 import { JournalEntryScreenProps } from "./types";
+import { JournalEntry } from "@/hooks/data/types";
 import { useJournalEdit, useKeyboardHandler, useTags } from "./hooks";
 import {
   MinimalHeader,
@@ -81,7 +82,26 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   const handleContinue = useCallback(async (): Promise<void> => {
     try {
       if (!insights) return;
-      await saveJournal(insights);
+      
+      // Merge edited data with insights before saving
+      const updatedInsights: JournalEntry = {
+        ...insights,
+        transcripts: journalText,
+        moods: insights.moods
+          ? {
+              ...insights.moods,
+              main_mood: selectedMood,
+            }
+          : { main_mood: selectedMood },
+        journal_ai_insights: insights.journal_ai_insights
+          ? {
+              ...insights.journal_ai_insights,
+              feelings: tags,
+            }
+          : null,
+      };
+
+      await saveJournal(updatedInsights);
 
       toast.show({
         placement: "bottom",
@@ -103,7 +123,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
         ),
       });
     }
-  }, [saveJournal, insights]);
+  }, [saveJournal, insights, journalText, selectedMood, tags, toast, onClose]);
 
   const currentGradient = MOOD_GRADIENTS[selectedMood] || MOOD_GRADIENTS.great;
 
@@ -150,12 +170,12 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
             />
           )}
 
-          {/* <FeelingsSection
-            feelings={}
+          <FeelingsSection
+            feelings={tags.map((tag: FeelingsType) => tag.name)}
             isEditing={isEditing}
             onAddFeeling={addFeelingString}
             onRemoveFeeling={removeFeelingByIndex}
-          /> */}
+          />
 
           <TranscriptSection
             text={journalText}
