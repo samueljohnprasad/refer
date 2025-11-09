@@ -35,6 +35,7 @@ import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
 import { supabase } from "@/src/network/auth/supabase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const { width, height } = Dimensions.get("window");
 
 // Global color palette
@@ -77,12 +78,16 @@ export default function JournalCalendarScreen() {
 
   useEffect(() => {
     const fetchToken = async () => {
-      const auth = supabase.auth.getSession();
-      const token = await auth.then((res) => res.data.session?.access_token);
+      async function logStorage() {
+        const keys = await AsyncStorage.getAllKeys();
+        const stores = await AsyncStorage.multiGet(keys);
+        const allData = Object.fromEntries(stores);
+        console.log("📦 AsyncStorage contents:", allData);
+      }
 
-      console.log(token);
+      logStorage();
     };
-    fetchToken();
+    // fetchToken();
     // Animate progress bar fill based on actual streak progress
     Animated.timing(progressAnim, {
       toValue: currentStreak / nextMilestone, // Convert percentage to 0-1

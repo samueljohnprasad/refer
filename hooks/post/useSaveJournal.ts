@@ -8,7 +8,8 @@ import { format } from "date-fns";
 import { selectedDateDiscoveryAtom } from "@/src/screens/DiscoveryScreen/helpers";
 import { useAtomValue } from "jotai";
 import { Insert } from "@/types/types";
-import { formateDate_y_m_d } from "../data/date";
+import { formateDate_y_m_d } from "../../src/utils/date";
+import { JournalEntry } from "../data/types";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -23,32 +24,19 @@ export const useSaveJournal = () => {
   const updateStreakMutation = useUpdateStreak();
   const queryClient = useQueryClient();
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
-
+  console.log("selectedDateDiscoveryAtom", selectedDate);
   const saveJournal = useCallback(
-    async (input: InsightsType): Promise<void> => {
+    async (input: JournalEntry): Promise<void> => {
       if (!user?.id) {
         throw new Error("Not authenticated");
       }
 
       setSaving(true);
       try {
-        // const row = {
-        //   user_id: user.id,
-        //   created_at: formatDateKey(new Date()),
-        //   selected_date: format(dateToUse, "yyyy-MM-dd"),
-        //   title: input.title,
-        //   enrichedTranscript: input.enrichedTranscript,
-        //   aiInsights: input.aiInsights,
-        //   moodScore: input.moodScore ?? null,
-        //   mainEmoji: input.mainEmoji ?? null,
-        //   feelings: input.feelings,
-        //   suggestedTags: input.suggestedTags,
-        //   positiveInsights: input.positiveInsights,
-        // };
         const journalRow: Insert<"journal_records"> = {
           user_id: user.id,
           duration_seconds: 0,
-          transcripts: input.enrichedTranscript,
+          transcripts: input.transcripts,
           input_type: "voice",
           title: input.title,
           selected_date: formateDate_y_m_d(selectedDate),
@@ -63,14 +51,14 @@ export const useSaveJournal = () => {
 
         const aiInsights: Insert<"journal_ai_insights"> = {
           journal_entry_id: journalData.id,
-          aiInsights: input.aiInsights,
-          feelings: input.feelings,
-          energyLevel: input.energyLevel,
-          stressLevel: input.stressLevel,
-          triggers: input.triggers,
-          worries: input.worries,
-          achievements: input.achievements,
-          sleepQuality: input.sleepQuality,
+          aiInsights: input.journal_ai_insights?.aiInsights,
+          feelings: input.journal_ai_insights?.feelings,
+          energyLevel: input.journal_ai_insights?.energyLevel,
+          stressLevel: input.journal_ai_insights?.stressLevel,
+          triggers: input.journal_ai_insights?.triggers,
+          worries: input.journal_ai_insights?.worries,
+          achievements: input.journal_ai_insights?.achievements,
+          sleepQuality: input.journal_ai_insights?.sleepQuality,
         };
 
         const { data: insightsData, error: insightsError } = await supabase
@@ -82,7 +70,7 @@ export const useSaveJournal = () => {
 
         const mood: Insert<"moods"> = {
           user_id: user.id,
-          main_mood: input.mainEmoji,
+          main_mood: input.moods?.main_mood,
           selected_date: format(selectedDate, "yyyy-MM-dd"),
           input_method: "journal",
           journal_entry_id: journalData.id,

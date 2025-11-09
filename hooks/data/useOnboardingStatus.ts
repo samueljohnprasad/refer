@@ -9,10 +9,9 @@ export type OnboardingStatus = {
 export const useOnboardingStatus = (): OnboardingStatus => {
   const [loading, setLoading] = useState<boolean>(true);
   const [completed, setCompleted] = useState<boolean>(false);
+  console.log("onboarding status", { completed, loading });
 
   useEffect(() => {
-    let mounted = true;
-
     const load = async () => {
       try {
         // 2) Check supabase profile field if user exists
@@ -20,40 +19,37 @@ export const useOnboardingStatus = (): OnboardingStatus => {
           data: { user },
         } = await supabase.auth.getUser();
 
+        console.log("user onboarding", user?.id);
         if (!user) {
-          if (mounted) setLoading(false);
+          setLoading(false);
           return;
         }
 
+        console.log("user onboarding profiles", user?.id);
         const { data, error } = await supabase
           .from("profiles")
           .select("onboarding_completed")
           .eq("id", user.id)
           .maybeSingle();
-
+        console.log("data onboarding maybeSingle", data);
         if (error) {
           // Fall back to local flag on error
-          if (mounted) setLoading(false);
+          setLoading(false);
           return;
         }
 
         const remoteCompleted = Boolean(data?.onboarding_completed);
-        if (mounted) {
-          setCompleted(remoteCompleted);
-          setLoading(false);
-        }
+
+        setCompleted(remoteCompleted);
+        setLoading(false);
       } catch (e) {
-        if (mounted) {
-          setLoading(false);
-        }
+        console.log("error onboarding", e);
+        setLoading(false);
       }
     };
 
     load();
-    return () => {
-      mounted = false;
-    };
   }, []);
 
-  return useMemo(() => ({ loading, completed }), [loading, completed]);
+  return { loading, completed };
 };

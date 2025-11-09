@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
-import { InsightsType } from "@/src/network/genAi";
 import { callMyFunction } from "@/src/network/transcribeAudio";
 import { ProcessingPhase } from "@/src/screens/DiscoveryScreen/types";
 import { File } from "expo-file-system";
+import { recorderOpenAtom } from "@/src/screens/DiscoveryScreen/helpers";
+import { useAtom } from "jotai";
+import { JournalEntry } from "./data/types";
+import { getAudioDuration } from "@/src/utils/date";
 
 export type AnalysisCompletedType = {
-  insights: InsightsType;
+  insights: JournalEntry;
 };
 
 const useEmotionsAnalysis = ({
@@ -17,6 +20,8 @@ const useEmotionsAnalysis = ({
   journalText?: string;
   onAnalysisCompleted: (data: AnalysisCompletedType) => void;
 }) => {
+  const [, setRecorderOpen] = useAtom(recorderOpenAtom);
+
   const [processingPhase, setProcessingPhase] = React.useState<ProcessingPhase>(
     ProcessingPhase.TRANSCRIBING
   );
@@ -28,12 +33,6 @@ const useEmotionsAnalysis = ({
     }
     const audioFile = new File(absoluteUri);
     const base64Audio = audioFile.base64Sync();
-    console.log(
-      "Base64 audio length:",
-      base64Audio.length,
-      audioFile.exists,
-      audioFile.size
-    );
 
     return base64Audio;
   };
@@ -47,8 +46,32 @@ const useEmotionsAnalysis = ({
       isAudio: uri ? true : false,
     });
 
-    console.log("insights>>>", insights);
-    return insights;
+    if (!insights) {
+      setRecorderOpen(false);
+      return null;
+    }
+    const duration = uri ? await getAudioDuration(uri) : 0;
+    const journalEntryData: JournalEntry = {
+      duration_seconds: Math.round(duration),
+      input_type: uri ? "voice" : "typing",
+      title: insights.title,
+      transcripts: insights.enrichedTranscript,
+      journal_ai_insights: {
+        achievements: insights.achievements,
+        aiInsights: insights.aiInsights,
+        energyLevel: insights.energyLevel,
+        feelings: insights.feelings,
+        sleepQuality: insights.sleepQuality,
+        stressLevel: insights.stressLevel,
+        triggers: insights.triggers,
+        worries: insights.worries,
+        journal_entry_id: 0,
+      },
+      moods: {
+        main_mood: insights.mainEmoji,
+      },
+    };
+    return journalEntryData;
   };
 
   useEffect(() => {

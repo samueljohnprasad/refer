@@ -88,6 +88,42 @@ export type Database = {
         }
         Relationships: []
       }
+      delete_users: {
+        Row: {
+          "Created at": string | null
+          created_at: string
+          "Display name": string | null
+          Email: string | null
+          id: number
+          "Last sign in at": string | null
+          Phone: string | null
+          Providers: string | null
+          UID: string | null
+        }
+        Insert: {
+          "Created at"?: string | null
+          created_at?: string
+          "Display name"?: string | null
+          Email?: string | null
+          id?: number
+          "Last sign in at"?: string | null
+          Phone?: string | null
+          Providers?: string | null
+          UID?: string | null
+        }
+        Update: {
+          "Created at"?: string | null
+          created_at?: string
+          "Display name"?: string | null
+          Email?: string | null
+          id?: number
+          "Last sign in at"?: string | null
+          Phone?: string | null
+          Providers?: string | null
+          UID?: string | null
+        }
+        Relationships: []
+      }
       journal_ai_insights: {
         Row: {
           achievements: string[] | null
@@ -132,69 +168,14 @@ export type Database = {
           {
             foreignKeyName: "journal_ai_insights_journal_entry_id_fkey"
             columns: ["journal_entry_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "journal_records"
             referencedColumns: ["id"]
           },
         ]
       }
-      journal_entries: {
-        Row: {
-          aiInsights: string | null
-          created_at: string
-          duration_seconds: number | null
-          enrichedTranscript: string | null
-          feelings: Json | null
-          id: number
-          language_code: string | null
-          mainEmoji: string | null
-          moodScore: number | null
-          positiveInsights: string[] | null
-          selected_date: string | null
-          suggestedTags: string[] | null
-          summary: string | null
-          title: string | null
-          user_id: string
-        }
-        Insert: {
-          aiInsights?: string | null
-          created_at?: string
-          duration_seconds?: number | null
-          enrichedTranscript?: string | null
-          feelings?: Json | null
-          id?: number
-          language_code?: string | null
-          mainEmoji?: string | null
-          moodScore?: number | null
-          positiveInsights?: string[] | null
-          selected_date?: string | null
-          suggestedTags?: string[] | null
-          summary?: string | null
-          title?: string | null
-          user_id?: string
-        }
-        Update: {
-          aiInsights?: string | null
-          created_at?: string
-          duration_seconds?: number | null
-          enrichedTranscript?: string | null
-          feelings?: Json | null
-          id?: number
-          language_code?: string | null
-          mainEmoji?: string | null
-          moodScore?: number | null
-          positiveInsights?: string[] | null
-          selected_date?: string | null
-          suggestedTags?: string[] | null
-          summary?: string | null
-          title?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       journal_records: {
         Row: {
-          created_at: string
           duration_seconds: number | null
           id: number
           input_type: string | null
@@ -204,7 +185,6 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
-          created_at?: string
           duration_seconds?: number | null
           id?: number
           input_type?: string | null
@@ -214,7 +194,6 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
-          created_at?: string
           duration_seconds?: number | null
           id?: number
           input_type?: string | null
@@ -235,7 +214,6 @@ export type Database = {
       }
       moods: {
         Row: {
-          created_at: string
           id: number
           input_method: string | null
           journal_entry_id: number | null
@@ -244,7 +222,6 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
-          created_at?: string
           id?: number
           input_method?: string | null
           journal_entry_id?: number | null
@@ -253,7 +230,6 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
-          created_at?: string
           id?: number
           input_method?: string | null
           journal_entry_id?: number | null
@@ -265,8 +241,8 @@ export type Database = {
           {
             foreignKeyName: "moods_journal_entry_id_fkey"
             columns: ["journal_entry_id"]
-            isOneToOne: false
-            referencedRelation: "journal_entries"
+            isOneToOne: true
+            referencedRelation: "journal_records"
             referencedColumns: ["id"]
           },
           {

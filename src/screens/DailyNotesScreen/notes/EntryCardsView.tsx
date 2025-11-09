@@ -1,17 +1,19 @@
 import React from "react";
-import { ScrollView, Pressable, Animated, View } from "react-native";
+import { Pressable, Animated, View } from "react-native";
 import { Text } from "@/components/ui/text";
-import { format } from "date-fns";
+import { format, intervalToDuration } from "date-fns";
 import { Feather } from "@expo/vector-icons";
-import { InsightsTypeResponse } from "../types";
-import { Emotion, emotions, great } from "@/assets/emojis";
-import { Image } from "@/components/ui/image";
 import { Tables } from "@/types/types";
+import {
+  getEntryTypeIcon,
+  getEntryTypeColor,
+} from "../../../lib/entryTypeUtils";
+import { JournalEntry } from "@/hooks/data/types";
 
 interface EntryCardsViewProps {
-  entries: Tables<"journal_records">[];
+  entries: JournalEntry[];
   isLoading: boolean;
-  onEntryPress: (entry: Tables<"journal_records">) => void;
+  onEntryPress: (entry: JournalEntry) => void;
   onRefresh?: () => void;
 }
 
@@ -47,14 +49,6 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
           <Text className="text-lg font-semibold text-gray-800">
             Journal Entries
           </Text>
-          {onRefresh && (
-            <Feather
-              name="refresh-cw"
-              size={20}
-              color="#6b7280"
-              onPress={onRefresh}
-            />
-          )}
         </View>
 
         <View className="bg-gray-50 rounded-2xl p-8 items-center">
@@ -93,7 +87,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 };
 
 interface EntryCardProps {
-  entry: Tables<"journal_records">;
+  entry: JournalEntry;
   onPress: () => void;
   index: number;
 }
@@ -103,14 +97,26 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
-    // Staggered entrance animation
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
-      delay: index * 100, // Stagger by 100ms
+      delay: index * 100,
       useNativeDriver: true,
     }).start();
   }, [index]);
+
+  const getDuration = () => {
+    if (!entry.duration_seconds) return "";
+    const d = intervalToDuration({
+      start: 0,
+      end: entry.duration_seconds * 1000,
+    });
+    const parts = [];
+    if (d.hours) parts.push(`${d.hours}h`);
+    if (d.minutes) parts.push(`${d.minutes}m`);
+    if (d.seconds) parts.push(`${d.seconds}s`);
+    return parts.join(" ") || "0s";
+  };
 
   return (
     <Pressable onPress={onPress}>
@@ -128,24 +134,22 @@ const EntryCard: React.FC<EntryCardProps> = ({ entry, onPress, index }) => {
               {entry.title}
             </Text>
             <View className="flex-row items-center">
-              {entry.created_at && (
+              {entry.selected_date && (
                 <Text className="text-sm text-gray-500">
-                  {format(new Date(entry.created_at), "h:mm a")}
+                  {format(new Date(entry.selected_date), "h:mm a")}
                 </Text>
               )}
               <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
-              {/* <Feather
-                name={getEntryTypeIcon(entry.entryType) as any}
+              <Feather
+                name={getEntryTypeIcon(entry.input_type)}
                 size={12}
-                color="#6B7280"
-              /> */}
-              {/* {entry.entryType === "voice" && entry.duration && (
-                <>
-                  <Text className="text-sm text-gray-500 ml-1">
-                    {formatDuration(entry.duration)}
-                  </Text>
-                </>
-              )} */}
+                color={getEntryTypeColor(entry.input_type)}
+              />
+              {!!entry.duration_seconds && (
+                <Text className="text-sm text-gray-500 ml-1">
+                  {getDuration()}
+                </Text>
+              )}
             </View>
           </View>
 

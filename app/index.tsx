@@ -7,33 +7,36 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 // import SignInBottomSheet from "@/screens/components/SignInBottomSheet";
 import { Redirect } from "expo-router";
-import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/src/context/AuthContext";
 import { BottomSheet, BottomSheetTrigger } from "@/components/ui/bottomsheet";
 import SignInBottomSheet from "@/src/components/SignInBottomSheet";
 import MovingGradientBackground from "@/src/components/MovingGradientBackground";
-import { useOnboardingStatus } from "@/hooks/data/useOnboardingStatus";
+import LottieView from "lottie-react-native";
+import { loadingLottie } from "@/assets/lottie";
 
 export default function Home() {
   const { session, loading } = useAuth();
-  const onboarding = useOnboardingStatus();
 
-  if (loading || onboarding.loading) {
+  if (loading) {
     return (
       <Box className="flex-1 w-full h-full items-center justify-center">
         <Box className="flex-1 w-full h-full items-center justify-center flex fixed inset-0 z-50 before:starting:backdrop-blur-0 before:absolute before:inset-0 before:bg-gray-200/50 before:backdrop-blur-[1px] before:transition before:duration-250 dark:before:bg-black/50 before:starting:opacity-0">
-          <Spinner />
+          <LottieView
+            autoPlay
+            loop
+            style={{
+              width: 60,
+              height: 60,
+            }}
+            source={loadingLottie}
+          />
         </Box>
       </Box>
     );
   }
 
-  if (session && !onboarding.completed) {
-    return <Redirect href="/tabs/screens/onboarding" />;
-  }
-
-  if (session && onboarding.completed) {
-    return <Redirect href="/tabs/(tabs)/home" />;
+  if (session) {
+    return <Redirect href="/tabs/screens/onboard-container" />;
   }
 
   return (

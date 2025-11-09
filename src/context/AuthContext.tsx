@@ -7,6 +7,7 @@ import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import { supabase } from "../network/auth/supabase";
 import { createSessionFromUrl } from "../network/auth/google-auth";
 import { useCheckStreakOnLaunch } from "@/hooks/data/useUpdateStreak";
+import { router } from "expo-router";
 
 interface AuthContextType {
   user: User | null;
@@ -42,13 +43,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const checkStreakMutation = useCheckStreakOnLaunch();
 
   useEffect(() => {
+    const fetchToken = async () => {
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data?.session?.access_token;
+      // signOut();
+
+      console.log("accessToken", accessToken);
+    };
+    fetchToken();
+  }, []);
+
+  useEffect(() => {
     // Listen for auth changes **including** the INITIAL_SESSION event which
     // fires once Supabase finishes recovering any persisted session.
     // This avoids the race condition where getSession() returns null before
     // the async storage has been read.
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state change:", event, session?.user?.email);
 
       // INITIAL_SESSION fires exactly once and contains the session
@@ -57,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
-        
+
         // Check streak on app launch
         if (session?.user?.id) {
           checkStreakMutation.mutate(session.user.id);
@@ -82,11 +94,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             </Toast>
           ),
         });
-        
+
         // Check streak on sign in
         if (session.user.id) {
           checkStreakMutation.mutate(session.user.id);
         }
+      }
+
+      if (event === "SIGNED_OUT") {
+        setSession(null);
+        setUser(null);
+        await AsyncStorage.clear();
       }
     });
 
@@ -124,36 +142,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signOut = async (): Promise<void> => {
     try {
-      // Clear any stored session data
-      await AsyncStorage.multiRemove([
-        `sb-${process.env.EXPO_PUBLIC_SUPABASE_REF_ID}-auth-token`,
-        `sb-${process.env.EXPO_PUBLIC_SUPABASE_REF_ID}-auth-token-1`,
-        `sb-${process.env.EXPO_PUBLIC_SUPABASE_REF_ID}-auth-token-2`,
-        "sb:token",
-        "sb:state",
-        "sb:session",
-        "sb:provider_token",
-        "sb:refresh_token",
-        "sb:expires_at",
-      ]);
-
-      console.log("Signing out from Supabase");
       const response = await supabase.auth.signOut();
-      console.log("Signed out from Supabase", response);
       if (response.error) throw response.error;
-
-      // Reset all auth state
       setSession(null);
       setUser(null);
-
+      await AsyncStorage.clear();
       console.log("Signed out successfully!");
-      // Clear AsyncStorage completely if needed (use with caution)
-      // await AsyncStorage.clear();
+
+      router.replace("/");
     } catch (error) {
-      // Even if there's an error, we want to ensure the app is in a signed-out state
       setSession(null);
       setUser(null);
-      await AsyncStorage.clear(); // As a last resort, clear everything
+      await AsyncStorage.clear();
+      router.replace("/");
     }
   };
 

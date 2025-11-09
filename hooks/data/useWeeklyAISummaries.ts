@@ -45,14 +45,35 @@ const fetchWeekEntries = async (userId: string, weekStart: Date) => {
   const weekEnd = endOfWeek(weekStart, { weekStartsOn: 0 });
 
   const { data, error } = await supabase
-    .from("journal_entries")
-    .select("enrichedTranscript, moodScore, feelings, created_at")
+    .from("journal_records")
+    .select(
+      `
+    id,
+    transcripts,
+    duration_seconds,
+    selected_date,
+    journal_ai_insights (
+      id,
+      created_at,
+      aiInsights,
+      feelings,
+      energyLevel,
+      stressLevel,
+      triggers,
+      worries,
+      achievements,
+      sleepQuality
+    )
+  `
+    )
     .eq("user_id", userId)
-    .gte("created_at", weekStart.toISOString())
-    .lte("created_at", weekEnd.toISOString())
-    .order("created_at", { ascending: false });
+    .gte("selected_date", weekStart.toISOString())
+    .lte("selected_date", weekEnd.toISOString())
+    .order("selected_date", { ascending: false });
 
   if (error) throw error;
+
+  console.log("datadatadata", data);
   return data || [];
 };
 
@@ -132,20 +153,27 @@ export const useGenerateWeeklySummary = () => {
       }
 
       // Filter valid entries
-      const validEntries = entries.filter(
-        (e) => e.enrichedTranscript && e.moodScore !== null
-      ) as Array<{
-        enrichedTranscript: string;
-        moodScore: number;
-        feelings: any;
-        created_at: string;
-      }>;
+      // const validEntries = entries.filter(
+      //   (e) => e.enrichedTranscript && e.moodScore !== null
+      // ) as Array<{
+      //   enrichedTranscript: string;
+      //   moodScore: number;
+      //   feelings: any;
+      //   created_at: string;
+      // }>;
 
-      if (validEntries.length === 0) {
-        throw new Error("No valid journal entries found for this week");
-      }
+      // const validEntries = entries.map((entry) => ({
+      //   enrichedTranscript: entry.transcripts,
+      //   moodScore: entry.journal_ai_insights,
+      //   feelings: entry.journal_ai_insights?.[0]?.feelings,
+      //   created_at: entry.selected_date,
+      // }));
 
-      console.log(`Found ${validEntries.length} valid entries for AI analysis`);
+      // if (validEntries.length === 0) {
+      //   throw new Error("No valid journal entries found for this week");
+      // }
+
+      // console.log(`Found ${validEntries.length} valid entries for AI analysis`);
 
       // 2. Get user's current streak
       const { data: profile } = await supabase
@@ -155,41 +183,41 @@ export const useGenerateWeeklySummary = () => {
         .single();
 
       // 3. Generate all AI insights in parallel
-      const [recommendations, weeklySummary, growthInsights] =
-        await Promise.all([
-          generateAIRecommendations(validEntries),
-          generateWeeklySummary(
-            validEntries,
-            format(weekStart, "MMM dd, yyyy"),
-            format(weekEnd, "MMM dd, yyyy"),
-            profile?.current_streak || 0
-          ),
-          validEntries.length >= 5
-            ? generateGrowthInsights(validEntries)
-            : Promise.resolve([]),
-        ]);
+      // const [recommendations, weeklySummary, growthInsights] =
+      //   await Promise.all([
+      //     generateAIRecommendations(validEntries),
+      //     generateWeeklySummary(
+      //       validEntries,
+      //       format(weekStart, "MMM dd, yyyy"),
+      //       format(weekEnd, "MMM dd, yyyy"),
+      //       profile?.current_streak || 0
+      //     ),
+      //     validEntries.length >= 5
+      //       ? generateGrowthInsights(validEntries)
+      //       : Promise.resolve([]),
+      //   ]);
 
       console.log("AI insights generated successfully");
 
       // 4. Store in database
-      const { data, error } = await supabase
-        .from("ai_weekly_summaries")
-        .upsert({
-          user_id: user.id,
-          year,
-          week_number: weekNumber,
-          week_start: format(weekStart, "yyyy-MM-dd"),
-          week_end: format(weekEnd, "yyyy-MM-dd"),
-          recommendations,
-          weekly_summary: weeklySummary,
-          growth_insights: growthInsights,
-        })
-        .select()
-        .single();
+      // const { data, error } = await supabase
+      //   .from("ai_weekly_summaries")
+      //   .upsert({
+      //     user_id: user.id,
+      //     year,
+      //     week_number: weekNumber,
+      //     week_start: format(weekStart, "yyyy-MM-dd"),
+      //     week_end: format(weekEnd, "yyyy-MM-dd"),
+      //     recommendations,
+      //     weekly_summary: weeklySummary,
+      //     growth_insights: growthInsights,
+      //   })
+      //   .select()
+      //   .single();
 
-      if (error) throw error;
+      // if (error) throw error;
 
-      return data as WeeklyAISummaryRecord;
+      return {}as WeeklyAISummaryRecord;
     },
     onSuccess: (data) => {
       // Invalidate and update cache

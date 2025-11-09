@@ -15,6 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtomValue } from "jotai";
+import { formattedDateTime } from "@/src/utils/date";
 
 interface VoiceRecorderProps {
   onStop: (uri: string) => void;
@@ -24,8 +25,6 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
   const { currentPrompt, shufflePrompt } = useJournalEntry();
   const rotation = useSharedValue(0);
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
-
-  const formattedDate = format(selectedDate || new Date(), "MMMM d, yyyy");
 
   const handleShufflePrompt = () => {
     rotation.value = withSpring(rotation.value + 360, {
@@ -90,7 +89,7 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
       {/* Date Header - Centered */}
       <View className="px-6 mt-80 pb-4 items-center">
         <Text className="text-[#1F2937] text-base font-semibold">
-          {formattedDate}
+          {formattedDateTime(selectedDate)}
         </Text>
       </View>
 

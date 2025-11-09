@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState, useCallback } from "react";
 import { useMentalHealthData } from "@/hooks/data/useMentalHealthData";
-import { InsightsTypeResponse } from "../types";
 import { View } from "@/components/ui/view";
 import { Text } from "@/components/Themed";
 import { Button, ButtonText } from "@/components/ui/button";
 import { EntryCardsView } from "./EntryCardsView";
 import BlurModal from "@/src/components/BlurModal";
 import JournalEntryScreen from "../../JournalEntryScreen/JournalEntryScreen";
+import { JournalEntry } from "@/hooks/data/types";
 
 interface MentalHealthProfileContainerProps {
   selectedDate: Date;
@@ -17,9 +16,8 @@ interface MentalHealthProfileContainerProps {
 export const MentalHealthProfileContainer: React.FC<
   MentalHealthProfileContainerProps
 > = ({ selectedDate }) => {
-  const [selectedEntry, setSelectedEntry] = useState<InsightsTypeResponse>();
+  const [selectedEntry, setSelectedEntry] = useState<JournalEntry>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [refreshKey, setRefreshKey] = useState<number>(0);
   const {
     data: insightsResponse,
     isLoading: mentalHealthLoading,
@@ -27,19 +25,10 @@ export const MentalHealthProfileContainer: React.FC<
   } = useMentalHealthData(selectedDate);
 
   // Handle entry card press
-  const handleEntryPress = useCallback((entry: InsightsTypeResponse): void => {
+  const handleEntryPress = useCallback((entry: JournalEntry): void => {
     setSelectedEntry(entry);
     setIsModalVisible(true);
   }, []);
-
-  // // Handle modal close
-  // const handleModalClose = useCallback((): void => {
-  //   setIsModalVisible(false);
-  //   // Clear selected entry after animation completes
-  //   setTimeout(() => {
-  //     setSelectedEntry(null);
-  //   }, 300);
-  // }, []);
 
   if (!insightsResponse && !mentalHealthLoading) {
     return (
@@ -61,13 +50,6 @@ export const MentalHealthProfileContainer: React.FC<
 
   return (
     <>
-      {/* Daily Statistics Section */}
-      {/* <DailyStatisticsView
-        dailyStats={mentalHealthData?.dailyStats || null}
-        isLoading={isLoading}
-        onRefresh={handleRefresh}
-      /> */}
-
       {/* Journal Entries Section */}
       <EntryCardsView
         entries={insightsResponse || []}
@@ -82,12 +64,6 @@ export const MentalHealthProfileContainer: React.FC<
           onClose={() => setIsModalVisible(false)}
         />
       </BlurModal>
-      {/* Entry Detail Modal */}
-      {/* <EntryDetailModal
-        entry={selectedEntry}
-        isVisible={isModalVisible}
-        onClose={handleModalClose}
-      /> */}
     </>
   );
 };

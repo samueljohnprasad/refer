@@ -6,6 +6,7 @@ import manRocket from "./man-rocket.lottie";
 import girlMeditationBlue from "./Meditation.lottie";
 import notification from "./notification.json";
 import checklist from "./checklist.json";
+import loadingLottie from "./loading.lottie";
 export {
   singingContract,
   thinkingMan,
@@ -15,4 +16,5 @@ export {
   lendHand,
   notification,
   checklist,
+  loadingLottie,
 };

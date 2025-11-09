@@ -28,6 +28,9 @@ import NameEditScreen from "../NameEditScreen/NameEditScreen";
 import { useStreakReminders } from "@/hooks/notifications/useStreakReminders";
 import { useBulkImportJournals } from "@/hooks/post/useBulkImportJournals";
 import { format, subDays } from "date-fns";
+import PrivacyPolicyModal from "@/src/components/modals/PrivacyPolicyModal";
+import EraseDataConfirmationModal from "@/src/components/modals/EraseDataConfirmationModal";
+import { useDeleteUser } from "@/hooks/useDeleteUser";
 
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
@@ -57,6 +60,9 @@ export default React.memo(function SettingsScreen() {
   const [importStartDate, setImportStartDate] = useState<Date>(
     subDays(new Date(), 20)
   );
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [showEraseDataModal, setShowEraseDataModal] = useState(false);
+  const deleteUserDataMutation = useDeleteUser();
 
   // Handle reminder toggle
   const handleReminderToggle = async (enabled: boolean) => {
@@ -116,6 +122,21 @@ export default React.memo(function SettingsScreen() {
       setShowImportModal(false);
     } catch (error) {
       Alert.alert("Error", `Failed to import journals: ${error}`);
+    }
+  };
+
+  const handleEraseDataConfirm = async (): Promise<void> => {
+    try {
+      await deleteUserDataMutation.mutateAsync();
+      setShowEraseDataModal(false);
+      // Sign out after successful deletion
+      await signOut();
+    } catch (error) {
+      console.error("Failed to delete user data:", error);
+      Alert.alert(
+        "Error",
+        "Failed to delete your data. Please try again or contact support."
+      );
     }
   };
 
@@ -430,6 +451,43 @@ export default React.memo(function SettingsScreen() {
               <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
             </TouchableOpacity>
 
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setShowPrivacyPolicy(true);
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#DBEAFE" }]}>
+                <Feather name="shield" size={20} color="#2563EB" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Privacy Policy</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setShowEraseDataModal(true);
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#FEE2E2" }]}>
+                <Feather name="trash-2" size={20} color="#DC2626" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Erase Personal Data</Text>
+                <Text style={styles.itemSubtitle}>
+                  Permanently delete all data
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+            </TouchableOpacity>
+
             <View style={styles.rowItem}>
               <View style={[styles.leftIcon, { backgroundColor: "#FEF3C7" }]}>
                 <Feather name="info" size={20} color="#D97706" />
@@ -557,6 +615,20 @@ export default React.memo(function SettingsScreen() {
           </View>
         </BlurView>
       </Modal>
+
+      {/* Privacy Policy Modal */}
+      <PrivacyPolicyModal
+        visible={showPrivacyPolicy}
+        onClose={() => setShowPrivacyPolicy(false)}
+      />
+
+      {/* Erase Data Confirmation Modal */}
+      <EraseDataConfirmationModal
+        visible={showEraseDataModal}
+        onClose={() => setShowEraseDataModal(false)}
+        onConfirm={handleEraseDataConfirm}
+        isDeleting={deleteUserDataMutation.isPending}
+      />
     </SafeAreaView>
   );
 });

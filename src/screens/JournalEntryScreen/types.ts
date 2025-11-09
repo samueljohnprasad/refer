@@ -1,7 +1,8 @@
+import { JournalEntry } from "@/hooks/data/types";
 import { InsightsType, FeelingsType } from "@/src/network/genAi";
 
 export interface JournalEntryScreenProps {
-  insights?: InsightsType;
+  insights?: JournalEntry;
   onClose?: () => void;
 }
 

@@ -1,5 +1,3 @@
-import { InsightsType } from "@/src/network/genAi";
-
-export type InsightsTypeResponse = {
+export type Id = {
   id: number;
-} & InsightsType;
+};

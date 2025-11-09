@@ -44,7 +44,7 @@ import { MentalHealthProfileContainer } from "./notes/MentalHealthProfileContain
 import { AIInsightsChip } from "@/src/components/ai/AIInsightsChip";
 import { AIInsightsModalBottomSheet } from "@/src/components/ai/AIInsightsModalBottomSheet";
 import { useWeeklyAISummary } from "@/hooks/data/useWeeklyAISummaries";
-import { formateDate_y_m_d } from "@/hooks/data/date";
+import { formateDate_y_m_d } from "@/src/utils/date";
 
 // Animated Day Button Component
 interface DayButtonProps {
@@ -88,7 +88,11 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
     <Pressable onPress={handlePress}>
       <Animated.View
         className={`items-center py-1.5 px-1 rounded-xl ${
-          isSelected ? "bg-[#7B61FF]" : isToday && !isSelected ? "bg-white/10" : ""
+          isSelected
+            ? "bg-[#7B61FF]"
+            : isToday && !isSelected
+            ? "bg-white/10"
+            : ""
         }`}
         style={[outerAnimatedStyle]}
       >
@@ -240,13 +244,13 @@ const DailyNotesScreen: React.FC = () => {
           });
         })
         .onUpdate((g) => {
-          'worklet';
+          "worklet";
           let tx = g.translationX;
           const maxTranslate = 100;
           if (tx < -maxTranslate) tx = -maxTranslate;
           else if (tx > maxTranslate) tx = maxTranslate;
           contentTranslateX.value = tx;
-          
+
           // Add subtle opacity change during swipe
           const progress = Math.abs(tx) / maxTranslate;
           contentOpacity.value = interpolate(

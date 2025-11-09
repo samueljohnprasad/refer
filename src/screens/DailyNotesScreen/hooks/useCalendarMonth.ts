@@ -11,7 +11,7 @@ import {
 } from "date-fns";
 import { useAtom, useSetAtom } from "jotai";
 import { calenderVisibleDatesAtom } from "../atoms";
-import { formateDate_y_m_d } from "@/hooks/data/date";
+import { formateDate_y_m_d } from "@/src/utils/date";
 
 export interface UseCalendarMonthOptions {
   selectedDate: Date;
@@ -64,16 +64,16 @@ const useCalendarMonth = (
     const allDays = eachDayOfInterval({ start: visibleStart, end: visibleEnd });
     // Always return 42 days (6 weeks) for consistent calendar display
     const CALENDAR_DAYS = 42;
-    
+
     // If we have fewer than 42 days, add days from the next month
     if (allDays.length < CALENDAR_DAYS) {
       const additionalDays = CALENDAR_DAYS - allDays.length;
       const lastDay = allDays[allDays.length - 1];
       for (let i = 1; i <= additionalDays; i++) {
-        allDays.push(new Date(lastDay.getTime() + (i * 24 * 60 * 60 * 1000)));
+        allDays.push(new Date(lastDay.getTime() + i * 24 * 60 * 60 * 1000));
       }
     }
-    
+
     return allDays;
   }, [visibleStart, visibleEnd]);
 

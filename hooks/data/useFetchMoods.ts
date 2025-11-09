@@ -4,7 +4,7 @@ import { calenderVisibleDatesAtom } from "@/src/screens/DailyNotesScreen/atoms";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useAtomValue } from "jotai";
-import { formateDate_y_m_d } from "./date";
+import { formateDate_y_m_d } from "../../src/utils/date";
 
 type FetchMonthlyMoodsParams = {
   userId?: string;

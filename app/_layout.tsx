@@ -57,6 +57,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function RootLayout() {
+  console.log('test same root layout')
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,

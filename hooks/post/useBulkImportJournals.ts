@@ -27,37 +27,16 @@ export const useBulkImportJournals = () => {
 
       try {
         const rows = [];
-        
+
         // Prepare all rows for bulk insert
         for (let i = 0; i < count; i++) {
           const currentDate = addDays(startDate, i);
           // Randomly select an entry from the sample data
           const randomIndex = Math.floor(Math.random() * sampleData.length);
           const entryData = sampleData[randomIndex] as InsightsType;
-          
-          const row = {
-            user_id: user.id,
-            created_at: currentDate.toISOString(),
-            selected_date: format(currentDate, "yyyy-MM-dd"),
-            title: entryData.title,
-            enrichedTranscript: entryData.enrichedTranscript,
-            aiInsights: entryData.aiInsights,
-            moodScore: entryData.moodScore ?? null,
-            mainEmoji: entryData.mainEmoji ?? null,
-            feelings: entryData.feelings,
-            suggestedTags: entryData.suggestedTags,
-            positiveInsights: entryData.positiveInsights,
-          };
-          
-          rows.push(row);
+
+          rows.push(entryData);
         }
-
-        // Bulk insert all rows
-        const { error } = await supabase
-          .from("journal_entries")
-          .insert(rows);
-
-        if (error) throw error;
 
         // Invalidate queries to refresh UI
         queryClient.invalidateQueries({ queryKey: ["userProfile"] });

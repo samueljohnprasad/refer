@@ -6,6 +6,7 @@ import VoiceRecorderModal from "./VoiceRecorderModal";
 import VoiceRecorder from "./VoiceRecorder";
 import JournalEntryScreen from "../JournalEntryScreen/JournalEntryScreen";
 import EmotionAnalysisLoadingScreen from "./EmotionAnalysisLoadingScreen";
+import { JournalEntry } from "@/hooks/data/types";
 
 type VoiceRecorderModalWrapperProps = {};
 
@@ -13,13 +14,13 @@ const VoiceRecorderModalWrapper = () => {
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
   const [stepper, setStepper] = useState(0);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
-  const [insights, setInsights] = useState<InsightsType>(defaultInsights);
+  const [insights, setInsights] = useState<JournalEntry>();
 
   const onClose = () => {
     setRecorderOpen(false);
     setStepper(0);
     setRecordingUri(null);
-    setInsights(defaultInsights);
+    setInsights(undefined);
   };
   return (
     <VoiceRecorderModal visible={recorderOpen} onRequestClose={onClose}>

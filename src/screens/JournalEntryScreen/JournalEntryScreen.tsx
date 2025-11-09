@@ -4,33 +4,18 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { useSaveJournal } from "@/hooks/post/useSaveJournal";
-import { useRouter } from "expo-router";
-
-// Types and Constants
 import { JournalEntryScreenProps } from "./types";
-
-// Custom Hooks
-import {
-  useJournalEdit,
-  useKeyboardHandler,
-  useTags,
-  useFormattedDateTime,
-} from "./hooks";
-
-// Redesigned Components
+import { useJournalEdit, useKeyboardHandler, useTags } from "./hooks";
 import {
   MinimalHeader,
   MoodSelector,
-  ActivitySection,
   FeelingsSection,
   TranscriptSection,
   ContinueButton,
 } from "./components";
+import { Enums } from "@/database.types";
+import { FeelingsType } from "@/src/network/genAi";
 
-/**
- * JournalEntryScreen - Redesigned with ultra-clean, professional aesthetic
- * Features soft gradients, minimal UI elements, and delightful interactions
- */
 const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   insights,
   onClose,
@@ -38,9 +23,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   const insets = useSafeAreaInsets();
   const toast = useToast();
   const { saveJournal, saving } = useSaveJournal();
-  const router = useRouter();
 
-  // Mood gradient configurations (using light 100 level colors)
   const MOOD_GRADIENTS: { [key: string]: string[] } = {
     terrible: ["#FEE2E2", "#FED7D7"], // red-100 to red-100 lighter
     bad: ["#FED7AA", "#FEF3C7"], // orange-100 to yellow-100
@@ -49,19 +32,10 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
     great: ["#DBEAFE", "#EFF6FF"], // blue-100 to blue-50
   };
 
-  // State
-  const [selectedMood, setSelectedMood] = useState<string>(
-    insights?.mainEmoji || "great"
-  );
-  const [activities, setActivities] = useState<string[]>(["watching movie"]);
-  const [feelings, setFeelings] = useState<string[]>(
-    insights?.feelings?.map((f) => f.name) || []
+  const [selectedMood, setSelectedMood] = useState<Enums<"mood">>(
+    insights?.moods?.main_mood || "great"
   );
 
-  // Formatted date/time
-  const formattedDateTime: string = useFormattedDateTime();
-
-  // Journal editing state
   const {
     isEditing,
     selectedEmoji,
@@ -75,14 +49,13 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
     handleClose: handleCloseEdit,
   } = useJournalEdit({
     initialEmoji: "great",
-    initialTags: insights?.feelings || [],
-    initialText: insights?.enrichedTranscript || "no transcript available",
+    initialTags: (insights?.journal_ai_insights?.feelings ||
+      []) as FeelingsType[],
+    initialText: insights?.transcripts || "no transcript available",
   });
 
-  // Keyboard handling
   const { keyboardHeight } = useKeyboardHandler();
 
-  // Tag operations
   const { removeTag, addTag } = useTags({ setTags });
 
   // Helper functions for feelings
@@ -100,28 +73,14 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
     removeTag(index);
   };
 
-  // Convert tags to strings for display
-  const feelingStrings: string[] = tags.map((tag) =>
-    typeof tag === "string" ? tag : tag.name
-  );
-
   const handleClose = useCallback((): void => {
     handleCloseEdit(onClose);
   }, [handleCloseEdit, onClose]);
 
   const handleContinue = useCallback(async (): Promise<void> => {
     try {
-      await saveJournal({
-        title: insights?.title || "Daily Reflections",
-        enrichedTranscript: journalText,
-        aiInsights: insights?.aiInsights,
-        moodScore: insights?.moodScore,
-        mainEmoji: selectedMood,
-        feelings: tags,
-        suggestedTags: insights?.suggestedTags,
-        growthAreas: insights?.growthAreas,
-        positiveInsights: insights?.positiveInsights,
-      });
+      if (!insights) return;
+      await saveJournal(insights);
 
       toast.show({
         placement: "bottom",
@@ -143,7 +102,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
         ),
       });
     }
-  }, [saveJournal, insights, journalText, tags, selectedMood]);
+  }, [saveJournal, insights]);
 
   const currentGradient = MOOD_GRADIENTS[selectedMood] || MOOD_GRADIENTS.great;
 
@@ -161,8 +120,8 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
         style={{ paddingTop: insets.top }}
       >
         <MinimalHeader
+          date={insights?.selected_date}
           isEditing={isEditing}
-          formattedDateTime={formattedDateTime}
           onClose={handleClose}
           onEdit={handleEdit}
           onDone={handleDone}
@@ -190,23 +149,12 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
             />
           )}
 
-          <ActivitySection
-            activities={activities}
-            isEditing={isEditing}
-            onAddActivity={(activity) =>
-              setActivities([...activities, activity])
-            }
-            onRemoveActivity={(index) =>
-              setActivities(activities.filter((_, i) => i !== index))
-            }
-          />
-
-          <FeelingsSection
-            feelings={feelingStrings}
+          {/* <FeelingsSection
+            feelings={}
             isEditing={isEditing}
             onAddFeeling={addFeelingString}
             onRemoveFeeling={removeFeelingByIndex}
-          />
+          /> */}
 
           <TranscriptSection
             text={journalText}
