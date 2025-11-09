@@ -24,7 +24,6 @@ export const useSaveJournal = () => {
   const updateStreakMutation = useUpdateStreak();
   const queryClient = useQueryClient();
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
-  console.log("selectedDateDiscoveryAtom", selectedDate);
   const saveJournal = useCallback(
     async (input: JournalEntry): Promise<void> => {
       if (!user?.id) {
@@ -39,7 +38,7 @@ export const useSaveJournal = () => {
           transcripts: input.transcripts,
           input_type: "voice",
           title: input.title,
-          selected_date: formateDate_y_m_d(selectedDate),
+          selected_date: selectedDate.toISOString(),
         };
 
         const { data: journalData, error: journalError } = await supabase
@@ -88,9 +87,10 @@ export const useSaveJournal = () => {
           forceReset: false,
         });
 
-        queryClient.invalidateQueries({ queryKey: ["userProfile"] });
-        queryClient.invalidateQueries({ queryKey: ["journal_records"] });
-        queryClient.invalidateQueries({ queryKey: ["journal_ai_insights"] });
+        const formattedDate = formateDate_y_m_d(selectedDate);
+        queryClient.invalidateQueries({
+          queryKey: ["journals_data", user?.id, formattedDate],
+        });
       } catch (error) {
         console.error("Failed to save journal:", error);
         throw error;

@@ -23,7 +23,7 @@ type EmotionType = keyof typeof EMOTION_IMAGES;
 const MOODS: { id: Enums<'mood'>; label: string }[] = [
   { id: "terrible", label: "Terrible" },
   { id: "bad", label: "Bad" },
-  { id: "okay", label: "Okay" },
+  { id: "fine", label: "Fine" },
   { id: "good", label: "Good" },
   { id: "great", label: "Great" },
 ];

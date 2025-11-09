@@ -20,6 +20,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   insights,
   onClose,
 }: JournalEntryScreenProps) => {
+  console.log("insights", insights);
   const insets = useSafeAreaInsets();
   const toast = useToast();
   const { saveJournal, saving } = useSaveJournal();

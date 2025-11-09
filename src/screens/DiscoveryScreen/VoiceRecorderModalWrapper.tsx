@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { useAtom } from "jotai";
 import { recorderOpenAtom } from "./helpers";
-import { defaultInsights, InsightsType } from "@/src/network/genAi";
 import VoiceRecorderModal from "./VoiceRecorderModal";
 import VoiceRecorder from "./VoiceRecorder";
 import JournalEntryScreen from "../JournalEntryScreen/JournalEntryScreen";
 import EmotionAnalysisLoadingScreen from "./EmotionAnalysisLoadingScreen";
 import { JournalEntry } from "@/hooks/data/types";
-
-type VoiceRecorderModalWrapperProps = {};
 
 const VoiceRecorderModalWrapper = () => {
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);

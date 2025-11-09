@@ -43,7 +43,7 @@ export const useMentalHealthData = (selectedDate: Date) => {
   }, [user?.id, formattedDate]);
 
   const query = useQuery<JournalEntry[]>({
-    queryKey: [user?.id, formattedDate],
+    queryKey: ["journals_data", user?.id, formattedDate],
     queryFn: loadData,
     staleTime: TWO_HOUR,
     gcTime: TWO_HOUR,

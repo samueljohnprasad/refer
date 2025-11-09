@@ -21,7 +21,7 @@ export async function callMyFunction({
     console.error("Function invoke error:", error);
     return null;
   }
-
+console.log("callMyFunction", data)
   return data;
 }
 

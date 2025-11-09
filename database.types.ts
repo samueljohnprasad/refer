@@ -128,11 +128,14 @@ export type Database = {
         Row: {
           achievements: string[] | null
           aiInsights: string | null
+          copingStrategies: string[] | null
           created_at: string
           energyLevel: number | null
           feelings: Json | null
+          goals: string[] | null
           id: number
           journal_entry_id: number
+          "physical-symptoms": string[] | null
           sleepQuality: number | null
           stressLevel: number | null
           triggers: string[] | null
@@ -141,11 +144,14 @@ export type Database = {
         Insert: {
           achievements?: string[] | null
           aiInsights?: string | null
+          copingStrategies?: string[] | null
           created_at?: string
           energyLevel?: number | null
           feelings?: Json | null
+          goals?: string[] | null
           id?: number
           journal_entry_id: number
+          "physical-symptoms"?: string[] | null
           sleepQuality?: number | null
           stressLevel?: number | null
           triggers?: string[] | null
@@ -154,11 +160,14 @@ export type Database = {
         Update: {
           achievements?: string[] | null
           aiInsights?: string | null
+          copingStrategies?: string[] | null
           created_at?: string
           energyLevel?: number | null
           feelings?: Json | null
+          goals?: string[] | null
           id?: number
           journal_entry_id?: number
+          "physical-symptoms"?: string[] | null
           sleepQuality?: number | null
           stressLevel?: number | null
           triggers?: string[] | null
@@ -367,7 +376,7 @@ export type Database = {
       app_permission: "channels.delete" | "messages.delete"
       app_role: "admin" | "moderator"
       gender_enum: "male" | "female" | "other"
-      mood: "terrible" | "bad" | "okay" | "good" | "great"
+      mood: "terrible" | "bad" | "fine" | "good" | "great"
       subscription_plan_enum: "free" | "trial" | "weekly" | "monthly" | "yearly"
       user_status: "ONLINE" | "OFFLINE"
     }
@@ -501,7 +510,7 @@ export const Constants = {
       app_permission: ["channels.delete", "messages.delete"],
       app_role: ["admin", "moderator"],
       gender_enum: ["male", "female", "other"],
-      mood: ["terrible", "bad", "okay", "good", "great"],
+      mood: ["terrible", "bad", "fine", "good", "great"],
       subscription_plan_enum: ["free", "trial", "weekly", "monthly", "yearly"],
       user_status: ["ONLINE", "OFFLINE"],
     },
