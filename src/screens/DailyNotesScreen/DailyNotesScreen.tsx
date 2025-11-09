@@ -6,7 +6,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { View, ScrollView, Pressable } from "react-native";
+import { View, ScrollView, Pressable, TouchableOpacity } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { Text } from "@/components/Themed";
 import { Stack } from "expo-router";
 import {
@@ -187,6 +188,10 @@ const DailyNotesScreen = () => {
   const contentTranslateX = useSharedValue<number>(0);
   const contentOpacity = useSharedValue<number>(1);
   const contentScale = useSharedValue<number>(1);
+  const leftArrowOpacity = useSharedValue<number>(0);
+  const rightArrowOpacity = useSharedValue<number>(0);
+  const leftArrowScale = useSharedValue<number>(0.8);
+  const rightArrowScale = useSharedValue<number>(0.8);
 
   // Animated styles with smooth scale feedback
   const contentAnimatedStyle = useAnimatedStyle(() => ({
@@ -195,6 +200,17 @@ const DailyNotesScreen = () => {
       { translateX: contentTranslateX.value },
       { scale: contentScale.value },
     ],
+  }));
+
+  // Navigation arrow animated styles
+  const leftArrowAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: leftArrowOpacity.value,
+    transform: [{ scale: leftArrowScale.value }],
+  }));
+
+  const rightArrowAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: rightArrowOpacity.value,
+    transform: [{ scale: rightArrowScale.value }],
   }));
 
   // Helper to move date by offset without stale closure issues
@@ -232,32 +248,84 @@ const DailyNotesScreen = () => {
   const goToPreviousDateContent = (): void => changeDateBy(-1);
   const goToNextDateContent = (): void => changeDateBy(1);
 
-  // Enhanced pan gesture with better feedback
+  // Enhanced pan gesture with reduced sensitivity
   const contentPanGesture = useMemo(
     () =>
       Gesture.Pan()
-        .minDistance(10)
-        .activeOffsetY([-12, 12])
+        .minDistance(15)
+        .activeOffsetY([-15, 15])
         .onBegin(() => {
-          contentScale.value = withSpring(0.98, {
-            damping: 15,
-            stiffness: 200,
+          // Reduced scale effect for less bounce
+          contentScale.value = withSpring(0.995, {
+            damping: 25,
+            stiffness: 180,
           });
         })
         .onUpdate((g) => {
           "worklet";
-          let tx = g.translationX;
+          const rawTx = g.translationX;
+          const resistanceThreshold = 60; // Start resistance after this distance
           const maxTranslate = 100;
+          
+          let tx = rawTx;
+          
+          // Apply rubber band resistance after threshold
+          if (Math.abs(rawTx) > resistanceThreshold) {
+            const excess = Math.abs(rawTx) - resistanceThreshold;
+            // Logarithmic resistance: harder to pull the further you go
+            const resistance = resistanceThreshold + excess * 0.3;
+            tx = rawTx > 0 ? resistance : -resistance;
+          }
+          
+          // Hard limit
           if (tx < -maxTranslate) tx = -maxTranslate;
           else if (tx > maxTranslate) tx = maxTranslate;
+          
           contentTranslateX.value = tx;
 
-          // Add subtle opacity change during swipe
+          // Show arrow indicators based on swipe direction
           const progress = Math.abs(tx) / maxTranslate;
+          
+          if (tx > 20) {
+            // Swiping right - show left arrow (go to previous)
+            leftArrowOpacity.value = interpolate(
+              progress,
+              [0.2, 0.6],
+              [0, 1],
+              "clamp"
+            );
+            leftArrowScale.value = interpolate(
+              progress,
+              [0.2, 0.6],
+              [0.8, 1],
+              "clamp"
+            );
+            rightArrowOpacity.value = 0;
+          } else if (tx < -20) {
+            // Swiping left - show right arrow (go to next)
+            rightArrowOpacity.value = interpolate(
+              progress,
+              [0.2, 0.6],
+              [0, 1],
+              "clamp"
+            );
+            rightArrowScale.value = interpolate(
+              progress,
+              [0.2, 0.6],
+              [0.8, 1],
+              "clamp"
+            );
+            leftArrowOpacity.value = 0;
+          } else {
+            leftArrowOpacity.value = 0;
+            rightArrowOpacity.value = 0;
+          }
+
+          // Less aggressive opacity change during swipe
           contentOpacity.value = interpolate(
             progress,
-            [0, 0.5, 1],
-            [1, 0.85, 0.7],
+            [0, 0.7, 1],
+            [1, 0.92, 0.85],
             "clamp"
           );
         })
@@ -265,7 +333,8 @@ const DailyNotesScreen = () => {
           const absDx = Math.abs(g.translationX);
           const direction = g.translationX > 0 ? "right" : "left";
 
-          if (absDx > 50) {
+          // Increased threshold for less sensitivity
+          if (absDx > 75) {
             if (direction === "left") {
               runOnJS(goToNextDateContent)();
             } else {
@@ -273,26 +342,33 @@ const DailyNotesScreen = () => {
             }
           }
 
+          // Smoother, less bouncy spring animation
           contentTranslateX.value = withSpring(0, {
-            damping: 20,
-            stiffness: 200,
+            damping: 30,
+            stiffness: 180,
           });
           contentOpacity.value = withSpring(1, {
-            damping: 15,
+            damping: 25,
             stiffness: 150,
           });
           contentScale.value = withSpring(1, {
-            damping: 15,
-            stiffness: 200,
+            damping: 25,
+            stiffness: 180,
           });
+          
+          // Hide arrows
+          leftArrowOpacity.value = withTiming(0, { duration: 200 });
+          rightArrowOpacity.value = withTiming(0, { duration: 200 });
         })
         .onFinalize(() => {
           contentTranslateX.value = withSpring(0, {
-            damping: 20,
-            stiffness: 200,
+            damping: 30,
+            stiffness: 180,
           });
           contentOpacity.value = withSpring(1);
           contentScale.value = withSpring(1);
+          leftArrowOpacity.value = withTiming(0, { duration: 150 });
+          rightArrowOpacity.value = withTiming(0, { duration: 150 });
         }),
     [goToNextDateContent, goToPreviousDateContent]
   );
@@ -315,35 +391,64 @@ const DailyNotesScreen = () => {
           />
         </View>
 
-        <GestureDetector gesture={contentPanGesture}>
-          <ScrollView
-            className="flex-1"
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-            accessible={true}
-            accessibilityLabel="Daily notes content"
-          >
-            <Animated.View
-              className="flex-1 px-4 bg-gray-50"
-              style={[
-                contentAnimatedStyle,
-                { paddingBottom: tabBarHeight + 20 },
-              ]}
+        <View className="flex-1 relative">
+          <GestureDetector gesture={contentPanGesture}>
+            <ScrollView
+              className="flex-1"
+              contentContainerStyle={{ flexGrow: 1 }}
+              showsVerticalScrollIndicator={false}
+              accessible={true}
+              accessibilityLabel="Daily notes content"
             >
-              {/* Mental Health Journal Dashboard */}
-              <View className="pt-4 pb-2">
-                <MentalHealthProfileContainer
-                  selectedDate={selectedDate}
-                  showBookmarksModal={showBookmarksModal}
-                  setShowBookmarksModal={setShowBookmarksModal}
-                  onRefresh={() => {
-                    // Optional refresh logic for mental health data
-                  }}
-                />
-              </View>
-            </Animated.View>
-          </ScrollView>
-        </GestureDetector>
+              <Animated.View
+                className="flex-1 px-4 bg-gray-50"
+                style={[
+                  contentAnimatedStyle,
+                  { paddingBottom: tabBarHeight + 20 },
+                ]}
+              >
+                {/* Mental Health Journal Dashboard */}
+                <View className="pt-4 pb-2">
+                  <MentalHealthProfileContainer
+                    selectedDate={selectedDate}
+                    showBookmarksModal={showBookmarksModal}
+                    setShowBookmarksModal={setShowBookmarksModal}
+                    onRefresh={() => {
+                      // Optional refresh logic for mental health data
+                    }}
+                  />
+                </View>
+              </Animated.View>
+            </ScrollView>
+          </GestureDetector>
+
+          {/* Navigation Arrows - Chrome-style */}
+          <Animated.View
+            className="absolute left-4"
+            style={[
+              leftArrowAnimatedStyle,
+              { top: "50%", marginTop: -24 },
+            ]}
+            pointerEvents="none"
+          >
+            <View className="bg-violet-500 rounded-full p-3 shadow-lg">
+              <Feather name="chevron-left" size={24} color="white" />
+            </View>
+          </Animated.View>
+
+          <Animated.View
+            className="absolute right-4"
+            style={[
+              rightArrowAnimatedStyle,
+              { top: "50%", marginTop: -24 },
+            ]}
+            pointerEvents="none"
+          >
+            <View className="bg-violet-500 rounded-full p-3 shadow-lg">
+              <Feather name="chevron-right" size={24} color="white" />
+            </View>
+          </Animated.View>
+        </View>
       </View>
 
       {/* AI Insights Bottom Sheet */}
