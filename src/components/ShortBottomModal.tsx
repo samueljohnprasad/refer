@@ -1,19 +1,27 @@
 import { StyleSheet } from "react-native";
 import React, { useMemo } from "react";
 import {
+  BottomSheetBackdrop,
   BottomSheetContent,
   BottomSheetPortal,
 } from "@/components/ui/bottomsheet";
 import { VStack } from "@/components/ui/vstack";
 import AnimatedLinearGradient from "./AnimatedLinearGradient";
+import { SharedValue } from "react-native-reanimated";
 
 interface ShortBottomModalProps {
   children: React.ReactNode;
+  height?: number;
+  snapPoints?:
+    | ((string | number)[] & string[])
+    | (SharedValue<(string | number)[]> & string[]);
 }
 
-const ShortBottomModal: React.FC<ShortBottomModalProps> = ({ children }) => {
-  const snapPoints = useMemo(() => ["50%"], []);
-
+const ShortBottomModal: React.FC<ShortBottomModalProps> = ({
+  children,
+  height,
+  snapPoints = ["50%"],
+}) => {
   return (
     <BottomSheetPortal
       enableDynamicSizing
@@ -29,6 +37,7 @@ const ShortBottomModal: React.FC<ShortBottomModalProps> = ({ children }) => {
       }}
       bottomInset={0}
       enablePanDownToClose
+      backdropComponent={BottomSheetBackdrop}
     >
       <BottomSheetContent
         style={{
@@ -36,7 +45,7 @@ const ShortBottomModal: React.FC<ShortBottomModalProps> = ({ children }) => {
           borderRadius: 16,
           borderBottomStartRadius: 16,
           borderBottomEndRadius: 16,
-          height: 370,
+          height: height || 370,
           paddingHorizontal: 12,
         }}
       >

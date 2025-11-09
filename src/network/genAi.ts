@@ -1,5 +1,7 @@
+import { FetchWeekEntriesType } from "@/hooks/data/useWeeklyAISummaries";
 import { Enums } from "@/types/types";
 import { GoogleGenAI } from "@google/genai";
+import { getMoodScore } from "../utils/mood";
 
 export type FeelingsType = {
   name: string;
@@ -119,12 +121,7 @@ export type GrowthInsight = {
  * Generate personalized growth recommendations based on recent journal entries
  */
 export const generateAIRecommendations = async (
-  entries: Array<{
-    enrichedTranscript: string;
-    moodScore: number;
-    feelings: any;
-    created_at: string;
-  }>
+  entries: FetchWeekEntriesType
 ): Promise<AIRecommendation[]> => {
   try {
     if (!entries || entries.length === 0) {
@@ -134,9 +131,9 @@ export const generateAIRecommendations = async (
     const entriesText = entries
       .map(
         (e, i) =>
-          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${
-            e.enrichedTranscript
-          }\n`
+          `Entry ${i + 1} (${e.selected_date}):\nMood: ${
+            e.moods?.main_mood
+          }/5\n${e.transcripts}\n`
       )
       .join("\n---\n");
 
@@ -197,15 +194,9 @@ export const generateAIRecommendations = async (
  * Generate weekly summary from journal entries
  */
 export const generateWeeklySummary = async (
-  entries: Array<{
-    enrichedTranscript: string;
-    moodScore: number;
-    feelings: any;
-    created_at: string;
-  }>,
+  entries: FetchWeekEntriesType,
   weekStart: string,
-  weekEnd: string,
-  streakDays: number
+  weekEnd: string
 ): Promise<WeeklySummary | null> => {
   try {
     if (!entries || entries.length === 0) {
@@ -215,14 +206,17 @@ export const generateWeeklySummary = async (
     const entriesText = entries
       .map(
         (e, i) =>
-          `Entry ${i + 1} (${e.created_at}):\nMood: ${e.moodScore}/5\n${
-            e.enrichedTranscript
-          }\n`
+          `Entry ${i + 1} (${e.selected_date}):\nMood: ${
+            e.moods?.main_mood
+          }/5\n${e.transcripts}\n`
       )
       .join("\n---\n");
 
     const avgMood =
-      entries.reduce((sum, e) => sum + (e.moodScore || 0), 0) / entries.length;
+      entries.reduce(
+        (sum, e) => sum + (getMoodScore(e.moods?.main_mood || "fine") || 0),
+        0
+      ) / entries.length;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
@@ -230,7 +224,11 @@ export const generateWeeklySummary = async (
         entries.length
       } entries with an average mood of ${avgMood.toFixed(
         1
-      )}/5 and maintained a ${streakDays} day streak.\n\nEntries:\n${entriesText}\n\nIMPORTANT: Perform these advanced analyses:\n\n1. EMOTIONAL DIMENSIONS (8 emotions, 0-100 scale):\n- Joy, Gratitude, Confidence, Peace (positive)\n- Anxiety, Sadness, Anger, Fear (challenging)\nScore each based on presence in entries.\n\n2. EMOTIONAL VOLATILITY ANALYSIS:\nFor each day with entries, calculate:\n- Volatility score (0-100): how much emotions fluctuated\n- Number of mood swings\n- Emotional range (difference between highest/lowest)\n- Stability level and triggers\n\n3. COGNITIVE PATTERN FLOW:\nIdentify thought patterns and their connections:\n- How one emotion/thought leads to another\n- Pattern strength and frequency\n- Whether patterns are positive/negative\n\n4. LIFE DOMAIN BALANCE (score 0-100 each):\n- Work/Career\n- Relationships/Family\n- Health/Wellness\n- Personal Growth\n- Recreation/Hobbies\n- Spirituality/Purpose\nIdentify which domains need attention.\n\nProvide specific, actionable insights for each analysis.`,
+      )}/5 and \n\nEntries:\n${entriesText}\n\nIMPORTANT: Perform these advanced analyses:\n\n1.
+       EMOTIONAL DIMENSIONS (8 emotions, 0-100 scale):\n- Joy, Gratitude, Confidence, Peace (positive)\n- Anxiety, Sadness, Anger, Fear (challenging)\nScore each based on presence in entries.\n\n
+       2. EMOTIONAL VOLATILITY ANALYSIS:\nFor each day with entries, calculate:\n- Volatility score (0-100): how much emotions fluctuated\n- Number of mood swings\n- Emotional range (difference between highest/lowest)\n- Stability level and triggers\n\n
+       3. COGNITIVE PATTERN FLOW:\nIdentify thought patterns and their connections:\n- How one emotion/thought leads to another\n- Pattern strength and frequency\n- Whether patterns are positive/negative\n\n
+       4. LIFE DOMAIN BALANCE (score 0-100 each):\n- Work/Career\n- Relationships/Family\n- Health/Wellness\n- Personal Growth\n- Recreation/Hobbies\n- Spirituality/Purpose\nIdentify which domains need attention.\n\nProvide specific, actionable insights for each analysis.`,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -435,7 +433,6 @@ export const generateWeeklySummary = async (
     return {
       ...summary,
       entriesCount: entries.length,
-      streakDays,
     };
   } catch (error) {
     console.error("Error generating weekly summary:", error);
@@ -447,12 +444,7 @@ export const generateWeeklySummary = async (
  * Detect patterns and generate deep growth insights
  */
 export const generateGrowthInsights = async (
-  entries: Array<{
-    enrichedTranscript: string;
-    moodScore: number;
-    feelings: any;
-    created_at: string;
-  }>
+  entries: FetchWeekEntriesType
 ): Promise<GrowthInsight[]> => {
   try {
     if (!entries || entries.length < 5) {
@@ -463,9 +455,9 @@ export const generateGrowthInsights = async (
       .slice(0, 20)
       .map(
         (e, i) =>
-          `Entry ${i + 1} (${e.created_at}):\nMood: ${
-            e.moodScore
-          }/5\n${e.enrichedTranscript?.substring(0, 300)}...\n`
+          `Entry ${i + 1} (${e.selected_date}):\nMood: ${
+            e.moods?.main_mood
+          }/5\n${e.transcripts?.substring(0, 300)}...\n`
       )
       .join("\n---\n");
 

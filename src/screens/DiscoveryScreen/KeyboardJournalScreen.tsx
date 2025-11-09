@@ -43,8 +43,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const rotation = useSharedValue(0);
 
   const formattedDate = format(localSelectedDate, "MMMM d, yyyy");
-  const characterCount = journalText.length;
-  const xpValue = Math.min(Math.floor(characterCount / 10), 50);
+  // const xpValue = Math.min(Math.floor(characterCount / 10), 50);
 
   const handleShufflePrompt = useCallback(() => {
     rotation.value = withSpring(rotation.value + 360, {
@@ -146,11 +145,11 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           {/* Bottom Actions */}
           <View className="px-6 pb-6 pt-4 bg-white border-t border-gray-100">
             {/* XP Counter */}
-            <View className="mb-4 items-center">
+            {/* <View className="mb-4 items-center">
               <Text className="text-[#6B7280] text-sm font-medium">
                 {xpValue} <Text className="text-[#9CA3AF] text-sm">/50 XP</Text>
               </Text>
-            </View>
+            </View> */}
 
             {/* Action Buttons */}
             <View className="flex-row items-center justify-between gap-3">
@@ -164,14 +163,14 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               </TouchableOpacity>
 
               {/* Reflect with AI Button */}
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 className="flex-1 h-14 rounded-full bg-[#F3F4F6] items-center justify-center"
                 activeOpacity={0.7}
               >
                 <Text className="text-[#6B7280] text-base font-semibold">
                   Reflect with AI
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               {/* Submit Button - Purple when enabled */}
               <TouchableOpacity

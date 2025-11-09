@@ -6,6 +6,7 @@ import { formateDate_y_m_d } from "../../src/utils/date";
 import { TWO_HOUR } from "@/constants/Colors";
 import { Tables } from "@/types/types";
 import { JournalEntry } from "./types";
+import dayjs from "dayjs";
 
 export const useMentalHealthData = (selectedDate: Date) => {
   const { user } = useAuth();
@@ -16,10 +17,8 @@ export const useMentalHealthData = (selectedDate: Date) => {
       return [];
     }
     try {
-      const start: Date = new Date(formattedDate);
-      start.setHours(0, 0, 0, 0);
-      const end: Date = new Date(formattedDate);
-      end.setHours(23, 59, 59, 999);
+      const start = dayjs(selectedDate).startOf("day").toISOString();
+      const end = dayjs(selectedDate).endOf("day").toISOString();
 
       const { data, error: dateColErr } = await supabase
         .from("journal_records")
@@ -30,8 +29,8 @@ export const useMentalHealthData = (selectedDate: Date) => {
           `
         )
         .eq("user_id", user.id)
-        .gte("selected_date", start.toISOString())
-        .lte("selected_date", end.toISOString())
+        .gte("selected_date", start)
+        .lte("selected_date", end)
         .order("selected_date", { ascending: false });
 
       if (dateColErr) {
