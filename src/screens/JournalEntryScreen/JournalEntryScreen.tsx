@@ -82,7 +82,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   const handleContinue = useCallback(async (): Promise<void> => {
     try {
       if (!insights) return;
-      
+
       // Merge edited data with insights before saving
       const updatedInsights: JournalEntry = {
         ...insights,
@@ -104,7 +104,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
       await saveJournal(updatedInsights);
 
       toast.show({
-        placement: "bottom",
+        placement: "top",
         render: ({ id }) => (
           <Toast nativeID={id} variant="solid" action="success">
             <ToastTitle>Journal saved successfully</ToastTitle>

@@ -10,6 +10,7 @@ import { useAtomValue } from "jotai";
 import { Insert } from "@/types/types";
 import { formateDate_y_m_d } from "../../src/utils/date";
 import { JournalEntry } from "../data/types";
+import { getMoodScore } from "@/src/utils/mood";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -71,9 +72,10 @@ export const useSaveJournal = () => {
         const mood: Insert<"moods"> = {
           user_id: user.id,
           main_mood: input.moods?.main_mood,
-          selected_date: format(selectedDate, "yyyy-MM-dd"),
+          selected_date: selectedDate.toISOString(),
           input_method: "journal",
           journal_entry_id: journalData.id,
+          mood_score: getMoodScore(input.moods?.main_mood),
         };
 
         const { error: moodError } = await supabase

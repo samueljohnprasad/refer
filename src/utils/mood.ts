@@ -1,6 +1,6 @@
 import { Enums } from "@/types/types";
 
-export const getMoodScore = (mood: Enums<"mood">): number => {
+export const getMoodScore = (mood?: Enums<"mood"> | null): number => {
   switch (mood) {
     case "terrible":
       return 1;

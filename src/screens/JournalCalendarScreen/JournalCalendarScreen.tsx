@@ -255,9 +255,9 @@ export default function JournalCalendarScreen() {
           <View className="mt-5">
             <EmotionLogger
               selectedDate={selectedEmotionDate}
-              onEmotionLogged={(emotionScore) => {
+              onEmotionLogged={(emotionScore: number) => {
                 console.log("Emotion logged:", emotionScore);
-                // You can add logic here to refresh mood data if needed
+                // Cache invalidation is handled automatically in useEmotionLogger hook
               }}
             />
           </View>

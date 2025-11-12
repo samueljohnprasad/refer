@@ -20,7 +20,6 @@ export type Database = {
           growth_insights: Json | null
           id: string
           recommendations: Json | null
-          updated_at: string | null
           user_id: string
           week_end: string
           week_number: number
@@ -33,7 +32,6 @@ export type Database = {
           growth_insights?: Json | null
           id?: string
           recommendations?: Json | null
-          updated_at?: string | null
           user_id: string
           week_end: string
           week_number: number
@@ -46,7 +44,6 @@ export type Database = {
           growth_insights?: Json | null
           id?: string
           recommendations?: Json | null
-          updated_at?: string | null
           user_id?: string
           week_end?: string
           week_number?: number
@@ -233,6 +230,7 @@ export type Database = {
           input_method: string | null
           journal_entry_id: number | null
           main_mood: Database["public"]["Enums"]["mood"] | null
+          mood_score: number | null
           selected_date: string | null
           user_id: string | null
         }
@@ -241,6 +239,7 @@ export type Database = {
           input_method?: string | null
           journal_entry_id?: number | null
           main_mood?: Database["public"]["Enums"]["mood"] | null
+          mood_score?: number | null
           selected_date?: string | null
           user_id?: string | null
         }
@@ -249,6 +248,7 @@ export type Database = {
           input_method?: string | null
           journal_entry_id?: number | null
           main_mood?: Database["public"]["Enums"]["mood"] | null
+          mood_score?: number | null
           selected_date?: string | null
           user_id?: string | null
         }

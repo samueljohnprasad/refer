@@ -79,9 +79,10 @@ async function logEmotion(userId: string, emotionId: number): Promise<void> {
   const { error } = await supabase.from("moods").insert({
     user_id: userId,
     main_mood: mood,
-    selected_date: dayjs().startOf("day").toISOString(),
+    selected_date: format(new Date(), "yyyy-MM-dd"),
     input_method: "emotion_logger",
     journal_entry_id: null,
+    mood_score: emotionId,
   });
 
   if (error) {
@@ -126,12 +127,22 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
       queryClient.invalidateQueries({
         queryKey: ["daily-emotions", user?.id, dateStr],
       });
+
+      // Invalidate all mood-related queries
       queryClient.invalidateQueries({
         queryKey: ["moods"],
         refetchType: "active",
       });
+
+      // Invalidate daily moods for calendar display
       queryClient.invalidateQueries({
         queryKey: ["daily-moods"],
+        refetchType: "active",
+      });
+
+      // Invalidate daily moods range queries for weekly mood chart
+      queryClient.invalidateQueries({
+        queryKey: ["daily-moods-range"],
         refetchType: "active",
       });
     },
