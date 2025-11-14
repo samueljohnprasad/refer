@@ -22,7 +22,6 @@ export const useUpdateDisplayName = () => {
       );
 
       if (error) {
-        console.log(error);
         throw error;
       }
 

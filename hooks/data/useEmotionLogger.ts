@@ -51,7 +51,6 @@ async function fetchDailyEmotions(
     .not("main_mood", "is", null);
 
   if (error) {
-     console.error("Error fetching daily emotions:", error);
     return emotionCounts;
   }
 
@@ -86,7 +85,6 @@ async function logEmotion(userId: string, emotionId: number): Promise<void> {
   });
 
   if (error) {
-    console.error("Error logging emotion:", error);
     throw error;
   }
 }
@@ -146,9 +144,7 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
         refetchType: "active",
       });
     },
-    onError: (error) => {
-      console.error("Failed to log emotion:", error);
-    },
+    onError: (error) => {},
   });
 
   const handleLogEmotion = useCallback(

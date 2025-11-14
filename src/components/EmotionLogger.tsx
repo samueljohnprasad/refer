@@ -14,7 +14,13 @@ import { useEmotionLogger } from "@/hooks/data/useEmotionLogger";
 
 // Emotion configuration
 const EMOTIONS = [
-  { id: 1, name: "Terrible", emoji: terrible, color: "#FF6B6B", bgColor: "#FFE5E5" },
+  {
+    id: 1,
+    name: "Terrible",
+    emoji: terrible,
+    color: "#FF6B6B",
+    bgColor: "#FFE5E5",
+  },
   { id: 2, name: "Bad", emoji: bad, color: "#FFA94D", bgColor: "#FFF3E5" },
   { id: 3, name: "Okay", emoji: fine, color: "#FFD43B", bgColor: "#FFF9E5" },
   { id: 4, name: "Good", emoji: good, color: "#69DB7C", bgColor: "#E5F9E5" },
@@ -27,7 +33,7 @@ interface EmotionLoggerProps {
 }
 
 const EmotionItem: React.FC<{
-  emotion: typeof EMOTIONS[number];
+  emotion: (typeof EMOTIONS)[number];
   count: number;
   onPress: () => void;
   isLoading: boolean;
@@ -107,7 +113,9 @@ const EmotionItem: React.FC<{
           </View>
         </Animated.View>
       </Pressable>
-      <Text className="text-xs font-medium text-gray-700 mt-1.5">{emotion.name}</Text>
+      <Text className="text-xs font-medium text-gray-700 mt-1.5">
+        {emotion.name}
+      </Text>
     </View>
   );
 };
@@ -129,20 +137,20 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = ({
     try {
       await logEmotionToSupabase(emotionScore);
       onEmotionLogged?.(emotionScore);
-    } catch (error) {
-      console.error("Error logging emotion:", error);
-    }
+    } catch (error) {}
   };
 
   return (
     <View className="bg-white rounded-2xl p-4 border border-gray-100">
       <View className="flex-row items-center justify-between mb-3">
-        <Text className="text-base font-semibold text-gray-900">Daily Mood Log</Text>
+        <Text className="text-base font-semibold text-gray-900">
+          Daily Mood Log
+        </Text>
         <Text className="text-xs text-gray-500">
           {format(selectedDate, "MMM d, yyyy")}
         </Text>
       </View>
-      
+
       <View className="flex-row justify-between">
         {EMOTIONS.map((emotion) => (
           <EmotionItem

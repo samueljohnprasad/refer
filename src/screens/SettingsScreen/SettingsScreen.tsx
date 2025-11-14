@@ -105,7 +105,6 @@ export default React.memo(function SettingsScreen() {
       // Sign out after successful deletion
       await signOut();
     } catch (error) {
-      console.error("Failed to delete user data:", error);
       Alert.alert(
         "Error",
         "Failed to delete your data. Please try again or contact support."

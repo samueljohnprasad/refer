@@ -39,7 +39,6 @@ export const useOnboardingStatus = (): OnboardingStatus => {
         setCompleted(remoteCompleted);
         setLoading(false);
       } catch (e) {
-        console.log("error onboarding", e);
         setLoading(false);
       }
     };

@@ -210,7 +210,6 @@ export default function JournalCalendarScreen() {
             <EmotionLogger
               selectedDate={selectedEmotionDate}
               onEmotionLogged={(emotionScore: number) => {
-                console.log("Emotion logged:", emotionScore);
                 // Cache invalidation is handled automatically in useEmotionLogger hook
               }}
             />

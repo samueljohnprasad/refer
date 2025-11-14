@@ -44,8 +44,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const { data } = await supabase.auth.getSession();
       const accessToken = data?.session?.access_token;
       // signOut();
-
-      console.log("accessToken", accessToken);
     };
     fetchToken();
   }, []);
@@ -54,8 +52,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state change:", event, session?.user?.email);
-
       if (event === "INITIAL_SESSION") {
         setSession(session);
         setUser(session?.user ?? null);
@@ -70,8 +66,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Show success toast when user signs in (navigation handled by signin screen)
       if (event === "SIGNED_IN" && session?.user) {
-        console.log("User signed in successfully!");
-
         // Show success toast
         toast.show({
           placement: "bottom right",
@@ -92,26 +86,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Handle OAuth redirect when user returns to app
     const handleDeepLink = async (url: string) => {
-      console.log("Deep link received:", url);
       if (url && url.includes("access_token")) {
         try {
           await createSessionFromUrl(url);
-        } catch (error) {
-          console.error("Error handling OAuth redirect:", error);
-        }
+        } catch (error) {}
       }
     };
 
     // Listen for URL changes (when user returns from OAuth)
     const urlSubscription = Linking.addEventListener("url", ({ url }) => {
-      console.log("Deep link received:", url);
       handleDeepLink(url);
     });
 
     // Check if app was opened with a URL
     Linking.getInitialURL().then((url) => {
       if (url) {
-        console.log("Initial deep link received:", url);
         handleDeepLink(url);
       }
     });
@@ -129,7 +118,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSession(null);
       setUser(null);
       await AsyncStorage.clear();
-      console.log("Signed out successfully!");
 
       router.replace("/");
     } catch (error) {

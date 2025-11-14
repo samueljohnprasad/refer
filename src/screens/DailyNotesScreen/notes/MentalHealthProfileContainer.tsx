@@ -56,7 +56,6 @@ export const MentalHealthProfileContainer: React.FC<
         });
         // React Query will automatically update the cache
       } catch (error) {
-        console.error("[handleBookmarkToggle] Error:", error);
       } finally {
         setBookmarkingId(null);
       }

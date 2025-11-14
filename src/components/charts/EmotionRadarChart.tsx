@@ -51,9 +51,6 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
   loading = false,
   premium = false,
 }) => {
-  console.log("EmotionRadarChart", data, data?.length, loading);
-
-  // Calculate emotional balance score
   const emotionalBalance = useMemo(() => {
     if (!data || data.length === 0) {
       return {
@@ -135,7 +132,9 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
             zIndex: 10,
           }}
         >
-          <Text className="text-white text-xs font-extrabold tracking-wider">PREMIUM</Text>
+          <Text className="text-white text-xs font-extrabold tracking-wider">
+            PREMIUM
+          </Text>
         </LinearGradient>
       )}
 
@@ -151,10 +150,11 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
             </Text>
           </View>
           <View className="items-end">
-            <View 
+            <View
               className="px-3 py-1.5 rounded-lg"
               style={{
-                backgroundColor: emotionalBalance.balance > 0 ? "#10B98120" : "#EF444420",
+                backgroundColor:
+                  emotionalBalance.balance > 0 ? "#10B98120" : "#EF444420",
               }}
             >
               <Text
@@ -167,7 +167,9 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
                 {emotionalBalance.balance.toFixed(0)}%
               </Text>
             </View>
-            <Text className="text-xs text-gray-500 mt-1.5 font-medium">Balance Score</Text>
+            <Text className="text-xs text-gray-500 mt-1.5 font-medium">
+              Balance Score
+            </Text>
           </View>
         </View>
 

@@ -22,7 +22,6 @@ const RemindersScreen = () => {
     try {
       await addNotifications();
     } catch (error) {
-      console.error("Error saving notifications:", error);
     }
   }, [addNotifications]);
 

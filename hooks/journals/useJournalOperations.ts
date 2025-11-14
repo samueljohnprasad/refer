@@ -112,7 +112,6 @@ export const useJournalOperations = () => {
           .eq("user_id", user.id);
 
         if (error) {
-          console.error("[toggleBookmark] Error:", error);
           throw error;
         }
 

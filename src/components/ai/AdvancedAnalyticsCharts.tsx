@@ -41,9 +41,7 @@ export const AdvancedAnalyticsCharts: React.FC<
           {showPremiumBadge && (
             <TouchableOpacity
               className="rounded-xl overflow-hidden shadow-md"
-              onPress={
-                onPremiumPress || (() => console.log("Show premium modal"))
-              }
+              onPress={onPremiumPress}
             >
               <LinearGradient
                 colors={["#7B61FF", "#9C7CFF"]}

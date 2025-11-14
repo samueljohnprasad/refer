@@ -96,7 +96,6 @@ export default function AIInsightsScreen() {
   } = usePreviousWeekSummary();
   const generateSummary = useGenerateWeeklySummary();
   const { height } = useWindowDimensions();
-  console.log("cachedSummary", cachedSummary);
   const previousWeek = subWeeks(new Date(), 1);
   const weeklySummary = cachedSummary?.weekly_summary;
   const recommendations = cachedSummary?.recommendations;
@@ -335,7 +334,6 @@ export default function AIInsightsScreen() {
             loading={isGenerating}
             showPremiumBadge={true}
             showTitle={true}
-            onPremiumPress={() => console.log("Show premium modal")}
           />
         )}
 
@@ -349,46 +347,6 @@ export default function AIInsightsScreen() {
               growthInsights={growthInsights || []}
             />
           )}
-
-          {/* Premium CTA */}
-          {/* <TouchableOpacity
-            className="mt-8 rounded-3xl overflow-hidden"
-            style={{
-              shadowColor: "#7B61FF",
-              shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: 0.3,
-              shadowRadius: 16,
-              elevation: 8,
-            }}
-            onPress={() => {
-              // Show premium upgrade modal or navigate to subscription screen
-              console.log("Navigate to premium subscription");
-            }}
-          >
-            <LinearGradient
-              colors={["#7B61FF", "#9C7CFF"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                paddingHorizontal: 24,
-                paddingVertical: 20,
-              }}
-            >
-              <View className="flex-row items-center justify-between">
-                <Text className="text-5xl mr-4">✨</Text>
-                <View className="flex-1 mr-3">
-                  <Text className="text-xl font-extrabold text-white mb-2">
-                    Unlock Full Analytics Suite
-                  </Text>
-                  <Text className="text-sm text-white/95 leading-5 font-medium">
-                    Get personalized insights, predictive analytics, and
-                    unlimited AI analysis
-                  </Text>
-                </View>
-                <Feather name="chevron-right" size={28} color="#FFF" />
-              </View>
-            </LinearGradient>
-          </TouchableOpacity> */}
         </View>
       </Animated.ScrollView>
     </SafeAreaView>

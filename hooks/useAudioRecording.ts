@@ -20,7 +20,6 @@ const useAudioRecording = () => {
   const audioRecorder = useAudioRecorder(
     RecordingPresets.HIGH_QUALITY,
     (status) => {
-        console.log("Recording status:", status);
       setRecordedStatus(status);
     }
   );

@@ -16,8 +16,6 @@ export const useCompleteOnboarding = () => {
     ): Promise<void> => {
       if (!user) return;
 
-      console.log("onBoardingData", onBoardingData);
-
       const { data, error } = await supabase.from("user_preferences").upsert(
         {
           user_id: user.id,
@@ -28,7 +26,6 @@ export const useCompleteOnboarding = () => {
       );
 
       if (error) {
-        console.error("Error updating user preferences:", error);
         throw error;
       }
 
@@ -47,7 +44,6 @@ export const useCompleteOnboarding = () => {
         );
 
       if (profileError) {
-        console.error("Error updating profile:", profileError);
         throw profileError;
       }
 

@@ -34,33 +34,15 @@ export const useMentalHealthData = (selectedDate: Date) => {
         .order("selected_date", { ascending: false });
 
       if (dateColErr) {
-        console.error("[useMentalHealthData] Supabase query error:", {
-          error: dateColErr,
-          userId: user.id,
-          date: formattedDate,
-        });
         throw dateColErr;
       }
 
       if (!data) {
-        console.warn("[useMentalHealthData] No data returned for:", {
-          userId: user.id,
-          date: formattedDate,
-        });
         return [];
       }
 
       return data as JournalEntry[];
     } catch (err) {
-      const errorMessage: string =
-        err instanceof Error ? err.message : "Unknown error";
-      console.error("[useMentalHealthData] Error loading data:", {
-        message: errorMessage,
-        userId: user?.id,
-        date: formattedDate,
-        error: err,
-      });
-      // Return empty array to prevent app crash
       return [];
     }
   }, [user?.id, formattedDate]);

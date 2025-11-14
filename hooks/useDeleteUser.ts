@@ -24,7 +24,6 @@ export const useDeleteUser = () => {
           message: "All personal data has been permanently deleted",
         };
       } catch (error) {
-        console.error("Failed to delete user data:", error);
         throw error;
       }
     },

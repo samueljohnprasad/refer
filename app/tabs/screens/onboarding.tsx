@@ -23,7 +23,6 @@ export default function OnboardingScreen() {
       await addNotifications();
       router.replace("/tabs/(tabs)/home");
     } catch (error) {
-      console.error("Error completing onboarding:", error);
     }
   };
 

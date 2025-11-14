@@ -35,12 +35,6 @@ export async function callMyFunction({
         errorMessage.includes("Network request failed") ||
         errorMessage.includes("Failed to send a request");
 
-      console.error("[EdgeFunction] Error:", {
-        message: errorMessage,
-        isNetworkError,
-        fullError: error,
-      });
-
       throw new EdgeFunctionError(
         isNetworkError
           ? "Unable to connect to server. Please check your internet connection and try again."
@@ -56,7 +50,6 @@ export async function callMyFunction({
       );
     }
 
-    console.log("[EdgeFunction] Success:", data);
     return data;
   } catch (err) {
     // Re-throw EdgeFunctionError
@@ -79,7 +72,6 @@ export async function deleteUserAuth(): Promise<InsightsType | null> {
     );
 
     if (error) {
-      console.error("[EdgeFunction] Delete user error:", error);
       throw new EdgeFunctionError(
         "Failed to delete user. Please try again.",
         error as Error

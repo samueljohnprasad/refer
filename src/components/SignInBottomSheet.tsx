@@ -16,7 +16,6 @@ export default () => {
     try {
       await performOAuth({ replace: router.replace });
     } catch (error) {
-      console.error("Google Sign-In error:", error);
       toast.show({
         placement: "bottom right",
         render: ({ id }) => {

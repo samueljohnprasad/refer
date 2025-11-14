@@ -45,7 +45,6 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
         setShowModal(false);
       },
       onError: (error: Error) => {
-        console.error("Error updating display name:", error);
         Alert.alert("Error", "Failed to update name. Please try again.");
       },
     });

@@ -94,7 +94,6 @@ export const useSaveJournal = () => {
           refetchType: "active",
         });
       } catch (error) {
-        console.error("Failed to save journal:", error);
         throw error;
       } finally {
         setSaving(false);

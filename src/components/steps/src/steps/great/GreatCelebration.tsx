@@ -14,8 +14,9 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { Text } from "@/components/ui/text";
-import { ArrowDown, ArrowUp, Sparkles, Star } from "lucide-react-native";
 import { emotions } from "@/assets/emojis";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { MagicWand02Icon, SparklesIcon } from "@hugeicons/core-free-icons";
 
 export type Trend = "up" | "down";
 
@@ -173,7 +174,11 @@ const StatCard: React.FC<{
             opacity: 0.6,
           }}
         >
-          <Sparkles size={20 * scale} color="#FCD34D" />
+          <HugeiconsIcon
+            icon={SparklesIcon}
+            size={20 * scale}
+            color="#FCD34D"
+          />
         </View>
 
         <View
@@ -205,7 +210,7 @@ const StatCard: React.FC<{
             >
               {percentText}
             </Text>
-            {trend === "up" ? (
+            {/* {trend === "up" ? (
               <View
                 style={{
                   backgroundColor: "rgba(16,185,129,0.15)",
@@ -233,7 +238,7 @@ const StatCard: React.FC<{
                   strokeWidth={3}
                 />
               </View>
-            )}
+            )} */}
           </View>
           <Text
             style={{
@@ -409,7 +414,6 @@ export const GreatCelebration: React.FC<GreatCelebrationProps> = ({
         </Text>
       </Animated.View>
 
-      {/* Animated Sparkles */}
       <Animated.View
         style={[
           sparkleAnimatedStyle,
@@ -421,7 +425,12 @@ export const GreatCelebration: React.FC<GreatCelebrationProps> = ({
           },
         ]}
       >
-        <Star size={24} color="#FCD34D" fill="#FCD34D" />
+        <HugeiconsIcon
+          icon={MagicWand02Icon}
+          size={24}
+          color="#FCD34D"
+          fill="#FCD34D"
+        />
       </Animated.View>
 
       {/* Premium Stats Cards */}

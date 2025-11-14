@@ -71,7 +71,6 @@ const fetchWeekEntries = async (userId: string, weekStart: Date) => {
 
   if (error) throw error;
 
-  console.log("datadatadata", data);
   return data || [];
 };
 
@@ -143,8 +142,6 @@ export const useGenerateWeeklySummary = () => {
       const weekNumber = getWeek(weekDate, { weekStartsOn: 0 });
       const year = getYear(weekDate);
 
-      console.log(`Generating AI summary for week ${weekNumber}, year ${year}`);
-
       // 1. Fetch journal entries for this week
       const entries: FetchWeekEntriesType = await fetchWeekEntries(
         user.id,
@@ -168,8 +165,6 @@ export const useGenerateWeeklySummary = () => {
             ? generateGrowthInsights(entries)
             : Promise.resolve([]),
         ]);
-
-      console.log("AI insights generated successfully");
 
       const { data, error } = await supabase
         .from("ai_weekly_summaries")

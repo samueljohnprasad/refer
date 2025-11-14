@@ -185,7 +185,6 @@ export const generateAIRecommendations = async (
     if (!response.text) return [];
     return JSON.parse(response.text);
   } catch (error) {
-    console.error("Error generating recommendations:", error);
     return [];
   }
 };
@@ -435,7 +434,6 @@ export const generateWeeklySummary = async (
       entriesCount: entries.length,
     };
   } catch (error) {
-    console.error("Error generating weekly summary:", error);
     return null;
   }
 };
@@ -498,7 +496,6 @@ export const generateGrowthInsights = async (
     if (!response.text) return [];
     return JSON.parse(response.text);
   } catch (error) {
-    console.error("Error generating growth insights:", error);
     return [];
   }
 };

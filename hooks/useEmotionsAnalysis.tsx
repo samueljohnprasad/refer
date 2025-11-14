@@ -1,12 +1,20 @@
 import React, { useEffect } from "react";
-import { callMyFunction, EdgeFunctionError } from "@/src/network/transcribeAudio";
+import {
+  callMyFunction,
+  EdgeFunctionError,
+} from "@/src/network/transcribeAudio";
 import { ProcessingPhase } from "@/src/screens/DiscoveryScreen/types";
 import { File } from "expo-file-system";
 import { recorderOpenAtom } from "@/src/screens/DiscoveryScreen/helpers";
 import { useAtom } from "jotai";
 import { JournalEntry } from "./data/types";
 import { getAudioDuration } from "@/src/utils/date";
-import { useToast, Toast, ToastTitle, ToastDescription } from "@/components/ui/toast";
+import {
+  useToast,
+  Toast,
+  ToastTitle,
+  ToastDescription,
+} from "@/components/ui/toast";
 
 export type AnalysisCompletedType = {
   insights: JournalEntry;
@@ -49,7 +57,9 @@ const useEmotionsAnalysis = ({
   };
 
   const uploadAndTranscribe = async (): Promise<JournalEntry | null> => {
-    const journalEntry: string | undefined = uri ? getBase64Audio(uri) : journalText;
+    const journalEntry: string | undefined = uri
+      ? getBase64Audio(uri)
+      : journalText;
     if (!journalEntry) {
       throw new Error("No journal content provided");
     }
@@ -88,43 +98,43 @@ const useEmotionsAnalysis = ({
       try {
         setProcessingPhase(ProcessingPhase.TRANSCRIBING);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        
+
         const insights: JournalEntry | null = await uploadAndTranscribe();
-        
+
         if (!insights) {
           throw new Error("Failed to process journal entry");
         }
-        
+
         setProcessingPhase(ProcessingPhase.ANALYZING_EMOTIONS);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setProcessingPhase(ProcessingPhase.GENERATING_INSIGHTS);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setProcessingPhase(ProcessingPhase.FINALIZING);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        
+
         onAnalysisCompleted({ insights });
       } catch (error) {
-        console.error("[useEmotionsAnalysis] Error:", error);
-        
         // Close the recorder
         setRecorderOpen(false);
-        
+
         // Handle EdgeFunctionError specifically
         if (error instanceof EdgeFunctionError) {
           const errorData: AnalysisErrorType = {
             message: error.message,
             isNetworkError: error.isNetworkError,
           };
-          
+
           onAnalysisError?.(errorData);
-          
+
           // Show toast notification
           toast.show({
             placement: "top",
             render: ({ id }) => (
               <Toast nativeID={id} variant="solid" action="error">
                 <ToastTitle>
-                  {error.isNetworkError ? "Connection Error" : "Processing Error"}
+                  {error.isNetworkError
+                    ? "Connection Error"
+                    : "Processing Error"}
                 </ToastTitle>
                 <ToastDescription>{error.message}</ToastDescription>
               </Toast>
@@ -136,12 +146,12 @@ const useEmotionsAnalysis = ({
             error instanceof Error
               ? error.message
               : "An unexpected error occurred";
-          
+
           onAnalysisError?.({
             message: errorMessage,
             isNetworkError: false,
           });
-          
+
           toast.show({
             placement: "top",
             render: ({ id }) => (
