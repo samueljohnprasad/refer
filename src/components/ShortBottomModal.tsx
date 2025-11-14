@@ -1,13 +1,18 @@
 import { StyleSheet } from "react-native";
-import React, { useMemo } from "react";
-import {
-  BottomSheetBackdrop,
-  BottomSheetContent,
-  BottomSheetPortal,
-} from "@/components/ui/bottomsheet";
-import { VStack } from "@/components/ui/vstack";
-import AnimatedLinearGradient from "./AnimatedLinearGradient";
+import React, { forwardRef, useEffect, useMemo, useRef } from "react";
 import { SharedValue } from "react-native-reanimated";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  BottomSheetBackdrop,
+  BottomSheetView,
+  BottomSheetBackdropProps,
+} from "@gorhom/bottom-sheet";
+import { BlurredBackground } from "./BlurredBackground";
+import { Text, View } from "@/components/Themed";
+import { BlurView } from "expo-blur";
+import { useAtom } from "jotai";
+// import { BottomSheetBackdrop } from "@/components/ui/bottomsheet";
 
 interface ShortBottomModalProps {
   children: React.ReactNode;
@@ -15,63 +20,67 @@ interface ShortBottomModalProps {
   snapPoints?:
     | ((string | number)[] & string[])
     | (SharedValue<(string | number)[]> & string[]);
+  onDismiss?: () => void;
 }
 
-const ShortBottomModal: React.FC<ShortBottomModalProps> = ({
-  children,
-  height,
-  snapPoints = ["50%"],
-}) => {
+export function BlurBackdropExpo(props: BottomSheetBackdropProps) {
+  // props contains animated indices and style; pass through to BottomSheetBackdrop
   return (
-    <BottomSheetPortal
-      enableDynamicSizing
-      snapPoints={snapPoints}
-      index={-1}
-      android_keyboardInputMode="adjustResize"
-      style={{ padding: 0, marginHorizontal: 0 }}
-      handleStyle={{ display: "none" }}
-      backgroundStyle={{
-        borderRadius: 16,
-        backgroundColor: "transparent",
-        alignItems: "flex-end",
-      }}
-      bottomInset={0}
-      enablePanDownToClose
-      backdropComponent={BottomSheetBackdrop}
+    <BottomSheetBackdrop
+      {...props}
+      disappearsOnIndex={-1}
+      appearsOnIndex={0}
+      pressBehavior="close"
+      opacity={0.2}
+      style={props.style}
     >
-      <BottomSheetContent
-        style={{
-          backgroundColor: "transparent",
-          borderRadius: 16,
-          borderBottomStartRadius: 16,
-          borderBottomEndRadius: 16,
-          height: height || 370,
-          paddingHorizontal: 12,
-        }}
-      >
-        <VStack
-          className="flex-1  rounded-2xl h-full px-6 "
-          space="4xl"
-          style={{
-            backgroundColor: "white",
-            borderRadius: 24,
-            height: "100%",
-            paddingTop: 24,
-          }}
-        >
-          <AnimatedLinearGradient
-            className="rounded-2xl"
-            colors={["#f0efed", "#bdebf8"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            locations={[0, 1]}
-            style={[StyleSheet.absoluteFill, { borderRadius: 24 }]}
-          />
-          {children}
-        </VStack>
-      </BottomSheetContent>
-    </BottomSheetPortal>
+      {/* <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFill} /> */}
+    </BottomSheetBackdrop>
   );
-};
+}
+
+const ShortBottomModal = forwardRef<
+  BottomSheetModal | null,
+  ShortBottomModalProps
+>(({ children, onDismiss, height, snapPoints = ["30%"] }, ref) => {
+  return (
+    <BottomSheetModal
+      // backgroundComponent={BlurredBackground}
+      ref={ref}
+      index={0}
+      snapPoints={snapPoints}
+      detached
+      bottomInset={100}
+      onDismiss={onDismiss}
+      stackBehavior="push"
+      backgroundStyle={{
+        borderRadius: 28,
+
+        backgroundColor: "white",
+        // shadowOpacity: 0.1,
+        // shadowRadius: 8,
+        // shadowOffset: { width: 0, height: 3 },
+        // elevation: 4,
+        // shadowColor: "#000",
+      }}
+      // backdropComponent={BlurBackdropExpo}
+      backdropComponent={BlurBackdropExpo}
+      enablePanDownToClose={true}
+      style={{
+        marginHorizontal: 24,
+        borderRadius: 56,
+      }}
+    >
+      <BottomSheetView
+        style={{
+          flex: 1,
+        }}
+        className="flex-1 h-full w-full rounded-sm"
+      >
+        {children}
+      </BottomSheetView>
+    </BottomSheetModal>
+  );
+});
 
 export default ShortBottomModal;

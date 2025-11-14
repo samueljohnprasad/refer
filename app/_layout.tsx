@@ -9,21 +9,17 @@ import {
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { Suspense, useEffect, useState } from "react";
-import { useColorScheme } from "@/components/useColorScheme";
 import { Slot, usePathname } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { Fab, FabIcon } from "@/components/ui/fab";
-import { MoonIcon, SunIcon } from "@/components/ui/icon";
 import { AuthProvider } from "@/src/context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { PressablesConfig } from "pressto";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import * as Notifications from "expo-notifications";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Loading from "@/src/components/Loading";
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -57,7 +53,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function RootLayout() {
-  console.log('test same root layout')
+  console.log("test same root layout");
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -83,7 +79,13 @@ function RootLayoutNav() {
   const [colorMode, setColorMode] = useState<"light" | "dark">("light");
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <View className="flex-1 items-center justify-center">
+          <Loading />
+        </View>
+      }
+    >
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <PressablesConfig
@@ -91,6 +93,7 @@ function RootLayoutNav() {
             animationType="spring"
           >
             <GestureHandlerRootView style={StyleSheet.absoluteFill}>
+
               <GluestackUIProvider mode={colorMode}>
                 <ThemeProvider
                   value={colorMode === "dark" ? DarkTheme : DefaultTheme}

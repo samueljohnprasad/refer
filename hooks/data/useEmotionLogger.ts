@@ -51,7 +51,7 @@ async function fetchDailyEmotions(
     .not("main_mood", "is", null);
 
   if (error) {
-    console.error("Error fetching daily emotions:", error);
+     console.error("Error fetching daily emotions:", error);
     return emotionCounts;
   }
 

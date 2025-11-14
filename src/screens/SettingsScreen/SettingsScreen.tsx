@@ -3,11 +3,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Switch,
-  Platform,
   Pressable,
   Linking,
-  Button,
   useWindowDimensions,
   Animated,
   Modal,
@@ -16,7 +13,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
-import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { Link, Stack, useRouter } from "expo-router";
@@ -33,6 +30,21 @@ import EraseDataConfirmationModal from "@/src/components/modals/EraseDataConfirm
 import SignOutConfirmationModal from "@/src/components/modals/SignOutConfirmationModal";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
 import { BottomSheet, BottomSheetTrigger } from "@/components/ui/bottomsheet";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  AlertSquareIcon,
+  ArrowLeft02Icon,
+  ArrowRight01Icon,
+  Delete02Icon,
+  Download02Icon,
+  File01Icon,
+  Logout02Icon,
+  MessageOutgoing01Icon,
+  Notification01Icon,
+  ShieldUserIcon,
+  StarIcon,
+  UserIcon,
+} from "@hugeicons/core-free-icons";
 
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
@@ -51,7 +63,7 @@ export default React.memo(function SettingsScreen() {
   const [showImportModal, setShowImportModal] = useState(false);
   const [importDaysCount, setImportDaysCount] = useState("20");
   const [importStartDate, setImportStartDate] = useState<Date>(
-    subDays(new Date(), 20)
+    subDays(new Date(), 10)
   );
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsAndConditions, setShowTermsAndConditions] = useState(false);
@@ -131,7 +143,11 @@ export default React.memo(function SettingsScreen() {
                     activeOpacity={0.7}
                     onPress={() => router.back()}
                   >
-                    <Ionicons name="arrow-back" size={20} color="#FFF" />
+                    <HugeiconsIcon
+                      icon={ArrowLeft02Icon}
+                      size={20}
+                      color="#FFF"
+                    />
                   </TouchableOpacity>
 
                   <Text style={styles.headerTitle}>Settings</Text>
@@ -232,8 +248,8 @@ export default React.memo(function SettingsScreen() {
                 }}
               >
                 <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
-                  <MaterialCommunityIcons
-                    name="bell-ring"
+                  <HugeiconsIcon
+                    icon={Notification01Icon}
                     size={20}
                     color="#A855F7"
                   />
@@ -244,7 +260,11 @@ export default React.memo(function SettingsScreen() {
                     Customize multiple reminders
                   </Text>
                 </View>
-                <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={22}
+                  color="#9CA3AF"
+                />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -255,12 +275,16 @@ export default React.memo(function SettingsScreen() {
                 }}
               >
                 <View style={[styles.leftIcon, { backgroundColor: "#FECACA" }]}>
-                  <Feather name="user" size={20} color="#EF4444" />
+                  <HugeiconsIcon icon={UserIcon} size={20} color="#EF4444" />
                 </View>
                 <View style={styles.rowText}>
                   <Text style={styles.itemTitle}>Edit Name</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={22}
+                  color="#9CA3AF"
+                />
               </TouchableOpacity>
 
               {/* <View style={styles.rowItem}>
@@ -292,12 +316,20 @@ export default React.memo(function SettingsScreen() {
                 }}
               >
                 <View style={[styles.leftIcon, { backgroundColor: "#CFFAFE" }]}>
-                  <Feather name="message-square" size={20} color="#06B6D4" />
+                  <HugeiconsIcon
+                    icon={MessageOutgoing01Icon}
+                    size={20}
+                    color="#06B6D4"
+                  />
                 </View>
                 <View style={styles.rowText}>
                   <Text style={styles.itemTitle}>Contact Support</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={22}
+                  color="#9CA3AF"
+                />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -306,12 +338,16 @@ export default React.memo(function SettingsScreen() {
                 onPress={handleRateUs}
               >
                 <View style={[styles.leftIcon, { backgroundColor: "#DCFCE7" }]}>
-                  <Feather name="star" size={20} color="#16A34A" />
+                  <HugeiconsIcon icon={StarIcon} size={20} color="#16A34A" />
                 </View>
                 <View style={styles.rowText}>
                   <Text style={styles.itemTitle}>Rate Us</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={22}
+                  color="#9CA3AF"
+                />
               </TouchableOpacity>
             </View>
 
@@ -326,12 +362,16 @@ export default React.memo(function SettingsScreen() {
                 }}
               >
                 <View style={[styles.leftIcon, { backgroundColor: "#F3E8FF" }]}>
-                  <Feather name="file-text" size={20} color="#9333EA" />
+                  <HugeiconsIcon icon={File01Icon} size={20} color="#9333EA" />
                 </View>
                 <View style={styles.rowText}>
                   <Text style={styles.itemTitle}>Terms of Use</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={22}
+                  color="#9CA3AF"
+                />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -343,12 +383,20 @@ export default React.memo(function SettingsScreen() {
                 }}
               >
                 <View style={[styles.leftIcon, { backgroundColor: "#DBEAFE" }]}>
-                  <Feather name="shield" size={20} color="#2563EB" />
+                  <HugeiconsIcon
+                    icon={ShieldUserIcon}
+                    size={20}
+                    color="#2563EB"
+                  />
                 </View>
                 <View style={styles.rowText}>
                   <Text style={styles.itemTitle}>Privacy Policy</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={22}
+                  color="#9CA3AF"
+                />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -360,7 +408,11 @@ export default React.memo(function SettingsScreen() {
                 }}
               >
                 <View style={[styles.leftIcon, { backgroundColor: "#FEE2E2" }]}>
-                  <Feather name="trash-2" size={20} color="#DC2626" />
+                  <HugeiconsIcon
+                    icon={Delete02Icon}
+                    size={20}
+                    color="#DC2626"
+                  />
                 </View>
                 <View style={styles.rowText}>
                   <Text style={styles.itemTitle}>Erase Personal Data</Text>
@@ -368,12 +420,20 @@ export default React.memo(function SettingsScreen() {
                     Permanently delete all data
                   </Text>
                 </View>
-                <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={22}
+                  color="#9CA3AF"
+                />
               </TouchableOpacity>
 
               <View style={styles.rowItem}>
                 <View style={[styles.leftIcon, { backgroundColor: "#FEF3C7" }]}>
-                  <Feather name="info" size={20} color="#D97706" />
+                  <HugeiconsIcon
+                    icon={AlertSquareIcon}
+                    size={20}
+                    color="#D97706"
+                  />
                 </View>
                 <View style={styles.rowText}>
                   <Text style={styles.itemTitle}>App Info</Text>
@@ -392,22 +452,38 @@ export default React.memo(function SettingsScreen() {
                 }}
               >
                 <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
-                  <Feather name="download" size={20} color="#9333EA" />
+                  <HugeiconsIcon
+                    icon={Download02Icon}
+                    size={20}
+                    color="#9333EA"
+                  />
                 </View>
                 <View style={styles.rowText}>
                   <Text style={styles.itemTitle}>Bulk Import Journals</Text>
                   <Text style={styles.itemSubtitle}>Import sample data</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={22}
+                  color="#9CA3AF"
+                />
               </TouchableOpacity>
               <BottomSheetTrigger style={styles.rowItem}>
                 <View style={[styles.leftIcon, { backgroundColor: "#BFDBFE" }]}>
-                  <Feather name="log-out" size={20} color="#3B82F6" />
+                  <HugeiconsIcon
+                    icon={Logout02Icon}
+                    size={20}
+                    color="#3B82F6"
+                  />
                 </View>
                 <View style={styles.rowText}>
                   <Text style={styles.itemTitle}>Sign Out</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={22} color="#9CA3AF" />
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={22}
+                  color="#9CA3AF"
+                />
               </BottomSheetTrigger>
             </View>
           </Animated.ScrollView>
@@ -426,12 +502,12 @@ export default React.memo(function SettingsScreen() {
 
         {/* Bulk Import Modal */}
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={showImportModal}
           onRequestClose={() => !importing && setShowImportModal(false)}
         >
-          <BlurView intensity={80} tint="dark" style={styles.modalOverlay}>
+          <BlurView intensity={20} tint="dark" style={styles.modalOverlay}>
             <View style={styles.importModalContent}>
               <Text style={styles.modalTitle}>Bulk Import Journals</Text>
               <Text style={styles.modalSubtitle}>

@@ -2,9 +2,7 @@ import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/network/auth/supabase";
 import { InsightsType } from "@/src/network/genAi";
 import { useCallback, useState } from "react";
-import { useUpdateStreak } from "@/hooks/data/useUpdateStreak";
 import { useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { selectedDateDiscoveryAtom } from "@/src/screens/DiscoveryScreen/helpers";
 import { useAtomValue } from "jotai";
 import { Insert } from "@/types/types";
@@ -22,7 +20,6 @@ export interface JournalEntryRow extends InsightsType {
 export const useSaveJournal = () => {
   const { user } = useAuth();
   const [saving, setSaving] = useState<boolean>(false);
-  const updateStreakMutation = useUpdateStreak();
   const queryClient = useQueryClient();
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
   const saveJournal = useCallback(
@@ -85,15 +82,8 @@ export const useSaveJournal = () => {
           .single();
         if (moodError) throw moodError;
 
-        const streakResult = await updateStreakMutation.mutateAsync({
-          userId: user.id,
-          forceReset: false,
-        });
-
-        // Invalidate all related queries
         const formattedDate: string = formateDate_y_m_d(selectedDate);
 
-        // Invalidate journals data for the specific date
         await queryClient.invalidateQueries({
           queryKey: ["journals_data", user?.id, formattedDate],
         });
@@ -110,7 +100,7 @@ export const useSaveJournal = () => {
         setSaving(false);
       }
     },
-    [user?.id, updateStreakMutation, queryClient, selectedDate]
+    [user?.id, queryClient, selectedDate]
   );
 
   return { saveJournal, saving };

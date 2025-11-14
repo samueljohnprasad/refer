@@ -1,101 +1,97 @@
-import React from "react";
-import { Modal, Pressable, View } from "react-native";
+import React, { useCallback, useEffect, useRef } from "react";
+import { View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Button, ButtonText } from "@/components/ui/button";
-import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
+import ShortBottomModal from "../ShortBottomModal";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useJournalOperations } from "@/hooks/journals/useJournalOperations";
+import { DeleteJournal } from "@/src/screens/DailyNotesScreen/atoms";
 
 interface ConfirmationModalProps {
-  visible: boolean;
   title: string;
   message: string;
   confirmText?: string;
   cancelText?: string;
   confirmVariant?: "destructive" | "primary";
-  onConfirm: () => void;
-  onCancel: () => void;
-  loading?: boolean;
-  icon?: keyof typeof Feather.glyphMap;
-  iconColor?: string;
+  onDelete?: () => void;
+  deleteEntry: DeleteJournal;
+  onDismiss?: () => void;
 }
 
 export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
-  visible,
   title,
   message,
   confirmText = "Confirm",
   cancelText = "Cancel",
   confirmVariant = "primary",
-  onConfirm,
-  onCancel,
-  loading = false,
-  icon = "alert-circle",
-  iconColor = "#EF4444",
+  onDelete,
+  deleteEntry,
+  onDismiss,
 }) => {
+  const sheetRef = useRef<BottomSheetModal>(null);
+  const { deleteJournal, deleting } = useJournalOperations();
+
+  useEffect(() => {
+    if (deleteEntry.flag) {
+      return sheetRef.current?.present();
+    }
+    return sheetRef.current?.close();
+  }, [deleteEntry.flag]);
+
+  const handleDeleteConfirm = useCallback(async (): Promise<void> => {
+    if (!deleteEntry) return;
+
+    try {
+      if (!deleteEntry.entry?.id) return;
+      await deleteJournal({
+        journalId: deleteEntry.entry.id,
+        selectedDate: deleteEntry.selectedDate,
+      });
+
+      onDelete?.();
+    } catch (error) {}
+  }, [deleteJournal, deleteEntry.selectedDate, onDelete]);
+
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onCancel}
-      statusBarTranslucent
-    >
-      <BlurView intensity={20} className="flex-1">
-        <Pressable
-          className="flex-1 justify-center items-center bg-black/50 px-6"
-          onPress={onCancel}
-        >
-          <Pressable
-            className="bg-white rounded-3xl p-6 w-full max-w-sm"
-            onPress={(e) => e.stopPropagation()}
+    <ShortBottomModal onDismiss={onDismiss} ref={sheetRef}>
+      <View className="flex-1 p-6 w-full justify-between">
+        <View>
+          <Text className="text-3xl font-bold text-gray-900 text-center mb-2">
+            {title}
+          </Text>
+
+          <Text className="text-base text-gray-600 text-center mb-6 leading-6">
+            {message}
+          </Text>
+        </View>
+
+        {/* Actions */}
+        <View className="flex-row gap-3">
+          <Button
+            onPress={() => {
+              sheetRef.current?.close();
+            }}
+            disabled={deleting}
+            className="flex-1 bg-gray-100 rounded-xl"
           >
-            {/* Icon */}
-            <View className="items-center mb-4">
-              <View
-                className="w-16 h-16 rounded-full items-center justify-center"
-                style={{ backgroundColor: `${iconColor}15` }}
-              >
-                <Feather name={icon} size={32} color={iconColor} />
-              </View>
-            </View>
+            <ButtonText className="text-gray-700 font-semibold">
+              {cancelText}
+            </ButtonText>
+          </Button>
 
-            {/* Title */}
-            <Text className="text-xl font-bold text-gray-900 text-center mb-2">
-              {title}
-            </Text>
-
-            {/* Message */}
-            <Text className="text-base text-gray-600 text-center mb-6 leading-6">
-              {message}
-            </Text>
-
-            {/* Actions */}
-            <View className="flex-row gap-3">
-              <Button
-                onPress={onCancel}
-                disabled={loading}
-                className="flex-1 bg-gray-100 rounded-xl"
-              >
-                <ButtonText className="text-gray-700 font-semibold">
-                  {cancelText}
-                </ButtonText>
-              </Button>
-
-              <Button
-                onPress={onConfirm}
-                disabled={loading}
-                className={`flex-1 rounded-xl ${
-                  confirmVariant === "destructive" ? "bg-red-600" : "bg-blue-600"
-                }`}
-              >
-                <ButtonText className="text-white font-semibold">
-                  {loading ? "Processing..." : confirmText}
-                </ButtonText>
-              </Button>
-            </View>
-          </Pressable>
-        </Pressable>
-      </BlurView>
-    </Modal>
+          <Button
+            onPress={handleDeleteConfirm}
+            disabled={deleting}
+            className={`flex-1 rounded-xl ${
+              confirmVariant === "destructive" ? "bg-red-600" : "bg-blue-600"
+            }`}
+          >
+            <ButtonText className="text-white font-semibold">
+              {deleting ? "Processing..." : confirmText}
+            </ButtonText>
+          </Button>
+        </View>
+      </View>
+    </ShortBottomModal>
   );
 };

@@ -38,7 +38,7 @@ export const AIInsightsChip: React.FC<AIInsightsChipProps> = ({
             Weekly AI Insights
           </Text>
           <Text className="text-sm text-gray-600 leading-5">
-            Get a weekly in depth ai analysis of your themes, patterns, and more
+            Discover your emotional patterns, growth insights, and personalized weekly reflections
           </Text>
         </View>
       </View>

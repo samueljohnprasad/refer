@@ -6,36 +6,22 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
-  Pressable,
 } from "react-native";
-import {
-  Feather,
-  MaterialIcons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
-import Svg, { Circle, Rect, Ellipse } from "react-native-svg";
-import { Calendar, DateData } from "react-native-calendars";
+import { MaterialIcons } from "@expo/vector-icons";
+import Svg, { Circle, Ellipse } from "react-native-svg";
 import { BlurView } from "expo-blur";
 import LottieView from "lottie-react-native";
 import { girlMeditationBlue } from "@/assets/lottie";
 import { endOfWeek, format, startOfWeek, sub } from "date-fns";
 import { Box } from "@/components/ui/box";
-// import { EntryDetailModal } from "@/components/mentalHealth/EntryModal/EntryDetailModal";
-// import type { MoodEntry } from "@/types/mentalHealth";
-// import { useCalendarEntries } from "@/hooks/useCalendarEntries";
-// import WeeklyMoodChart from "@/components/mentalHealth/WeeklyMoodChart";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
-import BlurModal from "@/src/components/BlurModal";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
 import { getNextMilestone } from "@/hooks/data/useStreakCalculation";
-import { StreakRecoveryModal } from "@/src/components/StreakRecoveryModal";
-import { useCanRecoverStreak } from "@/hooks/data/useStreakRecovery";
-// import { girlMeditationBlue } from "@/assets/lottie";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
-import { supabase } from "@/src/network/auth/supabase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Settings02Icon, StarsIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react-native";
 const { width, height } = Dimensions.get("window");
 
 // Global color palette
@@ -52,56 +38,21 @@ export const PALETTE = {
   grey: "#C4C4C4",
 };
 
-// Colors mapped to emojis for calendar cells
-const emojiColors = {
-  "😊": "#FFD24A", // yellow
-  "😎": "#60A6FF", // blue
-  "🙂": "#7B61FF", // purple
-  "😁": "#FF6A3D", // orange/red
-  "🤔": "#3B82F6", // darker blue
-  "😴": "#FFDFE8", // pink
-};
-
 export default function JournalCalendarScreen() {
-  // Animated value for streak progress bar
   const progressAnim = useRef(new Animated.Value(0)).current;
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [showRecoveryModal, setShowRecoveryModal] = useState<boolean>(false);
-  const [selectedEmotionDate, setSelectedEmotionDate] = useState<Date>(
-    new Date()
-  );
+  const [selectedEmotionDate] = useState<Date>(new Date());
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
-  const { canRecover } = useCanRecoverStreak();
 
   const currentStreak = userProfile?.currentStreak ?? 0;
   const nextMilestone = getNextMilestone(currentStreak);
 
   useEffect(() => {
-    const fetchToken = async () => {
-      async function logStorage() {
-        const keys = await AsyncStorage.getAllKeys();
-        const stores = await AsyncStorage.multiGet(keys);
-        const allData = Object.fromEntries(stores);
-        console.log("📦 AsyncStorage contents:", allData);
-      }
-
-      logStorage();
-    };
-    // fetchToken();
-    // Animate progress bar fill based on actual streak progress
     Animated.timing(progressAnim, {
-      toValue: currentStreak / nextMilestone, // Convert percentage to 0-1
+      toValue: currentStreak / nextMilestone,
       duration: 1200,
       useNativeDriver: false,
     }).start();
   }, [currentStreak]);
-
-  // Show recovery modal if streak can be recovered
-  useEffect(() => {
-    if (canRecover && !showRecoveryModal) {
-      setShowRecoveryModal(true);
-    }
-  }, [canRecover]);
 
   const yesterday = sub(new Date(), { days: 0 });
   const startOfWeekDate = startOfWeek(yesterday, { weekStartsOn: 0 });
@@ -109,7 +60,6 @@ export default function JournalCalendarScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* Background illustrations behind everything */}
       <View
         className="absolute top-10 left-1/2 -translate-x-1/2 -z-10"
         style={{ width: width, height: height }}
@@ -182,8 +132,8 @@ export default function JournalCalendarScreen() {
                 className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
                 activeOpacity={0.8}
               >
-                <MaterialCommunityIcons
-                  name="star-four-points-outline"
+                <HugeiconsIcon
+                  icon={StarsIcon}
                   size={20}
                   color={PALETTE.white}
                 />
@@ -194,7 +144,11 @@ export default function JournalCalendarScreen() {
                 activeOpacity={0.8}
                 onPress={() => router.push("/tabs/screens/settings")}
               >
-                <Feather name="settings" size={20} color={PALETTE.white} />
+                <HugeiconsIcon
+                  icon={Settings02Icon}
+                  color={PALETTE.white}
+                  size={20}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -221,7 +175,7 @@ export default function JournalCalendarScreen() {
                       color="#FF6A3D"
                     />
                     <Animated.Text className="text-[28px] font-extrabold ml-2">
-                      {isLoadingProfile ? "..." : currentStreak}
+                      2
                     </Animated.Text>
                   </View>
                 </View>
@@ -269,128 +223,8 @@ export default function JournalCalendarScreen() {
               title="This Week's Mood"
             />
           </View>
-
-          {/* Calendar section */}
-          {/* <View className="mt-5 bg-white rounded-2xl py-3 border border-indigo-50">
-            <Calendar
-              enableSwipeMonths
-              onVisibleMonthsChange={(months: DateData[]) => {
-                console.log("months", months);
-              }}
-              firstDay={0}
-              showSixWeeks={true}
-              hideExtraDays={false}
-              current={format(monthDate, "yyyy-MM-dd")}
-              onMonthChange={(m) => {
-                console.log("onMonthChange", m);
-                const next = new Date(
-                  `${m.year}-${String(m.month).padStart(2, "0")}-01`
-                );
-                setMonthDate(next);
-              }}
-              theme={{
-                calendarBackground: "#fff",
-                textSectionTitleColor: "#94A3B8",
-                monthTextColor: "#111827",
-                textMonthFontWeight: "700",
-                textMonthFontSize: 20,
-                todayTextColor: PALETTE.purple,
-                selectedDayBackgroundColor: PALETTE.purple,
-                selectedDayTextColor: "#fff",
-                arrowColor: "#6B7280",
-              }}
-              // Custom day cell rendering
-              dayComponent={({ date, state }) => {
-                if (!date) return null;
-
-                // const emoji = markedDays[date.dateString as string];
-                const emoji = "🚀";
-                const isSelected = selectedDate === date.dateString;
-                const isDisabled = state === "disabled";
-                const isTodayDate = state === "today";
-
-                // Scale animation for press interaction
-                const scaleAnim = useRef(new Animated.Value(1)).current;
-                const handlePress = (): void => {
-                  Animated.sequence([
-                    Animated.timing(scaleAnim, {
-                      toValue: 1.2,
-                      duration: 120,
-                      useNativeDriver: true,
-                    }),
-                    Animated.timing(scaleAnim, {
-                      toValue: 1,
-                      duration: 120,
-                      useNativeDriver: true,
-                    }),
-                  ]).start();
-                  const ds = date.dateString as string;
-                  setSelectedDate(ds);
-                  //   setSelectedEntries(getEntriesForDate(ds));
-                  setModalVisible(true);
-                };
-
-                return (
-                  <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
-                    <Animated.View
-                      className="items-center justify-center"
-                      style={{
-                        transform: [{ scale: scaleAnim }],
-                      }}
-                    >
-                      <View
-                        className="w-7 h-7 rounded-full items-center justify-center"
-                        style={{
-                          backgroundColor: isSelected
-                            ? PALETTE.purple
-                            : isTodayDate
-                            ? "rgba(123,97,255,0.15)"
-                            : "transparent",
-                          borderWidth: isSelected ? 0 : 1,
-                          borderColor: isTodayDate ? PALETTE.purple : "#E5E7EB",
-                        }}
-                      >
-                        {emoji ? (
-                          <Text className="text-lg">{emoji}</Text>
-                        ) : (
-                          <Text
-                            className="text-base font-bold"
-                            style={{
-                              color: isSelected ? "#fff" : "#94A3B8",
-                            }}
-                          >
-                            +
-                          </Text>
-                        )}
-                      </View>
-                      <Text
-                        className="text-xs"
-                        style={{
-                          color: isDisabled ? "#C7BFE7" : "#111827",
-                        }}
-                      >
-                        {date.day}
-                      </Text>
-                    </Animated.View>
-                  </TouchableOpacity>
-                );
-              }}
-            />
-          </View> */}
         </BlurView>
-        <BlurModal visible={modalVisible} />
-        {/* <EntryDetailModal
-          entry={selectedEntry}
-          isVisible={detailVisible}
-          onClose={() => setDetailVisible(false)}
-        /> */}
       </ScrollView>
-
-      {/* Streak Recovery Modal */}
-      <StreakRecoveryModal
-        visible={showRecoveryModal}
-        onClose={() => setShowRecoveryModal(false)}
-      />
     </SafeAreaView>
   );
 }

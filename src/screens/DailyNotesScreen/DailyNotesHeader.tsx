@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback, useState } from "react";
 import { View, Pressable, Dimensions, Platform } from "react-native";
 import { Text } from "@/components/Themed";
-import { Feather } from "@expo/vector-icons";
 import {
   format,
   startOfWeek,
@@ -28,10 +27,16 @@ import MoodBadge from "@/src/components/MoodBadge";
 import { DayButton } from "./DailyNotesScreen";
 import { CalendarPicker } from "./CalendarPicker";
 import { useWeekNavigation } from "./hooks/useWeekNavigation";
-import useFetchMoods from "@/hooks/data/useFetchMoods";
+import { useFetchMoodsMonthly } from "@/hooks/data/useFetchMoods";
 import useCalendarExpandReanimated from "./hooks/useCalendarExpandReanimated";
 import TodayPill from "@/src/components/TodayPill";
 import { router } from "expo-router";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  Bookmark03Icon,
+  Calendar01Icon,
+  Calendar02Icon,
+} from "@hugeicons/core-free-icons";
 
 const { height } = Dimensions.get("window");
 const isIos = Platform.OS === "ios";
@@ -58,7 +63,7 @@ const DailyNotesHeader = React.memo(
     });
     const insets = useSafeAreaInsets();
 
-    const { data: moodMap } = useFetchMoods();
+    const { data: moodMap } = useFetchMoodsMonthly();
 
     // Vertical expand/collapse for inline calendar (Reanimated on UI thread)
     const { progress, isExpanded, expand, collapse, toggle, gesture } =
@@ -252,7 +257,7 @@ const DailyNotesHeader = React.memo(
               onPress={() => toggle()}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
-              <Feather name="calendar" size={20} color="white" />
+              <HugeiconsIcon icon={Calendar01Icon} size={20} color="white" />
             </Pressable>
 
             <View className="flex-row items-center justify-center flex-1">
@@ -267,7 +272,7 @@ const DailyNotesHeader = React.memo(
                 onPress={onBookmarksPress}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Feather name="bookmark" size={20} color="white" />
+                <HugeiconsIcon icon={Bookmark03Icon} size={20} color="white" />
               </Pressable>
             </View>
           </Animated.View>

@@ -1,13 +1,6 @@
-import React, {
-  useMemo,
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-} from "react";
+import React, { useMemo, useState, useCallback, useRef } from "react";
 import {
   View,
-  ActivityIndicator,
   LayoutChangeEvent,
   Image,
   FlatList,
@@ -33,7 +26,10 @@ import {
   moodScoreToPale,
   clampToMoodScore,
 } from "@/constants/moodColors";
-import { MoodsMap, useFetchMoodsRange } from "@/hooks/data/useFetchMoodsRange";
+import useFetchMoods, { MoodsMap } from "@/hooks/data/useFetchMoods";
+import dayjs from "dayjs";
+import { ISO_DATE_FORMAT } from "../utils/date";
+import Loading from "./Loading";
 
 export interface WeeklyMoodChartProps {
   startDate: Date; // inclusive
@@ -122,10 +118,16 @@ interface ChartPageProps {
 
 const ChartPage: React.FC<ChartPageProps> = React.memo(
   ({ startDate, endDate, width, height, padding }) => {
-    const { data, isLoading } = useFetchMoodsRange({ startDate, endDate });
+    // const { data, isLoading } = useFetchMoodsRange({ startDate, endDate });
+    const { data, isLoading } = useFetchMoods({
+      visibleStartDate: dayjs(startDate)
+        .startOf("month")
+        .format(ISO_DATE_FORMAT),
+      visibleEndDate: dayjs(startDate).endOf("month").format(ISO_DATE_FORMAT),
+    });
 
     const points: ChartPoint[] = useMemo(
-      () => buildChartData(startDate, endDate, (data as MoodsMap) ?? new Map()),
+      () => buildChartData(startDate, endDate, data ?? new Map()),
       [startDate, endDate, data]
     );
 
@@ -348,7 +350,7 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
               justifyContent: "center",
             }}
           >
-            <ActivityIndicator />
+            <Loading />
           </View>
         )}
       </View>
@@ -374,9 +376,9 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     [endDate, weekIndex, spanDays]
   );
 
-  const { data, isLoading, isError } = useFetchMoodsRange({
-    startDate: effectiveStartDate,
-    endDate: effectiveEndDate,
+  const { data, isLoading, isError } = useFetchMoods({
+    visibleStartDate: dayjs(startDate).startOf("month").format(ISO_DATE_FORMAT),
+    visibleEndDate: dayjs(startDate).endOf("month").format(ISO_DATE_FORMAT),
   });
 
   const points: ChartPoint[] = useMemo(
@@ -388,7 +390,6 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       ),
     [effectiveStartDate, effectiveEndDate, data]
   );
-  const totalDays: number = points.length;
 
   // Derived values and layout
   const numericPoints5: NumericPoint[] = points
@@ -490,7 +491,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       <View className="w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
         <Text className="text-base font-semibold mb-2">{title}</Text>
         <View className="py-10 items-center justify-center">
-          <ActivityIndicator />
+          <Loading />
         </View>
       </View>
     );
@@ -548,7 +549,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
               justifyContent: "center",
             }}
           >
-            <ActivityIndicator />
+            <Loading />
           </View>
         ) : (
           <Animated.FlatList

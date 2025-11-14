@@ -266,9 +266,9 @@ const DailyNotesScreen = () => {
           const rawTx = g.translationX;
           const resistanceThreshold = 60; // Start resistance after this distance
           const maxTranslate = 100;
-          
+
           let tx = rawTx;
-          
+
           // Apply rubber band resistance after threshold
           if (Math.abs(rawTx) > resistanceThreshold) {
             const excess = Math.abs(rawTx) - resistanceThreshold;
@@ -276,16 +276,16 @@ const DailyNotesScreen = () => {
             const resistance = resistanceThreshold + excess * 0.3;
             tx = rawTx > 0 ? resistance : -resistance;
           }
-          
+
           // Hard limit
           if (tx < -maxTranslate) tx = -maxTranslate;
           else if (tx > maxTranslate) tx = maxTranslate;
-          
+
           contentTranslateX.value = tx;
 
           // Show arrow indicators based on swipe direction
           const progress = Math.abs(tx) / maxTranslate;
-          
+
           if (tx > 20) {
             // Swiping right - show left arrow (go to previous)
             leftArrowOpacity.value = interpolate(
@@ -355,7 +355,7 @@ const DailyNotesScreen = () => {
             damping: 25,
             stiffness: 180,
           });
-          
+
           // Hide arrows
           leftArrowOpacity.value = withTiming(0, { duration: 200 });
           rightArrowOpacity.value = withTiming(0, { duration: 200 });
@@ -378,7 +378,14 @@ const DailyNotesScreen = () => {
   return (
     <SafeAreaView edges={[]} className="flex-1 bg-gray-50">
       <Stack.Screen
-        options={{ header: () => <DailyNotesHeader onBookmarksPress={() => setShowBookmarksModal(true)} />, headerShown: true }}
+        options={{
+          header: () => (
+            <DailyNotesHeader
+              onBookmarksPress={() => setShowBookmarksModal((prev) => !prev)}
+            />
+          ),
+          headerShown: true,
+        }}
       />
       <View className="flex-1">
         {/* AI Insights Chip - Below header */}
@@ -425,10 +432,7 @@ const DailyNotesScreen = () => {
           {/* Navigation Arrows - Chrome-style */}
           <Animated.View
             className="absolute left-4"
-            style={[
-              leftArrowAnimatedStyle,
-              { top: "50%", marginTop: -24 },
-            ]}
+            style={[leftArrowAnimatedStyle, { top: "50%", marginTop: -24 }]}
             pointerEvents="none"
           >
             <View className="bg-violet-500 rounded-full p-3 shadow-lg">
@@ -438,10 +442,7 @@ const DailyNotesScreen = () => {
 
           <Animated.View
             className="absolute right-4"
-            style={[
-              rightArrowAnimatedStyle,
-              { top: "50%", marginTop: -24 },
-            ]}
+            style={[rightArrowAnimatedStyle, { top: "50%", marginTop: -24 }]}
             pointerEvents="none"
           >
             <View className="bg-violet-500 rounded-full p-3 shadow-lg">

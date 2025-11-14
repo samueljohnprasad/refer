@@ -6,23 +6,33 @@ import { Feather } from "@expo/vector-icons";
 import { EntryCardsView } from "./EntryCardsView";
 import { JournalEntry } from "@/hooks/data/types";
 import { useBookmarkedJournals } from "@/hooks/journals/useBookmarkedJournals";
-import { BottomSheetModal, BottomSheetScrollView, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  BottomSheetBackdrop,
+} from "@gorhom/bottom-sheet";
 import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 
 interface BookmarkedJournalsBottomSheetProps {
   isOpen: boolean;
   onClose: () => void;
   onEntryPress: (entry: JournalEntry) => void;
-  onDelete?: (entry: JournalEntry) => void;
   onBookmark?: (entry: JournalEntry, isBookmarked: boolean) => void;
 }
 
 export const BookmarkedJournalsBottomSheet: React.FC<
   BookmarkedJournalsBottomSheetProps
-> = ({ isOpen, onClose, onEntryPress, onDelete, onBookmark }) => {
+> = ({ isOpen, onClose, onEntryPress, onBookmark }) => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const { data: bookmarkedJournals, isLoading, refetch, hasNextPage, fetchNextPage, isFetchingNextPage, totalCount } =
-    useBookmarkedJournals();
+  const {
+    data: bookmarkedJournals,
+    isLoading,
+    refetch,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    totalCount,
+  } = useBookmarkedJournals();
   const observerTarget = useRef<View>(null);
 
   // Snap points for bottom sheet - 90% of screen height
@@ -126,15 +136,15 @@ export const BookmarkedJournalsBottomSheet: React.FC<
           </View>
         ) : bookmarkedJournals && bookmarkedJournals.length > 0 ? (
           <View className="pt-4">
-                <EntryCardsView
-                  entries={bookmarkedJournals}
-                  isLoading={false}
-                  onEntryPress={onEntryPress}
-                  onDelete={onDelete}
-                  onBookmark={onBookmark}
-                  showActions={true}
-                  showDateHeaders={true}
-                />
+            <EntryCardsView
+              onRefresh={refetch}
+              entries={bookmarkedJournals}
+              isLoading={false}
+              onEntryPress={onEntryPress}
+              onBookmark={onBookmark}
+              showActions={true}
+              showDateHeaders={true}
+            />
 
             {/* Load More Button */}
             {hasNextPage && (
@@ -174,8 +184,8 @@ export const BookmarkedJournalsBottomSheet: React.FC<
               No Bookmarked Journals
             </Text>
             <Text className="text-sm text-gray-500 text-center px-8">
-              Tap the bookmark icon on any journal entry to save it here
-              for quick access
+              Tap the bookmark icon on any journal entry to save it here for
+              quick access
             </Text>
           </View>
         )}

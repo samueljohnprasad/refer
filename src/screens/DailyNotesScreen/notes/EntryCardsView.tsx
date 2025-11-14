@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Pressable, Animated, View, ActivityIndicator } from "react-native";
 import { Text } from "@/components/ui/text";
-import { format, intervalToDuration, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Feather } from "@expo/vector-icons";
-import { Tables } from "@/types/types";
 import {
   getEntryTypeIcon,
   getEntryTypeColor,
@@ -12,12 +11,17 @@ import { JournalEntry } from "@/hooks/data/types";
 import { Image } from "@/components/ui/image";
 import { Emotion, emotions } from "@/assets/emojis";
 import { FeelingsType } from "@/src/network/genAi";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Bookmark02Icon, Delete02Icon } from "@hugeicons/core-free-icons";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { DeleteJournal, selectedDateAtom } from "../atoms";
+import { getDuration } from "@/src/utils/date";
+import { ConfirmationModal } from "@/src/components/modals/ConfirmationModal";
 
 interface EntryCardsViewProps {
   entries: JournalEntry[];
   isLoading: boolean;
   onEntryPress: (entry: JournalEntry) => void;
-  onDelete?: (entry: JournalEntry) => void;
   onBookmark?: (entry: JournalEntry, isBookmarked: boolean) => void;
   onRefresh?: () => void;
   showActions?: boolean;
@@ -29,13 +33,38 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   entries,
   isLoading,
   onEntryPress,
-  onDelete,
   onBookmark,
   onRefresh,
   showActions = true,
   bookmarkingId = null,
   showDateHeaders = false,
 }) => {
+  const [selectedDate] = useAtom(selectedDateAtom);
+  const [deleteEntry, setDeleteEntry] = useState<DeleteJournal>({
+    flag: false,
+    entry: null,
+  });
+
+  const onDismiss = () => {
+    setDeleteEntry((prev) => ({
+      flag: false,
+      entry: null,
+      selectedDate: undefined,
+    }));
+  };
+  const onDelete = () => {
+    onDismiss();
+    onRefresh?.();
+  };
+
+  const deleteHandler = (entry: JournalEntry) => {
+    setDeleteEntry({
+      flag: true,
+      entry,
+      selectedDate,
+    });
+  };
+
   if (isLoading) {
     return (
       <View>
@@ -91,17 +120,17 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
             {showDateHeaders && (
               <Text className="text-sm font-semibold text-gray-600 mb-2">
                 {entry.selected_date
-                  ? `${format(parseISO(entry.selected_date), "MMM d, yyyy")} · ${format(
+                  ? `${format(
                       parseISO(entry.selected_date),
-                      "EEE"
-                    )}`
+                      "MMM d, yyyy"
+                    )} · ${format(parseISO(entry.selected_date), "EEE")}`
                   : "No Date"}
               </Text>
             )}
             <EntryCard
+              onDelete={deleteHandler}
               entry={entry}
               onPress={() => onEntryPress(entry)}
-              onDelete={onDelete ? () => onDelete(entry) : undefined}
               onBookmark={
                 onBookmark
                   ? (isBookmarked) => onBookmark(entry, isBookmarked)
@@ -114,6 +143,16 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
           </View>
         ))}
       </View>
+      <ConfirmationModal
+        deleteEntry={deleteEntry}
+        onDismiss={onDismiss}
+        title="Delete Journal?"
+        message="This journal entry will be permanently deleted. This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmVariant="destructive"
+        onDelete={onDelete}
+      />
     </View>
   );
 };
@@ -121,7 +160,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 interface EntryCardProps {
   entry: JournalEntry;
   onPress: () => void;
-  onDelete?: () => void;
+  onDelete?: (entry: JournalEntry) => void;
   onBookmark?: (isBookmarked: boolean) => void;
   showActions?: boolean;
   index: number;
@@ -149,19 +188,6 @@ const EntryCard: React.FC<EntryCardProps> = ({
     }).start();
   }, [index]);
 
-  const getDuration = () => {
-    if (!entry.duration_seconds) return "";
-    const d = intervalToDuration({
-      start: 0,
-      end: entry.duration_seconds * 1000,
-    });
-    const parts = [];
-    if (d.hours) parts.push(`${d.hours}h`);
-    if (d.minutes) parts.push(`${d.minutes}m`);
-    if (d.seconds) parts.push(`${d.seconds}s`);
-    return parts.join(" ") || "0s";
-  };
-
   const feelings: FeelingsType[] = entry.journal_ai_insights
     ?.feelings as FeelingsType[];
 
@@ -173,9 +199,9 @@ const EntryCard: React.FC<EntryCardProps> = ({
     onBookmark?.(isBookmarked);
   };
 
-  const handleDeletePress = (e: { stopPropagation: () => void }): void => {
+  const handleDeletePress = (e: { stopPropagation: () => void }) => {
     e.stopPropagation();
-    onDelete?.();
+    onDelete?.(entry);
   };
 
   return (
@@ -260,7 +286,7 @@ const EntryCard: React.FC<EntryCardProps> = ({
               </Text>
             )}
           </View>
-          <View className="flex-row items-center gap-2">
+          <View className="flex-row items-center gap-2 ">
             {showActions && (
               <>
                 <Pressable
@@ -274,11 +300,11 @@ const EntryCard: React.FC<EntryCardProps> = ({
                   {isBookmarking ? (
                     <ActivityIndicator size="small" color="#3B82F6" />
                   ) : (
-                    <Feather
-                      name={isBookmarked ? "bookmark" : "bookmark"}
+                    <HugeiconsIcon
+                      icon={Bookmark02Icon}
                       size={18}
-                      color={isBookmarked ? "#3B82F6" : "grey"}
-                      fill={isBookmarked ? "#3B82F6" : "grey"}
+                      fill={isBookmarked ? "#93c5fd" : "#d1d5db"}
+                      color={isBookmarked ? "#93c5fd" : "#d1d5db"}
                     />
                   )}
                 </Pressable>
@@ -288,7 +314,7 @@ const EntryCard: React.FC<EntryCardProps> = ({
                   className="w-9 h-9 items-center justify-center active:opacity-70"
                   accessibilityLabel="Delete journal"
                 >
-                  <Feather name="trash-2" size={18} color="grey" />
+                  <HugeiconsIcon icon={Delete02Icon} size={18} color="grey" />
                 </Pressable>
               </>
             )}

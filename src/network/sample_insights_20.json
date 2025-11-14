@@ -21,9 +21,9 @@
         "colorsGradient": ["#A0E7E5", "#B4F8C8"]
       }
     ],
-    "title": "Exhausted Yet Growing",
-    "enrichedTranscript": "Today was exhausting 😓. So many meetings... I felt drained. But I reminded myself — I’m learning and growing 🌱.",
-    "aiInsights": "You’re developing emotional endurance. Recognizing hope in fatigue shows personal growth and perspective."
+    "title": "Long Day at the Office",
+    "enrichedTranscript": "Back-to-back meetings from 9 to 6 today 😓. My brain feels like mush, but I managed to finish the quarterly report. Sometimes I wonder if I'm pushing myself too hard, but I know this project matters. Need to remember to take breaks tomorrow.",
+    "aiInsights": "You're developing resilience under pressure while maintaining awareness of your limits. This balance between ambition and self-care shows emotional maturity."
   },
   {
     "moodScore": 5,
@@ -47,9 +47,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Morning Serenity",
-    "enrichedTranscript": "Walked by the river 🌊. The sunrise was breathtaking 🌅. I felt calm and centered.",
-    "aiInsights": "Your connection to nature helps you regulate stress and find emotional clarity."
+    "title": "Perfect Morning Walk",
+    "enrichedTranscript": "Woke up early and walked through the park before work 🌅. The morning air was crisp, and I saw a family of ducks by the pond. These quiet moments before the day gets crazy are becoming so important to me. I feel more grounded when I start like this.",
+    "aiInsights": "Your morning routine creates a foundation of calm that helps you navigate daily challenges. This self-care practice is strengthening your emotional resilience."
   },
   {
     "moodScore": 4,
@@ -73,9 +73,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 3",
-    "enrichedTranscript": "Entry 3: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 3 shows growing mindfulness and emotional maturity."
+    "title": "Coffee Shop Thoughts",
+    "enrichedTranscript": "Spent the afternoon at my favorite coffee shop, just watching people and thinking 💭. There's something about the gentle buzz of conversations that helps me process my own thoughts. Been reflecting on where I want to be in five years. Feeling hopeful but also a bit uncertain.",
+    "aiInsights": "You're using quiet observation as a tool for self-reflection. This contemplative approach helps you process complex emotions and future aspirations."
   },
   {
     "moodScore": 5,
@@ -99,9 +99,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 4",
-    "enrichedTranscript": "Entry 4: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 4 shows growing mindfulness and emotional maturity."
+    "title": "Celebrating Small Wins",
+    "enrichedTranscript": "Finally finished that presentation I've been working on for weeks! 🎉 The client loved it and we got the green light for the next phase. Sometimes I forget to acknowledge these moments. Treating myself to dinner at that new Italian place tonight.",
+    "aiInsights": "You're learning to celebrate achievements and practice self-recognition. This positive reinforcement strengthens your confidence and motivation."
   },
   {
     "moodScore": 1,
@@ -111,7 +111,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 5: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "A really tough day that tested my resilience, but I'm learning to sit with difficult emotions.",
     "mainEmoji": "terrible",
     "feelings": [
       {
@@ -125,9 +125,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 5",
-    "enrichedTranscript": "Entry 5: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 5 shows growing mindfulness and emotional maturity."
+    "title": "When Everything Goes Wrong",
+    "enrichedTranscript": "What a disaster of a day 😞. Missed my train, spilled coffee on my shirt, and then got some really harsh feedback on my project. Feeling pretty defeated right now. Called my sister and she reminded me that bad days don't last forever. Trying to hold onto that.",
+    "aiInsights": "You're developing healthy coping strategies by reaching out for support during difficult times. This shows emotional intelligence and self-awareness."
   },
   {
     "moodScore": 2,
@@ -137,7 +137,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 6: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "Struggling with some relationship tension, but working through it with patience and understanding.",
     "mainEmoji": "bad",
     "feelings": [
       {
@@ -151,9 +151,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 6",
-    "enrichedTranscript": "Entry 6: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 6 shows growing mindfulness and emotional maturity."
+    "title": "Difficult Conversation",
+    "enrichedTranscript": "Had that talk with Mom about boundaries that I've been putting off for months 😔. It didn't go as smoothly as I hoped, but I'm glad I finally said what needed to be said. These family dynamics are so complicated. Feeling drained but also relieved.",
+    "aiInsights": "You're courageously addressing difficult relationships and setting healthy boundaries. This emotional labor is challenging but essential for your wellbeing."
   },
   {
     "moodScore": 3,
@@ -163,7 +163,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 7: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "A quiet, steady day focused on routine and small pleasures. Sometimes ordinary is exactly what I need.",
     "mainEmoji": "fine",
     "feelings": [
       {
@@ -177,9 +177,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 7",
-    "enrichedTranscript": "Entry 7: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 7 shows growing mindfulness and emotional maturity."
+    "title": "Sunday Reset",
+    "enrichedTranscript": "Spent the day doing laundry, meal prep, and organizing my space 🧹. Nothing exciting, but there's something satisfying about getting ready for the week ahead. Made my favorite soup and watched an old movie. Simple Sunday vibes.",
+    "aiInsights": "You're finding contentment in routine self-care activities. This appreciation for simple pleasures indicates emotional stability and mindfulness."
   },
   {
     "moodScore": 4,
@@ -189,7 +189,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 8: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "Connected with an old friend and remembered how important these relationships are to my happiness.",
     "mainEmoji": "good",
     "feelings": [
       {
@@ -203,9 +203,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 8",
-    "enrichedTranscript": "Entry 8: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 8 shows growing mindfulness and emotional maturity."
+    "title": "Unexpected Reunion",
+    "enrichedTranscript": "Ran into Sarah at the grocery store today! 😊 We ended up talking for an hour in the parking lot, catching up on everything. It's been way too long since we've hung out. We made plans for coffee this weekend. These spontaneous moments remind me how much I value real connections.",
+    "aiInsights": "You're recognizing the importance of maintaining meaningful friendships. These social connections are vital for your emotional wellbeing and sense of belonging."
   },
   {
     "moodScore": 5,
@@ -215,7 +215,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 9: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "An absolutely wonderful day filled with laughter, good food, and the kind of joy that makes everything feel possible.",
     "mainEmoji": "great",
     "feelings": [
       {
@@ -229,9 +229,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 9",
-    "enrichedTranscript": "Entry 9: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 9 shows growing mindfulness and emotional maturity."
+    "title": "Best Saturday Ever",
+    "enrichedTranscript": "What a perfect day! 🌟 Started with brunch with the girls, then we went to that farmers market downtown. The weather was gorgeous, the food was amazing, and we laughed until our stomachs hurt. Bought fresh flowers and spent the evening cooking dinner with my partner. Days like this remind me how good life can be.",
+    "aiInsights": "You're fully present and appreciating life's joyful moments. This ability to savor positive experiences enhances your overall life satisfaction and emotional resilience."
   },
   {
     "moodScore": 1,
@@ -241,7 +241,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 10: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "Dealing with anxiety and overwhelm, but trying to be gentle with myself through the difficult feelings.",
     "mainEmoji": "terrible",
     "feelings": [
       {
@@ -255,9 +255,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 10",
-    "enrichedTranscript": "Entry 10: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 10 shows growing mindfulness and emotional maturity."
+    "title": "Anxiety Spiral",
+    "enrichedTranscript": "Woke up with that familiar knot in my stomach 😰. Everything feels overwhelming today - work deadlines, bills, that doctor's appointment I keep putting off. Tried my breathing exercises but my mind keeps racing. Sometimes I feel like I'm drowning in my own thoughts. Need to remember this will pass.",
+    "aiInsights": "You're experiencing anxiety but maintaining self-awareness about your mental state. Recognizing these patterns is the first step toward managing them effectively."
   },
   {
     "moodScore": 2,
@@ -267,7 +267,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 11: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "Processing disappointment and learning to adjust expectations while staying hopeful about future opportunities.",
     "mainEmoji": "bad",
     "feelings": [
       {
@@ -281,9 +281,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 11",
-    "enrichedTranscript": "Entry 11: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 11 shows growing mindfulness and emotional maturity."
+    "title": "Rejection Stings",
+    "enrichedTranscript": "Got the email today - didn't get the promotion 😞. I really thought this was my time. Spent the afternoon feeling sorry for myself and eating too much ice cream. My partner reminded me that this just means something better is coming. Trying to believe that, but it's hard right now.",
+    "aiInsights": "You're processing disappointment in a healthy way by allowing yourself to feel the emotions while also seeking perspective. This balanced approach helps you recover from setbacks."
   },
   {
     "moodScore": 3,
@@ -293,7 +293,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 12: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "A balanced day of productivity and rest, finding my rhythm between work and personal time.",
     "mainEmoji": "fine",
     "feelings": [
       {
@@ -307,9 +307,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 12",
-    "enrichedTranscript": "Entry 12: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 12 shows growing mindfulness and emotional maturity."
+    "title": "Finding Balance",
+    "enrichedTranscript": "Had a productive morning at work, then came home and actually managed to disconnect 📵. Cooked a nice dinner, read a few chapters of my book, and went to bed at a reasonable time. Nothing spectacular, but these balanced days are what I'm working toward. Small progress feels good.",
+    "aiInsights": "You're successfully creating work-life balance and recognizing the value of routine self-care. This consistency builds a foundation for long-term wellbeing."
   },
   {
     "moodScore": 4,
@@ -319,7 +319,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 13: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "Feeling proud of personal growth and the courage to try new things that push me outside my comfort zone.",
     "mainEmoji": "good",
     "feelings": [
       {
@@ -333,9 +333,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 13",
-    "enrichedTranscript": "Entry 13: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 13 shows growing mindfulness and emotional maturity."
+    "title": "Stepping Outside My Comfort Zone",
+    "enrichedTranscript": "Signed up for that pottery class I've been thinking about for months! 🎨 My hands were shaking when I walked in, but everyone was so welcoming. Made a wonky little bowl that I'm oddly proud of. It felt good to be a beginner at something again and just play.",
+    "aiInsights": "You're embracing vulnerability and new experiences as pathways to growth. This willingness to be a beginner demonstrates courage and openness to learning."
   },
   {
     "moodScore": 5,
@@ -345,7 +345,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 14: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "A breakthrough moment of clarity and gratitude that reminded me how far I've come in my personal journey.",
     "mainEmoji": "great",
     "feelings": [
       {
@@ -359,9 +359,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 14",
-    "enrichedTranscript": "Entry 14: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 14 shows growing mindfulness and emotional maturity."
+    "title": "Gratitude Overflow",
+    "enrichedTranscript": "Had one of those moments today where everything just clicked ✨. Sitting in the park after work, watching the sunset, and suddenly felt so grateful for this life I'm building. The struggles, the growth, the people who love me - it all feels worth it. These moments of clarity are precious.",
+    "aiInsights": "You're experiencing deep gratitude and perspective that comes from personal growth. This ability to find meaning in your journey shows emotional maturity and resilience."
   },
   {
     "moodScore": 1,
@@ -371,7 +371,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 15: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "Struggling with loneliness and questioning my choices, but trying to be patient with this difficult phase.",
     "mainEmoji": "terrible",
     "feelings": [
       {
@@ -385,9 +385,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 15",
-    "enrichedTranscript": "Entry 15: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 15 shows growing mindfulness and emotional maturity."
+    "title": "Lonely Evening",
+    "enrichedTranscript": "Spent the evening alone again and the silence felt so heavy 😔. Everyone seems to be busy with their own lives, and I'm here wondering if I'm doing something wrong. Ordered takeout and watched Netflix, but couldn't shake this feeling of being disconnected from everyone.",
+    "aiInsights": "You're acknowledging feelings of loneliness while maintaining self-awareness. This honest self-reflection is important for understanding your social and emotional needs."
   },
   {
     "moodScore": 2,
@@ -411,9 +411,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 16",
-    "enrichedTranscript": "Entry 16: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 16 shows growing mindfulness and emotional maturity."
+    "title": "Rainy Day Blues",
+    "enrichedTranscript": "It's been raining for three days straight and my mood matches the weather 🌧️. Everything feels gray and sluggish. Couldn't motivate myself to do much today - just stayed in pajamas and felt sorry for myself. Sometimes you just need to honor the low days.",
+    "aiInsights": "You're recognizing the connection between external factors and your mood while practicing self-compassion during difficult times."
   },
   {
     "moodScore": 3,
@@ -437,9 +437,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 17",
-    "enrichedTranscript": "Entry 17: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 17 shows growing mindfulness and emotional maturity."
+    "title": "Midweek Check-in",
+    "enrichedTranscript": "Wednesday already? This week is flying by 💫. Had lunch with a coworker and realized how much I enjoy these little social moments during the workday. Nothing earth-shattering, just a normal day with small bright spots. Sometimes that's enough.",
+    "aiInsights": "You're finding appreciation in everyday social connections and recognizing that contentment often comes from simple, ordinary moments."
   },
   {
     "moodScore": 4,
@@ -463,9 +463,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 18",
-    "enrichedTranscript": "Entry 18: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 18 shows growing mindfulness and emotional maturity."
+    "title": "Weekend Plans",
+    "enrichedTranscript": "Finally made plans with friends for this weekend! 🎉 We're going hiking and then having a barbecue. I've been so focused on work lately that I forgot how much I need these social connections. Already feeling excited and more like myself again.",
+    "aiInsights": "You're recognizing the importance of social connections and proactively nurturing relationships. This balance between work and social life supports your overall wellbeing."
   },
   {
     "moodScore": 5,
@@ -489,9 +489,9 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 19",
-    "enrichedTranscript": "Entry 19: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 19 shows growing mindfulness and emotional maturity."
+    "title": "Adventure Day",
+    "enrichedTranscript": "What an incredible day! 🏔️ The hike was challenging but so worth it - the view from the top was breathtaking. Spent hours laughing with friends, sharing stories, and just being present. My cheeks hurt from smiling so much. This is what happiness feels like.",
+    "aiInsights": "You're fully embracing joyful experiences and the power of nature and friendship to elevate your mood. These peak moments create lasting positive memories."
   },
   {
     "moodScore": 1,
@@ -501,7 +501,7 @@
       "You’re aware of your emotions",
       "You’re making steady progress"
     ],
-    "summary": "Day 20: You reflected deeply on your emotions and are learning from experience.",
+    "summary": "Confronting some deep fears and insecurities, but committed to working through them with courage and self-compassion.",
     "mainEmoji": "terrible",
     "feelings": [
       {
@@ -515,8 +515,8 @@
         "colorsGradient": ["#FFF1A6", "#FFD6A5"]
       }
     ],
-    "title": "Reflection Day 20",
-    "enrichedTranscript": "Entry 20: Thinking about life and personal growth 🌱. A lot to learn, a lot to feel.",
-    "aiInsights": "Entry 20 shows growing mindfulness and emotional maturity."
+    "title": "Facing My Fears",
+    "enrichedTranscript": "Had a panic attack at work today 😨. Right in the middle of a presentation, my heart started racing and I couldn't breathe. Had to excuse myself and spent 20 minutes in the bathroom trying to calm down. I think it's time to seriously consider therapy. I can't keep ignoring this.",
+    "aiInsights": "You're courageously acknowledging mental health challenges and considering professional support. This self-awareness and willingness to seek help demonstrates strength and wisdom."
   }
 ]

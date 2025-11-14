@@ -1,3 +1,4 @@
+import { JournalEntry } from "@/hooks/data/types";
 import { atom } from "jotai";
 
 export const selectedDateAtom = atom(new Date());
@@ -9,3 +10,13 @@ export const calenderVisibleDatesAtom = atom<{
   visibleStartDate: undefined,
   visibleEndDate: undefined,
 });
+
+export type DeleteJournal = {
+  flag?: boolean;
+  entry?: JournalEntry | null;
+  selectedDate?: Date;
+};
+// export const deleteJournalEntry = atom<DeleteJournal>({
+//   flag: false,
+//   entry: null,
+// });

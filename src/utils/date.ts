@@ -1,15 +1,17 @@
-import { format } from "date-fns/format";
+import { intervalToDuration } from "date-fns";
+import dayjs from "dayjs";
 import { createAudioPlayer } from "expo-audio";
 
+export const ISO_DATE_FORMAT = "YYYY-MM-DD";
+
 export const formateDate_y_m_d = (date: Date | string) => {
-  return format(date, "yyyy-MM-dd");
+  return dayjs(date).format(ISO_DATE_FORMAT);
 };
 
 export const formattedDateTime = (inputDate?: string | null | Date): string => {
   if (!inputDate) return "-";
-  return format(inputDate || new Date(), "MMM d, yyyy • h:mm a");
+  return dayjs(inputDate || new Date()).format("MMM D, YYYY • h:mm A");
 };
-
 
 export async function getAudioDuration(source: string) {
   const player = createAudioPlayer(source);
@@ -21,8 +23,21 @@ export async function getAudioDuration(source: string) {
       }
     }, 100);
   });
-  
+
   const duration = player.duration;
   player.remove();
   return duration;
 }
+
+export const getDuration = (durationSeconds?: number | null) => {
+  if (!durationSeconds) return "";
+  const d = intervalToDuration({
+    start: 0,
+    end: durationSeconds * 1000,
+  });
+  const parts = [];
+  if (d.hours) parts.push(`${d.hours}h`);
+  if (d.minutes) parts.push(`${d.minutes}m`);
+  if (d.seconds) parts.push(`${d.seconds}s`);
+  return parts.join(" ") || "0s";
+};

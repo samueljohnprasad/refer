@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Animated,
-  Easing,
   StyleSheet,
   View,
   type StyleProp,
@@ -11,8 +10,7 @@ import { bad, fine, good, great, terrible } from "@/assets/emojis";
 import { moodScoreToPale, clampToMoodScore } from "@/constants/moodColors";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/Themed";
-import { PressableOpacity, PressableScale } from "pressto";
-import { router } from "expo-router";
+import { PressableOpacity } from "pressto";
 
 export type MoodBadgeProps = {
   moodscore?: number;

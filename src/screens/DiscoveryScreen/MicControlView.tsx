@@ -15,7 +15,12 @@ import { HStack } from "@/components/ui/hstack";
 import ShortBottomModal from "@/src/components/ShortBottomModal";
 import { Center } from "@/components/ui/center";
 import { Button, ButtonText } from "@/components/ui/button";
-import { Check } from "lucide-react-native";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  AiMicIcon,
+  Cancel01Icon,
+  Tick01Icon,
+} from "@hugeicons/core-free-icons";
 
 // Props interface for the presenter component
 export interface MicControlViewProps {
@@ -133,30 +138,42 @@ const MicControlView: React.FC<MicControlViewProps> = ({
         />
       )}
       {!isRecording && (
-        <View style={CONTAINER_STYLE} className="absolute bottom-[50px] items-center pt-8 px-5">
+        <View
+          style={CONTAINER_STYLE}
+          className="absolute bottom-[50px] items-center pt-8 px-5"
+        >
           <Box className="backdrop-blur-md w-full">
             <HStack className="justify-center items-center gap-10">
               {isPaused && (
                 <Animated.View style={pausedOpacityStyle}>
                   <BottomSheetTrigger>
-                    <Feather name="mic" />
+                    <HugeiconsIcon icon={Cancel01Icon} size={32} />
                   </BottomSheetTrigger>
                 </Animated.View>
               )}
 
               {/* Main mic button with modern design */}
-              <Animated.View style={heartbeatTransform} className="flex items-center justify-center mb-4">
+              <Animated.View
+                style={heartbeatTransform}
+                className="flex items-center justify-center mb-4"
+              >
                 {/* Outer glow ring for recording state */}
                 {isRecording && (
-                  <Animated.View style={glowStyle} className="absolute w-[120px] h-[120px] rounded-full" />
+                  <Animated.View
+                    style={glowStyle}
+                    className="absolute w-[120px] h-[120px] rounded-full"
+                  />
                 )}
                 <TouchableOpacity
                   className="w-20 h-20 rounded-full justify-center items-center"
                   onPress={onToggleRecord}
                   activeOpacity={0.9}
                 >
-                  <View style={micButtonStyle} className="w-20 h-20 rounded-full justify-center items-center">
-                    <Feather name="mic" />
+                  <View
+                    style={micButtonStyle}
+                    className="w-20 h-20 rounded-full justify-center items-center"
+                  >
+                    <HugeiconsIcon icon={AiMicIcon} size={32} />
                   </View>
                 </TouchableOpacity>
               </Animated.View>
@@ -165,7 +182,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
                 <Animated.View style={pausedOpacityStyle}>
                   <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
                     <View>
-                      <Check />
+                      <HugeiconsIcon icon={Tick01Icon} size={32} />
                     </View>
                   </TouchableOpacity>
                 </Animated.View>

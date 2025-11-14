@@ -37,6 +37,13 @@ import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { useLocalSearchParams } from "expo-router";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  AiMicIcon,
+  KeyboardIcon,
+  Menu02Icon,
+  ReloadIcon,
+} from "@hugeicons/core-free-icons";
 
 // Constants outside component to prevent recreation
 const COLORS = {
@@ -144,7 +151,7 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
           </Pressable>
           <Pressable onPress={handleShuffle} className="p-1">
             <Animated.View style={rotateStyle}>
-              <Feather name="refresh-cw" size={20} color={COLORS.ink} />
+              <HugeiconsIcon icon={ReloadIcon} size={20} color={COLORS.ink} />
             </Animated.View>
           </Pressable>
         </View>
@@ -265,7 +272,13 @@ function DiscoveryScreen() {
                 key="menu"
                 size={72}
                 bg={COLORS.lavender}
-                icon={<Feather name="menu" size={26} color={COLORS.ink} />}
+                icon={
+                  <HugeiconsIcon
+                    icon={Menu02Icon}
+                    size={26}
+                    color={COLORS.ink}
+                  />
+                }
               />
 
               <CircleAction
@@ -274,7 +287,7 @@ function DiscoveryScreen() {
                 size={108}
                 bg={COLORS.accent}
                 elevation
-                icon={<Feather name="mic" size={34} color={COLORS.ink} />}
+                icon={<HugeiconsIcon icon={AiMicIcon} size={56} />}
               />
 
               <CircleAction
@@ -283,8 +296,8 @@ function DiscoveryScreen() {
                 size={72}
                 bg={COLORS.lavender}
                 icon={
-                  <MaterialCommunityIcons
-                    name="keyboard-outline"
+                  <HugeiconsIcon
+                    icon={KeyboardIcon}
                     size={26}
                     color={COLORS.ink}
                   />
