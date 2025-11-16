@@ -79,7 +79,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
   const handleSubmit = useCallback(() => {
     if (journalText.trim().length > 0) {
-      onSubmit(journalText);
+      onSubmit(journalText.substring(0, 7000));
     }
   }, [journalText, onSubmit]);
 
@@ -127,6 +127,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
             {/* Text Input */}
             <TextInput
+              maxLength={7000}
               value={journalText}
               onChangeText={setJournalText}
               placeholder="Start by answering prompt or write anything you have in mind"
@@ -145,11 +146,12 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           {/* Bottom Actions */}
           <View className="px-6 pb-6 pt-4 bg-white border-t border-gray-100">
             {/* XP Counter */}
-            {/* <View className="mb-4 items-center">
+            <View className="mb-4 items-center">
               <Text className="text-[#6B7280] text-sm font-medium">
-                {xpValue} <Text className="text-[#9CA3AF] text-sm">/50 XP</Text>
+                {journalText.length}{" "}
+                <Text className="text-[#9CA3AF] text-sm">/7000</Text>
               </Text>
-            </View> */}
+            </View>
 
             {/* Action Buttons */}
             <View className="flex-row items-center justify-between gap-3">

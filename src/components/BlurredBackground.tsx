@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 10,
     borderBottomLeftRadius: 10,
     overflow: "hidden",
-    // backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    marginHorizontal: 12,
   },
 });
 
@@ -32,7 +33,7 @@ export function BlurredBackground() {
   );
   return Platform.OS === "ios" ? (
     <View style={styles.container}>
-      <BlurView intensity={5} style={styles.blurView} />
+      <BlurView intensity={50} style={styles.blurView} />
     </View>
   ) : (
     <View style={containerStyle} />

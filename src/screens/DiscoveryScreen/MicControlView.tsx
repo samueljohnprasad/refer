@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   View,
   TouchableOpacity,
@@ -8,19 +8,22 @@ import {
 } from "react-native";
 import { recorderOpenAtom } from "./helpers";
 import { useAtom } from "jotai";
-import { BottomSheet, BottomSheetTrigger } from "@/components/ui/bottomsheet";
 import { Box } from "@/components/ui/box";
-import { Feather } from "@expo/vector-icons";
 import { HStack } from "@/components/ui/hstack";
-import ShortBottomModal from "@/src/components/ShortBottomModal";
-import { Center } from "@/components/ui/center";
 import { Button, ButtonText } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   AiMicIcon,
   Cancel01Icon,
   Tick01Icon,
 } from "@hugeicons/core-free-icons";
+import {
+  BottomSheet,
+  BottomSheetTrigger,
+  useBottomSheet,
+} from "@/components/ui/bottomsheet";
+import ShortBottomModalWithProvider from "@/src/components/ShortBottomModalWithProvider";
 
 // Props interface for the presenter component
 export interface MicControlViewProps {
@@ -29,18 +32,9 @@ export interface MicControlViewProps {
   isPaused: boolean;
   durationSeconds: number;
 
-  // Action props
   onToggleRecord: () => void;
   onStop: () => void;
-
-  // Animation props
-  heartbeatScale: Animated.Value;
-  breathingOpacity: Animated.Value;
-  glowScale: Animated.Value;
-  waveFlow: Animated.Value;
-
-  // Computed props
-  formattedDuration: string;
+  isStopped: boolean;
 }
 
 /**
@@ -52,11 +46,11 @@ const PANEL_HEIGHT = 200;
 
 // Constants to prevent recreation
 const CONTAINER_STOP_STYLE = {
-  width: width / 2,
-  height: PANEL_HEIGHT,
-  top: height / 1.7,
-  transform: [{ translateX: width / 4 }],
-} as const;
+  width: width * 0.68,
+  height: height * 0.3,
+  top: height / 1.6,
+  transform: [{ translateX: width / 6 }],
+};
 
 const CONTAINER_STYLE = {
   width: width,
@@ -66,70 +60,25 @@ const CONTAINER_STYLE = {
   shadowOpacity: 0.1,
   shadowRadius: 6,
   elevation: 3,
-} as const;
-
-const MIC_BUTTON_SHADOW = {
-  shadowColor: "#EF4444",
-  shadowOffset: { width: 0, height: 3 },
-  shadowOpacity: 0.15,
-  shadowRadius: 6,
-  elevation: 4,
-} as const;
+};
 
 const MicControlView: React.FC<MicControlViewProps> = ({
   isRecording,
   isPaused,
-  durationSeconds,
   onToggleRecord,
   onStop,
-  heartbeatScale,
-  breathingOpacity,
-  glowScale,
-  waveFlow,
-  formattedDuration,
+  durationSeconds,
+  isStopped,
 }) => {
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
+  const { handleClose } = useBottomSheet();
 
   const handleDiscard = useCallback(() => {
     setRecorderOpen(false);
   }, [setRecorderOpen]);
 
-  const micButtonStyle = useMemo(
-    () => ({
-      backgroundColor: isRecording ? "#EF4444" : "#EF4444",
-      ...MIC_BUTTON_SHADOW,
-    }),
-    [isRecording]
-  );
-
-  const glowStyle = useMemo(
-    () => ({
-      backgroundColor: "#EF444420",
-      transform: [{ scale: glowScale }],
-      opacity: breathingOpacity,
-    }),
-    [glowScale, breathingOpacity]
-  );
-
-  const heartbeatTransform = useMemo(
-    () => ({
-      transform: [{ scale: heartbeatScale }],
-    }),
-    [heartbeatScale]
-  );
-
-  const pausedOpacityStyle = useMemo(
-    () => ({
-      opacity: breathingOpacity.interpolate({
-        inputRange: [0.6, 1],
-        outputRange: [0.8, 1],
-      }),
-    }),
-    [breathingOpacity]
-  );
-
   return (
-    <BottomSheet>
+    <>
       {isRecording && (
         <Pressable
           onPress={onToggleRecord}
@@ -145,61 +94,76 @@ const MicControlView: React.FC<MicControlViewProps> = ({
           <Box className="backdrop-blur-md w-full">
             <HStack className="justify-center items-center gap-10">
               {isPaused && (
-                <Animated.View style={pausedOpacityStyle}>
-                  <BottomSheetTrigger>
-                    <HugeiconsIcon icon={Cancel01Icon} size={32} />
-                  </BottomSheetTrigger>
-                </Animated.View>
+                <BottomSheetTrigger>
+                  <HugeiconsIcon icon={Cancel01Icon} size={32} />
+                </BottomSheetTrigger>
               )}
-
-              {/* Main mic button with modern design */}
-              <Animated.View
-                style={heartbeatTransform}
-                className="flex items-center justify-center mb-4"
-              >
-                {/* Outer glow ring for recording state */}
+              <View className="flex p-5 items-center justify-center mb-4 bg-[#FFA726] rounded-full">
                 {isRecording && (
                   <Animated.View
-                    style={glowStyle}
+                    style={{ backgroundColor: "#EF444420" }}
                     className="absolute w-[120px] h-[120px] rounded-full"
                   />
                 )}
+
                 <TouchableOpacity
                   className="w-20 h-20 rounded-full justify-center items-center"
                   onPress={onToggleRecord}
                   activeOpacity={0.9}
                 >
-                  <View
-                    style={micButtonStyle}
-                    className="w-20 h-20 rounded-full justify-center items-center"
-                  >
-                    <HugeiconsIcon icon={AiMicIcon} size={32} />
+                  <View className="w-20 h-20 rounded-full justify-center items-center">
+                    <HugeiconsIcon icon={AiMicIcon} size={48} />
                   </View>
                 </TouchableOpacity>
-              </Animated.View>
+              </View>
 
               {isPaused && (
-                <Animated.View style={pausedOpacityStyle}>
-                  <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
-                    <View>
-                      <HugeiconsIcon icon={Tick01Icon} size={32} />
-                    </View>
-                  </TouchableOpacity>
-                </Animated.View>
+                <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
+                  <View>
+                    <HugeiconsIcon icon={Tick01Icon} size={32} />
+                  </View>
+                </TouchableOpacity>
               )}
             </HStack>
           </Box>
         </View>
       )}
+      <ShortBottomModalWithProvider>
+        <View className="flex-1 p-6 w-full justify-between">
+          <View>
+            <Text className="text-3xl font-bold text-gray-900 text-center mb-2">
+              Discard recording?
+            </Text>
+            <Text className="text-base text-gray-600 text-center mb-6 leading-6">
+              This will permanently delete your current audio and cannot be
+              undone.
+            </Text>
+          </View>
 
-      <ShortBottomModal>
-        <Center>
-          <Button onPress={handleDiscard}>
-            <ButtonText>Discard</ButtonText>
-          </Button>
-        </Center>
-      </ShortBottomModal>
-    </BottomSheet>
+          <View className="flex-row gap-3">
+            <Button
+              onPress={() => {
+                handleClose();
+              }}
+              className="flex-1 bg-gray-100 rounded-xl"
+            >
+              <ButtonText className="text-gray-700 font-semibold">
+                Keep Recording
+              </ButtonText>
+            </Button>
+
+            <Button
+              className="flex-1 rounded-xl bg-red-600"
+              onPress={handleDiscard}
+            >
+              <ButtonText className="text-white font-semibold">
+                Discard
+              </ButtonText>
+            </Button>
+          </View>
+        </View>
+      </ShortBottomModalWithProvider>
+    </>
   );
 };
 

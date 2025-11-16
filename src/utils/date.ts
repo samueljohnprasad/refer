@@ -1,6 +1,8 @@
 import { intervalToDuration } from "date-fns";
 import dayjs from "dayjs";
 import { createAudioPlayer } from "expo-audio";
+import duration from "dayjs/plugin/duration";
+dayjs.extend(duration);
 
 export const ISO_DATE_FORMAT = "YYYY-MM-DD";
 
@@ -40,4 +42,9 @@ export const getDuration = (durationSeconds?: number | null) => {
   if (d.minutes) parts.push(`${d.minutes}m`);
   if (d.seconds) parts.push(`${d.seconds}s`);
   return parts.join(" ") || "0s";
+};
+
+export const formatTime = (millis: number) => {
+  const d = dayjs.duration(millis);
+  return d.format("mm:ss");
 };

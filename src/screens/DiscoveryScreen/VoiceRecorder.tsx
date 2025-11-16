@@ -1,12 +1,9 @@
-import React, { useState, useRef } from "react";
-import { Box } from "@/components/ui/box";
-import MindfulGradient, { GradientPosition } from "./MindfulGradient";
+import React, { useState, useRef, useEffect } from "react";
+import MindfulGradient from "./MindfulGradient";
 import MicControlContainer from "./MicControlContainer";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useAudioRecording from "@/hooks/useAudioRecording";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { format } from "date-fns";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import Animated, {
   useAnimatedStyle,
@@ -15,7 +12,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtomValue } from "jotai";
-import { formattedDateTime } from "@/src/utils/date";
+import { formattedDateTime, formatTime } from "@/src/utils/date";
+import { ReloadIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react-native";
 
 interface VoiceRecorderProps {
   onStop: (uri: string) => void;
@@ -47,7 +46,9 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
     record,
     pauseRecording,
     stopRecording,
+    totalDuration,
   } = useAudioRecording();
+  const isStopped = recordingCurrentState === "stopped";
 
   const handleStopRecording = async () => {
     if (
@@ -79,6 +80,13 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
     }
   };
 
+  useEffect(() => {
+    if (isStopped) {
+      if (!recorderState?.url) return;
+      onStop(recorderState.url);
+    }
+  }, [isStopped]);
+
   const isRecording = recordingCurrentState === "recording";
   const isPaused = recordingCurrentState === "paused";
 
@@ -88,6 +96,9 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
 
       {/* Date Header - Centered */}
       <View className="px-6 mt-80 pb-4 items-center">
+        <Text className="text-[#1F2937] text-3xl font-bold">
+          {formatTime(totalDuration)}
+        </Text>
         <Text className="text-[#1F2937] text-base font-semibold">
           {formattedDateTime(selectedDate)}
         </Text>
@@ -105,16 +116,16 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
             activeOpacity={0.7}
           >
             <Animated.View style={rotateStyle}>
-              <Feather name="refresh-cw" size={16} color="#7B61FF" />
+              <HugeiconsIcon icon={ReloadIcon} size={16} color="#7B61FF" />
             </Animated.View>
           </TouchableOpacity>
         </View>
       </View>
 
-      <Box className="w-full" style={{ height: 40 }}></Box>
       <MicControlContainer
         isRecording={isRecording}
         isPaused={isPaused}
+        isStopped={isStopped}
         durationSeconds={recorderState.durationMillis / 1000}
         onToggleRecord={() => {
           if (isRecording) {

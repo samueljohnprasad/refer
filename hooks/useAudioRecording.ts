@@ -16,31 +16,51 @@ const useAudioRecording = () => {
   );
   const [recordingCurrentState, setRecordingCurrentState] =
     useState<recordStatus>("initial");
-
+  const [totalDuration, setTotalDuration] = useState(0);
+  const [timerInterval, setTimerInterval] = useState<number>();
   const audioRecorder = useAudioRecorder(
     RecordingPresets.HIGH_QUALITY,
     (status) => {
       setRecordedStatus(status);
+      if (status.isFinished) {
+        setRecordingCurrentState("stopped");
+      }
     }
   );
   const recorderState = useAudioRecorderState(audioRecorder);
 
   const record = async () => {
     await audioRecorder.prepareToRecordAsync();
-    audioRecorder.record();
+    audioRecorder.record({
+      forDuration: 10,
+    });
     setRecordingCurrentState("recording");
+    // Start timer
+    const interval = setInterval(() => {
+      setTotalDuration((prev) => prev + 1000); // +1 sec
+    }, 1000);
+
+    setTimerInterval(interval);
   };
 
   const stopRecording = async () => {
     await audioRecorder.stop();
     setRecordingCurrentState("stopped");
+    clearInterval(timerInterval);
     return recorderState;
   };
 
   const pauseRecording = async () => {
     audioRecorder.pause();
     setRecordingCurrentState("paused");
+    clearInterval(timerInterval);
   };
+
+  useEffect(() => {
+    return () => {
+      clearInterval(timerInterval);
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -62,6 +82,7 @@ const useAudioRecording = () => {
     record,
     stopRecording,
     pauseRecording,
+    totalDuration,
   };
 };
 

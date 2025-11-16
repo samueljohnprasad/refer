@@ -3,15 +3,10 @@ import React, { forwardRef, useEffect, useMemo, useRef } from "react";
 import { SharedValue } from "react-native-reanimated";
 import {
   BottomSheetModal,
-  BottomSheetScrollView,
   BottomSheetBackdrop,
   BottomSheetView,
   BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
-import { BlurredBackground } from "./BlurredBackground";
-import { Text, View } from "@/components/Themed";
-import { BlurView } from "expo-blur";
-import { useAtom } from "jotai";
 // import { BottomSheetBackdrop } from "@/components/ui/bottomsheet";
 
 interface ShortBottomModalProps {
