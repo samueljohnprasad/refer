@@ -16,7 +16,7 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
-import { Link, Stack, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { BlurView } from "expo-blur";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -29,7 +29,6 @@ import TermsAndConditionsModal from "@/src/components/modals/TermsAndConditionsM
 import EraseDataConfirmationModal from "@/src/components/modals/EraseDataConfirmationModal";
 import SignOutConfirmationModal from "@/src/components/modals/SignOutConfirmationModal";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
-import { BottomSheet } from "@/components/ui/bottomsheet";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   AlertSquareIcon,
@@ -63,9 +62,7 @@ export default React.memo(function SettingsScreen() {
   const { bulkImport, importing, progress } = useBulkImportJournals();
   const [showImportModal, setShowImportModal] = useState(false);
   const [importDaysCount, setImportDaysCount] = useState("20");
-  const [importStartDate, setImportStartDate] = useState<Date>(
-    subDays(new Date(), 10)
-  );
+  const [importStartDate] = useState<Date>(subDays(new Date(), 10));
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsAndConditions, setShowTermsAndConditions] = useState(false);
   const [showEraseDataModal, setShowEraseDataModal] = useState(false);

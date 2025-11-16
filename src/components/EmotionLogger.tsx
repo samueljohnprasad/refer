@@ -11,6 +11,7 @@ import { Image } from "@/components/ui/image";
 import { terrible, bad, fine, good, great } from "@/assets/emojis";
 import { format } from "date-fns";
 import { useEmotionLogger } from "@/hooks/data/useEmotionLogger";
+import { useDailyStreak } from "@/hooks/data/useDailyStreak";
 
 // Emotion configuration
 const EMOTIONS = [
@@ -130,12 +131,14 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = ({
     logEmotion: logEmotionToSupabase,
     isLoggingEmotion,
   } = useEmotionLogger(selectedDate);
+  const { logStreakIfNeeded } = useDailyStreak();
 
   const handleLogEmotion = async (emotionScore: number): Promise<void> => {
     if (isLoggingEmotion) return;
 
     try {
       await logEmotionToSupabase(emotionScore);
+      await logStreakIfNeeded();
       onEmotionLogged?.(emotionScore);
     } catch (error) {}
   };
