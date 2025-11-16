@@ -3,17 +3,14 @@ import { Pressable, Animated, View, ActivityIndicator } from "react-native";
 import { Text } from "@/components/ui/text";
 import { format, parseISO } from "date-fns";
 import { Feather } from "@expo/vector-icons";
-import {
-  getEntryTypeIcon,
-  getEntryTypeColor,
-} from "../../../lib/entryTypeUtils";
+import { getEntryTypeIcon } from "../../../lib/entryTypeUtils";
 import { JournalEntry } from "@/hooks/data/types";
 import { Image } from "@/components/ui/image";
 import { Emotion, emotions } from "@/assets/emojis";
 import { FeelingsType } from "@/src/network/genAi";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Bookmark02Icon, Delete02Icon } from "@hugeicons/core-free-icons";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { DeleteJournal, selectedDateAtom } from "../atoms";
 import { getDuration } from "@/src/utils/date";
 import { ConfirmationModal } from "@/src/components/modals/ConfirmationModal";
@@ -226,10 +223,9 @@ const EntryCard: React.FC<EntryCardProps> = ({
                 </Text>
               )}
               <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
-              <Feather
-                name={getEntryTypeIcon(entry.input_type)}
+              <HugeiconsIcon
                 size={12}
-                color={getEntryTypeColor(entry.input_type)}
+                icon={getEntryTypeIcon(entry.input_type)}
               />
               {!!entry.duration_seconds && (
                 <Text className="text-sm text-gray-500 ml-1">

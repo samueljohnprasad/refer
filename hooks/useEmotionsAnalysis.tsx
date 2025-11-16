@@ -84,7 +84,7 @@ const useEmotionsAnalysis = ({
         stressLevel: insights.stressLevel,
         triggers: insights.triggers,
         worries: insights.worries,
-        journal_entry_id: 0,
+        journal_entry_id: -1,
       },
       moods: {
         main_mood: insights.mainEmoji,

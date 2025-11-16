@@ -35,7 +35,7 @@ export const useSaveJournal = () => {
           user_id: user.id,
           duration_seconds: 0,
           transcripts: input.transcripts,
-          input_type: "voice",
+          input_type: input.input_type,
           title: input.title,
           selected_date: selectedDate.toISOString(),
         };

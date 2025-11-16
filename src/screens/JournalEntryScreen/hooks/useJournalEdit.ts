@@ -3,19 +3,18 @@ import { FeelingsType } from "@/src/network/genAi";
 import { BackupState } from "../types";
 
 interface UseJournalEditProps {
-  initialEmoji: string;
   initialTags: FeelingsType[];
   initialText: string;
 }
 
 interface UseJournalEditReturn {
   isEditing: boolean;
-  selectedEmoji: string;
   tags: FeelingsType[];
   journalText: string;
   backupState: BackupState;
-  setSelectedEmoji: (emoji: string) => void;
-  setTags: (tags: FeelingsType[] | ((prev: FeelingsType[]) => FeelingsType[])) => void;
+  setTags: (
+    tags: FeelingsType[] | ((prev: FeelingsType[]) => FeelingsType[])
+  ) => void;
   setJournalText: (text: string) => void;
   handleEdit: () => void;
   handleDone: () => void;
@@ -72,11 +71,9 @@ export const useJournalEdit = ({
 
   return {
     isEditing,
-    selectedEmoji,
     tags,
     journalText,
     backupState,
-    setSelectedEmoji,
     setTags,
     setJournalText,
     handleEdit,

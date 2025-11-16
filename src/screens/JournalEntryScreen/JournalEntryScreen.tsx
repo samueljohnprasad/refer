@@ -6,7 +6,7 @@ import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { useSaveJournal } from "@/hooks/post/useSaveJournal";
 import { JournalEntryScreenProps } from "./types";
 import { JournalEntry } from "@/hooks/data/types";
-import { useJournalEdit, useKeyboardHandler, useTags } from "./hooks";
+import { useJournalEdit } from "./hooks";
 import {
   MinimalHeader,
   MoodSelector,
@@ -39,27 +39,19 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
 
   const {
     isEditing,
-    selectedEmoji,
     tags,
     journalText,
-    setSelectedEmoji,
     setTags,
     setJournalText,
     handleEdit,
     handleDone,
     handleClose: handleCloseEdit,
   } = useJournalEdit({
-    initialEmoji: "great",
     initialTags: (insights?.journal_ai_insights?.feelings ||
       []) as FeelingsType[],
-    initialText: insights?.transcripts || "no transcript available",
+    initialText: insights?.transcripts || "",
   });
 
-  const { keyboardHeight } = useKeyboardHandler();
-
-  const { removeTag, addTag } = useTags({ setTags });
-
-  // Helper functions for feelings
   const addFeelingString = (feeling: string): void => {
     const newFeeling = {
       name: feeling,
@@ -71,7 +63,9 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   };
 
   const removeFeelingByIndex = (index: number): void => {
-    removeTag(index);
+    setTags((prevTags: FeelingsType[]) =>
+      prevTags.filter((_: FeelingsType, i: number) => i !== index)
+    );
   };
 
   const handleClose = useCallback((): void => {
@@ -99,6 +93,17 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
             }
           : null,
       };
+
+      if (!journalText) {
+        toast.show({
+          placement: "top",
+          render: ({ id }) => (
+            <Toast nativeID={id} variant="solid" action="success">
+              <ToastTitle>Enter the Journal </ToastTitle>
+            </Toast>
+          ),
+        });
+      }
 
       await saveJournal(updatedInsights);
 
@@ -176,7 +181,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
           />
 
           <TranscriptSection
-            text={journalText}
+            text={journalText || "no transcript available"}
             isEditing={isEditing}
             onTextChange={setJournalText}
           />

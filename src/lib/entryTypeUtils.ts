@@ -1,21 +1,12 @@
+import { Edit02Icon, Mic01Icon } from "@hugeicons/core-free-icons";
+
 export const getEntryTypeIcon = (inputType?: string | null) => {
   switch (inputType) {
-    case "text":
-      return "edit-3";
+    case "typing":
+      return Mic01Icon;
     case "voice":
-      return "mic";
+      return Edit02Icon;
     default:
-      return "mic";
-  }
-};
-
-export const getEntryTypeColor = (inputType?: string | null) => {
-  switch (inputType) {
-    case "text":
-      return "#6B7280";
-    case "voice":
-      return "#3B82F6";
-    default:
-      return "#3B82F6";
+      return Edit02Icon;
   }
 };

@@ -7,12 +7,11 @@ import {
   Dimensions,
   Animated,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
 import Svg, { Circle, Ellipse } from "react-native-svg";
 import { BlurView } from "expo-blur";
 import LottieView from "lottie-react-native";
 import { girlMeditationBlue } from "@/assets/lottie";
-import { endOfWeek, format, startOfWeek, sub } from "date-fns";
+import { endOfWeek, startOfWeek, sub } from "date-fns";
 import { Box } from "@/components/ui/box";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
@@ -20,7 +19,11 @@ import { getNextMilestone } from "@/hooks/data/useStreakCalculation";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
-import { Settings02Icon, StarsIcon } from "@hugeicons/core-free-icons";
+import {
+  Fire02Icon,
+  Settings02Icon,
+  StarsIcon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 const { width, height } = Dimensions.get("window");
 
@@ -169,11 +172,13 @@ export default function JournalCalendarScreen() {
                     Current Streak
                   </Text>
                   <View className="flex-row items-center">
-                    <MaterialIcons
-                      name="local-fire-department"
+                    <HugeiconsIcon
                       size={28}
+                      icon={Fire02Icon}
+                      fill={"#FF6A3D"}
                       color="#FF6A3D"
                     />
+
                     <Animated.Text className="text-[28px] font-extrabold ml-2">
                       {currentStreak}
                     </Animated.Text>

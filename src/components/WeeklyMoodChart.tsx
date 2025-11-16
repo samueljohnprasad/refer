@@ -55,11 +55,6 @@ const HEX = {
   grid: "#EAF0F6",
 };
 
-// Helpers for 5-point scale rendering
-function toFiveScale(v10: number): number {
-  return v10; // clamp to 1..5 for display
-}
-
 function moodLevelForScore(score: number): MoodLevel {
   const s = clampToMoodScore(score);
   switch (s) {
@@ -71,6 +66,8 @@ function moodLevelForScore(score: number): MoodLevel {
       return "Fine";
     case 2:
       return "Bad";
+    case 1:
+      return "Terrible";
     default:
       return "Terrible";
   }
@@ -114,21 +111,15 @@ interface ChartPageProps {
   width: number;
   height: number;
   padding: { top: number; bottom: number; left: number; right: number };
+  emotionsData: MoodsMap | undefined;
+  isLoading: boolean;
 }
 
 const ChartPage: React.FC<ChartPageProps> = React.memo(
-  ({ startDate, endDate, width, height, padding }) => {
-    // const { data, isLoading } = useFetchMoodsRange({ startDate, endDate });
-    const { data, isLoading } = useFetchMoods({
-      visibleStartDate: dayjs(startDate)
-        .startOf("month")
-        .format(ISO_DATE_FORMAT),
-      visibleEndDate: dayjs(startDate).endOf("month").format(ISO_DATE_FORMAT),
-    });
-
+  ({ startDate, endDate, width, height, padding, emotionsData, isLoading }) => {
     const points: ChartPoint[] = useMemo(
-      () => buildChartData(startDate, endDate, data ?? new Map()),
-      [startDate, endDate, data]
+      () => buildChartData(startDate, endDate, emotionsData ?? new Map()),
+      [startDate, endDate, emotionsData]
     );
 
     const totalDays: number = points.length;
@@ -136,9 +127,7 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
       () =>
         points
           .map((p, idx) =>
-            p.y !== null
-              ? { x: idx + 1, y: toFiveScale(p.y), label: p.x }
-              : null
+            p.y !== null ? { x: idx + 1, y: p.y, label: p.x } : null
           )
           .filter((p): p is NumericPoint => p !== null),
       [points]
@@ -390,19 +379,18 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       ),
     [effectiveStartDate, effectiveEndDate, data]
   );
-
   // Derived values and layout
   const numericPoints5: NumericPoint[] = points
-    .map((p, idx) =>
-      p.y !== null ? { x: idx + 1, y: toFiveScale(p.y), label: p.x } : null
-    )
-    .filter((p): p is NumericPoint => p !== null);
+    .map((p, idx) => (p.y !== null ? { x: idx + 1, y: p.y, label: p.x } : null))
+    .filter((p) => p !== null);
   const avg5: number =
     numericPoints5.length > 0
       ? numericPoints5.reduce((s, p) => s + p.y, 0) / numericPoints5.length
       : 0;
   const avgRounded = clampToMoodScore(avg5);
+
   const avgLabel: MoodLevel = moodLevelForScore(avgRounded);
+
   const headerTitle: string = title;
   const headerSubtitle: string = `${format(
     effectiveStartDate,
@@ -455,11 +443,13 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   const renderItem = useCallback(
     ({ item }: { item: WeekOffset }) => (
       <ChartPage
+        emotionsData={data}
         startDate={addDays(startDate, item * spanDays)}
         endDate={addDays(endDate, item * spanDays)}
         width={pageWidth}
         height={chartHeight}
         padding={padding}
+        isLoading={isLoading}
       />
     ),
     [startDate, endDate, spanDays, pageWidth, chartHeight, padding]
@@ -534,7 +524,9 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           />
           <Text className="text-xs text-gray-500">
             Average:{" "}
-            <Text className="font-semibold text-gray-700">{avgLabel}</Text>
+            <Text className="font-semibold text-gray-700">
+              {avg5 ? avgLabel : "-"}
+            </Text>
           </Text>
         </View>
       </View>
