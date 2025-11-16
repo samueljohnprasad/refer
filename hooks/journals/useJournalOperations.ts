@@ -29,24 +29,6 @@ export const useJournalOperations = () => {
 
       setDeleting(true);
       try {
-        const { error: insightsError } = await supabase
-          .from("journal_ai_insights")
-          .delete()
-          .eq("journal_entry_id", journalId);
-
-        if (insightsError) {
-          throw insightsError;
-        }
-
-        const { error: moodsError } = await supabase
-          .from("moods")
-          .delete()
-          .eq("journal_entry_id", journalId);
-
-        if (moodsError) {
-          throw moodsError;
-        }
-
         const { error: journalError } = await supabase
           .from("journal_records")
           .delete()

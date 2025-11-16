@@ -50,7 +50,7 @@ const ShortBottomModal = forwardRef<
       index={0}
       snapPoints={snapPoints}
       detached
-      bottomInset={100}
+      bottomInset={60}
       onDismiss={onDismiss}
       stackBehavior="push"
       backgroundStyle={{
@@ -67,7 +67,7 @@ const ShortBottomModal = forwardRef<
       backdropComponent={BlurBackdropExpo}
       enablePanDownToClose={true}
       style={{
-        marginHorizontal: 24,
+        marginHorizontal: 16,
         borderRadius: 56,
       }}
     >

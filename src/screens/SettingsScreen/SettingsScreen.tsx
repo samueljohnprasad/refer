@@ -29,7 +29,7 @@ import TermsAndConditionsModal from "@/src/components/modals/TermsAndConditionsM
 import EraseDataConfirmationModal from "@/src/components/modals/EraseDataConfirmationModal";
 import SignOutConfirmationModal from "@/src/components/modals/SignOutConfirmationModal";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
-import { BottomSheet, BottomSheetTrigger } from "@/components/ui/bottomsheet";
+import { BottomSheet } from "@/components/ui/bottomsheet";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   AlertSquareIcon,
@@ -47,6 +47,7 @@ import {
 } from "@hugeicons/core-free-icons";
 
 export default React.memo(function SettingsScreen() {
+  const [isSignoutOPen, setIsSignoutOPen] = useState(false);
   const router = useRouter();
   const { height } = useWindowDimensions();
   const headerHeight = useHeaderHeight();
@@ -113,180 +114,179 @@ export default React.memo(function SettingsScreen() {
   };
 
   return (
-    <BottomSheet>
-      <SafeAreaView style={styles.safe} edges={["bottom"]}>
-        <Stack.Screen
-          options={{
-            headerShown: true,
-            headerTransparent: true,
-            headerBlurEffect: "regular",
-            header(props) {
-              return (
-                <BlurView
-                  intensity={50}
-                  tint="light"
-                  style={[
-                    styles.headerRow,
-                    {
-                      height: height * 0.14,
-                      justifyContent: "space-between",
-                      alignItems: "flex-end",
-                      paddingHorizontal: 16,
-                      backgroundColor: "transparent",
-                      paddingBottom: 16,
-                    },
-                  ]}
-                >
-                  <TouchableOpacity
-                    style={styles.backBtn}
-                    activeOpacity={0.7}
-                    onPress={() => router.back()}
-                  >
-                    <HugeiconsIcon
-                      icon={ArrowLeft02Icon}
-                      size={20}
-                      color="#FFF"
-                    />
-                  </TouchableOpacity>
-
-                  <Text style={styles.headerTitle}>Settings</Text>
-                  {upgradeY !== null && (
-                    <Animated.View
-                      style={{
-                        position: "absolute",
-                        right: 16,
-                        bottom: 16,
-                        opacity: scrollY.interpolate({
-                          inputRange: [upgradeY + 20, upgradeY + 20 + 40],
-                          outputRange: [0, 1],
-                          extrapolate: "clamp",
-                        }),
-                      }}
-                    >
-                      <Pressable
-                        android_ripple={{ color: "#6D4AFF" }}
-                        onPress={() => router.push("/tabs/screens/paywall")}
-                        style={{ borderRadius: 24, overflow: "hidden" }}
-                      >
-                        <LinearGradient
-                          colors={["#7C5CFF", "#9C7CFF"]}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 1 }}
-                          style={[
-                            styles.upgradeButton,
-                            { paddingVertical: 8, paddingHorizontal: 14 },
-                          ]}
-                        >
-                          <Text style={styles.upgradeText}>Upgrade</Text>
-                        </LinearGradient>
-                      </Pressable>
-                    </Animated.View>
-                  )}
-
-                  <View style={{ width: 36 }} />
-                </BlurView>
-              );
-            },
-          }}
-        />
-        <View style={styles.surface}>
-          <Animated.ScrollView
-            contentContainerStyle={[
-              styles.scrollViewContent,
-              { paddingTop: headerHeight, paddingBottom: 24 },
-            ]}
-            showsVerticalScrollIndicator={false}
-            scrollEventThrottle={16}
-            nestedScrollEnabled={true}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-              { useNativeDriver: false }
-            )}
-            contentInsetAdjustmentBehavior="automatic"
-          >
-            {/* Promo Card */}
-            <View style={styles.promoCard}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.promoTitle}>Unlock All Features</Text>
-                <Text style={styles.promoSubtitle} numberOfLines={3}>
-                  AI Insights, Weekly Summaries,{"\n"}Advanced Dashboard,{"\n"}
-                  Longer Recordings, and more.
-                </Text>
-
-                <Pressable
-                  android_ripple={{ color: "#6D4AFF" }}
-                  onPress={() => {
-                    router.push("/tabs/screens/paywall");
-                  }}
-                  style={{
-                    borderRadius: 28,
-                    overflow: "hidden",
-                    alignSelf: "flex-start",
-                  }}
-                  onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)}
-                >
-                  <LinearGradient
-                    colors={["#7C5CFF", "#9C7CFF"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.upgradeButton}
-                  >
-                    <Text style={styles.upgradeText}>Upgrade to Premium</Text>
-                  </LinearGradient>
-                </Pressable>
-              </View>
-            </View>
-
-            <View style={styles.cardGroup}>
-              <TouchableOpacity
-                style={styles.rowItem}
-                activeOpacity={0.7}
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  router.push("/tabs/screens/reminders" as any);
-                }}
+    <SafeAreaView style={styles.safe} edges={["bottom"]}>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerTransparent: true,
+          headerBlurEffect: "regular",
+          header(props) {
+            return (
+              <BlurView
+                intensity={50}
+                tint="light"
+                style={[
+                  styles.headerRow,
+                  {
+                    height: height * 0.14,
+                    justifyContent: "space-between",
+                    alignItems: "flex-end",
+                    paddingHorizontal: 16,
+                    backgroundColor: "transparent",
+                    paddingBottom: 16,
+                  },
+                ]}
               >
-                <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
+                <TouchableOpacity
+                  style={styles.backBtn}
+                  activeOpacity={0.7}
+                  onPress={() => router.back()}
+                >
                   <HugeiconsIcon
-                    icon={Notification01Icon}
+                    icon={ArrowLeft02Icon}
                     size={20}
-                    color="#A855F7"
+                    color="#FFF"
                   />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.itemTitle}>Daily Reminders</Text>
-                  <Text style={styles.itemSubtitle}>
-                    Customize multiple reminders
-                  </Text>
-                </View>
-                <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={22}
-                  color="#9CA3AF"
-                />
-              </TouchableOpacity>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.rowItem}
-                activeOpacity={0.7}
+                <Text style={styles.headerTitle}>Settings</Text>
+                {upgradeY !== null && (
+                  <Animated.View
+                    style={{
+                      position: "absolute",
+                      right: 16,
+                      bottom: 16,
+                      opacity: scrollY.interpolate({
+                        inputRange: [upgradeY + 20, upgradeY + 20 + 40],
+                        outputRange: [0, 1],
+                        extrapolate: "clamp",
+                      }),
+                    }}
+                  >
+                    <Pressable
+                      android_ripple={{ color: "#6D4AFF" }}
+                      onPress={() => router.push("/tabs/screens/paywall")}
+                      style={{ borderRadius: 24, overflow: "hidden" }}
+                    >
+                      <LinearGradient
+                        colors={["#7C5CFF", "#9C7CFF"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={[
+                          styles.upgradeButton,
+                          { paddingVertical: 8, paddingHorizontal: 14 },
+                        ]}
+                      >
+                        <Text style={styles.upgradeText}>Upgrade</Text>
+                      </LinearGradient>
+                    </Pressable>
+                  </Animated.View>
+                )}
+
+                <View style={{ width: 36 }} />
+              </BlurView>
+            );
+          },
+        }}
+      />
+      <View style={styles.surface}>
+        <Animated.ScrollView
+          contentContainerStyle={[
+            styles.scrollViewContent,
+            { paddingTop: headerHeight, paddingBottom: 24 },
+          ]}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          nestedScrollEnabled={true}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
+          contentInsetAdjustmentBehavior="automatic"
+        >
+          {/* Promo Card */}
+          <View style={styles.promoCard}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.promoTitle}>Unlock All Features</Text>
+              <Text style={styles.promoSubtitle} numberOfLines={3}>
+                AI Insights, Weekly Summaries,{"\n"}Advanced Dashboard,{"\n"}
+                Longer Recordings, and more.
+              </Text>
+
+              <Pressable
+                android_ripple={{ color: "#6D4AFF" }}
                 onPress={() => {
-                  handlePress("edit-name");
+                  router.push("/tabs/screens/paywall");
                 }}
+                style={{
+                  borderRadius: 28,
+                  overflow: "hidden",
+                  alignSelf: "flex-start",
+                }}
+                onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)}
               >
-                <View style={[styles.leftIcon, { backgroundColor: "#FECACA" }]}>
-                  <HugeiconsIcon icon={UserIcon} size={20} color="#EF4444" />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.itemTitle}>Edit Name</Text>
-                </View>
-                <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={22}
-                  color="#9CA3AF"
-                />
-              </TouchableOpacity>
+                <LinearGradient
+                  colors={["#7C5CFF", "#9C7CFF"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.upgradeButton}
+                >
+                  <Text style={styles.upgradeText}>Upgrade to Premium</Text>
+                </LinearGradient>
+              </Pressable>
+            </View>
+          </View>
 
-              {/* <View style={styles.rowItem}>
+          <View style={styles.cardGroup}>
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                Haptics.selectionAsync();
+                router.push("/tabs/screens/reminders" as any);
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
+                <HugeiconsIcon
+                  icon={Notification01Icon}
+                  size={20}
+                  color="#A855F7"
+                />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Daily Reminders</Text>
+                <Text style={styles.itemSubtitle}>
+                  Customize multiple reminders
+                </Text>
+              </View>
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={22}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                handlePress("edit-name");
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#FECACA" }]}>
+                <HugeiconsIcon icon={UserIcon} size={20} color="#EF4444" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Edit Name</Text>
+              </View>
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={22}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
+
+            {/* <View style={styles.rowItem}>
               <View style={[styles.leftIcon, { backgroundColor: "#DDD6FE" }]}>
                 <MaterialCommunityIcons
                   name="lock-outline"
@@ -307,311 +307,307 @@ export default React.memo(function SettingsScreen() {
               />
             </View> */}
 
-              <TouchableOpacity
-                style={styles.rowItem}
-                activeOpacity={0.7}
-                onPress={() => {
-                  handlePress("contact-support");
-                }}
-              >
-                <View style={[styles.leftIcon, { backgroundColor: "#CFFAFE" }]}>
-                  <HugeiconsIcon
-                    icon={MessageOutgoing01Icon}
-                    size={20}
-                    color="#06B6D4"
-                  />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.itemTitle}>Contact Support</Text>
-                </View>
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                handlePress("contact-support");
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#CFFAFE" }]}>
                 <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={22}
-                  color="#9CA3AF"
+                  icon={MessageOutgoing01Icon}
+                  size={20}
+                  color="#06B6D4"
                 />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.rowItem}
-                activeOpacity={0.7}
-                onPress={handleRateUs}
-              >
-                <View style={[styles.leftIcon, { backgroundColor: "#DCFCE7" }]}>
-                  <HugeiconsIcon icon={StarIcon} size={20} color="#16A34A" />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.itemTitle}>Rate Us</Text>
-                </View>
-                <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={22}
-                  color="#9CA3AF"
-                />
-              </TouchableOpacity>
-            </View>
-
-            {/* Settings Group 2 */}
-            <View style={[styles.cardGroup, { marginTop: 14 }]}>
-              <TouchableOpacity
-                style={styles.rowItem}
-                activeOpacity={0.7}
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  setShowTermsAndConditions(true);
-                }}
-              >
-                <View style={[styles.leftIcon, { backgroundColor: "#F3E8FF" }]}>
-                  <HugeiconsIcon icon={File01Icon} size={20} color="#9333EA" />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.itemTitle}>Terms of Use</Text>
-                </View>
-                <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={22}
-                  color="#9CA3AF"
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.rowItem}
-                activeOpacity={0.7}
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  setShowPrivacyPolicy(true);
-                }}
-              >
-                <View style={[styles.leftIcon, { backgroundColor: "#DBEAFE" }]}>
-                  <HugeiconsIcon
-                    icon={ShieldUserIcon}
-                    size={20}
-                    color="#2563EB"
-                  />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.itemTitle}>Privacy Policy</Text>
-                </View>
-                <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={22}
-                  color="#9CA3AF"
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.rowItem}
-                activeOpacity={0.7}
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  setShowEraseDataModal(true);
-                }}
-              >
-                <View style={[styles.leftIcon, { backgroundColor: "#FEE2E2" }]}>
-                  <HugeiconsIcon
-                    icon={Delete02Icon}
-                    size={20}
-                    color="#DC2626"
-                  />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.itemTitle}>Erase Personal Data</Text>
-                  <Text style={styles.itemSubtitle}>
-                    Permanently delete all data
-                  </Text>
-                </View>
-                <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={22}
-                  color="#9CA3AF"
-                />
-              </TouchableOpacity>
-
-              <View style={styles.rowItem}>
-                <View style={[styles.leftIcon, { backgroundColor: "#FEF3C7" }]}>
-                  <HugeiconsIcon
-                    icon={AlertSquareIcon}
-                    size={20}
-                    color="#D97706"
-                  />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.itemTitle}>App Info</Text>
-                  <Text style={styles.itemSubtitle}>
-                    Version 1.0.0 (Build 1)
-                  </Text>
-                </View>
               </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Contact Support</Text>
+              </View>
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={22}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.rowItem}
-                activeOpacity={0.7}
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  setShowImportModal(true);
-                }}
-              >
-                <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
-                  <HugeiconsIcon
-                    icon={Download02Icon}
-                    size={20}
-                    color="#9333EA"
-                  />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.itemTitle}>Bulk Import Journals</Text>
-                  <Text style={styles.itemSubtitle}>Import sample data</Text>
-                </View>
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={handleRateUs}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#DCFCE7" }]}>
+                <HugeiconsIcon icon={StarIcon} size={20} color="#16A34A" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Rate Us</Text>
+              </View>
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={22}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* Settings Group 2 */}
+          <View style={[styles.cardGroup, { marginTop: 14 }]}>
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setShowTermsAndConditions(true);
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#F3E8FF" }]}>
+                <HugeiconsIcon icon={File01Icon} size={20} color="#9333EA" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Terms of Use</Text>
+              </View>
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={22}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setShowPrivacyPolicy(true);
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#DBEAFE" }]}>
                 <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={22}
-                  color="#9CA3AF"
+                  icon={ShieldUserIcon}
+                  size={20}
+                  color="#2563EB"
                 />
-              </TouchableOpacity>
-              <BottomSheetTrigger style={styles.rowItem}>
-                <View style={[styles.leftIcon, { backgroundColor: "#BFDBFE" }]}>
-                  <HugeiconsIcon
-                    icon={Logout02Icon}
-                    size={20}
-                    color="#3B82F6"
-                  />
-                </View>
-                <View style={styles.rowText}>
-                  <Text style={styles.itemTitle}>Sign Out</Text>
-                </View>
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Privacy Policy</Text>
+              </View>
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={22}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setShowEraseDataModal(true);
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#FEE2E2" }]}>
+                <HugeiconsIcon icon={Delete02Icon} size={20} color="#DC2626" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Erase Personal Data</Text>
+                <Text style={styles.itemSubtitle}>
+                  Permanently delete all data
+                </Text>
+              </View>
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={22}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
+
+            <View style={styles.rowItem}>
+              <View style={[styles.leftIcon, { backgroundColor: "#FEF3C7" }]}>
                 <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={22}
-                  color="#9CA3AF"
+                  icon={AlertSquareIcon}
+                  size={20}
+                  color="#D97706"
                 />
-              </BottomSheetTrigger>
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>App Info</Text>
+                <Text style={styles.itemSubtitle}>Version 1.0.0 (Build 1)</Text>
+              </View>
             </View>
-          </Animated.ScrollView>
-        </View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={showModal.showModal}
-        >
-          <NameEditScreen
-            setShowModal={() =>
-              setShowModal({ showModal: false, modalType: "" })
-            }
-          />
-        </Modal>
 
-        {/* Bulk Import Modal */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={showImportModal}
-          onRequestClose={() => !importing && setShowImportModal(false)}
-        >
-          <BlurView intensity={20} tint="dark" style={styles.modalOverlay}>
-            <View style={styles.importModalContent}>
-              <Text style={styles.modalTitle}>Bulk Import Journals</Text>
-              <Text style={styles.modalSubtitle}>
-                Import sample journal entries for testing
+            <TouchableOpacity
+              style={styles.rowItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setShowImportModal(true);
+              }}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
+                <HugeiconsIcon
+                  icon={Download02Icon}
+                  size={20}
+                  color="#9333EA"
+                />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Bulk Import Journals</Text>
+                <Text style={styles.itemSubtitle}>Import sample data</Text>
+              </View>
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={22}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setIsSignoutOPen(true);
+              }}
+              style={styles.rowItem}
+            >
+              <View style={[styles.leftIcon, { backgroundColor: "#BFDBFE" }]}>
+                <HugeiconsIcon icon={Logout02Icon} size={20} color="#3B82F6" />
+              </View>
+              <View style={styles.rowText}>
+                <Text style={styles.itemTitle}>Sign Out</Text>
+              </View>
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={22}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
+          </View>
+        </Animated.ScrollView>
+      </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showModal.showModal}
+      >
+        <NameEditScreen
+          setShowModal={() => setShowModal({ showModal: false, modalType: "" })}
+        />
+      </Modal>
+
+      {/* Bulk Import Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showImportModal}
+        onRequestClose={() => !importing && setShowImportModal(false)}
+      >
+        <BlurView intensity={20} tint="dark" style={styles.modalOverlay}>
+          <View style={styles.importModalContent}>
+            <Text style={styles.modalTitle}>Bulk Import Journals</Text>
+            <Text style={styles.modalSubtitle}>
+              Import sample journal entries for testing
+            </Text>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Start Date</Text>
+              <View style={styles.dateDisplay}>
+                <Feather name="calendar" size={18} color="#7C5CFF" />
+                <Text style={styles.dateText}>
+                  {format(importStartDate, "MMM dd, yyyy")}
+                </Text>
+              </View>
+              <Text style={styles.inputHint}>
+                Entries will be created from this date forward
               </Text>
-
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Start Date</Text>
-                <View style={styles.dateDisplay}>
-                  <Feather name="calendar" size={18} color="#7C5CFF" />
-                  <Text style={styles.dateText}>
-                    {format(importStartDate, "MMM dd, yyyy")}
-                  </Text>
-                </View>
-                <Text style={styles.inputHint}>
-                  Entries will be created from this date forward
-                </Text>
-              </View>
-
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Number of Days (1-20)</Text>
-                <TextInput
-                  style={styles.input}
-                  value={importDaysCount}
-                  onChangeText={setImportDaysCount}
-                  keyboardType="number-pad"
-                  placeholder="20"
-                  maxLength={2}
-                  editable={!importing}
-                />
-                <Text style={styles.inputHint}>
-                  {importDaysCount}{" "}
-                  {parseInt(importDaysCount) === 1 ? "entry" : "entries"} will
-                  be imported
-                </Text>
-              </View>
-
-              {importing && (
-                <View style={styles.progressContainer}>
-                  <ActivityIndicator size="large" color="#7C5CFF" />
-                  <Text style={styles.progressText}>
-                    Importing {progress.current} of {progress.total}...
-                  </Text>
-                </View>
-              )}
-
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.cancelButton]}
-                  onPress={() => setShowImportModal(false)}
-                  disabled={importing}
-                >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[
-                    styles.modalButton,
-                    styles.importButton,
-                    importing && styles.importButtonDisabled,
-                  ]}
-                  onPress={handleBulkImport}
-                  disabled={importing}
-                >
-                  <LinearGradient
-                    colors={
-                      importing ? ["#999", "#777"] : ["#7C5CFF", "#9C7CFF"]
-                    }
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.importButtonGradient}
-                  >
-                    <Text style={styles.importButtonText}>
-                      {importing ? "Importing..." : "Import"}
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
             </View>
-          </BlurView>
-        </Modal>
 
-        {/* Privacy Policy Modal */}
-        <PrivacyPolicyModal
-          visible={showPrivacyPolicy}
-          onClose={() => setShowPrivacyPolicy(false)}
-        />
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Number of Days (1-20)</Text>
+              <TextInput
+                style={styles.input}
+                value={importDaysCount}
+                onChangeText={setImportDaysCount}
+                keyboardType="number-pad"
+                placeholder="20"
+                maxLength={2}
+                editable={!importing}
+              />
+              <Text style={styles.inputHint}>
+                {importDaysCount}{" "}
+                {parseInt(importDaysCount) === 1 ? "entry" : "entries"} will be
+                imported
+              </Text>
+            </View>
 
-        {/* Terms and Conditions Modal */}
-        <TermsAndConditionsModal
-          visible={showTermsAndConditions}
-          onClose={() => setShowTermsAndConditions(false)}
-        />
+            {importing && (
+              <View style={styles.progressContainer}>
+                <ActivityIndicator size="large" color="#7C5CFF" />
+                <Text style={styles.progressText}>
+                  Importing {progress.current} of {progress.total}...
+                </Text>
+              </View>
+            )}
 
-        {/* Erase Data Confirmation Modal */}
-        <EraseDataConfirmationModal
-          visible={showEraseDataModal}
-          onClose={() => setShowEraseDataModal(false)}
-          onConfirm={handleEraseDataConfirm}
-          isDeleting={deleteUserDataMutation.isPending}
-        />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setShowImportModal(false)}
+                disabled={importing}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
 
-        <SignOutConfirmationModal onConfirm={signOut} />
-      </SafeAreaView>
-    </BottomSheet>
+              <TouchableOpacity
+                style={[
+                  styles.modalButton,
+                  styles.importButton,
+                  importing && styles.importButtonDisabled,
+                ]}
+                onPress={handleBulkImport}
+                disabled={importing}
+              >
+                <LinearGradient
+                  colors={importing ? ["#999", "#777"] : ["#7C5CFF", "#9C7CFF"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.importButtonGradient}
+                >
+                  <Text style={styles.importButtonText}>
+                    {importing ? "Importing..." : "Import"}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </BlurView>
+      </Modal>
+
+      {/* Privacy Policy Modal */}
+      <PrivacyPolicyModal
+        visible={showPrivacyPolicy}
+        onClose={() => setShowPrivacyPolicy(false)}
+      />
+
+      {/* Terms and Conditions Modal */}
+      <TermsAndConditionsModal
+        visible={showTermsAndConditions}
+        onClose={() => setShowTermsAndConditions(false)}
+      />
+
+      {/* Erase Data Confirmation Modal */}
+      <EraseDataConfirmationModal
+        visible={showEraseDataModal}
+        onClose={() => setShowEraseDataModal(false)}
+        onConfirm={handleEraseDataConfirm}
+        isDeleting={deleteUserDataMutation.isPending}
+      />
+
+      <SignOutConfirmationModal
+        isSignoutOPen={isSignoutOPen}
+        handleClose={() => {
+          setIsSignoutOPen(false);
+        }}
+        onConfirm={signOut}
+      />
+    </SafeAreaView>
   );
 });
 const styles = StyleSheet.create({

@@ -388,16 +388,6 @@ const DailyNotesScreen = () => {
         }}
       />
       <View className="flex-1">
-        {/* AI Insights Chip - Below header */}
-        <View className="pt-2 px-4 pb-1">
-          <AIInsightsChip
-            visible={isBeforeCurrentWeek}
-            onPress={() => {
-              bottomSheetRef.current?.present();
-            }}
-          />
-        </View>
-
         <View className="flex-1 relative">
           <GestureDetector gesture={contentPanGesture}>
             <ScrollView
@@ -407,6 +397,15 @@ const DailyNotesScreen = () => {
               accessible={true}
               accessibilityLabel="Daily notes content"
             >
+              {/* AI Insights Chip - Below header */}
+              <View className="pt-2 px-4 pb-1">
+                <AIInsightsChip
+                  visible={isBeforeCurrentWeek}
+                  onPress={() => {
+                    bottomSheetRef.current?.present();
+                  }}
+                />
+              </View>
               <Animated.View
                 className="flex-1 px-4 bg-gray-50"
                 style={[

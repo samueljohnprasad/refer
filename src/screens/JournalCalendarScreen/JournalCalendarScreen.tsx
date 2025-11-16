@@ -65,7 +65,7 @@ export default function JournalCalendarScreen() {
         style={{ width: width, height: height }}
         pointerEvents="none"
       >
-        <Box className="mt-10">
+        <Box className="mt-10 w-full justify-center items-center">
           <LottieView
             autoPlay
             style={{
@@ -175,7 +175,7 @@ export default function JournalCalendarScreen() {
                       color="#FF6A3D"
                     />
                     <Animated.Text className="text-[28px] font-extrabold ml-2">
-                      2
+                      {currentStreak}
                     </Animated.Text>
                   </View>
                 </View>
