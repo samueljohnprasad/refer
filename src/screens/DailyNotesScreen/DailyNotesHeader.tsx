@@ -11,6 +11,8 @@ import {
   addWeeks,
   startOfMonth,
   isSameWeek,
+  startOfDay,
+  isAfter,
 } from "date-fns";
 import { useAtom } from "jotai";
 import Animated, {
@@ -60,6 +62,18 @@ const DailyNotesHeader = React.memo(
       durationReturnMs: 300,
       swipeTriggerDx: 50,
       slideDivisor: 50,
+      canGoNextWeek: () => {
+        const today = new Date();
+        const nextWeek = addDays(currentWeekView, 7);
+        // allow moving next only if the next week is not beyond the current (today's) week
+        return (
+          isSameWeek(nextWeek, today, { weekStartsOn: 0 }) ||
+          !isAfter(
+            startOfWeek(nextWeek, { weekStartsOn: 0 }),
+            startOfWeek(today, { weekStartsOn: 0 })
+          )
+        );
+      },
     });
     const insets = useSafeAreaInsets();
 
@@ -177,8 +191,14 @@ const DailyNotesHeader = React.memo(
 
     // Memoize week days data to avoid recalculating format on every render
     const weekDaysData = useMemo(() => {
+      const today = new Date();
+      const isCurrentWeekInView = isSameWeek(currentWeekViewSafe, today, {
+        weekStartsOn: 0,
+      });
       return weekDays.map((day, index) => {
         const dayStr = format(day, "yyyy-MM-dd");
+        const disabled =
+          isCurrentWeekInView && isAfter(startOfDay(day), startOfDay(today));
         return {
           day,
           dayStr,
@@ -186,9 +206,10 @@ const DailyNotesHeader = React.memo(
           isTodayDate: isToday(day),
           isSelectedDay: selectedDateStr !== "" && dayStr === selectedDateStr,
           mood: moodMap?.get(dayStr), // Pre-fetch mood to avoid map lookup in render
+          disabled,
         };
       });
-    }, [weekDays, selectedDateStr, moodMap]);
+    }, [weekDays, selectedDateStr, moodMap, currentWeekViewSafe]);
 
     const dayPressHandlers = useCallback(
       (dayData: any) => {
@@ -209,7 +230,7 @@ const DailyNotesHeader = React.memo(
       } else {
         // More than 3 weeks: animate 3 weeks toward today, then jump
         const direction = weeksDifference > 0 ? 1 : -1; // Forward or backward
-        const intermediateDate = addWeeks(currentWeekView, 3 * direction);
+        const intermediateDate = addWeeks(currentWeekView, 2 * direction);
 
         // Animate for 3 weeks
         await animateToWeekOf(intermediateDate, currentWeekView);
@@ -233,6 +254,8 @@ const DailyNotesHeader = React.memo(
 
     const onEmojiPress = (day: Date, moodScore?: number) => {
       if (moodScore) return;
+      const today = new Date();
+      if (isAfter(startOfDay(day), startOfDay(today))) return;
       const date = day.toISOString();
       router.push({
         pathname: "/tabs/(tabs)/record",
@@ -293,10 +316,12 @@ const DailyNotesHeader = React.memo(
                       dayName={dayData.dayName}
                       isSelected={dayData.isSelectedDay}
                       isToday={dayData.isTodayDate}
+                      disabled={dayData.disabled}
                       onPress={dayPressHandlers(dayData)}
                     />
                     <View className="flex-1 items-center mb-1">
                       <MoodBadge
+                        disabled={dayData.disabled}
                         moodscore={dayData.mood}
                         active={dayData.isSelectedDay}
                         size={24}

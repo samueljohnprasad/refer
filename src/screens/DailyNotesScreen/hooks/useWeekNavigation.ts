@@ -15,6 +15,8 @@ export interface UseWeekNavigationOptions {
   swipeTriggerDx?: number; // distance threshold to trigger week change
   slideDivisor?: number; // divisor to reduce dx effect in onPanResponderMove
   weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6; // for week calculations (default Sunday)
+  // Optional guard to prevent navigating into future weeks
+  canGoNextWeek?: () => boolean;
 }
 
 export interface UseWeekNavigationResult {
@@ -39,6 +41,7 @@ export const useWeekNavigation = (
     swipeTriggerDx = 50,
     slideDivisor = 50,
     weekStartsOn = 0,
+    canGoNextWeek,
   } = options;
 
   const weekSlideAnim = useSharedValue<number>(0);
@@ -64,13 +67,25 @@ export const useWeekNavigation = (
   }, [durationEnterMs, durationReturnMs, updateWeekByDelta, weekSlideAnim]);
 
   const goToPreviousWeek = useCallback(() => animateStep(-1, -7), [animateStep]);
-  const goToNextWeek = useCallback(() => animateStep(1, 7), [animateStep]);
+  const goToNextWeek = useCallback(() => {
+    if (canGoNextWeek && !canGoNextWeek()) {
+      weekSlideAnim.value = withTiming(0, { duration: durationReturnMs });
+      return Promise.resolve();
+    }
+    return animateStep(1, 7);
+  }, [animateStep, canGoNextWeek, durationReturnMs, weekSlideAnim]);
 
   const animateToWeekOf = useCallback(async (targetDate: Date, currentWeek: Date): Promise<void> => {
     if (isSameWeek(currentWeek, targetDate, { weekStartsOn })) return;
-    const diff = differenceInCalendarWeeks(targetDate, currentWeek, { weekStartsOn });
-    const steps = Math.abs(diff);
-    const stepFn = diff > 0 ? goToNextWeek : goToPreviousWeek;
+    const rawDiff = differenceInCalendarWeeks(targetDate, currentWeek, { weekStartsOn });
+    const today = new Date();
+    const maxForward = Math.max(
+      0,
+      differenceInCalendarWeeks(today, currentWeek, { weekStartsOn })
+    );
+    const clampedDiff = rawDiff > 0 ? Math.min(rawDiff, maxForward) : rawDiff;
+    const steps = Math.abs(clampedDiff);
+    const stepFn = clampedDiff > 0 ? goToNextWeek : goToPreviousWeek;
     for (let i = 0; i < steps; i += 1) {
       // await each step to maintain smooth sequential animation
       // eslint-disable-next-line no-await-in-loop

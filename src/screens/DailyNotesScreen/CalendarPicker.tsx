@@ -1,10 +1,19 @@
-import { Feather } from "@expo/vector-icons";
-import { format, isToday, isSameMonth, isSameDay } from "date-fns";
-import React, { useMemo, useCallback } from "react";
-import { Pressable, View } from "react-native";
-import { Text } from "@/components/Themed";
+import {
+  format,
+  isToday,
+  isSameMonth,
+  isSameDay,
+  startOfDay,
+  isAfter,
+  startOfMonth,
+  addMonths,
+} from "date-fns";
+import React, { useMemo } from "react";
+import { Pressable, View, Text } from "react-native";
 import useCalendarMonth from "./hooks/useCalendarMonth";
 import MoodBadge from "@/src/components/MoodBadge";
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react-native";
 
 // Constants outside component to prevent recreation
 const WEEKDAY_LABELS = [
@@ -36,56 +45,65 @@ interface DayCellProps {
   mood: number | undefined;
   onPress: () => void;
   showMoodBadge: boolean;
+  disabled?: boolean;
 }
 
 const DayCell = React.memo<DayCellProps>(
-  ({ day, inCurrentMonth, isTodayDate, isSelected, mood, onPress, showMoodBadge }) => {
+  ({
+    day,
+    inCurrentMonth,
+    isTodayDate,
+    isSelected,
+    mood,
+    onPress,
+    showMoodBadge,
+    disabled = false,
+  }) => {
     const dayLabel = format(day, "d");
 
     // Memoize className strings to avoid recalculation
     const containerClassName = useMemo(
       () =>
-        `w-full h-full flex justify-center items-center gap-0.5 ${
-          isSelected
-            ? "bg-[#7B61FF] rounded-lg"
-            : isTodayDate
-            ? "bg-white/15 rounded-lg"
-            : ""
+        `w-full h-full flex justify-center items-center gap-0.5 rounded-lg ${
+          isSelected ? "bg-[#7B61FF]" : isTodayDate ? "bg-white/15" : ""
         }`,
       [isSelected, isTodayDate]
     );
 
-    const textClassName = useMemo(
-      () =>
-        `text-[14px] font-medium ${
-          !inCurrentMonth
-            ? "text-white/30"
-            : isTodayDate && !isSelected
-            ? "text-white font-semibold"
-            : isSelected
-            ? "text-white font-semibold"
-            : "text-white/90"
-        }`,
-      [inCurrentMonth, isTodayDate, isSelected]
-    );
+    const textClassName = useMemo(() => {
+      const getValue = () => {
+        if (disabled) return "text-black/30";
+        if (!inCurrentMonth) return "text-black/50";
+        if (isTodayDate && !isSelected) return "text-black font-semibold";
+        if (isSelected) return "text-black font-semibold";
 
-    const moodClassName = useMemo(
-      () => `mt-0.5 ${!inCurrentMonth ? "opacity-30" : ""}`,
-      [inCurrentMonth]
-    );
+        return "text-black";
+      };
+      return `text-[14px] font-medium ${getValue()}`;
+    }, [inCurrentMonth, isTodayDate, isSelected, disabled]);
+
+    const moodClassName = useMemo(() => {
+      const getValue = () => {
+        if (disabled) return "opacity-30";
+        if (!inCurrentMonth) return "opacity-50";
+        return "";
+      };
+      return `mt-0.5 ${getValue()}`;
+    }, [inCurrentMonth]);
 
     return (
       <Pressable
         className="justify-center items-center p-[2px]"
         style={DAY_CELL_STYLE}
         onPress={onPress}
+        disabled={disabled}
         accessibilityRole="button"
       >
         <View className={containerClassName}>
           <Text className={textClassName}>{dayLabel}</Text>
           {showMoodBadge && (
             <View className={moodClassName}>
-              <MoodBadge moodscore={mood} size={18} />
+              <MoodBadge disabled={disabled} moodscore={mood} size={18} />
             </View>
           )}
         </View>
@@ -134,10 +152,18 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
       [currentMonth]
     );
 
+    const canGoNextMonth = useMemo((): boolean => {
+      const nextMonthStart = startOfMonth(addMonths(currentMonth, 1));
+      const todayMonthStart = startOfMonth(new Date());
+      return !isAfter(nextMonthStart, todayMonthStart);
+    }, [currentMonth]);
+
     // Pre-compute day data to avoid calculations in render loop
     const daysData = useMemo(() => {
+      const today = startOfDay(new Date());
       return days.map((day: Date) => {
         const dayStr = format(day, "yyyy-MM-dd");
+        const disabled = isAfter(startOfDay(day), today);
         return {
           day,
           dayStr,
@@ -145,6 +171,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
           isTodayDate: isToday(day),
           isSelected: isSameDay(day, selectedDate),
           mood: moodMap?.get(dayStr),
+          disabled,
         };
       });
     }, [days, currentMonth, selectedDate, moodMap]);
@@ -158,11 +185,21 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
       <View className="px-1">
         <View className="flex-row justify-between items-center mb-4">
           <Pressable className="p-2 -ml-2" onPress={goToPreviousMonth}>
-            <Feather name="chevron-left" size={22} color="#fff" />
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={22} color="#fff" />
           </Pressable>
-          <Text className="text-[18px] font-semibold text-white tracking-wide">{monthTitle}</Text>
-          <Pressable className="p-2 -mr-2" onPress={goToNextMonth}>
-            <Feather name="chevron-right" size={22} color="#fff" />
+          <Text className="text-[18px] font-semibold text-white tracking-wide">
+            {monthTitle}
+          </Text>
+          <Pressable
+            className="p-2 -mr-2"
+            onPress={goToNextMonth}
+            disabled={!canGoNextMonth}
+          >
+            <HugeiconsIcon
+              icon={ArrowRight01Icon}
+              size={22}
+              color={canGoNextMonth ? "#fff" : "#9b9b9b"}
+            />
           </Pressable>
         </View>
 
@@ -179,6 +216,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
               mood={dayData.mood}
               onPress={dayPressHandlers[index]}
               showMoodBadge={showMoodBadges}
+              disabled={dayData.disabled}
             />
           ))}
         </View>

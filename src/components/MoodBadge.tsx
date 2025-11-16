@@ -18,6 +18,7 @@ export type MoodBadgeProps = {
   size?: number; // diameter of badge
   containerStyle?: StyleProp<ViewStyle>;
   onPress?: () => void;
+  disabled: boolean;
 };
 
 const moodEmojiMap = {
@@ -29,7 +30,7 @@ const moodEmojiMap = {
 };
 
 export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
-  ({ moodscore, size = 32, containerStyle, onPress }) => {
+  ({ moodscore, size = 32, containerStyle, onPress, disabled }) => {
     const diameter = size;
     const radius = diameter / 2;
     const moodEmoji = moodscore
@@ -55,6 +56,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
               justifyContent: "center",
               backgroundColor: bgColor,
             }}
+            className={`${disabled ? "opacity-30" : ""}`}
           >
             {moodEmoji && (
               <Image

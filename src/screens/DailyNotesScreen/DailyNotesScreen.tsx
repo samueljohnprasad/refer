@@ -6,9 +6,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { View, ScrollView, Pressable, TouchableOpacity } from "react-native";
+import { View, ScrollView, Pressable, Text } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { Text } from "@/components/Themed";
 import { Stack } from "expo-router";
 import {
   format,
@@ -54,6 +53,7 @@ interface DayButtonProps {
   isSelected: boolean;
   isToday: boolean;
   onPress: () => void;
+  disabled?: boolean;
 }
 
 const DayButtonComponent: React.FC<DayButtonProps> = ({
@@ -62,6 +62,7 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   isSelected,
   isToday,
   onPress,
+  disabled = false,
 }) => {
   const glow = useSharedValue<number>(0);
 
@@ -82,11 +83,17 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   }));
 
   const handlePress = (): void => {
+    if (disabled) return;
     onPress();
   };
 
+  const getFontColor = () => {
+    if (disabled) return "text-black/30";
+    if (isSelected) return "text-black/90";
+    return "text-black/80";
+  };
   return (
-    <Pressable onPress={handlePress}>
+    <Pressable onPress={handlePress} disabled={disabled}>
       <Animated.View
         className={`items-center py-1.5 px-1 rounded-xl ${
           isSelected
@@ -102,17 +109,11 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
           className="flex flex-col items-center"
         >
           <Text
-            className={`text-xs font-medium tracking-wider mb-0.5 ${
-              isSelected ? "text-white" : "text-[#EDE9FF]"
-            }`}
+            className={`text-xs font-medium tracking-wider mb-0.5 ${getFontColor()}`}
           >
             {dayName}
           </Text>
-          <Text
-            className={`text-base font-semibold ${
-              isSelected ? "text-white" : "text-white"
-            }`}
-          >
+          <Text className={`text-base font-semibold ${getFontColor()}`}>
             {format(day, "d")}
           </Text>
         </Animated.View>
@@ -130,7 +131,8 @@ const areDayButtonPropsEqual = (
     prev.isSelected === next.isSelected &&
     prev.isToday === next.isToday &&
     prev.day.getTime() === next.day.getTime() &&
-    prev.dayName === next.dayName
+    prev.dayName === next.dayName &&
+    (prev.disabled ?? false) === (next.disabled ?? false)
     // Intentionally ignoring onPress reference to avoid re-renders due to new function identity
   );
 };
