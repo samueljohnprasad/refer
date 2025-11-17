@@ -39,7 +39,7 @@ export const NotificationHeader: React.FC = () => {
     <>
       {/* Lottie Animation */}
       <Animated.View className="items-center mt-1" style={lottieAnimatedStyle}>
-        <LottieView
+        {/* <LottieView
           autoPlay
           loop
           style={{
@@ -47,7 +47,7 @@ export const NotificationHeader: React.FC = () => {
             height: 120,
           }}
           source={notification}
-        />
+        /> */}
       </Animated.View>
 
       {/* Header Text */}

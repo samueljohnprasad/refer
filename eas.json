@@ -3,6 +3,9 @@
     "version": ">= 16.16.0",
     "appVersionSource": "remote"
   },
+  "expo": {
+    "jsEngine": "hermes"
+  },
   "build": {
     "development": {
       "developmentClient": true,

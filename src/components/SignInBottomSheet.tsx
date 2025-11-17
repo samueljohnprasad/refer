@@ -42,7 +42,7 @@ export default forwardRef<BottomSheetModal | null>((props, ref) => {
         }}
       >
         <Heading size="3xl" className="text-left">
-          Sign in
+          Sign in 
         </Heading>
         <VStack space="xl" className="px-2">
           <Button

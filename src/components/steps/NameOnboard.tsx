@@ -64,7 +64,7 @@ export const NameOnboard: React.FC<NameOnboardProps> = ({ name, setName }) => {
               borderColor: "rgba(255, 255, 255, 0.3)",
             }}
           >
-            <LottieView
+            {/* <LottieView
               autoPlay
               loop
               style={{
@@ -72,7 +72,7 @@ export const NameOnboard: React.FC<NameOnboardProps> = ({ name, setName }) => {
                 height: 100,
               }}
               source={lendHand}
-            />
+            /> */}
           </View>
         </Animated.View>
 

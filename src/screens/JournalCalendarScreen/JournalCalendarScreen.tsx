@@ -69,14 +69,14 @@ export default function JournalCalendarScreen() {
         pointerEvents="none"
       >
         <Box className="mt-10 w-full justify-center items-center">
-          <LottieView
+          {/* <LottieView
             autoPlay
             style={{
               width: 200,
               height: 200,
             }}
             source={girlMeditationBlue}
-          />
+          /> */}
         </Box>
         <Svg height={height} width={width}>
           {/* Light, playful faded shapes */}

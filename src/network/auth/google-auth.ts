@@ -1,10 +1,15 @@
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as WebBrowser from "expo-web-browser";
-import * as Linking from "expo-linking";
+import * as AuthSession from "expo-auth-session";
 import { supabase } from "./supabase";
 
 WebBrowser.maybeCompleteAuthSession(); // required for web only
-const redirectUrl = Linking.createURL("");
+// Use a single redirect URI across platforms (iOS/Android)
+// Ensure this exact value is added to Supabase Auth > URL configuration > Additional Redirect URLs
+const redirectUrl = AuthSession.makeRedirectUri({
+  scheme: "happy",
+  path: "auth",
+});
 console.log("redirectUrl", redirectUrl);
 
 const createSessionFromUrl = async (url: string) => {
@@ -32,17 +37,21 @@ const createSessionFromUrl = async (url: string) => {
 // navigate after the OAuth flow completes.
 const performOAuth = async (router?: any) => {
   try {
+        console.log('data 1', )
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         skipBrowserRedirect: true,
-        redirectTo: "happy://auth", // Ensure Supabase keeps the dashboard path
+        redirectTo: redirectUrl, // Must match the return URL below
         queryParams: {
           access_type: "offline",
           prompt: "select_account", // Force account selection to avoid cached sessions
         },
       },
     });
+
+    console.log('data 1', data)
     if (error) throw error;
     if (data) {
       // await supabase
@@ -53,6 +62,7 @@ const performOAuth = async (router?: any) => {
       data.url, // The URL from Supabase
       redirectUrl // The deep link to your app
     );
+    console.log('data 2', result,)
 
     if (result.type === "success" && result.url) {
       try {
@@ -62,6 +72,7 @@ const performOAuth = async (router?: any) => {
       } catch (parseError) {}
     }
   } catch (error) {
+    console.log('data err', error)
     throw error;
   }
 };
