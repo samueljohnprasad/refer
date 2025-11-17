@@ -1,14 +1,14 @@
-import AnimatedLinearGradient from "./AnimatedLinearGradient";
 import { Button, ButtonText } from "@/components/ui/button";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import { useRouter } from "expo-router";
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
-import { StyleSheet } from "react-native";
 import { performOAuth } from "../network/auth/google-auth";
 import ShortBottomModal from "./ShortBottomModal";
+import { forwardRef } from "react";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
-export default () => {
+export default forwardRef<BottomSheetModal | null>((props, ref) => {
   const router = useRouter();
   const toast = useToast();
 
@@ -30,7 +30,7 @@ export default () => {
   };
 
   return (
-    <ShortBottomModal>
+    <ShortBottomModal ref={ref}>
       <VStack
         className="flex-1  rounded-2xl h-full px-6 "
         space="4xl"
@@ -41,16 +41,8 @@ export default () => {
           paddingTop: 24,
         }}
       >
-        <AnimatedLinearGradient
-          className="rounded-2xl"
-          colors={["#f0efed", "#bdebf8"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          locations={[0, 1]}
-          style={[StyleSheet.absoluteFill, { borderRadius: 24 }]}
-        />
         <Heading size="3xl" className="text-left">
-          I already have an account
+          Sign in
         </Heading>
         <VStack space="xl" className="px-2">
           <Button
@@ -75,4 +67,4 @@ export default () => {
       </VStack>
     </ShortBottomModal>
   );
-};
+});

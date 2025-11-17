@@ -1,10 +1,19 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/src/network/auth/supabase";
 import { useAuth } from "@/src/context/AuthContext";
 import { format } from "date-fns";
 import type { Database } from "@/database.types";
 import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+dayjs.extend(duration);
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  Toast,
+  ToastDescription,
+  ToastTitle,
+  useToast,
+} from "@/components/ui/toast";
 
 type MoodEnum = Database["public"]["Enums"]["mood"];
 
@@ -96,6 +105,10 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const dateStr = format(selectedDate, "yyyy-MM-dd");
+  const toast = useToast();
+
+  const COOLDOWN_MS: number = 30 * 60 * 1000; // 30 minutes
+  const lastLogKey = "lastLogKey";
 
   // Fetch daily emotions
   const {
@@ -143,15 +156,46 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
         queryKey: ["daily-moods-range"],
         refetchType: "active",
       });
+
+      // Persist last emotion log time and update cache
+      if (lastLogKey) {
+        const ts = dayjs().valueOf();
+        AsyncStorage.setItem(lastLogKey, String(ts)).catch(() => {});
+      }
     },
     onError: (error) => {},
   });
 
   const handleLogEmotion = useCallback(
     async (emotionId: number) => {
+      const raw = await AsyncStorage.getItem(lastLogKey);
+      const ts = raw ? Number(raw) : 0;
+
+      const now = dayjs();
+      const nextAllowed = ts ? dayjs(ts).add(COOLDOWN_MS, "millisecond") : null;
+      const remainingMs: number = nextAllowed
+        ? Math.max(0, nextAllowed.diff(now))
+        : 0;
+      const isOnCooldown: boolean = remainingMs > 0;
+
+      if (isOnCooldown) {
+        const timeLeft: string = dayjs.duration(remainingMs).format("mm:ss");
+
+        toast.show({
+          placement: "top",
+          render: ({ id }) => (
+            <Toast nativeID={id} variant="solid" action="warning">
+              <ToastTitle>Please wait</ToastTitle>
+              <ToastDescription>{`You can log another mood in ${timeLeft}.`}</ToastDescription>
+            </Toast>
+          ),
+        });
+        return;
+      }
+
       await logEmotionMutation.mutateAsync(emotionId);
     },
-    [logEmotionMutation]
+    [logEmotionMutation, toast]
   );
 
   return {

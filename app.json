@@ -1,12 +1,12 @@
 {
   "expo": {
     "jsEngine": "hermes",
-    "name": "Happy",
-    "slug": "Happy",
+    "name": "happy",
+    "slug": "happy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
-    "scheme": "Happy",
+    "scheme": "happy",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -16,11 +16,13 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.samuelprasad.Happy",
+      "bundleIdentifier": "com.samuelprasad.happy",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app needs access to your microphone to record audio.",
         "ITSAppUsesNonExemptEncryption": false,
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": [
+          "audio"
+        ]
       }
     },
     "android": {
@@ -29,7 +31,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.samuelprasad.Happy",
+      "package": "com.samuelprasad.happy",
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
@@ -67,7 +69,8 @@
           },
           "imageWidth": 100
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
@@ -75,7 +78,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "5978aa13-bcb8-4ea7-8877-db1b20550a62"
+        "projectId": "b87a1855-bf48-4992-9004-1ec817a4a5de"
       }
     }
   }

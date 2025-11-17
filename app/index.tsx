@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
 // import MovingGradientBackground from "@/screens/components/MovingGradientBackground";
@@ -13,9 +13,11 @@ import SignInBottomSheet from "@/src/components/SignInBottomSheet";
 import MovingGradientBackground from "@/src/components/MovingGradientBackground";
 import LottieView from "lottie-react-native";
 import { loadingLottie } from "@/assets/lottie";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 export default function Home() {
   const { session, loading } = useAuth();
+  const sheetRef = useRef<BottomSheetModal>(null);
 
   if (loading) {
     return (
@@ -49,36 +51,31 @@ export default function Home() {
           contentContainerStyle={{ flexGrow: 1 }}
         ></ScrollView> */}
 
-      <BottomSheet>
-        <VStack
-          className=" flex-1 p-2 md:max-w-[440px] lg:max-w-[640px] xl:max-w-[840px] w-full h-full items-center justify-center"
-          space="xl"
-        >
-          <VStack>
-            <Heading size="3xl" className="text-center">
-              Welcome to - App title
-            </Heading>
-            <Text className="font-bold text-center text-outline-500">
-              sub title
-            </Text>
-          </VStack>
-
-          <Button
-            variant="solid"
-            action="primary"
-            size="xl"
-            className="flex items-center font-semibold border w-full rounded-full py-2 drop-shadow-sm shadow-primary-500 hover:shadow-primary-500 hover:scale-95 transition-all duration-300"
-          >
-            <ButtonText>Get Started</ButtonText>
-          </Button>
-
-          <BottomSheetTrigger>
-            <Text className="text-center">I already have an account</Text>
-          </BottomSheetTrigger>
-
-          <SignInBottomSheet />
+      <VStack
+        className=" flex-1 p-2 md:max-w-[440px] lg:max-w-[640px] xl:max-w-[840px] w-full h-full items-center justify-center"
+        space="xl"
+      >
+        <VStack>
+          <Heading size="3xl" className="text-center">
+            Welcome to Happy
+          </Heading>
+          <Text className="font-bold text-center text-outline-500">
+            sub title
+          </Text>
         </VStack>
-      </BottomSheet>
+
+        <Button
+          onPress={() => sheetRef.current?.present()}
+          variant="solid"
+          action="primary"
+          size="xl"
+          className="flex items-center font-semibold border w-full rounded-full py-2 drop-shadow-sm shadow-primary-500 hover:shadow-primary-500 hover:scale-95 transition-all duration-300"
+        >
+          <ButtonText>Get Started</ButtonText>
+        </Button>
+
+        <SignInBottomSheet ref={sheetRef} />
+      </VStack>
     </VStack>
   );
 }

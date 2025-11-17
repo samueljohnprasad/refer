@@ -4,11 +4,11 @@ import * as Linking from "expo-linking";
 import { supabase } from "./supabase";
 
 WebBrowser.maybeCompleteAuthSession(); // required for web only
-const redirectUrl = Linking.createURL("/");
+const redirectUrl = Linking.createURL("");
+console.log("redirectUrl", redirectUrl);
 
 const createSessionFromUrl = async (url: string) => {
   const { params, errorCode } = QueryParams.getQueryParams(url);
-
   if (errorCode) throw new Error(errorCode);
   const { access_token, refresh_token } = params;
 
@@ -36,7 +36,7 @@ const performOAuth = async (router?: any) => {
       provider: "google",
       options: {
         skipBrowserRedirect: true,
-        redirectTo: "Happy://auth/callback", // Ensure Supabase keeps the dashboard path
+        redirectTo: "happy://auth", // Ensure Supabase keeps the dashboard path
         queryParams: {
           access_type: "offline",
           prompt: "select_account", // Force account selection to avoid cached sessions
