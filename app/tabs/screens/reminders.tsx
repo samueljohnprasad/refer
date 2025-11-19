@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, lazy } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Stack, useRouter, useNavigation } from "expo-router";
 import { BlurView } from "expo-blur";
@@ -6,8 +6,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
-import NotificationsUI from "@/src/components/NotificationsUI";
 import useNotifications from "@/hooks/data/useNotifications";
+import SuspensLoader from "@/src/components/SuspensLoader";
+const NotificationsUI = lazy(() => import("@/src/components/NotificationsUI"));
 
 /**
  * Reminders Screen
@@ -21,8 +22,7 @@ const RemindersScreen = () => {
   const saveNotifications = useCallback(async () => {
     try {
       await addNotifications();
-    } catch (error) {
-    }
+    } catch (error) {}
   }, [addNotifications]);
 
   // Intercept ALL navigation attempts (back button, swipe, device back)
@@ -65,8 +65,9 @@ const RemindersScreen = () => {
           ),
         }}
       />
-
-      <NotificationsUI />
+      <SuspensLoader>
+        <NotificationsUI />
+      </SuspensLoader>
     </SafeAreaView>
   );
 };

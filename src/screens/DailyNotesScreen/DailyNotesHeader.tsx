@@ -39,6 +39,7 @@ import {
   Calendar01Icon,
   Calendar02Icon,
 } from "@hugeicons/core-free-icons";
+import { isIOS } from "@/src/utils/mood";
 
 const { height } = Dimensions.get("window");
 const isIos = Platform.OS === "ios";
@@ -264,8 +265,15 @@ const DailyNotesHeader = React.memo(
     };
 
     // Pan gesture handlers are provided by useWeekNavigation
+    const paddingTop = isIOS ? 0 : 40;
     return (
-      <SafeAreaView edges={["top"]} className="bg-violet-300">
+      <SafeAreaView
+        edges={["top"]}
+        style={{
+          paddingTop: paddingTop,
+        }}
+        className="bg-violet-300"
+      >
         <Animated.View
           className="bg-violet-300 justify-end relative"
           style={[headerContainerAnimatedStyle]}

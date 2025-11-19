@@ -1,18 +1,13 @@
 import React, { useRef } from "react";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
-// import MovingGradientBackground from "@/screens/components/MovingGradientBackground";
 import { VStack } from "@/components/ui/vstack";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
-// import SignInBottomSheet from "@/screens/components/SignInBottomSheet";
 import { Redirect } from "expo-router";
 import { useAuth } from "@/src/context/AuthContext";
-import { BottomSheet, BottomSheetTrigger } from "@/components/ui/bottomsheet";
 import SignInBottomSheet from "@/src/components/SignInBottomSheet";
 import MovingGradientBackground from "@/src/components/MovingGradientBackground";
-import LottieView from "lottie-react-native";
-import { loadingLottie } from "@/assets/lottie";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 export default function Home() {
@@ -44,12 +39,6 @@ export default function Home() {
   return (
     <VStack className="flex-1 h-[100vh] justify-center">
       <MovingGradientBackground />
-      {/* <FirefliesParticles eveningOnly={false} fireflyCount={22} /> */}
-
-      {/* <ScrollView
-          style={{ height: "100%" }}
-          contentContainerStyle={{ flexGrow: 1 }}
-        ></ScrollView> */}
 
       <VStack
         className=" flex-1 p-2 md:max-w-[440px] lg:max-w-[640px] xl:max-w-[840px] w-full h-full items-center justify-center"

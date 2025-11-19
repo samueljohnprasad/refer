@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { View, Pressable, Text } from "react-native";
 import Animated, {
   useSharedValue,
@@ -11,7 +11,6 @@ import { Image } from "@/components/ui/image";
 import { terrible, bad, fine, good, great } from "@/assets/emojis";
 import { format } from "date-fns";
 import { useEmotionLogger } from "@/hooks/data/useEmotionLogger";
-import { useDailyStreak } from "@/hooks/data/useDailyStreak";
 
 // Emotion configuration
 const EMOTIONS = [
@@ -121,7 +120,10 @@ const EmotionItem: React.FC<{
   );
 };
 
-export const EmotionLogger: React.FC<EmotionLoggerProps> = ({
+// Memoize EmotionItem to prevent unnecessary re-renders
+const MemoizedEmotionItem = React.memo(EmotionItem);
+
+export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(({
   selectedDate = new Date(),
   onEmotionLogged,
 }) => {
@@ -131,17 +133,19 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = ({
     logEmotion: logEmotionToSupabase,
     isLoggingEmotion,
   } = useEmotionLogger(selectedDate);
-  const { logStreakIfNeeded } = useDailyStreak();
 
-  const handleLogEmotion = async (emotionScore: number): Promise<void> => {
-    if (isLoggingEmotion) return;
+  // Memoize the callback to prevent recreation on every render
+  const handleLogEmotion = useCallback(
+    async (emotionScore: number): Promise<void> => {
+      if (isLoggingEmotion) return;
 
-    try {
-      await logEmotionToSupabase(emotionScore);
-      await logStreakIfNeeded();
-      onEmotionLogged?.(emotionScore);
-    } catch (error) {}
-  };
+      try {
+        await logEmotionToSupabase(emotionScore);
+        onEmotionLogged?.(emotionScore);
+      } catch (error) {}
+    },
+    [isLoggingEmotion, logEmotionToSupabase, onEmotionLogged]
+  );
 
   return (
     <View className="bg-white rounded-2xl p-4 border border-gray-100">
@@ -156,7 +160,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = ({
 
       <View className="flex-row justify-between">
         {EMOTIONS.map((emotion) => (
-          <EmotionItem
+          <MemoizedEmotionItem
             key={emotion.id}
             emotion={emotion}
             count={emotionCounts.get(emotion.id) || 0}
@@ -167,6 +171,6 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = ({
       </View>
     </View>
   );
-};
+});
 
 export default EmotionLogger;

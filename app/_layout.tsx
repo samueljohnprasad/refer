@@ -8,18 +8,18 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Slot, usePathname } from "expo-router";
 import { AuthProvider } from "@/src/context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import * as Haptics from "expo-haptics";
 import { PressablesConfig } from "pressto";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import * as Notifications from "expo-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Loading from "@/src/components/Loading";
+import SuspensLoader from "@/src/components/SuspensLoader";
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -78,13 +78,7 @@ function RootLayoutNav() {
   const [colorMode, setColorMode] = useState<"light" | "dark">("light");
 
   return (
-    <Suspense
-      fallback={
-        <View className="flex-1 items-center justify-center">
-          <Loading />
-        </View>
-      }
-    >
+    <SuspensLoader>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <PressablesConfig
@@ -92,7 +86,6 @@ function RootLayoutNav() {
             animationType="spring"
           >
             <GestureHandlerRootView style={StyleSheet.absoluteFill}>
-
               <GluestackUIProvider mode={colorMode}>
                 <ThemeProvider
                   value={colorMode === "dark" ? DarkTheme : DefaultTheme}
@@ -119,6 +112,6 @@ function RootLayoutNav() {
           </PressablesConfig>
         </AuthProvider>
       </QueryClientProvider>
-    </Suspense>
+    </SuspensLoader>
   );
 }

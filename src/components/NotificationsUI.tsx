@@ -32,11 +32,11 @@ const NotificationsUI: React.FC<NotificationsUIProps> = () => {
   } = useReminderConfig(DEFAULT_REMINDERS);
 
   return (
-    <View className="flex-1 bg-[#F8F8FF]">
+    <View className="flex-1 bg-[#DCF2FF]">
       <ScrollView
         className="flex-1 px-4 pt-28"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 24 }}
+        contentContainerStyle={{ paddingBottom: 104 }}
       >
         <NotificationHeader />
 

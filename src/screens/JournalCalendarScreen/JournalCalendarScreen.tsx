@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useCallback, useState } from "react";
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   Dimensions,
-  Animated,
 } from "react-native";
-import Svg, { Circle, Ellipse } from "react-native-svg";
-import { BlurView } from "expo-blur";
-import LottieView from "lottie-react-native";
-import { girlMeditationBlue } from "@/assets/lottie";
-import { endOfWeek, startOfWeek, sub } from "date-fns";
-import { Box } from "@/components/ui/box";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  interpolate,
+} from "react-native-reanimated";
+import { endOfWeek, startOfWeek } from "date-fns";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
 import { getNextMilestone } from "@/hooks/data/useStreakCalculation";
@@ -41,193 +41,222 @@ export const PALETTE = {
   grey: "#C4C4C4",
 };
 
+// Memoized TopBar component
+const TopBar = React.memo(() => {
+  const handlePaywallPress = useCallback(() => {
+    router.push("/tabs/screens/paywall");
+  }, []);
+
+  const handleSettingsPress = useCallback(() => {
+    router.push("/tabs/screens/settings");
+  }, []);
+
+  return (
+    <View className="rounded-2xl overflow-hidden mb-2.5 pl-0">
+      <View className="flex-row justify-between py-1.5">
+        <TouchableOpacity
+          onPress={handlePaywallPress}
+          className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
+          activeOpacity={0.8}
+        >
+          <HugeiconsIcon
+            icon={StarsIcon}
+            size={20}
+            color={PALETTE.white}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
+          activeOpacity={0.8}
+          onPress={handleSettingsPress}
+        >
+          <HugeiconsIcon
+            icon={Settings02Icon}
+            color={PALETTE.white}
+            size={20}
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+});
+
+// Memoized Greeting component
+const Greeting = React.memo<{ displayName?: string; isLoading: boolean }>(
+  ({ displayName, isLoading }) => (
+    <Text className="text-[34px] font-bold mt-2 text-gray-900">
+      Hi, {isLoading ? "..." : displayName || "there"}{" "}
+      <Text className="text-3xl">👋</Text>
+    </Text>
+  )
+);
+
+// Memoized StreakCard component
+const StreakCard = React.memo<{
+  currentStreak: number;
+  nextMilestone: number;
+  isLoading: boolean;
+  progressBarStyle: any;
+}>(({ currentStreak, nextMilestone, isLoading, progressBarStyle }) => (
+  <View className="bg-[#FFD24A] rounded-2xl p-4 flex-row items-center overflow-hidden mt-3">
+    <View className="flex-1">
+      {/* Streak info */}
+      <View className="flex-row items-center justify-between">
+        <View>
+          <Text className="text-gray-900 text-base font-semibold">
+            Current Streak
+          </Text>
+          <View className="flex-row items-center">
+            <HugeiconsIcon
+              size={28}
+              icon={Fire02Icon}
+              fill={"#FF6A3D"}
+              color="#FF6A3D"
+            />
+
+            <Text className="text-[28px] font-extrabold ml-2">
+              {currentStreak}
+            </Text>
+          </View>
+        </View>
+
+        <View className="ml-4.5">
+          <Text className="text-gray-900 text-base font-semibold text-center">
+            Next Milestone
+          </Text>
+          <Text className="text-[28px] font-extrabold text-center">
+            {isLoading ? "..." : nextMilestone}
+          </Text>
+        </View>
+      </View>
+
+      {/* Animated progress bar */}
+      <View className="h-3 bg-[#F0D97A] rounded-xl mt-3 overflow-hidden">
+        <Animated.View
+          className="h-full bg-[#60A6FF] rounded-lg"
+          style={progressBarStyle}
+        />
+      </View>
+    </View>
+  </View>
+));
+
 export default function JournalCalendarScreen() {
-  const progressAnim = useRef(new Animated.Value(0)).current;
-  const [selectedEmotionDate] = useState<Date>(new Date());
+  const progressAnim = useSharedValue(0);
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
 
   const currentStreak = userProfile?.currentStreak ?? 0;
   const nextMilestone = getNextMilestone(currentStreak);
 
   useEffect(() => {
-    Animated.timing(progressAnim, {
-      toValue: currentStreak / nextMilestone,
+    progressAnim.value = withTiming(currentStreak / nextMilestone, {
       duration: 1200,
-      useNativeDriver: false,
-    }).start();
-  }, [currentStreak]);
+    });
+  }, [currentStreak, nextMilestone]);
 
-  const yesterday = sub(new Date(), { days: 0 });
-  const startOfWeekDate = startOfWeek(yesterday, { weekStartsOn: 0 });
-  const endOfWeekDate = endOfWeek(yesterday, { weekStartsOn: 0 });
+  // Memoize date calculations to prevent recalculation on every render
+  const { startOfWeekDate, endOfWeekDate, selectedEmotionDate } = useMemo(() => {
+    const today = new Date();
+    return {
+      selectedEmotionDate: today,
+      startOfWeekDate: startOfWeek(today, { weekStartsOn: 0 }),
+      endOfWeekDate: endOfWeek(today, { weekStartsOn: 0 }),
+    };
+  }, []);
+
+  // Memoize emotion logged callback
+  const handleEmotionLogged = useCallback((emotionScore: number) => {
+    // Cache invalidation is handled automatically in useEmotionLogger hook
+  }, []);
+
+  // Lazy load heavy chart component after initial render
+  const [shouldLoadChart, setShouldLoadChart] = useState(false);
+
+  useEffect(() => {
+    // Delay chart loading to improve initial render performance
+    const timer = setTimeout(() => {
+      setShouldLoadChart(true);
+    }, 100); // Load after 100ms
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Animated style for progress bar
+  const progressBarStyle = useAnimatedStyle(() => {
+    const widthPercentage = interpolate(
+      progressAnim.value,
+      [0, 1],
+      [0, 100]
+    );
+    return {
+      width: `${widthPercentage}%`,
+    };
+  });
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View
-        className="absolute top-10 left-1/2 -translate-x-1/2 -z-10"
-        style={{ width: width, height: height }}
-        pointerEvents="none"
-      >
-        <Box className="mt-10 w-full justify-center items-center">
-          {/* <LottieView
-            autoPlay
-            style={{
-              width: 200,
-              height: 200,
-            }}
-            source={girlMeditationBlue}
-          /> */}
-        </Box>
-        <Svg height={height} width={width}>
-          {/* Light, playful faded shapes */}
-          <Ellipse
-            cx={width * 0.8}
-            cy={100}
-            rx={120}
-            ry={80}
-            fill={PALETTE.lightPurple}
-            opacity={0.2}
-          />
-          <Circle
-            cx={80}
-            cy={height * 0.3}
-            r={60}
-            fill={PALETTE.lightYellow}
-            opacity={0.2}
-          />
-          <Circle
-            cx={width * 0.9}
-            cy={height * 0.6}
-            r={90}
-            fill={PALETTE.lightBlue}
-            opacity={0.15}
-          />
-          <Ellipse
-            cx={width * 0.2}
-            cy={height * 0.8}
-            rx={100}
-            ry={70}
-            fill={PALETTE.pink}
-            opacity={0.15}
-          />
-        </Svg>
-      </View>
-
       <ScrollView
+        removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
+        scrollEventThrottle={16}
         contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
       >
         {/* Outer panel container */}
-        <BlurView
-          intensity={50}
-          tint="light"
+        <View
+          // intensity={50}
+          // tint="light"
           className="bg-white p-4 pb-24"
           style={{ width: width }}
         >
           {/* Top bar with blur background */}
-          <View className="rounded-2xl overflow-hidden mb-2.5 pl-0">
-            <View className="flex-row justify-between py-1.5">
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("/tabs/screens/paywall");
-                }}
-                className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
-                activeOpacity={0.8}
-              >
-                <HugeiconsIcon
-                  icon={StarsIcon}
-                  size={20}
-                  color={PALETTE.white}
-                />
-              </TouchableOpacity>
+          <TopBar />
 
-              <TouchableOpacity
-                className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
-                activeOpacity={0.8}
-                onPress={() => router.push("/tabs/screens/settings")}
-              >
-                <HugeiconsIcon
-                  icon={Settings02Icon}
-                  color={PALETTE.white}
-                  size={20}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Greeting
+            displayName={userProfile?.displayName}
+            isLoading={isLoadingProfile}
+          />
 
-          {/* Greeting text */}
-          <Text className="text-[34px] font-bold mt-2 text-gray-900">
-            Hi, {isLoadingProfile ? "..." : userProfile?.displayName || "there"}{" "}
-            <Text className="text-3xl">👋</Text>
-          </Text>
-
-          {/* Streak card with animated progress bar */}
-          <View className="bg-[#FFD24A] rounded-2xl p-4  flex-row items-center overflow-hidden mt-3">
-            <View className="flex-1">
-              {/* Streak info */}
-              <View className="flex-row items-center justify-between">
-                <View>
-                  <Text className="text-gray-900 text-base font-semibold">
-                    Current Streak
-                  </Text>
-                  <View className="flex-row items-center">
-                    <HugeiconsIcon
-                      size={28}
-                      icon={Fire02Icon}
-                      fill={"#FF6A3D"}
-                      color="#FF6A3D"
-                    />
-
-                    <Animated.Text className="text-[28px] font-extrabold ml-2">
-                      {currentStreak}
-                    </Animated.Text>
-                  </View>
-                </View>
-
-                <View className="ml-4.5">
-                  <Text className="text-gray-900 text-base font-semibold text-center">
-                    Next Milestone
-                  </Text>
-                  <Text className="text-[28px] font-extrabold text-center">
-                    {isLoadingProfile ? "..." : nextMilestone}
-                  </Text>
-                </View>
-              </View>
-
-              {/* Animated progress bar */}
-              <View className="h-3 bg-[#F0D97A] rounded-xl mt-3 overflow-hidden">
-                <Animated.View
-                  className="h-full bg-[#60A6FF] rounded-lg"
-                  style={{
-                    width: progressAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ["0%", "100%"],
-                    }),
-                  }}
-                />
-              </View>
-            </View>
-          </View>
+          <StreakCard
+            currentStreak={currentStreak}
+            nextMilestone={nextMilestone}
+            isLoading={isLoadingProfile}
+            progressBarStyle={progressBarStyle}
+          />
 
           {/* Emotion Logger Component */}
           <View className="mt-5">
             <EmotionLogger
               selectedDate={selectedEmotionDate}
-              onEmotionLogged={(emotionScore: number) => {
-                // Cache invalidation is handled automatically in useEmotionLogger hook
-              }}
+              onEmotionLogged={handleEmotionLogged}
             />
           </View>
 
           <View className="mt-5">
-            <WeeklyMoodChart
-              startDate={startOfWeekDate}
-              endDate={endOfWeekDate}
-              title="This Week's Mood"
-            />
+            {shouldLoadChart ? (
+              <WeeklyMoodChart
+                startDate={startOfWeekDate}
+                endDate={endOfWeekDate}
+                title="This Week's Mood"
+              />
+            ) : (
+              <View className="bg-white rounded-3xl p-4 shadow-md border border-gray-100">
+                <View className="flex-row items-center justify-between px-1 mb-3">
+                  <View>
+                    <View className="h-6 w-32 bg-gray-200 rounded-lg mb-2" />
+                    <View className="h-3 w-24 bg-gray-100 rounded" />
+                  </View>
+                  <View className="h-4 w-20 bg-gray-100 rounded" />
+                </View>
+                <View style={{ height: 270 }} className="items-center justify-center">
+                  <View className="h-48 w-full bg-gray-50 rounded-xl" />
+                </View>
+              </View>
+            )}
           </View>
-        </BlurView>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

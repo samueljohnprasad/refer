@@ -1,8 +1,14 @@
-import React from "react";
-import SettingsScreen from "@/src/screens/SettingsScreen/SettingsScreen";
-
+import SuspensLoader from "@/src/components/SuspensLoader";
+import React, { lazy } from "react";
+const SettingsScreen = lazy(
+  () => import("@/src/screens/SettingsScreen/SettingsScreen")
+);
 const Settings = () => {
-  return <SettingsScreen />;
+  return (
+    <SuspensLoader>
+      <SettingsScreen />
+    </SuspensLoader>
+  );
 };
 
 export default Settings;

@@ -4,6 +4,7 @@ export type StepsProps = {
   onComplete?: (onBoardingData: OnBoardingFormData) => void;
 };
 
-export const Steps: React.FC<StepsProps> = ({ onComplete }) => {
+const Steps: React.FC<StepsProps> = ({ onComplete }) => {
   return <App onComplete={onComplete} />;
 };
+export default Steps;

@@ -1,4 +1,10 @@
-import { StyleSheet, useWindowDimensions, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import Animated, {
   LinearTransition,
   useAnimatedStyle,
@@ -7,6 +13,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { PressableScale } from "pressto";
+import { Text } from "@/components/Themed";
 
 type SplitAction = {
   label: string;

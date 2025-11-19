@@ -168,7 +168,7 @@ PromptCardContent.displayName = "PromptCardContent";
 // Memoized Illustration
 const Illustration = React.memo(() => (
   <View className="justify-end items-center" pointerEvents="none">
-    {/* <LottieView autoPlay style={LOTTIE_STYLE} source={girlMeditation} /> */}
+    <LottieView autoPlay style={LOTTIE_STYLE} source={girlMeditation} />
   </View>
 ));
 

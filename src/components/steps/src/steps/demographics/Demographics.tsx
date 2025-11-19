@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Pressable } from "react-native";
+import { View, Pressable, ScrollView } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -76,7 +76,7 @@ export const Demographics: React.FC<DemographicsProps> = ({
   };
 
   return (
-    <View className="w-full px-4 py-2 pb-6 relative">
+    <ScrollView className="w-full px-4 py-2 pb-6 relative">
       {/* Premium Header */}
       {(title || helperText) && (
         <View className="mb-6 items-center">
@@ -180,7 +180,7 @@ export const Demographics: React.FC<DemographicsProps> = ({
           })}
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

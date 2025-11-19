@@ -107,6 +107,9 @@ export const NameOnboard: React.FC<NameOnboardProps> = ({ name, setName }) => {
               value={name}
               onChangeText={setName}
               backgroundColor="transparent"
+              inputProps={{
+                autoFocus: true,
+              }}
             />
           </View>
         </Animated.View>
@@ -130,7 +133,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 24,
-    paddingVertical: 20,
+    paddingVertical: 12,
+    marginBottom: 32,
   },
   lottieContainer: {
     marginBottom: 16,
@@ -156,6 +160,7 @@ const styles = StyleSheet.create({
   },
 
   helper: {
+    marginTop: 12,
     fontSize: 13,
     color: "#475569",
     fontWeight: "600",

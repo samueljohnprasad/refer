@@ -11,6 +11,7 @@ const Loading = () => {
       style={{
         width: 60,
         height: 60,
+        zIndex: 99999,
       }}
       source={loadingLottie}
     />

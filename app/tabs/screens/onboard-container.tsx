@@ -4,8 +4,6 @@ import { useOnboardingStatus } from "@/hooks/data/useOnboardingStatus";
 import { Box } from "@/components/ui/box";
 import { useAuth } from "@/src/context/AuthContext";
 import { Redirect } from "expo-router";
-import LottieView from "lottie-react-native";
-import { loadingLottie } from "@/assets/lottie";
 
 const OnboardContainer = () => {
   const onboarding = useOnboardingStatus();

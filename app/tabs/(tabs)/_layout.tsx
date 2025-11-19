@@ -3,7 +3,6 @@ import { Tabs } from "expo-router";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { Platform, StyleSheet } from "react-native";
 import { BlurView } from "expo-blur";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -12,7 +11,6 @@ import {
   Mic01Icon,
   Notebook02Icon,
 } from "@hugeicons/core-free-icons";
-
 
 export default function TabLayout() {
   // Design system colors
@@ -24,21 +22,26 @@ export default function TabLayout() {
   // choose extra visual padding you want in addition to the safe area
   const extraBottomPadding = Platform.OS === "ios" ? 12 : 6 + insets.bottom;
   const tabHeightBase = Platform.OS === "ios" ? 90 : 70 + insets.bottom; // your original bases
+  
+  // Memoize the BlurView to prevent re-creation on every tab switch
+  const tabBarBackground = React.useMemo(
+    () => () => (
+      <BlurView
+        tint="light"
+        intensity={60}
+        style={StyleSheet.absoluteFill}
+      />
+    ),
+    []
+  );
+
   return (
-    <BottomSheetModalProvider>
     <Tabs
       screenOptions={{
-        tabBarBackground() {
-          return (
-            <BlurView
-              tint="light"
-              intensity={60}
-              style={StyleSheet.absoluteFill}
-            />
-          );
-        },
+        tabBarBackground,
         tabBarHideOnKeyboard: true,
-        animation: "fade",
+        lazy: true,
+        animation: "none",
         freezeOnBlur: true,
 
         // Disable the static rendrer of the header on web
@@ -116,6 +119,5 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-    </BottomSheetModalProvider>
   );
 }

@@ -1,11 +1,14 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import PaywallScreen from "@/src/screens/PaywallScreen/PaywallScreen";
-
+import React, { lazy } from "react";
+import SuspensLoader from "@/src/components/SuspensLoader";
+const PaywallScreen = lazy(
+  () => import("@/src/screens/PaywallScreen/PaywallScreen")
+);
 const paywall = () => {
-  return <PaywallScreen />;
+  return (
+    <SuspensLoader>
+      <PaywallScreen />
+    </SuspensLoader>
+  );
 };
 
 export default paywall;
-
-const styles = StyleSheet.create({});

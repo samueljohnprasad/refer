@@ -1,7 +1,12 @@
+import SuspensLoader from "@/src/components/SuspensLoader";
 import React, { lazy } from "react";
 const DiscoveryScreen = lazy(
   () => import("@/src/screens/DiscoveryScreen/DiscoveryScreen")
 );
 export default function RecordTab() {
-  return <DiscoveryScreen />;
+  return (
+    <SuspensLoader>
+      <DiscoveryScreen />
+    </SuspensLoader>
+  );
 }

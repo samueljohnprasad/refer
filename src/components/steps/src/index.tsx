@@ -16,7 +16,10 @@ import { atom, useAtom } from "jotai";
 import { Dots } from "./steps/dots";
 import { SplitButton } from "./steps/split-button";
 import { Text } from "@/components/Themed";
-import { KeyboardToolbar } from "react-native-keyboard-controller";
+import {
+  KeyboardAvoidingView,
+  KeyboardToolbar,
+} from "react-native-keyboard-controller";
 import { JournalOptions } from "./steps/journal-options/JournalOptions";
 import {
   AgeRangeOption,
@@ -189,11 +192,7 @@ const App = ({ onComplete }: StepsAppProps) => {
     const current = moods[currentStep];
     switch (current?.inputType) {
       case "birthday":
-        return (
-          typeof formData.ageRange === "string" &&
-          formData.ageRange.trim().length > 0 &&
-          !formData.gender
-        );
+        return !!formData?.ageRange && !!formData.gender;
       case "options":
         return Array.isArray(formData.reasons) && formData.reasons.length > 0;
       default:
@@ -292,90 +291,92 @@ const App = ({ onComplete }: StepsAppProps) => {
   };
 
   return (
-    <Animated.View style={[styles.container, backgroundAnimatedStyle]}>
-      {/* Premium glass overlay for depth */}
-      <Animated.View
-        style={[
-          StyleSheet.absoluteFillObject,
-          {
-            backgroundColor: "rgba(255,255,255,0.15)",
-            backgroundImage:
-              "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%)",
-          },
-          glassOverlayStyle,
-        ]}
-      />
+    <KeyboardAvoidingView className="flex-1">
+      <Animated.View style={[styles.container, backgroundAnimatedStyle]}>
+        {/* Premium glass overlay for depth */}
+        <Animated.View
+          style={[
+            StyleSheet.absoluteFillObject,
+            {
+              backgroundColor: "rgba(255,255,255,0.15)",
+              backgroundImage:
+                "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%)",
+            },
+            glassOverlayStyle,
+          ]}
+        />
 
-      {/* Content area with proper spacing */}
-      <View
-        className="flex-1 w-full "
-        style={{ paddingTop: 70, paddingBottom: 30 }}
-      >
-        {renderInput()}
-      </View>
-
-      {/* Bottom section for progress and buttons */}
-      <View className="w-full" style={{ marginTop: 20 }}>
-        {/* Premium progress indicator with step labels */}
-        <View className="px-6 mb-2">
-          <Dots activeIndex={activeIndex} count={5} dotSize={18} />
+        {/* Content area with proper spacing */}
+        <View
+          className="flex-1 w-full "
+          style={{ paddingTop: 70, paddingBottom: 30 }}
+        >
+          {renderInput()}
         </View>
 
-        {/* Premium navigation buttons with glass effect */}
-        <View style={{ marginTop: 24, marginBottom: 24 }}>
-          <SplitButton
-            splitted={splitted}
-            mainAction={{
-              label: "Continue",
-              labelColor: "white",
-              onPress: async () => {
-                if (isLastStep) {
-                  onComplete && onComplete(formData);
-                  return;
-                }
-                increaseActiveIndex();
-                setSplitted(true);
-              },
-              backgroundColor: "#7C3AED", // Premium violet
-            }}
-            leftAction={{
-              label: "Back",
-              labelColor: "#64748B",
-              onPress: () => {
-                if (activeIndex.value === 1) {
-                  setSplitted(false);
-                }
-                activeIndex.value = Math.max(0, activeIndex.value - 1);
-                setCurrentStep((prev) => Math.max(0, prev - 1));
-              },
-              backgroundColor: "rgba(255,255,255,0.85)",
-            }}
-            rightAction={{
-              label: rightLabel,
-              labelColor: "white",
-              iconVisible: true,
-              onPress: async () => {
-                if (isLastStep) {
-                  setSplitted(false);
-                  onComplete && onComplete(formData);
-                  return;
-                }
-                increaseActiveIndex();
-              },
-              backgroundColor: "#7C3AED", // Premium violet
-            }}
+        {/* Bottom section for progress and buttons */}
+        <View className="w-full" style={{ marginTop: 20 }}>
+          {/* Premium progress indicator with step labels */}
+          <View className="px-6 mb-2">
+            <Dots activeIndex={activeIndex} count={5} dotSize={18} />
+          </View>
+
+          {/* Premium navigation buttons with glass effect */}
+          <View style={{ marginTop: 24, marginBottom: 24 }}>
+            <SplitButton
+              splitted={splitted}
+              mainAction={{
+                label: "Continue",
+                labelColor: "white",
+                onPress: async () => {
+                  if (isLastStep) {
+                    onComplete && onComplete(formData);
+                    return;
+                  }
+                  increaseActiveIndex();
+                  setSplitted(true);
+                },
+                backgroundColor: "#7C3AED", // Premium violet
+              }}
+              leftAction={{
+                label: "Back",
+                labelColor: "#64748B",
+                onPress: () => {
+                  if (activeIndex.value === 1) {
+                    setSplitted(false);
+                  }
+                  activeIndex.value = Math.max(0, activeIndex.value - 1);
+                  setCurrentStep((prev) => Math.max(0, prev - 1));
+                },
+                backgroundColor: "rgba(255,255,255,0.85)",
+              }}
+              rightAction={{
+                label: rightLabel,
+                labelColor: "white",
+                iconVisible: true,
+                onPress: async () => {
+                  if (isLastStep) {
+                    setSplitted(false);
+                    onComplete && onComplete(formData);
+                    return;
+                  }
+                  increaseActiveIndex();
+                },
+                backgroundColor: "#7C3AED", // Premium violet
+              }}
+            />
+          </View>
+          <Animated.View style={keyboardPadding} pointerEvents="none" />
+          <KeyboardToolbar
+            pointerEvents="none"
+            content={<Text></Text>}
+            showArrows={false}
+            insets={{ left: 16, right: 0 }}
+            doneText="Close keyboard"
           />
         </View>
-        <Animated.View style={keyboardPadding} pointerEvents="none" />
-        <KeyboardToolbar
-          pointerEvents="none"
-          content={<Text></Text>}
-          showArrows={false}
-          insets={{ left: 16, right: 0 }}
-          doneText="Close keyboard"
-        />
-      </View>
-    </Animated.View>
+      </Animated.View>
+    </KeyboardAvoidingView>
   );
 };
 

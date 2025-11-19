@@ -1,4 +1,5 @@
 import { Enums } from "@/types/types";
+import { Platform } from "react-native";
 
 export const getMoodScore = (mood?: Enums<"mood"> | null): number => {
   switch (mood) {
@@ -16,3 +17,5 @@ export const getMoodScore = (mood?: Enums<"mood"> | null): number => {
       return 3;
   }
 };
+
+export const isIOS = Platform.OS === "ios";

@@ -110,70 +110,70 @@ export const JournalOptions: React.FC<JournalOptionsProps> = (
 
   return (
     <View className="w-full flex-1 px-4 py-2">
-      {/* Premium Header with Glass Effect */}
-      {(title || helperText) && (
-        <Animated.View entering={FadeInDown.duration(400)} className="mb-6">
-          <View
-            style={{
-              backgroundColor: "rgba(255, 255, 255, 0.25)",
-              borderRadius: 20,
-              padding: 18,
-              borderWidth: 1,
-              borderColor: "rgba(255, 255, 255, 0.3)",
-              shadowColor: "#7C3AED",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.08,
-              shadowRadius: 12,
-              elevation: 3,
-            }}
-          >
-            {title && (
-              <Text className="text-3xl font-black text-gray-900 dark:text-gray-100 mb-3 text-center">
-                {title}
-              </Text>
-            )}
-            {helperText && (
-              <Text className="text-base text-gray-600 dark:text-gray-400 text-center font-medium">
-                {helperText}
-              </Text>
-            )}
-          </View>
-        </Animated.View>
-      )}
-
-      {/* Premium Selected Count Badge with Pulse */}
-      {showCount && selectedSet.size > 0 && (
-        <Animated.View
-          entering={FadeIn.duration(300)}
-          className="absolute top-1 right-6 z-10"
-        >
-          <View
-            style={{
-              paddingHorizontal: 14,
-              paddingVertical: 8,
-              borderRadius: 20,
-              backgroundColor: "#7C3AED",
-              shadowColor: "#7C3AED",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 5,
-              borderWidth: 1.5,
-              borderColor: "rgba(255, 255, 255, 0.3)",
-            }}
-          >
-            <Text className="text-sm font-bold text-white">
-              ✓ {selectedSet.size} selected
-            </Text>
-          </View>
-        </Animated.View>
-      )}
-
       <ScrollView
         showsVerticalScrollIndicator={true}
         contentContainerStyle={{ paddingBottom: 120 }}
       >
-        <View className="gap-3">
+        {/* Premium Header with Glass Effect */}
+        {(title || helperText) && (
+          <Animated.View entering={FadeInDown.duration(400)} className="mb-6">
+            <View
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.25)",
+                borderRadius: 20,
+                padding: 18,
+                borderWidth: 1,
+                borderColor: "rgba(255, 255, 255, 0.3)",
+                shadowColor: "#7C3AED",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.08,
+                shadowRadius: 12,
+                elevation: 3,
+              }}
+            >
+              {title && (
+                <Text className="text-3xl font-black text-gray-900 dark:text-gray-100 mb-3 text-center">
+                  {title}
+                </Text>
+              )}
+              {helperText && (
+                <Text className="text-base text-gray-600 dark:text-gray-400 text-center font-medium">
+                  {helperText}
+                </Text>
+              )}
+            </View>
+          </Animated.View>
+        )}
+
+        {/* Premium Selected Count Badge with Pulse */}
+        {showCount && selectedSet.size > 0 && (
+          <Animated.View
+            entering={FadeIn.duration(300)}
+            className="absolute top-1 right-6 z-10"
+          >
+            <View
+              style={{
+                paddingHorizontal: 14,
+                paddingVertical: 8,
+                borderRadius: 20,
+                backgroundColor: "#7C3AED",
+                shadowColor: "#7C3AED",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+                elevation: 5,
+                borderWidth: 1.5,
+                borderColor: "rgba(255, 255, 255, 0.3)",
+              }}
+            >
+              <Text className="text-sm font-bold text-white">
+                ✓ {selectedSet.size} selected
+              </Text>
+            </View>
+          </Animated.View>
+        )}
+
+        <View className="gap-3 mt-8">
           {reasons.map((reason: string, index: number) => {
             const selected: boolean = selectedSet.has(reason);
             return (
