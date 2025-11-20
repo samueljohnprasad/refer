@@ -32,7 +32,7 @@ const useAudioRecording = () => {
   const record = async () => {
     await audioRecorder.prepareToRecordAsync();
     audioRecorder.record({
-      forDuration: 10,
+      forDuration: 6000,
     });
     setRecordingCurrentState("recording");
     // Start timer
@@ -59,7 +59,7 @@ const useAudioRecording = () => {
   useEffect(() => {
     return () => {
       clearInterval(timerInterval);
-    };
+  };
   }, []);
 
   useEffect(() => {

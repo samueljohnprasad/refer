@@ -265,7 +265,7 @@ const DailyNotesHeader = React.memo(
     };
 
     // Pan gesture handlers are provided by useWeekNavigation
-    const paddingTop = isIOS ? 0 : 40;
+    const paddingTop = isIOS ? 0 : 20;
     return (
       <SafeAreaView
         edges={["top"]}

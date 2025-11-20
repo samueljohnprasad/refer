@@ -46,7 +46,7 @@ import { AIInsightsModalBottomSheet } from "@/src/components/ai/AIInsightsModalB
 import { useWeeklyAISummary } from "@/hooks/data/useWeeklyAISummaries";
 import { formateDate_y_m_d } from "@/src/utils/date";
 
-// Animated Day Button Component
+// Simplified Animated Day Button Component - Performance Optimized
 interface DayButtonProps {
   day: Date;
   dayName: string;
@@ -56,6 +56,7 @@ interface DayButtonProps {
   disabled?: boolean;
 }
 
+// Simplified version without individual shared values - much more performant
 const DayButtonComponent: React.FC<DayButtonProps> = ({
   day,
   dayName,
@@ -64,24 +65,6 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   onPress,
   disabled = false,
 }) => {
-  const glow = useSharedValue<number>(0);
-
-  useEffect(() => {
-    // Gentle glow animation for selected state (on UI thread)
-    glow.value = withTiming(isSelected ? 1 : 0, {
-      duration: 400,
-      easing: Easing.out(Easing.quad),
-    });
-  }, [isSelected]);
-
-  const outerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(glow.value, [0, 1], [0.85, 1]),
-  }));
-
-  const innerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(glow.value, [0, 1], [0.8, 1]),
-  }));
-
   const handlePress = (): void => {
     if (disabled) return;
     onPress();
@@ -92,9 +75,10 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
     if (isSelected) return "text-black/90";
     return "text-black/80";
   };
+
   return (
     <Pressable onPress={handlePress} disabled={disabled}>
-      <Animated.View
+      <View
         className={`items-center py-1.5 px-1 rounded-xl ${
           isSelected
             ? "bg-[#7B61FF]"
@@ -102,12 +86,8 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
             ? "bg-white/10"
             : ""
         }`}
-        style={[outerAnimatedStyle]}
       >
-        <Animated.View
-          style={[innerAnimatedStyle]}
-          className="flex flex-col items-center"
-        >
+        <View className="flex flex-col items-center">
           <Text
             className={`text-xs font-medium tracking-wider mb-0.5 ${getFontColor()}`}
           >
@@ -116,8 +96,8 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
           <Text className={`text-base font-semibold ${getFontColor()}`}>
             {format(day, "d")}
           </Text>
-        </Animated.View>
-      </Animated.View>
+        </View>
+      </View>
     </Pressable>
   );
 };
@@ -139,7 +119,7 @@ const areDayButtonPropsEqual = (
 
 export const DayButton = memo(DayButtonComponent, areDayButtonPropsEqual);
 
-const DailyNotesScreen = () => {
+const DailyNotesScreenComponent = () => {
   // State for selected date
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [showBookmarksModal, setShowBookmarksModal] = useState<boolean>(false);
@@ -151,7 +131,13 @@ const DailyNotesScreen = () => {
   // Set calendar visible dates based on current week in view
   const setCalenderVisibleDates = useSetAtom(calenderVisibleDatesAtom);
 
-  // Update calendar visible dates when week changes
+  // Memoize the week number to avoid unnecessary effect triggers
+  const currentWeekNumber = useMemo(
+    () => getWeek(currentWeekView),
+    [currentWeekView]
+  );
+
+  // Update calendar visible dates when week changes - optimized with memoized week number
   useEffect(() => {
     const monthStart = startOfMonth(currentWeekView);
     const monthEnd = endOfMonth(currentWeekView);
@@ -162,7 +148,7 @@ const DailyNotesScreen = () => {
       visibleStartDate: formateDate_y_m_d(visibleStartDate),
       visibleEndDate: formateDate_y_m_d(visibleEndDate),
     });
-  }, [getWeek(currentWeekView)]);
+  }, [currentWeekNumber, setCalenderVisibleDates]);
 
   // Bottom sheet ref for AI insights
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -183,17 +169,22 @@ const DailyNotesScreen = () => {
     () => endOfWeek(currentWeekView, { weekStartsOn: 0 }),
     [currentWeekView]
   );
-  const weekStartFormatted = format(weekStart, "MMM dd, yyyy");
-  const weekEndFormatted = format(weekEnd, "MMM dd, yyyy");
+  const weekStartFormatted = useMemo(
+    () => format(weekStart, "MMM dd, yyyy"),
+    [weekStart]
+  );
+  const weekEndFormatted = useMemo(
+    () => format(weekEnd, "MMM dd, yyyy"),
+    [weekEnd]
+  );
 
   // Shared values for content animations (UI thread)
   const contentTranslateX = useSharedValue<number>(0);
   const contentOpacity = useSharedValue<number>(1);
   const contentScale = useSharedValue<number>(1);
+  // Simplified arrow indicators - only opacity, no scale
   const leftArrowOpacity = useSharedValue<number>(0);
   const rightArrowOpacity = useSharedValue<number>(0);
-  const leftArrowScale = useSharedValue<number>(0.8);
-  const rightArrowScale = useSharedValue<number>(0.8);
 
   // Animated styles with smooth scale feedback
   const contentAnimatedStyle = useAnimatedStyle(() => ({
@@ -204,15 +195,13 @@ const DailyNotesScreen = () => {
     ],
   }));
 
-  // Navigation arrow animated styles
+  // Simplified navigation arrow animated styles - only opacity
   const leftArrowAnimatedStyle = useAnimatedStyle(() => ({
     opacity: leftArrowOpacity.value,
-    transform: [{ scale: leftArrowScale.value }],
   }));
 
   const rightArrowAnimatedStyle = useAnimatedStyle(() => ({
     opacity: rightArrowOpacity.value,
-    transform: [{ scale: rightArrowScale.value }],
   }));
 
   // Helper to move date by offset without stale closure issues
@@ -225,38 +214,48 @@ const DailyNotesScreen = () => {
     [setSelectedDate, setCurrentWeekView]
   );
 
-  const changeDateBy = (offset: number): void => {
-    // Pre-compute the target date timestamp on JS thread and pass to worklet as a primitive
-    const targetTs: number = addDays(selectedDate, offset).getTime();
-    // Gently fade out, change date on JS thread, then fade back in (all driven by UI thread)
-    contentOpacity.value = withTiming(
-      0.15,
-      { duration: 180, easing: Easing.out(Easing.quad) },
-      (finished?: boolean) => {
-        if (finished) {
-          runOnJS(updateDateFromTs)(targetTs);
-          // Reset translation on UI thread
-          contentTranslateX.value = 0;
-          // Fade back in
-          contentOpacity.value = withTiming(1, {
-            duration: 300,
-            easing: Easing.out(Easing.quad),
-          });
+  const changeDateBy = useCallback(
+    (offset: number): void => {
+      // Pre-compute the target date timestamp on JS thread and pass to worklet as a primitive
+      const targetTs: number = addDays(selectedDate, offset).getTime();
+      // Gently fade out, change date on JS thread, then fade back in (all driven by UI thread)
+      contentOpacity.value = withTiming(
+        0.15,
+        { duration: 180, easing: Easing.out(Easing.quad) },
+        (finished?: boolean) => {
+          if (finished) {
+            runOnJS(updateDateFromTs)(targetTs);
+            // Reset translation on UI thread
+            contentTranslateX.value = 0;
+            // Fade back in
+            contentOpacity.value = withTiming(1, {
+              duration: 300,
+              easing: Easing.out(Easing.quad),
+            });
+          }
         }
-      }
-    );
-  };
+      );
+    },
+    [selectedDate, updateDateFromTs, contentOpacity, contentTranslateX]
+  );
 
-  const goToPreviousDateContent = (): void => changeDateBy(-1);
-  const goToNextDateContent = (): void => changeDateBy(1);
+  const goToPreviousDateContent = useCallback(
+    (): void => changeDateBy(-1),
+    [changeDateBy]
+  );
+  const goToNextDateContent = useCallback(
+    (): void => changeDateBy(1),
+    [changeDateBy]
+  );
 
-  // Enhanced pan gesture with reduced sensitivity
+  // Enhanced pan gesture with reduced sensitivity - memoized with stable dependencies
   const contentPanGesture = useMemo(
     () =>
       Gesture.Pan()
         .minDistance(15)
         .activeOffsetY([-15, 15])
         .onBegin(() => {
+          "worklet";
           // Reduced scale effect for less bounce
           contentScale.value = withSpring(0.995, {
             damping: 25,
@@ -285,7 +284,7 @@ const DailyNotesScreen = () => {
 
           contentTranslateX.value = tx;
 
-          // Show arrow indicators based on swipe direction
+          // Show arrow indicators based on swipe direction - simplified
           const progress = Math.abs(tx) / maxTranslate;
 
           if (tx > 20) {
@@ -296,12 +295,6 @@ const DailyNotesScreen = () => {
               [0, 1],
               "clamp"
             );
-            leftArrowScale.value = interpolate(
-              progress,
-              [0.2, 0.6],
-              [0.8, 1],
-              "clamp"
-            );
             rightArrowOpacity.value = 0;
           } else if (tx < -20) {
             // Swiping left - show right arrow (go to next)
@@ -309,12 +302,6 @@ const DailyNotesScreen = () => {
               progress,
               [0.2, 0.6],
               [0, 1],
-              "clamp"
-            );
-            rightArrowScale.value = interpolate(
-              progress,
-              [0.2, 0.6],
-              [0.8, 1],
               "clamp"
             );
             leftArrowOpacity.value = 0;
@@ -332,6 +319,7 @@ const DailyNotesScreen = () => {
           );
         })
         .onEnd((g) => {
+          "worklet";
           const absDx = Math.abs(g.translationX);
           const direction = g.translationX > 0 ? "right" : "left";
 
@@ -363,6 +351,7 @@ const DailyNotesScreen = () => {
           rightArrowOpacity.value = withTiming(0, { duration: 200 });
         })
         .onFinalize(() => {
+          "worklet";
           contentTranslateX.value = withSpring(0, {
             damping: 30,
             stiffness: 180,
@@ -372,20 +361,66 @@ const DailyNotesScreen = () => {
           leftArrowOpacity.value = withTiming(0, { duration: 150 });
           rightArrowOpacity.value = withTiming(0, { duration: 150 });
         }),
-    [goToNextDateContent, goToPreviousDateContent]
+    [
+      contentScale,
+      contentTranslateX,
+      contentOpacity,
+      leftArrowOpacity,
+      rightArrowOpacity,
+      goToNextDateContent,
+      goToPreviousDateContent,
+    ]
   );
 
-  // Removed unused day label animation for performance
+  // Memoize AI Insights Chip to prevent re-renders
+  const aiInsightsChip = useMemo(
+    () => (
+      <View className="pt-2 px-4 pb-1">
+        <AIInsightsChip
+          visible={isBeforeCurrentWeek}
+          onPress={() => {
+            bottomSheetRef.current?.present();
+          }}
+        />
+      </View>
+    ),
+    [isBeforeCurrentWeek]
+  );
+
+  // Memoize Mental Health Container to prevent re-renders during animations
+  const mentalHealthContent = useMemo(
+    () => (
+      <View className="pt-4 pb-2">
+        <MentalHealthProfileContainer
+          selectedDate={selectedDate}
+          showBookmarksModal={showBookmarksModal}
+          setShowBookmarksModal={setShowBookmarksModal}
+          onRefresh={() => {
+            // Optional refresh logic for mental health data
+          }}
+        />
+      </View>
+    ),
+    [selectedDate, showBookmarksModal]
+  );
+
+  // Memoize header callback
+  const handleBookmarksPress = useCallback(
+    () => setShowBookmarksModal((prev) => !prev),
+    []
+  );
+
+  // Memoize header component
+  const headerComponent = useMemo(
+    () => <DailyNotesHeader onBookmarksPress={handleBookmarksPress} />,
+    [handleBookmarksPress]
+  );
 
   return (
     <SafeAreaView edges={[]} className="flex-1 bg-gray-50">
       <Stack.Screen
         options={{
-          header: () => (
-            <DailyNotesHeader
-              onBookmarksPress={() => setShowBookmarksModal((prev) => !prev)}
-            />
-          ),
+          header: () => headerComponent,
           headerShown: true,
         }}
       />
@@ -400,14 +435,7 @@ const DailyNotesScreen = () => {
               accessibilityLabel="Daily notes content"
             >
               {/* AI Insights Chip - Below header */}
-              <View className="pt-2 px-4 pb-1">
-                <AIInsightsChip
-                  visible={isBeforeCurrentWeek}
-                  onPress={() => {
-                    bottomSheetRef.current?.present();
-                  }}
-                />
-              </View>
+              {aiInsightsChip}
               <Animated.View
                 className="flex-1 px-4 bg-gray-50"
                 style={[
@@ -416,21 +444,12 @@ const DailyNotesScreen = () => {
                 ]}
               >
                 {/* Mental Health Journal Dashboard */}
-                <View className="pt-4 pb-2">
-                  <MentalHealthProfileContainer
-                    selectedDate={selectedDate}
-                    showBookmarksModal={showBookmarksModal}
-                    setShowBookmarksModal={setShowBookmarksModal}
-                    onRefresh={() => {
-                      // Optional refresh logic for mental health data
-                    }}
-                  />
-                </View>
+                {mentalHealthContent}
               </Animated.View>
             </ScrollView>
           </GestureDetector>
 
-          {/* Navigation Arrows - Chrome-style */}
+          {/* Navigation Arrows - Simplified, Chrome-style */}
           <Animated.View
             className="absolute left-4"
             style={[leftArrowAnimatedStyle, { top: "50%", marginTop: -24 }]}
@@ -468,6 +487,7 @@ const DailyNotesScreen = () => {
   );
 };
 
-// All styles have been converted to Tailwind CSS
+// Memoize the entire screen to prevent unnecessary re-renders from parent
+const DailyNotesScreen = memo(DailyNotesScreenComponent);
 
 export default DailyNotesScreen;

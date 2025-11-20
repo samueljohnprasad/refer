@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, memo } from "react";
 import { useMentalHealthData } from "@/hooks/data/useMentalHealthData";
 import { View } from "@/components/ui/view";
 import { Text } from "@/components/Themed";
@@ -20,7 +20,7 @@ interface MentalHealthProfileContainerProps {
   setShowBookmarksModal: (show: boolean) => void;
 }
 
-export const MentalHealthProfileContainer: React.FC<
+const MentalHealthProfileContainerComponent: React.FC<
   MentalHealthProfileContainerProps
 > = ({ selectedDate, showBookmarksModal, setShowBookmarksModal }) => {
   const [selectedEntry, setSelectedEntry] = useState<JournalEntry>();
@@ -63,6 +63,22 @@ export const MentalHealthProfileContainer: React.FC<
     [toggleBookmark, selectedDate]
   );
 
+  // Memoize callbacks to prevent re-renders
+  const handleRefetch = useCallback(() => refetch(), [refetch]);
+
+  const handleCloseModal = useCallback(() => setIsModalVisible(false), []);
+
+  const handleCloseBookmarks = useCallback(
+    () => setShowBookmarksModal(false),
+    [setShowBookmarksModal]
+  );
+
+  const handleBookmarkEntryPress = useCallback((entry: JournalEntry) => {
+    setSelectedEntry(entry);
+    // Keep bookmarks modal open so user can browse multiple entries
+    setIsModalVisible(true);
+  }, []);
+
   if (!insightsResponse && !mentalHealthLoading) {
     return (
       <View className="p-4">
@@ -89,7 +105,7 @@ export const MentalHealthProfileContainer: React.FC<
         isLoading={mentalHealthLoading}
         onEntryPress={handleEntryPress}
         onBookmark={handleBookmarkToggle}
-        onRefresh={() => refetch()}
+        onRefresh={handleRefetch}
         bookmarkingId={bookmarkingId}
       />
 
@@ -97,7 +113,7 @@ export const MentalHealthProfileContainer: React.FC<
       <BlurModal visible={isModalVisible}>
         <JournalEntryScreen
           insights={selectedEntry}
-          onClose={() => setIsModalVisible(false)}
+          onClose={handleCloseModal}
         />
       </BlurModal>
 
@@ -127,15 +143,19 @@ export const MentalHealthProfileContainer: React.FC<
       {showBookmarksModal && (
         <BookmarkedJournalsBottomSheet
           isOpen={showBookmarksModal}
-          onClose={() => setShowBookmarksModal(false)}
-          onEntryPress={(entry) => {
-            setSelectedEntry(entry);
-            // Keep bookmarks modal open so user can browse multiple entries
-            setIsModalVisible(true);
-          }}
+          onClose={handleCloseBookmarks}
+          onEntryPress={handleBookmarkEntryPress}
           onBookmark={handleBookmarkToggle}
         />
       )}
     </>
   );
 };
+
+// Memoize component to prevent re-renders during parent animations
+export const MentalHealthProfileContainer = memo(
+  MentalHealthProfileContainerComponent,
+  (prev, next) =>
+    prev.selectedDate.getTime() === next.selectedDate.getTime() &&
+    prev.showBookmarksModal === next.showBookmarksModal
+);

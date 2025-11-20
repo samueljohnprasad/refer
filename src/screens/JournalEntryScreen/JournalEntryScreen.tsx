@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { useSaveJournal } from "@/hooks/post/useSaveJournal";
 import { JournalEntryScreenProps } from "./types";
@@ -131,6 +131,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   const currentGradient = MOOD_GRADIENTS[selectedMood] || MOOD_GRADIENTS.great;
 
   return (
+    <SafeAreaView className="flex-1"> 
     <LinearGradient
       colors={currentGradient as [string, string, ...string[]]}
       start={{ x: 0, y: 0 }}
@@ -194,6 +195,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
         />
       </KeyboardAvoidingView>
     </LinearGradient>
+    </SafeAreaView>
   );
 };
 

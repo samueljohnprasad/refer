@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Pressable,
   ScrollView,
   KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
@@ -43,7 +44,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const rotation = useSharedValue(0);
 
   const formattedDate = format(localSelectedDate, "MMMM d, yyyy");
-  // const xpValue = Math.min(Math.floor(characterCount / 10), 50);
+ 
 
   const handleShufflePrompt = useCallback(() => {
     rotation.value = withSpring(rotation.value + 360, {
@@ -60,6 +61,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   });
 
   const handleDatePress = useCallback(() => {
+    Keyboard.dismiss();
     setIsCalendarVisible(true);
   }, []);
 
@@ -70,7 +72,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
   const handleCloseCalendar = useCallback(() => {
     setIsCalendarVisible(false);
-  }, []);
+    }, []);
 
   const handleTodayPress = useCallback(() => {
     const today = new Date();
@@ -89,9 +91,9 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
     <>
       <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          behavior="padding"
           className="flex-1"
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
         >
           {/* Date Header - Centered and Clickable */}
           <View className="px-6 pt-6 pb-4 items-center">
@@ -127,6 +129,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
             {/* Text Input */}
             <TextInput
+             focusable
               maxLength={7000}
               value={journalText}
               onChangeText={setJournalText}
