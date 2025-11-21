@@ -2,7 +2,7 @@ import { App } from "./src";
 import { OnBoardingFormData } from "./src/types";
 
 export type StepsProps = {
-  onComplete?: (onBoardingData: OnBoardingFormData) => void;
+  onComplete?: (onBoardingData: OnBoardingFormData) => Promise<void>;
 };
 
 const Steps: React.FC<StepsProps> = ({ onComplete }) => {

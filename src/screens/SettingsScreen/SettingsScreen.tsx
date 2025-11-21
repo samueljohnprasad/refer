@@ -11,7 +11,6 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
-  StyleSheet,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -111,7 +110,7 @@ export default React.memo(function SettingsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe} edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-[#F8F8FF]" edges={["bottom"]}>
       <Stack.Screen
         options={{
           headerShown: true,
@@ -122,20 +121,15 @@ export default React.memo(function SettingsScreen() {
               <BlurView
                 intensity={50}
                 tint="light"
-                style={[
-                  styles.headerRow,
-                  {
-                    height: height * 0.14,
-                    justifyContent: "space-between",
-                    alignItems: "flex-end",
-                    paddingHorizontal: 16,
-                    backgroundColor: "transparent",
-                    paddingBottom: 16,
-                  },
-                ]}
+                className="flex-row items-center justify-between"
+                style={{
+                  height: height * 0.14,
+                  paddingHorizontal: 16,
+                  paddingBottom: 16,
+                }}
               >
                 <TouchableOpacity
-                  style={styles.backBtn}
+                  className="w-10 h-10 rounded-full justify-center items-center bg-[#7C5CFF]"
                   activeOpacity={0.7}
                   onPress={() => router.back()}
                 >
@@ -146,7 +140,9 @@ export default React.memo(function SettingsScreen() {
                   />
                 </TouchableOpacity>
 
-                <Text style={styles.headerTitle}>Settings</Text>
+                <Text className="text-[28px] font-extrabold text-[#0F172A]">
+                  Settings
+                </Text>
                 {upgradeY !== null && (
                   <Animated.View
                     style={{
@@ -169,12 +165,12 @@ export default React.memo(function SettingsScreen() {
                         colors={["#7C5CFF", "#9C7CFF"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
-                        style={[
-                          styles.upgradeButton,
-                          { paddingVertical: 8, paddingHorizontal: 14 },
-                        ]}
+                        className="self-start rounded-[28px]"
+                        style={{ paddingVertical: 8, paddingHorizontal: 14 }}
                       >
-                        <Text style={styles.upgradeText}>Upgrade</Text>
+                        <Text className="text-white font-bold text-[15px]">
+                          Upgrade
+                        </Text>
                       </LinearGradient>
                     </Pressable>
                   </Animated.View>
@@ -186,12 +182,13 @@ export default React.memo(function SettingsScreen() {
           },
         }}
       />
-      <View style={styles.surface}>
+      <View className="flex-1 px-0">
         <Animated.ScrollView
-          contentContainerStyle={[
-            styles.scrollViewContent,
-            { paddingTop: headerHeight, paddingBottom: 24 },
-          ]}
+          contentContainerClassName="flex-grow px-4"
+          contentContainerStyle={{
+            paddingTop: headerHeight,
+            paddingBottom: 24,
+          }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           nestedScrollEnabled={true}
@@ -202,10 +199,15 @@ export default React.memo(function SettingsScreen() {
           contentInsetAdjustmentBehavior="automatic"
         >
           {/* Promo Card */}
-          <View style={styles.promoCard}>
+          <View className="bg-[#FFED6B] rounded-[18px] p-4 flex-row items-center mb-[18px]">
             <View style={{ flex: 1 }}>
-              <Text style={styles.promoTitle}>Unlock All Features</Text>
-              <Text style={styles.promoSubtitle} numberOfLines={3}>
+              <Text className="text-[22px] font-extrabold text-[#0B1220] mb-1.5">
+                Unlock All Features
+              </Text>
+              <Text
+                className="text-[#374151] text-[13.5px] leading-[19px] mb-3"
+                numberOfLines={3}
+              >
                 AI Insights, Weekly Summaries,{"\n"}Advanced Dashboard,{"\n"}
                 Longer Recordings, and more.
               </Text>
@@ -226,33 +228,37 @@ export default React.memo(function SettingsScreen() {
                   colors={["#7C5CFF", "#9C7CFF"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
-                  style={styles.upgradeButton}
+                  className="self-start py-2.5 px-[18px] rounded-[28px]"
                 >
-                  <Text style={styles.upgradeText}>Upgrade to Premium</Text>
+                  <Text className="text-white font-bold text-[15px]">
+                    Upgrade to Premium
+                  </Text>
                 </LinearGradient>
               </Pressable>
             </View>
           </View>
 
-          <View style={styles.cardGroup}>
+          <View className="bg-white rounded-2xl overflow-hidden">
             <TouchableOpacity
-              style={styles.rowItem}
+              className="flex-row items-center py-3.5 px-4 border-b border-[#F0F0F3]"
               activeOpacity={0.7}
               onPress={() => {
                 Haptics.selectionAsync();
                 router.push("/tabs/screens/reminders" as any);
               }}
             >
-              <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
+              <View className="w-9 h-9 rounded-[18px] justify-center items-center mr-3 bg-[#E9D5FF]">
                 <HugeiconsIcon
                   icon={Notification01Icon}
                   size={20}
                   color="#A855F7"
                 />
               </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Daily Reminders</Text>
-                <Text style={styles.itemSubtitle}>
+              <View className="flex-1">
+                <Text className="text-[17px] font-bold text-[#0F172A]">
+                  Daily Reminders
+                </Text>
+                <Text className="text-[13px] text-[#6B7280] mt-0.5">
                   Customize multiple reminders
                 </Text>
               </View>
@@ -264,17 +270,19 @@ export default React.memo(function SettingsScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.rowItem}
+              className="flex-row items-center py-3.5 px-4 border-b border-[#F0F0F3]"
               activeOpacity={0.7}
               onPress={() => {
                 handlePress("edit-name");
               }}
             >
-              <View style={[styles.leftIcon, { backgroundColor: "#FECACA" }]}>
+              <View className="w-9 h-9 rounded-[18px] justify-center items-center mr-3 bg-[#FECACA]">
                 <HugeiconsIcon icon={UserIcon} size={20} color="#EF4444" />
               </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Edit Name</Text>
+              <View className="flex-1">
+                <Text className="text-[17px] font-bold text-[#0F172A]">
+                  Edit Name
+                </Text>
               </View>
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
@@ -283,43 +291,24 @@ export default React.memo(function SettingsScreen() {
               />
             </TouchableOpacity>
 
-            {/* <View style={styles.rowItem}>
-              <View style={[styles.leftIcon, { backgroundColor: "#DDD6FE" }]}>
-                <MaterialCommunityIcons
-                  name="lock-outline"
-                  size={20}
-                  color="#7C3AED"
-                />
-              </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Set Up Passcode</Text>
-                <Text style={styles.itemSubtitle}>Face/Touch ID</Text>
-              </View>
-              <Switch
-                value={passcodeEnabled}
-                onValueChange={(val) => handleToggle(setPasscodeEnabled, val)}
-                trackColor={{ true: "#7C5CFF", false: "#E6E6E6" }}
-                thumbColor={Platform.OS === "android" ? "#fff" : undefined}
-                ios_backgroundColor="#E6E6E6"
-              />
-            </View> */}
-
             <TouchableOpacity
-              style={styles.rowItem}
+              className="flex-row items-center py-3.5 px-4 border-b border-[#F0F0F3]"
               activeOpacity={0.7}
               onPress={() => {
                 handlePress("contact-support");
               }}
             >
-              <View style={[styles.leftIcon, { backgroundColor: "#CFFAFE" }]}>
+              <View className="w-9 h-9 rounded-[18px] justify-center items-center mr-3 bg-[#CFFAFE]">
                 <HugeiconsIcon
                   icon={MessageOutgoing01Icon}
                   size={20}
                   color="#06B6D4"
                 />
               </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Contact Support</Text>
+              <View className="flex-1">
+                <Text className="text-[17px] font-bold text-[#0F172A]">
+                  Contact Support
+                </Text>
               </View>
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
@@ -329,15 +318,17 @@ export default React.memo(function SettingsScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.rowItem}
+              className="flex-row items-center py-3.5 px-4 border-b border-[#F0F0F3]"
               activeOpacity={0.7}
               onPress={handleRateUs}
             >
-              <View style={[styles.leftIcon, { backgroundColor: "#DCFCE7" }]}>
+              <View className="w-9 h-9 rounded-[18px] justify-center items-center mr-3 bg-[#DCFCE7]">
                 <HugeiconsIcon icon={StarIcon} size={20} color="#16A34A" />
               </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Rate Us</Text>
+              <View className="flex-1">
+                <Text className="text-[17px] font-bold text-[#0F172A]">
+                  Rate Us
+                </Text>
               </View>
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
@@ -348,20 +339,22 @@ export default React.memo(function SettingsScreen() {
           </View>
 
           {/* Settings Group 2 */}
-          <View style={[styles.cardGroup, { marginTop: 14 }]}>
+          <View className="bg-white rounded-2xl overflow-hidden mt-[14px]">
             <TouchableOpacity
-              style={styles.rowItem}
+              className="flex-row items-center py-3.5 px-4 border-b border-[#F0F0F3]"
               activeOpacity={0.7}
               onPress={() => {
                 Haptics.selectionAsync();
                 setShowTermsAndConditions(true);
               }}
             >
-              <View style={[styles.leftIcon, { backgroundColor: "#F3E8FF" }]}>
+              <View className="w-9 h-9 rounded-[18px] justify-center items-center mr-3 bg-[#F3E8FF]">
                 <HugeiconsIcon icon={File01Icon} size={20} color="#9333EA" />
               </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Terms of Use</Text>
+              <View className="flex-1">
+                <Text className="text-[17px] font-bold text-[#0F172A]">
+                  Terms of Use
+                </Text>
               </View>
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
@@ -371,22 +364,24 @@ export default React.memo(function SettingsScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.rowItem}
+              className="flex-row items-center py-3.5 px-4 border-b border-[#F0F0F3]"
               activeOpacity={0.7}
               onPress={() => {
                 Haptics.selectionAsync();
                 setShowPrivacyPolicy(true);
               }}
             >
-              <View style={[styles.leftIcon, { backgroundColor: "#DBEAFE" }]}>
+              <View className="w-9 h-9 rounded-[18px] justify-center items-center mr-3 bg-[#DBEAFE]">
                 <HugeiconsIcon
                   icon={ShieldUserIcon}
                   size={20}
                   color="#2563EB"
                 />
               </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Privacy Policy</Text>
+              <View className="flex-1">
+                <Text className="text-[17px] font-bold text-[#0F172A]">
+                  Privacy Policy
+                </Text>
               </View>
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
@@ -396,19 +391,21 @@ export default React.memo(function SettingsScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.rowItem}
+              className="flex-row items-center py-3.5 px-4 border-b border-[#F0F0F3]"
               activeOpacity={0.7}
               onPress={() => {
                 Haptics.selectionAsync();
                 setShowEraseDataModal(true);
               }}
             >
-              <View style={[styles.leftIcon, { backgroundColor: "#FEE2E2" }]}>
+              <View className="w-9 h-9 rounded-[18px] justify-center items-center mr-3 bg-[#FEE2E2]">
                 <HugeiconsIcon icon={Delete02Icon} size={20} color="#DC2626" />
               </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Erase Personal Data</Text>
-                <Text style={styles.itemSubtitle}>
+              <View className="flex-1">
+                <Text className="text-[17px] font-bold text-[#0F172A]">
+                  Erase Personal Data
+                </Text>
+                <Text className="text-[13px] text-[#6B7280] mt-0.5">
                   Permanently delete all data
                 </Text>
               </View>
@@ -419,38 +416,46 @@ export default React.memo(function SettingsScreen() {
               />
             </TouchableOpacity>
 
-            <View style={styles.rowItem}>
-              <View style={[styles.leftIcon, { backgroundColor: "#FEF3C7" }]}>
+            <View className="flex-row items-center py-3.5 px-4 border-b border-[#F0F0F3]">
+              <View className="w-9 h-9 rounded-[18px] justify-center items-center mr-3 bg-[#FEF3C7]">
                 <HugeiconsIcon
                   icon={AlertSquareIcon}
                   size={20}
                   color="#D97706"
                 />
               </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>App Info</Text>
-                <Text style={styles.itemSubtitle}>Version 1.0.0 (Build 1)</Text>
+              <View className="flex-1">
+                <Text className="text-[17px] font-bold text-[#0F172A]">
+                  App Info
+                </Text>
+                <Text className="text-[13px] text-[#6B7280] mt-0.5">
+                  Version 1.0.0 (Build 1)
+                </Text>
               </View>
             </View>
 
             <TouchableOpacity
-              style={styles.rowItem}
+              className="flex-row items-center py-3.5 px-4 border-b border-[#F0F0F3]"
               activeOpacity={0.7}
               onPress={() => {
                 Haptics.selectionAsync();
                 setShowImportModal(true);
               }}
             >
-              <View style={[styles.leftIcon, { backgroundColor: "#E9D5FF" }]}>
+              <View className="w-9 h-9 rounded-[18px] justify-center items-center mr-3 bg-[#E9D5FF]">
                 <HugeiconsIcon
                   icon={Download02Icon}
                   size={20}
                   color="#9333EA"
                 />
               </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Bulk Import Journals</Text>
-                <Text style={styles.itemSubtitle}>Import sample data</Text>
+              <View className="flex-1">
+                <Text className="text-[17px] font-bold text-[#0F172A]">
+                  Bulk Import Journals
+                </Text>
+                <Text className="text-[13px] text-[#6B7280] mt-0.5">
+                  Import sample data
+                </Text>
               </View>
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
@@ -462,13 +467,15 @@ export default React.memo(function SettingsScreen() {
               onPress={() => {
                 setIsSignoutOPen(true);
               }}
-              style={styles.rowItem}
+              className="flex-row items-center py-3.5 px-4 border-b border-[#F0F0F3]"
             >
-              <View style={[styles.leftIcon, { backgroundColor: "#BFDBFE" }]}>
+              <View className="w-9 h-9 rounded-[18px] justify-center items-center mr-3 bg-[#BFDBFE]">
                 <HugeiconsIcon icon={Logout02Icon} size={20} color="#3B82F6" />
               </View>
-              <View style={styles.rowText}>
-                <Text style={styles.itemTitle}>Sign Out</Text>
+              <View className="flex-1">
+                <Text className="text-[17px] font-bold text-[#0F172A]">
+                  Sign Out
+                </Text>
               </View>
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
@@ -496,30 +503,40 @@ export default React.memo(function SettingsScreen() {
         visible={showImportModal}
         onRequestClose={() => !importing && setShowImportModal(false)}
       >
-        <BlurView intensity={20} tint="dark" style={styles.modalOverlay}>
-          <View style={styles.importModalContent}>
-            <Text style={styles.modalTitle}>Bulk Import Journals</Text>
-            <Text style={styles.modalSubtitle}>
+        <BlurView
+          intensity={20}
+          tint="dark"
+          className="flex-1 justify-center items-center px-5"
+        >
+          <View className="bg-white rounded-3xl p-6 w-full max-w-[400px] shadow-lg shadow-black/30">
+            <Text className="text-2xl font-extrabold text-[#0F172A] mb-2">
+              Bulk Import Journals
+            </Text>
+            <Text className="text-[15px] text-[#6B7280] mb-6">
               Import sample journal entries for testing
             </Text>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Start Date</Text>
-              <View style={styles.dateDisplay}>
+            <View className="mb-5">
+              <Text className="text-[15px] font-semibold text-[#0F172A] mb-2">
+                Start Date
+              </Text>
+              <View className="flex-row items-center bg-[#F8F8FF] p-3.5 rounded-xl border border-[#E6E6E6] gap-2.5">
                 <Feather name="calendar" size={18} color="#7C5CFF" />
-                <Text style={styles.dateText}>
+                <Text className="text-base text-[#0F172A] font-medium">
                   {format(importStartDate, "MMM dd, yyyy")}
                 </Text>
               </View>
-              <Text style={styles.inputHint}>
+              <Text className="text-[13px] text-[#6B7280] mt-1.5">
                 Entries will be created from this date forward
               </Text>
             </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Number of Days (1-20)</Text>
+            <View className="mb-5">
+              <Text className="text-[15px] font-semibold text-[#0F172A] mb-2">
+                Number of Days (1-20)
+              </Text>
               <TextInput
-                style={styles.input}
+                className="bg-[#F8F8FF] p-3.5 rounded-xl border border-[#E6E6E6] text-base text-[#0F172A]"
                 value={importDaysCount}
                 onChangeText={setImportDaysCount}
                 keyboardType="number-pad"
@@ -527,7 +544,7 @@ export default React.memo(function SettingsScreen() {
                 maxLength={2}
                 editable={!importing}
               />
-              <Text style={styles.inputHint}>
+              <Text className="text-[13px] text-[#6B7280] mt-1.5">
                 {importDaysCount}{" "}
                 {parseInt(importDaysCount) === 1 ? "entry" : "entries"} will be
                 imported
@@ -535,29 +552,29 @@ export default React.memo(function SettingsScreen() {
             </View>
 
             {importing && (
-              <View style={styles.progressContainer}>
+              <View className="items-center py-5">
                 <ActivityIndicator size="large" color="#7C5CFF" />
-                <Text style={styles.progressText}>
+                <Text className="text-[15px] text-[#6B7280] mt-3">
                   Importing {progress.current} of {progress.total}...
                 </Text>
               </View>
             )}
 
-            <View style={styles.modalButtons}>
+            <View className="flex-row gap-3 mt-2">
               <TouchableOpacity
-                style={[styles.modalButton, styles.cancelButton]}
+                className="flex-1 rounded-2xl overflow-hidden bg-[#F3F4F6] py-3.5 items-center justify-center"
                 onPress={() => setShowImportModal(false)}
                 disabled={importing}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text className="text-base font-semibold text-[#6B7280]">
+                  Cancel
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[
-                  styles.modalButton,
-                  styles.importButton,
-                  importing && styles.importButtonDisabled,
-                ]}
+                className={`flex-1 rounded-2xl overflow-hidden ${
+                  importing ? "opacity-60" : ""
+                }`}
                 onPress={handleBulkImport}
                 disabled={importing}
               >
@@ -565,9 +582,9 @@ export default React.memo(function SettingsScreen() {
                   colors={importing ? ["#999", "#777"] : ["#7C5CFF", "#9C7CFF"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
-                  style={styles.importButtonGradient}
+                  className="py-3.5 items-center justify-center rounded-2xl"
                 >
-                  <Text style={styles.importButtonText}>
+                  <Text className="text-base font-bold text-white">
                     {importing ? "Importing..." : "Import"}
                   </Text>
                 </LinearGradient>
@@ -609,214 +626,4 @@ export default React.memo(function SettingsScreen() {
       />
     </SafeAreaView>
   );
-});
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#F8F8FF" },
-  scrollViewContent: {
-    flexGrow: 1,
-    paddingHorizontal: 16,
-  },
-  surface: {
-    flex: 1,
-    // backgroundColor: "#F7F6FF",
-    paddingHorizontal: 0,
-    // backgroundColor: "red",
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#7C5CFF",
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#0F172A",
-  },
-
-  promoCard: {
-    backgroundColor: "#FFED6B",
-    borderRadius: 18,
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 18,
-  },
-  promoTitle: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: "#0B1220",
-    marginBottom: 6,
-  },
-  promoSubtitle: {
-    color: "#374151",
-    fontSize: 13.5,
-    lineHeight: 19,
-    marginBottom: 12,
-  },
-  upgradeButton: {
-    alignSelf: "flex-start",
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 28,
-  },
-  upgradeText: {
-    color: "#FFF",
-    fontWeight: "700",
-    fontSize: 15,
-  },
-  illustrationWrap: {
-    width: 110,
-    height: 110,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  cardGroup: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    overflow: "hidden",
-  },
-  rowItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderBottomColor: "#F0F0F3",
-    borderBottomWidth: 1,
-  },
-  leftIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  rowText: { flex: 1 },
-  itemTitle: { fontSize: 17, fontWeight: "700", color: "#0F172A" },
-  itemSubtitle: { fontSize: 13, color: "#6B7280", marginTop: 2 },
-
-  // Bulk import modal styles
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 20,
-  },
-  importModalContent: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    padding: 24,
-    width: "100%",
-    maxWidth: 400,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  modalTitle: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#0F172A",
-    marginBottom: 8,
-  },
-  modalSubtitle: {
-    fontSize: 15,
-    color: "#6B7280",
-    marginBottom: 24,
-  },
-  inputGroup: {
-    marginBottom: 20,
-  },
-  inputLabel: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#0F172A",
-    marginBottom: 8,
-  },
-  dateDisplay: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F8F8FF",
-    padding: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#E6E6E6",
-    gap: 10,
-  },
-  dateText: {
-    fontSize: 16,
-    color: "#0F172A",
-    fontWeight: "500",
-  },
-  input: {
-    backgroundColor: "#F8F8FF",
-    padding: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#E6E6E6",
-    fontSize: 16,
-    color: "#0F172A",
-  },
-  inputHint: {
-    fontSize: 13,
-    color: "#6B7280",
-    marginTop: 6,
-  },
-  progressContainer: {
-    alignItems: "center",
-    paddingVertical: 20,
-  },
-  progressText: {
-    fontSize: 15,
-    color: "#6B7280",
-    marginTop: 12,
-  },
-  modalButtons: {
-    flexDirection: "row",
-    gap: 12,
-    marginTop: 8,
-  },
-  modalButton: {
-    flex: 1,
-    borderRadius: 16,
-    overflow: "hidden",
-  },
-  cancelButton: {
-    backgroundColor: "#F3F4F6",
-    paddingVertical: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#6B7280",
-  },
-  importButton: {
-    overflow: "hidden",
-  },
-  importButtonDisabled: {
-    opacity: 0.6,
-  },
-  importButtonGradient: {
-    paddingVertical: 14,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 16,
-  },
-  importButtonText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
 });

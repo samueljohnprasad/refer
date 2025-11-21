@@ -1,5 +1,13 @@
 import { useEffect } from "react";
-import { Easing, interpolateColor, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from "react-native-reanimated";
+import {
+  Easing,
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 import { BACKGROUND_COLORS } from "../constants";
 import { StyleSheet } from "react-native";
 
@@ -62,7 +70,5 @@ export const useBackgroundAnimation = (
 export const glassOverlayBaseStyle = StyleSheet.create({
   base: {
     backgroundColor: "rgba(255,255,255,0.15)",
-    backgroundImage:
-      "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%)",
   },
 });

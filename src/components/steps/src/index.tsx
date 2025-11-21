@@ -20,7 +20,7 @@ import { MOODS, TOTAL_STEPS, BUTTON_COLOR } from "./constants";
 // Components
 import { Dots } from "./steps/dots";
 import { SplitButton } from "./steps/split-button";
-import { renderStepInput } from "./renderStepInput";
+import { StepInput } from "./renderStepInput";
 
 // Hooks
 import { useStepNavigation } from "./hooks/useStepNavigation";
@@ -42,6 +42,9 @@ export const onboardFormDataAtom = atom<OnBoardingFormData>({
  * Manages multi-step onboarding flow with form data collection
  */
 const App = ({ onComplete }: StepsAppProps) => {
+  // Loading state
+  const [loading, setLoading] = React.useState(false);
+
   // Form data state
   const [formData, setFormData] =
     useAtom<OnBoardingFormData>(onboardFormDataAtom);
@@ -99,7 +102,12 @@ const App = ({ onComplete }: StepsAppProps) => {
   // Handle main action (Continue/Complete)
   const handleMainAction = useCallback(async () => {
     if (isLastStep) {
-      onComplete?.(formData);
+      try {
+        setLoading(true);
+        await onComplete?.(formData);
+      } finally {
+        setLoading(false);
+      }
       return;
     }
     increaseActiveIndex();
@@ -110,16 +118,6 @@ const App = ({ onComplete }: StepsAppProps) => {
   const handleBackAction = useCallback(() => {
     decreaseActiveIndex();
   }, [decreaseActiveIndex]);
-
-  // Handle right action (Continue on split button)
-  const handleRightAction = useCallback(async () => {
-    if (isLastStep) {
-      setSplitted(false);
-      onComplete?.(formData);
-      return;
-    }
-    increaseActiveIndex();
-  }, [isLastStep, formData, onComplete, increaseActiveIndex, setSplitted]);
 
   return (
     <KeyboardAvoidingView className="flex-1">
@@ -138,11 +136,11 @@ const App = ({ onComplete }: StepsAppProps) => {
           className="flex-1 w-full"
           style={{ paddingTop: 70, paddingBottom: 30 }}
         >
-          {renderStepInput({
-            currentMood,
-            formData,
-            updateFormData,
-          })}
+          <StepInput
+            currentMood={currentMood}
+            formData={formData}
+            updateFormData={updateFormData}
+          />
         </View>
 
         {/* Bottom section for progress and buttons */}
@@ -155,6 +153,7 @@ const App = ({ onComplete }: StepsAppProps) => {
           {/* Premium navigation buttons with glass effect */}
           <View style={{ marginTop: 24, marginBottom: 24 }}>
             <SplitButton
+              loading={loading}
               splitted={splitted}
               mainAction={{
                 label: "Continue",
@@ -172,7 +171,7 @@ const App = ({ onComplete }: StepsAppProps) => {
                 label: rightLabel,
                 labelColor: "white",
                 iconVisible: true,
-                onPress: handleRightAction,
+                onPress: handleMainAction,
                 backgroundColor: BUTTON_COLOR,
               }}
             />

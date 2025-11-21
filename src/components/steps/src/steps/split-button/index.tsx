@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Pressable,
   StyleSheet,
   TouchableOpacity,
@@ -29,6 +30,7 @@ type SplitButtonProps = {
   mainAction: SplitAction;
   leftAction: SplitAction;
   rightAction: SplitAction;
+  loading?: boolean;
 };
 
 const ButtonHeight = 64; // Slightly taller for premium feel
@@ -40,6 +42,7 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
   mainAction,
   leftAction,
   rightAction,
+  loading = false,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
 
@@ -111,15 +114,15 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
 
   const rMainTextStyle = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(splitted ? 0 : 1),
+      opacity: withTiming(splitted || loading ? 0 : 1),
     };
-  }, [splitted]);
+  }, [splitted, loading]);
 
   const rRightTextStyle = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(splitted ? 1 : 0),
+      opacity: withTiming(splitted && !loading ? 1 : 0),
     };
-  }, [splitted]);
+  }, [splitted, loading]);
 
   return (
     <View
@@ -131,7 +134,7 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
       }}
     >
       <PressableScale
-        onPress={leftAction.onPress}
+        onPress={loading ? undefined : leftAction.onPress}
         style={[
           {
             backgroundColor: leftAction.backgroundColor,
@@ -156,9 +159,18 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
         </Animated.Text>
       </PressableScale>
       <PressableScale
-        onPress={splitted ? rightAction.onPress : mainAction.onPress}
+        onPress={
+          loading
+            ? undefined
+            : splitted
+            ? rightAction.onPress
+            : mainAction.onPress
+        }
         style={[rMainButtonStyle, styles.button]}
       >
+        {loading && (
+          <ActivityIndicator color="white" style={StyleSheet.absoluteFill} />
+        )}
         <Animated.Text
           layout={mainAction.iconVisible ? LayoutTransitionDefault : undefined}
           style={[

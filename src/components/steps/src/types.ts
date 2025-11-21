@@ -22,5 +22,5 @@ export interface AgeRangeOption {
 }
 
 export type StepsAppProps = {
-  onComplete?: (onBoardingData: OnBoardingFormData) => void;
+  onComplete?: (onBoardingData: OnBoardingFormData) => Promise<void>;
 };
