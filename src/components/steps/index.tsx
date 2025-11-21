@@ -1,4 +1,5 @@
-import { App, OnBoardingFormData } from "./src";
+import { App } from "./src";
+import { OnBoardingFormData } from "./src/types";
 
 export type StepsProps = {
   onComplete?: (onBoardingData: OnBoardingFormData) => void;

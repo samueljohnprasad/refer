@@ -1,119 +1,35 @@
-import { JSX, useCallback, useEffect, useState } from "react";
+import React, { useEffect, useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, {
-  interpolateColor,
-  runOnJS,
   useAnimatedReaction,
+  runOnJS,
   useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-  withDelay,
-  FadeIn,
-  withSequence,
-  Easing,
 } from "react-native-reanimated";
 import { atom, useAtom } from "jotai";
-import { Dots } from "./steps/dots";
-import { SplitButton } from "./steps/split-button";
 import { Text } from "@/components/Themed";
 import {
   KeyboardAvoidingView,
   KeyboardToolbar,
 } from "react-native-keyboard-controller";
-import { JournalOptions } from "./steps/journal-options/JournalOptions";
-import {
-  AgeRangeOption,
-  Demographics,
-} from "./steps/demographics/Demographics";
-import { GreatCelebration } from "./steps/great/GreatCelebration";
-import { AgeRange, Gender } from "@/types/types";
 import { useGradualAnimation } from "@/hooks/useGradualAnimation";
-import { JOURNALING_REASONS } from "@/constants/journaling";
-import NotificationsUI from "../../NotificationsUI";
-import { NameOnboard } from "../NameOnboard";
-type InputType = "name" | "birthday" | "options" | "reminder" | "great";
 
-interface MoodDef {
-  emoji: string;
-  name: string;
-  backgroundColor: string;
-  inputType: InputType;
-}
+// Types and Constants
+import { OnBoardingFormData, StepsAppProps } from "./types";
+import { MOODS, TOTAL_STEPS, BUTTON_COLOR } from "./constants";
 
-export interface OnBoardingFormData {
-  name: string;
-  ageRange?: AgeRange;
-  gender?: Gender;
-  reasons: string[];
-}
+// Components
+import { Dots } from "./steps/dots";
+import { SplitButton } from "./steps/split-button";
+import { renderStepInput } from "./renderStepInput";
 
-// Premium color palette with luxury gradients
-const moods: MoodDef[] = [
-  {
-    emoji: "😞",
-    name: "Terrible",
-    backgroundColor: "#E8D5FF", // Rich lavender gradient base
-    inputType: "name",
-  },
-  {
-    emoji: "😢",
-    name: "Sad",
-    backgroundColor: "#FFE0F0", // Elegant rose gradient base
-    inputType: "birthday",
-  },
-  {
-    emoji: "😐",
-    name: "Fine",
-    backgroundColor: "#FFF3D4", // Warm golden gradient base
-    inputType: "options",
-  },
-  {
-    emoji: "🙂",
-    name: "Good",
-    backgroundColor: "#DCF2FF", // Premium sky gradient base
-    inputType: "reminder",
-  },
-  {
-    emoji: "😄",
-    name: "Great",
-    backgroundColor: "#E5FFE5", // Fresh mint gradient base
-    inputType: "great",
-  },
-];
+// Hooks
+import { useStepNavigation } from "./hooks/useStepNavigation";
+import {
+  useBackgroundAnimation,
+  glassOverlayBaseStyle,
+} from "./hooks/useBackgroundAnimation";
 
-const AGE_RANGES: readonly AgeRangeOption[] = [
-  {
-    label: "18-24",
-    value: "18_24",
-  },
-  {
-    label: "25-34",
-    value: "25_34",
-  },
-  {
-    label: "35-44",
-    value: "35_44",
-  },
-  {
-    label: "45-54",
-    value: "45_54",
-  },
-  {
-    label: "55-64",
-    value: "55_64",
-  },
-  {
-    label: "65+",
-    value: "65+",
-  },
-];
-
-const GENDERS: readonly Gender[] = ["male", "female", "other"];
-
-type StepsAppProps = {
-  onComplete?: (onBoardingData: OnBoardingFormData) => void;
-};
-
+// Global state atom
 export const onboardFormDataAtom = atom<OnBoardingFormData>({
   name: "",
   ageRange: undefined,
@@ -121,174 +37,89 @@ export const onboardFormDataAtom = atom<OnBoardingFormData>({
   reasons: [],
 });
 
+/**
+ * Main onboarding stepper component
+ * Manages multi-step onboarding flow with form data collection
+ */
 const App = ({ onComplete }: StepsAppProps) => {
-  const [currentStep, setCurrentStep] = useState<number>(0);
-
-  const activeIndex = useSharedValue(0);
-  const backgroundProgress = useSharedValue(0);
-
-  const [splitted, setSplitted] = useState(false);
-  const [isLastStep, setIsLastStep] = useState(false);
-
-  const rightLabel = isLastStep ? " Start Your First Entry 🚀" : "Continue";
-
-  const increaseActiveIndex = useCallback(() => {
-    // advance until last step; do not wrap around
-    if (activeIndex.value < 4) {
-      activeIndex.value = activeIndex.value + 1;
-      setCurrentStep((prev) => Math.min(4, prev + 1));
-    }
-  }, [activeIndex]);
-
+  // Form data state
   const [formData, setFormData] =
     useAtom<OnBoardingFormData>(onboardFormDataAtom);
 
+  // Navigation state and methods
+  const {
+    currentStep,
+    splitted,
+    setSplitted,
+    isLastStep,
+    setIsLastStep,
+    activeIndex,
+    increaseActiveIndex,
+    decreaseActiveIndex,
+  } = useStepNavigation();
+
+  // Background animations
+  const { backgroundAnimatedStyle, glassOverlayStyle } = useBackgroundAnimation(
+    activeIndex.value,
+    currentStep,
+    setIsLastStep
+  );
+
+  // Keyboard animation
+  const { height } = useGradualAnimation();
+  const keyboardPadding = useAnimatedStyle(
+    () => ({
+      height: height.value,
+    }),
+    []
+  );
+
+  // Update isLastStep when activeIndex changes
   useAnimatedReaction(
     () => activeIndex.value,
     (index) => {
-      runOnJS(setIsLastStep)(index === 4);
+      runOnJS(setIsLastStep)(index === TOTAL_STEPS - 1);
     }
   );
 
-  useEffect(() => {
-    backgroundProgress.value = withTiming(activeIndex.value, { duration: 300 });
-  }, [activeIndex.value]);
+  // Helper to update form data
+  const updateFormData = useCallback(
+    (updates: Partial<OnBoardingFormData>) => {
+      setFormData((prev) => ({ ...prev, ...updates }));
+    },
+    [setFormData]
+  );
 
-  // Luxury gradient background animation
-  const backgroundAnimatedStyle = useAnimatedStyle(() => {
-    const progress = backgroundProgress.value;
-    return {
-      backgroundColor: interpolateColor(
-        progress,
-        [0, 1, 2, 3, 4],
-        [
-          "#E8D5FF", // Rich lavender
-          "#FFE0F0", // Elegant rose
-          "#FFF3D4", // Warm golden
-          "#DCF2FF", // Premium sky
-          "#E5FFE5", // Fresh mint
-        ]
-      ),
-    };
-  });
+  // Get current mood definition
+  const currentMood = MOODS[currentStep];
 
-  // Glass overlay animation
-  const glassOverlayStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withTiming(0.4, { duration: 500 }),
-    };
-  });
+  // Button labels
+  const rightLabel = isLastStep ? " Start Your First Entry 🚀" : "Continue";
 
-  const { height } = useGradualAnimation();
-
-  const keyboardPadding = useAnimatedStyle(() => {
-    return {
-      height: height.value,
-    };
-  }, []);
-
-  const currentMood: MoodDef = moods[currentStep];
-  const canProceed = (): boolean => {
-    const current = moods[currentStep];
-    switch (current?.inputType) {
-      case "birthday":
-        return !!formData?.ageRange && !!formData.gender;
-      case "options":
-        return Array.isArray(formData.reasons) && formData.reasons.length > 0;
-      default:
-        return true;
+  // Handle main action (Continue/Complete)
+  const handleMainAction = useCallback(async () => {
+    if (isLastStep) {
+      onComplete?.(formData);
+      return;
     }
-  };
+    increaseActiveIndex();
+    setSplitted(true);
+  }, [isLastStep, formData, onComplete, increaseActiveIndex, setSplitted]);
 
-  // Floating animation for headline and subtext
-  const floatingAnimation = useSharedValue(0);
+  // Handle back action
+  const handleBackAction = useCallback(() => {
+    decreaseActiveIndex();
+  }, [decreaseActiveIndex]);
 
-  useEffect(() => {
-    floatingAnimation.value = withSequence(
-      withTiming(0, { duration: 0 }),
-      withDelay(
-        200,
-        withTiming(1, {
-          duration: 800,
-          easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-        })
-      )
-    );
-  }, [currentStep]);
-
-  const renderInput = (): JSX.Element | null => {
-    const current = moods[currentStep];
-
-    switch (current?.inputType) {
-      case "name":
-        return (
-          <Animated.View entering={FadeIn.duration(500).delay(100)}>
-            <NameOnboard
-              name={formData.name}
-              setName={(name) => setFormData((prev) => ({ ...prev, name }))}
-            />
-          </Animated.View>
-        );
-      case "birthday":
-        return (
-          <Animated.View entering={FadeIn.duration(500).delay(100)}>
-            <Demographics
-              ageRanges={AGE_RANGES}
-              selectedAgeRange={formData.ageRange}
-              onSelectAgeRange={(value: AgeRange) =>
-                setFormData((prev) => ({ ...prev, ageRange: value }))
-              }
-              genders={GENDERS}
-              selectedGender={formData.gender}
-              onSelectGender={(value: Gender) =>
-                setFormData((prev) => ({ ...prev, gender: value }))
-              }
-              title="A bit about you"
-              helperText="This helps personalize your experience"
-            />
-          </Animated.View>
-        );
-      case "options":
-        return (
-          <Animated.View
-            className="flex-1 "
-            entering={FadeIn.duration(500).delay(100)}
-          >
-            <JournalOptions
-              reasons={Array.from(JOURNALING_REASONS)}
-              selectedReasons={formData.reasons}
-              onChangeSelected={(reasons: string[]) =>
-                setFormData((prev) => ({ ...prev, reasons }))
-              }
-              title="What brings you to journaling?"
-              helperText="Pick one or more reasons"
-              showCount
-              showIcons
-            />
-          </Animated.View>
-        );
-      case "reminder":
-        return (
-          <Animated.View
-            entering={FadeIn.duration(500).delay(100)}
-            className="flex-1 "
-          >
-            <NotificationsUI />
-          </Animated.View>
-        );
-      case "great":
-        return (
-          <Animated.View
-            entering={FadeIn.duration(500).delay(100)}
-            className="flex-1 w-full"
-          >
-            <GreatCelebration />
-          </Animated.View>
-        );
-      default:
-        return null;
+  // Handle right action (Continue on split button)
+  const handleRightAction = useCallback(async () => {
+    if (isLastStep) {
+      setSplitted(false);
+      onComplete?.(formData);
+      return;
     }
-  };
+    increaseActiveIndex();
+  }, [isLastStep, formData, onComplete, increaseActiveIndex, setSplitted]);
 
   return (
     <KeyboardAvoidingView className="flex-1">
@@ -297,28 +128,28 @@ const App = ({ onComplete }: StepsAppProps) => {
         <Animated.View
           style={[
             StyleSheet.absoluteFillObject,
-            {
-              backgroundColor: "rgba(255,255,255,0.15)",
-              backgroundImage:
-                "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%)",
-            },
+            glassOverlayBaseStyle.base,
             glassOverlayStyle,
           ]}
         />
 
         {/* Content area with proper spacing */}
         <View
-          className="flex-1 w-full "
+          className="flex-1 w-full"
           style={{ paddingTop: 70, paddingBottom: 30 }}
         >
-          {renderInput()}
+          {renderStepInput({
+            currentMood,
+            formData,
+            updateFormData,
+          })}
         </View>
 
         {/* Bottom section for progress and buttons */}
         <View className="w-full" style={{ marginTop: 20 }}>
           {/* Premium progress indicator with step labels */}
           <View className="px-6 mb-2">
-            <Dots activeIndex={activeIndex} count={5} dotSize={18} />
+            <Dots activeIndex={activeIndex} count={TOTAL_STEPS} dotSize={18} />
           </View>
 
           {/* Premium navigation buttons with glass effect */}
@@ -328,52 +159,33 @@ const App = ({ onComplete }: StepsAppProps) => {
               mainAction={{
                 label: "Continue",
                 labelColor: "white",
-                onPress: async () => {
-                  if (isLastStep) {
-                    onComplete && onComplete(formData);
-                    return;
-                  }
-                  increaseActiveIndex();
-                  setSplitted(true);
-                },
-                backgroundColor: "#7C3AED", // Premium violet
+                onPress: handleMainAction,
+                backgroundColor: BUTTON_COLOR,
               }}
               leftAction={{
                 label: "Back",
                 labelColor: "#64748B",
-                onPress: () => {
-                  if (activeIndex.value === 1) {
-                    setSplitted(false);
-                  }
-                  activeIndex.value = Math.max(0, activeIndex.value - 1);
-                  setCurrentStep((prev) => Math.max(0, prev - 1));
-                },
+                onPress: handleBackAction,
                 backgroundColor: "rgba(255,255,255,0.85)",
               }}
               rightAction={{
                 label: rightLabel,
                 labelColor: "white",
                 iconVisible: true,
-                onPress: async () => {
-                  if (isLastStep) {
-                    setSplitted(false);
-                    onComplete && onComplete(formData);
-                    return;
-                  }
-                  increaseActiveIndex();
-                },
-                backgroundColor: "#7C3AED", // Premium violet
+                onPress: handleRightAction,
+                backgroundColor: BUTTON_COLOR,
               }}
             />
           </View>
+
           <Animated.View style={keyboardPadding} pointerEvents="none" />
-          {/* <KeyboardToolbar
+          <KeyboardToolbar
             pointerEvents="none"
             content={<Text></Text>}
             showArrows={false}
             insets={{ left: 16, right: 0 }}
             doneText="Close keyboard"
-          /> */}
+          />
         </View>
       </Animated.View>
     </KeyboardAvoidingView>
