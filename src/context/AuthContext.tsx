@@ -11,6 +11,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  isSigningOut: boolean;
   signOut: () => Promise<void>;
 }
 
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
   loading: true,
+  isSigningOut: false,
   signOut: async () => {},
 });
 
@@ -37,6 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
@@ -113,6 +116,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signOut = async (): Promise<void> => {
     try {
+      setIsSigningOut(true);
       const response = await supabase.auth.signOut();
       if (response.error) throw response.error;
       setSession(null);
@@ -125,6 +129,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       await AsyncStorage.clear();
       router.replace("/");
+    } finally {
+      setIsSigningOut(false);
     }
   };
 
@@ -132,6 +138,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     session,
     loading,
+    isSigningOut,
     signOut,
   };
 

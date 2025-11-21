@@ -51,7 +51,7 @@ export default React.memo(function SettingsScreen() {
   const { height } = useWindowDimensions();
   const headerHeight = useHeaderHeight();
   const scrollY = useRef(new Animated.Value(0)).current;
-  const { signOut } = useAuth();
+  const { signOut, isSigningOut } = useAuth();
 
   const [showModal, setShowModal] = useState({
     modalType: "",
@@ -600,9 +600,12 @@ export default React.memo(function SettingsScreen() {
       <SignOutConfirmationModal
         isSignoutOPen={isSignoutOPen}
         handleClose={() => {
-          setIsSignoutOPen(false);
+          if (!isSigningOut) {
+            setIsSignoutOPen(false);
+          }
         }}
         onConfirm={signOut}
+        isLoading={isSigningOut}
       />
     </SafeAreaView>
   );
