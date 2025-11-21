@@ -1,8 +1,7 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useMemo } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   ColorValue,
-  StyleSheet,
   TextInput,
   TextInputProps,
   View,
@@ -28,18 +27,28 @@ export type NameInputProps = {
   inputProps?: TextInputProps;
 };
 
+// Extract animation config as constant to prevent recreation
 const ANIM = { duration: 220, easing: Easing.out(Easing.ease) };
 
-export const NameInput: React.FC<NameInputProps> = ({
-  label = "Enter your name",
-  placeholder = "",
-  value: controlledValue,
-  onChangeText,
-  accentColor = "#0c86f7",
-  backgroundColor = "white",
-  containerProps,
-  inputProps,
-}) => {
+// Static styles that don't change
+const LABEL_BASE_STYLE = {
+  position: "absolute" as const,
+  left: 26,
+  top: 32,
+};
+
+export const NameInput: React.FC<NameInputProps> = React.memo((props) => {
+  const {
+    label = "Enter your name",
+    placeholder = "",
+    value: controlledValue,
+    onChangeText,
+    accentColor = "#0c86f7",
+    backgroundColor = "white",
+    containerProps,
+    inputProps,
+  } = props;
+
   const inputRef = useRef<TextInput>(null);
   const [uncontrolledValue, setUncontrolledValue] = useState("");
   const value = controlledValue ?? uncontrolledValue;
@@ -56,7 +65,7 @@ export const NameInput: React.FC<NameInputProps> = ({
       clearP.value = withTiming(t.length > 0 ? 1 : 0, ANIM);
       focusP.value = withTiming(focused || t.length > 0 ? 1 : 0, ANIM);
     },
-    [onChangeText, focused]
+    [onChangeText, focused, clearP, focusP]
   );
 
   const handleFocus = useCallback(() => {
@@ -80,14 +89,23 @@ export const NameInput: React.FC<NameInputProps> = ({
     requestAnimationFrame(() => inputRef.current?.focus());
   }, [onChangeText]);
 
-  const onTap = Gesture.Tap().onEnd(() => {
-    runOnJS(focusInput)();
-  });
+  // Memoize gestures to prevent recreation
+  const onTap = useMemo(
+    () =>
+      Gesture.Tap().onEnd(() => {
+        runOnJS(focusInput)();
+      }),
+    [focusInput]
+  );
 
-  const onClearTap = Gesture.Tap().onEnd(() => {
-    clearP.value = withTiming(0, ANIM);
-    runOnJS(clearName)();
-  });
+  const onClearTap = useMemo(
+    () =>
+      Gesture.Tap().onEnd(() => {
+        clearP.value = withTiming(0, ANIM);
+        runOnJS(clearName)();
+      }),
+    [clearName, clearP]
+  );
 
   // label animation
   const rLabel = useAnimatedStyle(() => {
@@ -106,22 +124,33 @@ export const NameInput: React.FC<NameInputProps> = ({
     transform: [{ scale: withTiming(clearP.value ? 1 : 0.8, ANIM) }],
   }));
 
+  // Memoize container style
+  const containerStyle = useMemo(
+    () => [{ backgroundColor }, containerProps?.style],
+    [backgroundColor, containerProps?.style]
+  );
+
   return (
     <GestureDetector gesture={onTap}>
       <View
-        style={[styles.container, { backgroundColor }, containerProps?.style]}
+        className="w-[90%] self-center rounded-2xl px-4 pt-3.5 pb-[18px]"
+        style={containerStyle}
         {...containerProps}
       >
         {/* Label */}
-        <Animated.Text numberOfLines={1} style={[styles.label, rLabel]}>
+        <Animated.Text
+          numberOfLines={1}
+          className="text-base font-semibold"
+          style={[LABEL_BASE_STYLE, rLabel]}
+        >
           {label}
         </Animated.Text>
 
         {/* Text input row */}
-        <View style={styles.row}>
+        <View className="flex-row items-center pt-[18px]">
           <TextInput
             ref={inputRef}
-            style={styles.input}
+            className="flex-1 py-1.5 px-4 text-base text-slate-900"
             value={value}
             onChangeText={onLocalChange}
             onFocus={handleFocus}
@@ -132,7 +161,10 @@ export const NameInput: React.FC<NameInputProps> = ({
             {...inputProps}
           />
           <GestureDetector gesture={onClearTap}>
-            <Animated.View style={[styles.clearBtn, rClear]}>
+            <Animated.View
+              className="w-7 h-7 items-center justify-center"
+              style={rClear}
+            >
               <MaterialCommunityIcons
                 name="close-circle"
                 size={20}
@@ -144,44 +176,8 @@ export const NameInput: React.FC<NameInputProps> = ({
       </View>
     </GestureDetector>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    width: "90%",
-    alignSelf: "center",
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 18,
-    borderCurve: "continuous",
-  },
-  label: {
-    position: "absolute",
-    left: 26,
-    top: 32,
-    fontSize: 16,
-    color: "rgba(15,23,42,0.6)",
-    fontWeight: "600",
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 18,
-  },
-  input: {
-    flex: 1,
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: "#0f172a",
-  },
-  clearBtn: {
-    width: 28,
-    height: 28,
-    alignItems: "center",
-    justifyContent: "center",
-  },
 });
+
+NameInput.displayName = "NameInput";
 
 export default NameInput;
