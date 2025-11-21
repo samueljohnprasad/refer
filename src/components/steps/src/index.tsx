@@ -367,13 +367,13 @@ const App = ({ onComplete }: StepsAppProps) => {
             />
           </View>
           <Animated.View style={keyboardPadding} pointerEvents="none" />
-          <KeyboardToolbar
+          {/* <KeyboardToolbar
             pointerEvents="none"
             content={<Text></Text>}
             showArrows={false}
             insets={{ left: 16, right: 0 }}
             doneText="Close keyboard"
-          />
+          /> */}
         </View>
       </Animated.View>
     </KeyboardAvoidingView>
