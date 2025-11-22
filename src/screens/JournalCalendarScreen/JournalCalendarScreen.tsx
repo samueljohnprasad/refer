@@ -53,7 +53,7 @@ const TopBar = React.memo(() => {
 
   return (
     <View className="rounded-2xl overflow-hidden mb-2.5 pl-0">
-      <View className="flex-row justify-between py-1.5">
+      <View className="flex-row justify-between ">
         <TouchableOpacity
           onPress={handlePaywallPress}
           className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
@@ -208,7 +208,7 @@ export default function JournalCalendarScreen() {
         <View
           // intensity={50}
           // tint="light"
-          className="bg-white p-4 pb-24"
+          className="bg-white p-4 pb-24 pt-3"
           style={{ width: width }}
         >
           {/* Top bar with blur background */}
