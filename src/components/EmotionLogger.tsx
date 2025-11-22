@@ -11,6 +11,7 @@ import { Image } from "@/components/ui/image";
 import { terrible, bad, fine, good, great } from "@/assets/emojis";
 import { format } from "date-fns";
 import { useEmotionLogger } from "@/hooks/data/useEmotionLogger";
+import { useDailyStreak } from "@/hooks/data/useDailyStreak";
 
 // Emotion configuration
 const EMOTIONS = [
@@ -123,54 +124,53 @@ const EmotionItem: React.FC<{
 // Memoize EmotionItem to prevent unnecessary re-renders
 const MemoizedEmotionItem = React.memo(EmotionItem);
 
-export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(({
-  selectedDate = new Date(),
-  onEmotionLogged,
-}) => {
-  const {
-    emotionCounts,
-    isLoading,
-    logEmotion: logEmotionToSupabase,
-    isLoggingEmotion,
-  } = useEmotionLogger(selectedDate);
+export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
+  ({ selectedDate = new Date(), onEmotionLogged }) => {
+    const {
+      emotionCounts,
+      isLoading,
+      logEmotion: logEmotionToSupabase,
+      isLoggingEmotion,
+    } = useEmotionLogger(selectedDate);
 
-  // Memoize the callback to prevent recreation on every render
-  const handleLogEmotion = useCallback(
-    async (emotionScore: number): Promise<void> => {
-      if (isLoggingEmotion) return;
+    // Memoize the callback to prevent recreation on every render
+    const handleLogEmotion = useCallback(
+      async (emotionScore: number): Promise<void> => {
+        if (isLoggingEmotion) return;
 
-      try {
-        await logEmotionToSupabase(emotionScore);
-        onEmotionLogged?.(emotionScore);
-      } catch (error) {}
-    },
-    [isLoggingEmotion, logEmotionToSupabase, onEmotionLogged]
-  );
+        try {
+          await logEmotionToSupabase(emotionScore);
+          onEmotionLogged?.(emotionScore);
+        } catch (error) {}
+      },
+      [isLoggingEmotion, logEmotionToSupabase, onEmotionLogged]
+    );
 
-  return (
-    <View className="bg-white rounded-2xl p-4 border border-gray-100">
-      <View className="flex-row items-center justify-between mb-3">
-        <Text className="text-base font-semibold text-gray-900">
-          Daily Mood Log
-        </Text>
-        <Text className="text-xs text-gray-500">
-          {format(selectedDate, "MMM d, yyyy")}
-        </Text>
+    return (
+      <View className="bg-white rounded-2xl p-4 border border-gray-100">
+        <View className="flex-row items-center justify-between mb-3">
+          <Text className="text-base font-semibold text-gray-900">
+            Daily Mood Log
+          </Text>
+          <Text className="text-xs text-gray-500">
+            {format(selectedDate, "MMM d, yyyy")}
+          </Text>
+        </View>
+
+        <View className="flex-row justify-between">
+          {EMOTIONS.map((emotion) => (
+            <MemoizedEmotionItem
+              key={emotion.id}
+              emotion={emotion}
+              count={emotionCounts.get(emotion.id) || 0}
+              onPress={() => handleLogEmotion(emotion.id)}
+              isLoading={isLoggingEmotion}
+            />
+          ))}
+        </View>
       </View>
-
-      <View className="flex-row justify-between">
-        {EMOTIONS.map((emotion) => (
-          <MemoizedEmotionItem
-            key={emotion.id}
-            emotion={emotion}
-            count={emotionCounts.get(emotion.id) || 0}
-            onPress={() => handleLogEmotion(emotion.id)}
-            isLoading={isLoggingEmotion}
-          />
-        ))}
-      </View>
-    </View>
-  );
-});
+    );
+  }
+);
 
 export default EmotionLogger;

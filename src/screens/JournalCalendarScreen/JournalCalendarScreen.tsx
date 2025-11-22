@@ -23,6 +23,8 @@ import {
   Fire02Icon,
   Settings02Icon,
   StarsIcon,
+  Target02Icon,
+  Award01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 const { width, height } = Dimensions.get("window");
@@ -59,11 +61,7 @@ const TopBar = React.memo(() => {
           className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
           activeOpacity={0.8}
         >
-          <HugeiconsIcon
-            icon={StarsIcon}
-            size={20}
-            color={PALETTE.white}
-          />
+          <HugeiconsIcon icon={StarsIcon} size={20} color={PALETTE.white} />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -95,52 +93,83 @@ const Greeting = React.memo<{ displayName?: string; isLoading: boolean }>(
 // Memoized StreakCard component
 const StreakCard = React.memo<{
   currentStreak: number;
+  longestStreak: number;
   nextMilestone: number;
   isLoading: boolean;
   progressBarStyle: any;
-}>(({ currentStreak, nextMilestone, isLoading, progressBarStyle }) => (
-  <View className="bg-[#FFD24A] rounded-2xl p-4 flex-row items-center overflow-hidden mt-3">
-    <View className="flex-1">
-      {/* Streak info */}
-      <View className="flex-row items-center justify-between">
-        <View>
-          <Text className="text-gray-900 text-base font-semibold">
-            Current Streak
-          </Text>
-          <View className="flex-row items-center">
-            <HugeiconsIcon
-              size={28}
-              icon={Fire02Icon}
-              fill={"#FF6A3D"}
-              color="#FF6A3D"
-            />
-
-            <Text className="text-[28px] font-extrabold ml-2">
-              {currentStreak}
+}>(
+  ({
+    currentStreak,
+    longestStreak,
+    nextMilestone,
+    isLoading,
+    progressBarStyle,
+  }) => (
+    <View className="bg-[#FFD24A] rounded-2xl p-4 flex-row items-center overflow-hidden mt-3">
+      <View className="flex-1">
+        {/* Streak info */}
+        <View className="flex-row items-center justify-between">
+          <View>
+            <Text className="text-gray-900 text-sm font-semibold mb-1">
+              Current
             </Text>
+            <View className="flex-row items-center">
+              <HugeiconsIcon
+                size={24}
+                icon={Fire02Icon}
+                fill={"#FF6A3D"}
+                color="#FF6A3D"
+              />
+
+              <Text className="text-2xl font-extrabold ml-1.5">
+                {currentStreak}
+              </Text>
+            </View>
+          </View>
+          <View className="items-end">
+            <Text className="text-gray-900 text-sm font-semibold mb-1">
+              Goal
+            </Text>
+            <View className="flex-row items-center">
+              <HugeiconsIcon
+                size={24}
+                icon={Target02Icon}
+                fill={PALETTE.blue}
+              />
+              <Text className="text-2xl font-extrabold ml-1.5">
+                {isLoading ? "-" : nextMilestone}
+              </Text>
+            </View>
+          </View>
+          <View className="items-center">
+            <Text className="text-gray-900 text-sm font-semibold mb-1">
+              Best
+            </Text>
+            <View className="flex-row items-center">
+              <HugeiconsIcon
+                size={24}
+                icon={Award01Icon}
+                color={PALETTE.purple}
+                fill={PALETTE.purple}
+              />
+              <Text className="text-2xl font-extrabold ml-1.5">
+                {isLoading ? "-" : longestStreak}
+              </Text>
+            </View>
           </View>
         </View>
 
-        <View className="ml-4.5">
-          <Text className="text-gray-900 text-base font-semibold text-center">
-            Next Milestone
-          </Text>
-          <Text className="text-[28px] font-extrabold text-center">
-            {isLoading ? "..." : nextMilestone}
-          </Text>
+        {/* Animated progress bar */}
+        <View className="h-3 bg-[#F0D97A] rounded-xl mt-3 overflow-hidden">
+          <Animated.View
+            className="h-full bg-[#60A6FF] rounded-lg"
+            style={progressBarStyle}
+          />
         </View>
       </View>
-
-      {/* Animated progress bar */}
-      <View className="h-3 bg-[#F0D97A] rounded-xl mt-3 overflow-hidden">
-        <Animated.View
-          className="h-full bg-[#60A6FF] rounded-lg"
-          style={progressBarStyle}
-        />
-      </View>
     </View>
-  </View>
-));
+  )
+);
 
 export default function JournalCalendarScreen() {
   const progressAnim = useSharedValue(0);
@@ -156,14 +185,15 @@ export default function JournalCalendarScreen() {
   }, [currentStreak, nextMilestone]);
 
   // Memoize date calculations to prevent recalculation on every render
-  const { startOfWeekDate, endOfWeekDate, selectedEmotionDate } = useMemo(() => {
-    const today = new Date();
-    return {
-      selectedEmotionDate: today,
-      startOfWeekDate: startOfWeek(today, { weekStartsOn: 0 }),
-      endOfWeekDate: endOfWeek(today, { weekStartsOn: 0 }),
-    };
-  }, []);
+  const { startOfWeekDate, endOfWeekDate, selectedEmotionDate } =
+    useMemo(() => {
+      const today = new Date();
+      return {
+        selectedEmotionDate: today,
+        startOfWeekDate: startOfWeek(today, { weekStartsOn: 0 }),
+        endOfWeekDate: endOfWeek(today, { weekStartsOn: 0 }),
+      };
+    }, []);
 
   // Memoize emotion logged callback
   const handleEmotionLogged = useCallback((emotionScore: number) => {
@@ -184,11 +214,7 @@ export default function JournalCalendarScreen() {
 
   // Animated style for progress bar
   const progressBarStyle = useAnimatedStyle(() => {
-    const widthPercentage = interpolate(
-      progressAnim.value,
-      [0, 1],
-      [0, 100]
-    );
+    const widthPercentage = interpolate(progressAnim.value, [0, 1], [0, 100]);
     return {
       width: `${widthPercentage}%`,
     };
@@ -221,6 +247,7 @@ export default function JournalCalendarScreen() {
 
           <StreakCard
             currentStreak={currentStreak}
+            longestStreak={userProfile?.longestStreak ?? 0}
             nextMilestone={nextMilestone}
             isLoading={isLoadingProfile}
             progressBarStyle={progressBarStyle}
@@ -250,7 +277,10 @@ export default function JournalCalendarScreen() {
                   </View>
                   <View className="h-4 w-20 bg-gray-100 rounded" />
                 </View>
-                <View style={{ height: 270 }} className="items-center justify-center">
+                <View
+                  style={{ height: 270 }}
+                  className="items-center justify-center"
+                >
                   <View className="h-48 w-full bg-gray-50 rounded-xl" />
                 </View>
               </View>

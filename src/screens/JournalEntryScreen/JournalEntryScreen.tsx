@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { useSaveJournal } from "@/hooks/post/useSaveJournal";
 import { JournalEntryScreenProps } from "./types";
@@ -21,9 +21,9 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   insights,
   onClose,
 }: JournalEntryScreenProps) => {
-  const insets = useSafeAreaInsets();
   const toast = useToast();
   const { saveJournal, saving } = useSaveJournal();
+  const { top, bottom } = useSafeAreaInsets();
 
   const MOOD_GRADIENTS: { [key: string]: string[] } = {
     terrible: ["#FEE2E2", "#FED7D7"], // red-100 to red-100 lighter
@@ -131,18 +131,17 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   const currentGradient = MOOD_GRADIENTS[selectedMood] || MOOD_GRADIENTS.great;
 
   return (
-    <SafeAreaView className="flex-1"> 
+    // <SafeAreaView className="flex-1">
     <LinearGradient
       colors={currentGradient as [string, string, ...string[]]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       className="flex-1"
-      style={{ flex: 1 }}
+      style={{ flex: 1, paddingTop: top, paddingBottom: bottom }}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
-        style={{ paddingTop: insets.top }}
       >
         <MinimalHeader
           date={insights?.selected_date}
@@ -195,7 +194,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
         />
       </KeyboardAvoidingView>
     </LinearGradient>
-    </SafeAreaView>
+    // </SafeAreaView>
   );
 };
 

@@ -40,84 +40,22 @@ import {
   calenderVisibleDatesAtom,
 } from "./atoms";
 import DailyNotesHeader from "./DailyNotesHeader";
-import { MentalHealthProfileContainer } from "./notes/MentalHealthProfileContainer";
 import { AIInsightsChip } from "@/src/components/ai/AIInsightsChip";
-import { AIInsightsModalBottomSheet } from "@/src/components/ai/AIInsightsModalBottomSheet";
-import { useWeeklyAISummary } from "@/hooks/data/useWeeklyAISummaries";
 import { formateDate_y_m_d } from "@/src/utils/date";
+import SuspensLoader from "@/src/components/SuspensLoader";
 
-// Simplified Animated Day Button Component - Performance Optimized
-interface DayButtonProps {
-  day: Date;
-  dayName: string;
-  isSelected: boolean;
-  isToday: boolean;
-  onPress: () => void;
-  disabled?: boolean;
-}
+// Lazy load heavy components
+const MentalHealthProfileContainer = React.lazy(() =>
+  import("./notes/MentalHealthProfileContainer").then((module) => ({
+    default: module.MentalHealthProfileContainer,
+  }))
+);
 
-// Simplified version without individual shared values - much more performant
-const DayButtonComponent: React.FC<DayButtonProps> = ({
-  day,
-  dayName,
-  isSelected,
-  isToday,
-  onPress,
-  disabled = false,
-}) => {
-  const handlePress = (): void => {
-    if (disabled) return;
-    onPress();
-  };
-
-  const getFontColor = () => {
-    if (disabled) return "text-black/30";
-    if (isSelected) return "text-black/90";
-    return "text-black/80";
-  };
-
-  return (
-    <Pressable onPress={handlePress} disabled={disabled}>
-      <View
-        className={`items-center py-1.5 px-1 rounded-xl ${
-          isSelected
-            ? "bg-[#7B61FF]"
-            : isToday && !isSelected
-            ? "bg-white/10"
-            : ""
-        }`}
-      >
-        <View className="flex flex-col items-center">
-          <Text
-            className={`text-xs font-medium tracking-wider mb-0.5 ${getFontColor()}`}
-          >
-            {dayName}
-          </Text>
-          <Text className={`text-base font-semibold ${getFontColor()}`}>
-            {format(day, "d")}
-          </Text>
-        </View>
-      </View>
-    </Pressable>
-  );
-};
-
-// Memoize to prevent re-rendering of unchanged days during header/calendar animations
-const areDayButtonPropsEqual = (
-  prev: Readonly<DayButtonProps>,
-  next: Readonly<DayButtonProps>
-): boolean => {
-  return (
-    prev.isSelected === next.isSelected &&
-    prev.isToday === next.isToday &&
-    prev.day.getTime() === next.day.getTime() &&
-    prev.dayName === next.dayName &&
-    (prev.disabled ?? false) === (next.disabled ?? false)
-    // Intentionally ignoring onPress reference to avoid re-renders due to new function identity
-  );
-};
-
-export const DayButton = memo(DayButtonComponent, areDayButtonPropsEqual);
+const AIInsightsModalBottomSheet = React.lazy(() =>
+  import("@/src/components/ai/AIInsightsModalBottomSheet").then((module) => ({
+    default: module.AIInsightsModalBottomSheet,
+  }))
+);
 
 const DailyNotesScreenComponent = () => {
   // State for selected date
@@ -391,14 +329,16 @@ const DailyNotesScreenComponent = () => {
   const mentalHealthContent = useMemo(
     () => (
       <View className="pt-4 pb-2">
-        <MentalHealthProfileContainer
-          selectedDate={selectedDate}
-          showBookmarksModal={showBookmarksModal}
-          setShowBookmarksModal={setShowBookmarksModal}
-          onRefresh={() => {
-            // Optional refresh logic for mental health data
-          }}
-        />
+        <SuspensLoader>
+          <MentalHealthProfileContainer
+            selectedDate={selectedDate}
+            showBookmarksModal={showBookmarksModal}
+            setShowBookmarksModal={setShowBookmarksModal}
+            onRefresh={() => {
+              // Optional refresh logic for mental health data
+            }}
+          />
+        </SuspensLoader>
       </View>
     ),
     [selectedDate, showBookmarksModal]
@@ -473,14 +413,16 @@ const DailyNotesScreenComponent = () => {
       </View>
 
       {/* AI Insights Bottom Sheet */}
-      <AIInsightsModalBottomSheet
-        ref={bottomSheetRef}
-        weekStart={weekStartFormatted}
-        weekEnd={weekEndFormatted}
-        onClose={() => {
-          bottomSheetRef.current?.dismiss();
-        }}
-      />
+      <SuspensLoader>
+        <AIInsightsModalBottomSheet
+          ref={bottomSheetRef}
+          weekStart={weekStartFormatted}
+          weekEnd={weekEndFormatted}
+          onClose={() => {
+            bottomSheetRef.current?.dismiss();
+          }}
+        />
+      </SuspensLoader>
 
       {/* Calendar Modal */}
     </SafeAreaView>

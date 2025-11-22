@@ -1,20 +1,92 @@
-import type React from "react";
-import { Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
+import React, { useEffect } from "react";
+import { Text, View, Dimensions } from "react-native";
+import { LinearGradient as ExpoLinearGradient } from "expo-linear-gradient";
 import useEmotionsAnalysis, {
   AnalysisCompletedType,
 } from "@/hooks/useEmotionsAnalysis";
-import { View } from "@/components/Themed";
 import dayjs from "dayjs";
 import { useAtomValue } from "jotai";
 import { selectedDateDiscoveryAtom } from "./helpers";
+import Svg, { Rect, Defs, LinearGradient, Stop } from "react-native-svg";
+import Animated, {
+  useAnimatedProps,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+  Easing,
+} from "react-native-reanimated";
+
+const { width, height } = Dimensions.get("window");
+const PERIMETER = 2 * (width + height);
+
+const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 interface EmotionAnalysisLoadingScreenProps {
   onAnalysisCompleted: (data: AnalysisCompletedType) => void;
   recordingUri?: string;
   journalText?: string;
 }
+
+const BorderAnimation = () => {
+  const LINE_LENGTH = PERIMETER * 0.5; // Increased length for better visibility
+  const GAP_LENGTH = PERIMETER;
+  const TOTAL_LENGTH = LINE_LENGTH + GAP_LENGTH;
+
+  const strokeDashoffset = useSharedValue(TOTAL_LENGTH);
+
+  useEffect(() => {
+    strokeDashoffset.value = withRepeat(
+      withTiming(0, {
+        duration: 6000, // Adjusted duration for the longer path
+        easing: Easing.linear,
+      }),
+      -1,
+      false
+    );
+  }, []);
+
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDashoffset: strokeDashoffset.value,
+  }));
+
+  return (
+    <View
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: width,
+        height: height,
+        zIndex: 10,
+        pointerEvents: "none",
+      }}
+    >
+      <Svg width={width} height={height}>
+        <Defs>
+          <LinearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <Stop offset="0%" stopColor="#7B61FF" />
+            <Stop offset="50%" stopColor="#FFD24A" />
+            <Stop offset="100%" stopColor="#7B61FF" />
+          </LinearGradient>
+        </Defs>
+        <AnimatedRect
+          x={4}
+          y={4}
+          width={width - 8}
+          height={height - 8}
+          rx={55}
+          ry={55}
+          stroke="url(#grad)"
+          strokeWidth={6}
+          strokeDasharray={`${LINE_LENGTH} ${GAP_LENGTH}`}
+          strokeLinecap="round"
+          fill="transparent"
+          animatedProps={animatedProps}
+        />
+      </Svg>
+    </View>
+  );
+};
 
 const EmotionAnalysisLoadingScreen: React.FC<
   EmotionAnalysisLoadingScreenProps
@@ -28,8 +100,8 @@ const EmotionAnalysisLoadingScreen: React.FC<
   });
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <LinearGradient
+    <View style={{ flex: 1 }}>
+      <ExpoLinearGradient
         colors={["#f0f9ff", "#e0f2fe", "#bae6fd"]}
         style={{
           position: "absolute",
@@ -48,12 +120,14 @@ const EmotionAnalysisLoadingScreen: React.FC<
           paddingHorizontal: 32,
         }}
       >
+        <BorderAnimation />
+
         <Text
           style={{
             color: "#475569",
             fontSize: 15,
             fontWeight: "500",
-            marginBottom: 56,
+            marginBottom: 32,
             textAlign: "center",
             letterSpacing: 0.3,
           }}
@@ -64,9 +138,8 @@ const EmotionAnalysisLoadingScreen: React.FC<
         <Text
           style={{
             color: "#1e293b",
-            fontSize: 26,
+            fontSize: 24,
             fontWeight: "600",
-            marginBottom: 72,
             textAlign: "center",
             letterSpacing: -0.3,
             lineHeight: 32,
@@ -75,7 +148,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
           {processingPhase}
         </Text>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

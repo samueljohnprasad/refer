@@ -29,11 +29,8 @@ import {
   keyboardJournalOpenAtom,
   selectedDateDiscoveryAtom,
 } from "./helpers";
-import VoiceRecorderModalWrapper from "./VoiceRecorderModalWrapper";
-import KeyboardJournalModalWrapper from "./KeyboardJournalModalWrapper";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import { format } from "date-fns";
-import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { useLocalSearchParams } from "expo-router";
@@ -44,6 +41,25 @@ import {
   Menu02Icon,
   ReloadIcon,
 } from "@hugeicons/core-free-icons";
+import SuspensLoader from "@/src/components/SuspensLoader";
+
+// Lazy load components
+const VoiceRecorderModalWrapper = React.lazy(
+  () => import("./VoiceRecorderModalWrapper")
+);
+const KeyboardJournalModalWrapper = React.lazy(
+  () => import("./KeyboardJournalModalWrapper")
+);
+const JournalingOptionsModal = React.lazy(() =>
+  import("./JournalingOptionsModal").then((module) => ({
+    default: module.JournalingOptionsModal,
+  }))
+);
+const CalendarPicker = React.lazy(() =>
+  import("../DailyNotesScreen/CalendarPicker").then((module) => ({
+    default: module.CalendarPicker,
+  }))
+);
 
 // Constants outside component to prevent recreation
 const COLORS = {
@@ -187,7 +203,9 @@ function DiscoveryScreen() {
   }, [date]);
 
   const [isCalendarVisible, setIsCalendarVisible] = useState<boolean>(false);
-  const { currentPrompt, shufflePrompt } = useJournalEntry();
+  const [isOptionsVisible, setIsOptionsVisible] = useState<boolean>(false);
+  const { currentPrompt, shufflePrompt, setPrompt, allPrompts } =
+    useJournalEntry();
 
   const currentStreak = userProfile?.currentStreak ?? 0;
 
@@ -270,6 +288,7 @@ function DiscoveryScreen() {
             <View className="flex-row items-center justify-between px-[18px]">
               <CircleAction
                 key="menu"
+                onPress={() => setIsOptionsVisible(true)}
                 size={72}
                 bg={COLORS.lavender}
                 icon={
@@ -307,8 +326,17 @@ function DiscoveryScreen() {
           </LinearGradient>
         </View>
 
-        <VoiceRecorderModalWrapper />
-        <KeyboardJournalModalWrapper />
+        <SuspensLoader>
+          <VoiceRecorderModalWrapper />
+          <KeyboardJournalModalWrapper />
+          <JournalingOptionsModal
+            visible={isOptionsVisible}
+            onClose={() => setIsOptionsVisible(false)}
+            onSelectPrompt={setPrompt}
+            allPrompts={allPrompts}
+            currentPrompt={currentPrompt}
+          />
+        </SuspensLoader>
       </ScrollView>
 
       {/* Calendar Modal */}
@@ -317,13 +345,14 @@ function DiscoveryScreen() {
         transparent
         animationType="fade"
         onRequestClose={handleCloseCalendar}
+        className="flex-1 h-full w-full"
       >
         <AnimatedBlurView
           intensity={40}
-          className="flex-1 justify-center items-center"
+          className="flex-1 h-full w-full justify-center items-center"
         >
           <Pressable
-            className="flex-1 bg-black/50 px-2 justify-center items-center"
+            className="flex-1 bg-black/50 px-2 w-full justify-center items-center"
             onPress={handleCloseCalendar}
           >
             <Pressable
@@ -348,13 +377,15 @@ function DiscoveryScreen() {
                   <Feather name="x" size={24} color="white" />
                 </Pressable>
               </View>
-              <CalendarPicker
-                selectedDate={selectedDate}
-                onDateSelect={handleDateSelect}
-                visible={isCalendarVisible}
-                moodMap={undefined}
-                showMoodBadges={false}
-              />
+              <SuspensLoader>
+                <CalendarPicker
+                  selectedDate={selectedDate}
+                  onDateSelect={handleDateSelect}
+                  visible={isCalendarVisible}
+                  moodMap={undefined}
+                  showMoodBadges={false}
+                />
+              </SuspensLoader>
             </Pressable>
           </Pressable>
         </AnimatedBlurView>

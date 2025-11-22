@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Alert, Linking } from "react-native";
 import * as Haptics from "expo-haptics";
+import * as WebBrowser from "expo-web-browser";
 import { useAuth } from "@/src/context/AuthContext";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
 
@@ -13,8 +14,6 @@ export const useSettingsModals = () => {
     showModal: false,
   });
 
-  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
-  const [showTermsAndConditions, setShowTermsAndConditions] = useState(false);
   const [showEraseDataModal, setShowEraseDataModal] = useState(false);
   const deleteUserDataMutation = useDeleteUser();
 
@@ -26,6 +25,39 @@ export const useSettingsModals = () => {
   const handleRateUs = () => {
     Haptics.selectionAsync();
     Linking.openURL("https://apps.apple.com/app/idYOUR_APP_ID");
+  };
+
+  const handleContactSupport = async () => {
+    Haptics.selectionAsync();
+    const url = "mailto:happy.journals.app@gmail.com";
+    try {
+      const canOpen = await Linking.canOpenURL(url);
+      if (canOpen) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert(
+          "No Mail App Found",
+          "Please email us at happy.journals.app@gmail.com"
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        "Unable to open mail app. Please email us at happy.journals.app@gmail.com"
+      );
+    }
+  };
+
+  const handlePrivacyPolicy = async () => {
+    Haptics.selectionAsync();
+    await WebBrowser.openBrowserAsync(
+      "https://happie.lovable.app/privacy-policy"
+    );
+  };
+
+  const handleTermsOfUse = async () => {
+    Haptics.selectionAsync();
+    await WebBrowser.openBrowserAsync("https://happie.lovable.app/terms");
   };
 
   const handleEraseDataConfirm = async (): Promise<void> => {
@@ -47,10 +79,6 @@ export const useSettingsModals = () => {
     setIsSignoutOPen,
     showModal,
     setShowModal,
-    showPrivacyPolicy,
-    setShowPrivacyPolicy,
-    showTermsAndConditions,
-    setShowTermsAndConditions,
     showEraseDataModal,
     setShowEraseDataModal,
     deleteUserDataMutation,
@@ -58,6 +86,9 @@ export const useSettingsModals = () => {
     signOut,
     handlePress,
     handleRateUs,
+    handleContactSupport,
+    handlePrivacyPolicy,
+    handleTermsOfUse,
     handleEraseDataConfirm,
   };
 };

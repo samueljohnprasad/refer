@@ -1,5 +1,11 @@
 import React, { forwardRef, useMemo } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import {
   BottomSheetModal,
   BottomSheetScrollView,
@@ -7,7 +13,12 @@ import {
 } from "@gorhom/bottom-sheet";
 import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import { Feather } from "@expo/vector-icons";
-import WeekyScreenAIWrapper from "@/src/screens/DailyNotesScreen/components/WeekyScreenAIWrapper";
+import SuspensLoader from "@/src/components/SuspensLoader";
+
+// Lazy load heavy component
+const WeekyScreenAIWrapper = React.lazy(
+  () => import("@/src/screens/DailyNotesScreen/components/WeekyScreenAIWrapper")
+);
 
 interface AIInsightsModalBottomSheetProps {
   weekStart: string;
@@ -70,7 +81,9 @@ export const AIInsightsModalBottomSheet = forwardRef<
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
       >
-        <WeekyScreenAIWrapper />
+        <SuspensLoader>
+          <WeekyScreenAIWrapper />
+        </SuspensLoader>
       </BottomSheetScrollView>
     </BottomSheetModal>
   );

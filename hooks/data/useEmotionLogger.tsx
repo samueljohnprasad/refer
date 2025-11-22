@@ -14,6 +14,7 @@ import {
   ToastTitle,
   useToast,
 } from "@/components/ui/toast";
+import { useDailyStreak } from "./useDailyStreak";
 
 type MoodEnum = Database["public"]["Enums"]["mood"];
 
@@ -87,7 +88,7 @@ async function logEmotion(userId: string, emotionId: number): Promise<void> {
   const { error } = await supabase.from("moods").insert({
     user_id: userId,
     main_mood: mood,
-    selected_date: format(new Date(), "yyyy-MM-dd"),
+    selected_date: new Date().toISOString(),
     input_method: "emotion_logger",
     journal_entry_id: null,
     mood_score: emotionId,
@@ -106,6 +107,7 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
   const queryClient = useQueryClient();
   const dateStr = format(selectedDate, "yyyy-MM-dd");
   const toast = useToast();
+  const { logStreakIfNeeded } = useDailyStreak();
 
   const COOLDOWN_MS: number = 30 * 60 * 1000; // 30 minutes
   const lastLogKey = "lastLogKey";
@@ -121,8 +123,8 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
       if (!user?.id) return new Map<number, number>();
       return fetchDailyEmotions(user.id, selectedDate);
     },
-    staleTime: 2 * 60_000, // 2 minutes
-    gcTime: 5 * 60_000, // 5 minutes
+    staleTime: 2 * 60 * 60 * 1000, // 2 hours
+    gcTime: 5 * 60 * 60 * 1000, // 5 hours
     refetchOnWindowFocus: false,
     enabled: Boolean(user?.id),
   });
@@ -134,6 +136,7 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
       return logEmotion(user.id, emotionId);
     },
     onSuccess: () => {
+      logStreakIfNeeded();
       // Invalidate queries to refetch data
       queryClient.invalidateQueries({
         queryKey: ["daily-emotions", user?.id, dateStr],

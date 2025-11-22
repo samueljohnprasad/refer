@@ -26,7 +26,6 @@ import {
 } from "react-native-safe-area-context";
 import { currentWeekViewAtom, selectedDateAtom } from "./atoms";
 import MoodBadge from "@/src/components/MoodBadge";
-import { DayButton } from "./DailyNotesScreen";
 import { CalendarPicker } from "./CalendarPicker";
 import { useWeekNavigation } from "./hooks/useWeekNavigation";
 import { useFetchMoodsMonthly } from "@/hooks/data/useFetchMoods";
@@ -37,9 +36,9 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   Bookmark03Icon,
   Calendar01Icon,
-  Calendar02Icon,
 } from "@hugeicons/core-free-icons";
 import { isIOS } from "@/src/utils/mood";
+import { DayButton } from "./DayButtonComponent";
 
 const { height } = Dimensions.get("window");
 const isIos = Platform.OS === "ios";

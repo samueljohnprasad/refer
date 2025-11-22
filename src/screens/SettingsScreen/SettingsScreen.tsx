@@ -18,8 +18,6 @@ import {
 } from "@hugeicons/core-free-icons";
 
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
-import PrivacyPolicyModal from "@/src/components/modals/PrivacyPolicyModal";
-import TermsAndConditionsModal from "@/src/components/modals/TermsAndConditionsModal";
 import EraseDataConfirmationModal from "@/src/components/modals/EraseDataConfirmationModal";
 import SignOutConfirmationModal from "@/src/components/modals/SignOutConfirmationModal";
 
@@ -42,10 +40,6 @@ export default React.memo(function SettingsScreen() {
     setIsSignoutOPen,
     showModal,
     setShowModal,
-    showPrivacyPolicy,
-    setShowPrivacyPolicy,
-    showTermsAndConditions,
-    setShowTermsAndConditions,
     showEraseDataModal,
     setShowEraseDataModal,
     deleteUserDataMutation,
@@ -53,6 +47,9 @@ export default React.memo(function SettingsScreen() {
     signOut,
     handlePress,
     handleRateUs,
+    handleContactSupport,
+    handlePrivacyPolicy,
+    handleTermsOfUse,
     handleEraseDataConfirm,
   } = useSettingsModals();
 
@@ -124,7 +121,7 @@ export default React.memo(function SettingsScreen() {
               iconColor="#06B6D4"
               iconBgColor="#CFFAFE"
               title="Contact Support"
-              onPress={() => handlePress("contact-support")}
+              onPress={handleContactSupport}
             />
             <SettingsItem
               icon={StarIcon}
@@ -143,20 +140,14 @@ export default React.memo(function SettingsScreen() {
               iconColor="#9333EA"
               iconBgColor="#F3E8FF"
               title="Terms of Use"
-              onPress={() => {
-                Haptics.selectionAsync();
-                setShowTermsAndConditions(true);
-              }}
+              onPress={handleTermsOfUse}
             />
             <SettingsItem
               icon={ShieldUserIcon}
               iconColor="#2563EB"
               iconBgColor="#DBEAFE"
               title="Privacy Policy"
-              onPress={() => {
-                Haptics.selectionAsync();
-                setShowPrivacyPolicy(true);
-              }}
+              onPress={handlePrivacyPolicy}
             />
             <SettingsItem
               icon={Delete02Icon}
@@ -178,7 +169,7 @@ export default React.memo(function SettingsScreen() {
               onPress={() => {}}
               showArrow={false}
             />
-            <SettingsItem
+            {/* <SettingsItem
               icon={Download02Icon}
               iconColor="#9333EA"
               iconBgColor="#E9D5FF"
@@ -188,7 +179,7 @@ export default React.memo(function SettingsScreen() {
                 Haptics.selectionAsync();
                 setShowImportModal(true);
               }}
-            />
+            /> */}
             <SettingsItem
               icon={Logout02Icon}
               iconColor="#3B82F6"
@@ -220,16 +211,6 @@ export default React.memo(function SettingsScreen() {
         importStartDate={importStartDate}
         importDaysCount={importDaysCount}
         setImportDaysCount={setImportDaysCount}
-      />
-
-      <PrivacyPolicyModal
-        visible={showPrivacyPolicy}
-        onClose={() => setShowPrivacyPolicy(false)}
-      />
-
-      <TermsAndConditionsModal
-        visible={showTermsAndConditions}
-        onClose={() => setShowTermsAndConditions(false)}
       />
 
       <EraseDataConfirmationModal
