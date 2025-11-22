@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Keyboard } from "react-native";
 import { FeelingsType } from "@/src/network/genAi";
 import { BackupState } from "../types";
 
@@ -26,38 +27,35 @@ interface UseJournalEditReturn {
  * Handles edit mode, backup/restore of changes
  */
 export const useJournalEdit = ({
-  initialEmoji,
   initialTags,
   initialText,
 }: UseJournalEditProps): UseJournalEditReturn => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [selectedEmoji, setSelectedEmoji] = useState<string>(initialEmoji);
   const [tags, setTags] = useState<FeelingsType[]>(initialTags);
   const [journalText, setJournalText] = useState<string>(initialText);
   const [backupState, setBackupState] = useState<BackupState>({
-    selectedEmoji: "",
     tags: [],
     journalText: "",
   });
 
   const handleEdit = useCallback((): void => {
     setBackupState({
-      selectedEmoji,
       tags,
       journalText,
     });
     setIsEditing(true);
-  }, [selectedEmoji, tags, journalText]);
+  }, [tags, journalText]);
 
   const handleDone = useCallback((): void => {
+    Keyboard.dismiss();
     setIsEditing(false);
   }, []);
 
   const handleClose = useCallback(
     (onClose?: () => void): void => {
+      Keyboard.dismiss();
       if (isEditing) {
         // Restore backup state if editing and exit edit mode (don't close modal)
-        setSelectedEmoji(backupState.selectedEmoji);
         setTags(backupState.tags);
         setJournalText(backupState.journalText);
         setIsEditing(false);

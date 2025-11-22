@@ -178,12 +178,6 @@ export default function JournalCalendarScreen() {
   const currentStreak = userProfile?.currentStreak ?? 0;
   const nextMilestone = getNextMilestone(currentStreak);
 
-  useEffect(() => {
-    progressAnim.value = withTiming(currentStreak / nextMilestone, {
-      duration: 1200,
-    });
-  }, [currentStreak, nextMilestone]);
-
   // Memoize date calculations to prevent recalculation on every render
   const { startOfWeekDate, endOfWeekDate, selectedEmotionDate } =
     useMemo(() => {
@@ -212,13 +206,18 @@ export default function JournalCalendarScreen() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Animated style for progress bar
   const progressBarStyle = useAnimatedStyle(() => {
     const widthPercentage = interpolate(progressAnim.value, [0, 1], [0, 100]);
     return {
       width: `${widthPercentage}%`,
     };
   });
+
+  useEffect(() => {
+    progressAnim.value = withTiming(currentStreak / nextMilestone, {
+      duration: 1200,
+    });
+  }, [currentStreak, nextMilestone]);
 
   return (
     <SafeAreaView className="flex-1 bg-white">

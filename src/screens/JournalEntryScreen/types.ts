@@ -69,7 +69,6 @@ export interface SaveButtonProps {
 }
 
 export interface BackupState {
-  selectedEmoji: string;
   tags: FeelingsType[];
   journalText: string;
 }

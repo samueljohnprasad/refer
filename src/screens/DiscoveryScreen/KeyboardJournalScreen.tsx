@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+} from "react";
 import {
   View,
   Text,
@@ -44,7 +50,6 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const rotation = useSharedValue(0);
 
   const formattedDate = format(localSelectedDate, "MMMM d, yyyy");
- 
 
   const handleShufflePrompt = useCallback(() => {
     rotation.value = withSpring(rotation.value + 360, {
@@ -72,14 +77,21 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
   const handleCloseCalendar = useCallback(() => {
     setIsCalendarVisible(false);
-    }, []);
+  }, []);
 
   const handleTodayPress = useCallback(() => {
     const today = new Date();
     setLocalSelectedDate(today);
   }, []);
 
+  useEffect(() => {
+    return () => {
+      Keyboard.dismiss();
+    };
+  }, []);
+
   const handleSubmit = useCallback(() => {
+    Keyboard.dismiss();
     if (journalText.trim().length > 0) {
       onSubmit(journalText.substring(0, 7000));
     }
@@ -129,7 +141,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
             {/* Text Input */}
             <TextInput
-             focusable
+              focusable
               maxLength={7000}
               value={journalText}
               onChangeText={setJournalText}
@@ -160,7 +172,10 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             <View className="flex-row items-center justify-between gap-3">
               {/* Close Button */}
               <TouchableOpacity
-                onPress={onClose}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  onClose();
+                }}
                 className="w-14 h-14 rounded-full bg-[#F3F4F6] items-center justify-center"
                 activeOpacity={0.7}
               >

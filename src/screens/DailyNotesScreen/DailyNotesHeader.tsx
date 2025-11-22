@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useCallback, useState, Suspense } from "react";
 import { View, Pressable, Dimensions, Platform } from "react-native";
 import { Text } from "@/components/Themed";
 import {
@@ -26,19 +26,23 @@ import {
 } from "react-native-safe-area-context";
 import { currentWeekViewAtom, selectedDateAtom } from "./atoms";
 import MoodBadge from "@/src/components/MoodBadge";
-import { CalendarPicker } from "./CalendarPicker";
 import { useWeekNavigation } from "./hooks/useWeekNavigation";
 import { useFetchMoodsMonthly } from "@/hooks/data/useFetchMoods";
 import useCalendarExpandReanimated from "./hooks/useCalendarExpandReanimated";
 import TodayPill from "@/src/components/TodayPill";
 import { router } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import {
-  Bookmark03Icon,
-  Calendar01Icon,
-} from "@hugeicons/core-free-icons";
+import { Bookmark03Icon, Calendar01Icon } from "@hugeicons/core-free-icons";
 import { isIOS } from "@/src/utils/mood";
 import { DayButton } from "./DayButtonComponent";
+import SuspensLoader from "@/src/components/SuspensLoader";
+
+// Lazy load CalendarPicker
+const CalendarPicker = React.lazy(() =>
+  import("./CalendarPicker").then((module) => ({
+    default: module.CalendarPicker,
+  }))
+);
 
 const { height } = Dimensions.get("window");
 const isIos = Platform.OS === "ios";
@@ -346,17 +350,19 @@ const DailyNotesHeader = React.memo(
               className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-violet-300"
               style={[inlineCalendarAnimatedStyle, { top: 0 }]}
             >
-              <CalendarPicker
-                moodMap={moodMap}
-                selectedDate={isSelectedDateValid ? selectedDate : new Date()}
-                visible={isExpanded}
-                onDateSelect={(date: Date) => {
-                  // First collapse smoothly, then update date so header morph feels natural
-                  collapse(() => {
-                    selectDate(date);
-                  });
-                }}
-              />
+              <SuspensLoader>
+                <CalendarPicker
+                  moodMap={moodMap}
+                  selectedDate={isSelectedDateValid ? selectedDate : new Date()}
+                  visible={isExpanded}
+                  onDateSelect={(date: Date) => {
+                    // First collapse smoothly, then update date so header morph feels natural
+                    collapse(() => {
+                      selectDate(date);
+                    });
+                  }}
+                />
+              </SuspensLoader>
             </Animated.View>
           )}
           {/* Today tag - animated reusable component */}
