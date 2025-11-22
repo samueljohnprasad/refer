@@ -19,3 +19,4 @@ export const getMoodScore = (mood?: Enums<"mood"> | null): number => {
 };
 
 export const isIOS = Platform.OS === "ios";
+export const isAndroid = Platform.OS === "android";

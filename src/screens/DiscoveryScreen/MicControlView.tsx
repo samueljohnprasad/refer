@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Dimensions,
-  Animated,
-  Pressable,
-} from "react-native";
+import React, { useCallback } from "react";
+import { View, TouchableOpacity, Dimensions, Pressable } from "react-native";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  SlideInDown,
+  SlideOutDown,
+} from "react-native-reanimated";
 import { recorderOpenAtom } from "./helpers";
 import { useAtom } from "jotai";
 import { Box } from "@/components/ui/box";
@@ -19,11 +19,12 @@ import {
   Tick01Icon,
 } from "@hugeicons/core-free-icons";
 import {
-  BottomSheet,
   BottomSheetTrigger,
   useBottomSheet,
 } from "@/components/ui/bottomsheet";
 import ShortBottomModalWithProvider from "@/src/components/ShortBottomModalWithProvider";
+import { isAndroid } from "@/src/utils/mood";
+import { useMicControlAnimations } from "./hooks/useMicControlAnimations";
 
 // Props interface for the presenter component
 export interface MicControlViewProps {
@@ -37,10 +38,6 @@ export interface MicControlViewProps {
   isStopped: boolean;
 }
 
-/**
- * MicControlView - Pure presenter component for mic control UI
- * Receives all data and callbacks via props, handles only rendering
- */
 const { width, height } = Dimensions.get("window");
 const PANEL_HEIGHT = 200;
 
@@ -73,6 +70,12 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
   const { handleClose } = useBottomSheet();
 
+  // Use custom animation hook
+  const { micAnimatedStyle, sideIconsAnimatedStyle } = useMicControlAnimations({
+    isRecording,
+    isPaused,
+  });
+
   const handleDiscard = useCallback(() => {
     setRecorderOpen(false);
   }, [setRecorderOpen]);
@@ -80,32 +83,43 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   return (
     <>
       {isRecording && (
-        <Pressable
-          onPress={onToggleRecord}
-          style={CONTAINER_STOP_STYLE}
-          className="absolute justify-center bg-transparent rounded-full"
-        />
+        <Animated.View
+          entering={FadeIn.duration(300)}
+          exiting={FadeOut.duration(400)}
+          style={[CONTAINER_STOP_STYLE, { position: "absolute" }]}
+        >
+          <Pressable
+            onPress={() => {
+              if (isAndroid) {
+                return onStop();
+              }
+              onToggleRecord();
+            }}
+            style={{ width: "100%", height: "100%" }}
+            className="justify-center bg-transparent rounded-full"
+          />
+        </Animated.View>
       )}
       {!isRecording && (
-        <View
+        <Animated.View
+          entering={SlideInDown.duration(400).springify().damping(15)}
+          exiting={SlideOutDown.duration(500).springify().damping(18)}
           style={CONTAINER_STYLE}
           className="absolute bottom-[50px] items-center pt-8 px-5"
         >
           <Box className="backdrop-blur-md w-full">
             <HStack className="justify-center items-center gap-10">
               {isPaused && (
-                <BottomSheetTrigger>
-                  <HugeiconsIcon icon={Cancel01Icon} size={32} />
-                </BottomSheetTrigger>
+                <Animated.View style={sideIconsAnimatedStyle}>
+                  <BottomSheetTrigger>
+                    <HugeiconsIcon icon={Cancel01Icon} size={32} />
+                  </BottomSheetTrigger>
+                </Animated.View>
               )}
-              <View className="flex p-5 items-center justify-center mb-4 bg-[#FFA726] rounded-full">
-                {isRecording && (
-                  <Animated.View
-                    style={{ backgroundColor: "#EF444420" }}
-                    className="absolute w-[120px] h-[120px] rounded-full"
-                  />
-                )}
-
+              <Animated.View
+                style={micAnimatedStyle}
+                className="flex p-5 items-center justify-center mb-4 bg-[#FFA726] rounded-full"
+              >
                 <TouchableOpacity
                   className="w-20 h-20 rounded-full justify-center items-center"
                   onPress={onToggleRecord}
@@ -115,18 +129,20 @@ const MicControlView: React.FC<MicControlViewProps> = ({
                     <HugeiconsIcon icon={AiMicIcon} size={48} />
                   </View>
                 </TouchableOpacity>
-              </View>
+              </Animated.View>
 
               {isPaused && (
-                <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
-                  <View>
-                    <HugeiconsIcon icon={Tick01Icon} size={32} />
-                  </View>
-                </TouchableOpacity>
+                <Animated.View style={sideIconsAnimatedStyle}>
+                  <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
+                    <View>
+                      <HugeiconsIcon icon={Tick01Icon} size={32} />
+                    </View>
+                  </TouchableOpacity>
+                </Animated.View>
               )}
             </HStack>
           </Box>
-        </View>
+        </Animated.View>
       )}
       <ShortBottomModalWithProvider>
         <View className="flex-1 p-6 w-full justify-between">
