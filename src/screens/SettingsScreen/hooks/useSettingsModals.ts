@@ -4,10 +4,12 @@ import * as Haptics from "expo-haptics";
 import * as WebBrowser from "expo-web-browser";
 import { useAuth } from "@/src/context/AuthContext";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useSettingsModals = () => {
   const [isSignoutOPen, setIsSignoutOPen] = useState(false);
   const { signOut, isSigningOut } = useAuth();
+  const queryClient = useQueryClient();
 
   const [showModal, setShowModal] = useState({
     modalType: "",
@@ -65,6 +67,8 @@ export const useSettingsModals = () => {
       await deleteUserDataMutation.mutateAsync();
       setShowEraseDataModal(false);
       // Sign out after successful deletion
+      queryClient.clear();
+
       await signOut();
     } catch (error) {
       Alert.alert(
