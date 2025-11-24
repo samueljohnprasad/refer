@@ -49,7 +49,7 @@ export default function Home() {
             Welcome to Happy
           </Heading>
           <Text className="font-bold text-center text-outline-500">
-            sub title
+            your journaling companion
           </Text>
         </VStack>
 

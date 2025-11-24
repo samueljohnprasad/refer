@@ -82,7 +82,7 @@ export default React.memo(function SettingsScreen() {
         <Animated.ScrollView
           contentContainerClassName="flex-grow px-4"
           contentContainerStyle={{
-            paddingTop: headerHeight - 40,
+            paddingTop: headerHeight,
             paddingBottom: 24,
           }}
           showsVerticalScrollIndicator={false}

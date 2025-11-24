@@ -2,14 +2,12 @@ import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { supabase } from "./supabase";
+import { Router } from "expo-router";
 
 WebBrowser.maybeCompleteAuthSession(); // required for web only
 // Use a single redirect URI across platforms (iOS/Android)
 // Ensure this exact value is added to Supabase Auth > URL configuration > Additional Redirect URLs
-const redirectUrl = AuthSession.makeRedirectUri({
-  scheme: "happy",
-  path: "auth",
-});
+const redirectUrl = AuthSession.makeRedirectUri();
 console.log("redirectUrl", redirectUrl);
 
 const createSessionFromUrl = async (url: string) => {
@@ -35,10 +33,8 @@ const createSessionFromUrl = async (url: string) => {
 
 // Accept an optional Expo Router instance so we can programmatically
 // navigate after the OAuth flow completes.
-const performOAuth = async (router?: any) => {
+const performOAuth = async ({ router }: { router: Router }) => {
   try {
-        console.log('data 1', )
-
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -51,42 +47,23 @@ const performOAuth = async (router?: any) => {
       },
     });
 
-    console.log('data 1', data)
     if (error) throw error;
-    if (data) {
-      // await supabase
-      //   .from("profiles")
-      //   .insert([{ id: user.id, username: "new_user" }]);
-    }
+
     const result = await WebBrowser.openAuthSessionAsync(
       data.url, // The URL from Supabase
       redirectUrl // The deep link to your app
     );
-    console.log('data 2', result,)
 
     if (result.type === "success" && result.url) {
       try {
         await createSessionFromUrl(result.url);
         // Navigate to tabs layout after successful login
-        router?.replace("/tabs");
+        router.replace("/tabs/home");
       } catch (parseError) {}
     }
   } catch (error) {
-    console.log('data err', error)
     throw error;
   }
 };
 
-const sendMagicLink = async (email: string) => {
-  const { error } = await supabase.auth.signInWithOtp({
-    email: email,
-    options: {
-      emailRedirectTo: redirectUrl,
-    },
-  });
-
-  if (error) throw error;
-  // Email sent.
-};
-
-export { performOAuth, sendMagicLink, createSessionFromUrl };
+export { performOAuth, createSessionFromUrl };

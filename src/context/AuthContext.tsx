@@ -42,14 +42,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const toast = useToast();
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      const { data } = await supabase.auth.getSession();
-      const accessToken = data?.session?.access_token;
-      // signOut();
-    };
-    fetchToken();
-  }, []);
+  // useEffect(() => {
+  //   const fetchToken = async () => {
+  //     const { data } = await supabase.auth.getSession();
+  //     const accessToken = data?.session?.access_token;
+  //     // signOut();
+  //   };
+  //   fetchToken();
+  // }, []);
 
   useEffect(() => {
     const {
@@ -59,7 +59,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
-
         return;
       }
 
