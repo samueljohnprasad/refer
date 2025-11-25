@@ -1,5 +1,11 @@
 import * as AppleAuthentication from "expo-apple-authentication";
 import { supabase } from "./supabase";
+import * as AuthSession from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
+import { createSessionFromUrl } from "./google-auth";
+import { router } from "expo-router";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export async function signInWithApple() {
   try {
@@ -48,3 +54,32 @@ export async function signInWithApple() {
     }
   }
 }
+
+const redirectUrl = AuthSession.makeRedirectUri();
+
+export const signInWithAppleOAuth = async () => {
+  console.log("redirectUrlll", redirectUrl);
+  const { error, data } = await supabase.auth.signInWithOAuth({
+    provider: "apple",
+    options: {
+      redirectTo: redirectUrl,
+      skipBrowserRedirect: false,
+    },
+  });
+  console.log("redirectUrlll data", data, error);
+  if (error) throw error;
+
+  const result = await WebBrowser.openAuthSessionAsync(
+    data.url, // The URL from Supabase
+    redirectUrl // The deep link to your app
+  );
+  console.log("redirectUrlll result", result);
+
+  if (result.type === "success" && result.url) {
+    try {
+      await createSessionFromUrl(result.url);
+      // Navigate to tabs layout after successful login
+      router.replace("/tabs/home");
+    } catch (parseError) {}
+  }
+};

@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/bottomsheet";
 import ShortBottomModalWithProvider from "@/src/components/ShortBottomModalWithProvider";
 import { isAndroid } from "@/src/utils/mood";
-import { useMicControlAnimations } from "./hooks/useMicControlAnimations";
 
 // Props interface for the presenter component
 export interface MicControlViewProps {
@@ -70,12 +69,6 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
   const { handleClose } = useBottomSheet();
 
-  // Use custom animation hook
-  const { micAnimatedStyle, sideIconsAnimatedStyle } = useMicControlAnimations({
-    isRecording,
-    isPaused,
-  });
-
   const handleDiscard = useCallback(() => {
     setRecorderOpen(false);
   }, [setRecorderOpen]);
@@ -110,16 +103,13 @@ const MicControlView: React.FC<MicControlViewProps> = ({
           <Box className="backdrop-blur-md w-full">
             <HStack className="justify-center items-center gap-10">
               {isPaused && (
-                <Animated.View style={sideIconsAnimatedStyle}>
+                <View>
                   <BottomSheetTrigger>
                     <HugeiconsIcon icon={Cancel01Icon} size={32} />
                   </BottomSheetTrigger>
-                </Animated.View>
+                </View>
               )}
-              <Animated.View
-                style={micAnimatedStyle}
-                className="flex p-5 items-center justify-center mb-4 bg-[#FFA726] rounded-full"
-              >
+              <View className="flex p-5 items-center justify-center mb-4 bg-[#FFA726] rounded-full">
                 <TouchableOpacity
                   className="w-20 h-20 rounded-full justify-center items-center"
                   onPress={onToggleRecord}
@@ -129,16 +119,16 @@ const MicControlView: React.FC<MicControlViewProps> = ({
                     <HugeiconsIcon icon={AiMicIcon} size={48} />
                   </View>
                 </TouchableOpacity>
-              </Animated.View>
+              </View>
 
               {isPaused && (
-                <Animated.View style={sideIconsAnimatedStyle}>
+                <View>
                   <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
                     <View>
                       <HugeiconsIcon icon={Tick01Icon} size={32} />
                     </View>
                   </TouchableOpacity>
-                </Animated.View>
+                </View>
               )}
             </HStack>
           </Box>

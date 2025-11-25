@@ -7,8 +7,12 @@ import { performOAuth } from "../network/auth/google-auth";
 import ShortBottomModal from "./ShortBottomModal";
 import { forwardRef } from "react";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { signInWithApple } from "../network/auth/apple-auth";
+import {
+  signInWithApple,
+  signInWithAppleOAuth,
+} from "../network/auth/apple-auth";
 import * as AppleAuthentication from "expo-apple-authentication";
+import { isIOS } from "../utils/mood";
 export default forwardRef<BottomSheetModal | null>((props, ref) => {
   const router = useRouter();
   const toast = useToast();
@@ -47,7 +51,12 @@ export default forwardRef<BottomSheetModal | null>((props, ref) => {
         </Heading>
         <VStack space="xl" className="px-2">
           <Button
-            onPress={signInWithApple}
+            onPress={() => {
+              if (isIOS) {
+                return signInWithApple();
+              }
+              signInWithAppleOAuth();
+            }}
             variant="solid"
             action="primary"
             size="xl"
