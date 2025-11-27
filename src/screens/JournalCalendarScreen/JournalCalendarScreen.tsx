@@ -28,6 +28,8 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 const { width, height } = Dimensions.get("window");
+import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
+import Purchases from "react-native-purchases";
 
 // Global color palette
 export const PALETTE = {
@@ -45,8 +47,39 @@ export const PALETTE = {
 
 // Memoized TopBar component
 const TopBar = React.memo(() => {
+  async function presentPaywall(): Promise<boolean> {
+    try {
+      const offerings = await Purchases.getOfferings();
+      const offering = offerings.all["journal"];
+
+      if (!offering) {
+        return false;
+      }
+
+      const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({
+        offering: offering,
+      });
+
+      switch (paywallResult) {
+        case PAYWALL_RESULT.NOT_PRESENTED:
+        case PAYWALL_RESULT.ERROR:
+        case PAYWALL_RESULT.CANCELLED:
+          return false;
+        case PAYWALL_RESULT.PURCHASED:
+        case PAYWALL_RESULT.RESTORED:
+          return true;
+        default:
+          return false;
+      }
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
+
   const handlePaywallPress = useCallback(() => {
-    router.push("/tabs/screens/paywall");
+    // router.push("/tabs/screens/paywall");
+    presentPaywall();
   }, []);
 
   const handleSettingsPress = useCallback(() => {
@@ -218,6 +251,14 @@ export default function JournalCalendarScreen() {
       duration: 1200,
     });
   }, [currentStreak, nextMilestone]);
+
+  async function presentPaywallIfNeeded() {
+    // Present paywall for current offering:
+    const paywallResult: PAYWALL_RESULT =
+      await RevenueCatUI.presentPaywallIfNeeded({
+        requiredEntitlementIdentifier: "pro",
+      });
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white">

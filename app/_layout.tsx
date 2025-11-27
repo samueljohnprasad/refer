@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { Slot, usePathname } from "expo-router";
 import { AuthProvider } from "@/src/context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import * as Haptics from "expo-haptics";
 import { PressablesConfig } from "pressto";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -20,6 +20,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import * as Notifications from "expo-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SuspensLoader from "@/src/components/SuspensLoader";
+import Purchases, { LOG_LEVEL } from "react-native-purchases";
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -69,6 +70,26 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+    if (Platform.OS === "ios") {
+      Purchases.configure({ apiKey: "test_uplWOSJiaUBXqOcHZzthmJvPxNI" });
+      getCustomerInfo();
+    } else if (Platform.OS === "android") {
+      Purchases.configure({ apiKey: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo" });
+    }
+  }, []);
+
+  const getCustomerInfo = async () => {
+    try {
+      const customerInfo = await Purchases.getOfferings();
+      console.log("Customer Info:", JSON.stringify(customerInfo, null, 2));
+    } catch (error) {
+      console.error("Error fetching customer info:", error);
+    }
+  };
 
   return <RootLayoutNav />;
 }

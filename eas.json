@@ -3,8 +3,14 @@
     "version": ">= 16.16.0",
     "appVersionSource": "remote"
   },
- 
+
   "build": {
+    "ios-simulator": {
+      "extends": "development",
+      "ios": {
+        "simulator": true
+      }
+    },
     "development": {
       "developmentClient": true,
       "distribution": "internal",
@@ -25,8 +31,6 @@
     }
   },
   "submit": {
-    "production": {
-
-    }
+    "production": {}
   }
 }
