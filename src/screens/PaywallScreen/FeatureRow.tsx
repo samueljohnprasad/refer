@@ -6,17 +6,22 @@ function FeatureRow({
   icon,
   tint,
   label,
+  subtitle,
 }: {
   icon: React.ReactNode;
   tint: string;
   label: string;
+  subtitle?: string;
 }) {
   return (
     <View style={styles.featureRow}>
       <View style={[styles.featureIconChip, { backgroundColor: tint }]}>
         {icon}
       </View>
-      <Text style={styles.featureLabel}>{label}</Text>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.featureLabel}>{label}</Text>
+        {subtitle && <Text style={styles.featureSubtitle}>{subtitle}</Text>}
+      </View>
     </View>
   );
 }
@@ -37,8 +42,14 @@ const styles = StyleSheet.create({
   featureLabel: {
     color: COLORS.text,
     fontSize: 15,
-    lineHeight: 22,
+    lineHeight: 20,
     fontWeight: "600",
+  },
+  featureSubtitle: {
+    color: "rgba(15,23,42,0.6)",
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 2,
   },
 });
 

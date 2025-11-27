@@ -75,7 +75,7 @@ export default function RootLayout() {
     Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
 
     if (Platform.OS === "ios") {
-      Purchases.configure({ apiKey: "test_uplWOSJiaUBXqOcHZzthmJvPxNI" });
+      Purchases.configure({ apiKey: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo" });
       getCustomerInfo();
     } else if (Platform.OS === "android") {
       Purchases.configure({ apiKey: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo" });
@@ -85,7 +85,7 @@ export default function RootLayout() {
   const getCustomerInfo = async () => {
     try {
       const customerInfo = await Purchases.getOfferings();
-      console.log("Customer Info:", JSON.stringify(customerInfo, null, 2));
+      // console.log("Customer Info:", JSON.stringify(customerInfo, null, 2));
     } catch (error) {
       console.error("Error fetching customer info:", error);
     }

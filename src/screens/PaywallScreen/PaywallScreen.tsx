@@ -40,6 +40,10 @@ const PaywallScreen = () => {
               <Text style={styles.title}>
                 Go Premium{"\n"}& Unlock all features
               </Text>
+              <Text style={styles.subtitle}>
+                Get unlimited access to all features and take your journaling to
+                the next level.
+              </Text>
             </View>
           </View>
         </SafeAreaView>
@@ -67,37 +71,34 @@ const PaywallScreen = () => {
         >
           <Box className="flex flex-col gap-4 ">
             <FeatureRow
-              icon={<Ionicons name="star" size={18} color="#f6c73b" />}
-              tint="#fff7df"
-              label="Unlimited Journal Entries"
-            />
-            <FeatureRow
-              icon={
-                <Ionicons name="sparkles-outline" size={18} color="#6b8bff" />
-              }
+              icon={<Ionicons name="sparkles" size={18} color="#6b8bff" />}
               tint="#e9efff"
-              label="Smart AI Writing Suggestions"
+              label="AI Insights & Weekly Summaries"
+              subtitle="Get weekly AI reflection on your journals"
             />
             <FeatureRow
               icon={<Ionicons name="bar-chart" size={18} color="#35b276" />}
               tint="#e9f9f0"
-              label="Mood & Progress Tracking"
+              label="Advanced Mood Dashboard"
+              subtitle="Visualize your progress with detailed charts."
             />
             <FeatureRow
-              icon={<Ionicons name="cloud-outline" size={18} color="#7fb7ff" />}
+              icon={<Ionicons name="mic" size={18} color="#FF6B6B" />}
+              tint="#FFE5E5"
+              label="Longer Voice Recordings"
+              subtitle="Record your thoughts without time limits."
+            />
+            <FeatureRow
+              icon={<Ionicons name="star" size={18} color="#f6c73b" />}
+              tint="#fff7df"
+              label="Unlimited Journal Entries"
+              subtitle="Write as many entries as you want, every day."
+            />
+            <FeatureRow
+              icon={<Ionicons name="cloud" size={18} color="#7fb7ff" />}
               tint="#eef6ff"
               label="Secure Cloud Backup"
-            />
-            <FeatureRow
-              icon={
-                <Ionicons
-                  name="color-palette-outline"
-                  size={18}
-                  color="#f4a261"
-                />
-              }
-              tint="#fff2e8"
-              label="Themes & Customization"
+              subtitle="Keep your memories safe and synced across devices."
             />
           </Box>
         </ScrollView>
