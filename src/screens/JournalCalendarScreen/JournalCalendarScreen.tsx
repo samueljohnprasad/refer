@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -29,6 +30,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react-native";
 const { width } = Dimensions.get("window");
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Global color palette
 export const PALETTE = {
@@ -46,17 +48,30 @@ export const PALETTE = {
 
 // Memoized TopBar component
 const TopBar = React.memo(() => {
-  const { presentPaywall } = useRevenueCat();
+  const { presentPaywall, hasPro } = useRevenueCat();
 
   const handleSettingsPress = useCallback(() => {
     router.push("/tabs/screens/settings");
   }, []);
 
+  const handleProPress = useCallback(() => {
+    if (hasPro) {
+      Alert.alert(
+        "Premium Active 🌟",
+        "You have full access to all premium features.",
+        [{ text: "Awesome!", style: "default" }]
+      );
+      return;
+    }
+
+    presentPaywall();
+  }, [hasPro, presentPaywall]);
+
   return (
     <View className="rounded-2xl overflow-hidden mb-2.5 pl-0">
       <View className="flex-row justify-between ">
         <TouchableOpacity
-          onPress={presentPaywall}
+          onPress={handleProPress}
           className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
           activeOpacity={0.8}
         >
@@ -80,14 +95,30 @@ const TopBar = React.memo(() => {
 });
 
 // Memoized Greeting component
-const Greeting = React.memo<{ displayName?: string; isLoading: boolean }>(
-  ({ displayName, isLoading }) => (
-    <Text className="text-[34px] font-bold mt-2 text-gray-900">
+const Greeting = React.memo<{
+  displayName?: string;
+  isLoading: boolean;
+  hasPro: boolean;
+}>(({ displayName, isLoading, hasPro }) => (
+  <View className="flex-row items-center mt-2 gap-2">
+    <Text className="text-[34px] font-bold text-gray-900">
       Hi, {isLoading ? "..." : displayName || "there"}{" "}
       <Text className="text-3xl">👋</Text>
     </Text>
-  )
-);
+    {hasPro && (
+      <LinearGradient
+        colors={["#FFD24A", "#FF7A2F"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        className="px-3 py-1 rounded-full"
+      >
+        <Text className="text-white text-xs font-extrabold tracking-wide">
+          PRO
+        </Text>
+      </LinearGradient>
+    )}
+  </View>
+));
 
 // Memoized StreakCard component
 const StreakCard = React.memo<{
@@ -240,10 +271,10 @@ export default function JournalCalendarScreen() {
         >
           {/* Top bar with blur background */}
           <TopBar />
-          {hasPro ? <Text>has pro</Text> : <Text>has no pro</Text>}
           <Greeting
             displayName={userProfile?.displayName}
             isLoading={isLoadingProfile}
+            hasPro={hasPro}
           />
 
           <StreakCard
