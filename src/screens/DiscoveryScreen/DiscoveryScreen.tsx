@@ -42,6 +42,8 @@ import {
   ReloadIcon,
 } from "@hugeicons/core-free-icons";
 import SuspensLoader from "@/src/components/SuspensLoader";
+import { useJournalLimit } from "@/hooks/useJournalLimit";
+import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 
 // Lazy load components
 const VoiceRecorderModalWrapper = React.lazy(
@@ -197,6 +199,8 @@ function DiscoveryScreen() {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const { date } = useLocalSearchParams<{ date: string }>();
   const [selectedDate, setSelectedDate] = useAtom(selectedDateDiscoveryAtom);
+  const { presentPaywall } = useRevenueCat();
+  const { shouldShowPaywall } = useJournalLimit(selectedDate);
 
   useEffect(() => {
     setSelectedDate(date ? new Date(date) : new Date());
@@ -210,12 +214,20 @@ function DiscoveryScreen() {
   const currentStreak = userProfile?.currentStreak ?? 0;
 
   const handleOpenRecorder = useCallback(() => {
+    if (shouldShowPaywall) {
+      presentPaywall();
+      return;
+    }
     setRecorderOpen(true);
-  }, [setRecorderOpen]);
+  }, [shouldShowPaywall, presentPaywall, setRecorderOpen]);
 
   const handleKeyboardPress = useCallback(() => {
+    if (shouldShowPaywall) {
+      presentPaywall();
+      return;
+    }
     setKeyboardJournalOpen(true);
-  }, [setKeyboardJournalOpen]);
+  }, [shouldShowPaywall, presentPaywall, setKeyboardJournalOpen]);
 
   const handleDatePress = useCallback(() => {
     setIsCalendarVisible(true);

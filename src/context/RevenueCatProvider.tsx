@@ -10,7 +10,7 @@ import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 
 interface RevenueCatContextValue {
   customerInfo: CustomerInfo | null;
-  isLoading: boolean;
+  isLoadingRevenueCat: boolean;
   hasPro: boolean;
   presentPaywall: () => Promise<boolean>;
 }
@@ -34,7 +34,7 @@ export const useRevenueCat = () => {
 
 const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingRevenueCat, setIsLoadingRevenueCat] = useState<boolean>(true);
   const [hasPro, setHasPro] = useState<boolean>(false);
   const { user } = useAuth();
 
@@ -108,7 +108,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
         hasProHandler(customerInfo);
       } catch (e) {
       } finally {
-        setIsLoading(false);
+        setIsLoadingRevenueCat(false);
       }
     };
     fetchInfo();
@@ -127,7 +127,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
     <RevenueCatContext.Provider
       value={{
         customerInfo,
-        isLoading,
+        isLoadingRevenueCat,
         hasPro,
         presentPaywall,
       }}
