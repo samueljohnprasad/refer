@@ -11,6 +11,8 @@ export const calenderVisibleDatesAtom = atom<{
   visibleEndDate: undefined,
 });
 
+export const startRecordingAtom = atom(false);
+
 export type DeleteJournal = {
   flag?: boolean;
   entry?: JournalEntry | null;

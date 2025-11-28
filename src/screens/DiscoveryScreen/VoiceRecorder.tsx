@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import MindfulGradient from "./MindfulGradient";
 import MicControlContainer from "./MicControlContainer";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAudioRecording } from "@/src/context/AudioRecordingContext";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import Animated, {
@@ -11,10 +10,12 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { selectedDateDiscoveryAtom } from "./helpers";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { formattedDateTime, formatTime } from "@/src/utils/date";
 import { ReloadIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import useAudioRecording from "@/hooks/useAudioRecording";
+import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 
 interface VoiceRecorderProps {
   onStop: (uri: string) => void;
@@ -24,6 +25,7 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
   const { currentPrompt, shufflePrompt } = useJournalEntry();
   const rotation = useSharedValue(0);
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
+  const [startRecording, setStartRecording] = useAtom(startRecordingAtom);
 
   const handleShufflePrompt = () => {
     rotation.value = withSpring(rotation.value + 360, {
@@ -79,6 +81,15 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
       setIsSpeaking(true);
     }
   };
+
+  useEffect(() => {
+    if (startRecording) {
+      handleStartRecording();
+    }
+    return () => {
+      setStartRecording(false);
+    };
+  }, [startRecording]);
 
   useEffect(() => {
     if (isStopped) {

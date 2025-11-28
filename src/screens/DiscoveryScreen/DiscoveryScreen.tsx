@@ -16,7 +16,7 @@ import { MaterialCommunityIcons, Feather, Entypo } from "@expo/vector-icons";
 import { Box } from "@/components/ui/box";
 import LottieView from "lottie-react-native";
 import { girlMeditation } from "@/assets/lottie";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Animated, {
@@ -44,6 +44,7 @@ import {
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
+import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 
 // Lazy load components
 const VoiceRecorderModalWrapper = React.lazy(
@@ -201,6 +202,7 @@ function DiscoveryScreen() {
   const [selectedDate, setSelectedDate] = useAtom(selectedDateDiscoveryAtom);
   const { presentPaywall } = useRevenueCat();
   const { shouldShowPaywall } = useJournalLimit(selectedDate);
+  const setStartRecording = useSetAtom(startRecordingAtom);
 
   useEffect(() => {
     setSelectedDate(date ? new Date(date) : new Date());
@@ -314,7 +316,10 @@ function DiscoveryScreen() {
 
               <CircleAction
                 key="mic"
-                onPress={handleOpenRecorder}
+                onPress={() => {
+                  setStartRecording(true);
+                  handleOpenRecorder();
+                }}
                 size={108}
                 bg={COLORS.accent}
                 elevation
