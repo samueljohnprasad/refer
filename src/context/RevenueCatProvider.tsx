@@ -16,8 +16,8 @@ interface RevenueCatContextValue {
 }
 
 const apiKey = Platform.select({
-  ios: "test_uplWOSJiaUBXqOcHZzthmJvPxNI",
-  android: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo",
+  ios: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo",
+  android: "test_uplWOSJiaUBXqOcHZzthmJvPxNI",
 });
 
 const RevenueCatContext = createContext<RevenueCatContextValue | undefined>(
