@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import MindfulGradient from "./MindfulGradient";
 import MicControlContainer from "./MicControlContainer";
 import { SafeAreaView } from "react-native-safe-area-context";
-import useAudioRecording from "@/hooks/useAudioRecording";
+import { useAudioRecording } from "@/src/context/AudioRecordingContext";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import Animated, {
@@ -49,7 +49,7 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
     totalDuration,
   } = useAudioRecording();
   const isStopped = recordingCurrentState === "stopped";
-//  console.log('recordingCurrentState',recordingCurrentState, recorderState.url, recorderState.canRecord)
+  //  console.log('recordingCurrentState',recordingCurrentState, recorderState.url, recorderState.canRecord)
   const handleStopRecording = async () => {
     if (
       recordingCurrentState === "recording" ||
