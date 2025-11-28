@@ -29,6 +29,8 @@ import { AIInsightsContent } from "@/src/components/ai/AIInsightsContent";
 import { WeeklySummaryCard } from "@/src/components/ai/WeeklySummaryCard";
 import { AdvancedAnalyticsCharts } from "@/src/components/ai/AdvancedAnalyticsCharts";
 import { BlurView } from "expo-blur";
+import { useWeeklyInsightsLimit } from "@/hooks/useWeeklyInsightsLimit";
+import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 
 export default function AIInsightsScreen() {
   const router = useRouter();
@@ -100,6 +102,8 @@ export default function AIInsightsScreen() {
   const weeklySummary = cachedSummary?.weekly_summary;
   const recommendations = cachedSummary?.recommendations;
   const growthInsights = cachedSummary?.growth_insights;
+  const { shouldShowPaywall } = useWeeklyInsightsLimit();
+  const { presentPaywall } = useRevenueCat();
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -108,6 +112,11 @@ export default function AIInsightsScreen() {
   };
 
   const handleGenerateSummary = async () => {
+    if (shouldShowPaywall) {
+      await presentPaywall();
+      return;
+    }
+
     try {
       await generateSummary.mutateAsync(previousWeek);
     } catch (error: any) {
