@@ -49,9 +49,9 @@ const SignOutConfirmationModal: React.FC<SignOutConfirmationModalProps> = ({
       }}
       height={300}
       ref={sheetRef}
-      snapPoints={["42%"]}
+      snapPoints={["36%"]}
     >
-      <VStack className="flex-1 px-4" space="xl">
+      <VStack className="flex-1 px-4 justify-center items-center" space="xl">
         {/* Icon Header */}
         <View className="items-center">
           <View className="w-16 h-16 rounded-full bg-blue-100 items-center justify-center mb-4">
