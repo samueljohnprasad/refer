@@ -30,10 +30,12 @@ import { BulkImportModal } from "./components/BulkImportModal";
 import { useSettingsModals } from "./hooks/useSettingsModals";
 import { useSettingsBulkImport } from "./hooks/useSettingsBulkImport";
 import { useSettingsAnimation } from "./hooks/useSettingsAnimation";
+import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
+  const { hasPro } = useRevenueCat();
 
   const {
     isSignoutOPen,
@@ -95,7 +97,9 @@ export default React.memo(function SettingsScreen() {
           contentInsetAdjustmentBehavior="automatic"
         >
           {/* Promo Card */}
-          <PromoCard onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)} />
+          {!hasPro && (
+            <PromoCard onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)} />
+          )}
 
           <SettingsSection>
             <SettingsItem
