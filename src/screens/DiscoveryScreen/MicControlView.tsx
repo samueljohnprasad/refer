@@ -1,11 +1,5 @@
 import React, { useCallback } from "react";
 import { View, TouchableOpacity, Dimensions, Pressable } from "react-native";
-import Animated, {
-  FadeIn,
-  FadeOut,
-  SlideInDown,
-  SlideOutDown,
-} from "react-native-reanimated";
 import { recorderOpenAtom } from "./helpers";
 import { useAtom } from "jotai";
 import { Box } from "@/components/ui/box";
@@ -76,11 +70,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   return (
     <>
       {isRecording && (
-        <Animated.View
-          entering={FadeIn.duration(300)}
-          exiting={FadeOut.duration(400)}
-          style={[CONTAINER_STOP_STYLE, { position: "absolute" }]}
-        >
+        <View style={[CONTAINER_STOP_STYLE, { position: "absolute" }]}>
           <Pressable
             onPress={() => {
               if (isAndroid) {
@@ -91,12 +81,10 @@ const MicControlView: React.FC<MicControlViewProps> = ({
             style={{ width: "100%", height: "100%" }}
             className="justify-center bg-transparent rounded-full"
           />
-        </Animated.View>
+        </View>
       )}
       {!isRecording && (
-        <Animated.View
-          entering={SlideInDown.duration(400).springify().damping(15)}
-          exiting={SlideOutDown.duration(500).springify().damping(18)}
+        <View
           style={CONTAINER_STYLE}
           className="absolute bottom-[50px] items-center pt-8 px-5"
         >
@@ -132,7 +120,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               )}
             </HStack>
           </Box>
-        </Animated.View>
+        </View>
       )}
       <ShortBottomModalWithProvider>
         <View className="flex-1 p-6 w-full justify-between">

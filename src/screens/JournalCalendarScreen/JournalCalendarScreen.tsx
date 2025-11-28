@@ -27,9 +27,8 @@ import {
   Award01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-const { width, height } = Dimensions.get("window");
-import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
-import Purchases from "react-native-purchases";
+const { width } = Dimensions.get("window");
+import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 
 // Global color palette
 export const PALETTE = {
@@ -47,40 +46,7 @@ export const PALETTE = {
 
 // Memoized TopBar component
 const TopBar = React.memo(() => {
-  async function presentPaywall(): Promise<boolean> {
-    try {
-      const offerings = await Purchases.getOfferings();
-      const offering = offerings.all["journal"];
-
-      if (!offering) {
-        return false;
-      }
-
-      const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({
-        offering: offering,
-      });
-
-      switch (paywallResult) {
-        case PAYWALL_RESULT.NOT_PRESENTED:
-        case PAYWALL_RESULT.ERROR:
-        case PAYWALL_RESULT.CANCELLED:
-          return false;
-        case PAYWALL_RESULT.PURCHASED:
-        case PAYWALL_RESULT.RESTORED:
-          return true;
-        default:
-          return false;
-      }
-    } catch (e) {
-      console.error(e);
-      return false;
-    }
-  }
-
-  const handlePaywallPress = useCallback(() => {
-    // router.push("/tabs/screens/paywall");
-    presentPaywall();
-  }, []);
+  const { presentPaywall } = useRevenueCat();
 
   const handleSettingsPress = useCallback(() => {
     router.push("/tabs/screens/settings");
@@ -90,7 +56,7 @@ const TopBar = React.memo(() => {
     <View className="rounded-2xl overflow-hidden mb-2.5 pl-0">
       <View className="flex-row justify-between ">
         <TouchableOpacity
-          onPress={handlePaywallPress}
+          onPress={presentPaywall}
           className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
           activeOpacity={0.8}
         >
@@ -141,6 +107,7 @@ const StreakCard = React.memo<{
     <View className="bg-[#FFD24A] rounded-2xl p-4 flex-row items-center overflow-hidden mt-3">
       <View className="flex-1">
         {/* Streak info */}
+
         <View className="flex-row items-center justify-between">
           <View>
             <Text className="text-gray-900 text-sm font-semibold mb-1">
@@ -159,21 +126,7 @@ const StreakCard = React.memo<{
               </Text>
             </View>
           </View>
-          <View className="items-end">
-            <Text className="text-gray-900 text-sm font-semibold mb-1">
-              Goal
-            </Text>
-            <View className="flex-row items-center">
-              <HugeiconsIcon
-                size={24}
-                icon={Target02Icon}
-                fill={PALETTE.blue}
-              />
-              <Text className="text-2xl font-extrabold ml-1.5">
-                {isLoading ? "-" : nextMilestone}
-              </Text>
-            </View>
-          </View>
+
           <View className="items-center">
             <Text className="text-gray-900 text-sm font-semibold mb-1">
               Best
@@ -187,6 +140,21 @@ const StreakCard = React.memo<{
               />
               <Text className="text-2xl font-extrabold ml-1.5">
                 {isLoading ? "-" : longestStreak}
+              </Text>
+            </View>
+          </View>
+          <View className="items-end">
+            <Text className="text-gray-900 text-sm font-semibold mb-1">
+              Goal
+            </Text>
+            <View className="flex-row items-center">
+              <HugeiconsIcon
+                size={24}
+                icon={Target02Icon}
+                fill={PALETTE.blue}
+              />
+              <Text className="text-2xl font-extrabold ml-1.5">
+                {isLoading ? "-" : nextMilestone}
               </Text>
             </View>
           </View>
@@ -207,6 +175,7 @@ const StreakCard = React.memo<{
 export default function JournalCalendarScreen() {
   const progressAnim = useSharedValue(0);
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+  const { hasPro } = useRevenueCat();
 
   const currentStreak = userProfile?.currentStreak ?? 0;
   const nextMilestone = getNextMilestone(currentStreak);
@@ -252,14 +221,6 @@ export default function JournalCalendarScreen() {
     });
   }, [currentStreak, nextMilestone]);
 
-  async function presentPaywallIfNeeded() {
-    // Present paywall for current offering:
-    const paywallResult: PAYWALL_RESULT =
-      await RevenueCatUI.presentPaywallIfNeeded({
-        requiredEntitlementIdentifier: "pro",
-      });
-  }
-
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView
@@ -279,7 +240,7 @@ export default function JournalCalendarScreen() {
         >
           {/* Top bar with blur background */}
           <TopBar />
-
+          {hasPro ? <Text>has pro</Text> : <Text>has no pro</Text>}
           <Greeting
             displayName={userProfile?.displayName}
             isLoading={isLoadingProfile}

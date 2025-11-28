@@ -21,6 +21,7 @@ import * as Notifications from "expo-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
+import RevenueCatProvider from "@/src/context/RevenueCatProvider";
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -71,21 +72,21 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  useEffect(() => {
-    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+  // useEffect(() => {
+  //   Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
 
-    if (Platform.OS === "ios") {
-      Purchases.configure({ apiKey: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo" });
-      getCustomerInfo();
-    } else if (Platform.OS === "android") {
-      Purchases.configure({ apiKey: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo" });
-    }
-  }, []);
+  //   if (Platform.OS === "ios") {
+  //     Purchases.configure({ apiKey: "test_uplWOSJiaUBXqOcHZzthmJvPxNI" });
+  //     getCustomerInfo();
+  //   } else if (Platform.OS === "android") {
+  //     Purchases.configure({ apiKey: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo" });
+  //   }
+  // }, []);
 
   const getCustomerInfo = async () => {
     try {
       const customerInfo = await Purchases.getOfferings();
-      // console.log("Customer Info:", JSON.stringify(customerInfo, null, 2));
+      console.log("Customer Info:", JSON.stringify(customerInfo));
     } catch (error) {
       console.error("Error fetching customer info:", error);
     }
@@ -108,15 +109,16 @@ function RootLayoutNav() {
           >
             <GestureHandlerRootView style={StyleSheet.absoluteFill}>
               <GluestackUIProvider mode={colorMode}>
-                <ThemeProvider
-                  value={colorMode === "dark" ? DarkTheme : DefaultTheme}
-                >
-                  <KeyboardProvider>
-                    <BottomSheetModalProvider>
-                      <Slot />
-                    </BottomSheetModalProvider>
-                  </KeyboardProvider>
-                  {/* {pathname === "/" && (
+                <RevenueCatProvider>
+                  <ThemeProvider
+                    value={colorMode === "dark" ? DarkTheme : DefaultTheme}
+                  >
+                    <KeyboardProvider>
+                      <BottomSheetModalProvider>
+                        <Slot />
+                      </BottomSheetModalProvider>
+                    </KeyboardProvider>
+                    {/* {pathname === "/" && (
               <Fab
                 onPress={() =>
                   setColorMode(colorMode === "dark" ? "light" : "dark")
@@ -127,7 +129,8 @@ function RootLayoutNav() {
                 <FabIcon as={colorMode === "dark" ? MoonIcon : SunIcon} />
               </Fab>
             )} */}
-                </ThemeProvider>
+                  </ThemeProvider>
+                </RevenueCatProvider>
               </GluestackUIProvider>
             </GestureHandlerRootView>
           </PressablesConfig>

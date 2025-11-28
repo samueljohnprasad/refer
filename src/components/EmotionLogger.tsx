@@ -12,6 +12,7 @@ import { terrible, bad, fine, good, great } from "@/assets/emojis";
 import { format } from "date-fns";
 import { useEmotionLogger } from "@/hooks/data/useEmotionLogger";
 import { useDailyStreak } from "@/hooks/data/useDailyStreak";
+import { useRevenueCat } from "../context/RevenueCatProvider";
 
 // Emotion configuration
 const EMOTIONS = [
@@ -132,6 +133,12 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
       logEmotion: logEmotionToSupabase,
       isLoggingEmotion,
     } = useEmotionLogger(selectedDate);
+    const { presentPaywall, hasPro } = useRevenueCat();
+
+    const totalEmotions = Array.from(emotionCounts.values()).reduce(
+      (acc, count) => acc + count,
+      0
+    );
 
     // Memoize the callback to prevent recreation on every render
     const handleLogEmotion = useCallback(
@@ -163,7 +170,13 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
               key={emotion.id}
               emotion={emotion}
               count={emotionCounts.get(emotion.id) || 0}
-              onPress={() => handleLogEmotion(emotion.id)}
+              onPress={() => {
+                if (totalEmotions >= 5 && !hasPro) {
+                  presentPaywall();
+                  return;
+                }
+                handleLogEmotion(emotion.id);
+              }}
               isLoading={isLoggingEmotion}
             />
           ))}
