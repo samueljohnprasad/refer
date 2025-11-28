@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useAuth } from "@/src/context/AuthContext";
 import { supabase } from "@/src/network/auth/supabase";
-import { TWO_HOUR } from "@/constants/Colors";
+import { ONE_DAY, TWO_HOUR } from "@/constants/Colors";
 
 const FREE_WEEKLY_INSIGHTS_LIMIT = 2;
 
@@ -37,7 +37,7 @@ export const useWeeklyInsightsLimit = (): UseWeeklyInsightsLimitReturn => {
       return count ?? 0;
     },
     enabled: !!user?.id,
-    staleTime: TWO_HOUR
+    staleTime: ONE_DAY
   });
 
   const canGenerateInsight = useMemo(() => {
