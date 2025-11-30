@@ -99,7 +99,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
       throw new Error("RevenueCat API key not found");
     }
 
-    Purchases.configure({ apiKey: apiKey });
+    Purchases.configure({ apiKey: apiKey, appUserID: user.id });
     const fetchInfo = async () => {
       try {
         const customerInfo = await Purchases.getCustomerInfo();
