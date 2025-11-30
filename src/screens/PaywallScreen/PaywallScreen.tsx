@@ -4,14 +4,11 @@ import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import LottieView from "lottie-react-native";
-// import { singingContract } from "@/assets/lottie";
 import { router } from "expo-router";
 import AnimatedLinearGradient from "@/src/components/AnimatedLinearGradient";
 import FeatureRow from "./FeatureRow";
 import BuyCards from "./BuyCards";
 import { COLORS } from "./helpers";
-import { singingContract } from "@/assets/lottie";
 
 const PaywallScreen = () => {
   return (
@@ -27,14 +24,6 @@ const PaywallScreen = () => {
         <SafeAreaView edges={["top"]}>
           <View style={styles.headerRow}>
             {/* Illustration approximation: notebook + pencil */}
-            <LottieView
-              autoPlay
-              style={{
-                width: 200,
-                height: 200,
-              }}
-              source={singingContract}
-            />
 
             <View style={{ flex: 1 }}>
               <Text style={styles.title}>

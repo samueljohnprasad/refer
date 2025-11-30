@@ -5,9 +5,13 @@ import { useRouter } from "expo-router";
 
 interface PromoCardProps {
   onLayout: (event: any) => void;
+  onPromoPress: () => Promise<boolean>;
 }
 
-export const PromoCard: React.FC<PromoCardProps> = ({ onLayout }) => {
+export const PromoCard: React.FC<PromoCardProps> = ({
+  onLayout,
+  onPromoPress,
+}) => {
   const router = useRouter();
 
   return (
@@ -27,7 +31,7 @@ export const PromoCard: React.FC<PromoCardProps> = ({ onLayout }) => {
         <Pressable
           android_ripple={{ color: "#6D4AFF" }}
           onPress={() => {
-            router.push("/tabs/screens/paywall");
+            onPromoPress();
           }}
           style={{
             borderRadius: 28,

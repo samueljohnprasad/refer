@@ -41,7 +41,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
   async function presentPaywall(): Promise<boolean> {
     try {
       const offerings = await Purchases.getOfferings();
-      const offering = offerings.all["journal"];
+      const offering = offerings.current;
 
       if (!offering) {
         return false;
@@ -71,7 +71,7 @@ const RevenueCatProvider = ({ children }: { children: React.ReactNode }) => {
 
   async function presentPaywallIfNeeded() {
     const offerings = await Purchases.getOfferings();
-    const offering = offerings.all["journal"];
+    const offering = offerings.current;
 
     if (!offering) {
       return false;

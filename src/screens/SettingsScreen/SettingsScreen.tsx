@@ -35,7 +35,7 @@ import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
-  const { hasPro } = useRevenueCat();
+  const { hasPro , presentPaywall} = useRevenueCat();
 
   const {
     isSignoutOPen,
@@ -98,7 +98,7 @@ export default React.memo(function SettingsScreen() {
         >
           {/* Promo Card */}
           {!hasPro && (
-            <PromoCard onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)} />
+            <PromoCard onPromoPress={presentPaywall} onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)} />
           )}
 
           <SettingsSection>
@@ -110,7 +110,7 @@ export default React.memo(function SettingsScreen() {
               subtitle="Customize multiple reminders"
               onPress={() => {
                 Haptics.selectionAsync();
-                router.push("/tabs/screens/reminders" as any);
+                router.push("/tabs/screens/reminders");
               }}
             />
             <SettingsItem

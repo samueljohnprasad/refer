@@ -132,8 +132,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return;
       }
 
-      console.log("eventsubscription", event);
-
       setSession(session);
       setUser(session?.user ?? null);
 

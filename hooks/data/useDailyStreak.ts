@@ -34,20 +34,23 @@ export const useDailyStreak = () => {
     const currentStreak: number = profile?.currentStreak ?? 0;
     const longestStreak: number = profile?.longestStreak ?? 0;
 
-    if (lastDateStr) {
-      const diffDays: number = dayjs(todayStr).diff(dayjs(lastDateStr), "day");
-      if (diffDays === 1) {
-        newCurrent = currentStreak + 1;
-      } else if (diffDays > 1) {
-        newCurrent = 1;
-      } else {
-        newCurrent = Math.max(currentStreak, 1);
-      }
-    } else {
-      newCurrent = 1;
-    }
+    // if (lastDateStr) {
+    //   const diffDays: number = dayjs(todayStr).diff(dayjs(lastDateStr), "day");
+    //   if (diffDays === 1) {
+    //     newCurrent = currentStreak + 1;
+    //   } else if (diffDays > 1) {
+    //     newCurrent = 1;
+    //   } else {
+    //     newCurrent = Math.max(currentStreak, 1);
+    //   }
+    // } else {
+    //   newCurrent = 1;
+    // }
 
-    const newLongest: number = Math.max(newCurrent, longestStreak);
+    const newLongest: number = Math.max(
+      Math.max(currentStreak, 1),
+      longestStreak
+    );
 
     const { error } = await supabase
       .from("profiles")
