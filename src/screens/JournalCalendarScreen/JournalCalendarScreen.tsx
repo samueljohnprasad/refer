@@ -142,7 +142,7 @@ const StreakCard = React.memo<{
         <View className="flex-row items-center justify-between">
           <View>
             <Text className="text-gray-900 text-sm font-semibold mb-1">
-              Current
+              Current Streak
             </Text>
             <View className="flex-row items-center">
               <HugeiconsIcon
@@ -158,22 +158,6 @@ const StreakCard = React.memo<{
             </View>
           </View>
 
-          <View className="items-center">
-            <Text className="text-gray-900 text-sm font-semibold mb-1">
-              Best
-            </Text>
-            <View className="flex-row items-center">
-              <HugeiconsIcon
-                size={24}
-                icon={Award01Icon}
-                color={PALETTE.purple}
-                fill={PALETTE.purple}
-              />
-              <Text className="text-2xl font-extrabold ml-1.5">
-                {isLoading ? "-" : longestStreak}
-              </Text>
-            </View>
-          </View>
           <View className="items-end">
             <Text className="text-gray-900 text-sm font-semibold mb-1">
               Goal

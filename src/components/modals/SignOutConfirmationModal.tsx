@@ -47,9 +47,8 @@ const SignOutConfirmationModal: React.FC<SignOutConfirmationModalProps> = ({
       onDismiss={() => {
         handleClose();
       }}
-      height={300}
       ref={sheetRef}
-      snapPoints={["36%"]}
+      snapPoints={["40%"]}
     >
       <VStack className="flex-1 px-4 justify-center items-center" space="xl">
         {/* Icon Header */}

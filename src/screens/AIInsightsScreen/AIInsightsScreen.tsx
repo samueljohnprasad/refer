@@ -31,6 +31,8 @@ import { AdvancedAnalyticsCharts } from "@/src/components/ai/AdvancedAnalyticsCh
 import { BlurView } from "expo-blur";
 import { useWeeklyInsightsLimit } from "@/hooks/useWeeklyInsightsLimit";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
+import { useTotalJournalCount } from "@/hooks/data/useTotalJournalCount";
+import { useCurrentWeekJournalCount } from "@/hooks/data/useCurrentWeekJournalCount";
 
 export default function AIInsightsScreen() {
   const router = useRouter();
@@ -104,6 +106,13 @@ export default function AIInsightsScreen() {
   const growthInsights = cachedSummary?.growth_insights;
   const { shouldShowPaywall } = useWeeklyInsightsLimit();
   const { presentPaywall } = useRevenueCat();
+  const { data: journalStats, isLoading: isLoadingStats } =
+    useTotalJournalCount();
+  const { data: currentWeekCount, isLoading: isLoadingWeekCount } =
+    useCurrentWeekJournalCount();
+
+  const totalJournalCount = journalStats?.totalCount ?? 0;
+  const overallAverageMood = journalStats?.averageMood ?? null;
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -167,18 +176,7 @@ export default function AIInsightsScreen() {
                 >
                   <View className="items-center">
                     <Text className="text-xl font-bold text-white">
-                      {profile?.currentStreak || 0}
-                    </Text>
-                    <Text className="text-[11px] text-white opacity-90">
-                      Day Streak
-                    </Text>
-                  </View>
-
-                  <View className="w-px h-8 bg-white opacity-30" />
-
-                  <View className="items-center">
-                    <Text className="text-xl font-bold text-white">
-                      {weeklySummary?.entriesCount || 0}
+                      {isLoadingWeekCount ? "-" : currentWeekCount || 0}
                     </Text>
                     <Text className="text-[11px] text-white opacity-90">
                       This Week
@@ -189,10 +187,23 @@ export default function AIInsightsScreen() {
 
                   <View className="items-center">
                     <Text className="text-xl font-bold text-white">
-                      {weeklySummary?.overallMood?.toFixed(1) || "0.0"}
+                      {isLoadingStats ? "-" : totalJournalCount}
                     </Text>
                     <Text className="text-[11px] text-white opacity-90">
-                      Avg Mood
+                      All Entries
+                    </Text>
+                  </View>
+
+                  <View className="w-px h-8 bg-white opacity-30" />
+
+                  <View className="items-center">
+                    <Text className="text-xl font-bold text-white">
+                      {isLoadingStats
+                        ? "-"
+                        : overallAverageMood?.toFixed(1) || "N/A"}
+                    </Text>
+                    <Text className="text-[11px] text-white opacity-90">
+                      Overall Mood
                     </Text>
                   </View>
                 </Animated.View>
@@ -236,16 +247,7 @@ export default function AIInsightsScreen() {
             >
               <View className="items-center">
                 <Text className="text-[40px] font-extrabold text-white leading-tight">
-                  {profile?.currentStreak || 0}
-                </Text>
-                <Text className="text-sm text-white/90 mt-2 font-medium">
-                  Day Streak
-                </Text>
-              </View>
-              <View className="w-px h-14 bg-white/20" />
-              <View className="items-center">
-                <Text className="text-[40px] font-extrabold text-white leading-tight">
-                  {weeklySummary?.entriesCount || 0}
+                  {isLoadingWeekCount ? "-" : currentWeekCount || 0}
                 </Text>
                 <Text className="text-sm text-white/90 mt-2 font-medium">
                   This Week
@@ -254,10 +256,21 @@ export default function AIInsightsScreen() {
               <View className="w-px h-14 bg-white/20" />
               <View className="items-center">
                 <Text className="text-[40px] font-extrabold text-white leading-tight">
-                  {weeklySummary?.overallMood?.toFixed(1) || "0.0"}
+                  {isLoadingStats ? "-" : totalJournalCount}
                 </Text>
                 <Text className="text-sm text-white/90 mt-2 font-medium">
-                  Avg Mood
+                  All Entries
+                </Text>
+              </View>
+              <View className="w-px h-14 bg-white/20" />
+              <View className="items-center">
+                <Text className="text-[40px] font-extrabold text-white leading-tight">
+                  {isLoadingStats
+                    ? "-"
+                    : overallAverageMood?.toFixed(1) || "N/A"}
+                </Text>
+                <Text className="text-sm text-white/90 mt-2 font-medium">
+                  Overall Mood
                 </Text>
               </View>
             </Animated.View>
