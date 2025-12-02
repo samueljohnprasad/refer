@@ -20,7 +20,6 @@ import {
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
 import EraseDataConfirmationModal from "@/src/components/modals/EraseDataConfirmationModal";
 import SignOutConfirmationModal from "@/src/components/modals/SignOutConfirmationModal";
-
 import { SettingsHeader } from "./components/SettingsHeader";
 import { PromoCard } from "./components/PromoCard";
 import { SettingsSection } from "./components/SettingsSection";

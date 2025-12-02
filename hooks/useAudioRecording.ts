@@ -59,7 +59,7 @@ const useAudioRecording = () => {
   useEffect(() => {
     return () => {
       clearInterval(timerInterval);
-  };
+    };
   }, []);
 
   useEffect(() => {
