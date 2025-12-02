@@ -126,14 +126,14 @@ export default React.memo(function SettingsScreen() {
               title="Contact Support"
               onPress={handleContactSupport}
             />
-            <SettingsItem
+            {/* <SettingsItem
               icon={StarIcon}
               iconColor="#16A34A"
               iconBgColor="#DCFCE7"
               title="Rate Us"
               onPress={handleRateUs}
               isLast={true}
-            />
+            /> */}
           </SettingsSection>
 
           {/* Settings Group 2 */}
