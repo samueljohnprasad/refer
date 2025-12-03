@@ -1,7 +1,6 @@
 import React from "react";
 import { View } from "react-native";
 import { Text } from "@/components/ui/text";
-import LottieView from "lottie-react-native";
 import Animated, {
   FadeIn,
   useAnimatedStyle,
@@ -10,7 +9,6 @@ import Animated, {
   withTiming,
   withSpring,
 } from "react-native-reanimated";
-import { notification } from "@/assets/lottie";
 
 /**
  * Animated header section with Lottie animation and motivational text
@@ -74,6 +72,17 @@ export const NotificationHeader: React.FC = () => {
             87% success rate
           </Text>
         </View>
+      </Animated.View>
+
+      {/* Usage Info */}
+      <Animated.View
+        entering={FadeIn.duration(400).delay(600)}
+        className="px-6 mt-2 mb-4"
+      >
+        <Text className="text-center text-gray-500 text-xs leading-5 font-medium">
+          We use notifications to help you build a consistent journaling habit.
+          You'll only receive reminders at the times you schedule.
+        </Text>
       </Animated.View>
     </>
   );

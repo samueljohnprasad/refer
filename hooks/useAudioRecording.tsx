@@ -7,7 +7,7 @@ import {
   useAudioRecorderState,
 } from "expo-audio";
 import React, { useEffect, useState } from "react";
-import { Alert } from "react-native";
+import { Alert, Linking } from "react-native";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { recorderOpenAtom } from "@/src/screens/DiscoveryScreen/helpers";
 import { useAtom } from "jotai";
@@ -40,7 +40,17 @@ const useAudioRecording = () => {
     try {
       const status = await AudioModule.requestRecordingPermissionsAsync();
       if (!status.granted) {
-        Alert.alert("Permission to access microphone was denied");
+        Alert.alert(
+          "Microphone Permission Needed",
+          "Please enable microphone access in Settings.",
+          [
+            {
+              text: "Open Settings",
+              onPress: () => Linking.openURL("app-settings:"),
+            },
+            { text: "Cancel", style: "cancel" },
+          ]
+        );
         return setRecorderOpen(false);
       }
       setAudioModeAsync({

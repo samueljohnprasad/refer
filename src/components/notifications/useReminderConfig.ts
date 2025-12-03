@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { Alert, Linking } from "react-native";
 import { useAtom } from "jotai";
 import type { RemindersConfig } from "@/src/lib/notification-reminders";
 import {
@@ -127,7 +128,20 @@ export const useReminderConfig = (
 
     // Turn ON - request permissions first
     const granted = await ensureNotificationPermissions();
-    if (!granted) return;
+    if (!granted) {
+      Alert.alert(
+        "Notification Permission Needed",
+        "Please enable notification access in Settings to receive reminders.",
+        [
+          {
+            text: "Open Settings",
+            onPress: () => Linking.openURL("app-settings:"),
+          },
+          { text: "Cancel", style: "cancel" },
+        ]
+      );
+      return;
+    }
 
     const nextCfg: RemindersConfig = {
       ...cfg,
