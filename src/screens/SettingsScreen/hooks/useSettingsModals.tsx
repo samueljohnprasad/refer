@@ -2,14 +2,17 @@ import { useState } from "react";
 import { Alert, Linking } from "react-native";
 import * as Haptics from "expo-haptics";
 import * as WebBrowser from "expo-web-browser";
+import * as Clipboard from "expo-clipboard";
 import { useAuth } from "@/src/context/AuthContext";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
 import { useQueryClient } from "@tanstack/react-query";
+import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 
 export const useSettingsModals = () => {
   const [isSignoutOPen, setIsSignoutOPen] = useState(false);
-  const { signOut, isSigningOut } = useAuth();
+  const { signOut, isSigningOut, user } = useAuth();
   const queryClient = useQueryClient();
+  const toast = useToast();
 
   const [showModal, setShowModal] = useState({
     modalType: "",
@@ -62,6 +65,23 @@ export const useSettingsModals = () => {
     await WebBrowser.openBrowserAsync("https://happie.lovable.app/terms");
   };
 
+  const handleCopyUserId = async () => {
+    Haptics.selectionAsync();
+    if (user?.id) {
+      await Clipboard.setStringAsync(user.id);
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          return (
+            <Toast nativeID={id} variant="solid" action="success">
+              <ToastTitle>User ID copied to clipboard</ToastTitle>
+            </Toast>
+          );
+        },
+      });
+    }
+  };
+
   const handleEraseDataConfirm = async (): Promise<void> => {
     try {
       await deleteUserDataMutation.mutateAsync();
@@ -94,5 +114,6 @@ export const useSettingsModals = () => {
     handlePrivacyPolicy,
     handleTermsOfUse,
     handleEraseDataConfirm,
+    handleCopyUserId,
   };
 };

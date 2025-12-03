@@ -15,6 +15,7 @@ import {
   ShieldUserIcon,
   StarIcon,
   UserIcon,
+  Copy01Icon,
 } from "@hugeicons/core-free-icons";
 
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
@@ -34,7 +35,7 @@ import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
-  const { hasPro , presentPaywall} = useRevenueCat();
+  const { hasPro, presentPaywall } = useRevenueCat();
 
   const {
     isSignoutOPen,
@@ -52,6 +53,7 @@ export default React.memo(function SettingsScreen() {
     handlePrivacyPolicy,
     handleTermsOfUse,
     handleEraseDataConfirm,
+    handleCopyUserId,
   } = useSettingsModals();
 
   const {
@@ -97,7 +99,10 @@ export default React.memo(function SettingsScreen() {
         >
           {/* Promo Card */}
           {!hasPro && (
-            <PromoCard onPromoPress={presentPaywall} onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)} />
+            <PromoCard
+              onPromoPress={presentPaywall}
+              onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)}
+            />
           )}
 
           <SettingsSection>
@@ -118,6 +123,13 @@ export default React.memo(function SettingsScreen() {
               iconBgColor="#FECACA"
               title="Edit Name"
               onPress={() => handlePress("edit-name")}
+            />
+            <SettingsItem
+              icon={Copy01Icon}
+              iconColor="#8B5CF6"
+              iconBgColor="#DDD6FE"
+              title="Copy User ID"
+              onPress={handleCopyUserId}
             />
             <SettingsItem
               icon={MessageOutgoing01Icon}
