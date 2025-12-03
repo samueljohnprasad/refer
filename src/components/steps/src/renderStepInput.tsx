@@ -22,28 +22,18 @@ interface RenderInputProps {
 export const StepInput = React.memo(
   ({ currentMood, formData, updateFormData }: RenderInputProps) => {
     switch (currentMood?.inputType) {
-      case "name":
-        return (
-          <Animated.View entering={FadeIn.duration(500).delay(100)}>
-            <NameOnboard
-              name={formData.name}
-              setName={(name) => updateFormData({ name })}
-            />
-          </Animated.View>
-        );
-
       case "birthday":
         return (
           <Animated.View entering={FadeIn.duration(500).delay(100)}>
             <Demographics
               ageRanges={AGE_RANGES}
               selectedAgeRange={formData.ageRange}
-              onSelectAgeRange={(value: AgeRange) =>
+              onSelectAgeRange={(value: AgeRange | undefined) =>
                 updateFormData({ ageRange: value })
               }
               genders={GENDERS}
               selectedGender={formData.gender}
-              onSelectGender={(value: Gender) =>
+              onSelectGender={(value: Gender | undefined) =>
                 updateFormData({ gender: value })
               }
               title="A bit about you"

@@ -24,11 +24,11 @@ export type AgeRangeOption = {
 export interface DemographicsProps {
   ageRanges: readonly AgeRangeOption[];
   selectedAgeRange?: AgeRange;
-  onSelectAgeRange: (value: AgeRange) => void;
+  onSelectAgeRange: (value: AgeRange | undefined) => void;
 
   genders: readonly Gender[];
   selectedGender?: Gender;
-  onSelectGender: (value: Gender) => void;
+  onSelectGender: (value: Gender | undefined) => void;
 
   title?: string;
   helperText?: string;
@@ -45,10 +45,18 @@ export const Demographics: React.FC<DemographicsProps> = ({
   helperText = "This helps personalize your experience",
 }: DemographicsProps) => {
   const handleAgeChange = (value: AgeRange): void => {
-    onSelectAgeRange(value);
+    if (selectedAgeRange === value) {
+      onSelectAgeRange(undefined);
+    } else {
+      onSelectAgeRange(value);
+    }
   };
   const handleGenderChange = (value: Gender): void => {
-    onSelectGender(value);
+    if (selectedGender === value) {
+      onSelectGender(undefined);
+    } else {
+      onSelectGender(value);
+    }
   };
 
   // Get emoji for age range
@@ -119,7 +127,10 @@ export const Demographics: React.FC<DemographicsProps> = ({
           >
             <View className="flex-row items-center">
               <Text className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                Select your age
+                Select your age{" "}
+                <Text className="text-sm font-normal text-gray-500">
+                  (Optional)
+                </Text>
               </Text>
               <Text className="ml-3 text-xl">🎆</Text>
             </View>
@@ -158,7 +169,10 @@ export const Demographics: React.FC<DemographicsProps> = ({
           >
             <View className="flex-row items-center">
               <Text className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                How do you identify?
+                How do you identify?{" "}
+                <Text className="text-sm font-normal text-gray-500">
+                  (Optional)
+                </Text>
               </Text>
               <Text className="ml-3 text-xl">🌈</Text>
             </View>

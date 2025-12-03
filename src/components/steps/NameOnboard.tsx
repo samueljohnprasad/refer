@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useCallback } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useMemo } from "react";
+import { View, Text } from "react-native";
 import Animated, {
   useSharedValue,
   withTiming,
@@ -9,7 +9,6 @@ import Animated, {
 } from "react-native-reanimated";
 import LottieView from "lottie-react-native";
 import { lendHand } from "@/assets/lottie";
-import NameInput from "../animations/name-input/NameInput";
 
 type NameOnboardProps = {
   name: string;
@@ -74,7 +73,7 @@ export const NameOnboard: React.FC<NameOnboardProps> = React.memo(
           </Animated.View>
 
           {/* Premium Input Field with Glass Effect */}
-          <Animated.View
+          {/* <Animated.View
             entering={FadeInDown.duration(500).delay(400)}
             className="w-full mt-3"
           >
@@ -91,7 +90,7 @@ export const NameOnboard: React.FC<NameOnboardProps> = React.memo(
                 inputProps={INPUT_PROPS}
               />
             </View>
-          </Animated.View>
+          </Animated.View> */}
 
           {/* Dynamic Helper Text with Premium Animation */}
           <Text

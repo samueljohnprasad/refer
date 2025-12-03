@@ -4,12 +4,6 @@ import { MoodDef, AgeRangeOption } from "./types";
 // Premium color palette with luxury gradients
 export const MOODS: MoodDef[] = [
   {
-    emoji: "😞",
-    name: "Terrible",
-    backgroundColor: "#E8D5FF", // Rich lavender gradient base
-    inputType: "name",
-  },
-  {
     emoji: "😢",
     name: "Sad",
     backgroundColor: "#FFE0F0", // Elegant rose gradient base
@@ -49,10 +43,10 @@ export const GENDERS: readonly Gender[] = ["male", "female", "other"];
 export const BACKGROUND_COLORS = [
   "#E8D5FF", // Rich lavender
   "#FFE0F0", // Elegant rose
-  "#FFF3D4", // Warm golden
-  "#DCF2FF", // Premium sky
-  "#E5FFE5", // Fresh mint
+  "#DCF2FF", // Warm golden
+  "#E5FFE5", // Premium sky
+  "#FFF3D4", // Fresh mint
 ];
 
-export const TOTAL_STEPS = 5;
+export const TOTAL_STEPS = 4;
 export const BUTTON_COLOR = "#7C3AED"; // Premium violet
