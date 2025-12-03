@@ -14,14 +14,13 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { formattedDateTime, formatTime } from "@/src/utils/date";
 import { ReloadIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import useAudioRecording from "@/hooks/useAudioRecording";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
+import useAudioRecording from "@/hooks/useAudioRecording";
 
 interface VoiceRecorderProps {
   onStop: (uri: string) => void;
 }
 const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
   const rotation = useSharedValue(0);
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
@@ -58,7 +57,6 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
       recordingCurrentState === "paused"
     ) {
       const pathState = await stopRecording();
-      setIsSpeaking(false);
 
       if (!pathState?.url) return;
       onStop(pathState.url);
@@ -69,7 +67,6 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
     if (recordingCurrentState === "recording") {
       await pauseRecording();
     }
-    setIsSpeaking(false);
   };
 
   const handleStartRecording = async (): Promise<void> => {
@@ -78,7 +75,6 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
       recordingCurrentState === "paused"
     ) {
       await record();
-      setIsSpeaking(true);
     }
   };
 
@@ -103,7 +99,7 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
 
   return (
     <SafeAreaView className="flex-1 flex justify-start" edges={["top"]}>
-      <MindfulGradient position={"top"} isSpeaking={isSpeaking} />
+      <MindfulGradient position={"top"} isSpeaking={isRecording} />
 
       {/* Date Header - Centered */}
       <View className="px-6 mt-80 pb-4 items-center">

@@ -8,9 +8,14 @@ import {
 } from "expo-audio";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-native";
+import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
+import { recorderOpenAtom } from "@/src/screens/DiscoveryScreen/helpers";
+import { useAtom } from "jotai";
 type recordStatus = "recording" | "paused" | "stopped" | "initial";
 
 const useAudioRecording = () => {
+  const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
+
   const [recordedStatus, setRecordedStatus] = useState<RecordingStatus | null>(
     null
   );
@@ -29,18 +34,44 @@ const useAudioRecording = () => {
   );
   const recorderState = useAudioRecorderState(audioRecorder);
 
-  const record = async () => {
-    await audioRecorder.prepareToRecordAsync();
-    audioRecorder.record({
-      forDuration: 6000,
-    });
-    setRecordingCurrentState("recording");
-    // Start timer
-    const interval = setInterval(() => {
-      setTotalDuration((prev) => prev + 1000); // +1 sec
-    }, 1000);
+  const toast = useToast();
 
-    setTimerInterval(interval);
+  const record = async () => {
+    try {
+      const status = await AudioModule.requestRecordingPermissionsAsync();
+      if (!status.granted) {
+        Alert.alert("Permission to access microphone was denied");
+        return setRecorderOpen(false);
+      }
+      setAudioModeAsync({
+        playsInSilentMode: true,
+        allowsRecording: true,
+      });
+
+      await audioRecorder.prepareToRecordAsync();
+      audioRecorder.record({
+        forDuration: 6000,
+      });
+      setRecordingCurrentState("recording");
+      // Start timer
+      const interval = setInterval(() => {
+        setTotalDuration((prev) => prev + 1000); // +1 sec
+      }, 1000);
+
+      setTimerInterval(interval);
+    } catch (error) {
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast nativeID={id} variant="solid" action="error">
+            <ToastTitle>
+              Recording permission has not been granted. Please enable it in
+              settings.
+            </ToastTitle>
+          </Toast>
+        ),
+      });
+    }
   };
 
   const stopRecording = async () => {
@@ -60,19 +91,6 @@ const useAudioRecording = () => {
     return () => {
       clearInterval(timerInterval);
     };
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const status = await AudioModule.requestRecordingPermissionsAsync();
-      if (!status.granted) {
-        Alert.alert("Permission to access microphone was denied");
-      }
-      setAudioModeAsync({
-        playsInSilentMode: true,
-        allowsRecording: true,
-      });
-    })();
   }, []);
 
   return {
