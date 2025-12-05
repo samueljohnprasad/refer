@@ -61,7 +61,6 @@ const DailyNotesScreenComponent = () => {
   // State for selected date
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [showBookmarksModal, setShowBookmarksModal] = useState<boolean>(false);
-  const tabBarHeight = useBottomTabBarHeight();
 
   // State for current week view (independent of selected date)
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
@@ -378,10 +377,7 @@ const DailyNotesScreenComponent = () => {
               {aiInsightsChip}
               <Animated.View
                 className="flex-1 px-4 bg-gray-50"
-                style={[
-                  contentAnimatedStyle,
-                  { paddingBottom: tabBarHeight + 20 },
-                ]}
+                style={[contentAnimatedStyle, { paddingBottom: 20 }]}
               >
                 {/* Mental Health Journal Dashboard */}
                 {mentalHealthContent}

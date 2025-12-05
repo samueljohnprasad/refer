@@ -1,6 +1,3 @@
-// DiscoveryScreen.tsx
-// Updated per request: removed bottom tabs, bigger mic, slimmer progress, fire for streak.
-
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
   View,
@@ -18,7 +15,6 @@ import LottieView from "lottie-react-native";
 import { girlMeditation } from "@/assets/lottie";
 import { useAtom, useSetAtom } from "jotai";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -196,7 +192,6 @@ Illustration.displayName = "Illustration";
 function DiscoveryScreen() {
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
   const [, setKeyboardJournalOpen] = useAtom(keyboardJournalOpenAtom);
-  const tabBarHeight = useBottomTabBarHeight();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const { date } = useLocalSearchParams<{ date: string }>();
   const [selectedDate, setSelectedDate] = useAtom(selectedDateDiscoveryAtom);
@@ -254,16 +249,16 @@ function DiscoveryScreen() {
     () => ({
       paddingHorizontal: 18,
       paddingTop: 8,
-      paddingBottom: Math.max(24, tabBarHeight + 16),
+      paddingBottom: Math.max(24, 64),
       flexGrow: 1,
     }),
-    [tabBarHeight]
+    []
   );
 
   const cardShadowStyle = useMemo(() => [shadowCard, { borderRadius: 26 }], []);
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
       <ScrollView
         contentContainerStyle={scrollContentStyle}
         showsVerticalScrollIndicator={false}
