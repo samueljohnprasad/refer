@@ -12,6 +12,8 @@ import { useRouter } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
+import { Button, Host } from "@expo/ui/swift-ui";
 
 interface SettingsHeaderProps {
   scrollY: Animated.Value;
@@ -24,6 +26,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
 }) => {
   const router = useRouter();
   const { height } = useWindowDimensions();
+  const isLiquidGlass = isLiquidGlassAvailable();
 
   return (
     <BlurView
@@ -37,6 +40,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
       }}
     >
       {/* <View className="flex-row items-center bg-red-300"> */}
+      {!isLiquidGlass && (
         <TouchableOpacity
           className="w-10 h-10 rounded-full justify-center items-center bg-[#7C5CFF]"
           activeOpacity={0.7}
@@ -44,10 +48,22 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
         >
           <HugeiconsIcon icon={ArrowLeft02Icon} size={20} color="#FFF" />
         </TouchableOpacity>
+      )}
+      {isLiquidGlass && (
+        <Host matchContents>
+          <Button
+            onPress={() => router.back()}
+            color="#7B61FF"
+            variant="glassProminent"
+            controlSize="regular"
+            systemImage="chevron.left"
+          />
+        </Host>
+      )}
 
-        <Text className="text-[28px] font-extrabold text-[#0F172A]">
-          Settings
-        </Text>
+      <Text className="text-[28px] font-extrabold text-[#0F172A]">
+        Settings
+      </Text>
       {/* </View> */}
       {upgradeY !== null && (
         <Animated.View

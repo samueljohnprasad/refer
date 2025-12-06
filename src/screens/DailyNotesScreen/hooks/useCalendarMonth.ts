@@ -62,18 +62,7 @@ const useCalendarMonth = (
 
   const days = useMemo<Date[]>((): Date[] => {
     const allDays = eachDayOfInterval({ start: visibleStart, end: visibleEnd });
-    // Always return 42 days (6 weeks) for consistent calendar display
-    const CALENDAR_DAYS = 42;
-
-    // If we have fewer than 42 days, add days from the next month
-    if (allDays.length < CALENDAR_DAYS) {
-      const additionalDays = CALENDAR_DAYS - allDays.length;
-      const lastDay = allDays[allDays.length - 1];
-      for (let i = 1; i <= additionalDays; i++) {
-        allDays.push(new Date(lastDay.getTime() + i * 24 * 60 * 60 * 1000));
-      }
-    }
-
+    // Return actual days needed (5 or 6 weeks) - don't force 42
     return allDays;
   }, [visibleStart, visibleEnd]);
 

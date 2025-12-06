@@ -41,6 +41,9 @@ import SuspensLoader from "@/src/components/SuspensLoader";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
+import { Button, Host } from "@expo/ui/swift-ui";
+import { clipShape, foregroundStyle, frame } from "@expo/ui/swift-ui/modifiers";
 
 // Lazy load components
 const VoiceRecorderModalWrapper = React.lazy(
@@ -256,6 +259,7 @@ function DiscoveryScreen() {
   );
 
   const cardShadowStyle = useMemo(() => [shadowCard, { borderRadius: 26 }], []);
+  const isLiquidGlass = isLiquidGlassAvailable();
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
@@ -295,19 +299,32 @@ function DiscoveryScreen() {
             <Illustration />
 
             <View className="flex-row items-center justify-between px-[18px]">
-              <CircleAction
-                key="menu"
-                onPress={() => setIsOptionsVisible(true)}
-                size={72}
-                bg={COLORS.lavender}
-                icon={
-                  <HugeiconsIcon
-                    icon={Menu02Icon}
-                    size={26}
-                    color={COLORS.ink}
+              {!isLiquidGlass && (
+                <CircleAction
+                  key="menu"
+                  onPress={() => setIsOptionsVisible(true)}
+                  size={72}
+                  bg={COLORS.lavender}
+                  icon={
+                    <HugeiconsIcon
+                      icon={Menu02Icon}
+                      size={26}
+                      color={COLORS.ink}
+                    />
+                  }
+                />
+              )}
+              {isLiquidGlass && (
+                <Host matchContents>
+                  <Button
+                    onPress={() => setIsOptionsVisible(true)}
+                    color={COLORS.lavender}
+                    variant="glassProminent"
+                    controlSize="extraLarge"
+                    systemImage="line.3.horizontal"
                   />
-                }
-              />
+                </Host>
+              )}
 
               <CircleAction
                 key="mic"
@@ -321,19 +338,36 @@ function DiscoveryScreen() {
                 icon={<HugeiconsIcon icon={AiMicIcon} size={56} />}
               />
 
-              <CircleAction
-                key="keyboard"
-                onPress={handleKeyboardPress}
-                size={72}
-                bg={COLORS.lavender}
-                icon={
-                  <HugeiconsIcon
-                    icon={KeyboardIcon}
-                    size={26}
-                    color={COLORS.ink}
+              {!isLiquidGlass && (
+                <CircleAction
+                  key="keyboard"
+                  onPress={handleKeyboardPress}
+                  size={72}
+                  bg={COLORS.lavender}
+                  icon={
+                    <HugeiconsIcon
+                      icon={KeyboardIcon}
+                      size={26}
+                      color={COLORS.ink}
+                    />
+                  }
+                />
+              )}
+              {isLiquidGlass && (
+                <Host matchContents>
+                  <Button
+                    onPress={handleKeyboardPress}
+                    color={COLORS.lavender}
+                    variant="glassProminent"
+                    controlSize="extraLarge"
+                    systemImage="keyboard.fill"
+                    modifiers={[
+                      clipShape("circle"),
+                      foregroundStyle(COLORS.ink),
+                    ]}
                   />
-                }
-              />
+                </Host>
+              )}
             </View>
           </LinearGradient>
         </View>

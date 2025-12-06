@@ -31,6 +31,9 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 const { width } = Dimensions.get("window");
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { LinearGradient } from "expo-linear-gradient";
+import { Host, Button } from "@expo/ui/swift-ui";
+import { clipShape, glassEffect } from "@expo/ui/swift-ui/modifiers";
+import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 
 // Global color palette
 export const PALETTE = {
@@ -67,28 +70,64 @@ const TopBar = React.memo(() => {
     presentPaywall();
   }, [hasPro, presentPaywall]);
 
+  const isLiquidGlass = isLiquidGlassAvailable();
   return (
-    <View className="rounded-2xl overflow-hidden mb-2.5 pl-0">
+    <View className="py-3 px-4 bg-offwhite">
       <View className="flex-row justify-between ">
-        <TouchableOpacity
-          onPress={handleProPress}
-          className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
-          activeOpacity={0.8}
-        >
-          <HugeiconsIcon icon={StarsIcon} size={20} color={PALETTE.white} />
-        </TouchableOpacity>
+        {!isLiquidGlass && (
+          <TouchableOpacity
+            onPress={handleProPress}
+            className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
+            activeOpacity={0.8}
+          >
+            <HugeiconsIcon icon={StarsIcon} size={20} color={PALETTE.white} />
+          </TouchableOpacity>
+        )}
 
-        <TouchableOpacity
-          className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
-          activeOpacity={0.8}
-          onPress={handleSettingsPress}
-        >
-          <HugeiconsIcon
-            icon={Settings02Icon}
-            color={PALETTE.white}
-            size={20}
-          />
-        </TouchableOpacity>
+        {isLiquidGlass && (
+          <Host matchContents>
+            <Button
+              onPress={handleProPress}
+              color="#7B61FF"
+              systemImage="sparkles"
+              variant="glassProminent"
+              controlSize="regular"
+            >
+              <HugeiconsIcon icon={StarsIcon} size={20} color={PALETTE.white} />
+            </Button>
+          </Host>
+        )}
+
+        {!isLiquidGlass && (
+          <TouchableOpacity
+            className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
+            activeOpacity={0.8}
+            onPress={handleSettingsPress}
+          >
+            <HugeiconsIcon
+              icon={Settings02Icon}
+              color={PALETTE.white}
+              size={20}
+            />
+          </TouchableOpacity>
+        )}
+        {isLiquidGlass && (
+          <Host matchContents>
+            <Button
+              onPress={handleSettingsPress}
+              color="#7B61FF"
+              systemImage="gearshape.fill"
+              variant="glassProminent"
+              controlSize="regular"
+            >
+              <HugeiconsIcon
+                icon={Settings02Icon}
+                size={20}
+                color={PALETTE.white}
+              />
+            </Button>
+          </Host>
+        )}
       </View>
     </View>
   );
@@ -237,7 +276,7 @@ export default function JournalCalendarScreen() {
   }, [currentStreak, nextMilestone]);
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-offwhite">
       <ScrollView
         removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
@@ -247,14 +286,15 @@ export default function JournalCalendarScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* Outer panel container */}
+        <TopBar />
         <View
           // intensity={50}
           // tint="light"
-          className="bg-white p-4 pb-24 pt-3"
+          className="bg-offwhite px-4 pb-24 pt-3"
           style={{ width: width }}
         >
           {/* Top bar with blur background */}
-          <TopBar />
+
           <Greeting
             displayName={userProfile?.displayName}
             isLoading={isLoadingProfile}

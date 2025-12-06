@@ -30,6 +30,8 @@ import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtom } from "jotai";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
+import { Button, Host } from "@expo/ui/swift-ui";
 
 interface KeyboardJournalScreenProps {
   onSubmit: (text: string) => void;
@@ -98,6 +100,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   }, [journalText, onSubmit]);
 
   const isSubmitDisabled = journalText.trim().length === 0;
+  const isLiquidGlass = isLiquidGlassAvailable();
 
   return (
     <>
@@ -171,16 +174,32 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             {/* Action Buttons */}
             <View className="flex-row items-center justify-between gap-3">
               {/* Close Button */}
-              <TouchableOpacity
-                onPress={() => {
-                  Keyboard.dismiss();
-                  onClose();
-                }}
-                className="w-14 h-14 rounded-full bg-[#F3F4F6] items-center justify-center"
-                activeOpacity={0.7}
-              >
-                <Feather name="x" size={24} color="#6B7280" />
-              </TouchableOpacity>
+              {!isLiquidGlass && (
+                <TouchableOpacity
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    onClose();
+                  }}
+                  className="w-14 h-14 rounded-full bg-[#F3F4F6] items-center justify-center"
+                  activeOpacity={0.7}
+                >
+                  <Feather name="x" size={24} color="#6B7280" />
+                </TouchableOpacity>
+              )}
+              {isLiquidGlass && (
+                <Host matchContents>
+                  <Button
+                    onPress={() => {
+                      Keyboard.dismiss();
+                      onClose();
+                    }}
+                    color="#9ca3af"
+                    variant="glassProminent"
+                    controlSize="large"
+                    systemImage="xmark"
+                  />
+                </Host>
+              )}
 
               {/* Reflect with AI Button */}
               {/* <TouchableOpacity
@@ -193,20 +212,39 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               </TouchableOpacity> */}
 
               {/* Submit Button - Purple when enabled */}
-              <TouchableOpacity
-                onPress={handleSubmit}
-                disabled={isSubmitDisabled}
-                className={`w-14 h-14 rounded-full items-center justify-center ${
-                  isSubmitDisabled ? "bg-[#E5E7EB]" : "bg-[#7B61FF]"
-                }`}
-                activeOpacity={0.7}
-              >
-                <Feather
-                  name="check"
-                  size={24}
-                  color={isSubmitDisabled ? "#D1D5DB" : "#FFFFFF"}
-                />
-              </TouchableOpacity>
+              {!isLiquidGlass && (
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  disabled={isSubmitDisabled}
+                  className={`w-14 h-14 rounded-full items-center justify-center ${
+                    isSubmitDisabled ? "bg-[#E5E7EB]" : "bg-[#7B61FF]"
+                  }`}
+                  activeOpacity={0.7}
+                >
+                  <Feather
+                    name="check"
+                    size={24}
+                    color={isSubmitDisabled ? "#D1D5DB" : "#FFFFFF"}
+                  />
+                </TouchableOpacity>
+              )}
+
+              {isLiquidGlass && (
+                <Host matchContents>
+                  <Button
+                    disabled={isSubmitDisabled}
+                    onPress={() => {
+                      Keyboard.dismiss();
+                      onClose();
+                    }}
+                    color="#7B61FF"
+                    variant="glassProminent"
+                    controlSize="large"
+                    systemImage="checkmark"
+                    role="cancel"
+                  />
+                </Host>
+              )}
             </View>
           </View>
         </KeyboardAvoidingView>

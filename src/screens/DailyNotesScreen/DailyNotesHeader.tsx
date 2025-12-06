@@ -36,6 +36,8 @@ import { Bookmark03Icon, Calendar01Icon } from "@hugeicons/core-free-icons";
 import { isIOS } from "@/src/utils/mood";
 import { DayButton } from "./DayButtonComponent";
 import SuspensLoader from "@/src/components/SuspensLoader";
+import { DateTimePicker, Host } from "@expo/ui/swift-ui";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
 
 // Lazy load CalendarPicker
 const CalendarPicker = React.lazy(() =>
@@ -269,6 +271,8 @@ const DailyNotesHeader = React.memo(
 
     // Pan gesture handlers are provided by useWeekNavigation
     const paddingTop = isIOS ? 0 : 20;
+    const isLiquidGlass = isLiquidGlassAvailable();
+
     return (
       <SafeAreaView
         edges={["top"]}
@@ -350,19 +354,39 @@ const DailyNotesHeader = React.memo(
               className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-violet-300"
               style={[inlineCalendarAnimatedStyle, { top: 0 }]}
             >
-              <SuspensLoader>
-                <CalendarPicker
-                  moodMap={moodMap}
-                  selectedDate={isSelectedDateValid ? selectedDate : new Date()}
-                  visible={isExpanded}
-                  onDateSelect={(date: Date) => {
-                    // First collapse smoothly, then update date so header morph feels natural
-                    collapse(() => {
+              {!isLiquidGlass && (
+                <SuspensLoader>
+                  <CalendarPicker
+                    moodMap={moodMap}
+                    selectedDate={
+                      isSelectedDateValid ? selectedDate : new Date()
+                    }
+                    visible={isExpanded}
+                    onDateSelect={(date: Date) => {
+                      // First collapse smoothly, then update date so header morph feels natural
+                      collapse(() => {
+                        selectDate(date);
+                      });
+                    }}
+                  />
+                </SuspensLoader>
+              )}
+              {isLiquidGlass && (
+                <Host matchContents>
+                  <DateTimePicker
+                    onDateSelected={(date) => {
                       selectDate(date);
-                    });
-                  }}
-                />
-              </SuspensLoader>
+                      collapse(() => {
+                        selectDate(date);
+                      });
+                    }}
+                    displayedComponents={"date"}
+                    title="Select Date & Time"
+                    initialDate={selectedDate.toISOString()}
+                    variant={"graphical"}
+                  />
+                </Host>
+              )}
             </Animated.View>
           )}
           {/* Today tag - animated reusable component */}

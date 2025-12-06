@@ -7,13 +7,11 @@ import * as Haptics from "expo-haptics";
 import {
   AlertSquareIcon,
   Delete02Icon,
-  Download02Icon,
   File01Icon,
   Logout02Icon,
   MessageOutgoing01Icon,
   Notification01Icon,
   ShieldUserIcon,
-  StarIcon,
   UserIcon,
   Copy01Icon,
 } from "@hugeicons/core-free-icons";

@@ -61,11 +61,23 @@ const DayCell = React.memo<DayCellProps>(
   }) => {
     const dayLabel = format(day, "d");
 
+    // If not in current month, render empty cell for spacing
+    if (!inCurrentMonth) {
+      return (
+        <View
+          style={DAY_CELL_STYLE}
+          className="justify-center items-center p-[2px]"
+        >
+          <View className="w-full h-full" />
+        </View>
+      );
+    }
+
     // Memoize className strings to avoid recalculation
     const containerClassName = useMemo(
       () =>
-        `w-full h-full flex justify-center items-center gap-0.5 rounded-lg ${
-          isSelected ? "bg-[#7B61FF]" : isTodayDate ? "bg-white/15" : ""
+        `w-full h-full flex justify-center items-center gap-0.5 rounded-xl ${
+          isSelected ? "bg-[#7B61FF]" : isTodayDate ? "bg-white/20" : ""
         }`,
       [isSelected, isTodayDate]
     );
@@ -73,23 +85,20 @@ const DayCell = React.memo<DayCellProps>(
     const textClassName = useMemo(() => {
       const getValue = () => {
         if (disabled) return "text-black/30";
-        if (!inCurrentMonth) return "text-black/50";
-        if (isTodayDate && !isSelected) return "text-black font-semibold";
-        if (isSelected) return "text-black font-semibold";
-
+        if (isTodayDate && !isSelected) return "text-black font-bold";
+        if (isSelected) return "text-white font-bold";
         return "text-black";
       };
-      return `text-[14px] font-medium ${getValue()}`;
-    }, [inCurrentMonth, isTodayDate, isSelected, disabled]);
+      return `text-[18px] font-semibold ${getValue()}`;
+    }, [isTodayDate, isSelected, disabled]);
 
     const moodClassName = useMemo(() => {
       const getValue = () => {
         if (disabled) return "opacity-30";
-        if (!inCurrentMonth) return "opacity-50";
         return "";
       };
       return `mt-0.5 ${getValue()}`;
-    }, [inCurrentMonth]);
+    }, [disabled]);
 
     return (
       <Pressable
@@ -103,7 +112,7 @@ const DayCell = React.memo<DayCellProps>(
           <Text className={textClassName}>{dayLabel}</Text>
           {showMoodBadge && (
             <View className={moodClassName}>
-              <MoodBadge disabled={disabled} moodscore={mood} size={18} />
+              <MoodBadge disabled={disabled} moodscore={mood} size={16} />
             </View>
           )}
         </View>
@@ -127,11 +136,11 @@ DayCell.displayName = "DayCell";
 
 // Memoized Week Header Component
 const WeekDayHeader = React.memo(() => (
-  <View className="flex-row mb-2">
+  <View className="flex-row mb-3 mt-1">
     {WEEKDAY_LABELS.map((day) => (
       <Text
         key={day}
-        className="flex-1 text-center text-[11px] font-semibold text-white/60 uppercase tracking-wider py-1"
+        className="flex-1 text-center text-[12px] font-bold text-black/50 uppercase tracking-widest py-2"
       >
         {day}
       </Text>
@@ -146,9 +155,9 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
     const { currentMonth, days, goToPreviousMonth, goToNextMonth, goToDate } =
       useCalendarMonth({ selectedDate, visible, weekStartsOn: 0 });
 
-    // Memoize month title
+    // Memoize month title - use full month name
     const monthTitle = useMemo(
-      () => format(currentMonth, "MMM yyyy"),
+      () => format(currentMonth, "MMMM yyyy"),
       [currentMonth]
     );
 
@@ -182,25 +191,28 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
     }, [daysData, onDateSelect]);
 
     return (
-      <View className="px-1">
-        <View className="flex-row justify-between items-center mb-4">
-          <Pressable className="p-2 -ml-2" onPress={goToPreviousMonth}>
-            <HugeiconsIcon icon={ArrowLeft01Icon} size={22} color="#fff" />
-          </Pressable>
-          <Text className="text-[18px] font-semibold text-white tracking-wide">
+      <View className="px-2">
+        {/* Month header with title on left, arrows on right */}
+        <View className="flex-row justify-between items-center mb-2 py-2">
+          <Text className="text-[22px] font-bold text-black tracking-tight">
             {monthTitle}
           </Text>
-          <Pressable
-            className="p-2 -mr-2"
-            onPress={goToNextMonth}
-            disabled={!canGoNextMonth}
-          >
-            <HugeiconsIcon
-              icon={ArrowRight01Icon}
-              size={22}
-              color={canGoNextMonth ? "#fff" : "#9b9b9b"}
-            />
-          </Pressable>
+          <View className="flex-row items-center gap-2">
+            <Pressable className="p-2 rounded-full" onPress={goToPreviousMonth}>
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color="#007AFF" />
+            </Pressable>
+            <Pressable
+              className="p-2 rounded-full"
+              onPress={goToNextMonth}
+              disabled={!canGoNextMonth}
+            >
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={20}
+                color={canGoNextMonth ? "#007AFF" : "#C7C7CC"}
+              />
+            </Pressable>
+          </View>
         </View>
 
         <WeekDayHeader />
