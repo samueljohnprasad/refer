@@ -85,9 +85,9 @@ const DayCell = React.memo<DayCellProps>(
     const textClassName = useMemo(() => {
       const getValue = () => {
         if (disabled) return "text-black/30";
-        if (isTodayDate && !isSelected) return "text-black font-bold";
+        if (isTodayDate && !isSelected) return "text-black/60 font-bold";
         if (isSelected) return "text-white font-bold";
-        return "text-black";
+        return "text-black/60";
       };
       return `text-[18px] font-semibold ${getValue()}`;
     }, [isTodayDate, isSelected, disabled]);
