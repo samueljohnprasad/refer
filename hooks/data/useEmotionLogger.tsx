@@ -181,7 +181,7 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
         : 0;
       const isOnCooldown: boolean = remainingMs > 0;
 
-      if (isOnCooldown) {
+      if (false) {
         const timeLeft: string = dayjs.duration(remainingMs).format("mm:ss");
 
         toast.show({
