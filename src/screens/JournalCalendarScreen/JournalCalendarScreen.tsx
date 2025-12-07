@@ -325,7 +325,7 @@ export default function JournalCalendarScreen() {
                 title="This Week's Mood"
               />
             ) : (
-              <View className="bg-white rounded-3xl p-4 shadow-md border border-gray-100">
+              <View className="bg-white rounded-3xl p-4 border border-gray-100">
                 <View className="flex-row items-center justify-between px-1 mb-3">
                   <View>
                     <View className="h-6 w-32 bg-gray-200 rounded-lg mb-2" />

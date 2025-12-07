@@ -478,7 +478,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
 
   if (isLoading) {
     return (
-      <View className="w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+      <View className="w-full rounded-2xl bg-white p-4 border border-gray-100">
         <Text className="text-base font-semibold mb-2">{title}</Text>
         <View className="py-10 items-center justify-center">
           <Loading />
@@ -488,7 +488,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   }
   if (isError) {
     return (
-      <View className="w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+      <View className="w-full rounded-2xl bg-white p-4 border border-gray-100">
         <Text className="text-base font-semibold mb-2">{title}</Text>
         <Text className="text-red-500">Failed to load mood data.</Text>
       </View>
@@ -496,14 +496,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   }
 
   return (
-    <View
-      className="w-full rounded-3xl bg-white p-4 shadow-md border border-gray-100"
-      style={{
-        shadowOpacity: 0.1,
-        shadowRadius: 20,
-        shadowOffset: { width: 0, height: 6 },
-      }}
-    >
+    <View className="w-full rounded-3xl bg-white p-4 border border-gray-100">
       {/* Header */}
       <View className="flex-row items-center justify-between px-1">
         <View>
