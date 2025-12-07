@@ -147,6 +147,7 @@ const SpeakButton = ({
             styles.speakButtonText,
             isActive && styles.speakButtonTextActive,
           ]}
+          className="font-cormorantBold"
         >
           {getButtonText()}
         </Text>

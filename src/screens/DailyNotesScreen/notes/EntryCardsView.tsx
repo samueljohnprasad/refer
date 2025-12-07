@@ -65,7 +65,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   if (isLoading) {
     return (
       <View>
-        <Text className="text-lg font-semibold text-gray-800">
+        <Text className="text-lg font-semibold text-gray-800 font-cormorantBold">
           Journal Entries
         </Text>
         <View className="gap-3">
@@ -85,7 +85,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
     return (
       <View>
         <View className="flex-row items-center justify-between mb-4">
-          <Text className="text-lg font-semibold text-gray-800">
+          <Text className="text-lg font-semibold text-gray-800 font-cormorantBold">
             Journal Entries
           </Text>
         </View>
@@ -106,7 +106,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   return (
     <View className="gap-4">
       <View className="flex-row items-center justify-between">
-        <Text className="text-lg font-semibold text-gray-800">
+        <Text className="text-lg font-semibold text-gray-800 font-cormorantBold">
           Journal Entries ({entries.length})
         </Text>
       </View>

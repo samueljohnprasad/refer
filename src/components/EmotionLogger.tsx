@@ -156,7 +156,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     return (
       <View className="bg-white rounded-2xl p-4 border border-gray-100">
         <View className="flex-row items-center justify-between mb-3">
-          <Text className="text-base font-semibold text-gray-900">
+          <Text className="text-base font-cormorantSemiBold text-gray-900">
             Daily Mood Log
           </Text>
           <Text className="text-xs text-gray-500">

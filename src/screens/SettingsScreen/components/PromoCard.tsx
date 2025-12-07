@@ -17,7 +17,7 @@ export const PromoCard: React.FC<PromoCardProps> = ({
   return (
     <View className="bg-[#FFED6B] rounded-[18px] p-4 flex-row items-center mb-[18px]">
       <View style={{ flex: 1 }}>
-        <Text className="text-[22px] font-extrabold text-[#0B1220] mb-1.5">
+        <Text className="text-[22px] font-extrabold text-[#0B1220] mb-1.5 font-cormorantBold">
           Unlock All Features
         </Text>
         <Text
@@ -46,7 +46,7 @@ export const PromoCard: React.FC<PromoCardProps> = ({
             end={{ x: 1, y: 1 }}
             style={styles.upgradeButtonGradient}
           >
-            <Text className="text-white font-bold text-[15px]">
+            <Text className="text-white font-bold text-[15px] font-cormorantBold">
               Upgrade to Premium
             </Text>
           </LinearGradient>

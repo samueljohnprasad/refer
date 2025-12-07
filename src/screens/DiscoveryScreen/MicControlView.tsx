@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/bottomsheet";
 import ShortBottomModalWithProvider from "@/src/components/ShortBottomModalWithProvider";
 import { isAndroid } from "@/src/utils/mood";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
+import { Host, Button as SwiftButton } from "@expo/ui/swift-ui";
 
 // Props interface for the presenter component
 export interface MicControlViewProps {
@@ -66,6 +68,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   const handleDiscard = useCallback(() => {
     setRecorderOpen(false);
   }, [setRecorderOpen]);
+  const isLiquidGlass = isLiquidGlassAvailable();
 
   return (
     <>
@@ -93,7 +96,19 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               {isPaused && (
                 <View>
                   <BottomSheetTrigger>
-                    <HugeiconsIcon icon={Cancel01Icon} size={32} />
+                    {!isLiquidGlass && (
+                      <HugeiconsIcon icon={Cancel01Icon} size={32} />
+                    )}
+                    {isLiquidGlass && (
+                      <Host matchContents>
+                        <SwiftButton
+                          color="#9ca3af"
+                          variant="glassProminent"
+                          controlSize="large"
+                          systemImage="xmark"
+                        />
+                      </Host>
+                    )}
                   </BottomSheetTrigger>
                 </View>
               )}
@@ -111,11 +126,24 @@ const MicControlView: React.FC<MicControlViewProps> = ({
 
               {isPaused && (
                 <View>
-                  <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
-                    <View>
-                      <HugeiconsIcon icon={Tick01Icon} size={32} />
-                    </View>
-                  </TouchableOpacity>
+                  {!isLiquidGlass && (
+                    <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
+                      <View>
+                        <HugeiconsIcon icon={Tick01Icon} size={32} />
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  {isLiquidGlass && (
+                    <Host matchContents>
+                      <SwiftButton
+                        onPress={onStop}
+                        color="#7B61FF"
+                        variant="glassProminent"
+                        controlSize="large"
+                        systemImage="checkmark"
+                      />
+                    </Host>
+                  )}
                 </View>
               )}
             </HStack>

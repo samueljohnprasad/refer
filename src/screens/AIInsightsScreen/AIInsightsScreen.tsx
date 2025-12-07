@@ -238,7 +238,7 @@ export default function AIInsightsScreen() {
               paddingVertical: 20,
             }}
           >
-            <Text className="text-[28px] font-extrabold text-white mb-6">
+            <Text className="text-[28px] font-cormorantSemiBold text-white mb-6">
               Your Journey
             </Text>
             <Animated.View
@@ -280,13 +280,13 @@ export default function AIInsightsScreen() {
         {/* AI Recommendations */}
         <View className="mb-10">
           <View className="flex-row justify-between items-center mb-5">
-            <Text className="text-[22px] font-extrabold text-[#0F172A] tracking-wide">
+            <Text className="text-[22px] font-extrabold text-[#0F172A] tracking-wide font-cormorantBold">
               🎯 AI Insights for Previous Week
             </Text>
           </View>
 
           {!loadingCached && !cachedSummary && (
-            <View className="bg-white rounded-2xl p-10 items-center shadow-sm">
+            <View className="bg-white rounded-2xl p-10 items-center">
               <Text className="text-[64px] mb-4">🤖</Text>
               <Text className="text-[22px] font-bold text-[#0F172A] mb-2">
                 No AI Summary Yet
@@ -322,7 +322,7 @@ export default function AIInsightsScreen() {
                   {!isGenerating && (
                     <Feather name="zap" size={20} color="#FFF" />
                   )}
-                  <Text className="text-base font-bold text-white">
+                  <Text className="text-base font-bold text-white font-jakarta">
                     {isGenerating
                       ? "Generating..."
                       : "Get AI Insights for Past Week"}

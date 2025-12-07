@@ -131,7 +131,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           >
             {/* Prompt - No Card, Just Text with Icon */}
             <View className="flex-row justify-between items-start mb-8">
-              <Text className="flex-1 text-[#1F2937] text-2xl font-bold leading-tight pr-4">
+              <Text className="flex-1 text-[#1F2937] text-2xl font-bold leading-tight pr-4 font-cormorantSemiBold">
                 {currentPrompt}
               </Text>
               <TouchableOpacity
@@ -149,15 +149,15 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             <TextInput
               focusable
               maxLength={7000}
-              value={journalText + " \n " + realtimeResult}
+              value={journalText + realtimeResult}
               onChangeText={setJournalText}
               placeholder="Start by answering prompt or write anything you have in mind"
               placeholderTextColor="#CBD5E1"
               multiline
               textAlignVertical="top"
-              className="text-[#1F2937] text-base leading-6"
+              className="text-[#1F2937] text-base leading-6 font-cormorantMedium"
               style={{
-                fontFamily: Platform.OS === "ios" ? "System" : "Roboto",
+                fontFamily: "cormorantMedium",
                 minHeight: 400,
               }}
               autoFocus

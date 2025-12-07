@@ -144,6 +144,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
             letterSpacing: -0.3,
             lineHeight: 32,
           }}
+          className="font-cormorantBold"
         >
           {processingPhase}
         </Text>

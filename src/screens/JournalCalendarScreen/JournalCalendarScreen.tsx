@@ -140,7 +140,7 @@ const Greeting = React.memo<{
   hasPro: boolean;
 }>(({ displayName, isLoading, hasPro }) => (
   <View className="flex-row items-center mt-2 gap-2">
-    <Text className="text-[34px] font-bold text-gray-900">
+    <Text className="text-[34px] font-cormorantSemiBold text-gray-900">
       Hi, {isLoading ? "..." : displayName || "there"}{" "}
       <Text className="text-3xl">👋</Text>
     </Text>

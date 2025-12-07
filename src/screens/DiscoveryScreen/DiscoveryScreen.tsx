@@ -173,7 +173,7 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
             </Animated.View>
           </Pressable>
         </View>
-        <Text className="mt-2.5 text-[#2E285A] text-[28px] font-black leading-[34px] tracking-wide">
+        <Text className="mt-2.5 text-[#2E285A] text-4xl font-black leading-[34px] tracking-wide font-cormorantSemiBold">
           {prompt}
         </Text>
       </Box>
@@ -318,10 +318,10 @@ function DiscoveryScreen() {
                 <Host matchContents>
                   <Button
                     onPress={() => setIsOptionsVisible(true)}
-                    color={COLORS.lavender}
-                    variant="glassProminent"
+                    variant="glass"
                     controlSize="extraLarge"
                     systemImage="line.3.horizontal"
+                    modifiers={[foregroundStyle(COLORS.ink)]}
                   />
                 </Host>
               )}
@@ -357,12 +357,11 @@ function DiscoveryScreen() {
                 <Host matchContents>
                   <Button
                     onPress={handleKeyboardPress}
-                    color={COLORS.lavender}
-                    variant="glassProminent"
+                    variant="glass"
                     controlSize="extraLarge"
                     systemImage="keyboard.fill"
                     modifiers={[
-                      clipShape("circle"),
+                      // clipShape("circle"),
                       foregroundStyle(COLORS.ink),
                     ]}
                   />

@@ -61,7 +61,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
         </Host>
       )}
 
-      <Text className="text-[28px] font-extrabold text-[#0F172A]">
+      <Text className="text-[28px] font-extrabold text-[#0F172A] font-cormorantBold">
         Settings
       </Text>
       {/* </View> */}

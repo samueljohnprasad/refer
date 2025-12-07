@@ -16,6 +16,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@expo-google-fonts/cormorant-garamond": "^0.4.1",
     "@expo/html-elements": "^0.12.5",
     "@expo/ui": "~0.2.0-beta.9",
     "@expo/vector-icons": "^15.0.3",

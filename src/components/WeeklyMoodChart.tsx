@@ -507,7 +507,10 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       {/* Header */}
       <View className="flex-row items-center justify-between px-1">
         <View>
-          <Text className="text-xl font-extrabold text-gray-800">
+          <Text
+            // style={{ fontFamily: "CormorantRegular" }}
+            className="text-2xl text-gray-800 font-cormorantSemiBold"
+          >
             {headerTitle}
           </Text>
           <Text className="text-xs text-gray-500 mt-1">{headerSubtitle}</Text>

@@ -99,7 +99,7 @@ export const BookmarkedJournalsBottomSheet: React.FC<
       onChange={handleSheetChanges}
       backdropComponent={renderBackdrop}
       enablePanDownToClose={true}
-      backgroundStyle={{ backgroundColor: "#f9fafb" }}
+      backgroundStyle={{ backgroundColor: "white" }}
       handleIndicatorStyle={{ backgroundColor: "#FFFFFF" }}
     >
       {/* Header */}
@@ -109,7 +109,7 @@ export const BookmarkedJournalsBottomSheet: React.FC<
             <Feather name="bookmark" size={20} color="#3B82F6" />
           </View>
           <View>
-            <Text className="text-xl font-bold text-gray-900">
+            <Text className="text-2xl font-bold text-gray-900 font-cormorantSemiBold">
               Bookmarked Journals
             </Text>
             <Text className="text-sm text-gray-500">

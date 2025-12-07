@@ -299,7 +299,7 @@ const DailyNotesHeader = React.memo(
             </Pressable>
 
             <View className="flex-row items-center justify-center flex-1">
-              <Text className="text-base font-medium text-white tracking-wide text-center">
+              <Text className="text-2xl font-medium text-white tracking-wide text-center font-cormorantBold">
                 {currentMonthView || ""}
               </Text>
             </View>

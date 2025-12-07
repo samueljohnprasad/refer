@@ -1,6 +1,6 @@
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+// import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
   DefaultTheme,
@@ -20,8 +20,14 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import * as Notifications from "expo-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SuspensLoader from "@/src/components/SuspensLoader";
-import Purchases, { LOG_LEVEL } from "react-native-purchases";
 import RevenueCatProvider from "@/src/context/RevenueCatProvider";
+import {
+  CormorantGaramond_300Light,
+  CormorantGaramond_400Regular,
+  CormorantGaramond_500Medium,
+  CormorantGaramond_600SemiBold,
+  CormorantGaramond_700Bold,
+} from "@expo-google-fonts/cormorant-garamond";
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -56,8 +62,13 @@ Notifications.setNotificationHandler({
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    ...FontAwesome.font,
+    // SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    // ...FontAwesome.font,
+    CormorantLight: CormorantGaramond_300Light,
+    CormorantRegular: CormorantGaramond_400Regular,
+    CormorantMedium: CormorantGaramond_500Medium,
+    CormorantSemiBold: CormorantGaramond_600SemiBold,
+    CormorantBold: CormorantGaramond_700Bold,
   });
 
   const [styleLoaded, setStyleLoaded] = useState(false);
@@ -71,26 +82,6 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
-  // useEffect(() => {
-  //   Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
-
-  //   if (Platform.OS === "ios") {
-  //     Purchases.configure({ apiKey: "test_uplWOSJiaUBXqOcHZzthmJvPxNI" });
-  //     getCustomerInfo();
-  //   } else if (Platform.OS === "android") {
-  //     Purchases.configure({ apiKey: "appl_vziHsnYOgSMjzwblNQBZlcvuNAo" });
-  //   }
-  // }, []);
-
-  const getCustomerInfo = async () => {
-    try {
-      const customerInfo = await Purchases.getOfferings();
-      console.log("Customer Info:", JSON.stringify(customerInfo));
-    } catch (error) {
-      console.error("Error fetching customer info:", error);
-    }
-  };
 
   return <RootLayoutNav />;
 }

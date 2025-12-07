@@ -9,7 +9,7 @@ import {
   addMonths,
 } from "date-fns";
 import React, { useMemo } from "react";
-import { Pressable, View, Text } from "react-native";
+import { Pressable, View, Text, DimensionValue } from "react-native";
 import useCalendarMonth from "./hooks/useCalendarMonth";
 import MoodBadge from "@/src/components/MoodBadge";
 import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
@@ -25,7 +25,6 @@ const WEEKDAY_LABELS = [
   "Fri",
   "Sat",
 ] as const;
-const DAY_CELL_STYLE = { width: "14.285%", aspectRatio: 1 } as const;
 
 // Calendar Picker Component
 interface CalendarPickerProps {
@@ -46,6 +45,10 @@ interface DayCellProps {
   onPress: () => void;
   showMoodBadge: boolean;
   disabled?: boolean;
+  cellStyle: {
+    width: DimensionValue;
+    aspectRatio: number;
+  };
 }
 
 const DayCell = React.memo<DayCellProps>(
@@ -58,16 +61,14 @@ const DayCell = React.memo<DayCellProps>(
     onPress,
     showMoodBadge,
     disabled = false,
+    cellStyle,
   }) => {
     const dayLabel = format(day, "d");
 
     // If not in current month, render empty cell for spacing
     if (!inCurrentMonth) {
       return (
-        <View
-          style={DAY_CELL_STYLE}
-          className="justify-center items-center p-[2px]"
-        >
+        <View style={cellStyle} className="justify-center items-center p-[2px]">
           <View className="w-full h-full" />
         </View>
       );
@@ -103,7 +104,7 @@ const DayCell = React.memo<DayCellProps>(
     return (
       <Pressable
         className="justify-center items-center p-[2px]"
-        style={DAY_CELL_STYLE}
+        style={cellStyle}
         onPress={onPress}
         disabled={disabled}
         accessibilityRole="button"
@@ -127,7 +128,8 @@ const DayCell = React.memo<DayCellProps>(
       prevProps.inCurrentMonth === nextProps.inCurrentMonth &&
       prevProps.mood === nextProps.mood &&
       prevProps.showMoodBadge === nextProps.showMoodBadge &&
-      prevProps.day.getTime() === nextProps.day.getTime()
+      prevProps.day.getTime() === nextProps.day.getTime() &&
+      prevProps.cellStyle.aspectRatio === nextProps.cellStyle.aspectRatio
     );
   }
 );
@@ -136,7 +138,7 @@ DayCell.displayName = "DayCell";
 
 // Memoized Week Header Component
 const WeekDayHeader = React.memo(() => (
-  <View className="flex-row mb-3 mt-1">
+  <View className="flex-row mb-1">
     {WEEKDAY_LABELS.map((day) => (
       <Text
         key={day}
@@ -185,6 +187,15 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
       });
     }, [days, currentMonth, selectedDate, moodMap]);
 
+    const cellStyle = useMemo(() => {
+      const numberOfRows = days.length / 7;
+      const aspectRatio = numberOfRows === 5 ? 0.92 : 1.05;
+      return {
+        width: "14.285%" as DimensionValue,
+        aspectRatio,
+      };
+    }, [days.length]);
+
     // Create stable press handlers for each day
     const dayPressHandlers = useMemo(() => {
       return daysData.map((dayData) => () => onDateSelect(dayData.day));
@@ -194,7 +205,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
       <View className="px-2">
         {/* Month header with title on left, arrows on right */}
         <View className="flex-row justify-between items-center mb-2 py-2">
-          <Text className="text-[22px] font-bold text-black tracking-tight">
+          <Text className="text-[22px] font-bold text-black tracking-tight font-cormorantBold">
             {monthTitle}
           </Text>
           <View className="flex-row items-center gap-2">
@@ -229,6 +240,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
               onPress={dayPressHandlers[index]}
               showMoodBadge={showMoodBadges}
               disabled={dayData.disabled}
+              cellStyle={cellStyle}
             />
           ))}
         </View>

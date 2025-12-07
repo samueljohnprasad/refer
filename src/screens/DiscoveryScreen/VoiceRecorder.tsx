@@ -102,8 +102,8 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
       <MindfulGradient position={"top"} isSpeaking={isRecording} />
 
       {/* Date Header - Centered */}
-      <View className="px-6 mt-80 pb-4 items-center">
-        <Text className="text-[#1F2937] text-3xl font-bold">
+      <View className="px-6 mt-80 pb-4 items-center gap-6">
+        <Text className="text-[#1F2937] text-3xl font-bold font-roboto">
           {formatTime(totalDuration)}
         </Text>
         <Text className="text-[#1F2937] text-base font-semibold">
@@ -114,7 +114,7 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
       {/* Prompt Section - No Card, Just Text */}
       <View className="px-6 pb-8">
         <View className="flex-row justify-between items-start">
-          <Text className="flex-1 text-[#1F2937] text-2xl font-bold leading-tight pr-4">
+          <Text className="flex-1 text-[#1F2937] text-2xl font-bold leading-tight pr-4 font-cormorantBold">
             {currentPrompt}
           </Text>
           <TouchableOpacity

@@ -182,6 +182,11 @@ module.exports = {
         code: ["var(--font-source-code-pro)"],
         inter: ["var(--font-inter)"],
         "space-mono": ["var(--font-space-mono)"],
+        cormorant: ["CormorantRegular"],
+        cormorantLight: ["CormorantLight"],
+        cormorantMedium: ["CormorantMedium"],
+        cormorantSemiBold: ["CormorantSemiBold"],
+        cormorantBold: ["CormorantBold"],
       },
       fontWeight: {
         extrablack: "950",

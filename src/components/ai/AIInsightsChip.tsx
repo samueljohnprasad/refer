@@ -34,7 +34,7 @@ export const AIInsightsChip: React.FC<AIInsightsChipProps> = ({
 
         {/* Content */}
         <View className="flex-1">
-          <Text className="text-xl font-bold text-gray-900 mb-1.5">
+          <Text className="text-2xl font-bold text-gray-900 mb-1.5 font-cormorantBold">
             Weekly AI Insights
           </Text>
           <Text className="text-sm text-gray-600 leading-5">
