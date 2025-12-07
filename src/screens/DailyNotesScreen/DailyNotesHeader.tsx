@@ -354,39 +354,19 @@ const DailyNotesHeader = React.memo(
               className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-violet-300"
               style={[inlineCalendarAnimatedStyle, { top: 0 }]}
             >
-              {!isLiquidGlass && (
-                <SuspensLoader>
-                  <CalendarPicker
-                    moodMap={moodMap}
-                    selectedDate={
-                      isSelectedDateValid ? selectedDate : new Date()
-                    }
-                    visible={isExpanded}
-                    onDateSelect={(date: Date) => {
-                      // First collapse smoothly, then update date so header morph feels natural
-                      collapse(() => {
-                        selectDate(date);
-                      });
-                    }}
-                  />
-                </SuspensLoader>
-              )}
-              {isLiquidGlass && (
-                <Host matchContents>
-                  <DateTimePicker
-                    onDateSelected={(date) => {
+              <SuspensLoader>
+                <CalendarPicker
+                  moodMap={moodMap}
+                  selectedDate={isSelectedDateValid ? selectedDate : new Date()}
+                  visible={isExpanded}
+                  onDateSelect={(date: Date) => {
+                    // First collapse smoothly, then update date so header morph feels natural
+                    collapse(() => {
                       selectDate(date);
-                      collapse(() => {
-                        selectDate(date);
-                      });
-                    }}
-                    displayedComponents={"date"}
-                    title="Select Date & Time"
-                    initialDate={selectedDate.toISOString()}
-                    variant={"graphical"}
-                  />
-                </Host>
-              )}
+                    });
+                  }}
+                />
+              </SuspensLoader>
             </Animated.View>
           )}
           {/* Today tag - animated reusable component */}

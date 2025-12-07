@@ -32,6 +32,7 @@ import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtom } from "jotai";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
+import WhisperUI from "@/src/components/ui/swiftui";
 
 interface KeyboardJournalScreenProps {
   onSubmit: (text: string) => void;
@@ -46,6 +47,8 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const [localSelectedDate, setLocalSelectedDate] = useAtom(
     selectedDateDiscoveryAtom
   );
+  const [realtimeResult, setRealtimeResult] = useState<string>("");
+  const [isRealtimeActive, setIsRealtimeActive] = useState(false);
 
   const [isCalendarVisible, setIsCalendarVisible] = useState<boolean>(false);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
@@ -146,7 +149,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             <TextInput
               focusable
               maxLength={7000}
-              value={journalText}
+              value={journalText + " \n " + realtimeResult}
               onChangeText={setJournalText}
               placeholder="Start by answering prompt or write anything you have in mind"
               placeholderTextColor="#CBD5E1"
@@ -176,6 +179,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               {/* Close Button */}
               {!isLiquidGlass && (
                 <TouchableOpacity
+                  disabled={isRealtimeActive}
                   onPress={() => {
                     Keyboard.dismiss();
                     onClose();
@@ -189,6 +193,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               {isLiquidGlass && (
                 <Host matchContents>
                   <Button
+                    disabled={isRealtimeActive}
                     onPress={() => {
                       Keyboard.dismiss();
                       onClose();
@@ -211,11 +216,23 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                 </Text>
               </TouchableOpacity> */}
 
+              <WhisperUI
+                setRealtimeResult={(text) => {
+                  setRealtimeResult(text);
+                }}
+                onStop={() => {
+                  setJournalText((prev) => prev + " \n " + realtimeResult);
+                  setRealtimeResult("");
+                }}
+                isRealtimeActive={isRealtimeActive}
+                setIsRealtimeActive={setIsRealtimeActive}
+              />
+
               {/* Submit Button - Purple when enabled */}
               {!isLiquidGlass && (
                 <TouchableOpacity
                   onPress={handleSubmit}
-                  disabled={isSubmitDisabled}
+                  disabled={isSubmitDisabled || isRealtimeActive}
                   className={`w-14 h-14 rounded-full items-center justify-center ${
                     isSubmitDisabled ? "bg-[#E5E7EB]" : "bg-[#7B61FF]"
                   }`}
@@ -232,16 +249,12 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               {isLiquidGlass && (
                 <Host matchContents>
                   <Button
-                    disabled={isSubmitDisabled}
-                    onPress={() => {
-                      Keyboard.dismiss();
-                      onClose();
-                    }}
+                    disabled={isSubmitDisabled || isRealtimeActive}
+                    onPress={handleSubmit}
                     color="#7B61FF"
                     variant="glassProminent"
                     controlSize="large"
                     systemImage="checkmark"
-                    role="cancel"
                   />
                 </Host>
               )}
