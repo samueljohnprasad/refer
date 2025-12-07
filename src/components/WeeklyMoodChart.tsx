@@ -1098,6 +1098,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           </View>
         ) : activeTab === "week" ? (
           <Animated.FlatList
+            key="week-list"
             ref={listRef}
             data={pages}
             horizontal
@@ -1106,7 +1107,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
             snapToAlignment="start"
             disableIntervalMomentum
             scrollEventThrottle={16}
-            initialScrollIndex={CURRENT_INDEX}
+            initialScrollIndex={CURRENT_INDEX + weekIndex}
             showsHorizontalScrollIndicator={false}
             bounces={false}
             overScrollMode="never"
@@ -1126,6 +1127,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           />
         ) : (
           <Animated.FlatList
+            key="day-list"
             ref={dayListRef}
             data={dayPages}
             horizontal
@@ -1134,7 +1136,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
             snapToAlignment="start"
             disableIntervalMomentum
             scrollEventThrottle={16}
-            initialScrollIndex={CURRENT_DAY_INDEX}
+            initialScrollIndex={CURRENT_DAY_INDEX + dayIndex}
             showsHorizontalScrollIndicator={false}
             bounces={false}
             overScrollMode="never"
