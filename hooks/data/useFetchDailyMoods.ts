@@ -7,7 +7,12 @@ import dayjs from "dayjs";
  * Map of time slots to mood scores for daily view
  * Key format: "HH:mm" (e.g., "09:00", "09:30", "10:00")
  */
-export type DailyMoodsMap = Map<string, number>;
+export interface DailyMoodData {
+  score: number;
+  timestamp: string; // ISO string of the exact time
+}
+
+export type DailyMoodsMap = Map<string, DailyMoodData>;
 
 interface MoodEntry {
   selected_date: string;
@@ -26,7 +31,7 @@ async function fetchDailyMoods({
   userId,
   targetDate,
 }: FetchDailyMoodsParams): Promise<DailyMoodsMap> {
-  const moodMap: DailyMoodsMap = new Map<string, number>();
+  const moodMap: DailyMoodsMap = new Map<string, DailyMoodData>();
 
   if (!userId || !targetDate) {
     return moodMap;
@@ -63,7 +68,10 @@ async function fetchDailyMoods({
 
     // If multiple entries in same slot, keep the latest (or average them)
     // For simplicity, we'll keep the latest one
-    moodMap.set(timeKey, entry.mood_score);
+    moodMap.set(timeKey, {
+      score: entry.mood_score,
+      timestamp: entry.selected_date as string,
+    });
   });
 
   return moodMap;

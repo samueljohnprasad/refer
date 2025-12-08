@@ -23,7 +23,7 @@ import {
   VictoryScatter,
   VictoryTheme,
 } from "victory-native";
-import { Defs, LinearGradient, Stop } from "react-native-svg";
+import { Defs, LinearGradient, Stop, G } from "react-native-svg";
 import { addDays, differenceInCalendarDays, format } from "date-fns";
 import { emotions } from "@/assets/emojis";
 import {
@@ -57,12 +57,14 @@ interface DailyChartPoint {
   x: string;
   y: number | null;
   timeKey: string; // HH:mm
+  exactTime?: string;
 }
 
 interface NumericPoint {
   x: number;
   y: number;
   label: string;
+  exactTime?: string;
 }
 
 type MoodLevel = "Terrible" | "Bad" | "Fine" | "Good" | "Great";
@@ -157,23 +159,6 @@ const DAILY_TIME_SLOTS = [
   "23:30",
 ];
 
-// Display labels for X-axis (show every 2 hours for cleaner look)
-const DAILY_DISPLAY_LABELS: Record<string, string> = {
-  "00:00": "12AM",
-  "02:00": "2AM",
-  "04:00": "4AM",
-  "06:00": "6AM",
-  "08:00": "8AM",
-  "10:00": "10AM",
-  "12:00": "12PM",
-  "14:00": "2PM",
-  "16:00": "4PM",
-  "18:00": "6PM",
-  "20:00": "8PM",
-  "22:00": "10PM",
-  "24:00": "12AM",
-};
-
 const buildChartData = (
   start: Date,
   end: Date,
@@ -191,11 +176,25 @@ const buildChartData = (
   return points;
 };
 
+// Helper to format HH:mm to h:mm A
+const formatTimeLabel = (timeSlot: string): string => {
+  const [h, m] = timeSlot.split(":");
+  const hour = parseInt(h, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const displayHour = hour % 12 || 12;
+  return `${displayHour}:${m} ${ampm}`;
+};
+
 const buildDailyChartData = (moodMap: DailyMoodsMap): DailyChartPoint[] => {
   return DAILY_TIME_SLOTS.map((timeSlot) => {
     const val = moodMap.get(timeSlot);
-    const displayLabel = DAILY_DISPLAY_LABELS[timeSlot] || "";
-    return { x: displayLabel, y: val ?? null, timeKey: timeSlot };
+    const displayLabel = formatTimeLabel(timeSlot);
+    return {
+      x: displayLabel,
+      y: val ? val.score : null,
+      timeKey: timeSlot,
+      exactTime: val ? val.timestamp : undefined,
+    };
   });
 };
 
@@ -217,7 +216,7 @@ const ChartTooltip = ({
       top: y - 55,
       width: 120,
       alignItems: "center",
-      zIndex: 50,
+      zIndex: 150,
     }}
     pointerEvents="none"
   >
@@ -363,6 +362,7 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
             padding={padding}
             domain={{ x: [0.5, totalDays + 0.5], y: [1, 6] }}
             theme={VictoryTheme.material}
+            groupComponent={<G />}
           >
             {width > 0 && hasData && (
               <Defs>
@@ -492,7 +492,14 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
       () =>
         points
           .map((p, idx) =>
-            p.y !== null ? { x: idx + 1, y: p.y, label: p.x } : null
+            p.y !== null
+              ? ({
+                  x: idx + 1,
+                  y: p.y,
+                  label: p.x,
+                  exactTime: p.exactTime,
+                } as NumericPoint)
+              : null
           )
           .filter((p): p is NumericPoint => p !== null),
       [points]
@@ -605,6 +612,7 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
             padding={padding}
             domain={{ x: [0.5, totalSlots + 0.5], y: [1, 6] }}
             theme={VictoryTheme.material}
+            groupComponent={<G />}
           >
             {width > 0 && hasData && (
               <Defs>
@@ -690,7 +698,13 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
               title={`Mood: ${moodLevelForScore(
                 selectedPoint.datum.original.y
               )}`}
-              subtitle={`Time: ${selectedPoint.datum.original.label}`}
+              subtitle={`Time: ${
+                selectedPoint.datum.original.exactTime
+                  ? dayjs(selectedPoint.datum.original.exactTime).format(
+                      "h:mm A"
+                    )
+                  : selectedPoint.datum.original.label
+              }`}
             />
           )}
         </View>
