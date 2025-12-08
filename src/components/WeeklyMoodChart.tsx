@@ -907,7 +907,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
         )}`
       : format(effectiveDay, "LLLL d, yyyy");
 
-  const chartHeight: number = 270;
+  const chartHeight: number = 330;
   const padding = { top: 10, bottom: 26, left: 10, right: 35 } as const;
   const [layoutWidth, setLayoutWidth] = useState<number>(0);
   const onLayout = (e: LayoutChangeEvent): void => {
@@ -1114,7 +1114,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       </View>
 
       {/* Chart area */}
-      <View className="mt-3 overflow-hidden" onLayout={onLayout}>
+      <View className="overflow-hidden" onLayout={onLayout}>
         {layoutWidth === 0 ? (
           <View
             style={{
@@ -1193,21 +1193,19 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           style={{
             position: "absolute",
             right: 5,
-            top: 85,
+            top: 120,
             bottom: 50,
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          {(
-            [
-              { score: 5, key: "great" },
-              { score: 4, key: "good" },
-              { score: 3, key: "fine" },
-              { score: 2, key: "bad" },
-              { score: 1, key: "terrible" },
-            ] as const
-          ).map((it) => (
+          {[
+            { score: 5, key: "great" },
+            { score: 4, key: "good" },
+            { score: 3, key: "fine" },
+            { score: 2, key: "bad" },
+            { score: 1, key: "terrible" },
+          ].map((it) => (
             <View
               key={it.key}
               style={{

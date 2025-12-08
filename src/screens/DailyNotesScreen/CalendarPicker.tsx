@@ -189,7 +189,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
 
     const cellStyle = useMemo(() => {
       const numberOfRows = days.length / 7;
-      const aspectRatio = numberOfRows === 5 ? 0.92 : 1.05;
+      const aspectRatio = numberOfRows === 5 ? 0.86 : 1.05;
       return {
         width: "14.285%" as DimensionValue,
         aspectRatio,
