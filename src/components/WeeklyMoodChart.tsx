@@ -199,6 +199,49 @@ const buildDailyChartData = (moodMap: DailyMoodsMap): DailyChartPoint[] => {
   });
 };
 
+const ChartTooltip = ({
+  x,
+  y,
+  title,
+  subtitle,
+}: {
+  x: number;
+  y: number;
+  title: string;
+  subtitle: string;
+}) => (
+  <View
+    style={{
+      position: "absolute",
+      left: x - 60,
+      top: y - 55,
+      width: 120,
+      alignItems: "center",
+      zIndex: 50,
+    }}
+    pointerEvents="none"
+  >
+    <View className="bg-gray-800 px-3 py-2 rounded-lg shadow-lg items-center">
+      <Text className="text-white text-xs font-bold">{title}</Text>
+      <Text className="text-gray-300 text-[10px]">{subtitle}</Text>
+      <View
+        style={{
+          position: "absolute",
+          bottom: -4,
+          width: 0,
+          height: 0,
+          borderLeftWidth: 4,
+          borderRightWidth: 4,
+          borderTopWidth: 4,
+          borderLeftColor: "transparent",
+          borderRightColor: "transparent",
+          borderTopColor: "#1F2937",
+        }}
+      />
+    </View>
+  </View>
+);
+
 interface ChartPageProps {
   startDate: Date;
   endDate: Date;
@@ -253,6 +296,63 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
       startDate,
       "yyyyMMdd"
     )}`;
+
+    const [selectedPoint, setSelectedPoint] = useState<{
+      x: number;
+      y: number;
+      datum: any;
+    } | null>(null);
+
+    const handlePointPress = useCallback((props: any) => {
+      const { x, y, datum } = props;
+      setSelectedPoint({ x, y, datum });
+    }, []);
+
+    const renderScatter = (
+      level: MoodLevel,
+      score: number,
+      data: NumericPoint[]
+    ) => {
+      if (data.length === 0) return null;
+      return (
+        <VictoryScatter
+          key={level}
+          labelComponent={<View />}
+          data={data.map((point) => ({
+            x: point.x,
+            y: point.y + 0.5,
+            original: point,
+          }))}
+          size={5}
+          style={{
+            data: {
+              fill: moodScoreToColor(score),
+              stroke: "#FFFFFF",
+              strokeWidth: 2,
+            },
+          }}
+          events={[
+            {
+              target: "data",
+              eventHandlers: {
+                onPressIn: (evt, props) => {
+                  handlePointPress(props);
+                  return [];
+                },
+              },
+            },
+          ]}
+        />
+      );
+    };
+
+    const levels: { level: MoodLevel; score: number }[] = [
+      { level: "Great", score: 5 },
+      { level: "Good", score: 4 },
+      { level: "Fine", score: 3 },
+      { level: "Bad", score: 2 },
+      { level: "Terrible", score: 1 },
+    ];
 
     return (
       <View style={{ width }}>
@@ -334,92 +434,20 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
               />
             )}
 
-            {byLevel.Great.length > 0 && (
-              <VictoryScatter
-                labelComponent={<View />}
-                data={byLevel.Great.map((point) => ({
-                  x: point.x,
-                  y: point.y + 0.5,
-                }))}
-                size={5}
-                style={{
-                  data: {
-                    fill: MOOD_COLORS[5],
-                    stroke: "#FFFFFF",
-                    strokeWidth: 2,
-                  },
-                }}
-              />
-            )}
-            {byLevel.Good.length > 0 && (
-              <VictoryScatter
-                labelComponent={<View />}
-                data={byLevel.Good.map((point) => ({
-                  x: point.x,
-                  y: point.y + 0.5,
-                }))}
-                size={5}
-                style={{
-                  data: {
-                    fill: MOOD_COLORS[4],
-                    stroke: "#FFFFFF",
-                    strokeWidth: 2,
-                  },
-                }}
-              />
-            )}
-            {byLevel.Fine.length > 0 && (
-              <VictoryScatter
-                labelComponent={<View />}
-                data={byLevel.Fine.map((point) => ({
-                  x: point.x,
-                  y: point.y + 0.5,
-                }))}
-                size={5}
-                style={{
-                  data: {
-                    fill: MOOD_COLORS[3],
-                    stroke: "#FFFFFF",
-                    strokeWidth: 2,
-                  },
-                }}
-              />
-            )}
-            {byLevel.Bad.length > 0 && (
-              <VictoryScatter
-                labelComponent={<View />}
-                data={byLevel.Bad.map((point) => ({
-                  x: point.x,
-                  y: point.y + 0.5,
-                }))}
-                size={5}
-                style={{
-                  data: {
-                    fill: MOOD_COLORS[2],
-                    stroke: "#FFFFFF",
-                    strokeWidth: 2,
-                  },
-                }}
-              />
-            )}
-            {byLevel.Terrible.length > 0 && (
-              <VictoryScatter
-                labelComponent={<View />}
-                data={byLevel.Terrible.map((point) => ({
-                  x: point.x,
-                  y: point.y + 0.5,
-                }))}
-                size={5}
-                style={{
-                  data: {
-                    fill: MOOD_COLORS[1],
-                    stroke: "#FFFFFF",
-                    strokeWidth: 2,
-                  },
-                }}
-              />
+            {levels.map(({ level, score }) =>
+              renderScatter(level, score, byLevel[level])
             )}
           </VictoryChart>
+          {selectedPoint && (
+            <ChartTooltip
+              x={selectedPoint.x}
+              y={selectedPoint.y}
+              title={`Mood: ${moodLevelForScore(
+                selectedPoint.datum.original.y
+              )}`}
+              subtitle={`Day: ${selectedPoint.datum.original.label}`}
+            />
+          )}
         </View>
         {isLoading && (
           <View
@@ -511,6 +539,63 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
       "yyyyMMdd"
     )}`;
 
+    const [selectedPoint, setSelectedPoint] = useState<{
+      x: number;
+      y: number;
+      datum: any;
+    } | null>(null);
+
+    const handlePointPress = useCallback((props: any) => {
+      const { x, y, datum } = props;
+      setSelectedPoint({ x, y, datum });
+    }, []);
+
+    const renderScatter = (
+      level: MoodLevel,
+      score: number,
+      data: NumericPoint[]
+    ) => {
+      if (data.length === 0) return null;
+      return (
+        <VictoryScatter
+          key={level}
+          labelComponent={<View />}
+          data={data.map((point) => ({
+            x: point.x,
+            y: point.y + 0.5,
+            original: point,
+          }))}
+          size={5}
+          style={{
+            data: {
+              fill: moodScoreToColor(score),
+              stroke: "#FFFFFF",
+              strokeWidth: 2,
+            },
+          }}
+          events={[
+            {
+              target: "data",
+              eventHandlers: {
+                onPressIn: (evt, props) => {
+                  handlePointPress(props);
+                  return [];
+                },
+              },
+            },
+          ]}
+        />
+      );
+    };
+
+    const levels: { level: MoodLevel; score: number }[] = [
+      { level: "Great", score: 5 },
+      { level: "Good", score: 4 },
+      { level: "Fine", score: 3 },
+      { level: "Bad", score: 2 },
+      { level: "Terrible", score: 1 },
+    ];
+
     return (
       <View style={{ width }}>
         <View>
@@ -594,92 +679,20 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
               />
             )}
 
-            {byLevel.Great.length > 0 && (
-              <VictoryScatter
-                labelComponent={<View />}
-                data={byLevel.Great.map((point) => ({
-                  x: point.x,
-                  y: point.y + 0.5,
-                }))}
-                size={5}
-                style={{
-                  data: {
-                    fill: MOOD_COLORS[5],
-                    stroke: "#FFFFFF",
-                    strokeWidth: 2,
-                  },
-                }}
-              />
-            )}
-            {byLevel.Good.length > 0 && (
-              <VictoryScatter
-                labelComponent={<View />}
-                data={byLevel.Good.map((point) => ({
-                  x: point.x,
-                  y: point.y + 0.5,
-                }))}
-                size={5}
-                style={{
-                  data: {
-                    fill: MOOD_COLORS[4],
-                    stroke: "#FFFFFF",
-                    strokeWidth: 2,
-                  },
-                }}
-              />
-            )}
-            {byLevel.Fine.length > 0 && (
-              <VictoryScatter
-                labelComponent={<View />}
-                data={byLevel.Fine.map((point) => ({
-                  x: point.x,
-                  y: point.y + 0.5,
-                }))}
-                size={5}
-                style={{
-                  data: {
-                    fill: MOOD_COLORS[3],
-                    stroke: "#FFFFFF",
-                    strokeWidth: 2,
-                  },
-                }}
-              />
-            )}
-            {byLevel.Bad.length > 0 && (
-              <VictoryScatter
-                labelComponent={<View />}
-                data={byLevel.Bad.map((point) => ({
-                  x: point.x,
-                  y: point.y + 0.5,
-                }))}
-                size={5}
-                style={{
-                  data: {
-                    fill: MOOD_COLORS[2],
-                    stroke: "#FFFFFF",
-                    strokeWidth: 2,
-                  },
-                }}
-              />
-            )}
-            {byLevel.Terrible.length > 0 && (
-              <VictoryScatter
-                labelComponent={<View />}
-                data={byLevel.Terrible.map((point) => ({
-                  x: point.x,
-                  y: point.y + 0.5,
-                }))}
-                size={5}
-                style={{
-                  data: {
-                    fill: MOOD_COLORS[1],
-                    stroke: "#FFFFFF",
-                    strokeWidth: 2,
-                  },
-                }}
-              />
+            {levels.map(({ level, score }) =>
+              renderScatter(level, score, byLevel[level])
             )}
           </VictoryChart>
+          {selectedPoint && (
+            <ChartTooltip
+              x={selectedPoint.x}
+              y={selectedPoint.y}
+              title={`Mood: ${moodLevelForScore(
+                selectedPoint.datum.original.y
+              )}`}
+              subtitle={`Time: ${selectedPoint.datum.original.label}`}
+            />
+          )}
         </View>
         {isLoading && (
           <View
