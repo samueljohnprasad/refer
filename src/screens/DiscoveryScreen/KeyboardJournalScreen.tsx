@@ -198,8 +198,8 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                       Keyboard.dismiss();
                       onClose();
                     }}
-                    color="#9ca3af"
-                    variant="glassProminent"
+                    // color="#9ca3af"
+                    variant="glass"
                     controlSize="large"
                     systemImage="xmark"
                   />
