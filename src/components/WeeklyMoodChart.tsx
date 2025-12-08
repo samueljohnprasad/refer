@@ -107,6 +107,18 @@ function twoLetterDow(date: Date): string {
 
 // Generate 30-minute interval labels for a day (e.g., "6AM", "6:30", "7AM", etc.)
 const DAILY_TIME_SLOTS = [
+  "00:00",
+  "00:30",
+  "01:00",
+  "01:30",
+  "02:00",
+  "02:30",
+  "03:00",
+  "03:30",
+  "04:00",
+  "04:30",
+  "05:00",
+  "05:30",
   "06:00",
   "06:30",
   "07:00",
@@ -147,6 +159,9 @@ const DAILY_TIME_SLOTS = [
 
 // Display labels for X-axis (show every 2 hours for cleaner look)
 const DAILY_DISPLAY_LABELS: Record<string, string> = {
+  "00:00": "12AM",
+  "02:00": "2AM",
+  "04:00": "4AM",
   "06:00": "6AM",
   "08:00": "8AM",
   "10:00": "10AM",
@@ -156,6 +171,7 @@ const DAILY_DISPLAY_LABELS: Record<string, string> = {
   "18:00": "6PM",
   "20:00": "8PM",
   "22:00": "10PM",
+  "24:00": "12AM",
 };
 
 const buildChartData = (
@@ -456,11 +472,24 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
 
     // Show ticks at every 4th slot (every 2 hours)
     const xTickValues: number[] = useMemo(
-      () => [1, 5, 9, 13, 17, 21, 25, 29, 33],
+      () => [1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45],
       []
     );
     const xTickLabels: string[] = useMemo(
-      () => ["6AM", "8AM", "10AM", "12PM", "2PM", "4PM", "6PM", "8PM", "10PM"],
+      () => [
+        "12AM",
+        "2AM",
+        "4AM",
+        "6AM",
+        "8AM",
+        "10AM",
+        "12PM",
+        "2PM",
+        "4PM",
+        "6PM",
+        "8PM",
+        "10PM",
+      ],
       []
     );
 
