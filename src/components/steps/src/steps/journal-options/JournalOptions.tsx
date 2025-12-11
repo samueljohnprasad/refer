@@ -109,39 +109,27 @@ export const JournalOptions: React.FC<JournalOptionsProps> = (
   };
 
   return (
-    <View className="w-full flex-1 px-4 py-2">
+    <View className="w-full flex-1 px-4">
       <ScrollView
         showsVerticalScrollIndicator={true}
         contentContainerStyle={{ paddingBottom: 120 }}
       >
-        {/* Premium Header with Glass Effect */}
+        {/* Clean Header */}
         {(title || helperText) && (
-          <Animated.View entering={FadeInDown.duration(400)} className="mb-6">
-            <View
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.25)",
-                borderRadius: 20,
-                padding: 18,
-                borderWidth: 1,
-                borderColor: "rgba(255, 255, 255, 0.3)",
-                shadowColor: "#7C3AED",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.08,
-                shadowRadius: 12,
-                elevation: 3,
-              }}
-            >
-              {title && (
-                <Text className="text-3xl font-black text-gray-900 dark:text-gray-100 mb-3 text-center">
-                  {title}
-                </Text>
-              )}
-              {helperText && (
-                <Text className="text-base text-gray-600 dark:text-gray-400 text-center font-medium">
-                  {helperText}
-                </Text>
-              )}
-            </View>
+          <Animated.View
+            entering={FadeInDown.duration(400)}
+            className="mb-8 mt-4"
+          >
+            {title && (
+              <Text className="text-4xl text-gray-900 dark:text-white mb-3 font-cormorantSemiBold leading-tight">
+                {title}
+              </Text>
+            )}
+            {helperText && (
+              <Text className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
+                {helperText}
+              </Text>
+            )}
           </Animated.View>
         )}
 

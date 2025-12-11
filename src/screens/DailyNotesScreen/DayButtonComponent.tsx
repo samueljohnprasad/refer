@@ -27,9 +27,9 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   };
 
   const getFontColor = () => {
-    if (disabled) return "text-black/30";
-    if (isSelected) return "text-black/90";
-    return "text-black/80";
+    if (disabled) return "text-gray-400";
+    if (isSelected) return "text-black/70";
+    return "text-black/50";
   };
 
   return (
@@ -49,7 +49,7 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
           >
             {dayName}
           </Text>
-          <Text className={`text-base font-semibold ${getFontColor()}`}>
+          <Text className={`text-2xl font-semibold ${getFontColor()}`}>
             {format(day, "d")}
           </Text>
         </View>

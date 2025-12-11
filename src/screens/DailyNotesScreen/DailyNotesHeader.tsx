@@ -279,15 +279,15 @@ const DailyNotesHeader = React.memo(
         style={{
           paddingTop: paddingTop,
         }}
-        className="bg-violet-300"
+        className="bg-violet-300 rounded-3xl"
       >
         <Animated.View
-          className="bg-violet-300 justify-end relative"
+          className="bg-violet-300 justify-end relative rounded-3xl"
           style={[headerContainerAnimatedStyle]}
         >
           {/* Calendar Header */}
           <Animated.View
-            className="flex-row items-center justify-between px-4 pb-1"
+            className="flex-row items-center justify-between px-4 pb-1 rounded-3xl"
             style={[headerControlsAnimatedStyle]}
           >
             <Pressable

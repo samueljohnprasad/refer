@@ -1,6 +1,5 @@
 import React from "react";
 import { AgeRange, Gender } from "@/types/types";
-import { NameOnboard } from "../NameOnboard";
 import { Demographics } from "./steps/demographics/Demographics";
 import { MoodDef, OnBoardingFormData } from "./types";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -55,7 +54,7 @@ export const StepInput = React.memo(
                 updateFormData({ reasons })
               }
               title="What brings you to journaling?"
-              helperText="What brings you to journaling?"
+              helperText="Select all that apply"
               showCount
               showIcons
             />
