@@ -4,7 +4,7 @@ import SwiftUI
 struct Emotion {
     let id: Int
     let name: String
-    let emoji: String
+    let imageName: String
     let color: Color
     let bgColor: Color
     let count: Int
@@ -49,8 +49,11 @@ struct EmotionItemView: View {
                     .fill(emotion.bgColor)
                     .frame(width: 44, height: 44)
                 
-                Text(emotion.emoji)
-                    .font(.system(size: 24))
+                // Ensure these images are added to your Widget Target's Assets.xcassets
+                Image(emotion.imageName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 32, height: 32)
                 
                 if emotion.count > 0 {
                     ZStack {
@@ -78,12 +81,13 @@ struct widgetEntryView : View {
     var entry: Provider.Entry
     
     // Sample data matching EmotionLogger.tsx
+    // Note: "fine" maps to "Okay"
     let emotions = [
-        Emotion(id: 1, name: "Terrible", emoji: "😖", color: Color(hex: "FF6B6B"), bgColor: Color(hex: "FFE5E5"), count: 0),
-        Emotion(id: 2, name: "Bad", emoji: "☹️", color: Color(hex: "FFA94D"), bgColor: Color(hex: "FFF3E5"), count: 1),
-        Emotion(id: 3, name: "Okay", emoji: "😐", color: Color(hex: "FFD43B"), bgColor: Color(hex: "FFF9E5"), count: 3),
-        Emotion(id: 4, name: "Good", emoji: "🙂", color: Color(hex: "69DB7C"), bgColor: Color(hex: "E5F9E5"), count: 5),
-        Emotion(id: 5, name: "Great", emoji: "🤩", color: Color(hex: "74C0FC"), bgColor: Color(hex: "E5F3FF"), count: 2)
+        Emotion(id: 1, name: "Terrible", imageName: "terrible", color: Color(hex: "FF6B6B"), bgColor: Color(hex: "FFE5E5"), count: 2),
+        Emotion(id: 2, name: "Bad", imageName: "bad", color: Color(hex: "FFA94D"), bgColor: Color(hex: "FFF3E5"), count: 1),
+        Emotion(id: 3, name: "Okay", imageName: "fine", color: Color(hex: "FFD43B"), bgColor: Color(hex: "FFF9E5"), count: 3),
+        Emotion(id: 4, name: "Good", imageName: "good", color: Color(hex: "69DB7C"), bgColor: Color(hex: "E5F9E5"), count: 5),
+        Emotion(id: 5, name: "Great", imageName: "great", color: Color(hex: "74C0FC"), bgColor: Color(hex: "E5F3FF"), count: 2)
     ]
 
     var body: some View {
