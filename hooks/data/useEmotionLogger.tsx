@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/src/network/auth/supabase";
 import { useAuth } from "@/src/context/AuthContext";
@@ -8,6 +8,8 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppState, Platform } from "react-native";
+import { ExtensionStorage } from "@bacons/apple-targets";
 import {
   Toast,
   ToastDescription,
@@ -75,6 +77,23 @@ async function fetchDailyEmotions(
   return emotionCounts;
 }
 
+const APP_GROUP_IDENTIFIER = "group.samuelprasad.happy";
+const storage = new ExtensionStorage(APP_GROUP_IDENTIFIER);
+const widgetEmotionsKey = "emotionCounts";
+const syncToWidget = async (counts: Map<number, number>) => {
+  if (Platform.OS !== "ios") return;
+  try {
+    const countsObj: Record<string, number> = {};
+    counts.forEach((value, key) => {
+      countsObj[key.toString()] = value;
+    });
+
+    storage.set(widgetEmotionsKey, countsObj);
+  } catch (error) {
+    console.warn("Failed to sync to widget:", error);
+  }
+};
+
 /**
  * Log a new emotion entry
  */
@@ -129,7 +148,24 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
     enabled: Boolean(user?.id),
   });
 
-  // Log emotion mutation
+  React.useEffect(() => {
+    if (emotionCounts) {
+      syncToWidget(emotionCounts);
+    }
+  }, [emotionCounts]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "background") {
+        console.log("background");
+        ExtensionStorage.reloadWidget();
+      }
+    });
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   const logEmotionMutation = useMutation({
     mutationFn: async (emotionId: number) => {
       if (!user?.id) throw new Error("User not authenticated");

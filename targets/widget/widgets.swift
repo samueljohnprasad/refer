@@ -10,33 +10,46 @@ struct Emotion {
     let count: Int
 }
 
-struct Provider: AppIntentTimelineProvider {
+struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: ConfigurationAppIntent())
+        SimpleEntry(date: Date(), emotionCounts: [:])
     }
 
-    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: configuration)
+    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
+        let counts = fetchEmotionCounts()
+        let entry = SimpleEntry(date: Date(), emotionCounts: counts)
+        completion(entry)
     }
-    
-    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {
+        let counts = fetchEmotionCounts()
         var entries: [SimpleEntry] = []
 
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, configuration: configuration)
+            let entry = SimpleEntry(date: entryDate, emotionCounts: counts)
             entries.append(entry)
         }
 
-        return Timeline(entries: entries, policy: .atEnd)
+        let timeline = Timeline(entries: entries, policy: .atEnd)
+        completion(timeline)
     }
+    
+  func fetchEmotionCounts() -> [String: Int] {
+      let defaults = UserDefaults(suiteName: "group.samuelprasad.happy")
+      return (
+          defaults?
+              .data(forKey: "emotionCounts")
+              .flatMap { try? JSONDecoder().decode([String: Int].self, from: $0) }
+      ) ?? [:]
+  }
 }
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
-    let configuration: ConfigurationAppIntent
+    let emotionCounts: [String: Int]
 }
 
 struct EmotionItemView: View {
@@ -80,15 +93,16 @@ struct EmotionItemView: View {
 struct widgetEntryView : View {
     var entry: Provider.Entry
     
-    // Sample data matching EmotionLogger.tsx
-    // Note: "fine" maps to "Okay"
-    let emotions = [
-        Emotion(id: 1, name: "Terrible", imageName: "terrible", color: Color(hex: "FF6B6B"), bgColor: Color(hex: "FFE5E5"), count: 2),
-        Emotion(id: 2, name: "Bad", imageName: "bad", color: Color(hex: "FFA94D"), bgColor: Color(hex: "FFF3E5"), count: 1),
-        Emotion(id: 3, name: "Okay", imageName: "fine", color: Color(hex: "FFD43B"), bgColor: Color(hex: "FFF9E5"), count: 3),
-        Emotion(id: 4, name: "Good", imageName: "good", color: Color(hex: "69DB7C"), bgColor: Color(hex: "E5F9E5"), count: 5),
-        Emotion(id: 5, name: "Great", imageName: "great", color: Color(hex: "74C0FC"), bgColor: Color(hex: "E5F3FF"), count: 2)
-    ]
+    var emotions: [Emotion] {
+        let counts = entry.emotionCounts
+        return [
+            Emotion(id: 1, name: "Terrible", imageName: "terrible", color: Color(hex: "FF6B6B"), bgColor: Color(hex: "FFE5E5"), count:  counts["1"] ?? 0),
+            Emotion(id: 2, name: "Bad", imageName: "bad", color: Color(hex: "FFA94D"), bgColor: Color(hex: "FFF3E5"), count: counts["2"] ?? 0),
+            Emotion(id: 3, name: "Okay", imageName: "fine", color: Color(hex: "FFD43B"), bgColor: Color(hex: "FFF9E5"), count: counts["3"] ?? 0),
+            Emotion(id: 4, name: "Good", imageName: "good", color: Color(hex: "69DB7C"), bgColor: Color(hex: "E5F9E5"), count: counts["4"] ?? 0),
+            Emotion(id: 5, name: "Great", imageName: "great", color: Color(hex: "74C0FC"), bgColor: Color(hex: "E5F3FF"), count: counts["5"] ?? 0)
+        ]
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -119,7 +133,7 @@ struct widget: Widget {
     let kind: String = "widget"
 
     var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
             widgetEntryView(entry: entry)
                 .containerBackground(.white, for: .widget)
         }
@@ -156,22 +170,8 @@ extension Color {
     }
 }
 
-extension ConfigurationAppIntent {
-    fileprivate static var smiley: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "😀"
-        return intent
-    }
-    
-    fileprivate static var starEyes: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "🤩"
-        return intent
-    }
-}
-
 #Preview(as: .systemMedium) {
     widget()
 } timeline: {
-    SimpleEntry(date: .now, configuration: .smiley)
+    SimpleEntry(date: .now, emotionCounts: Provider().fetchEmotionCounts())
 }
