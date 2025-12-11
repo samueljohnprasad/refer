@@ -10,12 +10,14 @@
     "build": "expo export --platform web --output-dir dist",
     "build:preview": "expo export --platform web --output-dir dist",
     "test": "jest --watchAll",
-    "types": "npx supabase gen types typescript --project-id xaqeueshxpehijtxwklo > database.types.ts"
+    "types": "npx supabase gen types typescript --project-id xaqeueshxpehijtxwklo > database.types.ts",
+    "prewidget": "npx expo prebuild --template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@bacons/apple-targets": "^3.0.6",
     "@expo-google-fonts/cormorant-garamond": "^0.4.1",
     "@expo/html-elements": "^0.12.5",
     "@expo/ui": "~0.2.0-beta.9",

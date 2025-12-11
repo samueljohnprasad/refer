@@ -15,9 +15,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "appleTeamId": "QG7UY38762",
       "supportsTablet": false,
       "usesAppleSignIn": true,
       "bundleIdentifier": "com.samuelprasad.happy",
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.samuelprasad.happy"
+        ]
+      },
       "infoPlist": {
         "NSMicrophoneUsageDescription": "The app needs access to the microphone to record your voice for journal entries. For example, this allows you to speak your thoughts and save them as audio reflections in your daily journal.",
         "NSUserNotificationUsageDescription": "The app sends notifications to remind you to record your daily voice journal entries.",
@@ -71,7 +77,8 @@
         }
       ],
       "expo-asset",
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      "@bacons/apple-targets"
     ],
     "experiments": {
       "typedRoutes": true
