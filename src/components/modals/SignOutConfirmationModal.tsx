@@ -1,12 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, Pressable } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import ShortBottomModal from "@/src/components/ShortBottomModal";
-import { useBottomSheet } from "@/components/ui/bottomsheet";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 interface SignOutConfirmationModalProps {
@@ -48,56 +46,52 @@ const SignOutConfirmationModal: React.FC<SignOutConfirmationModalProps> = ({
         handleClose();
       }}
       ref={sheetRef}
-      snapPoints={["40%"]}
+      snapPoints={["35%"]}
     >
-      <VStack className="flex-1 px-4 justify-center items-center" space="xl">
-        {/* Icon Header */}
-        <View className="items-center">
-          <View className="w-16 h-16 rounded-full bg-blue-100 items-center justify-center mb-4">
-            <Feather name="log-out" size={28} color="#3B82F6" />
+      <VStack
+        className="flex-1 px-6 pt-2 items-center justify-between pb-8"
+        space="md"
+      >
+        <View className="items-center w-full">
+          {/* Icon Header */}
+          <View className="w-14 h-14 rounded-full bg-[#f8f8f8] items-center justify-center mb-5">
+            <Feather name="help-circle" size={26} color="#4b5563" />
           </View>
-          <Heading size="2xl" className="text-center mb-2">
+
+          <Heading className="text-center text-3xl font-cormorantSemiBold text-[#1f2937] mb-2">
             Sign Out?
           </Heading>
-          <Text className="text-gray-600 text-base leading-6 text-center">
+
+          <Text className="text-gray-500 text-center text-base px-2">
             Are you sure you want to sign out? You'll need to sign in again to
             access your journals.
           </Text>
         </View>
 
         {/* Buttons */}
-        <View className="flex-row gap-3 mt-10">
+        <View className="flex-row gap-3 w-full mt-4">
           <Pressable
             onPress={handleCloseCancel}
             disabled={isLoading}
-            className="flex-1 bg-gray-100 rounded-2xl py-4 items-center justify-center active:bg-gray-200"
+            className="flex-1 bg-[#F6F4FF] rounded-full flex-row items-center justify-center py-4 active:opacity-80"
           >
-            <Text className="text-gray-700 font-semibold text-base">
-              Cancel
-            </Text>
+            <Text className="text-gray-900 font-bold text-lg mr-2">Cancel</Text>
+            <Feather name="x" size={20} color="#1f2937" />
           </Pressable>
 
           <Pressable
             onPress={handleConfirm}
             disabled={isLoading}
-            className="flex-1 rounded-2xl overflow-hidden"
+            className="flex-1 bg-[#7B61FF] rounded-full flex-row items-center justify-center py-4 active:opacity-90"
           >
-            <LinearGradient
-              colors={isLoading ? ["#999", "#777"] : ["#3B82F6", "#2563EB"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                paddingHorizontal: 16,
-                paddingVertical: 16,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text className="text-white font-bold text-base">
-                {isLoading ? "Signing Out..." : "Sign Out"}
-              </Text>
-            </LinearGradient>
+            <Text className="text-white font-bold text-lg mr-2">
+              {isLoading ? "Signing Out..." : "Sign Out"}
+            </Text>
+            {isLoading ? (
+              <ActivityIndicator color="white" size="small" />
+            ) : (
+              <Feather name="log-out" size={20} color="white" />
+            )}
           </Pressable>
         </View>
       </VStack>
