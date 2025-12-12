@@ -151,37 +151,43 @@ const MicControlView: React.FC<MicControlViewProps> = ({
         </View>
       )}
       <ShortBottomModalWithProvider>
-        <View className="flex-1 p-6 w-full justify-between">
-          <View>
-            <Text className="text-3xl font-bold text-gray-900 text-center mb-2">
+        <View className="flex-1 px-2 pt-2 items-center justify-between pb-8">
+          <View className="items-center w-full">
+            {/* Icon Header */}
+            <View className="w-14 h-14 rounded-full bg-red-50 items-center justify-center mb-5">
+              <HugeiconsIcon icon={Cancel01Icon} size={26} color="#DC2626" />
+            </View>
+
+            <Text className="text-center text-4xl font-cormorantSemiBold text-[#1f2937] mb-3 leading-10">
               Discard recording?
             </Text>
-            <Text className="text-base text-gray-600 text-center mb-6 leading-6">
+
+            <Text className="text-gray-600 text-center text-lg px-2 leading-7 font-medium">
               This will permanently delete your current audio and cannot be
               undone.
             </Text>
           </View>
 
-          <View className="flex-row gap-3">
-            <Button
+          <View className="flex-row gap-3 w-full mt-4">
+            <Pressable
               onPress={() => {
                 handleClose();
               }}
-              className="flex-1 bg-gray-100 rounded-xl"
+              className="flex-1 bg-[#F6F4FF] rounded-full flex-row items-center justify-center py-4 active:opacity-80"
             >
-              <ButtonText className="text-gray-700 font-semibold">
+              <Text className="text-gray-900 font-bold text-lg mr-2">
                 Keep Recording
-              </ButtonText>
-            </Button>
+              </Text>
+              <HugeiconsIcon icon={Tick01Icon} size={20} color="#1f2937" />
+            </Pressable>
 
-            <Button
-              className="flex-1 rounded-xl bg-red-600"
+            <Pressable
+              className="flex-1 bg-red-500 rounded-full flex-row items-center justify-center py-4 active:opacity-90"
               onPress={handleDiscard}
             >
-              <ButtonText className="text-white font-semibold">
-                Discard
-              </ButtonText>
-            </Button>
+              <Text className="text-white font-bold text-lg mr-2">Discard</Text>
+              <HugeiconsIcon icon={Cancel01Icon} size={20} color="white" />
+            </Pressable>
           </View>
         </View>
       </ShortBottomModalWithProvider>
