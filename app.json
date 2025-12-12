@@ -79,7 +79,15 @@
       "expo-asset",
       "expo-apple-authentication",
       "@bacons/apple-targets",
-      "expo-localization"
+      "expo-localization",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "react-native",
+          "organization": "personal-6l5"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

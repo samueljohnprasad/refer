@@ -29,6 +29,26 @@ import {
   CormorantGaramond_700Bold,
 } from "@expo-google-fonts/cormorant-garamond";
 import { PostHogProvider } from "posthog-react-native";
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://82fc883710be27dc3b89702dd3b266ae@o4510522682900480.ingest.us.sentry.io/4510522687029248',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -61,7 +81,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export default function RootLayout() {
+export default Sentry.wrap(function RootLayout() {
   const [loaded, error] = useFonts({
     // SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     // ...FontAwesome.font,
@@ -85,7 +105,7 @@ export default function RootLayout() {
   }, [loaded]);
 
   return <RootLayoutNav />;
-}
+});
 
 function RootLayoutNav() {
   const pathname = usePathname();

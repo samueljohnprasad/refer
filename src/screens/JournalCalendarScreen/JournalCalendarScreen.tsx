@@ -35,6 +35,7 @@ import { Host, Button } from "@expo/ui/swift-ui";
 import { clipShape, glassEffect } from "@expo/ui/swift-ui/modifiers";
 import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { usePostHog } from "posthog-react-native";
+import * as Sentry from "@sentry/react-native";
 
 // Global color palette
 export const PALETTE = {
