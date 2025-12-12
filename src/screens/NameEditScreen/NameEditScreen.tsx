@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
 import { KeyboardToolbar } from "react-native-keyboard-controller";
 import { useGradualAnimation } from "@/hooks/useGradualAnimation";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
 import { useUpdateDisplayName } from "@/hooks/post/useUpdateDisplayName";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Cancel01Icon, Tick02Icon, UserIcon } from "@hugeicons/core-free-icons";
 
 interface NameEditScreenProps {
   setShowModal: (show: boolean) => void;
@@ -49,91 +50,79 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
   }, []);
 
   return (
-    <View className="flex-1">
-      <View className="flex-1 bg-[#7366ea] p-5 justify-between">
+    <View className="flex-1 bg-[#F6F4FF]">
+      <View className="flex-1 p-5 justify-between">
         {/* Top bar */}
-        <View className="flex-row justify-between items-center mt-10">
+        <View className="flex-row justify-between items-center mt-16">
           <TouchableOpacity
-            className="w-10 h-10 rounded-full bg-white/10 justify-center items-center"
+            className="w-10 h-10 rounded-full justify-center items-center bg-[#7C5CFF] shadow-sm"
             onPress={() => setShowModal(false)}
+            activeOpacity={0.7}
           >
-            <Ionicons name="chevron-back" size={24} color="#fff" />
+            <HugeiconsIcon icon={Cancel01Icon} size={20} color="#FFF" />
           </TouchableOpacity>
         </View>
 
         {/* Main content */}
-        <View className="flex-1 justify-center items-center">
-          <Text className="text-[28px] font-bold text-white text-center mb-5">
+        <View className="flex-1 justify-center items-center -mt-16">
+          <Text className="text-4xl font-cormorantSemiBold text-[#1f2937] text-center mb-10">
             Edit your name
           </Text>
 
-          {/* Avatar */}
-          <LinearGradient
-            colors={["#FFC4A1", "#FF9C7A"]}
-            start={{ x: 0.2, y: 0.2 }}
-            end={{ x: 0.8, y: 0.8 }}
-            className="w-[110px] h-[110px] rounded-full justify-center items-center mb-10 shadow-lg shadow-[#FF9C7A]/20"
-            style={{
-              shadowColor: "#FF9C7A",
-              shadowOffset: { width: 0, height: 10 },
-              shadowOpacity: 0.2,
-              shadowRadius: 20,
-            }}
-          >
-            <Ionicons name="person" size={54} color="rgba(255,255,255,0.9)" />
-          </LinearGradient>
+          {/* Avatar Container */}
+          <View className="w-28 h-28 rounded-full bg-white p-1 justify-center items-center mb-8 shadow-sm">
+            <HugeiconsIcon icon={UserIcon} size={48} color="black" />
+          </View>
 
           {/* Input */}
           <View
-            className="w-[90%] bg-white rounded-[50px] h-[70px] justify-center items-center mb-5 shadow-sm"
+            className="w-full bg-white rounded-[24px] h-20 justify-center items-center mb-4 shadow-sm"
             style={{
               shadowColor: "#000",
-              shadowOffset: { width: 0, height: 6 },
-              shadowOpacity: 0.1,
-              shadowRadius: 12,
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.05,
+              shadowRadius: 8,
+              elevation: 2,
             }}
           >
             <TextInput
-              className="text-[32px] font-semibold text-[#FF9A7A]"
+              className="text-3xl font-cormorantSemiBold text-[#1f2937] w-full text-center h-full"
               value={name}
               onChangeText={setName}
-              maxLength={18}
+              maxLength={20}
               placeholder="Your name"
-              placeholderTextColor="rgba(255,154,122,0.5)"
+              placeholderTextColor="#9CA3AF"
               textAlign="center"
+              autoFocus
+              selectionColor="#7B61FF"
             />
           </View>
         </View>
 
         {/* Bottom buttons */}
-        <View className="flex-row justify-between gap-3">
+        <View className="flex-row justify-between gap-4 mb-2">
           <TouchableOpacity
-            className="flex-1 bg-white rounded-[50px] py-4 items-center shadow-sm"
-            style={{
-              shadowColor: "#000",
-              shadowOpacity: 0.1,
-              shadowRadius: 12,
-            }}
+            className="flex-1 bg-[#F6F4FF] border border-[#e5e5ea] rounded-full flex-row items-center justify-center py-4 active:opacity-80"
             onPress={() => setShowModal(false)}
             disabled={isUpdating}
           >
-            <Text className="text-gray-900 font-medium text-base">Cancel</Text>
+            <Text className="text-gray-900 font-bold text-lg mr-2">Cancel</Text>
+            <HugeiconsIcon icon={Cancel01Icon} size={20} color="#1f2937" />
           </TouchableOpacity>
+
           <TouchableOpacity
-            className={`flex-1 bg-[#ffd23f] rounded-[50px] py-4 items-center shadow-md ${
-              isUpdating ? "opacity-70" : ""
+            className={`flex-1 bg-[#7B61FF] rounded-full flex-row items-center justify-center py-4 shadow-sm ${
+              isUpdating ? "opacity-80" : ""
             }`}
-            style={{
-              shadowColor: "#ffd23f",
-              shadowOpacity: 0.25,
-              shadowRadius: 20,
-            }}
             onPress={handleSave}
             disabled={isUpdating}
           >
-            <Text className="text-[#7366ea] text-base font-semibold">
+            <Text className="text-white text-lg font-bold mr-2">
               {isUpdating ? "Saving..." : "Save"}
             </Text>
+            {!isUpdating && (
+              <HugeiconsIcon icon={Tick02Icon} size={20} color="white" />
+            )}
           </TouchableOpacity>
         </View>
         <Animated.View style={keyboardPadding} />
@@ -141,7 +130,7 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
       <KeyboardToolbar
         showArrows={false}
         insets={{ left: 16, right: 0 }}
-        doneText="Close keyboard"
+        doneText="Done"
       />
     </View>
   );

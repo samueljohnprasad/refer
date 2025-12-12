@@ -19,7 +19,6 @@ import {
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
 import EraseDataConfirmationModal from "@/src/components/modals/EraseDataConfirmationModal";
 import SignOutConfirmationModal from "@/src/components/modals/SignOutConfirmationModal";
-import { SettingsHeader } from "./components/SettingsHeader";
 import { PromoCard } from "./components/PromoCard";
 import { SettingsSection } from "./components/SettingsSection";
 import { SettingsItem } from "./components/SettingsItem";
@@ -29,6 +28,7 @@ import { useSettingsModals } from "./hooks/useSettingsModals";
 import { useSettingsBulkImport } from "./hooks/useSettingsBulkImport";
 import { useSettingsAnimation } from "./hooks/useSettingsAnimation";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
+import { SettingsHeader } from "./components/SettingsHeader";
 
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
@@ -68,7 +68,7 @@ export default React.memo(function SettingsScreen() {
   const { scrollY, upgradeY, setUpgradeY } = useSettingsAnimation();
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8F8FF]" edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-[#F6F4FF]" edges={["bottom"]}>
       <Stack.Screen
         options={{
           headerShown: true,
