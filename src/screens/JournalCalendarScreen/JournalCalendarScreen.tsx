@@ -34,6 +34,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Host, Button } from "@expo/ui/swift-ui";
 import { clipShape, glassEffect } from "@expo/ui/swift-ui/modifiers";
 import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
+import { usePostHog } from "posthog-react-native";
 
 // Global color palette
 export const PALETTE = {
@@ -230,6 +231,7 @@ export default function JournalCalendarScreen() {
   const progressAnim = useSharedValue(0);
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const { hasPro } = useRevenueCat();
+  const posthog = usePostHog();
 
   const currentStreak = userProfile?.currentStreak ?? 0;
   const nextMilestone = getNextMilestone(currentStreak);
@@ -273,6 +275,7 @@ export default function JournalCalendarScreen() {
     progressAnim.value = withTiming(currentStreak / nextMilestone, {
       duration: 1200,
     });
+    posthog.capture("MyComponent loaded", { foo: "bar" });
   }, [currentStreak, nextMilestone]);
 
   return (

@@ -28,6 +28,7 @@ import {
   CormorantGaramond_600SemiBold,
   CormorantGaramond_700Bold,
 } from "@expo-google-fonts/cormorant-garamond";
+import { PostHogProvider } from "posthog-react-native";
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -92,24 +93,30 @@ function RootLayoutNav() {
 
   return (
     <SuspensLoader>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <PressablesConfig
-            globalHandlers={globalPressableHandlers}
-            animationType="spring"
-          >
-            <GestureHandlerRootView style={StyleSheet.absoluteFill}>
-              <GluestackUIProvider mode={colorMode}>
-                <RevenueCatProvider>
-                  <ThemeProvider
-                    value={colorMode === "dark" ? DarkTheme : DefaultTheme}
-                  >
-                    <KeyboardProvider>
-                      <BottomSheetModalProvider>
-                        <Slot />
-                      </BottomSheetModalProvider>
-                    </KeyboardProvider>
-                    {/* {pathname === "/" && (
+      <PostHogProvider
+        apiKey="phc_3A3cPPqkAbVXBfiskxZlaOcORt0AxADK0sNMgz0I7oU"
+        options={{
+          host: "https://us.i.posthog.com",
+        }}
+      >
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <PressablesConfig
+              globalHandlers={globalPressableHandlers}
+              animationType="spring"
+            >
+              <GestureHandlerRootView style={StyleSheet.absoluteFill}>
+                <GluestackUIProvider mode={colorMode}>
+                  <RevenueCatProvider>
+                    <ThemeProvider
+                      value={colorMode === "dark" ? DarkTheme : DefaultTheme}
+                    >
+                      <KeyboardProvider>
+                        <BottomSheetModalProvider>
+                          <Slot />
+                        </BottomSheetModalProvider>
+                      </KeyboardProvider>
+                      {/* {pathname === "/" && (
               <Fab
                 onPress={() =>
                   setColorMode(colorMode === "dark" ? "light" : "dark")
@@ -120,13 +127,14 @@ function RootLayoutNav() {
                 <FabIcon as={colorMode === "dark" ? MoonIcon : SunIcon} />
               </Fab>
             )} */}
-                  </ThemeProvider>
-                </RevenueCatProvider>
-              </GluestackUIProvider>
-            </GestureHandlerRootView>
-          </PressablesConfig>
-        </AuthProvider>
-      </QueryClientProvider>
+                    </ThemeProvider>
+                  </RevenueCatProvider>
+                </GluestackUIProvider>
+              </GestureHandlerRootView>
+            </PressablesConfig>
+          </AuthProvider>
+        </QueryClientProvider>
+      </PostHogProvider>
     </SuspensLoader>
   );
 }

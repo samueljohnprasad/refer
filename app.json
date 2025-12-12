@@ -78,7 +78,8 @@
       ],
       "expo-asset",
       "expo-apple-authentication",
-      "@bacons/apple-targets"
+      "@bacons/apple-targets",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true
