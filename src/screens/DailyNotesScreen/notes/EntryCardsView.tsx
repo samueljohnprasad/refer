@@ -14,6 +14,7 @@ import { useAtom } from "jotai";
 import { DeleteJournal, selectedDateAtom } from "../atoms";
 import { getDuration } from "@/src/utils/date";
 import { ConfirmationModal } from "@/src/components/modals/ConfirmationModal";
+import { search } from "@/assets/images";
 
 interface EntryCardsViewProps {
   entries: JournalEntry[];
@@ -90,12 +91,17 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
           </Text>
         </View>
 
-        <View className="bg-gray-50 rounded-2xl p-8 items-center">
-          <Feather name="book-open" size={48} color="#9CA3AF" />
-          <Text className="text-gray-500 text-center mt-4 text-base">
+        <View className="bg-gray-50 rounded-2xl items-center">
+          <Image
+            source={search}
+            className="w-full h-64 mb-6"
+            alt="No entries found"
+            resizeMode="contain"
+          />
+          <Text className="text-gray-700 text-center mt-2 text-xl font-semibold">
             No journal entries for this day yet
           </Text>
-          <Text className="text-gray-400 text-center mt-2 text-sm">
+          <Text className="text-gray-500 text-center mt-3 text-base">
             Your thoughts and reflections will appear here
           </Text>
         </View>

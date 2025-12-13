@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   useWindowDimensions,
+  Image,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -33,6 +34,9 @@ import { useWeeklyInsightsLimit } from "@/hooks/useWeeklyInsightsLimit";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useTotalJournalCount } from "@/hooks/data/useTotalJournalCount";
 import { useCurrentWeekJournalCount } from "@/hooks/data/useCurrentWeekJournalCount";
+import { weeklyAnalysis } from "@/assets/images";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Target03Icon } from "@hugeicons/core-free-icons";
 
 export default function AIInsightsScreen() {
   const router = useRouter();
@@ -280,21 +284,33 @@ export default function AIInsightsScreen() {
         {/* AI Recommendations */}
         <View className="mb-10">
           <View className="flex-row justify-between items-center mb-5">
-            <Text className="text-[22px] font-extrabold text-[#0F172A] tracking-wide font-cormorantBold">
-              🎯 AI Insights for Previous Week
-            </Text>
+            <View className="flex-row items-center gap-2">
+              <HugeiconsIcon icon={Target03Icon} size={24} color="#7B61FF" />
+              <Text className="text-[22px] font-extrabold text-[#0F172A] tracking-wide font-cormorantBold">
+                AI Insights for Previous Week
+              </Text>
+            </View>
           </View>
 
           {!loadingCached && !cachedSummary && (
-            <View className="bg-white rounded-2xl p-10 items-center">
-              <Text className="text-[64px] mb-4">🤖</Text>
-              <Text className="text-[22px] font-bold text-[#0F172A] mb-2">
-                No AI Summary Yet
-              </Text>
-              <Text className="text-[15px] text-[#6B7280] text-center mb-6 leading-6">
-                Generate personalized AI insights for the week of{"\n"}
-                {format(previousWeek, "MMM dd, yyyy")}
-              </Text>
+            <View className="bg-white rounded-3xl overflow-hidden items-center">
+              <Image
+                source={weeklyAnalysis}
+                style={{ width: "100%", height: 300 }}
+                resizeMode="cover"
+                className="p-4 rounded-3xl"
+              />
+              <View className="px-10 pb-10">
+                <Text className="text-[28px] font-cormorantBold text-[#0F172A] mb-3 text-center leading-tight">
+                  No AI Summary Yet
+                </Text>
+                <Text className="text-[16px] text-[#64748B] text-center mb-6 leading-7 font-jakartaMedium">
+                  Generate personalized AI insights for the week of{"\n"}
+                  <Text className="font-jakartaBold text-[#475569]">
+                    {format(previousWeek, "MMM dd, yyyy")}
+                  </Text>
+                </Text>
+              </View>
 
               <TouchableOpacity
                 className="rounded-2xl overflow-hidden w-full"
