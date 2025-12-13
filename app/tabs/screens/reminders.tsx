@@ -66,7 +66,9 @@ const RemindersScreen = () => {
         }}
       />
       <SuspensLoader>
-        <NotificationsUI />
+        <View className="flex-1 justify-center items-center pt-48">
+          <NotificationsUI />
+        </View>
       </SuspensLoader>
     </SafeAreaView>
   );
@@ -75,7 +77,9 @@ const RemindersScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F8FF",
+    backgroundColor: "#DCF2FF",
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     flexDirection: "row",
