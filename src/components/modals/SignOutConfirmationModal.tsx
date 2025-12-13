@@ -43,23 +43,23 @@ export const SignOutConfirmationModal: React.FC<
         handleClose();
       }}
       ref={sheetRef}
-      snapPoints={["35%"]}
+      snapPoints={["40%"]}
     >
       <VStack
-        className="flex-1 px-6 pt-2 items-center justify-between pb-8"
-        space="md"
+        className="flex-1 px-5 pt-1 items-center justify-between pb-6"
+        space="sm"
       >
         <View className="items-center w-full">
           {/* Icon Header */}
-          <View className="w-14 h-14 rounded-full bg-[#f8f8f8] items-center justify-center mb-5">
-            <Feather name="help-circle" size={26} color="#4b5563" />
+          <View className="w-12 h-12 rounded-full bg-[#f8f8f8] items-center justify-center mb-4">
+            <Feather name="help-circle" size={22} color="#4b5563" />
           </View>
 
-          <Heading className="text-center text-3xl font-cormorantSemiBold text-[#1f2937] mb-2">
+          <Heading className="text-center text-3xl font-cormorantSemiBold text-[#1f2937] mb-2 leading-9">
             Sign Out?
           </Heading>
 
-          <Text className="text-gray-500 text-center text-base px-2">
+          <Text className="text-gray-500 text-center text-base px-1 leading-6">
             Are you sure you want to sign out? You'll need to sign in again to
             access your journals.
           </Text>

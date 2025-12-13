@@ -45,29 +45,29 @@ export const EraseDataConfirmationModal: React.FC<
         onClose();
       }}
       ref={sheetRef}
-      snapPoints={["75%"]}
+      snapPoints={["70%"]}
     >
       <VStack
-        className="flex-1 px-6 pt-2 items-center justify-between pb-8"
-        space="md"
+        className="flex-1 px-5 pt-1 items-center justify-between pb-6"
+        space="sm"
       >
         <View className="items-center w-full">
           {/* Icon Header */}
-          <View className="w-16 h-16 rounded-full bg-red-50 items-center justify-center mb-6">
-            <Feather name="trash-2" size={32} color="#DC2626" />
+          <View className="w-14 h-14 rounded-full bg-red-50 items-center justify-center mb-4">
+            <Feather name="trash-2" size={26} color="#DC2626" />
           </View>
 
-          <Heading className="text-center text-4xl font-cormorantSemiBold text-[#1f2937] mb-3 leading-9">
+          <Heading className="text-center text-3xl font-cormorantSemiBold text-[#1f2937] mb-2 leading-9">
             Erase All Data?
           </Heading>
 
-          <Text className="text-gray-600 text-center text-xl font-medium px-2 mb-6 leading-7">
+          <Text className="text-gray-600 text-center text-base font-medium px-1 mb-4 leading-6">
             This will permanently delete:
           </Text>
 
           {/* Data Items List */}
-          <View className="w-full bg-red-50/50 rounded-3xl p-5 mb-5">
-            <VStack space="md">
+          <View className="w-full bg-red-50/50 rounded-2xl p-4 mb-4">
+            <VStack space="sm">
               <DataItem text="All journal entries and transcripts" />
               <DataItem text="Mood tracking history and emotions" />
               <DataItem text="AI-generated insights and analysis" />
@@ -77,14 +77,14 @@ export const EraseDataConfirmationModal: React.FC<
           </View>
 
           {/* Warning */}
-          <View className="flex-row items-start bg-amber-50 p-4 rounded-2xl border border-amber-100">
+          <View className="flex-row items-start bg-amber-50 p-3 rounded-xl border border-amber-100">
             <Feather
               name="alert-triangle"
-              size={20}
+              size={18}
               color="#F59E0B"
               style={{ marginTop: 2 }}
             />
-            <Text className="text-amber-900 text-base ml-3 flex-1 leading-6 font-medium">
+            <Text className="text-amber-900 text-sm ml-2.5 flex-1 leading-5 font-medium">
               You will be immediately logged out. Your account cannot be
               recovered.
             </Text>
@@ -131,8 +131,8 @@ export const EraseDataConfirmationModal: React.FC<
 
 const DataItem = ({ text }: { text: string }) => (
   <View className="flex-row items-center">
-    <View className="w-2 h-2 rounded-full bg-red-400 mr-3" />
-    <Text className="text-gray-800 text-lg font-medium tracking-tight">
+    <View className="w-1.5 h-1.5 rounded-full bg-red-400 mr-2.5" />
+    <Text className="text-gray-800 text-sm font-medium tracking-tight">
       {text}
     </Text>
   </View>

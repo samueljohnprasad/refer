@@ -82,33 +82,32 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
     }
   }, [appStoreUrl]);
 
-  // Build version info message if versions are provided
-  const versionMessage = React.useMemo(() => {
-    if (currentVersion && latestVersion) {
-      return `${message}\n\nCurrent: v${currentVersion} → Latest: v${latestVersion}`;
-    }
-    return message;
-  }, [message, currentVersion, latestVersion]);
-
   return (
-    <ShortBottomModal ref={sheetRef} snapPoints={["40%"]}>
+    <ShortBottomModal ref={sheetRef} snapPoints={["45%"]}>
       <VStack
-        className="flex-1 px-6 pt-2 items-center justify-between pb-8"
-        space="md"
+        className="flex-1 px-5 pt-1 items-center justify-between pb-6"
+        space="sm"
       >
         <View className="items-center w-full">
           {/* Icon Header */}
-          <View className="w-14 h-14 rounded-full items-center justify-center mb-5 bg-purple-50">
+          <View className="w-12 h-12 rounded-full items-center justify-center mb-4 bg-purple-50">
             <HugeiconsIcon icon={SparklesIcon} size={26} color="#7B61FF" />
           </View>
 
-          <Heading className="text-center text-4xl font-cormorantSemiBold text-[#1f2937] mb-3 leading-10">
+          <Heading className="text-center text-3xl font-cormorantSemiBold text-[#1f2937] mb-2 leading-9">
             {title}
           </Heading>
 
-          <Text className="text-gray-600 text-center text-lg px-2 leading-7 font-medium">
-            {versionMessage}
+          <Text className="text-gray-600 text-center text-lg px-2 leading-7">
+            {message}
           </Text>
+
+          {/* Version info on separate line for better readability */}
+          {currentVersion && latestVersion && (
+            <Text className="text-gray-700 text-center text-sm mt-3 font-semibold">
+              Current: v{currentVersion} → Latest: v{latestVersion}
+            </Text>
+          )}
         </View>
 
         {/* Buttons */}

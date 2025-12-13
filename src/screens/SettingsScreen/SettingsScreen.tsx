@@ -70,7 +70,7 @@ export default React.memo(function SettingsScreen() {
   const { scrollY, upgradeY, setUpgradeY } = useSettingsAnimation();
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F6F4FF]" edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-[#F6F4FF]">
       <Stack.Screen
         options={{
           headerShown: true,
