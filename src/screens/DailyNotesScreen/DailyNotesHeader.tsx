@@ -38,6 +38,7 @@ import { DayButton } from "./DayButtonComponent";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { DateTimePicker, Host } from "@expo/ui/swift-ui";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
+import { EmotionDetailsModal } from "@/src/components/modals";
 
 // Lazy load CalendarPicker
 const CalendarPicker = React.lazy(() =>
@@ -95,6 +96,11 @@ const DailyNotesHeader = React.memo(
 
     // Track if calendar was ever opened to keep it mounted for smooth animations
     const [hasBeenExpanded, setHasBeenExpanded] = useState(false);
+
+    const [showEmotionDetails, setShowEmotionDetails] = useState(false);
+    const [emotionDetailsDate, setEmotionDetailsDate] = useState<Date>(
+      new Date()
+    );
 
     React.useEffect(() => {
       if (isExpanded && !hasBeenExpanded) {
@@ -259,7 +265,10 @@ const DailyNotesHeader = React.memo(
     }, [currentWeekViewSafe]);
 
     const onEmojiPress = (day: Date, moodScore?: number) => {
-      if (moodScore) return;
+      if (moodScore) {
+        setEmotionDetailsDate(day);
+        return setShowEmotionDetails(true);
+      }
       const today = new Date();
       if (isAfter(startOfDay(day), startOfDay(today))) return;
       const date = day.toISOString();
@@ -383,6 +392,12 @@ const DailyNotesHeader = React.memo(
             </GestureDetector>
           </View>
         </Animated.View>
+
+        <EmotionDetailsModal
+          visible={showEmotionDetails}
+          onClose={() => setShowEmotionDetails(false)}
+          selectedDate={emotionDetailsDate}
+        />
       </SafeAreaView>
     );
   }

@@ -191,9 +191,9 @@ const buildDailyChartData = (moodMap: DailyMoodsMap): DailyChartPoint[] => {
     const displayLabel = formatTimeLabel(timeSlot);
     return {
       x: displayLabel,
-      y: val ? val.score : null,
+      y: val ? val.mood_score : null,
       timeKey: timeSlot,
-      exactTime: val ? val.timestamp : undefined,
+      exactTime: val ? val.selected_date : undefined,
     };
   });
 };
@@ -768,14 +768,14 @@ const DailyChartPageWithData: React.FC<DailyChartPageWithDataProps> =
       [targetDate]
     );
 
-    const { data, isLoading } = useFetchDailyMoods({
+    const { groupedMoods, isLoading } = useFetchDailyMoods({
       targetDate: targetDateStr,
     });
 
     return (
       <DailyChartPage
         targetDate={targetDate}
-        emotionsData={data}
+        emotionsData={groupedMoods}
         width={width}
         height={height}
         padding={padding}
@@ -896,7 +896,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   );
 
   // Fetch daily data for the current day (for Day tab average)
-  const { data: dailyData } = useFetchDailyMoods({
+  const { groupedMoods: dailyData } = useFetchDailyMoods({
     targetDate: effectiveDayStr,
   });
 

@@ -3,38 +3,35 @@ import { supabase } from "@/src/network/auth/supabase";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
-/**
- * Map of time slots to mood scores for daily view
- * Key format: "HH:mm" (e.g., "09:00", "09:30", "10:00")
- */
-export interface DailyMoodData {
-  score: number;
-  timestamp: string; // ISO string of the exact time
-}
-
-export type DailyMoodsMap = Map<string, DailyMoodData>;
-
-interface MoodEntry {
+export interface RawMoodEntry {
   selected_date: string;
-  mood_score: number | null;
+  mood_score: number;
+  input_method: string | null;
 }
 
-interface FetchDailyMoodsParams {
+export type DailyMoodsMap = Map<string, RawMoodEntry>;
+
+export type DailyMoodsList = RawMoodEntry[];
+
+interface FetchParams {
   userId?: string;
-  targetDate: string; // YYYY-MM-DD format
+  targetDate: string;
 }
 
-/**
- * Fetch mood entries for a single day and organize by 30-minute intervals
- */
-async function fetchDailyMoods({
+function isValidMoodEntry(entry: {
+  selected_date: string | null;
+  mood_score: number | null;
+  input_method: string | null;
+}): entry is RawMoodEntry {
+  return entry.selected_date !== null && entry.mood_score !== null;
+}
+
+async function fetchRawDailyMoods({
   userId,
   targetDate,
-}: FetchDailyMoodsParams): Promise<DailyMoodsMap> {
-  const moodMap: DailyMoodsMap = new Map<string, DailyMoodData>();
-
+}: FetchParams): Promise<RawMoodEntry[]> {
   if (!userId || !targetDate) {
-    return moodMap;
+    return [];
   }
 
   const startOfDay = dayjs(targetDate).startOf("day").toISOString();
@@ -42,7 +39,7 @@ async function fetchDailyMoods({
 
   const { data, error } = await supabase
     .from("moods")
-    .select("selected_date, mood_score")
+    .select("selected_date, mood_score, input_method")
     .eq("user_id", userId)
     .gte("selected_date", startOfDay)
     .lte("selected_date", endOfDay)
@@ -50,27 +47,29 @@ async function fetchDailyMoods({
     .order("selected_date", { ascending: true });
 
   if (error || !data) {
-    return moodMap;
+    return [];
   }
 
-  // Group mood entries by 30-minute intervals
-  data.forEach((entry) => {
-    if (entry.mood_score === null) return;
+  return data.filter(isValidMoodEntry);
+}
 
+function transformToIntervalMoods(entries: RawMoodEntry[]): DailyMoodsMap {
+  const moodMap: DailyMoodsMap = new Map();
+
+  entries.forEach((entry) => {
     const entryTime = dayjs(entry.selected_date);
     const hour = entryTime.hour();
     const minute = entryTime.minute();
-    // Round to nearest 30-minute interval
+
     const roundedMinute = minute < 30 ? 0 : 30;
     const timeKey = `${hour.toString().padStart(2, "0")}:${roundedMinute
       .toString()
       .padStart(2, "0")}`;
 
-    // If multiple entries in same slot, keep the latest (or average them)
-    // For simplicity, we'll keep the latest one
     moodMap.set(timeKey, {
-      score: entry.mood_score,
-      timestamp: entry.selected_date as string,
+      mood_score: entry.mood_score,
+      selected_date: entry.selected_date,
+      input_method: entry.input_method,
     });
   });
 
@@ -81,18 +80,15 @@ interface UseFetchDailyMoodsParams {
   targetDate: string; // YYYY-MM-DD format
 }
 
-/**
- * Hook to fetch mood data for a single day organized by 30-minute intervals
- */
 export const useFetchDailyMoods = ({
   targetDate,
 }: UseFetchDailyMoodsParams) => {
   const { user } = useAuth();
 
-  const query = useQuery({
+  const { data = [], isLoading } = useQuery({
     queryKey: ["daily-moods-intervals", user?.id, targetDate],
     queryFn: () =>
-      fetchDailyMoods({
+      fetchRawDailyMoods({
         userId: user?.id,
         targetDate,
       }),
@@ -103,7 +99,8 @@ export const useFetchDailyMoods = ({
     enabled: !!user?.id && !!targetDate,
   });
 
-  return query;
+  const groupedMoods = transformToIntervalMoods(data);
+  return { data, groupedMoods, isLoading };
 };
 
 export default useFetchDailyMoods;
