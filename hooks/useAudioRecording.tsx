@@ -7,7 +7,7 @@ import {
   useAudioRecorderState,
 } from "expo-audio";
 import React, { useEffect, useState } from "react";
-import { Alert, Linking } from "react-native";
+import { Alert, Linking, Platform } from "react-native";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { recorderOpenAtom } from "@/src/screens/DiscoveryScreen/helpers";
 import { useAtom } from "jotai";
@@ -36,6 +36,32 @@ const useAudioRecording = () => {
 
   const toast = useToast();
 
+  // Configure audio session on mount
+  useEffect(() => {
+    const configureAudioSession = async () => {
+      try {
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          allowsRecording: true,
+        });
+      } catch (error) {
+        console.error("Failed to configure audio session:", error);
+      }
+    };
+
+    configureAudioSession();
+
+    // Cleanup on unmount
+    return () => {
+      clearInterval(timerInterval);
+      // Reset audio mode
+      setAudioModeAsync({
+        playsInSilentMode: false,
+        allowsRecording: false,
+      }).catch(console.error);
+    };
+  }, []);
+
   const record = async () => {
     try {
       const status = await AudioModule.requestRecordingPermissionsAsync();
@@ -53,7 +79,9 @@ const useAudioRecording = () => {
         );
         return setRecorderOpen(false);
       }
-      setAudioModeAsync({
+
+      // Ensure audio mode is set before recording
+      await setAudioModeAsync({
         playsInSilentMode: true,
         allowsRecording: true,
       });
@@ -70,13 +98,13 @@ const useAudioRecording = () => {
 
       setTimerInterval(interval);
     } catch (error) {
+      console.error("Recording error:", error);
       toast.show({
         placement: "top",
         render: ({ id }) => (
           <Toast nativeID={id} variant="solid" action="error">
             <ToastTitle>
-              Recording permission has not been granted. Please enable it in
-              settings.
+              Failed to start recording. Please try again.
             </ToastTitle>
           </Toast>
         ),
@@ -85,23 +113,25 @@ const useAudioRecording = () => {
   };
 
   const stopRecording = async () => {
-    await audioRecorder.stop();
-    setRecordingCurrentState("stopped");
-    clearInterval(timerInterval);
-    return recorderState;
+    try {
+      await audioRecorder.stop();
+      setRecordingCurrentState("stopped");
+      clearInterval(timerInterval);
+      return recorderState;
+    } catch (error) {
+      console.error("Error stopping recording:", error);
+    }
   };
 
   const pauseRecording = async () => {
-    audioRecorder.pause();
-    setRecordingCurrentState("paused");
-    clearInterval(timerInterval);
-  };
-
-  useEffect(() => {
-    return () => {
+    try {
+      audioRecorder.pause();
+      setRecordingCurrentState("paused");
       clearInterval(timerInterval);
-    };
-  }, []);
+    } catch (error) {
+      console.error("Error pausing recording:", error);
+    }
+  };
 
   return {
     recorderState,
