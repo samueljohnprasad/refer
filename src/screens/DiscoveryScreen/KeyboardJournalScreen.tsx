@@ -35,7 +35,7 @@ import { Button, Host } from "@expo/ui/swift-ui";
 import WhisperUI from "@/src/components/ui/swiftui";
 
 interface KeyboardJournalScreenProps {
-  onSubmit: (text: string) => void;
+  onSubmit: (text: string, enableAIInsights: boolean) => void;
   onClose: () => void;
 }
 
@@ -49,6 +49,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   );
   const [realtimeResult, setRealtimeResult] = useState<string>("");
   const [isRealtimeActive, setIsRealtimeActive] = useState(false);
+  const [enableAIInsights, setEnableAIInsights] = useState<boolean>(true);
 
   const [isCalendarVisible, setIsCalendarVisible] = useState<boolean>(false);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
@@ -98,9 +99,9 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const handleSubmit = useCallback(() => {
     Keyboard.dismiss();
     if (journalText.trim().length > 0) {
-      onSubmit(journalText.substring(0, 7000));
+      onSubmit(journalText.substring(0, 7000), enableAIInsights);
     }
-  }, [journalText, onSubmit]);
+  }, [journalText, enableAIInsights, onSubmit]);
 
   const isSubmitDisabled = journalText.trim().length === 0;
   const isLiquidGlass = isLiquidGlassAvailable();
@@ -227,6 +228,37 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                 isRealtimeActive={isRealtimeActive}
                 setIsRealtimeActive={setIsRealtimeActive}
               />
+
+              {/* AI Insights Toggle Button */}
+              {!isLiquidGlass && (
+                <TouchableOpacity
+                  onPress={() => setEnableAIInsights(!enableAIInsights)}
+                  disabled={isRealtimeActive}
+                  className={`w-14 h-14 rounded-full items-center justify-center ${
+                    enableAIInsights ? "bg-[#7B61FF]" : "bg-[#F3F4F6]"
+                  }`}
+                  activeOpacity={0.7}
+                >
+                  <Feather
+                    name="zap"
+                    size={20}
+                    color={enableAIInsights ? "#FFFFFF" : "#9CA3AF"}
+                  />
+                </TouchableOpacity>
+              )}
+
+              {isLiquidGlass && (
+                <Host matchContents>
+                  <Button
+                    onPress={() => setEnableAIInsights(!enableAIInsights)}
+                    disabled={isRealtimeActive}
+                    color={enableAIInsights ? "#7B61FF" : "#9ca3af"}
+                    variant={enableAIInsights ? "glassProminent" : "glass"}
+                    controlSize="large"
+                    systemImage="sparkles"
+                  />
+                </Host>
+              )}
 
               {/* Submit Button - Purple when enabled */}
               {!isLiquidGlass && (

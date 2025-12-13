@@ -70,7 +70,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          day?: string
+          day: string
           mood_avg?: number
           mood_count?: number
           mood_sum?: number
@@ -191,6 +191,7 @@ export type Database = {
           title: string | null
           transcripts: string | null
           user_id: string | null
+          words_count: number | null
         }
         Insert: {
           bookmarked_at?: string | null
@@ -202,6 +203,7 @@ export type Database = {
           title?: string | null
           transcripts?: string | null
           user_id?: string | null
+          words_count?: number | null
         }
         Update: {
           bookmarked_at?: string | null
@@ -213,6 +215,7 @@ export type Database = {
           title?: string | null
           transcripts?: string | null
           user_id?: string | null
+          words_count?: number | null
         }
         Relationships: [
           {

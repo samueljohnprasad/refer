@@ -6,12 +6,16 @@ import KeyboardJournalScreen from "./KeyboardJournalScreen";
 import JournalEntryScreen from "../JournalEntryScreen/JournalEntryScreen";
 import EmotionAnalysisLoadingScreen from "./EmotionAnalysisLoadingScreen";
 import { JournalEntry } from "@/hooks/data/types";
+import { useSaveJournal } from "@/hooks/post/useSaveJournal";
+import { useSaveToast } from "@/hooks/useSaveToast";
 
 const KeyboardJournalModalWrapper: React.FC = () => {
   const [journalOpen, setJournalOpen] = useAtom(keyboardJournalOpenAtom);
   const [stepper, setStepper] = useState(0);
   const [journalText, setJournalText] = useState<string>("");
   const [insights, setInsights] = useState<JournalEntry>();
+  const { saveJournalQuick, saving } = useSaveJournal();
+  const { showToast } = useSaveToast();
 
   const onClose = () => {
     setJournalOpen(false);
@@ -24,9 +28,19 @@ const KeyboardJournalModalWrapper: React.FC = () => {
     <VoiceRecorderModal visible={journalOpen} onRequestClose={onClose}>
       {stepper === 0 && (
         <KeyboardJournalScreen
-          onSubmit={(text) => {
+          onSubmit={async (text, enableAIInsights) => {
             setJournalText(text);
-            setStepper(1);
+            if (!enableAIInsights) {
+              try {
+                await saveJournalQuick(text, { inputType: "typing" });
+                showToast("success", "Journal saved successfully");
+                onClose();
+              } catch (error) {
+                showToast("error", "Failed to save journal");
+              }
+            } else {
+              setStepper(1);
+            }
           }}
           onClose={onClose}
         />

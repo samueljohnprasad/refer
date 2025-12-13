@@ -10,6 +10,7 @@ import { formateDate_y_m_d } from "../../src/utils/date";
 import { JournalEntry } from "../data/types";
 import { getMoodScore } from "@/src/utils/mood";
 import { useDailyStreak } from "../data/useDailyStreak";
+import { countWords } from "@/src/utils/textUtils";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -36,11 +37,12 @@ export const useSaveJournal = () => {
         const journalRow: Insert<"journal_records"> = {
           id: input.id,
           user_id: user.id,
-          duration_seconds: 0,
+          duration_seconds: input.duration_seconds || 0,
           transcripts: input.transcripts,
           input_type: input.input_type,
           title: input.title,
           selected_date: selectedDate.toISOString(),
+          words_count: countWords(input.transcripts || ""),
         };
 
         const { data: journalData, error: journalError } = await supabase
@@ -108,5 +110,30 @@ export const useSaveJournal = () => {
     [user?.id, queryClient, selectedDate, logStreakIfNeeded]
   );
 
-  return { saveJournal, saving };
+  const saveJournalQuick = useCallback(
+    async (
+      text: string,
+      options: {
+        inputType: "typing" | "voice";
+        duration?: number;
+      } = { inputType: "typing" }
+    ): Promise<void> => {
+      const basicJournalEntry: JournalEntry = {
+        transcripts: text,
+        title: text.substring(0, 30).trim() + (text.length > 30 ? "..." : ""),
+        input_type: options.inputType,
+        duration_seconds: Math.round(options.duration || 0),
+        moods: {
+          main_mood: "fine",
+        },
+        journal_ai_insights: null,
+        words_count: countWords(text),
+      };
+
+      await saveJournal(basicJournalEntry);
+    },
+    [saveJournal]
+  );
+
+  return { saveJournal, saveJournalQuick, saving };
 };

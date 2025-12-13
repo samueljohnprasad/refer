@@ -229,8 +229,16 @@ const EntryCard: React.FC<EntryCardProps> = ({
               />
               {!!entry.duration_seconds && (
                 <Text className="text-sm text-gray-500 ml-1">
-                  {getDuration()}
+                  {getDuration(entry.duration_seconds)}
                 </Text>
+              )}
+              {!!entry.words_count && (
+                <>
+                  <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
+                  <Text className="text-sm text-gray-500">
+                    {entry.words_count} words
+                  </Text>
+                </>
               )}
             </View>
           </View>

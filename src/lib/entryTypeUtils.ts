@@ -3,10 +3,10 @@ import { Edit02Icon, Mic01Icon } from "@hugeicons/core-free-icons";
 export const getEntryTypeIcon = (inputType?: string | null) => {
   switch (inputType) {
     case "typing":
-      return Mic01Icon;
+      return Edit02Icon;
     case "voice":
-      return Edit02Icon;
+      return Mic01Icon;
     default:
-      return Edit02Icon;
+      return Mic01Icon;
   }
 };

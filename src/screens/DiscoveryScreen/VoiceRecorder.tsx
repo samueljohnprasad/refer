@@ -12,19 +12,20 @@ import Animated, {
 import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { formattedDateTime, formatTime } from "@/src/utils/date";
-import { ReloadIcon } from "@hugeicons/core-free-icons";
+import { ReloadIcon, SparklesIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import useAudioRecording from "@/hooks/useAudioRecording";
 
 interface VoiceRecorderProps {
-  onStop: (uri: string) => void;
+  onStop: (uri: string, enableAIInsights: boolean) => void;
 }
 const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
   const { currentPrompt, shufflePrompt } = useJournalEntry();
   const rotation = useSharedValue(0);
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
   const [startRecording, setStartRecording] = useAtom(startRecordingAtom);
+  const [enableAIInsights, setEnableAIInsights] = useState<boolean>(true);
 
   const handleShufflePrompt = () => {
     rotation.value = withSpring(rotation.value + 360, {
@@ -59,7 +60,7 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
       const pathState = await stopRecording();
 
       if (!pathState?.url) return;
-      onStop(pathState.url);
+      onStop(pathState.url, enableAIInsights);
     }
   };
 
@@ -90,7 +91,7 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
   useEffect(() => {
     if (isStopped) {
       if (!recorderState?.url) return;
-      onStop(recorderState.url);
+      onStop(recorderState.url, enableAIInsights);
     }
   }, [isStopped]);
 
