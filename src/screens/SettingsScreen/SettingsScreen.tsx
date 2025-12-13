@@ -138,14 +138,14 @@ export default React.memo(function SettingsScreen() {
               title="Contact Support"
               onPress={handleContactSupport}
             />
-            {/* <SettingsItem
-              icon={StarIcon}
+            <SettingsItem
+              icon={Notification01Icon}
               iconColor="#16A34A"
               iconBgColor="#DCFCE7"
-              title="Rate Us"
+              title="Write a Review"
               onPress={handleRateUs}
               isLast={true}
-            /> */}
+            />
           </SettingsSection>
 
           {/* Settings Group 2 */}

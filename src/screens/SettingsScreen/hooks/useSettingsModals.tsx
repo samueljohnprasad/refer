@@ -29,7 +29,10 @@ export const useSettingsModals = () => {
 
   const handleRateUs = () => {
     Haptics.selectionAsync();
-    Linking.openURL("https://apps.apple.com/app/idYOUR_APP_ID");
+    const itunesItemId = "6755650433";
+    Linking.openURL(
+      `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${itunesItemId}?action=write-review`
+    );
   };
 
   const handleContactSupport = async () => {
