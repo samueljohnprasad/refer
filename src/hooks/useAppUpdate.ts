@@ -42,7 +42,6 @@ export function useAppUpdate(
       const updateNeeded = await VersionCheck.needUpdate();
 
       if (updateNeeded.isNeeded) {
-        console.log("isVisible Update needed");
         setShowUpdateModal(true);
       }
     } catch (error) {

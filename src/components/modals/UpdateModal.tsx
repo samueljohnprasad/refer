@@ -54,7 +54,6 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
   }, [onDismiss]);
 
   useEffect(() => {
-    console.log("isVisible", isVisible);
     if (isVisible) {
       sheetRef.current?.present();
     } else {
@@ -70,7 +69,6 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
         appID: "6755650433",
         packageName: "com.samuelprasad.happy",
       });
-      console.log("storeUrlstoreUrl", storeUrl);
       if (canOpen) {
         await Linking.openURL(storeUrl);
       } else {
