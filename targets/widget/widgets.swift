@@ -103,6 +103,30 @@ struct widgetEntryView : View {
             Emotion(id: 5, name: "Great", imageName: "great", color: Color(hex: "74C0FC"), bgColor: Color(hex: "E5F3FF"), count: counts["5"] ?? 0)
         ]
     }
+    
+    var averageMood: Double? {
+        let totalCount = emotions.reduce(0) { $0 + $1.count }
+        guard totalCount > 0 else { return nil }
+        
+        let weightedSum = emotions.reduce(0) { $0 + ($1.id * $1.count) }
+        return Double(weightedSum) / Double(totalCount)
+    }
+    
+    var moodLabel: (text: String, color: Color)? {
+        guard let avg = averageMood else { return nil }
+        
+        if avg <= 1.5 {
+            return ("Terrible", Color(hex: "FF6B6B"))
+        } else if avg <= 2.5 {
+            return ("Bad", Color(hex: "FFA94D"))
+        } else if avg <= 3.5 {
+            return ("Okay", Color(hex: "FFD43B"))
+        } else if avg <= 4.5 {
+            return ("Good", Color(hex: "69DB7C"))
+        } else {
+            return ("Great", Color(hex: "74C0FC"))
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -113,9 +137,27 @@ struct widgetEntryView : View {
                 
                 Spacer()
                 
-                Text(entry.date.formatted(.dateTime.month().day().year()))
-                    .font(.system(size: 12))
-                    .foregroundColor(Color(red: 107/255, green: 114/255, blue: 128/255)) // Gray-500
+                HStack(spacing: 4) {
+                    if let avgMood = averageMood, let label = moodLabel {
+                        HStack(spacing: 4) {
+                            Text(label.text)
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundColor(label.color)
+                            
+                            Text("•")
+                                .font(.system(size: 11))
+                                .foregroundColor(Color(red: 156/255, green: 163/255, blue: 175/255)) // Gray-400
+                            
+                            Text(String(format: "%.1f", avgMood))
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(label.color)
+                        }
+                    }
+                    
+                    Text(entry.date.formatted(.dateTime.month().day().year()))
+                        .font(.system(size: 12))
+                        .foregroundColor(Color(red: 107/255, green: 114/255, blue: 128/255)) // Gray-500
+                }
             }
             
             HStack(spacing: 0) {

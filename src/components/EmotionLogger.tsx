@@ -140,6 +140,31 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
       0
     );
 
+    // Calculate average mood (weighted by emotion scores: 1-5)
+    const averageMood = React.useMemo(() => {
+      if (totalEmotions === 0) return null;
+
+      let weightedSum = 0;
+      emotionCounts.forEach((count, emotionId) => {
+        weightedSum += emotionId * count;
+      });
+
+      return (weightedSum / totalEmotions).toFixed(1);
+    }, [emotionCounts, totalEmotions]);
+
+    // Get mood label based on average
+    const getMoodLabel = (avg: string | null) => {
+      if (!avg) return null;
+      const avgNum = parseFloat(avg);
+      if (avgNum <= 1.5) return { text: "Terrible", color: "#FF6B6B" };
+      if (avgNum <= 2.5) return { text: "Bad", color: "#FFA94D" };
+      if (avgNum <= 3.5) return { text: "Okay", color: "#FFD43B" };
+      if (avgNum <= 4.5) return { text: "Good", color: "#69DB7C" };
+      return { text: "Great", color: "#74C0FC" };
+    };
+
+    const moodLabel = getMoodLabel(averageMood);
+
     // Memoize the callback to prevent recreation on every render
     const handleLogEmotion = useCallback(
       async (emotionScore: number): Promise<void> => {
@@ -159,9 +184,28 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
           <Text className="text-base font-cormorantSemiBold text-gray-900">
             Daily Mood Log
           </Text>
-          <Text className="text-xs text-gray-500">
-            {format(selectedDate, "MMM d, yyyy")}
-          </Text>
+          <View className="flex-row items-center gap-2">
+            {averageMood && moodLabel && (
+              <View className="flex-row items-center gap-1">
+                <Text
+                  className="text-xs font-semibold"
+                  style={{ color: moodLabel.color }}
+                >
+                  {moodLabel.text}
+                </Text>
+                <Text className="text-xs text-gray-400">•</Text>
+                <Text
+                  className="text-xs font-bold"
+                  style={{ color: moodLabel.color }}
+                >
+                  {averageMood}
+                </Text>
+              </View>
+            )}
+            <Text className="text-xs text-gray-500">
+              {format(selectedDate, "MMM d, yyyy")}
+            </Text>
+          </View>
         </View>
 
         <View className="flex-row justify-between">
