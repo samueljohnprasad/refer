@@ -9,6 +9,7 @@ import { Insert } from "@/types/types";
 import { formateDate_y_m_d } from "../../src/utils/date";
 import { JournalEntry } from "../data/types";
 import { getMoodScore } from "@/src/utils/mood";
+import { useDailyStreak } from "../data/useDailyStreak";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -22,6 +23,8 @@ export const useSaveJournal = () => {
   const [saving, setSaving] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
+  const { logStreakIfNeeded } = useDailyStreak();
+
   const saveJournal = useCallback(
     async (input: JournalEntry): Promise<void> => {
       if (!user?.id) {
@@ -82,6 +85,9 @@ export const useSaveJournal = () => {
           .single();
         if (moodError) throw moodError;
 
+        // Update streak when journal is saved
+        await logStreakIfNeeded();
+
         const formattedDate: string = formateDate_y_m_d(selectedDate);
 
         await queryClient.invalidateQueries({
@@ -99,7 +105,7 @@ export const useSaveJournal = () => {
         setSaving(false);
       }
     },
-    [user?.id, queryClient, selectedDate]
+    [user?.id, queryClient, selectedDate, logStreakIfNeeded]
   );
 
   return { saveJournal, saving };

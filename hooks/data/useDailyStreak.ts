@@ -22,7 +22,7 @@ export const useDailyStreak = () => {
 
     const todayStr: string = formateDate_y_m_d(new Date());
 
-    const lastDateStr = profile?.lastJournalDate
+    const lastDateStr: string | null = profile?.lastJournalDate
       ? formateDate_y_m_d(profile.lastJournalDate)
       : null;
 
@@ -30,33 +30,10 @@ export const useDailyStreak = () => {
       return { updated: false };
     }
 
-    let newCurrent: number = 1;
-    const currentStreak: number = profile?.currentStreak ?? 0;
-    const longestStreak: number = profile?.longestStreak ?? 0;
-
-    // if (lastDateStr) {
-    //   const diffDays: number = dayjs(todayStr).diff(dayjs(lastDateStr), "day");
-    //   if (diffDays === 1) {
-    //     newCurrent = currentStreak + 1;
-    //   } else if (diffDays > 1) {
-    //     newCurrent = 1;
-    //   } else {
-    //     newCurrent = Math.max(currentStreak, 1);
-    //   }
-    // } else {
-    //   newCurrent = 1;
-    // }
-
-    const newLongest: number = Math.max(
-      Math.max(currentStreak, 1),
-      longestStreak
-    );
-
     const { error } = await supabase
       .from("profiles")
       .update({
-        current_streak: newCurrent,
-        longest_streak: newLongest,
+        current_streak: profile?.currentStreak ? profile?.currentStreak + 1 : 1,
         last_journal_date: new Date().toISOString(),
       })
       .eq("id", user.id);
@@ -69,8 +46,8 @@ export const useDailyStreak = () => {
 
     return {
       updated: true,
-      newCurrentStreak: newCurrent,
-      newLongestStreak: newLongest,
+      newCurrentStreak: profile?.currentStreak ? profile?.currentStreak + 1 : 1,
+      newLongestStreak: profile?.longestStreak ? profile?.longestStreak + 1 : 1,
     };
   }, [
     user?.id,
