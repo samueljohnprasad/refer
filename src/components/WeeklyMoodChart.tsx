@@ -875,6 +875,11 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     [effectiveDay]
   );
 
+  // Fetch daily data for the current day (for Day tab average)
+  const { data: dailyData } = useFetchDailyMoods({
+    targetDate: effectiveDayStr,
+  });
+
   // Fetch weekly data
   const {
     data: weeklyData,
@@ -912,10 +917,28 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   const weeklyAvgRounded = clampToMoodScore(weeklyAvg);
   const weeklyAvgLabel: MoodLevel = moodLevelForScore(weeklyAvgRounded);
 
-  // For day view, we show "Average" only for week view (day view doesn't aggregate)
-  const avgRounded = weeklyAvgRounded;
-  const avgLabel = weeklyAvgLabel;
-  const avg = weeklyAvg;
+  // Calculate average for daily view
+  const dailyPoints: DailyChartPoint[] = useMemo(
+    () => buildDailyChartData(dailyData ?? new Map()),
+    [dailyData]
+  );
+
+  const dailyNumericPoints: NumericPoint[] = dailyPoints
+    .map((p, idx) => (p.y !== null ? { x: idx + 1, y: p.y, label: p.x } : null))
+    .filter((p): p is NumericPoint => p !== null);
+
+  const dailyAvg: number =
+    dailyNumericPoints.length > 0
+      ? dailyNumericPoints.reduce((s, p) => s + p.y, 0) /
+        dailyNumericPoints.length
+      : 0;
+  const dailyAvgRounded = clampToMoodScore(dailyAvg);
+  const dailyAvgLabel: MoodLevel = moodLevelForScore(dailyAvgRounded);
+
+  // Use daily average for day view, weekly average for week view
+  const avgRounded = activeTab === "day" ? dailyAvgRounded : weeklyAvgRounded;
+  const avgLabel = activeTab === "day" ? dailyAvgLabel : weeklyAvgLabel;
+  const avg = activeTab === "day" ? dailyAvg : weeklyAvg;
 
   // Determine day view title based on offset
   const getDayTitle = (): string => {
