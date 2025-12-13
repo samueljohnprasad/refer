@@ -14,12 +14,9 @@ interface EraseDataConfirmationModalProps {
   isDeleting?: boolean;
 }
 
-const EraseDataConfirmationModal: React.FC<EraseDataConfirmationModalProps> = ({
-  visible,
-  onClose,
-  onConfirm,
-  isDeleting = false,
-}) => {
+export const EraseDataConfirmationModal: React.FC<
+  EraseDataConfirmationModalProps
+> = ({ visible, onClose, onConfirm, isDeleting = false }) => {
   const sheetRef = useRef<BottomSheetModal>(null);
 
   const handleClose = (): void => {
@@ -140,5 +137,3 @@ const DataItem = ({ text }: { text: string }) => (
     </Text>
   </View>
 );
-
-export default EraseDataConfirmationModal;

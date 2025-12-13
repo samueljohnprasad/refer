@@ -14,12 +14,9 @@ interface SignOutConfirmationModalProps {
   handleClose: () => void;
 }
 
-const SignOutConfirmationModal: React.FC<SignOutConfirmationModalProps> = ({
-  onConfirm,
-  isLoading = false,
-  isSignoutOPen = false,
-  handleClose,
-}) => {
+export const SignOutConfirmationModal: React.FC<
+  SignOutConfirmationModalProps
+> = ({ onConfirm, isLoading = false, isSignoutOPen = false, handleClose }) => {
   const sheetRef = useRef<BottomSheetModal>(null);
   const handleCloseCancel = (): void => {
     if (isLoading) return;
@@ -98,7 +95,3 @@ const SignOutConfirmationModal: React.FC<SignOutConfirmationModalProps> = ({
     </ShortBottomModal>
   );
 };
-
-SignOutConfirmationModal.displayName = "SignOutConfirmationModal";
-
-export default SignOutConfirmationModal;

@@ -32,11 +32,10 @@ const { width } = Dimensions.get("window");
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { LinearGradient } from "expo-linear-gradient";
 import { Host, Button } from "@expo/ui/swift-ui";
-import { clipShape, glassEffect } from "@expo/ui/swift-ui/modifiers";
 import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { usePostHog } from "posthog-react-native";
-import * as Sentry from "@sentry/react-native";
-
+import { UpdateModal } from "@/src/components/modals";
+import { useAppUpdate } from "@/src/hooks/useAppUpdate";
 // Global color palette
 export const PALETTE = {
   purple: "#7B61FF",
@@ -234,6 +233,10 @@ export default function JournalCalendarScreen() {
   const { hasPro } = useRevenueCat();
   const posthog = usePostHog();
 
+  // App update check
+  const { showUpdateModal, currentVersion, latestVersion, hideModal } =
+    useAppUpdate({ autoCheck: true });
+
   const currentStreak = userProfile?.currentStreak ?? 0;
   const nextMilestone = getNextMilestone(currentStreak);
 
@@ -348,6 +351,14 @@ export default function JournalCalendarScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Update Modal */}
+      <UpdateModal
+        isVisible={showUpdateModal}
+        onDismiss={hideModal}
+        currentVersion={currentVersion}
+        latestVersion={latestVersion}
+      />
     </SafeAreaView>
   );
 }

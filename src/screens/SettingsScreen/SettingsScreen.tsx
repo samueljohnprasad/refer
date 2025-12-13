@@ -17,8 +17,10 @@ import {
 } from "@hugeicons/core-free-icons";
 
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
-import EraseDataConfirmationModal from "@/src/components/modals/EraseDataConfirmationModal";
-import SignOutConfirmationModal from "@/src/components/modals/SignOutConfirmationModal";
+import {
+  EraseDataConfirmationModal,
+  SignOutConfirmationModal,
+} from "@/src/components/modals";
 import { PromoCard } from "./components/PromoCard";
 import { SettingsSection } from "./components/SettingsSection";
 import { SettingsItem } from "./components/SettingsItem";
