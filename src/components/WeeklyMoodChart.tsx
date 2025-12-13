@@ -323,6 +323,11 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
             original: point,
           }))}
           size={5}
+          animate={{
+            duration: 800,
+            onLoad: { duration: 2000 },
+            easing: "sinInOut",
+          }}
           style={{
             data: {
               fill: moodScoreToColor(score),
@@ -424,6 +429,11 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
                 labelComponent={<View />}
                 data={numericPoints5.map((p) => ({ x: p.x, y: p.y + 0.5 }))}
                 interpolation="cardinal"
+                animate={{
+                  duration: 800,
+                  onLoad: { duration: 2000 },
+                  easing: "sinInOut",
+                }}
                 style={{
                   data: {
                     stroke: width > 0 ? `url(#${gradientId})` : "#64748B",
@@ -573,6 +583,11 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
             original: point,
           }))}
           size={5}
+          animate={{
+            duration: 800,
+            onLoad: { duration: 2000 },
+            easing: "sinInOut",
+          }}
           style={{
             data: {
               fill: moodScoreToColor(score),
@@ -677,6 +692,11 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
                 labelComponent={<View />}
                 data={numericPoints.map((p) => ({ x: p.x, y: p.y + 0.5 }))}
                 interpolation="cardinal"
+                animate={{
+                  duration: 800,
+                  onLoad: { duration: 2000 },
+                  easing: "sinInOut",
+                }}
                 style={{
                   data: {
                     stroke: width > 0 ? `url(#${gradientId})` : "#64748B",
