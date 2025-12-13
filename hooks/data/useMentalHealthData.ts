@@ -31,7 +31,7 @@ export const useMentalHealthData = (selectedDate: Date) => {
         .eq("user_id", user.id)
         .gte("selected_date", start)
         .lte("selected_date", end)
-        .order("selected_date", { ascending: false });
+        .order("selected_date", { ascending: true });
 
       if (dateColErr) {
         throw dateColErr;
