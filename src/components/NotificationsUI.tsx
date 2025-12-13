@@ -34,7 +34,7 @@ const NotificationsUI: React.FC<NotificationsUIProps> = () => {
   return (
     <View className="flex-1 bg-[#DCF2FF]">
       <ScrollView
-        className="flex-1 px-4 pt-28"
+        className="flex-1 px-4"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 104 }}
       >

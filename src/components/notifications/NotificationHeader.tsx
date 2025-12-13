@@ -7,69 +7,44 @@ import Animated, {
   useSharedValue,
   withDelay,
   withTiming,
-  withSpring,
 } from "react-native-reanimated";
 
 /**
- * Animated header section with Lottie animation and motivational text
+ * Animated header section with motivational text
  */
 export const NotificationHeader: React.FC = () => {
   const headerOpacity = useSharedValue(0);
-  const lottieScale = useSharedValue(0.8);
 
   React.useEffect(() => {
     headerOpacity.value = withDelay(200, withTiming(1, { duration: 800 }));
-    lottieScale.value = withDelay(
-      300,
-      withSpring(1, { damping: 12, stiffness: 80 })
-    );
   }, []);
 
   const headerAnimatedStyle = useAnimatedStyle(() => ({
     opacity: headerOpacity.value,
   }));
 
-  const lottieAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: lottieScale.value }],
-  }));
-
   return (
     <>
-      {/* Lottie Animation */}
-      <Animated.View className="items-center mt-1" style={lottieAnimatedStyle}>
-        {/* <LottieView
-          autoPlay
-          loop
-          style={{
-            width: 120,
-            height: 120,
-          }}
-          source={notification}
-        /> */}
-      </Animated.View>
-
       {/* Header Text */}
-      <Animated.View style={headerAnimatedStyle}>
-        <Text className="text-3xl font-extrabold text-center mt-2 text-gray-900 leading-9">
-          Stay Consistent 🎯
+      <Animated.View style={headerAnimatedStyle} className="mt-4">
+        <Text className="text-center text-4xl font-cormorantSemiBold text-[#1f2937] leading-tight mb-3">
+          Daily Reminders
         </Text>
-        <Text className="text-center text-gray-600 text-base mt-3 leading-6 font-medium">
-          Users who set reminders journal{`\n`}
-          <Text className="text-purple-600 font-extrabold">
-            3x more consistently
-          </Text>
+        <Text className="text-center text-gray-600 text-lg leading-7 font-medium px-4">
+          Set up gentle nudges to help you{"\n"}build a consistent journaling
+          habit
         </Text>
       </Animated.View>
 
       {/* Stats Badge */}
       <Animated.View
         entering={FadeIn.duration(400).delay(400)}
-        className="self-center mt-4 mb-3"
+        className="self-center mt-6 mb-2"
       >
-        <View className="flex-row items-center px-5 py-3 bg-purple-100 rounded-2xl">
-          <Text className="text-xl mr-2">📈</Text>
-          <Text className="text-sm font-bold text-purple-700">
-            87% success rate
+        <View className="flex-row items-center px-6 py-3 bg-purple-50 rounded-full border border-purple-100">
+          <Text className="text-2xl mr-2">⏰</Text>
+          <Text className="text-base font-bold text-purple-700">
+            3x more consistency
           </Text>
         </View>
       </Animated.View>
@@ -77,11 +52,11 @@ export const NotificationHeader: React.FC = () => {
       {/* Usage Info */}
       <Animated.View
         entering={FadeIn.duration(400).delay(600)}
-        className="px-6 mt-2 mb-4"
+        className="px-8 mt-4 mb-6"
       >
-        <Text className="text-center text-gray-500 text-xs leading-5 font-medium">
-          We use notifications to help you build a consistent journaling habit.
-          You'll only receive reminders at the times you schedule.
+        <Text className="text-center text-gray-500 text-sm leading-6 font-medium">
+          Choose the times that work best for you. You can enable or disable
+          reminders anytime.
         </Text>
       </Animated.View>
     </>

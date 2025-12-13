@@ -65,7 +65,7 @@ export const StepInput = React.memo(
         return (
           <Animated.View
             entering={FadeIn.duration(500).delay(100)}
-            className="flex-1"
+            className="flex-1 bg-black"
           >
             <NotificationsUI />
           </Animated.View>

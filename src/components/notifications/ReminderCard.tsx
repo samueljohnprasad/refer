@@ -1,7 +1,15 @@
 import React from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  Sun03Icon,
+  Moon02Icon,
+  SunsetIcon,
+  SleepingIcon,
+  Tick02Icon,
+  Clock04Icon,
+} from "@hugeicons/core-free-icons";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -17,6 +25,14 @@ type ReminderCardProps = {
   isSelected?: boolean;
   onToggle: () => void;
   onEditTime: () => void;
+};
+
+const iconMap: Record<string, any> = {
+  morning: Sun03Icon,
+  afternoon: Sun03Icon,
+  evening: SunsetIcon,
+  night: Moon02Icon,
+  bedtime: SleepingIcon,
 };
 
 /**
@@ -40,22 +56,18 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
       };
     });
 
+    const icon = iconMap[item.id] || Clock04Icon;
+
     return (
       <Pressable
         onPress={onToggle}
         style={{
-          paddingHorizontal: 20,
-          paddingVertical: 18,
-          borderRadius: 20,
-          marginBottom: 14,
-          backgroundColor: isSelected
-            ? colors.bg
-            : "rgba(255, 255, 255, 0.95)",
-          shadowColor: isSelected ? colors.border : "#000",
-          shadowOffset: { width: 0, height: isSelected ? 6 : 2 },
-          shadowOpacity: isSelected ? 0.25 : 0.08,
-          shadowRadius: isSelected ? 16 : 8,
-          elevation: isSelected ? 6 : 2,
+          paddingHorizontal: 24,
+          paddingVertical: 20,
+          borderRadius: 24,
+          marginBottom: 16,
+          backgroundColor: isSelected ? colors.bg : "#FFFFFF",
+          borderColor: isSelected ? colors.border : "#F3F4F6",
         }}
       >
         <View className="flex-row items-center justify-between">
@@ -63,105 +75,87 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
           <View className="flex-row items-center flex-1">
             <View
               style={{
-                width: 48,
-                height: 48,
-                borderRadius: 12,
+                width: 56,
+                height: 56,
+                borderRadius: 16,
                 justifyContent: "center",
                 alignItems: "center",
-                marginRight: 12,
-                backgroundColor: isSelected
-                  ? `${colors.border}30`
-                  : "#F9FAFB",
+                marginRight: 16,
+                backgroundColor: isSelected ? `${colors.border}20` : "#F9FAFB",
               }}
             >
-              {item.iconLib === "fe" ? (
-                <Feather
-                  name={item.icon}
-                  size={24}
-                  color={isSelected ? colors.icon : "#6B7280"}
-                />
-              ) : (
-                <MaterialCommunityIcons
-                  name={item.icon}
-                  size={24}
-                  color={isSelected ? colors.icon : "#6B7280"}
-                />
-              )}
+              <HugeiconsIcon
+                icon={icon}
+                size={28}
+                color={isSelected ? colors.icon : "#6B7280"}
+              />
             </View>
             <View className="flex-1">
               <Text
                 style={{
-                  fontSize: 16,
-                  fontWeight: "700",
-                  marginBottom: 2,
+                  fontSize: 20,
+                  fontFamily: "CormorantSemiBold",
+                  marginBottom: 6,
                   color: isSelected ? colors.text : "#1F2937",
                 }}
               >
                 {item.title}
               </Text>
+              <Pressable
+                onPress={onEditTime}
+                className="flex-row items-center active:opacity-70"
+                style={{
+                  alignSelf: "flex-start",
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  backgroundColor: isSelected
+                    ? `${colors.border}15`
+                    : "#F3F4F6",
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: isSelected ? `${colors.border}30` : "#E5E7EB",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: isSelected ? colors.text : "#4B5563",
+                    fontWeight: "700",
+                    letterSpacing: 0.3,
+                  }}
+                >
+                  {dayjs().hour(item.hour).minute(item.minute).format("h:mm A")}
+                </Text>
+              </Pressable>
             </View>
           </View>
 
-          {/* Right side - Time and Toggle */}
-          <View className="flex-row items-center">
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                borderRadius: 12,
-                paddingVertical: 10,
-                paddingHorizontal: 14,
-                marginRight: 12,
-                backgroundColor: isSelected
-                  ? `${colors.border}25`
-                  : "#F3F4F6",
-              }}
-              onPress={onEditTime}
-            >
-              <Feather
-                name="clock"
-                size={14}
-                color="#9CA3AF"
-                style={{ marginRight: 6 }}
-              />
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "700",
-                  letterSpacing: 0.2,
-                  color: isSelected ? colors.text : "#4B5563",
-                }}
+          {/* Right side - Toggle */}
+          <Pressable
+            onPress={onToggle}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: isSelected }}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 14,
+              borderWidth: 2,
+              alignItems: "center",
+              justifyContent: "center",
+              borderColor: isSelected ? colors.border : "#D1D5DB",
+              backgroundColor: isSelected ? colors.border : "#FFFFFF",
+            }}
+            accessibilityLabel={`${item.title} reminder`}
+          >
+            {isSelected && (
+              <Animated.View
+                style={toggleAnimatedStyle}
+                className="items-center justify-center"
               >
-                {dayjs().hour(item.hour).minute(item.minute).format("h:mm A")}
-              </Text>
-            </Pressable>
-
-            <Pressable
-              onPress={onToggle}
-              accessibilityRole="checkbox"
-              accessibilityState={{ checked: isSelected }}
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 16,
-                borderWidth: 2,
-                alignItems: "center",
-                justifyContent: "center",
-                borderColor: isSelected ? colors.border : "#D1D5DB",
-                backgroundColor: isSelected ? colors.border : "#FFFFFF",
-              }}
-              accessibilityLabel={`${item.title} reminder`}
-            >
-              {isSelected && (
-                <Animated.View
-                  style={toggleAnimatedStyle}
-                  className="items-center justify-center"
-                >
-                  <Feather name="check" size={16} color="white" strokeWidth={3} />
-                </Animated.View>
-              )}
-            </Pressable>
-          </View>
+                <HugeiconsIcon icon={Tick02Icon} size={14} color="white" />
+              </Animated.View>
+            )}
+          </Pressable>
         </View>
       </Pressable>
     );
