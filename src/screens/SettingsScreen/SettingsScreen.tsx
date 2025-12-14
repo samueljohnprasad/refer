@@ -70,7 +70,7 @@ export default React.memo(function SettingsScreen() {
   const { scrollY, upgradeY, setUpgradeY } = useSettingsAnimation();
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F6F4FF]">
+    <View className="flex-1 bg-[#F6F4FF]">
       <Stack.Screen
         options={{
           headerShown: true,
@@ -86,7 +86,6 @@ export default React.memo(function SettingsScreen() {
           contentContainerClassName="flex-grow px-4"
           contentContainerStyle={{
             paddingTop: headerHeight,
-            paddingBottom: 24,
           }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
@@ -245,6 +244,6 @@ export default React.memo(function SettingsScreen() {
         onConfirm={signOut}
         isLoading={isSigningOut}
       />
-    </SafeAreaView>
+    </View>
   );
 });
