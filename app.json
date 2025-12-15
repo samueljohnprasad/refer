@@ -20,9 +20,7 @@
       "usesAppleSignIn": true,
       "bundleIdentifier": "com.samuelprasad.happy",
       "entitlements": {
-        "com.apple.security.application-groups": [
-          "group.samuelprasad.happy"
-        ]
+        "com.apple.security.application-groups": ["group.samuelprasad.happy"]
       },
       "infoPlist": {
         "NSMicrophoneUsageDescription": "The app needs access to the microphone to record your voice for journal entries. For example, this allows you to speak your thoughts and save them as audio reflections in your daily journal.",

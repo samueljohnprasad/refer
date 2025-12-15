@@ -113,7 +113,7 @@ const DayCell = React.memo<DayCellProps>(
           <Text className={textClassName}>{dayLabel}</Text>
           {showMoodBadge && (
             <View className={moodClassName}>
-              <MoodBadge disabled={disabled} moodscore={mood} size={16} />
+              <MoodBadge disabled={disabled} moodscore={Math.round(mood || 0)} size={16} />
             </View>
           )}
         </View>

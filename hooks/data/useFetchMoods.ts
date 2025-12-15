@@ -30,19 +30,30 @@ async function fetchMoodsInRange({
     .select("day, mood_avg")
     .eq("user_id", userId)
     .gte("day", startDate)
-    .lt("day", endDate)
+    .lte("day", endDate)
     .order("day", { ascending: true });
   if (error || !data) {
     return moodMap;
   }
 
-  const moodMapData = data.reduce((acc, mood) => {
-    const localDate = dayjs(mood.day).format(ISO_DATE_FORMAT);
-    acc.set(localDate, Math.round(mood.mood_avg));
-    return acc;
-  }, moodMap);
+  const dailyTotals = new Map<string, { sum: number; count: number }>();
 
-  return moodMapData;
+  data.forEach((mood) => {
+    const localDate = dayjs(mood.day).format(ISO_DATE_FORMAT);
+    const current = dailyTotals.get(localDate) || { sum: 0, count: 0 };
+    dailyTotals.set(localDate, {
+      sum: current.sum + mood.mood_avg,
+      count: current.count + 1,
+    });
+  });
+
+  dailyTotals.forEach((value, date) => {
+    const avg = value.sum / value.count;
+    const roundedAvg = Number(avg.toFixed(1));
+    moodMap.set(date, roundedAvg);
+  });
+
+  return moodMap;
 }
 
 interface FetchMoodsParams {

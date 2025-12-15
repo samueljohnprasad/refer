@@ -84,9 +84,7 @@ const DailyNotesHeader = React.memo(
     });
     const insets = useSafeAreaInsets();
 
-    const { data: moodMap } = useFetchMoodsMonthly();
-
-    // Vertical expand/collapse for inline calendar (Reanimated on UI thread)
+    const { data: moodMap } = useFetchMoodsMonthly();    // Vertical expand/collapse for inline calendar (Reanimated on UI thread)
     const { progress, isExpanded, expand, collapse, toggle, gesture } =
       useCalendarExpandReanimated({
         expandedHeight: CALENDAR_EXPANDED_HEIGHT,
@@ -346,7 +344,7 @@ const DailyNotesHeader = React.memo(
                     <View className="flex-1 items-center mb-1">
                       <MoodBadge
                         disabled={dayData.disabled}
-                        moodscore={dayData.mood}
+                        moodscore={Math.round(dayData.mood || 0)}
                         active={dayData.isSelectedDay}
                         size={24}
                         onPress={() => onEmojiPress(dayData.day, dayData.mood)}

@@ -11,8 +11,11 @@ import {
   Mic01Icon,
   Notebook02Icon,
 } from "@hugeicons/core-free-icons";
+import { useWidgetWeekMoods } from "@/hooks/data/useWidgetWeekMoods";
 
 export default function TabLayout() {
+  useWidgetWeekMoods();
+
   // Design system colors
   const accentColor = "#7B61FF"; // brand purple
   const inactiveColor = "#94A3B8"; // slate-400-ish

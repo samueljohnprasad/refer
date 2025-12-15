@@ -10,26 +10,30 @@ struct Emotion {
     let count: Int
 }
 
+
+
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emotionCounts: [:])
+        SimpleEntry(date: Date(), emotionCounts: [:], weeklyMoodData: [:])
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
         let counts = fetchEmotionCounts()
-        let entry = SimpleEntry(date: Date(), emotionCounts: counts)
+        let weeklyData = fetchWeeklyMoodData()
+        let entry = SimpleEntry(date: Date(), emotionCounts: counts, weeklyMoodData: weeklyData)
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {
         let counts = fetchEmotionCounts()
+        let weeklyData = fetchWeeklyMoodData()
         var entries: [SimpleEntry] = []
 
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emotionCounts: counts)
+            let entry = SimpleEntry(date: entryDate, emotionCounts: counts, weeklyMoodData: weeklyData)
             entries.append(entry)
         }
 
@@ -45,11 +49,21 @@ struct Provider: TimelineProvider {
               .flatMap { try? JSONDecoder().decode([String: Int].self, from: $0) }
       ) ?? [:]
   }
+    
+  func fetchWeeklyMoodData() -> [String: Int] {
+      let defaults = UserDefaults(suiteName: "group.samuelprasad.happy")
+      return (
+          defaults?
+              .data(forKey: "weeklyMoodData")
+              .flatMap { try? JSONDecoder().decode([String: Int].self, from: $0) }
+      ) ?? [:]
+  }
 }
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let emotionCounts: [String: Int]
+    let weeklyMoodData: [String: Int]
 }
 
 struct EmotionItemView: View {
@@ -59,8 +73,8 @@ struct EmotionItemView: View {
         VStack(spacing: 6) {
             ZStack {
                 Circle()
-                    .fill(emotion.bgColor)
-                    .frame(width: 44, height: 44)
+                .fill(emotion.bgColor)
+                .frame(width: 44, height: 44)
                 
                 // Ensure these images are added to your Widget Target's Assets.xcassets
                 Image(emotion.imageName)
@@ -171,6 +185,165 @@ struct widgetEntryView : View {
     }
 }
 
+// MARK: - Weekly Mood Line Graph Widget View
+struct WeeklyMoodLineGraphView: View {
+    var entry: Provider.Entry
+    let chartHeight: CGFloat = 100
+    
+    var weekDays: [String] {
+        return ["SU", "MO", "TU", "WE", "TH", "FR", "SA"]
+    }
+    
+    var moodScores: [Int] {
+        // Build array from dictionary, index 0-6 corresponds to Sun-Sat
+        return (0..<7).map { index in
+            entry.weeklyMoodData[String(index)] ?? 0
+        }
+    }
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: 8) {
+                // Chart Area
+                ZStack(alignment: .bottomLeading) {
+                    // 5 Horizontal grid lines
+                    VStack(spacing: 0) {
+                        ForEach(0..<5) { i in
+                            Divider()
+                                .background(Color.gray.opacity(0.2))
+                            if i < 4 {
+                                Spacer()
+                            }
+                        }
+                    }
+                    .frame(height: chartHeight)
+                    
+                    // Line graph with Canvas
+                    Canvas { context, size in
+                        let points = calculatePoints(size: size)
+                        
+                        // Draw connecting lines between consecutive non-nil points
+                        var lastPoint: CGPoint? = nil
+                        for i in 0..<points.count {
+                            if let point = points[i] {
+                                if let last = lastPoint {
+                                    var path = Path()
+                                    path.move(to: last)
+                                    path.addLine(to: point)
+                                    
+                                    context.stroke(path, with: .color(Color.gray.opacity(0.3)), lineWidth: 1.5)
+                                }
+                                lastPoint = point
+                            }
+                        }
+                        
+                        // Draw colored dots
+                        for (index, point) in points.enumerated() {
+                            if let pt = point {
+                                let score = moodScores[index]
+                                let dotColor = getMoodColor(score)
+                                context.fill(
+                                    Circle().path(in: CGRect(x: pt.x - 4, y: pt.y - 4, width: 8, height: 8)),
+                                    with: .color(dotColor)
+                                )
+                            }
+                        }
+                    }
+                    .frame(height: chartHeight)
+                }
+                .frame(height: chartHeight)
+                .padding(.leading, 12)
+                
+                // Mood Legend - 5 emotion images aligned exactly on the 5 lines
+                VStack(spacing: 0) {
+                    MoodImageLegend(imageName: "great")
+                    Spacer()
+                    MoodImageLegend(imageName: "good")
+                    Spacer()
+                    MoodImageLegend(imageName: "fine")
+                    Spacer()
+                    MoodImageLegend(imageName: "bad")
+                    Spacer()
+                    MoodImageLegend(imageName: "terrible")
+                }
+                .frame(height: chartHeight)
+                .padding(.trailing, 8)
+            }
+            
+            // Day labels below the chart
+            HStack(spacing: 0) {
+                ForEach(0..<7, id: \.self) { index in
+                    Text(weekDays[index])
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundColor(Color.gray.opacity(0.6))
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .padding(.leading, 12)
+            .padding(.trailing, 28) // Account for legend width
+        }
+        .padding(.vertical, 12)
+        .padding(.horizontal, 8)
+        .background(Color.white)
+    }
+    
+    func calculatePoints(size: CGSize) -> [CGPoint?] {
+        return moodScores.enumerated().map { index, score in
+            guard score > 0 else { return nil }
+            return calculatePoint(index: index, score: score, size: size)
+        }
+    }
+    
+    func calculatePoint(index: Int, score: Int, size: CGSize) -> CGPoint {
+        let spacing = size.width / 7
+        let x = CGFloat(index) * spacing + spacing / 2
+        
+        // Map score (1-5) to Y position - aligned exactly on the 5 horizontal lines
+        // Score 5 (great) -> Line 1 at 0% (top)
+        // Score 4 (good) -> Line 2 at 25%
+        // Score 3 (okay) -> Line 3 at 50% (middle)
+        // Score 2 (bad) -> Line 4 at 75%
+        // Score 1 (terrible) -> Line 5 at 100% (bottom)
+        
+        let positions: [Int: CGFloat] = [
+            5: 0.0,   // great - top line
+            4: 0.25,  // good - 2nd line
+            3: 0.5,   // okay - middle line
+            2: 0.75,  // bad - 4th line
+            1: 1.0    // terrible - bottom line
+        ]
+        
+        let clampedScore = max(1, min(5, score))
+        let y = (positions[clampedScore] ?? 0.5) * size.height
+        return CGPoint(x: x, y: y)
+    }
+    
+    func getMoodColor(_ score: Int) -> Color {
+        switch score {
+        case 1: return Color(hex: "FF6B6B")   // terrible
+        case 2: return Color(hex: "FFA94D")   // bad
+        case 3: return Color(hex: "FFD43B")   // fine
+        case 4: return Color(hex: "69DB7C")   // good
+        case 5: return Color(hex: "74C0FC")   // great
+        default: return Color(hex: "FFD43B") // default to fine
+        }
+    }
+}
+
+struct MoodImageLegend: View {
+    let imageName: String
+    
+    var body: some View {
+        Image(imageName)
+            .resizable()
+            .scaledToFit()
+            .frame(width: 16, height: 16)
+    }
+}
+
+
+
+
 struct widget: Widget {
     let kind: String = "widget"
 
@@ -182,6 +355,21 @@ struct widget: Widget {
         .supportedFamilies([.systemMedium])
         .configurationDisplayName("Mood Logger")
         .description("Log your daily mood.")
+    }
+}
+
+// Weekly Mood Line Graph Widget
+struct WeeklyMoodTrendWidget: Widget {
+    let kind: String = "WeeklyMoodTrendWidget"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
+            WeeklyMoodLineGraphView(entry: entry)
+                .containerBackground(.white, for: .widget)
+        }
+        .supportedFamilies([.systemMedium])
+        .configurationDisplayName("Weekly Mood Trend")
+        .description("Track your weekly mood patterns with a line graph.")
     }
 }
 
@@ -212,8 +400,18 @@ extension Color {
     }
 }
 
-#Preview(as: .systemMedium) {
+#Preview("Mood Logger", as: .systemMedium) {
     widget()
 } timeline: {
-    SimpleEntry(date: .now, emotionCounts: Provider().fetchEmotionCounts())
+    SimpleEntry(date: .now, emotionCounts: Provider().fetchEmotionCounts(), weeklyMoodData: [:])
+}
+
+#Preview("Weekly Line Graph", as: .systemMedium) {
+    WeeklyMoodTrendWidget()
+} timeline: {
+    SimpleEntry(
+        date: .now,
+        emotionCounts: [:],
+        weeklyMoodData: Provider().fetchWeeklyMoodData()
+    )
 }

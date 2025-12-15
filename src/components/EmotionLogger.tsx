@@ -177,7 +177,6 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
       },
       [isLoggingEmotion, logEmotionToSupabase, onEmotionLogged]
     );
-
     return (
       <View className="bg-white rounded-2xl p-4 border border-gray-100">
         <View className="flex-row items-center justify-between mb-3">
