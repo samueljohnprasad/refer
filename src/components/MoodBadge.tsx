@@ -36,10 +36,6 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
     const moodEmoji = moodscore
       ? moodEmojiMap[moodscore as keyof typeof moodEmojiMap]
       : null;
-    const bgColor =
-      typeof moodscore === "number"
-        ? moodScoreToPale(clampToMoodScore(moodscore))
-        : "rgba(0,0,0,0.06)";
     return (
       <PressableOpacity
         style={{ width: diameter, height: diameter }}
@@ -54,7 +50,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
               borderRadius: radius,
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: bgColor,
+              backgroundColor: "#0000000F",
             }}
             className={`${disabled ? "opacity-30" : ""}`}
           >
@@ -71,11 +67,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
                 progressiveRenderingEnabled={true}
               />
             )}
-            {!moodEmoji && (
-              <Text className="color-slate-700" style={{ color: "#334155" }}>
-                +
-              </Text>
-            )}
+            {!moodEmoji && <Text className="color-slate-700">+</Text>}
           </View>
         </Animated.View>
       </PressableOpacity>

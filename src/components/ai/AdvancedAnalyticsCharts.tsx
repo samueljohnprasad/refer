@@ -1,7 +1,9 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Pressable } from "react-native";
+import { Text } from "@/components/ui/text";
 import { LinearGradient } from "expo-linear-gradient";
-import { Feather } from "@expo/vector-icons";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { ChartHistogramIcon, StarIcon } from "@hugeicons/core-free-icons";
 import { subWeeks } from "date-fns";
 import type { WeeklySummary } from "@/src/network/genAi";
 import { EmotionRadarChart } from "@/src/components/charts/EmotionRadarChart";
@@ -35,12 +37,28 @@ export const AdvancedAnalyticsCharts: React.FC<
       {/* Header with Premium Badge */}
       {showTitle && (
         <View className="flex-row justify-between items-center mb-5">
-          <Text className="text-[22px] font-extrabold text-[#0F172A] tracking-wide">
-            📊 Advanced Analytics
-          </Text>
+          <View className="flex-row items-center gap-2">
+            <View className="w-8 h-8 rounded-full bg-purple-50 items-center justify-center">
+              <HugeiconsIcon
+                icon={ChartHistogramIcon}
+                size={18}
+                color="#7B61FF"
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 22,
+                fontFamily: "CormorantSemiBold",
+                color: "#1f2937",
+                letterSpacing: -0.5,
+              }}
+            >
+              Advanced Analytics
+            </Text>
+          </View>
           {showPremiumBadge && (
-            <TouchableOpacity
-              className="rounded-xl overflow-hidden shadow-md"
+            <Pressable
+              className="rounded-xl overflow-hidden active:opacity-80"
               onPress={onPremiumPress}
             >
               <LinearGradient
@@ -48,18 +66,24 @@ export const AdvancedAnalyticsCharts: React.FC<
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
-                  gap: 8,
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  gap: 6,
                   flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                <Feather name="star" size={14} color="#FFF" />
+                <HugeiconsIcon
+                  icon={StarIcon}
+                  size={14}
+                  color="#FFF"
+                  fill="#FFF"
+                />
                 <Text className="text-xs font-extrabold text-white tracking-widest">
                   PREMIUM
                 </Text>
               </LinearGradient>
-            </TouchableOpacity>
+            </Pressable>
           )}
         </View>
       )}

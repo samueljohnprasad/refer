@@ -1,6 +1,12 @@
 import React from "react";
-import { View, Text, ActivityIndicator } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { View, ActivityIndicator } from "react-native";
+import { Text } from "@/components/ui/text";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  Target03Icon,
+  Leaf01Icon,
+  InformationCircleIcon,
+} from "@hugeicons/core-free-icons";
 import type {
   AIRecommendation,
   WeeklySummary,
@@ -149,9 +155,21 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
       {/* Recommendations */}
       {!!recommendations.length && (
         <View className="mb-6">
-          <Text className="text-xl font-bold text-slate-900 mb-4">
-            🎯 Personalized Recommendations
-          </Text>
+          <View className="flex-row items-center gap-2 mb-4">
+            <View className="w-8 h-8 rounded-full bg-purple-50 items-center justify-center">
+              <HugeiconsIcon icon={Target03Icon} size={18} color="#7B61FF" />
+            </View>
+            <Text
+              style={{
+                fontSize: 22,
+                fontFamily: "CormorantSemiBold",
+                color: "#1f2937",
+                letterSpacing: -0.5,
+              }}
+            >
+              Personalized Recommendations
+            </Text>
+          </View>
           {recommendations.map((rec, index) => (
             <View
               key={index}
@@ -201,9 +219,21 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
       {/* Growth Insights */}
       {growthInsights && growthInsights.length > 0 && (
         <View className="mb-6">
-          <Text className="text-xl font-bold text-slate-900 mb-4">
-            🌱 Deep Growth Insights
-          </Text>
+          <View className="flex-row items-center gap-2 mb-4">
+            <View className="w-8 h-8 rounded-full bg-green-50 items-center justify-center">
+              <HugeiconsIcon icon={Leaf01Icon} size={18} color="#10B981" />
+            </View>
+            <Text
+              style={{
+                fontSize: 22,
+                fontFamily: "CormorantSemiBold",
+                color: "#1f2937",
+                letterSpacing: -0.5,
+              }}
+            >
+              Deep Growth Insights
+            </Text>
+          </View>
           {growthInsights.map((insight, index) => (
             <View
               key={index}
@@ -246,14 +276,15 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
                 ))}
               </View>
 
-              <View className="flex-row items-start bg-yellow-50 rounded-lg p-3 gap-2">
-                <Feather
-                  name="info"
-                  size={18}
-                  color="#F59E0B"
-                  className="mt-0.5"
-                />
-                <Text className="flex-1 text-xs text-slate-900 leading-5">
+              <View className="flex-row items-start bg-purple-50 rounded-lg p-3 gap-2 border border-purple-100">
+                <View className="w-5 h-5 rounded-full bg-purple-100 items-center justify-center mt-0.5">
+                  <HugeiconsIcon
+                    icon={InformationCircleIcon}
+                    size={14}
+                    color="#7B61FF"
+                  />
+                </View>
+                <Text className="flex-1 text-xs text-slate-900 leading-5 font-medium">
                   {insight.suggestion}
                 </Text>
               </View>

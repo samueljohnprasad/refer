@@ -70,6 +70,15 @@ export default function AppLayout() {
           animation: "fade",
         }}
       />
+      <Stack.Screen
+        name="screens/calorie-tracker"
+        options={{
+          headerShown: false,
+          title: "Calorie Tracker",
+          freezeOnBlur: true,
+          animation: "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }

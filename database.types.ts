@@ -61,6 +61,57 @@ export type Database = {
           },
         ]
       }
+      calorie_entries: {
+        Row: {
+          created_at: string
+          foods: Json
+          health_score: number | null
+          id: string
+          image_url: string | null
+          meal_type: string
+          selected_date: string
+          suggestions: string[] | null
+          total_calories: number
+          total_carbs: number
+          total_fat: number
+          total_fiber: number
+          total_protein: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          foods?: Json
+          health_score?: number | null
+          id?: string
+          image_url?: string | null
+          meal_type: string
+          selected_date?: string
+          suggestions?: string[] | null
+          total_calories?: number
+          total_carbs?: number
+          total_fat?: number
+          total_fiber?: number
+          total_protein?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          foods?: Json
+          health_score?: number | null
+          id?: string
+          image_url?: string | null
+          meal_type?: string
+          selected_date?: string
+          suggestions?: string[] | null
+          total_calories?: number
+          total_carbs?: number
+          total_fat?: number
+          total_fiber?: number
+          total_protein?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_moods: {
         Row: {
           day: string

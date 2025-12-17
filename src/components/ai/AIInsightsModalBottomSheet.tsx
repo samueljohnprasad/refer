@@ -1,18 +1,14 @@
 import React, { forwardRef, useMemo } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
+import { View, Pressable } from "react-native";
 import {
   BottomSheetModal,
   BottomSheetScrollView,
   BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
 import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
-import { Feather } from "@expo/vector-icons";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Cancel01Icon, SparklesIcon } from "@hugeicons/core-free-icons";
+import { Text } from "@/components/ui/text";
 import SuspensLoader from "@/src/components/SuspensLoader";
 
 // Lazy load heavy component
@@ -54,32 +50,58 @@ export const AIInsightsModalBottomSheet = forwardRef<
       snapPoints={snapPoints}
       enablePanDownToClose={true}
       onDismiss={onClose}
-      backgroundStyle={styles.bottomSheetBackground}
-      handleIndicatorStyle={styles.handleIndicator}
+      backgroundStyle={{
+        backgroundColor: "#FFFFFF",
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+      }}
+      handleIndicatorStyle={{
+        backgroundColor: "#D1D5DB",
+        width: 40,
+        height: 5,
+      }}
       backdropComponent={renderBackdrop}
     >
       {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Text style={styles.title}>✨ AI Weekly Insights</Text>
-          <Text style={styles.subtitle}>
-            {weekStart} - {weekEnd}
-          </Text>
+      <View className="flex-row justify-between items-start px-5 pb-4 pt-2 border-b border-gray-100">
+        <View className="flex-1 flex-row items-center gap-2">
+          <View className="w-10 h-10 rounded-full bg-purple-50 items-center justify-center">
+            <HugeiconsIcon icon={SparklesIcon} size={20} color="#7B61FF" />
+          </View>
+          <View className="flex-1">
+            <Text
+              style={{
+                fontSize: 24,
+                fontFamily: "CormorantSemiBold",
+                color: "#1f2937",
+                letterSpacing: -0.5,
+              }}
+            >
+              AI Weekly Insights
+            </Text>
+            <Text className="text-sm text-gray-500 font-medium mt-0.5">
+              {weekStart} - {weekEnd}
+            </Text>
+          </View>
         </View>
-        <TouchableOpacity
-          style={styles.closeButton}
+        <Pressable
           onPress={onClose}
+          className="p-2 rounded-full active:bg-gray-100"
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Feather name="x" size={24} color="#6B7280" />
-        </TouchableOpacity>
+          <HugeiconsIcon icon={Cancel01Icon} size={24} color="#6B7280" />
+        </Pressable>
       </View>
 
       {/* Content */}
       <BottomSheetScrollView
-        style={styles.content}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: 20,
+          paddingBottom: 100,
+          minHeight: 600,
+        }}
       >
         <SuspensLoader>
           <WeekyScreenAIWrapper />
@@ -90,52 +112,3 @@ export const AIInsightsModalBottomSheet = forwardRef<
 });
 
 AIInsightsModalBottomSheet.displayName = "AIInsightsModalBottomSheet";
-
-const styles = StyleSheet.create({
-  bottomSheetBackground: {
-    backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-  },
-  handleIndicator: {
-    backgroundColor: "#D1D5DB",
-    width: 40,
-    height: 5,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-    paddingTop: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
-  },
-  headerContent: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#0F172A",
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#6B7280",
-    fontWeight: "500",
-  },
-  closeButton: {
-    padding: 4,
-  },
-  content: {
-    // Remove flex: 1 for BottomSheetScrollView
-  },
-  contentContainer: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 100,
-    minHeight: 600,
-  },
-});

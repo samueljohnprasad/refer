@@ -24,6 +24,8 @@
       },
       "infoPlist": {
         "NSMicrophoneUsageDescription": "The app needs access to the microphone to record your voice for journal entries. For example, this allows you to speak your thoughts and save them as audio reflections in your daily journal.",
+        "NSPhotoLibraryUsageDescription": "The app needs access to your photo library to select food photos for calorie tracking. This helps you log your meals by analyzing photos of your food.",
+        "NSCameraUsageDescription": "The app needs access to the camera to take photos of your food for calorie tracking. This allows the AI to analyze your meals and calculate nutritional information.",
         "NSUserNotificationUsageDescription": "The app sends notifications to remind you to record your daily voice journal entries.",
         "ITSAppUsesNonExemptEncryption": false,
         "UIBackgroundModes": []
