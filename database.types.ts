@@ -75,6 +75,7 @@ export type Database = {
           total_carbs: number
           total_fat: number
           total_fiber: number
+          total_micronutrients: Json | null
           total_protein: number
           user_id: string
         }
@@ -91,6 +92,7 @@ export type Database = {
           total_carbs?: number
           total_fat?: number
           total_fiber?: number
+          total_micronutrients?: Json | null
           total_protein?: number
           user_id: string
         }
@@ -107,6 +109,7 @@ export type Database = {
           total_carbs?: number
           total_fat?: number
           total_fiber?: number
+          total_micronutrients?: Json | null
           total_protein?: number
           user_id?: string
         }

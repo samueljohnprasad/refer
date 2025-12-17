@@ -1,9 +1,18 @@
 import { GoogleGenAI } from "@google/genai";
 import { File } from "expo-file-system";
+import { getAllMicronutrientNames } from "@/src/config/micronutrients";
 
 const ai = new GoogleGenAI({
   apiKey: "AIzaSyBKfv2gvLQIyHatEFiAjNSm1p1jmXepCSY",
 });
+
+/**
+ * Micronutrients stored as key-value pairs
+ * Key: micronutrient name (e.g., "zinc", "vitaminD3")
+ * Value: amount in appropriate unit (mg, mcg, etc.)
+ * This allows adding new micronutrients without changing the type
+ */
+export type Micronutrients = Record<string, number>;
 
 export interface FoodItem {
   name: string;
@@ -14,6 +23,7 @@ export interface FoodItem {
   fiber: number;
   servingSize: string;
   confidence: number;
+  micronutrients?: Micronutrients;
 }
 
 export interface CalorieAnalysisResult {
@@ -26,7 +36,9 @@ export interface CalorieAnalysisResult {
   totalFiber: number;
   mealType: "breakfast" | "lunch" | "dinner" | "snack";
   healthScore: number;
+  healthScoreReasoning: string; // Justification for the health score
   suggestions: string[];
+  totalMicronutrients?: Micronutrients;
   error?: string;
 }
 
@@ -46,6 +58,9 @@ export const analyzeCaloriesFromImage = async (
       ? "image/png"
       : "image/jpeg";
 
+    // Get dynamic list of micronutrients to track
+    const micronutrientNames = getAllMicronutrientNames().join(", ");
+
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: [
@@ -59,17 +74,20 @@ export const analyzeCaloriesFromImage = async (
               },
             },
             {
-              text: `Analyze this food image and provide detailed nutritional information.
+              text: `Analyze this food image and provide detailed nutritional information including micronutrients.
 
 IMPORTANT INSTRUCTIONS:
 1. Identify ALL food items visible in the image
-2. For each item, estimate calories and macronutrients based on typical serving sizes
-3. If you cannot identify the food, still provide your best estimate
-4. Determine the most likely meal type based on the foods
-5. Provide a health score (1-100) based on nutritional balance
-6. Give 2-3 brief health suggestions
+2. For each item, estimate calories, macronutrients, AND micronutrients based on typical serving sizes  
+3. Include estimated micronutrients: ${micronutrientNames}
+4. Store micronutrients as a key-value object where key is the nutrient ID (e.g., "zinc", "vitaminD3") and value is the amount
+5. If you cannot identify the food, still provide your best estimate
+6. Determine the most likely meal type based on the foods
+7. Provide a health score (1-100) based on nutritional balance
+8. Provide detailed reasoning for the health score (2-3 sentences explaining why this score was given, mentioning specific nutritional strengths and weaknesses)
+9. Give 2-3 brief health suggestions
 
-Be as accurate as possible with calorie estimates. Consider portion sizes visible in the image.`,
+Be as accurate as possible with all nutrient estimates. Consider portion sizes visible in the image.`,
             },
           ],
         },
@@ -96,6 +114,10 @@ Be as accurate as possible with calorie estimates. Consider portion sizes visibl
                     type: "number",
                     minimum: 0,
                     maximum: 100,
+                  },
+                  micronutrients: {
+                    type: "object",
+                    additionalProperties: { type: "number" },
                   },
                 },
                 required: [
@@ -124,10 +146,17 @@ Be as accurate as possible with calorie estimates. Consider portion sizes visibl
               minimum: 1,
               maximum: 100,
             },
+            healthScoreReasoning: {
+              type: "string",
+            },
             suggestions: {
               type: "array",
               items: { type: "string" },
               maxItems: 3,
+            },
+            totalMicronutrients: {
+              type: "object",
+              additionalProperties: { type: "number" },
             },
           },
           required: [
@@ -140,6 +169,7 @@ Be as accurate as possible with calorie estimates. Consider portion sizes visibl
             "totalFiber",
             "mealType",
             "healthScore",
+            "healthScoreReasoning",
             "suggestions",
           ],
         },
@@ -157,6 +187,7 @@ Be as accurate as possible with calorie estimates. Consider portion sizes visibl
         totalFiber: 0,
         mealType: "snack",
         healthScore: 0,
+        healthScoreReasoning: "",
         suggestions: [],
         error: "Failed to analyze image",
       };
@@ -179,6 +210,7 @@ Be as accurate as possible with calorie estimates. Consider portion sizes visibl
       totalFiber: 0,
       mealType: "snack",
       healthScore: 0,
+      healthScoreReasoning: "",
       suggestions: [],
       error: error instanceof Error ? error.message : "Unknown error occurred",
     };

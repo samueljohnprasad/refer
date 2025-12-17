@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Modal,
 } from "react-native";
 import { Image } from "@/components/ui/image";
 import { VStack } from "@/components/ui/vstack";
@@ -25,6 +26,9 @@ import {
   Image01Icon,
   Delete01Icon,
   ArrowLeft01Icon,
+  InformationCircleIcon,
+  Cancel01Icon,
+  Settings02Icon,
 } from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
 
@@ -49,6 +53,11 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] =
     useState<CalorieAnalysisResult | null>(null);
+  const [showHealthScoreModal, setShowHealthScoreModal] = useState(false);
+  const [selectedHealthScore, setSelectedHealthScore] = useState<{
+    score: number;
+    reasoning: string;
+  } | null>(null);
 
   const {
     calorieEntries,
@@ -162,17 +171,75 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
   // Render calorie entry card
   const renderCalorieEntry = (entry: CalorieEntry): React.ReactNode => {
     const colors = MealTypeColors[entry.meal_type] || MealTypeColors.snack;
+    const healthScore = entry.health_score || 0;
+    const healthScoreReasoning = entry.health_score_reasoning || "";
+
+    // Health score color
+    const getHealthScoreColor = (score: number) => {
+      if (score >= 80)
+        return {
+          bg: "bg-green-100",
+          text: "text-green-700",
+          border: "border-green-200",
+        };
+      if (score >= 60)
+        return {
+          bg: "bg-yellow-100",
+          text: "text-yellow-700",
+          border: "border-yellow-200",
+        };
+      return {
+        bg: "bg-red-100",
+        text: "text-red-700",
+        border: "border-red-200",
+      };
+    };
+
+    const healthColors = getHealthScoreColor(healthScore);
+
+    const showHealthScoreInfo = () => {
+      setSelectedHealthScore({
+        score: healthScore,
+        reasoning: healthScoreReasoning,
+      });
+      setShowHealthScoreModal(true);
+    };
+
     return (
       <View
         key={entry.id}
         className="bg-white rounded-2xl p-4 mb-3 border border-gray-100"
       >
         <HStack className="justify-between items-center mb-3">
-          <View className={`px-3 py-1 rounded-full ${colors.bg}`}>
-            <Text className={`text-sm font-medium capitalize ${colors.text}`}>
-              {entry.meal_type}
-            </Text>
-          </View>
+          <HStack space="sm" className="items-center">
+            <View className={`px-3 py-1 rounded-full ${colors.bg}`}>
+              <Text className={`text-sm font-medium capitalize ${colors.text}`}>
+                {entry.meal_type}
+              </Text>
+            </View>
+            {healthScore > 0 && (
+              <TouchableOpacity
+                onPress={showHealthScoreInfo}
+                className={`px-2.5 py-1 rounded-full border ${healthColors.bg} ${healthColors.border} flex-row items-center gap-1`}
+                activeOpacity={0.7}
+              >
+                <Text className={`text-xs font-bold ${healthColors.text}`}>
+                  ❤️ {healthScore}
+                </Text>
+                <HugeiconsIcon
+                  icon={InformationCircleIcon}
+                  size={14}
+                  color={
+                    healthColors.text.includes("green")
+                      ? "#15803d"
+                      : healthColors.text.includes("yellow")
+                      ? "#a16207"
+                      : "#b91c1c"
+                  }
+                />
+              </TouchableOpacity>
+            )}
+          </HStack>
           <HStack className="items-center" space="sm">
             <Text className="text-gray-500 text-sm">
               {format(new Date(entry.created_at), "h:mm a")}
@@ -323,6 +390,33 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
           </View>
         )}
 
+        {/* Micronutrient Tracking Button */}
+        <TouchableOpacity
+          onPress={() => router.push("/tabs/screens/micronutrient-tracking")}
+          className="bg-white rounded-2xl p-4 mb-5 border border-purple-200 flex-row items-center justify-between"
+          activeOpacity={0.7}
+        >
+          <View className="flex-row items-center gap-3">
+            <View className="w-12 h-12 rounded-full bg-purple-100 items-center justify-center">
+              <HugeiconsIcon icon={Settings02Icon} size={24} color="#7B61FF" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-gray-900 font-semibold text-base">
+                Track Micronutrients
+              </Text>
+              <Text className="text-gray-500 text-sm">
+                Select vitamins & minerals to track
+              </Text>
+            </View>
+          </View>
+          <HugeiconsIcon
+            icon={ArrowLeft01Icon}
+            size={20}
+            color="#9CA3AF"
+            style={{ transform: [{ rotate: "180deg" }] }}
+          />
+        </TouchableOpacity>
+
         {/* Meal Entries */}
         <View className="mt-2">
           <Text className="text-gray-600 font-medium mb-3">Today's Meals</Text>
@@ -340,6 +434,89 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
           )}
         </View>
       </ScrollView>
+
+      {/* Health Score Modal */}
+      <Modal
+        visible={showHealthScoreModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowHealthScoreModal(false)}
+      >
+        <TouchableOpacity
+          className="flex-1 bg-black/50 justify-center items-center px-5"
+          activeOpacity={1}
+          onPress={() => setShowHealthScoreModal(false)}
+        >
+          <TouchableOpacity
+            className="bg-white rounded-3xl p-6 w-full max-w-md"
+            activeOpacity={1}
+            onPress={(e) => e.stopPropagation()}
+          >
+            <View className="flex-row justify-between items-center mb-4">
+              <Text
+                style={{
+                  fontSize: 22,
+                  fontFamily: "CormorantSemiBold",
+                  color: "#1f2937",
+                }}
+              >
+                Health Score Analysis
+              </Text>
+              <TouchableOpacity
+                onPress={() => setShowHealthScoreModal(false)}
+                className="w-8 h-8 items-center justify-center rounded-full bg-gray-100"
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={20} color="#6B7280" />
+              </TouchableOpacity>
+            </View>
+
+            {selectedHealthScore && (
+              <>
+                <View className="items-center py-4">
+                  <View
+                    className={`w-24 h-24 rounded-full items-center justify-center ${
+                      selectedHealthScore.score >= 80
+                        ? "bg-green-100"
+                        : selectedHealthScore.score >= 60
+                        ? "bg-yellow-100"
+                        : "bg-red-100"
+                    }`}
+                  >
+                    <Text
+                      className={`text-4xl font-bold ${
+                        selectedHealthScore.score >= 80
+                          ? "text-green-700"
+                          : selectedHealthScore.score >= 60
+                          ? "text-yellow-700"
+                          : "text-red-700"
+                      }`}
+                    >
+                      {selectedHealthScore.score}
+                    </Text>
+                  </View>
+                  <Text className="text-gray-500 text-sm mt-2">out of 100</Text>
+                </View>
+
+                <View className="bg-gray-50 rounded-2xl p-4 mb-4">
+                  <Text className="text-gray-900 font-semibold mb-2">
+                    Why this score?
+                  </Text>
+                  <Text className="text-gray-700 leading-6">
+                    {selectedHealthScore.reasoning}
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => setShowHealthScoreModal(false)}
+                  className="bg-purple-600 rounded-xl py-3 items-center"
+                >
+                  <Text className="text-white font-semibold">Got it!</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };

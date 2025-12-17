@@ -6,6 +6,7 @@ import {
   analyzeCaloriesFromImage,
   CalorieAnalysisResult,
   FoodItem,
+  Micronutrients,
 } from "@/src/network/calorieAi";
 import dayjs from "dayjs";
 import { ISO_DATE_FORMAT } from "@/src/utils/date";
@@ -14,10 +15,19 @@ import { Database } from "@/database.types";
 type DbCalorieEntry = Database["public"]["Tables"]["calorie_entries"]["Row"];
 
 export interface CalorieEntry
-  extends Omit<DbCalorieEntry, "foods" | "health_score" | "suggestions"> {
+  extends Omit<
+    DbCalorieEntry,
+    | "foods"
+    | "health_score"
+    | "health_score_reasoning"
+    | "suggestions"
+    | "total_micronutrients"
+  > {
   foods: FoodItem[];
   health_score: number;
+  health_score_reasoning: string;
   suggestions: string[];
+  total_micronutrients?: Micronutrients;
 }
 
 interface DailyCalorieSummary {
@@ -64,23 +74,32 @@ const saveCalorieEntry = async (
   analysisResult: CalorieAnalysisResult,
   imageUrl: string | null
 ): Promise<CalorieEntry | null> => {
+  const insertData: any = {
+    user_id: userId,
+    selected_date: new Date().toISOString(),
+    meal_type: analysisResult.mealType,
+    foods:
+      analysisResult.foods as unknown as Database["public"]["Tables"]["calorie_entries"]["Insert"]["foods"],
+    total_calories: analysisResult.totalCalories,
+    total_protein: analysisResult.totalProtein,
+    total_carbs: analysisResult.totalCarbs,
+    total_fat: analysisResult.totalFat,
+    total_fiber: analysisResult.totalFiber,
+    health_score: analysisResult.healthScore,
+    health_score_reasoning: analysisResult.healthScoreReasoning,
+    suggestions: analysisResult.suggestions,
+    image_url: imageUrl,
+  };
+
+  // Add micronutrients if available
+  if (analysisResult.totalMicronutrients) {
+    insertData.total_micronutrients =
+      analysisResult.totalMicronutrients as unknown as Database["public"]["Tables"]["calorie_entries"]["Insert"]["total_micronutrients"];
+  }
+
   const { data, error } = await supabase
     .from("calorie_entries")
-    .insert({
-      user_id: userId,
-      selected_date: new Date().toISOString(),
-      meal_type: analysisResult.mealType,
-      foods:
-        analysisResult.foods as unknown as Database["public"]["Tables"]["calorie_entries"]["Insert"]["foods"],
-      total_calories: analysisResult.totalCalories,
-      total_protein: analysisResult.totalProtein,
-      total_carbs: analysisResult.totalCarbs,
-      total_fat: analysisResult.totalFat,
-      total_fiber: analysisResult.totalFiber,
-      health_score: analysisResult.healthScore,
-      suggestions: analysisResult.suggestions,
-      image_url: imageUrl,
-    })
+    .insert(insertData)
     .select()
     .single();
 
