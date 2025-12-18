@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -17,7 +17,16 @@ import {
   useCalorieTracker,
   CalorieEntry,
 } from "@/hooks/data/useCalorieTracker";
-import { CalorieAnalysisResult, FoodItem } from "@/src/network/calorieAi";
+import {
+  CalorieAnalysisResult,
+  FoodItem,
+  MicronutrientEntry,
+} from "@/src/network/calorieAi";
+import {
+  getMicronutrientById,
+  MicronutrientConfig,
+  MICRONUTRIENTS_CONFIG,
+} from "@/src/config/micronutrients";
 import { format } from "date-fns";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -31,6 +40,11 @@ import {
   Settings02Icon,
 } from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import ShortBottomModal from "@/src/components/ShortBottomModal";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+
+const TRACKED_MICRONUTRIENTS_KEY = "tracked_micronutrients";
 
 interface CalorieTrackerScreenProps {
   selectedDate?: Date;
@@ -58,6 +72,56 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
     score: number;
     reasoning: string;
   } | null>(null);
+  const [selectedMicronutrients, setSelectedMicronutrients] = useState<{
+    title: string;
+    micronutrients: MicronutrientEntry[];
+  } | null>(null);
+  const [trackedNutrientIds, setTrackedNutrientIds] = useState<Set<string>>(
+    new Set(MICRONUTRIENTS_CONFIG.map((n) => n.id))
+  );
+  const micronutrientModalRef = useRef<BottomSheetModal>(null);
+
+  // Load tracked micronutrients from storage
+  useEffect(() => {
+    const loadTrackedNutrients = async (): Promise<void> => {
+      try {
+        const saved = await AsyncStorage.getItem(TRACKED_MICRONUTRIENTS_KEY);
+        if (saved) {
+          setTrackedNutrientIds(new Set(JSON.parse(saved)));
+        }
+      } catch (error) {
+        console.error("Failed to load tracked nutrients:", error);
+      }
+    };
+    loadTrackedNutrients();
+  }, []);
+
+  // Filter micronutrients to only show tracked ones
+  const filterTrackedMicronutrients = (
+    micronutrients: MicronutrientEntry[]
+  ): MicronutrientEntry[] => {
+    return micronutrients.filter((m) => trackedNutrientIds.has(m.name));
+  };
+
+  // Calculate daily total micronutrients from all entries
+  const calculateDailyMicronutrients = (): MicronutrientEntry[] => {
+    const micronutrientMap = new Map<string, number>();
+
+    calorieEntries.forEach((entry) => {
+      if (entry.total_micronutrients) {
+        const nutrients = entry.total_micronutrients as MicronutrientEntry[];
+        nutrients.forEach((nutrient) => {
+          const current = micronutrientMap.get(nutrient.name) || 0;
+          micronutrientMap.set(nutrient.name, current + nutrient.amount);
+        });
+      }
+    });
+
+    return Array.from(micronutrientMap.entries()).map(([name, amount]) => ({
+      name,
+      amount,
+    }));
+  };
 
   const {
     calorieEntries,
@@ -147,26 +211,118 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
     ]);
   };
 
-  // Render food item
-  const renderFoodItem = (food: FoodItem, index: number): React.ReactNode => (
-    <View
-      key={`${food.name}-${index}`}
-      className="flex-row items-center py-3 border-b border-gray-100"
-    >
-      <View className="flex-1">
-        <Text className="text-gray-900 font-medium text-base">{food.name}</Text>
-        <Text className="text-gray-500 text-sm">{food.servingSize}</Text>
+  // Render micronutrient badge
+  const renderMicronutrientBadge = (
+    nutrient: MicronutrientEntry,
+    index: number
+  ): React.ReactNode => {
+    const config: MicronutrientConfig | undefined = getMicronutrientById(
+      nutrient.name
+    );
+    if (!config || nutrient.amount <= 0) return null;
+
+    const percentage: number = Math.round(
+      (nutrient.amount / config.dailyValue) * 100
+    );
+    const bgColor: string =
+      percentage >= 50
+        ? "bg-green-100"
+        : percentage >= 25
+        ? "bg-yellow-100"
+        : "bg-gray-100";
+    const textColor: string =
+      percentage >= 50
+        ? "text-green-700"
+        : percentage >= 25
+        ? "text-yellow-700"
+        : "text-gray-600";
+
+    return (
+      <View
+        key={`${nutrient.name}-${index}`}
+        className={`px-2 py-1 rounded-lg ${bgColor} mr-1 mb-1`}
+      >
+        <Text className={`text-xs font-medium ${textColor}`}>
+          {config.name}: {nutrient.amount.toFixed(1)}
+          {config.unit}
+        </Text>
       </View>
-      <View className="items-end">
-        <Text className="text-gray-900 font-semibold">{food.calories} cal</Text>
-        <HStack space="xs">
-          <Text className="text-xs text-gray-500">P:{food.protein}g</Text>
-          <Text className="text-xs text-gray-500">C:{food.carbs}g</Text>
-          <Text className="text-xs text-gray-500">F:{food.fat}g</Text>
+    );
+  };
+
+  // Render food item
+  const renderFoodItem = (food: FoodItem, index: number): React.ReactNode => {
+    // For debugging: show all micronutrients if they exist
+    const allMicronutrients = food.micronutrients || [];
+    const trackedMicronutrients = food.micronutrients
+      ? filterTrackedMicronutrients(food.micronutrients)
+      : [];
+
+    // Show icon if there are ANY micronutrients (for now, to debug)
+    const hasMicronutrients = allMicronutrients.length > 0;
+
+    // Log for debugging
+    if (allMicronutrients.length > 0) {
+      console.log("Food:", food.name);
+      console.log("All micronutrients:", allMicronutrients);
+      console.log("Tracked IDs:", Array.from(trackedNutrientIds));
+      console.log("Filtered micronutrients:", trackedMicronutrients);
+    }
+
+    const showMicronutrientInfo = (): void => {
+      if (hasMicronutrients) {
+        // Show tracked ones if available, otherwise show all
+        const micronutrientsToShow =
+          trackedMicronutrients.length > 0
+            ? trackedMicronutrients
+            : allMicronutrients;
+
+        setSelectedMicronutrients({
+          title: food.name,
+          micronutrients: micronutrientsToShow,
+        });
+        micronutrientModalRef.current?.present();
+      }
+    };
+
+    return (
+      <View
+        key={`${food.name}-${index}`}
+        className="flex-row items-center py-3 border-b border-gray-100"
+      >
+        <View className="flex-1">
+          <Text className="text-gray-900 font-medium text-base">
+            {food.name}
+          </Text>
+          <Text className="text-gray-500 text-sm">{food.servingSize}</Text>
+        </View>
+        <HStack className="items-center" space="md">
+          <View className="items-end">
+            <Text className="text-gray-900 font-semibold">
+              {food.calories} cal
+            </Text>
+            <HStack space="xs">
+              <Text className="text-xs text-gray-500">P:{food.protein}g</Text>
+              <Text className="text-xs text-gray-500">C:{food.carbs}g</Text>
+              <Text className="text-xs text-gray-500">F:{food.fat}g</Text>
+            </HStack>
+          </View>
+          {hasMicronutrients && (
+            <TouchableOpacity
+              onPress={showMicronutrientInfo}
+              activeOpacity={0.7}
+            >
+              <HugeiconsIcon
+                icon={InformationCircleIcon}
+                size={18}
+                color="#7B61FF"
+              />
+            </TouchableOpacity>
+          )}
         </HStack>
       </View>
-    </View>
-  );
+    );
+  };
 
   // Render calorie entry card
   const renderCalorieEntry = (entry: CalorieEntry): React.ReactNode => {
@@ -254,11 +410,47 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
           {entry.foods.map((food, index) => renderFoodItem(food, index))}
         </VStack>
 
-        <HStack className="justify-between mt-3 pt-3 border-t border-gray-100">
+        <HStack className="justify-between items-center mt-3 pt-3 border-t border-gray-100">
           <Text className="text-gray-900 font-semibold">Total</Text>
-          <Text className="text-purple-600 font-bold text-lg">
-            {entry.total_calories} cal
-          </Text>
+          <HStack className="items-center" space="md">
+            <Text className="text-purple-600 font-bold text-lg">
+              {entry.total_calories} cal
+            </Text>
+            {/* Micronutrient Info Icon - showing for ANY micronutrients temporarily */}
+            {entry.total_micronutrients &&
+              (entry.total_micronutrients as MicronutrientEntry[]).length >
+                0 && (
+                <TouchableOpacity
+                  onPress={() => {
+                    const allMicronutrients =
+                      entry.total_micronutrients as MicronutrientEntry[];
+                    const trackedMicronutrients =
+                      filterTrackedMicronutrients(allMicronutrients);
+
+                    const micronutrientsToShow =
+                      trackedMicronutrients.length > 0
+                        ? trackedMicronutrients
+                        : allMicronutrients;
+
+                    setSelectedMicronutrients({
+                      title: `${
+                        entry.meal_type.charAt(0).toUpperCase() +
+                        entry.meal_type.slice(1)
+                      } Nutrients`,
+                      micronutrients: micronutrientsToShow,
+                    });
+                    micronutrientModalRef.current?.present();
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <HugeiconsIcon
+                    icon={InformationCircleIcon}
+                    size={18}
+                    color="#7B61FF"
+                  />
+                </TouchableOpacity>
+              )}
+          </HStack>
         </HStack>
       </View>
     );
@@ -293,7 +485,32 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
       >
         {/* Daily Summary Card */}
         <View className="bg-white rounded-2xl p-5 mb-5 border border-gray-100">
-          <Text className="text-gray-600 font-medium mb-2">Today's Total</Text>
+          <HStack className="justify-between items-center mb-2">
+            <Text className="text-gray-600 font-medium">Today's Total</Text>
+            {(() => {
+              const dailyMicronutrients = calculateDailyMicronutrients();
+              const trackedDailyMicronutrients =
+                filterTrackedMicronutrients(dailyMicronutrients);
+              return trackedDailyMicronutrients.length > 0 ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedMicronutrients({
+                      title: "Today's Total Nutrients",
+                      micronutrients: trackedDailyMicronutrients,
+                    });
+                    micronutrientModalRef.current?.present();
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <HugeiconsIcon
+                    icon={InformationCircleIcon}
+                    size={20}
+                    color="#7B61FF"
+                  />
+                </TouchableOpacity>
+              ) : null;
+            })()}
+          </HStack>
           <Text className="text-4xl font-bold text-purple-600 mb-4">
             {dailySummary.totalCalories} cal
           </Text>
@@ -517,6 +734,90 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
+
+      {/* Micronutrient Modal using ShortBottomModal */}
+      <ShortBottomModal
+        ref={micronutrientModalRef}
+        snapPoints={["50%", "75%"]}
+        marginHorizontal={8}
+        enableContentPanningGesture={true}
+      >
+        <View className="px-5 pt-4 pb-2">
+          <Text
+            style={{
+              fontSize: 22,
+              fontFamily: "CormorantSemiBold",
+              color: "#1f2937",
+              marginBottom: 12,
+            }}
+          >
+            {selectedMicronutrients?.title || "Micronutrients"}
+          </Text>
+        </View>
+
+        {selectedMicronutrients &&
+        selectedMicronutrients.micronutrients.length > 0 ? (
+          <BottomSheetScrollView
+            contentContainerStyle={{
+              paddingHorizontal: 20,
+              paddingBottom: 20,
+            }}
+            showsVerticalScrollIndicator={false}
+          >
+            {selectedMicronutrients.micronutrients.map((nutrient, idx) => {
+              const config = getMicronutrientById(nutrient.name);
+              if (!config || nutrient.amount <= 0) return null;
+
+              const percentage = Math.min(
+                Math.round((nutrient.amount / config.dailyValue) * 100),
+                100
+              );
+              const barColor =
+                percentage >= 50
+                  ? "bg-green-500"
+                  : percentage >= 25
+                  ? "bg-yellow-500"
+                  : "bg-gray-400";
+
+              return (
+                <View
+                  key={`${nutrient.name}-${idx}`}
+                  className="mb-4 pb-4 border-b border-gray-100"
+                >
+                  <View className="flex-row justify-between items-center mb-2">
+                    <Text className="text-gray-900 font-medium">
+                      {config.name}
+                    </Text>
+                    <Text className="text-gray-600">
+                      {nutrient.amount.toFixed(1)} {config.unit}
+                    </Text>
+                  </View>
+                  <View className="flex-row items-center gap-2">
+                    <View className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <View
+                        className={`h-full ${barColor} rounded-full`}
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </View>
+                    <Text className="text-xs text-gray-500 w-12 text-right">
+                      {percentage}%
+                    </Text>
+                  </View>
+                  <Text className="text-xs text-gray-400 mt-1">
+                    Daily Value: {config.dailyValue} {config.unit}
+                  </Text>
+                </View>
+              );
+            })}
+          </BottomSheetScrollView>
+        ) : (
+          <View className="py-8 items-center">
+            <Text className="text-gray-400 text-center">
+              No micronutrient data available
+            </Text>
+          </View>
+        )}
+      </ShortBottomModal>
     </View>
   );
 };

@@ -7,12 +7,18 @@ const ai = new GoogleGenAI({
 });
 
 /**
- * Micronutrients stored as key-value pairs
- * Key: micronutrient name (e.g., "zinc", "vitaminD3")
- * Value: amount in appropriate unit (mg, mcg, etc.)
+ * Individual micronutrient entry
+ */
+export interface MicronutrientEntry {
+  name: string;
+  amount: number;
+}
+
+/**
+ * Micronutrients stored as an array of name-amount pairs
  * This allows adding new micronutrients without changing the type
  */
-export type Micronutrients = Record<string, number>;
+export type Micronutrients = MicronutrientEntry[];
 
 export interface FoodItem {
   name: string;
@@ -23,7 +29,7 @@ export interface FoodItem {
   fiber: number;
   servingSize: string;
   confidence: number;
-  micronutrients?: Micronutrients;
+  micronutrients: Micronutrients;
 }
 
 export interface CalorieAnalysisResult {
@@ -38,7 +44,7 @@ export interface CalorieAnalysisResult {
   healthScore: number;
   healthScoreReasoning: string; // Justification for the health score
   suggestions: string[];
-  totalMicronutrients?: Micronutrients;
+  totalMicronutrients: Micronutrients;
   error?: string;
 }
 
@@ -78,14 +84,18 @@ export const analyzeCaloriesFromImage = async (
 
 IMPORTANT INSTRUCTIONS:
 1. Identify ALL food items visible in the image
-2. For each item, estimate calories, macronutrients, AND micronutrients based on typical serving sizes  
-3. Include estimated micronutrients: ${micronutrientNames}
-4. Store micronutrients as a key-value object where key is the nutrient ID (e.g., "zinc", "vitaminD3") and value is the amount
-5. If you cannot identify the food, still provide your best estimate
-6. Determine the most likely meal type based on the foods
-7. Provide a health score (1-100) based on nutritional balance
-8. Provide detailed reasoning for the health score (2-3 sentences explaining why this score was given, mentioning specific nutritional strengths and weaknesses)
-9. Give 2-3 brief health suggestions
+2. For each item, estimate calories, macronutrients, AND micronutrients based on typical serving sizes
+3. Micronutrients to track: ${micronutrientNames || "none"}
+4. If micronutrients are configured, include estimated amounts as an ARRAY of objects, each with:
+   - "name": the nutrient ID (e.g., "zinc", "vitaminD3")
+   - "amount": the quantity in appropriate units (mg, mcg, etc.)
+   Example: [{"name": "zinc", "amount": 5.2}, {"name": "vitaminD3", "amount": 12.0}]
+5. If NO micronutrients are configured (empty list), return an empty array [] for both "micronutrients" and "totalMicronutrients"
+6. If you cannot identify the food, still provide your best estimate
+7. Determine the most likely meal type based on the foods
+8. Provide a health score (1-100) based on nutritional balance
+9. Provide detailed reasoning for the health score (2-3 sentences explaining why this score was given, mentioning specific nutritional strengths and weaknesses)
+10. Give 2-3 brief health suggestions
 
 Be as accurate as possible with all nutrient estimates. Consider portion sizes visible in the image.`,
             },
@@ -116,8 +126,15 @@ Be as accurate as possible with all nutrient estimates. Consider portion sizes v
                     maximum: 100,
                   },
                   micronutrients: {
-                    type: "object",
-                    additionalProperties: { type: "number" },
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        name: { type: "string" },
+                        amount: { type: "number" },
+                      },
+                      required: ["name", "amount"],
+                    },
                   },
                 },
                 required: [
@@ -129,6 +146,7 @@ Be as accurate as possible with all nutrient estimates. Consider portion sizes v
                   "fiber",
                   "servingSize",
                   "confidence",
+                  "micronutrients",
                 ],
               },
             },
@@ -155,8 +173,15 @@ Be as accurate as possible with all nutrient estimates. Consider portion sizes v
               maxItems: 3,
             },
             totalMicronutrients: {
-              type: "object",
-              additionalProperties: { type: "number" },
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  amount: { type: "number" },
+                },
+                required: ["name", "amount"],
+              },
             },
           },
           required: [
@@ -171,6 +196,7 @@ Be as accurate as possible with all nutrient estimates. Consider portion sizes v
             "healthScore",
             "healthScoreReasoning",
             "suggestions",
+            "totalMicronutrients",
           ],
         },
       },
@@ -189,6 +215,7 @@ Be as accurate as possible with all nutrient estimates. Consider portion sizes v
         healthScore: 0,
         healthScoreReasoning: "",
         suggestions: [],
+        totalMicronutrients: [],
         error: "Failed to analyze image",
       };
     }
@@ -212,6 +239,7 @@ Be as accurate as possible with all nutrient estimates. Consider portion sizes v
       healthScore: 0,
       healthScoreReasoning: "",
       suggestions: [],
+      totalMicronutrients: [],
       error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }

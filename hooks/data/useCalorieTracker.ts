@@ -27,7 +27,7 @@ export interface CalorieEntry
   health_score: number;
   health_score_reasoning: string;
   suggestions: string[];
-  total_micronutrients?: Micronutrients;
+  total_micronutrients: Micronutrients;
 }
 
 interface DailyCalorieSummary {
@@ -71,12 +71,13 @@ const fetchCalorieEntries = async (
  */
 const saveCalorieEntry = async (
   userId: string,
+  selectedDate: string,
   analysisResult: CalorieAnalysisResult,
   imageUrl: string | null
 ): Promise<CalorieEntry | null> => {
   const insertData: any = {
     user_id: userId,
-    selected_date: new Date().toISOString(),
+    selected_date: selectedDate,
     meal_type: analysisResult.mealType,
     foods:
       analysisResult.foods as unknown as Database["public"]["Tables"]["calorie_entries"]["Insert"]["foods"],
@@ -89,13 +90,9 @@ const saveCalorieEntry = async (
     health_score_reasoning: analysisResult.healthScoreReasoning,
     suggestions: analysisResult.suggestions,
     image_url: imageUrl,
+    total_micronutrients:
+      analysisResult.totalMicronutrients as unknown as Database["public"]["Tables"]["calorie_entries"]["Insert"]["total_micronutrients"],
   };
-
-  // Add micronutrients if available
-  if (analysisResult.totalMicronutrients) {
-    insertData.total_micronutrients =
-      analysisResult.totalMicronutrients as unknown as Database["public"]["Tables"]["calorie_entries"]["Insert"]["total_micronutrients"];
-  }
 
   const { data, error } = await supabase
     .from("calorie_entries")
@@ -159,7 +156,8 @@ export const useCalorieTracker = (targetDate?: string) => {
       imageUrl: string | null;
     }) => {
       if (!user?.id) throw new Error("User not authenticated");
-      return saveCalorieEntry(user.id, analysisResult, imageUrl);
+      // Use the selected date from the hook (dateStr)
+      return saveCalorieEntry(user.id, dateStr, analysisResult, imageUrl);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

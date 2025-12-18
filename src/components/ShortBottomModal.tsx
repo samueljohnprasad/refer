@@ -16,6 +16,8 @@ interface ShortBottomModalProps {
     | ((string | number)[] & string[])
     | (SharedValue<(string | number)[]> & string[]);
   onDismiss?: () => void;
+  marginHorizontal?: number;
+  enableContentPanningGesture?: boolean;
 }
 
 export function BlurBackdropExpo(props: BottomSheetBackdropProps) {
@@ -37,45 +39,57 @@ export function BlurBackdropExpo(props: BottomSheetBackdropProps) {
 const ShortBottomModal = forwardRef<
   BottomSheetModal | null,
   ShortBottomModalProps
->(({ children, onDismiss, height, snapPoints = ["30%"] }, ref) => {
-  return (
-    <BottomSheetModal
-      // backgroundComponent={BlurredBackground}
-      ref={ref}
-      index={0}
-      snapPoints={snapPoints}
-      detached
-      bottomInset={60}
-      onDismiss={onDismiss}
-      stackBehavior="push"
-      backgroundStyle={{
-        borderRadius: 28,
+>(
+  (
+    {
+      children,
+      onDismiss,
+      height,
+      snapPoints = ["30%"],
+      marginHorizontal = 16,
+      enableContentPanningGesture = false,
+    },
+    ref
+  ) => {
+    return (
+      <BottomSheetModal
+        // backgroundComponent={BlurredBackground}
+        ref={ref}
+        index={0}
+        snapPoints={snapPoints}
+        detached
+        bottomInset={60}
+        onDismiss={onDismiss}
+        stackBehavior="push"
+        backgroundStyle={{
+          borderRadius: 28,
 
-        backgroundColor: "white",
-        // shadowOpacity: 0.1,
-        // shadowRadius: 8,
-        // shadowOffset: { width: 0, height: 3 },
-        // elevation: 4,
-        // shadowColor: "#000",
-      }}
-      // backdropComponent={BlurBackdropExpo}
-      backdropComponent={BlurBackdropExpo}
-      enablePanDownToClose={true}
-      style={{
-        marginHorizontal: 16,
-        borderRadius: 56,
-      }}
-    >
-      <BottomSheetView
-        style={{
-          flex: 1,
+          backgroundColor: "white",
+          // shadowOpacity: 0.1,
+          // shadowRadius: 8,
+          // shadowOffset: { width: 0, height: 3 },
+          // elevation: 4,
+          // shadowColor: "#000",
         }}
-        className="flex-1 h-full w-full rounded-sm"
+        backdropComponent={BlurBackdropExpo}
+        enablePanDownToClose={true}
+        enableContentPanningGesture={enableContentPanningGesture}
+        style={{
+          marginHorizontal: marginHorizontal,
+          borderRadius: 56,
+        }}
       >
-        {children}
-      </BottomSheetView>
-    </BottomSheetModal>
-  );
-});
+        <BottomSheetView
+          style={{
+            flex: 1,
+          }}
+          className="flex-1 h-full w-full rounded-sm"
+        >
+          {children}
+        </BottomSheetView>
+      </BottomSheetModal>
+    );
+  }
+);
 
 export default ShortBottomModal;
