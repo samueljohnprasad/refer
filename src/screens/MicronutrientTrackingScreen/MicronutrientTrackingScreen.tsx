@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import {
-  ArrowLeft01Icon,
-  CheckmarkCircle02Icon,
-  CircleIcon,
-} from "@hugeicons/core-free-icons";
-import { useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { CheckmarkCircle02Icon, Idea01Icon } from "@hugeicons/core-free-icons";
+import { useHeaderHeight } from "@react-navigation/elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   MICRONUTRIENTS_CONFIG,
@@ -18,8 +13,7 @@ import {
 const STORAGE_KEY = "tracked_micronutrients";
 
 const MicronutrientTrackingScreen: React.FC = () => {
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
+  const headerHeight = useHeaderHeight();
   const [trackedNutrients, setTrackedNutrients] = useState<Set<string>>(
     new Set(MICRONUTRIENTS_CONFIG.map((n) => n.id))
   );
@@ -148,36 +142,14 @@ const MicronutrientTrackingScreen: React.FC = () => {
   const minerals = getMicronutrientsByCategory("mineral");
 
   return (
-    <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
-      {/* Header */}
-      <View className="px-5 py-4 bg-white border-b border-gray-100">
-        <View className="flex-row items-center">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="w-10 h-10 items-center justify-center rounded-full bg-gray-100 active:bg-gray-200"
-          >
-            <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color="#374151" />
-          </TouchableOpacity>
-          <View className="flex-1 ml-4">
-            <Text
-              style={{
-                fontSize: 22,
-                fontFamily: "CormorantSemiBold",
-                color: "#1f2937",
-              }}
-            >
-              Micronutrients
-            </Text>
-            <Text className="text-gray-500 text-sm">
-              {trackedNutrients.size} of {MICRONUTRIENTS_CONFIG.length} tracked
-            </Text>
-          </View>
-        </View>
-      </View>
-
+    <View className="flex-1 bg-[#F6F4FF]">
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
+        contentContainerStyle={{
+          paddingTop: headerHeight,
+          paddingHorizontal: 16,
+          paddingBottom: 100,
+        }}
         showsVerticalScrollIndicator={false}
       >
         {/* Quick Actions */}
@@ -200,9 +172,12 @@ const MicronutrientTrackingScreen: React.FC = () => {
 
         {/* Info Card */}
         <View className="bg-purple-50 rounded-xl p-4 mb-5 border border-purple-100">
-          <Text className="text-purple-800 font-medium mb-1">
-            💡 How it works
-          </Text>
+          <View className="flex-row items-center mb-1">
+            <HugeiconsIcon icon={Idea01Icon} size={18} color="#7C3AED" />
+            <Text className="text-purple-800 font-medium ml-1.5">
+              How it works
+            </Text>
+          </View>
           <Text className="text-purple-700 text-sm leading-5">
             Select nutrients to track. AI will analyze your meals and show how
             much of each you're consuming in your daily summary.

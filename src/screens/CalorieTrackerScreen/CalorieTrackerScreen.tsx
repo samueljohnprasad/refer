@@ -28,16 +28,16 @@ import {
   MICRONUTRIENTS_CONFIG,
 } from "@/src/config/micronutrients";
 import { format } from "date-fns";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   Camera01Icon,
   Image01Icon,
   Delete01Icon,
-  ArrowLeft01Icon,
   InformationCircleIcon,
   Cancel01Icon,
   Settings02Icon,
+  ArrowLeft01Icon,
 } from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -63,7 +63,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
   onClose,
 }) => {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
+  const headerHeight = useHeaderHeight();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] =
     useState<CalorieAnalysisResult | null>(null);
@@ -209,45 +209,6 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
         },
       },
     ]);
-  };
-
-  // Render micronutrient badge
-  const renderMicronutrientBadge = (
-    nutrient: MicronutrientEntry,
-    index: number
-  ): React.ReactNode => {
-    const config: MicronutrientConfig | undefined = getMicronutrientById(
-      nutrient.name
-    );
-    if (!config || nutrient.amount <= 0) return null;
-
-    const percentage: number = Math.round(
-      (nutrient.amount / config.dailyValue) * 100
-    );
-    const bgColor: string =
-      percentage >= 50
-        ? "bg-green-100"
-        : percentage >= 25
-        ? "bg-yellow-100"
-        : "bg-gray-100";
-    const textColor: string =
-      percentage >= 50
-        ? "text-green-700"
-        : percentage >= 25
-        ? "text-yellow-700"
-        : "text-gray-600";
-
-    return (
-      <View
-        key={`${nutrient.name}-${index}`}
-        className={`px-2 py-1 rounded-lg ${bgColor} mr-1 mb-1`}
-      >
-        <Text className={`text-xs font-medium ${textColor}`}>
-          {config.name}: {nutrient.amount.toFixed(1)}
-          {config.unit}
-        </Text>
-      </View>
-    );
   };
 
   // Render food item
@@ -457,30 +418,14 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
   };
 
   return (
-    <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
-      {/* Header */}
-      <View className="px-5 py-4 bg-white border-b border-gray-100">
-        <HStack className="items-center" space="md">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="w-10 h-10 items-center justify-center rounded-full bg-gray-100 active:bg-gray-200"
-          >
-            <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color="#374151" />
-          </TouchableOpacity>
-          <View className="flex-1">
-            <Heading className="text-2xl font-cormorantSemiBold text-gray-900">
-              Calorie Tracker
-            </Heading>
-            <Text className="text-gray-500 mt-1">
-              {format(selectedDate, "EEEE, MMMM d")}
-            </Text>
-          </View>
-        </HStack>
-      </View>
-
+    <View className="flex-1 bg-[#F6F4FF]">
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
+        contentContainerStyle={{
+          paddingTop: headerHeight,
+          paddingHorizontal: 20,
+          paddingBottom: 100,
+        }}
         showsVerticalScrollIndicator={false}
       >
         {/* Daily Summary Card */}
