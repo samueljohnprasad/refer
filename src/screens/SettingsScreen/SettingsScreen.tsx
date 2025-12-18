@@ -134,8 +134,12 @@ export default React.memo(function SettingsScreen() {
               icon={MessageOutgoing01Icon}
               iconColor="#06B6D4"
               iconBgColor="#CFFAFE"
-              title="Contact Support"
-              onPress={handleContactSupport}
+              title="Support Chat"
+              subtitle="Chat with our support team"
+              onPress={() => {
+                Haptics.selectionAsync();
+                router.push("/tabs/screens/support-chat" as any);
+              }}
             />
             <SettingsItem
               icon={Notification01Icon}

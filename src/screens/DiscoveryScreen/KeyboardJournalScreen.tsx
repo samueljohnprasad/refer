@@ -17,7 +17,10 @@ import {
   KeyboardAvoidingView,
   Keyboard,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
@@ -54,6 +57,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const [isCalendarVisible, setIsCalendarVisible] = useState<boolean>(false);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
   const rotation = useSharedValue(0);
+  const insets = useSafeAreaInsets();
 
   const formattedDate = format(localSelectedDate, "MMMM d, yyyy");
 
@@ -166,7 +170,10 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           </ScrollView>
 
           {/* Bottom Actions */}
-          <View className="px-6 pb-6 pt-4 bg-white border-t border-gray-100">
+          <View
+            className="px-6 pt-4 bg-white border-t border-gray-100"
+            style={{ paddingBottom: Math.max(insets.bottom, 24) }}
+          >
             {/* XP Counter */}
             <View className="mb-4 items-center">
               <Text className="text-[#6B7280] text-sm font-medium">
