@@ -26,18 +26,19 @@ import {
   Settings02Icon,
   StarsIcon,
   Target02Icon,
-  Award01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 const { width } = Dimensions.get("window");
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { LinearGradient } from "expo-linear-gradient";
 import { Host, Button } from "@expo/ui/swift-ui";
-import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { usePostHog } from "posthog-react-native";
 import { UpdateModal } from "@/src/components/modals";
 import { useAppUpdate } from "@/src/hooks/useAppUpdate";
 import { StreakDisplay } from "@/src/components/Streak";
+import { useStreakTracker } from "@/hooks/data/useStreakTracker";
+
 // Global color palette
 export const PALETTE = {
   purple: "#7B61FF",
@@ -235,7 +236,8 @@ export default function JournalCalendarScreen() {
   const { hasPro } = useRevenueCat();
   const posthog = usePostHog();
 
-  // App update check
+  const { refetch: refetchStreak } = useStreakTracker();
+
   const { showUpdateModal, currentVersion, latestVersion, hideModal } =
     useAppUpdate({ autoCheck: true });
 
@@ -254,13 +256,17 @@ export default function JournalCalendarScreen() {
     }, []);
 
   // Memoize emotion logged callback
-  const handleEmotionLogged = useCallback((emotionScore: number) => {
-    // Cache invalidation is handled automatically in useEmotionLogger hook
-  }, []);
+  const handleEmotionLogged = useCallback(
+    (emotionScore: number, updated: boolean) => {
+      refetchStreak();
+      setShowStreakModal(updated);
+    },
+    [refetchStreak]
+  );
 
   // Lazy load heavy chart component after initial render
   const [shouldLoadChart, setShouldLoadChart] = useState(false);
-  const [showStreakModal, setShowStreakModal] = useState(true);
+  const [showStreakModal, setShowStreakModal] = useState(false);
 
   useEffect(() => {
     // Delay chart loading to improve initial render performance

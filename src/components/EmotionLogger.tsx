@@ -31,7 +31,7 @@ const EMOTIONS = [
 
 interface EmotionLoggerProps {
   selectedDate?: Date;
-  onEmotionLogged?: (emotionScore: number) => void;
+  onEmotionLogged?: (emotionScore: number, updated: boolean) => void;
 }
 
 const EmotionItem: React.FC<{
@@ -171,8 +171,9 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
         if (isLoggingEmotion) return;
 
         try {
-          await logEmotionToSupabase(emotionScore);
-          onEmotionLogged?.(emotionScore);
+          await logEmotionToSupabase(emotionScore, (updated) => {
+            onEmotionLogged?.(emotionScore, updated);
+          });
         } catch (error) {}
       },
       [isLoggingEmotion, logEmotionToSupabase, onEmotionLogged]

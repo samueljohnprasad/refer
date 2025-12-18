@@ -64,12 +64,6 @@ export const useStreakTracker = () => {
     }
   }, [user?.id]);
 
-  const hasEntryToday = useCallback((): boolean => {
-    // Check if today (current day index) is marked true in weeklyProgress
-    const todayIndex = dayjs().day();
-    return streakData.weeklyProgress[todayIndex];
-  }, [streakData.weeklyProgress]);
-
   const isPerfectWeekPossible = useCallback((): boolean => {
     const todayIndex = dayjs().day();
 
@@ -86,7 +80,6 @@ export const useStreakTracker = () => {
   return {
     streakData,
     isLoading,
-    hasEntryToday: hasEntryToday(),
     isPerfectWeekPossible: isPerfectWeekPossible(),
     refetch: fetchStreakData,
   };

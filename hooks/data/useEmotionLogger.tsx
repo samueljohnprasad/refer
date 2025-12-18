@@ -172,7 +172,6 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
       return logEmotion(user.id, emotionId);
     },
     onSuccess: () => {
-      logStreakIfNeeded();
       // Invalidate queries to refetch data
       queryClient.invalidateQueries({
         queryKey: ["daily-emotions", user?.id, dateStr],
@@ -206,7 +205,7 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
   });
 
   const handleLogEmotion = useCallback(
-    async (emotionId: number) => {
+    async (emotionId: number, onSuccess?: (showStreak: boolean) => void) => {
       const raw = await AsyncStorage.getItem(lastLogKey);
       const ts = raw ? Number(raw) : 0;
 
@@ -231,8 +230,13 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
         });
         return;
       }
-
-      await logEmotionMutation.mutateAsync(emotionId);
+      try {
+        await logEmotionMutation.mutateAsync(emotionId);
+        const log = await logStreakIfNeeded();
+        onSuccess?.(log.updated);
+      } catch (error) {
+        console.error("Failed to log emotion:", error);
+      }
     },
     [logEmotionMutation, toast]
   );

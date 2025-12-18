@@ -19,14 +19,10 @@ export const useDailyStreak = () => {
 
   const logStreakIfNeeded = useCallback(async (): Promise<LogStreakResult> => {
     if (!user?.id) return { updated: false };
+    if (!profile?.lastJournalDate) return { updated: false };
+    if (!profile?.currentStreak) return { updated: false };
 
-    const todayStr: string = formateDate_y_m_d(new Date());
-
-    const lastDateStr: string | null = profile?.lastJournalDate
-      ? formateDate_y_m_d(profile.lastJournalDate)
-      : null;
-
-    if (lastDateStr === todayStr) {
+    if (dayjs(profile?.lastJournalDate).isSame(new Date(), "day")) {
       return { updated: false };
     }
 
