@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Animated, Modal } from "react-native";
+import { View, Animated, Modal, Share } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -14,6 +14,7 @@ import {
   ShieldUserIcon,
   UserIcon,
   Copy01Icon,
+  Share01Icon,
 } from "@hugeicons/core-free-icons";
 
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
@@ -68,6 +69,17 @@ export default React.memo(function SettingsScreen() {
   } = useSettingsBulkImport();
 
   const { scrollY, upgradeY, setUpgradeY } = useSettingsAnimation();
+
+  const handleShareApp = async () => {
+    try {
+      await Share.share({
+        message:
+          "Check out Happy AI Journal! https://apps.apple.com/us/app/happy-ai-journal/id6755650433",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <View className="flex-1 bg-[#F6F4FF]">
@@ -139,6 +151,17 @@ export default React.memo(function SettingsScreen() {
               onPress={() => {
                 Haptics.selectionAsync();
                 router.push("/tabs/screens/support-chat" as any);
+              }}
+            />
+            <SettingsItem
+              icon={Share01Icon}
+              iconColor="#EC4899"
+              iconBgColor="#FCE7F3"
+              title="Share App"
+              subtitle="Tell your friends about us"
+              onPress={() => {
+                Haptics.selectionAsync();
+                handleShareApp();
               }}
             />
             <SettingsItem
