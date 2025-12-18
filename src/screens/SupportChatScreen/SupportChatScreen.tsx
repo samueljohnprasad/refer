@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import {
   View,
   Text,
@@ -19,99 +19,37 @@ import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import {
-  ArrowLeft02Icon,
-  Sent02Icon,
-  CustomerService01Icon,
-} from "@hugeicons/core-free-icons";
+import { ArrowLeft02Icon, Sent02Icon } from "@hugeicons/core-free-icons";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
 import { useAuth } from "@/src/context/AuthContext";
+import { useSupportMessages } from "@/hooks/data/useSupportMessages";
 
 interface SupportChatScreenProps {
   onClose?: () => void;
 }
 
-// Predefined automated responses for common queries
-const AUTO_RESPONSES: Record<string, string> = {
-  default:
-    "Thank you for reaching out! Our support team typically responds within 24 hours. Is there anything specific I can help you with?",
-  hello: "Hello! 👋 Welcome to our support. How can I assist you today?",
-  hi: "Hi there! 👋 How can I help you today?",
-  help: "I'm here to help! You can ask me about:\n• Account issues\n• App features\n• Subscription & billing\n• Technical problems\n• Feature requests",
-  bug: "I'm sorry to hear you're experiencing an issue! 🐛 Could you please describe what's happening in detail? Include:\n1. What you were trying to do\n2. What happened instead\n3. Any error messages",
-  subscription:
-    "For subscription-related queries:\n• You can manage your subscription in Settings\n• Refunds are handled through the App Store\n• Contact support for billing issues",
-  thanks: "You're welcome! 😊 Is there anything else I can help you with?",
-  bye: "Goodbye! Feel free to reach out anytime. Have a great day! 👋",
-};
-
 const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
-  const router = useRouter();
   const headerHeight = useHeaderHeight();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
 
-  const [messages, setMessages] = useState<IMessage[]>([]);
+  const { messages, loading, sendMessage } = useSupportMessages();
 
-  // Initialize with welcome message
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: "Hello! 👋 Welcome to support. I'm here to help you with any questions about the app. How can I assist you today?",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "Support",
-          avatar:
-            "https://ui-avatars.com/api/?name=Support&background=7C5CFF&color=fff",
-        },
-      },
-    ]);
-  }, []);
+  const onSend = useCallback(
+    async (newMessages: IMessage[] = []) => {
+      if (newMessages.length === 0) return;
 
-  const getAutoResponse = (text: string): string => {
-    const lowerText = text.toLowerCase().trim();
+      const userMessage = newMessages[0];
 
-    // Check for keyword matches
-    for (const [keyword, response] of Object.entries(AUTO_RESPONSES)) {
-      if (lowerText.includes(keyword)) {
-        return response;
+      try {
+        await sendMessage(userMessage.text);
+      } catch (error) {
+        console.error("Error sending message:", error);
       }
-    }
-
-    return AUTO_RESPONSES.default;
-  };
-
-  const onSend = useCallback((newMessages: IMessage[] = []) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessages)
-    );
-
-    // Simulate auto-response after a short delay
-    if (newMessages.length > 0) {
-      const userMessage = newMessages[0].text;
-
-      setTimeout(() => {
-        const autoResponse: IMessage = {
-          _id: Math.random().toString(36).substring(7),
-          text: getAutoResponse(userMessage),
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: "Support",
-            avatar:
-              "https://ui-avatars.com/api/?name=Support&background=7C5CFF&color=fff",
-          },
-        };
-
-        setMessages((previousMessages) =>
-          GiftedChat.append(previousMessages, [autoResponse])
-        );
-      }, 1000 + Math.random() * 1000);
-    }
-  }, []);
+    },
+    [sendMessage]
+  );
 
   // Custom bubble styling
   const renderBubble = (props: any) => (
@@ -269,10 +207,6 @@ export const SupportChatHeader: React.FC = () => {
         <Text className="text-[28px] font-extrabold text-[#0F172A] font-cormorantBold">
           Support
         </Text>
-        <View className="flex-row items-center mt-1">
-          <View className="w-2 h-2 rounded-full bg-green-500 mr-2" />
-          <Text className="text-sm text-gray-500">Online</Text>
-        </View>
       </View>
 
       <View style={{ width: 40 }} />

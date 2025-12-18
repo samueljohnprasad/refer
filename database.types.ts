@@ -66,6 +66,7 @@ export type Database = {
           created_at: string
           foods: Json
           health_score: number | null
+          health_score_reasoning: string | null
           id: string
           image_url: string | null
           meal_type: string
@@ -83,6 +84,7 @@ export type Database = {
           created_at?: string
           foods?: Json
           health_score?: number | null
+          health_score_reasoning?: string | null
           id?: string
           image_url?: string | null
           meal_type: string
@@ -100,6 +102,7 @@ export type Database = {
           created_at?: string
           foods?: Json
           health_score?: number | null
+          health_score_reasoning?: string | null
           id?: string
           image_url?: string | null
           meal_type?: string
@@ -377,6 +380,33 @@ export type Database = {
           streak_freeze_count?: number | null
           subscription_plan?: string | null
           trial_ends_at?: string | null
+        }
+        Relationships: []
+      }
+      support_messages: {
+        Row: {
+          created_at: string
+          id: string
+          is_support: boolean | null
+          message: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_support?: boolean | null
+          message: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_support?: boolean | null
+          message?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
