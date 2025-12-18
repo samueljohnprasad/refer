@@ -71,7 +71,7 @@ export const useSupportMessages = () => {
       if (giftedMessages.length === 0) {
         const welcomeMessage: IMessage = {
           _id: "welcome-" + Date.now(),
-          text: "Hello! 👋 Welcome to support. I'm here to help you with any questions about the app. How can I assist you today?",
+          text: "Hello! 👋 Welcome to support. We here to help you with any questions about the app. How can we assist you today?",
           createdAt: new Date(),
           user: {
             _id: 900043,
@@ -160,6 +160,37 @@ export const useSupportMessages = () => {
     }
   };
 
+  const deleteAllMessages = async (): Promise<void> => {
+    if (!user?.id) return;
+
+    try {
+      const { error: deleteError } = await supabase
+        .from("support_messages")
+        .delete()
+        .eq("user_id", user.id);
+
+      if (deleteError) throw deleteError;
+
+      // Reset to welcome message
+      const welcomeMessage: IMessage = {
+        _id: "welcome-" + Date.now(),
+        text: "Hello! 👋 Welcome to support. We here to help you with any questions about the app. How can we assist you today?",
+        createdAt: new Date(),
+        user: {
+          _id: 900043,
+          name: "Support",
+        },
+        is_support: true,
+      } as IMessage;
+
+      setMessages([welcomeMessage]);
+      setHasMore(false);
+    } catch (err) {
+      console.error("Error deleting support messages:", err);
+      throw err;
+    }
+  };
+
   useEffect(() => {
     if (!user?.id) return;
 
@@ -203,6 +234,7 @@ export const useSupportMessages = () => {
     hasMore,
     sendMessage,
     loadMore,
+    deleteAllMessages,
     refetch: fetchMessages,
   };
 };

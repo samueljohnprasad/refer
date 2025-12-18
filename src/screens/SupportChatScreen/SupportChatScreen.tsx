@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   Platform,
+  Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -19,7 +20,11 @@ import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { ArrowLeft02Icon, Sent02Icon } from "@hugeicons/core-free-icons";
+import {
+  ArrowLeft02Icon,
+  Sent02Icon,
+  Delete02Icon,
+} from "@hugeicons/core-free-icons";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
 import { useAuth } from "@/src/context/AuthContext";
@@ -174,6 +179,35 @@ export const SupportChatHeader: React.FC = () => {
   const router = useRouter();
   const { height } = useWindowDimensions();
   const isLiquidGlass = isLiquidGlassAvailable();
+  const { deleteAllMessages } = useSupportMessages();
+
+  const handleDeleteChat = () => {
+    Alert.alert(
+      "Delete Chat",
+      "Are you sure you want to delete all messages? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteAllMessages();
+            } catch (error) {
+              console.error("Error deleting messages:", error);
+              Alert.alert(
+                "Error",
+                "Failed to delete messages. Please try again."
+              );
+            }
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <BlurView
@@ -213,7 +247,21 @@ export const SupportChatHeader: React.FC = () => {
         </Text>
       </View>
 
-      <View style={{ width: 40 }} />
+      {/* Delete Chat Button */}
+      <TouchableOpacity
+        onPress={handleDeleteChat}
+        className="w-10 h-10 rounded-full justify-center items-center bg-gray-300"
+        activeOpacity={0.7}
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+        }}
+      >
+        <HugeiconsIcon icon={Delete02Icon} size={20} color="#FFF" />
+      </TouchableOpacity>
     </BlurView>
   );
 };
