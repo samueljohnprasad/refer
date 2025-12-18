@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
+  Modal,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -36,6 +37,7 @@ import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { usePostHog } from "posthog-react-native";
 import { UpdateModal } from "@/src/components/modals";
 import { useAppUpdate } from "@/src/hooks/useAppUpdate";
+import { StreakDisplay } from "@/src/components/Streak";
 // Global color palette
 export const PALETTE = {
   purple: "#7B61FF",
@@ -258,6 +260,7 @@ export default function JournalCalendarScreen() {
 
   // Lazy load heavy chart component after initial render
   const [shouldLoadChart, setShouldLoadChart] = useState(false);
+  const [showStreakModal, setShowStreakModal] = useState(true);
 
   useEffect(() => {
     // Delay chart loading to improve initial render performance
@@ -359,6 +362,16 @@ export default function JournalCalendarScreen() {
         currentVersion={currentVersion}
         latestVersion={latestVersion}
       />
+
+      {/* Streak Modal */}
+      <Modal
+        visible={showStreakModal}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowStreakModal(false)}
+      >
+        <StreakDisplay onContinue={() => setShowStreakModal(false)} />
+      </Modal>
     </SafeAreaView>
   );
 }
