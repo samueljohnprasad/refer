@@ -18,8 +18,11 @@ export const useSupportMessages = () => {
   const { data: userProfile } = useUserProfile();
 
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+
+  const PAGE_SIZE: number = 20;
 
   const convertToGiftedChatMessage = (msg: SupportMessage): IMessage => {
     const isSupportMessage = msg.is_support ?? false;
@@ -38,7 +41,6 @@ export const useSupportMessages = () => {
             _id: msg.user_id,
             name: userName,
           },
-      // Add custom metadata to identify support messages
       is_support: isSupportMessage,
     } as IMessage;
   };
@@ -47,16 +49,23 @@ export const useSupportMessages = () => {
     if (!user?.id) return;
 
     try {
-      setLoading(true);
+      setIsLoading(true);
+      setHasMore(true);
+
       const { data, error: fetchError } = await supabase
         .from("support_messages")
         .select("*")
         .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(PAGE_SIZE);
 
       if (fetchError) throw fetchError;
 
       const giftedMessages = (data || []).map(convertToGiftedChatMessage);
+
+      if (!data || data.length < PAGE_SIZE) {
+        setHasMore(false);
+      }
 
       // Add welcome message if no messages exist
       if (giftedMessages.length === 0) {
@@ -70,6 +79,7 @@ export const useSupportMessages = () => {
           },
           is_support: true,
         } as IMessage;
+        setHasMore(false);
         return setMessages([welcomeMessage]);
       }
       setMessages(giftedMessages);
@@ -77,9 +87,58 @@ export const useSupportMessages = () => {
       setError(err as Error);
       console.error("Error fetching support messages:", err);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
-  }, [user?.id]);
+  }, [user?.id, userProfile?.displayName]);
+
+  const loadMore = useCallback(async (): Promise<void> => {
+    if (!user?.id || !hasMore || isLoading) return;
+
+    try {
+      setIsLoading(true);
+
+      if (messages.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      const oldestMessage = messages[messages.length - 1];
+      const oldestDate = new Date(oldestMessage.createdAt);
+
+      const { data, error: fetchError } = await supabase
+        .from("support_messages")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .lt("created_at", oldestDate.toISOString())
+        .limit(PAGE_SIZE);
+
+      if (fetchError) throw fetchError;
+
+      if (!data || data.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      const giftedMessages = (data || []).map(convertToGiftedChatMessage);
+
+      if (data.length < PAGE_SIZE) {
+        setHasMore(false);
+      }
+
+      if (giftedMessages.length > 0) {
+        return setMessages((prevMessages) => [
+          ...prevMessages,
+          ...giftedMessages,
+        ]);
+      }
+      setHasMore(false);
+    } catch (err) {
+      console.error("Error loading more support messages:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.id, messages, hasMore, isLoading, userProfile?.displayName]);
 
   // Send a new message
   const sendMessage = async (text: string): Promise<void> => {
@@ -139,9 +198,11 @@ export const useSupportMessages = () => {
 
   return {
     messages,
-    loading,
+    isLoading,
     error,
+    hasMore,
     sendMessage,
+    loadMore,
     refetch: fetchMessages,
   };
 };

@@ -34,7 +34,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
 
-  const { messages, loading, sendMessage } = useSupportMessages();
+  const { messages, isLoading, sendMessage, loadMore } = useSupportMessages();
 
   const onSend = useCallback(
     async (newMessages: IMessage[] = []) => {
@@ -155,6 +155,10 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
           renderInputToolbar={renderInputToolbar}
           renderComposer={renderComposer}
           renderSend={renderSend}
+          listProps={{
+            onEndReached: () => loadMore(),
+            onEndReachedThreshold: 0.5,
+          }}
           messagesContainerStyle={{
             backgroundColor: "#F6F4FF",
           }}
