@@ -6,7 +6,9 @@ import {
   useWindowDimensions,
   Platform,
   Alert,
+  ActivityIndicator,
 } from "react-native";
+import LottieView from "lottie-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   GiftedChat,
@@ -39,7 +41,8 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
 
-  const { messages, isLoading, sendMessage, loadMore } = useSupportMessages();
+  const { messages, isLoading, sendMessage, loadMore, hasMore } =
+    useSupportMessages();
 
   const onSend = useCallback(
     async (newMessages: IMessage[] = []) => {
@@ -55,6 +58,49 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
     },
     [sendMessage]
   );
+
+  const renderAvatar = (props: any) => {
+    const userName = props.currentMessage?.user?.name || "U";
+    const isSupport = (props.currentMessage as any)?.is_support ?? false;
+    const firstLetter = userName.charAt(0).toUpperCase();
+
+    return (
+      <View style={{ alignItems: "center", marginRight: 8 }}>
+        <View
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            backgroundColor: isSupport ? "#7C5CFF" : "#E5E7EB",
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 4,
+          }}
+        >
+          <Text
+            style={{
+              color: isSupport ? "#FFFFFF" : "#4B5563",
+              fontSize: 16,
+              fontWeight: "600",
+            }}
+          >
+            {firstLetter}
+          </Text>
+        </View>
+        {isSupport && (
+          <Text
+            style={{
+              fontSize: 10,
+              color: "#6B7280",
+              fontWeight: "500",
+            }}
+          >
+            Support
+          </Text>
+        )}
+      </View>
+    );
+  };
 
   // Custom bubble styling
   const renderBubble = (props: any) => (
@@ -152,10 +198,17 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
         <GiftedChat
           messages={messages}
           onSend={(messages) => onSend(messages)}
+          loadEarlierMessagesProps={{
+            isInfiniteScrollEnabled: true,
+            isAvailable: hasMore,
+            isLoading: isLoading,
+            onPress: () => loadMore(),
+          }}
           user={{
             _id: user?.id || "1",
             name: user?.user_metadata?.name || "User",
           }}
+          renderAvatar={renderAvatar}
           renderBubble={renderBubble}
           renderInputToolbar={renderInputToolbar}
           renderComposer={renderComposer}
