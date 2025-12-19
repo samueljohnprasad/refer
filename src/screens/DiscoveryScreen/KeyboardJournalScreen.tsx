@@ -36,6 +36,7 @@ import { useAtom } from "jotai";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
 import WhisperUI from "@/src/components/ui/swiftui";
+import * as Haptics from "expo-haptics";
 
 interface KeyboardJournalScreenProps {
   onSubmit: (text: string, enableAIInsights: boolean) => void;
@@ -98,6 +99,10 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
     return () => {
       Keyboard.dismiss();
     };
+  }, []);
+
+  useEffect(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   }, []);
 
   const handleSubmit = useCallback(() => {

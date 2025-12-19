@@ -16,6 +16,7 @@ import { ReloadIcon, SparklesIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import useAudioRecording from "@/hooks/useAudioRecording";
+import * as Haptics from "expo-haptics";
 
 interface VoiceRecorderProps {
   onStop: (uri: string, enableAIInsights: boolean) => void;
@@ -26,6 +27,10 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
   const [startRecording, setStartRecording] = useAtom(startRecordingAtom);
   const [enableAIInsights, setEnableAIInsights] = useState<boolean>(true);
+
+  useEffect(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+  }, []);
 
   const handleShufflePrompt = () => {
     rotation.value = withSpring(rotation.value + 360, {
@@ -135,6 +140,7 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
         isStopped={isStopped}
         durationSeconds={recorderState.durationMillis / 1000}
         onToggleRecord={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           if (isRecording) {
             return handlePauseRecording();
           }

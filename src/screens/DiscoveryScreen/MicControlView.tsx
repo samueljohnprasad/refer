@@ -20,6 +20,7 @@ import ShortBottomModalWithProvider from "@/src/components/ShortBottomModalWithP
 import { isAndroid } from "@/src/utils/mood";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Host, Button as SwiftButton } from "@expo/ui/swift-ui";
+import * as Haptics from "expo-haptics";
 
 // Props interface for the presenter component
 export interface MicControlViewProps {
@@ -66,6 +67,8 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   const { handleClose } = useBottomSheet();
 
   const handleDiscard = useCallback(() => {
+    // Heavy haptic for destructive action (discard recording)
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     setRecorderOpen(false);
   }, [setRecorderOpen]);
   const isLiquidGlass = isLiquidGlassAvailable();
@@ -76,6 +79,8 @@ const MicControlView: React.FC<MicControlViewProps> = ({
         <View style={[CONTAINER_STOP_STYLE, { position: "absolute" }]}>
           <Pressable
             onPress={() => {
+              // Light haptic for pause/resume toggle
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               if (isAndroid) {
                 return onStop();
               }
@@ -115,7 +120,11 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               <View className="flex p-5 items-center justify-center mb-4 bg-[#FFA726] rounded-full">
                 <TouchableOpacity
                   className="w-20 h-20 rounded-full justify-center items-center"
-                  onPress={onToggleRecord}
+                  onPress={() => {
+                    // Light haptic for record toggle
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    onToggleRecord();
+                  }}
                   activeOpacity={0.9}
                 >
                   <View className="w-20 h-20 rounded-full justify-center items-center">
@@ -127,7 +136,14 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               {isPaused && (
                 <View>
                   {!isLiquidGlass && (
-                    <TouchableOpacity onPress={onStop} activeOpacity={0.8}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        // Medium haptic for completion/submit action
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        onStop();
+                      }}
+                      activeOpacity={0.8}
+                    >
                       <View>
                         <HugeiconsIcon icon={Tick01Icon} size={32} />
                       </View>
@@ -136,7 +152,13 @@ const MicControlView: React.FC<MicControlViewProps> = ({
                   {isLiquidGlass && (
                     <Host matchContents>
                       <SwiftButton
-                        onPress={onStop}
+                        onPress={() => {
+                          // Medium haptic for completion/submit action
+                          Haptics.impactAsync(
+                            Haptics.ImpactFeedbackStyle.Medium
+                          );
+                          onStop();
+                        }}
                         color="#7B61FF"
                         variant="glassProminent"
                         controlSize="large"
@@ -171,6 +193,10 @@ const MicControlView: React.FC<MicControlViewProps> = ({
           <View className="flex-row gap-3 w-full mt-4">
             <Pressable
               onPress={() => {
+                // Success haptic for keeping recording
+                Haptics.notificationAsync(
+                  Haptics.NotificationFeedbackType.Success
+                );
                 handleClose();
               }}
               className="flex-1 bg-[#F6F4FF] rounded-full flex-row items-center justify-center py-4 active:opacity-80"
