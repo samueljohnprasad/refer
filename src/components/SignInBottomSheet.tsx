@@ -1,6 +1,4 @@
-import { Button, ButtonText } from "@/components/ui/button";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
+import { View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import { performOAuth } from "../network/auth/google-auth";
@@ -11,8 +9,8 @@ import {
   signInWithApple,
   signInWithAppleOAuth,
 } from "../network/auth/apple-auth";
-import * as AppleAuthentication from "expo-apple-authentication";
 import { isIOS } from "../utils/mood";
+
 export default forwardRef<BottomSheetModal | null>((props, ref) => {
   const router = useRouter();
   const toast = useToast();
@@ -35,46 +33,48 @@ export default forwardRef<BottomSheetModal | null>((props, ref) => {
   };
 
   return (
-    <ShortBottomModal ref={ref}>
-      <VStack
-        className="flex-1  rounded-2xl h-full px-6 "
-        space="4xl"
-        style={{
-          backgroundColor: "white",
-          borderRadius: 24,
-          height: "100%",
-          paddingTop: 24,
-        }}
-      >
-        <Heading size="3xl" className="text-left">
-          Sign in
-        </Heading>
-        <VStack space="xl" className="px-2">
-          <Button
+    <ShortBottomModal ref={ref} snapPoints={["35%"]}>
+      <View className="flex-1 px-6 pt-4 pb-8 justify-between bg-white rounded-[24px]">
+        <View>
+          <Text
+            className="text-3xl text-gray-900 mb-2"
+            style={{ fontFamily: "CormorantSemiBold" }}
+          >
+            Welcome Back
+          </Text>
+          <Text className="text-gray-500 text-base leading-5">
+            Sign in to sync your journals, moods, and calories across all your
+            devices.
+          </Text>
+        </View>
+
+        <View className="gap-3">
+          <TouchableOpacity
             onPress={() => {
               if (isIOS) {
                 return signInWithApple();
               }
               signInWithAppleOAuth();
             }}
-            variant="solid"
-            action="primary"
-            size="xl"
-            className="flex items-center font-semibold border w-full rounded-full py-2 drop-shadow-sm shadow-primary-500 hover:shadow-primary-500 hover:scale-95 transition-all duration-300"
+            className="w-full bg-gray-900 h-14 rounded-full items-center justify-center flex-row"
+            activeOpacity={0.8}
           >
-            <ButtonText>Sign In with Apple</ButtonText>
-          </Button>
-          <Button
+            <Text className="text-white font-semibold text-lg">
+              Sign in with Apple
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             onPress={handleGoogleSignIn}
-            variant="solid"
-            action="secondary"
-            size="xl"
-            className="flex items-center font-semibold border w-full rounded-full py-2 drop-shadow-sm shadow-primary-500 hover:shadow-primary-500 hover:scale-95 transition-all duration-300"
+            className="w-full bg-white border border-gray-200 h-14 rounded-full items-center justify-center flex-row"
+            activeOpacity={0.8}
           >
-            <ButtonText>Sign In with Google</ButtonText>
-          </Button>
-        </VStack>
-      </VStack>
+            <Text className="text-gray-900 font-semibold text-lg">
+              Sign in with Google
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </ShortBottomModal>
   );
 });
