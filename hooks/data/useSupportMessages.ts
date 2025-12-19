@@ -19,6 +19,39 @@ const messagesAtom = atom<IMessage[]>([]);
 const isLoadingAtom = atom<boolean>(true);
 const hasMoreAtom = atom<boolean>(true);
 
+const createDailySupportPrompt = (): IMessage => {
+  const today = new Date();
+  return {
+    _id: "daily-prompt-" + today.toDateString(),
+    text: `Hello! 👋 We're here to assist you.
+          
+How can we help improve your experience today?
+
+❓ **General Queries**
+Questions about features or how things work?
+
+✨ **Feature Requests**
+Have a great idea for the app? We'd love to hear it!
+
+🐞 **Bug Reports**
+Found an issue? Please tell us what happened.
+
+🔐 **Account & Data**
+Need help with your profile, subscription, or privacy?
+
+❤️ **Feedback**
+Any other thoughts or suggestions?
+
+Drop us a message below!`,
+    createdAt: today,
+    user: {
+      _id: 900043,
+      name: "Support",
+    },
+    is_support: true,
+  } as IMessage;
+};
+
 export const useSupportMessages = () => {
   const { user } = useAuth();
   const { data: userProfile } = useUserProfile();
@@ -76,21 +109,22 @@ export const useSupportMessages = () => {
         setHasMore(false);
       }
 
-      // Add welcome message if no messages exist
-      if (giftedMessages.length === 0) {
-        const welcomeMessage: IMessage = {
-          _id: "welcome-" + Date.now(),
-          text: "Hello! 👋 Welcome to support. We here to help you with any questions about the app. How can we assist you today?",
-          createdAt: new Date(),
-          user: {
-            _id: 900043,
-            name: "Support",
-          },
-          is_support: true,
-        } as IMessage;
-        setHasMore(false);
-        return setMessages([welcomeMessage]);
+      // Check if the last message was from today
+      const today = new Date();
+      const lastMessageDate =
+        giftedMessages.length > 0 ? giftedMessages[0].createdAt : null;
+      const isLastMessageToday =
+        lastMessageDate &&
+        (lastMessageDate instanceof Date
+          ? lastMessageDate
+          : new Date(lastMessageDate)
+        ).toDateString() === today.toDateString();
+
+      // If no messages from today, add the daily prompt
+      if (!isLastMessageToday) {
+        return setMessages([createDailySupportPrompt(), ...giftedMessages]);
       }
+
       setMessages(giftedMessages);
     } catch (err) {
       setError(err as Error);
@@ -202,18 +236,8 @@ export const useSupportMessages = () => {
 
       if (deleteError) throw deleteError;
 
-      const welcomeMessage: IMessage = {
-        _id: "welcome-" + Date.now(),
-        text: "Hello! 👋 Welcome to support. We here to help you with any questions about the app. How can we assist you today?",
-        createdAt: new Date(),
-        user: {
-          _id: 900043,
-          name: "Support",
-        },
-        is_support: true,
-      } as IMessage;
+      setMessages([createDailySupportPrompt()]);
 
-      setMessages([welcomeMessage]);
       setHasMore(false);
     } catch (err) {
       console.error("Error deleting support messages:", err);
