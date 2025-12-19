@@ -3,7 +3,7 @@ import {
   RemindersConfigItem,
   saveRemindersConfig,
   scheduleDailyReminder,
-} from "@/src/lib/notification-reminders";
+} from "@/src/components/lib/notification-reminders";
 import { useAtom } from "jotai";
 import * as Notifications from "expo-notifications";
 import { cfgAtom } from "@/src/components/notifications";

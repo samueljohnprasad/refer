@@ -222,14 +222,6 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
     // Show icon if there are ANY micronutrients (for now, to debug)
     const hasMicronutrients = allMicronutrients.length > 0;
 
-    // Log for debugging
-    if (allMicronutrients.length > 0) {
-      console.log("Food:", food.name);
-      console.log("All micronutrients:", allMicronutrients);
-      console.log("Tracked IDs:", Array.from(trackedNutrientIds));
-      console.log("Filtered micronutrients:", trackedMicronutrients);
-    }
-
     const showMicronutrientInfo = (): void => {
       if (hasMicronutrients) {
         // Show tracked ones if available, otherwise show all

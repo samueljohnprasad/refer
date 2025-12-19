@@ -263,8 +263,6 @@ export default function WhisperUI({
       setRealtimeResult("");
       setError("");
 
-      console.log("Starting real-time transcription...");
-
       const realtimeOptions: TranscribeRealtimeOptions = {
         language: "en",
         realtimeAudioSec: 300,
@@ -285,28 +283,12 @@ export default function WhisperUI({
       subscribe((event: any) => {
         const { isCapturing, data, processTime, recordingTime } = event;
 
-        console.log(
-          `Realtime transcribing: ${isCapturing ? "ON" : "OFF"}\n` +
-            `Result: ${data?.result || "No result"}\n` +
-            `Process time: ${processTime}ms\n` +
-            `Recording time: ${recordingTime}ms`
-        );
-
         if (data?.result) {
           const currentResult = data.result.trim();
-          console.log("currentResult", currentResult);
           setRealtimeResult(currentResult);
-
-          console.log("📝 Real-time update:", {
-            isCapturing,
-            length: currentResult.length,
-            lastWords: currentResult.split(" ").slice(-5).join(" "),
-            totalWords: currentResult.split(" ").length,
-          });
         }
 
         if (!isCapturing) {
-          console.log("Speech segment finished, but continuing to listen...");
         }
       });
 
@@ -334,7 +316,6 @@ export default function WhisperUI({
       setIsRealtimeActive(false);
       onStop();
       setRealtimeResult("");
-      console.log("Real-time transcription stopped");
     } catch (err) {
       console.error("Error stopping real-time transcription:", err);
     } finally {

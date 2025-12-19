@@ -157,7 +157,6 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
       if (nextAppState === "background") {
-        console.log("background");
         ExtensionStorage.reloadWidget();
       }
     });

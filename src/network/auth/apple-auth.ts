@@ -23,7 +23,6 @@ export async function signInWithApple() {
         provider: "apple",
         token: credential.identityToken,
       });
-      console.log(JSON.stringify({ error, user }, null, 2));
       if (!error) {
         // Apple only provides the user's full name on the first sign-in
         // Save it to user metadata if available
@@ -58,7 +57,6 @@ export async function signInWithApple() {
 const redirectUrl = AuthSession.makeRedirectUri();
 
 export const signInWithAppleOAuth = async () => {
-  console.log("redirectUrlll", redirectUrl);
   const { error, data } = await supabase.auth.signInWithOAuth({
     provider: "apple",
     options: {
@@ -66,14 +64,12 @@ export const signInWithAppleOAuth = async () => {
       skipBrowserRedirect: false,
     },
   });
-  console.log("redirectUrlll data", data, error);
   if (error) throw error;
 
   const result = await WebBrowser.openAuthSessionAsync(
     data.url, // The URL from Supabase
     redirectUrl // The deep link to your app
   );
-  console.log("redirectUrlll result", result);
 
   if (result.type === "success" && result.url) {
     try {

@@ -136,7 +136,6 @@ export const generateAIRecommendations = async (
           }/5\n${e.transcripts}\n`
       )
       .join("\n---\n");
-      console.log("entriesentries", entriesText);
 
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
@@ -183,11 +182,9 @@ export const generateAIRecommendations = async (
       },
     });
 
-    console.log("response", response);
     if (!response.text) return [];
     return JSON.parse(response.text);
   } catch (error) {
-    console.log("error generateAIRecommendations", error);
     return [];
   }
 };

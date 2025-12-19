@@ -3,7 +3,7 @@ import { Pressable, Animated, View, ActivityIndicator } from "react-native";
 import { Text } from "@/components/ui/text";
 import { format, parseISO } from "date-fns";
 import { Feather } from "@expo/vector-icons";
-import { getEntryTypeIcon } from "../../../lib/entryTypeUtils";
+import { getEntryTypeIcon } from "../../../components/lib/entryTypeUtils";
 import { JournalEntry } from "@/hooks/data/types";
 import { Image } from "@/components/ui/image";
 import { Emotion, emotions } from "@/assets/emojis";

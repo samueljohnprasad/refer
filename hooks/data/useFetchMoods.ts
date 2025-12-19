@@ -49,7 +49,7 @@ async function fetchMoodsInRange({
 
   dailyTotals.forEach((value, date) => {
     const avg = value.sum / value.count;
-    const roundedAvg = Number(avg.toFixed(1));
+    const roundedAvg = Math.round(Number(avg.toFixed(1)));
     moodMap.set(date, roundedAvg);
   });
 

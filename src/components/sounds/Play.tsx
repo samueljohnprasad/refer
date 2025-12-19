@@ -6,7 +6,6 @@ const Play = ({ audioSourceString }: { audioSourceString: string }) => {
   const player = useAudioPlayer({ uri: audioSourceString });
   useAudioSampleListener(player, (sample) => {
     // Use sample.channels array for audio visualization
-    // console.log("Audio sample:", sample.channels[0].frames);
   });
   return (
     <>

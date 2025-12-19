@@ -51,7 +51,6 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
     totalDuration,
   } = useAudioRecording();
   const isStopped = recordingCurrentState === "stopped";
-  //  console.log('recordingCurrentState',recordingCurrentState, recorderState.url, recorderState.canRecord)
   const handleStopRecording = async () => {
     if (
       recordingCurrentState === "recording" ||

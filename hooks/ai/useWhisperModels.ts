@@ -117,20 +117,14 @@ export function useWhisperModels() {
       try {
         existingInfo = file.info();
       } catch (infoError) {
-        console.warn(
-          `Failed to read info for model ${model.id} at ${file.uri}:`,
-          infoError
-        );
         existingInfo = { exists: false };
       }
       if (existingInfo.exists) {
-        console.log(`Model ${model.id} already exists at ${file.uri}`);
         updateModelFileInfo();
         return file.uri;
       }
 
       setIsDownloading(true);
-      console.log(`Downloading model ${model.id} from ${model.url}`);
 
       try {
         const downloadResumable = createDownloadResumable(
@@ -148,11 +142,6 @@ export function useWhisperModels() {
               ...prev,
               [model.id]: fraction,
             }));
-            console.log(
-              `Download progress for ${model.id}: ${(fraction * 100).toFixed(
-                1
-              )}%`
-            );
           }
         );
 
@@ -165,7 +154,6 @@ export function useWhisperModels() {
           (downloadResult.status === 0 ||
             (downloadResult.status >= 200 && downloadResult.status < 300))
         ) {
-          console.log(`Successfully downloaded model ${model.id}`);
           updateModelFileInfo();
           setDownloadProgress((prev) => ({ ...prev, [model.id]: 1 }));
           return file.uri;
@@ -175,7 +163,6 @@ export function useWhisperModels() {
           );
         }
       } catch (error) {
-        console.error(`Error downloading model ${model.id}:`, error);
         throw error;
       } finally {
         setIsDownloading(false);
@@ -191,7 +178,6 @@ export function useWhisperModels() {
 
       try {
         setIsInitializingModel(true);
-        console.log(`Initializing Whisper model: ${model.label}`);
 
         // Download model if not already available
         const modelPath = await downloadModel(model);
@@ -203,17 +189,14 @@ export function useWhisperModels() {
 
         setWhisperContext(context);
         setCurrentModelId(modelId);
-        console.log(`Whisper context initialized for model: ${model.label}`);
 
         // Optionally initialize VAD context
         if (options?.initVad) {
-          console.log("Initializing VAD context...");
           try {
             const vad = await initWhisperVad({
               filePath: modelPath,
             });
             setVadContext(vad);
-            console.log("VAD context initialized successfully");
           } catch (vadError) {
             console.warn("VAD initialization failed:", vadError);
             // Continue without VAD - it's optional
@@ -238,7 +221,6 @@ export function useWhisperModels() {
     setWhisperContext(null);
     setVadContext(null);
     setCurrentModelId(null);
-    console.log("Whisper contexts reset");
   }, []);
 
   const getModelById = useCallback((modelId: string) => {
@@ -276,7 +258,6 @@ export function useWhisperModels() {
         const info = file.info();
         if (info.exists) {
           file.delete();
-          console.log(`Deleted model file at ${fileInfo.path}`);
         }
       } catch (error) {
         console.error(`Failed to delete model ${modelId}:`, error);

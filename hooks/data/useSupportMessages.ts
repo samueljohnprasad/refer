@@ -274,21 +274,7 @@ export const useSupportMessages = () => {
           });
         }
       )
-      .subscribe((status, error) => {
-        console.log(`Support Chat Subscription Status: ${status}`);
-
-        if (status === "SUBSCRIBED") {
-          console.log("Successfully subscribed to support messages.");
-        }
-
-        if (status === "CHANNEL_ERROR") {
-          console.error("Support Chat Channel Error:", error);
-        }
-
-        if (status === "CLOSED") {
-          console.log("Support Chat Channel Closed.");
-        }
-      });
+      .subscribe();
 
     return () => {
       supabase.removeChannel(channel);

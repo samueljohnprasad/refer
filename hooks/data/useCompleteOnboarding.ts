@@ -1,9 +1,9 @@
-import { OnBoardingFormData } from "@/src/components/steps/src";
 import { useAuth } from "@/src/context/AuthContext";
-import { RemindersConfig } from "@/src/lib/notification-reminders";
+import { RemindersConfig } from "@/src/components/lib/notification-reminders";
 import { supabase } from "@/src/network/auth/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback } from "react";
+import { OnBoardingFormData } from "@/src/components/steps/src/types";
 
 export const ONBOARDING_KEY = "onboarding_completed";
 

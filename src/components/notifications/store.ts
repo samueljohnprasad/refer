@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import type { RemindersConfig } from "@/src/lib/notification-reminders";
+import type { RemindersConfig } from "@/src/components/lib/notification-reminders";
 
 /**
  * Global atom for reminder configuration state

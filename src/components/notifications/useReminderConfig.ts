@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { Alert, Linking } from "react-native";
 import { useAtom } from "jotai";
-import type { RemindersConfig } from "@/src/lib/notification-reminders";
+import type { RemindersConfig } from "@/src/components/lib/notification-reminders";
 import {
   ensureNotificationPermissions,
   loadRemindersConfig,
-} from "@/src/lib/notification-reminders";
+} from "@/src/components/lib/notification-reminders";
 import type { ReminderItem } from "./types";
 import { cfgAtom } from "./store";
 
