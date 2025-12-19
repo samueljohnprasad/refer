@@ -8,7 +8,6 @@ WebBrowser.maybeCompleteAuthSession(); // required for web only
 // Use a single redirect URI across platforms (iOS/Android)
 // Ensure this exact value is added to Supabase Auth > URL configuration > Additional Redirect URLs
 const redirectUrl = AuthSession.makeRedirectUri();
-console.log("redirectUrl", redirectUrl);
 
 const createSessionFromUrl = async (url: string) => {
   const { params, errorCode } = QueryParams.getQueryParams(url);
