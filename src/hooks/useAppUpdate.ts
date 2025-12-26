@@ -18,14 +18,13 @@ interface UseAppUpdateOptions {
 export function useAppUpdate(
   options: UseAppUpdateOptions = {}
 ): UseAppUpdateReturn {
-  const { autoCheck = true } = options;
+  const { autoCheck = false } = options;
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [currentVersion, setCurrentVersion] = useState<string>();
   const [latestVersion, setLatestVersion] = useState<string>();
   const [isChecking, setIsChecking] = useState(false);
 
-  // Track if we've already checked for updates
   const hasCheckedRef = useRef(false);
 
   const checkForUpdates = useCallback(async () => {
@@ -52,7 +51,6 @@ export function useAppUpdate(
   }, [isChecking]);
 
   useEffect(() => {
-    // Only check once per app session
     if (autoCheck && !hasCheckedRef.current) {
       hasCheckedRef.current = true;
       checkForUpdates();

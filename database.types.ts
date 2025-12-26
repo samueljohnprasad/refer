@@ -178,6 +178,125 @@ export type Database = {
         }
         Relationships: []
       }
+      habit_completions: {
+        Row: {
+          completed_at: string | null
+          completed_date: string
+          habit_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_date: string
+          habit_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_date?: string
+          habit_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habit_completions_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "habit_completions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      habits: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          end_repeat_count: number | null
+          end_repeat_date: string | null
+          end_repeat_option: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          notes: string | null
+          reminder_enabled: boolean | null
+          reminder_time: string | null
+          repeat_days: number[] | null
+          repeat_pattern: string | null
+          scheduled_time: string | null
+          sort_order: number | null
+          start_date: string | null
+          time_option: string | null
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          end_repeat_count?: number | null
+          end_repeat_date?: string | null
+          end_repeat_option?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          notes?: string | null
+          reminder_enabled?: boolean | null
+          reminder_time?: string | null
+          repeat_days?: number[] | null
+          repeat_pattern?: string | null
+          scheduled_time?: string | null
+          sort_order?: number | null
+          start_date?: string | null
+          time_option?: string | null
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          end_repeat_count?: number | null
+          end_repeat_date?: string | null
+          end_repeat_option?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          notes?: string | null
+          reminder_enabled?: boolean | null
+          reminder_time?: string | null
+          repeat_days?: number[] | null
+          repeat_pattern?: string | null
+          scheduled_time?: string | null
+          sort_order?: number | null
+          start_date?: string | null
+          time_option?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journal_ai_insights: {
         Row: {
           achievements: string[] | null

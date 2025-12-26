@@ -4,12 +4,10 @@ import { Text } from "@/components/ui/text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   ChartHistogramIcon,
-  TrendingUpIcon,
-  TrendingDownIcon,
   ArrowRight01Icon,
   SparklesIcon,
   Target03Icon,
-  Muscle01Icon,
+  StarIcon,
 } from "@hugeicons/core-free-icons";
 import type { WeeklySummary } from "@/src/network/genAi";
 
@@ -29,8 +27,8 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
   if (!weeklySummary) return null;
 
   const getTrendIcon = () => {
-    if (weeklySummary.moodTrend === "improving") return TrendingUpIcon;
-    if (weeklySummary.moodTrend === "declining") return TrendingDownIcon;
+    if (weeklySummary.moodTrend === "improving") return ArrowRight01Icon;
+    if (weeklySummary.moodTrend === "declining") return ArrowRight01Icon;
     return ArrowRight01Icon;
   };
 
@@ -88,28 +86,31 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
         </View>
 
         {/* Top Emotions */}
-        {weeklySummary.topEmotions && weeklySummary.topEmotions.length > 0 && (
-          <View className="mb-4">
-            <Text className="text-base font-bold text-slate-900 mb-2.5">
-              Top Emotions
-            </Text>
-            <View className="flex-row flex-wrap gap-2">
-              {weeklySummary.topEmotions.map((emotion, idx) => (
-                <View
-                  key={idx}
-                  className="bg-purple-50 px-3 py-1.5 rounded-full border border-purple-100"
-                >
-                  <Text className="text-xs text-purple-700 font-semibold">
-                    {emotion}
-                  </Text>
-                </View>
-              ))}
+        {weeklySummary?.topEmotions &&
+          Array.isArray(weeklySummary.topEmotions) &&
+          weeklySummary.topEmotions.length > 0 && (
+            <View className="mb-4">
+              <Text className="text-base font-bold text-slate-900 mb-2.5">
+                Top Emotions
+              </Text>
+              <View className="flex-row flex-wrap gap-2">
+                {weeklySummary.topEmotions.map((emotion, idx) => (
+                  <View
+                    key={idx}
+                    className="bg-purple-50 px-3 py-1.5 rounded-full border border-purple-100"
+                  >
+                    <Text className="text-xs text-purple-700 font-semibold">
+                      {emotion}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             </View>
-          </View>
-        )}
+          )}
 
         {/* Key Highlights */}
-        {weeklySummary.keyHighlights &&
+        {weeklySummary?.keyHighlights &&
+          Array.isArray(weeklySummary.keyHighlights) &&
           weeklySummary.keyHighlights.length > 0 && (
             <View className="mb-4">
               <View className="flex-row items-center gap-2 mb-2.5">
@@ -133,7 +134,7 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
         {weeklySummary.motivationalMessage && (
           <View className="bg-purple-50 rounded-xl p-4 flex-row items-start gap-3 mt-2 border border-purple-100">
             <View className="w-8 h-8 rounded-full bg-purple-100 items-center justify-center">
-              <HugeiconsIcon icon={Muscle01Icon} size={18} color="#7B61FF" />
+              <HugeiconsIcon icon={StarIcon} size={18} color="#7B61FF" />
             </View>
             <Text className="flex-1 text-sm text-slate-900 leading-5 font-medium">
               {weeklySummary.motivationalMessage}
@@ -142,7 +143,8 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
         )}
 
         {/* Next Week Focus */}
-        {weeklySummary.nextWeekFocus &&
+        {weeklySummary?.nextWeekFocus &&
+          Array.isArray(weeklySummary.nextWeekFocus) &&
           weeklySummary.nextWeekFocus.length > 0 && (
             <View className="mt-4">
               <View className="flex-row items-center gap-2 mb-2.5">

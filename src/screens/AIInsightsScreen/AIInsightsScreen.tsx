@@ -16,7 +16,10 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -42,6 +45,7 @@ export default function AIInsightsScreen() {
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const scrollY = useSharedValue(0);
+  const insets = useSafeAreaInsets();
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -154,9 +158,10 @@ export default function AIInsightsScreen() {
               <Animated.View
                 style={[
                   {
-                    height: height * 0.14,
-                    justifyContent: "center",
-                    alignItems: "center",
+                    paddingTop: insets.top,
+                    minHeight: insets.top + 60,
+                    justifyContent: "flex-end", // Align content to bottom of header area
+                    overflow: "hidden",
                   },
                   headerAnimatedStyle,
                 ]}
@@ -173,44 +178,47 @@ export default function AIInsightsScreen() {
                   tint="light"
                 />
 
-                {/* Animated Stats in Header */}
-                <Animated.View
-                  style={[headerStatsStyle]}
-                  className="flex-row items-center justify-around w-full px-5 mt-8"
-                >
-                  <View className="items-center">
-                    <Text className="text-xl font-bold text-white">
-                      {isLoadingWeekCount ? "-" : currentWeekCount || 0}
-                    </Text>
-                    <Text className="text-[11px] text-white opacity-90">
-                      This Week
-                    </Text>
-                  </View>
+                {/* Main Header Content Container */}
+                <View className="pb-4 pt-2">
+                  {/* Animated Stats in Header */}
+                  <Animated.View
+                    style={[headerStatsStyle]}
+                    className="flex-row items-center justify-around w-full px-5 mt-2" // Reduced margin top
+                  >
+                    <View className="items-center">
+                      <Text className="text-xl font-bold text-white">
+                        {isLoadingWeekCount ? "-" : currentWeekCount || 0}
+                      </Text>
+                      <Text className="text-[11px] text-white opacity-90">
+                        This Week
+                      </Text>
+                    </View>
 
-                  <View className="w-px h-8 bg-white opacity-30" />
+                    <View className="w-px h-8 bg-white opacity-30" />
 
-                  <View className="items-center">
-                    <Text className="text-xl font-bold text-white">
-                      {isLoadingStats ? "-" : totalJournalCount}
-                    </Text>
-                    <Text className="text-[11px] text-white opacity-90">
-                      All Entries
-                    </Text>
-                  </View>
+                    <View className="items-center">
+                      <Text className="text-xl font-bold text-white">
+                        {isLoadingStats ? "-" : totalJournalCount}
+                      </Text>
+                      <Text className="text-[11px] text-white opacity-90">
+                        All Entries
+                      </Text>
+                    </View>
 
-                  <View className="w-px h-8 bg-white opacity-30" />
+                    <View className="w-px h-8 bg-white opacity-30" />
 
-                  <View className="items-center">
-                    <Text className="text-xl font-bold text-white">
-                      {isLoadingStats
-                        ? "-"
-                        : overallAverageMood?.toFixed(1) || "N/A"}
-                    </Text>
-                    <Text className="text-[11px] text-white opacity-90">
-                      Overall Mood
-                    </Text>
-                  </View>
-                </Animated.View>
+                    <View className="items-center">
+                      <Text className="text-xl font-bold text-white">
+                        {isLoadingStats
+                          ? "-"
+                          : overallAverageMood?.toFixed(1) || "N/A"}
+                      </Text>
+                      <Text className="text-[11px] text-white opacity-90">
+                        Overall Mood
+                      </Text>
+                    </View>
+                  </Animated.View>
+                </View>
               </Animated.View>
             );
           },

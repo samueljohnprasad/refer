@@ -44,6 +44,7 @@ import { AIInsightsChip } from "@/src/components/ai/AIInsightsChip";
 import { formateDate_y_m_d } from "@/src/utils/date";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import CalorieWidget from "@/src/components/CalorieWidget";
+import { HabitsSection } from "@/src/components/habits/HabitsSection";
 
 // Lazy load heavy components
 const MentalHealthProfileContainer = React.lazy(() =>
@@ -380,6 +381,11 @@ const DailyNotesScreenComponent = () => {
               {/* Calorie Tracker Widget */}
               <View className="px-4 pt-3">
                 <CalorieWidget selectedDate={selectedDate} />
+              </View>
+
+              {/* Habits Section */}
+              <View className="px-4 pt-3">
+                <HabitsSection selectedDate={selectedDate} />
               </View>
 
               <Animated.View
