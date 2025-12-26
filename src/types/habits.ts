@@ -16,7 +16,7 @@ export type DbHabitCompletionUpdate =
 export type TimeOption = "anytime" | "at_time";
 
 // Repeat patterns
-export type RepeatPattern = "never" | "daily" | "weekly" | "monthly" | "yearly";
+export type RepeatPattern = "never" | "daily" | "weekly" | "monthly";
 
 // End repeat options
 export type EndRepeatOption = "never" | "on_date" | "after_count";

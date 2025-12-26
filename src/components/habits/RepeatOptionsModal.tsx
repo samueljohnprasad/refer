@@ -17,7 +17,6 @@ const REPEAT_OPTIONS: { value: RepeatPattern; label: string }[] = [
   { value: "daily", label: "Daily" },
   { value: "weekly", label: "Weekly" },
   { value: "monthly", label: "Monthly" },
-  { value: "yearly", label: "Yearly" },
 ];
 
 export const RepeatOptionsModal: React.FC<RepeatOptionsModalProps> = ({

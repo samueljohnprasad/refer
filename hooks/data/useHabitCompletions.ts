@@ -7,7 +7,16 @@ import {
   HabitWithStatus,
   Habit,
 } from "@/src/types/habits";
-import { format } from "date-fns";
+import {
+  format,
+  getDay,
+  getDate,
+  getMonth,
+  isSameDay,
+  parseISO,
+  isAfter,
+  isBefore,
+} from "date-fns";
 
 export const useHabitCompletions = (selectedDate: Date) => {
   const { session } = useAuth();
@@ -150,10 +159,65 @@ export const useHabitCompletions = (selectedDate: Date) => {
     [completeHabit, uncompleteHabit]
   );
 
-  // Combine habits with their completion status
+  // Check if a habit should be shown on the selected date based on repeat pattern
+  const isHabitScheduledForDate = useCallback(
+    (habit: Habit): boolean => {
+      // Check if habit has started
+      if (habit.startDate) {
+        const startDate = parseISO(habit.startDate);
+        if (isBefore(selectedDate, startDate)) {
+          return false; // Habit hasn't started yet
+        }
+      }
+
+      // Check repeat pattern
+      switch (habit.repeatPattern) {
+        case "daily":
+          return true; // Show every day
+
+        case "weekly":
+          // Get day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+          const dayOfWeek = getDay(selectedDate);
+          // If repeatDays is set, check if today is in the list
+          if (habit.repeatDays && habit.repeatDays.length > 0) {
+            return habit.repeatDays.includes(dayOfWeek);
+          }
+          // If no specific days set, show on the same day as start date
+          if (habit.startDate) {
+            const startDayOfWeek = getDay(parseISO(habit.startDate));
+            return dayOfWeek === startDayOfWeek;
+          }
+          return true;
+
+        case "monthly":
+          // Show on the same day of the month as the start date
+          if (habit.startDate) {
+            const startDayOfMonth = getDate(parseISO(habit.startDate));
+            return getDate(selectedDate) === startDayOfMonth;
+          }
+          return true;
+
+        case "never":
+          // One-time habit - only show on the start date
+          if (habit.startDate) {
+            return isSameDay(selectedDate, parseISO(habit.startDate));
+          }
+          return true;
+
+        default:
+          return true;
+      }
+    },
+    [selectedDate]
+  );
+
+  // Combine habits with their completion status (filtered by schedule)
   const getHabitsWithStatus = useCallback(
     (habits: Habit[]): HabitWithStatus[] => {
-      return habits.map((habit) => {
+      // Filter habits that are scheduled for the selected date
+      const scheduledHabits = habits.filter(isHabitScheduledForDate);
+
+      return scheduledHabits.map((habit) => {
         const completion = completions.find((c) => c.habitId === habit.id);
         return {
           ...habit,
@@ -162,7 +226,7 @@ export const useHabitCompletions = (selectedDate: Date) => {
         };
       });
     },
-    [completions]
+    [completions, isHabitScheduledForDate]
   );
 
   // Load completions when date or user changes

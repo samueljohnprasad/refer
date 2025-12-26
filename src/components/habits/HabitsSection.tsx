@@ -30,7 +30,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   const detailsModalRef = useRef<BottomSheetModal>(null);
   const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
 
-  const { habits, createHabit, updateHabit } = useHabits();
+  const { habits, createHabit, updateHabit, deleteHabit } = useHabits();
   const { toggleHabitCompletion, getHabitsWithStatus } =
     useHabitCompletions(selectedDate);
 
@@ -79,6 +79,12 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     await toggleHabitCompletion(habitId, isCompleted);
   };
 
+  const handleDeleteHabit = async (habitId: string) => {
+    await deleteHabit(habitId);
+    setSelectedHabit(null);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  };
+
   const handleAddHabitPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     addHabitModalRef.current?.present();
@@ -92,32 +98,34 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     : null;
 
   return (
-    <View className="mt-2">
+    <View className="mt-4">
       {/* Header with Title and Add Button */}
       <View className="flex-row items-center justify-between mb-4">
-        <View>
-          <Text className="text-xl font-cormorantSemiBold text-gray-900">
+        <View className="flex-row items-center">
+          <Text className="text-lg font-semibold text-gray-900">
             Daily Habits
           </Text>
           {totalCount > 0 && (
-            <Text className="text-sm text-gray-500 font-medium">
-              {completedCount}/{totalCount} completed
-            </Text>
+            <View className="ml-2 px-2 py-0.5 bg-gray-100 rounded-full">
+              <Text className="text-xs font-medium text-gray-500">
+                {completedCount}/{totalCount}
+              </Text>
+            </View>
           )}
         </View>
 
         <TouchableOpacity
           onPress={handleAddHabitPress}
-          className="bg-gray-100 p-2 rounded-full"
+          className="w-8 h-8 bg-gray-50 rounded-full items-center justify-center"
           activeOpacity={0.7}
         >
-          <HugeiconsIcon icon={Add01Icon} size={20} color="#374151" />
+          <HugeiconsIcon icon={Add01Icon} size={18} color="#6B7280" />
         </TouchableOpacity>
       </View>
 
       {/* Progress Bar - Only visible if habits exist */}
       {totalCount > 0 && (
-        <View className="w-full h-1.5 bg-gray-100 rounded-full mb-5 overflow-hidden">
+        <View className="w-full h-1 bg-gray-100 rounded-full mb-4 overflow-hidden">
           <View
             className="h-full bg-[#7B61FF] rounded-full"
             style={{
@@ -131,23 +139,23 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
       {/* Habits List */}
       {habitsWithStatus.length === 0 ? (
-        <View className="bg-white rounded-2xl p-6 border border-gray-100 items-center justify-center">
-          <View className="w-12 h-12 bg-gray-50 rounded-full items-center justify-center mb-3">
-            <Text style={{ fontSize: 24 }}>✨</Text>
+        <View className="bg-gray-50/50 rounded-2xl p-8 items-center justify-center border border-gray-100 border-dashed">
+          <View className="w-14 h-14 bg-white rounded-2xl items-center justify-center mb-4 shadow-sm">
+            <Text style={{ fontSize: 28 }}>✨</Text>
           </View>
           <Text className="text-base font-semibold text-gray-900 mb-1">
             Build Better Habits
           </Text>
-          <Text className="text-sm text-gray-500 text-center mb-4 leading-5">
+          <Text className="text-sm text-gray-500 text-center mb-5 leading-5 max-w-[240px]">
             Small daily actions lead to big changes over time.
           </Text>
           <TouchableOpacity
             onPress={handleAddHabitPress}
-            className="px-5 py-2.5 bg-gray-900 rounded-full"
+            className="px-6 py-3 bg-[#7B61FF] rounded-xl"
             activeOpacity={0.8}
           >
             <Text className="text-white text-sm font-semibold">
-              Add First Habit
+              Add Your First Habit
             </Text>
           </TouchableOpacity>
         </View>
@@ -158,6 +166,9 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
               key={habit.id}
               habit={habit}
               onPress={() => handleHabitPress(habit.id)}
+              onToggleComplete={() =>
+                handleToggleCompletion(habit.id, habit.isCompleted)
+              }
             />
           ))}
         </View>
@@ -173,6 +184,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
         isCompleted={selectedHabitWithStatus?.isCompleted || false}
         onSave={handleSaveScheduling}
         onToggleCompletion={handleToggleCompletion}
+        onDelete={handleDeleteHabit}
       />
     </View>
   );

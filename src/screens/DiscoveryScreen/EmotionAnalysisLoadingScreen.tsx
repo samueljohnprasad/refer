@@ -7,19 +7,17 @@ import useEmotionsAnalysis, {
 import dayjs from "dayjs";
 import { useAtomValue } from "jotai";
 import { selectedDateDiscoveryAtom } from "./helpers";
-import Svg, { Rect, Defs, LinearGradient, Stop } from "react-native-svg";
 import Animated, {
-  useAnimatedProps,
+  useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withTiming,
+  withSequence,
+  withDelay,
   Easing,
 } from "react-native-reanimated";
 
-const { width, height } = Dimensions.get("window");
-const PERIMETER = 2 * (width + height);
-
-const AnimatedRect = Animated.createAnimatedComponent(Rect);
+const { width } = Dimensions.get("window");
 
 interface EmotionAnalysisLoadingScreenProps {
   onAnalysisCompleted: (data: AnalysisCompletedType) => void;
@@ -27,63 +25,110 @@ interface EmotionAnalysisLoadingScreenProps {
   journalText?: string;
 }
 
-const BorderAnimation = () => {
-  const LINE_LENGTH = PERIMETER * 0.5; // Increased length for better visibility
-  const GAP_LENGTH = PERIMETER;
-  const TOTAL_LENGTH = LINE_LENGTH + GAP_LENGTH;
-
-  const strokeDashoffset = useSharedValue(TOTAL_LENGTH);
+// Floating orb component
+const FloatingOrb: React.FC<{
+  delay: number;
+  size: number;
+  color: string;
+  initialX: number;
+  initialY: number;
+}> = ({ delay, size, color, initialX, initialY }) => {
+  const translateY = useSharedValue(0);
+  const translateX = useSharedValue(0);
+  const opacity = useSharedValue(0);
 
   useEffect(() => {
-    strokeDashoffset.value = withRepeat(
-      withTiming(0, {
-        duration: 6000, // Adjusted duration for the longer path
-        easing: Easing.linear,
-      }),
-      -1,
-      false
+    opacity.value = withDelay(delay, withTiming(0.6, { duration: 800 }));
+    translateY.value = withDelay(
+      delay,
+      withRepeat(
+        withSequence(
+          withTiming(-20, { duration: 2000, easing: Easing.inOut(Easing.ease) }),
+          withTiming(20, { duration: 2000, easing: Easing.inOut(Easing.ease) })
+        ),
+        -1,
+        true
+      )
+    );
+    translateX.value = withDelay(
+      delay,
+      withRepeat(
+        withSequence(
+          withTiming(10, { duration: 3000, easing: Easing.inOut(Easing.ease) }),
+          withTiming(-10, { duration: 3000, easing: Easing.inOut(Easing.ease) })
+        ),
+        -1,
+        true
+      )
     );
   }, []);
 
-  const animatedProps = useAnimatedProps(() => ({
-    strokeDashoffset: strokeDashoffset.value,
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value + initialX },
+      { translateY: translateY.value + initialY },
+    ],
+    opacity: opacity.value,
   }));
 
   return (
-    <View
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: width,
-        height: height,
-        zIndex: 10,
-        pointerEvents: "none",
-      }}
-    >
-      <Svg width={width} height={height}>
-        <Defs>
-          <LinearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <Stop offset="0%" stopColor="#7B61FF" />
-            <Stop offset="50%" stopColor="#FFD24A" />
-            <Stop offset="100%" stopColor="#7B61FF" />
-          </LinearGradient>
-        </Defs>
-        <AnimatedRect
-          x={4}
-          y={4}
-          width={width - 8}
-          height={height - 8}
-          rx={55}
-          ry={55}
-          stroke="url(#grad)"
-          strokeWidth={6}
-          strokeDasharray={`${LINE_LENGTH} ${GAP_LENGTH}`}
-          strokeLinecap="round"
-          fill="transparent"
-          animatedProps={animatedProps}
-        />
-      </Svg>
+    <Animated.View
+      style={[
+        {
+          position: "absolute",
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: color,
+        },
+        animatedStyle,
+      ]}
+    />
+  );
+};
+
+// Progress dots
+const ProgressDots = () => {
+  const dots = [0, 1, 2];
+  
+  return (
+    <View style={{ flexDirection: "row", marginTop: 32, gap: 8 }}>
+      {dots.map((index) => {
+        const opacity = useSharedValue(0.3);
+        
+        useEffect(() => {
+          opacity.value = withDelay(
+            index * 300,
+            withRepeat(
+              withSequence(
+                withTiming(1, { duration: 500 }),
+                withTiming(0.3, { duration: 500 })
+              ),
+              -1,
+              true
+            )
+          );
+        }, []);
+        
+        const animatedStyle = useAnimatedStyle(() => ({
+          opacity: opacity.value,
+        }));
+        
+        return (
+          <Animated.View
+            key={index}
+            style={[
+              {
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: "#7B61FF",
+              },
+              animatedStyle,
+            ]}
+          />
+        );
+      })}
     </View>
   );
 };
@@ -100,9 +145,10 @@ const EmotionAnalysisLoadingScreen: React.FC<
   });
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#FAFAFF" }}>
+      {/* Subtle gradient background */}
       <ExpoLinearGradient
-        colors={["#f0f9ff", "#e0f2fe", "#bae6fd"]}
+        colors={["#F8F7FF", "#F0EEFF", "#E8E4FF"]}
         style={{
           position: "absolute",
           top: 0,
@@ -112,41 +158,68 @@ const EmotionAnalysisLoadingScreen: React.FC<
         }}
       />
 
+      {/* Floating orbs in background */}
+      <FloatingOrb delay={0} size={150} color="rgba(123, 97, 255, 0.08)" initialX={-50} initialY={-100} />
+      <FloatingOrb delay={500} size={100} color="rgba(167, 139, 250, 0.1)" initialX={width - 80} initialY={100} />
+      <FloatingOrb delay={1000} size={80} color="rgba(196, 181, 253, 0.12)" initialX={20} initialY={200} />
+      <FloatingOrb delay={1500} size={120} color="rgba(123, 97, 255, 0.06)" initialX={width - 100} initialY={-150} />
+
+      {/* Main content */}
       <View
         style={{
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          paddingHorizontal: 32,
+          paddingHorizontal: 40,
         }}
       >
-        <BorderAnimation />
+        {/* Sparkle emoji */}
+        <Text style={{ fontSize: 48, marginBottom: 24 }}>✨</Text>
 
+        {/* Date */}
         <Text
           style={{
-            color: "#475569",
-            fontSize: 15,
+            color: "#64748B",
+            fontSize: 14,
             fontWeight: "500",
-            marginBottom: 32,
             textAlign: "center",
-            letterSpacing: 0.3,
+            letterSpacing: 0.5,
           }}
         >
-          {dayjs(selectedDate).format("dddd, MMMM D, YYYY h:mm A")}
+          {dayjs(selectedDate).format("MMMM D, YYYY")}
         </Text>
 
+        {/* Processing phase text */}
         <Text
           style={{
-            color: "#1e293b",
-            fontSize: 24,
+            color: "#1E1B4B",
+            fontSize: 22,
             fontWeight: "600",
             textAlign: "center",
-            letterSpacing: -0.3,
-            lineHeight: 32,
+            marginTop: 16,
+            lineHeight: 30,
           }}
           className="font-cormorantBold"
         >
           {processingPhase}
+        </Text>
+
+        {/* Progress dots */}
+        <ProgressDots />
+
+        {/* Subtle hint text */}
+        <Text
+          style={{
+            color: "#94A3B8",
+            fontSize: 13,
+            fontWeight: "400",
+            textAlign: "center",
+            marginTop: 24,
+            lineHeight: 20,
+            maxWidth: 280,
+          }}
+        >
+          Analyzing your thoughts and emotions to provide personalized insights
         </Text>
       </View>
     </View>

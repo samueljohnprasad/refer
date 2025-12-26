@@ -1,14 +1,17 @@
-import React, { useState, useRef } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
+import { View, Text, TouchableOpacity, TextInput, Switch } from "react-native";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  Switch,
-  Modal,
-} from "react-native";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+  BottomSheetModal,
+  BottomSheetScrollView,
+  BottomSheetBackdrop,
+} from "@gorhom/bottom-sheet";
+import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import { forwardRef, useImperativeHandle } from "react";
 import {
   Habit,
@@ -33,6 +36,7 @@ interface HabitDetailsModalProps {
     schedulingData: HabitSchedulingData
   ) => Promise<void>;
   onToggleCompletion: (habitId: string, isCompleted: boolean) => Promise<void>;
+  onDelete: (habitId: string) => Promise<void>;
   isCompleted: boolean;
 }
 
@@ -40,9 +44,9 @@ export const HabitDetailsModal = forwardRef<
   BottomSheetModal,
   HabitDetailsModalProps
 >((props, ref) => {
-  const { habit, onSave, onToggleCompletion, isCompleted } = props;
+  const { habit, onSave, onToggleCompletion, onDelete, isCompleted } = props;
 
-  const [visible, setVisible] = useState(false);
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   // State - Must be declared before any conditional returns
   const [timeOption, setTimeOption] = useState<TimeOption>("anytime");
@@ -61,20 +65,24 @@ export const HabitDetailsModal = forwardRef<
   // Modal states
   const [showRepeatModal, setShowRepeatModal] = useState(false);
 
+  // Snap points
+  const snapPoints = useMemo(() => ["90%"], []);
+
   // Expose present and close methods
   useImperativeHandle(ref, () => ({
-    present: () => setVisible(true),
-    close: () => setVisible(false),
-    dismiss: () => setVisible(false),
-    snapToIndex: () => {},
-    snapToPosition: () => {},
-    expand: () => {},
-    collapse: () => {},
-    forceClose: () => setVisible(false),
+    present: () => bottomSheetRef.current?.present(),
+    close: () => bottomSheetRef.current?.dismiss(),
+    dismiss: () => bottomSheetRef.current?.dismiss(),
+    snapToIndex: (index: number) => bottomSheetRef.current?.snapToIndex(index),
+    snapToPosition: (position: string | number) =>
+      bottomSheetRef.current?.snapToPosition(position),
+    expand: () => bottomSheetRef.current?.expand(),
+    collapse: () => bottomSheetRef.current?.collapse(),
+    forceClose: () => bottomSheetRef.current?.forceClose(),
   }));
 
   // Sync state when habit changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (habit) {
       setTimeOption(habit.timeOption || "anytime");
       setDurationMinutes(habit.durationMinutes || 30);
@@ -95,8 +103,19 @@ export const HabitDetailsModal = forwardRef<
     }
   }, [habit]);
 
-  // Early return AFTER all hooks
-  if (!habit) return null;
+  // Render backdrop
+  const renderBackdrop = useCallback(
+    (backdropProps: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...backdropProps}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.5}
+        pressBehavior="close"
+      />
+    ),
+    []
+  );
 
   const handleTimeOptionChange = (option: TimeOption) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -104,6 +123,8 @@ export const HabitDetailsModal = forwardRef<
   };
 
   const handleSave = async () => {
+    if (!habit) return;
+
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     const schedulingData: HabitSchedulingData = {
@@ -125,244 +146,216 @@ export const HabitDetailsModal = forwardRef<
     };
 
     await onSave(habit.id, schedulingData);
-    setVisible(false);
+    bottomSheetRef.current?.dismiss();
   };
+
+  const handleToggle = async () => {
+    if (!habit) return;
+    await onToggleCompletion(habit.id, isCompleted);
+    bottomSheetRef.current?.dismiss();
+  };
+
+  // Early return AFTER all hooks
+  if (!habit) return null;
 
   return (
     <>
-      <Modal
-        visible={visible}
-        animationType="slide"
-        presentationStyle="formSheet"
-        onRequestClose={() => setVisible(false)}
+      <BottomSheetModal
+        ref={bottomSheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        backdropComponent={renderBackdrop}
+        enablePanDownToClose={true}
+        backgroundStyle={{ backgroundColor: "#F8F8FF" }}
+        handleIndicatorStyle={{ backgroundColor: "#D1D5DB", width: 40 }}
       >
-        <View className="flex-1 bg-gray-50">
-          {/* Header */}
-          <View className="bg-white border-b border-gray-200 px-6 pt-4 pb-4">
-            <View className="flex-row items-center justify-between">
+        {/* Header */}
+        <View className="items-center px-6 pt-2 pb-4 border-b border-gray-100 bg-white">
+          <View
+            className="w-14 h-14 rounded-full items-center justify-center mb-2"
+            style={{ backgroundColor: habit.color + "20" }}
+          >
+            <Text style={{ fontSize: 28 }}>{habit.icon}</Text>
+          </View>
+          <Text className="text-xl font-cormorantSemiBold text-gray-900">
+            {habit.name}
+          </Text>
+          {habit.description && (
+            <Text className="text-sm text-gray-500 mt-1 text-center">
+              {habit.description}
+            </Text>
+          )}
+        </View>
+
+        <BottomSheetScrollView
+          className="flex-1 px-6"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        >
+          {/* Time Options */}
+          <View className="mt-5 mb-4">
+            <Text className="text-sm font-semibold text-gray-600 mb-3 uppercase tracking-wide">
+              Time
+            </Text>
+            <View className="flex-row gap-3">
               <TouchableOpacity
-                onPress={() => setVisible(false)}
-                className="py-2"
+                onPress={() => handleTimeOptionChange("anytime")}
+                className={`flex-1 py-3.5 rounded-xl ${
+                  timeOption === "anytime"
+                    ? "bg-[#7B61FF]"
+                    : "bg-white border border-gray-200"
+                }`}
                 activeOpacity={0.7}
               >
-                <Text className="text-base text-gray-600 font-medium">
-                  Cancel
+                <Text
+                  className={`text-center font-semibold text-base ${
+                    timeOption === "anytime" ? "text-white" : "text-gray-700"
+                  }`}
+                >
+                  Anytime
                 </Text>
               </TouchableOpacity>
 
-              <Text className="text-lg font-cormorantSemiBold text-gray-900">
-                {habit.name}
-              </Text>
-
               <TouchableOpacity
-                onPress={handleSave}
-                className="py-2"
+                onPress={() => handleTimeOptionChange("at_time")}
+                className={`flex-1 py-3.5 rounded-xl ${
+                  timeOption === "at_time"
+                    ? "bg-[#7B61FF]"
+                    : "bg-white border border-gray-200"
+                }`}
                 activeOpacity={0.7}
               >
-                <Text className="text-base text-[#7B61FF] font-semibold">
-                  Save
+                <Text
+                  className={`text-center font-semibold text-base ${
+                    timeOption === "at_time" ? "text-white" : "text-gray-700"
+                  }`}
+                >
+                  At time
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          <ScrollView
-            className="flex-1 px-6 pt-6"
-            showsVerticalScrollIndicator={false}
-            bounces={true}
-          >
-            {/* Icon Display */}
-            <View className="items-center mb-6">
-              <View
-                className="w-16 h-16 rounded-full items-center justify-center"
-                style={{ backgroundColor: habit.color + "20" }}
-              >
-                <Text style={{ fontSize: 32 }}>{habit.icon}</Text>
-              </View>
-            </View>
-
-            {/* Time Options */}
-            <View className="mb-5">
-              <Text className="text-sm font-semibold text-gray-600 mb-3 uppercase tracking-wide">
-                Time
-              </Text>
-              <View className="flex-row gap-3">
-                <TouchableOpacity
-                  onPress={() => handleTimeOptionChange("anytime")}
-                  className={`flex-1 py-3.5 rounded-xl ${
-                    timeOption === "anytime"
-                      ? "bg-[#7B61FF]"
-                      : "bg-white border border-gray-200"
-                  }`}
-                  activeOpacity={0.7}
-                >
-                  <Text
-                    className={`text-center font-semibold text-base ${
-                      timeOption === "anytime" ? "text-white" : "text-gray-700"
-                    }`}
-                  >
-                    Anytime
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => handleTimeOptionChange("at_time")}
-                  className={`flex-1 py-3.5 rounded-xl ${
-                    timeOption === "at_time"
-                      ? "bg-[#7B61FF]"
-                      : "bg-white border border-gray-200"
-                  }`}
-                  activeOpacity={0.7}
-                >
-                  <Text
-                    className={`text-center font-semibold text-base ${
-                      timeOption === "at_time" ? "text-white" : "text-gray-700"
-                    }`}
-                  >
-                    At time
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* Content Card */}
-            <View className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-5">
-              {/* Date Picker */}
-              <TouchableOpacity
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  datePickerModalRef.current?.present();
-                }}
-                className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100"
-                activeOpacity={0.7}
-              >
-                <Text className="text-base text-gray-600 font-medium">
-                  Date
-                </Text>
-                <Text className="text-base text-gray-900 font-semibold">
-                  {format(startDate, "MMM dd, yyyy")}
-                </Text>
-              </TouchableOpacity>
-
-              {/* Time Section - Only visible if "At time" is selected */}
-              {timeOption === "at_time" && (
-                <>
-                  {/* Time Picker */}
-                  <View className="border-b border-gray-100">
-                    <View className="px-4 py-4">
-                      <Host matchContents>
-                        <SwiftUIDateTimePicker
-                          onDateSelected={(date) => {
-                            Haptics.impactAsync(
-                              Haptics.ImpactFeedbackStyle.Light
-                            );
-                            setScheduledTime(new Date(date));
-                          }}
-                          displayedComponents={"hourAndMinute"}
-                          title="Select Time"
-                          initialDate={scheduledTime.toISOString()}
-                          variant={"graphical"}
-                        />
-                      </Host>
-                    </View>
-                  </View>
-
-                  {/* Duration */}
-                  <View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100">
-                    <Text className="text-base text-gray-600 font-medium">
-                      Duration
-                    </Text>
-                    <Text className="text-base text-gray-900 font-semibold">
-                      {durationMinutes} mins
-                    </Text>
-                  </View>
-                </>
-              )}
-
-              {/* Repeat Pattern */}
-              <TouchableOpacity
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setShowRepeatModal(true);
-                }}
-                className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100"
-                activeOpacity={0.7}
-              >
-                <Text className="text-base text-gray-600 font-medium">
-                  Repeat
-                </Text>
-                <Text className="text-base text-gray-900 font-semibold capitalize">
-                  {repeatPattern === "weekly"
-                    ? "Weekly on Thursday"
-                    : repeatPattern}
-                </Text>
-              </TouchableOpacity>
-
-              {/* End Repeat */}
-              <View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100">
-                <Text className="text-base text-gray-600 font-medium">
-                  End Repeat
-                </Text>
-                <Text className="text-base text-gray-900 font-semibold capitalize">
-                  {endRepeatOption}
-                </Text>
-              </View>
-
-              {/* Reminder Toggle */}
-              <View className="flex-row items-center justify-between px-4 py-4">
-                <Text className="text-base text-gray-600 font-medium">
-                  Reminder
-                </Text>
-                <Switch
-                  value={reminderEnabled}
-                  onValueChange={(value) => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    setReminderEnabled(value);
-                  }}
-                  trackColor={{ false: "#E5E7EB", true: "#7B61FF" }}
-                  thumbColor="#FFFFFF"
-                />
-              </View>
-            </View>
-
-            {/* Description Section */}
-            {habit.description && (
-              <View className="mb-5">
-                <Text className="text-sm font-semibold text-gray-600 mb-3 uppercase tracking-wide">
-                  Description
-                </Text>
-                <View className="bg-white rounded-2xl p-4 border border-gray-200">
-                  <Text className="text-base text-gray-700 leading-6">
-                    {habit.description}
-                  </Text>
-                </View>
-              </View>
-            )}
-
-            {/* Notes */}
-            <View className="mb-6">
-              <Text className="text-sm font-semibold text-gray-600 mb-3 uppercase tracking-wide">
-                Notes
-              </Text>
-              <TextInput
-                value={notes}
-                onChangeText={setNotes}
-                placeholder="Add notes about this habit..."
-                placeholderTextColor="#9CA3AF"
-                multiline
-                numberOfLines={4}
-                textAlignVertical="top"
-                className="bg-white rounded-2xl p-4 text-base text-gray-900 border border-gray-200 min-h-[100px]"
-              />
-            </View>
-
-            {/* Complete Button */}
+          {/* Settings Card */}
+          <View className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-5">
+            {/* Date Picker */}
             <TouchableOpacity
               onPress={() => {
-                onToggleCompletion(habit.id, isCompleted);
-                setVisible(false);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                datePickerModalRef.current?.present();
               }}
-              className={`py-4 rounded-2xl mb-8 ${
+              className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100"
+              activeOpacity={0.7}
+            >
+              <Text className="text-base text-gray-600 font-medium">Date</Text>
+              <Text className="text-base text-gray-900 font-semibold">
+                {format(startDate, "MMM dd, yyyy")}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Time Section - Only visible if "At time" is selected */}
+            {timeOption === "at_time" && (
+              <>
+                {/* Time Picker */}
+                <View className="border-b border-gray-100">
+                  <View className="px-4 py-4">
+                    <Host matchContents>
+                      <SwiftUIDateTimePicker
+                        onDateSelected={(date) => {
+                          Haptics.impactAsync(
+                            Haptics.ImpactFeedbackStyle.Light
+                          );
+                          setScheduledTime(new Date(date));
+                        }}
+                        displayedComponents={"hourAndMinute"}
+                        title="Select Time"
+                        initialDate={scheduledTime.toISOString()}
+                        variant={"graphical"}
+                      />
+                    </Host>
+                  </View>
+                </View>
+
+                {/* Duration */}
+                <View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100">
+                  <Text className="text-base text-gray-600 font-medium">
+                    Duration
+                  </Text>
+                  <Text className="text-base text-gray-900 font-semibold">
+                    {durationMinutes} mins
+                  </Text>
+                </View>
+              </>
+            )}
+
+            {/* Repeat Pattern */}
+            <TouchableOpacity
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setShowRepeatModal(true);
+              }}
+              className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100"
+              activeOpacity={0.7}
+            >
+              <Text className="text-base text-gray-600 font-medium">
+                Repeat
+              </Text>
+              <Text className="text-base text-gray-900 font-semibold capitalize">
+                {repeatPattern === "weekly"
+                  ? "Weekly on Thursday"
+                  : repeatPattern}
+              </Text>
+            </TouchableOpacity>
+
+            {/* End Repeat */}
+            <View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100">
+              <Text className="text-base text-gray-600 font-medium">
+                End Repeat
+              </Text>
+              <Text className="text-base text-gray-900 font-semibold capitalize">
+                {endRepeatOption}
+              </Text>
+            </View>
+
+            {/* Reminder Toggle */}
+            <View className="flex-row items-center justify-between px-4 py-4">
+              <Text className="text-base text-gray-600 font-medium">
+                Reminder
+              </Text>
+              <Switch
+                value={reminderEnabled}
+                onValueChange={(value) => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setReminderEnabled(value);
+                }}
+                trackColor={{ false: "#E5E7EB", true: "#7B61FF" }}
+                thumbColor="#FFFFFF"
+              />
+            </View>
+          </View>
+
+          {/* Notes */}
+          <View className="mb-6">
+            <Text className="text-sm font-semibold text-gray-600 mb-3 uppercase tracking-wide">
+              Notes
+            </Text>
+            <TextInput
+              value={notes}
+              onChangeText={setNotes}
+              placeholder="Add notes about this habit..."
+              placeholderTextColor="#9CA3AF"
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+              className="bg-white rounded-2xl p-4 text-base text-gray-900 border border-gray-200 min-h-[100px]"
+            />
+          </View>
+
+          {/* Action Buttons */}
+          <View className="flex-row gap-3 mb-6">
+            <TouchableOpacity
+              onPress={handleToggle}
+              className={`flex-1 py-4 rounded-2xl ${
                 isCompleted
                   ? "bg-white border-2 border-gray-300"
                   : "bg-[#7B61FF]"
@@ -374,12 +367,40 @@ export const HabitDetailsModal = forwardRef<
                   isCompleted ? "text-gray-700" : "text-white"
                 }`}
               >
-                {isCompleted ? "Mark Incomplete" : "✓ Complete Habit"}
+                {isCompleted ? "Mark Incomplete" : "✓ Complete"}
               </Text>
             </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </Modal>
+
+            <TouchableOpacity
+              onPress={handleSave}
+              className="flex-1 bg-gray-900 py-4 rounded-2xl"
+              activeOpacity={0.8}
+            >
+              <Text className="text-white text-center font-bold text-base">
+                Save
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Delete Button */}
+          <TouchableOpacity
+            onPress={async () => {
+              if (!habit) return;
+              Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Warning
+              );
+              await onDelete(habit.id);
+              bottomSheetRef.current?.dismiss();
+            }}
+            className="py-3 mb-6"
+            activeOpacity={0.7}
+          >
+            <Text className="text-center text-red-500 font-semibold text-base">
+              Delete Habit
+            </Text>
+          </TouchableOpacity>
+        </BottomSheetScrollView>
+      </BottomSheetModal>
 
       {/* Date Picker Bottom Sheet Modal */}
       <ShortBottomModal ref={datePickerModalRef} snapPoints={["50%"]}>

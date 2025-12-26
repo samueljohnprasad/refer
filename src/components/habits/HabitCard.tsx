@@ -1,105 +1,158 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { HabitWithStatus } from "@/src/types/habits";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withTiming,
-  interpolateColor,
+  withSpring,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
+import { format, parse } from "date-fns";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { RepeatIcon } from "@hugeicons/core-free-icons";
 
 interface HabitCardProps {
   habit: HabitWithStatus;
   onPress: () => void;
+  onToggleComplete: () => void;
 }
 
-export const HabitCard: React.FC<HabitCardProps> = ({ habit, onPress }) => {
-  const progress = useSharedValue(habit.isCompleted ? 1 : 0);
+export const HabitCard: React.FC<HabitCardProps> = ({
+  habit,
+  onPress,
+  onToggleComplete,
+}) => {
+  const scale = useSharedValue(1);
+  const checkScale = useSharedValue(habit.isCompleted ? 1 : 0);
 
-  // Update animated values when prop changes
+  // Update animation when completion status changes
   React.useEffect(() => {
-    progress.value = withTiming(habit.isCompleted ? 1 : 0, { duration: 300 });
+    checkScale.value = withSpring(habit.isCompleted ? 1 : 0, {
+      damping: 12,
+      stiffness: 180,
+    });
   }, [habit.isCompleted]);
 
-  const containerAnimatedStyle = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(
-      progress.value,
-      [0, 1],
-      ["#FFFFFF", "#F9FAFB"]
-    );
-    return {
-      backgroundColor,
-    };
-  });
+  const cardAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
-  const textAnimatedStyle = useAnimatedStyle(() => {
-    const color = interpolateColor(
-      progress.value,
-      [0, 1],
-      ["#111827", "#9CA3AF"]
-    );
-    return {
-      color,
-    };
-  });
+  const checkmarkAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: checkScale.value,
+    transform: [{ scale: checkScale.value }],
+  }));
 
-  const handlePress = () => {
+  const handleCardPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onPress();
   };
 
+  const handleCheckboxPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    onToggleComplete();
+  };
+
+  // Format time for display
+  const formatTime = (time: string): string => {
+    try {
+      const parsed = parse(time, "HH:mm", new Date());
+      return format(parsed, "h:mm a");
+    } catch {
+      return time;
+    }
+  };
+
+  // Get repeat label
+  const getRepeatLabel = (): string => {
+    switch (habit.repeatPattern) {
+      case "daily":
+        return "Daily";
+      case "weekly":
+        return "Weekly";
+      case "monthly":
+        return "Monthly";
+      case "never":
+        return "Once";
+      default:
+        return "";
+    }
+  };
+
   return (
-    <TouchableOpacity
-      onPress={handlePress}
-      activeOpacity={0.7}
-      className="mb-3"
-    >
-      <Animated.View
-        className="flex-row items-center p-4 rounded-2xl border border-gray-100"
-        style={containerAnimatedStyle}
+    <Animated.View style={cardAnimatedStyle}>
+      <Pressable
+        onPress={handleCardPress}
+        className="mb-3 bg-white rounded-2xl border border-gray-100 px-4 py-4"
+        style={({ pressed }) => ({
+          opacity: pressed ? 0.95 : 1,
+        })}
       >
-        {/* Completion Indicator */}
-        <View
-          className="w-6 h-6 rounded-full border-2 items-center justify-center mr-4"
-          style={{
-            borderColor: habit.isCompleted ? habit.color : "#D1D5DB",
-            backgroundColor: habit.isCompleted ? habit.color : "transparent",
-          }}
-        >
-          {habit.isCompleted && (
-            <Text className="text-white text-xs font-bold">✓</Text>
-          )}
-        </View>
-
-        {/* Content */}
-        <View className="flex-1">
-          <Animated.Text
-            className="text-base font-semibold mb-0.5"
-            style={textAnimatedStyle}
+        <View className="flex-row items-center">
+          {/* Emoji Icon */}
+          <View
+            className="w-10 h-10 rounded-xl items-center justify-center mr-3"
+            style={{ backgroundColor: habit.color + "15" }}
           >
-            {habit.name}
-          </Animated.Text>
+            <Text style={{ fontSize: 20 }}>{habit.icon || "✓"}</Text>
+          </View>
 
-          {habit.description && (
-            <Text className="text-xs text-gray-500 leading-4" numberOfLines={1}>
-              {habit.description}
+          {/* Content */}
+          <View className="flex-1">
+            {/* Habit Name */}
+            <Text
+              className={`text-base font-semibold ${
+                habit.isCompleted
+                  ? "text-gray-400 line-through"
+                  : "text-gray-900"
+              }`}
+            >
+              {habit.name}
             </Text>
-          )}
 
-          {/* Show time if scheduled */}
-          {habit.scheduledTime && (
-            <Text className="text-xs text-[#7B61FF] mt-1">
-              ⏰ {habit.scheduledTime}
-            </Text>
-          )}
-        </View>
+            {/* Metadata Row */}
+            <View className="flex-row items-center mt-1">
+              {/* Repeat Badge */}
+              <View className="flex-row items-center">
+                <HugeiconsIcon icon={RepeatIcon} size={12} color="#9CA3AF" />
+                <Text className="text-xs text-gray-400 ml-1">
+                  {getRepeatLabel()}
+                </Text>
+              </View>
 
-        {/* Icon */}
-        <View className="ml-3 opacity-80">
-          <Text style={{ fontSize: 20 }}>{habit.icon || "✓"}</Text>
+              {/* Time Badge */}
+              {habit.scheduledTime && (
+                <Text className="text-xs text-gray-400 ml-3">
+                  {formatTime(habit.scheduledTime)}
+                </Text>
+              )}
+            </View>
+          </View>
+
+          {/* Checkbox */}
+          <Pressable
+            onPress={handleCheckboxPress}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            className="ml-3"
+          >
+            <View
+              className="w-7 h-7 rounded-full border-2 items-center justify-center"
+              style={{
+                borderColor: habit.isCompleted ? habit.color : "#E5E7EB",
+                backgroundColor: habit.isCompleted
+                  ? habit.color
+                  : "transparent",
+              }}
+            >
+              <Animated.Text
+                className="text-white text-sm font-bold"
+                style={checkmarkAnimatedStyle}
+              >
+                ✓
+              </Animated.Text>
+            </View>
+          </Pressable>
         </View>
-      </Animated.View>
-    </TouchableOpacity>
+      </Pressable>
+    </Animated.View>
   );
 };

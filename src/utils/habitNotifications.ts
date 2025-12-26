@@ -87,15 +87,6 @@ function getTriggerForRepeatPattern(
         minute: minutes,
       };
 
-    case "yearly":
-      return {
-        type: Notifications.SchedulableTriggerInputTypes.YEARLY,
-        month: new Date().getMonth() + 1, // Month (1-12)
-        day: new Date().getDate(),
-        hour: hours,
-        minute: minutes,
-      };
-
     case "never":
     default:
       // One-time notification
@@ -143,7 +134,7 @@ export async function scheduleHabitNotification(
 
     const notificationId = await Notifications.scheduleNotificationAsync({
       content: {
-        title: "Habit Reminder 🎯",
+        title: `${habit.icon || "🎯"} Habit Reminder`,
         body: `Time to complete: ${habit.name}`,
         data: {
           habitId: habit.id,
