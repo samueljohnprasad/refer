@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Pressable, Animated, View, ActivityIndicator } from "react-native";
+import {
+  Pressable,
+  Animated,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { Text } from "@/components/ui/text";
 import { format, parseISO } from "date-fns";
 import { Feather } from "@expo/vector-icons";
@@ -9,12 +15,17 @@ import { Image } from "@/components/ui/image";
 import { Emotion, emotions } from "@/assets/emojis";
 import { FeelingsType } from "@/src/network/genAi";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Bookmark02Icon, Delete02Icon } from "@hugeicons/core-free-icons";
+import {
+  Bookmark02Icon,
+  Delete02Icon,
+  Add01Icon,
+} from "@hugeicons/core-free-icons";
 import { useAtom } from "jotai";
 import { DeleteJournal, selectedDateAtom } from "../atoms";
 import { getDuration } from "@/src/utils/date";
 import { ConfirmationModal } from "@/src/components/modals/ConfirmationModal";
 import { search } from "@/assets/images";
+import { useRouter } from "expo-router";
 
 interface EntryCardsViewProps {
   entries: JournalEntry[];
@@ -38,6 +49,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   showDateHeaders = false,
 }) => {
   const [selectedDate] = useAtom(selectedDateAtom);
+  const router = useRouter();
   const [deleteEntry, setDeleteEntry] = useState<DeleteJournal>({
     flag: false,
     entry: null,
@@ -84,25 +96,28 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
   if (entries.length === 0) {
     return (
-      <View>
+      <View className="bg-white rounded-2xl p-5 border border-gray-100">
         <View className="flex-row items-center justify-between mb-4">
-          <Text className="text-lg font-semibold text-gray-800 font-cormorantBold">
-            Journal Entries
-          </Text>
+          <View className="flex-row items-center">
+            <View className="bg-blue-100 p-2 rounded-xl mr-2">
+              <Feather name="book-open" size={24} color="#3B82F6" />
+            </View>
+            <Text className="text-gray-900 font-semibold text-lg">
+              Journal Entries
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => router.push("/tabs/(tabs)/record")}
+            className="bg-blue-500 p-2 rounded-xl"
+            activeOpacity={0.7}
+          >
+            <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
+          </TouchableOpacity>
         </View>
 
-        <View className="bg-gray-50 rounded-2xl items-center">
-          <Image
-            source={search}
-            className="w-full h-64 mb-6"
-            alt="No entries found"
-            resizeMode="contain"
-          />
-          <Text className="text-gray-700 text-center mt-2 text-xl font-semibold">
-            No journal entries for this day yet
-          </Text>
-          <Text className="text-gray-500 text-center mt-3 text-base">
-            Your thoughts and reflections will appear here
+        <View className="py-4 items-center">
+          <Text className="text-gray-400 text-center">
+            No entries for today.{"\n"}Tap + to add your first journal!
           </Text>
         </View>
       </View>
@@ -112,9 +127,26 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   return (
     <View className="gap-4">
       <View className="flex-row items-center justify-between">
-        <Text className="text-lg font-semibold text-gray-800 font-cormorantBold">
-          Journal Entries ({entries.length})
-        </Text>
+        <View className="flex-row items-center">
+          <View className="bg-blue-100 p-2 rounded-xl mr-2">
+            <Feather name="book-open" size={24} color="#3B82F6" />
+          </View>
+          <Text className="text-gray-900 font-semibold text-lg">
+            Journal Entries
+          </Text>
+          <View className="ml-2 px-2 py-0.5 bg-gray-100 rounded-full">
+            <Text className="text-xs font-medium text-gray-500">
+              {entries.length}
+            </Text>
+          </View>
+        </View>
+        <TouchableOpacity
+          onPress={() => router.push("/tabs/(tabs)/record")}
+          className="bg-blue-500 p-2 rounded-xl"
+          activeOpacity={0.7}
+        >
+          <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
+        </TouchableOpacity>
       </View>
 
       <View className="gap-3">

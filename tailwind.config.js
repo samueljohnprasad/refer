@@ -18,6 +18,29 @@ module.exports = {
     extend: {
       colors: {
         offwhite: "#f2f2f7",
+        // Improved theme color system
+        theme: {
+          purple: {
+            primary: "#9B8FD9", // Soft lavender - headers, primary actions
+            light: "#E8E4F8", // Light lavender - backgrounds, hover
+            deep: "#7B61FF", // Deep purple - habits, emphasis
+          },
+          accent: {
+            orange: "#FF8C42", // Calories/food tracking
+            blue: "#5B9FED", // Journal entries
+            yellow: "#FFD24A", // Streaks, achievements
+            mint: "#7ED9C4", // Reflection, positive actions
+          },
+          background: {
+            primary: "#F8F7FC", // Main app background
+            card: "#FFFFFF", // Card backgrounds
+          },
+          text: {
+            primary: "#1F1F1F", // Main text
+            secondary: "#6B6B6B", // Subtitles, hints
+          },
+          border: "#E5E5E5", // Dividers, card borders
+        },
         primary: {
           0: "rgb(var(--color-primary-0)/<alpha-value>)",
           50: "rgb(var(--color-primary-50)/<alpha-value>)",

@@ -1,5 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useHabits } from "@/hooks/data/useHabits";
 import { useHabitCompletions } from "@/hooks/data/useHabitCompletions";
@@ -12,7 +17,7 @@ import {
   Habit,
 } from "@/src/types/habits";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Add01Icon } from "@hugeicons/core-free-icons";
+import { Add01Icon, Tick01Icon } from "@hugeicons/core-free-icons";
 import * as Haptics from "expo-haptics";
 import {
   handleHabitCreated,
@@ -35,6 +40,9 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     useHabitCompletions(selectedDate);
 
   const habitsWithStatus = getHabitsWithStatus(habits);
+
+  // Animated progress bar
+  const progressWidth = useSharedValue(0);
 
   const handleCreateHabit = async (formData: CreateHabitFormData) => {
     const created = await createHabit(formData);
@@ -93,16 +101,32 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   const completedCount = habitsWithStatus.filter((h) => h.isCompleted).length;
   const totalCount = habitsWithStatus.length;
 
+  // Animate progress bar when completion changes
+  useEffect(() => {
+    const targetProgress =
+      totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+    progressWidth.value = withTiming(targetProgress, {
+      duration: 400,
+    });
+  }, [completedCount, totalCount]);
+
+  const progressAnimatedStyle = useAnimatedStyle(() => ({
+    width: `${progressWidth.value}%`,
+  }));
+
   const selectedHabitWithStatus = selectedHabit
     ? habitsWithStatus.find((h) => h.id === selectedHabit.id)
     : null;
 
   return (
-    <View className="mt-4">
+    <View className="bg-white rounded-2xl p-5 border border-gray-100">
       {/* Header with Title and Add Button */}
       <View className="flex-row items-center justify-between mb-4">
         <View className="flex-row items-center">
-          <Text className="text-lg font-semibold text-gray-900">
+          <View className="bg-theme-purple-light p-2 rounded-xl mr-2">
+            <HugeiconsIcon icon={Tick01Icon} size={24} color="#7B61FF" />
+          </View>
+          <Text className="text-gray-900 font-semibold text-lg">
             Daily Habits
           </Text>
           {totalCount > 0 && (
@@ -116,52 +140,32 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
         <TouchableOpacity
           onPress={handleAddHabitPress}
-          className="w-8 h-8 bg-gray-50 rounded-full items-center justify-center"
+          className="bg-theme-purple-deep p-2 rounded-xl"
           activeOpacity={0.7}
         >
-          <HugeiconsIcon icon={Add01Icon} size={18} color="#6B7280" />
+          <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
         </TouchableOpacity>
       </View>
 
-      {/* Progress Bar - Only visible if habits exist */}
-      {totalCount > 0 && (
-        <View className="w-full h-1 bg-gray-100 rounded-full mb-4 overflow-hidden">
-          <View
-            className="h-full bg-[#7B61FF] rounded-full"
-            style={{
-              width: `${
-                totalCount > 0 ? (completedCount / totalCount) * 100 : 0
-              }%`,
-            }}
-          />
-        </View>
-      )}
-
       {/* Habits List */}
       {habitsWithStatus.length === 0 ? (
-        <View className="bg-gray-50/50 rounded-2xl p-8 items-center justify-center border border-gray-100 border-dashed">
-          <View className="w-14 h-14 bg-white rounded-2xl items-center justify-center mb-4 shadow-sm">
-            <Text style={{ fontSize: 28 }}>✨</Text>
-          </View>
-          <Text className="text-base font-semibold text-gray-900 mb-1">
-            Build Better Habits
+        <View className="py-4 items-center">
+          <Text className="text-gray-400 text-center">
+            No habits for today.{"\n"}Tap + to add your first habit!
           </Text>
-          <Text className="text-sm text-gray-500 text-center mb-5 leading-5 max-w-[240px]">
-            Small daily actions lead to big changes over time.
-          </Text>
-          <TouchableOpacity
-            onPress={handleAddHabitPress}
-            className="px-6 py-3 bg-[#7B61FF] rounded-xl"
-            activeOpacity={0.8}
-          >
-            <Text className="text-white text-sm font-semibold">
-              Add Your First Habit
-            </Text>
-          </TouchableOpacity>
         </View>
       ) : (
         <View>
-          {habitsWithStatus.map((habit) => (
+          {/* Progress Bar */}
+          <View className="w-full h-1.5 bg-theme-purple-light rounded-full mb-4 overflow-hidden">
+            <Animated.View
+              className="h-full bg-theme-purple-deep rounded-full"
+              style={progressAnimatedStyle}
+            />
+          </View>
+
+          {/* Habit Items */}
+          {habitsWithStatus.map((habit, index) => (
             <HabitCard
               key={habit.id}
               habit={habit}

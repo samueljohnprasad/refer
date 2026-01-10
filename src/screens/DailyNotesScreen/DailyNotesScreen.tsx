@@ -358,7 +358,7 @@ const DailyNotesScreenComponent = () => {
   );
 
   return (
-    <SafeAreaView edges={[]} className="flex-1 bg-gray-50">
+    <SafeAreaView edges={[]} className="flex-1 bg-theme-background-primary">
       <Stack.Screen
         options={{
           header: () => headerComponent,
@@ -389,7 +389,7 @@ const DailyNotesScreenComponent = () => {
               </View>
 
               <Animated.View
-                className="flex-1 px-4 bg-gray-50"
+                className="flex-1 px-4 bg-theme-background-primary"
                 style={[contentAnimatedStyle, { paddingBottom: 20 }]}
               >
                 {/* Mental Health Journal Dashboard */}
@@ -404,7 +404,7 @@ const DailyNotesScreenComponent = () => {
             style={[leftArrowAnimatedStyle, { top: "50%", marginTop: -24 }]}
             pointerEvents="none"
           >
-            <View className="bg-violet-500 rounded-full p-3 shadow-lg">
+            <View className="bg-theme-purple-primary rounded-full p-3 shadow-lg">
               <Feather name="chevron-left" size={24} color="white" />
             </View>
           </Animated.View>
@@ -414,7 +414,7 @@ const DailyNotesScreenComponent = () => {
             style={[rightArrowAnimatedStyle, { top: "50%", marginTop: -24 }]}
             pointerEvents="none"
           >
-            <View className="bg-violet-500 rounded-full p-3 shadow-lg">
+            <View className="bg-theme-purple-primary rounded-full p-3 shadow-lg">
               <Feather name="chevron-right" size={24} color="white" />
             </View>
           </Animated.View>

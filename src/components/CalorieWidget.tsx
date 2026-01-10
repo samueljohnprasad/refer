@@ -102,8 +102,11 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
       >
         <HStack className="justify-between items-center">
           <HStack className="items-center" space="sm">
-            <View className="bg-orange-100 p-2 rounded-xl">
-              <HugeiconsIcon icon={AppleIcon} size={20} color="#F97316" />
+            <View
+              className="p-2 rounded-xl"
+              style={{ backgroundColor: "#FFE8D6" }}
+            >
+              <HugeiconsIcon icon={AppleIcon} size={20} color="#FF8C42" />
             </View>
             <VStack>
               <Text className="text-gray-900 font-semibold">Calories</Text>
@@ -130,8 +133,11 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
     >
       <HStack className="justify-between items-center mb-4">
         <HStack className="items-center" space="sm">
-          <View className="bg-orange-100 p-2 rounded-xl">
-            <HugeiconsIcon icon={AppleIcon} size={24} color="#F97316" />
+          <View
+            className="p-2 rounded-xl"
+            style={{ backgroundColor: "#FFE8D6" }}
+          >
+            <HugeiconsIcon icon={AppleIcon} size={24} color="#FF8C42" />
           </View>
           <Text className="text-gray-900 font-semibold text-lg">
             Calorie Tracker
@@ -139,7 +145,8 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
         </HStack>
         <TouchableOpacity
           onPress={handlePress}
-          className="bg-orange-500 p-2 rounded-xl"
+          className="p-2 rounded-xl"
+          style={{ backgroundColor: "#FF8C42" }}
         >
           <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
         </TouchableOpacity>

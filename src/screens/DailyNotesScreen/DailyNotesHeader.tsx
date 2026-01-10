@@ -84,7 +84,7 @@ const DailyNotesHeader = React.memo(
     });
     const insets = useSafeAreaInsets();
 
-    const { data: moodMap } = useFetchMoodsMonthly();    // Vertical expand/collapse for inline calendar (Reanimated on UI thread)
+    const { data: moodMap } = useFetchMoodsMonthly(); // Vertical expand/collapse for inline calendar (Reanimated on UI thread)
     const { progress, isExpanded, expand, collapse, toggle, gesture } =
       useCalendarExpandReanimated({
         expandedHeight: CALENDAR_EXPANDED_HEIGHT,
@@ -286,10 +286,10 @@ const DailyNotesHeader = React.memo(
         style={{
           paddingTop: paddingTop,
         }}
-        className="bg-violet-300 rounded-3xl"
+        className="bg-theme-purple-primary rounded-3xl"
       >
         <Animated.View
-          className="bg-violet-300 justify-end relative rounded-3xl"
+          className="bg-theme-purple-primary justify-end relative rounded-3xl"
           style={[headerContainerAnimatedStyle]}
         >
           {/* Calendar Header */}
@@ -358,7 +358,7 @@ const DailyNotesHeader = React.memo(
           {/* Only render CalendarPicker after first expansion for smooth animations */}
           {hasBeenExpanded && (
             <Animated.View
-              className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-violet-300"
+              className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-theme-purple-primary"
               style={[inlineCalendarAnimatedStyle, { top: 0 }]}
             >
               <SuspensLoader>
