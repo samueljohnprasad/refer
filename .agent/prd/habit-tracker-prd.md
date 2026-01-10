@@ -282,9 +282,20 @@ src/
 ### Phase 2: Enhanced Experience (Week 3)
 
 - [ ] Pre-selected habits library
+  - [x] Create `presetHabits.json` with habit definitions
+  - [x] Implement `PresetsList` component to display presets
+  - [x] Integrate presets into `AddHabitModal`
 - [ ] Animations and celebrations
+  - [ ] Add confetti animation on habit completion
+  - [ ] Optional completion sound effect
 - [ ] Streak tracking
+  - [ ] Extend habit schema with `currentStreak` and `longestStreak` fields
+  - [ ] Create `StreakBadge` component to display streaks
+  - [ ] Show streak information on `HabitCard` and streak overview screen
 - [ ] Habit reordering
+  - [ ] Implement drag-and-drop list using `reanimated-draggable`
+  - [ ] Persist `sort_order` in Supabase database
+  - [ ] Add UI affordance for entering reordering mode
 
 ### Phase 3: Analytics & Polish (Week 4)
 

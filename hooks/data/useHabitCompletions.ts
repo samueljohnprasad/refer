@@ -101,7 +101,20 @@ export const useHabitCompletions = (selectedDate: Date) => {
         setCompletions((prev) => [...prev, newCompletion]);
 
         return true;
-      } catch (err) {
+      } catch (err: any) {
+        // Handle duplicate key error (already completed) gracefully
+        if (err?.code === "23505") {
+          console.log("Habit already completed, ignoring duplicate check.");
+
+          // Ensure it's in local state if not already (optimistic update backup)
+          // We can't rely on `data` here since insert failed,
+          // but we know it's completed for the current user/date/habitId.
+          // Since we don't have the `id` of the existing row, we can just skip adding to state
+          // assuming it's already there or will be fetched.
+          // Or simpler: just return true.
+          return true;
+        }
+
         console.error("Error completing habit:", err);
         setError(
           err instanceof Error ? err.message : "Failed to complete habit"

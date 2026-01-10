@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { isFuture } from "date-fns";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -8,6 +9,8 @@ import Animated, {
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useHabits } from "@/hooks/data/useHabits";
 import { useHabitCompletions } from "@/hooks/data/useHabitCompletions";
+import { useHabitStreaks } from "@/src/hooks/data/useHabitStreaks";
+
 import { HabitCard } from "@/src/components/habits/HabitCard";
 import { AddHabitModal } from "@/src/components/habits/AddHabitModal";
 import { HabitDetailsModal } from "@/src/components/habits/HabitDetailsModal";
@@ -38,8 +41,15 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   const { habits, createHabit, updateHabit, deleteHabit } = useHabits();
   const { toggleHabitCompletion, getHabitsWithStatus } =
     useHabitCompletions(selectedDate);
+  const { streaks, refetchStreaks } = useHabitStreaks();
 
   const habitsWithStatus = getHabitsWithStatus(habits);
+
+  const habitsWithStatusAndStreaks = habitsWithStatus.map((h) => ({
+    ...h,
+    currentStreak: streaks[h.id]?.currentStreak || 0,
+    longestStreak: streaks[h.id]?.longestStreak || 0,
+  }));
 
   // Animated progress bar
   const progressWidth = useSharedValue(0);
@@ -84,7 +94,17 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     habitId: string,
     isCompleted: boolean
   ) => {
+    // Prevent completion for future dates
+    if (isFuture(selectedDate)) {
+      Alert.alert(
+        "Cannot complete habit",
+        "You cannot mark habits as complete for future dates."
+      );
+      return;
+    }
+
     await toggleHabitCompletion(habitId, isCompleted);
+    refetchStreaks();
   };
 
   const handleDeleteHabit = async (habitId: string) => {
@@ -165,7 +185,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           </View>
 
           {/* Habit Items */}
-          {habitsWithStatus.map((habit, index) => (
+          {habitsWithStatusAndStreaks.map((habit, index) => (
             <HabitCard
               key={habit.id}
               habit={habit}

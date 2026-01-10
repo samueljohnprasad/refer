@@ -5,7 +5,11 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  withSequence,
+  withSpring,
 } from "react-native-reanimated";
+import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
+import { StreakBadge } from "@/src/components/habits/StreakBadge";
 import * as Haptics from "expo-haptics";
 import { format, parse } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -22,13 +26,17 @@ export const HabitCard: React.FC<HabitCardProps> = ({
   onPress,
   onToggleComplete,
 }) => {
+  const [showConfetti, setShowConfetti] = React.useState(false);
   const checkScale = useSharedValue(habit.isCompleted ? 1 : 0);
 
-  // Update animation when completion status changes - smooth, no bounce
+  // Update animation when completion status changes
   React.useEffect(() => {
-    checkScale.value = withTiming(habit.isCompleted ? 1 : 0, {
-      duration: 200,
-    });
+    if (habit.isCompleted) {
+      checkScale.value = withTiming(1, { duration: 200 });
+      setShowConfetti(true);
+    } else {
+      checkScale.value = withTiming(0, { duration: 200 });
+    }
   }, [habit.isCompleted]);
 
   const checkmarkAnimatedStyle = useAnimatedStyle(() => ({
@@ -73,74 +81,93 @@ export const HabitCard: React.FC<HabitCardProps> = ({
   };
 
   return (
-    <Pressable
-      onPress={handleCardPress}
-      className="py-3 border-b border-gray-100"
-      style={({ pressed }) => ({
-        opacity: pressed ? 0.7 : 1,
-      })}
-    >
-      <View className="flex-row items-center">
-        {/* Emoji Icon */}
-        <View
-          className="w-10 h-10 rounded-xl items-center justify-center mr-3"
-          style={{ backgroundColor: habit.color + "15" }}
-        >
-          <Text style={{ fontSize: 20 }}>{habit.icon || "✓"}</Text>
-        </View>
-
-        {/* Content */}
-        <View className="flex-1">
-          {/* Habit Name */}
-          <Text
-            className={`text-base font-semibold ${
-              habit.isCompleted ? "text-gray-400 line-through" : "text-gray-900"
-            }`}
+    <View>
+      <Pressable
+        onPress={handleCardPress}
+        className="py-3 border-b border-gray-100"
+        style={({ pressed }) => ({
+          opacity: pressed ? 0.7 : 1,
+        })}
+      >
+        <View className="flex-row items-center">
+          {/* Emoji Icon */}
+          <View
+            className="w-10 h-10 rounded-xl items-center justify-center mr-3"
+            style={{ backgroundColor: habit.color + "15" }}
           >
-            {habit.name}
-          </Text>
+            <Text style={{ fontSize: 20 }}>{habit.icon || "✓"}</Text>
+          </View>
 
-          {/* Metadata Row */}
-          <View className="flex-row items-center mt-0.5">
-            {/* Repeat Badge */}
-            <View className="flex-row items-center">
-              <HugeiconsIcon icon={RepeatIcon} size={12} color="#9CA3AF" />
-              <Text className="text-xs text-gray-400 ml-1">
-                {getRepeatLabel()}
-              </Text>
+          {/* Content */}
+          <View className="flex-1">
+            {/* Habit Name */}
+            <Text
+              className={`text-base font-semibold ${
+                habit.isCompleted
+                  ? "text-gray-400 line-through"
+                  : "text-gray-900"
+              }`}
+            >
+              {habit.name}
+            </Text>
+
+            {/* Metadata Row */}
+            <View className="flex-row items-center mt-0.5">
+              {/* Repeat Badge */}
+              <View className="flex-row items-center">
+                <HugeiconsIcon icon={RepeatIcon} size={12} color="#9CA3AF" />
+                <Text className="text-xs text-gray-400 ml-1">
+                  {getRepeatLabel()}
+                </Text>
+              </View>
+
+              {/* Time Badge */}
+              {habit.scheduledTime && (
+                <Text className="text-xs text-gray-400 ml-3">
+                  {formatTime(habit.scheduledTime)}
+                </Text>
+              )}
+
+              {/* Streak Badge */}
+              <StreakBadge currentStreak={habit.currentStreak || 0} />
+            </View>
+          </View>
+
+          {/* Checkbox */}
+          <Pressable
+            onPress={handleCheckboxPress}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            className="ml-3 relative"
+          >
+            <View
+              className="w-7 h-7 rounded-full border-2 items-center justify-center z-10"
+              style={{
+                borderColor: habit.isCompleted ? habit.color : "#E5E7EB",
+                backgroundColor: habit.isCompleted
+                  ? habit.color
+                  : "transparent",
+              }}
+            >
+              <Animated.Text
+                className="text-white text-sm font-bold"
+                style={checkmarkAnimatedStyle}
+              >
+                ✓
+              </Animated.Text>
             </View>
 
-            {/* Time Badge */}
-            {habit.scheduledTime && (
-              <Text className="text-xs text-gray-400 ml-3">
-                {formatTime(habit.scheduledTime)}
-              </Text>
-            )}
-          </View>
-        </View>
-
-        {/* Checkbox */}
-        <Pressable
-          onPress={handleCheckboxPress}
-          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-          className="ml-3"
-        >
-          <View
-            className="w-7 h-7 rounded-full border-2 items-center justify-center"
-            style={{
-              borderColor: habit.isCompleted ? habit.color : "#E5E7EB",
-              backgroundColor: habit.isCompleted ? habit.color : "transparent",
-            }}
-          >
-            <Animated.Text
-              className="text-white text-sm font-bold"
-              style={checkmarkAnimatedStyle}
+            <View
+              className="absolute inset-0 items-center justify-center z-0"
+              pointerEvents="none"
             >
-              ✓
-            </Animated.Text>
-          </View>
-        </Pressable>
-      </View>
-    </Pressable>
+              <ConfettiExplosion
+                isVisible={showConfetti}
+                onAnimationComplete={() => setShowConfetti(false)}
+              />
+            </View>
+          </Pressable>
+        </View>
+      </Pressable>
+    </View>
   );
 };
