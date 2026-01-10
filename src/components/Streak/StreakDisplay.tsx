@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Share } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Share01Icon, StarIcon, Tick02Icon } from "@hugeicons/core-free-icons";
 import { useStreakTracker } from "@/hooks/data/useStreakTracker";
+import { useReviewPrompt } from "@/src/hooks/useReviewPrompt";
 import LottieView from "lottie-react-native";
 import { fireryLove } from "@/assets/lottie";
 
@@ -14,6 +15,12 @@ const DAYS_OF_WEEK = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 export const StreakDisplay: React.FC<StreakDisplayProps> = ({ onContinue }) => {
   const { streakData, isLoading } = useStreakTracker();
+
+  // Trigger review request at 1-day streak
+  useReviewPrompt({
+    currentStreak: streakData.currentStreak,
+    enabled: true,
+  });
 
   const handleShare = async () => {
     try {
