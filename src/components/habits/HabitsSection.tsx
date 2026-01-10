@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { isFuture } from "date-fns";
 import Animated, {
@@ -26,6 +26,12 @@ import {
   handleHabitCreated,
   handleHabitUpdated,
 } from "@/src/utils/habitNotificationHandlers";
+import {
+  categorizeHabits,
+  getActiveCategories,
+  TIME_CATEGORY_CONFIG,
+  TimeCategory,
+} from "@/src/utils/habitCategories";
 
 interface HabitsSectionProps {
   selectedDate: Date;
@@ -138,6 +144,17 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     ? habitsWithStatus.find((h) => h.id === selectedHabit.id)
     : null;
 
+  // Categorize habits by time of day
+  const categorizedHabits = useMemo(
+    () => categorizeHabits(habitsWithStatusAndStreaks),
+    [habitsWithStatusAndStreaks]
+  );
+
+  const activeCategories = useMemo(
+    () => getActiveCategories(categorizedHabits),
+    [categorizedHabits]
+  );
+
   return (
     <View className="bg-white rounded-2xl p-5 border border-gray-100">
       {/* Header with Title and Add Button */}
@@ -184,16 +201,34 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
             />
           </View>
 
-          {/* Habit Items */}
-          {habitsWithStatusAndStreaks.map((habit, index) => (
-            <HabitCard
-              key={habit.id}
-              habit={habit}
-              onPress={() => handleHabitPress(habit.id)}
-              onToggleComplete={() =>
-                handleToggleCompletion(habit.id, habit.isCompleted)
-              }
-            />
+          {/* Categorized Habit Items */}
+          {activeCategories.map((category) => (
+            <View key={category} className="mb-4">
+              {/* Category Header */}
+              <View className="flex-row items-center mb-2">
+                <Text className="text-sm mr-1.5">
+                  {TIME_CATEGORY_CONFIG[category].emoji}
+                </Text>
+                <Text className="text-sm font-semibold text-gray-600">
+                  {TIME_CATEGORY_CONFIG[category].label}
+                </Text>
+                <Text className="text-xs text-gray-400 ml-2">
+                  {TIME_CATEGORY_CONFIG[category].range}
+                </Text>
+              </View>
+
+              {/* Habits in this category */}
+              {categorizedHabits[category].map((habit) => (
+                <HabitCard
+                  key={habit.id}
+                  habit={habit}
+                  onPress={() => handleHabitPress(habit.id)}
+                  onToggleComplete={() =>
+                    handleToggleCompletion(habit.id, habit.isCompleted)
+                  }
+                />
+              ))}
+            </View>
           ))}
         </View>
       )}

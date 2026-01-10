@@ -9,6 +9,7 @@ import React, {
 import { View, ScrollView, Pressable, Text } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Stack } from "expo-router";
+import { Host, Picker } from "@expo/ui/swift-ui";
 import {
   format,
   addDays,
@@ -63,6 +64,13 @@ const DailyNotesScreenComponent = () => {
   // State for selected date
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
   const [showBookmarksModal, setShowBookmarksModal] = useState<boolean>(false);
+
+  // Tab filter state
+  type TabFilter = "habits" | "journal" | "calories";
+  const [tabFilter, setTabFilter] = useState<TabFilter>("journal");
+  const [filterIndex, setFilterIndex] = useState(0);
+
+  const filterOptions = ["journal", "calories", "habits"];
 
   // State for current week view (independent of selected date)
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
@@ -378,23 +386,50 @@ const DailyNotesScreenComponent = () => {
               {/* AI Insights Chip - Below header */}
               {aiInsightsChip}
 
-              {/* Calorie Tracker Widget */}
-              <View className="px-4 pt-3">
-                <CalorieWidget selectedDate={selectedDate} />
+              {/* Tab Picker */}
+              <View className="p-4 ">
+                <Host matchContents>
+                  <Picker
+                    label="View"
+                    options={filterOptions}
+                    selectedIndex={filterIndex}
+                    onOptionSelected={({ nativeEvent: { index } }) => {
+                      setFilterIndex(index);
+                      const filters: TabFilter[] = [
+                        "journal",
+                        "calories",
+                        "habits",
+                      ];
+                      setTabFilter(filters[index]);
+                    }}
+                    variant="palette"
+                  />
+                </Host>
               </View>
+
+              {/* Calorie Tracker Widget */}
+              {tabFilter === "calories" && (
+                <View className="px-4 pt-3">
+                  <CalorieWidget selectedDate={selectedDate} />
+                </View>
+              )}
 
               {/* Habits Section */}
-              <View className="px-4 pt-3">
-                <HabitsSection selectedDate={selectedDate} />
-              </View>
+              {tabFilter === "habits" && (
+                <View className="px-4 pt-3">
+                  <HabitsSection selectedDate={selectedDate} />
+                </View>
+              )}
 
-              <Animated.View
-                className="flex-1 px-4 bg-theme-background-primary"
-                style={[contentAnimatedStyle, { paddingBottom: 20 }]}
-              >
-                {/* Mental Health Journal Dashboard */}
-                {mentalHealthContent}
-              </Animated.View>
+              {tabFilter === "journal" && (
+                <Animated.View
+                  className="flex-1 px-4 bg-theme-background-primary"
+                  style={[contentAnimatedStyle, { paddingBottom: 20 }]}
+                >
+                  {/* Mental Health Journal Dashboard */}
+                  {mentalHealthContent}
+                </Animated.View>
+              )}
             </ScrollView>
           </GestureDetector>
 
