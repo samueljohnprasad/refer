@@ -156,81 +156,95 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   );
 
   return (
-    <View className="bg-white rounded-2xl p-5 border border-gray-100">
-      {/* Header with Title and Add Button */}
-      <View className="flex-row items-center justify-between mb-4">
-        <View className="flex-row items-center">
-          <View className="bg-theme-purple-light p-2 rounded-xl mr-2">
-            <HugeiconsIcon icon={Tick01Icon} size={24} color="#7B61FF" />
-          </View>
-          <Text className="text-gray-900 font-semibold text-lg">
-            Daily Habits
-          </Text>
-          {totalCount > 0 && (
-            <View className="ml-2 px-2 py-0.5 bg-gray-100 rounded-full">
-              <Text className="text-xs font-medium text-gray-500">
-                {completedCount}/{totalCount}
-              </Text>
+    <View>
+      {/* Header Card with Progress */}
+      <View className="bg-white rounded-2xl p-5 border border-gray-100 mb-4">
+        {/* Header with Title and Add Button */}
+        <View className="flex-row items-center justify-between">
+          <View className="flex-row items-center">
+            <View className="bg-theme-purple-light p-2 rounded-xl mr-2">
+              <HugeiconsIcon icon={Tick01Icon} size={24} color="#7B61FF" />
             </View>
-          )}
+            <Text className="text-gray-900 font-semibold text-lg">
+              Daily Habits
+            </Text>
+            {totalCount > 0 && (
+              <View className="ml-2 px-2 py-0.5 bg-gray-100 rounded-full">
+                <Text className="text-xs font-medium text-gray-500">
+                  {completedCount}/{totalCount}
+                </Text>
+              </View>
+            )}
+          </View>
+
+          <TouchableOpacity
+            onPress={handleAddHabitPress}
+            className="bg-theme-purple-deep p-2 rounded-xl"
+            activeOpacity={0.7}
+          >
+            <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          onPress={handleAddHabitPress}
-          className="bg-theme-purple-deep p-2 rounded-xl"
-          activeOpacity={0.7}
-        >
-          <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Habits List */}
-      {habitsWithStatus.length === 0 ? (
-        <View className="py-4 items-center">
-          <Text className="text-gray-400 text-center">
-            No habits for today.{"\n"}Tap + to add your first habit!
-          </Text>
-        </View>
-      ) : (
-        <View>
-          {/* Progress Bar */}
-          <View className="w-full h-1.5 bg-theme-purple-light rounded-full mb-4 overflow-hidden">
+        {/* Progress Bar */}
+        {totalCount > 0 && (
+          <View className="w-full h-2 bg-theme-purple-light rounded-full mt-4 overflow-hidden">
             <Animated.View
               className="h-full bg-theme-purple-deep rounded-full"
               style={progressAnimatedStyle}
             />
           </View>
+        )}
+      </View>
 
-          {/* Categorized Habit Items */}
+      {/* Empty State */}
+      {habitsWithStatus.length === 0 ? (
+        <View className="bg-white rounded-2xl p-8 border border-gray-100 items-center">
+          <Text className="text-gray-400 text-center">
+            No habits for today.{"\n"}Tap + to add your first habit!
+          </Text>
+        </View>
+      ) : (
+        <>
+          {/* Category Cards */}
           {activeCategories.map((category) => (
-            <View key={category} className="mb-4">
+            <View
+              key={category}
+              className="bg-white rounded-2xl border border-gray-100 mb-4 overflow-hidden"
+            >
               {/* Category Header */}
-              <View className="flex-row items-center mb-2">
-                <Text className="text-sm mr-1.5">
-                  {TIME_CATEGORY_CONFIG[category].emoji}
-                </Text>
-                <Text className="text-sm font-semibold text-gray-600">
-                  {TIME_CATEGORY_CONFIG[category].label}
-                </Text>
-                <Text className="text-xs text-gray-400 ml-2">
-                  {TIME_CATEGORY_CONFIG[category].range}
-                </Text>
+              <View className="px-4 py-3 border-b border-gray-100">
+                <View className="flex-row items-center">
+                  <Text className="text-2xl mr-2">
+                    {TIME_CATEGORY_CONFIG[category].emoji}
+                  </Text>
+                  <View>
+                    <Text className="text-base font-bold text-gray-800">
+                      {TIME_CATEGORY_CONFIG[category].label}
+                    </Text>
+                    <Text className="text-xs text-gray-400">
+                      {TIME_CATEGORY_CONFIG[category].range}
+                    </Text>
+                  </View>
+                </View>
               </View>
 
-              {/* Habits in this category */}
-              {categorizedHabits[category].map((habit) => (
-                <HabitCard
-                  key={habit.id}
-                  habit={habit}
-                  onPress={() => handleHabitPress(habit.id)}
-                  onToggleComplete={() =>
-                    handleToggleCompletion(habit.id, habit.isCompleted)
-                  }
-                />
-              ))}
+              {/* Habits List - Clean flat layout */}
+              <View className="px-4">
+                {categorizedHabits[category].map((habit) => (
+                  <HabitCard
+                    key={habit.id}
+                    habit={habit}
+                    onPress={() => handleHabitPress(habit.id)}
+                    onToggleComplete={() =>
+                      handleToggleCompletion(habit.id, habit.isCompleted)
+                    }
+                  />
+                ))}
+              </View>
             </View>
           ))}
-        </View>
+        </>
       )}
 
       {/* Add Habit Modal */}
