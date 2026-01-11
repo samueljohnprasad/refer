@@ -19,12 +19,14 @@ interface HabitCardProps {
   habit: HabitWithStatus;
   onPress: () => void;
   onToggleComplete: () => void;
+  isLast?: boolean;
 }
 
 export const HabitCard: React.FC<HabitCardProps> = ({
   habit,
   onPress,
   onToggleComplete,
+  isLast = false,
 }) => {
   const [showConfetti, setShowConfetti] = React.useState(false);
   const checkScale = useSharedValue(habit.isCompleted ? 1 : 0);
@@ -84,7 +86,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
     <View>
       <Pressable
         onPress={handleCardPress}
-        className="py-3 border-b border-gray-100"
+        className={`py-3 ${!isLast ? "border-b border-gray-100" : ""}`}
         style={({ pressed }) => ({
           opacity: pressed ? 0.7 : 1,
         })}

@@ -63,7 +63,6 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
   onClose,
 }) => {
   const router = useRouter();
-  const headerHeight = useHeaderHeight();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] =
     useState<CalorieAnalysisResult | null>(null);
@@ -414,72 +413,11 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
       <ScrollView
         className="flex-1"
         contentContainerStyle={{
-          paddingTop: headerHeight,
-          paddingHorizontal: 20,
+          paddingTop: 20,
           paddingBottom: 100,
         }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Daily Summary Card */}
-        <View className="bg-white rounded-2xl p-5 mb-5 border border-gray-100">
-          <HStack className="justify-between items-center mb-2">
-            <Text className="text-gray-600 font-medium">Today's Total</Text>
-            {(() => {
-              const dailyMicronutrients = calculateDailyMicronutrients();
-              const trackedDailyMicronutrients =
-                filterTrackedMicronutrients(dailyMicronutrients);
-              return trackedDailyMicronutrients.length > 0 ? (
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedMicronutrients({
-                      title: "Today's Total Nutrients",
-                      micronutrients: trackedDailyMicronutrients,
-                    });
-                    micronutrientModalRef.current?.present();
-                  }}
-                  activeOpacity={0.7}
-                >
-                  <HugeiconsIcon
-                    icon={InformationCircleIcon}
-                    size={20}
-                    color="#7B61FF"
-                  />
-                </TouchableOpacity>
-              ) : null;
-            })()}
-          </HStack>
-          <Text className="text-4xl font-bold text-purple-600 mb-4">
-            {dailySummary.totalCalories} cal
-          </Text>
-          <HStack className="justify-between">
-            <View className="items-center">
-              <Text className="text-lg font-semibold text-gray-900">
-                {dailySummary.totalProtein}g
-              </Text>
-              <Text className="text-xs text-gray-500">Protein</Text>
-            </View>
-            <View className="items-center">
-              <Text className="text-lg font-semibold text-gray-900">
-                {dailySummary.totalCarbs}g
-              </Text>
-              <Text className="text-xs text-gray-500">Carbs</Text>
-            </View>
-            <View className="items-center">
-              <Text className="text-lg font-semibold text-gray-900">
-                {dailySummary.totalFat}g
-              </Text>
-              <Text className="text-xs text-gray-500">Fat</Text>
-            </View>
-            <View className="items-center">
-              <Text className="text-lg font-semibold text-gray-900">
-                {dailySummary.totalFiber}g
-              </Text>
-              <Text className="text-xs text-gray-500">Fiber</Text>
-            </View>
-          </HStack>
-        </View>
-
-        {/* Add Food Buttons */}
         <HStack className="mb-5" space="md">
           <TouchableOpacity
             className="flex-1 bg-purple-600 rounded-2xl py-4 items-center flex-row justify-center"

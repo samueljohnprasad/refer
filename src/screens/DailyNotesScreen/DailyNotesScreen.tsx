@@ -46,6 +46,7 @@ import { formateDate_y_m_d } from "@/src/utils/date";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import CalorieWidget from "@/src/components/CalorieWidget";
 import { HabitsSection } from "@/src/components/habits/HabitsSection";
+import CalorieTrackerScreen from "../CalorieTrackerScreen/CalorieTrackerScreen";
 
 // Lazy load heavy components
 const MentalHealthProfileContainer = React.lazy(() =>
@@ -411,6 +412,7 @@ const DailyNotesScreenComponent = () => {
               {tabFilter === "calories" && (
                 <View className="px-4 pt-3">
                   <CalorieWidget selectedDate={selectedDate} />
+                  <CalorieTrackerScreen selectedDate={selectedDate} />
                 </View>
               )}
 

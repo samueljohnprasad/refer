@@ -231,7 +231,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
               {/* Habits List - Clean flat layout */}
               <View className="px-4">
-                {categorizedHabits[category].map((habit) => (
+                {categorizedHabits[category].map((habit, index) => (
                   <HabitCard
                     key={habit.id}
                     habit={habit}
@@ -239,6 +239,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
                     onToggleComplete={() =>
                       handleToggleCompletion(habit.id, habit.isCompleted)
                     }
+                    isLast={index === categorizedHabits[category].length - 1}
                   />
                 ))}
               </View>
