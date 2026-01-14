@@ -454,6 +454,7 @@ export type Database = {
           avatar_url: string | null
           created_at: string | null
           current_streak: number | null
+          daily_calorie_goal: number | null
           display_name: string | null
           full_name: string | null
           gender: Database["public"]["Enums"]["gender_enum"] | null
@@ -471,6 +472,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string | null
           current_streak?: number | null
+          daily_calorie_goal?: number | null
           display_name?: string | null
           full_name?: string | null
           gender?: Database["public"]["Enums"]["gender_enum"] | null
@@ -488,6 +490,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string | null
           current_streak?: number | null
+          daily_calorie_goal?: number | null
           display_name?: string | null
           full_name?: string | null
           gender?: Database["public"]["Enums"]["gender_enum"] | null

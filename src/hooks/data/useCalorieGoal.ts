@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { supabase } from "@/src/network/auth/supabase";
+import { useAuth } from "@/src/context/AuthContext";
 
-const CALORIE_GOAL_KEY = "daily_calorie_goal";
 const DEFAULT_CALORIE_GOAL = 2000;
 
 interface UseCalorieGoalReturn {
@@ -12,23 +12,33 @@ interface UseCalorieGoalReturn {
 
 /**
  * Custom hook to manage the user's daily calorie goal.
- * Stores the goal in AsyncStorage for persistence.
+ * Stores the goal in the user's profile in Supabase.
  */
 export function useCalorieGoal(): UseCalorieGoalReturn {
+  const { user } = useAuth();
   const [calorieGoal, setCalorieGoalState] =
     useState<number>(DEFAULT_CALORIE_GOAL);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Load calorie goal from storage on mount
+  // Load calorie goal from profile
   useEffect(() => {
     const loadCalorieGoal = async (): Promise<void> => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        const savedGoal = await AsyncStorage.getItem(CALORIE_GOAL_KEY);
-        if (savedGoal !== null) {
-          const parsedGoal = parseInt(savedGoal, 10);
-          if (!isNaN(parsedGoal) && parsedGoal > 0) {
-            setCalorieGoalState(parsedGoal);
-          }
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("daily_calorie_goal")
+          .eq("id", user.id)
+          .single();
+
+        if (error) {
+          console.error("Failed to load calorie goal:", error);
+        } else if (data?.daily_calorie_goal) {
+          setCalorieGoalState(data.daily_calorie_goal);
         }
       } catch (error) {
         console.error("Failed to load calorie goal:", error);
@@ -36,21 +46,39 @@ export function useCalorieGoal(): UseCalorieGoalReturn {
         setIsLoading(false);
       }
     };
-    loadCalorieGoal();
-  }, []);
 
-  // Save calorie goal to storage
-  const setCalorieGoal = useCallback(async (goal: number): Promise<void> => {
-    try {
-      if (goal > 0) {
-        await AsyncStorage.setItem(CALORIE_GOAL_KEY, goal.toString());
-        setCalorieGoalState(goal);
+    loadCalorieGoal();
+  }, [user]);
+
+  // Save calorie goal to profile
+  const setCalorieGoal = useCallback(
+    async (goal: number): Promise<void> => {
+      if (!user) {
+        console.error("Cannot set calorie goal: user not authenticated");
+        return;
       }
-    } catch (error) {
-      console.error("Failed to save calorie goal:", error);
-      throw error;
-    }
-  }, []);
+
+      try {
+        if (goal > 0) {
+          const { error } = await supabase
+            .from("profiles")
+            .update({ daily_calorie_goal: goal })
+            .eq("id", user.id);
+
+          if (error) {
+            console.error("Failed to save calorie goal:", error);
+            throw error;
+          }
+
+          setCalorieGoalState(goal);
+        }
+      } catch (error) {
+        console.error("Failed to save calorie goal:", error);
+        throw error;
+      }
+    },
+    [user]
+  );
 
   return {
     calorieGoal,
