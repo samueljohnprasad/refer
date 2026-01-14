@@ -9,6 +9,7 @@ import {
   AppleIcon,
   Add01Icon,
   InformationCircleIcon,
+  Target02Icon,
 } from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,6 +20,8 @@ import {
   getMicronutrientById,
 } from "@/src/config/micronutrients";
 import { MicronutrientEntry } from "@/src/network/calorieAi";
+import { useCalorieGoal } from "@/src/hooks/data/useCalorieGoal";
+import CalorieGoalModal from "@/src/components/calorie/CalorieGoalModal";
 
 const TRACKED_MICRONUTRIENTS_KEY = "tracked_micronutrients";
 
@@ -36,6 +39,10 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
     format(selectedDate, "yyyy-MM-dd")
   );
 
+  // Calorie goal management
+  const { calorieGoal, setCalorieGoal } = useCalorieGoal();
+  const [showGoalModal, setShowGoalModal] = useState<boolean>(false);
+
   const [trackedNutrientIds, setTrackedNutrientIds] = useState<Set<string>>(
     new Set(MICRONUTRIENTS_CONFIG.map((n) => n.id))
   );
@@ -44,6 +51,16 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
     micronutrients: MicronutrientEntry[];
   } | null>(null);
   const micronutrientModalRef = useRef<BottomSheetModal>(null);
+
+  // Calculate progress percentage toward goal
+  const progressPercentage = Math.min(
+    Math.round((dailySummary.totalCalories / calorieGoal) * 100),
+    100
+  );
+  const remainingCalories = Math.max(
+    calorieGoal - dailySummary.totalCalories,
+    0
+  );
 
   // Load tracked micronutrients from storage
   useEffect(() => {
@@ -92,6 +109,14 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
       pathname: "/tabs/screens/calorie-tracker",
       params: { date: format(selectedDate, "yyyy-MM-dd") },
     });
+  };
+
+  const handleGoalPress = (): void => {
+    setShowGoalModal(true);
+  };
+
+  const handleSaveGoal = async (goal: number): Promise<void> => {
+    await setCalorieGoal(goal);
   };
 
   if (compact) {
@@ -157,6 +182,17 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
           <Text className="text-gray-400 text-center">
             No meals logged today.{"\n"}Tap + to add your first meal!
           </Text>
+          {/* Goal indicator even when no meals */}
+          <TouchableOpacity
+            onPress={handleGoalPress}
+            className="mt-4 flex-row items-center bg-orange-50 px-4 py-2 rounded-full"
+            activeOpacity={0.7}
+          >
+            <HugeiconsIcon icon={Target02Icon} size={18} color="#F97316" />
+            <Text className="text-orange-600 font-medium ml-2">
+              Goal: {calorieGoal} kcal
+            </Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <>
@@ -190,6 +226,44 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
               })()}
             </HStack>
             <Text className="text-gray-500">calories consumed</Text>
+          </View>
+
+          {/* Progress bar toward goal */}
+          <View className="mb-4">
+            <TouchableOpacity
+              onPress={handleGoalPress}
+              activeOpacity={0.8}
+              className="flex-row justify-between items-center mb-2"
+            >
+              <HStack className="items-center" space="xs">
+                <HugeiconsIcon icon={Target02Icon} size={16} color="#F97316" />
+                <Text className="text-gray-600 text-sm">
+                  Goal: {calorieGoal} kcal
+                </Text>
+              </HStack>
+              <Text
+                className={`text-sm font-semibold ${
+                  dailySummary.totalCalories > calorieGoal
+                    ? "text-red-500"
+                    : "text-green-600"
+                }`}
+              >
+                {dailySummary.totalCalories > calorieGoal
+                  ? `+${dailySummary.totalCalories - calorieGoal} over`
+                  : `${remainingCalories} left`}
+              </Text>
+            </TouchableOpacity>
+            <View className="h-3 bg-gray-200 rounded-full overflow-hidden">
+              <View
+                className={`h-full rounded-full ${
+                  progressPercentage >= 100 ? "bg-red-500" : "bg-orange-500"
+                }`}
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </View>
+            <Text className="text-gray-400 text-xs text-center mt-1">
+              {progressPercentage}% of daily goal
+            </Text>
           </View>
 
           <HStack className="justify-between bg-gray-50 rounded-xl p-3">
@@ -240,7 +314,6 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
             {selectedMicronutrients?.title || "Micronutrients"}
           </Text>
         </View>
-
         {selectedMicronutrients &&
         selectedMicronutrients.micronutrients.length > 0 ? (
           <BottomSheetScrollView
@@ -303,7 +376,16 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
             </Text>
           </View>
         )}
+        \n{" "}
       </ShortBottomModal>
+
+      {/* Calorie Goal Modal */}
+      <CalorieGoalModal
+        visible={showGoalModal}
+        currentGoal={calorieGoal}
+        onSave={handleSaveGoal}
+        onClose={() => setShowGoalModal(false)}
+      />
     </TouchableOpacity>
   );
 };

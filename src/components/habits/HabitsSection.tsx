@@ -156,7 +156,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   );
 
   return (
-    <View>
+    <View style={{ paddingBottom: 120 }}>
       {/* Header Card with Progress */}
       <View className="bg-white rounded-2xl p-5 border border-gray-100 mb-4">
         {/* Header with Title and Add Button */}
