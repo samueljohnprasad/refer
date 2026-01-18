@@ -5,6 +5,8 @@ export { MoodCard } from "./MoodCard";
 export { TagsList } from "./TagsList";
 export { JournalContent } from "./JournalContent";
 export { AIInsightsSection } from "./AIInsightsSection";
+export { InsightMetricsCard } from "./InsightMetricsCard";
+export { InsightTagsSection, INSIGHT_TAG_CONFIGS } from "./InsightTagsSection";
 export { SaveButton } from "./SaveButton";
 
 // New redesigned components

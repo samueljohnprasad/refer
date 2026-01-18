@@ -35,7 +35,12 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
   }, [visible]);
 
   return (
-    <ShortBottomModal ref={sheetRef} snapPoints={["75%"]} onDismiss={onClose}>
+    <ShortBottomModal
+      marginHorizontal={8}
+      ref={sheetRef}
+      snapPoints={["75%"]}
+      onDismiss={onClose}
+    >
       <View style={styles.container}>
         <ScrollView
           showsVerticalScrollIndicator={false}

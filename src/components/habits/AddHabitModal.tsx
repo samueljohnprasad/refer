@@ -121,7 +121,7 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
     };
 
     return (
-      <ShortBottomModal ref={ref} snapPoints={["80%"]}>
+      <ShortBottomModal marginHorizontal={8} ref={ref} snapPoints={["80%"]}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           className="flex-1"

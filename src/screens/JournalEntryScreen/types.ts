@@ -56,8 +56,16 @@ export interface JournalContentProps {
 }
 
 export interface AIInsightsSectionProps {
-  aiInsights: string;
+  aiInsights: string | null;
   colorScheme: "light" | "dark" | null | undefined;
+  energyLevel?: number | null;
+  stressLevel?: number | null;
+  sleepQuality?: number | null;
+  achievements?: string[] | null;
+  worries?: string[] | null;
+  goals?: string[] | null;
+  triggers?: string[] | null;
+  copingStrategies?: string[] | null;
 }
 
 export interface SaveButtonProps {

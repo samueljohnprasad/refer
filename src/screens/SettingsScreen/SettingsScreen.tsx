@@ -15,6 +15,7 @@ import {
   UserIcon,
   Copy01Icon,
   Share01Icon,
+  Download02Icon,
 } from "@hugeicons/core-free-icons";
 
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
@@ -210,7 +211,7 @@ export default React.memo(function SettingsScreen() {
               onPress={() => {}}
               showArrow={false}
             />
-            {/* <SettingsItem
+            <SettingsItem
               icon={Download02Icon}
               iconColor="#9333EA"
               iconBgColor="#E9D5FF"
@@ -220,7 +221,7 @@ export default React.memo(function SettingsScreen() {
                 Haptics.selectionAsync();
                 setShowImportModal(true);
               }}
-            /> */}
+            />
             <SettingsItem
               icon={Logout02Icon}
               iconColor="#3B82F6"

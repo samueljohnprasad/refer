@@ -424,7 +424,7 @@ const CalorieGoalModal: React.FC<CalorieGoalModalProps> = ({
     <ShortBottomModal
       ref={modalRef}
       snapPoints={activeTab === "calculator" ? ["80%"] : ["50%"]}
-      marginHorizontal={16}
+      marginHorizontal={8}
       onDismiss={onClose}
       enableContentPanningGesture={activeTab === "calculator"}
     >

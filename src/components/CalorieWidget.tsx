@@ -104,13 +104,6 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
     }));
   };
 
-  const handlePress = (): void => {
-    router.push({
-      pathname: "/tabs/screens/calorie-tracker",
-      params: { date: format(selectedDate, "yyyy-MM-dd") },
-    });
-  };
-
   const handleGoalPress = (): void => {
     setShowGoalModal(true);
   };
@@ -121,10 +114,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
 
   if (compact) {
     return (
-      <TouchableOpacity
-        onPress={handlePress}
-        className="bg-white rounded-2xl p-4 border border-gray-100"
-      >
+      <TouchableOpacity className="bg-white rounded-2xl p-4 border border-gray-100">
         <HStack className="justify-between items-center">
           <HStack className="items-center" space="sm">
             <View
@@ -152,10 +142,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
   }
 
   return (
-    <TouchableOpacity
-      onPress={handlePress}
-      className="bg-white rounded-2xl p-5 border border-gray-100"
-    >
+    <TouchableOpacity className="bg-white rounded-2xl p-5 border border-gray-100">
       <HStack className="justify-between items-center mb-4">
         <HStack className="items-center" space="sm">
           <View
@@ -168,13 +155,6 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
             Calorie Tracker
           </Text>
         </HStack>
-        <TouchableOpacity
-          onPress={handlePress}
-          className="p-2 rounded-xl"
-          style={{ backgroundColor: "#FF8C42" }}
-        >
-          <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
-        </TouchableOpacity>
       </HStack>
 
       {dailySummary.mealCount === 0 ? (

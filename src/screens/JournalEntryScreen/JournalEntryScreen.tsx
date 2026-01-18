@@ -13,8 +13,10 @@ import {
   FeelingsSection,
   TranscriptSection,
   ContinueButton,
+  AIInsightsSection,
 } from "./components";
 import { Enums } from "@/database.types";
+import { useColorScheme } from "react-native";
 import { FeelingsType } from "@/src/network/genAi";
 
 const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
@@ -24,6 +26,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   const toast = useToast();
   const { saveJournal, saving } = useSaveJournal();
   const { top, bottom } = useSafeAreaInsets();
+  const colorScheme = useColorScheme();
 
   const MOOD_GRADIENTS: { [key: string]: string[] } = {
     terrible: ["#FEE2E2", "#FED7D7"], // red-100 to red-100 lighter
@@ -185,6 +188,20 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
             isEditing={isEditing}
             onTextChange={setJournalText}
           />
+          {insights?.journal_ai_insights && (
+            <AIInsightsSection
+              aiInsights={insights.journal_ai_insights.aiInsights ?? null}
+              colorScheme={colorScheme}
+              energyLevel={insights.journal_ai_insights.energyLevel}
+              stressLevel={insights.journal_ai_insights.stressLevel}
+              sleepQuality={insights.journal_ai_insights.sleepQuality}
+              achievements={insights.journal_ai_insights.achievements}
+              worries={insights.journal_ai_insights.worries}
+              goals={insights.journal_ai_insights.goals}
+              triggers={insights.journal_ai_insights.triggers}
+              copingStrategies={insights.journal_ai_insights.copingStrategies}
+            />
+          )}
         </ScrollView>
 
         <ContinueButton
