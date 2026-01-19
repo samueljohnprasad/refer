@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { ScrollView, KeyboardAvoidingView, Platform, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
@@ -27,7 +27,6 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   const { saveJournal, saving } = useSaveJournal();
   const { top, bottom } = useSafeAreaInsets();
   const colorScheme = useColorScheme();
-
   const MOOD_GRADIENTS: { [key: string]: string[] } = {
     terrible: ["#FEE2E2", "#FED7D7"], // red-100 to red-100 lighter
     bad: ["#FED7AA", "#FEF3C7"], // orange-100 to yellow-100
@@ -36,8 +35,16 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
     great: ["#DBEAFE", "#EFF6FF"], // blue-100 to blue-50
   };
 
+  // Handle potential array response from API
+  const entry = Array.isArray(insights) ? insights[0] : insights;
+
+  console.log(
+    "JournalEntryScreen - entry?.journal_ai_insights:",
+    JSON.stringify(entry?.journal_ai_insights, null, 2)
+  );
+
   const [selectedMood, setSelectedMood] = useState<Enums<"mood">>(
-    insights?.moods?.main_mood || "great"
+    entry?.moods?.main_mood || "great"
   );
 
   const {
@@ -50,9 +57,18 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
     handleDone,
     handleClose: handleCloseEdit,
   } = useJournalEdit({
-    initialTags: (insights?.journal_ai_insights?.feelings ||
-      []) as FeelingsType[],
-    initialText: insights?.transcripts || "",
+    initialTags: ((entry?.journal_ai_insights?.feelings || []) as any[]).map(
+      (f) =>
+        typeof f === "string"
+          ? {
+              name: f,
+              emoji: "😊",
+              colorsGradient: ["#FFD700", "#FFA500"],
+              intensity: 5,
+            }
+          : f
+    ),
+    initialText: entry?.transcripts || "",
   });
 
   const addFeelingString = (feeling: string): void => {
@@ -80,22 +96,22 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
       if (!insights) return;
 
       // Merge edited data with insights before saving
-      const updatedInsights: JournalEntry = {
-        ...insights,
+      const updatedInsights = {
+        ...entry,
         transcripts: journalText,
-        moods: insights.moods
+        moods: entry?.moods
           ? {
-              ...insights.moods,
+              ...entry.moods,
               main_mood: selectedMood,
             }
           : { main_mood: selectedMood },
-        journal_ai_insights: insights.journal_ai_insights
+        journal_ai_insights: entry?.journal_ai_insights
           ? {
-              ...insights.journal_ai_insights,
+              ...entry.journal_ai_insights,
               feelings: tags,
             }
           : null,
-      };
+      } as JournalEntry;
 
       if (!journalText) {
         toast.show({
@@ -147,7 +163,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
         className="flex-1"
       >
         <MinimalHeader
-          date={insights?.selected_date}
+          date={entry?.selected_date}
           isEditing={isEditing}
           onClose={handleClose}
           onEdit={handleEdit}
@@ -172,7 +188,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
               selectedMood={selectedMood}
               onSelectMood={setSelectedMood}
               viewOnly={true}
-              title={insights?.title || "Daily Reflections"}
+              title={entry?.title || "Daily Reflections"}
             />
           )}
 
@@ -188,18 +204,22 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
             isEditing={isEditing}
             onTextChange={setJournalText}
           />
-          {insights?.journal_ai_insights && (
+          {entry?.journal_ai_insights && (
             <AIInsightsSection
-              aiInsights={insights.journal_ai_insights.aiInsights ?? null}
+              aiInsights={entry.journal_ai_insights.aiInsights ?? null}
               colorScheme={colorScheme}
-              energyLevel={insights.journal_ai_insights.energyLevel}
-              stressLevel={insights.journal_ai_insights.stressLevel}
-              sleepQuality={insights.journal_ai_insights.sleepQuality}
-              achievements={insights.journal_ai_insights.achievements}
-              worries={insights.journal_ai_insights.worries}
-              goals={insights.journal_ai_insights.goals}
-              triggers={insights.journal_ai_insights.triggers}
-              copingStrategies={insights.journal_ai_insights.copingStrategies}
+              energyLevel={entry.journal_ai_insights.energyLevel}
+              stressLevel={entry.journal_ai_insights.stressLevel}
+              sleepQuality={entry.journal_ai_insights.sleepQuality}
+              achievements={entry.journal_ai_insights.achievements}
+              worries={entry.journal_ai_insights.worries}
+              goals={entry.journal_ai_insights.goals}
+              triggers={entry.journal_ai_insights.triggers}
+              copingStrategies={entry.journal_ai_insights.copingStrategies}
+              physicalSymptoms={
+                (entry.journal_ai_insights as any)["physical-symptoms"] ||
+                entry.journal_ai_insights.physicalSymptoms
+              }
             />
           )}
         </ScrollView>

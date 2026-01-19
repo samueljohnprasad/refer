@@ -66,6 +66,7 @@ export interface AIInsightsSectionProps {
   goals?: string[] | null;
   triggers?: string[] | null;
   copingStrategies?: string[] | null;
+  physicalSymptoms?: string[] | null;
 }
 
 export interface SaveButtonProps {

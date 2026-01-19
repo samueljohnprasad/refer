@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Redirect } from "expo-router";
 import { useAuth } from "@/src/context/AuthContext";
 import SignInBottomSheet from "@/src/components/SignInBottomSheet";
@@ -130,7 +130,20 @@ export default function Home(): React.JSX.Element {
       >
         {/* Main Content - Centered */}
         <View className="flex-1 justify-center items-center">
-          <Animated.Text
+          <Animated.View style={titleAnimatedStyle}>
+            <Image
+              source={require("@/assets/images/moody.png")}
+              style={{
+                width: 650,
+                height: 650,
+                // borderColor: "red",
+                // borderWidth: 1,
+                // marginBottom: 24,
+              }}
+              resizeMode="contain"
+            />
+          </Animated.View>
+          {/* <Animated.Text
             className="text-center text-gray-900 mt-12"
             style={[
               {
@@ -144,8 +157,8 @@ export default function Home(): React.JSX.Element {
             ]}
           >
             Feel
-          </Animated.Text>
-          <Animated.Text
+          </Animated.Text> */}
+          {/* <Animated.Text
             className="text-center text-gray-900"
             style={[
               {
@@ -159,7 +172,7 @@ export default function Home(): React.JSX.Element {
             ]}
           >
             happy
-          </Animated.Text>
+          </Animated.Text> */}
         </View>
 
         {/* Bottom Button */}

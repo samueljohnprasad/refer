@@ -1,13 +1,17 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   PencilEdit02Icon,
   BookOpen01Icon,
   Tick02Icon,
+  Camera01Icon,
 } from "@hugeicons/core-free-icons";
-import ShortBottomModal from "@/src/components/ShortBottomModal";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetView,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
 
 interface JournalingOptionsModalProps {
   visible: boolean;
@@ -15,6 +19,7 @@ interface JournalingOptionsModalProps {
   onSelectPrompt: (prompt: string) => void;
   allPrompts: string[];
   currentPrompt: string;
+  onScanJournal?: () => void;
 }
 
 export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
@@ -23,6 +28,7 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
   onSelectPrompt,
   allPrompts,
   currentPrompt,
+  onScanJournal,
 }) => {
   const sheetRef = useRef<BottomSheetModal>(null);
 
@@ -35,92 +41,107 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
   }, [visible]);
 
   return (
-    <ShortBottomModal
-      marginHorizontal={8}
+    <BottomSheetModal
       ref={sheetRef}
       snapPoints={["75%"]}
       onDismiss={onClose}
+      style={{
+        marginHorizontal: 8,
+        borderRadius: 24,
+        overflow: "hidden",
+      }}
+      backgroundStyle={{ backgroundColor: "white" }}
+      handleIndicatorStyle={{ backgroundColor: "#E5E7EB" }}
     >
-      <View style={styles.container}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
+      <BottomSheetScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingHorizontal: 20, paddingTop: 8 },
+        ]}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.iconContainer}>
+            <HugeiconsIcon icon={BookOpen01Icon} size={32} color="#7B61FF" />
+          </View>
+          <Text style={styles.title}>Journaling Options</Text>
+        </View>
+
+        {/* Free Write Option */}
+        <View
+          onTouchEnd={() => {
+            onSelectPrompt("Free Write");
+            onClose();
+          }}
+          style={styles.freeWriteCard}
         >
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.iconContainer}>
-              <HugeiconsIcon icon={BookOpen01Icon} size={32} color="#7B61FF" />
-            </View>
-            <Text style={styles.title}>Journaling Options</Text>
+          <View style={styles.freeWriteIcon}>
+            <HugeiconsIcon icon={PencilEdit02Icon} size={24} color="#7B61FF" />
           </View>
-
-          {/* Free Write Option */}
-          <View
-            onTouchEnd={() => {
-              onSelectPrompt("Free Write");
-              onClose();
-            }}
-            style={styles.freeWriteCard}
-          >
-            <View style={styles.freeWriteIcon}>
-              <HugeiconsIcon
-                icon={PencilEdit02Icon}
-                size={24}
-                color="#7B61FF"
-              />
-            </View>
-            <View style={styles.freeWriteText}>
-              <Text style={styles.freeWriteTitle}>Free Write</Text>
-              <Text style={styles.freeWriteSubtitle}>
-                Write without a prompt
-              </Text>
-            </View>
+          <View style={styles.freeWriteText}>
+            <Text style={styles.freeWriteTitle}>Free Write</Text>
+            <Text style={styles.freeWriteSubtitle}>Write without a prompt</Text>
           </View>
+        </View>
 
-          <Text style={styles.sectionTitle}>Or select a Prompt</Text>
+        {/* Scan Journal Option */}
+        <View
+          onTouchEnd={() => {
+            onScanJournal?.();
+            onClose();
+          }}
+          style={styles.scanCard}
+        >
+          <View style={styles.scanIcon}>
+            <HugeiconsIcon icon={Camera01Icon} size={24} color="#7C3AED" />
+          </View>
+          <View style={styles.freeWriteText}>
+            <Text style={styles.freeWriteTitle}>Scan Journal Page</Text>
+            <Text style={styles.freeWriteSubtitle}>
+              Capture handwritten entries
+            </Text>
+          </View>
+        </View>
 
-          {allPrompts.map((prompt, index) => {
-            const isSelected = prompt === currentPrompt;
-            return (
-              <View
-                key={index}
-                onTouchEnd={() => {
-                  onSelectPrompt(prompt);
-                  onClose();
-                }}
+        <Text style={styles.sectionTitle}>Or select a Prompt</Text>
+
+        {allPrompts.map((prompt, index) => {
+          const isSelected = prompt === currentPrompt;
+          return (
+            <View
+              key={index}
+              onTouchEnd={() => {
+                onSelectPrompt(prompt);
+                onClose();
+              }}
+              style={[
+                styles.promptCard,
+                isSelected && styles.promptCardSelected,
+              ]}
+            >
+              <Text
                 style={[
-                  styles.promptCard,
-                  isSelected && styles.promptCardSelected,
+                  styles.promptText,
+                  isSelected && styles.promptTextSelected,
                 ]}
               >
-                <Text
-                  style={[
-                    styles.promptText,
-                    isSelected && styles.promptTextSelected,
-                  ]}
-                >
-                  {prompt}
-                </Text>
-                {isSelected && (
-                  <View style={styles.checkIconContainer}>
-                    <HugeiconsIcon icon={Tick02Icon} size={18} color="white" />
-                  </View>
-                )}
-              </View>
-            );
-          })}
-        </ScrollView>
-      </View>
-    </ShortBottomModal>
+                {prompt}
+              </Text>
+              {isSelected && (
+                <View style={styles.checkIconContainer}>
+                  <HugeiconsIcon icon={Tick02Icon} size={18} color="white" />
+                </View>
+              )}
+            </View>
+          );
+        })}
+      </BottomSheetScrollView>
+    </BottomSheetModal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 8,
-  },
   header: {
     alignItems: "center",
     marginBottom: 24,
@@ -222,5 +243,28 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 12,
     marginLeft: 12,
+  },
+  scanCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#F3E8FF",
+    borderRadius: 24,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#E9D5FF",
+  },
+  scanIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
   },
 });

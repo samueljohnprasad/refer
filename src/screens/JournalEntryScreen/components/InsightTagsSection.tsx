@@ -113,4 +113,12 @@ export const INSIGHT_TAG_CONFIGS: Record<
     tagBgColor: "#FCE7F3",
     tagTextColor: "#9D174D",
   },
+  physicalSymptoms: {
+    title: "Physical Symptoms",
+    icon: "activity",
+    iconColor: "#0891B2",
+    bgColor: "#ECFEFF",
+    tagBgColor: "#CFFAFE",
+    tagTextColor: "#155F75",
+  },
 };

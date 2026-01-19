@@ -32,6 +32,7 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
     goals,
     triggers,
     copingStrategies,
+    physicalSymptoms,
   }: AIInsightsSectionProps) => {
     const [isInsightsOpen, setIsInsightsOpen] = React.useState<boolean>(true);
     const insightsOpen = useSharedValue<number>(1);
@@ -64,7 +65,17 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
       Boolean(worries && worries.length > 0) ||
       Boolean(goals && goals.length > 0) ||
       Boolean(triggers && triggers.length > 0) ||
-      Boolean(copingStrategies && copingStrategies.length > 0);
+      Boolean(copingStrategies && copingStrategies.length > 0) ||
+      Boolean(physicalSymptoms && physicalSymptoms.length > 0);
+
+    console.log(
+      "DEBUG - Achievements:",
+      achievements,
+      "Worries:",
+      worries,
+      "Triggers:",
+      triggers
+    );
 
     if (!hasAnyData) return null;
 
@@ -142,6 +153,13 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
               <InsightTagsSection
                 {...INSIGHT_TAG_CONFIGS.copingStrategies}
                 items={copingStrategies}
+              />
+            )}
+
+            {physicalSymptoms && physicalSymptoms.length > 0 && (
+              <InsightTagsSection
+                {...INSIGHT_TAG_CONFIGS.physicalSymptoms}
+                items={physicalSymptoms}
               />
             )}
 

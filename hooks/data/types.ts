@@ -1,7 +1,6 @@
-import { Insert, Relationships, Tables } from "@/types/types";
+import { Tables } from "@/types/types";
 
-export type JournalEntry = Insert<"journal_records"> & {
-  journal_ai_insights: Insert<"journal_ai_insights"> | null;
-  moods: Insert<"moods"> | null;
+export type JournalEntry = Tables<"journal_records"> & {
+  journal_ai_insights: Tables<"journal_ai_insights"> | null;
+  moods: Tables<"moods"> | null;
 };
-

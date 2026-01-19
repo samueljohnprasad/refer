@@ -1,4 +1,10 @@
-import React, { useMemo, useCallback, useState, useEffect } from "react";
+import React, {
+  useMemo,
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 import {
   View,
   Text,
@@ -36,6 +42,10 @@ import {
   KeyboardIcon,
   Menu02Icon,
   ReloadIcon,
+  Camera02Icon,
+  ListViewIcon,
+  Menu01Icon,
+  Image02Icon,
 } from "@hugeicons/core-free-icons";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
@@ -62,6 +72,7 @@ const CalendarPicker = React.lazy(() =>
     default: module.CalendarPicker,
   }))
 );
+const ImageJournalModal = React.lazy(() => import("./ImageJournalModal"));
 
 // Constants outside component to prevent recreation
 const COLORS = {
@@ -117,10 +128,11 @@ interface PromptCardContentProps {
   onDatePress: () => void;
   prompt: string;
   onShufflePrompt: () => void;
+  onOpenOptions: () => void;
 }
 
 const PromptCardContent = React.memo<PromptCardContentProps>(
-  ({ selectedDate, onDatePress, prompt, onShufflePrompt }) => {
+  ({ selectedDate, onDatePress, prompt, onShufflePrompt, onOpenOptions }) => {
     const rotation = useSharedValue(0);
 
     const formattedDate = useMemo(
@@ -167,11 +179,16 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
               />
             </View>
           </Pressable>
-          <Pressable onPress={handleShuffle} className="p-1">
-            <Animated.View style={rotateStyle}>
-              <HugeiconsIcon icon={ReloadIcon} size={20} color={COLORS.ink} />
-            </Animated.View>
-          </Pressable>
+          <View className="flex-row items-center gap-1">
+            <Pressable onPress={onOpenOptions} className="p-1">
+              <HugeiconsIcon icon={ListViewIcon} size={20} color={COLORS.ink} />
+            </Pressable>
+            <Pressable onPress={handleShuffle} className="p-1">
+              <Animated.View style={rotateStyle}>
+                <HugeiconsIcon icon={ReloadIcon} size={20} color={COLORS.ink} />
+              </Animated.View>
+            </Pressable>
+          </View>
         </View>
         <Text className="mt-2.5 text-[#2E285A] text-4xl font-black leading-[34px] tracking-wide font-cormorantSemiBold">
           {prompt}
@@ -208,6 +225,9 @@ function DiscoveryScreen() {
 
   const [isCalendarVisible, setIsCalendarVisible] = useState<boolean>(false);
   const [isOptionsVisible, setIsOptionsVisible] = useState<boolean>(false);
+  const [isImageJournalVisible, setIsImageJournalVisible] =
+    useState<boolean>(false);
+  const imageJournalRef = useRef<any>(null);
   const { currentPrompt, shufflePrompt, setPrompt, allPrompts } =
     useJournalEntry();
 
@@ -247,6 +267,27 @@ function DiscoveryScreen() {
     setSelectedDate(today);
     setIsCalendarVisible(false);
   }, []);
+
+  const handleScanJournal = useCallback(() => {
+    if (shouldShowPaywall) {
+      presentPaywall();
+      return;
+    }
+    setIsImageJournalVisible(true);
+    setTimeout(() => {
+      imageJournalRef.current?.present();
+    }, 100);
+  }, [shouldShowPaywall, presentPaywall]);
+
+  const handleImageInsightsReady = useCallback(
+    (insights: any, transcript: string) => {
+      // Navigate to journal entry screen with insights
+      // This will be handled by the modal internally
+      console.log("Insights ready:", insights);
+      setIsImageJournalVisible(false);
+    },
+    []
+  );
 
   const scrollContentStyle = useMemo(
     () => ({
@@ -295,32 +336,49 @@ function DiscoveryScreen() {
               onDatePress={handleDatePress}
               prompt={currentPrompt}
               onShufflePrompt={shufflePrompt}
+              onOpenOptions={() => setIsOptionsVisible(true)}
             />
             <Illustration />
 
             <View className="flex-row items-center justify-between px-[18px]">
               {!isLiquidGlass && (
-                <CircleAction
-                  key="menu"
-                  onPress={() => setIsOptionsVisible(true)}
-                  size={72}
-                  bg={COLORS.lavender}
-                  icon={
+                <View className="flex-row gap-2">
+                  <TouchableOpacity
+                    key="camera"
+                    onPress={handleScanJournal}
+                    style={[shadowCard, { backgroundColor: COLORS.white }]}
+                    className="w-[60px] h-[44px] rounded-full items-center justify-center"
+                    activeOpacity={0.85}
+                  >
                     <HugeiconsIcon
-                      icon={Menu02Icon}
-                      size={26}
+                      icon={Camera02Icon}
+                      size={24}
                       color={COLORS.ink}
                     />
-                  }
-                />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    key="gallery"
+                    onPress={handleScanJournal}
+                    style={[shadowCard, { backgroundColor: COLORS.white }]}
+                    className="w-[60px] h-[44px] rounded-full items-center justify-center"
+                    activeOpacity={0.85}
+                  >
+                    <HugeiconsIcon
+                      icon={Image02Icon}
+                      size={24}
+                      color={COLORS.ink}
+                    />
+                  </TouchableOpacity>
+                </View>
               )}
               {isLiquidGlass && (
                 <Host matchContents>
                   <Button
-                    onPress={() => setIsOptionsVisible(true)}
+                    onPress={handleScanJournal}
                     variant="glass"
                     controlSize="extraLarge"
-                    systemImage="line.3.horizontal"
+                    systemImage="camera.fill"
                     modifiers={[foregroundStyle(COLORS.ink)]}
                   />
                 </Host>
@@ -339,19 +397,19 @@ function DiscoveryScreen() {
               />
 
               {!isLiquidGlass && (
-                <CircleAction
+                <TouchableOpacity
                   key="keyboard"
                   onPress={handleKeyboardPress}
-                  size={72}
-                  bg={COLORS.lavender}
-                  icon={
-                    <HugeiconsIcon
-                      icon={KeyboardIcon}
-                      size={26}
-                      color={COLORS.ink}
-                    />
-                  }
-                />
+                  style={[shadowCard, { backgroundColor: COLORS.white }]}
+                  className="w-[60px] h-[44px] rounded-full items-center justify-center"
+                  activeOpacity={0.85}
+                >
+                  <HugeiconsIcon
+                    icon={KeyboardIcon}
+                    size={24}
+                    color={COLORS.ink}
+                  />
+                </TouchableOpacity>
               )}
               {isLiquidGlass && (
                 <Host matchContents>
@@ -380,7 +438,16 @@ function DiscoveryScreen() {
             onSelectPrompt={setPrompt}
             allPrompts={allPrompts}
             currentPrompt={currentPrompt}
+            onScanJournal={handleScanJournal}
           />
+          {isImageJournalVisible && (
+            <ImageJournalModal
+              sheetRef={imageJournalRef}
+              onClose={() => setIsImageJournalVisible(false)}
+              onInsightsReady={handleImageInsightsReady}
+              selectedDate={selectedDate}
+            />
+          )}
         </SuspensLoader>
       </ScrollView>
 

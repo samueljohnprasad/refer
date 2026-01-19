@@ -26,7 +26,9 @@ import {
   Settings02Icon,
   StarsIcon,
   Target02Icon,
+  Camera02Icon,
 } from "@hugeicons/core-free-icons";
+import SuspensLoader from "@/src/components/SuspensLoader";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 const { width } = Dimensions.get("window");
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
@@ -38,6 +40,11 @@ import { UpdateModal } from "@/src/components/modals";
 import { useAppUpdate } from "@/src/hooks/useAppUpdate";
 import { StreakDisplay } from "@/src/components/Streak";
 import { useStreakTracker } from "@/hooks/data/useStreakTracker";
+import { useJournalLimit } from "@/hooks/useJournalLimit";
+
+const ImageJournalModal = React.lazy(
+  () => import("../DiscoveryScreen/ImageJournalModal")
+);
 
 // Global color palette
 export const PALETTE = {
@@ -54,7 +61,9 @@ export const PALETTE = {
 };
 
 // Memoized TopBar component
-const TopBar = React.memo(() => {
+const TopBar = React.memo<{
+  onCameraPress: () => void;
+}>(({ onCameraPress }) => {
   const { presentPaywall, hasPro } = useRevenueCat();
 
   const handleSettingsPress = useCallback(() => {
@@ -80,24 +89,32 @@ const TopBar = React.memo(() => {
       <View className="flex-row justify-between ">
         {!isLiquidGlass && (
           <TouchableOpacity
-            onPress={handleProPress}
+            onPress={onCameraPress}
             className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
             activeOpacity={0.8}
           >
-            <HugeiconsIcon icon={StarsIcon} size={20} color={PALETTE.white} />
+            <HugeiconsIcon
+              icon={Camera02Icon}
+              size={20}
+              color={PALETTE.white}
+            />
           </TouchableOpacity>
         )}
 
         {isLiquidGlass && (
           <Host matchContents>
             <Button
-              onPress={handleProPress}
+              onPress={onCameraPress}
               color="#7B61FF"
-              systemImage="sparkles"
+              systemImage="camera.fill"
               variant="glassProminent"
               controlSize="regular"
             >
-              <HugeiconsIcon icon={StarsIcon} size={20} color={PALETTE.white} />
+              <HugeiconsIcon
+                icon={Camera02Icon}
+                size={20}
+                color={PALETTE.white}
+              />
             </Button>
           </Host>
         )}
@@ -233,13 +250,36 @@ const StreakCard = React.memo<{
 export default function JournalCalendarScreen() {
   const progressAnim = useSharedValue(0);
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
-  const { hasPro } = useRevenueCat();
+  const { hasPro, presentPaywall } = useRevenueCat();
   const posthog = usePostHog();
 
   const { refetch: refetchStreak } = useStreakTracker();
 
   const { showUpdateModal, currentVersion, latestVersion, hideModal } =
     useAppUpdate({ autoCheck: true });
+
+  const [isImageJournalVisible, setIsImageJournalVisible] = useState(false);
+  const imageJournalRef = React.useRef<any>(null);
+  const { shouldShowPaywall } = useJournalLimit(new Date());
+
+  const handleScanJournal = useCallback(() => {
+    if (shouldShowPaywall) {
+      presentPaywall();
+      return;
+    }
+    setIsImageJournalVisible(true);
+    setTimeout(() => {
+      imageJournalRef.current?.present();
+    }, 100);
+  }, [shouldShowPaywall, presentPaywall]);
+
+  const handleImageInsightsReady = useCallback(
+    (insights: any, transcript: string) => {
+      console.log("Insights ready:", insights);
+      setIsImageJournalVisible(false);
+    },
+    []
+  );
 
   const currentStreak = userProfile?.currentStreak ?? 0;
   const nextMilestone = getNextMilestone(currentStreak);
@@ -302,7 +342,7 @@ export default function JournalCalendarScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* Outer panel container */}
-        <TopBar />
+        <TopBar onCameraPress={handleScanJournal} />
         <View
           // intensity={50}
           // tint="light"
@@ -368,6 +408,17 @@ export default function JournalCalendarScreen() {
         currentVersion={currentVersion}
         latestVersion={latestVersion}
       />
+
+      <SuspensLoader>
+        {isImageJournalVisible && (
+          <ImageJournalModal
+            sheetRef={imageJournalRef}
+            onClose={() => setIsImageJournalVisible(false)}
+            onInsightsReady={handleImageInsightsReady}
+            selectedDate={new Date()}
+          />
+        )}
+      </SuspensLoader>
 
       {/* Streak Modal */}
       <Modal

@@ -24,7 +24,22 @@ export const useMentalHealthData = (selectedDate: Date) => {
         .from("journal_records")
         .select(
           `*,
-          journal_ai_insights(*),
+          journal_ai_insights(
+            id,
+            journal_entry_id,
+            created_at,
+            aiInsights,
+            feelings,
+            energyLevel,
+            stressLevel,
+            sleepQuality,
+            achievements,
+            worries,
+            goals,
+            triggers,
+            copingStrategies,
+            "physical-symptoms"
+          ),
           moods(*)
           `
         )
