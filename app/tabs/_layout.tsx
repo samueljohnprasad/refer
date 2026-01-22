@@ -79,6 +79,19 @@ export default function AppLayout() {
           animation: "slide_from_right",
         }}
       />
+      <Stack.Screen
+        name="screens/all-prompts"
+        options={{
+          headerShown: true,
+          headerLargeTitle: true,
+          title: "Journal Prompts",
+          headerTitle: "Journal Promptss",
+          headerLargeTitleShadowVisible: true,
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }

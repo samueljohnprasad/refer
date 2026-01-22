@@ -45,6 +45,14 @@ import { useJournalLimit } from "@/hooks/useJournalLimit";
 const ImageJournalModal = React.lazy(
   () => import("../DiscoveryScreen/ImageJournalModal")
 );
+import {
+  QuickJournalSection,
+  QuickJournalPrompt,
+} from "../DiscoveryScreen/QuickJournalSection";
+import { recorderOpenAtom } from "../DiscoveryScreen/helpers";
+import { startRecordingAtom } from "../DailyNotesScreen/atoms";
+import { useAtom, useSetAtom } from "jotai";
+import { useJournalEntry } from "@/hooks/useJournalEntry";
 
 // Global color palette
 export const PALETTE = {
@@ -262,6 +270,10 @@ export default function JournalCalendarScreen() {
   const imageJournalRef = React.useRef<any>(null);
   const { shouldShowPaywall } = useJournalLimit(new Date());
 
+  const [, setRecorderOpen] = useAtom(recorderOpenAtom);
+  const setStartRecording = useSetAtom(startRecordingAtom);
+  const { setPrompt } = useJournalEntry();
+
   const handleScanJournal = useCallback(() => {
     if (shouldShowPaywall) {
       presentPaywall();
@@ -280,6 +292,30 @@ export default function JournalCalendarScreen() {
     },
     []
   );
+
+  const handleQuickJournalPress = useCallback(
+    (prompt: QuickJournalPrompt) => {
+      if (shouldShowPaywall) {
+        presentPaywall();
+        return;
+      }
+      setPrompt(prompt.description);
+      setStartRecording(true);
+      setRecorderOpen(true);
+      router.push("/tabs/(tabs)/record");
+    },
+    [
+      shouldShowPaywall,
+      presentPaywall,
+      setPrompt,
+      setStartRecording,
+      setRecorderOpen,
+    ]
+  );
+
+  const handleSeeAllPrompts = useCallback(() => {
+    router.push("/tabs/screens/all-prompts");
+  }, []);
 
   const currentStreak = userProfile?.currentStreak ?? 0;
   const nextMilestone = getNextMilestone(currentStreak);
@@ -372,6 +408,12 @@ export default function JournalCalendarScreen() {
               onEmotionLogged={handleEmotionLogged}
             />
           </View>
+
+          {/* Quick Journal Section */}
+          <QuickJournalSection
+            onCardPress={handleQuickJournalPress}
+            onSeeAllPress={handleSeeAllPrompts}
+          />
 
           <View className="mt-5">
             {shouldLoadChart ? (
