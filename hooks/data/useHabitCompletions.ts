@@ -17,6 +17,8 @@ import {
   isAfter,
   isBefore,
 } from "date-fns";
+import { useXPOptional } from "@/src/context/XPContext";
+import { XPActionType } from "@/src/types/xp";
 
 export const useHabitCompletions = (selectedDate: Date) => {
   const { session } = useAuth();
@@ -25,6 +27,7 @@ export const useHabitCompletions = (selectedDate: Date) => {
   const [error, setError] = useState<string | null>(null);
 
   const dateString = format(selectedDate, "yyyy-MM-dd");
+  const xp = useXPOptional();
 
   // Fetch completions for a specific date
   const fetchCompletions = useCallback(async () => {
@@ -52,14 +55,14 @@ export const useHabitCompletions = (selectedDate: Date) => {
           userId: dbCompletion.user_id,
           completedDate: dbCompletion.completed_date,
           completedAt: dbCompletion.completed_at,
-        })
+        }),
       );
 
       setCompletions(transformedCompletions);
     } catch (err) {
       console.error("Error fetching completions:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to fetch completions"
+        err instanceof Error ? err.message : "Failed to fetch completions",
       );
     } finally {
       setLoading(false);
@@ -68,7 +71,7 @@ export const useHabitCompletions = (selectedDate: Date) => {
 
   // Complete a habit
   const completeHabit = useCallback(
-    async (habitId: string): Promise<boolean> => {
+    async (habitId: string, habitName: string): Promise<boolean> => {
       if (!session?.user?.id) {
         setError("User not authenticated");
         return false;
@@ -100,6 +103,11 @@ export const useHabitCompletions = (selectedDate: Date) => {
 
         setCompletions((prev) => [...prev, newCompletion]);
 
+        // Award XP for habit completion with custom description
+        xp?.awardXP(XPActionType.HABIT_COMPLETION, {
+          customDescription: `Completed: ${habitName}`,
+        });
+
         return true;
       } catch (err: any) {
         // Handle duplicate key error (already completed) gracefully
@@ -117,17 +125,17 @@ export const useHabitCompletions = (selectedDate: Date) => {
 
         console.error("Error completing habit:", err);
         setError(
-          err instanceof Error ? err.message : "Failed to complete habit"
+          err instanceof Error ? err.message : "Failed to complete habit",
         );
         return false;
       }
     },
-    [session?.user?.id, dateString]
+    [session?.user?.id, dateString],
   );
 
   // Uncomplete a habit
   const uncompleteHabit = useCallback(
-    async (habitId: string): Promise<boolean> => {
+    async (habitId: string, habitName: string): Promise<boolean> => {
       if (!session?.user?.id) {
         setError("User not authenticated");
         return false;
@@ -148,28 +156,37 @@ export const useHabitCompletions = (selectedDate: Date) => {
         // Remove from local state
         setCompletions((prev) => prev.filter((c) => c.habitId !== habitId));
 
+        // Remove XP for habit completion
+        xp?.removeXP(XPActionType.HABIT_COMPLETION, {
+          customDescription: `Uncompleted: ${habitName}`,
+        });
+
         return true;
       } catch (err) {
         console.error("Error uncompleting habit:", err);
         setError(
-          err instanceof Error ? err.message : "Failed to uncomplete habit"
+          err instanceof Error ? err.message : "Failed to uncomplete habit",
         );
         return false;
       }
     },
-    [session?.user?.id, dateString]
+    [session?.user?.id, dateString],
   );
 
   // Toggle habit completion
   const toggleHabitCompletion = useCallback(
-    async (habitId: string, isCompleted: boolean): Promise<boolean> => {
+    async (
+      habitId: string,
+      isCompleted: boolean,
+      habitName: string,
+    ): Promise<boolean> => {
       if (isCompleted) {
-        return await uncompleteHabit(habitId);
+        return await uncompleteHabit(habitId, habitName);
       } else {
-        return await completeHabit(habitId);
+        return await completeHabit(habitId, habitName);
       }
     },
-    [completeHabit, uncompleteHabit]
+    [completeHabit, uncompleteHabit],
   );
 
   // Check if a habit should be shown on the selected date based on repeat pattern
@@ -221,7 +238,7 @@ export const useHabitCompletions = (selectedDate: Date) => {
           return true;
       }
     },
-    [selectedDate]
+    [selectedDate],
   );
 
   // Combine habits with their completion status (filtered by schedule)
@@ -239,7 +256,7 @@ export const useHabitCompletions = (selectedDate: Date) => {
         };
       });
     },
-    [completions, isHabitScheduledForDate]
+    [completions, isHabitScheduledForDate],
   );
 
   // Load completions when date or user changes

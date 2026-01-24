@@ -41,9 +41,11 @@ import { useAppUpdate } from "@/src/hooks/useAppUpdate";
 import { StreakDisplay } from "@/src/components/Streak";
 import { useStreakTracker } from "@/hooks/data/useStreakTracker";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
+import { XPDisplay } from "@/src/components/XP";
+import { useXP } from "@/src/context/XPContext";
 
 const ImageJournalModal = React.lazy(
-  () => import("../DiscoveryScreen/ImageJournalModal")
+  () => import("../DiscoveryScreen/ImageJournalModal"),
 );
 import {
   QuickJournalSection,
@@ -83,7 +85,7 @@ const TopBar = React.memo<{
       Alert.alert(
         "Premium Active 🌟",
         "You have full access to all premium features.",
-        [{ text: "Awesome!", style: "default" }]
+        [{ text: "Awesome!", style: "default" }],
       );
       return;
     }
@@ -162,31 +164,59 @@ const TopBar = React.memo<{
   );
 });
 
-// Memoized Greeting component
+// Memoized Greeting component with XP display
 const Greeting = React.memo<{
   displayName?: string;
   isLoading: boolean;
   hasPro: boolean;
-}>(({ displayName, isLoading, hasPro }) => (
-  <View className="flex-row items-center mt-2 gap-2">
-    <Text className="text-[34px] font-cormorantSemiBold text-gray-900">
-      Hi, {isLoading ? "..." : displayName || "there"}{" "}
-      <Text className="text-3xl">👋</Text>
-    </Text>
-    {hasPro && (
-      <LinearGradient
-        colors={["#FFD24A", "#FF7A2F"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        className="px-3 py-1 rounded-full"
-      >
-        <Text className="text-white text-xs font-extrabold tracking-wide">
-          PRO
+  totalXP: number;
+  recentGains: Array<{
+    id: string;
+    amount: number;
+    label: string;
+    timestamp: number;
+  }>;
+  onClearGain: (id: string) => void;
+  onXPPress: () => void;
+}>(
+  ({
+    displayName,
+    isLoading,
+    hasPro,
+    totalXP,
+    recentGains,
+    onClearGain,
+    onXPPress,
+  }) => (
+    <View className="flex-row items-center justify-between mt-2">
+      <View className="flex-row items-center gap-2 flex-1">
+        <Text className="text-[34px] font-cormorantSemiBold text-gray-900">
+          Hi, {isLoading ? "..." : displayName || "there"}{" "}
+          <Text className="text-3xl">👋</Text>
         </Text>
-      </LinearGradient>
-    )}
-  </View>
-));
+        {hasPro && (
+          <LinearGradient
+            colors={["#FFD24A", "#FF7A2F"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            className="px-3 py-1 rounded-full"
+          >
+            <Text className="text-white text-xs font-extrabold tracking-wide">
+              PRO
+            </Text>
+          </LinearGradient>
+        )}
+      </View>
+      <XPDisplay
+        totalXP={totalXP}
+        recentGains={recentGains}
+        onClearGain={onClearGain}
+        onPress={onXPPress}
+        compact
+      />
+    </View>
+  ),
+);
 
 // Memoized StreakCard component
 const StreakCard = React.memo<{
@@ -252,7 +282,7 @@ const StreakCard = React.memo<{
         </View>
       </View>
     </View>
-  )
+  ),
 );
 
 export default function JournalCalendarScreen() {
@@ -262,6 +292,7 @@ export default function JournalCalendarScreen() {
   const posthog = usePostHog();
 
   const { refetch: refetchStreak } = useStreakTracker();
+  const { totalXP, recentGains, clearRecentGain } = useXP();
 
   const { showUpdateModal, currentVersion, latestVersion, hideModal } =
     useAppUpdate({ autoCheck: true });
@@ -290,7 +321,7 @@ export default function JournalCalendarScreen() {
       console.log("Insights ready:", insights);
       setIsImageJournalVisible(false);
     },
-    []
+    [],
   );
 
   const handleQuickJournalPress = useCallback(
@@ -310,7 +341,7 @@ export default function JournalCalendarScreen() {
       setPrompt,
       setStartRecording,
       setRecorderOpen,
-    ]
+    ],
   );
 
   const handleSeeAllPrompts = useCallback(() => {
@@ -337,7 +368,7 @@ export default function JournalCalendarScreen() {
       refetchStreak();
       setShowStreakModal(updated);
     },
-    [refetchStreak]
+    [refetchStreak],
   );
 
   // Lazy load heavy chart component after initial render
@@ -391,6 +422,10 @@ export default function JournalCalendarScreen() {
             displayName={userProfile?.displayName}
             isLoading={isLoadingProfile}
             hasPro={hasPro}
+            totalXP={totalXP}
+            recentGains={recentGains}
+            onClearGain={clearRecentGain}
+            onXPPress={() => router.push("/tabs/screens/xp-history")}
           />
 
           <StreakCard

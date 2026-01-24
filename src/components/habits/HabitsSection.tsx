@@ -32,6 +32,8 @@ import {
   TIME_CATEGORY_CONFIG,
   TimeCategory,
 } from "@/src/utils/habitCategories";
+import { XPBadge } from "@/src/components/XP";
+import { XPActionType, XP_REWARDS } from "@/src/types/xp";
 
 interface HabitsSectionProps {
   selectedDate: Date;
@@ -79,7 +81,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
   const handleSaveScheduling = async (
     habitId: string,
-    schedulingData: HabitSchedulingData
+    schedulingData: HabitSchedulingData,
   ) => {
     // Update habit with scheduling data
     await updateHabit(habitId, schedulingData);
@@ -98,18 +100,19 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
   const handleToggleCompletion = async (
     habitId: string,
-    isCompleted: boolean
+    isCompleted: boolean,
+    habitName: string,
   ) => {
     // Prevent completion for future dates
     if (isFuture(selectedDate)) {
       Alert.alert(
         "Cannot complete habit",
-        "You cannot mark habits as complete for future dates."
+        "You cannot mark habits as complete for future dates.",
       );
       return;
     }
 
-    await toggleHabitCompletion(habitId, isCompleted);
+    await toggleHabitCompletion(habitId, isCompleted, habitName);
     refetchStreaks();
   };
 
@@ -147,12 +150,12 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   // Categorize habits by time of day
   const categorizedHabits = useMemo(
     () => categorizeHabits(habitsWithStatusAndStreaks),
-    [habitsWithStatusAndStreaks]
+    [habitsWithStatusAndStreaks],
   );
 
   const activeCategories = useMemo(
     () => getActiveCategories(categorizedHabits),
-    [categorizedHabits]
+    [categorizedHabits],
   );
 
   return (
@@ -168,6 +171,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
             <Text className="text-gray-900 font-semibold text-lg">
               Daily Habits
             </Text>
+            <XPBadge amount={XP_REWARDS[XPActionType.HABIT_COMPLETION]} />
             {totalCount > 0 && (
               <View className="ml-2 px-2 py-0.5 bg-gray-100 rounded-full">
                 <Text className="text-xs font-medium text-gray-500">
@@ -237,7 +241,11 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
                     habit={habit}
                     onPress={() => handleHabitPress(habit.id)}
                     onToggleComplete={() =>
-                      handleToggleCompletion(habit.id, habit.isCompleted)
+                      handleToggleCompletion(
+                        habit.id,
+                        habit.isCompleted,
+                        habit.name,
+                      )
                     }
                     isLast={index === categorizedHabits[category].length - 1}
                   />

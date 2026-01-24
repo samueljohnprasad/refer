@@ -22,6 +22,8 @@ import {
 import { MicronutrientEntry } from "@/src/network/calorieAi";
 import { useCalorieGoal } from "@/src/hooks/data/useCalorieGoal";
 import CalorieGoalModal from "@/src/components/calorie/CalorieGoalModal";
+import { XPBadge } from "@/src/components/XP";
+import { XPActionType, XP_REWARDS } from "@/src/types/xp";
 
 const TRACKED_MICRONUTRIENTS_KEY = "tracked_micronutrients";
 
@@ -36,7 +38,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
 }) => {
   const router = useRouter();
   const { dailySummary, isLoading, calorieEntries } = useCalorieTracker(
-    format(selectedDate, "yyyy-MM-dd")
+    format(selectedDate, "yyyy-MM-dd"),
   );
 
   // Calorie goal management
@@ -44,7 +46,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
   const [showGoalModal, setShowGoalModal] = useState<boolean>(false);
 
   const [trackedNutrientIds, setTrackedNutrientIds] = useState<Set<string>>(
-    new Set(MICRONUTRIENTS_CONFIG.map((n) => n.id))
+    new Set(MICRONUTRIENTS_CONFIG.map((n) => n.id)),
   );
   const [selectedMicronutrients, setSelectedMicronutrients] = useState<{
     title: string;
@@ -55,11 +57,11 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
   // Calculate progress percentage toward goal
   const progressPercentage = Math.min(
     Math.round((dailySummary.totalCalories / calorieGoal) * 100),
-    100
+    100,
   );
   const remainingCalories = Math.max(
     calorieGoal - dailySummary.totalCalories,
-    0
+    0,
   );
 
   // Load tracked micronutrients from storage
@@ -79,7 +81,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
 
   // Filter micronutrients to only show tracked ones
   const filterTrackedMicronutrients = (
-    micronutrients: MicronutrientEntry[]
+    micronutrients: MicronutrientEntry[],
   ): MicronutrientEntry[] => {
     return micronutrients.filter((m) => trackedNutrientIds.has(m.name));
   };
@@ -154,6 +156,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
           <Text className="text-gray-900 font-semibold text-lg">
             Calorie Tracker
           </Text>
+          <XPBadge amount={XP_REWARDS[XPActionType.CALORIE_LOG]} />
         </HStack>
       </HStack>
 
@@ -309,14 +312,14 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
 
               const percentage = Math.min(
                 Math.round((nutrient.amount / config.dailyValue) * 100),
-                100
+                100,
               );
               const barColor =
                 percentage >= 50
                   ? "bg-green-500"
                   : percentage >= 25
-                  ? "bg-yellow-500"
-                  : "bg-gray-400";
+                    ? "bg-yellow-500"
+                    : "bg-gray-400";
 
               return (
                 <View

@@ -11,6 +11,8 @@ import { JournalEntry } from "../data/types";
 import { getMoodScore } from "@/src/utils/mood";
 import { useDailyStreak } from "../data/useDailyStreak";
 import { countWords } from "@/src/utils/textUtils";
+import { useXPOptional } from "@/src/context/XPContext";
+import { XPActionType } from "@/src/types/xp";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -25,6 +27,7 @@ export const useSaveJournal = () => {
   const queryClient = useQueryClient();
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
   const { logStreakIfNeeded } = useDailyStreak();
+  const xp = useXPOptional();
 
   const saveJournal = useCallback(
     async (input: JournalEntry): Promise<void> => {
@@ -90,6 +93,15 @@ export const useSaveJournal = () => {
         // Update streak when journal is saved
         await logStreakIfNeeded();
 
+        // Award XP based on input type
+        if (input.input_type === "voice") {
+          xp?.awardXP(XPActionType.VOICE_JOURNAL);
+        } else if (input.input_type === "image") {
+          xp?.awardXP(XPActionType.IMAGE_JOURNAL);
+        } else {
+          xp?.awardXP(XPActionType.JOURNAL_ENTRY);
+        }
+
         const formattedDate: string = formateDate_y_m_d(selectedDate);
 
         await queryClient.invalidateQueries({
@@ -107,7 +119,7 @@ export const useSaveJournal = () => {
         setSaving(false);
       }
     },
-    [user?.id, queryClient, selectedDate, logStreakIfNeeded]
+    [user?.id, queryClient, selectedDate, logStreakIfNeeded],
   );
 
   const saveJournalQuick = useCallback(
@@ -116,7 +128,7 @@ export const useSaveJournal = () => {
       options: {
         inputType: "typing" | "voice";
         duration?: number;
-      } = { inputType: "typing" }
+      } = { inputType: "typing" },
     ): Promise<void> => {
       const basicJournalEntry: JournalEntry = {
         transcripts: text,
@@ -132,7 +144,7 @@ export const useSaveJournal = () => {
 
       await saveJournal(basicJournalEntry);
     },
-    [saveJournal]
+    [saveJournal],
   );
 
   return { saveJournal, saveJournalQuick, saving };

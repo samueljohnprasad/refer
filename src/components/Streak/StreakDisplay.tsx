@@ -1,7 +1,13 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Share } from "react-native";
+import { View, Text, TouchableOpacity, Share, Alert } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Share01Icon, StarIcon, Tick02Icon } from "@hugeicons/core-free-icons";
+import {
+  Share01Icon,
+  StarIcon,
+  Tick02Icon,
+  Fire02Icon,
+  Alert02Icon,
+} from "@hugeicons/core-free-icons";
 import { useStreakTracker } from "@/hooks/data/useStreakTracker";
 import { useReviewPrompt } from "@/src/hooks/useReviewPrompt";
 import LottieView from "lottie-react-native";
@@ -11,10 +17,40 @@ interface StreakDisplayProps {
   onContinue?: () => void;
 }
 
-const DAYS_OF_WEEK = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const DAYS_OF_WEEK: string[] = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 export const StreakDisplay: React.FC<StreakDisplayProps> = ({ onContinue }) => {
-  const { streakData, isLoading } = useStreakTracker();
+  const { streakData, isLoading, useStreakFreeze } = useStreakTracker();
+
+  const handleUseFreeze = async (): Promise<void> => {
+    if (streakData.streakFreezeCount <= 0) {
+      Alert.alert(
+        "No Freezes Available",
+        "You don't have any streak freezes remaining.",
+      );
+      return;
+    }
+
+    Alert.alert(
+      "Use Streak Freeze?",
+      `You have ${streakData.streakFreezeCount} freeze(s) available. Using one will protect your streak for today.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Use Freeze",
+          onPress: async () => {
+            const success = await useStreakFreeze();
+            if (success) {
+              Alert.alert(
+                "Streak Protected! 🛡️",
+                "Your streak freeze has been applied.",
+              );
+            }
+          },
+        },
+      ],
+    );
+  };
 
   // Trigger review request at 1-day streak
   useReviewPrompt({
@@ -138,6 +174,44 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({ onContinue }) => {
           <Text className="text-center mt-4 text-sm font-bold text-orange-500">
             🎉 Perfect week achieved!
           </Text>
+        )}
+
+        {/* Streak Stats */}
+        <View className="flex-row justify-between mt-4 pt-4 border-t border-gray-200">
+          <View className="items-center flex-1">
+            <Text className="text-xs text-gray-500">Longest</Text>
+            <View className="flex-row items-center mt-1">
+              <HugeiconsIcon icon={Fire02Icon} size={16} color="#FF6A3D" />
+              <Text className="text-lg font-bold text-gray-800 ml-1">
+                {streakData.longestStreak}
+              </Text>
+            </View>
+          </View>
+
+          <View className="w-px bg-gray-200" />
+
+          <TouchableOpacity
+            className="items-center flex-1"
+            onPress={handleUseFreeze}
+            activeOpacity={0.7}
+          >
+            <Text className="text-xs text-gray-500">Freezes</Text>
+            <View className="flex-row items-center mt-1">
+              <Text className="text-lg font-bold text-blue-500 ml-1">
+                ❄️ {streakData.streakFreezeCount}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* Streak At Risk Warning */}
+        {streakData.isStreakAtRisk && (
+          <View className="bg-yellow-50 rounded-xl p-3 mt-4 flex-row items-center">
+            <HugeiconsIcon icon={Alert02Icon} size={20} color="#F59E0B" />
+            <Text className="text-yellow-700 text-sm ml-2 flex-1">
+              Your streak is at risk! Journal now to keep it alive.
+            </Text>
+          </View>
         )}
       </View>
 

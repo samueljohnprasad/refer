@@ -33,9 +33,13 @@ interface HabitDetailsModalProps {
   habit: Habit | null;
   onSave: (
     habitId: string,
-    schedulingData: HabitSchedulingData
+    schedulingData: HabitSchedulingData,
   ) => Promise<void>;
-  onToggleCompletion: (habitId: string, isCompleted: boolean) => Promise<void>;
+  onToggleCompletion: (
+    habitId: string,
+    isCompleted: boolean,
+    habitName: string,
+  ) => Promise<void>;
   onDelete: (habitId: string) => Promise<void>;
   isCompleted: boolean;
 }
@@ -114,7 +118,7 @@ export const HabitDetailsModal = forwardRef<
         pressBehavior="close"
       />
     ),
-    []
+    [],
   );
 
   const handleTimeOptionChange = (option: TimeOption) => {
@@ -151,7 +155,7 @@ export const HabitDetailsModal = forwardRef<
 
   const handleToggle = async () => {
     if (!habit) return;
-    await onToggleCompletion(habit.id, isCompleted);
+    await onToggleCompletion(habit.id, isCompleted, habit.name);
     bottomSheetRef.current?.dismiss();
   };
 
@@ -263,7 +267,7 @@ export const HabitDetailsModal = forwardRef<
                       <SwiftUIDateTimePicker
                         onDateSelected={(date) => {
                           Haptics.impactAsync(
-                            Haptics.ImpactFeedbackStyle.Light
+                            Haptics.ImpactFeedbackStyle.Light,
                           );
                           setScheduledTime(new Date(date));
                         }}
@@ -387,7 +391,7 @@ export const HabitDetailsModal = forwardRef<
             onPress={async () => {
               if (!habit) return;
               Haptics.notificationAsync(
-                Haptics.NotificationFeedbackType.Warning
+                Haptics.NotificationFeedbackType.Warning,
               );
               await onDelete(habit.id);
               bottomSheetRef.current?.dismiss();

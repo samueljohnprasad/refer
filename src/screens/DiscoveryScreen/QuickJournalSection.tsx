@@ -1,5 +1,7 @@
 import React from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { XPBadge } from "@/src/components/XP";
+import { XPActionType, XP_REWARDS } from "@/src/types/xp";
 
 interface QuickJournalPrompt {
   id: string;
@@ -92,7 +94,7 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
         </View>
       </TouchableOpacity>
     );
-  }
+  },
 );
 
 QuickJournalCard.displayName = "QuickJournalCard";
@@ -107,7 +109,12 @@ export const QuickJournalSection: React.FC<QuickJournalSectionProps> =
     return (
       <View className="mt-6">
         <View className="flex-row justify-between items-center mb-4 px-1">
-          <Text className="text-xl font-bold text-gray-900">Quick Journal</Text>
+          <View className="flex-row items-center gap-2">
+            <Text className="text-xl font-bold text-gray-900">
+              Quick Journal
+            </Text>
+            <XPBadge amount={XP_REWARDS[XPActionType.JOURNAL_ENTRY]} />
+          </View>
           <TouchableOpacity onPress={onSeeAllPress} activeOpacity={0.7}>
             <Text className="text-sm text-gray-500 font-medium">See all</Text>
           </TouchableOpacity>

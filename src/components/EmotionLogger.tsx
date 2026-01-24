@@ -13,6 +13,9 @@ import { format } from "date-fns";
 import { useEmotionLogger } from "@/hooks/data/useEmotionLogger";
 import { useDailyStreak } from "@/hooks/data/useDailyStreak";
 import { useRevenueCat } from "../context/RevenueCatProvider";
+import { useXPOptional } from "../context/XPContext";
+import { XPActionType, XP_REWARDS } from "../types/xp";
+import { XPBadge } from "./XP";
 
 // Emotion configuration
 const EMOTIONS = [
@@ -48,7 +51,7 @@ const EmotionItem: React.FC<{
     if (count > 0) {
       countScale.value = withSequence(
         withSpring(1.2, { damping: 8, stiffness: 200 }),
-        withSpring(1, { damping: 10, stiffness: 150 })
+        withSpring(1, { damping: 10, stiffness: 150 }),
       );
     }
   }, [count]);
@@ -75,7 +78,7 @@ const EmotionItem: React.FC<{
       // Trigger animation
       scale.value = withSequence(
         withSpring(1.15, { damping: 8, stiffness: 180 }),
-        withSpring(1, { damping: 10, stiffness: 150 })
+        withSpring(1, { damping: 10, stiffness: 150 }),
       );
       onPress();
     }
@@ -134,10 +137,11 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
       isLoggingEmotion,
     } = useEmotionLogger(selectedDate);
     const { presentPaywall, hasPro } = useRevenueCat();
+    const xp = useXPOptional();
 
     const totalEmotions = Array.from(emotionCounts.values()).reduce(
       (acc, count) => acc + count,
-      0
+      0,
     );
 
     // Calculate average mood (weighted by emotion scores: 1-5)
@@ -172,18 +176,29 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
 
         try {
           await logEmotionToSupabase(emotionScore, (updated) => {
+            // Find emotion name
+            const emotion = EMOTIONS.find((e) => e.id === emotionScore);
+            const emotionName = emotion ? emotion.name : "Mood";
+
+            // Award XP for mood logging
+            xp?.awardXP(XPActionType.MOOD_LOG, {
+              customDescription: `Mood logged: ${emotionName}`,
+            });
             onEmotionLogged?.(emotionScore, updated);
           });
         } catch (error) {}
       },
-      [isLoggingEmotion, logEmotionToSupabase, onEmotionLogged]
+      [isLoggingEmotion, logEmotionToSupabase, onEmotionLogged],
     );
     return (
       <View className="bg-white rounded-2xl p-4 border border-gray-100">
         <View className="flex-row items-center justify-between mb-3">
-          <Text className="text-base font-cormorantSemiBold text-gray-900">
-            Daily Mood Log
-          </Text>
+          <View className="flex-row items-center gap-2">
+            <Text className="text-base font-cormorantSemiBold text-gray-900">
+              Daily Mood Log
+            </Text>
+            <XPBadge amount={XP_REWARDS[XPActionType.MOOD_LOG]} />
+          </View>
           <View className="flex-row items-center gap-2">
             {averageMood && moodLabel && (
               <View className="flex-row items-center gap-1">
@@ -215,10 +230,10 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
               emotion={emotion}
               count={emotionCounts.get(emotion.id) || 0}
               onPress={() => {
-                if (totalEmotions >= 5 && !hasPro) {
-                  presentPaywall();
-                  return;
-                }
+                // if (totalEmotions >= 5 && !hasPro) {
+                //   presentPaywall();
+                //   return;
+                // }
                 handleLogEmotion(emotion.id);
               }}
               isLoading={isLoggingEmotion}
@@ -227,7 +242,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
         </View>
       </View>
     );
-  }
+  },
 );
 
 export default EmotionLogger;

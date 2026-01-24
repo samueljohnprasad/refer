@@ -11,18 +11,19 @@ import {
 import dayjs from "dayjs";
 import { ISO_DATE_FORMAT } from "@/src/utils/date";
 import { Database } from "@/database.types";
+import { useXPOptional } from "@/src/context/XPContext";
+import { XPActionType } from "@/src/types/xp";
 
 type DbCalorieEntry = Database["public"]["Tables"]["calorie_entries"]["Row"];
 
-export interface CalorieEntry
-  extends Omit<
-    DbCalorieEntry,
-    | "foods"
-    | "health_score"
-    | "health_score_reasoning"
-    | "suggestions"
-    | "total_micronutrients"
-  > {
+export interface CalorieEntry extends Omit<
+  DbCalorieEntry,
+  | "foods"
+  | "health_score"
+  | "health_score_reasoning"
+  | "suggestions"
+  | "total_micronutrients"
+> {
   foods: FoodItem[];
   health_score: number;
   health_score_reasoning: string;
@@ -45,7 +46,7 @@ interface DailyCalorieSummary {
  */
 const fetchCalorieEntries = async (
   userId: string,
-  targetDate: string
+  targetDate: string,
 ): Promise<CalorieEntry[]> => {
   const startOfDay = dayjs(targetDate).startOf("day").toISOString();
   const endOfDay = dayjs(targetDate).endOf("day").toISOString();
@@ -73,7 +74,7 @@ const saveCalorieEntry = async (
   userId: string,
   selectedDate: string,
   analysisResult: CalorieAnalysisResult,
-  imageUrl: string | null
+  imageUrl: string | null,
 ): Promise<CalorieEntry | null> => {
   const insertData: any = {
     user_id: userId,
@@ -118,6 +119,7 @@ export const useCalorieTracker = (targetDate?: string) => {
 
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const xp = useXPOptional();
 
   // Fetch calorie entries for the target date
   const {
@@ -163,6 +165,8 @@ export const useCalorieTracker = (targetDate?: string) => {
       queryClient.invalidateQueries({
         queryKey: ["calorie-entries", user?.id],
       });
+      // Award XP for tracking a meal
+      xp?.awardXP(XPActionType.CALORIE_LOG);
     },
   });
 
@@ -202,7 +206,7 @@ export const useCalorieTracker = (targetDate?: string) => {
         setIsAnalyzing(false);
       }
     },
-    [user?.id, saveEntryMutation]
+    [user?.id, saveEntryMutation],
   );
 
   // Delete a calorie entry
@@ -223,7 +227,7 @@ export const useCalorieTracker = (targetDate?: string) => {
       });
       return true;
     },
-    [user?.id, queryClient]
+    [user?.id, queryClient],
   );
 
   return {
