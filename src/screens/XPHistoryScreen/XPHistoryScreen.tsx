@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { useXP } from "@/src/context/XPContext";
 import { XPHistoryEntry, XP_ACTION_LABELS, XPActionType } from "@/src/types/xp";
+import { LevelProgressBar } from "@/src/components/Level";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { router } from "expo-router";
@@ -82,6 +83,11 @@ export const XPHistoryScreen: React.FC = () => {
 
   const renderHeader = (): React.ReactElement => (
     <View className="bg-gradient-to-b from-yellow-50 to-white px-4 pb-6">
+      {/* Level Progress */}
+      <View className="mt-4">
+        <LevelProgressBar showBadge={true} compact={false} />
+      </View>
+
       {/* XP Stats */}
       <View className="flex-row justify-center gap-8 mt-4">
         <View className="items-center">

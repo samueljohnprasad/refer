@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { StarsIcon } from "@hugeicons/core-free-icons";
 import { XPGainAnimation } from "./XPGainAnimation";
+import { LevelBadge } from "../Level";
+import { getLevelFromXP } from "@/src/types/levels";
 
 interface XPGain {
   id: string;
@@ -42,6 +44,13 @@ export const XPDisplay: React.FC<XPDisplayProps> = ({
           <Text className="text-yellow-700 font-bold text-sm ml-1">
             {totalXP.toLocaleString()}
           </Text>
+          <View className="ml-2">
+            <LevelBadge
+              level={getLevelFromXP(totalXP)}
+              size="sm"
+              showName={false}
+            />
+          </View>
         </View>
 
         {/* Animated XP gains */}
@@ -77,6 +86,7 @@ export const XPDisplay: React.FC<XPDisplayProps> = ({
                 {totalXP.toLocaleString()}
               </Text>
             </View>
+            <LevelBadge level={getLevelFromXP(totalXP)} size="md" />
           </View>
 
           {/* Today's XP */}
