@@ -14,6 +14,7 @@ import { countWords } from "@/src/utils/textUtils";
 import { useXPOptional } from "@/src/context/XPContext";
 import { XPActionType } from "@/src/types/xp";
 import { useRewardsContext } from "@/src/context/RewardsContext";
+import { useChallengesOptional } from "@/src/context/ChallengesContext";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -30,6 +31,7 @@ export const useSaveJournal = () => {
   const { logStreakIfNeeded } = useDailyStreak();
   const xp = useXPOptional();
   const { earnCoinsForAction } = useRewardsContext();
+  const challenges = useChallengesOptional();
 
   const saveJournal = useCallback(
     async (input: JournalEntry): Promise<void> => {
@@ -99,13 +101,17 @@ export const useSaveJournal = () => {
         if (input.input_type === "voice") {
           xp?.awardXP(XPActionType.VOICE_JOURNAL);
           earnCoinsForAction("VOICE_JOURNAL");
+          challenges?.updateProgress("voice_journal");
         } else if (input.input_type === "image") {
           xp?.awardXP(XPActionType.IMAGE_JOURNAL);
           earnCoinsForAction("IMAGE_JOURNAL");
+          challenges?.updateProgress("image_journal");
         } else {
           xp?.awardXP(XPActionType.JOURNAL_ENTRY);
           earnCoinsForAction("JOURNAL_ENTRY");
         }
+        // Update journal count challenge
+        challenges?.updateProgress("journal_count");
 
         const formattedDate: string = formateDate_y_m_d(selectedDate);
 

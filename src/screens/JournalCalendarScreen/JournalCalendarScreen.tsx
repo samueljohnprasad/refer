@@ -21,6 +21,7 @@ import { getNextMilestone } from "@/hooks/data/useStreakCalculation";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
+import { ChallengesSection } from "@/src/components/Challenges";
 import {
   Fire02Icon,
   Settings02Icon,
@@ -465,6 +466,11 @@ export default function JournalCalendarScreen() {
             onCardPress={handleQuickJournalPress}
             onSeeAllPress={handleSeeAllPrompts}
           />
+
+          {/* Challenges Section */}
+          <View className="mt-5">
+            <ChallengesSection maxItems={3} />
+          </View>
 
           <View className="mt-5">
             {shouldLoadChart ? (

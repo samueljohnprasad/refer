@@ -17,6 +17,7 @@ import { useXPOptional } from "../context/XPContext";
 import { XPActionType, XP_REWARDS } from "../types/xp";
 import { XPBadge } from "./XP";
 import { useRewardsContext } from "../context/RewardsContext";
+import { useChallengesOptional } from "../context/ChallengesContext";
 
 // Emotion configuration
 const EMOTIONS = [
@@ -140,6 +141,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     const { presentPaywall, hasPro } = useRevenueCat();
     const xp = useXPOptional();
     const { earnCoinsForAction } = useRewardsContext();
+    const challenges = useChallengesOptional();
 
     const totalEmotions = Array.from(emotionCounts.values()).reduce(
       (acc, count) => acc + count,
@@ -188,6 +190,8 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
             });
             // Earn coins for mood log
             earnCoinsForAction("MOOD_LOG");
+            // Update mood challenge
+            challenges?.updateProgress("mood_count");
             onEmotionLogged?.(emotionScore, updated);
           });
         } catch (error) {}

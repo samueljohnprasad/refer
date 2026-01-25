@@ -20,6 +20,7 @@ import {
 import { useXPOptional } from "@/src/context/XPContext";
 import { XPActionType } from "@/src/types/xp";
 import { useRewardsContext } from "@/src/context/RewardsContext";
+import { useChallengesOptional } from "@/src/context/ChallengesContext";
 
 export const useHabitCompletions = (selectedDate: Date) => {
   const { session } = useAuth();
@@ -30,6 +31,7 @@ export const useHabitCompletions = (selectedDate: Date) => {
   const dateString = format(selectedDate, "yyyy-MM-dd");
   const xp = useXPOptional();
   const { earnCoinsForAction } = useRewardsContext();
+  const challenges = useChallengesOptional();
 
   // Fetch completions for a specific date
   const fetchCompletions = useCallback(async () => {
@@ -111,6 +113,8 @@ export const useHabitCompletions = (selectedDate: Date) => {
         });
         // Earn coins for habit completion
         earnCoinsForAction("HABIT_COMPLETE");
+        // Update habit challenge
+        challenges?.updateProgress("habit_count");
 
         return true;
       } catch (err: any) {
