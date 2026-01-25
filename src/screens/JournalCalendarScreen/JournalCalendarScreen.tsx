@@ -26,7 +26,7 @@ import {
   Settings02Icon,
   StarsIcon,
   Target02Icon,
-  Camera02Icon,
+  Medal01Icon,
 } from "@hugeicons/core-free-icons";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -72,8 +72,8 @@ export const PALETTE = {
 
 // Memoized TopBar component
 const TopBar = React.memo<{
-  onCameraPress: () => void;
-}>(({ onCameraPress }) => {
+  onAchievementsPress: () => void;
+}>(({ onAchievementsPress }) => {
   const { presentPaywall, hasPro } = useRevenueCat();
 
   const handleSettingsPress = useCallback(() => {
@@ -99,29 +99,25 @@ const TopBar = React.memo<{
       <View className="flex-row justify-between ">
         {!isLiquidGlass && (
           <TouchableOpacity
-            onPress={onCameraPress}
-            className="w-10 h-10 rounded-full bg-[#7B61FF] items-center justify-center"
+            onPress={onAchievementsPress}
+            className="w-10 h-10 rounded-full bg-[#F59E0B] items-center justify-center"
             activeOpacity={0.8}
           >
-            <HugeiconsIcon
-              icon={Camera02Icon}
-              size={20}
-              color={PALETTE.white}
-            />
+            <HugeiconsIcon icon={Medal01Icon} size={20} color={PALETTE.white} />
           </TouchableOpacity>
         )}
 
         {isLiquidGlass && (
           <Host matchContents>
             <Button
-              onPress={onCameraPress}
-              color="#7B61FF"
-              systemImage="camera.fill"
+              onPress={onAchievementsPress}
+              color="#F59E0B"
+              systemImage="medal.fill"
               variant="glassProminent"
               controlSize="regular"
             >
               <HugeiconsIcon
-                icon={Camera02Icon}
+                icon={Medal01Icon}
                 size={20}
                 color={PALETTE.white}
               />
@@ -316,6 +312,10 @@ export default function JournalCalendarScreen() {
     }, 100);
   }, [shouldShowPaywall, presentPaywall]);
 
+  const handleAchievementsPress = useCallback(() => {
+    router.push("/tabs/screens/achievements");
+  }, []);
+
   const handleImageInsightsReady = useCallback(
     (insights: any, transcript: string) => {
       console.log("Insights ready:", insights);
@@ -409,7 +409,7 @@ export default function JournalCalendarScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* Outer panel container */}
-        <TopBar onCameraPress={handleScanJournal} />
+        <TopBar onAchievementsPress={handleAchievementsPress} />
         <View
           // intensity={50}
           // tint="light"

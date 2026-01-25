@@ -32,6 +32,7 @@ import { PostHogProvider } from "posthog-react-native";
 import * as Sentry from "@sentry/react-native";
 import { XPProvider } from "@/src/context/XPContext";
 import { LevelProvider } from "@/src/context/LevelContext";
+import { AchievementProvider } from "@/src/context/AchievementContext";
 
 Sentry.init({
   dsn: "https://82fc883710be27dc3b89702dd3b266ae@o4510522682900480.ingest.us.sentry.io/4510522687029248",
@@ -130,24 +131,25 @@ function RootLayoutNav() {
           <AuthProvider>
             <XPProvider>
               <LevelProvider>
-                <PressablesConfig
-                  globalHandlers={globalPressableHandlers}
-                  animationType="spring"
-                >
-                  <GestureHandlerRootView style={StyleSheet.absoluteFill}>
-                    <GluestackUIProvider mode={colorMode}>
-                      <RevenueCatProvider>
-                        <ThemeProvider
-                          value={
-                            colorMode === "dark" ? DarkTheme : DefaultTheme
-                          }
-                        >
-                          <KeyboardProvider>
-                            <BottomSheetModalProvider>
-                              <Slot />
-                            </BottomSheetModalProvider>
-                          </KeyboardProvider>
-                          {/* {pathname === "/" && (
+                <AchievementProvider>
+                  <PressablesConfig
+                    globalHandlers={globalPressableHandlers}
+                    animationType="spring"
+                  >
+                    <GestureHandlerRootView style={StyleSheet.absoluteFill}>
+                      <GluestackUIProvider mode={colorMode}>
+                        <RevenueCatProvider>
+                          <ThemeProvider
+                            value={
+                              colorMode === "dark" ? DarkTheme : DefaultTheme
+                            }
+                          >
+                            <KeyboardProvider>
+                              <BottomSheetModalProvider>
+                                <Slot />
+                              </BottomSheetModalProvider>
+                            </KeyboardProvider>
+                            {/* {pathname === "/" && (
                 <Fab
                   onPress={() =>
                     setColorMode(colorMode === "dark" ? "light" : "dark")
@@ -158,11 +160,12 @@ function RootLayoutNav() {
                   <FabIcon as={colorMode === "dark" ? MoonIcon : SunIcon} />
                 </Fab>
               )} */}
-                        </ThemeProvider>
-                      </RevenueCatProvider>
-                    </GluestackUIProvider>
-                  </GestureHandlerRootView>
-                </PressablesConfig>
+                          </ThemeProvider>
+                        </RevenueCatProvider>
+                      </GluestackUIProvider>
+                    </GestureHandlerRootView>
+                  </PressablesConfig>
+                </AchievementProvider>
               </LevelProvider>
             </XPProvider>
           </AuthProvider>
