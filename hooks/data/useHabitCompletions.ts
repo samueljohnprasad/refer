@@ -19,6 +19,7 @@ import {
 } from "date-fns";
 import { useXPOptional } from "@/src/context/XPContext";
 import { XPActionType } from "@/src/types/xp";
+import { useRewardsContext } from "@/src/context/RewardsContext";
 
 export const useHabitCompletions = (selectedDate: Date) => {
   const { session } = useAuth();
@@ -28,6 +29,7 @@ export const useHabitCompletions = (selectedDate: Date) => {
 
   const dateString = format(selectedDate, "yyyy-MM-dd");
   const xp = useXPOptional();
+  const { earnCoinsForAction } = useRewardsContext();
 
   // Fetch completions for a specific date
   const fetchCompletions = useCallback(async () => {
@@ -107,6 +109,8 @@ export const useHabitCompletions = (selectedDate: Date) => {
         xp?.awardXP(XPActionType.HABIT_COMPLETION, {
           customDescription: `Completed: ${habitName}`,
         });
+        // Earn coins for habit completion
+        earnCoinsForAction("HABIT_COMPLETE");
 
         return true;
       } catch (err: any) {

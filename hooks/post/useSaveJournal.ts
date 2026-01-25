@@ -13,6 +13,7 @@ import { useDailyStreak } from "../data/useDailyStreak";
 import { countWords } from "@/src/utils/textUtils";
 import { useXPOptional } from "@/src/context/XPContext";
 import { XPActionType } from "@/src/types/xp";
+import { useRewardsContext } from "@/src/context/RewardsContext";
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -28,6 +29,7 @@ export const useSaveJournal = () => {
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
   const { logStreakIfNeeded } = useDailyStreak();
   const xp = useXPOptional();
+  const { earnCoinsForAction } = useRewardsContext();
 
   const saveJournal = useCallback(
     async (input: JournalEntry): Promise<void> => {
@@ -96,10 +98,13 @@ export const useSaveJournal = () => {
         // Award XP based on input type
         if (input.input_type === "voice") {
           xp?.awardXP(XPActionType.VOICE_JOURNAL);
+          earnCoinsForAction("VOICE_JOURNAL");
         } else if (input.input_type === "image") {
           xp?.awardXP(XPActionType.IMAGE_JOURNAL);
+          earnCoinsForAction("IMAGE_JOURNAL");
         } else {
           xp?.awardXP(XPActionType.JOURNAL_ENTRY);
+          earnCoinsForAction("JOURNAL_ENTRY");
         }
 
         const formattedDate: string = formateDate_y_m_d(selectedDate);

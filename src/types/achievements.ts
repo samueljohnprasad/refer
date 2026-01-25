@@ -275,3 +275,14 @@ export const getAchievementsByCategory = (
 ): Achievement[] => {
   return ACHIEVEMENTS.filter((a) => a.category === category);
 };
+
+// Helper to get coin reward amount for achievement tier
+export const getCoinRewardForAchievementTier = (tier: number): number => {
+  const tierRewards = {
+    1: 10, // Bronze tier
+    2: 20, // Silver tier
+    3: 35, // Gold tier
+    4: 50, // Platinum tier
+  };
+  return tierRewards[tier as keyof typeof tierRewards] || 10;
+};

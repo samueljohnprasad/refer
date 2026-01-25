@@ -16,6 +16,7 @@ import { useRevenueCat } from "../context/RevenueCatProvider";
 import { useXPOptional } from "../context/XPContext";
 import { XPActionType, XP_REWARDS } from "../types/xp";
 import { XPBadge } from "./XP";
+import { useRewardsContext } from "../context/RewardsContext";
 
 // Emotion configuration
 const EMOTIONS = [
@@ -138,6 +139,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     } = useEmotionLogger(selectedDate);
     const { presentPaywall, hasPro } = useRevenueCat();
     const xp = useXPOptional();
+    const { earnCoinsForAction } = useRewardsContext();
 
     const totalEmotions = Array.from(emotionCounts.values()).reduce(
       (acc, count) => acc + count,
@@ -184,6 +186,8 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
             xp?.awardXP(XPActionType.MOOD_LOG, {
               customDescription: `Mood logged: ${emotionName}`,
             });
+            // Earn coins for mood log
+            earnCoinsForAction("MOOD_LOG");
             onEmotionLogged?.(emotionScore, updated);
           });
         } catch (error) {}

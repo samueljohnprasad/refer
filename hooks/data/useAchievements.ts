@@ -7,8 +7,10 @@ import {
   UserAchievement,
   ACHIEVEMENTS,
   AchievementConditionType,
+  getCoinRewardForAchievementTier,
 } from "@/src/types/achievements";
 import { XPActionType } from "@/src/types/xp";
+import { useRewardsContext } from "@/src/context/RewardsContext";
 
 interface AchievementProgress {
   achievement: Achievement;
@@ -59,6 +61,7 @@ export const useAchievements = (): UseAchievementsReturn => {
     habitPerfectDays: 0,
     voiceJournalCount: 0,
   });
+  const { earnCoins } = useRewardsContext();
 
   // Fetch unlocked achievements from Supabase
   const fetchUnlockedAchievements = useCallback(async (): Promise<void> => {
@@ -157,6 +160,10 @@ export const useAchievements = (): UseAchievementsReturn => {
           customAmount: achievement.xpBonus,
           customDescription: `Achievement: ${achievement.name}`,
         });
+
+        // Award bonus coins based on achievement tier
+        const coinReward = getCoinRewardForAchievementTier(achievement.tier);
+        await earnCoins(coinReward, `Achievement: ${achievement.name}`);
 
         // Update local state
         const newUnlock: UserAchievement = {

@@ -43,6 +43,8 @@ import { useStreakTracker } from "@/hooks/data/useStreakTracker";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
 import { XPDisplay } from "@/src/components/XP";
 import { useXP } from "@/src/context/XPContext";
+import { CoinsBadge } from "@/src/components/Rewards";
+import { useRewardsContext } from "@/src/context/RewardsContext";
 
 const ImageJournalModal = React.lazy(
   () => import("../DiscoveryScreen/ImageJournalModal"),
@@ -73,8 +75,10 @@ export const PALETTE = {
 // Memoized TopBar component
 const TopBar = React.memo<{
   onAchievementsPress: () => void;
-}>(({ onAchievementsPress }) => {
+  onShopPress: () => void;
+}>(({ onAchievementsPress, onShopPress }) => {
   const { presentPaywall, hasPro } = useRevenueCat();
+  const { wallet } = useRewardsContext();
 
   const handleSettingsPress = useCallback(() => {
     router.push("/tabs/screens/settings");
@@ -124,6 +128,11 @@ const TopBar = React.memo<{
             </Button>
           </Host>
         )}
+
+        {/* Coins Badge */}
+        <TouchableOpacity onPress={onShopPress} activeOpacity={0.9}>
+          <CoinsBadge coins={wallet?.coins ?? 0} size="md" />
+        </TouchableOpacity>
 
         {!isLiquidGlass && (
           <TouchableOpacity
@@ -316,6 +325,10 @@ export default function JournalCalendarScreen() {
     router.push("/tabs/screens/achievements");
   }, []);
 
+  const handleShopPress = useCallback(() => {
+    router.push("/tabs/screens/rewards-shop");
+  }, []);
+
   const handleImageInsightsReady = useCallback(
     (insights: any, transcript: string) => {
       console.log("Insights ready:", insights);
@@ -409,7 +422,10 @@ export default function JournalCalendarScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* Outer panel container */}
-        <TopBar onAchievementsPress={handleAchievementsPress} />
+        <TopBar
+          onAchievementsPress={handleAchievementsPress}
+          onShopPress={handleShopPress}
+        />
         <View
           // intensity={50}
           // tint="light"
