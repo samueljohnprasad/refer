@@ -5,6 +5,7 @@ import {
   View,
   ActivityIndicator,
   TouchableOpacity,
+  Image as RNImage,
 } from "react-native";
 import { Text } from "@/components/ui/text";
 import { format, parseISO } from "date-fns";
@@ -115,7 +116,16 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
           </TouchableOpacity>
         </View>
 
-        <View className="py-4 items-center">
+        <View className="py-6 items-center">
+          <RNImage
+            source={require("@/assets/images/no-entries-dog.png")}
+            style={{
+              width: 156,
+              height: 156,
+              marginBottom: 16,
+            }}
+            resizeMode="contain"
+          />
           <Text className="text-gray-400 text-center">
             No entries for today.{"\n"}Tap + to add your first journal!
           </Text>
@@ -157,7 +167,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
                 {entry.selected_date
                   ? `${format(
                       parseISO(entry.selected_date),
-                      "MMM d, yyyy"
+                      "MMM d, yyyy",
                     )} · ${format(parseISO(entry.selected_date), "EEE")}`
                   : "No Date"}
               </Text>

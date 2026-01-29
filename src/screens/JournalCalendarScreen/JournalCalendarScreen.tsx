@@ -22,6 +22,7 @@ import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
 import { ChallengesSection } from "@/src/components/Challenges";
+import { FeaturedPromptCard } from "@/src/components/FeaturedPromptCard";
 import {
   Fire02Icon,
   Settings02Icon,
@@ -458,6 +459,26 @@ export default function JournalCalendarScreen() {
             <EmotionLogger
               selectedDate={selectedEmotionDate}
               onEmotionLogged={handleEmotionLogged}
+            />
+          </View>
+
+          {/* Featured Prompt Card */}
+          <View className="mt-5">
+            <FeaturedPromptCard
+              prompt="What is special about today?"
+              xpReward={30}
+              emoji="🤓"
+              onPress={() =>
+                handleQuickJournalPress({
+                  id: "featured_today",
+                  title: "Today's Prompt",
+                  description: "What is special about today?",
+                  category: "Personal",
+                  emoji: "✨",
+                  bgColor: "#E0F7FA",
+                  categoryColor: "#4A9FE8",
+                })
+              }
             />
           </View>
 

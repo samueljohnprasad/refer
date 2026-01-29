@@ -15,6 +15,9 @@ export interface Achievement {
   name: string;
   description: string;
   icon: string;
+  imageAsset?: {
+    unlocked: any;
+  };
   category: AchievementCategory;
   xpBonus: number;
   condition: AchievementCondition;
@@ -63,6 +66,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     name: "First Steps",
     description: "Complete your first journal entry",
     icon: "1",
+    imageAsset: {
+      unlocked: require("@/assets/achievements/first-reflection.png"),
+    },
     category: "journaling",
     xpBonus: 50,
     condition: { type: "journal_count", target: 1 },
@@ -79,6 +85,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "journal_count", target: 5 },
     color: BADGE_COLORS.journaling,
     tier: 1,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/getting-started.png"),
+    },
   },
   {
     id: "journal_10",
@@ -101,6 +110,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "journal_count", target: 25 },
     color: "#2563EB", // Darker blue
     tier: 3,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/consistent-writer.png"),
+    },
   },
   {
     id: "storyteller",
@@ -112,6 +124,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "journal_count", target: 50 },
     color: "#1D4ED8", // Deep blue
     tier: 4,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/story-teller.png"),
+    },
   },
   {
     id: "voice_master",
@@ -123,6 +138,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "voice_journal_count", target: 20 },
     color: "#6366F1", // Indigo
     tier: 3,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/voice-master.png"),
+    },
   },
 
   // === STREAKS (Red/Orange) ===
@@ -131,6 +149,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     name: "Spark Started",
     description: "Maintain a 3-day streak",
     icon: "3",
+    imageAsset: {
+      unlocked: require("@/assets/achievements/three-streak.png"),
+    },
     category: "streaks",
     xpBonus: 50,
     condition: { type: "streak_days", target: 3 },
@@ -142,6 +163,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     name: "Week Warrior",
     description: "Maintain a 7-day streak",
     icon: "7",
+    imageAsset: {
+      unlocked: require("@/assets/achievements/seven-streak.png"),
+    },
     category: "streaks",
     xpBonus: 100,
     condition: { type: "streak_days", target: 7 },

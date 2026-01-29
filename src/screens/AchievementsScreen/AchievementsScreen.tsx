@@ -104,19 +104,7 @@ export const AchievementsScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      {/* Header */}
-      <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="w-10 h-10 items-center justify-center"
-        >
-          <HugeiconsIcon icon={ArrowLeft02Icon} size={24} color="#374151" />
-        </TouchableOpacity>
-        <Text className="text-lg font-bold text-gray-900">Achievements</Text>
-        <View className="w-10" />
-      </View>
-
+    <View className="flex-1 bg-gray-50">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Your Stats Section */}
         <View className="px-4 pt-4">
@@ -221,7 +209,7 @@ export const AchievementsScreen: React.FC = () => {
 
         <View className="h-8" />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

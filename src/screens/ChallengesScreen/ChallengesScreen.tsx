@@ -42,20 +42,7 @@ export const ChallengesScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      {/* Header */}
-      <View className="flex-row items-center justify-between px-4 py-4 bg-white border-b border-gray-100">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="w-10 h-10 items-center justify-center"
-        >
-          <HugeiconsIcon icon={ArrowLeft02Icon} size={24} color="#111827" />
-        </TouchableOpacity>
-        <Text className="text-lg font-semibold text-gray-900">Challenges</Text>
-        <View className="w-10" />
-      </View>
-
-      {/* Stats */}
+    <View className="flex-1 bg-gray-50">
       <View className="flex-row px-4 py-4 gap-3">
         <View className="flex-1 bg-white rounded-2xl p-4 border border-gray-100">
           <Text className="text-2xl">⭐</Text>
@@ -152,7 +139,7 @@ export const ChallengesScreen: React.FC = () => {
           ))
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

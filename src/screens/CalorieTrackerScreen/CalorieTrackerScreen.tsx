@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Modal,
+  Image as RNImage,
 } from "react-native";
 import { Image } from "@/components/ui/image";
 import { VStack } from "@/components/ui/vstack";
@@ -76,7 +77,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
     micronutrients: MicronutrientEntry[];
   } | null>(null);
   const [trackedNutrientIds, setTrackedNutrientIds] = useState<Set<string>>(
-    new Set(MICRONUTRIENTS_CONFIG.map((n) => n.id))
+    new Set(MICRONUTRIENTS_CONFIG.map((n) => n.id)),
   );
   const micronutrientModalRef = useRef<BottomSheetModal>(null);
 
@@ -97,7 +98,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
 
   // Filter micronutrients to only show tracked ones
   const filterTrackedMicronutrients = (
-    micronutrients: MicronutrientEntry[]
+    micronutrients: MicronutrientEntry[],
   ): MicronutrientEntry[] => {
     return micronutrients.filter((m) => trackedNutrientIds.has(m.name));
   };
@@ -138,7 +139,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
     if (status !== "granted") {
       Alert.alert(
         "Permission Required",
-        "Camera permission is needed to take photos of your food."
+        "Camera permission is needed to take photos of your food.",
       );
       return;
     }
@@ -163,7 +164,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
     if (status !== "granted") {
       Alert.alert(
         "Permission Required",
-        "Photo library permission is needed to select photos."
+        "Photo library permission is needed to select photos.",
       );
       return;
     }
@@ -341,8 +342,8 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
                     healthColors.text.includes("green")
                       ? "#15803d"
                       : healthColors.text.includes("yellow")
-                      ? "#a16207"
-                      : "#b91c1c"
+                        ? "#a16207"
+                        : "#b91c1c"
                   }
                 />
               </TouchableOpacity>
@@ -516,6 +517,15 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
             <ActivityIndicator size="small" color="#7B61FF" />
           ) : calorieEntries.length === 0 ? (
             <View className="bg-white rounded-2xl p-6 items-center border border-gray-100">
+              <RNImage
+                source={require("@/assets/images/no-meal-dog.png")}
+                style={{
+                  width: 156,
+                  height: 156,
+                  marginBottom: 16,
+                }}
+                resizeMode="contain"
+              />
               <Text className="text-gray-400 text-center">
                 No meals logged today.{"\n"}Take a photo of your food to get
                 started!
@@ -570,8 +580,8 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
                       selectedHealthScore.score >= 80
                         ? "bg-green-100"
                         : selectedHealthScore.score >= 60
-                        ? "bg-yellow-100"
-                        : "bg-red-100"
+                          ? "bg-yellow-100"
+                          : "bg-red-100"
                     }`}
                   >
                     <Text
@@ -579,8 +589,8 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
                         selectedHealthScore.score >= 80
                           ? "text-green-700"
                           : selectedHealthScore.score >= 60
-                          ? "text-yellow-700"
-                          : "text-red-700"
+                            ? "text-yellow-700"
+                            : "text-red-700"
                       }`}
                     >
                       {selectedHealthScore.score}
@@ -645,14 +655,14 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
 
               const percentage = Math.min(
                 Math.round((nutrient.amount / config.dailyValue) * 100),
-                100
+                100,
               );
               const barColor =
                 percentage >= 50
                   ? "bg-green-500"
                   : percentage >= 25
-                  ? "bg-yellow-500"
-                  : "bg-gray-400";
+                    ? "bg-yellow-500"
+                    : "bg-gray-400";
 
               return (
                 <View

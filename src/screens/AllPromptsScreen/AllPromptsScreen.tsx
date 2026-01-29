@@ -121,7 +121,7 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
         </View>
       </TouchableOpacity>
     );
-  }
+  },
 );
 
 PromptCard.displayName = "PromptCard";
@@ -153,7 +153,7 @@ export default function AllPromptsScreen() {
       setPrompt,
       setStartRecording,
       setRecorderOpen,
-    ]
+    ],
   );
 
   const handleBack = useCallback(() => {
@@ -161,28 +161,7 @@ export default function AllPromptsScreen() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
-      {/* Header */}
-      <View className="px-4 py-3 border-b border-gray-100">
-        <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center gap-3">
-            <Pressable
-              onPress={handleBack}
-              className="flex-row items-center gap-2"
-            >
-              <Feather name="arrow-left" size={24} color="#000" />
-              <Text className="text-base font-medium text-gray-900">Back</Text>
-            </Pressable>
-          </View>
-        </View>
-        <Text className="text-2xl font-bold text-gray-900 mt-3">
-          Journal Prompts
-        </Text>
-        <Text className="text-sm text-gray-500 mt-1">
-          Choose a prompt to start journaling
-        </Text>
-      </View>
-
+    <View className="flex-1 bg-white">
       {/* Prompts Grid */}
       <ScrollView
         className="flex-1"
@@ -197,6 +176,6 @@ export default function AllPromptsScreen() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

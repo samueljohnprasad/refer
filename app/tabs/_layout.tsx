@@ -25,7 +25,7 @@ export default function AppLayout() {
         options={{
           headerShown: false,
           title: "Settings",
-          animation: "fade",
+          animation: "slide_from_right",
           freezeOnBlur: true,
         }}
       />
@@ -83,13 +83,40 @@ export default function AppLayout() {
         name="screens/all-prompts"
         options={{
           headerShown: true,
-          headerLargeTitle: true,
           title: "Journal Prompts",
-          headerTitle: "Journal Promptss",
-          headerLargeTitleShadowVisible: true,
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="screens/achievements"
+        options={{
+          headerShown: true,
+          title: "Achievements",
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_left",
+        }}
+      />
+      <Stack.Screen
+        name="screens/xp-history"
+        options={{
+          headerShown: true,
+          title: "XP History",
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="screens/challenges"
+        options={{
+          headerShown: true,
+          title: "Challenges",
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_bottom",
         }}
       />
     </Stack>

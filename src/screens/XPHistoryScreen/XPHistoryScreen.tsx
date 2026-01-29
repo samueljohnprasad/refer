@@ -5,6 +5,7 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -26,9 +27,11 @@ interface XPHistoryItemProps {
   entry: XPHistoryEntry;
 }
 
+import { emotions, Emotion } from "@/assets/emojis";
+
 const getActionEmoji = (action: XPActionType): string => {
   const emojis: Record<XPActionType, string> = {
-    [XPActionType.MOOD_LOG]: "😊",
+    [XPActionType.MOOD_LOG]: "", // Will use Image instead
     [XPActionType.JOURNAL_ENTRY]: "📝",
     [XPActionType.VOICE_JOURNAL]: "🎤",
     [XPActionType.IMAGE_JOURNAL]: "📸",
@@ -40,14 +43,45 @@ const getActionEmoji = (action: XPActionType): string => {
   return emojis[action] || "⭐";
 };
 
+// Extract mood from description like "Mood logged: Great"
+const getMoodFromDescription = (description?: string): Emotion => {
+  if (!description) return Emotion.Good; // default
+
+  const moodMatch = description.match(/Mood logged: (\w+)/);
+  if (!moodMatch) return Emotion.Good;
+
+  const mood = moodMatch[1].toLowerCase();
+
+  // Map mood names to Emotion enum
+  if (mood === "terrible") return Emotion.Terrible;
+  if (mood === "bad") return Emotion.Bad;
+  if (mood === "okay") return Emotion.Fine;
+  if (mood === "good") return Emotion.Good;
+  if (mood === "great") return Emotion.Great;
+
+  return Emotion.Good; // default fallback
+};
+
 const XPHistoryItem: React.FC<XPHistoryItemProps> = ({ entry }) => {
   const timeAgo = dayjs(entry.timestamp).fromNow();
+  const mood =
+    entry.action === XPActionType.MOOD_LOG
+      ? getMoodFromDescription(entry.description)
+      : null;
 
   return (
     <View className="flex-row items-center justify-between py-4 px-4 border-b border-gray-100">
       <View className="flex-row items-center flex-1">
         <View className="w-10 h-10 rounded-full bg-yellow-100 items-center justify-center mr-3">
-          <Text className="text-lg">{getActionEmoji(entry.action)}</Text>
+          {entry.action === XPActionType.MOOD_LOG && mood ? (
+            <Image
+              source={emotions[mood]}
+              style={{ width: 24, height: 24 }}
+              resizeMode="contain"
+            />
+          ) : (
+            <Text className="text-lg">{getActionEmoji(entry.action)}</Text>
+          )}
         </View>
         <View className="flex-1">
           <Text className="text-gray-900 font-medium">
@@ -149,19 +183,7 @@ export const XPHistoryScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      {/* Header */}
-      <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-100">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="w-10 h-10 items-center justify-center"
-        >
-          <HugeiconsIcon icon={ArrowLeft02Icon} size={24} color="#374151" />
-        </TouchableOpacity>
-        <Text className="text-lg font-semibold text-gray-900">XP Progress</Text>
-        <View className="w-10" />
-      </View>
-
+    <View className="flex-1 bg-white">
       <FlatList
         data={history}
         keyExtractor={(item) => item.id}
@@ -174,7 +196,7 @@ export const XPHistoryScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

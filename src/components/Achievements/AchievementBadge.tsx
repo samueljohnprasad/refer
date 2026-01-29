@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import { Achievement } from "@/src/types/achievements";
 import Svg, { Polygon } from "react-native-svg";
+import { Grayscale } from "react-native-color-matrix-image-filters";
 
 interface AchievementBadgeProps {
   achievement: Achievement;
@@ -20,7 +21,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   achievement,
   isUnlocked,
   currentProgress = 0,
-  size = "md",
+  size = "lg",
   onPress,
   showProgress = true,
 }) => {
@@ -50,7 +51,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         style={{ width: styles.hex, height: styles.hex }}
       >
         {/* Background Hexagon */}
-        <Svg
+        {/* <Svg
           width={styles.hex}
           height={styles.hex}
           viewBox="0 0 100 100"
@@ -62,11 +63,23 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
             stroke={isUnlocked ? achievement.color : "#D1D5DB"}
             strokeWidth="2"
           />
-        </Svg>
+        </Svg> */}
 
-        {/* Icon/Number */}
+        {/* Icon/Number/Image */}
         <View className="absolute items-center justify-center">
-          {isNumberIcon ? (
+          {achievement.imageAsset ? (
+            <Grayscale amount={isUnlocked ? 0 : 1}>
+              <Image
+                source={achievement.imageAsset.unlocked}
+                style={{
+                  width: styles.hex,
+                  height: styles.hex,
+                  opacity: isUnlocked ? 1 : 0.5,
+                }}
+                resizeMode="contain"
+              />
+            </Grayscale>
+          ) : isNumberIcon ? (
             <Text
               className="font-bold"
               style={{
