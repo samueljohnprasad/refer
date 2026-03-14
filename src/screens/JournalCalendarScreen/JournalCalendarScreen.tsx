@@ -240,31 +240,55 @@ const StreakCard = React.memo<{
     isLoading,
     progressBarStyle,
   }) => (
-    <View className="bg-[#FFD24A] rounded-2xl p-4 flex-row items-center overflow-hidden mt-3">
-      <View className="flex-1">
-        {/* Streak info */}
+    <View className="bg-[#FFD24A] rounded-2xl p-4 overflow-hidden mt-3">
+      {/* When streak is 0 — show motivational copy */}
+      {currentStreak === 0 && (
+        <Text className="text-gray-700 text-xs font-semibold mb-2 tracking-wide uppercase">
+          🌱 Start your streak today!
+        </Text>
+      )}
 
-        <View className="flex-row items-center justify-between">
-          <View>
-            <Text className="text-gray-900 text-sm font-semibold mb-1">
-              Current Streak
-            </Text>
-            <View className="flex-row items-center">
-              <HugeiconsIcon
-                size={24}
-                icon={Fire02Icon}
-                fill={"#FF6A3D"}
-                color="#FF6A3D"
-              />
-
-              <Text className="text-2xl font-extrabold ml-1.5">
-                {currentStreak}
-              </Text>
-            </View>
+      <View className="flex-row items-center justify-between">
+        {/* Goal as the left hero when streak is 0 */}
+        <View>
+          <Text className="text-gray-700 text-xs font-semibold mb-1">
+            {currentStreak === 0 ? "First goal" : "Current Streak"}
+          </Text>
+          <View className="flex-row items-center">
+            {currentStreak === 0 ? (
+              <>
+                <HugeiconsIcon
+                  size={24}
+                  icon={Target02Icon}
+                  fill={PALETTE.blue}
+                />
+                <Text className="text-2xl font-extrabold ml-1.5">
+                  {isLoading ? "-" : nextMilestone}{" "}
+                  <Text className="text-sm font-semibold text-gray-600">
+                    days
+                  </Text>
+                </Text>
+              </>
+            ) : (
+              <>
+                <HugeiconsIcon
+                  size={24}
+                  icon={Fire02Icon}
+                  fill={"#FF6A3D"}
+                  color="#FF6A3D"
+                />
+                <Text className="text-2xl font-extrabold ml-1.5">
+                  {currentStreak}
+                </Text>
+              </>
+            )}
           </View>
+        </View>
 
+        {/* Right side: next goal (only when streak > 0) */}
+        {currentStreak > 0 && (
           <View className="items-end">
-            <Text className="text-gray-900 text-sm font-semibold mb-1">
+            <Text className="text-gray-700 text-xs font-semibold mb-1">
               Goal
             </Text>
             <View className="flex-row items-center">
@@ -278,15 +302,23 @@ const StreakCard = React.memo<{
               </Text>
             </View>
           </View>
-        </View>
+        )}
+      </View>
 
-        {/* Animated progress bar */}
-        <View className="h-3 bg-[#F0D97A] rounded-xl mt-3 overflow-hidden">
-          <Animated.View
-            className="h-full bg-[#60A6FF] rounded-lg"
-            style={progressBarStyle}
-          />
-        </View>
+      {/* Progress bar — always visible, styled even at 0 */}
+      <View className="h-3 bg-[#F0D97A] rounded-xl mt-3 overflow-hidden">
+        <Animated.View
+          className="h-full bg-[#60A6FF] rounded-lg"
+          style={progressBarStyle}
+        />
+        {/* Show a faint start marker when empty */}
+        {currentStreak === 0 && (
+          <View className="absolute inset-0 items-center justify-center">
+            <Text className="text-[10px] text-gray-500 font-semibold">
+              Journal to begin
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   ),

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Notebook02Icon } from "@hugeicons/core-free-icons";
+import { PencilEdit01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 
 interface FeaturedPromptCardProps {
@@ -66,7 +66,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         className="bg-gray-900 flex-row items-center justify-center py-4 rounded-full"
         activeOpacity={0.8}
       >
-        <HugeiconsIcon icon={Notebook02Icon} size={20} color="#FFFFFF" />
+        <HugeiconsIcon icon={PencilEdit01Icon} size={18} color="#FFFFFF" />
         <Text className="text-white font-semibold text-base ml-2">
           Add entry
         </Text>

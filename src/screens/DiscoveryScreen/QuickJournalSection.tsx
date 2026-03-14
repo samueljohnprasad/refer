@@ -66,10 +66,18 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
         className="w-[160px] rounded-2xl p-4 mr-3"
         style={{ backgroundColor: prompt.bgColor }}
       >
-        <Text className="text-base font-semibold text-gray-900 mb-1">
+        <Text
+          className="text-base font-semibold text-gray-900 mb-1"
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
           {prompt.title} {prompt.emoji}
         </Text>
-        <Text className="text-sm text-gray-600 mb-3" numberOfLines={2}>
+        <Text
+          className="text-sm text-gray-600 mb-3"
+          numberOfLines={2}
+          ellipsizeMode="tail"
+        >
           {prompt.description}
         </Text>
         <View className="flex-row items-center gap-2 mt-auto">

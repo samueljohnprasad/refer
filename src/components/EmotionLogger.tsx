@@ -9,7 +9,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { Image } from "@/components/ui/image";
 import { terrible, bad, fine, good, great } from "@/assets/emojis";
-import { format } from "date-fns";
 import { useEmotionLogger } from "@/hooks/data/useEmotionLogger";
 import { useDailyStreak } from "@/hooks/data/useDailyStreak";
 import { useRevenueCat } from "../context/RevenueCatProvider";
@@ -225,9 +224,6 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
                 </Text>
               </View>
             )}
-            <Text className="text-xs text-gray-500">
-              {format(selectedDate, "MMM d, yyyy")}
-            </Text>
           </View>
         </View>
 
