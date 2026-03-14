@@ -66,12 +66,20 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
         className="w-[160px] rounded-2xl p-4 mr-3"
         style={{ backgroundColor: prompt.bgColor }}
       >
+        {/* Emoji in its own frosted bubble */}
+        <View
+          className="w-10 h-10 rounded-2xl items-center justify-center mb-3"
+          style={{ backgroundColor: "rgba(255,255,255,0.65)" }}
+        >
+          <Text style={{ fontSize: 20 }}>{prompt.emoji}</Text>
+        </View>
+
         <Text
           className="text-base font-semibold text-gray-900 mb-1"
           numberOfLines={1}
           ellipsizeMode="tail"
         >
-          {prompt.title} {prompt.emoji}
+          {prompt.title}
         </Text>
         <Text
           className="text-sm text-gray-600 mb-3"
@@ -80,25 +88,16 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
         >
           {prompt.description}
         </Text>
-        <View className="flex-row items-center gap-2 mt-auto">
-          <View className="bg-white/80 px-2.5 py-1 rounded-full">
-            <Text className="text-xs text-gray-600 font-medium">Today</Text>
-          </View>
-          <View
-            className="px-2.5 py-1 rounded-full"
-            style={{
-              backgroundColor: "transparent",
-              borderWidth: 1,
-              borderColor: prompt.categoryColor,
-            }}
+        <View
+          className="self-start px-2.5 py-1 rounded-full"
+          style={{ borderWidth: 1, borderColor: prompt.categoryColor }}
+        >
+          <Text
+            className="text-xs font-semibold"
+            style={{ color: prompt.categoryColor }}
           >
-            <Text
-              className="text-xs font-medium"
-              style={{ color: prompt.categoryColor }}
-            >
-              {prompt.category}
-            </Text>
-          </View>
+            {prompt.category}
+          </Text>
         </View>
       </TouchableOpacity>
     );

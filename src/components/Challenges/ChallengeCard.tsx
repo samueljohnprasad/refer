@@ -8,14 +8,81 @@ import Animated, {
 } from "react-native-reanimated";
 import { ActiveChallenge } from "@/src/types/challenges";
 import * as Haptics from "expo-haptics";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  Mic01Icon,
+  Sun01Icon,
+  MoonIcon,
+  BookOpen01Icon,
+  BulbIcon,
+  Camera01Icon,
+  HealthIcon,
+  Fire02Icon,
+  Medal01Icon,
+  SmileDizzyIcon,
+  NoteIcon,
+  TaskAdd01Icon,
+  CheckmarkBadge01Icon,
+  StarsIcon,
+  Coins01Icon,
+} from "@hugeicons/core-free-icons";
 
 interface ChallengeCardProps {
   challenge: ActiveChallenge;
   compact?: boolean;
 }
 
+/** Map challenge emoji icon → { hugeicon, bg color, icon color } */
+const ICON_MAP: Record<string, { icon: any; bg: string; color: string }> = {
+  "😊": { icon: SmileDizzyIcon, bg: "#FEF3C7", color: "#D97706" },
+  "📝": { icon: NoteIcon, bg: "#EDE9FE", color: "#7C3AED" },
+  "✅": { icon: TaskAdd01Icon, bg: "#D1FAE5", color: "#059669" },
+  "🍎": { icon: HealthIcon, bg: "#FEE2E2", color: "#DC2626" },
+  "🧘": { icon: StarsIcon, bg: "#E0F2FE", color: "#0284C7" },
+  "🎙️": { icon: Mic01Icon, bg: "#F3E8FF", color: "#9333EA" },
+  "☀️": { icon: Sun01Icon, bg: "#FEF9C3", color: "#CA8A04" },
+  "🌙": { icon: MoonIcon, bg: "#EFF6FF", color: "#3B82F6" },
+  "📚": { icon: BookOpen01Icon, bg: "#EDE9FE", color: "#6D28D9" },
+  "💡": { icon: BulbIcon, bg: "#FEF9C3", color: "#B45309" },
+  "📷": { icon: Camera01Icon, bg: "#FCE7F3", color: "#BE185D" },
+  "🥗": { icon: HealthIcon, bg: "#DCFCE7", color: "#16A34A" },
+  "🔥": { icon: Fire02Icon, bg: "#FEE2E2", color: "#DC2626" },
+  "🏆": { icon: Medal01Icon, bg: "#FEF3C7", color: "#D97706" },
+};
+
+const DEFAULT_ICON = { icon: StarsIcon, bg: "#F3F4F6", color: "#6B7280" };
+
+const ChallengeIconBubble: React.FC<{
+  iconKey: string;
+  size?: "sm" | "lg";
+}> = ({ iconKey, size = "sm" }) => {
+  const config = ICON_MAP[iconKey] ?? DEFAULT_ICON;
+  const bubbleSize = size === "lg" ? 48 : 40;
+  const iconSize = size === "lg" ? 22 : 18;
+
+  return (
+    <View
+      style={{
+        width: bubbleSize,
+        height: bubbleSize,
+        borderRadius: bubbleSize / 2,
+        backgroundColor: config.bg,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <HugeiconsIcon
+        icon={config.icon}
+        size={iconSize}
+        color={config.color}
+        strokeWidth={1.8}
+      />
+    </View>
+  );
+};
+
 /**
- * Minimalist challenge card with clean design
+ * Premium challenge card — uses HugeIcons in colored bubbles instead of emojis
  */
 export const ChallengeCard: React.FC<ChallengeCardProps> = ({
   challenge,
@@ -52,7 +119,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
           }`}
         >
           <View className="flex-row items-center">
-            <Text style={{ fontSize: 28 }}>{challenge.icon}</Text>
+            <ChallengeIconBubble iconKey={challenge.icon} size="sm" />
 
             <View className="flex-1 ml-3">
               <View className="flex-row items-center justify-between">
@@ -63,22 +130,28 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
                   {challenge.title}
                 </Text>
                 {isComplete ? (
-                  <View className="bg-green-100 px-2 py-1 rounded-full">
-                    <Text className="text-green-700 text-xs font-medium">
+                  <View className="bg-green-100 px-2 py-1 rounded-full flex-row items-center gap-1">
+                    <HugeiconsIcon
+                      icon={CheckmarkBadge01Icon}
+                      size={12}
+                      color="#059669"
+                      strokeWidth={2.5}
+                    />
+                    <Text className="text-green-700 text-xs font-semibold">
                       Done
                     </Text>
                   </View>
                 ) : (
-                  <Text className="text-gray-500 text-sm font-medium">
+                  <Text className="text-gray-400 text-sm font-medium">
                     {challenge.progress}/{challenge.condition.target}
                   </Text>
                 )}
               </View>
 
-              <View className="h-1.5 bg-gray-100 rounded-full mt-2">
+              <View className="h-1.5 bg-gray-100 rounded-full mt-2 overflow-hidden">
                 <View
                   className={`h-full rounded-full ${
-                    isComplete ? "bg-green-500" : "bg-gray-900"
+                    isComplete ? "bg-green-500" : "bg-violet-500"
                   }`}
                   style={{ width: `${progressPercent}%` }}
                 />
@@ -100,7 +173,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       >
         {/* Header */}
         <View className="flex-row items-start">
-          <Text style={{ fontSize: 32 }}>{challenge.icon}</Text>
+          <ChallengeIconBubble iconKey={challenge.icon} size="lg" />
 
           <View className="flex-1 ml-4">
             <View className="flex-row items-start justify-between">
@@ -117,9 +190,15 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
               </View>
 
               {isComplete && (
-                <View className="bg-green-100 px-2.5 py-1 rounded-full ml-2">
+                <View className="bg-green-100 px-2.5 py-1 rounded-full ml-2 flex-row items-center gap-1">
+                  <HugeiconsIcon
+                    icon={CheckmarkBadge01Icon}
+                    size={12}
+                    color="#059669"
+                    strokeWidth={2.5}
+                  />
                   <Text className="text-green-700 text-xs font-semibold">
-                    ✓
+                    Done
                   </Text>
                 </View>
               )}
@@ -138,10 +217,10 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
             </Text>
           </View>
 
-          <View className="h-2 bg-gray-100 rounded-full">
+          <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
             <View
               className={`h-full rounded-full ${
-                isComplete ? "bg-green-500" : "bg-gray-900"
+                isComplete ? "bg-green-500" : "bg-violet-500"
               }`}
               style={{ width: `${progressPercent}%` }}
             />
@@ -150,17 +229,27 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
 
         {/* Rewards */}
         {!isComplete && (
-          <View className="flex-row items-center mt-4 pt-4 border-t border-gray-100">
-            <Text className="text-gray-500 text-xs">Rewards:</Text>
-            <View className="flex-row items-center ml-2">
-              <Text className="text-sm">⭐</Text>
-              <Text className="text-gray-700 text-sm font-medium ml-1">
+          <View className="flex-row items-center mt-4 pt-4 border-t border-gray-100 gap-4">
+            <Text className="text-gray-400 text-xs">Reward</Text>
+            <View className="flex-row items-center gap-1">
+              <HugeiconsIcon
+                icon={StarsIcon}
+                size={14}
+                color="#D97706"
+                strokeWidth={1.8}
+              />
+              <Text className="text-amber-700 text-sm font-semibold">
                 {challenge.reward.xp} XP
               </Text>
             </View>
-            <View className="flex-row items-center ml-4">
-              <Text className="text-sm">🪙</Text>
-              <Text className="text-gray-700 text-sm font-medium ml-1">
+            <View className="flex-row items-center gap-1">
+              <HugeiconsIcon
+                icon={Coins01Icon}
+                size={14}
+                color="#D97706"
+                strokeWidth={1.8}
+              />
+              <Text className="text-gray-700 text-sm font-medium">
                 {challenge.reward.coins}
               </Text>
             </View>

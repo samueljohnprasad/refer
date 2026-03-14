@@ -12,6 +12,10 @@ import {
   Medal01Icon,
   StarsIcon,
   Fire02Icon,
+  NoteIcon,
+  TaskDone01Icon,
+  Yoga01Icon,
+  BarChartIcon,
 } from "@hugeicons/core-free-icons";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
@@ -25,17 +29,25 @@ import {
 
 const CATEGORY_CONFIG: Record<
   AchievementCategory,
-  { label: string; emoji: string; color: string }
+  { label: string; icon: any; color: string }
 > = {
   journaling: {
     label: "Journaling",
-    emoji: "📝",
+    icon: NoteIcon,
     color: BADGE_COLORS.journaling,
   },
-  streaks: { label: "Streaks", emoji: "🔥", color: BADGE_COLORS.streaks },
-  habits: { label: "Habits", emoji: "✅", color: BADGE_COLORS.habits },
-  wellness: { label: "Wellness", emoji: "🧘", color: BADGE_COLORS.wellness },
-  tracking: { label: "Tracking", emoji: "📊", color: BADGE_COLORS.tracking },
+  streaks: { label: "Streaks", icon: Fire02Icon, color: BADGE_COLORS.streaks },
+  habits: { label: "Habits", icon: TaskDone01Icon, color: BADGE_COLORS.habits },
+  wellness: {
+    label: "Wellness",
+    icon: StarsIcon,
+    color: BADGE_COLORS.wellness,
+  },
+  tracking: {
+    label: "Tracking",
+    icon: BarChartIcon,
+    color: BADGE_COLORS.tracking,
+  },
 };
 
 interface StatCardProps {
@@ -117,7 +129,16 @@ export const AchievementsScreen: React.FC = () => {
 
           {/* Stats Cards */}
           <StatCard
-            icon={<Text className="text-lg">🏆</Text>}
+            icon={
+              <View className="w-8 h-8 rounded-xl bg-amber-100 items-center justify-center">
+                <HugeiconsIcon
+                  icon={Medal01Icon}
+                  size={18}
+                  color="#D97706"
+                  strokeWidth={1.8}
+                />
+              </View>
+            }
             label="Badges Unlocked"
             value={String(unlockedCount)}
             subtext={`${unlockedCount}/${totalCount}`}
@@ -159,7 +180,11 @@ export const AchievementsScreen: React.FC = () => {
             const categoryAchievements = getAchievementsByCategory(category);
             if (categoryAchievements.length === 0) return null;
 
-            const { label, emoji, color } = CATEGORY_CONFIG[category];
+            const {
+              label,
+              icon: categoryIcon,
+              color,
+            } = CATEGORY_CONFIG[category];
             const categoryUnlocked = categoryAchievements.filter(
               (a) => a.isUnlocked,
             ).length;
@@ -173,7 +198,12 @@ export const AchievementsScreen: React.FC = () => {
                       className="w-8 h-8 rounded-lg items-center justify-center mr-2"
                       style={{ backgroundColor: color + "20" }}
                     >
-                      <Text className="text-base">{emoji}</Text>
+                      <HugeiconsIcon
+                        icon={categoryIcon}
+                        size={16}
+                        color={color}
+                        strokeWidth={1.8}
+                      />
                     </View>
                     <Text className="text-lg font-semibold text-gray-900">
                       {label}

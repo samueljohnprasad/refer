@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface XPBadgeProps {
   amount: number;
@@ -24,17 +25,35 @@ export const XPBadge: React.FC<XPBadgeProps> = ({
     lg: "text-base",
   };
 
-  const bgClass =
-    variant === "highlight"
-      ? "bg-yellow-400"
-      : "bg-gray-100 border border-gray-200";
+  if (variant === "highlight") {
+    return (
+      <LinearGradient
+        colors={["#F59E0B", "#D97706"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{ borderRadius: 99, paddingHorizontal: 8, paddingVertical: 3 }}
+      >
+        <Text className={`text-white font-bold ${textSizeClasses[size]}`}>
+          +{amount} XP
+        </Text>
+      </LinearGradient>
+    );
+  }
 
-  const textColor =
-    variant === "highlight" ? "text-yellow-900" : "text-gray-600";
-
+  // Default: subtle amber tint instead of plain gray
   return (
-    <View className={`${bgClass} rounded-full ${sizeClasses[size]}`}>
-      <Text className={`${textColor} font-bold ${textSizeClasses[size]}`}>
+    <View
+      className={`rounded-full ${sizeClasses[size]}`}
+      style={{
+        backgroundColor: "#FEF3C7",
+        borderWidth: 1,
+        borderColor: "#FDE68A",
+      }}
+    >
+      <Text
+        className={`font-bold ${textSizeClasses[size]}`}
+        style={{ color: "#B45309" }}
+      >
         +{amount} XP
       </Text>
     </View>

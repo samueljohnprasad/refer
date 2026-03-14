@@ -1,5 +1,8 @@
 import React from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { SparklesIcon } from "@hugeicons/core-free-icons";
+import { Text } from "react-native";
 
 interface AIInsightsChipProps {
   onPress: () => void;
@@ -9,7 +12,6 @@ interface AIInsightsChipProps {
 /**
  * Presentational card component for AI insights
  * Displays weekly AI insights prompt with sparkle icon
- * Matches design: light purple background, icon on left, descriptive text
  */
 export const AIInsightsChip: React.FC<AIInsightsChipProps> = ({
   onPress,
@@ -27,9 +29,14 @@ export const AIInsightsChip: React.FC<AIInsightsChipProps> = ({
       accessibilityHint="Opens detailed analysis of your week"
     >
       <View className="flex-row items-start">
-        {/* Sparkle icon */}
-        <View className="mr-4 mt-1">
-          <Text className="text-3xl">✨</Text>
+        {/* Sparkle icon bubble */}
+        <View className="w-11 h-11 rounded-2xl bg-purple-200 items-center justify-center mr-4 mt-0.5">
+          <HugeiconsIcon
+            icon={SparklesIcon}
+            size={22}
+            color="#7C3AED"
+            strokeWidth={1.8}
+          />
         </View>
 
         {/* Content */}
@@ -38,7 +45,8 @@ export const AIInsightsChip: React.FC<AIInsightsChipProps> = ({
             Weekly AI Insights
           </Text>
           <Text className="text-sm text-gray-600 leading-5">
-            Discover your emotional patterns, growth insights, and personalized weekly reflections
+            Discover your emotional patterns, growth insights, and personalized
+            weekly reflections
           </Text>
         </View>
       </View>

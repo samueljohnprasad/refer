@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { Reward } from "@/src/types/rewards";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Coins01Icon, CheckmarkBadge01Icon } from "@hugeicons/core-free-icons";
 
 interface RewardCardProps {
   reward: Reward;
@@ -45,8 +47,14 @@ export const RewardCard: React.FC<RewardCardProps> = ({
 
         {/* Price / Owned Badge */}
         {isOwned ? (
-          <View className="bg-green-100 px-3 py-1.5 rounded-full">
-            <Text className="text-xs font-bold text-green-700">✓ Owned</Text>
+          <View className="bg-green-100 px-3 py-1.5 rounded-full flex-row items-center gap-1">
+            <HugeiconsIcon
+              icon={CheckmarkBadge01Icon}
+              size={13}
+              color="#15803D"
+              strokeWidth={2}
+            />
+            <Text className="text-xs font-bold text-green-700">Owned</Text>
           </View>
         ) : (
           <View
@@ -55,7 +63,12 @@ export const RewardCard: React.FC<RewardCardProps> = ({
             }`}
           >
             <View className="flex-row items-center">
-              <Text style={{ fontSize: 12 }}>🪙</Text>
+              <HugeiconsIcon
+                icon={Coins01Icon}
+                size={13}
+                color="#D97706"
+                strokeWidth={1.8}
+              />
               <Text
                 className={`text-xs font-bold ml-1 ${
                   canAfford ? "text-yellow-700" : "text-gray-400"

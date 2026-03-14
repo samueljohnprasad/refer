@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import { useChallenges } from "@/hooks/data/useChallenges";
 import { ChallengeCard } from "./ChallengeCard";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Target02Icon } from "@hugeicons/core-free-icons";
 
 interface ChallengesSectionProps {
   maxItems?: number;
@@ -45,8 +47,16 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
         className="flex-row items-center justify-between p-4"
         activeOpacity={0.7}
       >
-        <View className="flex-row items-center">
-          <Text className="text-2xl mr-3">🎯</Text>
+        <View className="flex-row items-center gap-3">
+          {/* Icon bubble instead of emoji */}
+          <View className="w-9 h-9 rounded-full bg-red-100 items-center justify-center">
+            <HugeiconsIcon
+              icon={Target02Icon}
+              size={18}
+              color="#DC2626"
+              strokeWidth={1.8}
+            />
+          </View>
           <View>
             <Text className="text-gray-900 font-semibold text-base">
               Challenges
