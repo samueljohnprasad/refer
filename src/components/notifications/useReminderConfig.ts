@@ -40,12 +40,27 @@ export const useReminderConfig = (
       const stored = await loadRemindersConfig();
       if (!active) return;
 
-      setCfg(stored);
+      let initialCfg = { ...stored };
+
+      // If no config exists, enable all default items by default
+      if (Object.keys(stored).length === 0) {
+        defaultItems.forEach((it) => {
+          initialCfg[it.id] = {
+            hour: it.hour,
+            minute: it.minute,
+            enabled: true,
+            title: it.title,
+            body: it.notificationBody,
+          };
+        });
+      }
+
+      setCfg(initialCfg);
 
       // Update UI with saved times
       setItems((prev) =>
         prev.map((it) => {
-          const c = stored[it.id];
+          const c = initialCfg[it.id];
           return c?.hour
             ? { ...it, hour: c.hour, minute: c.minute, enabled: c.enabled }
             : it;

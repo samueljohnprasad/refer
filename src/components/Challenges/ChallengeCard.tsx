@@ -34,23 +34,23 @@ interface ChallengeCardProps {
 
 /** Map challenge emoji icon → { hugeicon, bg color, icon color } */
 const ICON_MAP: Record<string, { icon: any; bg: string; color: string }> = {
-  "😊": { icon: SmileDizzyIcon, bg: "#FEF3C7", color: "#D97706" },
-  "📝": { icon: NoteIcon, bg: "#EDE9FE", color: "#7C3AED" },
-  "✅": { icon: TaskAdd01Icon, bg: "#D1FAE5", color: "#059669" },
-  "🍎": { icon: HealthIcon, bg: "#FEE2E2", color: "#DC2626" },
-  "🧘": { icon: StarsIcon, bg: "#E0F2FE", color: "#0284C7" },
-  "🎙️": { icon: Mic01Icon, bg: "#F3E8FF", color: "#9333EA" },
-  "☀️": { icon: Sun01Icon, bg: "#FEF9C3", color: "#CA8A04" },
-  "🌙": { icon: MoonIcon, bg: "#EFF6FF", color: "#3B82F6" },
-  "📚": { icon: BookOpen01Icon, bg: "#EDE9FE", color: "#6D28D9" },
-  "💡": { icon: BulbIcon, bg: "#FEF9C3", color: "#B45309" },
-  "📷": { icon: Camera01Icon, bg: "#FCE7F3", color: "#BE185D" },
-  "🥗": { icon: HealthIcon, bg: "#DCFCE7", color: "#16A34A" },
-  "🔥": { icon: Fire02Icon, bg: "#FEE2E2", color: "#DC2626" },
-  "🏆": { icon: Medal01Icon, bg: "#FEF3C7", color: "#D97706" },
+  "😊": { icon: SmileDizzyIcon, bg: "#FEF9E7", color: "#F6BE5A" },
+  "📝": { icon: NoteIcon, bg: "#F3F0FF", color: "#A78BFA" },
+  "✅": { icon: TaskAdd01Icon, bg: "#ECFDF5", color: "#6EE7B7" },
+  "🍎": { icon: HealthIcon, bg: "#FFF1F2", color: "#FDA4AF" },
+  "🧘": { icon: StarsIcon, bg: "#EFF6FF", color: "#93C5FD" },
+  "🎙️": { icon: Mic01Icon, bg: "#FAF5FF", color: "#C4B5FD" },
+  "☀️": { icon: Sun01Icon, bg: "#FEFCE8", color: "#FCD34D" },
+  "🌙": { icon: MoonIcon, bg: "#EFF6FF", color: "#93C5FD" },
+  "📚": { icon: BookOpen01Icon, bg: "#F3F0FF", color: "#A78BFA" },
+  "💡": { icon: BulbIcon, bg: "#FEFCE8", color: "#FCD34D" },
+  "📷": { icon: Camera01Icon, bg: "#FDF2F8", color: "#F9A8D4" },
+  "🥗": { icon: HealthIcon, bg: "#ECFDF5", color: "#6EE7B7" },
+  "🔥": { icon: Fire02Icon, bg: "#FFF1F2", color: "#FDA4AF" },
+  "🏆": { icon: Medal01Icon, bg: "#FEF9E7", color: "#F6BE5A" },
 };
 
-const DEFAULT_ICON = { icon: StarsIcon, bg: "#F3F4F6", color: "#6B7280" };
+const DEFAULT_ICON = { icon: StarsIcon, bg: "#F8F7FF", color: "#C4B5FD" };
 
 const ChallengeIconBubble: React.FC<{
   iconKey: string;
@@ -151,7 +151,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
               <View className="h-1.5 bg-gray-100 rounded-full mt-2 overflow-hidden">
                 <View
                   className={`h-full rounded-full ${
-                    isComplete ? "bg-green-500" : "bg-violet-500"
+                    isComplete ? "bg-emerald-300" : "bg-violet-300"
                   }`}
                   style={{ width: `${progressPercent}%` }}
                 />
@@ -220,7 +220,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
           <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
             <View
               className={`h-full rounded-full ${
-                isComplete ? "bg-green-500" : "bg-violet-500"
+                isComplete ? "bg-emerald-300" : "bg-violet-300"
               }`}
               style={{ width: `${progressPercent}%` }}
             />

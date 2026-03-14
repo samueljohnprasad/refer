@@ -54,10 +54,10 @@ export const CoinsBadge: React.FC<CoinsBadgeProps> = ({
         <HugeiconsIcon
           icon={Coins01Icon}
           size={styles.icon}
-          color="#D97706"
+          color="#FCD34D"
           strokeWidth={1.8}
         />
-        <Text className={`${styles.text} font-bold text-yellow-700 ml-1`}>
+        <Text className={`${styles.text} font-bold text-yellow-600 ml-1`}>
           {coins.toLocaleString()}
         </Text>
       </Animated.View>

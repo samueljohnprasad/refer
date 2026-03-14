@@ -49,11 +49,14 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
       >
         <View className="flex-row items-center gap-3">
           {/* Icon bubble instead of emoji */}
-          <View className="w-9 h-9 rounded-full bg-red-100 items-center justify-center">
+          <View
+            className="w-9 h-9 rounded-full items-center justify-center"
+            style={{ backgroundColor: "#FFF1F2" }}
+          >
             <HugeiconsIcon
               icon={Target02Icon}
               size={18}
-              color="#DC2626"
+              color="#FDA4AF"
               strokeWidth={1.8}
             />
           </View>

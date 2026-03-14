@@ -48,15 +48,15 @@ export interface UserAchievement {
 
 // Badge colors by tier
 export const BADGE_COLORS = {
-  bronze: "#CD7F32",
+  bronze: "#E8B87A",
   silver: "#C0C0C0",
-  gold: "#FFD700",
+  gold: "#FBBF24",
   platinum: "#E5E4E2",
-  journaling: "#3B82F6", // Blue
-  streaks: "#EF4444", // Red
-  habits: "#8B5CF6", // Purple
-  wellness: "#10B981", // Green
-  tracking: "#F59E0B", // Orange
+  journaling: "#93C5FD", // Pastel blue
+  streaks: "#FDA4AF", // Pastel rose
+  habits: "#C4B5FD", // Pastel violet
+  wellness: "#6EE7B7", // Pastel emerald
+  tracking: "#FCD34D", // Pastel amber
 };
 
 export const ACHIEVEMENTS: Achievement[] = [
@@ -295,6 +295,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     name: "Nutrition Novice",
     description: "Track meals for 3 days",
     icon: "3",
+    imageAsset: {
+      unlocked: require("@/assets/achievements/calorie.png"),
+    },
     category: "tracking",
     xpBonus: 50,
     condition: { type: "calorie_streak", target: 3 },
@@ -306,6 +309,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     name: "Calorie Champion",
     description: "Track meals for 7 days",
     icon: "7",
+    imageAsset: {
+      unlocked: require("@/assets/achievements/calorie-seven.png"),
+    },
     category: "tracking",
     xpBonus: 100,
     condition: { type: "calorie_streak", target: 7 },

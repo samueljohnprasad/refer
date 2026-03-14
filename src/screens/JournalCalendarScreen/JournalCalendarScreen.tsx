@@ -257,11 +257,7 @@ const StreakCard = React.memo<{
           <View className="flex-row items-center">
             {currentStreak === 0 ? (
               <>
-                <HugeiconsIcon
-                  size={24}
-                  icon={Target02Icon}
-                  fill={PALETTE.blue}
-                />
+                <HugeiconsIcon size={24} icon={Target02Icon} fill={"#93C5FD"} />
                 <Text className="text-2xl font-extrabold ml-1.5">
                   {isLoading ? "-" : nextMilestone}{" "}
                   <Text className="text-sm font-semibold text-gray-600">
@@ -274,8 +270,8 @@ const StreakCard = React.memo<{
                 <HugeiconsIcon
                   size={24}
                   icon={Fire02Icon}
-                  fill={"#FF6A3D"}
-                  color="#FF6A3D"
+                  fill={"#FCA5A5"}
+                  color="#FCA5A5"
                 />
                 <Text className="text-2xl font-extrabold ml-1.5">
                   {currentStreak}
@@ -308,7 +304,7 @@ const StreakCard = React.memo<{
       {/* Progress bar — always visible, styled even at 0 */}
       <View className="h-3 bg-[#F0D97A] rounded-xl mt-3 overflow-hidden">
         <Animated.View
-          className="h-full bg-[#60A6FF] rounded-lg"
+          className="h-full bg-[#C4B5FD] rounded-lg"
           style={progressBarStyle}
         />
         {/* Show a faint start marker when empty */}

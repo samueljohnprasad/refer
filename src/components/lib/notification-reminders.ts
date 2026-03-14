@@ -64,12 +64,7 @@ async function ensureAndroidChannel(): Promise<void> {
 export async function ensureNotificationPermissions(): Promise<boolean> {
   if (Platform.OS === "web") return false;
   const perms = await Notifications.getPermissionsAsync();
-  if (
-    perms.granted ||
-    (perms.ios &&
-      "status" in perms.ios &&
-      perms.ios.status === Notifications.IosAuthorizationStatus.PROVISIONAL)
-  ) {
+  if (perms.granted) {
     return true;
   }
   const req = await Notifications.requestPermissionsAsync();

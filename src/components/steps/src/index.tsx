@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Alert, Linking } from "react-native";
 import Animated, {
   useAnimatedReaction,
   runOnJS,
@@ -21,6 +21,9 @@ import {
 } from "./hooks/useBackgroundAnimation";
 import { Stack } from "expo-router";
 
+import { cfgAtom } from "../../notifications";
+import { ensureNotificationPermissions } from "../../lib/notification-reminders";
+
 export const onboardFormDataAtom = atom<OnBoardingFormData>({
   name: "",
   ageRange: undefined,
@@ -29,6 +32,7 @@ export const onboardFormDataAtom = atom<OnBoardingFormData>({
 });
 
 const App = ({ onComplete }: StepsAppProps) => {
+  const [cfg] = useAtom(cfgAtom);
   const [loading, setLoading] = React.useState(false);
   const [formData, setFormData] =
     useAtom<OnBoardingFormData>(onboardFormDataAtom);
@@ -87,9 +91,46 @@ const App = ({ onComplete }: StepsAppProps) => {
       }
       return;
     }
+
+    if (currentMood.inputType === "reminder") {
+      const anyEnabled = Object.values(cfg).some((r) => r.enabled);
+      if (anyEnabled) {
+        const granted = await ensureNotificationPermissions();
+        if (!granted) {
+          Alert.alert(
+            "Notification Permission Needed",
+            "Please enable notification access in Settings to receive reminders.",
+            [
+              {
+                text: "Open Settings",
+                onPress: () => Linking.openURL("app-settings:"),
+              },
+              {
+                text: "Continue Anyway",
+                style: "cancel",
+                onPress: () => {
+                  increaseActiveIndex();
+                  setSplitted(true);
+                },
+              },
+            ]
+          );
+          return;
+        }
+      }
+    }
+
     increaseActiveIndex();
     setSplitted(true);
-  }, [isLastStep, formData, onComplete, increaseActiveIndex, setSplitted]);
+  }, [
+    isLastStep,
+    formData,
+    onComplete,
+    increaseActiveIndex,
+    setSplitted,
+    currentMood.inputType,
+    cfg,
+  ]);
 
   const handleBackAction = useCallback(() => {
     decreaseActiveIndex();

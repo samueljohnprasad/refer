@@ -188,9 +188,9 @@ export const XPHistoryScreen: React.FC = () => {
         data={history}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <XPHistoryItem entry={item} />}
-        ListHeaderComponent={renderHeader}
-        ListEmptyComponent={renderEmpty}
-        ListFooterComponent={renderFooter}
+        ListHeaderComponent={renderHeader()}
+        ListEmptyComponent={renderEmpty()}
+        ListFooterComponent={renderFooter()}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
         showsVerticalScrollIndicator={false}
