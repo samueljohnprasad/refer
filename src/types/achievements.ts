@@ -182,6 +182,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "streak_days", target: 14 },
     color: "#DC2626", // Darker red
     tier: 3,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/two-week-campion.png"),
+    },
   },
   {
     id: "monthly_master",
@@ -193,6 +196,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "streak_days", target: 30 },
     color: "#B91C1C", // Deep red
     tier: 4,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/month-master-streak.png"),
+    },
   },
 
   // === HABITS (Purple) ===
@@ -206,6 +212,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "habit_perfect_days", target: 1 },
     color: BADGE_COLORS.habits,
     tier: 1,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/one-habit.png"),
+    },
   },
   {
     id: "habit_hero",
@@ -217,6 +226,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "habit_perfect_days", target: 5 },
     color: "#7C3AED", // Violet
     tier: 2,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/five-habit.png"),
+    },
   },
   {
     id: "habit_master",
@@ -228,6 +240,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "habit_perfect_days", target: 14 },
     color: "#6D28D9", // Dark purple
     tier: 3,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/two-streak-habit.png"),
+    },
   },
 
   // === WELLNESS (Green) ===
@@ -241,6 +256,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "mood_variety", target: 5 },
     color: BADGE_COLORS.wellness,
     tier: 1,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/mood-tracker.png"),
+    },
   },
   {
     id: "emotion_explorer",
@@ -252,6 +270,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "mood_variety", target: 10 },
     color: "#059669", // Darker green
     tier: 2,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/emotion-explorer.png"),
+    },
   },
   {
     id: "mindful_minutes",
@@ -263,6 +284,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "prompt_count", target: 10 },
     color: "#047857", // Deep green
     tier: 3,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/mindful-minutes.png"),
+    },
   },
 
   // === TRACKING (Orange/Yellow) ===

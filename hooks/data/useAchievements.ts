@@ -11,6 +11,7 @@ import {
 } from "@/src/types/achievements";
 import { XPActionType } from "@/src/types/xp";
 import { useRewardsContext } from "@/src/context/RewardsContext";
+import { useUserStats } from "./useUserStats";
 
 interface AchievementProgress {
   achievement: Achievement;
@@ -48,6 +49,7 @@ export interface UserStats {
 export const useAchievements = (): UseAchievementsReturn => {
   const { user } = useAuth();
   const { awardXP } = useXP();
+  const { stats: userStats, isLoading: statsLoading } = useUserStats();
   const [unlockedAchievements, setUnlockedAchievements] = useState<
     UserAchievement[]
   >([]);
@@ -109,6 +111,17 @@ export const useAchievements = (): UseAchievementsReturn => {
     fetchUnlockedAchievements();
   }, [fetchUnlockedAchievements]);
 
+  // Auto-sync stats from useUserStats and check for new achievements
+  useEffect(() => {
+    if (!statsLoading && userStats) {
+      setCurrentStats(userStats);
+      // Only check achievements if we have fetched unlocked achievements
+      if (!isLoading && unlockedAchievements !== undefined) {
+        checkAndUnlockAchievements(userStats);
+      }
+    }
+  }, [userStats, statsLoading, isLoading]);
+
   // Get progress value for a condition type
   const getProgressForCondition = useCallback(
     (type: AchievementConditionType, stats: UserStats): number => {
@@ -167,7 +180,7 @@ export const useAchievements = (): UseAchievementsReturn => {
 
         // Update local state
         const newUnlock: UserAchievement = {
-          id: crypto.randomUUID(),
+          id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
           achievementId: achievement.id,
           unlockedAt: new Date().toISOString(),
           xpAwarded: achievement.xpBonus,
@@ -249,7 +262,7 @@ export const useAchievements = (): UseAchievementsReturn => {
   return {
     achievements,
     unlockedAchievements,
-    isLoading,
+    isLoading: isLoading || statsLoading,
     checkAndUnlockAchievements,
     getAchievementProgress,
     refetch: fetchUnlockedAchievements,
