@@ -28,8 +28,8 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
 
   const getFontColor = () => {
     if (disabled) return "text-black/30";
-    if (isSelected) return "text-black/80";
-    return "text-black/60";
+    if (isSelected) return "text-white";
+    return "text-theme-text-primary";
   };
 
   return (
@@ -39,7 +39,7 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
           isSelected
             ? "bg-[#7B61FF]"
             : isToday && !isSelected
-            ? "bg-white/10"
+            ? "bg-gray-100"
             : ""
         }`}
       >

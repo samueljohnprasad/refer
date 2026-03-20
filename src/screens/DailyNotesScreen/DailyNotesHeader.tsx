@@ -286,10 +286,10 @@ const DailyNotesHeader = React.memo(
         style={{
           paddingTop: paddingTop,
         }}
-        className="bg-theme-purple-primary rounded-3xl"
+        className="bg-white"
       >
         <Animated.View
-          className="bg-theme-purple-primary justify-end relative rounded-3xl"
+          className="bg-white justify-end relative"
           style={[headerContainerAnimatedStyle]}
         >
           {/* Calendar Header */}
@@ -298,26 +298,26 @@ const DailyNotesHeader = React.memo(
             style={[headerControlsAnimatedStyle]}
           >
             <Pressable
-              className="p-2 -ml-1 rounded-lg active:bg-white/10"
+              className="p-2 -ml-1 rounded-lg active:bg-purple-50"
               onPress={() => toggle()}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
-              <HugeiconsIcon icon={Calendar01Icon} size={20} color="white" />
+              <HugeiconsIcon icon={Calendar01Icon} size={20} color="#7B61FF" />
             </Pressable>
 
             <View className="flex-row items-center justify-center flex-1">
-              <Text className="text-2xl font-medium text-white tracking-wide text-center font-cormorantBold">
+              <Text className="text-2xl font-medium text-theme-text-primary tracking-wide text-center font-cormorantBold">
                 {currentMonthView || ""}
               </Text>
             </View>
 
             <View className="flex-row items-center gap-1">
               <Pressable
-                className="p-2 rounded-lg active:bg-white/10"
+                className="p-2 rounded-lg active:bg-purple-50"
                 onPress={onBookmarksPress}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <HugeiconsIcon icon={Bookmark03Icon} size={20} color="white" />
+                <HugeiconsIcon icon={Bookmark03Icon} size={20} color="#7B61FF" />
               </Pressable>
             </View>
           </Animated.View>
@@ -358,7 +358,7 @@ const DailyNotesHeader = React.memo(
           {/* Only render CalendarPicker after first expansion for smooth animations */}
           {hasBeenExpanded && (
             <Animated.View
-              className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-theme-purple-primary"
+              className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-white"
               style={[inlineCalendarAnimatedStyle, { top: 0 }]}
             >
               <SuspensLoader>
@@ -385,7 +385,7 @@ const DailyNotesHeader = React.memo(
           >
             <GestureDetector gesture={gesture}>
               <View className="py-1 px-8">
-                <View className="w-10 h-0.5 rounded-full bg-white/60" />
+                <View className="w-10 h-1 rounded-full bg-gray-300" />
               </View>
             </GestureDetector>
           </View>

@@ -161,7 +161,16 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   return (
     <View style={{ paddingBottom: 120 }}>
       {/* Header Card with Progress */}
-      <View className="bg-white rounded-2xl p-5 border border-gray-100 mb-4">
+      <View
+        className="bg-white rounded-2xl p-5 border border-gray-100 mb-4 shadow-sm"
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          elevation: 2,
+        }}
+      >
         {/* Header with Title and Add Button */}
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center">
@@ -203,7 +212,16 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
       {/* Empty State */}
       {habitsWithStatus.length === 0 ? (
-        <View className="bg-white rounded-2xl p-8 border border-gray-100 items-center">
+        <View
+          className="bg-white rounded-2xl p-8 border border-gray-100 items-center shadow-sm"
+          style={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 10,
+            elevation: 2,
+          }}
+        >
           <Text className="text-gray-400 text-center">
             No habits for today.{"\n"}Tap + to add your first habit!
           </Text>
@@ -214,7 +232,14 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           {activeCategories.map((category) => (
             <View
               key={category}
-              className="bg-white rounded-2xl border border-gray-100 mb-4 overflow-hidden"
+              className="bg-white rounded-2xl border border-gray-100 mb-4 overflow-hidden shadow-sm"
+              style={{
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.05,
+                shadowRadius: 10,
+                elevation: 2,
+              }}
             >
               {/* Category Header */}
               <View className="px-4 py-3 border-b border-gray-100">

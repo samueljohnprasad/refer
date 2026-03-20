@@ -320,39 +320,41 @@ export default function AIInsightsScreen() {
                 </Text>
               </View>
 
-              <TouchableOpacity
-                className="rounded-2xl overflow-hidden w-full"
-                onPress={handleGenerateSummary}
-                disabled={isGenerating}
-              >
-                <LinearGradient
-                  colors={
-                    isGenerating ? ["#999", "#777"] : ["#7B61FF", "#9C7CFF"]
-                  }
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  className="flex-row items-center justify-center py-4 gap-2"
-                  style={{
-                    paddingVertical: 16,
-                    gap: 8,
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
+              <View className="w-full px-6 pb-6">
+                <TouchableOpacity
+                  className="rounded-2xl overflow-hidden w-full"
+                  onPress={handleGenerateSummary}
+                  disabled={isGenerating}
                 >
-                  {isGenerating && (
-                    <ActivityIndicator size="small" color="#FFF" />
-                  )}
-                  {!isGenerating && (
-                    <Feather name="zap" size={20} color="#FFF" />
-                  )}
-                  <Text className="text-base font-bold text-white font-jakarta">
-                    {isGenerating
-                      ? "Generating..."
-                      : "Get AI Insights for Past Week"}
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
+                  <LinearGradient
+                    colors={
+                      isGenerating ? ["#999", "#777"] : ["#7B61FF", "#9C7CFF"]
+                    }
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    className="flex-row items-center justify-center py-4 gap-2"
+                    style={{
+                      paddingVertical: 16,
+                      gap: 8,
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {isGenerating && (
+                      <ActivityIndicator size="small" color="#FFF" />
+                    )}
+                    {!isGenerating && (
+                      <Feather name="zap" size={20} color="#FFF" />
+                    )}
+                    <Text className="text-base font-bold text-white font-jakarta">
+                      {isGenerating
+                        ? "Generating..."
+                        : "Get AI Insights for Past Week"}
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
 
               {isGenerating && (
                 <Text className="text-[13px] text-[#6B7280] mt-4 text-center italic">
@@ -388,7 +390,6 @@ export default function AIInsightsScreen() {
           {cachedSummary && (
             <AIInsightsContent
               loading={isGenerating || loadingCached}
-              weeklySummary={null}
               recommendations={recommendations || []}
               growthInsights={growthInsights || []}
             />

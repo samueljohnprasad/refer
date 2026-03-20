@@ -61,7 +61,16 @@ export const WeeklySummaryCard: React.FC<WeeklySummaryCardProps> = ({
           </Text>
         </View>
       )}
-      <View className="bg-white rounded-2xl p-5 border border-gray-100">
+      <View
+        className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm"
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          elevation: 2,
+        }}
+      >
         {/* Mood Trend */}
         <View className="flex-row items-center mb-4">
           <Text className="text-base font-semibold text-gray-700 mr-3">

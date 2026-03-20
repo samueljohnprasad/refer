@@ -78,7 +78,7 @@ const DayCell = React.memo<DayCellProps>(
     const containerClassName = useMemo(
       () =>
         `w-full h-full flex justify-center items-center gap-0.5 rounded-xl ${
-          isSelected ? "bg-[#7B61FF]" : isTodayDate ? "bg-white/20" : ""
+          isSelected ? "bg-[#7B61FF]" : isTodayDate ? "bg-gray-100" : ""
         }`,
       [isSelected, isTodayDate]
     );
@@ -214,7 +214,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
           </Text>
           <View className="flex-row items-center gap-2">
             <Pressable className="p-2 rounded-full" onPress={goToPreviousMonth}>
-              <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color="#007AFF" />
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color="#7B61FF" />
             </Pressable>
             <Pressable
               className="p-2 rounded-full"
@@ -224,7 +224,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
                 size={20}
-                color={canGoNextMonth ? "#007AFF" : "#C7C7CC"}
+                color={canGoNextMonth ? "#7B61FF" : "#C7C7CC"}
               />
             </Pressable>
           </View>

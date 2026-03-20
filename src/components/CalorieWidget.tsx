@@ -116,7 +116,16 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
 
   if (compact) {
     return (
-      <TouchableOpacity className="bg-white rounded-2xl p-4 border border-gray-100">
+      <TouchableOpacity
+        className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          elevation: 2,
+        }}
+      >
         <HStack className="justify-between items-center">
           <HStack className="items-center" space="sm">
             <View
@@ -144,7 +153,16 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
   }
 
   return (
-    <TouchableOpacity className="bg-white rounded-2xl p-5 border border-gray-100">
+    <TouchableOpacity
+      className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm"
+      style={{
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+        elevation: 2,
+      }}
+    >
       <HStack className="justify-between items-center mb-4">
         <HStack className="items-center" space="sm">
           <View
@@ -162,13 +180,10 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
 
       {dailySummary.mealCount === 0 ? (
         <View className="py-4 items-center">
-          <Text className="text-gray-400 text-center">
-            No meals logged today.{"\n"}Tap + to add your first meal!
-          </Text>
-          {/* Goal indicator even when no meals */}
+          {/* Goal indicator when no meals are logged */}
           <TouchableOpacity
             onPress={handleGoalPress}
-            className="mt-4 flex-row items-center bg-orange-50 px-4 py-2 rounded-full"
+            className="flex-row items-center bg-orange-50 px-4 py-2 rounded-full"
             activeOpacity={0.7}
           >
             <HugeiconsIcon icon={Target02Icon} size={18} color="#F97316" />

@@ -76,13 +76,13 @@ const ImageJournalModal = React.lazy(() => import("./ImageJournalModal"));
 
 // Constants outside component to prevent recreation
 const COLORS = {
-  ink: "#2E285A", // deep purple
-  accent: "#F6C24B", // yellow (mic, progress)
-  lavender: "#E7E5FB", // chip background
-  skyA: "#E7F4F5", // gradient start
-  skyB: "#E6ECFA", // gradient end
+  ink: "#2E285A",     // deep purple text
+  accent: "#7B61FF",  // core Brand Purple (mic, progress)
+  lavender: "#E7E5FB",// chip background
+  skyA: "#F6F4FF",    // subtle brand gradient start
+  skyB: "#FFFFFF",    // clean white gradient end
   white: "#FFFFFF",
-  streak: "#FF7A2F", // fire/number
+  streak: "#F59E0B",  // core Brand Amber (fire/number)
 };
 
 const GRADIENT_COLORS = [COLORS.skyA, COLORS.skyB] as const;
@@ -468,25 +468,25 @@ function DiscoveryScreen() {
             onPress={handleCloseCalendar}
           >
             <Pressable
-              className="bg-violet-300 rounded-3xl p-4 w-full"
+              className="bg-white rounded-3xl p-4 w-full shadow-lg"
               onPress={(e) => e.stopPropagation()}
             >
               <View className="flex-row justify-between items-center mb-4">
                 <View className="flex-row items-center gap-3">
-                  <Text className="text-white text-xl font-bold">
+                  <Text className="text-gray-900 text-xl font-bold">
                     Select Date
                   </Text>
                   <Pressable
                     onPress={handleTodayPress}
-                    className="bg-white/20 px-3 py-1.5 rounded-full"
+                    className="bg-gray-100 px-3 py-1.5 rounded-full"
                   >
-                    <Text className="text-white text-xs font-semibold">
+                    <Text className="text-gray-600 text-xs font-semibold">
                       Today
                     </Text>
                   </Pressable>
                 </View>
                 <Pressable onPress={handleCloseCalendar} className="p-2">
-                  <Feather name="x" size={24} color="white" />
+                  <Feather name="x" size={24} color="#111827" />
                 </Pressable>
               </View>
               <SuspensLoader>

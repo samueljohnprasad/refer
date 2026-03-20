@@ -53,10 +53,10 @@ interface CalorieTrackerScreenProps {
 }
 
 const MealTypeColors: Record<string, { bg: string; text: string }> = {
-  breakfast: { bg: "bg-amber-100", text: "text-amber-700" },
-  lunch: { bg: "bg-green-100", text: "text-green-700" },
-  dinner: { bg: "bg-purple-100", text: "text-purple-700" },
-  snack: { bg: "bg-blue-100", text: "text-blue-700" },
+  breakfast: { bg: "bg-gray-100", text: "text-gray-700" },
+  lunch: { bg: "bg-gray-100", text: "text-gray-700" },
+  dinner: { bg: "bg-gray-100", text: "text-gray-700" },
+  snack: { bg: "bg-gray-100", text: "text-gray-700" },
 };
 
 const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
@@ -318,6 +318,13 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
       <View
         key={entry.id}
         className="bg-white rounded-2xl p-4 mb-3 border border-gray-100"
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          elevation: 2,
+        }}
       >
         <HStack className="justify-between items-center mb-3">
           <HStack space="sm" className="items-center">
@@ -366,7 +373,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
         <HStack className="justify-between items-center mt-3 pt-3 border-t border-gray-100">
           <Text className="text-gray-900 font-semibold">Total</Text>
           <HStack className="items-center" space="md">
-            <Text className="text-purple-600 font-bold text-lg">
+            <Text className="text-[#7B61FF] font-bold text-lg">
               {entry.total_calories} cal
             </Text>
             {/* Micronutrient Info Icon - showing for ANY micronutrients temporarily */}
@@ -411,17 +418,17 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
 
   return (
     <View className="flex-1 bg-[#F6F4FF]">
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{
-          paddingTop: 20,
-          paddingBottom: 100,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
+      <View className="flex-1 pt-5 pb-[100px]">
         <HStack className="mb-5" space="md">
           <TouchableOpacity
-            className="flex-1 bg-purple-600 rounded-2xl py-4 items-center flex-row justify-center"
+            className="flex-1 bg-[#7B61FF] rounded-2xl py-4 items-center flex-row justify-center shadow-sm"
+            style={{
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.05,
+              shadowRadius: 10,
+              elevation: 2,
+            }}
             onPress={takePhoto}
             disabled={isAnalyzing}
           >
@@ -429,12 +436,19 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
             <Text className="text-white font-semibold ml-2">Take Photo</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className="flex-1 bg-white border border-purple-600 rounded-2xl py-4 items-center flex-row justify-center"
+            className="flex-1 bg-white border border-[#7B61FF] rounded-2xl py-4 items-center flex-row justify-center shadow-sm"
+            style={{
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.05,
+              shadowRadius: 10,
+              elevation: 2,
+            }}
             onPress={pickImage}
             disabled={isAnalyzing}
           >
             <HugeiconsIcon icon={Image01Icon} size={20} color="#7B61FF" />
-            <Text className="text-purple-600 font-semibold ml-2">Gallery</Text>
+            <Text className="text-[#7B61FF] font-semibold ml-2">Gallery</Text>
           </TouchableOpacity>
         </HStack>
 
@@ -483,10 +497,52 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
           </View>
         )}
 
+        {/* Meal Entries */}
+        <View className="mt-2 mb-5">
+          <Text className="text-gray-600 font-medium mb-3">Today's Meals</Text>
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#7B61FF" />
+          ) : calorieEntries.length === 0 ? (
+            <View
+              className="bg-white rounded-2xl p-6 items-center border border-gray-100 shadow-sm"
+              style={{
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.05,
+                shadowRadius: 10,
+                elevation: 2,
+              }}
+            >
+              <RNImage
+                source={require("@/assets/images/no-meal-dog.png")}
+                style={{
+                  width: 156,
+                  height: 156,
+                  marginBottom: 16,
+                }}
+                resizeMode="contain"
+              />
+              <Text className="text-gray-400 text-center">
+                No meals logged today.{"\n"}Take a photo of your food to get
+                started!
+              </Text>
+            </View>
+          ) : (
+            calorieEntries.map((entry) => renderCalorieEntry(entry))
+          )}
+        </View>
+
         {/* Micronutrient Tracking Button */}
         <TouchableOpacity
           onPress={() => router.push("/tabs/screens/micronutrient-tracking")}
-          className="bg-white rounded-2xl p-4 mb-5 border border-purple-200 flex-row items-center justify-between"
+          className="bg-white rounded-2xl p-4 mb-5 border border-purple-200 flex-row items-center justify-between shadow-sm"
+          style={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 10,
+            elevation: 2,
+          }}
           activeOpacity={0.7}
         >
           <View className="flex-row items-center gap-3">
@@ -509,33 +565,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
             style={{ transform: [{ rotate: "180deg" }] }}
           />
         </TouchableOpacity>
-
-        {/* Meal Entries */}
-        <View className="mt-2">
-          <Text className="text-gray-600 font-medium mb-3">Today's Meals</Text>
-          {isLoading ? (
-            <ActivityIndicator size="small" color="#7B61FF" />
-          ) : calorieEntries.length === 0 ? (
-            <View className="bg-white rounded-2xl p-6 items-center border border-gray-100">
-              <RNImage
-                source={require("@/assets/images/no-meal-dog.png")}
-                style={{
-                  width: 156,
-                  height: 156,
-                  marginBottom: 16,
-                }}
-                resizeMode="contain"
-              />
-              <Text className="text-gray-400 text-center">
-                No meals logged today.{"\n"}Take a photo of your food to get
-                started!
-              </Text>
-            </View>
-          ) : (
-            calorieEntries.map((entry) => renderCalorieEntry(entry))
-          )}
-        </View>
-      </ScrollView>
+      </View>
 
       {/* Health Score Modal */}
       <Modal
@@ -610,7 +640,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
 
                 <TouchableOpacity
                   onPress={() => setShowHealthScoreModal(false)}
-                  className="bg-purple-600 rounded-xl py-3 items-center"
+                  className="bg-[#7B61FF] rounded-xl py-3 items-center"
                 >
                   <Text className="text-white font-semibold">Got it!</Text>
                 </TouchableOpacity>

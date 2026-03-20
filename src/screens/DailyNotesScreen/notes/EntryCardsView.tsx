@@ -100,8 +100,8 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
       <View className="bg-white rounded-2xl p-5 border border-gray-100">
         <View className="flex-row items-center justify-between mb-4">
           <View className="flex-row items-center">
-            <View className="bg-blue-100 p-2 rounded-xl mr-2">
-              <Feather name="book-open" size={24} color="#3B82F6" />
+            <View className="bg-purple-50 p-2 rounded-xl border border-gray-50 mr-2">
+              <Feather name="book-open" size={24} color="#7B61FF" />
             </View>
             <Text className="text-gray-900 font-semibold text-lg">
               Journal Entries
@@ -109,7 +109,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
           </View>
           <TouchableOpacity
             onPress={() => router.push("/tabs/(tabs)/record")}
-            className="bg-blue-500 p-2 rounded-xl"
+            className="bg-gray-900 p-2 rounded-xl"
             activeOpacity={0.7}
           >
             <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
@@ -138,8 +138,8 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
     <View className="gap-4">
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">
-          <View className="bg-blue-100 p-2 rounded-xl mr-2">
-            <Feather name="book-open" size={24} color="#3B82F6" />
+          <View className="bg-purple-50 p-2 rounded-xl border border-gray-50 mr-2">
+            <Feather name="book-open" size={24} color="#7B61FF" />
           </View>
           <Text className="text-gray-900 font-semibold text-lg">
             Journal Entries
@@ -152,7 +152,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         </View>
         <TouchableOpacity
           onPress={() => router.push("/tabs/(tabs)/record")}
-          className="bg-blue-500 p-2 rounded-xl"
+          className="bg-gray-900 p-2 rounded-xl"
           activeOpacity={0.7}
         >
           <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
@@ -252,10 +252,15 @@ const EntryCard: React.FC<EntryCardProps> = ({
   return (
     <Pressable onPress={onPress}>
       <Animated.View
-        className="bg-white rounded-2xl p-4"
+        className="bg-white rounded-2xl p-4 border border-gray-100"
         style={{
           transform: [{ scale: scaleAnim }],
           opacity: fadeAnim,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          elevation: 2,
         }}
       >
         {/* Header */}
@@ -313,9 +318,9 @@ const EntryCard: React.FC<EntryCardProps> = ({
           {(feelings || []).map((emotion, idx) => (
             <View
               key={`${emotion}-${idx}`}
-              className="bg-blue-50 rounded-full px-2 py-1 mr-2 mb-1"
+              className="bg-gray-50 border border-gray-100 rounded-full px-2 py-1 mr-2 mb-1"
             >
-              <Text className="text-blue-700 text-xs font-medium capitalize">
+              <Text className="text-gray-700 text-xs font-medium capitalize">
                 {emotion.emoji} {emotion.name}
               </Text>
             </View>
@@ -350,13 +355,13 @@ const EntryCard: React.FC<EntryCardProps> = ({
                   disabled={isBookmarking}
                 >
                   {isBookmarking ? (
-                    <ActivityIndicator size="small" color="#3B82F6" />
+                    <ActivityIndicator size="small" color="#F59E0B" />
                   ) : (
                     <HugeiconsIcon
                       icon={Bookmark02Icon}
                       size={18}
-                      fill={isBookmarked ? "#93c5fd" : "#d1d5db"}
-                      color={isBookmarked ? "#93c5fd" : "#d1d5db"}
+                      fill={isBookmarked ? "#F59E0B" : "#d1d5db"}
+                      color={isBookmarked ? "#F59E0B" : "#d1d5db"}
                     />
                   )}
                 </Pressable>
