@@ -122,19 +122,19 @@ export const AchievementsScreen: React.FC = () => {
         <View className="px-4 pt-4">
           <View className="flex-row items-center mb-4">
             <Text className="text-xl font-bold text-gray-900">Your Stats</Text>
-            <View className="ml-auto w-12 h-12 rounded-full bg-yellow-400 items-center justify-center">
-              <HugeiconsIcon icon={Medal01Icon} size={24} color="#FFFFFF" />
+            <View className="ml-auto w-12 h-12 rounded-full bg-white border border-gray-100 items-center justify-center">
+              <HugeiconsIcon icon={Medal01Icon} size={24} color="#F59E0B" />
             </View>
           </View>
 
           {/* Stats Cards */}
           <StatCard
             icon={
-              <View className="w-8 h-8 rounded-xl bg-amber-100 items-center justify-center">
+              <View className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-50 items-center justify-center">
                 <HugeiconsIcon
                   icon={Medal01Icon}
                   size={18}
-                  color="#D97706"
+                  color="#7B61FF"
                   strokeWidth={1.8}
                 />
               </View>
@@ -142,20 +142,28 @@ export const AchievementsScreen: React.FC = () => {
             label="Badges Unlocked"
             value={String(unlockedCount)}
             subtext={`${unlockedCount}/${totalCount}`}
-            color="#F59E0B"
+            color="#7B61FF"
             progress={(unlockedCount / totalCount) * 100}
           />
 
           <StatCard
-            icon={<HugeiconsIcon icon={StarsIcon} size={20} color="#EAB308" />}
+            icon={
+              <View className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-50 items-center justify-center">
+                <HugeiconsIcon icon={StarsIcon} size={18} color="#F59E0B" />
+              </View>
+            }
             label="XP Earned from Badges"
             value={`${totalXPEarned}pts`}
             subtext="Keep earning more!"
-            color="#EAB308"
+            color="#F59E0B"
           />
 
           <StatCard
-            icon={<HugeiconsIcon icon={Fire02Icon} size={20} color="#EF4444" />}
+            icon={
+              <View className="w-8 h-8 rounded-xl bg-gray-50 border border-gray-50 items-center justify-center">
+                <HugeiconsIcon icon={Fire02Icon} size={18} color="#6366F1" />
+              </View>
+            }
             label="Categories Mastered"
             value={`${
               Object.keys(CATEGORY_CONFIG).filter((cat) =>
@@ -165,7 +173,7 @@ export const AchievementsScreen: React.FC = () => {
               ).length
             }/5`}
             subtext="Complete all badges in a category"
-            color="#EF4444"
+            color="#6366F1"
           />
         </View>
 

@@ -65,6 +65,9 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         onPress={handlePress}
         className="bg-gray-900 flex-row items-center justify-center py-4 rounded-full"
         activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel="Add entry for featured prompt"
+        accessibilityHint="Opens the journal recorder for this prompt"
       >
         <HugeiconsIcon icon={PencilEdit01Icon} size={18} color="#FFFFFF" />
         <Text className="text-white font-semibold text-base ml-2">

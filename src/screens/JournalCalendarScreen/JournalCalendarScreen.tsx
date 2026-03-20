@@ -110,13 +110,13 @@ const TopBar = React.memo<{
         {!isLiquidGlass && (
           <TouchableOpacity
             onPress={onAchievementsPress}
-            className="w-10 h-10 rounded-full items-center justify-center"
-            style={{ backgroundColor: PALETTE.amber }}
+            className="w-11 h-11 rounded-full items-center justify-center bg-white border border-gray-100"
             activeOpacity={0.8}
             accessibilityLabel="Achievements"
             accessibilityRole="button"
+            accessibilityHint="Opens the achievements screen"
           >
-            <HugeiconsIcon icon={Medal01Icon} size={20} color={PALETTE.white} />
+            <HugeiconsIcon icon={Medal01Icon} size={20} color={PALETTE.amber} />
           </TouchableOpacity>
         )}
 
@@ -124,7 +124,7 @@ const TopBar = React.memo<{
           <Host matchContents>
             <Button
               onPress={onAchievementsPress}
-              color="#F59E0B"
+              color={PALETTE.amber}
               systemImage="medal.fill"
               variant="glassProminent"
               controlSize="regular"
@@ -141,25 +141,26 @@ const TopBar = React.memo<{
         {/* Coins Badge */}
         <TouchableOpacity
           onPress={onShopPress}
-          activeOpacity={0.9}
+          activeOpacity={0.7}
           accessibilityLabel="Rewards shop"
           accessibilityRole="button"
+          accessibilityHint="Opens the rewards shop"
         >
           <CoinsBadge coins={wallet?.coins ?? 0} size="md" />
         </TouchableOpacity>
 
         {!isLiquidGlass && (
           <TouchableOpacity
-            className="w-10 h-10 rounded-full items-center justify-center"
-            style={{ backgroundColor: PALETTE.purple }}
+            className="w-11 h-11 rounded-full items-center justify-center bg-white border border-gray-100"
             activeOpacity={0.8}
             onPress={handleSettingsPress}
             accessibilityLabel="Settings"
             accessibilityRole="button"
+            accessibilityHint="Opens the settings menu"
           >
             <HugeiconsIcon
               icon={Settings02Icon}
-              color={PALETTE.white}
+              color={PALETTE.purple}
               size={20}
             />
           </TouchableOpacity>
@@ -230,7 +231,7 @@ const Greeting = React.memo<{
               end={{ x: 1, y: 1 }}
               className="px-3 py-1 rounded-full"
             >
-              <Text className="text-white text-xs font-extrabold tracking-wide">
+              <Text className="text-amber-950 text-xs font-extrabold tracking-wide">
                 PRO
               </Text>
             </LinearGradient>
@@ -285,14 +286,20 @@ const StreakCard = React.memo<{
 
     return (
       <View
-        className="bg-[#FFD24A] rounded-2xl p-4 overflow-hidden"
+        className="bg-white rounded-2xl p-4 overflow-hidden border border-gray-100"
         style={{
-          shadowColor: "#D4A017",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.15,
-          shadowRadius: 12,
-          elevation: 4,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          elevation: 2,
         }}
+        accessible={true}
+        accessibilityLabel={
+          currentStreak === 0
+            ? `Start your streak today. First goal is ${nextMilestone} days.`
+            : `Current streak is ${currentStreak} days. Next goal is ${nextMilestone} days.`
+        }
       >
         {/* When streak is 0 — show motivational copy */}
         {currentStreak === 0 && (
@@ -362,10 +369,10 @@ const StreakCard = React.memo<{
         </View>
 
         {/* Progress bar — always visible, styled even at 0 */}
-        <View className="h-3 bg-[#F0D97A] rounded-full mt-3 overflow-hidden">
+        <View className="h-3 bg-gray-100 rounded-full mt-3 overflow-hidden">
           <Animated.View
             className="h-full rounded-full"
-            style={[{ backgroundColor: PALETTE.lavender }, progressBarStyle]}
+            style={[{ backgroundColor: PALETTE.amber }, progressBarStyle]}
           />
           {/* Show a pulsing start marker when empty */}
           {currentStreak === 0 && (
@@ -557,12 +564,12 @@ export default function JournalCalendarScreen() {
 
           {/* ── Journaling ── */}
           <Animated.View
-            className="mt-8"
+            className="mt-6"
             entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
               STAGGER_DELAY_MS * 3,
             )}
           >
-            <Text className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest mb-3 px-1">
+            <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-3 px-1">
               Journaling
             </Text>
             <FeaturedPromptCard
@@ -597,12 +604,12 @@ export default function JournalCalendarScreen() {
 
           {/* ── Progress ── */}
           <Animated.View
-            className="mt-8"
+            className="mt-6"
             entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
               STAGGER_DELAY_MS * 5,
             )}
           >
-            <Text className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest mb-3 px-1">
+            <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-3 px-1">
               Progress
             </Text>
             <ChallengesSection maxItems={3} />

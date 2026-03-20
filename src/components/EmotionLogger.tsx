@@ -93,11 +93,13 @@ const EmotionItem: React.FC<{
         onPressOut={handlePressOut}
         disabled={isLoading}
         className="items-center"
+        accessibilityRole="button"
+        accessibilityLabel={`Log ${emotion.name} mood`}
+        accessibilityHint="Records this mood for your daily tracking"
       >
         <Animated.View style={animatedStyle}>
           <View
-            className="items-center justify-center rounded-2xl p-2"
-            style={{ backgroundColor: emotion.bgColor }}
+            className="items-center justify-center rounded-2xl p-2 bg-gray-50/50"
           >
             <Image
               source={emotion.emoji}

@@ -111,7 +111,17 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
 
   if (compact) {
     return (
-      <Pressable onPress={handlePress}>
+      <Pressable
+        onPress={handlePress}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={
+          isComplete
+            ? `Challenge completed: ${challenge.title}`
+            : `Challenge: ${challenge.title}. ${challenge.progress} of ${challenge.condition.target} completed.`
+        }
+        accessibilityHint="Opens challenge details"
+      >
         <Animated.View
           style={animatedStyle}
           className={`bg-white rounded-2xl p-4 mb-3 border ${
@@ -164,7 +174,17 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
   }
 
   return (
-    <Pressable onPress={handlePress}>
+    <Pressable
+      onPress={handlePress}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={
+        isComplete
+          ? `Challenge completed: ${challenge.title}`
+          : `Challenge: ${challenge.title}. ${challenge.description}. ${challenge.progress} of ${challenge.condition.target} completed. Reward: ${challenge.reward.xp} XP and ${challenge.reward.coins} coins.`
+      }
+      accessibilityHint="Opens challenge details"
+    >
       <Animated.View
         style={animatedStyle}
         className={`bg-white rounded-2xl p-5 mb-3 border ${

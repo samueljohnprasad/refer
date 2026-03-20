@@ -46,17 +46,20 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
         onPress={() => setExpanded(!expanded)}
         className="flex-row items-center justify-between p-4"
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityState={{ expanded }}
+        accessibilityLabel="Toggle challenges list"
       >
         <View className="flex-row items-center gap-3">
           {/* Icon bubble instead of emoji */}
           <View
             className="w-9 h-9 rounded-full items-center justify-center"
-            style={{ backgroundColor: "#FFF1F2" }}
+            style={{ backgroundColor: "#F6F4FF" }}
           >
             <HugeiconsIcon
               icon={Target02Icon}
               size={18}
-              color="#FDA4AF"
+              color="#7B61FF"
               strokeWidth={1.8}
             />
           </View>
@@ -73,6 +76,8 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
         <TouchableOpacity
           onPress={handleViewAll}
           className="bg-gray-100 px-3 py-1.5 rounded-full"
+          accessibilityRole="button"
+          accessibilityHint="Opens the full challenges screen"
         >
           <Text className="text-gray-700 font-medium text-xs">View All</Text>
         </TouchableOpacity>

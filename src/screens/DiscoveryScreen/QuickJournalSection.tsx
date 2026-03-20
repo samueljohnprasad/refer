@@ -65,6 +65,10 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
         activeOpacity={0.85}
         className="w-[160px] rounded-2xl p-4 mr-3"
         style={{ backgroundColor: prompt.bgColor }}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={`${prompt.title}. ${prompt.description}. ${prompt.category} prompt`}
+        accessibilityHint="Starts a journaling session with this prompt"
       >
         {/* Emoji in its own frosted bubble */}
         <View
@@ -122,7 +126,12 @@ export const QuickJournalSection: React.FC<QuickJournalSectionProps> =
             </Text>
             <XPBadge amount={XP_REWARDS[XPActionType.JOURNAL_ENTRY]} />
           </View>
-          <TouchableOpacity onPress={onSeeAllPress} activeOpacity={0.7}>
+          <TouchableOpacity
+            onPress={onSeeAllPress}
+            activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityHint="View all journaling prompts"
+          >
             <Text className="text-sm text-gray-500 font-medium">See all</Text>
           </TouchableOpacity>
         </View>

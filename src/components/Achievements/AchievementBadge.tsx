@@ -103,11 +103,17 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
           {/* XP indicator for unlocked */}
           {isUnlocked && (
             <View
-              className="absolute -bottom-1 px-1.5 py-0.5 rounded-full"
-              style={{ backgroundColor: "#FFD700" }}
+              className="absolute -bottom-1 px-1.5 py-0.5 rounded-full bg-white border border-gray-100"
+              style={{
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 2,
+                elevation: 1,
+              }}
             >
-              <Text className="text-[8px] font-bold text-gray-900">
-                +{achievement.xpBonus}
+              <Text className="text-[8px] font-bold text-gray-700">
+                +{achievement.xpBonus} XP
               </Text>
             </View>
           )}
@@ -131,33 +137,24 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         {achievement.description}
       </Text>
 
-      {/* Unlocked Button or Progress Bar */}
-      {isUnlocked ? (
-        <View
-          className="mt-2 px-3 py-1 rounded-full"
-          style={{ backgroundColor: "#22C55E" }}
-        >
-          <Text className="text-[10px] font-bold text-white">✓ Unlocked!</Text>
-        </View>
-      ) : (
-        showProgress && (
-          <View className="w-full mt-2">
-            {/* Progress Bar */}
-            <View className="h-2 bg-gray-200 rounded-full overflow-hidden">
-              <View
-                className="h-full rounded-full"
-                style={{
-                  width: `${progressPercent}%`,
-                  backgroundColor: achievement.color,
-                }}
-              />
-            </View>
-            {/* Progress Count */}
-            <Text className="text-[10px] text-gray-500 text-right mt-0.5">
-              {progress}/{target}
-            </Text>
+      {/* Progress Bar (only when locked) */}
+      {!isUnlocked && showProgress && (
+        <View className="w-full mt-2">
+          {/* Progress Bar */}
+          <View className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <View
+              className="h-full rounded-full"
+              style={{
+                width: `${progressPercent}%`,
+                backgroundColor: achievement.color,
+              }}
+            />
           </View>
-        )
+          {/* Progress Count */}
+          <Text className="text-[10px] text-gray-500 text-right mt-0.5">
+            {progress}/{target}
+          </Text>
+        </View>
       )}
     </Pressable>
   );
