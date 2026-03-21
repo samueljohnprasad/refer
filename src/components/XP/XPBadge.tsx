@@ -40,19 +40,17 @@ export const XPBadge: React.FC<XPBadgeProps> = ({
     );
   }
 
-  // Default: soft violet tint
+  // Default: soft amber tint for elegant XP rewards
   return (
     <View
       className={`rounded-full ${sizeClasses[size]}`}
       style={{
-        backgroundColor: "#F3F0FF",
-        borderWidth: 1,
-        borderColor: "#DDD6FE",
+        backgroundColor: "#FFFBEB", // amber-50
       }}
     >
       <Text
         className={`font-bold ${textSizeClasses[size]}`}
-        style={{ color: "#7C6FCC" }}
+        style={{ color: "#D97706" }} // amber-600
       >
         +{amount} XP
       </Text>

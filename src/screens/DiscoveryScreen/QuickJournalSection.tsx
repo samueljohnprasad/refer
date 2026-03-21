@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { XPBadge } from "@/src/components/XP";
+import { XPBadge } from "@/src/components/XP/XPBadge";
 import { XPActionType, XP_REWARDS } from "@/src/types/xp";
 
 interface QuickJournalPrompt {
@@ -70,21 +70,24 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
         accessibilityLabel={`${prompt.title}. ${prompt.description}. ${prompt.category} prompt`}
         accessibilityHint="Starts a journaling session with this prompt"
       >
-        {/* Emoji in its own frosted bubble */}
-        <View
-          className="w-10 h-10 rounded-2xl items-center justify-center mb-3"
-          style={{ backgroundColor: "rgba(255,255,255,0.65)" }}
-        >
-          <Text style={{ fontSize: 20 }}>{prompt.emoji}</Text>
+        {/* Top row: Emoji */}
+        <View className="mb-3">
+          <View
+            className="w-10 h-10 rounded-2xl items-center justify-center"
+            style={{ backgroundColor: "rgba(255,255,255,0.65)" }}
+          >
+            <Text style={{ fontSize: 20 }}>{prompt.emoji}</Text>
+          </View>
         </View>
 
-        <Text
-          className="text-base font-semibold text-gray-900 mb-1"
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
-          {prompt.title}
-        </Text>
+        <View className="flex-row items-center gap-2 mb-1">
+          <Text
+            className="text-gray-900 text-sm font-bold flex-1"
+            numberOfLines={1}
+          >
+            {prompt.title}
+          </Text>
+        </View>
         <Text
           className="text-sm text-gray-600 mb-3"
           numberOfLines={2}
@@ -92,14 +95,8 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
         >
           {prompt.description}
         </Text>
-        <View
-          className="self-start px-2.5 py-1 rounded-full"
-          style={{ borderWidth: 1, borderColor: prompt.categoryColor }}
-        >
-          <Text
-            className="text-xs font-semibold"
-            style={{ color: prompt.categoryColor }}
-          >
+        <View className="bg-white/40 self-start px-2 py-0.5 rounded-full mt-2">
+          <Text className="text-gray-900 text-[10px] font-medium">
             {prompt.category}
           </Text>
         </View>
@@ -120,7 +117,7 @@ export const QuickJournalSection: React.FC<QuickJournalSectionProps> =
     return (
       <View className="mt-6">
         <View className="flex-row justify-between items-center mb-3 px-1">
-          <View className="flex-row items-center gap-2">
+          <View className="flex-row items-center gap-2 mb-1">
             <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">
               Quick Journal
             </Text>

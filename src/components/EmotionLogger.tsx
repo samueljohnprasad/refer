@@ -206,13 +206,13 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
             challenges?.updateProgress("mood_count");
             onEmotionLogged?.(emotionScore, updated);
           });
-        } catch (error) {}
+        } catch (error) { }
       },
       [isLoggingEmotion, logEmotionToSupabase, onEmotionLogged],
     );
     return (
       <View className="gap-2">
-        <View className="flex-row items-center justify-between px-1">
+        <View className="flex-row items-center gap-2 px-1 mb-1">
           <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">
             Daily Mood Log
           </Text>
@@ -220,8 +220,8 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
         </View>
 
         <View className="bg-white rounded-2xl p-4 border border-gray-100">
-          {averageMood && moodLabel && (
-            <View className="flex-row justify-end mb-3">
+          <View className="flex-row justify-between items-center mb-3">
+            {averageMood && moodLabel ? (
               <View className="flex-row items-center gap-1">
                 <Text
                   className="text-xs font-semibold"
@@ -237,25 +237,27 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
                   {averageMood}
                 </Text>
               </View>
-            </View>
-          )}
+            ) : (
+              <View />
+            )}
+          </View>
 
           <View className="flex-row justify-between">
-          {EMOTIONS.map((emotion) => (
-            <MemoizedEmotionItem
-              key={emotion.id}
-              emotion={emotion}
-              count={emotionCounts.get(emotion.id) || 0}
-              onPress={() => {
-                // if (totalEmotions >= 5 && !hasPro) {
-                //   presentPaywall();
-                //   return;
-                // }
-                handleLogEmotion(emotion.id);
-              }}
-              isLoading={isLoggingEmotion}
-            />
-          ))}
+            {EMOTIONS.map((emotion) => (
+              <MemoizedEmotionItem
+                key={emotion.id}
+                emotion={emotion}
+                count={emotionCounts.get(emotion.id) || 0}
+                onPress={() => {
+                  // if (totalEmotions >= 5 && !hasPro) {
+                  //   presentPaywall();
+                  //   return;
+                  // }
+                  handleLogEmotion(emotion.id);
+                }}
+                isLoading={isLoggingEmotion}
+              />
+            ))}
           </View>
         </View>
       </View>

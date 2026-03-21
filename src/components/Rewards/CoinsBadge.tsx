@@ -48,16 +48,25 @@ export const CoinsBadge: React.FC<CoinsBadgeProps> = ({
   return (
     <Pressable onPress={handlePress}>
       <Animated.View
-        style={animatedStyle}
-        className={`flex-row items-center ${styles.container} bg-yellow-100 rounded-full border border-yellow-300`}
+        style={[
+          animatedStyle,
+          {
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 10,
+            elevation: 2,
+          },
+        ]}
+        className={`flex-row items-center ${styles.container} bg-white rounded-full border border-gray-100`}
       >
         <HugeiconsIcon
           icon={Coins01Icon}
           size={styles.icon}
-          color="#FCD34D"
+          color="#F59E0B"
           strokeWidth={1.8}
         />
-        <Text className={`${styles.text} font-bold text-yellow-600 ml-1`}>
+        <Text className={`${styles.text} font-bold text-gray-800 ml-1.5`}>
           {coins.toLocaleString()}
         </Text>
       </Animated.View>

@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { PencilEdit01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { XPBadge } from "../XP/XPBadge";
 
 interface FeaturedPromptCardProps {
   category?: string;
@@ -36,15 +37,6 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
     >
       {/* Header Row */}
       <View className="flex-row items-center justify-between mb-4">
-        <View className="flex-row items-center gap-2">
-          <Text className="text-gray-700 font-medium text-sm">{category}</Text>
-          <View className="bg-white/80 px-3 py-1 rounded-full">
-            <Text className="text-gray-900 font-bold text-xs">
-              +{xpReward} XP
-            </Text>
-          </View>
-        </View>
-
         {/* Image Mascot */}
         <View className="w-32 h-32 items-center justify-center overflow-hidden">
           <Image

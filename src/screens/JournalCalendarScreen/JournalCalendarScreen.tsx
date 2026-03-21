@@ -35,15 +35,13 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { LinearGradient } from "expo-linear-gradient";
-import { Host, Button } from "@expo/ui/swift-ui";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { usePostHog } from "posthog-react-native";
 import { UpdateModal } from "@/src/components/modals";
 import { useAppUpdate } from "@/src/hooks/useAppUpdate";
 import { StreakDisplay } from "@/src/components/Streak";
 import { useStreakTracker } from "@/hooks/data/useStreakTracker";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
-import { XPDisplay } from "@/src/components/XP";
+import { XPBadge, XPDisplay } from "@/src/components/XP";
 import { useXP } from "@/src/context/XPContext";
 import { CoinsBadge } from "@/src/components/Rewards";
 import { useRewardsContext } from "@/src/context/RewardsContext";
@@ -57,6 +55,7 @@ import { recorderOpenAtom } from "../DiscoveryScreen/helpers";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
+import { XP_REWARDS, XPActionType } from "@/src/types/xp";
 
 // Global color palette
 export const PALETTE = {
@@ -103,86 +102,58 @@ const TopBar = React.memo<{
 
 
 
-  const isLiquidGlass = isLiquidGlassAvailable();
   return (
-    <View className="py-4 px-5 bg-offwhite border-b border-gray-100/60">
-      <View className="flex-row justify-between items-center">
-        {!isLiquidGlass && (
-          <TouchableOpacity
-            onPress={onAchievementsPress}
-            className="w-11 h-11 rounded-full items-center justify-center bg-white border border-gray-100"
-            activeOpacity={0.8}
-            accessibilityLabel="Achievements"
-            accessibilityRole="button"
-            accessibilityHint="Opens the achievements screen"
-          >
-            <HugeiconsIcon icon={Medal01Icon} size={20} color={PALETTE.amber} />
-          </TouchableOpacity>
-        )}
+    <View className="py-4 px-5 bg-offwhite border-b border-gray-100/60 flex-row justify-between items-center">
+      <TouchableOpacity
+        onPress={onAchievementsPress}
+        className="w-11 h-11 rounded-full items-center justify-center bg-white border border-gray-100"
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          elevation: 2,
+        }}
+        activeOpacity={0.8}
+        accessibilityLabel="Achievements"
+        accessibilityRole="button"
+        accessibilityHint="Opens the achievements screen"
+      >
+        <HugeiconsIcon icon={Medal01Icon} size={20} color={PALETTE.amber} />
+      </TouchableOpacity>
 
-        {isLiquidGlass && (
-          <Host matchContents>
-            <Button
-              onPress={onAchievementsPress}
-              color={PALETTE.amber}
-              systemImage="medal.fill"
-              variant="glassProminent"
-              controlSize="regular"
-            >
-              <HugeiconsIcon
-                icon={Medal01Icon}
-                size={20}
-                color={PALETTE.white}
-              />
-            </Button>
-          </Host>
-        )}
+      {/* Coins Badge */}
+      <TouchableOpacity
+        onPress={onShopPress}
+        activeOpacity={0.7}
+        accessibilityLabel="Rewards shop"
+        accessibilityRole="button"
+        accessibilityHint="Opens the rewards shop"
+      >
+        <CoinsBadge coins={wallet?.coins ?? 0} size="md" />
+      </TouchableOpacity>
 
-        {/* Coins Badge */}
-        <TouchableOpacity
-          onPress={onShopPress}
-          activeOpacity={0.7}
-          accessibilityLabel="Rewards shop"
-          accessibilityRole="button"
-          accessibilityHint="Opens the rewards shop"
-        >
-          <CoinsBadge coins={wallet?.coins ?? 0} size="md" />
-        </TouchableOpacity>
-
-        {!isLiquidGlass && (
-          <TouchableOpacity
-            className="w-11 h-11 rounded-full items-center justify-center bg-white border border-gray-100"
-            activeOpacity={0.8}
-            onPress={handleSettingsPress}
-            accessibilityLabel="Settings"
-            accessibilityRole="button"
-            accessibilityHint="Opens the settings menu"
-          >
-            <HugeiconsIcon
-              icon={Settings02Icon}
-              color={PALETTE.purple}
-              size={20}
-            />
-          </TouchableOpacity>
-        )}
-        {isLiquidGlass && (
-          <Host matchContents>
-            <Button
-              onPress={handleSettingsPress}
-              color="#7B61FF"
-              systemImage="gearshape.fill"
-              variant="glassProminent"
-              controlSize="regular"
-            >
-              <HugeiconsIcon
-                icon={Settings02Icon}
-                size={20}
-                color={PALETTE.white}
-              />
-            </Button>
-          </Host>
-        )}
-      </View>
+      <TouchableOpacity
+        className="w-11 h-11 rounded-full items-center justify-center bg-white border border-gray-100"
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+          elevation: 2,
+        }}
+        activeOpacity={0.8}
+        onPress={handleSettingsPress}
+        accessibilityLabel="Settings"
+        accessibilityRole="button"
+        accessibilityHint="Opens the settings menu"
+      >
+        <HugeiconsIcon
+          icon={Settings02Icon}
+          color={PALETTE.purple}
+          size={20}
+        />
+      </TouchableOpacity>
     </View>
   );
 });
@@ -567,9 +538,12 @@ export default function JournalCalendarScreen() {
               STAGGER_DELAY_MS * 3,
             )}
           >
-            <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-3 px-1">
-              Journaling
-            </Text>
+            <View className="flex-row items-center gap-2 mb-3">
+              <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest px-1">
+                Journaling
+              </Text>
+              <XPBadge amount={XP_REWARDS[XPActionType.JOURNAL_ENTRY]} />
+            </View>
             <FeaturedPromptCard
               prompt="What is special about today?"
               xpReward={30}

@@ -39,9 +39,9 @@ export const XPDisplay: React.FC<XPDisplayProps> = ({
         activeOpacity={0.7}
         className="relative"
       >
-        <View className="flex-row items-center bg-yellow-100 rounded-full px-3 py-1.5">
-          <HugeiconsIcon icon={StarsIcon} size={16} color="#EAB308" />
-          <Text className="text-yellow-700 font-bold text-sm ml-1">
+        <View className="flex-row items-center bg-amber-50 rounded-full px-3 py-1.5">
+          <HugeiconsIcon icon={StarsIcon} size={16} color="#D97706" />
+          <Text className="text-amber-600 font-bold text-sm ml-1">
             {totalXP.toLocaleString()}
           </Text>
           <View className="ml-2">
