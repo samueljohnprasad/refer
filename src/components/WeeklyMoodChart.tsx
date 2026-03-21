@@ -1132,37 +1132,49 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
 
   if (isLoading && layoutWidth === 0) {
     return (
-      <View className="w-full rounded-2xl bg-white p-4 border border-gray-100">
-        <Text className="text-base font-semibold mb-2">{title}</Text>
-        <View className="py-10 items-center justify-center">
-          <Loading />
+      <View className="w-full gap-2">
+        <View className="flex-row items-center justify-between px-1">
+          <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">{headerTitle}</Text>
+        </View>
+        <View className="w-full rounded-3xl bg-white p-4 border border-gray-100">
+          <View className="py-10 items-center justify-center">
+            <Loading />
+          </View>
         </View>
       </View>
     );
   }
   if (isError) {
     return (
-      <View className="w-full rounded-2xl bg-white p-4 border border-gray-100">
-        <Text className="text-base font-semibold mb-2">{title}</Text>
-        <Text className="text-red-500">Failed to load mood data.</Text>
+      <View className="w-full gap-2">
+        <View className="flex-row items-center justify-between px-1">
+          <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">{headerTitle}</Text>
+        </View>
+        <View className="w-full rounded-3xl bg-white p-4 border border-gray-100">
+          <Text className="text-red-500">Failed to load mood data.</Text>
+        </View>
       </View>
     );
   }
 
   return (
-    <View className="w-full rounded-3xl bg-white py-4 border border-gray-100">
-      {/* Tab Header */}
+    <View className="w-full gap-2">
+      <View className="flex-row items-center justify-between px-1">
+        <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">
+          {headerTitle}
+        </Text>
+      </View>
+
+      <View className="w-full rounded-3xl bg-white py-4 border border-gray-100">
+        {/* Tab Header */}
       <View className="px-4 mb-4">
         <TabSelector activeTab={activeTab} onTabChange={setActiveTab} />
       </View>
 
-      {/* Title and Average Row */}
-      <View className="flex-row items-start justify-between px-4">
+      {/* Subtitle and Average Row */}
+      <View className="flex-row items-end justify-between px-4 mb-2">
         <View className="flex-1">
-          <Text className="text-2xl text-gray-800 font-cormorantSemiBold">
-            {headerTitle}
-          </Text>
-          <Text className="text-xs text-gray-500 mt-1">{headerSubtitle}</Text>
+          <Text className="text-xs text-gray-500 font-medium">{headerSubtitle}</Text>
         </View>
         <View className="flex-row items-center">
           <View
@@ -1300,6 +1312,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
           ))}
         </View>
       )}
+      </View>
     </View>
   );
 };

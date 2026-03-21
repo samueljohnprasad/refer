@@ -17,6 +17,17 @@ import { XPActionType, XP_REWARDS } from "../types/xp";
 import { XPBadge } from "./XP";
 import { useRewardsContext } from "../context/RewardsContext";
 import { useChallengesOptional } from "../context/ChallengesContext";
+import { SectionHeader } from "@/src/components/ui/SectionHeader";
+import { SmileIcon } from "@hugeicons/core-free-icons";
+
+// Subtle shadow constant matching other cards
+const LOG_SHADOW = {
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.05,
+  shadowRadius: 10,
+  elevation: 2,
+};
 
 // Emotion configuration
 const EMOTIONS = [
@@ -110,10 +121,10 @@ const EmotionItem: React.FC<{
             />
             {count > 0 && (
               <Animated.View
-                className="absolute -top-1 -right-1 bg-violet-500 rounded-full min-w-[20px] h-5 items-center justify-center px-1"
+                className="absolute -top-1 -right-1 bg-gray-800 rounded-full min-w-[18px] h-[18px] items-center justify-center px-1 border-2 border-white"
                 style={animatedCountStyle}
               >
-                <Text className="text-white text-xs font-semibold">
+                <Text className="text-white text-[9px] font-bold">
                   {count > 99 ? "99+" : count}
                 </Text>
               </Animated.View>
@@ -200,16 +211,17 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
       [isLoggingEmotion, logEmotionToSupabase, onEmotionLogged],
     );
     return (
-      <View className="bg-white rounded-2xl p-4 border border-gray-100">
-        <View className="flex-row items-center justify-between mb-3">
-          <View className="flex-row items-center gap-2">
-            <Text className="text-base font-cormorantSemiBold text-gray-900">
-              Daily Mood Log
-            </Text>
-            <XPBadge amount={XP_REWARDS[XPActionType.MOOD_LOG]} />
-          </View>
-          <View className="flex-row items-center gap-2">
-            {averageMood && moodLabel && (
+      <View className="gap-2">
+        <View className="flex-row items-center justify-between px-1">
+          <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">
+            Daily Mood Log
+          </Text>
+          <XPBadge amount={XP_REWARDS[XPActionType.MOOD_LOG]} />
+        </View>
+
+        <View className="bg-white rounded-2xl p-4 border border-gray-100">
+          {averageMood && moodLabel && (
+            <View className="flex-row justify-end mb-3">
               <View className="flex-row items-center gap-1">
                 <Text
                   className="text-xs font-semibold"
@@ -225,11 +237,10 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
                   {averageMood}
                 </Text>
               </View>
-            )}
-          </View>
-        </View>
+            </View>
+          )}
 
-        <View className="flex-row justify-between">
+          <View className="flex-row justify-between">
           {EMOTIONS.map((emotion) => (
             <MemoizedEmotionItem
               key={emotion.id}
@@ -245,6 +256,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
               isLoading={isLoggingEmotion}
             />
           ))}
+          </View>
         </View>
       </View>
     );

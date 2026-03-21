@@ -11,10 +11,10 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({ currentStreak }) => {
   if (currentStreak < 1) return null;
 
   return (
-    <View className="flex-row items-center bg-orange-50 px-2.5 py-1 rounded-full border border-orange-100 ml-2">
-      <HugeiconsIcon icon={FireIcon} size={14} color="#EA580C" />
-      <Text className="text-xs text-orange-600 font-semibold ml-1">
-        {currentStreak} {currentStreak === 1 ? "day" : "days"}
+    <View className="flex-row items-center bg-gray-100 px-2 py-0.5 rounded-full ml-2">
+      <HugeiconsIcon icon={FireIcon} size={12} color="#9CA3AF" />
+      <Text className="text-xs text-gray-500 font-medium ml-1">
+        {currentStreak}d
       </Text>
     </View>
   );

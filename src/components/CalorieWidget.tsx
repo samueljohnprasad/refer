@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, DeviceEventEmitter } from "react-native";
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
 import { useCalorieTracker } from "@/hooks/data/useCalorieTracker";
@@ -10,6 +10,8 @@ import {
   Add01Icon,
   InformationCircleIcon,
   Target02Icon,
+  Camera01Icon,
+  Image01Icon,
 } from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -24,8 +26,18 @@ import { useCalorieGoal } from "@/src/hooks/data/useCalorieGoal";
 import CalorieGoalModal from "@/src/components/calorie/CalorieGoalModal";
 import { XPBadge } from "@/src/components/XP";
 import { XPActionType, XP_REWARDS } from "@/src/types/xp";
+import { SectionHeader } from "@/src/components/ui/SectionHeader";
 
 const TRACKED_MICRONUTRIENTS_KEY = "tracked_micronutrients";
+
+/** Shared subtle card shadow — single source of truth */
+const WIDGET_SHADOW = {
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.04,
+  shadowRadius: 8,
+  elevation: 1,
+} as const;
 
 interface CalorieWidgetProps {
   selectedDate: Date;
@@ -117,22 +129,16 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
   if (compact) {
     return (
       <TouchableOpacity
-        className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"
-        style={{
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.05,
-          shadowRadius: 10,
-          elevation: 2,
-        }}
+        className="bg-white rounded-2xl p-4"
+        style={WIDGET_SHADOW}
       >
         <HStack className="justify-between items-center">
           <HStack className="items-center" space="sm">
             <View
               className="p-2 rounded-xl"
-              style={{ backgroundColor: "#FFE8D6" }}
+              style={{ backgroundColor: "#F3F4F6" }}
             >
-              <HugeiconsIcon icon={AppleIcon} size={20} color="#FF8C42" />
+              <HugeiconsIcon icon={AppleIcon} size={20} color="#9CA3AF" />
             </View>
             <VStack>
               <Text className="text-gray-900 font-semibold">Calories</Text>
@@ -142,7 +148,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
             </VStack>
           </HStack>
           <VStack className="items-end">
-            <Text className="text-2xl font-bold text-orange-500">
+            <Text className="text-2xl font-bold text-gray-900">
               {dailySummary.totalCalories}
             </Text>
             <Text className="text-xs text-gray-400">kcal</Text>
@@ -153,30 +159,36 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
   }
 
   return (
-    <TouchableOpacity
-      className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm"
-      style={{
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 10,
-        elevation: 2,
-      }}
-    >
-      <HStack className="justify-between items-center mb-4">
-        <HStack className="items-center" space="sm">
-          <View
-            className="p-2 rounded-xl"
-            style={{ backgroundColor: "#FFE8D6" }}
-          >
-            <HugeiconsIcon icon={AppleIcon} size={24} color="#FF8C42" />
-          </View>
-          <Text className="text-gray-900 font-semibold text-lg">
-            Calorie Tracker
-          </Text>
-          <XPBadge amount={XP_REWARDS[XPActionType.CALORIE_LOG]} />
-        </HStack>
-      </HStack>
+    <View className="gap-4">
+      <SectionHeader
+        title="Calorie Tracker"
+        icon={AppleIcon}
+        count={dailySummary.mealCount > 0 ? dailySummary.mealCount : undefined}
+        rightElement={
+          <>
+            <XPBadge amount={XP_REWARDS[XPActionType.CALORIE_LOG]} />
+            <TouchableOpacity
+              onPress={() => DeviceEventEmitter.emit("triggerCalorieCamera")}
+              className="bg-gray-800 p-2 rounded-xl"
+              activeOpacity={0.7}
+            >
+              <HugeiconsIcon icon={Camera01Icon} size={18} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => DeviceEventEmitter.emit("triggerCalorieGallery")}
+              className="bg-gray-800 p-2 rounded-xl"
+              activeOpacity={0.7}
+            >
+              <HugeiconsIcon icon={Image01Icon} size={18} color="white" />
+            </TouchableOpacity>
+          </>
+        }
+      />
+      <TouchableOpacity
+        className="bg-white rounded-2xl p-5"
+        style={WIDGET_SHADOW}
+        activeOpacity={1}
+      >
 
       {dailySummary.mealCount === 0 ? (
         <View className="py-4 items-center">
@@ -195,8 +207,8 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
       ) : (
         <>
           <View className="items-center mb-4">
-            <HStack className="items-center" space="sm">
-              <Text className="text-5xl font-bold text-orange-500">
+            <HStack className="items-center" space="xs">
+              <Text className="text-4xl font-bold text-gray-900">
                 {dailySummary.totalCalories}
               </Text>
               {(() => {
@@ -213,17 +225,18 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
                       micronutrientModalRef.current?.present();
                     }}
                     activeOpacity={0.7}
+                    className="ml-1"
                   >
                     <HugeiconsIcon
                       icon={InformationCircleIcon}
-                      size={24}
-                      color="#F97316"
+                      size={20}
+                      color="#D1D5DB"
                     />
                   </TouchableOpacity>
                 ) : null;
               })()}
             </HStack>
-            <Text className="text-gray-500">calories consumed</Text>
+            <Text className="text-gray-400 text-sm">calories consumed</Text>
           </View>
 
           {/* Progress bar toward goal */}
@@ -234,16 +247,16 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
               className="flex-row justify-between items-center mb-2"
             >
               <HStack className="items-center" space="xs">
-                <HugeiconsIcon icon={Target02Icon} size={16} color="#F97316" />
-                <Text className="text-gray-600 text-sm">
+                <HugeiconsIcon icon={Target02Icon} size={14} color="#9CA3AF" />
+                <Text className="text-gray-500 text-sm">
                   Goal: {calorieGoal} kcal
                 </Text>
               </HStack>
               <Text
-                className={`text-sm font-semibold ${
+                className={`text-sm font-medium ${
                   dailySummary.totalCalories > calorieGoal
-                    ? "text-red-500"
-                    : "text-green-600"
+                    ? "text-red-400"
+                    : "text-gray-500"
                 }`}
               >
                 {dailySummary.totalCalories > calorieGoal
@@ -251,10 +264,10 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
                   : `${remainingCalories} left`}
               </Text>
             </TouchableOpacity>
-            <View className="h-3 bg-gray-200 rounded-full overflow-hidden">
+            <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
               <View
                 className={`h-full rounded-full ${
-                  progressPercentage >= 100 ? "bg-red-500" : "bg-orange-500"
+                  progressPercentage >= 100 ? "bg-red-400" : "bg-gray-400"
                 }`}
                 style={{ width: `${progressPercentage}%` }}
               />
@@ -264,34 +277,35 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
             </Text>
           </View>
 
-          <HStack className="justify-between bg-gray-50 rounded-xl p-3">
+          <HStack className="justify-between rounded-xl px-2">
             <View className="items-center flex-1">
-              <Text className="text-lg font-semibold text-gray-900">
+              <Text className="text-base font-medium text-gray-900">
                 {dailySummary.totalProtein}g
               </Text>
-              <Text className="text-xs text-gray-500">Protein</Text>
+              <Text className="text-xs text-gray-400">Protein</Text>
             </View>
             <View className="items-center flex-1">
-              <Text className="text-lg font-semibold text-gray-900">
+              <Text className="text-base font-medium text-gray-900">
                 {dailySummary.totalCarbs}g
               </Text>
-              <Text className="text-xs text-gray-500">Carbs</Text>
+              <Text className="text-xs text-gray-400">Carbs</Text>
             </View>
             <View className="items-center flex-1">
-              <Text className="text-lg font-semibold text-gray-900">
+              <Text className="text-base font-medium text-gray-900">
                 {dailySummary.totalFat}g
               </Text>
-              <Text className="text-xs text-gray-500">Fat</Text>
+              <Text className="text-xs text-gray-400">Fat</Text>
             </View>
             <View className="items-center flex-1">
-              <Text className="text-lg font-semibold text-gray-900">
+              <Text className="text-base font-medium text-gray-900">
                 {dailySummary.mealCount}
               </Text>
-              <Text className="text-xs text-gray-500">Meals</Text>
+              <Text className="text-xs text-gray-400">Meals</Text>
             </View>
           </HStack>
-        </>
+    </>
       )}
+    </TouchableOpacity>
 
       {/* Micronutrient Modal using ShortBottomModal */}
       <ShortBottomModal
@@ -374,17 +388,16 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
             </Text>
           </View>
         )}
-        \n{" "}
       </ShortBottomModal>
 
       {/* Calorie Goal Modal */}
       <CalorieGoalModal
         visible={showGoalModal}
-        currentGoal={calorieGoal}
-        onSave={handleSaveGoal}
         onClose={() => setShowGoalModal(false)}
+        onSave={handleSaveGoal}
+        currentGoal={calorieGoal}
       />
-    </TouchableOpacity>
+    </View>
   );
 };
 

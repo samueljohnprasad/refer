@@ -219,10 +219,10 @@ const Greeting = React.memo<{
     return (
       <View className="flex-row items-center justify-between mt-2">
         <View className="flex-row items-center gap-2 flex-1">
-          <Text className="text-[28px] font-cormorantBold text-gray-900">
+          <Text className="text-2xl font-bold tracking-tight text-gray-900">
             {greeting},{" "}
             {isLoading ? "..." : displayName || "there"}{" "}
-            <Text className="text-2xl">👋</Text>
+            <Text className="text-xl">👋</Text>
           </Text>
           {hasPro && (
             <LinearGradient
@@ -286,7 +286,7 @@ const StreakCard = React.memo<{
 
     return (
       <View
-        className="bg-white rounded-2xl p-4 overflow-hidden border border-gray-100"
+        className="bg-white rounded-2xl p-5 overflow-hidden"
         style={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 2 },
@@ -303,13 +303,8 @@ const StreakCard = React.memo<{
       >
         {/* When streak is 0 — show motivational copy */}
         {currentStreak === 0 && (
-          <View className="flex-row items-center gap-1.5 mb-2">
-            <HugeiconsIcon
-              icon={Plant03Icon}
-              size={14}
-              color={PALETTE.green}
-            />
-            <Text className="text-gray-700 text-xs font-semibold tracking-wide uppercase">
+          <View className="mb-4">
+            <Text className="text-gray-800 text-sm font-bold tracking-wide uppercase">
               Start your streak today!
             </Text>
           </View>
@@ -318,16 +313,16 @@ const StreakCard = React.memo<{
         <View className="flex-row items-center justify-between">
           {/* Goal as the left hero when streak is 0 */}
           <View>
-            <Text className="text-gray-700 text-xs font-semibold mb-1">
-              {currentStreak === 0 ? "First goal" : "Current Streak"}
+            <Text className="text-gray-500 text-xs font-semibold tracking-wider uppercase mb-1">
+              {currentStreak === 0 ? "First Goal" : "Current Streak"}
             </Text>
             <View className="flex-row items-center">
               {currentStreak === 0 ? (
                 <>
                   <HugeiconsIcon size={24} icon={Target02Icon} fill={"#93C5FD"} />
-                  <Text className="text-[28px] font-extrabold ml-1.5">
+                  <Text className="text-3xl font-extrabold ml-1.5">
                     {isLoading ? "-" : nextMilestone}{" "}
-                    <Text className="text-xs font-semibold text-gray-600">
+                    <Text className="text-base font-semibold text-gray-500">
                       days
                     </Text>
                   </Text>
@@ -340,8 +335,11 @@ const StreakCard = React.memo<{
                     fill={"#FCA5A5"}
                     color="#FCA5A5"
                   />
-                  <Text className="text-[28px] font-extrabold ml-1.5">
-                    {currentStreak}
+                  <Text className="text-3xl font-extrabold ml-1.5">
+                    {currentStreak}{" "}
+                    <Text className="text-base font-semibold text-gray-500">
+                      days
+                    </Text>
                   </Text>
                 </>
               )}
@@ -351,7 +349,7 @@ const StreakCard = React.memo<{
           {/* Right side: next goal (only when streak > 0) */}
           {currentStreak > 0 && (
             <View className="items-end">
-              <Text className="text-gray-700 text-xs font-semibold mb-1">
+              <Text className="text-gray-500 text-xs font-semibold tracking-wider uppercase mb-1">
                 Goal
               </Text>
               <View className="flex-row items-center">
@@ -360,7 +358,7 @@ const StreakCard = React.memo<{
                   icon={Target02Icon}
                   fill={PALETTE.blue}
                 />
-                <Text className="text-[28px] font-extrabold ml-1.5">
+                <Text className="text-3xl font-extrabold ml-1.5">
                   {isLoading ? "-" : nextMilestone}
                 </Text>
               </View>

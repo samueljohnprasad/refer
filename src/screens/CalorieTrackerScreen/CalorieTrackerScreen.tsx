@@ -8,6 +8,7 @@ import {
   Alert,
   Modal,
   Image as RNImage,
+  DeviceEventEmitter,
 } from "react-native";
 import { Image } from "@/components/ui/image";
 import { VStack } from "@/components/ui/vstack";
@@ -46,6 +47,15 @@ import ShortBottomModal from "@/src/components/ShortBottomModal";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 const TRACKED_MICRONUTRIENTS_KEY = "tracked_micronutrients";
+
+/** Shared subtle card shadow — single source of truth for all cards */
+const CARD_SHADOW = {
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.04,
+  shadowRadius: 8,
+  elevation: 1,
+} as const;
 
 interface CalorieTrackerScreenProps {
   selectedDate?: Date;
@@ -183,6 +193,20 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
     }
   }, []);
 
+  // Listen for CTA events from the unified CalorieWidget header
+  useEffect(() => {
+    const sub1 = DeviceEventEmitter.addListener("triggerCalorieCamera", () => {
+      if (!isAnalyzing) takePhoto();
+    });
+    const sub2 = DeviceEventEmitter.addListener("triggerCalorieGallery", () => {
+      if (!isAnalyzing) pickImage();
+    });
+    return () => {
+      sub1.remove();
+      sub2.remove();
+    };
+  }, [isAnalyzing, takePhoto, pickImage]);
+
   // Process the image with AI
   const processImage = async (imageUri: string): Promise<void> => {
     const result = await analyzeAndSaveFood(imageUri);
@@ -238,11 +262,8 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
       }
     };
 
-    return (
-      <View
-        key={`${food.name}-${index}`}
-        className="flex-row items-center py-3 border-b border-gray-100"
-      >
+    const innerContent = (
+      <>
         <View className="flex-1">
           <Text className="text-gray-900 font-medium text-base">
             {food.name}
@@ -260,19 +281,25 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
               <Text className="text-xs text-gray-500">F:{food.fat}g</Text>
             </HStack>
           </View>
-          {hasMicronutrients && (
-            <TouchableOpacity
-              onPress={showMicronutrientInfo}
-              activeOpacity={0.7}
-            >
-              <HugeiconsIcon
-                icon={InformationCircleIcon}
-                size={18}
-                color="#7B61FF"
-              />
-            </TouchableOpacity>
-          )}
         </HStack>
+      </>
+    );
+
+    return hasMicronutrients ? (
+      <TouchableOpacity
+        key={`${food.name}-${index}`}
+        className="flex-row items-center py-3.5 border-b border-gray-50"
+        onPress={showMicronutrientInfo}
+        activeOpacity={0.7}
+      >
+        {innerContent}
+      </TouchableOpacity>
+    ) : (
+      <View
+        key={`${food.name}-${index}`}
+        className="flex-row items-center py-3.5 border-b border-gray-50"
+      >
+        {innerContent}
       </View>
     );
   };
@@ -283,24 +310,21 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
     const healthScore = entry.health_score || 0;
     const healthScoreReasoning = entry.health_score_reasoning || "";
 
-    // Health score color
+    // Health score color — muted tones for quiet hierarchy
     const getHealthScoreColor = (score: number) => {
       if (score >= 80)
         return {
-          bg: "bg-green-100",
-          text: "text-green-700",
-          border: "border-green-200",
+          bg: "bg-green-50",
+          text: "text-green-600",
         };
       if (score >= 60)
         return {
-          bg: "bg-yellow-100",
-          text: "text-yellow-700",
-          border: "border-yellow-200",
+          bg: "bg-yellow-50",
+          text: "text-yellow-600",
         };
       return {
-        bg: "bg-red-100",
-        text: "text-red-700",
-        border: "border-red-200",
+        bg: "bg-red-50",
+        text: "text-red-500",
       };
     };
 
@@ -317,14 +341,8 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
     return (
       <View
         key={entry.id}
-        className="bg-white rounded-2xl p-4 mb-3 border border-gray-100"
-        style={{
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.05,
-          shadowRadius: 10,
-          elevation: 2,
-        }}
+        className="bg-white rounded-2xl p-4 mb-3"
+        style={CARD_SHADOW}
       >
         <HStack className="justify-between items-center mb-3">
           <HStack space="sm" className="items-center">
@@ -336,23 +354,12 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
             {healthScore > 0 && (
               <TouchableOpacity
                 onPress={showHealthScoreInfo}
-                className={`px-2.5 py-1 rounded-full border ${healthColors.bg} ${healthColors.border} flex-row items-center gap-1`}
+                className={`px-2.5 py-1 rounded-full ${healthColors.bg} flex-row items-center`}
                 activeOpacity={0.7}
               >
-                <Text className={`text-xs font-bold ${healthColors.text}`}>
-                  ❤️ {healthScore}
+                <Text className={`text-xs font-medium ${healthColors.text}`}>
+                  {healthScore}
                 </Text>
-                <HugeiconsIcon
-                  icon={InformationCircleIcon}
-                  size={14}
-                  color={
-                    healthColors.text.includes("green")
-                      ? "#15803d"
-                      : healthColors.text.includes("yellow")
-                        ? "#a16207"
-                        : "#b91c1c"
-                  }
-                />
               </TouchableOpacity>
             )}
           </HStack>
@@ -361,7 +368,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
               {format(new Date(entry.created_at), "h:mm a")}
             </Text>
             <TouchableOpacity onPress={() => handleDeleteEntry(entry.id)}>
-              <HugeiconsIcon icon={Delete01Icon} size={18} color="#EF4444" />
+              <HugeiconsIcon icon={Delete01Icon} size={18} color="#9CA3AF" />
             </TouchableOpacity>
           </HStack>
         </HStack>
@@ -370,10 +377,10 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
           {entry.foods.map((food, index) => renderFoodItem(food, index))}
         </VStack>
 
-        <HStack className="justify-between items-center mt-3 pt-3 border-t border-gray-100">
-          <Text className="text-gray-900 font-semibold">Total</Text>
+        <HStack className="justify-between items-center mt-3 pt-3 border-t border-gray-50">
+          <Text className="text-gray-500 font-medium text-sm">Total</Text>
           <HStack className="items-center" space="md">
-            <Text className="text-[#7B61FF] font-bold text-lg">
+            <Text className="text-gray-900 font-semibold">
               {entry.total_calories} cal
             </Text>
             {/* Micronutrient Info Icon - showing for ANY micronutrients temporarily */}
@@ -405,8 +412,8 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
                 >
                   <HugeiconsIcon
                     icon={InformationCircleIcon}
-                    size={18}
-                    color="#7B61FF"
+                    size={16}
+                    color="#D1D5DB"
                   />
                 </TouchableOpacity>
               )}
@@ -418,43 +425,10 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
 
   return (
     <View className="flex-1 bg-[#F6F4FF]">
-      <View className="flex-1 pt-5 pb-[100px]">
-        <HStack className="mb-5" space="md">
-          <TouchableOpacity
-            className="flex-1 bg-[#7B61FF] rounded-2xl py-4 items-center flex-row justify-center shadow-sm"
-            style={{
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.05,
-              shadowRadius: 10,
-              elevation: 2,
-            }}
-            onPress={takePhoto}
-            disabled={isAnalyzing}
-          >
-            <HugeiconsIcon icon={Camera01Icon} size={20} color="white" />
-            <Text className="text-white font-semibold ml-2">Take Photo</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-1 bg-white border border-[#7B61FF] rounded-2xl py-4 items-center flex-row justify-center shadow-sm"
-            style={{
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.05,
-              shadowRadius: 10,
-              elevation: 2,
-            }}
-            onPress={pickImage}
-            disabled={isAnalyzing}
-          >
-            <HugeiconsIcon icon={Image01Icon} size={20} color="#7B61FF" />
-            <Text className="text-[#7B61FF] font-semibold ml-2">Gallery</Text>
-          </TouchableOpacity>
-        </HStack>
-
+      <View className="flex-1 pt-2 pb-[100px]">
         {/* Analyzing State */}
         {isAnalyzing && (
-          <View className="bg-white rounded-2xl p-6 mb-5 items-center border border-gray-100">
+          <View className="bg-white rounded-2xl px-6 py-7 mb-4 items-center" style={CARD_SHADOW}>
             <ActivityIndicator size="large" color="#7B61FF" />
             <Text className="text-gray-600 mt-3 text-center">
               Analyzing your food...
@@ -467,7 +441,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
 
         {/* Analysis Error */}
         {analysisError && (
-          <View className="bg-red-50 rounded-2xl p-4 mb-5 border border-red-200">
+          <View className="bg-red-50 rounded-2xl p-4 mb-4 border border-red-100">
             <Text className="text-red-600 font-medium">Analysis Failed</Text>
             <Text className="text-red-500 text-sm mt-1">{analysisError}</Text>
             <TouchableOpacity
@@ -481,7 +455,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
 
         {/* Analysis Result */}
         {analysisResult && !isAnalyzing && (
-          <View className="bg-green-50 rounded-2xl p-4 mb-5 border border-green-200">
+          <View className="bg-green-50 rounded-2xl p-4 mb-4 border border-green-100">
             <HStack className="justify-between items-center mb-2">
               <Text className="text-green-700 font-semibold">
                 ✓ Food Added Successfully!
@@ -498,20 +472,14 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
         )}
 
         {/* Meal Entries */}
-        <View className="mt-2 mb-5">
-          <Text className="text-gray-600 font-medium mb-3">Today's Meals</Text>
+        <View className="mt-4 mb-4">
+          <Text className="text-gray-800 font-semibold text-base mb-3">Today's Meals</Text>
           {isLoading ? (
             <ActivityIndicator size="small" color="#7B61FF" />
           ) : calorieEntries.length === 0 ? (
             <View
-              className="bg-white rounded-2xl p-6 items-center border border-gray-100 shadow-sm"
-              style={{
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 10,
-                elevation: 2,
-              }}
+              className="bg-white rounded-2xl p-6 items-center"
+              style={CARD_SHADOW}
             >
               <RNImage
                 source={require("@/assets/images/no-meal-dog.png")}
@@ -532,36 +500,23 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
           )}
         </View>
 
-        {/* Micronutrient Tracking Button */}
+        {/* Micronutrient Tracking — subtle secondary CTA */}
         <TouchableOpacity
           onPress={() => router.push("/tabs/screens/micronutrient-tracking")}
-          className="bg-white rounded-2xl p-4 mb-5 border border-purple-200 flex-row items-center justify-between shadow-sm"
-          style={{
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.05,
-            shadowRadius: 10,
-            elevation: 2,
-          }}
-          activeOpacity={0.7}
+          className="flex-row items-center justify-between py-3 px-1 mb-2"
+          activeOpacity={0.6}
+          accessibilityLabel="Track micronutrients"
         >
-          <View className="flex-row items-center gap-3">
-            <View className="w-12 h-12 rounded-full bg-purple-100 items-center justify-center">
-              <HugeiconsIcon icon={Settings02Icon} size={24} color="#7B61FF" />
-            </View>
-            <View className="flex-1">
-              <Text className="text-gray-900 font-semibold text-base">
-                Track Micronutrients
-              </Text>
-              <Text className="text-gray-500 text-sm">
-                Select vitamins & minerals to track
-              </Text>
-            </View>
-          </View>
+          <HStack className="items-center" space="sm">
+            <HugeiconsIcon icon={Settings02Icon} size={18} color="#9CA3AF" />
+            <Text className="text-gray-500 text-sm font-medium">
+              Manage micronutrients
+            </Text>
+          </HStack>
           <HugeiconsIcon
             icon={ArrowLeft01Icon}
-            size={20}
-            color="#9CA3AF"
+            size={16}
+            color="#D1D5DB"
             style={{ transform: [{ rotate: "180deg" }] }}
           />
         </TouchableOpacity>

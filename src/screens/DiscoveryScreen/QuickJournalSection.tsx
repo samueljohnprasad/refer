@@ -119,9 +119,9 @@ export const QuickJournalSection: React.FC<QuickJournalSectionProps> =
   React.memo(({ onCardPress, onSeeAllPress }) => {
     return (
       <View className="mt-6">
-        <View className="flex-row justify-between items-center mb-4 px-1">
+        <View className="flex-row justify-between items-center mb-3 px-1">
           <View className="flex-row items-center gap-2">
-            <Text className="text-xl font-bold text-gray-900">
+            <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">
               Quick Journal
             </Text>
             <XPBadge amount={XP_REWARDS[XPActionType.JOURNAL_ENTRY]} />

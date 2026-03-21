@@ -34,6 +34,16 @@ import {
 } from "@/src/utils/habitCategories";
 import { XPBadge } from "@/src/components/XP";
 import { XPActionType, XP_REWARDS } from "@/src/types/xp";
+import { SectionHeader } from "@/src/components/ui/SectionHeader";
+
+/** Shared subtle card shadow — matches CalorieWidget for cross-tab consistency */
+const SECTION_SHADOW = {
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.04,
+  shadowRadius: 8,
+  elevation: 1,
+} as const;
 
 interface HabitsSectionProps {
   selectedDate: Date;
@@ -160,67 +170,43 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
   return (
     <View style={{ paddingBottom: 120 }}>
-      {/* Header Card with Progress */}
-      <View
-        className="bg-white rounded-2xl p-5 border border-gray-100 mb-4 shadow-sm"
-        style={{
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.05,
-          shadowRadius: 10,
-          elevation: 2,
-        }}
-      >
-        {/* Header with Title and Add Button */}
-        <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center">
-            <View className="bg-theme-purple-light p-2 rounded-xl mr-2">
-              <HugeiconsIcon icon={Tick01Icon} size={24} color="#7B61FF" />
-            </View>
-            <Text className="text-gray-900 font-semibold text-lg">
-              Daily Habits
-            </Text>
+      <SectionHeader
+        title="Daily Habits"
+        icon={Tick01Icon}
+        count={totalCount > 0 ? `${completedCount}/${totalCount}` : undefined}
+        className="mb-4"
+        rightElement={
+          <>
             <XPBadge amount={XP_REWARDS[XPActionType.HABIT_COMPLETION]} />
-            {totalCount > 0 && (
-              <View className="ml-2 px-2 py-0.5 bg-gray-100 rounded-full">
-                <Text className="text-xs font-medium text-gray-500">
-                  {completedCount}/{totalCount}
-                </Text>
-              </View>
-            )}
-          </View>
+            <TouchableOpacity
+              onPress={handleAddHabitPress}
+              className="bg-gray-800 p-2 rounded-xl"
+              activeOpacity={0.7}
+            >
+              <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
+            </TouchableOpacity>
+          </>
+        }
+      />
 
-          <TouchableOpacity
-            onPress={handleAddHabitPress}
-            className="bg-theme-purple-deep p-2 rounded-xl"
-            activeOpacity={0.7}
-          >
-            <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Progress Bar */}
-        {totalCount > 0 && (
-          <View className="w-full h-2 bg-theme-purple-light rounded-full mt-4 overflow-hidden">
+      {/* Progress Bar Card */}
+      {totalCount > 0 && (
+        <View className="bg-white rounded-2xl p-5 mb-4" style={SECTION_SHADOW}>
+          <Text className="text-gray-900 font-semibold mb-3">Daily Progress</Text>
+          <View className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
             <Animated.View
-              className="h-full bg-theme-purple-deep rounded-full"
+              className="h-full bg-gray-400 rounded-full"
               style={progressAnimatedStyle}
             />
           </View>
-        )}
-      </View>
+        </View>
+      )}
 
       {/* Empty State */}
       {habitsWithStatus.length === 0 ? (
         <View
-          className="bg-white rounded-2xl p-8 border border-gray-100 items-center shadow-sm"
-          style={{
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.05,
-            shadowRadius: 10,
-            elevation: 2,
-          }}
+          className="bg-white rounded-2xl p-8 items-center"
+          style={SECTION_SHADOW}
         >
           <Text className="text-gray-400 text-center">
             No habits for today.{"\n"}Tap + to add your first habit!
@@ -232,23 +218,17 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           {activeCategories.map((category) => (
             <View
               key={category}
-              className="bg-white rounded-2xl border border-gray-100 mb-4 overflow-hidden shadow-sm"
-              style={{
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 10,
-                elevation: 2,
-              }}
+              className="bg-white rounded-2xl mb-4 overflow-hidden"
+              style={SECTION_SHADOW}
             >
               {/* Category Header */}
-              <View className="px-4 py-3 border-b border-gray-100">
+              <View className="px-4 py-3 border-b border-gray-50">
                 <View className="flex-row items-center">
-                  <Text className="text-2xl mr-2">
+                  <Text className="text-lg mr-2">
                     {TIME_CATEGORY_CONFIG[category].emoji}
                   </Text>
                   <View>
-                    <Text className="text-base font-bold text-gray-800">
+                    <Text className="text-sm font-semibold text-gray-700">
                       {TIME_CATEGORY_CONFIG[category].label}
                     </Text>
                     <Text className="text-xs text-gray-400">

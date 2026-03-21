@@ -298,11 +298,11 @@ const DailyNotesHeader = React.memo(
             style={[headerControlsAnimatedStyle]}
           >
             <Pressable
-              className="p-2 -ml-1 rounded-lg active:bg-purple-50"
+              className="p-2 -ml-1 rounded-lg active:[#6B7280]"
               onPress={() => toggle()}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
-              <HugeiconsIcon icon={Calendar01Icon} size={20} color="#7B61FF" />
+              <HugeiconsIcon icon={Calendar01Icon} size={20} color="#6B7280" />
             </Pressable>
 
             <View className="flex-row items-center justify-center flex-1">
@@ -313,11 +313,11 @@ const DailyNotesHeader = React.memo(
 
             <View className="flex-row items-center gap-1">
               <Pressable
-                className="p-2 rounded-lg active:bg-purple-50"
+                className="p-2 rounded-lg active:[#6B7280]"
                 onPress={onBookmarksPress}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <HugeiconsIcon icon={Bookmark03Icon} size={20} color="#7B61FF" />
+                <HugeiconsIcon icon={Bookmark03Icon} size={20} color="#6B7280" />
               </Pressable>
             </View>
           </Animated.View>

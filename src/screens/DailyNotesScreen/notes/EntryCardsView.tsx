@@ -9,17 +9,19 @@ import {
 } from "react-native";
 import { Text } from "@/components/ui/text";
 import { format, parseISO } from "date-fns";
-import { Feather } from "@expo/vector-icons";
 import { getEntryTypeIcon } from "../../../components/lib/entryTypeUtils";
 import { JournalEntry } from "@/hooks/data/types";
 import { Image } from "@/components/ui/image";
 import { Emotion, emotions } from "@/assets/emojis";
+import { SectionHeader } from "@/src/components/ui/SectionHeader";
 import { FeelingsType } from "@/src/network/genAi";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   Bookmark02Icon,
   Delete02Icon,
   Add01Icon,
+  NoteIcon,
+  Mic01Icon,
 } from "@hugeicons/core-free-icons";
 import { useAtom } from "jotai";
 import { DeleteJournal, selectedDateAtom } from "../atoms";
@@ -27,6 +29,15 @@ import { getDuration } from "@/src/utils/date";
 import { ConfirmationModal } from "@/src/components/modals/ConfirmationModal";
 import { search } from "@/assets/images";
 import { useRouter } from "expo-router";
+
+/** Shared subtle card shadow — matches CalorieWidget/HabitsSection */
+const CARD_SHADOW = {
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.04,
+  shadowRadius: 8,
+  elevation: 1,
+} as const;
 
 interface EntryCardsViewProps {
   entries: JournalEntry[];
@@ -78,13 +89,14 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
   if (isLoading) {
     return (
-      <View>
-        <Text className="text-lg font-semibold text-gray-800 font-cormorantBold">
-          Journal Entries
-        </Text>
+      <View className="gap-4">
+        <SectionHeader
+          title="Journal Entries"
+          icon={NoteIcon}
+        />
         <View className="gap-3">
           {[1, 2, 3].map((i) => (
-            <View key={i} className="bg-white rounded-2xl p-4  animate-pulse">
+            <View key={i} className="bg-white rounded-2xl p-4 animate-pulse">
               <View className="h-4 bg-gray-200 rounded mb-2 w-3/4" />
               <View className="h-3 bg-gray-200 rounded mb-2 w-1/2" />
               <View className="h-3 bg-gray-200 rounded w-full" />
@@ -95,40 +107,39 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
     );
   }
 
+  const ctaButton = (
+    <TouchableOpacity
+      onPress={() => router.push("/tabs/(tabs)/record")}
+      className="bg-gray-800 p-2 rounded-xl"
+      activeOpacity={0.7}
+    >
+      <HugeiconsIcon icon={Mic01Icon} size={18} color="white" />
+    </TouchableOpacity>
+  );
+
   if (entries.length === 0) {
     return (
-      <View className="bg-white rounded-2xl p-5 border border-gray-100">
-        <View className="flex-row items-center justify-between mb-4">
-          <View className="flex-row items-center">
-            <View className="bg-purple-50 p-2 rounded-xl border border-gray-50 mr-2">
-              <Feather name="book-open" size={24} color="#7B61FF" />
-            </View>
-            <Text className="text-gray-900 font-semibold text-lg">
-              Journal Entries
+      <View className="gap-4">
+        <SectionHeader
+          title="Journal Entries"
+          icon={NoteIcon}
+          rightElement={ctaButton}
+        />
+        <View className="bg-white rounded-2xl p-5" style={CARD_SHADOW}>
+          <View className="py-6 items-center">
+            <RNImage
+              source={require("@/assets/images/no-entries-dog.png")}
+              style={{
+                width: 156,
+                height: 156,
+                marginBottom: 16,
+              }}
+              resizeMode="contain"
+            />
+            <Text className="text-gray-400 text-center">
+              No entries for today.{"\n"}Tap + to add your first journal!
             </Text>
           </View>
-          <TouchableOpacity
-            onPress={() => router.push("/tabs/(tabs)/record")}
-            className="bg-gray-900 p-2 rounded-xl"
-            activeOpacity={0.7}
-          >
-            <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        <View className="py-6 items-center">
-          <RNImage
-            source={require("@/assets/images/no-entries-dog.png")}
-            style={{
-              width: 156,
-              height: 156,
-              marginBottom: 16,
-            }}
-            resizeMode="contain"
-          />
-          <Text className="text-gray-400 text-center">
-            No entries for today.{"\n"}Tap + to add your first journal!
-          </Text>
         </View>
       </View>
     );
@@ -136,28 +147,12 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
   return (
     <View className="gap-4">
-      <View className="flex-row items-center justify-between">
-        <View className="flex-row items-center">
-          <View className="bg-purple-50 p-2 rounded-xl border border-gray-50 mr-2">
-            <Feather name="book-open" size={24} color="#7B61FF" />
-          </View>
-          <Text className="text-gray-900 font-semibold text-lg">
-            Journal Entries
-          </Text>
-          <View className="ml-2 px-2 py-0.5 bg-gray-100 rounded-full">
-            <Text className="text-xs font-medium text-gray-500">
-              {entries.length}
-            </Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          onPress={() => router.push("/tabs/(tabs)/record")}
-          className="bg-gray-900 p-2 rounded-xl"
-          activeOpacity={0.7}
-        >
-          <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
-        </TouchableOpacity>
-      </View>
+      <SectionHeader
+        title="Journal Entries"
+        icon={NoteIcon}
+        count={entries.length}
+        rightElement={ctaButton}
+      />
 
       <View className="gap-3">
         {entries.map((entry, index) => (
@@ -252,15 +247,11 @@ const EntryCard: React.FC<EntryCardProps> = ({
   return (
     <Pressable onPress={onPress}>
       <Animated.View
-        className="bg-white rounded-2xl p-4 border border-gray-100"
+        className="bg-white rounded-2xl p-4"
         style={{
           transform: [{ scale: scaleAnim }],
           opacity: fadeAnim,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.05,
-          shadowRadius: 10,
-          elevation: 2,
+          ...CARD_SHADOW,
         }}
       >
         {/* Header */}
