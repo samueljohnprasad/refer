@@ -3,6 +3,9 @@ import { useMentalHealthData } from "@/hooks/data/useMentalHealthData";
 import { View } from "@/components/ui/view";
 import { Text } from "@/components/Themed";
 import { Button, ButtonText } from "@/components/ui/button";
+import { Center } from "@/components/ui/center";
+import { VStack } from "@/components/ui/vstack";
+import { Icon, AlertCircleIcon } from "@/components/ui/icon";
 import { EntryCardsView } from "./EntryCardsView";
 import BlurModal from "@/src/components/BlurModal";
 import { JournalEntry } from "@/hooks/data/types";
@@ -81,20 +84,23 @@ const MentalHealthProfileContainerComponent: React.FC<
     setIsModalVisible(true);
   }, []);
 
-  if (!insightsResponse && !mentalHealthLoading) {
+  if (true) {
     return (
-      <View className="p-4">
-        <View className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
-          <Text className="text-red-700">
-            Unable to load mental health data. Please try again.
-          </Text>
-          <Button
-            // onClick={handleRefresh}
-            className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg"
-          >
-            <ButtonText>Retry</ButtonText>
-          </Button>
-        </View>
+      <View className="p-4 flex-1">
+        <Center className="h-64">
+          <VStack space="md" className="items-center">
+            <Icon as={AlertCircleIcon} className="text-theme-text-secondary h-12 w-12 opacity-60" />
+            <Text className="text-theme-text-secondary text-center px-8">
+              Unable to load mental health data. Please try again.
+            </Text>
+            <Button
+              onPress={handleRefetch}
+              className="bg-theme-purple-primary rounded-full"
+            >
+              <ButtonText className="text-white font-semibold">Retry</ButtonText>
+            </Button>
+          </VStack>
+        </Center>
       </View>
     );
   }

@@ -124,8 +124,8 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       >
         <Animated.View
           style={animatedStyle}
-          className={`bg-white rounded-2xl p-4 mb-3 border ${
-            isComplete ? "border-green-200" : "border-gray-100"
+          className={`bg-white rounded-2xl p-3 mb-2 border ${
+            isComplete ? "border-emerald-100/50" : "border-gray-50/50"
           }`}
         >
           <View className="flex-row items-center">
@@ -134,34 +134,34 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
             <View className="flex-1 ml-3">
               <View className="flex-row items-center justify-between">
                 <Text
-                  className="text-gray-900 font-semibold text-base"
+                  className="text-gray-900 font-bold text-[15px] tracking-tight"
                   numberOfLines={1}
                 >
                   {challenge.title}
                 </Text>
                 {isComplete ? (
-                  <View className="bg-green-100 px-2 py-1 rounded-full flex-row items-center gap-1">
+                  <View className="bg-emerald-50 px-2 py-0.5 rounded-full flex-row items-center gap-1 border border-emerald-100/50">
                     <HugeiconsIcon
                       icon={CheckmarkBadge01Icon}
-                      size={12}
+                      size={10}
                       color="#059669"
                       strokeWidth={2.5}
                     />
-                    <Text className="text-green-700 text-xs font-semibold">
+                    <Text className="text-emerald-700 text-[10px] font-bold uppercase tracking-wider">
                       Done
                     </Text>
                   </View>
                 ) : (
-                  <Text className="text-gray-400 text-sm font-medium">
+                  <Text className="text-gray-400 text-xs font-semibold">
                     {challenge.progress}/{challenge.condition.target}
                   </Text>
                 )}
               </View>
 
-              <View className="h-1.5 bg-gray-100 rounded-full mt-2 overflow-hidden">
+              <View className="h-1 bg-gray-100 rounded-full mt-2.5 overflow-hidden">
                 <View
                   className={`h-full rounded-full ${
-                    isComplete ? "bg-emerald-300" : "bg-violet-300"
+                    isComplete ? "bg-emerald-400" : "bg-indigo-400"
                   }`}
                   style={{ width: `${progressPercent}%` }}
                 />
@@ -187,8 +187,8 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
     >
       <Animated.View
         style={animatedStyle}
-        className={`bg-white rounded-2xl p-5 mb-3 border ${
-          isComplete ? "border-green-200" : "border-gray-100"
+        className={`bg-white rounded-2xl p-4 mb-2.5 border ${
+          isComplete ? "border-emerald-100" : "border-gray-100"
         }`}
       >
         {/* Header */}
@@ -237,10 +237,10 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
             </Text>
           </View>
 
-          <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <View className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
             <View
               className={`h-full rounded-full ${
-                isComplete ? "bg-emerald-300" : "bg-violet-300"
+                isComplete ? "bg-emerald-400" : "bg-indigo-400"
               }`}
               style={{ width: `${progressPercent}%` }}
             />
@@ -249,27 +249,27 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
 
         {/* Rewards */}
         {!isComplete && (
-          <View className="flex-row items-center mt-4 pt-4 border-t border-gray-100 gap-4">
-            <Text className="text-gray-400 text-xs">Reward</Text>
-            <View className="flex-row items-center gap-1">
+          <View className="flex-row items-center mt-3 gap-3">
+            <Text className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Reward</Text>
+            <View className="flex-row items-center gap-1 bg-amber-50 px-2 py-0.5 rounded-lg">
               <HugeiconsIcon
                 icon={StarsIcon}
-                size={14}
+                size={12}
                 color="#D97706"
                 strokeWidth={1.8}
               />
-              <Text className="text-amber-700 text-sm font-semibold">
+              <Text className="text-amber-700 text-xs font-bold">
                 {challenge.reward.xp} XP
               </Text>
             </View>
-            <View className="flex-row items-center gap-1">
+            <View className="flex-row items-center gap-1 bg-gray-100/80 px-2 py-0.5 rounded-lg">
               <HugeiconsIcon
                 icon={Coins01Icon}
-                size={14}
-                color="#D97706"
+                size={12}
+                color="#92400E"
                 strokeWidth={1.8}
               />
-              <Text className="text-gray-700 text-sm font-medium">
+              <Text className="text-gray-600 text-xs font-bold">
                 {challenge.reward.coins}
               </Text>
             </View>

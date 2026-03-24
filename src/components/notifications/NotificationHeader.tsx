@@ -1,6 +1,8 @@
 import React from "react";
 import { View } from "react-native";
 import { Text } from "@/components/ui/text";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Clock04Icon } from "@hugeicons/core-free-icons";
 import Animated, {
   FadeIn,
   useAnimatedStyle,
@@ -16,7 +18,9 @@ export const NotificationHeader: React.FC = () => {
   const headerOpacity = useSharedValue(0);
 
   React.useEffect(() => {
-    headerOpacity.value = withDelay(200, withTiming(1, { duration: 800 }));
+    // FIX #10: Reset to 0 first so animation replays on remount
+    headerOpacity.value = 0;
+    headerOpacity.value = withDelay(100, withTiming(1, { duration: 600 }));
   }, []);
 
   const headerAnimatedStyle = useAnimatedStyle(() => ({
@@ -26,35 +30,45 @@ export const NotificationHeader: React.FC = () => {
   return (
     <>
       {/* Header Text */}
-      <Animated.View style={headerAnimatedStyle} className="mt-4">
-        <Text className="text-center text-4xl font-cormorantSemiBold text-[#1f2937] leading-tight mb-3">
+      <Animated.View style={headerAnimatedStyle} className="mt-6">
+        {/* FIX #4: Replaced cormorantSemiBold with system font-black for consistency */}
+        <Text className="text-center text-3xl font-black text-gray-900 leading-tight mb-2">
           Daily Reminders
         </Text>
-        <Text className="text-center text-gray-600 text-lg leading-7 font-medium px-4">
-          Set up gentle nudges to help you{"\n"}build a consistent journaling
-          habit
+        {/* FIX #5: text-[15px] instead of text-lg — supporting copy should be smaller */}
+        {/* FIX #6: Removed hard \"\\n\" — let text reflow naturally */}
+        <Text className="text-center text-gray-500 text-[15px] leading-6 font-medium px-6">
+          Set up gentle nudges to help you build a consistent journaling habit
         </Text>
       </Animated.View>
 
       {/* Stats Badge */}
+      {/* FIX #7: Replaced emoji ⏰ with HugeiconsIcon for consistent rendering */}
+      {/* FIX #8: Balanced icon size (16) and text size (text-sm) */}
       <Animated.View
-        entering={FadeIn.duration(400).delay(400)}
-        className="self-center mt-6 mb-2"
+        entering={FadeIn.duration(400).delay(300)}
+        className="self-center mt-5 mb-1"
       >
-        <View className="flex-row items-center px-6 py-3 bg-purple-50 rounded-full border border-purple-100">
-          <Text className="text-2xl mr-2">⏰</Text>
-          <Text className="text-base font-bold text-purple-700">
+        <View className="flex-row items-center gap-2 px-5 py-2.5 bg-violet-50 rounded-full border border-violet-100">
+          <HugeiconsIcon
+            icon={Clock04Icon}
+            size={16}
+            color="#7C3AED"
+            strokeWidth={1.8}
+          />
+          <Text className="text-sm font-bold text-violet-700">
             3x more consistency
           </Text>
         </View>
       </Animated.View>
 
       {/* Usage Info */}
+      {/* FIX #9: Reduced bottom margin from mb-6 to mb-4 — less wasted space before cards */}
       <Animated.View
-        entering={FadeIn.duration(400).delay(600)}
-        className="px-8 mt-4 mb-6"
+        entering={FadeIn.duration(400).delay(450)}
+        className="px-8 mt-4 mb-4"
       >
-        <Text className="text-center text-gray-500 text-sm leading-6 font-medium">
+        <Text className="text-center text-gray-400 text-[13px] leading-5">
           Choose the times that work best for you. You can enable or disable
           reminders anytime.
         </Text>

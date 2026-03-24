@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Pressable, Image } from "react-native";
 import { Achievement } from "@/src/types/achievements";
-import Svg, { Polygon } from "react-native-svg";
+// FIX #28: Removed unused Svg and Polygon imports (dead code)
 import { Grayscale } from "react-native-color-matrix-image-filters";
 
 interface AchievementBadgeProps {
@@ -14,8 +14,7 @@ interface AchievementBadgeProps {
 }
 
 /**
- * Hexagonal badge component with expressive design
- * Shows progress count and unlock status
+ * Badge component showing achievement image, progress, and unlock status.
  */
 export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   achievement,
@@ -26,46 +25,40 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   showProgress = true,
 }) => {
   const sizeStyles = {
-    sm: { hex: 60, icon: 18, text: "text-xs", nameSize: "text-xs" },
-    md: { hex: 80, icon: 24, text: "text-sm", nameSize: "text-xs" },
-    lg: { hex: 100, icon: 32, text: "text-base", nameSize: "text-sm" },
+    sm: { hex: 60, icon: 18, nameSize: "text-xs" },
+    md: { hex: 80, icon: 24, nameSize: "text-xs" },
+    lg: { hex: 100, icon: 32, nameSize: "text-sm" },
   };
 
   const styles = sizeStyles[size];
   const target = achievement.condition.target;
-  const progress = Math.min(currentProgress, target);
-  const progressPercent = (progress / target) * 100;
+  // FIX #29: Clamp progress to minimum of 0 to prevent negative values
+  const progress = Math.max(0, Math.min(currentProgress, target));
+  const progressPercent = target > 0 ? (progress / target) * 100 : 0;
 
-  // Check if icon is a number or emoji
   const isNumberIcon = !isNaN(Number(achievement.icon));
 
   return (
     <Pressable
       onPress={onPress}
-      className="items-center mb-4"
-      style={{ width: styles.hex + 20 }}
+      // FIX #30: Added accessibilityRole, accessibilityLabel, and accessibilityState
+      accessibilityRole="button"
+      accessibilityLabel={
+        isUnlocked
+          ? `${achievement.name} — Unlocked. +${achievement.xpBonus} XP.`
+          : `${achievement.name} — Locked. Progress: ${progress} of ${target}.`
+      }
+      accessibilityState={{ selected: isUnlocked }}
+      className="items-center mb-3"
+      style={({ pressed }) => [
+        { width: styles.hex + 20, opacity: pressed && !!onPress ? 0.7 : 1 },
+      ]}
     >
-      {/* Hexagon Badge */}
+      {/* Badge Image */}
       <View
         className="relative items-center justify-center"
         style={{ width: styles.hex, height: styles.hex }}
       >
-        {/* Background Hexagon */}
-        {/* <Svg
-          width={styles.hex}
-          height={styles.hex}
-          viewBox="0 0 100 100"
-          style={{ position: "absolute" }}
-        >
-          <Polygon
-            points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5"
-            fill={isUnlocked ? achievement.color : "#E5E7EB"}
-            stroke={isUnlocked ? achievement.color : "#D1D5DB"}
-            strokeWidth="2"
-          />
-        </Svg> */}
-
-        {/* Icon/Number/Image */}
         <View className="absolute items-center justify-center">
           {achievement.imageAsset ? (
             <Grayscale amount={isUnlocked ? 0 : 1}>
@@ -74,7 +67,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
                 style={{
                   width: styles.hex,
                   height: styles.hex,
-                  opacity: isUnlocked ? 1 : 0.5,
+                  opacity: isUnlocked ? 1 : 0.45,
                 }}
                 resizeMode="contain"
               />
@@ -84,7 +77,8 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
               className="font-bold"
               style={{
                 fontSize: styles.icon,
-                color: isUnlocked ? "#FFFFFF" : "#9CA3AF",
+                // FIX #31: Locked number icon: use gray-500 not gray-400 for better contrast
+                color: isUnlocked ? "#7B61FF" : "#6B7280",
               }}
             >
               {achievement.icon}
@@ -93,18 +87,19 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
             <Text
               style={{
                 fontSize: styles.icon,
-                opacity: isUnlocked ? 1 : 0.4,
+                opacity: isUnlocked ? 1 : 0.45,
               }}
             >
               {achievement.icon}
             </Text>
           )}
 
-          {/* XP indicator for unlocked */}
+          {/* XP badge — amber tint, only when unlocked */}
           {isUnlocked && (
             <View
-              className="absolute -bottom-1 px-1.5 py-0.5 rounded-full bg-white border border-gray-100"
+              className="absolute -bottom-1 px-1.5 py-0.5 rounded-full border border-amber-100"
               style={{
+                backgroundColor: "#FEF3C7",
                 shadowColor: "#000",
                 shadowOffset: { width: 0, height: 1 },
                 shadowOpacity: 0.05,
@@ -112,7 +107,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
                 elevation: 1,
               }}
             >
-              <Text className="text-[8px] font-bold text-gray-700">
+              <Text className="text-[10px] font-bold text-amber-700">
                 +{achievement.xpBonus} XP
               </Text>
             </View>
@@ -122,8 +117,9 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
 
       {/* Badge Name */}
       <Text
-        className={`${styles.nameSize} font-semibold text-center mt-2`}
-        style={{ color: isUnlocked ? "#111827" : "#6B7280" }}
+        className={`${styles.nameSize} font-bold text-center mt-1.5 ${
+          isUnlocked ? "text-gray-900" : "text-gray-500"
+        }`}
         numberOfLines={2}
       >
         {achievement.name}
@@ -131,17 +127,16 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
 
       {/* Description */}
       <Text
-        className="text-[10px] text-gray-400 text-center mt-0.5"
+        className="text-[10px] text-gray-500 text-center mt-0.5"
         numberOfLines={2}
       >
         {achievement.description}
       </Text>
 
-      {/* Progress Bar (only when locked) */}
+      {/* Progress (locked only) */}
       {!isUnlocked && showProgress && (
         <View className="w-full mt-2">
-          {/* Progress Bar */}
-          <View className="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <View className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
             <View
               className="h-full rounded-full"
               style={{
@@ -150,8 +145,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
               }}
             />
           </View>
-          {/* Progress Count */}
-          <Text className="text-[10px] text-gray-500 text-right mt-0.5">
+          <Text className="text-[10px] text-gray-400 text-center mt-0.5 font-medium">
             {progress}/{target}
           </Text>
         </View>

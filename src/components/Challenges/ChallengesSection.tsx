@@ -40,51 +40,61 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
   }
 
   return (
-    <View className="bg-white rounded-2xl border border-gray-100">
+    <View
+      className="bg-white rounded-2xl border border-gray-100"
+      style={{
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.04,
+        shadowRadius: 12,
+        elevation: 2,
+      }}
+    >
       {/* Header */}
-      <TouchableOpacity
-        onPress={() => setExpanded(!expanded)}
-        className="flex-row items-center justify-between p-4"
-        activeOpacity={0.7}
-        accessibilityRole="button"
-        accessibilityState={{ expanded }}
-        accessibilityLabel="Toggle challenges list"
-      >
-        <View className="flex-row items-center gap-3">
-          {/* Icon bubble instead of emoji */}
-          <View
-            className="w-9 h-9 rounded-full items-center justify-center"
-            style={{ backgroundColor: "#F6F4FF" }}
-          >
-            <HugeiconsIcon
-              icon={Target02Icon}
-              size={18}
-              color="#7B61FF"
-              strokeWidth={1.8}
-            />
+      <View className="flex-row items-center justify-between p-4 pb-2">
+        <TouchableOpacity
+          onPress={() => setExpanded(!expanded)}
+          className="flex-row items-center flex-1"
+          activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityState={{ expanded }}
+          accessibilityLabel="Toggle challenges list"
+        >
+          <View className="flex-row items-center gap-3">
+            {/* Icon bubble instead of emoji */}
+            <View
+              className="w-10 h-10 rounded-full items-center justify-center"
+              style={{ backgroundColor: "#F5F3FF" }}
+            >
+              <HugeiconsIcon
+                icon={Target02Icon}
+                size={20}
+                color="#8B5CF6"
+                strokeWidth={1.8}
+              />
+            </View>
+            <View>
+              <Text className="text-gray-900 font-bold text-base">
+                Daily Challenges
+              </Text>
+              <Text className="text-gray-400 text-xs font-medium">
+                {completedCount} of {totalCount} completed
+              </Text>
+            </View>
           </View>
-          <View>
-            <Text className="text-gray-900 font-semibold text-base">
-              Challenges
-            </Text>
-            <Text className="text-gray-500 text-xs mt-0.5">
-              {completedCount} of {totalCount} completed
-            </Text>
-          </View>
-        </View>
+        </TouchableOpacity>
 
         <TouchableOpacity
           onPress={handleViewAll}
-          className="bg-gray-100 px-3 py-1.5 rounded-full"
+          className="px-2 py-1"
           accessibilityRole="button"
           accessibilityHint="Opens the full challenges screen"
         >
-          <Text className="text-gray-700 font-medium text-xs">View All</Text>
+          <Text className="text-indigo-600 font-bold text-xs uppercase tracking-wider">
+            View All
+          </Text>
         </TouchableOpacity>
-      </TouchableOpacity>
-
-      {/* Divider */}
-      <View className="h-px bg-gray-100" />
+      </View>
 
       {/* Challenge list */}
       {expanded && (

@@ -540,9 +540,9 @@ export default function JournalCalendarScreen() {
           >
             <View className="flex-row items-center gap-2 mb-3">
               <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest px-1">
-                Journaling
-              </Text>
-              <XPBadge amount={XP_REWARDS[XPActionType.JOURNAL_ENTRY]} />
+                  Journaling
+                </Text>
+                <XPBadge amount={XP_REWARDS[XPActionType.JOURNAL_ENTRY]} />
             </View>
             <FeaturedPromptCard
               prompt="What is special about today?"
@@ -582,8 +582,8 @@ export default function JournalCalendarScreen() {
             )}
           >
             <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-3 px-1">
-              Progress
-            </Text>
+                Progress
+              </Text>
             <ChallengesSection maxItems={3} />
           </Animated.View>
 

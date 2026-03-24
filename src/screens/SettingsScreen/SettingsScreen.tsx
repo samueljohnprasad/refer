@@ -16,6 +16,7 @@ import {
   Copy01Icon,
   Share01Icon,
   Download02Icon,
+  StarIcon,
 } from "@hugeicons/core-free-icons";
 
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
@@ -83,7 +84,7 @@ export default React.memo(function SettingsScreen() {
   };
 
   return (
-    <View className="flex-1 bg-[#F6F4FF]">
+    <View className="flex-1 bg-offwhite">
       <Stack.Screen
         options={{
           headerShown: true,
@@ -117,7 +118,7 @@ export default React.memo(function SettingsScreen() {
             />
           )}
 
-          <SettingsSection>
+          <SettingsSection title="Account & Preferences">
             <SettingsItem
               icon={Notification01Icon}
               iconColor="#A855F7"
@@ -166,7 +167,7 @@ export default React.memo(function SettingsScreen() {
               }}
             />
             <SettingsItem
-              icon={Notification01Icon}
+              icon={StarIcon}
               iconColor="#16A34A"
               iconBgColor="#DCFCE7"
               title="Write a Review"
@@ -175,8 +176,7 @@ export default React.memo(function SettingsScreen() {
             />
           </SettingsSection>
 
-          {/* Settings Group 2 */}
-          <SettingsSection className="mt-[14px]">
+          <SettingsSection title="Legal & App">
             <SettingsItem
               icon={File01Icon}
               iconColor="#9333EA"
@@ -190,17 +190,6 @@ export default React.memo(function SettingsScreen() {
               iconBgColor="#DBEAFE"
               title="Privacy Policy"
               onPress={handlePrivacyPolicy}
-            />
-            <SettingsItem
-              icon={Delete02Icon}
-              iconColor="#DC2626"
-              iconBgColor="#FEE2E2"
-              title="Erase Personal Data"
-              subtitle="Permanently delete all data"
-              onPress={() => {
-                Haptics.selectionAsync();
-                setShowEraseDataModal(true);
-              }}
             />
             <SettingsItem
               icon={AlertSquareIcon}
@@ -223,12 +212,25 @@ export default React.memo(function SettingsScreen() {
               }}
             />
             <SettingsItem
+              icon={Delete02Icon}
+              iconColor="#DC2626"
+              iconBgColor="#FEE2E2"
+              title="Erase Personal Data"
+              subtitle="Permanently delete all data"
+              onPress={() => {
+                Haptics.selectionAsync();
+                setShowEraseDataModal(true);
+              }}
+              danger={true}
+            />
+            <SettingsItem
               icon={Logout02Icon}
               iconColor="#3B82F6"
               iconBgColor="#BFDBFE"
               title="Sign Out"
               onPress={() => setIsSignoutOPen(true)}
               isLast={true}
+              danger={true}
             />
           </SettingsSection>
         </Animated.ScrollView>

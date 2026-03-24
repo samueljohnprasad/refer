@@ -6,6 +6,7 @@
  */
 
 import React from "react";
+// FIX #2: Removed justify-center items-center from View — incompatible with scrollable content
 import { View, ScrollView } from "react-native";
 import TimePickerModal from "./TimePickerModal";
 import {
@@ -15,11 +16,8 @@ import {
   useReminderConfig,
 } from "./notifications";
 
-type NotificationsUIProps = {};
-/**
- * Main NotificationsUI Component
- */
-const NotificationsUI: React.FC<NotificationsUIProps> = () => {
+// FIX #1: Empty interface replaced with explicit empty type (no-arg)
+const NotificationsUI: React.FC = () => {
   const {
     items,
     cfg,
@@ -32,12 +30,19 @@ const NotificationsUI: React.FC<NotificationsUIProps> = () => {
   } = useReminderConfig(DEFAULT_REMINDERS);
 
   return (
-    <View className="flex-1 bg-[#DCF2FF] justify-center items-center">
-      <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
+    // FIX #1: bg-offwhite instead of hard-coded #DCF2FF
+    // FIX #2: Removed justify-center items-center — those break ScrollView layout
+    <View className="flex-1 bg-offwhite">
+      <ScrollView
+        className="flex-1 px-4"
+        showsVerticalScrollIndicator={false}
+        // FIX #3: Proper bottom padding so last card isn't clipped by home indicator
+        contentContainerStyle={{ paddingBottom: 48 }}
+      >
         <NotificationHeader />
 
         {/* Reminder Cards */}
-        <View className="mt-5">
+        <View className="mt-4">
           {items.map((item, index) => {
             const isSelected = cfg[item.id]?.enabled;
             return (
