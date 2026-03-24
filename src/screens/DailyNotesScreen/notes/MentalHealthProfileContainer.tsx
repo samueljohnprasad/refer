@@ -84,7 +84,7 @@ const MentalHealthProfileContainerComponent: React.FC<
     setIsModalVisible(true);
   }, []);
 
-  if (true) {
+  if (!insightsResponse && !mentalHealthLoading) {
     return (
       <View className="p-4 flex-1">
         <Center className="h-64">
