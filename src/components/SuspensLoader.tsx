@@ -10,7 +10,7 @@ const SuspensLoader: React.FC<SuspenseLoaderProps> = ({ children }) => {
   return (
     <Suspense
       fallback={
-        <View className="flex-1 w-full h-full  items-center justify-center">
+        <View className="flex-1 w-full h-full items-center justify-center">
           {isIOS ? <Loading /> : <ActivityIndicator />}
         </View>
       }

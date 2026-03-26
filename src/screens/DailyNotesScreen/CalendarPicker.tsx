@@ -9,7 +9,8 @@ import {
   addMonths,
 } from "date-fns";
 import React, { useMemo } from "react";
-import { Pressable, View, Text, DimensionValue } from "react-native";
+import { Pressable, View, DimensionValue } from "react-native";
+import { Text } from "@/components/Themed";
 import useCalendarMonth from "./hooks/useCalendarMonth";
 import MoodBadge from "@/src/components/MoodBadge";
 import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
@@ -65,7 +66,28 @@ const DayCell = React.memo<DayCellProps>(
   }) => {
     const dayLabel = format(day, "d");
 
-    // If not in current month, render empty cell for spacing
+    // All hooks MUST be called before any conditional returns (Rules of Hooks)
+    const containerClassName = useMemo(
+      () =>
+        `w-full h-full flex justify-center items-center gap-0.5 rounded-xl ${
+          isSelected ? "bg-theme-purple-light" : isTodayDate ? "bg-gray-100" : ""
+        }`,
+      [isSelected, isTodayDate]
+    );
+
+    const textClassName = useMemo(() => {
+      if (disabled) return "text-[18px] font-semibold text-theme-text-secondary/50";
+      if (isTodayDate && !isSelected) return "text-[18px] font-bold text-theme-text-secondary";
+      if (isSelected) return "text-[18px] font-bold text-theme-purple-deep";
+      return "text-[18px] font-semibold text-theme-text-secondary";
+    }, [isTodayDate, isSelected, disabled]);
+
+    const moodClassName = useMemo(
+      () => `mt-0.5 ${disabled ? "opacity-30" : ""}`,
+      [disabled]
+    );
+
+    // Early return for out-of-month cells (after all hooks)
     if (!inCurrentMonth) {
       return (
         <View style={cellStyle} className="justify-center items-center p-[2px]">
@@ -74,33 +96,6 @@ const DayCell = React.memo<DayCellProps>(
       );
     }
 
-    // Memoize className strings to avoid recalculation
-    const containerClassName = useMemo(
-      () =>
-        `w-full h-full flex justify-center items-center gap-0.5 rounded-xl ${
-          isSelected ? "bg-[#7B61FF]" : isTodayDate ? "bg-gray-100" : ""
-        }`,
-      [isSelected, isTodayDate]
-    );
-
-    const textClassName = useMemo(() => {
-      const getValue = () => {
-        if (disabled) return "text-black/30";
-        if (isTodayDate && !isSelected) return "text-black/60 font-bold";
-        if (isSelected) return "text-white font-bold";
-        return "text-black/60";
-      };
-      return `text-[18px] font-semibold ${getValue()}`;
-    }, [isTodayDate, isSelected, disabled]);
-
-    const moodClassName = useMemo(() => {
-      const getValue = () => {
-        if (disabled) return "opacity-30";
-        return "";
-      };
-      return `mt-0.5 ${getValue()}`;
-    }, [disabled]);
-
     return (
       <Pressable
         className="justify-center items-center p-[2px]"
@@ -108,6 +103,7 @@ const DayCell = React.memo<DayCellProps>(
         onPress={onPress}
         disabled={disabled}
         accessibilityRole="button"
+        accessibilityLabel={`${dayLabel}, ${isTodayDate ? "today" : ""}`}
       >
         <View className={containerClassName}>
           <Text className={textClassName}>{dayLabel}</Text>
@@ -209,12 +205,12 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
       <View className="px-2">
         {/* Month header with title on left, arrows on right */}
         <View className="flex-row justify-between items-center mb-2 py-2">
-          <Text className="text-[22px] font-bold text-black tracking-tight font-cormorantBold">
+          <Text className="text-[22px] font-bold text-theme-text-primary tracking-tight font-cormorantBold">
             {monthTitle}
           </Text>
           <View className="flex-row items-center gap-2">
             <Pressable className="p-2 rounded-full" onPress={goToPreviousMonth}>
-              <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color="#7B61FF" />
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color="#6B6B6B" />
             </Pressable>
             <Pressable
               className="p-2 rounded-full"
@@ -224,7 +220,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
                 size={20}
-                color={canGoNextMonth ? "#7B61FF" : "#C7C7CC"}
+                color={canGoNextMonth ? "#6B6B6B" : "#E5E5E5"}
               />
             </Pressable>
           </View>

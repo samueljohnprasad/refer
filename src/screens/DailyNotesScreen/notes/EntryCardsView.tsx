@@ -291,7 +291,7 @@ const EntryCard: React.FC<EntryCardProps> = ({
             <Text className="text-2xl mb-1">
               <Image
                 source={emotions[entry.moods?.main_mood as Emotion]}
-                className="w-6 h-6"
+                className="w-4 h-4 opacity-60"
                 alt={entry.moods?.main_mood || "-"}
                 progressiveRenderingEnabled={true}
               />

@@ -1,6 +1,7 @@
 import { format } from "date-fns/format";
 import { memo } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
+import { Text } from "@/components/Themed";
 
 // Simplified Animated Day Button Component - Performance Optimized
 export interface DayButtonProps {
@@ -28,16 +29,21 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
 
   const getFontColor = () => {
     if (disabled) return "text-black/30";
-    if (isSelected) return "text-white";
+    if (isSelected) return "text-theme-purple-deep";
     return "text-theme-text-primary";
   };
 
   return (
-    <Pressable onPress={handlePress} disabled={disabled}>
+    <Pressable
+      onPress={handlePress}
+      disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={`${dayName} ${format(day, "d")}`}
+    >
       <View
         className={`items-center py-1.5 px-1 rounded-xl ${
           isSelected
-            ? "bg-[#7B61FF]"
+            ? "bg-theme-purple-light"
             : isToday && !isSelected
             ? "bg-gray-100"
             : ""

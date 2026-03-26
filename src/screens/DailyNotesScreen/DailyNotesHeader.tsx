@@ -36,8 +36,6 @@ import { Bookmark03Icon, Calendar01Icon } from "@hugeicons/core-free-icons";
 import { isIOS } from "@/src/utils/mood";
 import { DayButton } from "./DayButtonComponent";
 import SuspensLoader from "@/src/components/SuspensLoader";
-import { DateTimePicker, Host } from "@expo/ui/swift-ui";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { EmotionDetailsModal } from "@/src/components/modals";
 
 // Lazy load CalendarPicker
@@ -222,7 +220,7 @@ const DailyNotesHeader = React.memo(
     }, [weekDays, selectedDateStr, moodMap, currentWeekViewSafe]);
 
     const dayPressHandlers = useCallback(
-      (dayData: any) => {
+      (dayData: (typeof weekDaysData)[number]) => {
         return () => selectDate(dayData.day);
       },
       [selectDate]
@@ -278,7 +276,6 @@ const DailyNotesHeader = React.memo(
 
     // Pan gesture handlers are provided by useWeekNavigation
     const paddingTop = isIOS ? 0 : 20;
-    const isLiquidGlass = isLiquidGlassAvailable();
 
     return (
       <SafeAreaView
@@ -298,11 +295,11 @@ const DailyNotesHeader = React.memo(
             style={[headerControlsAnimatedStyle]}
           >
             <Pressable
-              className="p-2 -ml-1 rounded-lg active:[#6B7280]"
+              className="p-2 -ml-1 rounded-lg"
               onPress={() => toggle()}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
-              <HugeiconsIcon icon={Calendar01Icon} size={20} color="#6B7280" />
+              <HugeiconsIcon icon={Calendar01Icon} size={20} color="#6B6B6B" />
             </Pressable>
 
             <View className="flex-row items-center justify-center flex-1">
@@ -313,11 +310,11 @@ const DailyNotesHeader = React.memo(
 
             <View className="flex-row items-center gap-1">
               <Pressable
-                className="p-2 rounded-lg active:[#6B7280]"
+                className="p-2 rounded-lg"
                 onPress={onBookmarksPress}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <HugeiconsIcon icon={Bookmark03Icon} size={20} color="#6B7280" />
+                <HugeiconsIcon icon={Bookmark03Icon} size={20} color="#6B6B6B" />
               </Pressable>
             </View>
           </Animated.View>
@@ -328,11 +325,11 @@ const DailyNotesHeader = React.memo(
               style={[weekHeaderAnimatedStyle]}
             >
               <Animated.View
-                className="flex flex-1 flex-row"
-                style={[{ gap: 5 }, weekSlideAnimatedStyle]}
+                className="flex flex-1 flex-row gap-1"
+                style={[weekSlideAnimatedStyle]}
               >
                 {weekDaysData.map((dayData) => (
-                  <View className="flex-1 gap-2.5 mb-8" key={dayData.dayStr}>
+                  <View className="flex-1 gap-2 mb-3" key={dayData.dayStr}>
                     <DayButton
                       day={dayData.day}
                       dayName={dayData.dayName}

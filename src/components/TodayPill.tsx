@@ -2,7 +2,6 @@ import React from "react";
 import {
   Animated,
   Pressable,
-  StyleSheet,
   View,
   type StyleProp,
   type ViewStyle,
@@ -29,7 +28,7 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
     label = "Today",
     onPress,
     containerStyle,
-    backgroundColor = "#8B5CF6", // purple-500
+    backgroundColor = "#7B61FF",
     textColor = "#ffffff",
     durationMs,
     offsetX,
@@ -45,8 +44,19 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
     return (
       <Animated.View
         style={[
-          styles.pill,
-          { backgroundColor },
+          {
+            position: "absolute",
+            right: 0,
+            bottom: -14,
+            borderTopLeftRadius: 16,
+            borderBottomLeftRadius: 16,
+            paddingHorizontal: 6,
+            paddingVertical: 4,
+            flexDirection: "row",
+            alignItems: "center",
+            zIndex: 100,
+            backgroundColor: "#EDE9FE", // Soft lavender/light purple
+          },
           containerStyle,
           animatedStyle,
         ]}
@@ -56,36 +66,14 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
           onPress={onPress}
           accessibilityRole="button"
           accessibilityLabel={label}
-          style={styles.row}
+          className="flex-row items-center"
         >
-          <MaterialCommunityIcons name="chevron-left" size={18} color="white" />
-          <Text style={[styles.text, { color: textColor }]}>{label}</Text>
+          <MaterialCommunityIcons name="chevron-left" size={18} color="#7B61FF" />
+          <Text className="font-semibold" style={{ color: "#7B61FF" }}>{label}</Text>
         </Pressable>
       </Animated.View>
     );
   }
 );
-
-const styles = StyleSheet.create({
-  pill: {
-    position: "absolute",
-    right: 0,
-    bottom: -14,
-    borderTopLeftRadius: 16,
-    borderBottomLeftRadius: 16,
-    paddingHorizontal: 6,
-    paddingVertical: 4,
-    flexDirection: "row",
-    alignItems: "center",
-    zIndex: 100,
-  },
-  text: {
-    fontWeight: "600",
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});
 
 export default TodayPill;

@@ -1,13 +1,10 @@
 import React from "react";
 import {
-  Animated,
-  StyleSheet,
   View,
   type StyleProp,
   type ViewStyle,
 } from "react-native";
 import { bad, fine, good, great, terrible } from "@/assets/emojis";
-import { moodScoreToPale, clampToMoodScore } from "@/constants/moodColors";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/Themed";
 import { PressableOpacity } from "pressto";
@@ -30,7 +27,7 @@ const moodEmojiMap = {
 };
 
 export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
-  ({ moodscore, size = 32, containerStyle, onPress, disabled }) => {
+  ({ moodscore, size = 32, containerStyle, onPress, disabled, active = true }) => {
     const diameter = size;
     const radius = diameter / 2;
     const moodEmoji = moodscore
@@ -41,18 +38,14 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
         style={{ width: diameter, height: diameter }}
         onPress={onPress}
       >
-        <Animated.View style={[styles.wrapper, containerStyle]}>
-          <View style={styles.outer} />
+        <View className={`items-center justify-center ${!active ? 'opacity-50' : ''}`} style={containerStyle}>
           <View
             style={{
               width: diameter,
               height: diameter,
               borderRadius: radius,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#0000000F",
             }}
-            className={`${disabled ? "opacity-30" : ""}`}
+            className={`items-center justify-center ${disabled ? "opacity-30" : ""}`}
           >
             {moodEmoji && (
               <Image
@@ -67,22 +60,12 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
                 progressiveRenderingEnabled={true}
               />
             )}
-            {!moodEmoji && <Text className="color-slate-700">+</Text>}
+            {!moodEmoji && <Text className="text-slate-700">+</Text>}
           </View>
-        </Animated.View>
+        </View>
       </PressableOpacity>
     );
   }
 );
-
-const styles = StyleSheet.create({
-  wrapper: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  outer: {
-    position: "absolute",
-  },
-});
 
 export default MoodBadge;
