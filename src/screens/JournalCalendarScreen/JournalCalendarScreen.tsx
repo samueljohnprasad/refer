@@ -15,6 +15,8 @@ import Animated, {
   withSequence,
   interpolate,
   FadeInDown,
+  FadeIn,
+  useAnimatedProps,
   type AnimatedStyle,
 } from "react-native-reanimated";
 import { endOfWeek, startOfWeek } from "date-fns";
@@ -32,6 +34,7 @@ import {
   Target02Icon,
   Medal01Icon,
   Plant03Icon,
+  ArrowRight01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
@@ -58,16 +61,16 @@ import { useAtom, useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { XP_REWARDS, XPActionType } from "@/src/types/xp";
 
-// Shared card shadow style — extracted to avoid duplication across components
-export const CARD_SHADOW = {
+// Apple Human Interface Guidelines - Subtle Shadow System
+export const SHADOW_SUBTLE = {
   shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.05,
-  shadowRadius: 10,
-  elevation: 2,
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.04,
+  shadowRadius: 12,
+  elevation: 3,
 } as const;
 
-// Global color palette
+// Global color palette - Refined for Semantic Harmony
 export const PALETTE = {
   purple: "#7B61FF",
   lightPurple: "#DCD6FF",
@@ -82,7 +85,22 @@ export const PALETTE = {
   amber: "#F59E0B",
   green: "#65A30D",
   lavender: "#C4B5FD",
+  // Apple Refinements
+  fireWarm: "#FF8A00",   // Warm semantic orange
+  goalAccent: "#8B5CF6", // Brand semantic violet
+  systemGray: "#8E8E93", // Standard Apple gray
 } as const;
+
+/**
+ * Standard Scale Animation Hook for Interactive Elements
+ */
+const useScaleFeedback = () => {
+  const scale = useSharedValue(1);
+  const onPressIn = () => (scale.value = withTiming(0.97, { duration: 100 }));
+  const onPressOut = () => (scale.value = withTiming(1, { duration: 150 }));
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  return { style, onPressIn, onPressOut };
+};
 
 /**
  * Returns a time-aware greeting based on the current hour.
@@ -110,48 +128,47 @@ const TopBar = React.memo<{
   }, []);
 
   return (
-    <View className="py-4 px-5 bg-offwhite border-b border-gray-100/60 flex-row justify-between items-center">
+    <View className="py-2.5 px-5 bg-offwhite border-b border-gray-100/50 flex-row justify-between items-center">
       <TouchableOpacity
         onPress={onAchievementsPress}
-        className="w-11 h-11 rounded-full items-center justify-center bg-white border border-gray-100"
-        style={CARD_SHADOW}
-        activeOpacity={0.8}
-        accessibilityLabel="Achievements"
-        accessibilityRole="button"
-        accessibilityHint="Opens the achievements screen"
+        className="w-10 h-10 rounded-full items-center justify-center bg-white border border-gray-100"
+        style={SHADOW_SUBTLE}
+        activeOpacity={0.7}
       >
-        <HugeiconsIcon icon={Medal01Icon} size={20} color={PALETTE.amber} />
+        <HugeiconsIcon icon={Medal01Icon} size={18} color={PALETTE.amber} />
       </TouchableOpacity>
 
-      {/* Coins Badge */}
+      {/* Date & Coins Container */}
       <TouchableOpacity
         onPress={onShopPress}
         activeOpacity={0.7}
-        accessibilityLabel="Rewards shop"
-        accessibilityRole="button"
-        accessibilityHint="Opens the rewards shop"
+        className="items-center"
       >
-        <CoinsBadge coins={wallet?.coins ?? 0} size="md" />
+        <CoinsBadge coins={wallet?.coins ?? 0} size="sm" />
       </TouchableOpacity>
 
       <TouchableOpacity
-        className="w-11 h-11 rounded-full items-center justify-center bg-white border border-gray-100"
-        style={CARD_SHADOW}
-        activeOpacity={0.8}
+        className="w-10 h-10 rounded-full items-center justify-center bg-white border border-gray-100"
+        style={SHADOW_SUBTLE}
+        activeOpacity={0.7}
         onPress={handleSettingsPress}
-        accessibilityLabel="Settings"
-        accessibilityRole="button"
-        accessibilityHint="Opens the settings menu"
       >
         <HugeiconsIcon
           icon={Settings02Icon}
           color={PALETTE.purple}
-          size={20}
+          size={18}
         />
       </TouchableOpacity>
     </View>
   );
 });
+
+type RecentGain = {
+  id: string;
+  amount: number;
+  label: string;
+  timestamp: number;
+};
 
 // Memoized Greeting component with XP display
 const Greeting = React.memo<{
@@ -159,12 +176,7 @@ const Greeting = React.memo<{
   isLoading: boolean;
   hasPro: boolean;
   totalXP: number;
-  recentGains: Array<{
-    id: string;
-    amount: number;
-    label: string;
-    timestamp: number;
-  }>;
+  recentGains: RecentGain[];
   onClearGain: (id: string) => void;
   onXPPress: () => void;
 }>(
@@ -177,39 +189,31 @@ const Greeting = React.memo<{
     onClearGain,
     onXPPress,
   }) => {
-    const greeting = useMemo(
-      () => getGreeting(new Date().getHours()),
-      [],
-    );
+    const greeting = useMemo(() => getGreeting(new Date().getHours()), []);
 
     return (
-      <View className="flex-row items-center justify-between mt-2">
-        <View className="flex-row items-center gap-2 flex-1">
-          <Text className="text-2xl font-bold tracking-tight text-gray-900">
+      <View className="flex-row items-center justify-between mt-1">
+        <View className="flex-row items-center gap-2.5 flex-1">
+          <Text className="text-2xl font-extrabold tracking-tight text-gray-900">
             {greeting},{" "}
-            {isLoading ? "..." : displayName || "there"}{" "}
-            <Text className="text-xl">👋</Text>
+            {isLoading ? "..." : displayName || "Friend"}
           </Text>
           {hasPro && (
-            <LinearGradient
-              colors={["#FFD24A", "#FF7A2F"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              className="px-3 py-1 rounded-full"
-            >
-              <Text className="text-amber-950 text-xs font-extrabold tracking-wide">
-                PRO
-              </Text>
-            </LinearGradient>
+            <View className="bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200">
+              <Text className="text-gray-600 text-[10px] font-black tracking-widest uppercase">PRO</Text>
+            </View>
           )}
         </View>
-        <XPDisplay
-          totalXP={totalXP}
-          recentGains={recentGains}
-          onClearGain={onClearGain}
-          onPress={onXPPress}
-          compact
-        />
+        <TouchableOpacity onPress={onXPPress} activeOpacity={0.7} className="flex-row items-center gap-1">
+          <XPDisplay
+            totalXP={totalXP}
+            recentGains={recentGains}
+            onClearGain={onClearGain}
+            onPress={onXPPress}
+            compact
+          />
+          <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={PALETTE.systemGray} />
+        </TouchableOpacity>
       </View>
     );
   },
@@ -222,6 +226,7 @@ const StreakCard = React.memo<{
   nextMilestone: number;
   isLoading: boolean;
   progressBarStyle: AnimatedStyle<ViewStyle>;
+  onPress: () => void;
 }>(
   ({
     currentStreak,
@@ -229,9 +234,10 @@ const StreakCard = React.memo<{
     nextMilestone,
     isLoading,
     progressBarStyle,
+    onPress,
   }) => {
-    // Subtle pulsing opacity for the "Journal to begin" placeholder
     const placeholderOpacity = useSharedValue(1);
+    const { style: scaleStyle, onPressIn, onPressOut } = useScaleFeedback();
 
     useEffect(() => {
       if (currentStreak === 0) {
@@ -240,7 +246,7 @@ const StreakCard = React.memo<{
             withTiming(0.4, { duration: 1200 }),
             withTiming(1, { duration: 1200 }),
           ),
-          -1, // infinite
+          -1,
           false,
         );
       }
@@ -251,103 +257,105 @@ const StreakCard = React.memo<{
     }));
 
     return (
-      <View
-        className="bg-white rounded-2xl p-5 overflow-hidden"
-        style={CARD_SHADOW}
-        accessible={true}
-        accessibilityLabel={
-          currentStreak === 0
-            ? `Start your streak today. First goal is ${nextMilestone} days.`
-            : `Current streak is ${currentStreak} days. Next goal is ${nextMilestone} days.`
-        }
-      >
-        {/* When streak is 0 — show motivational copy */}
-        {currentStreak === 0 && (
-          <View className="mb-4">
-            <Text className="text-gray-800 text-sm font-bold tracking-wide uppercase">
-              Start your streak today!
-            </Text>
-          </View>
-        )}
-
-        <View className="flex-row items-center justify-between">
-          {/* Goal as the left hero when streak is 0 */}
-          <View>
-            <Text className="text-gray-500 text-xs font-semibold tracking-wider uppercase mb-1">
-              {currentStreak === 0 ? "First Goal" : "Current Streak"}
-            </Text>
-            <View className="flex-row items-center">
-              {currentStreak === 0 ? (
-                <>
-                  <HugeiconsIcon size={24} icon={Target02Icon} fill={"#93C5FD"} />
-                  <Text className="text-3xl font-extrabold ml-1.5">
-                    {isLoading ? "-" : nextMilestone}{" "}
-                    <Text className="text-base font-semibold text-gray-500">
-                      days
-                    </Text>
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <HugeiconsIcon
-                    size={24}
-                    icon={Fire02Icon}
-                    fill={"#FCA5A5"}
-                    color="#FCA5A5"
-                  />
-                  <Text className="text-3xl font-extrabold ml-1.5">
-                    {currentStreak}{" "}
-                    <Text className="text-base font-semibold text-gray-500">
-                      days
-                    </Text>
-                  </Text>
-                </>
-              )}
+      <Animated.View style={[scaleStyle]}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressIn={onPressIn}
+          onPressOut={onPressOut}
+          onPress={onPress}
+          className="bg-white rounded-3xl p-5"
+          style={SHADOW_SUBTLE}
+        >
+          {currentStreak === 0 && (
+            <View className="mb-4 flex-row items-center justify-between">
+              <Text className="text-gray-900 text-sm font-bold tracking-tight">
+                ✧ Start your journey today
+              </Text>
+              <HugeiconsIcon icon={ArrowRight01Icon} size={14} color={PALETTE.goalAccent} />
             </View>
-          </View>
+          )}
 
-          {/* Right side: next goal (only when streak > 0) */}
-          {currentStreak > 0 && (
-            <View className="items-end">
-              <Text className="text-gray-500 text-xs font-semibold tracking-wider uppercase mb-1">
-                Goal
+          <View className="flex-row items-center justify-between">
+            <View>
+              <Text className="text-gray-400 text-[10px] font-black tracking-widest uppercase mb-1">
+                {currentStreak === 0 ? "Initial Goal" : "Active Streak"}
               </Text>
               <View className="flex-row items-center">
-                <HugeiconsIcon
-                  size={24}
-                  icon={Target02Icon}
-                  fill={PALETTE.blue}
-                />
-                <Text className="text-3xl font-extrabold ml-1.5">
-                  {isLoading ? "-" : nextMilestone}
-                </Text>
+                {currentStreak === 0 ? (
+                  <>
+                    <HugeiconsIcon size={22} icon={Target02Icon} fill={PALETTE.goalAccent} color={PALETTE.goalAccent} />
+                    <Text className="text-3xl font-black ml-2 text-gray-900">
+                      {isLoading ? "-" : nextMilestone}{" "}
+                      <Text className="text-sm font-bold text-gray-400">days</Text>
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <HugeiconsIcon size={22} icon={Fire02Icon} fill={PALETTE.fireWarm} color={PALETTE.fireWarm} />
+                    <Text className="text-3xl font-black ml-2 text-gray-900">
+                      {currentStreak}{" "}
+                      <Text className="text-sm font-bold text-gray-400">days</Text>
+                    </Text>
+                  </>
+                )}
               </View>
             </View>
-          )}
-        </View>
 
-        {/* Progress bar — always visible, styled even at 0 */}
-        <View className="h-3 bg-gray-100 rounded-full mt-3 overflow-hidden">
-          <Animated.View
-            className="h-full rounded-full"
-            style={[{ backgroundColor: PALETTE.amber }, progressBarStyle]}
-          />
-          {/* Show a pulsing start marker when empty */}
-          {currentStreak === 0 && (
+            {currentStreak > 0 && (
+              <View className="items-end">
+                <Text className="text-gray-400 text-[10px] font-black tracking-widest uppercase mb-1">Target</Text>
+                <View className="flex-row items-center">
+                  <HugeiconsIcon size={22} icon={Target02Icon} fill={PALETTE.goalAccent} color={PALETTE.goalAccent} />
+                  <Text className="text-3xl font-black ml-2 text-gray-900">
+                    {isLoading ? "-" : nextMilestone}
+                  </Text>
+                </View>
+              </View>
+            )}
+          </View>
+
+          <View className="h-2.5 bg-gray-50 rounded-full mt-4 overflow-hidden">
             <Animated.View
-              className="absolute inset-0 items-center justify-center"
-              style={placeholderAnimStyle}
-            >
-              <Text className="text-[10px] text-gray-500 font-semibold">
-                Journal to begin
+              className="h-full rounded-full"
+              style={[{ backgroundColor: PALETTE.fireWarm }, progressBarStyle]}
+            />
+            {currentStreak === 0 && (
+              <Animated.View
+                className="absolute inset-0 items-center justify-center"
+                style={placeholderAnimStyle}
+              >
+                <Text className="text-[10px] text-gray-300 font-bold italic tracking-wide">
+                  waiting for your first note
+                </Text>
+              </Animated.View>
+            )}
+          </View>
+
+          {longestStreak > 0 && currentStreak > 0 && (
+            <View className="mt-3 flex-row items-center gap-1.5 opacity-40">
+              <HugeiconsIcon icon={Medal01Icon} size={12} color={PALETTE.systemGray} />
+              <Text className="text-[10px] font-black uppercase tracking-widest text-gray-500">
+                Personal Best: {longestStreak} days
               </Text>
-            </Animated.View>
+            </View>
           )}
-        </View>
-      </View>
+        </TouchableOpacity>
+      </Animated.View>
     );
   },
 );
+
+/**
+ * Shimmering Skeleton Loader
+ */
+const ShimmerSkeleton = React.memo<{ height: number }>(({ height }) => {
+  const shimmer = useSharedValue(0.4);
+  useEffect(() => {
+    shimmer.value = withRepeat(withSequence(withTiming(0.6, { duration: 800 }), withTiming(0.4, { duration: 800 })), -1, true);
+  }, []);
+  const style = useAnimatedStyle(() => ({ opacity: shimmer.value }));
+  return <Animated.View className="bg-white rounded-3xl" style={[style, { height }, SHADOW_SUBTLE]} />;
+});
 
 export default function JournalCalendarScreen() {
   const progressAnim = useSharedValue(0);
@@ -381,10 +389,10 @@ export default function JournalCalendarScreen() {
 
   const handleQuickJournalPress = useCallback(
     (prompt: QuickJournalPrompt) => {
-      if (shouldShowPaywall) {
-        presentPaywall();
-        return;
-      }
+      // if (shouldShowPaywall) {
+      //   presentPaywall();
+      //   return;
+      // }
       setPrompt(prompt.description);
       setStartRecording(true);
       setRecorderOpen(true);
@@ -446,7 +454,7 @@ export default function JournalCalendarScreen() {
     progressAnim.value = withTiming(currentStreak / nextMilestone, {
       duration: 1200,
     });
-    posthog.capture("MyComponent loaded", { foo: "bar" });
+    posthog.capture("Journal Calendar Screen Visited");
   }, [currentStreak, nextMilestone, posthog]);
 
   return (
@@ -493,6 +501,15 @@ export default function JournalCalendarScreen() {
               nextMilestone={nextMilestone}
               isLoading={isLoadingProfile}
               progressBarStyle={progressBarStyle}
+              onPress={() => handleQuickJournalPress({
+                id: "initial_streak",
+                title: "Daily Log",
+                description: "Recording today's journey",
+                category: "Personal",
+                emoji: "✍️",
+                bgColor: PALETTE.softBackground,
+                categoryColor: PALETTE.purple,
+              })}
             />
           </Animated.View>
 
@@ -511,39 +528,35 @@ export default function JournalCalendarScreen() {
 
           {/* ── Journaling ── */}
           <Animated.View
-            className="mt-6"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 3,
-            )}
+            className="mt-8"
+            entering={FadeInDown.duration(400).delay(240)}
           >
-            <View className="flex-row items-center gap-2 mb-3">
-              <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest px-1">Journaling</Text>
+            <View className="flex-row items-center gap-2 mb-3 px-1">
+              <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">Journaling</Text>
               <XPBadge amount={XP_REWARDS[XPActionType.JOURNAL_ENTRY]} />
             </View>
             <FeaturedPromptCard
-              prompt="What is special about today?"
+              prompt="What's making you smile today?"
               xpReward={XP_REWARDS[XPActionType.JOURNAL_ENTRY]}
-              emoji="🤓"
+              emoji="✨"
               onPress={() =>
                 handleQuickJournalPress({
-                  id: "featured_today",
-                  title: "Today's Prompt",
-                  description: "What is special about today?",
-                  category: "Personal",
+                  id: "featured_apple",
+                  title: "Reflections",
+                  description: "What's making you smile today?",
+                  category: "Gratitude",
                   emoji: "✨",
-                  bgColor: "#E0F7FA",
-                  categoryColor: "#4A9FE8",
+                  bgColor: PALETTE.softBackground,
+                  categoryColor: PALETTE.purple,
                 })
               }
             />
           </Animated.View>
 
-          {/* Quick Journal Section — entrance animation index 4 */}
+          {/* Quick Journal Section — entrance animation index 3 */}
           <Animated.View
             className="mt-6"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 4,
-            )}
+            entering={FadeInDown.duration(400).delay(320)}
           >
             <QuickJournalSection
               onCardPress={handleQuickJournalPress}
@@ -553,44 +566,26 @@ export default function JournalCalendarScreen() {
 
           {/* ── Progress ── */}
           <Animated.View
-            className="mt-6"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 5,
-            )}
+            className="mt-8"
+            entering={FadeInDown.duration(400).delay(400)}
           >
-            <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-3 px-1">Progress</Text>
+            <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-3">Progress</Text>
             <ChallengesSection maxItems={3} />
           </Animated.View>
 
-          {/* Weekly Mood Chart — entrance animation index 6 */}
+          {/* Weekly Mood Chart — entrance animation index 4 */}
           <Animated.View
-            className="mt-6"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 6,
-            )}
+            className="mt-8"
+            entering={FadeInDown.duration(400).delay(480)}
           >
             {shouldLoadChart ? (
               <WeeklyMoodChart
                 startDate={startOfWeekDate}
                 endDate={endOfWeekDate}
-                title="This Week's Mood"
+                title="Mood Trends"
               />
             ) : (
-              <View className="bg-white rounded-2xl p-4 border border-gray-100">
-                <View className="flex-row items-center justify-between px-1 mb-3">
-                  <View>
-                    <View className="h-6 w-32 bg-gray-100 rounded-xl mb-2" />
-                    <View className="h-3 w-24 bg-gray-100 rounded-lg" />
-                  </View>
-                  <View className="h-4 w-20 bg-gray-100 rounded-lg" />
-                </View>
-                <View
-                  style={{ height: 270 }}
-                  className="items-center justify-center"
-                >
-                  <View className="h-48 w-full bg-gray-50 rounded-2xl" />
-                </View>
-              </View>
+              <ShimmerSkeleton height={320} />
             )}
           </Animated.View>
         </View>
