@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
+import { ViewStyle } from "react-native";
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   Modal,
-  useWindowDimensions,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -15,6 +15,7 @@ import Animated, {
   withSequence,
   interpolate,
   FadeInDown,
+  type AnimatedStyle,
 } from "react-native-reanimated";
 import { endOfWeek, startOfWeek } from "date-fns";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
@@ -57,6 +58,15 @@ import { useAtom, useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { XP_REWARDS, XPActionType } from "@/src/types/xp";
 
+// Shared card shadow style — extracted to avoid duplication across components
+export const CARD_SHADOW = {
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.05,
+  shadowRadius: 10,
+  elevation: 2,
+} as const;
+
 // Global color palette
 export const PALETTE = {
   purple: "#7B61FF",
@@ -93,27 +103,18 @@ const TopBar = React.memo<{
   onAchievementsPress: () => void;
   onShopPress: () => void;
 }>(({ onAchievementsPress, onShopPress }) => {
-  const { presentPaywall, hasPro } = useRevenueCat();
   const { wallet } = useRewardsContext();
 
   const handleSettingsPress = useCallback(() => {
     router.push("/tabs/screens/settings");
   }, []);
 
-
-
   return (
     <View className="py-4 px-5 bg-offwhite border-b border-gray-100/60 flex-row justify-between items-center">
       <TouchableOpacity
         onPress={onAchievementsPress}
         className="w-11 h-11 rounded-full items-center justify-center bg-white border border-gray-100"
-        style={{
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.05,
-          shadowRadius: 10,
-          elevation: 2,
-        }}
+        style={CARD_SHADOW}
         activeOpacity={0.8}
         accessibilityLabel="Achievements"
         accessibilityRole="button"
@@ -135,13 +136,7 @@ const TopBar = React.memo<{
 
       <TouchableOpacity
         className="w-11 h-11 rounded-full items-center justify-center bg-white border border-gray-100"
-        style={{
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.05,
-          shadowRadius: 10,
-          elevation: 2,
-        }}
+        style={CARD_SHADOW}
         activeOpacity={0.8}
         onPress={handleSettingsPress}
         accessibilityLabel="Settings"
@@ -226,7 +221,7 @@ const StreakCard = React.memo<{
   longestStreak: number;
   nextMilestone: number;
   isLoading: boolean;
-  progressBarStyle: any;
+  progressBarStyle: AnimatedStyle<ViewStyle>;
 }>(
   ({
     currentStreak,
@@ -258,13 +253,7 @@ const StreakCard = React.memo<{
     return (
       <View
         className="bg-white rounded-2xl p-5 overflow-hidden"
-        style={{
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.05,
-          shadowRadius: 10,
-          elevation: 2,
-        }}
+        style={CARD_SHADOW}
         accessible={true}
         accessibilityLabel={
           currentStreak === 0
@@ -362,7 +351,6 @@ const StreakCard = React.memo<{
 
 export default function JournalCalendarScreen() {
   const progressAnim = useSharedValue(0);
-  const { width } = useWindowDimensions();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const { hasPro, presentPaywall } = useRevenueCat();
   const posthog = usePostHog();
@@ -373,14 +361,15 @@ export default function JournalCalendarScreen() {
   const { showUpdateModal, currentVersion, latestVersion, hideModal } =
     useAppUpdate({ autoCheck: true });
 
-
   const { shouldShowPaywall } = useJournalLimit(new Date());
 
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
   const setStartRecording = useSetAtom(startRecordingAtom);
   const { setPrompt } = useJournalEntry();
 
-
+  // State declarations moved above callbacks that reference them
+  const [shouldLoadChart, setShouldLoadChart] = useState(false);
+  const [showStreakModal, setShowStreakModal] = useState(false);
 
   const handleAchievementsPress = useCallback(() => {
     router.push("/tabs/screens/achievements");
@@ -389,8 +378,6 @@ export default function JournalCalendarScreen() {
   const handleShopPress = useCallback(() => {
     router.push("/tabs/screens/rewards-shop");
   }, []);
-
-
 
   const handleQuickJournalPress = useCallback(
     (prompt: QuickJournalPrompt) => {
@@ -436,12 +423,8 @@ export default function JournalCalendarScreen() {
       refetchStreak();
       setShowStreakModal(updated);
     },
-    [refetchStreak],
+    [refetchStreak, setShowStreakModal],
   );
-
-  // Lazy load heavy chart component after initial render
-  const [shouldLoadChart, setShouldLoadChart] = useState(false);
-  const [showStreakModal, setShowStreakModal] = useState(false);
 
   useEffect(() => {
     // Delay chart loading to improve initial render performance
@@ -464,7 +447,7 @@ export default function JournalCalendarScreen() {
       duration: 1200,
     });
     posthog.capture("MyComponent loaded", { foo: "bar" });
-  }, [currentStreak, nextMilestone]);
+  }, [currentStreak, nextMilestone, posthog]);
 
   return (
     <SafeAreaView className="flex-1 bg-offwhite">
@@ -481,15 +464,10 @@ export default function JournalCalendarScreen() {
           onAchievementsPress={handleAchievementsPress}
           onShopPress={handleShopPress}
         />
-        <View
-          className="bg-offwhite px-4 pb-24 pt-3"
-          style={{ width: width }}
-        >
+        <View className="bg-offwhite px-4 pb-24 pt-3">
           {/* Greeting — entrance animation index 0 */}
           <Animated.View
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 0,
-            )}
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS)}
           >
             <Greeting
               displayName={userProfile?.displayName}
@@ -539,14 +517,12 @@ export default function JournalCalendarScreen() {
             )}
           >
             <View className="flex-row items-center gap-2 mb-3">
-              <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest px-1">
-                  Journaling
-                </Text>
-                <XPBadge amount={XP_REWARDS[XPActionType.JOURNAL_ENTRY]} />
+              <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest px-1">Journaling</Text>
+              <XPBadge amount={XP_REWARDS[XPActionType.JOURNAL_ENTRY]} />
             </View>
             <FeaturedPromptCard
               prompt="What is special about today?"
-              xpReward={30}
+              xpReward={XP_REWARDS[XPActionType.JOURNAL_ENTRY]}
               emoji="🤓"
               onPress={() =>
                 handleQuickJournalPress({
@@ -564,6 +540,7 @@ export default function JournalCalendarScreen() {
 
           {/* Quick Journal Section — entrance animation index 4 */}
           <Animated.View
+            className="mt-6"
             entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
               STAGGER_DELAY_MS * 4,
             )}
@@ -581,9 +558,7 @@ export default function JournalCalendarScreen() {
               STAGGER_DELAY_MS * 5,
             )}
           >
-            <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-3 px-1">
-                Progress
-              </Text>
+            <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-3 px-1">Progress</Text>
             <ChallengesSection maxItems={3} />
           </Animated.View>
 
