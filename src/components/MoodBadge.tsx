@@ -36,7 +36,12 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
     return (
       <PressableOpacity
         style={{ width: diameter, height: diameter }}
-        onPress={onPress}
+        onPress={disabled ? undefined : onPress}
+        accessibilityRole="button"
+        accessibilityLabel={`Mood is ${
+          moodscore ? Object.entries(moodEmojiMap).find(([key, val]) => val === moodEmoji)?.[0] : "Not set"
+        }.`}
+        accessibilityState={{ selected: active, disabled }}
       >
         <View className={`items-center justify-center ${!active ? 'opacity-50' : ''}`} style={containerStyle}>
           <View
@@ -60,7 +65,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
                 progressiveRenderingEnabled={true}
               />
             )}
-            {!moodEmoji && <Text className="text-slate-700">+</Text>}
+            {!moodEmoji && <Text className="text-theme-text-secondary text-sm font-medium">+</Text>}
           </View>
         </View>
       </PressableOpacity>

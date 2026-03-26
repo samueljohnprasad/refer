@@ -46,12 +46,12 @@ const CalendarPicker = React.lazy(() =>
 );
 
 const { height } = Dimensions.get("window");
-const isIos = Platform.OS === "ios";
-const twentyPercentHeight = height * 0.16;
+// Replaced magic number variable name to match exact scaling
+const HEADER_MIN_HEIGHT = 120;
 
 // Move constants outside component to avoid recreation
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-const CALENDAR_EXPANDED_HEIGHT = 410;
+const CALENDAR_EXPANDED_HEIGHT = 416; // 8pt grid multiple
 
 interface DailyNotesHeaderProps {
   onBookmarksPress?: () => void;
@@ -109,7 +109,7 @@ const DailyNotesHeader = React.memo(
       height: interpolate(
         progress.value,
         [0, 1],
-        [twentyPercentHeight, CALENDAR_EXPANDED_HEIGHT + 20]
+        [HEADER_MIN_HEIGHT, CALENDAR_EXPANDED_HEIGHT + 24]
       ),
     }));
     const headerControlsAnimatedStyle = useAnimatedStyle(() => ({
@@ -192,10 +192,10 @@ const DailyNotesHeader = React.memo(
       [currentWeekViewSafe]
     );
 
-    const weekDays = useMemo(
-      () => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)),
-      [weekStart]
-    );
+    const weekDays = useMemo(() => {
+      const start = weekStart.getTime();
+      return [0, 1, 2, 3, 4, 5, 6].map((i) => new Date(start + i * 86400000));
+    }, [weekStart]);
 
     // Memoize week days data to avoid recalculating format on every render
     const weekDaysData = useMemo(() => {
@@ -274,36 +274,36 @@ const DailyNotesHeader = React.memo(
       });
     };
 
-    // Pan gesture handlers are provided by useWeekNavigation
-    const paddingTop = isIOS ? 0 : 20;
-
     return (
       <SafeAreaView
         edges={["top"]}
         style={{
-          paddingTop: paddingTop,
+          paddingTop: insets.top,
         }}
-        className="bg-white"
+        className="bg-theme-background-primary"
       >
         <Animated.View
-          className="bg-white justify-end relative"
+          className="bg-theme-background-primary justify-end relative"
           style={[headerContainerAnimatedStyle]}
         >
           {/* Calendar Header */}
           <Animated.View
-            className="flex-row items-center justify-between px-4 pb-1 rounded-3xl"
+            className="flex-row items-center justify-between px-4 pb-2 rounded-3xl"
             style={[headerControlsAnimatedStyle]}
           >
             <Pressable
               className="p-2 -ml-1 rounded-lg"
               onPress={() => toggle()}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              accessibilityRole="button"
+              accessibilityLabel={isExpanded ? "Collapse calendar" : "Expand calendar"}
+              accessibilityHint="Toggles between weekly and monthly calendar views"
             >
-              <HugeiconsIcon icon={Calendar01Icon} size={20} color="#6B6B6B" />
+              <HugeiconsIcon icon={Calendar01Icon} size={20} className="text-theme-text-secondary" />
             </Pressable>
 
             <View className="flex-row items-center justify-center flex-1">
-              <Text className="text-2xl font-medium text-theme-text-primary tracking-wide text-center font-cormorantBold">
+              <Text className="text-2xl text-theme-text-primary text-center font-cormorantBold">
                 {currentMonthView || ""}
               </Text>
             </View>
@@ -313,8 +313,10 @@ const DailyNotesHeader = React.memo(
                 className="p-2 rounded-lg"
                 onPress={onBookmarksPress}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                accessibilityRole="button"
+                accessibilityLabel="Bookmarks"
               >
-                <HugeiconsIcon icon={Bookmark03Icon} size={20} color="#6B6B6B" />
+                <HugeiconsIcon icon={Bookmark03Icon} size={20} className="text-theme-text-secondary" />
               </Pressable>
             </View>
           </Animated.View>
@@ -327,9 +329,11 @@ const DailyNotesHeader = React.memo(
               <Animated.View
                 className="flex flex-1 flex-row gap-1"
                 style={[weekSlideAnimatedStyle]}
+                accessibilityElementsHidden={isExpanded}
+                importantForAccessibility={isExpanded ? "no-hide-descendants" : "auto"}
               >
                 {weekDaysData.map((dayData) => (
-                  <View className="flex-1 gap-2 mb-3" key={dayData.dayStr}>
+                  <View className="flex-1 gap-2 mb-2" key={dayData.dayStr}>
                     <DayButton
                       day={dayData.day}
                       dayName={dayData.dayName}
@@ -355,8 +359,10 @@ const DailyNotesHeader = React.memo(
           {/* Only render CalendarPicker after first expansion for smooth animations */}
           {hasBeenExpanded && (
             <Animated.View
-              className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-white"
-              style={[inlineCalendarAnimatedStyle, { top: 0 }]}
+              className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-theme-background-primary top-0"
+              style={[inlineCalendarAnimatedStyle]}
+              accessibilityElementsHidden={!isExpanded}
+              importantForAccessibility={!isExpanded ? "no-hide-descendants" : "yes"}
             >
               <SuspensLoader>
                 <CalendarPicker
@@ -381,8 +387,12 @@ const DailyNotesHeader = React.memo(
             pointerEvents="box-none"
           >
             <GestureDetector gesture={gesture}>
-              <View className="py-1 px-8">
-                <View className="w-10 h-1 rounded-full bg-gray-300" />
+              <View 
+                className="py-2 px-8"
+                accessibilityRole="adjustable"
+                accessibilityLabel="Calendar drag handle"
+              >
+                <View className="w-10 h-1 rounded-full bg-theme-border" />
               </View>
             </GestureDetector>
           </View>

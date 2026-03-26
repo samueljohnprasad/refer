@@ -69,17 +69,17 @@ const DayCell = React.memo<DayCellProps>(
     // All hooks MUST be called before any conditional returns (Rules of Hooks)
     const containerClassName = useMemo(
       () =>
-        `w-full h-full flex justify-center items-center gap-0.5 rounded-xl ${
-          isSelected ? "bg-theme-purple-light" : isTodayDate ? "bg-gray-100" : ""
+        `w-full h-full flex justify-center items-center gap-1 rounded-xl ${
+          isSelected ? "bg-theme-purple-light" : isTodayDate ? "bg-offwhite" : ""
         }`,
       [isSelected, isTodayDate]
     );
 
     const textClassName = useMemo(() => {
-      if (disabled) return "text-[18px] font-semibold text-theme-text-secondary/50";
-      if (isTodayDate && !isSelected) return "text-[18px] font-bold text-theme-text-secondary";
-      if (isSelected) return "text-[18px] font-bold text-theme-purple-deep";
-      return "text-[18px] font-semibold text-theme-text-secondary";
+      if (disabled) return "text-lg font-semibold text-theme-text-secondary/50";
+      if (isTodayDate && !isSelected) return "text-lg font-bold text-theme-text-secondary";
+      if (isSelected) return "text-lg font-bold text-theme-purple-deep";
+      return "text-lg font-medium text-theme-text-secondary";
     }, [isTodayDate, isSelected, disabled]);
 
     const moodClassName = useMemo(
@@ -90,7 +90,7 @@ const DayCell = React.memo<DayCellProps>(
     // Early return for out-of-month cells (after all hooks)
     if (!inCurrentMonth) {
       return (
-        <View style={cellStyle} className="justify-center items-center p-[2px]">
+        <View style={cellStyle} className="justify-center items-center p-0.5">
           <View className="w-full h-full" />
         </View>
       );
@@ -98,12 +98,13 @@ const DayCell = React.memo<DayCellProps>(
 
     return (
       <Pressable
-        className="justify-center items-center p-[2px]"
+        className="justify-center items-center p-0.5"
         style={cellStyle}
         onPress={onPress}
         disabled={disabled}
         accessibilityRole="button"
         accessibilityLabel={`${dayLabel}, ${isTodayDate ? "today" : ""}`}
+        accessibilityState={{ selected: isSelected, disabled }}
       >
         <View className={containerClassName}>
           <Text className={textClassName}>{dayLabel}</Text>
@@ -138,11 +139,12 @@ DayCell.displayName = "DayCell";
 
 // Memoized Week Header Component
 const WeekDayHeader = React.memo(() => (
-  <View className="flex-row mb-1">
+  // important: use accessibilityElementsHidden to reduce screen reader noise
+  <View className="flex-row mb-1" accessibilityElementsHidden={true} importantForAccessibility="no">
     {WEEKDAY_LABELS.map((day) => (
       <Text
         key={day}
-        className="flex-1 text-center text-[12px] font-bold text-black/50 uppercase tracking-widest py-2"
+        className="flex-1 text-center text-xs font-semibold text-theme-text-secondary uppercase tracking-wider py-2"
       >
         {day}
       </Text>
@@ -205,22 +207,31 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
       <View className="px-2">
         {/* Month header with title on left, arrows on right */}
         <View className="flex-row justify-between items-center mb-2 py-2">
-          <Text className="text-[22px] font-bold text-theme-text-primary tracking-tight font-cormorantBold">
+          <Text className="text-2xl font-cormorantBold text-theme-text-primary tracking-tight">
             {monthTitle}
           </Text>
           <View className="flex-row items-center gap-2">
-            <Pressable className="p-2 rounded-full" onPress={goToPreviousMonth}>
-              <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color="#6B6B6B" />
+            <Pressable 
+              className="p-2 rounded-full" 
+              onPress={goToPreviousMonth}
+              accessibilityRole="button"
+              accessibilityLabel="Previous Month"
+              accessibilityHint="Navigates calendar to the previous month"
+            >
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={20} className="text-theme-text-secondary" />
             </Pressable>
             <Pressable
               className="p-2 rounded-full"
               onPress={goToNextMonth}
               disabled={!canGoNextMonth}
+              accessibilityRole="button"
+              accessibilityLabel="Next Month"
+              accessibilityHint="Navigates calendar to the next month"
             >
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
                 size={20}
-                color={canGoNextMonth ? "#6B6B6B" : "#E5E5E5"}
+                className={canGoNextMonth ? "text-theme-text-secondary" : "text-theme-border"}
               />
             </Pressable>
           </View>
@@ -228,7 +239,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
 
         <WeekDayHeader />
 
-        <View className="flex-row flex-wrap -mx-[2px]">
+        <View className="flex-row flex-wrap">
           {daysData.map((dayData, index) => (
             <DayCell
               key={dayData.dayStr}

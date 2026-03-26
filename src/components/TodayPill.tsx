@@ -47,29 +47,24 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
           {
             position: "absolute",
             right: 0,
-            bottom: -14,
-            borderTopLeftRadius: 16,
-            borderBottomLeftRadius: 16,
-            paddingHorizontal: 6,
-            paddingVertical: 4,
-            flexDirection: "row",
-            alignItems: "center",
+            bottom: -16,
             zIndex: 100,
-            backgroundColor: "#EDE9FE", // Soft lavender/light purple
           },
           containerStyle,
           animatedStyle,
         ]}
+        className="flex-row items-center rounded-l-2xl px-2 py-1 bg-theme-purple-light"
         pointerEvents={pointerEvents}
       >
         <Pressable
           onPress={onPress}
           accessibilityRole="button"
           accessibilityLabel={label}
-          className="flex-row items-center"
+          accessibilityHint="Returns view to the current day"
+          className="flex-row items-center gap-1"
         >
-          <MaterialCommunityIcons name="chevron-left" size={18} color="#7B61FF" />
-          <Text className="font-semibold" style={{ color: "#7B61FF" }}>{label}</Text>
+          <MaterialCommunityIcons name="chevron-left" size={18} className="text-theme-purple-deep" />
+          <Text className="font-semibold text-theme-purple-deep text-sm">{label}</Text>
         </Pressable>
       </Animated.View>
     );
