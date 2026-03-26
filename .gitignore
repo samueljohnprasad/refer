@@ -10,8 +10,7 @@ ios/
 dist/
 web-build/
 expo-env.d.ts
-.agent/skills
-.cursor/
+
 
 # Native
 .kotlin/
