@@ -34,14 +34,19 @@ const CircularProgress: React.FC<{
   const strokeDashoffset: number = circumference * (1 - progress);
 
   return (
-    <View className="items-center justify-center">
+    <View 
+      className="items-center justify-center"
+      accessible={true}
+      accessibilityRole="image"
+      accessibilityLabel={`Score: ${value} out of ${maxValue}`}
+    >
       <Svg width={size} height={size}>
         {/* Background circle */}
         <Circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#E5E7EB"
+          stroke="rgba(0,0,0,0.05)"
           strokeWidth={strokeWidth}
           fill="transparent"
         />
@@ -60,7 +65,7 @@ const CircularProgress: React.FC<{
         />
       </Svg>
       <View className="absolute items-center justify-center">
-        <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">
+        <Text className="text-sm font-bold text-theme-text-primary">
           {value}/{maxValue}
         </Text>
       </View>
@@ -77,19 +82,18 @@ const MetricItem: React.FC<MetricItemProps> = ({
   label,
   icon,
   color,
-  bgColor,
 }) => {
   return (
     <View className="items-center flex-1">
       <View
         className="w-16 h-16 rounded-2xl items-center justify-center mb-2"
-        style={{ backgroundColor: bgColor }}
+        style={{ backgroundColor: "transparent" }}
       >
         <CircularProgress value={value} maxValue={maxValue} color={color} />
       </View>
       <View className="flex-row items-center">
         <Feather name={icon} size={14} color={color} />
-        <Text className="text-xs text-gray-600 dark:text-gray-400 ml-1 font-medium">
+        <Text className="text-xs text-theme-text-secondary ml-1 font-medium">
           {label}
         </Text>
       </View>
@@ -108,10 +112,10 @@ export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
     if (!hasData) return null;
 
     return (
-      <View className="bg-white dark:bg-gray-800 rounded-2xl p-4 mb-4 border border-gray-200 dark:border-gray-700">
+      <View className="bg-transparent rounded-xl p-4 mb-4 border border-theme-border/30">
         <View className="flex-row items-center mb-4">
-          <Feather name="activity" size={18} color="#6366F1" />
-          <Text className="text-base font-semibold text-gray-800 dark:text-gray-100 ml-2">
+          <Feather name="activity" size={16} className="text-theme-text-secondary" />
+          <Text className="text-base font-semibold text-theme-text-primary ml-2">
             Wellness Metrics
           </Text>
         </View>
@@ -124,7 +128,7 @@ export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
               label="Energy"
               icon="zap"
               color="#F59E0B"
-              bgColor="#FEF3C7"
+              bgColor="transparent"
             />
           )}
           {stressLevel !== null && (
@@ -134,7 +138,7 @@ export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
               label="Stress"
               icon="wind"
               color="#EF4444"
-              bgColor="#FEE2E2"
+              bgColor="transparent"
             />
           )}
           {sleepQuality !== null && (
@@ -144,7 +148,7 @@ export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
               label="Sleep"
               icon="moon"
               color="#8B5CF6"
-              bgColor="#EDE9FE"
+              bgColor="transparent"
             />
           )}
         </View>

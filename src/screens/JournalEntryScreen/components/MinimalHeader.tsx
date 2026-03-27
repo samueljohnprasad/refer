@@ -18,20 +18,23 @@ interface MinimalHeaderProps {
 export const MinimalHeader = React.memo<MinimalHeaderProps>(
   ({ isEditing, onClose, onEdit, onDone, date }: MinimalHeaderProps) => {
     return (
-      <View className="flex-row items-center justify-between px-5 py-4 mb-4">
+      <View className="flex-row items-center justify-between px-4 py-4 mb-4">
         {/* Close button */}
         <TouchableOpacity
           onPress={onClose}
-          className="w-10 h-10 items-center justify-center"
+          className="w-10 h-10 items-center justify-center -ml-2"
           activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel="Close"
+          accessibilityHint="Closes the journal entry"
         >
-          <Feather name="x" size={24} color="#1F2937" />
+          <Feather name="x" size={24} className="text-theme-text-primary" />
         </TouchableOpacity>
 
         {/* Date/Time */}
         <View className="flex-1 items-center">
-          <Text className="text-gray-900 text-base font-semibold">Today</Text>
-          <Text className="text-gray-400 text-xs mt-0.5">
+          <Text className="text-theme-text-primary text-base font-cormorantBold">Today</Text>
+          <Text className="text-theme-text-secondary text-xs mt-0.5">
             {formattedDateTime(date)}
           </Text>
         </View>
@@ -39,10 +42,12 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
         {/* Edit/Done button */}
         <TouchableOpacity
           onPress={isEditing ? onDone : onEdit}
-          className="px-4 py-2"
+          className="px-4 py-2 -mr-4"
           activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel={isEditing ? "Done editing" : "Edit journal"}
         >
-          <Text className="text-gray-900 text-base font-medium">
+          <Text className="text-theme-text-primary text-base font-medium">
             {isEditing ? "Done" : "Edit"}
           </Text>
         </TouchableOpacity>

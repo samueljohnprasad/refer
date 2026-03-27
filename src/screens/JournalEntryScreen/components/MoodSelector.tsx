@@ -42,18 +42,21 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
     if (viewOnly) {
       const currentMood = MOODS.find((m) => m.id === selectedMood) || MOODS[4];
       return (
-        <View className="mb-6">
-          <View className="flex-row items-center gap-3">
+        <View 
+          className="mb-4"
+          accessible={true}
+          accessibilityLabel={`Journal entry titled ${title || "Daily Reflections"}. Mood is ${currentMood.label}.`}
+        >
+          <View className="flex-row items-center gap-2">
             <Image
               source={EMOTION_IMAGES[currentMood.id as EmotionType]}
-              className="w-16 h-16"
+              className="w-8 h-8 opacity-90"
               resizeMode="contain"
             />
             <View className="flex-1">
-              <Text className="text-2xl font-bold text-gray-900">
+              <Text className="text-2xl font-cormorantBold text-theme-text-primary">
                 {title || "Daily Reflections"}
               </Text>
-              <Text className="text-gray-400 text-sm mt-1">📓 ☀️</Text>
             </View>
           </View>
         </View>
@@ -61,7 +64,7 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
     }
 
     return (
-      <View className="px-5 pb-4">
+      <View className="px-4 pb-4">
         <View className="flex-row justify-between">
           {MOODS.map((mood) => (
             <TouchableOpacity
@@ -69,17 +72,20 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
               onPress={() => onSelectMood(mood.id)}
               className="items-center"
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={mood.label}
+              accessibilityState={{ selected: selectedMood === mood.id }}
             >
               <Image
                 source={EMOTION_IMAGES[mood.id as EmotionType]}
-                className={selectedMood === mood.id ? "w-14 h-14" : "w-12 h-12"}
+                className={selectedMood === mood.id ? "w-14 h-14" : "w-12 h-12 opacity-50"}
                 resizeMode="contain"
               />
               <Text
                 className={`text-xs mt-1 ${
                   selectedMood === mood.id
-                    ? "text-gray-900 font-semibold"
-                    : "text-gray-400"
+                    ? "text-theme-text-primary font-semibold"
+                    : "text-theme-text-secondary"
                 }`}
               >
                 {mood.label}

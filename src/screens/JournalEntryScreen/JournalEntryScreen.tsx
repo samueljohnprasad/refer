@@ -178,10 +178,10 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
         )}
 
         <ScrollView
-          className="flex-1 px-5"
+          className="flex-1 px-4"
           showsVerticalScrollIndicator={false}
           bounces={true}
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: isEditing ? 120 : 64 }}
         >
           {!isEditing && (
             <MoodSelector

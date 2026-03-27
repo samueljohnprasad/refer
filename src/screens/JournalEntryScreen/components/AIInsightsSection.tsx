@@ -80,19 +80,20 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
     if (!hasAnyData) return null;
 
     return (
-      <View className="bg-white/80 dark:bg-gray-900/80 rounded-3xl p-5 mb-6">
+      <View className="bg-theme-background-card/80 rounded-2xl p-4 mb-6 border border-theme-border/50">
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel="Toggle AI Insights"
+          accessibilityState={{ expanded: isInsightsOpen }}
           activeOpacity={0.8}
           onPress={toggleInsights}
-          className="flex-row items-center mb-4 pb-3 border-b border-gray-100 dark:border-gray-800 justify-between"
+          className="flex-row items-center mb-4 pb-3 border-b border-theme-border/50 justify-between"
         >
           <View className="flex-row items-center">
-            <View className="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900 items-center justify-center">
-              <Feather name="cpu" size={18} color="#6366F1" />
+            <View className="w-8 h-8 rounded-full bg-theme-purple-light items-center justify-center">
+              <Feather name="cpu" size={16} className="text-theme-purple-primary" />
             </View>
-            <Text className="text-lg font-semibold text-gray-900 dark:text-gray-50 ml-3">
+            <Text className="text-lg font-semibold text-theme-text-primary ml-3">
               AI Insights
             </Text>
           </View>
@@ -165,14 +166,14 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
 
             {/* AI Summary Text */}
             {aiInsights && (
-              <View className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-4 mt-2">
+              <View className="bg-theme-background-secondary/50 rounded-xl p-4 mt-2">
                 <View className="flex-row items-center mb-2">
-                  <Feather name="message-circle" size={16} color="#6B7280" />
-                  <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 ml-2">
+                  <Feather name="message-circle" size={16} className="text-theme-text-secondary" />
+                  <Text className="text-sm font-medium text-theme-text-secondary ml-2">
                     Summary
                   </Text>
                 </View>
-                <Text className="text-base leading-6 text-gray-700 dark:text-gray-300 tracking-wide">
+                <Text className="text-base leading-6 text-theme-text-primary tracking-wide">
                   {aiInsights}
                 </Text>
               </View>

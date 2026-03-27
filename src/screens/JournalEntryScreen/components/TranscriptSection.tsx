@@ -20,7 +20,7 @@ export const TranscriptSection = React.memo<TranscriptSectionProps>(({
 
   return (
     <View className="mb-6">
-      <Text className="text-gray-400 text-xs uppercase tracking-wider mb-3">
+      <Text className="text-theme-text-secondary font-semibold text-xs uppercase tracking-wider mb-2">
         TRANSCRIPT ({wordCount} words)
       </Text>
       
@@ -31,12 +31,17 @@ export const TranscriptSection = React.memo<TranscriptSectionProps>(({
           multiline
           numberOfLines={6}
           placeholder="Write your thoughts..."
-          placeholderTextColor="#9CA3AF"
-          className="text-gray-900 text-base leading-6 bg-white rounded-lg p-4 min-h-[150]"
+          placeholderTextColor="rgba(107, 107, 107, 0.5)"
+          className="text-theme-text-primary text-base leading-6 bg-white rounded-xl p-4 min-h-[152px]"
           textAlignVertical="top"
+          accessibilityLabel="Journal transcript editor"
         />
       ) : (
-        <Text className="text-gray-900 text-base leading-6">
+        <Text 
+          className="text-theme-text-primary text-lg leading-relaxed"
+          accessibilityRole="text"
+          accessibilityLabel={`Transcript: ${text}`}
+        >
           {text}
         </Text>
       )}

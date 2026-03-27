@@ -44,21 +44,25 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
 
   return (
     <View className="mb-6">
-      <Text className="text-gray-400 text-xs uppercase tracking-wider mb-3">FEELINGS</Text>
+      <Text className="text-theme-text-secondary font-semibold text-xs uppercase tracking-wider mb-2">FEELINGS</Text>
       
       <View className="flex-row flex-wrap gap-2">
         {feelings.map((feeling, index) => (
           <View
             key={index}
-            className="flex-row items-center px-3 py-2 rounded-full bg-white"
+            className={`flex-row items-center px-4 py-2 rounded-full ${isEditing ? "bg-white" : "bg-white/50"}`}
+            accessibilityRole="text"
+            accessibilityLabel={`Feeling: ${feeling}`}
           >
             <Text className="mr-1">{FEELING_EMOJIS[feeling.toLowerCase()] || "😊"}</Text>
-            <Text className="text-gray-900 text-sm">{feeling}</Text>
+            <Text className="text-theme-text-primary text-sm font-medium">{feeling}</Text>
             {isEditing && (
               <TouchableOpacity
                 onPress={() => onRemoveFeeling(index)}
                 className="ml-2 w-5 h-5 rounded-full bg-red-400 items-center justify-center"
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel={`Remove ${feeling}`}
               >
                 <Text className="text-white text-xs font-bold">−</Text>
               </TouchableOpacity>
@@ -69,15 +73,17 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
         {isEditing && !isAdding && (
           <TouchableOpacity
             onPress={() => setIsAdding(true)}
-            className="flex-row items-center px-3 py-2 rounded-full bg-white"
+            className="flex-row items-center px-4 py-2 rounded-full bg-white/80"
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel="Add feeling"
           >
-            <Text className="text-gray-400 text-sm">+ add</Text>
+            <Text className="text-theme-text-secondary text-sm font-medium">+ add</Text>
           </TouchableOpacity>
         )}
 
         {isEditing && isAdding && (
-          <View className="flex-row items-center px-3 py-1 rounded-full bg-white border border-gray-300">
+          <View className="flex-row items-center px-4 py-1.5 rounded-full bg-white border border-theme-border">
             <TextInput
               value={newFeeling}
               onChangeText={setNewFeeling}
@@ -88,9 +94,10 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
                 }
               }}
               placeholder="enter feeling"
-              placeholderTextColor="#9CA3AF"
-              className="text-gray-900 text-sm min-w-[100]"
+              placeholderTextColor="rgba(107, 107, 107, 0.5)"
+              className="text-theme-text-primary text-sm min-w-[104px]"
               autoFocus
+              accessibilityLabel="Type new feeling"
             />
           </View>
         )}
