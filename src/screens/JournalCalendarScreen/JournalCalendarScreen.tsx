@@ -47,6 +47,8 @@ import { useStreakTracker } from "@/hooks/data/useStreakTracker";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
 import { XPBadge, XPDisplay } from "@/src/components/XP";
 import { useXP } from "@/src/context/XPContext";
+import { PALETTE } from "@/constants/palette";
+import { CARD_SHADOW, SUBTLE_SHADOW } from "@/constants/shadows";
 import { CoinsBadge } from "@/src/components/Rewards";
 import { useRewardsContext } from "@/src/context/RewardsContext";
 
@@ -61,35 +63,9 @@ import { useAtom, useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { XP_REWARDS, XPActionType } from "@/src/types/xp";
 
-// Apple Human Interface Guidelines - Subtle Shadow System
-export const SHADOW_SUBTLE = {
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.04,
-  shadowRadius: 12,
-  elevation: 3,
-} as const;
-
-// Global color palette - Refined for Semantic Harmony
-export const PALETTE = {
-  purple: "#7B61FF",
-  lightPurple: "#DCD6FF",
-  yellow: "#FFD24A",
-  lightYellow: "#FFF2CC",
-  blue: "#60A6FF",
-  lightBlue: "#DFF0FF",
-  pink: "#FFDFE8",
-  white: "#FFFFFF",
-  softBackground: "#F6F4FF",
-  grey: "#C4C4C4",
-  amber: "#F59E0B",
-  green: "#65A30D",
-  lavender: "#C4B5FD",
-  // Apple Refinements
-  fireWarm: "#FF8A00",   // Warm semantic orange
-  goalAccent: "#8B5CF6", // Brand semantic violet
-  systemGray: "#8E8E93", // Standard Apple gray
-} as const;
+// Re-export for backward compat from other files that import from here
+export { PALETTE } from "@/constants/palette";
+export { CARD_SHADOW as SHADOW_SUBTLE } from "@/constants/shadows";
 
 /**
  * Standard Scale Animation Hook for Interactive Elements
@@ -128,30 +104,36 @@ const TopBar = React.memo<{
   }, []);
 
   return (
-    <View className="py-2.5 px-5 bg-offwhite border-b border-gray-100/50 flex-row justify-between items-center">
+    <View className="py-2.5 px-4 bg-offwhite border-b border-gray-100/50 flex-row justify-between items-center">
       <TouchableOpacity
         onPress={onAchievementsPress}
-        className="w-10 h-10 rounded-full items-center justify-center bg-white border border-gray-100"
-        style={SHADOW_SUBTLE}
+        className="w-11 h-11 rounded-full items-center justify-center bg-white"
+        style={SUBTLE_SHADOW}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel="View achievements"
       >
         <HugeiconsIcon icon={Medal01Icon} size={18} color={PALETTE.amber} />
       </TouchableOpacity>
 
-      {/* Date & Coins Container */}
+      {/* Coins Container */}
       <TouchableOpacity
         onPress={onShopPress}
         activeOpacity={0.7}
         className="items-center"
+        accessibilityRole="button"
+        accessibilityLabel="Open rewards shop"
       >
         <CoinsBadge coins={wallet?.coins ?? 0} size="sm" />
       </TouchableOpacity>
 
       <TouchableOpacity
-        className="w-10 h-10 rounded-full items-center justify-center bg-white border border-gray-100"
-        style={SHADOW_SUBTLE}
+        className="w-11 h-11 rounded-full items-center justify-center bg-white"
+        style={SUBTLE_SHADOW}
         activeOpacity={0.7}
         onPress={handleSettingsPress}
+        accessibilityRole="button"
+        accessibilityLabel="Open settings"
       >
         <HugeiconsIcon
           icon={Settings02Icon}
@@ -264,7 +246,7 @@ const StreakCard = React.memo<{
           onPressOut={onPressOut}
           onPress={onPress}
           className="bg-white rounded-3xl p-5"
-          style={SHADOW_SUBTLE}
+          style={CARD_SHADOW}
         >
           {currentStreak === 0 && (
             <View className="mb-4 flex-row items-center justify-between">
@@ -354,7 +336,7 @@ const ShimmerSkeleton = React.memo<{ height: number }>(({ height }) => {
     shimmer.value = withRepeat(withSequence(withTiming(0.6, { duration: 800 }), withTiming(0.4, { duration: 800 })), -1, true);
   }, []);
   const style = useAnimatedStyle(() => ({ opacity: shimmer.value }));
-  return <Animated.View className="bg-white rounded-3xl" style={[style, { height }, SHADOW_SUBTLE]} />;
+  return <Animated.View className="bg-white rounded-3xl" style={[style, { height }, CARD_SHADOW]} />;
 });
 
 export default function JournalCalendarScreen() {

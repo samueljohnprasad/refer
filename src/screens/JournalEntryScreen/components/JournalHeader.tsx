@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, useWindowDimensions } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
@@ -23,8 +24,8 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
     backIconStyle,
     closeIconStyle,
   }: JournalHeaderProps) => {
-    const { height } = useWindowDimensions();
-    const headerHeight: number = Math.min(height * 0.14, 120);
+    const insets = useSafeAreaInsets();
+    const headerHeight: number = insets.top + 64;
 
     return (
       <AnimatedBlurView
@@ -41,9 +42,11 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
         }}
       >
         <AnimatedTouchableOpacity
-          className="w-10 h-10 rounded-full items-center justify-center bg-[#7B61FF]"
+          className="w-10 h-10 rounded-full items-center justify-center bg-theme-purple-deep"
           activeOpacity={0.7}
           onPress={onClose}
+          accessibilityRole="button"
+          accessibilityLabel="Close journal entry"
         >
           <Animated.View
             style={[
@@ -80,15 +83,17 @@ export const JournalHeader = React.memo<JournalHeaderProps>(
         </AnimatedTouchableOpacity>
 
         <View className="flex-1 items-center">
-          <Text className="text-base font-extrabold text-typography-900 dark:text-typography-50">
+          <Text className="text-base font-cormorantBold text-theme-text-primary mt-1">
             {formattedDateTime}
           </Text>
         </View>
 
         <AnimatedTouchableOpacity
-          className="w-10 h-10 rounded-full items-center justify-center bg-[#7B61FF]"
+          className="w-10 h-10 rounded-full items-center justify-center bg-theme-purple-deep"
           activeOpacity={0.7}
           onPress={isEditing ? onDone : onEdit}
+          accessibilityRole="button"
+          accessibilityLabel={isEditing ? "Done editing" : "Edit journal"}
         >
           <Animated.View
             style={[

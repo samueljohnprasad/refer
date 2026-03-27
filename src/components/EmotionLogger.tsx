@@ -19,29 +19,22 @@ import { useRewardsContext } from "../context/RewardsContext";
 import { useChallengesOptional } from "../context/ChallengesContext";
 import { SectionHeader } from "@/src/components/ui/SectionHeader";
 import { SmileIcon } from "@hugeicons/core-free-icons";
+import { MOOD } from "@/constants/palette";
+import { CARD_SHADOW } from "@/constants/shadows";
 
-// Subtle shadow constant matching other cards
-const LOG_SHADOW = {
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.05,
-  shadowRadius: 10,
-  elevation: 2,
-};
-
-// Emotion configuration
+// Emotion configuration — uses shared MOOD palette
 const EMOTIONS = [
   {
     id: 1,
     name: "Terrible",
     emoji: terrible,
-    color: "#FF6B6B",
-    bgColor: "#FFE5E5",
+    color: MOOD.terrible.color,
+    bgColor: MOOD.terrible.bg,
   },
-  { id: 2, name: "Bad", emoji: bad, color: "#FFA94D", bgColor: "#FFF3E5" },
-  { id: 3, name: "Okay", emoji: fine, color: "#FFD43B", bgColor: "#FFF9E5" },
-  { id: 4, name: "Good", emoji: good, color: "#69DB7C", bgColor: "#E5F9E5" },
-  { id: 5, name: "Great", emoji: great, color: "#74C0FC", bgColor: "#E5F3FF" },
+  { id: 2, name: "Bad", emoji: bad, color: MOOD.bad.color, bgColor: MOOD.bad.bg },
+  { id: 3, name: "Okay", emoji: fine, color: MOOD.okay.color, bgColor: MOOD.okay.bg },
+  { id: 4, name: "Good", emoji: good, color: MOOD.good.color, bgColor: MOOD.good.bg },
+  { id: 5, name: "Great", emoji: great, color: MOOD.great.color, bgColor: MOOD.great.bg },
 ] as const;
 
 interface EmotionLoggerProps {
@@ -176,11 +169,11 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     const getMoodLabel = (avg: string | null) => {
       if (!avg) return null;
       const avgNum = parseFloat(avg);
-      if (avgNum <= 1.5) return { text: "Terrible", color: "#FF6B6B" };
-      if (avgNum <= 2.5) return { text: "Bad", color: "#FFA94D" };
-      if (avgNum <= 3.5) return { text: "Okay", color: "#FFD43B" };
-      if (avgNum <= 4.5) return { text: "Good", color: "#69DB7C" };
-      return { text: "Great", color: "#74C0FC" };
+      if (avgNum <= 1.5) return { text: "Terrible", color: MOOD.terrible.color };
+      if (avgNum <= 2.5) return { text: "Bad", color: MOOD.bad.color };
+      if (avgNum <= 3.5) return { text: "Okay", color: MOOD.okay.color };
+      if (avgNum <= 4.5) return { text: "Good", color: MOOD.good.color };
+      return { text: "Great", color: MOOD.great.color };
     };
 
     const moodLabel = getMoodLabel(averageMood);

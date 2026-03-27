@@ -16,15 +16,15 @@ export const PhotosSection = React.memo<PhotosSectionProps>(
   ({ photos, isEditing, onAddPhoto }: PhotosSectionProps) => {
     return (
       <View className="mb-6">
-        <Text className="text-gray-400 text-xs uppercase tracking-wider mb-3">
+        <Text className="text-theme-text-secondary text-xs uppercase font-semibold tracking-wider mb-2">
           PHOTOS TO REMEMBER
         </Text>
 
-        <View className="flex-row flex-wrap gap-3">
+        <View className="flex-row flex-wrap gap-4">
           {photos.map((photo, index) => (
             <View
               key={index}
-              className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100"
+              className="w-20 h-20 rounded-lg overflow-hidden bg-theme-background-secondary border border-theme-border/50"
             >
               <Image source={{ uri: photo }} className="w-full h-full" />
             </View>
@@ -32,10 +32,12 @@ export const PhotosSection = React.memo<PhotosSectionProps>(
 
           <TouchableOpacity
             onPress={() => {}}
-            className="w-20 h-20 rounded-lg bg-gray-100 items-center justify-center"
+            className="w-20 h-20 rounded-lg bg-theme-background-secondary border border-theme-border/50 items-center justify-center"
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel="Add photo"
           >
-            <Feather name="plus" size={32} color="#9CA3AF" />
+            <Feather name="plus" size={32} className="text-theme-text-secondary" />
           </TouchableOpacity>
         </View>
       </View>

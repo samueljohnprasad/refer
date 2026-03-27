@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import { View, Text, StyleProp, ViewStyle } from "react-native";
+import { CARD_SHADOW } from "@/constants/shadows";
 
 export interface LevelProgressCardProps {
   xp: number;
@@ -8,64 +9,37 @@ export interface LevelProgressCardProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const LevelProgressCard: React.FC<LevelProgressCardProps> = ({ xp, levelLabel, percent, style }) => {
-  const clamped = Math.max(0, Math.min(100, percent));
+const LevelProgressCard: React.FC<LevelProgressCardProps> = ({
+  xp,
+  levelLabel,
+  percent,
+  style,
+}) => {
+  const clamped: number = Math.max(0, Math.min(100, percent));
   return (
-    <View style={[styles.levelCard, style]}>
-      <View style={styles.levelHeader}>
-        <Text style={styles.levelTitle}>My Level Progress</Text>
-        <Text style={styles.levelXP}>{xp} XP</Text>
+    <View
+      className="bg-violet-500 rounded-2xl p-4 mb-5"
+      style={[CARD_SHADOW, style]}
+    >
+      <View className="flex-row justify-between items-center mb-3">
+        <Text className="text-base font-bold text-white">
+          My Level Progress
+        </Text>
+        <Text className="text-base font-bold text-yellow-300">
+          {xp} XP
+        </Text>
       </View>
-      <View style={styles.levelProgress}>
-        <View style={[styles.levelProgressFill, { width: `${clamped}%` }]} />
+      <View className="h-2 bg-white/20 rounded-full mb-2 overflow-hidden">
+        <View
+          className="h-full bg-yellow-300 rounded-full"
+          style={{ width: `${clamped}%` }}
+        />
       </View>
-      <Text style={styles.levelText}>
+      <Text className="text-sm font-semibold text-white/80">
         {levelLabel} • {clamped}%
       </Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  levelCard: {
-    backgroundColor: "#8B5CF6",
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
-  },
-  levelHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  levelTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
-  levelXP: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FFD93D",
-  },
-  levelProgress: {
-    height: 8,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    borderRadius: 4,
-    marginBottom: 8,
-    overflow: "hidden",
-  },
-  levelProgressFill: {
-    height: "100%",
-    backgroundColor: "#FFD93D",
-    borderRadius: 4,
-  },
-  levelText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.8)",
-  },
-});
 
 export default LevelProgressCard;

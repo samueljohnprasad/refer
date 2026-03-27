@@ -27,17 +27,9 @@ import CalorieGoalModal from "@/src/components/calorie/CalorieGoalModal";
 import { XPBadge } from "@/src/components/XP";
 import { XPActionType, XP_REWARDS } from "@/src/types/xp";
 import { SectionHeader } from "@/src/components/ui/SectionHeader";
+import { CARD_SHADOW } from "@/constants/shadows";
 
 const TRACKED_MICRONUTRIENTS_KEY = "tracked_micronutrients";
-
-/** Shared subtle card shadow — single source of truth */
-const WIDGET_SHADOW = {
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.04,
-  shadowRadius: 8,
-  elevation: 1,
-} as const;
 
 interface CalorieWidgetProps {
   selectedDate: Date;
@@ -130,13 +122,12 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
     return (
       <TouchableOpacity
         className="bg-white rounded-2xl p-4"
-        style={WIDGET_SHADOW}
+        style={CARD_SHADOW}
       >
         <HStack className="justify-between items-center">
           <HStack className="items-center" space="sm">
             <View
-              className="p-2 rounded-xl"
-              style={{ backgroundColor: "#F3F4F6" }}
+              className="p-2 rounded-xl bg-gray-100"
             >
               <HugeiconsIcon icon={AppleIcon} size={20} color="#9CA3AF" />
             </View>
@@ -186,7 +177,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
       />
       <TouchableOpacity
         className="bg-white rounded-2xl p-5"
-        style={WIDGET_SHADOW}
+        style={CARD_SHADOW}
         activeOpacity={1}
       >
 

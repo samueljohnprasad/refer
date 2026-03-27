@@ -5,6 +5,8 @@ import { useChallenges } from "@/hooks/data/useChallenges";
 import { ChallengeCard } from "./ChallengeCard";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Target02Icon } from "@hugeicons/core-free-icons";
+import { CARD_SHADOW } from "@/constants/shadows";
+import { SEMANTIC } from "@/constants/palette";
 
 interface ChallengesSectionProps {
   maxItems?: number;
@@ -42,13 +44,7 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
   return (
     <View
       className="bg-white rounded-2xl border border-gray-100"
-      style={{
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.04,
-        shadowRadius: 12,
-        elevation: 2,
-      }}
+      style={CARD_SHADOW}
     >
       {/* Header */}
       <View className="flex-row items-center justify-between p-4 pb-2">
@@ -63,13 +59,12 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
           <View className="flex-row items-center gap-3">
             {/* Icon bubble instead of emoji */}
             <View
-              className="w-10 h-10 rounded-full items-center justify-center"
-              style={{ backgroundColor: "#F5F3FF" }}
+              className="w-10 h-10 rounded-full items-center justify-center bg-violet-50"
             >
               <HugeiconsIcon
                 icon={Target02Icon}
                 size={20}
-                color="#8B5CF6"
+                color={SEMANTIC.goalAccent}
                 strokeWidth={1.8}
               />
             </View>

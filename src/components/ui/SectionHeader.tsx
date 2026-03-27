@@ -21,8 +21,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
     <View className={`flex-row items-center justify-between ${className}`}>
       <View className="flex-row items-center">
         <View
-          className="p-2 rounded-xl mr-2"
-          style={{ backgroundColor: "#F3F4F6" }}
+          className="p-2 rounded-xl mr-2 bg-gray-100"
         >
           <HugeiconsIcon icon={icon} size={22} color="#6B7280" />
         </View>
@@ -35,7 +34,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
       </View>
 
       {rightElement && (
-        <View className="flex-row items-center" style={{ gap: 8 }}>
+        <View className="flex-row items-center gap-2">
           {rightElement}
         </View>
       )}

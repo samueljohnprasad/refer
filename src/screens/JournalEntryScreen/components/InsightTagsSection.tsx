@@ -22,17 +22,15 @@ export const InsightTagsSection: React.FC<InsightTagsSectionProps> = React.memo(
 
     return (
       <View
-        className="rounded-2xl p-4 mb-3"
-        style={{ backgroundColor: bgColor }}
+        className={`rounded-2xl p-4 mb-4 ${bgColor}`}
       >
-        <View className="flex-row items-center mb-3">
+        <View className="flex-row items-center mb-4">
           <View
-            className="w-8 h-8 rounded-full items-center justify-center mr-2"
-            style={{ backgroundColor: tagBgColor }}
+            className={`w-8 h-8 rounded-full items-center justify-center mr-2 ${tagBgColor}`}
           >
-            <Feather name={icon} size={16} color={iconColor} />
+            <Feather name={icon} size={16} className={iconColor} />
           </View>
-          <Text className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+          <Text className="text-sm font-semibold text-theme-text-primary">
             {title}
           </Text>
         </View>
@@ -40,18 +38,16 @@ export const InsightTagsSection: React.FC<InsightTagsSectionProps> = React.memo(
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingRight: 8 }}
+          contentContainerStyle={{ paddingRight: 16 }}
         >
           <View className="flex-row flex-wrap gap-2">
             {items.map((item: string, index: number) => (
               <View
                 key={`${title}-${index}`}
-                className="px-3 py-1.5 rounded-full"
-                style={{ backgroundColor: tagBgColor }}
+                className={`px-4 py-2 rounded-full ${tagBgColor}`}
               >
                 <Text
-                  className="text-xs font-medium"
-                  style={{ color: tagTextColor }}
+                  className={`text-sm font-medium ${tagTextColor}`}
                 >
                   {item}
                 </Text>
@@ -76,49 +72,49 @@ export const INSIGHT_TAG_CONFIGS: Record<
   achievements: {
     title: "Achievements",
     icon: "award",
-    iconColor: "#10B981",
-    bgColor: "#ECFDF5",
-    tagBgColor: "#D1FAE5",
-    tagTextColor: "#065F46",
+    iconColor: "text-emerald-500",
+    bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
+    tagBgColor: "bg-emerald-100 dark:bg-emerald-800/40",
+    tagTextColor: "text-emerald-700 dark:text-emerald-300",
   },
   worries: {
     title: "Worries",
     icon: "cloud",
-    iconColor: "#6366F1",
-    bgColor: "#EEF2FF",
-    tagBgColor: "#E0E7FF",
-    tagTextColor: "#3730A3",
+    iconColor: "text-indigo-500",
+    bgColor: "bg-indigo-50 dark:bg-indigo-900/20",
+    tagBgColor: "bg-indigo-100 dark:bg-indigo-800/40",
+    tagTextColor: "text-indigo-700 dark:text-indigo-300",
   },
   goals: {
     title: "Goals",
     icon: "target",
-    iconColor: "#F59E0B",
-    bgColor: "#FFFBEB",
-    tagBgColor: "#FEF3C7",
-    tagTextColor: "#92400E",
+    iconColor: "text-amber-500",
+    bgColor: "bg-amber-50 dark:bg-amber-900/20",
+    tagBgColor: "bg-amber-100 dark:bg-amber-800/40",
+    tagTextColor: "text-amber-700 dark:text-amber-300",
   },
   triggers: {
     title: "Triggers",
     icon: "alert-circle",
-    iconColor: "#EF4444",
-    bgColor: "#FEF2F2",
-    tagBgColor: "#FEE2E2",
-    tagTextColor: "#991B1B",
+    iconColor: "text-rose-500",
+    bgColor: "bg-rose-50 dark:bg-rose-900/20",
+    tagBgColor: "bg-rose-100 dark:bg-rose-800/40",
+    tagTextColor: "text-rose-700 dark:text-rose-300",
   },
   copingStrategies: {
     title: "Coping Strategies",
     icon: "heart",
-    iconColor: "#EC4899",
-    bgColor: "#FDF2F8",
-    tagBgColor: "#FCE7F3",
-    tagTextColor: "#9D174D",
+    iconColor: "text-pink-500",
+    bgColor: "bg-pink-50 dark:bg-pink-900/20",
+    tagBgColor: "bg-pink-100 dark:bg-pink-800/40",
+    tagTextColor: "text-pink-700 dark:text-pink-300",
   },
   physicalSymptoms: {
     title: "Physical Symptoms",
     icon: "activity",
-    iconColor: "#0891B2",
-    bgColor: "#ECFEFF",
-    tagBgColor: "#CFFAFE",
-    tagTextColor: "#155F75",
+    iconColor: "text-cyan-500",
+    bgColor: "bg-cyan-50 dark:bg-cyan-900/20",
+    tagBgColor: "bg-cyan-100 dark:bg-cyan-800/40",
+    tagTextColor: "text-cyan-700 dark:text-cyan-300",
   },
 };

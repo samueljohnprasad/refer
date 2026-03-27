@@ -817,10 +817,14 @@ const TabSelector: React.FC<TabProps> = ({ activeTab, onTabChange }) => {
 
   return (
     <View>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View className="flex-row items-center">
         <Pressable
           onPress={() => onTabChange("day")}
           style={{ width: TAB_WIDTH, marginRight: TAB_GAP }}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: activeTab === "day" }}
+          accessibilityLabel="Day view"
+          accessibilityHint="Show mood chart for individual days"
         >
           <Text
             className={`text-base font-medium ${
@@ -833,6 +837,10 @@ const TabSelector: React.FC<TabProps> = ({ activeTab, onTabChange }) => {
         <Pressable
           onPress={() => onTabChange("week")}
           style={{ width: TAB_WIDTH }}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: activeTab === "week" }}
+          accessibilityLabel="Week view"
+          accessibilityHint="Show mood chart for weekly averages"
         >
           <Text
             className={`text-base font-medium ${
@@ -1280,13 +1288,15 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
             alignItems: "center",
             justifyContent: "space-between",
           }}
+          accessibilityLabel="Mood scale from Great to Terrible"
+          accessibilityRole="image"
         >
           {[
-            { score: 5, key: "great" },
-            { score: 4, key: "good" },
-            { score: 3, key: "fine" },
-            { score: 2, key: "bad" },
-            { score: 1, key: "terrible" },
+            { score: 5, key: "great", label: "Great" },
+            { score: 4, key: "good", label: "Good" },
+            { score: 3, key: "fine", label: "Okay" },
+            { score: 2, key: "bad", label: "Bad" },
+            { score: 1, key: "terrible", label: "Terrible" },
           ].map((it) => (
             <View
               key={it.key}
@@ -1301,12 +1311,14 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
                 shadowOpacity: 0.05,
                 shadowRadius: 4,
               }}
+              accessibilityLabel={`Mood level: ${it.label}`}
             >
               <Image
                 source={emotions[it.key as keyof typeof emotions]}
                 style={{ width: 18, height: 18 }}
                 resizeMode="contain"
                 progressiveRenderingEnabled={true}
+                accessibilityLabel={`${it.label} mood emoji`}
               />
             </View>
           ))}

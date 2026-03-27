@@ -22,22 +22,20 @@ export const TagItem = React.memo<TagItemProps>(
             ? { backgroundColor: tag.colorsGradient[0] }
             : undefined,
         ]}
-        className="flex-row items-center py-2 px-3 rounded-full mr-2 mb-2 border border-outline-100 dark:border-outline-800 bg-background-100 dark:bg-background-800"
+        className="flex-row items-center py-2 px-4 rounded-full mr-2 mb-2 border border-theme-border/50 bg-theme-background-secondary"
         entering={FadeIn.springify().damping(16)}
         exiting={FadeOut.duration(140)}
         layout={Layout.springify().stiffness(180)}
       >
-        <Text className="text-[15px] text-typography-900 dark:text-typography-50">
+        <Text className="text-base font-medium text-theme-text-primary">
           {tag.emoji} {tag.name}
         </Text>
         {isEditing && (
-          <TouchableOpacity onPress={handleRemove}>
+          <TouchableOpacity onPress={handleRemove} className="ml-2" accessibilityRole="button" accessibilityLabel={`Remove ${tag.name}`}>
             <Feather
               name="x-circle"
               size={16}
-              color={
-                colorScheme === "dark" ? Colors.dark.icon : Colors.light.icon
-              }
+              className="text-theme-text-secondary"
             />
           </TouchableOpacity>
         )}

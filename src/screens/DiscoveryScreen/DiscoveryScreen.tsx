@@ -54,6 +54,8 @@ import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
 import { clipShape, foregroundStyle, frame } from "@expo/ui/swift-ui/modifiers";
+import { BRAND, PALETTE, SURFACE } from "@/constants/palette";
+import { CARD_SHADOW, ELEVATED_SHADOW } from "@/constants/shadows";
 
 // Lazy load components
 const VoiceRecorderModalWrapper = React.lazy(
@@ -75,17 +77,9 @@ const CalendarPicker = React.lazy(() =>
 const ImageJournalModal = React.lazy(() => import("./ImageJournalModal"));
 
 // Constants outside component to prevent recreation
-const COLORS = {
-  ink: "#2E285A",     // deep purple text
-  accent: "#7B61FF",  // core Brand Purple (mic, progress)
-  lavender: "#E7E5FB",// chip background
-  skyA: "#F6F4FF",    // subtle brand gradient start
-  skyB: "#FFFFFF",    // clean white gradient end
-  white: "#FFFFFF",
-  streak: "#F59E0B",  // core Brand Amber (fire/number)
-};
+const COLORS = BRAND;
 
-const GRADIENT_COLORS = [COLORS.skyA, COLORS.skyB] as const;
+const GRADIENT_COLORS = [BRAND.skyA, BRAND.skyB] as const;
 const GRADIENT_START = { x: 0, y: 0 } as const;
 const GRADIENT_END = { x: 1, y: 1 } as const;
 
@@ -93,8 +87,6 @@ const LOTTIE_STYLE = {
   width: 200,
   height: 200,
 } as const;
-
-const FIRE_ICON_STYLE = { marginLeft: 6 } as const;
 
 // Memoized Header Component
 interface DiscoveryHeaderProps {
@@ -106,15 +98,14 @@ const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(
   ({ currentStreak, isLoading }) => (
     <View className="flex-row items-center justify-between my-1.5">
       <View className="flex-row items-center"></View>
-      <View className="flex-row items-center">
-        <Text className="text-[#FF7A2F] text-lg font-extrabold">
-          {isLoading ? "..." : currentStreak}
+      <View className="flex-row items-center gap-1.5">
+        <Text className="text-amber-500 text-lg font-extrabold">
+          {isLoading ? "—" : currentStreak}
         </Text>
         <MaterialCommunityIcons
           name="fire"
           size={22}
-          color={COLORS.streak}
-          style={FIRE_ICON_STYLE}
+          color={PALETTE.amber}
         />
       </View>
     </View>
@@ -190,7 +181,7 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
             </Pressable>
           </View>
         </View>
-        <Text className="mt-2.5 text-[#2E285A] text-4xl font-black leading-[34px] tracking-wide font-cormorantSemiBold">
+        <Text className="mt-2.5 text-gray-900 text-4xl font-black leading-tight tracking-wide font-cormorantSemiBold">
           {prompt}
         </Text>
       </Box>
@@ -299,7 +290,7 @@ function DiscoveryScreen() {
     []
   );
 
-  const cardShadowStyle = useMemo(() => [shadowCard, { borderRadius: 26 }], []);
+  const cardShadowStyle = useMemo(() => [CARD_SHADOW, { borderRadius: 24 }], []);
   const isLiquidGlass = isLiquidGlassAvailable();
 
   return (
@@ -323,10 +314,10 @@ function DiscoveryScreen() {
             start={GRADIENT_START}
             end={GRADIENT_END}
             style={{
-              borderRadius: 26,
-              padding: 18,
+              borderRadius: 24,
+              padding: 20,
               overflow: "hidden",
-              minHeight: 260,
+              minHeight: 256,
               justifyContent: "space-between",
               flex: 1,
             }}
@@ -346,28 +337,28 @@ function DiscoveryScreen() {
                   <TouchableOpacity
                     key="camera"
                     onPress={handleScanJournal}
-                    style={[shadowCard, { backgroundColor: COLORS.white }]}
+                    style={[CARD_SHADOW, { backgroundColor: '#FFFFFF' }]}
                     className="w-[60px] h-[44px] rounded-full items-center justify-center"
                     activeOpacity={0.85}
                   >
                     <HugeiconsIcon
                       icon={Camera02Icon}
                       size={24}
-                      color={COLORS.ink}
+                      color={BRAND.ink}
                     />
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     key="gallery"
                     onPress={handleScanJournal}
-                    style={[shadowCard, { backgroundColor: COLORS.white }]}
+                    style={[CARD_SHADOW, { backgroundColor: '#FFFFFF' }]}
                     className="w-[60px] h-[44px] rounded-full items-center justify-center"
                     activeOpacity={0.85}
                   >
                     <HugeiconsIcon
                       icon={Image02Icon}
                       size={24}
-                      color={COLORS.ink}
+                      color={BRAND.ink}
                     />
                   </TouchableOpacity>
                 </View>
@@ -391,23 +382,26 @@ function DiscoveryScreen() {
                   handleOpenRecorder();
                 }}
                 size={108}
-                bg={COLORS.accent}
+                bg={BRAND.purple}
                 elevation
                 icon={<HugeiconsIcon icon={AiMicIcon} size={56} />}
+                accessibilityLabel="Start voice recording"
               />
 
               {!isLiquidGlass && (
                 <TouchableOpacity
                   key="keyboard"
                   onPress={handleKeyboardPress}
-                  style={[shadowCard, { backgroundColor: COLORS.white }]}
+                  style={[CARD_SHADOW, { backgroundColor: SURFACE.card }]}
                   className="w-[60px] h-[44px] rounded-full items-center justify-center"
                   activeOpacity={0.85}
+                  accessibilityRole="button"
+                  accessibilityLabel="Open keyboard journal"
                 >
                   <HugeiconsIcon
                     icon={KeyboardIcon}
                     size={24}
-                    color={COLORS.ink}
+                    color={BRAND.ink}
                   />
                 </TouchableOpacity>
               )}
@@ -513,10 +507,11 @@ interface CircleActionProps {
   icon: React.ReactNode;
   elevation?: boolean;
   onPress?: () => void;
+  accessibilityLabel?: string;
 }
 
 const CircleAction = React.memo<CircleActionProps>(
-  ({ size, bg, icon, elevation, onPress }) => {
+  ({ size, bg, icon, elevation, onPress, accessibilityLabel }) => {
     const buttonStyle = useMemo(
       () => [
         {
@@ -526,7 +521,7 @@ const CircleAction = React.memo<CircleActionProps>(
           backgroundColor: bg,
           zIndex: elevation ? 2 : 1,
         },
-        elevation ? shadowCard : null,
+        elevation ? ELEVATED_SHADOW : null,
       ],
       [size, bg, elevation]
     );
@@ -537,6 +532,8 @@ const CircleAction = React.memo<CircleActionProps>(
         onPress={onPress}
         style={buttonStyle}
         className="items-center justify-center"
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
       >
         {icon}
       </TouchableOpacity>
@@ -546,14 +543,6 @@ const CircleAction = React.memo<CircleActionProps>(
 
 CircleAction.displayName = "CircleAction";
 
-const shadowCard = Platform.select({
-  ios: {
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-  },
-  android: { elevation: 0 },
-});
+
 
 export default React.memo(DiscoveryScreen);

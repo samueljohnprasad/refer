@@ -26,7 +26,7 @@ export const MoodCard = React.memo<MoodCardProps>(
     return (
       <Animated.View
         style={[moodCardStyle]}
-        className="bg-amber-50 rounded-3xl p-6 mb-4"
+        className="bg-theme-background-card border border-theme-border/50 rounded-3xl p-6 mb-4"
       >
         {!isEditing ? (
           /* Display mode: Emotion Image + Title */
@@ -39,7 +39,7 @@ export const MoodCard = React.memo<MoodCardProps>(
               />
             </Animated.View>
             <Animated.View style={[{ flex: 1 }, summaryStyle]}>
-              <Text className="text-xl font-bold text-gray-900 leading-7">
+              <Text className="text-xl font-cormorantBold text-theme-text-primary leading-7">
                 {title}
               </Text>
             </Animated.View>
