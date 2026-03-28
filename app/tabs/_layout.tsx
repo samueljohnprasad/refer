@@ -118,6 +118,16 @@ export default function AppLayout() {
           animation: "slide_from_bottom",
         }}
       />
+      <Stack.Screen
+        name="screens/thought-reframing"
+        options={{
+          headerShown: true,
+          title: "Thought Reframing",
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }

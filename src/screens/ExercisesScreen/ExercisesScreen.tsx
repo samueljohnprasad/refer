@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui/text';
 import { Idea01Icon, Clock01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react-native';
+import { router } from 'expo-router';
 
 import { CBTExercise } from '@/src/types/exercises';
 import { CBT_EXERCISES } from '@/src/data/exercises';
 
 export default function ExercisesScreen() {
+  const handleExercisePress = useCallback((exercise: CBTExercise): void => {
+    // Route map: exercise id → screen route
+    const routeMap: Record<string, string> = {
+      'thought-reframing': '/tabs/screens/thought-reframing',
+    };
+    const route: string | undefined = routeMap[exercise.id];
+    if (route) {
+      router.push(route as never);
+    }
+  }, []);
+
   return (
     <SafeAreaView className="flex-1 bg-[#F8FAFC]" edges={['top']}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40, paddingTop: 16 }}>
@@ -46,6 +58,7 @@ export default function ExercisesScreen() {
           {CBT_EXERCISES.map((exercise: CBTExercise) => (
             <Pressable 
               key={exercise.id}
+              onPress={() => handleExercisePress(exercise)}
               className="bg-white rounded-[24px] p-4 shadow-sm shadow-slate-200 border border-slate-100 flex-row items-center active:bg-slate-50 mb-4"
             >
               <View 
