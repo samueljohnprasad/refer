@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, TextInput } from 'react-native';
+import { View } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { StepHeader } from '../components/StepHeader';
 import { StepNavigation } from '../components/StepNavigation';
+import { VoiceTextInput } from '../components/VoiceTextInput';
 
 interface AutomaticThoughtStepProps {
   value: string;
@@ -16,9 +17,6 @@ interface AutomaticThoughtStepProps {
 
 export const AutomaticThoughtStep: React.FC<AutomaticThoughtStepProps> = React.memo(
   ({ value, onChange, onNext, onBack, canGoBack, isValid, progress }) => {
-    const charCount: number = value.length;
-    const maxChars: number = 300;
-
     return (
       <View className="flex-1">
         <StepHeader
@@ -37,21 +35,12 @@ export const AutomaticThoughtStep: React.FC<AutomaticThoughtStepProps> = React.m
         </View>
 
         <View className="flex-1">
-          <TextInput
+          <VoiceTextInput
             value={value}
-            onChangeText={(text: string) => {
-              if (text.length <= maxChars) onChange(text);
-            }}
+            onChangeText={onChange}
             placeholder="e.g., 'They think my work isn't good enough'"
-            placeholderTextColor="#94A3B8"
-            multiline
-            textAlignVertical="top"
-            maxLength={maxChars}
-            className="bg-white border border-slate-100 rounded-2xl p-4 text-base text-slate-700 min-h-[120px]"
+            maxLength={300}
           />
-          <Text className={`text-xs mt-2 text-right ${charCount > maxChars * 0.9 ? 'text-amber-500' : 'text-slate-400'}`}>
-            {charCount}/{maxChars}
-          </Text>
         </View>
 
         <StepNavigation

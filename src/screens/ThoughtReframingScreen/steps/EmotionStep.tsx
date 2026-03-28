@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { Text } from '@/components/ui/text';
 import Slider from '@react-native-community/slider';
 import { StepHeader } from '../components/StepHeader';
@@ -7,6 +7,7 @@ import { StepNavigation } from '../components/StepNavigation';
 import { EmotionChip } from '../components/EmotionChip';
 import { EMOTION_OPTIONS, type EmotionOption } from '../data/emotions';
 import type { EmotionName, EmotionRating } from '../types';
+import type { AIEmotionSuggestion } from '../hooks/useThoughtReframingAI';
 
 interface EmotionStepProps {
   selectedEmotions: EmotionRating[];
@@ -17,6 +18,9 @@ interface EmotionStepProps {
   canGoBack: boolean;
   isValid: boolean;
   progress: number;
+  /** AI-suggested emotions */
+  aiSuggestedEmotions?: AIEmotionSuggestion[];
+  isDetectingEmotions?: boolean;
 }
 
 const MAX_EMOTIONS: number = 3;
@@ -31,10 +35,17 @@ export const EmotionStep: React.FC<EmotionStepProps> = React.memo(
     canGoBack,
     isValid,
     progress,
+    aiSuggestedEmotions = [],
+    isDetectingEmotions = false,
   }) => {
     const selectedNames: Set<EmotionName> = useMemo(
       () => new Set(selectedEmotions.map((e) => e.name)),
       [selectedEmotions]
+    );
+
+    const aiSuggestedNames: Set<EmotionName> = useMemo(
+      () => new Set(aiSuggestedEmotions.map((e) => e.name)),
+      [aiSuggestedEmotions]
     );
 
     const atLimit: boolean = selectedEmotions.length >= MAX_EMOTIONS;
@@ -49,17 +60,44 @@ export const EmotionStep: React.FC<EmotionStepProps> = React.memo(
           totalSteps={8}
         />
 
+        {/* AI suggestion badge */}
+        {isDetectingEmotions && (
+          <View className="flex-row items-center mb-3 bg-purple-50 rounded-xl px-3 py-2 border border-purple-100">
+            <ActivityIndicator size="small" color="#7C3AED" />
+            <Text className="text-xs text-purple-600 font-semibold ml-2">
+              AI is analyzing your emotions...
+            </Text>
+          </View>
+        )}
+
+        {aiSuggestedEmotions.length > 0 && !isDetectingEmotions && (
+          <View className="mb-3 bg-purple-50 rounded-xl px-3 py-2 border border-purple-100">
+            <Text className="text-xs text-purple-600 font-semibold">
+              ✨ AI detected these emotions — tap to confirm
+            </Text>
+          </View>
+        )}
+
         {/* Emotion chips */}
         <View className="flex-row flex-wrap mb-4">
-          {EMOTION_OPTIONS.map((emotion: EmotionOption) => (
-            <EmotionChip
-              key={emotion.name}
-              emotion={emotion}
-              isSelected={selectedNames.has(emotion.name)}
-              onToggle={() => onToggleEmotion(emotion.name)}
-              disabled={atLimit}
-            />
-          ))}
+          {EMOTION_OPTIONS.map((emotion: EmotionOption) => {
+            const isAISuggested: boolean = aiSuggestedNames.has(emotion.name);
+            return (
+              <View key={emotion.name} className="relative">
+                <EmotionChip
+                  emotion={emotion}
+                  isSelected={selectedNames.has(emotion.name)}
+                  onToggle={() => onToggleEmotion(emotion.name)}
+                  disabled={atLimit}
+                />
+                {isAISuggested && !selectedNames.has(emotion.name) && (
+                  <View className="absolute -top-1 -right-1 bg-purple-500 rounded-full h-3 w-3 items-center justify-center">
+                    <Text className="text-[6px] text-white font-bold">AI</Text>
+                  </View>
+                )}
+              </View>
+            );
+          })}
         </View>
 
         {/* Intensity sliders for selected emotions */}

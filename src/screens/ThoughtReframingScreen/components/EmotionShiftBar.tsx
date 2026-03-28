@@ -64,11 +64,11 @@ export const EmotionShiftBar: React.FC<EmotionShiftBarProps> = React.memo(
                 <View className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <View
                     className="h-full bg-red-300 rounded-full"
-                    style={{ width: `${emotion.initial_intensity * 10}%` }}
+                    style={{ width: `${(emotion.initial_intensity ?? 0) * 10}%` }}
                   />
                 </View>
                 <Text className="text-xs text-slate-500 text-right mt-0.5">
-                  {emotion.initial_intensity}/10
+                  {(emotion.initial_intensity ?? 0)}/10
                 </Text>
               </View>
 
@@ -78,11 +78,11 @@ export const EmotionShiftBar: React.FC<EmotionShiftBarProps> = React.memo(
                 <View className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <View
                     className="h-full bg-green-400 rounded-full"
-                    style={{ width: `${emotion.final_intensity * 10}%` }}
+                    style={{ width: `${(emotion.final_intensity ?? 0) * 10}%` }}
                   />
                 </View>
                 <Text className="text-xs text-slate-500 text-right mt-0.5">
-                  {emotion.final_intensity}/10
+                  {(emotion.final_intensity ?? 0)}/10
                 </Text>
               </View>
             </View>

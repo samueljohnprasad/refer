@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, TextInput } from 'react-native';
+import { View, Pressable, ActivityIndicator } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { StepHeader } from '../components/StepHeader';
 import { StepNavigation } from '../components/StepNavigation';
+import { VoiceTextInput } from '../components/VoiceTextInput';
+import type { AIBalancedThoughtSuggestion } from '../hooks/useThoughtReframingAI';
 
 interface BalancedThoughtStepProps {
   value: string;
@@ -13,6 +15,9 @@ interface BalancedThoughtStepProps {
   canGoBack: boolean;
   isValid: boolean;
   progress: number;
+  /** AI-generated balanced thought suggestions */
+  aiSuggestions?: AIBalancedThoughtSuggestion[];
+  isSuggestingBalanced?: boolean;
 }
 
 export const BalancedThoughtStep: React.FC<BalancedThoughtStepProps> = React.memo(
@@ -25,10 +30,9 @@ export const BalancedThoughtStep: React.FC<BalancedThoughtStepProps> = React.mem
     canGoBack,
     isValid,
     progress,
+    aiSuggestions = [],
+    isSuggestingBalanced = false,
   }) => {
-    const charCount: number = value.length;
-    const maxChars: number = 300;
-
     return (
       <View className="flex-1">
         <StepHeader
@@ -49,22 +53,47 @@ export const BalancedThoughtStep: React.FC<BalancedThoughtStepProps> = React.mem
           </Text>
         </View>
 
+        {/* AI suggestions */}
+        {isSuggestingBalanced && (
+          <View className="flex-row items-center mb-3 bg-purple-50 rounded-xl px-3 py-2 border border-purple-100">
+            <ActivityIndicator size="small" color="#7C3AED" />
+            <Text className="text-xs text-purple-600 font-semibold ml-2">
+              AI is crafting balanced thought options...
+            </Text>
+          </View>
+        )}
+
+        {aiSuggestions.length > 0 && !isSuggestingBalanced && (
+          <View className="mb-4">
+            <Text className="text-xs font-bold text-purple-500 uppercase tracking-wider mb-2">
+              ✨ AI Suggestions — tap to use
+            </Text>
+            {aiSuggestions.map((suggestion: AIBalancedThoughtSuggestion, index: number) => (
+              <Pressable
+                key={index}
+                onPress={() => onChange(suggestion.text)}
+                accessibilityRole="button"
+                accessibilityLabel={`Use AI suggestion: ${suggestion.text}`}
+                className="bg-purple-50 rounded-xl p-3 mb-2 border border-purple-100 active:bg-purple-100"
+              >
+                <Text className="text-sm text-purple-800 mb-1">
+                  "{suggestion.text}"
+                </Text>
+                <Text className="text-xs text-purple-400 italic">
+                  {suggestion.rationale}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
+
         <View className="flex-1">
-          <TextInput
+          <VoiceTextInput
             value={value}
-            onChangeText={(text: string) => {
-              if (text.length <= maxChars) onChange(text);
-            }}
+            onChangeText={onChange}
             placeholder="e.g., 'My manager is busy. Not responding immediately doesn't mean they dislike my work.'"
-            placeholderTextColor="#94A3B8"
-            multiline
-            textAlignVertical="top"
-            maxLength={maxChars}
-            className="bg-white border border-slate-100 rounded-2xl p-4 text-base text-slate-700 min-h-[120px]"
+            maxLength={300}
           />
-          <Text className={`text-xs mt-2 text-right ${charCount > maxChars * 0.9 ? 'text-amber-500' : 'text-slate-400'}`}>
-            {charCount}/{maxChars}
-          </Text>
 
           <View className="bg-blue-50 rounded-2xl p-3 mt-3 border border-blue-100">
             <Text className="text-sm text-blue-600 leading-relaxed">

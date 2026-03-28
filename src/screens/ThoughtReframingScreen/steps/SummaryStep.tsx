@@ -40,6 +40,18 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
           </Text>
         </View>
 
+        {/* Situation */}
+        <View className="mb-5">
+          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+            What happened?
+          </Text>
+          <View className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+            <Text className="text-sm text-slate-700">
+              {formState.situation || 'Not specified'}
+            </Text>
+          </View>
+        </View>
+
         {/* Thought comparison */}
         <View className="mb-5">
           <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
@@ -87,6 +99,41 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
             </View>
           </View>
         )}
+
+        {/* Evidence */}
+        <View className="mb-5">
+          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+            What evidence supports this thought?
+          </Text>
+          <View className="bg-slate-50 rounded-2xl p-4 mb-4 border border-slate-100">
+            {formState.evidenceFor.length > 0 ? (
+              formState.evidenceFor.map((item, i) => (
+                <View key={`for-${i}`} className="flex-row mb-1">
+                  <Text className="text-sm text-slate-400 mr-2">•</Text>
+                  <Text className="text-sm text-slate-700 flex-1">{item}</Text>
+                </View>
+              ))
+            ) : (
+              <Text className="text-sm text-slate-400 italic">None provided</Text>
+            )}
+          </View>
+
+          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+            What evidence does not support this thought?
+          </Text>
+          <View className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+            {formState.evidenceAgainst.length > 0 ? (
+              formState.evidenceAgainst.map((item, i) => (
+                <View key={`against-${i}`} className="flex-row mb-1">
+                  <Text className="text-sm text-slate-400 mr-2">•</Text>
+                  <Text className="text-sm text-slate-700 flex-1">{item}</Text>
+                </View>
+              ))
+            ) : (
+              <Text className="text-sm text-slate-400 italic">None provided</Text>
+            )}
+          </View>
+        </View>
 
         {/* Emotion shift */}
         {formState.selectedEmotions.length > 0 && (

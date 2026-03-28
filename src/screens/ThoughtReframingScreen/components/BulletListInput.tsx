@@ -1,8 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { View, Pressable, TextInput } from 'react-native';
+import { View, Pressable, TextInput, ActivityIndicator } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { Cancel01Icon, Add01Icon } from '@hugeicons/core-free-icons';
+import { Cancel01Icon, Add01Icon, Mic01Icon, StopIcon } from '@hugeicons/core-free-icons';
+import useAudioRecording from '@/hooks/useAudioRecording';
+import { useTranscribeAudio } from '@/hooks/useTranscribeAudio';
+import * as Haptics from 'expo-haptics';
 
 interface BulletListInputProps {
   items: string[];
@@ -18,9 +21,13 @@ export const BulletListInput: React.FC<BulletListInputProps> = React.memo(
     onAdd,
     onRemove,
     maxItems,
-    placeholder = 'Type something and tap add...',
+    placeholder = 'Type or use voice...',
   }) => {
     const [inputValue, setInputValue] = useState<string>('');
+    const { recordingCurrentState, record, stopRecording } = useAudioRecording();
+    const { transcribeAudio, isTranscribing } = useTranscribeAudio();
+    
+    const isRecording = recordingCurrentState === 'recording';
 
     const handleAdd = useCallback((): void => {
       const trimmed: string = inputValue.trim();
@@ -29,11 +36,27 @@ export const BulletListInput: React.FC<BulletListInputProps> = React.memo(
       setInputValue('');
     }, [inputValue, onAdd]);
 
+    const handleToggleRecording = useCallback(async (): Promise<void> => {
+      if (isRecording) {
+        const recorderState = await stopRecording();
+        const uri = recorderState?.url;
+        if (uri) {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          const result = await transcribeAudio(uri);
+          if (result && result.transcript) {
+            onAdd(result.transcript);
+          }
+        }
+      } else {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        await record();
+      }
+    }, [isRecording, record, stopRecording, transcribeAudio, onAdd]);
+
     const canAdd: boolean = items.length < maxItems && inputValue.trim().length > 0;
 
     return (
       <View>
-        {/* Existing items */}
         {items.map((item: string, index: number) => (
           <View
             key={`${item}-${index}`}
@@ -44,47 +67,65 @@ export const BulletListInput: React.FC<BulletListInputProps> = React.memo(
             <Pressable
               onPress={() => onRemove(index)}
               accessibilityRole="button"
-              accessibilityLabel={`Remove: ${item}`}
               className="h-8 w-8 rounded-full bg-slate-50 items-center justify-center active:bg-slate-100"
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <HugeiconsIcon icon={Cancel01Icon} size={14} color="#94A3B8" />
             </Pressable>
           </View>
         ))}
 
-        {/* Input row */}
         {items.length < maxItems && (
-          <View className="flex-row items-center bg-white rounded-xl border border-slate-100 overflow-hidden">
+          <View className={`flex-row items-center bg-white rounded-xl border overflow-hidden ${isRecording ? 'border-red-200' : 'border-slate-100'}`}>
             <TextInput
               value={inputValue}
               onChangeText={setInputValue}
-              placeholder={placeholder}
+              placeholder={isRecording ? 'Listening...' : placeholder}
               placeholderTextColor="#94A3B8"
               onSubmitEditing={handleAdd}
               returnKeyType="done"
               maxLength={200}
+              editable={!isTranscribing}
               className="flex-1 px-4 py-3 text-sm text-slate-700"
             />
+
+            {/* Voice button */}
             <Pressable
-              onPress={handleAdd}
-              disabled={!canAdd}
-              accessibilityRole="button"
-              accessibilityLabel="Add item"
-              className={`h-10 w-10 mx-1 rounded-xl items-center justify-center ${
-                canAdd ? 'bg-blue-500 active:bg-blue-600' : 'bg-slate-100'
+              onPress={handleToggleRecording}
+              disabled={isTranscribing}
+              className={`h-10 w-10 items-center justify-center rounded-xl mr-1 ${
+                isRecording ? 'bg-red-50' : 'bg-slate-50'
               }`}
             >
-              <HugeiconsIcon
-                icon={Add01Icon}
-                size={16}
-                color={canAdd ? '#ffffff' : '#CBD5E1'}
-              />
+              {isTranscribing ? (
+                <ActivityIndicator size="small" color="#3B82F6" />
+              ) : (
+                <HugeiconsIcon
+                  icon={isRecording ? StopIcon : Mic01Icon}
+                  size={18}
+                  color={isRecording ? '#EF4444' : '#64748B'}
+                />
+              )}
             </Pressable>
+
+            {/* Add button */}
+            {!isRecording && (
+              <Pressable
+                onPress={handleAdd}
+                disabled={!canAdd || isTranscribing}
+                className={`h-10 w-10 mr-1 rounded-xl items-center justify-center ${
+                  canAdd ? 'bg-blue-500 active:bg-blue-600' : 'bg-slate-100'
+                }`}
+              >
+                <HugeiconsIcon
+                  icon={Add01Icon}
+                  size={16}
+                  color={canAdd ? '#ffffff' : '#CBD5E1'}
+                />
+              </Pressable>
+            )}
           </View>
         )}
 
-        {/* Item count */}
         <Text className="text-xs text-slate-400 mt-2 text-right">
           {items.length}/{maxItems} items
         </Text>
