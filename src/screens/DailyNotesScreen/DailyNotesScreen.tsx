@@ -284,7 +284,7 @@ const DailyNotesScreenComponent = () => {
   // Memoize AI Insights Chip to prevent re-renders
   const aiInsightsChip = useMemo(
     () => (
-      <View className="pt-2 px-4 pb-1">
+      <View className="px-4 py-2">
         <AIInsightsChip
           visible={isBeforeCurrentWeek}
           onPress={() => {
@@ -335,66 +335,65 @@ const DailyNotesScreenComponent = () => {
           headerShown: true,
         }}
       />
-      <View className="flex-1">
-        <View className="flex-1 relative">
-          <GestureDetector gesture={contentPanGesture}>
-            <ScrollView
-              className="flex-1"
-              contentContainerStyle={{ flexGrow: 1 }}
-              showsVerticalScrollIndicator={false}
+      <View className="flex-1 relative">
+        <GestureDetector gesture={contentPanGesture}>
+          <ScrollView
+            className="flex-1"
+            contentContainerStyle={{ flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* AI Insights Chip - Below header */}
+            {aiInsightsChip}
+
+            {/* Tab Picker */}
+            <View className="px-4 py-2">
+              <Host matchContents>
+                <Picker
+                  label="View"
+                  options={filterOptions}
+                  selectedIndex={filterIndex}
+                  onOptionSelected={({ nativeEvent: { index } }) => {
+                    setFilterIndex(index);
+                    const filters: TabFilter[] = [
+                      "journal",
+                      "calories",
+                      "habits",
+                    ];
+                    setTabFilter(filters[index]);
+                  }}
+                  variant="palette"
+                />
+              </Host>
+            </View>
+
+            {/* Unified Animated Container for Swipe Transitions */}
+            <Animated.View
+              className="flex-1 bg-theme-background-primary px-4 pb-8"
+              style={contentAnimatedStyle}
             >
-              {/* AI Insights Chip - Below header */}
-              {aiInsightsChip}
-
-              {/* Tab Picker */}
-              <View className="p-4">
-                <Host matchContents>
-                  <Picker
-                    label="View"
-                    options={filterOptions}
-                    selectedIndex={filterIndex}
-                    onOptionSelected={({ nativeEvent: { index } }) => {
-                      setFilterIndex(index);
-                      const filters: TabFilter[] = [
-                        "journal",
-                        "calories",
-                        "habits",
-                      ];
-                      setTabFilter(filters[index]);
-                    }}
-                    variant="palette"
-                  />
-                </Host>
-              </View>
-
               {/* Calorie Tracker Widget */}
               {tabFilter === "calories" && (
-                <View className="px-4 pt-3">
+                <View className="flex-1 pt-4">
                   <CalorieTrackerScreen selectedDate={selectedDate} />
                 </View>
               )}
 
               {/* Habits Section */}
               {tabFilter === "habits" && (
-                <View className="px-4 pt-3">
+                <View className="flex-1 pt-4">
                   <HabitsSection selectedDate={selectedDate} />
                 </View>
               )}
 
+              {/* Journal Section */}
               {tabFilter === "journal" && (
-                <Animated.View
-                  className="flex-1 px-4 bg-theme-background-primary"
-                  style={[contentAnimatedStyle, { paddingBottom: 20 }]}
-                >
-                  {/* Mental Health Journal Dashboard */}
+                <View className="flex-1">
                   {mentalHealthContent}
-                </Animated.View>
+                </View>
               )}
-            </ScrollView>
-          </GestureDetector>
-
-
-        </View>
+            </Animated.View>
+          </ScrollView>
+        </GestureDetector>
       </View>
 
       {/* AI Insights Bottom Sheet */}

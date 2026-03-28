@@ -47,7 +47,7 @@ const CalendarPicker = React.lazy(() =>
 
 const { height } = Dimensions.get("window");
 // Replaced magic number variable name to match exact scaling
-const HEADER_MIN_HEIGHT = 120;
+const HEADER_MIN_HEIGHT = 132;
 
 // Move constants outside component to avoid recreation
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -187,7 +187,7 @@ const DailyNotesHeader = React.memo(
       () =>
         format(
           startOfMonth(startOfWeek(currentWeekViewSafe, { weekStartsOn: 0 })),
-          "MMM, yyyy"
+          "MMMM yyyy"
         ),
       [currentWeekViewSafe]
     );
@@ -303,7 +303,7 @@ const DailyNotesHeader = React.memo(
             </Pressable>
 
             <View className="flex-row items-center justify-center flex-1">
-              <Text className="text-2xl text-theme-text-primary text-center font-cormorantBold">
+              <Text className="text-2xl text-theme-text-secondary text-center font-cormorantBold">
                 {currentMonthView || ""}
               </Text>
             </View>
@@ -321,7 +321,7 @@ const DailyNotesHeader = React.memo(
             </View>
           </Animated.View>
           {/* Week View */}
-          <View className="px-4 pb-4 w-full relative" {...panHandlers}>
+          <View className="px-4 pb-6 w-full relative" {...panHandlers}>
             <Animated.View
               className="flex-row w-full"
               style={[weekHeaderAnimatedStyle]}
@@ -383,7 +383,7 @@ const DailyNotesHeader = React.memo(
           <TodayPill visible={showTodayPill} onPress={handleGoToToday} />
           {/* Drag handle for calendar expansion */}
           <View
-            className="absolute bottom-1 left-0 right-0 items-center z-10"
+            className="absolute bottom-2 left-0 right-0 items-center z-10"
             pointerEvents="box-none"
           >
             <GestureDetector gesture={gesture}>

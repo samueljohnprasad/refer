@@ -51,11 +51,15 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
       >
         <View className="flex flex-col items-center">
           <Text
-            className={`text-xs font-medium tracking-wider mb-0.5 ${getFontColor()}`}
+            className={`text-[10px] uppercase font-bold tracking-widest mb-1 ${getFontColor()}`}
+            style={{ opacity: isSelected ? 1 : 0.6 }}
           >
             {dayName}
           </Text>
-          <Text className={`text-2xl font-semibold ${getFontColor()}`}>
+          <Text 
+            className={`text-[20px] ${isSelected ? 'font-semibold' : 'font-regular'} ${getFontColor()}`}
+            style={{ opacity: isSelected ? 1 : 0.8 }}
+          >
             {format(day, "d")}
           </Text>
         </View>

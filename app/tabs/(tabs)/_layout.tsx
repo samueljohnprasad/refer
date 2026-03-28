@@ -40,6 +40,16 @@ export default function TabLayout() {
       //   light: "red",
       // })}
     >
+      <NativeTabs.Trigger name="exercises">
+        <Label>Exercises</Label>
+        <Icon
+          sf={{
+            default: "doc.text", // inactive
+            selected: "doc.text.fill", // active
+          }}
+          drawable="custom_android_drawable"
+        />
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="home">
         <Label>Home</Label>
         <Icon

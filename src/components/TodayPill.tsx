@@ -63,8 +63,8 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
           accessibilityHint="Returns view to the current day"
           className="flex-row items-center gap-1"
         >
-          <MaterialCommunityIcons name="chevron-left" size={18} className="text-theme-purple-deep" />
-          <Text className="font-semibold text-theme-purple-deep text-sm">{label}</Text>
+          <MaterialCommunityIcons name="chevron-left" size={18} className="text-theme-text-secondary font-regular" />
+          <Text className="font-regular text-theme-text-secondary text-sm">{label}</Text>
         </Pressable>
       </Animated.View>
     );
