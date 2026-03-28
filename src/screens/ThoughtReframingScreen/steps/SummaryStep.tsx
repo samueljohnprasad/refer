@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Pressable } from 'react-native';
+import { View, ScrollView, Pressable } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { EmotionShiftBar } from '../components/EmotionShiftBar';
 import { COGNITIVE_DISTORTIONS } from '../data/cognitiveDistortions';
@@ -16,6 +16,20 @@ interface SummaryStepProps {
   isSaving: boolean;
 }
 
+interface SectionProps {
+  label: string;
+  children: React.ReactNode;
+}
+
+const Section: React.FC<SectionProps> = ({ label, children }) => (
+  <View className="mb-7">
+    <Text className="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-3">
+      {label}
+    </Text>
+    {children}
+  </View>
+);
+
 export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
   ({ formState, onSave, onDone, isSaving }) => {
     const distortionLabels: string[] = formState.selectedDistortions.map(
@@ -28,136 +42,116 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
     );
 
     return (
-      <View className="flex-1">
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ paddingBottom: 24 }}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
-        <View className="items-center mb-6">
-          <Text className="text-4xl mb-2">✨</Text>
-          <Text className="text-2xl font-bold text-slate-800 text-center">
-            Great work!
+        <View className="items-center mb-10 pt-2">
+          <Text className="text-3xl mb-3">✦</Text>
+          <Text className="text-2xl font-bold text-slate-900 text-center">
+            You did it
           </Text>
-          <Text className="text-sm text-slate-500 text-center mt-1">
+          <Text className="text-sm text-slate-400 text-center mt-1">
             Reframing gets easier with practice.
           </Text>
         </View>
 
         {/* Situation */}
-        <View className="mb-5">
-          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-            What happened?
-          </Text>
-          <View className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-            <Text className="text-sm text-slate-700">
-              {formState.situation || 'Not specified'}
+        {!!formState.situation && (
+          <Section label="What happened">
+            <Text className="text-sm text-slate-600 leading-relaxed">
+              {formState.situation}
             </Text>
-          </View>
-        </View>
+          </Section>
+        )}
 
-        {/* Thought comparison */}
-        <View className="mb-5">
-          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-            Thought shift
-          </Text>
-
-          {/* Original */}
-          <View className="bg-red-50 rounded-2xl p-4 mb-2 border border-red-100">
-            <Text className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-1">
-              Before
-            </Text>
-            <Text className="text-sm text-red-700 italic">
+        {/* Thought shift */}
+        <Section label="Thought shift">
+          <View className="mb-3">
+            <Text className="text-[11px] text-slate-300 uppercase tracking-wider mb-1">Before</Text>
+            <Text className="text-sm text-slate-500 italic leading-relaxed">
               "{formState.automaticThought}"
             </Text>
           </View>
-
-          {/* Balanced */}
-          <View className="bg-green-50 rounded-2xl p-4 border border-green-100">
-            <Text className="text-xs font-semibold text-green-500 uppercase tracking-wider mb-1">
-              After
-            </Text>
-            <Text className="text-sm text-green-700">
+          <View className="h-px bg-slate-100 mb-3" />
+          <View>
+            <Text className="text-[11px] text-slate-300 uppercase tracking-wider mb-1">After</Text>
+            <Text className="text-sm text-slate-700 leading-relaxed">
               "{formState.balancedThought}"
             </Text>
           </View>
-        </View>
+        </Section>
+
+        {/* Evidence */}
+        {(formState.evidenceFor.length > 0 || formState.evidenceAgainst.length > 0) && (
+          <Section label="Evidence">
+            {formState.evidenceFor.length > 0 && (
+              <View className="mb-4">
+                <Text className="text-[11px] text-slate-300 uppercase tracking-wider mb-2">
+                  Supporting
+                </Text>
+                {formState.evidenceFor.map((item: string, i: number) => (
+                  <View key={`for-${i}`} className="flex-row mb-2">
+                    <Text className="text-slate-300 mr-2 text-sm">·</Text>
+                    <Text className="text-sm text-slate-600 flex-1 leading-relaxed">{item}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+            {formState.evidenceAgainst.length > 0 && (
+              <View>
+                <Text className="text-[11px] text-slate-300 uppercase tracking-wider mb-2">
+                  Against
+                </Text>
+                {formState.evidenceAgainst.map((item: string, i: number) => (
+                  <View key={`against-${i}`} className="flex-row mb-2">
+                    <Text className="text-slate-300 mr-2 text-sm">·</Text>
+                    <Text className="text-sm text-slate-600 flex-1 leading-relaxed">{item}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+          </Section>
+        )}
 
         {/* Thinking traps */}
         {distortionLabels.length > 0 && (
-          <View className="mb-5">
-            <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-              Thinking traps identified
-            </Text>
-            <View className="flex-row flex-wrap">
+          <Section label="Thinking traps">
+            <View className="flex-row flex-wrap gap-2">
               {distortionLabels.map((label: string) => (
                 <View
                   key={label}
-                  className="bg-amber-50 rounded-xl px-3 py-1.5 mr-2 mb-2 border border-amber-100"
+                  className="bg-slate-100 rounded-full px-3 py-1"
                 >
-                  <Text className="text-xs font-semibold text-amber-700">
-                    {label}
-                  </Text>
+                  <Text className="text-xs text-slate-600">{label}</Text>
                 </View>
               ))}
             </View>
-          </View>
+          </Section>
         )}
-
-        {/* Evidence */}
-        <View className="mb-5">
-          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-            What evidence supports this thought?
-          </Text>
-          <View className="bg-slate-50 rounded-2xl p-4 mb-4 border border-slate-100">
-            {formState.evidenceFor.length > 0 ? (
-              formState.evidenceFor.map((item, i) => (
-                <View key={`for-${i}`} className="flex-row mb-1">
-                  <Text className="text-sm text-slate-400 mr-2">•</Text>
-                  <Text className="text-sm text-slate-700 flex-1">{item}</Text>
-                </View>
-              ))
-            ) : (
-              <Text className="text-sm text-slate-400 italic">None provided</Text>
-            )}
-          </View>
-
-          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-            What evidence does not support this thought?
-          </Text>
-          <View className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-            {formState.evidenceAgainst.length > 0 ? (
-              formState.evidenceAgainst.map((item, i) => (
-                <View key={`against-${i}`} className="flex-row mb-1">
-                  <Text className="text-sm text-slate-400 mr-2">•</Text>
-                  <Text className="text-sm text-slate-700 flex-1">{item}</Text>
-                </View>
-              ))
-            ) : (
-              <Text className="text-sm text-slate-400 italic">None provided</Text>
-            )}
-          </View>
-        </View>
 
         {/* Emotion shift */}
         {formState.selectedEmotions.length > 0 && (
-          <View className="mb-6">
-            <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-              Emotion shift
-            </Text>
+          <Section label="Emotion shift">
             <EmotionShiftBar emotions={formState.selectedEmotions} />
-          </View>
+          </Section>
         )}
 
         {/* Actions */}
-        <View className="gap-3 mt-auto pb-2">
+        <View className="gap-3 mt-4">
           <Pressable
             onPress={onSave}
             disabled={isSaving}
             accessibilityRole="button"
             accessibilityLabel="Save to journal"
             className={`h-14 rounded-2xl items-center justify-center ${
-              isSaving ? 'bg-blue-300' : 'bg-blue-500 active:bg-blue-600'
+              isSaving ? 'bg-slate-300' : 'bg-slate-900 active:opacity-80'
             }`}
           >
             <Text className="text-base font-semibold text-white">
-              {isSaving ? 'Saving...' : 'Save to Journal'}
+              {isSaving ? 'Saving…' : 'Save to Journal'}
             </Text>
           </Pressable>
 
@@ -165,14 +159,14 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
             onPress={onDone}
             accessibilityRole="button"
             accessibilityLabel="Done"
-            className="h-12 rounded-2xl items-center justify-center bg-slate-100 active:bg-slate-200"
+            className="h-12 rounded-2xl items-center justify-center active:opacity-60"
           >
-            <Text className="text-base font-semibold text-slate-600">
+            <Text className="text-sm font-medium text-slate-400">
               Done
             </Text>
           </Pressable>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 );

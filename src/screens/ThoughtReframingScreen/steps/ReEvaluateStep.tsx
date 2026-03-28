@@ -43,29 +43,24 @@ export const ReEvaluateStep: React.FC<ReEvaluateStepProps> = React.memo(
               (e) => e.name === emotion.name
             );
             return (
-              <View
-                key={emotion.name}
-                className="bg-white rounded-2xl p-4 border border-slate-100 mb-3"
-              >
-                {/* Header */}
-                <View className="flex-row items-center justify-between mb-2">
+              <View key={emotion.name} className="mb-6">
+                <View className="flex-row items-center justify-between mb-3">
                   <View className="flex-row items-center">
-                    <Text className="text-lg mr-2">{option?.emoji}</Text>
-                    <Text className="text-sm font-semibold text-slate-700">
+                    <Text className="text-base mr-2">{option?.emoji}</Text>
+                    <Text className="text-sm font-medium text-slate-700">
                       {option?.label}
                     </Text>
                   </View>
-                  <View className="flex-row items-center gap-2">
-                    <Text className="text-xs text-slate-400">
+                  <View className="flex-row items-center gap-3">
+                    <Text className="text-[11px] text-slate-300 uppercase tracking-wider">
                       Before: {emotion.initial_intensity}
                     </Text>
-                    <Text className="text-sm font-bold text-blue-600">
-                      Now: {emotion.final_intensity}/10
+                    <Text className="text-sm font-bold text-slate-900">
+                      Now: {emotion.final_intensity}
                     </Text>
                   </View>
                 </View>
 
-                {/* Slider */}
                 <Slider
                   minimumValue={0}
                   maximumValue={10}
@@ -74,9 +69,9 @@ export const ReEvaluateStep: React.FC<ReEvaluateStepProps> = React.memo(
                   onValueChange={(val: number) =>
                     onSetFinalIntensity(emotion.name, val)
                   }
-                  minimumTrackTintColor="#22C55E"
+                  minimumTrackTintColor="#1E293B"
                   maximumTrackTintColor="#E2E8F0"
-                  thumbTintColor="#22C55E"
+                  thumbTintColor="#1E293B"
                   accessibilityLabel={`${option?.label} final intensity`}
                   accessibilityValue={{
                     min: 0,
@@ -85,8 +80,8 @@ export const ReEvaluateStep: React.FC<ReEvaluateStepProps> = React.memo(
                   }}
                 />
                 <View className="flex-row justify-between mt-1">
-                  <Text className="text-xs text-slate-400">Mild</Text>
-                  <Text className="text-xs text-slate-400">Intense</Text>
+                  <Text className="text-[11px] text-slate-300">Mild</Text>
+                  <Text className="text-[11px] text-slate-300">Intense</Text>
                 </View>
               </View>
             );

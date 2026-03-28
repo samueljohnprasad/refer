@@ -6,46 +6,41 @@ interface ThoughtReframingIntroProps {
   onBegin: () => void;
 }
 
+const STEPS: string[] = [
+  'Describe what happened',
+  'Capture your automatic thought',
+  'Identify how you feel',
+  'Spot the thinking trap',
+  'Weigh the evidence',
+  'Write a balanced thought',
+];
+
 export const ThoughtReframingIntro: React.FC<ThoughtReframingIntroProps> = React.memo(
   ({ onBegin }) => {
     return (
-      <View className="flex-1 justify-center px-6">
+      <View className="flex-1 justify-center px-2">
         {/* Icon */}
-        <View className="items-center mb-8">
-          <View className="h-24 w-24 rounded-3xl bg-blue-50 items-center justify-center mb-4">
-            <Text className="text-5xl">🧠</Text>
-          </View>
-          <View className="h-1 w-12 rounded-full bg-blue-200" />
+        <View className="items-center mb-10">
+          <Text className="text-5xl mb-5">🧠</Text>
+          <View className="h-px w-8 bg-slate-200" />
         </View>
 
-        {/* Title */}
-        <Text className="text-3xl font-bold text-slate-800 text-center mb-3">
+        {/* Title & description */}
+        <Text className="text-3xl font-bold text-slate-900 text-center mb-3 leading-tight">
           Thought Reframing
         </Text>
-
-        {/* Description */}
-        <Text className="text-base text-slate-500 text-center leading-relaxed mb-2">
-          This exercise helps you challenge unhelpful thoughts and see the situation more clearly.
-        </Text>
-        <Text className="text-sm text-slate-400 text-center mb-8">
-          It takes about 2–3 minutes.
+        <Text className="text-sm text-slate-400 text-center leading-relaxed mb-10 px-4">
+          Challenge unhelpful thoughts and see your situation more clearly.{'\n'}Takes about 2–3 minutes.
         </Text>
 
-        {/* Steps preview */}
-        <View className="bg-white rounded-2xl p-4 mb-8 border border-slate-100">
-          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-            What you'll do
-          </Text>
-          {[
-            '📝 Describe what happened',
-            '💭 Capture your thought',
-            '😟 Identify how you feel',
-            '🔍 Spot the thinking trap',
-            '⚖️ Weigh the evidence',
-            '✨ Reframe with balance',
-          ].map((step: string, index: number) => (
-            <View key={index} className="flex-row items-center py-1.5">
-              <Text className="text-sm text-slate-600">{step}</Text>
+        {/* Steps — plain list, no card */}
+        <View className="mb-10 px-1">
+          {STEPS.map((step: string, index: number) => (
+            <View key={index} className="flex-row items-center mb-4">
+              <Text className="text-[11px] text-slate-300 font-bold w-5 mr-3">
+                {index + 1}
+              </Text>
+              <Text className="text-sm text-slate-500">{step}</Text>
             </View>
           ))}
         </View>
@@ -55,10 +50,10 @@ export const ThoughtReframingIntro: React.FC<ThoughtReframingIntroProps> = React
           onPress={onBegin}
           accessibilityRole="button"
           accessibilityLabel="Begin exercise"
-          className="h-14 rounded-2xl bg-blue-500 items-center justify-center active:bg-blue-600"
+          className="h-14 rounded-2xl bg-slate-900 items-center justify-center active:opacity-80"
         >
           <Text className="text-base font-semibold text-white">
-            Begin Exercise
+            Begin
           </Text>
         </Pressable>
       </View>

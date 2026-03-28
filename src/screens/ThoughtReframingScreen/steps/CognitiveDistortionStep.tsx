@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { StepHeader } from '../components/StepHeader';
-import { StepNavigation } from '../components/StepNavigation';
+import { StepNavigation } from '../components/StepNavigation'
 import { DistortionCard } from '../components/DistortionCard';
 import { COGNITIVE_DISTORTIONS } from '../data/cognitiveDistortions';
 import type { CognitiveDistortionKey, CognitiveDistortion } from '../types';
@@ -16,7 +16,6 @@ interface CognitiveDistortionStepProps {
   canGoBack: boolean;
   isValid: boolean;
   progress: number;
-  /** AI-suggested distortions */
   aiSuggestedDistortions?: AIDistortionSuggestion[];
   isDetectingDistortions?: boolean;
 }
@@ -47,7 +46,6 @@ export const CognitiveDistortionStep: React.FC<CognitiveDistortionStepProps> = R
 
     const atLimit: boolean = selectedDistortions.length >= MAX_DISTORTIONS;
 
-    // Sort: AI-suggested first, then the rest
     const sortedDistortions: CognitiveDistortion[] = useMemo(() => {
       if (aiSuggestedDistortions.length === 0) return COGNITIVE_DISTORTIONS;
       const suggested: CognitiveDistortion[] = [];
@@ -72,23 +70,20 @@ export const CognitiveDistortionStep: React.FC<CognitiveDistortionStepProps> = R
           totalSteps={8}
         />
 
-        {/* AI loading */}
+        {/* AI state — quiet inline indicator */}
         {isDetectingDistortions && (
-          <View className="flex-row items-center mb-3 bg-purple-50 rounded-xl px-3 py-2 border border-purple-100">
-            <ActivityIndicator size="small" color="#7C3AED" />
-            <Text className="text-xs text-purple-600 font-semibold ml-2">
-              AI is detecting thinking traps...
+          <View className="flex-row items-center mb-4">
+            <ActivityIndicator size="small" color="#94A3B8" />
+            <Text className="text-[11px] text-slate-400 ml-2 uppercase tracking-wider">
+              Analysing patterns…
             </Text>
           </View>
         )}
 
-        {/* AI suggestions banner */}
         {aiSuggestedDistortions.length > 0 && !isDetectingDistortions && (
-          <View className="mb-3 bg-purple-50 rounded-xl px-3 py-2 border border-purple-100">
-            <Text className="text-xs text-purple-600 font-semibold">
-              ✨ AI detected {aiSuggestedDistortions.length} thinking trap{aiSuggestedDistortions.length > 1 ? 's' : ''} — shown first below
-            </Text>
-          </View>
+          <Text className="text-[11px] text-slate-400 mb-4 uppercase tracking-wider">
+            AI suggestions shown first
+          </Text>
         )}
 
         <View className="flex-1">
@@ -99,23 +94,17 @@ export const CognitiveDistortionStep: React.FC<CognitiveDistortionStepProps> = R
 
             return (
               <View key={distortion.key}>
-                {isAISuggested && (
-                  <View className="flex-row items-center mb-1 ml-1">
-                    <View className="bg-purple-500 rounded-full px-2 py-0.5 mr-2">
-                      <Text className="text-[9px] text-white font-bold">AI DETECTED</Text>
-                    </View>
-                    {aiSuggestion?.explanation && (
-                      <Text className="text-xs text-purple-500 flex-1" numberOfLines={1}>
-                        {aiSuggestion.explanation}
-                      </Text>
-                    )}
-                  </View>
+                {/* AI explanation — muted, inline */}
+                {isAISuggested && aiSuggestion?.explanation && (
+                  <Text className="text-[11px] text-slate-400 mb-1 ml-1" numberOfLines={2}>
+                    {aiSuggestion.explanation}
+                  </Text>
                 )}
                 <DistortionCard
                   distortion={distortion}
                   isSelected={selectedSet.has(distortion.key)}
                   onToggle={() => onToggle(distortion.key)}
-                  disabled={atLimit}
+                  disabled={atLimit && !selectedSet.has(distortion.key)}
                 />
               </View>
             );

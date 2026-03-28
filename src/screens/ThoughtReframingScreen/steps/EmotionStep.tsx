@@ -18,7 +18,6 @@ interface EmotionStepProps {
   canGoBack: boolean;
   isValid: boolean;
   progress: number;
-  /** AI-suggested emotions */
   aiSuggestedEmotions?: AIEmotionSuggestion[];
   isDetectingEmotions?: boolean;
 }
@@ -54,56 +53,54 @@ export const EmotionStep: React.FC<EmotionStepProps> = React.memo(
       <View className="flex-1">
         <StepHeader
           title="How did it make you feel?"
-          subtitle={`Select up to ${MAX_EMOTIONS} emotions and rate their intensity.`}
+          subtitle={`Select up to ${MAX_EMOTIONS} emotions, then rate intensity.`}
           progress={progress}
           stepNumber={3}
           totalSteps={8}
         />
 
-        {/* AI suggestion badge */}
+        {/* AI state — minimal pill, not a banner */}
         {isDetectingEmotions && (
-          <View className="flex-row items-center mb-3 bg-purple-50 rounded-xl px-3 py-2 border border-purple-100">
-            <ActivityIndicator size="small" color="#7C3AED" />
-            <Text className="text-xs text-purple-600 font-semibold ml-2">
-              AI is analyzing your emotions...
+          <View className="flex-row items-center mb-4">
+            <ActivityIndicator size="small" color="#94A3B8" />
+            <Text className="text-[11px] text-slate-400 ml-2 uppercase tracking-wider">
+              Analysing emotions…
             </Text>
           </View>
         )}
 
         {aiSuggestedEmotions.length > 0 && !isDetectingEmotions && (
-          <View className="mb-3 bg-purple-50 rounded-xl px-3 py-2 border border-purple-100">
-            <Text className="text-xs text-purple-600 font-semibold">
-              ✨ AI detected these emotions — tap to confirm
-            </Text>
-          </View>
+          <Text className="text-[11px] text-slate-400 mb-4 uppercase tracking-wider">
+            AI highlighted — tap to confirm
+          </Text>
         )}
 
         {/* Emotion chips */}
-        <View className="flex-row flex-wrap mb-4">
+        <View className="flex-row flex-wrap mb-6">
           {EMOTION_OPTIONS.map((emotion: EmotionOption) => {
             const isAISuggested: boolean = aiSuggestedNames.has(emotion.name);
+            const isSelected: boolean = selectedNames.has(emotion.name);
             return (
               <View key={emotion.name} className="relative">
                 <EmotionChip
                   emotion={emotion}
-                  isSelected={selectedNames.has(emotion.name)}
+                  isSelected={isSelected}
                   onToggle={() => onToggleEmotion(emotion.name)}
-                  disabled={atLimit}
+                  disabled={atLimit && !isSelected}
                 />
-                {isAISuggested && !selectedNames.has(emotion.name) && (
-                  <View className="absolute -top-1 -right-1 bg-purple-500 rounded-full h-3 w-3 items-center justify-center">
-                    <Text className="text-[6px] text-white font-bold">AI</Text>
-                  </View>
+                {/* Subtle AI dot — only if not selected */}
+                {isAISuggested && !isSelected && (
+                  <View className="absolute -top-0.5 -right-0.5 bg-slate-400 rounded-full h-2 w-2" />
                 )}
               </View>
             );
           })}
         </View>
 
-        {/* Intensity sliders for selected emotions */}
+        {/* Intensity sliders */}
         {selectedEmotions.length > 0 && (
-          <View className="mt-2">
-            <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+          <View>
+            <Text className="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-4">
               Rate intensity
             </Text>
             {selectedEmotions.map((emotion: EmotionRating) => {
@@ -113,17 +110,18 @@ export const EmotionStep: React.FC<EmotionStepProps> = React.memo(
               return (
                 <View
                   key={emotion.name}
-                  className="bg-white rounded-2xl p-4 border border-slate-100 mb-2"
+                  className="mb-4"
                 >
-                  <View className="flex-row items-center justify-between mb-2">
+                  <View className="flex-row items-center justify-between mb-3">
                     <View className="flex-row items-center">
-                      <Text className="text-lg mr-2">{option?.emoji}</Text>
-                      <Text className="text-sm font-semibold text-slate-700">
+                      <Text className="text-base mr-2">{option?.emoji}</Text>
+                      <Text className="text-sm font-medium text-slate-700">
                         {option?.label}
                       </Text>
                     </View>
-                    <Text className="text-sm font-bold text-blue-600">
-                      {emotion.initial_intensity}/10
+                    <Text className="text-sm font-bold text-slate-900">
+                      {emotion.initial_intensity}
+                      <Text className="text-xs font-normal text-slate-400">/10</Text>
                     </Text>
                   </View>
                   <Slider
@@ -134,9 +132,9 @@ export const EmotionStep: React.FC<EmotionStepProps> = React.memo(
                     onValueChange={(val: number) =>
                       onSetIntensity(emotion.name, val)
                     }
-                    minimumTrackTintColor="#3B82F6"
+                    minimumTrackTintColor="#1E293B"
                     maximumTrackTintColor="#E2E8F0"
-                    thumbTintColor="#3B82F6"
+                    thumbTintColor="#1E293B"
                     accessibilityLabel={`${option?.label} intensity`}
                     accessibilityValue={{
                       min: 0,
@@ -145,8 +143,8 @@ export const EmotionStep: React.FC<EmotionStepProps> = React.memo(
                     }}
                   />
                   <View className="flex-row justify-between mt-1">
-                    <Text className="text-xs text-slate-400">Mild</Text>
-                    <Text className="text-xs text-slate-400">Intense</Text>
+                    <Text className="text-[11px] text-slate-300">Mild</Text>
+                    <Text className="text-[11px] text-slate-300">Intense</Text>
                   </View>
                 </View>
               );
