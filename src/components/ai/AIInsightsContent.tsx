@@ -56,21 +56,14 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
             <View className="w-8 h-8 rounded-full bg-purple-50 items-center justify-center">
               <HugeiconsIcon icon={Target03Icon} size={18} color="#7B61FF" />
             </View>
-            <Text
-              style={{
-                fontSize: 22,
-                fontFamily: "CormorantSemiBold",
-                color: "#1f2937",
-                letterSpacing: -0.5,
-              }}
-            >
+            <Text className="text-2xl font-cormorantSemiBold text-theme-text-primary tracking-tight">
               Personalized Recommendations
             </Text>
           </View>
           {recommendations.map((rec, index) => (
             <View
               key={index}
-              className="bg-white rounded-2xl p-4 mb-3 border border-gray-200"
+              className="bg-theme-background-primary rounded-2xl p-4 mb-3 border border-gray-200"
             >
               <View className="flex-row justify-between items-start mb-3 gap-2">
                 <Text className="text-base font-bold text-slate-900 flex-1">
@@ -120,21 +113,14 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
             <View className="w-8 h-8 rounded-full bg-green-50 items-center justify-center">
               <HugeiconsIcon icon={Leaf01Icon} size={18} color="#10B981" />
             </View>
-            <Text
-              style={{
-                fontSize: 22,
-                fontFamily: "CormorantSemiBold",
-                color: "#1f2937",
-                letterSpacing: -0.5,
-              }}
-            >
+            <Text className="text-2xl font-cormorantSemiBold text-theme-text-primary tracking-tight">
               Deep Growth Insights
             </Text>
           </View>
           {growthInsights.map((insight, index) => (
             <View
               key={index}
-              className="bg-white rounded-2xl p-4 mb-3 border border-gray-200"
+              className="bg-theme-background-primary rounded-2xl p-4 mb-3 border border-gray-200"
             >
               <View className="flex-row justify-between items-start mb-3 gap-2">
                 <Text className="text-xs font-bold text-purple-500 uppercase tracking-wide">
@@ -194,8 +180,8 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
       {recommendations.length === 0 &&
         growthInsights.length === 0 && (
           <View className="py-12 items-center">
-            <Text className="text-5xl mb-3">📝</Text>
-            <Text className="text-base text-gray-500 text-center">
+            <HugeiconsIcon icon={InformationCircleIcon} size={48} color="#9CA3AF" />
+            <Text className="text-base text-gray-500 text-center mt-3">
               No insights available for this week
             </Text>
           </View>

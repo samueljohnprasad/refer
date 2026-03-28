@@ -71,7 +71,7 @@ const DailyNotesScreenComponent = () => {
   const [tabFilter, setTabFilter] = useState<TabFilter>("journal");
   const [filterIndex, setFilterIndex] = useState(0);
 
-  const filterOptions = ["journal", "calories", "habits"];
+  const filterOptions = ["Journal", "Calories", "Habits"];
 
   // State for current week view (independent of selected date)
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
@@ -130,10 +130,6 @@ const DailyNotesScreenComponent = () => {
   const contentTranslateX = useSharedValue<number>(0);
   const contentOpacity = useSharedValue<number>(1);
   const contentScale = useSharedValue<number>(1);
-  // Simplified arrow indicators - only opacity, no scale
-  const leftArrowOpacity = useSharedValue<number>(0);
-  const rightArrowOpacity = useSharedValue<number>(0);
-
   // Animated styles with smooth scale feedback
   const contentAnimatedStyle = useAnimatedStyle(() => ({
     opacity: contentOpacity.value,
@@ -141,15 +137,6 @@ const DailyNotesScreenComponent = () => {
       { translateX: contentTranslateX.value },
       { scale: contentScale.value },
     ],
-  }));
-
-  // Simplified navigation arrow animated styles - only opacity
-  const leftArrowAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: leftArrowOpacity.value,
-  }));
-
-  const rightArrowAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: rightArrowOpacity.value,
   }));
 
   // Helper to move date by offset without stale closure issues
@@ -166,19 +153,24 @@ const DailyNotesScreenComponent = () => {
     (offset: number): void => {
       // Pre-compute the target date timestamp on JS thread and pass to worklet as a primitive
       const targetTs: number = addDays(selectedDate, offset).getTime();
-      // Gently fade out, change date on JS thread, then fade back in (all driven by UI thread)
-      contentOpacity.value = withTiming(
-        0.15,
-        { duration: 180, easing: Easing.out(Easing.quad) },
+      const direction = offset > 0 ? -1 : 1;
+      const slideDistance = 30; // Exit distance is shorter
+
+      contentOpacity.value = withTiming(0, { duration: 150 });
+      contentTranslateX.value = withTiming(
+        direction * slideDistance,
+        { duration: 150 },
         (finished?: boolean) => {
           if (finished) {
             runOnJS(updateDateFromTs)(targetTs);
-            // Reset translation on UI thread
-            contentTranslateX.value = 0;
-            // Fade back in
-            contentOpacity.value = withTiming(1, {
-              duration: 300,
-              easing: Easing.out(Easing.quad),
+            // Set starting position for new content (coming from the other side)
+            contentTranslateX.value = -direction * slideDistance * 1.5;
+            
+            // Fade back in with spring motion
+            contentOpacity.value = withTiming(1, { duration: 250 });
+            contentTranslateX.value = withSpring(0, {
+              damping: 20,
+              stiffness: 200,
             });
           }
         }
@@ -204,10 +196,10 @@ const DailyNotesScreenComponent = () => {
         .activeOffsetY([-15, 15])
         .onBegin(() => {
           "worklet";
-          // Reduced scale effect for less bounce
-          contentScale.value = withSpring(0.995, {
-            damping: 25,
-            stiffness: 180,
+          // Subtle, anchored scale down
+          contentScale.value = withSpring(0.99, {
+            damping: 30,
+            stiffness: 200,
           });
         })
         .onUpdate((g) => {
@@ -218,11 +210,12 @@ const DailyNotesScreenComponent = () => {
 
           let tx = rawTx;
 
-          // Apply rubber band resistance after threshold
+          // Apply true rubber band resistance after threshold
           if (Math.abs(rawTx) > resistanceThreshold) {
             const excess = Math.abs(rawTx) - resistanceThreshold;
-            // Logarithmic resistance: harder to pull the further you go
-            const resistance = resistanceThreshold + excess * 0.3;
+            // Apple's rubber band formula: (excess * c) / (excess + c)
+            const c = 120; // max stretch pull distance
+            const resistance = resistanceThreshold + (excess * c) / (excess + c);
             tx = rawTx > 0 ? resistance : -resistance;
           }
 
@@ -232,31 +225,7 @@ const DailyNotesScreenComponent = () => {
 
           contentTranslateX.value = tx;
 
-          // Show arrow indicators based on swipe direction - simplified
           const progress = Math.abs(tx) / maxTranslate;
-
-          if (tx > 20) {
-            // Swiping right - show left arrow (go to previous)
-            leftArrowOpacity.value = interpolate(
-              progress,
-              [0.2, 0.6],
-              [0, 1],
-              "clamp"
-            );
-            rightArrowOpacity.value = 0;
-          } else if (tx < -20) {
-            // Swiping left - show right arrow (go to next)
-            rightArrowOpacity.value = interpolate(
-              progress,
-              [0.2, 0.6],
-              [0, 1],
-              "clamp"
-            );
-            leftArrowOpacity.value = 0;
-          } else {
-            leftArrowOpacity.value = 0;
-            rightArrowOpacity.value = 0;
-          }
 
           // Less aggressive opacity change during swipe
           contentOpacity.value = interpolate(
@@ -283,20 +252,16 @@ const DailyNotesScreenComponent = () => {
           // Smoother, less bouncy spring animation
           contentTranslateX.value = withSpring(0, {
             damping: 30,
-            stiffness: 180,
+            stiffness: 200,
           });
           contentOpacity.value = withSpring(1, {
-            damping: 25,
-            stiffness: 150,
+            damping: 30,
+            stiffness: 200,
           });
           contentScale.value = withSpring(1, {
-            damping: 25,
-            stiffness: 180,
+            damping: 30,
+            stiffness: 200,
           });
-
-          // Hide arrows
-          leftArrowOpacity.value = withTiming(0, { duration: 200 });
-          rightArrowOpacity.value = withTiming(0, { duration: 200 });
         })
         .onFinalize(() => {
           "worklet";
@@ -306,15 +271,11 @@ const DailyNotesScreenComponent = () => {
           });
           contentOpacity.value = withSpring(1);
           contentScale.value = withSpring(1);
-          leftArrowOpacity.value = withTiming(0, { duration: 150 });
-          rightArrowOpacity.value = withTiming(0, { duration: 150 });
         }),
     [
       contentScale,
       contentTranslateX,
       contentOpacity,
-      leftArrowOpacity,
-      rightArrowOpacity,
       goToNextDateContent,
       goToPreviousDateContent,
     ]
@@ -381,14 +342,12 @@ const DailyNotesScreenComponent = () => {
               className="flex-1"
               contentContainerStyle={{ flexGrow: 1 }}
               showsVerticalScrollIndicator={false}
-              accessible={true}
-              accessibilityLabel="Daily notes content"
             >
               {/* AI Insights Chip - Below header */}
               {aiInsightsChip}
 
               {/* Tab Picker */}
-              <View className="p-4 ">
+              <View className="p-4">
                 <Host matchContents>
                   <Picker
                     label="View"
@@ -411,7 +370,6 @@ const DailyNotesScreenComponent = () => {
               {/* Calorie Tracker Widget */}
               {tabFilter === "calories" && (
                 <View className="px-4 pt-3">
-                  <CalorieWidget selectedDate={selectedDate} />
                   <CalorieTrackerScreen selectedDate={selectedDate} />
                 </View>
               )}
@@ -435,26 +393,7 @@ const DailyNotesScreenComponent = () => {
             </ScrollView>
           </GestureDetector>
 
-          {/* Navigation Arrows - Simplified, Chrome-style */}
-          <Animated.View
-            className="absolute left-4"
-            style={[leftArrowAnimatedStyle, { top: "50%", marginTop: -24 }]}
-            pointerEvents="none"
-          >
-            <View className="bg-theme-purple-primary rounded-full p-3 shadow-lg">
-              <Feather name="chevron-left" size={24} color="white" />
-            </View>
-          </Animated.View>
 
-          <Animated.View
-            className="absolute right-4"
-            style={[rightArrowAnimatedStyle, { top: "50%", marginTop: -24 }]}
-            pointerEvents="none"
-          >
-            <View className="bg-theme-purple-primary rounded-full p-3 shadow-lg">
-              <Feather name="chevron-right" size={24} color="white" />
-            </View>
-          </Animated.View>
         </View>
       </View>
 

@@ -3,13 +3,15 @@ import { View, Text } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
   withSequence,
   withTiming,
   withDelay,
   runOnJS,
-  Easing,
 } from "react-native-reanimated";
 import { useEffect } from "react";
+import { SPRING_BOUNCY, TIMING_EXIT, DURATION } from "@/src/utils/motionTokens";
+import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 
 interface XPGainAnimationProps {
   amount: number;
@@ -22,40 +24,51 @@ export const XPGainAnimation: React.FC<XPGainAnimationProps> = ({
   label,
   onComplete,
 }) => {
-  const translateY = useSharedValue(0);
-  const opacity = useSharedValue(0);
-  const scale = useSharedValue(0.5);
+  const reducedMotion = useReducedMotion();
+  const translateY = useSharedValue<number>(0);
+  const opacity = useSharedValue<number>(reducedMotion ? 1 : 0);
+  const scale = useSharedValue<number>(reducedMotion ? 1 : 0.4);
 
   useEffect(() => {
-    // Start animation
-    opacity.value = withSequence(
-      withTiming(1, { duration: 200, easing: Easing.out(Easing.ease) }),
-      withDelay(
-        1500,
-        withTiming(0, { duration: 500, easing: Easing.in(Easing.ease) }),
-      ),
-    );
+    if (reducedMotion) {
+      // No animation — just show briefly then complete
+      opacity.value = 1;
+      scale.value = 1;
+      const timeout = setTimeout(() => {
+        opacity.value = withTiming(0, TIMING_EXIT);
+        onComplete?.();
+      }, 1500);
+      return () => clearTimeout(timeout);
+    }
 
+    // Spring pop-in: scale 0.4 → 1.15 → 1.0 with bouncy spring
+    scale.value = withSpring(1, SPRING_BOUNCY);
+
+    // Fade in fast
+    opacity.value = withTiming(1, { duration: DURATION.ultraFast });
+
+    // Float upward: spring to -20px, then drift further and fade out
     translateY.value = withSequence(
-      withTiming(-20, { duration: 300, easing: Easing.out(Easing.back(1.5)) }),
+      withSpring(-22, { stiffness: 280, damping: 18 }),
       withDelay(
-        1200,
-        withTiming(-40, { duration: 500, easing: Easing.in(Easing.ease) }),
+        1100,
+        withTiming(-44, { duration: DURATION.slow }),
       ),
     );
 
-    scale.value = withSequence(
-      withTiming(1.2, { duration: 200, easing: Easing.out(Easing.back(2)) }),
-      withTiming(1, { duration: 100 }),
-      withDelay(1400, withTiming(0.8, { duration: 300 })),
+    // Fade out after hold
+    opacity.value = withSequence(
+      withTiming(1, { duration: DURATION.ultraFast }),
+      withDelay(1200, withTiming(0, { duration: DURATION.fast })),
     );
 
-    // Trigger onComplete after animation
+    const triggerComplete = () => onComplete?.();
     const timeout = setTimeout(() => {
-      onComplete?.();
-    }, 2200);
+      triggerComplete();
+    }, 2000);
 
     return () => clearTimeout(timeout);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({

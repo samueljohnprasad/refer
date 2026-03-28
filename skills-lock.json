@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "skills": {
+    "ad-campaign-optimization": {
+      "source": "TerminalSkills/skills",
+      "sourceType": "github",
+      "computedHash": "bc258b331aab9f3c8ff2e8fd9c15e4c5129b3cecc0bb52dbde7df1ad07520ad0"
+    },
+    "ai-slides": {
+      "source": "TerminalSkills/skills",
+      "sourceType": "github",
+      "computedHash": "8a2ae6594627df7ff7d9721e503686343dfcaf9caf298aed2f112899e050160d"
+    },
+    "ai-video-generator": {
+      "source": "TerminalSkills/skills",
+      "sourceType": "github",
+      "computedHash": "2cb0ed52299b00b06017a5a59a378fcfb1827e5a0c8d7bd7982b23f60c09adcb"
+    },
+    "anti-ai-slop": {
+      "source": "d-oit/do-web-doc-resolver",
+      "sourceType": "github",
+      "computedHash": "aca4700fdbc5e52a78b7b346a46f6b0ab784bb6a65295e0fa1c6073a35fa703e"
+    },
+    "app-store-optimization": {
+      "source": "TerminalSkills/skills",
+      "sourceType": "github",
+      "computedHash": "d964f328784a7aa2b8288d64a95e933412576e4a79a8017ca9a34e1de2e89242"
+    },
+    "apple-design": {
+      "source": "dickwu/apple-design-skill",
+      "sourceType": "github",
+      "computedHash": "8ef2407bb66c759c110a55102e26646795fdcf67e6d8a49f035ee2d25afcd91b"
+    },
+    "apple-ui-designer": {
+      "source": "heyman333/atelier-ui",
+      "sourceType": "github",
+      "computedHash": "26d43c0a38e7a0ad8cf2cd5418d48ca7525873cc60f203ac67fcf024ce577eb3"
+    },
+    "clean-code": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "dc48fa544872c7cfc6163d39145ffec0a157fa3e2f9d891c1a995f9a5b2db74e"
+    },
+    "design-philosophy": {
+      "source": "mluev/design-philosophy-skill",
+      "sourceType": "github",
+      "computedHash": "68dbe485e48d9a9655cb9cd158d1d7a240b73fffd702e5c8e2e56d5df02e7cd2"
+    },
+    "designer": {
+      "source": "tim-hub/role-based-skills",
+      "sourceType": "github",
+      "computedHash": "9b4001b9916670f52ffff4b7d710d3ef0049a0ea003722c7ff5e967d25eb0121"
+    },
+    "expo": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "9b868ba1777f43ed1d7032a375ab1db6b7b5734fb80b76221bd9819c4d2f2d8a"
+    },
+    "frontend-design": {
+      "source": "ecocee/skills",
+      "sourceType": "github",
+      "computedHash": "7218eba7f77d28398485ba21102384e9fc51f48cbdbd3a8717bb700694619727"
+    },
+    "micro-interactions": {
+      "source": "solinkz/micro-interactions-skill",
+      "sourceType": "github",
+      "computedHash": "257eda7f26c7ea19ba02a48c608f3af9b4a97fd13c4f300cce494f5906dfd029"
+    },
+    "mobile-monetization": {
+      "source": "tinh2/skills-hub-registry",
+      "sourceType": "github",
+      "computedHash": "c8b18eb5797e95dc6e16829f3c952e9247e775283e39e0651eaf9b0a1218a76b"
+    },
+    "react-concurrent": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "1941f0c773c1d105ffdee220d139c962e9983e97b554076b4de7536d3c626aa1"
+    },
+    "react-hooks": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "8492c7895859cbe9ab6debc3328d4562fe5322b6c7da3b09fde74a47cc366519"
+    },
+    "react-native": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "37669d7dbe9967e6c89bd0dd855eba5db179ca4da1d4612fa3f9f431cdff7076"
+    },
+    "react-patterns": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "791f143b4e301c66e337c78860c9d5c0cb0e2dc0a751d7273d356ce2d920111d"
+    },
+    "react-suspense": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "5063fe896c4b06141caf049d19018701d41f68062ec449c7ff8e3259d709dc22"
+    },
+    "solid-principles": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "4041ed0cd97b6df405d2f4f19b88f18c7e456897f3bc483171a908423976192b"
+    },
+    "supabase-postgres-best-practices": {
+      "source": "ecocee/skills",
+      "sourceType": "github",
+      "computedHash": "2cd83130ba699f391d5251f2bb471db0cdbbe35efdcd2e053a6254e8075c5e72"
+    },
+    "tailwindcss": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "83e2b190cbce750233eddb30ce9b907d8157ed8fe1de7feba935c83a748a518b"
+    },
+    "tanstack-query": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "e083fd203e79fc655ecda9af9439941bd89febe56663058d1bd5ce3ca76a684a"
+    },
+    "typescript": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "caae8430d4682c3a352a21909ff016c01b20d4b1ebc6fb4dd01b56ac89f322cb"
+    },
+    "typescript-quality": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "aa977536fca9f0d429efd33db2c3a37326250d7960452ce6b155972bbb76bd3d"
+    },
+    "ui-ux-audit-mobile-android": {
+      "source": "deichworx/smart-swap",
+      "sourceType": "github",
+      "computedHash": "92cc938ff28c8a69080769bf94936007a2dfbe0b4cde99f34fe99fc2afad46f8"
+    },
+    "visual-hierarchy": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "computedHash": "9d47ac9e7ca142b5fb730ef0095fb6d84b18efed03384b83942dcefb7e3624a9"
+    }
+  }
+}

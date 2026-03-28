@@ -92,11 +92,10 @@ export default function AppLayout() {
       <Stack.Screen
         name="screens/achievements"
         options={{
-          headerShown: true,
+          headerShown: false,
           title: "Achievements",
           freezeOnBlur: true,
-          headerBackButtonDisplayMode: "minimal",
-          animation: "slide_from_left",
+          animation: "slide_from_right",
         }}
       />
       <Stack.Screen

@@ -1,9 +1,11 @@
-import React, { useCallback } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import React from "react";
+import { View, Text, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { PencilEdit01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { XPBadge } from "../XP/XPBadge";
+import { GRADIENTS } from "@/constants/palette";
+import { CARD_SHADOW } from "@/constants/shadows";
+import { PressableScale } from "@/src/components/ui/PressableScale";
 
 interface FeaturedPromptCardProps {
   category?: string;
@@ -14,58 +16,61 @@ interface FeaturedPromptCardProps {
 }
 
 /**
- * Featured journaling prompt card for home screen
- * Displays a visually appealing card with gradient background, prompt question, and XP reward
+ * Featured journaling prompt card for home screen — Hero treatment
+ * Accessible, scalable typography, high contrast focus
  */
 export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
   category = "Journaling",
-  xpReward = 30,
   prompt,
-  emoji = "🤓",
   onPress,
 }) => {
-  const handlePress = useCallback(() => {
-    onPress();
-  }, [onPress]);
-
   return (
-    <LinearGradient
-      colors={["#E0F7FA", "#B2EBF2", "#E0F2F1"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={{ padding: 20, overflow: "hidden", borderRadius: 24 }}
-    >
-      {/* Header Row */}
-      <View className="flex-row items-center justify-between mb-4">
-        {/* Image Mascot */}
-        <View className="w-32 h-32 items-center justify-center overflow-hidden">
-          <Image
-            source={require("@/assets/images/happy-dog.png")}
-            style={{ width: 128, height: 128 }}
-            resizeMode="cover"
-          />
-        </View>
-      </View>
-
-      {/* Prompt Question */}
-      <Text className="text-[28px] font-bold text-gray-900 mb-8 leading-tight">
-        {prompt}
-      </Text>
-
-      {/* Add Entry Button */}
-      <TouchableOpacity
-        onPress={handlePress}
-        className="bg-gray-900 flex-row items-center justify-center py-4 rounded-full"
-        activeOpacity={0.8}
+    <View style={CARD_SHADOW} className="rounded-3xl bg-indigo-50 shadow-sm">
+      <PressableScale
+        onPress={onPress}
+        scale={0.98}
+        hapticStyle="light"
         accessibilityRole="button"
-        accessibilityLabel="Add entry for featured prompt"
+        accessibilityLabel={`Take a moment to write. Featured Prompt: ${prompt}.`}
         accessibilityHint="Opens the journal recorder for this prompt"
       >
-        <HugeiconsIcon icon={PencilEdit01Icon} size={18} color="#FFFFFF" />
-        <Text className="text-white font-semibold text-base ml-2">
-          Add entry
-        </Text>
-      </TouchableOpacity>
-    </LinearGradient>
+        <LinearGradient
+          colors={GRADIENTS.featured}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          className="p-5 overflow-hidden"
+          style={{ padding: 20, borderRadius: 24 }}
+        >
+          <View className="mb-4 flex-row items-center justify-between">
+            <View className="w-10 h-10 rounded-full items-center justify-center overflow-hidden bg-white/20">
+              <Image
+                source={require("@/assets/images/happy-dog.png")}
+                className="w-8 h-8"
+                resizeMode="contain"
+                accessibilityIgnoresInvertColors
+              />
+            </View>
+            <View className="bg-white/30 px-2.5 py-1 rounded-full">
+              <Text className="text-teal-900 text-[11px] font-bold uppercase tracking-wider">{category}</Text>
+            </View>
+          </View>
+
+          <Text 
+            className="text-[26px] font-extrabold text-gray-900 mb-8 leading-tight tracking-tight"
+            minimumFontScale={0.8}
+            adjustsFontSizeToFit
+          >
+            {prompt}
+          </Text>
+
+          <View className="bg-black/5 flex-row items-center justify-center h-12 rounded-2xl mt-auto">
+            <HugeiconsIcon icon={PencilEdit01Icon} size={18} color="#111827" />
+            <Text className="text-gray-900 font-bold text-[15px] ml-2.5 tracking-tight">
+              Start writing
+            </Text>
+          </View>
+        </LinearGradient>
+      </PressableScale>
+    </View>
   );
 };

@@ -51,7 +51,6 @@ const WeekyScreenAIWrapper = () => {
         {/* Recommendations and Growth Insights */}
         <AIInsightsContent
           loading={isAILoading}
-          weeklySummary={null}
           recommendations={weeklyAISummary?.recommendations || []}
           growthInsights={weeklyAISummary?.growth_insights || []}
         />

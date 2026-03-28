@@ -1,0 +1,133 @@
+Enrollment for my animation course is open! Enrollment has closed.
+
+Emil Kowalski
+Design Engineer
+Good vs Great Animations
+
+We all want our UIs to feel great and animations can definitely help with that. But how do you actually create a great animation? This article is a collection of practical tips to help you go from good to great animations.
+
+Origin-aware animations
+
+When we click on a button that opens a dropdown, we expect the dropdown to animate from where the button is. This feels natural, it then doesn’t appear out of nowhere, it has a clear origin.
+
+The default transform-origin in CSS is center, but in this case, we want to change it to bottom-center, because that’s where the button is.
+
+Aware
+Unaware
+Aware slowed
+Unaware slowed
+Options
+transform-origin: bottom center
+
+If you are using Radix, you can automate it with the --radix-popover-content-transform-origin CSS variable. If you are using shadcn/ui, the work is already done for you.
+
+.radix-dropdown {
+  transform-origin: var(--radix-popover-content-transform-origin);
+}
+Use the right easing
+
+Easing is the most important part of any animation. It can make a bad animation feel great and a great animation feel bad. That’s why you have to know which easing to choose in a specific situation.
+
+Take a look at the example below. Each time you click the play button, the circle moves. The animation uses the ease-in curve. You can switch it to ease-in-out to see the difference. Which one feels better?
+
+transition-timing-function: ease-in
+Play animation
+Change easing
+
+You probably guessed that ease-in-out is the better choice here, but why?
+
+Animations have to feel natural. Since we’re moving something that is already on the screen, the motion should mimic natural acceleration and deceleration, just like a car. This curve does exactly that.
+
+A visual representation of the ease-in-out curve.
+
+While this example covers the ease-in-out curve, you should default to ease-out in most cases. More on that here.
+
+Use custom easing curves
+
+The built-in easing curves in CSS are usually not strong enough, which is why I almost never use them. Take a look at the example below where we compare two versions of the ease-in-out curve to see the difference.
+
+Built-in
+
+Custom easing feels more energetic.
+
+ease is an exception as it works well for basic hover effects like changing background color, but anything else requires a custom curve for the right feel.
+
+Plenty of sites offer custom easing curves; easing.dev and easings.co are two I recommend if you don’t feel like creating them yourself.
+
+Spring-based interactions
+
+Changing a component based on mouse position is a nice way to add interactivity to your UI in a subtle way. However, tying visual changes directly to mouse position can feel artificial, as it lacks motion.
+
+Interacting with this graph doesn’t feel satisfying.
+
+To make the interaction feel more natural, use the useSpring hook from Framer Motion (now called Motion). It interpolates value changes with spring-like behavior, rather than updating them immediately.
+
+This makes the interaction feel less artificial, since nothing in the real world changes instantly. There are cases where an instant change on the web is better, but this isn’t one of those cases.
+
+This works, because this animation is decorative, it doesn’t serve any function. If this was a functional graph, in a banking app for example, no animation would be better.
+
+Know your tools
+
+Knowing which CSS properties to use in a specific situation is key to great animations.
+
+A good tabs transition animates both the highlight bar and the text color, like the one below. But if you change the animation speed (button in the top-right corner), you’ll notice the movement and color change don’t really play well together.
+
+1x
+Payments
+Balances
+Customers
+Billing
+
+It’s not something you’d notice immediately, but you would be able to tell that something feels off. Usually, playing the animation frame by frame, or in slow motion, helps you spot it.
+
+When you know your tools, you know that using clip-path in this case is what will make the color transition feel right. You can view the implementation of this component here.
+
+Toggle clip path
+1x
+Payments
+Balances
+Customers
+Billing
+Payments
+Balances
+Customers
+Billing
+
+Play it in slow motion to see the color transition blending in with the highlighted tab.
+
+Knowing what’s possible doesn’t just help you improve existing animations, it also helps you create new ones. At one point, I played with 3D transforms and came up with this orbiting effect:
+
+Code Playground
+App.js
+styles.css
+import "./styles.css";
+
+
+export default function Orbit() {
+  return (
+    <div className="wrapper">
+      <div className="circle" />
+      <div className="orbitingCircle" />
+    </div>
+  );
+}
+
+While this type of animation is not that impressive, it lets you know that it is possible to animate an element in 3D space in CSS. With a little bit of creativity, you could for example create a 3D loading animation that Yann designed and I coded at Linear.
+
+This was just an experiment, it didn’t make it to the app.
+
+Or even a 3D coin CSS Animation:
+
+Inspired by aave.
+
+Why does this matter?
+
+Everyone’s software is good enough these days. The barriers to entry are low. To stand out, you need to make your product feel great. One way of doing that is through animations.
+
+Knowing when to add an animation, how, and why, can drastically change how your product is perceived and felt. I go in more depth on the theory and practice of great animations in my animations course, you can view it here:
+
+Check out animations.dev
+Previous
+Great Animations
+Next
+The Magic of Clip Path

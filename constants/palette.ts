@@ -58,8 +58,8 @@ export const SURFACE = {
 export const GRADIENTS = {
   /** Discovery card prompt background */
   prompt: [BRAND.skyA, BRAND.skyB] as const,
-  /** Featured journaling card */
-  featured: ['#E0F7FA', '#B2EBF2', '#E0F2F1'] as const,
+  /** Featured journaling card (Softened for contrast) */
+  featured: ['#F0FBFC', '#E0F7FA', '#F0FBFC'] as const,
   /** XP badge highlight */
   xpHighlight: ['#F59E0B', '#D97706'] as const,
 } as const;

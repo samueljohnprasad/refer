@@ -5,6 +5,7 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  withSpring,
 } from "react-native-reanimated";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useHabits } from "@/hooks/data/useHabits";
@@ -144,8 +145,9 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   useEffect(() => {
     const targetProgress =
       totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
-    progressWidth.value = withTiming(targetProgress, {
-      duration: 400,
+    progressWidth.value = withSpring(targetProgress, {
+      damping: 20,
+      stiffness: 150,
     });
   }, [completedCount, totalCount]);
 
@@ -191,7 +193,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
       {/* Progress Bar Card */}
       {totalCount > 0 && (
-        <View className="bg-white rounded-2xl p-5 mb-4" style={SECTION_SHADOW}>
+        <View className="bg-theme-background-primary rounded-2xl p-5 mb-4" style={SECTION_SHADOW}>
           <Text className="text-gray-900 font-semibold mb-3">Daily Progress</Text>
           <View className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
             <Animated.View
@@ -205,7 +207,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
       {/* Empty State */}
       {habitsWithStatus.length === 0 ? (
         <View
-          className="bg-white rounded-2xl p-8 items-center"
+          className="bg-theme-background-primary rounded-2xl p-8 items-center"
           style={SECTION_SHADOW}
         >
           <Text className="text-gray-400 text-center">
@@ -218,7 +220,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           {activeCategories.map((category) => (
             <View
               key={category}
-              className="bg-white rounded-2xl mb-4 overflow-hidden"
+              className="bg-theme-background-primary rounded-2xl mb-4 overflow-hidden"
               style={SECTION_SHADOW}
             >
               {/* Category Header */}

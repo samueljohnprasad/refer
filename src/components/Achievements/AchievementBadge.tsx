@@ -41,8 +41,8 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   return (
     <Pressable
       onPress={onPress}
-      // FIX #30: Added accessibilityRole, accessibilityLabel, and accessibilityState
-      accessibilityRole="button"
+      // Phase 1 fix: accessibilityRole is "button" only when interactive
+      accessibilityRole={onPress ? "button" : "image"}
       accessibilityLabel={
         isUnlocked
           ? `${achievement.name} — Unlocked. +${achievement.xpBonus} XP.`
@@ -97,7 +97,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
           {/* XP badge — amber tint, only when unlocked */}
           {isUnlocked && (
             <View
-              className="absolute -bottom-1 px-1.5 py-0.5 rounded-full border border-amber-100"
+              className="absolute -bottom-1 px-1 py-0.5 rounded-full border border-amber-100"
               style={{
                 backgroundColor: "#FEF3C7",
                 shadowColor: "#000",
@@ -105,9 +105,10 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
                 shadowOpacity: 0.05,
                 shadowRadius: 2,
                 elevation: 1,
+                zIndex: 1,
               }}
             >
-              <Text className="text-[10px] font-bold text-amber-700">
+              <Text className="text-[10px] font-bold text-amber-700" numberOfLines={1}>
                 +{achievement.xpBonus} XP
               </Text>
             </View>

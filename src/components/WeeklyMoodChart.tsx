@@ -20,6 +20,7 @@ import {
   VictoryAxis,
   VictoryChart,
   VictoryLine,
+  VictoryArea,
   VictoryScatter,
   VictoryTheme,
 } from "victory-native";
@@ -331,8 +332,8 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
           style={{
             data: {
               fill: moodScoreToColor(score),
-              stroke: "#FFFFFF",
-              strokeWidth: 2,
+              stroke: "rgba(255,255,255,0.6)",
+              strokeWidth: 4,
             },
           }}
           events={[
@@ -408,7 +409,7 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
               tickFormat={xTickLabels}
               style={{
                 axis: { stroke: "#EEF2F7" },
-                tickLabels: { fontSize: 11, padding: 10, fill: "#9AA4B2" },
+                tickLabels: { fontSize: 12, padding: 10, fill: "#9AA4B2", fontWeight: "600" },
                 grid: { stroke: "transparent" },
               }}
             />
@@ -420,15 +421,33 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
               style={{
                 axis: { stroke: "#EEF2F7" },
                 tickLabels: { fill: "transparent" },
-                grid: { stroke: HEX.grid, strokeDasharray: "4,8" },
+                grid: { stroke: HEX.grid, strokeDasharray: "4,6" },
               }}
             />
+
+            {hasData && (
+              <VictoryArea
+                data={numericPoints5.map((p) => ({ x: p.x, y: p.y + 0.5, y0: 1 }))}
+                interpolation="monotoneX"
+                animate={{
+                  duration: 800,
+                  onLoad: { duration: 2000 },
+                  easing: "sinInOut",
+                }}
+                style={{
+                  data: {
+                    fill: width > 0 ? `url(#${gradientId})` : "#64748B",
+                    opacity: 0.2,
+                  },
+                }}
+              />
+            )}
 
             {hasData && (
               <VictoryLine
                 labelComponent={<View />}
                 data={numericPoints5.map((p) => ({ x: p.x, y: p.y + 0.5 }))}
-                interpolation="cardinal"
+                interpolation="monotoneX"
                 animate={{
                   duration: 800,
                   onLoad: { duration: 2000 },
@@ -469,6 +488,8 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
               bottom: 0,
               alignItems: "center",
               justifyContent: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.6)",
+              borderRadius: 24,
             }}
           >
             <Loading />
@@ -591,8 +612,8 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
           style={{
             data: {
               fill: moodScoreToColor(score),
-              stroke: "#FFFFFF",
-              strokeWidth: 2,
+              stroke: "rgba(255,255,255,0.6)",
+              strokeWidth: 4,
             },
           }}
           events={[
@@ -671,7 +692,7 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
               }}
               style={{
                 axis: { stroke: "#EEF2F7" },
-                tickLabels: { fontSize: 9, padding: 10, fill: "#9AA4B2" },
+                tickLabels: { fontSize: 10, padding: 8, fill: "#9AA4B2", fontWeight: "600" },
                 grid: { stroke: "transparent" },
               }}
             />
@@ -683,15 +704,33 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
               style={{
                 axis: { stroke: "#EEF2F7" },
                 tickLabels: { fill: "transparent" },
-                grid: { stroke: HEX.grid, strokeDasharray: "4,8" },
+                grid: { stroke: HEX.grid, strokeDasharray: "4,6" },
               }}
             />
+
+            {hasData && (
+              <VictoryArea
+                data={numericPoints.map((p) => ({ x: p.x, y: p.y + 0.5, y0: 1 }))}
+                interpolation="monotoneX"
+                animate={{
+                  duration: 800,
+                  onLoad: { duration: 2000 },
+                  easing: "sinInOut",
+                }}
+                style={{
+                  data: {
+                    fill: width > 0 ? `url(#${gradientId})` : "#64748B",
+                    opacity: 0.2,
+                  },
+                }}
+              />
+            )}
 
             {hasData && (
               <VictoryLine
                 labelComponent={<View />}
                 data={numericPoints.map((p) => ({ x: p.x, y: p.y + 0.5 }))}
-                interpolation="cardinal"
+                interpolation="monotoneX"
                 animate={{
                   duration: 800,
                   onLoad: { duration: 2000 },
@@ -738,6 +777,8 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
               bottom: 0,
               alignItems: "center",
               justifyContent: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.6)",
+              borderRadius: 24,
             }}
           >
             <Loading />
@@ -1142,7 +1183,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     return (
       <View className="w-full gap-2">
         <View className="flex-row items-center justify-between px-1">
-          <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">{headerTitle}</Text>
+          <Text className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">{headerTitle}</Text>
         </View>
         <View className="w-full rounded-3xl bg-white p-4 border border-gray-100">
           <View className="py-10 items-center justify-center">
@@ -1156,7 +1197,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     return (
       <View className="w-full gap-2">
         <View className="flex-row items-center justify-between px-1">
-          <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">{headerTitle}</Text>
+          <Text className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">{headerTitle}</Text>
         </View>
         <View className="w-full rounded-3xl bg-white p-4 border border-gray-100">
           <Text className="text-red-500">Failed to load mood data.</Text>
@@ -1168,7 +1209,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   return (
     <View className="w-full gap-2">
       <View className="flex-row items-center justify-between px-1">
-        <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">
+        <Text className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">
           {headerTitle}
         </Text>
       </View>

@@ -1,11 +1,13 @@
 import React, { useEffect, useCallback } from "react";
-import { View, Pressable, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withSequence,
+  withTiming,
   interpolate,
+  interpolateColor,
 } from "react-native-reanimated";
 import { Image } from "@/components/ui/image";
 import { terrible, bad, fine, good, great } from "@/assets/emojis";
@@ -17,10 +19,9 @@ import { XPActionType, XP_REWARDS } from "../types/xp";
 import { XPBadge } from "./XP";
 import { useRewardsContext } from "../context/RewardsContext";
 import { useChallengesOptional } from "../context/ChallengesContext";
-import { SectionHeader } from "@/src/components/ui/SectionHeader";
-import { SmileIcon } from "@hugeicons/core-free-icons";
 import { MOOD } from "@/constants/palette";
 import { CARD_SHADOW } from "@/constants/shadows";
+import { PressableScale } from "@/src/components/ui/PressableScale";
 
 // Emotion configuration — uses shared MOOD palette
 const EMOTIONS = [
@@ -48,42 +49,30 @@ const EmotionItem: React.FC<{
   onPress: () => void;
   isLoading: boolean;
 }> = ({ emotion, count, onPress, isLoading }) => {
-  const scale = useSharedValue(1);
   const countScale = useSharedValue(1);
+  const highlightProgress = useSharedValue(0);
 
   // Animate count changes
   useEffect(() => {
     if (count > 0) {
       countScale.value = withSequence(
-        withSpring(1.2, { damping: 8, stiffness: 200 }),
-        withSpring(1, { damping: 10, stiffness: 150 }),
+        withSpring(1.2, { damping: 12, stiffness: 200 }),
+        withSpring(1, { damping: 14, stiffness: 150 }),
       );
     }
   }, [count]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
   const animatedCountStyle = useAnimatedStyle(() => ({
     transform: [{ scale: countScale.value }],
-    opacity: interpolate(countScale.value, [1, 1.2], [0.9, 1]),
+    opacity: interpolate(countScale.value, [1, 1.2], [0.95, 1]),
   }));
-
-  const handlePressIn = () => {
-    scale.value = withSpring(0.95, { damping: 10, stiffness: 200 });
-  };
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 10, stiffness: 200 });
-  };
 
   const handlePress = () => {
     if (!isLoading) {
-      // Trigger animation
-      scale.value = withSequence(
-        withSpring(1.15, { damping: 8, stiffness: 180 }),
-        withSpring(1, { damping: 10, stiffness: 150 }),
+      // Brief color highlight
+      highlightProgress.value = withSequence(
+        withTiming(1, { duration: 150 }),
+        withTiming(0, { duration: 600 }),
       );
       onPress();
     }
@@ -91,41 +80,45 @@ const EmotionItem: React.FC<{
 
   return (
     <View className="flex-1 items-center">
-      <Pressable
+      <PressableScale
         onPress={handlePress}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
         disabled={isLoading}
-        className="items-center"
+        scale={0.9}
+        hapticStyle="light"
         accessibilityRole="button"
         accessibilityLabel={`Log ${emotion.name} mood`}
-        accessibilityHint="Records this mood for your daily tracking"
+        accessibilityHint="Records this mood for today"
+        className="items-center min-w-[48px] min-h-[48px] justify-center"
       >
-        <Animated.View style={animatedStyle}>
-          <View
-            className="items-center justify-center rounded-2xl p-2 bg-gray-50/50"
-          >
-            <Image
-              source={emotion.emoji}
-              alt={emotion.name}
-              className="w-11 h-11"
-              width={44}
-              height={44}
-            />
-            {count > 0 && (
-              <Animated.View
-                className="absolute -top-1 -right-1 bg-gray-800 rounded-full min-w-[18px] h-[18px] items-center justify-center px-1 border-2 border-white"
-                style={animatedCountStyle}
-              >
-                <Text className="text-white text-[9px] font-bold">
-                  {count > 99 ? "99+" : count}
-                </Text>
-              </Animated.View>
-            )}
-          </View>
+        <Animated.View
+          className="items-center justify-center rounded-2xl p-2.5"
+          style={useAnimatedStyle(() => ({
+            backgroundColor: interpolateColor(
+              highlightProgress.value,
+              [0, 1],
+              ['transparent', emotion.bgColor],
+            ),
+          }))}
+        >
+          <Image
+            source={emotion.emoji}
+            alt={emotion.name}
+            className="w-10 h-10"
+            resizeMode="contain"
+          />
+          {count > 0 && (
+            <Animated.View
+              className="absolute -top-[2px] -right-[2px] bg-gray-100 rounded-full min-w-[18px] h-[18px] items-center justify-center px-1 border-[1.5px] border-white shadow-sm"
+              style={animatedCountStyle}
+            >
+              <Text className="text-gray-500 text-[10px] font-black z-10">
+                {count > 99 ? "99+" : count}
+              </Text>
+            </Animated.View>
+          )}
         </Animated.View>
-      </Pressable>
-      <Text className="text-xs font-medium text-gray-700 mt-1.5">
+      </PressableScale>
+      <Text className="text-[11px] font-semibold text-gray-500 mt-1">
         {emotion.name}
       </Text>
     </View>
@@ -156,12 +149,10 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     // Calculate average mood (weighted by emotion scores: 1-5)
     const averageMood = React.useMemo(() => {
       if (totalEmotions === 0) return null;
-
       let weightedSum = 0;
-      emotionCounts.forEach((count, emotionId) => {
+      for (const [emotionId, count] of emotionCounts.entries()) {
         weightedSum += emotionId * count;
-      });
-
+      }
       return (weightedSum / totalEmotions).toFixed(1);
     }, [emotionCounts, totalEmotions]);
 
@@ -205,37 +196,14 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     );
     return (
       <View className="gap-2">
-        <View className="flex-row items-center gap-2 px-1 mb-1">
-          <Text className="text-xs text-gray-400 font-semibold uppercase tracking-widest">
+        <View className="flex-row items-center justify-between px-1 mb-2">
+          <Text className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
             Daily Mood Log
           </Text>
-          <XPBadge amount={XP_REWARDS[XPActionType.MOOD_LOG]} />
         </View>
 
-        <View className="bg-white rounded-2xl p-4 border border-gray-100">
-          <View className="flex-row justify-between items-center mb-3">
-            {averageMood && moodLabel ? (
-              <View className="flex-row items-center gap-1">
-                <Text
-                  className="text-xs font-semibold"
-                  style={{ color: moodLabel.color }}
-                >
-                  {moodLabel.text}
-                </Text>
-                <Text className="text-xs text-gray-400">•</Text>
-                <Text
-                  className="text-xs font-bold"
-                  style={{ color: moodLabel.color }}
-                >
-                  {averageMood}
-                </Text>
-              </View>
-            ) : (
-              <View />
-            )}
-          </View>
-
-          <View className="flex-row justify-between">
+        <View className="bg-white rounded-2xl p-4" style={CARD_SHADOW}>
+          <View className="flex-row justify-between px-2 pt-1 pb-1">
             {EMOTIONS.map((emotion) => (
               <MemoizedEmotionItem
                 key={emotion.id}

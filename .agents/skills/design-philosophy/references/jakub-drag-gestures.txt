@@ -1,0 +1,206 @@
+Drag gestures on the web
+
+Drag gestures are far less common on the web than on mobile. I wanted to try how they feel on the web, so I built this iOS 26 inspired gesture with Motion as an exercise.
+
+Interfere
+11:24 AM
+Login to Interfere
+To protect your account, do not share this code. Interfere staff will never ask you to share it.
+LS
+Luke Shiels
+10:16 AM
+All-Hands Sync
+Invitation: All-Hands Sync @ Weekly from 9:30am to 9:45am on weekdays (EST) (Jakub Krehel)
+Apple
+9:41 AM
+Liquid Glass
+Apple introduces a delightful and elegant new software design.
+
+Drag items to the left or right to see the interaction.
+
+Structure
+
+In terms of structure, the component is fairly straightforward. We start with the outer container and add overflow-clip which clips everything but prevents scrolling. Inside we have a div with the content that handles the gesture.
+
+CONTAINER
+CONTENT
+Drag gesture
+
+For the gesture, we will be using the drag prop from Motion. We start by defining the x value using the useMotionValue hook, where x is how far the draggable row shifts horizontally.
+
+0 means the row is centered
+positive values mean the row is shifted to the right
+negative values mean the row is shifted to the left
+
+Motion updates x continuously while you drag. You don't need to calculate distances manually.
+
+const x = useMotionValue(0);
+
+<motion.div drag="x" style={{ x }} />
+
+We then pass the x value to the style prop of the motion.div and use drag="x" to make the row draggable on the x-axis only.
+
+X Axis
+Y Axis
+Both
+
+Drag the ball and change the modes to see the difference
+
+Drag configuration
+
+In addition to setting up the drag gesture itself, you can also define its behavior.
+
+<motion.div
+  drag="x"
+  dragConstraints={{ left: SNAP_POINTS.LEFT, right: SNAP_POINTS.RIGHT }}
+  dragElastic={0.05}
+  dragMomentum={false}
+  style={{ x }}
+/>
+
+dragConstraints allows you to define the boundaries of the draggable area. In this component, we limit the draggable area to the left and right of the row.
+
+On
+Off
+
+Drag the ball and toggle constraints to see the difference
+
+dragElastic controls the resistance when dragging past the boundaries. Lower values like 0.05 add very little overshoot, while higher values allow more before snapping back.
+
+0.10
+
+Drag the ball past the boundary to see the elastic effect
+
+Setting dragMomentum to false removes the fling effect. For swipe actions, you want the row to stop where you decide, not where velocity decides.
+
+On
+Off
+
+Flick the ball quickly and release to see the momentum effect
+
+Snap points
+
+When the drag ends, the row needs to snap to either left, right or center depending on the direction.
+
+const SNAP_POINTS = {
+    LEFT: -116,
+    CENTER: 0,
+    RIGHT: 116,
+};
+
+Based on the x value when drag ends, we can determine the snap point. If you don't drag far enough, the row will snap to the center. If you cross the threshold, the row will snap to the nearest side.
+
+const handleDragEnd = () => {
+  const currentX = x.get();
+
+  if (Math.abs(currentX) > POSITION_THRESHOLD) {
+    animate(
+      x,
+      currentX > 0 ? SNAP_POINTS.RIGHT : SNAP_POINTS.LEFT,
+      SPRING_CONFIG
+    );
+  } else {
+    animate(x, SNAP_POINTS.CENTER, SPRING_CONFIG);
+  }
+};
+
+POSITION_THRESHOLD is the commit point. Anything below it closes, anything above it opens.
+
+export const POSITION_THRESHOLD = 58;
+
+Setting dragMomentum to false is what makes this feel consistent. The row always lands on your snap points instead of overshooting based on velocity.
+
+Progressive reveal
+
+The original iOS gesture doesn’t reveal all actions at once. The first action appears first, the second one only when you drag past a certain threshold. The two thresholds I used are 44px and 88px.
+
+const [dragProgress, setDragProgress] = useState(0);
+
+useEffect(() => {
+  const unsub = x.on("change", setDragProgress);
+  return () => unsub();
+}, [x]);
+
+
+To do this, compare the motion value against the thresholds.
+
+<ActionButton isVisible={dragProgress > 44} label="Set reminder" />  // First button
+<ActionButton isVisible={dragProgress > 88} label="Mark as unread" />  // Second button
+
+We could also have this calculation be in percentages, but I like to keep it in pixels so I can easily tweak the values. We then use the isVisible prop to animate the button.
+
+<motion.button
+  animate={{
+    opacity: isVisible ? 1 : 0,
+    scale: isVisible ? 1 : 0.5,
+  }}
+  aria-label={label}
+  className={cn(bgColor, "action-button")}
+  initial={{ opacity: 0, scale: 0.5 }}
+  onClick={onClick}
+  onFocus={onFocus}
+>
+  {icon}
+</motion.button>
+Indicators
+
+In addition to the drag gesture, there are a couple other animations in this component, with the first one being the indicators.
+
+TC
+Unread
+Reminder
+
+We render them conditionally, animate opacity and scale and wrap it in an AnimatePresence to handle the exit animation. Depending on where the indicator renders, we add a corresponding origin so it animates in from the correct direction.
+
+<AnimatePresence>
+  {isUnread && (
+    <motion.div
+      animate={{ opacity: 1, scale: 1 }}
+      aria-label="Unread indicator"
+      className="indicator origin-bottom-right"
+      exit={{ opacity: 0, scale: 0.75 }}
+      initial={{ opacity: 0, scale: 0.75 }}
+      key="unread-indicator"
+      transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+    >
+      <span className="size-2.5 rounded-full bg-white" />
+    </motion.div>
+  )}
+</AnimatePresence>
+Trash button
+
+The trash button uses a clip-path overlay and renders different trash icons and background colors depending on the state.
+
+I made a collection of buttons like these a while back.
+
+<motion.button
+  animate={{
+    opacity: isVisible ? 1 : 0,
+    scale: isVisible ? 1 : 0.5,
+  }}
+  aria-label="Delete Item"
+  className="button"
+  initial={{ opacity: 0, scale: 0.5 }}
+  onClick={onClick}
+  onFocus={onFocus}
+  type="button"
+>
+  <div className="hold-overlay absolute action-button">
+    <IconTrashPermanently className="size-5.5 text-white" />
+  </div>
+  <IconTrashCan className="size-5.5 text-red-500" />
+</motion.button>
+More
+
+If you have any questions you can reach me via email, see more of my work on X (Twitter) or subscribe to my newsletter below.
+
+Newsletter
+
+I share stuff that I'm working on, new posts and resources here.
+
+Email address
+Subscribe
+Previous
+Using Gestures in Motion
+Next
+Using AI as a Design Engineer

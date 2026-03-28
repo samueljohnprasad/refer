@@ -1,0 +1,88 @@
+Craft
+Blurred Backdrops
+Choreographing Motion
+Staggering Motion
+Indicating Affordance
+Acknowledgments
+Designing Depth
+
+July 2024
+
+One of the most challenging fundamental pillars in visual media is composition. How do you distill a three-dimensional world into a two-dimensional (still) frame, while conveying story and depth? A favorite technique of mine to do so and also create visual interest is to composite the scene with layered objects.
+
+In filmmaking, this is generally referred to as "dirtying the frame" with foreground elements such as props or unconventional framing—usually the most obvious, pristine head-on shot would not subtly advance the story or be as visually compelling.
+
+For example, the composition below produces a sense of unease by suggesting that the subject is being observed from behind another object. Without the foreground obstruction, I would not draw this assumption and this single frame would carry less emotion and information.
+
+We can also shoot through windows for novel visual effects 1, obscure the frame with out-of-focus foreground objects 2, or even center a subject and provide more context using the surrounding environment 3.
+
+1
+2
+3
+
+In software design, we can similarly enhance a composition by introducing ambient foreground and background objects. Let's observe this visual I was struggling to put together for one of our marketing pages at Vercel:
+
+The design fell flat in one of the first iterations because there is no depth to the browser frame or the overlaying surfaces—they are placed as a seemingly sloppy afterthought.
+
+A trivial change we can make to introduce depth is to blur out the inner background to visually lower it on the Z-axis, and fade out the bottom edge of the container to make the boundaries feel infinite and less clearly defined:
+
+We can further emphasise the layered nature of our design with additional offset browser frames and out of focus objects. We're also not just adding gimmicky decorations around the focal point—but deliberately making use of the primary subjects (browser frame and bubble surfaces) to communicate an abundance of Preview Deployments on the Vercel platform.
+
+Blurred Backdrops
+
+It's fairly common in products and operating systems to dim the backdrop when launching an overlay 1. This is another opportunity to add dimensionality to an interface by simulating depth of field that our eyes have naturally evolved to expect.
+
+For instance, launching a context menu would feel fairly awkward without any de-emphasis on the iOS Home Screen layer 2. It would also signal that the entire backdrop of apps are interactive, which in this case would not be correct—only the context menu is actionable, tapping the backdrop closes it.
+
+Choreographing Motion
+
+In my mind, choreography is deliberately orchestrating when something happens in a structured sequence. I think there are subtle parallels between "dirtying the frame" and motion choreography. In both cases, at a high level we are looking to add more layers to a narrative, akin to layering together multiple musical instruments for variety in sound. In the context of animation, our instruments are time and artificial delays to be leveraged in a way that feels true to motion found in nature—you rarely see all the leaves of a tree moving in a jarring concert all at once.
+
+A production example of great motion choreography would be to observe the Home Screen swipe down gesture. A first pass at a recreation would probably be to implement a swipe down to trigger a keyframed animation.
+
+However, if we deconstruct the interaction into 4 discrete states that happen over the gesture, we end up with something like this that reveals more nuance:
+
+Because the first row of apps on the Home Screen and Siri suggestions occupy the same space on the screen, the Home Screen layer needs to be adequately blurred 1 before the four Siri suggestions can be cleanly surfaced 2. Linearly revealing said suggestions would create a visually odd layering situation, so the reveal is intentionally delayed here.
+
+The third state in the interaction transitions the Search entry point into an input 3, while subtly revealing the keyboard without fully expanding it. I'm assuming the keyboard pop-up transition is delayed to not cognitively compete with the Siri suggestions which the design could be trying to nudge you towards.
+
+Because you are swiping down, it also makes sense to show immediate feedback near the top of the screen where the gesture is likely originating from. On gesture end, the animation reaches its final state and satisfyingly expands the keyboard 4 in coordination with releasing your finger touch.
+
+Now, the same overlay can instead of swiping also be launched by tapping the Search button at the footer of the Home Screen:
+
+Interestingly, in this case, the choreography is reversed—the Search entry point transitions into an input immediately 1, and with a very slight delay the Siri suggested apps are revealed 2 thereafter. Again, it makes sense to prioritise transitioning near the trigger location (Search entry button) to promptly communicate that the interface understood you.
+
+Staggering Motion
+
+A school of fish swimming in the ocean produce mesmerising effects because they have very slight differences in their movement and timing, but visually look indistinguishable.
+
+Further observing how a flock of birds take flight it is apparent that nature in general does not always move in perfect synchrony.
+
+Taking inspiration from nature for interfaces, we can sometimes stagger the behavior of sibling items that look similar. For example, OpenAI staggers the fade in of loaded content in a grid layout. The interface does not feel slower as a result. Instead, there's more depth to the motion because elements don't just jarringly appear all at once—leaving the user to question whether the page scrolled and how many new items were updated on the screen.
+
+Observing the unlock interaction on the iPhone we can notice that the Home Screen apps are also staggered in their translation. Staggering here amplifies the unlock gesture by making a primitive swipe feel three-dimensional, exaggerated, and as a result—satisfying to perform. The Home Screen is also the "living room" on iOS and likely the first point of contact after setting up the device—a great moment to especially dial the novelty of animations up a notch.
+
+The iOS Control Centre offers organic rubber banding feedback by making each row of items respond with a slightly staggered spring configuration.
+
+We can also animate text with staggering motion to create a satisfying hover effect:
+
+Indicating Affordance
+
+A surface that iPadOS takes special care of animating is the Dock. For example, when swiping right on the Home Screen, a full screen overlay appears as the Dock slides out of view.
+
+The Dock not being blurred along with the Home Screen and specifically sliding off-screen while maintaining its opacity communicates that it retains interactivity and can be brought back with a swipe gesture.
+
+Apple is subtly communicating depth of the interface through motion and reinforcing the metaphor that the interface is composed of stacked layers. Now, it does feel like they could have just kept the Dock in place to avoid sliding—but because it's layered above the Today View sidebar, having it move out of the way is likely to respect your intent to interact with the surface you swiped for.
+
+Now, we can verify that the Dock does not have a sliding animation because it's simply cute that way—the Dock exhibits no properties of a separate layer while revealing the Control Centre which is also a full-screen overlay like the sidebar. Instead, it is blurred along with the Home Screen and the Home Bar is surfaced as a layer above to indicate dismissability.
+
+Acknowledgments
+
+Thanks to Paco and Glenn for reading early drafts, providing insights, feedback, and screen recordings.
+
+No artificial intelligence was used to generate content for this essay.
+
+Previous
+Novelty
+Next
+Logo Carousel

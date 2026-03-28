@@ -119,27 +119,21 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
   if (entries.length === 0) {
     return (
-      <View className="gap-4">
+      <View className="flex-1 gap-4">
         <SectionHeader
           title="Journal Entries"
           icon={NoteIcon}
           rightElement={ctaButton}
         />
-        <View className="bg-white rounded-2xl p-5" style={CARD_SHADOW}>
-          <View className="py-6 items-center">
-            <RNImage
-              source={require("@/assets/images/no-entries-dog.png")}
-              style={{
-                width: 156,
-                height: 156,
-                marginBottom: 16,
-              }}
-              resizeMode="contain"
-            />
-            <Text className="text-gray-400 text-center">
-              No entries for today.{"\n"}Tap + to add your first journal!
-            </Text>
-          </View>
+        <View className="flex-1 justify-center items-center py-10">
+          <RNImage
+            source={require("@/assets/images/no-entries-dog.png")}
+            style={{
+              width: 156,
+              height: 156,
+            }}
+            resizeMode="contain"
+          />
         </View>
       </View>
     );
@@ -222,11 +216,27 @@ const EntryCard: React.FC<EntryCardProps> = ({
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 500,
-      delay: index * 100,
+      duration: 250,
+      delay: index * 50,
       useNativeDriver: true,
     }).start();
   }, [index]);
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.97,
+      useNativeDriver: true,
+      speed: 20,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 20,
+    }).start();
+  };
 
   const feelings: FeelingsType[] = entry.journal_ai_insights
     ?.feelings as FeelingsType[];
@@ -245,7 +255,7 @@ const EntryCard: React.FC<EntryCardProps> = ({
   };
 
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
       <Animated.View
         className="bg-white rounded-2xl p-4"
         style={{
@@ -287,15 +297,13 @@ const EntryCard: React.FC<EntryCardProps> = ({
             </View>
           </View>
 
-          <View className="items-end">
-            <Text className="text-2xl mb-1">
-              <Image
-                source={emotions[entry.moods?.main_mood as Emotion]}
-                className="w-4 h-4 opacity-60"
-                alt={entry.moods?.main_mood || "-"}
-                progressiveRenderingEnabled={true}
-              />
-            </Text>
+          <View className="items-end justify-center mb-1">
+            <Image
+              source={emotions[entry.moods?.main_mood as Emotion]}
+              className="w-6 h-6 opacity-60"
+              alt={entry.moods?.main_mood || "-"}
+              progressiveRenderingEnabled={true}
+            />
           </View>
         </View>
 

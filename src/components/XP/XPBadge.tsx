@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { GRADIENTS } from "@/constants/palette";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
+import { SPRING_BOUNCY } from "@/src/utils/motionTokens";
+import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 
 interface XPBadgeProps {
   amount: number;
@@ -26,31 +33,45 @@ export const XPBadge: React.FC<XPBadgeProps> = ({
   size = "sm",
   variant = "default",
 }) => {
+  const reducedMotion = useReducedMotion();
+  const scale = useSharedValue<number>(reducedMotion ? 1 : 0);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    scale.value = withSpring(1, SPRING_BOUNCY);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
   if (variant === "highlight") {
     return (
-      <LinearGradient
-        colors={GRADIENTS.xpHighlight}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        className="rounded-full px-2 py-0.5"
-      >
-        <Text className={`text-white font-bold ${TEXT_SIZE_CLASSES[size]}`}>
-          +{amount} XP
-        </Text>
-      </LinearGradient>
+      <Animated.View style={animatedStyle}>
+        <LinearGradient
+          colors={GRADIENTS.xpHighlight}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          className="rounded-full px-2 py-0.5"
+        >
+          <Text className={`text-white font-bold ${TEXT_SIZE_CLASSES[size]}`}>
+            +{amount} XP
+          </Text>
+        </LinearGradient>
+      </Animated.View>
     );
   }
 
-  // Default: soft amber tint for elegant XP rewards
+  // Default: deeply quiet neutral for XP rewards without pulling focus
   return (
-    <View
-      className={`rounded-full bg-amber-50 ${SIZE_CLASSES[size]}`}
+    <Animated.View
+      style={animatedStyle}
+      className={`rounded-full bg-gray-100/80 px-2 py-0.5 ${SIZE_CLASSES[size]}`}
     >
-      <Text
-        className={`font-bold text-amber-600 ${TEXT_SIZE_CLASSES[size]}`}
-      >
+      <Text className={`font-bold text-gray-400 ${TEXT_SIZE_CLASSES[size]}`}>
         +{amount} XP
       </Text>
-    </View>
+    </Animated.View>
   );
 };

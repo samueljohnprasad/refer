@@ -128,10 +128,10 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
         >
           <View className="flex-1 px-6 pt-4">
             {/* Header */}
-            <Text className="text-3xl text-gray-900 mb-2 font-cormorantSemiBold">
+            <Text className="text-3xl text-theme-text-primary mb-2 font-cormorantSemiBold">
               Add a Habit
             </Text>
-            <Text className="text-gray-600 text-base mb-6">
+            <Text className="text-theme-text-secondary text-base mb-6">
               Choose from presets or create your own
             </Text>
 
@@ -147,18 +147,18 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
                       key={index}
                       onPress={() => handlePresetSelect(preset)}
                       disabled={loading}
-                      className="bg-gray-50 rounded-2xl p-4 mb-3 border border-gray-200"
+                      className="bg-theme-background-secondary rounded-2xl p-4 mb-3 border border-theme-border"
                       activeOpacity={0.7}
                     >
                       <View className="flex-row items-center">
-                        <View className="w-12 h-12 rounded-full bg-white items-center justify-center mr-3">
+                        <View className="w-12 h-12 rounded-full bg-theme-background-primary items-center justify-center mr-3">
                           <Text style={{ fontSize: 24 }}>{preset.icon}</Text>
                         </View>
                         <View className="flex-1">
-                          <Text className="text-base font-semibold text-gray-900 mb-1">
+                          <Text className="text-base font-semibold text-theme-text-primary mb-1">
                             {preset.name}
                           </Text>
-                          <Text className="text-sm text-gray-600">
+                          <Text className="text-sm text-theme-text-secondary">
                             {preset.description}
                           </Text>
                         </View>
@@ -190,7 +190,7 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
                   className="flex-1"
                 >
                   <View className="mb-4">
-                    <Text className="text-sm font-semibold text-gray-700 mb-2">
+                    <Text className="text-sm font-semibold text-theme-text-secondary mb-2">
                       Habit Name *
                     </Text>
                     <TextInput
@@ -199,7 +199,7 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
                       placeholder="e.g., Morning stretch routine"
                       placeholderTextColor="#9CA3AF"
                       maxLength={50}
-                      className="bg-gray-50 rounded-xl px-4 py-3 text-base text-gray-900 border border-gray-200"
+                      className="bg-theme-background-secondary rounded-xl px-4 py-3 text-base text-theme-text-primary border border-theme-border"
                     />
                     <Text className="text-xs text-gray-500 mt-1">
                       {habitName.length}/50
@@ -207,7 +207,7 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
                   </View>
 
                   <View className="mb-6">
-                    <Text className="text-sm font-semibold text-gray-700 mb-2">
+                    <Text className="text-sm font-semibold text-theme-text-secondary mb-2">
                       Why is this important to you?
                     </Text>
                     <TextInput
@@ -219,7 +219,7 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
                       multiline
                       numberOfLines={3}
                       textAlignVertical="top"
-                      className="bg-gray-50 rounded-xl px-4 py-3 text-base text-gray-900 border border-gray-200 min-h-[80px]"
+                      className="bg-theme-background-secondary rounded-xl px-4 py-3 text-base text-theme-text-primary border border-theme-border min-h-[80px]"
                     />
                     <Text className="text-xs text-gray-500 mt-1">
                       {habitDescription.length}/200

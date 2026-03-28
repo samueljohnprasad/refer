@@ -170,22 +170,20 @@ export const HabitDetailsModal = forwardRef<
         snapPoints={snapPoints}
         backdropComponent={renderBackdrop}
         enablePanDownToClose={true}
-        backgroundStyle={{ backgroundColor: "#F8F8FF" }}
         handleIndicatorStyle={{ backgroundColor: "#D1D5DB", width: 40 }}
       >
-        {/* Header */}
-        <View className="items-center px-6 pt-2 pb-4 border-b border-gray-100 bg-white">
+        <View className="items-center px-6 pt-2 pb-4 border-b border-theme-border bg-theme-background-primary">
           <View
             className="w-14 h-14 rounded-full items-center justify-center mb-2"
             style={{ backgroundColor: habit.color + "20" }}
           >
             <Text style={{ fontSize: 28 }}>{habit.icon}</Text>
           </View>
-          <Text className="text-xl font-cormorantSemiBold text-gray-900">
+          <Text className="text-xl font-cormorantSemiBold text-theme-text-primary">
             {habit.name}
           </Text>
           {habit.description && (
-            <Text className="text-sm text-gray-500 mt-1 text-center">
+            <Text className="text-sm text-theme-text-secondary mt-1 text-center">
               {habit.description}
             </Text>
           )}
@@ -198,7 +196,7 @@ export const HabitDetailsModal = forwardRef<
         >
           {/* Time Options */}
           <View className="mt-5 mb-4">
-            <Text className="text-sm font-semibold text-gray-600 mb-3 uppercase tracking-wide">
+            <Text className="text-sm font-semibold text-theme-text-secondary mb-3 uppercase tracking-wide">
               Time
             </Text>
             <View className="flex-row gap-3">
@@ -207,13 +205,13 @@ export const HabitDetailsModal = forwardRef<
                 className={`flex-1 py-3.5 rounded-xl ${
                   timeOption === "anytime"
                     ? "bg-[#7B61FF]"
-                    : "bg-white border border-gray-200"
+                    : "bg-theme-background-primary border border-theme-border"
                 }`}
                 activeOpacity={0.7}
               >
                 <Text
                   className={`text-center font-semibold text-base ${
-                    timeOption === "anytime" ? "text-white" : "text-gray-700"
+                    timeOption === "anytime" ? "text-white" : "text-theme-text-primary"
                   }`}
                 >
                   Anytime
@@ -225,13 +223,13 @@ export const HabitDetailsModal = forwardRef<
                 className={`flex-1 py-3.5 rounded-xl ${
                   timeOption === "at_time"
                     ? "bg-[#7B61FF]"
-                    : "bg-white border border-gray-200"
+                    : "bg-theme-background-primary border border-theme-border"
                 }`}
                 activeOpacity={0.7}
               >
                 <Text
                   className={`text-center font-semibold text-base ${
-                    timeOption === "at_time" ? "text-white" : "text-gray-700"
+                    timeOption === "at_time" ? "text-white" : "text-theme-text-primary"
                   }`}
                 >
                   At time
@@ -240,8 +238,7 @@ export const HabitDetailsModal = forwardRef<
             </View>
           </View>
 
-          {/* Settings Card */}
-          <View className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-5">
+          <View className="bg-theme-background-primary rounded-2xl border border-theme-border overflow-hidden mb-5">
             {/* Date Picker */}
             <TouchableOpacity
               onPress={() => {
@@ -251,8 +248,8 @@ export const HabitDetailsModal = forwardRef<
               className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100"
               activeOpacity={0.7}
             >
-              <Text className="text-base text-gray-600 font-medium">Date</Text>
-              <Text className="text-base text-gray-900 font-semibold">
+              <Text className="text-base text-theme-text-secondary font-medium">Date</Text>
+              <Text className="text-base text-theme-text-primary font-semibold">
                 {format(startDate, "MMM dd, yyyy")}
               </Text>
             </TouchableOpacity>
@@ -282,10 +279,10 @@ export const HabitDetailsModal = forwardRef<
 
                 {/* Duration */}
                 <View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100">
-                  <Text className="text-base text-gray-600 font-medium">
+                  <Text className="text-base text-theme-text-secondary font-medium">
                     Duration
                   </Text>
-                  <Text className="text-base text-gray-900 font-semibold">
+                  <Text className="text-base text-theme-text-primary font-semibold">
                     {durationMinutes} mins
                   </Text>
                 </View>
@@ -301,10 +298,10 @@ export const HabitDetailsModal = forwardRef<
               className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100"
               activeOpacity={0.7}
             >
-              <Text className="text-base text-gray-600 font-medium">
+              <Text className="text-base text-theme-text-secondary font-medium">
                 Repeat
               </Text>
-              <Text className="text-base text-gray-900 font-semibold capitalize">
+              <Text className="text-base text-theme-text-primary font-semibold capitalize">
                 {repeatPattern === "weekly"
                   ? "Weekly on Thursday"
                   : repeatPattern}
@@ -313,17 +310,17 @@ export const HabitDetailsModal = forwardRef<
 
             {/* End Repeat */}
             <View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100">
-              <Text className="text-base text-gray-600 font-medium">
+              <Text className="text-base text-theme-text-secondary font-medium">
                 End Repeat
               </Text>
-              <Text className="text-base text-gray-900 font-semibold capitalize">
+              <Text className="text-base text-theme-text-primary font-semibold capitalize">
                 {endRepeatOption}
               </Text>
             </View>
 
             {/* Reminder Toggle */}
             <View className="flex-row items-center justify-between px-4 py-4">
-              <Text className="text-base text-gray-600 font-medium">
+              <Text className="text-base text-theme-text-secondary font-medium">
                 Reminder
               </Text>
               <Switch
@@ -340,7 +337,7 @@ export const HabitDetailsModal = forwardRef<
 
           {/* Notes */}
           <View className="mb-6">
-            <Text className="text-sm font-semibold text-gray-600 mb-3 uppercase tracking-wide">
+            <Text className="text-sm font-semibold text-theme-text-secondary mb-3 uppercase tracking-wide">
               Notes
             </Text>
             <TextInput
@@ -351,7 +348,7 @@ export const HabitDetailsModal = forwardRef<
               multiline
               numberOfLines={4}
               textAlignVertical="top"
-              className="bg-white rounded-2xl p-4 text-base text-gray-900 border border-gray-200 min-h-[100px]"
+              className="bg-theme-background-primary rounded-2xl p-4 text-base text-theme-text-primary border border-theme-border min-h-[100px]"
             />
           </View>
 
@@ -361,14 +358,14 @@ export const HabitDetailsModal = forwardRef<
               onPress={handleToggle}
               className={`flex-1 py-4 rounded-2xl ${
                 isCompleted
-                  ? "bg-white border-2 border-gray-300"
+                  ? "bg-theme-background-primary border-2 border-theme-border"
                   : "bg-[#7B61FF]"
               }`}
               activeOpacity={0.8}
             >
               <Text
                 className={`text-center font-bold text-base ${
-                  isCompleted ? "text-gray-700" : "text-white"
+                  isCompleted ? "text-theme-text-primary" : "text-white"
                 }`}
               >
                 {isCompleted ? "Mark Incomplete" : "✓ Complete"}

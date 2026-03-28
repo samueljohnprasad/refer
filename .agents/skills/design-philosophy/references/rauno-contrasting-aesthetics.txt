@@ -1,0 +1,92 @@
+Craft
+Inviting Curiosity
+PP Foundry
+Just Friends
+Raw Materials
+Spaces
+Loïc Nottet
+Contrasting Aesthetics
+
+January 2024
+
+Much of the art I appreciate in museums can be bucketed into aesthetics like typographic, medieval, or patterned. The boundaries feel clearly defined because we can assign names to them. I have been increasingly more stimulated by aesthetic intersections—unexpected displays of art that tastefully reject the notion of a clean, singularly defined style, yet bridges many. For my taste, often this ends up in opposition to minimalism, yet does not chaotically lean into kitschy or maximalism. There is authoring intent, purpose, and a sense of iteration felt throughout, not seemingly arbitrary excess for the sake of creative provocation. I believe there's something fascinating in art and design that treats my attention with care and instills curiosity.
+
+Akin to excess—absence, or minimalism, and the idea of “clean design” can sometimes make me not think or feel anything special when interfacing with said art, software, or device. It often fails to surprise or force a moment of pause to ponder—why does this feel great? Rightfully so, I do not need to be intellectually stimulated when making breakfast—it is conveniently acceptable for the design of the toaster not to be influenced by contrasting aesthetics.
+
+But in search for novelty, it can more often than not be found at the intersection of many unrelated disciplines or styles, as one is able to increase their pool of inspiration to remix from. What does the Renaissance mixed with analog technology look like? How does an orchestral French ballad with a hip-hop beat sound like? Can you have more than one style of logo?
+
+Inviting Curiosity
+
+Here's an abstract home-baked primer on contrast. First, none of the ticks in this example stand out. This without hestitation tells me that they are all of equal weight conceptually.
+
+Now, to create visual interest and call for your attention, we traditionally apply color. This might be a color relevant to a given brand, or signify state, like an error.
+
+Contrast can also be achieved with form. Through rotation we're again emphasising the conceptual weight of the contrasting tick by saying "this one is different, and more important for a reason".
+
+Let's kick it up a notch to an extreme example. We're now back to where we started—nothing really stands out or gives us an impression of narrative nor purpose. The only harmony we can attempt to find is from the equal width and height.
+
+Let's dial it back a little, while introducing a new contrasting aesthetic: hand-drawn ticks. This feels more uniform, yet slightly playful and unorthodox.
+
+Now, this is a primitive example, but with higher fidelity elements the contrast between them can be exponentially stronger. Hopefully, this drives home that just the right amount of contrast invites curiosity—why is one of the elements different and what does that communicate?
+
+PP Foundry
+
+This is the website for a bitmap typeface called PP NeueBit. The contrasting aesthetics here are apparent, and to do with the choice of imagery and typography. My first thought was that they don’t belong together, but rather conceptually not tastefully. Let me explain.
+
+NeueBit and Mondwest
+
+First, the painting Annunciation by Leonardo da Vinci is from hundreds of years ago, long before computers and bitmapping. This makes me sense the tremendous passage of time and strikes a beautiful contrast between the computer and Renaissance eras.
+
+Secondly, the contrast is intensified by expecting to see a serif typeface with ornementation, which feels aesthetically much closer to the Renaissance age where text was cursive and editorial. Instead, the bitmap typeface works great to break away from the mold and make me feel unsettled, yet pleasantly surprised.
+
+As an aside, choosing a painting in particular by Leonardo and many other distinguished artists communicates mastery of craft, reinforcing the quality and craftsmanship of the typeface. This motif is also continuously reinforced on the website through various graphics.
+
+Altogether, the aesthetic contrast makes me immediately start finding connections like so. It creates a moment of curiosity. You would probably not want to do this often in productivity software, but for driving first impressions and establishing tone.
+
+Just Friends
+
+amo makes clever use of several contrasting typefaces for their wordmark to create this animation. The style of typefaces are unarguably different, but by retaining the word, casing, sizing, positioning, and color it creates consistency.
+
+amo - Just friends.
+
+On their website, they deliberately make use of the word "friends" when describing apps that they make: ID, Capture, Location. On Twitter, their bio also reads "Just Friends".
+
+I can only assume that animating through distinct typeface styles communicates kinship. And subtly hints at the diversity of people in any social group—like friends.
+
+Raw Materials
+
+The website of Raw Materials may be a lot to take in, but from my point of view they tastefully pull off playful animation, revealing raw materials, and various styles for 3D graphics.
+
+To set the stage, their company mantra reads:
+
+We believe that when everything is the same, different is the greatest of opportunities.
+Raw Materials | An Unusual Design Company
+
+The logo has four different animations. Each page visit gives you a different one. They all feel equally playful due to their elastic nature.
+
+Throughout the website they commit to visualizing their mantra with not just contrast in color, but aesthetics in the graphics relevant to a given section.
+
+First, they start off with a 3D shape in ASCII style. This tells me that one of the materials that they work with is code. A static visual would be as describing, but being able to interact with it validates the statement through execution.
+
+Next we have another 3D graphic, but this clearly has a different aesthetic from the previous. The soft, rounded shapes feel more playful in contrast to the robust, raw nature of code. I can also infer from this choice of style that they are proficient in 3D design software.
+
+Finally, we shift away from the soft shapes into a 3D wireframe perspective composed of unrefined typography that resemble brutalism.
+
+Spaces
+
+Another medium for contrasting aesthetics are homes or offices. Many people make use of analog furniture, décor, or gadgets to tastefully contrast the pristine Nordic–style minimalism commonly found in modern homes. In the context of a home, doing so also reveals hints of character.
+
+Now, below are two examples that have arguably no use of contrasting aesthetics. Both can be categorised fairly well—vintage and minimalist. Objects, colors, patterns, and textures in both rooms are more consistent within their theme.
+
+Loïc Nottet
+
+Contrasting styles are more easily detected in music. Sound is a highly dynamic medium, with every bar likely to introduce change of varying degree. Some tracks have varying beats per minute, switching across sub-genres from e.g. breakbeats to ambient house but still remaining within the same genre—electronic music.
+
+This is Mélodrame, a song by Loïc Nottet who is a Belgian singer, dancer, and songwriter. Aesthetically, the song should be considered a passionate orchestral ballad, until 1:55 where an unexpected introduction of drum machine beats. I don't even know how to describe this track from that point on. I kind of want to say it's leaned into the grounds of hip-hop?
+
+That moment feels special to me because the contrast introduced by the beat is so welcome—elevating the track outside the bounds of its supposed style.
+
+Previous
+Minimap
+Next
+What will you ship?

@@ -63,8 +63,8 @@ export const useStreakTracker = (): UseStreakTrackerReturn => {
         .single();
 
       // 2. Fetch daily moods for current week
-      const weekStart = dayjs().startOf("week").toISOString(); // Sunday start
-      const weekEnd = dayjs().endOf("week").toISOString(); // Saturday end
+      const weekStart = dayjs().startOf("week").format("YYYY-MM-DD"); // Sunday start
+      const weekEnd = dayjs().endOf("week").format("YYYY-MM-DD"); // Saturday end
 
       const { data: weeklyMoods } = await supabase
         .from("daily_moods")

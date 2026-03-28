@@ -19,17 +19,35 @@ export const useDailyStreak = () => {
 
   const logStreakIfNeeded = useCallback(async (): Promise<LogStreakResult> => {
     if (!user?.id) return { updated: false };
-    if (!profile?.lastJournalDate) return { updated: false };
-    if (!profile?.currentStreak) return { updated: false };
 
-    if (dayjs(profile?.lastJournalDate).isSame(new Date(), "day")) {
+    const today = dayjs().startOf("day");
+    let lastJournalDay = null;
+    
+    if (profile?.lastJournalDate) {
+      lastJournalDay = dayjs(profile.lastJournalDate).startOf("day");
+    }
+
+    if (lastJournalDay && lastJournalDay.isSame(today, "day")) {
       return { updated: false };
     }
+
+    let newStreak = 1;
+
+    if (lastJournalDay && lastJournalDay.isSame(today.subtract(1, "day"), "day")) {
+      // Logged yesterday, increment the streak cleanly
+      newStreak = (profile?.currentStreak || 0) + 1;
+    } else {
+      // First log ever, or missed a day (streak resets)
+      newStreak = 1;
+    }
+
+    const newLongest = Math.max(newStreak, profile?.longestStreak || 0);
 
     const { error } = await supabase
       .from("profiles")
       .update({
-        current_streak: profile?.currentStreak ? profile?.currentStreak + 1 : 1,
+        current_streak: newStreak,
+        longest_streak: newLongest,
         last_journal_date: new Date().toISOString(),
       })
       .eq("id", user.id);
@@ -42,8 +60,8 @@ export const useDailyStreak = () => {
 
     return {
       updated: true,
-      newCurrentStreak: profile?.currentStreak ? profile?.currentStreak + 1 : 1,
-      newLongestStreak: profile?.longestStreak ? profile?.longestStreak + 1 : 1,
+      newCurrentStreak: newStreak,
+      newLongestStreak: newLongest,
     };
   }, [
     user?.id,

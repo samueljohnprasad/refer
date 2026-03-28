@@ -40,11 +40,15 @@ import {
   Cancel01Icon,
   Settings02Icon,
   ArrowLeft01Icon,
+  AppleIcon,
 } from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ShortBottomModal from "@/src/components/ShortBottomModal";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { SectionHeader } from "@/src/components/ui/SectionHeader";
+import { XPBadge } from "@/src/components/XP";
+import { XPActionType, XP_REWARDS } from "@/src/types/xp";
 
 const TRACKED_MICRONUTRIENTS_KEY = "tracked_micronutrients";
 
@@ -424,8 +428,33 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
   };
 
   return (
-    <View className="flex-1 bg-[#F6F4FF]">
+    <View className="flex-1">
       <View className="flex-1 pt-2 pb-[100px]">
+        <SectionHeader
+          title="Calorie Tracker"
+          icon={AppleIcon}
+          count={dailySummary.mealCount > 0 ? dailySummary.mealCount : undefined}
+          rightElement={
+            <>
+              <XPBadge amount={XP_REWARDS[XPActionType.CALORIE_LOG]} />
+              <TouchableOpacity
+                onPress={takePhoto}
+                className="bg-gray-800 p-2 rounded-xl"
+                activeOpacity={0.7}
+              >
+                <HugeiconsIcon icon={Camera01Icon} size={18} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={pickImage}
+                className="bg-gray-800 p-2 rounded-xl"
+                activeOpacity={0.7}
+              >
+                <HugeiconsIcon icon={Image01Icon} size={18} color="white" />
+              </TouchableOpacity>
+            </>
+          }
+        />
+        
         {/* Analyzing State */}
         {isAnalyzing && (
           <View className="bg-white rounded-2xl px-6 py-7 mb-4 items-center" style={CARD_SHADOW}>
@@ -477,23 +506,15 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
           {isLoading ? (
             <ActivityIndicator size="small" color="#7B61FF" />
           ) : calorieEntries.length === 0 ? (
-            <View
-              className="bg-white rounded-2xl p-6 items-center"
-              style={CARD_SHADOW}
-            >
+            <View className="flex-1 justify-center items-center py-10">
               <RNImage
                 source={require("@/assets/images/no-meal-dog.png")}
                 style={{
                   width: 156,
                   height: 156,
-                  marginBottom: 16,
                 }}
                 resizeMode="contain"
               />
-              <Text className="text-gray-400 text-center">
-                No meals logged today.{"\n"}Take a photo of your food to get
-                started!
-              </Text>
             </View>
           ) : (
             calorieEntries.map((entry) => renderCalorieEntry(entry))
@@ -509,9 +530,6 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
         >
           <HStack className="items-center" space="sm">
             <HugeiconsIcon icon={Settings02Icon} size={18} color="#9CA3AF" />
-            <Text className="text-gray-500 text-sm font-medium">
-              Manage micronutrients
-            </Text>
           </HStack>
           <HugeiconsIcon
             icon={ArrowLeft01Icon}

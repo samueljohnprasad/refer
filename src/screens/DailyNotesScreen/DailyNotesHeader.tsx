@@ -278,7 +278,7 @@ const DailyNotesHeader = React.memo(
       <SafeAreaView
         edges={["top"]}
         style={{
-          paddingTop: insets.top,
+          paddingTop: insets.top - 30,
         }}
         className="bg-theme-background-primary"
       >
@@ -292,7 +292,7 @@ const DailyNotesHeader = React.memo(
             style={[headerControlsAnimatedStyle]}
           >
             <Pressable
-              className="p-2 -ml-1 rounded-lg"
+              className="min-h-[44px] min-w-[44px] justify-center items-center -ml-1 rounded-lg"
               onPress={() => toggle()}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               accessibilityRole="button"
@@ -310,7 +310,7 @@ const DailyNotesHeader = React.memo(
 
             <View className="flex-row items-center gap-1">
               <Pressable
-                className="p-2 rounded-lg"
+                className="min-h-[44px] min-w-[44px] justify-center items-center rounded-lg"
                 onPress={onBookmarksPress}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 accessibilityRole="button"
@@ -387,8 +387,8 @@ const DailyNotesHeader = React.memo(
             pointerEvents="box-none"
           >
             <GestureDetector gesture={gesture}>
-              <View 
-                className="py-2 px-8"
+              <View
+                className="min-h-[44px] justify-center px-8"
                 accessibilityRole="adjustable"
                 accessibilityLabel="Calendar drag handle"
               >

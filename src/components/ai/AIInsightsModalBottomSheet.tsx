@@ -69,14 +69,7 @@ export const AIInsightsModalBottomSheet = forwardRef<
             <HugeiconsIcon icon={SparklesIcon} size={20} color="#7B61FF" />
           </View>
           <View className="flex-1">
-            <Text
-              style={{
-                fontSize: 24,
-                fontFamily: "CormorantSemiBold",
-                color: "#1f2937",
-                letterSpacing: -0.5,
-              }}
-            >
+            <Text className="text-2xl font-cormorantSemiBold text-theme-text-primary tracking-tight">
               AI Weekly Insights
             </Text>
             <Text className="text-sm text-gray-500 font-medium mt-0.5">
@@ -86,8 +79,7 @@ export const AIInsightsModalBottomSheet = forwardRef<
         </View>
         <Pressable
           onPress={onClose}
-          className="p-2 rounded-full active:bg-gray-100"
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          className="w-11 h-11 items-center justify-center rounded-full active:bg-gray-100"
         >
           <HugeiconsIcon icon={Cancel01Icon} size={24} color="#6B7280" />
         </Pressable>

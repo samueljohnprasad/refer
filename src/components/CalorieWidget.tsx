@@ -120,7 +120,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
 
   if (compact) {
     return (
-      <TouchableOpacity
+      <View
         className="bg-white rounded-2xl p-4"
         style={CARD_SHADOW}
       >
@@ -145,7 +145,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
             <Text className="text-xs text-gray-400">kcal</Text>
           </VStack>
         </HStack>
-      </TouchableOpacity>
+      </View>
     );
   }
 
@@ -175,10 +175,9 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
           </>
         }
       />
-      <TouchableOpacity
+      <View
         className="bg-white rounded-2xl p-5"
         style={CARD_SHADOW}
-        activeOpacity={1}
       >
 
       {dailySummary.mealCount === 0 ? (
@@ -296,7 +295,7 @@ const CalorieWidget: React.FC<CalorieWidgetProps> = ({
           </HStack>
     </>
       )}
-    </TouchableOpacity>
+    </View>
 
       {/* Micronutrient Modal using ShortBottomModal */}
       <ShortBottomModal

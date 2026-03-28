@@ -181,3 +181,622 @@ Load references on-demand to keep context efficient:
 | Writing the plan | `references/design-rules.md` |
 | Handling gray areas | `references/scope-discipline.md` |
 | After implementation | `references/post-implementation.md` |
+
+
+
+
+# Mobile App UI/UX Design
+
+The Mobile App UI/UX Design skill is a comprehensive Claude Code skill that guides the creation of professional, polished mobile app interfaces. Built on proven design principles from top-tier apps like Airbnb, Duolingo, Spotify, Revolut, and Phantom, it provides a complete framework for designing interfaces that are intentional, smooth, personal, and alive — not just functional.
+
+This skill automatically triggers when users request mobile app screen designs, mockups, UI components, onboarding flows, or mobile navigation work. It covers the entire design process from initial context gathering through final polish, with specific guidance for industry-specific conventions across 9+ verticals including AI/Tech, Crypto, Finance, Health, Education, and more.
+
+## Core Design Philosophy
+
+Before designing anything, understand three essential questions that drive all design decisions: What is the user trying to accomplish? How should this make the user feel? What's the one thing they should notice first?
+
+```
+// Design Philosophy Checklist
+const designChecklist = {
+  // Question 1: User Goal
+  userGoal: "What is the user trying to accomplish?",
+  approach: "Reduce friction to that goal",
+
+  // Question 2: Emotional Target
+  emotionalTarget: "How should this make the user feel?",
+  options: ["trust", "delight", "confidence", "calm"],
+
+  // Question 3: Visual Hierarchy
+  visualHierarchy: "What's the one thing they should notice first?",
+  approach: "Design clear visual hierarchy"
+};
+```
+
+## 5-Step Design Process
+
+Follow this sequential framework for designing any mobile screen: understand context, structure first (UX), apply visual design (UI), design for emotion, then polish.
+
+```
+// Step 1: Understand Context
+const context = {
+  appType: "fitness | finance | social | productivity | health | crypto",
+  userType: "new | returning | power_user",
+  primaryAction: "The one thing user should do on this screen",
+  industryConventions: "See industry-conventions.md"
+};
+
+// Step 2: Structure First (UX Lens)
+const uxStructure = {
+  userFlow: "Map screen before and after",
+  mvpElements: "Only what's essential",
+  thumbZone: "Primary actions in bottom 1/3",
+  readingPattern: "F-pattern for content layout",
+  interactionCost: "Expose content directly, don't hide behind taps",
+  emptyStates: "Turn into opportunities with guidance + CTA"
+};
+
+// Step 3: Visual Design (UI Lens)
+const visualDesign = {
+  typography: { fontFamily: 1, maxSizes: 4, maxWeights: 2 },
+  colorRule: { neutral: "60%", complementary: "30%", accent: "10%" },
+  spacing: "8-point grid (8, 12, 16, 24, 32, 48, 64, 80, 96)",
+  shadows: "Soft only, match color to background"
+};
+
+// Step 4: Design for Emotion (Peak-End Rule)
+const emotionalDesign = {
+  peakMoment: "Completing core task, milestone, finding what they want",
+  peakDesign: "micro-animations, badges, sparkles, encouraging copy",
+  endingDesign: "summary card, progress affirmation, gentle nudge to return"
+};
+
+// Step 5: Polish & Details
+const polish = {
+  glowEffects: "Subtle glow behind key elements",
+  buttonDetails: "White inner shadows on primary buttons",
+  borders: "5% opacity primary-color on secondary elements",
+  tapTargets: "Minimum 44×44pt",
+  states: "error, empty, loading, success"
+};
+```
+
+## Typography System
+
+Use one font family with maximum 4 font sizes and 2 font weights. Create hierarchy through size, weight, and opacity — not by making everything bold.
+
+```css
+/* Typography Hierarchy Example */
+.typography-system {
+  /* Font Family - Use ONE */
+  --font-primary: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace; /* For numbers/prices */
+
+  /* Font Sizes - Maximum 4 */
+  --text-xl: 32px;   /* Headlines */
+  --text-lg: 24px;   /* Section titles */
+  --text-md: 16px;   /* Body text */
+  --text-sm: 14px;   /* Secondary text */
+
+  /* Font Weights - Maximum 2 */
+  --font-bold: 600;
+  --font-regular: 400;
+
+  /* Opacity for Hierarchy */
+  --opacity-heading: 100%;
+  --opacity-body: 80%;
+  --opacity-secondary: 60%;
+}
+
+/* Usage Example */
+.heading {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  opacity: var(--opacity-heading);
+}
+
+.body-text {
+  font-size: var(--text-md);
+  font-weight: var(--font-regular);
+  opacity: var(--opacity-body);
+}
+
+.secondary-text {
+  font-size: var(--text-sm);
+  font-weight: var(--font-regular);
+  opacity: var(--opacity-secondary);
+}
+
+/* Monospace for Large Numbers */
+.price-display {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+```
+
+## 60/30/10 Color System
+
+Apply the 60/30/10 rule: 60% neutral base, 30% complementary color, 10% brand accent. Use opacity variations for text hierarchy and match shadow colors to backgrounds.
+
+```css
+/* Color System Implementation */
+:root {
+  /* 60% - Neutral Base */
+  --color-base: #FFFFFF;
+  --color-base-dark: #0F0F0F; /* Dark mode */
+
+  /* 30% - Complementary (Text/Elements) */
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: rgba(26, 26, 26, 0.7);
+  --color-text-tertiary: rgba(26, 26, 26, 0.5);
+
+  /* 10% - Brand Accent */
+  --color-accent: #6366F1;
+  --color-accent-hover: #4F46E5;
+  --color-accent-light: rgba(99, 102, 241, 0.05); /* For secondary buttons */
+  --color-accent-border: rgba(99, 102, 241, 0.1); /* For subtle borders */
+}
+
+/* Shadow Colors - Match to Background */
+.card-on-white {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.card-on-purple {
+  /* Tinted shadow - never pure gray/black */
+  box-shadow: 0 4px 24px rgba(99, 102, 241, 0.2);
+}
+
+/* Button Examples */
+.btn-primary {
+  background: var(--color-accent);
+  color: white;
+  /* Subtle inner shadow for dimension */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent-border);
+}
+```
+
+## 8-Point Grid Spacing System
+
+All spacing values must be divisible by 8 or 4. Use relationship-based spacing where related elements are closer together and unrelated elements are further apart.
+
+```css
+/* 8-Point Grid Spacing */
+:root {
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 80px;
+  --space-10: 96px;
+}
+
+/* Relationship-Based Spacing Example */
+.card {
+  padding: var(--space-5); /* 24px internal padding */
+}
+
+.card-header {
+  margin-bottom: var(--space-3); /* 12px - related to content */
+}
+
+.card-title {
+  margin-bottom: var(--space-2); /* 8px - closely related */
+}
+
+.card-description {
+  margin-bottom: var(--space-4); /* 16px - before next section */
+}
+
+.card-actions {
+  margin-top: var(--space-5); /* 24px - separate section */
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Section Spacing */
+.section {
+  padding: var(--space-9) var(--space-5); /* 80px vertical, 24px horizontal */
+}
+
+.section-major {
+  padding: var(--space-10) var(--space-5); /* 96px for major sections */
+}
+
+/* Multiplier Rule: If related text = 16px gap, unrelated = 32px (2×) */
+.form-field {
+  margin-bottom: var(--space-4); /* 16px between fields */
+}
+
+.form-section {
+  margin-bottom: var(--space-6); /* 32px between sections (2×) */
+}
+```
+
+## Industry-Specific Design Conventions
+
+Different app categories have established visual conventions. Reference these when designing for specific verticals.
+
+```javascript
+// Industry Design Conventions Reference
+const industryConventions = {
+  aiTech: {
+    palette: "Soft gradients, ethereal accents",
+    elements: "Depth, dimensionality, glowing elements",
+    motion: "Smooth animations communicating intelligence",
+    theme: "Dark or light with moving elements"
+  },
+
+  cryptoWeb3: {
+    palette: "Neon colors, high contrast",
+    elements: "Geometric shapes, futuristic aesthetic",
+    motion: "Polish builds trust (Phantom lesson)",
+    theme: "Dark mode backgrounds",
+    keyInsight: "Treat visual details, motion, transitions as core product features"
+  },
+
+  financeBanking: {
+    palette: "Blue-dominant (trust, stability)",
+    elements: "Generous white space, clean layouts",
+    motion: "Tactile interactions (Revolut: draggable charts, 3D card flips)",
+    theme: "Professional, conservative typography",
+    keyInsight: "Tactile interactions turn basic features into premium experiences"
+  },
+
+  healthWellness: {
+    palette: "Bright, approachable colors",
+    elements: "Friendly illustrations, warm micro-interactions",
+    motion: "Non-intimidating onboarding flows",
+    theme: "Reduce anxiety through design",
+    keyInsight: "Guide users kindly, peak = personalized insight moment"
+  },
+
+  educationLearning: {
+    palette: "Bright, playful colors",
+    elements: "Character-driven experiences",
+    motion: "Emotional feedback loops",
+    theme: "Personality in every interaction",
+    keyInsight: "Duolingo: character animations doubled DAUs (14.2M → 34M+)"
+  },
+
+  fitness: {
+    palette: "Energetic colors, bold typography",
+    elements: "Progress-focused, visual momentum",
+    motion: "Adapt UI complexity to user stage",
+    theme: "New → Returning → Power user progression"
+  },
+
+  productivity: {
+    palette: "Clean, minimal",
+    elements: "Information-dense but organized",
+    motion: "Quick-action patterns, keyboard shortcuts",
+    theme: "Strong grid systems, consistent spacing"
+  },
+
+  ecommerce: {
+    palette: "Product photography focused",
+    elements: "Prominent CTAs, trust signals",
+    motion: "Frictionless checkout flows",
+    theme: "Reviews, ratings, delivery estimates"
+  }
+};
+```
+
+## Peak-End Rule Implementation
+
+Based on Nobel Prize research by Daniel Kahneman: users remember two moments — the peak (most intense) and the end (final impression).
+
+```javascript
+// Peak-End Rule Implementation
+const peakEndDesign = {
+  // Step 1: Map Your Journey
+  journeyMapping: {
+    process: [
+      "Lay out every step in core flow",
+      "Identify: Where is user slowed down?",
+      "Identify: Where might stress peak?",
+      "Identify: Where's the quiet in between?",
+      "Treat as living document"
+    ]
+  },
+
+  // Step 2: Design The Peak
+  peakMoments: {
+    triggers: [
+      "After completing a core task",
+      "Hitting a milestone",
+      "Investing significant effort",
+      "Finding what they want"
+    ],
+    implementations: [
+      "Badge or achievement",
+      "Sparkle animation",
+      "Surprise copy",
+      "Personalized brief that builds in front of them",
+      "Micro-animations with supporting tags"
+    ]
+  },
+
+  // Step 3: Design The Ending
+  endingMoments: {
+    requirements: [
+      "Never let app 'fall off' without closure",
+      "Celebrate what was done (check mark, summary card)",
+      "Encourage what comes next",
+      "Reaffirm progress",
+      "Gentle nudge to return"
+    ],
+    exampleCopy: "You showed up today. That's huge."
+  },
+
+  // Step 4: Reduce Negative Peaks
+  negativePeakMitigation: {
+    problemAreas: ["wait screens", "error states", "long forms"],
+    solutions: [
+      "Uplifting microcopy",
+      "Helpful tools before users ask",
+      "Loading animations with tips",
+      "Turn delays into opportunities"
+    ]
+  }
+};
+
+// Emotional Feedback Loop Examples
+const emotionalFeedback = {
+  correctAnswer: {
+    bad: "✓ Correct",
+    good: "🎉 You got it! Nice work!"
+  },
+  mistake: {
+    bad: "✗ Wrong",
+    good: "Almost! Here's a hint..."
+  },
+  milestone: {
+    bad: "Level complete",
+    good: "🏆 Level 5 unlocked! You're on fire!"
+  },
+  progress: {
+    bad: "50% complete",
+    good: "Halfway there! Keep the momentum going 🚀"
+  }
+};
+```
+
+## Smart UI Patterns
+
+Apply these proven patterns for common mobile app scenarios.
+
+```javascript
+// User Stage Personalization
+const userStagePatterns = {
+  newUser: {
+    approach: "Simple welcome, guided setup",
+    features: "Minimal options, clear onboarding",
+    tone: "Encouraging, educational"
+  },
+  returningUser: {
+    approach: "Personalized content, routine-focused",
+    features: "Progress indicators, quick actions",
+    tone: "Familiar, efficient"
+  },
+  powerUser: {
+    approach: "Advanced stats, optimization tools",
+    features: "Dense information, shortcuts",
+    tone: "Professional, data-rich"
+  }
+};
+
+// Smart Search Pattern - Never show blank search
+const smartSearchPattern = {
+  emptyState: {
+    include: [
+      "Recent searches",
+      "Popular/trending items",
+      "Personalized recommendations"
+    ],
+    avoid: "Blank screen with just search bar"
+  }
+};
+
+// Selection Over Manual Input
+const selectionPattern = {
+  approach: "Offer tappable selections for common options",
+  elements: [
+    "Icons/emojis alongside options",
+    "Pre-defined choices for common values",
+    "'Other' option with manual input fallback"
+  ],
+  example: {
+    question: "What's your role?",
+    options: ["👨‍💻 Developer", "🎨 Designer", "📊 Manager", "Other..."]
+  }
+};
+
+// Empty State Pattern
+const emptyStatePattern = {
+  bad: "No items found",
+  good: {
+    illustration: "Friendly visual",
+    message: "Your collection is empty",
+    guidance: "Add your first item to get started",
+    cta: "Add Item"
+  }
+};
+```
+
+## React/Tailwind Implementation
+
+Implementation guidance for building designs as React components with Tailwind CSS.
+
+```jsx
+// Mobile App Card Component Example
+import { Heart, Share2, MoreHorizontal } from 'lucide-react';
+
+const AppCard = ({ title, description, image, stats }) => {
+  return (
+    <div className="bg-white rounded-3xl p-6 shadow-sm">
+      {/* Image with soft shadow */}
+      <div className="relative mb-4">
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-48 object-cover rounded-2xl"
+        />
+        <div className="absolute inset-0 rounded-2xl shadow-inner" />
+      </div>
+
+      {/* Typography Hierarchy */}
+      <h3 className="text-xl font-semibold text-gray-900 mb-1">
+        {title}
+      </h3>
+      <p className="text-base text-gray-900/70 mb-4">
+        {description}
+      </p>
+
+      {/* Stats with monospace numbers */}
+      <div className="flex gap-6 mb-6">
+        {stats.map((stat, i) => (
+          <div key={i}>
+            <span className="font-mono text-2xl font-semibold text-gray-900">
+              {stat.value}
+            </span>
+            <span className="text-sm text-gray-900/60 ml-1">
+              {stat.label}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Actions in thumb zone */}
+      <div className="flex gap-3">
+        {/* Primary CTA - 10% accent color */}
+        <button className="flex-1 bg-indigo-500 text-white py-3 px-6 rounded-2xl font-medium shadow-sm hover:bg-indigo-600 transition-colors">
+          Get Started
+        </button>
+
+        {/* Secondary actions */}
+        <button className="p-3 bg-indigo-500/5 rounded-2xl text-indigo-500 hover:bg-indigo-500/10 transition-colors">
+          <Heart className="w-5 h-5" />
+        </button>
+        <button className="p-3 bg-indigo-500/5 rounded-2xl text-indigo-500 hover:bg-indigo-500/10 transition-colors">
+          <Share2 className="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Usage
+<AppCard
+  title="Morning Routine"
+  description="Start your day with intention"
+  image="/routine.jpg"
+  stats={[
+    { value: "12", label: "days" },
+    { value: "89%", label: "complete" }
+  ]}
+/>
+```
+
+## Spotify's Strategic Principles
+
+Three strategic design principles from Spotify's playbook for creating sticky, shareable experiences.
+
+```javascript
+// Spotify's Strategic Principles
+const spotifyPrinciples = {
+
+  // 1. The Trojan Horse
+  trojanHorse: {
+    principle: "Hide complex tech in familiar interfaces",
+    implementation: [
+      "Wrap sophisticated features in familiar UI patterns",
+      "Users don't want to interact with algorithms",
+      "They want experiences that feel natural"
+    ],
+    question: "What's the simplest, most familiar way users can interact with this feature?"
+  },
+
+  // 2. The Vanity Mirror
+  vanityMirror: {
+    principle: "Make sharing about identity, not the app",
+    implementation: [
+      "Create personal insights so meaningful sharing feels like self-expression",
+      "Don't celebrate what users did in your app",
+      "Celebrate who they are"
+    ],
+    examples: {
+      bad: "You completed 25 tasks",
+      good: "You're a night owl who does their best work after 9 PM"
+    }
+  },
+
+  // 3. The Comfort Trap
+  comfortTrap: {
+    principle: "Consistency as a competitive moat",
+    implementation: [
+      "Every interaction follows the same logic",
+      "Feels like it belongs to the same family",
+      "Predictable patterns become second nature",
+      "Switching costs increase naturally"
+    ],
+    insight: "Design consistency isn't about aesthetics — it's about creating habits competitors can't replicate"
+  }
+};
+```
+
+## Anti-Patterns to Avoid
+
+Common design mistakes that break visual hierarchy and user experience.
+
+```javascript
+// Anti-Patterns Reference
+const antiPatterns = {
+  // Visual Design Mistakes
+  visualMistakes: [
+    "Overusing flashy gradients and blur effects",
+    "More than 4 font sizes or 3 font weights",
+    "Random spacing values (use 8-point grid!)",
+    "Pure gray/black shadows on colored backgrounds",
+    "Making all information the same visual weight"
+  ],
+
+  // UX Mistakes
+  uxMistakes: [
+    "Hiding key content behind banners or extra taps",
+    "Placing CTAs outside the thumb zone",
+    "Generic empty states with no guidance",
+    "Using sliders for frequent/precise data entry",
+    "Emphasizing labels over values"
+  ],
+
+  // Examples
+  examples: {
+    labelEmphasis: {
+      bad: { label: "SALES (big)", value: "591 (small)" },
+      good: { label: "Sales (small)", value: "591 (big)" }
+    },
+    shadowColor: {
+      bad: "box-shadow: 0 4px 24px rgba(0,0,0,0.3)",
+      good: "box-shadow: 0 4px 24px rgba(99,102,241,0.2)"
+    }
+  }
+};
+```
+
+## Summary
+
+The Mobile App UI/UX Design skill provides a comprehensive framework for creating professional mobile interfaces through its 5-step design process: understanding context, structuring with UX principles, applying visual design rules (typography, 60/30/10 color, 8-point grid spacing), designing for emotional impact using the Peak-End Rule, and polishing with micro-interactions. It includes industry-specific conventions for 9+ verticals, enabling designers to either follow established patterns for familiarity or intentionally break them to stand out.
+
+The skill integrates seamlessly with modern development workflows through React and Tailwind CSS implementation guidance. Key integration patterns include using Lucide React for iconography, Recharts for data visualization, and CSS transitions for micro-interactions. Whether designing a fitness app dashboard, crypto wallet, banking interface, or meditation app, this skill provides the specific conventions, emotional design principles, and practical implementation details needed to create interfaces that feel smooth, personal, and alive — turning basic features into premium experiences through intentional design choices.
+

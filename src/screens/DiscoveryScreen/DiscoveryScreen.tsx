@@ -25,7 +25,14 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
+  withSequence,
+  runOnJS,
 } from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
+import { PressableScale } from "@/src/components/ui/PressableScale";
+import { SPRING_SNAPPY, SPRING_DEFAULT, TIMING_FADE } from "@/src/utils/motionTokens";
+import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import {
   recorderOpenAtom,
   keyboardJournalOpenAtom,
@@ -125,6 +132,37 @@ interface PromptCardContentProps {
 const PromptCardContent = React.memo<PromptCardContentProps>(
   ({ selectedDate, onDatePress, prompt, onShufflePrompt, onOpenOptions }) => {
     const rotation = useSharedValue(0);
+    const reducedMotion = useReducedMotion();
+
+    // Cross-fade prompt text when it changes
+    const promptOpacity = useSharedValue<number>(1);
+    const promptTranslateY = useSharedValue<number>(0);
+    const [displayedPrompt, setDisplayedPrompt] = useState<string>(prompt);
+
+    const updatePromptAndAnimateIn = useCallback((newPrompt: string) => {
+      setDisplayedPrompt(newPrompt);
+      promptOpacity.value = withTiming(1, TIMING_FADE);
+      promptTranslateY.value = withSpring(0, SPRING_DEFAULT);
+    }, [promptOpacity, promptTranslateY]);
+
+    useEffect(() => {
+      if (reducedMotion) {
+        setDisplayedPrompt(prompt);
+        return;
+      }
+      // Fade out
+      promptOpacity.value = withTiming(0, TIMING_FADE, (finished) => {
+        if (finished) {
+          promptTranslateY.value = 8;
+          runOnJS(updatePromptAndAnimateIn)(prompt);
+        }
+      });
+    }, [prompt, reducedMotion, promptOpacity, promptTranslateY, updatePromptAndAnimateIn]);
+
+    const promptAnimStyle = useAnimatedStyle(() => ({
+      opacity: promptOpacity.value,
+      transform: [{ translateY: promptTranslateY.value }],
+    }));
 
     const formattedDate = useMemo(
       () => format(selectedDate, "MMMM d"),
@@ -152,7 +190,7 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
             onPress={onDatePress}
             className="flex-row items-center justify-center gap-1"
           >
-            <Text className="text-[#2E285A] opacity-75 font-bold ">
+            <Text className="text-theme-text-primary opacity-75 font-bold ">
               Journal · {formattedDate}
             </Text>
             <View className="flex-col items-center p-0 m-0">
@@ -181,9 +219,12 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
             </Pressable>
           </View>
         </View>
-        <Text className="mt-2.5 text-gray-900 text-4xl font-black leading-tight tracking-wide font-cormorantSemiBold">
-          {prompt}
-        </Text>
+        <Animated.Text
+          style={promptAnimStyle}
+          className="mt-2.5 text-gray-900 text-4xl font-black leading-tight tracking-wide font-cormorantSemiBold"
+        >
+          {displayedPrompt}
+        </Animated.Text>
       </Box>
     );
   }
@@ -294,7 +335,7 @@ function DiscoveryScreen() {
   const isLiquidGlass = isLiquidGlassAvailable();
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
+    <SafeAreaView className="flex-1 bg-theme-background-primary" edges={["top", "bottom"]}>
       <ScrollView
         contentContainerStyle={scrollContentStyle}
         showsVerticalScrollIndicator={false}
@@ -334,33 +375,37 @@ function DiscoveryScreen() {
             <View className="flex-row items-center justify-between px-[18px]">
               {!isLiquidGlass && (
                 <View className="flex-row gap-2">
-                  <TouchableOpacity
+                  <PressableScale
                     key="camera"
                     onPress={handleScanJournal}
-                    style={[CARD_SHADOW, { backgroundColor: '#FFFFFF' }]}
-                    className="w-[60px] h-[44px] rounded-full items-center justify-center"
-                    activeOpacity={0.85}
+                    scale={0.92}
+                    hapticStyle="light"
+                    style={[CARD_SHADOW, { backgroundColor: '#FFFFFF', borderRadius: 999, width: 60, height: 44, alignItems: 'center', justifyContent: 'center' }]}
+                    accessibilityRole="button"
+                    accessibilityLabel="Scan journal with camera"
                   >
                     <HugeiconsIcon
                       icon={Camera02Icon}
                       size={24}
                       color={BRAND.ink}
                     />
-                  </TouchableOpacity>
+                  </PressableScale>
 
-                  <TouchableOpacity
+                  <PressableScale
                     key="gallery"
                     onPress={handleScanJournal}
-                    style={[CARD_SHADOW, { backgroundColor: '#FFFFFF' }]}
-                    className="w-[60px] h-[44px] rounded-full items-center justify-center"
-                    activeOpacity={0.85}
+                    scale={0.92}
+                    hapticStyle="light"
+                    style={[CARD_SHADOW, { backgroundColor: '#FFFFFF', borderRadius: 999, width: 60, height: 44, alignItems: 'center', justifyContent: 'center' }]}
+                    accessibilityRole="button"
+                    accessibilityLabel="Scan journal from gallery"
                   >
                     <HugeiconsIcon
                       icon={Image02Icon}
                       size={24}
                       color={BRAND.ink}
                     />
-                  </TouchableOpacity>
+                  </PressableScale>
                 </View>
               )}
               {isLiquidGlass && (
@@ -389,12 +434,12 @@ function DiscoveryScreen() {
               />
 
               {!isLiquidGlass && (
-                <TouchableOpacity
+                <PressableScale
                   key="keyboard"
                   onPress={handleKeyboardPress}
-                  style={[CARD_SHADOW, { backgroundColor: SURFACE.card }]}
-                  className="w-[60px] h-[44px] rounded-full items-center justify-center"
-                  activeOpacity={0.85}
+                  scale={0.92}
+                  hapticStyle="light"
+                  style={[CARD_SHADOW, { backgroundColor: SURFACE.card, borderRadius: 999, width: 60, height: 44, alignItems: 'center', justifyContent: 'center' }]}
                   accessibilityRole="button"
                   accessibilityLabel="Open keyboard journal"
                 >
@@ -403,7 +448,7 @@ function DiscoveryScreen() {
                     size={24}
                     color={BRAND.ink}
                   />
-                </TouchableOpacity>
+                </PressableScale>
               )}
               {isLiquidGlass && (
                 <Host matchContents>
@@ -458,7 +503,7 @@ function DiscoveryScreen() {
           className="flex-1 h-full w-full justify-center items-center"
         >
           <Pressable
-            className="flex-1 bg-black/50 px-2 w-full justify-center items-center"
+            className="flex-1 px-2 w-full justify-center items-center"
             onPress={handleCloseCalendar}
           >
             <Pressable
@@ -512,31 +557,54 @@ interface CircleActionProps {
 
 const CircleAction = React.memo<CircleActionProps>(
   ({ size, bg, icon, elevation, onPress, accessibilityLabel }) => {
-    const buttonStyle = useMemo(
-      () => [
+    const reducedMotion = useReducedMotion();
+    const pressScale = useSharedValue<number>(1);
+
+    const buttonBaseStyle = useMemo(
+      () => ([
         {
           width: size,
           height: size,
           borderRadius: size / 2,
           backgroundColor: bg,
           zIndex: elevation ? 2 : 1,
+          alignItems: 'center' as const,
+          justifyContent: 'center' as const,
         },
         elevation ? ELEVATED_SHADOW : null,
-      ],
+      ]),
       [size, bg, elevation]
     );
 
+    const animatedStyle = useAnimatedStyle(() => ({
+      transform: [{ scale: pressScale.value }],
+    }));
+
+    const handlePressIn = useCallback(() => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      if (!reducedMotion) {
+        pressScale.value = withSpring(0.91, SPRING_SNAPPY);
+      }
+    }, [reducedMotion, pressScale]);
+
+    const handlePressOut = useCallback(() => {
+      if (!reducedMotion) {
+        pressScale.value = withSpring(1, SPRING_SNAPPY);
+      }
+    }, [reducedMotion, pressScale]);
+
     return (
-      <TouchableOpacity
-        activeOpacity={0.85}
+      <Pressable
         onPress={onPress}
-        style={buttonStyle}
-        className="items-center justify-center"
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
       >
-        {icon}
-      </TouchableOpacity>
+        <Animated.View style={[buttonBaseStyle, animatedStyle]}>
+          {icon}
+        </Animated.View>
+      </Pressable>
     );
   }
 );

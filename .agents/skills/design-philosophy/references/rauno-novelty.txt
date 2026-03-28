@@ -1,0 +1,90 @@
+Craft
+Novelty
+
+February 2026
+
+I first wrote about the relationship between frequency and novelty in 2023 for Invisible Details of Interaction Design. My working hypothesis was that the more commonly an user interface action is performed, the less rewarding or satisfying any novel visual or motion treatment on it becomes.
+
+In psychology, there's this phenomenon called semantic satiation in which repetition of a word or phrase causes it to temporarily lose meaning. I believe the same phenomenon occurs when exposed to extravagant animations or other visual flourishes in common use cases.
+
+Novelty is the equivalent of an exclamation mark. Akin to seasoning, you don't want too much of it. What kinds of interaction patterns does an application invent? How much complexity does the visual language present? Is the amount of novelty appropriate for a given context or detrimental?
+
+These aren't questions your users will likely be thinking about. But they will definitely be feeling the answers to those questions and subconsciously making decisions based on them.
+
+I had a hard time tying a bunch of meta thoughts together here so don't take these observations as prescriptions. Best consumed with a grain of salt.
+
+T
+o make sense of novelty, we can observe contrast in cinematography. Filmmakers use the "three color rule" to create pleasing visuals. It generally means that about 60% of the frame is the  primary color, about 30% is a  secondary color, and the remaining 10% is an  accent color.
+
+Still from Her (2013)
+
+How is this relevant? The remaining 10% can be thought of as the novelty color. It lifts the subject out from its background and makes you drawn to it. You can't use much of it for obvious reasons.
+
+A lot of movies will follow this rule. It's why you might notice blue and orange being used a lot. Blue creates a striking contrast against the color of human skin, emphasising the subject.
+
+Stills from Severance, Interstellar, Drive, and The Dark Knight
+
+F
+or software design, I could see a similar framework making sense: make 90% of the experience familiar, and 10% novel.
+
+A really good use case for increased novelty is onboarding because you generally only onboard a product once. Traditionally, software products take this as an opportunity to express their visual language in a memorable way. Think of it as the first impression of someone.
+
+For example, logging into the Devouring Details platform there's a subtle transition between the login and welcome screen 
+
+Now, this animation can only be experienced right after logging in. When you reload the page, the page shows up instantly without motion.
+
+Think of it as a special moment. Personally, I don't need to be novelly greeted "welcome" by a product every single time I return. It diminishes the novelty of the occasion. 1 One may even forget about it and be pleasantly surprised when logging in again after a while.
+
+By the way, this is how it is set up in Next.js. A cookie is set client side on log in and the response is rewritten 2 to an animated version of the product index page:
+
+if (
+  request.nextUrl.pathname === "/introduction" &&
+  request.cookies.get(COOKIE_ANIMATE_INTRO)?.value === "true"
+) {
+  const response = NextResponse.rewrite(
+    new URL("/introduction-animate", request.nextUrl)
+  );
+  response.cookies.set(COOKIE_ANIMATE_INTRO, "false");
+  return response;
+}
+
+Paco's website implements a similar strategy. There is a beautiful staggered animation when first loading the page , but navigating to another page and then back to the index page does not trigger this animation:
+
+The Home Screen on iOS is likely the first point of contact after setting up the device—a great moment to especially dial the novelty of animations up a notch with a subtle stagger effect 
+
+Importantly, returning to the Home Screen when already unlocked does not trigger this treatment.
+
+W
+e can observe the relationship between novelty and frequency through web design "vibe shifts". Remember purple, the color? It got watered down because almost everyone was using it, and our senses eventually developed a collective ick for it.
+
+Novelty is the contrast to sameness. And novelty works best as a contrast. It becomes overwhelming otherwise.
+
+Take this route transition for example —I don't want to navigate all of the pages on a given website this way. But for a microsite on interviews, it works as a beautiful contrast against the navigation of the otherwise static sibling pages:
+
+Websites like Stripe Press are great examples to call out here. These are special websites, intentionally more experimental and novel from the rest of their portfolio of pages.
+
+The novelty hits hard because most of the pages aren't such experiences. Contrast.
+
+Stripe Press features a 3D interface for books
+
+O
+kay, so what you're saying is that repetitive exposure diminishes novelty. But then would software products with new interaction patterns and visual complexity not be desirable?
+
+It gets tricky. Here's where I would introduce another variable—intent. What is the intent of someone using the product? And how much novelty are they willing to accept? 3
+
+Famously, The Browser Company built Arc into a saxophone, but found it challenging to transform into a piano—something anyone could play. 4 Why? Novelty tax.
+
+There’s this novelty tax that you get when you try a new product—not you guys, but the average person that has a job and they have stuff going on in their life and someone’s like “Hey, you should try this new thing Arc.” [...] “Okay so the tabs are over here and there are these things called Spaces and then there are Pin Tabs but they are different than Bookmarks…” People just couldn’t handle how much there was to learn that was new…
+
+The amount of novelty you can get away with depends on your ambition. Successful novel products are successful because their intended audience is receptive to, or even seeking, novelty. They are novel in the correct aspects for an audience to care. Such audiences tend to be smaller in scale, but more passionate about the product.
+
+Not Boring has found a group of people that value beauty, uniqueness, and game-feel.
+
+An app from Not Boring — !Weather
+
+They've built apps for "non-novel functions" that anyone can understand like capturing photos, building habits, setting timers, calculating numbers, and more. They are then uniquely novel for those who appreciate "beautiful apps for life's routines".
+
+My takeaway? Make most things familiar, do something unexpected.
+
+Next
+Designing Depth

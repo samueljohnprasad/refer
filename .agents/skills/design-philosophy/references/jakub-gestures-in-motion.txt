@@ -1,0 +1,212 @@
+Using gestures in Motion
+
+Gestures are an important aspect of user interfaces, they are what makes elements feel alive. The user performs an action and the interface responds appropriately. We know this concept very well from the physical world.
+
+Hover
+Tap
+Pan
+Drag
+Focus
+InView
+Gesture types
+
+We hover over buttons, tap links, drag cards and more. Motion extends React's basic event system with a simple set of gestures that make these interactions feel alive.
+
+
+
+
+To use gestures from Motion, we have to use the motion component. It supports hover, tap, pan, drag, focus and inView gestures.
+
+whileHover
+whileTap
+onPan
+whileDrag
+whileFocus
+whileInView
+
+Each of these gestures can trigger animations through a while- prop or be handled manually with event listeners. pan is an exception, as it doesn't have a while- prop.
+
+Hover
+
+Hover is the most obvious gesture and also one of the most used ones. whileHover detects when a pointer enters or leaves the element.
+
+Hover over the rectangle
+
+The great part about Motion is that you can easily use spring animations for any of these gestures, which is pretty difficult to do with CSS.
+
+<motion.div
+  whileHover={{ rotate: 180 }}
+  transition={{ type: "spring", duration: 0.8, bounce: 0 }}
+/>
+
+For simple effects like these, both CSS and Motion work well. I prefer Motion because I can use springs, which in certain scenarios create a more natural-looking motion.
+
+Create
+CSS
+Create
+Motion
+
+Hover over the buttons to see the difference between CSS and Motion
+
+Performance is also worth keeping in mind, but for effects that involve transform, clipPath or filter CSS and Motion behave almost identically.
+
+
+
+
+Even though Motion uses JavaScript, these animations still run on the compositor thread, just like CSS. I covered this a bit in my will-change in CSS article.
+
+
+
+
+In most cases, there's no meaningful performance difference. Sometimes Motion's performance is even better, because it handles independent transforms more efficiently than CSS variables.
+
+Tap
+
+The whileTap prop fires when a pointer or a keyboard key presses and releases on the same element.
+
+Tap or click the rectangle
+
+Tap automatically cancels if the pointer moves too far so it won't conflict with drags.
+
+<motion.div
+  whileTap={{ scale: 0.8 }}
+  transition={{ type: "spring", duration: 0.5, bounce: 0 }}
+/>
+
+It's also keyboard accessible. Pressing the return key will trigger onTapStart and whileTap. Releasing it fires onTap.
+
+Add to Cart
+CSS
+Add to Cart
+Motion
+
+Click on the buttons to see the difference between CSS and Motion
+
+Drag
+
+The drag gesture applies pointer movement directly to a component. Motion provides a lot of controls out of the box. To make a component draggable, you can simply add the drag prop to a motion element.
+
+Drag the rectangle around
+
+You can then add whileDrag and the property that you want to animate. In this example, I also added dragConstraints, so the element can't be dragged outside of its container.
+
+<motion.div
+  whileDrag={{ scale: 0.8 }}
+  drag
+  dragConstraints={constraintsRef}
+  transition={{ type: "spring", duration: 0.5, bounce: 0 }}
+/>
+
+The drag gesture is very flexible. The Motion docs cover many more use cases and configurations.
+
+Interfere
+11:24 AM
+Login to Interfere
+To protect your account, do not share this code. Interfere staff will never ask you to share it.
+LS
+Luke Shiels
+10:16 AM
+All-Hands Sync
+Invitation: All-Hands Sync @ Weekly from 9:30am to 9:45am on weekdays (EST) (Jakub Krehel)
+Apple
+9:41 AM
+Liquid Glass
+Apple introduces a delightful and elegant new software design.
+
+Drag items to the left or right to see the interaction.
+
+If you want to understand how I built this component I've recently written an article about drag gestures on the web, where I talk about it in depth.
+
+Pan
+
+The pan gesture recognizes when a pointer moves more than 3 pixels while pressed and ends when it's released.
+
+Click and hold on the rectangle and then drag your cursor away while holding
+
+Pan doesn't have an associated while- prop, so you'll need to use event handlers like onPan, onPanStart and onPanEnd.
+
+<motion.div
+  onPanStart={() => setIsPanning(true)}
+  onPanEnd={() => setIsPanning(false)}
+  animate={{ scale: isPanning ? 0.9 : 1 }}
+/>
+
+Pan is one of the less common gestures, but it's still worth mentioning. It's great for creating interactive components like sliders or scrollable areas.
+
+Volume
+50%
+Spring
+Easing
+
+A slider component like this is a place where it's also worth using springs over regular easing functions as they make the motion feel more natural and realistic.
+
+Focus
+
+The whileFocus prop fires when an element gains or loses focus. It follows the same logic as :focus-visible in CSS.
+
+Click on the container and press the Tab key to focus the rectangle
+
+This adds subtle visual feedback for keyboard navigation or accessibility flows.
+
+<motion.button
+  whileFocus={{ scale: 1.1 }}
+  transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+/>
+
+It is great for elements like buttons, input fields and other elements that you want to have a clear visual response when they are focused.
+
+Click on the container and press the Tab key to focus and cycle over the buttons
+
+Since you can animate almost any value, you can get very creative with implementing even more complex effects.
+
+Click on the container and press the Tab key to focus the input
+
+However, I'd recommend keeping focus animations subtle. Overly complex motion can feel distracting or even disorienting when navigating by keyboard.
+
+In view
+
+whileInView triggers when an element enters or exits the viewport.
+
+Scroll down to see the rectangle enter the viewport
+
+It is great for scroll-based reveals or progressive section entrances. You can also pair it with the initial prop to make the component animate from and to a specific state.
+
+<motion.div
+  initial={{ filter: "blur(8px)" }}
+  whileInView={{ scale: 1.1, rotate: 45, filter: "blur(0px)" }}
+  viewport={{ root: scrollRef, amount: 0.5 }}
+  transition={{ type: "spring", duration: 0.6, bounce: 0 }}
+/>
+
+In this example, the initial (unrevealed) blur value is 8px. Once the component enters the viewport, it animates to 0px. There are a lot of great examples and creative ways to use this in the Motion docs.
+
+Up
+Down
+
+Use the buttons to navigate between cards and see the shapes animate
+
+Conclusion
+
+A lot of the things covered here can be found in the Motion Documentation.
+
+This article is by no means supposed to just recite things that are written in the documentation, but instead point out that this is something you can do with Motion and show how I use the gestures in my work.
+
+
+
+
+Thanks to Matt Perry for providing feedback on this article.
+
+More
+
+If you have any questions you can reach me via email, see more of my work on X (Twitter) or subscribe to my newsletter below.
+
+Newsletter
+
+I share stuff that I'm working on, new posts and resources here.
+
+Email address
+Subscribe
+Previous
+Details That Make Interfaces Feel Better
+Next
+Drag Gestures on the Web

@@ -124,9 +124,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       >
         <Animated.View
           style={animatedStyle}
-          className={`bg-white rounded-2xl p-3 mb-2 border ${
-            isComplete ? "border-emerald-100/50" : "border-gray-50/50"
-          }`}
+          className="py-1"
         >
           <View className="flex-row items-center">
             <ChallengeIconBubble iconKey={challenge.icon} size="sm" />

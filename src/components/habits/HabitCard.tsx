@@ -138,8 +138,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
           {/* Checkbox */}
           <Pressable
             onPress={handleCheckboxPress}
-            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-            className="ml-3 relative"
+            className="ml-3 relative w-11 h-11 items-center justify-center"
           >
             <View
               className="w-7 h-7 rounded-full border-2 items-center justify-center z-10"
