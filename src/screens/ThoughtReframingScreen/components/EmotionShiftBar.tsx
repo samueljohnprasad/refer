@@ -1,8 +1,8 @@
-import React from 'react';
-import { View } from 'react-native';
-import { Text } from '@/components/ui/text';
-import type { EmotionRating } from '../types';
-import { EMOTION_OPTIONS, type EmotionOption } from '../data/emotions';
+import React from "react";
+import { View } from "react-native";
+import { Text } from "@/components/ui/text";
+import type { EmotionRating } from "../types";
+import { EMOTION_OPTIONS, type EmotionOption } from "../data/emotions";
 
 interface EmotionShiftBarProps {
   emotions: EmotionRating[];
@@ -14,83 +14,107 @@ interface EmotionShiftBarProps {
 export const EmotionShiftBar: React.FC<EmotionShiftBarProps> = React.memo(
   ({ emotions }) => {
     return (
-      <View className="gap-4">
+      <View className="gap-3">
         {emotions.map((emotion: EmotionRating) => {
           const option: EmotionOption | undefined = EMOTION_OPTIONS.find(
-            (e) => e.name === emotion.name
+            (e) => e.name === emotion.name,
           );
           const label: string = option?.label ?? emotion.name;
-          const emoji: string = option?.emoji ?? '😶';
-          const shift: number = emotion.initial_intensity - emotion.final_intensity;
+          const emoji: string = option?.emoji ?? "😶";
+          const shift: number =
+            emotion.initial_intensity - emotion.final_intensity;
           const isReduced: boolean = shift > 0;
           const isIncreased: boolean = shift < 0;
 
           return (
-            <View key={emotion.name} className="bg-white rounded-2xl p-4 border border-slate-100">
+            <View
+              key={emotion.name}
+              className="bg-white rounded-2xl p-4"
+              style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
+            >
               {/* Emotion label row */}
-              <View className="flex-row items-center justify-between mb-3">
+              <View className="flex-row items-center justify-between mb-4">
                 <View className="flex-row items-center">
-                  <Text className="text-lg mr-2">{emoji}</Text>
-                  <Text className="text-sm font-semibold text-slate-700">
+                  <Text className="text-xl mr-2">{emoji}</Text>
+                  <Text className="text-[15px] font-bold text-slate-700">
                     {label}
                   </Text>
                 </View>
                 <View
-                  className={`px-2 py-0.5 rounded-full ${
-                    isReduced
-                      ? 'bg-green-50'
+                  className="px-2.5 py-1 rounded-full"
+                  style={{
+                    backgroundColor: isReduced
+                      ? "#D1FAE5"
                       : isIncreased
-                        ? 'bg-red-50'
-                        : 'bg-slate-50'
-                  }`}
+                        ? "#FEE2E2"
+                        : "#F1F5F9",
+                  }}
                 >
                   <Text
-                    className={`text-xs font-bold ${
-                      isReduced
-                        ? 'text-green-600'
+                    className="text-xs font-extrabold"
+                    style={{
+                      color: isReduced
+                        ? "#047857"
                         : isIncreased
-                          ? 'text-red-600'
-                          : 'text-slate-400'
-                    }`}
+                          ? "#DC2626"
+                          : "#64748B",
+                    }}
                   >
-                    {isReduced ? `−${shift}` : isIncreased ? `+${Math.abs(shift)}` : 'No change'}
+                    {isReduced
+                      ? `−${shift}`
+                      : isIncreased
+                        ? `+${Math.abs(shift)}`
+                        : "No change"}
                   </Text>
                 </View>
               </View>
 
               {/* Before bar */}
-              <View className="mb-2">
-                <Text className="text-[13px] text-slate-400 font-bold tracking-tight mb-1">Before</Text>
-                <View className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <View className="mb-3">
+                <View className="flex-row items-center justify-between mb-1">
+                  <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
+                    Before
+                  </Text>
+                  <Text className="text-xs font-bold text-slate-500">
+                    {emotion.initial_intensity ?? 0}/10
+                  </Text>
+                </View>
+                <View className="h-3 bg-slate-100 rounded-full overflow-hidden">
                   <View
-                    className="h-full bg-red-300 rounded-full"
-                    style={{ width: `${(emotion.initial_intensity ?? 0) * 10}%` }}
+                    className="h-full bg-slate-400 rounded-full"
+                    style={{
+                      width: `${(emotion.initial_intensity ?? 0) * 10}%`,
+                    }}
                   />
                 </View>
-                <Text className="text-xs text-slate-500 text-right mt-0.5">
-                  {(emotion.initial_intensity ?? 0)}/10
-                </Text>
               </View>
 
               {/* After bar */}
               <View>
-                <Text className="text-[13px] text-slate-400 font-bold tracking-tight mb-1">After</Text>
-                <View className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                <View className="flex-row items-center justify-between mb-1">
+                  <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
+                    After
+                  </Text>
+                  <Text className="text-xs font-bold text-slate-500">
+                    {emotion.final_intensity ?? 0}/10
+                  </Text>
+                </View>
+                <View className="h-3 bg-slate-100 rounded-full overflow-hidden">
                   <View
-                    className="h-full bg-green-400 rounded-full"
-                    style={{ width: `${(emotion.final_intensity ?? 0) * 10}%` }}
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${(emotion.final_intensity ?? 0) * 10}%`,
+                      backgroundColor: isReduced ? "#22C55E" : "#94A3B8",
+                    }}
                   />
                 </View>
-                <Text className="text-xs text-slate-500 text-right mt-0.5">
-                  {(emotion.final_intensity ?? 0)}/10
-                </Text>
               </View>
             </View>
           );
         })}
       </View>
     );
-  }
+  },
 );
 
-EmotionShiftBar.displayName = 'EmotionShiftBar';
+EmotionShiftBar.displayName = "EmotionShiftBar";

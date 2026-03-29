@@ -1,9 +1,9 @@
-import React from 'react';
-import { View } from 'react-native';
-import { Text } from '@/components/ui/text';
-import { StepHeader } from '../components/StepHeader';
-import { StepNavigation } from '../components/StepNavigation';
-import { BulletListInput } from '../components/BulletListInput';
+import React from "react";
+import { View } from "react-native";
+import { Text } from "@/components/ui/text";
+import { StepHeader } from "../components/StepHeader";
+import { StepNavigation } from "../components/StepNavigation";
+import { BulletListInput } from "../components/BulletListInput";
 
 interface EvidenceForStepProps {
   items: string[];
@@ -17,7 +17,16 @@ interface EvidenceForStepProps {
 }
 
 export const EvidenceForStep: React.FC<EvidenceForStepProps> = React.memo(
-  ({ items, onAdd, onRemove, onNext, onBack, canGoBack, isValid, progress }) => {
+  ({
+    items,
+    onAdd,
+    onRemove,
+    onNext,
+    onBack,
+    canGoBack,
+    isValid,
+    progress,
+  }) => {
     return (
       <View className="flex-1">
         <StepHeader
@@ -38,8 +47,18 @@ export const EvidenceForStep: React.FC<EvidenceForStepProps> = React.memo(
           />
 
           {items.length === 0 && (
-            <View className="mt-4 bg-slate-50 rounded-2xl p-3">
-              <Text className="text-sm text-slate-400 text-center">
+            <View
+              className="mt-4 rounded-2xl p-3.5 flex-row items-start"
+              style={{
+                backgroundColor: "#FFF7ED",
+                borderWidth: 2,
+                borderColor: "#FED7AA",
+              }}
+            >
+              <View className="h-8 w-8 rounded-lg bg-orange-100 items-center justify-center mr-3 mt-0.5">
+                <Text className="text-base">🔍</Text>
+              </View>
+              <Text className="text-sm text-orange-800 flex-1 leading-relaxed font-medium">
                 It's okay if you can't find much evidence — that's a clue!
               </Text>
             </View>
@@ -51,11 +70,11 @@ export const EvidenceForStep: React.FC<EvidenceForStepProps> = React.memo(
           canGoNext={isValid}
           onBack={onBack}
           onNext={onNext}
-          nextLabel={items.length === 0 ? 'Skip' : 'Continue'}
+          nextLabel={items.length === 0 ? "Skip" : "Continue"}
         />
       </View>
     );
-  }
+  },
 );
 
-EvidenceForStep.displayName = 'EvidenceForStep';
+EvidenceForStep.displayName = "EvidenceForStep";

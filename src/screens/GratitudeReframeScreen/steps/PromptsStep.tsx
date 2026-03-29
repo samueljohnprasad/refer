@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { View, Pressable, ActivityIndicator, TextInput } from 'react-native';
-import { Text } from '@/components/ui/text';
-import { StepHeader } from '../../ThoughtReframingScreen/components/StepHeader';
-import { StepNavigation } from '../../ThoughtReframingScreen/components/StepNavigation';
-import type { AIGratitudePrompt } from '../hooks/useGratitudeAI';
+import React, { useState } from "react";
+import { View, Pressable, ActivityIndicator, TextInput } from "react-native";
+import { Text } from "@/components/ui/text";
+import { StepHeader } from "../../ThoughtReframingScreen/components/StepHeader";
+import { StepNavigation } from "../../ThoughtReframingScreen/components/StepNavigation";
+import type { AIGratitudePrompt } from "../hooks/useGratitudeAI";
 
 interface PromptsStepProps {
   selectedPrompt: string;
@@ -18,23 +18,23 @@ interface PromptsStepProps {
 }
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  moments: '✨',
-  people: '👥',
-  health: '💪',
-  environment: '🌿',
-  resilience: '🛡️',
-  self: '🪞',
-  safety: '🏠',
-  kindness: '💛',
-  memory: '📸',
-  comfort: '☕',
-  perspective: '🔄',
-  strength: '💎',
-  support: '🤝',
-  values: '⭐',
-  patience: '🕊️',
-  progress: '📈',
-  peace: '🧘',
+  moments: "✨",
+  people: "👥",
+  health: "💪",
+  environment: "🌿",
+  resilience: "🛡️",
+  self: "🪞",
+  safety: "🏠",
+  kindness: "💛",
+  memory: "📸",
+  comfort: "☕",
+  perspective: "🔄",
+  strength: "💎",
+  support: "🤝",
+  values: "⭐",
+  patience: "🕊️",
+  progress: "📈",
+  peace: "🧘",
 };
 
 export const PromptsStep: React.FC<PromptsStepProps> = React.memo(
@@ -50,7 +50,7 @@ export const PromptsStep: React.FC<PromptsStepProps> = React.memo(
     progress,
   }) => {
     const [isCustomMode, setIsCustomMode] = useState<boolean>(false);
-    const [customPrompt, setCustomPrompt] = useState<string>('');
+    const [customPrompt, setCustomPrompt] = useState<string>("");
 
     const handleSelectPrompt = (text: string): void => {
       setIsCustomMode(false);
@@ -82,21 +82,23 @@ export const PromptsStep: React.FC<PromptsStepProps> = React.memo(
         {/* AI loading state */}
         {isGenerating && (
           <View className="flex-row items-center mb-4">
-            <ActivityIndicator size="small" color="#94A3B8" />
+            <ActivityIndicator
+              size="small"
+              color="#94A3B8"
+            />
             <Text className="text-[11px] text-slate-400 ml-2 uppercase tracking-wider">
               Generating prompts…
             </Text>
           </View>
         )}
 
-        {/* Prompt cards */}
+        {/* Prompt cards — Duolingo quiz-style selectable options */}
         {!isGenerating && aiPrompts.length > 0 && (
           <View className="mb-4">
             {aiPrompts.map((prompt: AIGratitudePrompt, index: number) => {
               const isSelected: boolean =
                 !isCustomMode && selectedPrompt === prompt.text;
-              const emoji: string =
-                CATEGORY_EMOJI[prompt.category] ?? '💡';
+              const emoji: string = CATEGORY_EMOJI[prompt.category] ?? "💡";
 
               return (
                 <Pressable
@@ -105,21 +107,36 @@ export const PromptsStep: React.FC<PromptsStepProps> = React.memo(
                   accessibilityRole="button"
                   accessibilityLabel={prompt.text}
                   accessibilityState={{ selected: isSelected }}
-                  className={`rounded-2xl p-4 mb-3 border ${
-                    isSelected
-                      ? 'bg-slate-900 border-slate-900'
-                      : 'bg-white border-slate-100 active:bg-slate-50'
-                  }`}
+                  className="rounded-2xl p-4 mb-3 active:opacity-80"
+                  style={{
+                    borderWidth: 2,
+                    borderColor: isSelected ? "#58CC02" : "#E2E8F0",
+                    backgroundColor: isSelected ? "#F0FFF0" : "#FFFFFF",
+                    borderBottomWidth: isSelected ? 2 : 4,
+                    borderBottomColor: isSelected ? "#58CC02" : "#CBD5E1",
+                    minHeight: 48,
+                  }}
                 >
                   <View className="flex-row items-start">
-                    <Text className="text-lg mr-3 mt-0.5">{emoji}</Text>
+                    <View className="h-9 w-9 rounded-xl bg-slate-100 items-center justify-center mr-3">
+                      <Text className="text-lg">{emoji}</Text>
+                    </View>
                     <Text
-                      className={`flex-1 text-[15px] leading-snug font-medium ${
-                        isSelected ? 'text-white' : 'text-slate-700'
-                      }`}
+                      className={`flex-1 text-[15px] leading-snug font-bold pt-1 ${isSelected ? "text-green-800" : "text-slate-700"
+                        }`}
                     >
                       {prompt.text}
                     </Text>
+                    {isSelected && (
+                      <View
+                        className="h-6 w-6 rounded-full items-center justify-center ml-2"
+                        style={{ backgroundColor: "#58CC02" }}
+                      >
+                        <Text className="text-white text-xs font-extrabold">
+                          ✓
+                        </Text>
+                      </View>
+                    )}
                   </View>
                 </Pressable>
               );
@@ -133,18 +150,20 @@ export const PromptsStep: React.FC<PromptsStepProps> = React.memo(
             onPress={handleCustomToggle}
             accessibilityRole="button"
             accessibilityLabel="Write your own prompt"
-            className={`rounded-2xl p-4 border ${
-              isCustomMode
-                ? 'border-slate-900 bg-slate-50'
-                : 'border-dashed border-slate-200 active:bg-slate-50'
-            }`}
+            className="rounded-2xl p-4 active:opacity-80"
+            style={{
+              borderWidth: 2,
+              borderStyle: isCustomMode ? "solid" : "dashed",
+              borderColor: isCustomMode ? "#58CC02" : "#CBD5E1",
+              backgroundColor: isCustomMode ? "#F0FFF0" : "#FFFFFF",
+              minHeight: 48,
+            }}
           >
             <Text
-              className={`text-sm font-medium ${
-                isCustomMode ? 'text-slate-900' : 'text-slate-400'
-              }`}
+              className={`text-[15px] font-bold ${isCustomMode ? "text-green-800" : "text-slate-400"
+                }`}
             >
-              ✏️  Write your own prompt
+              ✏️ Write your own prompt
             </Text>
           </Pressable>
 
@@ -155,8 +174,8 @@ export const PromptsStep: React.FC<PromptsStepProps> = React.memo(
               placeholder="e.g., What made me laugh this week?"
               placeholderTextColor="#94A3B8"
               multiline
-              className="bg-white border border-slate-100 rounded-2xl p-4 mt-3 text-base text-slate-700"
-              style={{ minHeight: 80 }}
+              className="bg-white rounded-2xl p-4 mt-3 text-base text-slate-700"
+              style={{ minHeight: 80, borderWidth: 2, borderColor: "#E2E8F0" }}
               maxLength={200}
               autoFocus
             />
@@ -171,7 +190,7 @@ export const PromptsStep: React.FC<PromptsStepProps> = React.memo(
         />
       </View>
     );
-  }
+  },
 );
 
-PromptsStep.displayName = 'PromptsStep';
+PromptsStep.displayName = "PromptsStep";
