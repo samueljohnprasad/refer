@@ -35,6 +35,9 @@ import { LevelProvider } from "@/src/context/LevelContext";
 import { AchievementProvider } from "@/src/context/AchievementContext";
 import { RewardsProvider } from "@/src/context/RewardsContext";
 import { ChallengesProvider } from "@/src/context/ChallengesContext";
+import { router as expoRouter } from "expo-router";
+import { trackNotificationOpened, trackNotificationReceived } from "@/src/utils/notificationConversionTracker";
+import { usePushNotificationSetup } from "@/src/hooks/data/usePushNotificationSetup";
 
 Sentry.init({
   dsn: "https://82fc883710be27dc3b89702dd3b266ae@o4510522682900480.ingest.us.sentry.io/4510522687029248",
@@ -114,6 +117,45 @@ export default Sentry.wrap(function RootLayout() {
     }
   }, [loaded]);
 
+  // Handle push notification taps — deep link to appropriate screen
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const data = response.notification.request.content.data;
+        if (!data?.notification_log_id) return;
+
+        // Track the open
+        trackNotificationOpened({
+          notification_log_id: data.notification_log_id as string,
+        });
+        trackNotificationReceived({
+          notification_log_id: data.notification_log_id as string,
+          category: (data.category as string) || "",
+          template_id: (data.template_id as string) || "",
+        });
+
+        // Deep link based on notification category
+        const category = data.category as string;
+        switch (category) {
+          case "mood_check_in":
+            expoRouter.push("/(tabs)/mood" as any);
+            break;
+          case "habit_reminder":
+            expoRouter.push("/(tabs)/habits" as any);
+            break;
+          case "weekly_insight":
+            expoRouter.push("/(tabs)/insights" as any);
+            break;
+          default:
+            expoRouter.push("/(tabs)/journal" as any);
+            break;
+        }
+      }
+    );
+
+    return () => subscription.remove();
+  }, []);
+
   return <RootLayoutNav />;
 });
 
@@ -131,6 +173,7 @@ function RootLayoutNav() {
       >
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
+            <NotificationIntegration />
             <XPProvider>
               <LevelProvider>
                 <RewardsProvider>
@@ -181,4 +224,8 @@ function RootLayoutNav() {
       </PostHogProvider>
     </SuspensLoader>
   );
+}
+function NotificationIntegration() {
+  usePushNotificationSetup();
+  return null;
 }

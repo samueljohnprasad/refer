@@ -131,6 +131,17 @@ export default React.memo(function SettingsScreen() {
               }}
             />
             <SettingsItem
+              icon={ShieldUserIcon}
+              iconColor="#3B82F6"
+              iconBgColor="#DBEAFE"
+              title="Notification Settings"
+              subtitle="Control alerts and quiet hours"
+              onPress={() => {
+                Haptics.selectionAsync();
+                router.push("/tabs/screens/notification-preferences");
+              }}
+            />
+            <SettingsItem
               icon={UserIcon}
               iconColor="#EF4444"
               iconBgColor="#FECACA"

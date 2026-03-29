@@ -61,6 +61,47 @@ export type Database = {
           },
         ]
       }
+      bandit_arm_stats: {
+        Row: {
+          alpha: number
+          beta: number
+          id: string
+          last_updated: string | null
+          template_id: string
+          total_opened: number
+          total_sent: number
+          user_segment: string
+        }
+        Insert: {
+          alpha?: number
+          beta?: number
+          id?: string
+          last_updated?: string | null
+          template_id: string
+          total_opened?: number
+          total_sent?: number
+          user_segment: string
+        }
+        Update: {
+          alpha?: number
+          beta?: number
+          id?: string
+          last_updated?: string | null
+          template_id?: string
+          total_opened?: number
+          total_sent?: number
+          user_segment?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bandit_arm_stats_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "notification_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calorie_entries: {
         Row: {
           created_at: string
@@ -224,6 +265,8 @@ export type Database = {
           initial_intensity: number
           selected_date: string
           selected_prompt: string
+          status: string
+          updated_at: string
           user_id: string
         }
         Insert: {
@@ -236,6 +279,8 @@ export type Database = {
           initial_intensity: number
           selected_date?: string
           selected_prompt: string
+          status?: string
+          updated_at?: string
           user_id: string
         }
         Update: {
@@ -248,6 +293,8 @@ export type Database = {
           initial_intensity?: number
           selected_date?: string
           selected_prompt?: string
+          status?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -522,6 +569,102 @@ export type Database = {
           },
         ]
       }
+      notification_log: {
+        Row: {
+          body: string
+          category: string
+          converted_at: string | null
+          delivery_status: string | null
+          expo_ticket_id: string | null
+          id: string
+          metadata: Json | null
+          opened_at: string | null
+          sent_at: string | null
+          template_id: string | null
+          title: string
+          user_id: string
+          user_segment: string | null
+        }
+        Insert: {
+          body: string
+          category: string
+          converted_at?: string | null
+          delivery_status?: string | null
+          expo_ticket_id?: string | null
+          id?: string
+          metadata?: Json | null
+          opened_at?: string | null
+          sent_at?: string | null
+          template_id?: string | null
+          title: string
+          user_id: string
+          user_segment?: string | null
+        }
+        Update: {
+          body?: string
+          category?: string
+          converted_at?: string | null
+          delivery_status?: string | null
+          expo_ticket_id?: string | null
+          id?: string
+          metadata?: Json | null
+          opened_at?: string | null
+          sent_at?: string | null
+          template_id?: string | null
+          title?: string
+          user_id?: string
+          user_segment?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_log_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "notification_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_log_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_templates: {
+        Row: {
+          body_template: string
+          category: string
+          created_at: string | null
+          id: string
+          is_active: boolean
+          min_segment: string | null
+          title_template: string
+          updated_at: string | null
+        }
+        Insert: {
+          body_template: string
+          category: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean
+          min_segment?: string | null
+          title_template: string
+          updated_at?: string | null
+        }
+        Update: {
+          body_template?: string
+          category?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean
+          min_segment?: string | null
+          title_template?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           age_range: Database["public"]["Enums"]["age_range_enum"] | null
@@ -578,6 +721,44 @@ export type Database = {
           trial_ends_at?: string | null
         }
         Relationships: []
+      }
+      push_tokens: {
+        Row: {
+          created_at: string | null
+          expo_push_token: string
+          id: string
+          is_valid: boolean
+          platform: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expo_push_token: string
+          id?: string
+          is_valid?: boolean
+          platform: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expo_push_token?: string
+          id?: string
+          is_valid?: boolean
+          platform?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_tokens_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       support_messages: {
         Row: {
@@ -655,6 +836,57 @@ export type Database = {
           id?: string
           intensity?: number
           is_true?: string | null
+          selected_date?: string
+          situation?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      thought_reframing_entries: {
+        Row: {
+          automatic_thought: string
+          balanced_thought: string | null
+          cognitive_distortions: Json | null
+          completed: boolean | null
+          created_at: string
+          emotions: Json | null
+          evidence_against: Json | null
+          evidence_for: Json | null
+          id: string
+          selected_date: string
+          situation: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          automatic_thought: string
+          balanced_thought?: string | null
+          cognitive_distortions?: Json | null
+          completed?: boolean | null
+          created_at?: string
+          emotions?: Json | null
+          evidence_against?: Json | null
+          evidence_for?: Json | null
+          id?: string
+          selected_date?: string
+          situation: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          automatic_thought?: string
+          balanced_thought?: string | null
+          cognitive_distortions?: Json | null
+          completed?: boolean | null
+          created_at?: string
+          emotions?: Json | null
+          evidence_against?: Json | null
+          evidence_for?: Json | null
+          id?: string
           selected_date?: string
           situation?: string
           status?: string
@@ -742,6 +974,56 @@ export type Database = {
           },
         ]
       }
+      user_notification_settings: {
+        Row: {
+          achievement_reminders: boolean | null
+          created_at: string | null
+          habit_reminders: boolean | null
+          max_per_day: number | null
+          mood_reminders: boolean | null
+          push_enabled: boolean
+          quiet_hours_end: number | null
+          quiet_hours_start: number | null
+          streak_reminders: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          achievement_reminders?: boolean | null
+          created_at?: string | null
+          habit_reminders?: boolean | null
+          max_per_day?: number | null
+          mood_reminders?: boolean | null
+          push_enabled?: boolean
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
+          streak_reminders?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          achievement_reminders?: boolean | null
+          created_at?: string | null
+          habit_reminders?: boolean | null
+          max_per_day?: number | null
+          mood_reminders?: boolean | null
+          push_enabled?: boolean
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
+          streak_reminders?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notification_settings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_preferences: {
         Row: {
           created_at: string
@@ -801,6 +1083,41 @@ export type Database = {
             foreignKeyName: "user_rewards_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_send_times: {
+        Row: {
+          computed_at: string | null
+          confidence: number | null
+          data_points: number | null
+          optimal_hour: number
+          optimal_minute: number
+          user_id: string
+        }
+        Insert: {
+          computed_at?: string | null
+          confidence?: number | null
+          data_points?: number | null
+          optimal_hour?: number
+          optimal_minute?: number
+          user_id: string
+        }
+        Update: {
+          computed_at?: string | null
+          confidence?: number | null
+          data_points?: number | null
+          optimal_hour?: number
+          optimal_minute?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_send_times_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },

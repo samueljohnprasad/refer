@@ -10,6 +10,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { WifiOffIcon, ReloadIcon } from "@hugeicons/core-free-icons";
+import { registerPushToken, unregisterPushToken } from "../utils/pushTokenRegistration";
 
 interface AuthContextType {
   user: User | null;
@@ -24,7 +25,7 @@ const AuthContext = createContext<AuthContextType>({
   session: null,
   loading: true,
   isSigningOut: false,
-  signOut: async () => {},
+  signOut: async () => { },
 });
 
 export const useAuth = (): AuthContextType => {
@@ -137,6 +138,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Show success toast when user signs in (navigation handled by signin screen)
       if (event === "SIGNED_IN" && session?.user) {
+        // Register push token for remote notifications
+        registerPushToken(session.user.id).catch(console.error);
+
         toast.show({
           placement: "bottom right",
           render: ({ id }) => (
@@ -162,7 +166,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (url && url.includes("access_token")) {
         try {
           await createSessionFromUrl(url);
-        } catch (error) {}
+        } catch (error) { }
       }
     };
 
@@ -193,6 +197,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsSigningOut(true);
       const response = await supabase.auth.signOut();
       if (response.error) throw response.error;
+      // Invalidate push token before clearing session
+      if (user?.id) {
+        await unregisterPushToken(user.id).catch(console.error);
+      }
       setSession(null);
       setUser(null);
       await AsyncStorage.clear();
