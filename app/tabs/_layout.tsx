@@ -128,6 +128,16 @@ export default function AppLayout() {
           animation: "slide_from_right",
         }}
       />
+      <Stack.Screen
+        name="screens/gratitude-reframe"
+        options={{
+          headerShown: true,
+          title: "Gratitude Reframe",
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }
