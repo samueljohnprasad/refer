@@ -60,7 +60,7 @@ export const EmotionShiftBar: React.FC<EmotionShiftBarProps> = React.memo(
 
               {/* Before bar */}
               <View className="mb-2">
-                <Text className="text-xs text-slate-400 mb-1">Before</Text>
+                <Text className="text-[13px] text-slate-400 font-bold tracking-tight mb-1">Before</Text>
                 <View className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <View
                     className="h-full bg-red-300 rounded-full"
@@ -74,7 +74,7 @@ export const EmotionShiftBar: React.FC<EmotionShiftBarProps> = React.memo(
 
               {/* After bar */}
               <View>
-                <Text className="text-xs text-slate-400 mb-1">After</Text>
+                <Text className="text-[13px] text-slate-400 font-bold tracking-tight mb-1">After</Text>
                 <View className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <View
                     className="h-full bg-green-400 rounded-full"

@@ -22,8 +22,8 @@ export const StepHeader: React.FC<StepHeaderProps> = React.memo(
               style={{ width: `${Math.round(progress * 100)}%` }}
             />
           </View>
-          <Text className="text-[11px] text-slate-400 font-medium ml-3 tracking-wider uppercase">
-            {stepNumber} of {totalSteps}
+          <Text className="text-[13px] text-slate-400 font-bold ml-3 tracking-tight">
+            Step {stepNumber} of {totalSteps}
           </Text>
         </View>
 

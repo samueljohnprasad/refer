@@ -110,16 +110,16 @@ const GratitudeReframeScreen: React.FC = () => {
     }
     Alert.alert(
       'Leave exercise?',
-      'Your progress has been saved automatically. You can resume later from "My Log".',
+      'Your progress is being saved automatically. You can resume later from "My Log".',
       [
-        { text: 'Keep going', style: 'cancel' },
-        {
-          text: 'Exit',
-          onPress: (): void => {
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Save & Exit', 
+          style: 'destructive',
+          onPress: () => {
             clearPrompts();
-            reset();
             router.back();
-          },
+          }
         },
       ]
     );
@@ -280,7 +280,7 @@ const GratitudeReframeScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8FAFC]" edges={['top', 'bottom']}>
+    <SafeAreaView className="flex-1 bg-emerald-50/30" edges={['top', 'bottom']}>
       <ScrollView
         contentContainerClassName="flex-grow px-5 pb-6"
         showsVerticalScrollIndicator={false}

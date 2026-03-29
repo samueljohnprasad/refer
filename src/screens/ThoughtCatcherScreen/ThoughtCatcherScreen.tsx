@@ -27,12 +27,12 @@ export default function ThoughtCatcherScreen() {
 
   const handleClose = useCallback(() => {
     Alert.alert(
-      'Discard entry?',
-      'You have unsaved progress. Are you sure you want to leave?',
+      'Leave exercise?',
+      'If you leave now, your progress on this step may not be saved. You can resume later from "My Log".',
       [
-        { text: 'Keep going', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Leave',
+          text: 'Save & Exit',
           style: 'destructive',
           onPress: () => {
             reset();
@@ -119,7 +119,7 @@ export default function ThoughtCatcherScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8FAFC]" edges={['top', 'bottom']}>
+    <SafeAreaView className="flex-1 bg-blue-50/20" edges={['top', 'bottom']}>
       {/* Loading Overlay */}
       {isSavingCatcher && (
         <View className="absolute inset-0 z-50 items-center justify-center bg-white/50">

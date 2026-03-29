@@ -126,9 +126,9 @@ function formatStatus(status: string): { label: string; isComplete: boolean; col
   if (status === 'checker_completed' || status === 'completed' || status === 'summary') {
     return { label: 'Completed', isComplete: true, colorClass: 'text-emerald-700', bgClass: 'bg-emerald-100' };
   } else if (status === 'catcher_completed') {
-    return { label: 'Resume Checker', isComplete: false, colorClass: 'text-amber-700', bgClass: 'bg-amber-100' };
+    return { label: 'Ready to Reframe', isComplete: false, colorClass: 'text-amber-700', bgClass: 'bg-amber-100' };
   }
-  return { label: 'In Progress', isComplete: false, colorClass: 'text-slate-700', bgClass: 'bg-slate-200' };
+  return { label: 'Resume Session', isComplete: false, colorClass: 'text-slate-700', bgClass: 'bg-slate-200' };
 }
 
 function LogCard({ item, onPress }: { item: HistoryLogItem; onPress: (item: HistoryLogItem) => void }): React.JSX.Element {
@@ -165,10 +165,10 @@ function LogCard({ item, onPress }: { item: HistoryLogItem; onPress: (item: Hist
       {/* Content */}
       <View className="flex-1 py-1">
         <View className="flex-row items-center justify-between mb-1">
-          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <Text className="text-[13px] font-bold text-slate-400 tracking-tight">
             {typeLabel}
           </Text>
-          <Text className="text-xs text-slate-400">
+          <Text className="text-[13px] text-slate-400">
             {format(new Date(item.date), 'MMM d, h:mm a')}
           </Text>
         </View>

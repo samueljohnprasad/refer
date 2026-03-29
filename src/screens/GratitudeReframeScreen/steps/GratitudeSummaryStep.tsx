@@ -21,7 +21,7 @@ interface SectionProps {
 
 const Section: React.FC<SectionProps> = ({ label, children }) => (
   <View className="mb-7">
-    <Text className="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-3">
+    <Text className="text-[13px] font-bold text-slate-400 tracking-tight mb-3">
       {label}
     </Text>
     {children}
@@ -86,7 +86,7 @@ export const GratitudeSummaryStep: React.FC<GratitudeSummaryStepProps> = React.m
 
               {/* Visual bar */}
               <View className="flex-row items-center gap-2">
-                <Text className="text-[11px] text-slate-300 w-10">Before</Text>
+                <Text className="text-[13px] text-slate-400 font-bold tracking-tight w-12">Before</Text>
                 <View className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                   <View
                     className="h-full bg-slate-400 rounded-full"
@@ -98,7 +98,7 @@ export const GratitudeSummaryStep: React.FC<GratitudeSummaryStepProps> = React.m
                 </Text>
               </View>
               <View className="flex-row items-center gap-2 mt-2">
-                <Text className="text-[11px] text-slate-300 w-10">After</Text>
+                <Text className="text-[13px] text-slate-400 font-bold tracking-tight w-12">After</Text>
                 <View className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                   <View
                     className={`h-full rounded-full ${

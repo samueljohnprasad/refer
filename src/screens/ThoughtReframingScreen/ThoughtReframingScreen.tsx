@@ -140,16 +140,17 @@ const ThoughtReframingScreen: React.FC = () => {
     // unless the user prefers "silent" exit. Let's keep it but mention it was saved.
     Alert.alert(
       'Leave exercise?',
-      'Your progress has been saved automatically. You can resume later from "My Log".',
+      'Your progress is being saved automatically. You can resume later from "My Log".',
       [
-        { text: 'Keep going', style: 'cancel' },
-        {
-          text: 'Exit',
-          onPress: (): void => {
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Save & Exit', 
+          style: 'destructive',
+          onPress: () => {
             clearSuggestions();
             reset();
             router.back();
-          },
+          }
         },
       ]
     );
@@ -390,7 +391,7 @@ const ThoughtReframingScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+    <SafeAreaView className="flex-1 bg-indigo-50/30" edges={['top', 'bottom']}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}

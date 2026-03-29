@@ -23,7 +23,7 @@ interface SectionProps {
 
 const Section: React.FC<SectionProps> = ({ label, children }) => (
   <View className="mb-7">
-    <Text className="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-3">
+    <Text className="text-[13px] font-bold text-slate-400 tracking-tight mb-3">
       {label}
     </Text>
     {children}
@@ -70,14 +70,14 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
         {/* Thought shift */}
         <Section label="Thought shift">
           <View className="mb-3">
-            <Text className="text-[11px] text-slate-300 uppercase tracking-wider mb-1">Before</Text>
+            <Text className="text-[13px] text-slate-400 font-bold tracking-tight mb-1">Before</Text>
             <Text className="text-sm text-slate-500 italic leading-relaxed">
               "{formState.automaticThought}"
             </Text>
           </View>
           <View className="h-px bg-slate-100 mb-3" />
           <View>
-            <Text className="text-[11px] text-slate-300 uppercase tracking-wider mb-1">After</Text>
+            <Text className="text-[13px] text-slate-400 font-bold tracking-tight mb-1">After</Text>
             <Text className="text-sm text-slate-700 leading-relaxed">
               "{formState.balancedThought}"
             </Text>
@@ -89,7 +89,7 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
           <Section label="Evidence">
             {formState.evidenceFor.length > 0 && (
               <View className="mb-4">
-                <Text className="text-[11px] text-slate-300 uppercase tracking-wider mb-2">
+                <Text className="text-[13px] text-slate-400 font-bold tracking-tight mb-2">
                   Supporting
                 </Text>
                 {formState.evidenceFor.map((item: string, i: number) => (
@@ -102,7 +102,7 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
             )}
             {formState.evidenceAgainst.length > 0 && (
               <View>
-                <Text className="text-[11px] text-slate-300 uppercase tracking-wider mb-2">
+                <Text className="text-[13px] text-slate-400 font-bold tracking-tight mb-2">
                   Against
                 </Text>
                 {formState.evidenceAgainst.map((item: string, i: number) => (

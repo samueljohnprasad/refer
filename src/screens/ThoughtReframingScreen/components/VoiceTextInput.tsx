@@ -98,7 +98,7 @@ export const VoiceTextInput: React.FC<VoiceTextInputProps> = React.memo(
             {isTranscribing && (
               <View className="mr-3 flex-row items-center bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
                 <ActivityIndicator size="small" color="#3B82F6" />
-                <Text className="text-[10px] font-bold text-slate-400 ml-2 uppercase tracking-wider">
+                <Text className="text-[13px] font-bold text-slate-400 ml-2 tracking-tight">
                   Transcribing...
                 </Text>
               </View>
