@@ -118,6 +118,41 @@ export type Database = {
         }
         Relationships: []
       }
+      coin_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string | null
+          id: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          created_at?: string | null
+          id?: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string | null
+          id?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coin_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_moods: {
         Row: {
           day: string
@@ -175,6 +210,45 @@ export type Database = {
           Phone?: string | null
           Providers?: string | null
           UID?: string | null
+        }
+        Relationships: []
+      }
+      gratitude_entries: {
+        Row: {
+          completed: boolean
+          created_at: string | null
+          current_mood: string
+          final_intensity: number
+          gratitude_entries: Json
+          id: string
+          initial_intensity: number
+          selected_date: string
+          selected_prompt: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string | null
+          current_mood: string
+          final_intensity: number
+          gratitude_entries?: Json
+          id?: string
+          initial_intensity: number
+          selected_date?: string
+          selected_prompt: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string | null
+          current_mood?: string
+          final_intensity?: number
+          gratitude_entries?: Json
+          id?: string
+          initial_intensity?: number
+          selected_date?: string
+          selected_prompt?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -547,6 +621,127 @@ export type Database = {
         }
         Relationships: []
       }
+      thought_catcher_entries: {
+        Row: {
+          automatic_thought: string
+          balanced_thought: string | null
+          created_at: string
+          id: string
+          intensity: number
+          is_true: string | null
+          selected_date: string
+          situation: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          automatic_thought: string
+          balanced_thought?: string | null
+          created_at?: string
+          id?: string
+          intensity: number
+          is_true?: string | null
+          selected_date: string
+          situation: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          automatic_thought?: string
+          balanced_thought?: string | null
+          created_at?: string
+          id?: string
+          intensity?: number
+          is_true?: string | null
+          selected_date?: string
+          situation?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          id: string
+          unlocked_at: string | null
+          user_id: string
+          xp_awarded: number
+        }
+        Insert: {
+          achievement_id: string
+          id?: string
+          unlocked_at?: string | null
+          user_id: string
+          xp_awarded?: number
+        }
+        Update: {
+          achievement_id?: string
+          id?: string
+          unlocked_at?: string | null
+          user_id?: string
+          xp_awarded?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_challenge_progress: {
+        Row: {
+          challenge_id: string
+          challenge_type: string
+          completed: boolean
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          period_start: string
+          progress: number
+          target: number
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          challenge_type: string
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          period_start: string
+          progress?: number
+          target: number
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          challenge_type?: string
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          period_start?: string
+          progress?: number
+          target?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenge_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_preferences: {
         Row: {
           created_at: string
@@ -572,6 +767,70 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_rewards: {
+        Row: {
+          id: string
+          reward_id: string
+          source: string | null
+          unlocked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          reward_id: string
+          source?: string | null
+          unlocked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          reward_id?: string
+          source?: string | null
+          unlocked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_rewards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_wallet: {
+        Row: {
+          coins: number
+          gems: number
+          total_coins_earned: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          coins?: number
+          gems?: number
+          total_coins_earned?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          coins?: number
+          gems?: number
+          total_coins_earned?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_wallet_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "profiles"
@@ -657,7 +916,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_old_challenges: { Args: never; Returns: undefined }
     }
     Enums: {
       age_range_enum: "18_24" | "25_34" | "35_44" | "45_54" | "55_64" | "65+"

@@ -67,6 +67,9 @@ const formReducer = (
     case 'SET_FINAL_MOOD_INTENSITY':
       return { ...state, finalMoodIntensity: action.payload };
 
+    case 'SET_INITIAL_DATA':
+      return { ...action.payload };
+
     case 'RESET':
       return INITIAL_FORM_STATE;
 
@@ -113,12 +116,15 @@ export interface UseGratitudeFlowReturn {
 }
 
 // ─── Hook ───────────────────────────────────────────────────────────
-export const useGratitudeFlow = (): UseGratitudeFlowReturn => {
-  const [formState, dispatch] = useReducer(formReducer, INITIAL_FORM_STATE);
+export const useGratitudeFlow = (
+  initialData?: GratitudeFormState,
+  initialStep?: GratitudeStep
+): UseGratitudeFlowReturn => {
+  const [formState, dispatch] = useReducer(formReducer, initialData || INITIAL_FORM_STATE);
   const [stepIndex, setStepIndex] = useReducer(
     (_prev: number, next: number) =>
       Math.max(0, Math.min(next, STEP_ORDER.length - 1)),
-    0
+    initialStep ? STEP_ORDER.indexOf(initialStep) : 0
   );
 
   const currentStep: GratitudeStep = STEP_ORDER[stepIndex];

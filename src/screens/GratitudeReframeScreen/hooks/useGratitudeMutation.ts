@@ -8,7 +8,10 @@ import type { GratitudeFormState, GratitudeEntry } from '../types';
 // ─── Types ───────────────────────────────────────────────────────────
 
 interface SaveParams {
+  id?: string;
   formState: GratitudeFormState;
+  status?: string;
+  completed?: boolean;
   selectedDate?: Date;
 }
 
@@ -26,7 +29,10 @@ export const useGratitudeMutation = (): UseGratitudeMutationReturn => {
 
   const mutation = useMutation<GratitudeEntry | null, Error, SaveParams>({
     mutationFn: async ({
+      id,
       formState,
+      status,
+      completed,
       selectedDate,
     }: SaveParams): Promise<GratitudeEntry | null> => {
       if (!user?.id) {
@@ -37,7 +43,8 @@ export const useGratitudeMutation = (): UseGratitudeMutationReturn => {
 
       const { data, error } = await supabase
         .from('gratitude_entries' as never)
-        .insert({
+        .upsert({
+          id: id || undefined,
           user_id: user.id,
           current_mood: formState.currentMood,
           initial_intensity: formState.moodIntensity,
@@ -46,7 +53,8 @@ export const useGratitudeMutation = (): UseGratitudeMutationReturn => {
           gratitude_entries: formState.gratitudeEntries.filter(
             (e) => e.trim().length > 0
           ),
-          completed: true,
+          completed: completed ?? false,
+          status: status || 'started',
           selected_date: dateStr,
         } as never)
         .select()

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, ScrollView, Pressable, AccessibilityInfo } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui/text';
@@ -15,6 +15,7 @@ import { CBT_EXERCISES } from '@/src/data/exercises';
 const ROUTE_MAP: Record<string, string> = {
   'thought-reframing': '/tabs/screens/thought-reframing',
   'gratitude-reframe': '/tabs/screens/gratitude-reframe',
+  'thought-catcher': '/tabs/screens/thought-catcher',
 };
 
 // ---------------------------------------------------------------------------
@@ -115,9 +116,87 @@ function EmptyState(): React.JSX.Element {
 }
 
 // ---------------------------------------------------------------------------
+// LogCard — presentational, displays a history entry
+// ---------------------------------------------------------------------------
+import { useCBTHistory, HistoryLogItem } from './hooks/useCBTHistory';
+import { format } from 'date-fns';
+import { CheckmarkBadge01Icon, Time02Icon } from '@hugeicons/core-free-icons';
+
+function formatStatus(status: string): { label: string; isComplete: boolean; colorClass: string; bgClass: string } {
+  if (status === 'checker_completed' || status === 'completed' || status === 'summary') {
+    return { label: 'Completed', isComplete: true, colorClass: 'text-emerald-700', bgClass: 'bg-emerald-100' };
+  } else if (status === 'catcher_completed') {
+    return { label: 'Resume Checker', isComplete: false, colorClass: 'text-amber-700', bgClass: 'bg-amber-100' };
+  }
+  return { label: 'In Progress', isComplete: false, colorClass: 'text-slate-700', bgClass: 'bg-slate-200' };
+}
+
+function LogCard({ item, onPress }: { item: HistoryLogItem; onPress: (item: HistoryLogItem) => void }): React.JSX.Element {
+  const { label, isComplete, colorClass, bgClass } = formatStatus(item.status);
+  const titleStr = item.title && item.title.trim().length > 0 ? item.title : 'Untitled Session';
+
+  const typeLabels = {
+    catcher: 'Thought Catcher',
+    reframing: 'Thought Reframing',
+    gratitude: 'Gratitude Reframe',
+  };
+  const typeIcons = {
+    catcher: '💡',
+    reframing: '🧭',
+    gratitude: '✨',
+  };
+
+  const typeLabel = typeLabels[item.type];
+  const typeIcon = typeIcons[item.type];
+
+  return (
+    <Pressable
+      onPress={() => onPress(item)}
+      className="bg-white rounded-3xl p-4 shadow-sm shadow-slate-200 border border-slate-100 flex-row items-center mb-4 active:bg-slate-50"
+    >
+      {/* Icon tile */}
+      <View
+        style={{ backgroundColor: isComplete ? '#D1FAE5' : '#FEF3C7' }}
+        className="h-14 w-14 rounded-2xl items-center justify-center mr-4"
+      >
+        <Text className="text-[28px]">{typeIcon}</Text>
+      </View>
+
+      {/* Content */}
+      <View className="flex-1 py-1">
+        <View className="flex-row items-center justify-between mb-1">
+          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+            {typeLabel}
+          </Text>
+          <Text className="text-xs text-slate-400">
+            {format(new Date(item.date), 'MMM d, h:mm a')}
+          </Text>
+        </View>
+
+        <Text className="text-base font-bold text-slate-800 mb-2 truncate" numberOfLines={1}>
+          {titleStr}
+        </Text>
+
+        <View className="flex-row items-center">
+          <View className={`${bgClass} px-2 py-1 rounded-full flex-row items-center`}>
+            <HugeiconsIcon icon={isComplete ? CheckmarkBadge01Icon : Time02Icon} size={12} color={isComplete ? '#047857' : '#B45309'} />
+            <Text className={`${colorClass} text-[10px] font-bold uppercase tracking-wider ml-1`}>
+              {label}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // ExercisesScreen — container
 // ---------------------------------------------------------------------------
 export default function ExercisesScreen(): React.JSX.Element {
+  const [activeTab, setActiveTab] = useState<'discover' | 'log'>('discover');
+  const { data: history = [], isLoading: isLoadingHistory } = useCBTHistory();
+
   const handleExercisePress = useCallback((exercise: CBTExercise): void => {
     const route: string | undefined = ROUTE_MAP[exercise.id];
     if (route) {
@@ -132,48 +211,102 @@ export default function ExercisesScreen(): React.JSX.Element {
 
   const hasExercises: boolean = CBT_EXERCISES.length > 0;
 
+  const handleLogPress = useCallback((item: HistoryLogItem): void => {
+    if (item.type === 'catcher') {
+      router.push(`/tabs/screens/thought-checker?id=${item.id}`);
+    } else if (item.type === 'reframing') {
+      router.push(`/tabs/screens/thought-reframing?id=${item.id}`);
+    } else if (item.type === 'gratitude') {
+      router.push(`/tabs/screens/gratitude-reframe?id=${item.id}`);
+    }
+  }, []);
+
   return (
     <SafeAreaView className="flex-1 bg-[#F8FAFC]" edges={['top']}>
+      <View className="px-5 pt-4 pb-2 bg-white flex-row items-end justify-between border-b border-slate-100 shadow-sm z-10">
+        <View className="flex-row">
+          <Pressable
+            onPress={() => setActiveTab('discover')}
+            className={`mr-6 pb-2 border-b-2 ${
+              activeTab === 'discover' ? 'border-slate-800' : 'border-transparent'
+            }`}
+          >
+            <Text
+              className={`text-2xl font-bold ${
+                activeTab === 'discover' ? 'text-slate-800' : 'text-slate-400'
+              }`}
+            >
+              Discover
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setActiveTab('log')}
+            className={`pb-2 border-b-2 ${
+              activeTab === 'log' ? 'border-slate-800' : 'border-transparent'
+            }`}
+          >
+            <Text
+              className={`text-2xl font-bold ${
+                activeTab === 'log' ? 'text-slate-800' : 'text-slate-400'
+              }`}
+            >
+              My Log
+            </Text>
+          </Pressable>
+        </View>
+        <View
+          className="h-10 w-10 items-center justify-center -mr-2 -mt-4 opacity-50"
+          accessible={true}
+          accessibilityLabel="CBT exercises illustration"
+          accessibilityRole="image"
+        >
+          <Text className="text-[28px]">🧠</Text>
+        </View>
+      </View>
+
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-5 pb-10 pt-4"
+        contentContainerClassName="px-5 pb-10 pt-6"
         showsVerticalScrollIndicator={false}
       >
-        {/* ---- Header ---- */}
-        <View className="mb-6 flex-row justify-between items-center mt-4">
-          <View className="flex-1 pr-4">
-            <Text className="text-3xl font-bold text-slate-800 mb-1">
-              CBT Exercises
-            </Text>
-            <Text className="text-base text-slate-500">
-              {hasExercises
-                ? `${CBT_EXERCISES.length} exercise${CBT_EXERCISES.length === 1 ? '' : 's'} available`
-                : 'Exercises to help shift your thinking'}
-            </Text>
-          </View>
-          <View
-            className="h-16 w-16 items-center justify-center -mr-2"
-            accessible={true}
-            accessibilityLabel="CBT exercises illustration"
-            accessibilityRole="image"
-          >
-            <Text className="text-[46px]">🧠</Text>
-          </View>
-        </View>
-
-        {/* ---- Exercise list or empty state ---- */}
-        {hasExercises ? (
-          <View>
-            {CBT_EXERCISES.map((exercise: CBTExercise) => (
-              <ExerciseCard
-                key={exercise.id}
-                exercise={exercise}
-                onPress={handleExercisePress}
-              />
-            ))}
-          </View>
+        {activeTab === 'discover' ? (
+          <>
+            {hasExercises ? (
+              <View>
+                {CBT_EXERCISES.map((exercise: CBTExercise) => (
+                  <ExerciseCard
+                    key={exercise.id}
+                    exercise={exercise}
+                    onPress={handleExercisePress}
+                  />
+                ))}
+              </View>
+            ) : (
+              <EmptyState />
+            )}
+          </>
         ) : (
-          <EmptyState />
+          <View>
+            {isLoadingHistory ? (
+              <View className="py-12 items-center">
+                <Text className="text-slate-400">Loading history...</Text>
+              </View>
+            ) : history.length > 0 ? (
+              history.map((item) => (
+                <LogCard key={`${item.type}-${item.id}`} item={item} onPress={handleLogPress} />
+              ))
+            ) : (
+              <View className="items-center justify-center py-16 px-8">
+                <Text className="text-[48px] mb-4">📚</Text>
+                <Text className="text-xl font-bold text-slate-700 mb-2 text-center">
+                  Your CBT history
+                </Text>
+                <Text className="text-sm text-slate-400 text-center leading-relaxed">
+                  You haven't completed any exercises yet. Head over to the Discover tab to get started!
+                </Text>
+              </View>
+            )}
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>

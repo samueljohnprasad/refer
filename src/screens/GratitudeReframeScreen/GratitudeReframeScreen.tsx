@@ -1,11 +1,13 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useGratitudeFlow } from './hooks/useGratitudeFlow';
 import { useGratitudeMutation } from './hooks/useGratitudeMutation';
 import { useGratitudeAI } from './hooks/useGratitudeAI';
+import { useSingleGratitudeQuery } from './hooks/useSingleGratitudeQuery';
 import type { EmotionName } from '../ThoughtReframingScreen/types';
+import type { GratitudeStep, GratitudeFormState } from './types';
 
 // Steps
 import { GratitudeIntro } from './steps/GratitudeIntro';
@@ -20,6 +22,24 @@ import { GratitudeSummaryStep } from './steps/GratitudeSummaryStep';
  * Wires AI prompt generation across steps.
  */
 const GratitudeReframeScreen: React.FC = () => {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { data: existingEntry, isLoading: isLoadingEntry } = useSingleGratitudeQuery(id);
+  
+  // Track the entry ID independently to support upsert even for new entries
+  const [entryId, setEntryId] = useState<string | undefined>(id);
+
+  // ─── Hydration ──────────────────────────────────────────────────────
+  const hydratedData = useMemo<GratitudeFormState | undefined>(() => {
+    if (!existingEntry) return undefined;
+    return {
+      currentMood: existingEntry.current_mood as EmotionName,
+      moodIntensity: existingEntry.initial_intensity || 0,
+      selectedPrompt: existingEntry.selected_prompt || '',
+      gratitudeEntries: existingEntry.gratitude_entries || [],
+      finalMoodIntensity: existingEntry.final_intensity || 0,
+    };
+  }, [existingEntry]);
+
   const {
     currentStep,
     formState,
@@ -32,7 +52,7 @@ const GratitudeReframeScreen: React.FC = () => {
     isIntro,
     progress,
     reset,
-  } = useGratitudeFlow();
+  } = useGratitudeFlow(hydratedData, existingEntry?.status as GratitudeStep);
 
   const { saveEntry, isSaving } = useGratitudeMutation();
 
@@ -45,6 +65,31 @@ const GratitudeReframeScreen: React.FC = () => {
 
   // Track whether AI generation has been triggered
   const aiTriggeredRef = useRef<boolean>(false);
+
+  // ─── Auto-Save ──────────────────────────────────────────────────────
+  const handleAutoSave = useCallback(async (nextStep?: GratitudeStep) => {
+    // Only save if we have at least a mood
+    if (formState.currentMood) {
+      try {
+        const result = await saveEntry({
+          id: entryId,
+          formState,
+          status: nextStep || currentStep,
+          completed: nextStep === 'summary',
+        });
+        if (result?.id && !entryId) {
+          setEntryId(result.id);
+        }
+      } catch (err) {
+        console.error('Gratitude auto-save failed:', err);
+      }
+    }
+  }, [formState, currentStep, entryId, saveEntry]);
+
+  const handleNext = useCallback(async () => {
+    await handleAutoSave();
+    goNext();
+  }, [handleAutoSave, goNext]);
 
   // ─── AI Triggers ───────────────────────────────────────────────────
   // Generate prompts when entering the prompts step
@@ -64,13 +109,12 @@ const GratitudeReframeScreen: React.FC = () => {
       return;
     }
     Alert.alert(
-      'Discard exercise?',
-      'You have unsaved progress. Are you sure you want to leave?',
+      'Leave exercise?',
+      'Your progress has been saved automatically. You can resume later from "My Log".',
       [
         { text: 'Keep going', style: 'cancel' },
         {
-          text: 'Discard',
-          style: 'destructive',
+          text: 'Exit',
           onPress: (): void => {
             clearPrompts();
             reset();
@@ -83,14 +127,19 @@ const GratitudeReframeScreen: React.FC = () => {
 
   const handleSave = useCallback(async (): Promise<void> => {
     try {
-      await saveEntry({ formState });
+      await saveEntry({ 
+        id: entryId,
+        formState, 
+        completed: true,
+        status: 'summary'
+      });
       Alert.alert('Saved!', 'Your gratitude reflection has been saved.', [
         { text: 'OK', onPress: (): void => router.back() },
       ]);
     } catch {
       Alert.alert('Error', 'Failed to save. Please try again.');
     }
-  }, [formState, saveEntry]);
+  }, [formState, saveEntry, entryId]);
 
   const handleDone = useCallback((): void => {
     clearPrompts();
@@ -153,7 +202,7 @@ const GratitudeReframeScreen: React.FC = () => {
             moodIntensity={formState.moodIntensity}
             onSelectMood={setMood}
             onSetIntensity={setMoodIntensity}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -168,7 +217,7 @@ const GratitudeReframeScreen: React.FC = () => {
             onSelectPrompt={setSelectedPrompt}
             aiPrompts={aiPrompts}
             isGenerating={isGenerating}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -184,7 +233,7 @@ const GratitudeReframeScreen: React.FC = () => {
             onAddEntry={addGratitudeEntry}
             onRemoveEntry={removeGratitudeEntry}
             onUpdateEntry={updateGratitudeEntry}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -199,7 +248,7 @@ const GratitudeReframeScreen: React.FC = () => {
             initialIntensity={formState.moodIntensity}
             finalIntensity={formState.finalMoodIntensity}
             onSetFinalIntensity={setFinalMoodIntensity}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -221,6 +270,14 @@ const GratitudeReframeScreen: React.FC = () => {
         return null;
     }
   };
+
+  if (isLoadingEntry) {
+    return (
+      <SafeAreaView className="flex-1 bg-[#F8FAFC] items-center justify-center">
+        {/* You could add a spinner here */}
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-[#F8FAFC]" edges={['top', 'bottom']}>

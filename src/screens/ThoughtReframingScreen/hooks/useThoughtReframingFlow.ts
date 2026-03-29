@@ -143,6 +143,9 @@ const formReducer = (
     case 'SET_BALANCED_THOUGHT':
       return { ...state, balancedThought: action.payload };
 
+    case 'SET_INITIAL_DATA':
+      return { ...action.payload };
+
     case 'RESET':
       return INITIAL_FORM_STATE;
 
@@ -208,11 +211,14 @@ export interface UseThoughtReframingFlowReturn {
   reset: () => void;
 }
 
-export const useThoughtReframingFlow = (): UseThoughtReframingFlowReturn => {
-  const [formState, dispatch] = useReducer(formReducer, INITIAL_FORM_STATE);
+export const useThoughtReframingFlow = (
+  initialData?: ThoughtReframingFormState,
+  initialStep?: ThoughtReframingStep
+): UseThoughtReframingFlowReturn => {
+  const [formState, dispatch] = useReducer(formReducer, initialData || INITIAL_FORM_STATE);
   const [stepIndex, setStepIndex] = useReducer(
     (_prev: number, next: number) => Math.max(0, Math.min(next, STEP_ORDER.length - 1)),
-    0
+    initialStep ? STEP_ORDER.indexOf(initialStep) : 0
   );
 
   const currentStep: ThoughtReframingStep = STEP_ORDER[stepIndex];

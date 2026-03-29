@@ -6,7 +6,10 @@ import { formateDate_y_m_d } from '@/src/utils/date';
 import type { ThoughtReframingFormState, ThoughtReframingEntry } from '../types';
 
 interface SaveParams {
+  id?: string;
   formState: ThoughtReframingFormState;
+  status?: string;
+  completed?: boolean;
   selectedDate?: Date;
 }
 
@@ -21,7 +24,7 @@ export const useThoughtReframingMutation = (): UseMutationReturn => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ThoughtReframingEntry | null, Error, SaveParams>({
-    mutationFn: async ({ formState, selectedDate }: SaveParams): Promise<ThoughtReframingEntry | null> => {
+    mutationFn: async ({ id, formState, status, completed, selectedDate }: SaveParams): Promise<ThoughtReframingEntry | null> => {
       if (!user?.id) {
         throw new Error('User not authenticated');
       }
@@ -29,8 +32,9 @@ export const useThoughtReframingMutation = (): UseMutationReturn => {
       const dateStr: string = formateDate_y_m_d(selectedDate ?? new Date());
 
       const { data, error } = await supabase
-        .from('thought_reframing_entries')
-        .insert({
+        .from('thought_reframing_entries' as any)
+        .upsert({
+          id: id || undefined,
           user_id: user.id,
           situation: formState.situation.trim(),
           automatic_thought: formState.automaticThought.trim(),
@@ -39,9 +43,10 @@ export const useThoughtReframingMutation = (): UseMutationReturn => {
           evidence_for: formState.evidenceFor,
           evidence_against: formState.evidenceAgainst,
           balanced_thought: formState.balancedThought.trim(),
-          completed: true,
+          completed: completed ?? false,
+          status: status || 'started',
           selected_date: dateStr,
-        })
+        } as any)
         .select()
         .single();
 
@@ -49,11 +54,12 @@ export const useThoughtReframingMutation = (): UseMutationReturn => {
         throw error;
       }
 
-      return data as ThoughtReframingEntry;
+      return data as any as ThoughtReframingEntry;
     },
     onSuccess: (): void => {
       // Invalidate any cached thought reframing queries
       queryClient.invalidateQueries({ queryKey: ['thought_reframing'] });
+      queryClient.invalidateQueries({ queryKey: ['cbt_history'] });
     },
   });
 

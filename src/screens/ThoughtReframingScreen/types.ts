@@ -54,6 +54,7 @@ export interface ThoughtReframingEntry {
   evidence_against: string[];
   balanced_thought: string;
   completed: boolean;
+  status: string;
   created_at: string;
   selected_date: string;
 }
@@ -93,4 +94,5 @@ export type ThoughtReframingAction =
   | { type: 'ADD_EVIDENCE_AGAINST'; payload: string }
   | { type: 'REMOVE_EVIDENCE_AGAINST'; payload: number }
   | { type: 'SET_BALANCED_THOUGHT'; payload: string }
+  | { type: 'SET_INITIAL_DATA'; payload: ThoughtReframingFormState }
   | { type: 'RESET' };

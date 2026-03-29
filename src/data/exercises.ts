@@ -2,6 +2,18 @@ import { CBTExercise } from '../types/exercises';
 
 export const CBT_EXERCISES: CBTExercise[] = [
   {
+    id: 'thought-catcher',
+    title: 'Thought Catcher',
+    subtitle: 'Catch and check automatic thoughts',
+    duration: '3 minutes',
+    step: 0,
+    icon: '🧠',
+    badgeIcon: '⚡',
+    backgroundColor: '#F3E8FF',
+    badgeColor: 'bg-purple-100',
+    badgeTextColor: 'text-purple-700',
+  },
+  {
     id: 'thought-reframing',
     title: 'Thought Reframing',
     subtitle: 'Identify and challenge unhelpful thoughts',

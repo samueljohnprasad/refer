@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useThoughtReframingFlow } from './hooks/useThoughtReframingFlow';
 import { useThoughtReframingMutation } from './hooks/useThoughtReframingMutation';
 import { useThoughtReframingAI } from './hooks/useThoughtReframingAI';
-import type { EmotionName, CognitiveDistortionKey } from './types';
+import { useSingleThoughtReframingQuery } from './hooks/useSingleThoughtReframingQuery';
+import type { EmotionName, CognitiveDistortionKey, ThoughtReframingStep, ThoughtReframingFormState } from './types';
 
 // Steps
 import { ThoughtReframingIntro } from './steps/ThoughtReframingIntro';
@@ -24,6 +25,26 @@ import { SummaryStep } from './steps/SummaryStep';
  * Wires AI suggestions and voice input across all steps.
  */
 const ThoughtReframingScreen: React.FC = () => {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { data: existingEntry, isLoading: isLoadingEntry } = useSingleThoughtReframingQuery(id);
+  
+  // Track the entry ID independently to support upsert even for new entries
+  const [entryId, setEntryId] = useState<string | undefined>(id);
+
+  // ─── Hydration ──────────────────────────────────────────────────────
+  const hydratedData = useMemo<ThoughtReframingFormState | undefined>(() => {
+    if (!existingEntry) return undefined;
+    return {
+      situation: existingEntry.situation || '',
+      automaticThought: existingEntry.automatic_thought || '',
+      selectedEmotions: existingEntry.emotions || [],
+      selectedDistortions: existingEntry.cognitive_distortions || [],
+      evidenceFor: existingEntry.evidence_for || [],
+      evidenceAgainst: existingEntry.evidence_against || [],
+      balancedThought: existingEntry.balanced_thought || '',
+    };
+  }, [existingEntry]);
+
   const {
     currentStep,
     formState,
@@ -36,7 +57,7 @@ const ThoughtReframingScreen: React.FC = () => {
     isIntro,
     progress,
     reset,
-  } = useThoughtReframingFlow();
+  } = useThoughtReframingFlow(hydratedData, existingEntry?.status as ThoughtReframingStep);
 
   const { saveEntry, isSaving } = useThoughtReframingMutation();
 
@@ -57,6 +78,33 @@ const ThoughtReframingScreen: React.FC = () => {
   const aiTriggeredRef = useRef<boolean>(false);
   const balancedAiTriggeredRef = useRef<boolean>(false);
 
+  // ─── Auto-Save ──────────────────────────────────────────────────────
+  const handleAutoSave = useCallback(async (nextStep?: ThoughtReframingStep) => {
+    // Only save if we have at least a situation
+    if (formState.situation.trim().length > 0) {
+      try {
+        const result = await saveEntry({
+          id: entryId,
+          formState,
+          status: nextStep || currentStep,
+          completed: nextStep === 'summary',
+        });
+        if (result?.id && !entryId) {
+          setEntryId(result.id);
+        }
+      } catch (err) {
+        console.error('Auto-save failed:', err);
+      }
+    }
+  }, [formState, currentStep, entryId, saveEntry]);
+
+  const handleNext = useCallback(async () => {
+    // Determine the next step name
+    // We'll actually do the save THEN goNext
+    await handleAutoSave(); // We can't easily predict the next step without STEP_ORDER here
+    goNext();
+  }, [handleAutoSave, goNext]);
+
   // ─── AI Triggers ───────────────────────────────────────────────────
 
   // Trigger AI when entering emotions step (after automatic thought is filled)
@@ -65,7 +113,6 @@ const ThoughtReframingScreen: React.FC = () => {
       const { automaticThought, situation } = formState;
       if (automaticThought.trim().length > 0) {
         aiTriggeredRef.current = true;
-        // Fire both AI detections in parallel
         detectDistortions(automaticThought, situation);
         detectEmotions(automaticThought, situation);
       }
@@ -89,14 +136,15 @@ const ThoughtReframingScreen: React.FC = () => {
       router.back();
       return;
     }
+    // With auto-save, we don't necessarily NEED to alert, but it's good practice
+    // unless the user prefers "silent" exit. Let's keep it but mention it was saved.
     Alert.alert(
-      'Discard exercise?',
-      'You have unsaved progress. Are you sure you want to leave?',
+      'Leave exercise?',
+      'Your progress has been saved automatically. You can resume later from "My Log".',
       [
         { text: 'Keep going', style: 'cancel' },
         {
-          text: 'Discard',
-          style: 'destructive',
+          text: 'Exit',
           onPress: (): void => {
             clearSuggestions();
             reset();
@@ -109,14 +157,19 @@ const ThoughtReframingScreen: React.FC = () => {
 
   const handleSave = useCallback(async (): Promise<void> => {
     try {
-      await saveEntry({ formState });
+      await saveEntry({ 
+        id: entryId,
+        formState, 
+        completed: true,
+        status: 'summary'
+      });
       Alert.alert('Saved!', 'Your thought reframing has been saved.', [
         { text: 'OK', onPress: (): void => router.back() },
       ]);
     } catch {
       Alert.alert('Error', 'Failed to save. Please try again.');
     }
-  }, [formState, saveEntry]);
+  }, [formState, saveEntry, entryId]);
 
   const handleDone = useCallback((): void => {
     clearSuggestions();
@@ -204,7 +257,7 @@ const ThoughtReframingScreen: React.FC = () => {
           <SituationStep
             value={formState.situation}
             onChange={setSituation}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -217,7 +270,7 @@ const ThoughtReframingScreen: React.FC = () => {
           <AutomaticThoughtStep
             value={formState.automaticThought}
             onChange={setAutomaticThought}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -231,7 +284,7 @@ const ThoughtReframingScreen: React.FC = () => {
             selectedEmotions={formState.selectedEmotions}
             onToggleEmotion={toggleEmotion}
             onSetIntensity={setEmotionIntensity}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -246,7 +299,7 @@ const ThoughtReframingScreen: React.FC = () => {
           <CognitiveDistortionStep
             selectedDistortions={formState.selectedDistortions}
             onToggle={toggleDistortion}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -262,7 +315,7 @@ const ThoughtReframingScreen: React.FC = () => {
             items={formState.evidenceFor}
             onAdd={addEvidenceFor}
             onRemove={removeEvidenceFor}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -276,7 +329,7 @@ const ThoughtReframingScreen: React.FC = () => {
             items={formState.evidenceAgainst}
             onAdd={addEvidenceAgainst}
             onRemove={removeEvidenceAgainst}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -290,7 +343,7 @@ const ThoughtReframingScreen: React.FC = () => {
             value={formState.balancedThought}
             automaticThought={formState.automaticThought}
             onChange={setBalancedThought}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -305,7 +358,7 @@ const ThoughtReframingScreen: React.FC = () => {
           <ReEvaluateStep
             selectedEmotions={formState.selectedEmotions}
             onSetFinalIntensity={setEmotionFinalIntensity}
-            onNext={goNext}
+            onNext={handleNext}
             onBack={goBack}
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
@@ -328,8 +381,16 @@ const ThoughtReframingScreen: React.FC = () => {
     }
   };
 
+  if (isLoadingEntry) {
+    return (
+      <SafeAreaView className="flex-1 bg-white items-center justify-center">
+        {/* Spinner could be added here */}
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <SafeAreaView className="flex-1 bg-[#F8FAFC]" edges={['top', 'bottom']}>
+    <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}

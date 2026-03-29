@@ -36,6 +36,7 @@ export type GratitudeAction =
   | { type: 'REMOVE_GRATITUDE_ENTRY'; payload: number }
   | { type: 'UPDATE_GRATITUDE_ENTRY'; payload: { index: number; text: string } }
   | { type: 'SET_FINAL_MOOD_INTENSITY'; payload: number }
+  | { type: 'SET_INITIAL_DATA'; payload: GratitudeFormState }
   | { type: 'RESET' };
 
 // ─── Supabase Row ───────────────────────────────────────────────────
@@ -48,6 +49,7 @@ export interface GratitudeEntry {
   selected_prompt: string;
   gratitude_entries: string[];
   completed: boolean;
+  status: string;
   created_at: string;
   selected_date: string;
 }
