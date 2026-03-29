@@ -1,8 +1,6 @@
-import React from 'react';
-import { View, Pressable, ScrollView } from 'react-native';
-import { Text } from '@/components/ui/text';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import { Cancel01Icon, ArrowDown01Icon, CheckmarkBadge01Icon, Alert01Icon, HelpCircleIcon } from '@hugeicons/core-free-icons';
+import React from "react";
+import { View, Pressable, ScrollView } from "react-native";
+import { Text } from "@/components/ui/text";
 
 interface CheckerSummaryStepProps {
   situation: string;
@@ -14,6 +12,42 @@ interface CheckerSummaryStepProps {
   onClose: () => void;
 }
 
+const ACCENT = "#58CC02";
+const XP_EARNED = 15;
+
+interface TruthStyle {
+  emoji: string;
+  label: string;
+  bgColor: string;
+  textColor: string;
+}
+
+function getTruthStyle(isTrue: string): TruthStyle {
+  switch (isTrue) {
+    case "YES":
+      return {
+        emoji: "⚠️",
+        label: "Yes",
+        bgColor: "#FEE2E2",
+        textColor: "#DC2626",
+      };
+    case "NOT SURE":
+      return {
+        emoji: "🤔",
+        label: "Not sure",
+        bgColor: "#FEF3C7",
+        textColor: "#D97706",
+      };
+    default:
+      return {
+        emoji: "💡",
+        label: "No",
+        bgColor: "#D1FAE5",
+        textColor: "#059669",
+      };
+  }
+}
+
 export const CheckerSummaryStep: React.FC<CheckerSummaryStepProps> = ({
   situation,
   automaticThought,
@@ -23,70 +57,92 @@ export const CheckerSummaryStep: React.FC<CheckerSummaryStepProps> = ({
   onDone,
   onClose,
 }) => {
-  // Determine styles for the "Reality Check" badge based on answer
-  const getTruthStyles = () => {
-    switch (isTrue) {
-      case 'YES':
-        return { icon: Alert01Icon, color: '#DC2626', bgClass: 'bg-red-100', textClass: 'text-red-700' };
-      case 'NOT SURE':
-        return { icon: HelpCircleIcon, color: '#D97706', bgClass: 'bg-amber-100', textClass: 'text-amber-700' };
-      default:
-        return { icon: CheckmarkBadge01Icon, color: '#059669', bgClass: 'bg-emerald-100', textClass: 'text-emerald-700' };
-    }
-  };
-
-  const truthStyle = getTruthStyles();
+  const truthStyle: TruthStyle = getTruthStyle(isTrue);
 
   return (
     <View className="flex-1">
-      {/* Header */}
-      <View className="flex-row items-center justify-between mb-2 mt-2">
-        <Text className="text-[17px] font-bold text-slate-800">Review</Text>
-        <Pressable onPress={onClose} className="p-2 -mr-2 bg-slate-100 rounded-full active:bg-slate-200">
-          <HugeiconsIcon icon={Cancel01Icon} size={20} color="#94A3B8" />
-        </Pressable>
-      </View>
-
-      <ScrollView 
-        className="flex-1" 
+      <ScrollView
+        className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
       >
-        <View className="items-center py-6">
-          <View className="h-16 w-16 bg-blue-100 rounded-3xl items-center justify-center mb-4">
-            <Text className="text-[32px]" accessible={false}>🌱</Text>
+        {/* ── Duolingo celebration header ── */}
+        <View className="items-center pt-4 mb-8">
+          <View
+            className="h-20 w-20 rounded-full items-center justify-center mb-4"
+            style={{ backgroundColor: "#F0FFF0" }}
+          >
+            <Text
+              className="text-[44px]"
+              accessible={false}
+            >
+              🌱
+            </Text>
           </View>
-          <Text className="text-2xl font-bold text-slate-800 text-center mb-2">
-            Thought Checked
+          <Text className="text-[26px] font-extrabold text-slate-900 text-center mb-1">
+            Thought Checked!
           </Text>
-          <Text className="text-base text-slate-500 text-center px-4 leading-relaxed">
-            You've successfully reframed your negative thought. Here is how your perspective shifted.
+          <Text className="text-[15px] text-slate-500 text-center mb-4">
+            You've reframed your perspective. Great work!
           </Text>
-        </View>
 
-        {/* Situation */}
-        <View className="mb-4">
-          <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">The Situation</Text>
-          <View className="bg-white rounded-[24px] p-5 shadow-sm shadow-slate-200 border border-slate-100">
-            <Text className="text-[15px] text-slate-700 leading-relaxed font-medium">
-              {situation || 'No situation recorded.'}
+          {/* XP reward badge */}
+          <View
+            className="flex-row items-center px-5 py-2.5 rounded-full"
+            style={{
+              backgroundColor: "#FFF3CD",
+              borderWidth: 2,
+              borderColor: "#FBBF24",
+            }}
+          >
+            <Text className="text-lg mr-1.5">⚡</Text>
+            <Text className="text-base font-extrabold text-amber-700">
+              +{XP_EARNED} XP earned!
             </Text>
           </View>
         </View>
 
-        {/* Arrow Down */}
-        <View className="items-center mb-4">
-          <HugeiconsIcon icon={ArrowDown01Icon} size={24} color="#CBD5E1" />
+        {/* Situation */}
+        <View className="mb-4">
+          <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">
+            The Situation
+          </Text>
+          <View
+            className="bg-white rounded-2xl p-4"
+            style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
+          >
+            <Text className="text-sm text-slate-700 leading-relaxed font-medium">
+              {situation || "No situation recorded."}
+            </Text>
+          </View>
         </View>
 
-        {/* Automatic Thought */}
+        {/* Arrow */}
+        <View className="items-center mb-4">
+          <Text className="text-slate-300 text-lg">↓</Text>
+        </View>
+
+        {/* Original Thought — red card */}
         <View className="mb-4">
-          <View className="flex-row items-center justify-between mb-2 mx-1">
-            <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider">Original Thought</Text>
-            <Text className="text-xs font-bold text-orange-500 uppercase">Intensity: {intensity}%</Text>
+          <View className="flex-row items-center justify-between mb-2">
+            <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
+              Original Thought
+            </Text>
+            <View className="px-2 py-0.5 rounded-full bg-orange-100">
+              <Text className="text-[10px] font-extrabold text-orange-600 uppercase">
+                Intensity: {intensity}%
+              </Text>
+            </View>
           </View>
-          <View className="bg-orange-50 rounded-[24px] p-5 border border-orange-100">
-            <Text className="text-[15px] text-orange-900 leading-relaxed font-semibold italic">
+          <View
+            className="rounded-2xl p-4"
+            style={{
+              backgroundColor: "#FEF2F2",
+              borderWidth: 2,
+              borderColor: "#FECACA",
+            }}
+          >
+            <Text className="text-sm text-red-700 italic leading-relaxed font-medium">
               "{automaticThought || "..."}"
             </Text>
           </View>
@@ -94,44 +150,76 @@ export const CheckerSummaryStep: React.FC<CheckerSummaryStepProps> = ({
 
         {/* Reality Check */}
         <View className="mb-4">
-           <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Reality Check</Text>
-           <View className="bg-white rounded-[24px] p-5 shadow-sm shadow-slate-200 border border-slate-100 flex-row items-center justify-between">
-             <Text className="text-[14px] text-slate-600 font-medium flex-1 mr-4">Is this thought completely grounded in facts?</Text>
-             <View className={`flex-row items-center px-3 py-1.5 rounded-full ${truthStyle.bgClass}`}>
-               <HugeiconsIcon icon={truthStyle.icon} size={14} color={truthStyle.color} />
-               <Text className={`text-xs font-bold ml-1.5 ${truthStyle.textClass}`}>
-                 {isTrue || 'N/A'}
-               </Text>
-             </View>
-           </View>
-        </View>
-
-        {/* Balanced Thought */}
-        <View className="mb-8 mt-2">
-          <View className="absolute -inset-1 bg-gradient-to-r from-blue-100 to-emerald-100 rounded-[28px] blur opacity-50"></View>
-          <View className="bg-white rounded-[24px] p-6 shadow-md shadow-slate-200 border border-slate-100 relative">
-            <View className="flex-row items-center mb-3">
-              <View className="bg-blue-100 h-8 w-8 rounded-full items-center justify-center mr-3">
-                <Text className="text-lg">⚖️</Text>
-              </View>
-              <Text className="text-[17px] font-bold text-slate-800">Balanced Perspective</Text>
-            </View>
-            <View className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
-              <Text className="text-base text-slate-700 font-medium leading-relaxed">
-                "{balancedThought || "..."}"
+          <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">
+            Reality Check
+          </Text>
+          <View
+            className="bg-white rounded-2xl p-4 flex-row items-center justify-between"
+            style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
+          >
+            <Text className="text-sm text-slate-600 font-medium flex-1 mr-3">
+              Is this thought grounded in facts?
+            </Text>
+            <View
+              className="flex-row items-center px-3 py-1.5 rounded-full"
+              style={{ backgroundColor: truthStyle.bgColor }}
+            >
+              <Text className="text-xs mr-1">{truthStyle.emoji}</Text>
+              <Text
+                className="text-xs font-extrabold"
+                style={{ color: truthStyle.textColor }}
+              >
+                {truthStyle.label}
               </Text>
             </View>
           </View>
         </View>
+
+        {/* Balanced Thought — green card */}
+        <View className="mb-8">
+          <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">
+            Balanced Perspective
+          </Text>
+          <View
+            className="rounded-2xl p-4"
+            style={{
+              backgroundColor: "#F0FDF4",
+              borderWidth: 2,
+              borderColor: "#BBF7D0",
+            }}
+          >
+            <View className="flex-row items-center mb-2">
+              <Text className="text-lg mr-2">⚖️</Text>
+              <Text className="text-xs font-extrabold text-green-600 uppercase tracking-wider">
+                New thought
+              </Text>
+            </View>
+            <Text className="text-sm text-green-800 font-medium leading-relaxed">
+              "{balancedThought || "..."}"
+            </Text>
+          </View>
+        </View>
       </ScrollView>
 
-      {/* Action Footer */}
+      {/* ── Action Footer — Duolingo-style CTA ── */}
       <View className="absolute bottom-6 left-0 right-0 px-2 bg-transparent">
         <Pressable
           onPress={onDone}
-          className="w-full bg-slate-800 rounded-[20px] h-14 items-center justify-center shadow-lg shadow-slate-300 active:bg-slate-700"
+          accessibilityRole="button"
+          accessibilityLabel="Done"
+          className="w-full rounded-2xl h-14 items-center justify-center active:opacity-90"
+          style={{
+            backgroundColor: ACCENT,
+            shadowColor: ACCENT,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 0,
+            elevation: 4,
+          }}
         >
-          <Text className="text-white text-[17px] font-bold tracking-wide">Done</Text>
+          <Text className="text-white text-base font-extrabold uppercase tracking-wider">
+            Done
+          </Text>
         </Pressable>
       </View>
     </View>

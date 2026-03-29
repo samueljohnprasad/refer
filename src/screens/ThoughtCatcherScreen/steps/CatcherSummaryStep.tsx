@@ -1,15 +1,14 @@
-import React from 'react';
-import { View, Pressable } from 'react-native';
-import { Text } from '@/components/ui/text';
-import { TouchableOpacity } from 'react-native';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import { Cancel01Icon } from '@hugeicons/core-free-icons';
-import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
+import React from "react";
+import { View, Pressable } from "react-native";
+import { Text } from "@/components/ui/text";
 
 interface CatcherSummaryStepProps {
   onCheckIt: () => void;
-  onClose: () => void; // Allow dropping off with it saved
+  onClose: () => void;
 }
+
+const ACCENT = "#58CC02";
+const XP_EARNED = 10;
 
 export const CatcherSummaryStep: React.FC<CatcherSummaryStepProps> = ({
   onCheckIt,
@@ -17,50 +16,75 @@ export const CatcherSummaryStep: React.FC<CatcherSummaryStepProps> = ({
 }) => {
   return (
     <View className="flex-1">
-      {/* Header */}
-      <View className="flex-row items-center justify-end mb-8 mt-2">
-        <Pressable onPress={onClose} className="p-2 -mr-2 bg-slate-100 rounded-full active:bg-slate-200">
-          <HugeiconsIcon icon={Cancel01Icon} size={20} color="#94A3B8" />
-        </Pressable>
+      {/* ── Duolingo celebration ── */}
+      <View className="flex-1 items-center justify-center p-6">
+        <View
+          className="h-24 w-24 rounded-full items-center justify-center mb-6"
+          style={{ backgroundColor: "#F0FFF0" }}
+        >
+          <Text
+            className="text-[56px]"
+            accessible={false}
+          >
+            🧠
+          </Text>
+        </View>
+
+        <Text className="text-[26px] font-extrabold text-slate-900 text-center mb-2">
+          Nice catch!
+        </Text>
+        <Text className="text-[15px] text-slate-500 text-center leading-relaxed mb-6">
+          That's an automatic thought.{"\n"}Let's check if it's really true.
+        </Text>
+
+        {/* XP reward badge */}
+        <View
+          className="flex-row items-center px-5 py-2.5 rounded-full"
+          style={{
+            backgroundColor: "#FFF3CD",
+            borderWidth: 2,
+            borderColor: "#FBBF24",
+          }}
+        >
+          <Text className="text-lg mr-1.5">⚡</Text>
+          <Text className="text-base font-extrabold text-amber-700">
+            +{XP_EARNED} XP earned!
+          </Text>
+        </View>
       </View>
 
-      <Animated.View 
-        entering={FadeIn.duration(800)}
-        className="flex-1 items-center justify-center p-6"
-      >
-        <Text className="text-[100px] mb-8 text-center" accessible={false}>
-          🧠
-        </Text>
-        
-        <Text className="text-[28px] font-bold text-slate-800 text-center mb-4">
-          Nice catch.
-        </Text>
-        
-        <Text className="text-[17px] text-slate-500 text-center leading-relaxed">
-          That's an automatic thought.{"\n"}Let's check it.
-        </Text>
-      </Animated.View>
-
-      {/* Action Footer */}
-      <Animated.View 
-        entering={SlideInDown.delay(300).springify().damping(18)}
-        className="mt-auto px-2 pb-8"
-      >
-        <TouchableOpacity
+      {/* ── Action Footer — Duolingo-style CTAs ── */}
+      <View className="px-2 pb-8">
+        <Pressable
           onPress={onCheckIt}
-          className="w-full bg-slate-800 rounded-2xl h-14 items-center justify-center"
-          activeOpacity={0.8}
+          accessibilityRole="button"
+          accessibilityLabel="Check this thought"
+          className="w-full rounded-2xl h-14 items-center justify-center active:opacity-90"
+          style={{
+            backgroundColor: ACCENT,
+            shadowColor: ACCENT,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 0,
+            elevation: 4,
+          }}
         >
-          <Text className="text-white text-[17px] font-semibold">Let's check it</Text>
-        </TouchableOpacity>
-        
-        <Pressable 
-          onPress={onClose}
-          className="mt-4 p-3 active:opacity-70 items-center"
-        >
-          <Text className="text-[15px] font-semibold text-slate-500">I'll do it later</Text>
+          <Text className="text-white text-base font-extrabold uppercase tracking-wider">
+            Let's check it
+          </Text>
         </Pressable>
-      </Animated.View>
+
+        <Pressable
+          onPress={onClose}
+          accessibilityRole="button"
+          accessibilityLabel="Do it later"
+          className="mt-3 h-11 rounded-2xl items-center justify-center active:bg-slate-100"
+        >
+          <Text className="text-sm font-bold text-slate-400">
+            I'll do it later
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
