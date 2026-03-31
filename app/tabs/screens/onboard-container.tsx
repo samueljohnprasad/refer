@@ -29,7 +29,7 @@ const OnboardContainer = () => {
   }
 
   if (session && !onboarding.completed) {
-    return <Redirect href="/tabs/screens/onboarding" />;
+    return <Redirect href="/tabs/screens/premium-onboarding" />;
   }
 
   if (session && onboarding.completed) {

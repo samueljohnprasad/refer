@@ -665,6 +665,33 @@ export type Database = {
         }
         Relationships: []
       }
+      onboarding_events: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          step_name: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          step_name: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          step_name?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           age_range: Database["public"]["Enums"]["age_range_enum"] | null
@@ -679,10 +706,14 @@ export type Database = {
           last_journal_date: string | null
           longest_streak: number | null
           onboarding_completed: boolean | null
+          onboarding_goals: string[] | null
+          onboarding_mood: string | null
           reasons: string[] | null
           streak_freeze_count: number | null
           subscription_plan: string | null
           trial_ends_at: string | null
+          trial_offered_at: string | null
+          trial_started_at: string | null
         }
         Insert: {
           age_range?: Database["public"]["Enums"]["age_range_enum"] | null
@@ -697,10 +728,14 @@ export type Database = {
           last_journal_date?: string | null
           longest_streak?: number | null
           onboarding_completed?: boolean | null
+          onboarding_goals?: string[] | null
+          onboarding_mood?: string | null
           reasons?: string[] | null
           streak_freeze_count?: number | null
           subscription_plan?: string | null
           trial_ends_at?: string | null
+          trial_offered_at?: string | null
+          trial_started_at?: string | null
         }
         Update: {
           age_range?: Database["public"]["Enums"]["age_range_enum"] | null
@@ -715,10 +750,14 @@ export type Database = {
           last_journal_date?: string | null
           longest_streak?: number | null
           onboarding_completed?: boolean | null
+          onboarding_goals?: string[] | null
+          onboarding_mood?: string | null
           reasons?: string[] | null
           streak_freeze_count?: number | null
           subscription_plan?: string | null
           trial_ends_at?: string | null
+          trial_offered_at?: string | null
+          trial_started_at?: string | null
         }
         Relationships: []
       }

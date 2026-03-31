@@ -18,9 +18,11 @@ interface QuickJournalPrompt {
   emoji: string;
   description: string;
   category: "Personal" | "Family" | "Work" | "Health" | "Gratitude";
-  bgColorClass: string;
-  categoryTextColorClass: string;
-  categoryBgColorClass: string;
+  bgColorClass?: string;
+  categoryTextColorClass?: string;
+  categoryBgColorClass?: string;
+  bgColor?: string;
+  categoryColor?: string;
 }
 
 const QUICK_JOURNAL_PROMPTS: QuickJournalPrompt[] = [
@@ -102,14 +104,14 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
           accessibilityLabel={`${prompt.title}. ${prompt.description}. ${prompt.category} prompt`}
           accessibilityHint="Starts a journaling session with this prompt"
         >
-          <View className={`w-44 rounded-2xl p-4 ${prompt.bgColorClass}`}>
+          <View className={`w-44 rounded-2xl p-4 ${prompt.bgColorClass || "bg-gray-50"}`}>
             {/* Top row: Emoji */}
             <View className="mb-3">
               <View className="w-10 h-10 rounded-2xl items-center justify-center">
                 <Text style={{ fontSize: 24 }}>{prompt.emoji}</Text>
               </View>
             </View>
-
+ 
             <View className="flex-row items-center gap-2 mb-1">
               <Text
                 className="text-gray-900 text-base font-semibold flex-1 tracking-tight"
@@ -125,8 +127,8 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
             >
               {prompt.description}
             </Text>
-            <View className={`self-start px-2 py-1 rounded-md mt-2 ${prompt.categoryBgColorClass}`}>
-              <Text className={`text-xs font-bold tracking-wide uppercase ${prompt.categoryTextColorClass}`}>
+            <View className={`self-start px-2 py-1 rounded-md mt-2 ${prompt.categoryBgColorClass || "bg-white/50"}`}>
+              <Text className={`text-xs font-bold tracking-wide uppercase ${prompt.categoryTextColorClass || "text-gray-600"}`}>
                 {prompt.category}
               </Text>
             </View>

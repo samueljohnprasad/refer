@@ -34,6 +34,8 @@ import { useSettingsBulkImport } from "./hooks/useSettingsBulkImport";
 import { useSettingsAnimation } from "./hooks/useSettingsAnimation";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { SettingsHeader } from "./components/SettingsHeader";
+import OnboardingChecklist from "@/src/components/onboarding/OnboardingChecklist";
+import PostTrialDiscountBanner from "@/src/components/premium/PostTrialDiscountBanner";
 
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
@@ -91,7 +93,10 @@ export default React.memo(function SettingsScreen() {
           headerTransparent: true,
           headerBlurEffect: "regular",
           header: () => (
-            <SettingsHeader scrollY={scrollY} upgradeY={upgradeY} />
+            <SettingsHeader
+              scrollY={scrollY}
+              upgradeY={upgradeY}
+            />
           ),
         }}
       />
@@ -106,7 +111,7 @@ export default React.memo(function SettingsScreen() {
           nestedScrollEnabled={true}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            { useNativeDriver: false }
+            { useNativeDriver: false },
           )}
           contentInsetAdjustmentBehavior="automatic"
         >
@@ -117,6 +122,12 @@ export default React.memo(function SettingsScreen() {
               onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)}
             />
           )}
+
+          {/* Post-trial 30% discount banner */}
+          <PostTrialDiscountBanner />
+
+          {/* Onboarding checklist for new users */}
+          <OnboardingChecklist />
 
           <SettingsSection title="Account & Preferences">
             <SettingsItem
@@ -208,7 +219,7 @@ export default React.memo(function SettingsScreen() {
               iconBgColor="#FEF3C7"
               title="App Info"
               subtitle="Version 1.0.0 (Build 1)"
-              onPress={() => {}}
+              onPress={() => { }}
               showArrow={false}
             />
             <SettingsItem

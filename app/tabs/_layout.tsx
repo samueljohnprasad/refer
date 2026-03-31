@@ -61,6 +61,15 @@ export default function AppLayout() {
           animation: "fade",
         }}
       />
+        <Stack.Screen
+        name="screens/premium-onboarding"
+        options={{
+          headerShown: false,
+          title: "Onboarding",
+          freezeOnBlur: true,
+          animation: "fade",
+        }}
+      />
       <Stack.Screen
         name="screens/onboard-container"
         options={{
