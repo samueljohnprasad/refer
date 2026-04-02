@@ -1,13 +1,6 @@
-import SuspensLoader from "@/src/components/SuspensLoader";
-import React, { lazy } from "react";
-const AIInsightsScreen = lazy(
-  () => import("@/src/screens/AIInsightsScreen/AIInsightsScreen")
-);
+import React from "react";
+import JourneyMapContainer from "@/src/screens/JourneyMapScreen/JourneyMapContainer";
 
 export default function InsightsTab() {
-  return (
-    <SuspensLoader>
-      <AIInsightsScreen />
-    </SuspensLoader>
-  );
+  return <JourneyMapContainer />;
 }

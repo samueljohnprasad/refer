@@ -1,0 +1,50 @@
+/**
+ * Journey Map Enums
+ * All enumerated types for the journey/path system.
+ * Single source of truth for status, type, and category values.
+ */
+
+/** Visual and interaction state of a path node */
+export enum NodeStatus {
+  LOCKED = "locked",
+  ACTIVE = "active",
+  COMPLETED = "completed",
+}
+
+/** Functional type of a path node */
+export enum NodeType {
+  LESSON = "lesson",
+  CHECKPOINT = "checkpoint",
+  CHEST = "chest",
+}
+
+/** Icon displayed inside a path node */
+export enum NodeIcon {
+  STAR = "star",
+  LOCK = "lock",
+  CHECKMARK = "checkmark",
+  BOOK = "book",
+  CHEST = "chest",
+}
+
+/** Types of rewards earned from journey nodes */
+export enum JourneyRewardType {
+  XP = "xp",
+  GEMS = "gems",
+  HEARTS = "hearts",
+  ACHIEVEMENT = "achievement",
+}
+
+/** Color scheme for a unit header */
+export enum UnitColorScheme {
+  GREEN = "green",
+  BLUE = "blue",
+  PURPLE = "purple",
+  ORANGE = "orange",
+}
+
+/** Mascot placement side relative to the path */
+export enum MascotSide {
+  LEFT = "left",
+  RIGHT = "right",
+}
