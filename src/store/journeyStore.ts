@@ -1,38 +1,69 @@
 /**
  * Journey Map Jotai Store
- * Central state management for the journey map feature.
+ * Central state management for the multi-journey system.
  * Uses Jotai atoms with AsyncStorage persistence.
  *
- * Atoms:
- * - journeyStateAtom: full JourneyState (persisted)
- * - currentUnitAtom: derived — the active UnitData
- * - activeNodeAtom: derived — the currently active PathNodeData
- * - journeyStatsAtom: derived — user stats for the header
+ * Architecture:
+ * - journeyTemplateAtom: cached template for the active journey
+ * - journeyProgressAtom: user's progress for the active journey
+ * - journeyStateAtom: merged view model (template + progress → UI state)
+ * - Derived atoms: currentUnitAtom, activeNodeAtom, journeyStatsAtom
+ *
+ * Data flow:
+ * 1. Container sets the active journey slug
+ * 2. Template + progress are fetched from Supabase
+ * 3. mergeJourneyState() produces JourneyState
+ * 4. All derived atoms re-derive from the merged state
  */
 
-import { atom } from "jotai";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { atom } from 'jotai';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type {
   JourneyState,
   UnitData,
   PathNodeData,
   JourneyStats,
-} from "@/src/types/journey";
-import { NodeStatus } from "@/src/types/journey";
-import { MOCK_JOURNEY_STATE } from "@/src/data/journey";
+  JourneyTemplate,
+  UserJourneyProgress,
+} from '@/src/types/journey';
+import { NodeStatus } from '@/src/types/journey';
+import { MOCK_JOURNEY_STATE } from '@/src/data/journey';
 
 // ---------------------------------------------------------------------------
-// Storage key
+// Storage keys
 // ---------------------------------------------------------------------------
 
-const JOURNEY_STORAGE_KEY = "@journey_state_v1";
+const JOURNEY_STATE_KEY = '@journey_state_v2';
+const JOURNEY_TEMPLATE_CACHE_KEY = '@journey_template_cache_v1';
+const ACTIVE_SLUG_KEY = '@journey_active_slug_v1';
 
 // ---------------------------------------------------------------------------
-// Base atom (writable)
+// Active journey slug
 // ---------------------------------------------------------------------------
 
-/** Primary journey state atom — initialized with mock data */
+/** Which journey is currently being viewed */
+export const activeJourneySlugAtom = atom<string | null>(null);
+
+// ---------------------------------------------------------------------------
+// Template cache atom
+// ---------------------------------------------------------------------------
+
+/** Cached template for the active journey (fetched from Supabase, cached locally) */
+export const journeyTemplateAtom = atom<JourneyTemplate | null>(null);
+
+// ---------------------------------------------------------------------------
+// Progress atom
+// ---------------------------------------------------------------------------
+
+/** User's progress for the active journey (fetched from Supabase) */
+export const journeyProgressAtom = atom<UserJourneyProgress | null>(null);
+
+// ---------------------------------------------------------------------------
+// Merged state atom (primary UI state)
+// ---------------------------------------------------------------------------
+
+/** Full merged JourneyState — the single source of truth for the UI */
 export const journeyStateAtom = atom<JourneyState>(MOCK_JOURNEY_STATE);
 
 // ---------------------------------------------------------------------------
@@ -67,6 +98,12 @@ export const completedCountAtom = atom<number>((get) => {
   ).length;
 });
 
+/** Active enrollment ID (for API calls) */
+export const enrollmentIdAtom = atom<string | null>((get) => {
+  const progress: UserJourneyProgress | null = get(journeyProgressAtom);
+  return progress?.enrollment.id ?? null;
+});
+
 // ---------------------------------------------------------------------------
 // Persistence helpers
 // ---------------------------------------------------------------------------
@@ -76,56 +113,109 @@ export const completedCountAtom = atom<number>((get) => {
  * Returns true only if all critical fields exist with correct types.
  */
 function isValidJourneyState(obj: unknown): obj is JourneyState {
-  if (!obj || typeof obj !== "object") return false;
+  if (!obj || typeof obj !== 'object') return false;
   const s = obj as Record<string, unknown>;
-  if (typeof s.currentUnit !== "number") return false;
+  if (typeof s.currentUnit !== 'number') return false;
   if (!Array.isArray(s.units) || s.units.length === 0) return false;
-  if (!s.stats || typeof s.stats !== "object") return false;
-  // Validate first unit has nodes array
+  if (!s.stats || typeof s.stats !== 'object') return false;
   const firstUnit = s.units[0] as Record<string, unknown> | undefined;
   if (!firstUnit || !Array.isArray(firstUnit.nodes)) return false;
   return true;
 }
 
-/** Load persisted journey state from AsyncStorage with corruption recovery */
+/** Load persisted merged journey state from AsyncStorage (offline fallback) */
 export async function loadJourneyState(): Promise<JourneyState | null> {
   try {
-    const raw: string | null = await AsyncStorage.getItem(JOURNEY_STORAGE_KEY);
+    const raw: string | null = await AsyncStorage.getItem(JOURNEY_STATE_KEY);
     if (!raw) return null;
 
     const parsed: unknown = JSON.parse(raw);
 
     if (!isValidJourneyState(parsed)) {
       console.warn(
-        "[JourneyStore] Corrupted state detected, resetting to defaults",
+        '[JourneyStore] Corrupted state detected, resetting to defaults',
       );
-      await AsyncStorage.removeItem(JOURNEY_STORAGE_KEY);
+      await AsyncStorage.removeItem(JOURNEY_STATE_KEY);
       return null;
     }
 
     return parsed;
   } catch (error) {
-    console.error("[JourneyStore] Failed to load state:", error);
-    // Remove corrupted data so next load starts fresh
-    await AsyncStorage.removeItem(JOURNEY_STORAGE_KEY).catch(() => {});
+    console.error('[JourneyStore] Failed to load state:', error);
+    await AsyncStorage.removeItem(JOURNEY_STATE_KEY).catch(() => {});
     return null;
   }
 }
 
-/** Persist journey state to AsyncStorage */
+/** Persist merged journey state to AsyncStorage (offline backup) */
 export async function saveJourneyState(state: JourneyState): Promise<void> {
   try {
-    await AsyncStorage.setItem(JOURNEY_STORAGE_KEY, JSON.stringify(state));
+    await AsyncStorage.setItem(JOURNEY_STATE_KEY, JSON.stringify(state));
   } catch (error) {
-    console.error("[JourneyStore] Failed to save state:", error);
+    console.error('[JourneyStore] Failed to save state:', error);
   }
 }
 
 /** Clear persisted journey state */
 export async function clearJourneyState(): Promise<void> {
   try {
-    await AsyncStorage.removeItem(JOURNEY_STORAGE_KEY);
+    await AsyncStorage.removeItem(JOURNEY_STATE_KEY);
   } catch (error) {
-    console.error("[JourneyStore] Failed to clear state:", error);
+    console.error('[JourneyStore] Failed to clear state:', error);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Template cache persistence
+// ---------------------------------------------------------------------------
+
+/** Cache a journey template locally for offline access */
+export async function cacheTemplate(
+  slug: string,
+  template: JourneyTemplate,
+): Promise<void> {
+  try {
+    const key = `${JOURNEY_TEMPLATE_CACHE_KEY}_${slug}`;
+    await AsyncStorage.setItem(key, JSON.stringify(template));
+  } catch (error) {
+    console.error('[JourneyStore] Failed to cache template:', error);
+  }
+}
+
+/** Load a cached journey template */
+export async function loadCachedTemplate(
+  slug: string,
+): Promise<JourneyTemplate | null> {
+  try {
+    const key = `${JOURNEY_TEMPLATE_CACHE_KEY}_${slug}`;
+    const raw: string | null = await AsyncStorage.getItem(key);
+    if (!raw) return null;
+    return JSON.parse(raw) as JourneyTemplate;
+  } catch (error) {
+    console.error('[JourneyStore] Failed to load cached template:', error);
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Active slug persistence
+// ---------------------------------------------------------------------------
+
+/** Persist the last active journey slug for session restoration */
+export async function saveActiveSlug(slug: string): Promise<void> {
+  try {
+    await AsyncStorage.setItem(ACTIVE_SLUG_KEY, slug);
+  } catch (error) {
+    console.error('[JourneyStore] Failed to save active slug:', error);
+  }
+}
+
+/** Load the last active journey slug */
+export async function loadActiveSlug(): Promise<string | null> {
+  try {
+    return await AsyncStorage.getItem(ACTIVE_SLUG_KEY);
+  } catch (error) {
+    console.error('[JourneyStore] Failed to load active slug:', error);
+    return null;
   }
 }

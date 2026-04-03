@@ -13,6 +13,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { View } from "react-native";
+import { SvgXml } from "react-native-svg";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { Text } from "@/components/ui/text";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
@@ -39,6 +40,33 @@ import {
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
+
+/**
+ * SVG content for the locked-node asset (assets/journey/lesson.svg).
+ * Inlined so it works without a Metro SVG transformer.
+ */
+const LESSON_SVG_XML: string = `<svg width="70" height="65" viewBox="0 0 70 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_dd_4_5107)">
+<rect width="70" height="57" rx="28.5" fill="#E5E5E5"/>
+</g>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M34.8731 16.0382C30.9449 16.0382 27.7604 19.0241 27.7604 22.7073V24.983C27.7604 25.0386 27.7612 25.0941 27.7626 25.1493H27.7049C25.854 25.1493 24.3535 26.6498 24.3535 28.5007V37.4418C24.3535 39.2927 25.854 40.7932 27.7049 40.7932H42.0455C43.8965 40.7932 45.397 39.2927 45.397 37.4418V28.5008C45.397 26.6498 43.8965 25.1493 42.0455 25.1493H41.9837C41.9851 25.0941 41.9858 25.0386 41.9858 24.983V22.7073C41.9858 19.0241 38.8014 16.0382 34.8731 16.0382ZM38.4812 25.1493C38.484 25.0942 38.4855 25.0388 38.4855 24.983V22.7073C38.4855 20.8367 36.8682 19.3203 34.8731 19.3203C32.8781 19.3203 31.2608 20.8367 31.2608 22.7073V24.983C31.2608 25.0388 31.2622 25.0942 31.2651 25.1493H38.4812Z" fill="#AFAFAF"/>
+<defs>
+<filter id="filter0_dd_4_5107" x="0" y="0" width="70" height="65" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="8"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.898039 0 0 0 0 0.898039 0 0 0 0 0.898039 0 0 0 1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_4_5107"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="8"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"/>
+<feBlend mode="normal" in2="effect1_dropShadow_4_5107" result="effect2_dropShadow_4_5107"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_4_5107" result="shape"/>
+</filter>
+</defs>
+</svg>`;
 
 const ICON_MAP: Record<string, string> = {
   star: "⭐",
@@ -296,7 +324,16 @@ function PathNode({
                 : {}),
             }}
           >
-            <Text className="text-2xl">{ICON_MAP[node.icon] ?? "⭐"}</Text>
+            {node.status === NodeStatus.LOCKED ? (
+              <SvgXml
+                xml={LESSON_SVG_XML}
+                width={size * 0.55}
+                height={size * 0.55}
+                accessibilityLabel="Locked lesson"
+              />
+            ) : (
+              <Text className="text-2xl">{ICON_MAP[node.icon] ?? "⭐"}</Text>
+            )}
           </PressableScale>
         </Animated.View>
       </Animated.View>

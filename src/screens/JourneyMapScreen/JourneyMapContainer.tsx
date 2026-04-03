@@ -4,9 +4,11 @@
  * and data preparation. Passes everything to JourneyMapPresentation.
  * No markup beyond composing the presentation child.
  *
- * State: Jotai atoms (journeyStore)
- * Actions: pure reducer functions (journeyActions)
- * Persistence: AsyncStorage via loadJourneyState/saveJourneyState
+ * Data flow (multi-journey):
+ * 1. useJourneyData(slug) fetches template + progress from Supabase
+ * 2. mergeJourneyState() produces JourneyState (same shape as before)
+ * 3. All derived atoms / UI components consume the merged state
+ * 4. Node completion uses server-side RPC for atomic reward granting
  */
 
 import React, {
@@ -20,8 +22,8 @@ import React, {
 } from "react";
 import { ScrollView, useWindowDimensions, View } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { router } from "expo-router";
+import { useAtomValue, useSetAtom } from "jotai";
+import { router, useLocalSearchParams } from "expo-router";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 
 import type { PathNodeData, JourneyState } from "@/src/types/journey";
@@ -33,7 +35,7 @@ import {
   journeyStateAtom,
   currentUnitAtom,
   journeyStatsAtom,
-  loadJourneyState,
+  enrollmentIdAtom,
   saveJourneyState,
 } from "@/src/store/journeyStore";
 import {
@@ -41,13 +43,18 @@ import {
   updateNodeProgress,
   unlockUnit,
 } from "@/src/store/journeyActions";
+import {
+  completeNodeApi,
+  updateNodeProgress as updateNodeProgressApi,
+} from "@/src/lib/api/journeyApi";
+import { useJourneyData } from "@/src/hooks/useJourneyData";
 import { useUnitCompletion } from "@/src/hooks/useUnitCompletion";
 import { useSoundEffects } from "@/src/hooks/useSoundEffects";
 import { useNetworkStatus } from "@/src/hooks/useNetworkStatus";
 import { useOfflineQueue } from "@/src/hooks/useOfflineQueue";
 import { useInteractionLock } from "@/src/hooks/useInteractionLock";
 import { useScrollToActive } from "@/src/hooks/useScrollToActive";
-// Lazy-loaded modals — only parsed when first rendered (Task 4.6.2)
+// Lazy-loaded modals — only parsed when first rendered
 const NodeCompletionModal = lazy(
   () => import("@/src/components/journey/NodeCompletionModal"),
 );
@@ -58,8 +65,15 @@ const UnitCompleteModal = lazy(
   () => import("@/src/components/journey/UnitCompleteModal"),
 );
 import JourneyMapPresentation from "./JourneyMapPresentation";
+import JourneyLoadingSkeleton from "@/src/components/journey/JourneyLoadingSkeleton";
+import JourneyErrorState from "@/src/components/journey/JourneyErrorState";
 
 export default function JourneyMapContainer(): React.JSX.Element {
+  // Route params — journey slug comes from navigation
+  const { slug } = useLocalSearchParams<{ slug?: string }>();
+  // Default to first journey slug if not provided (backward compatible)
+  const journeySlug: string = slug ?? 'default';
+
   const scrollViewRef = useRef<ScrollView | null>(null);
   const completionModalRef = useRef<BottomSheetModal>(null);
   const chestModalRef = useRef<BottomSheetModal>(null);
@@ -70,48 +84,23 @@ export default function JourneyMapContainer(): React.JSX.Element {
   const { play: playSound } = useSoundEffects();
   const { height: viewportHeight } = useWindowDimensions();
 
-  // Task 5.1.1: Network status + offline queue
+  // Multi-journey data pipeline: fetch → merge → set atoms
+  const { isLoading, error: dataError, isOfflineFallback, refresh } =
+    useJourneyData(journeySlug);
+
+  // Network status + offline queue
   const { isOnline } = useNetworkStatus();
   const { enqueue } = useOfflineQueue(isOnline);
 
-  // Task 5.1.3: Rapid interaction prevention
+  // Rapid interaction prevention
   const { guardedPress, lock: lockInteraction } = useInteractionLock();
 
-  // Jotai state
+  // Jotai state (set by useJourneyData, consumed here)
   const journeyState = useAtomValue(journeyStateAtom);
   const setJourneyState = useSetAtom(journeyStateAtom);
-
   const currentUnit = useAtomValue(currentUnitAtom);
   const stats = useAtomValue(journeyStatsAtom);
-
-  // We cannot return early here because we must call all hooks below.
-
-  // Task 5.1.2: Load persisted state with corruption recovery
-  useEffect(() => {
-    const hydrate = async (): Promise<void> => {
-      try {
-        const persisted: JourneyState | null = await loadJourneyState();
-        if (persisted) {
-          setJourneyState(persisted);
-        }
-      } catch (error) {
-        console.error(
-          "[JourneyMapContainer] Hydration failed, using defaults:",
-          error,
-        );
-        toast.show({
-          id: "hydration-error",
-          placement: "bottom",
-          render: () => (
-            <Toast action="error">
-              <ToastTitle>Failed to load progress — starting fresh</ToastTitle>
-            </Toast>
-          ),
-        });
-      }
-    };
-    hydrate();
-  }, [setJourneyState, toast]);
+  const enrollmentId = useAtomValue(enrollmentIdAtom);
 
   // Persist state on every change; queue for sync if offline
   useEffect(() => {
@@ -178,7 +167,10 @@ export default function JourneyMapContainer(): React.JSX.Element {
       switch (node.status) {
         case NodeStatus.ACTIVE:
           playSound("nodeTap");
-          router.push(`/tabs/screens/task/${node.taskId}` as never);
+          router.push({
+            pathname: `/tabs/screens/task/[id]`,
+            params: { id: node.taskId, nodeId: node.id }
+          } as never);
           break;
 
         case NodeStatus.COMPLETED:
@@ -211,22 +203,53 @@ export default function JourneyMapContainer(): React.JSX.Element {
 
   // ── Action dispatchers (used by child flows returning from task screen) ──
   const handleCompleteNode = useCallback(
-    (nodeId: string): void => {
+    async (nodeId: string): Promise<void> => {
       playSound("nodeComplete");
-      // Lock interactions during the completion animation (Task 5.1.3)
       lockInteraction(800);
+
+      // Optimistic local update for instant UI feedback
       setJourneyState((prev: JourneyState) => completeNode(prev, nodeId));
+
+      // Server-side atomic completion (validates, grants rewards, unlocks next)
+      if (isOnline && enrollmentId) {
+        const result = await completeNodeApi({
+          enrollmentId,
+          nodeId,
+        });
+        if (!result.success) {
+          console.warn('[JourneyMapContainer] Server completion failed, will sync on next refresh');
+          // Optimistic state already saved to AsyncStorage by useJourneyData
+        } else {
+          // Re-fetch to sync server-granted rewards
+          await refresh();
+        }
+      } else {
+        // Offline — optimistic state is saved, will sync when reconnected
+        console.warn('[JourneyMapContainer] Offline: node completion queued in local state');
+      }
     },
-    [setJourneyState, playSound, lockInteraction],
+    [setJourneyState, playSound, lockInteraction, isOnline, enrollmentId, enqueue, refresh],
   );
 
   const handleUpdateProgress = useCallback(
     (nodeId: string, progress: number): void => {
+      // Optimistic local update
       setJourneyState((prev: JourneyState) =>
         updateNodeProgress(prev, nodeId, progress),
       );
+
+      // Fire-and-forget server update (non-blocking)
+      if (isOnline && enrollmentId) {
+        updateNodeProgressApi({
+          enrollmentId,
+          nodeId,
+          progress,
+        }).catch((err: unknown) =>
+          console.warn('[JourneyMapContainer] Progress sync failed:', err),
+        );
+      }
     },
-    [setJourneyState],
+    [setJourneyState, isOnline, enrollmentId],
   );
 
   const handleModalContinue = useCallback((): void => {
@@ -258,7 +281,17 @@ export default function JourneyMapContainer(): React.JSX.Element {
     setJourneyState((prev: JourneyState) => unlockUnit(prev));
   }, [setJourneyState]);
 
-  // Early return if unit not loaded yet
+  // Only block rendering with skeleton on true first load before any state exists
+  if (isLoading && !currentUnit) {
+    return <JourneyLoadingSkeleton />;
+  }
+
+  // Hard error with nothing to render at all
+  if (dataError && !currentUnit) {
+    return <JourneyErrorState message={dataError} onRetry={refresh} />;
+  }
+
+  // Safety guard
   if (!currentUnit) {
     return <View className="flex-1 bg-gray-50" />;
   }

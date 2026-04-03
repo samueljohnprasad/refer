@@ -524,6 +524,130 @@ export type Database = {
           },
         ]
       }
+      journey_template_nodes: {
+        Row: {
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          node_index: number
+          node_type: string
+          rewards: Json
+          task_id: string
+          unit_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          node_index: number
+          node_type: string
+          rewards?: Json
+          task_id?: string
+          unit_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          node_index?: number
+          node_type?: string
+          rewards?: Json
+          task_id?: string
+          unit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_template_nodes_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "journey_template_units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journey_template_units: {
+        Row: {
+          color_scheme: string
+          created_at: string | null
+          description: string
+          id: string
+          journey_id: string
+          mascot_placements: Json
+          title: string
+          unit_number: number
+        }
+        Insert: {
+          color_scheme?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          journey_id: string
+          mascot_placements?: Json
+          title: string
+          unit_number: number
+        }
+        Update: {
+          color_scheme?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          journey_id?: string
+          mascot_placements?: Json
+          title?: string
+          unit_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_template_units_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journey_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journey_templates: {
+        Row: {
+          color_scheme: string
+          created_at: string | null
+          description: string
+          icon_url: string | null
+          id: string
+          is_active: boolean
+          slug: string
+          sort_order: number
+          title: string
+          updated_at: string | null
+          version: number
+        }
+        Insert: {
+          color_scheme?: string
+          created_at?: string | null
+          description?: string
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          slug: string
+          sort_order?: number
+          title: string
+          updated_at?: string | null
+          version?: number
+        }
+        Update: {
+          color_scheme?: string
+          created_at?: string | null
+          description?: string
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          slug?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string | null
+          version?: number
+        }
+        Relationships: []
+      }
       moods: {
         Row: {
           id: number
@@ -1013,6 +1137,112 @@ export type Database = {
           },
         ]
       }
+      user_journey_enrollments: {
+        Row: {
+          completed_at: string | null
+          current_unit_number: number
+          enrolled_at: string | null
+          id: string
+          journey_id: string
+          status: string
+          template_version: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          current_unit_number?: number
+          enrolled_at?: string | null
+          id?: string
+          journey_id: string
+          status?: string
+          template_version?: number
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          current_unit_number?: number
+          enrolled_at?: string | null
+          id?: string
+          journey_id?: string
+          status?: string
+          template_version?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_journey_enrollments_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journey_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_journey_enrollments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_node_progress: {
+        Row: {
+          completed_at: string | null
+          enrollment_id: string
+          id: string
+          node_id: string
+          progress: number
+          reward_claimed: boolean
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          enrollment_id: string
+          id?: string
+          node_id: string
+          progress?: number
+          reward_claimed?: boolean
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          enrollment_id?: string
+          id?: string
+          node_id?: string
+          progress?: number
+          reward_claimed?: boolean
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_node_progress_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "user_journey_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_node_progress_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "journey_template_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_node_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_notification_settings: {
         Row: {
           achievement_reminders: boolean | null
@@ -1273,6 +1503,16 @@ export type Database = {
     }
     Functions: {
       cleanup_old_challenges: { Args: never; Returns: undefined }
+      complete_journey_node: {
+        Args: { p_enrollment_id: string; p_node_id: string }
+        Returns: Json
+      }
+      get_journey_catalog: { Args: never; Returns: Json }
+      get_journey_template: { Args: { p_slug: string }; Returns: Json }
+      get_user_journey_progress: {
+        Args: { p_journey_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       age_range_enum: "18_24" | "25_34" | "35_44" | "45_54" | "55_64" | "65+"

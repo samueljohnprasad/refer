@@ -10,9 +10,36 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/ui/text";
 import { useLocalSearchParams, router } from "expo-router";
 import { PressableScale } from "@/src/components/ui/PressableScale";
+import { useAtomValue, useSetAtom } from 'jotai';
+import { enrollmentIdAtom, journeyStateAtom } from '@/src/store/journeyStore';
+import { completeNode } from '@/src/store/journeyActions';
+import { completeNodeApi } from '@/src/lib/api/journeyApi';
+import { useNetworkStatus } from '@/src/hooks/useNetworkStatus';
 
 export default function TaskScreen(): React.JSX.Element {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, nodeId } = useLocalSearchParams<{ id: string; nodeId?: string }>();
+  
+  const enrollmentId = useAtomValue(enrollmentIdAtom);
+  const setJourneyState = useSetAtom(journeyStateAtom);
+  const { isOnline } = useNetworkStatus();
+
+  const handleComplete = () => {
+    if (nodeId) {
+      // Optimistic local update so the map instantly shows it as completed
+      setJourneyState((prev) => completeNode(prev, nodeId));
+
+      // Non-blocking server sync
+      if (isOnline && enrollmentId) {
+        completeNodeApi({ enrollmentId, nodeId }).catch((err) => {
+          console.warn('[TaskScreen] Failed to complete node on server', err);
+        });
+      } else {
+        console.warn('[TaskScreen] Offline or not enrolled, progress queued locally');
+      }
+    }
+    
+    router.back();
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
@@ -32,7 +59,7 @@ export default function TaskScreen(): React.JSX.Element {
 
         {/* Complete button */}
         <PressableScale
-          onPress={() => router.back()}
+          onPress={handleComplete}
           scale={0.95}
           hapticStyle="medium"
           style={{

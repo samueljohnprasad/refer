@@ -17,3 +17,18 @@ export type { JourneyReward, PathNodeData, NodePosition } from "./node";
 export type { MascotPlacement, UnitData } from "./unit";
 
 export type { JourneyStats, JourneyState } from "./state";
+
+export type {
+  JourneyTemplate,
+  JourneyTemplateUnit,
+  JourneyTemplateNode,
+  TemplateMascotPlacement,
+  JourneyListItem,
+} from "./template";
+
+export type {
+  UserJourneyProgress,
+  UserJourneyEnrollment,
+  UserNodeProgress,
+  CompleteNodeResponse,
+} from "./progress";
