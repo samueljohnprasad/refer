@@ -1,7 +1,5 @@
 
 
-
-
 /**
  * ChestNode (Task 4.2.1)
  * Treasure chest node on the journey path — larger than regular nodes (80px).
@@ -27,12 +25,16 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 
-import { PressableScale } from "@/src/components/ui/PressableScale";
+import AnimatedNodeButton from "@/src/components/journey/AnimatedNodeButton";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { NodePosition, PathNodeData } from "@/src/types/journey/node";
 import { NodeStatus } from "@/src/types/journey/enums";
-import { ANIMATION_TIMING, CHEST_COLORS, NODE_SIZE } from "@/src/data/journey/constants";
-
+import {
+  ANIMATION_TIMING,
+  CHEST_COLORS,
+  NODE_SIZE,
+} from "@/src/data/journey/constants";
+import { darkenHex } from "@/src/utils/colorUtils";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -119,6 +121,7 @@ function ChestNode({
 
   // Colors based on locked state
   const bodyColor: string = isLocked ? CHEST_COLORS.locked : CHEST_COLORS.body;
+  const shadowFaceColor: string = darkenHex(bodyColor, 0.25);
   const borderColor: string = isLocked
     ? CHEST_COLORS.lockedBorder
     : CHEST_COLORS.bodyBorder;
@@ -154,31 +157,17 @@ function ChestNode({
 
       {/* Chest body with shake */}
       <Animated.View style={shakeStyle}>
-        <PressableScale
+        <AnimatedNodeButton
+          size={size}
+          backgroundColor={bodyColor}
+          shadowColor={shadowFaceColor}
           onPress={handlePress}
           disabled={!isInteractive}
-          scale={0.88}
           hapticStyle="heavy"
-          accessibilityRole="button"
+          shadowDepth={6}
+          borderRadius={20}
           accessibilityLabel={`Treasure chest ${node.index + 1}, ${node.status}`}
           accessibilityState={{ disabled: !isInteractive }}
-          style={{
-            width: size,
-            height: size,
-            borderRadius: 20,
-            backgroundColor: bodyColor,
-            alignItems: "center",
-            justifyContent: "center",
-            borderWidth: 3,
-            borderColor: borderColor,
-            borderBottomWidth: 5,
-            borderBottomColor: borderColor,
-            shadowColor: isLocked ? "#000" : CHEST_COLORS.shine,
-            shadowOffset: { width: 0, height: isLocked ? 2 : 0 },
-            shadowOpacity: isLocked ? 0.1 : 0.4,
-            shadowRadius: isLocked ? 4 : 12,
-            elevation: isLocked ? 2 : 6,
-          }}
         >
           {/* Chest icon */}
           <Text className="text-3xl">{isLocked ? "🔒" : "🎁"}</Text>
@@ -196,29 +185,13 @@ function ChestNode({
               }}
             />
           )}
-        </PressableScale>
+        </AnimatedNodeButton>
       </Animated.View>
     </View>
   );
 }
 
 export default React.memo(ChestNode);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -18,7 +18,7 @@ import React, { useEffect, useRef } from "react";
 import { View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { Text } from "@/components/ui/text";
-import { PressableScale } from "@/src/components/ui/PressableScale";
+import AnimatedNodeButton from "@/src/components/journey/AnimatedNodeButton";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import Animated, {
     useSharedValue,
@@ -102,6 +102,7 @@ import {
     useColorTheme,
 } from "@/src/context/JourneyConfigContext";
 import { getSvg } from "@/src/data/journey";
+import { darkenHex } from "@/src/utils/colorUtils";
 
 // ---------------------------------------------------------------------------
 // Animation Factory Registry — maps animation key → setup function
@@ -169,6 +170,11 @@ const ANIMATION_FACTORIES: Record<string, AnimationSetup> = {
 // no outer shell needed. Emoji/hugeicons are glyphs inside the shell circle.
 // ---------------------------------------------------------------------------
 
+/** Shadow depth for the 3D press effect (dp) */
+const NODE_SHADOW_DEPTH = 6;
+/** Factor to darken the face color for the shadow layer */
+const NODE_SHADOW_DARKEN_FACTOR = 0.25;
+
 interface NodeShellContentProps {
     iconConfig: NodeIconConfig;
     /** Full node size (used as SVG dimensions) */
@@ -205,6 +211,12 @@ function NodeShellContent({
 }: NodeShellContentProps): React.JSX.Element {
     // SVG type: the SVG provides the COMPLETE node visual (pill bg, shadow, glyph).
     // We do NOT add a circular shell — just wrap with PressableScale for interaction.
+    // Compute the darker shadow color once for the 3D effect
+    const shadowFaceColor: string = darkenHex(
+        isCompleted || isActive ? theme.pathActiveColor : backgroundColor,
+        NODE_SHADOW_DARKEN_FACTOR,
+    );
+
     if (iconConfig.type === "svg") {
         // Use cached recolored SVG for active/completed, raw SVG for others
         const xml: string | undefined =
@@ -218,12 +230,14 @@ function NodeShellContent({
 
         if (xml) {
             return (
-                <PressableScale
+                <AnimatedNodeButton
+                    size={size}
+                    backgroundColor="transparent"
+                    shadowColor="transparent"
                     onPress={onPress}
                     disabled={!isInteractive}
-                    scale={0.9}
                     hapticStyle="medium"
-                    accessibilityRole="button"
+                    shadowDepth={0}
                     accessibilityLabel={accessibilityLabel}
                     accessibilityState={{ disabled: !isInteractive }}
                 >
@@ -233,40 +247,32 @@ function NodeShellContent({
                         height={size}
                         accessibilityLabel={iconConfig.value}
                     />
-                </PressableScale>
+                </AnimatedNodeButton>
             );
         }
         // SVG not found — fall through to emoji fallback
     }
 
-    // Emoji / hugeicons / fallback: render inside a colored circle shell
+    // Emoji / hugeicons / fallback: render inside a Duolingo-style 3D circle
     const glyph: string =
         iconConfig.type === "emoji" || iconConfig.type === "hugeicons"
             ? iconConfig.value
             : "⭐";
 
     return (
-        <PressableScale
+        <AnimatedNodeButton
+            size={size}
+            backgroundColor={backgroundColor}
+            shadowColor={shadowFaceColor}
             onPress={onPress}
             disabled={!isInteractive}
-            scale={0.9}
             hapticStyle="medium"
-            accessibilityRole="button"
+            shadowDepth={NODE_SHADOW_DEPTH}
             accessibilityLabel={accessibilityLabel}
             accessibilityState={{ disabled: !isInteractive }}
-            style={{
-                width: size,
-                height: size,
-                borderRadius: size / 2,
-                backgroundColor,
-                alignItems: "center",
-                justifyContent: "center",
-                borderBottomWidth: 4,
-                borderBottomColor: borderColor,
-            }}
         >
             <Text className="text-2xl">{glyph}</Text>
-        </PressableScale>
+        </AnimatedNodeButton>
     );
 }
 

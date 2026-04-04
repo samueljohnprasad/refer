@@ -7,7 +7,11 @@
  * Compositor-only rule: Only animate `transform` and `opacity`.
  */
 
-import { WithSpringConfig, WithTimingConfig, Easing } from 'react-native-reanimated';
+import {
+  WithSpringConfig,
+  WithTimingConfig,
+  Easing,
+} from "react-native-reanimated";
 
 // ─── Spring Presets ───────────────────────────────────────────────────────────
 
@@ -37,6 +41,13 @@ export const SPRING_BOUNCY: WithSpringConfig = {
   stiffness: 320,
   damping: 10,
   mass: 1,
+};
+
+/** Duolingo-style 3D press: snappy down, natural bounce-back (~250ms settle) */
+export const SPRING_DUOLINGO_PRESS: WithSpringConfig = {
+  stiffness: 300,
+  damping: 20,
+  mass: 0.4,
 };
 
 // ─── Timing Durations (ms) ────────────────────────────────────────────────────

@@ -18,6 +18,7 @@ export { default as ConfigDrivenNode } from "./ConfigDrivenNode";
 export { default as UnitDivider } from "./UnitDivider";
 export { default as StickyUnitHeader } from "./StickyUnitHeader";
 export { default as SideProgressRail } from "./SideProgressRail";
+export { default as AnimatedNodeButton } from "./AnimatedNodeButton";
 
 export type { PathNodeProps } from "./PathNode";
 export type { ConfigDrivenNodeProps } from "./ConfigDrivenNode";
@@ -33,3 +34,7 @@ export type { ChestNodeProps } from "./ChestNode";
 export type { UnitCompleteModalProps } from "./UnitCompleteModal";
 export type { OfflineBannerProps } from "./OfflineBanner";
 export type { ScrollToActiveButtonProps } from "./ScrollToActiveButton";
+export type {
+    AnimatedNodeButtonProps,
+    NodeHapticStyle,
+} from "./AnimatedNodeButton";

@@ -14,7 +14,7 @@
 import React, { useEffect, useRef } from "react";
 import { View } from "react-native";
 import { SvgXml } from "react-native-svg";
-import { PressableScale } from "@/src/components/ui/PressableScale";
+import AnimatedNodeButton from "@/src/components/journey/AnimatedNodeButton";
 import { Text } from "@/components/ui/text";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import Animated, {
@@ -36,6 +36,7 @@ import {
   NODE_SIZE,
   ANIMATION_TIMING,
 } from "@/src/data/journey/constants";
+import { darkenHex } from "@/src/utils/colorUtils";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -81,6 +82,11 @@ const NODE_BG_COLORS: Record<string, string> = {
   [NodeStatus.ACTIVE]: NODE_COLORS.active,
   [NodeStatus.LOCKED]: NODE_COLORS.locked,
 };
+
+/** Shadow depth for the 3D press effect (dp) */
+const NODE_SHADOW_DEPTH = 6;
+/** Factor to darken the face color for the shadow layer */
+const NODE_SHADOW_DARKEN_FACTOR = 0.25;
 
 // ---------------------------------------------------------------------------
 // Props
@@ -164,6 +170,7 @@ function PathNode({
     node.type === "chest" ? NODE_SIZE.chest : NODE_SIZE.regular;
   const halfSize: number = size / 2;
   const bgColor: string = NODE_BG_COLORS[node.status] ?? NODE_COLORS.locked;
+  const shadowColor: string = darkenHex(bgColor, NODE_SHADOW_DARKEN_FACTOR);
   const isInteractive: boolean = node.status !== NodeStatus.LOCKED;
   const isActive: boolean = node.status === NodeStatus.ACTIVE;
   const isCompleted: boolean = node.status === NodeStatus.COMPLETED;
@@ -292,37 +299,16 @@ function PathNode({
         ]}
       >
         <Animated.View style={isActive ? glowStyle : undefined}>
-          <PressableScale
+          <AnimatedNodeButton
+            size={size}
+            backgroundColor={bgColor}
+            shadowColor={shadowColor}
             onPress={handlePress}
             disabled={!isInteractive}
-            scale={0.9}
             hapticStyle="medium"
-            accessibilityRole="button"
+            shadowDepth={NODE_SHADOW_DEPTH}
             accessibilityLabel={`${node.type === NodeType.CHECKPOINT ? "Checkpoint" : "Lesson"} ${node.index + 1}, ${node.status}${isActive && node.progress !== undefined ? `, ${Math.round(node.progress * 100)}% complete` : ""}`}
             accessibilityState={{ disabled: !isInteractive }}
-            style={{
-              width: size,
-              height: size,
-              borderRadius: size / 2,
-              backgroundColor: bgColor,
-              alignItems: "center",
-              justifyContent: "center",
-              borderBottomWidth: 4,
-              borderBottomColor: isActive
-                ? "#45A802"
-                : isCompleted
-                  ? "#E5A800"
-                  : "#A0AEC0",
-              ...(isCompleted
-                ? {
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.15,
-                    shadowRadius: 8,
-                    elevation: 5,
-                  }
-                : {}),
-            }}
           >
             {node.status === NodeStatus.LOCKED ? (
               <SvgXml
@@ -334,7 +320,7 @@ function PathNode({
             ) : (
               <Text className="text-2xl">{ICON_MAP[node.icon] ?? "⭐"}</Text>
             )}
-          </PressableScale>
+          </AnimatedNodeButton>
         </Animated.View>
       </Animated.View>
     </View>
