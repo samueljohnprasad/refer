@@ -41,8 +41,11 @@ export default function SectionOverviewRoute(): React.JSX.Element {
   }, []);
 
   const handleJumpToSection = useCallback((sectionId: string): void => {
-    // Navigate back to journey map — the jump will be handled there
-    router.back();
+    // Navigate back to journey map with the jumpToSection param
+    router.navigate({
+      pathname: "/tabs/(tabs)/insights",
+      params: { jumpToSection: sectionId },
+    });
   }, []);
 
   return (

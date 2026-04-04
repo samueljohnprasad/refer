@@ -68,14 +68,15 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
     const isMascotRight: boolean = section.mascotSide === "right";
 
     return (
-        <View
+        <Pressable
             className="rounded-2xl mx-4 mb-4 overflow-hidden"
             style={{
                 backgroundColor: section.cardBackgroundColor,
                 opacity: section.isUnlocked ? 1 : 0.6,
             }}
-            accessibilityRole="summary"
+            accessibilityRole="button"
             accessibilityLabel={`${section.title}, ${section.unitRangeLabel}, ${section.progressPercent}% complete`}
+            onPress={() => onJump(section.id)}
         >
             {/* Speech bubble + mascot area */}
             <View className="p-5 pb-3">
@@ -172,7 +173,7 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
                     </Pressable>
                 )}
             </View>
-        </View>
+        </Pressable>
     );
 }
 

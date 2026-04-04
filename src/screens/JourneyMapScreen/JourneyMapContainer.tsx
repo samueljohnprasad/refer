@@ -23,7 +23,7 @@ import React, {
 import { ScrollView, useWindowDimensions, View } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useAtomValue, useSetAtom } from "jotai";
-import { router, Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 
 import type {
@@ -80,7 +80,7 @@ import { Text } from "@/components/Themed";
 
 export default function JourneyMapContainer(): React.JSX.Element {
   // Route params — journey slug comes from navigation
-  const { slug } = useLocalSearchParams<{ slug?: string }>();
+  const { slug, jumpToSection } = useLocalSearchParams<{ slug?: string, jumpToSection?: string }>();
   // Default to first journey slug if not provided (backward compatible)
   const journeySlug: string = slug ?? "default";
 
@@ -127,12 +127,43 @@ export default function JourneyMapContainer(): React.JSX.Element {
   // Get config for multi-unit rendering
   const config: JourneyConfig = useJourneyConfig();
 
-  // All units from journey state
-  const allUnits: UnitData[] = journeyState?.units || [];
+  // Determine the default section based on user's current unit
+  const defaultSectionId = useMemo(() => {
+    if (!journeyState || !config.units.length) return config.sections[0].id;
+    const currentUnitConfig = config.units[journeyState.currentUnit] || config.units[0];
+    return currentUnitConfig.sectionId;
+  }, [journeyState?.currentUnit, config]);
+
+  // State to track which section is currently focused (only its units render)
+  const [activeSectionId, setActiveSectionId] = useState<string>(defaultSectionId);
+
+  // Sync defaultSectionId to active state if the journey is refreshed or initialized
+  useEffect(() => {
+    if (!jumpToSection) setActiveSectionId(defaultSectionId);
+  }, [defaultSectionId]);
+
+  // Handle cross-section jumping via routing params
+  useEffect(() => {
+    if (jumpToSection && jumpToSection !== activeSectionId) {
+      setActiveSectionId(jumpToSection);
+      router.setParams({ jumpToSection: undefined });
+      // Reset scroll position gracefully to the top when navigating to a new section
+      scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+    }
+  }, [jumpToSection, activeSectionId]);
+
+  // Filter unit configs to ONLY the ones in the active section
+  const activeSectionConfig = config.sections.find(s => s.id === activeSectionId) || config.sections[0];
+  
+  // All units from journey state, restricted to the active section
+  const allUnits: UnitData[] = useMemo(() => {
+    const units = journeyState?.units || [];
+    return units.filter((u) => activeSectionConfig.unitIds.includes(u.id));
+  }, [journeyState?.units, activeSectionConfig]);
 
   // Compute multi-unit layout (all units in one scrollable path)
   const { screenWidth, unitSegments, totalDimensions } =
-    useMultiUnitLayout(allUnits);
+    useMultiUnitLayout(allUnits, config);
 
   // Compute per-unit render data with mascot positions
   const unitRenderData: UnitRenderData[] = useMemo(() => {
@@ -191,18 +222,23 @@ export default function JourneyMapContainer(): React.JSX.Element {
     onScroll,
   } = useScrollToActive(scrollViewRef, activeNodeY, viewportHeight);
 
-  // Auto-scroll to active node on mount
-  useEffect(() => {
-    if (activeNodeY !== null) {
-      const timer = setTimeout(() => {
-        scrollViewRef.current?.scrollTo({
-          y: Math.max(0, activeNodeY - 200),
-          animated: true,
-        });
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [activeNodeY]);
+  // Auto-scroll to active node gracefully on screen focus
+  // Gives the user a moment to see their completed node before panning to the next one
+  useFocusEffect(
+    useCallback(() => {
+      if (activeNodeY !== null && !jumpToSection) {
+        const timer = setTimeout(() => {
+          scrollViewRef.current?.scrollTo({
+            y: Math.max(0, activeNodeY - 200),
+            animated: true,
+          });
+        }, 500); // 500ms lets the screen settle so they can observe the completion before the scroll native animation triggers
+        return () => clearTimeout(timer);
+      }
+    }, [activeNodeY, jumpToSection])
+  );
+
+
 
   // ── Node press handlers by status (wrapped with interaction lock — Task 5.1.3) ──
   const handleNodePressInner = useCallback(

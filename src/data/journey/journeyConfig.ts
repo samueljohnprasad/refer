@@ -244,15 +244,15 @@ const SECTION_CONFIGS: SectionConfig[] = [
     {
         id: 'section_2',
         sectionNumber: 2,
-        title: 'Section 2',
-        unitRangeLabel: 'Units 4 to 6',
+        title: 'Journaling Fundamentals',
+        unitRangeLabel: 'Units 4 to 5',
         cardBackgroundColor: '#F3E8FF',
         mascot: {
             imageKey: 'owl_excited',
             message: 'section_2_intro',
             side: 'right',
         },
-        unitIds: [],
+        unitIds: ['44000000-0000-0000-0000-000000000004', '55000000-0000-0000-0000-000000000005'],
     },
 ];
 
@@ -333,6 +333,52 @@ const UNIT_CONFIGS: UnitConfig[] = [
             title: 'Talk about travel',
             showJumpHere: true,
         },
+        pathGeometry: 'sine',
+    },
+    {
+        id: '44000000-0000-0000-0000-000000000004',
+        unitNumber: 4,
+        title: 'Start Journaling',
+        description: 'Explore your thoughts and establish a journaling habit',
+        colorThemeKey: 'orange',
+        sectionId: 'section_2',
+        nodes: [
+            { variantKey: 'star', taskId: 'task_j1', taskType: 'journal_prompt' },
+            { variantKey: 'star', taskId: 'task_j2', taskType: 'thought_reframing' },
+            { variantKey: 'checkpoint', taskId: 'task_j3', taskType: 'mood_check_in' },
+            { variantKey: 'microphone', taskId: 'task_j4', taskType: 'voice_journal' },
+            { variantKey: 'chest', taskId: 'task_j5', taskType: 'chest_reward' },
+        ],
+        mascotPlacements: [
+            { afterNodeIndex: 2, side: 'right', messageKey: 'amazing_work' },
+        ],
+        divider: {
+            title: 'Journaling Basics',
+            showJumpHere: false,
+        },
+        pathGeometry: 'organic',
+    },
+    {
+        id: '55000000-0000-0000-0000-000000000005',
+        unitNumber: 5,
+        title: 'Deep Reflection',
+        description: 'Challenge your perspectives with intensive reframing',
+        colorThemeKey: 'pink',
+        sectionId: 'section_2',
+        nodes: [
+            { variantKey: 'star', taskId: 'task_j6', taskType: 'journal_prompt' },
+            { variantKey: 'headphones', taskId: 'task_j7', taskType: 'gratitude_reframe' },
+            { variantKey: 'gamepad', taskId: 'task_j8', taskType: 'thought_catcher' },
+            { variantKey: 'chest', taskId: 'task_j9', taskType: 'chest_reward' },
+        ],
+        mascotPlacements: [
+            { afterNodeIndex: 1, side: 'left', messageKey: 'keep_it_up' },
+        ],
+        divider: {
+            title: 'Deep Reflection',
+            showJumpHere: true,
+        },
+        pathGeometry: 'zigzag',
     },
 ];
 

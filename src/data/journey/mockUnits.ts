@@ -23,7 +23,7 @@ export const UNIT_1: UnitData = {
       { type: NodeType.LESSON },
       { type: NodeType.CHECKPOINT },
       { type: NodeType.LESSON, overrides: { progress: 0.75 } },
-      { type: NodeType.LESSON , overrides: { progress: 0.75 }},
+      { type: NodeType.LESSON, overrides: { progress: 0.75 } },
       { type: NodeType.CHEST },
       { type: NodeType.LESSON },
       { type: NodeType.CHECKPOINT },
@@ -112,5 +112,50 @@ export const UNIT_3: UnitData = {
   ],
 };
 
+/** Unit 4: Journaling Start — All locked (5 total) */
+export const UNIT_4: UnitData = {
+  id: "44000000-0000-0000-0000-000000000004",
+  unitNumber: 4,
+  title: "Start Journaling",
+  description: "Explore your thoughts",
+  colorScheme: UnitColorScheme.ORANGE,
+  nodes: createNodeSequence(
+    [
+      { type: NodeType.LESSON },
+      { type: NodeType.LESSON },
+      { type: NodeType.CHECKPOINT },
+      { type: NodeType.LESSON },
+      { type: NodeType.CHEST },
+    ],
+    0, // 0 completed -> first node is active!
+  ),
+  mascotPlacements: [],
+};
+
+/** Unit 5: Deep Reflection — All locked (4 total) */
+export const UNIT_5: UnitData = {
+  id: "55000000-0000-0000-0000-000000000005",
+  unitNumber: 5,
+  title: "Deep Reflection",
+  description: "Challenge your perspectives",
+  colorScheme: UnitColorScheme.PINK,
+  nodes: createNodeSequence(
+    [
+      { type: NodeType.LESSON },
+      { type: NodeType.LESSON },
+      { type: NodeType.CHECKPOINT },
+      { type: NodeType.CHEST },
+    ],
+    0,
+  ).map((node) => ({
+    ...node,
+    status: NodeStatus.LOCKED,
+    icon: NodeIcon.LOCK,
+    progress: undefined,
+    label: undefined,
+  })),
+  mascotPlacements: [],
+};
+
 /** All mock units in order */
-export const MOCK_UNITS: UnitData[] = [UNIT_1, UNIT_2, UNIT_3];
+export const MOCK_UNITS: UnitData[] = [UNIT_1, UNIT_2, UNIT_3, UNIT_4, UNIT_5];

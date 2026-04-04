@@ -41,6 +41,7 @@ export enum UnitColorScheme {
   BLUE = "blue",
   PURPLE = "purple",
   ORANGE = "orange",
+  PINK = "pink",
 }
 
 /** Mascot placement side relative to the path */

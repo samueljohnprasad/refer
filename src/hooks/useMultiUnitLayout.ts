@@ -10,9 +10,9 @@
 import { useMemo } from "react";
 import { useWindowDimensions } from "react-native";
 import type { NodePosition } from "@/src/types/journey";
-import type { UnitData } from "@/src/types/journey";
+import type { UnitData, JourneyConfig, UnitConfig } from "@/src/types/journey";
 import type { PathDimensions } from "@/src/utils/journey";
-import { getNodePosition } from "@/src/utils/journey";
+import { getAllNodePositions } from "@/src/utils/journey";
 import type { WaveConfig } from "@/src/utils/journey";
 
 // ---------------------------------------------------------------------------
@@ -61,7 +61,7 @@ export interface MultiUnitLayoutData {
  */
 export function useMultiUnitLayout(
     units: UnitData[],
-    config?: Partial<WaveConfig>,
+    globalConfig?: JourneyConfig,
 ): MultiUnitLayoutData {
     const { width: screenWidth } = useWindowDimensions();
 
@@ -78,20 +78,20 @@ export function useMultiUnitLayout(
 
                 const yOffset: number = currentY;
 
+                const unitConfig: UnitConfig | undefined = globalConfig?.units.find(uc => uc.id === unit.id);
+
                 // Compute relative positions for this unit's nodes, then offset
-                const nodePositions: NodePosition[] = unit.nodes.map(
-                    (_: unknown, nodeIndex: number) => {
-                        const relPos: NodePosition = getNodePosition(
-                            nodeIndex,
-                            screenWidth,
-                            config,
-                        );
-                        return {
-                            x: relPos.x,
-                            y: currentY + nodeIndex * (config?.verticalGap ?? 120),
-                        };
+                const nodePositions: NodePosition[] = getAllNodePositions(
+                    unit.nodes.length,
+                    screenWidth,
+                    { 
+                        topPadding: 0,
+                        pathGeometry: unitConfig?.pathGeometry 
                     },
-                );
+                ).map((pos: NodePosition) => ({
+                    ...pos,
+                    y: pos.y + yOffset,
+                }));
 
                 segments.push({
                     unitId: unit.id,
@@ -101,16 +101,16 @@ export function useMultiUnitLayout(
 
                 // Advance currentY past the last node in this unit
                 if (unit.nodes.length > 0) {
-                    currentY += (unit.nodes.length - 1) * (config?.verticalGap ?? 120);
+                    currentY += (unit.nodes.length - 1) * (globalConfig?.settings.verticalGap ?? 120);
                     // Add spacing after the last node before the next unit
-                    currentY += config?.verticalGap ?? 120;
+                    currentY += globalConfig?.settings.verticalGap ?? 120;
                 }
             });
 
             const totalHeight: number = currentY + BOTTOM_PADDING;
 
             return { segments, totalHeight };
-        }, [units, screenWidth, config]);
+        }, [units, screenWidth, globalConfig]);
 
     const totalDimensions: PathDimensions = useMemo(
         () => ({

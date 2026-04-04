@@ -18,6 +18,7 @@ import type { JourneyState, JourneyStats } from '@/src/types/journey';
 import type { JourneyTemplate } from '@/src/types/journey/template';
 import type { UserJourneyProgress } from '@/src/types/journey/progress';
 import { MOCK_JOURNEY_STATE } from '@/src/data/journey';
+import { NodeStatus, NodeIcon } from '@/src/types/journey/enums';
 import { mergeJourneyState, createInitialProgress } from '@/src/utils/journey/mergeJourneyState';
 import {
   journeyStateAtom,
@@ -117,8 +118,10 @@ export function useJourneyData(slug: string | null): UseJourneyDataReturn {
         if (!template) {
           console.warn('[useJourneyData] No template found, using mock data');
           const cachedState = await loadJourneyState();
-          // Use cached state if available, otherwise default mock
-          await applyState(cachedState ?? MOCK_JOURNEY_STATE);
+          const currentState = cachedState 
+            ? { ...cachedState, units: MOCK_JOURNEY_STATE.units } 
+            : MOCK_JOURNEY_STATE;
+          await applyState(currentState);
           setIsOfflineFallback(true);
           setIsLoading(false);
           return;
@@ -160,7 +163,7 @@ export function useJourneyData(slug: string | null): UseJourneyDataReturn {
           const cachedState = await loadJourneyState();
           if (cachedState) {
             setTemplate(template);
-            await applyState(cachedState);
+            await applyState({ ...cachedState, units: MOCK_JOURNEY_STATE.units });
             setIsOfflineFallback(true);
             setIsLoading(false);
             return;
@@ -179,6 +182,26 @@ export function useJourneyData(slug: string | null): UseJourneyDataReturn {
         // ── Step 6: Merge template + progress → JourneyState ─────────────
         const mergedState = mergeJourneyState(template, progress, DEFAULT_STATS);
 
+        // [DEV INJECTION] Ensure new UI-configured units exist in state for testing, 
+        // even if they haven't been seeded in the remote database yet.
+        MOCK_JOURNEY_STATE.units.forEach(mockUnit => {
+          if (!mergedState.units.find(u => u.id === mockUnit.id)) {
+            // Lock all nodes on injection so we don't accidentally create a second "START" button 
+            // if the user's progress is still back in an earlier section!
+            const lockedUnit = {
+              ...mockUnit,
+              nodes: mockUnit.nodes.map(n => ({
+                ...n,
+                status: NodeStatus.LOCKED,
+                icon: NodeIcon.LOCK,
+                progress: undefined,
+                label: undefined,
+              }))
+            };
+            mergedState.units.push(lockedUnit);
+          }
+        });
+
         setTemplate(template);
         setProgress(progress);
         setActiveSlug(journeySlug);
@@ -190,7 +213,10 @@ export function useJourneyData(slug: string | null): UseJourneyDataReturn {
 
         // Last resort — never show a blank screen
         const cachedState = await loadJourneyState();
-        await applyState(cachedState ?? MOCK_JOURNEY_STATE);
+        const fallbackState = cachedState 
+          ? { ...cachedState, units: MOCK_JOURNEY_STATE.units } 
+          : MOCK_JOURNEY_STATE;
+        await applyState(fallbackState);
         setIsOfflineFallback(true);
         // Don't set error — the UI can still render with fallback data
       } finally {

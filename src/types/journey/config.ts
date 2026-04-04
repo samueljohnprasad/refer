@@ -124,6 +124,9 @@ export interface SectionConfig {
 // Unit Config (enhanced — replaces UnitData for static config)
 // ---------------------------------------------------------------------------
 
+/** Geometry styles for how the path interpolates between nodes */
+export type PathGeometryType = 'sine' | 'organic' | 'zigzag' | 'straight';
+
 /** Config for the visual divider rendered between units in the scrollable path */
 export interface UnitDividerConfig {
     /** Title text shown in the divider (e.g. "Describe your family") */
@@ -183,6 +186,8 @@ export interface UnitConfig {
     mascotPlacements: MascotPlacementConfig[];
     /** Divider config rendered above this unit (between previous unit and this one) */
     divider: UnitDividerConfig;
+    /** Defines the mathematical path style. Defaults to 'sine' */
+    pathGeometry?: PathGeometryType;
 }
 
 // ---------------------------------------------------------------------------
