@@ -73,14 +73,14 @@ function PathConnector({
   const fullPathD: string = buildPathD(nodePositions);
   const progressPathD: string =
     completedCount > 0
-      ? buildPartialPathD(nodePositions, completedCount - 1)
+      ? buildPartialPathD(nodePositions, completedCount)
       : "";
 
   // Estimate total length of the progress sub-path for dash animation
   const estimatedLength: number = useMemo(
     () =>
       completedCount > 0
-        ? approximatePathLength(nodePositions, completedCount - 1)
+        ? approximatePathLength(nodePositions, completedCount)
         : 0,
     [nodePositions, completedCount],
   );

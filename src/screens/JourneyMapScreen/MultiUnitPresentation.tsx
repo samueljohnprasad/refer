@@ -93,38 +93,13 @@ export interface MultiUnitPresentationProps {
 interface UnitSectionProps {
     renderData: UnitRenderData;
     onNodePress: (node: PathNodeData) => void;
-    screenWidth: number;
 }
 
-function UnitSection({ renderData, onNodePress, screenWidth }: UnitSectionProps): React.JSX.Element {
+function UnitSection({ renderData, onNodePress }: UnitSectionProps): React.JSX.Element {
     const { unit, unitConfig, layout, mascotPositions } = renderData;
-
-    const completedCount: number = useMemo(
-        () => unit.nodes.filter((n: PathNodeData) => n.status === NodeStatus.COMPLETED).length,
-        [unit.nodes],
-    );
-
-    const pathDimensions = useMemo(() => ({
-        width: screenWidth,
-        height: layout.nodePositions.length > 1
-            ? (layout.nodePositions[layout.nodePositions.length - 1]?.y ?? 0) -
-              (layout.nodePositions[0]?.y ?? 0)
-            : 0,
-        totalLength: layout.nodePositions.length * 120,
-    }), [screenWidth, layout.nodePositions]);
 
     return (
         <>
-            {/* Path connector for this unit's nodes */}
-            {layout.nodePositions.length >= 2 && (
-                <PathConnector
-                    nodePositions={layout.nodePositions}
-                    pathDimensions={pathDimensions}
-                    screenWidth={screenWidth}
-                    completedCount={completedCount}
-                />
-            )}
-
             {/* Config-driven nodes */}
             {unit.nodes.map((node: PathNodeData, index: number) => {
                 const position: NodePosition | undefined = layout.nodePositions[index];
@@ -182,6 +157,25 @@ function MultiUnitPresentation({
     const visibleUnit: UnitRenderData | undefined =
         unitRenderData[currentVisibleUnitIndex] ?? unitRenderData[0];
 
+    // Flatten all node positions to draw one continuous path across all units
+    const allNodePositions: NodePosition[] = useMemo(() => {
+        return unitRenderData.flatMap((rd) => rd.layout.nodePositions);
+    }, [unitRenderData]);
+
+    // Calculate global active node index so the green progress path reaches it exactly
+    const activeNodeGlobalIndex: number = useMemo(() => {
+        let globalIndex = 0;
+        for (const rd of unitRenderData) {
+            for (const node of rd.unit.nodes) {
+                if (node.status === NodeStatus.ACTIVE) {
+                    return globalIndex;
+                }
+                globalIndex++;
+            }
+        }
+        return globalIndex; // If completely finished, path extends to the very end
+    }, [unitRenderData]);
+
     return (
         <View className="flex-1 bg-gray-50 mb-28">
             {/* Sticky unit header — color from config */}
@@ -211,6 +205,16 @@ function MultiUnitPresentation({
                 onScroll={onScroll}
                 scrollEventThrottle={16}
             >
+                {/* Global continuous path behind everything */}
+                {allNodePositions.length > 1 && (
+                    <PathConnector
+                        nodePositions={allNodePositions}
+                        pathDimensions={totalDimensions}
+                        screenWidth={screenWidth}
+                        completedCount={activeNodeGlobalIndex}
+                    />
+                )}
+
                 {unitRenderData.map((renderData: UnitRenderData, unitIndex: number) => (
                     <React.Fragment key={renderData.unit.id}>
                         {/* Unit divider (skip for the first unit) */}
@@ -238,8 +242,8 @@ function MultiUnitPresentation({
                             </View>
                         )}
 
-                        {/* Unit's nodes, paths, and mascots */}
-                        <UnitSection renderData={renderData} onNodePress={onNodePress} screenWidth={screenWidth} />
+                        {/* Unit's nodes and mascots */}
+                        <UnitSection renderData={renderData} onNodePress={onNodePress} />
                     </React.Fragment>
                 ))}
             </ScrollView>
