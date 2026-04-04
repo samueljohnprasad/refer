@@ -30,7 +30,7 @@ import type { PathNodeData, JourneyState, UnitData, JourneyConfig, UnitConfig } 
 import { NodeStatus, NodeType } from "@/src/types/journey";
 import { useMultiUnitLayout } from "@/src/hooks/useMultiUnitLayout";
 import type { UnitLayoutSegment } from "@/src/hooks/useMultiUnitLayout";
-import { useMascotPositions } from "@/src/hooks/useMascotPositions";
+import { computeMascotPositions } from "@/src/hooks/useMascotPositions";
 import type { MascotPositionData } from "@/src/hooks/useMascotPositions";
 import { useJourneyConfig } from "@/src/context/JourneyConfigContext";
 import {
@@ -68,8 +68,8 @@ const UnitCompleteModal = lazy(
 );
 import JourneyLoadingSkeleton from "@/src/components/journey/JourneyLoadingSkeleton";
 import JourneyErrorState from "@/src/components/journey/JourneyErrorState";
-import { UnitRenderData } from "./JourneyMapPresentation";
 import MultiUnitPresentation from "./MultiUnitPresentation";
+import type { UnitRenderData } from "./MultiUnitPresentation";
 import { Text } from "@/components/Themed";
 
 export default function JourneyMapContainer(): React.JSX.Element {
@@ -143,7 +143,8 @@ export default function JourneyMapContainer(): React.JSX.Element {
           return null;
         }
 
-        const mascotPositions: MascotPositionData[] = useMascotPositions(
+        // Use pure function — NOT a hook — so it's safe inside useMemo
+        const mascotPositions: MascotPositionData[] = computeMascotPositions(
           unit.mascotPlacements || [],
           segment.nodePositions,
           screenWidth,

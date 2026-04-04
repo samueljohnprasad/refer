@@ -6,8 +6,9 @@
  * All visuals are resolved from JourneyConfig via context lookups.
  *
  * Architecture:
- * - NodeShell: size, background, border, glow, shadow from NodeColorConfig
- * - NodeIconRenderer: renders SVG/emoji/hugeicons from NodeIconConfig
+ * - SVG icons: the SVG IS the complete node visual (pill bg + shadow + glyph baked in).
+ *   The pressable wraps the SVG directly — no outer shell added.
+ * - Emoji/hugeicons: the shell (circle with colorConfig fill) wraps the glyph.
  * - Animation resolved from variant.activeAnimation via ANIMATION_FACTORIES
  * - ProgressRing conditionally shown from variant.showProgressRing
  * - BouncingTooltip for active node label
@@ -31,11 +32,20 @@ import Animated, {
     type SharedValue,
 } from "react-native-reanimated";
 
-import type { PathNodeData, NodePosition, NodeIconConfig, NodeVariantConfig, NodeColorConfig } from "@/src/types/journey";
+import type {
+    PathNodeData,
+    NodePosition,
+    NodeIconConfig,
+    NodeVariantConfig,
+    NodeColorConfig,
+} from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { ANIMATION_TIMING } from "@/src/data/journey/constants";
-import { useJourneySettings, useNodeVariant } from "@/src/context/JourneyConfigContext";
+import {
+    useJourneySettings,
+    useNodeVariant,
+} from "@/src/context/JourneyConfigContext";
 import { getSvg } from "@/src/data/journey";
 
 // ---------------------------------------------------------------------------
@@ -98,47 +108,96 @@ const ANIMATION_FACTORIES: Record<string, AnimationSetup> = {
 };
 
 // ---------------------------------------------------------------------------
-// NodeIconRenderer — renders icon from config. No conditionals on node type.
+// NodeShellContent — renders the inner content based on icon type
+//
+// SVG icons are self-contained pill designs — rendered at full node size,
+// no outer shell needed. Emoji/hugeicons are glyphs inside the shell circle.
 // ---------------------------------------------------------------------------
 
-interface NodeIconRendererProps {
+interface NodeShellContentProps {
     iconConfig: NodeIconConfig;
+    /** Full node size (used as SVG dimensions) */
     size: number;
+    /** Shell background color — only used for emoji/hugeicons mode */
+    backgroundColor: string;
+    /** Shell border color */
+    borderColor: string;
+    /** Whether this is the active (selected) node */
+    isActive: boolean;
+    /** Accessibility label */
+    accessibilityLabel: string;
+    /** Whether the node can be pressed */
+    isInteractive: boolean;
+    /** Press handler */
+    onPress: () => void;
 }
 
-function NodeIconRenderer({
+function NodeShellContent({
     iconConfig,
     size,
-}: NodeIconRendererProps): React.JSX.Element {
-    const iconSize: number = size * 0.55;
-
-    /** Renderer map — looked up by iconConfig.type */
-    const renderers: Record<string, () => React.JSX.Element> = {
-        svg: (): React.JSX.Element => {
-            const xml: string | undefined = getSvg(iconConfig.value);
-            if (!xml) {
-                return <Text className="text-lg">{"⭐"}</Text>;
-            }
+    backgroundColor,
+    borderColor,
+    isActive,
+    accessibilityLabel,
+    isInteractive,
+    onPress,
+}: NodeShellContentProps): React.JSX.Element {
+    // SVG type: the SVG provides the COMPLETE node visual (pill bg, shadow, glyph).
+    // We do NOT add a circular shell — just wrap with PressableScale for interaction.
+    if (iconConfig.type === "svg") {
+        const xml: string | undefined = getSvg(iconConfig.value);
+        if (xml) {
             return (
-                <SvgXml
-                    xml={xml}
-                    width={iconSize}
-                    height={iconSize}
-                    accessibilityLabel={iconConfig.value}
-                />
+                <PressableScale
+                    onPress={onPress}
+                    disabled={!isInteractive}
+                    scale={0.9}
+                    hapticStyle="medium"
+                    accessibilityRole="button"
+                    accessibilityLabel={accessibilityLabel}
+                    accessibilityState={{ disabled: !isInteractive }}
+                >
+                    <SvgXml
+                        xml={xml}
+                        width={size}
+                        height={size}
+                        accessibilityLabel={iconConfig.value}
+                    />
+                </PressableScale>
             );
-        },
-        emoji: (): React.JSX.Element => (
-            <Text className="text-2xl">{iconConfig.value}</Text>
-        ),
-        hugeicons: (): React.JSX.Element => (
-            // Fallback to emoji rendering — HugeIcons integration can be added later
-            <Text className="text-2xl">{iconConfig.value}</Text>
-        ),
-    };
+        }
+        // SVG not found — fall through to emoji fallback
+    }
 
-    const renderer = renderers[iconConfig.type] ?? renderers.emoji;
-    return renderer();
+    // Emoji / hugeicons / fallback: render inside a colored circle shell
+    const glyph: string =
+        iconConfig.type === "emoji" || iconConfig.type === "hugeicons"
+            ? iconConfig.value
+            : "⭐";
+
+    return (
+        <PressableScale
+            onPress={onPress}
+            disabled={!isInteractive}
+            scale={0.9}
+            hapticStyle="medium"
+            accessibilityRole="button"
+            accessibilityLabel={accessibilityLabel}
+            accessibilityState={{ disabled: !isInteractive }}
+            style={{
+                width: size,
+                height: size,
+                borderRadius: size / 2,
+                backgroundColor,
+                alignItems: "center",
+                justifyContent: "center",
+                borderBottomWidth: 4,
+                borderBottomColor: borderColor,
+            }}
+        >
+            <Text className="text-2xl">{glyph}</Text>
+        </PressableScale>
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -263,7 +322,7 @@ function ConfigDrivenNode({
         return { transform: [{ scale }] };
     });
 
-    // Glow style synced to animation progress
+    // Glow style synced to animation progress (only for active nodes)
     const glowStyle = useAnimatedStyle(() => {
         const shadowOpacity: number = interpolate(
             animProgress.value,
@@ -310,10 +369,16 @@ function ConfigDrivenNode({
         onPress(node);
     };
 
-    // Progress ring
+    // Progress ring dimensions
     const ringSize: number =
         size + settings.progressRingGap * 2 + settings.progressRingStroke * 2;
     const progressPercent: number = (node.progress ?? 0) * 100;
+
+    const a11yLabel: string = `${variant.label} ${node.index + 1}, ${node.status}${
+        isActive && node.progress !== undefined
+            ? `, ${Math.round(node.progress * 100)}% complete`
+            : ""
+    }`;
 
     return (
         <View
@@ -354,7 +419,7 @@ function ConfigDrivenNode({
                 </View>
             )}
 
-            {/* Node circle — animations from config */}
+            {/* Node visual — animated wrapper */}
             <Animated.View
                 style={[
                     isActive ? activeScaleStyle : undefined,
@@ -362,39 +427,16 @@ function ConfigDrivenNode({
                 ]}
             >
                 <Animated.View style={isActive ? glowStyle : undefined}>
-                    <PressableScale
+                    <NodeShellContent
+                        iconConfig={iconConfig}
+                        size={size}
+                        backgroundColor={colorConfig.fill}
+                        borderColor={colorConfig.border}
+                        isActive={isActive}
+                        isInteractive={isInteractive}
+                        accessibilityLabel={a11yLabel}
                         onPress={handlePress}
-                        disabled={!isInteractive}
-                        scale={0.9}
-                        hapticStyle="medium"
-                        accessibilityRole="button"
-                        accessibilityLabel={`${variant.label} ${node.index + 1}, ${node.status}${isActive && node.progress !== undefined ? `, ${Math.round(node.progress * 100)}% complete` : ""}`}
-                        accessibilityState={{ disabled: !isInteractive }}
-                        style={{
-                            width: size,
-                            height: size,
-                            borderRadius: size / 2,
-                            backgroundColor: colorConfig.fill,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderBottomWidth: 4,
-                            borderBottomColor: colorConfig.border,
-                            ...(isCompleted
-                                ? {
-                                    shadowColor: "#000",
-                                    shadowOffset: { width: 0, height: 4 },
-                                    shadowOpacity: 0.15,
-                                    shadowRadius: 8,
-                                    elevation: 5,
-                                }
-                                : {}),
-                        }}
-                    >
-                        <NodeIconRenderer
-                            iconConfig={iconConfig}
-                            size={size}
-                        />
-                    </PressableScale>
+                    />
                 </Animated.View>
             </Animated.View>
         </View>

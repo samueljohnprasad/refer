@@ -31,14 +31,24 @@ export function completeNode(
   state: JourneyState,
   nodeId: string,
 ): JourneyState {
-  const unitIndex: number = state.currentUnit;
-  const unit: UnitData = state.units[unitIndex];
-  const nodeIndex: number = unit.nodes.findIndex(
-    (n: PathNodeData) => n.id === nodeId,
-  );
+  // Search ALL units for the node — not just currentUnit
+  let targetUnitIndex: number = -1;
+  let nodeIndex: number = -1;
 
-  if (nodeIndex === -1) return state;
+  for (let ui: number = 0; ui < state.units.length; ui++) {
+    const ni: number = state.units[ui].nodes.findIndex(
+      (n: PathNodeData) => n.id === nodeId,
+    );
+    if (ni !== -1) {
+      targetUnitIndex = ui;
+      nodeIndex = ni;
+      break;
+    }
+  }
 
+  if (targetUnitIndex === -1 || nodeIndex === -1) return state;
+
+  const unit: UnitData = state.units[targetUnitIndex];
   const node: PathNodeData = unit.nodes[nodeIndex];
   if (node.status !== NodeStatus.ACTIVE) return state;
 
@@ -73,7 +83,7 @@ export function completeNode(
 
   // Build new units array
   const updatedUnits: UnitData[] = [...state.units];
-  updatedUnits[unitIndex] = { ...unit, nodes: updatedNodes };
+  updatedUnits[targetUnitIndex] = { ...unit, nodes: updatedNodes };
 
   return {
     ...state,

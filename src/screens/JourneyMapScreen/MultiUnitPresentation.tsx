@@ -93,9 +93,10 @@ export interface MultiUnitPresentationProps {
 interface UnitSectionProps {
     renderData: UnitRenderData;
     onNodePress: (node: PathNodeData) => void;
+    screenWidth: number;
 }
 
-function UnitSection({ renderData, onNodePress }: UnitSectionProps): React.JSX.Element {
+function UnitSection({ renderData, onNodePress, screenWidth }: UnitSectionProps): React.JSX.Element {
     const { unit, unitConfig, layout, mascotPositions } = renderData;
 
     const completedCount: number = useMemo(
@@ -103,18 +104,23 @@ function UnitSection({ renderData, onNodePress }: UnitSectionProps): React.JSX.E
         [unit.nodes],
     );
 
+    const pathDimensions = useMemo(() => ({
+        width: screenWidth,
+        height: layout.nodePositions.length > 1
+            ? (layout.nodePositions[layout.nodePositions.length - 1]?.y ?? 0) -
+              (layout.nodePositions[0]?.y ?? 0)
+            : 0,
+        totalLength: layout.nodePositions.length * 120,
+    }), [screenWidth, layout.nodePositions]);
+
     return (
         <>
             {/* Path connector for this unit's nodes */}
             {layout.nodePositions.length >= 2 && (
                 <PathConnector
                     nodePositions={layout.nodePositions}
-                    pathDimensions={{
-                        width: 0,
-                        height: 0,
-                        totalLength: 0,
-                    }}
-                    screenWidth={0}
+                    pathDimensions={pathDimensions}
+                    screenWidth={screenWidth}
                     completedCount={completedCount}
                 />
             )}
@@ -233,7 +239,7 @@ function MultiUnitPresentation({
                         )}
 
                         {/* Unit's nodes, paths, and mascots */}
-                        <UnitSection renderData={renderData} onNodePress={onNodePress} />
+                        <UnitSection renderData={renderData} onNodePress={onNodePress} screenWidth={screenWidth} />
                     </React.Fragment>
                 ))}
             </ScrollView>
