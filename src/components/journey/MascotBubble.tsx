@@ -65,18 +65,13 @@ function getRandomMessage(exclude: string): string {
 // ---------------------------------------------------------------------------
 
 interface OwlAvatarProps {
-  breathProgress: SharedValue<number>;
 }
 
-function OwlAvatar({ breathProgress }: OwlAvatarProps): React.JSX.Element {
-  const breathStyle = useAnimatedStyle(() => {
-    const scale: number = interpolate(breathProgress.value, [0, 1], [1, 1.06]);
-    return { transform: [{ scale }] };
-  });
+function OwlAvatar({ }: OwlAvatarProps): React.JSX.Element {
+
 
   return (
-    <Animated.View
-      style={breathStyle}
+    <View
       className="items-center justify-center rounded-full"
       accessibilityRole="image"
       accessibilityLabel="Duo the owl mascot"
@@ -93,7 +88,7 @@ function OwlAvatar({ breathProgress }: OwlAvatarProps): React.JSX.Element {
       >
         <Text className="text-2xl">🦉</Text>
       </View>
-    </Animated.View>
+    </View>
   );
 }
 
@@ -194,10 +189,7 @@ function MascotBubble({
     );
   }, [entranceX, entranceOpacity, isLeft, reducedMotion]);
 
-  const entranceStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: entranceX.value }],
-    opacity: entranceOpacity.value,
-  }));
+
 
   // ── Tap handler — cycle random message (Task 4.1.3) ──
   const handleTap = useCallback((): void => {
@@ -207,7 +199,6 @@ function MascotBubble({
   return (
     <Animated.View
       style={[
-        entranceStyle,
         {
           position: "absolute",
           left: x - halfAvatar,
@@ -225,7 +216,7 @@ function MascotBubble({
         accessibilityRole="button"
         accessibilityLabel="Tap for encouragement"
       >
-        <OwlAvatar breathProgress={breathProgress} />
+        <OwlAvatar />
       </PressableScale>
 
       <View style={{ width: 8 }} />
