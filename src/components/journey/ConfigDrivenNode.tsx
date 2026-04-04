@@ -246,6 +246,8 @@ function BouncingTooltip({
                 },
             ]}
             pointerEvents={isVisible ? "auto" : "none"}
+            accessibilityRole="text"
+            accessibilityLabel={label ? `Current task: ${label}` : undefined}
         >
             <Text
                 className="text-xs font-extrabold tracking-wider"
@@ -374,11 +376,10 @@ function ConfigDrivenNode({
         size + settings.progressRingGap * 2 + settings.progressRingStroke * 2;
     const progressPercent: number = (node.progress ?? 0) * 100;
 
-    const a11yLabel: string = `${variant.label} ${node.index + 1}, ${node.status}${
-        isActive && node.progress !== undefined
-            ? `, ${Math.round(node.progress * 100)}% complete`
-            : ""
-    }`;
+    const a11yLabel: string = `${variant.label} ${node.index + 1}, ${node.status}${isActive && node.progress !== undefined
+        ? `, ${Math.round(node.progress * 100)}% complete`
+        : ""
+        }`;
 
     return (
         <View

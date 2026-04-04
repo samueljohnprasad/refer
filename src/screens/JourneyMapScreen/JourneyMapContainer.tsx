@@ -23,10 +23,16 @@ import React, {
 import { ScrollView, useWindowDimensions, View } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useAtomValue, useSetAtom } from "jotai";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 
-import type { PathNodeData, JourneyState, UnitData, JourneyConfig, UnitConfig } from "@/src/types/journey";
+import type {
+  PathNodeData,
+  JourneyState,
+  UnitData,
+  JourneyConfig,
+  UnitConfig,
+} from "@/src/types/journey";
 import { NodeStatus, NodeType } from "@/src/types/journey";
 import { useMultiUnitLayout } from "@/src/hooks/useMultiUnitLayout";
 import type { UnitLayoutSegment } from "@/src/hooks/useMultiUnitLayout";
@@ -345,15 +351,24 @@ export default function JourneyMapContainer(): React.JSX.Element {
 
   // Guide-book press handler (opens section overview)
   const handleGuidePress = useCallback((): void => {
-    // TODO: Navigate to section overview screen
-    console.log("[JourneyMapContainer] Guide-book pressed");
+    router.push("/tabs/screens/section-overview" as never);
   }, []);
 
-  // Jump to unit handler
-  const handleJumpToUnit = useCallback((unitId: string): void => {
-    // TODO: Scroll to unit position
-    console.log("[JourneyMapContainer] Jump to unit:", unitId);
-  }, []);
+  // Jump to unit handler — scroll to the target unit's Y offset
+  const handleJumpToUnit = useCallback(
+    (unitId: string): void => {
+      const target: UnitRenderData | undefined = unitRenderData.find(
+        (rd: UnitRenderData) => rd.unit.id === unitId,
+      );
+      if (target) {
+        scrollViewRef.current?.scrollTo({
+          y: Math.max(0, target.layout.yOffset - 120),
+          animated: true,
+        });
+      }
+    },
+    [unitRenderData],
+  );
 
   // Only block rendering with skeleton on true first load before any state exists
   if (isLoading && !currentUnit) {
@@ -372,11 +387,20 @@ export default function JourneyMapContainer(): React.JSX.Element {
 
   // Safety guard
   if (!currentUnit) {
-    return <View className="flex-1 bg-gray-50" > <Text>No unit found</Text></View>;
+    return (
+      <View className="flex-1 bg-gray-50">
+        <Text>No unit found</Text>
+      </View>
+    );
   }
 
   return (
     <>
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+      />
       <MultiUnitPresentation
         unitRenderData={unitRenderData}
         stats={stats}

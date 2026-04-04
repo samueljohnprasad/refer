@@ -11,10 +11,12 @@
  * All data received via props — no context or state access.
  */
 
-import React from 'react';
-import { View, ScrollView, Pressable } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text } from '@/components/ui/text';
+import React from "react";
+import { View, ScrollView, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Text } from "@/components/ui/text";
+import { SvgXml } from "react-native-svg";
+import { getMascotSvg } from "@/src/data/journey";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -27,7 +29,9 @@ export interface SectionCardData {
     unitRangeLabel: string;
     cardBackgroundColor: string;
     mascotMessage: string;
-    mascotSide: 'left' | 'right';
+    mascotSide: "left" | "right";
+    /** Mascot image key for SVG lookup */
+    mascotImageKey: string;
     /** 0–100 progress percentage */
     progressPercent: number;
     /** Total nodes in this section */
@@ -61,7 +65,7 @@ interface SectionCardProps {
 }
 
 function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
-    const isMascotRight: boolean = section.mascotSide === 'right';
+    const isMascotRight: boolean = section.mascotSide === "right";
 
     return (
         <View
@@ -76,29 +80,47 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
             {/* Speech bubble + mascot area */}
             <View className="p-5 pb-3">
                 <View
-                    className={`flex-row items-end ${isMascotRight ? '' : 'flex-row-reverse'}`}
+                    className={`flex-row items-end ${isMascotRight ? "" : "flex-row-reverse"}`}
                 >
                     {/* Speech bubble */}
                     <View className="flex-1 mr-3">
                         <View
                             className="bg-white rounded-2xl px-4 py-3 mb-2"
                             style={{
-                                shadowColor: '#000',
+                                shadowColor: "#000",
                                 shadowOffset: { width: 0, height: 1 },
                                 shadowOpacity: 0.05,
                                 shadowRadius: 2,
                                 elevation: 1,
                             }}
                         >
-                            <Text className="text-base" style={{ color: '#1A202C' }}>
+                            <Text
+                                className="text-base"
+                                style={{ color: "#1A202C" }}
+                            >
                                 {section.mascotMessage}
                             </Text>
                         </View>
                     </View>
 
-                    {/* Mascot placeholder (owl emoji — replace with actual image asset later) */}
+                    {/* Mascot SVG from registry */}
                     <View className="items-center justify-center mb-2">
-                        <Text className="text-5xl">🦉</Text>
+                        {(() => {
+                            const xml: string | undefined = getMascotSvg(
+                                section.mascotImageKey,
+                            );
+                            if (xml) {
+                                return (
+                                    <SvgXml
+                                        xml={xml}
+                                        width={64}
+                                        height={64}
+                                        accessibilityLabel="Mascot"
+                                    />
+                                );
+                            }
+                            return <Text className="text-5xl">🦉</Text>;
+                        })()}
                     </View>
                 </View>
             </View>
@@ -106,10 +128,16 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
             {/* Section info bar */}
             <View className="bg-white mx-3 mb-3 rounded-xl px-4 py-3">
                 <View className="flex-row items-center justify-between mb-2">
-                    <Text className="text-xl font-extrabold" style={{ color: '#1A202C' }}>
+                    <Text
+                        className="text-xl font-extrabold"
+                        style={{ color: "#1A202C" }}
+                    >
                         {section.title}
                     </Text>
-                    <Text className="text-sm font-semibold" style={{ color: '#718096' }}>
+                    <Text
+                        className="text-sm font-semibold"
+                        style={{ color: "#718096" }}
+                    >
                         {section.unitRangeLabel}
                     </Text>
                 </View>
@@ -117,13 +145,13 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
                 {/* Progress bar */}
                 <View
                     className="w-full h-2.5 rounded-full overflow-hidden mb-2"
-                    style={{ backgroundColor: '#E2E8F0' }}
+                    style={{ backgroundColor: "#E2E8F0" }}
                 >
                     <View
                         className="h-full rounded-full"
                         style={{
                             width: `${section.progressPercent}%`,
-                            backgroundColor: section.isCurrent ? '#58CC02' : '#A0AEC0',
+                            backgroundColor: section.isCurrent ? "#58CC02" : "#A0AEC0",
                         }}
                     />
                 </View>
@@ -137,7 +165,7 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
                     >
                         <Text
                             className="text-sm font-bold uppercase tracking-wider"
-                            style={{ color: '#1CB0F6' }}
+                            style={{ color: "#1CB0F6" }}
                         >
                             JUMP HERE
                         </Text>
@@ -168,9 +196,17 @@ function SectionOverviewPresentation({
                     accessibilityLabel="Close section overview"
                     className="p-2"
                 >
-                    <Text className="text-2xl" style={{ color: '#4A5568' }}>✕</Text>
+                    <Text
+                        className="text-2xl"
+                        style={{ color: "#4A5568" }}
+                    >
+                        ✕
+                    </Text>
                 </Pressable>
-                <Text className="text-lg font-bold" style={{ color: '#1A202C' }}>
+                <Text
+                    className="text-lg font-bold"
+                    style={{ color: "#1A202C" }}
+                >
                     {journeyTitle}
                 </Text>
                 <View className="w-10" />

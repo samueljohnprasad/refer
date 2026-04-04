@@ -9,7 +9,7 @@
  * producing a draw-on effect via react-native-reanimated + react-native-svg.
  */
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import Svg, { Path } from "react-native-svg";
 import Animated, {
   useSharedValue,
@@ -88,13 +88,28 @@ function PathConnector({
   // Shared value drives strokeDashoffset: starts at full length, animates to 0
   const dashOffset = useSharedValue(estimatedLength);
 
+  const prevLengthRef = useRef(estimatedLength);
+
   useEffect(() => {
-    // Reset to full length instantly, then animate to 0 (draw on)
-    dashOffset.value = estimatedLength;
-    dashOffset.value = withTiming(0, {
-      duration: ANIMATION_TIMING.pathDraw,
-      easing: Easing.out(Easing.ease),
-    });
+    // True crawl animation: only animate the NEW delta sequence
+    if (estimatedLength > prevLengthRef.current) {
+        const delta = estimatedLength - prevLengthRef.current;
+        // Instantly offset the dash by delta. Because the SVG stroke drawing starts from 0,
+        // leaving the last delta pixels un-stroked, this hides ONLY the newly unlocked segment!
+        dashOffset.value = delta;
+        // Crawl down the path
+        dashOffset.value = withTiming(0, {
+          duration: ANIMATION_TIMING.pathDraw || 1000,
+          easing: Easing.out(Easing.ease),
+        });
+    } else if (estimatedLength < prevLengthRef.current) {
+        // Handled backward steps (e.g. debugging/resetting progress)
+        dashOffset.value = 0;
+    } else {
+        // Initial render mounts it fully drawn
+        dashOffset.value = 0;
+    }
+    prevLengthRef.current = estimatedLength;
   }, [estimatedLength, dashOffset]);
 
   const animatedProgressProps = useAnimatedProps(() => ({

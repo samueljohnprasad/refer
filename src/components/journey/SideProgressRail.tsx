@@ -1,4 +1,3 @@
-
 /**
  * SideProgressRail (Task 10)
  * Floating side panel showing persistent progress icons.
@@ -12,10 +11,10 @@
  * Values driven by JourneyStats. Tapping opens relevant detail.
  */
 
-import React from 'react';
-import { View, Pressable } from 'react-native';
-import { Text } from '@/components/ui/text';
-import type { JourneyStats } from '@/src/types/journey/state';
+import React from "react";
+import { View, Pressable } from "react-native";
+import { Text } from "@/components/ui/text";
+import type { JourneyStats } from "@/src/types/journey/state";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -63,7 +62,7 @@ function RailIcon({
                     borderWidth: 2,
                     borderColor,
                     borderBottomWidth: 4,
-                    shadowColor: '#000',
+                    shadowColor: "#000",
                     shadowOffset: { width: 0, height: 2 },
                     shadowOpacity: 0.1,
                     shadowRadius: 4,
@@ -74,7 +73,7 @@ function RailIcon({
             </View>
             <Text
                 className="text-xs font-bold mt-1"
-                style={{ color: '#4A5568' }}
+                style={{ color: "#4A5568" }}
             >
                 {value}
             </Text>
@@ -97,6 +96,8 @@ function SideProgressRail({
             className="absolute left-2 z-20 items-center"
             style={{ top: 120 }}
             pointerEvents="box-none"
+            accessibilityRole="summary"
+            accessibilityLabel="Progress stats"
         >
             <RailIcon
                 icon="🏋️"
@@ -129,7 +130,3 @@ function SideProgressRail({
 }
 
 export default React.memo(SideProgressRail);
-
-
-
-

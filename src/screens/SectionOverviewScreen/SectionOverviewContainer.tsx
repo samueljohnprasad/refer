@@ -1,3 +1,5 @@
+
+
 /**
  * SectionOverviewContainer (Task 8)
  * Container component — loads sections from config, computes progress,
@@ -6,10 +8,15 @@
  * Follows container/presentation pattern per coding standards.
  */
 
-import React, { useMemo, useCallback } from 'react';
-import { useJourneyConfig, useMascotMessage } from '@/src/context/JourneyConfigContext';
-import SectionOverviewPresentation, { SectionCardData } from './SectionOverviewPresentation';
-import { JourneyConfig, SectionConfig, UnitConfig } from '@/src/types/journey';
+import React, { useMemo, useCallback } from "react";
+import {
+    useJourneyConfig,
+    useMascotMessage,
+} from "@/src/context/JourneyConfigContext";
+import SectionOverviewPresentation, {
+    SectionCardData,
+} from "./SectionOverviewPresentation";
+import { JourneyConfig, SectionConfig, UnitConfig } from "@/src/types/journey";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -52,8 +59,12 @@ function SectionOverviewContainer({
     const sectionCards: SectionCardData[] = useMemo(() => {
         return config.sections.map((section: SectionConfig) => {
             const sectionUnits: UnitConfig[] = section.unitIds
-                .map((uid: string) => config.units.find((u: UnitConfig) => u.id === uid))
-                .filter((u: UnitConfig | undefined): u is UnitConfig => u !== undefined);
+                .map((uid: string) =>
+                    config.units.find((u: UnitConfig) => u.id === uid),
+                )
+                .filter(
+                    (u: UnitConfig | undefined): u is UnitConfig => u !== undefined,
+                );
 
             let totalNodes: number = 0;
             let completedNodes: number = 0;
@@ -94,6 +105,7 @@ function SectionOverviewContainer({
                 cardBackgroundColor: section.cardBackgroundColor,
                 mascotMessage,
                 mascotSide: section.mascot.side,
+                mascotImageKey: section.mascot.imageKey,
                 progressPercent,
                 totalNodes,
                 completedNodes,
@@ -121,3 +133,6 @@ function SectionOverviewContainer({
 }
 
 export default React.memo(SectionOverviewContainer);
+
+
+
