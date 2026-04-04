@@ -115,7 +115,7 @@ export function createNodeSequence(
     return createNode(index, config.type, status, {
       ...config.overrides,
       // Auto-add "START" label to the active node
-      label: index === completedCount ? "START" : config.overrides?.label,
+      label: config.overrides?.label ?? (index === completedCount ? "START" : undefined),
       // Set default progress for active node
       progress:
         index === completedCount

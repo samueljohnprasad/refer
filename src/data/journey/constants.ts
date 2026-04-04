@@ -14,7 +14,7 @@ export const NODE_COLORS = {
 /** Path stroke colors */
 export const PATH_COLORS = {
   inactive: "#E0E0E0",
-  active: "#78C800",
+  active: "#8FE325", // Lighter green as requested
 } as const;
 
 /** Unit header gradient pairs by color scheme */

@@ -61,6 +61,7 @@ export function completeNode(
     status: NodeStatus.COMPLETED,
     icon: NodeIcon.CHECKMARK,
     progress: 1,
+    label: undefined, // Clear the START tooltip once finished
   };
 
   // Unlock next node if it exists and is locked

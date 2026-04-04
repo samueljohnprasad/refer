@@ -3,7 +3,6 @@ trigger: always_on
 globs: *.ts, *.tsx, *.js, *.jsx
 ---
 
-
 # Common Coding Standards (FE & BE)
 
 write code that is scalable for 50,000 users
@@ -14,6 +13,7 @@ These rules apply to both frontend (React Native/React)
 - strictly use typescript everywhere, for every variable assignment, function params , function return, explicitly write the types.
 dont use any type.
 
+#write code in such a way that i should be easily extendable, easy to integrate , plugin and plugout .
 ## 1. SOLID Principles
 - Follow SOLID principles for object-oriented and functional code:
   - **S**ingle Responsibility: Each module/class/function should have one responsibility.

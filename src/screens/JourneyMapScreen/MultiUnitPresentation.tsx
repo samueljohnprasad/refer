@@ -222,7 +222,7 @@ function MultiUnitPresentation({
                             <View
                                 style={{
                                     position: 'absolute',
-                                    top: renderData.layout.yOffset - 140,
+                                    top: renderData.layout.yOffset - 200,
                                     left: 0,
                                     right: 0,
                                 }}
