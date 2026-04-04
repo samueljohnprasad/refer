@@ -80,8 +80,9 @@ function ScrollToActiveButton({
         animatedStyle,
         {
           position: "absolute",
-          bottom: 24,
-          alignSelf: "center",
+          bottom: 104,
+          alignSelf: "flex-end",
+          right: 24,
           zIndex: 100,
         },
       ]}
@@ -106,7 +107,7 @@ function ScrollToActiveButton({
           }}
         >
           <Text className="text-sm font-extrabold text-white">
-            {direction === "down" ? "↓" : "↑"} Go to current lesson
+            {direction === "down" ? "↓" : "↑"}
           </Text>
         </View>
       </PressableScale>

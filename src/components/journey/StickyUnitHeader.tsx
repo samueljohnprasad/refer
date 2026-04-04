@@ -173,7 +173,7 @@ function StickyUnitHeader({
     }, [scrollY, inputRange, outputBackgrounds, outputShadows]);
 
     return (
-        <View className="w-full bg-white">
+        <View className="w-full">
             <SafeAreaView edges={["top"]}>
                 {/* ── Stats row ── */}
                 <View
@@ -219,7 +219,7 @@ function StickyUnitHeader({
                 {/* ── Section / Unit card ── */}
                 <AnimatedPressable
                     onPress={onGuidePress}
-                    className="mx-4 mb-3 rounded-2xl overflow-hidden flex-row"
+                    className="mx-4 rounded-2xl overflow-hidden flex-row"
                     style={[
                         {
                             backgroundColor: theme.headerGradient[0],

@@ -12,6 +12,7 @@
 
 import React, { useEffect } from 'react';
 import { View, Pressable } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { Text } from '@/components/ui/text';
 import Animated, {
     useSharedValue,
@@ -78,7 +79,7 @@ function JumpHereBadge({ accentColor, onPress }: JumpHereBadgeProps): React.JSX.
                     elevation: 3,
                 }}
             >
-                <Text className="text-sm font-bold tracking-wide" style={{ color: '#4A5568' }}>
+                <Text className="text-sm font-bold tracking-wide" style={{ color: accentColor }}>
                     JUMP HERE?
                 </Text>
                 {/* Arrow pointing down */}
@@ -106,7 +107,7 @@ function JumpHereBadge({ accentColor, onPress }: JumpHereBadgeProps): React.JSX.
                         elevation: 5,
                     }}
                 >
-                    <Text className="text-white text-xl font-bold">⏩</Text>
+                    <Feather name="chevrons-down" size={32} color="white" />
                 </Pressable>
             </Animated.View>
         </View>

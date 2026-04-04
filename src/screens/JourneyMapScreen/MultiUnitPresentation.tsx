@@ -35,9 +35,10 @@ import {
     StickyUnitHeader,
 } from "@/src/components/journey";
 import type { MascotPositionData } from "@/src/hooks/useMascotPositions";
-import type { UnitLayoutSegment } from "@/src/hooks/useMultiUnitLayout";
 import type { PathDimensions } from "@/src/utils/journey";
 import type { UnitConfig } from "@/src/types/journey/config";
+import type { UnitLayoutSegment } from "@/src/hooks/useMultiUnitLayout";
+import { useJourneyConfig } from "@/src/context/JourneyConfigContext";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -125,6 +126,7 @@ function UnitSection({
                         node={node}
                         position={position}
                         variantKey={variantKey}
+                        colorThemeKey={unitConfig.colorThemeKey}
                         onPress={onNodePress}
                     />
                 );
@@ -167,6 +169,8 @@ function MultiUnitPresentation({
     onGuidePress,
     onJumpToUnit,
 }: MultiUnitPresentationProps): React.JSX.Element {
+    const journeyConfig = useJourneyConfig();
+
     // Viewport culling for performance with many nodes
     const { isInViewport, onScroll: onCullingScroll } = useViewportCulling();
 
@@ -224,7 +228,7 @@ function MultiUnitPresentation({
     }, [unitRenderData]);
 
     return (
-        <View className="flex-1 bg-gray-50 mb-28">
+        <View className="flex-1 bg-gray-50">
             {/* Sticky unit header — color automatically interpolates on scroll */}
             {visibleUnit && (
                 <StickyUnitHeader
@@ -282,7 +286,7 @@ function MultiUnitPresentation({
                                     title={renderData.unitConfig.divider.title}
                                     showJumpHere={renderData.unitConfig.divider.showJumpHere}
                                     accentColor={
-                                        renderData.unitConfig.divider.jumpButtonColor ?? "#A855F7"
+                                        journeyConfig.colorThemes[renderData.unitConfig.colorThemeKey]?.dividerColor
                                     }
                                     onJumpPress={
                                         onJumpToUnit

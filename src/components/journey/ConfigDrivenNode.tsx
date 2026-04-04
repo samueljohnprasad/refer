@@ -38,13 +38,22 @@ import type {
     NodeIconConfig,
     NodeVariantConfig,
     NodeColorConfig,
+    ColorThemeConfig,
 } from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { ANIMATION_TIMING } from "@/src/data/journey/constants";
+
+function hexToFeColorMatrix(hex: string): string {
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+    return `0 0 0 0 ${r.toFixed(3).replace(/\.?0+$/, '') || '0'} 0 0 0 0 ${g.toFixed(3).replace(/\.?0+$/, '') || '0'} 0 0 0 0 ${b.toFixed(3).replace(/\.?0+$/, '') || '0'} 0 0 0 1 0`;
+}
 import {
     useJourneySettings,
     useNodeVariant,
+    useColorTheme,
 } from "@/src/context/JourneyConfigContext";
 import { getSvg } from "@/src/data/journey";
 
@@ -124,6 +133,10 @@ interface NodeShellContentProps {
     borderColor: string;
     /** Whether this is the active (selected) node */
     isActive: boolean;
+    /** Whether this is a completed node */
+    isCompleted: boolean;
+    /** The active section's color theme */
+    theme: ColorThemeConfig;
     /** Accessibility label */
     accessibilityLabel: string;
     /** Whether the node can be pressed */
@@ -138,6 +151,8 @@ function NodeShellContent({
     backgroundColor,
     borderColor,
     isActive,
+    isCompleted,
+    theme,
     accessibilityLabel,
     isInteractive,
     onPress,
@@ -145,8 +160,17 @@ function NodeShellContent({
     // SVG type: the SVG provides the COMPLETE node visual (pill bg, shadow, glyph).
     // We do NOT add a circular shell — just wrap with PressableScale for interaction.
     if (iconConfig.type === "svg") {
-        const xml: string | undefined = getSvg(iconConfig.value);
+        let xml: string | undefined = getSvg(iconConfig.value);
         if (xml) {
+            if (isCompleted || isActive) {
+                // Dynamically recolor the completed/active interior to match the bold section header
+                xml = xml.replace(/#FFC800|#ffc800|#58CC02|#58cc02/g, theme.pathActiveColor);
+                
+                // Dynamically replace the yellow/green drop shadows with the theme's base color (divider color)
+                const newMatrix = `values="${hexToFeColorMatrix(theme.dividerColor)}"`;
+                xml = xml.replace(/values="0 0 0 0 0\.8 0 0 0 0 0\.627 0 0 0 0 0 0 0 0 1 0"/g, newMatrix);
+                xml = xml.replace(/values="0 0 0 0 0\.267 0 0 0 0 0\.639 0 0 0 0 0\.008 0 0 0 1 0"/g, newMatrix);
+            }
             return (
                 <PressableScale
                     onPress={onPress}
@@ -274,6 +298,8 @@ export interface ConfigDrivenNodeProps {
     position: NodePosition;
     /** Variant key to look up from config */
     variantKey: string;
+    /** Theme key from the parent unit to adapt the node color */
+    colorThemeKey: string;
     /** Press handler */
     onPress: (node: PathNodeData) => void;
 }
@@ -286,9 +312,11 @@ function ConfigDrivenNode({
     node,
     position,
     variantKey,
+    colorThemeKey,
     onPress,
 }: ConfigDrivenNodeProps): React.JSX.Element {
     const variant: NodeVariantConfig = useNodeVariant(variantKey);
+    const theme = useColorTheme(colorThemeKey);
     const settings = useJourneySettings();
     const reducedMotion: boolean = useReducedMotion();
 
@@ -391,13 +419,13 @@ function ConfigDrivenNode({
                 height: size,
             }}
         >
-            {/* Bouncing tooltip — accent color from config */}
+            {/* Bouncing tooltip — use theme color for active node, else config fill */}
             <BouncingTooltip
                 label={node.label}
-                accentColor={colorConfig.fill}
+                accentColor={isActive ? theme.pathActiveColor : colorConfig.fill}
             />
 
-            {/* Progress ring (only if variant config says to show it AND node is active) */}
+            {/* Progress ring — use theme color for active node */}
             {variant.showProgressRing && isActive && (
                 <View
                     className="absolute items-center justify-center"
@@ -412,8 +440,8 @@ function ConfigDrivenNode({
                         size={ringSize}
                         width={settings.progressRingStroke}
                         fill={progressPercent}
-                        tintColor={colorConfig.fill}
-                        backgroundColor={`${colorConfig.fill}33`}
+                        tintColor={theme.pathActiveColor}
+                        backgroundColor={`${theme.pathActiveColor}33`}
                         rotation={0}
                         lineCap="round"
                     />
@@ -431,11 +459,13 @@ function ConfigDrivenNode({
                     <NodeShellContent
                         iconConfig={iconConfig}
                         size={size}
-                        backgroundColor={colorConfig.fill}
-                        borderColor={colorConfig.border}
+                        backgroundColor={isCompleted || isActive ? theme.pathActiveColor : colorConfig.fill}
+                        borderColor={isCompleted || isActive ? theme.dividerColor : colorConfig.border}
                         isActive={isActive}
-                        isInteractive={isInteractive}
+                        isCompleted={isCompleted}
+                        theme={theme}
                         accessibilityLabel={a11yLabel}
+                        isInteractive={isInteractive}
                         onPress={handlePress}
                     />
                 </Animated.View>

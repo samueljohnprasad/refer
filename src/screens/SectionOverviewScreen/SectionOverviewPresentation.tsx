@@ -152,7 +152,7 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
                         className="h-full rounded-full"
                         style={{
                             width: `${section.progressPercent}%`,
-                            backgroundColor: section.isCurrent ? "#58CC02" : "#A0AEC0",
+                            backgroundColor: section.isCurrent ? section.cardBackgroundColor : "#A0AEC0",
                         }}
                     />
                 </View>
@@ -163,10 +163,11 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
                         onPress={() => onJump(section.id)}
                         accessibilityRole="button"
                         accessibilityLabel={`Jump to ${section.title}`}
+                        className="mt-1 active:opacity-75"
                     >
                         <Text
-                            className="text-sm font-bold uppercase tracking-wider"
-                            style={{ color: "#1CB0F6" }}
+                            className="text-sm font-extrabold uppercase tracking-wide"
+                            style={{ color: section.cardBackgroundColor }}
                         >
                             JUMP HERE
                         </Text>

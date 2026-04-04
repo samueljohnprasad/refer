@@ -199,6 +199,30 @@ const COLOR_THEME_REGISTRY: Record<string, ColorThemeConfig> = {
         dividerColor: '#E05CB0',
         jumpButtonColor: '#E05CB0',
     },
+    indigo: {
+        key: 'indigo',
+        headerGradient: ['#818CF8', '#6366F1'],
+        headerTextColor: '#FFFFFF',
+        pathActiveColor: '#818CF8',
+        dividerColor: '#6366F1',
+        jumpButtonColor: '#6366F1',
+    },
+    teal: {
+        key: 'teal',
+        headerGradient: ['#20E3B2', '#00C895'],
+        headerTextColor: '#FFFFFF',
+        pathActiveColor: '#20E3B2',
+        dividerColor: '#00C895',
+        jumpButtonColor: '#00C895',
+    },
+    rose: {
+        key: 'rose',
+        headerGradient: ['#FB7185', '#E11D48'],
+        headerTextColor: '#FFFFFF',
+        pathActiveColor: '#FB7185',
+        dividerColor: '#E11D48',
+        jumpButtonColor: '#E11D48',
+    },
 };
 
 // ---------------------------------------------------------------------------
@@ -266,7 +290,7 @@ const UNIT_CONFIGS: UnitConfig[] = [
         unitNumber: 1,
         title: 'Use basic phrases',
         description: 'Use basic phrases, greet people',
-        colorThemeKey: 'green',
+        colorThemeKey: 'blue',
         sectionId: 'section_1',
         nodes: [
             { variantKey: 'star', taskId: 'task_0', taskType: 'thought_reframing' },
@@ -316,7 +340,7 @@ const UNIT_CONFIGS: UnitConfig[] = [
         unitNumber: 3,
         title: 'Talk about travel',
         description: 'Use the past tense, talk about travel',
-        colorThemeKey: 'blue',
+        colorThemeKey: 'teal',
         sectionId: 'section_1',
         nodes: [
             { variantKey: 'star', taskId: 'task_15', taskType: 'thought_reframing' },
@@ -340,7 +364,7 @@ const UNIT_CONFIGS: UnitConfig[] = [
         unitNumber: 4,
         title: 'Start Journaling',
         description: 'Explore your thoughts and establish a journaling habit',
-        colorThemeKey: 'orange',
+        colorThemeKey: 'rose',
         sectionId: 'section_2',
         nodes: [
             { variantKey: 'star', taskId: 'task_j1', taskType: 'journal_prompt' },
