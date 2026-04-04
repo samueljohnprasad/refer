@@ -16,8 +16,9 @@
  * 4. All derived atoms re-derive from the merged state
  */
 
-import { atom } from 'jotai';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { atom } from "jotai";
+import { selectAtom } from "jotai/utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import type {
   JourneyState,
@@ -26,17 +27,17 @@ import type {
   JourneyStats,
   JourneyTemplate,
   UserJourneyProgress,
-} from '@/src/types/journey';
-import { NodeStatus } from '@/src/types/journey';
-import { MOCK_JOURNEY_STATE } from '@/src/data/journey';
+} from "@/src/types/journey";
+import { NodeStatus } from "@/src/types/journey";
+import { MOCK_JOURNEY_STATE } from "@/src/data/journey";
 
 // ---------------------------------------------------------------------------
 // Storage keys
 // ---------------------------------------------------------------------------
 
-const JOURNEY_STATE_KEY = '@journey_state_v2';
-const JOURNEY_TEMPLATE_CACHE_KEY = '@journey_template_cache_v1';
-const ACTIVE_SLUG_KEY = '@journey_active_slug_v1';
+const JOURNEY_STATE_KEY = "@journey_state_v2";
+const JOURNEY_TEMPLATE_CACHE_KEY = "@journey_template_cache_v1";
+const ACTIVE_SLUG_KEY = "@journey_active_slug_v1";
 
 // ---------------------------------------------------------------------------
 // Active journey slug
@@ -98,6 +99,74 @@ export const completedCountAtom = atom<number>((get) => {
   ).length;
 });
 
+/** Just the currentUnit index — lightweight subscription for components that don't need the full state */
+export const currentUnitIndexAtom = selectAtom(
+  journeyStateAtom,
+  (state: JourneyState) => state.currentUnit,
+);
+
+// ---------------------------------------------------------------------------
+// Per-unit granular selectors (Fix #9 — break the useMemo cascade)
+// ---------------------------------------------------------------------------
+// These use selectAtom with shallow equality so that a progress tick on
+// unit_3.nodes[2] does NOT cause unit_1 or unit_2 subscribers to re-render.
+// The selector returns the same array reference if the unit's node data
+// hasn't changed.
+
+/** Cache of per-unit selectAtom instances to avoid re-creating on every render */
+const unitNodesAtomCache = new Map<string, ReturnType<typeof selectAtom>>();
+
+/**
+ * Returns a selectAtom that derives a specific unit's nodes array from journeyStateAtom.
+ * Preserves referential equality — only triggers re-render when that unit's nodes change.
+ */
+export function unitNodesAtomFamily(
+  unitId: string,
+): ReturnType<typeof selectAtom> {
+  let cached = unitNodesAtomCache.get(unitId);
+  if (!cached) {
+    cached = selectAtom(
+      journeyStateAtom,
+      (state: JourneyState): PathNodeData[] => {
+        const unit: UnitData | undefined = state.units.find(
+          (u: UnitData) => u.id === unitId,
+        );
+        return unit?.nodes ?? [];
+      },
+    );
+    unitNodesAtomCache.set(unitId, cached);
+  }
+  return cached;
+}
+
+/** Cache of per-unit UnitData selectAtoms */
+const unitDataAtomCache = new Map<string, ReturnType<typeof selectAtom>>();
+
+/**
+ * Returns a selectAtom that derives a specific UnitData from journeyStateAtom.
+ * Only triggers re-render when that specific unit's data changes.
+ */
+export function unitDataAtomFamily(
+  unitId: string,
+): ReturnType<typeof selectAtom> {
+  let cached = unitDataAtomCache.get(unitId);
+  if (!cached) {
+    cached = selectAtom(
+      journeyStateAtom,
+      (state: JourneyState): UnitData | undefined =>
+        state.units.find((u: UnitData) => u.id === unitId),
+    );
+    unitDataAtomCache.set(unitId, cached);
+  }
+  return cached;
+}
+
+/** The full units array — preserves reference when units haven't changed */
+export const unitsAtom = selectAtom(
+  journeyStateAtom,
+  (state: JourneyState): UnitData[] => state.units,
+);
+
 /** Active enrollment ID (for API calls) */
 export const enrollmentIdAtom = atom<string | null>((get) => {
   const progress: UserJourneyProgress | null = get(journeyProgressAtom);
@@ -113,11 +182,11 @@ export const enrollmentIdAtom = atom<string | null>((get) => {
  * Returns true only if all critical fields exist with correct types.
  */
 function isValidJourneyState(obj: unknown): obj is JourneyState {
-  if (!obj || typeof obj !== 'object') return false;
+  if (!obj || typeof obj !== "object") return false;
   const s = obj as Record<string, unknown>;
-  if (typeof s.currentUnit !== 'number') return false;
+  if (typeof s.currentUnit !== "number") return false;
   if (!Array.isArray(s.units) || s.units.length === 0) return false;
-  if (!s.stats || typeof s.stats !== 'object') return false;
+  if (!s.stats || typeof s.stats !== "object") return false;
   const firstUnit = s.units[0] as Record<string, unknown> | undefined;
   if (!firstUnit || !Array.isArray(firstUnit.nodes)) return false;
   return true;
@@ -133,7 +202,7 @@ export async function loadJourneyState(): Promise<JourneyState | null> {
 
     if (!isValidJourneyState(parsed)) {
       console.warn(
-        '[JourneyStore] Corrupted state detected, resetting to defaults',
+        "[JourneyStore] Corrupted state detected, resetting to defaults",
       );
       await AsyncStorage.removeItem(JOURNEY_STATE_KEY);
       return null;
@@ -141,8 +210,8 @@ export async function loadJourneyState(): Promise<JourneyState | null> {
 
     return parsed;
   } catch (error) {
-    console.error('[JourneyStore] Failed to load state:', error);
-    await AsyncStorage.removeItem(JOURNEY_STATE_KEY).catch(() => {});
+    console.error("[JourneyStore] Failed to load state:", error);
+    await AsyncStorage.removeItem(JOURNEY_STATE_KEY).catch(() => { });
     return null;
   }
 }
@@ -152,7 +221,7 @@ export async function saveJourneyState(state: JourneyState): Promise<void> {
   try {
     await AsyncStorage.setItem(JOURNEY_STATE_KEY, JSON.stringify(state));
   } catch (error) {
-    console.error('[JourneyStore] Failed to save state:', error);
+    console.error("[JourneyStore] Failed to save state:", error);
   }
 }
 
@@ -161,7 +230,7 @@ export async function clearJourneyState(): Promise<void> {
   try {
     await AsyncStorage.removeItem(JOURNEY_STATE_KEY);
   } catch (error) {
-    console.error('[JourneyStore] Failed to clear state:', error);
+    console.error("[JourneyStore] Failed to clear state:", error);
   }
 }
 
@@ -178,7 +247,7 @@ export async function cacheTemplate(
     const key = `${JOURNEY_TEMPLATE_CACHE_KEY}_${slug}`;
     await AsyncStorage.setItem(key, JSON.stringify(template));
   } catch (error) {
-    console.error('[JourneyStore] Failed to cache template:', error);
+    console.error("[JourneyStore] Failed to cache template:", error);
   }
 }
 
@@ -192,7 +261,7 @@ export async function loadCachedTemplate(
     if (!raw) return null;
     return JSON.parse(raw) as JourneyTemplate;
   } catch (error) {
-    console.error('[JourneyStore] Failed to load cached template:', error);
+    console.error("[JourneyStore] Failed to load cached template:", error);
     return null;
   }
 }
@@ -206,7 +275,7 @@ export async function saveActiveSlug(slug: string): Promise<void> {
   try {
     await AsyncStorage.setItem(ACTIVE_SLUG_KEY, slug);
   } catch (error) {
-    console.error('[JourneyStore] Failed to save active slug:', error);
+    console.error("[JourneyStore] Failed to save active slug:", error);
   }
 }
 
@@ -215,7 +284,7 @@ export async function loadActiveSlug(): Promise<string | null> {
   try {
     return await AsyncStorage.getItem(ACTIVE_SLUG_KEY);
   } catch (error) {
-    console.error('[JourneyStore] Failed to load active slug:', error);
+    console.error("[JourneyStore] Failed to load active slug:", error);
     return null;
   }
 }

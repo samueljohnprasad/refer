@@ -13,8 +13,11 @@
 
 import React, { useMemo, useCallback } from "react";
 import { View, ScrollView } from "react-native";
-import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
+import Animated, {
+    useSharedValue,
+    useAnimatedScrollHandler,
+    runOnJS,
+} from "react-native-reanimated";
 import { useViewportCulling } from "@/src/hooks/useViewportCulling";
 
 import type {
@@ -81,8 +84,8 @@ export interface MultiUnitPresentationProps {
     scrollDirection: "up" | "down";
     /** Scroll-to-active callback */
     onScrollToActive: () => void;
-    /** Scroll event handler */
-    onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+    /** Callback to update scroll-to-active visibility (called via runOnJS) */
+    updateScrollVisibility: (scrollY: number) => void;
     /** Guide-book button handler */
     onGuidePress?: () => void;
     /** Jump-here handler for unit dividers */
@@ -132,17 +135,24 @@ function UnitSection({
                 );
             })}
 
-            {/* Mascot bubbles — also culled */}
+            {/* Mascot bubbles — kept mounted to avoid animation churn on scroll.
+          Off-screen mascots are hidden with opacity + pointerEvents instead
+          of unmounting, so their shared values stay alive on the native side. */}
             {mascotPositions.map((mascot: MascotPositionData) => {
-                if (!isInViewport(mascot.y)) return null;
+                const visible: boolean = isInViewport(mascot.y);
                 return (
-                    <MascotBubble
+                    <View
                         key={mascot.key}
-                        x={mascot.x}
-                        y={mascot.y}
-                        side={mascot.side}
-                        initialMessage={mascot.message}
-                    />
+                        style={{ opacity: visible ? 1 : 0 }}
+                        pointerEvents={visible ? "auto" : "none"}
+                    >
+                        <MascotBubble
+                            x={mascot.x}
+                            y={mascot.y}
+                            side={mascot.side}
+                            initialMessage={mascot.message}
+                        />
+                    </View>
                 );
             })}
         </>
@@ -152,6 +162,32 @@ function UnitSection({
 // ---------------------------------------------------------------------------
 // MultiUnitPresentation
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Binary search helper — finds the last unit whose transition Y <= scrollY.
+// Runs on the UI thread inside worklets so it must be a plain function.
+// O(log n) instead of the previous O(n) linear scan per frame.
+// ---------------------------------------------------------------------------
+
+function binarySearchVisibleUnit(
+    breakpoints: number[],
+    scrollY: number,
+): number {
+    "worklet";
+    let lo: number = 0;
+    let hi: number = breakpoints.length - 1;
+    let result: number = 0;
+    while (lo <= hi) {
+        const mid: number = (lo + hi) >>> 1;
+        if (breakpoints[mid] <= scrollY) {
+            result = mid;
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+    return result;
+}
 
 function MultiUnitPresentation({
     unitRenderData,
@@ -165,44 +201,82 @@ function MultiUnitPresentation({
     isActiveOffScreen,
     scrollDirection,
     onScrollToActive,
-    onScroll,
+    updateScrollVisibility,
     onGuidePress,
     onJumpToUnit,
 }: MultiUnitPresentationProps): React.JSX.Element {
     const journeyConfig = useJourneyConfig();
 
-    // Viewport culling for performance with many nodes
-    const { isInViewport, onScroll: onCullingScroll } = useViewportCulling();
+    // Viewport culling — no longer owns a scroll handler; we push updates via runOnJS
+    const { isInViewport, updateScrollY } = useViewportCulling();
 
-    // Setup scroll tracking for color interpolation
+    // Canonical scroll position on the UI thread (drives header color interpolation)
     const scrollY = useSharedValue(0);
 
-    // Setup local state for tracking visible unit efficiently without re-rendering every frame
-    const currentVisibleUnitIndexRef = React.useRef(currentVisibleUnitIndex || 0);
-    const [visibleIndex, setVisibleIndex] = React.useState(currentVisibleUnitIndex || 0);
+    // Visible unit index — only updated via runOnJS when the index actually changes
+    const [visibleIndex, setVisibleIndex] = React.useState<number>(
+        currentVisibleUnitIndex || 0,
+    );
 
-    // Compose both scroll handlers (parent + culling)
-    const handleScroll = useCallback(
-        (event: NativeSyntheticEvent<NativeScrollEvent>): void => {
-            const y = event.nativeEvent.contentOffset.y;
+    // Pre-compute sorted breakpoints for binary search (yOffset - 170 = transition point)
+    const unitBreakpoints: number[] = useMemo(
+        () => unitRenderData.map((rd: UnitRenderData) => rd.layout.yOffset - 170),
+        [unitRenderData],
+    );
+
+    // Shared value tracking the last pushed unit index (avoids redundant runOnJS calls)
+    const lastVisibleIndexSV = useSharedValue(currentVisibleUnitIndex || 0);
+
+    /**
+     * JS-thread callback invoked via runOnJS when the visible unit changes.
+     * Batches the React state update with the culling + visibility updates
+     * so we get at most 1 re-render per threshold crossing, not 4.
+     */
+    const onUnitChanged = useCallback(
+        (newIndex: number, y: number): void => {
+            setVisibleIndex(newIndex);
+            updateScrollY(y);
+            updateScrollVisibility(y);
+        },
+        [updateScrollY, updateScrollVisibility],
+    );
+
+    /**
+     * JS-thread callback for scroll positions where the unit didn't change.
+     * Only called when the culling hysteresis threshold is likely crossed
+     * (~every 300px). Much cheaper than calling per-frame.
+     */
+    const onScrollTick = useCallback(
+        (y: number): void => {
+            updateScrollY(y);
+            updateScrollVisibility(y);
+        },
+        [updateScrollY, updateScrollVisibility],
+    );
+
+    // ── Single Reanimated scroll handler — runs entirely on the UI thread ──
+    // All per-frame work (scrollY.value assignment, binary search) is worklet code.
+    // JS thread is only touched via runOnJS when a discrete threshold is crossed.
+    const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+            "worklet";
+            const y: number = event.contentOffset.y;
             scrollY.value = y;
-            onScroll(event);
-            onCullingScroll(event);
 
-            // Determine visible unit when the UnitDivider text (at ~yOffset - 170) hits the header
-            let newIndex = 0;
-            for (let i = 0; i < unitRenderData.length; i++) {
-                if (y >= unitRenderData[i].layout.yOffset - 170) {
-                    newIndex = i;
-                }
-            }
-            if (newIndex !== currentVisibleUnitIndexRef.current) {
-                currentVisibleUnitIndexRef.current = newIndex;
-                setVisibleIndex(newIndex);
+            // Binary search for visible unit — O(log n) on the UI thread
+            const newIndex: number = binarySearchVisibleUnit(unitBreakpoints, y);
+
+            if (newIndex !== lastVisibleIndexSV.value) {
+                lastVisibleIndexSV.value = newIndex;
+                // Unit boundary crossed — push all JS updates in one batch
+                runOnJS(onUnitChanged)(newIndex, y);
+            } else {
+                // Same unit — only push culling/visibility updates periodically.
+                // The hysteresis inside updateScrollY ensures this is ~2-3x per fling.
+                runOnJS(onScrollTick)(y);
             }
         },
-        [onScroll, onCullingScroll, scrollY, unitRenderData],
-    );
+    });
 
     // Determine current visible unit for the sticky header
     const visibleUnit: UnitRenderData | undefined =
@@ -210,12 +284,14 @@ function MultiUnitPresentation({
 
     // Flatten all node positions to draw one continuous path across all units
     const allNodePositions: NodePosition[] = useMemo(() => {
-        return unitRenderData.flatMap((rd) => rd.layout.nodePositions);
+        return unitRenderData.flatMap(
+            (rd: UnitRenderData) => rd.layout.nodePositions,
+        );
     }, [unitRenderData]);
 
     // Calculate global active node index so the green progress path reaches it exactly
     const activeNodeGlobalIndex: number = useMemo(() => {
-        let globalIndex = 0;
+        let globalIndex: number = 0;
         for (const rd of unitRenderData) {
             for (const node of rd.unit.nodes) {
                 if (node.status === NodeStatus.ACTIVE) {
@@ -224,7 +300,7 @@ function MultiUnitPresentation({
                 globalIndex++;
             }
         }
-        return globalIndex; // If completely finished, path extends to the very end
+        return globalIndex;
     }, [unitRenderData]);
 
     return (
@@ -238,8 +314,6 @@ function MultiUnitPresentation({
                     colorThemeKey={visibleUnit.unitConfig.colorThemeKey}
                     stats={stats}
                     onGuidePress={onGuidePress}
-                    
-                    // Added props for color interpolation
                     scrollY={scrollY}
                     unitRenderData={unitRenderData}
                 />
@@ -248,16 +322,16 @@ function MultiUnitPresentation({
             {/* Offline banner */}
             <OfflineBanner isOffline={isOffline} />
 
-            {/* Single scrollable path with ALL units */}
-            <ScrollView
-                ref={scrollViewRef}
+            {/* Animated.ScrollView — native scroll events handled on UI thread */}
+            <Animated.ScrollView
+                ref={scrollViewRef as React.RefObject<Animated.ScrollView>}
                 className="flex-1"
                 contentContainerStyle={{
                     height: totalDimensions.height,
                     width: screenWidth,
                 }}
                 showsVerticalScrollIndicator={false}
-                onScroll={handleScroll}
+                onScroll={scrollHandler}
                 scrollEventThrottle={16}
             >
                 {/* Global continuous path behind everything */}
@@ -286,7 +360,9 @@ function MultiUnitPresentation({
                                     title={renderData.unitConfig.divider.title}
                                     showJumpHere={renderData.unitConfig.divider.showJumpHere}
                                     accentColor={
-                                        journeyConfig.colorThemes[renderData.unitConfig.colorThemeKey]?.dividerColor
+                                        journeyConfig.colorThemes[
+                                            renderData.unitConfig.colorThemeKey
+                                        ]?.dividerColor
                                     }
                                     onJumpPress={
                                         onJumpToUnit
@@ -305,7 +381,7 @@ function MultiUnitPresentation({
                         />
                     </React.Fragment>
                 ))}
-            </ScrollView>
+            </Animated.ScrollView>
 
             {/* Scroll-to-active floating button */}
             <ScrollToActiveButton

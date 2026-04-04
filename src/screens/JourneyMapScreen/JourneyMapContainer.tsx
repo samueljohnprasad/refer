@@ -23,7 +23,12 @@ import React, {
 import { ScrollView, useWindowDimensions, View } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useAtomValue, useSetAtom } from "jotai";
-import { router, Stack, useLocalSearchParams, useFocusEffect } from "expo-router";
+import {
+  router,
+  Stack,
+  useLocalSearchParams,
+  useFocusEffect,
+} from "expo-router";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 
 import type {
@@ -32,6 +37,7 @@ import type {
   UnitData,
   JourneyConfig,
   UnitConfig,
+  SectionConfig,
 } from "@/src/types/journey";
 import { NodeStatus, NodeType } from "@/src/types/journey";
 import { useMultiUnitLayout } from "@/src/hooks/useMultiUnitLayout";
@@ -44,6 +50,8 @@ import {
   currentUnitAtom,
   journeyStatsAtom,
   enrollmentIdAtom,
+  currentUnitIndexAtom,
+  unitsAtom,
   saveJourneyState,
 } from "@/src/store/journeyStore";
 import {
@@ -77,10 +85,14 @@ import JourneyErrorState from "@/src/components/journey/JourneyErrorState";
 import MultiUnitPresentation from "./MultiUnitPresentation";
 import type { UnitRenderData } from "./MultiUnitPresentation";
 import { Text } from "@/components/Themed";
+import { debounce, DebouncedFunction } from "@/src/utils/debounce";
 
 export default function JourneyMapContainer(): React.JSX.Element {
   // Route params — journey slug comes from navigation
-  const { slug, jumpToSection } = useLocalSearchParams<{ slug?: string, jumpToSection?: string }>();
+  const { slug, jumpToSection } = useLocalSearchParams<{
+    slug?: string;
+    jumpToSection?: string;
+  }>();
   // Default to first journey slug if not provided (backward compatible)
   const journeySlug: string = slug ?? "default";
 
@@ -115,27 +127,69 @@ export default function JourneyMapContainer(): React.JSX.Element {
   const currentUnit = useAtomValue(currentUnitAtom);
   const stats = useAtomValue(journeyStatsAtom);
   const enrollmentId = useAtomValue(enrollmentIdAtom);
+  // Granular selectors — preserve referential equality for unchanged slices
+  const currentUnitIndex: number = useAtomValue(currentUnitIndexAtom);
+  const allUnitsRaw: UnitData[] = useAtomValue(unitsAtom);
 
-  // Persist state on every change; queue for sync if offline
+  // Debounced persistence — avoids hammering AsyncStorage on every progress tick.
+  // Fires at most once per 1.5s (trailing). Flushed on unmount to avoid data loss.
+  const debouncedSave = useMemo<DebouncedFunction<typeof saveJourneyState>>(
+    () => debounce(saveJourneyState, 1500),
+    [],
+  );
+
   useEffect(() => {
-    saveJourneyState(journeyState);
+    debouncedSave(journeyState);
     if (!isOnline) {
       enqueue(journeyState);
     }
-  }, [journeyState, isOnline, enqueue]);
+  }, [journeyState, isOnline, enqueue, debouncedSave]);
+
+  // Flush any pending save on unmount to prevent data loss
+  useEffect(() => {
+    return () => {
+      debouncedSave.flush();
+    };
+  }, [debouncedSave]);
 
   // Get config for multi-unit rendering
   const config: JourneyConfig = useJourneyConfig();
 
+  // ── Pre-built lookup Maps — O(1) instead of O(n) .find() per lookup ──
+  // Built once when config changes (extremely rare — only on hot-swap).
+  const unitConfigMap: Map<string, UnitConfig> = useMemo(
+    () => new Map(config.units.map((uc: UnitConfig) => [uc.id, uc])),
+    [config.units],
+  );
+  const sectionConfigMap: Map<string, SectionConfig> = useMemo(
+    () => new Map(config.sections.map((sc: SectionConfig) => [sc.id, sc])),
+    [config.sections],
+  );
+  // Reverse lookup: unitId → sectionConfig (avoids nested .find inside .map)
+  const unitToSectionMap: Map<string, SectionConfig> = useMemo(() => {
+    const map = new Map<string, SectionConfig>();
+    for (const [unitId, uc] of unitConfigMap) {
+      const sc: SectionConfig | undefined = sectionConfigMap.get(uc.sectionId);
+      if (sc) map.set(unitId, sc);
+    }
+    return map;
+  }, [unitConfigMap, sectionConfigMap]);
+
+  const verticalGap: number = config.settings.verticalGap ?? 120;
+
   // Determine the default section based on user's current unit
-  const defaultSectionId = useMemo(() => {
-    if (!journeyState || !config.units.length) return config.sections[0].id;
-    const currentUnitConfig = config.units[journeyState.currentUnit] || config.units[0];
+  // Uses granular currentUnitIndexAtom — only re-derives when the index changes,
+  // not on every progress tick.
+  const defaultSectionId: string = useMemo(() => {
+    if (!config.units.length) return config.sections[0].id;
+    const currentUnitConfig: UnitConfig =
+      config.units[currentUnitIndex] || config.units[0];
     return currentUnitConfig.sectionId;
-  }, [journeyState?.currentUnit, config]);
+  }, [currentUnitIndex, config]);
 
   // State to track which section is currently focused (only its units render)
-  const [activeSectionId, setActiveSectionId] = useState<string>(defaultSectionId);
+  const [activeSectionId, setActiveSectionId] =
+    useState<string>(defaultSectionId);
 
   // Sync defaultSectionId to active state if the journey is refreshed or initialized
   useEffect(() => {
@@ -153,27 +207,40 @@ export default function JourneyMapContainer(): React.JSX.Element {
   }, [jumpToSection, activeSectionId]);
 
   // Filter unit configs to ONLY the ones in the active section
-  const activeSectionConfig = config.sections.find(s => s.id === activeSectionId) || config.sections[0];
-  
-  // All units from journey state, restricted to the active section
+  const activeSectionConfig =
+    config.sections.find((s) => s.id === activeSectionId) || config.sections[0];
+
+  // All units from journey state, restricted to the active section.
+  // Uses granular unitsAtom — reference only changes when the units array mutates,
+  // not on stats/currentUnit changes. This breaks the useMemo cascade.
   const allUnits: UnitData[] = useMemo(() => {
-    const units = journeyState?.units || [];
-    return units.filter((u) => activeSectionConfig.unitIds.includes(u.id));
-  }, [journeyState?.units, activeSectionConfig]);
+    return allUnitsRaw.filter((u: UnitData) =>
+      activeSectionConfig.unitIds.includes(u.id),
+    );
+  }, [allUnitsRaw, activeSectionConfig]);
 
   // Compute multi-unit layout (all units in one scrollable path)
-  const { screenWidth, unitSegments, totalDimensions } =
-    useMultiUnitLayout(allUnits, config);
+  // Passes the pre-built Map so layout never calls .find()
+  const { screenWidth, unitSegments, totalDimensions } = useMultiUnitLayout(
+    allUnits,
+    unitConfigMap,
+    verticalGap,
+  );
+
+  // Build a quick unit-data lookup for the active section (O(n) build, O(1) per get)
+  const unitDataMap: Map<string, UnitData> = useMemo(
+    () => new Map(allUnits.map((u: UnitData) => [u.id, u])),
+    [allUnits],
+  );
 
   // Compute per-unit render data with mascot positions
+  // All lookups are O(1) Map.get() instead of O(n) .find()
   const unitRenderData: UnitRenderData[] = useMemo(() => {
     return unitSegments
       .map((segment: UnitLayoutSegment) => {
-        const unit: UnitData | undefined = allUnits.find(
-          (u: UnitData) => u.id === segment.unitId,
-        );
-        const unitConfig: UnitConfig | undefined = config.units.find(
-          (uc: UnitConfig) => uc.id === segment.unitId,
+        const unit: UnitData | undefined = unitDataMap.get(segment.unitId);
+        const unitConfig: UnitConfig | undefined = unitConfigMap.get(
+          segment.unitId,
         );
 
         if (!unit || !unitConfig) {
@@ -187,8 +254,8 @@ export default function JourneyMapContainer(): React.JSX.Element {
           screenWidth,
         );
 
-        const sectionConfig = config.sections.find(
-          (s) => s.id === unitConfig.sectionId,
+        const sectionConfig: SectionConfig | undefined = unitToSectionMap.get(
+          segment.unitId,
         );
 
         return {
@@ -200,7 +267,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
         };
       })
       .filter((rd): rd is UnitRenderData => rd !== null);
-  }, [unitSegments, allUnits, config, screenWidth]);
+  }, [unitSegments, unitDataMap, unitConfigMap, unitToSectionMap, screenWidth]);
 
   // Compute active node Y across all units for scroll-to-active
   const activeNodeY: number | null = useMemo(() => {
@@ -219,7 +286,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
     isOffScreen: isActiveOffScreen,
     direction: scrollDirection,
     scrollToActive,
-    onScroll,
+    updateVisibility,
   } = useScrollToActive(scrollViewRef, activeNodeY, viewportHeight);
 
   // Auto-scroll to active node gracefully on screen focus
@@ -235,10 +302,8 @@ export default function JourneyMapContainer(): React.JSX.Element {
         }, 500); // 500ms lets the screen settle so they can observe the completion before the scroll native animation triggers
         return () => clearTimeout(timer);
       }
-    }, [activeNodeY, jumpToSection])
+    }, [activeNodeY, jumpToSection]),
   );
-
-
 
   // ── Node press handlers by status (wrapped with interaction lock — Task 5.1.3) ──
   const handleNodePressInner = useCallback(
@@ -449,7 +514,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
         isActiveOffScreen={isActiveOffScreen}
         scrollDirection={scrollDirection}
         onScrollToActive={scrollToActive}
-        onScroll={onScroll}
+        updateScrollVisibility={updateVisibility}
         onGuidePress={handleGuidePress}
         onJumpToUnit={handleJumpToUnit}
       />

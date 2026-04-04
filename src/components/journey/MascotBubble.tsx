@@ -14,24 +14,22 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import { Text } from "@/components/ui/text";
-import { SharedValue } from "react-native-reanimated";
 import Animated, {
   useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
   withTiming,
   withSpring,
   withDelay,
-  Easing,
-  interpolate,
   FadeIn,
 } from "react-native-reanimated";
 
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import { ANIMATION_TIMING, MASCOT_MESSAGES, MASCOT_SIZE } from "@/src/data/journey/constants";
+import {
+  ANIMATION_TIMING,
+  MASCOT_MESSAGES,
+  MASCOT_SIZE,
+} from "@/src/data/journey/constants";
 import { MascotSide } from "@/src/types/journey/enums";
-
 
 // ---------------------------------------------------------------------------
 // Props
@@ -64,12 +62,9 @@ function getRandomMessage(exclude: string): string {
 // Sub-components
 // ---------------------------------------------------------------------------
 
-interface OwlAvatarProps {
-}
+interface OwlAvatarProps { }
 
 function OwlAvatar({ }: OwlAvatarProps): React.JSX.Element {
-
-
   return (
     <View
       className="items-center justify-center rounded-full"
@@ -151,25 +146,9 @@ function MascotBubble({
   const halfAvatar: number = MASCOT_SIZE.avatar / 2;
   const reducedMotion: boolean = useReducedMotion();
 
-  // ── Breathing animation ──
-  const breathProgress = useSharedValue(0);
-
-  useEffect(() => {
-    if (reducedMotion) {
-      breathProgress.value = 0;
-      return;
-    }
-    breathProgress.value = withRepeat(
-      withTiming(1, {
-        duration: ANIMATION_TIMING.breathing,
-        easing: Easing.inOut(Easing.ease),
-      }),
-      -1,
-      true,
-    );
-  }, [breathProgress, reducedMotion]);
-
   // ── Entrance slide-in animation ──
+  // Mascots are now kept mounted (hidden via opacity in parent) so this
+  // animation only fires once on initial mount — no more churn.
   const entranceX = useSharedValue(reducedMotion ? 0 : isLeft ? -60 : 60);
   const entranceOpacity = useSharedValue(reducedMotion ? 1 : 0);
 
@@ -188,8 +167,6 @@ function MascotBubble({
       withTiming(1, { duration: 300 }),
     );
   }, [entranceX, entranceOpacity, isLeft, reducedMotion]);
-
-
 
   // ── Tap handler — cycle random message (Task 4.1.3) ──
   const handleTap = useCallback((): void => {
@@ -221,7 +198,10 @@ function MascotBubble({
 
       <View style={{ width: 8 }} />
 
-      <SpeechBubble message={message} side={side} />
+      <SpeechBubble
+        message={message}
+        side={side}
+      />
     </Animated.View>
   );
 }

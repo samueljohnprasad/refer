@@ -20,10 +20,12 @@ import Animated, {
 import { NodePosition } from "@/src/types/journey/node";
 import { PathDimensions } from "@/src/utils/journey/dimensions";
 import { useHighContrast } from "@/src/hooks/useHighContrast";
-import { buildPartialPathD, buildPathD } from "@/src/utils/journey/pathBuilder";
+import {
+  buildPartialPathD,
+  buildPathD,
+  approximatePathLength,
+} from "@/src/utils/journey/pathBuilder";
 import { ANIMATION_TIMING } from "@/src/data/journey/constants";
-
-
 
 // Wrap SVG Path with reanimated so we can animate native SVG props
 const AnimatedPath = Animated.createAnimatedComponent(Path);
@@ -41,25 +43,6 @@ export interface PathConnectorProps {
 }
 
 // ---------------------------------------------------------------------------
-// Approximate path length for strokeDash animation
-// ---------------------------------------------------------------------------
-
-function approximatePathLength(
-  positions: NodePosition[],
-  endIndex: number,
-): number {
-  let length = 0;
-  const end: number = Math.min(endIndex + 1, positions.length);
-  for (let i = 1; i < end; i++) {
-    const dx: number = positions[i].x - positions[i - 1].x;
-    const dy: number = positions[i].y - positions[i - 1].y;
-    // Bézier is ~1.2× the chord length on average
-    length += Math.sqrt(dx * dx + dy * dy) * 1.2;
-  }
-  return Math.max(length, 1);
-}
-
-// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
@@ -70,17 +53,34 @@ function PathConnector({
   completedCount,
 }: PathConnectorProps): React.JSX.Element {
   const { pathColors, pathStrokeWidth } = useHighContrast();
-  const fullPathD: string = buildPathD(nodePositions);
-  const progressPathD: string =
-    completedCount > 0
-      ? buildPartialPathD(nodePositions, completedCount)
-      : "";
+
+  // Memoize fullPathD — only recomputes when nodePositions change (layout/rotation),
+  // NOT when completedCount changes. Eliminates redundant O(n) Bézier building.
+  const fullPathD: string = useMemo(
+    () => buildPathD(nodePositions),
+    [nodePositions],
+  );
+
+  // Memoize progressPathD — recomputes only when completedCount or positions change
+  const progressPathD: string = useMemo(
+    () =>
+      completedCount > 0
+        ? buildPartialPathD(nodePositions, completedCount)
+        : "",
+    [nodePositions, completedCount],
+  );
 
   // Estimate total length of the progress sub-path for dash animation
+  // Uses the shared approximatePathLength from pathBuilder (DRY — removed local duplicate)
   const estimatedLength: number = useMemo(
     () =>
       completedCount > 0
-        ? approximatePathLength(nodePositions, completedCount)
+        ? approximatePathLength(
+          nodePositions.slice(
+            0,
+            Math.min(completedCount + 1, nodePositions.length),
+          ),
+        )
         : 0,
     [nodePositions, completedCount],
   );
@@ -93,21 +93,21 @@ function PathConnector({
   useEffect(() => {
     // True crawl animation: only animate the NEW delta sequence
     if (estimatedLength > prevLengthRef.current) {
-        const delta = estimatedLength - prevLengthRef.current;
-        // Instantly offset the dash by delta. Because the SVG stroke drawing starts from 0,
-        // leaving the last delta pixels un-stroked, this hides ONLY the newly unlocked segment!
-        dashOffset.value = delta;
-        // Crawl down the path
-        dashOffset.value = withTiming(0, {
-          duration: ANIMATION_TIMING.pathDraw || 1000,
-          easing: Easing.out(Easing.ease),
-        });
+      const delta = estimatedLength - prevLengthRef.current;
+      // Instantly offset the dash by delta. Because the SVG stroke drawing starts from 0,
+      // leaving the last delta pixels un-stroked, this hides ONLY the newly unlocked segment!
+      dashOffset.value = delta;
+      // Crawl down the path
+      dashOffset.value = withTiming(0, {
+        duration: ANIMATION_TIMING.pathDraw || 1000,
+        easing: Easing.out(Easing.ease),
+      });
     } else if (estimatedLength < prevLengthRef.current) {
-        // Handled backward steps (e.g. debugging/resetting progress)
-        dashOffset.value = 0;
+      // Handled backward steps (e.g. debugging/resetting progress)
+      dashOffset.value = 0;
     } else {
-        // Initial render mounts it fully drawn
-        dashOffset.value = 0;
+      // Initial render mounts it fully drawn
+      dashOffset.value = 0;
     }
     prevLengthRef.current = estimatedLength;
   }, [estimatedLength, dashOffset]);

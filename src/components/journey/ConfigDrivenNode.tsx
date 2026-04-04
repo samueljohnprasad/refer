@@ -49,7 +49,7 @@ function hexToFeColorMatrix(hex: string): string {
     const g = parseInt(hex.slice(3, 5), 16) / 255;
     const b = parseInt(hex.slice(5, 7), 16) / 255;
     // Force integers for safe matching
-    return `0 0 0 0 ${r.toFixed(3).replace(/\.?0+$/, '') || '0'} 0 0 0 0 ${g.toFixed(3).replace(/\.?0+$/, '') || '0'} 0 0 0 0 ${b.toFixed(3).replace(/\.?0+$/, '') || '0'} 0 0 0 1 0`;
+    return `0 0 0 0 ${r.toFixed(3).replace(/\.?0+$/, "") || "0"} 0 0 0 0 ${g.toFixed(3).replace(/\.?0+$/, "") || "0"} 0 0 0 0 ${b.toFixed(3).replace(/\.?0+$/, "") || "0"} 0 0 0 1 0`;
 }
 
 // Global memo cache for matrix calculations to avoid repeating hex math
@@ -59,6 +59,41 @@ function getCachedMatrix(hex: string): string {
         matrixCache.set(hex, hexToFeColorMatrix(hex));
     }
     return matrixCache.get(hex)!;
+}
+
+// ---------------------------------------------------------------------------
+// Recolored SVG cache — eliminates 3 regex scans per node per render.
+// Key: "svgKey|pathActiveColor|dividerColor" → fully recolored XML string.
+// Only invalidated on config hot-swap (matrixCache.clear + recolorCache.clear).
+// ---------------------------------------------------------------------------
+const recolorCache = new Map<string, string>();
+
+function getRecoloredSvg(
+    svgKey: string,
+    pathActiveColor: string,
+    dividerColor: string,
+): string | undefined {
+    const cacheKey: string = `${svgKey}|${pathActiveColor}|${dividerColor}`;
+    const cached: string | undefined = recolorCache.get(cacheKey);
+    if (cached) return cached;
+
+    let xml: string | undefined = getSvg(svgKey);
+    if (!xml) return undefined;
+
+    // Apply the 3 regex replacements once, then cache forever
+    xml = xml.replace(/#FFC800|#ffc800|#58CC02|#58cc02/g, pathActiveColor);
+    const newMatrix: string = `values="${getCachedMatrix(dividerColor)}"`;
+    xml = xml.replace(
+        /values="0 0 0 0 0\.8 0 0 0 0 0\.627 0 0 0 0 0 0 0 0 1 0"/g,
+        newMatrix,
+    );
+    xml = xml.replace(
+        /values="0 0 0 0 0\.267 0 0 0 0 0\.639 0 0 0 0 0\.008 0 0 0 1 0"/g,
+        newMatrix,
+    );
+
+    recolorCache.set(cacheKey, xml);
+    return xml;
 }
 
 import {
@@ -171,18 +206,17 @@ function NodeShellContent({
     // SVG type: the SVG provides the COMPLETE node visual (pill bg, shadow, glyph).
     // We do NOT add a circular shell — just wrap with PressableScale for interaction.
     if (iconConfig.type === "svg") {
-        let xml: string | undefined = getSvg(iconConfig.value);
+        // Use cached recolored SVG for active/completed, raw SVG for others
+        const xml: string | undefined =
+            isCompleted || isActive
+                ? getRecoloredSvg(
+                    iconConfig.value,
+                    theme.pathActiveColor,
+                    theme.dividerColor,
+                )
+                : getSvg(iconConfig.value);
+
         if (xml) {
-            if (isCompleted || isActive) {
-                // Dynamically recolor the completed/active interior to match the bold section header
-                xml = xml.replace(/#FFC800|#ffc800|#58CC02|#58cc02/g, theme.pathActiveColor);
-                
-                // Dynamically replace the yellow/green drop shadows with the theme's base color (divider color)
-                const newMatrix = `values="${getCachedMatrix(theme.dividerColor)}"`;
-                // Standardize active/completed values matrices in a fast string replace
-                xml = xml.replace(/values="0 0 0 0 0\.8 0 0 0 0 0\.627 0 0 0 0 0 0 0 0 1 0"/g, newMatrix);
-                xml = xml.replace(/values="0 0 0 0 0\.267 0 0 0 0 0\.639 0 0 0 0 0\.008 0 0 0 1 0"/g, newMatrix);
-            }
             return (
                 <PressableScale
                     onPress={onPress}
@@ -471,8 +505,12 @@ function ConfigDrivenNodeInner({
                     <NodeShellContent
                         iconConfig={iconConfig}
                         size={size}
-                        backgroundColor={isCompleted || isActive ? theme.pathActiveColor : colorConfig.fill}
-                        borderColor={isCompleted || isActive ? theme.dividerColor : colorConfig.border}
+                        backgroundColor={
+                            isCompleted || isActive ? theme.pathActiveColor : colorConfig.fill
+                        }
+                        borderColor={
+                            isCompleted || isActive ? theme.dividerColor : colorConfig.border
+                        }
                         isActive={isActive}
                         isCompleted={isCompleted}
                         theme={theme}
@@ -487,18 +525,21 @@ function ConfigDrivenNodeInner({
 }
 
 // Highly aggressive memoization to preserve scroll performance
-export const ConfigDrivenNode = React.memo(ConfigDrivenNodeInner, (prev, next) => {
-    // Only re-render if the core status changes, progress ticks, or theme changes.
-    // X,Y positions never change at runtime so we don't bother deep comparing them.
-    return (
-        prev.node.id === next.node.id &&
-        prev.node.status === next.node.status &&
-        prev.node.progress === next.node.progress &&
-        prev.variantKey === next.variantKey &&
-        prev.colorThemeKey === next.colorThemeKey &&
-        prev.position.x === next.position.x &&
-        prev.position.y === next.position.y
-    );
-});
+export const ConfigDrivenNode = React.memo(
+    ConfigDrivenNodeInner,
+    (prev, next) => {
+        // Only re-render if the core status changes, progress ticks, or theme changes.
+        // X,Y positions never change at runtime so we don't bother deep comparing them.
+        return (
+            prev.node.id === next.node.id &&
+            prev.node.status === next.node.status &&
+            prev.node.progress === next.node.progress &&
+            prev.variantKey === next.variantKey &&
+            prev.colorThemeKey === next.colorThemeKey &&
+            prev.position.x === next.position.x &&
+            prev.position.y === next.position.y
+        );
+    },
+);
 
 export default ConfigDrivenNode;

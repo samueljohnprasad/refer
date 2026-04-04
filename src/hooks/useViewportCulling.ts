@@ -1,7 +1,18 @@
 /**
- * useViewportCulling Hook (Task 17)
- * Tracks the current scroll offset and provides a helper to determine
- * whether a given Y position is within (or near) the visible viewport.
+ * useViewportCulling Hook (Task 17 — Perf #1 rewrite)
+ *
+ * Tracks the current scroll offset via a Reanimated SharedValue and provides
+ * a JS-side `isInViewport(y)` check for render-time culling decisions.
+ *
+ * Architecture (post-perf-audit):
+ * - The canonical scroll position lives in a SharedValue owned by the caller
+ *   (MultiUnitPresentation's `useAnimatedScrollHandler`).
+ * - This hook reads a **snapshot** of that value. The snapshot is pushed to JS
+ *   via `runOnJS` only when the scroll crosses a culling-zone boundary
+ *   (every ~300px of travel), NOT every frame. This means React re-renders
+ *   only 2-3 times during a full-screen fling instead of 60+ times.
+ * - Between snapshots the `isInViewport` check uses the stale value which is
+ *   fine because the overscan buffer (600px) absorbs the gap.
  *
  * Nodes outside the viewport + overscan are skipped during render,
  * dramatically reducing the number of mounted components for long paths.
@@ -9,7 +20,6 @@
 
 import { useState, useCallback, useMemo, useRef } from "react";
 import { useWindowDimensions } from "react-native";
-import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -18,10 +28,10 @@ import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 export interface ViewportCullingResult {
     /** Whether a Y position is currently visible (within viewport + overscan) */
     isInViewport: (y: number) => boolean;
-    /** Scroll handler to attach to the ScrollView */
-    onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
-    /** Current scroll offset Y */
+    /** Current scroll offset Y snapshot (for consumers that need it) */
     scrollY: number;
+    /** Call this from `runOnJS` inside `useAnimatedScrollHandler` to push a new snapshot */
+    updateScrollY: (y: number) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -31,14 +41,22 @@ export interface ViewportCullingResult {
 /** How far above/below the viewport to keep nodes rendered (prevents pop-in) */
 const DEFAULT_OVERSCAN_PX: number = 600;
 
+/**
+ * Minimum scroll distance (px) before we push a new snapshot to JS.
+ * Must be significantly less than overscan so nodes are never popped in late.
+ * 300px means ~2-3 JS updates per full-screen fling — virtually free.
+ */
+const SNAPSHOT_HYSTERESIS_PX: number = 300;
+
 // ---------------------------------------------------------------------------
 // Hook
 // ---------------------------------------------------------------------------
 
 /**
- * Returns a scroll handler and `isInViewport(y)` check that culls
- * off-screen nodes. Attach `onScroll` to the ScrollView and call
- * `isInViewport(nodeY)` before rendering each node.
+ * Returns `isInViewport(y)` for render-time culling and an `updateScrollY`
+ * callback to be called from the caller's Reanimated scroll handler via `runOnJS`.
+ *
+ * The hook no longer owns a scroll handler — the caller drives it.
  *
  * @param overscan - Extra pixels above/below viewport to keep mounted
  */
@@ -47,23 +65,21 @@ export function useViewportCulling(
 ): ViewportCullingResult {
     const { height: screenHeight } = useWindowDimensions();
     const [scrollY, setScrollY] = useState<number>(0);
-    // Use a ref to throttle updates manually without importing anything heavyweight
-    const lastUpdateTimeRef = useRef<number>(0);
 
-    const onScroll = useCallback(
-        (event: NativeSyntheticEvent<NativeScrollEvent>): void => {
-            const now = Date.now();
-            const currentY = Math.max(0, event.nativeEvent.contentOffset.y);
-            
-            // Throttle internal React state updates to 5 times a second (every 200ms)
-            // This massively reduces JS thread blockages during fast scrolling.
-            if (now - lastUpdateTimeRef.current > 200) {
-                setScrollY(currentY);
-                lastUpdateTimeRef.current = now;
-            }
-        },
-        [],
-    );
+    // Track the last value we actually pushed so we can apply hysteresis
+    const lastPushedRef = useRef<number>(0);
+
+    /**
+     * Called from `runOnJS` on the UI thread. Only commits a React state
+     * update when scroll has moved more than SNAPSHOT_HYSTERESIS_PX since
+     * the last push, collapsing dozens of frames into 1 re-render.
+     */
+    const updateScrollY = useCallback((y: number): void => {
+        if (Math.abs(y - lastPushedRef.current) >= SNAPSHOT_HYSTERESIS_PX) {
+            lastPushedRef.current = y;
+            setScrollY(y);
+        }
+    }, []);
 
     const isInViewport = useCallback(
         (y: number): boolean => {
@@ -75,7 +91,7 @@ export function useViewportCulling(
     );
 
     return useMemo(
-        () => ({ isInViewport, onScroll, scrollY }),
-        [isInViewport, onScroll, scrollY],
+        () => ({ isInViewport, scrollY, updateScrollY }),
+        [isInViewport, scrollY, updateScrollY],
     );
 }
