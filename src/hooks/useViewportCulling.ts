@@ -7,7 +7,7 @@
  * dramatically reducing the number of mounted components for long paths.
  */
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { useWindowDimensions } from "react-native";
 import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 
@@ -47,10 +47,20 @@ export function useViewportCulling(
 ): ViewportCullingResult {
     const { height: screenHeight } = useWindowDimensions();
     const [scrollY, setScrollY] = useState<number>(0);
+    // Use a ref to throttle updates manually without importing anything heavyweight
+    const lastUpdateTimeRef = useRef<number>(0);
 
     const onScroll = useCallback(
         (event: NativeSyntheticEvent<NativeScrollEvent>): void => {
-            setScrollY(event.nativeEvent.contentOffset.y);
+            const now = Date.now();
+            const currentY = Math.max(0, event.nativeEvent.contentOffset.y);
+            
+            // Throttle internal React state updates to 5 times a second (every 200ms)
+            // This massively reduces JS thread blockages during fast scrolling.
+            if (now - lastUpdateTimeRef.current > 200) {
+                setScrollY(currentY);
+                lastUpdateTimeRef.current = now;
+            }
         },
         [],
     );

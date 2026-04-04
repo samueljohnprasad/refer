@@ -48,8 +48,19 @@ function hexToFeColorMatrix(hex: string): string {
     const r = parseInt(hex.slice(1, 3), 16) / 255;
     const g = parseInt(hex.slice(3, 5), 16) / 255;
     const b = parseInt(hex.slice(5, 7), 16) / 255;
+    // Force integers for safe matching
     return `0 0 0 0 ${r.toFixed(3).replace(/\.?0+$/, '') || '0'} 0 0 0 0 ${g.toFixed(3).replace(/\.?0+$/, '') || '0'} 0 0 0 0 ${b.toFixed(3).replace(/\.?0+$/, '') || '0'} 0 0 0 1 0`;
 }
+
+// Global memo cache for matrix calculations to avoid repeating hex math
+const matrixCache = new Map<string, string>();
+function getCachedMatrix(hex: string): string {
+    if (!matrixCache.has(hex)) {
+        matrixCache.set(hex, hexToFeColorMatrix(hex));
+    }
+    return matrixCache.get(hex)!;
+}
+
 import {
     useJourneySettings,
     useNodeVariant,
@@ -167,7 +178,8 @@ function NodeShellContent({
                 xml = xml.replace(/#FFC800|#ffc800|#58CC02|#58cc02/g, theme.pathActiveColor);
                 
                 // Dynamically replace the yellow/green drop shadows with the theme's base color (divider color)
-                const newMatrix = `values="${hexToFeColorMatrix(theme.dividerColor)}"`;
+                const newMatrix = `values="${getCachedMatrix(theme.dividerColor)}"`;
+                // Standardize active/completed values matrices in a fast string replace
                 xml = xml.replace(/values="0 0 0 0 0\.8 0 0 0 0 0\.627 0 0 0 0 0 0 0 0 1 0"/g, newMatrix);
                 xml = xml.replace(/values="0 0 0 0 0\.267 0 0 0 0 0\.639 0 0 0 0 0\.008 0 0 0 1 0"/g, newMatrix);
             }
@@ -305,10 +317,10 @@ export interface ConfigDrivenNodeProps {
 }
 
 // ---------------------------------------------------------------------------
-// ConfigDrivenNode — Component
+// ConfigDrivenNode — Main Component
 // ---------------------------------------------------------------------------
 
-function ConfigDrivenNode({
+function ConfigDrivenNodeInner({
     node,
     position,
     variantKey,
@@ -474,4 +486,19 @@ function ConfigDrivenNode({
     );
 }
 
-export default React.memo(ConfigDrivenNode);
+// Highly aggressive memoization to preserve scroll performance
+export const ConfigDrivenNode = React.memo(ConfigDrivenNodeInner, (prev, next) => {
+    // Only re-render if the core status changes, progress ticks, or theme changes.
+    // X,Y positions never change at runtime so we don't bother deep comparing them.
+    return (
+        prev.node.id === next.node.id &&
+        prev.node.status === next.node.status &&
+        prev.node.progress === next.node.progress &&
+        prev.variantKey === next.variantKey &&
+        prev.colorThemeKey === next.colorThemeKey &&
+        prev.position.x === next.position.x &&
+        prev.position.y === next.position.y
+    );
+});
+
+export default ConfigDrivenNode;
