@@ -32,3 +32,18 @@ export type {
   UserNodeProgress,
   CompleteNodeResponse,
 } from "./progress";
+
+export type {
+  NodeIconConfig,
+  NodeColorConfig,
+  NodeVariantConfig,
+  ColorThemeConfig,
+  SectionMascotConfig,
+  SectionConfig,
+  UnitDividerConfig,
+  UnitNodeConfig,
+  MascotPlacementConfig,
+  UnitConfig,
+  JourneySettingsConfig,
+  JourneyConfig,
+} from "./config";

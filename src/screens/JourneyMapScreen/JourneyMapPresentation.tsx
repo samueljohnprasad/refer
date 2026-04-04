@@ -1,70 +1,167 @@
 /**
- * JourneyMapPresentation
- * Pure presentational component — composes journey sub-components.
- * Receives all data and callbacks via props. No state, no side effects.
+ * MultiUnitPresentation (Task 9)
+ * Renders ALL units in a single scrollable path with:
+ * - Config-driven nodes (ConfigDrivenNode)
+ * - Unit dividers between units
+ * - Sticky unit header
+ * - Mascot bubbles
+ * - Path connectors per unit
+ * - Offline banner + scroll-to-active button
+ *
+ * Pure presentational — all data via props.
  */
 
-import React, { useMemo } from "react";
-import { View, ScrollView } from "react-native";
-import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
+import React, { useMemo } from 'react';
+import { View, ScrollView } from 'react-native';
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 
 import type {
   UnitData,
   PathNodeData,
   NodePosition,
   JourneyStats,
-} from "@/src/types/journey";
-import { NodeStatus } from "@/src/types/journey";
+  UnitConfig,
+} from '@/src/types/journey';
+import { NodeStatus } from '@/src/types/journey';
 
 import {
-  PathNode,
   PathConnector,
-  JourneyHeader,
   MascotBubble,
-  ChestNode,
   OfflineBanner,
   ScrollToActiveButton,
-} from "@/src/components/journey";
-import { NodeType } from "@/src/types/journey";
-import type { MascotPositionData } from "@/src/hooks/useMascotPositions";
-import { PathDimensions } from "@/src/utils/journey";
+  ConfigDrivenNode,
+  UnitDivider,
+  StickyUnitHeader,
+} from '@/src/components/journey';
+import type { MascotPositionData } from '@/src/hooks/useMascotPositions';
+import type { UnitLayoutSegment } from '@/src/hooks/useMultiUnitLayout';
+import type { PathDimensions } from '@/src/utils/journey';
 
 // ---------------------------------------------------------------------------
-// Props
+// Types
 // ---------------------------------------------------------------------------
 
-export interface JourneyMapPresentationProps {
+/** Per-unit rendering data combining runtime state with layout */
+export interface UnitRenderData {
+  /** Runtime unit data (nodes with statuses) */
   unit: UnitData;
-  stats: JourneyStats;
-  nodePositions: NodePosition[];
-  pathDimensions: PathDimensions;
-  screenWidth: number;
+  /** Config for this unit (for divider, color theme, node variant keys) */
+  unitConfig: UnitConfig;
+  /** Layout segment with absolute positions */
+  layout: UnitLayoutSegment;
+  /** Mascot positions for this unit */
   mascotPositions: MascotPositionData[];
+  /** Section number this unit belongs to */
+  sectionNumber: number;
+}
+
+export interface MultiUnitPresentationProps {
+  /** All units to render in order */
+  unitRenderData: UnitRenderData[];
+  /** User stats for the header */
+  stats: JourneyStats;
+  /** Currently visible unit index (for sticky header) */
+  currentVisibleUnitIndex: number;
+  /** Total scrollable dimensions */
+  totalDimensions: PathDimensions;
+  /** Screen width */
+  screenWidth: number;
+  /** Node press handler */
   onNodePress: (node: PathNodeData) => void;
+  /** ScrollView ref */
   scrollViewRef: React.RefObject<ScrollView | null>;
-  /** Task 5.1.1: Whether the device is offline */
+  /** Whether offline */
   isOffline: boolean;
-  /** Task 5.1.4: Whether the active node is scrolled off-screen */
+  /** Whether active node is off-screen */
   isActiveOffScreen: boolean;
-  /** Task 5.1.4: Direction to scroll to reach active node */
-  scrollDirection: "up" | "down";
-  /** Task 5.1.4: Callback to scroll to active node */
+  /** Scroll direction to reach active */
+  scrollDirection: 'up' | 'down';
+  /** Scroll-to-active callback */
   onScrollToActive: () => void;
-  /** Task 5.1.4: onScroll handler for tracking viewport position */
+  /** Scroll event handler */
   onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  /** Guide-book button handler */
+  onGuidePress?: () => void;
+  /** Jump-here handler for unit dividers */
+  onJumpToUnit?: (unitId: string) => void;
 }
 
 // ---------------------------------------------------------------------------
-// Presentation
+// UnitSection sub-component — renders one unit's nodes + mascots
 // ---------------------------------------------------------------------------
 
-function JourneyMapPresentation({
-  unit,
+interface UnitSectionProps {
+  renderData: UnitRenderData;
+  onNodePress: (node: PathNodeData) => void;
+}
+
+function UnitSection({ renderData, onNodePress }: UnitSectionProps): React.JSX.Element {
+  const { unit, unitConfig, layout, mascotPositions } = renderData;
+
+  const completedCount: number = useMemo(
+    () => unit.nodes.filter((n: PathNodeData) => n.status === NodeStatus.COMPLETED).length,
+    [unit.nodes],
+  );
+
+  return (
+    <>
+      {/* Path connector for this unit's nodes */}
+      {layout.nodePositions.length >= 2 && (
+        <PathConnector
+          nodePositions={layout.nodePositions}
+          pathDimensions={{
+            width: 0,
+            height: 0,
+            totalLength: 0,
+          }}
+          screenWidth={0}
+          completedCount={completedCount}
+        />
+      )}
+
+      {/* Config-driven nodes */}
+      {unit.nodes.map((node: PathNodeData, index: number) => {
+        const position: NodePosition | undefined = layout.nodePositions[index];
+        if (!position) return null;
+
+        const nodeConfig = unitConfig.nodes[index];
+        const variantKey: string = nodeConfig?.variantKey ?? 'star';
+
+        return (
+          <ConfigDrivenNode
+            key={`${unit.id}_${node.id}`}
+            node={node}
+            position={position}
+            variantKey={variantKey}
+            onPress={onNodePress}
+          />
+        );
+      })}
+
+      {/* Mascot bubbles */}
+      {mascotPositions.map((mascot: MascotPositionData) => (
+        <MascotBubble
+          key={mascot.key}
+          x={mascot.x}
+          y={mascot.y}
+          side={mascot.side}
+          initialMessage={mascot.message}
+        />
+      ))}
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// MultiUnitPresentation
+// ---------------------------------------------------------------------------
+
+function MultiUnitPresentation({
+  unitRenderData,
   stats,
-  nodePositions,
-  pathDimensions,
+  currentVisibleUnitIndex,
+  totalDimensions,
   screenWidth,
-  mascotPositions,
   onNodePress,
   scrollViewRef,
   isOffline,
@@ -72,77 +169,76 @@ function JourneyMapPresentation({
   scrollDirection,
   onScrollToActive,
   onScroll,
-}: JourneyMapPresentationProps): React.JSX.Element {
-  const completedCount: number = useMemo(
-    () =>
-      unit?.nodes
-        ? unit.nodes.filter((n: PathNodeData) => n.status === NodeStatus.COMPLETED).length
-        : 0,
-    [unit?.nodes],
-  );
-
-
+  onGuidePress,
+  onJumpToUnit,
+}: MultiUnitPresentationProps): React.JSX.Element {
+  // Determine current visible unit for the sticky header
+  const visibleUnit: UnitRenderData | undefined =
+    unitRenderData[currentVisibleUnitIndex] ?? unitRenderData[0];
 
   return (
     <View className="flex-1 bg-gray-50 mb-28">
-      {/* Header — fixed above scroll */}
-      {/* <JourneyHeader unit={unit} stats={stats} /> */}
+      {/* Sticky unit header — color from config */}
+      {visibleUnit && (
+        <StickyUnitHeader
+          sectionNumber={visibleUnit.sectionNumber}
+          unitNumber={visibleUnit.unitConfig.unitNumber}
+          unitTitle={visibleUnit.unitConfig.title}
+          colorThemeKey={visibleUnit.unitConfig.colorThemeKey}
+          stats={stats}
+          onGuidePress={onGuidePress}
+        />
+      )}
 
-      {/* Task 5.1.1: Offline banner */}
+      {/* Offline banner */}
       <OfflineBanner isOffline={isOffline} />
 
-      {/* Scrollable journey path */}
+      {/* Single scrollable path with ALL units */}
       <ScrollView
         ref={scrollViewRef}
         className="flex-1"
         contentContainerStyle={{
-          height: pathDimensions.height,
+          height: totalDimensions.height,
           width: screenWidth,
         }}
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={16}
       >
-        {/* SVG path layer (behind nodes) */}
-        <PathConnector
-          nodePositions={nodePositions}
-          pathDimensions={pathDimensions}
-          screenWidth={screenWidth}
-          completedCount={completedCount}
-        />
+        {unitRenderData.map((renderData: UnitRenderData, unitIndex: number) => (
+          <React.Fragment key={renderData.unit.id}>
+            {/* Unit divider (skip for the first unit) */}
+            {unitIndex > 0 && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: renderData.layout.yOffset - 140,
+                  left: 0,
+                  right: 0,
+                }}
+              >
+                <UnitDivider
+                  title={renderData.unitConfig.divider.title}
+                  showJumpHere={renderData.unitConfig.divider.showJumpHere}
+                  accentColor={
+                    renderData.unitConfig.divider.jumpButtonColor ?? '#A855F7'
+                  }
+                  onJumpPress={
+                    onJumpToUnit
+                      ? () => onJumpToUnit(renderData.unit.id)
+                      : undefined
+                  }
+                />
+              </View>
+            )}
 
-        {/* Node layer (above path) — ChestNode for chests, PathNode for all others */}
-        {(unit?.nodes || []).map((node: PathNodeData, index: number) =>
-          node.type === NodeType.CHEST ? (
-            <ChestNode
-              key={node.id}
-              node={node}
-              position={nodePositions[index]}
-              onPress={onNodePress}
-            />
-          ) : (
-            <PathNode
-              key={node.id}
-              node={node}
-              position={nodePositions[index]}
-              onPress={onNodePress}
-            />
-          ),
-        )}
-
-        {/* Mascot layer (above nodes) */}
-        {mascotPositions.map((mascot: MascotPositionData) => (
-          <MascotBubble
-            key={mascot.key}
-            x={mascot.x}
-            y={mascot.y}
-            side={mascot.side}
-            initialMessage={mascot.message}
-          />
+            {/* Unit's nodes, paths, and mascots */}
+            <UnitSection renderData={renderData} onNodePress={onNodePress} />
+          </React.Fragment>
         ))}
       </ScrollView>
 
-      {/* Task 5.1.4: Scroll-to-active floating button */}
+      {/* Scroll-to-active floating button */}
       <ScrollToActiveButton
         isVisible={isActiveOffScreen}
         direction={scrollDirection}
@@ -152,4 +248,4 @@ function JourneyMapPresentation({
   );
 }
 
-export default React.memo(JourneyMapPresentation);
+export default React.memo(MultiUnitPresentation);

@@ -12,7 +12,7 @@ import { UnitData } from "@/src/types/journey/unit";
 
 /** Unit 1: Basics — 3 completed, 1 active, 4 locked (8 total) */
 export const UNIT_1: UnitData = {
-  id: "unit_1",
+  id: "11000000-0000-0000-0000-000000000001",
   unitNumber: 1,
   title: "Unit 1",
   description: "Use basic phrases, greet people",
@@ -46,7 +46,7 @@ export const UNIT_1: UnitData = {
 
 /** Unit 2: Intermediate — All locked (7 total) */
 export const UNIT_2: UnitData = {
-  id: "unit_2",
+  id: "22000000-0000-0000-0000-000000000002",
   unitNumber: 2,
   title: "Unit 2",
   description: "Order food and drink, describe your family",
@@ -81,7 +81,7 @@ export const UNIT_2: UnitData = {
 
 /** Unit 3: Advanced — All locked (6 total) */
 export const UNIT_3: UnitData = {
-  id: "unit_3",
+  id: "33000000-0000-0000-0000-000000000003",
   unitNumber: 3,
   title: "Unit 3",
   description: "Use the past tense, talk about travel",

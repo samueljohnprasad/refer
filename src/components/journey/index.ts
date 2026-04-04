@@ -14,8 +14,16 @@ export { default as ChestRewardModal } from "./ChestRewardModal";
 export { default as UnitCompleteModal } from "./UnitCompleteModal";
 export { default as OfflineBanner } from "./OfflineBanner";
 export { default as ScrollToActiveButton } from "./ScrollToActiveButton";
+export { default as ConfigDrivenNode } from "./ConfigDrivenNode";
+export { default as UnitDivider } from "./UnitDivider";
+export { default as StickyUnitHeader } from "./StickyUnitHeader";
+export { default as SideProgressRail } from "./SideProgressRail";
 
 export type { PathNodeProps } from "./PathNode";
+export type { ConfigDrivenNodeProps } from "./ConfigDrivenNode";
+export type { UnitDividerProps } from "./UnitDivider";
+export type { StickyUnitHeaderProps } from "./StickyUnitHeader";
+export type { SideProgressRailProps } from "./SideProgressRail";
 export type { PathConnectorProps } from "./PathConnector";
 export type { JourneyHeaderProps } from "./JourneyHeader";
 export type { JourneyErrorStateProps } from "./JourneyErrorState";
