@@ -394,9 +394,19 @@ function ConfigDrivenNodeInner({
         onPress(node);
     };
 
-    // Progress ring dimensions
+    // Progress ring dimensions and segmentation
     const ringSize: number =
-        size + settings.progressRingGap * 2 + settings.progressRingStroke * 2;
+        size + settings.progressRingGap * 6 + settings.progressRingStroke * 2;
+    const ringRadius = (ringSize - settings.progressRingStroke) / 2;
+    const circumference = 2 * Math.PI * ringRadius;
+    
+    // We want 4 segments. Adding strokeWidth to the gap accounts for round lineCaps overlapping.
+    const segmentsCount = 8;
+    const dashGap = 8 + settings.progressRingStroke;
+    const dashWidth = (circumference - dashGap * segmentsCount) / segmentsCount;
+    // Object properties must be precisely in this order for Object.values to destructure correctly
+    const dashedConfig = { width: dashWidth, gap: dashGap };
+
     const progressPercent: number = (node.progress ?? 0) * 100;
 
     const a11yLabel: string = `${variant.label} ${node.index + 1}, ${node.status}${isActive && node.progress !== undefined
@@ -420,7 +430,7 @@ function ConfigDrivenNodeInner({
                 accentColor={isActive ? theme.pathActiveColor : colorConfig.fill}
             />
 
-            {/* Progress ring — use theme color for active node */}
+            {/* Progress ring — segmented active and background tracks */}
             {variant.showProgressRing && isActive && (
                 <View
                     className="absolute items-center justify-center"
@@ -428,7 +438,7 @@ function ConfigDrivenNodeInner({
                         width: ringSize,
                         height: ringSize,
                         left: -(ringSize - size) / 2,
-                        top: -(ringSize - size) / 2,
+                        top: -(ringSize-10 - size) / 2,
                     }}
                 >
                     <AnimatedCircularProgress
@@ -436,9 +446,11 @@ function ConfigDrivenNodeInner({
                         width={settings.progressRingStroke}
                         fill={progressPercent}
                         tintColor={theme.pathActiveColor}
-                        backgroundColor={`${theme.pathActiveColor}33`}
+                        backgroundColor={"#E2E8F0"} // Inactive path grey from constants
                         rotation={0}
                         lineCap="round"
+                        dashedBackground={dashedConfig}
+                        dashedTint={dashedConfig}
                     />
                 </View>
             )}
