@@ -6,15 +6,15 @@
 
 /** Node visual colors by status */
 export const NODE_COLORS = {
-  locked: "#CBD5E0",
+  locked: "rgba(226, 232, 240, 0.25)", // Semi-transparent light gray
   active: "#58CC02",
   completed: "#FFC800",
 } as const;
 
 /** Path stroke colors */
 export const PATH_COLORS = {
-  inactive: "#E0E0E0",
-  active: "#D9F99D", // Significantly lighter lime green
+  inactive: "#E2E8F0", // Lighter gray for less visual weight
+  active: "#86EFAC", // More vibrant, pure light green
 } as const;
 
 /** Unit header gradient pairs by color scheme */

@@ -55,6 +55,7 @@ export interface AnimatedButtonProps {
     onLongPress?: () => void;
     hitSlop?: Insets;
     disableAnimations?: boolean; // New prop to disable animations for accessibility
+    containerOpacity?: number; // Optional override for the entire button container opacity
 }
 
 const isIOS = Platform.OS === 'ios';
@@ -106,7 +107,7 @@ const AnimatedButton = forwardRef<View, AnimatedButtonProps>((props, ref) => {
         iconPosition,
         loading = false,
         loadingText = null,
-        type = 'normal',
+        type = 'squircle',
         fullWidth = true,
         minHeight,
         testID,
@@ -115,22 +116,25 @@ const AnimatedButton = forwardRef<View, AnimatedButtonProps>((props, ref) => {
         onLongPress,
         hitSlop,
         disableAnimations,
+        containerOpacity,
     } = props;
 
     const normalize = useNormalize();
     const pressY = useRef(new Animated.Value(0)).current;
     const pressLock = useRef(false); // guard to prevent rapid double presses
 
+    const h = minHeight ?? normalize(52);
     const brMain = useMemo(() => {
-        if (type === 'capsule') return normalize(50);
-        if (type === 'squircle') return normalize(26);
+        if (type === 'capsule') return h / 2;
+        if (type === 'squircle') return h * (26 / 64); // Fixed proportion based on 64px node
         return normalize(18);
-    }, [type, normalize]);
+    }, [type, h, normalize]);
+
     const brShadow = useMemo(() => {
-        if (type === 'capsule') return normalize(50);
-        if (type === 'squircle') return normalize(27);
+        if (type === 'capsule') return h / 2;
+        if (type === 'squircle') return h * (27 / 64); // Fixed proportion based on 64px node
         return normalize(19);
-    }, [type, normalize]);
+    }, [type, h, normalize]);
 
     const effectiveIconPosition: IconPosition = useMemo(() => {
         if (iconPosition) return iconPosition;
@@ -281,18 +285,21 @@ const AnimatedButton = forwardRef<View, AnimatedButtonProps>((props, ref) => {
                         ) : (
                             <>
                                 {effectiveIconPosition === 'left' && renderIcon()}
-                                {effectiveIconPosition === 'left' && <Spacer width={normalize(7)} />}
-                                <Text
-                                    style={[
-                                        styles.textBase,
-                                        { color: textColor, fontSize: normalize(18), fontFamily: FONTS.figtreeSemiBold },
-                                        textStyle,
-                                    ]}
-                                    numberOfLines={1}
-                                    ellipsizeMode="tail"
-                                >
-                                    {title}
-                                </Text>
+                                {title && (
+                                    <>
+                                        {effectiveIconPosition === 'left' && <Spacer width={normalize(7)} />}
+                                        <Text
+                                            style={[
+                                                styles.textBase,
+                                                { color: textColor, fontSize: normalize(18), fontFamily: FONTS.figtreeSemiBold },
+                                                textStyle,
+                                            ]}
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                        >
+                                            {title}
+                                        </Text>
+                                    </>)}
                                 {effectiveIconPosition === 'right' && <Spacer width={normalize(7)} />}
                                 {effectiveIconPosition === 'right' && renderIcon()}
                             </>

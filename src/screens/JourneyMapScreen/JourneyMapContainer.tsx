@@ -20,7 +20,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ScrollView, useWindowDimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
@@ -70,6 +70,7 @@ import { useNetworkStatus } from "@/src/hooks/useNetworkStatus";
 import { useOfflineQueue } from "@/src/hooks/useOfflineQueue";
 import { useInteractionLock } from "@/src/hooks/useInteractionLock";
 import { useScrollToActive } from "@/src/hooks/useScrollToActive";
+import Animated, { useAnimatedRef, scrollTo, runOnUI } from "react-native-reanimated";
 // Lazy-loaded modals — only parsed when first rendered
 const NodeCompletionModal = lazy(
   () => import("@/src/components/journey/NodeCompletionModal"),
@@ -96,7 +97,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
   // Default to first journey slug if not provided (backward compatible)
   const journeySlug: string = slug ?? "default";
 
-  const scrollViewRef = useRef<ScrollView | null>(null);
+  const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
   const completionModalRef = useRef<BottomSheetModal>(null);
   const chestModalRef = useRef<BottomSheetModal>(null);
   const unitCompleteModalRef = useRef<BottomSheetModal>(null);
@@ -202,9 +203,12 @@ export default function JourneyMapContainer(): React.JSX.Element {
       setActiveSectionId(jumpToSection);
       router.setParams({ jumpToSection: undefined });
       // Reset scroll position gracefully to the top when navigating to a new section
-      scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+      runOnUI(() => {
+        "worklet";
+        scrollTo(scrollViewRef, 0, 0, false);
+      })();
     }
-  }, [jumpToSection, activeSectionId]);
+  }, [jumpToSection, activeSectionId, scrollViewRef]);
 
   // Filter unit configs to ONLY the ones in the active section
   const activeSectionConfig =
@@ -295,10 +299,10 @@ export default function JourneyMapContainer(): React.JSX.Element {
     useCallback(() => {
       if (activeNodeY !== null && !jumpToSection) {
         const timer = setTimeout(() => {
-          scrollViewRef.current?.scrollTo({
-            y: Math.max(0, activeNodeY - 200),
-            animated: true,
-          });
+          runOnUI(() => {
+            "worklet";
+            scrollTo(scrollViewRef, 0, Math.max(0, activeNodeY - 200), true);
+          })();
         }, 500); // 500ms lets the screen settle so they can observe the completion before the scroll native animation triggers
         return () => clearTimeout(timer);
       }
@@ -462,10 +466,10 @@ export default function JourneyMapContainer(): React.JSX.Element {
         (rd: UnitRenderData) => rd.unit.id === unitId,
       );
       if (target) {
-        scrollViewRef.current?.scrollTo({
-          y: Math.max(0, target.layout.yOffset - 120),
-          animated: true,
-        });
+        runOnUI(() => {
+          "worklet";
+          scrollTo(scrollViewRef, 0, Math.max(0, target.layout.yOffset - 120), true);
+        })();
       }
     },
     [unitRenderData],

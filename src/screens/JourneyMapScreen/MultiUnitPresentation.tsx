@@ -17,6 +17,7 @@ import Animated, {
     useSharedValue,
     useAnimatedScrollHandler,
     runOnJS,
+    type AnimatedRef,
 } from "react-native-reanimated";
 import { useViewportCulling } from "@/src/hooks/useViewportCulling";
 
@@ -75,7 +76,7 @@ export interface MultiUnitPresentationProps {
     /** Node press handler */
     onNodePress: (node: PathNodeData) => void;
     /** ScrollView ref */
-    scrollViewRef: React.RefObject<ScrollView | null>;
+    scrollViewRef: AnimatedRef<Animated.ScrollView>;
     /** Whether offline */
     isOffline: boolean;
     /** Whether active node is off-screen */
@@ -324,7 +325,7 @@ function MultiUnitPresentation({
 
             {/* Animated.ScrollView — native scroll events handled on UI thread */}
             <Animated.ScrollView
-                ref={scrollViewRef as React.RefObject<Animated.ScrollView>}
+                ref={scrollViewRef}
                 className="flex-1"
                 contentContainerStyle={{
                     height: totalDimensions.height,

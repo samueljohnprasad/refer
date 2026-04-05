@@ -202,16 +202,18 @@ function NodeShellContent({
         <AnimatedButton
             title=""
             onPress={onPress}
-            disabled={!isInteractive}
+            disabled={false}
             backgroundColor={faceColor}
             shadowColor={shadowColor}
             hapticStyle="Medium"
-            type={buttonType}
+            type={'squircle'}
             fullWidth={false}
             minHeight={size}
             customIcon={customIcon}
             iconSize={size * 0.45}
             accessibilityLabel={accessibilityLabel}
+            containerOpacity={1}
+            disableAnimations={false}
             style={{ width: size, marginBottom: 0, height: size }}
             textStyle={{ display: 'none' }}
         />
@@ -385,9 +387,7 @@ function ConfigDrivenNodeInner({
         prevStatusRef.current = node.status;
     }, [node.status, isCompleted, popScale, reducedMotion]);
 
-    const popStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: popScale.value }],
-    }));
+
 
     const handlePress = (): void => {
         if (!isInteractive) return;
@@ -447,7 +447,6 @@ function ConfigDrivenNodeInner({
             <Animated.View
                 style={[
                     isActive ? activeScaleStyle : undefined,
-                    isCompleted ? popStyle : undefined,
                 ]}
             >
                 <Animated.View style={isActive ? glowStyle : undefined}>
@@ -466,7 +465,7 @@ function ConfigDrivenNodeInner({
                         accessibilityLabel={a11yLabel}
                         isInteractive={isInteractive}
                         onPress={handlePress}
-                        shape={variant.shape ?? 'squircle'}
+                        shape="squircle"
                     />
                 </Animated.View>
             </Animated.View>
