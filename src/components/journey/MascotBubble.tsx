@@ -120,7 +120,7 @@ function SpeechBubble({ message, side }: SpeechBubbleProps): React.JSX.Element {
           width: 10,
           height: 10,
           bottom: 10,
-          ...(isLeft ? { right: -4 } : { left: -4 }),
+          ...(isLeft ? { left: -4 } : { right: -4 }),
           transform: [{ rotate: "45deg" }],
         }}
       />
@@ -178,30 +178,50 @@ function MascotBubble({
       style={[
         {
           position: "absolute",
-          left: x - halfAvatar,
-          top: y - halfAvatar,
-          flexDirection: isLeft ? "row" : "row-reverse",
-          alignItems: "center",
+          left: x,
+          top: y,
+          transform: [{ translateX: entranceX }],
+          opacity: entranceOpacity,
         },
       ]}
       entering={FadeIn.delay(ANIMATION_TIMING.mascotEntrance).duration(400)}
+      pointerEvents="box-none"
     >
-      <PressableScale
-        onPress={handleTap}
-        scale={0.9}
-        hapticStyle="light"
-        accessibilityRole="button"
-        accessibilityLabel="Tap for encouragement"
+      {/* Speech Bubble centered vertically around avatar, positioned to the correct side */}
+      <View
+        style={{
+          position: "absolute",
+          top: -100,
+          bottom: -100,
+          justifyContent: "center",
+          ...(isLeft ? { left: halfAvatar + 8 } : { right: halfAvatar + 8 }),
+        }}
+        pointerEvents="box-none"
       >
-        <OwlAvatar />
-      </PressableScale>
+        <SpeechBubble
+          message={message}
+          side={side}
+        />
+      </View>
 
-      <View style={{ width: 8 }} />
-
-      <SpeechBubble
-        message={message}
-        side={side}
-      />
+      {/* Avatar perfectly centered at x,y */}
+      <View
+        style={{
+          position: "absolute",
+          left: -halfAvatar,
+          top: -halfAvatar,
+        }}
+      >
+        <PressableScale
+          onPress={handleTap}
+          scale={0.9}
+          hapticStyle="light"
+          accessibilityRole="button"
+          accessibilityLabel="Tap for encouragement"
+        >
+          <OwlAvatar />
+        </PressableScale>
+      </View>
     </Animated.View>
   );
 }

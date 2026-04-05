@@ -1,24 +1,25 @@
 /**
- * ConfigDrivenNode (Task 5)
- * Config-driven node renderer that replaces PathNode.
- *
- * ZERO if/else or switch statements for node type, icon, or color.
- * All visuals are resolved from JourneyConfig via context lookups.
+ * ConfigDrivenNode
+ * Config-driven node renderer using AnimatedButton + HugeiconsIcon.
  *
  * Architecture:
- * - SVG icons: the SVG IS the complete node visual (pill bg + shadow + glyph baked in).
- *   The pressable wraps the SVG directly — no outer shell added.
- * - Emoji/hugeicons: the shell (circle with colorConfig fill) wraps the glyph.
- * - Animation resolved from variant.activeAnimation via ANIMATION_FACTORIES
+ * - Icons:     Resolved from HUGEICON_REGISTRY via NodeIconConfig.value
+ * - Colors:    Button bg = section theme.pathActiveColor (active/completed)
+ *              or colorConfig.fill (locked). Shadow auto-darkened by 25%.
+ * - Animation: Resolved from variant.activeAnimation via ANIMATION_FACTORIES
  * - ProgressRing conditionally shown from variant.showProgressRing
  * - BouncingTooltip for active node label
+ *
+ * ZERO svg XML, ZERO if/else for node type/icon/color.
  */
 
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { View } from "react-native";
-import { SvgXml } from "react-native-svg";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+
 import { Text } from "@/components/ui/text";
-import AnimatedNodeButton from "@/src/components/journey/AnimatedNodeButton";
+import AnimatedButton from "@/src/components/AnimatedButton";
+import type { AnimatedButtonProps } from "@/src/components/AnimatedButton";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import Animated, {
     useSharedValue,
@@ -43,66 +44,13 @@ import type {
 import { NodeStatus } from "@/src/types/journey";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { ANIMATION_TIMING } from "@/src/data/journey/constants";
-
-function hexToFeColorMatrix(hex: string): string {
-    const r = parseInt(hex.slice(1, 3), 16) / 255;
-    const g = parseInt(hex.slice(3, 5), 16) / 255;
-    const b = parseInt(hex.slice(5, 7), 16) / 255;
-    // Force integers for safe matching
-    return `0 0 0 0 ${r.toFixed(3).replace(/\.?0+$/, "") || "0"} 0 0 0 0 ${g.toFixed(3).replace(/\.?0+$/, "") || "0"} 0 0 0 0 ${b.toFixed(3).replace(/\.?0+$/, "") || "0"} 0 0 0 1 0`;
-}
-
-// Global memo cache for matrix calculations to avoid repeating hex math
-const matrixCache = new Map<string, string>();
-function getCachedMatrix(hex: string): string {
-    if (!matrixCache.has(hex)) {
-        matrixCache.set(hex, hexToFeColorMatrix(hex));
-    }
-    return matrixCache.get(hex)!;
-}
-
-// ---------------------------------------------------------------------------
-// Recolored SVG cache — eliminates 3 regex scans per node per render.
-// Key: "svgKey|pathActiveColor|dividerColor" → fully recolored XML string.
-// Only invalidated on config hot-swap (matrixCache.clear + recolorCache.clear).
-// ---------------------------------------------------------------------------
-const recolorCache = new Map<string, string>();
-
-function getRecoloredSvg(
-    svgKey: string,
-    pathActiveColor: string,
-    dividerColor: string,
-): string | undefined {
-    const cacheKey: string = `${svgKey}|${pathActiveColor}|${dividerColor}`;
-    const cached: string | undefined = recolorCache.get(cacheKey);
-    if (cached) return cached;
-
-    let xml: string | undefined = getSvg(svgKey);
-    if (!xml) return undefined;
-
-    // Apply the 3 regex replacements once, then cache forever
-    xml = xml.replace(/#FFC800|#ffc800|#58CC02|#58cc02/g, pathActiveColor);
-    const newMatrix: string = `values="${getCachedMatrix(dividerColor)}"`;
-    xml = xml.replace(
-        /values="0 0 0 0 0\.8 0 0 0 0 0\.627 0 0 0 0 0 0 0 0 1 0"/g,
-        newMatrix,
-    );
-    xml = xml.replace(
-        /values="0 0 0 0 0\.267 0 0 0 0 0\.639 0 0 0 0 0\.008 0 0 0 1 0"/g,
-        newMatrix,
-    );
-
-    recolorCache.set(cacheKey, xml);
-    return xml;
-}
-
 import {
     useJourneySettings,
     useNodeVariant,
     useColorTheme,
 } from "@/src/context/JourneyConfigContext";
-import { getSvg } from "@/src/data/journey";
 import { darkenHex } from "@/src/utils/colorUtils";
+import { getHugeicon } from "@/src/data/journey/hugeiconsRegistry";
 
 // ---------------------------------------------------------------------------
 // Animation Factory Registry — maps animation key → setup function
@@ -164,117 +112,112 @@ const ANIMATION_FACTORIES: Record<string, AnimationSetup> = {
 };
 
 // ---------------------------------------------------------------------------
-// NodeShellContent — renders the inner content based on icon type
+// NodeShellContent — Hugeicons-driven node button
 //
-// SVG icons are self-contained pill designs — rendered at full node size,
-// no outer shell needed. Emoji/hugeicons are glyphs inside the shell circle.
+// - Icon:  resolved from HUGEICON_REGISTRY via iconConfig.value
+// - Color: theme.pathActiveColor for active/completed, colorConfig.fill for locked
+// - Shadow: auto-darkened 25% from the face color
 // ---------------------------------------------------------------------------
 
-/** Shadow depth for the 3D press effect (dp) */
-const NODE_SHADOW_DEPTH = 6;
-/** Factor to darken the face color for the shadow layer */
+/** Darken factor applied to button face color to generate the 3D shadow */
 const NODE_SHADOW_DARKEN_FACTOR = 0.25;
+/** Icon color: white on colored backgrounds, grey-500 on locked grey */
+const ICON_COLOR_ACTIVE = '#FFFFFF';
+const ICON_COLOR_LOCKED = '#FFFFFF';
 
 interface NodeShellContentProps {
     iconConfig: NodeIconConfig;
-    /** Full node size (used as SVG dimensions) */
+    /** Full node size — sets button minHeight/width */
     size: number;
-    /** Shell background color — only used for emoji/hugeicons mode */
+    /** Resolved background color for this status */
     backgroundColor: string;
-    /** Shell border color */
+    /** Shell border color (unused visually but kept for API compat) */
     borderColor: string;
-    /** Whether this is the active (selected) node */
+    /** Whether this node is active */
     isActive: boolean;
-    /** Whether this is a completed node */
+    /** Whether this node is completed */
     isCompleted: boolean;
-    /** The active section's color theme */
+    /** Section color theme (for active/completed background) */
     theme: ColorThemeConfig;
     /** Accessibility label */
     accessibilityLabel: string;
-    /** Whether the node can be pressed */
+    /** Whether press is enabled */
     isInteractive: boolean;
-    /** Press handler */
+    /** Press callback */
     onPress: () => void;
+    /**
+     * Button shape: 'squircle' (Duolingo-style pill) or 'circle' (fully round).
+     * Defaults to 'squircle' when omitted.
+     */
+    shape?: 'squircle' | 'circle';
 }
 
 function NodeShellContent({
     iconConfig,
     size,
     backgroundColor,
-    borderColor,
     isActive,
     isCompleted,
     theme,
     accessibilityLabel,
     isInteractive,
     onPress,
+    shape = 'squircle',
 }: NodeShellContentProps): React.JSX.Element {
-    // SVG type: the SVG provides the COMPLETE node visual (pill bg, shadow, glyph).
-    // We do NOT add a circular shell — just wrap with PressableScale for interaction.
-    // Compute the darker shadow color once for the 3D effect
-    const shadowFaceColor: string = darkenHex(
-        isCompleted || isActive ? theme.pathActiveColor : backgroundColor,
-        NODE_SHADOW_DARKEN_FACTOR,
-    );
+    // Map shape → AnimatedButton type
+    const buttonType = shape === 'circle' ? 'capsule' : 'squircle';
 
-    if (iconConfig.type === "svg") {
-        // Use cached recolored SVG for active/completed, raw SVG for others
-        const xml: string | undefined =
-            isCompleted || isActive
-                ? getRecoloredSvg(
-                    iconConfig.value,
-                    theme.pathActiveColor,
-                    theme.dividerColor,
-                )
-                : getSvg(iconConfig.value);
+    // Resolve the Hugeicons icon object from the registry
+    const iconObj = getHugeicon(iconConfig.value);
 
-        if (xml) {
-            return (
-                <AnimatedNodeButton
-                    size={size}
-                    backgroundColor="transparent"
-                    shadowColor="transparent"
-                    onPress={onPress}
-                    disabled={!isInteractive}
-                    hapticStyle="medium"
-                    shadowDepth={0}
-                    accessibilityLabel={accessibilityLabel}
-                    accessibilityState={{ disabled: !isInteractive }}
-                >
-                    <SvgXml
-                        xml={xml}
-                        width={size}
-                        height={size}
-                        accessibilityLabel={iconConfig.value}
-                    />
-                </AnimatedNodeButton>
-            );
-        }
-        // SVG not found — fall through to emoji fallback
-    }
+    // Button face color: section accent for active/completed, colorConfig.fill for locked
+    const faceColor: string = (isActive || isCompleted)
+        ? theme.pathActiveColor
+        : backgroundColor;
 
-    // Emoji / hugeicons / fallback: render inside a Duolingo-style 3D circle
-    const glyph: string =
-        iconConfig.type === "emoji" || iconConfig.type === "hugeicons"
-            ? iconConfig.value
-            : "⭐";
+    // Shadow is always 25% darker than the face
+    const shadowColor: string = darkenHex(faceColor, NODE_SHADOW_DARKEN_FACTOR);
+
+    // Icon color: white for all states (locked uses same grey fill bg, still white icon)
+    const iconColor: string = (isActive || isCompleted)
+        ? ICON_COLOR_ACTIVE
+        : ICON_COLOR_LOCKED;
+
+    // Memoised customIcon component so AnimatedButton's React.memo sees a stable ref
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const customIcon = useCallback(
+        () => (
+            <HugeiconsIcon
+                icon={iconObj}
+                size={size * 0.45}
+                color={iconColor}
+                strokeWidth={1.8}
+            />
+        ),
+        // Intentionally wide dep set: icon, size, color may all change per status
+        [iconObj, size, iconColor],
+    ) as AnimatedButtonProps['customIcon'];
 
     return (
-        <AnimatedNodeButton
-            size={size}
-            backgroundColor={backgroundColor}
-            shadowColor={shadowFaceColor}
+        <AnimatedButton
+            title=""
             onPress={onPress}
             disabled={!isInteractive}
-            hapticStyle="medium"
-            shadowDepth={NODE_SHADOW_DEPTH}
+            backgroundColor={faceColor}
+            shadowColor={shadowColor}
+            hapticStyle="Medium"
+            type={buttonType}
+            fullWidth={false}
+            minHeight={size}
+            customIcon={customIcon}
+            iconSize={size * 0.45}
             accessibilityLabel={accessibilityLabel}
-            accessibilityState={{ disabled: !isInteractive }}
-        >
-            <Text className="text-2xl">{glyph}</Text>
-        </AnimatedNodeButton>
+            style={{ width: size, marginBottom: 0, height: size }}
+            textStyle={{ display: 'none' }}
+        />
     );
 }
+
 
 // ---------------------------------------------------------------------------
 // BouncingTooltip (reused from PathNode — identical behavior)
@@ -523,6 +466,7 @@ function ConfigDrivenNodeInner({
                         accessibilityLabel={a11yLabel}
                         isInteractive={isInteractive}
                         onPress={handlePress}
+                        shape={variant.shape ?? 'squircle'}
                     />
                 </Animated.View>
             </Animated.View>

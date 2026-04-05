@@ -59,6 +59,12 @@ export interface NodeVariantConfig {
     activeAnimation: string;
     /** Whether to show a circular progress ring when active */
     showProgressRing: boolean;
+    /**
+     * Button shape for this node variant.
+     * - 'squircle': rounded-rectangle pill (Duolingo-style, default)
+     * - 'circle':   fully circular button
+     */
+    shape?: 'squircle' | 'circle';
 }
 
 // ---------------------------------------------------------------------------

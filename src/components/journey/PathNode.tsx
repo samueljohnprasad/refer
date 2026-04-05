@@ -13,8 +13,8 @@
 
 import React, { useEffect, useRef } from "react";
 import { View } from "react-native";
-import { SvgXml } from "react-native-svg";
-import AnimatedNodeButton from "@/src/components/journey/AnimatedNodeButton";
+
+import AnimatedButton from "@/src/components/AnimatedButton";
 import { Text } from "@/components/ui/text";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import Animated, {
@@ -83,8 +83,6 @@ const NODE_BG_COLORS: Record<string, string> = {
   [NodeStatus.LOCKED]: NODE_COLORS.locked,
 };
 
-/** Shadow depth for the 3D press effect (dp) */
-const NODE_SHADOW_DEPTH = 6;
 /** Factor to darken the face color for the shadow layer */
 const NODE_SHADOW_DARKEN_FACTOR = 0.25;
 
@@ -299,28 +297,30 @@ function PathNode({
         ]}
       >
         <Animated.View style={isActive ? glowStyle : undefined}>
-          <AnimatedNodeButton
-            size={size}
-            backgroundColor={bgColor}
-            shadowColor={shadowColor}
+          <AnimatedButton
+            title={
+              node.status === NodeStatus.LOCKED
+                ? ""
+                : (ICON_MAP[node.icon] ?? "⭐")
+            }
             onPress={handlePress}
             disabled={!isInteractive}
-            hapticStyle="medium"
-            shadowDepth={NODE_SHADOW_DEPTH}
+            backgroundColor={bgColor}
+            shadowColor={shadowColor}
+            hapticStyle="Medium"
+            type="squircle"
+            fullWidth={false}
+            minHeight={size}
+          
+            iconSize={size * 0.55}
             accessibilityLabel={`${node.type === NodeType.CHECKPOINT ? "Checkpoint" : "Lesson"} ${node.index + 1}, ${node.status}${isActive && node.progress !== undefined ? `, ${Math.round(node.progress * 100)}% complete` : ""}`}
-            accessibilityState={{ disabled: !isInteractive }}
-          >
-            {node.status === NodeStatus.LOCKED ? (
-              <SvgXml
-                xml={LESSON_SVG_XML}
-                width={size * 0.55}
-                height={size * 0.55}
-                accessibilityLabel="Locked lesson"
-              />
-            ) : (
-              <Text className="text-2xl">{ICON_MAP[node.icon] ?? "⭐"}</Text>
-            )}
-          </AnimatedNodeButton>
+            style={{ width: size, marginBottom: 0 }}
+            textStyle={
+              node.status === NodeStatus.LOCKED
+                ? { display: 'none' }
+                : { fontSize: 24 }
+            }
+          />
         </Animated.View>
       </Animated.View>
     </View>

@@ -9,6 +9,7 @@
 export { DEFAULT_JOURNEY_CONFIG } from "./journeyConfig";
 export { SVG_REGISTRY, getSvg } from "./svgRegistry";
 export { MASCOT_REGISTRY, getMascotSvg } from "./mascotRegistry";
+export { HUGEICON_REGISTRY, getHugeicon } from "./hugeiconsRegistry";
 
 // Constants (design tokens, colors, sizing, timing)
 // NOTE: These are kept for backward compat. New components should use

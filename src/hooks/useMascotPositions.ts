@@ -67,13 +67,12 @@ export function computeMascotPositions(
       // Slightly below the reference node center
       const yOffset: number = MASCOT_SIZE.verticalOffset;
 
-      // Clamp X so the mascot + bubble stays within screen bounds
-      const rawX: number = refNode.x + xOffset;
-      const margin: number = MASCOT_SIZE.avatar / 2 + 8;
-      const clampedX: number = Math.max(
-        margin,
-        Math.min(rawX, screenWidth - margin - MASCOT_SIZE.bubbleMaxWidth),
-      );
+      // Move mascots to the far edges of the screen
+      const margin: number = (MASCOT_SIZE.avatar / 2) + 16;
+      const clampedX: number =
+        mp.position === MascotSide.LEFT
+          ? margin
+          : screenWidth - margin;
 
       return {
         key: `mascot-${mp.afterNodeIndex}-${idx}`,

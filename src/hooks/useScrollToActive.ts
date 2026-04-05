@@ -99,11 +99,19 @@ export function useScrollToActive(
 
   const scrollToActive = useCallback((): void => {
     if (activeNodeY === null) return;
-
-    scrollViewRef.current?.scrollTo({
-      y: Math.max(0, activeNodeY - viewportHeight / 3),
-      animated: true,
-    });
+    const targetY = Math.max(0, activeNodeY - viewportHeight / 3);
+    // Getting the underlying ScrollView node from the Animated.ScrollView ref
+    const ref = scrollViewRef.current as unknown as {
+      scrollTo?: (opts: { y: number; animated: boolean }) => void;
+      getScrollResponder?: () => { scrollTo?: (opts: { y: number; animated: boolean }) => void };
+    };
+    // Try direct scrollTo first (works when ref is a plain ScrollView),
+    // then fall back to getScrollResponder for Animated.ScrollView wrappers.
+    if (ref?.scrollTo) {
+      ref.scrollTo({ y: targetY, animated: true });
+    } else {
+      ref?.getScrollResponder?.()?.scrollTo?.({ y: targetY, animated: true });
+    }
   }, [scrollViewRef, activeNodeY, viewportHeight]);
 
   return useMemo(
