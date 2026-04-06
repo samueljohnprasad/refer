@@ -47,3 +47,57 @@ export type {
   JourneySettingsConfig,
   JourneyConfig,
 } from "./config";
+
+// ---------------------------------------------------------------------------
+// Mental Health Journey Types
+// ---------------------------------------------------------------------------
+
+export { MentalHealthNodeType, STREAK_MILESTONES } from "./mentalHealth";
+
+export type {
+  // Node content types
+  LearnCard,
+  LearnContent,
+  ExerciseStep,
+  ExerciseInputType,
+  ExerciseContent,
+  BreathingConfig,
+  BodyScanArea,
+  BodyScanConfig,
+  JournalContent,
+  QuizQuestion,
+  QuizContent,
+  MoodCheckContent,
+  ChestRarity,
+  ChestContent,
+  NextJourneySuggestion,
+  CheckpointContent,
+  PracticeContent,
+  AIInsightContent,
+  NodeContent,
+  // Extended template types
+  JourneyCategory,
+  JourneyDifficulty,
+  MentalHealthJourneyFields,
+  MentalHealthTemplateNode,
+  // Response data types
+  ExerciseResponseData,
+  JournalResponseData,
+  QuizResponseData,
+  MoodCheckResponseData,
+  ChestResponseData,
+  NodeResponseData,
+  // User streak types
+  UserStreak,
+  UpdateStreakResponse,
+  // Insight Points types
+  IPSource,
+  IPLedgerEntry,
+  IPTotals,
+  // Node completion types
+  UserNodeCompletion,
+  CompleteNodePayload as MHCompleteNodePayload,
+  CompleteNodeResult,
+  // Catalog types
+  MentalHealthJourneyListItem,
+} from "./mentalHealth";

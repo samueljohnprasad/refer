@@ -418,6 +418,54 @@ export type Database = {
           },
         ]
       }
+      insight_points_ledger: {
+        Row: {
+          amount: number
+          earned_at: string | null
+          id: string
+          journey_id: string | null
+          metadata: Json | null
+          source: string
+          source_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          earned_at?: string | null
+          id?: string
+          journey_id?: string | null
+          metadata?: Json | null
+          source: string
+          source_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          earned_at?: string | null
+          id?: string
+          journey_id?: string | null
+          metadata?: Json | null
+          source?: string
+          source_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insight_points_ledger_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journey_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insight_points_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journal_ai_insights: {
         Row: {
           achievements: string[] | null
@@ -526,34 +574,55 @@ export type Database = {
       }
       journey_template_nodes: {
         Row: {
+          content: Json
           created_at: string | null
+          description: string | null
+          estimated_minutes: number
+          icon_key: string | null
           id: string
           metadata: Json | null
           node_index: number
           node_type: string
           rewards: Json
           task_id: string
+          title: string | null
           unit_id: string
+          variant_key: string
+          xp_reward: number
         }
         Insert: {
+          content?: Json
           created_at?: string | null
+          description?: string | null
+          estimated_minutes?: number
+          icon_key?: string | null
           id?: string
           metadata?: Json | null
           node_index: number
           node_type: string
           rewards?: Json
           task_id?: string
+          title?: string | null
           unit_id: string
+          variant_key?: string
+          xp_reward?: number
         }
         Update: {
+          content?: Json
           created_at?: string | null
+          description?: string | null
+          estimated_minutes?: number
+          icon_key?: string | null
           id?: string
           metadata?: Json | null
           node_index?: number
           node_type?: string
           rewards?: Json
           task_id?: string
+          title?: string | null
           unit_id?: string
+          variant_key?: string
+          xp_reward?: number
         }
         Relationships: [
           {
@@ -575,6 +644,7 @@ export type Database = {
           mascot_placements: Json
           title: string
           unit_number: number
+          unlock_rule: string
         }
         Insert: {
           color_scheme?: string
@@ -585,6 +655,7 @@ export type Database = {
           mascot_placements?: Json
           title: string
           unit_number: number
+          unlock_rule?: string
         }
         Update: {
           color_scheme?: string
@@ -595,6 +666,7 @@ export type Database = {
           mascot_placements?: Json
           title?: string
           unit_number?: number
+          unlock_rule?: string
         }
         Relationships: [
           {
@@ -608,41 +680,59 @@ export type Database = {
       }
       journey_templates: {
         Row: {
+          category: string
           color_scheme: string
+          color_theme_key: string | null
           created_at: string | null
           description: string
+          difficulty: string
+          estimated_days: number | null
+          icon_key: string | null
           icon_url: string | null
           id: string
           is_active: boolean
           slug: string
           sort_order: number
           title: string
+          total_nodes: number
           updated_at: string | null
           version: number
         }
         Insert: {
+          category?: string
           color_scheme?: string
+          color_theme_key?: string | null
           created_at?: string | null
           description?: string
+          difficulty?: string
+          estimated_days?: number | null
+          icon_key?: string | null
           icon_url?: string | null
           id?: string
           is_active?: boolean
           slug: string
           sort_order?: number
           title: string
+          total_nodes?: number
           updated_at?: string | null
           version?: number
         }
         Update: {
+          category?: string
           color_scheme?: string
+          color_theme_key?: string | null
           created_at?: string | null
           description?: string
+          difficulty?: string
+          estimated_days?: number | null
+          icon_key?: string | null
           icon_url?: string | null
           id?: string
           is_active?: boolean
           slug?: string
           sort_order?: number
           title?: string
+          total_nodes?: number
           updated_at?: string | null
           version?: number
         }
@@ -1185,39 +1275,128 @@ export type Database = {
           },
         ]
       }
+      user_node_completions: {
+        Row: {
+          completed_at: string | null
+          duration_seconds: number | null
+          enrollment_id: string | null
+          id: string
+          journey_id: string
+          mood_after: number | null
+          mood_before: number | null
+          node_id: string
+          node_type: string
+          response_data: Json | null
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          completed_at?: string | null
+          duration_seconds?: number | null
+          enrollment_id?: string | null
+          id?: string
+          journey_id: string
+          mood_after?: number | null
+          mood_before?: number | null
+          node_id: string
+          node_type: string
+          response_data?: Json | null
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          completed_at?: string | null
+          duration_seconds?: number | null
+          enrollment_id?: string | null
+          id?: string
+          journey_id?: string
+          mood_after?: number | null
+          mood_before?: number | null
+          node_id?: string
+          node_type?: string
+          response_data?: Json | null
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_node_completions_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "user_journey_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_node_completions_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journey_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_node_completions_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "journey_template_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_node_completions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_node_progress: {
         Row: {
           completed_at: string | null
+          duration_seconds: number | null
           enrollment_id: string
           id: string
+          mood_after: number | null
+          mood_before: number | null
           node_id: string
           progress: number
+          response_data: Json | null
           reward_claimed: boolean
           status: string
           updated_at: string | null
           user_id: string
+          xp_earned: number
         }
         Insert: {
           completed_at?: string | null
+          duration_seconds?: number | null
           enrollment_id: string
           id?: string
+          mood_after?: number | null
+          mood_before?: number | null
           node_id: string
           progress?: number
+          response_data?: Json | null
           reward_claimed?: boolean
           status?: string
           updated_at?: string | null
           user_id: string
+          xp_earned?: number
         }
         Update: {
           completed_at?: string | null
+          duration_seconds?: number | null
           enrollment_id?: string
           id?: string
+          mood_after?: number | null
+          mood_before?: number | null
           node_id?: string
           progress?: number
+          response_data?: Json | null
           reward_claimed?: boolean
           status?: string
           updated_at?: string | null
           user_id?: string
+          xp_earned?: number
         }
         Relationships: [
           {
@@ -1392,6 +1571,50 @@ export type Database = {
           },
         ]
       }
+      user_streaks: {
+        Row: {
+          created_at: string | null
+          current_streak: number
+          last_activity_date: string
+          longest_streak: number
+          rest_days_used_this_week: number
+          streak_freezes_available: number
+          updated_at: string | null
+          user_id: string
+          week_start_date: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_streak?: number
+          last_activity_date?: string
+          longest_streak?: number
+          rest_days_used_this_week?: number
+          streak_freezes_available?: number
+          updated_at?: string | null
+          user_id: string
+          week_start_date?: string
+        }
+        Update: {
+          created_at?: string | null
+          current_streak?: number
+          last_activity_date?: string
+          longest_streak?: number
+          rest_days_used_this_week?: number
+          streak_freezes_available?: number
+          updated_at?: string | null
+          user_id?: string
+          week_start_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_streaks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_wallet: {
         Row: {
           coins: number
@@ -1499,7 +1722,23 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      user_ip_totals: {
+        Row: {
+          today_ip: number | null
+          total_ip: number | null
+          user_id: string | null
+          week_ip: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insight_points_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       cleanup_old_challenges: { Args: never; Returns: undefined }
@@ -1513,6 +1752,7 @@ export type Database = {
         Args: { p_journey_id: string }
         Returns: Json
       }
+      update_user_streak: { Args: never; Returns: Json }
     }
     Enums: {
       age_range_enum: "18_24" | "25_34" | "35_44" | "45_54" | "55_64" | "65+"

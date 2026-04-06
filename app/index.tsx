@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { useAuth } from "@/src/context/AuthContext";
 import SignInBottomSheet from "@/src/components/SignInBottomSheet";
 import MovingGradientBackground from "@/src/components/MovingGradientBackground";
@@ -97,6 +97,12 @@ export default function Home(): React.JSX.Element {
     sheetRef.current?.present();
   };
 
+  const handleBrowseJourneysPress = (): void => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // Navigate into the app as a guest — Journeys tab
+    router.push('/tabs/(tabs)/journeys' as never);
+  };
+
   const handlePressIn = (): void => {
     buttonScale.value = withSpring(0.96, { damping: 15, stiffness: 400 });
   };
@@ -175,8 +181,8 @@ export default function Home(): React.JSX.Element {
           </Animated.Text> */}
         </View>
 
-        {/* Bottom Button */}
-        <Animated.View className="w-full" style={buttonAnimatedStyle}>
+        {/* Bottom Buttons */}
+        <Animated.View className="w-full gap-3" style={buttonAnimatedStyle}>
           <AnimatedTouchableOpacity
             onPress={handleGetStartedPress}
             onPressIn={handlePressIn}
@@ -189,6 +195,19 @@ export default function Home(): React.JSX.Element {
             </Text>
             <HugeiconsIcon icon={ArrowRight01Icon} size={20} color="#FFFFFF" />
           </AnimatedTouchableOpacity>
+
+          {/* Secondary CTA: Browse as guest */}
+          <TouchableOpacity
+            onPress={handleBrowseJourneysPress}
+            activeOpacity={0.7}
+            className="w-full h-12 items-center justify-center"
+            accessibilityRole="button"
+            accessibilityLabel="Browse journeys without signing in"
+          >
+            <Text className="text-gray-600 font-medium text-base">
+              Browse Journeys →
+            </Text>
+          </TouchableOpacity>
         </Animated.View>
 
         <SignInBottomSheet ref={sheetRef} />

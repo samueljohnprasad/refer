@@ -11,6 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { WifiOffIcon, ReloadIcon } from "@hugeicons/core-free-icons";
 import { registerPushToken, unregisterPushToken } from "../utils/pushTokenRegistration";
+import { migrateGuestProgress } from "../lib/migrations/migrateGuestProgress";
 
 interface AuthContextType {
   user: User | null;
@@ -140,6 +141,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (event === "SIGNED_IN" && session?.user) {
         // Register push token for remote notifications
         registerPushToken(session.user.id).catch(console.error);
+        // P1.6.1: Migrate any guest journey progress to Supabase
+        migrateGuestProgress(session.user.id).catch(console.error);
 
         toast.show({
           placement: "bottom right",

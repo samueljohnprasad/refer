@@ -9,6 +9,12 @@
  * 2. mergeJourneyState() produces JourneyState (same shape as before)
  * 3. All derived atoms / UI components consume the merged state
  * 4. Node completion uses server-side RPC for atomic reward granting
+ *
+ * P1.6.1 — Try-Before-Sign-Up:
+ * - Guests may complete the first 2 nodes without authentication.
+ * - useJourneyAuthGate intercepts node presses beyond the limit.
+ * - useGuestProgress stores local completions in AsyncStorage.
+ * - GuestSignUpSheet is presented to prompt account creation.
  */
 
 import React, {
@@ -20,7 +26,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { useWindowDimensions, View, Text as RNText, TouchableOpacity } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
@@ -71,6 +77,10 @@ import { useOfflineQueue } from "@/src/hooks/useOfflineQueue";
 import { useInteractionLock } from "@/src/hooks/useInteractionLock";
 import { useScrollToActive } from "@/src/hooks/useScrollToActive";
 import Animated, { useAnimatedRef, scrollTo, runOnUI } from "react-native-reanimated";
+// Guest auth gate (P1.6.1)
+import { useJourneyAuthGate } from "@/hooks/data/useJourneyAuthGate";
+import { useGuestProgress } from "@/hooks/data/useGuestProgress";
+import GuestSignUpSheet from "@/src/components/journey/GuestSignUpSheet";
 // Lazy-loaded modals — only parsed when first rendered
 const NodeCompletionModal = lazy(
   () => import("@/src/components/journey/NodeCompletionModal"),
@@ -106,6 +116,10 @@ export default function JourneyMapContainer(): React.JSX.Element {
   const toast = useToast();
   const { play: playSound } = useSoundEffects();
   const { height: viewportHeight } = useWindowDimensions();
+
+  // ── P1.6.1: Guest try-before-sign-up ──
+  const { isGuest, canAccessNode, showSignUpPrompt, signUpSheetRef } = useJourneyAuthGate();
+  const { guestProgress, recordGuestNodeCompletion } = useGuestProgress();
 
   // Multi-journey data pipeline: fetch → merge → set atoms
   const {
@@ -309,9 +323,28 @@ export default function JourneyMapContainer(): React.JSX.Element {
     }, [activeNodeY, jumpToSection]),
   );
 
+  // ── Compute total completed count across ALL units (for guest gate) ──
+  const totalCompletedCount: number = useMemo(() => {
+    return allUnitsRaw.reduce(
+      (acc: number, unit: UnitData) =>
+        acc +
+        unit.nodes.filter((n: PathNodeData) => n.status === NodeStatus.COMPLETED).length,
+      0,
+    );
+  }, [allUnitsRaw]);
+
   // ── Node press handlers by status (wrapped with interaction lock — Task 5.1.3) ──
   const handleNodePressInner = useCallback(
     (node: PathNodeData): void => {
+      // ── P1.6.1: Guest gate ──
+      // Guests may access up to GUEST_FREE_NODE_LIMIT nodes.
+      // ACTIVE nodes beyond the limit are blocked and prompt sign-up.
+      if (isGuest && node.status === NodeStatus.ACTIVE && !canAccessNode(totalCompletedCount)) {
+        playSound("lockedTap");
+        showSignUpPrompt();
+        return;
+      }
+
       // Chest nodes get their own modal regardless of status
       if (node.type === NodeType.CHEST && node.status !== NodeStatus.LOCKED) {
         playSound("chestOpen");
@@ -349,7 +382,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
           break;
       }
     },
-    [toast, playSound],
+    [toast, playSound, isGuest, canAccessNode, totalCompletedCount, showSignUpPrompt],
   );
 
   const handleNodePress = useMemo(
@@ -365,6 +398,12 @@ export default function JourneyMapContainer(): React.JSX.Element {
 
       // Optimistic local update for instant UI feedback
       setJourneyState((prev: JourneyState) => completeNode(prev, nodeId));
+
+      // ── P1.6.1: For guests, record completion locally instead of Supabase ──
+      if (isGuest) {
+        await recordGuestNodeCompletion(nodeId, 10, journeySlug);
+        return;
+      }
 
       // Server-side atomic completion (validates, grants rewards, unlocks next)
       if (isOnline && enrollmentId) {
@@ -396,6 +435,9 @@ export default function JourneyMapContainer(): React.JSX.Element {
       enrollmentId,
       enqueue,
       refresh,
+      isGuest,
+      recordGuestNodeCompletion,
+      journeySlug,
     ],
   );
 
@@ -542,6 +584,11 @@ export default function JourneyMapContainer(): React.JSX.Element {
           onContinue={handleUnitContinue}
         />
       </Suspense>
+      {/* P1.6.1: Guest sign-up prompt */}
+      <GuestSignUpSheet
+        ref={signUpSheetRef}
+        guestProgress={guestProgress}
+      />
     </>
   );
 }

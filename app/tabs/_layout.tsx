@@ -19,7 +19,10 @@ export default function AppLayout() {
         animation: "none",
       }}
     >
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(tabs)"
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="screens/settings"
         options={{
@@ -61,7 +64,7 @@ export default function AppLayout() {
           animation: "fade",
         }}
       />
-        <Stack.Screen
+      <Stack.Screen
         name="screens/premium-onboarding"
         options={{
           headerShown: false,
@@ -144,6 +147,15 @@ export default function AppLayout() {
           title: "Gratitude Reframe",
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="screens/journey/[slug]"
+        options={{
+          headerShown: false,
+          title: "Journey",
+          freezeOnBlur: true,
           animation: "slide_from_right",
         }}
       />

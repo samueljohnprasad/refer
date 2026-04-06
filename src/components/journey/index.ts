@@ -38,3 +38,24 @@ export type {
     AnimatedNodeButtonProps,
     NodeHapticStyle,
 } from "./AnimatedNodeButton";
+
+// Mental Health Journey Components
+export { default as MentalHealthSectionDivider } from "./MentalHealthSectionDivider";
+export { default as DailyPracticeBonusNode } from "./DailyPracticeBonusNode";
+export { default as StreakBanner } from "./StreakBanner";
+export { default as XPCounter } from "./XPCounter";
+export type { MentalHealthSectionDividerProps } from "./MentalHealthSectionDivider";
+export type { DailyPracticeBonusNodeProps } from "./DailyPracticeBonusNode";
+export type { StreakBannerProps } from "./StreakBanner";
+export type { XPCounterProps, XPGain } from "./XPCounter";
+export { default as StreakMilestoneModal } from "./StreakMilestoneModal";
+export { default as JourneyMapHeader } from "./JourneyMapHeader";
+export type { StreakMilestoneModalProps } from "./StreakMilestoneModal";
+export type { JourneyMapHeaderProps } from "./JourneyMapHeader";
+export { default as SignUpPromptModal } from "./SignUpPromptModal";
+export type { SignUpPromptModalProps } from "./SignUpPromptModal";
+export { default as SpotlightTooltip } from "./SpotlightTooltip";
+export type {
+    SpotlightTooltipProps,
+    SpotlightTarget,
+} from "./SpotlightTooltip";

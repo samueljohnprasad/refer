@@ -27,18 +27,18 @@ export default function TabLayout() {
       labelStyle={{
         color: inactiveColor, // inactive label color
       }}
-      // labelStyle={{
-      //   // For the text color
-      //   color: DynamicColorIOS({
-      //     dark: "white",
-      //     light: "red",
-      //   }),
-      // }}
-      // // For the selected icon color
-      // tintColor={DynamicColorIOS({
-      //   dark: "white",
-      //   light: "red",
-      // })}
+    // labelStyle={{
+    //   // For the text color
+    //   color: DynamicColorIOS({
+    //     dark: "white",
+    //     light: "red",
+    //   }),
+    // }}
+    // // For the selected icon color
+    // tintColor={DynamicColorIOS({
+    //   dark: "white",
+    //   light: "red",
+    // })}
     >
       <NativeTabs.Trigger name="exercises">
         <Label>Exercises</Label>
@@ -76,6 +76,16 @@ export default function TabLayout() {
           sf={{
             default: "mic", // inactive
             selected: "mic.fill", // active
+          }}
+          drawable="custom_settings_drawable"
+        />
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="journeys">
+        <Label>Journeys</Label>
+        <Icon
+          sf={{
+            default: "map",
+            selected: "map.fill",
           }}
           drawable="custom_settings_drawable"
         />
