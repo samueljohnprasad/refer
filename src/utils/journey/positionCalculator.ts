@@ -28,7 +28,7 @@ const DEFAULT_WAVE_CONFIG: WaveConfig = {
   verticalGap: PATH_LAYOUT.verticalGap,
   topPadding: PATH_LAYOUT.topPadding,
   waveFrequency: PATH_LAYOUT.waveFrequency,
-  pathGeometry: 'straight',
+  pathGeometry: 'organic',
 };
 
 /**

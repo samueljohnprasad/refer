@@ -27,6 +27,8 @@ import type {
   JourneyStats,
   JourneyTemplate,
   UserJourneyProgress,
+  JourneyFlashListItem,
+  JourneyNode,
 } from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
 import { MOCK_JOURNEY_STATE } from "@/src/data/journey";
@@ -172,6 +174,66 @@ export const enrollmentIdAtom = atom<string | null>((get) => {
   const progress: UserJourneyProgress | null = get(journeyProgressAtom);
   return progress?.enrollment.id ?? null;
 });
+
+// ---------------------------------------------------------------------------
+// FlashList segment-per-cell atoms
+// ---------------------------------------------------------------------------
+
+/**
+ * Pre-computed flat array for FlashList rendering.
+ * Built once by buildJourneyNodes(), stored here, never mutated after init.
+ * FlashList cells subscribe to individual items via nodeStatusAtomFamily.
+ */
+export const journeyFlashListAtom = atom<JourneyFlashListItem[]>([]);
+
+/**
+ * Index of the currently active node in the FlashList array.
+ * Used for scrollToIndex on mount and scroll-to-active button.
+ */
+export const activeFlashListIndexAtom = atom<number>((get) => {
+  const items: JourneyFlashListItem[] = get(journeyFlashListAtom);
+  return items.findIndex(
+    (item: JourneyFlashListItem) =>
+      item.itemType === "node" &&
+      (item as JourneyNode).status === NodeStatus.ACTIVE,
+  );
+});
+
+/**
+ * Per-node status atom family.
+ * Each JourneyNodeCell subscribes to exactly its own status via selectAtom.
+ * Completing a node writes to two atoms (nodeId + nextNodeId) — nothing else re-renders.
+ */
+const nodeStatusAtomCache = new Map<string, ReturnType<typeof selectAtom>>();
+
+export function nodeStatusAtomFamily(
+  nodeId: string,
+): ReturnType<typeof selectAtom> {
+  let cached = nodeStatusAtomCache.get(nodeId);
+  if (!cached) {
+    cached = selectAtom(
+      journeyFlashListAtom,
+      (items: JourneyFlashListItem[]): NodeStatus => {
+        const node: JourneyFlashListItem | undefined = items.find(
+          (item: JourneyFlashListItem) =>
+            item.itemType === "node" && item.id === nodeId,
+        );
+        if (!node || node.itemType !== "node") return NodeStatus.LOCKED;
+        return (node as JourneyNode).status;
+      },
+    );
+    nodeStatusAtomCache.set(nodeId, cached);
+  }
+  return cached;
+}
+
+/** Count of node items in the FlashList (excludes dividers and mascots) */
+export const flashListNodeCountAtom = selectAtom(
+  journeyFlashListAtom,
+  (items: JourneyFlashListItem[]): number =>
+    items.filter((item: JourneyFlashListItem) => item.itemType === "node")
+      .length,
+);
 
 // ---------------------------------------------------------------------------
 // Persistence helpers

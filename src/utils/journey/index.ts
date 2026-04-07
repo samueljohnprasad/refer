@@ -21,3 +21,13 @@ export type { PathDimensions } from "./dimensions";
 
 // Template + progress merge (multi-journey)
 export { mergeJourneyState, createInitialProgress } from "./mergeJourneyState";
+
+// FlashList pre-computation (segment-per-cell)
+export {
+  buildJourneyNodes,
+  findActiveNodeIndex,
+  updateNodeStatus,
+} from "./buildJourneyNodes";
+export type { BuildJourneyNodesInput } from "./buildJourneyNodes";
+
+

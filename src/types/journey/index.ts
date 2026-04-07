@@ -12,7 +12,16 @@ export {
   MascotSide,
 } from "./enums";
 
-export type { JourneyReward, PathNodeData, NodePosition } from "./node";
+export type {
+  JourneyReward,
+  PathNodeData,
+  NodePosition,
+  JourneyNode,
+  JourneyDividerItem,
+  JourneyMascotItem,
+  JourneyFlashListItem,
+  JourneyListItemType,
+} from "./node";
 
 export type { MascotPlacement, UnitData } from "./unit";
 

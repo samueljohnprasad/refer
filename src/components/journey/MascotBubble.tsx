@@ -186,6 +186,7 @@ function MascotBubble({
           justifyContent: "center",
           transform: [{ translateX: entranceX }],
           opacity: entranceOpacity,
+          backgroundColor: "transparent"
         },
       ]}
       entering={FadeIn.delay(ANIMATION_TIMING.mascotEntrance).duration(400)}
@@ -199,6 +200,8 @@ function MascotBubble({
           bottom: -100,
           justifyContent: "center",
           ...(isLeft ? { left: halfAvatar + 8 } : { right: halfAvatar + 8 }),
+          backgroundColor: "transparent"
+
         }}
         pointerEvents="box-none"
       >
@@ -214,6 +217,7 @@ function MascotBubble({
           position: "absolute",
           left: -halfAvatar,
           top: -halfAvatar,
+          backgroundColor: "transparent" 
         }}
       >
         <PressableScale
@@ -226,7 +230,7 @@ function MascotBubble({
           <OwlAvatar />
         </PressableScale>
       </View>
-    </Animated.View>
+    </Animated.View >
   );
 }
 

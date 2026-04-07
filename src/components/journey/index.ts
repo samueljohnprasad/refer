@@ -19,6 +19,7 @@ export { default as UnitDivider } from "./UnitDivider";
 export { default as StickyUnitHeader } from "./StickyUnitHeader";
 export { default as SideProgressRail } from "./SideProgressRail";
 export { default as AnimatedNodeButton } from "./AnimatedNodeButton";
+export { JourneyNodeCell } from "./JourneyNodeCell";
 
 export type { PathNodeProps } from "./PathNode";
 export type { ConfigDrivenNodeProps } from "./ConfigDrivenNode";

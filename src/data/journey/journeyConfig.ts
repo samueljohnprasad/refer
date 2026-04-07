@@ -439,6 +439,17 @@ const SECTION_CONFIGS: SectionConfig[] = [
 // 5. Unit Configs
 // ---------------------------------------------------------------------------
 
+const generateTestNodes = (count: number): any[] => {
+    const variants = ["star", "checkpoint", "gamepad", "microphone", "video"];
+    const types = ["thought_reframing", "journal_prompt", "mood_check_in", "thought_catcher", "voice_journal"];
+
+    return Array.from({ length: count }).map((_, i) => ({
+        variantKey: variants[i % variants.length],
+        taskId: `task_generated_${i}`,
+        taskType: types[i % types.length],
+    }));
+};
+
 const UNIT_CONFIGS: UnitConfig[] = [
     {
         id: "11000000-0000-0000-0000-000000000001",
@@ -469,6 +480,7 @@ const UNIT_CONFIGS: UnitConfig[] = [
             title: "Use basic phrases",
             showJumpHere: false,
         },
+        pathGeometry: "zigzag",
     },
     {
         id: "22000000-0000-0000-0000-000000000002",
@@ -532,7 +544,7 @@ const UNIT_CONFIGS: UnitConfig[] = [
             title: "Talk about travel",
             showJumpHere: true,
         },
-        pathGeometry: "sine",
+        pathGeometry: "organic",
     },
     {
         id: "44000000-0000-0000-0000-000000000004",

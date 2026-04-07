@@ -26,7 +26,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useWindowDimensions, View, Text as RNText, TouchableOpacity } from "react-native";
+import {
+  useWindowDimensions,
+  View,
+  Text as RNText,
+  TouchableOpacity,
+} from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
@@ -76,7 +81,14 @@ import { useNetworkStatus } from "@/src/hooks/useNetworkStatus";
 import { useOfflineQueue } from "@/src/hooks/useOfflineQueue";
 import { useInteractionLock } from "@/src/hooks/useInteractionLock";
 import { useScrollToActive } from "@/src/hooks/useScrollToActive";
-import Animated, { useAnimatedRef, scrollTo, runOnUI } from "react-native-reanimated";
+import Animated, {
+  useAnimatedRef,
+  scrollTo,
+  runOnUI,
+  useSharedValue,
+  withTiming,
+  useAnimatedReaction,
+} from "react-native-reanimated";
 // Guest auth gate (P1.6.1)
 import { useJourneyAuthGate } from "@/hooks/data/useJourneyAuthGate";
 import { useGuestProgress } from "@/hooks/data/useGuestProgress";
@@ -97,6 +109,14 @@ import MultiUnitPresentation from "./MultiUnitPresentation";
 import type { UnitRenderData } from "./MultiUnitPresentation";
 import { Text } from "@/components/Themed";
 import { debounce, DebouncedFunction } from "@/src/utils/debounce";
+// FlashList segment-per-cell architecture
+import { useJourneyFlashList } from "@/src/hooks/useJourneyFlashList";
+import JourneyMapFlashList from "./JourneyMapFlashList";
+import type { JourneyFlashListItem } from "@/src/types/journey";
+import { FlashListRef } from "@shopify/flash-list";
+
+/** Feature flag: set to true to use new FlashList rendering path */
+const USE_FLASH_LIST: boolean = true;
 
 export default function JourneyMapContainer(): React.JSX.Element {
   // Route params — journey slug comes from navigation
@@ -118,7 +138,8 @@ export default function JourneyMapContainer(): React.JSX.Element {
   const { height: viewportHeight } = useWindowDimensions();
 
   // ── P1.6.1: Guest try-before-sign-up ──
-  const { isGuest, canAccessNode, showSignUpPrompt, signUpSheetRef } = useJourneyAuthGate();
+  const { isGuest, canAccessNode, showSignUpPrompt, signUpSheetRef } =
+    useJourneyAuthGate();
   const { guestProgress, recordGuestNodeCompletion } = useGuestProgress();
 
   // Multi-journey data pipeline: fetch → merge → set atoms
@@ -287,8 +308,18 @@ export default function JourneyMapContainer(): React.JSX.Element {
       .filter((rd): rd is UnitRenderData => rd !== null);
   }, [unitSegments, unitDataMap, unitConfigMap, unitToSectionMap, screenWidth]);
 
-  // Compute active node Y across all units for scroll-to-active
-  const activeNodeY: number | null = useMemo(() => {
+  // ── FlashList segment-per-cell data pipeline ──
+  const flashListRef = useAnimatedRef<FlashListRef<JourneyFlashListItem>>();
+  const {
+    flashListData,
+    activeNodeIndex: flashActiveNodeIndex,
+    activeGlobalIndex,
+    screenWidth: flashScreenWidth,
+    activeNodeY: flashActiveNodeY,
+  } = useJourneyFlashList(config, unitConfigMap, activeSectionConfig.unitIds);
+
+  // Compute active node Y across all units for scroll-to-active (Old architecture only)
+  const explicitActiveNodeY: number | null = useMemo(() => {
     for (const renderData of unitRenderData) {
       const activeIndex: number = renderData.unit.nodes.findIndex(
         (n: PathNodeData) => n.status === NodeStatus.ACTIVE,
@@ -299,6 +330,9 @@ export default function JourneyMapContainer(): React.JSX.Element {
     }
     return null;
   }, [unitRenderData]);
+
+  // Use the FlashList-specific activeNodeY if the feature flag is enabled
+  const activeNodeY = USE_FLASH_LIST ? flashActiveNodeY : explicitActiveNodeY;
 
   const {
     isOffScreen: isActiveOffScreen,
@@ -328,7 +362,9 @@ export default function JourneyMapContainer(): React.JSX.Element {
     return allUnitsRaw.reduce(
       (acc: number, unit: UnitData) =>
         acc +
-        unit.nodes.filter((n: PathNodeData) => n.status === NodeStatus.COMPLETED).length,
+        unit.nodes.filter(
+          (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
+        ).length,
       0,
     );
   }, [allUnitsRaw]);
@@ -339,7 +375,11 @@ export default function JourneyMapContainer(): React.JSX.Element {
       // ── P1.6.1: Guest gate ──
       // Guests may access up to GUEST_FREE_NODE_LIMIT nodes.
       // ACTIVE nodes beyond the limit are blocked and prompt sign-up.
-      if (isGuest && node.status === NodeStatus.ACTIVE && !canAccessNode(totalCompletedCount)) {
+      if (
+        isGuest &&
+        node.status === NodeStatus.ACTIVE &&
+        !canAccessNode(totalCompletedCount)
+      ) {
         playSound("lockedTap");
         showSignUpPrompt();
         return;
@@ -382,7 +422,14 @@ export default function JourneyMapContainer(): React.JSX.Element {
           break;
       }
     },
-    [toast, playSound, isGuest, canAccessNode, totalCompletedCount, showSignUpPrompt],
+    [
+      toast,
+      playSound,
+      isGuest,
+      canAccessNode,
+      totalCompletedCount,
+      showSignUpPrompt,
+    ],
   );
 
   const handleNodePress = useMemo(
@@ -496,6 +543,75 @@ export default function JourneyMapContainer(): React.JSX.Element {
     return journeyState?.currentUnit ?? 0;
   }, [journeyState?.currentUnit]);
 
+  // Track real scroll position for custom animation anchor point
+  const currentScrollY = useRef(0);
+  const scrollY = useSharedValue(0);
+
+  // FlashList scroll-to-active handler
+  const handleFlashListScrollToActive = useCallback((duration = 3000) => {
+    if (flashActiveNodeY !== null && flashListRef.current) {
+      const targetOffset = Math.max(
+        0,
+        flashActiveNodeY - viewportHeight / 3
+      );
+
+      // Start the animation from our actual current scroll position!
+      scrollY.value = currentScrollY.current;
+
+      // Now slowly glide to the target over 800ms
+      scrollY.value = withTiming(targetOffset, {
+        duration,
+      });
+    }
+  }, [flashActiveNodeY, viewportHeight, scrollY]);
+
+  useAnimatedReaction(
+    () => scrollY.value,
+    (y) => {
+      scrollTo(flashListRef, 0, y, false); // ✅ Custom smooth scroll hook
+    }
+  );
+
+  // FlashList jump-to-unit handler
+  const handleFlashListJumpToUnit = useCallback(
+    (unitId: string): void => {
+      const targetIndex: number = flashListData.findIndex(
+        (item: JourneyFlashListItem) =>
+          item.itemType === "divider" && item.id === `divider_${unitId}`,
+      );
+      if (targetIndex >= 0 && flashListRef.current) {
+        flashListRef.current.scrollToIndex({
+          index: targetIndex,
+          animated: true,
+          viewPosition: 0,
+        });
+      }
+    },
+    [flashListData],
+  );
+
+  // Auto-scroll FlashList to active node on mount / focus
+  useFocusEffect(
+    useCallback(() => {
+      if (USE_FLASH_LIST && flashActiveNodeIndex >= 0 && !jumpToSection) {
+        const timer = setTimeout(() => {
+          handleFlashListScrollToActive(2000);
+        }, 500);
+        return () => clearTimeout(timer);
+      }
+    }, [flashActiveNodeIndex, jumpToSection, handleFlashListScrollToActive]),
+  );
+
+  // Auto-scroll when the active node index changes (e.g., node completed)
+  useEffect(() => {
+    if (USE_FLASH_LIST && flashActiveNodeIndex >= 0 && !jumpToSection) {
+      const timer = setTimeout(() => {
+        handleFlashListScrollToActive(1000);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [flashActiveNodeIndex, jumpToSection, handleFlashListScrollToActive]);
+
   // Guide-book press handler (opens section overview)
   const handleGuidePress = useCallback((): void => {
     router.push("/tabs/screens/section-overview" as never);
@@ -510,7 +626,12 @@ export default function JourneyMapContainer(): React.JSX.Element {
       if (target) {
         runOnUI(() => {
           "worklet";
-          scrollTo(scrollViewRef, 0, Math.max(0, target.layout.yOffset - 120), true);
+          scrollTo(
+            scrollViewRef,
+            0,
+            Math.max(0, target.layout.yOffset - 120),
+            true,
+          );
         })();
       }
     },
@@ -548,22 +669,42 @@ export default function JourneyMapContainer(): React.JSX.Element {
           headerShown: false,
         }}
       />
-      <MultiUnitPresentation
-        unitRenderData={unitRenderData}
-        stats={stats}
-        currentVisibleUnitIndex={currentVisibleUnitIndex}
-        totalDimensions={totalDimensions}
-        screenWidth={screenWidth}
-        onNodePress={handleNodePress}
-        scrollViewRef={scrollViewRef}
-        isOffline={!isOnline}
-        isActiveOffScreen={isActiveOffScreen}
-        scrollDirection={scrollDirection}
-        onScrollToActive={scrollToActive}
-        updateScrollVisibility={updateVisibility}
-        onGuidePress={handleGuidePress}
-        onJumpToUnit={handleJumpToUnit}
-      />
+      {USE_FLASH_LIST ? (
+        <JourneyMapFlashList
+          data={flashListData}
+          stats={stats}
+          screenWidth={flashScreenWidth}
+          activeGlobalIndex={activeGlobalIndex}
+          onNodePress={handleNodePress}
+          isOffline={!isOnline}
+          isActiveOffScreen={isActiveOffScreen}
+          scrollDirection={scrollDirection}
+          onScrollToActive={() => handleFlashListScrollToActive()}
+          onJumpToUnit={handleFlashListJumpToUnit}
+          listRef={flashListRef}
+          onScroll={(e) => {
+            currentScrollY.current = e.nativeEvent.contentOffset.y;
+            updateVisibility(e.nativeEvent.contentOffset.y);
+          }}
+        />
+      ) : (
+        <MultiUnitPresentation
+          unitRenderData={unitRenderData}
+          stats={stats}
+          currentVisibleUnitIndex={currentVisibleUnitIndex}
+          totalDimensions={totalDimensions}
+          screenWidth={screenWidth}
+          onNodePress={handleNodePress}
+          scrollViewRef={scrollViewRef}
+          isOffline={!isOnline}
+          isActiveOffScreen={isActiveOffScreen}
+          scrollDirection={scrollDirection}
+          onScrollToActive={scrollToActive}
+          updateScrollVisibility={updateVisibility}
+          onGuidePress={handleGuidePress}
+          onJumpToUnit={handleJumpToUnit}
+        />
+      )}
       <Suspense fallback={null}>
         <NodeCompletionModal
           ref={completionModalRef}
