@@ -22,6 +22,7 @@ import type {
     JourneyConfig,
     UnitData,
     UnitConfig,
+    SectionConfig,
 } from '@/src/types/journey';
 import { NodeStatus } from '@/src/types/journey';
 import {
@@ -48,6 +49,17 @@ export interface UseJourneyFlashListReturn {
     screenWidth: number;
     /** The Y pixel offset of the active node */
     activeNodeY: number | null;
+    /** Header data for all units for StickyUnitHeader */
+    unitHeaders: UnitHeaderData[];
+}
+
+export interface UnitHeaderData {
+    unitId: string;
+    unitNumber: number;
+    unitTitle: string;
+    sectionNumber: number;
+    colorThemeKey: string;
+    yOffset: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -82,6 +94,50 @@ export function useJourneyFlashList(
         return buildJourneyNodes(input);
     }, [allUnits, unitConfigMap, config, screenWidth, unitFilter]);
 
+    // Compute unit headers with their estimated Y offsets for StickyUnitHeader
+    const unitHeaders: UnitHeaderData[] = useMemo(() => {
+        const headers: UnitHeaderData[] = [];
+        let runningY = config.settings.topPadding;
+
+        allUnits.forEach((unit: UnitData, index: number) => {
+            const unitConf = unitConfigMap.get(unit.id);
+            if (!unitConf) return;
+
+            // Find section number
+            const section = config.sections.find((sec: SectionConfig) =>
+                sec.unitIds.includes(unit.id)
+            );
+
+            // For the first unit, start at Y=0. For others, include divider and mascot heights
+            // Actually, we can just scan flashListData to find the exact Y offset of the first item of this unit.
+            let yOffset = 0;
+            let currentY = 0;
+            const firstItemOfUnit = flashListData.find((item) => {
+                if (item.itemType === 'node' && (item as JourneyNode).unitId === unit.id) {
+                    return true;
+                }
+                if (item.itemType === 'divider' && (item as any).targetUnitId === unit.id) {
+                    return true;
+                }
+                // Mascot has ID prefix 'mascot_UNITID_'
+                currentY += item.cellHeight;
+                return false;
+            });
+            yOffset = currentY;
+
+            headers.push({
+                unitId: unit.id,
+                unitNumber: unitConf.unitNumber,
+                unitTitle: unitConf.title,
+                sectionNumber: section?.sectionNumber ?? 1,
+                colorThemeKey: unitConf.colorThemeKey,
+                yOffset,
+            });
+        });
+
+        return headers;
+    }, [allUnits, unitConfigMap, config.sections, flashListData]);
+
     // Push to atom so other components/atoms can derive from it
     useEffect(() => {
         setFlashListData(flashListData);
@@ -112,6 +168,7 @@ export function useJourneyFlashList(
         activeGlobalIndex,
         screenWidth,
         activeNodeY,
+        unitHeaders,
     };
 }
 

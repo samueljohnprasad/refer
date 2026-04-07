@@ -21,8 +21,12 @@ import { Text } from "@/components/ui/text";
 import type { JourneyStats } from "@/src/types/journey/state";
 import { useColorTheme, useJourneyConfig } from "@/src/context/JourneyConfigContext";
 import type { ColorThemeConfig } from "@/src/types/journey";
-import type { UnitRenderData } from "@/src/screens/JourneyMapScreen/MultiUnitPresentation";
 import Animated, { useAnimatedStyle, interpolateColor, SharedValue } from "react-native-reanimated";
+
+export interface UnitHeaderBreakpoint {
+    yOffset: number;
+    colorThemeKey: string;
+}
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -45,8 +49,8 @@ export interface StickyUnitHeaderProps {
     onGuidePress?: () => void;
     /** Scroll position for color interpolation */
     scrollY?: SharedValue<number>;
-    /** Render data for calculating color transition points */
-    unitRenderData?: UnitRenderData[];
+    /** Breakpoints for calculating color transition points */
+    unitBreakpoints?: UnitHeaderBreakpoint[];
 }
 
 // ---------------------------------------------------------------------------
@@ -112,14 +116,14 @@ function StickyUnitHeader({
     stats,
     onGuidePress,
     scrollY,
-    unitRenderData,
+    unitBreakpoints,
 }: StickyUnitHeaderProps): React.JSX.Element {
     const theme: ColorThemeConfig = useColorTheme(colorThemeKey);
     const config = useJourneyConfig();
 
     // Compute interpolation ranges based on all units
     const { inputRange, outputBackgrounds, outputShadows } = React.useMemo(() => {
-        if (!unitRenderData || unitRenderData.length === 0) {
+        if (!unitBreakpoints || unitBreakpoints.length === 0) {
             return { 
                 inputRange: [0], 
                 outputBackgrounds: [theme.headerGradient[0]], 
@@ -131,9 +135,9 @@ function StickyUnitHeader({
         const bgs: string[] = [];
         const shadows: string[] = [];
 
-        unitRenderData.forEach((rd) => {
-            const y = rd.layout.yOffset;
-            const unitTheme = config.colorThemes[rd.unitConfig.colorThemeKey];
+        unitBreakpoints.forEach((bp) => {
+            const y = bp.yOffset;
+            const unitTheme = config.colorThemes[bp.colorThemeKey];
             const bg = unitTheme.headerGradient[0];
             const shadow = unitTheme.headerGradient[1];
 
@@ -161,7 +165,7 @@ function StickyUnitHeader({
         }
 
         return { inputRange: ranges, outputBackgrounds: bgs, outputShadows: shadows };
-    }, [unitRenderData, config, theme]);
+    }, [unitBreakpoints, config, theme]);
 
     const animatedStyle = useAnimatedStyle(() => {
         if (!scrollY) return {};

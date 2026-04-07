@@ -316,6 +316,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
     activeGlobalIndex,
     screenWidth: flashScreenWidth,
     activeNodeY: flashActiveNodeY,
+    unitHeaders,
   } = useJourneyFlashList(config, unitConfigMap, activeSectionConfig.unitIds);
 
   // Compute active node Y across all units for scroll-to-active (Old architecture only)
@@ -682,9 +683,11 @@ export default function JourneyMapContainer(): React.JSX.Element {
           onScrollToActive={() => handleFlashListScrollToActive()}
           onJumpToUnit={handleFlashListJumpToUnit}
           listRef={flashListRef}
-          onScroll={(e) => {
-            currentScrollY.current = e.nativeEvent.contentOffset.y;
-            updateVisibility(e.nativeEvent.contentOffset.y);
+          unitHeaders={unitHeaders}
+          onGuidePress={handleGuidePress}
+          onScroll={(y) => {
+            currentScrollY.current = y;
+            updateVisibility(y);
           }}
         />
       ) : (
