@@ -1,22 +1,17 @@
-/**
- * SectionOverviewPresentation (Task 8)
- * Pure presentational component for the section overview screen.
- *
- * Matches Duolingo reference (Image 2):
- * - Scrollable list of section cards
- * - Each card: colored background, mascot image, speech bubble, title,
- *   unit range, progress bar, "JUMP HERE" link
- * - Close button header
- *
- * All data received via props — no context or state access.
- */
-
-import React from "react";
-import { View, ScrollView, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useMemo, useCallback, useRef, useEffect } from "react";
+import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
+import {
+    BottomSheetModal,
+    BottomSheetScrollView,
+    BottomSheetBackdrop,
+} from "@gorhom/bottom-sheet";
+import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import { SvgXml } from "react-native-svg";
 import { getMascotSvg } from "@/src/data/journey";
+
+import { useJourneyConfig } from "@/src/context/JourneyConfigContext";
+import { JourneyConfig, SectionConfig, UnitConfig } from "@/src/types/journey";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -30,29 +25,38 @@ export interface SectionCardData {
     cardBackgroundColor: string;
     mascotMessage: string;
     mascotSide: "left" | "right";
-    /** Mascot image key for SVG lookup */
     mascotImageKey: string;
-    /** 0–100 progress percentage */
     progressPercent: number;
-    /** Total nodes in this section */
     totalNodes: number;
-    /** Completed nodes in this section */
     completedNodes: number;
-    /** Whether user has reached this section */
     isUnlocked: boolean;
-    /** Whether this is the user's current section */
     isCurrent: boolean;
 }
 
-export interface SectionOverviewPresentationProps {
-    /** Journey title for the header */
-    journeyTitle: string;
-    /** Section cards data */
-    sections: SectionCardData[];
-    /** Close button handler */
+export interface SectionOverviewSheetProps {
+    /** Whether the sheet is open */
+    isOpen: boolean;
+    /** Close handler */
     onClose: () => void;
+    /** Current unit index */
+    currentUnitIndex: number;
+    /** Per-unit completed node counts */
+    unitCompletedCounts: Record<string, number>;
     /** Jump to section handler */
     onJumpToSection: (sectionId: string) => void;
+    /** Journey title */
+    journeyTitle: string;
+}
+
+// ---------------------------------------------------------------------------
+// Helper: resolve mascot message from config
+// ---------------------------------------------------------------------------
+
+function resolveMascotMessage(
+    messageKey: string,
+    messages: Record<string, string>,
+): string {
+    return messages[messageKey] ?? messageKey;
 }
 
 // ---------------------------------------------------------------------------
@@ -96,7 +100,7 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
                             }}
                         >
                             <Text
-                                className="text-base"
+                                className="text-base font-medium"
                                 style={{ color: "#1A202C" }}
                             >
                                 {section.mascotMessage}
@@ -179,57 +183,164 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
 }
 
 // ---------------------------------------------------------------------------
-// SectionOverviewPresentation
+// SectionOverviewSheet
 // ---------------------------------------------------------------------------
 
-function SectionOverviewPresentation({
-    journeyTitle,
-    sections,
+export function SectionOverviewSheet({
+    isOpen,
     onClose,
+    currentUnitIndex,
+    unitCompletedCounts,
     onJumpToSection,
-}: SectionOverviewPresentationProps): React.JSX.Element {
+    journeyTitle,
+}: SectionOverviewSheetProps): React.JSX.Element {
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const snapPoints = useMemo(() => ["90%"], []);
+    const config: JourneyConfig = useJourneyConfig();
+
+    // Present/dismiss based on isOpen prop
+    useEffect(() => {
+        if (isOpen) {
+            bottomSheetRef.current?.present();
+        } else {
+            bottomSheetRef.current?.dismiss();
+        }
+    }, [isOpen]);
+
+    const renderBackdrop = useCallback(
+        (props: BottomSheetBackdropProps) => (
+            <BottomSheetBackdrop
+                {...props}
+                disappearsOnIndex={-1}
+                appearsOnIndex={0}
+                opacity={0.5}
+                pressBehavior="close"
+            />
+        ),
+        [],
+    );
+
+    const handleSheetChanges = useCallback(
+        (index: number): void => {
+            if (index === -1) {
+                onClose();
+            }
+        },
+        [onClose],
+    );
+
+    const handleJumpAndClose = useCallback(
+        (sectionId: string): void => {
+            onJumpToSection(sectionId);
+            onClose();
+        },
+        [onJumpToSection, onClose],
+    );
+
+    const sectionCards: SectionCardData[] = useMemo(() => {
+        return config.sections.map((section: SectionConfig) => {
+            const sectionUnits: UnitConfig[] = section.unitIds
+                .map((uid: string) =>
+                    config.units.find((u: UnitConfig) => u.id === uid),
+                )
+                .filter(
+                    (u: UnitConfig | undefined): u is UnitConfig => u !== undefined,
+                );
+
+            let totalNodes: number = 0;
+            let completedNodes: number = 0;
+            let isUnlocked: boolean = false;
+            let isCurrent: boolean = false;
+
+            sectionUnits.forEach((unit: UnitConfig) => {
+                const unitIndex: number = config.units.findIndex(
+                    (u: UnitConfig) => u.id === unit.id,
+                );
+                const nodeCount: number = unit.nodes.length;
+                const completed: number = unitCompletedCounts[unit.id] ?? 0;
+
+                totalNodes += nodeCount;
+                completedNodes += completed;
+
+                if (unitIndex <= currentUnitIndex) {
+                    isUnlocked = true;
+                }
+                if (unitIndex === currentUnitIndex) {
+                    isCurrent = true;
+                }
+            });
+
+            const progressPercent: number =
+                totalNodes > 0 ? Math.round((completedNodes / totalNodes) * 100) : 0;
+
+            const mascotMessage: string = resolveMascotMessage(
+                section.mascot.message,
+                config.mascotMessages,
+            );
+
+            return {
+                id: section.id,
+                sectionNumber: section.sectionNumber,
+                title: section.title,
+                unitRangeLabel: section.unitRangeLabel,
+                cardBackgroundColor: section.cardBackgroundColor,
+                mascotMessage,
+                mascotSide: section.mascot.side,
+                mascotImageKey: section.mascot.imageKey,
+                progressPercent,
+                totalNodes,
+                completedNodes,
+                isUnlocked,
+                isCurrent,
+            };
+        });
+    }, [config, currentUnitIndex, unitCompletedCounts]);
+
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <BottomSheetModal
+            ref={bottomSheetRef}
+            index={0}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+            backdropComponent={renderBackdrop}
+            enablePanDownToClose
+            backgroundStyle={{ backgroundColor: "white" }}
+            handleIndicatorStyle={{ backgroundColor: "#E2E8F0" }}
+        >
             {/* Header */}
-            <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200">
+            <View className="flex-row items-center justify-between px-6 py-4 border-b border-gray-100">
+                <View>
+                    <Text className="text-xl font-bold text-gray-900">
+                        {journeyTitle}
+                    </Text>
+                    <Text className="text-sm text-gray-500">
+                        {sectionCards.length} {sectionCards.length === 1 ? "section" : "sections"}
+                    </Text>
+                </View>
                 <Pressable
                     onPress={onClose}
-                    accessibilityRole="button"
-                    accessibilityLabel="Close section overview"
-                    className="p-2"
+                    className="p-2 rounded-full bg-gray-100"
                 >
-                    <Text
-                        className="text-2xl"
-                        style={{ color: "#4A5568" }}
-                    >
-                        ✕
-                    </Text>
+                    <Text className="text-lg" style={{ color: "#4A5568" }}>✕</Text>
                 </Pressable>
-                <Text
-                    className="text-lg font-bold"
-                    style={{ color: "#1A202C" }}
-                >
-                    {journeyTitle}
-                </Text>
-                <View className="w-10" />
             </View>
 
-            {/* Section cards list */}
-            <ScrollView
+            {/* Content */}
+            <BottomSheetScrollView
                 className="flex-1"
                 contentContainerClassName="py-4"
                 showsVerticalScrollIndicator={false}
             >
-                {sections.map((section: SectionCardData) => (
+                {sectionCards.map((section: SectionCardData) => (
                     <SectionCard
                         key={section.id}
                         section={section}
-                        onJump={onJumpToSection}
+                        onJump={handleJumpAndClose}
                     />
                 ))}
-            </ScrollView>
-        </SafeAreaView>
+            </BottomSheetScrollView>
+        </BottomSheetModal>
     );
 }
 
-export default React.memo(SectionOverviewPresentation);
+export default React.memo(SectionOverviewSheet);

@@ -29,6 +29,9 @@ import type {
   UserJourneyProgress,
   JourneyFlashListItem,
   JourneyNode,
+  JourneyEnrollment,
+  MultiJourneyState,
+  JourneySwitcherItem,
 } from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
 import { MOCK_JOURNEY_STATE } from "@/src/data/journey";
@@ -40,6 +43,7 @@ import { MOCK_JOURNEY_STATE } from "@/src/data/journey";
 const JOURNEY_STATE_KEY = "@journey_state_v2";
 const JOURNEY_TEMPLATE_CACHE_KEY = "@journey_template_cache_v1";
 const ACTIVE_SLUG_KEY = "@journey_active_slug_v1";
+const MULTI_JOURNEY_STATE_KEY = "@multi_journey_state_v1";
 
 // ---------------------------------------------------------------------------
 // Active journey slug
@@ -47,6 +51,45 @@ const ACTIVE_SLUG_KEY = "@journey_active_slug_v1";
 
 /** Which journey is currently being viewed */
 export const activeJourneySlugAtom = atom<string | null>(null);
+
+// ---------------------------------------------------------------------------
+// Multi-Journey Enrollment State
+// ---------------------------------------------------------------------------
+
+/** All user enrollments — the source of truth for the journey switcher */
+export const journeyEnrollmentsAtom = atom<JourneyEnrollment[]>([]);
+
+/** Whether the user has any active enrollments (drives empty state vs map) */
+export const hasActiveEnrollmentAtom = atom<boolean>((get) => {
+  const enrollments: JourneyEnrollment[] = get(journeyEnrollmentsAtom);
+  return enrollments.some(
+    (e: JourneyEnrollment) => e.status === "active" && !e.isArchived,
+  );
+});
+
+/** Active (non-archived) enrollments for the journey switcher */
+export const activeEnrollmentsAtom = atom<JourneyEnrollment[]>((get) => {
+  const enrollments: JourneyEnrollment[] = get(journeyEnrollmentsAtom);
+  return enrollments.filter((e: JourneyEnrollment) => !e.isArchived);
+});
+
+/** Items formatted for the journey switcher bottom sheet */
+export const journeySwitcherItemsAtom = atom<JourneySwitcherItem[]>((get) => {
+  const enrollments: JourneyEnrollment[] = get(activeEnrollmentsAtom);
+  const activeSlug: string | null = get(activeJourneySlugAtom);
+  return enrollments.map(
+    (e: JourneyEnrollment): JourneySwitcherItem => ({
+      slug: e.slug,
+      title: e.title,
+      progressPercent: e.progressPercent,
+      currentUnitTitle: e.currentUnitTitle,
+      colorScheme: e.colorScheme,
+      isActive: e.slug === activeSlug,
+      iconUrl: e.iconUrl,
+      status: e.status,
+    }),
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Template cache atom
@@ -348,5 +391,51 @@ export async function loadActiveSlug(): Promise<string | null> {
   } catch (error) {
     console.error("[JourneyStore] Failed to load active slug:", error);
     return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Multi-journey enrollment persistence
+// ---------------------------------------------------------------------------
+
+/** Persist the full multi-journey enrollment state */
+export async function saveMultiJourneyState(
+  state: MultiJourneyState,
+): Promise<void> {
+  try {
+    await AsyncStorage.setItem(MULTI_JOURNEY_STATE_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.error("[JourneyStore] Failed to save multi-journey state:", error);
+  }
+}
+
+/** Load persisted multi-journey enrollment state */
+export async function loadMultiJourneyState(): Promise<MultiJourneyState | null> {
+  try {
+    const raw: string | null = await AsyncStorage.getItem(
+      MULTI_JOURNEY_STATE_KEY,
+    );
+    if (!raw) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (
+      !parsed ||
+      typeof parsed !== "object" ||
+      !Array.isArray((parsed as Record<string, unknown>).enrollments)
+    ) {
+      return null;
+    }
+    return parsed as MultiJourneyState;
+  } catch (error) {
+    console.error("[JourneyStore] Failed to load multi-journey state:", error);
+    return null;
+  }
+}
+
+/** Clear persisted multi-journey state */
+export async function clearMultiJourneyState(): Promise<void> {
+  try {
+    await AsyncStorage.removeItem(MULTI_JOURNEY_STATE_KEY);
+  } catch (error) {
+    console.error("[JourneyStore] Failed to clear multi-journey state:", error);
   }
 }

@@ -90,16 +90,6 @@ export default function TabLayout() {
           drawable="custom_settings_drawable"
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="insights">
-        <Label>Learn</Label>
-        <Icon
-          sf={{
-            default: "graduationcap",
-            selected: "graduationcap.fill",
-          }}
-          drawable="custom_settings_drawable"
-        />
-      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }

@@ -16,8 +16,16 @@
  */
 
 import React, { useCallback, useRef } from "react";
-import { View, type NativeSyntheticEvent, type NativeScrollEvent } from "react-native";
-import Animated, { useSharedValue, useAnimatedScrollHandler, runOnJS } from "react-native-reanimated";
+import {
+    View,
+    type NativeSyntheticEvent,
+    type NativeScrollEvent,
+} from "react-native";
+import Animated, {
+    useSharedValue,
+    useAnimatedScrollHandler,
+    runOnJS,
+} from "react-native-reanimated";
 import { FlashList } from "@shopify/flash-list";
 import type { ViewToken } from "react-native";
 
@@ -86,6 +94,8 @@ export interface JourneyMapFlashListProps {
     unitHeaders: UnitHeaderData[];
     /** Guide-book handler */
     onGuidePress?: () => void;
+    /** Flag icon handler (opens journey switcher) */
+    onFlagPress?: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -153,6 +163,7 @@ function JourneyMapFlashListInner({
     onScroll,
     unitHeaders,
     onGuidePress,
+    onFlagPress,
 }: JourneyMapFlashListProps): React.JSX.Element {
     const internalRef = useRef<FlashList<JourneyFlashListItem>>(null);
     const flashListRef = listRef ?? internalRef;
@@ -160,9 +171,12 @@ function JourneyMapFlashListInner({
     const scrollY = useSharedValue(0);
     const [visibleUnitIndex, setVisibleUnitIndex] = React.useState(0);
 
-    const onScrollTick = useCallback((y: number) => {
-        onScroll?.(y);
-    }, [onScroll]);
+    const onScrollTick = useCallback(
+        (y: number) => {
+            onScroll?.(y);
+        },
+        [onScroll],
+    );
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
@@ -173,22 +187,29 @@ function JourneyMapFlashListInner({
     });
 
     // Determine visible unit from viewable items
-    const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
-        if (viewableItems.length > 0) {
-            // Find the first visible node or divider to determine the current unit
-            const firstItem = viewableItems.find(vi => vi.item.itemType === 'node' || vi.item.itemType === 'divider');
-            if (firstItem) {
-                const targetUnitId = firstItem.item.itemType === 'node' 
-                    ? (firstItem.item as JourneyNode).unitId 
-                    : (firstItem.item as JourneyDividerItem).targetUnitId;
-                
-                const unitIndex = unitHeaders.findIndex(uh => uh.unitId === targetUnitId);
-                if (unitIndex !== -1 && unitIndex !== visibleUnitIndex) {
-                    setVisibleUnitIndex(unitIndex);
+    const onViewableItemsChanged = useRef(
+        ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+            if (viewableItems.length > 0) {
+                // Find the first visible node or divider to determine the current unit
+                const firstItem = viewableItems.find(
+                    (vi) => vi.item.itemType === "node" || vi.item.itemType === "divider",
+                );
+                if (firstItem) {
+                    const targetUnitId =
+                        firstItem.item.itemType === "node"
+                            ? (firstItem.item as JourneyNode).unitId
+                            : (firstItem.item as JourneyDividerItem).targetUnitId;
+
+                    const unitIndex = unitHeaders.findIndex(
+                        (uh) => uh.unitId === targetUnitId,
+                    );
+                    if (unitIndex !== -1 && unitIndex !== visibleUnitIndex) {
+                        setVisibleUnitIndex(unitIndex);
+                    }
                 }
             }
-        }
-    });
+        },
+    );
 
     const visibleUnit = unitHeaders[visibleUnitIndex] || unitHeaders[0];
 
@@ -260,6 +281,7 @@ function JourneyMapFlashListInner({
                         colorThemeKey={visibleUnit.colorThemeKey}
                         stats={stats}
                         onGuidePress={onGuidePress}
+                        onFlagPress={onFlagPress}
                         scrollY={scrollY}
                         unitBreakpoints={unitHeaders}
                     />

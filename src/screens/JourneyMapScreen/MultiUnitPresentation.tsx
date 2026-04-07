@@ -89,6 +89,8 @@ export interface MultiUnitPresentationProps {
     updateScrollVisibility: (scrollY: number) => void;
     /** Guide-book button handler */
     onGuidePress?: () => void;
+    /** Flag icon handler (opens journey switcher) */
+    onFlagPress?: () => void;
     /** Jump-here handler for unit dividers */
     onJumpToUnit?: (unitId: string) => void;
 }
@@ -204,6 +206,7 @@ function MultiUnitPresentation({
     onScrollToActive,
     updateScrollVisibility,
     onGuidePress,
+    onFlagPress,
     onJumpToUnit,
 }: MultiUnitPresentationProps): React.JSX.Element {
     const journeyConfig = useJourneyConfig();
@@ -315,6 +318,7 @@ function MultiUnitPresentation({
                     colorThemeKey={visibleUnit.unitConfig.colorThemeKey}
                     stats={stats}
                     onGuidePress={onGuidePress}
+                    onFlagPress={onFlagPress}
                     scrollY={scrollY}
                     unitRenderData={unitRenderData}
                 />

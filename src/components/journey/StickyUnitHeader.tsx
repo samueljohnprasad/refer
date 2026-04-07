@@ -19,9 +19,16 @@ import { View, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/ui/text";
 import type { JourneyStats } from "@/src/types/journey/state";
-import { useColorTheme, useJourneyConfig } from "@/src/context/JourneyConfigContext";
+import {
+    useColorTheme,
+    useJourneyConfig,
+} from "@/src/context/JourneyConfigContext";
 import type { ColorThemeConfig } from "@/src/types/journey";
-import Animated, { useAnimatedStyle, interpolateColor, SharedValue } from "react-native-reanimated";
+import Animated, {
+    useAnimatedStyle,
+    interpolateColor,
+    SharedValue,
+} from "react-native-reanimated";
 
 export interface UnitHeaderBreakpoint {
     yOffset: number;
@@ -47,6 +54,8 @@ export interface StickyUnitHeaderProps {
     stats: JourneyStats;
     /** Callback when guide-book button is pressed */
     onGuidePress?: () => void;
+    /** Callback when flag icon is pressed (opens journey switcher) */
+    onFlagPress?: () => void;
     /** Scroll position for color interpolation */
     scrollY?: SharedValue<number>;
     /** Breakpoints for calculating color transition points */
@@ -115,6 +124,7 @@ function StickyUnitHeader({
     colorThemeKey,
     stats,
     onGuidePress,
+    onFlagPress,
     scrollY,
     unitBreakpoints,
 }: StickyUnitHeaderProps): React.JSX.Element {
@@ -124,13 +134,13 @@ function StickyUnitHeader({
     // Compute interpolation ranges based on all units
     const { inputRange, outputBackgrounds, outputShadows } = React.useMemo(() => {
         if (!unitBreakpoints || unitBreakpoints.length === 0) {
-            return { 
-                inputRange: [0], 
-                outputBackgrounds: [theme.headerGradient[0]], 
-                outputShadows: [theme.headerGradient[1]] 
+            return {
+                inputRange: [0],
+                outputBackgrounds: [theme.headerGradient[0]],
+                outputShadows: [theme.headerGradient[1]],
             };
         }
-        
+
         const ranges: number[] = [];
         const bgs: string[] = [];
         const shadows: string[] = [];
@@ -143,7 +153,7 @@ function StickyUnitHeader({
 
             // Transition happens quickly when UnitDivider text (yOffset - 170) hits the header
             const transitionY = Math.max(0, y - 170);
-            
+
             if (ranges.length === 0 || transitionY > ranges[ranges.length - 1]) {
                 if (ranges.length > 0) {
                     // Make it a fast transition (sharp) over 5 pixels
@@ -164,14 +174,22 @@ function StickyUnitHeader({
             shadows.push(shadows[0]);
         }
 
-        return { inputRange: ranges, outputBackgrounds: bgs, outputShadows: shadows };
+        return {
+            inputRange: ranges,
+            outputBackgrounds: bgs,
+            outputShadows: shadows,
+        };
     }, [unitBreakpoints, config, theme]);
 
     const animatedStyle = useAnimatedStyle(() => {
         if (!scrollY) return {};
-        
+
         return {
-            backgroundColor: interpolateColor(scrollY.value, inputRange, outputBackgrounds),
+            backgroundColor: interpolateColor(
+                scrollY.value,
+                inputRange,
+                outputBackgrounds,
+            ),
             shadowColor: interpolateColor(scrollY.value, inputRange, outputShadows),
         };
     }, [scrollY, inputRange, outputBackgrounds, outputShadows]);
@@ -185,16 +203,22 @@ function StickyUnitHeader({
                     accessibilityRole="summary"
                     accessibilityLabel={`Stats: ${stats.streakDays} day streak, ${stats.wallet.gems} gems, ${stats.totalXP} XP`}
                 >
-                    {/* Flag */}
-                    <View className="flex-row items-center gap-1.5">
-                        <Text className="text-xl">🇩🇪</Text>
+                    {/* Flag — opens journey switcher */}
+                    <Pressable
+                        onPress={onFlagPress}
+                        className="flex-row items-center gap-1.5"
+                        accessibilityRole="button"
+                        accessibilityLabel="Switch journey"
+                        accessibilityHint="Opens the journey switcher"
+                    >
+                        <Text className="text-xl">�️</Text>
                         <Text
                             className="text-base font-extrabold"
                             style={{ color: "#4A5568" }}
                         >
                             {stats.streakDays}
                         </Text>
-                    </View>
+                    </Pressable>
 
                     {/* Stats badges */}
                     <StatBadge

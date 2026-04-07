@@ -60,3 +60,13 @@ export type {
     SpotlightTooltipProps,
     SpotlightTarget,
 } from "./SpotlightTooltip";
+export { JourneySwitcherSheet } from "./JourneySwitcherSheet";
+export type { JourneySwitcherSheetProps } from "./JourneySwitcherSheet";
+export { default as JourneyOnboardingScreen } from "./JourneyOnboardingScreen";
+export { default as AnimatedScreenTransition } from "./AnimatedScreenTransition";
+export type { AnimatedScreenTransitionProps } from "./AnimatedScreenTransition";
+export type {
+    JourneyOnboardingScreenProps,
+    OnboardingQuestion,
+    OnboardingOption,
+} from "./JourneyOnboardingScreen";

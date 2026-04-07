@@ -64,6 +64,7 @@ import {
   currentUnitIndexAtom,
   unitsAtom,
   saveJourneyState,
+  journeyTemplateAtom,
 } from "@/src/store/journeyStore";
 import {
   completeNode,
@@ -105,10 +106,14 @@ const UnitCompleteModal = lazy(
 );
 import JourneyLoadingSkeleton from "@/src/components/journey/JourneyLoadingSkeleton";
 import JourneyErrorState from "@/src/components/journey/JourneyErrorState";
+import { JourneySwitcherSheet } from "@/src/components/journey/JourneySwitcherSheet";
+import { useMultiJourney } from "@/src/hooks/useMultiJourney";
+import { useEnrollmentProgressSync } from "@/src/hooks/useEnrollmentProgressSync";
 import MultiUnitPresentation from "./MultiUnitPresentation";
 import type { UnitRenderData } from "./MultiUnitPresentation";
 import { Text } from "@/components/Themed";
 import { debounce, DebouncedFunction } from "@/src/utils/debounce";
+import SectionOverviewSheet from "@/src/components/journey/SectionOverviewSheet";
 // FlashList segment-per-cell architecture
 import { useJourneyFlashList } from "@/src/hooks/useJourneyFlashList";
 import JourneyMapFlashList from "./JourneyMapFlashList";
@@ -126,6 +131,20 @@ export default function JourneyMapContainer(): React.JSX.Element {
   }>();
   // Default to first journey slug if not provided (backward compatible)
   const journeySlug: string = slug ?? "default";
+
+  // Track slug changes to show brief transition skeleton
+  const prevSlugRef = useRef<string>(journeySlug);
+  const [isSwitchingJourney, setIsSwitchingJourney] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (prevSlugRef.current !== journeySlug) {
+      prevSlugRef.current = journeySlug;
+      setIsSwitchingJourney(true);
+      // Safety timeout in case loading never clears
+      const timer = setTimeout(() => setIsSwitchingJourney(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [journeySlug]);
 
   const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
   const completionModalRef = useRef<BottomSheetModal>(null);
@@ -150,6 +169,13 @@ export default function JourneyMapContainer(): React.JSX.Element {
     refresh,
   } = useJourneyData(journeySlug);
 
+  // Clear switching state once loading finishes for the new slug
+  useEffect(() => {
+    if (!isLoading && isSwitchingJourney) {
+      setIsSwitchingJourney(false);
+    }
+  }, [isLoading, isSwitchingJourney]);
+
   // Network status + offline queue
   const { isOnline } = useNetworkStatus();
   const { enqueue } = useOfflineQueue(isOnline);
@@ -160,12 +186,29 @@ export default function JourneyMapContainer(): React.JSX.Element {
   // Jotai state (set by useJourneyData, consumed here)
   const journeyState = useAtomValue(journeyStateAtom);
   const setJourneyState = useSetAtom(journeyStateAtom);
+
+  // Sync node completion progress → multi-journey enrollment store
+  useEnrollmentProgressSync();
   const currentUnit = useAtomValue(currentUnitAtom);
   const stats = useAtomValue(journeyStatsAtom);
   const enrollmentId = useAtomValue(enrollmentIdAtom);
   // Granular selectors — preserve referential equality for unchanged slices
   const currentUnitIndex: number = useAtomValue(currentUnitIndexAtom);
   const allUnitsRaw: UnitData[] = useAtomValue(unitsAtom);
+  const journeyTemplate = useAtomValue(journeyTemplateAtom);
+  const journeyTitle: string = journeyTemplate?.title ?? "Journey Overview";
+
+  const unitCompletedCounts: Record<string, number> = useMemo(() => {
+    const counts: Record<string, number> = {};
+    if (!journeyState?.units) return counts;
+
+    journeyState.units.forEach((unit: UnitData) => {
+      counts[unit.id] = unit.nodes.filter(
+        (n) => n.status === NodeStatus.COMPLETED,
+      ).length;
+    });
+    return counts;
+  }, [journeyState?.units]);
 
   // Debounced persistence — avoids hammering AsyncStorage on every progress tick.
   // Fires at most once per 1.5s (trailing). Flushed on unmount to avoid data loss.
@@ -549,28 +592,28 @@ export default function JourneyMapContainer(): React.JSX.Element {
   const scrollY = useSharedValue(0);
 
   // FlashList scroll-to-active handler
-  const handleFlashListScrollToActive = useCallback((duration = 3000) => {
-    if (flashActiveNodeY !== null && flashListRef.current) {
-      const targetOffset = Math.max(
-        0,
-        flashActiveNodeY - viewportHeight / 3
-      );
+  const handleFlashListScrollToActive = useCallback(
+    (duration = 3000) => {
+      if (flashActiveNodeY !== null && flashListRef.current) {
+        const targetOffset = Math.max(0, flashActiveNodeY - viewportHeight / 3);
 
-      // Start the animation from our actual current scroll position!
-      scrollY.value = currentScrollY.current;
+        // Start the animation from our actual current scroll position!
+        scrollY.value = currentScrollY.current;
 
-      // Now slowly glide to the target over 800ms
-      scrollY.value = withTiming(targetOffset, {
-        duration,
-      });
-    }
-  }, [flashActiveNodeY, viewportHeight, scrollY]);
+        // Now slowly glide to the target over 800ms
+        scrollY.value = withTiming(targetOffset, {
+          duration,
+        });
+      }
+    },
+    [flashActiveNodeY, viewportHeight, scrollY],
+  );
 
   useAnimatedReaction(
     () => scrollY.value,
     (y) => {
       scrollTo(flashListRef, 0, y, false); // ✅ Custom smooth scroll hook
-    }
+    },
   );
 
   // FlashList jump-to-unit handler
@@ -613,10 +656,53 @@ export default function JourneyMapContainer(): React.JSX.Element {
     }
   }, [flashActiveNodeIndex, jumpToSection, handleFlashListScrollToActive]);
 
-  // Guide-book press handler (opens section overview)
+  const [isSectionOverviewOpen, setIsSectionOverviewOpen] = useState<boolean>(false);
+
+  // Guide-book press handler (opens section overview sheet)
   const handleGuidePress = useCallback((): void => {
-    router.push("/tabs/screens/section-overview" as never);
+    setIsSectionOverviewOpen(true);
   }, []);
+
+  const handleSectionOverviewClose = useCallback((): void => {
+    setIsSectionOverviewOpen(false);
+  }, []);
+
+  // ── Journey Switcher ──
+  const { switcherItems, switchJourney, archiveJourney } = useMultiJourney();
+
+  const [isSwitcherOpen, setIsSwitcherOpen] = useState<boolean>(false);
+
+  const handleFlagPress = useCallback((): void => {
+    setIsSwitcherOpen(true);
+  }, []);
+
+  const handleSwitcherClose = useCallback((): void => {
+    setIsSwitcherOpen(false);
+  }, []);
+
+  const handleSwitchJourney = useCallback(
+    (targetSlug: string): void => {
+      switchJourney(targetSlug);
+      // Small delay so bottom sheet dismiss animation finishes before skeleton
+      setTimeout(() => {
+        router.setParams({ slug: targetSlug });
+      }, 250);
+    },
+    [switchJourney],
+  );
+
+  const handleDiscoverPress = useCallback((): void => {
+    setIsSwitcherOpen(false);
+    // Navigate to the catalog by removing slug param (triggers empty state → catalog)
+    router.push("/tabs/(tabs)/journeys" as never);
+  }, []);
+
+  const handleArchiveJourney = useCallback(
+    (slug: string): void => {
+      archiveJourney(slug);
+    },
+    [archiveJourney],
+  );
 
   // Jump to unit handler — scroll to the target unit's Y offset
   const handleJumpToUnit = useCallback(
@@ -639,8 +725,8 @@ export default function JourneyMapContainer(): React.JSX.Element {
     [unitRenderData],
   );
 
-  // Only block rendering with skeleton on true first load before any state exists
-  if (isLoading && !currentUnit) {
+  // Show skeleton on first load OR when actively switching journeys
+  if ((isLoading && !currentUnit) || isSwitchingJourney) {
     return <JourneyLoadingSkeleton />;
   }
 
@@ -685,6 +771,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
           listRef={flashListRef}
           unitHeaders={unitHeaders}
           onGuidePress={handleGuidePress}
+          onFlagPress={handleFlagPress}
           onScroll={(y) => {
             currentScrollY.current = y;
             updateVisibility(y);
@@ -705,6 +792,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
           onScrollToActive={scrollToActive}
           updateScrollVisibility={updateVisibility}
           onGuidePress={handleGuidePress}
+          onFlagPress={handleFlagPress}
           onJumpToUnit={handleJumpToUnit}
         />
       )}
@@ -732,6 +820,23 @@ export default function JourneyMapContainer(): React.JSX.Element {
       <GuestSignUpSheet
         ref={signUpSheetRef}
         guestProgress={guestProgress}
+      />
+      <SectionOverviewSheet
+        isOpen={isSectionOverviewOpen}
+        onClose={handleSectionOverviewClose}
+        currentUnitIndex={currentUnitIndex}
+        unitCompletedCounts={unitCompletedCounts}
+        onJumpToSection={(sectionId) => router.setParams({ jumpToSection: sectionId })}
+        journeyTitle={journeyTitle}
+      />
+      {/* Journey Switcher Bottom Sheet */}
+      <JourneySwitcherSheet
+        isOpen={isSwitcherOpen}
+        onClose={handleSwitcherClose}
+        items={switcherItems}
+        onSwitchJourney={handleSwitchJourney}
+        onDiscoverPress={handleDiscoverPress}
+        onArchive={handleArchiveJourney}
       />
     </>
   );

@@ -110,3 +110,14 @@ export type {
   // Catalog types
   MentalHealthJourneyListItem,
 } from "./mentalHealth";
+
+// ---------------------------------------------------------------------------
+// Multi-Journey Enrollment Types
+// ---------------------------------------------------------------------------
+
+export type {
+  EnrollmentStatus,
+  JourneyEnrollment,
+  MultiJourneyState,
+  JourneySwitcherItem,
+} from "./enrollment";
