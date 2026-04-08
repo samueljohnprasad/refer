@@ -11,7 +11,8 @@ import { SvgXml } from "react-native-svg";
 import { getMascotSvg } from "@/src/data/journey";
 
 import { useJourneyConfig } from "@/src/context/JourneyConfigContext";
-import { JourneyConfig, SectionConfig, UnitConfig } from "@/src/types/journey";
+import type { JourneyConfig } from "@/src/types/journey";
+import type { SectionListItem } from "@/src/types/journey/sectionMap";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -42,8 +43,12 @@ export interface SectionOverviewSheetProps {
     currentUnitIndex: number;
     /** Per-unit completed node counts */
     unitCompletedCounts: Record<string, number>;
-    /** Jump to section handler */
-    onJumpToSection: (sectionId: string) => void;
+    /** Server-provided section list (from useSectionData) */
+    sectionList: SectionListItem[];
+    /** Current section's unit number (from sectionMap) */
+    currentSectionUnitNumber: number;
+    /** Jump to section handler — receives unitNumber */
+    onJumpToSection: (unitNumber: number) => void;
     /** Journey title */
     journeyTitle: string;
 }
@@ -65,7 +70,7 @@ function resolveMascotMessage(
 
 interface SectionCardProps {
     section: SectionCardData;
-    onJump: (sectionId: string) => void;
+    onJump: (unitNumber: number) => void;
 }
 
 function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
@@ -79,8 +84,8 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
                 opacity: section.isUnlocked ? 1 : 0.6,
             }}
             accessibilityRole="button"
-            accessibilityLabel={`${section.title}, ${section.unitRangeLabel}, ${section.progressPercent}% complete`}
-            onPress={() => onJump(section.id)}
+            accessibilityLabel={`${section.title}, Section ${section.sectionNumber}, ${section.progressPercent}% complete`}
+            onPress={() => onJump(section.sectionNumber)}
         >
             {/* Speech bubble + mascot area */}
             <View className="p-5 pb-3">
@@ -156,7 +161,9 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
                         className="h-full rounded-full"
                         style={{
                             width: `${section.progressPercent}%`,
-                            backgroundColor: section.isCurrent ? section.cardBackgroundColor : "#A0AEC0",
+                            backgroundColor: section.isCurrent
+                                ? section.cardBackgroundColor
+                                : "#A0AEC0",
                         }}
                     />
                 </View>
@@ -164,7 +171,7 @@ function SectionCard({ section, onJump }: SectionCardProps): React.JSX.Element {
                 {/* Jump here link for non-current sections */}
                 {!section.isCurrent && section.isUnlocked && (
                     <Pressable
-                        onPress={() => onJump(section.id)}
+                        onPress={() => onJump(section.sectionNumber)}
                         accessibilityRole="button"
                         accessibilityLabel={`Jump to ${section.title}`}
                         className="mt-1 active:opacity-75"
@@ -191,6 +198,8 @@ export function SectionOverviewSheet({
     onClose,
     currentUnitIndex,
     unitCompletedCounts,
+    sectionList,
+    currentSectionUnitNumber,
     onJumpToSection,
     journeyTitle,
 }: SectionOverviewSheetProps): React.JSX.Element {
@@ -230,63 +239,60 @@ export function SectionOverviewSheet({
     );
 
     const handleJumpAndClose = useCallback(
-        (sectionId: string): void => {
-            onJumpToSection(sectionId);
+        (unitNumber: number): void => {
+            onJumpToSection(unitNumber);
             onClose();
         },
         [onJumpToSection, onClose],
     );
 
     const sectionCards: SectionCardData[] = useMemo(() => {
-        return config.sections.map((section: SectionConfig) => {
-            const sectionUnits: UnitConfig[] = section.unitIds
-                .map((uid: string) =>
-                    config.units.find((u: UnitConfig) => u.id === uid),
-                )
-                .filter(
-                    (u: UnitConfig | undefined): u is UnitConfig => u !== undefined,
-                );
+        // Derive card data from server-provided sectionList instead of deprecated config
+        return sectionList.map((section: SectionListItem) => {
+            const totalNodes: number = section.nodeCount;
+            const isCurrent: boolean =
+                section.unitNumber === currentSectionUnitNumber;
+            // Sections up to and including current are unlocked
+            const isUnlocked: boolean =
+                section.unitNumber <= currentSectionUnitNumber;
 
-            let totalNodes: number = 0;
-            let completedNodes: number = 0;
-            let isUnlocked: boolean = false;
-            let isCurrent: boolean = false;
+            // Use the mascot messages from config (still client-side)
+            const mascotMessageKey: string = `section_${section.unitNumber}_intro`;
+            const mascotMessage: string = resolveMascotMessage(
+                mascotMessageKey,
+                config.mascotMessages,
+            );
 
-            sectionUnits.forEach((unit: UnitConfig) => {
-                const unitIndex: number = config.units.findIndex(
-                    (u: UnitConfig) => u.id === unit.id,
-                );
-                const nodeCount: number = unit.nodes.length;
-                const completed: number = unitCompletedCounts[unit.id] ?? 0;
-
-                totalNodes += nodeCount;
-                completedNodes += completed;
-
-                if (unitIndex <= currentUnitIndex) {
-                    isUnlocked = true;
-                }
-                if (unitIndex === currentUnitIndex) {
-                    isCurrent = true;
-                }
-            });
+            // Derive completed node count from unitCompletedCounts
+            // The key may be the section ID or unit number — check both
+            const completedNodes: number =
+                unitCompletedCounts[`section_${section.unitNumber}`] ?? 0;
 
             const progressPercent: number =
                 totalNodes > 0 ? Math.round((completedNodes / totalNodes) * 100) : 0;
 
-            const mascotMessage: string = resolveMascotMessage(
-                section.mascot.message,
-                config.mascotMessages,
-            );
+            // Map colorScheme to card background colors
+            const colorMap: Record<string, string> = {
+                blue: "#E0F2FE",
+                purple: "#F3E8FF",
+                green: "#DCFCE7",
+                orange: "#FFF7ED",
+                pink: "#FCE7F3",
+                teal: "#CCFBF1",
+                rose: "#FFE4E6",
+                indigo: "#E0E7FF",
+            };
 
             return {
-                id: section.id,
-                sectionNumber: section.sectionNumber,
+                id: `section_${section.unitNumber}`,
+                sectionNumber: section.unitNumber,
                 title: section.title,
-                unitRangeLabel: section.unitRangeLabel,
-                cardBackgroundColor: section.cardBackgroundColor,
+                unitRangeLabel: `Section ${section.unitNumber}`,
+                cardBackgroundColor: colorMap[section.colorScheme] ?? "#E0F2FE",
                 mascotMessage,
-                mascotSide: section.mascot.side,
-                mascotImageKey: section.mascot.imageKey,
+                mascotSide:
+                    section.unitNumber % 2 === 0 ? ("left" as const) : ("right" as const),
+                mascotImageKey: isCurrent ? "owl_excited" : "owl_default",
                 progressPercent,
                 totalNodes,
                 completedNodes,
@@ -294,7 +300,12 @@ export function SectionOverviewSheet({
                 isCurrent,
             };
         });
-    }, [config, currentUnitIndex, unitCompletedCounts]);
+    }, [
+        sectionList,
+        currentSectionUnitNumber,
+        unitCompletedCounts,
+        config.mascotMessages,
+    ]);
 
     return (
         <BottomSheetModal
@@ -314,14 +325,20 @@ export function SectionOverviewSheet({
                         {journeyTitle}
                     </Text>
                     <Text className="text-sm text-gray-500">
-                        {sectionCards.length} {sectionCards.length === 1 ? "section" : "sections"}
+                        {sectionCards.length}{" "}
+                        {sectionCards.length === 1 ? "section" : "sections"}
                     </Text>
                 </View>
                 <Pressable
                     onPress={onClose}
                     className="p-2 rounded-full bg-gray-100"
                 >
-                    <Text className="text-lg" style={{ color: "#4A5568" }}>✕</Text>
+                    <Text
+                        className="text-lg"
+                        style={{ color: "#4A5568" }}
+                    >
+                        ✕
+                    </Text>
                 </Pressable>
             </View>
 
@@ -331,13 +348,21 @@ export function SectionOverviewSheet({
                 contentContainerClassName="py-4"
                 showsVerticalScrollIndicator={false}
             >
-                {sectionCards.map((section: SectionCardData) => (
-                    <SectionCard
-                        key={section.id}
-                        section={section}
-                        onJump={handleJumpAndClose}
-                    />
-                ))}
+                {sectionCards.length === 0 ? (
+                    <View className="items-center justify-center py-12 px-6">
+                        <Text className="text-gray-400 text-base text-center">
+                            No sections available. Check your connection and try again.
+                        </Text>
+                    </View>
+                ) : (
+                    sectionCards.map((section: SectionCardData) => (
+                        <SectionCard
+                            key={section.id}
+                            section={section}
+                            onJump={handleJumpAndClose}
+                        />
+                    ))
+                )}
             </BottomSheetScrollView>
         </BottomSheetModal>
     );

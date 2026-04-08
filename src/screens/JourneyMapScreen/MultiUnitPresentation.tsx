@@ -297,6 +297,7 @@ function MultiUnitPresentation({
     const activeNodeGlobalIndex: number = useMemo(() => {
         let globalIndex: number = 0;
         for (const rd of unitRenderData) {
+            if (!rd.unit || !rd.unit.nodes) continue;
             for (const node of rd.unit.nodes) {
                 if (node.status === NodeStatus.ACTIVE) {
                     return globalIndex;

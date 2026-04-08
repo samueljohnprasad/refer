@@ -9,17 +9,25 @@
  * Graceful fallback chain:
  *   Supabase → AsyncStorage cache → Mock data
  * The UI always renders — loading/error states are only shown when truly needed.
+ *
+ * @deprecated Use `useSectionData` instead. This hook fetches the entire journey
+ * template + all progress in one request. The new `useSectionData` hook uses the
+ * lazy-loaded `get_section_map` RPC which only fetches one section at a time,
+ * resulting in ~90% smaller payloads and faster initial load.
+ * Scheduled for removal in the next major version.
  */
 
-import { useCallback, useEffect, useState } from 'react';
-import { useSetAtom } from 'jotai';
+import { useCallback, useEffect, useState } from "react";
+import { useSetAtom } from "jotai";
 
-import type { JourneyState, JourneyStats } from '@/src/types/journey';
-import type { JourneyTemplate } from '@/src/types/journey/template';
-import type { UserJourneyProgress } from '@/src/types/journey/progress';
-import { MOCK_JOURNEY_STATE } from '@/src/data/journey';
-import { NodeStatus, NodeIcon } from '@/src/types/journey/enums';
-import { mergeJourneyState, createInitialProgress } from '@/src/utils/journey/mergeJourneyState';
+import type { JourneyState, JourneyStats } from "@/src/types/journey";
+import type { JourneyTemplate } from "@/src/types/journey/template";
+import type { UserJourneyProgress } from "@/src/types/journey/progress";
+import { NodeStatus, NodeIcon } from "@/src/types/journey/enums";
+import {
+  mergeJourneyState,
+  createInitialProgress,
+} from "@/src/utils/journey/mergeJourneyState";
 import {
   journeyStateAtom,
   journeyTemplateAtom,
@@ -30,13 +38,13 @@ import {
   cacheTemplate,
   loadCachedTemplate,
   saveActiveSlug,
-} from '@/src/store/journeyStore';
+} from "@/src/store/journeyStore";
 import {
   fetchJourneyTemplate,
   fetchUserProgress,
   enrollInJourney,
-} from '@/src/lib/api/journeyApi';
-import { useNetworkStatus } from '@/src/hooks/useNetworkStatus';
+} from "@/src/lib/api/journeyApi";
+import { useNetworkStatus } from "@/src/hooks/useNetworkStatus";
 
 // ---------------------------------------------------------------------------
 // Return type
@@ -69,6 +77,13 @@ const DEFAULT_STATS: JourneyStats = {
 // ---------------------------------------------------------------------------
 
 export function useJourneyData(slug: string | null): UseJourneyDataReturn {
+  if (__DEV__) {
+    console.warn(
+      "[useJourneyData] DEPRECATED: Use useSectionData instead. " +
+      "This hook will be removed in the next major version.",
+    );
+  }
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isOfflineFallback, setIsOfflineFallback] = useState<boolean>(false);
@@ -116,13 +131,8 @@ export function useJourneyData(slug: string | null): UseJourneyDataReturn {
 
         // ── Step 2: No template at all → fall back to mock data to keep UI working ──
         if (!template) {
-          console.warn('[useJourneyData] No template found, using mock data');
-          const cachedState = await loadJourneyState();
-          const currentState = cachedState 
-            ? { ...cachedState, units: MOCK_JOURNEY_STATE.units } 
-            : MOCK_JOURNEY_STATE;
-          await applyState(currentState);
-          setIsOfflineFallback(true);
+          console.warn("[useJourneyData] No template found");
+          setError("Journey not found. Please check your enrollment.");
           setIsLoading(false);
           return;
         }
@@ -139,7 +149,9 @@ export function useJourneyData(slug: string | null): UseJourneyDataReturn {
 
         // ── Step 4: No enrollment → auto-enroll the user ─────────────────
         if (!progress && isOnline) {
-          console.info('[useJourneyData] No enrollment found, auto-enrolling...');
+          console.info(
+            "[useJourneyData] No enrollment found, auto-enrolling...",
+          );
           const firstNodeId = template.units[0]?.nodes[0]?.id;
 
           if (firstNodeId) {
@@ -151,9 +163,12 @@ export function useJourneyData(slug: string | null): UseJourneyDataReturn {
 
             if (enrollRes.success && enrollRes.data) {
               progress = enrollRes.data;
-              console.info('[useJourneyData] Auto-enrollment successful');
+              console.info("[useJourneyData] Auto-enrollment successful");
             } else {
-              console.warn('[useJourneyData] Auto-enrollment failed:', enrollRes.error);
+              console.warn(
+                "[useJourneyData] Auto-enrollment failed:",
+                enrollRes.error,
+              );
             }
           }
         }
@@ -163,7 +178,7 @@ export function useJourneyData(slug: string | null): UseJourneyDataReturn {
           const cachedState = await loadJourneyState();
           if (cachedState) {
             setTemplate(template);
-            await applyState({ ...cachedState, units: MOCK_JOURNEY_STATE.units });
+            await applyState(cachedState);
             setIsOfflineFallback(true);
             setIsLoading(false);
             return;
@@ -171,8 +186,16 @@ export function useJourneyData(slug: string | null): UseJourneyDataReturn {
 
           // Build a local initial-progress view from the template
           // (shows all nodes locked except the first one — correct UX)
-          const localProgress = createInitialProgress(template, 'local', template.id);
-          const initialState = mergeJourneyState(template, localProgress, DEFAULT_STATS);
+          const localProgress = createInitialProgress(
+            template,
+            "local",
+            template.id,
+          );
+          const initialState = mergeJourneyState(
+            template,
+            localProgress,
+            DEFAULT_STATS,
+          );
           setTemplate(template);
           await applyState(initialState);
           setIsLoading(false);
@@ -180,45 +203,30 @@ export function useJourneyData(slug: string | null): UseJourneyDataReturn {
         }
 
         // ── Step 6: Merge template + progress → JourneyState ─────────────
-        const mergedState = mergeJourneyState(template, progress, DEFAULT_STATS);
-
-        // [DEV INJECTION] Ensure new UI-configured units exist in state for testing, 
-        // even if they haven't been seeded in the remote database yet.
-        MOCK_JOURNEY_STATE.units.forEach(mockUnit => {
-          if (!mergedState.units.find(u => u.id === mockUnit.id)) {
-            // Lock all nodes on injection so we don't accidentally create a second "START" button 
-            // if the user's progress is still back in an earlier section!
-            const lockedUnit = {
-              ...mockUnit,
-              nodes: mockUnit.nodes.map(n => ({
-                ...n,
-                status: NodeStatus.LOCKED,
-                icon: NodeIcon.LOCK,
-                progress: undefined,
-                label: undefined,
-              }))
-            };
-            mergedState.units.push(lockedUnit);
-          }
-        });
+        const mergedState = mergeJourneyState(
+          template,
+          progress,
+          DEFAULT_STATS,
+        );
 
         setTemplate(template);
         setProgress(progress);
         setActiveSlug(journeySlug);
         await saveActiveSlug(journeySlug);
         await applyState(mergedState);
-
       } catch (err) {
-        console.error('[useJourneyData] Unexpected error:', err);
+        console.error("[useJourneyData] Unexpected error:", err);
 
-        // Last resort — never show a blank screen
+        // Last resort — show error state
         const cachedState = await loadJourneyState();
-        const fallbackState = cachedState 
-          ? { ...cachedState, units: MOCK_JOURNEY_STATE.units } 
-          : MOCK_JOURNEY_STATE;
-        await applyState(fallbackState);
-        setIsOfflineFallback(true);
-        // Don't set error — the UI can still render with fallback data
+        if (cachedState) {
+          await applyState(cachedState);
+          setIsOfflineFallback(true);
+        } else {
+          setError(
+            err instanceof Error ? err.message : "Failed to load journey data",
+          );
+        }
       } finally {
         setIsLoading(false);
       }

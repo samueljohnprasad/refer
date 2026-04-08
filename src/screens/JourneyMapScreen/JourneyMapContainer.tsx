@@ -4,11 +4,13 @@
  * and data preparation. Passes everything to JourneyMapPresentation.
  * No markup beyond composing the presentation child.
  *
- * Data flow (multi-journey):
- * 1. useJourneyData(slug) fetches template + progress from Supabase
- * 2. mergeJourneyState() produces JourneyState (same shape as before)
- * 3. All derived atoms / UI components consume the merged state
- * 4. Node completion uses server-side RPC for atomic reward granting
+ * Data flow (lazy section loading — Phase C):
+ * 1. useSectionData(slug) fetches one section at a time via get_section_map RPC
+ * 2. sectionMapBridge converts SectionMapResponse → JourneyState for existing UI
+ * 3. All derived atoms / FlashList pipeline consume the bridged state
+ * 4. useNodeContent lazily fetches full JSONB content on node tap
+ * 5. Node completion uses server-side RPC for atomic reward granting
+ * 6. Trophy completion auto-loads the next section
  *
  * P1.6.1 — Try-Before-Sign-Up:
  * - Guests may complete the first 2 nodes without authentication.
@@ -30,7 +32,7 @@ import {
   useWindowDimensions,
   View,
   Text as RNText,
-  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -75,7 +77,15 @@ import {
   completeNodeApi,
   updateNodeProgress as updateNodeProgressApi,
 } from "@/src/lib/api/journeyApi";
-import { useJourneyData } from "@/src/hooks/useJourneyData";
+import { useSectionData } from "@/src/hooks/useSectionData";
+import { useNodeContent } from "@/src/hooks/useNodeContent";
+import type {
+  NodeStub,
+  NodeContentResponse,
+  SectionListItem,
+} from "@/src/types/journey/sectionMap";
+import { sectionMapToJourneyState } from "@/src/utils/journey/sectionMapBridge";
+import { useSectionPrefetch } from "@/src/hooks/useSectionPrefetch";
 import { useUnitCompletion } from "@/src/hooks/useUnitCompletion";
 import { useSoundEffects } from "@/src/hooks/useSoundEffects";
 import { useNetworkStatus } from "@/src/hooks/useNetworkStatus";
@@ -95,9 +105,6 @@ import { useJourneyAuthGate } from "@/hooks/data/useJourneyAuthGate";
 import { useGuestProgress } from "@/hooks/data/useGuestProgress";
 import GuestSignUpSheet from "@/src/components/journey/GuestSignUpSheet";
 // Lazy-loaded modals — only parsed when first rendered
-const NodeCompletionModal = lazy(
-  () => import("@/src/components/journey/NodeCompletionModal"),
-);
 const ChestRewardModal = lazy(
   () => import("@/src/components/journey/ChestRewardModal"),
 );
@@ -118,7 +125,7 @@ import SectionOverviewSheet from "@/src/components/journey/SectionOverviewSheet"
 import { useJourneyFlashList } from "@/src/hooks/useJourneyFlashList";
 import JourneyMapFlashList from "./JourneyMapFlashList";
 import type { JourneyFlashListItem } from "@/src/types/journey";
-import { FlashListRef } from "@shopify/flash-list";
+import { FlashList, FlashListRef } from "@shopify/flash-list";
 
 /** Feature flag: set to true to use new FlashList rendering path */
 const USE_FLASH_LIST: boolean = true;
@@ -129,8 +136,8 @@ export default function JourneyMapContainer(): React.JSX.Element {
     slug?: string;
     jumpToSection?: string;
   }>();
-  // Default to first journey slug if not provided (backward compatible)
-  const journeySlug: string = slug ?? "default";
+  // Default to anxiety-toolkit if no slug provided
+  const journeySlug: string = slug ?? "anxiety-toolkit";
 
   // Track slug changes to show brief transition skeleton
   const prevSlugRef = useRef<string>(journeySlug);
@@ -147,10 +154,8 @@ export default function JourneyMapContainer(): React.JSX.Element {
   }, [journeySlug]);
 
   const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
-  const completionModalRef = useRef<BottomSheetModal>(null);
   const chestModalRef = useRef<BottomSheetModal>(null);
   const unitCompleteModalRef = useRef<BottomSheetModal>(null);
-  const [completedNode, setCompletedNode] = useState<PathNodeData | null>(null);
   const [chestNode, setChestNode] = useState<PathNodeData | null>(null);
   const toast = useToast();
   const { play: playSound } = useSoundEffects();
@@ -161,13 +166,52 @@ export default function JourneyMapContainer(): React.JSX.Element {
     useJourneyAuthGate();
   const { guestProgress, recordGuestNodeCompletion } = useGuestProgress();
 
-  // Multi-journey data pipeline: fetch → merge → set atoms
+  // ── Section-based lazy loading (Phase C) ──
   const {
     isLoading,
     error: dataError,
-    isOfflineFallback,
+    isOfflineFallback: _isOfflineFallback,
+    isSwitchingSection,
+    sectionMap,
+    sectionList,
+    activeNodeId: _sectionActiveNodeId,
+    loadSection,
     refresh,
-  } = useJourneyData(journeySlug);
+    wasVersionInvalidated,
+    resetVersionInvalidated,
+  } = useSectionData(journeySlug);
+
+  // D4: Show toast when journey template was updated (cache invalidated)
+  useEffect(() => {
+    if (wasVersionInvalidated) {
+      toast.show({
+        id: "journey-version-updated",
+        placement: "top",
+        render: () => (
+          <Toast action="info">
+            <ToastTitle>Journey updated — loading latest content</ToastTitle>
+          </Toast>
+        ),
+      });
+      resetVersionInvalidated();
+    }
+  }, [wasVersionInvalidated, toast, resetVersionInvalidated]);
+
+  // Lazy node content fetcher (on-demand when user taps a node)
+  const {
+    content: _nodeContent,
+    isLoading: isNodeContentLoading,
+    error: _nodeContentError,
+    fetchContent: fetchNodeContent,
+    clearContent: _clearNodeContent,
+  } = useNodeContent();
+
+  // D5: Proactive prefetching — next section at 80%, next 1-2 node contents
+  useSectionPrefetch({
+    slug: journeySlug,
+    sectionMap,
+    enabled: !isLoading && !isSwitchingSection,
+  });
 
   // Clear switching state once loading finishes for the new slug
   useEffect(() => {
@@ -191,21 +235,41 @@ export default function JourneyMapContainer(): React.JSX.Element {
   useEnrollmentProgressSync();
   const currentUnit = useAtomValue(currentUnitAtom);
   const stats = useAtomValue(journeyStatsAtom);
-  const enrollmentId = useAtomValue(enrollmentIdAtom);
+
+  // Bridge: sync section map → journeyStateAtom so existing FlashList + UI works
+  useEffect(() => {
+    if (sectionMap) {
+      const bridgedState: JourneyState = sectionMapToJourneyState(
+        sectionMap,
+        stats,
+      );
+      setJourneyState(bridgedState);
+    }
+  }, [sectionMap, stats, setJourneyState]);
+
+  const enrollmentIdFromAtom: string | null = useAtomValue(enrollmentIdAtom);
+  const enrollmentId: string | null =
+    sectionMap?.enrollment?.id ?? enrollmentIdFromAtom;
   // Granular selectors — preserve referential equality for unchanged slices
   const currentUnitIndex: number = useAtomValue(currentUnitIndexAtom);
   const allUnitsRaw: UnitData[] = useAtomValue(unitsAtom);
   const journeyTemplate = useAtomValue(journeyTemplateAtom);
-  const journeyTitle: string = journeyTemplate?.title ?? "Journey Overview";
+  const journeyTitle: string =
+    sectionMap?.journey.title ?? journeyTemplate?.title ?? "Journey Overview";
 
   const unitCompletedCounts: Record<string, number> = useMemo(() => {
     const counts: Record<string, number> = {};
     if (!journeyState?.units) return counts;
 
     journeyState.units.forEach((unit: UnitData) => {
-      counts[unit.id] = unit.nodes.filter(
-        (n) => n.status === NodeStatus.COMPLETED,
+      if (!unit || !unit.nodes) return;
+      const completed: number = unit.nodes.filter(
+        (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
       ).length;
+      // Key by unit.id (UUID) for FlashList pipeline
+      counts[unit.id] = completed;
+      // Key by section_${unitNumber} for SectionOverviewSheet
+      counts[`section_${unit.unitNumber}`] = completed;
     });
     return counts;
   }, [journeyState?.units]);
@@ -360,11 +424,12 @@ export default function JourneyMapContainer(): React.JSX.Element {
     screenWidth: flashScreenWidth,
     activeNodeY: flashActiveNodeY,
     unitHeaders,
-  } = useJourneyFlashList(config, unitConfigMap, activeSectionConfig.unitIds);
+  } = useJourneyFlashList(config, unitConfigMap, activeSectionConfig?.unitIds ?? []);
 
   // Compute active node Y across all units for scroll-to-active (Old architecture only)
   const explicitActiveNodeY: number | null = useMemo(() => {
     for (const renderData of unitRenderData) {
+      if (!renderData?.unit?.nodes) continue;
       const activeIndex: number = renderData.unit.nodes.findIndex(
         (n: PathNodeData) => n.status === NodeStatus.ACTIVE,
       );
@@ -404,11 +469,13 @@ export default function JourneyMapContainer(): React.JSX.Element {
   // ── Compute total completed count across ALL units (for guest gate) ──
   const totalCompletedCount: number = useMemo(() => {
     return allUnitsRaw.reduce(
-      (acc: number, unit: UnitData) =>
-        acc +
-        unit.nodes.filter(
-          (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
-        ).length,
+      (acc: number, unit: UnitData) => {
+        if (!unit || !unit.nodes) return acc;
+        return acc +
+          unit.nodes.filter(
+            (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
+          ).length;
+      },
       0,
     );
   }, [allUnitsRaw]);
@@ -416,6 +483,29 @@ export default function JourneyMapContainer(): React.JSX.Element {
   // ── Node press handlers by status (wrapped with interaction lock — Task 5.1.3) ──
   const handleNodePressInner = useCallback(
     (node: PathNodeData): void => {
+      // ── Phase C: Check canInteract from section map (preview mode gate) ──
+      // If the section is non-interactive, show a toast instead of allowing tap
+      const nodeStub: NodeStub | undefined = sectionMap?.section.nodes.find(
+        (n: NodeStub) => n.id === node.id,
+      );
+      if (nodeStub && !nodeStub.canInteract) {
+        playSound("lockedTap");
+        const currentSection: number =
+          sectionMap?.enrollment?.currentUnitNumber ?? 1;
+        toast.show({
+          id: `preview-${node.id}`,
+          placement: "bottom",
+          render: () => (
+            <Toast action="warning">
+              <ToastTitle>
+                Complete Section {currentSection} trophy to unlock
+              </ToastTitle>
+            </Toast>
+          ),
+        });
+        return;
+      }
+
       // ── P1.6.1: Guest gate ──
       // Guests may access up to GUEST_FREE_NODE_LIMIT nodes.
       // ACTIVE nodes beyond the limit are blocked and prompt sign-up.
@@ -440,16 +530,80 @@ export default function JourneyMapContainer(): React.JSX.Element {
       switch (node.status) {
         case NodeStatus.ACTIVE:
           playSound("nodeTap");
-          router.push({
-            pathname: `/tabs/screens/task/[id]`,
-            params: { id: node.taskId, nodeId: node.id },
-          } as never);
+          // Lazy-fetch node content before navigating
+          fetchNodeContent(node.id)
+            .then((result: NodeContentResponse | null) => {
+              if (!result) {
+                toast.show({
+                  id: `fetch-error-${node.id}`,
+                  placement: "bottom",
+                  render: () => (
+                    <Toast action="error">
+                      <ToastTitle>
+                        Failed to load content. Please try again.
+                      </ToastTitle>
+                    </Toast>
+                  ),
+                });
+                return;
+              }
+              router.push({
+                pathname: `/tabs/screens/task/[id]`,
+                params: { id: node.taskId, nodeId: node.id },
+              } as never);
+            })
+            .catch(() => {
+              toast.show({
+                id: `fetch-error-${node.id}`,
+                placement: "bottom",
+                render: () => (
+                  <Toast action="error">
+                    <ToastTitle>
+                      Something went wrong. Please try again.
+                    </ToastTitle>
+                  </Toast>
+                ),
+              });
+            });
           break;
 
         case NodeStatus.COMPLETED:
           playSound("nodeTap");
-          setCompletedNode(node);
-          completionModalRef.current?.present();
+          // Lazy-fetch content and open in review mode (read-only)
+          fetchNodeContent(node.id)
+            .then((result: NodeContentResponse | null) => {
+              if (!result) {
+                toast.show({
+                  id: `fetch-error-${node.id}`,
+                  placement: "bottom",
+                  render: () => (
+                    <Toast action="error">
+                      <ToastTitle>
+                        Failed to load content. Please try again.
+                      </ToastTitle>
+                    </Toast>
+                  ),
+                });
+                return;
+              }
+              router.push({
+                pathname: `/tabs/screens/task/[id]`,
+                params: { id: node.taskId, nodeId: node.id, mode: "review" },
+              } as never);
+            })
+            .catch(() => {
+              toast.show({
+                id: `fetch-error-${node.id}`,
+                placement: "bottom",
+                render: () => (
+                  <Toast action="error">
+                    <ToastTitle>
+                      Something went wrong. Please try again.
+                    </ToastTitle>
+                  </Toast>
+                ),
+              });
+            });
           break;
 
         case NodeStatus.LOCKED:
@@ -473,6 +627,8 @@ export default function JourneyMapContainer(): React.JSX.Element {
       canAccessNode,
       totalCompletedCount,
       showSignUpPrompt,
+      sectionMap,
+      fetchNodeContent,
     ],
   );
 
@@ -482,6 +638,9 @@ export default function JourneyMapContainer(): React.JSX.Element {
   );
 
   // ── Action dispatchers (used by child flows returning from task screen) ──
+  // TODO: Wire handleCompleteNode and handleUpdateProgress to the task renderer
+  // via a context provider or navigation params so the task screen can call them
+  // on node completion / progress updates. Currently defined but not passed down.
   const handleCompleteNode = useCallback(
     async (nodeId: string): Promise<void> => {
       playSound("nodeComplete");
@@ -506,10 +665,46 @@ export default function JourneyMapContainer(): React.JSX.Element {
           console.warn(
             "[JourneyMapContainer] Server completion failed, will sync on next refresh",
           );
-          // Optimistic state already saved to AsyncStorage by useJourneyData
         } else {
-          // Re-fetch to sync server-granted rewards
+          // Re-fetch section to sync server-granted rewards & updated progress
           await refresh();
+
+          // Phase C: Check if this was a trophy node → auto-load next section
+          const completedStub: NodeStub | undefined =
+            sectionMap?.section.nodes.find((n: NodeStub) => n.id === nodeId);
+          if (completedStub?.isTrophy && sectionMap) {
+            const nextUnitNumber: number = sectionMap.section.unitNumber + 1;
+            if (nextUnitNumber <= sectionMap.journey.totalSections) {
+              // Small delay for celebration animation to play
+              setTimeout(() => {
+                loadSection(nextUnitNumber);
+              }, 1200);
+            } else {
+              // Last trophy completed — journey is finished!
+              setTimeout(() => {
+                toast.show({
+                  id: "journey-complete",
+                  placement: "top",
+                  duration: 5000,
+                  render: () => (
+                    <Toast action="success">
+                      <ToastTitle>
+                        🎉 Journey complete! Congratulations!
+                      </ToastTitle>
+                    </Toast>
+                  ),
+                });
+                // Navigate to journey completion screen
+                router.push({
+                  pathname: "/tabs/screens/journey-complete",
+                  params: {
+                    slug: journeySlug ?? "",
+                    title: journeyTitle,
+                  },
+                } as never);
+              }, 1200);
+            }
+          }
         }
       } else {
         // Offline — optimistic state is saved, will sync when reconnected
@@ -524,11 +719,14 @@ export default function JourneyMapContainer(): React.JSX.Element {
       lockInteraction,
       isOnline,
       enrollmentId,
-      enqueue,
       refresh,
       isGuest,
       recordGuestNodeCompletion,
       journeySlug,
+      journeyTitle,
+      sectionMap,
+      loadSection,
+      toast,
     ],
   );
 
@@ -553,18 +751,25 @@ export default function JourneyMapContainer(): React.JSX.Element {
     [setJourneyState, isOnline, enrollmentId],
   );
 
-  const handleModalContinue = useCallback((): void => {
-    setCompletedNode(null);
-  }, []);
-
   const handleChestClaim = useCallback(
     (nodeId: string): void => {
       playSound("chestClaim");
       // Mark chest as completed and grant rewards
       setJourneyState((prev: JourneyState) => completeNode(prev, nodeId));
       setChestNode(null);
+
+      // Record guest progress locally (mirrors handleCompleteNode guest path)
+      if (isGuest) {
+        recordGuestNodeCompletion(nodeId, 10, journeySlug);
+      }
     },
-    [setJourneyState, playSound],
+    [
+      setJourneyState,
+      playSound,
+      isGuest,
+      recordGuestNodeCompletion,
+      journeySlug,
+    ],
   );
 
   // ── Unit completion detection ──
@@ -656,7 +861,8 @@ export default function JourneyMapContainer(): React.JSX.Element {
     }
   }, [flashActiveNodeIndex, jumpToSection, handleFlashListScrollToActive]);
 
-  const [isSectionOverviewOpen, setIsSectionOverviewOpen] = useState<boolean>(false);
+  const [isSectionOverviewOpen, setIsSectionOverviewOpen] =
+    useState<boolean>(false);
 
   // Guide-book press handler (opens section overview sheet)
   const handleGuidePress = useCallback((): void => {
@@ -666,6 +872,20 @@ export default function JourneyMapContainer(): React.JSX.Element {
   const handleSectionOverviewClose = useCallback((): void => {
     setIsSectionOverviewOpen(false);
   }, []);
+
+  const handleJumpToSection = useCallback(
+    (unitNumber: number): void => {
+      loadSection(unitNumber);
+      // Derive section ID from sectionList for local state
+      const target = sectionList.find(
+        (s: SectionListItem) => s.unitNumber === unitNumber,
+      );
+      if (target) {
+        setActiveSectionId(`section_${unitNumber}`);
+      }
+    },
+    [loadSection, sectionList],
+  );
 
   // ── Journey Switcher ──
   const { switcherItems, switchJourney, archiveJourney } = useMultiJourney();
@@ -725,13 +945,13 @@ export default function JourneyMapContainer(): React.JSX.Element {
     [unitRenderData],
   );
 
-  // Show skeleton on first load OR when actively switching journeys
-  if ((isLoading && !currentUnit) || isSwitchingJourney) {
+  // Show skeleton on first load, switching journeys, or switching sections
+  if ((isLoading && !sectionMap) || isSwitchingJourney || isSwitchingSection) {
     return <JourneyLoadingSkeleton />;
   }
 
   // Hard error with nothing to render at all
-  if (dataError && !currentUnit) {
+  if (dataError && !sectionMap) {
     return (
       <JourneyErrorState
         message={dataError}
@@ -740,12 +960,13 @@ export default function JourneyMapContainer(): React.JSX.Element {
     );
   }
 
-  // Safety guard
-  if (!currentUnit) {
+  // Fallback: sectionMap loaded but no unit data — show retry
+  if (!sectionMap || !currentUnit) {
     return (
-      <View className="flex-1 bg-gray-50">
-        <Text>No unit found</Text>
-      </View>
+      <JourneyErrorState
+        message={dataError ?? "Could not load journey data. Please try again."}
+        onRetry={refresh}
+      />
     );
   }
 
@@ -768,7 +989,11 @@ export default function JourneyMapContainer(): React.JSX.Element {
           scrollDirection={scrollDirection}
           onScrollToActive={() => handleFlashListScrollToActive()}
           onJumpToUnit={handleFlashListJumpToUnit}
-          listRef={flashListRef}
+          listRef={
+            flashListRef as unknown as React.RefObject<
+              FlashListRef<JourneyFlashListItem>
+            >
+          }
           unitHeaders={unitHeaders}
           onGuidePress={handleGuidePress}
           onFlagPress={handleFlagPress}
@@ -797,11 +1022,6 @@ export default function JourneyMapContainer(): React.JSX.Element {
         />
       )}
       <Suspense fallback={null}>
-        <NodeCompletionModal
-          ref={completionModalRef}
-          node={completedNode}
-          onContinue={handleModalContinue}
-        />
         {chestNode && (
           <ChestRewardModal
             ref={chestModalRef}
@@ -826,7 +1046,9 @@ export default function JourneyMapContainer(): React.JSX.Element {
         onClose={handleSectionOverviewClose}
         currentUnitIndex={currentUnitIndex}
         unitCompletedCounts={unitCompletedCounts}
-        onJumpToSection={(sectionId) => router.setParams({ jumpToSection: sectionId })}
+        sectionList={sectionList}
+        currentSectionUnitNumber={sectionMap?.section.unitNumber ?? 1}
+        onJumpToSection={handleJumpToSection}
         journeyTitle={journeyTitle}
       />
       {/* Journey Switcher Bottom Sheet */}
@@ -838,6 +1060,20 @@ export default function JourneyMapContainer(): React.JSX.Element {
         onDiscoverPress={handleDiscoverPress}
         onArchive={handleArchiveJourney}
       />
+      {/* Loading overlay while fetching node content on tap */}
+      {isNodeContentLoading && (
+        <View className="absolute inset-0 items-center justify-center bg-black/20 z-50">
+          <View className="rounded-2xl bg-white px-6 py-4 items-center shadow-lg">
+            <ActivityIndicator
+              size="large"
+              color="#58CC02"
+            />
+            <RNText className="mt-2 text-sm font-medium text-gray-600">
+              Loading content…
+            </RNText>
+          </View>
+        </View>
+      )}
     </>
   );
 }

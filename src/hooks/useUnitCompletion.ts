@@ -40,28 +40,30 @@ export interface UnitCompletionData {
  * @param onComplete - callback fired once when the unit transitions to complete
  */
 export function useUnitCompletion(
-  unit: UnitData,
+  unit: UnitData | undefined,
   onComplete: () => void,
 ): UnitCompletionData {
   const prevCompleteRef = useRef<boolean>(false);
 
   const isUnitComplete: boolean = useMemo(() => {
-    if (unit.nodes.length === 0) return false;
+    if (!unit || !unit.nodes || unit.nodes.length === 0) return false;
     return unit.nodes.every(
-      (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
+      (n: PathNodeData) => n && n.status === NodeStatus.COMPLETED,
     );
-  }, [unit.nodes]);
+  }, [unit]);
 
   const xpEarned: number = useMemo(() => {
+    if (!unit || !unit.nodes) return 0;
     return unit.nodes.reduce((total: number, node: PathNodeData) => {
+      if (!node || !node.rewards) return total;
       const nodeXP: number = node.rewards.reduce(
         (sum: number, reward: JourneyReward) =>
-          reward.type === JourneyRewardType.XP ? sum + reward.amount : sum,
+          reward && reward.type === JourneyRewardType.XP ? sum + reward.amount : sum,
         0,
       );
       return total + nodeXP;
     }, 0);
-  }, [unit.nodes]);
+  }, [unit]);
 
   // Fire onComplete only on the transition false → true
   useEffect(() => {

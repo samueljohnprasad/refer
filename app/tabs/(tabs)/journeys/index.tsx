@@ -52,7 +52,7 @@ export default function JourneysTab(): React.JSX.Element {
     // Derive a stable transition key so the fade re-triggers on state changes
     const transitionKey: string = useMemo((): string => {
         if (isLoadingEnrollments || isCheckingStatus) return "loading";
-        if (hasEnrollments) return `map-${activeSlug ?? "default"}`;
+        if (hasEnrollments) return `map-${activeSlug ?? "anxiety-toolkit"}`;
         if (!hasCompletedOnboarding) return "onboarding";
         return "catalog";
     }, [

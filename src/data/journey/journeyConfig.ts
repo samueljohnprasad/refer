@@ -397,6 +397,10 @@ const MASCOT_MESSAGE_REGISTRY: Record<string, string> = {
 
 // ---------------------------------------------------------------------------
 // 4. Section Configs
+// @deprecated — Section metadata is now served by get_section_map RPC.
+// Kept for backward compatibility with JourneyConfigContext consumers
+// (SectionOverviewSheet, useJourneyFlashList, JourneyMapContainer).
+// Will be removed once those consumers are migrated to sectionMap atoms.
 // ---------------------------------------------------------------------------
 
 const SECTION_CONFIGS: SectionConfig[] = [
@@ -437,18 +441,10 @@ const SECTION_CONFIGS: SectionConfig[] = [
 
 // ---------------------------------------------------------------------------
 // 5. Unit Configs
+// @deprecated — Unit metadata + node stubs are now served by get_section_map RPC.
+// Kept for backward compatibility with JourneyConfigContext consumers.
+// Will be removed once those consumers are migrated to sectionMap atoms.
 // ---------------------------------------------------------------------------
-
-const generateTestNodes = (count: number): any[] => {
-    const variants = ["star", "checkpoint", "gamepad", "microphone", "video"];
-    const types = ["thought_reframing", "journal_prompt", "mood_check_in", "thought_catcher", "voice_journal"];
-
-    return Array.from({ length: count }).map((_, i) => ({
-        variantKey: variants[i % variants.length],
-        taskId: `task_generated_${i}`,
-        taskType: types[i % types.length],
-    }));
-};
 
 const UNIT_CONFIGS: UnitConfig[] = [
     {

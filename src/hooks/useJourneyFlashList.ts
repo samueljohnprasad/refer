@@ -12,27 +12,27 @@
  * Keeps all FlashList data prep in one place — container stays clean.
  */
 
-import { useEffect, useMemo } from 'react';
-import { useWindowDimensions } from 'react-native';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useEffect, useMemo } from "react";
+import { useWindowDimensions } from "react-native";
+import { useAtomValue, useSetAtom } from "jotai";
 
 import type {
     JourneyFlashListItem,
     JourneyNode,
+    JourneyDividerItem,
     JourneyConfig,
     UnitData,
     UnitConfig,
-    SectionConfig,
-} from '@/src/types/journey';
-import { NodeStatus } from '@/src/types/journey';
+} from "@/src/types/journey";
+import { NodeStatus } from "@/src/types/journey";
 import {
     journeyFlashListAtom,
     activeFlashListIndexAtom,
     journeyStateAtom,
     unitsAtom,
-} from '@/src/store/journeyStore';
-import { buildJourneyNodes } from '@/src/utils/journey/buildJourneyNodes';
-import type { BuildJourneyNodesInput } from '@/src/utils/journey/buildJourneyNodes';
+} from "@/src/store/journeyStore";
+import { buildJourneyNodes } from "@/src/utils/journey/buildJourneyNodes";
+import type { BuildJourneyNodesInput } from "@/src/utils/journey/buildJourneyNodes";
 
 // ---------------------------------------------------------------------------
 // Return type
@@ -103,20 +103,24 @@ export function useJourneyFlashList(
             const unitConf = unitConfigMap.get(unit.id);
             if (!unitConf) return;
 
-            // Find section number
-            const section = config.sections.find((sec: SectionConfig) =>
-                sec.unitIds.includes(unit.id)
-            );
+            // In the lazy section architecture, unitNumber == sectionNumber
+            const sectionNumber: number = unitConf.unitNumber;
 
             // For the first unit, start at Y=0. For others, include divider and mascot heights
             // Actually, we can just scan flashListData to find the exact Y offset of the first item of this unit.
             let yOffset = 0;
             let currentY = 0;
             const firstItemOfUnit = flashListData.find((item) => {
-                if (item.itemType === 'node' && (item as JourneyNode).unitId === unit.id) {
+                if (
+                    item.itemType === "node" &&
+                    (item as JourneyNode).unitId === unit.id
+                ) {
                     return true;
                 }
-                if (item.itemType === 'divider' && (item as any).targetUnitId === unit.id) {
+                if (
+                    item.itemType === "divider" &&
+                    (item as JourneyDividerItem).targetUnitId === unit.id
+                ) {
                     return true;
                 }
                 // Mascot has ID prefix 'mascot_UNITID_'
@@ -129,14 +133,14 @@ export function useJourneyFlashList(
                 unitId: unit.id,
                 unitNumber: unitConf.unitNumber,
                 unitTitle: unitConf.title,
-                sectionNumber: section?.sectionNumber ?? 1,
+                sectionNumber,
                 colorThemeKey: unitConf.colorThemeKey,
                 yOffset,
             });
         });
 
         return headers;
-    }, [allUnits, unitConfigMap, config.sections, flashListData]);
+    }, [allUnits, unitConfigMap, flashListData]);
 
     // Push to atom so other components/atoms can derive from it
     useEffect(() => {
@@ -146,14 +150,16 @@ export function useJourneyFlashList(
     // Derive the active node's globalIndex for path segment coloring
     const activeGlobalIndex: number = useMemo(() => {
         if (activeNodeIndex < 0) return -1;
-        const item: JourneyFlashListItem | undefined = flashListData[activeNodeIndex];
-        if (!item || item.itemType !== 'node') return -1;
+        const item: JourneyFlashListItem | undefined =
+            flashListData[activeNodeIndex];
+        if (!item || item.itemType !== "node") return -1;
         return (item as JourneyNode).globalIndex;
     }, [flashListData, activeNodeIndex]);
 
     // Calculate the actual Y position of the active node for scroll-to-active calculation
     const activeNodeY: number | null = useMemo(() => {
-        if (activeNodeIndex < 0 || activeNodeIndex >= flashListData.length) return null;
+        if (activeNodeIndex < 0 || activeNodeIndex >= flashListData.length)
+            return null;
         let y = 0;
         for (let i = 0; i < activeNodeIndex; i++) {
             y += flashListData[i].cellHeight;

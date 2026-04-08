@@ -9,12 +9,12 @@
  * 4. Derive node statuses (LOCKED / ACTIVE / COMPLETED)
  * 5. Expose actions: startJourney, getNodeContent
  *
- * Designed to work alongside the existing useJourneyData hook.
- * This hook focuses on mental health content; the existing hook handles
+ * Designed to work alongside the useSectionData hook (previously useJourneyData).
+ * This hook focuses on mental health content; the section data hook handles
  * the journey map rendering state (Jotai atoms, PathNodeData, etc.).
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type {
     MentalHealthTemplateNode,
@@ -22,9 +22,9 @@ import type {
     IPTotals,
     NodeContent,
     UserNodeCompletion,
-} from '@/src/types/journey/mentalHealth';
-import type { UserJourneyProgress } from '@/src/types/journey/progress';
-import { NodeStatus } from '@/src/types/journey/enums';
+} from "@/src/types/journey/mentalHealth";
+import type { UserJourneyProgress } from "@/src/types/journey/progress";
+import { NodeStatus } from "@/src/types/journey/enums";
 import {
     fetchMHJourneyTemplate,
     fetchMHJourneyCatalog,
@@ -33,16 +33,16 @@ import {
     fetchJourneyCompletions,
     type MHJourneyTemplate,
     type MHTemplateUnit,
-} from '@/src/lib/api/mentalHealthJourneyApi';
-import { fetchUserProgress, enrollInJourney } from '@/src/lib/api/journeyApi';
-import { useNetworkStatus } from '@/src/hooks/useNetworkStatus';
+} from "@/src/lib/api/mentalHealthJourneyApi";
+import { fetchUserProgress, enrollInJourney } from "@/src/lib/api/journeyApi";
+import { useNetworkStatus } from "@/src/hooks/useNetworkStatus";
 
 // ============================================================================
 // Types
 // ============================================================================
 
 /** Status of a node derived from user progress */
-export type DerivedNodeStatus = 'locked' | 'active' | 'completed';
+export type DerivedNodeStatus = "locked" | "active" | "completed";
 
 /** A node with its derived status and content — ready for renderers */
 export interface MHNodeWithStatus {
@@ -150,7 +150,8 @@ function deriveNodeStatuses(
         }
     }
 
-    const currentUnitNumber: number = userProgress?.enrollment.currentUnitNumber ?? 1;
+    const currentUnitNumber: number =
+        userProgress?.enrollment.currentUnitNumber ?? 1;
     let foundCurrentNode: boolean = false;
 
     return template.units.map((unit: MHTemplateUnit): MHSectionWithProgress => {
@@ -158,23 +159,29 @@ function deriveNodeStatuses(
 
         const nodesWithStatus: MHNodeWithStatus[] = unit.nodes.map(
             (node: MentalHealthTemplateNode): MHNodeWithStatus => {
-                let status: DerivedNodeStatus = 'locked';
+                let status: DerivedNodeStatus = "locked";
 
                 if (isUnitLocked) {
-                    status = 'locked';
+                    status = "locked";
                 } else {
                     const progressStatus: string | undefined = nodeStatusMap.get(node.id);
-                    if (progressStatus === NodeStatus.COMPLETED || progressStatus === 'completed') {
-                        status = 'completed';
-                    } else if (progressStatus === NodeStatus.ACTIVE || progressStatus === 'active') {
-                        status = 'active';
+                    if (
+                        progressStatus === NodeStatus.COMPLETED ||
+                        progressStatus === "completed"
+                    ) {
+                        status = "completed";
+                    } else if (
+                        progressStatus === NodeStatus.ACTIVE ||
+                        progressStatus === "active"
+                    ) {
+                        status = "active";
                     } else if (!foundCurrentNode && !isUnitLocked) {
                         // First node without progress in an unlocked unit = active
-                        status = 'active';
+                        status = "active";
                     }
                 }
 
-                const isCurrent: boolean = status === 'active' && !foundCurrentNode;
+                const isCurrent: boolean = status === "active" && !foundCurrentNode;
                 if (isCurrent) {
                     foundCurrentNode = true;
                 }
@@ -190,7 +197,7 @@ function deriveNodeStatuses(
         );
 
         const completedCount: number = nodesWithStatus.filter(
-            (n: MHNodeWithStatus) => n.status === 'completed',
+            (n: MHNodeWithStatus) => n.status === "completed",
         ).length;
 
         return {
@@ -220,7 +227,9 @@ export function useJourneyMentalHealth(
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [template, setTemplate] = useState<MHJourneyTemplate | null>(null);
-    const [userProgress, setUserProgress] = useState<UserJourneyProgress | null>(null);
+    const [userProgress, setUserProgress] = useState<UserJourneyProgress | null>(
+        null,
+    );
     const [streak, setStreak] = useState<UserStreak | null>(null);
     const [ipTotals, setIpTotals] = useState<IPTotals>(DEFAULT_IP_TOTALS);
     const [completions, setCompletions] = useState<UserNodeCompletion[]>([]);
@@ -249,12 +258,11 @@ export function useJourneyMentalHealth(
         if (!template) return DEFAULT_PROGRESS;
 
         const completedNodes: number = allNodes.filter(
-            (n: MHNodeWithStatus) => n.status === 'completed',
+            (n: MHNodeWithStatus) => n.status === "completed",
         ).length;
         const totalNodes: number = allNodes.length;
-        const progressPercent: number = totalNodes > 0
-            ? Math.round((completedNodes / totalNodes) * 100)
-            : 0;
+        const progressPercent: number =
+            totalNodes > 0 ? Math.round((completedNodes / totalNodes) * 100) : 0;
         const currentSectionIndex: number = sections.findIndex(
             (s: MHSectionWithProgress) => !s.isComplete && !s.isLocked,
         );
@@ -277,7 +285,7 @@ export function useJourneyMentalHealth(
                 // 1. Fetch template
                 const templateRes = await fetchMHJourneyTemplate(journeySlug);
                 if (!templateRes.success || !templateRes.data) {
-                    setError(templateRes.error ?? 'Failed to load journey');
+                    setError(templateRes.error ?? "Failed to load journey");
                     setIsLoading(false);
                     return;
                 }
@@ -308,13 +316,15 @@ export function useJourneyMentalHealth(
                 }
 
                 // 4. Fetch completions for this journey
-                const completionsRes = await fetchJourneyCompletions(fetchedTemplate.id);
+                const completionsRes = await fetchJourneyCompletions(
+                    fetchedTemplate.id,
+                );
                 if (completionsRes.success) {
                     setCompletions(completionsRes.data);
                 }
             } catch (err) {
-                console.error('[useJourneyMentalHealth] Unexpected error:', err);
-                setError(err instanceof Error ? err.message : 'Unknown error');
+                console.error("[useJourneyMentalHealth] Unexpected error:", err);
+                setError(err instanceof Error ? err.message : "Unknown error");
             } finally {
                 setIsLoading(false);
             }
@@ -351,10 +361,13 @@ export function useJourneyMentalHealth(
                 return true;
             }
 
-            console.warn('[useJourneyMentalHealth] Enrollment failed:', enrollRes.error);
+            console.warn(
+                "[useJourneyMentalHealth] Enrollment failed:",
+                enrollRes.error,
+            );
             return false;
         } catch (err) {
-            console.error('[useJourneyMentalHealth] startJourney error:', err);
+            console.error("[useJourneyMentalHealth] startJourney error:", err);
             return false;
         }
     }, [template, isOnline]);
@@ -378,7 +391,9 @@ export function useJourneyMentalHealth(
     /** Get a node with status by ID */
     const getNodeById = useCallback(
         (nodeId: string): MHNodeWithStatus | null => {
-            return allNodes.find((n: MHNodeWithStatus) => n.node.id === nodeId) ?? null;
+            return (
+                allNodes.find((n: MHNodeWithStatus) => n.node.id === nodeId) ?? null
+            );
         },
         [allNodes],
     );

@@ -112,6 +112,21 @@ export type {
 } from "./mentalHealth";
 
 // ---------------------------------------------------------------------------
+// Section Map Types (lazy-loaded architecture)
+// ---------------------------------------------------------------------------
+
+export type {
+  NodeStub,
+  SectionData,
+  SectionListItem,
+  SectionNodeProgress,
+  SectionEnrollment,
+  SectionJourneyMeta,
+  SectionMapResponse,
+  NodeContentResponse,
+} from "./sectionMap";
+
+// ---------------------------------------------------------------------------
 // Multi-Journey Enrollment Types
 // ---------------------------------------------------------------------------
 

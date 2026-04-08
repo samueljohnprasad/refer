@@ -34,7 +34,11 @@ import type {
   JourneySwitcherItem,
 } from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
-import { MOCK_JOURNEY_STATE } from "@/src/data/journey";
+import type {
+  SectionMapResponse,
+  SectionListItem,
+  NodeContentResponse,
+} from "@/src/types/journey/sectionMap";
 
 // ---------------------------------------------------------------------------
 // Storage keys
@@ -44,6 +48,11 @@ const JOURNEY_STATE_KEY = "@journey_state_v2";
 const JOURNEY_TEMPLATE_CACHE_KEY = "@journey_template_cache_v1";
 const ACTIVE_SLUG_KEY = "@journey_active_slug_v1";
 const MULTI_JOURNEY_STATE_KEY = "@multi_journey_state_v1";
+const SECTION_MAP_CACHE_KEY = "@section_map_cache_v1";
+const NODE_CONTENT_CACHE_KEY = "@node_content_cache_v1";
+
+/** Cache TTL: 24 hours in milliseconds */
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 // ---------------------------------------------------------------------------
 // Active journey slug
@@ -109,22 +118,38 @@ export const journeyProgressAtom = atom<UserJourneyProgress | null>(null);
 // Merged state atom (primary UI state)
 // ---------------------------------------------------------------------------
 
-/** Full merged JourneyState — the single source of truth for the UI */
-export const journeyStateAtom = atom<JourneyState>(MOCK_JOURNEY_STATE);
+/** Full merged JourneyState — the single source of truth for the UI.
+ * Initial value is empty — real data loaded by useSectionData hook
+ * (via sectionMapBridge). Previously populated by useJourneyData (deprecated). */
+export const journeyStateAtom = atom<JourneyState>({
+  units: [],
+  currentUnit: 0,
+  lastActiveNodeId: "",
+  stats: {
+    streakDays: 0,
+    wallet: {
+      coins: 0,
+      gems: 0,
+    },
+    hearts: 5,
+    totalXP: 0,
+  },
+});
 
 // ---------------------------------------------------------------------------
 // Derived atoms (read-only)
 // ---------------------------------------------------------------------------
 
 /** Current unit based on journeyState.currentUnit index */
-export const currentUnitAtom = atom<UnitData>((get) => {
+export const currentUnitAtom = atom<UnitData | undefined>((get) => {
   const state: JourneyState = get(journeyStateAtom);
   return state.units[state.currentUnit];
 });
 
 /** The currently active node (first node with ACTIVE status in current unit) */
 export const activeNodeAtom = atom<PathNodeData | null>((get) => {
-  const unit: UnitData = get(currentUnitAtom);
+  const unit: UnitData | undefined = get(currentUnitAtom);
+  if (!unit) return null;
   return (
     unit.nodes.find((n: PathNodeData) => n.status === NodeStatus.ACTIVE) ?? null
   );
@@ -138,7 +163,8 @@ export const journeyStatsAtom = atom<JourneyStats>((get) => {
 
 /** Count of completed nodes in current unit */
 export const completedCountAtom = atom<number>((get) => {
-  const unit: UnitData = get(currentUnitAtom);
+  const unit: UnitData | undefined = get(currentUnitAtom);
+  if (!unit) return 0;
   return unit.nodes.filter(
     (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
   ).length;
@@ -437,5 +463,193 @@ export async function clearMultiJourneyState(): Promise<void> {
     await AsyncStorage.removeItem(MULTI_JOURNEY_STATE_KEY);
   } catch (error) {
     console.error("[JourneyStore] Failed to clear multi-journey state:", error);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Section Map: Atoms (lazy-loaded architecture)
+// ---------------------------------------------------------------------------
+
+/** Current section map response — the active section being viewed */
+export const currentSectionMapAtom = atom<SectionMapResponse | null>(null);
+
+/** Section list for sticky header tabs — derived from section map */
+export const sectionListAtom = atom<SectionListItem[]>(
+  (get): SectionListItem[] => {
+    const sectionMap: SectionMapResponse | null = get(currentSectionMapAtom);
+    return sectionMap?.sectionList ?? [];
+  },
+);
+
+/** Active node ID within the current section — derived from progress */
+export const activeSectionNodeIdAtom = atom<string | null>(
+  (get): string | null => {
+    const sectionMap: SectionMapResponse | null = get(currentSectionMapAtom);
+    if (!sectionMap) return null;
+
+    const activeProgress = sectionMap.progress.find(
+      (p) => p.status === "active",
+    );
+    return activeProgress?.nodeId ?? null;
+  },
+);
+
+/** In-memory cache of visited sections (avoids re-fetch on back/forward nav) */
+export const sectionCacheAtom = atom<Map<number, SectionMapResponse>>(
+  new Map(),
+);
+
+// ---------------------------------------------------------------------------
+// Section Map: AsyncStorage Cache Persistence
+// ---------------------------------------------------------------------------
+
+/** Cached section map envelope with TTL */
+interface CachedSectionMap {
+  data: SectionMapResponse;
+  version: number;
+  cachedAt: number;
+}
+
+/** Cached node content envelope with TTL */
+interface CachedNodeContent {
+  data: NodeContentResponse;
+  cachedAt: number;
+}
+
+/**
+ * Build the AsyncStorage key for a section map cache entry.
+ */
+function sectionCacheKey(slug: string, unitNumber: number): string {
+  return `${SECTION_MAP_CACHE_KEY}_${slug}_${unitNumber}`;
+}
+
+/**
+ * Build the AsyncStorage key for a node content cache entry.
+ */
+function nodeContentCacheKey(nodeId: string): string {
+  return `${NODE_CONTENT_CACHE_KEY}_${nodeId}`;
+}
+
+/**
+ * Cache a section map response to AsyncStorage.
+ * Includes version and timestamp for TTL-based invalidation.
+ */
+export async function cacheSectionMap(
+  slug: string,
+  unitNumber: number,
+  data: SectionMapResponse,
+): Promise<void> {
+  try {
+    const envelope: CachedSectionMap = {
+      data,
+      version: data.journey.version,
+      cachedAt: Date.now(),
+    };
+    const key: string = sectionCacheKey(slug, unitNumber);
+    await AsyncStorage.setItem(key, JSON.stringify(envelope));
+  } catch (error: unknown) {
+    console.error("[JourneyStore] Failed to cache section map:", error);
+  }
+}
+
+/**
+ * Load a cached section map from AsyncStorage.
+ * Returns null if expired (>24h), version mismatch, or not found.
+ *
+ * @param expectedVersion - If provided, invalidate cache if version differs
+ */
+export async function loadCachedSectionMap(
+  slug: string,
+  unitNumber: number,
+  expectedVersion?: number,
+): Promise<SectionMapResponse | null> {
+  try {
+    const key: string = sectionCacheKey(slug, unitNumber);
+    const raw: string | null = await AsyncStorage.getItem(key);
+    if (!raw) return null;
+
+    const envelope: CachedSectionMap = JSON.parse(raw) as CachedSectionMap;
+
+    // TTL check
+    if (Date.now() - envelope.cachedAt > CACHE_TTL_MS) {
+      await AsyncStorage.removeItem(key);
+      return null;
+    }
+
+    // Version mismatch check
+    if (expectedVersion !== undefined && envelope.version !== expectedVersion) {
+      await AsyncStorage.removeItem(key);
+      return null;
+    }
+
+    return envelope.data;
+  } catch (error: unknown) {
+    console.error("[JourneyStore] Failed to load cached section map:", error);
+    return null;
+  }
+}
+
+/**
+ * Cache node content to AsyncStorage.
+ */
+export async function cacheNodeContent(
+  nodeId: string,
+  data: NodeContentResponse,
+): Promise<void> {
+  try {
+    const envelope: CachedNodeContent = {
+      data,
+      cachedAt: Date.now(),
+    };
+    const key: string = nodeContentCacheKey(nodeId);
+    await AsyncStorage.setItem(key, JSON.stringify(envelope));
+  } catch (error: unknown) {
+    console.error("[JourneyStore] Failed to cache node content:", error);
+  }
+}
+
+/**
+ * Load cached node content from AsyncStorage.
+ * Returns null if expired (>24h) or not found.
+ */
+export async function loadCachedNodeContent(
+  nodeId: string,
+): Promise<NodeContentResponse | null> {
+  try {
+    const key: string = nodeContentCacheKey(nodeId);
+    const raw: string | null = await AsyncStorage.getItem(key);
+    if (!raw) return null;
+
+    const envelope: CachedNodeContent = JSON.parse(raw) as CachedNodeContent;
+
+    // TTL check
+    if (Date.now() - envelope.cachedAt > CACHE_TTL_MS) {
+      await AsyncStorage.removeItem(key);
+      return null;
+    }
+
+    return envelope.data;
+  } catch (error: unknown) {
+    console.error("[JourneyStore] Failed to load cached node content:", error);
+    return null;
+  }
+}
+
+/**
+ * Invalidate all cached section maps for a journey.
+ * Called when template version changes.
+ */
+export async function invalidateSectionCaches(
+  slug: string,
+  totalSections: number,
+): Promise<void> {
+  try {
+    const keys: string[] = Array.from(
+      { length: totalSections },
+      (_: unknown, i: number): string => sectionCacheKey(slug, i + 1),
+    );
+    await AsyncStorage.multiRemove(keys);
+  } catch (error: unknown) {
+    console.error("[JourneyStore] Failed to invalidate section caches:", error);
   }
 }

@@ -3,8 +3,8 @@
  * TanStack Query hooks for journey mutations — complete node, update progress.
  * Provides optimistic updates and automatic rollback on failure.
  *
- * NOTE: Journey state loading is now handled by useJourneyData (Jotai-based).
- * This file only exposes mutation hooks used for write operations.
+ * NOTE: Journey state loading is now handled by useSectionData (Jotai-based).
+ * useJourneyData is deprecated. This file only exposes mutation hooks for write operations.
  */
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";

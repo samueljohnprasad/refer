@@ -1,5 +1,3 @@
-
-
 /**
  * Journey Data Module
  * Barrel export for all journey data: config, constants, factories, and registries.
@@ -26,10 +24,3 @@ export {
 
 // Factory functions for DRY node creation (legacy — prefer configResolver)
 export { createNode, createNodeSequence } from "./nodeFactory";
-
-// Mock data (legacy — prefer config-driven resolution)
-export { UNIT_1, UNIT_2, UNIT_3, MOCK_UNITS } from "./mockUnits";
-export { MOCK_JOURNEY_STATE } from "./mockState";
-
-
-

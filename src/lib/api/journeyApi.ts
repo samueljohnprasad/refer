@@ -9,17 +9,20 @@
  * Falls back to mock data when Supabase calls fail (dev/offline).
  */
 
-import { supabase } from '@/src/network/auth/supabase';
-import { MOCK_JOURNEY_STATE } from '@/src/data/journey';
-import type { JourneyState } from '@/src/types/journey/state';
+import { supabase } from "@/src/network/auth/supabase";
+import type { JourneyState } from "@/src/types/journey/state";
 import type {
   JourneyTemplate,
   JourneyListItem,
-} from '@/src/types/journey/template';
+} from "@/src/types/journey/template";
 import type {
   UserJourneyProgress,
   CompleteNodeResponse,
-} from '@/src/types/journey/progress';
+} from "@/src/types/journey/progress";
+import type {
+  SectionMapResponse,
+  NodeContentResponse,
+} from "@/src/types/journey/sectionMap";
 
 // ---------------------------------------------------------------------------
 // Response wrapper
@@ -64,22 +67,22 @@ export async function fetchJourneyTemplate(
   slug: string,
 ): Promise<ApiResponse<JourneyTemplate | null>> {
   try {
-    const { data, error } = await supabase.rpc('get_journey_template', {
+    const { data, error } = await supabase.rpc("get_journey_template", {
       p_slug: slug,
     });
 
     if (error) {
-      console.error('[JourneyAPI] fetchJourneyTemplate error:', error.message);
+      console.error("[JourneyAPI] fetchJourneyTemplate error:", error.message);
       return { data: null, success: false, error: error.message };
     }
 
     return { data: data as unknown as JourneyTemplate, success: true };
   } catch (err) {
-    console.error('[JourneyAPI] fetchJourneyTemplate exception:', err);
+    console.error("[JourneyAPI] fetchJourneyTemplate exception:", err);
     return {
       data: null,
       success: false,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message : "Unknown error",
     };
   }
 }
@@ -96,12 +99,12 @@ export async function fetchUserProgress(
   journeyId: string,
 ): Promise<ApiResponse<UserJourneyProgress | null>> {
   try {
-    const { data, error } = await supabase.rpc('get_user_journey_progress', {
+    const { data, error } = await supabase.rpc("get_user_journey_progress", {
       p_journey_id: journeyId,
     });
 
     if (error) {
-      console.error('[JourneyAPI] fetchUserProgress error:', error.message);
+      console.error("[JourneyAPI] fetchUserProgress error:", error.message);
       return { data: null, success: false, error: error.message };
     }
 
@@ -112,11 +115,11 @@ export async function fetchUserProgress(
 
     return { data: data as unknown as UserJourneyProgress, success: true };
   } catch (err) {
-    console.error('[JourneyAPI] fetchUserProgress exception:', err);
+    console.error("[JourneyAPI] fetchUserProgress exception:", err);
     return {
       data: null,
       success: false,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message : "Unknown error",
     };
   }
 }
@@ -130,15 +133,15 @@ export async function updateNodeProgress(
 ): Promise<ApiResponse<{ nodeId: string; progress: number }>> {
   try {
     const { error } = await supabase
-      .from('user_node_progress')
+      .from("user_node_progress")
       .update({
         progress: payload.progress,
       })
-      .eq('enrollment_id', payload.enrollmentId)
-      .eq('node_id', payload.nodeId);
+      .eq("enrollment_id", payload.enrollmentId)
+      .eq("node_id", payload.nodeId);
 
     if (error) {
-      console.error('[JourneyAPI] updateNodeProgress error:', error.message);
+      console.error("[JourneyAPI] updateNodeProgress error:", error.message);
       return {
         data: { nodeId: payload.nodeId, progress: payload.progress },
         success: false,
@@ -151,11 +154,11 @@ export async function updateNodeProgress(
       success: true,
     };
   } catch (err) {
-    console.error('[JourneyAPI] updateNodeProgress exception:', err);
+    console.error("[JourneyAPI] updateNodeProgress exception:", err);
     return {
       data: { nodeId: payload.nodeId, progress: payload.progress },
       success: false,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message : "Unknown error",
     };
   }
 }
@@ -169,13 +172,13 @@ export async function completeNodeApi(
   payload: CompleteNodePayload,
 ): Promise<ApiResponse<CompleteNodeResponse>> {
   try {
-    const { data, error } = await supabase.rpc('complete_journey_node', {
+    const { data, error } = await supabase.rpc("complete_journey_node", {
       p_enrollment_id: payload.enrollmentId,
       p_node_id: payload.nodeId,
     });
 
     if (error) {
-      console.error('[JourneyAPI] completeNodeApi error:', error.message);
+      console.error("[JourneyAPI] completeNodeApi error:", error.message);
       return {
         data: { success: false, error: error.message },
         success: false,
@@ -188,14 +191,14 @@ export async function completeNodeApi(
       success: true,
     };
   } catch (err) {
-    console.error('[JourneyAPI] completeNodeApi exception:', err);
+    console.error("[JourneyAPI] completeNodeApi exception:", err);
     return {
       data: {
         success: false,
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message : "Unknown error",
       },
       success: false,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message : "Unknown error",
     };
   }
 }
@@ -212,52 +215,56 @@ export async function enrollInJourney(
   payload: EnrollPayload,
 ): Promise<ApiResponse<UserJourneyProgress | null>> {
   try {
-    const userId: string | undefined = (await supabase.auth.getUser()).data.user?.id;
+    const userId: string | undefined = (await supabase.auth.getUser()).data.user
+      ?.id;
     if (!userId) {
-      return { data: null, success: false, error: 'Not authenticated' };
+      return { data: null, success: false, error: "Not authenticated" };
     }
 
     // Insert enrollment
     const { data: enrollment, error: enrollError } = await supabase
-      .from('user_journey_enrollments')
+      .from("user_journey_enrollments")
       .insert({
         user_id: userId,
         journey_id: payload.journeyId,
         template_version: payload.templateVersion,
         current_unit_number: 1,
-        status: 'active',
+        status: "active",
       })
       .select()
       .single();
 
     if (enrollError) {
-      console.error('[JourneyAPI] enrollInJourney error:', enrollError.message);
+      console.error("[JourneyAPI] enrollInJourney error:", enrollError.message);
       return { data: null, success: false, error: enrollError.message };
     }
 
     // Insert first node as active
     const { error: nodeError } = await supabase
-      .from('user_node_progress')
+      .from("user_node_progress")
       .insert({
         user_id: userId,
         enrollment_id: enrollment.id,
         node_id: payload.firstNodeId,
-        status: 'active',
+        status: "active",
         progress: 0.0,
       });
 
     if (nodeError) {
-      console.error('[JourneyAPI] enrollInJourney node error:', nodeError.message);
+      console.error(
+        "[JourneyAPI] enrollInJourney node error:",
+        nodeError.message,
+      );
     }
 
     // Re-fetch the full progress to return a clean state
     return fetchUserProgress(payload.journeyId);
   } catch (err) {
-    console.error('[JourneyAPI] enrollInJourney exception:', err);
+    console.error("[JourneyAPI] enrollInJourney exception:", err);
     return {
       data: null,
       success: false,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message : "Unknown error",
     };
   }
 }
@@ -274,10 +281,10 @@ export async function fetchJourneyCatalog(): Promise<
   ApiResponse<JourneyListItem[]>
 > {
   try {
-    const { data, error } = await supabase.rpc('get_journey_catalog');
+    const { data, error } = await supabase.rpc("get_journey_catalog");
 
     if (error) {
-      console.error('[JourneyAPI] fetchJourneyCatalog error:', error.message);
+      console.error("[JourneyAPI] fetchJourneyCatalog error:", error.message);
       return { data: [], success: false, error: error.message };
     }
 
@@ -286,11 +293,97 @@ export async function fetchJourneyCatalog(): Promise<
       success: true,
     };
   } catch (err) {
-    console.error('[JourneyAPI] fetchJourneyCatalog exception:', err);
+    console.error("[JourneyAPI] fetchJourneyCatalog exception:", err);
     return {
       data: [],
       success: false,
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Section Map API (lazy-loaded section architecture)
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch a single section's node stubs + user progress.
+ * Content JSONB is excluded — fetched on-demand via fetchNodeContent.
+ *
+ * @param slug - Journey slug (e.g. 'anxiety-toolkit')
+ * @param unitNumber - Section number to fetch; undefined = user's current
+ */
+export async function fetchSectionMap(
+  slug: string,
+  unitNumber?: number,
+  signal?: AbortSignal,
+): Promise<ApiResponse<SectionMapResponse | null>> {
+  try {
+    const params: { p_slug: string; p_unit_number?: number } = {
+      p_slug: slug,
+    };
+    if (unitNumber !== undefined) {
+      params.p_unit_number = unitNumber;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let query = (supabase.rpc as any)("get_section_map", params);
+    if (signal) {
+      query = query.abortSignal(signal);
+    }
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("[JourneyAPI] fetchSectionMap error:", error.message);
+      return { data: null, success: false, error: error.message };
+    }
+
+    if (!data) {
+      return { data: null, success: true };
+    }
+
+    return { data: data as unknown as SectionMapResponse, success: true };
+  } catch (err: unknown) {
+    console.error("[JourneyAPI] fetchSectionMap exception:", err);
+    return {
+      data: null,
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}
+
+/**
+ * Fetch the full content JSONB for a single node.
+ * Called on-demand when user taps a node to start or review it.
+ *
+ * @param nodeId - UUID of the node to fetch content for
+ */
+export async function fetchNodeContent(
+  nodeId: string,
+): Promise<ApiResponse<NodeContentResponse | null>> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.rpc as any)("get_node_content", {
+      p_node_id: nodeId,
+    });
+
+    if (error) {
+      console.error("[JourneyAPI] fetchNodeContent error:", error.message);
+      return { data: null, success: false, error: error.message };
+    }
+
+    if (!data) {
+      return { data: null, success: true };
+    }
+
+    return { data: data as unknown as NodeContentResponse, success: true };
+  } catch (err: unknown) {
+    console.error("[JourneyAPI] fetchNodeContent exception:", err);
+    return {
+      data: null,
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
     };
   }
 }
@@ -302,12 +395,15 @@ export async function fetchJourneyCatalog(): Promise<
 /**
  * Fetch the full journey state using mock data.
  * @deprecated Use fetchJourneyTemplate + fetchUserProgress + mergeJourneyState instead.
+ * This function is no longer supported - mock data has been removed.
  */
 export async function fetchJourneyStateLegacy(): Promise<
   ApiResponse<JourneyState>
 > {
   return {
-    data: MOCK_JOURNEY_STATE,
-    success: true,
+    data: null as any,
+    success: false,
+    error:
+      "Legacy function deprecated - use fetchJourneyTemplate + fetchUserProgress instead",
   };
 }
