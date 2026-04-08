@@ -26,6 +26,7 @@ import {
     NodeIcon,
     MascotSide,
 } from "@/src/types/journey/enums";
+import { DEFAULT_JOURNEY_CONFIG } from "@/src/data/journey";
 
 // ---------------------------------------------------------------------------
 // Icon resolution (mirrors mergeJourneyState.ts logic)
@@ -49,6 +50,13 @@ function resolveIcon(nodeType: string, status: NodeStatus): NodeIcon {
         return COMPLETED_ICON_MAP[nodeType] ?? NodeIcon.CHECKMARK;
     }
     return ACTIVE_ICON_MAP[nodeType] ?? NodeIcon.STAR;
+}
+
+function resolveConfigUnitId(unitNumber: number, fallbackId: string): string {
+    const configUnit = DEFAULT_JOURNEY_CONFIG.units.find(
+        (unit) => unit.unitNumber === unitNumber,
+    );
+    return configUnit?.id ?? fallbackId;
 }
 
 // ---------------------------------------------------------------------------
@@ -128,7 +136,9 @@ export function sectionMapToUnitData(response: SectionMapResponse): UnitData {
         : [];
 
     return {
-        id: section.id,
+        // Keep the runtime unit aligned with the config-driven unit IDs so
+        // section filtering, FlashList layout, and header/theme lookups all work.
+        id: resolveConfigUnitId(section.unitNumber, section.id),
         unitNumber: section.unitNumber,
         title: section.title,
         description: section.description,

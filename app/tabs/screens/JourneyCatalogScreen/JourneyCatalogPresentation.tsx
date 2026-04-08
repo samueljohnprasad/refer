@@ -1,236 +1,167 @@
-/**
- * JourneyCatalogContainer (P1.2.1)
- * Container component — handles data fetching, state, and business logic.
- * No markup beyond composing the presentation child + bottom sheet.
- *
- * Data flow:
- * 1. fetchMHJourneyCatalog() → all published journeys with enrollment status
- * 2. useStreak() → current streak for banner
- * 3. useInsightPoints() → today IP for banner
- * 4. Category filtering (local state)
- * 5. Journey card press → open JourneyDetailSheet
- * 6. Start/Continue → navigate to journey map
- */
-
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
+import React from "react";
 import {
-    BottomSheetModal,
-    BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
-import { router } from "expo-router";
+    RefreshControl,
+    ScrollView,
+    View,
+    Pressable,
+} from "react-native";
 
+import { Text } from "@/components/ui/text";
+import JourneyCard from "@/src/components/journey/JourneyCard";
 import type {
-    MentalHealthJourneyListItem,
     JourneyCategory,
+    MentalHealthJourneyListItem,
 } from "@/src/types/journey/mentalHealth";
-import type { MHTemplateUnit } from "@/src/lib/api/mentalHealthJourneyApi";
-import {
-    fetchMHJourneyCatalog,
-    fetchMHJourneyTemplate,
-} from "@/src/lib/api/mentalHealthJourneyApi";
-import { useStreak } from "@/src/hooks/useStreak";
-import { useInsightPoints } from "@/src/hooks/useInsightPoints";
-import { useMultiJourney } from "@/src/hooks/useMultiJourney";
 
-import JourneyCatalogPresentation from "./JourneyCatalogPresentation";
-import JourneyDetailSheet from "@/src/components/journey/JourneyDetailSheet";
+export interface JourneyCatalogPresentationProps {
+    journeys: MentalHealthJourneyListItem[];
+    activeJourney: MentalHealthJourneyListItem | null;
+    selectedCategory: JourneyCategory | "all";
+    categories: Array<{ key: JourneyCategory | "all"; label: string }>;
+    currentStreak: number;
+    todayIP: number;
+    isLoading: boolean;
+    isRefreshing: boolean;
+    error: string | null;
+    onJourneyPress: (journey: MentalHealthJourneyListItem) => void;
+    onContinuePress: (journey: MentalHealthJourneyListItem) => void;
+    onCategoryChange: (category: JourneyCategory | "all") => void;
+    onRefresh: () => void;
+}
 
-// ============================================================================
-// Constants
-// ============================================================================
-
-const CATEGORIES: Array<{ key: JourneyCategory | "all"; label: string }> = [
-    { key: "all", label: "All" },
-    { key: "anxiety", label: "Anxiety" },
-    { key: "mood", label: "Mood" },
-    { key: "stress", label: "Stress" },
-    { key: "growth", label: "Growth" },
-    { key: "sleep", label: "Sleep" },
-    { key: "self_compassion", label: "Self-Compassion" },
-];
-
-// ============================================================================
-// Container
-// ============================================================================
-
-export default function JourneyCatalogContainer(): React.JSX.Element {
-    // ── State ──
-    const [allJourneys, setAllJourneys] = useState<MentalHealthJourneyListItem[]>(
-        [],
-    );
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-    const [selectedCategory, setSelectedCategory] = useState<
-        JourneyCategory | "all"
-    >("all");
-
-    // Detail sheet state
-    const [selectedJourney, setSelectedJourney] =
-        useState<MentalHealthJourneyListItem | null>(null);
-    const [detailSections, setDetailSections] = useState<MHTemplateUnit[]>([]);
-    const [detailSectionsLoading, setDetailSectionsLoading] =
-        useState<boolean>(false);
-    const detailSheetRef = useRef<BottomSheetModal>(null);
-
-    // ── Hooks ──
-    const { currentStreak } = useStreak();
-    const { todayIP } = useInsightPoints();
-    const { enrollInJourney, switchJourney } = useMultiJourney();
-
-    // ── Data fetching ──
-    const loadCatalog = useCallback(
-        async (showRefresh: boolean = false): Promise<void> => {
-            try {
-                if (showRefresh) {
-                    setIsRefreshing(true);
-                } else {
-                    setIsLoading(true);
-                }
-                setError(null);
-
-                const res = await fetchMHJourneyCatalog();
-                if (res.success) {
-                    setAllJourneys(res.data);
-                } else {
-                    setError(res.error ?? "Failed to load journeys");
-                }
-            } catch (err) {
-                console.error("[JourneyCatalog] loadCatalog error:", err);
-                setError(err instanceof Error ? err.message : "Unknown error");
-            } finally {
-                setIsLoading(false);
-                setIsRefreshing(false);
-            }
-        },
-        [],
-    );
-
-    useEffect(() => {
-        loadCatalog();
-    }, [loadCatalog]);
-
-    // ── Derived: filtered journeys ──
-    const filteredJourneys: MentalHealthJourneyListItem[] = useMemo(() => {
-        if (selectedCategory === "all") return allJourneys;
-        return allJourneys.filter(
-            (j: MentalHealthJourneyListItem) => j.category === selectedCategory,
-        );
-    }, [allJourneys, selectedCategory]);
-
-    // ── Derived: active journey (first in-progress) ──
-    const activeJourney: MentalHealthJourneyListItem | null = useMemo(() => {
-        return (
-            allJourneys.find(
-                (j: MentalHealthJourneyListItem) =>
-                    j.isEnrolled && j.enrollmentStatus === "active",
-            ) ?? null
-        );
-    }, [allJourneys]);
-
-    // ── Handlers ──
-
-    /** Open detail sheet for a journey */
-    const handleJourneyPress = useCallback(
-        async (journey: MentalHealthJourneyListItem): Promise<void> => {
-            setSelectedJourney(journey);
-            setDetailSections([]);
-            setDetailSectionsLoading(true);
-            detailSheetRef.current?.present();
-
-            // Fetch sections for the detail view
-            try {
-                const templateRes = await fetchMHJourneyTemplate(journey.slug);
-                if (templateRes.success && templateRes.data) {
-                    setDetailSections(templateRes.data.units);
-                }
-            } catch (err) {
-                console.error("[JourneyCatalog] Failed to fetch journey details:", err);
-            } finally {
-                setDetailSectionsLoading(false);
-            }
-        },
-        [],
-    );
-
-    /** Navigate to journey map (continue) */
-    const handleContinuePress = useCallback(
-        async (journey: MentalHealthJourneyListItem): Promise<void> => {
-            detailSheetRef.current?.dismiss();
-            await switchJourney(journey.slug);
-            router.push({
-                pathname: "/tabs/(tabs)/journeys",
-                params: { slug: journey.slug },
-            } as never);
-        },
-        [switchJourney],
-    );
-
-    /** Start a new journey → enroll + navigate to journey map */
-    const handleStartJourney = useCallback(
-        async (journey: MentalHealthJourneyListItem): Promise<void> => {
-            detailSheetRef.current?.dismiss();
-            await enrollInJourney(journey);
-            router.push({
-                pathname: "/tabs/(tabs)/journeys",
-                params: { slug: journey.slug },
-            } as never);
-        },
-        [enrollInJourney],
-    );
-
-    /** Dismiss detail sheet */
-    const handleDismissSheet = useCallback((): void => {
-        detailSheetRef.current?.dismiss();
-        setSelectedJourney(null);
-        setDetailSections([]);
-    }, []);
-
-    /** Category change */
-    const handleCategoryChange = useCallback(
-        (category: JourneyCategory | "all"): void => {
-            setSelectedCategory(category);
-        },
-        [],
-    );
-
-    /** Pull-to-refresh */
-    const handleRefresh = useCallback((): void => {
-        loadCatalog(true);
-    }, [loadCatalog]);
-
+function EmptyState(): React.JSX.Element {
     return (
-        <BottomSheetModalProvider>
-            <JourneyCatalogPresentation
-                journeys={filteredJourneys}
-                activeJourney={activeJourney}
-                selectedCategory={selectedCategory}
-                categories={CATEGORIES}
-                currentStreak={currentStreak}
-                todayIP={todayIP}
-                isLoading={isLoading}
-                isRefreshing={isRefreshing}
-                error={error}
-                onJourneyPress={handleJourneyPress}
-                onContinuePress={handleContinuePress}
-                onCategoryChange={handleCategoryChange}
-                onRefresh={handleRefresh}
-            />
-            <JourneyDetailSheet
-                ref={detailSheetRef}
-                journey={selectedJourney}
-                sections={detailSections}
-                sectionsLoading={detailSectionsLoading}
-                onStart={handleStartJourney}
-                onContinue={handleContinuePress}
-                onDismiss={handleDismissSheet}
-            />
-        </BottomSheetModalProvider>
+        <View className="rounded-3xl bg-slate-50 px-5 py-8 items-center">
+            <Text className="text-lg font-semibold text-slate-900">
+                No journeys yet
+            </Text>
+            <Text className="mt-2 text-center text-sm text-slate-500">
+                Your recommended journey will show up here after the quiz.
+            </Text>
+        </View>
+    );
+}
+
+export default function JourneyCatalogPresentation({
+    journeys,
+    activeJourney,
+    selectedCategory,
+    categories,
+    currentStreak,
+    todayIP,
+    isLoading,
+    isRefreshing,
+    error,
+    onJourneyPress,
+    onContinuePress,
+    onCategoryChange,
+    onRefresh,
+}: JourneyCatalogPresentationProps): React.JSX.Element {
+    return (
+        <ScrollView
+            className="flex-1 bg-white"
+            contentContainerStyle={{ padding: 20, paddingBottom: 120 }}
+            refreshControl={
+                <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+            }
+        >
+            <View className="mb-6">
+                <Text className="text-3xl font-bold text-slate-900">
+                    Journeys
+                </Text>
+                <Text className="mt-2 text-sm text-slate-500">
+                    Pick a path that matches what you need right now.
+                </Text>
+            </View>
+
+            <View className="mb-6 flex-row gap-3">
+                <View className="flex-1 rounded-2xl bg-violet-50 px-4 py-4">
+                    <Text className="text-xs font-semibold uppercase tracking-wide text-violet-500">
+                        Streak
+                    </Text>
+                    <Text className="mt-1 text-2xl font-bold text-slate-900">
+                        {currentStreak}
+                    </Text>
+                </View>
+                <View className="flex-1 rounded-2xl bg-blue-50 px-4 py-4">
+                    <Text className="text-xs font-semibold uppercase tracking-wide text-blue-500">
+                        Today IP
+                    </Text>
+                    <Text className="mt-1 text-2xl font-bold text-slate-900">
+                        {todayIP}
+                    </Text>
+                </View>
+            </View>
+
+            {activeJourney ? (
+                <Pressable
+                    onPress={() => onContinuePress(activeJourney)}
+                    className="mb-6 rounded-3xl bg-slate-900 px-5 py-5"
+                    accessibilityRole="button"
+                    accessibilityLabel={`Continue ${activeJourney.title}`}
+                >
+                    <Text className="text-xs font-semibold uppercase tracking-wide text-slate-300">
+                        Continue Journey
+                    </Text>
+                    <Text className="mt-2 text-xl font-bold text-white">
+                        {activeJourney.title}
+                    </Text>
+                    <Text className="mt-1 text-sm text-slate-300">
+                        {activeJourney.completedNodes} of {activeJourney.totalNodes} steps
+                        completed
+                    </Text>
+                </Pressable>
+            ) : null}
+
+            <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                className="mb-6"
+                contentContainerStyle={{ paddingRight: 20 }}
+            >
+                {categories.map((category) => {
+                    const isSelected = category.key === selectedCategory;
+                    return (
+                        <Pressable
+                            key={category.key}
+                            onPress={() => onCategoryChange(category.key)}
+                            className={`mr-3 rounded-full px-4 py-2 ${
+                                isSelected ? "bg-violet-600" : "bg-slate-100"
+                            }`}
+                        >
+                            <Text
+                                className={`text-sm font-medium ${
+                                    isSelected ? "text-white" : "text-slate-600"
+                                }`}
+                            >
+                                {category.label}
+                            </Text>
+                        </Pressable>
+                    );
+                })}
+            </ScrollView>
+
+            {error ? (
+                <View className="mb-6 rounded-2xl bg-red-50 px-4 py-4">
+                    <Text className="text-sm font-medium text-red-700">{error}</Text>
+                </View>
+            ) : null}
+
+            {isLoading ? (
+                <View className="rounded-3xl bg-slate-50 px-5 py-8 items-center">
+                    <Text className="text-sm text-slate-500">Loading journeys...</Text>
+                </View>
+            ) : journeys.length === 0 ? (
+                <EmptyState />
+            ) : (
+                journeys.map((journey) => (
+                    <JourneyCard
+                        key={journey.id}
+                        journey={journey}
+                        onPress={onJourneyPress}
+                    />
+                ))
+            )}
+        </ScrollView>
     );
 }

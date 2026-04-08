@@ -116,9 +116,6 @@ import JourneyErrorState from "@/src/components/journey/JourneyErrorState";
 import { JourneySwitcherSheet } from "@/src/components/journey/JourneySwitcherSheet";
 import { useMultiJourney } from "@/src/hooks/useMultiJourney";
 import { useEnrollmentProgressSync } from "@/src/hooks/useEnrollmentProgressSync";
-import MultiUnitPresentation from "./MultiUnitPresentation";
-import type { UnitRenderData } from "./MultiUnitPresentation";
-import { Text } from "@/components/Themed";
 import { debounce, DebouncedFunction } from "@/src/utils/debounce";
 import SectionOverviewSheet from "@/src/components/journey/SectionOverviewSheet";
 // FlashList segment-per-cell architecture
@@ -127,17 +124,36 @@ import JourneyMapFlashList from "./JourneyMapFlashList";
 import type { JourneyFlashListItem } from "@/src/types/journey";
 import { FlashList, FlashListRef } from "@shopify/flash-list";
 
-/** Feature flag: set to true to use new FlashList rendering path */
-const USE_FLASH_LIST: boolean = true;
+/** Feature flag: keep the legacy renderer on until the FlashList path is stable. */
 
-export default function JourneyMapContainer(): React.JSX.Element {
+export interface UnitRenderData {
+  /** Runtime unit data (nodes with statuses) */
+  unit: UnitData;
+  /** Config for this unit (for divider, color theme, node variant keys) */
+  unitConfig: UnitConfig;
+  /** Layout segment with absolute positions */
+  layout: UnitLayoutSegment;
+  /** Mascot positions for this unit */
+  mascotPositions: MascotPositionData[];
+  /** Section number this unit belongs to */
+  sectionNumber: number;
+}
+
+
+export interface JourneyMapContainerProps {
+  slugOverride?: string;
+}
+
+export default function JourneyMapContainer({
+  slugOverride,
+}: JourneyMapContainerProps = {}): React.JSX.Element {
   // Route params — journey slug comes from navigation
   const { slug, jumpToSection } = useLocalSearchParams<{
     slug?: string;
     jumpToSection?: string;
   }>();
   // Default to anxiety-toolkit if no slug provided
-  const journeySlug: string = slug ?? "anxiety-toolkit";
+  const journeySlug: string = slugOverride ?? slug ?? "anxiety-toolkit";
 
   // Track slug changes to show brief transition skeleton
   const prevSlugRef = useRef<string>(journeySlug);
@@ -320,15 +336,18 @@ export default function JourneyMapContainer(): React.JSX.Element {
 
   const verticalGap: number = config.settings.verticalGap ?? 120;
 
-  // Determine the default section based on user's current unit
-  // Uses granular currentUnitIndexAtom — only re-derives when the index changes,
-  // not on every progress tick.
+  // In the lazy section architecture, only the current section's unit is loaded.
+  // Derive the focused section from the server response first, then fall back to
+  // the local config for older paths.
   const defaultSectionId: string = useMemo(() => {
+    if (sectionMap?.section?.unitNumber) {
+      return `section_${sectionMap.section.unitNumber}`;
+    }
     if (!config.units.length) return config.sections[0].id;
     const currentUnitConfig: UnitConfig =
       config.units[currentUnitIndex] || config.units[0];
     return currentUnitConfig.sectionId;
-  }, [currentUnitIndex, config]);
+  }, [sectionMap?.section?.unitNumber, currentUnitIndex, config]);
 
   // State to track which section is currently focused (only its units render)
   const [activeSectionId, setActiveSectionId] =
@@ -356,14 +375,11 @@ export default function JourneyMapContainer(): React.JSX.Element {
   const activeSectionConfig =
     config.sections.find((s) => s.id === activeSectionId) || config.sections[0];
 
-  // All units from journey state, restricted to the active section.
-  // Uses granular unitsAtom — reference only changes when the units array mutates,
-  // not on stats/currentUnit changes. This breaks the useMemo cascade.
+  // In the lazy section flow, `allUnitsRaw` already contains only the visible
+  // section's unit, so avoid filtering it through static config groups.
   const allUnits: UnitData[] = useMemo(() => {
-    return allUnitsRaw.filter((u: UnitData) =>
-      activeSectionConfig.unitIds.includes(u.id),
-    );
-  }, [allUnitsRaw, activeSectionConfig]);
+    return allUnitsRaw;
+  }, [allUnitsRaw]);
 
   // Compute multi-unit layout (all units in one scrollable path)
   // Passes the pre-built Map so layout never calls .find()
@@ -424,7 +440,11 @@ export default function JourneyMapContainer(): React.JSX.Element {
     screenWidth: flashScreenWidth,
     activeNodeY: flashActiveNodeY,
     unitHeaders,
-  } = useJourneyFlashList(config, unitConfigMap, activeSectionConfig?.unitIds ?? []);
+  } = useJourneyFlashList(
+    config,
+    unitConfigMap,
+    allUnits.map((unit: UnitData) => unit.id),
+  );
 
   // Compute active node Y across all units for scroll-to-active (Old architecture only)
   const explicitActiveNodeY: number | null = useMemo(() => {
@@ -441,7 +461,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
   }, [unitRenderData]);
 
   // Use the FlashList-specific activeNodeY if the feature flag is enabled
-  const activeNodeY = USE_FLASH_LIST ? flashActiveNodeY : explicitActiveNodeY;
+  const activeNodeY = flashActiveNodeY;
 
   const {
     isOffScreen: isActiveOffScreen,
@@ -842,7 +862,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
   // Auto-scroll FlashList to active node on mount / focus
   useFocusEffect(
     useCallback(() => {
-      if (USE_FLASH_LIST && flashActiveNodeIndex >= 0 && !jumpToSection) {
+      if (flashActiveNodeIndex >= 0 && !jumpToSection) {
         const timer = setTimeout(() => {
           handleFlashListScrollToActive(2000);
         }, 500);
@@ -853,7 +873,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
 
   // Auto-scroll when the active node index changes (e.g., node completed)
   useEffect(() => {
-    if (USE_FLASH_LIST && flashActiveNodeIndex >= 0 && !jumpToSection) {
+    if (flashActiveNodeIndex >= 0 && !jumpToSection) {
       const timer = setTimeout(() => {
         handleFlashListScrollToActive(1000);
       }, 500);
@@ -977,50 +997,32 @@ export default function JourneyMapContainer(): React.JSX.Element {
           headerShown: false,
         }}
       />
-      {USE_FLASH_LIST ? (
-        <JourneyMapFlashList
-          data={flashListData}
-          stats={stats}
-          screenWidth={flashScreenWidth}
-          activeGlobalIndex={activeGlobalIndex}
-          onNodePress={handleNodePress}
-          isOffline={!isOnline}
-          isActiveOffScreen={isActiveOffScreen}
-          scrollDirection={scrollDirection}
-          onScrollToActive={() => handleFlashListScrollToActive()}
-          onJumpToUnit={handleFlashListJumpToUnit}
-          listRef={
-            flashListRef as unknown as React.RefObject<
-              FlashListRef<JourneyFlashListItem>
-            >
-          }
-          unitHeaders={unitHeaders}
-          onGuidePress={handleGuidePress}
-          onFlagPress={handleFlagPress}
-          onScroll={(y) => {
-            currentScrollY.current = y;
-            updateVisibility(y);
-          }}
-        />
-      ) : (
-        <MultiUnitPresentation
-          unitRenderData={unitRenderData}
-          stats={stats}
-          currentVisibleUnitIndex={currentVisibleUnitIndex}
-          totalDimensions={totalDimensions}
-          screenWidth={screenWidth}
-          onNodePress={handleNodePress}
-          scrollViewRef={scrollViewRef}
-          isOffline={!isOnline}
-          isActiveOffScreen={isActiveOffScreen}
-          scrollDirection={scrollDirection}
-          onScrollToActive={scrollToActive}
-          updateScrollVisibility={updateVisibility}
-          onGuidePress={handleGuidePress}
-          onFlagPress={handleFlagPress}
-          onJumpToUnit={handleJumpToUnit}
-        />
-      )}
+
+      <JourneyMapFlashList
+        data={flashListData}
+        stats={stats}
+        screenWidth={flashScreenWidth}
+        activeGlobalIndex={activeGlobalIndex}
+        onNodePress={handleNodePress}
+        isOffline={!isOnline}
+        isActiveOffScreen={isActiveOffScreen}
+        scrollDirection={scrollDirection}
+        onScrollToActive={() => handleFlashListScrollToActive()}
+        onJumpToUnit={handleFlashListJumpToUnit}
+        listRef={
+          flashListRef as unknown as React.RefObject<
+            FlashListRef<JourneyFlashListItem>
+          >
+        }
+        unitHeaders={unitHeaders}
+        onGuidePress={handleGuidePress}
+        onFlagPress={handleFlagPress}
+        onScroll={(y) => {
+          currentScrollY.current = y;
+          updateVisibility(y);
+        }}
+      />
+
       <Suspense fallback={null}>
         {chestNode && (
           <ChestRewardModal
