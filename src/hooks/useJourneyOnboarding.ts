@@ -23,12 +23,14 @@ import type {
 } from "@/src/components/journey/JourneyOnboardingScreen";
 import { fetchMHJourneyCatalog } from "@/src/lib/api/mentalHealthJourneyApi";
 import { useMultiJourney } from "@/src/hooks/useMultiJourney";
+import { createLogger } from "@/src/lib/logger";
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
 const ONBOARDING_COMPLETE_KEY = "@journey_onboarding_complete_v1";
+const log = createLogger("useJourneyOnboarding");
 
 // ---------------------------------------------------------------------------
 // Quiz Data
@@ -204,7 +206,7 @@ export interface UseJourneyOnboardingReturn {
 // ---------------------------------------------------------------------------
 
 export function useJourneyOnboarding(): UseJourneyOnboardingReturn {
-    const { enrollInJourney } = useMultiJourney();
+    const { enrollInJourney, switchJourney } = useMultiJourney();
     const [hasCompletedOnboarding, setHasCompletedOnboarding] =
         useState<boolean>(false);
     const [isCheckingStatus, setIsCheckingStatus] = useState<boolean>(true);
@@ -218,8 +220,13 @@ export function useJourneyOnboarding(): UseJourneyOnboardingReturn {
                     ONBOARDING_COMPLETE_KEY,
                 );
                 setHasCompletedOnboarding(value === "true");
+                log.info("Loaded onboarding status", {
+                    storedValue: value,
+                    hasCompleted: value === "true",
+                });
             } catch {
                 setHasCompletedOnboarding(false);
+                log.warn("Failed to read onboarding status, defaulting to false");
             } finally {
                 setIsCheckingStatus(false);
             }
@@ -231,8 +238,9 @@ export function useJourneyOnboarding(): UseJourneyOnboardingReturn {
         try {
             await AsyncStorage.setItem(ONBOARDING_COMPLETE_KEY, "true");
             setHasCompletedOnboarding(true);
+            log.info("Marked onboarding complete");
         } catch (error) {
-            console.error("[Onboarding] Failed to mark complete:", error);
+            log.error("Failed to mark onboarding complete", error);
         }
     }, []);
 
@@ -240,6 +248,7 @@ export function useJourneyOnboarding(): UseJourneyOnboardingReturn {
         async (answers: Record<string, string>): Promise<void> => {
             try {
                 setIsEnrolling(true);
+                log.info("Quiz complete received", { answers });
 
                 // 1. Score answers
                 const rankedCategories: string[] = scoreAnswers(
@@ -255,11 +264,15 @@ export function useJourneyOnboarding(): UseJourneyOnboardingReturn {
                 } else if (experienceAnswer === "experienced") {
                     difficultyPreference = "advanced";
                 }
+                log.info("Computed onboarding recommendation inputs", {
+                    rankedCategories,
+                    difficultyPreference,
+                });
 
                 // 2. Fetch catalog to find best match
                 const catalogRes = await fetchMHJourneyCatalog();
                 if (!catalogRes.success || catalogRes.data.length === 0) {
-                    console.warn("[Onboarding] Failed to fetch catalog, skipping auto-enroll");
+                    log.warn("Failed to fetch journey catalog, skipping auto-enroll");
                     await markOnboardingComplete();
                     return;
                 }
@@ -270,25 +283,49 @@ export function useJourneyOnboarding(): UseJourneyOnboardingReturn {
                     rankedCategories,
                     difficultyPreference,
                 );
+                log.info("Resolved best journey match", {
+                    bestMatchSlug: bestMatch?.slug ?? null,
+                    catalogCount: catalogRes.data.length,
+                });
 
                 if (bestMatch) {
-                    // 4. Auto-enroll
-                    await enrollInJourney(bestMatch);
+                    try {
+                        // 4. Auto-enroll when possible
+                        log.info("Attempting auto-enroll", { slug: bestMatch.slug });
+                        await enrollInJourney(bestMatch);
+                        log.info("Auto-enroll succeeded", { slug: bestMatch.slug });
+                    } catch (error) {
+                        // Guests / preview users can still open the recommended
+                        // journey even if a persisted enrollment cannot be created.
+                        log.warn(
+                            "Auto-enroll failed, falling back to preview journey",
+                            error,
+                            { slug: bestMatch.slug },
+                        );
+                        await switchJourney(bestMatch.slug);
+                        log.info("Preview journey selected after enroll failure", {
+                            slug: bestMatch.slug,
+                        });
+                    }
+                } else {
+                    log.warn("No best match could be resolved from onboarding quiz");
                 }
 
                 // 5. Mark onboarding complete
                 await markOnboardingComplete();
             } catch (error) {
-                console.error("[Onboarding] Quiz completion error:", error);
+                log.error("Quiz completion error", error);
                 await markOnboardingComplete();
             } finally {
                 setIsEnrolling(false);
+                log.info("Quiz completion flow ended");
             }
         },
-        [enrollInJourney, markOnboardingComplete],
+        [enrollInJourney, markOnboardingComplete, switchJourney],
     );
 
     const handleSkip = useCallback(async (): Promise<void> => {
+        log.info("Onboarding skipped");
         await markOnboardingComplete();
     }, [markOnboardingComplete]);
 

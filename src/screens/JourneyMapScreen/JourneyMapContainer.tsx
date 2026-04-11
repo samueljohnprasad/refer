@@ -20,8 +20,6 @@
  */
 
 import React, {
-  lazy,
-  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -50,13 +48,8 @@ import type {
   UnitData,
   JourneyConfig,
   UnitConfig,
-  SectionConfig,
 } from "@/src/types/journey";
 import { NodeStatus, NodeType } from "@/src/types/journey";
-import { useMultiUnitLayout } from "@/src/hooks/useMultiUnitLayout";
-import type { UnitLayoutSegment } from "@/src/hooks/useMultiUnitLayout";
-import { computeMascotPositions } from "@/src/hooks/useMascotPositions";
-import type { MascotPositionData } from "@/src/hooks/useMascotPositions";
 import { useJourneyConfig } from "@/src/context/JourneyConfigContext";
 import {
   journeyStateAtom,
@@ -75,6 +68,7 @@ import {
 } from "@/src/store/journeyActions";
 import {
   completeNodeApi,
+  replayCompletedNodeApi,
   updateNodeProgress as updateNodeProgressApi,
 } from "@/src/lib/api/journeyApi";
 import { useSectionData } from "@/src/hooks/useSectionData";
@@ -82,7 +76,7 @@ import { useNodeContent } from "@/src/hooks/useNodeContent";
 import type {
   NodeStub,
   NodeContentResponse,
-  SectionListItem,
+  SectionViewMode,
 } from "@/src/types/journey/sectionMap";
 import { sectionMapToJourneyState } from "@/src/utils/journey/sectionMapBridge";
 import { useSectionPrefetch } from "@/src/hooks/useSectionPrefetch";
@@ -95,7 +89,6 @@ import { useScrollToActive } from "@/src/hooks/useScrollToActive";
 import Animated, {
   useAnimatedRef,
   scrollTo,
-  runOnUI,
   useSharedValue,
   withTiming,
   useAnimatedReaction,
@@ -104,13 +97,8 @@ import Animated, {
 import { useJourneyAuthGate } from "@/hooks/data/useJourneyAuthGate";
 import { useGuestProgress } from "@/hooks/data/useGuestProgress";
 import GuestSignUpSheet from "@/src/components/journey/GuestSignUpSheet";
-// Lazy-loaded modals — only parsed when first rendered
-const ChestRewardModal = lazy(
-  () => import("@/src/components/journey/ChestRewardModal"),
-);
-const UnitCompleteModal = lazy(
-  () => import("@/src/components/journey/UnitCompleteModal"),
-);
+import ChestRewardModal from "@/src/components/journey/ChestRewardModal";
+import UnitCompleteModal from "@/src/components/journey/UnitCompleteModal";
 import JourneyLoadingSkeleton from "@/src/components/journey/JourneyLoadingSkeleton";
 import JourneyErrorState from "@/src/components/journey/JourneyErrorState";
 import { JourneySwitcherSheet } from "@/src/components/journey/JourneySwitcherSheet";
@@ -123,46 +111,50 @@ import { useJourneyFlashList } from "@/src/hooks/useJourneyFlashList";
 import JourneyMapFlashList from "./JourneyMapFlashList";
 import type { JourneyFlashListItem } from "@/src/types/journey";
 import { FlashList, FlashListRef } from "@shopify/flash-list";
+import { createLogger } from "@/src/lib/logger";
 
 /** Feature flag: keep the legacy renderer on until the FlashList path is stable. */
-
-export interface UnitRenderData {
-  /** Runtime unit data (nodes with statuses) */
-  unit: UnitData;
-  /** Config for this unit (for divider, color theme, node variant keys) */
-  unitConfig: UnitConfig;
-  /** Layout segment with absolute positions */
-  layout: UnitLayoutSegment;
-  /** Mascot positions for this unit */
-  mascotPositions: MascotPositionData[];
-  /** Section number this unit belongs to */
-  sectionNumber: number;
-}
-
+const USE_FLASH_LIST = true;
+const log = createLogger("JourneyMapContainer");
 
 export interface JourneyMapContainerProps {
   slugOverride?: string;
+  modeOverride?: SectionViewMode;
 }
 
 export default function JourneyMapContainer({
   slugOverride,
+  modeOverride,
 }: JourneyMapContainerProps = {}): React.JSX.Element {
   // Route params — journey slug comes from navigation
-  const { slug, jumpToSection } = useLocalSearchParams<{
+  const { slug, mode, jumpToSection } = useLocalSearchParams<{
     slug?: string;
+    mode?: SectionViewMode;
     jumpToSection?: string;
   }>();
-  // Default to anxiety-toolkit if no slug provided
-  const journeySlug: string = slugOverride ?? slug ?? "anxiety-toolkit";
+  const journeySlug: string | null = slugOverride ?? slug ?? null;
+  const journeyAccessMode: SectionViewMode = modeOverride ?? mode ?? "active";
+  const resolvedJourneySlug: string = journeySlug ?? "";
 
   // Track slug changes to show brief transition skeleton
-  const prevSlugRef = useRef<string>(journeySlug);
+  const prevSlugRef = useRef<string | null>(journeySlug);
   const [isSwitchingJourney, setIsSwitchingJourney] = useState<boolean>(false);
+
+  useEffect(() => {
+    log.info("Journey map mounted / slug resolved", {
+      routeSlug: slug ?? null,
+      slugOverride: slugOverride ?? null,
+      journeySlug,
+      journeyAccessMode,
+      jumpToSection: jumpToSection ?? null,
+    });
+  }, [journeyAccessMode, journeySlug, jumpToSection, slug, slugOverride]);
 
   useEffect(() => {
     if (prevSlugRef.current !== journeySlug) {
       prevSlugRef.current = journeySlug;
       setIsSwitchingJourney(true);
+      log.info("Journey slug changed", { journeySlug });
       // Safety timeout in case loading never clears
       const timer = setTimeout(() => setIsSwitchingJourney(false), 2000);
       return () => clearTimeout(timer);
@@ -193,9 +185,10 @@ export default function JourneyMapContainer({
     activeNodeId: _sectionActiveNodeId,
     loadSection,
     refresh,
+    loadCurrentPosition,
     wasVersionInvalidated,
     resetVersionInvalidated,
-  } = useSectionData(journeySlug);
+  } = useSectionData(journeySlug, journeyAccessMode);
 
   // D4: Show toast when journey template was updated (cache invalidated)
   useEffect(() => {
@@ -259,9 +252,18 @@ export default function JourneyMapContainer({
         sectionMap,
         stats,
       );
+      log.info("Bridging section map into journey state", {
+        journeySlug,
+        journeyAccessMode,
+        sectionNumber: sectionMap.section.unitNumber,
+        unitCount: sectionMap.section.units?.length ?? 0,
+        nodeCount: sectionMap.section.nodes.length,
+        progressCount: sectionMap.progress.length,
+        hasEnrollment: sectionMap.enrollment !== null,
+      });
       setJourneyState(bridgedState);
     }
-  }, [sectionMap, stats, setJourneyState]);
+  }, [journeySlug, sectionMap, setJourneyState]);
 
   const enrollmentIdFromAtom: string | null = useAtomValue(enrollmentIdAtom);
   const enrollmentId: string | null =
@@ -284,8 +286,10 @@ export default function JourneyMapContainer({
       ).length;
       // Key by unit.id (UUID) for FlashList pipeline
       counts[unit.id] = completed;
-      // Key by section_${unitNumber} for SectionOverviewSheet
-      counts[`section_${unit.unitNumber}`] = completed;
+      // Key by section number for SectionOverviewSheet aggregation
+      const sectionNumber: number = unit.sectionNumber ?? unit.unitNumber;
+      counts[`section_${sectionNumber}`] =
+        (counts[`section_${sectionNumber}`] ?? 0) + completed;
     });
     return counts;
   }, [journeyState?.units]);
@@ -320,116 +324,12 @@ export default function JourneyMapContainer({
     () => new Map(config.units.map((uc: UnitConfig) => [uc.id, uc])),
     [config.units],
   );
-  const sectionConfigMap: Map<string, SectionConfig> = useMemo(
-    () => new Map(config.sections.map((sc: SectionConfig) => [sc.id, sc])),
-    [config.sections],
-  );
-  // Reverse lookup: unitId → sectionConfig (avoids nested .find inside .map)
-  const unitToSectionMap: Map<string, SectionConfig> = useMemo(() => {
-    const map = new Map<string, SectionConfig>();
-    for (const [unitId, uc] of unitConfigMap) {
-      const sc: SectionConfig | undefined = sectionConfigMap.get(uc.sectionId);
-      if (sc) map.set(unitId, sc);
-    }
-    return map;
-  }, [unitConfigMap, sectionConfigMap]);
-
-  const verticalGap: number = config.settings.verticalGap ?? 120;
-
-  // In the lazy section architecture, only the current section's unit is loaded.
-  // Derive the focused section from the server response first, then fall back to
-  // the local config for older paths.
-  const defaultSectionId: string = useMemo(() => {
-    if (sectionMap?.section?.unitNumber) {
-      return `section_${sectionMap.section.unitNumber}`;
-    }
-    if (!config.units.length) return config.sections[0].id;
-    const currentUnitConfig: UnitConfig =
-      config.units[currentUnitIndex] || config.units[0];
-    return currentUnitConfig.sectionId;
-  }, [sectionMap?.section?.unitNumber, currentUnitIndex, config]);
-
-  // State to track which section is currently focused (only its units render)
-  const [activeSectionId, setActiveSectionId] =
-    useState<string>(defaultSectionId);
-
-  // Sync defaultSectionId to active state if the journey is refreshed or initialized
-  useEffect(() => {
-    if (!jumpToSection) setActiveSectionId(defaultSectionId);
-  }, [defaultSectionId]);
-
-  // Handle cross-section jumping via routing params
-  useEffect(() => {
-    if (jumpToSection && jumpToSection !== activeSectionId) {
-      setActiveSectionId(jumpToSection);
-      router.setParams({ jumpToSection: undefined });
-      // Reset scroll position gracefully to the top when navigating to a new section
-      runOnUI(() => {
-        "worklet";
-        scrollTo(scrollViewRef, 0, 0, false);
-      })();
-    }
-  }, [jumpToSection, activeSectionId, scrollViewRef]);
-
-  // Filter unit configs to ONLY the ones in the active section
-  const activeSectionConfig =
-    config.sections.find((s) => s.id === activeSectionId) || config.sections[0];
 
   // In the lazy section flow, `allUnitsRaw` already contains only the visible
   // section's unit, so avoid filtering it through static config groups.
   const allUnits: UnitData[] = useMemo(() => {
     return allUnitsRaw;
   }, [allUnitsRaw]);
-
-  // Compute multi-unit layout (all units in one scrollable path)
-  // Passes the pre-built Map so layout never calls .find()
-  const { screenWidth, unitSegments, totalDimensions } = useMultiUnitLayout(
-    allUnits,
-    unitConfigMap,
-    verticalGap,
-  );
-
-  // Build a quick unit-data lookup for the active section (O(n) build, O(1) per get)
-  const unitDataMap: Map<string, UnitData> = useMemo(
-    () => new Map(allUnits.map((u: UnitData) => [u.id, u])),
-    [allUnits],
-  );
-
-  // Compute per-unit render data with mascot positions
-  // All lookups are O(1) Map.get() instead of O(n) .find()
-  const unitRenderData: UnitRenderData[] = useMemo(() => {
-    return unitSegments
-      .map((segment: UnitLayoutSegment) => {
-        const unit: UnitData | undefined = unitDataMap.get(segment.unitId);
-        const unitConfig: UnitConfig | undefined = unitConfigMap.get(
-          segment.unitId,
-        );
-
-        if (!unit || !unitConfig) {
-          return null;
-        }
-
-        // Use pure function — NOT a hook — so it's safe inside useMemo
-        const mascotPositions: MascotPositionData[] = computeMascotPositions(
-          unit.mascotPlacements || [],
-          segment.nodePositions,
-          screenWidth,
-        );
-
-        const sectionConfig: SectionConfig | undefined = unitToSectionMap.get(
-          segment.unitId,
-        );
-
-        return {
-          unit,
-          unitConfig,
-          layout: segment,
-          mascotPositions,
-          sectionNumber: sectionConfig?.sectionNumber ?? 1,
-        };
-      })
-      .filter((rd): rd is UnitRenderData => rd !== null);
-  }, [unitSegments, unitDataMap, unitConfigMap, unitToSectionMap, screenWidth]);
 
   // ── FlashList segment-per-cell data pipeline ──
   const flashListRef = useAnimatedRef<FlashListRef<JourneyFlashListItem>>();
@@ -445,23 +345,86 @@ export default function JourneyMapContainer({
     unitConfigMap,
     allUnits.map((unit: UnitData) => unit.id),
   );
-
-  // Compute active node Y across all units for scroll-to-active (Old architecture only)
-  const explicitActiveNodeY: number | null = useMemo(() => {
-    for (const renderData of unitRenderData) {
-      if (!renderData?.unit?.nodes) continue;
-      const activeIndex: number = renderData.unit.nodes.findIndex(
-        (n: PathNodeData) => n.status === NodeStatus.ACTIVE,
-      );
-      if (activeIndex >= 0 && renderData.layout.nodePositions[activeIndex]) {
-        return renderData.layout.nodePositions[activeIndex].y;
-      }
-    }
-    return null;
-  }, [unitRenderData]);
-
-  // Use the FlashList-specific activeNodeY if the feature flag is enabled
   const activeNodeY = flashActiveNodeY;
+  const renderState: "loading" | "hard-error" | "fallback-error" | "flash-list" =
+    (isLoading && !sectionMap) || isSwitchingJourney || isSwitchingSection
+      ? "loading"
+      : dataError && !sectionMap
+        ? "hard-error"
+        : !sectionMap || !currentUnit
+          ? "fallback-error"
+          : "flash-list";
+
+  useEffect(() => {
+    log.info("Journey map state snapshot", {
+      journeySlug,
+      isLoading,
+      isSwitchingJourney,
+      isSwitchingSection,
+      dataError: dataError ?? null,
+      hasSectionMap: sectionMap !== null,
+      hasCurrentUnit: currentUnit !== undefined,
+      sectionUnitNumber: sectionMap?.section.unitNumber ?? null,
+      hasEnrollment: sectionMap?.enrollment !== null,
+      progressCount: sectionMap?.progress.length ?? 0,
+      allUnitsCount: allUnitsRaw.length,
+      flashListItemCount: flashListData.length,
+      activeNodeId: _sectionActiveNodeId ?? null,
+      flashActiveNodeIndex,
+      activeNodeY,
+      isGuest,
+    });
+  }, [
+    _sectionActiveNodeId,
+    activeNodeY,
+    allUnitsRaw.length,
+    currentUnit,
+    dataError,
+    flashActiveNodeIndex,
+    flashListData.length,
+    isGuest,
+    isLoading,
+    isSwitchingJourney,
+    isSwitchingSection,
+    journeySlug,
+    sectionMap,
+  ]);
+
+  useEffect(() => {
+    log.info("Journey map render state", {
+      journeySlug,
+      renderState,
+      dataError: dataError ?? null,
+      hasSectionMap: sectionMap !== null,
+      hasCurrentUnit: currentUnit !== undefined,
+      isLoading,
+      isSwitchingJourney,
+      isSwitchingSection,
+      flashListItemCount: flashListData.length,
+    });
+  }, [
+    currentUnit,
+    dataError,
+    flashListData.length,
+    isLoading,
+    isSwitchingJourney,
+    isSwitchingSection,
+    journeySlug,
+    renderState,
+    sectionMap,
+  ]);
+
+  useEffect(() => {
+    if (sectionMap && currentUnit) {
+      log.info("Journey flash list is ready to render", {
+        journeySlug,
+        flashListItemCount: flashListData.length,
+        sectionUnitNumber: sectionMap.section.unitNumber,
+        hasEnrollment: sectionMap.enrollment !== null,
+        currentUnitTitle: currentUnit.title,
+      });
+    }
+  }, [currentUnit, flashListData.length, journeySlug, sectionMap]);
 
   const {
     isOffScreen: isActiveOffScreen,
@@ -469,22 +432,6 @@ export default function JourneyMapContainer({
     scrollToActive,
     updateVisibility,
   } = useScrollToActive(scrollViewRef, activeNodeY, viewportHeight);
-
-  // Auto-scroll to active node gracefully on screen focus
-  // Gives the user a moment to see their completed node before panning to the next one
-  useFocusEffect(
-    useCallback(() => {
-      if (activeNodeY !== null && !jumpToSection) {
-        const timer = setTimeout(() => {
-          runOnUI(() => {
-            "worklet";
-            scrollTo(scrollViewRef, 0, Math.max(0, activeNodeY - 200), true);
-          })();
-        }, 500); // 500ms lets the screen settle so they can observe the completion before the scroll native animation triggers
-        return () => clearTimeout(timer);
-      }
-    }, [activeNodeY, jumpToSection]),
-  );
 
   // ── Compute total completed count across ALL units (for guest gate) ──
   const totalCompletedCount: number = useMemo(() => {
@@ -569,7 +516,15 @@ export default function JourneyMapContainer({
               }
               router.push({
                 pathname: `/tabs/screens/task/[id]`,
-                params: { id: node.taskId, nodeId: node.id },
+                params: {
+                  id: node.taskId,
+                  nodeId: node.id,
+                  journeyMode: sectionMap?.viewMode ?? journeyAccessMode,
+                  journeySlug: sectionMap?.journey.slug ?? resolvedJourneySlug,
+                  returnSectionNumber: String(
+                    sectionMap?.section.unitNumber ?? 1,
+                  ),
+                },
               } as never);
             })
             .catch(() => {
@@ -589,7 +544,7 @@ export default function JourneyMapContainer({
 
         case NodeStatus.COMPLETED:
           playSound("nodeTap");
-          // Lazy-fetch content and open in review mode (read-only)
+          // Completed journeys are replayable; active journeys stay in review mode.
           fetchNodeContent(node.id)
             .then((result: NodeContentResponse | null) => {
               if (!result) {
@@ -608,7 +563,19 @@ export default function JourneyMapContainer({
               }
               router.push({
                 pathname: `/tabs/screens/task/[id]`,
-                params: { id: node.taskId, nodeId: node.id, mode: "review" },
+                params: {
+                  id: node.taskId,
+                  nodeId: node.id,
+                  ...(sectionMap?.viewMode === "completed"
+                    ? {
+                        journeyMode: "completed",
+                        journeySlug: sectionMap.journey.slug,
+                        returnSectionNumber: String(
+                          sectionMap.section.unitNumber,
+                        ),
+                      }
+                    : { mode: "review" }),
+                },
               } as never);
             })
             .catch(() => {
@@ -649,6 +616,8 @@ export default function JourneyMapContainer({
       showSignUpPrompt,
       sectionMap,
       fetchNodeContent,
+      journeyAccessMode,
+      resolvedJourneySlug,
     ],
   );
 
@@ -671,7 +640,7 @@ export default function JourneyMapContainer({
 
       // ── P1.6.1: For guests, record completion locally instead of Supabase ──
       if (isGuest) {
-        await recordGuestNodeCompletion(nodeId, 10, journeySlug);
+        await recordGuestNodeCompletion(nodeId, 10, resolvedJourneySlug);
         return;
       }
 
@@ -682,9 +651,7 @@ export default function JourneyMapContainer({
           nodeId,
         });
         if (!result.success) {
-          console.warn(
-            "[JourneyMapContainer] Server completion failed, will sync on next refresh",
-          );
+          log.warn("Server completion failed, will sync on next refresh");
         } else {
           // Re-fetch section to sync server-granted rewards & updated progress
           await refresh();
@@ -728,9 +695,7 @@ export default function JourneyMapContainer({
         }
       } else {
         // Offline — optimistic state is saved, will sync when reconnected
-        console.warn(
-          "[JourneyMapContainer] Offline: node completion queued in local state",
-        );
+        log.warn("Offline: node completion queued in local state");
       }
     },
     [
@@ -742,7 +707,7 @@ export default function JourneyMapContainer({
       refresh,
       isGuest,
       recordGuestNodeCompletion,
-      journeySlug,
+      resolvedJourneySlug,
       journeyTitle,
       sectionMap,
       loadSection,
@@ -763,16 +728,14 @@ export default function JourneyMapContainer({
           enrollmentId,
           nodeId,
           progress,
-        }).catch((err: unknown) =>
-          console.warn("[JourneyMapContainer] Progress sync failed:", err),
-        );
+        }).catch((err: unknown) => log.warn("Progress sync failed", err));
       }
     },
     [setJourneyState, isOnline, enrollmentId],
   );
 
   const handleChestClaim = useCallback(
-    (nodeId: string): void => {
+    async (nodeId: string): Promise<void> => {
       playSound("chestClaim");
       // Mark chest as completed and grant rewards
       setJourneyState((prev: JourneyState) => completeNode(prev, nodeId));
@@ -780,37 +743,95 @@ export default function JourneyMapContainer({
 
       // Record guest progress locally (mirrors handleCompleteNode guest path)
       if (isGuest) {
-        recordGuestNodeCompletion(nodeId, 10, journeySlug);
+        await recordGuestNodeCompletion(nodeId, 10, resolvedJourneySlug);
+        return;
+      }
+
+      if (isOnline && enrollmentId) {
+        const result =
+          sectionMap?.viewMode === "completed"
+            ? await replayCompletedNodeApi({
+                enrollmentId,
+                nodeId,
+              })
+            : await completeNodeApi({
+                enrollmentId,
+                nodeId,
+              });
+
+        if (!result.success) {
+          log.warn(
+            "Chest completion failed on server, will sync on next refresh",
+            {
+              nodeId,
+              enrollmentId,
+              viewMode: sectionMap?.viewMode ?? journeyAccessMode,
+            },
+          );
+          return;
+        }
+
+        if (sectionMap?.viewMode === "completed") {
+          await refresh();
+        } else {
+          await loadCurrentPosition();
+        }
+      } else {
+        log.warn("Offline: chest completion queued in local state", {
+          nodeId,
+          enrollmentId,
+          isOnline,
+        });
       }
     },
     [
+      enrollmentId,
+      isOnline,
+      loadCurrentPosition,
+      refresh,
       setJourneyState,
       playSound,
       isGuest,
       recordGuestNodeCompletion,
-      journeySlug,
+      resolvedJourneySlug,
+      sectionMap?.viewMode,
+      journeyAccessMode,
     ],
   );
 
   // ── Unit completion detection ──
   const handleUnitComplete = useCallback((): void => {
+    if (sectionMap?.viewMode === "completed") {
+      return;
+    }
+
+    const isLastUnitInSection =
+      currentUnit !== undefined &&
+      currentUnit.unitNumber >= allUnitsRaw.length;
+
     playSound("unitComplete");
+
+    if (isLastUnitInSection) {
+      log.info("Last unit in section completed; waiting for section auto-advance", {
+        journeySlug,
+        sectionNumber: currentUnit?.sectionNumber ?? null,
+        unitNumber: currentUnit?.unitNumber ?? null,
+        sectionUnitCount: allUnitsRaw.length,
+      });
+      return;
+    }
+
     // Small delay so the last node animation finishes before modal appears
     setTimeout(() => {
       unitCompleteModalRef.current?.present();
     }, 600);
-  }, [playSound]);
+  }, [allUnitsRaw.length, currentUnit, journeySlug, playSound, sectionMap?.viewMode]);
 
   const { xpEarned } = useUnitCompletion(currentUnit, handleUnitComplete);
 
   const handleUnitContinue = useCallback((): void => {
     setJourneyState((prev: JourneyState) => unlockUnit(prev));
   }, [setJourneyState]);
-
-  // Current visible unit index for sticky header (simplified — use first unit for now)
-  const currentVisibleUnitIndex: number = useMemo(() => {
-    return journeyState?.currentUnit ?? 0;
-  }, [journeyState?.currentUnit]);
 
   // Track real scroll position for custom animation anchor point
   const currentScrollY = useRef(0);
@@ -896,15 +917,14 @@ export default function JourneyMapContainer({
   const handleJumpToSection = useCallback(
     (unitNumber: number): void => {
       loadSection(unitNumber);
-      // Derive section ID from sectionList for local state
-      const target = sectionList.find(
-        (s: SectionListItem) => s.unitNumber === unitNumber,
-      );
-      if (target) {
-        setActiveSectionId(`section_${unitNumber}`);
+      if (USE_FLASH_LIST) {
+        flashListRef.current?.scrollToOffset({
+          offset: 0,
+          animated: true,
+        });
       }
     },
-    [loadSection, sectionList],
+    [flashListRef, loadSection],
   );
 
   // ── Journey Switcher ──
@@ -925,7 +945,7 @@ export default function JourneyMapContainer({
       switchJourney(targetSlug);
       // Small delay so bottom sheet dismiss animation finishes before skeleton
       setTimeout(() => {
-        router.setParams({ slug: targetSlug });
+        router.replace("/tabs/(tabs)/journeys" as never);
       }, 250);
     },
     [switchJourney],
@@ -933,8 +953,12 @@ export default function JourneyMapContainer({
 
   const handleDiscoverPress = useCallback((): void => {
     setIsSwitcherOpen(false);
-    // Navigate to the catalog by removing slug param (triggers empty state → catalog)
-    router.push("/tabs/(tabs)/journeys" as never);
+    router.replace({
+      pathname: "/tabs/(tabs)/journeys",
+      params: {
+        view: "catalog",
+      },
+    } as never);
   }, []);
 
   const handleArchiveJourney = useCallback(
@@ -944,28 +968,18 @@ export default function JourneyMapContainer({
     [archiveJourney],
   );
 
-  // Jump to unit handler — scroll to the target unit's Y offset
-  const handleJumpToUnit = useCallback(
-    (unitId: string): void => {
-      const target: UnitRenderData | undefined = unitRenderData.find(
-        (rd: UnitRenderData) => rd.unit.id === unitId,
-      );
-      if (target) {
-        runOnUI(() => {
-          "worklet";
-          scrollTo(
-            scrollViewRef,
-            0,
-            Math.max(0, target.layout.yOffset - 120),
-            true,
-          );
-        })();
-      }
-    },
-    [unitRenderData],
-  );
-
   // Show skeleton on first load, switching journeys, or switching sections
+  if (!journeySlug) {
+    return (
+      <JourneyErrorState
+        message="No journey was selected. Please choose a journey to continue."
+        onRetry={() => {
+          router.push("/tabs/(tabs)/journeys" as never);
+        }}
+      />
+    );
+  }
+
   if ((isLoading && !sectionMap) || isSwitchingJourney || isSwitchingSection) {
     return <JourneyLoadingSkeleton />;
   }
@@ -999,6 +1013,7 @@ export default function JourneyMapContainer({
       />
 
       <JourneyMapFlashList
+        key={`${journeySlug}:${sectionMap.section.id}:${flashListData.length}`}
         data={flashListData}
         stats={stats}
         screenWidth={flashScreenWidth}
@@ -1023,21 +1038,19 @@ export default function JourneyMapContainer({
         }}
       />
 
-      <Suspense fallback={null}>
-        {chestNode && (
-          <ChestRewardModal
-            ref={chestModalRef}
-            node={chestNode}
-            onClaim={handleChestClaim}
-          />
-        )}
-        <UnitCompleteModal
-          ref={unitCompleteModalRef}
-          unit={currentUnit}
-          xpEarned={xpEarned}
-          onContinue={handleUnitContinue}
+      {chestNode && (
+        <ChestRewardModal
+          ref={chestModalRef}
+          node={chestNode}
+          onClaim={handleChestClaim}
         />
-      </Suspense>
+      )}
+      <UnitCompleteModal
+        ref={unitCompleteModalRef}
+        unit={currentUnit}
+        xpEarned={xpEarned}
+        onContinue={handleUnitContinue}
+      />
       {/* P1.6.1: Guest sign-up prompt */}
       <GuestSignUpSheet
         ref={signUpSheetRef}

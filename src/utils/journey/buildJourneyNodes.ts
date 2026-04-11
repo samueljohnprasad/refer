@@ -39,14 +39,38 @@ import { MASCOT_SIZE } from '@/src/data/journey/constants';
 // Constants
 // ---------------------------------------------------------------------------
 
-/** Default cell height for unit dividers */
-const DIVIDER_CELL_HEIGHT: number = 200;
+/** Divider height when it's just a title separator */
+const DIVIDER_CELL_HEIGHT_COMPACT: number = 76;
+
+/** Divider height when it also includes the jump CTA */
+const DIVIDER_CELL_HEIGHT_WITH_JUMP: number = 156;
 
 /** Default cell height for mascot bubble rows */
 const MASCOT_CELL_HEIGHT: number = 80;
 
 /** Minimum cell height between nodes (prevents zero-height cells) */
 const MIN_NODE_CELL_HEIGHT: number = 80;
+
+function resolveFallbackVariantKey(nodeType: string): string {
+    switch (nodeType) {
+        case "learn":
+        case "exercise":
+        case "journal":
+        case "quiz":
+        case "mood_check":
+        case "microphone":
+        case "checkpoint":
+        case "chest":
+            return nodeType;
+        case NodeType.CHEST:
+            return "chest";
+        case NodeType.CHECKPOINT:
+            return "checkpoint";
+        case NodeType.LESSON:
+        default:
+            return "star";
+    }
+}
 
 // ---------------------------------------------------------------------------
 // Segment path builder (local cell coordinates)
@@ -126,28 +150,74 @@ export function buildJourneyNodes(input: BuildJourneyNodesInput): JourneyFlashLi
     let globalIndex: number = 0;
     let prevX: number = screenWidth / 2; // first node's segment starts from center
     let cumulativeY: number = settings.topPadding;
+    const sectionThemeMap = new Map<number, string>();
+
+    filteredUnits.forEach((unit: UnitData) => {
+        const sectionNumber: number = unit.sectionNumber ?? unit.unitNumber;
+        if (!sectionThemeMap.has(sectionNumber)) {
+            const unitThemeKey: string =
+                colorThemes[unit.colorScheme] ? unit.colorScheme : "green";
+            sectionThemeMap.set(sectionNumber, unitThemeKey);
+        }
+    });
 
     filteredUnits.forEach((unit: UnitData, unitIndex: number) => {
-        const unitConfig: UnitConfig | undefined = unitConfigMap.get(unit.id);
-        if (!unitConfig) return;
+        const resolvedUnitConfig: UnitConfig | undefined = unitConfigMap.get(unit.id);
+        const fallbackColorThemeKey: string =
+            colorThemes[unit.colorScheme] ? unit.colorScheme : "green";
+        const unitConfig: UnitConfig = resolvedUnitConfig ?? {
+            id: unit.id,
+            unitNumber: unit.unitNumber,
+            title: unit.title,
+            description: unit.description,
+            colorThemeKey: fallbackColorThemeKey,
+            sectionId: unit.id,
+            nodes: unit.nodes.map((node: PathNodeData) => ({
+                variantKey:
+                    node.variantKey ??
+                    resolveFallbackVariantKey(
+                        node.taskType ?? String(node.type),
+                    ),
+                taskId: node.taskId,
+                taskType: node.taskType ?? String(node.type),
+            })),
+            mascotPlacements: unit.mascotPlacements.map((placement) => ({
+                afterNodeIndex: placement.afterNodeIndex,
+                side: placement.position,
+                messageKey: placement.message ?? "",
+            })),
+            divider: {
+                title: unit.title,
+                showJumpHere: false,
+            },
+            pathGeometry: "sine",
+        };
 
         const colorThemeKey: string = unitConfig.colorThemeKey;
         const themeConfig: ColorThemeConfig | undefined = colorThemes[colorThemeKey];
+        const sectionNumber: number = unit.sectionNumber ?? unit.unitNumber;
+        const sectionThemeKey: string =
+            sectionThemeMap.get(sectionNumber) ?? colorThemeKey;
+        const sectionThemeConfig: ColorThemeConfig | undefined =
+            colorThemes[sectionThemeKey];
 
         // ── Insert unit divider (skip for first unit) ──
         if (unitIndex > 0) {
             const dividerId: string = `divider_${unit.id}`;
+            const dividerCellHeight: number = unitConfig.divider.showJumpHere
+                ? DIVIDER_CELL_HEIGHT_WITH_JUMP
+                : DIVIDER_CELL_HEIGHT_COMPACT;
             const dividerItem: JourneyDividerItem = {
                 id: dividerId,
                 itemType: 'divider',
-                cellHeight: DIVIDER_CELL_HEIGHT,
+                cellHeight: dividerCellHeight,
                 title: unitConfig.divider.title,
                 showJumpHere: unitConfig.divider.showJumpHere,
-                accentColor: themeConfig?.dividerColor,
+                accentColor: sectionThemeConfig?.dividerColor ?? themeConfig?.dividerColor,
                 targetUnitId: unit.id,
             };
             items.push(dividerItem);
-            cumulativeY += DIVIDER_CELL_HEIGHT;
+            cumulativeY += dividerCellHeight;
         }
 
         // ── Track mascot placements for this unit (sorted by afterNodeIndex) ──
@@ -162,8 +232,14 @@ export function buildJourneyNodes(input: BuildJourneyNodesInput): JourneyFlashLi
         // ── Process each node in the unit ──
         unit.nodes.forEach((node: PathNodeData, nodeIndex: number) => {
             const nodeConfig: UnitNodeConfig | undefined = unitConfig.nodes[nodeIndex];
-            const variantKey: string = nodeConfig?.variantKey ?? 'star';
-            const taskType: string = nodeConfig?.taskType ?? 'lesson';
+            const variantKey: string =
+                nodeConfig?.variantKey ??
+                node.variantKey ??
+                resolveFallbackVariantKey(node.taskType ?? String(node.type));
+            const taskType: string =
+                nodeConfig?.taskType ??
+                node.taskType ??
+                "lesson";
 
             // Compute position using existing sine-wave calculator
             const position = getNodePosition(nodeIndex, screenWidth, {

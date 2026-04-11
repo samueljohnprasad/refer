@@ -19,6 +19,14 @@ export interface PathNodeData {
   type: NodeType;
   status: NodeStatus;
   icon: NodeIcon;
+  /** Backend-provided visual variant key for config-driven rendering. */
+  variantKey?: string;
+  /** Backend-provided task type / node type string. */
+  taskType?: string;
+  /** Backend-provided display title for this node. */
+  title?: string | null;
+  /** Backend-provided icon key, if present. */
+  iconKey?: string | null;
   /** 0–1 progress for the active node's ring. Undefined for non-active. */
   progress?: number;
   /** Tooltip text shown above node, e.g. "START" */

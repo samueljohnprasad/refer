@@ -25,6 +25,7 @@ import type {
     NodeContent,
     NodeResponseData,
 } from "@/src/types/journey/mentalHealth";
+import { createLogger } from "@/src/lib/logger";
 
 /**
  * NOTE: New tables (user_node_completions, user_streaks, insight_points_ledger,
@@ -38,6 +39,7 @@ import type {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as any;
+const log = createLogger("MentalHealthJourneyAPI");
 
 // ============================================================================
 // Types for the extended template (matches DB + RPC output)
@@ -47,6 +49,9 @@ const db = supabase as any;
 export interface MHTemplateUnit {
     id: string;
     unitNumber: number;
+    globalUnitNumber?: number;
+    sectionId?: string;
+    sectionNumber?: number;
     title: string;
     description: string;
     colorScheme: string;
@@ -57,6 +62,22 @@ export interface MHTemplateUnit {
         message?: string;
     }>;
     nodes: MentalHealthTemplateNode[];
+}
+
+/** Section within a mental health journey template */
+export interface MHTemplateSection {
+    id: string;
+    sectionNumber: number;
+    title: string;
+    description: string;
+    colorScheme: string;
+    unlockRule: string;
+    mascotPlacements: Array<{
+        afterNodeIndex: number;
+        position: string;
+        message?: string;
+    }>;
+    units: MHTemplateUnit[];
 }
 
 /** Full mental health journey template */
@@ -73,6 +94,7 @@ export interface MHJourneyTemplate {
     totalNodes: number;
     colorThemeKey: string | null;
     iconKey: string | null;
+    sections: MHTemplateSection[];
     units: MHTemplateUnit[];
 }
 
@@ -88,120 +110,96 @@ export async function fetchMHJourneyTemplate(
     slug: string,
 ): Promise<ApiResponse<MHJourneyTemplate | null>> {
     try {
-        // Fetch the journey
-        const { data: journey, error: journeyError } = await db
-            .from("journey_templates")
-            .select("*")
-            .eq("slug", slug)
-            .eq("is_active", true)
-            .single();
+        const { data, error } = await supabase.rpc("get_journey_template", {
+            p_slug: slug,
+        });
 
-        if (journeyError || !journey) {
-            console.error(
-                "[MH-JourneyAPI] fetchMHJourneyTemplate error:",
-                journeyError?.message,
-            );
+        if (error || !data) {
+            log.error("fetchMHJourneyTemplate RPC error", error?.message, { slug });
             return {
                 data: null,
                 success: false,
-                error: journeyError?.message ?? "Journey not found",
+                error: error?.message ?? "Journey not found",
             };
         }
 
-        // Fetch units ordered by unit_number
-        const { data: units, error: unitsError } = await db
-            .from("journey_template_units")
-            .select("*")
-            .eq("journey_id", journey.id)
-            .order("unit_number", { ascending: true });
+        const templateData = data as Record<string, unknown>;
 
-        if (unitsError) {
-            console.error(
-                "[MH-JourneyAPI] fetchMHJourneyTemplate units error:",
-                unitsError.message,
-            );
-            return { data: null, success: false, error: unitsError.message };
-        }
+        const toNode = (node: Record<string, unknown>): MentalHealthTemplateNode => ({
+            id: node.id as string,
+            nodeIndex: (node.nodeIndex ?? node.node_index ?? 0) as number,
+            nodeType: (node.nodeType ?? node.node_type ?? "learn") as string,
+            taskId: (node.taskId ?? node.task_id ?? "") as string,
+            rewards: (node.rewards ?? []) as Array<{
+                type: string;
+                amount: number;
+                icon: string;
+            }>,
+            content: (node.content ?? {}) as NodeContent,
+            title: (node.title ?? null) as string | null,
+            description: (node.description ?? null) as string | null,
+            xpReward: (node.xpReward ?? node.xp_reward ?? 10) as number,
+            estimatedMinutes:
+                (node.estimatedMinutes ?? node.estimated_minutes ?? 3) as number,
+            iconKey: (node.iconKey ?? node.icon_key ?? null) as string | null,
+            variantKey: (node.variantKey ?? node.variant_key ?? "lesson") as string,
+            metadata: node.metadata as Record<string, unknown> | undefined,
+        });
 
-        // Fetch all nodes for all units, ordered by sort
-        const unitIds: string[] = (units ?? []).map(
-            (u: Record<string, unknown>) => u.id as string,
-        );
+        const toUnit = (unit: Record<string, unknown>): MHTemplateUnit => ({
+            id: unit.id as string,
+            unitNumber: (unit.unitNumber ?? unit.sectionUnitNumber ?? 1) as number,
+            globalUnitNumber:
+                (unit.globalUnitNumber ?? unit.unitNumber ?? null) as number | undefined,
+            sectionId: (unit.sectionId ?? null) as string | undefined,
+            sectionNumber: (unit.sectionNumber ?? null) as number | undefined,
+            title: unit.title as string,
+            description: (unit.description ?? "") as string,
+            colorScheme: (unit.colorScheme ?? "blue") as string,
+            unlockRule: (unit.unlockRule ?? "sequential") as string,
+            mascotPlacements:
+                (unit.mascotPlacements ?? []) as MHTemplateUnit["mascotPlacements"],
+            nodes: ((unit.nodes ?? []) as Record<string, unknown>[]).map(toNode),
+        });
 
-        const { data: nodes, error: nodesError } = await db
-            .from("journey_template_nodes")
-            .select("*")
-            .in("unit_id", unitIds)
-            .order("node_index", { ascending: true });
+        const sections: MHTemplateSection[] = (
+            (templateData.sections ?? []) as Record<string, unknown>[]
+        ).map((section) => ({
+            id: section.id as string,
+            sectionNumber: (section.sectionNumber ?? section.unitNumber ?? 1) as number,
+            title: section.title as string,
+            description: (section.description ?? "") as string,
+            colorScheme: (section.colorScheme ?? "blue") as string,
+            unlockRule: (section.unlockRule ?? "sequential") as string,
+            mascotPlacements:
+                (section.mascotPlacements ?? []) as MHTemplateSection["mascotPlacements"],
+            units: ((section.units ?? []) as Record<string, unknown>[]).map(toUnit),
+        }));
 
-        if (nodesError) {
-            console.error(
-                "[MH-JourneyAPI] fetchMHJourneyTemplate nodes error:",
-                nodesError.message,
-            );
-            return { data: null, success: false, error: nodesError.message };
-        }
+        const flatUnits: MHTemplateUnit[] = sections.length > 0
+            ? sections.flatMap((section) => section.units)
+            : ((templateData.units ?? []) as Record<string, unknown>[]).map(toUnit);
 
-        // Group nodes by unit_id
-        const nodesByUnit: Map<string, MentalHealthTemplateNode[]> = new Map();
-        for (const node of nodes ?? []) {
-            const unitId: string = node.unit_id as string;
-            const existing: MentalHealthTemplateNode[] =
-                nodesByUnit.get(unitId) ?? [];
-            existing.push({
-                id: node.id as string,
-                nodeIndex: node.node_index as number,
-                nodeType: node.node_type as string,
-                taskId: node.task_id as string,
-                rewards: (node.rewards ?? []) as Array<{
-                    type: string;
-                    amount: number;
-                    icon: string;
-                }>,
-                content: (node.content ?? {}) as NodeContent,
-                title: (node.title ?? null) as string | null,
-                description: (node.description ?? null) as string | null,
-                xpReward: (node.xp_reward ?? 10) as number,
-                estimatedMinutes: (node.estimated_minutes ?? 3) as number,
-                iconKey: (node.icon_key ?? null) as string | null,
-                variantKey: (node.variant_key ?? "lesson") as string,
-                metadata: node.metadata as Record<string, unknown> | undefined,
-            });
-            nodesByUnit.set(unitId, existing);
-        }
-
-        // Assemble the template
         const template: MHJourneyTemplate = {
-            id: journey.id as string,
-            slug: journey.slug as string,
-            title: journey.title as string,
-            description: journey.description as string,
-            version: (journey.version ?? 1) as number,
-            colorScheme: (journey.color_scheme ?? "blue") as string,
-            category: (journey.category ?? "general") as string,
-            difficulty: (journey.difficulty ?? "beginner") as string,
-            estimatedDays: (journey.estimated_days ?? null) as number | null,
-            totalNodes: (journey.total_nodes ?? 0) as number,
-            colorThemeKey: (journey.color_theme_key ?? null) as string | null,
-            iconKey: (journey.icon_key ?? null) as string | null,
-            units: (units ?? []).map(
-                (u: Record<string, unknown>): MHTemplateUnit => ({
-                    id: u.id as string,
-                    unitNumber: u.unit_number as number,
-                    title: u.title as string,
-                    description: (u.description ?? "") as string,
-                    colorScheme: (u.color_scheme ?? "blue") as string,
-                    unlockRule: (u.unlock_rule ?? "sequential") as string,
-                    mascotPlacements: (u.mascot_placements ??
-                        []) as MHTemplateUnit["mascotPlacements"],
-                    nodes: nodesByUnit.get(u.id as string) ?? [],
-                }),
-            ),
+            id: templateData.id as string,
+            slug: templateData.slug as string,
+            title: templateData.title as string,
+            description: templateData.description as string,
+            version: (templateData.version ?? 1) as number,
+            colorScheme: (templateData.colorScheme ?? "blue") as string,
+            category: (templateData.category ?? "general") as string,
+            difficulty: (templateData.difficulty ?? "beginner") as string,
+            estimatedDays: (templateData.estimatedDays ?? null) as number | null,
+            totalNodes: (templateData.totalNodes ?? 0) as number,
+            colorThemeKey: (templateData.colorThemeKey ?? null) as string | null,
+            iconKey: (templateData.iconKey ?? null) as string | null,
+            sections,
+            units: flatUnits,
         };
 
         return { data: template, success: true };
     } catch (err) {
-        console.error("[MH-JourneyAPI] fetchMHJourneyTemplate exception:", err);
+        log.error("fetchMHJourneyTemplate exception", err, { slug });
         return {
             data: null,
             success: false,
@@ -231,10 +229,7 @@ export async function fetchMHJourneyCatalog(): Promise<
             .order("sort_order", { ascending: true });
 
         if (error) {
-            console.error(
-                "[MH-JourneyAPI] fetchMHJourneyCatalog error:",
-                error.message,
-            );
+            log.error("fetchMHJourneyCatalog query error", error.message);
             return { data: [], success: false, error: error.message };
         }
 
@@ -300,7 +295,7 @@ export async function fetchMHJourneyCatalog(): Promise<
 
         return { data: items, success: true };
     } catch (err) {
-        console.error("[MH-JourneyAPI] fetchMHJourneyCatalog exception:", err);
+        log.error("fetchMHJourneyCatalog exception", err);
         return {
             data: [],
             success: false,
@@ -359,7 +354,10 @@ export async function logNodeCompletion(
             .single();
 
         if (error) {
-            console.error("[MH-JourneyAPI] logNodeCompletion error:", error.message);
+            log.error("logNodeCompletion insert error", error.message, {
+                nodeId: payload.nodeId,
+                enrollmentId: payload.enrollmentId,
+            });
             return { data: null, success: false, error: error.message };
         }
 
@@ -394,7 +392,10 @@ export async function logNodeCompletion(
 
         return { data: completion, success: true };
     } catch (err) {
-        console.error("[MH-JourneyAPI] logNodeCompletion exception:", err);
+        log.error("logNodeCompletion exception", err, {
+            nodeId: payload.nodeId,
+            enrollmentId: payload.enrollmentId,
+        });
         return {
             data: null,
             success: false,
@@ -427,7 +428,7 @@ export async function fetchUserStreak(): Promise<
             .maybeSingle();
 
         if (error) {
-            console.error("[MH-JourneyAPI] fetchUserStreak error:", error.message);
+            log.error("fetchUserStreak query error", error.message);
             return { data: null, success: false, error: error.message };
         }
 
@@ -448,7 +449,7 @@ export async function fetchUserStreak(): Promise<
 
         return { data: streak, success: true };
     } catch (err) {
-        console.error("[MH-JourneyAPI] fetchUserStreak exception:", err);
+        log.error("fetchUserStreak exception", err);
         return {
             data: null,
             success: false,
@@ -468,13 +469,13 @@ export async function updateStreak(): Promise<
         const { data, error } = await db.rpc("update_user_streak");
 
         if (error) {
-            console.error("[MH-JourneyAPI] updateStreak error:", error.message);
+            log.error("updateStreak RPC error", error.message);
             return { data: null, success: false, error: error.message };
         }
 
         return { data: data as unknown as UpdateStreakResponse, success: true };
     } catch (err) {
-        console.error("[MH-JourneyAPI] updateStreak exception:", err);
+        log.error("updateStreak exception", err);
         return {
             data: null,
             success: false,
@@ -518,7 +519,7 @@ export async function earnInsightPoints(params: {
             .single();
 
         if (error) {
-            console.error("[MH-JourneyAPI] earnInsightPoints error:", error.message);
+            log.error("earnInsightPoints insert error", error.message);
             return { data: null, success: false, error: error.message };
         }
 
@@ -535,7 +536,7 @@ export async function earnInsightPoints(params: {
 
         return { data: entry, success: true };
     } catch (err) {
-        console.error("[MH-JourneyAPI] earnInsightPoints exception:", err);
+        log.error("earnInsightPoints exception", err);
         return {
             data: null,
             success: false,
@@ -566,7 +567,7 @@ export async function fetchIPTotals(): Promise<ApiResponse<IPTotals>> {
             .maybeSingle();
 
         if (error) {
-            console.error("[MH-JourneyAPI] fetchIPTotals error:", error.message);
+            log.error("fetchIPTotals query error", error.message);
             return {
                 data: { totalIp: 0, todayIp: 0, weekIp: 0 },
                 success: false,
@@ -582,7 +583,7 @@ export async function fetchIPTotals(): Promise<ApiResponse<IPTotals>> {
 
         return { data: totals, success: true };
     } catch (err) {
-        console.error("[MH-JourneyAPI] fetchIPTotals exception:", err);
+        log.error("fetchIPTotals exception", err);
         return {
             data: { totalIp: 0, todayIp: 0, weekIp: 0 },
             success: false,
@@ -612,10 +613,9 @@ export async function fetchJourneyCompletions(
             .order("completed_at", { ascending: true });
 
         if (error) {
-            console.error(
-                "[MH-JourneyAPI] fetchJourneyCompletions error:",
-                error.message,
-            );
+            log.error("fetchJourneyCompletions query error", error.message, {
+                journeyId,
+            });
             return { data: [], success: false, error: error.message };
         }
 
@@ -638,7 +638,7 @@ export async function fetchJourneyCompletions(
 
         return { data: completions, success: true };
     } catch (err) {
-        console.error("[MH-JourneyAPI] fetchJourneyCompletions exception:", err);
+        log.error("fetchJourneyCompletions exception", err, { journeyId });
         return {
             data: [],
             success: false,

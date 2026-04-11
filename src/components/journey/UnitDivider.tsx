@@ -125,20 +125,37 @@ function UnitDivider({
     onJumpPress,
 }: UnitDividerProps): React.JSX.Element {
     return (
-        <View className="w-full py-6 px-4">
-            {/* Horizontal line with centered title */}
-            <View className="flex-row items-center">
-                <View className="flex-1 h-px" style={{ backgroundColor: '#CBD5E0' }} />
-                <View className="px-4">
+        <View
+            className="w-full px-4"
+            style={{
+                paddingTop: showJumpHere ? 14 : 4,
+                paddingBottom: showJumpHere ? 6 : 2,
+            }}
+        >
+            {/* Quiet divider with low-contrast title */}
+            <View className="flex-row items-center px-1">
+                <View
+                    className="flex-1 h-px"
+                    style={{ backgroundColor: 'rgba(203, 213, 225, 0.92)' }}
+                />
+                <View
+                    className="mx-3 rounded-full px-2.5 py-1"
+                    style={{
+                        backgroundColor: 'rgba(248, 250, 252, 0.98)',
+                    }}
+                >
                     <Text
-                        className="text-base font-semibold text-center"
-                        style={{ color: '#4A5568' }}
+                        className="text-[14px] font-medium text-center"
+                        style={{ color: '#64748B', letterSpacing: -0.1 }}
                         accessibilityRole="header"
                     >
                         {title}
                     </Text>
                 </View>
-                <View className="flex-1 h-px" style={{ backgroundColor: '#CBD5E0' }} />
+                <View
+                    className="flex-1 h-px"
+                    style={{ backgroundColor: 'rgba(203, 213, 225, 0.92)' }}
+                />
             </View>
 
             {/* Jump Here badge (conditional from config) */}

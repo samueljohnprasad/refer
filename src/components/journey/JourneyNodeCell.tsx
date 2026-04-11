@@ -75,8 +75,12 @@ function JourneyNodeCellInner({
 }: JourneyNodeCellProps): React.JSX.Element {
     const { pathColors, pathStrokeWidth } = useHighContrast();
 
-    // Determine segment color: green if this node is at or before the active node
-    const isProgressSegment: boolean = item.globalIndex <= activeGlobalIndex;
+    // Determine segment color:
+    // - completed nodes always carry a completed/progress connector
+    // - active journeys still color up to the current active node boundary
+    const isProgressSegment: boolean =
+        item.status === NodeStatus.COMPLETED ||
+        (activeGlobalIndex >= 0 && item.globalIndex <= activeGlobalIndex);
     const segmentColor: string = isProgressSegment
         ? pathColors.active
         : pathColors.inactive;

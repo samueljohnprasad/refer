@@ -97,20 +97,17 @@ export function useJourneyFlashList(
     // Compute unit headers with their estimated Y offsets for StickyUnitHeader
     const unitHeaders: UnitHeaderData[] = useMemo(() => {
         const headers: UnitHeaderData[] = [];
-        let runningY = config.settings.topPadding;
 
-        allUnits.forEach((unit: UnitData, index: number) => {
+        allUnits.forEach((unit: UnitData) => {
             const unitConf = unitConfigMap.get(unit.id);
-            if (!unitConf) return;
 
-            // In the lazy section architecture, unitNumber == sectionNumber
-            const sectionNumber: number = unitConf.unitNumber;
+            const sectionNumber: number =
+                unit.sectionNumber ?? unitConf?.unitNumber ?? unit.unitNumber;
 
             // For the first unit, start at Y=0. For others, include divider and mascot heights
             // Actually, we can just scan flashListData to find the exact Y offset of the first item of this unit.
-            let yOffset = 0;
             let currentY = 0;
-            const firstItemOfUnit = flashListData.find((item) => {
+            flashListData.find((item) => {
                 if (
                     item.itemType === "node" &&
                     (item as JourneyNode).unitId === unit.id
@@ -127,20 +124,21 @@ export function useJourneyFlashList(
                 currentY += item.cellHeight;
                 return false;
             });
-            yOffset = currentY;
 
             headers.push({
                 unitId: unit.id,
-                unitNumber: unitConf.unitNumber,
-                unitTitle: unitConf.title,
+                unitNumber: unit.unitNumber,
+                unitTitle: unitConf?.title ?? unit.title,
                 sectionNumber,
-                colorThemeKey: unitConf.colorThemeKey,
-                yOffset,
+                colorThemeKey:
+                    unitConf?.colorThemeKey ??
+                    (config.colorThemes[unit.colorScheme] ? unit.colorScheme : "green"),
+                yOffset: currentY,
             });
         });
 
         return headers;
-    }, [allUnits, unitConfigMap, flashListData]);
+    }, [allUnits, config.colorThemes, flashListData, unitConfigMap]);
 
     // Push to atom so other components/atoms can derive from it
     useEffect(() => {

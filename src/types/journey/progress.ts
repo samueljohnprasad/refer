@@ -19,6 +19,10 @@ export interface UserJourneyEnrollment {
   journeyId: string;
   /** Which unit the user is currently on (1-indexed) */
   currentUnitNumber: number;
+  /** Which section the user is currently on (1-indexed) */
+  currentSectionNumber?: number;
+  /** Which unit within the current section the user is currently on (1-indexed) */
+  currentSectionUnitNumber?: number;
   /** active | completed | abandoned */
   status: 'active' | 'completed' | 'abandoned';
   /** ISO timestamp of enrollment */

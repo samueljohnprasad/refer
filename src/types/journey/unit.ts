@@ -19,7 +19,10 @@ export interface MascotPlacement {
 /** A unit (section) containing multiple nodes */
 export interface UnitData {
   id: string;
+  sectionId?: string;
+  sectionNumber?: number;
   unitNumber: number;
+  globalUnitNumber?: number;
   title: string;
   description: string;
   colorScheme: UnitColorScheme;

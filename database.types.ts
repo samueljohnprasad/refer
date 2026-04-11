@@ -634,6 +634,50 @@ export type Database = {
           },
         ]
       }
+      journey_template_sections: {
+        Row: {
+          color_scheme: string
+          created_at: string | null
+          description: string
+          id: string
+          journey_id: string
+          mascot_placements: Json
+          section_number: number
+          title: string
+          unlock_rule: string
+        }
+        Insert: {
+          color_scheme?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          journey_id: string
+          mascot_placements?: Json
+          section_number: number
+          title: string
+          unlock_rule?: string
+        }
+        Update: {
+          color_scheme?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          journey_id?: string
+          mascot_placements?: Json
+          section_number?: number
+          title?: string
+          unlock_rule?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_template_sections_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journey_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journey_template_units: {
         Row: {
           color_scheme: string
@@ -642,6 +686,8 @@ export type Database = {
           id: string
           journey_id: string
           mascot_placements: Json
+          section_id: string | null
+          section_unit_number: number | null
           title: string
           unit_number: number
           unlock_rule: string
@@ -653,6 +699,8 @@ export type Database = {
           id?: string
           journey_id: string
           mascot_placements?: Json
+          section_id?: string | null
+          section_unit_number?: number | null
           title: string
           unit_number: number
           unlock_rule?: string
@@ -664,6 +712,8 @@ export type Database = {
           id?: string
           journey_id?: string
           mascot_placements?: Json
+          section_id?: string | null
+          section_unit_number?: number | null
           title?: string
           unit_number?: number
           unlock_rule?: string
@@ -674,6 +724,13 @@ export type Database = {
             columns: ["journey_id"]
             isOneToOne: false
             referencedRelation: "journey_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journey_template_units_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "journey_template_sections"
             referencedColumns: ["id"]
           },
         ]
@@ -1230,6 +1287,10 @@ export type Database = {
       user_journey_enrollments: {
         Row: {
           completed_at: string | null
+          current_section_id: string | null
+          current_section_number: number | null
+          current_section_unit_number: number | null
+          current_unit_id: string | null
           current_unit_number: number
           enrolled_at: string | null
           id: string
@@ -1240,6 +1301,10 @@ export type Database = {
         }
         Insert: {
           completed_at?: string | null
+          current_section_id?: string | null
+          current_section_number?: number | null
+          current_section_unit_number?: number | null
+          current_unit_id?: string | null
           current_unit_number?: number
           enrolled_at?: string | null
           id?: string
@@ -1250,6 +1315,10 @@ export type Database = {
         }
         Update: {
           completed_at?: string | null
+          current_section_id?: string | null
+          current_section_number?: number | null
+          current_section_unit_number?: number | null
+          current_unit_id?: string | null
           current_unit_number?: number
           enrolled_at?: string | null
           id?: string
@@ -1259,6 +1328,20 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "user_journey_enrollments_current_section_id_fkey"
+            columns: ["current_section_id"]
+            isOneToOne: false
+            referencedRelation: "journey_template_sections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_journey_enrollments_current_unit_id_fkey"
+            columns: ["current_unit_id"]
+            isOneToOne: false
+            referencedRelation: "journey_template_units"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "user_journey_enrollments_journey_id_fkey"
             columns: ["journey_id"]
@@ -1418,6 +1501,51 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_node_replays: {
+        Row: {
+          completed_at: string
+          enrollment_id: string
+          id: string
+          node_id: string
+          reward_payload: Json
+          source: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          enrollment_id: string
+          id?: string
+          node_id: string
+          reward_payload?: Json
+          source?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          enrollment_id?: string
+          id?: string
+          node_id?: string
+          reward_payload?: Json
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_node_replays_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "user_journey_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_node_replays_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "journey_template_nodes"
             referencedColumns: ["id"]
           },
         ]
@@ -1748,8 +1876,23 @@ export type Database = {
       }
       get_journey_catalog: { Args: never; Returns: Json }
       get_journey_template: { Args: { p_slug: string }; Returns: Json }
+      get_node_content: { Args: { p_node_id: string }; Returns: Json }
+      get_section_map:
+        | { Args: { p_slug: string; p_unit_number?: number }; Returns: Json }
+        | {
+            Args: {
+              p_slug: string
+              p_unit_number?: number
+              p_view_mode?: string
+            }
+            Returns: Json
+          }
       get_user_journey_progress: {
         Args: { p_journey_id: string }
+        Returns: Json
+      }
+      replay_completed_journey_node: {
+        Args: { p_enrollment_id: string; p_node_id: string }
         Returns: Json
       }
       update_user_streak: { Args: never; Returns: Json }

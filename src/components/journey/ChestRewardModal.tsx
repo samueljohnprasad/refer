@@ -32,17 +32,16 @@ export interface ChestRewardModalProps {
 // Backdrop
 // ---------------------------------------------------------------------------
 
-const Backdrop = useCallback(
-  (props: BottomSheetBackdropProps) => (
+function Backdrop(props: BottomSheetBackdropProps): React.JSX.Element {
+  return (
     <BottomSheetBackdrop
       {...props}
       disappearsOnIndex={-1}
       appearsOnIndex={0}
       opacity={0.5}
     />
-  ),
-  [],
-);
+  );
+}
 
 // ---------------------------------------------------------------------------
 // ChestRewardModal

@@ -38,7 +38,9 @@ import type {
   SectionMapResponse,
   SectionListItem,
   NodeContentResponse,
+  SectionViewMode,
 } from "@/src/types/journey/sectionMap";
+import { createLogger } from "@/src/lib/logger";
 
 // ---------------------------------------------------------------------------
 // Storage keys
@@ -48,8 +50,9 @@ const JOURNEY_STATE_KEY = "@journey_state_v2";
 const JOURNEY_TEMPLATE_CACHE_KEY = "@journey_template_cache_v1";
 const ACTIVE_SLUG_KEY = "@journey_active_slug_v1";
 const MULTI_JOURNEY_STATE_KEY = "@multi_journey_state_v1";
-const SECTION_MAP_CACHE_KEY = "@section_map_cache_v1";
+const SECTION_MAP_CACHE_KEY = "@section_map_cache_v2";
 const NODE_CONTENT_CACHE_KEY = "@node_content_cache_v1";
+const log = createLogger("JourneyStore");
 
 /** Cache TTL: 24 hours in milliseconds */
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -261,10 +264,19 @@ export const journeyFlashListAtom = atom<JourneyFlashListItem[]>([]);
  */
 export const activeFlashListIndexAtom = atom<number>((get) => {
   const items: JourneyFlashListItem[] = get(journeyFlashListAtom);
-  return items.findIndex(
+  const activeIndex = items.findIndex(
     (item: JourneyFlashListItem) =>
       item.itemType === "node" &&
       (item as JourneyNode).status === NodeStatus.ACTIVE,
+  );
+  if (activeIndex >= 0) return activeIndex;
+
+  const fallbackNodeId: string = get(journeyStateAtom).lastActiveNodeId;
+  if (!fallbackNodeId) return -1;
+
+  return items.findIndex(
+    (item: JourneyFlashListItem) =>
+      item.itemType === "node" && item.id === fallbackNodeId,
   );
 });
 
@@ -332,16 +344,14 @@ export async function loadJourneyState(): Promise<JourneyState | null> {
     const parsed: unknown = JSON.parse(raw);
 
     if (!isValidJourneyState(parsed)) {
-      console.warn(
-        "[JourneyStore] Corrupted state detected, resetting to defaults",
-      );
+      log.warn("Corrupted journey state detected, resetting to defaults");
       await AsyncStorage.removeItem(JOURNEY_STATE_KEY);
       return null;
     }
 
     return parsed;
   } catch (error) {
-    console.error("[JourneyStore] Failed to load state:", error);
+    log.error("Failed to load journey state", error);
     await AsyncStorage.removeItem(JOURNEY_STATE_KEY).catch(() => { });
     return null;
   }
@@ -352,7 +362,7 @@ export async function saveJourneyState(state: JourneyState): Promise<void> {
   try {
     await AsyncStorage.setItem(JOURNEY_STATE_KEY, JSON.stringify(state));
   } catch (error) {
-    console.error("[JourneyStore] Failed to save state:", error);
+    log.error("Failed to save journey state", error);
   }
 }
 
@@ -361,7 +371,7 @@ export async function clearJourneyState(): Promise<void> {
   try {
     await AsyncStorage.removeItem(JOURNEY_STATE_KEY);
   } catch (error) {
-    console.error("[JourneyStore] Failed to clear state:", error);
+    log.error("Failed to clear journey state", error);
   }
 }
 
@@ -378,7 +388,7 @@ export async function cacheTemplate(
     const key = `${JOURNEY_TEMPLATE_CACHE_KEY}_${slug}`;
     await AsyncStorage.setItem(key, JSON.stringify(template));
   } catch (error) {
-    console.error("[JourneyStore] Failed to cache template:", error);
+    log.error("Failed to cache journey template", error, { slug });
   }
 }
 
@@ -392,7 +402,7 @@ export async function loadCachedTemplate(
     if (!raw) return null;
     return JSON.parse(raw) as JourneyTemplate;
   } catch (error) {
-    console.error("[JourneyStore] Failed to load cached template:", error);
+    log.error("Failed to load cached journey template", error, { slug });
     return null;
   }
 }
@@ -406,7 +416,16 @@ export async function saveActiveSlug(slug: string): Promise<void> {
   try {
     await AsyncStorage.setItem(ACTIVE_SLUG_KEY, slug);
   } catch (error) {
-    console.error("[JourneyStore] Failed to save active slug:", error);
+    log.error("Failed to save active journey slug", error, { slug });
+  }
+}
+
+/** Clear the persisted active journey slug */
+export async function clearActiveSlug(): Promise<void> {
+  try {
+    await AsyncStorage.removeItem(ACTIVE_SLUG_KEY);
+  } catch (error) {
+    log.error("Failed to clear active journey slug", error);
   }
 }
 
@@ -415,7 +434,7 @@ export async function loadActiveSlug(): Promise<string | null> {
   try {
     return await AsyncStorage.getItem(ACTIVE_SLUG_KEY);
   } catch (error) {
-    console.error("[JourneyStore] Failed to load active slug:", error);
+    log.error("Failed to load active journey slug", error);
     return null;
   }
 }
@@ -431,7 +450,7 @@ export async function saveMultiJourneyState(
   try {
     await AsyncStorage.setItem(MULTI_JOURNEY_STATE_KEY, JSON.stringify(state));
   } catch (error) {
-    console.error("[JourneyStore] Failed to save multi-journey state:", error);
+    log.error("Failed to save multi-journey state", error);
   }
 }
 
@@ -452,7 +471,7 @@ export async function loadMultiJourneyState(): Promise<MultiJourneyState | null>
     }
     return parsed as MultiJourneyState;
   } catch (error) {
-    console.error("[JourneyStore] Failed to load multi-journey state:", error);
+    log.error("Failed to load multi-journey state", error);
     return null;
   }
 }
@@ -462,7 +481,7 @@ export async function clearMultiJourneyState(): Promise<void> {
   try {
     await AsyncStorage.removeItem(MULTI_JOURNEY_STATE_KEY);
   } catch (error) {
-    console.error("[JourneyStore] Failed to clear multi-journey state:", error);
+    log.error("Failed to clear multi-journey state", error);
   }
 }
 
@@ -495,7 +514,7 @@ export const activeSectionNodeIdAtom = atom<string | null>(
 );
 
 /** In-memory cache of visited sections (avoids re-fetch on back/forward nav) */
-export const sectionCacheAtom = atom<Map<number, SectionMapResponse>>(
+export const sectionCacheAtom = atom<Map<string, SectionMapResponse>>(
   new Map(),
 );
 
@@ -519,8 +538,12 @@ interface CachedNodeContent {
 /**
  * Build the AsyncStorage key for a section map cache entry.
  */
-function sectionCacheKey(slug: string, unitNumber: number): string {
-  return `${SECTION_MAP_CACHE_KEY}_${slug}_${unitNumber}`;
+function sectionCacheKey(
+  slug: string,
+  unitNumber: number,
+  viewMode: SectionViewMode,
+): string {
+  return `${SECTION_MAP_CACHE_KEY}_${slug}_${viewMode}_${unitNumber}`;
 }
 
 /**
@@ -545,10 +568,10 @@ export async function cacheSectionMap(
       version: data.journey.version,
       cachedAt: Date.now(),
     };
-    const key: string = sectionCacheKey(slug, unitNumber);
+    const key: string = sectionCacheKey(slug, unitNumber, data.viewMode);
     await AsyncStorage.setItem(key, JSON.stringify(envelope));
   } catch (error: unknown) {
-    console.error("[JourneyStore] Failed to cache section map:", error);
+    log.error("Failed to cache section map", error, { slug, unitNumber });
   }
 }
 
@@ -561,10 +584,11 @@ export async function cacheSectionMap(
 export async function loadCachedSectionMap(
   slug: string,
   unitNumber: number,
+  viewMode: SectionViewMode,
   expectedVersion?: number,
 ): Promise<SectionMapResponse | null> {
   try {
-    const key: string = sectionCacheKey(slug, unitNumber);
+    const key: string = sectionCacheKey(slug, unitNumber, viewMode);
     const raw: string | null = await AsyncStorage.getItem(key);
     if (!raw) return null;
 
@@ -584,7 +608,7 @@ export async function loadCachedSectionMap(
 
     return envelope.data;
   } catch (error: unknown) {
-    console.error("[JourneyStore] Failed to load cached section map:", error);
+    log.error("Failed to load cached section map", error, { slug, unitNumber });
     return null;
   }
 }
@@ -604,7 +628,7 @@ export async function cacheNodeContent(
     const key: string = nodeContentCacheKey(nodeId);
     await AsyncStorage.setItem(key, JSON.stringify(envelope));
   } catch (error: unknown) {
-    console.error("[JourneyStore] Failed to cache node content:", error);
+    log.error("Failed to cache node content", error, { nodeId });
   }
 }
 
@@ -630,7 +654,7 @@ export async function loadCachedNodeContent(
 
     return envelope.data;
   } catch (error: unknown) {
-    console.error("[JourneyStore] Failed to load cached node content:", error);
+    log.error("Failed to load cached node content", error, { nodeId });
     return null;
   }
 }
@@ -644,12 +668,15 @@ export async function invalidateSectionCaches(
   totalSections: number,
 ): Promise<void> {
   try {
-    const keys: string[] = Array.from(
-      { length: totalSections },
-      (_: unknown, i: number): string => sectionCacheKey(slug, i + 1),
+    const modes: SectionViewMode[] = ["active", "completed", "preview"];
+    const keys: string[] = modes.flatMap((mode: SectionViewMode) =>
+      Array.from(
+        { length: totalSections },
+        (_: unknown, i: number): string => sectionCacheKey(slug, i + 1, mode),
+      ),
     );
     await AsyncStorage.multiRemove(keys);
   } catch (error: unknown) {
-    console.error("[JourneyStore] Failed to invalidate section caches:", error);
+    log.error("Failed to invalidate section caches", error, { slug, totalSections });
   }
 }

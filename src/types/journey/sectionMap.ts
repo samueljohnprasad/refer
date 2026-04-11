@@ -13,6 +13,9 @@
 import type { UnitColorScheme } from './enums';
 import type { JourneyReward } from './node';
 
+/** How the journey map is being accessed */
+export type SectionViewMode = 'active' | 'completed' | 'preview';
+
 // ---------------------------------------------------------------------------
 // Node stub — lightweight node metadata (NO content JSONB)
 // ---------------------------------------------------------------------------
@@ -21,6 +24,12 @@ import type { JourneyReward } from './node';
 export interface NodeStub {
     /** UUID from DB */
     id: string;
+    /** UUID of the unit that owns this node */
+    unitId: string;
+    /** 1-indexed unit number within the current section */
+    unitNumber: number;
+    /** 1-indexed global unit number within the journey */
+    globalUnitNumber: number;
     /** 0-indexed position within the unit */
     nodeIndex: number;
     /** learn | exercise | quiz | checkpoint | chest | mood_check | etc. */
@@ -46,20 +55,26 @@ export interface NodeStub {
 }
 
 // ---------------------------------------------------------------------------
-// Section data — metadata + node stubs for one section
+// Section unit data — one unit nested inside a fetched section
 // ---------------------------------------------------------------------------
 
-/** Full metadata for a single section (unit) */
-export interface SectionData {
+/** One unit within a fetched section */
+export interface SectionUnitData {
     /** UUID from DB */
     id: string;
+    /** UUID of the parent section */
+    sectionId: string;
     /** 1-indexed section number */
+    sectionNumber: number;
+    /** 1-indexed unit number within the section */
     unitNumber: number;
+    /** 1-indexed unit number across the full journey */
+    globalUnitNumber: number;
     /** Display title */
     title: string;
-    /** Section description */
+    /** Unit description */
     description: string;
-    /** Color scheme for the section header/theme */
+    /** Color scheme for the unit header/theme */
     colorScheme: UnitColorScheme;
     /** Mascot placement configs */
     mascotPlacements: unknown[];
@@ -70,19 +85,53 @@ export interface SectionData {
 }
 
 // ---------------------------------------------------------------------------
+// Section data — metadata + node stubs for one section
+// ---------------------------------------------------------------------------
+
+/** Full metadata for a single section */
+export interface SectionData {
+    /** UUID from DB */
+    id: string;
+    /** 1-indexed section number (legacy alias kept for compatibility) */
+    unitNumber: number;
+    /** 1-indexed section number */
+    sectionNumber: number;
+    /** Display title */
+    title: string;
+    /** Section description */
+    description: string;
+    /** Color scheme for the section header/theme */
+    colorScheme: UnitColorScheme;
+    /** Mascot placement configs */
+    mascotPlacements: unknown[];
+    /** Unlock rule: sequential | placement_test | immediate */
+    unlockRule: string;
+    /** Total units inside this section */
+    unitCount: number;
+    /** Flattened node stubs across all units — ordered by unitNumber, nodeIndex */
+    nodes: NodeStub[];
+    /** Nested units for this section */
+    units: SectionUnitData[];
+}
+
+// ---------------------------------------------------------------------------
 // Section list item — lightweight entry for sticky header tabs
 // ---------------------------------------------------------------------------
 
 /** Summary of a section for the sticky header tab bar */
 export interface SectionListItem {
-    /** 1-indexed section number */
+    /** 1-indexed section number (legacy alias kept for compatibility) */
     unitNumber: number;
+    /** 1-indexed section number */
+    sectionNumber?: number;
     /** Display title */
     title: string;
     /** Color scheme for tab styling */
     colorScheme: string;
     /** Total number of nodes in this section */
     nodeCount: number;
+    /** Total number of units in this section */
+    unitCount?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -111,8 +160,16 @@ export interface SectionNodeProgress {
 export interface SectionEnrollment {
     /** UUID of the enrollment */
     id: string;
-    /** User's current section number */
+    /** User's current global unit number */
     currentUnitNumber: number;
+    /** User's current section number */
+    currentSectionNumber: number;
+    /** User's current unit number within the current section */
+    currentSectionUnitNumber: number;
+    /** UUID of the current section */
+    currentSectionId?: string | null;
+    /** UUID of the current unit */
+    currentUnitId?: string | null;
     /** active | completed | abandoned */
     status: 'active' | 'completed' | 'abandoned';
     /** Template version at enrollment time */
@@ -145,6 +202,10 @@ export interface SectionJourneyMeta {
 
 /** Complete response from the `get_section_map` RPC */
 export interface SectionMapResponse {
+    /** Which access mode produced this response */
+    viewMode: SectionViewMode;
+    /** Node that should be focused/scrolled to on initial render */
+    focusNodeId: string | null;
     /** High-level journey metadata */
     journey: SectionJourneyMeta;
     /** Section metadata + node stubs (no content) */

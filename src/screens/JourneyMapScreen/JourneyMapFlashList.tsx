@@ -61,6 +61,9 @@ const ESTIMATED_ITEM_SIZE: number = 120;
 /** Extra pixels above/below viewport to pre-render for smooth scrolling */
 const DRAW_DISTANCE: number = 600;
 
+/** Bottom inset so the final node can scroll above the tab bar */
+const LIST_BOTTOM_PADDING: number = 180;
+
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
@@ -307,6 +310,7 @@ function JourneyMapFlashListInner({
                 snapToInterval={80} // item height
                 decelerationRate="normal"
                 ref={flashListRef as any}
+                contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
                 onViewableItemsChanged={onViewableItemsChanged.current}
                 viewabilityConfig={{
                     itemVisiblePercentThreshold: 10,

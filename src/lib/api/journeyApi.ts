@@ -22,7 +22,13 @@ import type {
 import type {
   SectionMapResponse,
   NodeContentResponse,
+  SectionViewMode,
 } from "@/src/types/journey/sectionMap";
+import { createLogger } from "@/src/lib/logger";
+
+const log = createLogger("JourneyAPI");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const db = supabase as any;
 
 // ---------------------------------------------------------------------------
 // Response wrapper
@@ -45,6 +51,11 @@ export interface UpdateProgressPayload {
 }
 
 export interface CompleteNodePayload {
+  enrollmentId: string;
+  nodeId: string;
+}
+
+export interface ReplayCompletedNodePayload {
   enrollmentId: string;
   nodeId: string;
 }
@@ -72,13 +83,13 @@ export async function fetchJourneyTemplate(
     });
 
     if (error) {
-      console.error("[JourneyAPI] fetchJourneyTemplate error:", error.message);
+      log.error("fetchJourneyTemplate RPC error", error.message);
       return { data: null, success: false, error: error.message };
     }
 
     return { data: data as unknown as JourneyTemplate, success: true };
   } catch (err) {
-    console.error("[JourneyAPI] fetchJourneyTemplate exception:", err);
+    log.error("fetchJourneyTemplate exception", err);
     return {
       data: null,
       success: false,
@@ -104,7 +115,7 @@ export async function fetchUserProgress(
     });
 
     if (error) {
-      console.error("[JourneyAPI] fetchUserProgress error:", error.message);
+      log.error("fetchUserProgress RPC error", error.message);
       return { data: null, success: false, error: error.message };
     }
 
@@ -115,7 +126,7 @@ export async function fetchUserProgress(
 
     return { data: data as unknown as UserJourneyProgress, success: true };
   } catch (err) {
-    console.error("[JourneyAPI] fetchUserProgress exception:", err);
+    log.error("fetchUserProgress exception", err);
     return {
       data: null,
       success: false,
@@ -141,7 +152,7 @@ export async function updateNodeProgress(
       .eq("node_id", payload.nodeId);
 
     if (error) {
-      console.error("[JourneyAPI] updateNodeProgress error:", error.message);
+      log.error("updateNodeProgress mutation error", error.message);
       return {
         data: { nodeId: payload.nodeId, progress: payload.progress },
         success: false,
@@ -154,7 +165,7 @@ export async function updateNodeProgress(
       success: true,
     };
   } catch (err) {
-    console.error("[JourneyAPI] updateNodeProgress exception:", err);
+    log.error("updateNodeProgress exception", err);
     return {
       data: { nodeId: payload.nodeId, progress: payload.progress },
       success: false,
@@ -178,7 +189,7 @@ export async function completeNodeApi(
     });
 
     if (error) {
-      console.error("[JourneyAPI] completeNodeApi error:", error.message);
+      log.error("completeNodeApi RPC error", error.message);
       return {
         data: { success: false, error: error.message },
         success: false,
@@ -191,7 +202,46 @@ export async function completeNodeApi(
       success: true,
     };
   } catch (err) {
-    console.error("[JourneyAPI] completeNodeApi exception:", err);
+    log.error("completeNodeApi exception", err);
+    return {
+      data: {
+        success: false,
+        error: err instanceof Error ? err.message : "Unknown error",
+      },
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}
+
+export async function replayCompletedNodeApi(
+  payload: ReplayCompletedNodePayload,
+): Promise<ApiResponse<CompleteNodeResponse>> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.rpc as any)(
+      "replay_completed_journey_node",
+      {
+        p_enrollment_id: payload.enrollmentId,
+        p_node_id: payload.nodeId,
+      },
+    );
+
+    if (error) {
+      log.error("replayCompletedNodeApi RPC error", error.message);
+      return {
+        data: { success: false, error: error.message },
+        success: false,
+        error: error.message,
+      };
+    }
+
+    return {
+      data: data as unknown as CompleteNodeResponse,
+      success: true,
+    };
+  } catch (err) {
+    log.error("replayCompletedNodeApi exception", err);
     return {
       data: {
         success: false,
@@ -221,6 +271,51 @@ export async function enrollInJourney(
       return { data: null, success: false, error: "Not authenticated" };
     }
 
+    const { data: firstNode, error: firstNodeError } = await db
+      .from("journey_template_nodes")
+      .select("unit_id")
+      .eq("id", payload.firstNodeId)
+      .single();
+
+    if (firstNodeError || !firstNode?.unit_id) {
+      log.error("enrollInJourney first node lookup error", firstNodeError?.message);
+      return {
+        data: null,
+        success: false,
+        error: firstNodeError?.message ?? "First node not found",
+      };
+    }
+
+    const { data: firstUnit, error: firstUnitError } = await db
+      .from("journey_template_units")
+      .select("id, unit_number, section_id, section_unit_number")
+      .eq("id", firstNode.unit_id)
+      .single();
+
+    if (firstUnitError || !firstUnit?.id) {
+      log.error("enrollInJourney first unit lookup error", firstUnitError?.message);
+      return {
+        data: null,
+        success: false,
+        error: firstUnitError?.message ?? "First unit not found",
+      };
+    }
+
+    const { data: firstSection, error: firstSectionError } = await db
+      .from("journey_template_sections")
+      .select("id, section_number")
+      .eq("id", firstUnit.section_id)
+      .single();
+
+    if (firstSectionError || !firstSection?.id) {
+      log.error("enrollInJourney first section lookup error", firstSectionError?.message);
+      return {
+        data: null,
+        success: false,
+        error: firstSectionError?.message ?? "First section not found",
+      };
+    }
+
     // Insert enrollment
     const { data: enrollment, error: enrollError } = await supabase
       .from("user_journey_enrollments")
@@ -228,14 +323,18 @@ export async function enrollInJourney(
         user_id: userId,
         journey_id: payload.journeyId,
         template_version: payload.templateVersion,
-        current_unit_number: 1,
+        current_unit_number: firstUnit.unit_number,
+        current_section_id: firstSection.id,
+        current_unit_id: firstUnit.id,
+        current_section_number: firstSection.section_number,
+        current_section_unit_number: firstUnit.section_unit_number,
         status: "active",
       })
       .select()
       .single();
 
     if (enrollError) {
-      console.error("[JourneyAPI] enrollInJourney error:", enrollError.message);
+      log.error("enrollInJourney insert error", enrollError.message);
       return { data: null, success: false, error: enrollError.message };
     }
 
@@ -251,16 +350,13 @@ export async function enrollInJourney(
       });
 
     if (nodeError) {
-      console.error(
-        "[JourneyAPI] enrollInJourney node error:",
-        nodeError.message,
-      );
+      log.error("enrollInJourney first node insert error", nodeError.message);
     }
 
     // Re-fetch the full progress to return a clean state
     return fetchUserProgress(payload.journeyId);
   } catch (err) {
-    console.error("[JourneyAPI] enrollInJourney exception:", err);
+    log.error("enrollInJourney exception", err);
     return {
       data: null,
       success: false,
@@ -284,7 +380,7 @@ export async function fetchJourneyCatalog(): Promise<
     const { data, error } = await supabase.rpc("get_journey_catalog");
 
     if (error) {
-      console.error("[JourneyAPI] fetchJourneyCatalog error:", error.message);
+      log.error("fetchJourneyCatalog RPC error", error.message);
       return { data: [], success: false, error: error.message };
     }
 
@@ -293,7 +389,7 @@ export async function fetchJourneyCatalog(): Promise<
       success: true,
     };
   } catch (err) {
-    console.error("[JourneyAPI] fetchJourneyCatalog exception:", err);
+    log.error("fetchJourneyCatalog exception", err);
     return {
       data: [],
       success: false,
@@ -317,13 +413,21 @@ export async function fetchSectionMap(
   slug: string,
   unitNumber?: number,
   signal?: AbortSignal,
+  viewMode?: SectionViewMode,
 ): Promise<ApiResponse<SectionMapResponse | null>> {
   try {
-    const params: { p_slug: string; p_unit_number?: number } = {
+    const params: {
+      p_slug: string;
+      p_unit_number?: number;
+      p_view_mode?: SectionViewMode;
+    } = {
       p_slug: slug,
     };
     if (unitNumber !== undefined) {
       params.p_unit_number = unitNumber;
+    }
+    if (viewMode) {
+      params.p_view_mode = viewMode;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -334,7 +438,10 @@ export async function fetchSectionMap(
     const { data, error } = await query;
 
     if (error) {
-      console.error("[JourneyAPI] fetchSectionMap error:", error.message);
+      log.error("fetchSectionMap RPC error", error.message, {
+        slug,
+        unitNumber,
+      });
       return { data: null, success: false, error: error.message };
     }
 
@@ -344,7 +451,7 @@ export async function fetchSectionMap(
 
     return { data: data as unknown as SectionMapResponse, success: true };
   } catch (err: unknown) {
-    console.error("[JourneyAPI] fetchSectionMap exception:", err);
+    log.error("fetchSectionMap exception", err, { slug, unitNumber });
     return {
       data: null,
       success: false,
@@ -369,7 +476,7 @@ export async function fetchNodeContent(
     });
 
     if (error) {
-      console.error("[JourneyAPI] fetchNodeContent error:", error.message);
+      log.error("fetchNodeContent RPC error", error.message, { nodeId });
       return { data: null, success: false, error: error.message };
     }
 
@@ -379,7 +486,7 @@ export async function fetchNodeContent(
 
     return { data: data as unknown as NodeContentResponse, success: true };
   } catch (err: unknown) {
-    console.error("[JourneyAPI] fetchNodeContent exception:", err);
+    log.error("fetchNodeContent exception", err, { nodeId });
     return {
       data: null,
       success: false,

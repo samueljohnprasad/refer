@@ -86,6 +86,34 @@ export function completeNode(
   const updatedUnits: UnitData[] = [...state.units];
   updatedUnits[targetUnitIndex] = { ...unit, nodes: updatedNodes };
 
+  if (nextIndex >= updatedNodes.length) {
+    const nextUnitIndex: number = targetUnitIndex + 1;
+    const nextUnit: UnitData | undefined = updatedUnits[nextUnitIndex];
+
+    if (nextUnit && nextUnit.nodes.length > 0) {
+      const nextUnitNodes: PathNodeData[] = [...nextUnit.nodes];
+      if (nextUnitNodes[0].status === NodeStatus.LOCKED) {
+        nextUnitNodes[0] = {
+          ...nextUnitNodes[0],
+          status: NodeStatus.ACTIVE,
+          icon: NodeIcon.STAR,
+          label: "START",
+          progress: 0,
+        };
+      }
+
+      updatedUnits[nextUnitIndex] = { ...nextUnit, nodes: nextUnitNodes };
+
+      return {
+        ...state,
+        currentUnit: nextUnitIndex,
+        units: updatedUnits,
+        lastActiveNodeId: nextUnitNodes[0].id,
+        stats: updatedStats,
+      };
+    }
+  }
+
   return {
     ...state,
     units: updatedUnits,

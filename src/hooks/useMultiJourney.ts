@@ -13,8 +13,8 @@
  * Persistence via AsyncStorage for offline fallback.
  */
 
-import { useCallback, useEffect, useState } from "react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useAtom, useAtomValue } from "jotai";
 
 import type {
     JourneyEnrollment,
@@ -27,11 +27,19 @@ import {
     hasActiveEnrollmentAtom,
     journeySwitcherItemsAtom,
     saveActiveSlug,
+    clearActiveSlug,
     loadActiveSlug,
     saveMultiJourneyState,
     loadMultiJourneyState,
 } from "@/src/store/journeyStore";
-import { fetchMHJourneyCatalog } from "@/src/lib/api/mentalHealthJourneyApi";
+import {
+    fetchMHJourneyCatalog,
+    fetchMHJourneyTemplate,
+} from "@/src/lib/api/mentalHealthJourneyApi";
+import { enrollInJourney as enrollJourneyApi } from "@/src/lib/api/journeyApi";
+import { createLogger } from "@/src/lib/logger";
+
+const log = createLogger("useMultiJourney");
 
 // ---------------------------------------------------------------------------
 // Return type
@@ -112,82 +120,166 @@ export function useMultiJourney(): UseMultiJourneyReturn {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const latestStateRef = useRef<{
+        activeSlug: string | null;
+        enrollments: JourneyEnrollment[];
+    }>({
+        activeSlug,
+        enrollments,
+    });
+
+    useEffect(() => {
+        latestStateRef.current = {
+            activeSlug,
+            enrollments,
+        };
+    }, [activeSlug, enrollments]);
+
+    const persistEnrollmentState = useCallback(
+        async (
+            nextEnrollments: JourneyEnrollment[],
+            nextActiveSlug: string | null,
+        ): Promise<void> => {
+            log.info("Persisting multi-journey state", {
+                nextActiveSlug,
+                enrollmentCount: nextEnrollments.length,
+                enrollmentSlugs: nextEnrollments.map((e) => e.slug),
+            });
+            latestStateRef.current = {
+                activeSlug: nextActiveSlug,
+                enrollments: nextEnrollments,
+            };
+            setEnrollments(nextEnrollments);
+            setActiveSlug(nextActiveSlug);
+
+            if (nextActiveSlug) {
+                await saveActiveSlug(nextActiveSlug);
+            } else {
+                await clearActiveSlug();
+            }
+
+            await saveMultiJourneyState({
+                activeJourneySlug: nextActiveSlug,
+                enrollments: nextEnrollments,
+            });
+        },
+        [setActiveSlug, setEnrollments],
+    );
 
     // ── Hydrate from local cache first, then server ──
-    const hydrateEnrollments = useCallback(async (): Promise<void> => {
-        try {
-            setIsLoading(true);
-            setError(null);
+    const hydrateEnrollments = useCallback(
+        async (preferredActiveSlug?: string | null): Promise<void> => {
+            try {
+                setIsLoading(true);
+                setError(null);
+                log.info("Hydrating multi-journey state", {
+                    preferredActiveSlug: preferredActiveSlug ?? null,
+                });
 
-            // 1. Restore from local cache for instant UI
-            const cached = await loadMultiJourneyState();
-            if (cached) {
-                setEnrollments(cached.enrollments);
-                if (cached.activeJourneySlug) {
-                    setActiveSlug(cached.activeJourneySlug);
-                }
-            }
-
-            // 2. Also restore the active slug independently
-            const savedSlug: string | null = await loadActiveSlug();
-            if (savedSlug && !cached?.activeJourneySlug) {
-                setActiveSlug(savedSlug);
-            }
-
-            // 3. Fetch fresh data from server
-            const res = await fetchMHJourneyCatalog();
-            if (res.success) {
-                const enrolled: JourneyEnrollment[] = res.data
-                    .filter(
-                        (j: MentalHealthJourneyListItem) =>
-                            j.isEnrolled && j.enrollmentStatus !== null,
-                    )
-                    .map(catalogItemToEnrollment);
-
-                // Preserve local archive state
-                const archivedSlugs: Set<string> = new Set(
-                    enrollments
-                        .filter((e: JourneyEnrollment) => e.isArchived)
-                        .map((e: JourneyEnrollment) => e.slug),
-                );
-                const mergedEnrollments: JourneyEnrollment[] = enrolled.map(
-                    (e: JourneyEnrollment): JourneyEnrollment => ({
-                        ...e,
-                        isArchived: archivedSlugs.has(e.slug),
-                    }),
-                );
-
-                setEnrollments(mergedEnrollments);
-
-                // If no active slug yet, default to the first active enrollment
-                if (!savedSlug && !cached?.activeJourneySlug && enrolled.length > 0) {
-                    const firstActive: JourneyEnrollment | undefined = enrolled.find(
-                        (e: JourneyEnrollment) => e.status === "active",
-                    );
-                    if (firstActive) {
-                        setActiveSlug(firstActive.slug);
-                        await saveActiveSlug(firstActive.slug);
+                // 1. Restore from local cache for instant UI
+                const cached = await loadMultiJourneyState();
+                if (cached) {
+                    log.info("Loaded cached multi-journey state", {
+                        cachedActiveSlug: cached.activeJourneySlug,
+                        cachedEnrollmentCount: cached.enrollments.length,
+                    });
+                    setEnrollments(cached.enrollments);
+                    if (cached.activeJourneySlug) {
+                        setActiveSlug(cached.activeJourneySlug);
                     }
                 }
 
-                // Persist merged state
-                await saveMultiJourneyState({
-                    activeJourneySlug: activeSlug ?? savedSlug ?? null,
-                    enrollments: mergedEnrollments,
-                });
-            } else {
-                // Server failed — use cached data (already set above)
-                if (!cached) {
-                    setError(res.error ?? "Failed to load journeys");
+                // 2. Also restore the active slug independently
+                const savedSlug: string | null = await loadActiveSlug();
+                if (savedSlug && !cached?.activeJourneySlug) {
+                    log.info("Loaded saved active slug", { savedSlug });
+                    setActiveSlug(savedSlug);
                 }
+
+                // 3. Fetch fresh data from server
+                const res = await fetchMHJourneyCatalog();
+                if (res.success) {
+                    const enrolled: JourneyEnrollment[] = res.data
+                        .filter(
+                            (j: MentalHealthJourneyListItem) =>
+                                j.isEnrolled && j.enrollmentStatus !== null,
+                        )
+                        .map(catalogItemToEnrollment);
+
+                    const existingEnrollments: JourneyEnrollment[] =
+                        cached?.enrollments ??
+                        latestStateRef.current.enrollments;
+
+                    // Preserve local archive state
+                    const archivedSlugs: Set<string> = new Set(
+                        existingEnrollments
+                            .filter((e: JourneyEnrollment) => e.isArchived)
+                            .map((e: JourneyEnrollment) => e.slug),
+                    );
+                    const mergedEnrollments: JourneyEnrollment[] = enrolled.map(
+                        (e: JourneyEnrollment): JourneyEnrollment => ({
+                            ...e,
+                            isArchived: archivedSlugs.has(e.slug),
+                        }),
+                    );
+
+                    const requestedActiveSlug: string | null =
+                        preferredActiveSlug ??
+                        savedSlug ??
+                        cached?.activeJourneySlug ??
+                        latestStateRef.current.activeSlug;
+
+                    const isRequestedSlugValid =
+                        requestedActiveSlug !== null &&
+                        mergedEnrollments.some(
+                            (e: JourneyEnrollment) =>
+                                e.slug === requestedActiveSlug && !e.isArchived,
+                        );
+
+                    const fallbackActiveSlug: string | null =
+                        mergedEnrollments.find(
+                            (e: JourneyEnrollment) =>
+                                e.status === "active" && !e.isArchived,
+                        )?.slug ?? null;
+
+                    log.info("Hydration fetched server journeys", {
+                        totalCatalogCount: res.data.length,
+                        enrolledCount: mergedEnrollments.length,
+                        requestedActiveSlug,
+                        resolvedActiveSlug: isRequestedSlugValid
+                            ? requestedActiveSlug
+                            : fallbackActiveSlug,
+                    });
+                    await persistEnrollmentState(
+                        mergedEnrollments,
+                        isRequestedSlugValid
+                            ? requestedActiveSlug
+                            : fallbackActiveSlug,
+                    );
+                } else if (!cached) {
+                    // Server failed — use cached data (already set above)
+                    log.warn("Hydration failed and no cache available", {
+                        error: res.error ?? "Failed to load journeys",
+                    });
+                    setError(res.error ?? "Failed to load journeys");
+                } else {
+                    log.warn("Hydration server fetch failed, using cached state", {
+                        error: res.error ?? "Failed to load journeys",
+                    });
+                }
+            } catch (err) {
+                log.error("Hydration error", err);
+                setError(err instanceof Error ? err.message : "Unknown error");
+            } finally {
+                setIsLoading(false);
             }
-        } catch (err) {
-            console.error("[useMultiJourney] hydration error:", err);
-            setError(err instanceof Error ? err.message : "Unknown error");
-        } finally {
-            setIsLoading(false);
-        }
-    }, [setActiveSlug, setEnrollments]);
+        },
+        [
+            persistEnrollmentState,
+            setActiveSlug,
+            setEnrollments,
+        ],
+    );
 
     // Hydrate on mount
     useEffect(() => {
@@ -197,74 +289,121 @@ export function useMultiJourney(): UseMultiJourneyReturn {
     // ── Switch active journey ──
     const switchJourney = useCallback(
         async (slug: string): Promise<void> => {
-            setActiveSlug(slug);
-            await saveActiveSlug(slug);
-            await saveMultiJourneyState({
-                activeJourneySlug: slug,
-                enrollments,
+            log.info("Switching active journey", {
+                slug,
+                currentActiveSlug: latestStateRef.current.activeSlug,
+                enrollmentCount: latestStateRef.current.enrollments.length,
             });
+            await persistEnrollmentState(
+                latestStateRef.current.enrollments,
+                slug,
+            );
         },
-        [setActiveSlug, enrollments],
+        [persistEnrollmentState],
     );
 
     // ── Enroll in a new journey ──
     const enrollInJourney = useCallback(
         async (journey: MentalHealthJourneyListItem): Promise<void> => {
-            const newEnrollment: JourneyEnrollment = catalogItemToEnrollment({
-                ...journey,
-                isEnrolled: true,
-                enrollmentStatus: "active",
-                completedNodes: 0,
+            log.info("Starting journey enrollment", {
+                slug: journey.slug,
+                journeyId: journey.id,
+            });
+            const templateRes = await fetchMHJourneyTemplate(journey.slug);
+            if (!templateRes.success || !templateRes.data) {
+                log.warn("Journey template lookup failed", {
+                    slug: journey.slug,
+                    error: templateRes.error ?? "Unknown template error",
+                });
+                throw new Error(
+                    templateRes.error ??
+                        `Failed to load template for ${journey.slug}`,
+                );
+            }
+
+            const firstNodeId: string | undefined =
+                templateRes.data.units[0]?.nodes[0]?.id;
+
+            if (!firstNodeId) {
+                log.warn("Journey template missing first node", {
+                    slug: journey.slug,
+                    unitCount: templateRes.data.units.length,
+                });
+                throw new Error(
+                    `Journey ${journey.slug} does not have a start node`,
+                );
+            }
+
+            log.info("Template resolved for enrollment", {
+                slug: journey.slug,
+                templateId: templateRes.data.id,
+                templateVersion: templateRes.data.version,
+                firstNodeId,
+            });
+            const enrollRes = await enrollJourneyApi({
+                journeyId: templateRes.data.id,
+                templateVersion: templateRes.data.version,
+                firstNodeId,
             });
 
-            const updatedEnrollments: JourneyEnrollment[] = [
-                ...enrollments.filter(
-                    (e: JourneyEnrollment) => e.slug !== journey.slug,
-                ),
-                newEnrollment,
-            ];
+            if (!enrollRes.success) {
+                log.warn("Journey enrollment API failed", {
+                    slug: journey.slug,
+                    error: enrollRes.error ?? "Unknown enrollment error",
+                });
+                throw new Error(
+                    enrollRes.error ?? `Failed to enroll in ${journey.slug}`,
+                );
+            }
 
-            setEnrollments(updatedEnrollments);
-            setActiveSlug(journey.slug);
-            await saveActiveSlug(journey.slug);
-            await saveMultiJourneyState({
-                activeJourneySlug: journey.slug,
-                enrollments: updatedEnrollments,
-            });
+            log.info("Journey enrollment API succeeded", { slug: journey.slug });
+            await hydrateEnrollments(journey.slug);
         },
-        [enrollments, setEnrollments, setActiveSlug],
+        [hydrateEnrollments],
     );
 
     // ── Archive journey ──
     const archiveJourney = useCallback(
         (slug: string): void => {
-            const updated: JourneyEnrollment[] = enrollments.map(
+            log.info("Archiving journey locally", { slug });
+            const updated: JourneyEnrollment[] =
+                latestStateRef.current.enrollments.map(
                 (e: JourneyEnrollment): JourneyEnrollment =>
                     e.slug === slug ? { ...e, isArchived: true } : e,
             );
+            latestStateRef.current = {
+                activeSlug: latestStateRef.current.activeSlug,
+                enrollments: updated,
+            };
             setEnrollments(updated);
             saveMultiJourneyState({
-                activeJourneySlug: activeSlug,
+                activeJourneySlug: latestStateRef.current.activeSlug,
                 enrollments: updated,
             });
         },
-        [enrollments, setEnrollments, activeSlug],
+        [setEnrollments],
     );
 
     // ── Restore archived journey ──
     const restoreJourney = useCallback(
         (slug: string): void => {
-            const updated: JourneyEnrollment[] = enrollments.map(
+            log.info("Restoring journey locally", { slug });
+            const updated: JourneyEnrollment[] =
+                latestStateRef.current.enrollments.map(
                 (e: JourneyEnrollment): JourneyEnrollment =>
                     e.slug === slug ? { ...e, isArchived: false } : e,
             );
+            latestStateRef.current = {
+                activeSlug: latestStateRef.current.activeSlug,
+                enrollments: updated,
+            };
             setEnrollments(updated);
             saveMultiJourneyState({
-                activeJourneySlug: activeSlug,
+                activeJourneySlug: latestStateRef.current.activeSlug,
                 enrollments: updated,
             });
         },
-        [enrollments, setEnrollments, activeSlug],
+        [setEnrollments],
     );
 
     return {

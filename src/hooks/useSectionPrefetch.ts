@@ -101,11 +101,17 @@ export function useSectionPrefetch({
                 const cached: SectionMapResponse | null = await loadCachedSectionMap(
                     slug,
                     nextUnitNumber,
+                    sectionMap.viewMode,
                     journey.version,
                 );
                 if (cached) return; // Already cached
 
-                const res = await fetchSectionMap(slug, nextUnitNumber);
+                const res = await fetchSectionMap(
+                    slug,
+                    nextUnitNumber,
+                    undefined,
+                    sectionMap.viewMode,
+                );
                 if (res.success && res.data) {
                     await cacheSectionMap(slug, nextUnitNumber, res.data);
                 }

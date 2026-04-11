@@ -8,13 +8,14 @@
  * - Section preview list
  * - "What you'll learn" bullet list
  * - Duration + node count summary
- * - Start / Continue / Restart CTA
+ * - Start / Continue / Open CTA
  */
 
 import React, { forwardRef, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { BottomSheetModal, BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import type { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import {
     BookOpen02Icon,
@@ -26,7 +27,7 @@ import {
 } from '@hugeicons/core-free-icons';
 
 import type { MentalHealthJourneyListItem } from '@/src/types/journey/mentalHealth';
-import type { MHTemplateUnit } from '@/src/lib/api/mentalHealthJourneyApi';
+import type { MHTemplateSection } from '@/src/lib/api/mentalHealthJourneyApi';
 
 // ============================================================================
 // Types
@@ -35,7 +36,7 @@ import type { MHTemplateUnit } from '@/src/lib/api/mentalHealthJourneyApi';
 export interface JourneyDetailSheetProps {
     journey: MentalHealthJourneyListItem | null;
     /** Sections from the template (fetched when sheet opens) */
-    sections: MHTemplateUnit[];
+    sections: MHTemplateSection[];
     /** Whether sections are still loading */
     sectionsLoading: boolean;
     onStart: (journey: MentalHealthJourneyListItem) => void;
@@ -77,6 +78,7 @@ const JourneyDetailSheet = forwardRef<BottomSheetModal, JourneyDetailSheetProps>
         ref,
     ): React.JSX.Element | null {
         const snapPoints = useMemo(() => ['70%', '90%'], []);
+        const insets = useSafeAreaInsets();
 
         const renderBackdrop = useCallback(
             (props: BottomSheetBackdropProps) => (
@@ -99,7 +101,7 @@ const JourneyDetailSheet = forwardRef<BottomSheetModal, JourneyDetailSheetProps>
         const diffColors = DIFFICULTY_COLORS[journey.difficulty] ?? DIFFICULTY_COLORS.beginner;
 
         const handleCTA = (): void => {
-            if (isEnrolled && !isCompleted) {
+            if (isEnrolled || isCompleted) {
                 onContinue(journey);
             } else {
                 onStart(journey);
@@ -107,7 +109,7 @@ const JourneyDetailSheet = forwardRef<BottomSheetModal, JourneyDetailSheetProps>
         };
 
         const ctaLabel: string = isCompleted
-            ? 'Restart Journey'
+            ? 'Open Journey'
             : isEnrolled
                 ? 'Continue Journey'
                 : 'Start Journey';
@@ -125,7 +127,9 @@ const JourneyDetailSheet = forwardRef<BottomSheetModal, JourneyDetailSheetProps>
                     <ScrollView
                         className="flex-1 px-5"
                         showsVerticalScrollIndicator={false}
-                        contentContainerStyle={{ paddingBottom: 120 }}
+                        contentContainerStyle={{
+                            paddingBottom: Math.max(160, insets.bottom + 140),
+                        }}
                     >
                         {/* Close button */}
                         <Pressable
@@ -209,7 +213,7 @@ const JourneyDetailSheet = forwardRef<BottomSheetModal, JourneyDetailSheetProps>
                                 <Text className="text-base font-bold text-slate-900 mb-3">
                                     What you'll learn
                                 </Text>
-                                {sections.map((section: MHTemplateUnit, index: number) => (
+                                {sections.map((section: MHTemplateSection, index: number) => (
                                     <View
                                         key={section.id}
                                         className="flex-row items-start gap-3 mb-3"
@@ -230,7 +234,12 @@ const JourneyDetailSheet = forwardRef<BottomSheetModal, JourneyDetailSheetProps>
                                                 {section.title}
                                             </Text>
                                             <Text className="text-xs text-slate-400 mt-0.5">
-                                                {section.nodes.length} activities
+                                                {section.units.length} units,{" "}
+                                                {section.units.reduce(
+                                                    (sum, unit) => sum + unit.nodes.length,
+                                                    0,
+                                                )}{" "}
+                                                activities
                                             </Text>
                                             {section.description ? (
                                                 <Text className="text-xs text-slate-500 mt-1" numberOfLines={2}>
@@ -281,7 +290,12 @@ const JourneyDetailSheet = forwardRef<BottomSheetModal, JourneyDetailSheetProps>
                     </ScrollView>
 
                     {/* CTA Button — fixed at bottom */}
-                    <View className="absolute bottom-0 left-0 right-0 px-5 pb-8 pt-4 bg-white border-t border-slate-100">
+                    <View
+                        className="absolute bottom-0 left-0 right-0 px-5 pt-4 bg-white border-t border-slate-100"
+                        style={{
+                            paddingBottom: Math.max(insets.bottom + 16, 28),
+                        }}
+                    >
                         <Pressable
                             onPress={handleCTA}
                             className="py-4 rounded-2xl flex-row items-center justify-center"

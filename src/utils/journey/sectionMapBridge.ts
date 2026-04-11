@@ -12,6 +12,8 @@ import type {
     SectionMapResponse,
     NodeStub,
     SectionNodeProgress,
+    SectionUnitData,
+    SectionViewMode,
 } from "@/src/types/journey/sectionMap";
 import type {
     JourneyState,
@@ -26,7 +28,9 @@ import {
     NodeIcon,
     MascotSide,
 } from "@/src/types/journey/enums";
-import { DEFAULT_JOURNEY_CONFIG } from "@/src/data/journey";
+import {
+    resolveNodeType,
+} from "@/src/lib/journey/mentalHealthNodeMapping";
 
 // ---------------------------------------------------------------------------
 // Icon resolution (mirrors mergeJourneyState.ts logic)
@@ -52,13 +56,6 @@ function resolveIcon(nodeType: string, status: NodeStatus): NodeIcon {
     return ACTIVE_ICON_MAP[nodeType] ?? NodeIcon.STAR;
 }
 
-function resolveConfigUnitId(unitNumber: number, fallbackId: string): string {
-    const configUnit = DEFAULT_JOURNEY_CONFIG.units.find(
-        (unit) => unit.unitNumber === unitNumber,
-    );
-    return configUnit?.id ?? fallbackId;
-}
-
 // ---------------------------------------------------------------------------
 // Node stub → PathNodeData
 // ---------------------------------------------------------------------------
@@ -71,11 +68,20 @@ function resolveConfigUnitId(unitNumber: number, fallbackId: string): string {
 function nodeStubToPathNode(
     stub: NodeStub,
     progress: SectionNodeProgress | undefined,
+    isFallbackActive: boolean,
+    viewMode: SectionViewMode,
 ): PathNodeData {
-    // If this section is not interactive (preview mode), force LOCKED
+    const resolvedType: NodeType = resolveNodeType(stub.nodeType);
+
+    // First-time / guest preview mode has no progress rows yet.
+    // In that case, expose the first node as ACTIVE so the journey can start.
     const rawStatus: NodeStatus = progress?.status
         ? (progress.status as NodeStatus)
-        : NodeStatus.LOCKED;
+        : viewMode === "completed" && stub.canInteract
+            ? NodeStatus.COMPLETED
+            : isFallbackActive
+                ? NodeStatus.ACTIVE
+                : NodeStatus.LOCKED;
 
     const effectiveStatus: NodeStatus = stub.canInteract
         ? rawStatus
@@ -84,9 +90,13 @@ function nodeStubToPathNode(
     return {
         id: stub.id,
         index: stub.nodeIndex,
-        type: stub.nodeType as NodeType,
+        type: resolvedType,
         status: effectiveStatus,
-        icon: resolveIcon(stub.nodeType, effectiveStatus),
+        icon: resolveIcon(resolvedType, effectiveStatus),
+        variantKey: stub.variantKey,
+        taskType: stub.nodeType,
+        title: stub.title,
+        iconKey: stub.iconKey,
         progress:
             effectiveStatus === NodeStatus.ACTIVE
                 ? (progress?.progress ?? 0)
@@ -100,14 +110,13 @@ function nodeStubToPathNode(
 }
 
 // ---------------------------------------------------------------------------
-// SectionMapResponse → UnitData (single section = single UnitData)
+// SectionMapResponse → UnitData[]
 // ---------------------------------------------------------------------------
 
 /**
- * Convert a SectionMapResponse into a UnitData array (always 1 element for now).
- * The section becomes a single UnitData with merged PathNodeData[].
+ * Convert a SectionMapResponse into runtime UnitData[] for the current section.
  */
-export function sectionMapToUnitData(response: SectionMapResponse): UnitData {
+export function sectionMapToUnitData(response: SectionMapResponse): UnitData[] {
     const { section, progress } = response;
 
     // Build progress lookup map for O(1) access
@@ -115,37 +124,73 @@ export function sectionMapToUnitData(response: SectionMapResponse): UnitData {
         progress.map((p: SectionNodeProgress) => [p.nodeId, p]),
     );
 
-    // Convert node stubs → PathNodeData
-    const nodes: PathNodeData[] = section.nodes.map(
-        (stub: NodeStub): PathNodeData =>
-            nodeStubToPathNode(stub, progressMap.get(stub.id)),
+    const sectionUnits: SectionUnitData[] =
+        Array.isArray(section.units) && section.units.length > 0
+            ? section.units
+            : [
+                  {
+                      id: section.id,
+                      sectionId: section.id,
+                      sectionNumber: section.sectionNumber ?? section.unitNumber,
+                      unitNumber: 1,
+                      globalUnitNumber: section.unitNumber,
+                      title: section.title,
+                      description: section.description,
+                      colorScheme: section.colorScheme,
+                      mascotPlacements: section.mascotPlacements ?? [],
+                      unlockRule: section.unlockRule,
+                      nodes: section.nodes ?? [],
+                  },
+              ];
+
+    const hasExplicitActiveNode: boolean = progress.some(
+        (row: SectionNodeProgress) => row.status === NodeStatus.ACTIVE,
     );
+    const fallbackActiveUnitNumber: number =
+        response.enrollment?.currentSectionUnitNumber ?? 1;
+    const shouldUseFallbackActive: boolean = response.viewMode !== "completed";
 
-    // Convert mascot placements
-    const mascotPlacements: MascotPlacement[] = Array.isArray(
-        section.mascotPlacements,
-    )
-        ? section.mascotPlacements.map((raw: unknown): MascotPlacement => {
-            const mp = raw as Record<string, unknown>;
-            return {
-                afterNodeIndex: (mp.afterNodeIndex as number) ?? 0,
-                position: (mp.position as MascotSide) ?? MascotSide.LEFT,
-                message: (mp.message as string) ?? undefined,
-            };
-        })
-        : [];
+    return sectionUnits.map((unit: SectionUnitData): UnitData => {
+        const nodes: PathNodeData[] = unit.nodes.map(
+            (stub: NodeStub): PathNodeData =>
+                nodeStubToPathNode(
+                    stub,
+                    progressMap.get(stub.id),
+                    shouldUseFallbackActive &&
+                        !hasExplicitActiveNode &&
+                        stub.canInteract &&
+                        unit.unitNumber === fallbackActiveUnitNumber &&
+                        stub.nodeIndex === 0,
+                    response.viewMode,
+                ),
+        );
 
-    return {
-        // Keep the runtime unit aligned with the config-driven unit IDs so
-        // section filtering, FlashList layout, and header/theme lookups all work.
-        id: resolveConfigUnitId(section.unitNumber, section.id),
-        unitNumber: section.unitNumber,
-        title: section.title,
-        description: section.description,
-        colorScheme: section.colorScheme,
-        nodes,
-        mascotPlacements,
-    };
+        const mascotPlacements: MascotPlacement[] = Array.isArray(
+            unit.mascotPlacements,
+        )
+            ? unit.mascotPlacements.map((raw: unknown): MascotPlacement => {
+                const mp = raw as Record<string, unknown>;
+                return {
+                    afterNodeIndex: (mp.afterNodeIndex as number) ?? 0,
+                    position: (mp.position as MascotSide) ?? MascotSide.LEFT,
+                    message: (mp.message as string) ?? undefined,
+                };
+            })
+            : [];
+
+        return {
+            id: unit.id,
+            sectionId: unit.sectionId,
+            sectionNumber: unit.sectionNumber,
+            unitNumber: unit.unitNumber,
+            globalUnitNumber: unit.globalUnitNumber,
+            title: unit.title,
+            description: unit.description,
+            colorScheme: unit.colorScheme,
+            nodes,
+            mascotPlacements,
+        };
+    });
 }
 
 // ---------------------------------------------------------------------------
@@ -154,24 +199,44 @@ export function sectionMapToUnitData(response: SectionMapResponse): UnitData {
 
 /**
  * Convert a SectionMapResponse into a complete JourneyState.
- * This produces a single-unit JourneyState (the current section).
+ * This produces a multi-unit JourneyState for the currently loaded section.
  * Stats are passed externally since they come from a different source.
  */
 export function sectionMapToJourneyState(
     response: SectionMapResponse,
     stats: JourneyStats,
 ): JourneyState {
-    const unitData: UnitData = sectionMapToUnitData(response);
+    const units: UnitData[] = sectionMapToUnitData(response);
+    const focusNodeId: string = response.focusNodeId ?? "";
 
-    // Find the active node ID for lastActiveNodeId
-    const activeNode: PathNodeData | undefined = unitData.nodes.find(
-        (n: PathNodeData) => n.status === NodeStatus.ACTIVE,
+    const activeUnitIndex: number = units.findIndex((unit: UnitData) =>
+        unit.nodes.some((n: PathNodeData) => n.status === NodeStatus.ACTIVE),
     );
+    const activeNode: PathNodeData | undefined =
+        activeUnitIndex >= 0
+            ? units[activeUnitIndex].nodes.find(
+                (n: PathNodeData) => n.status === NodeStatus.ACTIVE,
+            )
+            : undefined;
+    const fallbackCurrentUnitIndex: number =
+        response.viewMode === "completed"
+            ? 0
+            : Math.max(0, (response.enrollment?.currentSectionUnitNumber ?? 1) - 1);
+    const focusUnitIndex: number = focusNodeId
+        ? units.findIndex((unit: UnitData) =>
+            unit.nodes.some((node: PathNodeData) => node.id === focusNodeId),
+        )
+        : -1;
 
     return {
-        currentUnit: 0, // Always index 0 since we only have the active section
-        units: [unitData],
-        lastActiveNodeId: activeNode?.id ?? "",
+        currentUnit:
+            activeUnitIndex >= 0
+                ? activeUnitIndex
+                : focusUnitIndex >= 0
+                    ? focusUnitIndex
+                : Math.min(fallbackCurrentUnitIndex, Math.max(units.length - 1, 0)),
+        units,
+        lastActiveNodeId: activeNode?.id ?? focusNodeId,
         stats,
     };
 }

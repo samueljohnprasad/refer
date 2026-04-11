@@ -13,23 +13,27 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 
 import type {
     MentalHealthJourneyListItem,
     JourneyCategory,
 } from '@/src/types/journey/mentalHealth';
-import type { MHTemplateUnit } from '@/src/lib/api/mentalHealthJourneyApi';
+import type { MHTemplateSection } from '@/src/lib/api/mentalHealthJourneyApi';
 import {
     fetchMHJourneyCatalog,
     fetchMHJourneyTemplate,
 } from '@/src/lib/api/mentalHealthJourneyApi';
 import { useStreak } from '@/src/hooks/useStreak';
 import { useInsightPoints } from '@/src/hooks/useInsightPoints';
+import { useMultiJourney } from '@/src/hooks/useMultiJourney';
+import { createLogger } from '@/src/lib/logger';
 
 import JourneyCatalogPresentation from './JourneyCatalogPresentation';
 import JourneyDetailSheet from '@/src/components/journey/JourneyDetailSheet';
+
+const log = createLogger("JourneyCatalogContainer");
 
 // ============================================================================
 // Constants
@@ -59,13 +63,14 @@ export default function JourneyCatalogContainer(): React.JSX.Element {
 
     // Detail sheet state
     const [selectedJourney, setSelectedJourney] = useState<MentalHealthJourneyListItem | null>(null);
-    const [detailSections, setDetailSections] = useState<MHTemplateUnit[]>([]);
+    const [detailSections, setDetailSections] = useState<MHTemplateSection[]>([]);
     const [detailSectionsLoading, setDetailSectionsLoading] = useState<boolean>(false);
     const detailSheetRef = useRef<BottomSheetModal>(null);
 
     // ── Hooks ──
     const { currentStreak } = useStreak();
     const { todayIP } = useInsightPoints();
+    const { enrollInJourney, switchJourney } = useMultiJourney();
 
     // ── Data fetching ──
     const loadCatalog = useCallback(async (showRefresh: boolean = false): Promise<void> => {
@@ -84,7 +89,7 @@ export default function JourneyCatalogContainer(): React.JSX.Element {
                 setError(res.error ?? 'Failed to load journeys');
             }
         } catch (err) {
-            console.error('[JourneyCatalog] loadCatalog error:', err);
+            log.error("loadCatalog error", err);
             setError(err instanceof Error ? err.message : 'Unknown error');
         } finally {
             setIsLoading(false);
@@ -128,10 +133,12 @@ export default function JourneyCatalogContainer(): React.JSX.Element {
             try {
                 const templateRes = await fetchMHJourneyTemplate(journey.slug);
                 if (templateRes.success && templateRes.data) {
-                    setDetailSections(templateRes.data.units);
+                    setDetailSections(templateRes.data.sections);
                 }
             } catch (err) {
-                console.error('[JourneyCatalog] Failed to fetch journey details:', err);
+                log.error("Failed to fetch journey details", err, {
+                    slug: journey.slug,
+                });
             } finally {
                 setDetailSectionsLoading(false);
             }
@@ -141,26 +148,48 @@ export default function JourneyCatalogContainer(): React.JSX.Element {
 
     /** Navigate to journey map (continue) */
     const handleContinuePress = useCallback(
-        (journey: MentalHealthJourneyListItem): void => {
-            detailSheetRef.current?.dismiss();
-            router.push({
-                pathname: '/tabs/(tabs)/insights',
-                params: { slug: journey.slug },
-            } as never);
+        async (journey: MentalHealthJourneyListItem): Promise<void> => {
+            try {
+                detailSheetRef.current?.dismiss();
+
+                if (journey.enrollmentStatus === 'completed') {
+                    router.replace({
+                        pathname: '/tabs/(tabs)/journeys',
+                        params: {
+                            slug: journey.slug,
+                            mode: 'completed',
+                        },
+                    } as never);
+                    return;
+                }
+
+                await switchJourney(journey.slug);
+                router.replace('/tabs/(tabs)/journeys' as never);
+            } catch (err) {
+                log.error("Failed to continue journey", err, {
+                    slug: journey.slug,
+                });
+            }
         },
-        [],
+        [switchJourney],
     );
 
     /** Start a new journey → navigate to journey map */
     const handleStartJourney = useCallback(
-        (journey: MentalHealthJourneyListItem): void => {
-            detailSheetRef.current?.dismiss();
-            router.push({
-                pathname: '/tabs/(tabs)/insights',
-                params: { slug: journey.slug },
-            } as never);
+        async (journey: MentalHealthJourneyListItem): Promise<void> => {
+            try {
+                detailSheetRef.current?.dismiss();
+                await enrollInJourney(journey);
+                router.replace('/tabs/(tabs)/journeys' as never);
+            } catch (err) {
+                log.warn("Falling back to preview journey", err, {
+                    slug: journey.slug,
+                });
+                await switchJourney(journey.slug);
+                router.replace('/tabs/(tabs)/journeys' as never);
+            }
         },
-        [],
+        [enrollInJourney, switchJourney],
     );
 
     /** Dismiss detail sheet */
@@ -184,7 +213,7 @@ export default function JourneyCatalogContainer(): React.JSX.Element {
     }, [loadCatalog]);
 
     return (
-        <BottomSheetModalProvider>
+        <>
             <JourneyCatalogPresentation
                 journeys={filteredJourneys}
                 activeJourney={activeJourney}
@@ -209,6 +238,6 @@ export default function JourneyCatalogContainer(): React.JSX.Element {
                 onContinue={handleContinuePress}
                 onDismiss={handleDismissSheet}
             />
-        </BottomSheetModalProvider>
+        </>
     );
 }

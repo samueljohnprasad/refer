@@ -118,10 +118,12 @@ export type {
 export type {
   NodeStub,
   SectionData,
+  SectionUnitData,
   SectionListItem,
   SectionNodeProgress,
   SectionEnrollment,
   SectionJourneyMeta,
+  SectionViewMode,
   SectionMapResponse,
   NodeContentResponse,
 } from "./sectionMap";
