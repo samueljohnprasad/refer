@@ -36,10 +36,60 @@
       "sourceType": "github",
       "computedHash": "26d43c0a38e7a0ad8cf2cd5418d48ca7525873cc60f203ac67fcf024ce577eb3"
     },
+    "brand-storytelling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "b5d0f38c9063817d67214ff6dfc003c8bfcbe3e7ce2a94202e6ad7812b9eabc6"
+    },
+    "branding": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "7ed51f00b3422d549d18912748caa85278b17f7b78da43b242ea7ce7a0c8766c"
+    },
+    "character-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "4a7b9636547a0d4d5cd396aa0a4e6df73532f200147a58e1961c974647d91112"
+    },
     "clean-code": {
       "source": "claude-dev-suite/claude-dev-suite",
       "sourceType": "github",
       "computedHash": "dc48fa544872c7cfc6163d39145ffec0a157fa3e2f9d891c1a995f9a5b2db74e"
+    },
+    "content-creation-ai-tools": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "de6ee08f6c076b7195e8a702f9b759e40bac9477503224c498beee3682c0e072"
+    },
+    "content-strategy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "0375d4be046c88f5e63a89f72cd0b58def7c0c1b21d5c57b36568b9e8700b777"
+    },
+    "copywriting": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "13e3767775b435668285a6398270dfdc836dbd01b383f1c507e245cec928191d"
+    },
+    "course-creation": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "f699b4ae6ab855ab4e052f51dd6f3663bc031120f94a9a8819eada2d8bd386e9"
+    },
+    "creative-communications": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "f25981fff0e5ffab3edcde381fb98021d8843138e416e2c89ba8e1ce3e14c128"
+    },
+    "creative-strategy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "2e39c786a23ed426365285675dcf3c404b7aa84d1b5c892ca5163604f722ae19"
+    },
+    "creature-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "05195efde734ffada65f3d5b23a21c326c1cb248eca22b97997341c18c0dd037"
     },
     "design-philosophy": {
       "source": "mluev/design-philosophy-skill",
@@ -61,6 +111,61 @@
       "sourceType": "github",
       "computedHash": "7218eba7f77d28398485ba21102384e9fc51f48cbdbd3a8717bb700694619727"
     },
+    "game-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "b718cc2e642b144b1d58f1729e733b183081ada806139e3be1b30061600d697e"
+    },
+    "game-design-core": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "63dbf2110d16745f999fd67061571f891e3ed7a7de24e355b5dd0abf845ea0a6"
+    },
+    "game-ui-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "cff8acaf58f3f4255f76fb962775fb1a2fec1fce49a54a50bde2c1efd5eb33ec"
+    },
+    "gamification-loops": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "5c6d90890a2bb618ded9387244dd9d146c2d9f56933208875942038601d489b6"
+    },
+    "growth-loops": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "d2cdabdb6a3e69c3fcc5c360e2baea92d6b5979d5b0cad47ed4a8808b59f43db"
+    },
+    "growth-strategy": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "4185c50f4c271d62ca9d6605c7f580ee7c1fcabba3ee5f28fd499c49436fbd95"
+    },
+    "icon-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "2f62173457084a6b47aee605763fdb53f03236535e98639bfa0c7b052fb7e43f"
+    },
+    "landing-page-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "73bd88ca54f5a9bb75b5bcf8a61601bbda27f16d37eed69b4562ffc88e60e4b6"
+    },
+    "launch-storytelling": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "da43f154ff8928688a01027349b57b98ce18e6365b1eff3e5279bc0158e87c24"
+    },
+    "level-design": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "4caca3577444e720e892a44b1e26176646896c8fefc1dbb5e8b6e3cba3bd7849"
+    },
+    "marketing": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "346e536c384ae82a98d5281fc37545abca7a205b2dc5cc4045ceb17159e82c4d"
+    },
     "micro-interactions": {
       "source": "solinkz/micro-interactions-skill",
       "sourceType": "github",
@@ -70,6 +175,11 @@
       "source": "tinh2/skills-hub-registry",
       "sourceType": "github",
       "computedHash": "c8b18eb5797e95dc6e16829f3c952e9247e775283e39e0651eaf9b0a1218a76b"
+    },
+    "player-onboarding": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "12d044e45979b2a77dc4bf398dfad67880bf1c83734a55f3e40a5fa76e8ac440"
     },
     "react-concurrent": {
       "source": "claude-dev-suite/claude-dev-suite",
@@ -95,6 +205,16 @@
       "source": "claude-dev-suite/claude-dev-suite",
       "sourceType": "github",
       "computedHash": "5063fe896c4b06141caf049d19018701d41f68062ec449c7ff8e3259d709dc22"
+    },
+    "real-time-content": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "93bbf5d75f0e6e39e9c3fd296be16221da5e01b1ad18a1442ae2ce8326eb2fbc"
+    },
+    "skill-writer": {
+      "source": "pytorch/pytorch",
+      "sourceType": "github",
+      "computedHash": "c220867183e2f6a32290b0c87d6dcc56ce507154e20ae7cb64ad91bee2d4677e"
     },
     "solid-principles": {
       "source": "claude-dev-suite/claude-dev-suite",
