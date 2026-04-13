@@ -326,6 +326,7 @@ function JourneyMapFlashListInner({
             />
         </View>
     );
+    
 }
 
 export const JourneyMapFlashList = React.memo(JourneyMapFlashListInner);

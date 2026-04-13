@@ -233,7 +233,7 @@ interface BouncingTooltipProps {
 function BouncingTooltip({
     label,
     accentColor,
-}: BouncingTooltipProps): React.JSX.Element {
+}: BouncingTooltipProps): React.JSX.Element | null {
     const translateY = useSharedValue(0);
     const isVisible: boolean = Boolean(label);
 
@@ -252,13 +252,16 @@ function BouncingTooltip({
         transform: [{ translateY: translateY.value }],
     }));
 
+    // If there is no label to display, do not render the tooltip at all.
+    // This prevents ghost tooltips from appearing when FlashList recycles cells.
+    if (!isVisible) return null;
+
     return (
         <Animated.View
             className="absolute -top-10 bg-white rounded-lg px-3 py-1.5 z-10"
             style={[
                 bounceStyle,
                 {
-                    opacity: isVisible ? 1 : 0,
                     shadowColor: "#000",
                     shadowOffset: { width: 0, height: 2 },
                     shadowOpacity: 0.1,
@@ -266,7 +269,7 @@ function BouncingTooltip({
                     elevation: 3,
                 },
             ]}
-            pointerEvents={isVisible ? "auto" : "none"}
+            pointerEvents="auto"
             accessibilityRole="text"
             accessibilityLabel={label ? `Current task: ${label}` : undefined}
         >

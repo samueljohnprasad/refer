@@ -1,0 +1,78 @@
+{
+  "version": 3,
+  "skills": {
+    "ce:brainstorm": {
+      "source": "everyinc/compound-engineering-plugin",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/everyinc/compound-engineering-plugin.git",
+      "skillPath": "plugins/compound-engineering/skills/ce-brainstorm/SKILL.md",
+      "skillFolderHash": "0c47473f55a1b96b7377c7a8feaa9010d1fcdafb",
+      "installedAt": "2026-04-13T10:16:30.342Z",
+      "updatedAt": "2026-04-13T10:16:30.342Z"
+    },
+    "ce-debug": {
+      "source": "everyinc/compound-engineering-plugin",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/everyinc/compound-engineering-plugin.git",
+      "skillPath": "plugins/compound-engineering/skills/ce-debug/SKILL.md",
+      "skillFolderHash": "ff83d627aafafdf38ee7ffaac438597e56e5f8f5",
+      "installedAt": "2026-04-13T10:16:30.440Z",
+      "updatedAt": "2026-04-13T10:16:30.440Z"
+    },
+    "ce:ideate": {
+      "source": "everyinc/compound-engineering-plugin",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/everyinc/compound-engineering-plugin.git",
+      "skillPath": "plugins/compound-engineering/skills/ce-ideate/SKILL.md",
+      "skillFolderHash": "5bb39ae3e818366f8ed4e973787b1d92c08bb2a1",
+      "installedAt": "2026-04-13T10:16:30.535Z",
+      "updatedAt": "2026-04-13T10:16:30.535Z"
+    },
+    "ce-optimize": {
+      "source": "everyinc/compound-engineering-plugin",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/everyinc/compound-engineering-plugin.git",
+      "skillPath": "plugins/compound-engineering/skills/ce-optimize/SKILL.md",
+      "skillFolderHash": "a398348f41837b0953b383ea3c82dfed3c9be97c",
+      "installedAt": "2026-04-13T10:16:30.638Z",
+      "updatedAt": "2026-04-13T10:16:30.638Z"
+    },
+    "ce:plan": {
+      "source": "everyinc/compound-engineering-plugin",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/everyinc/compound-engineering-plugin.git",
+      "skillPath": "plugins/compound-engineering/skills/ce-plan/SKILL.md",
+      "skillFolderHash": "8d265af4fad162441f6d447c54de1e75d00c5c03",
+      "installedAt": "2026-04-13T10:16:30.746Z",
+      "updatedAt": "2026-04-13T10:16:30.746Z"
+    },
+    "ce:review": {
+      "source": "everyinc/compound-engineering-plugin",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/everyinc/compound-engineering-plugin.git",
+      "skillPath": "plugins/compound-engineering/skills/ce-review/SKILL.md",
+      "skillFolderHash": "3c42d20a4a2aa1f907f407639b917a64448ce925",
+      "installedAt": "2026-04-13T10:16:30.834Z",
+      "updatedAt": "2026-04-13T10:16:30.834Z"
+    },
+    "ce-sessions": {
+      "source": "everyinc/compound-engineering-plugin",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/everyinc/compound-engineering-plugin.git",
+      "skillPath": "plugins/compound-engineering/skills/ce-sessions/SKILL.md",
+      "skillFolderHash": "3277854542dbcc9feb68ab119d09bfe215d8c2ed",
+      "installedAt": "2026-04-13T10:16:30.927Z",
+      "updatedAt": "2026-04-13T10:16:30.927Z"
+    },
+    "frontend-design": {
+      "source": "everyinc/compound-engineering-plugin",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/everyinc/compound-engineering-plugin.git",
+      "skillPath": "plugins/compound-engineering/skills/frontend-design/SKILL.md",
+      "skillFolderHash": "d02c13f0ad05a960dc41323beb8820bfe19987aa",
+      "installedAt": "2026-04-13T10:16:31.035Z",
+      "updatedAt": "2026-04-13T10:16:31.035Z"
+    }
+  },
+  "dismissed": {}
+}
