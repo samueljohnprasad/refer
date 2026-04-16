@@ -25,7 +25,7 @@ export const selfCompassionBreakConfig: ExerciseConfig<SelfCompassionBreakRespon
     icon: "self_compassion_break",
     duration: "5-7 min",
     xp: 10,
-    backgroundColor: "#FFF8E1",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

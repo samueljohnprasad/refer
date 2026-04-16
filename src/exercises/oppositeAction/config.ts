@@ -25,7 +25,7 @@ export const oppositeActionConfig: ExerciseConfig<OppositeActionResponse> = {
   icon: "opposite_action",
   duration: "5-7 min",
   xp: 10,
-  backgroundColor: "#FFF8E1",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

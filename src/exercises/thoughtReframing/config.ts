@@ -30,7 +30,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
     icon: "thought_reframing",
     duration: "10-15 min",
     xp: 15,
-    backgroundColor: "#E8F5E9",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: THOUGHT_REFRAMING_INITIAL,
 

@@ -24,7 +24,7 @@ export const stimulusControlConfig: ExerciseConfig<StimulusControlResponse> = {
   icon: "stimulus_control",
   duration: "5-7 min",
   xp: 8,
-  backgroundColor: "#E8EAF6",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

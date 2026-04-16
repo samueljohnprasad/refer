@@ -52,7 +52,6 @@ export type ExerciseType =
   | "recognizing_rumination"
   | "detached_mindfulness"
   | "attention_training"
-  | "reverse_rabbit_hole"
   // Sleep (4)
   | "sleep_diary"
   | "stimulus_control"
@@ -65,7 +64,6 @@ export type ExerciseType =
   | "radical_acceptance"
   // ACT (2)
   | "values_clarification"
-  | "leaves_on_stream"
   // Self-Compassion (2)
   | "self_compassion_break"
   | "self_criticism_to_coach"
@@ -73,8 +71,6 @@ export type ExerciseType =
   | "core_beliefs_suitcase"
   // Anger (1)
   | "anger_thermometer"
-  // Procrastination (1)
-  | "procrastination_buster"
   // Relationships (1)
   | "boundary_setting_script";
 
@@ -91,7 +87,6 @@ export type ExerciseCategory =
   | "self_compassion"
   | "self_esteem"
   | "anger"
-  | "procrastination"
   | "relationships";
 
 export interface CategoryMeta {
@@ -161,12 +156,6 @@ export const CATEGORY_META: CategoryMeta[] = [
     label: "Anger",
     icon: "anger",
     description: "Anger awareness & de-escalation",
-  },
-  {
-    key: "procrastination",
-    label: "Productivity",
-    icon: "procrastination",
-    description: "Overcome avoidance & take action",
   },
   {
     key: "relationships",
@@ -539,13 +528,7 @@ export interface AttentionTrainingResponse {
   postRating: number;
 }
 
-export interface ReverseRabbitHoleResponse {
-  worry: string;
-  worstOutcome: string;
-  flippedSpiral: string;
-  bestRealisticOutcome: string;
-  whichSpiralDeservesEnergy: "negative" | "positive" | "neither" | null;
-}
+
 
 // ── Sleep ───────────────────────────────────────────────────────────────────
 
@@ -600,11 +583,11 @@ export interface OppositeActionResponse {
 export interface TIPPResponse {
   distressRating: number;
   chosenTechnique:
-    | "temperature"
-    | "intense_exercise"
-    | "paced_breathing"
-    | "paired_muscle_relaxation"
-    | null;
+  | "temperature"
+  | "intense_exercise"
+  | "paced_breathing"
+  | "paired_muscle_relaxation"
+  | null;
   techniqueCompleted: boolean;
   postDistressRating: number;
   effectivenessRating: number;
@@ -629,12 +612,7 @@ export interface ValuesClarificationResponse {
   actionSteps: Record<string, string>;
 }
 
-export interface LeavesOnStreamResponse {
-  preRating: number;
-  thoughts: string[];
-  postRating: number;
-  reflection: string;
-}
+
 
 // ── Self-Compassion ─────────────────────────────────────────────────────────
 
@@ -676,16 +654,7 @@ export interface AngerThermometerResponse {
   postAngerRating: number;
 }
 
-// ── Procrastination ─────────────────────────────────────────────────────────
 
-export interface ProcrastinationBusterResponse {
-  avoidedTask: string;
-  avoidanceReason: string;
-  microTasks: string[];
-  scheduledFirst: string;
-  cognitiveRestructure: string;
-  commitmentConfirmed: boolean;
-}
 
 // ── Relationships ───────────────────────────────────────────────────────────
 
@@ -721,7 +690,6 @@ export type ExerciseResponseMap = {
   recognizing_rumination: RecognizingRuminationResponse;
   detached_mindfulness: DetachedMindfulnessResponse;
   attention_training: AttentionTrainingResponse;
-  reverse_rabbit_hole: ReverseRabbitHoleResponse;
   sleep_diary: SleepDiaryResponse;
   stimulus_control: StimulusControlResponse;
   cognitive_shuffle: CognitiveShuffleResponse;
@@ -731,12 +699,10 @@ export type ExerciseResponseMap = {
   tipp: TIPPResponse;
   radical_acceptance: RadicalAcceptanceResponse;
   values_clarification: ValuesClarificationResponse;
-  leaves_on_stream: LeavesOnStreamResponse;
   self_compassion_break: SelfCompassionBreakResponse;
   self_criticism_to_coach: SelfCriticismToCoachResponse;
   core_beliefs_suitcase: CoreBeliefsSuitcaseResponse;
   anger_thermometer: AngerThermometerResponse;
-  procrastination_buster: ProcrastinationBusterResponse;
   boundary_setting_script: BoundarySettingScriptResponse;
 };
 

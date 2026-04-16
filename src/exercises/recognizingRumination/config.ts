@@ -29,7 +29,7 @@ export const recognizingRuminationConfig: ExerciseConfig<RecognizingRuminationRe
     icon: "recognizing_rumination",
     duration: "5-7 min",
     xp: 10,
-    backgroundColor: "#EDE7F6",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

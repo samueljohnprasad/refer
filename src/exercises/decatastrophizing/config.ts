@@ -28,7 +28,7 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
     icon: "decatastrophizing",
     duration: "5-7 min",
     xp: 12,
-    backgroundColor: "#E1F5FE",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

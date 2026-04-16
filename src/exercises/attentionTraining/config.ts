@@ -27,7 +27,7 @@ export const attentionTrainingConfig: ExerciseConfig<AttentionTrainingResponse> 
     icon: "attention_training",
     duration: "7-10 min",
     xp: 12,
-    backgroundColor: "#E0F2F1",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

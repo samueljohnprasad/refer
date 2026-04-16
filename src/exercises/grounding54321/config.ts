@@ -25,7 +25,7 @@ export const grounding54321Config: ExerciseConfig<Grounding54321Response> = {
   icon: "grounding_54321",
   duration: "5-7 min",
   xp: 10,
-  backgroundColor: "#F1F8E9",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

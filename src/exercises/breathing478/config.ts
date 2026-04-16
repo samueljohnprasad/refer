@@ -22,7 +22,7 @@ export const breathing478Config: ExerciseConfig<Breathing478Response> = {
   icon: "breathing_478",
   duration: "3-5 min",
   xp: 8,
-  backgroundColor: "#E0F2F1",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

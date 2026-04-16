@@ -25,7 +25,7 @@ export const radicalAcceptanceConfig: ExerciseConfig<RadicalAcceptanceResponse> 
     icon: "radical_acceptance",
     duration: "5-7 min",
     xp: 10,
-    backgroundColor: "#F1F8E9",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

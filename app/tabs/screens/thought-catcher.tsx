@@ -1,6 +1,6 @@
 import React from 'react';
-import ThoughtCatcherScreen from '@/src/screens/ThoughtCatcherScreen/ThoughtCatcherScreen';
+import { ExerciseFlowScreen } from '@/src/screens/ExerciseFlowScreen/ExerciseFlowScreen';
 
 export default function ThoughtCatcherRoute() {
-  return <ThoughtCatcherScreen />;
+  return <ExerciseFlowScreen exerciseType="thought_catcher" />;
 }

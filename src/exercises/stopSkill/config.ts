@@ -24,7 +24,7 @@ export const stopSkillConfig: ExerciseConfig<StopSkillResponse> = {
   icon: "stop_skill",
   duration: "3-5 min",
   xp: 8,
-  backgroundColor: "#FFEBEE",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

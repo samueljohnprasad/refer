@@ -22,7 +22,7 @@ export const bodyScanPMRConfig: ExerciseConfig<BodyScanPMRResponse> = {
   icon: "body_scan_pmr",
   duration: "10-15 min",
   xp: 12,
-  backgroundColor: "#FCE4EC",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

@@ -25,7 +25,7 @@ export const sleepDiaryConfig: ExerciseConfig<SleepDiaryResponse> = {
   icon: "sleep_diary",
   duration: "2-3 min",
   xp: 5,
-  backgroundColor: "#E8EAF6",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

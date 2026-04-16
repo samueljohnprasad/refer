@@ -22,7 +22,7 @@ export const tippConfig: ExerciseConfig<TIPPResponse> = {
   icon: "tipp",
   duration: "5-10 min",
   xp: 10,
-  backgroundColor: "#E1F5FE",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

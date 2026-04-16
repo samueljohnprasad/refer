@@ -116,7 +116,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
   if (entries.length === 0) {
     return (
-      <View className="flex-1 gap-4">
+      <View className="flex-1 gap-20">
         <SectionHeader
           title="Journal Entries"
           icon={NoteIcon}
@@ -124,10 +124,10 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         />
         <View className="flex-1 justify-center items-center py-10">
           <RNImage
-            source={require("@/assets/images/no-entries-dog.png")}
+            source={require("@/assets/images/panda-writing.png")}
             style={{
-              width: 156,
-              height: 156,
+              width: 200,
+              height: 200,
             }}
             resizeMode="contain"
           />

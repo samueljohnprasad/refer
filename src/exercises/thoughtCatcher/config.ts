@@ -44,7 +44,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
   icon: "thought_catcher",
   duration: "3-5 min",
   xp: 10,
-  backgroundColor: "#FFF8E1",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: THOUGHT_CATCHER_INITIAL,
 
@@ -57,6 +57,13 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
           "Notice a stressful thought? Let's catch it and look at it clearly.",
         exerciseType: "thought_catcher",
         duration: "3-5 min",
+        bulletPoints: [
+          "Describe the situation",
+          "Catch your automatic thought",
+          "Rate its intensity",
+          "Check if it's true",
+          "Find a balanced perspective",
+        ],
       }),
       label: "Welcome",
       validate: () => true,

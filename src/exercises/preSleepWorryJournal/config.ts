@@ -28,7 +28,7 @@ export const preSleepWorryJournalConfig: ExerciseConfig<PreSleepWorryJournalResp
     icon: "pre_sleep_worry_journal",
     duration: "5-10 min",
     xp: 10,
-    backgroundColor: "#E0F7FA",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

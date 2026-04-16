@@ -26,7 +26,7 @@ export const selfCriticismToCoachConfig: ExerciseConfig<SelfCriticismToCoachResp
     icon: "self_criticism_to_coach",
     duration: "5-7 min",
     xp: 12,
-    backgroundColor: "#FCE4EC",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

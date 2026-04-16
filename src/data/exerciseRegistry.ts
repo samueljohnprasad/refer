@@ -26,7 +26,6 @@ import { worryDecisionTreeConfig } from "@/src/exercises/worryDecisionTree/confi
 import { recognizingRuminationConfig } from "@/src/exercises/recognizingRumination/config";
 import { detachedMindfulnessConfig } from "@/src/exercises/detachedMindfulness/config";
 import { attentionTrainingConfig } from "@/src/exercises/attentionTraining/config";
-import { reverseRabbitHoleConfig } from "@/src/exercises/reverseRabbitHole/config";
 import { sleepDiaryConfig } from "@/src/exercises/sleepDiary/config";
 import { stimulusControlConfig } from "@/src/exercises/stimulusControl/config";
 import { cognitiveShuffleConfig } from "@/src/exercises/cognitiveShuffle/config";
@@ -36,12 +35,10 @@ import { oppositeActionConfig } from "@/src/exercises/oppositeAction/config";
 import { tippConfig } from "@/src/exercises/tipp/config";
 import { radicalAcceptanceConfig } from "@/src/exercises/radicalAcceptance/config";
 import { valuesClarificationConfig } from "@/src/exercises/valuesClarification/config";
-import { leavesOnStreamConfig } from "@/src/exercises/leavesOnStream/config";
 import { selfCompassionBreakConfig } from "@/src/exercises/selfCompassionBreak/config";
 import { selfCriticismToCoachConfig } from "@/src/exercises/selfCriticismToCoach/config";
 import { coreBeliefsSuitcaseConfig } from "@/src/exercises/coreBeliefsSuitcase/config";
 import { angerThermometerConfig } from "@/src/exercises/angerThermometer/config";
-import { procrastinationBusterConfig } from "@/src/exercises/procrastinationBuster/config";
 import { boundarySettingScriptConfig } from "@/src/exercises/boundarySettingScript/config";
 
 // ─── Master Registry ────────────────────────────────────────────────────────
@@ -70,7 +67,6 @@ const ALL_CONFIGS: ExerciseConfig<any>[] = [
   recognizingRuminationConfig,
   detachedMindfulnessConfig,
   attentionTrainingConfig,
-  reverseRabbitHoleConfig,
   // Sleep
   sleepDiaryConfig,
   stimulusControlConfig,
@@ -83,7 +79,6 @@ const ALL_CONFIGS: ExerciseConfig<any>[] = [
   radicalAcceptanceConfig,
   // ACT
   valuesClarificationConfig,
-  leavesOnStreamConfig,
   // Self-Compassion
   selfCompassionBreakConfig,
   selfCriticismToCoachConfig,
@@ -91,8 +86,6 @@ const ALL_CONFIGS: ExerciseConfig<any>[] = [
   coreBeliefsSuitcaseConfig,
   // Anger
   angerThermometerConfig,
-  // Procrastination
-  procrastinationBusterConfig,
   // Relationships
   boundarySettingScriptConfig,
 ];

@@ -28,7 +28,7 @@ export const fearLadderConfig: ExerciseConfig<FearLadderResponse> = {
   icon: "fear_ladder",
   duration: "10-15 min",
   xp: 15,
-  backgroundColor: "#FBE9E7",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

@@ -28,7 +28,7 @@ export const coreBeliefsSuitcaseConfig: ExerciseConfig<CoreBeliefsSuitcaseRespon
     icon: "core_beliefs_suitcase",
     duration: "10-15 min",
     xp: 15,
-    backgroundColor: "#E0F7FA",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

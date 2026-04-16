@@ -25,7 +25,7 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
     icon: "worry_decision_tree",
     duration: "5-7 min",
     xp: 10,
-    backgroundColor: "#E8F5E9",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

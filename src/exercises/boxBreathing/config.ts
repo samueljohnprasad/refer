@@ -22,7 +22,7 @@ export const boxBreathingConfig: ExerciseConfig<BoxBreathingResponse> = {
   icon: "box_breathing",
   duration: "3-5 min",
   xp: 8,
-  backgroundColor: "#E3F2FD",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

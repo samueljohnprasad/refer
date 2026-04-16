@@ -26,7 +26,7 @@ export const boundarySettingScriptConfig: ExerciseConfig<BoundarySettingScriptRe
     icon: "boundary_setting_script",
     duration: "7-10 min",
     xp: 12,
-    backgroundColor: "#E8F5E9",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

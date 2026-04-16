@@ -27,7 +27,7 @@ export const valuesClarificationConfig: ExerciseConfig<ValuesClarificationRespon
     icon: "values_clarification",
     duration: "7-10 min",
     xp: 12,
-    backgroundColor: "#FFF3E0",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

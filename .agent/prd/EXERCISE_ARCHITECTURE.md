@@ -81,7 +81,6 @@ User taps exercise card
 | Self-Compassion | 2     | `self_compassion` |
 | Self-Esteem     | 1     | `self_esteem`     |
 | Anger           | 1     | `anger`           |
-| Productivity    | 1     | `procrastination` |
 | Relationships   | 1     | `relationships`   |
 
 ---

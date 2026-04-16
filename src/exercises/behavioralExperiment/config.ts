@@ -26,7 +26,7 @@ export const behavioralExperimentConfig: ExerciseConfig<BehavioralExperimentResp
     icon: "behavioral_experiment",
     duration: "5-7 min",
     xp: 15,
-    backgroundColor: "#E8EAF6",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

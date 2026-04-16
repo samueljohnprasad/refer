@@ -29,7 +29,7 @@ export const socraticQuestioningConfig: ExerciseConfig<SocraticQuestioningRespon
     icon: "socratic_questioning",
     duration: "7-10 min",
     xp: 15,
-    backgroundColor: "#E0F7FA",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

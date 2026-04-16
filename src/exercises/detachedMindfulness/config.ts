@@ -28,7 +28,7 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
     icon: "detached_mindfulness",
     duration: "5-7 min",
     xp: 10,
-    backgroundColor: "#F3E5F5",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

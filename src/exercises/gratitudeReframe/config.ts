@@ -26,7 +26,7 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
     icon: "gratitude_reframe",
     duration: "5-7 min",
     xp: 10,
-    backgroundColor: "#FFF3E0",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: GRATITUDE_REFRAME_INITIAL,
 

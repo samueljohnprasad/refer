@@ -26,7 +26,7 @@ export const cognitiveShuffleConfig: ExerciseConfig<CognitiveShuffleResponse> =
     icon: "cognitive_shuffle",
     duration: "5-10 min",
     xp: 8,
-    backgroundColor: "#F3E5F5",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

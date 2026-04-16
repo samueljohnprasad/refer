@@ -25,7 +25,7 @@ export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
   icon: "worry_time",
   duration: "10-15 min",
   xp: 12,
-  backgroundColor: "#FFF8E1",
+  backgroundColor: "#fff",
   schemaVersion: 1,
   initialResponse: INITIAL,
 

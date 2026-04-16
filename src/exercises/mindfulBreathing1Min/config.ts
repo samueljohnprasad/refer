@@ -25,7 +25,7 @@ export const mindfulBreathing1MinConfig: ExerciseConfig<MindfulBreathing1MinResp
     icon: "mindful_breathing_1min",
     duration: "2-3 min",
     xp: 5,
-    backgroundColor: "#E0F7FA",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

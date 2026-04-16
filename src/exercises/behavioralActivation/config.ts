@@ -27,7 +27,7 @@ export const behavioralActivationConfig: ExerciseConfig<BehavioralActivationResp
     icon: "behavioral_activation",
     duration: "5-7 min",
     xp: 12,
-    backgroundColor: "#E3F2FD",
+    backgroundColor: "#fff",
     schemaVersion: 1,
     initialResponse: INITIAL,
 

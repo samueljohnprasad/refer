@@ -47,6 +47,9 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
   // ─── AI ───────────────────────────────────────────────────────────
   const currentStep = config?.steps[flow.currentStepIndex];
   const ai = useExerciseAI(currentStep?.ai);
+  const isFinalStep = flow.currentStepIndex === flow.totalSteps - 1;
+  const usesEmbeddedHeader =
+    exerciseType === "abc_analysis" || exerciseType === "anger_thermometer";
 
   // Trigger AI when entering a step with AI config
   React.useEffect(() => {
@@ -79,7 +82,11 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
       {
         text: "Discard",
         style: "destructive",
-        onPress: () => router.back(),
+        onPress: () => {
+          setTimeout(() => {
+            router.back();
+          }, 100);
+        },
       },
     ]);
   }, [readOnly, flow, entryId, save, router]);
@@ -143,7 +150,7 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
     () => ({
       response: flow.response,
       onUpdate: flow.updateResponse,
-      onNext: flow.goNext,
+      onNext: readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext,
       onBack: flow.goBack,
       onClose: handleClose,
       canGoBack: flow.canGoBack,
@@ -156,7 +163,16 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
       isSaving,
       readOnly,
     }),
-    [flow, ai.suggestions, ai.isLoading, isSaving, readOnly, handleClose],
+    [
+      flow,
+      ai.suggestions,
+      ai.isLoading,
+      isSaving,
+      readOnly,
+      handleClose,
+      handleSave,
+      isFinalStep,
+    ],
   );
 
   return (
@@ -164,21 +180,21 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
       className="flex-1"
       style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
     >
-      {/* Close button */}
-      <View className="flex-row justify-end px-4 pt-2">
-        <Pressable
-          onPress={handleClose}
-          accessibilityRole="button"
-          accessibilityLabel="Close exercise"
-          hitSlop={12}
-          className="w-9 h-9 rounded-full bg-slate-100 items-center justify-center"
-        >
-          <Text className="text-slate-500 text-lg font-bold">✕</Text>
-        </Pressable>
-      </View>
+      {!usesEmbeddedHeader ? (
+        <View className="flex-row justify-end px-4 pt-2">
+          <Pressable
+            onPress={handleClose}
+            accessibilityRole="button"
+            accessibilityLabel="Close exercise"
+            hitSlop={12}
+            className="w-9 h-9 rounded-full bg-slate-100 items-center justify-center"
+          >
+            <Text className="text-slate-500 text-lg font-bold">✕</Text>
+          </Pressable>
+        </View>
+      ) : null}
 
-      {/* Step content */}
-      <View className="flex-1 px-5 pb-4">
+      <View className={`flex-1 ${usesEmbeddedHeader ? "px-5 pb-6 pt-4" : "px-5 pb-4"}`}>
         {StepComponent ? (
           <StepComponent {...stepProps} />
         ) : (
