@@ -90,10 +90,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   if (isLoading) {
     return (
       <View className="gap-4">
-        <SectionHeader
-          title="Journal Entries"
-          icon={NoteIcon}
-        />
+        <SectionHeader title="Journal Entries" icon={NoteIcon} />
         <View className="gap-3">
           {[1, 2, 3].map((i) => (
             <View key={i} className="bg-white rounded-2xl p-4 animate-pulse">
@@ -255,7 +252,11 @@ const EntryCard: React.FC<EntryCardProps> = ({
   };
 
   return (
-    <Pressable onPress={onPress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+    <Pressable
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+    >
       <Animated.View
         className="bg-white rounded-2xl p-4"
         style={{

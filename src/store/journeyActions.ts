@@ -50,6 +50,9 @@ export function completeNode(
 
   const unit: UnitData = state.units[targetUnitIndex];
   const node: PathNodeData = unit.nodes[nodeIndex];
+  // Already completed — idempotent, prevents replay race conditions
+  if (node.status === NodeStatus.COMPLETED) return state;
+  // Only allow completing ACTIVE nodes (LOCKED nodes are not actionable)
   if (node.status !== NodeStatus.ACTIVE) return state;
 
   // Clone nodes array

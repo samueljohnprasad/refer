@@ -14,7 +14,11 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { ScrollView } from "react-native";
-import Animated, { runOnUI, scrollTo, type AnimatedRef } from "react-native-reanimated";
+import Animated, {
+  runOnUI,
+  scrollTo,
+  type AnimatedRef,
+} from "react-native-reanimated";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -46,7 +50,7 @@ const VISIBILITY_BUFFER: number = 80;
 // ---------------------------------------------------------------------------
 
 export function useScrollToActive(
-  scrollViewRef: AnimatedRef<Animated.ScrollView>,
+  scrollViewRef: AnimatedRef<Animated.ScrollView> | null,
   activeNodeY: number | null,
   viewportHeight: number,
 ): ScrollToActiveResult {
@@ -99,13 +103,14 @@ export function useScrollToActive(
   );
 
   const scrollToActive = useCallback((): void => {
-    if (activeNodeY === null) return;
+    if (activeNodeY === null || !scrollViewRef) return;
     const targetY = Math.max(0, activeNodeY - viewportHeight / 3);
-    
+
     // Guaranteed native smooth layout scroll via Reanimated worklet
+    const ref = scrollViewRef;
     runOnUI(() => {
       "worklet";
-      scrollTo(scrollViewRef, 0, targetY, true);
+      scrollTo(ref, 0, targetY, true);
     })();
   }, [scrollViewRef, activeNodeY, viewportHeight]);
 

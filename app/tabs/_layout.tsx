@@ -19,10 +19,7 @@ export default function AppLayout() {
         animation: "none",
       }}
     >
-      <Stack.Screen
-        name="(tabs)"
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="screens/settings"
         options={{
@@ -157,6 +154,24 @@ export default function AppLayout() {
           title: "Journey",
           freezeOnBlur: true,
           animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="screens/exercise-flow"
+        options={{
+          headerShown: false,
+          title: "Exercise",
+          freezeOnBlur: true,
+          animation: "slide_from_bottom",
+        }}
+      />
+      <Stack.Screen
+        name="screens/task/[id]"
+        options={{
+          headerShown: false,
+          title: "Task",
+          freezeOnBlur: true,
+          animation: "slide_from_bottom",
         }}
       />
     </Stack>

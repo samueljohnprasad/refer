@@ -31,6 +31,7 @@ import {
   View,
   Text as RNText,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -150,18 +151,6 @@ export default function JourneyMapContainer({
     });
   }, [journeyAccessMode, journeySlug, jumpToSection, slug, slugOverride]);
 
-  useEffect(() => {
-    if (prevSlugRef.current !== journeySlug) {
-      prevSlugRef.current = journeySlug;
-      setIsSwitchingJourney(true);
-      log.info("Journey slug changed", { journeySlug });
-      // Safety timeout in case loading never clears
-      const timer = setTimeout(() => setIsSwitchingJourney(false), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [journeySlug]);
-
-  const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
   const chestModalRef = useRef<BottomSheetModal>(null);
   const unitCompleteModalRef = useRef<BottomSheetModal>(null);
   const [chestNode, setChestNode] = useState<PathNodeData | null>(null);
@@ -190,6 +179,21 @@ export default function JourneyMapContainer({
     resetVersionInvalidated,
   } = useSectionData(journeySlug, journeyAccessMode);
 
+  // Detect journey slug change → show skeleton only if data isn't cached
+  useEffect(() => {
+    if (prevSlugRef.current !== journeySlug) {
+      prevSlugRef.current = journeySlug;
+      log.info("Journey slug changed", { journeySlug });
+      // Only show skeleton if data isn't already loaded (e.g., not cached)
+      if (isLoading) {
+        setIsSwitchingJourney(true);
+        // Safety timeout in case loading never clears
+        const timer = setTimeout(() => setIsSwitchingJourney(false), 800);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [journeySlug, isLoading]);
+
   // D4: Show toast when journey template was updated (cache invalidated)
   useEffect(() => {
     if (wasVersionInvalidated) {
@@ -212,8 +216,37 @@ export default function JourneyMapContainer({
     isLoading: isNodeContentLoading,
     error: _nodeContentError,
     fetchContent: fetchNodeContent,
-    clearContent: _clearNodeContent,
+    clearContent: clearNodeContent,
   } = useNodeContent();
+
+  // BUG-09: Auto-dismiss loading overlay after 10s to prevent indefinite block
+  const nodeContentTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  useEffect(() => {
+    if (isNodeContentLoading) {
+      nodeContentTimeoutRef.current = setTimeout(() => {
+        clearNodeContent();
+        toast.show({
+          id: "node-content-timeout",
+          placement: "bottom",
+          render: () => (
+            <Toast action="error">
+              <ToastTitle>Loading timed out. Please try again.</ToastTitle>
+            </Toast>
+          ),
+        });
+      }, 10_000);
+    } else if (nodeContentTimeoutRef.current) {
+      clearTimeout(nodeContentTimeoutRef.current);
+      nodeContentTimeoutRef.current = null;
+    }
+    return () => {
+      if (nodeContentTimeoutRef.current) {
+        clearTimeout(nodeContentTimeoutRef.current);
+      }
+    };
+  }, [isNodeContentLoading, clearNodeContent, toast]);
 
   // D5: Proactive prefetching — next section at 80%, next 1-2 node contents
   useSectionPrefetch({
@@ -346,14 +379,6 @@ export default function JourneyMapContainer({
     allUnits.map((unit: UnitData) => unit.id),
   );
   const activeNodeY = flashActiveNodeY;
-  const renderState: "loading" | "hard-error" | "fallback-error" | "flash-list" =
-    (isLoading && !sectionMap) || isSwitchingJourney || isSwitchingSection
-      ? "loading"
-      : dataError && !sectionMap
-        ? "hard-error"
-        : !sectionMap || !currentUnit
-          ? "fallback-error"
-          : "flash-list";
 
   useEffect(() => {
     log.info("Journey map state snapshot", {
@@ -391,30 +416,6 @@ export default function JourneyMapContainer({
   ]);
 
   useEffect(() => {
-    log.info("Journey map render state", {
-      journeySlug,
-      renderState,
-      dataError: dataError ?? null,
-      hasSectionMap: sectionMap !== null,
-      hasCurrentUnit: currentUnit !== undefined,
-      isLoading,
-      isSwitchingJourney,
-      isSwitchingSection,
-      flashListItemCount: flashListData.length,
-    });
-  }, [
-    currentUnit,
-    dataError,
-    flashListData.length,
-    isLoading,
-    isSwitchingJourney,
-    isSwitchingSection,
-    journeySlug,
-    renderState,
-    sectionMap,
-  ]);
-
-  useEffect(() => {
     if (sectionMap && currentUnit) {
       log.info("Journey flash list is ready to render", {
         journeySlug,
@@ -429,22 +430,20 @@ export default function JourneyMapContainer({
   const {
     isOffScreen: isActiveOffScreen,
     direction: scrollDirection,
-    scrollToActive,
     updateVisibility,
-  } = useScrollToActive(scrollViewRef, activeNodeY, viewportHeight);
+  } = useScrollToActive(null, activeNodeY, viewportHeight);
 
   // ── Compute total completed count across ALL units (for guest gate) ──
   const totalCompletedCount: number = useMemo(() => {
-    return allUnitsRaw.reduce(
-      (acc: number, unit: UnitData) => {
-        if (!unit || !unit.nodes) return acc;
-        return acc +
-          unit.nodes.filter(
-            (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
-          ).length;
-      },
-      0,
-    );
+    return allUnitsRaw.reduce((acc: number, unit: UnitData) => {
+      if (!unit || !unit.nodes) return acc;
+      return (
+        acc +
+        unit.nodes.filter(
+          (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
+        ).length
+      );
+    }, 0);
   }, [allUnitsRaw]);
 
   // ── Node press handlers by status (wrapped with interaction lock — Task 5.1.3) ──
@@ -806,18 +805,20 @@ export default function JourneyMapContainer({
     }
 
     const isLastUnitInSection =
-      currentUnit !== undefined &&
-      currentUnit.unitNumber >= allUnitsRaw.length;
+      currentUnit !== undefined && currentUnit.unitNumber >= allUnitsRaw.length;
 
     playSound("unitComplete");
 
     if (isLastUnitInSection) {
-      log.info("Last unit in section completed; waiting for section auto-advance", {
-        journeySlug,
-        sectionNumber: currentUnit?.sectionNumber ?? null,
-        unitNumber: currentUnit?.unitNumber ?? null,
-        sectionUnitCount: allUnitsRaw.length,
-      });
+      log.info(
+        "Last unit in section completed; waiting for section auto-advance",
+        {
+          journeySlug,
+          sectionNumber: currentUnit?.sectionNumber ?? null,
+          unitNumber: currentUnit?.unitNumber ?? null,
+          sectionUnitCount: allUnitsRaw.length,
+        },
+      );
       return;
     }
 
@@ -825,7 +826,13 @@ export default function JourneyMapContainer({
     setTimeout(() => {
       unitCompleteModalRef.current?.present();
     }, 600);
-  }, [allUnitsRaw.length, currentUnit, journeySlug, playSound, sectionMap?.viewMode]);
+  }, [
+    allUnitsRaw.length,
+    currentUnit,
+    journeySlug,
+    playSound,
+    sectionMap?.viewMode,
+  ]);
 
   const { xpEarned } = useUnitCompletion(currentUnit, handleUnitComplete);
 
@@ -986,12 +993,7 @@ export default function JourneyMapContainer({
 
   // Hard error with nothing to render at all
   if (dataError && !sectionMap) {
-    return (
-      <JourneyErrorState
-        message={dataError}
-        onRetry={refresh}
-      />
-    );
+    return <JourneyErrorState message={dataError} onRetry={refresh} />;
   }
 
   // Fallback: sectionMap loaded but no unit data — show retry
@@ -1013,7 +1015,7 @@ export default function JourneyMapContainer({
       />
 
       <JourneyMapFlashList
-        key={`${journeySlug}:${sectionMap.section.id}:${flashListData.length}`}
+        key={`${journeySlug}:${sectionMap.section.id}`}
         data={flashListData}
         stats={stats}
         screenWidth={flashScreenWidth}
@@ -1052,10 +1054,7 @@ export default function JourneyMapContainer({
         onContinue={handleUnitContinue}
       />
       {/* P1.6.1: Guest sign-up prompt */}
-      <GuestSignUpSheet
-        ref={signUpSheetRef}
-        guestProgress={guestProgress}
-      />
+      <GuestSignUpSheet ref={signUpSheetRef} guestProgress={guestProgress} />
       <SectionOverviewSheet
         isOpen={isSectionOverviewOpen}
         onClose={handleSectionOverviewClose}
@@ -1075,19 +1074,22 @@ export default function JourneyMapContainer({
         onDiscoverPress={handleDiscoverPress}
         onArchive={handleArchiveJourney}
       />
-      {/* Loading overlay while fetching node content on tap */}
+      {/* Loading overlay while fetching node content on tap — tappable to cancel */}
       {isNodeContentLoading && (
-        <View className="absolute inset-0 items-center justify-center bg-black/20 z-50">
+        <Pressable
+          className="absolute inset-0 items-center justify-center bg-black/20 z-50"
+          onPress={clearNodeContent}
+        >
           <View className="rounded-2xl bg-white px-6 py-4 items-center shadow-lg">
-            <ActivityIndicator
-              size="large"
-              color="#58CC02"
-            />
+            <ActivityIndicator size="large" color="#58CC02" />
             <RNText className="mt-2 text-sm font-medium text-gray-600">
               Loading content…
             </RNText>
+            <RNText className="mt-1 text-xs text-gray-400">
+              Tap to cancel
+            </RNText>
           </View>
-        </View>
+        </Pressable>
       )}
     </>
   );

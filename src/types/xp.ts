@@ -12,6 +12,7 @@ export enum XPActionType {
   WEEKLY_REFLECTION = "weekly_reflection",
   HABIT_COMPLETION = "habit_completion",
   CALORIE_LOG = "calorie_log",
+  EXERCISE_COMPLETE = "exercise_complete",
 }
 
 export const XP_REWARDS: Record<XPActionType, number> = {
@@ -23,6 +24,7 @@ export const XP_REWARDS: Record<XPActionType, number> = {
   [XPActionType.WEEKLY_REFLECTION]: 50,
   [XPActionType.HABIT_COMPLETION]: 10,
   [XPActionType.CALORIE_LOG]: 15,
+  [XPActionType.EXERCISE_COMPLETE]: 10,
 };
 
 export interface XPHistoryEntry {
@@ -51,4 +53,5 @@ export const XP_ACTION_LABELS: Record<XPActionType, string> = {
   [XPActionType.WEEKLY_REFLECTION]: "Weekly reflection",
   [XPActionType.HABIT_COMPLETION]: "Habit completed",
   [XPActionType.CALORIE_LOG]: "Meal tracked",
+  [XPActionType.EXERCISE_COMPLETE]: "Exercise completed",
 };
