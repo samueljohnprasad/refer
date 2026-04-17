@@ -79,27 +79,6 @@ export const EXERCISE_ICON_REGISTRY: Record<ExerciseType, HugeIconObject> = {
   recognizing_rumination: EyeIcon,
   detached_mindfulness: Leaf01Icon,
   attention_training: HeadphonesIcon,
-  // Sleep
-  sleep_diary: Notebook01Icon,
-  stimulus_control: BedIcon,
-  cognitive_shuffle: ShuffleIcon,
-  pre_sleep_worry_journal: PenTool01Icon,
-  // DBT
-  stop_skill: StopWatchIcon,
-  opposite_action: FlashIcon,
-  tipp: Fire02Icon,
-  radical_acceptance: CheckmarkCircle01Icon,
-  // ACT
-  values_clarification: Compass01Icon,
-  // Self-Compassion
-  self_compassion_break: FavouriteIcon,
-  self_criticism_to_coach: HappyIcon,
-  // Self-Esteem
-  core_beliefs_suitcase: Idea01Icon,
-  // Anger
-  anger_thermometer: AngryIcon,
-  // Relationships
-  boundary_setting_script: Shield01Icon,
 };
 
 // ─── Category → Icon ─────────────────────────────────────────────────────────
@@ -109,14 +88,7 @@ export const CATEGORY_ICON_REGISTRY: Record<ExerciseCategory, HugeIconObject> =
   cbt_core: Brain01Icon,
   mindfulness: Leaf01Icon,
   anxiety: CloudIcon,
-  sleep: Moon01Icon,
   overthinking: AiBrain01Icon,
-  dbt: Shield01Icon,
-  act: Compass01Icon,
-  self_compassion: FavouriteIcon,
-  self_esteem: StarIcon,
-  anger: AngryIcon,
-  relationships: UserGroupIcon,
 };
 
 // ─── Lookup helpers ──────────────────────────────────────────────────────────

@@ -51,28 +51,7 @@ export type ExerciseType =
   // Overthinking (4)
   | "recognizing_rumination"
   | "detached_mindfulness"
-  | "attention_training"
-  // Sleep (4)
-  | "sleep_diary"
-  | "stimulus_control"
-  | "cognitive_shuffle"
-  | "pre_sleep_worry_journal"
-  // DBT (4)
-  | "stop_skill"
-  | "opposite_action"
-  | "tipp"
-  | "radical_acceptance"
-  // ACT (2)
-  | "values_clarification"
-  // Self-Compassion (2)
-  | "self_compassion_break"
-  | "self_criticism_to_coach"
-  // Self-Esteem (1)
-  | "core_beliefs_suitcase"
-  // Anger (1)
-  | "anger_thermometer"
-  // Relationships (1)
-  | "boundary_setting_script";
+  | "attention_training";
 
 // ─── Exercise Category ──────────────────────────────────────────────────────
 
@@ -80,15 +59,7 @@ export type ExerciseCategory =
   | "cbt_core"
   | "mindfulness"
   | "anxiety"
-  | "sleep"
-  | "overthinking"
-  | "dbt"
-  | "act"
-  | "self_compassion"
-  | "self_esteem"
-  | "anger"
-  | "relationships";
-
+  | "overthinking";
 export interface CategoryMeta {
   key: ExerciseCategory;
   label: string;
@@ -116,53 +87,11 @@ export const CATEGORY_META: CategoryMeta[] = [
     description: "Worry management & exposure tools",
   },
   {
-    key: "sleep",
-    label: "Sleep",
-    icon: "sleep",
-    description: "Sleep hygiene & bedtime exercises",
-  },
-  {
     key: "overthinking",
     label: "Overthinking",
     icon: "overthinking",
     description: "Break rumination & thought loops",
-  },
-  {
-    key: "dbt",
-    label: "DBT Skills",
-    icon: "dbt",
-    description: "Distress tolerance & emotion regulation",
-  },
-  {
-    key: "act",
-    label: "ACT",
-    icon: "act",
-    description: "Values, acceptance & cognitive defusion",
-  },
-  {
-    key: "self_compassion",
-    label: "Self-Compassion",
-    icon: "self_compassion",
-    description: "Kindness toward yourself",
-  },
-  {
-    key: "self_esteem",
-    label: "Self-Esteem",
-    icon: "self_esteem",
-    description: "Challenge core beliefs & build confidence",
-  },
-  {
-    key: "anger",
-    label: "Anger",
-    icon: "anger",
-    description: "Anger awareness & de-escalation",
-  },
-  {
-    key: "relationships",
-    label: "Relationships",
-    icon: "relationships",
-    description: "Boundaries, communication & scripts",
-  },
+  }
 ];
 
 /** Quick lookup by category key */
@@ -530,142 +459,13 @@ export interface AttentionTrainingResponse {
 
 
 
-// ── Sleep ───────────────────────────────────────────────────────────────────
-
-export interface SleepDiaryResponse {
-  bedtime: string;
-  wakeTime: string;
-  timeToFallAsleep: string;
-  nightWakeups: number;
-  sleepQuality: number;
-  notes: string;
-}
-
-export interface StimulusControlResponse {
-  rulesAcknowledged: boolean;
-  routineItems: string[];
-  adherence: Record<string, boolean>;
-  reflection: string;
-}
-
-export interface CognitiveShuffleResponse {
-  word: string;
-  visualizedLetters: string[];
-  anotherWord: boolean;
-  drowsinessRating: number;
-}
-
-export interface PreSleepWorryJournalResponse {
-  worries: string;
-  journalClosed: boolean;
-  relaxationChoice: "breathing" | "body_scan" | "skip" | null;
-  relaxationCompleted: boolean;
-  readinessRating: number;
-}
-
-// ── DBT ─────────────────────────────────────────────────────────────────────
-
-export interface StopSkillResponse {
-  stopCompleted: boolean;
-  breathCompleted: boolean;
-  observations: string;
-  skillfulAction: string;
-}
-
-export interface OppositeActionResponse {
-  emotion: EmotionName | null;
-  urge: string;
-  isHelpful: "helpful" | "harmful" | null;
-  oppositeAction: string;
-  commitment: string;
-}
-
-export interface TIPPResponse {
-  distressRating: number;
-  chosenTechnique:
-  | "temperature"
-  | "intense_exercise"
-  | "paced_breathing"
-  | "paired_muscle_relaxation"
-  | null;
-  techniqueCompleted: boolean;
-  postDistressRating: number;
-  effectivenessRating: number;
-}
-
-export interface RadicalAcceptanceResponse {
-  struggle: string;
-  realityStatement: string;
-  acceptanceReason: string;
-  forwardAction: string;
-  peaceRating: number;
-}
-
-// ── ACT ─────────────────────────────────────────────────────────────────────
-
-export interface ValuesClarificationResponse {
-  veryImportant: string[];
-  somewhatImportant: string[];
-  notImportant: string[];
-  top5: string[];
-  alignmentRatings: Record<string, number>;
-  actionSteps: Record<string, string>;
-}
 
 
 
-// ── Self-Compassion ─────────────────────────────────────────────────────────
-
-export interface SelfCompassionBreakResponse {
-  struggle: string;
-  mindfulnessAcknowledged: boolean;
-  commonHumanityAcknowledged: boolean;
-  friendAdvice: string;
-  selfDirectedKindness: boolean;
-}
-
-export interface SelfCriticismToCoachResponse {
-  selfCriticalThought: string;
-  coachRewrite: string;
-  evidenceAgainstLabel: string;
-  compassionateDescription: string;
-  feelingCheck: number;
-}
-
-// ── Self-Esteem ─────────────────────────────────────────────────────────────
-
-export interface CoreBeliefsSuitcaseResponse {
-  negativeCoreBelief: string;
-  origin: string;
-  evidenceFor: string[];
-  evidenceAgainst: string[];
-  rewrittenBelief: string;
-  beliefRating: number;
-}
-
-// ── Anger ───────────────────────────────────────────────────────────────────
-
-export interface AngerThermometerResponse {
-  angerRating: number;
-  trigger: string;
-  thoughts: string;
-  matchedCopingSkill: string;
-  techniqueCompleted: boolean;
-  postAngerRating: number;
-}
 
 
 
-// ── Relationships ───────────────────────────────────────────────────────────
 
-export interface BoundarySettingScriptResponse {
-  boundary: string;
-  scriptWhen: string;
-  scriptFeel: string;
-  scriptNeed: string;
-  scriptIf: string;
-  confidenceRating: number;
-}
 
 // ─── Discriminated Response Union ───────────────────────────────────────────
 // Used to type-narrow a response based on exercise_type
@@ -690,20 +490,6 @@ export type ExerciseResponseMap = {
   recognizing_rumination: RecognizingRuminationResponse;
   detached_mindfulness: DetachedMindfulnessResponse;
   attention_training: AttentionTrainingResponse;
-  sleep_diary: SleepDiaryResponse;
-  stimulus_control: StimulusControlResponse;
-  cognitive_shuffle: CognitiveShuffleResponse;
-  pre_sleep_worry_journal: PreSleepWorryJournalResponse;
-  stop_skill: StopSkillResponse;
-  opposite_action: OppositeActionResponse;
-  tipp: TIPPResponse;
-  radical_acceptance: RadicalAcceptanceResponse;
-  values_clarification: ValuesClarificationResponse;
-  self_compassion_break: SelfCompassionBreakResponse;
-  self_criticism_to_coach: SelfCriticismToCoachResponse;
-  core_beliefs_suitcase: CoreBeliefsSuitcaseResponse;
-  anger_thermometer: AngerThermometerResponse;
-  boundary_setting_script: BoundarySettingScriptResponse;
 };
 
 /** Helper: get the response type for a given ExerciseType */

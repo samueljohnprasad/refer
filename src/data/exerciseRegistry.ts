@@ -26,20 +26,6 @@ import { worryDecisionTreeConfig } from "@/src/exercises/worryDecisionTree/confi
 import { recognizingRuminationConfig } from "@/src/exercises/recognizingRumination/config";
 import { detachedMindfulnessConfig } from "@/src/exercises/detachedMindfulness/config";
 import { attentionTrainingConfig } from "@/src/exercises/attentionTraining/config";
-import { sleepDiaryConfig } from "@/src/exercises/sleepDiary/config";
-import { stimulusControlConfig } from "@/src/exercises/stimulusControl/config";
-import { cognitiveShuffleConfig } from "@/src/exercises/cognitiveShuffle/config";
-import { preSleepWorryJournalConfig } from "@/src/exercises/preSleepWorryJournal/config";
-import { stopSkillConfig } from "@/src/exercises/stopSkill/config";
-import { oppositeActionConfig } from "@/src/exercises/oppositeAction/config";
-import { tippConfig } from "@/src/exercises/tipp/config";
-import { radicalAcceptanceConfig } from "@/src/exercises/radicalAcceptance/config";
-import { valuesClarificationConfig } from "@/src/exercises/valuesClarification/config";
-import { selfCompassionBreakConfig } from "@/src/exercises/selfCompassionBreak/config";
-import { selfCriticismToCoachConfig } from "@/src/exercises/selfCriticismToCoach/config";
-import { coreBeliefsSuitcaseConfig } from "@/src/exercises/coreBeliefsSuitcase/config";
-import { angerThermometerConfig } from "@/src/exercises/angerThermometer/config";
-import { boundarySettingScriptConfig } from "@/src/exercises/boundarySettingScript/config";
 
 // ─── Master Registry ────────────────────────────────────────────────────────
 
@@ -67,27 +53,6 @@ const ALL_CONFIGS: ExerciseConfig<any>[] = [
   recognizingRuminationConfig,
   detachedMindfulnessConfig,
   attentionTrainingConfig,
-  // Sleep
-  sleepDiaryConfig,
-  stimulusControlConfig,
-  cognitiveShuffleConfig,
-  preSleepWorryJournalConfig,
-  // DBT
-  stopSkillConfig,
-  oppositeActionConfig,
-  tippConfig,
-  radicalAcceptanceConfig,
-  // ACT
-  valuesClarificationConfig,
-  // Self-Compassion
-  selfCompassionBreakConfig,
-  selfCriticismToCoachConfig,
-  // Self-Esteem
-  coreBeliefsSuitcaseConfig,
-  // Anger
-  angerThermometerConfig,
-  // Relationships
-  boundarySettingScriptConfig,
 ];
 
 // ─── Lookup Maps ────────────────────────────────────────────────────────────

@@ -49,7 +49,7 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
   const ai = useExerciseAI(currentStep?.ai);
   const isFinalStep = flow.currentStepIndex === flow.totalSteps - 1;
   const usesEmbeddedHeader =
-    exerciseType === "abc_analysis" || exerciseType === "anger_thermometer";
+    exerciseType === "abc_analysis";
 
   // Trigger AI when entering a step with AI config
   React.useEffect(() => {
