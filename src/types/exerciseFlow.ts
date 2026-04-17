@@ -33,10 +33,7 @@ export type ExerciseType =
   | "thought_catcher"
   | "thought_reframing"
   | "gratitude_reframe"
-  | "behavioral_activation"
   | "abc_analysis"
-  | "socratic_questioning"
-  | "behavioral_experiment"
   // Mindfulness (5)
   | "box_breathing"
   | "breathing_478"
@@ -313,14 +310,7 @@ export interface GratitudeReframeResponse {
   finalMoodIntensity: number;
 }
 
-export interface BehavioralActivationResponse {
-  currentMood: number;
-  selectedActivity: string;
-  customActivity: string;
-  scheduledDate: string;
-  scheduledTime: string;
-  commitment: string;
-}
+
 
 export interface ABCAnalysisResponse {
   activatingEvent: string;
@@ -331,26 +321,8 @@ export interface ABCAnalysisResponse {
   newConsequence: string;
 }
 
-export interface SocraticQuestioningResponse {
-  troublingThought: string;
-  evidence: string;
-  alternativeExplanation: string;
-  worstOutcome: string;
-  bestOutcome: string;
-  mostLikelyOutcome: string;
-  friendAdvice: string;
-  effectOfThinking: string;
-  reratedBelief: number;
-}
 
-export interface BehavioralExperimentResponse {
-  prediction: string;
-  beliefRating: number;
-  experimentPlan: string;
-  whatHappened: string;
-  reratedBelief: number;
-  learning: string;
-}
+
 
 // ── Mindfulness ─────────────────────────────────────────────────────────────
 
@@ -474,10 +446,7 @@ export type ExerciseResponseMap = {
   thought_catcher: ThoughtCatcherResponse;
   thought_reframing: ThoughtReframingResponse;
   gratitude_reframe: GratitudeReframeResponse;
-  behavioral_activation: BehavioralActivationResponse;
   abc_analysis: ABCAnalysisResponse;
-  socratic_questioning: SocraticQuestioningResponse;
-  behavioral_experiment: BehavioralExperimentResponse;
   box_breathing: BoxBreathingResponse;
   breathing_478: Breathing478Response;
   grounding_54321: Grounding54321Response;

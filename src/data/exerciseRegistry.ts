@@ -10,10 +10,7 @@ import { EXERCISE_CATEGORY_META } from "@/src/types/exerciseFlow";
 import { thoughtCatcherConfig } from "@/src/exercises/thoughtCatcher/config";
 import { thoughtReframingConfig } from "@/src/exercises/thoughtReframing/config";
 import { gratitudeReframeConfig } from "@/src/exercises/gratitudeReframe/config";
-import { behavioralActivationConfig } from "@/src/exercises/behavioralActivation/config";
 import { abcAnalysisConfig } from "@/src/exercises/abcAnalysis/config";
-import { socraticQuestioningConfig } from "@/src/exercises/socraticQuestioning/config";
-import { behavioralExperimentConfig } from "@/src/exercises/behavioralExperiment/config";
 import { boxBreathingConfig } from "@/src/exercises/boxBreathing/config";
 import { breathing478Config } from "@/src/exercises/breathing478/config";
 import { grounding54321Config } from "@/src/exercises/grounding54321/config";
@@ -34,10 +31,7 @@ const ALL_CONFIGS: ExerciseConfig<any>[] = [
   thoughtCatcherConfig,
   thoughtReframingConfig,
   gratitudeReframeConfig,
-  behavioralActivationConfig,
   abcAnalysisConfig,
-  socraticQuestioningConfig,
-  behavioralExperimentConfig,
   // Mindfulness
   boxBreathingConfig,
   breathing478Config,

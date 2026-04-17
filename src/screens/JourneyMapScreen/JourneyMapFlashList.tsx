@@ -342,6 +342,7 @@ function JourneyMapFlashListInner({
                 keyExtractor={keyExtractor as any}
                 getItemType={getItemType as any}
                 overrideItemLayout={overrideItemLayout as any}
+                //@ts-ignore
                 estimatedItemSize={ESTIMATED_ITEM_SIZE}
                 drawDistance={DRAW_DISTANCE}
                 showsVerticalScrollIndicator={false}

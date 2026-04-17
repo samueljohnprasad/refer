@@ -60,10 +60,7 @@ export const EXERCISE_ICON_REGISTRY: Record<ExerciseType, HugeIconObject> = {
   thought_catcher: Brain01Icon,
   thought_reframing: AiBrain01Icon,
   gratitude_reframe: SparklesIcon,
-  behavioral_activation: Flag01Icon,
   abc_analysis: BalanceScaleIcon,
-  socratic_questioning: BubbleChatIcon,
-  behavioral_experiment: Target01Icon,
   // Mindfulness
   box_breathing: Yoga01Icon,
   breathing_478: WellnessIcon,
