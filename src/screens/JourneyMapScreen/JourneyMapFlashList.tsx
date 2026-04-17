@@ -21,12 +21,14 @@ import {
     type NativeSyntheticEvent,
     type NativeScrollEvent,
 } from "react-native";
+import Svg, { Path } from "react-native-svg";
+import { useHighContrast } from "@/src/hooks/useHighContrast";
 import Animated, {
     useSharedValue,
     useAnimatedScrollHandler,
     runOnJS,
 } from "react-native-reanimated";
-import { FlashList } from "@shopify/flash-list";
+import { FlashList, FlashListRef } from "@shopify/flash-list";
 import type { ViewToken } from "react-native";
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
@@ -50,6 +52,7 @@ import {
     StickyUnitHeader,
 } from "@/src/components/journey";
 import type { UnitHeaderData } from "@/src/hooks/useJourneyFlashList";
+import { MASCOT_SIZE } from "@/src/data/journey/constants";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -90,7 +93,7 @@ export interface JourneyMapFlashListProps {
     /** Jump-to-unit handler for dividers */
     onJumpToUnit?: (unitId: string) => void;
     /** FlashList ref for external scroll control */
-    listRef?: React.RefObject<FlashList<JourneyFlashListItem>>;
+    listRef?: React.RefObject<FlashListRef<JourneyFlashListItem>>;
     /** Scroll event handler for tracking scroll visibility */
     onScroll?: (y: number) => void;
     /** Unit headers data */
@@ -107,19 +110,50 @@ export interface JourneyMapFlashListProps {
 
 interface DividerCellProps {
     item: JourneyDividerItem;
+    screenWidth: number;
+    activeGlobalIndex: number;
     onJumpToUnit?: (unitId: string) => void;
 }
 
 function DividerCell({
     item,
+    screenWidth,
+    activeGlobalIndex,
     onJumpToUnit,
 }: DividerCellProps): React.JSX.Element {
+    const { pathColors, pathStrokeWidth } = useHighContrast();
     const handleJump = useCallback((): void => {
         onJumpToUnit?.(item.targetUnitId);
     }, [onJumpToUnit, item.targetUnitId]);
 
+    // Mirror JourneyNodeCell logic: the divider's path is "progress-colored" if the
+    // last node before this divider is completed or active.
+    const isProgressSegment: boolean =
+        item.prevNodeGlobalIndex !== undefined &&
+        activeGlobalIndex >= 0 &&
+        item.prevNodeGlobalIndex <= activeGlobalIndex;
+    const segmentColor: string = isProgressSegment ? pathColors.active : pathColors.inactive;
+
     return (
-        <View style={{ height: item.cellHeight }}>
+        <View style={{ height: item.cellHeight}}>
+            {/* Path segment running straight through the divider */}
+            {item.segmentD ? (
+                <Svg
+                    width={screenWidth}
+                    height={item.cellHeight}
+                    style={{ position: "absolute", top: 0, left: 0 }}
+                    pointerEvents="none"
+                >
+                    <Path
+                        d={item.segmentD}
+                        stroke={segmentColor}
+                        strokeWidth={pathStrokeWidth}
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+                </Svg>
+            ) : null}
             <UnitDivider
                 title={item.title}
                 showJumpHere={item.showJumpHere}
@@ -135,13 +169,18 @@ interface MascotCellProps {
 }
 
 function MascotCell({ item }: MascotCellProps): React.JSX.Element {
+    // If cell height is 0 (so it doesn't break path logic), use verticalOffset so it sits below the previous node
+    const calculatedY = item.cellHeight > 0 ? item.cellHeight / 2 : MASCOT_SIZE.verticalOffset;
     return (
-        <View style={{ height: item.cellHeight, backgroundColor: "transparent" }}>
+        <View style={{ height: item.cellHeight, backgroundColor: "transparent", overflow: "visible" }}>
             <MascotBubble
                 x={item.x}
-                y={item.cellHeight / 2}
+                y={calculatedY}
                 side={item.side as MascotSide}
                 initialMessage={item.message}
+                imageKey={item.imageKey}
+                avatarSize={item.avatarSize}
+                offsetY={item.offsetY}
             />
         </View>
     );
@@ -168,7 +207,7 @@ function JourneyMapFlashListInner({
     onGuidePress,
     onFlagPress,
 }: JourneyMapFlashListProps): React.JSX.Element {
-    const internalRef = useRef<FlashList<JourneyFlashListItem>>(null);
+    const internalRef = useRef<FlashListRef<JourneyFlashListItem>>(null);
     const flashListRef = listRef ?? internalRef;
 
     const scrollY = useSharedValue(0);
@@ -234,12 +273,14 @@ function JourneyMapFlashListInner({
                     return (
                         <DividerCell
                             item={item as JourneyDividerItem}
+                            screenWidth={screenWidth}
+                            activeGlobalIndex={activeGlobalIndex}
                             onJumpToUnit={onJumpToUnit}
                         />
                     );
 
-                // case "mascot":
-                //     return <MascotCell item={item as JourneyMascotItem} />;
+                case "mascot":
+                    return <MascotCell item={item as JourneyMascotItem} />;
 
                 default:
                     return <View />;

@@ -14,6 +14,14 @@ export interface MascotPlacement {
   position: MascotSide;
   /** Optional message the mascot displays */
   message?: string;
+  /** Image key for the mascot avatar (e.g. 'panda-writing') */
+  imageKey?: string;
+  /** Avatar render size in dp */
+  avatarSize?: number;
+  /** Vertical offset from node centre-line in dp */
+  offsetY?: number;
+  /** Horizontal offset from the node's center, in dp */
+  offsetX?: number;
 }
 
 /** A unit (section) containing multiple nodes */

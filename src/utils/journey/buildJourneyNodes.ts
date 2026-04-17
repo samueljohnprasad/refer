@@ -185,6 +185,10 @@ export function buildJourneyNodes(input: BuildJourneyNodesInput): JourneyFlashLi
                 afterNodeIndex: placement.afterNodeIndex,
                 side: placement.position,
                 messageKey: placement.message ?? "",
+                imageKey: placement.imageKey,
+                avatarSize: placement.avatarSize,
+                offsetY: placement.offsetY,
+                offsetX: placement.offsetX,
             })),
             divider: {
                 title: unit.title,
@@ -207,15 +211,29 @@ export function buildJourneyNodes(input: BuildJourneyNodesInput): JourneyFlashLi
             const dividerCellHeight: number = unitConfig.divider.showJumpHere
                 ? DIVIDER_CELL_HEIGHT_WITH_JUMP
                 : DIVIDER_CELL_HEIGHT_COMPACT;
-            const dividerItem: JourneyDividerItem = {
-                id: dividerId,
-                itemType: 'divider',
-                cellHeight: dividerCellHeight,
-                title: unitConfig.divider.title,
-                showJumpHere: unitConfig.divider.showJumpHere,
-                accentColor: sectionThemeConfig?.dividerColor ?? themeConfig?.dividerColor,
-                targetUnitId: unit.id,
-            };
+            // ── Build a straight vertical path segment through the divider cell ──
+        const dividerSegmentD = (() => {
+            if (dividerCellHeight <= 0) return '';
+            const p = d3Path();
+            p.moveTo(prevX, 0);
+            p.lineTo(prevX, dividerCellHeight);
+            return p.toString();
+        })();
+
+        const dividerItem: JourneyDividerItem = {
+            id: dividerId,
+            itemType: 'divider',
+            cellHeight: dividerCellHeight,
+            title: unitConfig.divider.title,
+            showJumpHere: unitConfig.divider.showJumpHere,
+            accentColor: sectionThemeConfig?.dividerColor ?? themeConfig?.dividerColor,
+            targetUnitId: unit.id,
+            pathX: prevX,
+            segmentD: dividerSegmentD,
+            // globalIndex hasn't been incremented yet — so globalIndex - 1 is the last
+            // node of the previous unit. Used by DividerCell to pick the correct path color.
+            prevNodeGlobalIndex: globalIndex - 1,
+        };
             items.push(dividerItem);
             cumulativeY += dividerCellHeight;
         }
@@ -253,10 +271,12 @@ export function buildJourneyNodes(input: BuildJourneyNodesInput): JourneyFlashLi
             // Cell height = vertical gap (variable support — use settings.verticalGap as base)
             const cellHeight: number = Math.max(MIN_NODE_CELL_HEIGHT, settings.verticalGap);
 
-            // Build SVG segment in LOCAL cell coordinates
-            // Only build segment if it's NOT the first node in the unit
-            const segmentD: string = nodeIndex === 0 
-                ? '' 
+            // Build SVG segment in LOCAL cell coordinates.
+            // Only skip for the absolute first node (nothing above it on the canvas).
+            // First nodes of subsequent units (after a divider) DO need a segment
+            // to connect from the bottom of the divider to the node.
+            const segmentD: string = globalIndex === 0
+                ? ''
                 : buildSegmentD(prevX, nodeX, cellHeight, screenWidth);
 
             const journeyNode: JourneyNode = {
@@ -293,22 +313,27 @@ export function buildJourneyNodes(input: BuildJourneyNodesInput): JourneyFlashLi
                 const mp: MascotPlacementConfig = mascotPlacements[nextMascotIdx];
                 const messageText: string =
                     mascotMessages[mp.messageKey] ?? mp.messageKey;
+                console.log('sdfsd', mp)
 
+                const resolvedOffsetX = mp.offsetX ?? MASCOT_SIZE.horizontalOffset;
                 const mascotX: number = mp.side === 'right'
-                    ? nodeX + MASCOT_SIZE.horizontalOffset + 200
-                    : nodeX - MASCOT_SIZE.horizontalOffset - 200;
+                    ? nodeX + resolvedOffsetX
+                    : nodeX - resolvedOffsetX;
 
                 const mascotItem: JourneyMascotItem = {
                     id: `mascot_${unit.id}_${nodeIndex}_${nextMascotIdx}`,
                     itemType: 'mascot',
-                    cellHeight: MASCOT_CELL_HEIGHT,
+                    cellHeight: 0,
                     x: mascotX,
                     side: mp.side,
                     message: messageText,
+                    imageKey: mp.imageKey || "panda-writing",
+                    avatarSize: mp.avatarSize ?? 72,
+                    offsetY: mp.offsetY ?? 16,
                 };
 
                 items.push(mascotItem);
-                cumulativeY += MASCOT_CELL_HEIGHT;
+                
                 nextMascotIdx++;
             }
         });

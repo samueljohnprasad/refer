@@ -126,7 +126,7 @@ function UnitDivider({
 }: UnitDividerProps): React.JSX.Element {
     return (
         <View
-            className="w-full px-4"
+            className="w-full px-4 justify-center items-center h-full"
             style={{
                 paddingTop: showJumpHere ? 14 : 4,
                 paddingBottom: showJumpHere ? 6 : 2,
@@ -141,7 +141,7 @@ function UnitDivider({
                 <View
                     className="mx-3 rounded-full px-2.5 py-1"
                     style={{
-                        backgroundColor: 'rgba(248, 250, 252, 0.98)',
+                        backgroundColor: 'rgba(203, 213, 225, 0.12)',
                     }}
                 >
                     <Text

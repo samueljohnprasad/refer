@@ -13,6 +13,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
+import { Image } from "expo-image";
 import { Text } from "@/components/ui/text";
 import Animated, {
   useSharedValue,
@@ -44,6 +45,18 @@ export interface MascotBubbleProps {
   side: MascotSide;
   /** Initial message to display in the speech bubble */
   initialMessage?: string;
+  /** Image key (e.g. 'panda-writing') */
+  imageKey?: string;
+  /**
+   * Avatar render size in dp. Falls back to MASCOT_SIZE.avatar when omitted.
+   * Comes straight from MascotPlacementConfig — no computation here.
+   */
+  avatarSize?: number;
+  /**
+   * Vertical nudge from the anchor point in dp.
+   * Falls back to MASCOT_SIZE.verticalOffset when omitted.
+   */
+  offsetY?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -85,6 +98,21 @@ function OwlAvatar({ }: OwlAvatarProps): React.JSX.Element {
       </View>
     </View>
   );
+}
+
+function ImageAvatar({ imageKey, size }: { imageKey: string; size: number }): React.JSX.Element {
+    const source = imageKey === 'panda-writing'
+      ? require("@/assets/images/panda-writing.png")
+      : require("@/assets/images/panda-hi.png");
+
+    return (
+        <Image
+            source={source}
+            style={{ width: size, height: size }}
+            contentFit="contain"
+            accessibilityLabel="Mascot"
+        />
+    );
 }
 
 interface SpeechBubbleProps {
@@ -137,13 +165,19 @@ function MascotBubble({
   y,
   side,
   initialMessage,
+  imageKey,
+  avatarSize,
+  offsetY,
 }: MascotBubbleProps): React.JSX.Element {
   const [message, setMessage] = useState<string>(
     initialMessage ?? MASCOT_MESSAGES[0],
   );
 
   const isLeft: boolean = side === MascotSide.LEFT;
-  const halfAvatar: number = MASCOT_SIZE.avatar / 2;
+  // Use config-supplied size; fall back to the constant — no multipliers.
+  const resolvedAvatarSize: number = avatarSize ?? MASCOT_SIZE.avatar;
+  const resolvedOffsetY: number = offsetY ?? MASCOT_SIZE.verticalOffset;
+  const halfAvatar: number = resolvedAvatarSize / 2;
   const reducedMotion: boolean = useReducedMotion();
 
   // ── Entrance slide-in animation ──
@@ -179,7 +213,7 @@ function MascotBubble({
         {
           position: "absolute",
           left: x,
-          top: y,
+          top: y + resolvedOffsetY,
           width: 0,
           height: 0,
           alignItems: "center",
@@ -227,7 +261,7 @@ function MascotBubble({
           accessibilityRole="button"
           accessibilityLabel="Tap for encouragement"
         >
-          <OwlAvatar />
+          {imageKey ? <ImageAvatar imageKey={imageKey} size={resolvedAvatarSize} /> : <OwlAvatar />}
         </PressableScale>
       </View>
     </Animated.View >

@@ -114,6 +114,16 @@ export interface JourneyDividerItem {
   accentColor?: string;
   /** Unit ID this divider precedes (for jump-to-unit) */
   targetUnitId: string;
+  /** X position of the path at this divider (same prevX — path passes straight through) */
+  pathX?: number;
+  /** Pre-built straight-line SVG path for this divider cell in local coordinates */
+  segmentD?: string;
+  /**
+   * Global index of the last node BEFORE this divider.
+   * Used at render time to determine if the path through this cell should be
+   * colored as active/completed (same logic as JourneyNodeCell).
+   */
+  prevNodeGlobalIndex?: number;
 }
 
 /**
@@ -132,6 +142,12 @@ export interface JourneyMascotItem {
   side: "left" | "right";
   /** Message text */
   message: string;
+  /** Mascot image key (for overriding default avatar) */
+  imageKey?: string;
+  /** Avatar render size in dp (config-set, falls back to MASCOT_SIZE.avatar) */
+  avatarSize?: number;
+  /** Vertical offset from the node centre-line in dp (config-set) */
+  offsetY?: number;
 }
 
 /** Union type for all items in the FlashList data array */

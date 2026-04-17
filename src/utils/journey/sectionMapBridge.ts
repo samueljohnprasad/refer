@@ -174,6 +174,10 @@ export function sectionMapToUnitData(response: SectionMapResponse): UnitData[] {
                     afterNodeIndex: (mp.afterNodeIndex as number) ?? 0,
                     position: (mp.position as MascotSide) ?? MascotSide.LEFT,
                     message: (mp.message as string) ?? undefined,
+                    imageKey: (mp.imageKey as string) ?? undefined,
+                    avatarSize: (mp.avatarSize as number) ?? undefined,
+                    offsetY: (mp.offsetY as number) ?? undefined,
+                    offsetX: (mp.offsetX as number) ?? undefined,
                 };
             })
             : [];

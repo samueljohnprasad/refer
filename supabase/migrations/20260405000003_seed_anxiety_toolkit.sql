@@ -49,7 +49,7 @@ INSERT INTO journey_template_units (
   'Understanding Anxiety',
   'Learn what anxiety is, how it works in your brain and body, and why it feels the way it does.',
   'blue',
-  '[{"afterNodeIndex": 3, "position": "right", "message": "You''re learning fast! 🧠"}]'::jsonb,
+  '[{"afterNodeIndex": 3, "position": "right", "message": "You''re learning fast! 🧠", "imageKey": "panda-writing", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
   'sequential'
 ) ON CONFLICT (journey_id, unit_number) DO UPDATE SET
   title = EXCLUDED.title,
@@ -65,7 +65,7 @@ INSERT INTO journey_template_units (
   'Challenging Anxious Thoughts',
   'Spot the thinking traps anxiety uses and learn to challenge them with evidence.',
   'purple',
-  '[{"afterNodeIndex": 4, "position": "left", "message": "Thought detective mode! 🔍"}]'::jsonb,
+  '[{"afterNodeIndex": 4, "position": "left", "message": "Thought detective mode! 🔍", "imageKey": "panda-writing", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
   'sequential'
 ) ON CONFLICT (journey_id, unit_number) DO UPDATE SET
   title = EXCLUDED.title,
@@ -81,7 +81,7 @@ INSERT INTO journey_template_units (
   'Calming Your Body',
   'Master breathing, grounding, and relaxation techniques that calm your nervous system.',
   'green',
-  '[{"afterNodeIndex": 2, "position": "right", "message": "Breathe... you''re doing great 🌿"}]'::jsonb,
+  '[{"afterNodeIndex": 2, "position": "right", "message": "Breathe... you''re doing great 🌿", "imageKey": "panda-writing", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
   'sequential'
 ) ON CONFLICT (journey_id, unit_number) DO UPDATE SET
   title = EXCLUDED.title,
@@ -97,7 +97,7 @@ INSERT INTO journey_template_units (
   'Your Anxiety Action Plan',
   'Build your personal coping toolkit and create an emergency action plan.',
   'orange',
-  '[{"afterNodeIndex": 2, "position": "left", "message": "You''ve got this! 💪"}]'::jsonb,
+  '[{"afterNodeIndex": 2, "position": "left", "message": "You''ve got this! 💪", "imageKey": "panda-writing", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
   'sequential'
 ) ON CONFLICT (journey_id, unit_number) DO UPDATE SET
   title = EXCLUDED.title,
@@ -331,7 +331,15 @@ INSERT INTO journey_template_nodes (
     "rarity": "uncommon"
   }'::jsonb,
   5, 1, 'gift', 'chest'
-);
+) ON CONFLICT (id) DO UPDATE SET
+  title = EXCLUDED.title,
+  description = EXCLUDED.description,
+  content = EXCLUDED.content,
+  rewards = EXCLUDED.rewards,
+  xp_reward = EXCLUDED.xp_reward,
+  estimated_minutes = EXCLUDED.estimated_minutes,
+  icon_key = EXCLUDED.icon_key,
+  variant_key = EXCLUDED.variant_key;
 
 -- --------------------------------------------------------------------------
 -- 4. Insert nodes — Section 2: Challenging Anxious Thoughts (8 nodes)
@@ -651,7 +659,15 @@ INSERT INTO journey_template_nodes (
     "show_mood_comparison": true
   }'::jsonb,
   50, 2, 'star', 'checkpoint'
-);
+) ON CONFLICT (id) DO UPDATE SET
+  title = EXCLUDED.title,
+  description = EXCLUDED.description,
+  content = EXCLUDED.content,
+  rewards = EXCLUDED.rewards,
+  xp_reward = EXCLUDED.xp_reward,
+  estimated_minutes = EXCLUDED.estimated_minutes,
+  icon_key = EXCLUDED.icon_key,
+  variant_key = EXCLUDED.variant_key;
 
 -- --------------------------------------------------------------------------
 -- 5. Insert nodes — Section 3: Calming Your Body (7 nodes)
@@ -860,7 +876,15 @@ INSERT INTO journey_template_nodes (
     "rarity": "rare"
   }'::jsonb,
   5, 1, 'gift', 'chest'
-);
+) ON CONFLICT (id) DO UPDATE SET
+  title = EXCLUDED.title,
+  description = EXCLUDED.description,
+  content = EXCLUDED.content,
+  rewards = EXCLUDED.rewards,
+  xp_reward = EXCLUDED.xp_reward,
+  estimated_minutes = EXCLUDED.estimated_minutes,
+  icon_key = EXCLUDED.icon_key,
+  variant_key = EXCLUDED.variant_key;
 
 -- --------------------------------------------------------------------------
 -- 6. Insert nodes — Section 4: Your Anxiety Action Plan (6 nodes)
@@ -1050,7 +1074,15 @@ INSERT INTO journey_template_nodes (
     }
   }'::jsonb,
   100, 2, 'star', 'checkpoint'
-);
+) ON CONFLICT (id) DO UPDATE SET
+  title = EXCLUDED.title,
+  description = EXCLUDED.description,
+  content = EXCLUDED.content,
+  rewards = EXCLUDED.rewards,
+  xp_reward = EXCLUDED.xp_reward,
+  estimated_minutes = EXCLUDED.estimated_minutes,
+  icon_key = EXCLUDED.icon_key,
+  variant_key = EXCLUDED.variant_key;
 
 -- ============================================================================
 -- Reload PostgREST schema cache

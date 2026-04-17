@@ -165,6 +165,23 @@ export interface MascotPlacementConfig {
     side: 'left' | 'right';
     /** Key into the mascot message registry, or a literal string */
     messageKey: string;
+    /** Optional image key to show instead of the default owl avatar */
+    imageKey?: string;
+    /**
+     * Avatar render size in dp. Defaults to MASCOT_SIZE.avatar (48) if omitted.
+     * Set a larger value (e.g. 72) for image-based mascots.
+     */
+    avatarSize?: number;
+    /**
+     * Vertical offset from the node's centre-line, in dp.
+     * Positive pushes the mascot downward. Defaults to MASCOT_SIZE.verticalOffset.
+     */
+    offsetY?: number;
+    /**
+     * Horizontal offset from the node's center, in dp.
+     * Defaults to MASCOT_SIZE.horizontalOffset.
+     */
+    offsetX?: number;
     /** Optional: star rating to display next to mascot (e.g. 2 gold stars) */
     starRating?: number;
 }
