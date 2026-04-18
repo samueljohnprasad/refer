@@ -1,6 +1,5 @@
 {
   "expo": {
-    "jsEngine": "hermes",
     "name": "Happy",
     "slug": "happy",
     "version": "1.4.4",
@@ -8,7 +7,6 @@
     "icon": "./assets/icons/icon.png",
     "scheme": "happy",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/icons/icon.png",
       "resizeMode": "contain",
@@ -36,7 +34,6 @@
         "foregroundImage": "./assets/icons/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
       "package": "com.samuelprasad.happy",
       "permissions": [
         "android.permission.RECORD_AUDIO",
@@ -79,7 +76,9 @@
       "expo-asset",
       "expo-apple-authentication",
       "@bacons/apple-targets",
-      "expo-localization"
+      "expo-localization",
+      "@react-native-community/datetimepicker",
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true

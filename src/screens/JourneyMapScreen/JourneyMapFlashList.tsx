@@ -15,7 +15,7 @@
  * Pure presentational — all data via props.
  */
 
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   View,
   type NativeSyntheticEvent,
@@ -30,6 +30,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { FlashList, FlashListRef } from "@shopify/flash-list";
 import type { ViewToken } from "react-native";
+import { Pressable, Text as RNText, } from 'react-native';
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
@@ -56,6 +57,8 @@ import type { UnitHeaderData } from "@/src/hooks/useJourneyFlashList";
 import { MASCOT_SIZE, UNIT_GRADIENTS } from "@/src/data/journey/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HomeMainButton } from "@/src/components/journey/home-main-button";
+import BasicBottomSheetExample from "@/src/components/BasicBottomSheetExample";
+import BottomSheetWithRNContent from "@/src/components/BottomSheetWithRNContent";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -225,25 +228,13 @@ function JourneyMapFlashListInner({
 
   const scrollY = useSharedValue(0);
   const [visibleUnitIndex, setVisibleUnitIndex] = React.useState(0);
+  const [counter, setCounter] = useState(0);
 
   const onScrollTick = useCallback(
     (y: number) => {
       onScroll?.(y);
-
-      // Determine visible unit based on scroll position
-      const currentUnitIndex = unitHeaders.findIndex((uh, index) => {
-        const nextUnit = unitHeaders[index + 1];
-        if (nextUnit) {
-          return y >= uh.yOffset && y < nextUnit.yOffset;
-        }
-        return y >= uh.yOffset;
-      });
-
-      if (currentUnitIndex !== -1 && currentUnitIndex !== visibleUnitIndex) {
-        setVisibleUnitIndex(currentUnitIndex);
-      }
     },
-    [onScroll, unitHeaders, visibleUnitIndex],
+    [onScroll],
   );
 
   const scrollHandler = useAnimatedScrollHandler({
@@ -253,6 +244,31 @@ function JourneyMapFlashListInner({
       runOnJS(onScrollTick)(event.contentOffset.y);
     },
   });
+
+  // Determine visible unit from viewable items
+  const onViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      if (viewableItems.length > 0) {
+        // Find the first visible node or divider to determine the current unit
+        const firstItem = viewableItems.find(
+          (vi) => vi.item.itemType === "node" || vi.item.itemType === "divider",
+        );
+        if (firstItem) {
+          const targetUnitId =
+            firstItem.item.itemType === "node"
+              ? (firstItem.item as JourneyNode).unitId
+              : (firstItem.item as JourneyDividerItem).targetUnitId;
+
+          const unitIndex = unitHeaders.findIndex(
+            (uh) => uh.unitId === targetUnitId,
+          );
+          if (unitIndex !== -1 && unitIndex !== visibleUnitIndex) {
+            setVisibleUnitIndex(unitIndex);
+          }
+        }
+      }
+    },
+  );
 
   const visibleUnit = unitHeaders[visibleUnitIndex] || unitHeaders[0];
 
@@ -363,6 +379,11 @@ function JourneyMapFlashListInner({
         decelerationRate="normal"
         ref={flashListRef as any}
         contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
+        onViewableItemsChanged={onViewableItemsChanged.current}
+        viewabilityConfig={{
+          itemVisiblePercentThreshold: 10,
+          minimumViewTime: 100,
+        }}
       />
 
       {/* Scroll-to-active floating button */}
@@ -371,6 +392,36 @@ function JourneyMapFlashListInner({
         direction={scrollDirection}
         onPress={onScrollToActive}
       />
+      {/* <BottomSheetWithRNContent>
+        <View>
+          <RNText style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
+            React Native Content
+          </RNText>
+          <RNText style={{ color: '#666', marginBottom: 16 }}>Counter: {counter}</RNText>
+          <Pressable
+            style={{
+              backgroundColor: '#007AFF',
+              padding: 12,
+              borderRadius: 8,
+              alignItems: 'center',
+              marginBottom: 12,
+            }}
+            onPress={() => setCounter(counter + 1)}>
+            <RNText style={{ color: 'white', fontWeight: '600' }}>Increment</RNText>
+          </Pressable>
+          <Pressable
+            style={{
+              backgroundColor: '#FF3B30',
+              padding: 12,
+              borderRadius: 8,
+              alignItems: 'center',
+            }}
+          >
+            <RNText style={{ color: 'white', fontWeight: '600' }}>Close</RNText>
+          </Pressable>
+        </View>
+      </BottomSheetWithRNContent> */}
+
     </View>
   );
 }

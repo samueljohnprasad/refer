@@ -1,5 +1,8 @@
 import React from "react";
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
+
+const Label = NativeTabs.Trigger.Label;
+const Icon = NativeTabs.Trigger.Icon;
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { DynamicColorIOS, Platform, StyleSheet } from "react-native";
 import { BlurView } from "expo-blur";

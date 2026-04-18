@@ -1,12 +1,6 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
 import { ViewStyle, Pressable } from "react-native";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -54,7 +48,6 @@ import { SPRING_SNAPPY } from "@/src/utils/motionTokens";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import * as Haptics from "expo-haptics";
 
-
 import {
   QuickJournalSection,
   QuickJournalPrompt,
@@ -65,6 +58,7 @@ import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { XP_REWARDS, XPActionType } from "@/src/types/xp";
+import BasicBottomSheetExample from "@/src/components/BasicBottomSheetExample";
 
 // Re-export for backward compat from other files that import from here
 export { PALETTE } from "@/constants/palette";
@@ -90,7 +84,6 @@ const ENTRANCE_DURATION_MS = 300 as const;
 const TopBar = React.memo<{
   onAchievementsPress: () => void;
 }>(({ onAchievementsPress }) => {
-
   const handleSettingsPress = useCallback(() => {
     router.push("/tabs/screens/settings");
   }, []);
@@ -117,11 +110,7 @@ const TopBar = React.memo<{
         accessibilityRole="button"
         accessibilityLabel="Open settings"
       >
-        <HugeiconsIcon
-          icon={Settings02Icon}
-          color="#6B7280"
-          size={22}
-        />
+        <HugeiconsIcon icon={Settings02Icon} color="#6B7280" size={22} />
       </PressableScale>
     </View>
   );
@@ -139,33 +128,25 @@ const Greeting = React.memo<{
   displayName?: string;
   isLoading: boolean;
   hasPro: boolean;
-}>(
-  ({
-    displayName,
-    isLoading,
-    hasPro,
-  }) => {
-    const greeting = useMemo(() => getGreeting(new Date().getHours()), []);
+}>(({ displayName, isLoading, hasPro }) => {
+  const greeting = useMemo(() => getGreeting(new Date().getHours()), []);
 
-    return (
-      <View className="mt-1">
-        <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center gap-2.5 flex-1 pr-2">
-            <Text 
-              className="text-2xl font-bold tracking-tight text-gray-900"
-              numberOfLines={1}
-              adjustsFontSizeToFit
-            >
-              {greeting},{" "}
-              {isLoading ? "..." : displayName || "Friend"}
-            </Text>
-          </View>
+  return (
+    <View className="mt-1">
+      <View className="flex-row items-center justify-between">
+        <View className="flex-row items-center gap-2.5 flex-1 pr-2">
+          <Text
+            className="text-2xl font-bold tracking-tight text-gray-900"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+          >
+            {greeting}, {isLoading ? "..." : displayName || "Friend"}
+          </Text>
         </View>
       </View>
-    );
-  },
-);
-
+    </View>
+  );
+});
 
 /**
  * Shimmering Skeleton Loader
@@ -173,10 +154,22 @@ const Greeting = React.memo<{
 const ShimmerSkeleton = React.memo<{ height?: number }>(({ height = 240 }) => {
   const shimmer = useSharedValue(0.4);
   useEffect(() => {
-    shimmer.value = withRepeat(withSequence(withTiming(0.6, { duration: 800 }), withTiming(0.4, { duration: 800 })), -1, true);
+    shimmer.value = withRepeat(
+      withSequence(
+        withTiming(0.6, { duration: 800 }),
+        withTiming(0.4, { duration: 800 }),
+      ),
+      -1,
+      true,
+    );
   }, []);
   const style = useAnimatedStyle(() => ({ opacity: shimmer.value }));
-  return <Animated.View className="bg-white rounded-3xl" style={[style, { height, width: '100%' }, CARD_SHADOW]} />;
+  return (
+    <Animated.View
+      className="bg-white rounded-3xl"
+      style={[style, { height, width: "100%" }, CARD_SHADOW]}
+    />
+  );
 });
 
 export default function JournalCalendarScreen() {
@@ -274,14 +267,10 @@ export default function JournalCalendarScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* Top Bar */}
-        <TopBar
-          onAchievementsPress={handleAchievementsPress}
-        />
+        <TopBar onAchievementsPress={handleAchievementsPress} />
         <View className="bg-offwhite px-4 pb-12 pt-4">
           {/* Greeting — entrance animation index 0 */}
-          <Animated.View
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS)}
-          >
+          <Animated.View entering={FadeInDown.duration(ENTRANCE_DURATION_MS)}>
             <Greeting
               displayName={userProfile?.displayName}
               isLoading={isLoadingProfile}
@@ -297,15 +286,17 @@ export default function JournalCalendarScreen() {
             )}
           >
             <WeeklyStreakWidget
-              onPress={() => handleQuickJournalPress({
-                id: "initial_streak",
-                title: "Daily Log",
-                description: "Recording today's journey",
-                category: "Personal",
-                emoji: "✍️",
-                bgColor: PALETTE.softBackground,
-                categoryColor: PALETTE.purple,
-              })}
+              onPress={() =>
+                handleQuickJournalPress({
+                  id: "initial_streak",
+                  title: "Daily Log",
+                  description: "Recording today's journey",
+                  category: "Personal",
+                  emoji: "✍️",
+                  bgColor: PALETTE.softBackground,
+                  categoryColor: PALETTE.purple,
+                })
+              }
             />
           </Animated.View>
 
@@ -342,7 +333,9 @@ export default function JournalCalendarScreen() {
           {/* ── GROUP 3: Track — entrance animation index 3 ── */}
           <Animated.View
             className="mt-10"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(STAGGER_DELAY_MS * 3)}
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 3,
+            )}
           >
             <EmotionLogger
               selectedDate={selectedEmotionDate}
@@ -353,7 +346,9 @@ export default function JournalCalendarScreen() {
           {/* Mood Chart — same group as emotion logger, tighter spacing */}
           <Animated.View
             className="mt-6"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(STAGGER_DELAY_MS * 4)}
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 4,
+            )}
           >
             {shouldLoadChart ? (
               <WeeklyMoodChart
@@ -363,7 +358,9 @@ export default function JournalCalendarScreen() {
               />
             ) : (
               <View className="mb-4">
-                <Text className="text-[11px] font-bold text-gray-400 uppercase tracking-widest px-1 mb-3">Mood Trends</Text>
+                <Text className="text-[11px] font-bold text-gray-400 uppercase tracking-widest px-1 mb-3">
+                  Mood Trends
+                </Text>
                 <ShimmerSkeleton height={240} />
               </View>
             )}
@@ -372,7 +369,9 @@ export default function JournalCalendarScreen() {
           {/* ── GROUP 4: Progress — entrance animation index 5 ── */}
           <Animated.View
             className="mt-10"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(STAGGER_DELAY_MS * 5)}
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 5,
+            )}
           >
             <ChallengesSection maxItems={3} />
           </Animated.View>
@@ -380,7 +379,9 @@ export default function JournalCalendarScreen() {
           {/* Quick Journal — same group as journaling, tighter spacing */}
           <Animated.View
             className="mt-8 mb-6"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(STAGGER_DELAY_MS * 6)}
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 6,
+            )}
           >
             <QuickJournalSection
               onCardPress={handleQuickJournalPress}
