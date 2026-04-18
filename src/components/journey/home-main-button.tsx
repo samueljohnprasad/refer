@@ -7,6 +7,7 @@ type HomeMainButtonProps = {
   sectionTitle: string;
   faceColor: string;
   rimColor: string;
+  onPress: () => void;
 };
 
 export const HomeMainButton = ({
@@ -14,6 +15,7 @@ export const HomeMainButton = ({
   sectionTitle,
   faceColor,
   rimColor,
+  onPress,
 }: HomeMainButtonProps) => {
   const { width } = useWindowDimensions();
   return (
@@ -29,7 +31,7 @@ export const HomeMainButton = ({
         strokeRightPressedWidth={5}
         strokeRightColor={rimColor}
         pressDepth={4}
-        onPress={() => {}}
+        onPress={onPress}
         contentContainerStyle={{
           justifyContent: "center",
           paddingHorizontal: 16,
@@ -51,7 +53,7 @@ export const HomeMainButton = ({
         strokeLeftWidth={1}
         strokeLeftColor={rimColor}
         pressDepth={4}
-        onPress={() => {}}
+        onPress={onPress}
         contentContainerStyle={{
           justifyContent: "center",
           alignItems: "center",

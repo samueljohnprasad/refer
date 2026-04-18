@@ -28,11 +28,13 @@ import Animated, {
   useAnimatedScrollHandler,
   runOnJS,
 } from "react-native-reanimated";
-import { FlashList, FlashListRef } from "@shopify/flash-list";
+import { LegendList } from "@legendapp/list";
 import type { ViewToken } from "react-native";
-import { Pressable, Text as RNText, } from 'react-native';
+import { Pressable, Text as RNText } from "react-native";
 
-const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
+const AnimatedLegendList = Animated.createAnimatedComponent(
+  LegendList,
+) as typeof LegendList;
 
 import type {
   JourneyFlashListItem,
@@ -98,8 +100,8 @@ export interface JourneyMapFlashListProps {
   onScrollToActive: () => void;
   /** Jump-to-unit handler for dividers */
   onJumpToUnit?: (unitId: string) => void;
-  /** FlashList ref for external scroll control */
-  listRef?: React.RefObject<FlashListRef<JourneyFlashListItem>>;
+  /** LegendList ref for external scroll control */
+  listRef?: React.RefObject<any>;
   /** Scroll event handler for tracking scroll visibility */
   onScroll?: (y: number) => void;
   /** Unit headers data */
@@ -111,6 +113,20 @@ export interface JourneyMapFlashListProps {
 }
 
 // ---------------------------------------------------------------------------
+// Type guards
+// ---------------------------------------------------------------------------
+
+function isJourneyNode(item: JourneyFlashListItem): item is JourneyNode {
+  return item.itemType === "node";
+}
+
+function isJourneyDivider(
+  item: JourneyFlashListItem,
+): item is JourneyDividerItem {
+  return item.itemType === "divider";
+}
+
+// ---------------------------------------------------------------------------
 // Sub-components for heterogeneous cell types
 // ---------------------------------------------------------------------------
 
@@ -118,19 +134,14 @@ interface DividerCellProps {
   item: JourneyDividerItem;
   screenWidth: number;
   activeGlobalIndex: number;
-  onJumpToUnit?: (unitId: string) => void;
 }
 
 function DividerCell({
   item,
   screenWidth,
   activeGlobalIndex,
-  onJumpToUnit,
 }: DividerCellProps): React.JSX.Element {
   const { pathColors, pathStrokeWidth } = useHighContrast();
-  const handleJump = useCallback((): void => {
-    onJumpToUnit?.(item.targetUnitId);
-  }, [onJumpToUnit, item.targetUnitId]);
 
   // Mirror JourneyNodeCell logic: the divider's path is "progress-colored" if the
   // last node before this divider is completed or active.
@@ -162,12 +173,7 @@ function DividerCell({
           />
         </Svg>
       ) : null}
-      <UnitDivider
-        title={item.title}
-        showJumpHere={item.showJumpHere}
-        accentColor={item.accentColor ?? "#58CC02"}
-        onJumpPress={item.showJumpHere ? handleJump : undefined}
-      />
+      <UnitDivider title={item.title} />
     </View>
   );
 }
@@ -222,9 +228,10 @@ function JourneyMapFlashListInner({
   onGuidePress,
   onFlagPress,
 }: JourneyMapFlashListProps): React.JSX.Element {
-  const internalRef = useRef<FlashListRef<JourneyFlashListItem>>(null);
-  const flashListRef = listRef ?? internalRef;
+  const internalRef = useRef<any>(null);
+  const legendListRef = listRef ?? internalRef;
   const insets = useSafeAreaInsets();
+  const [isPresented, setIsPresented] = useState(false);
 
   const scrollY = useSharedValue(0);
   const [visibleUnitIndex, setVisibleUnitIndex] = React.useState(0);
@@ -246,28 +253,28 @@ function JourneyMapFlashListInner({
   });
 
   // Determine visible unit from viewable items
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0) {
-        // Find the first visible node or divider to determine the current unit
-        const firstItem = viewableItems.find(
-          (vi) => vi.item.itemType === "node" || vi.item.itemType === "divider",
-        );
-        if (firstItem) {
-          const targetUnitId =
-            firstItem.item.itemType === "node"
-              ? (firstItem.item as JourneyNode).unitId
-              : (firstItem.item as JourneyDividerItem).targetUnitId;
+  const onViewableItemsChanged = useCallback(
+    ({
+      viewableItems,
+    }: {
+      viewableItems: ViewToken<JourneyFlashListItem>[];
+    }) => {
+      const firstItem = viewableItems.find((vi) => isJourneyNode(vi.item));
 
-          const unitIndex = unitHeaders.findIndex(
-            (uh) => uh.unitId === targetUnitId,
-          );
-          if (unitIndex !== -1 && unitIndex !== visibleUnitIndex) {
-            setVisibleUnitIndex(unitIndex);
-          }
-        }
+      if (!firstItem) return;
+      if (!isJourneyNode(firstItem.item)) return;
+
+      const targetUnitId = firstItem.item.unitId;
+
+      const unitIndex = unitHeaders.findIndex(
+        (uh) => uh.unitId === targetUnitId,
+      );
+
+      if (unitIndex !== -1 && unitIndex !== visibleUnitIndex) {
+        setVisibleUnitIndex(unitIndex);
       }
     },
+    [unitHeaders, visibleUnitIndex],
   );
 
   const visibleUnit = unitHeaders[visibleUnitIndex] || unitHeaders[0];
@@ -292,7 +299,6 @@ function JourneyMapFlashListInner({
               item={item as JourneyDividerItem}
               screenWidth={screenWidth}
               activeGlobalIndex={activeGlobalIndex}
-              onJumpToUnit={onJumpToUnit}
             />
           );
 
@@ -312,29 +318,12 @@ function JourneyMapFlashListInner({
     [],
   );
 
-  // ── getItemType — enables FlashList cell recycling optimization ──
-  const getItemType = useCallback(
-    (item: JourneyFlashListItem): string => item.itemType,
-    [],
-  );
-
-  // ── overrideItemLayout — provides exact cell height per item ──
-  // FlashList uses this instead of measuring, eliminating layout thrashing
-  const overrideItemLayout = useCallback(
-    (
-      layout: { span?: number; size?: number },
-      item: JourneyFlashListItem,
-    ): void => {
-      layout.size = item.cellHeight;
-    },
-    [],
-  );
-
   return (
     <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
       {/* Duolingo-style header */}
       <DuolingoHeader />
       <HomeMainButton
+        onPress={() => setIsPresented(true)}
         unitLabel={`Unit ${visibleUnit.unitNumber}`}
         sectionTitle={visibleUnit.unitTitle}
         faceColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[0] || "#4CAF50"}
@@ -361,25 +350,18 @@ function JourneyMapFlashListInner({
       {/* Offline banner */}
       <OfflineBanner isOffline={isOffline} />
 
-      {/* FlashList — cell recycling with segment-per-cell SVG rendering */}
-      <AnimatedFlashList
-        data={data as any}
-        renderItem={renderItem as any}
-        keyExtractor={keyExtractor as any}
-        getItemType={getItemType as any}
-        overrideItemLayout={overrideItemLayout as any}
-        //@ts-ignore
+      {/* LegendList — cell recycling with segment-per-cell SVG rendering */}
+      <AnimatedLegendList<JourneyFlashListItem>
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
         estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        drawDistance={DRAW_DISTANCE}
         showsVerticalScrollIndicator={false}
-        disableAutoLayout={false}
         onScroll={scrollHandler}
         scrollEventThrottle={16}
-        snapToInterval={80} // item height
-        decelerationRate="normal"
-        ref={flashListRef as any}
+        ref={legendListRef as any}
         contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
-        onViewableItemsChanged={onViewableItemsChanged.current}
+        onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={{
           itemVisiblePercentThreshold: 10,
           minimumViewTime: 100,
@@ -389,10 +371,10 @@ function JourneyMapFlashListInner({
       {/* Scroll-to-active floating button */}
       <ScrollToActiveButton
         isVisible={isActiveOffScreen}
-        direction={scrollDirection}
+        direction={scrollDirection} 
         onPress={onScrollToActive}
       />
-      {/* <BottomSheetWithRNContent>
+      <BottomSheetWithRNContent isPresented={isPresented} setIsPresented={setIsPresented}>
         <View>
           <RNText style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
             React Native Content
@@ -420,8 +402,7 @@ function JourneyMapFlashListInner({
             <RNText style={{ color: 'white', fontWeight: '600' }}>Close</RNText>
           </Pressable>
         </View>
-      </BottomSheetWithRNContent> */}
-
+      </BottomSheetWithRNContent>
     </View>
   );
 }

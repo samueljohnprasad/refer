@@ -108,12 +108,10 @@ export interface JourneyDividerItem {
   cellHeight: number;
   /** Divider title text */
   title: string;
-  /** Whether to show "JUMP HERE?" badge */
-  showJumpHere: boolean;
+  
   /** Accent color for the divider */
   accentColor?: string;
-  /** Unit ID this divider precedes (for jump-to-unit) */
-  targetUnitId: string;
+
   /** X position of the path at this divider (same prevX — path passes straight through) */
   pathX?: number;
   /** Pre-built straight-line SVG path for this divider cell in local coordinates */
