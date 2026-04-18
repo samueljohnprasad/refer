@@ -40,10 +40,10 @@ import { MASCOT_SIZE } from "@/src/data/journey/constants";
 // ---------------------------------------------------------------------------
 
 /** Divider height when it's just a title separator */
-const DIVIDER_CELL_HEIGHT_COMPACT: number = 76;
+const DIVIDER_CELL_HEIGHT_COMPACT: number = 180;
 
 /** Divider height when it also includes the jump CTA */
-const DIVIDER_CELL_HEIGHT_WITH_JUMP: number = 156;
+const DIVIDER_CELL_HEIGHT_WITH_JUMP: number = 200;
 
 /** Default cell height for mascot bubble rows */
 const MASCOT_CELL_HEIGHT: number = 80;

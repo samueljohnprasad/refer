@@ -478,7 +478,7 @@ const SECTION_CONFIGS: SectionConfig[] = [
 const JOURNEY_SETTINGS: JourneySettingsConfig = {
   defaultNodeSize: 64,
   chestNodeSize: 80,
-  verticalGap: 200,
+  verticalGap: 250,
   amplitudeFactor: 0.22,
   waveFrequency: 2.5,
   pathStrokeWidth: 10,

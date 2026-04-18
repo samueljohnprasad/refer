@@ -20,7 +20,7 @@ import type { WaveConfig } from "@/src/utils/journey";
 // ---------------------------------------------------------------------------
 
 /** Extra vertical space allocated for the divider between units */
-const UNIT_DIVIDER_HEIGHT: number = 200;
+const UNIT_DIVIDER_HEIGHT: number = 300;
 
 /** Top padding before the first unit's first node */
 const INITIAL_TOP_PADDING: number = 100;

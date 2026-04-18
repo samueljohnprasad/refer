@@ -36,9 +36,9 @@ export const NODE_SIZE = {
 /** Path layout constants */
 export const PATH_LAYOUT = {
   /** Fraction of screen width for horizontal zigzag */
-  amplitudeFactor: 0.22,
+  amplitudeFactor: 0.15,
   /** Vertical pixels between nodes */
-  verticalGap: 160,
+  verticalGap: 200,
   /** Top padding before first node */
   topPadding: 100,
   /** Bottom padding after last node */

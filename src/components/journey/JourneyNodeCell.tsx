@@ -35,14 +35,14 @@ const NODE_VERTICAL_POSITION_RATIO: number = 0.85;
 // ---------------------------------------------------------------------------
 
 export interface JourneyNodeCellProps {
-    /** Pre-computed node data from buildJourneyNodes */
-    item: JourneyNode;
-    /** Screen width for SVG container */
-    screenWidth: number;
-    /** Index of the currently active node (for path coloring) */
-    activeGlobalIndex: number;
-    /** Node press handler */
-    onNodePress: (node: PathNodeData) => void;
+  /** Pre-computed node data from buildJourneyNodes */
+  item: JourneyNode;
+  /** Screen width for SVG container */
+  screenWidth: number;
+  /** Index of the currently active node (for path coloring) */
+  activeGlobalIndex: number;
+  /** Node press handler */
+  onNodePress: (node: PathNodeData) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -50,17 +50,17 @@ export interface JourneyNodeCellProps {
 // ---------------------------------------------------------------------------
 
 function toPathNodeData(item: JourneyNode): PathNodeData {
-    return {
-        id: item.id,
-        index: item.globalIndex,
-        type: item.type,
-        status: item.status,
-        icon: item.icon,
-        progress: item.progress,
-        label: item.status === NodeStatus.ACTIVE ? item.label : undefined,
-        taskId: item.taskId,
-        rewards: item.rewards,
-    };
+  return {
+    id: item.id,
+    index: item.globalIndex,
+    type: item.type,
+    status: item.status,
+    icon: item.icon,
+    progress: item.progress,
+    label: item.status === NodeStatus.ACTIVE ? item.label : undefined,
+    taskId: item.taskId,
+    rewards: item.rewards,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -68,70 +68,77 @@ function toPathNodeData(item: JourneyNode): PathNodeData {
 // ---------------------------------------------------------------------------
 
 function JourneyNodeCellInner({
-    item,
-    screenWidth,
-    activeGlobalIndex,
-    onNodePress,
+  item,
+  screenWidth,
+  activeGlobalIndex,
+  onNodePress,
 }: JourneyNodeCellProps): React.JSX.Element {
-    const { pathColors, pathStrokeWidth } = useHighContrast();
+  const { pathColors, pathStrokeWidth } = useHighContrast();
 
-    // Determine segment color:
-    // - completed nodes always carry a completed/progress connector
-    // - active journeys still color up to the current active node boundary
-    const isProgressSegment: boolean =
-        item.status === NodeStatus.COMPLETED ||
-        (activeGlobalIndex >= 0 && item.globalIndex <= activeGlobalIndex);
-    const segmentColor: string = isProgressSegment
-        ? pathColors.active
-        : pathColors.inactive;
+  // Determine segment color:
+  // - completed nodes always carry a completed/progress connector
+  // - active journeys still color up to the current active node boundary
+  const isProgressSegment: boolean =
+    item.status === NodeStatus.COMPLETED ||
+    (activeGlobalIndex >= 0 && item.globalIndex <= activeGlobalIndex);
+  const segmentColor: string = isProgressSegment
+    ? pathColors.active
+    : pathColors.inactive;
 
-    // Node position within the cell (centered at bottom of segment)
-    const nodePosition: NodePosition = {
-        x: item.x,
-        y: item.cellHeight * NODE_VERTICAL_POSITION_RATIO,
-    };
+  // Node position within the cell (centered at bottom of segment)
+  const nodePosition: NodePosition = {
+    x: item.x,
+    y: item.cellHeight * NODE_VERTICAL_POSITION_RATIO,
+  };
 
-    // Stable press handler
-    const handlePress = useCallback(
-        (node: PathNodeData): void => {
-            onNodePress(node);
-        },
-        [onNodePress],
-    );
+  // Stable press handler
+  const handlePress = useCallback(
+    (node: PathNodeData): void => {
+      onNodePress(node);
+    },
+    [onNodePress],
+  );
 
-    const pathNodeData: PathNodeData = toPathNodeData(item);
+  const pathNodeData: PathNodeData = toPathNodeData(item);
 
-    return (
-        <View style={{ height: item.cellHeight, width: screenWidth, zIndex: 1000 - item.globalIndex }}>
-            {/* SVG path segment — local coordinates (0 → cellHeight) */}
-            {item.segmentD.length > 0 && (
-                <Svg
-                    width={screenWidth}
-                    height={item.cellHeight}
-                    style={{ position: "absolute", top: 0, left: 0 }}
-                    pointerEvents="none"
-                >
-                    <Path
-                        d={item.segmentD}
-                        stroke={segmentColor}
-                        strokeWidth={pathStrokeWidth}
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </Svg>
-            )}
+  return (
+    <View
+      style={{
+        height: item.cellHeight,
+        width: screenWidth,
+        zIndex: 1000 - item.globalIndex,
+        // backgroundColor: item.globalIndex === 3? "green" : "transparent",
+      }}
+    >
+      {/* SVG path segment — local coordinates (0 → cellHeight) */}
+      {item.segmentD.length > 0 && (
+        <Svg
+          width={screenWidth}
+          height={item.cellHeight}
+          style={{ position: "absolute", top: 0, left: 0 }}
+          pointerEvents="none"
+        >
+          <Path
+            d={item.segmentD}
+            stroke={segmentColor}
+            strokeWidth={pathStrokeWidth}
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </Svg>
+      )}
 
-            {/* Node circle — absolutely positioned over the path endpoint */}
-            <ConfigDrivenNode
-                node={pathNodeData}
-                position={nodePosition}
-                variantKey={item.variantKey}
-                colorThemeKey={item.colorThemeKey}
-                onPress={handlePress}
-            />
-        </View>
-    );
+      {/* Node circle — absolutely positioned over the path endpoint */}
+      <ConfigDrivenNode
+        node={pathNodeData}
+        position={nodePosition}
+        variantKey={item.variantKey}
+        colorThemeKey={item.colorThemeKey}
+        onPress={handlePress}
+      />
+    </View>
+  );
 }
 
 /**
@@ -143,16 +150,16 @@ function JourneyNodeCellInner({
  * X, Y, cellHeight, segmentD are pre-computed and NEVER change at runtime.
  */
 export const JourneyNodeCell = React.memo(
-    JourneyNodeCellInner,
-    (prev: JourneyNodeCellProps, next: JourneyNodeCellProps): boolean => {
-        return (
-            prev.item.id === next.item.id &&
-            prev.item.status === next.item.status &&
-            prev.item.progress === next.item.progress &&
-            prev.activeGlobalIndex === next.activeGlobalIndex &&
-            prev.screenWidth === next.screenWidth
-        );
-    },
+  JourneyNodeCellInner,
+  (prev: JourneyNodeCellProps, next: JourneyNodeCellProps): boolean => {
+    return (
+      prev.item.id === next.item.id &&
+      prev.item.status === next.item.status &&
+      prev.item.progress === next.item.progress &&
+      prev.activeGlobalIndex === next.activeGlobalIndex &&
+      prev.screenWidth === next.screenWidth
+    );
+  },
 );
 
 export default JourneyNodeCell;

@@ -53,8 +53,9 @@ import {
 } from "@/src/components/journey";
 import { DuolingoHeader } from "@/src/components/journey/DuolingoHeader";
 import type { UnitHeaderData } from "@/src/hooks/useJourneyFlashList";
-import { MASCOT_SIZE } from "@/src/data/journey/constants";
+import { MASCOT_SIZE, UNIT_GRADIENTS } from "@/src/data/journey/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { HomeMainButton } from "@/src/components/journey/home-main-button";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -228,8 +229,21 @@ function JourneyMapFlashListInner({
   const onScrollTick = useCallback(
     (y: number) => {
       onScroll?.(y);
+
+      // Determine visible unit based on scroll position
+      const currentUnitIndex = unitHeaders.findIndex((uh, index) => {
+        const nextUnit = unitHeaders[index + 1];
+        if (nextUnit) {
+          return y >= uh.yOffset && y < nextUnit.yOffset;
+        }
+        return y >= uh.yOffset;
+      });
+
+      if (currentUnitIndex !== -1 && currentUnitIndex !== visibleUnitIndex) {
+        setVisibleUnitIndex(currentUnitIndex);
+      }
     },
-    [onScroll],
+    [onScroll, unitHeaders, visibleUnitIndex],
   );
 
   const scrollHandler = useAnimatedScrollHandler({
@@ -239,31 +253,6 @@ function JourneyMapFlashListInner({
       runOnJS(onScrollTick)(event.contentOffset.y);
     },
   });
-
-  // Determine visible unit from viewable items
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0) {
-        // Find the first visible node or divider to determine the current unit
-        const firstItem = viewableItems.find(
-          (vi) => vi.item.itemType === "node" || vi.item.itemType === "divider",
-        );
-        if (firstItem) {
-          const targetUnitId =
-            firstItem.item.itemType === "node"
-              ? (firstItem.item as JourneyNode).unitId
-              : (firstItem.item as JourneyDividerItem).targetUnitId;
-
-          const unitIndex = unitHeaders.findIndex(
-            (uh) => uh.unitId === targetUnitId,
-          );
-          if (unitIndex !== -1 && unitIndex !== visibleUnitIndex) {
-            setVisibleUnitIndex(unitIndex);
-          }
-        }
-      }
-    },
-  );
 
   const visibleUnit = unitHeaders[visibleUnitIndex] || unitHeaders[0];
 
@@ -329,6 +318,12 @@ function JourneyMapFlashListInner({
     <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
       {/* Duolingo-style header */}
       <DuolingoHeader />
+      <HomeMainButton
+        unitLabel={`Unit ${visibleUnit.unitNumber}`}
+        sectionTitle={visibleUnit.unitTitle}
+        faceColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[0] || "#4CAF50"}
+        rimColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[1] || "#388E3C"}
+      />
 
       {/* Sticky unit header */}
       {/* {visibleUnit && (
@@ -368,11 +363,6 @@ function JourneyMapFlashListInner({
         decelerationRate="normal"
         ref={flashListRef as any}
         contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
-        onViewableItemsChanged={onViewableItemsChanged.current}
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 10,
-          minimumViewTime: 100,
-        }}
       />
 
       {/* Scroll-to-active floating button */}
