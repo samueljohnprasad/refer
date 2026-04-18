@@ -211,6 +211,16 @@
       "sourceType": "github",
       "computedHash": "93bbf5d75f0e6e39e9c3fd296be16221da5e01b1ad18a1442ae2ce8326eb2fbc"
     },
+    "refactor-code": {
+      "source": "BrOrlandi/my-claude-skills",
+      "sourceType": "github",
+      "computedHash": "6ee0cef3ae88713b4e24823f8b4ae74fa2f969937047f5981f6b5ad2ebd47d7d"
+    },
+    "refactor-components": {
+      "source": "BrOrlandi/my-claude-skills",
+      "sourceType": "github",
+      "computedHash": "414ca27b21e8669775f33a450320c197eb431470b69a7af58cdca5bcbb9e6bca"
+    },
     "skill-writer": {
       "source": "pytorch/pytorch",
       "sourceType": "github",

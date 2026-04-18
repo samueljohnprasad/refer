@@ -1,5 +1,7 @@
 declare module "*.png" {
   import type { ImageSourcePropType } from "react-native";
+  import type { SvgProps } from "react-native-svg";
+
   const content: ImageSourcePropType;
   export default content;
 }
@@ -28,8 +30,14 @@ declare module "*.webp" {
   export default content;
 }
 
-
-declare module '*.lottie' {
+declare module "*.lottie" {
   const content: string;
+  export default content;
+}
+
+declare module "*.svg" {
+  import React from "react";
+  import type { SvgProps } from "react-native-svg";
+  const content: React.FC<SvgProps>;
   export default content;
 }

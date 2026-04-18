@@ -13,8 +13,8 @@ export const NODE_COLORS = {
 
 /** Path stroke colors */
 export const PATH_COLORS = {
-  inactive: "#E2E8F0", // Lighter gray for less visual weight
-  active: "#86EFAC", // More vibrant, pure light green
+  inactive: "#F1F5F9", // Very light gray for minimal visual weight
+  active: "#DCFCE7", // Subtle light green
 } as const;
 
 /** Unit header gradient pairs by color scheme */
@@ -38,7 +38,7 @@ export const PATH_LAYOUT = {
   /** Fraction of screen width for horizontal zigzag */
   amplitudeFactor: 0.22,
   /** Vertical pixels between nodes */
-  verticalGap: 120,
+  verticalGap: 160,
   /** Top padding before first node */
   topPadding: 100,
   /** Bottom padding after last node */

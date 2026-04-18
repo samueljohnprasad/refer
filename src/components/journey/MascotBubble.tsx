@@ -5,31 +5,19 @@
  * Features:
  * - Owl avatar with breathing scale animation (synced to a gentle pulse)
  * - Speech bubble with the current message
- * - Entrance slide-in animation (slides from the placement side)
  * - Tap to cycle through random encouraging messages (Task 4.1.3)
  *
  * Placement is absolute-positioned; the parent provides x/y via props.
  */
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 import { Image } from "expo-image";
 import { Text } from "@/components/ui/text";
-import Animated, {
-  useSharedValue,
-  withTiming,
-  withSpring,
-  withDelay,
-  FadeIn,
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
 import { PressableScale } from "@/src/components/ui/PressableScale";
-import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import {
-  ANIMATION_TIMING,
-  MASCOT_MESSAGES,
-  MASCOT_SIZE,
-} from "@/src/data/journey/constants";
+import { MASCOT_MESSAGES, MASCOT_SIZE } from "@/src/data/journey/constants";
 import { MascotSide } from "@/src/types/journey/enums";
 import { Mascot } from "@/src/components/ui/Mascot";
 
@@ -76,9 +64,9 @@ function getRandomMessage(exclude: string): string {
 // Sub-components
 // ---------------------------------------------------------------------------
 
-interface OwlAvatarProps { }
+interface OwlAvatarProps {}
 
-function OwlAvatar({ }: OwlAvatarProps): React.JSX.Element {
+function OwlAvatar({}: OwlAvatarProps): React.JSX.Element {
   return (
     <View
       className="items-center justify-center rounded-full"
@@ -164,29 +152,6 @@ function MascotBubble({
   const resolvedAvatarSize: number = avatarSize ?? MASCOT_SIZE.avatar;
   const resolvedOffsetY: number = offsetY ?? MASCOT_SIZE.verticalOffset;
   const halfAvatar: number = resolvedAvatarSize / 2;
-  const reducedMotion: boolean = useReducedMotion();
-
-  // ── Entrance slide-in animation ──
-  // Mascots are now kept mounted (hidden via opacity in parent) so this
-  // animation only fires once on initial mount — no more churn.
-  const entranceX = useSharedValue(reducedMotion ? 0 : isLeft ? -60 : 60);
-  const entranceOpacity = useSharedValue(reducedMotion ? 1 : 0);
-
-  useEffect(() => {
-    if (reducedMotion) {
-      entranceX.value = 0;
-      entranceOpacity.value = 1;
-      return;
-    }
-    entranceX.value = withDelay(
-      ANIMATION_TIMING.mascotEntrance,
-      withSpring(0, { damping: 14, stiffness: 120 }),
-    );
-    entranceOpacity.value = withDelay(
-      ANIMATION_TIMING.mascotEntrance,
-      withTiming(1, { duration: 300 }),
-    );
-  }, [entranceX, entranceOpacity, isLeft, reducedMotion]);
 
   // ── Tap handler — cycle random message (Task 4.1.3) ──
   const handleTap = useCallback((): void => {
@@ -204,12 +169,10 @@ function MascotBubble({
           height: 0,
           alignItems: "center",
           justifyContent: "center",
-          transform: [{ translateX: entranceX }],
-          opacity: entranceOpacity,
-          backgroundColor: "transparent"
+          opacity: 1,
+          backgroundColor: "transparent",
         },
       ]}
-      entering={FadeIn.delay(ANIMATION_TIMING.mascotEntrance).duration(400)}
       pointerEvents="box-none"
     >
       {/* Speech Bubble centered vertically around avatar, positioned to the correct side */}
@@ -220,15 +183,11 @@ function MascotBubble({
           bottom: -100,
           justifyContent: "center",
           ...(isLeft ? { left: halfAvatar + 8 } : { right: halfAvatar + 8 }),
-          backgroundColor: "transparent"
-
+          backgroundColor: "transparent",
         }}
         pointerEvents="box-none"
       >
-        <SpeechBubble
-          message={message}
-          side={side}
-        />
+        <SpeechBubble message={message} side={side} />
       </View>
 
       {/* Avatar perfectly centered at x,y */}
@@ -237,7 +196,7 @@ function MascotBubble({
           position: "absolute",
           left: -halfAvatar,
           top: -halfAvatar,
-          backgroundColor: "transparent" 
+          backgroundColor: "transparent",
         }}
       >
         <PressableScale
@@ -254,7 +213,7 @@ function MascotBubble({
           )}
         </PressableScale>
       </View>
-    </Animated.View >
+    </Animated.View>
   );
 }
 
