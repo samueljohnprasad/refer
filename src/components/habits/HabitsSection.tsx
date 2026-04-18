@@ -13,6 +13,7 @@ import { useHabitCompletions } from "@/hooks/data/useHabitCompletions";
 import { useHabitStreaks } from "@/src/hooks/data/useHabitStreaks";
 
 import { HabitCard } from "@/src/components/habits/HabitCard";
+import { EmptyState } from "@/src/components/ui/EmptyState";
 import { AddHabitModal } from "@/src/components/habits/AddHabitModal";
 import { HabitDetailsModal } from "@/src/components/habits/HabitDetailsModal";
 import {
@@ -172,29 +173,37 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
   return (
     <View style={{ paddingBottom: 120 }}>
-      <SectionHeader
-        title="Daily Habits"
-        icon={Tick01Icon}
-        count={totalCount > 0 ? `${completedCount}/${totalCount}` : undefined}
-        className="mb-4"
-        rightElement={
-          <>
-            <XPBadge amount={XP_REWARDS[XPActionType.HABIT_COMPLETION]} />
-            <TouchableOpacity
-              onPress={handleAddHabitPress}
-              className="bg-gray-800 p-2 rounded-xl"
-              activeOpacity={0.7}
-            >
-              <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
-            </TouchableOpacity>
-          </>
-        }
-      />
+      {/* Header - Only show when not empty */}
+      {habitsWithStatus.length > 0 && (
+        <SectionHeader
+          title="Daily Habits"
+          icon={Tick01Icon}
+          count={totalCount > 0 ? `${completedCount}/${totalCount}` : undefined}
+          className="mb-4"
+          rightElement={
+            <>
+              <XPBadge amount={XP_REWARDS[XPActionType.HABIT_COMPLETION]} />
+              <TouchableOpacity
+                onPress={handleAddHabitPress}
+                className="bg-gray-800 p-2 rounded-xl"
+                activeOpacity={0.7}
+              >
+                <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
+              </TouchableOpacity>
+            </>
+          }
+        />
+      )}
 
       {/* Progress Bar Card */}
       {totalCount > 0 && (
-        <View className="bg-theme-background-primary rounded-2xl p-5 mb-4" style={SECTION_SHADOW}>
-          <Text className="text-gray-900 font-semibold mb-3">Daily Progress</Text>
+        <View
+          className="bg-theme-background-primary rounded-2xl p-5 mb-4"
+          style={SECTION_SHADOW}
+        >
+          <Text className="text-gray-900 font-semibold mb-3">
+            Daily Progress
+          </Text>
           <View className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
             <Animated.View
               className="h-full bg-gray-400 rounded-full"
@@ -206,14 +215,12 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
       {/* Empty State */}
       {habitsWithStatus.length === 0 ? (
-        <View
-          className="bg-theme-background-primary rounded-2xl p-8 items-center"
-          style={SECTION_SHADOW}
-        >
-          <Text className="text-gray-400 text-center">
-            No habits for today.{"\n"}Tap + to add your first habit!
-          </Text>
-        </View>
+        <EmptyState
+          mascotState="panda-yet-sleep-pillow"
+          buttonText="Add Habit"
+          onButtonPress={() => addHabitModalRef.current?.present()}
+          buttonIcon={Add01Icon}
+        />
       ) : (
         <>
           {/* Category Cards */}

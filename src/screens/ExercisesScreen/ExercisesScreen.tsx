@@ -21,6 +21,7 @@ import {
   getCategoryIcon,
   getExerciseIcon,
 } from "@/src/data/exerciseIconRegistry";
+import { Mascot } from "@/src/components/ui/Mascot";
 import type {
   ExerciseCategory,
   ExerciseConfig,
@@ -427,9 +428,12 @@ export default function ExercisesScreen(): React.JSX.Element {
     >
       <View className="px-5 pt-4 pb-3">
         <View className="flex-row items-center justify-between mb-4">
-          <Text className="text-[28px] font-extrabold text-slate-900">
-            Exercises
-          </Text>
+          <View className="flex-row items-center gap-3">
+            <Mascot state="panda-love-hug-2" size={40} />
+            <Text className="text-[28px] font-extrabold text-slate-900">
+              Exercises
+            </Text>
+          </View>
           {completedCount > 0 && (
             <View
               className="flex-row items-center px-3 py-1.5 rounded-full"

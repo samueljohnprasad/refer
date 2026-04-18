@@ -49,7 +49,7 @@ INSERT INTO journey_template_units (
   'Understanding Anxiety',
   'Learn what anxiety is, how it works in your brain and body, and why it feels the way it does.',
   'blue',
-  '[{"afterNodeIndex": 3, "position": "right", "message": "You''re learning fast! 🧠", "imageKey": "panda-writing", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
+  '[{"afterNodeIndex": 3, "position": "right", "message": "You''re learning fast! 🧠", "imageKey": "panda-notes", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
   'sequential'
 ) ON CONFLICT (journey_id, unit_number) DO UPDATE SET
   title = EXCLUDED.title,
@@ -65,7 +65,7 @@ INSERT INTO journey_template_units (
   'Challenging Anxious Thoughts',
   'Spot the thinking traps anxiety uses and learn to challenge them with evidence.',
   'purple',
-  '[{"afterNodeIndex": 4, "position": "left", "message": "Thought detective mode! 🔍", "imageKey": "panda-writing", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
+  '[{"afterNodeIndex": 4, "position": "left", "message": "Thought detective mode! 🔍", "imageKey": "panda-confused-thinking", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
   'sequential'
 ) ON CONFLICT (journey_id, unit_number) DO UPDATE SET
   title = EXCLUDED.title,
@@ -81,7 +81,7 @@ INSERT INTO journey_template_units (
   'Calming Your Body',
   'Master breathing, grounding, and relaxation techniques that calm your nervous system.',
   'green',
-  '[{"afterNodeIndex": 2, "position": "right", "message": "Breathe... you''re doing great 🌿", "imageKey": "panda-writing", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
+  '[{"afterNodeIndex": 2, "position": "right", "message": "Breathe... you''re doing great 🌿", "imageKey": "panda-plant", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
   'sequential'
 ) ON CONFLICT (journey_id, unit_number) DO UPDATE SET
   title = EXCLUDED.title,
@@ -97,7 +97,7 @@ INSERT INTO journey_template_units (
   'Your Anxiety Action Plan',
   'Build your personal coping toolkit and create an emergency action plan.',
   'orange',
-  '[{"afterNodeIndex": 2, "position": "left", "message": "You''ve got this! 💪", "imageKey": "panda-writing", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
+  '[{"afterNodeIndex": 2, "position": "left", "message": "You''ve got this! 💪", "imageKey": "panda-super-excite", "avatarSize": 72, "offsetY": 16, "offsetX": 60}]'::jsonb,
   'sequential'
 ) ON CONFLICT (journey_id, unit_number) DO UPDATE SET
   title = EXCLUDED.title,

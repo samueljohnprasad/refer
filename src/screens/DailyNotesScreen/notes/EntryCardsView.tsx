@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, memo } from "react";
 import {
   Pressable,
-  Animated,
   View,
   ActivityIndicator,
   TouchableOpacity,
   Image as RNImage,
 } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
 import { Text } from "@/components/ui/text";
 import { format, parseISO } from "date-fns";
 import { getEntryTypeIcon } from "../../../components/lib/entryTypeUtils";
@@ -29,6 +33,7 @@ import { getDuration } from "@/src/utils/date";
 import { ConfirmationModal } from "@/src/components/modals/ConfirmationModal";
 import { search } from "@/assets/images";
 import { useRouter } from "expo-router";
+import { EmptyState } from "@/src/components/ui/EmptyState";
 
 /** Shared subtle card shadow — matches CalorieWidget/HabitsSection */
 const CARD_SHADOW = {
@@ -67,25 +72,21 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
     entry: null,
   });
 
-  const onDismiss = () => {
-    setDeleteEntry((prev) => ({
-      flag: false,
-      entry: null,
-      selectedDate: undefined,
-    }));
-  };
-  const onDelete = () => {
+  const onDismiss = useCallback(() => {
+    setDeleteEntry({ flag: false, entry: null, selectedDate: undefined });
+  }, []);
+
+  const onDelete = useCallback(() => {
     onDismiss();
     onRefresh?.();
-  };
+  }, [onDismiss, onRefresh]);
 
-  const deleteHandler = (entry: JournalEntry) => {
-    setDeleteEntry({
-      flag: true,
-      entry,
-      selectedDate,
-    });
-  };
+  const deleteHandler = useCallback(
+    (entry: JournalEntry) => {
+      setDeleteEntry({ flag: true, entry, selectedDate });
+    },
+    [selectedDate],
+  );
 
   if (isLoading) {
     return (
@@ -116,23 +117,12 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
   if (entries.length === 0) {
     return (
-      <View className="flex-1 gap-20">
-        <SectionHeader
-          title="Journal Entries"
-          icon={NoteIcon}
-          rightElement={ctaButton}
-        />
-        <View className="flex-1 justify-center items-center py-10">
-          <RNImage
-            source={require("@/assets/images/panda-writing.png")}
-            style={{
-              width: 200,
-              height: 200,
-            }}
-            resizeMode="contain"
-          />
-        </View>
-      </View>
+      <EmptyState
+        mascotState="panda-notes"
+        buttonText="Start Journaling"
+        onButtonPress={() => router.push("/tabs/(tabs)/record")}
+        buttonIcon={Mic01Icon}
+      />
     );
   }
 
@@ -151,22 +141,15 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
             {showDateHeaders && (
               <Text className="text-sm font-semibold text-gray-600 mb-2">
                 {entry.selected_date
-                  ? `${format(
-                      parseISO(entry.selected_date),
-                      "MMM d, yyyy",
-                    )} · ${format(parseISO(entry.selected_date), "EEE")}`
+                  ? `${format(parseISO(entry.selected_date), "MMM d, yyyy")} · ${format(parseISO(entry.selected_date), "EEE")}`
                   : "No Date"}
               </Text>
             )}
             <EntryCard
               onDelete={deleteHandler}
               entry={entry}
-              onPress={() => onEntryPress(entry)}
-              onBookmark={
-                onBookmark
-                  ? (isBookmarked) => onBookmark(entry, isBookmarked)
-                  : undefined
-              }
+              onPress={onEntryPress}
+              onBookmark={onBookmark}
               showActions={showActions}
               index={index}
               isBookmarking={bookmarkingId === entry.id}
@@ -190,15 +173,15 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
 interface EntryCardProps {
   entry: JournalEntry;
-  onPress: () => void;
+  onPress: (entry: JournalEntry) => void;
   onDelete?: (entry: JournalEntry) => void;
-  onBookmark?: (isBookmarked: boolean) => void;
+  onBookmark?: (entry: JournalEntry, isBookmarked: boolean) => void;
   showActions?: boolean;
   index: number;
   isBookmarking?: boolean;
 }
 
-const EntryCard: React.FC<EntryCardProps> = ({
+const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
   entry,
   onPress,
   onDelete,
@@ -206,34 +189,21 @@ const EntryCard: React.FC<EntryCardProps> = ({
   showActions = true,
   index,
   isBookmarking = false,
-}) => {
-  const scaleAnim = React.useRef(new Animated.Value(1)).current;
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+}) {
+  // Reanimated shared values — run on UI thread, zero JS-thread overhead during scroll
+  const scaleAnim = useSharedValue(1);
 
-  React.useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 250,
-      delay: index * 50,
-      useNativeDriver: true,
-    }).start();
-  }, [index]);
+  const cardAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scaleAnim.value }],
+  }));
 
-  const handlePressIn = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 0.97,
-      useNativeDriver: true,
-      speed: 20,
-    }).start();
-  };
+  const handlePressIn = useCallback(() => {
+    scaleAnim.value = withSpring(0.97, { damping: 20, stiffness: 300 });
+  }, [scaleAnim]);
 
-  const handlePressOut = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 1,
-      useNativeDriver: true,
-      speed: 20,
-    }).start();
-  };
+  const handlePressOut = useCallback(() => {
+    scaleAnim.value = withSpring(1, { damping: 20, stiffness: 300 });
+  }, [scaleAnim]);
 
   const feelings: FeelingsType[] = entry.journal_ai_insights
     ?.feelings as FeelingsType[];
@@ -241,143 +211,154 @@ const EntryCard: React.FC<EntryCardProps> = ({
   // Get bookmark status from entry
   const isBookmarked: boolean = entry.is_bookmarked || false;
 
-  const handleBookmarkPress = (e: { stopPropagation: () => void }): void => {
-    e.stopPropagation();
-    onBookmark?.(isBookmarked);
-  };
+  const handleBookmarkPress = useCallback(
+    (e: { stopPropagation: () => void }): void => {
+      e.stopPropagation();
+      onBookmark?.(entry, isBookmarked);
+    },
+    [onBookmark, entry, isBookmarked],
+  );
 
-  const handleDeletePress = (e: { stopPropagation: () => void }) => {
-    e.stopPropagation();
-    onDelete?.(entry);
-  };
+  const handleDeletePress = useCallback(
+    (e: { stopPropagation: () => void }) => {
+      e.stopPropagation();
+      onDelete?.(entry);
+    },
+    [onDelete, entry],
+  );
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={() => onPress(entry)}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
     >
-      <Animated.View
-        className="bg-white rounded-2xl p-4"
-        style={{
-          transform: [{ scale: scaleAnim }],
-          opacity: fadeAnim,
-          ...CARD_SHADOW,
-        }}
+      {/* GPU-cached shadow container — shouldRasterizeIOS prevents per-frame
+          shadow recalculation during scroll which was causing the flicker */}
+      <View
+        className="bg-white rounded-2xl"
+        style={CARD_SHADOW}
+        shouldRasterizeIOS
+        renderToHardwareTextureAndroid
       >
-        {/* Header */}
-        <View className="flex-row items-start justify-between mb-3">
-          <View className="flex-1">
-            <Text className="text-base font-semibold text-gray-800 mb-1">
-              {entry.title}
-            </Text>
-            <View className="flex-row items-center">
-              {entry.selected_date && (
-                <Text className="text-sm text-gray-500">
-                  {format(new Date(entry.selected_date), "h:mm a")}
-                </Text>
-              )}
-              <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
-              <HugeiconsIcon
-                size={12}
-                icon={getEntryTypeIcon(entry.input_type)}
-              />
-              {!!entry.duration_seconds && (
-                <Text className="text-sm text-gray-500 ml-1">
-                  {getDuration(entry.duration_seconds)}
-                </Text>
-              )}
-              {!!entry.words_count && (
-                <>
-                  <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
-                  <Text className="text-sm text-gray-500">
-                    {entry.words_count} words
-                  </Text>
-                </>
-              )}
-            </View>
-          </View>
-
-          <View className="items-end justify-center mb-1">
-            <Image
-              source={emotions[entry.moods?.main_mood as Emotion]}
-              className="w-6 h-6 opacity-60"
-              alt={entry.moods?.main_mood || "-"}
-              progressiveRenderingEnabled={true}
-            />
-          </View>
-        </View>
-
-        {/* Excerpt */}
-        <Text className="text-gray-700 text-sm leading-5 mb-3">
-          {entry.transcripts?.substring(0, 100) + "..."}
-        </Text>
-
-        {/* Emotion Tags */}
-        <View className="flex-row flex-wrap mb-3">
-          {(feelings || []).map((emotion, idx) => (
-            <View
-              key={`${emotion}-${idx}`}
-              className="bg-gray-50 border border-gray-100 rounded-full px-2 py-1 mr-2 mb-1"
-            >
-              <Text className="text-gray-700 text-xs font-medium capitalize">
-                {emotion.emoji} {emotion.name}
+        <Animated.View
+          className="p-4 rounded-2xl overflow-hidden"
+          style={cardAnimatedStyle}
+        >
+          {/* Header */}
+          <View className="flex-row items-start justify-between mb-3">
+            <View className="flex-1">
+              <Text className="text-base font-semibold text-gray-800 mb-1">
+                {entry.title}
               </Text>
+              <View className="flex-row items-center">
+                {entry.selected_date && (
+                  <Text className="text-sm text-gray-500">
+                    {format(new Date(entry.selected_date), "h:mm a")}
+                  </Text>
+                )}
+                <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
+                <HugeiconsIcon
+                  size={12}
+                  icon={getEntryTypeIcon(entry.input_type)}
+                />
+                {!!entry.duration_seconds && (
+                  <Text className="text-sm text-gray-500 ml-1">
+                    {getDuration(entry.duration_seconds)}
+                  </Text>
+                )}
+                {!!entry.words_count && (
+                  <>
+                    <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
+                    <Text className="text-sm text-gray-500">
+                      {entry.words_count} words
+                    </Text>
+                  </>
+                )}
+              </View>
             </View>
-          ))}
-          {/* {entry.emotions.length > 3 && (
+
+            <View className="items-end justify-center mb-1">
+              <Image
+                source={emotions[entry.moods?.main_mood as Emotion]}
+                className="w-6 h-6 opacity-60"
+                alt={entry.moods?.main_mood || "-"}
+                progressiveRenderingEnabled={true}
+              />
+            </View>
+          </View>
+
+          {/* Excerpt */}
+          <Text className="text-gray-700 text-sm leading-5 mb-3">
+            {entry.transcripts?.substring(0, 100) + "..."}
+          </Text>
+
+          {/* Emotion Tags */}
+          <View className="flex-row flex-wrap mb-3">
+            {(feelings || []).map((emotion, idx) => (
+              <View
+                key={`${emotion}-${idx}`}
+                className="bg-gray-50 border border-gray-100 rounded-full px-2 py-1 mr-2 mb-1"
+              >
+                <Text className="text-gray-700 text-xs font-medium capitalize">
+                  {emotion.emoji} {emotion.name}
+                </Text>
+              </View>
+            ))}
+            {/* {entry.emotions.length > 3 && (
             <View className="bg-gray-100 rounded-full px-2 py-1">
               <Text className="text-gray-600 text-xs">
                 +{entry.emotions.length - 3} more
               </Text>
             </View>
           )} */}
-        </View>
-
-        {/* Footer */}
-        <View className="flex-row items-center justify-between pt-2 border-t border-gray-100">
-          <View className="flex-row items-center gap-2">
-            {entry.moods?.main_mood && (
-              <Text className="text-xs text-gray-500 capitalize">
-                {entry.moods?.main_mood} mood
-              </Text>
-            )}
           </View>
-          <View className="flex-row items-center gap-2 ">
-            {showActions && (
-              <>
-                <Pressable
-                  onPress={handleBookmarkPress}
-                  className="w-9 h-9 items-center justify-center active:opacity-70"
-                  accessibilityLabel={
-                    isBookmarked ? "Remove bookmark" : "Bookmark"
-                  }
-                  disabled={isBookmarking}
-                >
-                  {isBookmarking ? (
-                    <ActivityIndicator size="small" color="#F59E0B" />
-                  ) : (
-                    <HugeiconsIcon
-                      icon={Bookmark02Icon}
-                      size={18}
-                      fill={isBookmarked ? "#F59E0B" : "#d1d5db"}
-                      color={isBookmarked ? "#F59E0B" : "#d1d5db"}
-                    />
-                  )}
-                </Pressable>
 
-                <Pressable
-                  onPress={handleDeletePress}
-                  className="w-9 h-9 items-center justify-center active:opacity-70"
-                  accessibilityLabel="Delete journal"
-                >
-                  <HugeiconsIcon icon={Delete02Icon} size={18} color="grey" />
-                </Pressable>
-              </>
-            )}
+          {/* Footer */}
+          <View className="flex-row items-center justify-between pt-2 border-t border-gray-100">
+            <View className="flex-row items-center gap-2">
+              {entry.moods?.main_mood && (
+                <Text className="text-xs text-gray-500 capitalize">
+                  {entry.moods?.main_mood} mood
+                </Text>
+              )}
+            </View>
+            <View className="flex-row items-center gap-2 ">
+              {showActions && (
+                <>
+                  <Pressable
+                    onPress={handleBookmarkPress}
+                    className="w-9 h-9 items-center justify-center active:opacity-70"
+                    accessibilityLabel={
+                      isBookmarked ? "Remove bookmark" : "Bookmark"
+                    }
+                    disabled={isBookmarking}
+                  >
+                    {isBookmarking ? (
+                      <ActivityIndicator size="small" color="#F59E0B" />
+                    ) : (
+                      <HugeiconsIcon
+                        icon={Bookmark02Icon}
+                        size={18}
+                        fill={isBookmarked ? "#F59E0B" : "#d1d5db"}
+                        color={isBookmarked ? "#F59E0B" : "#d1d5db"}
+                      />
+                    )}
+                  </Pressable>
+
+                  <Pressable
+                    onPress={handleDeletePress}
+                    className="w-9 h-9 items-center justify-center active:opacity-70"
+                    accessibilityLabel="Delete journal"
+                  >
+                    <HugeiconsIcon icon={Delete02Icon} size={18} color="grey" />
+                  </Pressable>
+                </>
+              )}
+            </View>
           </View>
-        </View>
-      </Animated.View>
+        </Animated.View>
+      </View>
     </Pressable>
   );
-};
+});

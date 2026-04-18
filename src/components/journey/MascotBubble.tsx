@@ -31,6 +31,7 @@ import {
   MASCOT_SIZE,
 } from "@/src/data/journey/constants";
 import { MascotSide } from "@/src/types/journey/enums";
+import { Mascot } from "@/src/components/ui/Mascot";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -98,21 +99,6 @@ function OwlAvatar({ }: OwlAvatarProps): React.JSX.Element {
       </View>
     </View>
   );
-}
-
-function ImageAvatar({ imageKey, size }: { imageKey: string; size: number }): React.JSX.Element {
-    const source = imageKey === 'panda-writing'
-      ? require("@/assets/images/panda-writing.png")
-      : require("@/assets/images/panda-hi.png");
-
-    return (
-        <Image
-            source={source}
-            style={{ width: size, height: size }}
-            contentFit="contain"
-            accessibilityLabel="Mascot"
-        />
-    );
 }
 
 interface SpeechBubbleProps {
@@ -261,7 +247,11 @@ function MascotBubble({
           accessibilityRole="button"
           accessibilityLabel="Tap for encouragement"
         >
-          {imageKey ? <ImageAvatar imageKey={imageKey} size={resolvedAvatarSize} /> : <OwlAvatar />}
+          {imageKey ? (
+            <Mascot state={imageKey as any} size={resolvedAvatarSize} />
+          ) : (
+            <OwlAvatar />
+          )}
         </PressableScale>
       </View>
     </Animated.View >

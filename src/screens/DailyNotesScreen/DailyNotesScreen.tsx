@@ -193,33 +193,28 @@ const DailyNotesScreenComponent = () => {
     () =>
       Gesture.Pan()
         .minDistance(15)
-        .activeOffsetY([-15, 15])
-        .onBegin(() => {
-          "worklet";
-          // Subtle, anchored scale down
-          contentScale.value = withSpring(0.99, {
-            damping: 30,
-            stiffness: 200,
-          });
-        })
+        // failOffsetY: gesture fails immediately when vertical scroll detected.
+        // This prevents onBegin/onUpdate from firing during vertical scroll,
+        // which was animating contentScale/opacity → causing the flicker.
+        .failOffsetY([-5, 5])
+        // Only become active once the user moves clearly horizontally
+        .activeOffsetX([-15, 15])
         .onUpdate((g) => {
           "worklet";
           const rawTx = g.translationX;
-          const resistanceThreshold = 60; // Start resistance after this distance
+          const resistanceThreshold = 60;
           const maxTranslate = 100;
 
           let tx = rawTx;
 
-          // Apply true rubber band resistance after threshold
+          // Rubber band resistance after threshold
           if (Math.abs(rawTx) > resistanceThreshold) {
             const excess = Math.abs(rawTx) - resistanceThreshold;
-            // Apple's rubber band formula: (excess * c) / (excess + c)
-            const c = 120; // max stretch pull distance
+            const c = 120;
             const resistance = resistanceThreshold + (excess * c) / (excess + c);
             tx = rawTx > 0 ? resistance : -resistance;
           }
 
-          // Hard limit
           if (tx < -maxTranslate) tx = -maxTranslate;
           else if (tx > maxTranslate) tx = maxTranslate;
 
@@ -227,13 +222,14 @@ const DailyNotesScreenComponent = () => {
 
           const progress = Math.abs(tx) / maxTranslate;
 
-          // Less aggressive opacity change during swipe
           contentOpacity.value = interpolate(
             progress,
             [0, 0.7, 1],
             [1, 0.92, 0.85],
             "clamp"
           );
+          // Scale only applies during confirmed horizontal swipe, never during scroll
+          contentScale.value = interpolate(progress, [0, 1], [1, 0.98], "clamp");
         })
         .onEnd((g) => {
           "worklet";

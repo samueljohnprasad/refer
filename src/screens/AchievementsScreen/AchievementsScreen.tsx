@@ -30,6 +30,7 @@ import { useXP } from "@/src/context/XPContext";
 import { XPDisplay } from "@/src/components/XP";
 import { useRewardsContext } from "@/src/context/RewardsContext";
 import { CoinsBadge } from "@/src/components/Rewards";
+import { Mascot } from "@/src/components/ui/Mascot";
 
 // ─── Utility ────────────────────────────────────────────────────────────────
 /** Convert a 6-digit hex color to rgba() for safe cross-platform tinting. */
@@ -173,7 +174,7 @@ const EmptyState: React.FC = () => (
       className="w-16 h-16 rounded-2xl bg-amber-50 items-center justify-center mb-4"
       style={{ borderWidth: 1, borderColor: "#FEF3C7" }}
     >
-      <HugeiconsIcon icon={Medal01Icon} size={32} color="#F59E0B" />
+      <Mascot state="panda-yet-sleep-pillow" size={44} />
     </View>
     <Text className="text-base font-bold text-gray-900 text-center mb-1">
       No badges yet
@@ -258,13 +259,16 @@ export const AchievementsScreen: React.FC = () => {
             strokeWidth={2}
           />
         </TouchableOpacity>
-        <View className="flex-1">
-          <Text className="text-xl font-bold text-gray-900 leading-tight">
-            Achievements
-          </Text>
-          <Text className="text-xs text-gray-400 font-medium">
-            Your earned badges
-          </Text>
+        <View className="flex-1 flex-row items-center gap-2.5">
+          <Mascot state="panda-super-excite" size={32} />
+          <View>
+            <Text className="text-xl font-bold text-gray-900 leading-tight">
+              Achievements
+            </Text>
+            <Text className="text-xs text-gray-400 font-medium">
+              Your earned badges
+            </Text>
+          </View>
         </View>
 
         <View className="flex-row items-center gap-2">
