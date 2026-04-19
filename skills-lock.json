@@ -146,6 +146,16 @@
       "sourceType": "github",
       "computedHash": "2f62173457084a6b47aee605763fdb53f03236535e98639bfa0c7b052fb7e43f"
     },
+    "jotai": {
+      "source": "vercel-labs/json-render",
+      "sourceType": "github",
+      "computedHash": "25bddfd76eba7f21fe4b8bafd8309200674c3d61e125797601a49f3d8650b480"
+    },
+    "jotai-x": {
+      "source": "udecode/kitcn",
+      "sourceType": "github",
+      "computedHash": "88ee20422c32b282c5eba480f419a30ec9787e59024255b3ca6105ab81a3f7de"
+    },
     "landing-page-design": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
@@ -192,9 +202,9 @@
       "computedHash": "8492c7895859cbe9ab6debc3328d4562fe5322b6c7da3b09fde74a47cc366519"
     },
     "react-native": {
-      "source": "claude-dev-suite/claude-dev-suite",
+      "source": "vercel-labs/json-render",
       "sourceType": "github",
-      "computedHash": "37669d7dbe9967e6c89bd0dd855eba5db179ca4da1d4612fa3f9f431cdff7076"
+      "computedHash": "bce560b25029037d424b5ec55bb9b3ec2b399ef98fd12c572327292744de84fe"
     },
     "react-patterns": {
       "source": "claude-dev-suite/claude-dev-suite",

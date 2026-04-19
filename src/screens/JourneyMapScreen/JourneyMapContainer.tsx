@@ -121,7 +121,8 @@ export default function JourneyMapContainer({
   } = useJourneyDerivedState(journeyState, allUnitsRaw, config, unitConfigMap);
 
   // 6. Node Actions (Complete, update progress, chest claim)
-  const { isGuest, canAccessNode, showSignUpPrompt, signUpSheetRef } = useJourneyAuthGate();
+  const { isGuest, canAccessNode, showSignUpPrompt, signUpSheetRef } =
+    useJourneyAuthGate();
   const { guestProgress, recordGuestNodeCompletion } = useGuestProgress();
 
   const {
@@ -271,18 +272,18 @@ export default function JourneyMapContainer({
           onClaim={handleChestClaim}
         />
       )}
-      
+
       <UnitCompleteModal
         ref={unitCompleteModalRef}
         unit={currentUnit}
         xpEarned={xpEarned}
         onContinue={handleUnitContinue}
       />
-      
+
       <GuestSignUpSheet ref={signUpSheetRef} guestProgress={guestProgress} />
-      
+
       <SectionOverviewSheet
-        isOpen={isSectionOverviewOpen}
+        isOpen={true}
         onClose={handleSectionOverviewClose}
         currentUnitIndex={currentUnitIndex}
         unitCompletedCounts={unitCompletedCounts}
@@ -291,7 +292,7 @@ export default function JourneyMapContainer({
         onJumpToSection={handleJumpToSection}
         journeyTitle={journeyTitle}
       />
-      
+
       <JourneySwitcherSheet
         isOpen={isSwitcherOpen}
         onClose={handleSwitcherClose}
@@ -300,7 +301,7 @@ export default function JourneyMapContainer({
         onDiscoverPress={handleDiscoverPress}
         onArchive={handleArchiveJourney}
       />
-      
+
       <NodeContentLoadingOverlay
         isVisible={isNodeContentLoading}
         onCancel={clearNodeContent}

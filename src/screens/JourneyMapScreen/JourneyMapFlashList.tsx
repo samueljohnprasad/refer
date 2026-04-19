@@ -371,35 +371,43 @@ function JourneyMapFlashListInner({
       {/* Scroll-to-active floating button */}
       <ScrollToActiveButton
         isVisible={isActiveOffScreen}
-        direction={scrollDirection} 
+        direction={scrollDirection}
         onPress={onScrollToActive}
       />
-      <BottomSheetWithRNContent isPresented={isPresented} setIsPresented={setIsPresented}>
+      <BottomSheetWithRNContent
+        isPresented={isPresented}
+        setIsPresented={setIsPresented}
+      >
         <View>
-          <RNText style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 8 }}>
+          <RNText style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8 }}>
             React Native Content
           </RNText>
-          <RNText style={{ color: '#666', marginBottom: 16 }}>Counter: {counter}</RNText>
+          <RNText style={{ color: "#666", marginBottom: 16 }}>
+            Counter: {counter}
+          </RNText>
           <Pressable
             style={{
-              backgroundColor: '#007AFF',
+              backgroundColor: "#007AFF",
               padding: 12,
               borderRadius: 8,
-              alignItems: 'center',
+              alignItems: "center",
               marginBottom: 12,
             }}
-            onPress={() => setCounter(counter + 1)}>
-            <RNText style={{ color: 'white', fontWeight: '600' }}>Increment</RNText>
+            onPress={() => setCounter(counter + 1)}
+          >
+            <RNText style={{ color: "white", fontWeight: "600" }}>
+              Increment
+            </RNText>
           </Pressable>
           <Pressable
             style={{
-              backgroundColor: '#FF3B30',
+              backgroundColor: "#FF3B30",
               padding: 12,
               borderRadius: 8,
-              alignItems: 'center',
+              alignItems: "center",
             }}
           >
-            <RNText style={{ color: 'white', fontWeight: '600' }}>Close</RNText>
+            <RNText style={{ color: "white", fontWeight: "600" }}>Close</RNText>
           </Pressable>
         </View>
       </BottomSheetWithRNContent>

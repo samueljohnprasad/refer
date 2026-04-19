@@ -352,7 +352,7 @@ export async function loadJourneyState(): Promise<JourneyState | null> {
     return parsed;
   } catch (error) {
     log.error("Failed to load journey state", error);
-    await AsyncStorage.removeItem(JOURNEY_STATE_KEY).catch(() => { });
+    await AsyncStorage.removeItem(JOURNEY_STATE_KEY).catch(() => {});
     return null;
   }
 }
@@ -670,13 +670,15 @@ export async function invalidateSectionCaches(
   try {
     const modes: SectionViewMode[] = ["active", "completed", "preview"];
     const keys: string[] = modes.flatMap((mode: SectionViewMode) =>
-      Array.from(
-        { length: totalSections },
-        (_: unknown, i: number): string => sectionCacheKey(slug, i + 1, mode),
+      Array.from({ length: totalSections }, (_: unknown, i: number): string =>
+        sectionCacheKey(slug, i + 1, mode),
       ),
     );
     await AsyncStorage.multiRemove(keys);
   } catch (error: unknown) {
-    log.error("Failed to invalidate section caches", error, { slug, totalSections });
+    log.error("Failed to invalidate section caches", error, {
+      slug,
+      totalSections,
+    });
   }
 }
