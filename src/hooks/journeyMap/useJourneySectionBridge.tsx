@@ -25,10 +25,7 @@ import { createLogger } from "@/src/lib/logger";
 
 const log = createLogger("useJourneySectionBridge");
 
-export function useJourneySectionBridge(
-  journeySlug: string | null,
-  journeyAccessMode: SectionViewMode,
-) {
+export function useJourneySectionBridge(journeySlug: string | null) {
   const toast = useToast();
 
   const {
@@ -37,7 +34,7 @@ export function useJourneySectionBridge(
     sectionMap,
     sectionList,
     activeNodeId: sectionActiveNodeId,
-  } = useSectionData(journeySlug, journeyAccessMode);
+  } = useSectionData(journeySlug);
 
   const journeyState = useAtomValue(journeyStateAtom);
   const setJourneyState = useSetAtom(journeyStateAtom);
@@ -64,7 +61,7 @@ export function useJourneySectionBridge(
 
       setJourneyState(bridgedState);
     }
-  }, [journeySlug, sectionMap, setJourneyState, journeyAccessMode]);
+  }, [journeySlug, sectionMap, setJourneyState]);
   // `stats` is left out of dependency array to prevent unnecessary full-state resets on stat ticks.
 
   const config: JourneyConfig = useJourneyConfig();

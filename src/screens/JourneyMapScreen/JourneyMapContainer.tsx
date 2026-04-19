@@ -42,7 +42,7 @@ export default function JourneyMapContainer({
     allUnitsRaw,
     config,
     unitConfigMap,
-  } = useJourneySectionBridge(slugOverride || "", modeOverride || "active");
+  } = useJourneySectionBridge(slugOverride || "");
 
   const handleSectionSwitch = React.useCallback(
     async (unitNumber: number) => {
@@ -51,7 +51,7 @@ export default function JourneyMapContainer({
         const res = await fetchSectionMap(
           slugOverride,
           unitNumber,
-          modeOverride || "active",
+          
         );
         if (res.success && res.data) {
           setCurrentSectionMap(res.data);

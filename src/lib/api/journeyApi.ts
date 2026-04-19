@@ -421,7 +421,6 @@ export async function fetchJourneyCatalog(): Promise<
 export async function fetchSectionMap(
   slug: string,
   unitNumber?: number,
-  viewMode?: SectionViewMode,
 ): Promise<ApiResponse<SectionMapResponse | null>> {
   try {
     const params: {
@@ -434,9 +433,9 @@ export async function fetchSectionMap(
     if (unitNumber !== undefined) {
       params.p_unit_number = unitNumber;
     }
-    if (viewMode) {
-      params.p_view_mode = viewMode;
-    }
+
+    params.p_view_mode = 'active';
+
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let query = (supabase.rpc as any)("get_section_map", params);

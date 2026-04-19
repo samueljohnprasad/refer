@@ -30,10 +30,7 @@ export interface UseSectionDataReturn {
   /** Load a specific section (called on sticky header tap) */
 }
 
-export function useSectionData(
-  slug: string | null,
-  viewMode: SectionViewMode = "active",
-): UseSectionDataReturn {
+export function useSectionData(slug: string | null): UseSectionDataReturn {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +45,7 @@ export function useSectionData(
   const fetchAndApplySection = useCallback(
     async (journeySlug: string, unitNumber?: number): Promise<void> => {
       try {
-        const res = await fetchSectionMap(journeySlug, unitNumber, viewMode);
+        const res = await fetchSectionMap(journeySlug, unitNumber);
 
         if (!res.success || !res.data) {
           setError(res.error ?? "Failed to load section data");
@@ -65,7 +62,7 @@ export function useSectionData(
         setError(err instanceof Error ? err.message : "Failed to load section");
       }
     },
-    [setSectionMap, viewMode],
+    [setSectionMap],
   );
 
   // ── Initial load: fetch user's current section ──
@@ -81,7 +78,7 @@ export function useSectionData(
         setIsLoading(false);
       }
     },
-    [fetchAndApplySection, setActiveSlug, viewMode],
+    [fetchAndApplySection, setActiveSlug],
   );
 
   useEffect(() => {
