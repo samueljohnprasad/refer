@@ -18,9 +18,6 @@ interface UseNodeActionsProps {
   lockInteraction: (duration: number) => void;
   isOnline: boolean;
   enrollmentId: string | null;
-  refresh: () => Promise<void>;
-  isGuest: boolean;
-  recordGuestNodeCompletion: (nodeId: string, xp: number, slug: string) => Promise<void>;
   resolvedJourneySlug: string;
   journeyTitle: string;
   sectionMap: SectionMapResponse | null;
@@ -38,9 +35,6 @@ export function useNodeActions({
   lockInteraction,
   isOnline,
   enrollmentId,
-  refresh,
-  isGuest,
-  recordGuestNodeCompletion,
   resolvedJourneySlug,
   journeyTitle,
   sectionMap,
@@ -64,12 +58,6 @@ export function useNodeActions({
       // Optimistic local update for instant UI feedback
       setJourneyState((prev: JourneyState) => completeNode(prev, nodeId));
 
-      // ── P1.6.1: For guests, record completion locally instead of Supabase ──
-      if (isGuest) {
-        await recordGuestNodeCompletion(nodeId, 10, resolvedJourneySlug);
-        return;
-      }
-
       // Server-side atomic completion (validates, grants rewards, unlocks next)
       if (isOnline && enrollmentId) {
         const result = await completeNodeApi({
@@ -80,7 +68,6 @@ export function useNodeActions({
           log.warn("Server completion failed, will sync on next refresh");
         } else {
           // Re-fetch section to sync server-granted rewards & updated progress
-          await refresh();
 
           // Phase C: Check if this was a trophy node → auto-load next section
           const completedStub: NodeStub | undefined =
@@ -130,9 +117,6 @@ export function useNodeActions({
       lockInteraction,
       isOnline,
       enrollmentId,
-      refresh,
-      isGuest,
-      recordGuestNodeCompletion,
       resolvedJourneySlug,
       journeyTitle,
       sectionMap,
@@ -168,23 +152,18 @@ export function useNodeActions({
       setJourneyState((prev: JourneyState) => completeNode(prev, nodeId));
       setChestNode(null);
 
-      // Record guest progress locally (mirrors handleCompleteNode guest path)
-      if (isGuest) {
-        await recordGuestNodeCompletion(nodeId, 10, resolvedJourneySlug);
-        return;
-      }
 
       if (isOnline && enrollmentId) {
         const result =
           sectionMap?.viewMode === "completed"
             ? await replayCompletedNodeApi({
-                enrollmentId,
-                nodeId,
-              })
+              enrollmentId,
+              nodeId,
+            })
             : await completeNodeApi({
-                enrollmentId,
-                nodeId,
-              });
+              enrollmentId,
+              nodeId,
+            });
 
         if (!result.success) {
           log.warn(
@@ -199,7 +178,6 @@ export function useNodeActions({
         }
 
         if (sectionMap?.viewMode === "completed") {
-          await refresh();
         } else {
           await loadCurrentPosition();
         }
@@ -215,11 +193,8 @@ export function useNodeActions({
       enrollmentId,
       isOnline,
       loadCurrentPosition,
-      refresh,
       setJourneyState,
       playSound,
-      isGuest,
-      recordGuestNodeCompletion,
       resolvedJourneySlug,
       sectionMap?.viewMode,
       journeyAccessMode,

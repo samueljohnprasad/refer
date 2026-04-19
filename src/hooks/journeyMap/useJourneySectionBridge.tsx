@@ -15,30 +15,28 @@ import {
   unitsAtom,
   journeyTemplateAtom,
 } from "@/src/store/journeyStore";
-import type { JourneyConfig, UnitConfig, JourneyState, UnitData } from "@/src/types/journey";
+import type {
+  JourneyConfig,
+  UnitConfig,
+  JourneyState,
+  UnitData,
+} from "@/src/types/journey";
 import { createLogger } from "@/src/lib/logger";
 
 const log = createLogger("useJourneySectionBridge");
 
 export function useJourneySectionBridge(
   journeySlug: string | null,
-  journeyAccessMode: SectionViewMode
+  journeyAccessMode: SectionViewMode,
 ) {
   const toast = useToast();
 
   const {
     isLoading,
     error: dataError,
-    isOfflineFallback,
-    isSwitchingSection,
     sectionMap,
     sectionList,
     activeNodeId: sectionActiveNodeId,
-    loadSection,
-    refresh,
-    loadCurrentPosition,
-    wasVersionInvalidated,
-    resetVersionInvalidated,
   } = useSectionData(journeySlug, journeyAccessMode);
 
   const journeyState = useAtomValue(journeyStateAtom);
@@ -56,22 +54,6 @@ export function useJourneySectionBridge(
   const journeyTitle: string =
     sectionMap?.journey.title ?? journeyTemplate?.title ?? "Journey Overview";
 
-  // D4: Show toast when journey template was updated (cache invalidated)
-  useEffect(() => {
-    if (wasVersionInvalidated) {
-      toast.show({
-        id: "journey-version-updated",
-        placement: "top",
-        render: () => (
-          <Toast action="info">
-            <ToastTitle>Journey updated — loading latest content</ToastTitle>
-          </Toast>
-        ),
-      });
-      resetVersionInvalidated();
-    }
-  }, [wasVersionInvalidated, toast, resetVersionInvalidated]);
-
   // Bridge: sync section map → journeyStateAtom so existing FlashList + UI works
   useEffect(() => {
     if (sectionMap) {
@@ -79,15 +61,7 @@ export function useJourneySectionBridge(
         sectionMap,
         stats,
       );
-      log.info("Bridging section map into journey state", {
-        journeySlug,
-        journeyAccessMode,
-        sectionNumber: sectionMap.section.unitNumber,
-        unitCount: sectionMap.section.units?.length ?? 0,
-        nodeCount: sectionMap.section.nodes.length,
-        progressCount: sectionMap.progress.length,
-        hasEnrollment: sectionMap.enrollment !== null,
-      });
+
       setJourneyState(bridgedState);
     }
   }, [journeySlug, sectionMap, setJourneyState, journeyAccessMode]);
@@ -111,14 +85,9 @@ export function useJourneySectionBridge(
   return {
     isLoading,
     dataError,
-    isOfflineFallback,
-    isSwitchingSection,
     sectionMap,
     sectionList,
     sectionActiveNodeId,
-    loadSection,
-    refresh,
-    loadCurrentPosition,
     journeyState,
     setJourneyState,
     currentUnit,

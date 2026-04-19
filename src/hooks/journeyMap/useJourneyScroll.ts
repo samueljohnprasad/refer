@@ -9,7 +9,6 @@ interface UseJourneyScrollProps {
   flashActiveNodeY: number | null;
   viewportHeight: number;
   flashActiveNodeIndex: number;
-  jumpToSection: string | undefined;
   flashListData: JourneyFlashListItem[];
   USE_FLASH_LIST?: boolean;
 }
@@ -18,7 +17,6 @@ export function useJourneyScroll({
   flashActiveNodeY,
   viewportHeight,
   flashActiveNodeIndex,
-  jumpToSection,
   flashListData,
   USE_FLASH_LIST = true,
 }: UseJourneyScrollProps) {
@@ -80,24 +78,24 @@ export function useJourneyScroll({
   // Auto-scroll FlashList to active node on mount / focus
   useFocusEffect(
     useCallback(() => {
-      if (flashActiveNodeIndex >= 0 && !jumpToSection) {
+      if (flashActiveNodeIndex >= 0) {
         const timer = setTimeout(() => {
           handleFlashListScrollToActive(2000);
         }, 500);
         return () => clearTimeout(timer);
       }
-    }, [flashActiveNodeIndex, jumpToSection, handleFlashListScrollToActive]),
+    }, [flashActiveNodeIndex, handleFlashListScrollToActive]),
   );
 
   // Auto-scroll when the active node index changes (e.g., node completed)
   useEffect(() => {
-    if (flashActiveNodeIndex >= 0 && !jumpToSection) {
+    if (flashActiveNodeIndex >= 0) {
       const timer = setTimeout(() => {
         handleFlashListScrollToActive(1000);
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [flashActiveNodeIndex, jumpToSection, handleFlashListScrollToActive]);
+  }, [flashActiveNodeIndex, handleFlashListScrollToActive]);
 
   return {
     flashListRef,

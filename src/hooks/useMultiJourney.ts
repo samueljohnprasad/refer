@@ -26,11 +26,6 @@ import {
     journeyEnrollmentsAtom,
     hasActiveEnrollmentAtom,
     journeySwitcherItemsAtom,
-    saveActiveSlug,
-    clearActiveSlug,
-    loadActiveSlug,
-    saveMultiJourneyState,
-    loadMultiJourneyState,
 } from "@/src/store/journeyStore";
 import {
     fetchMHJourneyCatalog,
@@ -152,16 +147,8 @@ export function useMultiJourney(): UseMultiJourneyReturn {
             setEnrollments(nextEnrollments);
             setActiveSlug(nextActiveSlug);
 
-            if (nextActiveSlug) {
-                await saveActiveSlug(nextActiveSlug);
-            } else {
-                await clearActiveSlug();
-            }
 
-            await saveMultiJourneyState({
-                activeJourneySlug: nextActiveSlug,
-                enrollments: nextEnrollments,
-            });
+
         },
         [setActiveSlug, setEnrollments],
     );
@@ -176,25 +163,6 @@ export function useMultiJourney(): UseMultiJourneyReturn {
                     preferredActiveSlug: preferredActiveSlug ?? null,
                 });
 
-                // 1. Restore from local cache for instant UI
-                const cached = await loadMultiJourneyState();
-                if (cached) {
-                    log.info("Loaded cached multi-journey state", {
-                        cachedActiveSlug: cached.activeJourneySlug,
-                        cachedEnrollmentCount: cached.enrollments.length,
-                    });
-                    setEnrollments(cached.enrollments);
-                    if (cached.activeJourneySlug) {
-                        setActiveSlug(cached.activeJourneySlug);
-                    }
-                }
-
-                // 2. Also restore the active slug independently
-                const savedSlug: string | null = await loadActiveSlug();
-                if (savedSlug && !cached?.activeJourneySlug) {
-                    log.info("Loaded saved active slug", { savedSlug });
-                    setActiveSlug(savedSlug);
-                }
 
                 // 3. Fetch fresh data from server
                 const res = await fetchMHJourneyCatalog();
@@ -207,7 +175,6 @@ export function useMultiJourney(): UseMultiJourneyReturn {
                         .map(catalogItemToEnrollment);
 
                     const existingEnrollments: JourneyEnrollment[] =
-                        cached?.enrollments ??
                         latestStateRef.current.enrollments;
 
                     // Preserve local archive state
@@ -225,8 +192,6 @@ export function useMultiJourney(): UseMultiJourneyReturn {
 
                     const requestedActiveSlug: string | null =
                         preferredActiveSlug ??
-                        savedSlug ??
-                        cached?.activeJourneySlug ??
                         latestStateRef.current.activeSlug;
 
                     const isRequestedSlugValid =
@@ -238,8 +203,7 @@ export function useMultiJourney(): UseMultiJourneyReturn {
 
                     const fallbackActiveSlug: string | null =
                         mergedEnrollments.find(
-                            (e: JourneyEnrollment) =>
-                                e.status === "active" && !e.isArchived,
+                            (e: JourneyEnrollment) => e.status === "active" && !e.isArchived,
                         )?.slug ?? null;
 
                     log.info("Hydration fetched server journeys", {
@@ -252,20 +216,14 @@ export function useMultiJourney(): UseMultiJourneyReturn {
                     });
                     await persistEnrollmentState(
                         mergedEnrollments,
-                        isRequestedSlugValid
-                            ? requestedActiveSlug
-                            : fallbackActiveSlug,
+                        isRequestedSlugValid ? requestedActiveSlug : fallbackActiveSlug,
                     );
-                } else if (!cached) {
+                } else {
                     // Server failed — use cached data (already set above)
                     log.warn("Hydration failed and no cache available", {
                         error: res.error ?? "Failed to load journeys",
                     });
                     setError(res.error ?? "Failed to load journeys");
-                } else {
-                    log.warn("Hydration server fetch failed, using cached state", {
-                        error: res.error ?? "Failed to load journeys",
-                    });
                 }
             } catch (err) {
                 log.error("Hydration error", err);
@@ -274,11 +232,7 @@ export function useMultiJourney(): UseMultiJourneyReturn {
                 setIsLoading(false);
             }
         },
-        [
-            persistEnrollmentState,
-            setActiveSlug,
-            setEnrollments,
-        ],
+        [persistEnrollmentState, setActiveSlug, setEnrollments],
     );
 
     // Hydrate on mount
@@ -294,10 +248,7 @@ export function useMultiJourney(): UseMultiJourneyReturn {
                 currentActiveSlug: latestStateRef.current.activeSlug,
                 enrollmentCount: latestStateRef.current.enrollments.length,
             });
-            await persistEnrollmentState(
-                latestStateRef.current.enrollments,
-                slug,
-            );
+            await persistEnrollmentState(latestStateRef.current.enrollments, slug);
         },
         [persistEnrollmentState],
     );
@@ -316,8 +267,7 @@ export function useMultiJourney(): UseMultiJourneyReturn {
                     error: templateRes.error ?? "Unknown template error",
                 });
                 throw new Error(
-                    templateRes.error ??
-                        `Failed to load template for ${journey.slug}`,
+                    templateRes.error ?? `Failed to load template for ${journey.slug}`,
                 );
             }
 
@@ -329,9 +279,7 @@ export function useMultiJourney(): UseMultiJourneyReturn {
                     slug: journey.slug,
                     unitCount: templateRes.data.units.length,
                 });
-                throw new Error(
-                    `Journey ${journey.slug} does not have a start node`,
-                );
+                throw new Error(`Journey ${journey.slug} does not have a start node`);
             }
 
             log.info("Template resolved for enrollment", {
@@ -368,18 +316,15 @@ export function useMultiJourney(): UseMultiJourneyReturn {
             log.info("Archiving journey locally", { slug });
             const updated: JourneyEnrollment[] =
                 latestStateRef.current.enrollments.map(
-                (e: JourneyEnrollment): JourneyEnrollment =>
-                    e.slug === slug ? { ...e, isArchived: true } : e,
-            );
+                    (e: JourneyEnrollment): JourneyEnrollment =>
+                        e.slug === slug ? { ...e, isArchived: true } : e,
+                );
             latestStateRef.current = {
                 activeSlug: latestStateRef.current.activeSlug,
                 enrollments: updated,
             };
             setEnrollments(updated);
-            saveMultiJourneyState({
-                activeJourneySlug: latestStateRef.current.activeSlug,
-                enrollments: updated,
-            });
+
         },
         [setEnrollments],
     );
@@ -390,18 +335,15 @@ export function useMultiJourney(): UseMultiJourneyReturn {
             log.info("Restoring journey locally", { slug });
             const updated: JourneyEnrollment[] =
                 latestStateRef.current.enrollments.map(
-                (e: JourneyEnrollment): JourneyEnrollment =>
-                    e.slug === slug ? { ...e, isArchived: false } : e,
-            );
+                    (e: JourneyEnrollment): JourneyEnrollment =>
+                        e.slug === slug ? { ...e, isArchived: false } : e,
+                );
             latestStateRef.current = {
                 activeSlug: latestStateRef.current.activeSlug,
                 enrollments: updated,
             };
             setEnrollments(updated);
-            saveMultiJourneyState({
-                activeJourneySlug: latestStateRef.current.activeSlug,
-                enrollments: updated,
-            });
+
         },
         [setEnrollments],
     );

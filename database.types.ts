@@ -254,6 +254,57 @@ export type Database = {
         }
         Relationships: []
       }
+      exercise_entries: {
+        Row: {
+          completed_at: string | null
+          completed_steps: Json
+          created_at: string
+          current_step: string
+          exercise_type: string
+          id: string
+          response: Json
+          schema_version: number
+          selected_date: string
+          status: string
+          step_index: number
+          step_timings: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_steps?: Json
+          created_at?: string
+          current_step: string
+          exercise_type: string
+          id?: string
+          response?: Json
+          schema_version?: number
+          selected_date?: string
+          status?: string
+          step_index?: number
+          step_timings?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_steps?: Json
+          created_at?: string
+          current_step?: string
+          exercise_type?: string
+          id?: string
+          response?: Json
+          schema_version?: number
+          selected_date?: string
+          status?: string
+          step_index?: number
+          step_timings?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       gratitude_entries: {
         Row: {
           completed: boolean

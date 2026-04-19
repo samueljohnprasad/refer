@@ -278,7 +278,10 @@ export async function enrollInJourney(
       .single();
 
     if (firstNodeError || !firstNode?.unit_id) {
-      log.error("enrollInJourney first node lookup error", firstNodeError?.message);
+      log.error(
+        "enrollInJourney first node lookup error",
+        firstNodeError?.message,
+      );
       return {
         data: null,
         success: false,
@@ -293,7 +296,10 @@ export async function enrollInJourney(
       .single();
 
     if (firstUnitError || !firstUnit?.id) {
-      log.error("enrollInJourney first unit lookup error", firstUnitError?.message);
+      log.error(
+        "enrollInJourney first unit lookup error",
+        firstUnitError?.message,
+      );
       return {
         data: null,
         success: false,
@@ -308,7 +314,10 @@ export async function enrollInJourney(
       .single();
 
     if (firstSectionError || !firstSection?.id) {
-      log.error("enrollInJourney first section lookup error", firstSectionError?.message);
+      log.error(
+        "enrollInJourney first section lookup error",
+        firstSectionError?.message,
+      );
       return {
         data: null,
         success: false,
@@ -412,7 +421,6 @@ export async function fetchJourneyCatalog(): Promise<
 export async function fetchSectionMap(
   slug: string,
   unitNumber?: number,
-  signal?: AbortSignal,
   viewMode?: SectionViewMode,
 ): Promise<ApiResponse<SectionMapResponse | null>> {
   try {
@@ -432,9 +440,6 @@ export async function fetchSectionMap(
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let query = (supabase.rpc as any)("get_section_map", params);
-    if (signal) {
-      query = query.abortSignal(signal);
-    }
     const { data, error } = await query;
 
     if (error) {

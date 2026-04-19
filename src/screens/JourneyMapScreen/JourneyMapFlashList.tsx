@@ -48,11 +48,9 @@ import { MascotSide } from "@/src/types/journey";
 
 import { JourneyNodeCell } from "@/src/components/journey/JourneyNodeCell";
 import {
-  OfflineBanner,
   ScrollToActiveButton,
   UnitDivider,
   MascotBubble,
-  StickyUnitHeader,
 } from "@/src/components/journey";
 import { DuolingoHeader } from "@/src/components/journey/DuolingoHeader";
 import type { UnitHeaderData } from "@/src/hooks/useJourneyFlashList";
@@ -90,8 +88,6 @@ export interface JourneyMapFlashListProps {
   activeGlobalIndex: number;
   /** Node press handler */
   onNodePress: (node: PathNodeData) => void;
-  /** Whether device is offline */
-  isOffline: boolean;
   /** Whether the active node is off-screen */
   isActiveOffScreen: boolean;
   /** Direction to scroll to reach active node */
@@ -110,6 +106,19 @@ export interface JourneyMapFlashListProps {
   onGuidePress?: () => void;
   /** Flag icon handler (opens journey switcher) */
   onFlagPress?: () => void;
+  /** Section list for bottom sheet */
+  sectionList?: Array<{
+    unitNumber: number;
+    sectionNumber?: number;
+    title: string;
+    colorScheme: string;
+    nodeCount: number;
+    unitCount?: number;
+  }>;
+  /** Current active section number for highlighting */
+  currentSectionNumber?: number;
+  /** Callback when user switches to a different section */
+  onSectionSwitch?: (unitNumber: number) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -211,13 +220,11 @@ function MascotCell({ item }: MascotCellProps): React.JSX.Element {
 // Main Component
 // ---------------------------------------------------------------------------
 
-function JourneyMapFlashListInner({
+export function JourneyMapFlashListInner({
   data,
-  stats,
   screenWidth,
   activeGlobalIndex,
   onNodePress,
-  isOffline,
   isActiveOffScreen,
   scrollDirection,
   onScrollToActive,
@@ -225,8 +232,9 @@ function JourneyMapFlashListInner({
   listRef,
   onScroll,
   unitHeaders,
-  onGuidePress,
-  onFlagPress,
+  sectionList,
+  currentSectionNumber,
+  onSectionSwitch,
 }: JourneyMapFlashListProps): React.JSX.Element {
   const internalRef = useRef<any>(null);
   const legendListRef = listRef ?? internalRef;
@@ -235,7 +243,6 @@ function JourneyMapFlashListInner({
 
   const scrollY = useSharedValue(0);
   const [visibleUnitIndex, setVisibleUnitIndex] = React.useState(0);
-  const [counter, setCounter] = useState(0);
 
   const onScrollTick = useCallback(
     (y: number) => {
@@ -330,26 +337,6 @@ function JourneyMapFlashListInner({
         rimColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[1] || "#388E3C"}
       />
 
-      {/* Sticky unit header */}
-      {/* {visibleUnit && (
-        <View style={{ zIndex: 10 }}>
-          <StickyUnitHeader
-            sectionNumber={visibleUnit.sectionNumber}
-            unitNumber={visibleUnit.unitNumber}
-            unitTitle={visibleUnit.unitTitle}
-            colorThemeKey={visibleUnit.colorThemeKey}
-            stats={stats}
-            onGuidePress={onGuidePress}
-            onFlagPress={onFlagPress}
-            scrollY={scrollY}
-            unitBreakpoints={unitHeaders}
-          />
-        </View>
-      )} */}
-
-      {/* Offline banner */}
-      <OfflineBanner isOffline={isOffline} />
-
       {/* LegendList — cell recycling with segment-per-cell SVG rendering */}
       <AnimatedLegendList<JourneyFlashListItem>
         data={data}
@@ -379,36 +366,70 @@ function JourneyMapFlashListInner({
         setIsPresented={setIsPresented}
       >
         <View>
-          <RNText style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8 }}>
-            React Native Content
-          </RNText>
-          <RNText style={{ color: "#666", marginBottom: 16 }}>
-            Counter: {counter}
-          </RNText>
-          <Pressable
-            style={{
-              backgroundColor: "#007AFF",
-              padding: 12,
-              borderRadius: 8,
-              alignItems: "center",
-              marginBottom: 12,
-            }}
-            onPress={() => setCounter(counter + 1)}
+          <RNText
+            style={{ fontSize: 20, fontWeight: "bold", marginBottom: 16 }}
           >
-            <RNText style={{ color: "white", fontWeight: "600" }}>
-              Increment
+            Course Sections
+          </RNText>
+          {sectionList && sectionList.length > 0 ? (
+            sectionList.map((section, index) => {
+              const isActive =
+                (section.sectionNumber || section.unitNumber) ===
+                currentSectionNumber;
+              return (
+                <Pressable
+                  key={section.unitNumber}
+                  style={{
+                    backgroundColor: isActive ? "#E3F2FD" : "#f5f5f5",
+                    padding: 16,
+                    borderRadius: 12,
+                    marginBottom: 12,
+                    borderWidth: isActive ? 2 : 1,
+                    borderColor: isActive ? "#2196F3" : "#e0e0e0",
+                  }}
+                  onPress={() => {
+                    setIsPresented(false);
+                    if (onSectionSwitch && !isActive) {
+                      onSectionSwitch(section.unitNumber);
+                    }
+                  }}
+                >
+                  <RNText
+                    style={{
+                      fontSize: 16,
+                      fontWeight: isActive ? "700" : "600",
+                      marginBottom: 4,
+                      color: isActive ? "#1976D2" : "#333",
+                    }}
+                  >
+                    Section {section.sectionNumber || section.unitNumber}:{" "}
+                    {section.title}
+                  </RNText>
+                  <RNText style={{ fontSize: 14, color: "#666" }}>
+                    {section.nodeCount} nodes
+                  </RNText>
+                  {isActive && (
+                    <RNText
+                      style={{
+                        fontSize: 12,
+                        color: "#1976D2",
+                        marginTop: 4,
+                        fontWeight: "500",
+                      }}
+                    >
+                      Currently viewing
+                    </RNText>
+                  )}
+                </Pressable>
+              );
+            })
+          ) : (
+            <RNText
+              style={{ color: "#999", textAlign: "center", marginTop: 20 }}
+            >
+              No sections available
             </RNText>
-          </Pressable>
-          <Pressable
-            style={{
-              backgroundColor: "#FF3B30",
-              padding: 12,
-              borderRadius: 8,
-              alignItems: "center",
-            }}
-          >
-            <RNText style={{ color: "white", fontWeight: "600" }}>Close</RNText>
-          </Pressable>
+          )}
         </View>
       </BottomSheetWithRNContent>
     </View>
