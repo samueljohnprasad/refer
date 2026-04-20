@@ -58,13 +58,7 @@ import {
 import { useVisibleUnit } from "@/src/hooks/useVisibleUnit";
 import { useScrollHandler } from "@/src/hooks/useScrollHandler";
 import { useGetSectionMapQuery } from "@/src/store/api/sectionMapApi";
-import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
-import {
-  setSectionMap,
-  setCurrentSectionNumber,
-} from "@/src/store/slices/sectionMapSlice";
-import { setJourneyState } from "@/src/store/slices/journeySlice";
-import { sectionMapToJourneyState } from "@/src/utils/journey/sectionMapBridge";
+import { useAppSelector } from "@/src/store/hooks";
 
 import { JourneyNodeCell } from "@/src/components/journey/JourneyNodeCell";
 import {
@@ -207,7 +201,7 @@ function MascotCell({ item }: MascotCellProps): React.JSX.Element {
 // ---------------------------------------------------------------------------
 
 export function JourneyMapFlashListInner({
-  journeyState,
+  journeyState: _journeyState, // Unused - we use Redux state directly
   config,
   unitConfigMap,
   slugOverride,
@@ -218,7 +212,6 @@ export function JourneyMapFlashListInner({
   const legendListRef = internalRef;
   const [isPresented, setIsPresented] = useState(false);
 
-  const dispatch = useAppDispatch();
   const currentSectionNumber = useAppSelector(
     (state) => state.sectionMap.currentSectionNumber,
   );
@@ -234,21 +227,6 @@ export function JourneyMapFlashListInner({
     { skip: !slugOverride },
   );
 
-  // Sync RTK Query data to Redux store
-  React.useEffect(() => {
-    if (sectionMapData) {
-      dispatch(setSectionMap(sectionMapData));
-      dispatch(setCurrentSectionNumber(sectionMapData.section.unitNumber));
-      const bridgedState = sectionMapToJourneyState(sectionMapData, {
-        streakDays: 0,
-        wallet: { coins: 0, gems: 0 },
-        hearts: 5,
-        totalXP: 0,
-      });
-      dispatch(setJourneyState(bridgedState));
-    }
-  }, [sectionMapData, dispatch]);
-
   const {
     flashListData,
     flashActiveNodeIndex,
@@ -256,30 +234,25 @@ export function JourneyMapFlashListInner({
     flashScreenWidth,
     flashActiveNodeY,
     unitHeaders,
-  } = useJourneyDerivedState(
-    sectionMapData,
-    journeyState,
-    config,
-    unitConfigMap,
-  );
+  } = useJourneyDerivedState(sectionMapData, undefined, config, unitConfigMap);
+  console.log('flashListDataaaaaaaa', flashListData, sectionMapData)
+  // const {
+  //   flashListRef,
+  //   handleFlashListScrollToActive,
+  //   handleFlashListJumpToUnit,
+  //   currentScrollY,
+  //   isActiveOffScreen,
+  //   scrollDirection,
+  //   updateVisibility,
+  // } = useJourneyScroll({
+  //   flashActiveNodeY,
+  //   viewportHeight,
+  //   flashActiveNodeIndex,
+  //   flashListData,
+  //   USE_FLASH_LIST: true,
+  // });
 
-  const {
-    flashListRef,
-    handleFlashListScrollToActive,
-    handleFlashListJumpToUnit,
-    currentScrollY,
-    isActiveOffScreen,
-    scrollDirection,
-    updateVisibility,
-  } = useJourneyScroll({
-    flashActiveNodeY,
-    viewportHeight,
-    flashActiveNodeIndex,
-    flashListData,
-    USE_FLASH_LIST: true,
-  });
-
-  const { scrollY, scrollHandler } = useScrollHandler({ updateVisibility });
+  // const { scrollY, scrollHandler } = useScrollHandler({ updateVisibility });
 
   const { visibleUnit, onViewableItemsChanged } = useVisibleUnit({
     unitHeaders,
@@ -295,7 +268,7 @@ export function JourneyMapFlashListInner({
               item={item as JourneyNode}
               screenWidth={flashScreenWidth}
               activeGlobalIndex={activeGlobalIndex}
-              onNodePress={() => {}}
+              onNodePress={() => { }}
             />
           );
 
@@ -349,31 +322,42 @@ export function JourneyMapFlashListInner({
           />
 
           {/* LegendList — cell recycling with segment-per-cell SVG rendering */}
-          <AnimatedLegendList<JourneyFlashListItem>
-            data={flashListData}
-            renderItem={renderItem}
-            keyExtractor={keyExtractor}
-            estimatedItemSize={ESTIMATED_ITEM_SIZE}
-            showsVerticalScrollIndicator={false}
-            onScroll={scrollHandler}
-            scrollEventThrottle={16}
-            ref={legendListRef as any}
-            contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={{
-              itemVisiblePercentThreshold: 10,
-              minimumViewTime: 100,
-            }}
-          />
+          {flashListData && flashListData.length > 0 ? (
+            <AnimatedLegendList<JourneyFlashListItem>
+              data={flashListData}
+              renderItem={renderItem}
+              keyExtractor={keyExtractor}
+              estimatedItemSize={ESTIMATED_ITEM_SIZE}
+              showsVerticalScrollIndicator={false}
+              // onScroll={scrollHandler}
+              scrollEventThrottle={16}
+              ref={legendListRef as any}
+              contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
+              onViewableItemsChanged={onViewableItemsChanged}
+              viewabilityConfig={{
+                itemVisiblePercentThreshold: 10,
+                minimumViewTime: 100,
+              }}
+            />
+          ) : (
+            <View className="flex-1 items-center justify-center p-4">
+              <RNText className="text-gray-500 text-center">
+                Map data not available. Check console for details.
+              </RNText>
+              <RNText className="text-gray-400 text-xs mt-2">
+                flashListData: {flashListData?.length || 0} items
+              </RNText>
+            </View>
+          )}
 
           {/* Scroll-to-active button (shown when active node is off-screen) */}
-          {isActiveOffScreen && (
+          {/* {isActiveOffScreen && (
             <ScrollToActiveButton
               direction={scrollDirection}
               onPress={handleFlashListScrollToActive}
               isVisible={isActiveOffScreen}
             />
-          )}
+          )} */}
 
           <BottomSheetWithRNContent
             isPresented={isPresented}

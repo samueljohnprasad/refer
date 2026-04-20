@@ -1,6 +1,10 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { fetchSectionMap } from "@/src/lib/api/journeyApi";
 import type { SectionMapResponse } from "@/src/types/journey/sectionMap";
+import {
+  setSectionMap,
+  setCurrentSectionNumber,
+} from "@/src/store/slices/sectionMapSlice";
 
 // Create the API slice
 export const sectionMapApi = createApi({

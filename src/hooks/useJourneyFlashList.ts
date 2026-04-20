@@ -63,11 +63,12 @@ export function useJourneyFlashList(
   config: JourneyConfig,
   unitConfigMap: Map<string, UnitConfig>,
   unitFilter?: string[],
+  unitsOverride?: UnitData[],
 ): UseJourneyFlashListReturn {
   const { width: screenWidth } = useWindowDimensions();
-  const allUnits: UnitData[] = useAppSelector(
-    (state) => state.journey.journeyState?.units || [],
-  );
+  const allUnits: UnitData[] =
+    unitsOverride ||
+    useAppSelector((state) => state.journey.journeyState?.units || []);
   const journeyState = useAppSelector((state) => state.journey.journeyState);
 
   // Calculate active node index from journey state
@@ -101,7 +102,7 @@ export function useJourneyFlashList(
     };
 
     return buildJourneyNodes(input);
-  }, [allUnits, unitConfigMap, config, screenWidth, unitFilter]);
+  }, [allUnits, unitConfigMap, config, screenWidth, unitFilter, unitsOverride]);
 
   // Compute unit headers with their estimated Y offsets for StickyUnitHeader
   const unitHeaders: UnitHeaderData[] = useMemo(() => {

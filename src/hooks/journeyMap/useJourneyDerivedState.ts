@@ -9,6 +9,7 @@ import type {
   SectionMapResponse,
 } from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
+import { sectionMapToUnitData } from "@/src/utils/journey/sectionMapBridge";
 
 export function useJourneyDerivedState(
   sectionMapData: SectionMapResponse | null | undefined,
@@ -51,6 +52,12 @@ export function useJourneyDerivedState(
   }, [sectionMapData?.section?.units]);
 
   // FlashList segment-per-cell data pipeline
+  // Derive units directly from sectionMapData to avoid Redux timing issues
+  const unitsFromSectionData = useMemo(() => {
+    if (!sectionMapData) return [];
+    return sectionMapToUnitData(sectionMapData);
+  }, [sectionMapData]);
+
   const {
     flashListData,
     activeNodeIndex: flashActiveNodeIndex,
@@ -61,7 +68,8 @@ export function useJourneyDerivedState(
   } = useJourneyFlashList(
     config,
     unitConfigMap,
-    sectionMapData?.section?.units.map((unit: any) => unit.id) || [],
+    undefined, // No unit filter - use all units from sectionMapData
+    unitsFromSectionData, // Pass units directly instead of reading from Redux
   );
 
   return {
