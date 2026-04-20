@@ -1,19 +1,27 @@
 import { useMemo } from "react";
 import { useJourneyFlashList } from "@/src/hooks/useJourneyFlashList";
-import type { JourneyState, UnitData, PathNodeData, JourneyConfig, UnitConfig } from "@/src/types/journey";
+import type {
+  JourneyState,
+  UnitData,
+  PathNodeData,
+  JourneyConfig,
+  UnitConfig,
+  SectionMapResponse,
+} from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
 
 export function useJourneyDerivedState(
+  sectionMapData: SectionMapResponse | null | undefined,
   journeyState: JourneyState | undefined,
-  allUnitsRaw: UnitData[],
   config: JourneyConfig,
-  unitConfigMap: Map<string, UnitConfig>
+  unitConfigMap: Map<string, UnitConfig>,
 ) {
   const unitCompletedCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    if (!journeyState?.units) return counts;
+    // Use section units with progress from sectionMapData
+    const units = sectionMapData?.section?.units || [];
 
-    journeyState.units.forEach((unit: UnitData) => {
+    units.forEach((unit: any) => {
       if (!unit || !unit.nodes) return;
       const completed: number = unit.nodes.filter(
         (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
@@ -26,11 +34,12 @@ export function useJourneyDerivedState(
         (counts[`section_${sectionNumber}`] ?? 0) + completed;
     });
     return counts;
-  }, [journeyState?.units]);
+  }, [sectionMapData?.section?.units]);
 
   // Compute total completed count across ALL units (for guest gate)
   const totalCompletedCount: number = useMemo(() => {
-    return allUnitsRaw.reduce((acc: number, unit: UnitData) => {
+    const units = sectionMapData?.section?.units || [];
+    return units.reduce((acc: number, unit: any) => {
       if (!unit || !unit.nodes) return acc;
       return (
         acc +
@@ -39,7 +48,7 @@ export function useJourneyDerivedState(
         ).length
       );
     }, 0);
-  }, [allUnitsRaw]);
+  }, [sectionMapData?.section?.units]);
 
   // FlashList segment-per-cell data pipeline
   const {
@@ -52,7 +61,7 @@ export function useJourneyDerivedState(
   } = useJourneyFlashList(
     config,
     unitConfigMap,
-    allUnitsRaw.map((unit: UnitData) => unit.id),
+    sectionMapData?.section?.units.map((unit: any) => unit.id) || [],
   );
 
   return {

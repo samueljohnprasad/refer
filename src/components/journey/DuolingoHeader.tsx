@@ -22,33 +22,17 @@ import { FullWindowOverlay } from "react-native-screens";
 import { scheduleOnRN } from "react-native-worklets";
 import HeaderOverlayContent from "./header-overlay-content";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-const Buttons = [
-  {
-    name: "Flag",
-    Icon: Flag,
-    title: "14",
-    textColor: "#4B4B4B",
-  },
-  {
-    name: "Fire",
-    Icon: Fire,
-    title: "12",
-    textColor: "#FF9600",
-  },
-  {
-    name: "Gem",
-    Icon: Gem,
 
-    title: "527",
-    textColor: "#1cb0f6",
-  },
-  {
-    name: "Battery",
-    Icon: Battery,
-    title: "5",
-    textColor: "#A993C5",
-  },
-];
+export interface DuolingoHeaderStats {
+  streak: number;
+  gems: number;
+  hearts: number;
+  xp: number;
+}
+
+interface DuolingoHeaderProps {
+  stats?: DuolingoHeaderStats;
+}
 const HeaderButton = ({
   Icon,
   onPress,
@@ -71,7 +55,7 @@ const HeaderButton = ({
     </Pressable>
   );
 };
-export const DuolingoHeader = () => {
+export const DuolingoHeader = ({ stats }: DuolingoHeaderProps) => {
   const [headerHeight, setHeaderHeight] = useState(0);
   const { height: windoHeight } = useWindowDimensions();
   const translateY = useSharedValue(0);
@@ -108,15 +92,44 @@ export const DuolingoHeader = () => {
     };
   });
   const insets = useSafeAreaInsets();
+
+  // Build buttons from stats or use defaults
+  const buttons = [
+    {
+      name: "Flag",
+      Icon: Flag,
+      title: String(stats?.xp ?? 0),
+      textColor: "#4B4B4B",
+    },
+    {
+      name: "Fire",
+      Icon: Fire,
+      title: String(stats?.streak ?? 0),
+      textColor: "#FF9600",
+    },
+    {
+      name: "Gem",
+      Icon: Gem,
+      title: String(stats?.gems ?? 0),
+      textColor: "#1cb0f6",
+    },
+    {
+      name: "Battery",
+      Icon: Battery,
+      title: String(stats?.hearts ?? 5),
+      textColor: "#A993C5",
+    },
+  ];
+
   return (
     <View
       style={[styles.headerContainer]}
       onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
     >
-      {Buttons.map((button) => (
+      {buttons.map((button) => (
         <HeaderButton
           onPress={() => handleFlagPress(button.name)}
-          key={button.title}
+          key={button.name}
           Icon={button.Icon}
           title={button.title}
           textColor={button.textColor}

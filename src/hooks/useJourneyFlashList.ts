@@ -5,16 +5,15 @@
  *
  * Responsibilities:
  * - Calls buildJourneyNodes() once when journey data changes
- * - Stores result in journeyFlashListAtom
  * - Derives the active node index for scroll-to-active
  * - Provides the flat data array for JourneyMapFlashList
  *
  * Keeps all FlashList data prep in one place — container stays clean.
  */
 
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useWindowDimensions } from "react-native";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAppSelector } from "@/src/store/hooks";
 
 import type {
   JourneyFlashListItem,
@@ -25,12 +24,6 @@ import type {
   UnitConfig,
 } from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
-import {
-  journeyFlashListAtom,
-  activeFlashListIndexAtom,
-  journeyStateAtom,
-  unitsAtom,
-} from "@/src/store/journeyStore";
 import { buildJourneyNodes } from "@/src/utils/journey/buildJourneyNodes";
 import type { BuildJourneyNodesInput } from "@/src/utils/journey/buildJourneyNodes";
 
@@ -72,9 +65,25 @@ export function useJourneyFlashList(
   unitFilter?: string[],
 ): UseJourneyFlashListReturn {
   const { width: screenWidth } = useWindowDimensions();
-  const allUnits: UnitData[] = useAtomValue(unitsAtom);
-  const setFlashListData = useSetAtom(journeyFlashListAtom);
-  const activeNodeIndex: number = useAtomValue(activeFlashListIndexAtom);
+  const allUnits: UnitData[] = useAppSelector(
+    (state) => state.journey.journeyState?.units || [],
+  );
+  const journeyState = useAppSelector((state) => state.journey.journeyState);
+
+  // Calculate active node index from journey state
+  const activeNodeIndex: number = useMemo(() => {
+    if (!journeyState || !journeyState.units) return -1;
+    let globalIndex = 0;
+    for (const unit of journeyState.units) {
+      for (const node of unit.nodes) {
+        if (node.status === NodeStatus.ACTIVE) {
+          return globalIndex;
+        }
+        globalIndex++;
+      }
+    }
+    return -1;
+  }, [journeyState]);
 
   // Build the flat FlashList data array when units or screen width change.
   // This runs infrequently — only on data load, unit unlock, or orientation change.
@@ -134,11 +143,6 @@ export function useJourneyFlashList(
 
     return headers;
   }, [allUnits, config.colorThemes, flashListData, unitConfigMap]);
-
-  // Push to atom so other components/atoms can derive from it
-  useEffect(() => {
-    setFlashListData(flashListData);
-  }, [flashListData, setFlashListData]);
 
   // Derive the active node's globalIndex for path segment coloring
   const activeGlobalIndex: number = useMemo(() => {

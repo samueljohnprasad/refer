@@ -7,36 +7,34 @@ import JourneyCatalogContainer from "@/app/tabs/screens/JourneyCatalogScreen/Jou
 import JourneyOnboardingScreen from "@/src/components/journey/JourneyOnboardingScreen";
 import { JourneyConfigProvider } from "@/src/context/JourneyConfigContext";
 import { useJourneyOnboarding } from "@/src/hooks/useJourneyOnboarding";
-import { useMultiJourney } from "@/src/hooks/useMultiJourney";
 import { createLogger } from "@/src/lib/logger";
 import JourneyMapContainer from "@/src/screens/JourneyMapScreen/JourneyMapContainer";
 import type { SectionViewMode } from "@/src/types/journey/sectionMap";
-import { useEnrolledCoursesQuery } from "@/src/hooks/useEnrolledCoursesQuery";
+import { useGetEnrolledCoursesQuery } from "@/src/store/api/enrolledCoursesApi";
 import { JourneyLoadingSkeleton } from "@/src/components/journey";
 
 const log = createLogger("JourneysTab");
 
 export default function JourneysTab(): React.JSX.Element {
-    const {
-        data: enrolledCourses,
-        isLoading: isLoadingCourses,
-        error: coursesError,
-    } = useEnrolledCoursesQuery();
+  const {
+    data: enrolledCourses,
+    isLoading: isLoadingCourses,
+    error: coursesError,
+  } = useGetEnrolledCoursesQuery();
 
-    if (!enrolledCourses) {
-        return <JourneyLoadingSkeleton />;
-    }
+  if (coursesError) {
+    return <JourneyLoadingSkeleton />;
+  }
 
-    if (isLoadingCourses) {
-        return <JourneyLoadingSkeleton />;
-    }
+  if (isLoadingCourses) {
+    return <JourneyLoadingSkeleton />;
+  }
 
-    return (
-        <JourneyConfigProvider>
-            <JourneyMapContainer
-                slugOverride={enrolledCourses?.activeSlug ?? undefined}
-                modeOverride="active"
-            />
-        </JourneyConfigProvider>
-    );
+  return (
+    <JourneyConfigProvider>
+      <JourneyMapContainer
+        slugOverride={enrolledCourses?.activeSlug ?? undefined}
+      />
+    </JourneyConfigProvider>
+  );
 }

@@ -1,20 +1,17 @@
 import React, { useEffect, useMemo } from "react";
-import { useAtomValue, useSetAtom } from "jotai";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 
 import type { SectionViewMode } from "@/src/types/journey/sectionMap";
 import { useSectionData } from "@/src/hooks/useSectionData";
 import { sectionMapToJourneyState } from "@/src/utils/journey/sectionMapBridge";
 import { useJourneyConfig } from "@/src/context/JourneyConfigContext";
+import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
+import { setJourneyState } from "@/src/store/slices/journeySlice";
 import {
-  journeyStateAtom,
-  currentUnitAtom,
-  journeyStatsAtom,
-  enrollmentIdAtom,
-  currentUnitIndexAtom,
-  unitsAtom,
-  journeyTemplateAtom,
-} from "@/src/store/journeyStore";
+  setSectionMap,
+  setSectionList,
+  setActiveNodeId,
+} from "@/src/store/slices/sectionMapSlice";
 import type {
   JourneyConfig,
   UnitConfig,
@@ -27,6 +24,7 @@ const log = createLogger("useJourneySectionBridge");
 
 export function useJourneySectionBridge(journeySlug: string | null) {
   const toast = useToast();
+  const dispatch = useAppDispatch();
 
   const {
     isLoading,
@@ -36,22 +34,17 @@ export function useJourneySectionBridge(journeySlug: string | null) {
     activeNodeId: sectionActiveNodeId,
   } = useSectionData(journeySlug);
 
-  const journeyState = useAtomValue(journeyStateAtom);
-  const setJourneyState = useSetAtom(journeyStateAtom);
-  const currentUnit = useAtomValue(currentUnitAtom);
-  const stats = useAtomValue(journeyStatsAtom);
-  const enrollmentIdFromAtom = useAtomValue(enrollmentIdAtom);
-  const currentUnitIndex = useAtomValue(currentUnitIndexAtom);
-  const allUnitsRaw = useAtomValue(unitsAtom);
-  const journeyTemplate = useAtomValue(journeyTemplateAtom);
+  const journeyState = useAppSelector((state) => state.journey.journeyState);
+  const currentUnitIndex = useAppSelector(
+    (state) => state.journey.currentUnitIndex,
+  );
+  const stats = useAppSelector((state) => state.journey.stats);
 
-  const enrollmentId: string | null =
-    sectionMap?.enrollment?.id ?? enrollmentIdFromAtom;
+  const enrollmentId: string | null = sectionMap?.enrollment?.id ?? null;
 
-  const journeyTitle: string =
-    sectionMap?.journey.title ?? journeyTemplate?.title ?? "Journey Overview";
+  const journeyTitle: string = sectionMap?.journey.title ?? "Journey Overview";
 
-  // Bridge: sync section map → journeyStateAtom so existing FlashList + UI works
+  // Bridge: sync section map → Redux store
   useEffect(() => {
     if (sectionMap) {
       const bridgedState: JourneyState = sectionMapToJourneyState(
@@ -59,10 +52,19 @@ export function useJourneySectionBridge(journeySlug: string | null) {
         stats,
       );
 
-      setJourneyState(bridgedState);
+      dispatch(setJourneyState(bridgedState));
+      dispatch(setSectionMap(sectionMap));
+      dispatch(setSectionList(sectionList || []));
+      dispatch(setActiveNodeId(sectionActiveNodeId || null));
     }
-  }, [journeySlug, sectionMap, setJourneyState]);
-  // `stats` is left out of dependency array to prevent unnecessary full-state resets on stat ticks.
+  }, [
+    journeySlug,
+    sectionMap,
+    sectionList,
+    sectionActiveNodeId,
+    stats,
+    dispatch,
+  ]);
 
   const config: JourneyConfig = useJourneyConfig();
 
@@ -75,9 +77,12 @@ export function useJourneySectionBridge(journeySlug: string | null) {
 
   // In the lazy section flow, `allUnitsRaw` already contains only the visible
   // section's unit, so avoid filtering it through static config groups.
+  const allUnitsRaw = journeyState?.units || [];
   const allUnits: UnitData[] = useMemo(() => {
     return allUnitsRaw;
   }, [allUnitsRaw]);
+
+  const currentUnit = journeyState?.units[journeyState.currentUnit];
 
   return {
     isLoading,
@@ -86,7 +91,7 @@ export function useJourneySectionBridge(journeySlug: string | null) {
     sectionList,
     sectionActiveNodeId,
     journeyState,
-    setJourneyState,
+    setJourneyState: (state: JourneyState) => dispatch(setJourneyState(state)),
     currentUnit,
     stats,
     enrollmentId,

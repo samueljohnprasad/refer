@@ -434,8 +434,7 @@ export async function fetchSectionMap(
       params.p_unit_number = unitNumber;
     }
 
-    params.p_view_mode = 'active';
-
+    params.p_view_mode = "active";
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let query = (supabase.rpc as any)("get_section_map", params);

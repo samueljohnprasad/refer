@@ -35,8 +35,12 @@ import { AchievementProvider } from "@/src/context/AchievementContext";
 import { RewardsProvider } from "@/src/context/RewardsContext";
 import { ChallengesProvider } from "@/src/context/ChallengesContext";
 import { router as expoRouter } from "expo-router";
-import { trackNotificationOpened, trackNotificationReceived } from "@/src/utils/notificationConversionTracker";
+import {
+  trackNotificationOpened,
+  trackNotificationReceived,
+} from "@/src/utils/notificationConversionTracker";
 import { usePushNotificationSetup } from "@/src/hooks/data/usePushNotificationSetup";
+import { ReduxProvider } from "@/src/store/ReduxProvider";
 
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
@@ -127,7 +131,7 @@ export default function RootLayout() {
             expoRouter.push("/(tabs)/journal" as any);
             break;
         }
-      }
+      },
     );
 
     return () => subscription.remove();
@@ -142,40 +146,43 @@ function RootLayoutNav() {
 
   return (
     <SuspensLoader>
-      <PostHogProvider
-        apiKey="phc_3A3cPPqkAbVXBfiskxZlaOcORt0AxADK0sNMgz0I7oU"
-        options={{
-          host: "https://us.i.posthog.com",
-        }}
-      >
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <NotificationIntegration />
-            <XPProvider>
-              <LevelProvider>
-                <RewardsProvider>
-                  <AchievementProvider>
-                    <ChallengesProvider>
-                      <PressablesConfig
-                        globalHandlers={globalPressableHandlers}
-                        animationType="spring"
-                      >
-                        <GestureHandlerRootView style={StyleSheet.absoluteFill}>
-                          <GluestackUIProvider mode={colorMode}>
-                            <RevenueCatProvider>
-                              <ThemeProvider
-                                value={
-                                  colorMode === "dark"
-                                    ? DarkTheme
-                                    : DefaultTheme
-                                }
-                              >
-                                <KeyboardProvider>
-                                  <BottomSheetModalProvider>
-                                    <Slot />
-                                  </BottomSheetModalProvider>
-                                </KeyboardProvider>
-                                {/* {pathname === "/" && (
+      <ReduxProvider>
+        <PostHogProvider
+          apiKey="phc_3A3cPPqkAbVXBfiskxZlaOcORt0AxADK0sNMgz0I7oU"
+          options={{
+            host: "https://us.i.posthog.com",
+          }}
+        >
+          <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+              <NotificationIntegration />
+              <XPProvider>
+                <LevelProvider>
+                  <RewardsProvider>
+                    <AchievementProvider>
+                      <ChallengesProvider>
+                        <PressablesConfig
+                          globalHandlers={globalPressableHandlers}
+                          animationType="spring"
+                        >
+                          <GestureHandlerRootView
+                            style={StyleSheet.absoluteFill}
+                          >
+                            <GluestackUIProvider mode={colorMode}>
+                              <RevenueCatProvider>
+                                <ThemeProvider
+                                  value={
+                                    colorMode === "dark"
+                                      ? DarkTheme
+                                      : DefaultTheme
+                                  }
+                                >
+                                  <KeyboardProvider>
+                                    <BottomSheetModalProvider>
+                                      <Slot />
+                                    </BottomSheetModalProvider>
+                                  </KeyboardProvider>
+                                  {/* {pathname === "/" && (
                 <Fab
                   onPress={() =>
                     setColorMode(colorMode === "dark" ? "light" : "dark")
@@ -186,19 +193,20 @@ function RootLayoutNav() {
                   <FabIcon as={colorMode === "dark" ? MoonIcon : SunIcon} />
                 </Fab>
               )} */}
-                              </ThemeProvider>
-                            </RevenueCatProvider>
-                          </GluestackUIProvider>
-                        </GestureHandlerRootView>
-                      </PressablesConfig>
-                    </ChallengesProvider>
-                  </AchievementProvider>
-                </RewardsProvider>
-              </LevelProvider>
-            </XPProvider>
-          </AuthProvider>
-        </QueryClientProvider>
-      </PostHogProvider>
+                                </ThemeProvider>
+                              </RevenueCatProvider>
+                            </GluestackUIProvider>
+                          </GestureHandlerRootView>
+                        </PressablesConfig>
+                      </ChallengesProvider>
+                    </AchievementProvider>
+                  </RewardsProvider>
+                </LevelProvider>
+              </XPProvider>
+            </AuthProvider>
+          </QueryClientProvider>
+        </PostHogProvider>
+      </ReduxProvider>
     </SuspensLoader>
   );
 }

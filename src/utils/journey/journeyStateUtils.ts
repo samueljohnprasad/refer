@@ -1,10 +1,7 @@
 /**
- * Journey State Update Actions
- * Pure functions that produce new JourneyState from the current state.
- * Used by the container to dispatch state changes via Jotai's useSetAtom.
- *
- * Each action is a pure reducer: (state, payload) => newState
- * This keeps logic testable and separate from UI/atoms.
+ * Journey State Pure Functions
+ * Pure functions that transform JourneyState.
+ * Used by Redux reducers and components that need optimistic updates.
  */
 
 import type {
@@ -13,7 +10,7 @@ import type {
   UnitData,
   JourneyReward,
 } from "@/src/types/journey";
-import { NodeStatus, NodeIcon, JourneyRewardType } from "@/src/types/journey";
+import { NodeStatus, NodeIcon, JourneyRewardType } from "@/src/types/journey/enums";
 
 // ---------------------------------------------------------------------------
 // completeNode

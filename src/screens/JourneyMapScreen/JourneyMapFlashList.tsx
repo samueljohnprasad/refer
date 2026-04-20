@@ -20,6 +20,7 @@ import {
   View,
   type NativeSyntheticEvent,
   type NativeScrollEvent,
+  useWindowDimensions,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useHighContrast } from "@/src/hooks/useHighContrast";
@@ -43,8 +44,27 @@ import type {
   JourneyMascotItem,
   JourneyStats,
   PathNodeData,
+  JourneyState,
+  UnitData,
+  JourneyConfig,
+  UnitConfig,
 } from "@/src/types/journey";
 import { MascotSide } from "@/src/types/journey";
+import { useSectionSwitch } from "@/src/hooks/useSectionSwitch";
+import {
+  useJourneyDerivedState,
+  useJourneyScroll,
+} from "@/src/hooks/journeyMap";
+import { useVisibleUnit } from "@/src/hooks/useVisibleUnit";
+import { useScrollHandler } from "@/src/hooks/useScrollHandler";
+import { useGetSectionMapQuery } from "@/src/store/api/sectionMapApi";
+import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
+import {
+  setSectionMap,
+  setCurrentSectionNumber,
+} from "@/src/store/slices/sectionMapSlice";
+import { setJourneyState } from "@/src/store/slices/journeySlice";
+import { sectionMapToJourneyState } from "@/src/utils/journey/sectionMapBridge";
 
 import { JourneyNodeCell } from "@/src/components/journey/JourneyNodeCell";
 import {
@@ -53,6 +73,7 @@ import {
   MascotBubble,
 } from "@/src/components/journey";
 import { DuolingoHeader } from "@/src/components/journey/DuolingoHeader";
+import { SectionList } from "@/src/components/journey/SectionList";
 import type { UnitHeaderData } from "@/src/hooks/useJourneyFlashList";
 import { MASCOT_SIZE, UNIT_GRADIENTS } from "@/src/data/journey/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -78,47 +99,12 @@ const LIST_BOTTOM_PADDING: number = 180;
 // ---------------------------------------------------------------------------
 
 export interface JourneyMapFlashListProps {
-  /** Pre-computed flat data array */
-  data: JourneyFlashListItem[];
-  /** User stats for sticky header */
-  stats: JourneyStats;
-  /** Screen width */
-  screenWidth: number;
-  /** Index of the active node in the flat list */
-  activeGlobalIndex: number;
-  /** Node press handler */
-  onNodePress: (node: PathNodeData) => void;
-  /** Whether the active node is off-screen */
-  isActiveOffScreen: boolean;
-  /** Direction to scroll to reach active node */
-  scrollDirection: "up" | "down";
-  /** Scroll-to-active callback */
-  onScrollToActive: () => void;
-  /** Jump-to-unit handler for dividers */
-  onJumpToUnit?: (unitId: string) => void;
-  /** LegendList ref for external scroll control */
-  listRef?: React.RefObject<any>;
-  /** Scroll event handler for tracking scroll visibility */
-  onScroll?: (y: number) => void;
-  /** Unit headers data */
-  unitHeaders: UnitHeaderData[];
-  /** Guide-book handler */
-  onGuidePress?: () => void;
-  /** Flag icon handler (opens journey switcher) */
-  onFlagPress?: () => void;
-  /** Section list for bottom sheet */
-  sectionList?: Array<{
-    unitNumber: number;
-    sectionNumber?: number;
-    title: string;
-    colorScheme: string;
-    nodeCount: number;
-    unitCount?: number;
-  }>;
-  /** Current active section number for highlighting */
-  currentSectionNumber?: number;
-  /** Callback when user switches to a different section */
-  onSectionSwitch?: (unitNumber: number) => void;
+  /** Dependencies for derived state computation */
+  journeyState?: JourneyState;
+  config: JourneyConfig;
+  unitConfigMap: Map<string, UnitConfig>;
+  /** Journey slug for section switching */
+  slugOverride?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -221,70 +207,83 @@ function MascotCell({ item }: MascotCellProps): React.JSX.Element {
 // ---------------------------------------------------------------------------
 
 export function JourneyMapFlashListInner({
-  data,
-  screenWidth,
-  activeGlobalIndex,
-  onNodePress,
-  isActiveOffScreen,
-  scrollDirection,
-  onScrollToActive,
-  onJumpToUnit,
-  listRef,
-  onScroll,
-  unitHeaders,
-  sectionList,
-  currentSectionNumber,
-  onSectionSwitch,
+  journeyState,
+  config,
+  unitConfigMap,
+  slugOverride,
 }: JourneyMapFlashListProps): React.JSX.Element {
+  const { width: viewportWidth, height: viewportHeight } =
+    useWindowDimensions();
   const internalRef = useRef<any>(null);
-  const legendListRef = listRef ?? internalRef;
-  const insets = useSafeAreaInsets();
+  const legendListRef = internalRef;
   const [isPresented, setIsPresented] = useState(false);
 
-  const scrollY = useSharedValue(0);
-  const [visibleUnitIndex, setVisibleUnitIndex] = React.useState(0);
+  const dispatch = useAppDispatch();
+  const currentSectionNumber = useAppSelector(
+    (state) => state.sectionMap.currentSectionNumber,
+  );
+  const handleSectionSwitch = useSectionSwitch();
 
-  const onScrollTick = useCallback(
-    (y: number) => {
-      onScroll?.(y);
-    },
-    [onScroll],
+  // Use RTK Query for section map data
+  const {
+    data: sectionMapData,
+    isLoading: isSectionMapLoading,
+    error: sectionMapError,
+  } = useGetSectionMapQuery(
+    { slug: slugOverride || "", unitNumber: currentSectionNumber ?? undefined },
+    { skip: !slugOverride },
   );
 
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      "worklet";
-      scrollY.value = event.contentOffset.y;
-      runOnJS(onScrollTick)(event.contentOffset.y);
-    },
+  // Sync RTK Query data to Redux store
+  React.useEffect(() => {
+    if (sectionMapData) {
+      dispatch(setSectionMap(sectionMapData));
+      dispatch(setCurrentSectionNumber(sectionMapData.section.unitNumber));
+      const bridgedState = sectionMapToJourneyState(sectionMapData, {
+        streakDays: 0,
+        wallet: { coins: 0, gems: 0 },
+        hearts: 5,
+        totalXP: 0,
+      });
+      dispatch(setJourneyState(bridgedState));
+    }
+  }, [sectionMapData, dispatch]);
+
+  const {
+    flashListData,
+    flashActiveNodeIndex,
+    activeGlobalIndex,
+    flashScreenWidth,
+    flashActiveNodeY,
+    unitHeaders,
+  } = useJourneyDerivedState(
+    sectionMapData,
+    journeyState,
+    config,
+    unitConfigMap,
+  );
+
+  const {
+    flashListRef,
+    handleFlashListScrollToActive,
+    handleFlashListJumpToUnit,
+    currentScrollY,
+    isActiveOffScreen,
+    scrollDirection,
+    updateVisibility,
+  } = useJourneyScroll({
+    flashActiveNodeY,
+    viewportHeight,
+    flashActiveNodeIndex,
+    flashListData,
+    USE_FLASH_LIST: true,
   });
 
-  // Determine visible unit from viewable items
-  const onViewableItemsChanged = useCallback(
-    ({
-      viewableItems,
-    }: {
-      viewableItems: ViewToken<JourneyFlashListItem>[];
-    }) => {
-      const firstItem = viewableItems.find((vi) => isJourneyNode(vi.item));
+  const { scrollY, scrollHandler } = useScrollHandler({ updateVisibility });
 
-      if (!firstItem) return;
-      if (!isJourneyNode(firstItem.item)) return;
-
-      const targetUnitId = firstItem.item.unitId;
-
-      const unitIndex = unitHeaders.findIndex(
-        (uh) => uh.unitId === targetUnitId,
-      );
-
-      if (unitIndex !== -1 && unitIndex !== visibleUnitIndex) {
-        setVisibleUnitIndex(unitIndex);
-      }
-    },
-    [unitHeaders, visibleUnitIndex],
-  );
-
-  const visibleUnit = unitHeaders[visibleUnitIndex] || unitHeaders[0];
+  const { visibleUnit, onViewableItemsChanged } = useVisibleUnit({
+    unitHeaders,
+  });
 
   // ── renderItem — dispatches to the correct cell type ──
   const renderItem = useCallback(
@@ -294,9 +293,9 @@ export function JourneyMapFlashListInner({
           return (
             <JourneyNodeCell
               item={item as JourneyNode}
-              screenWidth={screenWidth}
+              screenWidth={flashScreenWidth}
               activeGlobalIndex={activeGlobalIndex}
-              onNodePress={onNodePress}
+              onNodePress={() => {}}
             />
           );
 
@@ -304,7 +303,7 @@ export function JourneyMapFlashListInner({
           return (
             <DividerCell
               item={item as JourneyDividerItem}
-              screenWidth={screenWidth}
+              screenWidth={flashScreenWidth}
               activeGlobalIndex={activeGlobalIndex}
             />
           );
@@ -316,7 +315,7 @@ export function JourneyMapFlashListInner({
           return <View />;
       }
     },
-    [screenWidth, activeGlobalIndex, onNodePress, onJumpToUnit],
+    [flashScreenWidth, activeGlobalIndex],
   );
 
   // ── keyExtractor — stable unique ID per item ──
@@ -325,114 +324,73 @@ export function JourneyMapFlashListInner({
     [],
   );
 
+  // Derive section list from sectionMapData
+  const sectionList = sectionMapData?.sectionList || [];
+
   return (
-    <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
-      {/* Duolingo-style header */}
-      <DuolingoHeader />
-      <HomeMainButton
-        onPress={() => setIsPresented(true)}
-        unitLabel={`Unit ${visibleUnit.unitNumber}`}
-        sectionTitle={visibleUnit.unitTitle}
-        faceColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[0] || "#4CAF50"}
-        rimColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[1] || "#388E3C"}
-      />
+    <>
+      {isSectionMapLoading && <View className="flex-1 bg-gray-50" />}
+      {!isSectionMapLoading && (sectionMapError || !sectionMapData) && (
+        <View className="flex-1 bg-gray-50" />
+      )}
 
-      {/* LegendList — cell recycling with segment-per-cell SVG rendering */}
-      <AnimatedLegendList<JourneyFlashListItem>
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        showsVerticalScrollIndicator={false}
-        onScroll={scrollHandler}
-        scrollEventThrottle={16}
-        ref={legendListRef as any}
-        contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 10,
-          minimumViewTime: 100,
-        }}
-      />
+      {!isSectionMapLoading && !sectionMapError && sectionMapData && (
+        <>
+          <HomeMainButton
+            onPress={() => setIsPresented(true)}
+            unitLabel={`Unit ${visibleUnit.unitNumber}`}
+            sectionTitle={visibleUnit.unitTitle}
+            faceColor={
+              UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[0] || "#4CAF50"
+            }
+            rimColor={
+              UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[1] || "#388E3C"
+            }
+          />
 
-      {/* Scroll-to-active floating button */}
-      <ScrollToActiveButton
-        isVisible={isActiveOffScreen}
-        direction={scrollDirection}
-        onPress={onScrollToActive}
-      />
-      <BottomSheetWithRNContent
-        isPresented={isPresented}
-        setIsPresented={setIsPresented}
-      >
-        <View>
-          <RNText
-            style={{ fontSize: 20, fontWeight: "bold", marginBottom: 16 }}
-          >
-            Course Sections
-          </RNText>
-          {sectionList && sectionList.length > 0 ? (
-            sectionList.map((section, index) => {
-              const isActive =
-                (section.sectionNumber || section.unitNumber) ===
-                currentSectionNumber;
-              return (
-                <Pressable
-                  key={section.unitNumber}
-                  style={{
-                    backgroundColor: isActive ? "#E3F2FD" : "#f5f5f5",
-                    padding: 16,
-                    borderRadius: 12,
-                    marginBottom: 12,
-                    borderWidth: isActive ? 2 : 1,
-                    borderColor: isActive ? "#2196F3" : "#e0e0e0",
-                  }}
-                  onPress={() => {
-                    setIsPresented(false);
-                    if (onSectionSwitch && !isActive) {
-                      onSectionSwitch(section.unitNumber);
-                    }
-                  }}
-                >
-                  <RNText
-                    style={{
-                      fontSize: 16,
-                      fontWeight: isActive ? "700" : "600",
-                      marginBottom: 4,
-                      color: isActive ? "#1976D2" : "#333",
-                    }}
-                  >
-                    Section {section.sectionNumber || section.unitNumber}:{" "}
-                    {section.title}
-                  </RNText>
-                  <RNText style={{ fontSize: 14, color: "#666" }}>
-                    {section.nodeCount} nodes
-                  </RNText>
-                  {isActive && (
-                    <RNText
-                      style={{
-                        fontSize: 12,
-                        color: "#1976D2",
-                        marginTop: 4,
-                        fontWeight: "500",
-                      }}
-                    >
-                      Currently viewing
-                    </RNText>
-                  )}
-                </Pressable>
-              );
-            })
-          ) : (
-            <RNText
-              style={{ color: "#999", textAlign: "center", marginTop: 20 }}
-            >
-              No sections available
-            </RNText>
+          {/* LegendList — cell recycling with segment-per-cell SVG rendering */}
+          <AnimatedLegendList<JourneyFlashListItem>
+            data={flashListData}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+            estimatedItemSize={ESTIMATED_ITEM_SIZE}
+            showsVerticalScrollIndicator={false}
+            onScroll={scrollHandler}
+            scrollEventThrottle={16}
+            ref={legendListRef as any}
+            contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={{
+              itemVisiblePercentThreshold: 10,
+              minimumViewTime: 100,
+            }}
+          />
+
+          {/* Scroll-to-active button (shown when active node is off-screen) */}
+          {isActiveOffScreen && (
+            <ScrollToActiveButton
+              direction={scrollDirection}
+              onPress={handleFlashListScrollToActive}
+              isVisible={isActiveOffScreen}
+            />
           )}
-        </View>
-      </BottomSheetWithRNContent>
-    </View>
+
+          <BottomSheetWithRNContent
+            isPresented={isPresented}
+            setIsPresented={setIsPresented}
+          >
+            <SectionList
+              sectionList={sectionList}
+              currentSectionNumber={currentSectionNumber}
+              onSectionPress={(unitNumber) => {
+                setIsPresented(false);
+                handleSectionSwitch(unitNumber);
+              }}
+            />
+          </BottomSheetWithRNContent>
+        </>
+      )}
+    </>
   );
 }
 

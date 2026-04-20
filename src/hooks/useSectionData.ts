@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useAtom, useSetAtom } from "jotai";
+import { useCallback, useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 
 import type {
   SectionMapResponse,
@@ -8,9 +8,9 @@ import type {
 } from "@/src/types/journey/sectionMap";
 import { fetchSectionMap } from "@/src/lib/api/journeyApi";
 import {
-  currentSectionMapAtom,
-  activeJourneySlugAtom,
-} from "@/src/store/journeyStore";
+  setSectionMap,
+  setCurrentSectionNumber,
+} from "@/src/store/slices/sectionMapSlice";
 import { createLogger } from "@/src/lib/logger";
 
 const log = createLogger("useSectionData");
@@ -31,14 +31,13 @@ export interface UseSectionDataReturn {
 }
 
 export function useSectionData(slug: string | null): UseSectionDataReturn {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const [sectionMap, setSectionMap] = useAtom(currentSectionMapAtom);
-  const setActiveSlug = useSetAtom(activeJourneySlugAtom);
+  const dispatch = useAppDispatch();
+  const sectionMap = useAppSelector((state) => state.sectionMap.sectionMap);
+  const sectionList = useAppSelector((state) => state.sectionMap.sectionList);
+  const isLoading = useAppSelector((state) => state.sectionMap.isLoading);
+  const dataError = useAppSelector((state) => state.sectionMap.error);
 
   // ── Derived values ──
-  const sectionList: SectionListItem[] = sectionMap?.sectionList ?? [];
   const activeNodeId: string | null =
     sectionMap?.progress.find((p) => p.status === "active")?.nodeId ?? null;
 
@@ -48,48 +47,36 @@ export function useSectionData(slug: string | null): UseSectionDataReturn {
         const res = await fetchSectionMap(journeySlug, unitNumber);
 
         if (!res.success || !res.data) {
-          setError(res.error ?? "Failed to load section data");
           return;
         }
 
-        setError(null);
-
         const data: SectionMapResponse = res.data;
-        // Apply
-        setSectionMap(data);
-        setError(null);
+        dispatch(setSectionMap(data));
+        dispatch(setCurrentSectionNumber(data.section.unitNumber));
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : "Failed to load section");
+        console.error("Failed to load section data:", err);
       }
     },
-    [setSectionMap],
+    [dispatch],
   );
 
   // ── Initial load: fetch user's current section ──
   const loadInitial = useCallback(
     async (journeySlug: string): Promise<void> => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        await fetchAndApplySection(journeySlug);
-        setActiveSlug(journeySlug);
-      } finally {
-        setIsLoading(false);
-      }
+      await fetchAndApplySection(journeySlug);
     },
-    [fetchAndApplySection, setActiveSlug],
+    [fetchAndApplySection],
   );
 
   useEffect(() => {
-    if (slug) {
+    if (slug && !sectionMap) {
       loadInitial(slug);
     }
-  }, [slug]);
+  }, [slug, sectionMap, loadInitial]);
 
   return {
-    isLoading,
-    error,
+    isLoading: isLoading && !sectionMap,
+    error: dataError,
     sectionMap,
     sectionList,
     activeNodeId,

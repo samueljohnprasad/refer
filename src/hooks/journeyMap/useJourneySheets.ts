@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { router } from "expo-router";
-import { useMultiJourney } from "@/src/hooks/useMultiJourney";
+// TODO: Re-implement with Redux after jotai removal
+// import { useMultiJourney } from "@/src/hooks/useMultiJourney";
 import { FlashListRef } from "@shopify/flash-list";
 import type { JourneyFlashListItem } from "@/src/types/journey";
 
@@ -10,9 +11,14 @@ interface UseJourneySheetsProps {
   USE_FLASH_LIST?: boolean;
 }
 
-export function useJourneySheets({ loadSection, flashListRef, USE_FLASH_LIST = true }: UseJourneySheetsProps) {
-  const [isSectionOverviewOpen, setIsSectionOverviewOpen] = useState<boolean>(false);
-  
+export function useJourneySheets({
+  loadSection,
+  flashListRef,
+  USE_FLASH_LIST = true,
+}: UseJourneySheetsProps) {
+  const [isSectionOverviewOpen, setIsSectionOverviewOpen] =
+    useState<boolean>(false);
+
   // Guide-book press handler (opens section overview sheet)
   const handleGuidePress = useCallback((): void => {
     setIsSectionOverviewOpen(true);
@@ -36,7 +42,9 @@ export function useJourneySheets({ loadSection, flashListRef, USE_FLASH_LIST = t
   );
 
   // ── Journey Switcher ──
-  const { switcherItems, switchJourney, archiveJourney } = useMultiJourney();
+  // TODO: Re-implement with Redux after jotai removal
+  // const { switcherItems, switchJourney, archiveJourney } = useMultiJourney();
+  const switcherItems: any[] = [];
 
   const [isSwitcherOpen, setIsSwitcherOpen] = useState<boolean>(false);
 
@@ -48,16 +56,13 @@ export function useJourneySheets({ loadSection, flashListRef, USE_FLASH_LIST = t
     setIsSwitcherOpen(false);
   }, []);
 
-  const handleSwitchJourney = useCallback(
-    (targetSlug: string): void => {
-      switchJourney(targetSlug);
-      // Small delay so bottom sheet dismiss animation finishes before skeleton
-      setTimeout(() => {
-        router.replace("/tabs/(tabs)/journeys" as never);
-      }, 250);
-    },
-    [switchJourney],
-  );
+  const handleSwitchJourney = useCallback((targetSlug: string): void => {
+    // switchJourney(targetSlug);
+    // Small delay so bottom sheet dismiss animation finishes before skeleton
+    setTimeout(() => {
+      router.replace("/tabs/(tabs)/journeys" as never);
+    }, 250);
+  }, []);
 
   const handleDiscoverPress = useCallback((): void => {
     setIsSwitcherOpen(false);
@@ -69,12 +74,9 @@ export function useJourneySheets({ loadSection, flashListRef, USE_FLASH_LIST = t
     } as never);
   }, []);
 
-  const handleArchiveJourney = useCallback(
-    (slug: string): void => {
-      archiveJourney(slug);
-    },
-    [archiveJourney],
-  );
+  const handleArchiveJourney = useCallback((slug: string): void => {
+    // archiveJourney(slug);
+  }, []);
 
   return {
     isSectionOverviewOpen,

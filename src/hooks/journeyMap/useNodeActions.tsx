@@ -3,9 +3,21 @@ import { router } from "expo-router";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import type { JourneyState, PathNodeData, UnitData } from "@/src/types/journey";
-import type { SectionMapResponse, NodeStub, SectionViewMode } from "@/src/types/journey/sectionMap";
-import { completeNode, updateNodeProgress, unlockUnit } from "@/src/store/journeyActions";
-import { completeNodeApi, replayCompletedNodeApi, updateNodeProgress as updateNodeProgressApi } from "@/src/lib/api/journeyApi";
+import type {
+  SectionMapResponse,
+  NodeStub,
+  SectionViewMode,
+} from "@/src/types/journey/sectionMap";
+import {
+  completeNode,
+  updateNodeProgress,
+  unlockUnit,
+} from "@/src/utils/journey/journeyStateUtils";
+import {
+  completeNodeApi,
+  replayCompletedNodeApi,
+  updateNodeProgress as updateNodeProgressApi,
+} from "@/src/lib/api/journeyApi";
 import { useUnitCompletion } from "@/src/hooks/useUnitCompletion";
 import { createLogger } from "@/src/lib/logger";
 import type { JourneySoundKey } from "@/src/hooks/useSoundEffects";
@@ -152,18 +164,17 @@ export function useNodeActions({
       setJourneyState((prev: JourneyState) => completeNode(prev, nodeId));
       setChestNode(null);
 
-
       if (isOnline && enrollmentId) {
         const result =
           sectionMap?.viewMode === "completed"
             ? await replayCompletedNodeApi({
-              enrollmentId,
-              nodeId,
-            })
+                enrollmentId,
+                nodeId,
+              })
             : await completeNodeApi({
-              enrollmentId,
-              nodeId,
-            });
+                enrollmentId,
+                nodeId,
+              });
 
         if (!result.success) {
           log.warn(

@@ -196,7 +196,6 @@ export function buildJourneyNodes(
       })),
       divider: {
         title: unit.title,
-        showJumpHere: false,
       },
       pathGeometry: "sine",
     };
@@ -213,9 +212,7 @@ export function buildJourneyNodes(
     // ── Insert unit divider (skip for first unit) ──
     if (unitIndex > 0) {
       const dividerId: string = `divider_${unit.id}`;
-      const dividerCellHeight: number = unitConfig.divider.showJumpHere
-        ? DIVIDER_CELL_HEIGHT_WITH_JUMP
-        : DIVIDER_CELL_HEIGHT_COMPACT;
+      const dividerCellHeight: number = DIVIDER_CELL_HEIGHT_COMPACT;
       // ── Build a straight vertical path segment through the divider cell ──
       const dividerSegmentD = (() => {
         if (dividerCellHeight <= 0) return "";
@@ -230,10 +227,8 @@ export function buildJourneyNodes(
         itemType: "divider",
         cellHeight: dividerCellHeight,
         title: unitConfig.divider.title,
-        showJumpHere: unitConfig.divider.showJumpHere,
         accentColor:
           sectionThemeConfig?.dividerColor ?? themeConfig?.dividerColor,
-        targetUnitId: unit.id,
         pathX: prevX,
         segmentD: dividerSegmentD,
         // globalIndex hasn't been incremented yet — so globalIndex - 1 is the last
