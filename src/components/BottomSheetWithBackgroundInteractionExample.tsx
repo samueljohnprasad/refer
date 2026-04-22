@@ -11,7 +11,6 @@ export default function BottomSheetWithBackgroundInteractionExample() {
     return (
         <Host style={{ flex: 1 }}>
             <VStack>
-                <Button label="Open Sheet" onPress={() => setIsPresented(true)} />
                 <BottomSheet isPresented={isPresented} onIsPresentedChange={setIsPresented}>
                     <Group
                         modifiers={[
