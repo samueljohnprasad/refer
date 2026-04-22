@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useWindowDimensions, View } from "react-native";
 import { Stack, router } from "expo-router";
 
@@ -7,7 +7,7 @@ import type { JourneyConfig, UnitConfig } from "@/src/types/journey";
 import JourneyLoadingSkeleton from "@/src/components/journey/JourneyLoadingSkeleton";
 import JourneyMapFlashList from "./JourneyMapFlashList";
 import { createLogger } from "@/src/lib/logger";
-import { useAppSelector } from "@/src/store/hooks";
+import { useAppSelector, useAppDispatch } from "@/src/store/hooks";
 import { useJourneyConfig } from "@/src/context/JourneyConfigContext";
 import {
   DuolingoHeader,
@@ -15,6 +15,7 @@ import {
 } from "@/src/components/journey/DuolingoHeader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useGetEnrolledCoursesQuery } from "@/src/store/api/enrolledCoursesApi";
+import { setActiveSlug } from "@/src/store/slices/enrolledCoursesSlice";
 
 const USE_FLASH_LIST = true;
 const log = createLogger("JourneyMapContainer");
@@ -28,17 +29,22 @@ export default function JourneyMapContainer({}: JourneyMapContainerProps = {}): 
     error: coursesError,
   } = useGetEnrolledCoursesQuery();
 
-  const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const enrolledCoursesData = useAppSelector(
+    (state) => state.enrolledCourses.data,
+  );
 
   const { width: viewportWidth, height: viewportHeight } =
     useWindowDimensions();
   const insets = useSafeAreaInsets();
 
   const handleCourseSelect = (slug: string) => {
-    setActiveSlug(slug);
+    dispatch(setActiveSlug(slug));
   };
 
-  const currentActiveSlug = activeSlug || enrolledCourses?.activeSlug;
+  const currentActiveSlug =
+    enrolledCoursesData?.activeSlug || enrolledCourses?.activeSlug;
+  const coursesData = enrolledCoursesData || enrolledCourses;
 
   // Get config from context
 
@@ -65,12 +71,12 @@ export default function JourneyMapContainer({}: JourneyMapContainerProps = {}): 
     return <JourneyLoadingSkeleton />;
   }
 
-  console.log("enrolledCoursesss", enrolledCourses?.items);
+  console.log("enrolledCoursesss", coursesData?.items);
 
-  const enrolledCoursesWithActiveSlug = enrolledCourses
+  const enrolledCoursesWithActiveSlug = coursesData
     ? {
-        ...enrolledCourses,
-        activeSlug: currentActiveSlug || enrolledCourses.activeSlug,
+        ...coursesData,
+        activeSlug: currentActiveSlug || coursesData.activeSlug,
       }
     : undefined;
 

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import journeyReducer from "./slices/journeySlice";
 import sectionMapReducer from "./slices/sectionMapSlice";
+import enrolledCoursesReducer from "./slices/enrolledCoursesSlice";
 import { enrolledCoursesApi } from "./api/enrolledCoursesApi";
 import { sectionMapApi } from "./api/sectionMapApi";
 
@@ -8,6 +9,7 @@ export const store = configureStore({
   reducer: {
     journey: journeyReducer,
     sectionMap: sectionMapReducer,
+    enrolledCourses: enrolledCoursesReducer,
     [enrolledCoursesApi.reducerPath]: enrolledCoursesApi.reducer,
     [sectionMapApi.reducerPath]: sectionMapApi.reducer,
   },
