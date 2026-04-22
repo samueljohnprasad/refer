@@ -199,7 +199,7 @@ function MascotBubble({
           backgroundColor: "transparent",
         }}
       >
-        <PressableScale
+        {/* <PressableScale
           onPress={handleTap}
           scale={0.9}
           hapticStyle="light"
@@ -211,7 +211,7 @@ function MascotBubble({
           ) : (
             <OwlAvatar />
           )}
-        </PressableScale>
+        </PressableScale> */}
       </View>
     </Animated.View>
   );

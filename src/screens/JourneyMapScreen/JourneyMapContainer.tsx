@@ -71,7 +71,7 @@ export default function JourneyMapContainer({}: JourneyMapContainerProps = {}): 
     return <JourneyLoadingSkeleton />;
   }
 
-  console.log("enrolledCoursesss", coursesData?.items);
+  console.log("enrolledCoursessss", coursesData?.items[0]);
 
   const enrolledCoursesWithActiveSlug = coursesData
     ? {

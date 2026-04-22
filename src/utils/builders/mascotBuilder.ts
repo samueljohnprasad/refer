@@ -61,7 +61,7 @@ export function buildMascotItems(
       : "";
 
     const mascotItem: JourneyMascotItem = {
-      id: `mascot_${current.prevX}_${nodeIndex}_${placement.messageKey ?? "default"}`,
+      id: `mascot_${current.items.length}_${nodeIndex}_${placement.messageKey ?? "default"}`,
       itemType: "mascot",
       cellHeight: MASCOT_CELL_HEIGHT,
       x: current.prevX,

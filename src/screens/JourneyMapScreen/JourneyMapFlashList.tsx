@@ -47,11 +47,16 @@ import type {
   JourneyMascotItem,
 } from "@/src/types/journey";
 import { MascotSide } from "@/src/types/journey";
-import { useSectionSwitch } from "@/src/hooks/useSectionSwitch";
 import { useJourneyDerivedState } from "@/src/hooks/journeyMap";
 import { useVisibleUnit } from "@/src/hooks/useVisibleUnit";
-import { useGetSectionMapQuery } from "@/src/store/api/sectionMapApi";
-import { useAppSelector } from "@/src/store/hooks";
+import { useGetSectionUnitsQuery } from "@/src/store/api/sectionMapApi";
+import { useAppSelector, useAppDispatch } from "@/src/store/hooks";
+import {
+  setCurrentSectionNumber,
+  selectCurrentSectionNumber,
+  selectSectionTitle,
+  selectSectionList,
+} from "@/src/store/slices/enrolledCoursesSlice";
 
 import { JourneyNodeCell } from "@/src/components/journey/JourneyNodeCell";
 import {
@@ -196,41 +201,20 @@ export function JourneyMapFlashListInner({
   const internalRef = useRef<any>(null);
   const legendListRef = internalRef;
   const [isPresented, setIsPresented] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const currentSectionNumber = useAppSelector(
-    (state) => state.sectionMap.currentSectionNumber,
-  );
-  const handleSectionSwitch = useSectionSwitch();
+  const currentSectionNumber = useAppSelector(selectCurrentSectionNumber);
+  const sectionTitle = useAppSelector(selectSectionTitle);
+  const sectionList = useAppSelector(selectSectionList);
 
-  // Use RTK Query for section map data
-  // const {
-  //   data: sectionMapData,
-  //   isLoading: isSectionMapLoading,
-  //   error: sectionMapError,
-  // } = useGetSectionMapQuery(
-  //   { slug: slugOverride || "", unitNumber: currentSectionNumber ?? undefined },
-  //   { skip: !slugOverride },
-  // );
+  // Fetch units + nodes for the active section (re-fetches on section switch)
+  const { isLoading: isSectionLoading, error: sectionError } =
+    useGetSectionUnitsQuery(
+      { slug: slugOverride || "", sectionNumber: currentSectionNumber },
+      { skip: !slugOverride },
+    );
 
   const { flashListData, activeGlobalIndex, units } = useJourneyDerivedState();
-  console.log("flashListDataaaaaaaa", flashListData);
-  // const {
-  //   flashListRef,
-  //   handleFlashListScrollToActive,
-  //   handleFlashListJumpToUnit,
-  //   currentScrollY,
-  //   isActiveOffScreen,
-  //   scrollDirection,
-  //   updateVisibility,
-  // } = useJourneyScroll({
-  //   flashActiveNodeY,
-  //   viewportHeight,
-  //   flashActiveNodeIndex,
-  //   flashListData,
-  //   USE_FLASH_LIST: true,
-  // });
-
-  // const { scrollY, scrollHandler } = useScrollHandler({ updateVisibility });
 
   const { visibleUnit, onViewableItemsChanged } = useVisibleUnit({
     units,
@@ -259,8 +243,8 @@ export function JourneyMapFlashListInner({
             />
           );
 
-        case "mascot":
-          return <MascotCell item={item as JourneyMascotItem} />;
+        // case "mascot":
+        //   return <MascotCell item={item as JourneyMascotItem} />;
 
         default:
           return <View />;
@@ -279,14 +263,18 @@ export function JourneyMapFlashListInner({
     <>
       <HomeMainButton
         onPress={() => setIsPresented(true)}
-        unitLabel={`Unit ${visibleUnit.unitNumber}`}
-        sectionTitle={visibleUnit.unitTitle}
+        unitLabel={`Section ${currentSectionNumber ?? 1}, Unit ${visibleUnit.unitNumber}`}
+        sectionTitle={sectionTitle ?? visibleUnit.unitTitle}
         faceColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[0] || "#4CAF50"}
         rimColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[1] || "#388E3C"}
       />
 
       {/* LegendList — cell recycling with segment-per-cell SVG rendering */}
-      {flashListData && flashListData.length > 0 ? (
+      {isSectionLoading ? (
+        <View className="flex-1 items-center justify-center">
+          <RNText className="text-gray-500">Loading section...</RNText>
+        </View>
+      ) : flashListData && flashListData.length > 0 ? (
         <AnimatedLegendList<JourneyFlashListItem>
           data={flashListData}
           renderItem={renderItem}
@@ -305,10 +293,7 @@ export function JourneyMapFlashListInner({
       ) : (
         <View className="flex-1 items-center justify-center p-4">
           <RNText className="text-gray-500 text-center">
-            Map data not available. Check console for details.
-          </RNText>
-          <RNText className="text-gray-400 text-xs mt-2">
-            flashListData: {flashListData?.length || 0} items
+            {sectionError ? "Failed to load section" : "No data available"}
           </RNText>
         </View>
       )}
@@ -327,11 +312,11 @@ export function JourneyMapFlashListInner({
         setIsPresented={setIsPresented}
       >
         <SectionList
-          sectionList={[]}
+          sectionList={sectionList}
           currentSectionNumber={currentSectionNumber}
           onSectionPress={(unitNumber) => {
             setIsPresented(false);
-            handleSectionSwitch(unitNumber);
+            dispatch(setCurrentSectionNumber(unitNumber));
           }}
         />
       </BottomSheetWithRNContent>

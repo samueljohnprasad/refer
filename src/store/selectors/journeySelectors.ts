@@ -8,10 +8,6 @@ import type {
   JourneyNode,
   JourneyConfig,
 } from "@/src/types/journey";
-import type {
-  SectionMapResponse,
-  SectionUnitData,
-} from "@/src/types/journey/sectionMap";
 import { NodeStatus } from "@/src/types/journey";
 import {
   buildJourneyNodes,
@@ -28,46 +24,17 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 // Base selectors
 // ---------------------------------------------------------------------------
 
-const selectSectionMapData = (state: RootState): SectionMapResponse | null =>
-  state.sectionMap.sectionMap;
+const selectUnitsFromStore = (state: RootState): UnitData[] =>
+  state.sectionMap.units;
 
 const selectJourneyConfig = (state: RootState): JourneyConfig | null =>
   state.journey.config;
 
-const selectJourneyState = (state: RootState) => state.journey.journeyState;
-
 // ---------------------------------------------------------------------------
-// Derived: Units from section map
+// Derived: Units (direct from store — no extraction needed)
 // ---------------------------------------------------------------------------
 
-export const selectUnits = createSelector(
-  selectSectionMapData,
-  (sectionMapData): UnitData[] => {
-    if (!sectionMapData) return [];
-
-    const { section } = sectionMapData;
-    const units: SectionUnitData[] =
-      Array.isArray(section.units) && section.units.length > 0
-        ? section.units
-        : [
-            {
-              id: section.id,
-              sectionId: section.id,
-              sectionNumber: section.sectionNumber,
-              unitNumber: 1,
-              globalUnitNumber: section.unitNumber,
-              title: section.title,
-              description: section.description,
-              colorScheme: section.colorScheme,
-              mascotPlacements: section.mascotPlacements ?? [],
-              unlockRule: section.unlockRule,
-              nodes: section.nodes ?? [],
-            },
-          ];
-
-    return units as UnitData[];
-  },
-);
+export const selectUnits = selectUnitsFromStore;
 
 // ---------------------------------------------------------------------------
 // Derived: Completed counts

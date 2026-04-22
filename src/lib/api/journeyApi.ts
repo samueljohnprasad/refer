@@ -24,6 +24,7 @@ import type {
   NodeContentResponse,
   SectionViewMode,
 } from "@/src/types/journey/sectionMap";
+import type { UnitData } from "@/src/types/journey/unit";
 import { createLogger } from "@/src/lib/logger";
 
 const log = createLogger("JourneyAPI");
@@ -455,6 +456,40 @@ export async function fetchSectionMap(
     return { data: data as unknown as SectionMapResponse, success: true };
   } catch (err: unknown) {
     log.error("fetchSectionMap exception", err, { slug, unitNumber });
+    return {
+      data: null,
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+}
+
+/**
+ * Fetch units + nodes (with server-resolved status) for a single section.
+ * Lightweight alternative to fetchSectionMap — only returns UnitData[].
+ */
+export async function fetchSectionUnits(
+  slug: string,
+  sectionNumber: number,
+): Promise<ApiResponse<UnitData[] | null>> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.rpc as any)("get_section_units", {
+      p_slug: slug,
+      p_section_number: sectionNumber,
+    });
+
+    if (error) {
+      log.error("fetchSectionUnits RPC error", error.message, {
+        slug,
+        sectionNumber,
+      });
+      return { data: null, success: false, error: error.message };
+    }
+
+    return { data: (data as UnitData[]) ?? [], success: true };
+  } catch (err: unknown) {
+    log.error("fetchSectionUnits exception", err, { slug, sectionNumber });
     return {
       data: null,
       success: false,

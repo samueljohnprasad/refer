@@ -365,6 +365,9 @@ export async function fetchMHJourneyCatalog(): Promise<
             enrollmentStatus,
             colorThemeKey: (j.color_theme_key ?? null) as string | null,
             iconKey: (j.icon_key ?? null) as string | null,
+            activeSection: null,
+            activeUnit: null,
+            activeSectionUnit: null,
             sections: [],
           };
         },

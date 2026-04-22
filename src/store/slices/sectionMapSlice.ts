@@ -1,64 +1,30 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { SectionMapResponse, SectionListItem } from '@/src/types/journey/sectionMap';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { UnitData } from "@/src/types/journey/unit";
 
 interface SectionMapState {
-  sectionMap: SectionMapResponse | null;
-  sectionList: SectionListItem[];
-  activeNodeId: string | null;
-  currentSectionNumber: number | null;
+  units: UnitData[];
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: SectionMapState = {
-  sectionMap: null,
-  sectionList: [],
-  activeNodeId: null,
-  currentSectionNumber: null,
+  units: [],
   isLoading: false,
   error: null,
 };
 
 const sectionMapSlice = createSlice({
-  name: 'sectionMap',
+  name: "sectionMap",
   initialState,
   reducers: {
-    setSectionMap: (state, action: PayloadAction<SectionMapResponse>) => {
-      state.sectionMap = action.payload;
-      state.sectionList = action.payload.sectionList || [];
-      state.activeNodeId = action.payload.focusNodeId || null;
-      state.currentSectionNumber = action.payload.section.unitNumber;
+    setSectionUnits: (state, action: PayloadAction<UnitData[]>) => {
+      state.units = action.payload;
       state.error = null;
     },
-    setSectionList: (state, action: PayloadAction<SectionListItem[]>) => {
-      state.sectionList = action.payload;
-    },
-    setActiveNodeId: (state, action: PayloadAction<string | null>) => {
-      state.activeNodeId = action.payload;
-    },
-    setCurrentSectionNumber: (state, action: PayloadAction<number>) => {
-      state.currentSectionNumber = action.payload;
-    },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
-    },
-    setError: (state, action: PayloadAction<string | null>) => {
-      state.error = action.payload;
-    },
-    resetSectionMap: (state) => {
-      return initialState;
-    },
+    resetSectionMap: () => initialState,
   },
 });
 
-export const {
-  setSectionMap,
-  setSectionList,
-  setActiveNodeId,
-  setCurrentSectionNumber,
-  setLoading,
-  setError,
-  resetSectionMap,
-} = sectionMapSlice.actions;
+export const { setSectionUnits, resetSectionMap } = sectionMapSlice.actions;
 
 export default sectionMapSlice.reducer;

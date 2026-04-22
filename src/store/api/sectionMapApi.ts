@@ -1,29 +1,23 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { fetchSectionMap } from "@/src/lib/api/journeyApi";
-import type { SectionMapResponse } from "@/src/types/journey/sectionMap";
-import {
-  setSectionMap,
-  setCurrentSectionNumber,
-} from "@/src/store/slices/sectionMapSlice";
+import { fetchSectionUnits } from "@/src/lib/api/journeyApi";
+import type { UnitData } from "@/src/types/journey/unit";
+import { setSectionUnits } from "@/src/store/slices/sectionMapSlice";
 
-// Create the API slice
 export const sectionMapApi = createApi({
   reducerPath: "sectionMapApi",
-  baseQuery: async (args, api, extraOptions) => {
-    // Custom base query that uses the existing fetchSectionMap function
+  baseQuery: async (args) => {
     try {
-      const { slug, unitNumber } = args as {
+      const { slug, sectionNumber } = args as {
         slug: string;
-        unitNumber?: number;
+        sectionNumber: number;
       };
-      const response = await fetchSectionMap(slug, unitNumber);
+      const response = await fetchSectionUnits(slug, sectionNumber);
 
       if (!response.success) {
         return {
           error: {
             status: "CUSTOM_ERROR",
-            error: response.error ?? "Failed to fetch section map",
-            data: response.data,
+            error: response.error ?? "Failed to fetch section units",
           },
         };
       }
@@ -39,20 +33,19 @@ export const sectionMapApi = createApi({
     }
   },
   endpoints: (builder) => ({
-    getSectionMap: builder.query<
-      SectionMapResponse | null,
-      { slug: string; unitNumber?: number }
+    getSectionUnits: builder.query<
+      UnitData[] | null,
+      { slug: string; sectionNumber: number }
     >({
-      query: ({ slug, unitNumber }) => ({ slug, unitNumber }),
+      query: ({ slug, sectionNumber }) => ({ slug, sectionNumber }),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
         if (data) {
-          dispatch(setSectionMap(data));
+          dispatch(setSectionUnits(data));
         }
       },
     }),
   }),
 });
 
-// Export hooks
-export const { useGetSectionMapQuery } = sectionMapApi;
+export const { useGetSectionUnitsQuery } = sectionMapApi;

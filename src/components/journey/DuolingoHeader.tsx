@@ -36,21 +36,24 @@ export interface EnrolledCourse {
   title: string;
   description: string;
   colorScheme: string;
-  colorThemeKey: string;
+  colorThemeKey: string | null;
   category: string;
   difficulty: string;
-  estimatedDays: number;
+  estimatedDays: number | null;
   totalNodes: number;
   completedNodes: number;
   isEnrolled: boolean;
-  enrollmentStatus: string;
-  iconKey: string;
+  enrollmentStatus: string | null;
+  iconKey: string | null;
   iconUrl: string | null;
+  activeSection: number | null;
+  activeUnit: number | null;
+  activeSectionUnit: number | null;
   sections: any[];
 }
 
 export interface EnrolledCoursesResponse {
-  activeSlug: string;
+  activeSlug: string | null;
   items: EnrolledCourse[];
 }
 

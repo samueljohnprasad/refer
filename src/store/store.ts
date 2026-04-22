@@ -16,7 +16,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["sectionMap/setSectionMap"],
+        ignoredActions: ["sectionMap/setSectionUnits"],
       },
     }).concat(enrolledCoursesApi.middleware, sectionMapApi.middleware),
 });

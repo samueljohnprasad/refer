@@ -40,7 +40,7 @@ Deno.serve(async (req: Request) => {
     // First, fetch user's enrollments
     const { data: enrollments, error: enrollmentsError } = await adminSupabase
       .from("user_journey_enrollments")
-      .select("id, journey_id, status")
+      .select("id, journey_id, status, current_section_number, current_unit_number, current_section_unit_number")
       .eq("user_id", user.id)
       .order("enrolled_at", { ascending: false });
 
@@ -183,6 +183,9 @@ Deno.serve(async (req: Request) => {
           enrollmentStatus,
           colorThemeKey: j.color_theme_key ?? null,
           iconKey: j.icon_key ?? null,
+          activeSection: enrollment?.current_section_number ?? null,
+          activeUnit: enrollment?.current_unit_number ?? null,
+          activeSectionUnit: enrollment?.current_section_unit_number ?? null,
           sections: sectionsByJourney[j.id] ?? [],
         };
       }),

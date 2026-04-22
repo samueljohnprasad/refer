@@ -212,6 +212,10 @@ const HeaderOverlayContent = ({
             Your {activeCourse?.title || "Course"} Score{" "}
             {activeCourse?.completedNodes || 0}
           </Text>
+          <Text className="text-base text-text-secondary font-rd-regular">
+            Section {activeCourse?.activeSection ?? 1} of{" "}
+            {activeCourse?.sections?.length ?? 0}
+          </Text>
           <Text
             className="text-base uppercase text-[#1CB0F6]"
             style={{
