@@ -301,7 +301,7 @@ function PathNode({
             title={
               node.status === NodeStatus.LOCKED
                 ? ""
-                : (ICON_MAP[node.icon] ?? "⭐")
+                : ((node.icon ? ICON_MAP[node.icon] : undefined) ?? "⭐")
             }
             onPress={handlePress}
             disabled={!isInteractive}
@@ -311,13 +311,12 @@ function PathNode({
             type="squircle"
             fullWidth={false}
             minHeight={size}
-          
             iconSize={size * 0.55}
             accessibilityLabel={`${node.type === NodeType.CHECKPOINT ? "Checkpoint" : "Lesson"} ${node.index + 1}, ${node.status}${isActive && node.progress !== undefined ? `, ${Math.round(node.progress * 100)}% complete` : ""}`}
             style={{ width: size, marginBottom: 0 }}
             textStyle={
               node.status === NodeStatus.LOCKED
-                ? { display: 'none' }
+                ? { display: "none" }
                 : { fontSize: 24 }
             }
           />

@@ -116,7 +116,7 @@ export type {
 // ---------------------------------------------------------------------------
 
 export type {
-  NodeStub,
+  ServerNodeData,
   SectionData,
   SectionUnitData,
   SectionListItem,

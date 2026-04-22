@@ -4,7 +4,12 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import type { PathNodeData } from "@/src/types/journey";
 import { NodeStatus, NodeType } from "@/src/types/journey";
-import type { NodeStub, SectionMapResponse, SectionViewMode, NodeContentResponse } from "@/src/types/journey/sectionMap";
+import type {
+  ServerNodeData,
+  SectionMapResponse,
+  SectionViewMode,
+  NodeContentResponse,
+} from "@/src/types/journey/sectionMap";
 import type { JourneySoundKey } from "@/src/hooks/useSoundEffects";
 
 interface UseNodePressHandlerProps {
@@ -39,11 +44,10 @@ export function useNodePressHandler({
   const toast = useToast();
   const handleNodePressInner = useCallback(
     (node: PathNodeData): void => {
-      // ── Phase C: Check canInteract from section map (preview mode gate) ──
-      const nodeStub: NodeStub | undefined = sectionMap?.section.nodes.find(
-        (n: NodeStub) => n.id === node.id,
-      );
-      if (nodeStub && !nodeStub.canInteract) {
+      // ── Phase C: Check node status from section map (preview mode gate) ──
+      const nodeStub: ServerNodeData | undefined =
+        sectionMap?.section.nodes.find((n: ServerNodeData) => n.id === node.id);
+      if (nodeStub && nodeStub.status === NodeStatus.LOCKED) {
         playSound("lockedTap");
         const currentSection: number =
           sectionMap?.enrollment?.currentUnitNumber ?? 1;
@@ -204,7 +208,7 @@ export function useNodePressHandler({
       resolvedJourneySlug,
       setChestNode,
       chestModalRef,
-    ]
+    ],
   );
 
   return guardedPress(handleNodePressInner);

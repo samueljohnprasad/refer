@@ -38,8 +38,9 @@ export function useSectionData(slug: string | null): UseSectionDataReturn {
   const dataError = useAppSelector((state) => state.sectionMap.error);
 
   // ── Derived values ──
+  // Find active node directly from section nodes (status is server-resolved)
   const activeNodeId: string | null =
-    sectionMap?.progress.find((p) => p.status === "active")?.nodeId ?? null;
+    sectionMap?.section.nodes.find((n) => n.status === "active")?.id ?? null;
 
   const fetchAndApplySection = useCallback(
     async (journeySlug: string, unitNumber?: number): Promise<void> => {

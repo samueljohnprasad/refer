@@ -1,23 +1,20 @@
 import { useState, useCallback } from "react";
 import type { ViewToken } from "@legendapp/list";
-import type { JourneyFlashListItem, JourneyNode } from "@/src/types/journey";
-
-interface UnitHeader {
-  unitId: string;
-  unitNumber: number;
-  unitTitle: string;
-  colorThemeKey: string;
-}
+import type {
+  JourneyFlashListItem,
+  JourneyNode,
+  UnitData,
+} from "@/src/types/journey";
 
 interface UseVisibleUnitProps {
-  unitHeaders: UnitHeader[];
+  units: UnitData[];
 }
 
 function isJourneyNode(item: JourneyFlashListItem): item is JourneyNode {
   return item.itemType === "node";
 }
 
-export function useVisibleUnit({ unitHeaders }: UseVisibleUnitProps) {
+export function useVisibleUnit({ units }: UseVisibleUnitProps) {
   const [visibleUnitIndex, setVisibleUnitIndex] = useState(0);
 
   const onViewableItemsChanged = useCallback(
@@ -33,24 +30,29 @@ export function useVisibleUnit({ unitHeaders }: UseVisibleUnitProps) {
 
       const targetUnitId = firstItem.item.unitId;
 
-      const unitIndex = unitHeaders.findIndex(
-        (uh) => uh.unitId === targetUnitId,
-      );
+      const unitIndex = units.findIndex((u) => u.id === targetUnitId);
 
       if (unitIndex !== -1 && unitIndex !== visibleUnitIndex) {
         setVisibleUnitIndex(unitIndex);
       }
     },
-    [unitHeaders, visibleUnitIndex],
+    [units, visibleUnitIndex],
   );
 
-  const visibleUnit = unitHeaders[visibleUnitIndex] ||
-    unitHeaders[0] || {
-      unitNumber: 1,
-      unitTitle: "Loading...",
-      colorThemeKey: "green",
-      unitId: "",
-    };
+  const unit = units[visibleUnitIndex] || units[0];
+  const visibleUnit = unit
+    ? {
+        unitNumber: unit.unitNumber,
+        unitTitle: unit.title,
+        colorThemeKey: unit.colorScheme,
+        unitId: unit.id,
+      }
+    : {
+        unitNumber: 1,
+        unitTitle: "Loading...",
+        colorThemeKey: "green",
+        unitId: "",
+      };
 
   return {
     visibleUnit,

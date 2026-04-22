@@ -44,6 +44,12 @@ export const sectionMapApi = createApi({
       { slug: string; unitNumber?: number }
     >({
       query: ({ slug, unitNumber }) => ({ slug, unitNumber }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        if (data) {
+          dispatch(setSectionMap(data));
+        }
+      },
     }),
   }),
 });

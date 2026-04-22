@@ -4,6 +4,9 @@ import {
   Text,
   useWindowDimensions,
   View,
+  Pressable,
+  ScrollView,
+  Alert,
 } from "react-native";
 
 import Svg, { Path, SvgProps } from "react-native-svg";
@@ -15,11 +18,15 @@ import Animated, {
 } from "react-native-reanimated";
 
 import ProgressBar from "../ProgressBar";
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import type { EnrolledCourse, EnrolledCoursesResponse } from "./DuolingoHeader";
 const AnimatedPath = Animated.createAnimatedComponent(Path);
+
 type HeaderOverlayContentProps = {
   translateY: SharedValue<number>;
+  enrolledCourses?: EnrolledCoursesResponse;
+  onCourseSelect?: (slug: string) => void;
 };
 
 type NewCourse = {
@@ -57,10 +64,21 @@ const newCourses: NewCourse[] = [
     isNew: true,
   },
 ];
-
-const HeaderOverlayContent = ({ translateY }: HeaderOverlayContentProps) => {
+const HeaderOverlayContent = ({
+  translateY,
+  enrolledCourses,
+  onCourseSelect,
+}: HeaderOverlayContentProps) => {
   const { width } = useWindowDimensions();
   const [scoreBarWidth, setScoreBarWidth] = useState(180);
+
+  const handleAddCoursePress = () => {
+    Alert.alert(
+      "Add Course",
+      "Course addition feature coming soon! You'll be able to browse and add new courses.",
+      [{ text: "OK", onPress: () => {} }],
+    );
+  };
 
   const handleScoreBarLayout = (event: LayoutChangeEvent) => {
     const nextWidth = event.nativeEvent.layout.width;
@@ -73,6 +91,30 @@ const HeaderOverlayContent = ({ translateY }: HeaderOverlayContentProps) => {
       transform: [{ translateY: translateY.value }],
     };
   });
+
+  const courses = enrolledCourses?.items || [];
+
+  const getCourseColor = (colorScheme: string) => {
+    switch (colorScheme) {
+      case "blue":
+        return "#1CB0F6";
+      case "orange":
+        return "#FF9600";
+      case "purple":
+        return "#CE82FF";
+      default:
+        return "#1CB0F6";
+    }
+  };
+  const activeCourse =
+    courses.find(
+      (c: EnrolledCourse) => c.slug === enrolledCourses?.activeSlug,
+    ) || courses[0];
+
+  const progress = activeCourse
+    ? activeCourse.completedNodes / activeCourse.totalNodes
+    : 0;
+
   return (
     <Animated.View className="bg-white w-full  pb-3" style={[animatedStyle]}>
       <Svg
@@ -96,48 +138,79 @@ const HeaderOverlayContent = ({ translateY }: HeaderOverlayContentProps) => {
         />
       </Svg>
       <View className="px-4 pt-6">
-        <View className="flex-row items-start  gap-3">
-          <View className="items-center gap-1 ">
-            <View className="h-[70px] w-[85px] items-center justify-center rounded-[14px] border-[3px] border-[#1CB0F6]">
-              <Flag width={70} height={70} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="flex-row gap-3"
+          contentContainerStyle={{ paddingHorizontal: 4 }}
+        >
+          {courses.map((course: EnrolledCourse) => {
+            const isActive = course.slug === enrolledCourses?.activeSlug;
+            return (
+              <Pressable
+                key={course.id}
+                className="items-center gap-1"
+                onPress={() => onCourseSelect?.(course.slug)}
+              >
+                <View
+                  className="h-[70px] w-[85px] items-center justify-center rounded-[14px]"
+                  style={{
+                    borderWidth: isActive ? 3 : 0,
+                    borderColor: isActive
+                      ? getCourseColor(course.colorScheme)
+                      : "transparent",
+                  }}
+                >
+                  <Flag width={70} height={70} />
+                </View>
+                <Text
+                  className="text-base font-bold"
+                  style={{
+                    fontFamily: "DINNextRoundedBold",
+                    color: isActive ? "#4B4B4B" : "#AFAFAF",
+                  }}
+                >
+                  {course.title}
+                </Text>
+              </Pressable>
+            );
+          })}
+          <Pressable
+            className="items-center gap-1 ml-3"
+            onPress={handleAddCoursePress}
+          >
+            <View className="h-[70px] w-[85px] items-center justify-center rounded-[14px] border-[2px] border-[#AFAFAF] bg-gray-50">
+              <HugeiconsIcon icon={PlusSignIcon} size={24} color="#AFAFAF" />
             </View>
             <Text
-              className="text-base font-bold text-text-primary"
-              style={{ fontFamily: "DINNextRoundedBold" }}
+              className="text-base font-bold"
+              style={{
+                fontFamily: "DINNextRoundedBold",
+                color: "#AFAFAF",
+              }}
             >
-              German
-            </Text>
-          </View>
-          <View className="items-center gap-1  ">
-            <View className="h-[70px] w-[85px] scale-[0.75] items-center justify-center rounded-[14px] border-[3px] border-[#AFAFAF] ">
-              <HugeiconsIcon
-                icon={ArrowRight01Icon}
-                size={20}
-                color="#AFAFAF"
-              />
-            </View>
-            <Text className="text-base font-bold text-gray-3 font-rd-bold">
               Course
             </Text>
-          </View>
-        </View>
+          </Pressable>
+        </ScrollView>
         <View className="mt-3 w-full items-center gap-3 rounded-[10px] border border-[#E5E5E5] py-4">
           <View className="w-full flex-row items-center px-5">
             <Text className="text-lg font-bold text-text-primary font-rd-bold">
-              13
+              {activeCourse?.completedNodes || 0}
             </Text>
             <View className="mx-3 flex-1" onLayout={handleScoreBarLayout}>
-              <ProgressBar progress={0.72} width={scoreBarWidth} />
+              <ProgressBar progress={progress} width={scoreBarWidth} />
             </View>
             <Text
               className="text-lg font-bold text-text-primary font-rd-bold"
               style={{ fontFamily: "DINNextRoundedBold" }}
             >
-              14
+              {activeCourse?.totalNodes || 0}
             </Text>
           </View>
           <Text className="text-xl  text-text-secondary font-rd-regular">
-            Your German Score 13
+            Your {activeCourse?.title || "Course"} Score{" "}
+            {activeCourse?.completedNodes || 0}
           </Text>
           <Text
             className="text-base uppercase text-[#1CB0F6]"

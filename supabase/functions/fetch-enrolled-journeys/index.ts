@@ -77,6 +77,75 @@ Deno.serve(async (req: Request) => {
       });
     }
 
+    // Fetch sections for all enrolled journeys in one query
+    const { data: allSections, error: sectionsError } = await adminSupabase
+      .from("journey_template_sections")
+      .select(
+        "id, journey_id, section_number, title, description, color_scheme",
+      )
+      .in("journey_id", journeyIds)
+      .order("section_number", { ascending: true });
+
+    if (sectionsError) {
+      console.error("Sections query error:", sectionsError);
+    }
+
+    // Count nodes per section via units
+    const sectionIds = (allSections ?? []).map((s: any) => s.id);
+    let nodeCountsBySection: Record<string, number> = {};
+    let unitCountsBySection: Record<string, number> = {};
+
+    if (sectionIds.length > 0) {
+      const { data: unitRows } = await adminSupabase
+        .from("journey_template_units")
+        .select("id, section_id")
+        .in("section_id", sectionIds);
+
+      // Count units per section
+      (unitRows ?? []).forEach((u: any) => {
+        unitCountsBySection[u.section_id] =
+          (unitCountsBySection[u.section_id] ?? 0) + 1;
+      });
+
+      // Count nodes per section
+      const unitIds = (unitRows ?? []).map((u: any) => u.id);
+      if (unitIds.length > 0) {
+        const { data: nodeRows } = await adminSupabase
+          .from("journey_template_nodes")
+          .select("id, unit_id")
+          .in("unit_id", unitIds);
+
+        // Map unit_id → section_id for aggregation
+        const unitToSection: Record<string, string> = {};
+        (unitRows ?? []).forEach((u: any) => {
+          unitToSection[u.id] = u.section_id;
+        });
+
+        (nodeRows ?? []).forEach((n: any) => {
+          const secId = unitToSection[n.unit_id];
+          if (secId) {
+            nodeCountsBySection[secId] = (nodeCountsBySection[secId] ?? 0) + 1;
+          }
+        });
+      }
+    }
+
+    // Group sections by journey_id
+    const sectionsByJourney: Record<string, any[]> = {};
+    (allSections ?? []).forEach((s: any) => {
+      if (!sectionsByJourney[s.journey_id]) {
+        sectionsByJourney[s.journey_id] = [];
+      }
+      sectionsByJourney[s.journey_id].push({
+        unitNumber: s.section_number,
+        sectionNumber: s.section_number,
+        title: s.title,
+        colorScheme: s.color_scheme ?? "green",
+        nodeCount: nodeCountsBySection[s.id] ?? 0,
+        unitCount: unitCountsBySection[s.id] ?? 0,
+      });
+    });
+
     // Build the response by matching enrollments with journeys
     const items = await Promise.all(
       (journeys ?? []).map(async (j: any) => {
@@ -114,6 +183,7 @@ Deno.serve(async (req: Request) => {
           enrollmentStatus,
           colorThemeKey: j.color_theme_key ?? null,
           iconKey: j.icon_key ?? null,
+          sections: sectionsByJourney[j.id] ?? [],
         };
       }),
     );
@@ -141,7 +211,11 @@ Deno.serve(async (req: Request) => {
     }
 
     return new Response(
-      JSON.stringify({ data: items, activeSlug: activeSlug ?? 'anxiety-toolkit', success: true }),
+      JSON.stringify({
+        data: items,
+        activeSlug: activeSlug ?? "anxiety-toolkit",
+        success: true,
+      }),
       { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (error) {
@@ -157,7 +231,7 @@ Deno.serve(async (req: Request) => {
 });
 
 /* To invoke locally:
-
+npx supabase functions deploy fetch-enrolled-journeys
   1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
   2. Make an HTTP request:
 

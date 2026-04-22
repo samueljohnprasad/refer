@@ -18,7 +18,7 @@ export interface PathNodeData {
   index: number;
   type: NodeType;
   status: NodeStatus;
-  icon: NodeIcon;
+  icon?: NodeIcon;
   /** Backend-provided visual variant key for config-driven rendering. */
   variantKey?: string;
   /** Backend-provided task type / node type string. */

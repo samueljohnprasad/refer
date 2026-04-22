@@ -5,7 +5,7 @@ import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import type { JourneyState, PathNodeData, UnitData } from "@/src/types/journey";
 import type {
   SectionMapResponse,
-  NodeStub,
+  ServerNodeData,
   SectionViewMode,
 } from "@/src/types/journey/sectionMap";
 import {
@@ -82,8 +82,10 @@ export function useNodeActions({
           // Re-fetch section to sync server-granted rewards & updated progress
 
           // Phase C: Check if this was a trophy node → auto-load next section
-          const completedStub: NodeStub | undefined =
-            sectionMap?.section.nodes.find((n: NodeStub) => n.id === nodeId);
+          const completedStub: ServerNodeData | undefined =
+            sectionMap?.section.nodes.find(
+              (n: ServerNodeData) => n.id === nodeId,
+            );
           if (completedStub?.isTrophy && sectionMap) {
             const nextUnitNumber: number = sectionMap.section.unitNumber + 1;
             if (nextUnitNumber <= sectionMap.journey.totalSections) {

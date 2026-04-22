@@ -1,362 +1,147 @@
 /**
- * buildJourneyNodes — Pure Function
- * Pre-computes the flat JourneyFlashListItem[] array for FlashList rendering.
+ * buildJourneyNodes — Orchestrator
  *
- * Runs ONCE at startup (outside React render cycle). The result is stored
- * in a Jotai atom and never mutated after init. This eliminates all
- * per-frame layout computation.
+ * WHY THIS FILE EXISTS:
+ * The FlashList that renders the journey map needs a flat array of items
+ * (nodes, dividers, mascot bubbles) with pre-computed positions, SVG paths,
+ * and config keys. This orchestrator composes focused builder functions to
+ * produce that array.
  *
- * Each node gets:
- * - x, y: absolute screen coordinates (zig-zag pattern)
- * - cellHeight: vertical gap to the next node (variable)
- * - segmentD: pre-built SVG cubic bezier path in LOCAL cell coordinates (0 → cellHeight)
- * - All config keys for rendering (variantKey, colorThemeKey, etc.)
+ * HOW IT WORKS:
+ * The pipeline uses a functional "reduce" pattern. A LayoutAccumulator
+ * (carrying the growing items array + layout state) is threaded through
+ * each builder. Each builder appends its item(s) and returns updated state.
  *
- * Mascot bubbles and unit dividers are interleaved as separate list items.
+ * The two-level reduce:
+ *   1. Outer reduce: iterates units — inserts dividers between them
+ *   2. Inner reduce: iterates nodes within a unit — builds node items
+ *      and interleaves mascot bubbles after each node
+ *
+ * This runs ONCE at data load (not per-frame). The result is stored in a
+ * Redux selector / Jotai atom and only recomputed when journey data changes.
  */
 
-import { path as d3Path } from "d3-path";
-
-import type { UnitData, PathNodeData } from "@/src/types/journey";
-import { NodeStatus, NodeType, NodeIcon } from "@/src/types/journey";
+import type { UnitData } from "@/src/types/journey";
+import { NodeStatus } from "@/src/types/journey";
+import type { JourneyNode, JourneyFlashListItem } from "@/src/types/journey";
 import type {
-  JourneyNode,
-  JourneyDividerItem,
-  JourneyMascotItem,
-  JourneyFlashListItem,
-} from "@/src/types/journey";
-import type {
-  UnitConfig,
-  UnitNodeConfig,
-  MascotPlacementConfig,
   ColorThemeConfig,
   JourneySettingsConfig,
 } from "@/src/types/journey";
-import { getNodePosition } from "./positionCalculator";
-import { MASCOT_SIZE } from "@/src/data/journey/constants";
+import { BuilderContext, LayoutAccumulator } from "../builders/types";
+import { buildDividerItem } from "../builders/dividerBuilder";
+import { buildNodeItem } from "../builders/nodeBuilder";
+import { buildMascotItems } from "../builders/mascotBuilder";
+
+
 
 // ---------------------------------------------------------------------------
-// Constants
+// Public input type
 // ---------------------------------------------------------------------------
 
-/** Divider height when it's just a title separator */
-const DIVIDER_CELL_HEIGHT_COMPACT: number = 180;
-
-/** Divider height when it also includes the jump CTA */
-const DIVIDER_CELL_HEIGHT_WITH_JUMP: number = 200;
-
-/** Default cell height for mascot bubble rows */
-const MASCOT_CELL_HEIGHT: number = 80;
-
-/** Minimum cell height between nodes (prevents zero-height cells) */
-const MIN_NODE_CELL_HEIGHT: number = 80;
-
-function resolveFallbackVariantKey(nodeType: string): string {
-  switch (nodeType) {
-    case "learn":
-    case "exercise":
-    case "journal":
-    case "quiz":
-    case "mood_check":
-    case "microphone":
-    case "checkpoint":
-    case "chest":
-      return nodeType;
-    case NodeType.CHEST:
-      return "chest";
-    case NodeType.CHECKPOINT:
-      return "checkpoint";
-    case NodeType.LESSON:
-    default:
-      return "star";
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Segment path builder (local cell coordinates)
-// ---------------------------------------------------------------------------
-
-/**
- * Build a cubic bezier SVG `d` string from (prevX, 0) to (thisX, cellHeight).
- * Uses local cell coordinates — each cell's SVG is height={cellHeight} with
- * y values from 0 to cellHeight. This is the key insight from the PRD:
- * no global canvas coordinates in the SVG.
- *
- * Control points sit at the vertical midpoint for natural S-curves:
- *   CP1 = (prevX, cellHeight/2)
- *   CP2 = (thisX, cellHeight/2)
- */
-function buildSegmentD(
-  prevX: number,
-  thisX: number,
-  cellHeight: number,
-  screenWidth: number,
-): string {
-  if (cellHeight <= 0) return "";
-
-  const p = d3Path();
-  const midY: number = cellHeight / 2;
-
-  p.moveTo(prevX, 0);
-  p.bezierCurveTo(prevX, midY, thisX, midY, thisX, cellHeight);
-
-  return p.toString();
-}
-
-// ---------------------------------------------------------------------------
-// Main builder
-// ---------------------------------------------------------------------------
-
-/** Input config for buildJourneyNodes */
 export interface BuildJourneyNodesInput {
-  /** Runtime unit data with node statuses */
+  /** Runtime unit data with server-resolved node statuses */
   units: UnitData[];
-  /** Static unit configs (keyed by unit ID for O(1) lookup) */
-  unitConfigMap: Map<string, UnitConfig>;
-  /** Color theme registry */
+  /** Color theme registry (theme key → colors) */
   colorThemes: Record<string, ColorThemeConfig>;
-  /** Global journey settings */
+  /** Global layout settings (verticalGap, topPadding, nodeSize, etc.) */
   settings: JourneySettingsConfig;
-  /** Current screen width in dp */
+  /** Device screen width in dp (for sine-wave positioning) */
   screenWidth: number;
-  /** Mascot message registry for resolving message keys */
+  /** Message key → display string lookup (for mascot speech bubbles) */
   mascotMessages: Record<string, string>;
-  /** Optional: IDs of units to include (for section filtering). All if omitted. */
-  unitFilter?: string[];
 }
 
+// ---------------------------------------------------------------------------
+// Orchestrator
+// ---------------------------------------------------------------------------
+
 /**
- * Build the flat FlashList data array from units + config.
- * Runs once, outside React. Result is stored in Jotai atom.
+ * Build the flat FlashList data array from units.
  *
- * @returns Pre-computed JourneyFlashListItem[] ready for FlashList consumption
+ * WHAT: Transforms hierarchical journey data (units → nodes) into a flat
+ * array of renderable items (nodes, dividers, mascots) with pre-computed
+ * positions and SVG paths.
+ *
+ * WHY FLAT: FlashList needs a flat array. Each item knows its own height
+ * (cellHeight) and carries its own SVG path segment. This eliminates all
+ * per-frame layout computation — the list just renders what it's given.
+ *
+ * PIPELINE:
+ *   1. Create the BuilderContext (shared deps for all builders)
+ *   2. Seed the accumulator (empty items, initial positions)
+ *   3. Reduce over units:
+ *      a. Insert divider between units (skip first unit)
+ *      b. Reduce over nodes in unit:
+ *         - Build node item (position, segment, variant)
+ *         - Check for mascot placements after this node
+ *      c. Advance cumulativeY past all nodes in this unit
+ *   4. Return the accumulated items array
  */
 export function buildJourneyNodes(
   input: BuildJourneyNodesInput,
 ): JourneyFlashListItem[] {
-  const {
-    units,
-    unitConfigMap,
-    colorThemes,
-    settings,
+  const { units, colorThemes, settings, screenWidth, mascotMessages } = input;
+
+  // Step 1: Build shared context that all builders will reference
+  const ctx: BuilderContext = {
     screenWidth,
+    settings,
+    colorThemes,
     mascotMessages,
-    unitFilter,
-  } = input;
+  };
 
-  const filteredUnits: UnitData[] = unitFilter
-    ? units.filter((u: UnitData) => unitFilter.includes(u.id))
-    : units;
+  // Step 2: Initial accumulator — empty list, first node starts at screen center
+  const seed: LayoutAccumulator = {
+    items: [],
+    globalIndex: 0,
+    prevX: screenWidth / 2,
+    cumulativeY: settings.topPadding,
+  };
 
-  const items: JourneyFlashListItem[] = [];
-  let globalIndex: number = 0;
-  let prevX: number = screenWidth / 2; // first node's segment starts from center
-  let cumulativeY: number = settings.topPadding;
-  const sectionThemeMap = new Map<number, string>();
+  // Step 3: Compose builders via reduce
+  const result = units.reduce((acc, unit, unitIndex) => {
+    // 3a. Insert divider between units (skip the first unit — nothing above it)
+    const withDivider = unitIndex > 0 ? buildDividerItem(unit, acc, ctx) : acc;
 
-  filteredUnits.forEach((unit: UnitData) => {
-    const sectionNumber: number = unit.sectionNumber ?? unit.unitNumber;
-    if (!sectionThemeMap.has(sectionNumber)) {
-      const unitThemeKey: string = colorThemes[unit.colorScheme]
-        ? unit.colorScheme
-        : "green";
-      sectionThemeMap.set(sectionNumber, unitThemeKey);
-    }
-  });
-
-  filteredUnits.forEach((unit: UnitData, unitIndex: number) => {
-    const resolvedUnitConfig: UnitConfig | undefined = unitConfigMap.get(
-      unit.id,
-    );
-    const fallbackColorThemeKey: string = colorThemes[unit.colorScheme]
-      ? unit.colorScheme
-      : "green";
-    const unitConfig: UnitConfig = resolvedUnitConfig ?? {
-      id: unit.id,
-      unitNumber: unit.unitNumber,
-      title: unit.title,
-      description: unit.description,
-      colorThemeKey: fallbackColorThemeKey,
-      sectionId: unit.id,
-      nodes: unit.nodes.map((node: PathNodeData) => ({
-        variantKey:
-          node.variantKey ??
-          resolveFallbackVariantKey(node.taskType ?? String(node.type)),
-        taskId: node.taskId,
-        taskType: node.taskType ?? String(node.type),
-      })),
-      mascotPlacements: unit.mascotPlacements.map((placement) => ({
-        afterNodeIndex: placement.afterNodeIndex,
-        side: placement.position,
-        messageKey: placement.message ?? "",
-        imageKey: placement.imageKey,
-        avatarSize: placement.avatarSize,
-        offsetY: placement.offsetY,
-        offsetX: placement.offsetX,
-      })),
-      divider: {
-        title: unit.title,
-      },
-      pathGeometry: "sine",
-    };
-
-    const colorThemeKey: string = unitConfig.colorThemeKey;
-    const themeConfig: ColorThemeConfig | undefined =
-      colorThemes[colorThemeKey];
-    const sectionNumber: number = unit.sectionNumber ?? unit.unitNumber;
-    const sectionThemeKey: string =
-      sectionThemeMap.get(sectionNumber) ?? colorThemeKey;
-    const sectionThemeConfig: ColorThemeConfig | undefined =
-      colorThemes[sectionThemeKey];
-
-    // ── Insert unit divider (skip for first unit) ──
-    if (unitIndex > 0) {
-      const dividerId: string = `divider_${unit.id}`;
-      const dividerCellHeight: number = DIVIDER_CELL_HEIGHT_COMPACT;
-      // ── Build a straight vertical path segment through the divider cell ──
-      const dividerSegmentD = (() => {
-        if (dividerCellHeight <= 0) return "";
-        const p = d3Path();
-        p.moveTo(prevX, 0);
-        p.lineTo(prevX, dividerCellHeight);
-        return p.toString();
-      })();
-
-      const dividerItem: JourneyDividerItem = {
-        id: dividerId,
-        itemType: "divider",
-        cellHeight: dividerCellHeight,
-        title: unitConfig.divider.title,
-        accentColor:
-          sectionThemeConfig?.dividerColor ?? themeConfig?.dividerColor,
-        pathX: prevX,
-        segmentD: dividerSegmentD,
-        // globalIndex hasn't been incremented yet — so globalIndex - 1 is the last
-        // node of the previous unit. Used by DividerCell to pick the correct path color.
-        prevNodeGlobalIndex: globalIndex - 1,
-      };
-      items.push(dividerItem);
-      cumulativeY += dividerCellHeight;
-    }
-
-    // ── Track mascot placements for this unit (sorted by afterNodeIndex) ──
-    const mascotPlacements: MascotPlacementConfig[] = [
-      ...(unitConfig.mascotPlacements ?? []),
-    ].sort(
-      (a: MascotPlacementConfig, b: MascotPlacementConfig) =>
-        a.afterNodeIndex - b.afterNodeIndex,
-    );
-    let nextMascotIdx: number = 0;
-
-    // ── Process each node in the unit ──
-    unit.nodes.forEach((node: PathNodeData, nodeIndex: number) => {
-      const nodeConfig: UnitNodeConfig | undefined =
-        unitConfig.nodes[nodeIndex];
-      const variantKey: string =
-        nodeConfig?.variantKey ??
-        node.variantKey ??
-        resolveFallbackVariantKey(node.taskType ?? String(node.type));
-      const taskType: string =
-        nodeConfig?.taskType ?? node.taskType ?? "lesson";
-
-      // Compute position using existing sine-wave calculator
-      const position = getNodePosition(nodeIndex, screenWidth, {
-        topPadding: 0,
-        pathGeometry: unitConfig.pathGeometry,
-      });
-
-      const nodeX: number = position.x;
-      const nodeY: number = cumulativeY + position.y;
-
-      // Cell height = vertical gap (variable support — use settings.verticalGap as base)
-      const cellHeight: number = Math.max(
-        MIN_NODE_CELL_HEIGHT,
-        settings.verticalGap,
+    // 3b. Process each node, interleaving mascots after each
+    const withNodes = unit.nodes.reduce((nodeAcc, node, nodeIndex) => {
+      const withNode = buildNodeItem(node, nodeIndex, unit, nodeAcc, ctx);
+      return buildMascotItems(
+        nodeIndex,
+        unit.mascotPlacements ?? [],
+        withNode,
+        ctx,
       );
+    }, withDivider);
 
-      // Build SVG segment in LOCAL cell coordinates.
-      // Only skip for the absolute first node (nothing above it on the canvas).
-      // First nodes of subsequent units (after a divider) DO need a segment
-      // to connect from the bottom of the divider to the node.
-      const segmentD: string =
-        globalIndex === 0
-          ? ""
-          : buildSegmentD(prevX, nodeX, cellHeight, screenWidth);
+    // 3c. Advance cumulativeY past all nodes in this unit
+    return {
+      ...withNodes,
+      cumulativeY:
+        withNodes.cumulativeY + unit.nodes.length * settings.verticalGap,
+    };
+  }, seed);
 
-      const journeyNode: JourneyNode = {
-        id: node.id,
-        itemType: "node",
-        globalIndex,
-        label: node.label,
-        x: nodeX,
-        y: nodeY,
-        cellHeight,
-        segmentD,
-        status: node.status,
-        progress: node.progress,
-        variantKey,
-        colorThemeKey,
-        taskId: node.taskId,
-        taskType,
-        type: node.type,
-        icon: node.icon,
-        rewards: node.rewards,
-        unitId: unit.id,
-        prevX,
-      };
-
-      items.push(journeyNode);
-      globalIndex++;
-      prevX = nodeX;
-
-      // ── Insert mascot bubbles after configured node indices ──
-      while (
-        nextMascotIdx < mascotPlacements.length &&
-        mascotPlacements[nextMascotIdx].afterNodeIndex === nodeIndex
-      ) {
-        const mp: MascotPlacementConfig = mascotPlacements[nextMascotIdx];
-        const messageText: string =
-          mascotMessages[mp.messageKey] ?? mp.messageKey;
-        console.log("sdfsd", mp);
-
-        const resolvedOffsetX = mp.offsetX ?? MASCOT_SIZE.horizontalOffset;
-        const mascotX: number =
-          mp.side === "right"
-            ? nodeX + resolvedOffsetX
-            : nodeX - resolvedOffsetX;
-
-        const mascotItem: JourneyMascotItem = {
-          id: `mascot_${unit.id}_${nodeIndex}_${nextMascotIdx}`,
-          itemType: "mascot",
-          cellHeight: 0,
-          x: mascotX,
-          side: mp.side,
-          message: messageText,
-          imageKey: mp.imageKey || "panda-writing",
-          avatarSize: mp.avatarSize ?? 72,
-          offsetY: mp.offsetY ?? 16,
-        };
-
-        items.push(mascotItem);
-
-        nextMascotIdx++;
-      }
-    });
-
-    // Advance cumulative Y past all nodes in this unit
-    cumulativeY += unit.nodes.length * settings.verticalGap;
-  });
-
-  return items;
+  // Step 4: Extract the flat items array
+  return result.items;
 }
+
+// ---------------------------------------------------------------------------
+// Helpers (already clean, single-purpose — kept here for barrel export)
+// ---------------------------------------------------------------------------
 
 /**
  * Find the index of the currently active node in the flat list.
- * Returns -1 if no active node found.
+ *
+ * WHY: Used for scroll-to-active — the FlashList needs to know which
+ * index to scroll to when the user opens the journey map.
+ *
+ * Returns -1 if no active node found (e.g. all nodes completed).
  */
 export function findActiveNodeIndex(items: JourneyFlashListItem[]): number {
   return items.findIndex(
-    (item: JourneyFlashListItem) =>
+    (item) =>
       item.itemType === "node" &&
       (item as JourneyNode).status === NodeStatus.ACTIVE,
   );
@@ -364,15 +149,19 @@ export function findActiveNodeIndex(items: JourneyFlashListItem[]): number {
 
 /**
  * Update a single node's status in the flat array (immutable).
- * Returns a new array with the updated node. O(n) copy but only
- * runs on completion events — not per-frame.
+ *
+ * WHY: When a user completes a node, we need to update the flat list
+ * without rerunning the entire build pipeline. This returns a new array
+ * with only the target node's status changed.
+ *
+ * O(n) copy but only runs on completion events — not per-frame.
  */
 export function updateNodeStatus(
   items: JourneyFlashListItem[],
   nodeId: string,
   newStatus: NodeStatus,
 ): JourneyFlashListItem[] {
-  return items.map((item: JourneyFlashListItem): JourneyFlashListItem => {
+  return items.map((item): JourneyFlashListItem => {
     if (item.itemType !== "node") return item;
     const node = item as JourneyNode;
     if (node.id !== nodeId) return item;

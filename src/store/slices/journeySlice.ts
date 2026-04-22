@@ -4,11 +4,13 @@ import type {
   PathNodeData,
   UnitData,
   JourneyStats,
+  JourneyConfig,
 } from "@/src/types/journey";
 import { NodeStatus, NodeIcon } from "@/src/types/journey/enums";
 
 interface JourneyStateSlice {
   journeyState: JourneyState | null;
+  config: JourneyConfig | null;
   currentUnitIndex: number;
   lastActiveNodeId: string | null;
   stats: JourneyStats;
@@ -18,6 +20,7 @@ interface JourneyStateSlice {
 
 const initialState: JourneyStateSlice = {
   journeyState: null,
+  config: null,
   currentUnitIndex: 0,
   lastActiveNodeId: null,
   stats: {
@@ -39,6 +42,9 @@ const journeySlice = createSlice({
       state.currentUnitIndex = action.payload.currentUnit;
       state.lastActiveNodeId = action.payload.lastActiveNodeId;
       state.stats = action.payload.stats;
+    },
+    setJourneyConfig: (state, action: PayloadAction<JourneyConfig>) => {
+      state.config = action.payload;
     },
     updateNodeStatus: (
       state,
@@ -214,6 +220,7 @@ const journeySlice = createSlice({
 
 export const {
   setJourneyState,
+  setJourneyConfig,
   updateNodeStatus,
   updateNodeProgress,
   completeNode,

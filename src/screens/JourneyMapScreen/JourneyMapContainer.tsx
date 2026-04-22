@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 import { Stack, router } from "expo-router";
 
@@ -14,46 +14,35 @@ import {
   DuolingoHeaderStats,
 } from "@/src/components/journey/DuolingoHeader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useGetEnrolledCoursesQuery } from "@/src/store/api/enrolledCoursesApi";
 
 const USE_FLASH_LIST = true;
 const log = createLogger("JourneyMapContainer");
 
-export interface JourneyMapContainerProps {
-  slugOverride?: string;
-}
+export interface JourneyMapContainerProps {}
 
-export default function JourneyMapContainer({
-  slugOverride,
-}: JourneyMapContainerProps = {}): React.JSX.Element {
+export default function JourneyMapContainer({}: JourneyMapContainerProps = {}): React.JSX.Element {
+  const {
+    data: enrolledCourses,
+    isLoading: isLoadingCourses,
+    error: coursesError,
+  } = useGetEnrolledCoursesQuery();
+
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
+
   const { width: viewportWidth, height: viewportHeight } =
     useWindowDimensions();
-  const journeyState = useAppSelector((state) => state.journey.journeyState);
   const insets = useSafeAreaInsets();
 
-  // Get config from context
-  const config = useJourneyConfig();
-  const unitConfigMap: Map<string, UnitConfig> = new Map(
-    config.units.length > 0
-      ? config.units.map((uc: UnitConfig) => [uc.id, uc])
-      : (journeyState?.units || []).map((unit) => [
-          unit.id,
-          {
-            ...unit,
-            colorThemeKey: unit.colorScheme as any,
-            divider: {
-              title: unit.title,
-              showJumpHere: true,
-            },
-            mascotPlacements: unit.mascotPlacements.map((mp) => ({
-              afterNodeIndex: mp.afterNodeIndex,
-              side: mp.position === "left" ? "left" : "right",
-              messageKey: mp.message ?? "",
-            })),
-          } as UnitConfig,
-        ]),
-  );
+  const handleCourseSelect = (slug: string) => {
+    setActiveSlug(slug);
+  };
 
-  const stats = journeyState?.stats || {
+  const currentActiveSlug = activeSlug || enrolledCourses?.activeSlug;
+
+  // Get config from context
+
+  const stats = {
     streakDays: 0,
     wallet: { coins: 0, gems: 0 },
     hearts: 5,
@@ -68,21 +57,35 @@ export default function JourneyMapContainer({
     xp: stats.totalXP,
   };
 
-  if (!slugOverride) {
+  if (isLoadingCourses) {
     return <JourneyLoadingSkeleton />;
   }
+
+  if (coursesError) {
+    return <JourneyLoadingSkeleton />;
+  }
+
+  console.log("enrolledCoursesss", enrolledCourses?.items);
+
+  const enrolledCoursesWithActiveSlug = enrolledCourses
+    ? {
+        ...enrolledCourses,
+        activeSlug: currentActiveSlug || enrolledCourses.activeSlug,
+      }
+    : undefined;
 
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
-        <DuolingoHeader stats={headerStats} />
+        <DuolingoHeader
+          stats={headerStats}
+          enrolledCourses={enrolledCoursesWithActiveSlug}
+          onCourseSelect={handleCourseSelect}
+        />
         <JourneyMapFlashList
-          key={slugOverride}
-          journeyState={journeyState || undefined}
-          config={config}
-          unitConfigMap={unitConfigMap}
-          slugOverride={slugOverride}
+          key={currentActiveSlug}
+          slugOverride={currentActiveSlug || undefined}
         />
       </View>
     </>

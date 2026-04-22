@@ -30,8 +30,34 @@ export interface DuolingoHeaderStats {
   xp: number;
 }
 
+export interface EnrolledCourse {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  colorScheme: string;
+  colorThemeKey: string;
+  category: string;
+  difficulty: string;
+  estimatedDays: number;
+  totalNodes: number;
+  completedNodes: number;
+  isEnrolled: boolean;
+  enrollmentStatus: string;
+  iconKey: string;
+  iconUrl: string | null;
+  sections: any[];
+}
+
+export interface EnrolledCoursesResponse {
+  activeSlug: string;
+  items: EnrolledCourse[];
+}
+
 interface DuolingoHeaderProps {
   stats?: DuolingoHeaderStats;
+  enrolledCourses?: EnrolledCoursesResponse;
+  onCourseSelect?: (slug: string) => void;
 }
 const HeaderButton = ({
   Icon,
@@ -55,7 +81,11 @@ const HeaderButton = ({
     </Pressable>
   );
 };
-export const DuolingoHeader = ({ stats }: DuolingoHeaderProps) => {
+export const DuolingoHeader = ({
+  stats,
+  enrolledCourses,
+  onCourseSelect,
+}: DuolingoHeaderProps) => {
   const [headerHeight, setHeaderHeight] = useState(0);
   const { height: windoHeight } = useWindowDimensions();
   const translateY = useSharedValue(0);
@@ -160,7 +190,11 @@ export const DuolingoHeader = ({ stats }: DuolingoHeaderProps) => {
               ]}
               onPress={handleTouchStart}
             />
-            <HeaderOverlayContent translateY={translateY} />
+            <HeaderOverlayContent
+              translateY={translateY}
+              enrolledCourses={enrolledCourses}
+              onCourseSelect={onCourseSelect}
+            />
           </Animated.View>
         </FullWindowOverlay>
       )}

@@ -21,16 +21,12 @@ export function SectionList({
 }: SectionListProps) {
   return (
     <View>
-      <RNText
-        style={{ fontSize: 20, fontWeight: "bold", marginBottom: 16 }}
-      >
+      <RNText style={{ fontSize: 20, fontWeight: "bold", marginBottom: 16 }}>
         Course Sections
       </RNText>
       {sectionList && sectionList.length > 0 ? (
         sectionList.map((section: Section, index: number) => {
-          const isActive =
-            (section.sectionNumber || section.unitNumber) ===
-            currentSectionNumber;
+          const isActive = section.sectionNumber === currentSectionNumber;
           return (
             <Pressable
               key={section.unitNumber}
@@ -56,8 +52,7 @@ export function SectionList({
                   color: isActive ? "#1976D2" : "#333",
                 }}
               >
-                Section {section.sectionNumber || section.unitNumber}:{" "}
-                {section.title}
+                Section {section.sectionNumber}: {section.title}
               </RNText>
               <RNText style={{ fontSize: 14, color: "#666" }}>
                 {section.nodeCount} nodes
@@ -78,9 +73,7 @@ export function SectionList({
           );
         })
       ) : (
-        <RNText
-          style={{ color: "#999", textAlign: "center", marginTop: 20 }}
-        >
+        <RNText style={{ color: "#999", textAlign: "center", marginTop: 20 }}>
           No sections available
         </RNText>
       )}

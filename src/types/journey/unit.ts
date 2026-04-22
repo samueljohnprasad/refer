@@ -11,9 +11,9 @@ export interface MascotPlacement {
   /** Show mascot after this node index */
   afterNodeIndex: number;
   /** Which side of the path to place the mascot */
-  position: MascotSide;
-  /** Optional message the mascot displays */
-  message?: string;
+  side: MascotSide;
+  /** Key into the mascot message registry, or a literal string */
+  messageKey?: string;
   /** Image key for the mascot avatar (e.g. 'panda-writing') */
   imageKey?: string;
   /** Avatar render size in dp */
@@ -27,10 +27,10 @@ export interface MascotPlacement {
 /** A unit (section) containing multiple nodes */
 export interface UnitData {
   id: string;
-  sectionId?: string;
-  sectionNumber?: number;
+  sectionId: string;
+  sectionNumber: number;
   unitNumber: number;
-  globalUnitNumber?: number;
+  globalUnitNumber: number;
   title: string;
   description: string;
   colorScheme: UnitColorScheme;

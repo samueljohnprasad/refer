@@ -5,8 +5,8 @@
  * Used by the merge function to combine with UserJourneyProgress.
  */
 
-import type { UnitColorScheme, MascotSide } from './enums';
-import type { JourneyReward } from './node';
+import type { UnitColorScheme, MascotSide } from "./enums";
+import type { JourneyReward } from "./node";
 
 // ---------------------------------------------------------------------------
 // Template node (static definition — no user state)
@@ -35,8 +35,8 @@ export interface JourneyTemplateNode {
 /** Mascot placement config within a unit */
 export interface TemplateMascotPlacement {
   afterNodeIndex: number;
-  position: MascotSide;
-  message?: string;
+  side: MascotSide;
+  messageKey?: string;
 }
 
 /** A unit (section) in a journey template */
@@ -87,5 +87,5 @@ export interface JourneyListItem {
   totalNodes: number;
   completedNodes: number;
   isEnrolled: boolean;
-  enrollmentStatus: 'active' | 'completed' | null;
+  enrollmentStatus: "active" | "completed" | null;
 }

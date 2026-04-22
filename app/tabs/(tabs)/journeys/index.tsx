@@ -16,25 +16,9 @@ import { JourneyLoadingSkeleton } from "@/src/components/journey";
 const log = createLogger("JourneysTab");
 
 export default function JourneysTab(): React.JSX.Element {
-  const {
-    data: enrolledCourses,
-    isLoading: isLoadingCourses,
-    error: coursesError,
-  } = useGetEnrolledCoursesQuery();
-
-  if (coursesError) {
-    return <JourneyLoadingSkeleton />;
-  }
-
-  if (isLoadingCourses) {
-    return <JourneyLoadingSkeleton />;
-  }
-
   return (
     <JourneyConfigProvider>
-      <JourneyMapContainer
-        slugOverride={enrolledCourses?.activeSlug ?? undefined}
-      />
+      <JourneyMapContainer />
     </JourneyConfigProvider>
   );
 }
