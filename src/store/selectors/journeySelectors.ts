@@ -24,17 +24,13 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 // Base selectors
 // ---------------------------------------------------------------------------
 
-const selectUnitsFromStore = (state: RootState): UnitData[] =>
+export const selectUnits = (state: RootState): UnitData[] =>
   state.sectionMap.units;
 
-const selectJourneyConfig = (state: RootState): JourneyConfig | null =>
-  state.journey.config;
-
-// ---------------------------------------------------------------------------
-// Derived: Units (direct from store — no extraction needed)
-// ---------------------------------------------------------------------------
-
-export const selectUnits = selectUnitsFromStore;
+const selectJourneyConfig = (state: RootState): JourneyConfig | null => {
+  if (!state.enrolledCourses) return null;
+  return state.enrolledCourses.config ?? null;
+};
 
 // ---------------------------------------------------------------------------
 // Derived: Completed counts

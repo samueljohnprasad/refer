@@ -9,8 +9,7 @@
  * - Hot-swappable config at runtime
  */
 
-import React, { createContext, useContext, useEffect, useMemo } from "react";
-import type { ReactNode } from "react";
+import React, { useContext } from "react";
 import {
   ColorThemeConfig,
   JourneyConfig,
@@ -20,65 +19,17 @@ import {
   UnitConfig,
 } from "../types/journey";
 import { DEFAULT_JOURNEY_CONFIG } from "../data/journey";
-import { useAppDispatch } from "../store/hooks";
-import { setJourneyConfig } from "../store/slices/journeySlice";
-
-// ---------------------------------------------------------------------------
-// Context
-// ---------------------------------------------------------------------------
-
-const JourneyConfigContext = createContext<JourneyConfig | undefined>(
-  undefined,
-);
-
-// ---------------------------------------------------------------------------
-// Provider
-// ---------------------------------------------------------------------------
-
-interface JourneyConfigProviderProps {
-  /** Override config for testing or remote config. Falls back to default. */
-  config?: JourneyConfig;
-  children: ReactNode;
-}
-
-/**
- * Wrap the journey screen tree with this provider.
- * All journey components read config from this context.
- */
-export function JourneyConfigProvider({
-  config,
-  children,
-}: JourneyConfigProviderProps): React.JSX.Element {
-  const dispatch = useAppDispatch();
-  const value: JourneyConfig = useMemo(
-    () => config ?? DEFAULT_JOURNEY_CONFIG,
-    [config],
-  );
-
-  useEffect(() => {
-    dispatch(setJourneyConfig(value));
-  }, [dispatch, value]);
-
-  return (
-    <JourneyConfigContext.Provider value={value}>
-      {children}
-    </JourneyConfigContext.Provider>
-  );
-}
+import { useAppSelector } from "../store/hooks";
+import { selectJourneyConfig } from "../store/slices/enrolledCoursesSlice";
 
 // ---------------------------------------------------------------------------
 // Primary hook — full config
 // ---------------------------------------------------------------------------
 
-/** Access the full JourneyConfig object. Must be inside JourneyConfigProvider. */
+/** Access the full JourneyConfig object from Redux state. */
 export function useJourneyConfig(): JourneyConfig {
-  const ctx: JourneyConfig | undefined = useContext(JourneyConfigContext);
-  if (!ctx) {
-    throw new Error(
-      "useJourneyConfig must be used within a <JourneyConfigProvider>",
-    );
-  }
-  return ctx;
+  const reduxConfig = useAppSelector(selectJourneyConfig);
+  return reduxConfig ?? DEFAULT_JOURNEY_CONFIG;
 }
 
 // ---------------------------------------------------------------------------

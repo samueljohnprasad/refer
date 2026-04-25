@@ -1,8 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createSelector } from "@reduxjs/toolkit";
-import type { MentalHealthJourneyListItem } from "@/src/types/journey";
+import type {
+  MentalHealthJourneyListItem,
+  JourneyConfig,
+} from "@/src/types/journey";
 import type { SectionListItem } from "@/src/types/journey/sectionMap";
 import type { RootState } from "@/src/store/store";
+import { DEFAULT_JOURNEY_CONFIG } from "@/src/data/journey";
 
 export interface EnrolledCoursesData {
   items: MentalHealthJourneyListItem[];
@@ -13,11 +17,13 @@ interface EnrolledCoursesState {
   data: EnrolledCoursesData | null;
   /** User-overridden section number (from section switcher). Null = use activeSection from API. */
   currentSectionOverride: number | null;
+  config: JourneyConfig | null;
 }
 
 const initialState: EnrolledCoursesState = {
   data: null,
   currentSectionOverride: null,
+  config: DEFAULT_JOURNEY_CONFIG,
 };
 
 const enrolledCoursesSlice = createSlice({
@@ -47,6 +53,9 @@ const enrolledCoursesSlice = createSlice({
       state.data = null;
       state.currentSectionOverride = null;
     },
+    setJourneyConfig: (state, action: PayloadAction<JourneyConfig>) => {
+      state.config = action.payload;
+    },
   },
 });
 
@@ -56,6 +65,7 @@ export const {
   setCurrentSectionNumber,
   resetActiveSlug,
   resetEnrolledCourses,
+  setJourneyConfig,
 } = enrolledCoursesSlice.actions;
 
 // ---------------------------------------------------------------------------
@@ -95,6 +105,11 @@ export const selectSectionTitle = createSelector(
 export const selectSectionList = createSelector(
   selectActiveCourse,
   (activeCourse): SectionListItem[] => activeCourse?.sections ?? [],
+);
+
+export const selectJourneyConfig = createSelector(
+  selectEnrolledCoursesState,
+  (state): JourneyConfig | null => state.config,
 );
 
 export default enrolledCoursesSlice.reducer;
