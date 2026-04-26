@@ -1,51 +1,24 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { fetchSectionUnits } from "@/src/lib/api/journeyApi";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { fetchSectionUnits as fetchSectionUnitsApi } from "@/src/lib/api/journeyApi";
 import type { UnitData } from "@/src/types/journey/unit";
-import { setSectionUnits } from "@/src/store/slices/sectionMapSlice";
 
-export const sectionMapApi = createApi({
-  reducerPath: "sectionMapApi",
-  baseQuery: async (args) => {
-    try {
-      const { slug, sectionNumber } = args as {
-        slug: string;
-        sectionNumber: number;
-      };
-      const response = await fetchSectionUnits(slug, sectionNumber);
+export const fetchSectionUnits = createAsyncThunk<
+  UnitData[] | null,
+  { slug: string; sectionNumber: number },
+  { rejectValue: string }
+>("sectionMap/fetchSectionUnits", async (args, { rejectWithValue }) => {
+  try {
+    const { slug, sectionNumber } = args;
+    const response = await fetchSectionUnitsApi(slug, sectionNumber);
 
-      if (!response.success) {
-        return {
-          error: {
-            status: "CUSTOM_ERROR",
-            error: response.error ?? "Failed to fetch section units",
-          },
-        };
-      }
-
-      return { data: response.data };
-    } catch (error) {
-      return {
-        error: {
-          status: "CUSTOM_ERROR",
-          error: error instanceof Error ? error.message : "Unknown error",
-        },
-      };
+    if (!response.success) {
+      return rejectWithValue(response.error ?? "Failed to fetch section units");
     }
-  },
-  endpoints: (builder) => ({
-    getSectionUnits: builder.query<
-      UnitData[] | null,
-      { slug: string; sectionNumber: number }
-    >({
-      query: ({ slug, sectionNumber }) => ({ slug, sectionNumber }),
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
-        if (data) {
-          dispatch(setSectionUnits(data));
-        }
-      },
-    }),
-  }),
-});
 
-export const { useGetSectionUnitsQuery } = sectionMapApi;
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(
+      error instanceof Error ? error.message : "Unknown error",
+    );
+  }
+});

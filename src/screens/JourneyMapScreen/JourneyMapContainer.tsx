@@ -14,7 +14,7 @@ import {
   DuolingoHeaderStats,
 } from "@/src/components/journey/DuolingoHeader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useGetEnrolledCoursesQuery } from "@/src/store/api/enrolledCoursesApi";
+import { fetchEnrolledCourses } from "@/src/store/api/enrolledCoursesApi";
 import { setActiveSlug } from "@/src/store/slices/enrolledCoursesSlice";
 
 const USE_FLASH_LIST = true;
@@ -23,16 +23,16 @@ const log = createLogger("JourneyMapContainer");
 export interface JourneyMapContainerProps {}
 
 export default function JourneyMapContainer({}: JourneyMapContainerProps = {}): React.JSX.Element {
-  const {
-    data: enrolledCourses,
-    isLoading: isLoadingCourses,
-    error: coursesError,
-  } = useGetEnrolledCoursesQuery();
-
   const dispatch = useAppDispatch();
-  const enrolledCoursesData = useAppSelector(
-    (state) => state.enrolledCourses.data,
+  const enrolledCoursesData = useAppSelector((state) => state.enrolledCourses.data);
+  const isLoadingCourses = useAppSelector(
+    (state) => state.enrolledCourses.isLoading,
   );
+  const coursesError = useAppSelector((state) => state.enrolledCourses.error);
+
+  React.useEffect(() => {
+    void dispatch(fetchEnrolledCourses());
+  }, [dispatch]);
 
   const { width: viewportWidth, height: viewportHeight } =
     useWindowDimensions();
@@ -43,8 +43,8 @@ export default function JourneyMapContainer({}: JourneyMapContainerProps = {}): 
   };
 
   const currentActiveSlug =
-    enrolledCoursesData?.activeSlug || enrolledCourses?.activeSlug;
-  const coursesData = enrolledCoursesData || enrolledCourses;
+    enrolledCoursesData?.activeSlug;
+  const coursesData = enrolledCoursesData;
 
   // Get config from context
 
@@ -67,7 +67,7 @@ export default function JourneyMapContainer({}: JourneyMapContainerProps = {}): 
     return <JourneyLoadingSkeleton />;
   }
 
-  if (coursesError) {
+  if (coursesError && !coursesData) {
     return <JourneyLoadingSkeleton />;
   }
 

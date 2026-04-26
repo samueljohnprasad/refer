@@ -9,7 +9,6 @@ import { useJourneyOnboarding } from "@/src/hooks/useJourneyOnboarding";
 import { createLogger } from "@/src/lib/logger";
 import JourneyMapContainer from "@/src/screens/JourneyMapScreen/JourneyMapContainer";
 import type { SectionViewMode } from "@/src/types/journey/sectionMap";
-import { useGetEnrolledCoursesQuery } from "@/src/store/api/enrolledCoursesApi";
 import { JourneyLoadingSkeleton } from "@/src/components/journey";
 
 const log = createLogger("JourneysTab");

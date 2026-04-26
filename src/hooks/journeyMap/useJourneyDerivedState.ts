@@ -1,6 +1,15 @@
 import { useAppSelector } from "@/src/store/hooks";
-import { selectActiveGlobalIndex, selectActiveNodeIndex, selectActiveNodeY, selectFlashListData, selectTotalCompletedCount, selectUnitCompletedCounts, selectUnits } from "@/src/store/selectors/journeySelectors";
-
+import {
+  selectActiveGlobalIndex,
+  selectActiveNodeY,
+  selectFlashListData,
+} from "@/src/store/selectors/journeySelectors";
+import {
+  selectActiveNodeIndex,
+  selectTotalCompletedCount,
+  selectUnitCompletedCounts,
+  selectUnits,
+} from "@/src/store/slices/sectionMapSelectors";
 
 export function useJourneyDerivedState() {
   const units = useAppSelector(selectUnits);

@@ -4,7 +4,7 @@ import { Flag } from "@/assets/icons";
 
 type HomeMainButtonProps = {
   unitLabel: string;
-  sectionTitle: string;
+  unitTitle: string;
   faceColor: string;
   rimColor: string;
   onPress: () => void;
@@ -12,7 +12,7 @@ type HomeMainButtonProps = {
 
 export const HomeMainButton = ({
   unitLabel,
-  sectionTitle,
+  unitTitle,
   faceColor,
   rimColor,
   onPress,
@@ -40,7 +40,7 @@ export const HomeMainButton = ({
         <Text className="text-lg font-rd-medium" style={{ color: "#ecffde" }}>
           {unitLabel}
         </Text>
-        <Text className="text-white text-xl font-bold">{sectionTitle}</Text>
+        <Text className="text-white text-xl font-bold">{unitTitle}</Text>
       </SvgAppButton>
       <SvgAppButton
         width={55}

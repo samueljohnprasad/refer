@@ -7,6 +7,7 @@ import type {
 import type { SectionListItem } from "@/src/types/journey/sectionMap";
 import type { RootState } from "@/src/store/store";
 import { DEFAULT_JOURNEY_CONFIG } from "@/src/data/journey";
+import { fetchEnrolledCourses } from "@/src/store/api/enrolledCoursesApi";
 
 export interface EnrolledCoursesData {
   items: MentalHealthJourneyListItem[];
@@ -18,12 +19,16 @@ interface EnrolledCoursesState {
   /** User-overridden section number (from section switcher). Null = use activeSection from API. */
   currentSectionOverride: number | null;
   config: JourneyConfig | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 const initialState: EnrolledCoursesState = {
   data: null,
   currentSectionOverride: null,
   config: DEFAULT_JOURNEY_CONFIG,
+  isLoading: false,
+  error: null,
 };
 
 const enrolledCoursesSlice = createSlice({
@@ -56,6 +61,25 @@ const enrolledCoursesSlice = createSlice({
     setJourneyConfig: (state, action: PayloadAction<JourneyConfig>) => {
       state.config = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchEnrolledCourses.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchEnrolledCourses.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.data = action.payload;
+      })
+      .addCase(fetchEnrolledCourses.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          action.payload ??
+          action.error.message ??
+          "Failed to fetch enrolled courses";
+      });
   },
 });
 

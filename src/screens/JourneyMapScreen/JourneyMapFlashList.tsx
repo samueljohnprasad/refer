@@ -49,12 +49,11 @@ import type {
 import { MascotSide } from "@/src/types/journey";
 import { useJourneyDerivedState } from "@/src/hooks/journeyMap";
 import { useVisibleUnit } from "@/src/hooks/useVisibleUnit";
-import { useGetSectionUnitsQuery } from "@/src/store/api/sectionMapApi";
+import { fetchSectionUnits } from "@/src/store/api/sectionMapApi";
 import { useAppSelector, useAppDispatch } from "@/src/store/hooks";
 import {
   setCurrentSectionNumber,
   selectCurrentSectionNumber,
-  selectSectionTitle,
   selectSectionList,
 } from "@/src/store/slices/enrolledCoursesSlice";
 
@@ -204,15 +203,22 @@ export function JourneyMapFlashListInner({
   const dispatch = useAppDispatch();
 
   const currentSectionNumber = useAppSelector(selectCurrentSectionNumber);
-  const sectionTitle = useAppSelector(selectSectionTitle);
   const sectionList = useAppSelector(selectSectionList);
+  const isSectionLoading = useAppSelector((state) => state.sectionMap.isLoading);
+  const sectionError = useAppSelector((state) => state.sectionMap.error);
 
-  // Fetch units + nodes for the active section (re-fetches on section switch)
-  const { isLoading: isSectionLoading, error: sectionError } =
-    useGetSectionUnitsQuery(
-      { slug: slugOverride || "", sectionNumber: currentSectionNumber },
-      { skip: !slugOverride },
+  React.useEffect(() => {
+    if (!slugOverride) {
+      return;
+    }
+
+    void dispatch(
+      fetchSectionUnits({
+        slug: slugOverride,
+        sectionNumber: currentSectionNumber,
+      }),
     );
+  }, [currentSectionNumber, dispatch, slugOverride]);
 
   const { flashListData, activeGlobalIndex, units } = useJourneyDerivedState();
 
@@ -264,7 +270,7 @@ export function JourneyMapFlashListInner({
       <HomeMainButton
         onPress={() => setIsPresented(true)}
         unitLabel={`Section ${currentSectionNumber ?? 1}, Unit ${visibleUnit.unitNumber}`}
-        sectionTitle={sectionTitle ?? visibleUnit.unitTitle}
+        unitTitle={visibleUnit.unitTitle}
         faceColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[0] || "#4CAF50"}
         rimColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[1] || "#388E3C"}
       />

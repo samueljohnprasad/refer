@@ -4,6 +4,160 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { auth } from "../save-journal-ai-insights/auth.ts";
 
+const ENROLLMENT_SELECT =
+  "id, journey_id, status, current_section_number, current_unit_number, current_section_unit_number";
+const DEFAULT_JOURNEY_SLUG = "anxiety-toolkit";
+
+type EnrollmentRow = {
+  id: string;
+  journey_id: string;
+  status: string;
+  current_section_number: number | null;
+  current_unit_number: number | null;
+  current_section_unit_number: number | null;
+};
+
+async function fetchUserEnrollments(
+  adminSupabase: any,
+  userId: string,
+): Promise<{ data: EnrollmentRow[] | null; error: string | null }> {
+  const { data, error } = await adminSupabase
+    .from("user_journey_enrollments")
+    .select(ENROLLMENT_SELECT)
+    .eq("user_id", userId)
+    .order("enrolled_at", { ascending: false });
+
+  if (error) {
+    console.error("Enrollments query error:", error);
+    return { data: null, error: error.message };
+  }
+
+  return { data: (data as EnrollmentRow[] | null) ?? [], error: null };
+}
+
+async function getOrCreateUserEnrollments(
+  adminSupabase: any,
+  userId: string,
+): Promise<{ data: EnrollmentRow[] | null; error: string | null }> {
+  const existingEnrollments = await fetchUserEnrollments(adminSupabase, userId);
+  if (existingEnrollments.error || !existingEnrollments.data) {
+    return existingEnrollments;
+  }
+
+  if (existingEnrollments.data.length > 0) {
+    return existingEnrollments;
+  }
+
+  const { data: defaultJourney, error: defaultJourneyError } = await adminSupabase
+    .from("journey_templates")
+    .select("id, version")
+    .eq("slug", DEFAULT_JOURNEY_SLUG)
+    .eq("is_active", true)
+    .single();
+
+  if (defaultJourneyError || !defaultJourney?.id) {
+    console.error("Default journey lookup error:", defaultJourneyError);
+    return {
+      data: null,
+      error: defaultJourneyError?.message ?? "Default journey not found",
+    };
+  }
+
+  const { data: firstSection, error: firstSectionError } = await adminSupabase
+    .from("journey_template_sections")
+    .select("id, section_number")
+    .eq("journey_id", defaultJourney.id)
+    .order("section_number", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (firstSectionError || !firstSection?.id) {
+    console.error("Default journey first section lookup error:", firstSectionError);
+    return {
+      data: null,
+      error: firstSectionError?.message ?? "Default journey first section not found",
+    };
+  }
+
+  const { data: firstUnit, error: firstUnitError } = await adminSupabase
+    .from("journey_template_units")
+    .select("id, unit_number, section_unit_number")
+    .eq("journey_id", defaultJourney.id)
+    .eq("section_id", firstSection.id)
+    .order("section_unit_number", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (firstUnitError || !firstUnit?.id) {
+    console.error("Default journey first unit lookup error:", firstUnitError);
+    return {
+      data: null,
+      error: firstUnitError?.message ?? "Default journey first unit not found",
+    };
+  }
+
+  const { data: firstNode, error: firstNodeError } = await adminSupabase
+    .from("journey_template_nodes")
+    .select("id")
+    .eq("unit_id", firstUnit.id)
+    .order("node_index", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (firstNodeError || !firstNode?.id) {
+    console.error("Default journey first node lookup error:", firstNodeError);
+    return {
+      data: null,
+      error: firstNodeError?.message ?? "Default journey first node not found",
+    };
+  }
+
+  const { data: createdEnrollment, error: createEnrollmentError } =
+    await adminSupabase
+      .from("user_journey_enrollments")
+      .insert({
+        user_id: userId,
+        journey_id: defaultJourney.id,
+        template_version: defaultJourney.version ?? 1,
+        current_section_id: firstSection.id,
+        current_unit_id: firstUnit.id,
+        current_section_number: firstSection.section_number,
+        current_unit_number: firstUnit.unit_number,
+        current_section_unit_number: firstUnit.section_unit_number,
+        status: "active",
+      })
+      .select(ENROLLMENT_SELECT)
+      .single();
+
+  if (createEnrollmentError) {
+    if (createEnrollmentError.code === "23505") {
+      return fetchUserEnrollments(adminSupabase, userId);
+    }
+
+    console.error("Default enrollment insert error:", createEnrollmentError);
+    return { data: null, error: createEnrollmentError.message };
+  }
+
+  const { error: createNodeProgressError } = await adminSupabase
+    .from("user_node_progress")
+    .insert({
+      user_id: userId,
+      enrollment_id: createdEnrollment.id,
+      node_id: firstNode.id,
+      status: "active",
+      progress: 0.0,
+    });
+
+  if (createNodeProgressError && createNodeProgressError.code !== "23505") {
+    console.error(
+      "Default enrollment first node insert error:",
+      createNodeProgressError,
+    );
+  }
+
+  return { data: [createdEnrollment as EnrollmentRow], error: null };
+}
+
 Deno.serve(async (req: Request) => {
   try {
     const authHeader = req.headers.get("Authorization");
@@ -37,26 +191,26 @@ Deno.serve(async (req: Request) => {
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhcWV1ZXNoeHBlaGlqdHh3a2xvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MjU5NjY4MywiZXhwIjoyMDY4MTcyNjgzfQ.V5jpUlbJsNQAOH4jFjwfjSG4MK4SA2vVnAKLI99mPlE";
     const adminSupabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // First, fetch user's enrollments
-    const { data: enrollments, error: enrollmentsError } = await adminSupabase
-      .from("user_journey_enrollments")
-      .select("id, journey_id, status, current_section_number, current_unit_number, current_section_unit_number")
-      .eq("user_id", user.id)
-      .order("enrolled_at", { ascending: false });
+    const {
+      data: enrollments,
+      error: enrollmentsError,
+    } = await getOrCreateUserEnrollments(adminSupabase, user.id);
 
     if (enrollmentsError) {
-      console.error("Enrollments query error:", enrollmentsError);
-      return new Response(JSON.stringify({ error: enrollmentsError.message }), {
+      return new Response(JSON.stringify({ error: enrollmentsError }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
       });
     }
 
     if (!enrollments || enrollments.length === 0) {
-      return new Response(JSON.stringify({ data: [] }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: "No enrollments found or created" }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     }
 
     // Extract journey IDs from enrollments

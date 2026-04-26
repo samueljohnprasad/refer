@@ -1,18 +1,13 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { Dimensions } from "react-native";
-import type { RootState } from "@/src/store/store";
-import type {
-  UnitData,
-  PathNodeData,
-  JourneyFlashListItem,
-  JourneyNode,
-  JourneyConfig,
-} from "@/src/types/journey";
-import { NodeStatus } from "@/src/types/journey";
+import type { JourneyFlashListItem, JourneyNode } from "@/src/types/journey";
 import {
   buildJourneyNodes,
   type BuildJourneyNodesInput,
 } from "@/src/utils/journey/buildJourneyNodes";
+import { selectUnits } from "@/src/store/slices/sectionMapSelectors";
+import { selectJourneyConfig } from "@/src/store/slices/enrolledCoursesSlice";
+import { selectActiveNodeIndex } from "@/src/store/slices/sectionMapSelectors";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -21,57 +16,7 @@ import {
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 // ---------------------------------------------------------------------------
-// Base selectors
-// ---------------------------------------------------------------------------
-
-export const selectUnits = (state: RootState): UnitData[] =>
-  state.sectionMap.units;
-
-const selectJourneyConfig = (state: RootState): JourneyConfig | null => {
-  if (!state.enrolledCourses) return null;
-  return state.enrolledCourses.config ?? null;
-};
-
-// ---------------------------------------------------------------------------
-// Derived: Completed counts
-// ---------------------------------------------------------------------------
-
-export const selectUnitCompletedCounts = createSelector(
-  selectUnits,
-  (units): Record<string, number> =>
-    units.reduce(
-      (counts, unit) => {
-        const completed = unit.nodes.filter(
-          (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
-        ).length;
-
-        counts[unit.id] = completed;
-
-        const sectionNumber = unit.sectionNumber;
-        counts[`section_${sectionNumber}`] =
-          (counts[`section_${sectionNumber}`] ?? 0) + completed;
-
-        return counts;
-      },
-      {} as Record<string, number>,
-    ),
-);
-
-export const selectTotalCompletedCount = createSelector(
-  selectUnits,
-  (units): number =>
-    units.reduce(
-      (acc, unit) =>
-        acc +
-        unit.nodes.filter(
-          (n: PathNodeData) => n.status === NodeStatus.COMPLETED,
-        ).length,
-      0,
-    ),
-);
-
-// ---------------------------------------------------------------------------
-// Derived: FlashList data
+// Derived: FlashList data (cross-slice selector)
 // ---------------------------------------------------------------------------
 
 export const selectFlashListData = createSelector(
@@ -89,25 +34,6 @@ export const selectFlashListData = createSelector(
     };
 
     return buildJourneyNodes(input);
-  },
-);
-
-// ---------------------------------------------------------------------------
-// Derived: Active node index (flat)
-// ---------------------------------------------------------------------------
-
-export const selectActiveNodeIndex = createSelector(
-  selectUnits,
-  (units): number => {
-    let idx = 0;
-    const found = units.find((unit) =>
-      unit.nodes.find((node) => {
-        if (node.status === NodeStatus.ACTIVE) return true;
-        idx++;
-        return false;
-      }),
-    );
-    return found ? idx : -1;
   },
 );
 
