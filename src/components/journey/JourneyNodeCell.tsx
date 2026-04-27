@@ -77,7 +77,8 @@ function JourneyNodeCellInner({
 
   // Determine segment color:
   // - completed nodes always carry a completed/progress connector
-  // - active journeys still color up to the current active node boundary
+  // - segments before the active node are colored (completed path)
+  // - the active node's segment is also colored (progress path)
   const isProgressSegment: boolean =
     item.status === NodeStatus.COMPLETED ||
     (activeGlobalIndex >= 0 && item.globalIndex <= activeGlobalIndex);

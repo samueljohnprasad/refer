@@ -92,48 +92,4 @@ export const {
   setJourneyConfig,
 } = enrolledCoursesSlice.actions;
 
-// ---------------------------------------------------------------------------
-// Selectors
-// ---------------------------------------------------------------------------
-
-const selectEnrolledCoursesState = (state: RootState) => state.enrolledCourses;
-
-export const selectActiveCourse = createSelector(
-  selectEnrolledCoursesState,
-  (ec): MentalHealthJourneyListItem | undefined => {
-    const slug = ec.data?.activeSlug;
-    if (!slug) return undefined;
-    return ec.data?.items?.find((c) => c.slug === slug);
-  },
-);
-
-export const selectCurrentSectionNumber = createSelector(
-  selectEnrolledCoursesState,
-  selectActiveCourse,
-  (ec, activeCourse): number =>
-    ec.currentSectionOverride ?? activeCourse?.activeSection ?? 1,
-);
-
-export const selectCurrentSection = createSelector(
-  selectActiveCourse,
-  selectCurrentSectionNumber,
-  (activeCourse, sectionNumber): SectionListItem | undefined =>
-    activeCourse?.sections?.find((s) => s.sectionNumber === sectionNumber),
-);
-
-export const selectSectionTitle = createSelector(
-  selectCurrentSection,
-  (section): string => section?.title ?? "",
-);
-
-export const selectSectionList = createSelector(
-  selectActiveCourse,
-  (activeCourse): SectionListItem[] => activeCourse?.sections ?? [],
-);
-
-export const selectJourneyConfig = createSelector(
-  selectEnrolledCoursesState,
-  (state): JourneyConfig | null => state.config,
-);
-
 export default enrolledCoursesSlice.reducer;

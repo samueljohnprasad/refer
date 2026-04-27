@@ -9,7 +9,8 @@ import React, {
 import { View, ScrollView, Pressable, Text } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Stack } from "expo-router";
-import { Host, Picker } from "@expo/ui/swift-ui";
+import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
+import { pickerStyle, tag } from "@expo/ui/swift-ui/modifiers";
 import {
   format,
   addDays,
@@ -345,20 +346,26 @@ const DailyNotesScreenComponent = () => {
             <View className="px-4 py-2">
               <Host matchContents>
                 <Picker
+                  modifiers={[pickerStyle("segmented")]}
                   label="View"
-                  options={filterOptions}
-                  selectedIndex={filterIndex}
-                  onOptionSelected={({ nativeEvent: { index } }) => {
-                    setFilterIndex(index);
+                  selection={filterOptions[filterIndex]}
+                  onSelectionChange={(selection) => {
+                    const newIndex = filterOptions.indexOf(selection as string);
+                    setFilterIndex(newIndex);
                     const filters: TabFilter[] = [
                       "journal",
                       "calories",
                       "habits",
                     ];
-                    setTabFilter(filters[index]);
+                    setTabFilter(filters[newIndex]);
                   }}
-                  variant="palette"
-                />
+                >
+                  {filterOptions.map((option) => (
+                    <SwiftUIText key={option} modifiers={[tag(option)]}>
+                      {option}
+                    </SwiftUIText>
+                  ))}
+                </Picker>
               </Host>
             </View>
 

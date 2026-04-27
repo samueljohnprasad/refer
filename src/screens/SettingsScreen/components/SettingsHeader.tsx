@@ -14,6 +14,7 @@ import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
+import { buttonStyle, controlSize, labelStyle, tint } from "@expo/ui/swift-ui/modifiers";
 
 interface SettingsHeaderProps {
   scrollY: Animated.Value;
@@ -53,9 +54,13 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
         <Host matchContents>
           <Button
             onPress={() => router.back()}
-            color="#7B61FF"
-            variant="glassProminent"
-            controlSize="regular"
+            label="Back"
+            modifiers={[
+              labelStyle('iconOnly'),
+              buttonStyle('glassProminent'),
+              controlSize('regular'),
+              tint('#7B61FF')
+            ]}
             systemImage="chevron.left"
           />
         </Host>

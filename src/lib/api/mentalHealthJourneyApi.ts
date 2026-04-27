@@ -317,6 +317,7 @@ export async function fetchMHJourneyCatalog(): Promise<
         ): Promise<MentalHealthJourneyListItem> => {
           let completedNodes: number = 0;
           let isEnrolled: boolean = false;
+          let enrollmentId: string | null = null;
           let enrollmentStatus: MentalHealthJourneyListItem["enrollmentStatus"] =
             null;
 
@@ -332,6 +333,7 @@ export async function fetchMHJourneyCatalog(): Promise<
               .maybeSingle();
 
             if (enrollment) {
+              enrollmentId = enrollment.id as string;
               isEnrolled = enrollment.status === "active";
               enrollmentStatus =
                 enrollment.status as MentalHealthJourneyListItem["enrollmentStatus"];
@@ -362,6 +364,7 @@ export async function fetchMHJourneyCatalog(): Promise<
             totalNodes: (j.total_nodes ?? 0) as number,
             completedNodes,
             isEnrolled,
+            enrollmentId,
             enrollmentStatus,
             colorThemeKey: (j.color_theme_key ?? null) as string | null,
             iconKey: (j.icon_key ?? null) as string | null,

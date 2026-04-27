@@ -22,7 +22,10 @@ export const IntroStep: React.FC<IntroStepProps> = React.memo(
     const iconObj = exerciseType ? getExerciseIcon(exerciseType) : null;
 
     return (
-      <View className="flex-1 justify-center items-center px-6">
+      <View className="flex-1 items-center px-6">
+        {/* Top spacer — shrinks to 0 when content is tall */}
+        <View style={{ flex: 1, maxHeight: 80 }} />
+
         {iconObj ? (
           <View
             className="h-20 w-20 rounded-3xl items-center justify-center mb-6"
@@ -79,11 +82,14 @@ export const IntroStep: React.FC<IntroStepProps> = React.memo(
           </View>
         )}
 
+        {/* Bottom spacer — pushes button toward bottom */}
+        <View style={{ flex: 1, maxHeight: 40 }} />
+
         <Pressable
           onPress={onNext}
           accessibilityRole="button"
           accessibilityLabel="Begin exercise"
-          className="h-14 w-full rounded-2xl items-center justify-center active:opacity-90"
+          className="h-14 w-full rounded-2xl items-center justify-center active:opacity-90 mb-4"
           style={{
             backgroundColor: "#58CC02",
             shadowColor: "#58CC02",

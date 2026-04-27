@@ -63,10 +63,15 @@ export interface UserJourneyProgress {
 // Complete-node response
 // ---------------------------------------------------------------------------
 
-/** Response from the complete_journey_node RPC */
+/** Response from the complete-journey-node edge function */
 export interface CompleteNodeResponse {
   success: boolean;
   error?: string;
+  currentSectionNumber?: number | null;
+  currentUnitNumber?: number | null;
+  currentNodeId?: string | null;
+  enrollmentStatus?: "active" | "completed" | "abandoned" | null;
+  journeyCompleted?: boolean;
   rewards?: {
     xp: number;
     gems: number;

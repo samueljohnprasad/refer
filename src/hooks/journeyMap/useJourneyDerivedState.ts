@@ -9,7 +9,7 @@ import {
   selectTotalCompletedCount,
   selectUnitCompletedCounts,
   selectUnits,
-} from "@/src/store/slices/sectionMapSelectors";
+} from "@/src/store/selectors/sectionMapSelectors";
 
 export function useJourneyDerivedState() {
   const units = useAppSelector(selectUnits);

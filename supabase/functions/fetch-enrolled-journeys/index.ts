@@ -334,6 +334,7 @@ Deno.serve(async (req: Request) => {
           totalNodes: j.total_nodes ?? 0,
           completedNodes,
           isEnrolled,
+          enrollmentId: enrollment?.id ?? null,
           enrollmentStatus,
           colorThemeKey: j.color_theme_key ?? null,
           iconKey: j.icon_key ?? null,

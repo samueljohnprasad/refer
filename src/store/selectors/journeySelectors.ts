@@ -5,9 +5,9 @@ import {
   buildJourneyNodes,
   type BuildJourneyNodesInput,
 } from "@/src/utils/journey/buildJourneyNodes";
-import { selectUnits } from "@/src/store/slices/sectionMapSelectors";
-import { selectJourneyConfig } from "@/src/store/slices/enrolledCoursesSlice";
-import { selectActiveNodeIndex } from "@/src/store/slices/sectionMapSelectors";
+import { selectUnits } from "@/src/store/selectors/sectionMapSelectors";
+import { selectJourneyConfig } from "@/src/store/selectors/enrolledCoursesSelectors";
+import { selectActiveNodeIndex } from "@/src/store/selectors/sectionMapSelectors";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -41,14 +41,33 @@ export const selectFlashListData = createSelector(
 // Derived: Active global index (for path coloring)
 // ---------------------------------------------------------------------------
 
+/**
+ * Returns the `globalIndex` of the currently active node so that path
+ * segments can be coloured accordingly.
+ *
+ * WHY a scan instead of `flashListData[activeNodeIndex]`:
+ * `activeNodeIndex` is a count of pure nodes before the active one, but
+ * `flashListData` is a heterogeneous array (nodes + dividers + mascots).
+ * Using `activeNodeIndex` as an array subscript puts us on a divider most
+ * of the time, returning -1 and making every segment appear grey.
+ *
+ * We scan `flashListData` directly for the first item whose `itemType` is
+ * "node" and whose `status` is "active", then return its stable `globalIndex`.
+ *
+ * Returns -1 when no active node exists (all completed or none loaded).
+ */
 export const selectActiveGlobalIndex = createSelector(
   selectFlashListData,
-  selectActiveNodeIndex,
-  (flashListData, activeNodeIndex): number => {
-    if (activeNodeIndex < 0) return -1;
-    const item = flashListData[activeNodeIndex];
-    if (!item || item.itemType !== "node") return -1;
-    return (item as JourneyNode).globalIndex;
+  (flashListData): number => {
+    for (const item of flashListData) {
+      if (item.itemType === "node") {
+        const node = item as JourneyNode;
+        if (node.status === "active") {
+          return node.globalIndex;
+        }
+      }
+    }
+    return -1;
   },
 );
 

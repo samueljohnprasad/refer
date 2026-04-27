@@ -4,7 +4,7 @@
  *
  * Two data flows:
  * 1. Read: fetch template + progress → merge on client → JourneyState
- * 2. Write: complete_journey_node RPC → refetch progress → re-merge
+ * 2. Write: edge function / direct mutations → refetch progress → re-merge
  *
  * Falls back to mock data when Supabase calls fail (dev/offline).
  */
@@ -176,30 +176,55 @@ export async function updateNodeProgress(
 }
 
 /**
- * Atomically complete a node via server-side RPC.
- * Validates the node is active, marks it completed, unlocks the next,
- * and grants XP/gems rewards — all in one transaction.
+ * Complete a node via the `complete-journey-node` edge function.
+ * The function validates the node is active, marks it completed,
+ * advances the enrollment, and grants rewards.
  */
 export async function completeNodeApi(
   payload: CompleteNodePayload,
 ): Promise<ApiResponse<CompleteNodeResponse>> {
   try {
-    const { data, error } = await supabase.rpc("complete_journey_node", {
-      p_enrollment_id: payload.enrollmentId,
-      p_node_id: payload.nodeId,
-    });
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-    if (error) {
-      log.error("completeNodeApi RPC error", error.message);
+    if (!session?.access_token) {
       return {
-        data: { success: false, error: error.message },
+        data: { success: false, error: "Not authenticated" },
         success: false,
-        error: error.message,
+        error: "Not authenticated",
+      };
+    }
+
+    const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
+    const response = await fetch(
+      `${supabaseUrl}/functions/v1/complete-journey-node`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+
+    const result = (await response.json()) as CompleteNodeResponse;
+
+    if (!response.ok || !result.success) {
+      const message =
+        result.error ??
+        `complete-journey-node failed with status ${response.status}`;
+      log.error("completeNodeApi edge function error", message, payload);
+      return {
+        data: { success: false, error: message },
+        success: false,
+        error: message,
       };
     }
 
     return {
-      data: data as unknown as CompleteNodeResponse,
+      data: result,
       success: true,
     };
   } catch (err) {

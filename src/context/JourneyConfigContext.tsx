@@ -20,7 +20,7 @@ import {
 } from "../types/journey";
 import { DEFAULT_JOURNEY_CONFIG } from "../data/journey";
 import { useAppSelector } from "../store/hooks";
-import { selectJourneyConfig } from "../store/slices/enrolledCoursesSlice";
+import { selectJourneyConfig } from "../store/selectors/enrolledCoursesSelectors";
 
 // ---------------------------------------------------------------------------
 // Primary hook — full config

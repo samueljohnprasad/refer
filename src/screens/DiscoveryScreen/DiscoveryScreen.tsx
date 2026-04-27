@@ -60,7 +60,7 @@ import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
-import { clipShape, foregroundStyle, frame } from "@expo/ui/swift-ui/modifiers";
+import { clipShape, foregroundStyle, frame, buttonStyle, controlSize, labelStyle } from "@expo/ui/swift-ui/modifiers";
 import { BRAND, PALETTE, SURFACE } from "@/constants/palette";
 import { CARD_SHADOW, ELEVATED_SHADOW } from "@/constants/shadows";
 
@@ -412,10 +412,14 @@ function DiscoveryScreen() {
                 <Host matchContents>
                   <Button
                     onPress={handleScanJournal}
-                    variant="glass"
-                    controlSize="extraLarge"
+                    label="Scan"
+                    modifiers={[
+                      buttonStyle('glass'),
+                      controlSize('extraLarge'),
+                      foregroundStyle(COLORS.ink),
+                      labelStyle('iconOnly')
+                    ]}
                     systemImage="camera.fill"
-                    modifiers={[foregroundStyle(COLORS.ink)]}
                   />
                 </Host>
               )}
@@ -454,13 +458,14 @@ function DiscoveryScreen() {
                 <Host matchContents>
                   <Button
                     onPress={handleKeyboardPress}
-                    variant="glass"
-                    controlSize="extraLarge"
-                    systemImage="keyboard.fill"
+                    label="Keyboard"
                     modifiers={[
-                      // clipShape("circle"),
+                      buttonStyle('glass'),
+                      controlSize('extraLarge'),
                       foregroundStyle(COLORS.ink),
+                      labelStyle('iconOnly')
                     ]}
+                    systemImage="keyboard.fill"
                   />
                 </Host>
               )}

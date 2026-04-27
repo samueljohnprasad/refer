@@ -556,6 +556,7 @@ export interface MentalHealthJourneyListItem {
   totalNodes: number;
   completedNodes: number;
   isEnrolled: boolean;
+  enrollmentId: string | null;
   enrollmentStatus: "active" | "completed" | "paused" | "abandoned" | null;
   colorThemeKey: string | null;
   iconKey: string | null;

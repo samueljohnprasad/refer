@@ -4,7 +4,7 @@
  * Handles the entire completion pipeline:
  *
  * 1. Insert immutable completion log (user_node_completions)
- * 2. Mark the node complete via the existing RPC (complete_journey_node)
+ * 2. Mark the node complete via the complete-journey-node edge function
  * 3. Calculate XP: base xp_reward + bonuses (perfect quiz, streak, perfect day)
  * 4. Award Insight Points to the ledger
  * 5. Update streak
