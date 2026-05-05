@@ -1,8 +1,8 @@
-import { AgeRange, Gender } from '@/types/types';
+import type { JourneyStepScreenName } from "@/src/components/journey/journeyStepScreenConfig";
 
 export type OnboardingStepName =
     | 'welcome'
-    | 'demographics'
+    | 'reframe_thoughts_intro'
     | 'goals'
     | 'quick_win_mood'
     | 'feature_discovery'
@@ -49,8 +49,6 @@ export interface PricingPlan {
 
 export interface OnboardingFormDataExtended {
     name: string;
-    ageRange?: AgeRange;
-    gender?: Gender;
     reasons: string[];
     goals: JournalingGoal[];
     quickWinMood?: MoodValue;
@@ -58,11 +56,50 @@ export interface OnboardingFormDataExtended {
     selectedPlan?: 'annual' | 'weekly';
 }
 
+export enum OnboardingRendererKind {
+    JourneyStep = "journey-step",
+    Goals = "goals",
+    QuickWinMood = "quick-win-mood",
+    FeatureDiscovery = "feature-discovery",
+    SoftPaywall = "soft-paywall",
+    Celebration = "celebration",
+}
+
+export type OnboardingStepRendererConfig =
+    | {
+        kind: OnboardingRendererKind.JourneyStep;
+        screenName: JourneyStepScreenName;
+        transitionKey?: string;
+        transitionDuration?: number;
+    }
+    | {
+        kind: OnboardingRendererKind.Goals;
+    }
+    | {
+        kind: OnboardingRendererKind.QuickWinMood;
+    }
+    | {
+        kind: OnboardingRendererKind.FeatureDiscovery;
+    }
+    | {
+        kind: OnboardingRendererKind.SoftPaywall;
+    }
+    | {
+        kind: OnboardingRendererKind.Celebration;
+    };
+
 export interface OnboardingStepConfig {
     name: OnboardingStepName;
     backgroundColor: string;
     canSkip: boolean;
     analyticsLabel: string;
+    showBackButton: boolean;
+    showContinueButton: boolean;
+    continueButtonLabel: string;
+    isContinueEnabled?: (
+        formData: OnboardingFormDataExtended,
+    ) => boolean;
+    renderer: OnboardingStepRendererConfig;
 }
 
 export interface OnboardingAnalyticsEvent {
@@ -95,4 +132,3 @@ export interface OnboardingChecklistItem {
     route: string;
     xpReward: number;
 }
-

@@ -13,17 +13,13 @@ interface UseOnboardingFlowReturn {
     goNext: () => void;
     goBack: () => void;
     skipToStep: (stepName: OnboardingStepName) => void;
-    updateName: (name: string) => void;
     updateGoals: (goals: JournalingGoal[]) => void;
     updateQuickWinMood: (mood: MoodValue) => void;
     updateTrialStarted: (started: boolean, plan?: 'annual' | 'weekly') => void;
-    updateFormField: (updates: Partial<OnboardingFormDataExtended>) => void;
 }
 
 const INITIAL_FORM_DATA: OnboardingFormDataExtended = {
     name: '',
-    ageRange: undefined,
-    gender: undefined,
     reasons: [],
     goals: [],
     quickWinMood: undefined,
@@ -65,10 +61,6 @@ export const useOnboardingFlow = (): UseOnboardingFlowReturn => {
         }
     }, []);
 
-    const updateName = useCallback((name: string): void => {
-        setFormData((prev: OnboardingFormDataExtended) => ({ ...prev, name }));
-    }, []);
-
     const updateGoals = useCallback((goals: JournalingGoal[]): void => {
         setFormData((prev: OnboardingFormDataExtended) => ({ ...prev, goals }));
     }, []);
@@ -88,13 +80,6 @@ export const useOnboardingFlow = (): UseOnboardingFlowReturn => {
         []
     );
 
-    const updateFormField = useCallback(
-        (updates: Partial<OnboardingFormDataExtended>): void => {
-            setFormData((prev: OnboardingFormDataExtended) => ({ ...prev, ...updates }));
-        },
-        []
-    );
-
     return {
         currentStepIndex,
         currentStep,
@@ -106,10 +91,8 @@ export const useOnboardingFlow = (): UseOnboardingFlowReturn => {
         goNext,
         goBack,
         skipToStep,
-        updateName,
         updateGoals,
         updateQuickWinMood,
         updateTrialStarted,
-        updateFormField,
     };
 };

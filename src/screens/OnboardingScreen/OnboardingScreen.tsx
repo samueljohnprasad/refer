@@ -1,15 +1,12 @@
 import React, { useCallback, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withTiming,
-    withSpring,
     Easing,
-    FadeIn,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
 import { Stack } from "expo-router";
 import { KeyboardToolbar } from "react-native-keyboard-controller";
 import { useGradualAnimation } from "@/hooks/useGradualAnimation";
@@ -18,23 +15,19 @@ import { useOnboardingAnalytics } from "./hooks/useOnboardingAnalytics";
 import { usePremiumFeatureMapping } from "./hooks/usePremiumFeatureMapping";
 import { useCompleteOnboarding } from "@/hooks/data/useCompleteOnboarding";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
-import { OnboardingStepName, MoodValue, JournalingGoal } from "./types";
-import {
-    ONBOARDING_STEPS,
-    BRAND_PURPLE,
-    TOTAL_ONBOARDING_STEPS,
-} from "./constants";
+import { OnboardingRendererKind } from "./types";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
+import { ONBOARDING_STEPS } from "./constants";
 
-import WelcomeValueStep from "./steps/WelcomeValueStep";
 import GoalsSelectionStep from "./steps/GoalsSelectionStep";
 import QuickWinMoodStep from "./steps/QuickWinMoodStep";
 import FeatureDiscoveryStep from "./steps/FeatureDiscoveryStep";
 import SoftPaywallStep from "./steps/SoftPaywallStep";
 import EnhancedCelebrationStep from "./steps/EnhancedCelebrationStep";
-
-import { Demographics } from "@/src/components/steps/src/steps/demographics/Demographics";
-import { AGE_RANGES, GENDERS } from "@/src/components/steps/src/constants";
-import { AgeRange, Gender } from "@/types/types";
+import JourneyStepScreen from "@/src/components/journey/JourneyStepScreen";
+import AnimatedScreenTransition from "@/src/components/journey/AnimatedScreenTransition";
+import BeginButton from "@/src/components/BeginButton";
 
 interface OnboardingScreenProps {
     onComplete: () => Promise<void>;
@@ -61,7 +54,6 @@ const ProgressDots: React.FC<ProgressDotsProps> = ({
 );
 
 const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
-    const router = useRouter();
     const analytics = useOnboardingAnalytics();
     const { markCompleted } = useCompleteOnboarding();
     const { presentPaywall } = useRevenueCat();
@@ -71,22 +63,19 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         currentStepIndex,
         currentStep,
         totalSteps,
-        isFirstStep,
         isLastStep,
-        progress,
         formData,
         goNext,
         goBack,
-        updateName,
         updateGoals,
         updateQuickWinMood,
         updateTrialStarted,
-        updateFormField,
     } = useOnboardingFlow();
 
     const { relevantSlides, relevantPremiumFeatures } = usePremiumFeatureMapping(
         formData.goals,
     );
+    const currentStepConfig = ONBOARDING_STEPS[currentStepIndex];
 
     const bgColor = useSharedValue<string>(ONBOARDING_STEPS[0].backgroundColor);
 
@@ -96,11 +85,11 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
 
     useEffect(() => {
         bgColor.value = withTiming(
-            ONBOARDING_STEPS[currentStepIndex].backgroundColor,
+            currentStepConfig.backgroundColor,
             { duration: 400, easing: Easing.out(Easing.cubic) },
         );
         analytics.trackStepViewed(currentStep, currentStepIndex);
-    }, [currentStepIndex, currentStep]);
+    }, [analytics, bgColor, currentStep, currentStepConfig.backgroundColor, currentStepIndex]);
 
     const { height } = useGradualAnimation();
     const keyboardPadding = useAnimatedStyle(
@@ -117,8 +106,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                 setLoading(true);
                 await markCompleted({
                     name: formData.name,
-                    ageRange: formData.ageRange,
-                    gender: formData.gender,
                     reasons: formData.reasons,
                     cfg: {} as never,
                 });
@@ -173,89 +160,30 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         goNext();
     }, [analytics, updateTrialStarted, goNext]);
 
-    const canContinue: boolean = (() => {
-        switch (currentStep) {
-            case "welcome":
-                return true;
-            case "demographics":
-                return formData.name.trim().length > 0;
-            case "goals":
-                return formData.goals.length > 0;
-            case "quick_win_mood":
-                return formData.quickWinMood !== undefined;
-            case "feature_discovery":
-                return true;
-            case "soft_paywall":
-                return true;
-            case "celebration":
-                return true;
-            default:
-                return true;
-        }
-    })();
-
-    const currentStepConfig = ONBOARDING_STEPS[currentStepIndex];
-    const showSkip: boolean = currentStepConfig.canSkip && !isLastStep;
-    const ctaLabel: string = isLastStep ? "Start Your Journey 🚀" : "Continue";
+    const canContinue: boolean = currentStepConfig.isContinueEnabled?.(formData) ?? true;
+    const showSkip: boolean = currentStepConfig.canSkip;
+    const showHeaderBack: boolean = currentStepConfig.showBackButton;
+    const showContinueButton: boolean = currentStepConfig.showContinueButton;
+    const ctaLabel: string = currentStepConfig.continueButtonLabel;
 
     const renderStep = (): React.ReactNode => {
-        switch (currentStep) {
-            case "welcome":
-                return <WelcomeValueStep />;
-
-            case "demographics":
+        switch (currentStepConfig.renderer.kind) {
+            case OnboardingRendererKind.JourneyStep:
                 return (
-                    <Animated.View
-                        entering={FadeIn.duration(500).delay(100)}
-                        className="flex-1"
+                    <AnimatedScreenTransition
+                        transitionKey={
+                            currentStepConfig.renderer.transitionKey ??
+                            currentStepConfig.renderer.screenName
+                        }
+                        duration={currentStepConfig.renderer.transitionDuration ?? 360}
                     >
-                        <View className="px-6 pt-4 pb-2">
-                            <Text
-                                className="text-gray-900 mb-1"
-                                style={{
-                                    fontFamily: "CormorantSemiBold",
-                                    fontSize: 22,
-                                    lineHeight: 28,
-                                }}
-                            >
-                                What should we call you?
-                            </Text>
-                            <TextInput
-                                value={formData.name}
-                                onChangeText={(text: string) => updateFormField({ name: text })}
-                                placeholder="Your name"
-                                placeholderTextColor="#9CA3AF"
-                                maxLength={30}
-                                autoFocus
-                                className="text-lg font-semibold text-gray-800 border-b-2 border-purple-300 py-3 mb-2"
-                                accessibilityLabel="Enter your name"
-                            />
-                            {formData.name.trim().length > 0 && (
-                                <Animated.View entering={FadeIn.duration(300)}>
-                                    <Text className="text-sm text-purple-500 font-medium mt-1">
-                                        Nice to meet you, {formData.name.trim()}! 👋
-                                    </Text>
-                                </Animated.View>
-                            )}
-                        </View>
-                        <Demographics
-                            ageRanges={AGE_RANGES}
-                            selectedAgeRange={formData.ageRange}
-                            onSelectAgeRange={(value: AgeRange | undefined) =>
-                                updateFormField({ ageRange: value })
-                            }
-                            genders={GENDERS}
-                            selectedGender={formData.gender}
-                            onSelectGender={(value: Gender | undefined) =>
-                                updateFormField({ gender: value })
-                            }
-                            title=""
-                            helperText=""
+                        <JourneyStepScreen
+                            name={currentStepConfig.renderer.screenName}
                         />
-                    </Animated.View>
+                    </AnimatedScreenTransition>
                 );
 
-            case "goals":
+            case OnboardingRendererKind.Goals:
                 return (
                     <GoalsSelectionStep
                         selectedGoals={formData.goals}
@@ -263,7 +191,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                     />
                 );
 
-            case "quick_win_mood":
+            case OnboardingRendererKind.QuickWinMood:
                 return (
                     <QuickWinMoodStep
                         selectedMood={formData.quickWinMood}
@@ -271,10 +199,10 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                     />
                 );
 
-            case "feature_discovery":
+            case OnboardingRendererKind.FeatureDiscovery:
                 return <FeatureDiscoveryStep slides={relevantSlides} />;
 
-            case "soft_paywall":
+            case OnboardingRendererKind.SoftPaywall:
                 return (
                     <SoftPaywallStep
                         relevantFeatures={relevantPremiumFeatures}
@@ -283,7 +211,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                     />
                 );
 
-            case "celebration":
+            case OnboardingRendererKind.Celebration:
                 return (
                     <EnhancedCelebrationStep
                         userName={formData.name}
@@ -296,8 +224,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         }
     };
 
-    const isPaywallStep: boolean = currentStep === "soft_paywall";
-
     return (
         <Animated.View
             style={[{ flex: 1, backgroundColor: "#fff" }, backgroundAnimatedStyle]}
@@ -308,26 +234,51 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                     header: () => (
                         <Animated.View
                             style={[{ backgroundColor: "#fff" }, backgroundAnimatedStyle]}
-                            className="h-28 items-start justify-end px-5"
+                            className="h-32 items-start justify-end px-5"
                         >
-                            <View className="w-full flex-row items-center justify-between mb-4">
-                                <ProgressDots
-                                    totalSteps={totalSteps}
-                                    currentStep={currentStepIndex}
-                                />
-                                {showSkip && (
+                            <View className="relative mb-4 w-full flex-row items-center justify-between">
+                                {showHeaderBack ? (
                                     <TouchableOpacity
-                                        onPress={handleSkip}
-                                        className="py-3 px-4"
-                                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                                        accessibilityLabel="Skip this step"
+                                        onPress={handleBack}
+                                        activeOpacity={0.8}
+                                        className="h-14 w-14 items-center justify-center rounded-full bg-[#F4F4F5]"
+                                        accessibilityLabel="Go back to previous step"
                                         accessibilityRole="button"
                                     >
-                                        <Text className="text-gray-400 dark:text-gray-500 text-sm font-semibold">
-                                            Skip
-                                        </Text>
+                                        <HugeiconsIcon
+                                            icon={ArrowLeft02Icon}
+                                            size={24}
+                                            color="#171717"
+                                        />
                                     </TouchableOpacity>
+                                ) : (
+                                    <View className="h-14 w-14" />
                                 )}
+
+                                <View className="pointer-events-none absolute inset-x-0 items-center">
+                                    <ProgressDots
+                                        totalSteps={totalSteps}
+                                        currentStep={currentStepIndex}
+                                    />
+                                </View>
+
+                                <View className="min-w-[56px] items-end">
+                                    {showSkip ? (
+                                        <TouchableOpacity
+                                            onPress={handleSkip}
+                                            className="py-3 px-4"
+                                            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                                            accessibilityLabel="Skip this step"
+                                            accessibilityRole="button"
+                                        >
+                                            <Text className="text-gray-400 dark:text-gray-500 text-sm font-semibold">
+                                                Skip
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ) : (
+                                        <View className="h-14 w-14" />
+                                    )}
+                                </View>
                             </View>
                         </Animated.View>
                     ),
@@ -336,43 +287,16 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
 
             <View className="flex-1 w-full">{renderStep()}</View>
 
-            {!isPaywallStep && (
-                <View className="w-full border-t border-gray-200 px-6 pt-5 pb-8">
-                    <View className="flex-row gap-3">
-                        {!isFirstStep && (
-                            <TouchableOpacity
-                                onPress={handleBack}
-                                className="bg-gray-100 dark:bg-gray-800 rounded-2xl py-4 px-6 items-center justify-center"
-                                activeOpacity={0.7}
-                                accessibilityLabel="Go back to previous step"
-                                accessibilityRole="button"
-                            >
-                                <Text className="text-gray-500 dark:text-gray-400 text-sm font-semibold">
-                                    Back
-                                </Text>
-                            </TouchableOpacity>
-                        )}
-                        <TouchableOpacity
+            {showContinueButton && (
+                <View className="w-full border-t border-gray-200 px-6 pt-8 items-center justify-center">
+                    <View className="flex-row justify-center items-center">
+                        <BeginButton
                             onPress={handleContinue}
+                            name={loading ? "Setting up..." : ctaLabel}
                             disabled={!canContinue || loading}
-                            className={`flex-1 rounded-2xl py-4 items-center justify-center ${canContinue && !loading
-                                ? "bg-purple-600"
-                                : "bg-gray-300 dark:bg-gray-700"
-                                }`}
+                            showIcon={true}
                             activeOpacity={0.8}
-                            accessibilityLabel={ctaLabel}
-                            accessibilityRole="button"
-                            accessibilityState={{ disabled: !canContinue || loading }}
-                        >
-                            <Text
-                                className={`text-sm font-bold ${canContinue && !loading
-                                    ? "text-white"
-                                    : "text-gray-500 dark:text-gray-400"
-                                    }`}
-                            >
-                                {loading ? "Setting up..." : ctaLabel}
-                            </Text>
-                        </TouchableOpacity>
+                        />
                     </View>
                 </View>
             )}
