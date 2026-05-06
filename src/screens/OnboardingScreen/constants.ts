@@ -42,6 +42,18 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
     },
   },
   {
+    name: "progress_graph",
+    backgroundColor: "#F4FBF1",
+    canSkip: true,
+    analyticsLabel: "progress_graph",
+    showBackButton: true,
+    showContinueButton: true,
+    continueButtonLabel: "Continue",
+    renderer: {
+      kind: OnboardingRendererKind.ProgressGraph,
+    },
+  },
+  {
     name: "goals",
     backgroundColor: "#FFF3D4",
     canSkip: false,

@@ -28,6 +28,7 @@ import EnhancedCelebrationStep from "./steps/EnhancedCelebrationStep";
 import JourneyStepScreen from "@/src/components/journey/JourneyStepScreen";
 import AnimatedScreenTransition from "@/src/components/journey/AnimatedScreenTransition";
 import BeginButton from "@/src/components/BeginButton";
+import ProgressGraphVictoryStep from "./steps/ProgressGraphVictoryStep";
 
 interface OnboardingScreenProps {
     onComplete: () => Promise<void>;
@@ -182,6 +183,9 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                         />
                     </AnimatedScreenTransition>
                 );
+
+            case OnboardingRendererKind.ProgressGraph:
+                return <ProgressGraphVictoryStep />;
 
             case OnboardingRendererKind.Goals:
                 return (

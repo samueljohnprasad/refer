@@ -3,6 +3,7 @@ import type { JourneyStepScreenName } from "@/src/components/journey/journeyStep
 export type OnboardingStepName =
     | 'welcome'
     | 'reframe_thoughts_intro'
+    | 'progress_graph'
     | 'goals'
     | 'quick_win_mood'
     | 'feature_discovery'
@@ -58,6 +59,7 @@ export interface OnboardingFormDataExtended {
 
 export enum OnboardingRendererKind {
     JourneyStep = "journey-step",
+    ProgressGraph = "progress-graph",
     Goals = "goals",
     QuickWinMood = "quick-win-mood",
     FeatureDiscovery = "feature-discovery",
@@ -71,6 +73,9 @@ export type OnboardingStepRendererConfig =
         screenName: JourneyStepScreenName;
         transitionKey?: string;
         transitionDuration?: number;
+    }
+    | {
+        kind: OnboardingRendererKind.ProgressGraph;
     }
     | {
         kind: OnboardingRendererKind.Goals;
