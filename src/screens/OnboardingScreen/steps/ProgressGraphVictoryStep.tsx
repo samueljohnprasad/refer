@@ -11,8 +11,8 @@ import type { ProgressGraphVictoryStepProps } from "./progress-graph-victory/typ
 import { useProgressGraphVictoryAnimation } from "./progress-graph-victory/useProgressGraphVictoryAnimation";
 
 const ProgressGraphVictoryStep: React.FC<ProgressGraphVictoryStepProps> = ({
-    primaryLabel = "Your weight",
-    comparisonLabel = "Other apps",
+    primaryLabel = "Your mood",
+    comparisonLabel = "Without journaling",
     productLabel = "Happy",
 }) => {
     const { width: screenWidth } = useWindowDimensions();
@@ -26,10 +26,10 @@ const ProgressGraphVictoryStep: React.FC<ProgressGraphVictoryStepProps> = ({
     return (
         <View style={styles.screen}>
             <Animated.View entering={FadeInUp.duration(560).springify()} style={styles.header}>
-                <Text style={styles.title}>See your progress unfold</Text>
+                <Text style={styles.title}>See your journaling impact</Text>
                 <Text style={styles.subtitle}>
-                    Happy helps you spot emotional patterns at a glance, not just
-                    collect entries.
+                    Watch how consistent journaling can steady your emotions over
+                    time, instead of letting tough days pile up unnoticed.
                 </Text>
             </Animated.View>
 
@@ -80,7 +80,7 @@ const ProgressGraphVictoryStep: React.FC<ProgressGraphVictoryStepProps> = ({
                             startDotOpacity={animationState.startDotOpacity}
                         />
 
-                        <Text style={[styles.timeLabel, layout.timeLabelStyle]}>Time</Text>
+                        <Text style={[styles.timeLabel, layout.timeLabelStyle]}>Journal entries</Text>
 
                         <ProgressGraphVictoryBadge
                             animatedStyle={animationState.labelAnimatedStyle}
