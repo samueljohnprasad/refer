@@ -1,4 +1,4 @@
-const { withNativeWind } = require("nativewind/metro");
+const { withUniwindConfig } = require('uniwind/metro');
 const { getDefaultConfig } = require("expo/metro-config");
 
 const config = getDefaultConfig(__dirname);
@@ -15,4 +15,8 @@ config.transformer = {
   }),
 };
 
-module.exports = withNativeWind(config, { input: "./global.css" });
+module.exports = withUniwindConfig(config, {
+  cssEntryFile: './global.css',
+  dtsFile: './uniwind-types.d.ts',
+  extraThemes: ['dark'],
+});
