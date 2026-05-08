@@ -25,6 +25,10 @@ export type AnimatedScalar = {
 };
 
 export type ScaledLayout = {
+    screenStyle: ViewStyle;
+    headerStyle: ViewStyle;
+    titleStyle: TextStyle;
+    subtitleStyle: TextStyle;
     stagePaddingVertical: number;
     shellWidth: number;
     shellHeight: number;

@@ -17,12 +17,12 @@ export const journeyStepScreenConfig: Record<
     image: require("@/assets/journey/journey-step.png"),
     title: "Feel\nbetter",
     subtitle: "Take one guided\nstep at a time.",
-    imageAspectRatio: 443 / 648,
+    imageAspectRatio: 543 / 686,
   },
   "reframe-thoughts": {
     image: require("@/assets/journey/cbt-step.png"),
     title: "Reframe\nThoughts",
     subtitle: "Reset anxious thinking with guided thought reframing tools.",
-    imageAspectRatio: 443 / 648,
+    imageAspectRatio: 918 / 1155,
   },
 };

@@ -15,19 +15,34 @@ const ProgressGraphVictoryStep: React.FC<ProgressGraphVictoryStepProps> = ({
     comparisonLabel = "Without journaling",
     productLabel = "Happy",
 }) => {
-    const { width: screenWidth } = useWindowDimensions();
-    const cardWidth = Math.min(screenWidth - 40, 352);
-    const cardHeight = cardWidth * 0.9;
+    const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+    const isCompactScreen = screenWidth < 390 || screenHeight < 880;
+    const horizontalPadding = isCompactScreen ? 12 : 16;
+    const maxCardWidth = isCompactScreen ? 332 : 352;
+    const cardWidth = Math.max(
+        Math.min(screenWidth - horizontalPadding * 2 - 8, maxCardWidth),
+        288,
+    );
+    const cardHeight = cardWidth * (isCompactScreen ? 0.87 : 0.9);
     const scale = cardWidth / 320;
-    const chartHeight = cardHeight * 0.72;
-    const layout = getScaledLayout(scale, cardWidth, cardHeight, chartHeight);
+    const chartHeight = cardHeight * (isCompactScreen ? 0.68 : 0.72);
+    const layout = getScaledLayout({
+        scale,
+        cardWidth,
+        cardHeight,
+        chartHeight,
+        isCompact: isCompactScreen,
+    });
     const animationState = useProgressGraphVictoryAnimation();
 
     return (
-        <View style={styles.screen}>
-            <Animated.View entering={FadeInUp.duration(560).springify()} style={styles.header}>
-                <Text style={styles.title}>See your journaling impact</Text>
-                <Text style={styles.subtitle}>
+        <View style={[styles.screen, layout.screenStyle]}>
+            <Animated.View
+                entering={FadeInUp.duration(560).springify()}
+                style={[styles.header, layout.headerStyle]}
+            >
+                <Text style={[styles.title, layout.titleStyle]}>See your journaling impact</Text>
+                <Text style={[styles.subtitle, layout.subtitleStyle]}>
                     Watch how consistent journaling can steady your emotions over
                     time, instead of letting tough days pile up unnoticed.
                 </Text>
