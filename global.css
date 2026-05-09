@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 @import 'uniwind';
+
+@theme {
+  --breakpoint-phone: 390px;
+  --breakpoint-phablet: 430px;
+}
 /* ─── UniWind theme variants ─────────────────────────────────────
    Switched at runtime via Uniwind.setTheme('light' | 'dark' | 'system').
    Uses :where(.dark, .dark *) selectors so that:
