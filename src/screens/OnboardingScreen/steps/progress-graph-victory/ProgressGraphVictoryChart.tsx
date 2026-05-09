@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { Circle, DashPathEffect } from "@shopify/react-native-skia";
 import { CartesianChart, Line } from "victory-native-v4";
 import {
+    CHART_DOMAIN,
     CHART_DATA,
     CHART_Y_KEYS,
     COLORS,
@@ -156,7 +157,7 @@ const ProgressGraphVictoryChart: React.FC<ProgressGraphVictoryChartProps> = ({
                 data={CHART_DATA}
                 xKey="x"
                 yKeys={CHART_Y_KEYS}
-                domain={{ x: [0, 5.45], y: [0, 84] }}
+                domain={{ x: [0, CHART_DOMAIN.x], y: [0, CHART_DOMAIN.y] }}
                 padding={layout.chartPadding}
                 axisOptions={{
                     lineColor: "transparent",

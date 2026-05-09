@@ -14,6 +14,16 @@ export const CHART_Y_KEYS: Array<keyof Pick<StressProjectionDatum, "happy" | "ot
     "other",
 ];
 
+export const CHART_DOMAIN = {
+    x: 5.45,
+    y: 84,
+} as const;
+
+export const HAPPY_END_POINT = {
+    x: 5,
+    y: 10,
+} as const;
+
 export const OUTER_GRADIENT_COLORS: [string, string, string] = [
     "rgba(212, 242, 201, 0.88)",
     "rgba(248, 252, 246, 0.42)",
