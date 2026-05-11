@@ -46,6 +46,12 @@
       "sourceType": "github",
       "computedHash": "7ed51f00b3422d549d18912748caa85278b17f7b78da43b242ea7ce7a0c8766c"
     },
+    "building-native-ui": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/building-native-ui/SKILL.md",
+      "computedHash": "342df93f481a0dba919f372d6c7b40d2b4bf5b51dd24363aea2e5d0bae27a6fa"
+    },
     "character-design": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
@@ -105,6 +111,12 @@
       "source": "claude-dev-suite/claude-dev-suite",
       "sourceType": "github",
       "computedHash": "9b868ba1777f43ed1d7032a375ab1db6b7b5734fb80b76221bd9819c4d2f2d8a"
+    },
+    "fixing-motion-performance": {
+      "source": "ibelick/ui-skills",
+      "sourceType": "github",
+      "skillPath": "skills/fixing-motion-performance/SKILL.md",
+      "computedHash": "426dcf33f23419643f2aab71e2253e1a5b5684a808fabb8a4ad135e489ed7a0f"
     },
     "frontend-design": {
       "source": "ecocee/skills",
@@ -180,6 +192,12 @@
       "source": "solinkz/micro-interactions-skill",
       "sourceType": "github",
       "computedHash": "257eda7f26c7ea19ba02a48c608f3af9b4a97fd13c4f300cce494f5906dfd029"
+    },
+    "microinteractions": {
+      "source": "wondelai/skills",
+      "sourceType": "github",
+      "skillPath": "microinteractions/SKILL.md",
+      "computedHash": "875eca02a058bca5467850587d6c7aed62f3de1cd9f509f52c95253ec267b518"
     },
     "mobile-monetization": {
       "source": "tinh2/skills-hub-registry",

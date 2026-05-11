@@ -1,139 +1,132 @@
-import type { JourneyStepScreenName } from "@/src/components/journey/journeyStepScreenConfig";
-
 export type OnboardingStepName =
-    | 'welcome'
-    | 'reframe_thoughts_intro'
-    | 'progress_graph'
-    | 'goals'
-    | 'quick_win_mood'
-    | 'feature_discovery'
-    | 'soft_paywall'
-    | 'celebration';
+  | "welcome"
+  | "mascot_greeting"
+  | "quiz_motivation"
+  | "quiz_stress_level"
+  | "quiz_experience"
+  | "quiz_timing"
+  | "daily_goal"
+  | "pact_signing"
+  | "building_journey"
+  | "plan_reveal"
+  | "mood_check_lesson"
+  | "ai_insight"
+  | "lesson_complete"
+  | "notification_permission"
+  | "journey_map"
+  | "letter_from_future"
+  | "soft_paywall"
+  | "welcome_to_happy";
 
-export type MoodValue = 'terrible' | 'bad' | 'okay' | 'good' | 'great';
+export type OnboardingStage = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
-export type JournalingGoal =
-    | 'track_emotions'
-    | 'build_habits'
-    | 'reduce_anxiety'
-    | 'personal_growth'
-    | 'improve_relationships'
-    | 'practice_gratitude'
-    | 'self_reflection';
+export type MotivationAnswer =
+  | "anxiety"
+  | "self_discovery"
+  | "habits"
+  | "relationships";
+export type StressLevel = "light" | "moderate" | "heavy" | "overwhelming";
+export type JournalExperience = "never" | "tried_quit" | "active";
+export type StressTiming = "morning" | "afternoon" | "evening" | "night";
+export type DailyGoalMinutes = 3 | 5 | 10 | 15;
+export type FeelingEmoji =
+  | "calm"
+  | "anxious"
+  | "happy"
+  | "sad"
+  | "angry"
+  | "hopeful"
+  | "tired"
+  | "grateful";
+export type PricingTier = "weekly" | "annual" | "monthly";
+export type NotificationTime = "morning" | "afternoon" | "evening";
 
-export interface GoalConfig {
-    id: JournalingGoal;
-    label: string;
-    emoji: string;
-    premiumFeature: string | null;
-    premiumFeatureLabel: string | null;
+export interface OnboardingFormData {
+  motivation?: MotivationAnswer;
+  stressLevel?: StressLevel;
+  journalExperience?: JournalExperience;
+  stressTiming?: StressTiming;
+  dailyGoal: DailyGoalMinutes;
+  pactSigned: boolean;
+  selectedFeeling?: FeelingEmoji;
+  notificationTime?: NotificationTime;
+  notificationPermissionGranted: boolean;
+  selectedPricingTier?: PricingTier;
+  trialStarted: boolean;
 }
-
-export interface PremiumFeatureConfig {
-    id: string;
-    title: string;
-    description: string;
-    emoji: string;
-    isPremium: boolean;
-    statLabel: string;
-    statValue: string;
-}
-
-export interface PricingPlan {
-    id: 'annual' | 'weekly';
-    label: string;
-    price: string;
-    perMonthPrice: string;
-    badge: string | null;
-    savings: string | null;
-}
-
-export interface OnboardingFormDataExtended {
-    name: string;
-    reasons: string[];
-    goals: JournalingGoal[];
-    quickWinMood?: MoodValue;
-    trialStarted: boolean;
-    selectedPlan?: 'annual' | 'weekly';
-}
-
-export enum OnboardingRendererKind {
-    JourneyStep = "journey-step",
-    ProgressGraph = "progress-graph",
-    Goals = "goals",
-    QuickWinMood = "quick-win-mood",
-    FeatureDiscovery = "feature-discovery",
-    SoftPaywall = "soft-paywall",
-    Celebration = "celebration",
-}
-
-export type OnboardingStepRendererConfig =
-    | {
-        kind: OnboardingRendererKind.JourneyStep;
-        screenName: JourneyStepScreenName;
-        transitionKey?: string;
-        transitionDuration?: number;
-    }
-    | {
-        kind: OnboardingRendererKind.ProgressGraph;
-    }
-    | {
-        kind: OnboardingRendererKind.Goals;
-    }
-    | {
-        kind: OnboardingRendererKind.QuickWinMood;
-    }
-    | {
-        kind: OnboardingRendererKind.FeatureDiscovery;
-    }
-    | {
-        kind: OnboardingRendererKind.SoftPaywall;
-    }
-    | {
-        kind: OnboardingRendererKind.Celebration;
-    };
 
 export interface OnboardingStepConfig {
-    name: OnboardingStepName;
-    backgroundColor: string;
-    canSkip: boolean;
-    analyticsLabel: string;
-    showBackButton: boolean;
-    showContinueButton: boolean;
-    continueButtonLabel: string;
-    isContinueEnabled?: (
-        formData: OnboardingFormDataExtended,
-    ) => boolean;
-    renderer: OnboardingStepRendererConfig;
+  name: OnboardingStepName;
+  stage: OnboardingStage;
+  backgroundColor: string;
+  showBackButton: boolean;
+  showContinueButton: boolean;
+  continueButtonLabel: string;
+  autoAdvance: boolean;
+  canSkip: boolean;
+  analyticsLabel: string;
+  isContinueEnabled?: (formData: OnboardingFormData) => boolean;
 }
 
-export interface OnboardingAnalyticsEvent {
-    eventName: string;
-    properties: Record<string, string | number | boolean | string[]>;
+export interface QuizOption<T extends string> {
+  id: T;
+  emoji: string;
+  title: string;
+  subtitle: string;
 }
 
-export interface FeatureDiscoverySlide {
-    id: string;
-    title: string;
-    description: string;
-    emoji: string;
-    isPremium: boolean;
-    statLabel: string;
-    backgroundColor: string;
+export interface GoalCardConfig {
+  minutes: DailyGoalMinutes;
+  tag: string;
+  tagVariant: "casual" | "recommended" | "committed" | "serious";
+  description: string;
 }
 
-export interface QuickWinMoodOption {
-    value: MoodValue;
-    emoji: string;
-    label: string;
-    color: string;
-    insightText: string;
+export interface LoadingTask {
+  id: string;
+  label: string;
+  durationMs: number;
 }
+
+export interface PricingPlanConfig {
+  tier: PricingTier;
+  label: string;
+  price: string;
+  perUnit: string;
+  featured: boolean;
+  badge?: string;
+  savings?: string;
+  isDecoy?: boolean;
+}
+
+export type JourneyNodeStatus = "completed" | "current" | "locked";
+
+export interface JourneyMapNode {
+  id: string;
+  emoji: string;
+  label: string;
+  subtitle: string;
+  status: JourneyNodeStatus;
+}
+
+export interface FeelingOption {
+  id: FeelingEmoji;
+  emoji: string;
+  label: string;
+}
+
+export type MochiExpression =
+  | "happy"
+  | "waving"
+  | "concentrating"
+  | "celebrating"
+  | "peaceful"
+  | "notes";
 
 export interface OnboardingChecklistItem {
-    id: string;
-    label: string;
-    completed: boolean;
-    route: string;
-    xpReward: number;
+  id: string;
+  label: string;
+  completed: boolean;
+  route: string;
+  xpReward: number;
 }

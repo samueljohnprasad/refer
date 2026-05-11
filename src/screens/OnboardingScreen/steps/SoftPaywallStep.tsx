@@ -1,296 +1,174 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import Animated, {
-    FadeIn,
-    FadeInDown,
-    FadeInUp,
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
-} from "react-native-reanimated";
-import * as Haptics from "expo-haptics";
-import { PricingPlan } from "../types";
-import {
-    PRICING_PLANS,
-    TRIAL_DAYS,
-    PREMIUM_MEMBER_COUNT,
-    BRAND_PURPLE,
-} from "../constants";
-import PremiumBadge from "../../../components/premium/PremiumBadge";
+import React, { useState } from 'react';
+import { Text, View, ScrollView, Pressable } from 'react-native';
+import Animated, { FadeInUp, FadeInDown } from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
+import MochiMascot from '../components/MochiMascot';
+import PricingTierCard from '../components/PricingTierCard';
+import TactileButton from '../components/TactileButton';
+import DiscountInterceptModal from '../components/DiscountInterceptModal';
+import { PricingTier } from '../types';
+import { PRICING_PLANS, PAYWALL_BENEFITS } from '../constants';
 
 interface SoftPaywallStepProps {
-    relevantFeatures: {
-        id: string;
-        title: string;
-        description: string;
-        emoji: string;
-        isPremium: boolean;
-        statLabel: string;
-        statValue: string;
-    }[];
-    onStartTrial: (plan: "annual" | "weekly") => void;
-    onSkipTrial: () => void;
+  selectedTier?: PricingTier;
+  onSelectTier: (tier: PricingTier) => void;
+  onStartTrial: () => void;
+  onContinueFree: () => void;
 }
-
-interface PricingCardProps {
-    plan: PricingPlan;
-    isSelected: boolean;
-    onSelect: () => void;
-}
-
-const PricingCard: React.FC<PricingCardProps> = ({
-    plan,
-    isSelected,
-    onSelect,
-}) => {
-    const scale = useSharedValue(1);
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: scale.value }],
-    }));
-
-    const handlePressIn = (): void => {
-        scale.value = withSpring(0.97, { damping: 15, stiffness: 400 });
-    };
-
-    const handlePressOut = (): void => {
-        scale.value = withSpring(1, { damping: 15, stiffness: 400 });
-    };
-
-    return (
-        <TouchableOpacity
-            onPress={onSelect}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            activeOpacity={1}
-            className="flex-1"
-            accessibilityLabel={`Select ${plan.label} plan at ${plan.price}`}
-            accessibilityRole="button"
-        >
-            <Animated.View
-                style={animatedStyle}
-                className={`rounded-2xl p-4 border-2 ${isSelected
-                    ? "border-purple-600 bg-purple-50"
-                    : "border-gray-200 bg-white"
-                    }`}
-            >
-                {plan.badge && (
-                    <View className="absolute -top-3 left-3 bg-purple-600 rounded-full px-3 py-0.5">
-                        <Text className="text-white text-xs font-bold">{plan.badge}</Text>
-                    </View>
-                )}
-
-                <Text className="text-sm font-bold text-gray-800 mb-1">
-                    {plan.label}
-                </Text>
-                <Text
-                    className="text-lg font-extrabold text-gray-900"
-                    style={{ letterSpacing: -0.3 }}
-                >
-                    {plan.price}
-                </Text>
-                <Text className="text-xs text-gray-500 font-medium">
-                    {plan.perMonthPrice}
-                </Text>
-                {plan.savings && (
-                    <View className="bg-green-100 rounded-full px-2 py-0.5 mt-2 self-start">
-                        <Text className="text-green-700 text-xs font-bold">
-                            {plan.savings}
-                        </Text>
-                    </View>
-                )}
-            </Animated.View>
-        </TouchableOpacity>
-    );
-};
-
-interface FeatureListItemProps {
-    emoji: string;
-    title: string;
-    delay: number;
-}
-
-const FeatureListItem: React.FC<FeatureListItemProps> = ({
-    emoji,
-    title,
-    delay,
-}) => (
-    <Animated.View
-        entering={FadeInDown.duration(400).delay(delay)}
-        className="flex-row items-center py-2"
-    >
-        <View className="w-8 h-8 rounded-full bg-purple-50 items-center justify-center mr-3">
-            <Text style={{ fontSize: 14 }}>{emoji}</Text>
-        </View>
-        <Text className="flex-1 text-sm font-semibold text-gray-700">{title}</Text>
-        <Text className="text-green-500 text-sm">✓</Text>
-    </Animated.View>
-);
 
 const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
-    relevantFeatures,
-    onStartTrial,
-    onSkipTrial,
+  selectedTier,
+  onSelectTier,
+  onStartTrial,
+  onContinueFree,
 }) => {
-    const [selectedPlan, setSelectedPlan] = useState<"annual" | "weekly">(
-        "annual",
-    );
-    const ctaScale = useSharedValue(1);
+  const [showIntercept, setShowIntercept] = useState(false);
 
-    const ctaAnimatedStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: ctaScale.value }],
-    }));
+  const handleContinueFree = () => {
+    Haptics.selectionAsync();
+    setShowIntercept(true);
+  };
 
-    const handleStartTrial = (): void => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-        onStartTrial(selectedPlan);
-    };
+  return (
+    <>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 32 }}
+        className="flex-1 px-6 pt-4"
+      >
+        <Animated.View entering={FadeInUp.delay(100).duration(500)} className="items-center">
+          <View className="flex-row items-center gap-1.5 rounded-full bg-sage-700 px-3.5 py-1.5">
+            <Text className="text-[11px] font-bold uppercase tracking-wider text-gold">
+              ⭐ App of the Day
+            </Text>
+          </View>
+          <MochiMascot expression="happy" size={100} delay={200} />
+          <Text
+            style={{ fontFamily: 'CormorantSemiBold' }}
+            className="mt-3 text-center text-[26px] leading-[1.15] text-ink"
+          >
+            Become someone who doesn't run from how they feel.
+          </Text>
+          <Text className="mt-2 text-center text-[13px] text-ink-soft">
+            Co-designed with Dr. Lena Park, PhD · Licensed CBT therapist
+          </Text>
+        </Animated.View>
 
-    const handleSkip = (): void => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        onSkipTrial();
-    };
+        <Animated.View entering={FadeInDown.delay(300).duration(500)} className="mt-5 gap-2">
+          {PAYWALL_BENEFITS.map((benefit) => (
+            <View key={benefit} className="flex-row items-center gap-2.5">
+              <View className="h-[22px] w-[22px] items-center justify-center rounded-full bg-sage-500">
+                <Text className="text-xs font-extrabold text-white">✓</Text>
+              </View>
+              <Text className="flex-1 text-[13px] font-medium text-ink">{benefit}</Text>
+            </View>
+          ))}
+        </Animated.View>
 
-    return (
-        <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 24 }}
-            className="flex-1 px-6 pt-6"
+        <Animated.View entering={FadeInDown.delay(500).duration(500)} className="mt-5">
+          <Text className="mb-2.5 text-xs font-bold uppercase tracking-wide text-sage-700">
+            Your next 3 lessons (locked without Plus)
+          </Text>
+          {['The Thought Spiral', 'Body as Compass', 'Thought Records: Your First CBT Tool'].map(
+            (name, i) => (
+              <View
+                key={name}
+                className="mb-2 flex-row items-center gap-3 rounded-xl border border-sage-100 bg-warm-white px-3.5 py-3"
+              >
+                <View className="h-8 w-8 items-center justify-center rounded-lg bg-sage-100">
+                  <Text
+                    style={{ fontFamily: 'CormorantSemiBold' }}
+                    className="text-sm text-ink-muted"
+                  >
+                    {i + 2}
+                  </Text>
+                </View>
+                <Text className="flex-1 text-[13px] font-semibold text-ink">{name}</Text>
+                <View className="h-[26px] w-[26px] items-center justify-center rounded-full bg-sage-700">
+                  <Text className="text-xs text-gold">🔒</Text>
+                </View>
+              </View>
+            ),
+          )}
+        </Animated.View>
+
+        <Animated.View entering={FadeInDown.delay(600).duration(500)} className="mt-5 gap-2.5">
+          {PRICING_PLANS.map((plan) => (
+            <PricingTierCard
+              key={plan.tier}
+              plan={plan}
+              isSelected={selectedTier === plan.tier}
+              onSelect={() => onSelectTier(plan.tier)}
+            />
+          ))}
+        </Animated.View>
+
+        <Animated.View entering={FadeInDown.delay(700).duration(400)} className="mt-4">
+          <Text className="text-center text-[11px] text-ink-muted">
+            7-day free trial · No charge until day 8 · Cancel anytime
+          </Text>
+          <Text className="mt-1 text-center text-[11px] text-ink-muted">
+            💚 30-day full refund · No questions asked
+          </Text>
+        </Animated.View>
+
+        <View className="mt-5">
+          <TactileButton label="START FREE TRIAL" onPress={onStartTrial} />
+          <Pressable onPress={handleContinueFree} className="mt-3 items-center py-2">
+            <Text className="text-sm text-ink-muted">Continue with free</Text>
+          </Pressable>
+        </View>
+
+        <Animated.View
+          entering={FadeInDown.delay(800).duration(400)}
+          className="mt-5 flex-row items-center justify-center gap-3.5 border-t border-sage-100 pt-3"
         >
-            <Animated.View
-                entering={FadeInUp.duration(600).springify()}
-                className="items-center mb-6"
-            >
-                <View className="mb-3">
-                    <PremiumBadge
-                        size="large"
-                        label="PREMIUM"
-                    />
-                </View>
-                <Text
-                    className="text-center text-gray-900 mb-2"
-                    style={{
-                        fontFamily: "CormorantBold",
-                        fontSize: 28,
-                        lineHeight: 34,
-                        letterSpacing: -0.5,
-                    }}
-                >
-                    Start Your Free Trial
-                </Text>
-                <Text className="text-center text-gray-500 text-sm font-medium leading-5">
-                    Try all premium features free for {TRIAL_DAYS} days
-                </Text>
-            </Animated.View>
+          <View className="items-center">
+            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
+              3 in 4
+            </Text>
+            <Text className="text-[9px] uppercase tracking-wide text-ink-muted">
+              sleep better by Day 14
+            </Text>
+          </View>
+          <View className="items-center">
+            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
+              ★ 4.9
+            </Text>
+            <Text className="text-[9px] uppercase tracking-wide text-ink-muted">12k reviews</Text>
+          </View>
+          <View className="items-center">
+            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
+              220k
+            </Text>
+            <Text className="text-[9px] uppercase tracking-wide text-ink-muted">in the Grove</Text>
+          </View>
+        </Animated.View>
 
-            <Animated.View
-                entering={FadeIn.duration(400).delay(200)}
-                className="bg-white rounded-2xl p-5 mb-5"
-                style={{
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.06,
-                    shadowRadius: 8,
-                    elevation: 2,
-                }}
-            >
-                <Text className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-                    Everything included
-                </Text>
-                {relevantFeatures.map((feature, index: number) => (
-                    <FeatureListItem
-                        key={feature.id}
-                        emoji={feature.emoji}
-                        title={feature.title}
-                        delay={300 + index * 80}
-                    />
-                ))}
-            </Animated.View>
+        <View className="mt-4 rounded-[14px] border-l-[3px] border-gold bg-warm-white px-4 py-3">
+          <Text
+            style={{ fontFamily: 'CormorantMedium' }}
+            className="text-[13px] italic leading-[1.4] text-ink"
+          >
+            "I'm a 47-year-old guy. Never thought I'd journal. The CBT lessons are why I stayed — they actually teach you something. Day 89."
+          </Text>
+          <Text className="mt-1 text-[11px] text-ink-muted">— Marcus, 47</Text>
+        </View>
+      </ScrollView>
 
-            <Animated.View
-                entering={FadeIn.duration(400).delay(600)}
-                className="flex-row gap-3 mb-5"
-            >
-                {PRICING_PLANS.map((plan: PricingPlan) => (
-                    <PricingCard
-                        key={plan.id}
-                        plan={plan}
-                        isSelected={selectedPlan === plan.id}
-                        onSelect={() => {
-                            Haptics.selectionAsync();
-                            setSelectedPlan(plan.id);
-                        }}
-                    />
-                ))}
-            </Animated.View>
-
-            <Animated.View entering={FadeIn.duration(400).delay(700)}>
-                <TouchableOpacity
-                    onPress={handleStartTrial}
-                    onPressIn={() => {
-                        ctaScale.value = withSpring(0.97, { damping: 15, stiffness: 400 });
-                    }}
-                    onPressOut={() => {
-                        ctaScale.value = withSpring(1, { damping: 15, stiffness: 400 });
-                    }}
-                    activeOpacity={1}
-                    accessibilityLabel="Start free trial"
-                    accessibilityRole="button"
-                >
-                    <Animated.View
-                        style={ctaAnimatedStyle}
-                        className="bg-purple-600 rounded-2xl py-4 items-center"
-                    >
-                        <Text className="text-white text-base font-bold">
-                            Start {TRIAL_DAYS}-Day Free Trial
-                        </Text>
-                    </Animated.View>
-                </TouchableOpacity>
-
-                <View className="flex-row items-center justify-center mt-3 gap-4">
-                    <Text className="text-gray-400 text-xs font-medium">
-                        Cancel anytime
-                    </Text>
-                    <Text className="text-gray-300">•</Text>
-                    <Text className="text-gray-400 text-xs font-medium">
-                        No charge for {TRIAL_DAYS} days
-                    </Text>
-                </View>
-
-                <Text className="text-gray-400 text-xs font-normal text-center leading-4 mt-3 px-2">
-                    After your {TRIAL_DAYS}-day free trial, your selected plan will
-                    automatically renew. You can cancel anytime before the trial ends and
-                    you won't be charged.
-                </Text>
-            </Animated.View>
-
-            <Animated.View
-                entering={FadeIn.duration(400).delay(800)}
-                className="items-center mt-5"
-            >
-                <TouchableOpacity
-                    onPress={handleSkip}
-                    className="py-4 px-8"
-                    hitSlop={{ top: 8, bottom: 8, left: 12, right: 12 }}
-                    accessibilityLabel="Skip trial and continue without premium"
-                    accessibilityRole="button"
-                >
-                    <Text className="text-gray-400 text-sm font-semibold">
-                        Maybe Later
-                    </Text>
-                </TouchableOpacity>
-            </Animated.View>
-
-            <Animated.View
-                entering={FadeIn.duration(300).delay(900)}
-                className="items-center mt-2 mb-4"
-            >
-                <Text className="text-gray-400 text-xs font-medium">
-                    Join {PREMIUM_MEMBER_COUNT} premium members
-                </Text>
-            </Animated.View>
-        </ScrollView>
-    );
+      <DiscountInterceptModal
+        visible={showIntercept}
+        onAccept={() => {
+          setShowIntercept(false);
+          onStartTrial();
+        }}
+        onDismiss={() => {
+          setShowIntercept(false);
+          onContinueFree();
+        }}
+      />
+    </>
+  );
 };
 
 export default React.memo(SoftPaywallStep);

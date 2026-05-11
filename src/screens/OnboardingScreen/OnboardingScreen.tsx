@@ -1,323 +1,350 @@
-import React, { useCallback, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useCallback, useEffect, useRef } from "react";
+import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
-    Easing,
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSpring,
+  Easing,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { Stack } from "expo-router";
-import { KeyboardToolbar } from "react-native-keyboard-controller";
-import { useGradualAnimation } from "@/hooks/useGradualAnimation";
-import { useOnboardingFlow } from "./hooks/useOnboardingFlow";
-import { useOnboardingAnalytics } from "./hooks/useOnboardingAnalytics";
-import { usePremiumFeatureMapping } from "./hooks/usePremiumFeatureMapping";
-import { useCompleteOnboarding } from "@/hooks/data/useCompleteOnboarding";
-import { useRevenueCat } from "@/src/context/RevenueCatProvider";
-import { OnboardingRendererKind } from "./types";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
+
+import { useOnboardingFlow } from "./hooks/useOnboardingFlow";
+import { useOnboardingAnalytics } from "./hooks/useOnboardingAnalytics";
+import { useCompleteOnboarding } from "@/hooks/data/useCompleteOnboarding";
 import { ONBOARDING_STEPS } from "./constants";
 
-import GoalsSelectionStep from "./steps/GoalsSelectionStep";
-import QuickWinMoodStep from "./steps/QuickWinMoodStep";
-import FeatureDiscoveryStep from "./steps/FeatureDiscoveryStep";
+import StageProgressBar from "./components/StageProgressBar";
+import TactileButton from "./components/TactileButton";
+
+import WelcomeStep from "./steps/WelcomeStep";
+import MascotGreetingStep from "./steps/MascotGreetingStep";
+import QuizMotivationStep from "./steps/QuizMotivationStep";
+import QuizStressLevelStep from "./steps/QuizStressLevelStep";
+import QuizExperienceStep from "./steps/QuizExperienceStep";
+import QuizTimingStep from "./steps/QuizTimingStep";
+import DailyGoalStep from "./steps/DailyGoalStep";
+import PactSigningStep from "./steps/PactSigningStep";
+import BuildingJourneyStep from "./steps/BuildingJourneyStep";
+import PlanRevealStep from "./steps/PlanRevealStep";
+import MoodCheckLessonStep from "./steps/MoodCheckLessonStep";
+import AIInsightStep from "./steps/AIInsightStep";
+import LessonCompleteStep from "./steps/LessonCompleteStep";
+import NotificationPermissionStep from "./steps/NotificationPermissionStep";
+import JourneyMapStep from "./steps/JourneyMapStep";
+import LetterFromFutureStep from "./steps/LetterFromFutureStep";
 import SoftPaywallStep from "./steps/SoftPaywallStep";
-import EnhancedCelebrationStep from "./steps/EnhancedCelebrationStep";
-import JourneyStepScreen from "@/src/components/journey/JourneyStepScreen";
-import AnimatedScreenTransition from "@/src/components/journey/AnimatedScreenTransition";
-import BeginButton from "@/src/components/BeginButton";
-import ProgressGraphVictoryStep from "./steps/ProgressGraphVictoryStep";
+import WelcomeToHappyStep from "./steps/WelcomeToHappyStep";
 
 interface OnboardingScreenProps {
-    onComplete: () => Promise<void>;
+  onComplete: () => Promise<void>;
 }
-
-interface ProgressDotsProps {
-    totalSteps: number;
-    currentStep: number;
-}
-
-const ProgressDots: React.FC<ProgressDotsProps> = ({
-    totalSteps,
-    currentStep,
-}) => (
-    <View className="flex-row items-center gap-1.5">
-        {Array.from({ length: totalSteps }).map((_: unknown, index: number) => (
-            <View
-                key={index}
-                className={`h-1.5 rounded-full ${index <= currentStep ? "bg-purple-600 w-5" : "bg-gray-300 w-1.5"
-                    }`}
-            />
-        ))}
-    </View>
-);
 
 const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
-    const analytics = useOnboardingAnalytics();
-    const { markCompleted } = useCompleteOnboarding();
-    const { presentPaywall } = useRevenueCat();
-    const [loading, setLoading] = React.useState<boolean>(false);
+  const { width: screenWidth } = useWindowDimensions();
+  const analytics = useOnboardingAnalytics();
+  const { markCompleted } = useCompleteOnboarding();
+  const [loading, setLoading] = React.useState(false);
 
-    const {
-        currentStepIndex,
-        currentStep,
-        totalSteps,
-        isLastStep,
-        formData,
-        goNext,
-        goBack,
-        updateGoals,
-        updateQuickWinMood,
-        updateTrialStarted,
-    } = useOnboardingFlow();
+  const {
+    currentStepIndex,
+    currentStep,
+    currentStage,
+    totalSteps,
+    isLastStep,
+    formData,
+    derivedPlanName,
+    goNext,
+    goBack,
+    updateMotivation,
+    updateStressLevel,
+    updateExperience,
+    updateTiming,
+    updateDailyGoal,
+    updatePactSigned,
+    updateFeeling,
+    updateNotificationTime,
+    updatePricingTier,
+    updateTrialStarted,
+  } = useOnboardingFlow();
 
-    const { relevantSlides, relevantPremiumFeatures } = usePremiumFeatureMapping(
-        formData.goals,
-    );
-    const currentStepConfig = ONBOARDING_STEPS[currentStepIndex];
+  const currentStepConfig = ONBOARDING_STEPS[currentStepIndex];
+  const bgColor = useSharedValue(ONBOARDING_STEPS[0].backgroundColor);
+  const slideX = useSharedValue(0);
+  const slideOpacity = useSharedValue(1);
+  const prevStepRef = useRef(currentStepIndex);
+  const direction = useRef<"forward" | "backward">("forward");
 
-    const bgColor = useSharedValue<string>(ONBOARDING_STEPS[0].backgroundColor);
+  const backgroundAnimatedStyle = useAnimatedStyle(() => ({
+    backgroundColor: bgColor.value,
+  }));
 
-    const backgroundAnimatedStyle = useAnimatedStyle(() => ({
-        backgroundColor: bgColor.value,
-    }));
+  const stepContainerStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: slideX.value }],
+    opacity: slideOpacity.value,
+  }));
 
-    useEffect(() => {
-        bgColor.value = withTiming(
-            currentStepConfig.backgroundColor,
-            { duration: 400, easing: Easing.out(Easing.cubic) },
+  useEffect(() => {
+    const isForward = currentStepIndex > prevStepRef.current;
+    direction.current = isForward ? "forward" : "backward";
+    prevStepRef.current = currentStepIndex;
+
+    bgColor.value = withTiming(currentStepConfig.backgroundColor, {
+      duration: 400,
+      easing: Easing.out(Easing.cubic),
+    });
+
+    // Slide transition: enter from right (forward) or left (backward)
+    const enterFrom = isForward ? screenWidth * 0.3 : -screenWidth * 0.3;
+    slideX.value = enterFrom;
+    slideOpacity.value = 0;
+    slideX.value = withSpring(0, { damping: 20, stiffness: 200 });
+    slideOpacity.value = withTiming(1, {
+      duration: 250,
+      easing: Easing.out(Easing.cubic),
+    });
+
+    analytics.trackStepViewed(currentStep, currentStepIndex);
+  }, [currentStepIndex]);
+
+  const handleContinue = useCallback(async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    analytics.trackStepCompleted(currentStep, currentStepIndex);
+
+    if (isLastStep) {
+      try {
+        setLoading(true);
+        await markCompleted({
+          name: "",
+          reasons: formData.motivation ? [formData.motivation] : [],
+          cfg: {} as never,
+        });
+        await onComplete();
+      } catch (error) {
+        console.error("[Onboarding] Failed to complete:", error);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    goNext();
+  }, [
+    isLastStep,
+    currentStep,
+    currentStepIndex,
+    formData,
+    markCompleted,
+    onComplete,
+    goNext,
+    analytics,
+  ]);
+
+  const handleBack = useCallback(() => {
+    Haptics.selectionAsync();
+    goBack();
+  }, [goBack]);
+
+  const handlePactCommit = useCallback(() => {
+    updatePactSigned();
+    setTimeout(goNext, 1200);
+  }, [updatePactSigned, goNext]);
+
+  const handlePaywallTrial = useCallback(() => {
+    updateTrialStarted(true);
+    goNext();
+  }, [updateTrialStarted, goNext]);
+
+  const handlePaywallFree = useCallback(() => {
+    updateTrialStarted(false);
+    goNext();
+  }, [updateTrialStarted, goNext]);
+
+  const canContinue = currentStepConfig.isContinueEnabled?.(formData) ?? true;
+  const showBackButton = currentStepConfig.showBackButton;
+  const showContinueButton = currentStepConfig.showContinueButton;
+
+  const renderStep = (): React.ReactNode => {
+    switch (currentStep) {
+      case "welcome":
+        return <WelcomeStep />;
+      case "mascot_greeting":
+        return <MascotGreetingStep />;
+      case "quiz_motivation":
+        return (
+          <QuizMotivationStep
+            selected={formData.motivation}
+            onSelect={updateMotivation}
+            onAdvance={goNext}
+          />
         );
-        analytics.trackStepViewed(currentStep, currentStepIndex);
-    }, [analytics, bgColor, currentStep, currentStepConfig.backgroundColor, currentStepIndex]);
+      case "quiz_stress_level":
+        return (
+          <QuizStressLevelStep
+            selected={formData.stressLevel}
+            onSelect={updateStressLevel}
+            onAdvance={goNext}
+          />
+        );
+      case "quiz_experience":
+        return (
+          <QuizExperienceStep
+            selected={formData.journalExperience}
+            onSelect={updateExperience}
+            onAdvance={goNext}
+          />
+        );
+      case "quiz_timing":
+        return (
+          <QuizTimingStep
+            selected={formData.stressTiming}
+            onSelect={updateTiming}
+            onAdvance={goNext}
+          />
+        );
+      case "daily_goal":
+        return (
+          <DailyGoalStep
+            selected={formData.dailyGoal}
+            onSelect={updateDailyGoal}
+          />
+        );
+      case "pact_signing":
+        return (
+          <PactSigningStep
+            dailyGoal={formData.dailyGoal}
+            onCommit={handlePactCommit}
+          />
+        );
+      case "building_journey":
+        return <BuildingJourneyStep onComplete={goNext} />;
+      case "plan_reveal":
+        return <PlanRevealStep planName={derivedPlanName} />;
+      case "mood_check_lesson":
+        return (
+          <MoodCheckLessonStep
+            selected={formData.selectedFeeling}
+            onSelect={updateFeeling}
+          />
+        );
+      case "ai_insight":
+        return (
+          <AIInsightStep
+            feeling={formData.selectedFeeling}
+            timing={formData.stressTiming}
+          />
+        );
+      case "lesson_complete":
+        return <LessonCompleteStep />;
+      case "notification_permission":
+        return (
+          <NotificationPermissionStep
+            selectedTime={formData.notificationTime}
+            onSelectTime={updateNotificationTime}
+            stressTiming={formData.stressTiming}
+          />
+        );
+      case "journey_map":
+        return <JourneyMapStep planName={derivedPlanName} />;
+      case "letter_from_future":
+        return (
+          <LetterFromFutureStep
+            dailyGoal={formData.dailyGoal}
+            timing={formData.stressTiming}
+          />
+        );
+      case "soft_paywall":
+        return (
+          <SoftPaywallStep
+            selectedTier={formData.selectedPricingTier}
+            onSelectTier={updatePricingTier}
+            onStartTrial={handlePaywallTrial}
+            onContinueFree={handlePaywallFree}
+          />
+        );
+      case "welcome_to_happy":
+        return (
+          <WelcomeToHappyStep
+            planName={derivedPlanName}
+            dailyGoal={formData.dailyGoal}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
-    const { height } = useGradualAnimation();
-    const keyboardPadding = useAnimatedStyle(
-        () => ({ height: height.value }),
-        [],
-    );
-
-    const handleContinue = useCallback(async (): Promise<void> => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        analytics.trackStepCompleted(currentStep, currentStepIndex);
-
-        if (isLastStep) {
-            try {
-                setLoading(true);
-                await markCompleted({
-                    name: formData.name,
-                    reasons: formData.reasons,
-                    cfg: {} as never,
-                });
-                await onComplete();
-            } catch (error) {
-                console.error("[Onboarding] Failed to complete:", error);
-            } finally {
-                setLoading(false);
-            }
-            return;
-        }
-
-        goNext();
-    }, [
-        isLastStep,
-        currentStep,
-        currentStepIndex,
-        formData,
-        markCompleted,
-        onComplete,
-        goNext,
-        analytics,
-    ]);
-
-    const handleBack = useCallback((): void => {
-        Haptics.selectionAsync();
-        goBack();
-    }, [goBack]);
-
-    const handleSkip = useCallback((): void => {
-        Haptics.selectionAsync();
-        analytics.trackStepSkipped(currentStep);
-        goNext();
-    }, [currentStep, goNext, analytics]);
-
-    const handleTrialStart = useCallback(
-        async (plan: "annual" | "weekly"): Promise<void> => {
-            analytics.trackTrialStarted(plan);
-            updateTrialStarted(true, plan);
-            const success: boolean = await presentPaywall();
-            if (success) {
-                updateTrialStarted(true, plan);
-            }
-            goNext();
-        },
-        [analytics, updateTrialStarted, presentPaywall, goNext],
-    );
-
-    const handleTrialSkip = useCallback((): void => {
-        analytics.trackTrialSkipped();
-        updateTrialStarted(false);
-        goNext();
-    }, [analytics, updateTrialStarted, goNext]);
-
-    const canContinue: boolean = currentStepConfig.isContinueEnabled?.(formData) ?? true;
-    const showSkip: boolean = currentStepConfig.canSkip;
-    const showHeaderBack: boolean = currentStepConfig.showBackButton;
-    const showContinueButton: boolean = currentStepConfig.showContinueButton;
-    const ctaLabel: string = currentStepConfig.continueButtonLabel;
-
-    const renderStep = (): React.ReactNode => {
-        switch (currentStepConfig.renderer.kind) {
-            case OnboardingRendererKind.JourneyStep:
-                return (
-                    <AnimatedScreenTransition
-                        transitionKey={
-                            currentStepConfig.renderer.transitionKey ??
-                            currentStepConfig.renderer.screenName
-                        }
-                        duration={currentStepConfig.renderer.transitionDuration ?? 360}
-                    >
-                        <JourneyStepScreen
-                            name={currentStepConfig.renderer.screenName}
-                        />
-                    </AnimatedScreenTransition>
-                );
-
-            case OnboardingRendererKind.ProgressGraph:
-                return <ProgressGraphVictoryStep />;
-
-            case OnboardingRendererKind.Goals:
-                return (
-                    <GoalsSelectionStep
-                        selectedGoals={formData.goals}
-                        onUpdateGoals={updateGoals}
-                    />
-                );
-
-            case OnboardingRendererKind.QuickWinMood:
-                return (
-                    <QuickWinMoodStep
-                        selectedMood={formData.quickWinMood}
-                        onSelectMood={updateQuickWinMood}
-                    />
-                );
-
-            case OnboardingRendererKind.FeatureDiscovery:
-                return <FeatureDiscoveryStep slides={relevantSlides} />;
-
-            case OnboardingRendererKind.SoftPaywall:
-                return (
-                    <SoftPaywallStep
-                        relevantFeatures={relevantPremiumFeatures}
-                        onStartTrial={handleTrialStart}
-                        onSkipTrial={handleTrialSkip}
-                    />
-                );
-
-            case OnboardingRendererKind.Celebration:
-                return (
-                    <EnhancedCelebrationStep
-                        userName={formData.name}
-                        trialStarted={formData.trialStarted}
-                    />
-                );
-
-            default:
-                return null;
-        }
-    };
-
-    return (
-        <Animated.View
-            style={[{ flex: 1, backgroundColor: "#fff" }, backgroundAnimatedStyle]}
-        >
-            <Stack.Screen
-                options={{
-                    headerShown: true,
-                    header: () => (
-                        <Animated.View
-                            style={[{ backgroundColor: "#fff" }, backgroundAnimatedStyle]}
-                            className="h-32 items-start justify-end px-5"
-                        >
-                            <View className="relative mb-4 w-full flex-row items-center justify-between">
-                                {showHeaderBack ? (
-                                    <TouchableOpacity
-                                        onPress={handleBack}
-                                        activeOpacity={0.8}
-                                        className="h-14 w-14 items-center justify-center rounded-full bg-[#F4F4F5]"
-                                        accessibilityLabel="Go back to previous step"
-                                        accessibilityRole="button"
-                                    >
-                                        <HugeiconsIcon
-                                            icon={ArrowLeft02Icon}
-                                            size={24}
-                                            color="#171717"
-                                        />
-                                    </TouchableOpacity>
-                                ) : (
-                                    <View className="h-14 w-14" />
-                                )}
-
-                                <View className="pointer-events-none absolute inset-x-0 items-center">
-                                    <ProgressDots
-                                        totalSteps={totalSteps}
-                                        currentStep={currentStepIndex}
-                                    />
-                                </View>
-
-                                <View className="min-w-[56px] items-end">
-                                    {showSkip ? (
-                                        <TouchableOpacity
-                                            onPress={handleSkip}
-                                            className="py-3 px-4"
-                                            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                                            accessibilityLabel="Skip this step"
-                                            accessibilityRole="button"
-                                        >
-                                            <Text className="text-gray-400 dark:text-gray-500 text-sm font-semibold">
-                                                Skip
-                                            </Text>
-                                        </TouchableOpacity>
-                                    ) : (
-                                        <View className="h-14 w-14" />
-                                    )}
-                                </View>
-                            </View>
-                        </Animated.View>
-                    ),
-                }}
-            />
-
-            <View className="flex-1 w-full">{renderStep()}</View>
-
-            {showContinueButton && (
-                <View className="w-full border-t border-gray-200 px-6 pt-8 items-center justify-center">
-                    <View className="flex-row justify-center items-center">
-                        <BeginButton
-                            onPress={handleContinue}
-                            name={loading ? "Setting up..." : ctaLabel}
-                            disabled={!canContinue || loading}
-                            showIcon={true}
-                            activeOpacity={0.8}
-                        />
-                    </View>
-                </View>
-            )}
-
+  return (
+    <Animated.View style={[{ flex: 1 }, backgroundAnimatedStyle]}>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          header: () => (
             <Animated.View
-                style={keyboardPadding}
-                pointerEvents="none"
+              style={backgroundAnimatedStyle}
+              className="h-28 justify-end pb-3"
+            >
+              <View className="flex-row items-center px-5">
+                {showBackButton ? (
+                  <TouchableOpacity
+                    onPress={handleBack}
+                    activeOpacity={0.8}
+                    className="h-10 w-10 items-center justify-center rounded-full bg-sage-50"
+                    accessibilityLabel="Go back"
+                    accessibilityRole="button"
+                  >
+                    <HugeiconsIcon
+                      icon={ArrowLeft02Icon}
+                      size={20}
+                      color="#4A5A4A"
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <View className="h-10 w-10" />
+                )}
+                <View className="flex-1 px-3">
+                  <StageProgressBar currentStage={currentStage} />
+                </View>
+                <View className="h-10 w-10" />
+              </View>
+            </Animated.View>
+          ),
+        }}
+      />
+
+      <Animated.View style={[{ flex: 1 }, stepContainerStyle]}>
+        {renderStep()}
+      </Animated.View>
+
+      {showContinueButton && (
+        <Animated.View
+          style={backgroundAnimatedStyle}
+          className="px-6 pb-8 pt-4"
+        >
+          <TactileButton
+            label={
+              loading ? "Setting up..." : currentStepConfig.continueButtonLabel
+            }
+            onPress={handleContinue}
+            disabled={!canContinue || loading}
+          />
+          {currentStepConfig.canSkip && (
+            <TactileButton
+              label="Skip for now"
+              onPress={() => {
+                analytics.trackStepSkipped(currentStep);
+                goNext();
+              }}
+              variant="secondary"
             />
-            <KeyboardToolbar
-                pointerEvents="none"
-                content={<Text />}
-                showArrows={false}
-                insets={{ left: 16, right: 0 }}
-                doneText="Close keyboard"
-            />
+          )}
         </Animated.View>
-    );
+      )}
+    </Animated.View>
+  );
 };
 
 export default React.memo(OnboardingScreen);

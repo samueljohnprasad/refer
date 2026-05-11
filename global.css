@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'uniwind';
+@import "tailwindcss";
+@import "uniwind";
 
 @theme {
   --breakpoint-phone: 390px;
@@ -117,4 +117,23 @@
   --color-ring: rgb(var(--ring));
   --color-accent: rgb(var(--accent));
   --color-accent-foreground: rgb(var(--accent-foreground));
+
+  /* Happy onboarding — sage palette */
+  --color-sage-50: #f4f1ea;
+  --color-sage-100: #e8e2d2;
+  --color-sage-200: #d4ccb5;
+  --color-sage-300: #a8b89a;
+  --color-sage-400: #7a9272;
+  --color-sage-500: #5a7a56;
+  --color-sage-600: #3f5a3d;
+  --color-sage-700: #2a3f2a;
+  --color-sage-800: #1a2a1a;
+  --color-cream: #faf6ed;
+  --color-warm-white: #fffcf5;
+  --color-terracotta: #c8694b;
+  --color-terracotta-light: #e8a88e;
+  --color-gold: #d4a943;
+  --color-ink: #1a2a1a;
+  --color-ink-soft: #4a5a4a;
+  --color-ink-muted: #7a8a7a;
 }

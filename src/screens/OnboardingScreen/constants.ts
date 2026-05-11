@@ -1,350 +1,472 @@
 import {
-  GoalConfig,
-  PremiumFeatureConfig,
-  PricingPlan,
   OnboardingStepConfig,
-  OnboardingRendererKind,
-  QuickWinMoodOption,
-  FeatureDiscoverySlide,
   OnboardingChecklistItem,
-  JournalingGoal,
+  QuizOption,
+  MotivationAnswer,
+  StressLevel,
+  JournalExperience,
+  StressTiming,
+  GoalCardConfig,
+  LoadingTask,
+  PricingPlanConfig,
+  FeelingOption,
+  JourneyMapNode,
 } from "./types";
 
 export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "welcome",
-    backgroundColor: "#fff",
-    canSkip: true,
-    analyticsLabel: "welcome_value",
+    stage: 1,
+    backgroundColor: "#FAF6ED",
     showBackButton: false,
     showContinueButton: true,
-    continueButtonLabel: "Continue",
-    renderer: {
-      kind: OnboardingRendererKind.JourneyStep,
-      screenName: "feel-better",
-      transitionKey: "feel-better",
-      transitionDuration: 360,
-    },
-  },
-  {
-    name: "reframe_thoughts_intro",
-    backgroundColor: "#fff",
-    canSkip: true,
-    analyticsLabel: "reframe_thoughts_intro",
-    showBackButton: true,
-    showContinueButton: true,
-    continueButtonLabel: "Continue",
-    renderer: {
-      kind: OnboardingRendererKind.JourneyStep,
-      screenName: "reframe-thoughts",
-      transitionKey: "reframe-thoughts",
-      transitionDuration: 360,
-    },
-  },
-  {
-    name: "progress_graph",
-    backgroundColor: "#F4FBF1",
-    canSkip: true,
-    analyticsLabel: "progress_graph",
-    showBackButton: true,
-    showContinueButton: true,
-    continueButtonLabel: "Continue",
-    renderer: {
-      kind: OnboardingRendererKind.ProgressGraph,
-    },
-  },
-  {
-    name: "goals",
-    backgroundColor: "#FFF3D4",
+    continueButtonLabel: "LET'S BEGIN",
+    autoAdvance: false,
     canSkip: false,
-    analyticsLabel: "goals_selection",
-    showBackButton: true,
-    showContinueButton: true,
-    continueButtonLabel: "Continue",
-    isContinueEnabled: (formData) => formData.goals.length > 0,
-    renderer: {
-      kind: OnboardingRendererKind.Goals,
-    },
+    analyticsLabel: "welcome",
   },
   {
-    name: "quick_win_mood",
-    backgroundColor: "#DCF2FF",
-    canSkip: true,
-    analyticsLabel: "quick_win_mood",
+    name: "mascot_greeting",
+    stage: 1,
+    backgroundColor: "#FAF6ED",
     showBackButton: true,
     showContinueButton: true,
-    continueButtonLabel: "Continue",
-    isContinueEnabled: (formData) => formData.quickWinMood !== undefined,
-    renderer: {
-      kind: OnboardingRendererKind.QuickWinMood,
-    },
+    continueButtonLabel: "I'M READY",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "mascot_greeting",
   },
   {
-    name: "feature_discovery",
-    backgroundColor: "#F0FDF4",
-    canSkip: true,
-    analyticsLabel: "feature_discovery",
+    name: "quiz_motivation",
+    stage: 2,
+    backgroundColor: "#FAF6ED",
+    showBackButton: true,
+    showContinueButton: false,
+    continueButtonLabel: "CONTINUE",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "quiz_motivation",
+  },
+  {
+    name: "quiz_stress_level",
+    stage: 2,
+    backgroundColor: "#FAF6ED",
+    showBackButton: true,
+    showContinueButton: false,
+    continueButtonLabel: "CONTINUE",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "quiz_stress_level",
+  },
+  {
+    name: "quiz_experience",
+    stage: 2,
+    backgroundColor: "#FAF6ED",
+    showBackButton: true,
+    showContinueButton: false,
+    continueButtonLabel: "CONTINUE",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "quiz_experience",
+  },
+  {
+    name: "quiz_timing",
+    stage: 2,
+    backgroundColor: "#FAF6ED",
+    showBackButton: true,
+    showContinueButton: false,
+    continueButtonLabel: "CONTINUE",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "quiz_timing",
+  },
+  {
+    name: "daily_goal",
+    stage: 3,
+    backgroundColor: "#FAF6ED",
     showBackButton: true,
     showContinueButton: true,
-    continueButtonLabel: "Continue",
-    renderer: {
-      kind: OnboardingRendererKind.FeatureDiscovery,
-    },
+    continueButtonLabel: "CONTINUE",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "daily_goal",
+    isContinueEnabled: (formData) => formData.dailyGoal !== undefined,
+  },
+  {
+    name: "pact_signing",
+    stage: 3,
+    backgroundColor: "#FAF6ED",
+    showBackButton: true,
+    showContinueButton: false,
+    continueButtonLabel: "",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "pact_signing",
+  },
+  {
+    name: "building_journey",
+    stage: 4,
+    backgroundColor: "#FAF6ED",
+    showBackButton: false,
+    showContinueButton: false,
+    continueButtonLabel: "",
+    autoAdvance: true,
+    canSkip: false,
+    analyticsLabel: "building_journey",
+  },
+  {
+    name: "plan_reveal",
+    stage: 4,
+    backgroundColor: "#FAF6ED",
+    showBackButton: false,
+    showContinueButton: true,
+    continueButtonLabel: "START DAY 1",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "plan_reveal",
+  },
+  {
+    name: "mood_check_lesson",
+    stage: 5,
+    backgroundColor: "#FFFCF5",
+    showBackButton: false,
+    showContinueButton: true,
+    continueButtonLabel: "CONTINUE",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "mood_check_lesson",
+    isContinueEnabled: (formData) => formData.selectedFeeling !== undefined,
+  },
+  {
+    name: "ai_insight",
+    stage: 5,
+    backgroundColor: "#FFFCF5",
+    showBackButton: false,
+    showContinueButton: true,
+    continueButtonLabel: "CONTINUE",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "ai_insight",
+  },
+  {
+    name: "lesson_complete",
+    stage: 5,
+    backgroundColor: "#FAF6ED",
+    showBackButton: false,
+    showContinueButton: true,
+    continueButtonLabel: "CONTINUE",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "lesson_complete",
+  },
+  {
+    name: "notification_permission",
+    stage: 6,
+    backgroundColor: "#FAF6ED",
+    showBackButton: false,
+    showContinueButton: true,
+    continueButtonLabel: "ENABLE REMINDERS",
+    autoAdvance: false,
+    canSkip: true,
+    analyticsLabel: "notification_permission",
+  },
+  {
+    name: "journey_map",
+    stage: 6,
+    backgroundColor: "#FAF6ED",
+    showBackButton: false,
+    showContinueButton: true,
+    continueButtonLabel: "CONTINUE",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "journey_map",
+  },
+  {
+    name: "letter_from_future",
+    stage: 7,
+    backgroundColor: "#FAF6ED",
+    showBackButton: false,
+    showContinueButton: true,
+    continueButtonLabel: "I NEEDED THIS",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "letter_from_future",
   },
   {
     name: "soft_paywall",
-    backgroundColor: "#FFFFFF",
-    canSkip: true,
-    analyticsLabel: "soft_paywall",
-    showBackButton: true,
+    stage: 7,
+    backgroundColor: "#FFFCF5",
+    showBackButton: false,
     showContinueButton: false,
-    continueButtonLabel: "Continue",
-    renderer: {
-      kind: OnboardingRendererKind.SoftPaywall,
-    },
-  },
-  {
-    name: "celebration",
-    backgroundColor: "#E5FFE5",
+    continueButtonLabel: "",
+    autoAdvance: false,
     canSkip: false,
-    analyticsLabel: "celebration",
-    showBackButton: true,
+    analyticsLabel: "soft_paywall",
+  },
+  {
+    name: "welcome_to_happy",
+    stage: 7,
+    backgroundColor: "#FAF6ED",
+    showBackButton: false,
     showContinueButton: true,
-    continueButtonLabel: "Start Your Journey 🚀",
-    renderer: {
-      kind: OnboardingRendererKind.Celebration,
-    },
+    continueButtonLabel: "BEGIN MY JOURNEY",
+    autoAdvance: false,
+    canSkip: false,
+    analyticsLabel: "welcome_to_happy",
   },
 ] as const;
 
-export const TOTAL_ONBOARDING_STEPS: number = ONBOARDING_STEPS.length;
+export const TOTAL_ONBOARDING_STEPS = ONBOARDING_STEPS.length;
 
-export const GOAL_OPTIONS: readonly GoalConfig[] = [
+export const MOTIVATION_OPTIONS: readonly QuizOption<MotivationAnswer>[] = [
   {
-    id: "track_emotions",
-    label: "Track my daily emotions",
-    emoji: "😊",
-    premiumFeature: "advanced_mood_dashboard",
-    premiumFeatureLabel: "Advanced Mood Dashboard",
+    id: "anxiety",
+    emoji: "😰",
+    title: "Managing anxiety",
+    subtitle: "I want to feel calmer and more in control",
   },
   {
-    id: "build_habits",
-    label: "Build better habits",
-    emoji: "✅",
-    premiumFeature: null,
-    premiumFeatureLabel: null,
-  },
-  {
-    id: "reduce_anxiety",
-    label: "Reduce stress & anxiety",
-    emoji: "🧘",
-    premiumFeature: "cbt_exercises",
-    premiumFeatureLabel: "CBT Thought Checker",
-  },
-  {
-    id: "personal_growth",
-    label: "Personal growth",
-    emoji: "🌱",
-    premiumFeature: "ai_insights",
-    premiumFeatureLabel: "AI Insights & Summaries",
-  },
-  {
-    id: "improve_relationships",
-    label: "Improve relationships",
-    emoji: "❤️",
-    premiumFeature: null,
-    premiumFeatureLabel: null,
-  },
-  {
-    id: "practice_gratitude",
-    label: "Practice gratitude",
-    emoji: "🙏",
-    premiumFeature: "gratitude_reframe",
-    premiumFeatureLabel: "Gratitude Reframe",
-  },
-  {
-    id: "self_reflection",
-    label: "Self-reflection & journaling",
-    emoji: "📝",
-    premiumFeature: "unlimited_journals",
-    premiumFeatureLabel: "Unlimited Journal Entries",
-  },
-] as const;
-
-export const QUICK_WIN_MOOD_OPTIONS: readonly QuickWinMoodOption[] = [
-  {
-    value: "terrible",
-    emoji: "😢",
-    label: "Terrible",
-    color: "#FEE2E2",
-    insightText:
-      "Acknowledging how you feel is the first step. Journaling can help process tough emotions.",
-  },
-  {
-    value: "bad",
-    emoji: "😔",
-    label: "Not great",
-    color: "#FED7AA",
-    insightText:
-      "It's okay to have off days. Users who journal regularly report 40% fewer bad days.",
-  },
-  {
-    value: "okay",
-    emoji: "😐",
-    label: "Okay",
-    color: "#FEF3C7",
-    insightText:
-      "Neutral days are perfect for reflection. Small insights today lead to big changes.",
-  },
-  {
-    value: "good",
-    emoji: "🙂",
-    label: "Good",
-    color: "#D1FAE5",
-    insightText:
-      "Great mood! Capturing positive moments helps build lasting happiness patterns.",
-  },
-  {
-    value: "great",
-    emoji: "😄",
-    label: "Amazing",
-    color: "#DBEAFE",
-    insightText:
-      "Wonderful! Tracking your highs helps you understand what makes you thrive.",
-  },
-] as const;
-
-export const PREMIUM_FEATURES: readonly PremiumFeatureConfig[] = [
-  {
-    id: "ai_insights",
-    title: "AI Insights & Summaries",
-    description: "Get personalized weekly reflections powered by AI",
-    emoji: "✨",
-    isPremium: true,
-    statLabel: "of users feel more self-aware",
-    statValue: "89%",
-  },
-  {
-    id: "cbt_exercises",
-    title: "CBT Thought Checker",
-    description: "Challenge negative thoughts with science-backed exercises",
-    emoji: "🧠",
-    isPremium: true,
-    statLabel: "reduction in anxiety reported",
-    statValue: "67%",
-  },
-  {
-    id: "advanced_mood_dashboard",
-    title: "Advanced Mood Dashboard",
-    description: "Visualize patterns and trends in your emotional health",
-    emoji: "📊",
-    isPremium: true,
-    statLabel: "better mood awareness",
-    statValue: "92%",
-  },
-  {
-    id: "unlimited_journals",
-    title: "Unlimited Journal Entries",
-    description: "Write as many entries as you want, every single day",
-    emoji: "📝",
-    isPremium: true,
-    statLabel: "more entries per week on avg",
-    statValue: "3.5x",
-  },
-  {
-    id: "voice_recording",
-    title: "Extended Voice Journaling",
-    description: "Record your thoughts without time limits",
-    emoji: "🎙️",
-    isPremium: true,
-    statLabel: "prefer voice over typing",
-    statValue: "45%",
-  },
-  {
-    id: "streak_freeze",
-    title: "Streak Freeze Protection",
-    description: "Protect your streak when life gets busy",
-    emoji: "🛡️",
-    isPremium: true,
-    statLabel: "longer streaks with freeze",
-    statValue: "2.8x",
-  },
-] as const;
-
-export const FEATURE_DISCOVERY_SLIDES: readonly FeatureDiscoverySlide[] = [
-  {
-    id: "mood_tracking",
-    title: "Track Your Mood",
-    description:
-      "Log how you feel throughout the day and discover patterns over time",
-    emoji: "😊",
-    isPremium: false,
-    statLabel: "Users report better emotional awareness in 2 weeks",
-    backgroundColor: "#FDF2F8",
-  },
-  {
-    id: "ai_insights",
-    title: "AI-Powered Insights",
-    description:
-      "Get personalized weekly summaries and deeper understanding of your patterns",
-    emoji: "✨",
-    isPremium: true,
-    statLabel: "89% of users feel more self-aware with AI insights",
-    backgroundColor: "#EFF6FF",
-  },
-  {
-    id: "cbt_tools",
-    title: "Science-Backed CBT Tools",
-    description:
-      "Challenge negative thoughts and build resilience with proven techniques",
-    emoji: "🧠",
-    isPremium: true,
-    statLabel: "67% reduction in anxiety after 4 weeks",
-    backgroundColor: "#F0FDF4",
+    id: "self_discovery",
+    emoji: "🔍",
+    title: "Self-discovery",
+    subtitle: "I want to understand myself better",
   },
   {
     id: "habits",
-    title: "Habit Tracker",
-    description:
-      "Build positive daily routines alongside your journaling practice",
-    emoji: "✅",
-    isPremium: false,
-    statLabel: "78% of users build at least one lasting habit",
-    backgroundColor: "#F5F3FF",
+    emoji: "🌱",
+    title: "Building better habits",
+    subtitle: "I want to create a daily wellness routine",
   },
   {
-    id: "gratitude",
-    title: "Gratitude Reframing",
-    description: "Transform your perspective with guided gratitude exercises",
-    emoji: "🙏",
-    isPremium: true,
-    statLabel: "95% report higher life satisfaction",
-    backgroundColor: "#FFF7ED",
+    id: "relationships",
+    emoji: "❤️",
+    title: "Improving relationships",
+    subtitle: "I want to connect more deeply with others",
   },
-] as const;
+];
 
-export const PRICING_PLANS: readonly PricingPlan[] = [
+export const STRESS_LEVEL_OPTIONS: readonly QuizOption<StressLevel>[] = [
   {
-    id: "annual",
-    label: "Annual",
-    price: "$39.99/year",
-    perMonthPrice: "$3.33/mo",
-    badge: "Best Value",
-    savings: "Save 60%",
+    id: "light",
+    emoji: "🌤️",
+    title: "Light breeze",
+    subtitle: "Manageable — I just want to stay ahead of it",
   },
   {
-    id: "weekly",
+    id: "moderate",
+    emoji: "🌥️",
+    title: "Moderate weight",
+    subtitle: "It comes and goes, some days harder than others",
+  },
+  {
+    id: "heavy",
+    emoji: "🌧️",
+    title: "Heavy clouds",
+    subtitle: "It affects my daily life significantly",
+  },
+  {
+    id: "overwhelming",
+    emoji: "⛈️",
+    title: "Overwhelming storm",
+    subtitle: "Some days I don't know how to start",
+  },
+];
+
+export const EXPERIENCE_OPTIONS: readonly QuizOption<JournalExperience>[] = [
+  {
+    id: "never",
+    emoji: "🆕",
+    title: "Never tried it",
+    subtitle: "I'm completely new to journaling",
+  },
+  {
+    id: "tried_quit",
+    emoji: "🔄",
+    title: "Tried but stopped",
+    subtitle: "I've started before but couldn't keep it up",
+  },
+  {
+    id: "active",
+    emoji: "📔",
+    title: "I journal regularly",
+    subtitle: "Looking for structure and deeper insights",
+  },
+];
+
+export const TIMING_OPTIONS: readonly QuizOption<StressTiming>[] = [
+  {
+    id: "morning",
+    emoji: "🌅",
+    title: "Mornings",
+    subtitle: "The day ahead feels overwhelming before it starts",
+  },
+  {
+    id: "afternoon",
+    emoji: "☀️",
+    title: "Afternoons",
+    subtitle: "Midday crashes and mounting pressure",
+  },
+  {
+    id: "evening",
+    emoji: "🌆",
+    title: "Evenings",
+    subtitle: "The day's weight hits hardest after work",
+  },
+  {
+    id: "night",
+    emoji: "🌙",
+    title: "Late at night",
+    subtitle: "Racing thoughts when trying to wind down",
+  },
+];
+
+export const DAILY_GOAL_CARDS: readonly GoalCardConfig[] = [
+  {
+    minutes: 3,
+    tag: "Gentle",
+    tagVariant: "casual",
+    description: "A quick check-in",
+  },
+  {
+    minutes: 5,
+    tag: "Recommended",
+    tagVariant: "recommended",
+    description: "The sweet spot for building a habit",
+  },
+  {
+    minutes: 10,
+    tag: "Committed",
+    tagVariant: "committed",
+    description: "Deep enough for real insights",
+  },
+  {
+    minutes: 15,
+    tag: "Serious",
+    tagVariant: "serious",
+    description: "Full journaling with CBT exercises",
+  },
+];
+
+export const LOADING_TASKS: readonly LoadingTask[] = [
+  { id: "stress", label: "Analyzing your stress profile", durationMs: 800 },
+  { id: "plan", label: "Building your personal journey", durationMs: 900 },
+  { id: "cbt", label: "Selecting CBT exercises for you", durationMs: 1000 },
+  { id: "schedule", label: "Optimizing your daily schedule", durationMs: 800 },
+];
+
+export const FEELINGS: readonly FeelingOption[] = [
+  { id: "calm", emoji: "😌", label: "Calm" },
+  { id: "anxious", emoji: "😰", label: "Anxious" },
+  { id: "happy", emoji: "😊", label: "Happy" },
+  { id: "sad", emoji: "😢", label: "Sad" },
+  { id: "angry", emoji: "😤", label: "Angry" },
+  { id: "hopeful", emoji: "🌟", label: "Hopeful" },
+  { id: "tired", emoji: "😴", label: "Tired" },
+  { id: "grateful", emoji: "🙏", label: "Grateful" },
+];
+
+export const PRICING_PLANS: readonly PricingPlanConfig[] = [
+  {
+    tier: "weekly",
     label: "Weekly",
-    price: "$1.99/week",
-    perMonthPrice: "$7.96/mo",
-    badge: null,
-    savings: null,
+    price: "$7.99/week",
+    perUnit: "$31.96/mo",
+    featured: false,
+    isDecoy: true,
   },
-] as const;
+  {
+    tier: "annual",
+    label: "Annual",
+    price: "$99.99/year",
+    perUnit: "$0.27/day",
+    featured: true,
+    badge: "BEST VALUE",
+    savings: "SAVE 67%",
+  },
+  {
+    tier: "monthly",
+    label: "Monthly",
+    price: "$14.99/month",
+    perUnit: "$14.99/mo",
+    featured: false,
+  },
+];
 
-export const POST_TRIAL_DISCOUNT_PERCENT: number = 30;
-export const POST_TRIAL_ANNUAL_PRICE: string = "$27.99/year";
-export const POST_TRIAL_ANNUAL_PER_MONTH: string = "$2.33/mo";
+export const NOTIFICATION_TIMES = [
+  { id: "morning" as const, label: "Morning", time: "8:00 AM" },
+  { id: "afternoon" as const, label: "Afternoon", time: "1:00 PM" },
+  { id: "evening" as const, label: "Evening", time: "7:00 PM" },
+];
+
+export const JOURNEY_MAP_NODES: readonly JourneyMapNode[] = [
+  {
+    id: "1",
+    emoji: "😌",
+    label: "How are you, really?",
+    subtitle: "Mood check-in",
+    status: "completed",
+  },
+  {
+    id: "2",
+    emoji: "🧠",
+    label: "The Thought Spiral",
+    subtitle: "Day 2 · CBT basics",
+    status: "current",
+  },
+  {
+    id: "3",
+    emoji: "🫁",
+    label: "Body as Compass",
+    subtitle: "Day 3 · Body scan",
+    status: "locked",
+  },
+  {
+    id: "4",
+    emoji: "📝",
+    label: "Thought Records",
+    subtitle: "Day 4 · Your first CBT tool",
+    status: "locked",
+  },
+  {
+    id: "5",
+    emoji: "🌊",
+    label: "Riding the Wave",
+    subtitle: "Day 5 · Acceptance",
+    status: "locked",
+  },
+  {
+    id: "6",
+    emoji: "🔑",
+    label: "Patterns Unlocked",
+    subtitle: "Day 6 · AI insights",
+    status: "locked",
+  },
+  {
+    id: "7",
+    emoji: "🏔️",
+    label: "The Quiet Summit",
+    subtitle: "Day 7 · Reflection",
+    status: "locked",
+  },
+];
+
+export const PAYWALL_BENEFITS = [
+  "All 12 journeys with sequenced lessons",
+  "Unlimited AI insights & weekly patterns",
+  "Full CBT toolkit (20+ exercises)",
+  "Streak repair & premium themes",
+];
+
+export const PACT_TEXT = `I commit to showing up for myself — even on the days I don't feel like it. Just {minutes} minutes. That's all it takes.`;
+
+export const FUTURE_LETTER_TEXT = `You did it. You actually showed up — not once, but every single day for 30 days.\n\nRemember how heavy things felt when you started? The {timing} were the hardest. But you kept coming back. {minutes} minutes at a time.\n\nYou're not the same person who opened this app a month ago. You're calmer. You notice your thoughts before they spiral. You have tools now.\n\nI'm proud of you.`;
+
+export const PLAN_STATS = [
+  { value: "7", label: "Days" },
+  { value: "14", label: "Lessons" },
+  { value: "9", label: "CBT Exercises" },
+  { value: "5 min", label: "Per Day" },
+];
 
 export const DEFAULT_CHECKLIST_ITEMS: readonly OnboardingChecklistItem[] = [
   {
@@ -382,22 +504,10 @@ export const DEFAULT_CHECKLIST_ITEMS: readonly OnboardingChecklistItem[] = [
     route: "/(tabs)/home",
     xpReward: 20,
   },
-] as const;
+];
 
-export const SOCIAL_PROOF_COUNT: string = "50,000+";
-export const PREMIUM_MEMBER_COUNT: string = "15,000+";
-export const TRIAL_DAYS: number = 7;
-export const BRAND_PURPLE: string = "#7C3AED";
-export const BRAND_PURPLE_LIGHT: string = "#EDE9FE";
-export const SUCCESS_GREEN: string = "#10B981";
-export const PREMIUM_GOLD: string = "#F59E0B";
-
-export const GOAL_TO_FEATURES_MAP: Record<JournalingGoal, string[]> = {
-  track_emotions: ["advanced_mood_dashboard", "ai_insights"],
-  build_habits: ["habits"],
-  reduce_anxiety: ["cbt_exercises", "ai_insights"],
-  personal_growth: ["ai_insights", "unlimited_journals"],
-  improve_relationships: ["ai_insights", "unlimited_journals"],
-  practice_gratitude: ["gratitude", "ai_insights"],
-  self_reflection: ["unlimited_journals", "voice_recording"],
-};
+export const TRIAL_DAYS = 7;
+export const POST_TRIAL_DISCOUNT_PERCENT = 30;
+export const POST_TRIAL_ANNUAL_PRICE = "$69.99/year";
+export const POST_TRIAL_ANNUAL_PER_MONTH = "$5.83/mo";
+export const PREMIUM_GOLD = "#D4A943";
