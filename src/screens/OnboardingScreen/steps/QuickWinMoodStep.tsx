@@ -113,7 +113,7 @@ const QuickWinMoodStep: React.FC<QuickWinMoodStepProps> = ({
                 <Text
                     className="text-center text-gray-900 dark:text-white mb-3"
                     style={{
-                        fontFamily: "CormorantBold",
+                        fontFamily: "FrauncesBold",
                         fontSize: 30,
                         lineHeight: 36,
                         letterSpacing: -0.5,

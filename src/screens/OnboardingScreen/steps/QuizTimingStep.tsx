@@ -36,12 +36,12 @@ const QuizTimingStep: React.FC<QuizTimingStepProps> = ({
           Step 4 of 7
         </Text>
         <Text
-          style={{ fontFamily: "CormorantSemiBold" }}
+          style={{ fontFamily: "FrauncesSemiBold" }}
           className="mt-2 text-[30px] leading-[1.1] text-ink"
         >
           When does stress hit{" "}
           <Text
-            style={{ fontFamily: "CormorantMedium" }}
+            style={{ fontFamily: "FrauncesMedium" }}
             className="italic text-sage-500"
           >
             hardest?
@@ -66,7 +66,7 @@ const QuizTimingStep: React.FC<QuizTimingStepProps> = ({
 
       <View className="mt-5 rounded-[14px] border-l-[3px] border-gold bg-warm-white px-4 py-3">
         <Text
-          style={{ fontFamily: "CormorantMedium" }}
+          style={{ fontFamily: "FrauncesMedium" }}
           className="text-[13px] italic leading-[1.4] text-ink"
         >
           "5 minutes felt fake at first. But I have ADHD — anything longer than

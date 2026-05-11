@@ -61,7 +61,7 @@ const WelcomeValueStep: React.FC = () => {
                 <Text
                     className="text-center text-gray-900 dark:text-white mb-3"
                     style={{
-                        fontFamily: "CormorantBold",
+                        fontFamily: "FrauncesBold",
                         fontSize: 32,
                         lineHeight: 38,
                         letterSpacing: -0.5,

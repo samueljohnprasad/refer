@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import {
+  Text,
   View,
   TouchableOpacity,
   useWindowDimensions,
@@ -47,12 +48,91 @@ interface OnboardingScreenProps {
   onComplete: () => Promise<void>;
 }
 
+interface HeaderConfig {
+  visible: boolean;
+  showBackButton?: boolean;
+  backButtonVariant?: "arrow" | "close";
+  progress?: number;
+  progressFillColor?: string;
+  progressTrackColor?: string;
+  trailingLabel?: string;
+  trailingLabelColor?: string;
+  trailingLabelTracking?: number;
+  trailingLabelAlignment?: "center" | "end";
+}
+
 const WELCOME_CTA_REVEAL_DELAY_MS = 520;
 const WELCOME_CTA_HANDOFF_DELAY_MS = 110;
 const STEP_CTA_REVEAL_DURATION_MS = 180;
 const STEP_CTA_REVEAL_OFFSET = 6;
 const STEP_ENTER_DURATION_MS = 200;
 const STEP_ENTER_TRAVEL_PX = 18;
+const LESSON_PROGRESS_FILL = "#C8694B";
+
+const getHeaderConfig = (stepName: string): HeaderConfig => {
+  switch (stepName) {
+    case "welcome":
+    case "building_journey":
+    case "lesson_complete":
+    case "journey_map":
+    case "soft_paywall":
+    case "welcome_to_happy":
+      return { visible: false };
+    case "mascot_greeting":
+      return { visible: true, showBackButton: true, progress: 0.08 };
+    case "quiz_motivation":
+      return { visible: true, showBackButton: true, progress: 0.16 };
+    case "quiz_stress_level":
+      return { visible: true, showBackButton: true, progress: 0.24 };
+    case "quiz_experience":
+      return { visible: true, showBackButton: true, progress: 0.32 };
+    case "quiz_timing":
+      return { visible: true, showBackButton: true, progress: 0.42 };
+    case "daily_goal":
+      return { visible: true, showBackButton: true, progress: 0.54 };
+    case "pact_signing":
+      return { visible: true, showBackButton: true, progress: 0.63 };
+    case "plan_reveal":
+      return {
+        visible: true,
+        trailingLabel: "YOUR PLAN",
+        trailingLabelColor: "#7A8A7A",
+        trailingLabelTracking: 0.6,
+        trailingLabelAlignment: "end",
+      };
+    case "mood_check_lesson":
+      return {
+        visible: true,
+        showBackButton: true,
+        backButtonVariant: "close",
+        progress: 0.25,
+        progressFillColor: LESSON_PROGRESS_FILL,
+        trailingLabel: "+10 XP",
+        trailingLabelColor: LESSON_PROGRESS_FILL,
+      };
+    case "ai_insight":
+      return {
+        visible: true,
+        progress: 0.5,
+        progressFillColor: LESSON_PROGRESS_FILL,
+        trailingLabel: "+10 XP",
+        trailingLabelColor: LESSON_PROGRESS_FILL,
+      };
+    case "notification_permission":
+      return { visible: true, progress: 1 };
+    case "letter_from_future":
+      return {
+        visible: true,
+        showBackButton: true,
+        trailingLabel: "A QUIET MOMENT",
+        trailingLabelColor: "#7A8A7A",
+        trailingLabelTracking: 0.6,
+        trailingLabelAlignment: "center",
+      };
+    default:
+      return { visible: false };
+  }
+};
 
 const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const { width: screenWidth } = useWindowDimensions();
@@ -64,8 +144,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const {
     currentStepIndex,
     currentStep,
-    currentStage,
-    totalSteps,
     isLastStep,
     formData,
     derivedPlanName,
@@ -84,9 +162,9 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   } = useOnboardingFlow();
 
   const currentStepConfig = ONBOARDING_STEPS[currentStepIndex];
+  const headerConfig = getHeaderConfig(currentStep);
   const initialBackgroundColor = ONBOARDING_STEPS[0].backgroundColor;
   const canContinue = currentStepConfig.isContinueEnabled?.(formData) ?? true;
-  const showBackButton = currentStepConfig.showBackButton;
   const showContinueButton = currentStepConfig.showContinueButton;
   const slideX = useSharedValue(0);
   const slideOpacity = useSharedValue(1);
@@ -320,7 +398,12 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
       case "building_journey":
         return <BuildingJourneyStep onComplete={goNext} />;
       case "plan_reveal":
-        return <PlanRevealStep planName={derivedPlanName} />;
+        return (
+          <PlanRevealStep
+            planName={derivedPlanName}
+            motivation={formData.motivation}
+          />
+        );
       case "mood_check_lesson":
         return (
           <MoodCheckLessonStep
@@ -387,7 +470,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
       />
       <Stack.Screen
         options={{
-          headerShown: true,
+          headerShown: headerConfig.visible,
           headerShadowVisible: false,
           headerStyle: {
             backgroundColor: containerBackgroundColor,
@@ -397,28 +480,90 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
               style={{ backgroundColor: containerBackgroundColor }}
               className="h-28 justify-end pb-3"
             >
-              <View className="flex-row items-center px-5">
-                {showBackButton ? (
+              <View className="flex-row items-center gap-3 px-5">
+                {headerConfig.showBackButton ? (
                   <TouchableOpacity
                     onPress={handleBack}
-                    activeOpacity={0.8}
-                    className="h-10 w-10 items-center justify-center rounded-full bg-sage-50"
-                    accessibilityLabel="Go back"
+                    activeOpacity={0.65}
+                    className="h-8 w-8 items-center justify-center"
+                    accessibilityLabel={
+                      headerConfig.backButtonVariant === "close"
+                        ? "Close"
+                        : "Go back"
+                    }
                     accessibilityRole="button"
                   >
-                    <HugeiconsIcon
-                      icon={ArrowLeft02Icon}
-                      size={20}
-                      color="#4A5A4A"
-                    />
+                    {headerConfig.backButtonVariant === "close" ? (
+                      <Text
+                        style={{
+                          fontSize: 24,
+                          lineHeight: 24,
+                          color: "#4A5A4A",
+                          fontWeight: "400",
+                        }}
+                      >
+                        x
+                      </Text>
+                    ) : (
+                      <HugeiconsIcon
+                        icon={ArrowLeft02Icon}
+                        size={18}
+                        color="#4A5A4A"
+                      />
+                    )}
                   </TouchableOpacity>
+                ) : null}
+                {typeof headerConfig.progress === "number" ? (
+                  <View className="flex-1">
+                    <StageProgressBar
+                      progress={headerConfig.progress}
+                      fillColor={headerConfig.progressFillColor}
+                      trackColor={headerConfig.progressTrackColor}
+                    />
+                  </View>
                 ) : (
-                  <View className="h-10 w-10" />
+                  <>
+                    <View
+                      className={`flex-1 ${
+                        headerConfig.trailingLabelAlignment === "center"
+                          ? "items-center"
+                          : "items-end"
+                      }`}
+                    >
+                      {headerConfig.trailingLabel ? (
+                      <Text
+                        style={{
+                          fontFamily: "GeistSemiBold",
+                          color: headerConfig.trailingLabelColor ?? "#7A8A7A",
+                          fontSize: 11,
+                          fontWeight: "600",
+                            letterSpacing:
+                              headerConfig.trailingLabelTracking ?? 0.5,
+                          }}
+                        >
+                          {headerConfig.trailingLabel}
+                        </Text>
+                      ) : null}
+                    </View>
+                    {headerConfig.trailingLabelAlignment === "center" &&
+                    headerConfig.showBackButton ? (
+                      <View className="h-8 w-8" />
+                    ) : null}
+                  </>
                 )}
-                <View className="flex-1 px-3">
-                  <StageProgressBar currentStage={currentStage} />
-                </View>
-                <View className="h-10 w-10" />
+                {typeof headerConfig.progress === "number" &&
+                headerConfig.trailingLabel ? (
+                  <Text
+                    style={{
+                      fontFamily: "GeistBold",
+                      color: headerConfig.trailingLabelColor ?? "#7A8A7A",
+                      fontSize: 12,
+                      fontWeight: "700",
+                    }}
+                  >
+                    {headerConfig.trailingLabel}
+                  </Text>
+                ) : null}
               </View>
             </View>
           ),

@@ -28,6 +28,23 @@ import {
   CormorantGaramond_600SemiBold,
   CormorantGaramond_700Bold,
 } from "@expo-google-fonts/cormorant-garamond";
+import {
+  Fraunces_400Regular,
+  Fraunces_400Regular_Italic,
+  Fraunces_500Medium,
+  Fraunces_500Medium_Italic,
+  Fraunces_600SemiBold,
+  Fraunces_600SemiBold_Italic,
+  Fraunces_700Bold,
+  Fraunces_700Bold_Italic,
+} from "@expo-google-fonts/fraunces";
+import {
+  Geist_300Light,
+  Geist_400Regular,
+  Geist_500Medium,
+  Geist_600SemiBold,
+  Geist_700Bold,
+} from "@expo-google-fonts/geist";
 import { PostHogProvider } from "posthog-react-native";
 import { XPProvider } from "@/src/context/XPContext";
 import { LevelProvider } from "@/src/context/LevelContext";
@@ -82,6 +99,19 @@ export default function RootLayout() {
     CormorantMedium: CormorantGaramond_500Medium,
     CormorantSemiBold: CormorantGaramond_600SemiBold,
     CormorantBold: CormorantGaramond_700Bold,
+    FrauncesRegular: Fraunces_400Regular,
+    FrauncesRegularItalic: Fraunces_400Regular_Italic,
+    FrauncesMedium: Fraunces_500Medium,
+    FrauncesMediumItalic: Fraunces_500Medium_Italic,
+    FrauncesSemiBold: Fraunces_600SemiBold,
+    FrauncesSemiBoldItalic: Fraunces_600SemiBold_Italic,
+    FrauncesBold: Fraunces_700Bold,
+    FrauncesBoldItalic: Fraunces_700Bold_Italic,
+    GeistLight: Geist_300Light,
+    GeistRegular: Geist_400Regular,
+    GeistMedium: Geist_500Medium,
+    GeistSemiBold: Geist_600SemiBold,
+    GeistBold: Geist_700Bold,
   });
 
   const [styleLoaded, setStyleLoaded] = useState(false);

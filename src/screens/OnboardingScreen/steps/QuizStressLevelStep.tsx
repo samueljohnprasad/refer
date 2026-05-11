@@ -36,12 +36,12 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
           Step 2 of 7
         </Text>
         <Text
-          style={{ fontFamily: "CormorantSemiBold" }}
+          style={{ fontFamily: "FrauncesSemiBold" }}
           className="mt-2 text-[30px] leading-[1.1] text-ink"
         >
           How heavy does stress feel{" "}
           <Text
-            style={{ fontFamily: "CormorantMedium" }}
+            style={{ fontFamily: "FrauncesMedium" }}
             className="italic text-sage-500"
           >
             lately?

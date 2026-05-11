@@ -49,15 +49,16 @@ const INITIAL_FORM_DATA: OnboardingFormData = {
   selectedFeeling: undefined,
   notificationTime: undefined,
   notificationPermissionGranted: false,
-  selectedPricingTier: undefined,
+  selectedPricingTier: "annual",
   trialStarted: false,
 };
 
 const PLAN_NAME_MAP: Record<MotivationAnswer, string> = {
   anxiety: "Quieting the Storm",
-  self_discovery: "Coming Home to Yourself",
-  habits: "The Daily Reset",
-  relationships: "Opening the Door",
+  mood: "Finding Light Again",
+  stress: "Steady Under Pressure",
+  self_understanding: "Coming Home to Yourself",
+  sleep: "The Gentle Wind-Down",
 };
 
 export const useOnboardingFlow = (): UseOnboardingFlowReturn => {

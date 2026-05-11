@@ -6,8 +6,9 @@ import Animated, {
   interpolate,
 } from "react-native-reanimated";
 import { useHoldToCommit } from "../hooks/useHoldToCommit";
-import MochiMascot from "../components/MochiMascot";
 import { DailyGoalMinutes } from "../types";
+
+const DIVIDER_SEGMENTS = Array.from({ length: 28 }, (_, index) => index);
 
 interface PactSigningStepProps {
   dailyGoal: DailyGoalMinutes;
@@ -20,17 +21,11 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
 }) => {
   const { progress, isHolding, committed, onPressIn, onPressOut } =
     useHoldToCommit(onCommit);
+  const [buttonWidth, setButtonWidth] = React.useState(0);
 
-  const ringStyle = useAnimatedStyle(() => {
-    const borderWidth = interpolate(progress.value, [0, 1], [3, 5]);
-    const opacity = interpolate(progress.value, [0, 0.1, 1], [0.7, 1, 1]);
-    const scale = interpolate(progress.value, [0, 0.5, 1], [1, 1.01, 1.02]);
-    return { borderWidth, opacity, transform: [{ scale }] };
-  });
-
-  const glowStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: interpolate(progress.value, [0, 1], [0.96, 1.08]) }],
-    opacity: interpolate(progress.value, [0, 0.2, 1], [0, 0.22, 0.34]),
+  const commitFillStyle = useAnimatedStyle(() => ({
+    width: buttonWidth * progress.value,
+    opacity: interpolate(progress.value, [0, 0.02, 1], [0, 1, 1]),
   }));
 
   return (
@@ -38,92 +33,141 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 24, flexGrow: 1 }}
       contentInsetAdjustmentBehavior="automatic"
-      className="flex-1 px-6"
+      className="flex-1 px-6 pt-3"
     >
-      <View className="flex-1 items-center justify-center">
-        <Animated.View entering={FadeIn.duration(180).delay(80)}>
-          <Text className="text-center text-xs font-semibold uppercase tracking-widest text-sage-500">
-            Step 6 of 7
-          </Text>
-          <Text
-            style={{ fontFamily: "CormorantSemiBold" }}
-            className="mt-2 text-center text-[26px] leading-[1.15] text-ink"
+      <View className="flex-1 justify-between">
+        <View>
+          <Animated.View
+            entering={FadeIn.duration(180).delay(80)}
+            className="items-center"
           >
-            Your commitment
-          </Text>
-        </Animated.View>
-
-        <Animated.View
-          entering={FadeIn.duration(180).delay(160)}
-          className="mt-6 w-full rounded-[20px] border-2 border-sage-200 bg-warm-white px-6 py-6"
-        >
-          <Text
-            style={{ fontFamily: "CormorantMedium" }}
-            className="text-center text-[17px] italic leading-[1.5] text-ink"
-          >
-            I commit to showing up for myself — even on the days I don't feel
-            like it. Just{" "}
-            <Text className="font-semibold not-italic text-sage-600">
-              {dailyGoal} minutes
+            <Text
+              style={{ fontFamily: "GeistSemiBold" }}
+              className="text-center text-xs font-semibold uppercase tracking-[0.12em] text-sage-500"
+            >
+              Step 6 of 6 — Final commitment
             </Text>
-            . That's all it takes.
-          </Text>
-        </Animated.View>
+            <Text
+              style={{ fontFamily: "FrauncesSemiBold" }}
+              className="mt-3 text-center text-[30px] leading-[1.05] text-ink"
+            >
+              A small{" "}
+              <Text
+                style={{
+                  fontFamily: "FrauncesRegularItalic",
+                  color: "#5A7A56",
+                }}
+              >
+                pact.
+              </Text>
+            </Text>
+          </Animated.View>
 
-        <Animated.View
-          entering={FadeIn.duration(180).delay(240)}
-          className="mt-8 items-center"
-        >
-          {committed ? (
-            <View className="items-center">
-              <MochiMascot expression="celebrating" size={120} delay={0} />
-              <Animated.Text
-                entering={FadeIn.duration(180).delay(120)}
-                style={{ fontFamily: "CormorantSemiBold" }}
-                className="mt-4 text-xl text-sage-600"
-              >
-                Pact sealed!
-              </Animated.Text>
-              <Animated.Text
-                entering={FadeIn.duration(180).delay(200)}
-                className="mt-2 text-center text-xs text-ink-muted"
-              >
-                Small promises, kept gently, become real change.
-              </Animated.Text>
-            </View>
-          ) : (
-            <View className="items-center">
-              <Pressable onPressIn={onPressIn} onPressOut={onPressOut}>
-                <View className="items-center justify-center">
-                  {/* Outer glow ring */}
-                  <Animated.View
-                    style={[
-                      glowStyle,
-                      {
-                        position: "absolute",
-                        width: 110,
-                        height: 110,
-                        borderRadius: 55,
-                        backgroundColor: "#5A7A56",
-                      },
-                    ]}
+          <Animated.View
+            entering={FadeIn.duration(180).delay(160)}
+            style={{ borderCurve: "continuous" }}
+            className="mt-4 w-full rounded-[24px] border-2 border-sage-100 bg-warm-white px-6 py-7"
+          >
+            <Text
+              style={{ fontFamily: "FrauncesRegularItalic" }}
+              className="text-left text-[16px] leading-[25px] text-ink"
+            >
+              For the next 7 days, I&apos;ll show up for myself — even if
+              it&apos;s just for {dailyGoal} minutes.
+            </Text>
+            <Text
+              style={{ fontFamily: "FrauncesRegularItalic" }}
+              className="mt-7 text-left text-[16px] leading-[25px] text-ink"
+            >
+              I&apos;ll be honest. I&apos;ll be patient. I&apos;m worth the
+              effort.
+            </Text>
+
+            <View className="mt-[18px] items-center pt-4">
+              <View className="mb-6 w-full flex-row justify-between">
+                {DIVIDER_SEGMENTS.map((segment) => (
+                  <View
+                    key={segment}
+                    style={{
+                      width: 8,
+                      height: 1,
+                      backgroundColor: "#DDD5C6",
+                      opacity: 0.9,
+                    }}
                   />
-                  {/* Progress ring */}
-                  <Animated.View
-                    style={ringStyle}
-                    className="h-24 w-24 items-center justify-center rounded-full border-sage-500 bg-sage-500"
-                  >
-                    <Text className="text-center text-xs font-bold uppercase tracking-wider text-white">
-                      {isHolding ? "Keep\nholding..." : "Hold to\ncommit"}
-                    </Text>
-                  </Animated.View>
-                </View>
-              </Pressable>
-              <Text className="mt-3 text-xs text-ink-muted">
-                Press and hold for 1.5 seconds
+                ))}
+              </View>
+              <Text
+                style={{ fontFamily: "GeistMedium" }}
+                className="text-[11px] uppercase tracking-[0.1em] text-ink-muted"
+              >
+                Signed
+              </Text>
+              <Text
+                style={{ fontFamily: "FrauncesRegularItalic" }}
+                className="mt-1 text-[22px] tracking-[-0.01em] text-sage-600"
+              >
+                — You, today
               </Text>
             </View>
-          )}
+          </Animated.View>
+
+          <Animated.Text
+            entering={FadeIn.duration(180).delay(240)}
+            style={{ fontFamily: "GeistRegular" }}
+            className="mt-8 text-center text-[13px] text-ink-muted"
+          >
+            Hold to make it official.
+          </Animated.Text>
+        </View>
+
+        <Animated.View
+          entering={FadeIn.duration(180).delay(300)}
+          className="pb-2"
+        >
+          <Pressable
+            onPressIn={onPressIn}
+            onPressOut={onPressOut}
+            disabled={committed}
+            accessibilityRole="button"
+            accessibilityLabel="Hold to commit"
+          >
+            <View
+              onLayout={(event) => {
+                setButtonWidth(event.nativeEvent.layout.width);
+              }}
+              style={{
+                position: "relative",
+                overflow: "hidden",
+                borderRadius: 16,
+                borderCurve: "continuous",
+              }}
+              className="w-full border-b-4 border-b-sage-700 bg-sage-500 px-6 py-[18px]"
+            >
+              <Animated.View
+                style={[
+                  {
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    backgroundColor: "#2A3F2A",
+                  },
+                  commitFillStyle,
+                ]}
+              />
+              <Text
+                style={{ fontFamily: "GeistBold" }}
+                className="text-center text-base font-bold uppercase tracking-[0.02em] text-white"
+              >
+                {committed
+                  ? "Pact sealed"
+                  : isHolding
+                    ? "Keep holding..."
+                    : "Hold to commit"}
+              </Text>
+            </View>
+          </Pressable>
         </Animated.View>
       </View>
     </ScrollView>

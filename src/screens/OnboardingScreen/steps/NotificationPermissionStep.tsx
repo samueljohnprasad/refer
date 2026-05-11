@@ -37,7 +37,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
     >
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text
-          style={{ fontFamily: "CormorantSemiBold" }}
+          style={{ fontFamily: "FrauncesSemiBold" }}
           className="text-[26px] leading-[1.1] text-ink"
         >
           When should Mochi remind you?

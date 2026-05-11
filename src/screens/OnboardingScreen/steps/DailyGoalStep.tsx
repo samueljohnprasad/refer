@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import GoalCard from "../components/GoalCard";
+import TestimonialCard from "../components/TestimonialCard";
 import { DailyGoalMinutes } from "../types";
 import { DAILY_GOAL_CARDS } from "../constants";
 
@@ -23,26 +24,39 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
     >
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text className="text-xs font-semibold uppercase tracking-widest text-sage-500">
-          Step 5 of 7
+          Step 6 of 6
         </Text>
         <Text
-          style={{ fontFamily: "CormorantSemiBold" }}
+          style={{ fontFamily: "FrauncesRegular" }}
           className="mt-2 text-[30px] leading-[1.1] text-ink"
         >
-          How much time can you{" "}
+          How much time can you give{" "}
           <Text
-            style={{ fontFamily: "CormorantMedium" }}
+            style={{ fontFamily: "FrauncesRegularItalic" }}
             className="italic text-sage-500"
           >
-            commit?
+            yourself?
           </Text>
         </Text>
-        <Text className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-          Start small. You can always do more.
+        <Text
+          style={{ fontFamily: "GeistRegular" }}
+          className="mt-3 text-[15px] leading-relaxed text-ink-soft"
+        >
+          5 minutes a day beats 30 minutes once a week. Pick something honest.
         </Text>
       </Animated.View>
 
-      <View className="mt-6 gap-2.5">
+      <Animated.View entering={FadeIn.duration(180).delay(180)} className="mt-5">
+        <TestimonialCard
+          initial="D"
+          tone="lavender"
+          quote={`"5 minutes felt fake at first. But I have ADHD — anything longer than 10 minutes I'd quit. This actually works for my brain. Day 142."`}
+          name="Dani"
+          age={28}
+        />
+      </Animated.View>
+
+      <View className="mt-5 gap-2.5">
         {DAILY_GOAL_CARDS.map((config, index) => (
           <GoalCard
             key={config.minutes}

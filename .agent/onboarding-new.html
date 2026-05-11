@@ -1,0 +1,5512 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy: AI Journal &amp; CBT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=Geist:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Happy Palette — therapy meets Duolingo */
+        --sage-50: #f4f1ea;
+        --sage-100: #e8e2d2;
+        --sage-200: #d4ccb5;
+        --sage-300: #a8b89a;
+        --sage-400: #7a9272;
+        --sage-500: #5a7a56;
+        --sage-600: #3f5a3d;
+        --sage-700: #2a3f2a;
+        --sage-800: #1a2a1a;
+
+        --cream: #faf6ed;
+        --warm-white: #fffcf5;
+        --terracotta: #c8694b;
+        --terracotta-light: #e8a88e;
+        --gold: #d4a943;
+        --soft-pink: #e8b4a0;
+        --lavender: #b8a4c9;
+        --sky: #94b5c9;
+
+        --ink: #1a2a1a;
+        --ink-soft: #4a5a4a;
+        --ink-muted: #7a8a7a;
+
+        --shadow-soft: 0 2px 8px rgba(42, 63, 42, 0.06);
+        --shadow-medium: 0 8px 24px rgba(42, 63, 42, 0.1);
+        --shadow-strong: 0 16px 48px rgba(42, 63, 42, 0.16);
+        --shadow-pressed:
+          inset 0 0 0 4px var(--sage-600), 0 4px 0 var(--sage-700);
+        --shadow-button: 0 4px 0 var(--sage-700);
+        --shadow-button-hover: 0 6px 0 var(--sage-700);
+        --shadow-button-pressed: 0 2px 0 var(--sage-700);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        font-family:
+          "Geist",
+          -apple-system,
+          sans-serif;
+        background: linear-gradient(135deg, #2a3f2a 0%, #1a2a1a 100%);
+        color: var(--ink);
+      }
+
+      /* Background decorative pattern */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          radial-gradient(
+            circle at 20% 30%,
+            rgba(168, 184, 154, 0.05) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(212, 169, 67, 0.04) 0%,
+            transparent 40%
+          );
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .app-container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+      }
+
+      /* Phone frame */
+      .phone-frame {
+        width: 390px;
+        height: min(844px, 95vh);
+        max-height: 844px;
+        background: var(--cream);
+        border-radius: 48px;
+        box-shadow:
+          0 0 0 12px #1a2a1a,
+          0 0 0 14px #2a3f2a,
+          0 30px 80px rgba(0, 0, 0, 0.4),
+          0 8px 32px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Notch */
+      .notch {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 30px;
+        background: #1a2a1a;
+        border-radius: 0 0 20px 20px;
+        z-index: 100;
+      }
+
+      /* Status bar */
+      .status-bar {
+        height: 44px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 28px 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ink);
+        flex-shrink: 0;
+        z-index: 50;
+        position: relative;
+      }
+
+      .status-icons {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+
+      /* Main screen container */
+      .screen-container {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .screen {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 0 24px 28px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(20px);
+        transition:
+          opacity 0.4s ease,
+          transform 0.4s ease;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .screen.active {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(0);
+      }
+
+      .screen::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Header bar with progress */
+      .header-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 0 24px;
+        flex-shrink: 0;
+      }
+
+      .back-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--ink-soft);
+        flex-shrink: 0;
+      }
+
+      .back-btn:hover {
+        color: var(--ink);
+      }
+
+      .progress-track {
+        flex: 1;
+        height: 12px;
+        background: var(--sage-100);
+        border-radius: 100px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--sage-400) 0%,
+          var(--sage-500) 100%
+        );
+        border-radius: 100px;
+        transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+      }
+
+      .progress-fill::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 6px;
+        right: 6px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 100px;
+      }
+
+      /* Screen content */
+      .screen-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Headlines */
+      .eyebrow {
+        font-family: "Geist", sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--sage-500);
+        margin-bottom: 8px;
+      }
+
+      .headline {
+        font-family: "Fraunces", serif;
+        font-weight: 600;
+        font-size: 30px;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        margin-bottom: 12px;
+      }
+
+      .headline em {
+        font-style: italic;
+        font-weight: 400;
+        color: var(--sage-500);
+      }
+
+      .subhead {
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--ink-soft);
+        margin-bottom: 24px;
+      }
+
+      /* Mascot - Mochi the Panda */
+      .mascot {
+        width: 140px;
+        height: 140px;
+        margin: 0 auto;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .mascot-large {
+        width: 180px;
+        height: 180px;
+      }
+
+      .mascot svg {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 4px 12px rgba(42, 63, 42, 0.15));
+      }
+
+      /* Mascot pulse animation */
+      @keyframes mascot-bounce {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-6px) scale(1.02);
+        }
+      }
+
+      .mascot.bouncing {
+        animation: mascot-bounce 2s ease-in-out infinite;
+      }
+
+      /* Speech bubble */
+      .speech-bubble {
+        background: var(--warm-white);
+        border: 2px solid var(--sage-200);
+        border-radius: 20px;
+        padding: 16px 20px;
+        font-family: "Fraunces", serif;
+        font-size: 17px;
+        line-height: 1.4;
+        color: var(--ink);
+        position: relative;
+        margin-bottom: 24px;
+      }
+
+      .speech-bubble::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 32px;
+        width: 18px;
+        height: 18px;
+        background: var(--warm-white);
+        border-left: 2px solid var(--sage-200);
+        border-top: 2px solid var(--sage-200);
+        transform: rotate(45deg);
+      }
+
+      /* Option cards */
+      .options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .option-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 18px;
+        background: var(--warm-white);
+        border: 2px solid var(--sage-100);
+        border-bottom: 4px solid var(--sage-100);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+        width: 100%;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--ink);
+      }
+
+      .option-card:hover {
+        border-color: var(--sage-300);
+        border-bottom-color: var(--sage-300);
+        transform: translateY(-1px);
+      }
+
+      .option-card.selected {
+        background: #eef2e8;
+        border-color: var(--sage-500);
+        border-bottom-color: var(--sage-600);
+        color: var(--sage-700);
+      }
+
+      .option-card.selected .option-icon {
+        background: var(--sage-500);
+        color: white;
+      }
+
+      .option-icon {
+        width: 44px;
+        height: 44px;
+        background: var(--sage-50);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+      }
+
+      .option-text {
+        flex: 1;
+      }
+
+      .option-title {
+        font-weight: 600;
+        margin-bottom: 2px;
+        font-size: 15px;
+      }
+
+      .option-sub {
+        font-size: 12px;
+        color: var(--ink-muted);
+        font-weight: 400;
+      }
+
+      /* Primary button */
+      .primary-btn {
+        width: 100%;
+        padding: 18px;
+        background: var(--sage-500);
+        color: white;
+        border: none;
+        border-bottom: 4px solid var(--sage-700);
+        border-radius: 16px;
+        font-family: "Geist", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        margin-top: auto;
+        text-transform: uppercase;
+      }
+
+      .primary-btn:hover {
+        background: var(--sage-600);
+        transform: translateY(-1px);
+      }
+
+      .primary-btn:active {
+        transform: translateY(2px);
+        border-bottom-width: 2px;
+      }
+
+      .primary-btn:disabled {
+        background: var(--sage-200);
+        border-bottom-color: var(--sage-300);
+        color: var(--ink-muted);
+        cursor: not-allowed;
+      }
+
+      .secondary-btn {
+        width: 100%;
+        padding: 14px;
+        background: transparent;
+        color: var(--ink-soft);
+        border: none;
+        font-family: "Geist", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+
+      .secondary-btn:hover {
+        color: var(--ink);
+      }
+
+      /* Welcome screen */
+      .welcome-screen {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding-top: 60px;
+      }
+
+      .welcome-screen .mascot {
+        margin-bottom: 24px;
+      }
+
+      .app-name {
+        font-family: "Fraunces", serif;
+        font-weight: 700;
+        font-size: 48px;
+        letter-spacing: -0.03em;
+        color: var(--sage-700);
+        margin-bottom: 8px;
+      }
+
+      .app-tagline {
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-size: 18px;
+        color: var(--sage-500);
+        margin-bottom: 40px;
+      }
+
+      .value-props {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        width: 100%;
+        margin-bottom: 32px;
+      }
+
+      .value-prop {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: var(--warm-white);
+        border-radius: 14px;
+        font-size: 14px;
+        text-align: left;
+        border: 1px solid var(--sage-100);
+      }
+
+      .value-prop-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+      }
+
+      /* Goal selection (commitment) */
+      .goal-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+
+      .goal-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px;
+        background: var(--warm-white);
+        border: 2px solid var(--sage-100);
+        border-bottom: 4px solid var(--sage-100);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .goal-option.selected {
+        background: #eef2e8;
+        border-color: var(--sage-500);
+        border-bottom-color: var(--sage-600);
+      }
+
+      .goal-option-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .goal-time {
+        font-family: "Fraunces", serif;
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      .goal-label {
+        font-size: 12px;
+        color: var(--ink-muted);
+        font-weight: 500;
+      }
+
+      .goal-option.selected .goal-time {
+        color: var(--sage-600);
+      }
+
+      .goal-tag {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 100px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .tag-casual {
+        background: #f4f1ea;
+        color: var(--ink-soft);
+      }
+      .tag-regular {
+        background: #e8e2d2;
+        color: var(--sage-600);
+      }
+      .tag-serious {
+        background: var(--terracotta-light);
+        color: var(--terracotta);
+      }
+      .tag-intense {
+        background: var(--terracotta);
+        color: white;
+      }
+
+      /* Plan reveal */
+      .plan-card {
+        background: linear-gradient(
+          135deg,
+          var(--sage-600) 0%,
+          var(--sage-700) 100%
+        );
+        border-radius: 24px;
+        padding: 28px 24px;
+        color: white;
+        margin: 16px 0 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .plan-card::before {
+        content: "";
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 169, 67, 0.3) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+
+      .plan-eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 8px;
+        position: relative;
+      }
+
+      .plan-title {
+        font-family: "Fraunces", serif;
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 1.15;
+        margin-bottom: 16px;
+        position: relative;
+      }
+
+      .plan-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        position: relative;
+      }
+
+      .plan-stat {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .plan-stat-value {
+        font-family: "Fraunces", serif;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--gold);
+      }
+
+      .plan-stat-label {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* Loading screen */
+      .loading-screen {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding-top: 80px;
+      }
+
+      .loading-tasks {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        margin-top: 32px;
+      }
+
+      .loading-task {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        background: var(--warm-white);
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink-muted);
+        border: 1px solid var(--sage-100);
+        opacity: 0.5;
+        transition:
+          opacity 0.4s ease,
+          color 0.4s ease;
+      }
+
+      .loading-task.active {
+        opacity: 1;
+        color: var(--ink);
+      }
+
+      .loading-task.done {
+        opacity: 1;
+        color: var(--sage-600);
+      }
+
+      .loading-spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--sage-200);
+        border-top-color: var(--sage-500);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-task.done .loading-spinner {
+        border: none;
+        background: var(--sage-500);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: none;
+      }
+
+      .loading-task.done .loading-spinner::after {
+        content: "✓";
+        color: white;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      /* Lesson preview */
+      .lesson-screen {
+        text-align: center;
+        align-items: center;
+      }
+
+      .exercise-card {
+        background: var(--warm-white);
+        border: 2px solid var(--sage-100);
+        border-radius: 24px;
+        padding: 28px 24px;
+        margin: 24px 0;
+        width: 100%;
+        position: relative;
+      }
+
+      .exercise-prompt {
+        font-family: "Fraunces", serif;
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.3;
+        color: var(--ink);
+        margin-bottom: 20px;
+      }
+
+      .feeling-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .feeling-btn {
+        aspect-ratio: 1;
+        background: var(--cream);
+        border: 2px solid transparent;
+        border-radius: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        transition: all 0.15s ease;
+      }
+
+      .feeling-btn:hover {
+        transform: scale(1.05);
+        background: var(--warm-white);
+      }
+
+      .feeling-btn.selected {
+        background: var(--sage-50);
+        border-color: var(--sage-500);
+        transform: scale(1.05);
+      }
+
+      /* AI insight card */
+      .insight-card {
+        background: linear-gradient(135deg, #faf6ed 0%, #f0ebda 100%);
+        border: 2px solid var(--gold);
+        border-radius: 20px;
+        padding: 20px;
+        margin: 16px 0 24px;
+        position: relative;
+      }
+
+      .insight-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--terracotta);
+        margin-bottom: 8px;
+      }
+
+      .insight-text {
+        font-family: "Fraunces", serif;
+        font-size: 16px;
+        line-height: 1.5;
+        color: var(--ink);
+        font-style: italic;
+      }
+
+      /* Paywall */
+      .paywall-screen {
+        padding: 0 24px 24px;
+      }
+
+      .paywall-hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 16px 0 8px;
+      }
+
+      .paywall-hero .mascot {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 12px;
+      }
+
+      .paywall-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--gold);
+        background: var(--sage-700);
+        padding: 6px 14px;
+        border-radius: 100px;
+        margin-bottom: 12px;
+      }
+
+      .paywall-headline {
+        font-family: "Fraunces", serif;
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin-bottom: 6px;
+      }
+
+      .paywall-sub {
+        font-size: 13px;
+        color: var(--ink-soft);
+        margin-bottom: 16px;
+      }
+
+      .benefits-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 12px 0 16px;
+      }
+
+      .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink);
+      }
+
+      .benefit-check {
+        width: 22px;
+        height: 22px;
+        background: var(--sage-500);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+        font-weight: 800;
+        flex-shrink: 0;
+      }
+
+      .pricing-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .price-card {
+        border: 2px solid var(--sage-100);
+        border-radius: 16px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        background: var(--warm-white);
+      }
+
+      .price-card.selected {
+        border-color: var(--sage-500);
+        background: #eef2e8;
+      }
+
+      .price-card.featured {
+        border-color: var(--sage-500);
+        background: #eef2e8;
+      }
+
+      .featured-badge {
+        position: absolute;
+        top: -10px;
+        right: 12px;
+        background: var(--gold);
+        color: var(--sage-700);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        padding: 3px 10px;
+        border-radius: 100px;
+        text-transform: uppercase;
+      }
+
+      .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .price-label {
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .price-amount {
+        font-family: "Fraunces", serif;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--sage-600);
+      }
+
+      .price-detail {
+        font-size: 11px;
+        color: var(--ink-muted);
+        margin-top: 2px;
+      }
+
+      .savings-badge {
+        display: inline-block;
+        background: var(--terracotta);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-left: 4px;
+      }
+
+      .trial-info {
+        text-align: center;
+        font-size: 11px;
+        color: var(--ink-muted);
+        margin-top: 8px;
+        margin-bottom: 6px;
+      }
+
+      .social-proof {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 0;
+        border-top: 1px solid var(--sage-100);
+        margin-top: 8px;
+      }
+
+      .proof-stat {
+        text-align: center;
+      }
+
+      .proof-value {
+        font-family: "Fraunces", serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--sage-600);
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        justify-content: center;
+      }
+
+      .proof-label {
+        font-size: 9px;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* Home dashboard preview */
+      .home-screen {
+        padding: 0 0 24px;
+      }
+
+      .home-header {
+        padding: 8px 24px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .home-greeting {
+        font-family: "Fraunces", serif;
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      .home-date {
+        font-size: 13px;
+        color: var(--ink-muted);
+        margin-top: 2px;
+      }
+
+      .streak-badge {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(
+          135deg,
+          var(--terracotta-light),
+          var(--terracotta)
+        );
+        color: white;
+        padding: 8px 14px;
+        border-radius: 100px;
+        font-weight: 700;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(200, 105, 75, 0.3);
+      }
+
+      .journey-section {
+        padding: 0 24px 24px;
+      }
+
+      .section-label {
+        font-family: "Geist", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--sage-500);
+        margin-bottom: 12px;
+      }
+
+      .journey-path {
+        position: relative;
+        padding: 16px 0;
+      }
+
+      .journey-node {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 16px;
+        position: relative;
+      }
+
+      .node-circle {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        background: var(--sage-500);
+        color: white;
+        border: 4px solid var(--cream);
+        box-shadow: 0 4px 0 var(--sage-700);
+        flex-shrink: 0;
+        z-index: 2;
+        position: relative;
+      }
+
+      .node-circle.locked {
+        background: var(--sage-100);
+        color: var(--ink-muted);
+        box-shadow: 0 4px 0 var(--sage-200);
+      }
+
+      .node-circle.current {
+        background: var(--gold);
+        color: var(--sage-700);
+        box-shadow: 0 4px 0 #b08c2f;
+        animation: pulse-glow 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          box-shadow:
+            0 4px 0 #b08c2f,
+            0 0 0 0 rgba(212, 169, 67, 0.6);
+        }
+        50% {
+          box-shadow:
+            0 4px 0 #b08c2f,
+            0 0 0 12px rgba(212, 169, 67, 0);
+        }
+      }
+
+      .node-info {
+        flex: 1;
+      }
+
+      .node-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--ink);
+        margin-bottom: 2px;
+      }
+
+      .node-meta {
+        font-size: 12px;
+        color: var(--ink-muted);
+      }
+
+      .node-line {
+        position: absolute;
+        left: 32px;
+        top: 60px;
+        width: 4px;
+        height: 18px;
+        background: var(--sage-200);
+        border-radius: 2px;
+        z-index: 1;
+      }
+
+      /* Confetti animation */
+      .confetti {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        pointer-events: none;
+        z-index: 200;
+      }
+
+      @keyframes confetti-fall {
+        to {
+          transform: translateY(100vh) rotate(720deg);
+          opacity: 0;
+        }
+      }
+
+      /* Notification permission card */
+      .permission-card {
+        background: var(--warm-white);
+        border: 2px solid var(--sage-100);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+
+      .permission-illustration {
+        width: 80px;
+        height: 80px;
+        background: var(--sage-50);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin: 0 auto 16px;
+      }
+
+      .notification-preview {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--sage-100);
+        border-radius: 14px;
+        padding: 12px 14px;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        margin: 12px 0;
+      }
+
+      .notif-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--sage-500);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: white;
+        font-weight: 800;
+        font-family: "Fraunces", serif;
+      }
+
+      .notif-content {
+        flex: 1;
+        text-align: left;
+      }
+
+      .notif-title {
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 1px;
+      }
+
+      .notif-body {
+        font-size: 12px;
+        color: var(--ink-soft);
+        line-height: 1.3;
+      }
+
+      .notif-time {
+        font-size: 11px;
+        color: var(--ink-muted);
+      }
+
+      /* Floating navigation */
+      .dev-nav {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 252, 245, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 10px 14px;
+        border-radius: 100px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+      }
+
+      .dev-nav-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: var(--sage-500);
+        color: white;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+      }
+
+      .dev-nav-btn:hover {
+        background: var(--sage-600);
+        transform: scale(1.05);
+      }
+      .dev-nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .dev-nav-counter {
+        font-family: "Fraunces", serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--sage-700);
+        min-width: 60px;
+        text-align: center;
+      }
+
+      .screen-label {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        background: rgba(255, 252, 245, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 8px 14px;
+        border-radius: 100px;
+        font-family: "Geist", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--sage-700);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+      }
+
+      /* Mood projection graph */
+      .projection-card {
+        background: linear-gradient(135deg, var(--cream) 0%, #f0ebda 100%);
+        border: 2px solid var(--sage-200);
+        border-radius: 20px;
+        padding: 20px 18px;
+        margin: 12px 0 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .projection-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--terracotta);
+        margin-bottom: 4px;
+      }
+
+      .projection-headline {
+        font-family: "Fraunces", serif;
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--ink);
+        line-height: 1.3;
+        margin-bottom: 14px;
+      }
+
+      .projection-headline em {
+        color: var(--sage-600);
+        font-style: italic;
+        font-weight: 500;
+      }
+
+      .projection-graph {
+        width: 100%;
+        height: 140px;
+        position: relative;
+      }
+
+      .projection-graph svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .proj-line-bg {
+        fill: none;
+        stroke: var(--sage-200);
+        stroke-width: 2.5;
+        stroke-dasharray: 4, 4;
+      }
+
+      .proj-line-fg {
+        fill: none;
+        stroke: var(--sage-500);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-dasharray: 600;
+        stroke-dashoffset: 600;
+        filter: drop-shadow(0 2px 4px rgba(90, 122, 86, 0.3));
+      }
+
+      .screen[data-screen="11"].active .proj-line-fg {
+        animation: draw-line 1.6s ease-out 0.4s forwards;
+      }
+
+      @keyframes draw-line {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      .proj-area {
+        fill: url(#sageGradient);
+        opacity: 0;
+      }
+
+      .screen[data-screen="11"].active .proj-area {
+        animation: fade-in-area 1.2s ease-out 1s forwards;
+      }
+
+      @keyframes fade-in-area {
+        to {
+          opacity: 0.4;
+        }
+      }
+
+      .proj-dot {
+        fill: var(--sage-500);
+        stroke: white;
+        stroke-width: 2.5;
+        opacity: 0;
+      }
+
+      .screen[data-screen="11"].active .proj-dot {
+        animation: dot-pop 0.4s ease-out forwards;
+      }
+
+      .proj-dot:nth-child(7) {
+        animation-delay: 0.7s;
+      }
+      .proj-dot:nth-child(8) {
+        animation-delay: 1s;
+      }
+      .proj-dot:nth-child(9) {
+        animation-delay: 1.3s;
+      }
+      .proj-dot:nth-child(10) {
+        animation-delay: 1.6s;
+      }
+
+      @keyframes dot-pop {
+        from {
+          opacity: 0;
+          r: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .proj-axis-label {
+        font-family: "Geist", sans-serif;
+        font-size: 10px;
+        font-weight: 500;
+        fill: var(--ink-muted);
+      }
+
+      .proj-end-label {
+        font-family: "Fraunces", serif;
+        font-size: 12px;
+        font-weight: 600;
+        fill: var(--sage-700);
+      }
+
+      .proj-legend {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        padding-top: 12px;
+        border-top: 1px dashed var(--sage-200);
+        font-size: 11px;
+        color: var(--ink-muted);
+      }
+
+      .proj-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+      }
+
+      .proj-legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      .proj-citation {
+        font-size: 10px;
+        color: var(--ink-muted);
+        margin-top: 8px;
+        font-style: italic;
+        line-height: 1.4;
+      }
+
+      /* Testimonial card */
+      .testimonial-card {
+        background: var(--warm-white);
+        border: 1px solid var(--sage-200);
+        border-left: 3px solid var(--gold);
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .testimonial-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--terracotta-light),
+          var(--terracotta)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-family: "Fraunces", serif;
+        font-weight: 700;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+
+      .testimonial-avatar.lavender {
+        background: linear-gradient(135deg, #c9b8d9, var(--lavender));
+      }
+
+      .testimonial-avatar.sky {
+        background: linear-gradient(135deg, #b0ccdb, var(--sky));
+      }
+
+      .testimonial-body {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .testimonial-quote {
+        font-family: "Fraunces", serif;
+        font-size: 13px;
+        font-style: italic;
+        line-height: 1.4;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+
+      .testimonial-attribution {
+        font-size: 11px;
+        color: var(--ink-muted);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .testimonial-stars {
+        color: var(--gold);
+        font-size: 10px;
+        letter-spacing: -1px;
+      }
+
+      /* Authority / credential badge */
+      .credential-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--sage-50);
+        border: 1px solid var(--sage-200);
+        padding: 6px 12px;
+        border-radius: 100px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--sage-700);
+        margin-bottom: 16px;
+      }
+
+      .credential-badge svg {
+        flex-shrink: 0;
+        color: var(--sage-500);
+      }
+
+      .research-citation {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        background: rgba(168, 184, 154, 0.15);
+        border-radius: 10px;
+        padding: 10px 12px;
+        margin-top: 12px;
+        font-size: 11px;
+        line-height: 1.4;
+        color: var(--ink-soft);
+      }
+
+      .research-citation-icon {
+        flex-shrink: 0;
+        color: var(--sage-600);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .research-citation strong {
+        color: var(--sage-700);
+        font-weight: 600;
+      }
+
+      /* AI feature highlight */
+      .ai-highlight {
+        background: linear-gradient(
+          135deg,
+          var(--sage-700) 0%,
+          var(--sage-800) 100%
+        );
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+        color: white;
+      }
+
+      .ai-highlight::before {
+        content: "";
+        position: absolute;
+        top: -30px;
+        right: -30px;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 169, 67, 0.4) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+
+      .ai-highlight-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--gold);
+        color: var(--sage-700);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 100px;
+        margin-bottom: 8px;
+        position: relative;
+      }
+
+      .ai-highlight-headline {
+        font-family: "Fraunces", serif;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 4px;
+        position: relative;
+      }
+
+      .ai-highlight-sub {
+        font-size: 12px;
+        opacity: 0.85;
+        line-height: 1.4;
+        position: relative;
+      }
+
+      /* Letter from Future Self */
+      .letter-screen {
+        align-items: center;
+        text-align: center;
+      }
+
+      .letter-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--gold);
+        color: var(--sage-700);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 5px 12px;
+        border-radius: 100px;
+        margin-bottom: 10px;
+      }
+
+      .letter-card {
+        background: linear-gradient(180deg, #fffcf5 0%, #faf6ed 100%);
+        border: 1px solid var(--sage-200);
+        border-radius: 16px;
+        padding: 24px 22px 20px;
+        margin: 14px 0 20px;
+        position: relative;
+        box-shadow:
+          0 8px 24px rgba(42, 63, 42, 0.08),
+          0 2px 6px rgba(42, 63, 42, 0.04);
+        text-align: left;
+        overflow: hidden;
+      }
+
+      /* Paper edge effect */
+      .letter-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          var(--sage-100) 20%,
+          var(--sage-200) 50%,
+          var(--sage-100) 80%,
+          transparent 100%
+        );
+        opacity: 0.6;
+      }
+
+      /* Wax seal in corner */
+      .letter-seal {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 35% 35%,
+          var(--terracotta-light) 0%,
+          var(--terracotta) 70%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Fraunces", serif;
+        font-weight: 700;
+        font-size: 16px;
+        color: white;
+        box-shadow:
+          inset -2px -2px 4px rgba(0, 0, 0, 0.2),
+          inset 2px 2px 4px rgba(255, 255, 255, 0.2),
+          0 2px 4px rgba(200, 105, 75, 0.3);
+        transform: rotate(-8deg);
+        font-style: italic;
+      }
+
+      .letter-date {
+        font-family: "Geist", sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--ink-muted);
+        letter-spacing: 0.05em;
+        margin-bottom: 14px;
+        padding-right: 50px;
+      }
+
+      .letter-greeting {
+        font-family: "Fraunces", serif;
+        font-size: 17px;
+        font-weight: 500;
+        color: var(--ink);
+        margin-bottom: 14px;
+      }
+
+      .letter-body {
+        font-family: "Fraunces", serif;
+        font-size: 14px;
+        font-style: italic;
+        line-height: 1.65;
+        color: var(--ink-soft);
+        margin-bottom: 16px;
+      }
+
+      .letter-body p {
+        margin-bottom: 12px;
+      }
+
+      .letter-body p:last-child {
+        margin-bottom: 0;
+      }
+
+      .letter-body strong {
+        color: var(--sage-600);
+        font-weight: 600;
+        font-style: italic;
+      }
+
+      .letter-divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--sage-200),
+          transparent
+        );
+        margin: 16px 0 12px;
+      }
+
+      .letter-signature {
+        text-align: right;
+        font-family: "Fraunces", serif;
+        font-style: italic;
+      }
+
+      .letter-signature-line {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--terracotta);
+        margin-bottom: 2px;
+        font-style: italic;
+      }
+
+      .letter-signature-meta {
+        font-size: 11px;
+        color: var(--ink-muted);
+        font-style: normal;
+        letter-spacing: 0.03em;
+      }
+
+      /* Letter reveal animation */
+      .screen[data-screen="16"].active .letter-card {
+        animation: letter-reveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s
+          both;
+      }
+
+      @keyframes letter-reveal {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .screen[data-screen="16"].active .letter-seal {
+        animation: seal-stamp 0.5s cubic-bezier(0.34, 1.8, 0.5, 1) 1.4s both;
+      }
+
+      @keyframes seal-stamp {
+        0% {
+          opacity: 0;
+          transform: rotate(-8deg) scale(2.5);
+        }
+        60% {
+          transform: rotate(-8deg) scale(0.92);
+        }
+        100% {
+          opacity: 1;
+          transform: rotate(-8deg) scale(1);
+        }
+      }
+
+      /* Mascot pulse beside letter */
+      .letter-mascot-frame {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 6px;
+        margin-bottom: 4px;
+      }
+
+      .letter-mascot-frame .mascot {
+        width: 60px;
+        height: 60px;
+        flex-shrink: 0;
+        margin: 0;
+      }
+
+      .letter-mascot-quote {
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-size: 13px;
+        color: var(--ink-soft);
+        line-height: 1.4;
+      }
+
+      /* Worldview line on Welcome */
+      .worldview-line {
+        font-family: "Fraunces", serif;
+        font-style: italic;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--ink-soft);
+        text-align: center;
+        padding: 0 16px;
+        margin-bottom: 20px;
+        max-width: 320px;
+      }
+
+      .worldview-line strong {
+        color: var(--sage-600);
+        font-weight: 500;
+      }
+
+      /* Enemy line (under credential badges) */
+      .enemy-line {
+        font-size: 12px;
+        color: var(--ink-muted);
+        font-style: italic;
+        margin-top: -8px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      /* Locked lesson preview (paywall) */
+      .locked-lessons-section {
+        margin: 16px 0;
+      }
+
+      .locked-lessons-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .locked-lessons-title {
+        font-family: "Geist", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: var(--sage-700);
+        text-transform: uppercase;
+      }
+
+      .locked-lesson-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        background: var(--warm-white);
+        border: 1px solid var(--sage-100);
+        border-radius: 12px;
+        margin-bottom: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .locked-lesson-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 252, 245, 0) 0%,
+          rgba(255, 252, 245, 0.6) 50%,
+          rgba(255, 252, 245, 0.3) 100%
+        );
+        pointer-events: none;
+      }
+
+      .locked-lesson-num {
+        width: 32px;
+        height: 32px;
+        background: var(--sage-100);
+        color: var(--ink-muted);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Fraunces", serif;
+        font-weight: 600;
+        font-size: 14px;
+        flex-shrink: 0;
+        filter: blur(0.5px);
+      }
+
+      .locked-lesson-info {
+        flex: 1;
+        filter: blur(0.5px);
+        opacity: 0.85;
+      }
+
+      .locked-lesson-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 1px;
+      }
+
+      .locked-lesson-meta {
+        font-size: 11px;
+        color: var(--ink-muted);
+      }
+
+      .locked-lesson-icon {
+        width: 26px;
+        height: 26px;
+        background: var(--sage-700);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gold);
+        font-size: 12px;
+        flex-shrink: 0;
+        z-index: 2;
+        position: relative;
+      }
+
+      .locked-lessons-footer {
+        font-size: 11px;
+        color: var(--ink-muted);
+        font-style: italic;
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      /* Three-tier pricing — weekly decoy */
+      .price-card.decoy {
+        border-color: var(--sage-100);
+        background: rgba(255, 252, 245, 0.5);
+        opacity: 0.85;
+      }
+
+      .price-card.decoy .price-amount {
+        color: var(--ink-soft);
+      }
+
+      .price-card.decoy .price-label {
+        color: var(--ink-soft);
+      }
+
+      /* Annual reframe styling */
+      .price-card .price-headline {
+        font-family: "Fraunces", serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ink);
+        font-style: italic;
+        margin-bottom: 2px;
+        display: block;
+        line-height: 1.3;
+      }
+
+      .price-card.featured .price-headline {
+        color: var(--sage-700);
+      }
+
+      /* Refund promise */
+      .refund-promise {
+        text-align: center;
+        font-size: 11px;
+        color: var(--sage-600);
+        font-weight: 500;
+        margin-top: 4px;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      /* Discount Intercept Modal */
+      .intercept-modal-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(26, 42, 26, 0.55);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        z-index: 200;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      .intercept-modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .intercept-modal {
+        background: var(--cream);
+        border-radius: 28px 28px 0 0;
+        padding: 28px 24px 24px;
+        width: 100%;
+        max-width: 390px;
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+        position: relative;
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
+      }
+
+      .intercept-modal-overlay.active .intercept-modal {
+        transform: translateY(0);
+      }
+
+      .intercept-handle {
+        width: 40px;
+        height: 4px;
+        background: var(--sage-200);
+        border-radius: 2px;
+        margin: 0 auto 16px;
+      }
+
+      .intercept-mascot {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 12px;
+      }
+
+      .intercept-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--gold);
+        color: var(--sage-700);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        padding: 4px 10px;
+        border-radius: 100px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .intercept-headline {
+        font-family: "Fraunces", serif;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.15;
+        margin-bottom: 6px;
+        text-align: center;
+      }
+
+      .intercept-headline em {
+        font-style: italic;
+        color: var(--sage-500);
+      }
+
+      .intercept-sub {
+        font-size: 13px;
+        color: var(--ink-soft);
+        text-align: center;
+        margin-bottom: 18px;
+        line-height: 1.4;
+      }
+
+      .intercept-offer-card {
+        background: linear-gradient(135deg, var(--sage-600), var(--sage-700));
+        border-radius: 16px;
+        padding: 16px;
+        color: white;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .intercept-offer-card::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 169, 67, 0.3) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+
+      .intercept-offer-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+      }
+
+      .intercept-offer-label {
+        font-size: 12px;
+        opacity: 0.85;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+      }
+
+      .intercept-offer-headline {
+        font-family: "Fraunces", serif;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .intercept-offer-price {
+        font-family: "Fraunces", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--gold);
+      }
+
+      .intercept-offer-strike {
+        font-size: 12px;
+        opacity: 0.7;
+        text-decoration: line-through;
+        text-align: right;
+      }
+
+      .intercept-offer-meta {
+        font-size: 11px;
+        margin-top: 8px;
+        opacity: 0.85;
+        position: relative;
+        font-style: italic;
+      }
+
+      /* Teaching card (Lesson 1 micro-lesson) */
+      .teaching-card {
+        background: linear-gradient(135deg, var(--sage-50) 0%, #ecf0e5 100%);
+        border: 1px solid var(--sage-200);
+        border-radius: 18px;
+        padding: 18px 18px 14px;
+        margin-bottom: 12px;
+        width: 100%;
+        text-align: left;
+      }
+
+      .teaching-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--sage-600);
+        margin-bottom: 8px;
+      }
+
+      .teaching-text {
+        font-family: "Fraunces", serif;
+        font-size: 15px;
+        line-height: 1.55;
+        color: var(--ink);
+        margin-bottom: 12px;
+      }
+
+      .teaching-text strong {
+        color: var(--sage-700);
+        font-weight: 600;
+        font-style: italic;
+      }
+
+      .teaching-mechanism {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--sage-200);
+      }
+
+      .mechanism-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        flex: 1;
+      }
+
+      .mechanism-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        border: 2px solid var(--sage-200);
+        box-shadow: 0 2px 4px rgba(42, 63, 42, 0.05);
+      }
+
+      .mechanism-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .mechanism-arrow {
+        color: var(--sage-300);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .exercise-prompt-eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--terracotta);
+        margin-bottom: 6px;
+      }
+
+      /* Toolkit preview */
+      .toolkit-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+
+      .toolkit-card {
+        background: var(--warm-white);
+        border: 2px solid var(--sage-100);
+        border-radius: 16px;
+        padding: 16px 14px;
+        text-align: center;
+      }
+
+      .toolkit-card.featured {
+        background: linear-gradient(135deg, var(--sage-50), var(--cream));
+        border-color: var(--sage-300);
+      }
+
+      .toolkit-icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+
+      .toolkit-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 2px;
+      }
+
+      .toolkit-meta {
+        font-size: 10px;
+        color: var(--ink-muted);
+      }
+
+      .lock-icon {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        background: var(--ink-muted);
+        border-radius: 4px;
+        vertical-align: middle;
+        margin-left: 4px;
+        position: relative;
+      }
+
+      /* For mobile responsive */
+      @media (max-width: 420px) {
+        .phone-frame {
+          width: 100vw;
+          height: 100vh;
+          max-height: none;
+          border-radius: 0;
+          box-shadow: none;
+        }
+        .notch {
+          display: none;
+        }
+        body {
+          background: var(--cream);
+        }
+        .dev-nav {
+          bottom: 12px;
+        }
+        .screen-label {
+          top: 12px;
+          left: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="screen-label" id="screenLabel">Screen 1 / 18 — Welcome</div>
+
+    <div class="app-container">
+      <div class="phone-frame">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-icons">
+            <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor">
+              <rect x="0" y="6" width="3" height="6" rx="1" />
+              <rect x="5" y="4" width="3" height="8" rx="1" />
+              <rect x="10" y="2" width="3" height="10" rx="1" />
+              <rect x="15" y="0" width="3" height="12" rx="1" />
+            </svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+              <path
+                d="M8 9.5C8.55 9.5 9 9.95 9 10.5C9 11.05 8.55 11.5 8 11.5C7.45 11.5 7 11.05 7 10.5C7 9.95 7.45 9.5 8 9.5ZM8 6C9.65 6 11.15 6.65 12.25 7.7L11.05 8.9C10.25 8.05 9.2 7.5 8 7.5C6.8 7.5 5.75 8.05 4.95 8.9L3.75 7.7C4.85 6.65 6.35 6 8 6ZM8 2.5C10.65 2.5 13 3.55 14.65 5.25L13.45 6.45C12.05 5.05 10.1 4.25 8 4.25C5.9 4.25 3.95 5.05 2.55 6.45L1.35 5.25C3 3.55 5.35 2.5 8 2.5Z"
+              />
+            </svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+              <rect
+                x="0.5"
+                y="0.5"
+                width="22"
+                height="11"
+                rx="2.5"
+                stroke="currentColor"
+              />
+              <rect
+                x="2"
+                y="2"
+                width="19"
+                height="8"
+                rx="1"
+                fill="currentColor"
+              />
+              <rect
+                x="23"
+                y="4"
+                width="2"
+                height="4"
+                rx="1"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <div class="screen-container" id="screenContainer">
+          <!-- ========================================================== -->
+          <!-- SCREEN 1: WELCOME (Brand Introduction) -->
+          <!-- ========================================================== -->
+          <div class="screen welcome-screen active" data-screen="1">
+            <div class="mascot mascot-large bouncing">
+              <!-- Mochi the Panda mascot SVG -->
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Body -->
+                <ellipse cx="100" cy="142" rx="58" ry="48" fill="#FAF6ED" />
+                <!-- Hind feet -->
+                <ellipse cx="72" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                <ellipse cx="128" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                <!-- Arms holding journal -->
+                <ellipse
+                  cx="56"
+                  cy="138"
+                  rx="14"
+                  ry="22"
+                  fill="#2A2A2A"
+                  transform="rotate(-12 56 138)"
+                />
+                <ellipse
+                  cx="144"
+                  cy="138"
+                  rx="14"
+                  ry="22"
+                  fill="#2A2A2A"
+                  transform="rotate(12 144 138)"
+                />
+                <!-- Journal -->
+                <rect
+                  x="78"
+                  y="120"
+                  width="44"
+                  height="32"
+                  rx="4"
+                  fill="#A8B89A"
+                  stroke="#5A7A56"
+                  stroke-width="2"
+                />
+                <line
+                  x1="86"
+                  y1="130"
+                  x2="114"
+                  y2="130"
+                  stroke="#3F5A3D"
+                  stroke-width="1.5"
+                  opacity="0.6"
+                />
+                <line
+                  x1="86"
+                  y1="137"
+                  x2="114"
+                  y2="137"
+                  stroke="#3F5A3D"
+                  stroke-width="1.5"
+                  opacity="0.6"
+                />
+                <line
+                  x1="86"
+                  y1="144"
+                  x2="104"
+                  y2="144"
+                  stroke="#3F5A3D"
+                  stroke-width="1.5"
+                  opacity="0.6"
+                />
+                <!-- Head -->
+                <ellipse cx="100" cy="80" rx="52" ry="46" fill="#FAF6ED" />
+                <!-- Ears -->
+                <circle cx="62" cy="40" r="14" fill="#2A2A2A" />
+                <circle cx="138" cy="40" r="14" fill="#2A2A2A" />
+                <circle cx="62" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                <circle cx="138" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                <!-- Eye patches -->
+                <ellipse
+                  cx="76"
+                  cy="80"
+                  rx="13"
+                  ry="15"
+                  fill="#2A2A2A"
+                  transform="rotate(-12 76 80)"
+                />
+                <ellipse
+                  cx="124"
+                  cy="80"
+                  rx="13"
+                  ry="15"
+                  fill="#2A2A2A"
+                  transform="rotate(12 124 80)"
+                />
+                <!-- Eyes -->
+                <ellipse cx="78" cy="82" rx="4.5" ry="5.5" fill="white" />
+                <ellipse cx="122" cy="82" rx="4.5" ry="5.5" fill="white" />
+                <circle cx="79" cy="83" r="3" fill="#1A1A1A" />
+                <circle cx="121" cy="83" r="3" fill="#1A1A1A" />
+                <circle cx="80" cy="81" r="1.3" fill="white" />
+                <circle cx="122" cy="81" r="1.3" fill="white" />
+                <!-- Cheek blush -->
+                <ellipse
+                  cx="65"
+                  cy="105"
+                  rx="7"
+                  ry="4"
+                  fill="#E8B4A0"
+                  opacity="0.6"
+                />
+                <ellipse
+                  cx="135"
+                  cy="105"
+                  rx="7"
+                  ry="4"
+                  fill="#E8B4A0"
+                  opacity="0.6"
+                />
+                <!-- Nose -->
+                <ellipse cx="100" cy="100" rx="5" ry="4" fill="#1A1A1A" />
+                <!-- Mouth (gentle smile) -->
+                <path
+                  d="M 100 104 L 100 108"
+                  stroke="#1A1A1A"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 100 108 Q 93 112 89 109"
+                  stroke="#1A1A1A"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 100 108 Q 107 112 111 109"
+                  stroke="#1A1A1A"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <h1 class="app-name">Happy</h1>
+            <p class="app-tagline">AI Journal &amp; CBT</p>
+
+            <div class="credential-badge">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M12 2L4 6v6c0 5.5 3.5 10.5 8 12 4.5-1.5 8-6.5 8-12V6l-8-4z"
+                />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+              <span>CBT-informed · End-to-end encrypted</span>
+            </div>
+
+            <div
+              class="enemy-line"
+              style="margin-top: 8px; margin-bottom: 40px"
+            >
+              Built for the days you don't want to open it.
+            </div>
+
+            <button class="primary-btn" onclick="nextScreen()">
+              Get Started
+            </button>
+            <button class="secondary-btn" onclick="goToScreen(17)">
+              I already have an account
+            </button>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 2: GREETING FROM MASCOT -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="2">
+            <div class="header-bar">
+              <button class="back-btn" onclick="prevScreen()">←</button>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 8%"></div>
+              </div>
+            </div>
+            <div
+              class="screen-content"
+              style="padding-top: 20px; align-items: center; text-align: center"
+            >
+              <div class="mascot bouncing">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Body -->
+                  <ellipse cx="100" cy="142" rx="58" ry="48" fill="#FAF6ED" />
+                  <!-- Hind feet -->
+                  <ellipse cx="72" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                  <ellipse cx="128" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                  <!-- Left arm down -->
+                  <ellipse
+                    cx="56"
+                    cy="138"
+                    rx="14"
+                    ry="22"
+                    fill="#2A2A2A"
+                    transform="rotate(-12 56 138)"
+                  />
+                  <!-- Right arm RAISED waving -->
+                  <ellipse
+                    cx="160"
+                    cy="80"
+                    rx="13"
+                    ry="22"
+                    fill="#2A2A2A"
+                    transform="rotate(45 160 80)"
+                  />
+                  <ellipse cx="170" cy="60" rx="10" ry="10" fill="#2A2A2A" />
+                  <!-- Head -->
+                  <ellipse cx="100" cy="80" rx="52" ry="46" fill="#FAF6ED" />
+                  <!-- Ears -->
+                  <circle cx="62" cy="40" r="14" fill="#2A2A2A" />
+                  <circle cx="138" cy="40" r="14" fill="#2A2A2A" />
+                  <circle cx="62" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                  <circle cx="138" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                  <!-- Eye patches -->
+                  <ellipse
+                    cx="76"
+                    cy="80"
+                    rx="13"
+                    ry="15"
+                    fill="#2A2A2A"
+                    transform="rotate(-12 76 80)"
+                  />
+                  <ellipse
+                    cx="124"
+                    cy="80"
+                    rx="13"
+                    ry="15"
+                    fill="#2A2A2A"
+                    transform="rotate(12 124 80)"
+                  />
+                  <!-- Eyes -->
+                  <ellipse cx="78" cy="82" rx="4.5" ry="5.5" fill="white" />
+                  <ellipse cx="122" cy="82" rx="4.5" ry="5.5" fill="white" />
+                  <circle cx="79" cy="83" r="3" fill="#1A1A1A" />
+                  <circle cx="121" cy="83" r="3" fill="#1A1A1A" />
+                  <circle cx="80" cy="81" r="1.3" fill="white" />
+                  <circle cx="122" cy="81" r="1.3" fill="white" />
+                  <!-- Cheek blush -->
+                  <ellipse
+                    cx="65"
+                    cy="105"
+                    rx="7"
+                    ry="4"
+                    fill="#E8B4A0"
+                    opacity="0.6"
+                  />
+                  <ellipse
+                    cx="135"
+                    cy="105"
+                    rx="7"
+                    ry="4"
+                    fill="#E8B4A0"
+                    opacity="0.6"
+                  />
+                  <!-- Nose -->
+                  <ellipse cx="100" cy="100" rx="5" ry="4" fill="#1A1A1A" />
+                  <!-- Mouth (big smile) -->
+                  <path
+                    d="M 100 104 L 100 108"
+                    stroke="#1A1A1A"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 86 108 Q 100 117 114 108"
+                    stroke="#1A1A1A"
+                    stroke-width="2.5"
+                    fill="none"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <div class="speech-bubble" style="margin-top: 20px">
+                <strong>Hi, I'm Mochi.</strong><br />
+                I'm a panda. I'm soft. I'm patient. I'll be your companion on
+                this journey — just <strong>6 quick questions</strong> before
+                your first lesson.
+              </div>
+              <div
+                class="worldview-line"
+                style="margin-top: 24px; margin-bottom: 24px"
+              >
+                <strong>The smallest practice, done daily,</strong> is more
+                powerful than the biggest one done once.
+              </div>
+              <button class="primary-btn" onclick="nextScreen()">
+                Continue
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 3: WHAT BRINGS YOU HERE (Motivation) -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="3">
+            <div class="header-bar">
+              <button class="back-btn" onclick="prevScreen()">←</button>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 16%"></div>
+              </div>
+            </div>
+            <div class="screen-content">
+              <div class="eyebrow">Step 1 of 7</div>
+              <h2 class="headline">What brings you here, <em>friend?</em></h2>
+              <p class="subhead">
+                This shapes which journeys we suggest. Pick what resonates most.
+              </p>
+
+              <div class="testimonial-card">
+                <div class="testimonial-avatar">M</div>
+                <div class="testimonial-body">
+                  <div class="testimonial-quote">
+                    "I'd downloaded 6 anxiety apps before this. Happy is the
+                    first one I actually opened on day 8."
+                  </div>
+                  <div class="testimonial-attribution">
+                    <span>Maya, 32</span>
+                    <span class="testimonial-stars">★★★★★</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="options-list">
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌊</div>
+                  <div class="option-text">
+                    <div class="option-title">Manage anxiety</div>
+                    <div class="option-sub">Quiet the racing thoughts</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌫️</div>
+                  <div class="option-text">
+                    <div class="option-title">Lift my mood</div>
+                    <div class="option-sub">Find lightness in heavy days</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🪨</div>
+                  <div class="option-text">
+                    <div class="option-title">Handle stress better</div>
+                    <div class="option-sub">
+                      Build resilience for hard moments
+                    </div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🪞</div>
+                  <div class="option-text">
+                    <div class="option-title">Understand myself</div>
+                    <div class="option-sub">Patterns, triggers, and growth</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌙</div>
+                  <div class="option-text">
+                    <div class="option-title">Sleep &amp; rest better</div>
+                    <div class="option-sub">Wind-down rituals that work</div>
+                  </div>
+                </button>
+              </div>
+              <button
+                class="primary-btn"
+                id="step3Btn"
+                onclick="nextScreen()"
+                disabled
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 4: HOW HEAVY DOES STRESS FEEL (Self-Assessment) -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="4">
+            <div class="header-bar">
+              <button class="back-btn" onclick="prevScreen()">←</button>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 24%"></div>
+              </div>
+            </div>
+            <div class="screen-content">
+              <div class="eyebrow">Step 2 of 7</div>
+              <h2 class="headline">Lately, stress feels…</h2>
+              <p class="subhead">
+                No wrong answer. We'll calibrate the depth of your first
+                lessons.
+              </p>
+
+              <div class="options-list">
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">☁️</div>
+                  <div class="option-text">
+                    <div class="option-title">Light — passing clouds</div>
+                    <div class="option-sub">Manageable most days</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌥️</div>
+                  <div class="option-text">
+                    <div class="option-title">A weight I notice</div>
+                    <div class="option-sub">There, but I'm functioning</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">⛈️</div>
+                  <div class="option-text">
+                    <div class="option-title">Heavy &amp; constant</div>
+                    <div class="option-sub">It's affecting daily life</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌪️</div>
+                  <div class="option-text">
+                    <div class="option-title">Overwhelming</div>
+                    <div class="option-sub">I need real tools, soon</div>
+                  </div>
+                </button>
+              </div>
+              <button
+                class="primary-btn"
+                id="step4Btn"
+                onclick="nextScreen()"
+                disabled
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 5: EXPERIENCE LEVEL -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="5">
+            <div class="header-bar">
+              <button class="back-btn" onclick="prevScreen()">←</button>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 32%"></div>
+              </div>
+            </div>
+            <div class="screen-content">
+              <div class="eyebrow">Step 3 of 7</div>
+              <h2 class="headline">
+                Have you tried <em>journaling</em> before?
+              </h2>
+              <p class="subhead">
+                This decides where your first journey starts.
+              </p>
+
+              <div class="options-list">
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌱</div>
+                  <div class="option-text">
+                    <div class="option-title">Total beginner</div>
+                    <div class="option-sub">Blank page = panic</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌿</div>
+                  <div class="option-text">
+                    <div class="option-title">Tried, never stuck</div>
+                    <div class="option-sub">
+                      Started 3 journals, finished none
+                    </div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌳</div>
+                  <div class="option-text">
+                    <div class="option-title">Off &amp; on for years</div>
+                    <div class="option-sub">Want to make it consistent</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌲</div>
+                  <div class="option-text">
+                    <div class="option-title">Daily practice</div>
+                    <div class="option-sub">
+                      Looking for structure &amp; depth
+                    </div>
+                  </div>
+                </button>
+              </div>
+              <button
+                class="primary-btn"
+                id="step5Btn"
+                onclick="nextScreen()"
+                disabled
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 6: WHEN DO YOU FEEL THE STRESS MOST -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="6">
+            <div class="header-bar">
+              <button class="back-btn" onclick="prevScreen()">←</button>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 42%"></div>
+              </div>
+            </div>
+            <div class="screen-content">
+              <div class="eyebrow">Step 4 of 7</div>
+              <h2 class="headline">When does it hit <em>hardest?</em></h2>
+              <p class="subhead">
+                We'll send your reminders at the right time, not random ones.
+              </p>
+
+              <div class="options-list">
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌅</div>
+                  <div class="option-text">
+                    <div class="option-title">First thing in the morning</div>
+                    <div class="option-sub">Anxiety waking with me</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">☀️</div>
+                  <div class="option-text">
+                    <div class="option-title">Mid-day grind</div>
+                    <div class="option-sub">Work pressure, deadlines</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌆</div>
+                  <div class="option-text">
+                    <div class="option-title">After the workday</div>
+                    <div class="option-sub">Decompressing is hard</div>
+                  </div>
+                </button>
+                <button class="option-card" onclick="selectOption(this)">
+                  <div class="option-icon">🌙</div>
+                  <div class="option-text">
+                    <div class="option-title">Late at night</div>
+                    <div class="option-sub">Mind racing in bed</div>
+                  </div>
+                </button>
+              </div>
+              <button
+                class="primary-btn"
+                id="step6Btn"
+                onclick="nextScreen()"
+                disabled
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 7: DAILY GOAL COMMITMENT (Pre-commitment) -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="7">
+            <div class="header-bar">
+              <button class="back-btn" onclick="prevScreen()">←</button>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 54%"></div>
+              </div>
+            </div>
+            <div class="screen-content">
+              <div class="eyebrow">Step 6 of 6</div>
+              <h2 class="headline">
+                How much time can you give <em>yourself?</em>
+              </h2>
+              <p class="subhead">
+                5 minutes a day beats 30 minutes once a week. Pick something
+                honest.
+              </p>
+
+              <div class="testimonial-card">
+                <div class="testimonial-avatar lavender">D</div>
+                <div class="testimonial-body">
+                  <div class="testimonial-quote">
+                    "5 minutes felt fake at first. But I have ADHD — anything
+                    longer than 10 minutes I'd quit. This actually works for my
+                    brain. Day 142."
+                  </div>
+                  <div class="testimonial-attribution">
+                    <span>Dani, 28</span>
+                    <span class="testimonial-stars">★★★★★</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="goal-options">
+                <button class="goal-option" onclick="selectGoal(this)">
+                  <div class="goal-option-left">
+                    <span class="goal-time">3 min</span>
+                    <span class="goal-label">A check-in</span>
+                  </div>
+                  <span class="goal-tag tag-casual">Gentle</span>
+                </button>
+                <button class="goal-option selected" onclick="selectGoal(this)">
+                  <div class="goal-option-left">
+                    <span class="goal-time">5 min</span>
+                    <span class="goal-label">A meaningful pause</span>
+                  </div>
+                  <span class="goal-tag tag-regular">Recommended</span>
+                </button>
+                <button class="goal-option" onclick="selectGoal(this)">
+                  <div class="goal-option-left">
+                    <span class="goal-time">10 min</span>
+                    <span class="goal-label">A real reflection</span>
+                  </div>
+                  <span class="goal-tag tag-serious">Committed</span>
+                </button>
+                <button class="goal-option" onclick="selectGoal(this)">
+                  <div class="goal-option-left">
+                    <span class="goal-time">15+ min</span>
+                    <span class="goal-label">A deep practice</span>
+                  </div>
+                  <span class="goal-tag tag-intense">Serious</span>
+                </button>
+              </div>
+
+              <button class="primary-btn" onclick="nextScreen()">
+                Set My Goal
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 8: COMMITMENT SCREEN (Pact) -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="8">
+            <div class="header-bar">
+              <button class="back-btn" onclick="prevScreen()">←</button>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 63%"></div>
+              </div>
+            </div>
+            <div
+              class="screen-content"
+              style="text-align: center; align-items: center"
+            >
+              <div class="eyebrow">Step 6 of 6 — Final commitment</div>
+              <h2 class="headline">A small <em>pact</em>.</h2>
+
+              <div class="exercise-card" style="margin-top: 16px">
+                <div
+                  style="
+                    font-family: &quot;Fraunces&quot;, serif;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    color: var(--ink);
+                    text-align: left;
+                  "
+                >
+                  <em
+                    >For the next 7 days, I'll show up for myself — even if it's
+                    just for 5 minutes.</em
+                  >
+                  <br /><br />
+                  <em
+                    >I'll be honest. I'll be patient. I'm worth the effort.</em
+                  >
+                </div>
+                <div
+                  style="
+                    margin-top: 16px;
+                    padding-top: 16px;
+                    border-top: 1px dashed var(--sage-200);
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 11px;
+                      color: var(--ink-muted);
+                      text-transform: uppercase;
+                      letter-spacing: 0.1em;
+                    "
+                  >
+                    Signed
+                  </div>
+                  <div
+                    style="
+                      font-family: &quot;Fraunces&quot;, serif;
+                      font-style: italic;
+                      font-size: 22px;
+                      color: var(--sage-600);
+                      margin-top: 4px;
+                    "
+                  >
+                    — You, today
+                  </div>
+                </div>
+              </div>
+
+              <p
+                style="
+                  font-size: 13px;
+                  color: var(--ink-muted);
+                  margin-bottom: 20px;
+                "
+              >
+                Hold to make it official.
+              </p>
+
+              <button
+                class="primary-btn"
+                id="commitBtn"
+                onmousedown="startCommit()"
+                onmouseup="cancelCommit()"
+                ontouchstart="startCommit()"
+                ontouchend="cancelCommit()"
+                style="position: relative; overflow: hidden"
+              >
+                <span
+                  id="commitFill"
+                  style="
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 0%;
+                    background: var(--sage-700);
+                    transition: width 0.05s linear;
+                  "
+                ></span>
+                <span style="position: relative">HOLD TO COMMIT</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 9: BUILDING YOUR PLAN (Labor Illusion) -->
+          <!-- ========================================================== -->
+          <div class="screen loading-screen" data-screen="9">
+            <div class="mascot bouncing">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Body -->
+                <ellipse cx="100" cy="142" rx="58" ry="48" fill="#FAF6ED" />
+                <!-- Hind feet -->
+                <ellipse cx="72" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                <ellipse cx="128" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                <!-- Arms in lap (meditating pose) -->
+                <ellipse
+                  cx="60"
+                  cy="155"
+                  rx="16"
+                  ry="14"
+                  fill="#2A2A2A"
+                  transform="rotate(-25 60 155)"
+                />
+                <ellipse
+                  cx="140"
+                  cy="155"
+                  rx="16"
+                  ry="14"
+                  fill="#2A2A2A"
+                  transform="rotate(25 140 155)"
+                />
+                <!-- Head -->
+                <ellipse cx="100" cy="80" rx="52" ry="46" fill="#FAF6ED" />
+                <!-- Ears -->
+                <circle cx="62" cy="40" r="14" fill="#2A2A2A" />
+                <circle cx="138" cy="40" r="14" fill="#2A2A2A" />
+                <circle cx="62" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                <circle cx="138" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                <!-- Eye patches -->
+                <ellipse
+                  cx="76"
+                  cy="80"
+                  rx="13"
+                  ry="15"
+                  fill="#2A2A2A"
+                  transform="rotate(-12 76 80)"
+                />
+                <ellipse
+                  cx="124"
+                  cy="80"
+                  rx="13"
+                  ry="15"
+                  fill="#2A2A2A"
+                  transform="rotate(12 124 80)"
+                />
+                <!-- Eyes CLOSED (curved arcs) -->
+                <path
+                  d="M 71 82 Q 78 76 85 82"
+                  stroke="white"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 115 82 Q 122 76 129 82"
+                  stroke="white"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <!-- Cheek blush -->
+                <ellipse
+                  cx="65"
+                  cy="105"
+                  rx="7"
+                  ry="4"
+                  fill="#E8B4A0"
+                  opacity="0.6"
+                />
+                <ellipse
+                  cx="135"
+                  cy="105"
+                  rx="7"
+                  ry="4"
+                  fill="#E8B4A0"
+                  opacity="0.6"
+                />
+                <!-- Nose -->
+                <ellipse cx="100" cy="100" rx="5" ry="4" fill="#1A1A1A" />
+                <!-- Mouth (small concentrated line) -->
+                <path
+                  d="M 100 104 L 100 108"
+                  stroke="#1A1A1A"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 95 110 Q 100 113 105 110"
+                  stroke="#1A1A1A"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <h2 class="headline" style="margin-top: 20px">
+              Building your <em>journey</em>…
+            </h2>
+            <p class="subhead">
+              Drawing on 800+ CBT exercises &amp; thousands of journal patterns.
+            </p>
+
+            <div class="loading-tasks" id="loadingTasks">
+              <div class="loading-task" data-task="0">
+                <div class="loading-spinner"></div>
+                <span>Analyzing your stress profile</span>
+              </div>
+              <div class="loading-task" data-task="1">
+                <div class="loading-spinner"></div>
+                <span>Matching CBT exercises to you</span>
+              </div>
+              <div class="loading-task" data-task="2">
+                <div class="loading-spinner"></div>
+                <span>Sequencing your first journey</span>
+              </div>
+              <div class="loading-task" data-task="3">
+                <div class="loading-spinner"></div>
+                <span>Tuning daily prompts</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 10: PERSONALIZED PLAN REVEAL -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="10">
+            <div class="header-bar">
+              <div
+                style="
+                  flex: 1;
+                  text-align: right;
+                  font-size: 12px;
+                  color: var(--ink-muted);
+                  font-weight: 600;
+                "
+              >
+                YOUR PLAN
+              </div>
+            </div>
+            <div class="screen-content">
+              <div class="eyebrow" style="color: var(--terracotta)">
+                Built for you ✨
+              </div>
+              <h2 class="headline">
+                Your first journey: <em>Quieting the Storm.</em>
+              </h2>
+
+              <div class="plan-card">
+                <div class="plan-eyebrow">7-Day Foundation Journey</div>
+                <div class="plan-title">
+                  From racing thoughts to steady ground.
+                </div>
+                <div class="plan-stats">
+                  <div class="plan-stat">
+                    <span class="plan-stat-value">7</span>
+                    <span class="plan-stat-label">Days</span>
+                  </div>
+                  <div class="plan-stat">
+                    <span class="plan-stat-value">14</span>
+                    <span class="plan-stat-label">Lessons</span>
+                  </div>
+                  <div class="plan-stat">
+                    <span class="plan-stat-value">9</span>
+                    <span class="plan-stat-label">CBT exercises</span>
+                  </div>
+                  <div class="plan-stat">
+                    <span class="plan-stat-value">5 min</span>
+                    <span class="plan-stat-label">Per day</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="projection-card">
+                <div class="projection-eyebrow">
+                  📈 What people like you report
+                </div>
+                <div class="projection-headline">
+                  Your projected <em>mood clarity</em> over 30 days
+                </div>
+
+                <div class="projection-graph">
+                  <svg
+                    viewBox="0 0 320 140"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="none"
+                  >
+                    <defs>
+                      <linearGradient
+                        id="sageGradient"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="0%"
+                          stop-color="#7A9272"
+                          stop-opacity="0.5"
+                        />
+                        <stop
+                          offset="100%"
+                          stop-color="#7A9272"
+                          stop-opacity="0"
+                        />
+                      </linearGradient>
+                    </defs>
+
+                    <!-- Y-axis labels -->
+                    <text x="6" y="22" class="proj-axis-label">High</text>
+                    <text x="6" y="120" class="proj-axis-label">Low</text>
+
+                    <!-- Grid lines -->
+                    <line
+                      x1="35"
+                      y1="20"
+                      x2="305"
+                      y2="20"
+                      stroke="#E8E2D2"
+                      stroke-width="1"
+                      stroke-dasharray="2,3"
+                    />
+                    <line
+                      x1="35"
+                      y1="60"
+                      x2="305"
+                      y2="60"
+                      stroke="#E8E2D2"
+                      stroke-width="1"
+                      stroke-dasharray="2,3"
+                    />
+                    <line
+                      x1="35"
+                      y1="100"
+                      x2="305"
+                      y2="100"
+                      stroke="#E8E2D2"
+                      stroke-width="1"
+                      stroke-dasharray="2,3"
+                    />
+
+                    <!-- Without journaling baseline (flat dashed line) -->
+                    <path d="M 35 95 L 305 92" class="proj-line-bg" />
+
+                    <!-- With Happy — ascending area -->
+                    <path
+                      d="M 35 100 Q 80 95 110 85 T 180 60 T 250 35 L 305 22 L 305 120 L 35 120 Z"
+                      class="proj-area"
+                    />
+
+                    <!-- With Happy — main line -->
+                    <path
+                      d="M 35 100 Q 80 95 110 85 T 180 60 T 250 35 L 305 22"
+                      class="proj-line-fg"
+                    />
+
+                    <!-- Milestone dots -->
+                    <circle cx="35" cy="100" r="4" class="proj-dot" />
+                    <circle cx="110" cy="85" r="4" class="proj-dot" />
+                    <circle cx="180" cy="60" r="4" class="proj-dot" />
+                    <circle cx="250" cy="35" r="4" class="proj-dot" />
+                    <circle
+                      cx="305"
+                      cy="22"
+                      r="5"
+                      class="proj-dot"
+                      style="fill: var(--gold); stroke-width: 3"
+                    />
+
+                    <!-- X-axis day labels -->
+                    <text
+                      x="35"
+                      y="135"
+                      class="proj-axis-label"
+                      text-anchor="start"
+                    >
+                      Day 1
+                    </text>
+                    <text
+                      x="110"
+                      y="135"
+                      class="proj-axis-label"
+                      text-anchor="middle"
+                    >
+                      7
+                    </text>
+                    <text
+                      x="180"
+                      y="135"
+                      class="proj-axis-label"
+                      text-anchor="middle"
+                    >
+                      14
+                    </text>
+                    <text
+                      x="250"
+                      y="135"
+                      class="proj-axis-label"
+                      text-anchor="middle"
+                    >
+                      21
+                    </text>
+                    <text
+                      x="305"
+                      y="135"
+                      class="proj-axis-label"
+                      text-anchor="end"
+                    >
+                      Day 30
+                    </text>
+
+                    <!-- End label -->
+                    <text
+                      x="305"
+                      y="14"
+                      class="proj-end-label"
+                      text-anchor="end"
+                    >
+                      +62%
+                    </text>
+                  </svg>
+                </div>
+
+                <div class="proj-legend">
+                  <div class="proj-legend-item">
+                    <span
+                      class="proj-legend-dot"
+                      style="background: var(--sage-500)"
+                    ></span>
+                    <span>With Happy</span>
+                  </div>
+                  <div class="proj-legend-item">
+                    <span
+                      class="proj-legend-dot"
+                      style="
+                        background: var(--sage-200);
+                        border: 1px dashed var(--sage-300);
+                      "
+                    ></span>
+                    <span>Without journaling</span>
+                  </div>
+                </div>
+
+                <div class="proj-citation">
+                  Based on self-reported clarity scores from
+                  <strong>3,847 Happy users</strong> over their first 30 days.
+                  Individual results vary.
+                </div>
+              </div>
+
+              <div class="ai-highlight">
+                <div class="ai-highlight-eyebrow">✨ New · AI Companion</div>
+                <div class="ai-highlight-headline">
+                  Mochi learns your patterns &amp; reflects them back.
+                </div>
+                <div class="ai-highlight-sub">
+                  After every journal entry, get an AI insight written just for
+                  you. Spot the patterns you can't see.
+                </div>
+              </div>
+
+              <div class="testimonial-card">
+                <div class="testimonial-avatar sky">J</div>
+                <div class="testimonial-body">
+                  <div class="testimonial-quote">
+                    "The AI noticed I was using 'should' 40 times a week.
+                    Therapy never caught that. Now I notice it before I write
+                    it."
+                  </div>
+                  <div class="testimonial-attribution">
+                    <span>Jordan, 35</span>
+                    <span class="testimonial-stars">★★★★★</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section-label">What you'll learn</div>
+              <div class="options-list" style="margin-bottom: 16px">
+                <div
+                  class="option-card"
+                  style="cursor: default; padding: 14px 16px"
+                >
+                  <div class="option-icon">1</div>
+                  <div class="option-text">
+                    <div class="option-title">Naming the feeling</div>
+                    <div class="option-sub">Day 1 — Foundation</div>
+                  </div>
+                </div>
+                <div
+                  class="option-card"
+                  style="cursor: default; padding: 14px 16px"
+                >
+                  <div class="option-icon">2</div>
+                  <div class="option-text">
+                    <div class="option-title">The thought spiral</div>
+                    <div class="option-sub">Day 2 — Cognitive distortions</div>
+                  </div>
+                </div>
+                <div
+                  class="option-card"
+                  style="cursor: default; padding: 14px 16px"
+                >
+                  <div class="option-icon">3</div>
+                  <div class="option-text">
+                    <div class="option-title">Body as compass</div>
+                    <div class="option-sub">Day 3 — Somatic awareness</div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="primary-btn" onclick="nextScreen()">
+                Start Day 1
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 11: FIRST LESSON - INTRO -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="11">
+            <div class="header-bar">
+              <button class="back-btn" onclick="prevScreen()">×</button>
+              <div class="progress-track">
+                <div
+                  class="progress-fill"
+                  style="
+                    width: 25%;
+                    background: linear-gradient(
+                      90deg,
+                      var(--terracotta-light),
+                      var(--terracotta)
+                    );
+                  "
+                ></div>
+              </div>
+              <div
+                style="
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: var(--terracotta);
+                "
+              >
+                +10 XP
+              </div>
+            </div>
+            <div class="screen-content lesson-screen">
+              <div style="margin-top: 8px" class="eyebrow">
+                Day 1 — Lesson 1 of 2
+              </div>
+              <h2 class="headline">Naming the <em>feeling</em>.</h2>
+              <p class="subhead" style="margin-bottom: 16px">
+                A 30-second lesson, then we'll try it.
+              </p>
+
+              <div class="teaching-card">
+                <div class="teaching-eyebrow">📖 The Concept</div>
+                <div class="teaching-text">
+                  When you put a feeling into <strong>specific words</strong>,
+                  your thinking brain takes over and your fear brain quiets
+                  down.<br /><br />
+                  Researchers call it <strong>affect labeling</strong> — the
+                  intensity drops by roughly <strong>40%</strong>, on average.
+                </div>
+                <div class="teaching-mechanism">
+                  <div class="mechanism-step">
+                    <div class="mechanism-icon">😨</div>
+                    <div class="mechanism-label">Feel it</div>
+                  </div>
+                  <div class="mechanism-arrow">→</div>
+                  <div class="mechanism-step">
+                    <div class="mechanism-icon">📝</div>
+                    <div class="mechanism-label">Name it</div>
+                  </div>
+                  <div class="mechanism-arrow">→</div>
+                  <div class="mechanism-step">
+                    <div class="mechanism-icon">❄️</div>
+                    <div class="mechanism-label">Cools</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="exercise-card">
+                <div class="exercise-prompt-eyebrow">✏️ Now: name yours</div>
+                <div class="exercise-prompt">How are you, <em>really?</em></div>
+                <div class="feeling-grid">
+                  <button class="feeling-btn" onclick="selectFeeling(this)">
+                    😌
+                  </button>
+                  <button class="feeling-btn" onclick="selectFeeling(this)">
+                    🥺
+                  </button>
+                  <button class="feeling-btn" onclick="selectFeeling(this)">
+                    😤
+                  </button>
+                  <button class="feeling-btn" onclick="selectFeeling(this)">
+                    😔
+                  </button>
+                  <button class="feeling-btn" onclick="selectFeeling(this)">
+                    😨
+                  </button>
+                  <button class="feeling-btn" onclick="selectFeeling(this)">
+                    😴
+                  </button>
+                  <button class="feeling-btn" onclick="selectFeeling(this)">
+                    🫥
+                  </button>
+                  <button class="feeling-btn" onclick="selectFeeling(this)">
+                    😊
+                  </button>
+                </div>
+              </div>
+
+              <button
+                class="primary-btn"
+                id="feelingBtn"
+                onclick="nextScreen()"
+                disabled
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 12: AI INSIGHT (Reciprocity Moment) -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="12">
+            <div class="header-bar">
+              <div class="progress-track">
+                <div
+                  class="progress-fill"
+                  style="
+                    width: 50%;
+                    background: linear-gradient(
+                      90deg,
+                      var(--terracotta-light),
+                      var(--terracotta)
+                    );
+                  "
+                ></div>
+              </div>
+              <div
+                style="
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: var(--terracotta);
+                "
+              >
+                +10 XP
+              </div>
+            </div>
+            <div class="screen-content">
+              <div
+                class="mascot"
+                style="
+                  width: 100px;
+                  height: 100px;
+                  margin-bottom: 8px;
+                  align-self: flex-start;
+                "
+              >
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Body -->
+                  <ellipse cx="100" cy="142" rx="58" ry="48" fill="#FAF6ED" />
+                  <!-- Hind feet -->
+                  <ellipse cx="72" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                  <ellipse cx="128" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                  <!-- Arms holding journal -->
+                  <ellipse
+                    cx="56"
+                    cy="138"
+                    rx="14"
+                    ry="22"
+                    fill="#2A2A2A"
+                    transform="rotate(-12 56 138)"
+                  />
+                  <ellipse
+                    cx="144"
+                    cy="138"
+                    rx="14"
+                    ry="22"
+                    fill="#2A2A2A"
+                    transform="rotate(12 144 138)"
+                  />
+                  <!-- Journal -->
+                  <rect
+                    x="78"
+                    y="120"
+                    width="44"
+                    height="32"
+                    rx="4"
+                    fill="#A8B89A"
+                    stroke="#5A7A56"
+                    stroke-width="2"
+                  />
+                  <line
+                    x1="86"
+                    y1="130"
+                    x2="114"
+                    y2="130"
+                    stroke="#3F5A3D"
+                    stroke-width="1.5"
+                    opacity="0.6"
+                  />
+                  <line
+                    x1="86"
+                    y1="137"
+                    x2="114"
+                    y2="137"
+                    stroke="#3F5A3D"
+                    stroke-width="1.5"
+                    opacity="0.6"
+                  />
+                  <line
+                    x1="86"
+                    y1="144"
+                    x2="104"
+                    y2="144"
+                    stroke="#3F5A3D"
+                    stroke-width="1.5"
+                    opacity="0.6"
+                  />
+                  <!-- Head -->
+                  <ellipse cx="100" cy="80" rx="52" ry="46" fill="#FAF6ED" />
+                  <!-- Ears -->
+                  <circle cx="62" cy="40" r="14" fill="#2A2A2A" />
+                  <circle cx="138" cy="40" r="14" fill="#2A2A2A" />
+                  <circle cx="62" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                  <circle cx="138" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                  <!-- Eye patches -->
+                  <ellipse
+                    cx="76"
+                    cy="80"
+                    rx="13"
+                    ry="15"
+                    fill="#2A2A2A"
+                    transform="rotate(-12 76 80)"
+                  />
+                  <ellipse
+                    cx="124"
+                    cy="80"
+                    rx="13"
+                    ry="15"
+                    fill="#2A2A2A"
+                    transform="rotate(12 124 80)"
+                  />
+                  <!-- Eyes -->
+                  <ellipse cx="78" cy="82" rx="4.5" ry="5.5" fill="white" />
+                  <ellipse cx="122" cy="82" rx="4.5" ry="5.5" fill="white" />
+                  <circle cx="79" cy="83" r="3" fill="#1A1A1A" />
+                  <circle cx="121" cy="83" r="3" fill="#1A1A1A" />
+                  <circle cx="80" cy="81" r="1.3" fill="white" />
+                  <circle cx="122" cy="81" r="1.3" fill="white" />
+                  <!-- Cheek blush -->
+                  <ellipse
+                    cx="65"
+                    cy="105"
+                    rx="7"
+                    ry="4"
+                    fill="#E8B4A0"
+                    opacity="0.6"
+                  />
+                  <ellipse
+                    cx="135"
+                    cy="105"
+                    rx="7"
+                    ry="4"
+                    fill="#E8B4A0"
+                    opacity="0.6"
+                  />
+                  <!-- Nose -->
+                  <ellipse cx="100" cy="100" rx="5" ry="4" fill="#1A1A1A" />
+                  <!-- Mouth (gentle smile) -->
+                  <path
+                    d="M 100 104 L 100 108"
+                    stroke="#1A1A1A"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 100 108 Q 93 112 89 109"
+                    stroke="#1A1A1A"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 100 108 Q 107 112 111 109"
+                    stroke="#1A1A1A"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+
+              <h2 class="headline" style="font-size: 24px">
+                Here's what I noticed about <em>you</em>.
+              </h2>
+
+              <div class="insight-card">
+                <div class="insight-eyebrow">✨ AI Insight</div>
+                <div class="insight-text">
+                  "You're carrying <strong>anxiety</strong> in the evenings, the
+                  heaviest stretch of your day. Most people in your shoes find
+                  <strong>5pm–9pm reflection</strong> the highest-leverage
+                  time."
+                </div>
+              </div>
+
+              <div class="exercise-card" style="margin-top: 0">
+                <div
+                  style="
+                    font-size: 12px;
+                    font-weight: 700;
+                    color: var(--sage-500);
+                    margin-bottom: 8px;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                  "
+                >
+                  CBT Exercise — Try this
+                </div>
+                <div class="exercise-prompt" style="font-size: 18px">
+                  When the anxiety hits, try the
+                  <strong style="color: var(--sage-600)">5-4-3-2-1</strong>
+                  grounding technique:
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                    font-size: 14px;
+                    line-height: 1.5;
+                    color: var(--ink-soft);
+                  "
+                >
+                  <div>
+                    <strong style="color: var(--sage-600)">5 things</strong> you
+                    can see
+                  </div>
+                  <div>
+                    <strong style="color: var(--sage-600)">4 things</strong> you
+                    can touch
+                  </div>
+                  <div>
+                    <strong style="color: var(--sage-600)">3 things</strong> you
+                    can hear
+                  </div>
+                  <div>
+                    <strong style="color: var(--sage-600)">2 things</strong> you
+                    can smell
+                  </div>
+                  <div>
+                    <strong style="color: var(--sage-600)">1 thing</strong> you
+                    can taste
+                  </div>
+                </div>
+
+                <div class="research-citation">
+                  <span class="research-citation-icon">📖</span>
+                  <span
+                    ><strong>Research:</strong> Naming an emotion reduces its
+                    intensity by activating the prefrontal cortex while quieting
+                    the amygdala. <em>Lieberman et al., UCLA (2007)</em></span
+                  >
+                </div>
+              </div>
+
+              <button class="primary-btn" onclick="nextScreen()">
+                Got it — Continue
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 13: LESSON COMPLETE (Variable Reward) -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="13">
+            <div
+              class="screen-content"
+              style="align-items: center; text-align: center; padding-top: 40px"
+            >
+              <div class="mascot bouncing" style="width: 160px; height: 160px">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Body -->
+                  <ellipse cx="100" cy="142" rx="58" ry="48" fill="#FAF6ED" />
+                  <!-- Hind feet -->
+                  <ellipse cx="72" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                  <ellipse cx="128" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                  <!-- BOTH arms raised celebrating -->
+                  <ellipse
+                    cx="40"
+                    cy="80"
+                    rx="13"
+                    ry="22"
+                    fill="#2A2A2A"
+                    transform="rotate(-50 40 80)"
+                  />
+                  <ellipse cx="30" cy="55" rx="10" ry="10" fill="#2A2A2A" />
+                  <ellipse
+                    cx="160"
+                    cy="80"
+                    rx="13"
+                    ry="22"
+                    fill="#2A2A2A"
+                    transform="rotate(50 160 80)"
+                  />
+                  <ellipse cx="170" cy="55" rx="10" ry="10" fill="#2A2A2A" />
+                  <!-- Head -->
+                  <ellipse cx="100" cy="80" rx="52" ry="46" fill="#FAF6ED" />
+                  <!-- Ears -->
+                  <circle cx="62" cy="40" r="14" fill="#2A2A2A" />
+                  <circle cx="138" cy="40" r="14" fill="#2A2A2A" />
+                  <circle cx="62" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                  <circle cx="138" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                  <!-- Eye patches -->
+                  <ellipse
+                    cx="76"
+                    cy="80"
+                    rx="13"
+                    ry="15"
+                    fill="#2A2A2A"
+                    transform="rotate(-12 76 80)"
+                  />
+                  <ellipse
+                    cx="124"
+                    cy="80"
+                    rx="13"
+                    ry="15"
+                    fill="#2A2A2A"
+                    transform="rotate(12 124 80)"
+                  />
+                  <!-- Eyes (happy scrunched ^^) -->
+                  <path
+                    d="M 70 84 Q 78 76 86 84"
+                    stroke="white"
+                    stroke-width="3"
+                    fill="none"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 114 84 Q 122 76 130 84"
+                    stroke="white"
+                    stroke-width="3"
+                    fill="none"
+                    stroke-linecap="round"
+                  />
+                  <!-- Cheek blush (bigger, happier) -->
+                  <ellipse
+                    cx="64"
+                    cy="105"
+                    rx="9"
+                    ry="5"
+                    fill="#E8B4A0"
+                    opacity="0.7"
+                  />
+                  <ellipse
+                    cx="136"
+                    cy="105"
+                    rx="9"
+                    ry="5"
+                    fill="#E8B4A0"
+                    opacity="0.7"
+                  />
+                  <!-- Nose -->
+                  <ellipse cx="100" cy="100" rx="5" ry="4" fill="#1A1A1A" />
+                  <!-- Mouth (big open happy smile) -->
+                  <path
+                    d="M 84 108 Q 100 122 116 108"
+                    stroke="#1A1A1A"
+                    stroke-width="2.5"
+                    fill="#FFB4A0"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+
+              <div
+                style="
+                  background: var(--gold);
+                  color: var(--sage-700);
+                  padding: 6px 16px;
+                  border-radius: 100px;
+                  font-size: 11px;
+                  font-weight: 800;
+                  letter-spacing: 0.15em;
+                  text-transform: uppercase;
+                  margin: 20px 0 12px;
+                "
+              >
+                First Lesson Complete
+              </div>
+
+              <h2 class="headline" style="font-size: 28px">
+                You did it. <em>Truly.</em>
+              </h2>
+              <p class="subhead">
+                <em style="color: var(--sage-600); font-style: italic"
+                  >You showed up. That's the whole thing.</em
+                >
+                Five minutes, just like you said.
+              </p>
+
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr 1fr;
+                  gap: 12px;
+                  width: 100%;
+                  margin: 20px 0 24px;
+                "
+              >
+                <div
+                  style="
+                    text-align: center;
+                    padding: 14px 8px;
+                    background: var(--warm-white);
+                    border: 2px solid var(--sage-100);
+                    border-radius: 14px;
+                  "
+                >
+                  <div
+                    style="
+                      font-family: &quot;Fraunces&quot;, serif;
+                      font-size: 22px;
+                      font-weight: 600;
+                      color: var(--sage-600);
+                    "
+                  >
+                    +20
+                  </div>
+                  <div
+                    style="
+                      font-size: 10px;
+                      color: var(--ink-muted);
+                      text-transform: uppercase;
+                      letter-spacing: 0.05em;
+                      font-weight: 600;
+                    "
+                  >
+                    XP Earned
+                  </div>
+                </div>
+                <div
+                  style="
+                    text-align: center;
+                    padding: 14px 8px;
+                    background: linear-gradient(
+                      135deg,
+                      var(--terracotta-light),
+                      var(--terracotta)
+                    );
+                    border-radius: 14px;
+                    color: white;
+                  "
+                >
+                  <div
+                    style="
+                      font-family: &quot;Fraunces&quot;, serif;
+                      font-size: 22px;
+                      font-weight: 600;
+                    "
+                  >
+                    🔥 1
+                  </div>
+                  <div
+                    style="
+                      font-size: 10px;
+                      opacity: 0.9;
+                      text-transform: uppercase;
+                      letter-spacing: 0.05em;
+                      font-weight: 600;
+                    "
+                  >
+                    Day Streak
+                  </div>
+                </div>
+                <div
+                  style="
+                    text-align: center;
+                    padding: 14px 8px;
+                    background: var(--warm-white);
+                    border: 2px solid var(--sage-100);
+                    border-radius: 14px;
+                  "
+                >
+                  <div
+                    style="
+                      font-family: &quot;Fraunces&quot;, serif;
+                      font-size: 22px;
+                      font-weight: 600;
+                      color: var(--sage-600);
+                    "
+                  >
+                    7%
+                  </div>
+                  <div
+                    style="
+                      font-size: 10px;
+                      color: var(--ink-muted);
+                      text-transform: uppercase;
+                      letter-spacing: 0.05em;
+                      font-weight: 600;
+                    "
+                  >
+                    Toolkit
+                  </div>
+                </div>
+              </div>
+
+              <button class="primary-btn" onclick="nextScreen()">
+                Continue
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 14: NOTIFICATION PERMISSION (Primed) -->
+          <!-- ========================================================== -->
+          <div class="screen" data-screen="14">
+            <div class="header-bar">
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 100%"></div>
+              </div>
+            </div>
+            <div
+              class="screen-content"
+              style="text-align: center; align-items: center"
+            >
+              <div class="permission-illustration">🔔</div>
+
+              <h2 class="headline">Pick a moment that's <em>yours</em>.</h2>
+              <p class="subhead">
+                A gentle nudge — never spam. You picked
+                <strong>evenings</strong> earlier, so we'll start there.
+              </p>
+
+              <div class="notification-preview">
+                <div class="notif-icon">S</div>
+                <div class="notif-content">
+                  <div class="notif-title">Mochi</div>
+                  <div class="notif-body">
+                    Hey, friend. 5 quiet minutes? Your Day 2 lesson is ready.
+                  </div>
+                </div>
+                <div class="notif-time">7:00 PM</div>
+              </div>
+
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr 1fr;
+                  gap: 8px;
+                  width: 100%;
+                  margin: 16px 0;
+                "
+              >
+                <button
+                  class="goal-option"
+                  onclick="selectTime(this, '5pm')"
+                  style="padding: 12px 6px; flex-direction: column; gap: 2px"
+                >
+                  <span class="goal-time" style="font-size: 16px">5pm</span>
+                  <span class="goal-label" style="font-size: 10px"
+                    >After work</span
+                  >
+                </button>
+                <button
+                  class="goal-option selected"
+                  onclick="selectTime(this, '7pm')"
+                  style="padding: 12px 6px; flex-direction: column; gap: 2px"
+                >
+                  <span class="goal-time" style="font-size: 16px">7pm</span>
+                  <span class="goal-label" style="font-size: 10px"
+                    >Wind-down</span
+                  >
+                </button>
+                <button
+                  class="goal-option"
+                  onclick="selectTime(this, '9pm')"
+                  style="padding: 12px 6px; flex-direction: column; gap: 2px"
+                >
+                  <span class="goal-time" style="font-size: 16px">9pm</span>
+                  <span class="goal-label" style="font-size: 10px"
+                    >Before bed</span
+                  >
+                </button>
+              </div>
+
+              <button class="primary-btn" onclick="nextScreen()">
+                Yes, remind me at 7pm
+              </button>
+              <button class="secondary-btn" onclick="nextScreen()">
+                Maybe later
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 15: HOME / JOURNEY MAP (Aha Moment) -->
+          <!-- ========================================================== -->
+          <div class="screen home-screen" data-screen="15" style="padding: 0">
+            <div class="home-header">
+              <div>
+                <div class="home-greeting">Welcome, friend.</div>
+                <div class="home-date">Day 1 of your journey · Tuesday</div>
+              </div>
+              <div class="streak-badge">🔥 1</div>
+            </div>
+
+            <div class="journey-section">
+              <div class="section-label">📍 Quieting the Storm · Section 1</div>
+
+              <div class="journey-path">
+                <div class="journey-node">
+                  <div class="node-circle" style="background: var(--sage-500)">
+                    ✓
+                  </div>
+                  <div class="node-info">
+                    <div class="node-title">Naming the feeling</div>
+                    <div class="node-meta">Lesson 1 · Complete</div>
+                  </div>
+                  <div
+                    class="node-line"
+                    style="background: var(--sage-500)"
+                  ></div>
+                </div>
+                <div class="journey-node">
+                  <div class="node-circle current">2</div>
+                  <div class="node-info">
+                    <div class="node-title">The thought spiral</div>
+                    <div class="node-meta">Up next · 5 min</div>
+                  </div>
+                  <div class="node-line"></div>
+                </div>
+                <div class="journey-node">
+                  <div class="node-circle locked">3</div>
+                  <div class="node-info">
+                    <div class="node-title">Body as compass</div>
+                    <div class="node-meta">Locked</div>
+                  </div>
+                  <div class="node-line"></div>
+                </div>
+                <div class="journey-node">
+                  <div class="node-circle locked">4</div>
+                  <div class="node-info">
+                    <div class="node-title">CBT: Thought records</div>
+                    <div class="node-meta">Locked · Exercise</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section-label">⚡ Your Toolkit</div>
+              <div class="toolkit-grid">
+                <div class="toolkit-card featured">
+                  <div class="toolkit-icon">🌬️</div>
+                  <div class="toolkit-name">Box breathing</div>
+                  <div class="toolkit-meta">Free · 2 min</div>
+                </div>
+                <div class="toolkit-card">
+                  <div class="toolkit-icon">📓</div>
+                  <div class="toolkit-name">5-4-3-2-1</div>
+                  <div class="toolkit-meta">Free · 3 min</div>
+                </div>
+                <div class="toolkit-card" style="opacity: 0.6">
+                  <div class="toolkit-icon">🧠</div>
+                  <div class="toolkit-name">
+                    Thought records<span class="lock-icon"></span>
+                  </div>
+                  <div class="toolkit-meta">Premium</div>
+                </div>
+                <div class="toolkit-card" style="opacity: 0.6">
+                  <div class="toolkit-icon">💭</div>
+                  <div class="toolkit-name">
+                    Worry diary<span class="lock-icon"></span>
+                  </div>
+                  <div class="toolkit-meta">Premium</div>
+                </div>
+              </div>
+
+              <button class="primary-btn" onclick="nextScreen()">
+                Continue Day 1 →
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 16: LETTER FROM FUTURE SELF (Temporal Self-Continuity) -->
+          <!-- ========================================================== -->
+          <div class="screen letter-screen" data-screen="16">
+            <div class="header-bar">
+              <button class="back-btn" onclick="prevScreen()">←</button>
+              <div
+                style="
+                  flex: 1;
+                  text-align: right;
+                  font-size: 11px;
+                  color: var(--ink-muted);
+                  font-weight: 600;
+                  letter-spacing: 0.05em;
+                "
+              >
+                A QUIET MOMENT
+              </div>
+            </div>
+            <div class="screen-content">
+              <div class="letter-eyebrow">📨 Something arrived for you</div>
+              <h2 class="headline" style="font-size: 26px; margin-bottom: 4px">
+                A letter from <em>you,</em>
+              </h2>
+              <p class="subhead" style="margin-bottom: 0">
+                written 30 days from now.
+              </p>
+
+              <div class="letter-card">
+                <div class="letter-seal">S</div>
+                <div class="letter-date">June 6, 2026 · Tuesday evening</div>
+
+                <div class="letter-greeting">Hey, friend —</div>
+
+                <div class="letter-body">
+                  <p>
+                    I'm writing from a Tuesday, just like today. I closed Happy
+                    <strong>five minutes ago</strong>. Just like you will, in a
+                    moment.
+                  </p>
+
+                  <p>
+                    I won't lie to you. The noise didn't stop. Some mornings the
+                    thoughts still race. Some evenings the weight is still
+                    there.
+                  </p>
+
+                  <p>
+                    But yesterday, when the spiral started — I caught it. I
+                    named it. I sat with it for thirty seconds.
+                    <strong>And it didn't get bigger.</strong>
+                  </p>
+
+                  <p>Thirty days ago, that wasn't possible.</p>
+
+                  <p>
+                    You showed up today. Five minutes. Just like you said you
+                    would, in that pact you signed.
+                  </p>
+
+                  <p>
+                    Keep going.
+                    <strong>We're not the same person anymore.</strong>
+                  </p>
+                </div>
+
+                <div class="letter-divider"></div>
+
+                <div class="letter-signature">
+                  <div class="letter-signature-line">— You, in 30 days.</div>
+                  <div class="letter-signature-meta">
+                    P.S. Still anxious sometimes. Just less afraid of it.
+                  </div>
+                </div>
+              </div>
+
+              <div class="letter-mascot-frame">
+                <div class="mascot">
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Body -->
+                    <ellipse cx="100" cy="142" rx="58" ry="48" fill="#FAF6ED" />
+                    <!-- Hind feet -->
+                    <ellipse cx="72" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                    <ellipse cx="128" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                    <!-- Arms folded gently -->
+                    <ellipse
+                      cx="56"
+                      cy="138"
+                      rx="14"
+                      ry="22"
+                      fill="#2A2A2A"
+                      transform="rotate(-12 56 138)"
+                    />
+                    <ellipse
+                      cx="144"
+                      cy="138"
+                      rx="14"
+                      ry="22"
+                      fill="#2A2A2A"
+                      transform="rotate(12 144 138)"
+                    />
+                    <!-- Journal (paper in lap) -->
+                    <rect
+                      x="78"
+                      y="120"
+                      width="44"
+                      height="32"
+                      rx="4"
+                      fill="#A8B89A"
+                      stroke="#5A7A56"
+                      stroke-width="2"
+                    />
+                    <line
+                      x1="86"
+                      y1="130"
+                      x2="114"
+                      y2="130"
+                      stroke="#3F5A3D"
+                      stroke-width="1.5"
+                      opacity="0.6"
+                    />
+                    <line
+                      x1="86"
+                      y1="137"
+                      x2="114"
+                      y2="137"
+                      stroke="#3F5A3D"
+                      stroke-width="1.5"
+                      opacity="0.6"
+                    />
+                    <line
+                      x1="86"
+                      y1="144"
+                      x2="104"
+                      y2="144"
+                      stroke="#3F5A3D"
+                      stroke-width="1.5"
+                      opacity="0.6"
+                    />
+                    <!-- Head -->
+                    <ellipse cx="100" cy="80" rx="52" ry="46" fill="#FAF6ED" />
+                    <!-- Ears -->
+                    <circle cx="62" cy="40" r="14" fill="#2A2A2A" />
+                    <circle cx="138" cy="40" r="14" fill="#2A2A2A" />
+                    <circle
+                      cx="62"
+                      cy="42"
+                      r="6"
+                      fill="#4A3030"
+                      opacity="0.7"
+                    />
+                    <circle
+                      cx="138"
+                      cy="42"
+                      r="6"
+                      fill="#4A3030"
+                      opacity="0.7"
+                    />
+                    <!-- Eye patches -->
+                    <ellipse
+                      cx="76"
+                      cy="80"
+                      rx="13"
+                      ry="15"
+                      fill="#2A2A2A"
+                      transform="rotate(-12 76 80)"
+                    />
+                    <ellipse
+                      cx="124"
+                      cy="80"
+                      rx="13"
+                      ry="15"
+                      fill="#2A2A2A"
+                      transform="rotate(12 124 80)"
+                    />
+                    <!-- Eyes (soft half-closed peaceful) -->
+                    <path
+                      d="M 71 82 Q 78 78 85 82"
+                      stroke="white"
+                      stroke-width="2.5"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M 115 82 Q 122 78 129 82"
+                      stroke="white"
+                      stroke-width="2.5"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <!-- Cheek blush -->
+                    <ellipse
+                      cx="65"
+                      cy="105"
+                      rx="7"
+                      ry="4"
+                      fill="#E8B4A0"
+                      opacity="0.6"
+                    />
+                    <ellipse
+                      cx="135"
+                      cy="105"
+                      rx="7"
+                      ry="4"
+                      fill="#E8B4A0"
+                      opacity="0.6"
+                    />
+                    <!-- Nose -->
+                    <ellipse cx="100" cy="100" rx="5" ry="4" fill="#1A1A1A" />
+                    <!-- Mouth (soft small smile) -->
+                    <path
+                      d="M 92 109 Q 100 114 108 109"
+                      stroke="#1A1A1A"
+                      stroke-width="2"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </div>
+                <div class="letter-mascot-quote">
+                  Hold onto this. Some days you'll need to remember who you're
+                  becoming.
+                </div>
+              </div>
+
+              <button
+                class="primary-btn"
+                onclick="nextScreen()"
+                style="margin-top: 14px"
+              >
+                I needed this
+              </button>
+              <button class="secondary-btn" onclick="nextScreen()">
+                Save to journal
+              </button>
+            </div>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 17: SOFT PAYWALL (After Multiple Sessions) -->
+          <!-- ========================================================== -->
+          <div
+            class="screen paywall-screen"
+            data-screen="17"
+            style="padding-top: 12px"
+          >
+            <div class="paywall-hero">
+              <div class="paywall-eyebrow">⭐ App of the Day</div>
+              <div class="mascot bouncing">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Body -->
+                  <ellipse cx="100" cy="142" rx="58" ry="48" fill="#FAF6ED" />
+                  <!-- Hind feet -->
+                  <ellipse cx="72" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                  <ellipse cx="128" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+                  <!-- Arms holding journal -->
+                  <ellipse
+                    cx="56"
+                    cy="138"
+                    rx="14"
+                    ry="22"
+                    fill="#2A2A2A"
+                    transform="rotate(-12 56 138)"
+                  />
+                  <ellipse
+                    cx="144"
+                    cy="138"
+                    rx="14"
+                    ry="22"
+                    fill="#2A2A2A"
+                    transform="rotate(12 144 138)"
+                  />
+                  <!-- Journal -->
+                  <rect
+                    x="78"
+                    y="120"
+                    width="44"
+                    height="32"
+                    rx="4"
+                    fill="#A8B89A"
+                    stroke="#5A7A56"
+                    stroke-width="2"
+                  />
+                  <line
+                    x1="86"
+                    y1="130"
+                    x2="114"
+                    y2="130"
+                    stroke="#3F5A3D"
+                    stroke-width="1.5"
+                    opacity="0.6"
+                  />
+                  <line
+                    x1="86"
+                    y1="137"
+                    x2="114"
+                    y2="137"
+                    stroke="#3F5A3D"
+                    stroke-width="1.5"
+                    opacity="0.6"
+                  />
+                  <line
+                    x1="86"
+                    y1="144"
+                    x2="104"
+                    y2="144"
+                    stroke="#3F5A3D"
+                    stroke-width="1.5"
+                    opacity="0.6"
+                  />
+                  <!-- Head -->
+                  <ellipse cx="100" cy="80" rx="52" ry="46" fill="#FAF6ED" />
+                  <!-- Ears -->
+                  <circle cx="62" cy="40" r="14" fill="#2A2A2A" />
+                  <circle cx="138" cy="40" r="14" fill="#2A2A2A" />
+                  <circle cx="62" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                  <circle cx="138" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+                  <!-- Eye patches -->
+                  <ellipse
+                    cx="76"
+                    cy="80"
+                    rx="13"
+                    ry="15"
+                    fill="#2A2A2A"
+                    transform="rotate(-12 76 80)"
+                  />
+                  <ellipse
+                    cx="124"
+                    cy="80"
+                    rx="13"
+                    ry="15"
+                    fill="#2A2A2A"
+                    transform="rotate(12 124 80)"
+                  />
+                  <!-- Eyes -->
+                  <ellipse cx="78" cy="82" rx="4.5" ry="5.5" fill="white" />
+                  <ellipse cx="122" cy="82" rx="4.5" ry="5.5" fill="white" />
+                  <circle cx="79" cy="83" r="3" fill="#1A1A1A" />
+                  <circle cx="121" cy="83" r="3" fill="#1A1A1A" />
+                  <circle cx="80" cy="81" r="1.3" fill="white" />
+                  <circle cx="122" cy="81" r="1.3" fill="white" />
+                  <!-- Cheek blush -->
+                  <ellipse
+                    cx="65"
+                    cy="105"
+                    rx="7"
+                    ry="4"
+                    fill="#E8B4A0"
+                    opacity="0.6"
+                  />
+                  <ellipse
+                    cx="135"
+                    cy="105"
+                    rx="7"
+                    ry="4"
+                    fill="#E8B4A0"
+                    opacity="0.6"
+                  />
+                  <!-- Nose -->
+                  <ellipse cx="100" cy="100" rx="5" ry="4" fill="#1A1A1A" />
+                  <!-- Mouth (gentle smile) -->
+                  <path
+                    d="M 100 104 L 100 108"
+                    stroke="#1A1A1A"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 100 108 Q 93 112 89 109"
+                    stroke="#1A1A1A"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M 100 108 Q 107 112 111 109"
+                    stroke="#1A1A1A"
+                    stroke-width="2"
+                    fill="none"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <h2 class="paywall-headline">
+                Become someone who doesn't run from
+                <em
+                  style="
+                    font-style: italic;
+                    font-weight: 400;
+                    color: var(--sage-500);
+                  "
+                  >how they feel.</em
+                >
+              </h2>
+              <p class="paywall-sub">
+                12 journeys · 800+ exercises · Unlimited AI insights
+              </p>
+
+              <div class="credential-badge">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12 2L4 6v6c0 5.5 3.5 10.5 8 12 4.5-1.5 8-6.5 8-12V6l-8-4z"
+                  />
+                  <path d="M9 12l2 2 4-4" />
+                </svg>
+                <span
+                  >Co-designed with Dr. Lena Park, PhD · Licensed CBT
+                  therapist</span
+                >
+              </div>
+            </div>
+
+            <div class="ai-highlight">
+              <div class="ai-highlight-eyebrow">✨ Premium · AI Companion</div>
+              <div class="ai-highlight-headline">
+                Unlimited AI reflections trained on 800+ CBT exercises.
+              </div>
+              <div class="ai-highlight-sub">
+                Every entry analyzed. Patterns surfaced weekly. Insights
+                personal to you.
+              </div>
+            </div>
+
+            <div class="benefits-list">
+              <div class="benefit-item">
+                <div class="benefit-check">✓</div>
+                <span>All 12 journeys (anxiety, sleep, self-worth, more)</span>
+              </div>
+              <div class="benefit-item">
+                <div class="benefit-check">✓</div>
+                <span
+                  ><strong>Unlimited AI insights</strong> &amp; weekly pattern
+                  reports</span
+                >
+              </div>
+              <div class="benefit-item">
+                <div class="benefit-check">✓</div>
+                <span>Full CBT toolkit · Thought records · Worry diary</span>
+              </div>
+              <div class="benefit-item">
+                <div class="benefit-check">✓</div>
+                <span>Streak repair &amp; private journal export</span>
+              </div>
+            </div>
+
+            <div class="locked-lessons-section">
+              <div class="locked-lessons-header">
+                <div class="locked-lessons-title">
+                  🔒 Your next 3 lessons (locked without Plus)
+                </div>
+              </div>
+              <div class="locked-lesson-card">
+                <div class="locked-lesson-num">2</div>
+                <div class="locked-lesson-info">
+                  <div class="locked-lesson-name">The Thought Spiral</div>
+                  <div class="locked-lesson-meta">
+                    Day 2 · 5 min · Cognitive distortions
+                  </div>
+                </div>
+                <div class="locked-lesson-icon">🔒</div>
+              </div>
+              <div class="locked-lesson-card">
+                <div class="locked-lesson-num">3</div>
+                <div class="locked-lesson-info">
+                  <div class="locked-lesson-name">Body as Compass</div>
+                  <div class="locked-lesson-meta">
+                    Day 3 · 5 min · Somatic awareness
+                  </div>
+                </div>
+                <div class="locked-lesson-icon">🔒</div>
+              </div>
+              <div class="locked-lesson-card">
+                <div class="locked-lesson-num">4</div>
+                <div class="locked-lesson-info">
+                  <div class="locked-lesson-name">
+                    Thought Records: Your First CBT Tool
+                  </div>
+                  <div class="locked-lesson-meta">
+                    Day 4 · 7 min · Hands-on exercise
+                  </div>
+                </div>
+                <div class="locked-lesson-icon">🔒</div>
+              </div>
+              <div class="locked-lessons-footer">
+                Continue your journey or restart from Day 1.
+              </div>
+            </div>
+
+            <div class="testimonial-card">
+              <div
+                class="testimonial-avatar"
+                style="
+                  background: linear-gradient(135deg, #b8c4a8, var(--sage-500));
+                "
+              >
+                M
+              </div>
+              <div class="testimonial-body">
+                <div class="testimonial-quote">
+                  "I'm a 47-year-old guy. Never thought I'd journal. The CBT
+                  lessons are why I stayed — they actually teach you something.
+                  Day 89."
+                </div>
+                <div class="testimonial-attribution">
+                  <span>Marcus, 47 · Happy Plus member</span>
+                  <span class="testimonial-stars">★★★★★</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pricing-options">
+              <div class="price-card decoy" onclick="selectPrice(this)">
+                <div class="price-row">
+                  <div>
+                    <div class="price-label">Weekly</div>
+                    <div class="price-detail">Cancel anytime</div>
+                  </div>
+                  <div>
+                    <div class="price-amount">$7.99</div>
+                    <div class="price-detail" style="text-align: right">
+                      /week
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="price-card featured" onclick="selectPrice(this)">
+                <div class="featured-badge">Best value</div>
+                <div class="price-row">
+                  <div>
+                    <span class="price-headline"
+                      >365 days of showing up for yourself.</span
+                    >
+                    <div class="price-label" style="margin-top: 4px">
+                      Annual <span class="savings-badge">SAVE 67%</span>
+                    </div>
+                    <div class="price-detail">
+                      Just <strong>$0.27 per day</strong> · billed yearly
+                    </div>
+                  </div>
+                  <div>
+                    <div class="price-amount">$99.99</div>
+                    <div class="price-detail" style="text-align: right">
+                      <s>$299/yr</s>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="price-card" onclick="selectPrice(this)">
+                <div class="price-row">
+                  <div>
+                    <div class="price-label">Monthly</div>
+                    <div class="price-detail">Cancel anytime</div>
+                  </div>
+                  <div>
+                    <div class="price-amount">$14.99</div>
+                    <div class="price-detail" style="text-align: right">
+                      /month
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="trial-info">
+              ✨ 7-day free trial · No charge until day 8 · Cancel anytime
+            </div>
+            <div class="refund-promise">
+              💚 30-day full refund · No questions asked
+            </div>
+
+            <button class="primary-btn" onclick="nextScreen()">
+              Start 7-day free trial
+            </button>
+
+            <div class="social-proof">
+              <div class="proof-stat">
+                <div class="proof-value">3 in 4</div>
+                <div class="proof-label">sleep better by Day 14</div>
+              </div>
+              <div
+                style="width: 1px; height: 24px; background: var(--sage-200)"
+              ></div>
+              <div class="proof-stat">
+                <div class="proof-value">★ 4.9</div>
+                <div class="proof-label">12k reviews</div>
+              </div>
+              <div
+                style="width: 1px; height: 24px; background: var(--sage-200)"
+              ></div>
+              <div class="proof-stat">
+                <div class="proof-value">220k</div>
+                <div class="proof-label">in the Grove</div>
+              </div>
+            </div>
+
+            <button class="secondary-btn" onclick="showInterceptModal()">
+              Continue with free
+            </button>
+          </div>
+
+          <!-- ========================================================== -->
+          <!-- SCREEN 18: WELCOME / FINAL DASHBOARD -->
+          <!-- ========================================================== -->
+          <div class="screen home-screen" data-screen="18" style="padding: 0">
+            <div class="home-header">
+              <div>
+                <div class="home-greeting">
+                  Welcome to
+                  <em style="font-style: italic; color: var(--sage-500)"
+                    >the Grove</em
+                  >
+                  🌿
+                </div>
+                <div class="home-date">Your journey starts now</div>
+              </div>
+              <div class="streak-badge">🔥 1</div>
+            </div>
+
+            <div class="journey-section">
+              <div
+                class="exercise-card"
+                style="
+                  margin-top: 0;
+                  background: linear-gradient(
+                    135deg,
+                    var(--sage-50),
+                    var(--cream)
+                  );
+                  border-color: var(--sage-300);
+                "
+              >
+                <div
+                  style="
+                    font-size: 11px;
+                    color: var(--terracotta);
+                    font-weight: 700;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    margin-bottom: 8px;
+                  "
+                >
+                  ✨ A note from Mochi
+                </div>
+                <div
+                  style="
+                    font-family: &quot;Fraunces&quot;, serif;
+                    font-size: 17px;
+                    line-height: 1.5;
+                    color: var(--ink);
+                    font-style: italic;
+                  "
+                >
+                  "You signed a pact with yourself today. I'll be here every
+                  day. We'll go gently, and we'll go far.
+                  <strong style="color: var(--sage-600)"
+                    >Until tomorrow, friend.</strong
+                  >"
+                </div>
+                <div
+                  style="
+                    margin-top: 14px;
+                    font-size: 12px;
+                    color: var(--ink-muted);
+                  "
+                >
+                  — Mochi 🐼
+                </div>
+              </div>
+
+              <div class="section-label" style="margin-top: 24px">
+                Up next · Tomorrow at 7pm
+              </div>
+              <div class="option-card" style="cursor: default">
+                <div class="option-icon">2</div>
+                <div class="option-text">
+                  <div class="option-title">The thought spiral</div>
+                  <div class="option-sub">
+                    Day 2 · 5 min · Cognitive distortions
+                  </div>
+                </div>
+              </div>
+
+              <button
+                class="primary-btn"
+                style="margin-top: 24px"
+                onclick="
+                  goToScreen(1);
+                  resetAll();
+                "
+              >
+                Restart Prototype
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Discount Intercept Modal -->
+    <div
+      class="intercept-modal-overlay"
+      id="interceptModal"
+      onclick="hideInterceptModal(event)"
+    >
+      <div class="intercept-modal" onclick="event.stopPropagation()">
+        <div class="intercept-handle"></div>
+
+        <div class="intercept-mascot">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <!-- Body -->
+            <ellipse cx="100" cy="142" rx="58" ry="48" fill="#FAF6ED" />
+            <!-- Hind feet -->
+            <ellipse cx="72" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+            <ellipse cx="128" cy="182" rx="13" ry="7" fill="#2A2A2A" />
+            <!-- Arms holding journal -->
+            <ellipse
+              cx="56"
+              cy="138"
+              rx="14"
+              ry="22"
+              fill="#2A2A2A"
+              transform="rotate(-12 56 138)"
+            />
+            <ellipse
+              cx="144"
+              cy="138"
+              rx="14"
+              ry="22"
+              fill="#2A2A2A"
+              transform="rotate(12 144 138)"
+            />
+            <!-- Journal -->
+            <rect
+              x="78"
+              y="120"
+              width="44"
+              height="32"
+              rx="4"
+              fill="#A8B89A"
+              stroke="#5A7A56"
+              stroke-width="2"
+            />
+            <line
+              x1="86"
+              y1="130"
+              x2="114"
+              y2="130"
+              stroke="#3F5A3D"
+              stroke-width="1.5"
+              opacity="0.6"
+            />
+            <line
+              x1="86"
+              y1="137"
+              x2="114"
+              y2="137"
+              stroke="#3F5A3D"
+              stroke-width="1.5"
+              opacity="0.6"
+            />
+            <line
+              x1="86"
+              y1="144"
+              x2="104"
+              y2="144"
+              stroke="#3F5A3D"
+              stroke-width="1.5"
+              opacity="0.6"
+            />
+            <!-- Head -->
+            <ellipse cx="100" cy="80" rx="52" ry="46" fill="#FAF6ED" />
+            <!-- Ears -->
+            <circle cx="62" cy="40" r="14" fill="#2A2A2A" />
+            <circle cx="138" cy="40" r="14" fill="#2A2A2A" />
+            <circle cx="62" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+            <circle cx="138" cy="42" r="6" fill="#4A3030" opacity="0.7" />
+            <!-- Eye patches -->
+            <ellipse
+              cx="76"
+              cy="80"
+              rx="13"
+              ry="15"
+              fill="#2A2A2A"
+              transform="rotate(-12 76 80)"
+            />
+            <ellipse
+              cx="124"
+              cy="80"
+              rx="13"
+              ry="15"
+              fill="#2A2A2A"
+              transform="rotate(12 124 80)"
+            />
+            <!-- Eyes -->
+            <ellipse cx="78" cy="82" rx="4.5" ry="5.5" fill="white" />
+            <ellipse cx="122" cy="82" rx="4.5" ry="5.5" fill="white" />
+            <circle cx="79" cy="83" r="3" fill="#1A1A1A" />
+            <circle cx="121" cy="83" r="3" fill="#1A1A1A" />
+            <circle cx="80" cy="81" r="1.3" fill="white" />
+            <circle cx="122" cy="81" r="1.3" fill="white" />
+            <!-- Cheek blush -->
+            <ellipse
+              cx="65"
+              cy="105"
+              rx="7"
+              ry="4"
+              fill="#E8B4A0"
+              opacity="0.6"
+            />
+            <ellipse
+              cx="135"
+              cy="105"
+              rx="7"
+              ry="4"
+              fill="#E8B4A0"
+              opacity="0.6"
+            />
+            <!-- Nose -->
+            <ellipse cx="100" cy="100" rx="5" ry="4" fill="#1A1A1A" />
+            <!-- Mouth (gentle smile) -->
+            <path
+              d="M 100 104 L 100 108"
+              stroke="#1A1A1A"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+            />
+            <path
+              d="M 100 108 Q 93 112 89 109"
+              stroke="#1A1A1A"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+            />
+            <path
+              d="M 100 108 Q 107 112 111 109"
+              stroke="#1A1A1A"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+
+        <div style="text-align: center">
+          <div class="intercept-eyebrow">Wait — one more thing</div>
+        </div>
+        <h2 class="intercept-headline">Try Happy Plus for <em>$4.99</em>.</h2>
+        <p class="intercept-sub">
+          A first month, on us — almost. No pressure. No catch.
+        </p>
+
+        <div class="intercept-offer-card">
+          <div class="intercept-offer-row">
+            <div>
+              <div class="intercept-offer-label">First Month</div>
+              <div class="intercept-offer-headline">Happy Plus</div>
+            </div>
+            <div style="text-align: right">
+              <div class="intercept-offer-price">$4.99</div>
+              <div class="intercept-offer-strike">was $14.99</div>
+            </div>
+          </div>
+          <div class="intercept-offer-meta">
+            After month 1: continues at $14.99/mo · Cancel anytime
+          </div>
+        </div>
+
+        <button class="primary-btn" onclick="acceptIntercept()">
+          Yes, I'll try it for $4.99
+        </button>
+        <button class="secondary-btn" onclick="declineIntercept()">
+          No thanks, continue with free
+        </button>
+      </div>
+    </div>
+
+    <!-- Dev navigation -->
+    <div class="dev-nav">
+      <button class="dev-nav-btn" id="prevBtn" onclick="prevScreen()">←</button>
+      <span class="dev-nav-counter" id="navCounter">1 / 18</span>
+      <button class="dev-nav-btn" id="nextBtn" onclick="nextScreen()">→</button>
+    </div>
+
+    <script>
+      // State
+      let currentScreen = 1;
+      const totalScreens = 18;
+
+      const screenLabels = {
+        1: "Welcome — Brand Intro",
+        2: "Mascot Greeting",
+        3: "Q1 — What Brings You Here",
+        4: "Q2 — Stress Self-Assessment",
+        5: "Q3 — Experience Level",
+        6: "Q4 — When Stress Hits",
+        7: "Q5 — Daily Goal Commitment",
+        8: "Q6 — Pact Signing",
+        9: "Building Your Plan (Labor Illusion)",
+        10: "Plan Reveal + Mood Projection",
+        11: "Lesson 1 — Mood Check",
+        12: "AI Insight + CBT",
+        13: "Lesson Complete",
+        14: "Notification Permission",
+        15: "Home — Journey Map",
+        16: "Letter from Future Self",
+        17: "Soft Paywall (Identity-Based)",
+        18: "Welcome to the Grove",
+      };
+
+      function updateUI() {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document
+          .querySelector(`.screen[data-screen="${currentScreen}"]`)
+          .classList.add("active");
+        document.getElementById("navCounter").textContent =
+          `${currentScreen} / ${totalScreens}`;
+        document.getElementById("prevBtn").disabled = currentScreen === 1;
+        document.getElementById("nextBtn").disabled =
+          currentScreen === totalScreens;
+        document.getElementById("screenLabel").textContent =
+          `Screen ${currentScreen} / 18 — ${screenLabels[currentScreen]}`;
+
+        // Trigger loading animation on screen 9 (Building your plan)
+        if (currentScreen === 9) {
+          runLoadingAnimation();
+        }
+        // Auto scroll to top
+        const activeScreen = document.querySelector(
+          `.screen[data-screen="${currentScreen}"]`,
+        );
+        if (activeScreen) activeScreen.scrollTop = 0;
+      }
+
+      function nextScreen() {
+        if (currentScreen < totalScreens) {
+          currentScreen++;
+          updateUI();
+        }
+      }
+
+      function prevScreen() {
+        if (currentScreen > 1) {
+          currentScreen--;
+          updateUI();
+        }
+      }
+
+      function goToScreen(n) {
+        currentScreen = n;
+        updateUI();
+      }
+
+      function selectOption(btn) {
+        const parent = btn.closest(".options-list");
+        parent
+          .querySelectorAll(".option-card")
+          .forEach((c) => c.classList.remove("selected"));
+        btn.classList.add("selected");
+        // Enable continue button
+        const continueBtn = btn
+          .closest(".screen")
+          .querySelector(".primary-btn");
+        if (continueBtn) continueBtn.disabled = false;
+
+        // Subtle haptic
+        if (navigator.vibrate) navigator.vibrate(10);
+      }
+
+      function selectGoal(btn) {
+        const parent = btn.closest(".goal-options");
+        parent
+          .querySelectorAll(".goal-option")
+          .forEach((c) => c.classList.remove("selected"));
+        btn.classList.add("selected");
+        if (navigator.vibrate) navigator.vibrate(10);
+      }
+
+      function selectTime(btn) {
+        const parent = btn.parentElement;
+        parent
+          .querySelectorAll(".goal-option")
+          .forEach((c) => c.classList.remove("selected"));
+        btn.classList.add("selected");
+        if (navigator.vibrate) navigator.vibrate(10);
+      }
+
+      function selectFeeling(btn) {
+        const parent = btn.closest(".feeling-grid");
+        parent
+          .querySelectorAll(".feeling-btn")
+          .forEach((c) => c.classList.remove("selected"));
+        btn.classList.add("selected");
+        document.getElementById("feelingBtn").disabled = false;
+        if (navigator.vibrate) navigator.vibrate(10);
+      }
+
+      function selectPrice(card) {
+        document
+          .querySelectorAll(".price-card")
+          .forEach((c) => c.classList.remove("featured"));
+        card.classList.add("featured");
+      }
+
+      // Discount Intercept Modal
+      function showInterceptModal() {
+        document.getElementById("interceptModal").classList.add("active");
+        if (navigator.vibrate) navigator.vibrate(10);
+      }
+
+      function hideInterceptModal(event) {
+        // Only close if clicking the overlay, not the modal itself
+        if (event && event.target.id !== "interceptModal") return;
+        document.getElementById("interceptModal").classList.remove("active");
+      }
+
+      function acceptIntercept() {
+        document.getElementById("interceptModal").classList.remove("active");
+        // Simulate accepting the discount — go to welcome screen with confetti
+        launchConfetti();
+        setTimeout(() => nextScreen(), 400);
+      }
+
+      function declineIntercept() {
+        document.getElementById("interceptModal").classList.remove("active");
+        setTimeout(() => nextScreen(), 250);
+      }
+
+      function resetAll() {
+        document
+          .querySelectorAll(".option-card.selected, .feeling-btn.selected")
+          .forEach((c) => c.classList.remove("selected"));
+        document
+          .querySelectorAll('.primary-btn[id*="step"], #feelingBtn')
+          .forEach((b) => (b.disabled = true));
+      }
+
+      // Loading screen animation
+      function runLoadingAnimation() {
+        const tasks = document.querySelectorAll("#loadingTasks .loading-task");
+        tasks.forEach((t) => {
+          t.classList.remove("active", "done");
+        });
+
+        let i = 0;
+        function next() {
+          if (i > 0) tasks[i - 1].classList.remove("active");
+          if (i > 0) tasks[i - 1].classList.add("done");
+          if (i < tasks.length) {
+            tasks[i].classList.add("active");
+            i++;
+            setTimeout(next, 750);
+          } else {
+            // Auto-advance after all tasks done
+            setTimeout(() => {
+              if (currentScreen === 9) nextScreen();
+            }, 600);
+          }
+        }
+        setTimeout(next, 300);
+      }
+
+      // Commit hold animation
+      let commitTimer = null;
+      let commitProgress = 0;
+      function startCommit() {
+        commitProgress = 0;
+        const fill = document.getElementById("commitFill");
+        const btn = document.getElementById("commitBtn");
+        commitTimer = setInterval(() => {
+          commitProgress += 5;
+          fill.style.width = commitProgress + "%";
+          if (commitProgress >= 100) {
+            clearInterval(commitTimer);
+            // Confetti burst
+            if (navigator.vibrate) navigator.vibrate([20, 50, 20]);
+            launchConfetti();
+            setTimeout(() => nextScreen(), 400);
+          }
+        }, 30);
+      }
+      function cancelCommit() {
+        clearInterval(commitTimer);
+        if (commitProgress < 100) {
+          const fill = document.getElementById("commitFill");
+          fill.style.width = "0%";
+          commitProgress = 0;
+        }
+      }
+
+      // Confetti
+      function launchConfetti() {
+        const colors = [
+          "#7A9272",
+          "#5A7A56",
+          "#D4A943",
+          "#C8694B",
+          "#E8B4A0",
+          "#A8B89A",
+        ];
+        for (let i = 0; i < 30; i++) {
+          setTimeout(() => {
+            const c = document.createElement("div");
+            c.className = "confetti";
+            c.style.left = 50 + (Math.random() - 0.5) * 60 + "%";
+            c.style.top = "50%";
+            c.style.background =
+              colors[Math.floor(Math.random() * colors.length)];
+            c.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+            c.style.transform = `rotate(${Math.random() * 360}deg)`;
+            c.style.animation = `confetti-fall ${1.5 + Math.random()}s ease-in forwards`;
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 2500);
+          }, i * 30);
+        }
+      }
+
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") nextScreen();
+        else if (e.key === "ArrowLeft") prevScreen();
+      });
+
+      updateUI();
+    </script>
+  </body>
+</html>

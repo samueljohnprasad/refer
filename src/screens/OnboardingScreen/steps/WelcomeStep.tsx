@@ -26,7 +26,7 @@ const WelcomeStep: React.FC = () => {
 
         <Animated.Text
           entering={FadeIn.duration(180).delay(TITLE_ENTER_DELAY_MS)}
-          style={{ fontFamily: "CormorantBold" }}
+          style={{ fontFamily: "FrauncesBold" }}
           className="mt-6 text-5xl tracking-tight text-sage-700"
         >
           Happy
@@ -34,7 +34,7 @@ const WelcomeStep: React.FC = () => {
 
         <Animated.Text
           entering={FadeIn.duration(180).delay(SUBTITLE_ENTER_DELAY_MS)}
-          style={{ fontFamily: "CormorantMedium" }}
+          style={{ fontFamily: "FrauncesMedium" }}
           className="mt-2 text-lg italic text-sage-500"
         >
           AI Journal & CBT
@@ -44,13 +44,17 @@ const WelcomeStep: React.FC = () => {
           entering={FadeIn.duration(180).delay(BADGE_ENTER_DELAY_MS)}
           className="mt-8 flex-row items-center gap-1.5 rounded-full border border-sage-200 bg-sage-50 px-3 py-1.5"
         >
-          <Text className="text-[11px] font-semibold text-sage-700">
+          <Text
+            style={{ fontFamily: "GeistSemiBold" }}
+            className="text-[11px] font-semibold text-sage-700"
+          >
             🛡️ CBT-informed · End-to-end encrypted
           </Text>
         </Animated.View>
 
         <Animated.Text
           entering={FadeIn.duration(180).delay(TAGLINE_ENTER_DELAY_MS)}
+          style={{ fontFamily: "GeistRegular" }}
           className="mt-4 text-center text-xs italic text-ink-muted"
         >
           Built for the days you don't want to open it.

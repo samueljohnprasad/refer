@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
 import MochiMascot from "../components/MochiMascot";
 import { DailyGoalMinutes, StressTiming } from "../types";
 
@@ -9,137 +10,359 @@ interface LetterFromFutureStepProps {
   timing?: StressTiming;
 }
 
-const TIMING_LABELS: Record<StressTiming, string> = {
-  morning: "mornings",
-  afternoon: "afternoons",
-  evening: "evenings",
-  night: "late nights",
+const TIMING_MOMENTS: Record<StressTiming, string> = {
+  morning: "morning",
+  afternoon: "afternoon",
+  evening: "evening",
+  night: "late night",
 };
 
 const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
-  dailyGoal,
   timing,
 }) => {
-  const futureDate = useMemo(() => {
+  const futureLetterMeta = useMemo(() => {
     const date = new Date();
     date.setDate(date.getDate() + 30);
-    return date.toLocaleDateString("en-US", {
+    const calendarDate = date.toLocaleDateString("en-US", {
       month: "long",
       day: "numeric",
       year: "numeric",
     });
-  }, []);
+    const weekday = date.toLocaleDateString("en-US", {
+      weekday: "long",
+    });
+    const moment = timing ? TIMING_MOMENTS[timing] : "evening";
 
-  const timingLabel = timing ? TIMING_LABELS[timing] : "evenings";
+    return {
+      dateLabel: `${calendarDate} · ${weekday} ${moment}`,
+      weekdayLower: weekday.toLowerCase(),
+      moment,
+    };
+  }, [timing]);
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24 }}
+      contentContainerStyle={{
+        paddingTop: 8,
+        paddingBottom: 156,
+        paddingHorizontal: 24,
+      }}
       contentInsetAdjustmentBehavior="automatic"
-      className="flex-1 px-6 pt-6"
+      className="flex-1"
     >
       <Animated.View
         entering={FadeIn.duration(180).delay(80)}
         className="items-center"
       >
-        <View className="rounded-full bg-gold px-3 py-1.5">
-          <Text className="text-[11px] font-extrabold uppercase tracking-widest text-sage-700">
-            ✉️ A letter to you
+        <View
+          style={{
+            alignSelf: "stretch",
+            borderRadius: 999,
+            borderCurve: "continuous",
+            backgroundColor: "#D4A943",
+            paddingHorizontal: 18,
+            paddingVertical: 10,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "GeistBold",
+              color: "#2A3F2A",
+              fontSize: 11,
+              fontWeight: "800",
+              letterSpacing: 1.8,
+              textTransform: "uppercase",
+            }}
+          >
+            📨 Something arrived for you
           </Text>
         </View>
+
+        <Text
+          style={{
+            marginTop: 18,
+            fontFamily: "FrauncesRegular",
+            fontSize: 28,
+            lineHeight: 33,
+            textAlign: "center",
+            color: "#1A2A1A",
+          }}
+        >
+          A letter from{" "}
+          <Text
+            style={{
+              fontFamily: "FrauncesRegularItalic",
+              color: "#5A7A56",
+            }}
+          >
+            you,
+          </Text>
+        </Text>
+        <Text
+          style={{
+            marginTop: 6,
+            fontFamily: "GeistRegular",
+            fontSize: 15,
+            lineHeight: 21,
+            textAlign: "center",
+            color: "#4A5A4A",
+          }}
+        >
+          written 30 days from now.
+        </Text>
       </Animated.View>
 
       <Animated.View
         entering={FadeIn.duration(180).delay(160)}
-        className="relative mt-5 overflow-hidden rounded-2xl border border-sage-200 bg-warm-white p-6 shadow-sm"
+        style={{
+          marginTop: 18,
+          overflow: "hidden",
+          borderRadius: 24,
+          borderCurve: "continuous",
+          borderWidth: 1,
+          borderColor: "#D4CCB5",
+          boxShadow:
+            "0 8px 24px rgba(42, 63, 42, 0.08), 0 2px 6px rgba(42, 63, 42, 0.04)",
+        }}
       >
-        <View className="absolute left-0 right-0 top-0 h-[3px] bg-sage-100/60" />
-
-        <View className="absolute right-5 top-5 h-[38px] w-[38px] -rotate-[8deg] items-center justify-center rounded-full bg-terracotta shadow-sm">
-          <Text
-            style={{ fontFamily: "CormorantBold" }}
-            className="text-base italic text-white"
-          >
-            H
-          </Text>
-        </View>
-
-        <Text className="pr-12 text-[11px] font-medium tracking-wide text-ink-muted">
-          {futureDate}
-        </Text>
-
-        <Text
-          style={{ fontFamily: "CormorantMedium" }}
-          className="mt-3.5 text-[17px] text-ink"
+        <LinearGradient
+          colors={["#FFFCF5", "#FAF6ED"]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={{ paddingHorizontal: 22, paddingTop: 24, paddingBottom: 20 }}
         >
-          Dear you,
-        </Text>
+          <LinearGradient
+            colors={["transparent", "#E8E2D2", "#D4CCB5", "#E8E2D2", "transparent"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              height: 3,
+              opacity: 0.6,
+            }}
+          />
 
-        <View className="mt-3.5">
-          <Text
-            style={{ fontFamily: "CormorantMedium" }}
-            className="text-sm italic leading-[1.65] text-ink-soft"
+          <Animated.View
+            entering={FadeIn.duration(180).delay(260)}
+            style={{
+              position: "absolute",
+              right: 18,
+              top: 18,
+              transform: [{ rotate: "-8deg" }],
+              width: 58,
+              height: 58,
+              borderRadius: 999,
+              borderCurve: "continuous",
+              overflow: "hidden",
+              boxShadow:
+                "inset -2px -2px 4px rgba(0,0,0,0.2), inset 2px 2px 4px rgba(255,255,255,0.2), 0 2px 4px rgba(200,105,75,0.3)",
+            }}
           >
-            You did it. You actually showed up — not once, but every single day
-            for 30 days.
-          </Text>
-          <Text
-            style={{ fontFamily: "CormorantMedium" }}
-            className="mt-3 text-sm italic leading-[1.65] text-ink-soft"
-          >
-            Remember how heavy things felt when you started? The{" "}
-            <Text className="font-semibold not-italic text-sage-600">
-              {timingLabel}
-            </Text>{" "}
-            were the hardest. But you kept coming back.{" "}
-            <Text className="font-semibold not-italic text-sage-600">
-              {dailyGoal} minutes
-            </Text>{" "}
-            at a time.
-          </Text>
-          <Text
-            style={{ fontFamily: "CormorantMedium" }}
-            className="mt-3 text-sm italic leading-[1.65] text-ink-soft"
-          >
-            You're not the same person who opened this app a month ago. You're
-            calmer. You notice your thoughts before they spiral. You have tools
-            now.
-          </Text>
-          <Text
-            style={{ fontFamily: "CormorantMedium" }}
-            className="mt-3 text-sm italic leading-[1.65] text-ink-soft"
-          >
-            I'm proud of you.
-          </Text>
-        </View>
+            <LinearGradient
+              colors={["#E8A88E", "#C8694B"]}
+              start={{ x: 0.2, y: 0.2 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "FrauncesBold",
+                  fontSize: 16,
+                  color: "#FFFFFF",
+                  fontStyle: "italic",
+                }}
+              >
+                S
+              </Text>
+            </LinearGradient>
+          </Animated.View>
 
-        <View className="my-4 h-[1px] bg-sage-200" />
-
-        <View className="items-end">
           <Text
-            style={{ fontFamily: "CormorantSemiBold" }}
-            className="text-lg italic text-terracotta"
+            style={{
+              fontFamily: "GeistMedium",
+              paddingRight: 60,
+              color: "#7A8A7A",
+              fontSize: 11,
+              fontWeight: "500",
+              letterSpacing: 0.5,
+            }}
           >
-            — You, in 30 days
+            {futureLetterMeta.dateLabel}
           </Text>
-          <Text className="mt-0.5 text-[11px] tracking-wide text-ink-muted">
-            {futureDate}
+
+          <Text
+            style={{
+              marginTop: 14,
+              fontFamily: "FrauncesRegular",
+              fontSize: 18,
+              lineHeight: 22,
+              color: "#1A2A1A",
+            }}
+          >
+            Hey, friend —
           </Text>
-        </View>
+
+          <View style={{ marginTop: 14 }}>
+            <Text
+              style={{
+                fontFamily: "FrauncesRegular",
+                fontSize: 14,
+                lineHeight: 23,
+                color: "#4A5A4A",
+              }}
+            >
+              I&apos;m writing from a {futureLetterMeta.weekdayLower}{" "}
+              {futureLetterMeta.moment}. I closed Happy{" "}
+              <Text
+                style={{
+                  color: "#3F5A3D",
+                  fontFamily: "FrauncesSemiBold",
+                }}
+              >
+                five minutes ago.
+              </Text>{" "}
+              Just like you will, in a moment.
+            </Text>
+            <Text
+              style={{
+                marginTop: 12,
+                fontFamily: "FrauncesRegular",
+                fontSize: 14,
+                lineHeight: 23,
+                color: "#4A5A4A",
+              }}
+            >
+              I won&apos;t lie to you. The noise didn&apos;t stop. Some mornings
+              the thoughts still race. Some evenings the weight is still there.
+            </Text>
+            <Text
+              style={{
+                marginTop: 12,
+                fontFamily: "FrauncesRegular",
+                fontSize: 14,
+                lineHeight: 23,
+                color: "#4A5A4A",
+              }}
+            >
+              But yesterday, when the spiral started — I caught it. I named it.
+              I sat with it for thirty seconds.{" "}
+              <Text
+                style={{
+                  color: "#3F5A3D",
+                  fontFamily: "FrauncesSemiBold",
+                }}
+              >
+                And it didn&apos;t get bigger.
+              </Text>
+            </Text>
+            <Text
+              style={{
+                marginTop: 12,
+                fontFamily: "FrauncesRegular",
+                fontSize: 14,
+                lineHeight: 23,
+                color: "#4A5A4A",
+              }}
+            >
+              Thirty days ago, that wasn&apos;t possible.
+            </Text>
+            <Text
+              style={{
+                marginTop: 12,
+                fontFamily: "FrauncesRegular",
+                fontSize: 14,
+                lineHeight: 23,
+                color: "#4A5A4A",
+              }}
+            >
+              You showed up today. Five minutes. Just like you said you would,
+              in that pact you signed.
+            </Text>
+            <Text
+              style={{
+                marginTop: 12,
+                fontFamily: "FrauncesRegular",
+                fontSize: 14,
+                lineHeight: 23,
+                color: "#4A5A4A",
+              }}
+            >
+              Keep going.{" "}
+              <Text
+                style={{
+                  color: "#3F5A3D",
+                  fontFamily: "FrauncesSemiBold",
+                }}
+              >
+                We&apos;re not the same person anymore.
+              </Text>
+            </Text>
+          </View>
+
+          <LinearGradient
+            colors={["transparent", "#D4CCB5", "transparent"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={{ marginTop: 16, height: 1 }}
+          />
+
+          <View style={{ marginTop: 12, alignItems: "flex-end" }}>
+            <Text
+              style={{
+                fontFamily: "FrauncesRegularItalic",
+                fontSize: 18,
+                lineHeight: 22,
+                color: "#C8694B",
+              }}
+            >
+              — You, in 30 days.
+            </Text>
+            <Text
+              style={{
+                marginTop: 2,
+                fontFamily: "GeistRegular",
+                fontSize: 11,
+                lineHeight: 15,
+                color: "#7A8A7A",
+                letterSpacing: 0.3,
+              }}
+            >
+              P.S. Still anxious sometimes. Just less afraid of it.
+            </Text>
+          </View>
+        </LinearGradient>
       </Animated.View>
 
       <Animated.View
         entering={FadeIn.duration(180).delay(260)}
-        className="mt-5 flex-row items-center gap-2.5"
+        style={{
+          marginTop: 6,
+          marginBottom: 4,
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 10,
+        }}
       >
-        <MochiMascot expression="peaceful" size={60} animate={false} />
+        <MochiMascot expression="notes" size={60} animate={false} />
         <Text
-          style={{ fontFamily: "CormorantMedium" }}
-          className="flex-1 text-[13px] italic leading-[1.4] text-ink-soft"
+          style={{
+            flex: 1,
+            fontFamily: "FrauncesMediumItalic",
+            fontSize: 13,
+            lineHeight: 18,
+            color: "#4A5A4A",
+          }}
         >
-          "Hold onto this. Some days you'll need to remember who you're
-          becoming."
+          Hold onto this. Some days you&apos;ll need to remember who you&apos;re
+          becoming.
         </Text>
       </Animated.View>
     </ScrollView>

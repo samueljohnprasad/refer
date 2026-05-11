@@ -45,12 +45,12 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
 
       <Animated.Text
         entering={FadeIn.duration(180).delay(TITLE_ENTER_DELAY_MS)}
-        style={{ fontFamily: "CormorantSemiBold" }}
+        style={{ fontFamily: "FrauncesSemiBold" }}
         className="mt-2 text-[30px] leading-[1.1] text-ink"
       >
         What brings you here,{" "}
         <Text
-          style={{ fontFamily: "CormorantMedium" }}
+          style={{ fontFamily: "FrauncesMedium" }}
           className="italic text-sage-500"
         >
           friend?
@@ -81,7 +81,7 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
         className="mt-5 rounded-[14px] border-l-[3px] border-gold bg-warm-white px-4 py-3"
       >
         <Text
-          style={{ fontFamily: "CormorantMedium" }}
+          style={{ fontFamily: "FrauncesMedium" }}
           className="text-[13px] italic leading-[1.4] text-ink"
         >
           "I'd downloaded 6 anxiety apps before this. Happy is the first one I

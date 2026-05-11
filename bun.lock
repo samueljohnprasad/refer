@@ -7,6 +7,8 @@
       "dependencies": {
         "@bacons/apple-targets": "^3.0.6",
         "@expo-google-fonts/cormorant-garamond": "^0.4.1",
+        "@expo-google-fonts/fraunces": "^0.4.1",
+        "@expo-google-fonts/geist": "^0.4.1",
         "@expo/html-elements": "^55.0.3",
         "@expo/ui": "~55.0.15",
         "@expo/vector-icons": "^15.0.3",
@@ -325,6 +327,10 @@
     "@egjs/hammerjs": ["@egjs/hammerjs@2.0.17", "", { "dependencies": { "@types/hammerjs": "^2.0.36" } }, "sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A=="],
 
     "@expo-google-fonts/cormorant-garamond": ["@expo-google-fonts/cormorant-garamond@0.4.1", "", {}, "sha512-e8J4Cn13K1txygamg50n3odLUsYP7Ck28XOGobMi7uDsWvFmp/jgK0qcALqJTlmi9NczSWUNdERxcLauHCBa/Q=="],
+
+    "@expo-google-fonts/fraunces": ["@expo-google-fonts/fraunces@0.4.1", "", {}, "sha512-gYc9P92ObyWvz1rWPOeWSvVKyBFIuA8hgOdhvo4DSiPBaWLbFA6v8uLIEIBwW+0oWTlXbBzjeBReHQI2H7UNjQ=="],
+
+    "@expo-google-fonts/geist": ["@expo-google-fonts/geist@0.4.1", "", {}, "sha512-UOBwoTJkKC0ViMOS8gjlQyUcT/5PX0phCroz/8z0DP1+7FcoD1RGGeG//nVQYWbT3y/ze4XoE63gSunml9Wdbw=="],
 
     "@expo-google-fonts/material-symbols": ["@expo-google-fonts/material-symbols@0.4.36", "", {}, "sha512-hFIN8h99qUid9OppB9Sj18sUQib2O0I9c0soBmgb932Kz+20pAaGe/PRH6NdAqm8/DdOs+Hwx8A4Fqn9ZNadhg=="],
 

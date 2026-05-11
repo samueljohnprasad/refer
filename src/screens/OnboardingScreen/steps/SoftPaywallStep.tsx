@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Text, View, ScrollView, Pressable } from 'react-native';
+import { BlurView } from 'expo-blur';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import MochiMascot from '../components/MochiMascot';
 import PricingTierCard from '../components/PricingTierCard';
 import TactileButton from '../components/TactileButton';
 import DiscountInterceptModal from '../components/DiscountInterceptModal';
+import TestimonialCard from '../components/TestimonialCard';
 import { PricingTier } from '../types';
 import { PRICING_PLANS, PAYWALL_BENEFITS } from '../constants';
 
@@ -15,6 +17,24 @@ interface SoftPaywallStepProps {
   onStartTrial: () => void;
   onContinueFree: () => void;
 }
+
+const LOCKED_LESSONS = [
+  {
+    day: 2,
+    title: 'The Thought Spiral',
+    meta: 'Day 2 · 5 min · Cognitive distortions',
+  },
+  {
+    day: 3,
+    title: 'Body as Compass',
+    meta: 'Day 3 · 5 min · Somatic awareness',
+  },
+  {
+    day: 4,
+    title: 'Thought Records: Your First CBT Tool',
+    meta: 'Day 4 · 7 min · Hands-on exercise',
+  },
+] as const;
 
 const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
   selectedTier,
@@ -37,21 +57,35 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
         contentInsetAdjustmentBehavior="automatic"
         className="flex-1 px-6 pt-4"
       >
-        <Animated.View entering={FadeIn.duration(180).delay(80)} className="items-center">
-          <View className="flex-row items-center gap-1.5 rounded-full bg-sage-700 px-3.5 py-1.5">
-            <Text className="text-[11px] font-bold uppercase tracking-wider text-gold">
+        <Animated.View
+          entering={FadeIn.duration(180).delay(80)}
+          className="items-center pt-4"
+        >
+          <View className="mb-3 flex-row items-center gap-1.5 rounded-full bg-sage-700 px-3.5 py-1.5">
+            <Text
+              style={{ fontFamily: 'GeistBold' }}
+              className="text-[11px] uppercase tracking-[0.1em] text-gold"
+            >
               ⭐ App of the Day
             </Text>
           </View>
           <MochiMascot expression="happy" size={100} delay={200} />
           <Text
-            style={{ fontFamily: 'CormorantSemiBold' }}
-            className="mt-3 text-center text-[26px] leading-[1.15] text-ink"
+            style={{ fontFamily: 'FrauncesSemiBold' }}
+            className="mt-3 text-center text-[26px] leading-[1.15] tracking-[-0.02em] text-ink"
           >
-            Become someone who doesn't run from how they feel.
+            Become someone who doesn&apos;t run from{' '}
+            <Text
+              style={{ fontFamily: 'FrauncesRegularItalic', color: '#5A7A56' }}
+            >
+              how they feel.
+            </Text>
           </Text>
-          <Text className="mt-2 text-center text-[13px] text-ink-soft">
-            Co-designed with Dr. Lena Park, PhD · Licensed CBT therapist
+          <Text
+            style={{ fontFamily: 'GeistRegular' }}
+            className="mt-1.5 text-center text-[13px] text-ink-soft"
+          >
+            12 journeys · 800+ exercises · Unlimited AI insights
           </Text>
         </Animated.View>
 
@@ -67,30 +101,66 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
         </Animated.View>
 
         <Animated.View entering={FadeIn.duration(180).delay(220)} className="mt-5">
-          <Text className="mb-2.5 text-xs font-bold uppercase tracking-wide text-sage-700">
-            Your next 3 lessons (locked without Plus)
+          <Text
+            style={{ fontFamily: 'GeistBold' }}
+            className="mb-2.5 text-xs uppercase tracking-[0.05em] text-sage-700"
+          >
+            🔒 Your next 3 lessons (locked without Plus)
           </Text>
-          {['The Thought Spiral', 'Body as Compass', 'Thought Records: Your First CBT Tool'].map(
-            (name, i) => (
+          {LOCKED_LESSONS.map((lesson) => (
               <View
-                key={name}
-                className="mb-2 flex-row items-center gap-3 rounded-xl border border-sage-100 bg-warm-white px-3.5 py-3"
+                key={lesson.day}
+                style={{ borderCurve: 'continuous' }}
+                className="relative mb-2 flex-row items-center gap-3 overflow-hidden rounded-xl border border-sage-100 bg-warm-white px-3.5 py-3"
               >
-                <View className="h-8 w-8 items-center justify-center rounded-lg bg-sage-100">
-                  <Text
-                    style={{ fontFamily: 'CormorantSemiBold' }}
-                    className="text-sm text-ink-muted"
-                  >
-                    {i + 2}
-                  </Text>
+                <View className="flex-1 flex-row items-center gap-3 opacity-90">
+                  <View className="h-8 w-8 items-center justify-center rounded-lg bg-sage-100">
+                    <Text
+                      style={{ fontFamily: 'FrauncesSemiBold' }}
+                      className="text-sm text-ink-muted"
+                    >
+                      {lesson.day}
+                    </Text>
+                  </View>
+                  <View className="flex-1">
+                    <Text
+                      style={{ fontFamily: 'GeistSemiBold' }}
+                      className="text-[13px] text-ink"
+                    >
+                      {lesson.title}
+                    </Text>
+                    <Text
+                      style={{ fontFamily: 'GeistRegular' }}
+                      className="mt-0.5 text-[11px] text-ink-muted"
+                    >
+                      {lesson.meta}
+                    </Text>
+                  </View>
                 </View>
-                <Text className="flex-1 text-[13px] font-semibold text-ink">{name}</Text>
-                <View className="h-[26px] w-[26px] items-center justify-center rounded-full bg-sage-700">
+                <BlurView
+                  tint="light"
+                  intensity={8}
+                  pointerEvents="none"
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    right: 54,
+                    opacity: 0.42,
+                  }}
+                />
+                <View className="h-[26px] w-[26px] items-center justify-center rounded-full bg-sage-600">
                   <Text className="text-xs text-gold">🔒</Text>
                 </View>
               </View>
-            ),
-          )}
+            ))}
+          <Text
+            style={{ fontFamily: 'FrauncesRegularItalic' }}
+            className="mt-2 text-center text-[13px] text-ink-muted"
+          >
+            Continue your journey or restart from Day 1.
+          </Text>
         </Animated.View>
 
         <View className="mt-5 gap-2.5">
@@ -125,7 +195,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           className="mt-5 flex-row items-center justify-center gap-3.5 border-t border-sage-100 pt-3"
         >
           <View className="items-center">
-            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
+            <Text style={{ fontFamily: 'FrauncesSemiBold' }} className="text-base text-sage-600">
               3 in 4
             </Text>
             <Text className="text-[9px] uppercase tracking-wide text-ink-muted">
@@ -133,13 +203,13 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
             </Text>
           </View>
           <View className="items-center">
-            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
+            <Text style={{ fontFamily: 'FrauncesSemiBold' }} className="text-base text-sage-600">
               ★ 4.9
             </Text>
             <Text className="text-[9px] uppercase tracking-wide text-ink-muted">12k reviews</Text>
           </View>
           <View className="items-center">
-            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
+            <Text style={{ fontFamily: 'FrauncesSemiBold' }} className="text-base text-sage-600">
               220k
             </Text>
             <Text className="text-[9px] uppercase tracking-wide text-ink-muted">in the Grove</Text>
@@ -148,15 +218,16 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
 
         <Animated.View
           entering={FadeIn.duration(180).delay(420)}
-          className="mt-4 rounded-[14px] border-l-[3px] border-gold bg-warm-white px-4 py-3"
+          className="mt-4"
         >
-          <Text
-            style={{ fontFamily: 'CormorantMedium' }}
-            className="text-[13px] italic leading-[1.4] text-ink"
-          >
-            "I'm a 47-year-old guy. Never thought I'd journal. The CBT lessons are why I stayed — they actually teach you something. Day 89."
-          </Text>
-          <Text className="mt-1 text-[11px] text-ink-muted">— Marcus, 47</Text>
+          <TestimonialCard
+            initial="M"
+            tone="sage"
+            quote={`"I'm a 47-year-old guy. Never thought I'd journal. The CBT lessons are why I stayed — they actually teach you something. Day 89."`}
+            name="Marcus"
+            age={47}
+            metaLabel="Happy Plus member"
+          />
         </Animated.View>
       </ScrollView>
 

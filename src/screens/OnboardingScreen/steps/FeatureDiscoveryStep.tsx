@@ -108,7 +108,7 @@ const FeatureDiscoveryStep: React.FC<FeatureDiscoveryStepProps> = ({
                 <Text
                     className="text-center text-gray-900 mb-2"
                     style={{
-                        fontFamily: "CormorantBold",
+                        fontFamily: "FrauncesBold",
                         fontSize: 28,
                         lineHeight: 34,
                         letterSpacing: -0.5,

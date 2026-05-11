@@ -22,9 +22,10 @@ export type OnboardingStage = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export type MotivationAnswer =
   | "anxiety"
-  | "self_discovery"
-  | "habits"
-  | "relationships";
+  | "mood"
+  | "stress"
+  | "self_understanding"
+  | "sleep";
 export type StressLevel = "light" | "moderate" | "heavy" | "overwhelming";
 export type JournalExperience = "never" | "tried_quit" | "active";
 export type StressTiming = "morning" | "afternoon" | "evening" | "night";
@@ -77,6 +78,7 @@ export interface QuizOption<T extends string> {
 
 export interface GoalCardConfig {
   minutes: DailyGoalMinutes;
+  displayLabel?: string;
   tag: string;
   tagVariant: "casual" | "recommended" | "committed" | "serious";
   description: string;
@@ -94,8 +96,14 @@ export interface PricingPlanConfig {
   price: string;
   perUnit: string;
   featured: boolean;
+  headline?: string;
   badge?: string;
   savings?: string;
+  comparisonPrice?: string;
+  detailLabel?: string;
+  detailPrefix?: string;
+  detailEmphasis?: string;
+  detailSuffix?: string;
   isDecoy?: boolean;
 }
 

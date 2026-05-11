@@ -74,7 +74,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                 <Text
                     className="text-center text-gray-900 dark:text-white mb-3"
                     style={{
-                        fontFamily: "CormorantBold",
+                        fontFamily: "FrauncesBold",
                         fontSize: 32,
                         lineHeight: 38,
                         letterSpacing: -0.5,
@@ -85,7 +85,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                 <Text
                     className="text-center text-gray-900 dark:text-gray-100"
                     style={{
-                        fontFamily: "CormorantSemiBold",
+                        fontFamily: "FrauncesSemiBold",
                         fontSize: 24,
                         lineHeight: 30,
                     }}

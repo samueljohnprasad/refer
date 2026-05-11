@@ -1,53 +1,79 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View } from "react-native";
 import Animated, {
+  Easing,
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  interpolateColor,
 } from "react-native-reanimated";
-import { OnboardingStage } from "../types";
 
 interface StageProgressBarProps {
-  currentStage: OnboardingStage;
+  progress: number;
+  fillColor?: string;
+  trackColor?: string;
 }
 
-const TOTAL_STAGES = 7;
+const TRACK_HEIGHT = 12;
 
-const Segment: React.FC<{ index: number; currentStage: OnboardingStage }> = ({
-  index,
-  currentStage,
+const StageProgressBar: React.FC<StageProgressBarProps> = ({
+  progress,
+  fillColor = "#6E8965",
+  trackColor = "#E8E1CF",
 }) => {
-  const progress = useSharedValue(index < currentStage ? 1 : 0);
+  const [trackWidth, setTrackWidth] = React.useState(0);
+  const clampedProgress = Math.max(0, Math.min(progress, 1));
+  const animatedProgress = useSharedValue(clampedProgress);
 
-  useEffect(() => {
-    const isActive = index < currentStage;
-    progress.value = withTiming(isActive ? 1 : 0, {
-      duration: 180,
+  React.useEffect(() => {
+    animatedProgress.value = withTiming(clampedProgress, {
+      duration: 220,
+      easing: Easing.out(Easing.cubic),
     });
-  }, [currentStage]);
+  }, [animatedProgress, clampedProgress]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(
-      progress.value,
-      [0, 1],
-      ["#E8E2D2", "#5A7A56"],
-    ),
+  const fillStyle = useAnimatedStyle(() => ({
+    width: trackWidth * animatedProgress.value,
   }));
 
   return (
-    <Animated.View style={animatedStyle} className="h-1 flex-1 rounded-full" />
-  );
-};
-
-const StageProgressBar: React.FC<StageProgressBarProps> = ({
-  currentStage,
-}) => {
-  return (
-    <View className="flex-row items-center gap-1.5 px-6">
-      {Array.from({ length: TOTAL_STAGES }).map((_, index) => (
-        <Segment key={index} index={index} currentStage={currentStage} />
-      ))}
+    <View style={{ height: TRACK_HEIGHT, justifyContent: "center" }}>
+      <View
+        onLayout={(event) => {
+          setTrackWidth(event.nativeEvent.layout.width);
+        }}
+        style={{
+          height: TRACK_HEIGHT,
+          overflow: "hidden",
+          borderRadius: 999,
+          borderCurve: "continuous",
+          backgroundColor: trackColor,
+        }}
+      >
+        <Animated.View
+          style={[
+            {
+              height: TRACK_HEIGHT,
+              overflow: "hidden",
+              borderRadius: 999,
+              borderCurve: "continuous",
+              backgroundColor: fillColor,
+            },
+            fillStyle,
+          ]}
+        >
+          <View
+            style={{
+              position: "absolute",
+              top: 2,
+              left: 6,
+              right: 6,
+              height: 3,
+              borderRadius: 999,
+              backgroundColor: "rgba(255, 255, 255, 0.3)",
+            }}
+          />
+        </Animated.View>
+      </View>
     </View>
   );
 };

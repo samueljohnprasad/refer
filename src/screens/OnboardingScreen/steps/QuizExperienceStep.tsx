@@ -36,12 +36,12 @@ const QuizExperienceStep: React.FC<QuizExperienceStepProps> = ({
           Step 3 of 7
         </Text>
         <Text
-          style={{ fontFamily: "CormorantSemiBold" }}
+          style={{ fontFamily: "FrauncesSemiBold" }}
           className="mt-2 text-[30px] leading-[1.1] text-ink"
         >
           Have you journaled{" "}
           <Text
-            style={{ fontFamily: "CormorantMedium" }}
+            style={{ fontFamily: "FrauncesMedium" }}
             className="italic text-sage-500"
           >
             before?
