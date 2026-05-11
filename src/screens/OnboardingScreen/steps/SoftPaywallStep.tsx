@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View, ScrollView, Pressable } from 'react-native';
-import Animated, { FadeInUp, FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import MochiMascot from '../components/MochiMascot';
 import PricingTierCard from '../components/PricingTierCard';
@@ -34,9 +34,10 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 32 }}
+        contentInsetAdjustmentBehavior="automatic"
         className="flex-1 px-6 pt-4"
       >
-        <Animated.View entering={FadeInUp.delay(100).duration(500)} className="items-center">
+        <Animated.View entering={FadeIn.duration(180).delay(80)} className="items-center">
           <View className="flex-row items-center gap-1.5 rounded-full bg-sage-700 px-3.5 py-1.5">
             <Text className="text-[11px] font-bold uppercase tracking-wider text-gold">
               ⭐ App of the Day
@@ -54,7 +55,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           </Text>
         </Animated.View>
 
-        <Animated.View entering={FadeInDown.delay(300).duration(500)} className="mt-5 gap-2">
+        <Animated.View entering={FadeIn.duration(180).delay(160)} className="mt-5 gap-2">
           {PAYWALL_BENEFITS.map((benefit) => (
             <View key={benefit} className="flex-row items-center gap-2.5">
               <View className="h-[22px] w-[22px] items-center justify-center rounded-full bg-sage-500">
@@ -65,7 +66,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           ))}
         </Animated.View>
 
-        <Animated.View entering={FadeInDown.delay(500).duration(500)} className="mt-5">
+        <Animated.View entering={FadeIn.duration(180).delay(220)} className="mt-5">
           <Text className="mb-2.5 text-xs font-bold uppercase tracking-wide text-sage-700">
             Your next 3 lessons (locked without Plus)
           </Text>
@@ -92,7 +93,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           )}
         </Animated.View>
 
-        <Animated.View entering={FadeInDown.delay(600).duration(500)} className="mt-5 gap-2.5">
+        <View className="mt-5 gap-2.5">
           {PRICING_PLANS.map((plan) => (
             <PricingTierCard
               key={plan.tier}
@@ -101,9 +102,9 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
               onSelect={() => onSelectTier(plan.tier)}
             />
           ))}
-        </Animated.View>
+        </View>
 
-        <Animated.View entering={FadeInDown.delay(700).duration(400)} className="mt-4">
+        <Animated.View entering={FadeIn.duration(180).delay(300)} className="mt-4">
           <Text className="text-center text-[11px] text-ink-muted">
             7-day free trial · No charge until day 8 · Cancel anytime
           </Text>
@@ -120,7 +121,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
         </View>
 
         <Animated.View
-          entering={FadeInDown.delay(800).duration(400)}
+          entering={FadeIn.duration(180).delay(360)}
           className="mt-5 flex-row items-center justify-center gap-3.5 border-t border-sage-100 pt-3"
         >
           <View className="items-center">
@@ -145,7 +146,10 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           </View>
         </Animated.View>
 
-        <View className="mt-4 rounded-[14px] border-l-[3px] border-gold bg-warm-white px-4 py-3">
+        <Animated.View
+          entering={FadeIn.duration(180).delay(420)}
+          className="mt-4 rounded-[14px] border-l-[3px] border-gold bg-warm-white px-4 py-3"
+        >
           <Text
             style={{ fontFamily: 'CormorantMedium' }}
             className="text-[13px] italic leading-[1.4] text-ink"
@@ -153,7 +157,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
             "I'm a 47-year-old guy. Never thought I'd journal. The CBT lessons are why I stayed — they actually teach you something. Day 89."
           </Text>
           <Text className="mt-1 text-[11px] text-ink-muted">— Marcus, 47</Text>
-        </View>
+        </Animated.View>
       </ScrollView>
 
       <DiscountInterceptModal

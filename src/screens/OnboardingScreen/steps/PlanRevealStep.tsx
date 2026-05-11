@@ -1,19 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Text, View, ScrollView } from "react-native";
-import Animated, {
-  FadeInUp,
-  FadeInDown,
-  SlideInRight,
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withDelay,
-  withSpring,
-  withRepeat,
-  withSequence,
-  Easing,
-  interpolate,
-} from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import MochiMascot from "../components/MochiMascot";
 import { PLAN_STATS } from "../constants";
 
@@ -26,25 +13,11 @@ const AnimatedStat: React.FC<{
   label: string;
   index: number;
 }> = ({ value, label, index }) => {
-  const progress = useSharedValue(0);
-
-  useEffect(() => {
-    progress.value = withDelay(
-      400 + index * 150,
-      withSpring(1, { damping: 12, stiffness: 200 }),
-    );
-  }, []);
-
-  const style = useAnimatedStyle(() => ({
-    opacity: progress.value,
-    transform: [
-      { translateY: interpolate(progress.value, [0, 1], [20, 0]) },
-      { scale: interpolate(progress.value, [0, 0.5, 1], [0.8, 1.05, 1]) },
-    ],
-  }));
-
   return (
-    <Animated.View style={style} className="min-w-[60px]">
+    <Animated.View
+      entering={FadeIn.duration(180).delay(240 + index * 60)}
+      className="min-w-[60px]"
+    >
       <Text
         style={{ fontFamily: "CormorantSemiBold" }}
         className="text-2xl text-gold"
@@ -59,38 +32,14 @@ const AnimatedStat: React.FC<{
 };
 
 const PlanRevealStep: React.FC<PlanRevealStepProps> = ({ planName }) => {
-  const circleScale = useSharedValue(0.6);
-  const circleRotate = useSharedValue(0);
-
-  useEffect(() => {
-    circleScale.value = withDelay(
-      300,
-      withSpring(1, { damping: 15, stiffness: 100 }),
-    );
-    circleRotate.value = withRepeat(
-      withSequence(
-        withTiming(6, { duration: 3000, easing: Easing.inOut(Easing.sin) }),
-        withTiming(-6, { duration: 3000, easing: Easing.inOut(Easing.sin) }),
-      ),
-      0,
-      true,
-    );
-  }, []);
-
-  const circleStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: circleScale.value },
-      { rotate: `${circleRotate.value}deg` },
-    ],
-  }));
-
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 24 }}
+      contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-6"
     >
-      <Animated.View entering={FadeInUp.delay(100).duration(600)}>
+      <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text className="text-xs font-semibold uppercase tracking-widest text-gold">
           Your first journey
         </Text>
@@ -103,12 +52,12 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({ planName }) => {
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(300).duration(600)}
+        entering={FadeIn.duration(180).delay(160)}
         className="mt-5 overflow-hidden rounded-3xl bg-sage-700 p-6"
       >
-        <Animated.View
-          style={[circleStyle, { position: "absolute", right: -48, top: -48 }]}
-          className="h-36 w-36 rounded-full bg-gold/30"
+        <View
+          style={{ position: "absolute", right: -48, top: -48 }}
+          className="h-36 w-36 rounded-full bg-gold/20"
         />
         <Text className="text-[11px] font-bold uppercase tracking-[0.15em] text-gold">
           Personalized Plan
@@ -132,7 +81,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({ planName }) => {
       </Animated.View>
 
       <Animated.View
-        entering={SlideInRight.delay(600).duration(500)}
+        entering={FadeIn.duration(180).delay(300)}
         className="mt-5 rounded-[20px] border-2 border-sage-200 bg-cream p-5"
       >
         <Text className="text-[11px] font-bold uppercase tracking-wider text-terracotta">
@@ -152,7 +101,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({ planName }) => {
       </Animated.View>
 
       <Animated.View
-        entering={SlideInRight.delay(800).duration(500)}
+        entering={FadeIn.duration(180).delay(380)}
         className="mt-5 flex-row items-center gap-3 rounded-2xl bg-sage-800 p-4"
       >
         <MochiMascot expression="happy" size={50} animate={false} />

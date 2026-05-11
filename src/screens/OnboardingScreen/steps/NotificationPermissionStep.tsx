@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, ScrollView } from "react-native";
-import Animated, { FadeInUp, FadeInDown } from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
 import NotificationPreview from "../components/NotificationPreview";
 import { NotificationTime } from "../types";
@@ -32,9 +32,10 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 24 }}
+      contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-6"
     >
-      <Animated.View entering={FadeInUp.delay(100).duration(500)}>
+      <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text
           style={{ fontFamily: "CormorantSemiBold" }}
           className="text-[26px] leading-[1.1] text-ink"
@@ -50,7 +51,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(300).duration(500)}
+        entering={FadeIn.duration(180).delay(160)}
         className="mt-5"
       >
         <NotificationPreview

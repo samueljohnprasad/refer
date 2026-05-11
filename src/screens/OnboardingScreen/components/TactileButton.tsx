@@ -3,7 +3,7 @@ import { Text, Pressable } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
+  withTiming,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 
@@ -29,11 +29,11 @@ const TactileButton: React.FC<TactileButtonProps> = ({
   }));
 
   const handlePressIn = () => {
-    translateY.value = withSpring(3, { damping: 20, stiffness: 400 });
+    translateY.value = withTiming(1.5, { duration: 90 });
   };
 
   const handlePressOut = () => {
-    translateY.value = withSpring(0, { damping: 15, stiffness: 300 });
+    translateY.value = withTiming(0, { duration: 120 });
   };
 
   const handlePress = () => {

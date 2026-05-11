@@ -1,16 +1,12 @@
 import React from "react";
 import { Text, View, ScrollView, Pressable } from "react-native";
 import Animated, {
-  FadeInUp,
-  FadeInDown,
-  BounceIn,
+  FadeIn,
   useAnimatedStyle,
-  useSharedValue,
   interpolate,
 } from "react-native-reanimated";
 import { useHoldToCommit } from "../hooks/useHoldToCommit";
 import MochiMascot from "../components/MochiMascot";
-import ConfettiBurst from "../components/ConfettiBurst";
 import { DailyGoalMinutes } from "../types";
 
 interface PactSigningStepProps {
@@ -26,25 +22,26 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
     useHoldToCommit(onCommit);
 
   const ringStyle = useAnimatedStyle(() => {
-    const borderWidth = interpolate(progress.value, [0, 1], [3, 7]);
+    const borderWidth = interpolate(progress.value, [0, 1], [3, 5]);
     const opacity = interpolate(progress.value, [0, 0.1, 1], [0.7, 1, 1]);
-    const scale = interpolate(progress.value, [0, 0.5, 1], [1, 1.03, 1.06]);
+    const scale = interpolate(progress.value, [0, 0.5, 1], [1, 1.01, 1.02]);
     return { borderWidth, opacity, transform: [{ scale }] };
   });
 
   const glowStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: interpolate(progress.value, [0, 1], [0.9, 1.15]) }],
-    opacity: interpolate(progress.value, [0, 0.2, 1], [0, 0.3, 0.5]),
+    transform: [{ scale: interpolate(progress.value, [0, 1], [0.96, 1.08]) }],
+    opacity: interpolate(progress.value, [0, 0.2, 1], [0, 0.22, 0.34]),
   }));
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 24, flexGrow: 1 }}
+      contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6"
     >
       <View className="flex-1 items-center justify-center">
-        <Animated.View entering={FadeInUp.delay(100).duration(500)}>
+        <Animated.View entering={FadeIn.duration(180).delay(80)}>
           <Text className="text-center text-xs font-semibold uppercase tracking-widest text-sage-500">
             Step 6 of 7
           </Text>
@@ -57,7 +54,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
         </Animated.View>
 
         <Animated.View
-          entering={FadeInDown.delay(300).duration(500)}
+          entering={FadeIn.duration(180).delay(160)}
           className="mt-6 w-full rounded-[20px] border-2 border-sage-200 bg-warm-white px-6 py-6"
         >
           <Text
@@ -74,27 +71,24 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
         </Animated.View>
 
         <Animated.View
-          entering={FadeInDown.delay(500).duration(500)}
+          entering={FadeIn.duration(180).delay(240)}
           className="mt-8 items-center"
         >
           {committed ? (
             <View className="items-center">
-              <View className="items-center justify-center">
-                <ConfettiBurst />
-                <Animated.View entering={BounceIn.duration(600)}>
-                  <MochiMascot
-                    expression="celebrating"
-                    size={120}
-                    animate={false}
-                  />
-                </Animated.View>
-              </View>
+              <MochiMascot expression="celebrating" size={120} delay={0} />
               <Animated.Text
-                entering={FadeInUp.delay(300).duration(400)}
+                entering={FadeIn.duration(180).delay(120)}
                 style={{ fontFamily: "CormorantSemiBold" }}
                 className="mt-4 text-xl text-sage-600"
               >
                 Pact sealed!
+              </Animated.Text>
+              <Animated.Text
+                entering={FadeIn.duration(180).delay(200)}
+                className="mt-2 text-center text-xs text-ink-muted"
+              >
+                Small promises, kept gently, become real change.
               </Animated.Text>
             </View>
           ) : (

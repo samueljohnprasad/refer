@@ -3,7 +3,7 @@ import { View } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
+  withTiming,
   interpolateColor,
 } from "react-native-reanimated";
 import { OnboardingStage } from "../types";
@@ -22,9 +22,8 @@ const Segment: React.FC<{ index: number; currentStage: OnboardingStage }> = ({
 
   useEffect(() => {
     const isActive = index < currentStage;
-    progress.value = withSpring(isActive ? 1 : 0, {
-      damping: 20,
-      stiffness: 200,
+    progress.value = withTiming(isActive ? 1 : 0, {
+      duration: 180,
     });
   }, [currentStage]);
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, ScrollView } from "react-native";
-import Animated, { FadeInUp, FadeInDown } from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import EmojiSelector from "../components/EmojiSelector";
 import { FeelingEmoji } from "../types";
 
@@ -17,9 +17,10 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 24 }}
+      contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-6"
     >
-      <Animated.View entering={FadeInUp.delay(100).duration(500)}>
+      <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <View className="flex-row items-center gap-2">
           <View className="rounded-full bg-sage-50 px-2.5 py-1">
             <Text className="text-[11px] font-bold text-sage-600">
@@ -36,7 +37,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(300).duration(500)}
+        entering={FadeIn.duration(180).delay(160)}
         className="mt-5 rounded-[20px] border-2 border-sage-100 bg-warm-white p-5"
       >
         <Text className="text-xs font-bold uppercase tracking-wider text-sage-500">
@@ -75,7 +76,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(500).duration(500)}
+        entering={FadeIn.duration(180).delay(240)}
         className="mt-5 rounded-[20px] border-2 border-sage-100 bg-warm-white p-5"
       >
         <Text className="text-xs font-bold uppercase tracking-wider text-terracotta">

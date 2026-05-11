@@ -2,11 +2,9 @@ import React from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Animated, {
     FadeIn,
-    FadeInDown,
-    FadeInUp,
     useAnimatedStyle,
     useSharedValue,
-    withSpring,
+    withTiming,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { JournalingGoal, GoalConfig } from "../types";
@@ -47,17 +45,15 @@ const GoalChip: React.FC<GoalChipProps> = ({
 
     return (
         <Animated.View
-            entering={FadeInDown.duration(400)
-                .delay(200 + index * 60)
-                .springify()}
+            entering={FadeIn.duration(180).delay(160 + index * 50)}
         >
             <TouchableOpacity
                 onPress={handlePress}
                 onPressIn={() => {
-                    scale.value = withSpring(0.95, { damping: 15, stiffness: 400 });
+                    scale.value = withTiming(0.985, { duration: 90 });
                 }}
                 onPressOut={() => {
-                    scale.value = withSpring(1, { damping: 15, stiffness: 400 });
+                    scale.value = withTiming(1, { duration: 120 });
                 }}
                 activeOpacity={1}
                 accessibilityLabel={`${isSelected ? "Deselect" : "Select"} goal: ${goal.label}${goal.premiumFeatureLabel ? `, unlocks ${goal.premiumFeatureLabel}` : ""}`}
@@ -130,10 +126,11 @@ const GoalsSelectionStep: React.FC<GoalsSelectionStepProps> = ({
         <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 24 }}
+            contentInsetAdjustmentBehavior="automatic"
             className="flex-1 px-6 pt-8"
         >
             <Animated.View
-                entering={FadeInUp.duration(600).springify()}
+                entering={FadeIn.duration(180).delay(80)}
                 className="items-center mb-6"
             >
                 <Text
@@ -153,7 +150,7 @@ const GoalsSelectionStep: React.FC<GoalsSelectionStepProps> = ({
             </Animated.View>
 
             <Animated.View
-                entering={FadeIn.duration(300).delay(150)}
+                entering={FadeIn.duration(180).delay(140)}
                 className="mb-2"
             >
                 <View className="flex-row items-center justify-between px-1">

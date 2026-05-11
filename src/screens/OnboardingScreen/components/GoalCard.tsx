@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import { Text, View, Pressable } from "react-native";
 import Animated, {
-  FadeInDown,
+  FadeIn,
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
   withSequence,
   withTiming,
   interpolateColor,
@@ -40,14 +39,14 @@ const GoalCard: React.FC<GoalCardProps> = ({
 
   useEffect(() => {
     if (isSelected) {
-      selectionProgress.value = withSpring(1, { damping: 15, stiffness: 200 });
+      selectionProgress.value = withTiming(1, { duration: 180 });
       minuteScale.value = withSequence(
-        withSpring(1.15, { damping: 8, stiffness: 400 }),
-        withSpring(1, { damping: 12, stiffness: 200 }),
+        withTiming(1.02, { duration: 100 }),
+        withTiming(1, { duration: 140 }),
       );
     } else {
-      selectionProgress.value = withTiming(0, { duration: 200 });
-      minuteScale.value = withTiming(1, { duration: 200 });
+      selectionProgress.value = withTiming(0, { duration: 160 });
+      minuteScale.value = withTiming(1, { duration: 160 });
     }
   }, [isSelected]);
 
@@ -73,11 +72,11 @@ const GoalCard: React.FC<GoalCardProps> = ({
   }));
 
   const handlePressIn = () => {
-    scale.value = withSpring(0.96, { damping: 15, stiffness: 400 });
+    scale.value = withTiming(0.985, { duration: 90 });
   };
 
   const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 12, stiffness: 300 });
+    scale.value = withTiming(1, { duration: 120 });
   };
 
   const handlePress = () => {
@@ -86,7 +85,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
   };
 
   return (
-    <Animated.View entering={FadeInDown.delay(200 + index * 80).duration(400)}>
+    <Animated.View entering={FadeIn.delay(140 + index * 60).duration(220)}>
       <AnimatedPressable
         onPress={handlePress}
         onPressIn={handlePressIn}

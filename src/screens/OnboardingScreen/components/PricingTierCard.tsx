@@ -3,8 +3,7 @@ import { Text, View, Pressable } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
-  withSequence,
+  withTiming,
   interpolateColor,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
@@ -28,9 +27,9 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
 
   useEffect(() => {
     if (isSelected) {
-      selectionProgress.value = withSpring(1, { damping: 15, stiffness: 200 });
+      selectionProgress.value = withTiming(1, { duration: 180 });
     } else {
-      selectionProgress.value = withSpring(0, { damping: 20, stiffness: 300 });
+      selectionProgress.value = withTiming(0, { duration: 160 });
     }
   }, [isSelected]);
 
@@ -49,19 +48,15 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
   }));
 
   const handlePressIn = () => {
-    scale.value = withSpring(0.97, { damping: 15, stiffness: 400 });
+    scale.value = withTiming(0.985, { duration: 90 });
   };
 
   const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 12, stiffness: 300 });
+    scale.value = withTiming(1, { duration: 120 });
   };
 
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    scale.value = withSequence(
-      withSpring(0.95, { damping: 10, stiffness: 400 }),
-      withSpring(1, { damping: 12, stiffness: 200 }),
-    );
     onSelect();
   };
 

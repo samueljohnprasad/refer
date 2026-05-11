@@ -1,10 +1,14 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { View, TouchableOpacity, useWindowDimensions } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  useWindowDimensions,
+  StyleSheet,
+} from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  withSpring,
   Easing,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
@@ -43,11 +47,19 @@ interface OnboardingScreenProps {
   onComplete: () => Promise<void>;
 }
 
+const WELCOME_CTA_REVEAL_DELAY_MS = 520;
+const WELCOME_CTA_HANDOFF_DELAY_MS = 110;
+const STEP_CTA_REVEAL_DURATION_MS = 180;
+const STEP_CTA_REVEAL_OFFSET = 6;
+const STEP_ENTER_DURATION_MS = 200;
+const STEP_ENTER_TRAVEL_PX = 18;
+
 const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const { width: screenWidth } = useWindowDimensions();
   const analytics = useOnboardingAnalytics();
   const { markCompleted } = useCompleteOnboarding();
   const [loading, setLoading] = React.useState(false);
+  const [isStepActionReady, setIsStepActionReady] = React.useState(false);
 
   const {
     currentStepIndex,
@@ -72,14 +84,28 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   } = useOnboardingFlow();
 
   const currentStepConfig = ONBOARDING_STEPS[currentStepIndex];
-  const bgColor = useSharedValue(ONBOARDING_STEPS[0].backgroundColor);
+  const initialBackgroundColor = ONBOARDING_STEPS[0].backgroundColor;
+  const canContinue = currentStepConfig.isContinueEnabled?.(formData) ?? true;
+  const showBackButton = currentStepConfig.showBackButton;
+  const showContinueButton = currentStepConfig.showContinueButton;
   const slideX = useSharedValue(0);
   const slideOpacity = useSharedValue(1);
+  const backgroundOverlayOpacity = useSharedValue(0);
+  const footerOpacity = useSharedValue(
+    currentStep === "welcome" ? 0 : showContinueButton ? 1 : 0,
+  );
+  const footerTranslateY = useSharedValue(currentStep === "welcome" ? 12 : 0);
+  const hasAnimatedStepRef = useRef(false);
+  const currentBackgroundColorRef = useRef(initialBackgroundColor);
   const prevStepRef = useRef(currentStepIndex);
   const direction = useRef<"forward" | "backward">("forward");
+  const [containerBackgroundColor, setContainerBackgroundColor] =
+    React.useState(initialBackgroundColor);
+  const [transitionOverlayColor, setTransitionOverlayColor] =
+    React.useState(initialBackgroundColor);
 
-  const backgroundAnimatedStyle = useAnimatedStyle(() => ({
-    backgroundColor: bgColor.value,
+  const backgroundOverlayStyle = useAnimatedStyle(() => ({
+    opacity: backgroundOverlayOpacity.value,
   }));
 
   const stepContainerStyle = useAnimatedStyle(() => ({
@@ -87,31 +113,96 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     opacity: slideOpacity.value,
   }));
 
+  const footerAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: footerOpacity.value,
+    transform: [{ translateY: footerTranslateY.value }],
+  }));
+
   useEffect(() => {
+    const nextBackgroundColor = currentStepConfig.backgroundColor;
+
+    if (!hasAnimatedStepRef.current) {
+      hasAnimatedStepRef.current = true;
+      prevStepRef.current = currentStepIndex;
+      currentBackgroundColorRef.current = nextBackgroundColor;
+      setContainerBackgroundColor(nextBackgroundColor);
+      setTransitionOverlayColor(nextBackgroundColor);
+      backgroundOverlayOpacity.value = 0;
+      slideX.value = 0;
+      slideOpacity.value = 1;
+      analytics.trackStepViewed(currentStep, currentStepIndex);
+      return;
+    }
+
     const isForward = currentStepIndex > prevStepRef.current;
     direction.current = isForward ? "forward" : "backward";
     prevStepRef.current = currentStepIndex;
 
-    bgColor.value = withTiming(currentStepConfig.backgroundColor, {
-      duration: 400,
-      easing: Easing.out(Easing.cubic),
-    });
+    const previousBackgroundColor = currentBackgroundColorRef.current;
+    if (nextBackgroundColor !== previousBackgroundColor) {
+      currentBackgroundColorRef.current = nextBackgroundColor;
+      setTransitionOverlayColor(previousBackgroundColor);
+      setContainerBackgroundColor(nextBackgroundColor);
+      backgroundOverlayOpacity.value = 1;
+      backgroundOverlayOpacity.value = withTiming(0, {
+        duration: 220,
+        easing: Easing.out(Easing.cubic),
+      });
+    }
 
     // Slide transition: enter from right (forward) or left (backward)
-    const enterFrom = isForward ? screenWidth * 0.3 : -screenWidth * 0.3;
+    const travelDistance = Math.min(screenWidth * 0.12, STEP_ENTER_TRAVEL_PX);
+    const enterFrom = isForward ? travelDistance : -travelDistance;
     slideX.value = enterFrom;
     slideOpacity.value = 0;
-    slideX.value = withSpring(0, { damping: 20, stiffness: 200 });
+    slideX.value = withTiming(0, {
+      duration: STEP_ENTER_DURATION_MS,
+      easing: Easing.out(Easing.cubic),
+    });
     slideOpacity.value = withTiming(1, {
-      duration: 250,
+      duration: STEP_ENTER_DURATION_MS,
       easing: Easing.out(Easing.cubic),
     });
 
     analytics.trackStepViewed(currentStep, currentStepIndex);
   }, [currentStepIndex]);
 
+  useEffect(() => {
+    if (!showContinueButton) {
+      setIsStepActionReady(false);
+      footerOpacity.value = 0;
+      footerTranslateY.value = STEP_CTA_REVEAL_OFFSET;
+      return;
+    }
+
+    setIsStepActionReady(false);
+    footerOpacity.value = 0;
+    footerTranslateY.value = STEP_CTA_REVEAL_OFFSET;
+
+    const revealFooter = () => {
+      setIsStepActionReady(true);
+      footerOpacity.value = withTiming(1, {
+        duration: STEP_CTA_REVEAL_DURATION_MS,
+        easing: Easing.out(Easing.cubic),
+      });
+      footerTranslateY.value = withTiming(0, {
+        duration: STEP_CTA_REVEAL_DURATION_MS,
+        easing: Easing.out(Easing.cubic),
+      });
+    };
+
+    if (currentStep !== "welcome") {
+      revealFooter();
+      return;
+    }
+
+    const timer = setTimeout(revealFooter, WELCOME_CTA_REVEAL_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [currentStep, showContinueButton]);
+
   const handleContinue = useCallback(async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (!isStepActionReady || loading) return;
+
     analytics.trackStepCompleted(currentStep, currentStepIndex);
 
     if (isLastStep) {
@@ -131,6 +222,12 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
       return;
     }
 
+    if (currentStep === "welcome") {
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, WELCOME_CTA_HANDOFF_DELAY_MS);
+      });
+    }
+
     goNext();
   }, [
     isLastStep,
@@ -141,6 +238,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     onComplete,
     goNext,
     analytics,
+    isStepActionReady,
+    loading,
   ]);
 
   const handleBack = useCallback(() => {
@@ -163,9 +262,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     goNext();
   }, [updateTrialStarted, goNext]);
 
-  const canContinue = currentStepConfig.isContinueEnabled?.(formData) ?? true;
-  const showBackButton = currentStepConfig.showBackButton;
-  const showContinueButton = currentStepConfig.showContinueButton;
+  const isContinueDisabled =
+    !canContinue || loading || (currentStep === "welcome" && !isStepActionReady);
 
   const renderStep = (): React.ReactNode => {
     switch (currentStep) {
@@ -278,13 +376,25 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   };
 
   return (
-    <Animated.View style={[{ flex: 1 }, backgroundAnimatedStyle]}>
+    <View style={{ flex: 1, backgroundColor: containerBackgroundColor }}>
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          StyleSheet.absoluteFillObject,
+          { backgroundColor: transitionOverlayColor },
+          backgroundOverlayStyle,
+        ]}
+      />
       <Stack.Screen
         options={{
           headerShown: true,
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: containerBackgroundColor,
+          },
           header: () => (
-            <Animated.View
-              style={backgroundAnimatedStyle}
+            <View
+              style={{ backgroundColor: containerBackgroundColor }}
               className="h-28 justify-end pb-3"
             >
               <View className="flex-row items-center px-5">
@@ -310,7 +420,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                 </View>
                 <View className="h-10 w-10" />
               </View>
-            </Animated.View>
+            </View>
           ),
         }}
       />
@@ -321,7 +431,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
 
       {showContinueButton && (
         <Animated.View
-          style={backgroundAnimatedStyle}
+          style={footerAnimatedStyle}
           className="px-6 pb-8 pt-4"
         >
           <TactileButton
@@ -329,7 +439,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
               loading ? "Setting up..." : currentStepConfig.continueButtonLabel
             }
             onPress={handleContinue}
-            disabled={!canContinue || loading}
+            disabled={isContinueDisabled}
           />
           {currentStepConfig.canSkip && (
             <TactileButton
@@ -343,7 +453,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           )}
         </Animated.View>
       )}
-    </Animated.View>
+    </View>
   );
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, useWindowDimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { OUTER_GRADIENT_COLORS } from "./progress-graph-victory/constants";
 import { getScaledLayout } from "./progress-graph-victory/layout";
 import ProgressGraphVictoryBadge from "./progress-graph-victory/ProgressGraphVictoryBadge";
@@ -38,7 +38,7 @@ const ProgressGraphVictoryStep: React.FC<ProgressGraphVictoryStepProps> = ({
     return (
         <View style={[styles.screen, layout.screenStyle]}>
             <Animated.View
-                entering={FadeInUp.duration(560).springify()}
+                entering={FadeIn.duration(180).delay(80)}
                 style={[styles.header, layout.headerStyle]}
             >
                 <Text style={[styles.title, layout.titleStyle]}>See your journaling impact</Text>
@@ -49,7 +49,7 @@ const ProgressGraphVictoryStep: React.FC<ProgressGraphVictoryStepProps> = ({
             </Animated.View>
 
             <Animated.View
-                entering={FadeIn.duration(420).delay(180)}
+                entering={FadeIn.duration(180).delay(140)}
                 style={[styles.cardStage, { paddingVertical: layout.stagePaddingVertical }]}
             >
                 <View

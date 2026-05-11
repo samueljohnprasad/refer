@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Text, View, ScrollView } from "react-native";
-import Animated, { FadeInUp, FadeInDown } from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import MochiMascot from "../components/MochiMascot";
 import { DailyGoalMinutes, StressTiming } from "../types";
 
@@ -36,10 +36,11 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 24 }}
+      contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-6"
     >
       <Animated.View
-        entering={FadeInUp.delay(100).duration(500)}
+        entering={FadeIn.duration(180).delay(80)}
         className="items-center"
       >
         <View className="rounded-full bg-gold px-3 py-1.5">
@@ -50,7 +51,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(400).duration(700)}
+        entering={FadeIn.duration(180).delay(160)}
         className="relative mt-5 overflow-hidden rounded-2xl border border-sage-200 bg-warm-white p-6 shadow-sm"
       >
         <View className="absolute left-0 right-0 top-0 h-[3px] bg-sage-100/60" />
@@ -129,7 +130,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(800).duration(400)}
+        entering={FadeIn.duration(180).delay(260)}
         className="mt-5 flex-row items-center gap-2.5"
       >
         <MochiMascot expression="peaceful" size={60} animate={false} />

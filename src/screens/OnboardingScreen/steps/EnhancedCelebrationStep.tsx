@@ -2,19 +2,13 @@ import React, { useEffect } from "react";
 import { View, Text, ScrollView } from "react-native";
 import Animated, {
     FadeIn,
-    FadeInDown,
-    FadeInUp,
-    useAnimatedStyle,
-    useSharedValue,
-    withDelay,
-    withSpring,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 
 interface EnhancedCelebrationStepProps {
     userName: string;
     trialStarted: boolean;
-}
+};
 
 interface StatBadgeProps {
     emoji: string;
@@ -31,22 +25,9 @@ const StatBadge: React.FC<StatBadgeProps> = ({
     bgColor,
     delay,
 }) => {
-    const scale = useSharedValue(0.5);
-
-    useEffect(() => {
-        scale.value = withDelay(
-            delay,
-            withSpring(1, { damping: 12, stiffness: 80 }),
-        );
-    }, [delay, scale]);
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: scale.value }],
-    }));
-
     return (
         <Animated.View
-            style={animatedStyle}
+            entering={FadeIn.duration(180).delay(delay)}
             className="items-center flex-1"
         >
             <View
@@ -82,10 +63,11 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
         <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 40, alignItems: "center" }}
+            contentInsetAdjustmentBehavior="automatic"
             className="flex-1 px-6 pt-8"
         >
             <Animated.View
-                entering={FadeInUp.duration(700).springify()}
+                entering={FadeIn.duration(180).delay(80)}
                 className="items-center mb-6"
             >
                 <Text style={{ fontSize: 64, marginBottom: 16 }}>🎉</Text>
@@ -114,7 +96,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
 
             {trialStarted && (
                 <Animated.View
-                    entering={FadeIn.duration(500).delay(300)}
+                    entering={FadeIn.duration(180).delay(160)}
                     className="bg-purple-50 rounded-2xl px-5 py-4 mb-6 w-full border border-purple-100"
                 >
                     <View className="flex-row items-center">
@@ -136,10 +118,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                 </Animated.View>
             )}
 
-            <Animated.View
-                entering={FadeIn.duration(500).delay(400)}
-                className="w-full mb-8"
-            >
+            <View className="w-full mb-8">
                 <Text className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4 ml-1">
                     Users who journal daily report
                 </Text>
@@ -149,27 +128,27 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                         value="92%"
                         label="Better mood"
                         bgColor="#D1FAE5"
-                        delay={500}
+                        delay={220}
                     />
                     <StatBadge
                         emoji="😌"
                         value="78%"
                         label="Less stress"
                         bgColor="#FEE2E2"
-                        delay={650}
+                        delay={280}
                     />
                     <StatBadge
                         emoji="💪"
                         value="95%"
                         label="More aware"
                         bgColor="#DBEAFE"
-                        delay={800}
+                        delay={340}
                     />
                 </View>
-            </Animated.View>
+            </View>
 
             <Animated.View
-                entering={FadeInDown.duration(500).delay(900)}
+                entering={FadeIn.duration(180).delay(420)}
                 className="bg-white dark:bg-gray-800 rounded-2xl p-5 w-full"
                 style={{
                     shadowColor: "#000",

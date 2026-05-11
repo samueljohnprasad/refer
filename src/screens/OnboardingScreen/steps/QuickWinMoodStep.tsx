@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Animated, {
     FadeIn,
-    FadeInDown,
-    FadeInUp,
     useAnimatedStyle,
     useSharedValue,
-    withSpring,
+    withTiming,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { MoodValue, QuickWinMoodOption } from "../types";
@@ -37,18 +35,16 @@ const MoodButton: React.FC<MoodButtonProps> = ({
     }));
 
     const handlePressIn = (): void => {
-        scale.value = withSpring(0.9, { damping: 15, stiffness: 400 });
+        scale.value = withTiming(0.985, { duration: 90 });
     };
 
     const handlePressOut = (): void => {
-        scale.value = withSpring(1, { damping: 15, stiffness: 400 });
+        scale.value = withTiming(1, { duration: 120 });
     };
 
     return (
         <Animated.View
-            entering={FadeInDown.duration(400)
-                .delay(300 + index * 100)
-                .springify()}
+            entering={FadeIn.duration(180).delay(180 + index * 50)}
         >
             <TouchableOpacity
                 onPress={onPress}
@@ -107,10 +103,11 @@ const QuickWinMoodStep: React.FC<QuickWinMoodStepProps> = ({
         <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 24 }}
+            contentInsetAdjustmentBehavior="automatic"
             className="flex-1 px-6 pt-8"
         >
             <Animated.View
-                entering={FadeInUp.duration(600).springify()}
+                entering={FadeIn.duration(180).delay(80)}
                 className="items-center mb-8"
             >
                 <Text
@@ -145,7 +142,7 @@ const QuickWinMoodStep: React.FC<QuickWinMoodStepProps> = ({
 
             {showInsight && selectedOption && (
                 <Animated.View
-                    entering={FadeIn.duration(500).springify()}
+                    entering={FadeIn.duration(180).delay(80)}
                     className="bg-white dark:bg-gray-800 rounded-2xl p-5 mx-1"
                     style={{
                         shadowColor: "#000",
@@ -175,4 +172,3 @@ const QuickWinMoodStep: React.FC<QuickWinMoodStepProps> = ({
 };
 
 export default React.memo(QuickWinMoodStep);
-

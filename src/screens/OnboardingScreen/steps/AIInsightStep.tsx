@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, ScrollView } from "react-native";
-import Animated, { FadeInUp, FadeInDown } from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import MochiMascot from "../components/MochiMascot";
 import { FeelingEmoji, StressTiming } from "../types";
 import { FEELINGS } from "../constants";
@@ -26,9 +26,10 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 24 }}
+      contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-6"
     >
-      <Animated.View entering={FadeInUp.delay(100).duration(500)}>
+      <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text
           style={{ fontFamily: "CormorantSemiBold" }}
           className="text-2xl text-ink"
@@ -38,7 +39,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(300).duration(600)}
+        entering={FadeIn.duration(180).delay(160)}
         className="mt-5 rounded-[20px] border-2 border-gold bg-cream p-5"
       >
         <View className="flex-row items-center gap-1.5">
@@ -63,7 +64,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(500).duration(500)}
+        entering={FadeIn.duration(180).delay(240)}
         className="mt-5 rounded-[20px] border-2 border-sage-100 bg-warm-white p-5"
       >
         <Text className="text-xs font-bold uppercase tracking-wider text-sage-500">
@@ -86,7 +87,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(700).duration(400)}
+        entering={FadeIn.duration(180).delay(320)}
         className="mt-4 flex-row items-start gap-2 rounded-xl bg-sage-300/15 p-3"
       >
         <Text className="text-[13px] font-bold text-sage-600">📚</Text>

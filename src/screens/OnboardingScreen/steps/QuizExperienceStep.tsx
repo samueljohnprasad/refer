@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Text, View, ScrollView } from "react-native";
-import Animated, { FadeInUp } from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
 import { JournalExperience } from "../types";
 import { EXPERIENCE_OPTIONS } from "../constants";
@@ -19,7 +19,7 @@ const QuizExperienceStep: React.FC<QuizExperienceStepProps> = ({
   const handleSelect = useCallback(
     (id: JournalExperience) => {
       onSelect(id);
-      setTimeout(onAdvance, 400);
+      setTimeout(onAdvance, 220);
     },
     [onSelect, onAdvance],
   );
@@ -28,9 +28,10 @@ const QuizExperienceStep: React.FC<QuizExperienceStepProps> = ({
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 24 }}
+      contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-8"
     >
-      <Animated.View entering={FadeInUp.delay(100).duration(500)}>
+      <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text className="text-xs font-semibold uppercase tracking-widest text-sage-500">
           Step 3 of 7
         </Text>

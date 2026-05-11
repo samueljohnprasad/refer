@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
     View,
     Text,
@@ -6,13 +6,8 @@ import {
     useWindowDimensions,
     NativeScrollEvent,
     NativeSyntheticEvent,
-    AccessibilityInfo,
 } from "react-native";
-import Animated, {
-    FadeIn,
-    FadeInDown,
-    FadeInUp,
-} from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { FeatureDiscoverySlide } from "../types";
 import PremiumBadge from "../../../components/premium/PremiumBadge";
 
@@ -87,25 +82,7 @@ const FeatureDiscoveryStep: React.FC<FeatureDiscoveryStepProps> = ({
 }) => {
     const { width: screenWidth } = useWindowDimensions();
     const cardWidth: number = screenWidth - 80;
-    const scrollViewRef = useRef<ScrollView>(null);
     const [activeIndex, setActiveIndex] = useState<number>(0);
-    const autoScrollRef = useRef<ReturnType<typeof setInterval> | null>(null);
-    const [reduceMotion, setReduceMotion] = useState<boolean>(false);
-    const userInteractedRef = useRef<boolean>(false);
-
-    useEffect(() => {
-        const checkReduceMotion = async (): Promise<void> => {
-            const isEnabled: boolean =
-                await AccessibilityInfo.isReduceMotionEnabled();
-            setReduceMotion(isEnabled);
-        };
-        checkReduceMotion();
-        const subscription = AccessibilityInfo.addEventListener(
-            "reduceMotionChanged",
-            (isEnabled: boolean) => setReduceMotion(isEnabled),
-        );
-        return () => subscription.remove();
-    }, []);
 
     const handleScroll = useCallback(
         (event: NativeSyntheticEvent<NativeScrollEvent>): void => {
@@ -122,39 +99,10 @@ const FeatureDiscoveryStep: React.FC<FeatureDiscoveryStepProps> = ({
         [activeIndex, cardWidth, slides.length],
     );
 
-    const handleScrollBeginDrag = useCallback((): void => {
-        userInteractedRef.current = true;
-        if (autoScrollRef.current) {
-            clearInterval(autoScrollRef.current);
-            autoScrollRef.current = null;
-        }
-    }, []);
-
-    useEffect(() => {
-        if (reduceMotion || userInteractedRef.current) return;
-
-        autoScrollRef.current = setInterval(() => {
-            setActiveIndex((prev: number) => {
-                const nextIndex: number = (prev + 1) % slides.length;
-                scrollViewRef.current?.scrollTo({
-                    x: nextIndex * (cardWidth + 16),
-                    animated: true,
-                });
-                return nextIndex;
-            });
-        }, 4000);
-
-        return () => {
-            if (autoScrollRef.current) {
-                clearInterval(autoScrollRef.current);
-            }
-        };
-    }, [cardWidth, slides.length, reduceMotion]);
-
     return (
         <View className="flex-1 pt-8">
             <Animated.View
-                entering={FadeInUp.duration(600).springify()}
+                entering={FadeIn.duration(180).delay(80)}
                 className="items-center mb-6 px-6"
             >
                 <Text
@@ -173,16 +121,14 @@ const FeatureDiscoveryStep: React.FC<FeatureDiscoveryStepProps> = ({
                 </Text>
             </Animated.View>
 
-            <Animated.View entering={FadeIn.duration(500).delay(300)}>
+            <Animated.View entering={FadeIn.duration(180).delay(160)}>
                 <ScrollView
-                    ref={scrollViewRef}
                     horizontal
                     pagingEnabled={false}
                     snapToInterval={cardWidth + 16}
                     decelerationRate="fast"
                     showsHorizontalScrollIndicator={false}
                     onScroll={handleScroll}
-                    onScrollBeginDrag={handleScrollBeginDrag}
                     scrollEventThrottle={16}
                     contentContainerStyle={{ paddingHorizontal: 32 }}
                     accessible
@@ -207,5 +153,4 @@ const FeatureDiscoveryStep: React.FC<FeatureDiscoveryStepProps> = ({
 };
 
 export default React.memo(FeatureDiscoveryStep);
-
 

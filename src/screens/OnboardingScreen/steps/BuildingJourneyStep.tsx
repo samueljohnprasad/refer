@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
-import Animated, { FadeInUp } from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import MochiMascot from "../components/MochiMascot";
 import LoadingTaskRow from "../components/LoadingTaskRow";
 import { useAutoAdvance } from "../hooks/useAutoAdvance";
@@ -19,7 +19,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
       <MochiMascot expression="concentrating" size={140} delay={0} />
 
       <Animated.View
-        entering={FadeInUp.delay(200).duration(500)}
+        entering={FadeIn.duration(180).delay(120)}
         className="mt-6 items-center"
       >
         <Text

@@ -3,7 +3,6 @@ import { Text, View } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
   withDelay,
   withTiming,
   interpolate,
@@ -15,32 +14,28 @@ interface SpeechBubbleProps {
   delay?: number;
 }
 
+const BUBBLE_ENTER_DURATION_MS = 220;
+
 const SpeechBubble: React.FC<SpeechBubbleProps> = ({ text, delay = 300 }) => {
   const progress = useSharedValue(0);
-  const scaleX = useSharedValue(0.9);
 
   useEffect(() => {
     progress.value = withDelay(
       delay,
-      withSpring(1, { damping: 14, stiffness: 180 }),
-    );
-    scaleX.value = withDelay(
-      delay,
-      withSpring(1, { damping: 12, stiffness: 200 }),
+      withTiming(1, {
+        duration: BUBBLE_ENTER_DURATION_MS,
+        easing: Easing.out(Easing.cubic),
+      }),
     );
   }, []);
 
   const bubbleStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0, 0.3, 1], [0, 0.8, 1]),
-    transform: [
-      { translateY: interpolate(progress.value, [0, 1], [15, 0]) },
-      { scale: interpolate(progress.value, [0, 0.6, 1], [0.92, 1.02, 1]) },
-    ],
+    opacity: interpolate(progress.value, [0, 1], [0, 1]),
+    transform: [{ translateY: interpolate(progress.value, [0, 1], [6, 0]) }],
   }));
 
   const triangleStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0, 0.5, 1], [0, 0, 1]),
-    transform: [{ scale: interpolate(progress.value, [0.5, 1], [0, 1]) }],
+    opacity: interpolate(progress.value, [0.35, 1], [0, 1]),
   }));
 
   return (

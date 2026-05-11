@@ -2,10 +2,8 @@ import React from "react";
 import { View, Text, ScrollView } from "react-native";
 import Animated, {
     FadeIn,
-    FadeInDown,
-    FadeInUp,
 } from "react-native-reanimated";
-import { SOCIAL_PROOF_COUNT, BRAND_PURPLE } from "../constants";
+import { SOCIAL_PROOF_COUNT } from "../constants";
 import PremiumBadge from "../../../components/premium/PremiumBadge";
 
 interface BenefitItemProps {
@@ -22,7 +20,7 @@ const BenefitItem: React.FC<BenefitItemProps> = ({
     delay,
 }) => (
     <Animated.View
-        entering={FadeInDown.duration(500).delay(delay).springify()}
+        entering={FadeIn.duration(180).delay(delay)}
         className="flex-row items-center bg-white dark:bg-gray-800 rounded-2xl px-5 py-4 mb-3"
         style={{
             shadowColor: "#000",
@@ -52,10 +50,11 @@ const WelcomeValueStep: React.FC = () => {
         <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 24 }}
+            contentInsetAdjustmentBehavior="automatic"
             className="flex-1 px-6 pt-8"
         >
             <Animated.View
-                entering={FadeInUp.duration(600).springify()}
+                entering={FadeIn.duration(180).delay(80)}
                 className="items-center mb-8"
             >
                 <Text className="text-5xl mb-4">🌿</Text>
@@ -76,7 +75,7 @@ const WelcomeValueStep: React.FC = () => {
                 </Text>
             </Animated.View>
 
-            <Animated.View entering={FadeIn.duration(400).delay(300)}>
+            <Animated.View entering={FadeIn.duration(180).delay(160)}>
                 <Text className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 ml-1">
                     What you'll get
                 </Text>
@@ -86,29 +85,29 @@ const WelcomeValueStep: React.FC = () => {
                 emoji="📊"
                 title="Track your mood patterns"
                 isPremium={false}
-                delay={400}
+                delay={220}
             />
             <BenefitItem
                 emoji="✨"
                 title="AI-powered insights"
                 isPremium={true}
-                delay={500}
+                delay={280}
             />
             <BenefitItem
                 emoji="🧠"
                 title="Science-backed CBT exercises"
                 isPremium={true}
-                delay={600}
+                delay={340}
             />
             <BenefitItem
                 emoji="✅"
                 title="Build positive daily habits"
                 isPremium={false}
-                delay={700}
+                delay={400}
             />
 
             <Animated.View
-                entering={FadeIn.duration(400).delay(800)}
+                entering={FadeIn.duration(180).delay(460)}
                 className="items-center mt-6"
             >
                 <View className="flex-row items-center bg-purple-50 rounded-full px-4 py-2">

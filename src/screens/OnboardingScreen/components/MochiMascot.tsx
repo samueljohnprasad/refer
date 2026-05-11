@@ -1,15 +1,6 @@
-import React, { useEffect } from "react";
-import { Image, ImageSourcePropType, View } from "react-native";
-import Animated, {
-  FadeInUp,
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withSequence,
-  withTiming,
-  withDelay,
-  Easing,
-} from "react-native-reanimated";
+import React from "react";
+import { Image, ImageSourcePropType } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { MochiExpression } from "../types";
 
 /* eslint-disable @typescript-eslint/no-require-imports */
@@ -35,53 +26,10 @@ const MochiMascot: React.FC<MochiMascotProps> = ({
   animate = true,
   delay = 0,
 }) => {
-  const floatY = useSharedValue(0);
-  const breatheScale = useSharedValue(1);
-
-  useEffect(() => {
-    if (!animate) return;
-
-    floatY.value = withDelay(
-      delay + 600,
-      withRepeat(
-        withSequence(
-          withTiming(-4, { duration: 1800, easing: Easing.inOut(Easing.sin) }),
-          withTiming(4, { duration: 1800, easing: Easing.inOut(Easing.sin) }),
-        ),
-        0,
-        true,
-      ),
-    );
-
-    breatheScale.value = withDelay(
-      delay + 600,
-      withRepeat(
-        withSequence(
-          withTiming(1.02, {
-            duration: 2200,
-            easing: Easing.inOut(Easing.sin),
-          }),
-          withTiming(0.98, {
-            duration: 2200,
-            easing: Easing.inOut(Easing.sin),
-          }),
-        ),
-        0,
-        true,
-      ),
-    );
-  }, [animate, delay]);
-
-  const floatingStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: floatY.value }, { scale: breatheScale.value }],
-  }));
-
-  const content = (
+  return (
     <Animated.View
-      style={[
-        { width: size, height: size },
-        animate ? floatingStyle : undefined,
-      ]}
+      entering={animate ? FadeIn.delay(delay).duration(220) : undefined}
+      style={{ width: size, height: size }}
       className="items-center justify-center"
     >
       <Image
@@ -89,14 +37,6 @@ const MochiMascot: React.FC<MochiMascotProps> = ({
         style={{ width: size * 0.9, height: size * 0.9 }}
         resizeMode="contain"
       />
-    </Animated.View>
-  );
-
-  if (!animate) return content;
-
-  return (
-    <Animated.View entering={FadeInUp.delay(delay).duration(600)}>
-      {content}
     </Animated.View>
   );
 };

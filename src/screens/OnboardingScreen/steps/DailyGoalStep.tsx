@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, ScrollView } from "react-native";
-import Animated, { FadeInUp } from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 import GoalCard from "../components/GoalCard";
 import { DailyGoalMinutes } from "../types";
 import { DAILY_GOAL_CARDS } from "../constants";
@@ -18,9 +18,10 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 24 }}
+      contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-8"
     >
-      <Animated.View entering={FadeInUp.delay(100).duration(500)}>
+      <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text className="text-xs font-semibold uppercase tracking-widest text-sage-500">
           Step 5 of 7
         </Text>

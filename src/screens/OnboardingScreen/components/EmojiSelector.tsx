@@ -1,10 +1,10 @@
 import React from "react";
 import { Text, View, Pressable } from "react-native";
 import Animated, {
-  FadeInDown,
+  FadeIn,
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
+  withTiming,
   withSequence,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
@@ -38,27 +38,27 @@ const EmojiButton: React.FC<{
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     emojiScale.value = withSequence(
-      withSpring(1.2, { damping: 10, stiffness: 300 }),
-      withSpring(1, { damping: 12, stiffness: 200 }),
+      withTiming(1.03, { duration: 110 }),
+      withTiming(1, { duration: 140 }),
     );
     scale.value = withSequence(
-      withSpring(0.9, { damping: 10, stiffness: 400 }),
-      withSpring(1, { damping: 12, stiffness: 200 }),
+      withTiming(0.985, { duration: 90 }),
+      withTiming(1, { duration: 120 }),
     );
     onPress();
   };
 
   const handlePressIn = () => {
-    scale.value = withSpring(0.92, { damping: 15, stiffness: 400 });
+    scale.value = withTiming(0.99, { duration: 90 });
   };
 
   const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 12, stiffness: 300 });
+    scale.value = withTiming(1, { duration: 120 });
   };
 
   return (
     <Animated.View
-      entering={FadeInDown.delay(150 + index * 50).duration(300)}
+      entering={FadeIn.delay(120 + index * 40).duration(180)}
       className="items-center"
     >
       <AnimatedPressable
