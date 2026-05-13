@@ -19,9 +19,10 @@ import Animated, {
 } from "react-native-reanimated";
 import JourneyStepPreviewScreen from "./tabs/screens/journey-step-preview";
 import CbtStepPreviewScreen from "./tabs/screens/cbt-step-preview";
+import Loading from "@/src/components/Loading";
 
 export default function Home(): React.JSX.Element {
-  const { session, loading } = useAuth();
+  const { session, loading, ensureAnonymousSession } = useAuth();
   const sheetRef = useRef<BottomSheetModal>(null);
   const { width, height } = Dimensions.get("window");
 
@@ -89,9 +90,16 @@ export default function Home(): React.JSX.Element {
     ],
   }));
 
-  const handleGetStartedPress = (): void => {
+  const handleGetStartedPress = async (): Promise<void> => {
     // Light haptic for button press
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+    const nextSession = session ?? (await ensureAnonymousSession());
+    if (nextSession) {
+      router.replace("/tabs/screens/onboard-container");
+      return;
+    }
+
     sheetRef.current?.present();
   };
 
@@ -111,8 +119,8 @@ export default function Home(): React.JSX.Element {
 
   if (loading) {
     return (
-      <View className="flex-1 w-full h-full items-center justify-center">
-        <View className="flex-1 w-full h-full items-center justify-center" />
+      <View className="flex-1 w-full h-full bg-white items-center justify-center">
+        <Loading />
       </View>
     );
   }
@@ -132,10 +140,10 @@ export default function Home(): React.JSX.Element {
 
       <View
         className="flex-1 px-8 justify-between"
-      // style={{
-      //   paddingTop: insets.top + 40,
-      //   paddingBottom: insets.bottom + 40,
-      // }}
+        // style={{
+        //   paddingTop: insets.top + 40,
+        //   paddingBottom: insets.bottom + 40,
+        // }}
       >
         {/* Main Content - Centered */}
         <View className="flex-1 justify-center items-center">

@@ -136,4 +136,16 @@
   --color-ink: #1a2a1a;
   --color-ink-soft: #4a5a4a;
   --color-ink-muted: #7a8a7a;
+
+  /* Happy app semantic palette */
+  --color-offwhite: #faf9f6;
+  --color-theme-background-primary: #ffffff;
+  --color-theme-background-secondary: #f2efe8;
+  --color-theme-background-card: #ffffff;
+  --color-theme-text-primary: #1f2937;
+  --color-theme-text-secondary: #64748b;
+  --color-theme-border: #ded6c8;
+  --color-theme-purple-light: #eee9ff;
+  --color-theme-purple-primary: #7b61ff;
+  --color-theme-purple-deep: #5f46e8;
 }

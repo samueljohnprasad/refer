@@ -21,6 +21,7 @@ import * as Notifications from "expo-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import RevenueCatProvider from "@/src/context/RevenueCatProvider";
+import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
 import {
   CormorantGaramond_300Light,
   CormorantGaramond_400Regular,
@@ -210,6 +211,7 @@ function RootLayoutNav() {
                                   <KeyboardProvider>
                                     <BottomSheetModalProvider>
                                       <Slot />
+                                      <AnonymousPurchaseClaimPrompt />
                                     </BottomSheetModalProvider>
                                   </KeyboardProvider>
                                   {/* {pathname === "/" && (

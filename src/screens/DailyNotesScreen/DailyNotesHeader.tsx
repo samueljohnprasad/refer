@@ -52,6 +52,12 @@ const HEADER_MIN_HEIGHT = 132;
 // Move constants outside component to avoid recreation
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const CALENDAR_EXPANDED_HEIGHT = 416; // 8pt grid multiple
+const JOURNAL_COLORS = {
+  surface: "#fff",
+  text: "#1F2937",
+  muted: "#64748B",
+  border: "#DED6C8",
+};
 
 interface DailyNotesHeaderProps {
   onBookmarksPress?: () => void;
@@ -279,12 +285,13 @@ const DailyNotesHeader = React.memo(
         edges={["top"]}
         style={{
           paddingTop: insets.top - 30,
+          backgroundColor: JOURNAL_COLORS.surface,
         }}
-        className="bg-theme-background-primary"
+        className="bg-white"
       >
         <Animated.View
-          className="bg-theme-background-primary justify-end relative"
-          style={[headerContainerAnimatedStyle]}
+          className="bg-white justify-end relative"
+          style={[headerContainerAnimatedStyle, { backgroundColor: JOURNAL_COLORS.surface }]}
         >
           {/* Calendar Header */}
           <Animated.View
@@ -299,11 +306,14 @@ const DailyNotesHeader = React.memo(
               accessibilityLabel={isExpanded ? "Collapse calendar" : "Expand calendar"}
               accessibilityHint="Toggles between weekly and monthly calendar views"
             >
-              <HugeiconsIcon icon={Calendar01Icon} size={20} className="text-theme-text-secondary" />
+              <HugeiconsIcon icon={Calendar01Icon} size={20} color={JOURNAL_COLORS.text} />
             </Pressable>
 
             <View className="flex-row items-center justify-center flex-1">
-              <Text className="text-2xl text-theme-text-secondary text-center font-cormorantBold">
+              <Text
+                className="text-2xl text-center font-cormorantBold"
+                style={{ color: JOURNAL_COLORS.text }}
+              >
                 {currentMonthView || ""}
               </Text>
             </View>
@@ -316,7 +326,7 @@ const DailyNotesHeader = React.memo(
                 accessibilityRole="button"
                 accessibilityLabel="Bookmarks"
               >
-                <HugeiconsIcon icon={Bookmark03Icon} size={20} className="text-theme-text-secondary" />
+                <HugeiconsIcon icon={Bookmark03Icon} size={20} color={JOURNAL_COLORS.text} />
               </Pressable>
             </View>
           </Animated.View>
@@ -359,7 +369,7 @@ const DailyNotesHeader = React.memo(
           {/* Only render CalendarPicker after first expansion for smooth animations */}
           {hasBeenExpanded && (
             <Animated.View
-              className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-theme-background-primary top-0"
+              className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-white top-0"
               style={[inlineCalendarAnimatedStyle]}
               accessibilityElementsHidden={!isExpanded}
               importantForAccessibility={!isExpanded ? "no-hide-descendants" : "yes"}
@@ -392,7 +402,10 @@ const DailyNotesHeader = React.memo(
                 accessibilityRole="adjustable"
                 accessibilityLabel="Calendar drag handle"
               >
-                <View className="w-10 h-1 rounded-full bg-theme-border" />
+                <View
+                  className="w-10 h-1 rounded-full bg-theme-border"
+                  style={{ backgroundColor: JOURNAL_COLORS.border }}
+                />
               </View>
             </GestureDetector>
           </View>

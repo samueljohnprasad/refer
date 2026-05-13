@@ -53,13 +53,13 @@ import CalorieTrackerScreen from "../CalorieTrackerScreen/CalorieTrackerScreen";
 const MentalHealthProfileContainer = React.lazy(() =>
   import("./notes/MentalHealthProfileContainer").then((module) => ({
     default: module.MentalHealthProfileContainer,
-  }))
+  })),
 );
 
 const AIInsightsModalBottomSheet = React.lazy(() =>
   import("@/src/components/ai/AIInsightsModalBottomSheet").then((module) => ({
     default: module.AIInsightsModalBottomSheet,
-  }))
+  })),
 );
 
 const DailyNotesScreenComponent = () => {
@@ -83,7 +83,7 @@ const DailyNotesScreenComponent = () => {
   // Memoize the week number to avoid unnecessary effect triggers
   const currentWeekNumber = useMemo(
     () => getWeek(currentWeekView),
-    [currentWeekView]
+    [currentWeekView],
   );
 
   // Update calendar visible dates when week changes - optimized with memoized week number
@@ -112,19 +112,19 @@ const DailyNotesScreenComponent = () => {
   // Format week dates for display
   const weekStart = useMemo(
     () => startOfWeek(currentWeekView, { weekStartsOn: 0 }),
-    [currentWeekView]
+    [currentWeekView],
   );
   const weekEnd = useMemo(
     () => endOfWeek(currentWeekView, { weekStartsOn: 0 }),
-    [currentWeekView]
+    [currentWeekView],
   );
   const weekStartFormatted = useMemo(
     () => format(weekStart, "MMM dd, yyyy"),
-    [weekStart]
+    [weekStart],
   );
   const weekEndFormatted = useMemo(
     () => format(weekEnd, "MMM dd, yyyy"),
-    [weekEnd]
+    [weekEnd],
   );
 
   // Shared values for content animations (UI thread)
@@ -147,7 +147,7 @@ const DailyNotesScreenComponent = () => {
       setSelectedDate(newDate);
       setCurrentWeekView(newDate);
     },
-    [setSelectedDate, setCurrentWeekView]
+    [setSelectedDate, setCurrentWeekView],
   );
 
   const changeDateBy = useCallback(
@@ -166,7 +166,7 @@ const DailyNotesScreenComponent = () => {
             runOnJS(updateDateFromTs)(targetTs);
             // Set starting position for new content (coming from the other side)
             contentTranslateX.value = -direction * slideDistance * 1.5;
-            
+
             // Fade back in with spring motion
             contentOpacity.value = withTiming(1, { duration: 250 });
             contentTranslateX.value = withSpring(0, {
@@ -174,19 +174,19 @@ const DailyNotesScreenComponent = () => {
               stiffness: 200,
             });
           }
-        }
+        },
       );
     },
-    [selectedDate, updateDateFromTs, contentOpacity, contentTranslateX]
+    [selectedDate, updateDateFromTs, contentOpacity, contentTranslateX],
   );
 
   const goToPreviousDateContent = useCallback(
     (): void => changeDateBy(-1),
-    [changeDateBy]
+    [changeDateBy],
   );
   const goToNextDateContent = useCallback(
     (): void => changeDateBy(1),
-    [changeDateBy]
+    [changeDateBy],
   );
 
   // Enhanced pan gesture with reduced sensitivity - memoized with stable dependencies
@@ -212,7 +212,8 @@ const DailyNotesScreenComponent = () => {
           if (Math.abs(rawTx) > resistanceThreshold) {
             const excess = Math.abs(rawTx) - resistanceThreshold;
             const c = 120;
-            const resistance = resistanceThreshold + (excess * c) / (excess + c);
+            const resistance =
+              resistanceThreshold + (excess * c) / (excess + c);
             tx = rawTx > 0 ? resistance : -resistance;
           }
 
@@ -227,10 +228,15 @@ const DailyNotesScreenComponent = () => {
             progress,
             [0, 0.7, 1],
             [1, 0.92, 0.85],
-            "clamp"
+            "clamp",
           );
           // Scale only applies during confirmed horizontal swipe, never during scroll
-          contentScale.value = interpolate(progress, [0, 1], [1, 0.98], "clamp");
+          contentScale.value = interpolate(
+            progress,
+            [0, 1],
+            [1, 0.98],
+            "clamp",
+          );
         })
         .onEnd((g) => {
           "worklet";
@@ -275,7 +281,7 @@ const DailyNotesScreenComponent = () => {
       contentOpacity,
       goToNextDateContent,
       goToPreviousDateContent,
-    ]
+    ],
   );
 
   // Memoize AI Insights Chip to prevent re-renders
@@ -290,7 +296,7 @@ const DailyNotesScreenComponent = () => {
         />
       </View>
     ),
-    [isBeforeCurrentWeek]
+    [isBeforeCurrentWeek],
   );
 
   // Memoize Mental Health Container to prevent re-renders during animations
@@ -309,38 +315,42 @@ const DailyNotesScreenComponent = () => {
         </SuspensLoader>
       </View>
     ),
-    [selectedDate, showBookmarksModal]
+    [selectedDate, showBookmarksModal],
   );
 
   // Memoize header callback
   const handleBookmarksPress = useCallback(
     () => setShowBookmarksModal((prev) => !prev),
-    []
+    [],
   );
 
   // Memoize header component
   const headerComponent = useMemo(
     () => <DailyNotesHeader onBookmarksPress={handleBookmarksPress} />,
-    [handleBookmarksPress]
+    [handleBookmarksPress],
   );
 
   return (
-    <SafeAreaView edges={[]} className="flex-1 bg-theme-background-primary">
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "#fff" }}
+      className="flex-1"
+      edges={[]}
+    >
       <Stack.Screen
         options={{
           header: () => headerComponent,
           headerShown: true,
         }}
       />
-      <View className="flex-1 relative">
+      <View className="flex-1 relative bg-theme-background-card">
         <GestureDetector gesture={contentPanGesture}>
           <ScrollView
-            className="flex-1"
+            className="flex-1 bg-theme-background-card"
             contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
           >
             {/* AI Insights Chip - Below header */}
-            {aiInsightsChip}
+            {/* {aiInsightsChip} */}
 
             {/* Tab Picker */}
             <View className="px-4 py-2">
@@ -390,9 +400,7 @@ const DailyNotesScreenComponent = () => {
 
               {/* Journal Section */}
               {tabFilter === "journal" && (
-                <View className="flex-1">
-                  {mentalHealthContent}
-                </View>
+                <View className="flex-1">{mentalHealthContent}</View>
               )}
             </Animated.View>
           </ScrollView>

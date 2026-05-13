@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { format } from "date-fns";
@@ -11,7 +11,6 @@ import {
   Time02Icon,
 } from "@hugeicons/core-free-icons";
 
-import { Text } from "@/components/ui/text";
 import {
   getCategoryMeta,
   getExerciseConfig,
@@ -28,8 +27,6 @@ import type {
   ExerciseType,
 } from "@/src/types/exerciseFlow";
 import { useCBTHistory, type HistoryLogItem } from "./hooks/useCBTHistory";
-
-const ACCENT = "#58CC02";
 
 type TabKey = "discover" | "log";
 
@@ -94,61 +91,43 @@ function ExerciseCard({
       onPress={() => onPress(exercise)}
       accessibilityRole="button"
       accessibilityLabel={`${exercise.title}: ${exercise.subtitle}. Duration: ${exercise.duration}.`}
-      className="rounded-2xl mb-4 active:opacity-90"
-      style={{
-        backgroundColor: "#FFFFFF",
-        borderWidth: 2,
-        borderColor: "#E2E8F0",
-        borderBottomWidth: 4,
-        borderBottomColor: "#CBD5E1",
-        minHeight: 48,
-      }}
+      className="mb-4 min-h-12 rounded-2xl border-2 border-b-4 border-slate-200 border-b-slate-300 bg-white active:opacity-90"
     >
-      <View className="p-4 flex-row items-center">
+      <View className="flex-row items-center p-4">
         <View
+          className="mr-4 h-14 w-14 items-center justify-center rounded-2xl"
           style={{ backgroundColor: exercise.backgroundColor }}
-          className="h-14 w-14 rounded-2xl items-center justify-center mr-4"
           accessible={false}
         >
-          <HugeiconsIcon
-            icon={icon}
-            size={28}
-            color="#1E293B"
-          />
+          <HugeiconsIcon icon={icon} size={28} color="#1E293B" />
         </View>
 
         <View className="flex-1">
-          <Text className="text-[17px] font-extrabold text-slate-800 mr-2 flex-shrink">
+          <Text className="mr-2 flex-shrink text-[17px] font-extrabold text-slate-800">
             {exercise.title}
           </Text>
-          <Text className="text-[14px] text-slate-500 mb-2 font-medium">
+          <Text className="mb-2 mt-0.5 text-[14px] font-medium text-slate-500">
             {exercise.subtitle}
           </Text>
 
           <View className="flex-row items-center gap-2">
-            <View className="bg-slate-100 px-2.5 py-1 rounded-full flex-row items-center">
+            <View className="flex-row items-center rounded-full bg-slate-100 px-2.5 py-1">
               <Text className="text-xs">⏱️</Text>
-              <Text className="text-slate-600 text-xs font-bold ml-1">
+              <Text className="ml-1 text-xs font-bold text-slate-600">
                 {exercise.duration}
               </Text>
             </View>
-            <View
-              className="px-2.5 py-1 rounded-full flex-row items-center"
-              style={{ backgroundColor: "#FFF3CD" }}
-            >
+            <View className="flex-row items-center rounded-full bg-[#FFF3CD] px-2.5 py-1">
               <Text className="text-xs">⚡</Text>
-              <Text className="text-xs font-extrabold text-amber-700 ml-1">
+              <Text className="ml-1 text-xs font-extrabold text-amber-700">
                 +{exercise.xp} XP
               </Text>
             </View>
           </View>
         </View>
 
-        <View
-          className="h-8 w-8 rounded-full items-center justify-center"
-          style={{ backgroundColor: ACCENT }}
-        >
-          <Text className="text-white text-sm font-extrabold">›</Text>
+        <View className="h-8 w-8 items-center justify-center rounded-full bg-[#58CC02]">
+          <Text className="text-sm font-extrabold text-white">›</Text>
         </View>
       </View>
     </Pressable>
@@ -171,19 +150,15 @@ function DiscoverSection({
 
   return (
     <View className="mb-6">
-      <View className="flex-row items-center mb-3">
-        <View className="h-10 w-10 rounded-2xl bg-slate-100 items-center justify-center mr-3">
-          <HugeiconsIcon
-            icon={categoryIcon}
-            size={20}
-            color="#334155"
-          />
+      <View className="mb-3 flex-row items-center">
+        <View className="mr-3 h-10 w-10 items-center justify-center rounded-2xl bg-slate-100">
+          <HugeiconsIcon icon={categoryIcon} size={20} color="#334155" />
         </View>
         <View className="flex-1">
           <Text className="text-[18px] font-extrabold text-slate-900">
             {label}
           </Text>
-          <Text className="text-sm text-slate-500">
+          <Text className="mt-0.5 text-sm text-slate-500">
             {categoryMeta.description}
           </Text>
         </View>
@@ -203,8 +178,10 @@ function DiscoverSection({
 interface StatusInfo {
   label: string;
   isComplete: boolean;
-  badgeColor: string;
-  badgeBg: string;
+  badgeIconColor: string;
+  badgeClassName: string;
+  badgeTextClassName: string;
+  cardBorderClassName: string;
   xpEarned: number;
 }
 
@@ -228,8 +205,10 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
     return {
       label: "Completed",
       isComplete: true,
-      badgeColor: "#047857",
-      badgeBg: "#D1FAE5",
+      badgeIconColor: "#047857",
+      badgeClassName: "bg-emerald-100",
+      badgeTextClassName: "text-emerald-700",
+      cardBorderClassName: "border-green-200 border-b-green-300",
       xpEarned: getHistoryXp(item),
     };
   }
@@ -238,8 +217,10 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
     return {
       label: "Ready to Reframe",
       isComplete: false,
-      badgeColor: "#B45309",
-      badgeBg: "#FEF3C7",
+      badgeIconColor: "#B45309",
+      badgeClassName: "bg-amber-100",
+      badgeTextClassName: "text-amber-700",
+      cardBorderClassName: "border-slate-200 border-b-slate-300",
       xpEarned: 0,
     };
   }
@@ -247,8 +228,10 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
   return {
     label: "Resume",
     isComplete: false,
-    badgeColor: "#64748B",
-    badgeBg: "#F1F5F9",
+    badgeIconColor: "#64748B",
+    badgeClassName: "bg-slate-100",
+    badgeTextClassName: "text-slate-500",
+    cardBorderClassName: "border-slate-200 border-b-slate-300",
     xpEarned: 0,
   };
 }
@@ -299,37 +282,33 @@ function LogCard({
   item: HistoryLogItem;
   onPress: (item: HistoryLogItem) => void;
 }): React.JSX.Element {
-  const { label, isComplete, badgeColor, badgeBg, xpEarned } =
-    formatStatus(item);
+  const {
+    label,
+    isComplete,
+    badgeIconColor,
+    badgeClassName,
+    badgeTextClassName,
+    cardBorderClassName,
+    xpEarned,
+  } = formatStatus(item);
   const presentation = getLogPresentation(item);
 
   return (
     <Pressable
       onPress={() => onPress(item)}
-      className="rounded-2xl mb-3 active:opacity-90"
-      style={{
-        backgroundColor: "#FFFFFF",
-        borderWidth: 2,
-        borderColor: isComplete ? "#BBF7D0" : "#E2E8F0",
-        borderBottomWidth: 4,
-        borderBottomColor: isComplete ? "#86EFAC" : "#CBD5E1",
-      }}
+      className={`mb-3 rounded-2xl border-2 border-b-4 bg-white active:opacity-90 ${cardBorderClassName}`}
     >
-      <View className="p-4 flex-row items-center">
+      <View className="flex-row items-center p-4">
         <View
-          className="h-12 w-12 rounded-2xl items-center justify-center mr-3"
+          className="mr-3 h-12 w-12 items-center justify-center rounded-2xl"
           style={{ backgroundColor: presentation.iconBackgroundColor }}
         >
-          <HugeiconsIcon
-            icon={presentation.icon}
-            size={22}
-            color="#1E293B"
-          />
+          <HugeiconsIcon icon={presentation.icon} size={22} color="#1E293B" />
         </View>
 
         <View className="flex-1">
-          <View className="flex-row items-center justify-between mb-0.5">
-            <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <View className="mb-0.5 flex-row items-center justify-between">
+            <Text className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               {presentation.heading}
             </Text>
             <Text className="text-xs text-slate-400">
@@ -338,7 +317,7 @@ function LogCard({
           </View>
 
           <Text
-            className="text-[15px] font-extrabold text-slate-800 mb-1.5"
+            className="mb-1.5 text-[15px] font-extrabold text-slate-800"
             numberOfLines={1}
           >
             {presentation.title}
@@ -346,28 +325,23 @@ function LogCard({
 
           <View className="flex-row items-center gap-2">
             <View
-              className="px-2.5 py-1 rounded-full flex-row items-center"
-              style={{ backgroundColor: badgeBg }}
+              className={`flex-row items-center rounded-full px-2.5 py-1 ${badgeClassName}`}
             >
               <HugeiconsIcon
                 icon={isComplete ? CheckmarkBadge01Icon : Time02Icon}
                 size={12}
-                color={badgeColor}
+                color={badgeIconColor}
               />
               <Text
-                className="text-[10px] font-extrabold uppercase tracking-wider ml-1"
-                style={{ color: badgeColor }}
+                className={`ml-1 text-[10px] font-extrabold uppercase tracking-wider ${badgeTextClassName}`}
               >
                 {label}
               </Text>
             </View>
             {isComplete && xpEarned > 0 && (
-              <View
-                className="px-2 py-1 rounded-full flex-row items-center"
-                style={{ backgroundColor: "#FFF3CD" }}
-              >
+              <View className="flex-row items-center rounded-full bg-[#FFF3CD] px-2 py-1">
                 <Text className="text-[10px]">⚡</Text>
-                <Text className="text-[10px] font-extrabold text-amber-700 ml-0.5">
+                <Text className="ml-0.5 text-[10px] font-extrabold text-amber-700">
                   +{xpEarned} XP
                 </Text>
               </View>
@@ -422,12 +396,9 @@ export default function ExercisesScreen(): React.JSX.Element {
   }, []);
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-white"
-      edges={["top"]}
-    >
-      <View className="px-5 pt-4 pb-3">
-        <View className="flex-row items-center justify-between mb-4">
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top"]}>
+      <View className="px-5 pb-3 pt-4">
+        <View className="mb-4 flex-row items-center justify-between">
           <View className="flex-row items-center gap-3">
             <Mascot state="panda-love-hug-2" size={40} />
             <Text className="text-[28px] font-extrabold text-slate-900">
@@ -435,19 +406,16 @@ export default function ExercisesScreen(): React.JSX.Element {
             </Text>
           </View>
           {completedCount > 0 && (
-            <View
-              className="flex-row items-center px-3 py-1.5 rounded-full"
-              style={{ backgroundColor: "#FFF3CD" }}
-            >
+            <View className="flex-row items-center rounded-full bg-[#FFF3CD] px-3 py-1.5">
               <Text className="text-sm">🔥</Text>
-              <Text className="text-xs font-extrabold text-amber-700 ml-1">
+              <Text className="ml-1 text-xs font-extrabold text-amber-700">
                 {completedCount} done
               </Text>
             </View>
           )}
         </View>
 
-        <View className="flex-row bg-slate-100 rounded-xl p-1">
+        <View className="flex-row rounded-xl bg-slate-100 p-1">
           {(["discover", "log"] as const).map((tab) => {
             const isActive = activeTab === tab;
             const label = tab === "discover" ? "Lessons" : "My Log";
@@ -458,21 +426,14 @@ export default function ExercisesScreen(): React.JSX.Element {
                 onPress={() => setActiveTab(tab)}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: isActive }}
-                className={`flex-1 py-2.5 rounded-lg items-center justify-center ${isActive ? "bg-white" : ""}`}
-                style={
-                  isActive
-                    ? {
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 1 },
-                        shadowOpacity: 0.08,
-                        shadowRadius: 2,
-                        elevation: 2,
-                      }
-                    : undefined
-                }
+                className={`flex-1 items-center justify-center rounded-lg py-2.5 ${
+                  isActive ? "bg-white shadow-sm" : ""
+                }`}
               >
                 <Text
-                  className={`text-sm font-extrabold ${isActive ? "text-slate-800" : "text-slate-400"}`}
+                  className={`text-sm font-extrabold ${
+                    isActive ? "text-slate-800" : "text-slate-400"
+                  }`}
                 >
                   {label}
                 </Text>
@@ -482,77 +443,75 @@ export default function ExercisesScreen(): React.JSX.Element {
         </View>
       </View>
 
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="px-5 pb-10 pt-4"
-        showsVerticalScrollIndicator={false}
-      >
-        {activeTab === "discover" ? (
-          exerciseGroups.length > 0 ? (
-            <View>
-              {exerciseGroups.map((group) => (
-                <DiscoverSection
-                  key={group.category}
-                  label={group.label}
-                  category={group.category}
-                  exercises={group.exercises}
-                  onPress={handleExercisePress}
-                />
-              ))}
-            </View>
-          ) : (
-            <View
-              className="items-center justify-center py-16 px-8"
-              accessibilityLiveRegion="polite"
-            >
-              <View className="h-20 w-20 rounded-3xl bg-slate-100 items-center justify-center mb-4">
-                <Text
-                  className="text-[40px]"
-                  accessibilityLabel="Exercise illustration"
-                  accessibilityRole="image"
-                >
-                  🏋️
-                </Text>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        <View className="px-5 pb-10 pt-4">
+          {activeTab === "discover" ? (
+            exerciseGroups.length > 0 ? (
+              <View>
+                {exerciseGroups.map((group) => (
+                  <DiscoverSection
+                    key={group.category}
+                    label={group.label}
+                    category={group.category}
+                    exercises={group.exercises}
+                    onPress={handleExercisePress}
+                  />
+                ))}
               </View>
-              <Text className="text-xl font-extrabold text-slate-700 mb-2 text-center">
-                No exercises yet
-              </Text>
-              <Text className="text-sm text-slate-400 text-center leading-relaxed">
-                Exercises will appear here as they become available.
-              </Text>
-            </View>
-          )
-        ) : (
-          <View>
-            {isLoadingHistory ? (
-              <View className="py-12 items-center">
-                <Text className="text-sm font-bold text-slate-400">
-                  Loading history...
-                </Text>
-              </View>
-            ) : history.length > 0 ? (
-              history.map((item) => (
-                <LogCard
-                  key={`${item.type}-${item.id}`}
-                  item={item}
-                  onPress={handleLogPress}
-                />
-              ))
             ) : (
-              <View className="items-center justify-center py-16 px-8">
-                <View className="h-20 w-20 rounded-3xl bg-slate-100 items-center justify-center mb-4">
-                  <Text className="text-[40px]">📚</Text>
+              <View
+                className="items-center justify-center px-8 py-16"
+                accessibilityLiveRegion="polite"
+              >
+                <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-slate-100">
+                  <Text
+                    className="text-[40px]"
+                    accessibilityLabel="Exercise illustration"
+                    accessibilityRole="image"
+                  >
+                    🏋️
+                  </Text>
                 </View>
-                <Text className="text-xl font-extrabold text-slate-700 mb-2 text-center">
-                  Your exercise journal
+                <Text className="mb-2 text-center text-xl font-extrabold text-slate-700">
+                  No exercises yet
                 </Text>
-                <Text className="text-sm text-slate-400 text-center leading-relaxed">
-                  Complete your first exercise to see it here.
+                <Text className="text-center text-sm leading-relaxed text-slate-400">
+                  Exercises will appear here as they become available.
                 </Text>
               </View>
-            )}
-          </View>
-        )}
+            )
+          ) : (
+            <View>
+              {isLoadingHistory ? (
+                <View className="items-center py-12">
+                  <Text className="text-sm font-bold text-slate-400">
+                    Loading history...
+                  </Text>
+                </View>
+              ) : history.length > 0 ? (
+                history.map((item) => (
+                  <LogCard
+                    key={`${item.type}-${item.id}`}
+                    item={item}
+                    onPress={handleLogPress}
+                  />
+                ))
+              ) : (
+                <View className="items-center justify-center px-8 py-16">
+                  <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-slate-100">
+                    <Text className="text-[40px]">📚</Text>
+                  </View>
+                  <Text className="mb-2 text-center text-xl font-extrabold text-slate-700">
+                    Your exercise journal
+                  </Text>
+                  <Text className="text-center text-sm leading-relaxed text-slate-400">
+                    Complete your first exercise to see it here.
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

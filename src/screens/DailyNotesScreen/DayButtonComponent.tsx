@@ -13,6 +13,15 @@ export interface DayButtonProps {
   disabled?: boolean;
 }
 
+const DAY_BUTTON_COLORS = {
+  text: "#1F2937",
+  muted: "#64748B",
+  disabled: "rgba(31, 41, 55, 0.35)",
+  selectedText: "#5F46E8",
+  selectedBackground: "#EEE9FF",
+  todayBackground: "#FFFFFF",
+};
+
 // Simplified version without individual shared values - much more performant
 const DayButtonComponent: React.FC<DayButtonProps> = ({
   day,
@@ -27,11 +36,17 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
     onPress();
   };
 
-  const getFontColor = () => {
-    if (disabled) return "text-black/30";
-    if (isSelected) return "text-theme-purple-deep";
-    return "text-theme-text-primary";
+  const getTextColor = () => {
+    if (disabled) return DAY_BUTTON_COLORS.disabled;
+    if (isSelected) return DAY_BUTTON_COLORS.selectedText;
+    return DAY_BUTTON_COLORS.text;
   };
+
+  const backgroundColor = isSelected
+    ? DAY_BUTTON_COLORS.selectedBackground
+    : isToday && !isSelected
+    ? DAY_BUTTON_COLORS.todayBackground
+    : "transparent";
 
   return (
     <Pressable
@@ -41,24 +56,25 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
       accessibilityLabel={`${dayName} ${format(day, "d")}`}
     >
       <View
-        className={`items-center py-1.5 px-1 rounded-xl ${
-          isSelected
-            ? "bg-theme-purple-light"
-            : isToday && !isSelected
-            ? "bg-gray-100"
-            : ""
-        }`}
+        className="items-center py-1.5 px-1 rounded-xl"
+        style={{ backgroundColor }}
       >
         <View className="flex flex-col items-center">
           <Text
-            className={`text-[10px] uppercase font-bold tracking-widest mb-1 ${getFontColor()}`}
-            style={{ opacity: isSelected ? 1 : 0.6 }}
+            className="text-[10px] uppercase font-bold tracking-widest mb-1"
+            style={{
+              color: disabled ? DAY_BUTTON_COLORS.disabled : DAY_BUTTON_COLORS.muted,
+              opacity: isSelected || disabled ? 1 : 0.78,
+            }}
           >
             {dayName}
           </Text>
           <Text 
-            className={`text-[20px] ${isSelected ? 'font-semibold' : 'font-regular'} ${getFontColor()}`}
-            style={{ opacity: isSelected ? 1 : 0.8 }}
+            className={`text-[20px] ${isSelected ? "font-semibold" : "font-regular"}`}
+            style={{
+              color: getTextColor(),
+              opacity: isSelected || disabled ? 1 : 0.92,
+            }}
           >
             {format(day, "d")}
           </Text>

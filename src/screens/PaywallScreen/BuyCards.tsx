@@ -1,16 +1,22 @@
-import { View, Text } from "react-native";
-import React from "react";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useState } from "react";
 import { Box } from "@/components/ui/box";
-import { TouchableOpacity } from "react-native";
-import { StyleSheet } from "react-native";
-import { useState } from "react";
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import BestOfferCard from "./BestOfferCard";
 import WeeklyCard from "./WeeklyCard";
+import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 
 const BuyCards = () => {
   const [selectedCard, setSelectedCard] = useState("bestOffer");
+  const [isPurchasing, setIsPurchasing] = useState(false);
   const toast = useToast();
+  const { presentPaywall } = useRevenueCat();
 
   return (
     <Box className="flex-1 flex flex-col gap-4 ">
@@ -26,21 +32,34 @@ const BuyCards = () => {
       </View>
       <Box className="flex flex-col">
         <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            toast.show({
-              placement: "top",
-              render: ({ id }) => {
-                return (
-                  <Toast nativeID={id} variant="solid" action="error">
-                    <ToastTitle>{selectedCard} selected</ToastTitle>
-                  </Toast>
-                );
-              },
-            });
+          style={[styles.button, isPurchasing && styles.buttonDisabled]}
+          disabled={isPurchasing}
+          onPress={async () => {
+            try {
+              setIsPurchasing(true);
+              const purchased = await presentPaywall();
+              if (!purchased) {
+                toast.show({
+                  placement: "top",
+                  render: ({ id }) => {
+                    return (
+                      <Toast nativeID={id} variant="solid" action="error">
+                        <ToastTitle>Purchase was not completed.</ToastTitle>
+                      </Toast>
+                    );
+                  },
+                });
+              }
+            } finally {
+              setIsPurchasing(false);
+            }
           }}
         >
-          <Text style={styles.buttonText}>Continue</Text>
+          {isPurchasing ? (
+            <ActivityIndicator size="small" color="#000" />
+          ) : (
+            <Text style={styles.buttonText}>Continue</Text>
+          )}
         </TouchableOpacity>
         <Text style={styles.caption}>Cancel anytime. Secure payments.</Text>
       </Box>
@@ -59,6 +78,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: "center",
+  },
+  buttonDisabled: {
+    opacity: 0.72,
   },
   buttonText: {
     fontSize: 16,

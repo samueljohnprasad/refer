@@ -65,7 +65,14 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
                 progressiveRenderingEnabled={true}
               />
             )}
-            {!moodEmoji && <Text className="text-theme-text-secondary text-sm font-medium">+</Text>}
+            {!moodEmoji && (
+              <Text
+                className="text-theme-text-secondary text-sm font-medium"
+                style={{ color: "#64748B" }}
+              >
+                +
+              </Text>
+            )}
           </View>
         </View>
       </PressableOpacity>

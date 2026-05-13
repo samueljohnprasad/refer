@@ -8,6 +8,7 @@ import {
   AlertSquareIcon,
   Delete02Icon,
   File01Icon,
+  Login02Icon,
   Logout02Icon,
   MessageOutgoing01Icon,
   Notification01Icon,
@@ -36,11 +37,16 @@ import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { SettingsHeader } from "./components/SettingsHeader";
 import OnboardingChecklist from "@/src/components/onboarding/OnboardingChecklist";
 import PostTrialDiscountBanner from "@/src/components/premium/PostTrialDiscountBanner";
+import SignInBottomSheet from "@/src/components/SignInBottomSheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { PremiumStatusCard } from "./components/PremiumStatusCard";
 
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
-  const { hasPro, presentPaywall } = useRevenueCat();
+  const signInSheetRef = React.useRef<BottomSheetModal>(null);
+  const { customerInfo, hasPro, isLoadingRevenueCat, presentPaywall } =
+    useRevenueCat();
 
   const {
     isSignoutOPen,
@@ -51,6 +57,7 @@ export default React.memo(function SettingsScreen() {
     setShowEraseDataModal,
     deleteUserDataMutation,
     isSigningOut,
+    shouldShowSignIn,
     signOut,
     handlePress,
     handleRateUs,
@@ -120,6 +127,13 @@ export default React.memo(function SettingsScreen() {
             <PromoCard
               onPromoPress={presentPaywall}
               onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)}
+            />
+          )}
+
+          {hasPro && (
+            <PremiumStatusCard
+              customerInfo={customerInfo}
+              isLoading={isLoadingRevenueCat}
             />
           )}
 
@@ -245,15 +259,30 @@ export default React.memo(function SettingsScreen() {
               }}
               danger={true}
             />
-            <SettingsItem
-              icon={Logout02Icon}
-              iconColor="#3B82F6"
-              iconBgColor="#BFDBFE"
-              title="Sign Out"
-              onPress={() => setIsSignoutOPen(true)}
-              isLast={true}
-              danger={true}
-            />
+            {shouldShowSignIn ? (
+              <SettingsItem
+                icon={Login02Icon}
+                iconColor="#16A34A"
+                iconBgColor="#DCFCE7"
+                title="Sign In"
+                subtitle="Save your progress and Premium"
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  signInSheetRef.current?.present();
+                }}
+                isLast={true}
+              />
+            ) : (
+              <SettingsItem
+                icon={Logout02Icon}
+                iconColor="#3B82F6"
+                iconBgColor="#BFDBFE"
+                title="Sign Out"
+                onPress={() => setIsSignoutOPen(true)}
+                isLast={true}
+                danger={true}
+              />
+            )}
           </SettingsSection>
         </Animated.ScrollView>
       </View>
@@ -296,6 +325,7 @@ export default React.memo(function SettingsScreen() {
         onConfirm={signOut}
         isLoading={isSigningOut}
       />
+      <SignInBottomSheet ref={signInSheetRef} onSuccess={() => {}} />
     </View>
   );
 });

@@ -257,7 +257,7 @@ export default function JournalCalendarScreen() {
   }, [posthog]);
 
   return (
-    <SafeAreaView className="flex-1 bg-offwhite">
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }} edges={[]}>
       <ScrollView
         removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
@@ -268,7 +268,7 @@ export default function JournalCalendarScreen() {
       >
         {/* Top Bar */}
         <TopBar onAchievementsPress={handleAchievementsPress} />
-        <View className="bg-offwhite px-4 pb-12 pt-4">
+        <View className="bg-white px-4 pb-12 pt-4">
           {/* Greeting — entrance animation index 0 */}
           <Animated.View entering={FadeInDown.duration(ENTRANCE_DURATION_MS)}>
             <Greeting

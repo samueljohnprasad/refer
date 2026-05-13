@@ -34,6 +34,43 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
   const router = useRouter();
   const config = getExerciseConfig(exerciseType);
 
+  if (!config) {
+    return (
+      <SafeAreaView className="flex-1 justify-center items-center bg-white">
+        <Text className="text-lg text-slate-500">Exercise not found</Text>
+        <Pressable
+          onPress={() => router.back()}
+          className="mt-4"
+        >
+          <Text className="text-base font-bold text-blue-500">Go back</Text>
+        </Pressable>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <ResolvedExerciseFlowScreen
+      config={config}
+      entryId={entryId}
+      readOnly={readOnly}
+    />
+  );
+};
+
+interface ResolvedExerciseFlowScreenProps {
+  config: ExerciseConfig<any>;
+  entryId?: string;
+  readOnly: boolean;
+}
+
+const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
+  config,
+  entryId,
+  readOnly,
+}) => {
+  const router = useRouter();
+  const exerciseType = config.type;
+
   // ─── Resume: load existing entry if entryId provided ──────────────
   const { entry: existingEntry, isLoading: isLoadingEntry } =
     useSingleExerciseEntry(entryId ?? null);
@@ -121,29 +158,6 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
     return unsub;
   }, [navigation, handleClose, readOnly, flow.currentStepIndex]);
 
-  // ─── Guards ───────────────────────────────────────────────────────
-  if (!config) {
-    return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-white">
-        <Text className="text-lg text-slate-500">Exercise not found</Text>
-        <Pressable
-          onPress={() => router.back()}
-          className="mt-4"
-        >
-          <Text className="text-base font-bold text-blue-500">Go back</Text>
-        </Pressable>
-      </SafeAreaView>
-    );
-  }
-
-  if (isLoadingEntry && entryId) {
-    return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-white">
-        <Text className="text-base text-slate-400">Loading...</Text>
-      </SafeAreaView>
-    );
-  }
-
   // ─── Step rendering ───────────────────────────────────────────────
   const StepComponent = currentStep?.component;
   const stepProps: StepProps<any> = useMemo(
@@ -174,6 +188,15 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
       isFinalStep,
     ],
   );
+
+  // ─── Guards ───────────────────────────────────────────────────────
+  if (isLoadingEntry && entryId) {
+    return (
+      <SafeAreaView className="flex-1 justify-center items-center bg-white">
+        <Text className="text-base text-slate-400">Loading...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -208,3 +231,4 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
 };
 
 ExerciseFlowScreen.displayName = "ExerciseFlowScreen";
+ResolvedExerciseFlowScreen.displayName = "ResolvedExerciseFlowScreen";

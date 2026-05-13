@@ -27,6 +27,16 @@ const WEEKDAY_LABELS = [
   "Sat",
 ] as const;
 
+const CALENDAR_COLORS = {
+  text: "#1F2937",
+  muted: "#64748B",
+  disabled: "rgba(31, 41, 55, 0.35)",
+  selectedText: "#5F46E8",
+  selectedBackground: "#EEE9FF",
+  todayBackground: "#FFFFFF",
+  border: "#DED6C8",
+};
+
 // Calendar Picker Component
 interface CalendarPickerProps {
   selectedDate: Date;
@@ -69,18 +79,32 @@ const DayCell = React.memo<DayCellProps>(
     // All hooks MUST be called before any conditional returns (Rules of Hooks)
     const containerClassName = useMemo(
       () =>
-        `w-full h-full flex justify-center items-center gap-1 rounded-xl ${
-          isSelected ? "bg-theme-purple-light" : isTodayDate ? "bg-offwhite" : ""
-        }`,
-      [isSelected, isTodayDate]
+        "w-full h-full flex justify-center items-center gap-1 rounded-xl",
+      []
     );
 
     const textClassName = useMemo(() => {
-      if (disabled) return "text-lg font-semibold text-theme-text-secondary/50";
-      if (isTodayDate && !isSelected) return "text-lg font-bold text-theme-text-secondary";
-      if (isSelected) return "text-lg font-bold text-theme-purple-deep";
-      return "text-lg font-medium text-theme-text-secondary";
+      if (disabled) return "text-lg font-semibold";
+      if (isTodayDate && !isSelected) return "text-lg font-bold";
+      if (isSelected) return "text-lg font-bold";
+      return "text-lg font-medium";
     }, [isTodayDate, isSelected, disabled]);
+
+    const textColor = useMemo(() => {
+      if (disabled) return CALENDAR_COLORS.disabled;
+      if (isSelected) return CALENDAR_COLORS.selectedText;
+      return isTodayDate ? CALENDAR_COLORS.text : CALENDAR_COLORS.muted;
+    }, [disabled, isSelected, isTodayDate]);
+
+    const containerStyle = useMemo(() => {
+      if (isSelected) {
+        return { backgroundColor: CALENDAR_COLORS.selectedBackground };
+      }
+      if (isTodayDate) {
+        return { backgroundColor: CALENDAR_COLORS.todayBackground };
+      }
+      return undefined;
+    }, [isSelected, isTodayDate]);
 
     const moodClassName = useMemo(
       () => `mt-0.5 ${disabled ? "opacity-30" : ""}`,
@@ -106,8 +130,10 @@ const DayCell = React.memo<DayCellProps>(
         accessibilityLabel={`${dayLabel}, ${isTodayDate ? "today" : ""}`}
         accessibilityState={{ selected: isSelected, disabled }}
       >
-        <View className={containerClassName}>
-          <Text className={textClassName}>{dayLabel}</Text>
+        <View className={containerClassName} style={containerStyle}>
+          <Text className={textClassName} style={{ color: textColor }}>
+            {dayLabel}
+          </Text>
           {showMoodBadge && (
             <View className={moodClassName}>
               <MoodBadge
@@ -144,7 +170,8 @@ const WeekDayHeader = React.memo(() => (
     {WEEKDAY_LABELS.map((day) => (
       <Text
         key={day}
-        className="flex-1 text-center text-xs font-semibold text-theme-text-secondary uppercase tracking-wider py-2"
+        className="flex-1 text-center text-xs font-semibold uppercase tracking-wider py-2"
+        style={{ color: CALENDAR_COLORS.muted }}
       >
         {day}
       </Text>
@@ -207,7 +234,10 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
       <View className="px-2">
         {/* Month header with title on left, arrows on right */}
         <View className="flex-row justify-between items-center mb-2 py-2">
-          <Text className="text-2xl font-cormorantBold text-theme-text-primary tracking-tight">
+          <Text
+            className="text-2xl font-cormorantBold tracking-tight"
+            style={{ color: CALENDAR_COLORS.text }}
+          >
             {monthTitle}
           </Text>
           <View className="flex-row items-center gap-2">
@@ -218,7 +248,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
               accessibilityLabel="Previous Month"
               accessibilityHint="Navigates calendar to the previous month"
             >
-              <HugeiconsIcon icon={ArrowLeft01Icon} size={20} className="text-theme-text-secondary" />
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color={CALENDAR_COLORS.muted} />
             </Pressable>
             <Pressable
               className="p-2 rounded-full"
@@ -231,7 +261,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
               <HugeiconsIcon
                 icon={ArrowRight01Icon}
                 size={20}
-                className={canGoNextMonth ? "text-theme-text-secondary" : "text-theme-border"}
+                color={canGoNextMonth ? CALENDAR_COLORS.muted : CALENDAR_COLORS.border}
               />
             </Pressable>
           </View>

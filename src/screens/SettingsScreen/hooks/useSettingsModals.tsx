@@ -10,9 +10,10 @@ import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 
 export const useSettingsModals = () => {
   const [isSignoutOPen, setIsSignoutOPen] = useState(false);
-  const { signOut, isSigningOut, user } = useAuth();
+  const { signOut, isSigningOut, user, isAnonymous } = useAuth();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const shouldShowSignIn = !user || isAnonymous;
 
   const [showModal, setShowModal] = useState({
     modalType: "",
@@ -110,6 +111,7 @@ export const useSettingsModals = () => {
     setShowEraseDataModal,
     deleteUserDataMutation,
     isSigningOut,
+    shouldShowSignIn,
     signOut,
     handlePress,
     handleRateUs,

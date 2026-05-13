@@ -20,6 +20,7 @@ import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { useOnboardingFlow } from "./hooks/useOnboardingFlow";
 import { useOnboardingAnalytics } from "./hooks/useOnboardingAnalytics";
 import { useCompleteOnboarding } from "@/hooks/data/useCompleteOnboarding";
+import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { ONBOARDING_STEPS } from "./constants";
 
 import StageProgressBar from "./components/StageProgressBar";
@@ -138,6 +139,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const { width: screenWidth } = useWindowDimensions();
   const analytics = useOnboardingAnalytics();
   const { markCompleted } = useCompleteOnboarding();
+  const { presentPaywall } = useRevenueCat();
   const [loading, setLoading] = React.useState(false);
   const [isStepActionReady, setIsStepActionReady] = React.useState(false);
 
@@ -330,10 +332,20 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     setTimeout(goNext, 1200);
   }, [updatePactSigned, goNext]);
 
-  const handlePaywallTrial = useCallback(() => {
-    updateTrialStarted(true);
-    goNext();
-  }, [updateTrialStarted, goNext]);
+  const handlePaywallTrial = useCallback(async () => {
+    if (loading) return;
+
+    try {
+      setLoading(true);
+      const purchased = await presentPaywall();
+      if (!purchased) return;
+
+      updateTrialStarted(true);
+      goNext();
+    } finally {
+      setLoading(false);
+    }
+  }, [goNext, loading, presentPaywall, updateTrialStarted]);
 
   const handlePaywallFree = useCallback(() => {
     updateTrialStarted(false);

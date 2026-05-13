@@ -4,20 +4,113 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Linking from "expo-linking";
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import { supabase } from "../network/auth/supabase";
-import { createSessionFromUrl } from "../network/auth/google-auth";
+import {
+  AuthFlowCancelledError,
+  AuthIdentityConflictError,
+  createSessionFromUrl,
+  isIdentityConflictError,
+  linkGoogleIdentity,
+  signInWithGoogleOAuth,
+} from "../network/auth/google-auth";
+import {
+  linkAppleIdentity,
+  linkAppleIdentityOAuth,
+  signInWithApple,
+  signInWithAppleOAuth,
+} from "../network/auth/apple-auth";
 import { router } from "expo-router";
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  Platform,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { WifiOffIcon, ReloadIcon } from "@hugeicons/core-free-icons";
-import { registerPushToken, unregisterPushToken } from "../utils/pushTokenRegistration";
+import {
+  registerPushToken,
+  unregisterPushToken,
+} from "../utils/pushTokenRegistration";
 import { migrateGuestProgress } from "../lib/migrations/migrateGuestProgress";
+
+export type AuthProviderId = "apple" | "google";
+
+export interface AccountConflict {
+  provider: AuthProviderId;
+  anonymousUserId: string;
+  message: string;
+}
+
+export type ClaimProfileResult =
+  | { status: "linked"; session: Session; user: User }
+  | { status: "existing_account"; conflict: AccountConflict }
+  | { status: "cancelled" }
+  | { status: "failed"; error: unknown };
+
+export type MoveToExistingAccountResult =
+  | { status: "signed_in"; session: Session; user: User }
+  | { status: "cancelled" }
+  | { status: "failed"; error: unknown };
+
+const isAnonymousSignInDisabledError = (error: unknown): boolean => {
+  const maybeError = error as {
+    code?: string;
+    message?: string;
+    name?: string;
+  };
+  const haystack = [
+    maybeError?.code,
+    maybeError?.message,
+    maybeError?.name,
+    error instanceof Error ? error.message : "",
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return (
+    haystack.includes("anonymous sign-ins are disabled") ||
+    haystack.includes("anonymous signups are disabled")
+  );
+};
+
+const AUTH_STARTUP_TIMEOUT_MS = 10000;
+
+const withTimeout = async <T,>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  label: string,
+): Promise<T> => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error(`${label} timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+  });
+
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+};
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  isAnonymous: boolean;
   isSigningOut: boolean;
+  accountConflict: AccountConflict | null;
+  ensureAnonymousSession: () => Promise<Session | null>;
+  claimProfile: (provider: AuthProviderId) => Promise<ClaimProfileResult>;
+  moveToExistingAccount: (
+    provider: AuthProviderId,
+  ) => Promise<MoveToExistingAccountResult>;
+  clearAccountConflict: () => void;
   signOut: () => Promise<void>;
 }
 
@@ -25,8 +118,20 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
   loading: true,
+  isAnonymous: false,
   isSigningOut: false,
-  signOut: async () => { },
+  accountConflict: null,
+  ensureAnonymousSession: async () => null,
+  claimProfile: async () => ({
+    status: "failed",
+    error: new Error("AuthProvider missing"),
+  }),
+  moveToExistingAccount: async () => ({
+    status: "failed",
+    error: new Error("AuthProvider missing"),
+  }),
+  clearAccountConflict: () => {},
+  signOut: async () => {},
 });
 
 export const useAuth = (): AuthContextType => {
@@ -93,21 +198,78 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [error, setError] = useState<boolean>(false);
   const [retrying, setRetrying] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [accountConflict, setAccountConflict] =
+    useState<AccountConflict | null>(null);
   const toast = useToast();
+
+  const ensureProfileForUser = async (nextUser: User): Promise<void> => {
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .upsert(
+        { id: nextUser.id },
+        { onConflict: "id", ignoreDuplicates: true },
+      );
+
+    if (profileError) {
+      console.warn("[Auth] Failed to ensure profile row:", profileError);
+    }
+  };
+
+  const ensureProfileForUserInBackground = (nextUser: User): void => {
+    ensureProfileForUser(nextUser).catch((profileError) => {
+      console.warn("[Auth] Failed to ensure profile row:", profileError);
+    });
+  };
+
+  const ensureAnonymousSessionInternal = async (): Promise<Session | null> => {
+    const {
+      data: { session: currentSession },
+      error: currentSessionError,
+    } = await withTimeout(
+      supabase.auth.getSession(),
+      AUTH_STARTUP_TIMEOUT_MS,
+      "Supabase getSession",
+    );
+
+    if (currentSessionError) throw currentSessionError;
+
+    if (currentSession) {
+      ensureProfileForUserInBackground(currentSession.user);
+      return currentSession;
+    }
+
+    const { data, error: anonymousError } = await withTimeout(
+      supabase.auth.signInAnonymously(),
+      AUTH_STARTUP_TIMEOUT_MS,
+      "Supabase anonymous sign-in",
+    );
+
+    if (anonymousError) {
+      if (isAnonymousSignInDisabledError(anonymousError)) {
+        console.warn(
+          "[Auth] Anonymous sign-ins are disabled in Supabase. Enable Anonymous sign-ins in the hosted Supabase dashboard to use anonymous purchase/profile claiming.",
+        );
+        return null;
+      }
+
+      throw anonymousError;
+    }
+    if (data.session?.user) {
+      ensureProfileForUserInBackground(data.session.user);
+    }
+
+    return data.session;
+  };
 
   const initializeAuth = async () => {
     try {
       setError(false);
       setRetrying(true);
 
-      // Trigger a session refresh which will fire the INITIAL_SESSION event
-      const { error: sessionError } = await supabase.auth.getSession();
-
-      if (sessionError) {
-        throw sessionError;
-      }
-
-      // Session and user will be set by onAuthStateChange INITIAL_SESSION event
+      const nextSession = await ensureAnonymousSessionInternal();
+      setSession(nextSession);
+      setUser(nextSession?.user ?? null);
+      setLoading(false);
       setRetrying(false);
     } catch (err) {
       console.error("Auth initialization error:", err);
@@ -120,16 +282,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "INITIAL_SESSION") {
-        // Handle potential network error during initial session
-        if (!session && error) {
-          return; // Keep error state if we failed to initialize
-        }
-
         setSession(session);
         setUser(session?.user ?? null);
-        setLoading(false);
         setError(false);
         return;
       }
@@ -139,25 +295,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Show success toast when user signs in (navigation handled by signin screen)
       if (event === "SIGNED_IN" && session?.user) {
-        // Register push token for remote notifications
-        registerPushToken(session.user.id).catch(console.error);
-        // P1.6.1: Migrate any guest journey progress to Supabase
-        migrateGuestProgress(session.user.id).catch(console.error);
+        ensureProfileForUserInBackground(session.user);
 
-        toast.show({
-          placement: "bottom right",
-          render: ({ id }) => (
-            <Toast nativeID={id} variant="solid" action="success">
-              <ToastTitle>Signed in successfully!</ToastTitle>
-            </Toast>
-          ),
-        });
+        if (!session.user.is_anonymous) {
+          setTimeout(() => {
+            // Register push token for remote notifications.
+            registerPushToken(session.user.id).catch(console.error);
+            // Legacy local guest migration is intentionally skipped for anonymous users.
+            migrateGuestProgress(session.user.id).catch(console.error);
+
+            toast.show({
+              placement: "bottom right",
+              render: ({ id }) => (
+                <Toast nativeID={id} variant="solid" action="success">
+                  <ToastTitle>Signed in successfully!</ToastTitle>
+                </Toast>
+              ),
+            });
+          }, 0);
+        }
       }
 
       if (event === "SIGNED_OUT") {
         setSession(null);
         setUser(null);
-        await AsyncStorage.clear();
+        AsyncStorage.clear().catch(console.error);
       }
     });
 
@@ -169,7 +331,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (url && url.includes("access_token")) {
         try {
           await createSessionFromUrl(url);
-        } catch (error) { }
+        } catch (error) {}
       }
     };
 
@@ -204,11 +366,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (user?.id) {
         await unregisterPushToken(user.id).catch(console.error);
       }
-      setSession(null);
-      setUser(null);
       await AsyncStorage.clear();
 
-      router.replace("/");
+      const anonymousSession = await ensureAnonymousSessionInternal();
+      setSession(anonymousSession);
+      setUser(anonymousSession?.user ?? null);
+
+      router.replace("/tabs/screens/onboard-container");
     } catch (error) {
       setSession(null);
       setUser(null);
@@ -219,11 +383,140 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const ensureAnonymousSession = async (): Promise<Session | null> => {
+    const anonymousSession = await ensureAnonymousSessionInternal();
+    setSession(anonymousSession);
+    setUser(anonymousSession?.user ?? null);
+    return anonymousSession;
+  };
+
+  const claimProfile = async (
+    provider: AuthProviderId,
+  ): Promise<ClaimProfileResult> => {
+    let anonymousUserId = "";
+
+    try {
+      const currentSession = await ensureAnonymousSessionInternal();
+      if (!currentSession?.user) {
+        return {
+          status: "failed",
+          error: new Error("No anonymous session available."),
+        };
+      }
+
+      anonymousUserId = currentSession.user.id;
+
+      if (!currentSession.user.is_anonymous) {
+        return {
+          status: "linked",
+          session: currentSession,
+          user: currentSession.user,
+        };
+      }
+
+      const linkedSession =
+        provider === "google"
+          ? await linkGoogleIdentity()
+          : Platform.OS === "ios"
+            ? await linkAppleIdentity()
+            : await linkAppleIdentityOAuth();
+
+      const nextSession =
+        linkedSession ?? (await supabase.auth.getSession()).data.session;
+
+      if (!nextSession?.user) {
+        return {
+          status: "failed",
+          error: new Error("No session returned after linking identity."),
+        };
+      }
+
+      await ensureProfileForUser(nextSession.user);
+      setSession(nextSession);
+      setUser(nextSession.user);
+      setAccountConflict(null);
+
+      return { status: "linked", session: nextSession, user: nextSession.user };
+    } catch (err) {
+      if (err instanceof AuthFlowCancelledError) {
+        return { status: "cancelled" };
+      }
+
+      if (
+        err instanceof AuthIdentityConflictError ||
+        isIdentityConflictError(err)
+      ) {
+        const conflict: AccountConflict = {
+          provider,
+          anonymousUserId: anonymousUserId ?? "",
+          message:
+            err instanceof Error
+              ? err.message
+              : "This login is already linked to another Happy account.",
+        };
+        setAccountConflict(conflict);
+        return { status: "existing_account", conflict };
+      }
+
+      return { status: "failed", error: err };
+    }
+  };
+
+  const moveToExistingAccount = async (
+    provider: AuthProviderId,
+  ): Promise<MoveToExistingAccountResult> => {
+    try {
+      const nextSession =
+        provider === "google"
+          ? await signInWithGoogleOAuth()
+          : Platform.OS === "ios"
+            ? await signInWithApple()
+            : await signInWithAppleOAuth();
+
+      const resolvedSession =
+        nextSession ?? (await supabase.auth.getSession()).data.session;
+
+      if (!resolvedSession?.user) {
+        return {
+          status: "failed",
+          error: new Error("No session returned after signing in."),
+        };
+      }
+
+      await ensureProfileForUser(resolvedSession.user);
+      setSession(resolvedSession);
+      setUser(resolvedSession.user);
+      setAccountConflict(null);
+
+      return {
+        status: "signed_in",
+        session: resolvedSession,
+        user: resolvedSession.user,
+      };
+    } catch (err) {
+      if (err instanceof AuthFlowCancelledError) {
+        return { status: "cancelled" };
+      }
+
+      return { status: "failed", error: err };
+    }
+  };
+
+  const clearAccountConflict = (): void => {
+    setAccountConflict(null);
+  };
+
   const value: AuthContextType = {
     user,
     session,
     loading,
+    isAnonymous: Boolean(user?.is_anonymous),
     isSigningOut,
+    accountConflict,
+    ensureAnonymousSession,
+    claimProfile,
+    moveToExistingAccount,
+    clearAccountConflict,
     signOut,
   };
 
