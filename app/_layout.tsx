@@ -22,6 +22,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import RevenueCatProvider from "@/src/context/RevenueCatProvider";
 import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
+import { FloatingSettingsButton } from "@/src/components/FloatingSettingsButton";
 import {
   CormorantGaramond_300Light,
   CormorantGaramond_400Regular,
@@ -212,6 +213,7 @@ function RootLayoutNav() {
                                     <BottomSheetModalProvider>
                                       <Slot />
                                       <AnonymousPurchaseClaimPrompt />
+                                      <FloatingSettingsButton />
                                     </BottomSheetModalProvider>
                                   </KeyboardProvider>
                                   {/* {pathname === "/" && (
