@@ -12,6 +12,7 @@ export const calenderVisibleDatesAtom = atom<{
 });
 
 export const startRecordingAtom = atom(false);
+export const openAIInsightsAtom = atom(false);
 
 export type DeleteJournal = {
   flag?: boolean;

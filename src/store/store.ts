@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import sectionMapReducer from "./slices/sectionMapSlice";
 import enrolledCoursesReducer from "./slices/enrolledCoursesSlice";
+import happyAssistantReducer from "./slices/happyAssistantSlice";
 
 export const store = configureStore({
   reducer: {
     sectionMap: sectionMapReducer,
     enrolledCourses: enrolledCoursesReducer,
+    happyAssistant: happyAssistantReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

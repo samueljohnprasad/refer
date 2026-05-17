@@ -1,18 +1,14 @@
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 // import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
-import { Slot, usePathname } from "expo-router";
+import { useEffect } from "react";
+import { Slot } from "expo-router";
 import { AuthProvider } from "@/src/context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import * as Haptics from "expo-haptics";
 import { PressablesConfig } from "pressto";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -22,7 +18,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import RevenueCatProvider from "@/src/context/RevenueCatProvider";
 import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
-import { FloatingSettingsButton } from "@/src/components/FloatingSettingsButton";
+import { FloatingHappyAssistant } from "@/src/components/happy-assistant/FloatingHappyAssistant";
 import {
   CormorantGaramond_300Light,
   CormorantGaramond_400Regular,
@@ -61,10 +57,11 @@ import {
 import { usePushNotificationSetup } from "@/src/hooks/data/usePushNotificationSetup";
 import { ReduxProvider } from "@/src/store/ReduxProvider";
 
+const APP_COLOR_MODE = "light";
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
-  onPress: () => {
-    Haptics.selectionAsync();
+  onPress: (): void => {
+    void Haptics.selectionAsync().catch(() => {});
   },
 };
 export {
@@ -77,7 +74,7 @@ SplashScreen.setOptions({
   fade: true,
 });
 
-SplashScreen.preventAutoHideAsync();
+void SplashScreen.preventAutoHideAsync().catch(() => {});
 
 // Configure how notifications behave while the app is in the foreground.
 // Without this, local notifications may be silent or not visible if the app
@@ -116,7 +113,6 @@ export default function RootLayout() {
     GeistBold: Geist_700Bold,
   });
 
-  const [styleLoaded, setStyleLoaded] = useState(false);
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
@@ -124,9 +120,10 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
-      // Add subtle haptic feedback on app launch
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      void SplashScreen.hideAsync().catch(() => {});
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(
+        () => {},
+      );
     }
   }, [loaded]);
 
@@ -173,9 +170,6 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const pathname = usePathname();
-  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
-
   return (
     <SuspensLoader>
       <ReduxProvider>
@@ -200,33 +194,16 @@ function RootLayoutNav() {
                           <GestureHandlerRootView
                             style={StyleSheet.absoluteFill}
                           >
-                            <GluestackUIProvider mode={colorMode}>
+                            <GluestackUIProvider mode={APP_COLOR_MODE}>
                               <RevenueCatProvider>
-                                <ThemeProvider
-                                  value={
-                                    colorMode === "dark"
-                                      ? DarkTheme
-                                      : DefaultTheme
-                                  }
-                                >
+                                <ThemeProvider value={DefaultTheme}>
                                   <KeyboardProvider>
                                     <BottomSheetModalProvider>
                                       <Slot />
                                       <AnonymousPurchaseClaimPrompt />
-                                      <FloatingSettingsButton />
+                                      <FloatingHappyAssistant />
                                     </BottomSheetModalProvider>
                                   </KeyboardProvider>
-                                  {/* {pathname === "/" && (
-                <Fab
-                  onPress={() =>
-                    setColorMode(colorMode === "dark" ? "light" : "dark")
-                  }
-                  className="m-6"
-                  size="lg"
-                >
-                  <FabIcon as={colorMode === "dark" ? MoonIcon : SunIcon} />
-                </Fab>
-              )} */}
                                 </ThemeProvider>
                               </RevenueCatProvider>
                             </GluestackUIProvider>

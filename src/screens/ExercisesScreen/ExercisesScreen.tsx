@@ -1,7 +1,15 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactElement,
+} from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -29,6 +37,14 @@ import type {
 import { useCBTHistory, type HistoryLogItem } from "./hooks/useCBTHistory";
 
 type TabKey = "discover" | "log";
+type ExerciseGroup = ReturnType<typeof getExercisesGrouped>[number];
+
+const TAB_KEYS = ["discover", "log"] as const;
+const COMPLETE_HISTORY_STATUSES = new Set<string>([
+  "completed",
+  "summary",
+  "checker_completed",
+]);
 
 const LEGACY_LOG_META = {
   catcher: {
@@ -50,6 +66,10 @@ const LEGACY_LOG_META = {
     backgroundColor: "#F0FDF4",
   },
 } as const;
+
+function isTabKey(value: unknown): value is TabKey {
+  return typeof value === "string" && TAB_KEYS.includes(value as TabKey);
+}
 
 function buildExerciseFlowRoute(
   type: ExerciseType,
@@ -80,23 +100,34 @@ interface ExerciseCardProps {
   onPress: (exercise: ExerciseConfig<any>) => void;
 }
 
-function ExerciseCard({
+const ExerciseCard = memo(function ExerciseCard({
   exercise,
   onPress,
-}: ExerciseCardProps): React.JSX.Element {
+}: ExerciseCardProps): ReactElement {
   const icon = getExerciseIcon(exercise.type);
+  const iconStyle = useMemo(
+    () => [
+      styles.exerciseIcon,
+      { backgroundColor: exercise.backgroundColor },
+    ],
+    [exercise.backgroundColor],
+  );
+  const handlePress = useCallback((): void => {
+    onPress(exercise);
+  }, [exercise, onPress]);
 
   return (
     <Pressable
-      onPress={() => onPress(exercise)}
+      onPress={handlePress}
       accessibilityRole="button"
       accessibilityLabel={`${exercise.title}: ${exercise.subtitle}. Duration: ${exercise.duration}.`}
       className="mb-4 min-h-12 rounded-2xl border-2 border-b-4 border-slate-200 border-b-slate-300 bg-white active:opacity-90"
+      style={styles.roundedCard}
     >
       <View className="flex-row items-center p-4">
         <View
           className="mr-4 h-14 w-14 items-center justify-center rounded-2xl"
-          style={{ backgroundColor: exercise.backgroundColor }}
+          style={iconStyle}
           accessible={false}
         >
           <HugeiconsIcon icon={icon} size={28} color="#1E293B" />
@@ -132,19 +163,21 @@ function ExerciseCard({
       </View>
     </Pressable>
   );
-}
+});
 
-function DiscoverSection({
-  label,
-  category,
-  exercises,
-  onPress,
-}: {
+interface DiscoverSectionProps {
   label: string;
   category: ExerciseCategory;
   exercises: ExerciseConfig<any>[];
   onPress: (exercise: ExerciseConfig<any>) => void;
-}): React.JSX.Element {
+}
+
+const DiscoverSection = memo(function DiscoverSection({
+  label,
+  category,
+  exercises,
+  onPress,
+}: DiscoverSectionProps): ReactElement {
   const categoryMeta = getCategoryMeta(category);
   const categoryIcon = getCategoryIcon(category);
 
@@ -173,7 +206,7 @@ function DiscoverSection({
       ))}
     </View>
   );
-}
+});
 
 interface StatusInfo {
   label: string;
@@ -275,13 +308,15 @@ function getLogPresentation(item: HistoryLogItem) {
   };
 }
 
-function LogCard({
-  item,
-  onPress,
-}: {
+interface LogCardProps {
   item: HistoryLogItem;
   onPress: (item: HistoryLogItem) => void;
-}): React.JSX.Element {
+}
+
+const LogCard = memo(function LogCard({
+  item,
+  onPress,
+}: LogCardProps): ReactElement {
   const {
     label,
     isComplete,
@@ -292,16 +327,27 @@ function LogCard({
     xpEarned,
   } = formatStatus(item);
   const presentation = getLogPresentation(item);
+  const iconStyle = useMemo(
+    () => [
+      styles.logIcon,
+      { backgroundColor: presentation.iconBackgroundColor },
+    ],
+    [presentation.iconBackgroundColor],
+  );
+  const handlePress = useCallback((): void => {
+    onPress(item);
+  }, [item, onPress]);
 
   return (
     <Pressable
-      onPress={() => onPress(item)}
+      onPress={handlePress}
       className={`mb-3 rounded-2xl border-2 border-b-4 bg-white active:opacity-90 ${cardBorderClassName}`}
+      style={styles.roundedCard}
     >
       <View className="flex-row items-center p-4">
         <View
           className="mr-3 h-12 w-12 items-center justify-center rounded-2xl"
-          style={{ backgroundColor: presentation.iconBackgroundColor }}
+          style={iconStyle}
         >
           <HugeiconsIcon icon={presentation.icon} size={22} color="#1E293B" />
         </View>
@@ -338,35 +384,171 @@ function LogCard({
                 {label}
               </Text>
             </View>
-            {isComplete && xpEarned > 0 && (
+            {isComplete && xpEarned > 0 ? (
               <View className="flex-row items-center rounded-full bg-[#FFF3CD] px-2 py-1">
                 <Text className="text-[10px]">⚡</Text>
                 <Text className="ml-0.5 text-[10px] font-extrabold text-amber-700">
                   +{xpEarned} XP
                 </Text>
               </View>
-            )}
+            ) : null}
           </View>
         </View>
       </View>
     </Pressable>
   );
+});
+
+function EmptyDiscoverState(): ReactElement {
+  return (
+    <View
+      className="items-center justify-center px-8 py-16"
+      accessibilityLiveRegion="polite"
+    >
+      <View
+        className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-slate-100"
+        style={styles.emptyIcon}
+      >
+        <Text
+          className="text-[40px]"
+          accessibilityLabel="Exercise illustration"
+          accessibilityRole="image"
+        >
+          🏋️
+        </Text>
+      </View>
+      <Text className="mb-2 text-center text-xl font-extrabold text-slate-700">
+        No exercises yet
+      </Text>
+      <Text className="text-center text-sm leading-relaxed text-slate-400">
+        Exercises will appear here as they become available.
+      </Text>
+    </View>
+  );
 }
 
-export default function ExercisesScreen(): React.JSX.Element {
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  listContent: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 40,
+  },
+  list: {
+    flex: 1,
+  },
+  roundedCard: {
+    borderCurve: "continuous",
+  },
+  exerciseIcon: {
+    borderCurve: "continuous",
+  },
+  logIcon: {
+    borderCurve: "continuous",
+  },
+  emptyIcon: {
+    borderCurve: "continuous",
+  },
+  tabButton: {
+    borderCurve: "continuous",
+  },
+});
+
+function LoadingHistoryState(): ReactElement {
+  return (
+    <View className="items-center py-12">
+      <Text className="text-sm font-bold text-slate-400">
+        Loading history...
+      </Text>
+    </View>
+  );
+}
+
+function EmptyExerciseLogState(): ReactElement {
+  return (
+    <View className="items-center justify-center px-8 py-16">
+      <View
+        className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-slate-100"
+        style={styles.emptyIcon}
+      >
+        <Text className="text-[40px]">📚</Text>
+      </View>
+      <Text className="mb-2 text-center text-xl font-extrabold text-slate-700">
+        Your exercise journal
+      </Text>
+      <Text className="text-center text-sm leading-relaxed text-slate-400">
+        Complete your first exercise to see it here.
+      </Text>
+    </View>
+  );
+}
+
+interface ExerciseTabButtonProps {
+  tab: TabKey;
+  isActive: boolean;
+  onPress: (tab: TabKey) => void;
+}
+
+const ExerciseTabButton = memo(function ExerciseTabButton({
+  tab,
+  isActive,
+  onPress,
+}: ExerciseTabButtonProps): ReactElement {
+  const handlePress = useCallback((): void => {
+    onPress(tab);
+  }, [onPress, tab]);
+  const label = tab === "discover" ? "Lessons" : "My Log";
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: isActive }}
+      className={`flex-1 items-center justify-center rounded-lg py-2.5 ${
+        isActive ? "bg-white shadow-sm" : ""
+      }`}
+      style={styles.tabButton}
+    >
+      <Text
+        className={`text-sm font-extrabold ${
+          isActive ? "text-slate-800" : "text-slate-400"
+        }`}
+      >
+        {label}
+      </Text>
+    </Pressable>
+  );
+});
+
+export default function ExercisesScreen(): ReactElement {
   const [activeTab, setActiveTab] = useState<TabKey>("discover");
+  const params = useLocalSearchParams<{ tab?: string }>();
   const { data: history = [], isLoading: isLoadingHistory } = useCBTHistory();
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
 
-  const completedCount = history.filter(
-    (item) =>
-      item.status === "completed" ||
-      item.status === "summary" ||
-      item.status === "checker_completed",
-  ).length;
+  useEffect(() => {
+    if (isTabKey(params.tab)) {
+      setActiveTab(params.tab);
+    }
+  }, [params.tab]);
+
+  const completedCount = useMemo(
+    () =>
+      history.filter((item) => COMPLETE_HISTORY_STATUSES.has(item.status))
+        .length,
+    [history],
+  );
 
   const handleExercisePress = useCallback((exercise: ExerciseConfig<any>) => {
     router.push(buildExerciseRoute(exercise.type) as never);
+  }, []);
+
+  const handleTabPress = useCallback((tab: TabKey): void => {
+    setActiveTab(tab);
+    router.setParams({ tab });
   }, []);
 
   const handleLogPress = useCallback((item: HistoryLogItem): void => {
@@ -394,9 +576,32 @@ export default function ExercisesScreen(): React.JSX.Element {
       router.push(`/tabs/screens/gratitude-reframe?id=${item.id}` as never);
     }
   }, []);
+  const renderDiscoverSection = useCallback<ListRenderItem<ExerciseGroup>>(
+    ({ item }) => (
+      <DiscoverSection
+        label={item.label}
+        category={item.category}
+        exercises={item.exercises}
+        onPress={handleExercisePress}
+      />
+    ),
+    [handleExercisePress],
+  );
+  const renderLogCard = useCallback<ListRenderItem<HistoryLogItem>>(
+    ({ item }) => <LogCard item={item} onPress={handleLogPress} />,
+    [handleLogPress],
+  );
+  const exerciseGroupKeyExtractor = useCallback(
+    (item: ExerciseGroup): string => item.category,
+    [],
+  );
+  const historyKeyExtractor = useCallback(
+    (item: HistoryLogItem): string => `${item.type}-${item.id}`,
+    [],
+  );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top"]}>
+    <SafeAreaView style={styles.root} edges={["top"]}>
       <View className="px-5 pb-3 pt-4">
         <View className="mb-4 flex-row items-center justify-between">
           <View className="flex-row items-center gap-3">
@@ -405,114 +610,51 @@ export default function ExercisesScreen(): React.JSX.Element {
               Exercises
             </Text>
           </View>
-          {completedCount > 0 && (
+          {completedCount > 0 ? (
             <View className="flex-row items-center rounded-full bg-[#FFF3CD] px-3 py-1.5">
               <Text className="text-sm">🔥</Text>
               <Text className="ml-1 text-xs font-extrabold text-amber-700">
                 {completedCount} done
               </Text>
             </View>
-          )}
+          ) : null}
         </View>
 
         <View className="flex-row rounded-xl bg-slate-100 p-1">
-          {(["discover", "log"] as const).map((tab) => {
-            const isActive = activeTab === tab;
-            const label = tab === "discover" ? "Lessons" : "My Log";
-
-            return (
-              <Pressable
-                key={tab}
-                onPress={() => setActiveTab(tab)}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: isActive }}
-                className={`flex-1 items-center justify-center rounded-lg py-2.5 ${
-                  isActive ? "bg-white shadow-sm" : ""
-                }`}
-              >
-                <Text
-                  className={`text-sm font-extrabold ${
-                    isActive ? "text-slate-800" : "text-slate-400"
-                  }`}
-                >
-                  {label}
-                </Text>
-              </Pressable>
-            );
-          })}
+          {TAB_KEYS.map((tab) => (
+            <ExerciseTabButton
+              key={tab}
+              tab={tab}
+              isActive={activeTab === tab}
+              onPress={handleTabPress}
+            />
+          ))}
         </View>
       </View>
 
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        <View className="px-5 pb-10 pt-4">
-          {activeTab === "discover" ? (
-            exerciseGroups.length > 0 ? (
-              <View>
-                {exerciseGroups.map((group) => (
-                  <DiscoverSection
-                    key={group.category}
-                    label={group.label}
-                    category={group.category}
-                    exercises={group.exercises}
-                    onPress={handleExercisePress}
-                  />
-                ))}
-              </View>
-            ) : (
-              <View
-                className="items-center justify-center px-8 py-16"
-                accessibilityLiveRegion="polite"
-              >
-                <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-slate-100">
-                  <Text
-                    className="text-[40px]"
-                    accessibilityLabel="Exercise illustration"
-                    accessibilityRole="image"
-                  >
-                    🏋️
-                  </Text>
-                </View>
-                <Text className="mb-2 text-center text-xl font-extrabold text-slate-700">
-                  No exercises yet
-                </Text>
-                <Text className="text-center text-sm leading-relaxed text-slate-400">
-                  Exercises will appear here as they become available.
-                </Text>
-              </View>
-            )
-          ) : (
-            <View>
-              {isLoadingHistory ? (
-                <View className="items-center py-12">
-                  <Text className="text-sm font-bold text-slate-400">
-                    Loading history...
-                  </Text>
-                </View>
-              ) : history.length > 0 ? (
-                history.map((item) => (
-                  <LogCard
-                    key={`${item.type}-${item.id}`}
-                    item={item}
-                    onPress={handleLogPress}
-                  />
-                ))
-              ) : (
-                <View className="items-center justify-center px-8 py-16">
-                  <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-slate-100">
-                    <Text className="text-[40px]">📚</Text>
-                  </View>
-                  <Text className="mb-2 text-center text-xl font-extrabold text-slate-700">
-                    Your exercise journal
-                  </Text>
-                  <Text className="text-center text-sm leading-relaxed text-slate-400">
-                    Complete your first exercise to see it here.
-                  </Text>
-                </View>
-              )}
-            </View>
-          )}
-        </View>
-      </ScrollView>
+      {activeTab === "discover" ? (
+        <FlashList
+          style={styles.list}
+          data={exerciseGroups}
+          renderItem={renderDiscoverSection}
+          keyExtractor={exerciseGroupKeyExtractor}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={EmptyDiscoverState}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <FlashList
+          style={styles.list}
+          data={isLoadingHistory ? [] : history}
+          renderItem={renderLogCard}
+          keyExtractor={historyKeyExtractor}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={
+            isLoadingHistory ? LoadingHistoryState : EmptyExerciseLogState
+          }
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </SafeAreaView>
   );
 }

@@ -1,0 +1,46 @@
+import { useMemo } from "react";
+import { usePathname } from "expo-router";
+
+import { useAuth } from "@/src/context/AuthContext";
+import { useRevenueCat } from "@/src/context/RevenueCatProvider";
+import { useCBTHistory } from "@/src/screens/ExercisesScreen/hooks/useCBTHistory";
+import { useAppSelector } from "@/src/store/hooks";
+import { selectTotalCompletedCount } from "@/src/store/selectors/sectionMapSelectors";
+import { resolveHappyAssistantActions } from "./assistantResolver";
+import { getLatestIncompleteExercise } from "./assistantHistory";
+import type { HappyAssistantActionDescriptor } from "./types";
+
+interface HappyAssistantActionsResult {
+  title: string;
+  subtitle: string;
+  actions: HappyAssistantActionDescriptor[];
+}
+
+export function useHappyAssistantActions(): HappyAssistantActionsResult {
+  const pathname = usePathname();
+  const { isAnonymous } = useAuth();
+  const { hasPro, shouldPromptAccountClaim } = useRevenueCat();
+  const { data: history = [] } = useCBTHistory();
+  const completedJourneyNodeCount = useAppSelector(selectTotalCompletedCount);
+
+  return useMemo(() => {
+    const latestIncompleteExercise = getLatestIncompleteExercise(history);
+    const hasProgress = history.length > 0 || completedJourneyNodeCount > 0;
+
+    return resolveHappyAssistantActions({
+      pathname,
+      isAnonymous,
+      hasPro,
+      shouldPromptAccountClaim,
+      hasProgress,
+      latestIncompleteExerciseTitle: latestIncompleteExercise?.title,
+    });
+  }, [
+    completedJourneyNodeCount,
+    hasPro,
+    history,
+    isAnonymous,
+    pathname,
+    shouldPromptAccountClaim,
+  ]);
+}

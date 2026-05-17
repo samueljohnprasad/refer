@@ -1,13 +1,14 @@
-import React, {
+import {
+  lazy,
+  memo,
   useCallback,
   useEffect,
   useMemo,
-  memo,
   useRef,
   useState,
+  type ReactElement,
 } from "react";
-import { View, ScrollView, Pressable, Text } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { Stack } from "expo-router";
 import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import { pickerStyle, tag } from "@expo/ui/swift-ui/modifiers";
@@ -16,16 +17,12 @@ import {
   addDays,
   startOfWeek,
   endOfWeek,
-  isBefore,
-  startOfDay,
   startOfMonth,
   endOfMonth,
-  getWeek,
 } from "date-fns";
 import { useAtom, useSetAtom } from "jotai";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
-  Easing,
   interpolate,
   runOnJS,
   useAnimatedStyle,
@@ -34,45 +31,62 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
   currentWeekViewAtom,
   selectedDateAtom,
   calenderVisibleDatesAtom,
+  openAIInsightsAtom,
 } from "./atoms";
 import DailyNotesHeader from "./DailyNotesHeader";
-import { AIInsightsChip } from "@/src/components/ai/AIInsightsChip";
 import { formateDate_y_m_d } from "@/src/utils/date";
 import SuspensLoader from "@/src/components/SuspensLoader";
-import CalorieWidget from "@/src/components/CalorieWidget";
 import { HabitsSection } from "@/src/components/habits/HabitsSection";
 import CalorieTrackerScreen from "../CalorieTrackerScreen/CalorieTrackerScreen";
 
 // Lazy load heavy components
-const MentalHealthProfileContainer = React.lazy(() =>
+const MentalHealthProfileContainer = lazy(() =>
   import("./notes/MentalHealthProfileContainer").then((module) => ({
     default: module.MentalHealthProfileContainer,
   })),
 );
 
-const AIInsightsModalBottomSheet = React.lazy(() =>
+const AIInsightsModalBottomSheet = lazy(() =>
   import("@/src/components/ai/AIInsightsModalBottomSheet").then((module) => ({
     default: module.AIInsightsModalBottomSheet,
   })),
 );
 
-const DailyNotesScreenComponent = () => {
+const TAB_FILTER_OPTIONS = ["Journal", "Calories", "Habits"] as const;
+type TabFilter = "habits" | "journal" | "calories";
+type TabFilterLabel = (typeof TAB_FILTER_OPTIONS)[number];
+
+const TAB_FILTER_BY_LABEL: Record<TabFilterLabel, TabFilter> = {
+  Journal: "journal",
+  Calories: "calories",
+  Habits: "habits",
+};
+const TAB_FILTER_LABEL_BY_FILTER: Record<TabFilter, TabFilterLabel> = {
+  journal: "Journal",
+  calories: "Calories",
+  habits: "Habits",
+};
+
+function isTabFilterLabel(selection: unknown): selection is TabFilterLabel {
+  return (
+    typeof selection === "string" &&
+    TAB_FILTER_OPTIONS.includes(selection as TabFilterLabel)
+  );
+}
+
+function DailyNotesScreenComponent(): ReactElement {
   // State for selected date
   const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
+  const [openAIInsights, setOpenAIInsights] = useAtom(openAIInsightsAtom);
   const [showBookmarksModal, setShowBookmarksModal] = useState<boolean>(false);
 
   // Tab filter state
-  type TabFilter = "habits" | "journal" | "calories";
   const [tabFilter, setTabFilter] = useState<TabFilter>("journal");
-  const [filterIndex, setFilterIndex] = useState(0);
-
-  const filterOptions = ["Journal", "Calories", "Habits"];
 
   // State for current week view (independent of selected date)
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
@@ -80,13 +94,7 @@ const DailyNotesScreenComponent = () => {
   // Set calendar visible dates based on current week in view
   const setCalenderVisibleDates = useSetAtom(calenderVisibleDatesAtom);
 
-  // Memoize the week number to avoid unnecessary effect triggers
-  const currentWeekNumber = useMemo(
-    () => getWeek(currentWeekView),
-    [currentWeekView],
-  );
-
-  // Update calendar visible dates when week changes - optimized with memoized week number
+  // Update calendar visible dates when the displayed week changes.
   useEffect(() => {
     const monthStart = startOfMonth(currentWeekView);
     const monthEnd = endOfMonth(currentWeekView);
@@ -97,17 +105,23 @@ const DailyNotesScreenComponent = () => {
       visibleStartDate: formateDate_y_m_d(visibleStartDate),
       visibleEndDate: formateDate_y_m_d(visibleEndDate),
     });
-  }, [currentWeekNumber, setCalenderVisibleDates]);
+  }, [currentWeekView, setCalenderVisibleDates]);
 
   // Bottom sheet ref for AI insights
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
-  // Check if current week is before today (past week)
-  const isBeforeCurrentWeek = useMemo(() => {
-    const today = startOfDay(new Date());
-    const weekEndDate = endOfWeek(currentWeekView, { weekStartsOn: 0 });
-    return isBefore(weekEndDate, today);
-  }, [currentWeekView]);
+  useEffect(() => {
+    if (!openAIInsights) return;
+
+    setTabFilter("journal");
+
+    const timer = setTimeout(() => {
+      bottomSheetRef.current?.present();
+      setOpenAIInsights(false);
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [openAIInsights, setOpenAIInsights]);
 
   // Format week dates for display
   const weekStart = useMemo(
@@ -133,10 +147,10 @@ const DailyNotesScreenComponent = () => {
   const contentScale = useSharedValue<number>(1);
   // Animated styles with smooth scale feedback
   const contentAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: contentOpacity.value,
+    opacity: contentOpacity.get(),
     transform: [
-      { translateX: contentTranslateX.value },
-      { scale: contentScale.value },
+      { translateX: contentTranslateX.get() },
+      { scale: contentScale.get() },
     ],
   }));
 
@@ -157,24 +171,28 @@ const DailyNotesScreenComponent = () => {
       const direction = offset > 0 ? -1 : 1;
       const slideDistance = 30; // Exit distance is shorter
 
-      contentOpacity.value = withTiming(0, { duration: 150 });
-      contentTranslateX.value = withTiming(
-        direction * slideDistance,
-        { duration: 150 },
-        (finished?: boolean) => {
-          if (finished) {
-            runOnJS(updateDateFromTs)(targetTs);
-            // Set starting position for new content (coming from the other side)
-            contentTranslateX.value = -direction * slideDistance * 1.5;
+      contentOpacity.set(withTiming(0, { duration: 150 }));
+      contentTranslateX.set(
+        withTiming(
+          direction * slideDistance,
+          { duration: 150 },
+          (finished?: boolean) => {
+            if (finished) {
+              runOnJS(updateDateFromTs)(targetTs);
+              // Set starting position for new content (coming from the other side)
+              contentTranslateX.set(-direction * slideDistance * 1.5);
 
-            // Fade back in with spring motion
-            contentOpacity.value = withTiming(1, { duration: 250 });
-            contentTranslateX.value = withSpring(0, {
-              damping: 20,
-              stiffness: 200,
-            });
-          }
-        },
+              // Fade back in with spring motion
+              contentOpacity.set(withTiming(1, { duration: 250 }));
+              contentTranslateX.set(
+                withSpring(0, {
+                  damping: 20,
+                  stiffness: 200,
+                }),
+              );
+            }
+          },
+        ),
       );
     },
     [selectedDate, updateDateFromTs, contentOpacity, contentTranslateX],
@@ -220,23 +238,15 @@ const DailyNotesScreenComponent = () => {
           if (tx < -maxTranslate) tx = -maxTranslate;
           else if (tx > maxTranslate) tx = maxTranslate;
 
-          contentTranslateX.value = tx;
+          contentTranslateX.set(tx);
 
           const progress = Math.abs(tx) / maxTranslate;
 
-          contentOpacity.value = interpolate(
-            progress,
-            [0, 0.7, 1],
-            [1, 0.92, 0.85],
-            "clamp",
+          contentOpacity.set(
+            interpolate(progress, [0, 0.7, 1], [1, 0.92, 0.85], "clamp"),
           );
           // Scale only applies during confirmed horizontal swipe, never during scroll
-          contentScale.value = interpolate(
-            progress,
-            [0, 1],
-            [1, 0.98],
-            "clamp",
-          );
+          contentScale.set(interpolate(progress, [0, 1], [1, 0.98], "clamp"));
         })
         .onEnd((g) => {
           "worklet";
@@ -253,27 +263,35 @@ const DailyNotesScreenComponent = () => {
           }
 
           // Smoother, less bouncy spring animation
-          contentTranslateX.value = withSpring(0, {
-            damping: 30,
-            stiffness: 200,
-          });
-          contentOpacity.value = withSpring(1, {
-            damping: 30,
-            stiffness: 200,
-          });
-          contentScale.value = withSpring(1, {
-            damping: 30,
-            stiffness: 200,
-          });
+          contentTranslateX.set(
+            withSpring(0, {
+              damping: 30,
+              stiffness: 200,
+            }),
+          );
+          contentOpacity.set(
+            withSpring(1, {
+              damping: 30,
+              stiffness: 200,
+            }),
+          );
+          contentScale.set(
+            withSpring(1, {
+              damping: 30,
+              stiffness: 200,
+            }),
+          );
         })
         .onFinalize(() => {
           "worklet";
-          contentTranslateX.value = withSpring(0, {
-            damping: 30,
-            stiffness: 180,
-          });
-          contentOpacity.value = withSpring(1);
-          contentScale.value = withSpring(1);
+          contentTranslateX.set(
+            withSpring(0, {
+              damping: 30,
+              stiffness: 180,
+            }),
+          );
+          contentOpacity.set(withSpring(1));
+          contentScale.set(withSpring(1));
         }),
     [
       contentScale,
@@ -282,21 +300,6 @@ const DailyNotesScreenComponent = () => {
       goToNextDateContent,
       goToPreviousDateContent,
     ],
-  );
-
-  // Memoize AI Insights Chip to prevent re-renders
-  const aiInsightsChip = useMemo(
-    () => (
-      <View className="px-4 py-2">
-        <AIInsightsChip
-          visible={isBeforeCurrentWeek}
-          onPress={() => {
-            bottomSheetRef.current?.present();
-          }}
-        />
-      </View>
-    ),
-    [isBeforeCurrentWeek],
   );
 
   // Memoize Mental Health Container to prevent re-renders during animations
@@ -323,54 +326,51 @@ const DailyNotesScreenComponent = () => {
     () => setShowBookmarksModal((prev) => !prev),
     [],
   );
+  const handleFilterSelectionChange = useCallback(
+    (selection: unknown): void => {
+      if (!isTabFilterLabel(selection)) return;
+
+      setTabFilter(TAB_FILTER_BY_LABEL[selection]);
+    },
+    [],
+  );
+  const handleAIInsightsClose = useCallback((): void => {
+    bottomSheetRef.current?.dismiss();
+  }, []);
 
   // Memoize header component
   const headerComponent = useMemo(
     () => <DailyNotesHeader onBookmarksPress={handleBookmarksPress} />,
     [handleBookmarksPress],
   );
+  const screenOptions = useMemo(
+    () => ({
+      header: () => headerComponent,
+      headerShown: true,
+    }),
+    [headerComponent],
+  );
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: "#fff" }}
-      className="flex-1"
-      edges={[]}
-    >
-      <Stack.Screen
-        options={{
-          header: () => headerComponent,
-          headerShown: true,
-        }}
-      />
+    <SafeAreaView style={styles.root} className="flex-1" edges={[]}>
+      <Stack.Screen options={screenOptions} />
       <View className="flex-1 relative bg-theme-background-card">
         <GestureDetector gesture={contentPanGesture}>
           <ScrollView
             className="flex-1 bg-theme-background-card"
-            contentContainerStyle={{ flexGrow: 1 }}
+            contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
-            {/* AI Insights Chip - Below header */}
-            {/* {aiInsightsChip} */}
-
             {/* Tab Picker */}
             <View className="px-4 py-2">
               <Host matchContents>
                 <Picker
                   modifiers={[pickerStyle("segmented")]}
                   label="View"
-                  selection={filterOptions[filterIndex]}
-                  onSelectionChange={(selection) => {
-                    const newIndex = filterOptions.indexOf(selection as string);
-                    setFilterIndex(newIndex);
-                    const filters: TabFilter[] = [
-                      "journal",
-                      "calories",
-                      "habits",
-                    ];
-                    setTabFilter(filters[newIndex]);
-                  }}
+                  selection={TAB_FILTER_LABEL_BY_FILTER[tabFilter]}
+                  onSelectionChange={handleFilterSelectionChange}
                 >
-                  {filterOptions.map((option) => (
+                  {TAB_FILTER_OPTIONS.map((option) => (
                     <SwiftUIText key={option} modifiers={[tag(option)]}>
                       {option}
                     </SwiftUIText>
@@ -385,23 +385,23 @@ const DailyNotesScreenComponent = () => {
               style={contentAnimatedStyle}
             >
               {/* Calorie Tracker Widget */}
-              {tabFilter === "calories" && (
+              {tabFilter === "calories" ? (
                 <View className="flex-1 pt-4">
                   <CalorieTrackerScreen selectedDate={selectedDate} />
                 </View>
-              )}
+              ) : null}
 
               {/* Habits Section */}
-              {tabFilter === "habits" && (
+              {tabFilter === "habits" ? (
                 <View className="flex-1 pt-4">
                   <HabitsSection selectedDate={selectedDate} />
                 </View>
-              )}
+              ) : null}
 
               {/* Journal Section */}
-              {tabFilter === "journal" && (
+              {tabFilter === "journal" ? (
                 <View className="flex-1">{mentalHealthContent}</View>
-              )}
+              ) : null}
             </Animated.View>
           </ScrollView>
         </GestureDetector>
@@ -413,16 +413,24 @@ const DailyNotesScreenComponent = () => {
           ref={bottomSheetRef}
           weekStart={weekStartFormatted}
           weekEnd={weekEndFormatted}
-          onClose={() => {
-            bottomSheetRef.current?.dismiss();
-          }}
+          onClose={handleAIInsightsClose}
         />
       </SuspensLoader>
 
       {/* Calendar Modal */}
     </SafeAreaView>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+});
 
 // Memoize the entire screen to prevent unnecessary re-renders from parent
 const DailyNotesScreen = memo(DailyNotesScreenComponent);
