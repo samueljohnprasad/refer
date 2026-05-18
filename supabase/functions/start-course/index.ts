@@ -20,6 +20,11 @@ Deno.serve(async (req: Request) => {
   if (!token) return err("Missing authorization token", 401);
 
   const supabase = createUserClient(token);
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) return err("Failed to resolve authenticated user", 401);
 
   // ── 1. Parse request ──────────────────────────────────────────────────────
   let courseId: string;
@@ -45,16 +50,64 @@ Deno.serve(async (req: Request) => {
   const { data: existingProgress } = await supabase
     .from("user_course_progress")
     .select("course_id")
+    .eq("user_id", user.id)
     .eq("course_id", courseId)
     .maybeSingle();
 
   const alreadyStarted = existingProgress !== null;
 
-  // ── 4. Upsert user_course_progress ────────────────────────────────────────
+  // ── 4. Resolve the first node in the course (section → unit → node) ─────
+  const { data: firstSection, error: firstSectionError } = await supabase
+    .from("sections")
+    .select("id")
+    .eq("course_id", courseId)
+    .order("order_index", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (firstSectionError)
+    return err(
+      `Failed to fetch first section: ${firstSectionError.message}`,
+      500,
+    );
+  if (!firstSection) return err("Course has no sections", 404);
+
+  const firstSectionId = (firstSection as Record<string, unknown>)["id"] as string;
+
+  const { data: firstUnit, error: firstUnitError } = await supabase
+    .from("units")
+    .select("id")
+    .eq("section_id", firstSectionId)
+    .order("order_index", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (firstUnitError)
+    return err(`Failed to fetch first unit: ${firstUnitError.message}`, 500);
+  if (!firstUnit) return err("Course has no units", 404);
+
+  const firstUnitId = (firstUnit as Record<string, unknown>)["id"] as string;
+
+  const { data: firstNode, error: firstNodeError } = await supabase
+    .from("nodes")
+    .select("id")
+    .eq("unit_id", firstUnitId)
+    .order("order_index", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (firstNodeError)
+    return err(`Failed to fetch first node: ${firstNodeError.message}`, 500);
+  if (!firstNode) return err("Course has no nodes", 404);
+
+  const firstNodeId = (firstNode as Record<string, unknown>)["id"] as string;
+
+  // ── 5. Upsert user_course_progress ────────────────────────────────────────
   const { error: upsertError } = await supabase
     .from("user_course_progress")
     .upsert(
       {
+        user_id: user.id,
         course_id: courseId,
         status: "in_progress",
         started_at: new Date().toISOString(),
@@ -62,47 +115,24 @@ Deno.serve(async (req: Request) => {
       { onConflict: "user_id,course_id", ignoreDuplicates: true },
     );
 
-  if (upsertError) return err("Failed to start course", 500);
-
-  // ── 5. Find the first node in the course (by order) ──────────────────────
-  const { data: firstNodeData, error: firstNodeError } = await supabase
-    .from("nodes")
-    .select(
-      `
-      id,
-      units!inner (
-        section_id,
-        order_index,
-        sections!inner (
-          course_id,
-          order_index
-        )
-      ),
-      order_index
-    `,
-    )
-    .eq("units.sections.course_id", courseId)
-    .order("units.sections.order_index", { ascending: true })
-    .order("units.order_index", { ascending: true })
-    .order("order_index", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-
-  if (firstNodeError || !firstNodeData) return err("Course has no nodes", 404);
-
-  const firstNodeId = (firstNodeData as Record<string, unknown>)[
-    "id"
-  ] as string;
+  if (upsertError)
+    return err(`Failed to start course: ${upsertError.message}`, 500);
 
   // ── 6. Unlock the first node ─────────────────────────────────────────────
   const { error: nodeProgressError } = await supabase
-    .from("user_node_progress")
+    .from("user_course_node_progress")
     .upsert(
-      { node_id: firstNodeId, status: "not_started", attempts: 0 },
+      {
+        user_id: user.id,
+        node_id: firstNodeId,
+        status: "not_started",
+        attempts: 0,
+      },
       { onConflict: "user_id,node_id", ignoreDuplicates: true },
     );
 
-  if (nodeProgressError) return err("Failed to unlock first node", 500);
+  if (nodeProgressError)
+    return err(`Failed to unlock first node: ${nodeProgressError.message}`, 500);
 
   return ok({ courseProgressId: courseId, firstNodeId, alreadyStarted });
 });

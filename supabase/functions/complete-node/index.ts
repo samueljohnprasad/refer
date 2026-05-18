@@ -40,6 +40,11 @@ Deno.serve(async (req: Request) => {
   if (!token) return err("Missing authorization token", 401);
 
   const supabase = createUserClient(token);
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) return err("Failed to resolve authenticated user", 401);
 
   // ── 1. Parse request ──────────────────────────────────────────────────────
   let nodeId: string, courseId: string;
@@ -72,24 +77,29 @@ Deno.serve(async (req: Request) => {
 
   // ── 3. Check for re-completion ────────────────────────────────────────────
   const { data: currentProgress } = await supabase
-    .from("user_node_progress")
-    .select("status")
+    .from("user_course_node_progress")
+    .select("status, attempts")
+    .eq("user_id", user.id)
     .eq("node_id", nodeId)
     .maybeSingle();
 
   const isRecompletion =
     (currentProgress as Record<string, unknown> | null)?.["status"] ===
     "completed";
+  const nextAttemptCount =
+    (((currentProgress as Record<string, unknown> | null)?.["attempts"] as number | null) ??
+      0) + 1;
 
   // ── 4. Mark node as completed ─────────────────────────────────────────────
   const now = new Date().toISOString();
   const { error: updateError } = await supabase
-    .from("user_node_progress")
+    .from("user_course_node_progress")
     .upsert(
       {
+        user_id: user.id,
         node_id: nodeId,
         status: "completed",
-        attempts: 1,
+        attempts: nextAttemptCount,
         last_score: null,
         best_score: null,
         last_attempted_at: now,
@@ -112,7 +122,7 @@ Deno.serve(async (req: Request) => {
   }
 
   // ── 6. Unlock next node ───────────────────────────────────────────────────
-  const unlockResult = await unlockNextNode(supabase, node, courseId);
+  const unlockResult = await unlockNextNode(supabase, user.id, node, courseId);
 
   return ok({ nodeId, ...unlockResult });
 });
@@ -121,6 +131,7 @@ Deno.serve(async (req: Request) => {
 
 async function unlockNextNode(
   supabase: ReturnType<typeof import("../_shared/client.ts").createUserClient>,
+  userId: string,
   node: NodeContext,
   courseId: string,
 ): Promise<{
@@ -147,7 +158,7 @@ async function unlockNextNode(
 
   if (nextInUnit) {
     const nextNodeId = (nextInUnit as Record<string, unknown>)["id"] as string;
-    await unlockNodeProgress(supabase, nextNodeId);
+    await unlockNodeProgress(supabase, userId, nextNodeId);
     return {
       nextNodeId,
       unitCompleted: false,
@@ -172,7 +183,7 @@ async function unlockNextNode(
       Record<string, unknown>
     >;
     const nextNodeId = nodesArr[0]!["id"] as string;
-    await unlockNodeProgress(supabase, nextNodeId);
+    await unlockNodeProgress(supabase, userId, nextNodeId);
     return {
       nextNodeId,
       unitCompleted: true,
@@ -207,7 +218,7 @@ async function unlockNextNode(
     >;
     const nodesArr = unitsArr[0]!["nodes"] as Array<Record<string, unknown>>;
     const nextNodeId = nodesArr[0]!["id"] as string;
-    await unlockNodeProgress(supabase, nextNodeId);
+    await unlockNodeProgress(supabase, userId, nextNodeId);
     return {
       nextNodeId,
       unitCompleted: true,
@@ -220,6 +231,7 @@ async function unlockNextNode(
   await supabase
     .from("user_course_progress")
     .update({ status: "completed", completed_at: new Date().toISOString() })
+    .eq("user_id", userId)
     .eq("course_id", courseId);
 
   return {
@@ -233,12 +245,13 @@ async function unlockNextNode(
 /** Inserts a not_started progress row for the given node. Idempotent. */
 async function unlockNodeProgress(
   supabase: ReturnType<typeof import("../_shared/client.ts").createUserClient>,
+  userId: string,
   nodeId: string,
 ): Promise<void> {
   await supabase
-    .from("user_node_progress")
+    .from("user_course_node_progress")
     .upsert(
-      { node_id: nodeId, status: "not_started", attempts: 0 },
+      { user_id: userId, node_id: nodeId, status: "not_started", attempts: 0 },
       { onConflict: "user_id,node_id", ignoreDuplicates: true },
     );
 }

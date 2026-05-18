@@ -77,12 +77,15 @@ async function loadCourseData(
 
   if ("data" in progressResult && progressResult.data) {
     const { courseProgress, nodeProgressMap } = progressResult.data;
+    const hasNodeProgress = Object.keys(nodeProgressMap).length > 0;
 
-    // Auto-enroll: if user has no progress row, call start-course
-    if (courseProgress === null) {
+    // Ensure enrollment is fully initialized.
+    // A course row without any node progress means a prior start attempt only partially succeeded.
+    if (courseProgress === null || !hasNodeProgress) {
       const startResult = await dispatch(
         journeyApi.endpoints.startCourse.initiate(courseId),
       );
+      console.log("startResult", JSON.stringify(startResult, null, 2));
 
       if ("data" in startResult) {
         // Refetch progress after enrollment
@@ -91,9 +94,12 @@ async function loadCourseData(
             forceRefetch: true,
           }),
         );
+        console.log("progressRefetchResult", JSON.stringify(refetchResult, null, 2));
         if ("data" in refetchResult && refetchResult.data) {
           dispatch(setCourseProgress(refetchResult.data));
         }
+      } else {
+        console.log("startCourseError", JSON.stringify(startResult, null, 2));
       }
     } else {
       dispatch(setCourseProgress({ courseProgress, nodeProgressMap }));
