@@ -119,6 +119,10 @@ export interface SectionListItem {
   nodeCount: number;
   /** Total number of units in this section */
   unitCount?: number;
+  /** Ordered unit titles for the section */
+  unitTitles?: string[];
+  /** Ordered HugeIcons keys for the section's units */
+  unitIconKeys?: Array<string | null | undefined>;
 }
 
 // ---------------------------------------------------------------------------

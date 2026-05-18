@@ -7,21 +7,21 @@
  * configuration interfaces. Components read from a JourneyConfig object
  * via context — zero if/else or switch statements in rendering code.
  *
- * Adding a new node type = one entry in nodeVariants + one SVG in the registry.
+ * Adding a new node type = one entry in nodeVariants + one HugeIcons key.
  */
 
-import type { NodeStatus } from "./enums";
+import type { NodeVisualStatus } from "@/src/types/journeyV5";
 import type { JourneyReward } from "./node";
 
 // ---------------------------------------------------------------------------
 // Node Variant Config (replaces hardcoded NodeType → icon/color mappings)
 // ---------------------------------------------------------------------------
 
-/** How to render an icon inside a node — supports multiple icon systems */
+/** How to render an icon inside a node. */
 export interface NodeIconConfig {
   /** Icon source type */
-  type: "svg" | "emoji" | "hugeicons";
-  /** Value: SVG registry key, emoji string, or HugeIcons component name */
+  type: "hugeicons";
+  /** Value: HugeIcons registry key */
   value: string;
   /** Optional tint color override (hex) */
   tintColor?: string;
@@ -43,14 +43,14 @@ export interface NodeColorConfig {
  * Components look up variants by key — no conditionals.
  */
 export interface NodeVariantConfig {
-  /** Unique key for this variant (e.g. 'star', 'microphone', 'video') */
+  /** Unique key for this variant (e.g. 'star', 'checkpoint', 'microphone') */
   key: string;
   /** Human-readable label for accessibility */
   label: string;
   /** Icon config per node status — looked up by status key */
-  icons: Record<NodeStatus, NodeIconConfig>;
+  icons: Record<NodeVisualStatus, NodeIconConfig>;
   /** Color config per node status — looked up by status key */
-  colors: Record<NodeStatus, NodeColorConfig>;
+  colors: Record<NodeVisualStatus, NodeColorConfig>;
   /** Default rewards granted when this node type is completed */
   rewards: JourneyReward[];
   /** Size override in dp. Falls back to global settings if omitted */

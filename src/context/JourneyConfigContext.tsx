@@ -19,17 +19,13 @@ import {
   UnitConfig,
 } from "../types/journey";
 import { DEFAULT_JOURNEY_CONFIG } from "../data/journey";
-import { useAppSelector } from "../store/hooks";
-import { selectJourneyConfig } from "../store/selectors/enrolledCoursesSelectors";
-
 // ---------------------------------------------------------------------------
 // Primary hook — full config
 // ---------------------------------------------------------------------------
 
-/** Access the full JourneyConfig object from Redux state. */
+/** Access the full JourneyConfig object. Returns the static default config. */
 export function useJourneyConfig(): JourneyConfig {
-  const reduxConfig = useAppSelector(selectJourneyConfig);
-  return reduxConfig ?? DEFAULT_JOURNEY_CONFIG;
+  return DEFAULT_JOURNEY_CONFIG;
 }
 
 // ---------------------------------------------------------------------------

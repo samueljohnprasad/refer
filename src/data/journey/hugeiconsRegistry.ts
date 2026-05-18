@@ -1,7 +1,7 @@
 /**
  * Hugeicons Registry for Journey Nodes
  *
- * Maps the `value` string from NodeIconConfig (type: 'hugeicons') to the
+ * Maps the `value` string from NodeIconConfig to the
  * actual icon object from @hugeicons/core-free-icons.
  *
  * Adding a new icon = one entry here + one entry in journeyConfig.ts.
@@ -9,15 +9,24 @@
  */
 
 import {
-    StarIcon,
-    CheckmarkCircle01Icon,
     Archive01Icon,
-    Mic01Icon,
-    Video01Icon,
+    Book01Icon,
+    Brain01Icon,
+    BubbleChatIcon,
+    CheckmarkCircle01Icon,
+    CheckmarkCircle02Icon,
+    FavouriteIcon,
     GameController01Icon,
     HeadphonesIcon,
     LockIcon,
-    Book01Icon,
+    Mic01Icon,
+    PencilEdit01Icon,
+    Quiz01Icon,
+    RepeatIcon,
+    Shield01Icon,
+    StarIcon,
+    Target03Icon,
+    Video01Icon,
 } from '@hugeicons/core-free-icons';
 
 /** The icon object type expected by HugeiconsIcon's `icon` prop */
@@ -43,6 +52,15 @@ export const HUGEICON_REGISTRY: Record<string, HugeIconObject> = {
     headphones_locked: LockIcon,
     book: Book01Icon,
     book_locked: LockIcon,
+    brain: Brain01Icon,
+    journal: PencilEdit01Icon,
+    quiz: Quiz01Icon,
+    heart: FavouriteIcon,
+    mood_check: CheckmarkCircle02Icon,
+    story: BubbleChatIcon,
+    practice: RepeatIcon,
+    challenge: Shield01Icon,
+    boss: Target03Icon,
     lock: LockIcon,
 };
 

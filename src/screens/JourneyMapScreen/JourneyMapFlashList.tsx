@@ -1,183 +1,193 @@
 /**
  * JourneyMapFlashList
- * FlashList-based presentation component for the segment-per-cell architecture.
+ * Rewired to the v5 normalized Redux store.
  *
- * Replaces MultiUnitPresentation for the scrollable content area.
- * Each cell owns its own SVG path segment — no single giant SVG.
- *
- * Features:
- * - LegendList (Animated) with overrideItemLayout for variable cell heights
- * - Heterogeneous items: nodes, dividers, mascot bubbles
- * - StickyUnitHeader preserved from existing code
- * - HomeMainButton header + BottomSheetWithRNContent section picker
- * - NodeCompleteModal for the "Done" CTA
- *
- * Architecture:
- *  - Presentational rendering: DividerCell, MascotCell, renderItem
- *  - Container logic: useJourneyNodeDone (completion), useVisibleUnit (header)
- *  - State: selectedNode, isPresented, pendingFocusNodeId
+ * Data source: useJourneyFlashListData(courseId) — builds FlashList items from
+ * selectSectionsForCourse → selectUnitsForSection → selectNodesForUnit.
+ * Node tap: locked → toast, unlocked → open NodeContentModal directly.
+ * Visual rendering: unchanged — JourneyNodeCell, DividerCell, etc.
  */
 
-import React, { useCallback, useRef, useState } from "react";
-import { Dimensions, View } from "react-native";
-import { Text as RNText } from "react-native";
-import Svg, { Path } from "react-native-svg";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Dimensions, View, Text } from "react-native";
 import Animated from "react-native-reanimated";
 import { LegendList } from "@legendapp/list";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import type {
   JourneyFlashListItem,
   JourneyNode,
   JourneyDividerItem,
-  JourneyMascotItem,
   PathNodeData,
 } from "@/src/types/journey";
-import { MascotSide, NodeStatus } from "@/src/types/journey";
 
-import { useHighContrast } from "@/src/hooks/useHighContrast";
-import { useJourneyDerivedState } from "@/src/hooks/journeyMap";
 import { useVisibleUnit } from "@/src/hooks/useVisibleUnit";
-import { useJourneyNodeDone } from "@/src/hooks/journeyMap/useJourneyNodeDone";
-import { useJourneyAutoScroll } from "@/src/hooks/journeyMap/useJourneyAutoScroll";
 import { useAppSelector, useAppDispatch } from "@/src/store/hooks";
-import { fetchSectionUnits } from "@/src/store/api/sectionMapApi";
-import { setCurrentSectionNumber } from "@/src/store/slices/enrolledCoursesSlice";
+import { setActiveNodeModal } from "@/src/features/journey/journeySlice";
 import {
-  selectActiveCourse,
-  selectCurrentSectionNumber,
-  selectSectionList,
-} from "@/src/store/selectors/enrolledCoursesSelectors";
+  selectCourse,
+  selectSectionsForCourse,
+} from "@/src/features/journey/journeySelectors";
 
 import { JourneyNodeCell } from "@/src/components/journey/JourneyNodeCell";
-import { UnitDivider, MascotBubble, ScrollToActiveButton } from "@/src/components/journey";
-import { SectionList } from "@/src/components/journey/SectionList";
-import { MASCOT_SIZE, UNIT_GRADIENTS } from "@/src/data/journey/constants";
-import { HomeMainButton } from "@/src/components/journey/home-main-button";
-import BottomSheetWithRNContent from "@/src/components/BottomSheetWithRNContent";
-import { NodeCompleteModal } from "./NodeCompleteModal";
 import { DividerCell } from "@/src/components/journey/DividerCell";
-import { MascotCell } from "@/src/components/journey/MascotCell";
+import { UNIT_GRADIENTS } from "@/src/data/journey/constants";
+import BottomSheetWithRNContent from "@/src/components/BottomSheetWithRNContent";
+import { HomeMainButton } from "@/src/components/journey/home-main-button";
+import { SectionOverviewSheet } from "@/src/components/journey/SectionOverviewSheet";
+import { NodeContentModal } from "./NodeContentModal";
+import { useJourneyFlashListData } from "@/hooks/journey/useJourneyFlashListData";
 
-// ---------------------------------------------------------------------------
-// Module-level constants
-// ---------------------------------------------------------------------------
+// ── Constants ─────────────────────────────────────────────────────────────────
 
 const AnimatedLegendList = Animated.createAnimatedComponent(
   LegendList,
 ) as typeof LegendList;
-
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const ESTIMATED_ITEM_SIZE = 120;
+const LIST_BOTTOM_PADDING = 180;
 
-/** Average cell height hint for LegendList's internal estimation */
-const ESTIMATED_ITEM_SIZE: number = 120;
-
-/** Bottom inset so the final node can scroll above the tab bar */
-const LIST_BOTTOM_PADDING: number = 180;
-
-// ---------------------------------------------------------------------------
-// Props
-// ---------------------------------------------------------------------------
+// ── Props ─────────────────────────────────────────────────────────────────────
 
 export interface JourneyMapFlashListProps {
-  /** Journey slug for section switching */
-  slugOverride?: string;
+  /** Active course id resolved by useDefaultCourse */
+  courseId: string;
 }
 
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
+// ── Component ─────────────────────────────────────────────────────────────────
 
-export function JourneyMapFlashListInner({
-  slugOverride,
+function JourneyMapFlashListInner({
+  courseId,
 }: JourneyMapFlashListProps): React.JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const legendListRef = useRef<any>(null);
+  const [isSectionSheetOpen, setIsSectionSheetOpen] = useState(false);
+  const [selectedSectionNumber, setSelectedSectionNumber] = useState<
+    number | null
+  >(null);
+
+  // ── Data ───────────────────────────────────────────────────────────────────
+  const sections = useAppSelector((state) =>
+    selectSectionsForCourse(state, courseId),
+  );
+  const { units: allUnits } = useJourneyFlashListData(courseId);
+  const selectedSectionId = useMemo(
+    () =>
+      selectedSectionNumber === null
+        ? undefined
+        : sections.find((section) => section.orderIndex === selectedSectionNumber)
+            ?.id,
+    [sections, selectedSectionNumber],
+  );
+  const { flashListData, activeGlobalIndex, units } = useJourneyFlashListData(
+    courseId,
+    selectedSectionId,
+  );
+  const { visibleUnit, onViewableItemsChanged } = useVisibleUnit({ units });
+  const course = useAppSelector((state) => selectCourse(state, courseId));
+  const isLoaded = useAppSelector(
+    (state) => !!state.journey.loadedCourses[courseId],
+  );
+
+  const currentVisibleUnit =
+    units.find((unit) => unit.id === visibleUnit.unitId) ?? units[0];
+  const currentSectionNumber =
+    selectedSectionNumber ?? currentVisibleUnit?.sectionNumber ?? 1;
+
+  const sectionList = useMemo(
+    () =>
+      sections.map((section) => {
+        const sectionUnits = allUnits.filter((unit) => unit.sectionId === section.id);
+        const nodeCount = sectionUnits.reduce(
+          (total, unit) => total + unit.nodes.length,
+          0,
+        );
+
+        return {
+          unitNumber: section.orderIndex,
+          sectionNumber: section.orderIndex,
+          title: section.title,
+          colorScheme: sectionUnits[0]?.colorScheme ?? "green",
+          nodeCount,
+          unitCount: sectionUnits.length,
+          unitTitles: sectionUnits.map((unit) => unit.title),
+          unitIconKeys: sectionUnits.map((unit) => unit.iconKey),
+        };
+      }),
+    [allUnits, sections],
+  );
+
+  const unitCompletedCounts = useMemo(
+    () =>
+      sections.reduce<Record<string, number>>((counts, section) => {
+        const sectionUnits = allUnits.filter((unit) => unit.sectionId === section.id);
+
+        counts[`section_${section.orderIndex}`] = sectionUnits.reduce(
+          (total, unit) =>
+            total + unit.nodes.filter((node) => node.status === "completed").length,
+          0,
+        );
+
+        return counts;
+      }, {}),
+    [allUnits, sections],
+  );
+
+  // ── Auto-scroll to current node ────────────────────────────────────────────
+  const lastScrolledIndexRef = useRef<number>(-1);
+  useEffect(() => {
+    if (!isLoaded || activeGlobalIndex < 0) return;
+    if (activeGlobalIndex === lastScrolledIndexRef.current) return;
+    lastScrolledIndexRef.current = activeGlobalIndex;
+    const timer = setTimeout(() => {
+      legendListRef.current?.scrollToIndex({
+        index: activeGlobalIndex,
+        animated: true,
+      });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [isLoaded, activeGlobalIndex]);
+
+  // ── Node tap — locked → toast, unlocked → open modal directly ─────────────
   const dispatch = useAppDispatch();
   const toast = useToast();
 
-  // ── Selectors ──────────────────────────────────────────────────────────────
-  const activeCourse = useAppSelector(selectActiveCourse);
-  const currentSectionNumber = useAppSelector(selectCurrentSectionNumber);
-  const sectionList = useAppSelector(selectSectionList);
-  const isSectionLoading = useAppSelector(
-    (state) => state.sectionMap.isLoading,
-  );
-  const sectionError = useAppSelector((state) => state.sectionMap.error);
-
-  // ── UI state ───────────────────────────────────────────────────────────────
-  const [isPresented, setIsPresented] = useState<boolean>(false);
-  const [selectedNode, setSelectedNode] = useState<PathNodeData | null>(null);
-  const [pendingFocusNodeId, setPendingFocusNodeId] = useState<string | null>(
-    null,
-  );
-
-  // ── Derived journey data ───────────────────────────────────────────────────
-  const { flashListData, activeGlobalIndex, units } = useJourneyDerivedState();
-  const { visibleUnit, onViewableItemsChanged } = useVisibleUnit({ units });
-
-  // ── Auto-scroll to the next node after a completion and track visibility ──
-  const {
-    isActiveOffScreen,
-    scrollDirection,
-    handleFlashListScrollToActive,
-    onViewableItemsChangedWrapper,
-  } = useJourneyAutoScroll({
-    flashListData,
-    pendingFocusNodeId,
-    setPendingFocusNodeId,
-    legendListRef,
-    onVisibleUnitChanged: onViewableItemsChanged,
-  });
-  React.useEffect(() => {
-    if (!slugOverride) return;
-    void dispatch(
-      fetchSectionUnits({
-        slug: slugOverride,
-        sectionNumber: currentSectionNumber,
-      }),
-    );
-  }, [currentSectionNumber, dispatch, slugOverride]);
-
-
-
-  // ── Completion logic (extracted to hook) ──────────────────────────────────
-  const { isCompletingNode, handleDonePress } = useJourneyNodeDone({
-    slugOverride,
-    activeCourse,
-    selectedNode,
-    onSuccess: useCallback((nextNodeId: string | null): void => {
-      setSelectedNode(null);
-      setPendingFocusNodeId(nextNodeId);
-    }, []),
-  });
-
-  // ── Node press — show modal for active nodes, toast for others ────────────
   const handleNodePress = useCallback(
     (node: PathNodeData): void => {
-      if (node.status !== NodeStatus.ACTIVE) {
+      if (node.status === "locked") {
         toast.show({
-          id: `node-state-${node.id}`,
-          placement: "bottom",
-          render: () => (
-            <Toast action="warning">
-              <ToastTitle>
-                {node.status === NodeStatus.COMPLETED
-                  ? "This node is already completed."
-                  : "This node is locked."}
-              </ToastTitle>
+          placement: "top",
+          render: ({ id }) => (
+            <Toast nativeID={id} action="warning">
+              <ToastTitle>Complete earlier activities first.</ToastTitle>
             </Toast>
           ),
         });
         return;
       }
-      setSelectedNode(node);
+      dispatch(setActiveNodeModal(node.id));
     },
-    [toast],
+    [dispatch, toast],
   );
 
-  // ── renderItem — dispatches to the correct cell type ─────────────────────
+  const handleOpenSections = useCallback((): void => {
+    if (sectionList.length === 0) return;
+    setIsSectionSheetOpen(true);
+  }, [sectionList.length]);
+
+  const handleCloseSections = useCallback((): void => {
+    setIsSectionSheetOpen(false);
+  }, []);
+
+  const handleJumpToSection = useCallback(
+    (sectionNumber: number): void => {
+      setSelectedSectionNumber(sectionNumber);
+      setIsSectionSheetOpen(false);
+    },
+    [],
+  );
+
+  // ── renderItem ────────────────────────────────────────────────────────────
   const renderItem = useCallback(
     ({ item }: { item: JourneyFlashListItem }): React.JSX.Element => {
       switch (item.itemType) {
@@ -190,7 +200,6 @@ export function JourneyMapFlashListInner({
               onNodePress={handleNodePress}
             />
           );
-
         case "divider":
           return (
             <DividerCell
@@ -199,7 +208,6 @@ export function JourneyMapFlashListInner({
               activeGlobalIndex={activeGlobalIndex}
             />
           );
-
         default:
           return <View />;
       }
@@ -215,21 +223,22 @@ export function JourneyMapFlashListInner({
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <>
-      {/* Sticky header — shows current section + unit info */}
       <HomeMainButton
-        onPress={() => setIsPresented(true)}
-        unitLabel={`Section ${currentSectionNumber ?? 1}, Unit ${visibleUnit.unitNumber}`}
+        onPress={handleOpenSections}
+        unitLabel={`Section ${currentSectionNumber} • Unit ${visibleUnit.unitNumber}`}
         unitTitle={visibleUnit.unitTitle}
-        faceColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[0] || "#4CAF50"}
-        rimColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[1] || "#388E3C"}
+        faceColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[0] ?? "#4CAF50"}
+        rimColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[1] ?? "#388E3C"}
+        unitIconKey={visibleUnit.unitIconKey}
       />
 
-      {/* Scrollable list */}
-      {isSectionLoading ? (
-        <View className="flex-1 items-center justify-center">
-          <RNText className="text-gray-500">Loading section...</RNText>
+      {!isLoaded ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Text style={{ color: "#6B7280" }}>Loading…</Text>
         </View>
-      ) : flashListData && flashListData.length > 0 ? (
+      ) : flashListData.length > 0 ? (
         <AnimatedLegendList<JourneyFlashListItem>
           ref={legendListRef}
           data={flashListData}
@@ -239,55 +248,40 @@ export function JourneyMapFlashListInner({
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
-          onViewableItemsChanged={onViewableItemsChangedWrapper}
+          onViewableItemsChanged={onViewableItemsChanged}
           viewabilityConfig={{
             itemVisiblePercentThreshold: 10,
             minimumViewTime: 100,
           }}
         />
       ) : (
-        <View className="flex-1 items-center justify-center p-4">
-          <RNText className="text-gray-500 text-center">
-            {sectionError ? "Failed to load section" : "No data available"}
-          </RNText>
+        <View>
+          {" "}
+          <Text>This course is being prepared. Check back shortly.</Text>
         </View>
       )}
 
-      {/* Scroll-to-active button (shown when active node is off-screen) */}
-      {isActiveOffScreen && (
-            <ScrollToActiveButton
-              direction={scrollDirection}
-              onPress={handleFlashListScrollToActive}
-              isVisible={isActiveOffScreen}
-            />
-          )}
+      {isSectionSheetOpen ? (
+        <BottomSheetWithRNContent
+          isPresented={isSectionSheetOpen}
+          setIsPresented={setIsSectionSheetOpen}
+        >
+          <SectionOverviewSheet
+            onClose={handleCloseSections}
+            unitCompletedCounts={unitCompletedCounts}
+            sectionList={sectionList}
+            currentSectionUnitNumber={currentSectionNumber}
+            onJumpToSection={handleJumpToSection}
+            journeyTitle={course?.title ?? "Journey"}
+          />
+        </BottomSheetWithRNContent>
+      ) : null}
 
-      <BottomSheetWithRNContent
-        isPresented={isPresented}
-        setIsPresented={setIsPresented}
-      >
-        <SectionList
-          sectionList={sectionList}
-          currentSectionNumber={currentSectionNumber}
-          onSectionPress={(unitNumber) => {
-            setIsPresented(false);
-            dispatch(setCurrentSectionNumber(unitNumber));
-          }}
-        />
-      </BottomSheetWithRNContent>
-
-      <NodeCompleteModal
-        visible={selectedNode !== null}
-        isCompletingNode={isCompletingNode}
-        onClose={() => {
-          if (!isCompletingNode) setSelectedNode(null);
-        }}
-        onDone={() => void handleDonePress()}
-      />
+      {/* Full-screen content modal — opens on node tap, Done marks complete */}
+      <NodeContentModal courseId={courseId} />
     </>
   );
 }
 
 export const JourneyMapFlashList = React.memo(JourneyMapFlashListInner);
-
 export default JourneyMapFlashList;

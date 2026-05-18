@@ -1,12 +1,13 @@
 import { Text, useWindowDimensions, View } from "react-native";
 import { SvgAppButton } from "./svg-app-button";
-import { Flag } from "@/assets/icons";
+import JourneyUnitIcon from "@/src/components/journey/JourneyUnitIcon";
 
 type HomeMainButtonProps = {
   unitLabel: string;
   unitTitle: string;
   faceColor: string;
   rimColor: string;
+  unitIconKey?: string | null;
   onPress: () => void;
 };
 
@@ -15,6 +16,7 @@ export const HomeMainButton = ({
   unitTitle,
   faceColor,
   rimColor,
+  unitIconKey,
   onPress,
 }: HomeMainButtonProps) => {
   const { width } = useWindowDimensions();
@@ -59,7 +61,7 @@ export const HomeMainButton = ({
           alignItems: "center",
         }}
       >
-        <Flag width={22} height={22} />
+        <JourneyUnitIcon iconKey={unitIconKey} size={22} color="#FFFFFF" />
       </SvgAppButton>
     </View>
   );

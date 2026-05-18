@@ -3,7 +3,7 @@
  * A unit is a section/chapter containing multiple path nodes.
  */
 
-import { UnitColorScheme, MascotSide } from "./enums";
+import { MascotSide } from "./enums";
 import { PathNodeData } from "./node";
 
 /** Where to place the mascot character along the path */
@@ -33,7 +33,9 @@ export interface UnitData {
   globalUnitNumber: number;
   title: string;
   description: string;
-  colorScheme: UnitColorScheme;
+  iconKey?: string | null;
+  /** Color theme key (e.g. 'green', 'blue', 'purple', 'orange') */
+  colorScheme: string;
   nodes: PathNodeData[];
   mascotPlacements: MascotPlacement[];
 }

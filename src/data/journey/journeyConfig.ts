@@ -19,7 +19,7 @@ import {
   SectionConfig,
   UnitConfig,
 } from "@/src/types/journey";
-import { NodeStatus, JourneyRewardType } from "@/src/types/journey/enums";
+import { JourneyRewardType } from "@/src/types/journey/enums";
 
 // ---------------------------------------------------------------------------
 // 1. Node Variant Registry
@@ -30,18 +30,18 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     key: "star",
     label: "Lesson",
     icons: {
-      [NodeStatus.LOCKED]: { type: "hugeicons", value: "star_locked" },
-      [NodeStatus.ACTIVE]: { type: "hugeicons", value: "star" },
-      [NodeStatus.COMPLETED]: { type: "hugeicons", value: "star" },
+      locked: { type: "hugeicons", value: "star_locked" },
+      active: { type: "hugeicons", value: "star" },
+      completed: { type: "hugeicons", value: "star" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#58CC02",
         border: "#46A302",
         glow: "rgba(88,204,2,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#FFC800", border: "#E5B400" },
+      completed: { fill: "#FFC800", border: "#E5B400" },
     },
     rewards: [{ type: JourneyRewardType.XP, amount: 10, icon: "⚡" }],
     activeAnimation: "breathing",
@@ -52,18 +52,18 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     key: "checkpoint",
     label: "Checkpoint",
     icons: {
-      [NodeStatus.LOCKED]: { type: "hugeicons", value: "checkpoint_locked" },
-      [NodeStatus.ACTIVE]: { type: "hugeicons", value: "checkpoint" },
-      [NodeStatus.COMPLETED]: { type: "hugeicons", value: "checkpoint" },
+      locked: { type: "hugeicons", value: "checkpoint_locked" },
+      active: { type: "hugeicons", value: "checkpoint" },
+      completed: { type: "hugeicons", value: "checkpoint" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#58CC02",
         border: "#46A302",
         glow: "rgba(88,204,2,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#FFC800", border: "#E5B400" },
+      completed: { fill: "#FFC800", border: "#E5B400" },
     },
     rewards: [
       { type: JourneyRewardType.XP, amount: 25, icon: "⚡" },
@@ -77,18 +77,18 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     key: "chest",
     label: "Treasure Chest",
     icons: {
-      [NodeStatus.LOCKED]: { type: "hugeicons", value: "chest_locked" },
-      [NodeStatus.ACTIVE]: { type: "hugeicons", value: "chest" },
-      [NodeStatus.COMPLETED]: { type: "hugeicons", value: "chest" },
+      locked: { type: "hugeicons", value: "chest_locked" },
+      active: { type: "hugeicons", value: "chest" },
+      completed: { type: "hugeicons", value: "chest" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#8B5E3C",
         border: "#6B4226",
         glow: "rgba(255,215,0,0.3)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#D4A574", border: "#B8860B" },
+      completed: { fill: "#D4A574", border: "#B8860B" },
     },
     rewards: [
       { type: JourneyRewardType.XP, amount: 50, icon: "⚡" },
@@ -106,18 +106,18 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     key: "learn",
     label: "Learn",
     icons: {
-      [NodeStatus.LOCKED]: { type: "emoji", value: "📖" },
-      [NodeStatus.ACTIVE]: { type: "emoji", value: "📖" },
-      [NodeStatus.COMPLETED]: { type: "emoji", value: "📖" },
+      locked: { type: "hugeicons", value: "book" },
+      active: { type: "hugeicons", value: "book" },
+      completed: { type: "hugeicons", value: "book" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#3B82F6",
         border: "#2563EB",
         glow: "rgba(59,130,246,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#93C5FD", border: "#3B82F6" },
+      completed: { fill: "#93C5FD", border: "#3B82F6" },
     },
     rewards: [{ type: JourneyRewardType.XP, amount: 10, icon: "⚡" }],
     activeAnimation: "breathing",
@@ -128,18 +128,18 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     key: "exercise",
     label: "Exercise",
     icons: {
-      [NodeStatus.LOCKED]: { type: "emoji", value: "🏋️" },
-      [NodeStatus.ACTIVE]: { type: "emoji", value: "🏋️" },
-      [NodeStatus.COMPLETED]: { type: "emoji", value: "🏋️" },
+      locked: { type: "hugeicons", value: "brain" },
+      active: { type: "hugeicons", value: "brain" },
+      completed: { type: "hugeicons", value: "brain" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#16A34A",
         border: "#15803D",
         glow: "rgba(22,163,74,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#86EFAC", border: "#16A34A" },
+      completed: { fill: "#86EFAC", border: "#16A34A" },
     },
     rewards: [{ type: JourneyRewardType.XP, amount: 15, icon: "⚡" }],
     activeAnimation: "breathing",
@@ -150,18 +150,18 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     key: "journal",
     label: "Journal",
     icons: {
-      [NodeStatus.LOCKED]: { type: "emoji", value: "✍️" },
-      [NodeStatus.ACTIVE]: { type: "emoji", value: "✍️" },
-      [NodeStatus.COMPLETED]: { type: "emoji", value: "✍️" },
+      locked: { type: "hugeicons", value: "journal" },
+      active: { type: "hugeicons", value: "journal" },
+      completed: { type: "hugeicons", value: "journal" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#8B5CF6",
         border: "#7C3AED",
         glow: "rgba(139,92,246,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#C4B5FD", border: "#8B5CF6" },
+      completed: { fill: "#C4B5FD", border: "#8B5CF6" },
     },
     rewards: [{ type: JourneyRewardType.XP, amount: 15, icon: "⚡" }],
     activeAnimation: "breathing",
@@ -172,18 +172,18 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     key: "quiz",
     label: "Quiz",
     icons: {
-      [NodeStatus.LOCKED]: { type: "emoji", value: "❓" },
-      [NodeStatus.ACTIVE]: { type: "emoji", value: "❓" },
-      [NodeStatus.COMPLETED]: { type: "emoji", value: "❓" },
+      locked: { type: "hugeicons", value: "quiz" },
+      active: { type: "hugeicons", value: "quiz" },
+      completed: { type: "hugeicons", value: "quiz" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#D97706",
         border: "#B45309",
         glow: "rgba(217,119,6,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#FDE68A", border: "#D97706" },
+      completed: { fill: "#FDE68A", border: "#D97706" },
     },
     rewards: [{ type: JourneyRewardType.XP, amount: 15, icon: "⚡" }],
     activeAnimation: "breathing",
@@ -194,18 +194,18 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     key: "mood_check",
     label: "Mood Check",
     icons: {
-      [NodeStatus.LOCKED]: { type: "emoji", value: "🪞" },
-      [NodeStatus.ACTIVE]: { type: "emoji", value: "🪞" },
-      [NodeStatus.COMPLETED]: { type: "emoji", value: "🪞" },
+      locked: { type: "hugeicons", value: "mood_check" },
+      active: { type: "hugeicons", value: "mood_check" },
+      completed: { type: "hugeicons", value: "heart" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#0D9488",
         border: "#0F766E",
         glow: "rgba(13,148,136,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#99F6E4", border: "#0D9488" },
+      completed: { fill: "#99F6E4", border: "#0D9488" },
     },
     rewards: [{ type: JourneyRewardType.XP, amount: 5, icon: "⚡" }],
     activeAnimation: "breathing",
@@ -213,44 +213,110 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     shape: "circle",
   },
 
-  microphone: {
-    key: "microphone",
-    label: "Voice Exercise",
+  story: {
+    key: "story",
+    label: "Story",
     icons: {
-      [NodeStatus.LOCKED]: { type: "hugeicons", value: "microphone_locked" },
-      [NodeStatus.ACTIVE]: { type: "hugeicons", value: "microphone" },
-      [NodeStatus.COMPLETED]: { type: "hugeicons", value: "microphone" },
+      locked: { type: "hugeicons", value: "story" },
+      active: { type: "hugeicons", value: "story" },
+      completed: { type: "hugeicons", value: "story" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
-        fill: "#58CC02",
-        border: "#46A302",
-        glow: "rgba(88,204,2,0.4)",
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
+        fill: "#7C3AED",
+        border: "#6D28D9",
+        glow: "rgba(124,58,237,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#FFC800", border: "#E5B400" },
+      completed: { fill: "#C4B5FD", border: "#7C3AED" },
     },
-    rewards: [{ type: JourneyRewardType.XP, amount: 15, icon: "⚡" }],
+    rewards: [{ type: JourneyRewardType.XP, amount: 12, icon: "⚡" }],
     activeAnimation: "breathing",
     showProgressRing: true,
   },
 
-  video: {
-    key: "video",
-    label: "Video Exercise",
+  practice: {
+    key: "practice",
+    label: "Practice",
     icons: {
-      [NodeStatus.LOCKED]: { type: "hugeicons", value: "video_locked" },
-      [NodeStatus.ACTIVE]: { type: "hugeicons", value: "video" },
-      [NodeStatus.COMPLETED]: { type: "hugeicons", value: "video" },
+      locked: { type: "hugeicons", value: "practice" },
+      active: { type: "hugeicons", value: "practice" },
+      completed: { type: "hugeicons", value: "practice" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
+        fill: "#0D9488",
+        border: "#0F766E",
+        glow: "rgba(13,148,136,0.4)",
+      },
+      completed: { fill: "#99F6E4", border: "#0D9488" },
+    },
+    rewards: [{ type: JourneyRewardType.XP, amount: 12, icon: "⚡" }],
+    activeAnimation: "breathing",
+    showProgressRing: true,
+  },
+
+  challenge: {
+    key: "challenge",
+    label: "Challenge",
+    icons: {
+      locked: { type: "hugeicons", value: "challenge" },
+      active: { type: "hugeicons", value: "challenge" },
+      completed: { type: "hugeicons", value: "challenge" },
+    },
+    colors: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
+        fill: "#D97706",
+        border: "#B45309",
+        glow: "rgba(217,119,6,0.4)",
+      },
+      completed: { fill: "#FDE68A", border: "#D97706" },
+    },
+    rewards: [{ type: JourneyRewardType.XP, amount: 18, icon: "⚡" }],
+    activeAnimation: "breathing",
+    showProgressRing: true,
+  },
+
+  boss: {
+    key: "boss",
+    label: "Boss",
+    icons: {
+      locked: { type: "hugeicons", value: "boss" },
+      active: { type: "hugeicons", value: "boss" },
+      completed: { type: "hugeicons", value: "boss" },
+    },
+    colors: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
+        fill: "#DC2626",
+        border: "#B91C1C",
+        glow: "rgba(220,38,38,0.35)",
+      },
+      completed: { fill: "#FCA5A5", border: "#DC2626" },
+    },
+    rewards: [{ type: JourneyRewardType.XP, amount: 25, icon: "⚡" }],
+    activeAnimation: "breathing",
+    showProgressRing: true,
+  },
+
+  microphone: {
+    key: "microphone",
+    label: "Voice Exercise",
+    icons: {
+      locked: { type: "hugeicons", value: "microphone_locked" },
+      active: { type: "hugeicons", value: "microphone" },
+      completed: { type: "hugeicons", value: "microphone" },
+    },
+    colors: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#58CC02",
         border: "#46A302",
         glow: "rgba(88,204,2,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#FFC800", border: "#E5B400" },
+      completed: { fill: "#FFC800", border: "#E5B400" },
     },
     rewards: [{ type: JourneyRewardType.XP, amount: 15, icon: "⚡" }],
     activeAnimation: "breathing",
@@ -261,18 +327,18 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     key: "gamepad",
     label: "Interactive Exercise",
     icons: {
-      [NodeStatus.LOCKED]: { type: "hugeicons", value: "gamepad_locked" },
-      [NodeStatus.ACTIVE]: { type: "hugeicons", value: "gamepad" },
-      [NodeStatus.COMPLETED]: { type: "hugeicons", value: "gamepad" },
+      locked: { type: "hugeicons", value: "gamepad_locked" },
+      active: { type: "hugeicons", value: "gamepad" },
+      completed: { type: "hugeicons", value: "gamepad" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#58CC02",
         border: "#46A302",
         glow: "rgba(88,204,2,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#FFC800", border: "#E5B400" },
+      completed: { fill: "#FFC800", border: "#E5B400" },
     },
     rewards: [{ type: JourneyRewardType.XP, amount: 15, icon: "⚡" }],
     activeAnimation: "breathing",
@@ -283,18 +349,18 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     key: "headphones",
     label: "Listening Exercise",
     icons: {
-      [NodeStatus.LOCKED]: { type: "hugeicons", value: "headphones_locked" },
-      [NodeStatus.ACTIVE]: { type: "hugeicons", value: "headphones" },
-      [NodeStatus.COMPLETED]: { type: "hugeicons", value: "headphones" },
+      locked: { type: "hugeicons", value: "headphones_locked" },
+      active: { type: "hugeicons", value: "headphones" },
+      completed: { type: "hugeicons", value: "headphones" },
     },
     colors: {
-      [NodeStatus.LOCKED]: { fill: "#E5E5E5", border: "#AFAFAF" },
-      [NodeStatus.ACTIVE]: {
+      locked: { fill: "#E5E5E5", border: "#AFAFAF" },
+      active: {
         fill: "#58CC02",
         border: "#46A302",
         glow: "rgba(88,204,2,0.4)",
       },
-      [NodeStatus.COMPLETED]: { fill: "#FFC800", border: "#E5B400" },
+      completed: { fill: "#FFC800", border: "#E5B400" },
     },
     rewards: [{ type: JourneyRewardType.XP, amount: 15, icon: "⚡" }],
     activeAnimation: "breathing",

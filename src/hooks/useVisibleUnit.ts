@@ -44,12 +44,14 @@ export function useVisibleUnit({ units }: UseVisibleUnitProps) {
     ? {
         unitNumber: unit.unitNumber,
         unitTitle: unit.title,
+        unitIconKey: unit.iconKey,
         colorThemeKey: unit.colorScheme,
         unitId: unit.id,
       }
     : {
         unitNumber: 1,
         unitTitle: "Loading...",
+        unitIconKey: null,
         colorThemeKey: "green",
         unitId: "",
       };
