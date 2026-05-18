@@ -19,9 +19,9 @@ import Svg, { Path } from "react-native-svg";
 
 import type { JourneyNode } from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
-import ConfigDrivenNode from "@/src/components/journey/ConfigDrivenNode";
 import type { PathNodeData, NodePosition } from "@/src/types/journey";
 import { useHighContrast } from "@/src/hooks/useHighContrast";
+import ConfigDrivenNode from "./ConfigDrivenNode";
 
 // ---------------------------------------------------------------------------
 // Constants
