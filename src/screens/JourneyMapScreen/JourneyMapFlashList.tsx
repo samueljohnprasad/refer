@@ -2,13 +2,23 @@
  * JourneyMapFlashList
  * Rewired to the v5 normalized Redux store.
  *
- * Data source: useJourneyFlashListData(courseId) — builds FlashList items from
- * selectSectionsForCourse → selectUnitsForSection → selectNodesForUnit.
+ * Default data source: the progress-derived current section for the course.
+ * Preview mode: tapping the header opens the section sheet, which can
+ * preview a different section while keeping that choice scoped to the course.
+ *
+ * List data source: useJourneyFlashListData(courseId, renderedSectionId) —
+ * builds FlashList items from selectSectionsForCourse → selectUnitsForSection
+ * → selectNodesForUnit.
  * Node tap: locked → toast, unlocked → open NodeContentModal directly.
  * Visual rendering: unchanged — JourneyNodeCell, DividerCell, etc.
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Dimensions, View, Text } from "react-native";
 import Animated from "react-native-reanimated";
 import { LegendList } from "@legendapp/list";
@@ -23,12 +33,19 @@ import type {
 
 import { useVisibleUnit } from "@/src/hooks/useVisibleUnit";
 import { useAppSelector, useAppDispatch } from "@/src/store/hooks";
-import { setActiveNodeModal } from "@/src/features/journey/journeySlice";
+import {
+  setActiveNodeModal,
+  setPreviewSection,
+} from "@/src/features/journey/journeySlice";
 import {
   selectCourse,
-  selectCurrentNodeForActiveCourse,
-  selectCurrentSectionForActiveCourse,
-  selectSectionsForCourse,
+  selectCurrentSectionIdForCourse,
+  selectIsCourseLoaded,
+  selectPreviewSectionForCourse,
+  selectPreviewSectionIdForCourse,
+  selectRenderedJourneyViewForCourse,
+  selectRenderedSectionIdForCourse,
+  selectSectionOverviewItemsForCourse,
 } from "@/src/features/journey/journeySelectors";
 
 import { JourneyNodeCell } from "@/src/components/journey/JourneyNodeCell";
@@ -64,93 +81,53 @@ function JourneyMapFlashListInner({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const legendListRef = useRef<any>(null);
   const [isSectionSheetOpen, setIsSectionSheetOpen] = useState(false);
-  const [selectedSectionNumber, setSelectedSectionNumber] = useState<
-    number | null
-  >(null);
+  const dispatch = useAppDispatch();
 
   // ── Data ───────────────────────────────────────────────────────────────────
-  const sections = useAppSelector((state) =>
-    selectSectionsForCourse(state, courseId),
+  const currentSectionId = useAppSelector((state) =>
+    selectCurrentSectionIdForCourse(state, courseId),
   );
-  const { units: allUnits } = useJourneyFlashListData(courseId);
-  const selectedSectionId = useMemo(
-    () =>
-      selectedSectionNumber === null
-        ? undefined
-        : sections.find((section) => section.orderIndex === selectedSectionNumber)
-            ?.id,
-    [sections, selectedSectionNumber],
+  const previewSectionId = useAppSelector((state) =>
+    selectPreviewSectionIdForCourse(state, courseId),
+  );
+  const previewSection = useAppSelector((state) =>
+    selectPreviewSectionForCourse(state, courseId),
+  );
+  const renderedSectionId = useAppSelector((state) =>
+    selectRenderedSectionIdForCourse(state, courseId),
   );
   const { flashListData, activeGlobalIndex, units } = useJourneyFlashListData(
     courseId,
-    selectedSectionId,
+    renderedSectionId ?? undefined,
   );
-  const { visibleUnit, onViewableItemsChanged } = useVisibleUnit({ units });
+  const { visibleUnitId, onViewableItemsChanged } = useVisibleUnit({ units });
+  const { renderedSection, renderedUnit } = useAppSelector((state) =>
+    selectRenderedJourneyViewForCourse(state, courseId, visibleUnitId),
+  );
   const course = useAppSelector((state) => selectCourse(state, courseId));
-  const currentNode = useAppSelector(selectCurrentNodeForActiveCourse);
-  const currentSection = useAppSelector(selectCurrentSectionForActiveCourse);
-  const isLoaded = useAppSelector(
-    (state) => !!state.journey.loadedCourses[courseId],
+  const isLoaded = useAppSelector((state) =>
+    selectIsCourseLoaded(state, courseId),
+  );
+  const sectionOverviewItems = useAppSelector((state) =>
+    selectSectionOverviewItemsForCourse(state, courseId),
   );
 
-  const currentVisibleUnit =
-    units.find((unit) => unit.id === visibleUnit.unitId) ?? units[0];
-  const currentProgressUnit = useMemo(
-    () => allUnits.find((unit) => unit.id === currentNode?.unitId),
-    [allUnits, currentNode],
-  );
-  const currentProgressSectionNumber =
-    currentSection?.orderIndex ??
-    currentProgressUnit?.sectionNumber ??
-    1;
-  const displayUnit =
-    selectedSectionNumber === null
-      ? currentProgressUnit ?? currentVisibleUnit
-      : currentVisibleUnit;
-  const displaySectionNumber =
-    selectedSectionNumber ?? displayUnit?.sectionNumber ?? currentProgressSectionNumber;
+  const canOpenSections = sectionOverviewItems.length > 0;
 
-  const sectionList = useMemo(
-    () =>
-      sections.map((section) => {
-        const sectionUnits = allUnits.filter((unit) => unit.sectionId === section.id);
-        const nodeCount = sectionUnits.reduce(
-          (total, unit) => total + unit.nodes.length,
-          0,
-        );
+  useEffect(() => {
+    if (previewSectionId === null || previewSection !== null) {
+      return;
+    }
 
-        return {
-          unitNumber: section.orderIndex,
-          sectionNumber: section.orderIndex,
-          title: section.title,
-          colorScheme: sectionUnits[0]?.colorScheme ?? "green",
-          nodeCount,
-          unitCount: sectionUnits.length,
-          unitTitles: sectionUnits.map((unit) => unit.title),
-          unitIconKeys: sectionUnits.map((unit) => unit.iconKey),
-        };
-      }),
-    [allUnits, sections],
-  );
-
-  const unitCompletedCounts = useMemo(
-    () =>
-      sections.reduce<Record<string, number>>((counts, section) => {
-        const sectionUnits = allUnits.filter((unit) => unit.sectionId === section.id);
-
-        counts[`section_${section.orderIndex}`] = sectionUnits.reduce(
-          (total, unit) =>
-            total + unit.nodes.filter((node) => node.status === "completed").length,
-          0,
-        );
-
-        return counts;
-      }, {}),
-    [allUnits, sections],
-  );
+    dispatch(setPreviewSection({ courseId, sectionId: null }));
+  }, [courseId, dispatch, previewSection, previewSectionId]);
 
   // ── Auto-scroll to current node ────────────────────────────────────────────
   const lastScrolledIndexRef = useRef<number>(-1);
+  useEffect(() => {
+    lastScrolledIndexRef.current = -1;
+  }, [renderedSectionId]);
+
   useEffect(() => {
     if (!isLoaded || activeGlobalIndex < 0) return;
     if (activeGlobalIndex === lastScrolledIndexRef.current) return;
@@ -165,7 +142,6 @@ function JourneyMapFlashListInner({
   }, [isLoaded, activeGlobalIndex]);
 
   // ── Node tap — locked → toast, unlocked → open modal directly ─────────────
-  const dispatch = useAppDispatch();
   const toast = useToast();
 
   const handleNodePress = useCallback(
@@ -181,26 +157,30 @@ function JourneyMapFlashListInner({
         });
         return;
       }
-      dispatch(setActiveNodeModal(node.id));
+      dispatch(setActiveNodeModal({ courseId, nodeId: node.id }));
     },
-    [dispatch, toast],
+    [courseId, dispatch, toast],
   );
 
   const handleOpenSections = useCallback((): void => {
-    if (sectionList.length === 0) return;
+    if (!canOpenSections) return;
     setIsSectionSheetOpen(true);
-  }, [sectionList.length]);
+  }, [canOpenSections]);
 
   const handleCloseSections = useCallback((): void => {
     setIsSectionSheetOpen(false);
   }, []);
 
-  const handleJumpToSection = useCallback(
-    (sectionNumber: number): void => {
-      setSelectedSectionNumber(sectionNumber);
-      setIsSectionSheetOpen(false);
+  const handleSelectSection = useCallback(
+    (sectionId: string): void => {
+      if (!sectionId || sectionId === currentSectionId) {
+        dispatch(setPreviewSection({ courseId, sectionId: null }));
+        return;
+      }
+
+      dispatch(setPreviewSection({ courseId, sectionId }));
     },
-    [],
+    [courseId, currentSectionId, dispatch],
   );
 
   // ── renderItem ────────────────────────────────────────────────────────────
@@ -241,11 +221,25 @@ function JourneyMapFlashListInner({
     <>
       <HomeMainButton
         onPress={handleOpenSections}
-        unitLabel={`Section ${displaySectionNumber} • Unit ${displayUnit?.unitNumber ?? 1}`}
-        unitTitle={displayUnit?.title ?? visibleUnit.unitTitle}
-        faceColor={UNIT_GRADIENTS[displayUnit?.colorScheme ?? visibleUnit.colorThemeKey]?.[0] ?? "#4CAF50"}
-        rimColor={UNIT_GRADIENTS[displayUnit?.colorScheme ?? visibleUnit.colorThemeKey]?.[1] ?? "#388E3C"}
-        unitIconKey={displayUnit?.iconKey ?? visibleUnit.unitIconKey}
+        unitLabel={
+          renderedSection
+            ? `Section ${renderedSection.orderIndex}${
+                renderedUnit ? ` • Unit ${renderedUnit.unitNumber}` : ""
+              }`
+            : "Journey"
+        }
+        unitTitle={renderedUnit?.title ?? "Select a section"}
+        faceColor={
+          UNIT_GRADIENTS[
+            renderedUnit?.colorThemeKey ?? "green"
+          ]?.[0] ?? "#4CAF50"
+        }
+        rimColor={
+          UNIT_GRADIENTS[
+            renderedUnit?.colorThemeKey ?? "green"
+          ]?.[1] ?? "#388E3C"
+        }
+        unitIconKey={renderedUnit?.iconKey ?? null}
       />
 
       {!isLoaded ? (
@@ -256,6 +250,7 @@ function JourneyMapFlashListInner({
         </View>
       ) : flashListData.length > 0 ? (
         <AnimatedLegendList<JourneyFlashListItem>
+          key={renderedSectionId ?? courseId}
           ref={legendListRef}
           data={flashListData}
           renderItem={renderItem}
@@ -284,10 +279,8 @@ function JourneyMapFlashListInner({
         >
           <SectionOverviewSheet
             onClose={handleCloseSections}
-            unitCompletedCounts={unitCompletedCounts}
-            sectionList={sectionList}
-            currentSectionUnitNumber={currentProgressSectionNumber}
-            onJumpToSection={handleJumpToSection}
+            sections={sectionOverviewItems}
+            onPreviewSection={handleSelectSection}
             journeyTitle={course?.title ?? "Journey"}
           />
         </BottomSheetWithRNContent>

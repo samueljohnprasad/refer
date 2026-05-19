@@ -2,7 +2,8 @@
 // Normalized Redux state for the Journey Map.
 // Stores courses, sections, units, nodes as entity adapters (O(1) lookups).
 // Maintains relationship indexes for O(1) parent→children traversal.
-// Owns all journey UI state: active course, selected node, active modal.
+// Owns shared journey data plus global/per-course UI state that must survive
+// beyond a single screen render.
 
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
@@ -50,6 +51,7 @@ export interface JourneyState {
 
   // UI state
   activeCourseId: string | null;
+  previewSectionIdByCourse: Record<string, string | null>;
   activeNodeModalIdByCourse: Record<string, string | null>;
 }
 
@@ -70,6 +72,7 @@ const initialState: JourneyState = {
   loadingCourses: {},
 
   activeCourseId: null,
+  previewSectionIdByCourse: {},
   activeNodeModalIdByCourse: {},
 };
 
@@ -175,10 +178,20 @@ const journeySlice = createSlice({
       state.activeCourseId = action.payload;
     },
 
-    setActiveNodeModal(state, action: PayloadAction<string | null>) {
-      const courseId = state.activeCourseId;
-      if (!courseId) return;
-      state.activeNodeModalIdByCourse[courseId] = action.payload;
+    setPreviewSection(
+      state,
+      action: PayloadAction<{ courseId: string; sectionId: string | null }>,
+    ) {
+      const { courseId, sectionId } = action.payload;
+      state.previewSectionIdByCourse[courseId] = sectionId;
+    },
+
+    setActiveNodeModal(
+      state,
+      action: PayloadAction<{ courseId: string; nodeId: string | null }>,
+    ) {
+      const { courseId, nodeId } = action.payload;
+      state.activeNodeModalIdByCourse[courseId] = nodeId;
     },
   },
 });
@@ -189,6 +202,7 @@ export const {
   optimisticSetNodeStatus,
   setLoadingCourse,
   setActiveCourse,
+  setPreviewSection,
   setActiveNodeModal,
 } = journeySlice.actions;
 

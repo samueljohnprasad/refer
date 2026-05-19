@@ -15,7 +15,7 @@ function isJourneyNode(item: JourneyFlashListItem): item is JourneyNode {
 }
 
 export function useVisibleUnit({ units }: UseVisibleUnitProps) {
-  const [visibleUnitIndex, setVisibleUnitIndex] = useState(0);
+  const [visibleUnitId, setVisibleUnitId] = useState<string | null>(null);
 
   const onViewableItemsChanged = useCallback(
     ({
@@ -29,35 +29,17 @@ export function useVisibleUnit({ units }: UseVisibleUnitProps) {
       if (!isJourneyNode(firstItem.item)) return;
 
       const targetUnitId = firstItem.item.unitId;
+      const hasVisibleUnit = units.some((unit) => unit.id === targetUnitId);
 
-      const unitIndex = units.findIndex((u) => u.id === targetUnitId);
-
-      if (unitIndex !== -1 && unitIndex !== visibleUnitIndex) {
-        setVisibleUnitIndex(unitIndex);
+      if (hasVisibleUnit && targetUnitId !== visibleUnitId) {
+        setVisibleUnitId(targetUnitId);
       }
     },
-    [units, visibleUnitIndex],
+    [units, visibleUnitId],
   );
 
-  const unit = units[visibleUnitIndex] || units[0];
-  const visibleUnit = unit
-    ? {
-        unitNumber: unit.unitNumber,
-        unitTitle: unit.title,
-        unitIconKey: unit.iconKey,
-        colorThemeKey: unit.colorScheme,
-        unitId: unit.id,
-      }
-    : {
-        unitNumber: 1,
-        unitTitle: "Loading...",
-        unitIconKey: null,
-        colorThemeKey: "green",
-        unitId: "",
-      };
-
   return {
-    visibleUnit,
+    visibleUnitId,
     onViewableItemsChanged,
   };
 }

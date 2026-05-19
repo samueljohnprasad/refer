@@ -136,6 +136,7 @@ function createDividerItem(
   unit: Unit,
   entryX: number,
   exitX: number,
+  previousNodeVisualStatus: NodeVisualStatus | null,
   previousNodeGlobalIndex: number | undefined,
 ): JourneyDividerItem {
   return {
@@ -146,6 +147,7 @@ function createDividerItem(
     accentColor: undefined,
     connectorLaneX: resolveDividerConnectorLaneX(entryX, exitX),
     segmentD: buildDividerSegmentD(entryX, exitX, DIVIDER_LAYOUT.cellHeight),
+    isConnectorActive: previousNodeVisualStatus === "completed",
     prevNodeGlobalIndex: previousNodeGlobalIndex,
   };
 }
@@ -292,6 +294,7 @@ export interface JourneyLayoutResult {
  * @param unitsBySection - Relationship index from Redux store
  * @param nodesByUnit    - Relationship index from Redux store
  * @param nodeProgress   - Map of nodeId → UserNodeProgress (from store.journey.nodeProgress)
+ * @param renderedSectionId - Optional section id to render in isolation
  */
 export function buildJourneyFlashListData(
   sections: Section[],
@@ -300,7 +303,7 @@ export function buildJourneyFlashListData(
   unitsBySection: Record<string, string[]>,
   nodesByUnit: Record<string, string[]>,
   nodeProgress: Record<string, UserNodeProgress>,
-  selectedSectionId?: string,
+  renderedSectionId?: string,
 ): JourneyLayoutResult {
   const flashListData: JourneyFlashListItem[] = [];
   const unitsData: UnitData[] = [];
@@ -309,12 +312,13 @@ export function buildJourneyFlashListData(
   let globalIndex = 0;
   let globalUnitNumber = 0;
   let previousNodeX = SCREEN_WIDTH / 2; // path enters from center for the first node
+  let previousNodeVisualStatus: NodeVisualStatus | null = null;
 
-  let activeGlobalIndex = -1; // -1 means course complete (no active node)
+  let activeGlobalIndex = -1; // -1 means there is no active node in the rendered slice
 
   for (const section of sections) {
     const shouldIncludeSection =
-      selectedSectionId === undefined || section.id === selectedSectionId;
+      renderedSectionId === undefined || section.id === renderedSectionId;
     const unitIds = unitsBySection[section.id] ?? [];
 
     for (const unitId of unitIds) {
@@ -341,6 +345,7 @@ export function buildJourneyFlashListData(
             unit,
             previousNodeX,
             firstNodeX,
+            previousNodeVisualStatus,
             lastNodeGlobalIndex >= 0 ? lastNodeGlobalIndex : undefined,
           ),
         );
@@ -376,6 +381,7 @@ export function buildJourneyFlashListData(
         pathNodeDataList.push(createPathNodeData(node, globalIndex, visualStatus));
 
         previousNodeX = nodeX;
+        previousNodeVisualStatus = visualStatus;
         globalIndex++;
       }
 

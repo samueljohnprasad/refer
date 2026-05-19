@@ -121,9 +121,13 @@ export interface JourneyDividerItem {
   /** Pre-built SVG path for this divider cell in local coordinates */
   segmentD?: string;
   /**
+   * Whether the connector through this divider belongs to completed progress.
+   * Derived during layout building from the last node before the divider.
+   */
+  isConnectorActive?: boolean;
+  /**
    * Global index of the last node BEFORE this divider.
-   * Used at render time to determine if the path through this cell should be
-   * colored as active/completed (same logic as JourneyNodeCell).
+   * Retained as a legacy fallback for divider highlight logic in older builders.
    */
   prevNodeGlobalIndex?: number;
 }

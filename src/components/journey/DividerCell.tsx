@@ -31,11 +31,16 @@ function isActiveDividerSegment(
 }
 
 function resolveDividerSegmentColor(
+  isConnectorActive: boolean | undefined,
   previousNodeGlobalIndex: number | undefined,
   activeGlobalIndex: number,
   pathColors: { active: string; inactive: string },
 ): string {
-  return isActiveDividerSegment(previousNodeGlobalIndex, activeGlobalIndex)
+  const shouldHighlightDivider =
+    isConnectorActive ??
+    isActiveDividerSegment(previousNodeGlobalIndex, activeGlobalIndex);
+
+  return shouldHighlightDivider
     ? pathColors.active
     : pathColors.inactive;
 }
@@ -49,6 +54,7 @@ export function DividerCell({
   const { pathColors, pathStrokeWidth } = useHighContrast();
 
   const segmentColor = resolveDividerSegmentColor(
+    item.isConnectorActive,
     item.prevNodeGlobalIndex,
     activeGlobalIndex,
     pathColors,

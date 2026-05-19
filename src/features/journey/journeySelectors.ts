@@ -5,59 +5,111 @@
 
 import { createSelector } from "@reduxjs/toolkit";
 import type { RootState } from "@/src/store/store";
+import type { SectionOverviewItem } from "@/src/types/journey/sectionMap";
 import type {
   Node,
   Section,
   NodeStatus,
   DerivedStatus,
 } from "@/src/types/journeyV5";
+import {
+  selectActiveCourseIdState,
+  selectActiveNodeModalIdByCourseMap,
+  selectCourseEntities,
+  selectCourseIdParam,
+  selectCourseProgressMap,
+  selectLoadedCoursesMap,
+  selectLoadingCoursesMap,
+  selectNodeEntities,
+  selectNodeIdParam,
+  selectNodeProgressMap,
+  selectNodesByUnitIndex,
+  selectPreviewSectionIdByCourseMap,
+  selectRootState,
+  selectSectionEntities,
+  selectSectionIdParam,
+  selectSectionsByCourseIndex,
+  selectUnitEntities,
+  selectUnitIdParam,
+  selectUnitsBySectionIndex,
+} from "./journeySelectorBase";
+
+interface RenderedUnitView {
+  id: string;
+  title: string;
+  unitNumber: number;
+  iconKey: string | null;
+  colorThemeKey: string;
+}
+
+interface RenderedJourneyView {
+  renderedSection: Section | null;
+  renderedUnit: RenderedUnitView | null;
+}
 
 // ── O(1) entity primitives ────────────────────────────────────────────────────
 
 /** Returns the course entity by id, or undefined if not in store. */
 export const selectCourse = (state: RootState, courseId: string) =>
-  state.journey.courses.entities[courseId];
+  selectCourseEntities(state)[courseId];
 
 /** Returns the section entity by id, or undefined if not in store. */
 export const selectSection = (state: RootState, sectionId: string) =>
-  state.journey.sections.entities[sectionId];
+  selectSectionEntities(state)[sectionId];
 
 /** Returns the unit entity by id, or undefined if not in store. */
 export const selectUnit = (state: RootState, unitId: string) =>
-  state.journey.units.entities[unitId];
+  selectUnitEntities(state)[unitId];
 
 /** Returns the node entity by id, or undefined if not in store. */
 export const selectNode = (state: RootState, nodeId: string) =>
-  state.journey.nodes.entities[nodeId];
+  selectNodeEntities(state)[nodeId];
 
 // ── Loading state ─────────────────────────────────────────────────────────────
 
 /** Returns true if this course's tree is already in the Redux store. */
-export const selectIsCourseLoaded = (
-  state: RootState,
-  courseId: string,
-): boolean => !!state.journey.loadedCourses[courseId];
+export const selectIsCourseLoaded = createSelector(
+  [selectLoadedCoursesMap, selectCourseIdParam],
+  (loadedCourses, courseId): boolean => !!loadedCourses[courseId],
+);
 
 /** Returns true if this course's tree is currently being fetched. */
-export const selectIsCourseLoading = (
-  state: RootState,
-  courseId: string,
-): boolean => !!state.journey.loadingCourses[courseId];
+export const selectIsCourseLoading = createSelector(
+  [selectLoadingCoursesMap, selectCourseIdParam],
+  (loadingCourses, courseId): boolean => !!loadingCourses[courseId],
+);
+
+/** Returns courseProgress for a course, or undefined if not enrolled. */
+export const selectCourseProgressForCourse = createSelector(
+  [selectCourseProgressMap, selectCourseIdParam],
+  (courseProgressMap, courseId) => courseProgressMap[courseId],
+);
 
 // ── Index selectors — O(k), never scans full entity store ─────────────────────
+
+export const selectSectionIdsForCourse = createSelector(
+  [selectSectionsByCourseIndex, selectCourseIdParam],
+  (sectionsByCourse, courseId): string[] => sectionsByCourse[courseId] ?? [],
+);
+
+export const selectUnitIdsForSection = createSelector(
+  [selectUnitsBySectionIndex, selectSectionIdParam],
+  (unitsBySection, sectionId): string[] => unitsBySection[sectionId] ?? [],
+);
+
+export const selectNodeIdsForUnit = createSelector(
+  [selectNodesByUnitIndex, selectUnitIdParam],
+  (nodesByUnit, unitId): string[] => nodesByUnit[unitId] ?? [],
+);
 
 /**
  * Returns sections for a course in order.
  * Uses sectionsByCourse index — O(k) where k = sections in course.
  */
 export const selectSectionsForCourse = createSelector(
-  [
-    (state: RootState) => state.journey.sectionsByCourse,
-    (state: RootState) => state.journey.sections.entities,
-    (_: RootState, courseId: string) => courseId,
-  ],
-  (sectionsByCourse, entities, courseId) =>
-    (sectionsByCourse[courseId] ?? [])
+  [selectSectionIdsForCourse, selectSectionEntities],
+  (sectionIds, entities) =>
+    sectionIds
       .map((id) => entities[id])
       .filter((s): s is NonNullable<typeof s> => s !== undefined),
 );
@@ -67,13 +119,9 @@ export const selectSectionsForCourse = createSelector(
  * Uses unitsBySection index — O(k) where k = units in section.
  */
 export const selectUnitsForSection = createSelector(
-  [
-    (state: RootState) => state.journey.unitsBySection,
-    (state: RootState) => state.journey.units.entities,
-    (_: RootState, sectionId: string) => sectionId,
-  ],
-  (unitsBySection, entities, sectionId) =>
-    (unitsBySection[sectionId] ?? [])
+  [selectUnitIdsForSection, selectUnitEntities],
+  (unitIds, entities) =>
+    unitIds
       .map((id) => entities[id])
       .filter((u): u is NonNullable<typeof u> => u !== undefined),
 );
@@ -83,13 +131,9 @@ export const selectUnitsForSection = createSelector(
  * Uses nodesByUnit index — O(k) where k = nodes in unit.
  */
 export const selectNodesForUnit = createSelector(
-  [
-    (state: RootState) => state.journey.nodesByUnit,
-    (state: RootState) => state.journey.nodes.entities,
-    (_: RootState, unitId: string) => unitId,
-  ],
-  (nodesByUnit, entities, unitId) =>
-    (nodesByUnit[unitId] ?? [])
+  [selectNodeIdsForUnit, selectNodeEntities],
+  (nodeIds, entities) =>
+    nodeIds
       .map((id) => entities[id])
       .filter((n): n is NonNullable<typeof n> => n !== undefined),
 );
@@ -102,8 +146,16 @@ export const selectNodesForUnit = createSelector(
  * Returns 'locked' if no progress row exists (never stored in DB).
  */
 export const selectNodeStatus = createSelector(
-  [(state: RootState, nodeId: string) => state.journey.nodeProgress[nodeId]],
-  (progress): NodeStatus => progress?.status ?? "locked",
+  [selectNodeProgressMap, selectNodeIdParam],
+  (nodeProgress, nodeId): NodeStatus => nodeProgress[nodeId]?.status ?? "locked",
+);
+
+/**
+ * Returns the progress row for a single node, or undefined if not started yet.
+ */
+export const selectNodeProgressForNode = createSelector(
+  [selectNodeProgressMap, selectNodeIdParam],
+  (nodeProgress, nodeId) => nodeProgress[nodeId],
 );
 
 /**
@@ -111,11 +163,7 @@ export const selectNodeStatus = createSelector(
  * Uses nodesByUnit index — O(k) traversal.
  */
 export const selectUnitStatus = createSelector(
-  [
-    (state: RootState, unitId: string) =>
-      state.journey.nodesByUnit[unitId] ?? [],
-    (state: RootState) => state.journey.nodeProgress,
-  ],
+  [selectNodeIdsForUnit, selectNodeProgressMap],
   (nodeIds, nodeProgress): DerivedStatus => {
     if (nodeIds.length === 0) return "locked";
 
@@ -138,10 +186,9 @@ export const selectUnitStatus = createSelector(
  */
 export const selectSectionStatus = createSelector(
   [
-    (state: RootState, sectionId: string) =>
-      state.journey.unitsBySection[sectionId] ?? [],
-    (state: RootState) => state.journey.nodesByUnit,
-    (state: RootState) => state.journey.nodeProgress,
+    selectUnitIdsForSection,
+    selectNodesByUnitIndex,
+    selectNodeProgressMap,
   ],
   (unitIds, nodesByUnit, nodeProgress): DerivedStatus => {
     if (unitIds.length === 0) return "locked";
@@ -172,6 +219,44 @@ export const selectSectionStatus = createSelector(
 
 // ── Current node ──────────────────────────────────────────────────────────────
 
+const COLOR_THEME_CYCLE = ["green", "blue", "purple", "orange"] as const;
+const DEFAULT_COLOR_THEME_KEY = "green";
+
+const selectVisibleUnitIdParam = (
+  _: RootState,
+  _courseId: string,
+  visibleUnitId: string | null,
+) => visibleUnitId;
+
+function isCurrentNodeStatus(status: NodeStatus): boolean {
+  return (
+    status === "not_started" ||
+    status === "in_progress" ||
+    status === "attempted"
+  );
+}
+
+function findCurrentNode(
+  sectionIds: string[],
+  unitsBySection: Record<string, string[]>,
+  nodesByUnit: Record<string, string[]>,
+  nodeEntities: Record<string, Node | undefined>,
+  nodeProgress: RootState["journey"]["nodeProgress"],
+): Node | null {
+  for (const sectionId of sectionIds) {
+    for (const unitId of unitsBySection[sectionId] ?? []) {
+      for (const nodeId of nodesByUnit[unitId] ?? []) {
+        const status = nodeProgress[nodeId]?.status ?? "locked";
+        if (isCurrentNodeStatus(status)) {
+          return nodeEntities[nodeId] ?? null;
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
 /**
  * Returns the current node for a course — the first non-completed, unlocked node.
  *
@@ -181,14 +266,13 @@ export const selectSectionStatus = createSelector(
  *
  * O(n) traversal of indexes with early return. Never scans the full entity store.
  */
-export const selectCurrentNode = createSelector(
+export const selectCurrentNodeForCourse = createSelector(
   [
-    (state: RootState, courseId: string) =>
-      state.journey.sectionsByCourse[courseId] ?? [],
-    (state: RootState) => state.journey.unitsBySection,
-    (state: RootState) => state.journey.nodesByUnit,
-    (state: RootState) => state.journey.nodes.entities,
-    (state: RootState) => state.journey.nodeProgress,
+    selectSectionIdsForCourse,
+    selectUnitsBySectionIndex,
+    selectNodesByUnitIndex,
+    selectNodeEntities,
+    selectNodeProgressMap,
   ],
   (
     sectionIds,
@@ -196,22 +280,306 @@ export const selectCurrentNode = createSelector(
     nodesByUnit,
     nodeEntities,
     nodeProgress,
-  ): Node | null => {
-    for (const sectionId of sectionIds) {
-      for (const unitId of unitsBySection[sectionId] ?? []) {
-        for (const nodeId of nodesByUnit[unitId] ?? []) {
-          const status = nodeProgress[nodeId]?.status ?? "locked";
-          if (
-            status === "not_started" ||
-            status === "in_progress" ||
-            status === "attempted"
-          ) {
-            return nodeEntities[nodeId] ?? null;
-          }
-        }
-      }
+  ): Node | null =>
+    findCurrentNode(
+      sectionIds,
+      unitsBySection,
+      nodesByUnit,
+      nodeEntities,
+      nodeProgress,
+    ),
+);
+
+export const selectCurrentNode = selectCurrentNodeForCourse;
+
+export const selectCurrentUnitIdForCourse = createSelector(
+  [selectCurrentNodeForCourse],
+  (currentNode): string | null => currentNode?.unitId ?? null,
+);
+
+export const selectCurrentSectionIdForCourse = createSelector(
+  [selectCurrentUnitIdForCourse, selectUnitEntities],
+  (currentUnitId, unitEntities): string | null => {
+    if (!currentUnitId) {
+      return null;
     }
-    return null;
+
+    return unitEntities[currentUnitId]?.sectionId ?? null;
+  },
+);
+
+export const selectDefaultSectionIdForCourse = createSelector(
+  [
+    selectCurrentSectionIdForCourse,
+    selectSectionIdsForCourse,
+    selectCourseProgressForCourse,
+  ],
+  (
+    currentSectionId,
+    sectionIds,
+    courseProgress,
+  ): string | null => {
+    if (currentSectionId) {
+      return currentSectionId;
+    }
+
+    if (sectionIds.length === 0) {
+      return null;
+    }
+
+    const fallbackSectionIndex =
+      courseProgress?.status === "completed" ? sectionIds.length - 1 : 0;
+
+    return sectionIds[fallbackSectionIndex] ?? null;
+  },
+);
+
+/**
+ * Returns the section the journey should show by default for a course.
+ * - If there is a current node, returns that node's parent section.
+ * - If the course is completed, returns the last section.
+ * - Otherwise falls back to the first section while progress is initializing.
+ */
+export const selectCurrentSectionForCourse = createSelector(
+  [selectDefaultSectionIdForCourse, selectSectionEntities],
+  (sectionId, sectionEntities): Section | null =>
+    sectionId ? sectionEntities[sectionId] ?? null : null,
+);
+
+export const selectCurrentSectionNumberForCourse = createSelector(
+  [selectCurrentSectionForCourse],
+  (currentSection): number => currentSection?.orderIndex ?? 1,
+);
+
+export const selectPreviewSectionIdForCourse = createSelector(
+  [selectPreviewSectionIdByCourseMap, selectCourseIdParam],
+  (previewSectionIdsByCourse, courseId): string | null =>
+    previewSectionIdsByCourse[courseId] ?? null,
+);
+
+/**
+ * Returns the course-scoped preview section when the user is intentionally
+ * browsing away from the progress-derived current section.
+ */
+export const selectPreviewSectionForCourse = createSelector(
+  [
+    selectPreviewSectionIdForCourse,
+    selectSectionIdsForCourse,
+    selectSectionEntities,
+    selectCurrentSectionForCourse,
+  ],
+  (
+    previewSectionId,
+    courseSectionIds,
+    sectionEntities,
+    currentSection,
+  ): Section | null => {
+    if (!previewSectionId) {
+      return null;
+    }
+
+    const previewSectionBelongsToCourse =
+      courseSectionIds.includes(previewSectionId);
+    if (!previewSectionBelongsToCourse) {
+      return null;
+    }
+
+    if (previewSectionId === currentSection?.id) {
+      return null;
+    }
+
+    return sectionEntities[previewSectionId] ?? null;
+  },
+);
+
+/**
+ * Returns the section the journey should currently render for a course.
+ * Preview wins when present; otherwise we fall back to the current section.
+ */
+export const selectRenderedSectionForCourse = createSelector(
+  [selectPreviewSectionForCourse, selectCurrentSectionForCourse],
+  (previewSection, currentSection): Section | null =>
+    previewSection ?? currentSection,
+);
+
+export const selectRenderedSectionIdForCourse = createSelector(
+  [selectRenderedSectionForCourse],
+  (renderedSection): string | null => renderedSection?.id ?? null,
+);
+
+export const selectOrderedUnitIdsForCourse = createSelector(
+  [selectSectionIdsForCourse, selectUnitsBySectionIndex],
+  (sectionIds, unitsBySection): string[] =>
+    sectionIds.flatMap((sectionId) => unitsBySection[sectionId] ?? []),
+);
+
+export const selectRenderedUnitIdsForCourse = createSelector(
+  [selectRenderedSectionIdForCourse, selectUnitsBySectionIndex],
+  (renderedSectionId, unitsBySection): string[] =>
+    renderedSectionId ? unitsBySection[renderedSectionId] ?? [] : [],
+);
+
+function resolveRenderedUnitId(
+  previewSection: Section | null,
+  currentUnitId: string | null,
+  renderedUnitIds: string[],
+  visibleUnitId: string | null,
+): string | null {
+  const preferredUnitId = previewSection ? visibleUnitId : currentUnitId;
+
+  if (preferredUnitId && renderedUnitIds.includes(preferredUnitId)) {
+    return preferredUnitId;
+  }
+
+  return renderedUnitIds[0] ?? null;
+}
+
+export const selectRenderedUnitIdForCourse = createSelector(
+  [
+    selectPreviewSectionForCourse,
+    selectCurrentUnitIdForCourse,
+    selectRenderedUnitIdsForCourse,
+    selectVisibleUnitIdParam,
+  ],
+  (
+    previewSection,
+    currentUnitId,
+    renderedUnitIds,
+    visibleUnitId,
+  ): string | null =>
+    resolveRenderedUnitId(
+      previewSection,
+      currentUnitId,
+      renderedUnitIds,
+      visibleUnitId,
+    ),
+);
+
+export const selectRenderedUnitForCourse = createSelector(
+  [
+    selectRenderedUnitIdForCourse,
+    selectOrderedUnitIdsForCourse,
+    selectUnitEntities,
+  ],
+  (
+    renderedUnitId,
+    orderedUnitIds,
+    unitEntities,
+  ): RenderedUnitView | null => {
+    if (!renderedUnitId) {
+      return null;
+    }
+
+    const renderedUnit = unitEntities[renderedUnitId];
+    if (!renderedUnit) {
+      return null;
+    }
+
+    const globalUnitNumber = orderedUnitIds.indexOf(renderedUnitId) + 1;
+    const colorThemeKey =
+      globalUnitNumber > 0
+        ? resolveColorThemeKey(globalUnitNumber)
+        : DEFAULT_COLOR_THEME_KEY;
+
+    return {
+      id: renderedUnit.id,
+      title: renderedUnit.title,
+      unitNumber: renderedUnit.orderIndex,
+      iconKey: renderedUnit.iconKey,
+      colorThemeKey,
+    };
+  },
+);
+
+export const selectRenderedJourneyViewForCourse = createSelector(
+  [selectRenderedSectionForCourse, selectRenderedUnitForCourse],
+  (
+    renderedSection,
+    renderedUnit,
+  ): RenderedJourneyView => ({
+    renderedSection,
+    renderedUnit,
+  }),
+);
+
+function resolveColorThemeKey(globalUnitNumber: number): string {
+  return COLOR_THEME_CYCLE[(globalUnitNumber - 1) % COLOR_THEME_CYCLE.length]!;
+}
+
+export const selectSectionOverviewItemsForCourse = createSelector(
+  [
+    selectSectionIdsForCourse,
+    selectSectionEntities,
+    selectUnitsBySectionIndex,
+    selectUnitEntities,
+    selectNodesByUnitIndex,
+    selectNodeProgressMap,
+    selectCurrentSectionNumberForCourse,
+  ],
+  (
+    sectionIds,
+    sectionEntities,
+    unitsBySection,
+    unitEntities,
+    nodesByUnit,
+    nodeProgress,
+    currentSectionNumber,
+  ): SectionOverviewItem[] => {
+    let globalUnitNumber = 0;
+
+    return sectionIds
+      .map((sectionId): SectionOverviewItem | null => {
+        const section = sectionEntities[sectionId];
+        if (!section) {
+          return null;
+        }
+
+        const unitIds = unitsBySection[sectionId] ?? [];
+        let totalNodes = 0;
+        let completedNodes = 0;
+        let colorScheme = "green";
+        const unitTitles: string[] = [];
+        const unitIconKeys: Array<string | null | undefined> = [];
+
+        unitIds.forEach((unitId, unitIndex) => {
+          globalUnitNumber += 1;
+
+          if (unitIndex === 0) {
+            colorScheme = resolveColorThemeKey(globalUnitNumber);
+          }
+
+          const unit = unitEntities[unitId];
+          if (!unit) {
+            return;
+          }
+
+          unitTitles.push(unit.title);
+          unitIconKeys.push(unit.iconKey);
+
+          const nodeIds = nodesByUnit[unitId] ?? [];
+          totalNodes += nodeIds.length;
+          completedNodes += nodeIds.filter(
+            (nodeId) => nodeProgress[nodeId]?.status === "completed",
+          ).length;
+        });
+
+        return {
+          id: section.id,
+          sectionNumber: section.orderIndex,
+          title: section.title,
+          colorScheme,
+          unitCount: unitIds.length,
+          unitTitles,
+          unitIconKeys,
+          totalNodes,
+          completedNodes,
+          progressPercent:
+            totalNodes > 0 ? Math.round((completedNodes / totalNodes) * 100) : 0,
+          isUnlocked: section.orderIndex <= currentSectionNumber,
+          isCurrent: section.orderIndex === currentSectionNumber,
+        };
+      })
+      .filter((section): section is SectionOverviewItem => section !== null);
   },
 );
 
@@ -223,11 +591,10 @@ export const selectCurrentNode = createSelector(
  */
 export const selectCourseProgressPct = createSelector(
   [
-    (state: RootState, courseId: string) =>
-      state.journey.sectionsByCourse[courseId] ?? [],
-    (state: RootState) => state.journey.unitsBySection,
-    (state: RootState) => state.journey.nodesByUnit,
-    (state: RootState) => state.journey.nodeProgress,
+    selectSectionIdsForCourse,
+    selectUnitsBySectionIndex,
+    selectNodesByUnitIndex,
+    selectNodeProgressMap,
   ],
   (sectionIds, unitsBySection, nodesByUnit, nodeProgress): number => {
     let total = 0;
@@ -251,11 +618,7 @@ export const selectCourseProgressPct = createSelector(
  * Uses nodesByUnit index — O(k).
  */
 export const selectUnitProgressPct = createSelector(
-  [
-    (state: RootState, unitId: string) =>
-      state.journey.nodesByUnit[unitId] ?? [],
-    (state: RootState) => state.journey.nodeProgress,
-  ],
+  [selectNodeIdsForUnit, selectNodeProgressMap],
   (nodeIds, nodeProgress): number => {
     if (nodeIds.length === 0) return 0;
     const completed = nodeIds.filter(
@@ -267,74 +630,40 @@ export const selectUnitProgressPct = createSelector(
 
 // ── UI state selectors ────────────────────────────────────────────────────────
 
-export const selectActiveCourseId = (state: RootState) =>
-  state.journey.activeCourseId;
+export const selectActiveCourseId = selectActiveCourseIdState;
 
 export const selectCurrentNodeForActiveCourse = createSelector(
-  [
-    selectActiveCourseId,
-    (state: RootState) => state.journey.sectionsByCourse,
-    (state: RootState) => state.journey.unitsBySection,
-    (state: RootState) => state.journey.nodesByUnit,
-    (state: RootState) => state.journey.nodes.entities,
-    (state: RootState) => state.journey.nodeProgress,
-  ],
-  (
-    activeCourseId,
-    sectionsByCourse,
-    unitsBySection,
-    nodesByUnit,
-    nodeEntities,
-    nodeProgress,
-  ): Node | null => {
-    if (!activeCourseId) return null;
-
-    for (const sectionId of sectionsByCourse[activeCourseId] ?? []) {
-      for (const unitId of unitsBySection[sectionId] ?? []) {
-        for (const nodeId of nodesByUnit[unitId] ?? []) {
-          const status = nodeProgress[nodeId]?.status ?? "locked";
-          if (
-            status === "not_started" ||
-            status === "in_progress" ||
-            status === "attempted"
-          ) {
-            return nodeEntities[nodeId] ?? null;
-          }
-        }
-      }
-    }
-
-    return null;
-  },
+  [selectActiveCourseId, selectRootState],
+  (activeCourseId, state): Node | null =>
+    activeCourseId ? selectCurrentNodeForCourse(state, activeCourseId) : null,
 );
 
 export const selectCurrentSectionForActiveCourse = createSelector(
-  [
-    selectCurrentNodeForActiveCourse,
-    (state: RootState) => state.journey.units.entities,
-    (state: RootState) => state.journey.sections.entities,
-  ],
-  (currentNode, unitEntities, sectionEntities): Section | null => {
-    if (!currentNode) return null;
+  [selectActiveCourseId, selectRootState],
+  (activeCourseId, state): Section | null =>
+    activeCourseId ? selectCurrentSectionForCourse(state, activeCourseId) : null,
+);
 
-    const sectionId = unitEntities[currentNode.unitId]?.sectionId;
-    if (!sectionId) return null;
+export const selectPreviewSectionForActiveCourse = createSelector(
+  [selectActiveCourseId, selectRootState],
+  (activeCourseId, state): Section | null =>
+    activeCourseId ? selectPreviewSectionForCourse(state, activeCourseId) : null,
+);
 
-    return sectionEntities[sectionId] ?? null;
-  },
+export const selectRenderedSectionForActiveCourse = createSelector(
+  [selectActiveCourseId, selectRootState],
+  (activeCourseId, state): Section | null =>
+    activeCourseId ? selectRenderedSectionForCourse(state, activeCourseId) : null,
+);
+
+export const selectActiveNodeModalIdForCourse = createSelector(
+  [selectActiveNodeModalIdByCourseMap, selectCourseIdParam],
+  (activeNodeModalIdsByCourse, courseId): string | null =>
+    activeNodeModalIdsByCourse[courseId] ?? null,
 );
 
 export const selectActiveNodeModalId = createSelector(
-  [
-    selectActiveCourseId,
-    (state: RootState) => state.journey.activeNodeModalIdByCourse,
-  ],
-  (activeCourseId, activeNodeModalIdByCourse) =>
-    activeCourseId ? activeNodeModalIdByCourse[activeCourseId] ?? null : null,
+  [selectActiveCourseId, selectRootState],
+  (activeCourseId, state) =>
+    activeCourseId ? selectActiveNodeModalIdForCourse(state, activeCourseId) : null,
 );
-
-/** Returns courseProgress for a course, or undefined if not enrolled. */
-export const selectCourseProgressForCourse = (
-  state: RootState,
-  courseId: string,
-) => state.journey.courseProgress[courseId];

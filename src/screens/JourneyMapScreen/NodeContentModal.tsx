@@ -17,7 +17,10 @@ import {
   setActiveNodeModal,
   setCourseProgress,
 } from "@/src/features/journey/journeySlice";
-import { selectActiveNodeModalId } from "@/src/features/journey/journeySelectors";
+import {
+  selectActiveNodeModalIdForCourse,
+  selectNode,
+} from "@/src/features/journey/journeySelectors";
 import { journeyApi } from "@/src/features/journey/journeyApi";
 
 interface NodeContentModalProps {
@@ -33,17 +36,19 @@ export function NodeContentModal({
   courseId,
 }: NodeContentModalProps): React.JSX.Element {
   const dispatch = useAppDispatch();
-  const activeNodeId = useAppSelector(selectActiveNodeModalId);
+  const activeNodeId = useAppSelector((state) =>
+    selectActiveNodeModalIdForCourse(state, courseId),
+  );
   const node = useAppSelector((state) =>
-    activeNodeId ? state.journey.nodes.entities[activeNodeId] : undefined,
+    activeNodeId ? selectNode(state, activeNodeId) : undefined,
   );
 
   const [completeNode] = journeyApi.useCompleteNodeMutation();
   const [isCompleting, setIsCompleting] = useState(false);
 
   const handleDismiss = useCallback(() => {
-    dispatch(setActiveNodeModal(null));
-  }, [dispatch]);
+    dispatch(setActiveNodeModal({ courseId, nodeId: null }));
+  }, [courseId, dispatch]);
 
   const handleDone = useCallback(async () => {
     if (!activeNodeId || isCompleting) return;
@@ -60,7 +65,7 @@ export function NodeContentModal({
         dispatch(setCourseProgress(progressResult.data));
       }
 
-      dispatch(setActiveNodeModal(null));
+      dispatch(setActiveNodeModal({ courseId, nodeId: null }));
     } catch {
       // Keep modal open on error so user can retry
     } finally {

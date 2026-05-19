@@ -120,6 +120,7 @@ export type {
   SectionData,
   SectionUnitData,
   SectionListItem,
+  SectionOverviewItem,
   SectionNodeProgress,
   SectionEnrollment,
   SectionJourneyMeta,

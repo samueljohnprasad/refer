@@ -6,7 +6,7 @@ import { useAppSelector } from "@/src/store/hooks";
 import {
   selectCourseProgressPct,
   selectCourseProgressForCourse,
-  selectCurrentNode,
+  selectCurrentNodeForCourse,
 } from "@/src/features/journey/journeySelectors";
 import type { CourseStatus, Node } from "@/src/types/journeyV5";
 
@@ -33,7 +33,7 @@ export function useCourseProgress(courseId: string): UseCourseProgressResult {
     selectCourseProgressForCourse(state, courseId),
   )?.status;
   const currentNode = useAppSelector((state) =>
-    selectCurrentNode(state, courseId),
+    selectCurrentNodeForCourse(state, courseId),
   );
 
   return { progressPct, courseStatus, currentNode };

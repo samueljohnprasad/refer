@@ -1,55 +1,27 @@
 // hooks/journey/useJourneyFlashListData.ts
-// Derives the flat FlashList data array from the normalized v5 Redux store.
-// Replaces the old useJourneyDerivedState hook with new-system selectors.
+// Thin hook over the course-scoped layout selector.
+// Keeps layout building memoized per course/view instead of rebuilding from
+// broad normalized maps on every unrelated store update.
 
 import { useMemo } from "react";
 import { useAppSelector } from "@/src/store/hooks";
-import type { JourneyFlashListItem, UnitData } from "@/src/types/journey";
-import { selectSectionsForCourse } from "@/src/features/journey/journeySelectors";
-import type { Unit, Node } from "@/src/types/journeyV5";
-import { buildJourneyFlashListData, JourneyLayoutResult } from "@/src/lib/utils/journeyLayout";
+import { makeSelectJourneyLayoutForCourse } from "@/src/features/journey/journeyLayoutSelectors";
+import type { JourneyLayoutResult } from "@/src/lib/utils/journeyLayout";
 
 /**
  * Returns the flat FlashList data, activeGlobalIndex, and units for a course.
  * Recomputes only when the course structure or node progress changes.
  *
  * @param courseId - The active course id
- * @param selectedSectionId - Optional section id to render only one section
+ * @param renderedSectionId - Optional section id to render in isolation
  */
 export function useJourneyFlashListData(
   courseId: string,
-  selectedSectionId?: string,
+  renderedSectionId?: string,
 ): JourneyLayoutResult {
-  const sections = useAppSelector((state) =>
-    selectSectionsForCourse(state, courseId),
-  );
-  const unitEntities = useAppSelector((state) => state.journey.units.entities);
-  const nodeEntities = useAppSelector((state) => state.journey.nodes.entities);
-  const unitsBySection = useAppSelector(
-    (state) => state.journey.unitsBySection,
-  );
-  const nodesByUnit = useAppSelector((state) => state.journey.nodesByUnit);
-  const nodeProgress = useAppSelector((state) => state.journey.nodeProgress);
+  const selectJourneyLayout = useMemo(makeSelectJourneyLayoutForCourse, []);
 
-  return useMemo(
-    () =>
-      buildJourneyFlashListData(
-        sections,
-        unitEntities as Record<string, Unit | undefined>,
-        nodeEntities as Record<string, Node | undefined>,
-        unitsBySection,
-        nodesByUnit,
-        nodeProgress,
-        selectedSectionId,
-      ),
-    [
-      sections,
-      unitEntities,
-      nodeEntities,
-      unitsBySection,
-      nodesByUnit,
-      nodeProgress,
-      selectedSectionId,
-    ],
+  return useAppSelector((state) =>
+    selectJourneyLayout(state, courseId, renderedSectionId),
   );
 }

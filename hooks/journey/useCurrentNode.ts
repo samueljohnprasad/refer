@@ -3,7 +3,7 @@
 // Thin selector wrapper. "Current node" is a UI concept; it is not stored in the DB.
 
 import { useAppSelector } from "@/src/store/hooks";
-import { selectCurrentNode } from "@/src/features/journey/journeySelectors";
+import { selectCurrentNodeForCourse } from "@/src/features/journey/journeySelectors";
 import type { Node } from "@/src/types/journeyV5";
 
 /**
@@ -18,5 +18,5 @@ import type { Node } from "@/src/types/journeyV5";
  * @param courseId - The active course id
  */
 export function useCurrentNode(courseId: string): Node | null {
-  return useAppSelector((state) => selectCurrentNode(state, courseId));
+  return useAppSelector((state) => selectCurrentNodeForCourse(state, courseId));
 }

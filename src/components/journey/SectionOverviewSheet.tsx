@@ -1,53 +1,53 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 
 import { Text } from "@/components/ui/text";
 import JourneyUnitIcon from "@/src/components/journey/JourneyUnitIcon";
-import type { SectionListItem } from "@/src/types/journey/sectionMap";
-
-export interface SectionCardData {
-  id: string;
-  sectionNumber: number;
-  title: string;
-  unitRangeLabel: string;
-  cardBackgroundColor: string;
-  progressPercent: number;
-  totalNodes: number;
-  completedNodes: number;
-  isUnlocked: boolean;
-  isCurrent: boolean;
-  unitTitles: string[];
-  unitIconKeys: Array<string | null | undefined>;
-}
+import type { SectionOverviewItem } from "@/src/types/journey/sectionMap";
 
 export interface SectionOverviewSheetProps {
   onClose: () => void;
-  unitCompletedCounts: Record<string, number>;
-  sectionList: SectionListItem[];
-  currentSectionUnitNumber: number;
-  onJumpToSection: (unitNumber: number) => void;
+  sections: SectionOverviewItem[];
+  onPreviewSection: (sectionId: string) => void;
   journeyTitle: string;
 }
 
 interface SectionCardProps {
-  section: SectionCardData;
-  onJump: (unitNumber: number) => void;
+  section: SectionOverviewItem;
+  onPress: (sectionId: string) => void;
 }
 
 function SectionCard({
   section,
-  onJump,
+  onPress,
 }: SectionCardProps): React.JSX.Element {
+  const unitRangeLabel = `Section ${section.sectionNumber}${
+    section.unitCount > 0
+      ? ` • ${section.unitCount} ${section.unitCount === 1 ? "unit" : "units"}`
+      : ""
+  }`;
+  const colorMap: Record<string, string> = {
+    blue: "#E0F2FE",
+    purple: "#F3E8FF",
+    green: "#DCFCE7",
+    orange: "#FFF7ED",
+    pink: "#FCE7F3",
+    teal: "#CCFBF1",
+    rose: "#FFE4E6",
+    indigo: "#E0E7FF",
+  };
+  const cardBackgroundColor = colorMap[section.colorScheme] ?? "#E0F2FE";
+
   return (
     <Pressable
       className="overflow-hidden rounded-2xl"
       style={{
-        backgroundColor: section.cardBackgroundColor,
+        backgroundColor: cardBackgroundColor,
         opacity: section.isUnlocked ? 1 : 0.6,
       }}
       accessibilityRole="button"
       accessibilityLabel={`${section.title}, Section ${section.sectionNumber}, ${section.progressPercent}% complete`}
-      onPress={() => onJump(section.sectionNumber)}
+      onPress={() => onPress(section.id)}
     >
       <View className="m-3 rounded-xl bg-white px-4 py-4">
         <View className="mb-3 flex-row items-start justify-between">
@@ -56,14 +56,14 @@ function SectionCard({
               {section.title}
             </Text>
             <Text className="mt-1 text-sm font-semibold" style={{ color: "#718096" }}>
-              {section.unitRangeLabel}
+              {unitRangeLabel}
             </Text>
           </View>
 
           {section.isCurrent ? (
             <View
               className="rounded-full px-3 py-1"
-              style={{ backgroundColor: `${section.cardBackgroundColor}CC` }}
+              style={{ backgroundColor: `${cardBackgroundColor}CC` }}
             >
               <Text
                 className="text-xs font-extrabold uppercase tracking-wide"
@@ -105,7 +105,7 @@ function SectionCard({
             style={{
               width: `${section.progressPercent}%`,
               backgroundColor: section.isCurrent
-                ? section.cardBackgroundColor
+                ? cardBackgroundColor
                 : "#A0AEC0",
             }}
           />
@@ -116,12 +116,12 @@ function SectionCard({
             {section.completedNodes}/{section.totalNodes} complete
           </Text>
 
-          {!section.isCurrent && section.isUnlocked ? (
+          {!section.isCurrent ? (
             <Text
               className="text-sm font-extrabold uppercase tracking-wide"
-              style={{ color: section.cardBackgroundColor }}
+              style={{ color: cardBackgroundColor }}
             >
-              Jump Here
+              Preview
             </Text>
           ) : null}
         </View>
@@ -132,62 +132,16 @@ function SectionCard({
 
 export function SectionOverviewSheet({
   onClose,
-  unitCompletedCounts,
-  sectionList,
-  currentSectionUnitNumber,
-  onJumpToSection,
+  sections,
+  onPreviewSection,
   journeyTitle,
 }: SectionOverviewSheetProps): React.JSX.Element {
-  const handleJumpAndClose = useCallback(
-    (unitNumber: number): void => {
-      onJumpToSection(unitNumber);
+  const handlePreviewAndClose = useCallback(
+    (sectionId: string): void => {
+      onPreviewSection(sectionId);
       onClose();
     },
-    [onClose, onJumpToSection],
-  );
-
-  const sectionCards = useMemo(
-    () =>
-      sectionList.map((section): SectionCardData => {
-        const totalNodes = section.nodeCount;
-        const isCurrent = section.unitNumber === currentSectionUnitNumber;
-        const isUnlocked = section.unitNumber <= currentSectionUnitNumber;
-        const completedNodes =
-          unitCompletedCounts[`section_${section.unitNumber}`] ?? 0;
-        const progressPercent =
-          totalNodes > 0 ? Math.round((completedNodes / totalNodes) * 100) : 0;
-        const unitCount = section.unitCount ?? section.unitTitles?.length ?? 0;
-        const colorMap: Record<string, string> = {
-          blue: "#E0F2FE",
-          purple: "#F3E8FF",
-          green: "#DCFCE7",
-          orange: "#FFF7ED",
-          pink: "#FCE7F3",
-          teal: "#CCFBF1",
-          rose: "#FFE4E6",
-          indigo: "#E0E7FF",
-        };
-
-        return {
-          id: `section_${section.unitNumber}`,
-          sectionNumber: section.unitNumber,
-          title: section.title,
-          unitRangeLabel: `Section ${section.unitNumber}${
-            unitCount > 0
-              ? ` • ${unitCount} ${unitCount === 1 ? "unit" : "units"}`
-              : ""
-          }`,
-          cardBackgroundColor: colorMap[section.colorScheme] ?? "#E0F2FE",
-          progressPercent,
-          totalNodes,
-          completedNodes,
-          isUnlocked,
-          isCurrent,
-          unitTitles: section.unitTitles ?? [],
-          unitIconKeys: section.unitIconKeys ?? [],
-        };
-      }),
-    [currentSectionUnitNumber, sectionList, unitCompletedCounts],
+    [onClose, onPreviewSection],
   );
 
   return (
@@ -198,8 +152,7 @@ export function SectionOverviewSheet({
             {journeyTitle}
           </Text>
           <Text className="text-sm text-gray-500">
-            {sectionCards.length}{" "}
-            {sectionCards.length === 1 ? "section" : "sections"}
+            {sections.length} {sections.length === 1 ? "section" : "sections"}
           </Text>
         </View>
         <Pressable onPress={onClose} className="rounded-full bg-gray-100 p-2">
@@ -215,18 +168,18 @@ export function SectionOverviewSheet({
         contentContainerStyle={{ gap: 16, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
       >
-        {sectionCards.length === 0 ? (
+        {sections.length === 0 ? (
           <View className="items-center justify-center px-6 py-12">
             <Text className="text-center text-base text-gray-400">
               No sections available. Check your connection and try again.
             </Text>
           </View>
         ) : (
-          sectionCards.map((section) => (
+          sections.map((section) => (
             <SectionCard
               key={section.id}
               section={section}
-              onJump={handleJumpAndClose}
+              onPress={handlePreviewAndClose}
             />
           ))
         )}

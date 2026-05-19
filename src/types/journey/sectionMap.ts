@@ -125,6 +125,34 @@ export interface SectionListItem {
   unitIconKeys?: Array<string | null | undefined>;
 }
 
+/** Selector-backed section summary used by the overview sheet. */
+export interface SectionOverviewItem {
+  /** UUID from DB */
+  id: string;
+  /** 1-indexed section number */
+  sectionNumber: number;
+  /** Display title */
+  title: string;
+  /** Color scheme used for the section card */
+  colorScheme: string;
+  /** Total number of units in the section */
+  unitCount: number;
+  /** Ordered unit titles for the section */
+  unitTitles: string[];
+  /** Ordered HugeIcons keys for the section's units */
+  unitIconKeys: Array<string | null | undefined>;
+  /** Total number of nodes in the section */
+  totalNodes: number;
+  /** Completed node count in the section */
+  completedNodes: number;
+  /** Completed node percentage for the section */
+  progressPercent: number;
+  /** True when this section is currently reachable from progress */
+  isUnlocked: boolean;
+  /** True when this section is the progress-derived current section */
+  isCurrent: boolean;
+}
+
 // ---------------------------------------------------------------------------
 // Section node progress — user progress for one node
 // ---------------------------------------------------------------------------
