@@ -26,8 +26,8 @@ import { useAppSelector, useAppDispatch } from "@/src/store/hooks";
 import { setActiveNodeModal } from "@/src/features/journey/journeySlice";
 import {
   selectCourse,
-  selectActiveSectionId,
-  selectSelectedNodeId,
+  selectCurrentNodeForActiveCourse,
+  selectCurrentSectionForActiveCourse,
   selectSectionsForCourse,
 } from "@/src/features/journey/journeySelectors";
 
@@ -87,9 +87,8 @@ function JourneyMapFlashListInner({
   );
   const { visibleUnit, onViewableItemsChanged } = useVisibleUnit({ units });
   const course = useAppSelector((state) => selectCourse(state, courseId));
-  const currentNodeId = useAppSelector(selectSelectedNodeId);
-  const currentSectionId = useAppSelector(selectActiveSectionId);
-  const nodeEntities = useAppSelector((state) => state.journey.nodes.entities);
+  const currentNode = useAppSelector(selectCurrentNodeForActiveCourse);
+  const currentSection = useAppSelector(selectCurrentSectionForActiveCourse);
   const isLoaded = useAppSelector(
     (state) => !!state.journey.loadedCourses[courseId],
   );
@@ -97,12 +96,11 @@ function JourneyMapFlashListInner({
   const currentVisibleUnit =
     units.find((unit) => unit.id === visibleUnit.unitId) ?? units[0];
   const currentProgressUnit = useMemo(
-    () =>
-      allUnits.find((unit) => unit.id === nodeEntities[currentNodeId ?? ""]?.unitId),
-    [allUnits, currentNodeId, nodeEntities],
+    () => allUnits.find((unit) => unit.id === currentNode?.unitId),
+    [allUnits, currentNode],
   );
   const currentProgressSectionNumber =
-    sections.find((section) => section.id === currentSectionId)?.orderIndex ??
+    currentSection?.orderIndex ??
     currentProgressUnit?.sectionNumber ??
     1;
   const displayUnit =

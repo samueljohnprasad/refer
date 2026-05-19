@@ -5,7 +5,12 @@
 
 import { createSelector } from "@reduxjs/toolkit";
 import type { RootState } from "@/src/store/store";
-import type { Node, NodeStatus, DerivedStatus } from "@/src/types/journeyV5";
+import type {
+  Node,
+  Section,
+  NodeStatus,
+  DerivedStatus,
+} from "@/src/types/journeyV5";
 
 // ── O(1) entity primitives ────────────────────────────────────────────────────
 
@@ -265,12 +270,13 @@ export const selectUnitProgressPct = createSelector(
 export const selectActiveCourseId = (state: RootState) =>
   state.journey.activeCourseId;
 
-export const selectSelectedNodeId = createSelector(
+export const selectCurrentNodeForActiveCourse = createSelector(
   [
     selectActiveCourseId,
     (state: RootState) => state.journey.sectionsByCourse,
     (state: RootState) => state.journey.unitsBySection,
     (state: RootState) => state.journey.nodesByUnit,
+    (state: RootState) => state.journey.nodes.entities,
     (state: RootState) => state.journey.nodeProgress,
   ],
   (
@@ -278,8 +284,9 @@ export const selectSelectedNodeId = createSelector(
     sectionsByCourse,
     unitsBySection,
     nodesByUnit,
+    nodeEntities,
     nodeProgress,
-  ): string | null => {
+  ): Node | null => {
     if (!activeCourseId) return null;
 
     for (const sectionId of sectionsByCourse[activeCourseId] ?? []) {
@@ -291,7 +298,7 @@ export const selectSelectedNodeId = createSelector(
             status === "in_progress" ||
             status === "attempted"
           ) {
-            return nodeId;
+            return nodeEntities[nodeId] ?? null;
           }
         }
       }
@@ -301,19 +308,19 @@ export const selectSelectedNodeId = createSelector(
   },
 );
 
-export const selectActiveSectionId = createSelector(
+export const selectCurrentSectionForActiveCourse = createSelector(
   [
-    selectSelectedNodeId,
-    (state: RootState) => state.journey.nodes.entities,
+    selectCurrentNodeForActiveCourse,
     (state: RootState) => state.journey.units.entities,
+    (state: RootState) => state.journey.sections.entities,
   ],
-  (selectedNodeId, nodeEntities, unitEntities): string | null => {
-    if (!selectedNodeId) return null;
+  (currentNode, unitEntities, sectionEntities): Section | null => {
+    if (!currentNode) return null;
 
-    const node = nodeEntities[selectedNodeId];
-    if (!node) return null;
+    const sectionId = unitEntities[currentNode.unitId]?.sectionId;
+    if (!sectionId) return null;
 
-    return unitEntities[node.unitId]?.sectionId ?? null;
+    return sectionEntities[sectionId] ?? null;
   },
 );
 
