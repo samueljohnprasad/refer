@@ -17,11 +17,34 @@ import type { LayoutAccumulator, BuilderContext } from "./types";
 import { DIVIDER_CELL_HEIGHT } from "./types";
 import { buildDividerSegmentD } from "./segmentPath";
 
+function createLegacyDividerItem(
+  unit: UnitData,
+  previousNodeX: number,
+  previousNodeGlobalIndex: number,
+  accentColor: string | undefined,
+): JourneyDividerItem {
+  return {
+    id: `divider_${unit.id}`,
+    itemType: "divider",
+    cellHeight: DIVIDER_CELL_HEIGHT,
+    title: unit.title,
+    accentColor,
+    connectorLaneX: previousNodeX,
+    segmentD: buildDividerSegmentD(previousNodeX, DIVIDER_CELL_HEIGHT),
+    prevNodeGlobalIndex: previousNodeGlobalIndex,
+  };
+}
+
 /**
  * Create a divider item between units and return the updated accumulator.
  *
  * WHAT: Builds a JourneyDividerItem with the unit's title, accent color
  * from the unit's color theme, and a straight vertical SVG path segment.
+ *
+ * NOTE: This builder belongs to the older layout pipeline. It preserves the
+ * legacy straight-through divider behavior, whereas the newer
+ * `src/lib/utils/journeyLayout.ts` pipeline bends toward the next unit inside
+ * the divider row itself.
  *
  * STATE CHANGES:
  * - items:       divider appended
@@ -35,17 +58,12 @@ export function buildDividerItem(
   ctx: BuilderContext,
 ): LayoutAccumulator {
   const themeConfig = ctx.colorThemes[unit.colorScheme];
-
-  const dividerItem: JourneyDividerItem = {
-    id: `divider_${unit.id}`,
-    itemType: "divider",
-    cellHeight: DIVIDER_CELL_HEIGHT,
-    title: unit.title,
-    accentColor: themeConfig?.dividerColor,
-    pathX: acc.prevX,
-    segmentD: buildDividerSegmentD(acc.prevX, DIVIDER_CELL_HEIGHT),
-    prevNodeGlobalIndex: acc.globalIndex - 1,
-  };
+  const dividerItem = createLegacyDividerItem(
+    unit,
+    acc.prevX,
+    acc.globalIndex - 1,
+    themeConfig?.dividerColor,
+  );
 
   return {
     ...acc,

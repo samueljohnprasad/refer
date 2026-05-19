@@ -49,6 +49,32 @@ export const PATH_LAYOUT = {
   strokeWidth: 10,
 } as const;
 
+/** Divider layout constants for unit transition rows */
+export const DIVIDER_LAYOUT = {
+  /** Divider row height in dp */
+  cellHeight: 80,
+  /** Fraction of the entry→exit connector span used for the text-avoidance lane */
+  connectorLaneInterpolation: 0.5,
+  /** Fraction of screen width reserved for the title-avoidance lane */
+  laneWidthFactor: 0.22,
+  /** Horizontal padding around the divider row */
+  edgePadding: 20,
+  /** Minimum horizontal gap reserved for the connector lane */
+  laneClearance: 84,
+  /** Gap between the title pill and adjacent line */
+  titleGap: 12,
+  /** Maximum width of the title pill as a fraction of screen width */
+  titleMaxWidthRatio: 0.52,
+  /** Minimum visible line width on either side of the title */
+  minLineWidth: 24,
+  /** Background behind the title pill */
+  titlePillColor: "rgba(241, 245, 249, 0.9)",
+  /** Divider title color */
+  titleTextColor: "#64748B",
+  /** Divider rule color */
+  lineColor: "rgba(203, 213, 225, 0.92)",
+} as const;
+
 /** Animation timing constants (ms) */
 export const ANIMATION_TIMING = {
   breathing: 2000,

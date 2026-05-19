@@ -9,14 +9,18 @@ import type {
   JourneyFlashListItem,
   UnitData,
 } from "@/src/types/journey";
-import type { NodeVisualStatus } from "@/src/types/journeyV5";
+import {
+  NodeIcon,
+  NodeStatus as JourneyNodeStatus,
+} from "@/src/types/journey/enums";
 import type {
+  NodeVisualStatus,
   Section,
   Unit,
   Node,
   UserNodeProgress,
 } from "@/src/types/journeyV5";
-import { PATH_LAYOUT } from "@/src/data/journey/constants";
+import { PATH_LAYOUT, DIVIDER_LAYOUT } from "@/src/data/journey/constants";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -24,6 +28,8 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 
 /** Where the node circle sits within its cell (matches JourneyNodeCell) */
 const NODE_VERTICAL_POSITION_RATIO = 0.85;
+const DEFAULT_NODE_ICON = NodeIcon.STAR;
+type UnitPathNode = UnitData["nodes"][number];
 
 /**
  * Maps the 5-state v5 NodeStatus to the 3-state visual status.
@@ -82,6 +88,191 @@ function buildSegmentD(
   return `M ${prevX} 0 C ${prevX} ${controlY} ${thisX} ${controlY} ${thisX} ${nodeY}`;
 }
 
+/**
+ * Builds the connector segment used inside a divider row.
+ * Unlike node cells, the divider should complete the horizontal shift toward
+ * the next unit before the next node cell begins.
+ */
+function buildDividerSegmentD(
+  entryX: number,
+  exitX: number,
+  cellHeight: number,
+): string {
+  const controlY = cellHeight / 2;
+  return (
+    `M ${entryX} 0 ` +
+    `C ${entryX} ${controlY} ${exitX} ${controlY} ${exitX} ${cellHeight}`
+  );
+}
+
+function getUnitNodes(
+  unitId: string,
+  nodesByUnit: Record<string, string[]>,
+  nodeEntities: Record<string, Node | undefined>,
+): Node[] {
+  return (nodesByUnit[unitId] ?? [])
+    .map((id) => nodeEntities[id])
+    .filter((node): node is Node => node !== undefined);
+}
+
+function resolveColorThemeKey(globalUnitNumber: number): string {
+  return COLOR_THEME_CYCLE[(globalUnitNumber - 1) % COLOR_THEME_CYCLE.length]!;
+}
+
+function resolveFirstNodeX(
+  globalIndex: number,
+  unitNodes: Node[],
+  previousNodeX: number,
+): number {
+  return unitNodes.length > 0 ? computeNodeX(globalIndex) : previousNodeX;
+}
+
+function resolveDividerConnectorLaneX(entryX: number, exitX: number): number {
+  const interpolation = DIVIDER_LAYOUT.connectorLaneInterpolation;
+  return Math.round(entryX + (exitX - entryX) * interpolation);
+}
+
+function createDividerItem(
+  unit: Unit,
+  entryX: number,
+  exitX: number,
+  previousNodeGlobalIndex: number | undefined,
+): JourneyDividerItem {
+  return {
+    id: `divider-${unit.id}`,
+    itemType: "divider",
+    cellHeight: DIVIDER_LAYOUT.cellHeight,
+    title: unit.title,
+    accentColor: undefined,
+    connectorLaneX: resolveDividerConnectorLaneX(entryX, exitX),
+    segmentD: buildDividerSegmentD(entryX, exitX, DIVIDER_LAYOUT.cellHeight),
+    prevNodeGlobalIndex: previousNodeGlobalIndex,
+  };
+}
+
+function resolveVisualStatus(
+  nodeId: string,
+  nodeProgress: Record<string, UserNodeProgress>,
+): NodeVisualStatus {
+  const storedStatus = nodeProgress[nodeId]?.status ?? "locked";
+  return V5_STATUS_TO_VISUAL[storedStatus] ?? "locked";
+}
+
+function toJourneyNodeStatus(
+  visualStatus: NodeVisualStatus,
+): JourneyNode["status"] {
+  switch (visualStatus) {
+    case "active":
+      return JourneyNodeStatus.ACTIVE;
+    case "completed":
+      return JourneyNodeStatus.COMPLETED;
+    case "locked":
+    default:
+      return JourneyNodeStatus.LOCKED;
+  }
+}
+
+function resolveVariantKey(nodeType: Node["type"]): string {
+  return NODE_TYPE_TO_VARIANT[nodeType] ?? DEFAULT_VARIANT;
+}
+
+function resolveNodeSegmentStartX(
+  nodeIndex: number,
+  isFirstVisibleUnit: boolean,
+  firstNodeX: number,
+  previousNodeX: number,
+): number {
+  const isFirstNodeInVisibleUnit = nodeIndex === 0;
+  if (!isFirstVisibleUnit && isFirstNodeInVisibleUnit) {
+    return firstNodeX;
+  }
+
+  return previousNodeX;
+}
+
+function buildNodeSegment(
+  globalIndex: number,
+  segmentStartX: number,
+  nodeX: number,
+  cellHeight: number,
+): string {
+  if (globalIndex === 0) {
+    return "";
+  }
+
+  return buildSegmentD(segmentStartX, nodeX, cellHeight);
+}
+
+function createPathNodeData(
+  node: Node,
+  globalIndex: number,
+  visualStatus: NodeVisualStatus,
+): UnitPathNode {
+  return {
+    id: node.id,
+    index: globalIndex,
+    type: node.type as UnitPathNode["type"],
+    status: toJourneyNodeStatus(visualStatus),
+    icon: DEFAULT_NODE_ICON,
+    taskId: node.contentId ?? node.id,
+    rewards: [],
+  };
+}
+
+function createJourneyNodeItem(
+  node: Node,
+  globalIndex: number,
+  nodeX: number,
+  segmentStartX: number,
+  cellHeight: number,
+  colorThemeKey: string,
+  visualStatus: NodeVisualStatus,
+): JourneyNode {
+  return {
+    id: node.id,
+    itemType: "node",
+    globalIndex,
+    label: visualStatus === "active" ? "START" : undefined,
+    x: nodeX,
+    y: PATH_LAYOUT.topPadding + globalIndex * cellHeight,
+    cellHeight,
+    segmentD: buildNodeSegment(globalIndex, segmentStartX, nodeX, cellHeight),
+    status: toJourneyNodeStatus(visualStatus),
+    progress: undefined,
+    variantKey: resolveVariantKey(node.type),
+    colorThemeKey,
+    taskId: node.contentId ?? node.id,
+    taskType: node.type,
+    type: node.type as JourneyNode["type"],
+    icon: DEFAULT_NODE_ICON,
+    rewards: [],
+    unitId: node.unitId,
+    prevX: segmentStartX,
+  };
+}
+
+function createVisibleUnitData(
+  unit: Unit,
+  section: Section,
+  globalUnitNumber: number,
+  colorThemeKey: string,
+  nodes: UnitPathNode[],
+): UnitData {
+  return {
+    id: unit.id,
+    sectionId: section.id,
+    sectionNumber: section.orderIndex,
+    unitNumber: unit.orderIndex,
+    globalUnitNumber,
+    title: unit.title,
+    description: "",
+    iconKey: unit.iconKey,
+    colorScheme: colorThemeKey,
+    nodes,
+    mascotPlacements: [],
+  };
+}
+
 // ── Main builder ──────────────────────────────────────────────────────────────
 
 export interface JourneyLayoutResult {
@@ -92,7 +283,7 @@ export interface JourneyLayoutResult {
 
 /**
  * Builds the flat FlashList data array from normalized v5 store entities.
- * Inserts a JourneyDividerItem before each unit's first node.
+ * Inserts a JourneyDividerItem before each visible unit after the first one.
  * Computes zigzag positions and SVG bezier path segments per node.
  *
  * @param sections       - Ordered sections for the course
@@ -116,8 +307,8 @@ export function buildJourneyFlashListData(
 
   const cellHeight = PATH_LAYOUT.verticalGap;
   let globalIndex = 0;
-  let globalUnitNum = 0;
-  let prevX = SCREEN_WIDTH / 2; // path enters from center for the first node
+  let globalUnitNumber = 0;
+  let previousNodeX = SCREEN_WIDTH / 2; // path enters from center for the first node
 
   let activeGlobalIndex = -1; // -1 means course complete (no active node)
 
@@ -130,96 +321,73 @@ export function buildJourneyFlashListData(
       const unit = unitEntities[unitId];
       if (!unit) continue;
 
-      globalUnitNum++;
-      const colorThemeKey =
-        COLOR_THEME_CYCLE[(globalUnitNum - 1) % COLOR_THEME_CYCLE.length];
+      globalUnitNumber++;
+      const colorThemeKey = resolveColorThemeKey(globalUnitNumber);
       if (!shouldIncludeSection) continue;
 
+      const unitNodes = getUnitNodes(unit.id, nodesByUnit, nodeEntities);
+      const isFirstVisibleUnit = flashListData.length === 0;
       const lastNodeGlobalIndex = globalIndex - 1;
+      const firstNodeX = resolveFirstNodeX(
+        globalIndex,
+        unitNodes,
+        previousNodeX,
+      );
 
       // ── Divider item before this unit's nodes ────────────────────────────
-      const dividerItem: JourneyDividerItem = {
-        id: `divider-${unit.id}`,
-        itemType: "divider",
-        cellHeight: 80,
-        title: unit.title,
-        accentColor: undefined,
-        pathX: prevX,
-        segmentD: `M ${prevX} 0 L ${prevX} ${cellHeight}`,
-        prevNodeGlobalIndex:
-          lastNodeGlobalIndex >= 0 ? lastNodeGlobalIndex : undefined,
-      };
-      flashListData.push(dividerItem);
+      if (!isFirstVisibleUnit) {
+        flashListData.push(
+          createDividerItem(
+            unit,
+            previousNodeX,
+            firstNodeX,
+            lastNodeGlobalIndex >= 0 ? lastNodeGlobalIndex : undefined,
+          ),
+        );
+      }
 
-      // ── Node items ───────────────────────────────────────────────────────
-      const nodeIds = nodesByUnit[unit.id] ?? [];
-      const unitNodes = nodeIds
-        .map((id) => nodeEntities[id])
-        .filter((n): n is Node => n !== undefined);
+      const pathNodeDataList: UnitPathNode[] = [];
 
-      const pathNodeDataList: UnitData["nodes"] = [];
-
-      for (const node of unitNodes) {
-        const v5Status = nodeProgress[node.id]?.status ?? "locked";
-        const visualStatus = V5_STATUS_TO_VISUAL[v5Status] ?? "locked";
-        const variantKey = NODE_TYPE_TO_VARIANT[node.type] ?? DEFAULT_VARIANT;
-        const thisX = computeNodeX(globalIndex);
+      for (const [nodeIndex, node] of unitNodes.entries()) {
+        const visualStatus = resolveVisualStatus(node.id, nodeProgress);
+        const nodeX = computeNodeX(globalIndex);
+        const segmentStartX = resolveNodeSegmentStartX(
+          nodeIndex,
+          isFirstVisibleUnit,
+          firstNodeX,
+          previousNodeX,
+        );
 
         if (visualStatus === "active" && activeGlobalIndex === -1) {
           activeGlobalIndex = globalIndex;
         }
 
-        const journeyNode: JourneyNode = {
-          id: node.id,
-          itemType: "node",
-          globalIndex,
-          label: visualStatus === "active" ? "START" : undefined,
-          x: thisX,
-          y: PATH_LAYOUT.topPadding + globalIndex * cellHeight,
-          cellHeight,
-          segmentD: buildSegmentD(prevX, thisX, cellHeight),
-          status: visualStatus as JourneyNode["status"],
-          progress: undefined,
-          variantKey,
-          colorThemeKey,
-          taskId: node.contentId ?? node.id,
-          taskType: node.type,
-          type: node.type as JourneyNode["type"],
-          icon: "star" as JourneyNode["icon"],
-          rewards: [],
-          unitId: unit.id,
-          prevX,
-        };
-        flashListData.push(journeyNode);
+        flashListData.push(
+          createJourneyNodeItem(
+            node,
+            globalIndex,
+            nodeX,
+            segmentStartX,
+            cellHeight,
+            colorThemeKey,
+            visualStatus,
+          ),
+        );
+        pathNodeDataList.push(createPathNodeData(node, globalIndex, visualStatus));
 
-        pathNodeDataList.push({
-          id: node.id,
-          index: globalIndex,
-          type: node.type as UnitData["nodes"][number]["type"],
-          status: visualStatus as UnitData["nodes"][number]["status"],
-          icon: "star" as UnitData["nodes"][number]["icon"],
-          taskId: node.contentId ?? node.id,
-          rewards: [],
-        });
-
-        prevX = thisX;
+        previousNodeX = nodeX;
         globalIndex++;
       }
 
-      // Build UnitData for useVisibleUnit
-      unitsData.push({
-        id: unit.id,
-        sectionId: section.id,
-        sectionNumber: section.orderIndex,
-        unitNumber: unit.orderIndex,
-        globalUnitNumber: globalUnitNum,
-        title: unit.title,
-        description: "",
-        iconKey: unit.iconKey,
-        colorScheme: colorThemeKey,
-        nodes: pathNodeDataList,
-        mascotPlacements: [],
-      });
+      unitsData.push(
+        createVisibleUnitData(
+          unit,
+          section,
+          globalUnitNumber,
+          colorThemeKey,
+          pathNodeDataList,
+        ),
+      );
     }
   }
 

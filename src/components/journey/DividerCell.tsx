@@ -11,6 +11,35 @@ export interface DividerCellProps {
   activeGlobalIndex: number;
 }
 
+/**
+ * Returns whether the divider's connector belongs to the completed/active path.
+ * Divider rows inherit their highlight state from the node that came before them.
+ */
+function isActiveDividerSegment(
+  previousNodeGlobalIndex: number | undefined,
+  activeGlobalIndex: number,
+): boolean {
+  if (previousNodeGlobalIndex === undefined) {
+    return false;
+  }
+
+  if (activeGlobalIndex === -1) {
+    return true;
+  }
+
+  return activeGlobalIndex >= 0 && previousNodeGlobalIndex < activeGlobalIndex;
+}
+
+function resolveDividerSegmentColor(
+  previousNodeGlobalIndex: number | undefined,
+  activeGlobalIndex: number,
+  pathColors: { active: string; inactive: string },
+): string {
+  return isActiveDividerSegment(previousNodeGlobalIndex, activeGlobalIndex)
+    ? pathColors.active
+    : pathColors.inactive;
+}
+
 /** Renders the path segment that runs through a unit-divider row. */
 export function DividerCell({
   item,
@@ -19,18 +48,11 @@ export function DividerCell({
 }: DividerCellProps): React.JSX.Element {
   const { pathColors, pathStrokeWidth } = useHighContrast();
 
-  // Color the segment if:
-  // - All nodes are completed (activeGlobalIndex = -1 means journey is done)
-  // - There's an active node and the previous node was completed (index < activeGlobalIndex)
-  const isProgressSegment: boolean =
-    item.prevNodeGlobalIndex !== undefined &&
-    (activeGlobalIndex === -1 ||
-      (activeGlobalIndex >= 0 &&
-        item.prevNodeGlobalIndex < activeGlobalIndex));
-
-  const segmentColor: string = isProgressSegment
-    ? pathColors.active
-    : pathColors.inactive;
+  const segmentColor = resolveDividerSegmentColor(
+    item.prevNodeGlobalIndex,
+    activeGlobalIndex,
+    pathColors,
+  );
 
   return (
     <View style={{ height: item.cellHeight }}>
@@ -51,7 +73,11 @@ export function DividerCell({
           />
         </Svg>
       ) : null}
-      <UnitDivider title={item.title} />
+      <UnitDivider
+        title={item.title}
+        connectorLaneX={item.connectorLaneX}
+        screenWidth={screenWidth}
+      />
     </View>
   );
 }

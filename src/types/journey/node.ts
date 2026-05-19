@@ -108,13 +108,17 @@ export interface JourneyDividerItem {
   cellHeight: number;
   /** Divider title text */
   title: string;
-  
+
   /** Accent color for the divider */
   accentColor?: string;
 
-  /** X position of the path at this divider (same prevX — path passes straight through) */
-  pathX?: number;
-  /** Pre-built straight-line SVG path for this divider cell in local coordinates */
+  /**
+   * Horizontal center of the connector lane through this divider row.
+   * Used by the UI to keep the title pill out of the path transition.
+   */
+  connectorLaneX?: number;
+
+  /** Pre-built SVG path for this divider cell in local coordinates */
   segmentD?: string;
   /**
    * Global index of the last node BEFORE this divider.

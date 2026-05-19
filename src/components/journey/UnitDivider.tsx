@@ -1,28 +1,15 @@
 /**
- * UnitDivider (Task 6)
- * Visual divider rendered between units in the scrollable journey path.
+ * UnitDivider
+ * Quiet divider row rendered between units in the journey map.
  *
- * Matches Duolingo reference (Images 3 & 4):
- * - Horizontal line with centered unit title text
- * - Optional "JUMP HERE?" speech bubble badge
- * - Fast-forward ⏩ button with configurable color
- *
- * All props driven by UnitDividerConfig — no hardcoded values.
+ * The title pill deliberately avoids the connector lane so the path transition
+ * stays legible even when the next unit begins on the opposite side.
  */
 
-import React, { useEffect } from "react";
-import { View, Pressable } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from "react";
+import { View } from "react-native";
 import { Text } from "@/components/ui/text";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  Easing,
-  interpolate,
-} from "react-native-reanimated";
-import { useReducedMotion } from "@/src/hooks/useReducedMotion";
+import { DIVIDER_LAYOUT } from "@/src/data/journey/constants";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -31,45 +18,129 @@ import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 export interface UnitDividerProps {
   /** Title shown in the divider (e.g. "Describe your family") */
   title: string;
+  /** Approximate X position of the connector lane for this divider row */
+  connectorLaneX?: number;
+  /** Screen width used to route the title away from the connector lane */
+  screenWidth: number;
+}
+
+interface DividerLineProps {
+  flex?: number;
+  width?: number;
+}
+
+function DividerLine({ flex = 1, width }: DividerLineProps): React.JSX.Element {
+  return (
+    <View
+      style={{
+        ...(width === undefined ? { flex } : { width }),
+        minWidth: DIVIDER_LAYOUT.minLineWidth,
+        height: 1,
+        backgroundColor: DIVIDER_LAYOUT.lineColor,
+      }}
+    />
+  );
+}
+
+function resolveConnectorLaneX(
+  connectorLaneX: number | undefined,
+  screenWidth: number,
+): number {
+  const fallbackLaneX = Math.round(screenWidth / 2);
+  const rawLaneX =
+    typeof connectorLaneX === "number" ? connectorLaneX : fallbackLaneX;
+  const minLaneX = DIVIDER_LAYOUT.edgePadding + DIVIDER_LAYOUT.minLineWidth;
+  const maxLaneX =
+    screenWidth - DIVIDER_LAYOUT.edgePadding - DIVIDER_LAYOUT.minLineWidth;
+
+  return Math.round(Math.min(Math.max(rawLaneX, minLaneX), maxLaneX));
+}
+
+function resolveLaneWidth(screenWidth: number): number {
+  return Math.max(
+    DIVIDER_LAYOUT.laneClearance,
+    Math.min(
+      screenWidth * DIVIDER_LAYOUT.laneWidthFactor,
+      screenWidth - DIVIDER_LAYOUT.edgePadding * 2,
+    ),
+  );
+}
+
+function resolveFixedLineWidth(
+  availableWidth: number,
+  minimumWidth: number,
+): number {
+  return Math.max(availableWidth, minimumWidth);
 }
 
 // ---------------------------------------------------------------------------
 // UnitDivider
 // ---------------------------------------------------------------------------
 
-function UnitDivider({ title }: UnitDividerProps): React.JSX.Element {
-  return (
+function UnitDivider({
+  title,
+  connectorLaneX,
+  screenWidth,
+}: UnitDividerProps): React.JSX.Element {
+  const laneCenterX = resolveConnectorLaneX(connectorLaneX, screenWidth);
+  const isConnectorLaneLeftOfCenter = laneCenterX <= screenWidth / 2;
+  const laneWidth = resolveLaneWidth(screenWidth);
+  const leftLineWidth = resolveFixedLineWidth(
+    laneCenterX - DIVIDER_LAYOUT.edgePadding,
+    DIVIDER_LAYOUT.minLineWidth,
+  );
+  const rightLineWidth = resolveFixedLineWidth(
+    screenWidth - laneCenterX - DIVIDER_LAYOUT.edgePadding,
+    DIVIDER_LAYOUT.minLineWidth,
+  );
+
+  const titlePill = (
     <View
-      className="w-full px-4 justify-end items-center h-full"
+      className="rounded-full px-2.5 py-1"
       style={{
-        paddingTop: 4,
-        paddingBottom: 2,
+        backgroundColor: DIVIDER_LAYOUT.titlePillColor,
+        maxWidth: screenWidth * DIVIDER_LAYOUT.titleMaxWidthRatio,
       }}
     >
-      {/* Quiet divider with low-contrast title */}
-      <View className="flex-row items-center px-1">
-        <View
-          className="flex-1 h-px"
-          style={{ backgroundColor: "rgba(203, 213, 225, 0.92)" }}
-        />
-        <View
-          className="mx-3 rounded-full px-2.5 py-1"
-          style={{
-            backgroundColor: "rgba(203, 213, 225, 0.12)",
-          }}
-        >
-          <Text
-            className="text-[14px] font-medium text-center"
-            style={{ color: "#64748B", letterSpacing: -0.1 }}
-            accessibilityRole="header"
-          >
-            {title}
-          </Text>
-        </View>
-        <View
-          className="flex-1 h-px"
-          style={{ backgroundColor: "rgba(203, 213, 225, 0.92)" }}
-        />
+      <Text
+        className="text-[14px] font-medium text-center"
+        numberOfLines={1}
+        style={{
+          color: DIVIDER_LAYOUT.titleTextColor,
+          letterSpacing: -0.1,
+        }}
+        accessibilityRole="header"
+      >
+        {title}
+      </Text>
+    </View>
+  );
+
+  return (
+    <View
+      className="w-full h-full justify-center"
+      style={{
+        paddingHorizontal: DIVIDER_LAYOUT.edgePadding,
+      }}
+    >
+      <View className="flex-row items-center">
+        {isConnectorLaneLeftOfCenter ? (
+          <>
+            <DividerLine width={leftLineWidth} />
+            <View style={{ width: laneWidth }} />
+            {titlePill}
+            <View style={{ width: DIVIDER_LAYOUT.titleGap }} />
+            <DividerLine />
+          </>
+        ) : (
+          <>
+            <DividerLine />
+            <View style={{ width: DIVIDER_LAYOUT.titleGap }} />
+            {titlePill}
+            <View style={{ width: laneWidth }} />
+            <DividerLine width={rightLineWidth} />
+          </>
+        )}
       </View>
     </View>
   );
