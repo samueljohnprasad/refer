@@ -264,12 +264,67 @@ export const selectUnitProgressPct = createSelector(
 
 export const selectActiveCourseId = (state: RootState) =>
   state.journey.activeCourseId;
-export const selectActiveSectionId = (state: RootState) =>
-  state.journey.activeSectionId;
-export const selectSelectedNodeId = (state: RootState) =>
-  state.journey.selectedNodeId;
-export const selectActiveNodeModalId = (state: RootState) =>
-  state.journey.activeNodeModalId;
+
+export const selectSelectedNodeId = createSelector(
+  [
+    selectActiveCourseId,
+    (state: RootState) => state.journey.sectionsByCourse,
+    (state: RootState) => state.journey.unitsBySection,
+    (state: RootState) => state.journey.nodesByUnit,
+    (state: RootState) => state.journey.nodeProgress,
+  ],
+  (
+    activeCourseId,
+    sectionsByCourse,
+    unitsBySection,
+    nodesByUnit,
+    nodeProgress,
+  ): string | null => {
+    if (!activeCourseId) return null;
+
+    for (const sectionId of sectionsByCourse[activeCourseId] ?? []) {
+      for (const unitId of unitsBySection[sectionId] ?? []) {
+        for (const nodeId of nodesByUnit[unitId] ?? []) {
+          const status = nodeProgress[nodeId]?.status ?? "locked";
+          if (
+            status === "not_started" ||
+            status === "in_progress" ||
+            status === "attempted"
+          ) {
+            return nodeId;
+          }
+        }
+      }
+    }
+
+    return null;
+  },
+);
+
+export const selectActiveSectionId = createSelector(
+  [
+    selectSelectedNodeId,
+    (state: RootState) => state.journey.nodes.entities,
+    (state: RootState) => state.journey.units.entities,
+  ],
+  (selectedNodeId, nodeEntities, unitEntities): string | null => {
+    if (!selectedNodeId) return null;
+
+    const node = nodeEntities[selectedNodeId];
+    if (!node) return null;
+
+    return unitEntities[node.unitId]?.sectionId ?? null;
+  },
+);
+
+export const selectActiveNodeModalId = createSelector(
+  [
+    selectActiveCourseId,
+    (state: RootState) => state.journey.activeNodeModalIdByCourse,
+  ],
+  (activeCourseId, activeNodeModalIdByCourse) =>
+    activeCourseId ? activeNodeModalIdByCourse[activeCourseId] ?? null : null,
+);
 
 /** Returns courseProgress for a course, or undefined if not enrolled. */
 export const selectCourseProgressForCourse = (

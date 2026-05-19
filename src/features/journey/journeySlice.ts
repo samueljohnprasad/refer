@@ -50,9 +50,7 @@ export interface JourneyState {
 
   // UI state
   activeCourseId: string | null;
-  activeSectionId: string | null;
-  selectedNodeId: string | null;
-  activeNodeModalId: string | null;
+  activeNodeModalIdByCourse: Record<string, string | null>;
 }
 
 const initialState: JourneyState = {
@@ -72,9 +70,7 @@ const initialState: JourneyState = {
   loadingCourses: {},
 
   activeCourseId: null,
-  activeSectionId: null,
-  selectedNodeId: null,
-  activeNodeModalId: null,
+  activeNodeModalIdByCourse: {},
 };
 
 // ── Slice ─────────────────────────────────────────────────────────────────────
@@ -175,19 +171,14 @@ const journeySlice = createSlice({
     // ── UI state ──────────────────────────────────────────────────────────────
 
     setActiveCourse(state, action: PayloadAction<string | null>) {
+      if (state.activeCourseId === action.payload) return;
       state.activeCourseId = action.payload;
     },
 
-    setActiveSection(state, action: PayloadAction<string | null>) {
-      state.activeSectionId = action.payload;
-    },
-
-    setSelectedNode(state, action: PayloadAction<string | null>) {
-      state.selectedNodeId = action.payload;
-    },
-
     setActiveNodeModal(state, action: PayloadAction<string | null>) {
-      state.activeNodeModalId = action.payload;
+      const courseId = state.activeCourseId;
+      if (!courseId) return;
+      state.activeNodeModalIdByCourse[courseId] = action.payload;
     },
   },
 });
@@ -198,8 +189,6 @@ export const {
   optimisticSetNodeStatus,
   setLoadingCourse,
   setActiveCourse,
-  setActiveSection,
-  setSelectedNode,
   setActiveNodeModal,
 } = journeySlice.actions;
 

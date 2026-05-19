@@ -32,18 +32,19 @@ export interface UseJourneyMapResult {
  * Subsequent visits return immediately — data is already in the store.
  * If the user is not yet enrolled, calls start-course (auto-enrollment).
  *
- * @param courseId - The course to load. Must be a valid published courseId.
+ * @param courseId - The course to load. Null while active-course resolution is in flight.
  */
-export function useJourneyMap(courseId: string): UseJourneyMapResult {
+export function useJourneyMap(courseId: string | null): UseJourneyMapResult {
   const dispatch = useAppDispatch();
   const isLoaded = useAppSelector((state) =>
-    selectIsCourseLoaded(state, courseId),
+    courseId ? selectIsCourseLoaded(state, courseId) : false,
   );
   const isLoading = useAppSelector((state) =>
-    selectIsCourseLoading(state, courseId),
+    courseId ? selectIsCourseLoading(state, courseId) : false,
   );
 
   useEffect(() => {
+    if (!courseId) return;
     if (isLoaded || isLoading) return;
 
     dispatch(setLoadingCourse(courseId));
@@ -52,7 +53,10 @@ export function useJourneyMap(courseId: string): UseJourneyMapResult {
     void loadCourseData(courseId, dispatch);
   }, [courseId, isLoaded, isLoading, dispatch]);
 
-  return { isLoading: isLoading || (!isLoaded && !isLoading), isLoaded };
+  return {
+    isLoading: courseId === null || isLoading || (!isLoaded && !isLoading),
+    isLoaded: courseId !== null && isLoaded,
+  };
 }
 
 /**
@@ -68,9 +72,6 @@ async function loadCourseData(
     dispatch(journeyApi.endpoints.getCourseProgress.initiate(courseId)),
   ]);
 
-  console.log("treeResult", JSON.stringify(treeResult, null, 2));
-  console.log("progressResult", JSON.stringify(progressResult, null, 2));
-
   if ("data" in treeResult && treeResult.data) {
     dispatch(setCourseTree(treeResult.data));
   }
@@ -85,7 +86,6 @@ async function loadCourseData(
       const startResult = await dispatch(
         journeyApi.endpoints.startCourse.initiate(courseId),
       );
-      console.log("startResult", JSON.stringify(startResult, null, 2));
 
       if ("data" in startResult) {
         // Refetch progress after enrollment
@@ -94,12 +94,9 @@ async function loadCourseData(
             forceRefetch: true,
           }),
         );
-        console.log("progressRefetchResult", JSON.stringify(refetchResult, null, 2));
         if ("data" in refetchResult && refetchResult.data) {
           dispatch(setCourseProgress(refetchResult.data));
         }
-      } else {
-        console.log("startCourseError", JSON.stringify(startResult, null, 2));
       }
     } else {
       dispatch(setCourseProgress({ courseProgress, nodeProgressMap }));

@@ -17,6 +17,7 @@ import {
   setActiveNodeModal,
   setCourseProgress,
 } from "@/src/features/journey/journeySlice";
+import { selectActiveNodeModalId } from "@/src/features/journey/journeySelectors";
 import { journeyApi } from "@/src/features/journey/journeyApi";
 
 interface NodeContentModalProps {
@@ -32,9 +33,7 @@ export function NodeContentModal({
   courseId,
 }: NodeContentModalProps): React.JSX.Element {
   const dispatch = useAppDispatch();
-  const activeNodeId = useAppSelector(
-    (state) => state.journey.activeNodeModalId,
-  );
+  const activeNodeId = useAppSelector(selectActiveNodeModalId);
   const node = useAppSelector((state) =>
     activeNodeId ? state.journey.nodes.entities[activeNodeId] : undefined,
   );

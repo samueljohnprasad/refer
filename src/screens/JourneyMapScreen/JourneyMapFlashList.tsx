@@ -26,6 +26,8 @@ import { useAppSelector, useAppDispatch } from "@/src/store/hooks";
 import { setActiveNodeModal } from "@/src/features/journey/journeySlice";
 import {
   selectCourse,
+  selectActiveSectionId,
+  selectSelectedNodeId,
   selectSectionsForCourse,
 } from "@/src/features/journey/journeySelectors";
 
@@ -50,7 +52,7 @@ const LIST_BOTTOM_PADDING = 180;
 // ── Props ─────────────────────────────────────────────────────────────────────
 
 export interface JourneyMapFlashListProps {
-  /** Active course id resolved by useDefaultCourse */
+  /** Active course id resolved by the Redux-backed course selection hook */
   courseId: string;
 }
 
@@ -85,14 +87,30 @@ function JourneyMapFlashListInner({
   );
   const { visibleUnit, onViewableItemsChanged } = useVisibleUnit({ units });
   const course = useAppSelector((state) => selectCourse(state, courseId));
+  const currentNodeId = useAppSelector(selectSelectedNodeId);
+  const currentSectionId = useAppSelector(selectActiveSectionId);
+  const nodeEntities = useAppSelector((state) => state.journey.nodes.entities);
   const isLoaded = useAppSelector(
     (state) => !!state.journey.loadedCourses[courseId],
   );
 
   const currentVisibleUnit =
     units.find((unit) => unit.id === visibleUnit.unitId) ?? units[0];
-  const currentSectionNumber =
-    selectedSectionNumber ?? currentVisibleUnit?.sectionNumber ?? 1;
+  const currentProgressUnit = useMemo(
+    () =>
+      allUnits.find((unit) => unit.id === nodeEntities[currentNodeId ?? ""]?.unitId),
+    [allUnits, currentNodeId, nodeEntities],
+  );
+  const currentProgressSectionNumber =
+    sections.find((section) => section.id === currentSectionId)?.orderIndex ??
+    currentProgressUnit?.sectionNumber ??
+    1;
+  const displayUnit =
+    selectedSectionNumber === null
+      ? currentProgressUnit ?? currentVisibleUnit
+      : currentVisibleUnit;
+  const displaySectionNumber =
+    selectedSectionNumber ?? displayUnit?.sectionNumber ?? currentProgressSectionNumber;
 
   const sectionList = useMemo(
     () =>
@@ -225,11 +243,11 @@ function JourneyMapFlashListInner({
     <>
       <HomeMainButton
         onPress={handleOpenSections}
-        unitLabel={`Section ${currentSectionNumber} • Unit ${visibleUnit.unitNumber}`}
-        unitTitle={visibleUnit.unitTitle}
-        faceColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[0] ?? "#4CAF50"}
-        rimColor={UNIT_GRADIENTS[visibleUnit.colorThemeKey]?.[1] ?? "#388E3C"}
-        unitIconKey={visibleUnit.unitIconKey}
+        unitLabel={`Section ${displaySectionNumber} • Unit ${displayUnit?.unitNumber ?? 1}`}
+        unitTitle={displayUnit?.title ?? visibleUnit.unitTitle}
+        faceColor={UNIT_GRADIENTS[displayUnit?.colorScheme ?? visibleUnit.colorThemeKey]?.[0] ?? "#4CAF50"}
+        rimColor={UNIT_GRADIENTS[displayUnit?.colorScheme ?? visibleUnit.colorThemeKey]?.[1] ?? "#388E3C"}
+        unitIconKey={displayUnit?.iconKey ?? visibleUnit.unitIconKey}
       />
 
       {!isLoaded ? (
@@ -270,7 +288,7 @@ function JourneyMapFlashListInner({
             onClose={handleCloseSections}
             unitCompletedCounts={unitCompletedCounts}
             sectionList={sectionList}
-            currentSectionUnitNumber={currentSectionNumber}
+            currentSectionUnitNumber={currentProgressSectionNumber}
             onJumpToSection={handleJumpToSection}
             journeyTitle={course?.title ?? "Journey"}
           />
