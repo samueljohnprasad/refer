@@ -201,7 +201,7 @@ function RootLayoutNav() {
                                     <BottomSheetModalProvider>
                                       <Slot />
                                       <AnonymousPurchaseClaimPrompt />
-                                      {/* <FloatingHappyAssistant /> */}
+                                      <FloatingHappyAssistant />
                                     </BottomSheetModalProvider>
                                   </KeyboardProvider>
                                 </ThemeProvider>

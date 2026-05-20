@@ -630,6 +630,18 @@ export const selectUnitProgressPct = createSelector(
   },
 );
 
+/**
+ * Returns the total number of completed journey nodes currently present in the
+ * normalized progress map across all loaded courses.
+ */
+export const selectTotalCompletedCount = createSelector(
+  [selectNodeProgressMap],
+  (nodeProgress): number =>
+    Object.values(nodeProgress).filter(
+      (progress) => progress.status === "completed",
+    ).length,
+);
+
 // ── UI state selectors ────────────────────────────────────────────────────────
 
 export const selectActiveCourseId = selectActiveCourseIdState;
