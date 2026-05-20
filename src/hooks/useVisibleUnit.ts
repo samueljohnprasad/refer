@@ -14,6 +14,18 @@ function isJourneyNode(item: JourneyFlashListItem): item is JourneyNode {
   return item.itemType === "node";
 }
 
+function getFirstVisibleNode(
+  viewableItems: ViewToken<JourneyFlashListItem>[],
+): JourneyNode | null {
+  const firstVisibleNode = viewableItems
+    .filter((viewToken) => isJourneyNode(viewToken.item))
+    .sort((left, right) => (left.index ?? 0) - (right.index ?? 0))[0];
+
+  return firstVisibleNode && isJourneyNode(firstVisibleNode.item)
+    ? firstVisibleNode.item
+    : null;
+}
+
 export function useVisibleUnit({ units }: UseVisibleUnitProps) {
   const [visibleUnitId, setVisibleUnitId] = useState<string | null>(null);
 
@@ -23,12 +35,10 @@ export function useVisibleUnit({ units }: UseVisibleUnitProps) {
     }: {
       viewableItems: ViewToken<JourneyFlashListItem>[];
     }) => {
-      const firstItem = viewableItems.find((vi) => isJourneyNode(vi.item));
+      const firstVisibleNode = getFirstVisibleNode(viewableItems);
+      if (!firstVisibleNode) return;
 
-      if (!firstItem) return;
-      if (!isJourneyNode(firstItem.item)) return;
-
-      const targetUnitId = firstItem.item.unitId;
+      const targetUnitId = firstVisibleNode.unitId;
       const hasVisibleUnit = units.some((unit) => unit.id === targetUnitId);
 
       if (hasVisibleUnit && targetUnitId !== visibleUnitId) {

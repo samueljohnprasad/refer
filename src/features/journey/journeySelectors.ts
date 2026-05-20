@@ -423,15 +423,16 @@ export const selectRenderedUnitIdsForCourse = createSelector(
 );
 
 function resolveRenderedUnitId(
-  previewSection: Section | null,
   currentUnitId: string | null,
   renderedUnitIds: string[],
   visibleUnitId: string | null,
 ): string | null {
-  const preferredUnitId = previewSection ? visibleUnitId : currentUnitId;
+  if (visibleUnitId && renderedUnitIds.includes(visibleUnitId)) {
+    return visibleUnitId;
+  }
 
-  if (preferredUnitId && renderedUnitIds.includes(preferredUnitId)) {
-    return preferredUnitId;
+  if (currentUnitId && renderedUnitIds.includes(currentUnitId)) {
+    return currentUnitId;
   }
 
   return renderedUnitIds[0] ?? null;
@@ -439,19 +440,16 @@ function resolveRenderedUnitId(
 
 export const selectRenderedUnitIdForCourse = createSelector(
   [
-    selectPreviewSectionForCourse,
     selectCurrentUnitIdForCourse,
     selectRenderedUnitIdsForCourse,
     selectVisibleUnitIdParam,
   ],
   (
-    previewSection,
     currentUnitId,
     renderedUnitIds,
     visibleUnitId,
   ): string | null =>
     resolveRenderedUnitId(
-      previewSection,
       currentUnitId,
       renderedUnitIds,
       visibleUnitId,

@@ -1,13 +1,7 @@
-/**
- * ScrollToActiveButton (Task 5.1.4)
- * Floating button that appears when the active node is scrolled off-screen.
- * Tapping it smoothly scrolls the journey map to center the active node.
- *
- * Uses react-native-reanimated for fade in/out transitions.
- */
-
 import React, { useEffect } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { FocusPointIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Text } from "@/components/ui/text";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import Animated, {
@@ -17,36 +11,54 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 
-// ---------------------------------------------------------------------------
-// Props
-// ---------------------------------------------------------------------------
+export type ScrollToActiveButtonDirection = "up" | "down";
+export type ScrollToActiveButtonMode = "direction" | "focus";
 
 export interface ScrollToActiveButtonProps {
-  /** Whether the active node is currently off-screen */
   isVisible: boolean;
-  /** Direction hint: is the active node above or below the viewport? */
-  direction: "up" | "down";
-  /** Callback to trigger scroll to the active node */
+  direction?: ScrollToActiveButtonDirection;
+  mode?: ScrollToActiveButtonMode;
   onPress: () => void;
 }
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
 const FADE_DURATION = 250;
+const BUTTON_COLOR = "#58CC02";
+const FOCUS_BUTTON_SIZE = 52;
+const FOCUS_ICON_SIZE = 22;
+const FLOATING_BUTTON_BOTTOM_OFFSET = 104;
+const FLOATING_BUTTON_RIGHT_OFFSET = 24;
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
+const getHiddenOffset = (
+  mode: ScrollToActiveButtonMode,
+  direction: ScrollToActiveButtonDirection,
+): number => {
+  if (mode === "focus") {
+    return 20;
+  }
+
+  return direction === "down" ? 20 : -20;
+};
+
+const getAccessibilityLabel = (
+  mode: ScrollToActiveButtonMode,
+  direction: ScrollToActiveButtonDirection,
+): string => {
+  if (mode === "focus") {
+    return "Return to current lesson";
+  }
+
+  return `Scroll ${direction} to active lesson`;
+};
 
 function ScrollToActiveButton({
   isVisible,
-  direction,
+  direction = "down",
+  mode = "direction",
   onPress,
 }: ScrollToActiveButtonProps): React.JSX.Element {
+  const hiddenOffset = getHiddenOffset(mode, direction);
   const opacity = useSharedValue(0);
-  const translateY = useSharedValue(direction === "down" ? 20 : -20);
+  const translateY = useSharedValue(hiddenOffset);
 
   useEffect(() => {
     if (isVisible) {
@@ -63,11 +75,11 @@ function ScrollToActiveButton({
         duration: FADE_DURATION,
         easing: Easing.in(Easing.ease),
       });
-      translateY.value = withTiming(direction === "down" ? 20 : -20, {
+      translateY.value = withTiming(hiddenOffset, {
         duration: FADE_DURATION,
       });
     }
-  }, [isVisible, direction, opacity, translateY]);
+  }, [isVisible, hiddenOffset, opacity, translateY]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -76,16 +88,7 @@ function ScrollToActiveButton({
 
   return (
     <Animated.View
-      style={[
-        animatedStyle,
-        {
-          position: "absolute",
-          bottom: 104,
-          alignSelf: "flex-end",
-          right: 24,
-          zIndex: 100,
-        },
-      ]}
+      style={[animatedStyle, styles.container]}
       pointerEvents={isVisible ? "auto" : "none"}
     >
       <PressableScale
@@ -93,26 +96,60 @@ function ScrollToActiveButton({
         scale={0.92}
         hapticStyle="light"
         accessibilityRole="button"
-        accessibilityLabel={`Scroll ${direction} to active lesson`}
+        accessibilityLabel={getAccessibilityLabel(mode, direction)}
       >
         <View
-          className="flex-row items-center rounded-full px-5 py-3"
-          style={{
-            backgroundColor: "#58CC02",
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.2,
-            shadowRadius: 8,
-            elevation: 6,
-          }}
+          style={[
+            styles.button,
+            mode === "focus" ? styles.focusButton : styles.directionButton,
+          ]}
         >
-          <Text className="text-sm font-extrabold text-white">
-            {direction === "down" ? "↓" : "↑"}
-          </Text>
+          {mode === "focus" ? (
+            <HugeiconsIcon
+              icon={FocusPointIcon}
+              size={FOCUS_ICON_SIZE}
+              color="#FFFFFF"
+              strokeWidth={2.4}
+            />
+          ) : (
+            <Text className="text-sm font-extrabold text-white">
+              {direction === "down" ? "↓" : "↑"}
+            </Text>
+          )}
         </View>
       </PressableScale>
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignSelf: "flex-end",
+    bottom: FLOATING_BUTTON_BOTTOM_OFFSET,
+    position: "absolute",
+    right: FLOATING_BUTTON_RIGHT_OFFSET,
+    zIndex: 100,
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: BUTTON_COLOR,
+    borderRadius: 999,
+    elevation: 6,
+    flexDirection: "row",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+  },
+  directionButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  focusButton: {
+    height: FOCUS_BUTTON_SIZE,
+    width: FOCUS_BUTTON_SIZE,
+  },
+});
 
 export default React.memo(ScrollToActiveButton);
