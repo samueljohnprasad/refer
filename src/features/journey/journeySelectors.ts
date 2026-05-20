@@ -11,6 +11,7 @@ import type {
   Section,
   NodeStatus,
   DerivedStatus,
+  CourseHeaderSummary,
 } from "@/src/types/journeyV5";
 import {
   findCurrentNodeIdInCourse,
@@ -588,30 +589,42 @@ export const selectSectionOverviewItemsForCourse = createSelector(
 // ── Progress percentages ──────────────────────────────────────────────────────
 
 /**
- * Returns completed node count as a percentage (0–100) for a course.
- * Uses all 3 relationship indexes to traverse without touching root arrays.
+ * Returns total/completed node counts for a course.
  */
-export const selectCourseProgressPct = createSelector(
+export const selectCourseNodeCountsForCourse = createSelector(
   [
     selectSectionIdsForCourse,
     selectUnitsBySectionIndex,
     selectNodesByUnitIndex,
     selectNodeProgressMap,
   ],
-  (sectionIds, unitsBySection, nodesByUnit, nodeProgress): number => {
-    let total = 0;
-    let completed = 0;
+  (sectionIds, unitsBySection, nodesByUnit, nodeProgress) => {
+    let totalNodes = 0;
+    let completedNodes = 0;
 
     for (const sectionId of sectionIds) {
       for (const unitId of unitsBySection[sectionId] ?? []) {
         for (const nodeId of nodesByUnit[unitId] ?? []) {
-          total++;
-          if (nodeProgress[nodeId]?.status === "completed") completed++;
+          totalNodes += 1;
+          if (nodeProgress[nodeId]?.status === "completed") {
+            completedNodes += 1;
+          }
         }
       }
     }
 
-    return total === 0 ? 0 : Math.round((completed / total) * 100);
+    return { completedNodes, totalNodes };
+  },
+);
+
+/**
+ * Returns completed node count as a percentage (0–100) for a course.
+ * Uses all 3 relationship indexes to traverse without touching root arrays.
+ */
+export const selectCourseProgressPct = createSelector(
+  [selectCourseNodeCountsForCourse],
+  ({ completedNodes, totalNodes }): number => {
+    return totalNodes === 0 ? 0 : Math.round((completedNodes / totalNodes) * 100);
   },
 );
 
@@ -640,6 +653,37 @@ export const selectTotalCompletedCount = createSelector(
     Object.values(nodeProgress).filter(
       (progress) => progress.status === "completed",
     ).length,
+);
+
+export const selectCourseHeaderSummaryForCourse = createSelector(
+  [
+    selectCourseEntities,
+    selectCourseIdParam,
+    selectCourseNodeCountsForCourse,
+    selectCurrentSectionNumberForCourse,
+    selectSectionIdsForCourse,
+  ],
+  (
+    courseEntities,
+    courseId,
+    { completedNodes, totalNodes },
+    currentSectionNumber,
+    sectionIds,
+  ): CourseHeaderSummary | null => {
+    const course = courseEntities[courseId];
+    if (!course) {
+      return null;
+    }
+
+    return {
+      courseId: course.id,
+      title: course.title,
+      completedNodes,
+      totalNodes,
+      activeSectionNumber: currentSectionNumber,
+      sectionCount: sectionIds.length,
+    };
+  },
 );
 
 // ── UI state selectors ────────────────────────────────────────────────────────

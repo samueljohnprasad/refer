@@ -14,6 +14,8 @@ import type {
   StartCourseResponse,
   CompleteNodeArgs,
   CompleteNodeResponse,
+  EnrolledCourseListItem,
+  CourseStatus,
 } from "@/src/types/journeyV5";
 import { callEdgeFunction, EDGE_FUNCTION_URLS } from "@/src/lib/supabase/edgeFunctions";
 
@@ -44,6 +46,86 @@ export const journeyApi = createApi({
           (row: { course_id: string }) => row.course_id,
         );
         return { data: ids };
+      },
+    }),
+
+    /**
+     * Returns enrolled courses with the metadata needed by the journeys header.
+     * Uses direct Supabase queries to keep the payload small and avoid loading
+     * every course tree up front.
+     */
+    getEnrolledCourses: builder.query<EnrolledCourseListItem[], void>({
+      providesTags: ["EnrolledCourses"],
+      queryFn: async () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: progressRows, error: progressError } = await (supabase as any)
+          .from("user_course_progress")
+          .select("course_id, started_at, status")
+          .order("started_at", { ascending: true });
+
+        if (progressError) {
+          return {
+            error: { status: "CUSTOM_ERROR", error: progressError.message },
+          };
+        }
+
+        const enrollmentRows = ((progressRows ?? []) as Array<{
+          course_id: string;
+          started_at: string | null;
+          status: CourseStatus;
+        }>).filter((row) => Boolean(row.course_id));
+
+        const courseIds = enrollmentRows.map((row) => row.course_id);
+        if (courseIds.length === 0) {
+          return { data: [] };
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: courseRows, error: courseError } = await (supabase as any)
+          .from("courses")
+          .select("id, title, description, icon_url, color_hex, order_index")
+          .in("id", courseIds);
+
+        if (courseError) {
+          return {
+            error: { status: "CUSTOM_ERROR", error: courseError.message },
+          };
+        }
+
+        const courseById = new Map(
+          ((courseRows ?? []) as Array<{
+            id: string;
+            title: string;
+            description: string;
+            icon_url: string | null;
+            color_hex: string;
+            order_index: number;
+          }>).map((course) => [course.id, course]),
+        );
+
+        const enrolledCourses = enrollmentRows
+          .map((row): EnrolledCourseListItem | null => {
+            const course = courseById.get(row.course_id);
+            if (!course) {
+              return null;
+            }
+
+            return {
+              id: course.id,
+              title: course.title,
+              description: course.description,
+              iconUrl: course.icon_url,
+              colorHex: course.color_hex,
+              orderIndex: course.order_index,
+              status: row.status,
+              startedAt: row.started_at,
+            };
+          })
+          .filter(
+            (course): course is EnrolledCourseListItem => course !== null,
+          );
+
+        return { data: enrolledCourses };
       },
     }),
 
@@ -97,6 +179,7 @@ export const journeyApi = createApi({
     startCourse: builder.mutation<StartCourseResponse, string>({
       invalidatesTags: (_, __, courseId) => [
         { type: "CourseProgress", id: courseId },
+        "EnrolledCourses",
       ],
       queryFn: async (courseId) => {
         try {
@@ -137,6 +220,7 @@ export const journeyApi = createApi({
 
 export const {
   useGetEnrolledCourseIdsQuery,
+  useGetEnrolledCoursesQuery,
   useGetCourseTreeQuery,
   useGetCourseProgressQuery,
   useStartCourseMutation,

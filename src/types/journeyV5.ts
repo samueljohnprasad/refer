@@ -54,6 +54,26 @@ export interface Course {
   isPublished: boolean;
 }
 
+export interface EnrolledCourseListItem {
+  id: string;
+  title: string;
+  description: string;
+  iconUrl: string | null;
+  colorHex: string;
+  orderIndex: number;
+  status: CourseStatus;
+  startedAt: string | null;
+}
+
+export interface CourseHeaderSummary {
+  courseId: string;
+  title: string;
+  completedNodes: number;
+  totalNodes: number;
+  activeSectionNumber: number;
+  sectionCount: number;
+}
+
 export interface Section {
   /** UUID primary key */
   id: string;

@@ -59,7 +59,6 @@ export function useActiveCourse(): UseActiveCourseResult {
     isLoading,
     error,
   } = useGetEnrolledCourseIdsQuery();
-  console.log("enrolledIds", enrolledIds);
   const resolvedCourseId = useMemo(
     () =>
       resolveActiveCourseId(

@@ -8,6 +8,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
+import { Image } from "expo-image";
 
 import Svg, { Path, SvgProps } from "react-native-svg";
 
@@ -18,15 +19,20 @@ import Animated, {
 } from "react-native-reanimated";
 
 import ProgressBar from "../ProgressBar";
-import { ArrowRight01Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
+import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import type { EnrolledCourse, EnrolledCoursesResponse } from "./DuolingoHeader";
+import type {
+  CourseHeaderSummary,
+  EnrolledCourseListItem,
+} from "@/src/types/journeyV5";
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 type HeaderOverlayContentProps = {
   translateY: SharedValue<number>;
-  enrolledCourses?: EnrolledCoursesResponse;
-  onCourseSelect?: (slug: string) => void;
+  enrolledCourses?: EnrolledCourseListItem[];
+  activeCourseId?: string | null;
+  activeCourseSummary?: CourseHeaderSummary | null;
+  onCourseSelect?: (courseId: string) => void;
 };
 
 type NewCourse = {
@@ -64,9 +70,58 @@ const newCourses: NewCourse[] = [
     isNew: true,
   },
 ];
+
+function resolveCourseAccentColor(colorHex: string | null | undefined): string {
+  if (!colorHex) {
+    return "#1CB0F6";
+  }
+
+  return colorHex.startsWith("#") ? colorHex : `#${colorHex}`;
+}
+
+function CourseAvatar({
+  course,
+  isActive,
+}: {
+  course: EnrolledCourseListItem;
+  isActive: boolean;
+}): React.JSX.Element {
+  const accentColor = resolveCourseAccentColor(course.colorHex);
+
+  return (
+    <View
+      className="h-[70px] w-[85px] items-center justify-center rounded-[14px] bg-slate-50"
+      style={{
+        borderWidth: isActive ? 3 : 2,
+        borderColor: isActive ? accentColor : "#E5E7EB",
+      }}
+    >
+      {course.iconUrl ? (
+        <Image
+          source={course.iconUrl}
+          style={{ width: 44, height: 44, borderRadius: 12 }}
+          contentFit="contain"
+        />
+      ) : (
+        <Text
+          style={{
+            color: accentColor,
+            fontFamily: "DINNextRoundedBold",
+            fontSize: 28,
+          }}
+        >
+          {course.title.charAt(0).toUpperCase()}
+        </Text>
+      )}
+    </View>
+  );
+}
+
 const HeaderOverlayContent = ({
   translateY,
   enrolledCourses,
+  activeCourseId,
+  activeCourseSummary,
   onCourseSelect,
 }: HeaderOverlayContentProps) => {
   const { width } = useWindowDimensions();
@@ -92,27 +147,9 @@ const HeaderOverlayContent = ({
     };
   });
 
-  const courses = enrolledCourses?.items || [];
-
-  const getCourseColor = (colorScheme: string) => {
-    switch (colorScheme) {
-      case "blue":
-        return "#1CB0F6";
-      case "orange":
-        return "#FF9600";
-      case "purple":
-        return "#CE82FF";
-      default:
-        return "#1CB0F6";
-    }
-  };
-  const activeCourse =
-    courses.find(
-      (c: EnrolledCourse) => c.slug === enrolledCourses?.activeSlug,
-    ) || courses[0];
-
-  const progress = activeCourse
-    ? activeCourse.completedNodes / activeCourse.totalNodes
+  const courses = enrolledCourses ?? [];
+  const progress = activeCourseSummary
+    ? activeCourseSummary.completedNodes / Math.max(activeCourseSummary.totalNodes, 1)
     : 0;
 
   return (
@@ -144,37 +181,41 @@ const HeaderOverlayContent = ({
           className="flex-row gap-3"
           contentContainerStyle={{ paddingHorizontal: 4 }}
         >
-          {courses.map((course: EnrolledCourse) => {
-            const isActive = course.slug === enrolledCourses?.activeSlug;
+          {courses.map((course) => {
+            const isActive = course.id === activeCourseId;
             return (
               <Pressable
                 key={course.id}
                 className="items-center gap-1"
-                onPress={() => onCourseSelect?.(course.slug)}
+                onPress={() => onCourseSelect?.(course.id)}
               >
-                <View
-                  className="h-[70px] w-[85px] items-center justify-center rounded-[14px]"
-                  style={{
-                    borderWidth: isActive ? 3 : 0,
-                    borderColor: isActive
-                      ? getCourseColor(course.colorScheme)
-                      : "transparent",
-                  }}
-                >
-                  <Flag width={70} height={70} />
-                </View>
+                <CourseAvatar course={course} isActive={isActive} />
                 <Text
                   className="text-base font-bold"
                   style={{
                     fontFamily: "DINNextRoundedBold",
                     color: isActive ? "#4B4B4B" : "#AFAFAF",
                   }}
+                  numberOfLines={1}
                 >
                   {course.title}
                 </Text>
               </Pressable>
             );
           })}
+          {courses.length === 0 ? (
+            <View className="justify-center px-3">
+              <Text
+                style={{
+                  color: "#94A3B8",
+                  fontFamily: "DINNextRoundedRegular",
+                  fontSize: 15,
+                }}
+              >
+                No enrolled courses yet.
+              </Text>
+            </View>
+          ) : null}
           <Pressable
             className="items-center gap-1 ml-3"
             onPress={handleAddCoursePress}
@@ -196,7 +237,7 @@ const HeaderOverlayContent = ({
         <View className="mt-3 w-full items-center gap-3 rounded-[10px] border border-[#E5E5E5] py-4">
           <View className="w-full flex-row items-center px-5">
             <Text className="text-lg font-bold text-text-primary font-rd-bold">
-              {activeCourse?.completedNodes || 0}
+              {activeCourseSummary?.completedNodes ?? 0}
             </Text>
             <View className="mx-3 flex-1" onLayout={handleScoreBarLayout}>
               <ProgressBar progress={progress} width={scoreBarWidth} />
@@ -205,16 +246,16 @@ const HeaderOverlayContent = ({
               className="text-lg font-bold text-text-primary font-rd-bold"
               style={{ fontFamily: "DINNextRoundedBold" }}
             >
-              {activeCourse?.totalNodes || 0}
+              {activeCourseSummary?.totalNodes ?? 0}
             </Text>
           </View>
           <Text className="text-xl  text-text-secondary font-rd-regular">
-            Your {activeCourse?.title || "Course"} Score{" "}
-            {activeCourse?.completedNodes || 0}
+            Your {activeCourseSummary?.title ?? "Course"} Score{" "}
+            {activeCourseSummary?.completedNodes ?? 0}
           </Text>
           <Text className="text-base text-text-secondary font-rd-regular">
-            Section {activeCourse?.activeSection ?? 1} of{" "}
-            {activeCourse?.sections?.length ?? 0}
+            Section {activeCourseSummary?.activeSectionNumber ?? 1} of{" "}
+            {activeCourseSummary?.sectionCount ?? 0}
           </Text>
           <Text
             className="text-base uppercase text-[#1CB0F6]"

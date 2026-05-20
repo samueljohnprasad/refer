@@ -12,7 +12,12 @@ import {
   DuolingoHeader,
   DuolingoHeaderStats,
 } from "@/src/components/journey/DuolingoHeader";
+import {
+  useGetEnrolledCoursesQuery,
+} from "@/src/features/journey/journeyApi";
+import { selectCourseHeaderSummaryForCourse } from "@/src/features/journey/journeySelectors";
 import JourneyLoadingSkeleton from "@/src/components/journey/JourneyLoadingSkeleton";
+import { useAppSelector } from "@/src/store/hooks";
 import JourneyMapFlashList from "./JourneyMapFlashList";
 import { useActiveCourse } from "@/hooks/journey/useActiveCourse";
 import { useJourneyMap } from "@/hooks/journey/useJourneyMap";
@@ -35,8 +40,12 @@ const STUB_STATS: DuolingoHeaderStats = {
 export default function JourneyMapContainer(): React.JSX.Element {
   const insets = useSafeAreaInsets();
 
-  const { courseId } = useActiveCourse();
+  const { courseId, setActiveCourseId } = useActiveCourse();
   const { isLoading, isLoaded } = useJourneyMap(courseId);
+  const { data: enrolledCourses } = useGetEnrolledCoursesQuery();
+  const activeCourseSummary = useAppSelector((state) =>
+    courseId ? selectCourseHeaderSummaryForCourse(state, courseId) : null,
+  );
 
   if (!courseId || (isLoading && !isLoaded)) {
     return <JourneyLoadingSkeleton />;
@@ -46,7 +55,13 @@ export default function JourneyMapContainer(): React.JSX.Element {
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
-        <DuolingoHeader stats={STUB_STATS} />
+        <DuolingoHeader
+          stats={STUB_STATS}
+          enrolledCourses={enrolledCourses}
+          activeCourseId={courseId}
+          activeCourseSummary={activeCourseSummary}
+          onCourseSelect={setActiveCourseId}
+        />
         <JourneyMapFlashList courseId={courseId} />
       </View>
     </>

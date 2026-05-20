@@ -21,6 +21,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FullWindowOverlay } from "react-native-screens";
 import { scheduleOnRN } from "react-native-worklets";
 import HeaderOverlayContent from "./header-overlay-content";
+import type {
+  CourseHeaderSummary,
+  EnrolledCourseListItem,
+} from "@/src/types/journeyV5";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface DuolingoHeaderStats {
@@ -30,37 +34,12 @@ export interface DuolingoHeaderStats {
   xp: number;
 }
 
-export interface EnrolledCourse {
-  id: string;
-  slug: string;
-  title: string;
-  description: string;
-  colorScheme: string;
-  colorThemeKey: string | null;
-  category: string;
-  difficulty: string;
-  estimatedDays: number | null;
-  totalNodes: number;
-  completedNodes: number;
-  isEnrolled: boolean;
-  enrollmentStatus: string | null;
-  iconKey: string | null;
-  iconUrl: string | null;
-  activeSection: number | null;
-  activeUnit: number | null;
-  activeSectionUnit: number | null;
-  sections: any[];
-}
-
-export interface EnrolledCoursesResponse {
-  activeSlug: string | null;
-  items: EnrolledCourse[];
-}
-
 interface DuolingoHeaderProps {
   stats?: DuolingoHeaderStats;
-  enrolledCourses?: EnrolledCoursesResponse;
-  onCourseSelect?: (slug: string) => void;
+  enrolledCourses?: EnrolledCourseListItem[];
+  activeCourseId?: string | null;
+  activeCourseSummary?: CourseHeaderSummary | null;
+  onCourseSelect?: (courseId: string) => void;
 }
 const HeaderButton = ({
   Icon,
@@ -87,6 +66,8 @@ const HeaderButton = ({
 export const DuolingoHeader = ({
   stats,
   enrolledCourses,
+  activeCourseId,
+  activeCourseSummary,
   onCourseSelect,
 }: DuolingoHeaderProps) => {
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -110,6 +91,10 @@ export const DuolingoHeader = ({
         }
       },
     );
+  };
+  const handleCourseSelect = (courseId: string) => {
+    onCourseSelect?.(courseId);
+    handleTouchStart();
   };
   useEffect(() => {
     translateY.value = -windoHeight / 2;
@@ -196,7 +181,9 @@ export const DuolingoHeader = ({
             <HeaderOverlayContent
               translateY={translateY}
               enrolledCourses={enrolledCourses}
-              onCourseSelect={onCourseSelect}
+              activeCourseId={activeCourseId}
+              activeCourseSummary={activeCourseSummary}
+              onCourseSelect={handleCourseSelect}
             />
           </Animated.View>
         </FullWindowOverlay>
