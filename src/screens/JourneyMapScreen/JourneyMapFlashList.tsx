@@ -21,7 +21,11 @@ import React, {
 } from "react";
 import { Dimensions, View, Text } from "react-native";
 import Animated from "react-native-reanimated";
-import { LegendList } from "@legendapp/list";
+import {
+  LegendList,
+  type LegendListRef,
+  type ViewToken,
+} from "@legendapp/list";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 
 import type {
@@ -54,6 +58,7 @@ import { UNIT_GRADIENTS } from "@/src/data/journey/constants";
 import BottomSheetWithRNContent from "@/src/components/BottomSheetWithRNContent";
 import { HomeMainButton } from "@/src/components/journey/home-main-button";
 import { SectionOverviewSheet } from "@/src/components/journey/SectionOverviewSheet";
+import ScrollToActiveButton from "@/src/components/journey/ScrollToActiveButton";
 import { NodeContentModal } from "./NodeContentModal";
 import { useJourneyFlashListData } from "@/hooks/journey/useJourneyFlashListData";
 
@@ -65,6 +70,11 @@ const AnimatedLegendList = Animated.createAnimatedComponent(
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const ESTIMATED_ITEM_SIZE = 120;
 const LIST_BOTTOM_PADDING = 180;
+const ACTIVE_NODE_VIEW_POSITION = 0.35;
+const ACTIVE_NODE_VIEW_OFFSET = 24;
+const AUTO_SCROLL_DELAY_MS = 120;
+const AUTO_SCROLL_RETRY_DELAY_MS = 80;
+const AUTO_SCROLL_MAX_ATTEMPTS = 4;
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -78,9 +88,13 @@ export interface JourneyMapFlashListProps {
 function JourneyMapFlashListInner({
   courseId,
 }: JourneyMapFlashListProps): React.JSX.Element {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const legendListRef = useRef<any>(null);
+  const legendListRef = useRef<LegendListRef | null>(null);
   const [isSectionSheetOpen, setIsSectionSheetOpen] = useState(false);
+  const [loadedListKey, setLoadedListKey] = useState<string | null>(null);
+  const [activeScrollHint, setActiveScrollHint] = useState<{
+    isVisible: boolean;
+    direction: "up" | "down";
+  }>({ isVisible: false, direction: "down" });
   const dispatch = useAppDispatch();
 
   // ── Data ───────────────────────────────────────────────────────────────────
@@ -96,6 +110,7 @@ function JourneyMapFlashListInner({
   const renderedSectionId = useAppSelector((state) =>
     selectRenderedSectionIdForCourse(state, courseId),
   );
+  const listKey = renderedSectionId ?? courseId;
   const { flashListData, activeGlobalIndex, activeListIndex, units } =
     useJourneyFlashListData(
     courseId,
@@ -127,20 +142,120 @@ function JourneyMapFlashListInner({
   const lastScrolledIndexRef = useRef<number>(-1);
   useEffect(() => {
     lastScrolledIndexRef.current = -1;
-  }, [renderedSectionId]);
+    setActiveScrollHint({ isVisible: false, direction: "down" });
+  }, [listKey]);
+
+  const scrollToActiveNode = useCallback(
+    (animated = true): boolean => {
+      if (activeListIndex < 0) {
+        return false;
+      }
+
+      const list = legendListRef.current;
+      if (!list) {
+        return false;
+      }
+
+      try {
+        list.scrollToIndex({
+          index: activeListIndex,
+          animated,
+          viewOffset: ACTIVE_NODE_VIEW_OFFSET,
+          viewPosition: ACTIVE_NODE_VIEW_POSITION,
+        });
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [activeListIndex],
+  );
 
   useEffect(() => {
-    if (!isLoaded || activeListIndex < 0) return;
+    if (!isLoaded || loadedListKey !== listKey || activeListIndex < 0) return;
     if (activeListIndex === lastScrolledIndexRef.current) return;
-    lastScrolledIndexRef.current = activeListIndex;
-    const timer = setTimeout(() => {
-      legendListRef.current?.scrollToIndex({
-        index: activeListIndex,
-        animated: true,
+
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let attemptCount = 0;
+
+    const tryScroll = () => {
+      attemptCount += 1;
+      const didScroll = scrollToActiveNode(true);
+
+      if (didScroll) {
+        lastScrolledIndexRef.current = activeListIndex;
+        return;
+      }
+
+      if (attemptCount < AUTO_SCROLL_MAX_ATTEMPTS) {
+        timeoutId = setTimeout(tryScroll, AUTO_SCROLL_RETRY_DELAY_MS);
+      }
+    };
+
+    timeoutId = setTimeout(tryScroll, AUTO_SCROLL_DELAY_MS);
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [
+    activeListIndex,
+    isLoaded,
+    listKey,
+    loadedListKey,
+    scrollToActiveNode,
+  ]);
+
+  const handleListLoad = useCallback(() => {
+    setLoadedListKey(listKey);
+  }, [listKey]);
+
+  const updateActiveScrollHint = useCallback(
+    (viewableItems: ViewToken<JourneyFlashListItem>[]) => {
+      if (activeListIndex < 0) {
+        setActiveScrollHint({ isVisible: false, direction: "down" });
+        return;
+      }
+
+      const viewableIndices = viewableItems
+        .map((item) => item.index)
+        .filter((index): index is number => typeof index === "number");
+
+      if (viewableIndices.length === 0) {
+        return;
+      }
+
+      const isActiveVisible = viewableIndices.includes(activeListIndex);
+      if (isActiveVisible) {
+        setActiveScrollHint((currentHint) =>
+          currentHint.isVisible
+            ? { ...currentHint, isVisible: false }
+            : currentHint,
+        );
+        return;
+      }
+
+      const firstVisibleIndex = Math.min(...viewableIndices);
+      const direction = activeListIndex < firstVisibleIndex ? "up" : "down";
+      setActiveScrollHint((currentHint) => {
+        if (currentHint.isVisible && currentHint.direction === direction) {
+          return currentHint;
+        }
+
+        return { isVisible: true, direction };
       });
-    }, 150);
-    return () => clearTimeout(timer);
-  }, [activeListIndex, isLoaded]);
+    },
+    [activeListIndex],
+  );
+
+  const handleViewableItemsChanged = useCallback(
+    (info: { viewableItems: ViewToken<JourneyFlashListItem>[] }) => {
+      onViewableItemsChanged(info);
+      updateActiveScrollHint(info.viewableItems);
+    },
+    [onViewableItemsChanged, updateActiveScrollHint],
+  );
 
   // ── Node tap — locked → toast, unlocked → open modal directly ─────────────
   const toast = useToast();
@@ -251,16 +366,26 @@ function JourneyMapFlashListInner({
         </View>
       ) : flashListData.length > 0 ? (
         <AnimatedLegendList<JourneyFlashListItem>
-          key={renderedSectionId ?? courseId}
+          key={listKey}
           ref={legendListRef}
           data={flashListData}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           estimatedItemSize={ESTIMATED_ITEM_SIZE}
+          initialScrollIndex={
+            activeListIndex >= 0
+              ? {
+                  index: activeListIndex,
+                  viewOffset: ACTIVE_NODE_VIEW_OFFSET,
+                }
+              : undefined
+          }
+          waitForInitialLayout
+          onLoad={handleListLoad}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
-          onViewableItemsChanged={onViewableItemsChanged}
+          onViewableItemsChanged={handleViewableItemsChanged}
           viewabilityConfig={{
             itemVisiblePercentThreshold: 10,
             minimumViewTime: 100,
@@ -272,6 +397,19 @@ function JourneyMapFlashListInner({
           <Text>This course is being prepared. Check back shortly.</Text>
         </View>
       )}
+
+      <ScrollToActiveButton
+        isVisible={activeScrollHint.isVisible}
+        direction={activeScrollHint.direction}
+        onPress={() => {
+          if (scrollToActiveNode(true)) {
+            setActiveScrollHint((currentHint) => ({
+              ...currentHint,
+              isVisible: false,
+            }));
+          }
+        }}
+      />
 
       {isSectionSheetOpen ? (
         <BottomSheetWithRNContent
