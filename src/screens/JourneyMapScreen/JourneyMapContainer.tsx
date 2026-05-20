@@ -3,11 +3,12 @@
 // Resolves the active courseId via Redux-backed selection, loads it via useJourneyMap,
 // then renders DuolingoHeader + JourneyMapFlashList.
 
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import CourseCatalogSheet from "@/src/components/journey/CourseCatalogSheet";
 import {
   DuolingoHeader,
   DuolingoHeaderStats,
@@ -39,6 +40,7 @@ const STUB_STATS: DuolingoHeaderStats = {
  */
 export default function JourneyMapContainer(): React.JSX.Element {
   const insets = useSafeAreaInsets();
+  const [isCourseCatalogPresented, setIsCourseCatalogPresented] = useState(false);
 
   const { courseId, setActiveCourseId } = useActiveCourse();
   const { isLoading, isLoaded } = useJourneyMap(courseId);
@@ -60,9 +62,17 @@ export default function JourneyMapContainer(): React.JSX.Element {
           enrolledCourses={enrolledCourses}
           activeCourseId={courseId}
           activeCourseSummary={activeCourseSummary}
+          onAddCoursePress={() => setIsCourseCatalogPresented(true)}
           onCourseSelect={setActiveCourseId}
         />
         <JourneyMapFlashList courseId={courseId} />
+        <CourseCatalogSheet
+          isPresented={isCourseCatalogPresented}
+          activeCourseId={courseId}
+          enrolledCourses={enrolledCourses}
+          onClose={() => setIsCourseCatalogPresented(false)}
+          onCourseSelect={setActiveCourseId}
+        />
       </View>
     </>
   );

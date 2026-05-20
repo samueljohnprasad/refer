@@ -65,6 +65,15 @@ export interface EnrolledCourseListItem {
   startedAt: string | null;
 }
 
+export interface CourseCatalogListItem {
+  id: string;
+  title: string;
+  description: string;
+  iconUrl: string | null;
+  colorHex: string;
+  orderIndex: number;
+}
+
 export interface CourseHeaderSummary {
   courseId: string;
   title: string;
@@ -114,6 +123,23 @@ export interface Node {
   orderIndex: number;
   /** Estimated minutes to complete */
   estimatedMins: number;
+}
+
+export interface CourseJourneyPreviewSection {
+  id: string;
+  title: string;
+  orderIndex: number;
+  unitCount: number;
+  nodeCount: number;
+}
+
+export interface CourseJourneyPreview {
+  courseId: string;
+  sectionCount: number;
+  unitCount: number;
+  nodeCount: number;
+  estimatedMinutes: number;
+  sections: CourseJourneyPreviewSection[];
 }
 
 // ── Progress types (mirrors DB progress tables) ──────────────────────────────

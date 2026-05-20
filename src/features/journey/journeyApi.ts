@@ -15,6 +15,7 @@ import type {
   CompleteNodeArgs,
   CompleteNodeResponse,
   EnrolledCourseListItem,
+  CourseCatalogListItem,
   CourseStatus,
 } from "@/src/types/journeyV5";
 import { callEdgeFunction, EDGE_FUNCTION_URLS } from "@/src/lib/supabase/edgeFunctions";
@@ -129,6 +130,44 @@ export const journeyApi = createApi({
       },
     }),
 
+    /**
+     * Returns every published course for the add-course catalog.
+     * Uses a direct Supabase query because only lightweight course metadata is
+     * needed up front; the full tree is fetched lazily for the selected course.
+     */
+    getCourseCatalog: builder.query<CourseCatalogListItem[], void>({
+      queryFn: async () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data, error } = await (supabase as any)
+          .from("courses")
+          .select("id, title, description, icon_url, color_hex, order_index")
+          .eq("is_published", true)
+          .order("order_index", { ascending: true });
+
+        if (error) {
+          return { error: { status: "CUSTOM_ERROR", error: error.message } };
+        }
+
+        const courses = ((data ?? []) as Array<{
+          id: string;
+          title: string;
+          description: string;
+          icon_url: string | null;
+          color_hex: string;
+          order_index: number;
+        }>).map((course) => ({
+          id: course.id,
+          title: course.title,
+          description: course.description,
+          iconUrl: course.icon_url,
+          colorHex: course.color_hex,
+          orderIndex: course.order_index,
+        }));
+
+        return { data: courses };
+      },
+    }),
+
     // ── READ: course tree (cached aggressively) ─────────────────────────────
     /**
      * Fetches the full content tree for a course: course + sections + units + nodes.
@@ -221,6 +260,7 @@ export const journeyApi = createApi({
 export const {
   useGetEnrolledCourseIdsQuery,
   useGetEnrolledCoursesQuery,
+  useGetCourseCatalogQuery,
   useGetCourseTreeQuery,
   useGetCourseProgressQuery,
   useStartCourseMutation,

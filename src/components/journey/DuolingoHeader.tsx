@@ -9,7 +9,7 @@ import {
 import { SvgProps } from "react-native-svg";
 
 import { Battery, Fire, Flag, Gem } from "@/assets/icons";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Animated, {
   FadeOut,
   interpolate,
@@ -39,6 +39,7 @@ interface DuolingoHeaderProps {
   enrolledCourses?: EnrolledCourseListItem[];
   activeCourseId?: string | null;
   activeCourseSummary?: CourseHeaderSummary | null;
+  onAddCoursePress?: () => void;
   onCourseSelect?: (courseId: string) => void;
 }
 const HeaderButton = ({
@@ -68,12 +69,14 @@ export const DuolingoHeader = ({
   enrolledCourses,
   activeCourseId,
   activeCourseSummary,
+  onAddCoursePress,
   onCourseSelect,
 }: DuolingoHeaderProps) => {
   const [headerHeight, setHeaderHeight] = useState(0);
-  const { height: windoHeight } = useWindowDimensions();
+  const { height: windowHeight } = useWindowDimensions();
   const translateY = useSharedValue(0);
   const [showCourseOverlay, setShowCourseOverlay] = useState(false);
+  const previousActiveCourseIdRef = useRef(activeCourseId);
 
   const handleFlagPress = (name: string) => {
     if (name === "Flag") {
@@ -81,9 +84,9 @@ export const DuolingoHeader = ({
       translateY.value = withTiming(0, { duration: 400 });
     }
   };
-  const handleTouchStart = () => {
+  const handleTouchStart = useCallback(() => {
     translateY.value = withTiming(
-      -windoHeight / 2,
+      -windowHeight / 2,
       { duration: 400 },
       (finished) => {
         if (finished) {
@@ -91,18 +94,34 @@ export const DuolingoHeader = ({
         }
       },
     );
-  };
+  }, [translateY, windowHeight]);
   const handleCourseSelect = (courseId: string) => {
     onCourseSelect?.(courseId);
     handleTouchStart();
   };
   useEffect(() => {
-    translateY.value = -windoHeight / 2;
-  }, []);
+    translateY.value = -windowHeight / 2;
+  }, [translateY, windowHeight]);
+  useEffect(() => {
+    const previousActiveCourseId = previousActiveCourseIdRef.current;
+    previousActiveCourseIdRef.current = activeCourseId;
+
+    if (!showCourseOverlay) {
+      return;
+    }
+
+    if (
+      previousActiveCourseId &&
+      activeCourseId &&
+      previousActiveCourseId !== activeCourseId
+    ) {
+      handleTouchStart();
+    }
+  }, [activeCourseId, handleTouchStart, showCourseOverlay]);
   const animatedOverlayStyle = useAnimatedStyle(() => {
     const opacity = interpolate(
       translateY.value,
-      [-windoHeight / 2, 0],
+      [-windowHeight / 2, 0],
       [0, 1],
     );
     return {
@@ -164,7 +183,7 @@ export const DuolingoHeader = ({
 
               {
                 top: headerHeight + insets.top,
-                height: Math.max(0, windoHeight - headerHeight - insets.top),
+                height: Math.max(0, windowHeight - headerHeight - insets.top),
               },
             ]}
           >
@@ -183,6 +202,7 @@ export const DuolingoHeader = ({
               enrolledCourses={enrolledCourses}
               activeCourseId={activeCourseId}
               activeCourseSummary={activeCourseSummary}
+              onAddCoursePress={onAddCoursePress}
               onCourseSelect={handleCourseSelect}
             />
           </Animated.View>

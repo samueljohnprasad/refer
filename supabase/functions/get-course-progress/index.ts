@@ -92,13 +92,17 @@ Deno.serve(async (req: Request) => {
 
   let nodeProgressRows: Array<Record<string, unknown>> = [];
   if (nodeIds.length > 0) {
+    // Large generated courses can contain hundreds of nodes. Encoding every UUID
+    // into a single `node_id in (...)` filter can overflow URL/query limits in
+    // PostgREST requests, which leaves the client with stale progress after a
+    // completion mutation. Fetch the user's sparse progress rows once, then
+    // filter in memory to the current course's node ids.
     const { data: nodeProgressData, error: nodeProgressError } = await supabase
       .from("user_course_node_progress")
       .select(
         "user_id, node_id, status, attempts, best_score, last_score, last_attempted_at, completed_at",
       )
-      .eq("user_id", user.id)
-      .in("node_id", nodeIds);
+      .eq("user_id", user.id);
 
     if (nodeProgressError)
       return err(
@@ -106,7 +110,9 @@ Deno.serve(async (req: Request) => {
         500,
       );
 
-    nodeProgressRows = (nodeProgressData ?? []) as Array<Record<string, unknown>>;
+    const courseNodeIds = new Set(nodeIds);
+    nodeProgressRows = ((nodeProgressData ?? []) as Array<Record<string, unknown>>)
+      .filter((row) => courseNodeIds.has(row["node_id"] as string));
   }
 
   // ── 4. Build nodeProgressMap as keyed object ─────────────────────────────

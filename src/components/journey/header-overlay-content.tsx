@@ -1,30 +1,31 @@
 import React, { useState } from "react";
 import {
   LayoutChangeEvent,
+  Pressable,
+  ScrollView,
   Text,
   useWindowDimensions,
   View,
-  Pressable,
-  ScrollView,
-  Alert,
 } from "react-native";
 import { Image } from "expo-image";
-
-import Svg, { Path, SvgProps } from "react-native-svg";
-
-import { Flag } from "@/assets/icons";
+import Svg, { Path } from "react-native-svg";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
-
-import ProgressBar from "../ProgressBar";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+
+import ProgressBar from "../ProgressBar";
 import type {
   CourseHeaderSummary,
   EnrolledCourseListItem,
 } from "@/src/types/journeyV5";
+import {
+  getCourseMonogram,
+  resolveCourseAccentColor,
+} from "./courseVisuals";
+
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 type HeaderOverlayContentProps = {
@@ -32,52 +33,9 @@ type HeaderOverlayContentProps = {
   enrolledCourses?: EnrolledCourseListItem[];
   activeCourseId?: string | null;
   activeCourseSummary?: CourseHeaderSummary | null;
+  onAddCoursePress?: () => void;
   onCourseSelect?: (courseId: string) => void;
 };
-
-type NewCourse = {
-  id: number;
-  title: string;
-  description: string;
-  image: React.FC<SvgProps>;
-  color: string;
-  isNew: boolean;
-};
-
-const newCourses: NewCourse[] = [
-  {
-    id: 1,
-    title: "Coding",
-    description: "New Course Description",
-    image: Flag,
-    color: "#CE82FF",
-    isNew: false,
-  },
-  {
-    id: 2,
-    title: "Maths",
-    description: "New Course 2 Description",
-    image: Flag,
-    color: "#1CB0F6",
-    isNew: false,
-  },
-  {
-    id: 3,
-    title: "Chess",
-    description: "New Course 3 Description",
-    image: Flag,
-    color: "#e6e6bc",
-    isNew: true,
-  },
-];
-
-function resolveCourseAccentColor(colorHex: string | null | undefined): string {
-  if (!colorHex) {
-    return "#1CB0F6";
-  }
-
-  return colorHex.startsWith("#") ? colorHex : `#${colorHex}`;
-}
 
 function CourseAvatar({
   course,
@@ -100,7 +58,9 @@ function CourseAvatar({
         <Image
           source={course.iconUrl}
           style={{ width: 44, height: 44, borderRadius: 12 }}
+          cachePolicy="memory-disk"
           contentFit="contain"
+          transition={150}
         />
       ) : (
         <Text
@@ -110,7 +70,7 @@ function CourseAvatar({
             fontSize: 28,
           }}
         >
-          {course.title.charAt(0).toUpperCase()}
+          {getCourseMonogram(course.title)}
         </Text>
       )}
     </View>
@@ -122,18 +82,11 @@ const HeaderOverlayContent = ({
   enrolledCourses,
   activeCourseId,
   activeCourseSummary,
+  onAddCoursePress,
   onCourseSelect,
-}: HeaderOverlayContentProps) => {
+}: HeaderOverlayContentProps): React.JSX.Element => {
   const { width } = useWindowDimensions();
   const [scoreBarWidth, setScoreBarWidth] = useState(180);
-
-  const handleAddCoursePress = () => {
-    Alert.alert(
-      "Add Course",
-      "Course addition feature coming soon! You'll be able to browse and add new courses.",
-      [{ text: "OK", onPress: () => {} }],
-    );
-  };
 
   const handleScoreBarLayout = (event: LayoutChangeEvent) => {
     const nextWidth = event.nativeEvent.layout.width;
@@ -141,19 +94,19 @@ const HeaderOverlayContent = ({
       setScoreBarWidth(nextWidth);
     }
   };
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: translateY.value }],
-    };
-  });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
 
   const courses = enrolledCourses ?? [];
   const progress = activeCourseSummary
-    ? activeCourseSummary.completedNodes / Math.max(activeCourseSummary.totalNodes, 1)
+    ? activeCourseSummary.completedNodes /
+      Math.max(activeCourseSummary.totalNodes, 1)
     : 0;
 
   return (
-    <Animated.View className="bg-white w-full  pb-3" style={[animatedStyle]}>
+    <Animated.View className="w-full bg-white pb-3" style={[animatedStyle]}>
       <Svg
         width={width}
         height={16}
@@ -174,6 +127,7 @@ const HeaderOverlayContent = ({
           strokeLinejoin="round"
         />
       </Svg>
+
       <View className="px-4 pt-6">
         <ScrollView
           horizontal
@@ -203,6 +157,7 @@ const HeaderOverlayContent = ({
               </Pressable>
             );
           })}
+
           {courses.length === 0 ? (
             <View className="justify-center px-3">
               <Text
@@ -216,10 +171,8 @@ const HeaderOverlayContent = ({
               </Text>
             </View>
           ) : null}
-          <Pressable
-            className="items-center gap-1 ml-3"
-            onPress={handleAddCoursePress}
-          >
+
+          <Pressable className="ml-3 items-center gap-1" onPress={onAddCoursePress}>
             <View className="h-[70px] w-[85px] items-center justify-center rounded-[14px] border-[2px] border-[#AFAFAF] bg-gray-50">
               <HugeiconsIcon icon={PlusSignIcon} size={24} color="#AFAFAF" />
             </View>
@@ -234,6 +187,7 @@ const HeaderOverlayContent = ({
             </Text>
           </Pressable>
         </ScrollView>
+
         <View className="mt-3 w-full items-center gap-3 rounded-[10px] border border-[#E5E5E5] py-4">
           <View className="w-full flex-row items-center px-5">
             <Text className="text-lg font-bold text-text-primary font-rd-bold">
@@ -249,7 +203,8 @@ const HeaderOverlayContent = ({
               {activeCourseSummary?.totalNodes ?? 0}
             </Text>
           </View>
-          <Text className="text-xl  text-text-secondary font-rd-regular">
+
+          <Text className="text-xl text-text-secondary font-rd-regular">
             Your {activeCourseSummary?.title ?? "Course"} Score{" "}
             {activeCourseSummary?.completedNodes ?? 0}
           </Text>
@@ -267,39 +222,6 @@ const HeaderOverlayContent = ({
           >
             More About score
           </Text>
-        </View>
-        <View className="mt-3 gap-3 ">
-          <Text
-            className="text-[24px] font-bold text-text-primary"
-            style={{ fontFamily: "DINNextRoundedBold" }}
-          >
-            New Course
-          </Text>
-          <View className="flex-row flex-wrap gap-3">
-            {newCourses.map((course) => (
-              <View key={course.id} className="items-center gap-3">
-                <View
-                  className="relative h-[55px] w-[75px] items-center justify-center rounded-[10px]"
-                  style={[{ backgroundColor: course.color }]}
-                >
-                  {course.isNew ? (
-                    <View className="absolute -right-5 -top-4 z-2 rounded-[8] border-white border-[3] bg-[#FF4B4B] px-[6] py-[6]">
-                      <Text className="text-xs font-bold leading-3 text-white">
-                        NEW
-                      </Text>
-                    </View>
-                  ) : null}
-                  <course.image color={"white"} width={40} height={40} />
-                </View>
-                <Text
-                  className="text-base font-bold text-text-primary"
-                  style={{ fontFamily: "DINNextRoundedBold" }}
-                >
-                  {course.title}
-                </Text>
-              </View>
-            ))}
-          </View>
         </View>
       </View>
     </Animated.View>

@@ -14,6 +14,7 @@ import {
 
 import { useAppSelector, useAppDispatch } from "@/src/store/hooks";
 import {
+  optimisticSetNodeStatus,
   setActiveNodeModal,
   setCourseProgress,
 } from "@/src/features/journey/journeySlice";
@@ -55,6 +56,12 @@ export function NodeContentModal({
     setIsCompleting(true);
     try {
       await completeNode({ nodeId: activeNodeId, courseId }).unwrap();
+      dispatch(
+        optimisticSetNodeStatus({
+          nodeId: activeNodeId,
+          status: "completed",
+        }),
+      );
 
       const progressResult = await dispatch(
         journeyApi.endpoints.getCourseProgress.initiate(courseId, {
