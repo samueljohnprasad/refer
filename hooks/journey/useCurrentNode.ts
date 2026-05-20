@@ -7,12 +7,11 @@ import { selectCurrentNodeForCourse } from "@/src/features/journey/journeySelect
 import type { Node } from "@/src/types/journeyV5";
 
 /**
- * Returns the current node for a course — the first node with status
- * not_started, in_progress, or attempted (in sequential order).
+ * Returns the current node for a course — the first node in course order
+ * without a completed progress row.
  *
  * Returns null if:
  * - All nodes are completed (course is done)
- * - No progress rows exist (user not yet started)
  * - The course is not yet loaded in the store
  *
  * @param courseId - The active course id

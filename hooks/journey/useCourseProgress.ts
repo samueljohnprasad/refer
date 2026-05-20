@@ -15,7 +15,7 @@ export interface UseCourseProgressResult {
   progressPct: number;
   /** Course-level status from user_course_progress. Undefined if not enrolled. */
   courseStatus: CourseStatus | undefined;
-  /** The first non-completed unlocked node. Null if all done or not started. */
+  /** The first non-completed node in course order. Null if the course is done. */
   currentNode: Node | null;
 }
 

@@ -13,6 +13,10 @@ import type {
   DerivedStatus,
 } from "@/src/types/journeyV5";
 import {
+  findCurrentNodeIdInCourse,
+  resolveDerivedStatusFromNodeIds,
+} from "@/src/lib/journey/journeyProgress";
+import {
   selectActiveCourseIdState,
   selectActiveNodeModalIdByCourseMap,
   selectCourseEntities,
@@ -141,9 +145,9 @@ export const selectNodesForUnit = createSelector(
 // ── Status selectors ──────────────────────────────────────────────────────────
 
 /**
- * Returns the status of a single node.
+ * Returns the stored status of a single node.
  * O(1) — direct map lookup. No array scan.
- * Returns 'locked' if no progress row exists (never stored in DB).
+ * Returns 'locked' if no progress row exists.
  */
 export const selectNodeStatus = createSelector(
   [selectNodeProgressMap, selectNodeIdParam],
@@ -163,20 +167,44 @@ export const selectNodeProgressForNode = createSelector(
  * Uses nodesByUnit index — O(k) traversal.
  */
 export const selectUnitStatus = createSelector(
-  [selectNodeIdsForUnit, selectNodeProgressMap],
-  (nodeIds, nodeProgress): DerivedStatus => {
-    if (nodeIds.length === 0) return "locked";
+  [
+    selectUnitIdParam,
+    selectNodeIdsForUnit,
+    selectUnitEntities,
+    selectSectionEntities,
+    selectSectionsByCourseIndex,
+    selectUnitsBySectionIndex,
+    selectNodesByUnitIndex,
+    selectNodeProgressMap,
+  ],
+  (
+    unitId,
+    nodeIds,
+    unitEntities,
+    sectionEntities,
+    sectionsByCourse,
+    unitsBySection,
+    nodesByUnit,
+    nodeProgress,
+  ): DerivedStatus => {
+    const unit = unitEntities[unitId];
+    if (!unit) {
+      return "locked";
+    }
 
-    const statuses = nodeIds.map(
-      (id) => (nodeProgress[id]?.status ?? "locked") as NodeStatus,
+    const section = sectionEntities[unit.sectionId];
+    if (!section) {
+      return "locked";
+    }
+
+    const currentNodeId = findCurrentNodeIdInCourse(
+      sectionsByCourse[section.courseId] ?? [],
+      unitsBySection,
+      nodesByUnit,
+      nodeProgress,
     );
 
-    if (statuses.every((s) => s === "locked")) return "locked";
-    if (statuses.every((s) => s === "completed")) return "completed";
-    if (statuses.every((s) => s === "locked" || s === "not_started"))
-      return "not_started";
-
-    return "in_progress";
+    return resolveDerivedStatusFromNodeIds(nodeIds, currentNodeId, nodeProgress);
   },
 );
 
@@ -186,34 +214,36 @@ export const selectUnitStatus = createSelector(
  */
 export const selectSectionStatus = createSelector(
   [
-    selectUnitIdsForSection,
+    selectSectionIdParam,
+    selectSectionEntities,
+    selectSectionsByCourseIndex,
     selectNodesByUnitIndex,
+    selectUnitsBySectionIndex,
     selectNodeProgressMap,
   ],
-  (unitIds, nodesByUnit, nodeProgress): DerivedStatus => {
-    if (unitIds.length === 0) return "locked";
+  (
+    sectionId,
+    sectionEntities,
+    sectionsByCourse,
+    nodesByUnit,
+    unitsBySection,
+    nodeProgress,
+  ): DerivedStatus => {
+    const section = sectionEntities[sectionId];
+    if (!section) {
+      return "locked";
+    }
 
-    const unitStatuses: DerivedStatus[] = unitIds.map((unitId) => {
-      const nodeIds = nodesByUnit[unitId] ?? [];
-      if (nodeIds.length === 0) return "locked";
+    const unitIds = unitsBySection[sectionId] ?? [];
+    const nodeIds = unitIds.flatMap((unitId) => nodesByUnit[unitId] ?? []);
+    const currentNodeId = findCurrentNodeIdInCourse(
+      sectionsByCourse[section.courseId] ?? [],
+      unitsBySection,
+      nodesByUnit,
+      nodeProgress,
+    );
 
-      const statuses = nodeIds.map(
-        (id) => (nodeProgress[id]?.status ?? "locked") as NodeStatus,
-      );
-      if (statuses.every((s) => s === "locked")) return "locked";
-      if (statuses.every((s) => s === "completed")) return "completed";
-      if (statuses.every((s) => s === "locked" || s === "not_started"))
-        return "not_started";
-
-      return "in_progress";
-    });
-
-    if (unitStatuses.every((s) => s === "locked")) return "locked";
-    if (unitStatuses.every((s) => s === "completed")) return "completed";
-    if (unitStatuses.every((s) => s === "locked" || s === "not_started"))
-      return "not_started";
-
-    return "in_progress";
+    return resolveDerivedStatusFromNodeIds(nodeIds, currentNodeId, nodeProgress);
   },
 );
 
@@ -228,66 +258,38 @@ const selectVisibleUnitIdParam = (
   visibleUnitId: string | null,
 ) => visibleUnitId;
 
-function isCurrentNodeStatus(status: NodeStatus): boolean {
-  return (
-    status === "not_started" ||
-    status === "in_progress" ||
-    status === "attempted"
-  );
-}
-
-function findCurrentNode(
-  sectionIds: string[],
-  unitsBySection: Record<string, string[]>,
-  nodesByUnit: Record<string, string[]>,
-  nodeEntities: Record<string, Node | undefined>,
-  nodeProgress: RootState["journey"]["nodeProgress"],
-): Node | null {
-  for (const sectionId of sectionIds) {
-    for (const unitId of unitsBySection[sectionId] ?? []) {
-      for (const nodeId of nodesByUnit[unitId] ?? []) {
-        const status = nodeProgress[nodeId]?.status ?? "locked";
-        if (isCurrentNodeStatus(status)) {
-          return nodeEntities[nodeId] ?? null;
-        }
-      }
-    }
-  }
-
-  return null;
-}
+export const selectCurrentNodeIdForCourse = createSelector(
+  [
+    selectSectionIdsForCourse,
+    selectUnitsBySectionIndex,
+    selectNodesByUnitIndex,
+    selectNodeProgressMap,
+  ],
+  (sectionIds, unitsBySection, nodesByUnit, nodeProgress): string | null =>
+    findCurrentNodeIdInCourse(
+      sectionIds,
+      unitsBySection,
+      nodesByUnit,
+      nodeProgress,
+    ),
+);
 
 /**
  * Returns the current node for a course — the first non-completed, unlocked node.
  *
  * "Current" is a UI-only concept. NOT stored in the database.
- * Statuses that make a node "current": not_started, in_progress, attempted.
- * Returns null if all nodes completed (course done) or no progress rows exist.
+ * The current node is the first node in course order without a completed row.
+ * Returns null if all nodes are completed.
  *
  * O(n) traversal of indexes with early return. Never scans the full entity store.
  */
 export const selectCurrentNodeForCourse = createSelector(
   [
-    selectSectionIdsForCourse,
-    selectUnitsBySectionIndex,
-    selectNodesByUnitIndex,
+    selectCurrentNodeIdForCourse,
     selectNodeEntities,
-    selectNodeProgressMap,
   ],
-  (
-    sectionIds,
-    unitsBySection,
-    nodesByUnit,
-    nodeEntities,
-    nodeProgress,
-  ): Node | null =>
-    findCurrentNode(
-      sectionIds,
-      unitsBySection,
-      nodesByUnit,
-      nodeEntities,
-      nodeProgress,
-    ),
+  (currentNodeId, nodeEntities): Node | null =>
+    currentNodeId ? nodeEntities[currentNodeId] ?? null : null,
 );
 
 export const selectCurrentNode = selectCurrentNodeForCourse;

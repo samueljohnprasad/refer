@@ -9,7 +9,7 @@ import { makeSelectJourneyLayoutForCourse } from "@/src/features/journey/journey
 import type { JourneyLayoutResult } from "@/src/lib/utils/journeyLayout";
 
 /**
- * Returns the flat FlashList data, activeGlobalIndex, and units for a course.
+ * Returns the flat FlashList data, active node indexes, and visible units for a course.
  * Recomputes only when the course structure or node progress changes.
  *
  * @param courseId - The active course id

@@ -9,8 +9,8 @@
 CREATE TABLE IF NOT EXISTS user_course_node_progress (
   user_id           UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   node_id           UUID        NOT NULL REFERENCES nodes(id)      ON DELETE CASCADE,
-  status            TEXT        NOT NULL DEFAULT 'not_started'
-                    CHECK (status IN ('not_started','in_progress','attempted','completed')),
+  status            TEXT        NOT NULL
+                    CHECK (status IN ('in_progress','attempted','completed')),
   attempts          INT         NOT NULL DEFAULT 0,
   best_score        INT,
   last_score        INT,

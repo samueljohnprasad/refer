@@ -1,5 +1,5 @@
 // complete-node/index.ts
-// Marks a node as completed and unlocks the next node in sequence.
+// Marks a node as completed and resolves the next node in sequence.
 // No attempt tracking or scoring — simple Done-button completion.
 // Rule order: next in unit → first of next unit → first of next section → course complete.
 
@@ -110,7 +110,7 @@ Deno.serve(async (req: Request) => {
 
   if (updateError) return err("Failed to mark node complete", 500);
 
-  // ── 5. Re-completion: no unlock, return early ─────────────────────────────
+  // ── 5. Re-completion: no progression change, return early ─────────────────
   if (isRecompletion) {
     return ok({
       nodeId,
@@ -121,15 +121,20 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  // ── 6. Unlock next node ───────────────────────────────────────────────────
-  const unlockResult = await unlockNextNode(supabase, user.id, node, courseId);
+  // ── 6. Resolve next node in sequence ──────────────────────────────────────
+  const progressionResult = await resolveNextNodeResult(
+    supabase,
+    user.id,
+    node,
+    courseId,
+  );
 
-  return ok({ nodeId, ...unlockResult });
+  return ok({ nodeId, ...progressionResult });
 });
 
-// ── unlockNextNode ────────────────────────────────────────────────────────────
+// ── resolveNextNodeResult ────────────────────────────────────────────────────
 
-async function unlockNextNode(
+async function resolveNextNodeResult(
   supabase: ReturnType<typeof import("../_shared/client.ts").createUserClient>,
   userId: string,
   node: NodeContext,
@@ -158,7 +163,6 @@ async function unlockNextNode(
 
   if (nextInUnit) {
     const nextNodeId = (nextInUnit as Record<string, unknown>)["id"] as string;
-    await unlockNodeProgress(supabase, userId, nextNodeId);
     return {
       nextNodeId,
       unitCompleted: false,
@@ -183,7 +187,6 @@ async function unlockNextNode(
       Record<string, unknown>
     >;
     const nextNodeId = nodesArr[0]!["id"] as string;
-    await unlockNodeProgress(supabase, userId, nextNodeId);
     return {
       nextNodeId,
       unitCompleted: true,
@@ -218,7 +221,6 @@ async function unlockNextNode(
     >;
     const nodesArr = unitsArr[0]!["nodes"] as Array<Record<string, unknown>>;
     const nextNodeId = nodesArr[0]!["id"] as string;
-    await unlockNodeProgress(supabase, userId, nextNodeId);
     return {
       nextNodeId,
       unitCompleted: true,
@@ -240,18 +242,4 @@ async function unlockNextNode(
     sectionCompleted: true,
     courseCompleted: true,
   };
-}
-
-/** Inserts a not_started progress row for the given node. Idempotent. */
-async function unlockNodeProgress(
-  supabase: ReturnType<typeof import("../_shared/client.ts").createUserClient>,
-  userId: string,
-  nodeId: string,
-): Promise<void> {
-  await supabase
-    .from("user_course_node_progress")
-    .upsert(
-      { user_id: userId, node_id: nodeId, status: "not_started", attempts: 0 },
-      { onConflict: "user_id,node_id", ignoreDuplicates: true },
-    );
 }

@@ -78,11 +78,11 @@ async function loadCourseData(
 
   if ("data" in progressResult && progressResult.data) {
     const { courseProgress, nodeProgressMap } = progressResult.data;
-    const hasNodeProgress = Object.keys(nodeProgressMap).length > 0;
 
-    // Ensure enrollment is fully initialized.
-    // A course row without any node progress means a prior start attempt only partially succeeded.
-    if (courseProgress === null || !hasNodeProgress) {
+    // A started course can legitimately have zero node progress rows because
+    // "current node" is derived from completion history instead of pre-created
+    // untouched next-node rows.
+    if (courseProgress === null) {
       const startResult = await dispatch(
         journeyApi.endpoints.startCourse.initiate(courseId),
       );

@@ -1,5 +1,5 @@
 // start-course/index.ts
-// Creates user_course_progress + unlocks the first node.
+// Creates user_course_progress for a course.
 // Idempotent — safe to call multiple times. Returns existing state if already started.
 // Called during auto-enrollment when get-course-progress returns courseProgress=null.
 
@@ -117,22 +117,6 @@ Deno.serve(async (req: Request) => {
 
   if (upsertError)
     return err(`Failed to start course: ${upsertError.message}`, 500);
-
-  // ── 6. Unlock the first node ─────────────────────────────────────────────
-  const { error: nodeProgressError } = await supabase
-    .from("user_course_node_progress")
-    .upsert(
-      {
-        user_id: user.id,
-        node_id: firstNodeId,
-        status: "not_started",
-        attempts: 0,
-      },
-      { onConflict: "user_id,node_id", ignoreDuplicates: true },
-    );
-
-  if (nodeProgressError)
-    return err(`Failed to unlock first node: ${nodeProgressError.message}`, 500);
 
   return ok({ courseProgressId: courseId, firstNodeId, alreadyStarted });
 });

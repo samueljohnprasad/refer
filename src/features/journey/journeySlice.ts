@@ -15,7 +15,6 @@ import type {
   Node,
   UserCourseProgress,
   UserNodeProgress,
-  NodeStatus,
   GetCourseTreeResponse,
   GetCourseProgressResponse,
 } from "@/src/types/journeyV5";
@@ -146,15 +145,18 @@ const journeySlice = createSlice({
      */
     optimisticSetNodeStatus(
       state,
-      action: PayloadAction<{ nodeId: string; status: NodeStatus }>,
+      action: PayloadAction<{
+        nodeId: string;
+        status: UserNodeProgress["status"];
+      }>,
     ) {
       const { nodeId, status } = action.payload;
       const existing = state.nodeProgress[nodeId];
       if (existing) {
-        existing.status = status as Exclude<NodeStatus, "locked">;
+        existing.status = status;
       } else {
         state.nodeProgress[nodeId] = {
-          status: status as Exclude<NodeStatus, "locked">,
+          status,
           attempts: 0,
           bestScore: null,
           lastScore: null,

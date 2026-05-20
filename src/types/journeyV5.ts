@@ -8,14 +8,13 @@
 /** All possible statuses a node can have. 'locked' is client-only — never stored in DB. */
 export type NodeStatus =
   | "locked"
-  | "not_started"
   | "in_progress"
   | "attempted"
   | "completed";
 
 /**
  * Visual status used by the journey map renderer.
- * Collapses the 5-state NodeStatus down to 3 visual states:
+ * Collapses the 4-state NodeStatus down to 3 visual states:
  *   locked     → node is inaccessible (locked icon)
  *   active     → node is accessible but not yet complete (star/checkpoint icon)
  *   completed  → node is done (checkmark icon)
@@ -23,14 +22,10 @@ export type NodeStatus =
 export type NodeVisualStatus = "locked" | "active" | "completed";
 
 /** Status for units and sections — no 'attempted' state at this level. */
-export type DerivedStatus =
-  | "locked"
-  | "not_started"
-  | "in_progress"
-  | "completed";
+export type DerivedStatus = "locked" | "in_progress" | "completed";
 
 /** Course-level progression status — stored in user_course_progress. */
-export type CourseStatus = "not_started" | "in_progress" | "completed";
+export type CourseStatus = "in_progress" | "completed";
 
 /** The 7 node content types. Determines which content table and renderer component to use. */
 export type NodeType =

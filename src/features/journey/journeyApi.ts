@@ -91,7 +91,7 @@ export const journeyApi = createApi({
 
     // ── MUTATION: start course (auto-enroll) ────────────────────────────────
     /**
-     * Creates user_course_progress + unlocks the first node.
+     * Creates user_course_progress for the course.
      * Idempotent — safe to call even if already started.
      */
     startCourse: builder.mutation<StartCourseResponse, string>({
@@ -113,7 +113,7 @@ export const journeyApi = createApi({
 
     // ── MUTATION: complete node (mark done + unlock next) ───────────────────
     /**
-     * Marks a node as completed and unlocks the next node in sequence.
+     * Marks a node as completed and returns the next node in sequence.
      * Invalidates CourseProgress — triggers a refetch to reflect new statuses.
      */
     completeNode: builder.mutation<CompleteNodeResponse, CompleteNodeArgs>({

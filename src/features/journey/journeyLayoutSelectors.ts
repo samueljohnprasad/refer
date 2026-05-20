@@ -18,11 +18,15 @@ import {
   selectUnitEntities,
   selectUnitsBySectionIndex,
 } from "./journeySelectorBase";
-import { selectSectionsForCourse } from "./journeySelectors";
+import {
+  selectCurrentNodeIdForCourse,
+  selectSectionsForCourse,
+} from "./journeySelectors";
 
 const EMPTY_LAYOUT: JourneyLayoutResult = {
   flashListData: [],
   activeGlobalIndex: -1,
+  activeListIndex: -1,
   units: [],
 };
 
@@ -68,6 +72,7 @@ function areArraysEqual<T>(
 }
 
 interface LayoutSnapshot {
+  currentNodeId: string | null;
   renderedSectionId?: string;
   sectionIds: string[];
   sectionRefs: Array<Section | undefined>;
@@ -90,6 +95,10 @@ function hasSameSnapshot(
     return false;
   }
 
+  if (previous.currentNodeId !== current.currentNodeId) {
+    return false;
+  }
+
   return (
     areArraysEqual(previous.sectionIds, current.sectionIds) &&
     areArraysEqual(previous.sectionRefs, current.sectionRefs) &&
@@ -108,6 +117,7 @@ function createLayoutSnapshot(
   unitEntities: Record<string, Unit | undefined>,
   nodeEntities: Record<string, Node | undefined>,
   nodeProgress: Record<string, UserNodeProgress>,
+  currentNodeId: string | null,
   renderedSectionId?: string,
 ): LayoutSnapshot {
   const sectionIds = sections.map((section) => section.id);
@@ -124,6 +134,7 @@ function createLayoutSnapshot(
   const progressRefs = visibleNodeIds.map((nodeId) => nodeProgress[nodeId]);
 
   return {
+    currentNodeId,
     renderedSectionId,
     sectionIds,
     sectionRefs,
@@ -147,6 +158,7 @@ export function makeSelectJourneyLayoutForCourse() {
       selectUnitsBySectionIndex,
       selectNodesByUnitIndex,
       selectNodeProgressMap,
+      selectCurrentNodeIdForCourse,
       selectRenderedSectionIdParam,
     ],
     (
@@ -156,6 +168,7 @@ export function makeSelectJourneyLayoutForCourse() {
       unitsBySection,
       nodesByUnit,
       nodeProgress,
+      currentNodeId,
       renderedSectionId,
     ): JourneyLayoutResult => {
       if (sections.length === 0) {
@@ -171,6 +184,7 @@ export function makeSelectJourneyLayoutForCourse() {
         unitEntities as Record<string, Unit | undefined>,
         nodeEntities as Record<string, Node | undefined>,
         nodeProgress,
+        currentNodeId,
         renderedSectionId,
       );
 

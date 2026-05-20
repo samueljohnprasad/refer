@@ -96,7 +96,8 @@ function JourneyMapFlashListInner({
   const renderedSectionId = useAppSelector((state) =>
     selectRenderedSectionIdForCourse(state, courseId),
   );
-  const { flashListData, activeGlobalIndex, units } = useJourneyFlashListData(
+  const { flashListData, activeGlobalIndex, activeListIndex, units } =
+    useJourneyFlashListData(
     courseId,
     renderedSectionId ?? undefined,
   );
@@ -129,17 +130,17 @@ function JourneyMapFlashListInner({
   }, [renderedSectionId]);
 
   useEffect(() => {
-    if (!isLoaded || activeGlobalIndex < 0) return;
-    if (activeGlobalIndex === lastScrolledIndexRef.current) return;
-    lastScrolledIndexRef.current = activeGlobalIndex;
+    if (!isLoaded || activeListIndex < 0) return;
+    if (activeListIndex === lastScrolledIndexRef.current) return;
+    lastScrolledIndexRef.current = activeListIndex;
     const timer = setTimeout(() => {
       legendListRef.current?.scrollToIndex({
-        index: activeGlobalIndex,
+        index: activeListIndex,
         animated: true,
       });
     }, 150);
     return () => clearTimeout(timer);
-  }, [isLoaded, activeGlobalIndex]);
+  }, [activeListIndex, isLoaded]);
 
   // ── Node tap — locked → toast, unlocked → open modal directly ─────────────
   const toast = useToast();

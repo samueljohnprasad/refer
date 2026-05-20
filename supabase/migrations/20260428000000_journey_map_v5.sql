@@ -104,8 +104,8 @@ CREATE TABLE IF NOT EXISTS story_contents (
 CREATE TABLE IF NOT EXISTS user_course_progress (
   user_id      UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   course_id    UUID        NOT NULL REFERENCES courses(id)    ON DELETE CASCADE,
-  status       TEXT        NOT NULL DEFAULT 'not_started'
-               CHECK (status IN ('not_started','in_progress','completed')),
+  status       TEXT        NOT NULL DEFAULT 'in_progress'
+               CHECK (status IN ('in_progress','completed')),
   started_at   TIMESTAMPTZ,
   completed_at TIMESTAMPTZ,
   PRIMARY KEY  (user_id, course_id)
@@ -114,8 +114,8 @@ CREATE TABLE IF NOT EXISTS user_course_progress (
 CREATE TABLE IF NOT EXISTS user_node_progress (
   user_id           UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   node_id           UUID        NOT NULL REFERENCES nodes(id)      ON DELETE CASCADE,
-  status            TEXT        NOT NULL DEFAULT 'not_started'
-                    CHECK (status IN ('not_started','in_progress','attempted','completed')),
+  status            TEXT        NOT NULL
+                    CHECK (status IN ('in_progress','attempted','completed')),
   attempts          INT         NOT NULL DEFAULT 0,
   best_score        INT,
   last_score        INT,

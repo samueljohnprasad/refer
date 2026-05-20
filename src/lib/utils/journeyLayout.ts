@@ -21,6 +21,10 @@ import type {
   UserNodeProgress,
 } from "@/src/types/journeyV5";
 import { PATH_LAYOUT, DIVIDER_LAYOUT } from "@/src/data/journey/constants";
+import {
+  findCurrentNodeIdInCourse,
+  resolveNodeVisualStatus,
+} from "@/src/lib/journey/journeyProgress";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -30,18 +34,6 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 const NODE_VERTICAL_POSITION_RATIO = 0.85;
 const DEFAULT_NODE_ICON = NodeIcon.STAR;
 type UnitPathNode = UnitData["nodes"][number];
-
-/**
- * Maps the 5-state v5 NodeStatus to the 3-state visual status.
- * Any non-locked, non-completed status is visually 'active'.
- */
-const V5_STATUS_TO_VISUAL: Record<string, NodeVisualStatus> = {
-  locked: "locked",
-  not_started: "active",
-  in_progress: "active",
-  attempted: "active",
-  completed: "completed",
-};
 
 /**
  * Maps v5 node types to their visual variant key.
@@ -150,14 +142,6 @@ function createDividerItem(
     isConnectorActive: previousNodeVisualStatus === "completed",
     prevNodeGlobalIndex: previousNodeGlobalIndex,
   };
-}
-
-function resolveVisualStatus(
-  nodeId: string,
-  nodeProgress: Record<string, UserNodeProgress>,
-): NodeVisualStatus {
-  const storedStatus = nodeProgress[nodeId]?.status ?? "locked";
-  return V5_STATUS_TO_VISUAL[storedStatus] ?? "locked";
 }
 
 function toJourneyNodeStatus(
@@ -280,6 +264,7 @@ function createVisibleUnitData(
 export interface JourneyLayoutResult {
   flashListData: JourneyFlashListItem[];
   activeGlobalIndex: number;
+  activeListIndex: number;
   units: UnitData[];
 }
 
@@ -307,6 +292,12 @@ export function buildJourneyFlashListData(
 ): JourneyLayoutResult {
   const flashListData: JourneyFlashListItem[] = [];
   const unitsData: UnitData[] = [];
+  const currentNodeId = findCurrentNodeIdInCourse(
+    sections.map((section) => section.id),
+    unitsBySection,
+    nodesByUnit,
+    nodeProgress,
+  );
 
   const cellHeight = PATH_LAYOUT.verticalGap;
   let globalIndex = 0;
@@ -315,6 +306,7 @@ export function buildJourneyFlashListData(
   let previousNodeVisualStatus: NodeVisualStatus | null = null;
 
   let activeGlobalIndex = -1; // -1 means there is no active node in the rendered slice
+  let activeListIndex = -1; // -1 means there is no active list item in the rendered slice
 
   for (const section of sections) {
     const shouldIncludeSection =
@@ -354,7 +346,11 @@ export function buildJourneyFlashListData(
       const pathNodeDataList: UnitPathNode[] = [];
 
       for (const [nodeIndex, node] of unitNodes.entries()) {
-        const visualStatus = resolveVisualStatus(node.id, nodeProgress);
+        const visualStatus = resolveNodeVisualStatus(
+          node.id,
+          currentNodeId,
+          nodeProgress,
+        );
         const nodeX = computeNodeX(globalIndex);
         const segmentStartX = resolveNodeSegmentStartX(
           nodeIndex,
@@ -365,6 +361,7 @@ export function buildJourneyFlashListData(
 
         if (visualStatus === "active" && activeGlobalIndex === -1) {
           activeGlobalIndex = globalIndex;
+          activeListIndex = flashListData.length;
         }
 
         flashListData.push(
@@ -397,5 +394,5 @@ export function buildJourneyFlashListData(
     }
   }
 
-  return { flashListData, activeGlobalIndex, units: unitsData };
+  return { flashListData, activeGlobalIndex, activeListIndex, units: unitsData };
 }
