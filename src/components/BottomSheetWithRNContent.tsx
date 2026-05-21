@@ -27,7 +27,7 @@ export default function BottomSheetWithRNContent({
           ]}
         >
           <RNHostView>
-            <View style={{ flex: 1, backgroundColor: "#FAF6ED" }}>
+            <View className="flex-1 bg-cream">
               {children}
             </View>
           </RNHostView>

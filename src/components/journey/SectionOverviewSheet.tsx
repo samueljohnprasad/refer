@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 
@@ -50,47 +50,44 @@ function SectionCard({
       : ""
   }`;
   const isComplete = section.progressPercent >= 100;
-  const cardBackgroundColor = section.isCurrent ? "#EEF2E8" : PALETTE.warmWhite;
-  const borderColor = section.isCurrent
-    ? PALETTE.sage500
+  const cardStateClassName = section.isCurrent
+    ? "border-sage-500 border-b-sage-600 bg-[#EEF2E8]"
     : isComplete
-      ? "#D8F3DD"
-      : PALETTE.sage100;
-  const borderBottomColor = section.isCurrent
-    ? PALETTE.sage600
-    : isComplete
-      ? "#C4E9CB"
-      : PALETTE.sage100;
+      ? "border-[#D8F3DD] border-b-[#C4E9CB] bg-warm-white"
+      : "border-sage-100 border-b-sage-100 bg-warm-white";
 
   return (
     <Pressable
-      style={[
-        styles.sectionCard,
-        {
-          backgroundColor: cardBackgroundColor,
-          borderColor,
-          borderBottomColor,
-          opacity: section.isUnlocked ? 1 : 0.6,
-        },
-      ]}
+      className={`rounded-[20px] border-2 border-b-[5px] p-[14px] ${
+        section.isUnlocked ? "opacity-100" : "opacity-60"
+      } ${cardStateClassName}`}
       accessibilityRole="button"
       accessibilityLabel={`${section.title}, Section ${section.sectionNumber}, ${section.progressPercent}% complete`}
       onPress={() => onPress(section.id)}
     >
-      <View style={styles.sectionCardInner}>
-        <View style={styles.sectionHeaderRow}>
-          <View style={styles.sectionTitleColumn}>
-            <Text style={styles.sectionTitle}>
+      <View className="gap-4 rounded-2xl bg-warm-white p-[18px]">
+        <View className="flex-row items-start justify-between gap-3">
+          <View className="flex-1 gap-1.5 pr-2">
+            <Text
+              className="text-[27px] leading-8 text-ink"
+              style={{ fontFamily: FONTS.heading }}
+            >
               {section.title}
             </Text>
-            <Text style={styles.sectionMeta}>
+            <Text
+              className="text-[15px] text-ink-muted"
+              style={{ fontFamily: FONTS.bodyBold }}
+            >
               {unitRangeLabel}
             </Text>
           </View>
 
           {section.isCurrent ? (
-            <View style={styles.currentBadge}>
-              <Text style={styles.currentBadgeText}>
+            <View className="rounded-full bg-sage-100 px-[14px] py-1.5">
+              <Text
+                className="text-xs uppercase tracking-[1.4px] text-sage-700"
+                style={{ fontFamily: FONTS.bodyBold }}
+              >
                 Current
               </Text>
             </View>
@@ -98,11 +95,11 @@ function SectionCard({
         </View>
 
         {section.unitTitles.length > 0 ? (
-          <View style={styles.unitPillList}>
+          <View className="flex-row flex-wrap gap-2.5">
             {section.unitTitles.map((unitTitle, index) => (
               <View
                 key={`${section.id}-${unitTitle}-${index}`}
-                style={styles.unitPill}
+                className="flex-row items-center rounded-full bg-sage-50 px-3 py-2"
               >
                 <JourneyUnitIcon
                   iconKey={section.unitIconKeys[index]}
@@ -110,7 +107,10 @@ function SectionCard({
                   color={PALETTE.ink}
                   backgroundColor={PALETTE.warmWhite}
                 />
-                <Text style={styles.unitPillText}>
+                <Text
+                  className="ml-2 text-[13px] text-ink"
+                  style={{ fontFamily: FONTS.bodyBold }}
+                >
                   Unit {index + 1}
                 </Text>
               </View>
@@ -118,24 +118,29 @@ function SectionCard({
           </View>
         ) : null}
 
-        <View style={styles.progressTrack}>
+        <View className="mb-3 h-2.5 w-full overflow-hidden rounded-full bg-sage-100">
           <View
+            className="h-full rounded-full"
             style={{
-              height: "100%",
               width: `${section.progressPercent}%`,
-              borderRadius: 999,
               backgroundColor: section.isCurrent ? PALETTE.sage500 : PALETTE.sage300,
             }}
           />
         </View>
 
-        <View style={styles.cardFooterRow}>
-          <Text style={styles.completionText}>
+        <View className="flex-row items-center justify-between">
+          <Text
+            className="text-[15px] text-ink-soft"
+            style={{ fontFamily: FONTS.body }}
+          >
             {section.completedNodes}/{section.totalNodes} complete
           </Text>
 
           {!section.isCurrent ? (
-            <Text style={styles.previewLabel}>
+            <Text
+              className="text-sm uppercase tracking-[0.8px] text-sage-500"
+              style={{ fontFamily: FONTS.bodyBold }}
+            >
               Preview
             </Text>
           ) : null}
@@ -160,20 +165,31 @@ export function SectionOverviewSheet({
   );
 
   return (
-    <View style={styles.root}>
-      <View style={styles.header}>
+    <View className="flex-1 bg-cream">
+      <View className="flex-row items-start justify-between border-b-2 border-sage-100 bg-cream px-6 pb-5 pt-5">
         <View>
-          <Text style={styles.eyebrow}>Journey Map</Text>
-          <Text style={styles.title}>
+          <Text
+            className="text-xs uppercase tracking-[1.6px] text-sage-500"
+            style={{ fontFamily: FONTS.bodyBold }}
+          >
+            Journey Map
+          </Text>
+          <Text
+            className="text-[30px] leading-[34px] text-ink"
+            style={{ fontFamily: FONTS.heading }}
+          >
             {journeyTitle}
           </Text>
-          <Text style={styles.subtitle}>
+          <Text
+            className="mt-1 text-base text-ink-muted"
+            style={{ fontFamily: FONTS.body }}
+          >
             {sections.length} {sections.length === 1 ? "section" : "sections"}
           </Text>
         </View>
         <Pressable
           onPress={onClose}
-          style={styles.closeButton}
+          className="h-11 w-11 items-center justify-center rounded-[22px] border-2 border-b-4 border-sage-100 border-b-sage-200 bg-warm-white"
           accessibilityRole="button"
           accessibilityLabel="Close section overview"
         >
@@ -182,14 +198,17 @@ export function SectionOverviewSheet({
       </View>
 
       <ScrollView
-        style={styles.scrollView}
+        className="flex-1 bg-cream"
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={styles.scrollContent}
+        contentContainerClassName="gap-[18px] px-5 pb-8 pt-5"
         showsVerticalScrollIndicator={false}
       >
         {sections.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>
+          <View className="items-center justify-center px-6 py-12">
+            <Text
+              className="text-center text-[15px] text-ink-muted"
+              style={{ fontFamily: FONTS.body }}
+            >
               No sections available. Check your connection and try again.
             </Text>
           </View>
@@ -208,165 +227,3 @@ export function SectionOverviewSheet({
 }
 
 export default React.memo(SectionOverviewSheet);
-
-const styles = StyleSheet.create({
-  cardFooterRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  closeButton: {
-    alignItems: "center",
-    backgroundColor: PALETTE.warmWhite,
-    borderColor: PALETTE.sage100,
-    borderBottomColor: PALETTE.sage200,
-    borderBottomWidth: 4,
-    borderRadius: 22,
-    borderWidth: 2,
-    height: 44,
-    justifyContent: "center",
-    width: 44,
-  },
-  completionText: {
-    color: PALETTE.inkSoft,
-    fontFamily: FONTS.body,
-    fontSize: 15,
-  },
-  currentBadge: {
-    backgroundColor: PALETTE.sage100,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-  },
-  currentBadgeText: {
-    color: PALETTE.sage700,
-    fontFamily: FONTS.bodyBold,
-    fontSize: 12,
-    letterSpacing: 1.4,
-    textTransform: "uppercase",
-  },
-  emptyState: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 24,
-    paddingVertical: 48,
-  },
-  emptyText: {
-    color: PALETTE.inkMuted,
-    fontFamily: FONTS.body,
-    fontSize: 15,
-    textAlign: "center",
-  },
-  eyebrow: {
-    color: PALETTE.sage500,
-    fontFamily: FONTS.bodyBold,
-    fontSize: 12,
-    letterSpacing: 1.6,
-    textTransform: "uppercase",
-  },
-  header: {
-    alignItems: "flex-start",
-    backgroundColor: PALETTE.cream,
-    borderBottomColor: PALETTE.sage100,
-    borderBottomWidth: 2,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingBottom: 20,
-    paddingHorizontal: 24,
-    paddingTop: 20,
-  },
-  previewLabel: {
-    color: PALETTE.sage500,
-    fontFamily: FONTS.bodyBold,
-    fontSize: 14,
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-  },
-  progressTrack: {
-    backgroundColor: PALETTE.sage100,
-    borderRadius: 999,
-    height: 10,
-    marginBottom: 12,
-    overflow: "hidden",
-    width: "100%",
-  },
-  root: {
-    backgroundColor: PALETTE.cream,
-    flex: 1,
-  },
-  scrollContent: {
-    gap: 18,
-    paddingBottom: 32,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  scrollView: {
-    backgroundColor: PALETTE.cream,
-    flex: 1,
-  },
-  sectionCard: {
-    borderBottomWidth: 5,
-    borderRadius: 20,
-    borderWidth: 2,
-    padding: 14,
-  },
-  sectionCardInner: {
-    backgroundColor: PALETTE.warmWhite,
-    borderRadius: 16,
-    gap: 16,
-    padding: 18,
-  },
-  sectionHeaderRow: {
-    alignItems: "flex-start",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 12,
-  },
-  sectionMeta: {
-    color: PALETTE.inkMuted,
-    fontFamily: FONTS.bodyBold,
-    fontSize: 15,
-  },
-  sectionTitle: {
-    color: PALETTE.ink,
-    fontFamily: FONTS.heading,
-    fontSize: 27,
-    lineHeight: 32,
-  },
-  sectionTitleColumn: {
-    flex: 1,
-    gap: 6,
-    paddingRight: 8,
-  },
-  subtitle: {
-    color: PALETTE.inkMuted,
-    fontFamily: FONTS.body,
-    fontSize: 16,
-    marginTop: 4,
-  },
-  title: {
-    color: PALETTE.ink,
-    fontFamily: FONTS.heading,
-    fontSize: 30,
-    lineHeight: 34,
-  },
-  unitPill: {
-    alignItems: "center",
-    backgroundColor: PALETTE.sage50,
-    borderRadius: 999,
-    flexDirection: "row",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  unitPillList: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  unitPillText: {
-    color: PALETTE.ink,
-    fontFamily: FONTS.bodyBold,
-    fontSize: 13,
-    marginLeft: 8,
-  },
-});

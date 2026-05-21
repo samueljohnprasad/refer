@@ -3,7 +3,6 @@ import {
   LayoutChangeEvent,
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   useWindowDimensions,
   View,
@@ -71,19 +70,16 @@ function CourseAvatar({
 
   return (
     <View
-      style={[
-        styles.courseAvatar,
-        {
-          backgroundColor: isActive ? "#EEF2E8" : PALETTE.warmWhite,
-          borderColor: isActive ? PALETTE.sage500 : PALETTE.sage100,
-          borderBottomColor: isActive ? PALETTE.sage600 : PALETTE.sage100,
-        },
-      ]}
+      className={
+        isActive
+          ? "h-[78px] w-[92px] items-center justify-center rounded-2xl border-2 border-b-4 border-sage-500 border-b-sage-600 bg-[#EEF2E8]"
+          : "h-[78px] w-[92px] items-center justify-center rounded-2xl border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white"
+      }
     >
       {course.iconUrl ? (
         <Image
           source={course.iconUrl}
-          style={styles.courseAvatarImage}
+          className="h-[46px] w-[46px] rounded-[14px]"
           cachePolicy="memory-disk"
           contentFit="contain"
           transition={150}
@@ -132,7 +128,7 @@ const HeaderOverlayContent = ({
     : 0;
 
   return (
-    <Animated.View style={[styles.root, animatedStyle]}>
+    <Animated.View className="w-full bg-cream pb-[14px]" style={animatedStyle}>
       <Svg
         width={width}
         height={16}
@@ -154,26 +150,26 @@ const HeaderOverlayContent = ({
         />
       </Svg>
 
-      <View style={styles.content}>
+      <View className="px-4 pt-7">
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.courseListContent}
+          contentContainerClassName="gap-3.5 px-1"
         >
           {courses.map((course) => {
             const isActive = course.id === activeCourseId;
             return (
               <Pressable
                 key={course.id}
-                style={styles.courseTab}
+                className="w-[116px] items-center gap-2"
                 onPress={() => onCourseSelect?.(course.id)}
               >
                 <CourseAvatar course={course} isActive={isActive} />
                 <Text
-                  style={[
-                    styles.courseTitle,
-                    { color: isActive ? PALETTE.ink : PALETTE.inkMuted },
-                  ]}
+                  className={`w-full text-center text-[15px] ${
+                    isActive ? "text-ink" : "text-ink-muted"
+                  }`}
+                  style={{ fontFamily: FONTS.bodyBold }}
                   numberOfLines={1}
                 >
                   {course.title}
@@ -183,29 +179,38 @@ const HeaderOverlayContent = ({
           })}
 
           {courses.length === 0 ? (
-            <View style={styles.emptyCourses}>
-              <Text style={styles.emptyCoursesText}>
+            <View className="min-h-[104px] justify-center px-3">
+              <Text
+                className="text-[15px] text-ink-muted"
+                style={{ fontFamily: FONTS.body }}
+              >
                 No enrolled courses yet.
               </Text>
             </View>
           ) : null}
 
-          <Pressable style={styles.courseTab} onPress={onAddCoursePress}>
-            <View style={styles.addCourseAvatar}>
+          <Pressable className="w-[116px] items-center gap-2" onPress={onAddCoursePress}>
+            <View className="h-[78px] w-[92px] items-center justify-center rounded-2xl border-2 border-b-4 border-sage-200 border-b-sage-200 bg-warm-white">
               <HugeiconsIcon icon={PlusSignIcon} size={24} color={PALETTE.sage300} />
             </View>
-            <Text style={[styles.courseTitle, { color: PALETTE.inkMuted }]}>
+            <Text
+              className="w-full text-center text-[15px] text-ink-muted"
+              style={{ fontFamily: FONTS.bodyBold }}
+            >
               Course
             </Text>
           </Pressable>
         </ScrollView>
 
-        <View style={styles.scoreCard}>
-          <View style={styles.scoreBarRow}>
-            <Text style={styles.scoreValue}>
+        <View className="mt-4 w-full items-center gap-[14px] rounded-[18px] border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white py-5">
+          <View className="w-full flex-row items-center px-[18px]">
+            <Text
+              className="min-w-[34px] text-center text-xl text-ink"
+              style={{ fontFamily: FONTS.bodyBold }}
+            >
               {activeCourseSummary?.completedNodes ?? 0}
             </Text>
-            <View style={styles.scoreBarWrap} onLayout={handleScoreBarLayout}>
+            <View className="mx-[14px] flex-1" onLayout={handleScoreBarLayout}>
               <ProgressBar
                 progress={progress}
                 width={scoreBarWidth}
@@ -215,20 +220,32 @@ const HeaderOverlayContent = ({
                 glossColor={PALETTE.sage300}
               />
             </View>
-            <Text style={styles.scoreValue}>
+            <Text
+              className="min-w-[34px] text-center text-xl text-ink"
+              style={{ fontFamily: FONTS.bodyBold }}
+            >
               {activeCourseSummary?.totalNodes ?? 0}
             </Text>
           </View>
 
-          <Text style={styles.scoreTitle}>
+          <Text
+            className="px-[18px] text-center text-[23px] leading-[29px] text-ink"
+            style={{ fontFamily: FONTS.heading }}
+          >
             Your {activeCourseSummary?.title ?? "Course"} Score{" "}
             {activeCourseSummary?.completedNodes ?? 0}
           </Text>
-          <Text style={styles.scoreSubtitle}>
+          <Text
+            className="text-base text-ink-soft"
+            style={{ fontFamily: FONTS.bodyMedium }}
+          >
             Section {activeCourseSummary?.activeSectionNumber ?? 1} of{" "}
             {activeCourseSummary?.sectionCount ?? 0}
           </Text>
-          <Text style={styles.scoreLink}>
+          <Text
+            className="text-sm uppercase tracking-[0.8px] text-sage-500"
+            style={{ fontFamily: FONTS.bodyBold }}
+          >
             More About score
           </Text>
         </View>
@@ -238,116 +255,3 @@ const HeaderOverlayContent = ({
 };
 
 export default HeaderOverlayContent;
-
-const styles = StyleSheet.create({
-  addCourseAvatar: {
-    alignItems: "center",
-    backgroundColor: PALETTE.warmWhite,
-    borderBottomColor: PALETTE.sage200,
-    borderBottomWidth: 4,
-    borderColor: PALETTE.sage200,
-    borderRadius: 16,
-    borderWidth: 2,
-    height: 78,
-    justifyContent: "center",
-    width: 92,
-  },
-  content: {
-    paddingHorizontal: 16,
-    paddingTop: 28,
-  },
-  courseAvatar: {
-    alignItems: "center",
-    borderBottomWidth: 4,
-    borderRadius: 16,
-    borderWidth: 2,
-    height: 78,
-    justifyContent: "center",
-    width: 92,
-  },
-  courseAvatarImage: {
-    borderRadius: 14,
-    height: 46,
-    width: 46,
-  },
-  courseListContent: {
-    gap: 14,
-    paddingHorizontal: 4,
-  },
-  courseTab: {
-    alignItems: "center",
-    gap: 8,
-    width: 116,
-  },
-  courseTitle: {
-    fontFamily: FONTS.bodyBold,
-    fontSize: 15,
-    textAlign: "center",
-    width: "100%",
-  },
-  emptyCourses: {
-    justifyContent: "center",
-    minHeight: 104,
-    paddingHorizontal: 12,
-  },
-  emptyCoursesText: {
-    color: PALETTE.inkMuted,
-    fontFamily: FONTS.body,
-    fontSize: 15,
-  },
-  root: {
-    backgroundColor: PALETTE.cream,
-    paddingBottom: 14,
-    width: "100%",
-  },
-  scoreBarRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    paddingHorizontal: 18,
-    width: "100%",
-  },
-  scoreBarWrap: {
-    flex: 1,
-    marginHorizontal: 14,
-  },
-  scoreCard: {
-    alignItems: "center",
-    backgroundColor: PALETTE.warmWhite,
-    borderBottomColor: PALETTE.sage100,
-    borderBottomWidth: 4,
-    borderColor: PALETTE.sage100,
-    borderRadius: 18,
-    borderWidth: 2,
-    gap: 14,
-    marginTop: 16,
-    paddingVertical: 20,
-    width: "100%",
-  },
-  scoreLink: {
-    color: PALETTE.sage500,
-    fontFamily: FONTS.bodyBold,
-    fontSize: 14,
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-  },
-  scoreSubtitle: {
-    color: PALETTE.inkSoft,
-    fontFamily: FONTS.bodyMedium,
-    fontSize: 16,
-  },
-  scoreTitle: {
-    color: PALETTE.ink,
-    fontFamily: FONTS.heading,
-    fontSize: 23,
-    lineHeight: 29,
-    paddingHorizontal: 18,
-    textAlign: "center",
-  },
-  scoreValue: {
-    color: PALETTE.ink,
-    fontFamily: FONTS.bodyBold,
-    fontSize: 20,
-    minWidth: 34,
-    textAlign: "center",
-  },
-});
