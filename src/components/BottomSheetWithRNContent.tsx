@@ -1,13 +1,5 @@
-import { useState } from "react";
-import { Pressable, Text as RNText, View } from "react-native";
-import {
-  Host,
-  BottomSheet,
-  Button,
-  RNHostView,
-  VStack,
-  Group,
-} from "@expo/ui/swift-ui";
+import { View } from "react-native";
+import { BottomSheet, Group, Host, RNHostView } from "@expo/ui/swift-ui";
 import {
   presentationDetents,
   presentationDragIndicator,
@@ -35,7 +27,9 @@ export default function BottomSheetWithRNContent({
           ]}
         >
           <RNHostView>
-            <View style={{ flex: 1, padding: 24 }}>{children}</View>
+            <View style={{ flex: 1, backgroundColor: "#FAF6ED" }}>
+              {children}
+            </View>
           </RNHostView>
         </Group>
       </BottomSheet>

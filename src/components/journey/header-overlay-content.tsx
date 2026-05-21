@@ -3,6 +3,7 @@ import {
   LayoutChangeEvent,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   useWindowDimensions,
   View,
@@ -28,6 +29,28 @@ import {
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
+const PALETTE = {
+  cream: "#FAF6ED",
+  warmWhite: "#FFFCF5",
+  sage50: "#F4F1EA",
+  sage100: "#E8E2D2",
+  sage200: "#D4CCB5",
+  sage300: "#A8B89A",
+  sage500: "#5A7A56",
+  sage600: "#3F5A3D",
+  sage700: "#2A3F2A",
+  ink: "#1A2A1A",
+  inkSoft: "#4A5A4A",
+  inkMuted: "#7A8A7A",
+} as const;
+
+const FONTS = {
+  body: "GeistRegular",
+  bodyMedium: "GeistMedium",
+  bodyBold: "GeistBold",
+  heading: "FrauncesSemiBold",
+} as const;
+
 type HeaderOverlayContentProps = {
   translateY: SharedValue<number>;
   enrolledCourses?: EnrolledCourseListItem[];
@@ -44,20 +67,23 @@ function CourseAvatar({
   course: EnrolledCourseListItem;
   isActive: boolean;
 }): React.JSX.Element {
-  const accentColor = resolveCourseAccentColor(course.colorHex);
+  const courseAccentColor = resolveCourseAccentColor(course.colorHex);
 
   return (
     <View
-      className="h-[70px] w-[85px] items-center justify-center rounded-[14px] bg-slate-50"
-      style={{
-        borderWidth: isActive ? 3 : 2,
-        borderColor: isActive ? accentColor : "#E5E7EB",
-      }}
+      style={[
+        styles.courseAvatar,
+        {
+          backgroundColor: isActive ? "#EEF2E8" : PALETTE.warmWhite,
+          borderColor: isActive ? PALETTE.sage500 : PALETTE.sage100,
+          borderBottomColor: isActive ? PALETTE.sage600 : PALETTE.sage100,
+        },
+      ]}
     >
       {course.iconUrl ? (
         <Image
           source={course.iconUrl}
-          style={{ width: 44, height: 44, borderRadius: 12 }}
+          style={styles.courseAvatarImage}
           cachePolicy="memory-disk"
           contentFit="contain"
           transition={150}
@@ -65,9 +91,9 @@ function CourseAvatar({
       ) : (
         <Text
           style={{
-            color: accentColor,
-            fontFamily: "DINNextRoundedBold",
-            fontSize: 28,
+            color: courseAccentColor,
+            fontFamily: FONTS.heading,
+            fontSize: 30,
           }}
         >
           {getCourseMonogram(course.title)}
@@ -106,7 +132,7 @@ const HeaderOverlayContent = ({
     : 0;
 
   return (
-    <Animated.View className="w-full bg-white pb-3" style={[animatedStyle]}>
+    <Animated.View style={[styles.root, animatedStyle]}>
       <Svg
         width={width}
         height={16}
@@ -122,34 +148,32 @@ const HeaderOverlayContent = ({
         <AnimatedPath
           d={`M0 8 H40 L51 8 L60 1 L69 8 H${width}`}
           fill="none"
-          stroke="#E5E5E5"
+          stroke={PALETTE.sage100}
           strokeWidth={1.8}
           strokeLinejoin="round"
         />
       </Svg>
 
-      <View className="px-4 pt-6">
+      <View style={styles.content}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          className="flex-row gap-3"
-          contentContainerStyle={{ paddingHorizontal: 4 }}
+          contentContainerStyle={styles.courseListContent}
         >
           {courses.map((course) => {
             const isActive = course.id === activeCourseId;
             return (
               <Pressable
                 key={course.id}
-                className="items-center gap-1"
+                style={styles.courseTab}
                 onPress={() => onCourseSelect?.(course.id)}
               >
                 <CourseAvatar course={course} isActive={isActive} />
                 <Text
-                  className="text-base font-bold"
-                  style={{
-                    fontFamily: "DINNextRoundedBold",
-                    color: isActive ? "#4B4B4B" : "#AFAFAF",
-                  }}
+                  style={[
+                    styles.courseTitle,
+                    { color: isActive ? PALETTE.ink : PALETTE.inkMuted },
+                  ]}
                   numberOfLines={1}
                 >
                   {course.title}
@@ -159,67 +183,52 @@ const HeaderOverlayContent = ({
           })}
 
           {courses.length === 0 ? (
-            <View className="justify-center px-3">
-              <Text
-                style={{
-                  color: "#94A3B8",
-                  fontFamily: "DINNextRoundedRegular",
-                  fontSize: 15,
-                }}
-              >
+            <View style={styles.emptyCourses}>
+              <Text style={styles.emptyCoursesText}>
                 No enrolled courses yet.
               </Text>
             </View>
           ) : null}
 
-          <Pressable className="ml-3 items-center gap-1" onPress={onAddCoursePress}>
-            <View className="h-[70px] w-[85px] items-center justify-center rounded-[14px] border-[2px] border-[#AFAFAF] bg-gray-50">
-              <HugeiconsIcon icon={PlusSignIcon} size={24} color="#AFAFAF" />
+          <Pressable style={styles.courseTab} onPress={onAddCoursePress}>
+            <View style={styles.addCourseAvatar}>
+              <HugeiconsIcon icon={PlusSignIcon} size={24} color={PALETTE.sage300} />
             </View>
-            <Text
-              className="text-base font-bold"
-              style={{
-                fontFamily: "DINNextRoundedBold",
-                color: "#AFAFAF",
-              }}
-            >
+            <Text style={[styles.courseTitle, { color: PALETTE.inkMuted }]}>
               Course
             </Text>
           </Pressable>
         </ScrollView>
 
-        <View className="mt-3 w-full items-center gap-3 rounded-[10px] border border-[#E5E5E5] py-4">
-          <View className="w-full flex-row items-center px-5">
-            <Text className="text-lg font-bold text-text-primary font-rd-bold">
+        <View style={styles.scoreCard}>
+          <View style={styles.scoreBarRow}>
+            <Text style={styles.scoreValue}>
               {activeCourseSummary?.completedNodes ?? 0}
             </Text>
-            <View className="mx-3 flex-1" onLayout={handleScoreBarLayout}>
-              <ProgressBar progress={progress} width={scoreBarWidth} />
+            <View style={styles.scoreBarWrap} onLayout={handleScoreBarLayout}>
+              <ProgressBar
+                progress={progress}
+                width={scoreBarWidth}
+                height={14}
+                trackColor={PALETTE.sage100}
+                fillColor={PALETTE.sage500}
+                glossColor={PALETTE.sage300}
+              />
             </View>
-            <Text
-              className="text-lg font-bold text-text-primary font-rd-bold"
-              style={{ fontFamily: "DINNextRoundedBold" }}
-            >
+            <Text style={styles.scoreValue}>
               {activeCourseSummary?.totalNodes ?? 0}
             </Text>
           </View>
 
-          <Text className="text-xl text-text-secondary font-rd-regular">
+          <Text style={styles.scoreTitle}>
             Your {activeCourseSummary?.title ?? "Course"} Score{" "}
             {activeCourseSummary?.completedNodes ?? 0}
           </Text>
-          <Text className="text-base text-text-secondary font-rd-regular">
+          <Text style={styles.scoreSubtitle}>
             Section {activeCourseSummary?.activeSectionNumber ?? 1} of{" "}
             {activeCourseSummary?.sectionCount ?? 0}
           </Text>
-          <Text
-            className="text-base uppercase text-[#1CB0F6]"
-            style={{
-              fontFamily: "DINNextRoundedBold",
-              fontSize: 16,
-              fontWeight: "bold",
-            }}
-          >
+          <Text style={styles.scoreLink}>
             More About score
           </Text>
         </View>
@@ -229,3 +238,116 @@ const HeaderOverlayContent = ({
 };
 
 export default HeaderOverlayContent;
+
+const styles = StyleSheet.create({
+  addCourseAvatar: {
+    alignItems: "center",
+    backgroundColor: PALETTE.warmWhite,
+    borderBottomColor: PALETTE.sage200,
+    borderBottomWidth: 4,
+    borderColor: PALETTE.sage200,
+    borderRadius: 16,
+    borderWidth: 2,
+    height: 78,
+    justifyContent: "center",
+    width: 92,
+  },
+  content: {
+    paddingHorizontal: 16,
+    paddingTop: 28,
+  },
+  courseAvatar: {
+    alignItems: "center",
+    borderBottomWidth: 4,
+    borderRadius: 16,
+    borderWidth: 2,
+    height: 78,
+    justifyContent: "center",
+    width: 92,
+  },
+  courseAvatarImage: {
+    borderRadius: 14,
+    height: 46,
+    width: 46,
+  },
+  courseListContent: {
+    gap: 14,
+    paddingHorizontal: 4,
+  },
+  courseTab: {
+    alignItems: "center",
+    gap: 8,
+    width: 116,
+  },
+  courseTitle: {
+    fontFamily: FONTS.bodyBold,
+    fontSize: 15,
+    textAlign: "center",
+    width: "100%",
+  },
+  emptyCourses: {
+    justifyContent: "center",
+    minHeight: 104,
+    paddingHorizontal: 12,
+  },
+  emptyCoursesText: {
+    color: PALETTE.inkMuted,
+    fontFamily: FONTS.body,
+    fontSize: 15,
+  },
+  root: {
+    backgroundColor: PALETTE.cream,
+    paddingBottom: 14,
+    width: "100%",
+  },
+  scoreBarRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    paddingHorizontal: 18,
+    width: "100%",
+  },
+  scoreBarWrap: {
+    flex: 1,
+    marginHorizontal: 14,
+  },
+  scoreCard: {
+    alignItems: "center",
+    backgroundColor: PALETTE.warmWhite,
+    borderBottomColor: PALETTE.sage100,
+    borderBottomWidth: 4,
+    borderColor: PALETTE.sage100,
+    borderRadius: 18,
+    borderWidth: 2,
+    gap: 14,
+    marginTop: 16,
+    paddingVertical: 20,
+    width: "100%",
+  },
+  scoreLink: {
+    color: PALETTE.sage500,
+    fontFamily: FONTS.bodyBold,
+    fontSize: 14,
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+  },
+  scoreSubtitle: {
+    color: PALETTE.inkSoft,
+    fontFamily: FONTS.bodyMedium,
+    fontSize: 16,
+  },
+  scoreTitle: {
+    color: PALETTE.ink,
+    fontFamily: FONTS.heading,
+    fontSize: 23,
+    lineHeight: 29,
+    paddingHorizontal: 18,
+    textAlign: "center",
+  },
+  scoreValue: {
+    color: PALETTE.ink,
+    fontFamily: FONTS.bodyBold,
+    fontSize: 20,
+    minWidth: 34,
+    textAlign: "center",
+  },
+});

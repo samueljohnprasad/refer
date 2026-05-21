@@ -39,6 +39,28 @@ import {
   resolveCourseAccentColor,
 } from "./courseVisuals";
 
+const PALETTE = {
+  cream: "#FAF6ED",
+  warmWhite: "#FFFCF5",
+  sage50: "#F4F1EA",
+  sage100: "#E8E2D2",
+  sage200: "#D4CCB5",
+  sage300: "#A8B89A",
+  sage500: "#5A7A56",
+  sage600: "#3F5A3D",
+  sage700: "#2A3F2A",
+  ink: "#1A2A1A",
+  inkSoft: "#4A5A4A",
+  inkMuted: "#7A8A7A",
+} as const;
+
+const FONTS = {
+  body: "GeistRegular",
+  bodyMedium: "GeistMedium",
+  bodyBold: "GeistBold",
+  heading: "FrauncesSemiBold",
+} as const;
+
 type CourseCatalogSheetProps = {
   isPresented: boolean;
   activeCourseId?: string | null;
@@ -113,7 +135,7 @@ const CourseCard = React.memo(function CourseCard({
   isEnrolled,
   onPress,
 }: CourseCardProps): React.JSX.Element {
-  const accentColor = resolveCourseAccentColor(course.colorHex);
+  const courseAccentColor = resolveCourseAccentColor(course.colorHex);
 
   return (
     <Pressable
@@ -126,8 +148,9 @@ const CourseCard = React.memo(function CourseCard({
         style={[
           styles.courseAvatar,
           {
-            borderColor: isSelected ? accentColor : "#D4D4D8",
-            borderWidth: isSelected ? 3 : 2,
+            backgroundColor: isSelected ? "#EEF2E8" : PALETTE.warmWhite,
+            borderColor: isSelected ? PALETTE.sage500 : PALETTE.sage100,
+            borderBottomColor: isSelected ? PALETTE.sage600 : PALETTE.sage100,
           },
         ]}
       >
@@ -140,7 +163,7 @@ const CourseCard = React.memo(function CourseCard({
             transition={150}
           />
         ) : (
-          <Text style={[styles.courseAvatarInitial, { color: accentColor }]}>
+          <Text style={[styles.courseAvatarInitial, { color: courseAccentColor }]}>
             {getCourseMonogram(course.title)}
           </Text>
         )}
@@ -150,15 +173,15 @@ const CourseCard = React.memo(function CourseCard({
         numberOfLines={1}
         style={[
           styles.courseCardTitle,
-          { color: isSelected ? "#374151" : "#9CA3AF" },
+          { color: isSelected ? PALETTE.sage700 : PALETTE.inkMuted },
         ]}
       >
         {course.title}
       </Text>
 
       {isEnrolled ? (
-        <View style={[styles.statusBadge, { backgroundColor: `${accentColor}20` }]}>
-          <Text style={[styles.statusBadgeText, { color: accentColor }]}>
+        <View style={styles.statusBadge}>
+          <Text style={styles.statusBadgeText}>
             Enrolled
           </Text>
         </View>
@@ -260,7 +283,8 @@ function CourseCatalogSheetContent({
   const isSelectedCourseEnrolled = selectedCourse
     ? enrolledCourseIds.has(selectedCourse.id)
     : false;
-  const accentColor = resolveCourseAccentColor(selectedCourse?.colorHex);
+  const courseAccentColor = resolveCourseAccentColor(selectedCourse?.colorHex);
+  const interactionColor = PALETTE.sage500;
 
   const handleCoursePress = useCallback((courseId: string) => {
     setSelectedCourseId(courseId);
@@ -304,7 +328,7 @@ function CourseCatalogSheetContent({
           accessibilityRole="button"
           accessibilityLabel="Close journey explorer"
         >
-          <HugeiconsIcon icon={Cancel01Icon} size={20} color="#475569" />
+          <HugeiconsIcon icon={Cancel01Icon} size={20} color={PALETTE.sage600} />
         </Pressable>
       </View>
 
@@ -316,6 +340,7 @@ function CourseCatalogSheetContent({
           contentContainerStyle={styles.scrollContent}
         >
           <View style={styles.headerBlock}>
+            <Text style={styles.eyebrow}>Find Your Next Path</Text>
             <Text style={styles.sheetTitle}>Explore Journeys</Text>
             <Text style={styles.sheetSubtitle}>
               Browse every published course, preview the path, and enroll when
@@ -340,7 +365,7 @@ function CourseCatalogSheetContent({
             ListEmptyComponent={
               isCatalogLoading ? (
                 <View style={styles.emptyState}>
-                  <ActivityIndicator color="#1CB0F6" />
+                  <ActivityIndicator color={interactionColor} />
                 </View>
               ) : (
                 <View style={styles.emptyState}>
@@ -359,8 +384,8 @@ function CourseCatalogSheetContent({
                   style={[
                     styles.previewAvatar,
                     {
-                      borderColor: accentColor,
-                      backgroundColor: `${accentColor}14`,
+                      borderColor: PALETTE.sage500,
+                      backgroundColor: "#EEF2E8",
                     },
                   ]}
                 >
@@ -374,7 +399,10 @@ function CourseCatalogSheetContent({
                     />
                   ) : (
                     <Text
-                      style={[styles.previewAvatarInitial, { color: accentColor }]}
+                      style={[
+                        styles.previewAvatarInitial,
+                        { color: courseAccentColor },
+                      ]}
                     >
                       {getCourseMonogram(selectedCourse.title)}
                     </Text>
@@ -418,7 +446,7 @@ function CourseCatalogSheetContent({
               <View style={styles.previewSectionsHeader}>
                 <Text style={styles.previewSectionsTitle}>Journey Preview</Text>
                 <Text
-                  style={[styles.previewSectionsCaption, { color: accentColor }]}
+                  style={styles.previewSectionsCaption}
                 >
                   {isSelectedCourseEnrolled ? "Already enrolled" : "Ready to enroll"}
                 </Text>
@@ -426,7 +454,7 @@ function CourseCatalogSheetContent({
 
               {isPreviewLoading ? (
                 <View style={styles.previewLoading}>
-                  <ActivityIndicator color={accentColor} />
+                  <ActivityIndicator color={interactionColor} />
                   <Text style={styles.previewLoadingText}>
                     Loading journey preview...
                   </Text>
@@ -442,7 +470,7 @@ function CourseCatalogSheetContent({
                   {preview?.sections.map((section) => (
                     <CoursePreviewSectionRow
                       key={section.id}
-                      accentColor={accentColor}
+                      accentColor={interactionColor}
                       section={section}
                     />
                   ))}
@@ -458,7 +486,12 @@ function CourseCatalogSheetContent({
           style={[
             styles.primaryButton,
             {
-              backgroundColor: selectedCourse ? accentColor : "#D1D5DB",
+              backgroundColor: selectedCourse
+                ? PALETTE.sage500
+                : PALETTE.sage200,
+              borderBottomColor: selectedCourse
+                ? PALETTE.sage700
+                : PALETTE.sage300,
               opacity: selectedCourse ? 1 : 0.7,
             },
           ]}
@@ -539,11 +572,13 @@ export default function CourseCatalogSheet(
 const styles = StyleSheet.create({
   courseAvatar: {
     width: 92,
-    height: 76,
-    borderRadius: 18,
+    height: 78,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderBottomWidth: 4,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F8FAFC",
+    backgroundColor: PALETTE.warmWhite,
   },
   courseAvatarImage: {
     width: 46,
@@ -551,22 +586,22 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   courseAvatarInitial: {
-    fontFamily: "DINNextRoundedBold",
+    fontFamily: FONTS.heading,
     fontSize: 30,
   },
   courseCard: {
-    width: 108,
+    width: 116,
     alignItems: "center",
-    gap: 6,
+    gap: 8,
   },
   courseCardTitle: {
-    fontFamily: "DINNextRoundedBold",
-    fontSize: 16,
+    fontFamily: FONTS.bodyMedium,
+    fontSize: 15,
     textAlign: "center",
   },
   courseListContent: {
     paddingHorizontal: 20,
-    gap: 14,
+    gap: 16,
   },
   emptyState: {
     minHeight: 92,
@@ -576,23 +611,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   emptyStateText: {
-    color: "#94A3B8",
-    fontFamily: "DINNextRoundedRegular",
+    color: PALETTE.inkMuted,
+    fontFamily: FONTS.body,
     fontSize: 15,
     textAlign: "center",
+  },
+  eyebrow: {
+    color: PALETTE.sage500,
+    fontFamily: FONTS.bodyBold,
+    fontSize: 12,
+    letterSpacing: 1.6,
+    textTransform: "uppercase",
   },
   headerBar: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: PALETTE.cream,
   },
   headerBarSpacer: {
     width: 44,
     height: 44,
   },
   headerBlock: {
-    gap: 8,
+    gap: 10,
     paddingHorizontal: 20,
   },
   closeButton: {
@@ -601,25 +643,29 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F8FAFC",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
+    backgroundColor: PALETTE.warmWhite,
+    borderWidth: 2,
+    borderBottomWidth: 4,
+    borderColor: PALETTE.sage100,
+    borderBottomColor: PALETTE.sage200,
   },
   metricCard: {
     flex: 1,
     minHeight: 82,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    borderWidth: 2,
+    borderBottomWidth: 4,
+    borderColor: PALETTE.sage100,
+    borderBottomColor: PALETTE.sage100,
+    backgroundColor: PALETTE.warmWhite,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 10,
     gap: 4,
   },
   metricLabel: {
-    color: "#94A3B8",
-    fontFamily: "DINNextRoundedRegular",
+    color: PALETTE.inkMuted,
+    fontFamily: FONTS.body,
     fontSize: 13,
   },
   metricRow: {
@@ -627,20 +673,21 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   metricValue: {
-    color: "#111827",
-    fontFamily: "DINNextRoundedBold",
+    color: PALETTE.ink,
+    fontFamily: FONTS.bodyBold,
     fontSize: 18,
     textAlign: "center",
   },
   modalScreen: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: PALETTE.cream,
   },
   previewAvatar: {
     width: 84,
     height: 84,
-    borderRadius: 24,
-    borderWidth: 3,
+    borderRadius: 18,
+    borderWidth: 2,
+    borderBottomWidth: 4,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -650,21 +697,23 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   previewAvatarInitial: {
-    fontFamily: "DINNextRoundedBold",
+    fontFamily: FONTS.heading,
     fontSize: 34,
   },
   previewCard: {
     gap: 20,
-    borderRadius: 26,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#F8FAFC",
+    borderRadius: 20,
+    borderWidth: 2,
+    borderBottomWidth: 4,
+    borderColor: PALETTE.sage100,
+    borderBottomColor: PALETTE.sage100,
+    backgroundColor: PALETTE.warmWhite,
     padding: 20,
     marginHorizontal: 20,
   },
   previewDescription: {
-    color: "#64748B",
-    fontFamily: "DINNextRoundedRegular",
+    color: PALETTE.inkSoft,
+    fontFamily: FONTS.body,
     fontSize: 15,
     lineHeight: 22,
   },
@@ -684,12 +733,13 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   previewLoadingText: {
-    color: "#94A3B8",
-    fontFamily: "DINNextRoundedRegular",
+    color: PALETTE.inkMuted,
+    fontFamily: FONTS.body,
     fontSize: 14,
   },
   previewSectionsCaption: {
-    fontFamily: "DINNextRoundedBold",
+    color: PALETTE.sage500,
+    fontFamily: FONTS.bodyBold,
     fontSize: 14,
   },
   previewSectionsHeader: {
@@ -699,32 +749,36 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   previewSectionsTitle: {
-    color: "#0F172A",
-    fontFamily: "DINNextRoundedBold",
+    color: PALETTE.ink,
+    fontFamily: FONTS.heading,
     fontSize: 20,
   },
   previewTitle: {
-    color: "#0F172A",
-    fontFamily: "DINNextRoundedBold",
-    fontSize: 24,
+    color: PALETTE.ink,
+    fontFamily: FONTS.heading,
+    fontSize: 30,
+    lineHeight: 34,
   },
   primaryButton: {
     minHeight: 56,
-    borderRadius: 18,
+    borderRadius: 16,
+    borderBottomWidth: 4,
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 20,
     marginTop: 16,
   },
   primaryButtonText: {
-    color: "#FFFFFF",
-    fontFamily: "DINNextRoundedBold",
-    fontSize: 18,
+    color: PALETTE.warmWhite,
+    fontFamily: FONTS.bodyBold,
+    fontSize: 16,
+    letterSpacing: 0.4,
+    textTransform: "uppercase",
   },
   scrollContent: {
     gap: 22,
     paddingTop: 20,
-    paddingBottom: 8,
+    paddingBottom: 12,
   },
   sectionContent: {
     flex: 1,
@@ -739,25 +793,29 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   sectionIndexText: {
-    fontFamily: "DINNextRoundedBold",
+    fontFamily: FONTS.bodyBold,
     fontSize: 15,
   },
   sectionMeta: {
-    color: "#64748B",
-    fontFamily: "DINNextRoundedRegular",
+    color: PALETTE.inkSoft,
+    fontFamily: FONTS.body,
     fontSize: 14,
   },
   sectionRow: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 14,
-    borderRadius: 18,
-    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    backgroundColor: PALETTE.warmWhite,
+    borderWidth: 2,
+    borderBottomWidth: 4,
+    borderColor: PALETTE.sage100,
+    borderBottomColor: PALETTE.sage100,
     padding: 14,
   },
   sectionTitle: {
-    color: "#111827",
-    fontFamily: "DINNextRoundedBold",
+    color: PALETTE.ink,
+    fontFamily: FONTS.bodyBold,
     fontSize: 16,
   },
   sectionsList: {
@@ -775,27 +833,32 @@ const styles = StyleSheet.create({
   },
   sheetRoot: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: PALETTE.cream,
   },
   sheetSubtitle: {
-    color: "#64748B",
-    fontFamily: "DINNextRoundedRegular",
+    color: PALETTE.inkSoft,
+    fontFamily: FONTS.body,
     fontSize: 16,
     lineHeight: 23,
   },
   sheetTitle: {
-    color: "#0F172A",
-    fontFamily: "DINNextRoundedBold",
-    fontSize: 28,
+    color: PALETTE.ink,
+    fontFamily: FONTS.heading,
+    fontSize: 34,
+    lineHeight: 38,
   },
   statusBadge: {
+    backgroundColor: PALETTE.sage100,
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
   },
   statusBadgeText: {
-    fontFamily: "DINNextRoundedBold",
+    color: PALETTE.sage600,
+    fontFamily: FONTS.bodyBold,
     fontSize: 12,
+    letterSpacing: 0.4,
+    textTransform: "uppercase",
   },
   windowOverlayRoot: {
     ...StyleSheet.absoluteFillObject,
