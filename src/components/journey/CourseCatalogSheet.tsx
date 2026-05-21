@@ -3,26 +3,25 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
-  Modal,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {
-  BottomSheet,
-  Group,
-  Host,
-  RNHostView,
-} from "@expo/ui/swift-ui";
-import {
-  presentationDetents,
-  presentationDragIndicator,
-} from "@expo/ui/swift-ui/modifiers";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import { FullWindowOverlay } from "react-native-screens";
+import Animated, {
+  Easing,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import {
   useGetCourseCatalogQuery,
@@ -291,151 +290,182 @@ function CourseCatalogSheetContent({
       : "Enroll in Course";
 
   return (
-    <View style={[styles.sheetRoot, { paddingBottom: Math.max(insets.bottom, 20) }]}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <View style={styles.headerBlock}>
-          <Text style={styles.sheetTitle}>Explore Journeys</Text>
-          <Text style={styles.sheetSubtitle}>
-            Browse every published course, preview the path, and enroll when
-            you are ready.
-          </Text>
-        </View>
-
-        <FlatList
-          horizontal
-          data={catalogCourses}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.courseListContent}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <CourseCard
-              course={item}
-              isSelected={item.id === selectedCourseId}
-              isEnrolled={enrolledCourseIds.has(item.id)}
-              onPress={handleCoursePress}
-            />
-          )}
-          ListEmptyComponent={
-            isCatalogLoading ? (
-              <View style={styles.emptyState}>
-                <ActivityIndicator color="#1CB0F6" />
-              </View>
-            ) : (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>
-                  No published courses are available yet.
-                </Text>
-              </View>
-            )
-          }
-        />
-
-        {selectedCourse ? (
-          <View style={styles.previewCard}>
-            <View style={styles.previewHeader}>
-              <View
-                style={[
-                  styles.previewAvatar,
-                  { borderColor: accentColor, backgroundColor: `${accentColor}14` },
-                ]}
-              >
-                {selectedCourse.iconUrl ? (
-                  <Image
-                    source={selectedCourse.iconUrl}
-                    style={styles.previewAvatarImage}
-                    cachePolicy="memory-disk"
-                    contentFit="contain"
-                    transition={150}
-                  />
-                ) : (
-                  <Text style={[styles.previewAvatarInitial, { color: accentColor }]}>
-                    {getCourseMonogram(selectedCourse.title)}
-                  </Text>
-                )}
-              </View>
-
-              <View style={styles.previewHeaderCopy}>
-                <Text style={styles.previewTitle}>{selectedCourse.title}</Text>
-                <Text style={styles.previewDescription}>
-                  {selectedCourse.description || "A guided journey you can start today."}
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.metricRow}>
-              <View style={styles.metricCard}>
-                <Text style={styles.metricValue}>
-                  {preview?.sectionCount ?? "—"}
-                </Text>
-                <Text style={styles.metricLabel}>Sections</Text>
-              </View>
-              <View style={styles.metricCard}>
-                <Text style={styles.metricValue}>{preview?.unitCount ?? "—"}</Text>
-                <Text style={styles.metricLabel}>Units</Text>
-              </View>
-              <View style={styles.metricCard}>
-                <Text style={styles.metricValue}>{preview?.nodeCount ?? "—"}</Text>
-                <Text style={styles.metricLabel}>Lessons</Text>
-              </View>
-              <View style={styles.metricCard}>
-                <Text style={styles.metricValue}>
-                  {preview ? formatEstimatedDuration(preview.estimatedMinutes) : "—"}
-                </Text>
-                <Text style={styles.metricLabel}>Time</Text>
-              </View>
-            </View>
-
-            <View style={styles.previewSectionsHeader}>
-              <Text style={styles.previewSectionsTitle}>Journey Preview</Text>
-              <Text style={[styles.previewSectionsCaption, { color: accentColor }]}>
-                {isSelectedCourseEnrolled ? "Already enrolled" : "Ready to enroll"}
-              </Text>
-            </View>
-
-            {isPreviewLoading ? (
-              <View style={styles.previewLoading}>
-                <ActivityIndicator color={accentColor} />
-                <Text style={styles.previewLoadingText}>
-                  Loading journey preview...
-                </Text>
-              </View>
-            ) : isPreviewError ? (
-              <View style={styles.previewLoading}>
-                <Text style={styles.emptyStateText}>
-                  Unable to load this course preview right now.
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.sectionsList}>
-                {preview?.sections.map((section) => (
-                  <CoursePreviewSectionRow
-                    key={section.id}
-                    accentColor={accentColor}
-                    section={section}
-                  />
-                ))}
-              </View>
-            )}
-          </View>
-        ) : null}
-      </ScrollView>
-
-      <Pressable
-        disabled={!selectedCourse || isStartingCourse}
-        onPress={handlePrimaryActionPress}
+    <View style={styles.modalScreen}>
+      <View
         style={[
-          styles.primaryButton,
-          {
-            backgroundColor: selectedCourse ? accentColor : "#D1D5DB",
-            opacity: selectedCourse ? 1 : 0.7,
-          },
+          styles.headerBar,
+          { paddingTop: Math.max(insets.top, 16), paddingHorizontal: 20 },
         ]}
       >
-        <Text style={styles.primaryButtonText}>{primaryButtonLabel}</Text>
-      </Pressable>
+        <View style={styles.headerBarSpacer} />
+        <Pressable
+          onPress={onClose}
+          style={styles.closeButton}
+          accessibilityRole="button"
+          accessibilityLabel="Close journey explorer"
+        >
+          <HugeiconsIcon icon={Cancel01Icon} size={20} color="#475569" />
+        </Pressable>
+      </View>
+
+      <View
+        style={[styles.sheetRoot, { paddingBottom: Math.max(insets.bottom, 20) }]}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.headerBlock}>
+            <Text style={styles.sheetTitle}>Explore Journeys</Text>
+            <Text style={styles.sheetSubtitle}>
+              Browse every published course, preview the path, and enroll when
+              you are ready.
+            </Text>
+          </View>
+
+          <FlatList
+            horizontal
+            data={catalogCourses}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.courseListContent}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <CourseCard
+                course={item}
+                isSelected={item.id === selectedCourseId}
+                isEnrolled={enrolledCourseIds.has(item.id)}
+                onPress={handleCoursePress}
+              />
+            )}
+            ListEmptyComponent={
+              isCatalogLoading ? (
+                <View style={styles.emptyState}>
+                  <ActivityIndicator color="#1CB0F6" />
+                </View>
+              ) : (
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyStateText}>
+                    No published courses are available yet.
+                  </Text>
+                </View>
+              )
+            }
+          />
+
+          {selectedCourse ? (
+            <View style={styles.previewCard}>
+              <View style={styles.previewHeader}>
+                <View
+                  style={[
+                    styles.previewAvatar,
+                    {
+                      borderColor: accentColor,
+                      backgroundColor: `${accentColor}14`,
+                    },
+                  ]}
+                >
+                  {selectedCourse.iconUrl ? (
+                    <Image
+                      source={selectedCourse.iconUrl}
+                      style={styles.previewAvatarImage}
+                      cachePolicy="memory-disk"
+                      contentFit="contain"
+                      transition={150}
+                    />
+                  ) : (
+                    <Text
+                      style={[styles.previewAvatarInitial, { color: accentColor }]}
+                    >
+                      {getCourseMonogram(selectedCourse.title)}
+                    </Text>
+                  )}
+                </View>
+
+                <View style={styles.previewHeaderCopy}>
+                  <Text style={styles.previewTitle}>{selectedCourse.title}</Text>
+                  <Text style={styles.previewDescription}>
+                    {selectedCourse.description ||
+                      "A guided journey you can start today."}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.metricRow}>
+                <View style={styles.metricCard}>
+                  <Text style={styles.metricValue}>
+                    {preview?.sectionCount ?? "—"}
+                  </Text>
+                  <Text style={styles.metricLabel}>Sections</Text>
+                </View>
+                <View style={styles.metricCard}>
+                  <Text style={styles.metricValue}>{preview?.unitCount ?? "—"}</Text>
+                  <Text style={styles.metricLabel}>Units</Text>
+                </View>
+                <View style={styles.metricCard}>
+                  <Text style={styles.metricValue}>{preview?.nodeCount ?? "—"}</Text>
+                  <Text style={styles.metricLabel}>Lessons</Text>
+                </View>
+                <View style={styles.metricCard}>
+                  <Text style={styles.metricValue}>
+                    {preview
+                      ? formatEstimatedDuration(preview.estimatedMinutes)
+                      : "—"}
+                  </Text>
+                  <Text style={styles.metricLabel}>Time</Text>
+                </View>
+              </View>
+
+              <View style={styles.previewSectionsHeader}>
+                <Text style={styles.previewSectionsTitle}>Journey Preview</Text>
+                <Text
+                  style={[styles.previewSectionsCaption, { color: accentColor }]}
+                >
+                  {isSelectedCourseEnrolled ? "Already enrolled" : "Ready to enroll"}
+                </Text>
+              </View>
+
+              {isPreviewLoading ? (
+                <View style={styles.previewLoading}>
+                  <ActivityIndicator color={accentColor} />
+                  <Text style={styles.previewLoadingText}>
+                    Loading journey preview...
+                  </Text>
+                </View>
+              ) : isPreviewError ? (
+                <View style={styles.previewLoading}>
+                  <Text style={styles.emptyStateText}>
+                    Unable to load this course preview right now.
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.sectionsList}>
+                  {preview?.sections.map((section) => (
+                    <CoursePreviewSectionRow
+                      key={section.id}
+                      accentColor={accentColor}
+                      section={section}
+                    />
+                  ))}
+                </View>
+              )}
+            </View>
+          ) : null}
+        </ScrollView>
+
+        <Pressable
+          disabled={!selectedCourse || isStartingCourse}
+          onPress={handlePrimaryActionPress}
+          style={[
+            styles.primaryButton,
+            {
+              backgroundColor: selectedCourse ? accentColor : "#D1D5DB",
+              opacity: selectedCourse ? 1 : 0.7,
+            },
+          ]}
+        >
+          <Text style={styles.primaryButtonText}>{primaryButtonLabel}</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -443,50 +473,66 @@ function CourseCatalogSheetContent({
 export default function CourseCatalogSheet(
   props: CourseCatalogSheetProps,
 ): React.JSX.Element | null {
-  if (!props.isPresented) {
+  const { height: windowHeight } = useWindowDimensions();
+  const [isMounted, setIsMounted] = useState(props.isPresented);
+  const translateY = useSharedValue(windowHeight);
+
+  useEffect(() => {
+    if (props.isPresented) {
+      setIsMounted(true);
+      translateY.value = windowHeight;
+      translateY.value = withTiming(0, {
+        duration: 320,
+        easing: Easing.out(Easing.cubic),
+      });
+      return;
+    }
+
+    translateY.value = withTiming(
+      windowHeight,
+      {
+        duration: 260,
+        easing: Easing.in(Easing.cubic),
+      },
+      (finished) => {
+        if (finished) {
+          runOnJS(setIsMounted)(false);
+        }
+      },
+    );
+  }, [props.isPresented, translateY, windowHeight]);
+
+  const handleClose = useCallback(() => {
+    translateY.value = withTiming(
+      windowHeight,
+      {
+        duration: 260,
+        easing: Easing.in(Easing.cubic),
+      },
+      (finished) => {
+        if (finished) {
+          runOnJS(props.onClose)();
+        }
+      },
+    );
+  }, [props.onClose, translateY, windowHeight]);
+
+  const animatedSheetStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  if (!isMounted) {
     return null;
   }
 
-  if (Platform.OS !== "ios") {
-    return (
-      <Modal
-        transparent
-        animationType="slide"
-        visible={props.isPresented}
-        onRequestClose={props.onClose}
-      >
-        <View style={styles.modalBackdrop}>
-          <Pressable style={StyleSheet.absoluteFill} onPress={props.onClose} />
-          <View style={styles.modalCard}>
-            <CourseCatalogSheetContent {...props} />
-          </View>
-        </View>
-      </Modal>
-    );
-  }
-
   return (
-    <Host style={StyleSheet.absoluteFill}>
-      <BottomSheet
-        isPresented={props.isPresented}
-        onIsPresentedChange={(isPresented) => {
-          if (!isPresented) {
-            props.onClose();
-          }
-        }}
-      >
-        <Group
-          modifiers={[
-            presentationDetents(["large"]),
-            presentationDragIndicator("visible"),
-          ]}
-        >
-          <RNHostView>
-            <CourseCatalogSheetContent {...props} />
-          </RNHostView>
-        </Group>
-      </BottomSheet>
-    </Host>
+    <FullWindowOverlay>
+      <View style={styles.windowOverlayRoot}>
+        <Animated.View style={[styles.windowOverlayRoot, animatedSheetStyle]}>
+          <CourseCatalogSheetContent {...props} onClose={handleClose} />
+        </Animated.View>
+      </View>
+    </FullWindowOverlay>
   );
 }
 
@@ -535,9 +581,29 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
   },
+  headerBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+  },
+  headerBarSpacer: {
+    width: 44,
+    height: 44,
+  },
   headerBlock: {
     gap: 8,
     paddingHorizontal: 20,
+  },
+  closeButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F8FAFC",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
   },
   metricCard: {
     flex: 1,
@@ -566,17 +632,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
-  modalBackdrop: {
+  modalScreen: {
     flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(15, 23, 42, 0.35)",
-  },
-  modalCard: {
-    maxHeight: "90%",
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
     backgroundColor: "#FFFFFF",
-    overflow: "hidden",
   },
   previewAvatar: {
     width: 84,
@@ -738,5 +796,8 @@ const styles = StyleSheet.create({
   statusBadgeText: {
     fontFamily: "DINNextRoundedBold",
     fontSize: 12,
+  },
+  windowOverlayRoot: {
+    ...StyleSheet.absoluteFillObject,
   },
 });

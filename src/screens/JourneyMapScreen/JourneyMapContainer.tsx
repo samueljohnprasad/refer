@@ -65,7 +65,9 @@ export default function JourneyMapContainer(): React.JSX.Element {
           onAddCoursePress={() => setIsCourseCatalogPresented(true)}
           onCourseSelect={setActiveCourseId}
         />
-        <JourneyMapFlashList courseId={courseId} />
+        <View style={{ flex: 1 }}>
+          <JourneyMapFlashList courseId={courseId} />
+        </View>
         <CourseCatalogSheet
           isPresented={isCourseCatalogPresented}
           activeCourseId={courseId}

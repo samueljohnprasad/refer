@@ -6,6 +6,7 @@ import {
   type LegendListRef,
   type ViewToken,
 } from "@legendapp/list";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 
 import type {
@@ -48,7 +49,7 @@ const AnimatedLegendList = Animated.createAnimatedComponent(
 ) as typeof LegendList;
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const ESTIMATED_ITEM_SIZE = 120;
-const LIST_BOTTOM_PADDING = 180;
+const LIST_BOTTOM_SPACER_HEIGHT = 132;
 const DEFAULT_UNIT_GRADIENT = ["#4CAF50", "#388E3C"] as const;
 
 export interface JourneyMapFlashListProps {
@@ -60,6 +61,7 @@ function JourneyMapFlashListInner({
 }: JourneyMapFlashListProps): React.JSX.Element {
   const legendListRef = useRef<LegendListRef | null>(null);
   const [isSectionSheetOpen, setIsSectionSheetOpen] = useState(false);
+  const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const toast = useToast();
 
@@ -208,6 +210,7 @@ function JourneyMapFlashListInner({
       }`
     : "Journey";
   const headerUnitTitle = renderedUnit?.title ?? "Select a section";
+  const bottomSpacerHeight = LIST_BOTTOM_SPACER_HEIGHT + insets.bottom;
 
   return (
     <>
@@ -239,7 +242,9 @@ function JourneyMapFlashListInner({
           onLoad={handleListLoad}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
-          contentContainerStyle={{ paddingBottom: LIST_BOTTOM_PADDING }}
+          ListFooterComponent={
+            <View pointerEvents="none" style={{ height: bottomSpacerHeight }} />
+          }
           onViewableItemsChanged={handleViewableItemsChanged}
           viewabilityConfig={{
             itemVisiblePercentThreshold: 10,
