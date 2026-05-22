@@ -95,14 +95,13 @@ const GoalCard: React.FC<GoalCardProps> = ({
       >
         <View>
           <Animated.Text
-            style={[{ fontFamily: "FrauncesSemiBold" }, minuteAnimStyle]}
-            className={`text-[22px] ${isSelected ? "text-sage-600" : "text-ink"}`}
+            style={minuteAnimStyle}
+            className={`happy-font-heading text-[22px] ${isSelected ? "text-sage-600" : "text-ink"}`}
           >
             {config.displayLabel ?? `${config.minutes} min`}
           </Animated.Text>
           <Text
-            style={{ fontFamily: "GeistRegular" }}
-            className="text-xs text-ink-muted"
+            className="happy-font-body text-xs text-ink-muted"
           >
             {config.description}
           </Text>
@@ -111,8 +110,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
           className={`rounded-full px-2.5 py-1 ${TAG_STYLES[config.tagVariant]}`}
         >
           <Text
-            style={{ fontFamily: "GeistBold" }}
-            className="text-[11px] font-bold uppercase tracking-wide"
+            className="happy-font-body-bold text-[11px] font-bold uppercase tracking-wide"
           >
             {config.tag}
           </Text>

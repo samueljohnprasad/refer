@@ -47,8 +47,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
         }}
       >
         <Text
-          style={{ fontFamily: "FrauncesBold" }}
-          className="text-[14px] text-white"
+          className="happy-font-heading text-[14px] text-white"
         >
           {initial}
         </Text>
@@ -56,23 +55,20 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
 
       <View className="flex-1">
         <Text
-          style={{ fontFamily: "FrauncesRegularItalic" }}
-          className="text-[13px] leading-[1.45] text-ink"
+          className="happy-font-heading-italic text-[13px] leading-[1.45] text-ink"
         >
           {quote}
         </Text>
 
         <View className="mt-1.5 flex-row items-center gap-2">
           <Text
-            style={{ fontFamily: "GeistMedium" }}
-            className="text-[11px] text-ink-muted"
+            className="happy-font-body-medium text-[11px] text-ink-muted"
           >
             {name}, {age}
             {metaLabel ? ` · ${metaLabel}` : ""}
           </Text>
           <Text
-            style={{ fontFamily: "GeistBold" }}
-            className="text-[10px] tracking-[-0.04em] text-gold"
+            className="happy-font-body-bold text-[10px] tracking-[-0.04em] text-gold"
           >
             ★★★★★
           </Text>

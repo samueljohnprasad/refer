@@ -149,3 +149,90 @@
   --color-theme-purple-primary: #7b61ff;
   --color-theme-purple-deep: #5f46e8;
 }
+
+/* ─── Happy brand utilities ─────────────────────────────────────
+   Shared onboarding/brand building blocks. Keep one-off layout in
+   components, but centralize reusable type, surfaces, and CTA styles here. */
+@utility happy-font-heading {
+  font-family: "FrauncesSemiBold";
+}
+
+@utility happy-font-heading-bold {
+  font-family: "FrauncesBold";
+}
+
+@utility happy-font-heading-medium {
+  font-family: "FrauncesMedium";
+}
+
+@utility happy-font-heading-regular {
+  font-family: "FrauncesRegular";
+}
+
+@utility happy-font-heading-italic {
+  font-family: "FrauncesRegularItalic";
+}
+
+@utility happy-font-heading-semibold-italic {
+  font-family: "FrauncesSemiBoldItalic";
+}
+
+@utility happy-font-heading-medium-italic {
+  font-family: "FrauncesMediumItalic";
+}
+
+@utility happy-font-body {
+  font-family: "GeistRegular";
+}
+
+@utility happy-font-body-medium {
+  font-family: "GeistMedium";
+}
+
+@utility happy-font-body-semibold {
+  font-family: "GeistSemiBold";
+}
+
+@utility happy-font-body-bold {
+  font-family: "GeistBold";
+}
+
+@utility happy-brand-card {
+  @apply border-2 border-sage-100 bg-warm-white;
+}
+
+@utility happy-brand-card-strong {
+  @apply border-2 border-sage-200 bg-warm-white;
+}
+
+@utility happy-brand-card-selected {
+  @apply border-2 border-sage-500 bg-[#EEF2E8];
+}
+
+@utility happy-brand-pressed-card {
+  @apply border-2 border-b-4 border-sage-100 bg-warm-white;
+}
+
+@utility happy-brand-pressed-card-selected {
+  @apply border-2 border-b-4 border-sage-500 border-b-sage-600 bg-[#EEF2E8];
+}
+
+@utility happy-brand-eyebrow {
+  @apply text-xs font-bold uppercase tracking-widest text-sage-500;
+}
+
+@utility happy-brand-copy {
+  @apply text-ink-soft;
+}
+
+@utility happy-brand-primary-cta {
+  @apply border-b-4 border-b-sage-700 bg-sage-500;
+}
+
+@utility happy-brand-primary-cta-disabled {
+  @apply border-b-4 border-b-sage-300 bg-sage-200;
+}
+
+@utility happy-brand-secondary-cta-text {
+  @apply text-sm font-medium text-ink-muted;
+}

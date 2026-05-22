@@ -103,16 +103,14 @@ function OptionCardInner<T extends string>({
         </Animated.View>
         <View className="flex-1">
           <Text
-            style={{ fontFamily: "GeistSemiBold" }}
-            className={`text-[15px] font-semibold ${
+            className={`happy-font-body-semibold text-[15px] font-semibold ${
               isSelected ? "text-sage-700" : "text-ink"
             }`}
           >
             {option.title}
           </Text>
           <Text
-            style={{ fontFamily: "GeistRegular" }}
-            className="text-xs text-ink-muted"
+            className="happy-font-body text-xs text-ink-muted"
           >
             {option.subtitle}
           </Text>

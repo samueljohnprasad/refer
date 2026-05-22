@@ -46,15 +46,14 @@ const SpeechBubble: React.FC<SpeechBubbleProps> = ({
   return (
     <Animated.View
       style={bubbleStyle}
-      className="relative mx-4 rounded-[20px] border-2 border-sage-200 bg-warm-white px-5 py-4"
+      className="happy-brand-card-strong relative mx-4 rounded-[20px] px-5 py-4"
     >
       <Animated.View
         style={triangleStyle}
         className="absolute -top-2.5 left-8 h-4 w-4 rotate-45 border-l-2 border-t-2 border-sage-200 bg-warm-white"
       />
       <Text
-        style={{ fontFamily: "FrauncesRegular" }}
-        className="text-[17px] leading-[1.4] text-ink"
+        className="happy-font-heading-regular text-[17px] leading-[1.4] text-ink"
       >
         {children ?? text}
       </Text>

@@ -543,15 +543,15 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                       }`}
                     >
                       {headerConfig.trailingLabel ? (
-                      <Text
-                        style={{
-                          fontFamily: "GeistSemiBold",
-                          color: headerConfig.trailingLabelColor ?? "#7A8A7A",
-                          fontSize: 11,
-                          fontWeight: "600",
+                        <Text
+                          style={{
+                            color:
+                              headerConfig.trailingLabelColor ?? "#7A8A7A",
+                            fontSize: 11,
                             letterSpacing:
                               headerConfig.trailingLabelTracking ?? 0.5,
                           }}
+                          className="happy-font-body-semibold"
                         >
                           {headerConfig.trailingLabel}
                         </Text>
@@ -567,11 +567,10 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                 headerConfig.trailingLabel ? (
                   <Text
                     style={{
-                      fontFamily: "GeistBold",
                       color: headerConfig.trailingLabelColor ?? "#7A8A7A",
                       fontSize: 12,
-                      fontWeight: "700",
                     }}
+                    className="happy-font-body-bold"
                   >
                     {headerConfig.trailingLabel}
                   </Text>

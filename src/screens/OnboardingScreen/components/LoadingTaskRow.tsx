@@ -53,7 +53,7 @@ const LoadingTaskRow: React.FC<LoadingTaskRowProps> = ({
         )}
       </View>
       <Text
-        className={`flex-1 text-sm font-medium ${
+        className={`happy-font-body-medium flex-1 text-sm font-medium ${
           completed
             ? "text-sage-600"
             : inProgress
