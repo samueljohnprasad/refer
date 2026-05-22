@@ -1,6 +1,5 @@
 import {
   Pressable,
-  StyleSheet,
   Text,
   useWindowDimensions,
   View,
@@ -9,7 +8,7 @@ import {
 import { SvgProps } from "react-native-svg";
 
 import { Battery, Fire, Flag, Gem } from "@/assets/icons";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import Animated, {
   FadeOut,
   interpolate,
@@ -42,28 +41,41 @@ interface DuolingoHeaderProps {
   onAddCoursePress?: () => void;
   onCourseSelect?: (courseId: string) => void;
 }
-const HeaderButton = ({
+
+type HeaderButtonProps = {
+  Icon: React.FC<SvgProps>;
+  accessibilityLabel: string;
+  onPress?: () => void;
+  title: string;
+  textClassName: string;
+};
+
+const HeaderButton = memo(function HeaderButton({
   Icon,
+  accessibilityLabel,
   onPress,
   title,
-  textColor,
-}: {
-  Icon: React.FC<SvgProps>;
-  onPress: () => void;
-  title: string;
-  textColor: string;
-}) => {
+  textClassName,
+}: HeaderButtonProps): React.JSX.Element {
   return (
-    <Pressable onPress={onPress}>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-        <Icon width={30} height={30} />
-        <Text style={{ color: textColor, fontWeight: "bold", fontSize: 16 }}>
-          {title}
-        </Text>
-      </View>
+    <Pressable
+      onPress={onPress}
+      disabled={!onPress}
+      accessibilityRole={onPress ? "button" : "text"}
+      accessibilityLabel={accessibilityLabel}
+      className="min-h-11 flex-row items-center gap-1.5 bg-warm-white px-2.5"
+    >
+      <Icon width={28} height={28} />
+      <Text
+        className={`text-base ${textClassName}`}
+        style={{ fontFamily: "GeistBold" }}
+      >
+        {title}
+      </Text>
     </Pressable>
   );
-};
+});
+
 export const DuolingoHeader = ({
   stats,
   enrolledCourses,
@@ -78,12 +90,11 @@ export const DuolingoHeader = ({
   const [showCourseOverlay, setShowCourseOverlay] = useState(false);
   const previousActiveCourseIdRef = useRef(activeCourseId);
 
-  const handleFlagPress = (name: string) => {
-    if (name === "Flag") {
-      setShowCourseOverlay(true);
-      translateY.value = withTiming(0, { duration: 400 });
-    }
-  };
+  const openCourseOverlay = useCallback((): void => {
+    setShowCourseOverlay(true);
+    translateY.value = withTiming(0, { duration: 400 });
+  }, [translateY]);
+
   const handleTouchStart = useCallback(() => {
     translateY.value = withTiming(
       -windowHeight / 2,
@@ -129,47 +140,54 @@ export const DuolingoHeader = ({
     };
   });
   const insets = useSafeAreaInsets();
+  const enrolledCourseCount = enrolledCourses?.length ?? 0;
 
   // Build buttons from stats or use defaults
   const buttons = [
     {
+      accessibilityLabel: `${enrolledCourseCount} enrolled courses`,
       name: "Flag",
       Icon: Flag,
-      title: String(stats?.xp ?? 0),
-      textColor: "#4B4B4B",
+      onPress: openCourseOverlay,
+      title: String(enrolledCourseCount),
+      textClassName: "text-ink",
     },
     {
+      accessibilityLabel: `${stats?.streak ?? 0} day streak`,
       name: "Fire",
       Icon: Fire,
       title: String(stats?.streak ?? 0),
-      textColor: "#FF9600",
+      textClassName: "text-gold",
     },
     {
+      accessibilityLabel: `${stats?.gems ?? 0} gems`,
       name: "Gem",
       Icon: Gem,
       title: String(stats?.gems ?? 0),
-      textColor: "#1cb0f6",
+      textClassName: "text-sage-500",
     },
     {
+      accessibilityLabel: `${stats?.hearts ?? 5} hearts`,
       name: "Battery",
       Icon: Battery,
       title: String(stats?.hearts ?? 5),
-      textColor: "#A993C5",
+      textClassName: "text-sage-400",
     },
   ];
 
   return (
     <View
-      style={[styles.headerContainer]}
+      className="flex-row items-center justify-between gap-2 px-6 pb-3 pt-2.5"
       onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
     >
       {buttons.map((button) => (
         <HeaderButton
-          onPress={() => handleFlagPress(button.name)}
+          accessibilityLabel={button.accessibilityLabel}
+          onPress={button.onPress}
           key={button.name}
           Icon={button.Icon}
           title={button.title}
-          textColor={button.textColor}
+          textClassName={button.textClassName}
         />
       ))}
 
@@ -178,23 +196,15 @@ export const DuolingoHeader = ({
           <Animated.View
             exiting={FadeOut.duration(50)}
             pointerEvents="box-none"
-            style={[
-              styles.overlay,
-
-              {
-                top: headerHeight + insets.top,
-                height: Math.max(0, windowHeight - headerHeight - insets.top),
-              },
-            ]}
+            className="absolute left-0 right-0 overflow-hidden"
+            style={{
+              top: headerHeight + insets.top,
+              height: Math.max(0, windowHeight - headerHeight - insets.top),
+            }}
           >
             <AnimatedPressable
-              style={[
-                {
-                  backgroundColor: "rgba(0,0,0,0.5)",
-                  ...StyleSheet.absoluteFillObject,
-                },
-                animatedOverlayStyle,
-              ]}
+              className="absolute inset-0 bg-black/50"
+              style={animatedOverlayStyle}
               onPress={handleTouchStart}
             />
             <HeaderOverlayContent
@@ -211,28 +221,3 @@ export const DuolingoHeader = ({
     </View>
   );
 };
-const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 25,
-    gap: 12,
-    paddingBottom: 12,
-    paddingTop: 10,
-  },
-  title: {
-    color: "#ffffff",
-    fontWeight: "bold",
-    fontSize: 20,
-  },
-  subTitle: {
-    color: "#585c5c",
-  },
-  overlay: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    overflow: "hidden",
-  },
-});
