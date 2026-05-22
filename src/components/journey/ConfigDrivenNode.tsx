@@ -345,11 +345,12 @@ function ConfigDrivenNodeInner({
 
   // Progress ring dimensions and segmentation
   const ringSize: number =
-    size + settings.progressRingGap * 6 + settings.progressRingStroke * 2;
+    size + settings.progressRingGap * 2 + settings.progressRingStroke * 2;
+  const ringOffset: number = -(ringSize - size) / 2;
   const ringRadius = (ringSize - settings.progressRingStroke) / 2;
   const circumference = 2 * Math.PI * ringRadius;
 
-  // We want 4 segments. Adding strokeWidth to the gap accounts for round lineCaps overlapping.
+  // Adding strokeWidth to the gap accounts for round lineCaps overlapping.
   const segmentsCount = 8;
   const dashGap = 8 + settings.progressRingStroke;
   const dashWidth = (circumference - dashGap * segmentsCount) / segmentsCount;
@@ -387,8 +388,8 @@ function ConfigDrivenNodeInner({
           style={{
             width: ringSize,
             height: ringSize,
-            left: -(ringSize - size) / 2,
-            top: -(ringSize - 10 - size) / 2,
+            left: ringOffset,
+            top: ringOffset,
           }}
         >
           <AnimatedCircularProgress

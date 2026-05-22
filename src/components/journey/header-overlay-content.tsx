@@ -29,18 +29,11 @@ import {
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const PALETTE = {
-  cream: "#FAF6ED",
   warmWhite: "#FFFCF5",
-  sage50: "#F4F1EA",
   sage100: "#E8E2D2",
-  sage200: "#D4CCB5",
   sage300: "#A8B89A",
   sage500: "#5A7A56",
   sage600: "#3F5A3D",
-  sage700: "#2A3F2A",
-  ink: "#1A2A1A",
-  inkSoft: "#4A5A4A",
-  inkMuted: "#7A8A7A",
 } as const;
 
 const FONTS = {
@@ -70,33 +63,43 @@ function CourseAvatar({
 
   return (
     <View
-      className={
-        isActive
-          ? "h-[78px] w-[92px] items-center justify-center rounded-2xl border-2 border-b-4 border-sage-500 border-b-sage-600 bg-[#EEF2E8]"
-          : "h-[78px] w-[92px] items-center justify-center rounded-2xl border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white"
-      }
+      className="h-[78px] w-[92px] items-center justify-center rounded-[24px] border-2 border-b-4 bg-warm-white"
+      style={{
+        borderColor: isActive ? courseAccentColor : PALETTE.sage100,
+        borderBottomColor: isActive ? PALETTE.sage600 : PALETTE.sage100,
+        backgroundColor: isActive ? `${courseAccentColor}12` : PALETTE.warmWhite,
+      }}
     >
-      {course.iconUrl ? (
-        <Image
-          source={course.iconUrl}
-          className="h-[46px] w-[46px] rounded-[14px]"
-          cachePolicy="memory-disk"
-          contentFit="contain"
-          transition={150}
-        />
-      ) : (
-        <Text
-          style={{
-            color: courseAccentColor,
-            fontFamily: FONTS.heading,
-            fontSize: 30,
-          }}
-        >
-          {getCourseMonogram(course.title)}
-        </Text>
-      )}
+      <View
+        className="h-[56px] w-[56px] items-center justify-center rounded-[18px]"
+        style={{ backgroundColor: `${courseAccentColor}1A` }}
+      >
+        {course.iconUrl ? (
+          <Image
+            source={course.iconUrl}
+            className="h-[38px] w-[38px] rounded-[12px]"
+            cachePolicy="memory-disk"
+            contentFit="contain"
+            transition={150}
+          />
+        ) : (
+          <Text
+            style={{
+              color: courseAccentColor,
+              fontFamily: FONTS.heading,
+              fontSize: 29,
+            }}
+          >
+            {getCourseMonogram(course.title)}
+          </Text>
+        )}
+      </View>
     </View>
   );
+}
+
+function formatProgressPercent(progress: number): string {
+  return `${Math.round(progress * 100)}%`;
 }
 
 const HeaderOverlayContent = ({
@@ -126,9 +129,14 @@ const HeaderOverlayContent = ({
     ? activeCourseSummary.completedNodes /
       Math.max(activeCourseSummary.totalNodes, 1)
     : 0;
+  const completedNodes = activeCourseSummary?.completedNodes ?? 0;
+  const totalNodes = activeCourseSummary?.totalNodes ?? 0;
+  const sectionNumber = activeCourseSummary?.activeSectionNumber ?? 1;
+  const sectionCount = activeCourseSummary?.sectionCount ?? 0;
+  const progressPercent = formatProgressPercent(progress);
 
   return (
-    <Animated.View className="w-full bg-cream pb-[14px]" style={animatedStyle}>
+    <Animated.View className="w-full bg-cream pb-4" style={animatedStyle}>
       <Svg
         width={width}
         height={16}
@@ -154,14 +162,14 @@ const HeaderOverlayContent = ({
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerClassName="gap-3.5 px-1"
+          contentContainerClassName="gap-3.5 px-1 pb-1"
         >
           {courses.map((course) => {
             const isActive = course.id === activeCourseId;
             return (
               <Pressable
                 key={course.id}
-                className="w-[116px] items-center gap-2"
+                className="w-[116px] items-center gap-2.5"
                 onPress={() => onCourseSelect?.(course.id)}
               >
                 <CourseAvatar course={course} isActive={isActive} />
@@ -174,6 +182,16 @@ const HeaderOverlayContent = ({
                 >
                   {course.title}
                 </Text>
+                {isActive ? (
+                  <View className="happy-brand-status-chip px-3 py-1">
+                    <Text
+                      className="text-[10px] uppercase tracking-[0.8px] text-sage-600"
+                      style={{ fontFamily: FONTS.bodyBold }}
+                    >
+                      Active
+                    </Text>
+                  </View>
+                ) : null}
               </Pressable>
             );
           })}
@@ -189,65 +207,117 @@ const HeaderOverlayContent = ({
             </View>
           ) : null}
 
-          <Pressable className="w-[116px] items-center gap-2" onPress={onAddCoursePress}>
-            <View className="h-[78px] w-[92px] items-center justify-center rounded-2xl border-2 border-b-4 border-sage-200 border-b-sage-200 bg-warm-white">
-              <HugeiconsIcon icon={PlusSignIcon} size={24} color={PALETTE.sage300} />
+          <Pressable
+            className="w-[116px] items-center gap-2.5"
+            onPress={onAddCoursePress}
+          >
+            <View className="h-[78px] w-[92px] items-center justify-center rounded-[24px] border-2 border-dashed border-sage-200 bg-warm-white">
+              <View className="h-[48px] w-[48px] items-center justify-center rounded-[16px] bg-sage-50">
+                <HugeiconsIcon
+                  icon={PlusSignIcon}
+                  size={23}
+                  color={PALETTE.sage500}
+                />
+              </View>
             </View>
             <Text
               className="w-full text-center text-[15px] text-ink-muted"
               style={{ fontFamily: FONTS.bodyBold }}
             >
-              Course
+              Add course
             </Text>
           </Pressable>
         </ScrollView>
 
-        <View className="mt-4 w-full items-center gap-[14px] rounded-[18px] border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white py-5">
-          <View className="w-full flex-row items-center px-[18px]">
-            <Text
-              className="min-w-[34px] text-center text-xl text-ink"
-              style={{ fontFamily: FONTS.bodyBold }}
-            >
-              {activeCourseSummary?.completedNodes ?? 0}
-            </Text>
-            <View className="mx-[14px] flex-1" onLayout={handleScoreBarLayout}>
-              <ProgressBar
-                progress={progress}
-                width={scoreBarWidth}
-                height={14}
-                trackColor={PALETTE.sage100}
-                fillColor={PALETTE.sage500}
-                glossColor={PALETTE.sage300}
-              />
-            </View>
-            <Text
-              className="min-w-[34px] text-center text-xl text-ink"
-              style={{ fontFamily: FONTS.bodyBold }}
-            >
-              {activeCourseSummary?.totalNodes ?? 0}
-            </Text>
-          </View>
+        <View className="happy-brand-raised-panel mt-5 w-full overflow-hidden rounded-[28px]">
+          <View className="gap-5 p-5">
+            <View className="flex-row items-start justify-between gap-4">
+              <View className="flex-1 gap-1.5">
+                <Text
+                  className="text-xs uppercase tracking-[1px] text-sage-500"
+                  style={{ fontFamily: FONTS.bodyBold }}
+                >
+                  Current score
+                </Text>
+                <Text
+                  className="text-[25px] leading-[30px] text-ink"
+                  style={{ fontFamily: FONTS.heading }}
+                  numberOfLines={2}
+                >
+                  {activeCourseSummary?.title ?? "Course"}
+                </Text>
+              </View>
 
-          <Text
-            className="px-[18px] text-center text-[23px] leading-[29px] text-ink"
-            style={{ fontFamily: FONTS.heading }}
-          >
-            Your {activeCourseSummary?.title ?? "Course"} Score{" "}
-            {activeCourseSummary?.completedNodes ?? 0}
-          </Text>
-          <Text
-            className="text-base text-ink-soft"
-            style={{ fontFamily: FONTS.bodyMedium }}
-          >
-            Section {activeCourseSummary?.activeSectionNumber ?? 1} of{" "}
-            {activeCourseSummary?.sectionCount ?? 0}
-          </Text>
-          <Text
-            className="text-sm uppercase tracking-[0.8px] text-sage-500"
-            style={{ fontFamily: FONTS.bodyBold }}
-          >
-            More About score
-          </Text>
+              <View className="happy-brand-score-badge items-end px-4 py-3">
+                <Text
+                  className="text-[28px] leading-[30px] text-ink"
+                  style={{ fontFamily: FONTS.bodyBold }}
+                >
+                  {completedNodes}
+                </Text>
+                <Text
+                  className="text-xs uppercase tracking-[0.8px] text-sage-600"
+                  style={{ fontFamily: FONTS.bodyBold }}
+                >
+                  of {totalNodes}
+                </Text>
+              </View>
+            </View>
+
+            <View className="gap-2.5">
+              <View className="flex-row items-center justify-between">
+                <Text
+                  className="text-[14px] text-ink-soft"
+                  style={{ fontFamily: FONTS.bodyMedium }}
+                >
+                  Journey progress
+                </Text>
+                <Text
+                  className="text-[14px] text-sage-600"
+                  style={{ fontFamily: FONTS.bodyBold }}
+                >
+                  {progressPercent}
+                </Text>
+              </View>
+
+              <View className="w-full" onLayout={handleScoreBarLayout}>
+                <ProgressBar
+                  progress={progress}
+                  width={scoreBarWidth}
+                  height={16}
+                  trackColor={PALETTE.sage100}
+                  fillColor={PALETTE.sage500}
+                  glossColor={PALETTE.sage300}
+                />
+              </View>
+            </View>
+
+            <View className="flex-row items-center justify-between gap-3 border-t border-sage-100 pt-4">
+              <View>
+                <Text
+                  className="text-[14px] text-ink-muted"
+                  style={{ fontFamily: FONTS.bodyMedium }}
+                >
+                  Current section
+                </Text>
+                <Text
+                  className="text-[18px] text-ink"
+                  style={{ fontFamily: FONTS.bodyBold }}
+                >
+                  {sectionNumber} of {sectionCount}
+                </Text>
+              </View>
+
+              <View className="happy-brand-status-chip px-4 py-2">
+                <Text
+                  className="text-xs uppercase tracking-[0.8px] text-sage-600"
+                  style={{ fontFamily: FONTS.bodyBold }}
+                >
+                  Details
+                </Text>
+              </View>
+            </View>
+          </View>
         </View>
       </View>
     </Animated.View>

@@ -128,7 +128,10 @@
   --color-sage-600: #3f5a3d;
   --color-sage-700: #2a3f2a;
   --color-sage-800: #1a2a1a;
+  --color-sage-selected: #eef2e8;
+  --color-sage-pill: #eaf0e2;
   --color-cream: #faf6ed;
+  --color-cream-raised: #f5f1e7;
   --color-warm-white: #fffcf5;
   --color-terracotta: #c8694b;
   --color-terracotta-light: #e8a88e;
@@ -206,7 +209,7 @@
 }
 
 @utility happy-brand-card-selected {
-  @apply border-2 border-sage-500 bg-[#EEF2E8];
+  @apply border-2 border-sage-500 bg-sage-selected;
 }
 
 @utility happy-brand-pressed-card {
@@ -214,7 +217,31 @@
 }
 
 @utility happy-brand-pressed-card-selected {
-  @apply border-2 border-b-4 border-sage-500 border-b-sage-600 bg-[#EEF2E8];
+  @apply border-2 border-b-4 border-sage-500 border-b-sage-600 bg-sage-selected;
+}
+
+@utility happy-brand-raised-panel {
+  @apply border-2 border-b-[6px] border-sage-100 border-b-sage-200 bg-warm-white;
+}
+
+@utility happy-brand-preview-tile {
+  @apply border-2 border-b-[5px] border-sage-100 border-b-sage-200 bg-warm-white;
+}
+
+@utility happy-brand-metric-card {
+  @apply bg-cream-raised;
+}
+
+@utility happy-brand-soft-chip {
+  @apply rounded-full bg-sage-50;
+}
+
+@utility happy-brand-status-chip {
+  @apply rounded-full bg-sage-pill;
+}
+
+@utility happy-brand-score-badge {
+  @apply rounded-[22px] bg-sage-selected;
 }
 
 @utility happy-brand-eyebrow {

@@ -68,6 +68,13 @@ type CourseMetricCardProps = {
   label: string;
 };
 
+const SECTION_PREVIEW_ACCENTS = [
+  "#5A7A56",
+  "#1F7A70",
+  "#C56A3A",
+  "#7A6754",
+] as const;
+
 function resolveInitialCourseId(
   courses: CourseCatalogListItem[],
   enrolledCourseIds: Set<string>,
@@ -99,6 +106,16 @@ function formatEstimatedDuration(estimatedMinutes: number): string {
 
   const totalHours = Math.round((estimatedMinutes / 60) * 10) / 10;
   return `${totalHours} hrs`;
+}
+
+function formatPreviewCount(value: number, singularLabel: string): string {
+  return `${value} ${value === 1 ? singularLabel : `${singularLabel}s`}`;
+}
+
+function resolveSectionPreviewAccentColor(sectionOrderIndex: number): string {
+  return SECTION_PREVIEW_ACCENTS[
+    (Math.max(sectionOrderIndex, 1) - 1) % SECTION_PREVIEW_ACCENTS.length
+  ];
 }
 
 function getErrorMessage(error: unknown): string {
@@ -183,12 +200,12 @@ const CourseMetricCard = React.memo(function CourseMetricCard({
   label,
 }: CourseMetricCardProps): React.JSX.Element {
   return (
-    <View className="happy-brand-pressed-card min-h-[78px] flex-1 items-center justify-center gap-1 rounded-2xl px-1">
+    <View className="happy-brand-metric-card min-h-[70px] flex-1 items-center justify-center gap-1 rounded-[18px] px-1">
       <Text
         numberOfLines={1}
         adjustsFontSizeToFit
         minimumFontScale={0.82}
-        className="happy-font-body-bold w-full text-center text-[18px] text-ink"
+        className="happy-font-body-bold w-full text-center text-[19px] text-ink"
       >
         {value}
       </Text>
@@ -208,35 +225,74 @@ const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
   accentColor,
   section,
 }: CoursePreviewSectionRowProps): React.JSX.Element {
-  return (
-    <View className="happy-brand-pressed-card flex-row items-start gap-[14px] rounded-2xl p-[14px]">
-      <View
-        className="mt-0.5 h-[34px] w-[34px] items-center justify-center rounded-full"
-        style={{ backgroundColor: `${accentColor}1A` }}
-      >
-        <Text
-          className="happy-font-body-bold text-[15px]"
-          style={{ color: accentColor }}
-        >
-          {section.orderIndex}
-        </Text>
-      </View>
+  const visibleUnitSegments = Math.max(1, Math.min(section.unitCount, 5));
+  const hiddenUnitCount = Math.max(section.unitCount - visibleUnitSegments, 0);
 
-      <View className="flex-1 gap-2">
-        <Text className="happy-font-body-bold text-base text-ink">
-          {section.title}
-        </Text>
-        <Text className="happy-font-body text-sm text-ink-soft">
-          {section.unitCount} units • {section.nodeCount} lessons
-        </Text>
-        <View className="flex-row gap-1.5">
-          {Array.from({ length: Math.min(section.unitCount, 8) }).map((_, index) => (
+  return (
+    <View className="happy-brand-preview-tile overflow-hidden rounded-[24px] p-4">
+      <View
+        className="absolute bottom-0 left-0 top-0 w-1.5"
+        style={{ backgroundColor: accentColor }}
+      />
+
+      <View className="gap-3 pl-2">
+        <View className="flex-row items-start gap-3">
+          <View
+            className="h-12 w-12 items-center justify-center rounded-2xl"
+            style={{ backgroundColor: `${accentColor}1A` }}
+          >
+            <Text
+              className="happy-font-body-bold text-[18px]"
+              style={{ color: accentColor }}
+            >
+              {section.orderIndex}
+            </Text>
+          </View>
+
+          <View className="flex-1 gap-1">
+            <Text
+              className="happy-font-body-bold text-[18px] leading-[23px] text-ink"
+              numberOfLines={2}
+            >
+              {section.title}
+            </Text>
+            <Text className="happy-font-body text-[13px] uppercase tracking-[0.8px] text-ink-muted">
+              Section {section.orderIndex}
+            </Text>
+          </View>
+        </View>
+
+        <View className="flex-row flex-wrap gap-2">
+          <View className="happy-brand-soft-chip px-3 py-1.5">
+            <Text className="happy-font-body-bold text-[13px] text-ink-soft">
+              {formatPreviewCount(section.unitCount, "unit")}
+            </Text>
+          </View>
+          <View className="happy-brand-soft-chip px-3 py-1.5">
+            <Text className="happy-font-body-bold text-[13px] text-ink-soft">
+              {formatPreviewCount(section.nodeCount, "lesson")}
+            </Text>
+          </View>
+        </View>
+
+        <View className="flex-row items-center gap-1.5">
+          {Array.from({ length: visibleUnitSegments }).map((_, index) => (
             <View
               key={`${section.id}-${index}`}
-              className="h-2 flex-1 rounded-full opacity-[0.22]"
-              style={{ backgroundColor: accentColor }}
+              className="h-2.5 flex-1 rounded-full"
+              style={{
+                backgroundColor:
+                  index === 0 ? accentColor : `${accentColor}33`,
+              }}
             />
           ))}
+          {hiddenUnitCount > 0 ? (
+            <View className="happy-brand-soft-chip px-2.5 py-1">
+              <Text className="happy-font-body-bold text-[11px] text-ink-muted">
+                +{hiddenUnitCount}
+              </Text>
+            </View>
+          ) : null}
         </View>
       </View>
     </View>
@@ -404,94 +460,117 @@ function CourseCatalogSheetContent({
           />
 
           {selectedCourse ? (
-            <View className="happy-brand-pressed-card mx-5 gap-5 rounded-[20px] p-5">
-              <View className="flex-row items-center gap-4">
-                <View className="happy-brand-pressed-card-selected h-[84px] w-[84px] items-center justify-center rounded-[18px]">
-                  {selectedCourse.iconUrl ? (
-                    <Image
-                      source={selectedCourse.iconUrl}
-                      className="h-12 w-12 rounded-2xl"
-                      cachePolicy="memory-disk"
-                      contentFit="contain"
-                      transition={150}
-                    />
-                  ) : (
-                    <Text
-                      className="happy-font-heading text-[34px]"
-                      style={{ color: courseAccentColor }}
-                    >
-                      {getCourseMonogram(selectedCourse.title)}
+            <View className="mx-5 gap-5">
+              <View className="happy-brand-raised-panel gap-5 rounded-[28px] p-5">
+                <View className="flex-row items-center gap-4">
+                  <View
+                    className="h-[86px] w-[86px] items-center justify-center rounded-[24px]"
+                    style={{ backgroundColor: `${courseAccentColor}18` }}
+                  >
+                    <View className="happy-brand-pressed-card-selected h-[68px] w-[68px] items-center justify-center rounded-[20px]">
+                      {selectedCourse.iconUrl ? (
+                        <Image
+                          source={selectedCourse.iconUrl}
+                          className="h-11 w-11 rounded-2xl"
+                          cachePolicy="memory-disk"
+                          contentFit="contain"
+                          transition={150}
+                        />
+                      ) : (
+                        <Text
+                          className="happy-font-heading text-[32px]"
+                          style={{ color: courseAccentColor }}
+                        >
+                          {getCourseMonogram(selectedCourse.title)}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+
+                  <View className="flex-1 gap-2">
+                    <View className="happy-brand-soft-chip self-start px-3 py-1">
+                      <Text className="happy-font-body-bold text-[11px] uppercase tracking-[0.8px] text-sage-600">
+                        {isSelectedCourseEnrolled ? "Enrolled" : "New journey"}
+                      </Text>
+                    </View>
+                    <Text className="happy-font-heading text-[28px] leading-[32px] text-ink">
+                      {selectedCourse.title}
                     </Text>
-                  )}
+                    <Text className="happy-font-body text-[15px] leading-[22px] text-ink-soft">
+                      {selectedCourse.description ||
+                        "A guided journey you can start today."}
+                    </Text>
+                  </View>
                 </View>
 
-                <View className="flex-1 gap-1.5">
-                  <Text className="happy-font-heading text-[30px] leading-[34px] text-ink">
-                    {selectedCourse.title}
-                  </Text>
-                  <Text className="happy-font-body text-[15px] leading-[22px] text-ink-soft">
-                    {selectedCourse.description ||
-                      "A guided journey you can start today."}
-                  </Text>
+                <View className="flex-row gap-2.5">
+                  <CourseMetricCard
+                    value={preview?.sectionCount ?? "—"}
+                    label="Sections"
+                  />
+                  <CourseMetricCard
+                    value={preview?.unitCount ?? "—"}
+                    label="Units"
+                  />
+                  <CourseMetricCard
+                    value={preview?.nodeCount ?? "—"}
+                    label="Lessons"
+                  />
+                  <CourseMetricCard
+                    value={
+                      preview
+                        ? formatEstimatedDuration(preview.estimatedMinutes)
+                        : "—"
+                    }
+                    label="Time"
+                  />
                 </View>
               </View>
 
-              <View className="flex-row gap-2.5">
-                <CourseMetricCard
-                  value={preview?.sectionCount ?? "—"}
-                  label="Sections"
-                />
-                <CourseMetricCard
-                  value={preview?.unitCount ?? "—"}
-                  label="Units"
-                />
-                <CourseMetricCard
-                  value={preview?.nodeCount ?? "—"}
-                  label="Lessons"
-                />
-                <CourseMetricCard
-                  value={
-                    preview
-                      ? formatEstimatedDuration(preview.estimatedMinutes)
-                      : "—"
-                  }
-                  label="Time"
-                />
-              </View>
+              <View className="gap-3">
+                <View className="flex-row items-center justify-between gap-3 px-1">
+                  <View>
+                    <Text className="happy-font-heading text-[24px] leading-[28px] text-ink">
+                      Journey Preview
+                    </Text>
+                    <Text className="happy-font-body text-sm text-ink-muted">
+                      The path you will move through
+                    </Text>
+                  </View>
+                  <View className="happy-brand-status-chip px-3 py-1.5">
+                    <Text className="happy-font-body-bold text-xs uppercase tracking-[0.7px] text-sage-600">
+                      {isSelectedCourseEnrolled ? "In progress" : "Ready"}
+                    </Text>
+                  </View>
+                </View>
 
-              <View className="flex-row items-center justify-between gap-3">
-                <Text className="happy-font-heading text-xl text-ink">
-                  Journey Preview
-                </Text>
-                <Text className="happy-font-body-bold text-sm text-sage-500">
-                  {isSelectedCourseEnrolled ? "Already enrolled" : "Ready to enroll"}
-                </Text>
+                {isPreviewLoading ? (
+                  <View className="min-h-[132px] items-center justify-center gap-2.5 rounded-[24px] bg-warm-white">
+                    <ActivityIndicator color={interactionColor} />
+                    <Text className="happy-font-body text-sm text-ink-muted">
+                      Loading journey preview...
+                    </Text>
+                  </View>
+                ) : isPreviewError ? (
+                  <View className="min-h-[132px] items-center justify-center gap-2.5 rounded-[24px] bg-warm-white px-6">
+                    <Text className="happy-font-body text-center text-[15px] text-ink-muted">
+                      Unable to load this course preview right now.
+                    </Text>
+                  </View>
+                ) : (
+                  <View className="gap-3">
+                    {preview?.sections.map((section) => (
+                      <CoursePreviewSectionRow
+                        key={section.id}
+                        accentColor={resolveSectionPreviewAccentColor(
+                          section.orderIndex,
+                        )}
+                        section={section}
+                      />
+                    ))}
+                  </View>
+                )}
               </View>
-
-              {isPreviewLoading ? (
-                <View className="min-h-[120px] items-center justify-center gap-2.5">
-                  <ActivityIndicator color={interactionColor} />
-                  <Text className="happy-font-body text-sm text-ink-muted">
-                    Loading journey preview...
-                  </Text>
-                </View>
-              ) : isPreviewError ? (
-                <View className="min-h-[120px] items-center justify-center gap-2.5">
-                  <Text className="happy-font-body text-center text-[15px] text-ink-muted">
-                    Unable to load this course preview right now.
-                  </Text>
-                </View>
-              ) : (
-                <View className="gap-3">
-                  {preview?.sections.map((section) => (
-                    <CoursePreviewSectionRow
-                      key={section.id}
-                      accentColor={interactionColor}
-                      section={section}
-                    />
-                  ))}
-                </View>
-              )}
             </View>
           ) : null}
         </ScrollView>
