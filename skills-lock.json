@@ -274,6 +274,12 @@
       "sourceType": "github",
       "computedHash": "414ca27b21e8669775f33a450320c197eb431470b69a7af58cdca5bcbb9e6bca"
     },
+    "retention-engagement": {
+      "source": "refoundai/lenny-skills",
+      "sourceType": "github",
+      "skillPath": "skills/retention-engagement/SKILL.md",
+      "computedHash": "9cdc088da6027459f96fab8e9b41df463519526d228e9b4ad28ea171e1513b44"
+    },
     "skill-writer": {
       "source": "pytorch/pytorch",
       "sourceType": "github",
@@ -283,6 +289,12 @@
       "source": "claude-dev-suite/claude-dev-suite",
       "sourceType": "github",
       "computedHash": "4041ed0cd97b6df405d2f4f19b88f18c7e456897f3bc483171a908423976192b"
+    },
+    "streak": {
+      "source": "membranedev/application-skills",
+      "sourceType": "github",
+      "skillPath": "skills/streak/SKILL.md",
+      "computedHash": "c0d4467f9ef7e2509c03748861e3fa06a76ae5e449a15f5e86e66869f46a5e5a"
     },
     "supabase-postgres-best-practices": {
       "source": "ecocee/skills",
