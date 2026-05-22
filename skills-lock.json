@@ -194,6 +194,12 @@
       "sourceType": "github",
       "computedHash": "346e536c384ae82a98d5281fc37545abca7a205b2dc5cc4045ceb17159e82c4d"
     },
+    "mental-health-psychoeducation": {
+      "source": "jk-0001/skills",
+      "sourceType": "github",
+      "skillPath": "mental-health-psychoeducation/SKILL.md",
+      "computedHash": "36af3b8583ebdb065194989db0b1bb4696e24deccb950eedfbc44c135840dd26"
+    },
     "micro-interactions": {
       "source": "solinkz/micro-interactions-skill",
       "sourceType": "github",
