@@ -17,7 +17,7 @@ export type { ActiveNodeInitialScrollIndex, ActiveNodeScrollHint };
 
 export interface UseCurrentNodeScrollHintOptions {
   activeListIndex: number;
-  canAutoScroll: boolean;
+  canAutoScrollToActiveNode: boolean;
   isCourseLoaded: boolean;
   isViewingPreviewSection: boolean;
   listKey: string;
@@ -37,7 +37,7 @@ export interface UseCurrentNodeScrollHintResult {
 
 export function useCurrentNodeScrollHint({
   activeListIndex,
-  canAutoScroll,
+  canAutoScrollToActiveNode,
   isCourseLoaded,
   isViewingPreviewSection,
   listKey,
@@ -48,7 +48,7 @@ export function useCurrentNodeScrollHint({
   const [scrollHint, setScrollHint] =
     useState<ActiveNodeScrollHint>(HIDDEN_SCROLL_HINT);
   const isAutoScrollEnabled =
-    canAutoScroll &&
+    canAutoScrollToActiveNode &&
     isCourseLoaded &&
     loadedListKey === listKey &&
     !isViewingPreviewSection;

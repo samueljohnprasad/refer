@@ -3,14 +3,12 @@ import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { LegendListRef, ViewToken } from "@legendapp/list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { JOURNEY } from "@/src/lib/constants/journey";
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import {
   setActiveNodeModal,
   setPreviewSection,
 } from "@/src/features/journey/journeySlice";
 import {
-  selectActiveNodeModalIdForCourse,
   selectCourse,
   selectCurrentSectionIdForCourse,
   selectIsCourseLoaded,
@@ -26,6 +24,7 @@ import {
   useCurrentNodeScrollHint,
 } from "@/hooks/journey/useCurrentNodeScrollHint";
 import { useJourneyFlashListData } from "@/hooks/journey/useJourneyFlashListData";
+import { useNodeModalAutoScrollGate } from "@/hooks/journey/useNodeModalAutoScrollGate";
 import { useVisibleUnit } from "@/src/hooks/useVisibleUnit";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import type { JourneyFlashListItem, PathNodeData } from "@/src/types/journey";
@@ -63,13 +62,9 @@ export function useJourneyMapController(
 ): JourneyMapController {
   const legendListRef = useRef<LegendListRef | null>(null);
   const [isSectionSheetOpen, setIsSectionSheetOpen] = useState(false);
-  const [isAutoScrollReady, setIsAutoScrollReady] = useState(true);
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const toast = useToast();
-  const activeNodeModalId = useAppSelector((state) =>
-    selectActiveNodeModalIdForCourse(state, courseId),
-  );
 
   const currentSectionId = useAppSelector((state) =>
     selectCurrentSectionIdForCourse(state, courseId),
@@ -100,22 +95,7 @@ export function useJourneyMapController(
 
   const canOpenSections = sectionOverviewItems.length > 0;
   const isViewingPreviewSection = previewSection !== null;
-  const isNodeModalOpen = activeNodeModalId !== null;
-
-  useEffect(() => {
-    if (isNodeModalOpen) {
-      setIsAutoScrollReady(false);
-      return;
-    }
-
-    const timeoutId = setTimeout(() => {
-      setIsAutoScrollReady(true);
-    }, JOURNEY.SCROLL_TO_NODE_DELAY_MS);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [isNodeModalOpen]);
+  const canAutoScrollToActiveNode = useNodeModalAutoScrollGate(courseId);
 
   useEffect(() => {
     if (previewSectionId === null || previewSection !== null) {
@@ -137,7 +117,7 @@ export function useJourneyMapController(
     updateScrollHintFromViewableItems,
   } = useCurrentNodeScrollHint({
     activeListIndex,
-    canAutoScroll: isAutoScrollReady && !isNodeModalOpen,
+    canAutoScrollToActiveNode,
     isCourseLoaded: isLoaded,
     isViewingPreviewSection,
     listKey,

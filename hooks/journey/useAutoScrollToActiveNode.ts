@@ -31,13 +31,14 @@ export function useAutoScrollToActiveNode({
   listRef,
 }: UseAutoScrollToActiveNodeOptions): UseAutoScrollToActiveNodeResult {
   const lastAutoScrolledIndexRef = useRef<number>(-1);
+  const hasScrollableActiveNode = activeListIndex >= 0;
 
   const resetLastAutoScrolledIndex = useCallback((): void => {
     lastAutoScrolledIndexRef.current = -1;
   }, []);
 
   const scrollToActiveNode = useCallback((): boolean => {
-    if (activeListIndex < 0) {
+    if (!hasScrollableActiveNode) {
       return false;
     }
 
@@ -57,14 +58,14 @@ export function useAutoScrollToActiveNode({
     } catch {
       return false;
     }
-  }, [activeListIndex, listRef]);
+  }, [activeListIndex, hasScrollableActiveNode, listRef]);
 
   useEffect(() => {
     resetLastAutoScrolledIndex();
   }, [listKey, resetLastAutoScrolledIndex]);
 
   useEffect(() => {
-    if (!isEnabled || activeListIndex < 0) {
+    if (!isEnabled || !hasScrollableActiveNode) {
       return;
     }
 
@@ -102,7 +103,7 @@ export function useAutoScrollToActiveNode({
         clearTimeout(retryTimeoutId);
       }
     };
-  }, [activeListIndex, isEnabled, scrollToActiveNode]);
+  }, [activeListIndex, hasScrollableActiveNode, isEnabled, scrollToActiveNode]);
 
   return {
     resetLastAutoScrolledIndex,

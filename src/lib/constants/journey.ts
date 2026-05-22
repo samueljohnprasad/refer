@@ -20,8 +20,8 @@ export const JOURNEY = {
   SUBMIT_DEBOUNCE_MS: 500,
   /** Duration the celebration overlay is visible. */
   CELEBRATION_DURATION_MS: 2500,
-  /** Delay before auto-scrolling to the new current node after completion. */
-  SCROLL_TO_NODE_DELAY_MS: 300,
+  /** Delay before auto-scrolling to the new current node after the completion modal closes. */
+  SCROLL_TO_NODE_DELAY_MS: 600,
 
   // ── UI layout ───────────────────────────────────────────────────────────
   /** Standard node circle diameter in dp. */
