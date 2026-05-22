@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import type { RefObject } from "react";
 import type { LegendListRef } from "@legendapp/list";
+import { InteractionManager } from "react-native";
 
 import {
   ACTIVE_NODE_VIEW_OFFSET,
@@ -72,6 +73,9 @@ export function useAutoScrollToActiveNode({
     }
 
     let retryTimeoutId: ReturnType<typeof setTimeout> | null = null;
+    let interactionHandle: ReturnType<
+      typeof InteractionManager.runAfterInteractions
+    > | null = null;
     let attemptCount = 0;
 
     const tryScroll = () => {
@@ -87,9 +91,13 @@ export function useAutoScrollToActiveNode({
       }
     };
 
-    retryTimeoutId = setTimeout(tryScroll, AUTO_SCROLL_DELAY_MS);
+    interactionHandle = InteractionManager.runAfterInteractions(() => {
+      retryTimeoutId = setTimeout(tryScroll, AUTO_SCROLL_DELAY_MS);
+    });
 
     return () => {
+      interactionHandle?.cancel();
+
       if (retryTimeoutId) {
         clearTimeout(retryTimeoutId);
       }
