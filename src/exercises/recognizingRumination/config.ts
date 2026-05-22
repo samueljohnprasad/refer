@@ -17,6 +17,7 @@ const INITIAL: RecognizingRuminationResponse = {
   timeSpent: "",
   interruptTechnique: "",
   interruptCompleted: false,
+  preRating: 5,
   postRating: 5,
 };
 
@@ -30,7 +31,7 @@ export const recognizingRuminationConfig: ExerciseConfig<RecognizingRuminationRe
     duration: "5-7 min",
     xp: 10,
     backgroundColor: "#fff",
-    schemaVersion: 1,
+    schemaVersion: 2,
     initialResponse: INITIAL,
 
     steps: [
@@ -45,6 +46,20 @@ export const recognizingRuminationConfig: ExerciseConfig<RecognizingRuminationRe
         label: "Welcome",
         validate: () => true,
         excludeFromProgress: true,
+      },
+      {
+        id: "pre_rating",
+        component: createStep(SliderStep, {
+          title: "How Stuck?",
+          subtitle: "How stuck in a thought loop do you feel right now?",
+          fieldKey: "preRating",
+          min: 1,
+          max: 10,
+          minLabel: "Free",
+          maxLabel: "Very stuck",
+        }),
+        label: "How stuck do you feel? (1-10)",
+        validate: () => true,
       },
       {
         id: "current_thought_loop",

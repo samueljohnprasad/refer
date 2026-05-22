@@ -13,6 +13,7 @@ export const THOUGHT_CATCHER_INITIAL: ThoughtCatcherResponse = {
   situation: "",
   automaticThought: "",
   intensity: 50,
+  postIntensity: undefined,
   isTrue: null,
   balancedThought: "",
 };
@@ -45,7 +46,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
   duration: "3-5 min",
   xp: 10,
   backgroundColor: "#fff",
-  schemaVersion: 1,
+  schemaVersion: 2,
   initialResponse: THOUGHT_CATCHER_INITIAL,
 
   steps: [
@@ -146,6 +147,22 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
       }),
       label: "Write a balanced thought",
       validate: (r) => (r.balancedThought ?? "").trim().length >= 1,
+      optional: true,
+    },
+    {
+      id: "post_intensity",
+      component: createStep(SliderStep, {
+        title: "Thought Intensity Now",
+        subtitle: "How strongly do you believe this thought after checking it?",
+        fieldKey: "postIntensity",
+        min: 0,
+        max: 100,
+        minLabel: "Not at all",
+        maxLabel: "Completely",
+        unit: "%",
+      }),
+      label: "How intense is the thought now?",
+      validate: () => true,
       optional: true,
     },
     {

@@ -140,6 +140,15 @@
   --color-ink-soft: #4a5a4a;
   --color-ink-muted: #7a8a7a;
 
+  /* Border radius scale */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-full: 9999px;
+
   /* Happy app semantic palette */
   --color-offwhite: #faf9f6;
   --color-theme-background-primary: #ffffff;

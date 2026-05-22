@@ -4,6 +4,7 @@ import { Text } from "@/components/ui/text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
 import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
+import { PostExerciseInsight } from "@/src/components/insights/PostExerciseInsight";
 import type { StepProps, ExerciseType } from "@/src/types/exerciseFlow";
 
 interface SummaryField {
@@ -30,6 +31,7 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
     onSave,
     saveLabel = "Save & Finish",
     isSaving,
+    response,
   }) => {
     const iconObj = exerciseType
       ? getExerciseIcon(exerciseType)
@@ -61,10 +63,14 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
           </Text>
         </View>
 
-        <ScrollView
-          className="flex-1"
-          showsVerticalScrollIndicator={false}
-        >
+        {exerciseType && response && (
+          <PostExerciseInsight
+            exerciseType={exerciseType as ExerciseType}
+            response={response}
+          />
+        )}
+
+        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
           <View
             className="bg-slate-50 rounded-2xl p-4 mb-6"
             style={{ borderWidth: 1, borderColor: "#E2E8F0" }}

@@ -128,6 +128,15 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="screens/insights"
+        options={{
+          headerShown: false,
+          title: "Insights",
+          freezeOnBlur: true,
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
         name="screens/thought-reframing"
         options={{
           headerShown: true,

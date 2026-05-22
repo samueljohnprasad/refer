@@ -14,6 +14,7 @@ const INITIAL: Grounding54321Response = {
   hear: [],
   smell: [],
   taste: [],
+  prePresenceRating: 5,
   presenceRating: 5,
 };
 
@@ -26,7 +27,7 @@ export const grounding54321Config: ExerciseConfig<Grounding54321Response> = {
   duration: "5-7 min",
   xp: 10,
   backgroundColor: "#fff",
-  schemaVersion: 1,
+  schemaVersion: 2,
   initialResponse: INITIAL,
 
   steps: [
@@ -48,6 +49,20 @@ export const grounding54321Config: ExerciseConfig<Grounding54321Response> = {
       label: "Welcome",
       validate: () => true,
       excludeFromProgress: true,
+    },
+    {
+      id: "pre_presence_rating",
+      component: createStep(SliderStep, {
+        title: "Before We Start",
+        subtitle: "How present and grounded do you feel right now?",
+        fieldKey: "prePresenceRating",
+        min: 1,
+        max: 10,
+        minLabel: "Not at all",
+        maxLabel: "Fully present",
+      }),
+      label: "How present do you feel now? (1-10)",
+      validate: () => true,
     },
     {
       id: "see_5",

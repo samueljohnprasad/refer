@@ -8,6 +8,7 @@ import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import { ChecklistStep } from "@/src/components/exercise/steps/ChecklistStep";
+import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 
 const INITIAL: WorryTimeResponse = {
   worryTimeSlot: "",
@@ -15,6 +16,8 @@ const INITIAL: WorryTimeResponse = {
   resolvedWorries: [],
   actionPlans: {},
   reflection: "",
+  preAnxietyRating: 5,
+  postAnxietyRating: 5,
 };
 
 export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
@@ -26,7 +29,7 @@ export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
   duration: "10-15 min",
   xp: 12,
   backgroundColor: "#fff",
-  schemaVersion: 1,
+  schemaVersion: 2,
   initialResponse: INITIAL,
 
   steps: [
@@ -42,6 +45,20 @@ export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
       label: "Welcome",
       validate: () => true,
       excludeFromProgress: true,
+    },
+    {
+      id: "pre_anxiety_rating",
+      component: createStep(SliderStep, {
+        title: "Before We Start",
+        subtitle: "How anxious are you feeling right now?",
+        fieldKey: "preAnxietyRating",
+        min: 1,
+        max: 10,
+        minLabel: "Calm",
+        maxLabel: "Very anxious",
+      }),
+      label: "How anxious do you feel? (1-10)",
+      validate: () => true,
     },
     {
       id: "set_worry_time",
@@ -98,6 +115,20 @@ export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
       }),
       label: "Reflect",
       validate: (r) => r.reflection.trim().length >= 1,
+    },
+    {
+      id: "post_anxiety_rating",
+      component: createStep(SliderStep, {
+        title: "After Worry Time",
+        subtitle: "How anxious are you feeling now?",
+        fieldKey: "postAnxietyRating",
+        min: 1,
+        max: 10,
+        minLabel: "Calm",
+        maxLabel: "Very anxious",
+      }),
+      label: "How anxious do you feel now? (1-10)",
+      validate: () => true,
     },
     {
       id: "summary",

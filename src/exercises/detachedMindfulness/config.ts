@@ -13,6 +13,7 @@ import { ChoiceStep } from "@/src/components/exercise/steps/ChoiceStep";
 
 const INITIAL: DetachedMindfulnessResponse = {
   observedThought: "",
+  preRating: 5,
   labelConfirmed: false,
   attentionShiftCompleted: false,
   checkInRating: 5,
@@ -29,7 +30,7 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
     duration: "5-7 min",
     xp: 10,
     backgroundColor: "#fff",
-    schemaVersion: 1,
+    schemaVersion: 2,
     initialResponse: INITIAL,
 
     steps: [
@@ -45,6 +46,20 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
         label: "Welcome",
         validate: () => true,
         excludeFromProgress: true,
+      },
+      {
+        id: "pre_rating",
+        component: createStep(SliderStep, {
+          title: "Before We Start",
+          subtitle: "How loud are your thoughts right now?",
+          fieldKey: "preRating",
+          min: 1,
+          max: 10,
+          minLabel: "Quiet",
+          maxLabel: "Very loud",
+        }),
+        label: "How loud are your thoughts? (1-10)",
+        validate: () => true,
       },
       {
         id: "observe_thought",

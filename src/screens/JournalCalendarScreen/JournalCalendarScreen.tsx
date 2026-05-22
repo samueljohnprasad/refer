@@ -59,6 +59,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { XP_REWARDS, XPActionType } from "@/src/types/xp";
 import BasicBottomSheetExample from "@/src/components/BasicBottomSheetExample";
+import { InsightNudgeCard } from "@/src/components/insights/InsightNudgeCard";
 
 // Re-export for backward compat from other files that import from here
 export { PALETTE } from "@/constants/palette";
@@ -366,11 +367,21 @@ export default function JournalCalendarScreen() {
             )}
           </Animated.View>
 
-          {/* ── GROUP 4: Progress — entrance animation index 5 ── */}
+          {/* Pattern Insight Nudge — entrance animation index 5 */}
+          <Animated.View
+            className="mt-8"
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 5,
+            )}
+          >
+            <InsightNudgeCard />
+          </Animated.View>
+
+          {/* ── GROUP 4: Progress — entrance animation index 6 ── */}
           <Animated.View
             className="mt-10"
             entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 5,
+              STAGGER_DELAY_MS * 6,
             )}
           >
             <ChallengesSection maxItems={3} />
@@ -380,7 +391,7 @@ export default function JournalCalendarScreen() {
           <Animated.View
             className="mt-8 mb-6"
             entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 6,
+              STAGGER_DELAY_MS * 7,
             )}
           >
             <QuickJournalSection

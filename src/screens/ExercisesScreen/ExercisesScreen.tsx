@@ -35,6 +35,7 @@ import type {
   ExerciseType,
 } from "@/src/types/exerciseFlow";
 import { useCBTHistory, type HistoryLogItem } from "./hooks/useCBTHistory";
+import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
 
 type TabKey = "discover" | "log";
 type ExerciseGroup = ReturnType<typeof getExercisesGrouped>[number];
@@ -639,6 +640,7 @@ export default function ExercisesScreen(): ReactElement {
           renderItem={renderDiscoverSection}
           keyExtractor={exerciseGroupKeyExtractor}
           contentContainerStyle={styles.listContent}
+          ListHeaderComponent={SuggestedExerciseCard}
           ListEmptyComponent={EmptyDiscoverState}
           showsVerticalScrollIndicator={false}
         />

@@ -4,7 +4,7 @@ import type { AIStepConfig } from "@/src/types/exerciseFlow";
 
 // Reuse the same Gemini client + API key from existing AI hooks
 const ai = new GoogleGenAI({
-  apiKey: "AIzaSyDPsiJbJ6eyYQ9Pt4z7l1AapI0GxErA9kQ",
+  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
 });
 
 const AI_TIMEOUT_MS = 10_000;

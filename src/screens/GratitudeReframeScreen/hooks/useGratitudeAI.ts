@@ -25,9 +25,8 @@ interface UseGratitudeAIReturn {
 }
 
 // ─── Gemini Client ───────────────────────────────────────────────────
-
 const ai = new GoogleGenAI({
-  apiKey: 'AIzaSyDPsiJbJ6eyYQ9Pt4z7l1AapI0GxErA9kQ',
+  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
 });
 
 // ─── Hook ────────────────────────────────────────────────────────────

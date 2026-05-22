@@ -17,6 +17,8 @@ const INITIAL: DecatastrophizingResponse = {
   perspective1Week: "",
   perspective1Month: "",
   perspective1Year: "",
+  anxietyBefore: 5,
+  anxietyAfter: 5,
 };
 
 export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> =
@@ -29,7 +31,7 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
     duration: "5-7 min",
     xp: 12,
     backgroundColor: "#fff",
-    schemaVersion: 1,
+    schemaVersion: 2,
     initialResponse: INITIAL,
 
     steps: [
@@ -45,6 +47,20 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
         label: "Welcome",
         validate: () => true,
         excludeFromProgress: true,
+      },
+      {
+        id: "anxiety_before",
+        component: createStep(SliderStep, {
+          title: "Before We Start",
+          subtitle: "How anxious does this fear make you feel?",
+          fieldKey: "anxietyBefore",
+          min: 1,
+          max: 10,
+          minLabel: "Calm",
+          maxLabel: "Very anxious",
+        }),
+        label: "How anxious do you feel? (1-10)",
+        validate: () => true,
       },
       {
         id: "feared_catastrophe",
@@ -117,6 +133,20 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
         }),
         label: "How will this look in 1 week / 1 month / 1 year?",
         validate: (r) => r.perspective1Week.trim().length >= 1,
+      },
+      {
+        id: "anxiety_after",
+        component: createStep(SliderStep, {
+          title: "After Perspective",
+          subtitle: "How anxious does this fear make you feel now?",
+          fieldKey: "anxietyAfter",
+          min: 1,
+          max: 10,
+          minLabel: "Calm",
+          maxLabel: "Very anxious",
+        }),
+        label: "How anxious do you feel now? (1-10)",
+        validate: () => true,
       },
       {
         id: "summary",

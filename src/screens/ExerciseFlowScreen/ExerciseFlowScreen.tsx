@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import {
   View,
   SafeAreaView,
@@ -70,6 +70,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
 }) => {
   const router = useRouter();
   const exerciseType = config.type;
+  const isConfirmedExitRef = useRef(false);
 
   // ─── Resume: load existing entry if entryId provided ──────────────
   const { entry: existingEntry, isLoading: isLoadingEntry } =
@@ -88,6 +89,11 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const usesEmbeddedHeader =
     exerciseType === "abc_analysis";
 
+  const exitScreen = useCallback(() => {
+    isConfirmedExitRef.current = true;
+    router.back();
+  }, [router]);
+
   // Trigger AI when entering a step with AI config
   React.useEffect(() => {
     if (currentStep?.ai && !readOnly) {
@@ -98,7 +104,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   // ─── Handlers ─────────────────────────────────────────────────────
   const handleClose = useCallback(() => {
     if (readOnly || flow.currentStepIndex === 0) {
-      router.back();
+      exitScreen();
       return;
     }
 
@@ -110,10 +116,10 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
           try {
             const payload = flow.getSavePayload("in_progress");
             await save(payload, entryId);
-          } catch {
-            /* best effort */
+            exitScreen();
+          } catch (err) {
+            Alert.alert("Save failed", "Please try again.");
           }
-          router.back();
         },
       },
       {
@@ -121,22 +127,22 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
         style: "destructive",
         onPress: () => {
           setTimeout(() => {
-            router.back();
+            exitScreen();
           }, 100);
         },
       },
     ]);
-  }, [readOnly, flow, entryId, save, router]);
+  }, [readOnly, flow, entryId, save, exitScreen]);
 
   const handleSave = useCallback(async () => {
     try {
       const payload = flow.getSavePayload("completed");
       await save(payload, entryId);
-      router.back();
+      exitScreen();
     } catch (err) {
       Alert.alert("Save failed", "Please try again.");
     }
-  }, [flow, entryId, save, router]);
+  }, [flow, entryId, save, exitScreen]);
 
   // ─── Android hardware back button ─────────────────────────────────
   React.useEffect(() => {
@@ -152,6 +158,10 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   React.useEffect(() => {
     if (readOnly || flow.currentStepIndex === 0) return;
     const unsub = navigation.addListener("beforeRemove", (e: any) => {
+      if (isConfirmedExitRef.current) {
+        return;
+      }
+
       e.preventDefault();
       handleClose();
     });

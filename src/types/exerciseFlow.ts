@@ -88,7 +88,7 @@ export const CATEGORY_META: CategoryMeta[] = [
     label: "Overthinking",
     icon: "overthinking",
     description: "Break rumination & thought loops",
-  }
+  },
 ];
 
 /** Quick lookup by category key */
@@ -287,6 +287,7 @@ export interface ThoughtCatcherResponse {
   situation: string;
   automaticThought: string;
   intensity: number;
+  postIntensity?: number;
   // Checker continuation (optional — populated if user taps "Check it")
   isTrue?: "YES" | "NOT SURE" | "NO" | null;
   balancedThought?: string;
@@ -310,8 +311,6 @@ export interface GratitudeReframeResponse {
   finalMoodIntensity: number;
 }
 
-
-
 export interface ABCAnalysisResponse {
   activatingEvent: string;
   belief: string;
@@ -319,10 +318,9 @@ export interface ABCAnalysisResponse {
   consequenceBehavior: string;
   alternativeBelief: string;
   newConsequence: string;
+  preEmotionalIntensity: number;
+  postEmotionalIntensity: number;
 }
-
-
-
 
 // ── Mindfulness ─────────────────────────────────────────────────────────────
 
@@ -344,6 +342,7 @@ export interface Grounding54321Response {
   hear: string[];
   smell: string[];
   taste: string[];
+  prePresenceRating: number;
   presenceRating: number;
 }
 
@@ -368,6 +367,8 @@ export interface WorryTimeResponse {
   resolvedWorries: string[];
   actionPlans: Record<string, string>;
   reflection: string;
+  preAnxietyRating: number;
+  postAnxietyRating: number;
 }
 
 export interface FearLadderResponse {
@@ -389,6 +390,8 @@ export interface DecatastrophizingResponse {
   perspective1Week: string;
   perspective1Month: string;
   perspective1Year: string;
+  anxietyBefore: number;
+  anxietyAfter: number;
 }
 
 export interface WorryDecisionTreeResponse {
@@ -397,6 +400,8 @@ export interface WorryDecisionTreeResponse {
   actionPlan: string;
   scheduledAction: string;
   acceptanceExercise: string;
+  preAnxietyRating: number;
+  postAnxietyRating: number;
 }
 
 // ── Overthinking ────────────────────────────────────────────────────────────
@@ -408,11 +413,13 @@ export interface RecognizingRuminationResponse {
   timeSpent: string;
   interruptTechnique: string;
   interruptCompleted: boolean;
+  preRating: number;
   postRating: number;
 }
 
 export interface DetachedMindfulnessResponse {
   observedThought: string;
+  preRating: number;
   labelConfirmed: boolean;
   attentionShiftCompleted: boolean;
   checkInRating: number;
@@ -428,16 +435,6 @@ export interface AttentionTrainingResponse {
   expandedAttentionCompleted: boolean;
   postRating: number;
 }
-
-
-
-
-
-
-
-
-
-
 
 // ─── Discriminated Response Union ───────────────────────────────────────────
 // Used to type-narrow a response based on exercise_type

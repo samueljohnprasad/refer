@@ -7,6 +7,7 @@ import { createSummaryStep } from "@/src/components/exercise/steps/createSummary
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { BooleanStep } from "@/src/components/exercise/steps/BooleanStep";
+import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 
 const INITIAL: WorryDecisionTreeResponse = {
   worry: "",
@@ -14,6 +15,8 @@ const INITIAL: WorryDecisionTreeResponse = {
   actionPlan: "",
   scheduledAction: "",
   acceptanceExercise: "",
+  preAnxietyRating: 5,
+  postAnxietyRating: 5,
 };
 
 export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> =
@@ -26,7 +29,7 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
     duration: "5-7 min",
     xp: 10,
     backgroundColor: "#fff",
-    schemaVersion: 1,
+    schemaVersion: 2,
     initialResponse: INITIAL,
 
     steps: [
@@ -41,6 +44,20 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
         label: "Welcome",
         validate: () => true,
         excludeFromProgress: true,
+      },
+      {
+        id: "pre_anxiety_rating",
+        component: createStep(SliderStep, {
+          title: "Before We Start",
+          subtitle: "How anxious are you feeling right now?",
+          fieldKey: "preAnxietyRating",
+          min: 1,
+          max: 10,
+          minLabel: "Calm",
+          maxLabel: "Very anxious",
+        }),
+        label: "How anxious do you feel? (1-10)",
+        validate: () => true,
       },
       {
         id: "write_worry",
@@ -104,6 +121,20 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
         label: "Acceptance exercise",
         validate: (r) => r.acceptanceExercise.trim().length >= 1,
         optional: true,
+      },
+      {
+        id: "post_anxiety_rating",
+        component: createStep(SliderStep, {
+          title: "After Processing",
+          subtitle: "How anxious are you feeling now?",
+          fieldKey: "postAnxietyRating",
+          min: 1,
+          max: 10,
+          minLabel: "Calm",
+          maxLabel: "Very anxious",
+        }),
+        label: "How anxious do you feel now? (1-10)",
+        validate: () => true,
       },
       {
         id: "summary",

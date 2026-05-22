@@ -10,6 +10,8 @@ import {
   ABCNewConsequenceStep,
   ABCSummaryStep,
 } from "./customSteps";
+import { createStep } from "@/src/components/exercise/steps/createStep";
+import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 
 const INITIAL: ABCAnalysisResponse = {
   activatingEvent: "",
@@ -18,6 +20,8 @@ const INITIAL: ABCAnalysisResponse = {
   consequenceBehavior: "",
   alternativeBelief: "",
   newConsequence: "",
+  preEmotionalIntensity: 5,
+  postEmotionalIntensity: 5,
 };
 
 export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
@@ -29,10 +33,24 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
   duration: "7-10 min",
   xp: 15,
   backgroundColor: "#fff",
-  schemaVersion: 1,
+  schemaVersion: 2,
   initialResponse: INITIAL,
 
   steps: [
+    {
+      id: "pre_emotional_intensity",
+      component: createStep(SliderStep, {
+        title: "Before We Start",
+        subtitle: "How intense are your emotions about this event?",
+        fieldKey: "preEmotionalIntensity",
+        min: 1,
+        max: 10,
+        minLabel: "Mild",
+        maxLabel: "Very intense",
+      }),
+      label: "How intense are your emotions? (1-10)",
+      validate: () => true,
+    },
     {
       id: "activating_event",
       component: ABCActivatingEventStep,
@@ -80,6 +98,20 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       component: ABCNewConsequenceStep,
       label: "Predicted new consequence",
       validate: (r) => r.newConsequence.trim().length >= 1,
+    },
+    {
+      id: "post_emotional_intensity",
+      component: createStep(SliderStep, {
+        title: "After Reframing",
+        subtitle: "How intense are your emotions now?",
+        fieldKey: "postEmotionalIntensity",
+        min: 1,
+        max: 10,
+        minLabel: "Mild",
+        maxLabel: "Very intense",
+      }),
+      label: "How intense are your emotions now? (1-10)",
+      validate: () => true,
     },
     {
       id: "summary",
