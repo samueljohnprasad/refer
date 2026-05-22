@@ -63,7 +63,7 @@ const HeaderButton = memo(function HeaderButton({
       disabled={!onPress}
       accessibilityRole={onPress ? "button" : "text"}
       accessibilityLabel={accessibilityLabel}
-      className="min-h-11 flex-row items-center gap-1.5 bg-warm-white px-2.5"
+      className="min-h-11 flex-row items-center gap-1.5 px-2.5"
     >
       <Icon width={28} height={28} />
       <Text
