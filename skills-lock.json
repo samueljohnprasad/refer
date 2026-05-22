@@ -88,6 +88,12 @@
       "sourceType": "github",
       "computedHash": "f699b4ae6ab855ab4e052f51dd6f3663bc031120f94a9a8819eada2d8bd386e9"
     },
+    "course-designer": {
+      "source": "teachingai/full-stack-skills",
+      "sourceType": "github",
+      "skillPath": "skills/teaching-skills/course-designer/SKILL.md",
+      "computedHash": "6476c010105d5acac69ef442e6018078d57ef4e02b134c1dc8c0962169c72dd6"
+    },
     "creative-communications": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
@@ -147,6 +153,7 @@
     "gamification-loops": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
+      "skillPath": "skills/gamification-loops/SKILL.md",
       "computedHash": "5c6d90890a2bb618ded9387244dd9d146c2d9f56933208875942038601d489b6"
     },
     "growth-loops": {
