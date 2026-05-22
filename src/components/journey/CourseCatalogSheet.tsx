@@ -39,25 +39,8 @@ import {
 } from "./courseVisuals";
 
 const PALETTE = {
-  cream: "#FAF6ED",
-  warmWhite: "#FFFCF5",
-  sage50: "#F4F1EA",
-  sage100: "#E8E2D2",
-  sage200: "#D4CCB5",
-  sage300: "#A8B89A",
   sage500: "#5A7A56",
   sage600: "#3F5A3D",
-  sage700: "#2A3F2A",
-  ink: "#1A2A1A",
-  inkSoft: "#4A5A4A",
-  inkMuted: "#7A8A7A",
-} as const;
-
-const FONTS = {
-  body: "GeistRegular",
-  bodyMedium: "GeistMedium",
-  bodyBold: "GeistBold",
-  heading: "FrauncesSemiBold",
 } as const;
 
 type CourseCatalogSheetProps = {
@@ -78,6 +61,11 @@ type CourseCardProps = {
 type CoursePreviewSectionRowProps = {
   accentColor: string;
   section: CourseJourneyPreviewSection;
+};
+
+type CourseMetricCardProps = {
+  value: string | number;
+  label: string;
 };
 
 function resolveInitialCourseId(
@@ -146,8 +134,8 @@ const CourseCard = React.memo(function CourseCard({
       <View
         className={
           isSelected
-            ? "h-[78px] w-[92px] items-center justify-center rounded-2xl border-2 border-b-4 border-sage-500 border-b-sage-600 bg-[#EEF2E8]"
-            : "h-[78px] w-[92px] items-center justify-center rounded-2xl border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white"
+            ? "happy-brand-pressed-card-selected h-[78px] w-[92px] items-center justify-center rounded-2xl"
+            : "happy-brand-pressed-card h-[78px] w-[92px] items-center justify-center rounded-2xl"
         }
       >
         {course.iconUrl ? (
@@ -160,8 +148,8 @@ const CourseCard = React.memo(function CourseCard({
           />
         ) : (
           <Text
-            className="text-[30px]"
-            style={{ color: courseAccentColor, fontFamily: FONTS.heading }}
+            className="happy-font-heading text-[30px]"
+            style={{ color: courseAccentColor }}
           >
             {getCourseMonogram(course.title)}
           </Text>
@@ -170,10 +158,9 @@ const CourseCard = React.memo(function CourseCard({
 
       <Text
         numberOfLines={1}
-        className={`w-full text-center text-[15px] ${
+        className={`happy-font-body-medium w-full text-center text-[15px] ${
           isSelected ? "text-sage-700" : "text-ink-muted"
         }`}
-        style={{ fontFamily: FONTS.bodyMedium }}
       >
         {course.title}
       </Text>
@@ -181,8 +168,7 @@ const CourseCard = React.memo(function CourseCard({
       {isEnrolled ? (
         <View className="rounded-full bg-sage-100 px-3 py-[5px]">
           <Text
-            className="text-xs uppercase tracking-[0.4px] text-sage-600"
-            style={{ fontFamily: FONTS.bodyBold }}
+            className="happy-font-body-bold text-xs uppercase tracking-[0.4px] text-sage-600"
           >
             Enrolled
           </Text>
@@ -192,35 +178,55 @@ const CourseCard = React.memo(function CourseCard({
   );
 });
 
+const CourseMetricCard = React.memo(function CourseMetricCard({
+  value,
+  label,
+}: CourseMetricCardProps): React.JSX.Element {
+  return (
+    <View className="happy-brand-pressed-card min-h-[78px] flex-1 items-center justify-center gap-1 rounded-2xl px-1">
+      <Text
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.82}
+        className="happy-font-body-bold w-full text-center text-[18px] text-ink"
+      >
+        {value}
+      </Text>
+      <Text
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.62}
+        className="happy-font-body w-full text-center text-[11px] text-ink-muted"
+      >
+        {label}
+      </Text>
+    </View>
+  );
+});
+
 const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
   accentColor,
   section,
 }: CoursePreviewSectionRowProps): React.JSX.Element {
   return (
-    <View className="flex-row items-start gap-[14px] rounded-2xl border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white p-[14px]">
+    <View className="happy-brand-pressed-card flex-row items-start gap-[14px] rounded-2xl p-[14px]">
       <View
         className="mt-0.5 h-[34px] w-[34px] items-center justify-center rounded-full"
         style={{ backgroundColor: `${accentColor}1A` }}
       >
         <Text
-          className="text-[15px]"
-          style={{ color: accentColor, fontFamily: FONTS.bodyBold }}
+          className="happy-font-body-bold text-[15px]"
+          style={{ color: accentColor }}
         >
           {section.orderIndex}
         </Text>
       </View>
 
       <View className="flex-1 gap-2">
-        <Text
-          className="text-base text-ink"
-          style={{ fontFamily: FONTS.bodyBold }}
-        >
+        <Text className="happy-font-body-bold text-base text-ink">
           {section.title}
         </Text>
-        <Text
-          className="text-sm text-ink-soft"
-          style={{ fontFamily: FONTS.body }}
-        >
+        <Text className="happy-font-body text-sm text-ink-soft">
           {section.unitCount} units • {section.nodeCount} lessons
         </Text>
         <View className="flex-row gap-1.5">
@@ -353,25 +359,16 @@ function CourseCatalogSheetContent({
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerClassName="gap-[22px] pb-3 pt-5"
+          contentContainerClassName="gap-[22px] pb-28 pt-5"
         >
           <View className="gap-2.5 px-5">
-            <Text
-              className="text-xs uppercase tracking-[1.6px] text-sage-500"
-              style={{ fontFamily: FONTS.bodyBold }}
-            >
+            <Text className="happy-brand-eyebrow">
               Find Your Next Path
             </Text>
-            <Text
-              className="text-[34px] leading-[38px] text-ink"
-              style={{ fontFamily: FONTS.heading }}
-            >
+            <Text className="happy-font-heading text-[34px] leading-[38px] text-ink">
               Explore Journeys
             </Text>
-            <Text
-              className="text-base leading-[23px] text-ink-soft"
-              style={{ fontFamily: FONTS.body }}
-            >
+            <Text className="happy-font-body text-base leading-[23px] text-ink-soft">
               Browse every published course, preview the path, and enroll when
               you are ready.
             </Text>
@@ -398,10 +395,7 @@ function CourseCatalogSheetContent({
                 </View>
               ) : (
                 <View className="min-h-[92px] min-w-[240px] items-center justify-center px-5">
-                  <Text
-                    className="text-center text-[15px] text-ink-muted"
-                    style={{ fontFamily: FONTS.body }}
-                  >
+                  <Text className="happy-font-body text-center text-[15px] text-ink-muted">
                     No published courses are available yet.
                   </Text>
                 </View>
@@ -410,9 +404,9 @@ function CourseCatalogSheetContent({
           />
 
           {selectedCourse ? (
-            <View className="mx-5 gap-5 rounded-[20px] border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white p-5">
+            <View className="happy-brand-pressed-card mx-5 gap-5 rounded-[20px] p-5">
               <View className="flex-row items-center gap-4">
-                <View className="h-[84px] w-[84px] items-center justify-center rounded-[18px] border-2 border-b-4 border-sage-500 bg-[#EEF2E8]">
+                <View className="happy-brand-pressed-card-selected h-[84px] w-[84px] items-center justify-center rounded-[18px]">
                   {selectedCourse.iconUrl ? (
                     <Image
                       source={selectedCourse.iconUrl}
@@ -423,8 +417,8 @@ function CourseCatalogSheetContent({
                     />
                   ) : (
                     <Text
-                      className="text-[34px]"
-                      style={{ color: courseAccentColor, fontFamily: FONTS.heading }}
+                      className="happy-font-heading text-[34px]"
+                      style={{ color: courseAccentColor }}
                     >
                       {getCourseMonogram(selectedCourse.title)}
                     </Text>
@@ -432,16 +426,10 @@ function CourseCatalogSheetContent({
                 </View>
 
                 <View className="flex-1 gap-1.5">
-                  <Text
-                    className="text-[30px] leading-[34px] text-ink"
-                    style={{ fontFamily: FONTS.heading }}
-                  >
+                  <Text className="happy-font-heading text-[30px] leading-[34px] text-ink">
                     {selectedCourse.title}
                   </Text>
-                  <Text
-                    className="text-[15px] leading-[22px] text-ink-soft"
-                    style={{ fontFamily: FONTS.body }}
-                  >
+                  <Text className="happy-font-body text-[15px] leading-[22px] text-ink-soft">
                     {selectedCourse.description ||
                       "A guided journey you can start today."}
                   </Text>
@@ -449,77 +437,33 @@ function CourseCatalogSheetContent({
               </View>
 
               <View className="flex-row gap-2.5">
-                <View className="min-h-[82px] flex-1 items-center justify-center gap-1 rounded-2xl border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white px-2.5">
-                  <Text
-                    className="text-center text-lg text-ink"
-                    style={{ fontFamily: FONTS.bodyBold }}
-                  >
-                    {preview?.sectionCount ?? "—"}
-                  </Text>
-                  <Text
-                    className="text-[13px] text-ink-muted"
-                    style={{ fontFamily: FONTS.body }}
-                  >
-                    Sections
-                  </Text>
-                </View>
-                <View className="min-h-[82px] flex-1 items-center justify-center gap-1 rounded-2xl border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white px-2.5">
-                  <Text
-                    className="text-center text-lg text-ink"
-                    style={{ fontFamily: FONTS.bodyBold }}
-                  >
-                    {preview?.unitCount ?? "—"}
-                  </Text>
-                  <Text
-                    className="text-[13px] text-ink-muted"
-                    style={{ fontFamily: FONTS.body }}
-                  >
-                    Units
-                  </Text>
-                </View>
-                <View className="min-h-[82px] flex-1 items-center justify-center gap-1 rounded-2xl border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white px-2.5">
-                  <Text
-                    className="text-center text-lg text-ink"
-                    style={{ fontFamily: FONTS.bodyBold }}
-                  >
-                    {preview?.nodeCount ?? "—"}
-                  </Text>
-                  <Text
-                    className="text-[13px] text-ink-muted"
-                    style={{ fontFamily: FONTS.body }}
-                  >
-                    Lessons
-                  </Text>
-                </View>
-                <View className="min-h-[82px] flex-1 items-center justify-center gap-1 rounded-2xl border-2 border-b-4 border-sage-100 border-b-sage-100 bg-warm-white px-2.5">
-                  <Text
-                    className="text-center text-lg text-ink"
-                    style={{ fontFamily: FONTS.bodyBold }}
-                  >
-                    {preview
+                <CourseMetricCard
+                  value={preview?.sectionCount ?? "—"}
+                  label="Sections"
+                />
+                <CourseMetricCard
+                  value={preview?.unitCount ?? "—"}
+                  label="Units"
+                />
+                <CourseMetricCard
+                  value={preview?.nodeCount ?? "—"}
+                  label="Lessons"
+                />
+                <CourseMetricCard
+                  value={
+                    preview
                       ? formatEstimatedDuration(preview.estimatedMinutes)
-                      : "—"}
-                  </Text>
-                  <Text
-                    className="text-[13px] text-ink-muted"
-                    style={{ fontFamily: FONTS.body }}
-                  >
-                    Time
-                  </Text>
-                </View>
+                      : "—"
+                  }
+                  label="Time"
+                />
               </View>
 
               <View className="flex-row items-center justify-between gap-3">
-                <Text
-                  className="text-xl text-ink"
-                  style={{ fontFamily: FONTS.heading }}
-                >
+                <Text className="happy-font-heading text-xl text-ink">
                   Journey Preview
                 </Text>
-                <Text
-                  className="text-sm text-sage-500"
-                  style={{ fontFamily: FONTS.bodyBold }}
-                >
+                <Text className="happy-font-body-bold text-sm text-sage-500">
                   {isSelectedCourseEnrolled ? "Already enrolled" : "Ready to enroll"}
                 </Text>
               </View>
@@ -527,19 +471,13 @@ function CourseCatalogSheetContent({
               {isPreviewLoading ? (
                 <View className="min-h-[120px] items-center justify-center gap-2.5">
                   <ActivityIndicator color={interactionColor} />
-                  <Text
-                    className="text-sm text-ink-muted"
-                    style={{ fontFamily: FONTS.body }}
-                  >
+                  <Text className="happy-font-body text-sm text-ink-muted">
                     Loading journey preview...
                   </Text>
                 </View>
               ) : isPreviewError ? (
                 <View className="min-h-[120px] items-center justify-center gap-2.5">
-                  <Text
-                    className="text-center text-[15px] text-ink-muted"
-                    style={{ fontFamily: FONTS.body }}
-                  >
+                  <Text className="happy-font-body text-center text-[15px] text-ink-muted">
                     Unable to load this course preview right now.
                   </Text>
                 </View>
@@ -561,15 +499,14 @@ function CourseCatalogSheetContent({
         <Pressable
           disabled={!selectedCourse || isStartingCourse}
           onPress={handlePrimaryActionPress}
-          className={`mx-5 mt-4 min-h-14 items-center justify-center rounded-2xl border-b-4 ${
+          className={`mx-5 mt-4 min-h-14 items-center justify-center rounded-2xl ${
             selectedCourse
-              ? "border-b-sage-700 bg-sage-500 opacity-100"
-              : "border-b-sage-300 bg-sage-200 opacity-70"
+              ? "happy-brand-primary-cta opacity-100"
+              : "happy-brand-primary-cta-disabled opacity-70"
           }`}
         >
           <Text
-            className="text-base uppercase tracking-[0.4px] text-warm-white"
-            style={{ fontFamily: FONTS.bodyBold }}
+            className="happy-font-body-bold text-base uppercase tracking-[0.4px] text-warm-white"
           >
             {primaryButtonLabel}
           </Text>
