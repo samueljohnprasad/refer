@@ -1,11 +1,10 @@
 /**
  * ConfigDrivenNode
- * Config-driven node renderer using AnimatedButton + HugeiconsIcon.
+ * Config-driven node renderer using the Duolingo-style SVG node shell.
  *
  * Architecture:
- * - Icons:     Resolved from HUGEICON_REGISTRY via NodeIconConfig.value
- * - Colors:    Button bg = section theme.pathActiveColor (active/completed)
- *              or colorConfig.fill (locked). Shadow auto-darkened by 25%.
+ * - Icons:     Resolved from HUGEICON_REGISTRY
+ * - Colors:    Button bg comes from the node variant config per state.
  * - Animation: Resolved from variant.activeAnimation via ANIMATION_FACTORIES
  * - ProgressRing conditionally shown from variant.showProgressRing
  * - BouncingTooltip for active node label
@@ -18,8 +17,6 @@ import { View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 
 import { Text } from "@/components/ui/text";
-import AnimatedButton from "@/src/components/AnimatedButton";
-import type { AnimatedButtonProps } from "@/src/components/AnimatedButton";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import Animated, {
   useSharedValue,
@@ -39,7 +36,6 @@ import type {
   NodeIconConfig,
   NodeVariantConfig,
   NodeColorConfig,
-  ColorThemeConfig,
 } from "@/src/types/journey";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { ANIMATION_TIMING } from "@/src/data/journey/constants";
@@ -49,7 +45,10 @@ import {
   useColorTheme,
 } from "@/src/context/JourneyConfigContext";
 import { darkenHex } from "@/src/utils/colorUtils";
-import { getHugeicon } from "@/src/data/journey/hugeiconsRegistry";
+import {
+  getHugeicon,
+} from "@/src/data/journey/hugeiconsRegistry";
+import { DuolingoSvgNodeButton } from "./DuolingoSvgNodeButton";
 
 // ---------------------------------------------------------------------------
 // Animation Factory Registry — maps animation key → setup function
@@ -111,18 +110,15 @@ const ANIMATION_FACTORIES: Record<string, AnimationSetup> = {
 };
 
 // ---------------------------------------------------------------------------
-// NodeShellContent — Hugeicons-driven node button
+// NodeShellContent — icon-driven Duolingo node button
 //
-// - Icon:  resolved from HUGEICON_REGISTRY via iconConfig.value
-// - Color: theme.pathActiveColor for active/completed, colorConfig.fill for locked
-// - Shadow: auto-darkened 25% from the face color
+// - Icon:  resolved from HUGEICON_REGISTRY
+// - Color: resolved from the node variant's color config
 // ---------------------------------------------------------------------------
 
-/** Darken factor applied to button face color to generate the 3D shadow */
-const NODE_SHADOW_DARKEN_FACTOR = 0.25;
-/** Icon color: white on colored backgrounds, grey-500 on locked grey */
 const ICON_COLOR_ACTIVE = "#FFFFFF";
 const ICON_COLOR_LOCKED = "#FFFFFF";
+const HUGEICON_SIZE_RATIO = 0.6;
 
 interface NodeShellContentProps {
   iconConfig: NodeIconConfig;
@@ -130,89 +126,49 @@ interface NodeShellContentProps {
   size: number;
   /** Resolved background color for this status */
   backgroundColor: string;
-  /** Shell border color (unused visually but kept for API compat) */
-  borderColor: string;
-  /** Whether this node is active */
-  isActive: boolean;
-  /** Whether this node is completed */
-  isCompleted: boolean;
-  /** Section color theme (for active/completed background) */
-  theme: ColorThemeConfig;
   /** Accessibility label */
   accessibilityLabel: string;
   /** Whether press is enabled */
   isInteractive: boolean;
   /** Press callback */
   onPress: () => void;
-  /**
-   * Button shape: 'squircle' (Duolingo-style pill) or 'circle' (fully round).
-   * Defaults to 'squircle' when omitted.
-   */
-  shape?: "squircle" | "circle";
 }
 
 function NodeShellContent({
   iconConfig,
   size,
   backgroundColor,
-  isActive,
-  isCompleted,
-  theme,
   accessibilityLabel,
   isInteractive,
   onPress,
-  shape = "squircle",
 }: NodeShellContentProps): React.JSX.Element {
-  // Map shape → AnimatedButton type
-  const buttonType = shape === "circle" ? "capsule" : "squircle";
+  const faceColor: string = backgroundColor;
+  const rimColor: string = darkenHex(faceColor, 0.22);
+  const iconColor: string = isInteractive ? ICON_COLOR_ACTIVE : ICON_COLOR_LOCKED;
+  const hugeiconSize = size * HUGEICON_SIZE_RATIO;
 
-  // Resolve the Hugeicons icon object from the registry
-  const iconObj = getHugeicon(iconConfig.value);
-
-  // Button face color: section accent for active/completed, colorConfig.fill for locked
-  const faceColor: string =
-    isActive || isCompleted ? theme.pathActiveColor : backgroundColor;
-
-  // Shadow is always 25% darker than the face
-  const shadowColor: string = darkenHex(faceColor, NODE_SHADOW_DARKEN_FACTOR);
-
-  // Icon color: white for all states (locked uses same grey fill bg, still white icon)
-  const iconColor: string =
-    isActive || isCompleted ? ICON_COLOR_ACTIVE : ICON_COLOR_LOCKED;
-
-  // Memoised customIcon component so AnimatedButton's React.memo sees a stable ref
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const customIcon = useCallback(
-    () => (
+  const icon = useCallback((): React.ReactNode => {
+    const iconObj = getHugeicon(iconConfig.value);
+    return (
       <HugeiconsIcon
         icon={iconObj}
-        size={size * 0.45}
+        size={hugeiconSize}
         color={iconColor}
         strokeWidth={1.8}
       />
-    ),
-    // Intentionally wide dep set: icon, size, color may all change per status
-    [iconObj, size, iconColor],
-  ) as AnimatedButtonProps["customIcon"];
+    );
+  }, [hugeiconSize, iconColor, iconConfig.value]);
 
   return (
-    <AnimatedButton
-      title=""
+    <DuolingoSvgNodeButton
+      size={size}
       onPress={onPress}
-      disabled={false}
-      backgroundColor={faceColor}
-      shadowColor={shadowColor}
-      hapticStyle="Medium"
-      type={"squircle"}
-      fullWidth={false}
-      minHeight={size}
-      customIcon={customIcon}
-      iconSize={size * 0.45}
+      disabled={!isInteractive}
+      faceColor={faceColor}
+      rimColor={rimColor}
+      icon={icon()}
+      iconSize={hugeiconSize}
       accessibilityLabel={accessibilityLabel}
-      containerOpacity={1}
-      disableAnimations={false}
-      style={{ width: size, marginBottom: 0, height: size }}
-      textStyle={{ display: "none" }}
     />
   );
 }
@@ -455,19 +411,10 @@ function ConfigDrivenNodeInner({
           <NodeShellContent
             iconConfig={iconConfig}
             size={size}
-            backgroundColor={
-              isCompleted || isActive ? theme.pathActiveColor : colorConfig.fill
-            }
-            borderColor={
-              isCompleted || isActive ? theme.dividerColor : colorConfig.border
-            }
-            isActive={isActive}
-            isCompleted={isCompleted}
-            theme={theme}
+            backgroundColor={colorConfig.fill}
             accessibilityLabel={a11yLabel}
             isInteractive={isInteractive}
             onPress={handlePress}
-            shape="squircle"
           />
         </Animated.View>
       </Animated.View>

@@ -157,11 +157,11 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
     colors: {
       locked: { fill: "#E5E5E5", border: "#AFAFAF" },
       active: {
-        fill: "#8B5CF6",
-        border: "#7C3AED",
-        glow: "rgba(139,92,246,0.4)",
+        fill: "#9A8AC4",
+        border: "#77669E",
+        glow: "rgba(154,138,196,0.4)",
       },
-      completed: { fill: "#C4B5FD", border: "#8B5CF6" },
+      completed: { fill: "#9A8AC4", border: "#77669E" },
     },
     rewards: [{ type: JourneyRewardType.XP, amount: 15, icon: "⚡" }],
     activeAnimation: "breathing",
@@ -542,7 +542,7 @@ const SECTION_CONFIGS: SectionConfig[] = [
 // ---------------------------------------------------------------------------
 
 const JOURNEY_SETTINGS: JourneySettingsConfig = {
-  defaultNodeSize: 64,
+  defaultNodeSize: 80,
   chestNodeSize: 80,
   verticalGap: 250,
   amplitudeFactor: 0.22,
