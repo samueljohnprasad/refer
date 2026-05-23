@@ -118,21 +118,25 @@
   --color-accent: rgb(var(--accent));
   --color-accent-foreground: rgb(var(--accent-foreground));
 
-  /* Happy onboarding — sage palette */
-  --color-sage-50: #f4f1ea;
-  --color-sage-100: #e8e2d2;
-  --color-sage-200: #d4ccb5;
+  /* Happy brand — white canvas with sage accents */
+  --color-sage-50: #f7faf5;
+  --color-sage-100: #e6ecdf;
+  --color-sage-200: #cfdbc4;
   --color-sage-300: #a8b89a;
   --color-sage-400: #7a9272;
   --color-sage-500: #5a7a56;
   --color-sage-600: #3f5a3d;
   --color-sage-700: #2a3f2a;
   --color-sage-800: #1a2a1a;
-  --color-sage-selected: #eef2e8;
-  --color-sage-pill: #eaf0e2;
-  --color-cream: #faf6ed;
-  --color-cream-raised: #f5f1e7;
-  --color-warm-white: #fffcf5;
+  --color-sage-selected: #f1f6ed;
+  --color-sage-pill: #edf4e7;
+  --color-cream: #ffffff;
+  --color-cream-raised: #f8faf7;
+  --color-warm-white: #ffffff;
+  --color-brand-canvas: #ffffff;
+  --color-brand-surface: #ffffff;
+  --color-brand-surface-soft: #f8faf7;
+  --color-mascot-stage: #ffffff;
   --color-terracotta: #c8694b;
   --color-terracotta-light: #e8a88e;
   --color-gold: #d4a943;
@@ -150,13 +154,13 @@
   --radius-full: 9999px;
 
   /* Happy app semantic palette */
-  --color-offwhite: #faf9f6;
+  --color-offwhite: #ffffff;
   --color-theme-background-primary: #ffffff;
-  --color-theme-background-secondary: #f2efe8;
+  --color-theme-background-secondary: #f8faf7;
   --color-theme-background-card: #ffffff;
   --color-theme-text-primary: #1f2937;
   --color-theme-text-secondary: #64748b;
-  --color-theme-border: #ded6c8;
+  --color-theme-border: #e1e8da;
   --color-theme-purple-light: #eee9ff;
   --color-theme-purple-primary: #7b61ff;
   --color-theme-purple-deep: #5f46e8;
@@ -210,11 +214,11 @@
 }
 
 @utility happy-brand-card {
-  @apply border-2 border-sage-100 bg-warm-white;
+  @apply border-2 border-sage-100 bg-brand-surface;
 }
 
 @utility happy-brand-card-strong {
-  @apply border-2 border-sage-200 bg-warm-white;
+  @apply border-2 border-sage-200 bg-brand-surface;
 }
 
 @utility happy-brand-card-selected {
@@ -222,7 +226,7 @@
 }
 
 @utility happy-brand-pressed-card {
-  @apply border-2 border-b-4 border-sage-100 bg-warm-white;
+  @apply border-2 border-b-4 border-sage-100 bg-brand-surface;
 }
 
 @utility happy-brand-pressed-card-selected {
@@ -230,15 +234,31 @@
 }
 
 @utility happy-brand-raised-panel {
-  @apply border-2 border-b-[6px] border-sage-100 border-b-sage-200 bg-warm-white;
+  @apply border-2 border-b-[6px] border-sage-100 border-b-sage-200 bg-brand-surface;
 }
 
 @utility happy-brand-preview-tile {
-  @apply border-2 border-b-[5px] border-sage-100 border-b-sage-200 bg-warm-white;
+  @apply border-2 border-b-[5px] border-sage-100 border-b-sage-200 bg-brand-surface;
 }
 
 @utility happy-brand-metric-card {
-  @apply bg-cream-raised;
+  @apply bg-brand-surface-soft;
+}
+
+@utility happy-brand-screen {
+  @apply bg-brand-canvas;
+}
+
+@utility happy-brand-surface {
+  @apply bg-brand-surface;
+}
+
+@utility happy-brand-surface-soft {
+  @apply bg-brand-surface-soft;
+}
+
+@utility happy-mascot-stage {
+  @apply border-2 border-sage-100 bg-mascot-stage;
 }
 
 @utility happy-brand-soft-chip {

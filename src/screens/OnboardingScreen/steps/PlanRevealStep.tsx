@@ -181,7 +181,7 @@ const ProjectionGraph: React.FC = () => {
           y1="20"
           x2="305"
           y2="20"
-          stroke="#E8E2D2"
+          stroke="#E6ECDF"
           strokeWidth="1"
           strokeDasharray="2 3"
         />
@@ -190,7 +190,7 @@ const ProjectionGraph: React.FC = () => {
           y1="60"
           x2="305"
           y2="60"
-          stroke="#E8E2D2"
+          stroke="#E6ECDF"
           strokeWidth="1"
           strokeDasharray="2 3"
         />
@@ -199,7 +199,7 @@ const ProjectionGraph: React.FC = () => {
           y1="100"
           x2="305"
           y2="100"
-          stroke="#E8E2D2"
+          stroke="#E6ECDF"
           strokeWidth="1"
           strokeDasharray="2 3"
         />
@@ -207,7 +207,7 @@ const ProjectionGraph: React.FC = () => {
         <Path
           d="M 35 95 L 305 92"
           fill="none"
-          stroke="#D4CCB5"
+          stroke="#CFDBC4"
           strokeWidth="2.5"
           strokeDasharray="4 4"
         />
@@ -297,7 +297,7 @@ const ProjectionGraph: React.FC = () => {
           marginTop: 8,
           paddingTop: 12,
           borderTopWidth: 1,
-          borderTopColor: "#D4CCB5",
+          borderTopColor: "#CFDBC4",
           borderStyle: "dashed",
           flexDirection: "row",
           justifyContent: "space-between",
@@ -326,7 +326,7 @@ const ProjectionGraph: React.FC = () => {
               width: 8,
               height: 8,
               borderRadius: 999,
-              backgroundColor: "#E8E2D2",
+              backgroundColor: "#E6ECDF",
               borderWidth: 1,
               borderColor: "#A8B89A",
               borderStyle: "dashed",

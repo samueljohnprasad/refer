@@ -12,7 +12,7 @@ interface PostExerciseInsightProps {
 const TONE_STYLES = {
   encouraging: { bg: "#eef2e8", border: "#d4ccb5", icon: "📊" },
   celebrating: { bg: "#eaf0e2", border: "#a8b89a", icon: "🎉" },
-  curious: { bg: "#faf6ed", border: "#d4ccb5", icon: "💡" },
+  curious: { bg: "#ffffff", border: "#cfdbc4", icon: "💡" },
 } as const;
 
 export const PostExerciseInsight: React.FC<PostExerciseInsightProps> =

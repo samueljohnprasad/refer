@@ -47,11 +47,11 @@ export const MOOD = {
 // ─── Surface / Background ──────────────────────────────────────────
 export const SURFACE = {
   /** Main app background */
-  background: '#F2F2F7',   // offwhite
+  background: '#FFFFFF',
   /** Card surface */
   card: '#FFFFFF',
   /** Subtle card border */
-  border: '#F3F4F6',       // gray-100
+  border: '#E1E8DA',
 } as const;
 
 // ─── Gradients ──────────────────────────────────────────────────────

@@ -103,7 +103,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
             marginTop: 14,
             paddingTop: 10,
             borderTopWidth: 1,
-            borderTopColor: "#D4CCB5",
+            borderTopColor: "#CFDBC4",
             borderStyle: "dashed",
             flexDirection: "row",
             alignItems: "center",

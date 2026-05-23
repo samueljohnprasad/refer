@@ -393,9 +393,9 @@ function CourseCatalogSheetContent({
       : "Enroll in Course";
 
   return (
-    <View className="flex-1 bg-cream">
+    <View className="flex-1 happy-brand-screen">
       <View
-        className="flex-row items-center justify-between bg-cream px-5"
+        className="flex-row items-center justify-between happy-brand-screen px-5"
         style={{ paddingTop: Math.max(insets.top, 16) }}
       >
         <View className="h-11 w-11" />
@@ -410,7 +410,7 @@ function CourseCatalogSheetContent({
       </View>
 
       <View
-        className="flex-1 bg-cream"
+        className="flex-1 happy-brand-screen"
         style={{ paddingBottom: Math.max(insets.bottom, 20) }}
       >
         <ScrollView

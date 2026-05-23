@@ -121,19 +121,19 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           borderRadius: 24,
           borderCurve: "continuous",
           borderWidth: 1,
-          borderColor: "#D4CCB5",
+          borderColor: "#CFDBC4",
           boxShadow:
             "0 8px 24px rgba(42, 63, 42, 0.08), 0 2px 6px rgba(42, 63, 42, 0.04)",
         }}
       >
         <LinearGradient
-          colors={["#FFFCF5", "#FAF6ED"]}
+          colors={["#FFFFFF", "#F8FAF7"]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={{ paddingHorizontal: 22, paddingTop: 24, paddingBottom: 20 }}
         >
           <LinearGradient
-            colors={["transparent", "#E8E2D2", "#D4CCB5", "#E8E2D2", "transparent"]}
+            colors={["transparent", "#E6ECDF", "#CFDBC4", "#E6ECDF", "transparent"]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={{
@@ -308,7 +308,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           </View>
 
           <LinearGradient
-            colors={["transparent", "#D4CCB5", "transparent"]}
+            colors={["transparent", "#CFDBC4", "transparent"]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={{ marginTop: 16, height: 1 }}

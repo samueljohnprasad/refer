@@ -29,8 +29,8 @@ import {
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const PALETTE = {
-  warmWhite: "#FFFCF5",
-  sage100: "#E8E2D2",
+  warmWhite: "#FFFFFF",
+  sage100: "#E6ECDF",
   sage300: "#A8B89A",
   sage500: "#5A7A56",
   sage600: "#3F5A3D",
@@ -136,7 +136,10 @@ const HeaderOverlayContent = ({
   const progressPercent = formatProgressPercent(progress);
 
   return (
-    <Animated.View className="w-full bg-cream pb-4" style={animatedStyle}>
+    <Animated.View
+      className="w-full happy-brand-screen pb-4"
+      style={animatedStyle}
+    >
       <Svg
         width={width}
         height={16}

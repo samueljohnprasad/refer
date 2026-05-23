@@ -30,7 +30,7 @@ const CATEGORY_ICONS = {
 
 const CATEGORY_COLORS = {
   cbt_core: "#eef2e8",
-  anxiety: "#faf6ed",
+  anxiety: "#f8faf7",
   mindfulness: "#eef2e8",
   overthinking: "#eaf0e2",
 } as const;
@@ -48,7 +48,7 @@ export default function InsightsScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-warm-white" edges={["top"]}>
+      <SafeAreaView className="flex-1 happy-brand-screen" edges={["top"]}>
         <View className="flex-1 items-center justify-center">
           <Text className="happy-font-body-medium text-sm text-ink-muted">
             Loading insights...
@@ -63,7 +63,7 @@ export default function InsightsScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-warm-white" edges={["top"]}>
+    <SafeAreaView className="flex-1 happy-brand-screen" edges={["top"]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
@@ -202,7 +202,7 @@ function EmptyState() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-warm-white" edges={["top"]}>
+    <SafeAreaView className="flex-1 happy-brand-screen" edges={["top"]}>
       <View className="flex-1 items-center justify-center px-8">
         <Text className="text-[48px] mb-4">🌿</Text>
         <Text className="happy-font-heading-bold text-xl text-ink text-center mb-2">

@@ -13,11 +13,13 @@ import {
   JourneyMapNode,
 } from "./types";
 
+const ONBOARDING_BACKGROUND = "#FFFFFF";
+
 export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "welcome",
     stage: 1,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: true,
     continueButtonLabel: "LET'S BEGIN",
@@ -28,7 +30,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "mascot_greeting",
     stage: 1,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: true,
     showContinueButton: true,
     continueButtonLabel: "I'M READY",
@@ -39,7 +41,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "quiz_motivation",
     stage: 2,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: true,
     showContinueButton: false,
     continueButtonLabel: "CONTINUE",
@@ -50,7 +52,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "quiz_stress_level",
     stage: 2,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: true,
     showContinueButton: false,
     continueButtonLabel: "CONTINUE",
@@ -61,7 +63,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "quiz_experience",
     stage: 2,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: true,
     showContinueButton: false,
     continueButtonLabel: "CONTINUE",
@@ -72,7 +74,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "quiz_timing",
     stage: 2,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: true,
     showContinueButton: false,
     continueButtonLabel: "CONTINUE",
@@ -83,7 +85,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "daily_goal",
     stage: 3,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: true,
     showContinueButton: true,
     continueButtonLabel: "SET MY GOAL",
@@ -95,7 +97,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "pact_signing",
     stage: 3,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: true,
     showContinueButton: false,
     continueButtonLabel: "",
@@ -106,7 +108,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "building_journey",
     stage: 4,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: false,
     continueButtonLabel: "",
@@ -117,7 +119,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "plan_reveal",
     stage: 4,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: true,
     continueButtonLabel: "START DAY 1",
@@ -128,7 +130,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "mood_check_lesson",
     stage: 5,
-    backgroundColor: "#FFFCF5",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: true,
     continueButtonLabel: "CONTINUE",
@@ -140,7 +142,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "ai_insight",
     stage: 5,
-    backgroundColor: "#FFFCF5",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: true,
     continueButtonLabel: "CONTINUE",
@@ -151,7 +153,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "lesson_complete",
     stage: 5,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: true,
     continueButtonLabel: "CONTINUE",
@@ -162,7 +164,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "notification_permission",
     stage: 6,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: true,
     continueButtonLabel: "ENABLE REMINDERS",
@@ -173,7 +175,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "journey_map",
     stage: 6,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: true,
     continueButtonLabel: "CONTINUE",
@@ -184,7 +186,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "letter_from_future",
     stage: 7,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: true,
     continueButtonLabel: "I NEEDED THIS",
@@ -195,7 +197,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "soft_paywall",
     stage: 7,
-    backgroundColor: "#FFFCF5",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: false,
     continueButtonLabel: "",
@@ -206,7 +208,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
   {
     name: "welcome_to_happy",
     stage: 7,
-    backgroundColor: "#FAF6ED",
+    backgroundColor: ONBOARDING_BACKGROUND,
     showBackButton: false,
     showContinueButton: true,
     continueButtonLabel: "BEGIN MY JOURNEY",

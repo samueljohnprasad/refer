@@ -38,12 +38,12 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
     borderColor: interpolateColor(
       selectionProgress.value,
       [0, 1],
-      ["#E8E2D2", "#688264"],
+      ["#E6ECDF", "#688264"],
     ),
     backgroundColor: interpolateColor(
       selectionProgress.value,
       [0, 1],
-      ["#FFFCF5", "#F2F5EE"],
+      ["#FFFFFF", "#F8FAF7"],
     ),
   }));
 

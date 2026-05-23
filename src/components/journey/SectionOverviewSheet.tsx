@@ -8,11 +8,11 @@ import JourneyUnitIcon from "@/src/components/journey/JourneyUnitIcon";
 import type { SectionOverviewItem } from "@/src/types/journey/sectionMap";
 
 const PALETTE = {
-  cream: "#FAF6ED",
-  warmWhite: "#FFFCF5",
-  sage50: "#F4F1EA",
-  sage100: "#E8E2D2",
-  sage200: "#D4CCB5",
+  cream: "#FFFFFF",
+  warmWhite: "#FFFFFF",
+  sage50: "#F7FAF5",
+  sage100: "#E6ECDF",
+  sage200: "#CFDBC4",
   sage300: "#A8B89A",
   sage500: "#5A7A56",
   sage600: "#3F5A3D",
@@ -51,7 +51,7 @@ function SectionCard({
   }`;
   const isComplete = section.progressPercent >= 100;
   const cardStateClassName = section.isCurrent
-    ? "border-sage-500 border-b-sage-600 bg-[#EEF2E8]"
+    ? "border-sage-500 border-b-sage-600 bg-sage-selected"
     : isComplete
       ? "border-[#D8F3DD] border-b-[#C4E9CB] bg-warm-white"
       : "border-sage-100 border-b-sage-100 bg-warm-white";
@@ -165,8 +165,8 @@ export function SectionOverviewSheet({
   );
 
   return (
-    <View className="flex-1 bg-cream">
-      <View className="flex-row items-start justify-between border-b-2 border-sage-100 bg-cream px-6 pb-5 pt-5">
+    <View className="flex-1 happy-brand-screen">
+      <View className="flex-row items-start justify-between border-b-2 border-sage-100 happy-brand-screen px-6 pb-5 pt-5">
         <View>
           <Text
             className="text-xs uppercase tracking-[1.6px] text-sage-500"
@@ -198,7 +198,7 @@ export function SectionOverviewSheet({
       </View>
 
       <ScrollView
-        className="flex-1 bg-cream"
+        className="flex-1 happy-brand-screen"
         contentInsetAdjustmentBehavior="automatic"
         contentContainerClassName="gap-[18px] px-5 pb-8 pt-5"
         showsVerticalScrollIndicator={false}

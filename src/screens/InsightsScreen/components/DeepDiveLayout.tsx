@@ -23,7 +23,7 @@ export function DeepDiveLayout({
 }: DeepDiveLayoutProps) {
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-warm-white" edges={["top"]}>
+      <SafeAreaView className="flex-1 happy-brand-screen" edges={["top"]}>
         <View className="flex-1 items-center justify-center">
           <Text className="happy-font-body-medium text-sm text-ink-muted">
             Loading...
@@ -34,7 +34,7 @@ export function DeepDiveLayout({
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-warm-white" edges={["top"]}>
+    <SafeAreaView className="flex-1 happy-brand-screen" edges={["top"]}>
       <View className="px-5 pt-4 pb-2 flex-row items-center justify-between">
         <View className="flex-row items-center gap-3">
           <Pressable onPress={() => router.back()} hitSlop={12}>
