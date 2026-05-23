@@ -276,7 +276,7 @@ export const selectCurrentNodeIdForCourse = createSelector(
 );
 
 /**
- * Returns the current node for a course — the first non-completed, unlocked node.
+ * Returns the current node for a course — the first non-completed node.
  *
  * "Current" is a UI-only concept. NOT stored in the database.
  * The current node is the first node in course order without a completed row.

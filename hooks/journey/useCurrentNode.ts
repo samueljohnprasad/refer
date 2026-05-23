@@ -1,5 +1,5 @@
 // hooks/journey/useCurrentNode.ts
-// Returns the current node — the first non-completed, unlocked node in a course.
+// Returns the current node — the first non-completed node in a course.
 // Thin selector wrapper. "Current node" is a UI concept; it is not stored in the DB.
 
 import { useAppSelector } from "@/src/store/hooks";
