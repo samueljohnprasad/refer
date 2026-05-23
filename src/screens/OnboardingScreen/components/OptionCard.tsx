@@ -54,12 +54,12 @@ function OptionCardInner<T extends string>({
     borderColor: interpolateColor(
       selectionProgress.value,
       [0, 1],
-      ["#E6ECDF", "#5A7A56"],
+      ["#E5EDE1", "#5F7F58"],
     ),
     backgroundColor: interpolateColor(
       selectionProgress.value,
       [0, 1],
-      ["#FFFFFF", "#F1F6ED"],
+      ["#FFFFFF", "#F2F8EF"],
     ),
   }));
 

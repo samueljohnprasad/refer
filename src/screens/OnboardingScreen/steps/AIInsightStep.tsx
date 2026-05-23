@@ -51,7 +51,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           <Text
             style={{
               fontFamily: "FrauncesRegularItalic",
-              color: "#5A7A56",
+              color: "#5F7F58",
             }}
           >
             you.
@@ -77,7 +77,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           <Text
             style={{
               fontFamily: "FrauncesSemiBoldItalic",
-              color: "#2A3F2A",
+              color: "#29452A",
             }}
           >
             feeling {feelingLabel}
@@ -86,7 +86,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           <Text
             style={{
               fontFamily: "FrauncesSemiBoldItalic",
-              color: "#2A3F2A",
+              color: "#29452A",
             }}
           >
             {timingLabel}
@@ -96,7 +96,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           <Text
             style={{
               fontFamily: "FrauncesSemiBoldItalic",
-              color: "#2A3F2A",
+              color: "#29452A",
             }}
           >
             {timeWindow} reflection
@@ -123,7 +123,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           <Text
             style={{
               fontFamily: "FrauncesSemiBold",
-              color: "#5A7A56",
+              color: "#5F7F58",
             }}
           >
             5-4-3-2-1
@@ -147,7 +147,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
               <Text
                 style={{
                   fontFamily: "GeistSemiBold",
-                  color: "#5A7A56",
+                  color: "#5F7F58",
                 }}
               >
                 {count}
@@ -164,7 +164,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
             className="flex-1 text-[11px] leading-[1.4] text-ink-soft"
           >
             <Text
-              style={{ fontFamily: "GeistSemiBold", color: "#3F5A3D" }}
+              style={{ fontFamily: "GeistSemiBold", color: "#44633F" }}
             >
               Research:
             </Text>{" "}

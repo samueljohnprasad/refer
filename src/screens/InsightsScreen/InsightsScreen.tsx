@@ -30,7 +30,7 @@ const CATEGORY_ICONS = {
 
 const CATEGORY_COLORS = {
   cbt_core: "#eef2e8",
-  anxiety: "#f8faf7",
+  anxiety: "#f8fbf6",
   mindfulness: "#eef2e8",
   overthinking: "#eaf0e2",
 } as const;

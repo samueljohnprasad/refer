@@ -68,7 +68,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           <Text
             style={{
               fontFamily: "GeistBold",
-              color: "#2A3F2A",
+              color: "#29452A",
               fontSize: 11,
               fontWeight: "800",
               letterSpacing: 1.8,
@@ -86,14 +86,14 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             fontSize: 28,
             lineHeight: 33,
             textAlign: "center",
-            color: "#1A2A1A",
+            color: "#142414",
           }}
         >
           A letter from{" "}
           <Text
             style={{
               fontFamily: "FrauncesRegularItalic",
-              color: "#5A7A56",
+              color: "#5F7F58",
             }}
           >
             you,
@@ -106,7 +106,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             fontSize: 15,
             lineHeight: 21,
             textAlign: "center",
-            color: "#4A5A4A",
+            color: "#4F604F",
           }}
         >
           written 30 days from now.
@@ -121,19 +121,19 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           borderRadius: 24,
           borderCurve: "continuous",
           borderWidth: 1,
-          borderColor: "#CFDBC4",
+          borderColor: "#D3E0CD",
           boxShadow:
             "0 8px 24px rgba(42, 63, 42, 0.08), 0 2px 6px rgba(42, 63, 42, 0.04)",
         }}
       >
         <LinearGradient
-          colors={["#FFFFFF", "#F8FAF7"]}
+            colors={["#FFFFFF", "#F8FBF6"]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={{ paddingHorizontal: 22, paddingTop: 24, paddingBottom: 20 }}
         >
           <LinearGradient
-            colors={["transparent", "#E6ECDF", "#CFDBC4", "#E6ECDF", "transparent"]}
+            colors={["transparent", "#E5EDE1", "#D3E0CD", "#E5EDE1", "transparent"]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={{
@@ -189,7 +189,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             style={{
               fontFamily: "GeistMedium",
               paddingRight: 60,
-              color: "#7A8A7A",
+              color: "#7D8D7B",
               fontSize: 11,
               fontWeight: "500",
               letterSpacing: 0.5,
@@ -204,7 +204,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
               fontFamily: "FrauncesRegular",
               fontSize: 18,
               lineHeight: 22,
-              color: "#1A2A1A",
+              color: "#142414",
             }}
           >
             Hey, friend —
@@ -216,14 +216,14 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 fontFamily: "FrauncesRegular",
                 fontSize: 14,
                 lineHeight: 23,
-                color: "#4A5A4A",
+                color: "#4F604F",
               }}
             >
               I&apos;m writing from a {futureLetterMeta.weekdayLower}{" "}
               {futureLetterMeta.moment}. I closed Happy{" "}
               <Text
                 style={{
-                  color: "#3F5A3D",
+                  color: "#44633F",
                   fontFamily: "FrauncesSemiBold",
                 }}
               >
@@ -237,7 +237,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 fontFamily: "FrauncesRegular",
                 fontSize: 14,
                 lineHeight: 23,
-                color: "#4A5A4A",
+                color: "#4F604F",
               }}
             >
               I won&apos;t lie to you. The noise didn&apos;t stop. Some mornings
@@ -249,14 +249,14 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 fontFamily: "FrauncesRegular",
                 fontSize: 14,
                 lineHeight: 23,
-                color: "#4A5A4A",
+                color: "#4F604F",
               }}
             >
               But yesterday, when the spiral started — I caught it. I named it.
               I sat with it for thirty seconds.{" "}
               <Text
                 style={{
-                  color: "#3F5A3D",
+                  color: "#44633F",
                   fontFamily: "FrauncesSemiBold",
                 }}
               >
@@ -269,7 +269,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 fontFamily: "FrauncesRegular",
                 fontSize: 14,
                 lineHeight: 23,
-                color: "#4A5A4A",
+                color: "#4F604F",
               }}
             >
               Thirty days ago, that wasn&apos;t possible.
@@ -280,7 +280,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 fontFamily: "FrauncesRegular",
                 fontSize: 14,
                 lineHeight: 23,
-                color: "#4A5A4A",
+                color: "#4F604F",
               }}
             >
               You showed up today. Five minutes. Just like you said you would,
@@ -292,13 +292,13 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 fontFamily: "FrauncesRegular",
                 fontSize: 14,
                 lineHeight: 23,
-                color: "#4A5A4A",
+                color: "#4F604F",
               }}
             >
               Keep going.{" "}
               <Text
                 style={{
-                  color: "#3F5A3D",
+                  color: "#44633F",
                   fontFamily: "FrauncesSemiBold",
                 }}
               >
@@ -308,7 +308,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           </View>
 
           <LinearGradient
-            colors={["transparent", "#CFDBC4", "transparent"]}
+            colors={["transparent", "#D3E0CD", "transparent"]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={{ marginTop: 16, height: 1 }}
@@ -331,7 +331,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
                 fontFamily: "GeistRegular",
                 fontSize: 11,
                 lineHeight: 15,
-                color: "#7A8A7A",
+                color: "#7D8D7B",
                 letterSpacing: 0.3,
               }}
             >
@@ -358,7 +358,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             fontFamily: "FrauncesMediumItalic",
             fontSize: 13,
             lineHeight: 18,
-            color: "#4A5A4A",
+            color: "#4F604F",
           }}
         >
           Hold onto this. Some days you&apos;ll need to remember who you&apos;re

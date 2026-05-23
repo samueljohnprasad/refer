@@ -119,30 +119,30 @@
   --color-accent-foreground: rgb(var(--accent-foreground));
 
   /* Happy brand — white canvas with sage accents */
-  --color-sage-50: #f7faf5;
-  --color-sage-100: #e6ecdf;
-  --color-sage-200: #cfdbc4;
-  --color-sage-300: #a8b89a;
-  --color-sage-400: #7a9272;
-  --color-sage-500: #5a7a56;
-  --color-sage-600: #3f5a3d;
-  --color-sage-700: #2a3f2a;
-  --color-sage-800: #1a2a1a;
-  --color-sage-selected: #f1f6ed;
-  --color-sage-pill: #edf4e7;
+  --color-sage-50: #f8fbf6;
+  --color-sage-100: #e5ede1;
+  --color-sage-200: #d3e0cd;
+  --color-sage-300: #abc0a2;
+  --color-sage-400: #7e9874;
+  --color-sage-500: #5f7f58;
+  --color-sage-600: #44633f;
+  --color-sage-700: #29452a;
+  --color-sage-800: #152714;
+  --color-sage-selected: #f2f8ef;
+  --color-sage-pill: #edf5e9;
   --color-cream: #ffffff;
   --color-cream-raised: #f8faf7;
   --color-warm-white: #ffffff;
   --color-brand-canvas: #ffffff;
   --color-brand-surface: #ffffff;
-  --color-brand-surface-soft: #f8faf7;
+  --color-brand-surface-soft: #f8fbf6;
   --color-mascot-stage: #ffffff;
   --color-terracotta: #c8694b;
   --color-terracotta-light: #e8a88e;
   --color-gold: #d4a943;
-  --color-ink: #1a2a1a;
-  --color-ink-soft: #4a5a4a;
-  --color-ink-muted: #7a8a7a;
+  --color-ink: #142414;
+  --color-ink-soft: #4f604f;
+  --color-ink-muted: #7d8d7b;
 
   /* Border radius scale */
   --radius-sm: 4px;
@@ -156,11 +156,11 @@
   /* Happy app semantic palette */
   --color-offwhite: #ffffff;
   --color-theme-background-primary: #ffffff;
-  --color-theme-background-secondary: #f8faf7;
+  --color-theme-background-secondary: #f8fbf6;
   --color-theme-background-card: #ffffff;
   --color-theme-text-primary: #1f2937;
   --color-theme-text-secondary: #64748b;
-  --color-theme-border: #e1e8da;
+  --color-theme-border: #e5ede1;
   --color-theme-purple-light: #eee9ff;
   --color-theme-purple-primary: #7b61ff;
   --color-theme-purple-deep: #5f46e8;

@@ -39,8 +39,8 @@ import {
 } from "./courseVisuals";
 
 const PALETTE = {
-  sage500: "#5A7A56",
-  sage600: "#3F5A3D",
+  sage500: "#5F7F58",
+  sage600: "#44633F",
 } as const;
 
 type CourseCatalogSheetProps = {
@@ -69,7 +69,7 @@ type CourseMetricCardProps = {
 };
 
 const SECTION_PREVIEW_ACCENTS = [
-  "#5A7A56",
+  "#5F7F58",
   "#1F7A70",
   "#C56A3A",
   "#7A6754",

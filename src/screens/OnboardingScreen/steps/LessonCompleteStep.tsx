@@ -47,7 +47,7 @@ const LessonCompleteStep: React.FC = () => {
             <Text
               style={{
                 fontFamily: "FrauncesRegularItalic",
-                color: "#5A7A56",
+                color: "#5F7F58",
               }}
             >
               Truly.
@@ -60,7 +60,7 @@ const LessonCompleteStep: React.FC = () => {
             <Text
               style={{
                 fontFamily: "FrauncesRegularItalic",
-                color: "#5A7A56",
+                color: "#5F7F58",
               }}
             >
               You showed up. That&apos;s the whole thing.

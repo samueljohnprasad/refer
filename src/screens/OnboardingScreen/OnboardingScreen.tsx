@@ -69,6 +69,7 @@ const STEP_CTA_REVEAL_OFFSET = 6;
 const STEP_ENTER_DURATION_MS = 200;
 const STEP_ENTER_TRAVEL_PX = 18;
 const LESSON_PROGRESS_FILL = "#C8694B";
+const HEADER_ICON_COLOR = "#4F604F";
 
 const getHeaderConfig = (stepName: string): HeaderConfig => {
   switch (stepName) {
@@ -97,7 +98,7 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
       return {
         visible: true,
         trailingLabel: "YOUR PLAN",
-        trailingLabelColor: "#7A8A7A",
+        trailingLabelColor: "#7D8D7B",
         trailingLabelTracking: 0.6,
         trailingLabelAlignment: "end",
       };
@@ -126,7 +127,7 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
         visible: true,
         showBackButton: true,
         trailingLabel: "A QUIET MOMENT",
-        trailingLabelColor: "#7A8A7A",
+        trailingLabelColor: "#7D8D7B",
         trailingLabelTracking: 0.6,
         trailingLabelAlignment: "center",
       };
@@ -510,7 +511,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                         style={{
                           fontSize: 24,
                           lineHeight: 24,
-                          color: "#4A5A4A",
+                          color: HEADER_ICON_COLOR,
                           fontWeight: "400",
                         }}
                       >
@@ -520,7 +521,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                       <HugeiconsIcon
                         icon={ArrowLeft02Icon}
                         size={18}
-                        color="#4A5A4A"
+                        color={HEADER_ICON_COLOR}
                       />
                     )}
                   </TouchableOpacity>
@@ -546,7 +547,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                         <Text
                           style={{
                             color:
-                              headerConfig.trailingLabelColor ?? "#7A8A7A",
+                              headerConfig.trailingLabelColor ?? "#7D8D7B",
                             fontSize: 11,
                             letterSpacing:
                               headerConfig.trailingLabelTracking ?? 0.5,
@@ -567,7 +568,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
                 headerConfig.trailingLabel ? (
                   <Text
                     style={{
-                      color: headerConfig.trailingLabelColor ?? "#7A8A7A",
+                      color: headerConfig.trailingLabelColor ?? "#7D8D7B",
                       fontSize: 12,
                     }}
                     className="happy-font-body-bold"

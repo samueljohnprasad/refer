@@ -47,7 +47,7 @@ const LoadingTaskRow: React.FC<LoadingTaskRowProps> = ({
             <Text className="text-[11px] font-extrabold text-white">✓</Text>
           </Animated.View>
         ) : inProgress ? (
-          <ActivityIndicator size="small" color="#5A7A56" />
+          <ActivityIndicator size="small" color="#5F7F58" />
         ) : (
           <View className="h-[18px] w-[18px] rounded-full border-2 border-sage-200" />
         )}

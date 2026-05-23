@@ -51,7 +51,7 @@ export const SURFACE = {
   /** Card surface */
   card: '#FFFFFF',
   /** Subtle card border */
-  border: '#E1E8DA',
+  border: '#E5EDE1',
 } as const;
 
 // ─── Gradients ──────────────────────────────────────────────────────

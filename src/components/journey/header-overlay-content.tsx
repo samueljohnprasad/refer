@@ -30,10 +30,10 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const PALETTE = {
   warmWhite: "#FFFFFF",
-  sage100: "#E6ECDF",
-  sage300: "#A8B89A",
-  sage500: "#5A7A56",
-  sage600: "#3F5A3D",
+  sage100: "#E5EDE1",
+  sage300: "#ABC0A2",
+  sage500: "#5F7F58",
+  sage600: "#44633F",
 } as const;
 
 const FONTS = {

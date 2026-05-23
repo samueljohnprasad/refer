@@ -17,8 +17,8 @@ const TRACK_HEIGHT = 12;
 
 const StageProgressBar: React.FC<StageProgressBarProps> = ({
   progress,
-  fillColor = "#6E8965",
-  trackColor = "#E8E1CF",
+  fillColor = "#5F7F58",
+  trackColor = "#E9EFE5",
 }) => {
   const [trackWidth, setTrackWidth] = React.useState(0);
   const clampedProgress = Math.max(0, Math.min(progress, 1));

@@ -152,15 +152,15 @@ const ProjectionGraph: React.FC = () => {
       <Svg width="100%" height={148} viewBox="0 0 320 140">
         <Defs>
           <SvgLinearGradient id="planProjectionGradient" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0%" stopColor="#7A9272" stopOpacity="0.5" />
-            <Stop offset="100%" stopColor="#7A9272" stopOpacity="0" />
+            <Stop offset="0%" stopColor="#7E9874" stopOpacity="0.5" />
+            <Stop offset="100%" stopColor="#7E9874" stopOpacity="0" />
           </SvgLinearGradient>
         </Defs>
 
         <SvgText
           x="6"
           y="22"
-          fill="#7A8A7A"
+          fill="#7D8D7B"
           fontSize="10"
           fontFamily="GeistMedium"
         >
@@ -169,7 +169,7 @@ const ProjectionGraph: React.FC = () => {
         <SvgText
           x="6"
           y="120"
-          fill="#7A8A7A"
+          fill="#7D8D7B"
           fontSize="10"
           fontFamily="GeistMedium"
         >
@@ -181,7 +181,7 @@ const ProjectionGraph: React.FC = () => {
           y1="20"
           x2="305"
           y2="20"
-          stroke="#E6ECDF"
+          stroke="#E5EDE1"
           strokeWidth="1"
           strokeDasharray="2 3"
         />
@@ -190,7 +190,7 @@ const ProjectionGraph: React.FC = () => {
           y1="60"
           x2="305"
           y2="60"
-          stroke="#E6ECDF"
+          stroke="#E5EDE1"
           strokeWidth="1"
           strokeDasharray="2 3"
         />
@@ -199,7 +199,7 @@ const ProjectionGraph: React.FC = () => {
           y1="100"
           x2="305"
           y2="100"
-          stroke="#E6ECDF"
+          stroke="#E5EDE1"
           strokeWidth="1"
           strokeDasharray="2 3"
         />
@@ -207,7 +207,7 @@ const ProjectionGraph: React.FC = () => {
         <Path
           d="M 35 95 L 305 92"
           fill="none"
-          stroke="#CFDBC4"
+          stroke="#D3E0CD"
           strokeWidth="2.5"
           strokeDasharray="4 4"
         />
@@ -218,22 +218,22 @@ const ProjectionGraph: React.FC = () => {
         <Path
           d="M 35 100 Q 80 95 110 85 T 180 60 T 250 35 L 305 22"
           fill="none"
-          stroke="#5A7A56"
+          stroke="#5F7F58"
           strokeWidth="3"
           strokeLinecap="round"
         />
 
-        <Circle cx="35" cy="100" r="4" fill="#5A7A56" stroke="#FFFFFF" strokeWidth="2.5" />
-        <Circle cx="110" cy="85" r="4" fill="#5A7A56" stroke="#FFFFFF" strokeWidth="2.5" />
-        <Circle cx="180" cy="60" r="4" fill="#5A7A56" stroke="#FFFFFF" strokeWidth="2.5" />
-        <Circle cx="250" cy="35" r="4" fill="#5A7A56" stroke="#FFFFFF" strokeWidth="2.5" />
+        <Circle cx="35" cy="100" r="4" fill="#5F7F58" stroke="#FFFFFF" strokeWidth="2.5" />
+        <Circle cx="110" cy="85" r="4" fill="#5F7F58" stroke="#FFFFFF" strokeWidth="2.5" />
+        <Circle cx="180" cy="60" r="4" fill="#5F7F58" stroke="#FFFFFF" strokeWidth="2.5" />
+        <Circle cx="250" cy="35" r="4" fill="#5F7F58" stroke="#FFFFFF" strokeWidth="2.5" />
         <Circle cx="305" cy="22" r="5" fill="#D4A943" stroke="#FFFFFF" strokeWidth="3" />
 
         <SvgText
           x="35"
           y="135"
           textAnchor="start"
-          fill="#7A8A7A"
+          fill="#7D8D7B"
           fontSize="10"
           fontFamily="GeistMedium"
         >
@@ -243,7 +243,7 @@ const ProjectionGraph: React.FC = () => {
           x="110"
           y="135"
           textAnchor="middle"
-          fill="#7A8A7A"
+          fill="#7D8D7B"
           fontSize="10"
           fontFamily="GeistMedium"
         >
@@ -253,7 +253,7 @@ const ProjectionGraph: React.FC = () => {
           x="180"
           y="135"
           textAnchor="middle"
-          fill="#7A8A7A"
+          fill="#7D8D7B"
           fontSize="10"
           fontFamily="GeistMedium"
         >
@@ -263,7 +263,7 @@ const ProjectionGraph: React.FC = () => {
           x="250"
           y="135"
           textAnchor="middle"
-          fill="#7A8A7A"
+          fill="#7D8D7B"
           fontSize="10"
           fontFamily="GeistMedium"
         >
@@ -273,7 +273,7 @@ const ProjectionGraph: React.FC = () => {
           x="305"
           y="135"
           textAnchor="end"
-          fill="#7A8A7A"
+          fill="#7D8D7B"
           fontSize="10"
           fontFamily="GeistMedium"
         >
@@ -284,7 +284,7 @@ const ProjectionGraph: React.FC = () => {
           x="305"
           y="14"
           textAnchor="end"
-          fill="#2A3F2A"
+          fill="#29452A"
           fontSize="12"
           fontFamily="FrauncesSemiBold"
         >
@@ -297,7 +297,7 @@ const ProjectionGraph: React.FC = () => {
           marginTop: 8,
           paddingTop: 12,
           borderTopWidth: 1,
-          borderTopColor: "#CFDBC4",
+          borderTopColor: "#D3E0CD",
           borderStyle: "dashed",
           flexDirection: "row",
           justifyContent: "space-between",
@@ -310,7 +310,7 @@ const ProjectionGraph: React.FC = () => {
               width: 8,
               height: 8,
               borderRadius: 999,
-              backgroundColor: "#5A7A56",
+              backgroundColor: "#5F7F58",
             }}
           />
           <Text
@@ -326,7 +326,7 @@ const ProjectionGraph: React.FC = () => {
               width: 8,
               height: 8,
               borderRadius: 999,
-              backgroundColor: "#E6ECDF",
+              backgroundColor: "#E5EDE1",
               borderWidth: 1,
               borderColor: "#A8B89A",
               borderStyle: "dashed",
@@ -382,7 +382,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           <Text
             style={{
               fontFamily: "FrauncesRegularItalic",
-              color: "#5A7A56",
+              color: "#5F7F58",
             }}
           >
             {displayPlanName}
@@ -392,7 +392,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
 
       <Animated.View entering={FadeIn.duration(180).delay(160)}>
         <LinearGradient
-          colors={["#3F5A3D", "#2A3F2A"]}
+          colors={["#44633F", "#29452A"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
@@ -467,7 +467,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           <Text
             style={{
               fontFamily: "FrauncesRegularItalic",
-              color: "#5A7A56",
+              color: "#5F7F58",
             }}
           >
             mood clarity
@@ -479,7 +479,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
 
       <Animated.View entering={FadeIn.duration(180).delay(320)}>
         <LinearGradient
-          colors={["#2A3F2A", "#1A2A1A"]}
+          colors={["#29452A", "#142414"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{

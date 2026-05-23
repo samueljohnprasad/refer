@@ -10,16 +10,16 @@ import type { SectionOverviewItem } from "@/src/types/journey/sectionMap";
 const PALETTE = {
   cream: "#FFFFFF",
   warmWhite: "#FFFFFF",
-  sage50: "#F7FAF5",
-  sage100: "#E6ECDF",
-  sage200: "#CFDBC4",
-  sage300: "#A8B89A",
-  sage500: "#5A7A56",
-  sage600: "#3F5A3D",
-  sage700: "#2A3F2A",
-  ink: "#1A2A1A",
-  inkSoft: "#4A5A4A",
-  inkMuted: "#7A8A7A",
+  sage50: "#F8FBF6",
+  sage100: "#E5EDE1",
+  sage200: "#D3E0CD",
+  sage300: "#ABC0A2",
+  sage500: "#5F7F58",
+  sage600: "#44633F",
+  sage700: "#29452A",
+  ink: "#142414",
+  inkSoft: "#4F604F",
+  inkMuted: "#7D8D7B",
 } as const;
 
 const FONTS = {

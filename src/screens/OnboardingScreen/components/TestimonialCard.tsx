@@ -17,7 +17,7 @@ const AVATAR_GRADIENTS: Record<TestimonialTone, [string, string]> = {
   terracotta: ["#E9A88B", "#D57655"],
   lavender: ["#C9B8D9", "#B7A0D0"],
   sky: ["#B0CCDB", "#94B5C9"],
-  sage: ["#B8C4A8", "#5A7A56"],
+  sage: ["#ABC0A2", "#5F7F58"],
 };
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({

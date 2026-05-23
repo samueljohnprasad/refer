@@ -22,7 +22,7 @@ interface GoalCardProps {
 
 const TAG_STYLES = {
   casual: "bg-sage-50 text-ink-soft",
-  recommended: "bg-sage-200 text-sage-600",
+  recommended: "bg-sage-pill text-sage-600",
   committed: "bg-terracotta-light text-terracotta",
   serious: "bg-terracotta text-white",
 } as const;
@@ -58,12 +58,12 @@ const GoalCard: React.FC<GoalCardProps> = ({
     borderColor: interpolateColor(
       selectionProgress.value,
       [0, 1],
-      ["#E6ECDF", "#5A7A56"],
+      ["#E5EDE1", "#5F7F58"],
     ),
     backgroundColor: interpolateColor(
       selectionProgress.value,
       [0, 1],
-      ["#FFFFFF", "#F1F6ED"],
+      ["#FFFFFF", "#F2F8EF"],
     ),
   }));
 

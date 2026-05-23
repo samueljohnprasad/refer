@@ -39,7 +39,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           <Text
             style={{
               fontFamily: "FrauncesRegularItalic",
-              color: "#5A7A56",
+              color: "#5F7F58",
             }}
           >
             feeling.
@@ -71,7 +71,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           <Text
             style={{
               fontFamily: "FrauncesSemiBoldItalic",
-              color: "#2A3F2A",
+              color: "#29452A",
             }}
           >
             specific words
@@ -81,7 +81,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           <Text
             style={{
               fontFamily: "FrauncesSemiBoldItalic",
-              color: "#2A3F2A",
+              color: "#29452A",
             }}
           >
             affect labeling
@@ -90,7 +90,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           <Text
             style={{
               fontFamily: "FrauncesSemiBoldItalic",
-              color: "#2A3F2A",
+              color: "#29452A",
             }}
           >
             40%
@@ -103,7 +103,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
             marginTop: 14,
             paddingTop: 10,
             borderTopWidth: 1,
-            borderTopColor: "#CFDBC4",
+            borderTopColor: "#D3E0CD",
             borderStyle: "dashed",
             flexDirection: "row",
             alignItems: "center",
@@ -177,7 +177,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           <Text
             style={{
               fontFamily: "FrauncesRegularItalic",
-              color: "#5A7A56",
+              color: "#5F7F58",
             }}
           >
             really?

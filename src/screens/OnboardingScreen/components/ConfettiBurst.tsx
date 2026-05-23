@@ -12,7 +12,7 @@ import Animated, {
 const PARTICLES = Array.from({ length: 12 }).map((_, i) => ({
   id: i,
   angle: i * 30 * (Math.PI / 180),
-  color: ["#D4A943", "#5A7A56", "#C8694B", "#7A9272", "#E8A88E", "#3F5A3D"][
+  color: ["#D4A943", "#5F7F58", "#C8694B", "#7E9874", "#E8A88E", "#44633F"][
     i % 6
   ],
   size: 6 + (i % 3) * 3,

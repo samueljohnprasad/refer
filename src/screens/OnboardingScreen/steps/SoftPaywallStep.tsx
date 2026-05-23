@@ -76,7 +76,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           >
             Become someone who doesn&apos;t run from{' '}
             <Text
-              style={{ fontFamily: 'FrauncesRegularItalic', color: '#5A7A56' }}
+              style={{ fontFamily: 'FrauncesRegularItalic', color: '#5F7F58' }}
             >
               how they feel.
             </Text>

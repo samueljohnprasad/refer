@@ -55,7 +55,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
               <Text
                 style={{
                   fontFamily: "FrauncesRegularItalic",
-                  color: "#5A7A56",
+                  color: "#5F7F58",
                 }}
               >
                 pact.
@@ -91,7 +91,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                     style={{
                       width: 8,
                       height: 1,
-                      backgroundColor: "#DDD5C6",
+                      backgroundColor: "#E5EDE1",
                       opacity: 0.9,
                     }}
                   />
@@ -151,7 +151,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                     left: 0,
                     top: 0,
                     bottom: 0,
-                    backgroundColor: "#2A3F2A",
+                    backgroundColor: "#29452A",
                   },
                   commitFillStyle,
                 ]}
