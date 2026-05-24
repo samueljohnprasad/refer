@@ -108,12 +108,20 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="screens/rewards-shop"
+        options={{
+          headerShown: false,
+          title: "Rewards Shop",
+          freezeOnBlur: true,
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
         name="screens/xp-history"
         options={{
-          headerShown: true,
+          headerShown: false,
           title: "XP History",
           freezeOnBlur: true,
-          headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
         }}
       />

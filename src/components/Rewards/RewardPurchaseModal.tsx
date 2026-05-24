@@ -4,7 +4,6 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-  withSequence,
 } from "react-native-reanimated";
 import { Reward } from "@/src/types/rewards";
 import * as Haptics from "expo-haptics";
@@ -52,49 +51,52 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
   return (
     <Modal transparent visible={visible} animationType="fade">
       <Pressable
-        className="flex-1 bg-black/50 items-center justify-center"
+        className="flex-1 items-center justify-center bg-black/35"
         onPress={onCancel}
       >
         <Animated.View
           style={animatedStyle}
-          className="bg-white rounded-3xl p-6 mx-6 w-80 items-center"
+          className="happy-brand-raised-panel mx-6 w-80 items-center rounded-[32px] p-6"
         >
-          {/* Icon */}
           <View
-            className="w-20 h-20 rounded-2xl items-center justify-center mb-4"
+            className="mb-4 h-20 w-20 items-center justify-center rounded-[24px]"
             style={{ backgroundColor: reward.color + "20" }}
           >
             <Text style={{ fontSize: 40 }}>{reward.icon}</Text>
           </View>
 
-          {/* Title */}
-          <Text className="text-xl font-bold text-gray-900 mb-1">
+          <Text className="happy-font-heading-bold mb-1 text-xl text-ink">
             {reward.name}
           </Text>
-          <Text className="text-sm text-gray-500 text-center mb-4">
+          <Text className="happy-font-body-medium mb-4 text-center text-sm leading-5 text-ink-muted">
             {reward.description}
           </Text>
 
-          {/* Price breakdown */}
-          <View className="bg-gray-50 rounded-xl p-4 w-full mb-4">
+          <View className="happy-brand-surface-soft mb-4 w-full rounded-[22px] p-4">
             <View className="flex-row justify-between mb-2">
-              <Text className="text-gray-500">Your Balance</Text>
-              <Text className="font-semibold text-gray-700">
+              <Text className="happy-font-body-medium text-ink-muted">
+                Your Balance
+              </Text>
+              <Text className="happy-font-body-bold text-ink-soft">
                 🪙 {currentCoins.toLocaleString()}
               </Text>
             </View>
             <View className="flex-row justify-between mb-2">
-              <Text className="text-gray-500">Cost</Text>
-              <Text className="font-semibold text-red-500">
+              <Text className="happy-font-body-medium text-ink-muted">
+                Cost
+              </Text>
+              <Text className="happy-font-body-bold text-terracotta">
                 - 🪙 {reward.cost.toLocaleString()}
               </Text>
             </View>
-            <View className="h-px bg-gray-200 my-2" />
+            <View className="my-2 h-0.5 rounded-full bg-sage-100" />
             <View className="flex-row justify-between">
-              <Text className="text-gray-700 font-medium">After Purchase</Text>
+              <Text className="happy-font-body-bold text-ink">
+                After Purchase
+              </Text>
               <Text
-                className={`font-bold ${
-                  canAfford ? "text-green-600" : "text-red-500"
+                className={`happy-font-body-bold ${
+                  canAfford ? "text-sage-600" : "text-terracotta"
                 }`}
               >
                 🪙 {Math.max(remainingCoins, 0).toLocaleString()}
@@ -102,27 +104,26 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
             </View>
           </View>
 
-          {/* Buttons */}
           <View className="flex-row w-full gap-3">
             <Pressable
               onPress={onCancel}
-              className="flex-1 py-3 rounded-xl bg-gray-100"
+              className="flex-1 rounded-[18px] bg-sage-50 py-3 active:opacity-80"
             >
-              <Text className="text-center font-semibold text-gray-600">
+              <Text className="happy-font-body-bold text-center text-ink-muted">
                 Cancel
               </Text>
             </Pressable>
 
             <Pressable
               onPress={canAfford ? onConfirm : undefined}
-              className={`flex-1 py-3 rounded-xl ${
-                canAfford ? "bg-yellow-400" : "bg-gray-200"
+              className={`flex-1 rounded-[18px] py-3 active:opacity-80 ${
+                canAfford ? "happy-brand-primary-cta" : "bg-sage-100"
               }`}
               disabled={!canAfford || isPurchasing}
             >
               <Text
-                className={`text-center font-bold ${
-                  canAfford ? "text-gray-900" : "text-gray-400"
+                className={`happy-font-body-bold text-center ${
+                  canAfford ? "text-white" : "text-sage-300"
                 }`}
               >
                 {isPurchasing ? "..." : canAfford ? "Buy Now" : "Not Enough"}

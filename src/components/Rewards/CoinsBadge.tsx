@@ -8,6 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Coins01Icon } from "@hugeicons/core-free-icons";
+import { GOLD, SAGE } from "@/lib/tokens";
 
 interface CoinsBadgeProps {
   coins: number;
@@ -51,22 +52,22 @@ export const CoinsBadge: React.FC<CoinsBadgeProps> = ({
         style={[
           animatedStyle,
           {
-            shadowColor: "#000",
+            shadowColor: SAGE[200],
             shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.05,
+            shadowOpacity: 0.35,
             shadowRadius: 10,
             elevation: 2,
           },
         ]}
-        className={`flex-row items-center ${styles.container} bg-white rounded-full border border-gray-100`}
+        className={`happy-brand-status-chip flex-row items-center ${styles.container}`}
       >
         <HugeiconsIcon
           icon={Coins01Icon}
           size={styles.icon}
-          color="#F59E0B"
+          color={GOLD}
           strokeWidth={1.8}
         />
-        <Text className={`${styles.text} font-bold text-gray-800 ml-1.5`}>
+        <Text className={`${styles.text} happy-font-body-bold ml-1.5 text-ink`}>
           {coins.toLocaleString()}
         </Text>
       </Animated.View>

@@ -7,6 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useUserLevel } from "@/hooks/data/useUserLevel";
 import { LevelBadge } from "./LevelBadge";
+import { SAGE } from "@/lib/tokens";
 
 interface LevelProgressBarProps {
   showBadge?: boolean;
@@ -49,16 +50,13 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
     return (
       <View className="flex-row items-center gap-2">
         {showBadge && <LevelBadge level={currentLevel} size="sm" />}
-        <View className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+        <View className="flex-1 h-2 bg-sage-100 rounded-full overflow-hidden">
           <Animated.View
             className="h-full rounded-full"
-            style={[
-              { backgroundColor: currentLevel.color },
-              progressAnimatedStyle,
-            ]}
+            style={[{ backgroundColor: SAGE[500] }, progressAnimatedStyle]}
           />
         </View>
-        <Text className="text-xs text-gray-500 font-medium">
+        <Text className="happy-font-body-medium text-xs text-ink-muted">
           {isMaxLevel ? "MAX" : `${progress}%`}
         </Text>
       </View>
@@ -66,33 +64,32 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
   }
 
   return (
-    <View className="bg-white rounded-2xl p-4 border border-gray-100">
+    <View className="happy-brand-raised-panel rounded-[24px] p-4">
       {/* Header with Level Badge */}
       <View className="flex-row items-center justify-between mb-3">
         {showBadge && <LevelBadge level={currentLevel} size="md" />}
-        <Text className="text-sm text-gray-500">{totalXP} XP total</Text>
+        <Text className="happy-font-body-medium text-sm text-ink-muted">
+          {totalXP} XP total
+        </Text>
       </View>
 
       {/* Progress Bar */}
-      <View className="h-3 bg-gray-200 rounded-full overflow-hidden mb-2">
+      <View className="h-3 bg-sage-100 rounded-full overflow-hidden mb-2">
         <Animated.View
           className="h-full rounded-full"
-          style={[
-            { backgroundColor: currentLevel.color },
-            progressAnimatedStyle,
-          ]}
+          style={[{ backgroundColor: SAGE[500] }, progressAnimatedStyle]}
         />
       </View>
 
       {/* Progress Text */}
       <View className="flex-row justify-between">
-        <Text className="text-xs text-gray-500">
+        <Text className="happy-font-body-medium text-xs text-ink-muted">
           {isMaxLevel
             ? "Max level reached!"
             : `${currentXP} / ${requiredXP} XP`}
         </Text>
         {nextLevel && (
-          <Text className="text-xs text-gray-400">
+          <Text className="happy-font-body-medium text-xs text-ink-muted">
             Next: {nextLevel.icon} {nextLevel.name}
           </Text>
         )}

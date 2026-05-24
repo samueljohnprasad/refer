@@ -15,6 +15,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import * as Haptics from "expo-haptics";
 
 import { Text } from "@/components/ui/text";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
@@ -340,6 +341,9 @@ function ConfigDrivenNodeInner({
 
   const handlePress = (): void => {
     if (!isInteractive) return;
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(
+      () => {},
+    );
     onPress(node);
   };
 

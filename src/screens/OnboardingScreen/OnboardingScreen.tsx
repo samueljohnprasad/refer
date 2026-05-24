@@ -36,9 +36,11 @@ import DailyGoalStep from "./steps/DailyGoalStep";
 import PactSigningStep from "./steps/PactSigningStep";
 import BuildingJourneyStep from "./steps/BuildingJourneyStep";
 import PlanRevealStep from "./steps/PlanRevealStep";
+import JourneyStepPreviewStep from "./steps/JourneyStepPreviewStep";
 import MoodCheckLessonStep from "./steps/MoodCheckLessonStep";
 import AIInsightStep from "./steps/AIInsightStep";
 import LessonCompleteStep from "./steps/LessonCompleteStep";
+import CbtStepPreviewStep from "./steps/CbtStepPreviewStep";
 import NotificationPermissionStep from "./steps/NotificationPermissionStep";
 import JourneyMapStep from "./steps/JourneyMapStep";
 import LetterFromFutureStep from "./steps/LetterFromFutureStep";
@@ -76,6 +78,8 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
     case "welcome":
     case "building_journey":
     case "lesson_complete":
+    case "journey_step_preview":
+    case "cbt_step_preview":
     case "journey_map":
     case "soft_paywall":
     case "welcome_to_happy":
@@ -417,6 +421,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
             motivation={formData.motivation}
           />
         );
+      case "journey_step_preview":
+        return <JourneyStepPreviewStep />;
       case "mood_check_lesson":
         return (
           <MoodCheckLessonStep
@@ -433,6 +439,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         );
       case "lesson_complete":
         return <LessonCompleteStep />;
+      case "cbt_step_preview":
+        return <CbtStepPreviewStep />;
       case "notification_permission":
         return (
           <NotificationPermissionStep
@@ -588,7 +596,10 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
 
       {showContinueButton && (
         <Animated.View
-          style={footerAnimatedStyle}
+          style={[
+            footerAnimatedStyle,
+            currentStep === "welcome" ? styles.welcomeFooter : null,
+          ]}
           className="px-6 pb-8 pt-4"
         >
           <TactileButton
@@ -613,5 +624,14 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  welcomeFooter: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+});
 
 export default React.memo(OnboardingScreen);

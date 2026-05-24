@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Pressable, Image } from "react-native";
-import { Achievement } from "@/src/types/achievements";
+import type { Achievement } from "@/src/types/achievements";
 // FIX #28: Removed unused Svg and Polygon imports (dead code)
 import { Grayscale } from "react-native-color-matrix-image-filters";
 
@@ -11,6 +11,10 @@ interface AchievementBadgeProps {
   size?: "sm" | "md" | "lg";
   onPress?: () => void;
   showProgress?: boolean;
+  showDescription?: boolean;
+  showProgressBar?: boolean;
+  showProgressText?: boolean;
+  showUnlockedProgress?: boolean;
 }
 
 /**
@@ -23,11 +27,15 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   size = "lg",
   onPress,
   showProgress = true,
+  showDescription = true,
+  showProgressBar = true,
+  showProgressText = true,
+  showUnlockedProgress = false,
 }) => {
   const sizeStyles = {
-    sm: { hex: 60, icon: 18, nameSize: "text-xs" },
-    md: { hex: 80, icon: 24, nameSize: "text-xs" },
-    lg: { hex: 100, icon: 32, nameSize: "text-sm" },
+    sm: { hex: 60, icon: 18, nameSize: "text-xs", tileWidth: 88 },
+    md: { hex: 80, icon: 24, nameSize: "text-xs", tileWidth: 104 },
+    lg: { hex: 100, icon: 32, nameSize: "text-sm", tileWidth: 128 },
   };
 
   const styles = sizeStyles[size];
@@ -35,6 +43,11 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   // FIX #29: Clamp progress to minimum of 0 to prevent negative values
   const progress = Math.max(0, Math.min(currentProgress, target));
   const progressPercent = target > 0 ? (progress / target) * 100 : 0;
+  const displayedProgress = isUnlocked ? target : progress;
+  const shouldShowProgress =
+    showProgress &&
+    (showProgressBar || showProgressText) &&
+    (!isUnlocked || showUnlockedProgress);
 
   const isNumberIcon = !isNaN(Number(achievement.icon));
 
@@ -51,7 +64,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
       accessibilityState={{ selected: isUnlocked }}
       className="items-center mb-3"
       style={({ pressed }) => [
-        { width: styles.hex + 20, opacity: pressed && !!onPress ? 0.7 : 1 },
+        { width: styles.tileWidth, opacity: pressed && !!onPress ? 0.7 : 1 },
       ]}
     >
       {/* Badge Image */}
@@ -118,8 +131,8 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
 
       {/* Badge Name */}
       <Text
-        className={`${styles.nameSize} font-bold text-center mt-1.5 ${
-          isUnlocked ? "text-gray-900" : "text-gray-500"
+        className={`${styles.nameSize} happy-font-body-bold text-center mt-1.5 ${
+          isUnlocked ? "text-ink" : "text-ink-muted"
         }`}
         numberOfLines={2}
       >
@@ -127,28 +140,38 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
       </Text>
 
       {/* Description */}
-      <Text
-        className="text-[10px] text-gray-500 text-center mt-0.5"
-        numberOfLines={2}
-      >
-        {achievement.description}
-      </Text>
+      {showDescription ? (
+        <Text
+          className="happy-font-body-medium text-[10px] text-ink-muted text-center mt-0.5"
+          numberOfLines={2}
+        >
+          {achievement.description}
+        </Text>
+      ) : null}
 
-      {/* Progress (locked only) */}
-      {!isUnlocked && showProgress && (
+      {/* Progress */}
+      {shouldShowProgress && (
         <View className="w-full mt-2">
-          <View className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <View
-              className="h-full rounded-full"
-              style={{
-                width: `${progressPercent}%`,
-                backgroundColor: achievement.color,
-              }}
-            />
-          </View>
-          <Text className="text-[10px] text-gray-400 text-center mt-0.5 font-medium">
-            {progress}/{target}
-          </Text>
+          {showProgressBar ? (
+            <View className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <View
+                className="h-full rounded-full"
+                style={{
+                  width: `${progressPercent}%`,
+                  backgroundColor: achievement.color,
+                }}
+              />
+            </View>
+          ) : null}
+          {showProgressText ? (
+            <Text
+              className={`happy-font-body-semibold text-[11px] text-center ${
+                showProgressBar ? "mt-0.5" : ""
+              } ${isUnlocked ? "text-sage-600" : "text-ink-muted"}`}
+            >
+              {displayedProgress}/{target}
+            </Text>
+          ) : null}
         </View>
       )}
     </Pressable>
