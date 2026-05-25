@@ -8,6 +8,7 @@ import { useAuth, type AuthProviderId } from "@/src/context/AuthContext";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { clearGuestProgress } from "@/hooks/data/useGuestProgress";
 import type { CustomerInfo } from "react-native-purchases";
+import { BRAND_SURFACE, INK } from "@/lib/tokens";
 
 interface PremiumRecoveryState {
   appUserID: string | null;
@@ -238,32 +239,31 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
         snapPoints={["52%"]}
         onDismiss={handleSheetDismiss}
       >
-        <View className="flex-1 px-6 pt-5 pb-8 justify-between bg-white rounded-[24px]">
+        <View className="flex-1 px-6 pt-5 pb-8 justify-between bg-brand-surface rounded-[24px]">
           <View>
             <Text
-              className="text-[32px] leading-9 text-gray-900 text-center mb-4"
-              style={{ fontFamily: "CormorantSemiBold" }}
+              className="happy-font-heading-bold text-[32px] leading-9 text-ink text-center mb-4"
             >
               {premiumRecovery.reason === "claim"
                 ? "Premium Refresh Needed"
                 : "Premium Restore Needed"}
             </Text>
-            <Text className="text-gray-500 text-base leading-6 text-center mb-5">
+            <Text className="happy-font-body-medium text-ink-muted text-base leading-6 text-center mb-5">
               {premiumRecovery.reason === "claim"
                 ? "Your profile is saved, but Premium could not be refreshed on this login. Try restore again, or share these IDs with support."
                 : "You're now on the existing account, but Premium could not be restored automatically. Try restore again, or share these IDs with support."}
             </Text>
-            <View className="bg-gray-50 rounded-2xl p-4 gap-2">
-              <Text className="text-gray-500 text-xs uppercase tracking-wide">
+            <View className="bg-sage-50 rounded-2xl p-4 gap-2">
+              <Text className="happy-brand-eyebrow">
                 RevenueCat App User ID
               </Text>
-              <Text className="text-gray-900 text-sm">
+              <Text className="happy-font-body text-ink text-sm">
                 {premiumRecovery.appUserID ?? "Unavailable"}
               </Text>
-              <Text className="text-gray-500 text-xs uppercase tracking-wide mt-2">
+              <Text className="happy-brand-eyebrow mt-2">
                 Supabase User ID
               </Text>
-              <Text className="text-gray-900 text-sm">
+              <Text className="happy-font-body text-ink text-sm">
                 {premiumRecovery.supabaseUserId}
               </Text>
             </View>
@@ -273,13 +273,13 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
             <TouchableOpacity
               onPress={handleRetryRestore}
               disabled={busyRestore}
-              className="w-full bg-gray-900 h-14 rounded-full items-center justify-center flex-row"
+              className="happy-brand-primary-cta w-full h-14 rounded-full items-center justify-center flex-row"
               activeOpacity={0.8}
             >
               {busyRestore ? (
-                <ActivityIndicator size="small" color="#FFF" />
+                <ActivityIndicator size="small" color={BRAND_SURFACE} />
               ) : (
-                <Text className="text-white font-semibold text-lg">
+                <Text className="happy-font-body-bold text-brand-surface text-lg">
                   Try Restore Again
                 </Text>
               )}
@@ -287,10 +287,10 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
             <TouchableOpacity
               onPress={handleContinueAfterRecovery}
               disabled={busyRestore}
-              className="w-full bg-gray-50 h-14 rounded-full items-center justify-center flex-row"
+              className="w-full bg-sage-pill h-14 rounded-full items-center justify-center flex-row"
               activeOpacity={0.8}
             >
-              <Text className="text-gray-900 font-semibold text-lg">
+              <Text className="happy-font-body-bold text-ink text-lg">
                 {premiumRecovery.reason === "claim"
                   ? "Continue"
                   : "Continue Without Premium"}
@@ -309,15 +309,14 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
         snapPoints={["52%"]}
         onDismiss={handleSheetDismiss}
       >
-        <View className="flex-1 px-6 pt-5 pb-8 justify-between bg-white rounded-[24px]">
+        <View className="flex-1 px-6 pt-5 pb-8 justify-between bg-brand-surface rounded-[24px]">
           <View>
             <Text
-              className="text-[32px] leading-9 text-gray-900 text-center mb-4"
-              style={{ fontFamily: "CormorantSemiBold" }}
+              className="happy-font-heading-bold text-[32px] leading-9 text-ink text-center mb-4"
             >
               {hasPro ? "Premium Is Active Here" : "Existing Account Found"}
             </Text>
-            <Text className="text-gray-500 text-base leading-6 text-center">
+            <Text className="happy-font-body-medium text-ink-muted text-base leading-6 text-center">
               {hasPro
                 ? `Your Premium and current progress belong to this profile. This ${providerLabel} login is already linked to another Happy account. You can keep this profile, or switch to your existing account and try to restore Premium there. Your current progress won't be transferred.`
                 : `This ${providerLabel} login is already linked to another Happy account. If you continue, you'll switch to that account and your current progress won't be transferred.`}
@@ -328,13 +327,13 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
             <TouchableOpacity
               onPress={hasPro ? handleStay : handleMove}
               disabled={busyMove}
-              className="w-full bg-gray-900 h-14 rounded-full items-center justify-center flex-row"
+              className="happy-brand-primary-cta w-full h-14 rounded-full items-center justify-center flex-row"
               activeOpacity={0.8}
             >
               {busyMove && !hasPro ? (
-                <ActivityIndicator size="small" color="#FFF" />
+                <ActivityIndicator size="small" color={BRAND_SURFACE} />
               ) : (
-                <Text className="text-white font-semibold text-lg">
+                <Text className="happy-font-body-bold text-brand-surface text-lg">
                   {hasPro ? "Keep This Premium Profile" : "Continue to Existing Account"}
                 </Text>
               )}
@@ -343,13 +342,13 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
             <TouchableOpacity
               onPress={hasPro ? handleMove : handleStay}
               disabled={busyMove}
-              className="w-full bg-gray-50 h-14 rounded-full items-center justify-center flex-row"
+              className="w-full bg-sage-pill h-14 rounded-full items-center justify-center flex-row"
               activeOpacity={0.8}
             >
               {busyMove && hasPro ? (
-                <ActivityIndicator size="small" color="#111827" />
+                <ActivityIndicator size="small" color={INK} />
               ) : (
-                <Text className="text-gray-900 font-semibold text-lg">
+                <Text className="happy-font-body-bold text-ink text-lg">
                   {hasPro ? "Move to Existing Account" : "Stay on Current Progress"}
                 </Text>
               )}
@@ -366,11 +365,10 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
       snapPoints={showSkipButton ? ["42%"] : ["35%"]}
       onDismiss={handleSheetDismiss}
     >
-      <View className="flex-1 px-6 pt-4 pb-8 justify-between bg-white rounded-[24px]">
+      <View className="flex-1 px-6 pt-4 pb-8 justify-between bg-brand-surface rounded-[24px]">
         <View>
           <Text
-            className="text-3xl text-gray-900 mb-2"
-            style={{ fontFamily: "CormorantSemiBold" }}
+            className="happy-font-heading-bold text-3xl text-ink mb-2"
           >
             {isAnonymous
               ? hasPro
@@ -378,7 +376,7 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
                 : "Save Your Progress"
               : "Welcome Back"}
           </Text>
-          <Text className="text-gray-500 text-base leading-5">
+          <Text className="happy-font-body-medium text-ink-muted text-base leading-5">
             {isAnonymous
               ? "Add a login to keep your current Happy profile, progress, and Premium access safe."
               : "Sign in to sync your journals, moods, and calories across all your devices."}
@@ -389,13 +387,13 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
           <TouchableOpacity
             onPress={() => handleProviderPress("apple")}
             disabled={busyProvider !== null}
-            className="w-full bg-gray-900 h-14 rounded-full items-center justify-center flex-row"
+            className="happy-brand-primary-cta w-full h-14 rounded-full items-center justify-center flex-row"
             activeOpacity={0.8}
           >
             {busyProvider === "apple" ? (
-              <ActivityIndicator size="small" color="#FFF" />
+              <ActivityIndicator size="small" color={BRAND_SURFACE} />
             ) : (
-              <Text className="text-white font-semibold text-lg">
+              <Text className="happy-font-body-bold text-brand-surface text-lg">
                 Continue with Apple
               </Text>
             )}
@@ -404,13 +402,13 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
           <TouchableOpacity
             onPress={() => handleProviderPress("google")}
             disabled={busyProvider !== null}
-            className="w-full bg-white border border-gray-200 h-14 rounded-full items-center justify-center flex-row"
+            className="w-full bg-brand-surface border border-sage-100 h-14 rounded-full items-center justify-center flex-row"
             activeOpacity={0.8}
           >
             {busyProvider === "google" ? (
-              <ActivityIndicator size="small" color="#111827" />
+              <ActivityIndicator size="small" color={INK} />
             ) : (
-              <Text className="text-gray-900 font-semibold text-lg">
+              <Text className="happy-font-body-bold text-ink text-lg">
                 Continue with Google
               </Text>
             )}
@@ -423,7 +421,7 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
               className="w-full h-11 items-center justify-center"
               activeOpacity={0.7}
             >
-              <Text className="text-gray-400 text-sm font-medium">
+              <Text className="happy-font-body-medium text-ink-muted text-sm">
                 Maybe later
               </Text>
             </TouchableOpacity>

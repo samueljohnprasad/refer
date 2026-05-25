@@ -1,4 +1,5 @@
 import type { ReminderItem, ReminderColorScheme } from "./types";
+import { GOLD, INK_SOFT, INK_MUTED, SAGE, TERRACOTTA } from "@/lib/tokens";
 
 /**
  * Default reminder slots with motivational messages
@@ -41,22 +42,22 @@ export const DEFAULT_REMINDERS: ReminderItem[] = [
  */
 export const REMINDER_COLOR_MAP: Record<string, ReminderColorScheme> = {
   "1": {
-    bg: "#FEF3C7",
-    border: "#FCD34D",
-    text: "#92400E",
-    icon: "#F59E0B",
+    bg: SAGE.pill,
+    border: SAGE[200],
+    text: SAGE[700],
+    icon: SAGE[600],
   }, // Morning - Amber/Yellow
   "2": {
-    bg: "#D1FAE5",
-    border: "#6EE7B7",
-    text: "#064E3B",
-    icon: "#10B981",
+    bg: SAGE.selected,
+    border: SAGE[300],
+    text: SAGE[700],
+    icon: SAGE[600],
   }, // Midday - Green
   "3": {
-    bg: "#E9D5FF",
-    border: "#C084FC",
-    text: "#6B21A8",
-    icon: "#A855F7",
+    bg: SAGE[50],
+    border: SAGE[200],
+    text: INK_SOFT,
+    icon: TERRACOTTA,
   }, // Evening - Purple
 };
 
@@ -64,8 +65,8 @@ export const REMINDER_COLOR_MAP: Record<string, ReminderColorScheme> = {
  * Default color scheme for unknown reminder IDs
  */
 export const DEFAULT_COLOR_SCHEME: ReminderColorScheme = {
-  bg: "#F3F4F6",
-  border: "#E5E7EB",
-  text: "#4B5563",
-  icon: "#6B7280",
+  bg: SAGE[50],
+  border: SAGE[100],
+  text: INK_MUTED,
+  icon: GOLD,
 };

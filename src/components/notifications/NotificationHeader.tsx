@@ -10,6 +10,7 @@ import Animated, {
   withDelay,
   withTiming,
 } from "react-native-reanimated";
+import { SAGE } from "@/lib/tokens";
 
 /**
  * Animated header section with motivational text
@@ -32,12 +33,12 @@ export const NotificationHeader: React.FC = () => {
       {/* Header Text */}
       <Animated.View style={headerAnimatedStyle} className="mt-6">
         {/* FIX #4: Replaced cormorantSemiBold with system font-black for consistency */}
-        <Text className="text-center text-3xl font-black text-gray-900 leading-tight mb-2">
+        <Text className="happy-font-heading-bold text-center text-[32px] text-ink leading-tight mb-2">
           Daily Reminders
         </Text>
         {/* FIX #5: text-[15px] instead of text-lg — supporting copy should be smaller */}
         {/* FIX #6: Removed hard \"\\n\" — let text reflow naturally */}
-        <Text className="text-center text-gray-500 text-[15px] leading-6 font-medium px-6">
+        <Text className="happy-font-body-medium text-center text-ink-muted text-[15px] leading-6 px-6">
           Set up gentle nudges to help you build a consistent journaling habit
         </Text>
       </Animated.View>
@@ -49,14 +50,14 @@ export const NotificationHeader: React.FC = () => {
         entering={FadeIn.duration(400).delay(300)}
         className="self-center mt-5 mb-1"
       >
-        <View className="flex-row items-center gap-2 px-5 py-2.5 bg-violet-50 rounded-full border border-violet-100">
+        <View className="flex-row items-center gap-2 px-5 py-2.5 bg-sage-pill rounded-full border border-sage-100">
           <HugeiconsIcon
             icon={Clock04Icon}
             size={16}
-            color="#7C3AED"
+            color={SAGE[600]}
             strokeWidth={1.8}
           />
-          <Text className="text-sm font-bold text-violet-700">
+          <Text className="happy-font-body-bold text-sm text-sage-600">
             3x more consistency
           </Text>
         </View>
@@ -68,7 +69,7 @@ export const NotificationHeader: React.FC = () => {
         entering={FadeIn.duration(400).delay(450)}
         className="px-8 mt-4 mb-4"
       >
-        <Text className="text-center text-gray-400 text-[13px] leading-5">
+        <Text className="happy-font-body-medium text-center text-ink-muted text-[13px] leading-5">
           Choose the times that work best for you. You can enable or disable
           reminders anytime.
         </Text>

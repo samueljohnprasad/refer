@@ -353,75 +353,80 @@ function DailyNotesScreenComponent(): ReactElement {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={[]}>
-      <Stack.Screen options={screenOptions} />
-      <View className="flex-1 relative bg-theme-background-card">
-        <GestureDetector gesture={contentPanGesture}>
-          <ScrollView
-            className="flex-1 bg-theme-background-card"
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-          >
-            {/* Tab Picker */}
-            <View className="px-4 pb-3 pt-4">
-              <View className="rounded-full border border-sage-100 bg-sage-50 p-1">
-                <Host matchContents>
-                  <Picker
-                    modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
-                    label="View"
-                    selection={TAB_FILTER_LABEL_BY_FILTER[tabFilter]}
-                    onSelectionChange={handleFilterSelectionChange}
-                  >
-                    {TAB_FILTER_OPTIONS.map((option) => (
-                      <SwiftUIText key={option} modifiers={[tag(option)]}>
-                        {option}
-                      </SwiftUIText>
-                    ))}
-                  </Picker>
-                </Host>
-              </View>
-            </View>
-
-            {/* Unified Animated Container for Swipe Transitions */}
-            <Animated.View
-              className="flex-1 bg-theme-background-primary px-4 pb-8"
-              style={contentAnimatedStyle}
+    <View className="flex-1 bg-white">
+      <SafeAreaView edges={[]} style={{ flex: 1 }}>
+        <Stack.Screen options={screenOptions} />
+        <View className="flex-1 relative bg-theme-background-card">
+          <GestureDetector gesture={contentPanGesture}>
+            <ScrollView
+              className="flex-1 bg-theme-background-card"
+              style={{ flex: 1 }}
+              contentContainerStyle={{ flexGrow: 1 }}
+              showsVerticalScrollIndicator={false}
             >
-              {/* Calorie Tracker Widget */}
-              {tabFilter === "calories" ? (
-                <View className="flex-1 pt-4">
-                  <CalorieTrackerScreen selectedDate={selectedDate} />
+              {/* Tab Picker */}
+              <View className="px-4 pb-3 pt-4">
+                <View className="rounded-full border border-sage-100 bg-sage-50 p-1">
+                  <Host matchContents>
+                    <Picker
+                      modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                      label="View"
+                      selection={TAB_FILTER_LABEL_BY_FILTER[tabFilter]}
+                      onSelectionChange={handleFilterSelectionChange}
+                    >
+                      {TAB_FILTER_OPTIONS.map((option) => (
+                        <SwiftUIText key={option} modifiers={[tag(option)]}>
+                          {option}
+                        </SwiftUIText>
+                      ))}
+                    </Picker>
+                  </Host>
                 </View>
-              ) : null}
+              </View>
 
-              {/* Habits Section */}
-              {tabFilter === "habits" ? (
-                <View className="flex-1 pt-4">
-                  <HabitsSection selectedDate={selectedDate} />
-                </View>
-              ) : null}
+              {/* Unified Animated Container for Swipe Transitions */}
+              <Animated.View
+                className="flex-1 bg-theme-background-primary px-4 pb-8"
+                style={contentAnimatedStyle}
+              >
+                {/* Calorie Tracker Widget */}
+                {tabFilter === "calories" ? (
+                  <View className="flex-1 pt-4">
+                    <CalorieTrackerScreen selectedDate={selectedDate} />
+                  </View>
+                ) : null}
 
-              {/* Journal Section */}
-              {tabFilter === "journal" ? (
-                <View className="flex-1">{mentalHealthContent}</View>
-              ) : null}
-            </Animated.View>
-          </ScrollView>
-        </GestureDetector>
-      </View>
+                {/* Habits Section */}
+                {tabFilter === "habits" ? (
+                  <View className="flex-1 pt-4">
+                    <HabitsSection selectedDate={selectedDate} />
+                  </View>
+                ) : null}
 
-      {/* AI Insights Bottom Sheet */}
-      <SuspensLoader>
-        <AIInsightsModalBottomSheet
-          ref={bottomSheetRef}
-          weekStart={weekStartFormatted}
-          weekEnd={weekEndFormatted}
-          onClose={handleAIInsightsClose}
-        />
-      </SuspensLoader>
+                {/* Journal Section */}
+                {tabFilter === "journal" ? (
+                  <View className="min-h-[520px] flex-1">
+                    {mentalHealthContent}
+                  </View>
+                ) : null}
+              </Animated.View>
+            </ScrollView>
+          </GestureDetector>
+        </View>
 
-      {/* Calendar Modal */}
-    </SafeAreaView>
+        {/* AI Insights Bottom Sheet */}
+        <SuspensLoader>
+          <AIInsightsModalBottomSheet
+            ref={bottomSheetRef}
+            weekStart={weekStartFormatted}
+            weekEnd={weekEndFormatted}
+            onClose={handleAIInsightsClose}
+          />
+        </SuspensLoader>
+
+        {/* Calendar Modal */}
+      </SafeAreaView>
+    </View>
   );
 }
 

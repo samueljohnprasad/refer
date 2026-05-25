@@ -13,24 +13,15 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
   title,
 }) => {
   return (
-    <View className="mb-4">
+    <View className="mb-5">
       {/* FIX #15: Optional overline section title */}
       {title && (
-        <Text className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.12em] px-1 mb-2">
+        <Text className="happy-brand-eyebrow px-1 mb-2">
           {title}
         </Text>
       )}
       {/* FIX #16: Added soft shadow for section card depth */}
-      <View
-        className="bg-white rounded-2xl overflow-hidden border border-gray-100/60"
-        style={{
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.04,
-          shadowRadius: 8,
-          elevation: 1,
-        }}
-      >
+      <View className="happy-brand-raised-panel overflow-hidden rounded-[28px]">
         {children}
       </View>
     </View>

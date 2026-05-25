@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
 import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
 import { useExerciseRecommendation } from "@/src/hooks/insights/useExerciseRecommendation";
+import { SAGE } from "@/lib/tokens";
 
 export const SuggestedExerciseCard: React.FC = React.memo(() => {
   const recommendation = useExerciseRecommendation();
@@ -28,17 +29,13 @@ export const SuggestedExerciseCard: React.FC = React.memo(() => {
       <Text className="happy-brand-eyebrow mb-3 px-1">Suggested for you</Text>
       <Pressable
         onPress={handlePress}
-        className="rounded-2xl border-2 border-b-4 border-sage-200 border-b-sage-300 bg-sage-selected active:opacity-90"
-        style={{ borderCurve: "continuous" }}
+        className="happy-brand-pressed-card-selected rounded-[28px] active:opacity-90"
         accessibilityRole="button"
         accessibilityLabel={`Start ${config.title}. ${recommendation.reason}`}
       >
         <View className="flex-row items-center p-4">
-          <View
-            className="mr-4 h-14 w-14 items-center justify-center rounded-2xl bg-warm-white"
-            style={{ borderCurve: "continuous" }}
-          >
-            <HugeiconsIcon icon={icon} size={28} color="#3f5a3d" />
+          <View className="mr-4 h-14 w-14 items-center justify-center rounded-[22px] bg-warm-white">
+            <HugeiconsIcon icon={icon} size={28} color={SAGE[600]} />
           </View>
           <View className="flex-1">
             <Text className="happy-font-body-bold text-[17px] text-ink">
@@ -49,7 +46,9 @@ export const SuggestedExerciseCard: React.FC = React.memo(() => {
             </Text>
           </View>
           <View className="h-8 w-8 items-center justify-center rounded-full bg-sage-500">
-            <Text className="text-sm font-extrabold text-white">›</Text>
+            <Text className="text-sm font-extrabold text-brand-surface">
+              ›
+            </Text>
           </View>
         </View>
       </Pressable>

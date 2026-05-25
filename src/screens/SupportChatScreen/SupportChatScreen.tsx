@@ -29,8 +29,15 @@ import {
 } from "@hugeicons/core-free-icons";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
+import {
+  buttonStyle,
+  controlSize,
+  labelStyle,
+  tint,
+} from "@expo/ui/swift-ui/modifiers";
 import { useAuth } from "@/src/context/AuthContext";
 import { useSupportMessages } from "@/hooks/data/useSupportMessages";
+import { BRAND_SURFACE, INK, INK_MUTED, SAGE } from "@/lib/tokens";
 
 interface SupportChatScreenProps {
   onClose?: () => void;
@@ -71,7 +78,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
             width: 36,
             height: 36,
             borderRadius: 18,
-            backgroundColor: isSupport ? "#7C5CFF" : "#E5E7EB",
+            backgroundColor: isSupport ? SAGE[500] : SAGE.pill,
             justifyContent: "center",
             alignItems: "center",
             marginBottom: 4,
@@ -79,7 +86,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
         >
           <Text
             style={{
-              color: isSupport ? "#FFFFFF" : "#4B5563",
+              color: isSupport ? BRAND_SURFACE : INK_MUTED,
               fontSize: 16,
               fontWeight: "600",
             }}
@@ -91,7 +98,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
           <Text
             style={{
               fontSize: 10,
-              color: "#6B7280",
+              color: INK_MUTED,
               fontWeight: "500",
             }}
           >
@@ -108,13 +115,13 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
       {...props}
       wrapperStyle={{
         right: {
-          backgroundColor: "#7C5CFF",
+          backgroundColor: SAGE[500],
           borderRadius: 16,
           paddingHorizontal: 4,
           paddingVertical: 2,
         },
         left: {
-          backgroundColor: "#F3F4F6",
+          backgroundColor: SAGE[50],
           borderRadius: 16,
           paddingHorizontal: 4,
           paddingVertical: 2,
@@ -122,10 +129,10 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
       }}
       textStyle={{
         right: {
-          color: "#FFFFFF",
+          color: BRAND_SURFACE,
         },
         left: {
-          color: "#1F2937",
+          color: INK,
         },
       }}
     />
@@ -136,9 +143,9 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
     <InputToolbar
       {...props}
       containerStyle={{
-        backgroundColor: "white",
+        backgroundColor: BRAND_SURFACE,
         borderTopWidth: 1,
-        borderTopColor: "#E5E7EB",
+        borderTopColor: SAGE[100],
         paddingHorizontal: 8,
         paddingTop: 4,
         paddingBottom: Math.max(insets.bottom, 4),
@@ -151,7 +158,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
     <Composer
       {...props}
       textInputStyle={{
-        backgroundColor: "#F9FAFB",
+        backgroundColor: SAGE[50],
         borderRadius: 20,
         paddingHorizontal: 16,
         paddingTop: 10,
@@ -161,7 +168,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
         lineHeight: 20,
       }}
       placeholder="Type your message..."
-      placeholderTextColor="#9CA3AF"
+      placeholderTextColor={INK_MUTED}
     />
   );
 
@@ -176,8 +183,8 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
         marginBottom: 4,
       }}
     >
-      <View className="w-10 h-10 rounded-full bg-purple-600 items-center justify-center">
-        <HugeiconsIcon icon={Sent02Icon} size={20} color="white" />
+      <View className="w-10 h-10 rounded-full bg-sage-500 items-center justify-center">
+        <HugeiconsIcon icon={Sent02Icon} size={20} color={BRAND_SURFACE} />
       </View>
     </Send>
   );
@@ -188,7 +195,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
   const keyboardVerticalOffset =
     insets.bottom + tabbarHeight + keyboardTopToolbarHeight;
   return (
-    <View className="flex-1 bg-[#F6F4FF]">
+    <View className="flex-1 happy-brand-screen">
       <View
         style={{
           flex: 1,
@@ -218,7 +225,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
             onEndReachedThreshold: 0.5,
           }}
           messagesContainerStyle={{
-            backgroundColor: "#F6F4FF",
+            backgroundColor: BRAND_SURFACE,
           }}
           keyboardAvoidingViewProps={{ keyboardVerticalOffset }}
         />
@@ -266,36 +273,47 @@ export const SupportChatHeader: React.FC = () => {
     <BlurView
       intensity={50}
       tint="light"
-      className="flex-row items-end justify-between"
+      className="relative flex-row items-end justify-between"
       style={{
-        height: height * 0.14,
+        height: Math.max(108, height * 0.13),
         paddingHorizontal: 16,
         paddingBottom: 16,
       }}
     >
       {!isLiquidGlass && (
         <TouchableOpacity
-          className="w-10 h-10 rounded-full justify-center items-center bg-[#7C5CFF]"
+          className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill"
           activeOpacity={0.7}
           onPress={() => router.back()}
         >
-          <HugeiconsIcon icon={ArrowLeft02Icon} size={20} color="#FFF" />
+          <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SAGE[600]} />
         </TouchableOpacity>
       )}
       {isLiquidGlass && (
         <Host matchContents>
           <Button
             onPress={() => router.back()}
-            color="#7B61FF"
-            variant="glassProminent"
-            controlSize="regular"
+            modifiers={[
+              labelStyle("iconOnly"),
+              buttonStyle("glassProminent"),
+              controlSize("regular"),
+              tint(SAGE[600]),
+            ]}
             systemImage="chevron.left"
           />
         </Host>
       )}
 
-      <View className="items-center">
-        <Text className="text-[28px] font-extrabold text-[#0F172A] font-cormorantBold">
+      <View
+        className="absolute left-20 right-20 items-center"
+        style={{ bottom: 17 }}
+        pointerEvents="none"
+      >
+        <Text
+          className="happy-font-body-bold text-[22px] text-ink"
+          numberOfLines={1}
+          adjustsFontSizeToFit
+        >
           Support
         </Text>
       </View>
@@ -303,17 +321,10 @@ export const SupportChatHeader: React.FC = () => {
       {/* Delete Chat Button */}
       <TouchableOpacity
         onPress={handleDeleteChat}
-        className="w-10 h-10 rounded-full justify-center items-center bg-gray-300"
+        className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill"
         activeOpacity={0.7}
-        style={{
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 5,
-        }}
       >
-        <HugeiconsIcon icon={Delete02Icon} size={20} color="#FFF" />
+        <HugeiconsIcon icon={Delete02Icon} size={20} color={SAGE[600]} />
       </TouchableOpacity>
     </BlurView>
   );

@@ -9,6 +9,7 @@ import {
   getMicronutrientsByCategory,
   type MicronutrientConfig,
 } from "@/src/config/micronutrients";
+import { BRAND_SURFACE, GOLD, SAGE } from "@/lib/tokens";
 
 const STORAGE_KEY = "tracked_micronutrients";
 
@@ -76,23 +77,23 @@ const MicronutrientTrackingScreen: React.FC = () => {
     const categoryColor =
       nutrient.category === "vitamin"
         ? {
-            bg: "bg-purple-50",
-            text: "text-purple-600",
-            border: "border-purple-200",
+            bg: "bg-sage-pill",
+            text: "text-sage-600",
+            checkColor: SAGE[600],
           }
         : {
-            bg: "bg-emerald-50",
-            text: "text-emerald-600",
-            border: "border-emerald-200",
+            bg: "bg-gold/15",
+            text: "text-ink-soft",
+            checkColor: GOLD,
           };
 
     return (
       <TouchableOpacity
         key={nutrient.id}
-        className={`rounded-xl p-4 mb-2 flex-row items-center ${
+        className={`mb-3 flex-row items-center rounded-[24px] p-4 ${
           isTracked
-            ? "bg-white border border-purple-200"
-            : "bg-gray-50 border border-gray-100"
+            ? "happy-brand-pressed-card-selected"
+            : "happy-brand-pressed-card"
         }`}
         onPress={() => toggleNutrient(nutrient.id)}
         activeOpacity={0.7}
@@ -100,8 +101,8 @@ const MicronutrientTrackingScreen: React.FC = () => {
         <View className="flex-1">
           <View className="flex-row items-center mb-1">
             <Text
-              className={`font-semibold text-base ${
-                isTracked ? "text-gray-900" : "text-gray-600"
+              className={`happy-font-body-bold text-[17px] ${
+                isTracked ? "text-ink" : "text-ink-soft"
               }`}
             >
               {nutrient.name}
@@ -116,22 +117,27 @@ const MicronutrientTrackingScreen: React.FC = () => {
               </Text>
             </View>
           </View>
-          <Text className="text-gray-500 text-sm">{nutrient.description}</Text>
-          <Text className="text-gray-400 text-xs mt-1">
+          <Text className="happy-font-body-medium text-ink-muted text-[15px] leading-5">
+            {nutrient.description}
+          </Text>
+          <Text className="happy-font-body text-ink-muted text-xs mt-1">
             Daily: {nutrient.dailyValue} {nutrient.unit}
           </Text>
         </View>
         <View className="ml-3">
           {isTracked ? (
-            <View className="w-7 h-7 rounded-full bg-purple-600 items-center justify-center">
+            <View
+              className="w-8 h-8 rounded-full items-center justify-center"
+              style={{ backgroundColor: categoryColor.checkColor }}
+            >
               <HugeiconsIcon
                 icon={CheckmarkCircle02Icon}
                 size={20}
-                color="white"
+                color={BRAND_SURFACE}
               />
             </View>
           ) : (
-            <View className="w-7 h-7 rounded-full border-2 border-gray-300" />
+            <View className="w-8 h-8 rounded-full border-2 border-sage-200" />
           )}
         </View>
       </TouchableOpacity>
@@ -142,7 +148,7 @@ const MicronutrientTrackingScreen: React.FC = () => {
   const minerals = getMicronutrientsByCategory("mineral");
 
   return (
-    <View className="flex-1 bg-[#F6F4FF]">
+    <View className="flex-1 happy-brand-screen">
       <ScrollView
         className="flex-1"
         contentContainerStyle={{
@@ -156,29 +162,33 @@ const MicronutrientTrackingScreen: React.FC = () => {
         <View className="flex-row gap-3 mb-5">
           <TouchableOpacity
             onPress={selectAll}
-            className="flex-1 bg-purple-600 rounded-xl py-3.5 items-center shadow-sm"
+            className="happy-brand-primary-cta flex-1 rounded-[20px] py-4 items-center"
             activeOpacity={0.8}
           >
-            <Text className="text-white font-semibold">Select All</Text>
+            <Text className="happy-font-body-bold text-brand-surface">
+              Select All
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={deselectAll}
-            className="flex-1 bg-white border border-gray-200 rounded-xl py-3.5 items-center"
+            className="flex-1 bg-brand-surface border-2 border-sage-100 rounded-[20px] py-4 items-center"
             activeOpacity={0.8}
           >
-            <Text className="text-gray-700 font-semibold">Clear All</Text>
+            <Text className="happy-font-body-bold text-ink-soft">
+              Clear All
+            </Text>
           </TouchableOpacity>
         </View>
 
         {/* Info Card */}
-        <View className="bg-purple-50 rounded-xl p-4 mb-5 border border-purple-100">
+        <View className="happy-brand-card rounded-[24px] p-5 mb-6">
           <View className="flex-row items-center mb-1">
-            <HugeiconsIcon icon={Idea01Icon} size={18} color="#7C3AED" />
-            <Text className="text-purple-800 font-medium ml-1.5">
+            <HugeiconsIcon icon={Idea01Icon} size={19} color={SAGE[600]} />
+            <Text className="happy-font-body-bold text-sage-600 ml-1.5">
               How it works
             </Text>
           </View>
-          <Text className="text-purple-700 text-sm leading-5">
+          <Text className="happy-font-body-medium text-ink-soft text-[15px] leading-6">
             Select nutrients to track. AI will analyze your meals and show how
             much of each you're consuming in your daily summary.
           </Text>
@@ -187,9 +197,11 @@ const MicronutrientTrackingScreen: React.FC = () => {
         {/* Vitamins Section */}
         <View className="mb-5">
           <View className="flex-row items-center mb-3">
-            <View className="w-1 h-4 bg-purple-500 rounded-full mr-2" />
-            <Text className="text-gray-800 font-bold">Vitamins</Text>
-            <Text className="text-gray-400 text-sm ml-2">
+            <View className="w-1 h-4 bg-sage-500 rounded-full mr-2" />
+            <Text className="happy-font-body-bold text-ink text-[17px]">
+              Vitamins
+            </Text>
+            <Text className="happy-font-body-medium text-ink-muted text-sm ml-2">
               ({vitamins.filter((v) => trackedNutrients.has(v.id)).length}/
               {vitamins.length})
             </Text>
@@ -200,9 +212,11 @@ const MicronutrientTrackingScreen: React.FC = () => {
         {/* Minerals Section */}
         <View className="mb-5">
           <View className="flex-row items-center mb-3">
-            <View className="w-1 h-4 bg-emerald-500 rounded-full mr-2" />
-            <Text className="text-gray-800 font-bold">Minerals</Text>
-            <Text className="text-gray-400 text-sm ml-2">
+            <View className="w-1 h-4 bg-gold rounded-full mr-2" />
+            <Text className="happy-font-body-bold text-ink text-[17px]">
+              Minerals
+            </Text>
+            <Text className="happy-font-body-medium text-ink-muted text-sm ml-2">
               ({minerals.filter((m) => trackedNutrients.has(m.id)).length}/
               {minerals.length})
             </Text>

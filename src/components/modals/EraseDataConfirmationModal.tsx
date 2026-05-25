@@ -6,6 +6,7 @@ import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import ShortBottomModal from "@/src/components/ShortBottomModal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BRAND_SURFACE, DANGER, GOLD, INK } from "@/lib/tokens";
 
 interface EraseDataConfirmationModalProps {
   visible: boolean;
@@ -54,14 +55,14 @@ export const EraseDataConfirmationModal: React.FC<
         <View className="items-center w-full">
           {/* Icon Header */}
           <View className="w-14 h-14 rounded-full bg-red-50 items-center justify-center mb-4">
-            <Feather name="trash-2" size={26} color="#DC2626" />
+            <Feather name="trash-2" size={26} color={DANGER} />
           </View>
 
-          <Heading className="text-center text-3xl font-cormorantSemiBold text-[#1f2937] mb-2 leading-9">
+          <Heading className="happy-font-heading-bold text-center text-3xl text-ink mb-2 leading-9">
             Erase All Data?
           </Heading>
 
-          <Text className="text-gray-600 text-center text-base font-medium px-1 mb-4 leading-6">
+          <Text className="happy-font-body-medium text-ink-soft text-center text-base px-1 mb-4 leading-6">
             This will permanently delete:
           </Text>
 
@@ -81,7 +82,7 @@ export const EraseDataConfirmationModal: React.FC<
             <Feather
               name="alert-triangle"
               size={18}
-              color="#F59E0B"
+              color={GOLD}
               style={{ marginTop: 2 }}
             />
             <Text className="text-amber-900 text-sm ml-2.5 flex-1 leading-5 font-medium">
@@ -96,10 +97,10 @@ export const EraseDataConfirmationModal: React.FC<
           <Pressable
             onPress={handleClose}
             disabled={isDeleting}
-            className="flex-1 bg-[#F6F4FF] rounded-full flex-row items-center justify-center py-4 active:opacity-80"
+            className="flex-1 bg-sage-pill rounded-full flex-row items-center justify-center py-4 active:opacity-80"
           >
-            <Text className="text-gray-900 font-bold text-xl mr-2">Cancel</Text>
-            <Feather name="x" size={24} color="#1f2937" />
+            <Text className="happy-font-body-bold text-ink text-xl mr-2">Cancel</Text>
+            <Feather name="x" size={24} color={INK} />
           </Pressable>
 
           <Pressable
@@ -112,14 +113,14 @@ export const EraseDataConfirmationModal: React.FC<
                 <Text className="text-white font-bold text-xl mr-2">
                   Erasing...
                 </Text>
-                <ActivityIndicator color="white" size="small" />
+                <ActivityIndicator color={BRAND_SURFACE} size="small" />
               </>
             ) : (
               <>
                 <Text className="text-white font-bold text-xl mr-2">
                   Delete
                 </Text>
-                <Feather name="trash" size={24} color="white" />
+                <Feather name="trash" size={24} color={BRAND_SURFACE} />
               </>
             )}
           </Pressable>
@@ -132,7 +133,7 @@ export const EraseDataConfirmationModal: React.FC<
 const DataItem = ({ text }: { text: string }) => (
   <View className="flex-row items-center">
     <View className="w-1.5 h-1.5 rounded-full bg-red-400 mr-2.5" />
-    <Text className="text-gray-800 text-sm font-medium tracking-tight">
+    <Text className="happy-font-body-medium text-ink text-sm tracking-tight">
       {text}
     </Text>
   </View>

@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, Text } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -12,30 +12,19 @@ import Animated, {
 import { Image } from "@/components/ui/image";
 import { terrible, bad, fine, good, great } from "@/assets/emojis";
 import { useEmotionLogger } from "@/hooks/data/useEmotionLogger";
-import { useDailyStreak } from "@/hooks/data/useDailyStreak";
-import { useRevenueCat } from "../context/RevenueCatProvider";
 import { useXPOptional } from "../context/XPContext";
-import { XPActionType, XP_REWARDS } from "../types/xp";
-import { XPBadge } from "./XP";
+import { XPActionType } from "../types/xp";
 import { useRewardsContext } from "../context/RewardsContext";
 import { useChallengesOptional } from "../context/ChallengesContext";
-import { MOOD } from "@/constants/palette";
-import { CARD_SHADOW } from "@/constants/shadows";
 import { PressableScale } from "@/src/components/ui/PressableScale";
+import { SAGE } from "@/lib/tokens";
 
-// Emotion configuration — uses shared MOOD palette
 const EMOTIONS = [
-  {
-    id: 1,
-    name: "Terrible",
-    emoji: terrible,
-    color: MOOD.terrible.color,
-    bgColor: MOOD.terrible.bg,
-  },
-  { id: 2, name: "Bad", emoji: bad, color: MOOD.bad.color, bgColor: MOOD.bad.bg },
-  { id: 3, name: "Okay", emoji: fine, color: MOOD.okay.color, bgColor: MOOD.okay.bg },
-  { id: 4, name: "Good", emoji: good, color: MOOD.good.color, bgColor: MOOD.good.bg },
-  { id: 5, name: "Great", emoji: great, color: MOOD.great.color, bgColor: MOOD.great.bg },
+  { id: 1, name: "Terrible", emoji: terrible },
+  { id: 2, name: "Bad", emoji: bad },
+  { id: 3, name: "Okay", emoji: fine },
+  { id: 4, name: "Good", emoji: good },
+  { id: 5, name: "Great", emoji: great },
 ] as const;
 
 interface EmotionLoggerProps {
@@ -96,7 +85,7 @@ const EmotionItem: React.FC<{
             backgroundColor: interpolateColor(
               highlightProgress.value,
               [0, 1],
-              ['transparent', emotion.bgColor],
+              ["transparent", SAGE.selected],
             ),
           }))}
         >
@@ -108,17 +97,17 @@ const EmotionItem: React.FC<{
           />
           {count > 0 && (
             <Animated.View
-              className="absolute -top-[2px] -right-[2px] bg-gray-100 rounded-full min-w-[18px] h-[18px] items-center justify-center px-1 border-[1.5px] border-white shadow-sm"
+              className="absolute -right-[2px] -top-[2px] h-[18px] min-w-[18px] items-center justify-center rounded-full border-[1.5px] border-brand-surface bg-sage-pill px-1"
               style={animatedCountStyle}
             >
-              <Text className="text-gray-500 text-[10px] font-black z-10">
+              <Text className="happy-font-body-bold z-10 text-[10px] text-sage-600">
                 {count > 99 ? "99+" : count}
               </Text>
             </Animated.View>
           )}
         </Animated.View>
       </PressableScale>
-      <Text className="text-[11px] font-semibold text-gray-500 mt-1">
+      <Text className="happy-font-body-semibold mt-1 text-[11px] text-ink-muted">
         {emotion.name}
       </Text>
     </View>
@@ -132,42 +121,12 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
   ({ selectedDate = new Date(), onEmotionLogged }) => {
     const {
       emotionCounts,
-      isLoading,
       logEmotion: logEmotionToSupabase,
       isLoggingEmotion,
     } = useEmotionLogger(selectedDate);
-    const { presentPaywall, hasPro } = useRevenueCat();
     const xp = useXPOptional();
     const { earnCoinsForAction } = useRewardsContext();
     const challenges = useChallengesOptional();
-
-    const totalEmotions = Array.from(emotionCounts.values()).reduce(
-      (acc, count) => acc + count,
-      0,
-    );
-
-    // Calculate average mood (weighted by emotion scores: 1-5)
-    const averageMood = React.useMemo(() => {
-      if (totalEmotions === 0) return null;
-      let weightedSum = 0;
-      for (const [emotionId, count] of emotionCounts.entries()) {
-        weightedSum += emotionId * count;
-      }
-      return (weightedSum / totalEmotions).toFixed(1);
-    }, [emotionCounts, totalEmotions]);
-
-    // Get mood label based on average
-    const getMoodLabel = (avg: string | null) => {
-      if (!avg) return null;
-      const avgNum = parseFloat(avg);
-      if (avgNum <= 1.5) return { text: "Terrible", color: MOOD.terrible.color };
-      if (avgNum <= 2.5) return { text: "Bad", color: MOOD.bad.color };
-      if (avgNum <= 3.5) return { text: "Okay", color: MOOD.okay.color };
-      if (avgNum <= 4.5) return { text: "Good", color: MOOD.good.color };
-      return { text: "Great", color: MOOD.great.color };
-    };
-
-    const moodLabel = getMoodLabel(averageMood);
 
     // Memoize the callback to prevent recreation on every render
     const handleLogEmotion = useCallback(
@@ -190,19 +149,24 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
             challenges?.updateProgress("mood_count");
             onEmotionLogged?.(emotionScore, updated);
           });
-        } catch (error) { }
+        } catch {}
       },
-      [isLoggingEmotion, logEmotionToSupabase, onEmotionLogged],
+      [
+        challenges,
+        earnCoinsForAction,
+        isLoggingEmotion,
+        logEmotionToSupabase,
+        onEmotionLogged,
+        xp,
+      ],
     );
     return (
       <View className="gap-2">
         <View className="flex-row items-center justify-between px-1 mb-2">
-          <Text className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-            Daily Mood Log
-          </Text>
+          <Text className="happy-brand-eyebrow">Daily Mood Log</Text>
         </View>
 
-        <View className="bg-white rounded-2xl p-4" style={CARD_SHADOW}>
+        <View className="happy-brand-raised-panel rounded-[28px] p-4">
           <View className="flex-row justify-between px-2 pt-1 pb-1">
             {EMOTIONS.map((emotion) => (
               <MemoizedEmotionItem
@@ -210,10 +174,6 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
                 emotion={emotion}
                 count={emotionCounts.get(emotion.id) || 0}
                 onPress={() => {
-                  // if (totalEmotions >= 5 && !hasPro) {
-                  //   presentPaywall();
-                  //   return;
-                  // }
                   handleLogEmotion(emotion.id);
                 }}
                 isLoading={isLoggingEmotion}

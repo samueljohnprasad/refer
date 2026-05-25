@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, lazy } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Stack, useRouter, useNavigation } from "expo-router";
 import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import useNotifications from "@/hooks/data/useNotifications";
 import SuspensLoader from "@/src/components/SuspensLoader";
+import { SAGE } from "@/lib/tokens";
 const NotificationsUI = lazy(() => import("@/src/components/NotificationsUI"));
 
 /**
@@ -42,70 +43,44 @@ const RemindersScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          headerTransparent: true,
-          headerBlurEffect: "regular",
-          header: () => (
-            <BlurView intensity={50} tint="light" style={styles.header}>
-              <TouchableOpacity
-                style={styles.backButton}
-                activeOpacity={0.7}
-                onPress={handleBack}
+    <View className="flex-1 happy-brand-screen">
+      <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            headerBlurEffect: "regular",
+            header: () => (
+              <BlurView
+                intensity={50}
+                tint="light"
+                className="flex-row items-end justify-between px-4 pb-4 pt-[60px]"
               >
-                <Ionicons name="arrow-back" size={20} color="#FFF" />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill"
+                  activeOpacity={0.7}
+                  onPress={handleBack}
+                >
+                  <Ionicons name="arrow-back" size={21} color={SAGE[600]} />
+                </TouchableOpacity>
 
-              <Text style={styles.headerTitle}>Daily Reminders</Text>
+                <Text className="happy-font-heading-bold text-[30px] text-ink">
+                  Daily Reminders
+                </Text>
 
-              <View style={styles.placeholder} />
-            </BlurView>
-          ),
-        }}
-      />
-      <SuspensLoader>
-        <View className="flex-1 justify-center items-center pt-48">
-          <NotificationsUI />
-        </View>
-      </SuspensLoader>
-    </SafeAreaView>
+                <View className="w-11" />
+              </BlurView>
+            ),
+          }}
+        />
+        <SuspensLoader>
+          <View className="flex-1 w-full pt-24">
+            <NotificationsUI />
+          </View>
+        </SuspensLoader>
+      </SafeAreaView>
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#DCF2FF",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-    paddingTop: 60,
-    backgroundColor: "transparent",
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#7C5CFF",
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "800",
-    color: "#0F172A",
-  },
-  placeholder: {
-    width: 40,
-  },
-});
 
 export default RemindersScreen;

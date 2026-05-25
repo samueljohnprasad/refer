@@ -11,9 +11,16 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
+import {
+  buttonStyle,
+  controlSize,
+  labelStyle,
+  tint,
+} from "@expo/ui/swift-ui/modifiers";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MicronutrientTrackingScreen from "@/src/screens/MicronutrientTrackingScreen/MicronutrientTrackingScreen";
 import { MICRONUTRIENTS_CONFIG } from "@/src/config/micronutrients";
+import { SAGE } from "@/lib/tokens";
 
 const STORAGE_KEY = "tracked_micronutrients";
 
@@ -57,31 +64,34 @@ const MicronutrientHeader: React.FC = () => {
     >
       {!isLiquidGlass && (
         <TouchableOpacity
-          className="w-10 h-10 rounded-full justify-center items-center bg-[#7C5CFF]"
+          className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill"
           activeOpacity={0.7}
           onPress={() => router.back()}
         >
-          <HugeiconsIcon icon={ArrowLeft02Icon} size={20} color="#FFF" />
+          <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SAGE[600]} />
         </TouchableOpacity>
       )}
       {isLiquidGlass && (
         <Host matchContents>
           <Button
             onPress={() => router.back()}
-            color="#7B61FF"
-            variant="glassProminent"
-            controlSize="regular"
+            modifiers={[
+              labelStyle("iconOnly"),
+              buttonStyle("glassProminent"),
+              controlSize("regular"),
+              tint(SAGE[600]),
+            ]}
             systemImage="chevron.left"
           />
         </Host>
       )}
 
       <View className="items-center">
-        <Text className="text-[28px] font-extrabold text-[#0F172A] font-cormorantBold">
+        <Text className="happy-font-heading-bold text-[32px] text-ink">
           Micronutrients
         </Text>
-        <View className="bg-purple-100 px-3 py-1 rounded-full mt-1">
-          <Text className="text-sm font-semibold text-purple-700">
+        <View className="mt-1 rounded-full bg-sage-pill px-3 py-1">
+          <Text className="happy-font-body-bold text-sm text-sage-600">
             {trackedCount} of {MICRONUTRIENTS_CONFIG.length} tracked
           </Text>
         </View>

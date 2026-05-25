@@ -14,6 +14,7 @@ import {
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import * as Haptics from "expo-haptics";
+import { BRAND_SURFACE, DANGER, INK, SAGE } from "@/lib/tokens";
 
 interface ConfirmationModalProps {
   title: string;
@@ -78,21 +79,21 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           {/* Icon Header */}
           <View
             className={`w-12 h-12 rounded-full items-center justify-center mb-4 ${
-              isDestructive ? "bg-red-50" : "bg-purple-50"
+              isDestructive ? "bg-red-50" : "bg-sage-pill"
             }`}
           >
             <HugeiconsIcon
               icon={isDestructive ? AlertCircleIcon : Tick02Icon}
               size={22}
-              color={isDestructive ? "#DC2626" : "#7B61FF"}
+              color={isDestructive ? DANGER : SAGE[600]}
             />
           </View>
 
-          <Heading className="text-center text-3xl font-cormorantSemiBold text-[#1f2937] mb-2 leading-9">
+          <Heading className="happy-font-heading-bold text-center text-3xl text-ink mb-2 leading-9">
             {title}
           </Heading>
 
-          <Text className="text-gray-600 text-center text-base px-1 leading-6">
+          <Text className="happy-font-body-medium text-ink-soft text-center text-base px-1 leading-6">
             {message}
           </Text>
         </View>
@@ -102,31 +103,31 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <Pressable
             onPress={handleCancel}
             disabled={deleting}
-            className="flex-1 bg-[#F6F4FF] rounded-full flex-row items-center justify-center py-4 active:opacity-80"
+            className="flex-1 bg-sage-pill rounded-full flex-row items-center justify-center py-4 active:opacity-80"
           >
-            <Text className="text-gray-900 font-bold text-lg mr-2">
+            <Text className="happy-font-body-bold text-ink text-lg mr-2">
               {cancelText}
             </Text>
-            <HugeiconsIcon icon={Cancel01Icon} size={20} color="#1f2937" />
+            <HugeiconsIcon icon={Cancel01Icon} size={20} color={INK} />
           </Pressable>
 
           <Pressable
             onPress={handleDeleteConfirm}
             disabled={deleting}
             className={`flex-1 rounded-full flex-row items-center justify-center py-4 active:opacity-90 ${
-              isDestructive ? "bg-red-500" : "bg-[#7B61FF]"
+              isDestructive ? "bg-red-500" : "happy-brand-primary-cta"
             } ${deleting ? "opacity-70" : ""}`}
           >
-            <Text className="text-white font-bold text-lg mr-2">
+            <Text className="happy-font-body-bold text-brand-surface text-lg mr-2">
               {deleting ? "Processing..." : confirmText}
             </Text>
             {deleting ? (
-              <ActivityIndicator color="white" size="small" />
+              <ActivityIndicator color={BRAND_SURFACE} size="small" />
             ) : (
               <HugeiconsIcon
                 icon={isDestructive ? Delete02Icon : Tick02Icon}
                 size={20}
-                color="white"
+                color={BRAND_SURFACE}
               />
             )}
           </Pressable>

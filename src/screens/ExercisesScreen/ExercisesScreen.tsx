@@ -6,10 +6,9 @@ import {
   useState,
   type ReactElement,
 } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
-import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -36,6 +35,7 @@ import type {
 } from "@/src/types/exerciseFlow";
 import { useCBTHistory, type HistoryLogItem } from "./hooks/useCBTHistory";
 import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
+import { GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
 
 type TabKey = "discover" | "log";
 type ExerciseGroup = ReturnType<typeof getExercisesGrouped>[number];
@@ -52,19 +52,16 @@ const LEGACY_LOG_META = {
     label: "Thought Catcher",
     icon: Brain01Icon,
     xp: 10,
-    backgroundColor: "#F3E8FF",
   },
   reframing: {
     label: "Thought Reframing",
     icon: Brain01Icon,
     xp: 15,
-    backgroundColor: "#E8F0FE",
   },
   gratitude: {
     label: "Gratitude Reframe",
     icon: SparklesIcon,
     xp: 10,
-    backgroundColor: "#F0FDF4",
   },
 } as const;
 
@@ -106,13 +103,6 @@ const ExerciseCard = memo(function ExerciseCard({
   onPress,
 }: ExerciseCardProps): ReactElement {
   const icon = getExerciseIcon(exercise.type);
-  const iconStyle = useMemo(
-    () => [
-      styles.exerciseIcon,
-      { backgroundColor: exercise.backgroundColor },
-    ],
-    [exercise.backgroundColor],
-  );
   const handlePress = useCallback((): void => {
     onPress(exercise);
   }, [exercise, onPress]);
@@ -122,44 +112,42 @@ const ExerciseCard = memo(function ExerciseCard({
       onPress={handlePress}
       accessibilityRole="button"
       accessibilityLabel={`${exercise.title}: ${exercise.subtitle}. Duration: ${exercise.duration}.`}
-      className="mb-4 min-h-12 rounded-2xl border-2 border-b-4 border-slate-200 border-b-slate-300 bg-white active:opacity-90"
-      style={styles.roundedCard}
+      className="happy-brand-preview-tile mb-4 min-h-12 rounded-[28px] active:opacity-90"
     >
       <View className="flex-row items-center p-4">
         <View
-          className="mr-4 h-14 w-14 items-center justify-center rounded-2xl"
-          style={iconStyle}
+          className="mr-4 h-14 w-14 items-center justify-center rounded-[22px] bg-sage-50"
           accessible={false}
         >
-          <HugeiconsIcon icon={icon} size={28} color="#1E293B" />
+          <HugeiconsIcon icon={icon} size={28} color={SAGE[600]} />
         </View>
 
         <View className="flex-1">
-          <Text className="mr-2 flex-shrink text-[17px] font-extrabold text-slate-800">
+          <Text className="happy-font-body-bold mr-2 flex-shrink text-[18px] text-ink">
             {exercise.title}
           </Text>
-          <Text className="mb-2 mt-0.5 text-[14px] font-medium text-slate-500">
+          <Text className="happy-font-body-medium mb-3 mt-0.5 text-[15px] leading-5 text-ink-muted">
             {exercise.subtitle}
           </Text>
 
           <View className="flex-row items-center gap-2">
-            <View className="flex-row items-center rounded-full bg-slate-100 px-2.5 py-1">
+            <View className="flex-row items-center rounded-full bg-sage-50 px-2.5 py-1">
               <Text className="text-xs">⏱️</Text>
-              <Text className="ml-1 text-xs font-bold text-slate-600">
+              <Text className="happy-font-body-bold ml-1 text-xs text-ink-soft">
                 {exercise.duration}
               </Text>
             </View>
-            <View className="flex-row items-center rounded-full bg-[#FFF3CD] px-2.5 py-1">
+            <View className="flex-row items-center rounded-full bg-gold/15 px-2.5 py-1">
               <Text className="text-xs">⚡</Text>
-              <Text className="ml-1 text-xs font-extrabold text-amber-700">
+              <Text className="happy-font-body-bold ml-1 text-xs text-ink-soft">
                 +{exercise.xp} XP
               </Text>
             </View>
           </View>
         </View>
 
-        <View className="h-8 w-8 items-center justify-center rounded-full bg-[#58CC02]">
-          <Text className="text-sm font-extrabold text-white">›</Text>
+        <View className="h-9 w-9 items-center justify-center rounded-full bg-sage-500">
+          <Text className="text-sm font-extrabold text-brand-surface">›</Text>
         </View>
       </View>
     </Pressable>
@@ -185,14 +173,14 @@ const DiscoverSection = memo(function DiscoverSection({
   return (
     <View className="mb-6">
       <View className="mb-3 flex-row items-center">
-        <View className="mr-3 h-10 w-10 items-center justify-center rounded-2xl bg-slate-100">
-          <HugeiconsIcon icon={categoryIcon} size={20} color="#334155" />
+        <View className="mr-3 h-11 w-11 items-center justify-center rounded-[18px] bg-sage-50">
+          <HugeiconsIcon icon={categoryIcon} size={21} color={SAGE[600]} />
         </View>
         <View className="flex-1">
-          <Text className="text-[18px] font-extrabold text-slate-900">
+          <Text className="happy-font-body-bold text-[20px] text-ink">
             {label}
           </Text>
-          <Text className="mt-0.5 text-sm text-slate-500">
+          <Text className="happy-font-body-medium mt-0.5 text-[15px] text-ink-muted">
             {categoryMeta.description}
           </Text>
         </View>
@@ -239,10 +227,10 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
     return {
       label: "Completed",
       isComplete: true,
-      badgeIconColor: "#047857",
-      badgeClassName: "bg-emerald-100",
-      badgeTextClassName: "text-emerald-700",
-      cardBorderClassName: "border-green-200 border-b-green-300",
+      badgeIconColor: SAGE[600],
+      badgeClassName: "bg-sage-pill",
+      badgeTextClassName: "text-sage-600",
+      cardBorderClassName: "border-sage-200 border-b-sage-300",
       xpEarned: getHistoryXp(item),
     };
   }
@@ -251,10 +239,10 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
     return {
       label: "Ready to Reframe",
       isComplete: false,
-      badgeIconColor: "#B45309",
-      badgeClassName: "bg-amber-100",
-      badgeTextClassName: "text-amber-700",
-      cardBorderClassName: "border-slate-200 border-b-slate-300",
+      badgeIconColor: GOLD,
+      badgeClassName: "bg-gold/15",
+      badgeTextClassName: "text-ink-soft",
+      cardBorderClassName: "border-sage-100 border-b-sage-200",
       xpEarned: 0,
     };
   }
@@ -262,10 +250,10 @@ function formatStatus(item: HistoryLogItem): StatusInfo {
   return {
     label: "Resume",
     isComplete: false,
-    badgeIconColor: "#64748B",
-    badgeClassName: "bg-slate-100",
-    badgeTextClassName: "text-slate-500",
-    cardBorderClassName: "border-slate-200 border-b-slate-300",
+    badgeIconColor: INK_MUTED,
+    badgeClassName: "bg-sage-50",
+    badgeTextClassName: "text-ink-muted",
+    cardBorderClassName: "border-sage-100 border-b-sage-200",
     xpEarned: 0,
   };
 }
@@ -279,7 +267,6 @@ function getLogPresentation(item: HistoryLogItem) {
       heading: categoryMeta?.label ?? "Exercise",
       title: config?.title ?? item.title ?? "Exercise",
       icon: config ? getExerciseIcon(config.type) : Brain01Icon,
-      iconBackgroundColor: config?.backgroundColor ?? "#F8FAFC",
     };
   }
 
@@ -288,7 +275,6 @@ function getLogPresentation(item: HistoryLogItem) {
       heading: LEGACY_LOG_META.catcher.label,
       title: item.title?.trim() || "Untitled Session",
       icon: LEGACY_LOG_META.catcher.icon,
-      iconBackgroundColor: LEGACY_LOG_META.catcher.backgroundColor,
     };
   }
 
@@ -297,7 +283,6 @@ function getLogPresentation(item: HistoryLogItem) {
       heading: LEGACY_LOG_META.reframing.label,
       title: item.title?.trim() || "Untitled Session",
       icon: LEGACY_LOG_META.reframing.icon,
-      iconBackgroundColor: LEGACY_LOG_META.reframing.backgroundColor,
     };
   }
 
@@ -305,7 +290,6 @@ function getLogPresentation(item: HistoryLogItem) {
     heading: LEGACY_LOG_META.gratitude.label,
     title: item.title?.trim() || "Untitled Session",
     icon: LEGACY_LOG_META.gratitude.icon,
-    iconBackgroundColor: LEGACY_LOG_META.gratitude.backgroundColor,
   };
 }
 
@@ -328,13 +312,6 @@ const LogCard = memo(function LogCard({
     xpEarned,
   } = formatStatus(item);
   const presentation = getLogPresentation(item);
-  const iconStyle = useMemo(
-    () => [
-      styles.logIcon,
-      { backgroundColor: presentation.iconBackgroundColor },
-    ],
-    [presentation.iconBackgroundColor],
-  );
   const handlePress = useCallback((): void => {
     onPress(item);
   }, [item, onPress]);
@@ -343,28 +320,24 @@ const LogCard = memo(function LogCard({
     <Pressable
       onPress={handlePress}
       className={`mb-3 rounded-2xl border-2 border-b-4 bg-white active:opacity-90 ${cardBorderClassName}`}
-      style={styles.roundedCard}
     >
       <View className="flex-row items-center p-4">
-        <View
-          className="mr-3 h-12 w-12 items-center justify-center rounded-2xl"
-          style={iconStyle}
-        >
-          <HugeiconsIcon icon={presentation.icon} size={22} color="#1E293B" />
+        <View className="mr-3 h-12 w-12 items-center justify-center rounded-[20px] bg-sage-50">
+          <HugeiconsIcon icon={presentation.icon} size={22} color={SAGE[600]} />
         </View>
 
         <View className="flex-1">
           <View className="mb-0.5 flex-row items-center justify-between">
-            <Text className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <Text className="happy-brand-eyebrow text-[10px]">
               {presentation.heading}
             </Text>
-            <Text className="text-xs text-slate-400">
+            <Text className="happy-font-body-medium text-xs text-ink-muted">
               {format(new Date(item.date), "MMM d, h:mm a")}
             </Text>
           </View>
 
           <Text
-            className="mb-1.5 text-[15px] font-extrabold text-slate-800"
+            className="happy-font-body-bold mb-2 text-[16px] text-ink"
             numberOfLines={1}
           >
             {presentation.title}
@@ -386,9 +359,9 @@ const LogCard = memo(function LogCard({
               </Text>
             </View>
             {isComplete && xpEarned > 0 ? (
-              <View className="flex-row items-center rounded-full bg-[#FFF3CD] px-2 py-1">
+              <View className="flex-row items-center rounded-full bg-gold/15 px-2 py-1">
                 <Text className="text-[10px]">⚡</Text>
-                <Text className="ml-0.5 text-[10px] font-extrabold text-amber-700">
+                <Text className="happy-font-body-bold ml-0.5 text-[10px] text-ink-soft">
                   +{xpEarned} XP
                 </Text>
               </View>
@@ -406,10 +379,7 @@ function EmptyDiscoverState(): ReactElement {
       className="items-center justify-center px-8 py-16"
       accessibilityLiveRegion="polite"
     >
-      <View
-        className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-slate-100"
-        style={styles.emptyIcon}
-      >
+      <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-sage-50">
         <Text
           className="text-[40px]"
           accessibilityLabel="Exercise illustration"
@@ -418,50 +388,20 @@ function EmptyDiscoverState(): ReactElement {
           🏋️
         </Text>
       </View>
-      <Text className="mb-2 text-center text-xl font-extrabold text-slate-700">
+      <Text className="happy-font-body-bold mb-2 text-center text-xl text-ink">
         No exercises yet
       </Text>
-      <Text className="text-center text-sm leading-relaxed text-slate-400">
+      <Text className="happy-font-body-medium text-center text-sm leading-relaxed text-ink-muted">
         Exercises will appear here as they become available.
       </Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  listContent: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 40,
-  },
-  list: {
-    flex: 1,
-  },
-  roundedCard: {
-    borderCurve: "continuous",
-  },
-  exerciseIcon: {
-    borderCurve: "continuous",
-  },
-  logIcon: {
-    borderCurve: "continuous",
-  },
-  emptyIcon: {
-    borderCurve: "continuous",
-  },
-  tabButton: {
-    borderCurve: "continuous",
-  },
-});
-
 function LoadingHistoryState(): ReactElement {
   return (
     <View className="items-center py-12">
-      <Text className="text-sm font-bold text-slate-400">
+      <Text className="happy-font-body-bold text-sm text-ink-muted">
         Loading history...
       </Text>
     </View>
@@ -471,16 +411,13 @@ function LoadingHistoryState(): ReactElement {
 function EmptyExerciseLogState(): ReactElement {
   return (
     <View className="items-center justify-center px-8 py-16">
-      <View
-        className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-slate-100"
-        style={styles.emptyIcon}
-      >
+      <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-sage-50">
         <Text className="text-[40px]">📚</Text>
       </View>
-      <Text className="mb-2 text-center text-xl font-extrabold text-slate-700">
+      <Text className="happy-font-body-bold mb-2 text-center text-xl text-ink">
         Your exercise journal
       </Text>
-      <Text className="text-center text-sm leading-relaxed text-slate-400">
+      <Text className="happy-font-body-medium text-center text-sm leading-relaxed text-ink-muted">
         Complete your first exercise to see it here.
       </Text>
     </View>
@@ -508,14 +445,13 @@ const ExerciseTabButton = memo(function ExerciseTabButton({
       onPress={handlePress}
       accessibilityRole="tab"
       accessibilityState={{ selected: isActive }}
-      className={`flex-1 items-center justify-center rounded-lg py-2.5 ${
-        isActive ? "bg-white shadow-sm" : ""
+      className={`flex-1 items-center justify-center rounded-full py-3 ${
+        isActive ? "bg-brand-surface" : ""
       }`}
-      style={styles.tabButton}
     >
       <Text
-        className={`text-sm font-extrabold ${
-          isActive ? "text-slate-800" : "text-slate-400"
+        className={`happy-font-body-bold text-[15px] ${
+          isActive ? "text-ink" : "text-ink-muted"
         }`}
       >
         {label}
@@ -577,86 +513,77 @@ export default function ExercisesScreen(): ReactElement {
       router.push(`/tabs/screens/gratitude-reframe?id=${item.id}` as never);
     }
   }, []);
-  const renderDiscoverSection = useCallback<ListRenderItem<ExerciseGroup>>(
-    ({ item }) => (
-      <DiscoverSection
-        label={item.label}
-        category={item.category}
-        exercises={item.exercises}
-        onPress={handleExercisePress}
-      />
-    ),
-    [handleExercisePress],
-  );
-  const renderLogCard = useCallback<ListRenderItem<HistoryLogItem>>(
-    ({ item }) => <LogCard item={item} onPress={handleLogPress} />,
-    [handleLogPress],
-  );
-  const exerciseGroupKeyExtractor = useCallback(
-    (item: ExerciseGroup): string => item.category,
-    [],
-  );
-  const historyKeyExtractor = useCallback(
-    (item: HistoryLogItem): string => `${item.type}-${item.id}`,
-    [],
-  );
-
   return (
-    <SafeAreaView style={styles.root} edges={["top"]}>
-      <View className="px-5 pb-3 pt-4">
-        <View className="mb-4 flex-row items-center justify-between">
-          <View className="flex-row items-center gap-3">
-            <Mascot state="panda-love-hug-2" size={40} />
-            <Text className="text-[28px] font-extrabold text-slate-900">
-              Exercises
-            </Text>
-          </View>
-          {completedCount > 0 ? (
-            <View className="flex-row items-center rounded-full bg-[#FFF3CD] px-3 py-1.5">
-              <Text className="text-sm">🔥</Text>
-              <Text className="ml-1 text-xs font-extrabold text-amber-700">
-                {completedCount} done
+    <View className="flex-1 happy-brand-screen">
+      <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
+        <View className="px-5 pb-3 pt-4">
+          <View className="mb-4 flex-row items-center justify-between">
+            <View className="flex-row items-center gap-3">
+              <Mascot state="panda-love-hug-2" size={40} />
+              <Text className="happy-font-heading-bold text-[34px] text-ink">
+                Exercises
               </Text>
             </View>
-          ) : null}
+            {completedCount > 0 ? (
+              <View className="flex-row items-center rounded-full bg-gold/15 px-3 py-1.5">
+                <Text className="text-sm">🔥</Text>
+                <Text className="happy-font-body-bold ml-1 text-xs text-ink-soft">
+                  {completedCount} done
+                </Text>
+              </View>
+            ) : null}
+          </View>
+
+          <View className="flex-row rounded-full border border-sage-100 bg-sage-50 p-1">
+            {TAB_KEYS.map((tab) => (
+              <ExerciseTabButton
+                key={tab}
+                tab={tab}
+                isActive={activeTab === tab}
+                onPress={handleTabPress}
+              />
+            ))}
+          </View>
         </View>
 
-        <View className="flex-row rounded-xl bg-slate-100 p-1">
-          {TAB_KEYS.map((tab) => (
-            <ExerciseTabButton
-              key={tab}
-              tab={tab}
-              isActive={activeTab === tab}
-              onPress={handleTabPress}
-            />
-          ))}
-        </View>
-      </View>
-
-      {activeTab === "discover" ? (
-        <FlashList
-          style={styles.list}
-          data={exerciseGroups}
-          renderItem={renderDiscoverSection}
-          keyExtractor={exerciseGroupKeyExtractor}
-          contentContainerStyle={styles.listContent}
-          ListHeaderComponent={SuggestedExerciseCard}
-          ListEmptyComponent={EmptyDiscoverState}
+        <ScrollView
+          className="flex-1"
+          style={{ flex: 1 }}
+          contentContainerClassName="px-5 pt-4 pb-[120px]"
           showsVerticalScrollIndicator={false}
-        />
-      ) : (
-        <FlashList
-          style={styles.list}
-          data={isLoadingHistory ? [] : history}
-          renderItem={renderLogCard}
-          keyExtractor={historyKeyExtractor}
-          contentContainerStyle={styles.listContent}
-          ListEmptyComponent={
-            isLoadingHistory ? LoadingHistoryState : EmptyExerciseLogState
-          }
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-    </SafeAreaView>
+        >
+          {activeTab === "discover" ? (
+            <>
+              <SuggestedExerciseCard />
+              {exerciseGroups.length === 0 ? (
+                <EmptyDiscoverState />
+              ) : (
+                exerciseGroups.map((group) => (
+                  <DiscoverSection
+                    key={group.category}
+                    label={group.label}
+                    category={group.category}
+                    exercises={group.exercises}
+                    onPress={handleExercisePress}
+                  />
+                ))
+              )}
+            </>
+          ) : isLoadingHistory ? (
+            <LoadingHistoryState />
+          ) : history.length === 0 ? (
+            <EmptyExerciseLogState />
+          ) : (
+            history.map((item) => (
+              <LogCard
+                key={`${item.type}-${item.id}`}
+                item={item}
+                onPress={handleLogPress}
+              />
+            ))
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }

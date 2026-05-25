@@ -58,6 +58,7 @@ export const MASCOT_STAGE = "#ffffff" as const;
 export const TERRACOTTA = "#c8694b" as const;
 export const TERRACOTTA_LIGHT = "#e8a88e" as const;
 export const GOLD = "#d4a943" as const;
+export const DANGER = "#e7000b" as const;
 export const INK = "#142414" as const;
 export const INK_SOFT = "#4f604f" as const;
 export const INK_MUTED = "#7d8d7b" as const;

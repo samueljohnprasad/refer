@@ -1,6 +1,7 @@
 import { useNotificationPreferences } from "@/src/hooks/data/useNotificationPreferences";
 import React from "react";
 import { View, Text, ScrollView, Switch, ActivityIndicator } from "react-native";
+import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
 
 export default function NotificationPreferencesScreen() {
     const { settings, isLoading, updateSettings, isUpdating } =
@@ -9,7 +10,7 @@ export default function NotificationPreferencesScreen() {
     if (isLoading) {
         return (
             <View className="flex-1 items-center justify-center">
-                <ActivityIndicator size="large" color="#7B61FF" />
+                <ActivityIndicator size="large" color={SAGE[600]} />
             </View>
         );
     }
@@ -19,8 +20,8 @@ export default function NotificationPreferencesScreen() {
     };
 
     return (
-        <ScrollView className="flex-1 bg-white px-5 pt-4">
-            <Text className="text-2xl font-bold text-gray-900 mb-6">
+        <ScrollView className="flex-1 happy-brand-screen px-5 pt-4">
+            <Text className="happy-font-heading-bold text-[30px] text-ink mb-6">
                 Notification Preferences
             </Text>
 
@@ -35,8 +36,8 @@ export default function NotificationPreferencesScreen() {
 
             {settings.push_enabled && (
                 <>
-                    <View className="h-px bg-gray-100 my-4" />
-                    <Text className="text-lg font-semibold text-gray-800 mb-3">
+                    <View className="h-px bg-sage-100 my-4" />
+                    <Text className="happy-font-body-bold text-lg text-ink mb-3">
                         Notification Types
                     </Text>
 
@@ -72,12 +73,12 @@ export default function NotificationPreferencesScreen() {
                         disabled={isUpdating}
                     />
 
-                    <View className="h-px bg-gray-100 my-4" />
-                    <Text className="text-sm text-gray-500 mb-2">
+                    <View className="h-px bg-sage-100 my-4" />
+                    <Text className="happy-font-body-medium text-sm text-ink-muted mb-2">
                         Quiet hours: {settings.quiet_hours_start}:00 -{" "}
                         {settings.quiet_hours_end}:00
                     </Text>
-                    <Text className="text-sm text-gray-500 mb-8">
+                    <Text className="happy-font-body-medium text-sm text-ink-muted mb-8">
                         Max {settings.max_per_day} notification per day. We use AI to find
                         the best time to send you notifications based on your usage
                         patterns.
@@ -102,17 +103,19 @@ function SettingRow({
     disabled: boolean;
 }) {
     return (
-        <View className="flex-row items-center justify-between py-3">
+        <View className="happy-brand-card mb-3 flex-row items-center justify-between rounded-[24px] p-4">
             <View className="flex-1 mr-4">
-                <Text className="text-base font-medium text-gray-900">{title}</Text>
-                <Text className="text-sm text-gray-500 mt-0.5">{description}</Text>
+                <Text className="happy-font-body-bold text-base text-ink">{title}</Text>
+                <Text className="happy-font-body-medium text-sm text-ink-muted mt-0.5">
+                    {description}
+                </Text>
             </View>
             <Switch
                 value={value}
                 onValueChange={onToggle}
                 disabled={disabled}
-                trackColor={{ false: "#E5E7EB", true: "#7B61FF" }}
-                thumbColor="#FFFFFF"
+                trackColor={{ false: SAGE[100], true: SAGE[500] }}
+                thumbColor={BRAND_SURFACE}
             />
         </View>
     );

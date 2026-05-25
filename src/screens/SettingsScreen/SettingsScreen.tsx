@@ -146,8 +146,7 @@ export default React.memo(function SettingsScreen() {
           <SettingsSection title="Account & Preferences">
             <SettingsItem
               icon={Notification01Icon}
-              iconColor="#A855F7"
-              iconBgColor="#E9D5FF"
+              tone="sage"
               title="Daily Reminders"
               subtitle="Customize multiple reminders"
               onPress={() => {
@@ -157,8 +156,7 @@ export default React.memo(function SettingsScreen() {
             />
             <SettingsItem
               icon={ShieldUserIcon}
-              iconColor="#3B82F6"
-              iconBgColor="#DBEAFE"
+              tone="sage"
               title="Notification Settings"
               subtitle="Control alerts and quiet hours"
               onPress={() => {
@@ -168,22 +166,19 @@ export default React.memo(function SettingsScreen() {
             />
             <SettingsItem
               icon={UserIcon}
-              iconColor="#EF4444"
-              iconBgColor="#FECACA"
+              tone="terracotta"
               title="Edit Name"
               onPress={() => handlePress("edit-name")}
             />
             <SettingsItem
               icon={Copy01Icon}
-              iconColor="#8B5CF6"
-              iconBgColor="#DDD6FE"
+              tone="sage"
               title="Copy User ID"
               onPress={handleCopyUserId}
             />
             <SettingsItem
               icon={MessageOutgoing01Icon}
-              iconColor="#06B6D4"
-              iconBgColor="#CFFAFE"
+              tone="sage"
               title="Support Chat"
               subtitle="Chat with our support team"
               onPress={() => {
@@ -193,8 +188,7 @@ export default React.memo(function SettingsScreen() {
             />
             <SettingsItem
               icon={Share01Icon}
-              iconColor="#EC4899"
-              iconBgColor="#FCE7F3"
+              tone="gold"
               title="Share App"
               subtitle="Tell your friends about us"
               onPress={() => {
@@ -204,8 +198,7 @@ export default React.memo(function SettingsScreen() {
             />
             <SettingsItem
               icon={StarIcon}
-              iconColor="#16A34A"
-              iconBgColor="#DCFCE7"
+              tone="gold"
               title="Write a Review"
               onPress={handleRateUs}
               isLast={true}
@@ -215,22 +208,19 @@ export default React.memo(function SettingsScreen() {
           <SettingsSection title="Legal & App">
             <SettingsItem
               icon={File01Icon}
-              iconColor="#9333EA"
-              iconBgColor="#F3E8FF"
+              tone="sage"
               title="Terms of Use"
               onPress={handleTermsOfUse}
             />
             <SettingsItem
               icon={ShieldUserIcon}
-              iconColor="#2563EB"
-              iconBgColor="#DBEAFE"
+              tone="sage"
               title="Privacy Policy"
               onPress={handlePrivacyPolicy}
             />
             <SettingsItem
               icon={AlertSquareIcon}
-              iconColor="#D97706"
-              iconBgColor="#FEF3C7"
+              tone="gold"
               title="App Info"
               subtitle="Version 1.0.0 (Build 1)"
               onPress={() => { }}
@@ -238,8 +228,7 @@ export default React.memo(function SettingsScreen() {
             />
             <SettingsItem
               icon={Download02Icon}
-              iconColor="#9333EA"
-              iconBgColor="#E9D5FF"
+              tone="sage"
               title="Bulk Import Journals"
               subtitle="Import sample data"
               onPress={() => {
@@ -249,8 +238,7 @@ export default React.memo(function SettingsScreen() {
             />
             <SettingsItem
               icon={Delete02Icon}
-              iconColor="#DC2626"
-              iconBgColor="#FEE2E2"
+              tone="danger"
               title="Erase Personal Data"
               subtitle="Permanently delete all data"
               onPress={() => {
@@ -262,8 +250,7 @@ export default React.memo(function SettingsScreen() {
             {shouldShowSignIn ? (
               <SettingsItem
                 icon={Login02Icon}
-                iconColor="#16A34A"
-                iconBgColor="#DCFCE7"
+                tone="sage"
                 title="Sign In"
                 subtitle="Save your progress and Premium"
                 onPress={() => {
@@ -275,8 +262,7 @@ export default React.memo(function SettingsScreen() {
             ) : (
               <SettingsItem
                 icon={Logout02Icon}
-                iconColor="#3B82F6"
-                iconBgColor="#BFDBFE"
+                tone="danger"
                 title="Sign Out"
                 onPress={() => setIsSignoutOPen(true)}
                 isLast={true}

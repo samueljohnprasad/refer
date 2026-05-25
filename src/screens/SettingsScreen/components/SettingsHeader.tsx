@@ -11,10 +11,10 @@ import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
 import { buttonStyle, controlSize, labelStyle, tint } from "@expo/ui/swift-ui/modifiers";
+import { SAGE } from "@/lib/tokens";
 
 interface SettingsHeaderProps {
   scrollY: Animated.Value;
@@ -43,11 +43,11 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
       {/* <View className="flex-row items-center bg-red-300"> */}
       {!isLiquidGlass && (
         <TouchableOpacity
-          className="w-10 h-10 rounded-full justify-center items-center bg-[#7C5CFF]"
+          className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill"
           activeOpacity={0.7}
           onPress={() => router.back()}
         >
-          <HugeiconsIcon icon={ArrowLeft02Icon} size={20} color="#FFF" />
+          <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SAGE[600]} />
         </TouchableOpacity>
       )}
       {isLiquidGlass && (
@@ -59,14 +59,14 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
               labelStyle('iconOnly'),
               buttonStyle('glassProminent'),
               controlSize('regular'),
-              tint('#7B61FF')
+              tint(SAGE[600])
             ]}
             systemImage="chevron.left"
           />
         </Host>
       )}
 
-      <Text className="text-[28px] font-extrabold text-[#0F172A] font-cormorantBold">
+      <Text className="happy-font-heading-bold text-[34px] text-ink">
         Settings
       </Text>
       {/* </View> */}
@@ -84,24 +84,18 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
           }}
         >
           <Pressable
-            android_ripple={{ color: "#6D4AFF" }}
+            android_ripple={{ color: SAGE[700] }}
             onPress={() => router.push("/tabs/screens/paywall")}
-            style={{ borderRadius: 24, overflow: "hidden" }}
+            className="happy-brand-primary-cta overflow-hidden rounded-full px-4 py-2"
           >
-            <LinearGradient
-              colors={["#7C5CFF", "#9C7CFF"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              className="self-start rounded-[28px]"
-              style={{ paddingVertical: 8, paddingHorizontal: 14 }}
-            >
-              <Text className="text-white font-bold text-[15px]">Upgrade</Text>
-            </LinearGradient>
+            <Text className="happy-font-body-bold text-[15px] text-brand-surface">
+              Upgrade
+            </Text>
           </Pressable>
         </Animated.View>
       )}
 
-      <View style={{ width: 36 }} />
+      <View style={{ width: 44 }} />
     </BlurView>
   );
 };

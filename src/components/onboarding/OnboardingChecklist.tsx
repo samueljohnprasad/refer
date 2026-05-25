@@ -22,22 +22,22 @@ const ChecklistRow: React.FC<ChecklistRowProps> = ({ item, index, onPress }) => 
             accessibilityRole="button"
         >
             <View
-                className={`w-6 h-6 rounded-full border-2 items-center justify-center mr-3 ${item.completed
-                        ? 'bg-green-500 border-green-500'
-                        : 'border-gray-300 bg-white'
+                className={`w-7 h-7 rounded-full border-2 items-center justify-center mr-3 ${item.completed
+                        ? 'bg-sage-500 border-sage-500'
+                        : 'border-sage-200 bg-brand-surface'
                     }`}
             >
                 {item.completed && (
-                    <Text className="text-white text-xs font-bold">✓</Text>
+                    <Text className="text-brand-surface text-xs font-bold">✓</Text>
                 )}
             </View>
             <Text
-                className={`flex-1 text-sm font-medium ${item.completed ? 'text-gray-400 line-through' : 'text-gray-700'
+                className={`happy-font-body-medium flex-1 text-[15px] ${item.completed ? 'text-ink-muted line-through' : 'text-ink-soft'
                     }`}
             >
                 {item.label}
             </Text>
-            <Text className="text-xs font-bold text-purple-500">+{item.xpReward} XP</Text>
+            <Text className="happy-font-body-bold text-xs text-sage-600">+{item.xpReward} XP</Text>
         </TouchableOpacity>
     </Animated.View>
 );
@@ -72,19 +72,12 @@ const OnboardingChecklist: React.FC = () => {
     return (
         <Animated.View
             entering={FadeIn.duration(500)}
-            className="bg-white rounded-2xl p-5 mx-4 mb-4"
-            style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.06,
-                shadowRadius: 8,
-                elevation: 2,
-            }}
+            className="happy-brand-raised-panel rounded-[28px] p-5 mb-5"
         >
             <View className="flex-row items-center justify-between mb-3">
                 <View className="flex-row items-center">
                     <Text style={{ fontSize: 16 }} className="mr-2">🚀</Text>
-                    <Text className="text-base font-bold text-gray-800">Getting Started</Text>
+                    <Text className="happy-font-body-bold text-[18px] text-ink">Getting Started</Text>
                 </View>
                 <TouchableOpacity
                     onPress={handleDismiss}
@@ -92,28 +85,28 @@ const OnboardingChecklist: React.FC = () => {
                     accessibilityLabel="Dismiss checklist"
                     accessibilityRole="button"
                 >
-                    <Text className="text-gray-400 text-xs font-medium">✕</Text>
+                    <Text className="happy-font-body-bold text-ink-muted text-xs">✕</Text>
                 </TouchableOpacity>
             </View>
 
             <View className="mb-4">
                 <View className="flex-row items-center justify-between mb-2">
-                    <Text className="text-xs font-semibold text-gray-500">
+                    <Text className="happy-font-body-semibold text-xs text-ink-muted">
                         {completedCount}/{totalCount} complete
                     </Text>
-                    <Text className="text-xs font-bold text-purple-600">
+                    <Text className="happy-font-body-bold text-xs text-sage-600">
                         Earn {totalXpReward} XP
                     </Text>
                 </View>
-                <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <View className="h-2 bg-sage-100 rounded-full overflow-hidden">
                     <View
-                        className="h-full bg-purple-500 rounded-full"
+                        className="h-full bg-sage-500 rounded-full"
                         style={{ width: `${progressPercent}%` }}
                     />
                 </View>
             </View>
 
-            <View className="border-t border-gray-100 pt-1">
+            <View className="border-t border-sage-100 pt-1">
                 {items.map((item: OnboardingChecklistItem, index: number) => (
                     <ChecklistRow
                         key={item.id}

@@ -113,16 +113,20 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
   return (
     <>
-      <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
+      <SafeAreaView className="flex-1 bg-white" edges={["top"]} style={{ flex: 1 }}>
         <KeyboardAvoidingView
           behavior="padding"
           className="flex-1"
+          style={{ flex: 1 }}
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
         >
           {/* Date Header - Centered and Clickable */}
-          <View className="px-6 pt-6 pb-4 items-center">
-            <Pressable onPress={handleDatePress}>
-              <Text className="text-ink-muted text-base happy-font-body-semibold">
+          <View className="items-center border-b border-sage-100 px-6 pb-4 pt-4">
+            <Pressable
+              onPress={handleDatePress}
+              className="rounded-full bg-sage-pill px-4 py-2"
+            >
+              <Text className="text-sage-600 text-sm happy-font-body-bold">
                 {formattedDate}
               </Text>
             </Pressable>
@@ -131,12 +135,13 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           {/* Content */}
           <ScrollView
             className="flex-1 px-6"
+            style={{ flex: 1 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ paddingBottom: 20 }}
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: 28, paddingTop: 24 }}
           >
             {/* Prompt - No Card, Just Text with Icon */}
-            <View className="flex-row justify-between items-start mb-8">
+            <View className="flex-row justify-between items-start mb-6">
               <Text className="flex-1 text-ink text-[30px] leading-9 pr-4 happy-font-heading-bold">
                 {currentPrompt}
               </Text>
@@ -156,21 +161,23 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             </View>
 
             {/* Text Input */}
-            <TextInput
-              focusable
-              maxLength={7000}
-              value={journalText + realtimeResult}
-              onChangeText={setJournalText}
-              placeholder="Start by answering prompt or write anything you have in mind"
-              placeholderTextColor={INK_MUTED}
-              multiline
-              textAlignVertical="top"
-              className="text-ink text-base leading-6 happy-font-body"
-              style={{
-                minHeight: 400,
-              }}
-              autoFocus
-            />
+            <View className="happy-brand-card min-h-[360px] rounded-[28px] p-5">
+              <TextInput
+                focusable
+                maxLength={7000}
+                value={journalText + realtimeResult}
+                onChangeText={setJournalText}
+                placeholder="Start by answering the prompt, or write anything on your mind."
+                placeholderTextColor={INK_MUTED}
+                multiline
+                textAlignVertical="top"
+                className="text-ink text-[17px] leading-7 happy-font-body"
+                style={{
+                  minHeight: 320,
+                }}
+                autoFocus
+              />
+            </View>
           </ScrollView>
 
           {/* Bottom Actions */}
