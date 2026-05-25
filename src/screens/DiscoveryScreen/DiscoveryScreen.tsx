@@ -10,15 +10,12 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Platform,
   Modal,
   Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons, Feather, Entypo } from "@expo/vector-icons";
 import { Box } from "@/components/ui/box";
-import LottieView from "lottie-react-native";
-import { girlMeditation } from "@/assets/lottie";
 import { useAtom, useSetAtom } from "jotai";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
@@ -26,7 +23,6 @@ import Animated, {
   useSharedValue,
   withSpring,
   withTiming,
-  withSequence,
   runOnJS,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
@@ -47,11 +43,9 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   AiMicIcon,
   KeyboardIcon,
-  Menu02Icon,
   ReloadIcon,
   Camera02Icon,
   ListViewIcon,
-  Menu01Icon,
   Image02Icon,
 } from "@hugeicons/core-free-icons";
 import SuspensLoader from "@/src/components/SuspensLoader";
@@ -60,9 +54,21 @@ import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
-import { clipShape, foregroundStyle, frame, buttonStyle, controlSize, labelStyle } from "@expo/ui/swift-ui/modifiers";
-import { BRAND, PALETTE, SURFACE } from "@/constants/palette";
+import {
+  foregroundStyle,
+  buttonStyle,
+  controlSize,
+  labelStyle,
+} from "@expo/ui/swift-ui/modifiers";
 import { CARD_SHADOW, ELEVATED_SHADOW } from "@/constants/shadows";
+import { Mascot } from "@/src/components/ui/Mascot";
+import {
+  BRAND_SURFACE,
+  GOLD,
+  INK_SOFT,
+  SAGE,
+  SAGE_DISCOVERY_GRADIENT,
+} from "@/lib/tokens";
 
 // Lazy load components
 const VoiceRecorderModalWrapper = React.lazy(
@@ -83,17 +89,8 @@ const CalendarPicker = React.lazy(() =>
 );
 const ImageJournalModal = React.lazy(() => import("./ImageJournalModal"));
 
-// Constants outside component to prevent recreation
-const COLORS = BRAND;
-
-const GRADIENT_COLORS = [BRAND.skyA, BRAND.skyB] as const;
 const GRADIENT_START = { x: 0, y: 0 } as const;
 const GRADIENT_END = { x: 1, y: 1 } as const;
-
-const LOTTIE_STYLE = {
-  width: 200,
-  height: 200,
-} as const;
 
 // Memoized Header Component
 interface DiscoveryHeaderProps {
@@ -112,7 +109,7 @@ const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(
         <MaterialCommunityIcons
           name="fire"
           size={22}
-          color={PALETTE.amber}
+          color={GOLD}
         />
       </View>
     </View>
@@ -190,7 +187,7 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
             onPress={onDatePress}
             className="flex-row items-center justify-center gap-1"
           >
-            <Text className="text-theme-text-primary opacity-75 font-bold ">
+            <Text className="happy-font-body-bold text-ink-muted">
               Journal · {formattedDate}
             </Text>
             <View className="flex-col items-center p-0 m-0">
@@ -198,30 +195,38 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
                 className=" p-0 m-0"
                 name="chevron-small-up"
                 size={12}
-                color={COLORS.ink}
+                color={INK_SOFT}
               />
               <Entypo
                 className="p-0 m-0"
                 name="chevron-small-down"
                 size={12}
-                color={COLORS.ink}
+                color={INK_SOFT}
               />
             </View>
           </Pressable>
           <View className="flex-row items-center gap-1">
-            <Pressable onPress={onOpenOptions} className="p-1">
-              <HugeiconsIcon icon={ListViewIcon} size={20} color={COLORS.ink} />
+            <Pressable onPress={onOpenOptions} className="p-2">
+              <HugeiconsIcon
+                icon={ListViewIcon}
+                size={22}
+                color={SAGE[600]}
+              />
             </Pressable>
-            <Pressable onPress={handleShuffle} className="p-1">
+            <Pressable onPress={handleShuffle} className="p-2">
               <Animated.View style={rotateStyle}>
-                <HugeiconsIcon icon={ReloadIcon} size={20} color={COLORS.ink} />
+                <HugeiconsIcon
+                  icon={ReloadIcon}
+                  size={22}
+                  color={SAGE[600]}
+                />
               </Animated.View>
             </Pressable>
           </View>
         </View>
         <Animated.Text
           style={promptAnimStyle}
-          className="mt-2.5 text-gray-900 text-4xl font-black leading-tight tracking-wide font-cormorantSemiBold"
+          className="mt-4 text-ink text-[42px] leading-[50px] tracking-tight happy-font-heading-bold"
         >
           {displayedPrompt}
         </Animated.Text>
@@ -234,8 +239,10 @@ PromptCardContent.displayName = "PromptCardContent";
 
 // Memoized Illustration
 const Illustration = React.memo(() => (
-  <View className="justify-end items-center" pointerEvents="none">
-    <LottieView autoPlay style={LOTTIE_STYLE} source={girlMeditation} />
+  <View className="items-center justify-end pt-3 pb-2" pointerEvents="none">
+    <View className="happy-mascot-stage h-48 w-48 items-center justify-center rounded-[44px] border-0 bg-sage-50">
+      <Mascot state="panda-notes" size={168} />
+    </View>
   </View>
 ));
 
@@ -331,11 +338,11 @@ function DiscoveryScreen() {
     []
   );
 
-  const cardShadowStyle = useMemo(() => [CARD_SHADOW, { borderRadius: 24 }], []);
+  const cardShadowStyle = useMemo(() => [CARD_SHADOW, { borderRadius: 32 }], []);
   const isLiquidGlass = isLiquidGlassAvailable();
 
   return (
-    <SafeAreaView className="flex-1 bg-theme-background-primary" edges={["top", "bottom"]}>
+    <SafeAreaView className="flex-1 happy-brand-screen" edges={["top", "bottom"]}>
       <ScrollView
         contentContainerStyle={scrollContentStyle}
         showsVerticalScrollIndicator={false}
@@ -349,18 +356,20 @@ function DiscoveryScreen() {
         </View>
 
         {/* Prompt card */}
-        <View style={cardShadowStyle} className="rounded-2xl flex-1">
+        <View style={cardShadowStyle} className="rounded-[32px] flex-1">
           <LinearGradient
-            colors={GRADIENT_COLORS}
+            colors={SAGE_DISCOVERY_GRADIENT}
             start={GRADIENT_START}
             end={GRADIENT_END}
             style={{
-              borderRadius: 24,
-              padding: 20,
+              borderRadius: 32,
+              padding: 24,
               overflow: "hidden",
-              minHeight: 256,
+              minHeight: 620,
               justifyContent: "space-between",
               flex: 1,
+              borderWidth: 2,
+              borderColor: SAGE[100],
             }}
           >
             <PromptCardContent
@@ -372,7 +381,7 @@ function DiscoveryScreen() {
             />
             <Illustration />
 
-            <View className="flex-row items-center justify-between px-[18px]">
+            <View className="flex-row items-center justify-between px-2 pb-2">
               {!isLiquidGlass && (
                 <View className="flex-row gap-2">
                   <PressableScale
@@ -380,15 +389,17 @@ function DiscoveryScreen() {
                     onPress={handleScanJournal}
                     scale={0.92}
                     hapticStyle="light"
-                    style={[CARD_SHADOW, { backgroundColor: '#FFFFFF', borderRadius: 999, width: 60, height: 44, alignItems: 'center', justifyContent: 'center' }]}
+                    style={CARD_SHADOW}
                     accessibilityRole="button"
                     accessibilityLabel="Scan journal with camera"
                   >
-                    <HugeiconsIcon
-                      icon={Camera02Icon}
-                      size={24}
-                      color={BRAND.ink}
-                    />
+                    <View className="h-[50px] w-[66px] items-center justify-center rounded-full border border-sage-100 bg-sage-pill">
+                      <HugeiconsIcon
+                        icon={Camera02Icon}
+                        size={24}
+                        color={SAGE[600]}
+                      />
+                    </View>
                   </PressableScale>
 
                   <PressableScale
@@ -396,15 +407,17 @@ function DiscoveryScreen() {
                     onPress={handleScanJournal}
                     scale={0.92}
                     hapticStyle="light"
-                    style={[CARD_SHADOW, { backgroundColor: '#FFFFFF', borderRadius: 999, width: 60, height: 44, alignItems: 'center', justifyContent: 'center' }]}
+                    style={CARD_SHADOW}
                     accessibilityRole="button"
                     accessibilityLabel="Scan journal from gallery"
                   >
-                    <HugeiconsIcon
-                      icon={Image02Icon}
-                      size={24}
-                      color={BRAND.ink}
-                    />
+                    <View className="h-[50px] w-[66px] items-center justify-center rounded-full border border-sage-100 bg-sage-pill">
+                      <HugeiconsIcon
+                        icon={Image02Icon}
+                        size={24}
+                        color={SAGE[600]}
+                      />
+                    </View>
                   </PressableScale>
                 </View>
               )}
@@ -416,7 +429,7 @@ function DiscoveryScreen() {
                     modifiers={[
                       buttonStyle('glass'),
                       controlSize('extraLarge'),
-                      foregroundStyle(COLORS.ink),
+                      foregroundStyle(SAGE[600]),
                       labelStyle('iconOnly')
                     ]}
                     systemImage="camera.fill"
@@ -431,9 +444,15 @@ function DiscoveryScreen() {
                   handleOpenRecorder();
                 }}
                 size={108}
-                bg={BRAND.purple}
+                bg={SAGE[500]}
                 elevation
-                icon={<HugeiconsIcon icon={AiMicIcon} size={56} />}
+                icon={
+                  <HugeiconsIcon
+                    icon={AiMicIcon}
+                    size={56}
+                    color={BRAND_SURFACE}
+                  />
+                }
                 accessibilityLabel="Start voice recording"
               />
 
@@ -443,15 +462,17 @@ function DiscoveryScreen() {
                   onPress={handleKeyboardPress}
                   scale={0.92}
                   hapticStyle="light"
-                  style={[CARD_SHADOW, { backgroundColor: SURFACE.card, borderRadius: 999, width: 60, height: 44, alignItems: 'center', justifyContent: 'center' }]}
+                  style={CARD_SHADOW}
                   accessibilityRole="button"
                   accessibilityLabel="Open keyboard journal"
                 >
-                  <HugeiconsIcon
-                    icon={KeyboardIcon}
-                    size={24}
-                    color={BRAND.ink}
-                  />
+                  <View className="h-[50px] w-[66px] items-center justify-center rounded-full border border-sage-100 bg-sage-pill">
+                    <HugeiconsIcon
+                      icon={KeyboardIcon}
+                      size={24}
+                      color={SAGE[600]}
+                    />
+                  </View>
                 </PressableScale>
               )}
               {isLiquidGlass && (
@@ -462,7 +483,7 @@ function DiscoveryScreen() {
                     modifiers={[
                       buttonStyle('glass'),
                       controlSize('extraLarge'),
-                      foregroundStyle(COLORS.ink),
+                      foregroundStyle(SAGE[600]),
                       labelStyle('iconOnly')
                     ]}
                     systemImage="keyboard.fill"
@@ -517,20 +538,20 @@ function DiscoveryScreen() {
             >
               <View className="flex-row justify-between items-center mb-4">
                 <View className="flex-row items-center gap-3">
-                  <Text className="text-gray-900 text-xl font-bold">
+                  <Text className="text-ink text-xl happy-font-body-bold">
                     Select Date
                   </Text>
                   <Pressable
                     onPress={handleTodayPress}
-                    className="bg-gray-100 px-3 py-1.5 rounded-full"
+                    className="bg-sage-pill px-3 py-1.5 rounded-full"
                   >
-                    <Text className="text-gray-600 text-xs font-semibold">
+                    <Text className="text-sage-600 text-xs happy-font-body-semibold">
                       Today
                     </Text>
                   </Pressable>
                 </View>
                 <Pressable onPress={handleCloseCalendar} className="p-2">
-                  <Feather name="x" size={24} color="#111827" />
+                  <Feather name="x" size={24} color={INK_SOFT} />
                 </Pressable>
               </View>
               <SuspensLoader>

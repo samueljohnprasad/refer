@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
@@ -25,18 +24,20 @@ import Animated, {
   Easing,
   cancelAnimation,
 } from "react-native-reanimated";
-
-const ACCENT_COLOR = "#0A84FF";
-const DARK_BG = "#1C1C1E";
+import {
+  BRAND_SURFACE,
+  SAGE,
+} from "@/lib/tokens";
 
 // Animated Sound Wave Bar Component
 interface WaveBarProps {
   delay: number;
   isActive: boolean;
   height: number;
+  color: string;
 }
 
-const WaveBar = ({ delay, isActive, height }: WaveBarProps) => {
+const WaveBar = ({ delay, isActive, height, color }: WaveBarProps) => {
   const animatedHeight = useSharedValue(height * 0.4);
 
   useEffect(() => {
@@ -70,7 +71,10 @@ const WaveBar = ({ delay, isActive, height }: WaveBarProps) => {
 
   return (
     <Animated.View
-      style={[styles.waveBar, { backgroundColor: ACCENT_COLOR }, animatedStyle]}
+      style={[
+        { width: 3, borderRadius: 2, backgroundColor: color },
+        animatedStyle,
+      ]}
     />
   );
 };
@@ -84,10 +88,12 @@ interface SoundWaveIconProps {
 const SoundWaveIcon = ({ isActive, size = 20 }: SoundWaveIconProps) => {
   const barHeights = [size * 0.5, size * 0.8, size, size * 0.8, size * 0.5];
   const delays = [0, 50, 100, 150, 200];
+  const color = isActive ? BRAND_SURFACE : SAGE[500];
 
   return (
     <View
-      style={[styles.soundWaveContainer, { height: size, width: size * 1.2 }]}
+      className="flex-row items-center justify-center gap-[3px]"
+      style={{ height: size, width: size * 1.2 }}
     >
       {barHeights.map((height, index) => (
         <WaveBar
@@ -95,6 +101,7 @@ const SoundWaveIcon = ({ isActive, size = 20 }: SoundWaveIconProps) => {
           delay={delays[index]}
           isActive={isActive}
           height={height}
+          color={color}
         />
       ))}
     </View>
@@ -123,13 +130,14 @@ const SpeakButton = ({
   };
 
   return (
-    <View style={styles.speakButtonWrapper}>
+    <View className="overflow-hidden rounded-full">
       <TouchableOpacity
-        style={[
-          styles.speakButton,
-          isActive && styles.speakButtonActive,
-          (isDisabled || isLoading) && styles.speakButtonDisabled,
-        ]}
+        className={`min-w-[132px] flex-row items-center justify-center gap-2.5 rounded-full border px-6 py-3.5 ${
+          isActive
+            ? "border-sage-600 bg-sage-500"
+            : "border-sage-100 bg-sage-selected"
+        }`}
+        style={{ opacity: isDisabled || isLoading ? 0.5 : 1 }}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           onPress();
@@ -138,16 +146,14 @@ const SpeakButton = ({
         activeOpacity={0.8}
       >
         {isLoading ? (
-          <ActivityIndicator size="small" color={ACCENT_COLOR} />
+          <ActivityIndicator size="small" color={SAGE[500]} />
         ) : (
           <SoundWaveIcon isActive={isActive} size={18} />
         )}
         <Text
-          style={[
-            styles.speakButtonText,
-            isActive && styles.speakButtonTextActive,
-          ]}
-          className="font-cormorantBold"
+          className={`text-[17px] happy-font-body-bold ${
+            isActive ? "text-white" : "text-ink"
+          }`}
         >
           {getButtonText()}
         </Text>
@@ -343,7 +349,7 @@ export default function WhisperUI({
     : true;
 
   return (
-    <View className="flex-1 items-center justify-center">
+    <View className="items-center justify-center">
       <SpeakButton
         isActive={isRealtimeActive}
         isDisabled={!whisperContext || isInitializingModel || isDownloading}
@@ -353,116 +359,3 @@ export default function WhisperUI({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: DARK_BG,
-  },
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 40,
-  },
-  header: {
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    marginBottom: 8,
-  },
-  transcriptionCard: {
-    flex: 1,
-    backgroundColor: "#2C2C2E",
-    borderRadius: 20,
-    marginBottom: 32,
-    overflow: "hidden",
-  },
-  transcriptionScroll: {
-    flex: 1,
-  },
-  transcriptionContent: {
-    padding: 20,
-    minHeight: 200,
-  },
-  transcriptionText: {
-    fontSize: 18,
-    lineHeight: 28,
-    color: "#FFFFFF",
-    fontWeight: "400",
-  },
-  placeholderText: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: "#636366",
-    textAlign: "center",
-    marginTop: 60,
-  },
-  errorText: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: "#FF453A",
-    textAlign: "center",
-    marginTop: 60,
-  },
-  buttonContainer: {
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  speakButtonWrapper: {
-    borderRadius: 30,
-    overflow: "hidden",
-  },
-  speakButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#F2F2F7",
-    paddingHorizontal: 28,
-    paddingVertical: 14,
-    borderRadius: 30,
-    gap: 10,
-    minWidth: 140,
-  },
-  speakButtonActive: {
-    backgroundColor: "#FFFFFF",
-  },
-  speakButtonDisabled: {
-    opacity: 0.5,
-  },
-  speakButtonText: {
-    fontSize: 17,
-    fontWeight: "600",
-    color: "#1C1C1E",
-  },
-  speakButtonTextActive: {
-    color: ACCENT_COLOR,
-  },
-  soundWaveContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 3,
-  },
-  waveBar: {
-    width: 3,
-    borderRadius: 2,
-  },
-  statusContainer: {
-    marginTop: 16,
-    paddingHorizontal: 20,
-  },
-  statusText: {
-    fontSize: 13,
-    color: "#8E8E93",
-    textAlign: "center",
-  },
-  footerHint: {
-    fontSize: 13,
-    color: "#636366",
-    textAlign: "center",
-  },
-});

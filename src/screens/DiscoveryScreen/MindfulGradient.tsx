@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import React, { useEffect } from "react";
 import {
   Blur,
@@ -15,15 +15,9 @@ import {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { SAGE_RECORDING_GRADIENT } from "@/lib/tokens";
 
 const { width, height } = Dimensions.get("window");
-const Colors = {
-  mediumBlue: "#FF9500",
-  lightBlue: "#FFA726",
-  teal: "#FFB74D",
-  iceBlue: "#FFE0B2",
-  white: "#fff",
-};
 
 const VISUAL_CONFIG = {
   blur: 9,
@@ -167,19 +161,13 @@ const MindfulGradient: React.FC<MindfulGradientProps> = ({
   }, [isSpeaking, radiusScale]);
 
   return (
-    <View style={[StyleSheet.absoluteFill]}>
+    <View className="absolute inset-0">
       <Canvas style={{ flex: 1 }}>
         <Rect x={0} y={0} width={width} height={height}>
           <RadialGradient
             c={center}
             r={animatedRadius}
-            colors={[
-              Colors.mediumBlue,
-              Colors.lightBlue,
-              Colors.teal,
-              Colors.iceBlue,
-              Colors.white,
-            ]}
+            colors={[...SAGE_RECORDING_GRADIENT]}
           />
 
           <Blur blur={VISUAL_CONFIG.blur} mode={"clamp"} />

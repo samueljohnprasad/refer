@@ -1,8 +1,6 @@
 import React, {
   useState,
   useCallback,
-  useMemo,
-  useRef,
   useEffect,
 } from "react";
 import {
@@ -33,10 +31,9 @@ import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtom } from "jotai";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
-import { Button, Host } from "@expo/ui/swift-ui";
 import WhisperUI from "@/src/components/ui/swiftui";
 import * as Haptics from "expo-haptics";
+import { BRAND_SURFACE, INK_MUTED, INK_SOFT, SAGE } from "@/lib/tokens";
 
 interface KeyboardJournalScreenProps {
   onSubmit: (text: string, enableAIInsights: boolean) => void;
@@ -113,7 +110,6 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   }, [journalText, enableAIInsights, onSubmit]);
 
   const isSubmitDisabled = journalText.trim().length === 0;
-  const isLiquidGlass = isLiquidGlassAvailable();
 
   return (
     <>
@@ -126,7 +122,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           {/* Date Header - Centered and Clickable */}
           <View className="px-6 pt-6 pb-4 items-center">
             <Pressable onPress={handleDatePress}>
-              <Text className="text-[#6B7280] text-base font-semibold">
+              <Text className="text-ink-muted text-base happy-font-body-semibold">
                 {formattedDate}
               </Text>
             </Pressable>
@@ -141,7 +137,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           >
             {/* Prompt - No Card, Just Text with Icon */}
             <View className="flex-row justify-between items-start mb-8">
-              <Text className="flex-1 text-[#1F2937] text-2xl font-bold leading-tight pr-4 font-cormorantSemiBold">
+              <Text className="flex-1 text-ink text-[30px] leading-9 pr-4 happy-font-heading-bold">
                 {currentPrompt}
               </Text>
               <TouchableOpacity
@@ -150,7 +146,11 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                 activeOpacity={0.7}
               >
                 <Animated.View style={rotateStyle}>
-                  <Feather name="refresh-cw" size={22} color="#CBD5E1" />
+                  <Feather
+                    name="refresh-cw"
+                    size={22}
+                    color={SAGE[600]}
+                  />
                 </Animated.View>
               </TouchableOpacity>
             </View>
@@ -162,12 +162,11 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               value={journalText + realtimeResult}
               onChangeText={setJournalText}
               placeholder="Start by answering prompt or write anything you have in mind"
-              placeholderTextColor="#CBD5E1"
+              placeholderTextColor={INK_MUTED}
               multiline
               textAlignVertical="top"
-              className="text-[#1F2937] text-base leading-6 font-cormorantMedium"
+              className="text-ink text-base leading-6 happy-font-body"
               style={{
-                fontFamily: "cormorantMedium",
                 minHeight: 400,
               }}
               autoFocus
@@ -176,58 +175,30 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
           {/* Bottom Actions */}
           <View
-            className="px-6 pt-4 bg-white border-t border-gray-100"
+            className="px-6 pt-4 bg-white border-t border-sage-100"
             style={{ paddingBottom: Math.max(insets.bottom, 24) }}
           >
             {/* XP Counter */}
             <View className="mb-4 items-center">
-              <Text className="text-[#6B7280] text-sm font-medium">
+              <Text className="text-ink-muted text-sm happy-font-body-medium">
                 {journalText.length}{" "}
-                <Text className="text-[#9CA3AF] text-sm">/7000</Text>
+                <Text className="text-sage-400 text-sm">/7000</Text>
               </Text>
             </View>
 
             {/* Action Buttons */}
             <View className="flex-row items-center justify-between gap-3">
-              {/* Close Button */}
-              {!isLiquidGlass && (
-                <TouchableOpacity
-                  disabled={isRealtimeActive}
-                  onPress={() => {
-                    Keyboard.dismiss();
-                    onClose();
-                  }}
-                  className="w-14 h-14 rounded-full bg-[#F3F4F6] items-center justify-center"
-                  activeOpacity={0.7}
-                >
-                  <Feather name="x" size={24} color="#6B7280" />
-                </TouchableOpacity>
-              )}
-              {isLiquidGlass && (
-                <Host matchContents>
-                  <Button
-                    disabled={isRealtimeActive}
-                    onPress={() => {
-                      Keyboard.dismiss();
-                      onClose();
-                    }}
-                    // color="#9ca3af"
-                    variant="glass"
-                    controlSize="large"
-                    systemImage="xmark"
-                  />
-                </Host>
-              )}
-
-              {/* Reflect with AI Button */}
-              {/* <TouchableOpacity
-                className="flex-1 h-14 rounded-full bg-[#F3F4F6] items-center justify-center"
+              <TouchableOpacity
+                disabled={isRealtimeActive}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  onClose();
+                }}
+                className="w-14 h-14 rounded-full bg-sage-pill items-center justify-center"
                 activeOpacity={0.7}
               >
-                <Text className="text-[#6B7280] text-base font-semibold">
-                  Reflect with AI
-                </Text>
-              </TouchableOpacity> */}
+                <Feather name="x" size={24} color={INK_SOFT} />
+              </TouchableOpacity>
 
               <WhisperUI
                 setRealtimeResult={(text) => {
@@ -241,67 +212,35 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                 setIsRealtimeActive={setIsRealtimeActive}
               />
 
-              {/* AI Insights Toggle Button */}
-              {!isLiquidGlass && (
-                <TouchableOpacity
-                  onPress={() => setEnableAIInsights(!enableAIInsights)}
-                  disabled={isRealtimeActive}
-                  className={`w-14 h-14 rounded-full items-center justify-center ${
-                    enableAIInsights ? "bg-[#7B61FF]" : "bg-[#F3F4F6]"
-                  }`}
-                  activeOpacity={0.7}
-                >
-                  <Feather
-                    name="zap"
-                    size={20}
-                    color={enableAIInsights ? "#FFFFFF" : "#9CA3AF"}
-                  />
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity
+                onPress={() => setEnableAIInsights(!enableAIInsights)}
+                disabled={isRealtimeActive}
+                className={`w-14 h-14 rounded-full items-center justify-center ${
+                  enableAIInsights ? "bg-sage-500" : "bg-sage-pill"
+                }`}
+                activeOpacity={0.7}
+              >
+                <Feather
+                  name="zap"
+                  size={20}
+                  color={enableAIInsights ? BRAND_SURFACE : INK_MUTED}
+                />
+              </TouchableOpacity>
 
-              {isLiquidGlass && (
-                <Host matchContents>
-                  <Button
-                    onPress={() => setEnableAIInsights(!enableAIInsights)}
-                    disabled={isRealtimeActive}
-                    color={enableAIInsights ? "#7B61FF" : "#9ca3af"}
-                    variant={enableAIInsights ? "glassProminent" : "glass"}
-                    controlSize="large"
-                    systemImage="sparkles"
-                  />
-                </Host>
-              )}
-
-              {/* Submit Button - Purple when enabled */}
-              {!isLiquidGlass && (
-                <TouchableOpacity
-                  onPress={handleSubmit}
-                  disabled={isSubmitDisabled || isRealtimeActive}
-                  className={`w-14 h-14 rounded-full items-center justify-center ${
-                    isSubmitDisabled ? "bg-[#E5E7EB]" : "bg-[#7B61FF]"
-                  }`}
-                  activeOpacity={0.7}
-                >
-                  <Feather
-                    name="check"
-                    size={24}
-                    color={isSubmitDisabled ? "#D1D5DB" : "#FFFFFF"}
-                  />
-                </TouchableOpacity>
-              )}
-
-              {isLiquidGlass && (
-                <Host matchContents>
-                  <Button
-                    disabled={isSubmitDisabled || isRealtimeActive}
-                    onPress={handleSubmit}
-                    color="#7B61FF"
-                    variant="glassProminent"
-                    controlSize="large"
-                    systemImage="checkmark"
-                  />
-                </Host>
-              )}
+              <TouchableOpacity
+                onPress={handleSubmit}
+                disabled={isSubmitDisabled || isRealtimeActive}
+                className={`w-14 h-14 rounded-full items-center justify-center ${
+                  isSubmitDisabled ? "bg-sage-100" : "bg-sage-600"
+                }`}
+                activeOpacity={0.7}
+              >
+                <Feather
+                  name="check"
+                  size={24}
+                  color={isSubmitDisabled ? INK_MUTED : BRAND_SURFACE}
+                />
+              </TouchableOpacity>
             </View>
           </View>
         </KeyboardAvoidingView>
@@ -323,25 +262,25 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             onPress={handleCloseCalendar}
           >
             <Pressable
-              className="bg-violet-300 rounded-3xl p-4 w-full"
+              className="bg-white rounded-3xl p-4 w-full border-2 border-sage-100"
               onPress={(e) => e.stopPropagation()}
             >
               <View className="flex-row justify-between items-center mb-4">
                 <View className="flex-row items-center gap-3">
-                  <Text className="text-white text-xl font-bold">
+                  <Text className="text-ink text-xl happy-font-body-bold">
                     Select Date
                   </Text>
                   <Pressable
                     onPress={handleTodayPress}
-                    className="bg-white/20 px-3 py-1.5 rounded-full"
+                    className="bg-sage-pill px-3 py-1.5 rounded-full"
                   >
-                    <Text className="text-white text-xs font-semibold">
+                    <Text className="text-sage-600 text-xs happy-font-body-semibold">
                       Today
                     </Text>
                   </Pressable>
                 </View>
                 <Pressable onPress={handleCloseCalendar} className="p-2">
-                  <Feather name="x" size={24} color="white" />
+                  <Feather name="x" size={24} color={INK_SOFT} />
                 </Pressable>
               </View>
               <CalendarPicker

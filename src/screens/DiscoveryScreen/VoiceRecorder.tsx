@@ -17,6 +17,7 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import useAudioRecording from "@/hooks/useAudioRecording";
 import * as Haptics from "expo-haptics";
+import { SAGE } from "@/lib/tokens";
 
 interface VoiceRecorderProps {
   onStop: (uri: string, enableAIInsights: boolean) => void;
@@ -108,10 +109,10 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
 
       {/* Date Header - Centered */}
       <View className="px-6 mt-80 pb-4 items-center gap-6">
-        <Text className="text-[#1F2937] text-3xl font-bold font-roboto">
+        <Text className="text-ink text-3xl happy-font-body-bold">
           {formatTime(totalDuration)}
         </Text>
-        <Text className="text-[#1F2937] text-base font-semibold">
+        <Text className="text-ink-soft text-base happy-font-body-semibold">
           {formattedDateTime(selectedDate)}
         </Text>
       </View>
@@ -119,16 +120,16 @@ const VoiceRecorder = ({ onStop }: VoiceRecorderProps) => {
       {/* Prompt Section - No Card, Just Text */}
       <View className="px-6 pb-8">
         <View className="flex-row justify-between items-start">
-          <Text className="flex-1 text-[#1F2937] text-2xl font-bold leading-tight pr-4 font-cormorantBold">
+          <Text className="flex-1 text-ink text-[30px] leading-9 pr-4 happy-font-heading-bold">
             {currentPrompt}
           </Text>
           <TouchableOpacity
             onPress={handleShufflePrompt}
-            className="p-1.5 bg-[#7B61FF]/10 rounded-full"
+            className="p-2 bg-sage-pill rounded-full"
             activeOpacity={0.7}
           >
             <Animated.View style={rotateStyle}>
-              <HugeiconsIcon icon={ReloadIcon} size={16} color="#7B61FF" />
+              <HugeiconsIcon icon={ReloadIcon} size={18} color={SAGE[600]} />
             </Animated.View>
           </TouchableOpacity>
         </View>

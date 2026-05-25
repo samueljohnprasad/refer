@@ -12,6 +12,7 @@ import {
   BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
 import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
+import { BRAND_SURFACE, INK_MUTED, SAGE } from "@/lib/tokens";
 
 interface BookmarkedJournalsBottomSheetProps {
   isOpen: boolean;
@@ -99,20 +100,20 @@ export const BookmarkedJournalsBottomSheet: React.FC<
       onChange={handleSheetChanges}
       backdropComponent={renderBackdrop}
       enablePanDownToClose={true}
-      backgroundStyle={{ backgroundColor: "white" }}
-      handleIndicatorStyle={{ backgroundColor: "#FFFFFF" }}
+      backgroundStyle={{ backgroundColor: BRAND_SURFACE, borderRadius: 32 }}
+      handleIndicatorStyle={{ backgroundColor: SAGE[200], width: 48 }}
     >
       {/* Header */}
-      <View className="flex-row items-center justify-between px-6 py-8 border-b border-gray-100">
+      <View className="flex-row items-center justify-between border-b border-sage-100 px-6 py-8">
         <View className="flex-row items-center gap-3">
-          <View className="w-10 h-10 rounded-full bg-blue-50 items-center justify-center">
-            <Feather name="bookmark" size={20} color="#3B82F6" />
+          <View className="h-12 w-12 items-center justify-center rounded-full bg-sage-50">
+            <Feather name="bookmark" size={22} color={SAGE[600]} />
           </View>
           <View>
-            <Text className="text-2xl font-bold text-gray-900 font-cormorantSemiBold">
+            <Text className="happy-font-heading-bold text-[30px] leading-9 text-ink">
               Bookmarked Journals
             </Text>
-            <Text className="text-sm text-gray-500">
+            <Text className="happy-font-body-medium text-[15px] text-ink-muted">
               {totalCount || 0} entries saved
             </Text>
           </View>
@@ -130,7 +131,7 @@ export const BookmarkedJournalsBottomSheet: React.FC<
             {[1, 2, 3].map((i) => (
               <View
                 key={i}
-                className="bg-gray-100 rounded-2xl h-32 animate-pulse"
+                className="h-32 animate-pulse rounded-[24px] bg-sage-50"
               />
             ))}
           </View>
@@ -152,12 +153,12 @@ export const BookmarkedJournalsBottomSheet: React.FC<
                 <Button
                   onPress={handleLoadMore}
                   disabled={isFetchingNextPage}
-                  className="bg-blue-600 rounded-xl "
+                  className="happy-brand-primary-cta rounded-[18px]"
                 >
                   {isFetchingNextPage ? (
-                    <ButtonSpinner color="white" />
+                    <ButtonSpinner color={BRAND_SURFACE} />
                   ) : (
-                    <ButtonText className="text-white font-semibold">
+                    <ButtonText className="happy-font-body-bold text-white">
                       Load More ({bookmarkedJournals.length} / {totalCount})
                     </ButtonText>
                   )}
@@ -168,8 +169,8 @@ export const BookmarkedJournalsBottomSheet: React.FC<
             {/* End of List Indicator */}
             {!hasNextPage && bookmarkedJournals.length > 0 && (
               <View className="items-center py-6">
-                <View className="h-px bg-gray-200 w-full mb-3" />
-                <Text className="text-sm text-gray-400">
+                <View className="mb-3 h-px w-full bg-sage-100" />
+                <Text className="happy-font-body-medium text-sm text-ink-muted">
                   All {totalCount} bookmarked journals loaded
                 </Text>
               </View>
@@ -177,13 +178,13 @@ export const BookmarkedJournalsBottomSheet: React.FC<
           </View>
         ) : (
           <View className="items-center justify-center py-20">
-            <View className="w-20 h-20 rounded-full bg-gray-100 items-center justify-center mb-4">
-              <Feather name="bookmark" size={40} color="#9CA3AF" />
+            <View className="mb-5 h-24 w-24 items-center justify-center rounded-[30px] bg-sage-50">
+              <Feather name="bookmark" size={42} color={INK_MUTED} />
             </View>
-            <Text className="text-lg font-semibold text-gray-800 mb-2">
+            <Text className="happy-font-body-bold mb-2 text-[20px] text-ink">
               No Bookmarked Journals
             </Text>
-            <Text className="text-sm text-gray-500 text-center px-8">
+            <Text className="happy-font-body-medium px-8 text-center text-[15px] leading-6 text-ink-muted">
               Tap the bookmark icon on any journal entry to save it here for
               quick access
             </Text>

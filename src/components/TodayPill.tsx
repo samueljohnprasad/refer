@@ -9,6 +9,7 @@ import {
 import { Text } from "@/components/Themed";
 import useTodayPillAnimation from "@/hooks/animations/useTodayPillAnimation";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { SAGE } from "@/lib/tokens";
 
 export interface TodayPillProps {
   visible: boolean;
@@ -28,8 +29,8 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
     label = "Today",
     onPress,
     containerStyle,
-    backgroundColor = "#7B61FF",
-    textColor = "#ffffff",
+    backgroundColor = SAGE.selected,
+    textColor = SAGE[600],
     durationMs,
     offsetX,
     scaleFrom,
@@ -49,11 +50,12 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
             right: 0,
             bottom: -16,
             zIndex: 100,
+            backgroundColor,
           },
           containerStyle,
           animatedStyle,
         ]}
-        className="flex-row items-center rounded-l-2xl px-2 py-1 bg-theme-purple-light"
+        className="flex-row items-center rounded-l-2xl px-2 py-1"
         pointerEvents={pointerEvents}
       >
         <Pressable
@@ -63,8 +65,17 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
           accessibilityHint="Returns view to the current day"
           className="flex-row items-center gap-1"
         >
-          <MaterialCommunityIcons name="chevron-left" size={18} className="text-theme-text-secondary font-regular" />
-          <Text className="font-regular text-theme-text-secondary text-sm">{label}</Text>
+          <MaterialCommunityIcons
+            name="chevron-left"
+            size={18}
+            color={textColor}
+          />
+          <Text
+            className="happy-font-body-medium text-sm"
+            style={{ color: textColor }}
+          >
+            {label}
+          </Text>
         </Pressable>
       </Animated.View>
     );

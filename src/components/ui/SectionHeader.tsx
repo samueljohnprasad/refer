@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { View, Text } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { SAGE } from "@/lib/tokens";
 
 interface SectionHeaderProps {
   title: string;
@@ -21,14 +22,16 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
     <View className={`flex-row items-center justify-between ${className}`}>
       <View className="flex-row items-center">
         <View
-          className="p-2 rounded-xl mr-2 bg-gray-100"
+          className="mr-3 h-11 w-11 items-center justify-center rounded-full bg-sage-50"
         >
-          <HugeiconsIcon icon={icon} size={22} color="#6B7280" />
+          <HugeiconsIcon icon={icon} size={22} color={SAGE[600]} />
         </View>
-        <Text className="text-gray-900 font-semibold text-base">{title}</Text>
+        <Text className="happy-font-body-bold text-[17px] text-ink">{title}</Text>
         {count !== undefined && (
-          <View className="ml-2 px-2 py-0.5 bg-gray-100 rounded-full">
-            <Text className="text-xs font-medium text-gray-500">{count}</Text>
+          <View className="ml-2 rounded-full bg-sage-pill px-2.5 py-1">
+            <Text className="happy-font-body-bold text-xs text-sage-600">
+              {count}
+            </Text>
           </View>
         )}
       </View>

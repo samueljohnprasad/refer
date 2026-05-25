@@ -1,5 +1,5 @@
-import { useMemo, type ReactElement, type ReactNode } from "react";
-import { Modal, Pressable, StyleSheet, View } from "react-native";
+import { type ReactElement, type ReactNode } from "react";
+import { Modal, Pressable, View } from "react-native";
 
 interface AssistantActionModalProps {
   visible: boolean;
@@ -14,11 +14,6 @@ export function AssistantActionModal({
   children,
   onClose,
 }: AssistantActionModalProps): ReactElement {
-  const contentStyle = useMemo(
-    () => [styles.content, { paddingBottom: bottomInset }],
-    [bottomInset],
-  );
-
   return (
     <Modal
       visible={visible}
@@ -27,35 +22,23 @@ export function AssistantActionModal({
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View style={styles.root}>
+      <View className="flex-1 justify-end bg-sage-800/35">
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Close Happy Assistant"
-          style={StyleSheet.absoluteFill}
+          className="absolute inset-0"
           onPress={onClose}
         />
-        <View style={contentStyle} pointerEvents="box-none">
-          <View style={styles.card}>{children}</View>
+        <View
+          className="px-4"
+          style={{ paddingBottom: bottomInset }}
+          pointerEvents="box-none"
+        >
+          <View className="overflow-hidden rounded-[32px] bg-white">
+            {children}
+          </View>
         </View>
       </View>
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(15, 23, 42, 0.28)",
-  },
-  content: {
-    paddingHorizontal: 16,
-  },
-  card: {
-    borderRadius: 28,
-    borderCurve: "continuous",
-    overflow: "hidden",
-    backgroundColor: "white",
-    boxShadow: "0 14px 28px rgba(0, 0, 0, 0.18)",
-  },
-});

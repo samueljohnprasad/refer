@@ -21,6 +21,32 @@ export const SAGE = {
   pill: "#edf5e9",
 } as const;
 
+export const SAGE_RECORDING_GRADIENT = [
+  SAGE[500],
+  SAGE[300],
+  SAGE[200],
+  SAGE.selected,
+  "#ffffff",
+] as const;
+
+export const SAGE_LOADING_GRADIENT = [
+  "#ffffff",
+  "#f8fbf6",
+  "#f2f8ef",
+] as const;
+
+export const SAGE_OVERLAY = {
+  clear: "transparent",
+  disabled: "rgba(20, 36, 20, 0.32)",
+  faint: "rgba(95, 127, 88, 0.08)",
+  soft: "rgba(171, 192, 162, 0.14)",
+  mist: "rgba(211, 224, 205, 0.18)",
+  whisper: "rgba(95, 127, 88, 0.06)",
+  whiteTint: "rgba(255, 255, 255, 0.2)",
+} as const;
+
+export const TRANSPARENT = SAGE_OVERLAY.clear;
+
 // ─── Brand Surfaces ─────────────────────────────────────────────────────
 export const CREAM = "#ffffff" as const;
 export const CREAM_RAISED = "#f8fbf6" as const;
@@ -36,6 +62,10 @@ export const INK = "#142414" as const;
 export const INK_SOFT = "#4f604f" as const;
 export const INK_MUTED = "#7d8d7b" as const;
 export const OFFWHITE = "#ffffff" as const;
+export const SAGE_DISCOVERY_GRADIENT = [
+  BRAND_SURFACE,
+  BRAND_SURFACE_SOFT,
+] as const;
 
 // ─── App Semantic Theme ─────────────────────────────────────────────────
 export const THEME = {

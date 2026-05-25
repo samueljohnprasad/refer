@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { Pressable, View, Text } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   PencilEdit02Icon,
@@ -9,9 +9,9 @@ import {
 } from "@hugeicons/core-free-icons";
 import {
   BottomSheetModal,
-  BottomSheetView,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
+import { BRAND_SURFACE, SAGE, SAGE_OVERLAY } from "@/lib/tokens";
 
 interface JournalingOptionsModalProps {
   visible: boolean;
@@ -47,224 +47,126 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
       onDismiss={onClose}
       style={{
         marginHorizontal: 8,
-        borderRadius: 24,
+        borderRadius: 32,
         overflow: "hidden",
       }}
-      backgroundStyle={{ backgroundColor: "white" }}
-      handleIndicatorStyle={{ backgroundColor: "#E5E7EB" }}
+      backgroundStyle={{ backgroundColor: BRAND_SURFACE }}
+      handleIndicatorStyle={{ backgroundColor: SAGE[100], width: 48 }}
     >
       <BottomSheetScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingHorizontal: 20, paddingTop: 8 },
-        ]}
+        contentContainerStyle={{
+          paddingBottom: 40,
+          paddingHorizontal: 20,
+          paddingTop: 8,
+        }}
       >
         {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <HugeiconsIcon icon={BookOpen01Icon} size={32} color="#7B61FF" />
+        <View className="mb-6 items-center">
+          <View className="mb-4 h-16 w-16 items-center justify-center rounded-[22px] bg-sage-pill">
+            <HugeiconsIcon
+              icon={BookOpen01Icon}
+              size={32}
+              color={SAGE[600]}
+            />
           </View>
-          <Text style={styles.title}>Journaling Options</Text>
+          <Text className="text-center text-4xl happy-font-heading-bold text-ink">
+            Journaling Options
+          </Text>
         </View>
 
         {/* Free Write Option */}
-        <View
-          onTouchEnd={() => {
+        <Pressable
+          onPress={() => {
             onSelectPrompt("Free Write");
             onClose();
           }}
-          style={styles.freeWriteCard}
+          className="mb-8 flex-row items-center rounded-3xl border-2 border-sage-100 bg-sage-50 p-5"
         >
-          <View style={styles.freeWriteIcon}>
-            <HugeiconsIcon icon={PencilEdit02Icon} size={24} color="#7B61FF" />
+          <View className="mr-4 h-12 w-12 items-center justify-center rounded-[18px] bg-white">
+            <HugeiconsIcon
+              icon={PencilEdit02Icon}
+              size={24}
+              color={SAGE[600]}
+            />
           </View>
-          <View style={styles.freeWriteText}>
-            <Text style={styles.freeWriteTitle}>Free Write</Text>
-            <Text style={styles.freeWriteSubtitle}>Write without a prompt</Text>
+          <View className="flex-1">
+            <Text className="text-xl leading-6 happy-font-body-bold text-ink">
+              Free Write
+            </Text>
+            <Text className="text-base happy-font-body-medium text-ink-muted">
+              Write without a prompt
+            </Text>
           </View>
-        </View>
+        </Pressable>
 
         {/* Scan Journal Option */}
-        <View
-          onTouchEnd={() => {
+        <Pressable
+          onPress={() => {
             onScanJournal?.();
             onClose();
           }}
-          style={styles.scanCard}
+          className="mb-4 flex-row items-center rounded-3xl border-2 border-sage-100 bg-sage-50 p-5"
         >
-          <View style={styles.scanIcon}>
-            <HugeiconsIcon icon={Camera01Icon} size={24} color="#7C3AED" />
+          <View className="mr-4 h-12 w-12 items-center justify-center rounded-[18px] bg-white">
+            <HugeiconsIcon
+              icon={Camera01Icon}
+              size={24}
+              color={SAGE[600]}
+            />
           </View>
-          <View style={styles.freeWriteText}>
-            <Text style={styles.freeWriteTitle}>Scan Journal Page</Text>
-            <Text style={styles.freeWriteSubtitle}>
+          <View className="flex-1">
+            <Text className="text-xl leading-6 happy-font-body-bold text-ink">
+              Scan Journal Page
+            </Text>
+            <Text className="text-base happy-font-body-medium text-ink-muted">
               Capture handwritten entries
             </Text>
           </View>
-        </View>
+        </Pressable>
 
-        <Text style={styles.sectionTitle}>Or select a Prompt</Text>
+        <Text className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-sage-500">
+          Or select a Prompt
+        </Text>
 
         {allPrompts.map((prompt, index) => {
           const isSelected = prompt === currentPrompt;
           return (
-            <View
+            <Pressable
               key={index}
-              onTouchEnd={() => {
+              onPress={() => {
                 onSelectPrompt(prompt);
                 onClose();
               }}
-              style={[
-                styles.promptCard,
-                isSelected && styles.promptCardSelected,
-              ]}
+              className={`mb-3 flex-row items-center rounded-2xl border-2 p-5 ${
+                isSelected
+                  ? "border-sage-600 bg-sage-500"
+                  : "border-sage-100 bg-white"
+              }`}
             >
               <Text
-                style={[
-                  styles.promptText,
-                  isSelected && styles.promptTextSelected,
-                ]}
+                className={`flex-1 text-lg leading-6 happy-font-body-medium ${
+                  isSelected ? "text-white" : "text-ink-soft"
+                }`}
               >
                 {prompt}
               </Text>
               {isSelected && (
-                <View style={styles.checkIconContainer}>
-                  <HugeiconsIcon icon={Tick02Icon} size={18} color="white" />
+                <View
+                  className="ml-3 rounded-xl p-1.5"
+                  style={{ backgroundColor: SAGE_OVERLAY.whiteTint }}
+                >
+                  <HugeiconsIcon
+                    icon={Tick02Icon}
+                    size={18}
+                    color={BRAND_SURFACE}
+                  />
                 </View>
               )}
-            </View>
+            </Pressable>
           );
         })}
       </BottomSheetScrollView>
     </BottomSheetModal>
   );
 };
-
-const styles = StyleSheet.create({
-  header: {
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  iconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: "#f6f4ff",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 36,
-    fontFamily: "CormorantSemiBold",
-    color: "#1f2937",
-    textAlign: "center",
-  },
-  scrollContent: {
-    paddingBottom: 40,
-  },
-  freeWriteCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#F6F4FF",
-    borderRadius: 24,
-    marginBottom: 32,
-    borderWidth: 1,
-    borderColor: "#e5e5ea",
-  },
-  freeWriteIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-  },
-  freeWriteText: {
-    flex: 1,
-  },
-  freeWriteTitle: {
-    fontSize: 20,
-    fontFamily: "CormorantSemiBold",
-    color: "#111827",
-    lineHeight: 24,
-  },
-  freeWriteSubtitle: {
-    fontSize: 16,
-    color: "#6B7280",
-    fontWeight: "500",
-  },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#9CA3AF",
-    marginBottom: 16,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    marginLeft: 4,
-  },
-  promptCard: {
-    padding: 20,
-    borderRadius: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "#F3F4F6",
-    backgroundColor: "white",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  promptCardSelected: {
-    backgroundColor: "#7B61FF",
-    borderColor: "#7B61FF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-  },
-  promptText: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: "500",
-    lineHeight: 24,
-    color: "#374151",
-  },
-  promptTextSelected: {
-    color: "white",
-  },
-  checkIconContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    padding: 6,
-    borderRadius: 12,
-    marginLeft: 12,
-  },
-  scanCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#F3E8FF",
-    borderRadius: 24,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: "#E9D5FF",
-  },
-  scanIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-  },
-});

@@ -67,9 +67,9 @@ export const XPBadge: React.FC<XPBadgeProps> = ({
   return (
     <Animated.View
       style={animatedStyle}
-      className={`rounded-full bg-gray-100/80 px-2 py-0.5 ${SIZE_CLASSES[size]}`}
+      className={`rounded-full bg-sage-pill px-2 py-0.5 ${SIZE_CLASSES[size]}`}
     >
-      <Text className={`font-bold text-gray-400 ${TEXT_SIZE_CLASSES[size]}`}>
+      <Text className={`happy-font-body-bold text-ink-muted ${TEXT_SIZE_CLASSES[size]}`}>
         +{amount} XP
       </Text>
     </Animated.View>

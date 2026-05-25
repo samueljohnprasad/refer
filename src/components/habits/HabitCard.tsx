@@ -14,6 +14,7 @@ import * as Haptics from "expo-haptics";
 import { format, parse } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { RepeatIcon } from "@hugeicons/core-free-icons";
+import { INK_MUTED, SAGE, TRANSPARENT } from "@/lib/tokens";
 
 interface HabitCardProps {
   habit: HabitWithStatus;
@@ -86,7 +87,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
     <View>
       <Pressable
         onPress={handleCardPress}
-        className={`py-3 ${!isLast ? "border-b border-gray-100" : ""}`}
+        className={`py-4 ${!isLast ? "border-b border-sage-100" : ""}`}
         style={({ pressed }) => ({
           opacity: pressed ? 0.7 : 1,
         })}
@@ -94,8 +95,9 @@ export const HabitCard: React.FC<HabitCardProps> = ({
         <View className="flex-row items-center">
           {/* Emoji Icon */}
           <View
-            className="w-10 h-10 rounded-xl items-center justify-center mr-3"
-            style={{ backgroundColor: habit.color + "15" }}
+            className={`mr-3 h-12 w-12 items-center justify-center rounded-[18px] ${
+              habit.isCompleted ? "bg-sage-pill" : "bg-sage-50"
+            }`}
           >
             <Text style={{ fontSize: 20 }}>{habit.icon || "✓"}</Text>
           </View>
@@ -104,10 +106,10 @@ export const HabitCard: React.FC<HabitCardProps> = ({
           <View className="flex-1">
             {/* Habit Name */}
             <Text
-              className={`text-base font-semibold ${
+              className={`happy-font-body-bold text-[16px] ${
                 habit.isCompleted
-                  ? "text-gray-400 line-through"
-                  : "text-gray-900"
+                  ? "text-ink-muted line-through"
+                  : "text-ink"
               }`}
             >
               {habit.name}
@@ -117,15 +119,15 @@ export const HabitCard: React.FC<HabitCardProps> = ({
             <View className="flex-row items-center mt-0.5">
               {/* Repeat Badge */}
               <View className="flex-row items-center">
-                <HugeiconsIcon icon={RepeatIcon} size={12} color="#9CA3AF" />
-                <Text className="text-xs text-gray-400 ml-1">
+                <HugeiconsIcon icon={RepeatIcon} size={12} color={INK_MUTED} />
+                <Text className="happy-font-body-medium ml-1 text-xs text-ink-muted">
                   {getRepeatLabel()}
                 </Text>
               </View>
 
               {/* Time Badge */}
               {habit.scheduledTime && (
-                <Text className="text-xs text-gray-400 ml-3">
+                <Text className="happy-font-body-medium ml-3 text-xs text-ink-muted">
                   {formatTime(habit.scheduledTime)}
                 </Text>
               )}
@@ -143,10 +145,10 @@ export const HabitCard: React.FC<HabitCardProps> = ({
             <View
               className="w-7 h-7 rounded-full border-2 items-center justify-center z-10"
               style={{
-                borderColor: habit.isCompleted ? habit.color : "#E5E7EB",
+                borderColor: habit.isCompleted ? SAGE[500] : SAGE[200],
                 backgroundColor: habit.isCompleted
-                  ? habit.color
-                  : "transparent",
+                  ? SAGE[500]
+                  : TRANSPARENT,
               }}
             >
               <Animated.Text

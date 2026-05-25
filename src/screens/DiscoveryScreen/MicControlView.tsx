@@ -4,7 +4,6 @@ import { recorderOpenAtom } from "./helpers";
 import { useAtom } from "jotai";
 import { Box } from "@/components/ui/box";
 import { HStack } from "@/components/ui/hstack";
-import { Button, ButtonText } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -18,9 +17,8 @@ import {
 } from "@/components/ui/bottomsheet";
 import ShortBottomModalWithProvider from "@/src/components/ShortBottomModalWithProvider";
 import { isAndroid } from "@/src/utils/mood";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
-import { Host, Button as SwiftButton } from "@expo/ui/swift-ui";
 import * as Haptics from "expo-haptics";
+import { BRAND_SURFACE, INK, INK_SOFT, LIGHT_TOKENS, SAGE } from "@/lib/tokens";
 
 // Props interface for the presenter component
 export interface MicControlViewProps {
@@ -48,7 +46,7 @@ const CONTAINER_STOP_STYLE = {
 const CONTAINER_STYLE = {
   width: width,
   height: PANEL_HEIGHT,
-  shadowColor: "rgba(0, 0, 0, 0.05)",
+  shadowColor: SAGE[600],
   shadowOffset: { width: 0, height: -1 },
   shadowOpacity: 0.1,
   shadowRadius: 6,
@@ -63,7 +61,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   durationSeconds,
   isStopped,
 }) => {
-  const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);
+  const [, setRecorderOpen] = useAtom(recorderOpenAtom);
   const { handleClose } = useBottomSheet();
 
   const handleDiscard = useCallback(() => {
@@ -71,7 +69,6 @@ const MicControlView: React.FC<MicControlViewProps> = ({
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     setRecorderOpen(false);
   }, [setRecorderOpen]);
-  const isLiquidGlass = isLiquidGlassAvailable();
 
   return (
     <>
@@ -101,23 +98,17 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               {isPaused && (
                 <View>
                   <BottomSheetTrigger>
-                    {!isLiquidGlass && (
-                      <HugeiconsIcon icon={Cancel01Icon} size={32} />
-                    )}
-                    {isLiquidGlass && (
-                      <Host matchContents>
-                        <SwiftButton
-                          color="#9ca3af"
-                          variant="glassProminent"
-                          controlSize="large"
-                          systemImage="xmark"
-                        />
-                      </Host>
-                    )}
+                    <View className="h-12 w-12 items-center justify-center rounded-full bg-sage-pill">
+                      <HugeiconsIcon
+                        icon={Cancel01Icon}
+                        size={26}
+                        color={INK_SOFT}
+                      />
+                    </View>
                   </BottomSheetTrigger>
                 </View>
               )}
-              <View className="flex p-5 items-center justify-center mb-4 bg-[#FFA726] rounded-full">
+              <View className="flex p-5 items-center justify-center mb-4 bg-sage-500 rounded-full">
                 <TouchableOpacity
                   className="w-20 h-20 rounded-full justify-center items-center"
                   onPress={() => {
@@ -128,44 +119,33 @@ const MicControlView: React.FC<MicControlViewProps> = ({
                   activeOpacity={0.9}
                 >
                   <View className="w-20 h-20 rounded-full justify-center items-center">
-                    <HugeiconsIcon icon={AiMicIcon} size={48} />
+                    <HugeiconsIcon
+                      icon={AiMicIcon}
+                      size={48}
+                      color={BRAND_SURFACE}
+                    />
                   </View>
                 </TouchableOpacity>
               </View>
 
               {isPaused && (
                 <View>
-                  {!isLiquidGlass && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        // Medium haptic for completion/submit action
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                        onStop();
-                      }}
-                      activeOpacity={0.8}
-                    >
-                      <View>
-                        <HugeiconsIcon icon={Tick01Icon} size={32} />
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                  {isLiquidGlass && (
-                    <Host matchContents>
-                      <SwiftButton
-                        onPress={() => {
-                          // Medium haptic for completion/submit action
-                          Haptics.impactAsync(
-                            Haptics.ImpactFeedbackStyle.Medium
-                          );
-                          onStop();
-                        }}
-                        color="#7B61FF"
-                        variant="glassProminent"
-                        controlSize="large"
-                        systemImage="checkmark"
+                  <TouchableOpacity
+                    onPress={() => {
+                      // Medium haptic for completion/submit action
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                      onStop();
+                    }}
+                    activeOpacity={0.8}
+                  >
+                    <View className="h-12 w-12 items-center justify-center rounded-full bg-sage-pill">
+                      <HugeiconsIcon
+                        icon={Tick01Icon}
+                        size={26}
+                        color={SAGE[500]}
                       />
-                    </Host>
-                  )}
+                    </View>
+                  </TouchableOpacity>
                 </View>
               )}
             </HStack>
@@ -177,14 +157,18 @@ const MicControlView: React.FC<MicControlViewProps> = ({
           <View className="items-center w-full">
             {/* Icon Header */}
             <View className="w-14 h-14 rounded-full bg-red-50 items-center justify-center mb-5">
-              <HugeiconsIcon icon={Cancel01Icon} size={26} color="#DC2626" />
+              <HugeiconsIcon
+                icon={Cancel01Icon}
+                size={26}
+                color={LIGHT_TOKENS.destructive}
+              />
             </View>
 
-            <Text className="text-center text-4xl font-cormorantSemiBold text-[#1f2937] mb-3 leading-10">
+            <Text className="text-center text-4xl happy-font-heading-bold text-ink mb-3 leading-10">
               Discard recording?
             </Text>
 
-            <Text className="text-gray-600 text-center text-lg px-2 leading-7 font-medium">
+            <Text className="text-ink-muted text-center text-lg px-2 leading-7 happy-font-body-medium">
               This will permanently delete your current audio and cannot be
               undone.
             </Text>
@@ -199,20 +183,30 @@ const MicControlView: React.FC<MicControlViewProps> = ({
                 );
                 handleClose();
               }}
-              className="flex-1 bg-[#F6F4FF] rounded-full flex-row items-center justify-center py-4 active:opacity-80"
+              className="flex-1 bg-sage-pill rounded-full flex-row items-center justify-center py-4 active:opacity-80"
             >
-              <Text className="text-gray-900 font-bold text-lg mr-2">
+              <Text className="text-ink happy-font-body-bold text-lg mr-2">
                 Keep Recording
               </Text>
-              <HugeiconsIcon icon={Tick01Icon} size={20} color="#1f2937" />
+              <HugeiconsIcon
+                icon={Tick01Icon}
+                size={20}
+                color={INK}
+              />
             </Pressable>
 
             <Pressable
               className="flex-1 bg-red-500 rounded-full flex-row items-center justify-center py-4 active:opacity-90"
               onPress={handleDiscard}
             >
-              <Text className="text-white font-bold text-lg mr-2">Discard</Text>
-              <HugeiconsIcon icon={Cancel01Icon} size={20} color="white" />
+              <Text className="text-white happy-font-body-bold text-lg mr-2">
+                Discard
+              </Text>
+              <HugeiconsIcon
+                icon={Cancel01Icon}
+                size={20}
+                color={BRAND_SURFACE}
+              />
             </Pressable>
           </View>
         </View>

@@ -16,6 +16,14 @@ import Animated, {
   withDelay,
   Easing,
 } from "react-native-reanimated";
+import {
+  BRAND_SURFACE,
+  INK,
+  INK_MUTED,
+  SAGE,
+  SAGE_LOADING_GRADIENT,
+  SAGE_OVERLAY,
+} from "@/lib/tokens";
 
 const { width } = Dimensions.get("window");
 
@@ -122,7 +130,7 @@ const ProgressDots = () => {
                 width: 8,
                 height: 8,
                 borderRadius: 4,
-                backgroundColor: "#7B61FF",
+                backgroundColor: SAGE[500],
               },
               animatedStyle,
             ]}
@@ -145,10 +153,10 @@ const EmotionAnalysisLoadingScreen: React.FC<
   });
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#FAFAFF" }}>
+    <View style={{ flex: 1, backgroundColor: BRAND_SURFACE }}>
       {/* Subtle gradient background */}
       <ExpoLinearGradient
-        colors={["#F8F7FF", "#F0EEFF", "#E8E4FF"]}
+        colors={SAGE_LOADING_GRADIENT}
         style={{
           position: "absolute",
           top: 0,
@@ -159,10 +167,34 @@ const EmotionAnalysisLoadingScreen: React.FC<
       />
 
       {/* Floating orbs in background */}
-      <FloatingOrb delay={0} size={150} color="rgba(123, 97, 255, 0.08)" initialX={-50} initialY={-100} />
-      <FloatingOrb delay={500} size={100} color="rgba(167, 139, 250, 0.1)" initialX={width - 80} initialY={100} />
-      <FloatingOrb delay={1000} size={80} color="rgba(196, 181, 253, 0.12)" initialX={20} initialY={200} />
-      <FloatingOrb delay={1500} size={120} color="rgba(123, 97, 255, 0.06)" initialX={width - 100} initialY={-150} />
+      <FloatingOrb
+        delay={0}
+        size={150}
+        color={SAGE_OVERLAY.faint}
+        initialX={-50}
+        initialY={-100}
+      />
+      <FloatingOrb
+        delay={500}
+        size={100}
+        color={SAGE_OVERLAY.soft}
+        initialX={width - 80}
+        initialY={100}
+      />
+      <FloatingOrb
+        delay={1000}
+        size={80}
+        color={SAGE_OVERLAY.mist}
+        initialX={20}
+        initialY={200}
+      />
+      <FloatingOrb
+        delay={1500}
+        size={120}
+        color={SAGE_OVERLAY.whisper}
+        initialX={width - 100}
+        initialY={-150}
+      />
 
       {/* Main content */}
       <View
@@ -179,7 +211,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
         {/* Date */}
         <Text
           style={{
-            color: "#64748B",
+            color: INK_MUTED,
             fontSize: 14,
             fontWeight: "500",
             textAlign: "center",
@@ -192,14 +224,14 @@ const EmotionAnalysisLoadingScreen: React.FC<
         {/* Processing phase text */}
         <Text
           style={{
-            color: "#1E1B4B",
+            color: INK,
             fontSize: 22,
             fontWeight: "600",
             textAlign: "center",
             marginTop: 16,
             lineHeight: 30,
           }}
-          className="font-cormorantBold"
+          className="happy-font-heading-bold"
         >
           {processingPhase}
         </Text>
@@ -210,7 +242,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
         {/* Subtle hint text */}
         <Text
           style={{
-            color: "#94A3B8",
+            color: INK_MUTED,
             fontSize: 13,
             fontWeight: "400",
             textAlign: "center",

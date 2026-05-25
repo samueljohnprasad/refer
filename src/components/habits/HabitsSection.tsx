@@ -37,14 +37,15 @@ import {
 import { XPBadge } from "@/src/components/XP";
 import { XPActionType, XP_REWARDS } from "@/src/types/xp";
 import { SectionHeader } from "@/src/components/ui/SectionHeader";
+import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
 
-/** Shared subtle card shadow — matches CalorieWidget for cross-tab consistency */
+/** Shared subtle card shadow — matches white Happy Sage surfaces. */
 const SECTION_SHADOW = {
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.04,
-  shadowRadius: 8,
-  elevation: 1,
+  shadowColor: SAGE[600],
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.06,
+  shadowRadius: 18,
+  elevation: 2,
 } as const;
 
 interface HabitsSectionProps {
@@ -185,10 +186,14 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
               <XPBadge amount={XP_REWARDS[XPActionType.HABIT_COMPLETION]} />
               <TouchableOpacity
                 onPress={handleAddHabitPress}
-                className="bg-gray-800 p-2 rounded-xl"
+                className="happy-brand-primary-cta h-12 w-12 items-center justify-center rounded-[18px]"
                 activeOpacity={0.7}
               >
-                <HugeiconsIcon icon={Add01Icon} size={18} color="white" />
+                <HugeiconsIcon
+                  icon={Add01Icon}
+                  size={22}
+                  color={BRAND_SURFACE}
+                />
               </TouchableOpacity>
             </>
           }
@@ -198,16 +203,16 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
       {/* Progress Bar Card */}
       {totalCount > 0 && (
         <View
-          className="bg-theme-background-primary rounded-2xl p-5 mb-4"
+          className="happy-brand-card mb-5 rounded-[26px] p-5"
           style={SECTION_SHADOW}
         >
-          <Text className="text-gray-900 font-semibold mb-3">
+          <Text className="happy-font-body-bold mb-3 text-[16px] text-ink">
             Daily Progress
           </Text>
-          <View className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+          <View className="h-2.5 w-full overflow-hidden rounded-full bg-sage-100">
             <Animated.View
-              className="h-full bg-gray-400 rounded-full"
-              style={progressAnimatedStyle}
+              className="h-full rounded-full"
+              style={[progressAnimatedStyle, { backgroundColor: SAGE[500] }]}
             />
           </View>
         </View>
@@ -227,20 +232,22 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           {activeCategories.map((category) => (
             <View
               key={category}
-              className="bg-theme-background-primary rounded-2xl mb-4 overflow-hidden"
+              className="happy-brand-card mb-5 overflow-hidden rounded-[26px]"
               style={SECTION_SHADOW}
             >
               {/* Category Header */}
-              <View className="px-4 py-3 border-b border-gray-50">
+              <View className="border-b border-sage-100 px-4 py-3.5">
                 <View className="flex-row items-center">
-                  <Text className="text-lg mr-2">
-                    {TIME_CATEGORY_CONFIG[category].emoji}
-                  </Text>
-                  <View>
-                    <Text className="text-sm font-semibold text-gray-700">
+                  <View className="mr-3 h-11 w-11 items-center justify-center rounded-full bg-sage-50">
+                    <Text className="text-xl">
+                      {TIME_CATEGORY_CONFIG[category].emoji}
+                    </Text>
+                  </View>
+                  <View className="flex-1">
+                    <Text className="happy-font-body-bold text-[15px] text-ink">
                       {TIME_CATEGORY_CONFIG[category].label}
                     </Text>
-                    <Text className="text-xs text-gray-400">
+                    <Text className="happy-font-body-medium text-[13px] text-ink-muted">
                       {TIME_CATEGORY_CONFIG[category].range}
                     </Text>
                   </View>

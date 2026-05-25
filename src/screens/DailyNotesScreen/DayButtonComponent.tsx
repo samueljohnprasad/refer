@@ -2,6 +2,14 @@ import { format } from "date-fns/format";
 import { memo } from "react";
 import { Pressable, View } from "react-native";
 import { Text } from "@/components/Themed";
+import {
+  BRAND_SURFACE_SOFT,
+  INK,
+  INK_MUTED,
+  SAGE,
+  SAGE_OVERLAY,
+  TRANSPARENT,
+} from "@/lib/tokens";
 
 // Simplified Animated Day Button Component - Performance Optimized
 export interface DayButtonProps {
@@ -12,15 +20,6 @@ export interface DayButtonProps {
   onPress: () => void;
   disabled?: boolean;
 }
-
-const DAY_BUTTON_COLORS = {
-  text: "#1F2937",
-  muted: "#64748B",
-  disabled: "rgba(31, 41, 55, 0.35)",
-  selectedText: "#5F46E8",
-  selectedBackground: "#EEE9FF",
-  todayBackground: "#FFFFFF",
-};
 
 // Simplified version without individual shared values - much more performant
 const DayButtonComponent: React.FC<DayButtonProps> = ({
@@ -37,16 +36,16 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   };
 
   const getTextColor = () => {
-    if (disabled) return DAY_BUTTON_COLORS.disabled;
-    if (isSelected) return DAY_BUTTON_COLORS.selectedText;
-    return DAY_BUTTON_COLORS.text;
+    if (disabled) return SAGE_OVERLAY.disabled;
+    if (isSelected) return SAGE[600];
+    return INK;
   };
 
   const backgroundColor = isSelected
-    ? DAY_BUTTON_COLORS.selectedBackground
+    ? SAGE.selected
     : isToday && !isSelected
-    ? DAY_BUTTON_COLORS.todayBackground
-    : "transparent";
+    ? BRAND_SURFACE_SOFT
+    : TRANSPARENT;
 
   return (
     <Pressable
@@ -56,21 +55,29 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
       accessibilityLabel={`${dayName} ${format(day, "d")}`}
     >
       <View
-        className="items-center py-1.5 px-1 rounded-xl"
-        style={{ backgroundColor }}
+        className="items-center px-1 py-1.5 rounded-xl"
+        style={{
+          backgroundColor,
+          borderColor: isSelected ? SAGE[200] : TRANSPARENT,
+          borderWidth: 1,
+        }}
       >
         <View className="flex flex-col items-center">
           <Text
-            className="text-[10px] uppercase font-bold tracking-widest mb-1"
+            className="happy-font-body-bold text-[10px] uppercase tracking-widest mb-1"
             style={{
-              color: disabled ? DAY_BUTTON_COLORS.disabled : DAY_BUTTON_COLORS.muted,
+              color: disabled
+                ? SAGE_OVERLAY.disabled
+                : INK_MUTED,
               opacity: isSelected || disabled ? 1 : 0.78,
             }}
           >
             {dayName}
           </Text>
-          <Text 
-            className={`text-[20px] ${isSelected ? "font-semibold" : "font-regular"}`}
+          <Text
+            className={`text-[21px] ${
+              isSelected ? "happy-font-body-bold" : "happy-font-body-medium"
+            }`}
             style={{
               color: getTextColor(),
               opacity: isSelected || disabled ? 1 : 0.92,

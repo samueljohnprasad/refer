@@ -1,5 +1,5 @@
-import { memo, useCallback, useMemo, type ReactElement } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { memo, useCallback, type ReactElement } from "react";
+import { Pressable, Text, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   ArrowRight01Icon,
@@ -12,6 +12,7 @@ import {
   type HappyAssistantCommand,
 } from "@/src/store/slices/happyAssistantSlice";
 import type { HappyAssistantActionDescriptor } from "./types";
+import { INK_MUTED, SAGE } from "@/lib/tokens";
 
 interface AssistantActionSheetProps {
   title: string;
@@ -31,22 +32,18 @@ export function AssistantActionSheet({
   }, [onCommandPress]);
 
   return (
-    <View
-      className="rounded-[28px] bg-white px-5 pt-4 pb-5"
-      style={styles.sheet}
-    >
+    <View className="rounded-[32px] border-2 border-sage-100 bg-white px-5 pb-5 pt-4">
       <View className="mb-4 flex-row items-center gap-3">
-        <View className="h-14 w-14 items-center justify-center rounded-2xl bg-[#F0FDF4]">
+        <View className="happy-mascot-stage h-14 w-14 items-center justify-center rounded-[20px]">
           <Mascot state="panda-happy" size={46} />
         </View>
         <View className="flex-1">
           <Text
-            className="text-[28px] leading-8 text-slate-950"
-            style={{ fontFamily: "CormorantSemiBold" }}
+            className="happy-font-heading-bold text-[30px] leading-9 text-ink"
           >
             {title}
           </Text>
-          <Text className="mt-0.5 text-sm font-medium leading-5 text-slate-500">
+          <Text className="happy-font-body-medium mt-0.5 text-[15px] leading-5 text-ink-muted">
             {subtitle}
           </Text>
         </View>
@@ -54,10 +51,9 @@ export function AssistantActionSheet({
           accessibilityRole="button"
           accessibilityLabel="Open settings"
           onPress={handleSettingsPress}
-          className="h-11 w-11 items-center justify-center rounded-full bg-slate-100 active:opacity-80"
-          style={styles.iconButton}
+          className="h-11 w-11 items-center justify-center rounded-full active:opacity-80"
         >
-          <HugeiconsIcon icon={Settings02Icon} size={21} color="#334155" />
+          <HugeiconsIcon icon={Settings02Icon} size={22} color={SAGE[600]} />
         </Pressable>
       </View>
 
@@ -81,10 +77,6 @@ const AssistantActionRow = memo(function AssistantActionRow({
   action: HappyAssistantActionDescriptor;
   onCommandPress: (command: HappyAssistantCommand) => void;
 }): ReactElement {
-  const iconBackgroundStyle = useMemo(
-    () => [styles.actionIcon, { backgroundColor: `${action.tint}18` }],
-    [action.tint],
-  );
   const handlePress = useCallback((): void => {
     onCommandPress(action.command);
   }, [action.command, onCommandPress]);
@@ -95,42 +87,23 @@ const AssistantActionRow = memo(function AssistantActionRow({
       accessibilityLabel={action.label}
       accessibilityHint={action.description}
       onPress={handlePress}
-      className="min-h-[70px] flex-row items-center rounded-2xl border border-slate-100 bg-slate-50 px-3.5 py-3 active:opacity-80"
-      style={styles.actionRow}
+      className="min-h-[72px] flex-row items-center rounded-[22px] border-2 border-sage-100 bg-sage-50/60 px-3.5 py-3 active:opacity-80"
     >
-      <View
-        className="mr-3 h-11 w-11 items-center justify-center rounded-2xl"
-        style={iconBackgroundStyle}
-      >
-        <HugeiconsIcon icon={action.icon} size={22} color={action.tint} />
+      <View className="mr-3 h-11 w-11 items-center justify-center rounded-[18px] bg-sage-pill">
+        <HugeiconsIcon icon={action.icon} size={22} color={SAGE[600]} />
       </View>
       <View className="flex-1">
-        <Text className="text-[15px] font-extrabold text-slate-900">
+        <Text className="happy-font-body-bold text-[15px] text-ink">
           {action.label}
         </Text>
         <Text
-          className="mt-0.5 text-[13px] font-medium leading-4 text-slate-500"
+          className="happy-font-body-medium mt-0.5 text-[13px] leading-4 text-ink-muted"
           numberOfLines={2}
         >
           {action.description}
         </Text>
       </View>
-      <HugeiconsIcon icon={ArrowRight01Icon} size={18} color="#94A3B8" />
+      <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={INK_MUTED} />
     </Pressable>
   );
-});
-
-const styles = StyleSheet.create({
-  sheet: {
-    borderCurve: "continuous",
-  },
-  iconButton: {
-    borderCurve: "continuous",
-  },
-  actionRow: {
-    borderCurve: "continuous",
-  },
-  actionIcon: {
-    borderCurve: "continuous",
-  },
 });

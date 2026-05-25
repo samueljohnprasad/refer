@@ -8,10 +8,10 @@ import {
   useState,
   type ReactElement,
 } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Stack } from "expo-router";
 import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
-import { pickerStyle, tag } from "@expo/ui/swift-ui/modifiers";
+import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
 import {
   format,
   addDays,
@@ -43,6 +43,7 @@ import { formateDate_y_m_d } from "@/src/utils/date";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { HabitsSection } from "@/src/components/habits/HabitsSection";
 import CalorieTrackerScreen from "../CalorieTrackerScreen/CalorieTrackerScreen";
+import { SAGE } from "@/lib/tokens";
 
 // Lazy load heavy components
 const MentalHealthProfileContainer = lazy(() =>
@@ -352,31 +353,33 @@ function DailyNotesScreenComponent(): ReactElement {
   );
 
   return (
-    <SafeAreaView style={styles.root} className="flex-1" edges={[]}>
+    <SafeAreaView className="flex-1 bg-white" edges={[]}>
       <Stack.Screen options={screenOptions} />
       <View className="flex-1 relative bg-theme-background-card">
         <GestureDetector gesture={contentPanGesture}>
           <ScrollView
             className="flex-1 bg-theme-background-card"
-            contentContainerStyle={styles.scrollContent}
+            contentContainerStyle={{ flexGrow: 1 }}
             showsVerticalScrollIndicator={false}
           >
             {/* Tab Picker */}
-            <View className="px-4 py-2">
-              <Host matchContents>
-                <Picker
-                  modifiers={[pickerStyle("segmented")]}
-                  label="View"
-                  selection={TAB_FILTER_LABEL_BY_FILTER[tabFilter]}
-                  onSelectionChange={handleFilterSelectionChange}
-                >
-                  {TAB_FILTER_OPTIONS.map((option) => (
-                    <SwiftUIText key={option} modifiers={[tag(option)]}>
-                      {option}
-                    </SwiftUIText>
-                  ))}
-                </Picker>
-              </Host>
+            <View className="px-4 pb-3 pt-4">
+              <View className="rounded-full border border-sage-100 bg-sage-50 p-1">
+                <Host matchContents>
+                  <Picker
+                    modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                    label="View"
+                    selection={TAB_FILTER_LABEL_BY_FILTER[tabFilter]}
+                    onSelectionChange={handleFilterSelectionChange}
+                  >
+                    {TAB_FILTER_OPTIONS.map((option) => (
+                      <SwiftUIText key={option} modifiers={[tag(option)]}>
+                        {option}
+                      </SwiftUIText>
+                    ))}
+                  </Picker>
+                </Host>
+              </View>
             </View>
 
             {/* Unified Animated Container for Swipe Transitions */}
@@ -421,16 +424,6 @@ function DailyNotesScreenComponent(): ReactElement {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-});
 
 // Memoize the entire screen to prevent unnecessary re-renders from parent
 const DailyNotesScreen = memo(DailyNotesScreenComponent);

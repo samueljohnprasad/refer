@@ -37,6 +37,7 @@ import { isIOS } from "@/src/utils/mood";
 import { DayButton } from "./DayButtonComponent";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { EmotionDetailsModal } from "@/src/components/modals";
+import { BRAND_SURFACE, INK, SAGE } from "@/lib/tokens";
 
 // Lazy load CalendarPicker
 const CalendarPicker = React.lazy(() =>
@@ -52,12 +53,6 @@ const HEADER_MIN_HEIGHT = 132;
 // Move constants outside component to avoid recreation
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const CALENDAR_EXPANDED_HEIGHT = 416; // 8pt grid multiple
-const JOURNAL_COLORS = {
-  surface: "#fff",
-  text: "#1F2937",
-  muted: "#64748B",
-  border: "#DED6C8",
-};
 
 interface DailyNotesHeaderProps {
   onBookmarksPress?: () => void;
@@ -285,13 +280,16 @@ const DailyNotesHeader = React.memo(
         edges={["top"]}
         style={{
           paddingTop: insets.top - 30,
-          backgroundColor: JOURNAL_COLORS.surface,
+          backgroundColor: BRAND_SURFACE,
         }}
         className="bg-white"
       >
         <Animated.View
-          className="bg-white justify-end relative"
-          style={[headerContainerAnimatedStyle, { backgroundColor: JOURNAL_COLORS.surface }]}
+          className="bg-white justify-end relative border-b border-sage-100"
+          style={[
+            headerContainerAnimatedStyle,
+            { backgroundColor: BRAND_SURFACE },
+          ]}
         >
           {/* Calendar Header */}
           <Animated.View
@@ -299,20 +297,27 @@ const DailyNotesHeader = React.memo(
             style={[headerControlsAnimatedStyle]}
           >
             <Pressable
-              className="min-h-[44px] min-w-[44px] justify-center items-center -ml-1 rounded-lg"
+              className="min-h-[44px] min-w-[44px] justify-center items-center -ml-1 rounded-full"
               onPress={() => toggle()}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               accessibilityRole="button"
-              accessibilityLabel={isExpanded ? "Collapse calendar" : "Expand calendar"}
+              accessibilityLabel={
+                isExpanded ? "Collapse calendar" : "Expand calendar"
+              }
               accessibilityHint="Toggles between weekly and monthly calendar views"
             >
-              <HugeiconsIcon icon={Calendar01Icon} size={20} color={JOURNAL_COLORS.text} />
+              <HugeiconsIcon
+                icon={Calendar01Icon}
+                size={20}
+                color={SAGE[600]}
+                strokeWidth={2}
+              />
             </Pressable>
 
             <View className="flex-row items-center justify-center flex-1">
               <Text
-                className="text-2xl text-center font-cormorantBold"
-                style={{ color: JOURNAL_COLORS.text }}
+                className="happy-font-heading-bold text-[30px] text-center"
+                style={{ color: INK }}
               >
                 {currentMonthView || ""}
               </Text>
@@ -320,18 +325,23 @@ const DailyNotesHeader = React.memo(
 
             <View className="flex-row items-center gap-1">
               <Pressable
-                className="min-h-[44px] min-w-[44px] justify-center items-center rounded-lg"
+                className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
                 onPress={onBookmarksPress}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 accessibilityRole="button"
                 accessibilityLabel="Bookmarks"
               >
-                <HugeiconsIcon icon={Bookmark03Icon} size={20} color={JOURNAL_COLORS.text} />
+                <HugeiconsIcon
+                  icon={Bookmark03Icon}
+                  size={20}
+                  color={SAGE[600]}
+                  strokeWidth={2}
+                />
               </Pressable>
             </View>
           </Animated.View>
           {/* Week View */}
-          <View className="px-4 pb-6 w-full relative" {...panHandlers}>
+          <View className="px-4 pb-5 w-full relative" {...panHandlers}>
             <Animated.View
               className="flex-row w-full"
               style={[weekHeaderAnimatedStyle]}
@@ -340,7 +350,9 @@ const DailyNotesHeader = React.memo(
                 className="flex flex-1 flex-row gap-1"
                 style={[weekSlideAnimatedStyle]}
                 accessibilityElementsHidden={isExpanded}
-                importantForAccessibility={isExpanded ? "no-hide-descendants" : "auto"}
+                importantForAccessibility={
+                  isExpanded ? "no-hide-descendants" : "auto"
+                }
               >
                 {weekDaysData.map((dayData) => (
                   <View className="flex-1 gap-2 mb-2" key={dayData.dayStr}>
@@ -372,7 +384,9 @@ const DailyNotesHeader = React.memo(
               className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-white top-0"
               style={[inlineCalendarAnimatedStyle]}
               accessibilityElementsHidden={!isExpanded}
-              importantForAccessibility={!isExpanded ? "no-hide-descendants" : "yes"}
+              importantForAccessibility={
+                !isExpanded ? "no-hide-descendants" : "yes"
+              }
             >
               <SuspensLoader>
                 <CalendarPicker
@@ -403,8 +417,8 @@ const DailyNotesHeader = React.memo(
                 accessibilityLabel="Calendar drag handle"
               >
                 <View
-                  className="w-10 h-1 rounded-full bg-theme-border"
-                  style={{ backgroundColor: JOURNAL_COLORS.border }}
+                  className="w-12 h-1.5 rounded-full bg-theme-border"
+                  style={{ backgroundColor: SAGE[200] }}
                 />
               </View>
             </GestureDetector>
