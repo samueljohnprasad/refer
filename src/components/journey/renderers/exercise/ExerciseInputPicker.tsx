@@ -52,7 +52,7 @@ export default function ExerciseInputPicker({
     return (
         <View className="flex-1">
             <RendererSectionCard eyebrow="Now: choose yours">
-                <Text className="happy-font-heading-bold mb-2 text-[23px] leading-8 text-ink">
+                <Text className="happy-font-heading-bold mb-2 text-[20px] leading-7 text-ink">
                     {prompt}
                 </Text>
 
@@ -69,7 +69,7 @@ export default function ExerciseInputPicker({
                             <Pressable
                                 key={option}
                                 onPress={() => handleOptionPress(option)}
-                                className={`rounded-[22px] px-5 py-3 ${isSelected
+                                className={`rounded-[22px] px-4 py-2.5 ${isSelected
                                     ? 'happy-brand-card-selected'
                                     : 'happy-brand-card'
                                     }`}
@@ -78,7 +78,7 @@ export default function ExerciseInputPicker({
                                 accessibilityState={{ selected: isSelected }}
                             >
                                 <Text
-                                    className={`happy-font-body-bold text-base ${isSelected ? 'text-sage-700' : 'text-ink-soft'
+                                    className={`happy-font-body-bold text-sm ${isSelected ? 'text-sage-700' : 'text-ink-soft'
                                         }`}
                                 >
                                     {option}

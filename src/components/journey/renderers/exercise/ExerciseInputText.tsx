@@ -50,7 +50,7 @@ export default function ExerciseInputText({
     return (
         <View className="flex-1">
             <RendererSectionCard eyebrow="Now: try it">
-                <Text className="happy-font-heading-bold mb-4 text-[23px] leading-8 text-ink">
+                <Text className="happy-font-heading-bold mb-4 text-[20px] leading-7 text-ink">
                     {prompt}
                 </Text>
 
@@ -62,7 +62,7 @@ export default function ExerciseInputText({
                         placeholderTextColor={INK_MUTED}
                         multiline
                         textAlignVertical="top"
-                        className="happy-font-body-medium text-base leading-6 text-ink"
+                        className="happy-font-body-medium text-[15px] leading-[22px] text-ink"
                         style={{ minHeight: 150 }}
                         accessibilityLabel={prompt}
                         accessibilityHint="Type your response"

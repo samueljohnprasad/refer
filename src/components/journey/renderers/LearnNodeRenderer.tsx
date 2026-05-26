@@ -171,7 +171,7 @@ function CardItem({
                 eyebrow={isLastCard ? "Key takeaway" : "The concept"}
                 className="min-h-[320px] p-5"
             >
-                <Text className="happy-font-heading-medium text-[22px] leading-8 text-ink">
+                <Text className="happy-font-heading-medium text-[20px] leading-7 text-ink">
                     {displayText}
                 </Text>
 

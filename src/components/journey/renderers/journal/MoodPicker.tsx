@@ -50,7 +50,7 @@ export default function MoodPicker({
 
     return (
         <View className="mb-6">
-            <Text className="happy-font-heading-bold mb-4 text-center text-[24px] leading-8 text-ink">
+            <Text className="happy-font-heading-bold mb-4 text-center text-[21px] leading-7 text-ink">
                 {label}
             </Text>
 

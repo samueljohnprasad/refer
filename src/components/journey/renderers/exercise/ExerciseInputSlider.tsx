@@ -72,7 +72,7 @@ export default function ExerciseInputSlider({
     return (
         <View className="flex-1 justify-center">
             <RendererSectionCard eyebrow="Now: rate yours">
-                <Text className="happy-font-heading-bold mb-5 text-[23px] leading-8 text-ink">
+                <Text className="happy-font-heading-bold mb-4 text-[20px] leading-7 text-ink">
                     {prompt}
                 </Text>
 

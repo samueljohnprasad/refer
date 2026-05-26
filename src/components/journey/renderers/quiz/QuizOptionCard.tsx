@@ -156,7 +156,7 @@ export default function QuizOptionCard({
             </View>
 
             {/* Option text */}
-            <Text className={`happy-font-body-semibold flex-1 text-base leading-6 ${styles.text}`}>
+            <Text className={`happy-font-body-semibold flex-1 text-[14px] leading-5 ${styles.text}`}>
                 {text}
             </Text>
         </AnimatedPressable>

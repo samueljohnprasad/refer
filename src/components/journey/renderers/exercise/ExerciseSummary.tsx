@@ -86,7 +86,7 @@ export default function ExerciseSummary({
                     <View className="mb-3 h-16 w-16 items-center justify-center rounded-full bg-sage-pill">
                         <HugeiconsIcon icon={CheckmarkCircle02Icon} size={32} color={SAGE[600]} />
                     </View>
-                    <Text className="happy-font-heading-bold mb-1 text-[26px] leading-8 text-ink">
+                    <Text className="happy-font-heading-bold mb-1 text-[24px] leading-8 text-ink">
                         Exercise Complete!
                     </Text>
                     <Text className="happy-font-body-medium text-center text-sm text-ink-muted">

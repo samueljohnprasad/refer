@@ -372,7 +372,7 @@ export default function QuizNodeRenderer({
                 </View>
 
                 <RendererSectionCard eyebrow="Question">
-                    <Text className="happy-font-heading-bold mb-5 text-[24px] leading-8 text-ink">
+                    <Text className="happy-font-heading-bold mb-4 text-[21px] leading-7 text-ink">
                         {currentQuestion.text}
                     </Text>
 

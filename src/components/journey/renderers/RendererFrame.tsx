@@ -24,7 +24,7 @@ export function RendererTopProgress({
 
   return (
     <View
-      className="flex-row items-center gap-4 px-7 pb-5"
+      className="flex-row items-center gap-3 px-7 pb-4"
       style={{ paddingTop: Math.max(insets.top + 20, 56) }}
     >
       <PressableScale
@@ -40,7 +40,7 @@ export function RendererTopProgress({
         accessibilityLabel="Close activity"
         accessibilityRole="button"
       >
-        <Text className="happy-font-body-bold text-[22px] text-sage-700">
+        <Text className="happy-font-body-bold text-[20px] text-sage-700">
           X
         </Text>
       </PressableScale>
@@ -53,7 +53,7 @@ export function RendererTopProgress({
         />
       </View>
 
-      <Text className="happy-font-body-bold min-w-[58px] text-right text-[15px] text-terracotta">
+      <Text className="happy-font-body-bold min-w-[54px] text-right text-[14px] text-terracotta">
         +{getDisplayXp(xpReward)} XP
       </Text>
     </View>
@@ -70,15 +70,15 @@ export function RendererTitleBlock({
   subtitle?: string;
 }): React.JSX.Element {
   return (
-    <View className="px-8 pb-5 pt-1">
-      <Text className="happy-brand-eyebrow mb-3 text-center text-[12px]">
+    <View className="px-8 pb-4 pt-1">
+      <Text className="happy-brand-eyebrow mb-2 text-center text-[11px]">
         {eyebrow}
       </Text>
-      <Text className="happy-font-heading-bold text-[30px] leading-[36px] text-ink">
+      <Text className="happy-font-heading-bold text-[26px] leading-[32px] text-ink">
         {title}
       </Text>
       {subtitle ? (
-        <Text className="happy-font-body-medium mt-3 text-[16px] leading-6 text-ink-soft">
+        <Text className="happy-font-body-medium mt-3 text-[15px] leading-[22px] text-ink-soft">
           {subtitle}
         </Text>
       ) : null}
@@ -96,7 +96,7 @@ export function RendererSectionCard({
   className?: string;
 }): React.JSX.Element {
   return (
-    <View className={`happy-brand-preview-tile rounded-[28px] p-5 ${className}`}>
+    <View className={`happy-brand-preview-tile rounded-[28px] p-4 ${className}`}>
       {eyebrow ? <Text className="happy-brand-eyebrow mb-4">{eyebrow}</Text> : null}
       {children}
     </View>
@@ -124,7 +124,7 @@ export function RendererPrimaryCTA({
       hapticStyle="medium"
       disabled={disabled}
       style={{
-        minHeight: 60,
+        minHeight: 56,
         borderRadius: 24,
         alignItems: "center",
         justifyContent: "center",
@@ -138,7 +138,7 @@ export function RendererPrimaryCTA({
       accessibilityState={{ disabled }}
     >
       <Text
-        className={`happy-font-body-bold text-[16px] uppercase tracking-wider ${
+        className={`happy-font-body-bold text-[15px] uppercase tracking-wider ${
           disabled ? "text-ink-muted" : "text-brand-surface"
         }`}
       >

@@ -58,7 +58,7 @@ export default function ExerciseInputRating({
     return (
         <View className="flex-1 justify-center">
             <RendererSectionCard eyebrow="Now: rate yours">
-                <Text className="happy-font-heading-bold mb-5 text-[23px] leading-8 text-ink">
+                <Text className="happy-font-heading-bold mb-4 text-[20px] leading-7 text-ink">
                     {prompt}
                 </Text>
 
@@ -99,7 +99,7 @@ export default function ExerciseInputRating({
                                 accessibilityState={{ selected: isSelected }}
                             >
                                 <Text
-                                    className={`happy-font-body-bold text-base ${isSelected ? 'text-brand-surface' : 'text-ink-muted'
+                                    className={`happy-font-body-bold text-sm ${isSelected ? 'text-brand-surface' : 'text-ink-muted'
                                         }`}
                                 >
                                     {num}

@@ -199,7 +199,7 @@ export default function MoodCheckRenderer({
                     <View className="flex-1 justify-between px-7 pb-5">
                         <View>
                             <RendererSectionCard eyebrow="Now: name yours">
-                                <Text className="happy-font-heading-bold mb-5 text-[24px] leading-8 text-ink">
+                                <Text className="happy-font-heading-bold mb-4 text-[21px] leading-7 text-ink">
                                     How are you, really?
                                 </Text>
                                 <View className="flex-row items-start justify-between">

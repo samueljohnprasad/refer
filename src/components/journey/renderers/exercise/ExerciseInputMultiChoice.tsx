@@ -102,7 +102,7 @@ export default function ExerciseInputMultiChoice({
     return (
         <View className="flex-1">
             <RendererSectionCard eyebrow="Now: choose yours">
-                <Text className="happy-font-heading-bold mb-4 text-[23px] leading-8 text-ink">
+                <Text className="happy-font-heading-bold mb-4 text-[20px] leading-7 text-ink">
                     {prompt}
                 </Text>
 
@@ -115,7 +115,7 @@ export default function ExerciseInputMultiChoice({
                             <Pressable
                                 key={index}
                                 onPress={() => handleOptionPress(index)}
-                                className={`flex-row items-center rounded-[24px] p-4 ${styles.container}`}
+                                className={`flex-row items-center rounded-[24px] px-4 py-3 ${styles.container}`}
                                 accessibilityLabel={`Option ${index + 1}: ${option}${value.includes(index) ? ', selected' : ''
                                     }`}
                                 accessibilityRole="button"
@@ -123,7 +123,7 @@ export default function ExerciseInputMultiChoice({
                                 disabled={hasCorrectAnswer && hasAnswered}
                             >
                                 <View
-                                    className={`mr-3 h-8 w-8 items-center justify-center rounded-full ${state === 'selected'
+                                    className={`mr-3 h-7 w-7 items-center justify-center rounded-full ${state === 'selected'
                                         ? 'bg-sage-500'
                                         : state === 'correct'
                                             ? 'bg-sage-500'
@@ -138,7 +138,7 @@ export default function ExerciseInputMultiChoice({
                                         <HugeiconsIcon icon={Cancel01Icon} size={16} color={BRAND_SURFACE} />
                                     ) : (
                                         <Text
-                                            className={`happy-font-body-bold text-sm ${state === 'selected' ? 'text-brand-surface' : 'text-ink-muted'
+                                            className={`happy-font-body-bold text-xs ${state === 'selected' ? 'text-brand-surface' : 'text-ink-muted'
                                                 }`}
                                         >
                                             {String.fromCharCode(65 + index)}
@@ -146,7 +146,7 @@ export default function ExerciseInputMultiChoice({
                                     )}
                                 </View>
 
-                                <Text className={`happy-font-body-semibold flex-1 text-[15px] leading-5 ${styles.text}`}>
+                                <Text className={`happy-font-body-semibold flex-1 text-[14px] leading-5 ${styles.text}`}>
                                     {option}
                                 </Text>
                             </Pressable>
