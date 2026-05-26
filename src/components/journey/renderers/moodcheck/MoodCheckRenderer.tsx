@@ -13,7 +13,7 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import { View, Text, TextInput, Image, Platform } from 'react-native';
+import { KeyboardAvoidingView, View, Text, TextInput, Image, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
     useSharedValue,
@@ -28,6 +28,13 @@ import type {
 } from '@/src/types/journey/mentalHealth';
 import { Emotion, emotions } from '@/assets/emojis';
 import { PressableScale } from '@/src/components/ui/PressableScale';
+import { INK_MUTED } from '@/lib/tokens';
+import {
+    RendererPrimaryCTA,
+    RendererSectionCard,
+    RendererTitleBlock,
+    RendererTopProgress,
+} from '../RendererFrame';
 
 // ============================================================================
 // Types
@@ -38,6 +45,8 @@ export interface MoodCheckRendererProps {
     content: MoodCheckContent;
     /** Node title */
     title: string;
+    /** XP reward displayed in the renderer header */
+    xpReward?: number;
     /** Called when user taps continue */
     onComplete: (responseData: MoodCheckResponseData) => void;
     /** Called when user taps back */
@@ -103,9 +112,9 @@ function MoodEmojiButton({
             hapticStyle="light"
             style={{
                 alignItems: 'center',
-                padding: 8,
-                minWidth: 64,
-                minHeight: 64,
+                width: 60,
+                minHeight: 76,
+                paddingVertical: 4,
             }}
             accessibilityLabel={`${label} mood, rating ${rating} of 5`}
             accessibilityRole="button"
@@ -113,9 +122,9 @@ function MoodEmojiButton({
         >
             <Animated.View style={animStyle}>
                 <View
-                    className={`w-16 h-16 rounded-2xl items-center justify-center ${isSelected
-                        ? 'bg-purple-50 border-2 border-purple-300'
-                        : 'bg-slate-50 border-2 border-transparent'
+                    className={`h-[58px] w-[58px] items-center justify-center rounded-[22px] ${isSelected
+                        ? 'happy-brand-card-selected'
+                        : 'happy-brand-card'
                         }`}
                 >
                     <Image
@@ -126,7 +135,8 @@ function MoodEmojiButton({
                 </View>
             </Animated.View>
             <Text
-                className={`text-xs mt-1 font-medium ${isSelected ? 'text-purple-600' : 'text-slate-400'
+                numberOfLines={1}
+                className={`happy-font-body-bold mt-2 text-xs ${isSelected ? 'text-sage-600' : 'text-ink-muted'
                     }`}
             >
                 {label}
@@ -142,6 +152,7 @@ function MoodEmojiButton({
 export default function MoodCheckRenderer({
     content,
     title,
+    xpReward,
     onComplete,
     onBack,
 }: MoodCheckRendererProps): React.JSX.Element {
@@ -169,97 +180,66 @@ export default function MoodCheckRenderer({
     }, [selectedRating, note, onComplete]);
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
-            {/* Minimal content — centered */}
-            <View className="flex-1 justify-center px-6">
-                {/* Prompt */}
-                <Text className="text-2xl font-bold text-slate-900 text-center mb-2 leading-9">
-                    {content.prompt}
-                </Text>
+        <View className="happy-brand-screen flex-1">
+            <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
+                <RendererTopProgress
+                    progress={selectedRating ? 0.75 : 0.35}
+                    xpReward={xpReward}
+                    onClose={onBack}
+                />
+                <RendererTitleBlock
+                    eyebrow="Check in"
+                    title={content.prompt || title}
+                    subtitle="Name what is here. No need to fix it yet."
+                />
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                    style={{ flex: 1 }}
+                >
+                    <View className="flex-1 justify-between px-7 pb-5">
+                        <View>
+                            <RendererSectionCard eyebrow="Now: name yours">
+                                <Text className="happy-font-heading-bold mb-5 text-[24px] leading-8 text-ink">
+                                    How are you, really?
+                                </Text>
+                                <View className="flex-row items-start justify-between">
+                                {MOOD_OPTIONS.map((option) => (
+                                    <MoodEmojiButton
+                                        key={option.rating}
+                                        rating={option.rating}
+                                        emotion={option.emotion}
+                                        label={option.label}
+                                        isSelected={selectedRating === option.rating}
+                                        onPress={handleSelectMood}
+                                    />
+                                ))}
+                                </View>
+                            </RendererSectionCard>
 
-                <Text className="text-sm text-slate-400 text-center mb-10">
-                    Tap how you're feeling right now
-                </Text>
+                            {content.note_enabled ? (
+                                <View className="happy-brand-preview-tile mt-10 rounded-[24px] px-4 py-3">
+                                    <TextInput
+                                        value={note}
+                                        onChangeText={setNote}
+                                        placeholder="Anything you'd like to add? (optional)"
+                                        placeholderTextColor={INK_MUTED}
+                                        maxLength={200}
+                                        className="happy-font-body-medium text-base text-ink"
+                                        style={{ minHeight: 44 }}
+                                        accessibilityLabel="Optional note about your mood"
+                                    />
+                                </View>
+                            ) : null}
+                        </View>
 
-                {/* Emoji selector row */}
-                <View className="flex-row items-center justify-center gap-1 mb-10">
-                    {MOOD_OPTIONS.map((option) => (
-                        <MoodEmojiButton
-                            key={option.rating}
-                            rating={option.rating}
-                            emotion={option.emotion}
-                            label={option.label}
-                            isSelected={selectedRating === option.rating}
-                            onPress={handleSelectMood}
-                        />
-                    ))}
-                </View>
-
-                {/* Optional note */}
-                {content.note_enabled ? (
-                    <View className="bg-slate-50 rounded-2xl px-4 py-3 border border-slate-100">
-                        <TextInput
-                            value={note}
-                            onChangeText={setNote}
-                            placeholder="Anything you'd like to add? (optional)"
-                            placeholderTextColor="#94A3B8"
-                            maxLength={200}
-                            className="text-base text-slate-700"
-                            style={{ minHeight: 40 }}
-                            accessibilityLabel="Optional note about your mood"
+                        <RendererPrimaryCTA
+                            label="Continue"
+                            onPress={handleComplete}
+                            disabled={!canContinue}
                         />
                     </View>
-                ) : null}
-            </View>
-
-            {/* Bottom buttons */}
-            <View className="flex-row items-center gap-3 px-5 pb-4 pt-2">
-                <PressableScale
-                    onPress={onBack}
-                    scale={0.96}
-                    hapticStyle="light"
-                    style={{
-                        paddingVertical: 14,
-                        paddingHorizontal: 20,
-                        borderRadius: 14,
-                        backgroundColor: '#F1F5F9',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                    accessibilityLabel="Go back"
-                    accessibilityRole="button"
-                >
-                    <Text className="text-sm font-semibold text-slate-500">Back</Text>
-                </PressableScale>
-
-                <PressableScale
-                    onPress={handleComplete}
-                    scale={0.96}
-                    hapticStyle="medium"
-                    disabled={!canContinue}
-                    style={{
-                        flex: 1,
-                        paddingVertical: 14,
-                        borderRadius: 14,
-                        backgroundColor: canContinue ? '#8B5CF6' : '#E2E8F0',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderBottomWidth: canContinue ? 4 : 0,
-                        borderBottomColor: '#7C3AED',
-                        opacity: canContinue ? 1 : 0.6,
-                    }}
-                    accessibilityLabel="Continue"
-                    accessibilityRole="button"
-                    accessibilityState={{ disabled: !canContinue }}
-                >
-                    <Text
-                        className={`text-base font-bold ${canContinue ? 'text-white' : 'text-slate-400'
-                            }`}
-                    >
-                        Continue
-                    </Text>
-                </PressableScale>
-            </View>
-        </SafeAreaView>
+                </KeyboardAvoidingView>
+            </SafeAreaView>
+        </View>
     );
 }

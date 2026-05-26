@@ -35,6 +35,7 @@ import type {
 } from "@/src/types/exerciseFlow";
 import { useCBTHistory, type HistoryLogItem } from "./hooks/useCBTHistory";
 import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
+import { PressableScale } from "@/src/components/ui/PressableScale";
 import { GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
 
 type TabKey = "discover" | "log";
@@ -108,49 +109,61 @@ const ExerciseCard = memo(function ExerciseCard({
   }, [exercise, onPress]);
 
   return (
-    <Pressable
+    <PressableScale
       onPress={handlePress}
+      scale={0.98}
+      hapticStyle="light"
       accessibilityRole="button"
       accessibilityLabel={`${exercise.title}: ${exercise.subtitle}. Duration: ${exercise.duration}.`}
-      className="happy-brand-preview-tile mb-4 min-h-12 rounded-[28px] active:opacity-90"
+      className="mb-3 rounded-[30px]"
     >
-      <View className="flex-row items-center p-4">
-        <View
-          className="mr-4 h-14 w-14 items-center justify-center rounded-[22px] bg-sage-50"
-          accessible={false}
-        >
-          <HugeiconsIcon icon={icon} size={28} color={SAGE[600]} />
-        </View>
+      <View className="happy-brand-preview-tile rounded-[30px] px-4 py-4">
+        <View className="flex-row items-center gap-3">
+          <View
+            className="h-12 w-12 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50"
+            accessible={false}
+          >
+            <HugeiconsIcon icon={icon} size={24} color={SAGE[600]} />
+          </View>
 
-        <View className="flex-1">
-          <Text className="happy-font-body-bold mr-2 flex-shrink text-[18px] text-ink">
-            {exercise.title}
-          </Text>
-          <Text className="happy-font-body-medium mb-3 mt-0.5 text-[15px] leading-5 text-ink-muted">
-            {exercise.subtitle}
-          </Text>
+          <View className="min-w-0 flex-1">
+            <Text
+              className="happy-font-body-bold text-[17px] leading-5 text-ink"
+              numberOfLines={1}
+            >
+              {exercise.title}
+            </Text>
+            <Text
+              className="happy-font-body-medium mt-1 text-[14px] leading-5 text-ink-muted"
+              numberOfLines={2}
+            >
+              {exercise.subtitle}
+            </Text>
 
-          <View className="flex-row items-center gap-2">
-            <View className="flex-row items-center rounded-full bg-sage-50 px-2.5 py-1">
-              <Text className="text-xs">⏱️</Text>
-              <Text className="happy-font-body-bold ml-1 text-xs text-ink-soft">
-                {exercise.duration}
-              </Text>
-            </View>
-            <View className="flex-row items-center rounded-full bg-gold/15 px-2.5 py-1">
-              <Text className="text-xs">⚡</Text>
-              <Text className="happy-font-body-bold ml-1 text-xs text-ink-soft">
-                +{exercise.xp} XP
-              </Text>
+            <View className="mt-3 flex-row items-center gap-2">
+              <View className="flex-row items-center rounded-full bg-sage-50 px-2.5 py-1">
+                <Text className="text-xs">⏱️</Text>
+                <Text className="happy-font-body-bold ml-1 text-xs text-ink-soft">
+                  {exercise.duration}
+                </Text>
+              </View>
+              <View className="flex-row items-center rounded-full bg-gold/15 px-2.5 py-1">
+                <Text className="text-xs">⚡</Text>
+                <Text className="happy-font-body-bold ml-1 text-xs text-ink-soft">
+                  +{exercise.xp} XP
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        <View className="h-9 w-9 items-center justify-center rounded-full bg-sage-500">
-          <Text className="text-sm font-extrabold text-brand-surface">›</Text>
+          <View className="h-10 w-10 items-center justify-center rounded-full bg-sage-500">
+            <Text className="happy-font-body-bold text-[18px] leading-5 text-brand-surface">
+              ›
+            </Text>
+          </View>
         </View>
       </View>
-    </Pressable>
+    </PressableScale>
   );
 });
 
@@ -171,17 +184,25 @@ const DiscoverSection = memo(function DiscoverSection({
   const categoryIcon = getCategoryIcon(category);
 
   return (
-    <View className="mb-6">
-      <View className="mb-3 flex-row items-center">
-        <View className="mr-3 h-11 w-11 items-center justify-center rounded-[18px] bg-sage-50">
-          <HugeiconsIcon icon={categoryIcon} size={21} color={SAGE[600]} />
+    <View className="mb-7">
+      <View className="mb-3 flex-row items-center px-1">
+        <View className="mr-3 h-12 w-12 items-center justify-center rounded-[20px] border border-sage-100 bg-sage-50">
+          <HugeiconsIcon icon={categoryIcon} size={22} color={SAGE[600]} />
         </View>
-        <View className="flex-1">
-          <Text className="happy-font-body-bold text-[20px] text-ink">
+        <View className="min-w-0 flex-1">
+          <Text className="happy-font-body-bold text-[20px] leading-6 text-ink">
             {label}
           </Text>
-          <Text className="happy-font-body-medium mt-0.5 text-[15px] text-ink-muted">
+          <Text
+            className="happy-font-body-medium mt-0.5 text-[14px] leading-5 text-ink-muted"
+            numberOfLines={1}
+          >
             {categoryMeta.description}
+          </Text>
+        </View>
+        <View className="happy-brand-status-chip ml-3 px-3 py-1">
+          <Text className="happy-font-body-bold text-xs text-sage-600">
+            {exercises.length}
           </Text>
         </View>
       </View>
@@ -317,59 +338,70 @@ const LogCard = memo(function LogCard({
   }, [item, onPress]);
 
   return (
-    <Pressable
+    <PressableScale
       onPress={handlePress}
-      className={`mb-3 rounded-2xl border-2 border-b-4 bg-white active:opacity-90 ${cardBorderClassName}`}
+      scale={0.98}
+      hapticStyle="light"
+      className="mb-3 rounded-[26px]"
+      accessibilityRole="button"
     >
-      <View className="flex-row items-center p-4">
-        <View className="mr-3 h-12 w-12 items-center justify-center rounded-[20px] bg-sage-50">
-          <HugeiconsIcon icon={presentation.icon} size={22} color={SAGE[600]} />
-        </View>
-
-        <View className="flex-1">
-          <View className="mb-0.5 flex-row items-center justify-between">
-            <Text className="happy-brand-eyebrow text-[10px]">
-              {presentation.heading}
-            </Text>
-            <Text className="happy-font-body-medium text-xs text-ink-muted">
-              {format(new Date(item.date), "MMM d, h:mm a")}
-            </Text>
+      <View
+        className={`rounded-[26px] border-2 border-b-4 bg-white p-4 ${cardBorderClassName}`}
+      >
+        <View className="flex-row items-center gap-3">
+          <View className="h-12 w-12 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50">
+            <HugeiconsIcon
+              icon={presentation.icon}
+              size={22}
+              color={SAGE[600]}
+            />
           </View>
 
-          <Text
-            className="happy-font-body-bold mb-2 text-[16px] text-ink"
-            numberOfLines={1}
-          >
-            {presentation.title}
-          </Text>
-
-          <View className="flex-row items-center gap-2">
-            <View
-              className={`flex-row items-center rounded-full px-2.5 py-1 ${badgeClassName}`}
-            >
-              <HugeiconsIcon
-                icon={isComplete ? CheckmarkBadge01Icon : Time02Icon}
-                size={12}
-                color={badgeIconColor}
-              />
-              <Text
-                className={`ml-1 text-[10px] font-extrabold uppercase tracking-wider ${badgeTextClassName}`}
-              >
-                {label}
+          <View className="min-w-0 flex-1">
+            <View className="mb-0.5 flex-row items-center justify-between">
+              <Text className="happy-brand-eyebrow text-[10px]">
+                {presentation.heading}
+              </Text>
+              <Text className="happy-font-body-medium text-xs text-ink-muted">
+                {format(new Date(item.date), "MMM d, h:mm a")}
               </Text>
             </View>
-            {isComplete && xpEarned > 0 ? (
-              <View className="flex-row items-center rounded-full bg-gold/15 px-2 py-1">
-                <Text className="text-[10px]">⚡</Text>
-                <Text className="happy-font-body-bold ml-0.5 text-[10px] text-ink-soft">
-                  +{xpEarned} XP
+
+            <Text
+              className="happy-font-body-bold mb-2 text-[16px] text-ink"
+              numberOfLines={1}
+            >
+              {presentation.title}
+            </Text>
+
+            <View className="flex-row items-center gap-2">
+              <View
+                className={`flex-row items-center rounded-full px-2.5 py-1 ${badgeClassName}`}
+              >
+                <HugeiconsIcon
+                  icon={isComplete ? CheckmarkBadge01Icon : Time02Icon}
+                  size={12}
+                  color={badgeIconColor}
+                />
+                <Text
+                  className={`ml-1 text-[10px] font-extrabold uppercase tracking-wider ${badgeTextClassName}`}
+                >
+                  {label}
                 </Text>
               </View>
-            ) : null}
+              {isComplete && xpEarned > 0 ? (
+                <View className="flex-row items-center rounded-full bg-gold/15 px-2 py-1">
+                  <Text className="text-[10px]">⚡</Text>
+                  <Text className="happy-font-body-bold ml-0.5 text-[10px] text-ink-soft">
+                    +{xpEarned} XP
+                  </Text>
+                </View>
+              ) : null}
+            </View>
           </View>
         </View>
       </View>
-    </Pressable>
+    </PressableScale>
   );
 });
 
@@ -516,11 +548,11 @@ export default function ExercisesScreen(): ReactElement {
   return (
     <View className="flex-1 happy-brand-screen">
       <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
-        <View className="px-5 pb-3 pt-4">
+        <View className="px-5 pb-3 pt-3">
           <View className="mb-4 flex-row items-center justify-between">
             <View className="flex-row items-center gap-3">
-              <Mascot state="panda-love-hug-2" size={40} />
-              <Text className="happy-font-heading-bold text-[34px] text-ink">
+              <Mascot state="panda-love-hug-2" size={38} />
+              <Text className="happy-font-heading-bold text-[40px] leading-[46px] text-ink">
                 Exercises
               </Text>
             </View>
@@ -534,7 +566,7 @@ export default function ExercisesScreen(): ReactElement {
             ) : null}
           </View>
 
-          <View className="flex-row rounded-full border border-sage-100 bg-sage-50 p-1">
+          <View className="happy-brand-card flex-row rounded-full bg-sage-50 p-1">
             {TAB_KEYS.map((tab) => (
               <ExerciseTabButton
                 key={tab}
@@ -549,7 +581,7 @@ export default function ExercisesScreen(): ReactElement {
         <ScrollView
           className="flex-1"
           style={{ flex: 1 }}
-          contentContainerClassName="px-5 pt-4 pb-[120px]"
+          contentContainerClassName="px-5 pt-3 pb-[128px]"
           showsVerticalScrollIndicator={false}
         >
           {activeTab === "discover" ? (

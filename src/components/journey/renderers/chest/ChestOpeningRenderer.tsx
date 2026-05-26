@@ -38,6 +38,7 @@ import * as Haptics from 'expo-haptics';
 import type { ChestContent, ChestRarity, ChestResponseData } from '@/src/types/journey/mentalHealth';
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { ConfettiExplosion } from '@/src/components/animations/ConfettiExplosion';
+import { GOLD, SAGE } from '@/lib/tokens';
 
 // ============================================================================
 // Types
@@ -69,36 +70,36 @@ const RARITY_CONFIG: Record<ChestRarity, {
     labelColor: string;
 }> = {
     common: {
-        glowColor: '#E2E8F0',
-        bgColor: 'bg-slate-100',
-        borderColor: 'border-slate-300',
+        glowColor: SAGE[100],
+        bgColor: 'bg-sage-50',
+        borderColor: 'border-sage-200',
         particleCount: 12,
         label: 'Common',
-        labelColor: 'text-slate-500',
+        labelColor: 'text-ink-muted',
     },
     uncommon: {
-        glowColor: '#FDE68A',
-        bgColor: 'bg-amber-50',
-        borderColor: 'border-amber-300',
+        glowColor: GOLD,
+        bgColor: 'bg-sage-pill',
+        borderColor: 'border-gold',
         particleCount: 20,
         label: 'Uncommon',
-        labelColor: 'text-amber-600',
+        labelColor: 'text-gold',
     },
     rare: {
-        glowColor: '#C4B5FD',
-        bgColor: 'bg-purple-50',
-        borderColor: 'border-purple-300',
+        glowColor: SAGE[300],
+        bgColor: 'bg-sage-selected',
+        borderColor: 'border-sage-400',
         particleCount: 28,
         label: 'Rare',
-        labelColor: 'text-purple-600',
+        labelColor: 'text-sage-600',
     },
     legendary: {
-        glowColor: '#FCD34D',
-        bgColor: 'bg-yellow-50',
-        borderColor: 'border-yellow-400',
+        glowColor: GOLD,
+        bgColor: 'bg-sage-pill',
+        borderColor: 'border-gold',
         particleCount: 36,
         label: 'Legendary',
-        labelColor: 'text-yellow-600',
+        labelColor: 'text-gold',
     },
 };
 
@@ -158,7 +159,7 @@ function ChestShimmer({
     return (
         <Animated.View
             style={[shimmerStyle, { backgroundColor: glowColor }]}
-            className="absolute w-40 h-40 rounded-full"
+                className="absolute h-40 w-40 rounded-full"
             pointerEvents="none"
         />
     );
@@ -204,7 +205,7 @@ function ChestBody({
             <Pressable
                 onPress={isIdle ? onTap : undefined}
                 disabled={!isIdle}
-                className="w-28 h-28 rounded-3xl bg-amber-100 border-4 border-amber-400 items-center justify-center"
+                className="h-28 w-28 items-center justify-center rounded-[32px] border-4 border-sage-300 bg-sage-pill"
                 accessibilityLabel={isIdle ? 'Tap to open treasure chest' : 'Chest'}
                 accessibilityRole="button"
             >
@@ -244,23 +245,23 @@ function RewardReveal({
         <Animated.View style={style} className="items-center mt-6">
             {/* Rarity label */}
             <View className="mb-3">
-                <Text className={`text-xs font-bold uppercase tracking-widest ${config.labelColor}`}>
+                <Text className={`happy-brand-eyebrow ${config.labelColor}`}>
                     {config.label}
                 </Text>
             </View>
 
             {/* Reward icon */}
-            <View className={`w-20 h-20 rounded-2xl ${config.bgColor} border-2 ${config.borderColor} items-center justify-center mb-4`}>
+            <View className={`mb-4 h-20 w-20 items-center justify-center rounded-[24px] border-2 ${config.bgColor} ${config.borderColor}`}>
                 <Text style={{ fontSize: 40 }}>{rewardEmoji}</Text>
             </View>
 
             {/* Reward name */}
-            <Text className="text-xl font-bold text-slate-900 text-center mb-2">
+            <Text className="happy-font-heading-bold mb-2 text-center text-[30px] leading-9 text-ink">
                 {content.reward_name}
             </Text>
 
             {/* Reward description */}
-            <Text className="text-sm text-slate-500 text-center leading-5 px-8">
+            <Text className="happy-font-body-medium px-8 text-center text-sm leading-5 text-ink-muted">
                 {content.reward_description}
             </Text>
         </Animated.View>
@@ -313,7 +314,8 @@ export default function ChestOpeningRenderer({
     }, [content, onComplete]);
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+        <View className="happy-brand-screen flex-1">
+            <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
             {/* Confetti */}
             <ConfettiExplosion
                 isVisible={showConfetti}
@@ -324,7 +326,7 @@ export default function ChestOpeningRenderer({
 
             <View className="flex-1 items-center justify-center px-5">
                 {/* Title */}
-                <Text className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-8">
+                <Text className="happy-brand-eyebrow mb-8">
                     {title}
                 </Text>
 
@@ -337,10 +339,10 @@ export default function ChestOpeningRenderer({
                 {/* Tap to open prompt (idle only) */}
                 {phase === 'idle' ? (
                     <View className="mt-6 items-center">
-                        <Text className="text-base font-semibold text-amber-600 mb-1">
+                        <Text className="happy-font-body-bold mb-1 text-base text-sage-600">
                             Tap to Open!
                         </Text>
-                        <Text className="text-xs text-slate-400">
+                        <Text className="happy-font-body-medium text-xs text-ink-muted">
                             A reward awaits inside
                         </Text>
                     </View>
@@ -360,23 +362,24 @@ export default function ChestOpeningRenderer({
                         scale={0.96}
                         hapticStyle="medium"
                         style={{
-                            backgroundColor: '#D97706',
+                            backgroundColor: SAGE[500],
                             paddingVertical: 16,
-                            borderRadius: 16,
+                            borderRadius: 22,
                             alignItems: 'center',
                             justifyContent: 'center',
                             borderBottomWidth: 4,
-                            borderBottomColor: '#B45309',
+                            borderBottomColor: SAGE[700],
                         }}
                         accessibilityLabel="Continue"
                         accessibilityRole="button"
                     >
-                        <Text className="text-base font-bold text-white">
+                        <Text className="happy-font-body-bold text-base text-brand-surface">
                             Awesome! 🎉
                         </Text>
                     </PressableScale>
                 </View>
             ) : null}
-        </SafeAreaView>
+            </SafeAreaView>
+        </View>
     );
 }

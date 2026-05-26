@@ -4,8 +4,10 @@
  * Features: character encouragement, placeholder, keyboard-aware.
  */
 
-import React, { useCallback, useState } from "react";
-import { View, Text, TextInput, Platform } from "react-native";
+import React from "react";
+import { View, Text, TextInput } from "react-native";
+import { INK_MUTED } from "@/lib/tokens";
+import { RendererSectionCard } from "../RendererFrame";
 
 // ============================================================================
 // Types
@@ -47,33 +49,33 @@ export default function ExerciseInputText({
 
     return (
         <View className="flex-1">
-            {/* Prompt */}
-            <Text className="text-lg font-semibold text-slate-800 mb-4 leading-7">
-                {prompt}
-            </Text>
+            <RendererSectionCard eyebrow="Now: try it">
+                <Text className="happy-font-heading-bold mb-4 text-[23px] leading-8 text-ink">
+                    {prompt}
+                </Text>
 
-            {/* Text input */}
-            <View className="flex-1 bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder={placeholder ?? "Start writing here..."}
-                    placeholderTextColor="#94A3B8"
-                    multiline
-                    textAlignVertical="top"
-                    className="flex-1 text-base text-slate-700 leading-6"
-                    style={{ minHeight: 160 }}
-                    accessibilityLabel={prompt}
-                    accessibilityHint="Type your response"
-                />
-            </View>
+                <View className="rounded-[24px] bg-sage-50 p-4">
+                    <TextInput
+                        value={value}
+                        onChangeText={onChange}
+                        placeholder={placeholder ?? "Start writing here..."}
+                        placeholderTextColor={INK_MUTED}
+                        multiline
+                        textAlignVertical="top"
+                        className="happy-font-body-medium text-base leading-6 text-ink"
+                        style={{ minHeight: 150 }}
+                        accessibilityLabel={prompt}
+                        accessibilityHint="Type your response"
+                    />
+                </View>
+            </RendererSectionCard>
 
             {/* Character count + encouragement */}
             <View className="flex-row items-center justify-between mt-2 px-1">
-                <Text className="text-xs text-purple-500 font-medium">
+                <Text className="happy-font-body-bold text-xs text-sage-600">
                     {encouragement}
                 </Text>
-                <Text className="text-xs text-slate-400">{charCount} chars</Text>
+                <Text className="happy-font-body-medium text-xs text-ink-muted">{charCount} chars</Text>
             </View>
         </View>
     );

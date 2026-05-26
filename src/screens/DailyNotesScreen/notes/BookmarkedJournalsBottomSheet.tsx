@@ -122,74 +122,76 @@ export const BookmarkedJournalsBottomSheet: React.FC<
 
       {/* Content */}
       <BottomSheetScrollView
-        className="flex-1 px-6"
+        style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
       >
-        {isLoading && bookmarkedJournals.length === 0 ? (
-          <View className="gap-3 pt-4">
-            {[1, 2, 3].map((i) => (
-              <View
-                key={i}
-                className="h-32 animate-pulse rounded-[24px] bg-sage-50"
-              />
-            ))}
-          </View>
-        ) : bookmarkedJournals && bookmarkedJournals.length > 0 ? (
-          <View className="pt-4">
-            <EntryCardsView
-              onRefresh={refetch}
-              entries={bookmarkedJournals}
-              isLoading={false}
-              onEntryPress={onEntryPress}
-              onBookmark={onBookmark}
-              showActions={true}
-              showDateHeaders={true}
-            />
-
-            {/* Load More Button */}
-            {hasNextPage && (
-              <View className="mt-6 mb-4" ref={observerTarget}>
-                <Button
-                  onPress={handleLoadMore}
-                  disabled={isFetchingNextPage}
-                  className="happy-brand-primary-cta rounded-[18px]"
-                >
-                  {isFetchingNextPage ? (
-                    <ButtonSpinner color={BRAND_SURFACE} />
-                  ) : (
-                    <ButtonText className="happy-font-body-bold text-white">
-                      Load More ({bookmarkedJournals.length} / {totalCount})
-                    </ButtonText>
-                  )}
-                </Button>
-              </View>
-            )}
-
-            {/* End of List Indicator */}
-            {!hasNextPage && bookmarkedJournals.length > 0 && (
-              <View className="items-center py-6">
-                <View className="mb-3 h-px w-full bg-sage-100" />
-                <Text className="happy-font-body-medium text-sm text-ink-muted">
-                  All {totalCount} bookmarked journals loaded
-                </Text>
-              </View>
-            )}
-          </View>
-        ) : (
-          <View className="items-center justify-center py-20">
-            <View className="mb-5 h-24 w-24 items-center justify-center rounded-[30px] bg-sage-50">
-              <Feather name="bookmark" size={42} color={INK_MUTED} />
+        <View className="px-6">
+          {isLoading && bookmarkedJournals.length === 0 ? (
+            <View className="gap-3 pt-4">
+              {[1, 2, 3].map((i) => (
+                <View
+                  key={i}
+                  className="h-32 animate-pulse rounded-[24px] bg-sage-50"
+                />
+              ))}
             </View>
-            <Text className="happy-font-body-bold mb-2 text-[20px] text-ink">
-              No Bookmarked Journals
-            </Text>
-            <Text className="happy-font-body-medium px-8 text-center text-[15px] leading-6 text-ink-muted">
-              Tap the bookmark icon on any journal entry to save it here for
-              quick access
-            </Text>
-          </View>
-        )}
+          ) : bookmarkedJournals && bookmarkedJournals.length > 0 ? (
+            <View className="pt-4">
+              <EntryCardsView
+                onRefresh={refetch}
+                entries={bookmarkedJournals}
+                isLoading={false}
+                onEntryPress={onEntryPress}
+                onBookmark={onBookmark}
+                showActions={true}
+                showDateHeaders={true}
+              />
+
+              {/* Load More Button */}
+              {hasNextPage && (
+                <View className="mt-6 mb-4" ref={observerTarget}>
+                  <Button
+                    onPress={handleLoadMore}
+                    disabled={isFetchingNextPage}
+                    className="happy-brand-primary-cta rounded-[18px]"
+                  >
+                    {isFetchingNextPage ? (
+                      <ButtonSpinner color={BRAND_SURFACE} />
+                    ) : (
+                      <ButtonText className="happy-font-body-bold text-white">
+                        Load More ({bookmarkedJournals.length} / {totalCount})
+                      </ButtonText>
+                    )}
+                  </Button>
+                </View>
+              )}
+
+              {/* End of List Indicator */}
+              {!hasNextPage && bookmarkedJournals.length > 0 && (
+                <View className="items-center py-6">
+                  <View className="mb-3 h-px w-full bg-sage-100" />
+                  <Text className="happy-font-body-medium text-sm text-ink-muted">
+                    All {totalCount} bookmarked journals loaded
+                  </Text>
+                </View>
+              )}
+            </View>
+          ) : (
+            <View className="items-center justify-center py-20">
+              <View className="mb-5 h-24 w-24 items-center justify-center rounded-[30px] bg-sage-50">
+                <Feather name="bookmark" size={42} color={INK_MUTED} />
+              </View>
+              <Text className="happy-font-body-bold mb-2 text-[20px] text-ink">
+                No Bookmarked Journals
+              </Text>
+              <Text className="happy-font-body-medium px-8 text-center text-[15px] leading-6 text-ink-muted">
+                Tap the bookmark icon on any journal entry to save it here for
+                quick access
+              </Text>
+            </View>
+          )}
+        </View>
       </BottomSheetScrollView>
     </BottomSheetModal>
   );

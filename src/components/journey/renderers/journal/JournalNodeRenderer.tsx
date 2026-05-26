@@ -33,7 +33,6 @@ import {
     ArrowLeft01Icon,
     Mic01Icon,
     Notebook02Icon,
-    CheckmarkCircle02Icon,
 } from '@hugeicons/core-free-icons';
 import * as Haptics from 'expo-haptics';
 
@@ -44,6 +43,12 @@ import type {
 import { Emotion } from '@/assets/emojis';
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { countWords } from '@/src/utils/textUtils';
+import { INK_MUTED, SAGE } from '@/lib/tokens';
+import {
+    RendererPrimaryCTA,
+    RendererTitleBlock,
+    RendererTopProgress,
+} from '../RendererFrame';
 
 import MoodPicker from './MoodPicker';
 import EmotionTagSelector from './EmotionTagSelector';
@@ -57,6 +62,8 @@ export interface JournalNodeRendererProps {
     content: JournalContent;
     /** Node title (shown in header) */
     title: string;
+    /** XP reward displayed in the renderer header */
+    xpReward?: number;
     /** Called when user saves the journal entry */
     onComplete: (responseData: JournalResponseData) => void;
     /** Called when user also wants to save to the main journal system */
@@ -110,7 +117,7 @@ function JournalHeader({
     onBack: () => void;
 }): React.JSX.Element {
     return (
-        <View className="flex-row items-center px-4 pt-2 pb-3">
+        <View className="flex-row items-center px-5 pb-4 pt-4">
             <PressableScale
                 onPress={onBack}
                 scale={0.9}
@@ -119,25 +126,25 @@ function JournalHeader({
                     width: 40,
                     height: 40,
                     borderRadius: 20,
-                    backgroundColor: '#F1F5F9',
+                    backgroundColor: SAGE.pill,
                     alignItems: 'center',
                     justifyContent: 'center',
                 }}
                 accessibilityLabel="Go back"
                 accessibilityRole="button"
             >
-                <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color="#475569" />
+                <HugeiconsIcon icon={ArrowLeft01Icon} size={20} color={INK_MUTED} />
             </PressableScale>
 
             <View className="flex-1 mx-3">
-                <Text className="text-sm font-bold text-slate-800" numberOfLines={1}>
+                <Text className="happy-font-body-bold text-sm text-ink" numberOfLines={1}>
                     {title}
                 </Text>
-                <Text className="text-xs text-slate-400">Guided Journal</Text>
+                <Text className="happy-font-body-medium text-xs text-ink-muted">Guided Journal</Text>
             </View>
 
-            <View className="bg-indigo-50 px-3 py-1.5 rounded-full">
-                <HugeiconsIcon icon={Notebook02Icon} size={16} color="#6366F1" />
+            <View className="happy-brand-status-chip px-3 py-1.5">
+                <HugeiconsIcon icon={Notebook02Icon} size={16} color={SAGE[600]} />
             </View>
         </View>
     );
@@ -156,15 +163,15 @@ function VoiceButton(): React.JSX.Element {
         <View className="relative">
             <Pressable
                 onPress={handlePress}
-                className="w-11 h-11 rounded-full bg-slate-100 items-center justify-center"
+                className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill"
                 accessibilityLabel="Voice to text — coming soon"
                 accessibilityRole="button"
             >
-                <HugeiconsIcon icon={Mic01Icon} size={20} color="#94A3B8" />
+                <HugeiconsIcon icon={Mic01Icon} size={20} color={INK_MUTED} />
             </Pressable>
             {showTooltip ? (
-                <View className="absolute -top-10 -left-8 bg-slate-800 px-3 py-1.5 rounded-lg">
-                    <Text className="text-xs text-white font-medium">Coming soon!</Text>
+                <View className="absolute -left-8 -top-10 rounded-lg bg-ink px-3 py-1.5">
+                    <Text className="happy-font-body-medium text-xs text-brand-surface">Coming soon!</Text>
                 </View>
             ) : null}
         </View>
@@ -178,6 +185,7 @@ function VoiceButton(): React.JSX.Element {
 export default function JournalNodeRenderer({
     content,
     title,
+    xpReward,
     onComplete,
     onSaveToJournal,
     onBack,
@@ -263,17 +271,19 @@ export default function JournalNodeRenderer({
     const ctaLabel: string = isLastPhase ? 'Save & Continue' : 'Next';
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
-            {/* Header */}
-            <JournalHeader title={title} onBack={handleBack} />
+        <View className="happy-brand-screen flex-1">
+            <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
+            <RendererTopProgress
+                progress={progressPercent / 100}
+                xpReward={xpReward}
+                onClose={onBack}
+            />
 
-            {/* Progress bar */}
-            <View className="h-1 bg-slate-100 mx-4 rounded-full overflow-hidden">
-                <View
-                    className="h-full bg-indigo-500 rounded-full"
-                    style={{ width: `${progressPercent}%` }}
-                />
-            </View>
+            <RendererTitleBlock
+                eyebrow={`Journal ${currentPhaseIndex + 1} of ${phases.length}`}
+                title={title}
+                subtitle="A quick reflection. Keep it honest, not perfect."
+            />
 
             {/* Content */}
             <KeyboardAvoidingView
@@ -282,7 +292,7 @@ export default function JournalNodeRenderer({
                 keyboardVerticalOffset={100}
             >
                 <ScrollView
-                    className="flex-1 px-5 pt-5"
+                    className="flex-1 px-7"
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                     contentContainerStyle={{ flexGrow: 1 }}
@@ -295,7 +305,7 @@ export default function JournalNodeRenderer({
                                 value={moodBefore}
                                 onChange={setMoodBefore}
                             />
-                            <Text className="text-xs text-slate-400 text-center mt-2">
+                            <Text className="happy-font-body-medium mt-2 text-center text-xs text-ink-muted">
                                 This helps track how journaling affects your mood
                             </Text>
                         </View>
@@ -305,24 +315,24 @@ export default function JournalNodeRenderer({
                     {currentPhase === 'writing' ? (
                         <View className="flex-1">
                             {/* Guided prompt */}
-                            <View className="bg-indigo-50 rounded-2xl p-4 mb-4 border border-indigo-100">
-                                <Text className="text-base font-medium text-indigo-800 leading-6">
+                            <View className="happy-brand-preview-tile mb-4 rounded-[24px] p-4">
+                                <Text className="happy-font-body-semibold text-base leading-6 text-ink">
                                     {content.prompt}
                                 </Text>
                             </View>
 
                             {/* Writing area */}
-                            <View className="flex-1 bg-slate-50 rounded-2xl p-4 border border-slate-100 mb-3">
+                            <View className="happy-brand-preview-tile mb-3 flex-1 rounded-[24px] p-4">
                                 <TextInput
                                     ref={textInputRef}
                                     value={journalText}
                                     onChangeText={setJournalText}
                                     placeholder="Start writing here..."
-                                    placeholderTextColor="#94A3B8"
+                                    placeholderTextColor={INK_MUTED}
                                     multiline
                                     textAlignVertical="top"
                                     autoFocus
-                                    className="flex-1 text-base text-slate-700 leading-6"
+                                    className="happy-font-body-medium flex-1 text-base leading-6 text-ink"
                                     style={{ minHeight: 200 }}
                                     accessibilityLabel="Journal writing area"
                                     accessibilityHint={content.prompt}
@@ -332,7 +342,7 @@ export default function JournalNodeRenderer({
                             {/* Word count + encouragement + voice button */}
                             <View className="flex-row items-center justify-between mb-4">
                                 <View className="flex-1">
-                                    <Text className="text-sm font-semibold text-indigo-500">
+                                    <Text className="happy-font-body-bold text-sm text-sage-600">
                                         {wordCount > 0 ? `${wordCount} words — ${encouragement}` : encouragement}
                                     </Text>
                                 </View>
@@ -358,8 +368,8 @@ export default function JournalNodeRenderer({
 
                             {/* Mood shift indicator */}
                             {moodBefore && moodAfter ? (
-                                <View className="bg-green-50 rounded-2xl p-4 mt-4 border border-green-100">
-                                    <Text className="text-sm font-medium text-green-700 text-center">
+                                <View className="happy-brand-card-selected mt-4 rounded-[24px] p-4">
+                                    <Text className="happy-font-body-semibold text-center text-sm text-sage-700">
                                         {moodBefore === moodAfter
                                             ? 'Your mood stayed steady — that\'s okay! 🤝'
                                             : 'Your mood shifted — journaling makes a difference! ✨'}
@@ -371,39 +381,15 @@ export default function JournalNodeRenderer({
                 </ScrollView>
 
                 {/* CTA Button */}
-                <View className="px-5 pb-4 pt-2">
-                    <PressableScale
+                <View className="px-7 pb-4 pt-2">
+                    <RendererPrimaryCTA
+                        label={ctaLabel}
                         onPress={handleNext}
-                        scale={0.96}
-                        hapticStyle="medium"
                         disabled={!canContinue}
-                        style={{
-                            backgroundColor: canContinue ? '#6366F1' : '#E2E8F0',
-                            paddingVertical: 16,
-                            borderRadius: 16,
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderBottomWidth: canContinue ? 4 : 0,
-                            borderBottomColor: '#4F46E5',
-                            opacity: canContinue ? 1 : 0.6,
-                        }}
-                        accessibilityLabel={ctaLabel}
-                        accessibilityRole="button"
-                        accessibilityState={{ disabled: !canContinue }}
-                    >
-                        {isLastPhase ? (
-                            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color="#FFFFFF" />
-                        ) : null}
-                        <Text
-                            className={`text-base font-bold ${canContinue ? 'text-white' : 'text-slate-400'
-                                } ${isLastPhase ? 'ml-2' : ''}`}
-                        >
-                            {ctaLabel}
-                        </Text>
-                    </PressableScale>
+                    />
                 </View>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+            </SafeAreaView>
+        </View>
     );
 }

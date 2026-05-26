@@ -18,6 +18,7 @@ import {
     CheckmarkCircle02Icon,
     Cancel01Icon,
 } from '@hugeicons/core-free-icons';
+import { BRAND_SURFACE } from '@/lib/tokens';
 
 // ============================================================================
 // Types
@@ -39,29 +40,29 @@ export interface QuizOptionCardProps {
 
 const STATE_STYLES: Record<OptionState, { container: string; badge: string; text: string }> = {
     default: {
-        container: 'bg-white border-slate-200',
-        badge: 'bg-slate-100',
-        text: 'text-slate-700',
+        container: 'happy-brand-card',
+        badge: 'bg-sage-50',
+        text: 'text-ink',
     },
     selected: {
-        container: 'bg-blue-50 border-blue-400',
-        badge: 'bg-blue-500',
-        text: 'text-blue-800',
+        container: 'happy-brand-card-selected',
+        badge: 'bg-sage-500',
+        text: 'text-sage-700',
     },
     correct: {
-        container: 'bg-green-50 border-green-400',
-        badge: 'bg-green-500',
-        text: 'text-green-800',
+        container: 'happy-brand-card-selected',
+        badge: 'bg-sage-500',
+        text: 'text-sage-800',
     },
     incorrect: {
-        container: 'bg-red-50 border-red-400',
-        badge: 'bg-red-500',
-        text: 'text-red-800',
+        container: 'border-2 border-terracotta-light bg-brand-surface',
+        badge: 'bg-terracotta',
+        text: 'text-terracotta',
     },
     missed_correct: {
-        container: 'bg-green-50 border-green-300',
-        badge: 'bg-green-400',
-        text: 'text-green-700',
+        container: 'border-2 border-sage-300 bg-sage-50',
+        badge: 'bg-sage-400',
+        text: 'text-sage-700',
     },
 };
 
@@ -129,7 +130,7 @@ export default function QuizOptionCard({
             onPressOut={handlePressOut}
             disabled={disabled}
             style={animatedStyle}
-            className={`flex-row items-center p-4 rounded-2xl border-2 mb-3 ${styles.container}`}
+            className={`mb-3 flex-row items-center rounded-[24px] p-4 ${styles.container}`}
             accessibilityLabel={`Option ${letter}: ${text}${state === 'selected' ? ', selected' : ''
                 }${state === 'correct' ? ', correct' : ''}${state === 'incorrect' ? ', incorrect' : ''
                 }`}
@@ -138,15 +139,15 @@ export default function QuizOptionCard({
         >
             {/* Letter badge / icon */}
             <View
-                className={`w-9 h-9 rounded-full items-center justify-center mr-3 ${styles.badge}`}
+                className={`mr-3 h-9 w-9 items-center justify-center rounded-full ${styles.badge}`}
             >
                 {showCheckmark ? (
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} size={18} color="#FFFFFF" />
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} size={18} color={BRAND_SURFACE} />
                 ) : showX ? (
-                    <HugeiconsIcon icon={Cancel01Icon} size={18} color="#FFFFFF" />
+                    <HugeiconsIcon icon={Cancel01Icon} size={18} color={BRAND_SURFACE} />
                 ) : (
                     <Text
-                        className={`text-sm font-bold ${state === 'selected' ? 'text-white' : 'text-slate-500'
+                        className={`happy-font-body-bold text-sm ${state === 'selected' ? 'text-brand-surface' : 'text-ink-muted'
                             }`}
                     >
                         {letter}
@@ -155,7 +156,7 @@ export default function QuizOptionCard({
             </View>
 
             {/* Option text */}
-            <Text className={`flex-1 text-base font-medium leading-6 ${styles.text}`}>
+            <Text className={`happy-font-body-semibold flex-1 text-base leading-6 ${styles.text}`}>
                 {text}
             </Text>
         </AnimatedPressable>

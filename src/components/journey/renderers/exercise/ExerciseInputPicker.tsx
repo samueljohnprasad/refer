@@ -6,6 +6,7 @@
 
 import React, { useCallback } from 'react';
 import { View, Text, Pressable } from 'react-native';
+import { RendererSectionCard } from '../RendererFrame';
 
 // ============================================================================
 // Types
@@ -50,48 +51,47 @@ export default function ExerciseInputPicker({
 
     return (
         <View className="flex-1">
-            {/* Prompt */}
-            <Text className="text-lg font-semibold text-slate-800 mb-2 leading-7">
-                {prompt}
-            </Text>
+            <RendererSectionCard eyebrow="Now: choose yours">
+                <Text className="happy-font-heading-bold mb-2 text-[23px] leading-8 text-ink">
+                    {prompt}
+                </Text>
 
-            {/* Selection hint */}
-            <Text className="text-sm text-slate-400 mb-5">
-                {allowMultiple
-                    ? `Select ${minSelections > 1 ? `at least ${minSelections}` : 'one or more'}`
-                    : 'Tap to select one'}
-            </Text>
+                <Text className="happy-font-body-medium mb-5 text-sm text-ink-muted">
+                    {allowMultiple
+                        ? `Select ${minSelections > 1 ? `at least ${minSelections}` : 'one or more'}`
+                        : 'Tap to select one'}
+                </Text>
 
-            {/* Options grid */}
-            <View className="flex-row flex-wrap gap-3">
-                {options.map((option: string) => {
-                    const isSelected: boolean = value.includes(option);
-                    return (
-                        <Pressable
-                            key={option}
-                            onPress={() => handleOptionPress(option)}
-                            className={`px-5 py-3 rounded-2xl border-2 ${isSelected
-                                ? 'bg-purple-50 border-purple-400'
-                                : 'bg-white border-slate-100'
-                                }`}
-                            accessibilityLabel={`${option}${isSelected ? ', selected' : ''}`}
-                            accessibilityRole="button"
-                            accessibilityState={{ selected: isSelected }}
-                        >
-                            <Text
-                                className={`text-base font-medium ${isSelected ? 'text-purple-700' : 'text-slate-600'
+                <View className="flex-row flex-wrap gap-3">
+                    {options.map((option: string) => {
+                        const isSelected: boolean = value.includes(option);
+                        return (
+                            <Pressable
+                                key={option}
+                                onPress={() => handleOptionPress(option)}
+                                className={`rounded-[22px] px-5 py-3 ${isSelected
+                                    ? 'happy-brand-card-selected'
+                                    : 'happy-brand-card'
                                     }`}
+                                accessibilityLabel={`${option}${isSelected ? ', selected' : ''}`}
+                                accessibilityRole="button"
+                                accessibilityState={{ selected: isSelected }}
                             >
-                                {option}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
-            </View>
+                                <Text
+                                    className={`happy-font-body-bold text-base ${isSelected ? 'text-sage-700' : 'text-ink-soft'
+                                        }`}
+                                >
+                                    {option}
+                                </Text>
+                            </Pressable>
+                        );
+                    })}
+                </View>
+            </RendererSectionCard>
 
             {/* Selection count */}
             {allowMultiple && value.length > 0 ? (
-                <Text className="text-xs text-purple-500 font-medium mt-3">
+                <Text className="happy-font-body-bold mt-3 text-xs text-sage-600">
                     {value.length} selected
                 </Text>
             ) : null}

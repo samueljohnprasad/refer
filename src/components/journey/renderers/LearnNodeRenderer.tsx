@@ -31,21 +31,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
-    withSpring,
     interpolate,
     Extrapolation,
     useAnimatedScrollHandler,
     type SharedValue,
 } from "react-native-reanimated";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import {
-    BookOpen02Icon,
-    ArrowLeft01Icon,
-    CheckmarkCircle02Icon,
-} from "@hugeicons/core-free-icons";
 
 import type { LearnContent, LearnCard } from "@/src/types/journey/mentalHealth";
-import { PressableScale } from "@/src/components/ui/PressableScale";
+import {
+    RendererPrimaryCTA,
+    RendererSectionCard,
+    RendererTitleBlock,
+    RendererTopProgress,
+} from "./RendererFrame";
 
 // ============================================================================
 // Types
@@ -58,6 +56,8 @@ export interface LearnNodeRendererProps {
     title: string;
     /** Estimated minutes */
     estimatedMinutes: number;
+    /** XP reward displayed in the renderer header */
+    xpReward?: number;
     /** Called when user taps "Continue" on the last card */
     onComplete: () => void;
     /** Called when user taps back button */
@@ -69,31 +69,30 @@ export interface LearnNodeRendererProps {
 // ============================================================================
 
 const MAX_WORD_COUNT: number = 40;
-const SPRING_CONFIG = { damping: 20, stiffness: 200, mass: 0.8 };
 
 /** Visual key → icon/emoji mapping for illustration area */
-const VISUAL_MAP: Record<string, { emoji: string; bgColor: string }> = {
-    brain: { emoji: "🧠", bgColor: "bg-purple-50" },
-    heart: { emoji: "❤️", bgColor: "bg-red-50" },
-    calm: { emoji: "🧘", bgColor: "bg-blue-50" },
-    storm: { emoji: "⛈️", bgColor: "bg-slate-100" },
-    shield: { emoji: "🛡️", bgColor: "bg-green-50" },
-    magnifier: { emoji: "🔍", bgColor: "bg-amber-50" },
-    lightbulb: { emoji: "💡", bgColor: "bg-yellow-50" },
-    thought: { emoji: "💭", bgColor: "bg-indigo-50" },
-    body: { emoji: "🧍", bgColor: "bg-teal-50" },
-    breath: { emoji: "🌬️", bgColor: "bg-cyan-50" },
-    anchor: { emoji: "⚓", bgColor: "bg-blue-50" },
-    wave: { emoji: "🌊", bgColor: "bg-sky-50" },
-    sun: { emoji: "☀️", bgColor: "bg-orange-50" },
-    star: { emoji: "⭐", bgColor: "bg-yellow-50" },
-    trophy: { emoji: "🏆", bgColor: "bg-amber-50" },
-    key: { emoji: "🔑", bgColor: "bg-yellow-50" },
-    book: { emoji: "📖", bgColor: "bg-indigo-50" },
-    puzzle: { emoji: "🧩", bgColor: "bg-pink-50" },
-    tree: { emoji: "🌳", bgColor: "bg-green-50" },
-    mountain: { emoji: "🏔️", bgColor: "bg-slate-50" },
-    default: { emoji: "📚", bgColor: "bg-slate-50" },
+const VISUAL_MAP: Record<string, { emoji: string }> = {
+    brain: { emoji: "🧠" },
+    heart: { emoji: "❤️" },
+    calm: { emoji: "🧘" },
+    storm: { emoji: "⛈️" },
+    shield: { emoji: "🛡️" },
+    magnifier: { emoji: "🔍" },
+    lightbulb: { emoji: "💡" },
+    thought: { emoji: "💭" },
+    body: { emoji: "🧍" },
+    breath: { emoji: "🌬️" },
+    anchor: { emoji: "⚓" },
+    wave: { emoji: "🌊" },
+    sun: { emoji: "☀️" },
+    star: { emoji: "⭐" },
+    trophy: { emoji: "🏆" },
+    key: { emoji: "🔑" },
+    book: { emoji: "📖" },
+    puzzle: { emoji: "🧩" },
+    tree: { emoji: "🌳" },
+    mountain: { emoji: "🏔️" },
+    default: { emoji: "📚" },
 };
 
 // ============================================================================
@@ -111,94 +110,13 @@ function truncateWords(
 }
 
 /** Resolve visual_key to icon config */
-function resolveVisual(visualKey: string): { emoji: string; bgColor: string } {
+function resolveVisual(visualKey: string): { emoji: string } {
     return VISUAL_MAP[visualKey] ?? VISUAL_MAP.default;
 }
 
 // ============================================================================
 // Sub-components
 // ============================================================================
-
-/** Header bar with back button, title, and card counter */
-function LearnHeader({
-    title,
-    currentIndex,
-    totalCards,
-    estimatedMinutes,
-    onBack,
-}: {
-    title: string;
-    currentIndex: number;
-    totalCards: number;
-    estimatedMinutes: number;
-    onBack: () => void;
-}): React.JSX.Element {
-    return (
-        <View className="flex-row items-center px-4 pt-2 pb-3">
-            <PressableScale
-                onPress={onBack}
-                scale={0.9}
-                hapticStyle="light"
-                style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 20,
-                    backgroundColor: "#F1F5F9",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-                accessibilityLabel="Go back"
-                accessibilityRole="button"
-            >
-                <HugeiconsIcon
-                    icon={ArrowLeft01Icon}
-                    size={20}
-                    color="#475569"
-                />
-            </PressableScale>
-
-            <View className="flex-1 mx-3">
-                <Text
-                    className="text-sm font-bold text-slate-800"
-                    numberOfLines={1}
-                >
-                    {title}
-                </Text>
-                <Text className="text-xs text-slate-400">
-                    {estimatedMinutes} min · Card {currentIndex + 1} of {totalCards}
-                </Text>
-            </View>
-
-            <View className="bg-purple-50 px-3 py-1.5 rounded-full">
-                <HugeiconsIcon
-                    icon={BookOpen02Icon}
-                    size={16}
-                    color="#8B5CF6"
-                />
-            </View>
-        </View>
-    );
-}
-
-/** Progress bar (thin, below header) */
-function ProgressBar({
-    current,
-    total,
-}: {
-    current: number;
-    total: number;
-}): React.JSX.Element {
-    const progressPercent: number = total > 0 ? ((current + 1) / total) * 100 : 0;
-
-    return (
-        <View className="h-1 bg-slate-100 mx-4 rounded-full overflow-hidden">
-            <Animated.View
-                className="h-full bg-purple-500 rounded-full"
-                style={{ width: `${progressPercent}%` }}
-            />
-        </View>
-    );
-}
 
 /** A single learn card */
 function CardItem({
@@ -245,48 +163,47 @@ function CardItem({
     return (
         <Animated.View
             style={[animatedStyle, { width }]}
-            className="px-5"
+            className="px-7"
             accessibilityLabel={`Card ${index + 1} of ${totalCards}. ${card.text}`}
             accessibilityRole="text"
         >
-            <View
-                className={`flex-1 rounded-3xl overflow-hidden ${isLastCard ? "border-2 border-purple-200" : "border border-slate-100"
-                    }`}
+            <RendererSectionCard
+                eyebrow={isLastCard ? "Key takeaway" : "The concept"}
+                className="min-h-[320px] p-5"
             >
-                {/* Illustration area — top 60% */}
-                <View
-                    className={`flex-[3] items-center justify-center ${isLastCard ? "bg-purple-50" : visual.bgColor
-                        }`}
-                >
-                    {isLastCard ? (
-                        <View className="items-center">
-                            <View className="w-20 h-20 rounded-full bg-purple-100 items-center justify-center mb-3">
-                                <Text className="text-4xl">💡</Text>
-                            </View>
-                            <Text className="text-sm font-bold text-purple-600 uppercase tracking-widest">
-                                Key Takeaway
-                            </Text>
-                        </View>
-                    ) : (
-                        <Text className="text-7xl">{visual.emoji}</Text>
-                    )}
-                </View>
+                <Text className="happy-font-heading-medium text-[22px] leading-8 text-ink">
+                    {displayText}
+                </Text>
 
-                {/* Text content — bottom 40% */}
-                <View
-                    className={`flex-[2] px-6 py-5 justify-center ${isLastCard ? "bg-white" : "bg-white"
-                        }`}
-                >
-                    <Text
-                        className={`text-lg leading-7 ${isLastCard
-                            ? "font-bold text-purple-800 text-center"
-                            : "font-medium text-slate-700"
-                            }`}
-                    >
-                        {displayText}
-                    </Text>
+                <View className="mt-8 flex-row items-center justify-between">
+                    <View className="items-center">
+                        <View className="h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-sage-200 bg-sage-50">
+                            <Text className="text-3xl">{visual.emoji}</Text>
+                        </View>
+                        <Text className="happy-brand-eyebrow mt-3 text-[10px]">
+                            Feel it
+                        </Text>
+                    </View>
+                    <Text className="happy-font-heading-bold text-3xl text-sage-300">{">"}</Text>
+                    <View className="items-center">
+                        <View className="h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-sage-200 bg-sage-50">
+                            <Text className="text-3xl">📝</Text>
+                        </View>
+                        <Text className="happy-brand-eyebrow mt-3 text-[10px]">
+                            Name it
+                        </Text>
+                    </View>
+                    <Text className="happy-font-heading-bold text-3xl text-sage-300">{">"}</Text>
+                    <View className="items-center">
+                        <View className="h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-sage-200 bg-sage-50">
+                            <Text className="text-3xl">❄️</Text>
+                        </View>
+                        <Text className="happy-brand-eyebrow mt-3 text-[10px]">
+                            Cools
+                        </Text>
+                    </View>
                 </View>
-            </View>
+            </RendererSectionCard>
         </Animated.View>
     );
 }
@@ -300,15 +217,15 @@ function ProgressDots({
     current: number;
 }): React.JSX.Element {
     return (
-        <View className="flex-row items-center justify-center gap-2 py-3">
+        <View className="flex-row items-center justify-center gap-2 py-2">
             {Array.from({ length: total }, (_, i: number) => (
                 <View
                     key={i}
                     className={`rounded-full ${i === current
-                        ? "w-6 h-2 bg-purple-500"
+                        ? "h-2 w-6 bg-sage-500"
                         : i < current
-                            ? "w-2 h-2 bg-purple-300"
-                            : "w-2 h-2 bg-slate-200"
+                            ? "h-2 w-2 bg-sage-300"
+                            : "h-2 w-2 bg-sage-100"
                         }`}
                 />
             ))}
@@ -324,6 +241,7 @@ export default function LearnNodeRenderer({
     content,
     title,
     estimatedMinutes,
+    xpReward,
     onComplete,
     onBack,
 }: LearnNodeRendererProps): React.JSX.Element {
@@ -336,7 +254,6 @@ export default function LearnNodeRenderer({
     const cards: LearnCard[] = content.cards;
     const totalCards: number = cards.length;
     const isOnLastCard: boolean = currentIndex === totalCards - 1;
-    const hasViewedAll: boolean = highestViewed >= totalCards - 1;
 
     // Track scroll position for card animations
     const scrollHandler = useAnimatedScrollHandler({
@@ -404,33 +321,39 @@ export default function LearnNodeRenderer({
         [],
     );
 
+    const handleContinuePress = useCallback((): void => {
+        if (isOnLastCard || totalCards <= 1) {
+            onComplete();
+            return;
+        }
+
+        const nextIndex = Math.min(currentIndex + 1, totalCards - 1);
+        setHighestViewed((prev: number) => Math.max(prev, nextIndex));
+        flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+    }, [currentIndex, isOnLastCard, onComplete, totalCards]);
+
     // Swipe hint text
     const hintText: string = isOnLastCard
         ? ""
-        : `Swipe left to continue · ${totalCards - currentIndex - 1} remaining`;
+        : `Swipe left or tap continue · ${totalCards - currentIndex - 1} remaining`;
 
     return (
-        <SafeAreaView
-            className="flex-1 bg-white"
-            edges={["top", "bottom"]}
-        >
-            {/* Header */}
-            <LearnHeader
-                title={title}
-                currentIndex={currentIndex}
-                totalCards={totalCards}
-                estimatedMinutes={estimatedMinutes}
-                onBack={onBack}
+        <View className="happy-brand-screen flex-1">
+            <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+            <RendererTopProgress
+                progress={totalCards > 0 ? (currentIndex + 1) / totalCards : 0}
+                xpReward={xpReward}
+                onClose={onBack}
             />
 
-            {/* Progress bar */}
-            <ProgressBar
-                current={currentIndex}
-                total={totalCards}
+            <RendererTitleBlock
+                eyebrow={`Day 1 - Lesson ${currentIndex + 1} of ${totalCards}`}
+                title={title}
+                subtitle={`${estimatedMinutes}-minute lesson. Swipe through, then continue.`}
             />
 
             {/* Card carousel */}
-            <View className="flex-1 mt-4">
+            <View className="flex-1">
                 <Animated.FlatList
                     ref={flatListRef as React.RefObject<FlatList>}
                     data={cards}
@@ -455,7 +378,7 @@ export default function LearnNodeRenderer({
             </View>
 
             {/* Bottom area: dots + hint/button */}
-            <View className="pb-4 px-5">
+            <View className="px-7 pb-5">
                 {/* Progress dots */}
                 <ProgressDots
                     total={totalCards}
@@ -463,42 +386,20 @@ export default function LearnNodeRenderer({
                 />
 
                 {/* Swipe hint or Continue button */}
-                {isOnLastCard ? (
-                    <PressableScale
-                        onPress={onComplete}
-                        scale={0.96}
-                        hapticStyle="medium"
-                        style={{
-                            backgroundColor: "#8B5CF6",
-                            paddingVertical: 16,
-                            borderRadius: 16,
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderBottomWidth: 4,
-                            borderBottomColor: "#7C3AED",
-                        }}
-                        accessibilityLabel="Complete this lesson and continue"
-                        accessibilityRole="button"
-                    >
-                        <HugeiconsIcon
-                            icon={CheckmarkCircle02Icon}
-                            size={20}
-                            color="#FFFFFF"
-                        />
-                        <Text className="text-base font-bold text-white ml-2">
-                            Continue
-                        </Text>
-                    </PressableScale>
-                ) : (
+                {isOnLastCard ? null : (
                     <Text
-                        className="text-xs text-slate-400 text-center py-3"
+                        className="happy-font-body-medium py-3 text-center text-xs text-ink-muted"
                         accessibilityHint="Swipe left to see the next card"
                     >
                         {hintText}
                     </Text>
                 )}
+                <RendererPrimaryCTA
+                    label="Continue"
+                    onPress={handleContinuePress}
+                />
             </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        </View>
     );
 }

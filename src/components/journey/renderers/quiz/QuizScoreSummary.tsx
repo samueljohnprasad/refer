@@ -19,6 +19,7 @@ import Animated, {
 
 import type { QuizQuestion } from '@/src/types/journey/mentalHealth';
 import { PressableScale } from '@/src/components/ui/PressableScale';
+import { BRAND_SURFACE, GOLD, SAGE } from '@/lib/tokens';
 
 // ============================================================================
 // Types
@@ -66,11 +67,11 @@ function ScoreCircle({
             className="items-center mb-6"
         >
             <View
-                className={`w-28 h-28 rounded-full items-center justify-center ${isPerfect ? 'bg-yellow-100' : percentage >= 70 ? 'bg-green-100' : 'bg-blue-100'
+                className={`h-28 w-28 items-center justify-center rounded-full ${isPerfect ? 'bg-sage-pill' : percentage >= 70 ? 'bg-sage-selected' : 'bg-brand-surface-soft'
                     }`}
             >
                 <Text
-                    className={`text-3xl font-bold ${isPerfect ? 'text-yellow-600' : percentage >= 70 ? 'text-green-600' : 'text-blue-600'
+                    className={`happy-font-heading-bold text-3xl ${isPerfect ? 'text-gold' : percentage >= 70 ? 'text-sage-600' : 'text-ink-muted'
                         }`}
                 >
                     {score}/{total}
@@ -117,10 +118,10 @@ export default function QuizScoreSummary({
                 <ScoreCircle score={score} total={total} isPerfect={isPerfect} />
 
                 {/* Headline */}
-                <Text className="text-2xl font-bold text-slate-900 text-center mb-2">
+                <Text className="happy-font-heading-bold mb-2 text-center text-[26px] leading-8 text-ink">
                     {headlineText}
                 </Text>
-                <Text className="text-sm text-slate-400 text-center mb-6 leading-5 px-4">
+                <Text className="happy-font-body-medium mb-6 px-4 text-center text-sm leading-5 text-ink-muted">
                     {subText}
                 </Text>
 
@@ -138,23 +139,23 @@ export default function QuizScoreSummary({
                         return (
                             <View
                                 key={qIndex}
-                                className={`rounded-2xl p-4 border ${isCorrect ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'
+                                className={`rounded-[24px] p-4 ${isCorrect ? 'happy-brand-card-selected' : 'border-2 border-terracotta-light bg-brand-surface'
                                     }`}
                             >
                                 {/* Question header */}
                                 <View className="flex-row items-start gap-2 mb-2">
                                     <View
-                                        className={`w-6 h-6 rounded-full items-center justify-center mt-0.5 ${isCorrect ? 'bg-green-500' : 'bg-red-500'
+                                        className={`mt-0.5 h-6 w-6 items-center justify-center rounded-full ${isCorrect ? 'bg-sage-500' : 'bg-terracotta'
                                             }`}
                                     >
                                         {isCorrect ? (
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={14} color="#FFFFFF" />
+                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={14} color={BRAND_SURFACE} />
                                         ) : (
-                                            <HugeiconsIcon icon={Cancel01Icon} size={14} color="#FFFFFF" />
+                                            <HugeiconsIcon icon={Cancel01Icon} size={14} color={BRAND_SURFACE} />
                                         )}
                                     </View>
                                     <Text
-                                        className={`flex-1 text-sm font-semibold ${isCorrect ? 'text-green-800' : 'text-red-800'
+                                        className={`happy-font-body-bold flex-1 text-sm ${isCorrect ? 'text-sage-800' : 'text-terracotta'
                                             }`}
                                     >
                                         {question.text}
@@ -164,10 +165,10 @@ export default function QuizScoreSummary({
                                 {/* Answer details */}
                                 {!isCorrect && selectedOption ? (
                                     <View className="ml-8 mb-1">
-                                        <Text className="text-xs text-red-500">
+                                        <Text className="happy-font-body-medium text-xs text-terracotta">
                                             Your answer: {selectedOption}
                                         </Text>
-                                        <Text className="text-xs text-green-600 font-medium">
+                                        <Text className="happy-font-body-semibold text-xs text-sage-600">
                                             Correct: {correctOption}
                                         </Text>
                                     </View>
@@ -175,7 +176,7 @@ export default function QuizScoreSummary({
 
                                 {/* Explanation */}
                                 <Text
-                                    className={`text-xs ml-8 leading-4 ${isCorrect ? 'text-green-600' : 'text-red-600'
+                                    className={`happy-font-body-medium ml-8 text-xs leading-4 ${isCorrect ? 'text-sage-600' : 'text-ink-soft'
                                         }`}
                                 >
                                     {question.explanation}
@@ -193,20 +194,20 @@ export default function QuizScoreSummary({
                     scale={0.96}
                     hapticStyle="medium"
                     style={{
-                        backgroundColor: isPerfect ? '#EAB308' : '#16A34A',
+                        backgroundColor: isPerfect ? GOLD : SAGE[500],
                         paddingVertical: 16,
-                        borderRadius: 16,
+                        borderRadius: 22,
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
                         borderBottomWidth: 4,
-                        borderBottomColor: isPerfect ? '#CA8A04' : '#15803D',
+                        borderBottomColor: isPerfect ? GOLD : SAGE[700],
                     }}
                     accessibilityLabel="Complete quiz and continue"
                     accessibilityRole="button"
                 >
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color="#FFFFFF" />
-                    <Text className="text-base font-bold text-white ml-2">
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color={BRAND_SURFACE} />
+                    <Text className="happy-font-body-bold ml-2 text-base text-brand-surface">
                         Continue
                     </Text>
                 </PressableScale>

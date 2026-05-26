@@ -34,6 +34,7 @@ import * as Haptics from 'expo-haptics';
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { ConfettiExplosion } from '@/src/components/animations/ConfettiExplosion';
 import { CheckpointContent } from '@/src/types/journey';
+import { BRAND_SURFACE, SAGE } from '@/lib/tokens';
 
 // ============================================================================
 // Types
@@ -129,20 +130,20 @@ function BadgeReveal({
             {/* Glow ring */}
             <Animated.View
                 style={[glowStyle, { position: 'absolute', width: 140, height: 140, borderRadius: 70 }]}
-                className="bg-yellow-200"
+                className="bg-sage-100"
             />
 
             {/* Badge */}
             <Animated.View
                 style={badgeStyle}
-                className="w-28 h-28 rounded-full bg-amber-100 border-4 border-amber-300 items-center justify-center"
+                className="h-28 w-28 items-center justify-center rounded-full border-4 border-sage-300 bg-sage-pill"
             >
                 <Text style={{ fontSize: 52 }}>{emoji}</Text>
             </Animated.View>
 
             {/* Badge name */}
             <Animated.View style={badgeStyle}>
-                <Text className="text-lg font-bold text-amber-700 mt-3 text-center">
+                <Text className="happy-font-heading-bold mt-3 text-center text-xl text-ink">
                     {badgeName}
                 </Text>
             </Animated.View>
@@ -171,7 +172,7 @@ function CelebrationTitle({
 
     return (
         <Animated.View style={style} className="items-center mb-4">
-            <Text className="text-3xl font-bold text-slate-900 text-center">
+            <Text className="happy-font-heading-bold text-center text-[36px] leading-10 text-ink">
                 {isJourneyComplete ? 'Journey Complete! 🎉' : 'Section Complete! ⭐'}
             </Text>
         </Animated.View>
@@ -187,17 +188,17 @@ function SkillsRecap({
     if (skills.length === 0) return null;
 
     return (
-        <View className="bg-slate-50 rounded-2xl p-5 mb-5 border border-slate-100">
-            <Text className="text-sm font-bold text-slate-700 uppercase tracking-wider mb-3">
+        <View className="happy-brand-preview-tile mb-5 rounded-[24px] p-5">
+            <Text className="happy-brand-eyebrow mb-3">
                 Skills You've Learned
             </Text>
             <View className="gap-2">
                 {skills.map((skill: string, index: number) => (
                     <View key={index} className="flex-row items-start gap-2">
-                        <View className="w-5 h-5 rounded-full bg-green-100 items-center justify-center mt-0.5">
-                            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} color="#16A34A" />
+                        <View className="mt-0.5 h-5 w-5 items-center justify-center rounded-full bg-sage-pill">
+                            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} color={SAGE[600]} />
                         </View>
-                        <Text className="flex-1 text-sm text-slate-600 leading-5">
+                        <Text className="happy-font-body-medium flex-1 text-sm leading-5 text-ink-soft">
                             {skill}
                         </Text>
                     </View>
@@ -219,8 +220,8 @@ function MoodComparison({
     const same: boolean = moodAfter.rating === moodBefore.rating;
 
     return (
-        <View className="bg-blue-50 rounded-2xl p-5 mb-5 border border-blue-100">
-            <Text className="text-sm font-bold text-blue-700 uppercase tracking-wider mb-3">
+        <View className="happy-brand-preview-tile mb-5 rounded-[24px] p-5">
+            <Text className="happy-brand-eyebrow mb-3">
                 Your Mood Journey
             </Text>
 
@@ -228,22 +229,22 @@ function MoodComparison({
                 {/* Before */}
                 <View className="items-center">
                     <Text className="text-3xl mb-1">{moodBefore.emoji}</Text>
-                    <Text className="text-xs text-slate-500">Section start</Text>
-                    <Text className="text-sm font-bold text-slate-700">{moodBefore.rating}/5</Text>
+                    <Text className="happy-font-body-medium text-xs text-ink-muted">Section start</Text>
+                    <Text className="happy-font-body-bold text-sm text-ink">{moodBefore.rating}/5</Text>
                 </View>
 
                 {/* Arrow */}
-                <Text className="text-2xl text-blue-300">→</Text>
+                <Text className="text-2xl text-sage-300">→</Text>
 
                 {/* After */}
                 <View className="items-center">
                     <Text className="text-3xl mb-1">{moodAfter.emoji}</Text>
-                    <Text className="text-xs text-slate-500">Now</Text>
-                    <Text className="text-sm font-bold text-slate-700">{moodAfter.rating}/5</Text>
+                    <Text className="happy-font-body-medium text-xs text-ink-muted">Now</Text>
+                    <Text className="happy-font-body-bold text-sm text-ink">{moodAfter.rating}/5</Text>
                 </View>
             </View>
 
-            <Text className="text-sm text-blue-600 text-center font-medium">
+            <Text className="happy-font-body-semibold text-center text-sm text-sage-600">
                 {improved
                     ? 'Your mood improved — great progress! 🌟'
                     : same
@@ -268,9 +269,9 @@ function XPBadge({ xp }: { xp: number }): React.JSX.Element {
 
     return (
         <Animated.View style={style} className="items-center mb-6">
-            <View className="bg-amber-50 border-2 border-amber-200 px-6 py-3 rounded-2xl flex-row items-center gap-2">
+            <View className="flex-row items-center gap-2 rounded-[22px] border-2 border-sage-200 bg-sage-50 px-6 py-3">
                 <Text className="text-2xl">⚡</Text>
-                <Text className="text-xl font-bold text-amber-700">+{xp} IP</Text>
+                <Text className="happy-font-heading-bold text-xl text-sage-700">+{xp} IP</Text>
             </View>
         </Animated.View>
     );
@@ -305,7 +306,8 @@ export default function CheckpointRenderer({
         content.show_mood_comparison && moodBefore !== null && moodBefore !== undefined && moodAfter !== null && moodAfter !== undefined;
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+        <View className="happy-brand-screen flex-1">
+            <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
             {/* Confetti overlay */}
             <ConfettiExplosion
                 isVisible={showConfetti}
@@ -329,7 +331,7 @@ export default function CheckpointRenderer({
                 />
 
                 {/* Badge description */}
-                <Text className="text-sm text-slate-400 text-center mb-6 px-4">
+                <Text className="happy-font-body-medium mb-6 px-4 text-center text-sm leading-5 text-ink-muted">
                     {content.badge_description}
                 </Text>
 
@@ -346,14 +348,14 @@ export default function CheckpointRenderer({
 
                 {/* Next journey suggestion (if journey complete) */}
                 {isJourneyComplete && content.next_journey_suggestion ? (
-                    <View className="bg-purple-50 rounded-2xl p-5 mb-5 border border-purple-100">
-                        <Text className="text-sm font-bold text-purple-700 uppercase tracking-wider mb-2">
+                    <View className="happy-brand-preview-tile mb-5 rounded-[24px] p-5">
+                        <Text className="happy-brand-eyebrow mb-2">
                             Recommended Next
                         </Text>
-                        <Text className="text-base font-semibold text-purple-800 mb-1">
+                        <Text className="happy-font-body-bold mb-1 text-base text-ink">
                             {content.next_journey_suggestion.title}
                         </Text>
-                        <Text className="text-sm text-purple-600 leading-5">
+                        <Text className="happy-font-body-medium text-sm leading-5 text-ink-soft">
                             {content.next_journey_suggestion.reason}
                         </Text>
                     </View>
@@ -367,26 +369,27 @@ export default function CheckpointRenderer({
                     scale={0.96}
                     hapticStyle="medium"
                     style={{
-                        backgroundColor: isJourneyComplete ? '#8B5CF6' : '#16A34A',
+                        backgroundColor: SAGE[500],
                         paddingVertical: 16,
-                        borderRadius: 16,
+                        borderRadius: 22,
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
                         borderBottomWidth: 4,
-                        borderBottomColor: isJourneyComplete ? '#7C3AED' : '#15803D',
+                        borderBottomColor: SAGE[700],
                     }}
                     accessibilityLabel={
                         isJourneyComplete ? 'Complete journey' : 'Continue to next section'
                     }
                     accessibilityRole="button"
                 >
-                    <Text className="text-base font-bold text-white mr-1">
+                    <Text className="happy-font-body-bold mr-1 text-base text-brand-surface">
                         {isJourneyComplete ? 'Journey Complete!' : 'Continue'}
                     </Text>
-                    <HugeiconsIcon icon={ArrowRight01Icon} size={18} color="#FFFFFF" />
+                    <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={BRAND_SURFACE} />
                 </PressableScale>
             </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        </View>
     );
 }

@@ -37,7 +37,7 @@ import { isIOS } from "@/src/utils/mood";
 import { DayButton } from "./DayButtonComponent";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { EmotionDetailsModal } from "@/src/components/modals";
-import { BRAND_SURFACE, INK, SAGE } from "@/lib/tokens";
+import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
 
 // Lazy load CalendarPicker
 const CalendarPicker = React.lazy(() =>
@@ -276,21 +276,18 @@ const DailyNotesHeader = React.memo(
     };
 
     return (
-      <SafeAreaView
-        edges={["top"]}
-        style={{
-          paddingTop: insets.top - 30,
-          backgroundColor: BRAND_SURFACE,
-        }}
-        className="bg-white"
-      >
-        <Animated.View
-          className="bg-white justify-end relative border-b border-sage-100"
-          style={[
-            headerContainerAnimatedStyle,
-            { backgroundColor: BRAND_SURFACE },
-          ]}
+      <View className="bg-white">
+        <SafeAreaView
+          edges={["top"]}
+          style={{ paddingTop: insets.top - 30 }}
         >
+          <Animated.View
+            className="bg-white justify-end relative border-b border-sage-100"
+            style={[
+              headerContainerAnimatedStyle,
+              { backgroundColor: BRAND_SURFACE },
+            ]}
+          >
           {/* Calendar Header */}
           <Animated.View
             className="flex-row items-center justify-between px-4 pb-2 rounded-3xl"
@@ -316,8 +313,7 @@ const DailyNotesHeader = React.memo(
 
             <View className="flex-row items-center justify-center flex-1">
               <Text
-                className="happy-font-heading-bold text-[30px] text-center"
-                style={{ color: INK }}
+                className="happy-font-heading-bold text-[30px] text-center text-ink"
               >
                 {currentMonthView || ""}
               </Text>
@@ -416,21 +412,19 @@ const DailyNotesHeader = React.memo(
                 accessibilityRole="adjustable"
                 accessibilityLabel="Calendar drag handle"
               >
-                <View
-                  className="w-12 h-1.5 rounded-full bg-theme-border"
-                  style={{ backgroundColor: SAGE[200] }}
-                />
+                <View className="w-12 h-1.5 rounded-full bg-sage-200" />
               </View>
             </GestureDetector>
           </View>
-        </Animated.View>
+          </Animated.View>
 
-        <EmotionDetailsModal
-          visible={showEmotionDetails}
-          onClose={() => setShowEmotionDetails(false)}
-          selectedDate={emotionDetailsDate}
-        />
-      </SafeAreaView>
+          <EmotionDetailsModal
+            visible={showEmotionDetails}
+            onClose={() => setShowEmotionDetails(false)}
+            selectedDate={emotionDetailsDate}
+          />
+        </SafeAreaView>
+      </View>
     );
   }
 );

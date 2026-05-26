@@ -180,8 +180,7 @@ const WeekDayHeader = React.memo(() => (
     {WEEKDAY_LABELS.map((day) => (
       <Text
         key={day}
-        className="happy-font-body-bold flex-1 text-center text-xs uppercase tracking-widest py-2"
-        style={{ color: INK_MUTED }}
+        className="happy-font-body-bold flex-1 text-center text-xs uppercase tracking-widest py-2 text-ink-muted"
       >
         {day}
       </Text>
@@ -245,8 +244,7 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
         {/* Month header with title on left, arrows on right */}
         <View className="flex-row justify-between items-center mb-3 py-2">
           <Text
-            className="happy-font-heading-bold text-[30px] tracking-tight"
-            style={{ color: INK }}
+            className="happy-font-heading-bold text-[30px] tracking-tight text-ink"
           >
             {monthTitle}
           </Text>

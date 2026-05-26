@@ -36,6 +36,7 @@ import {
     type ChestResponseData,
 } from '@/src/types/journey/mentalHealth';
 import { PressableScale } from '@/src/components/ui/PressableScale';
+import { INK_MUTED, SAGE } from '@/lib/tokens';
 
 import LearnNodeRenderer from './LearnNodeRenderer';
 import { ExerciseNodeRenderer } from './exercise';
@@ -83,36 +84,39 @@ function UnknownNodeFallback({
     onClose: () => void;
 }): React.JSX.Element {
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
-            <View className="flex-1 items-center justify-center px-6">
-                <Text className="text-5xl mb-4">🚧</Text>
-                <Text className="text-xl font-bold text-slate-900 text-center mb-2">
-                    Coming Soon
-                </Text>
-                <Text className="text-sm text-slate-400 text-center mb-8">
-                    The "{nodeType}" node type is not yet available.
-                </Text>
-                <PressableScale
-                    onPress={onClose}
-                    scale={0.96}
-                    hapticStyle="light"
-                    style={{
-                        backgroundColor: '#F1F5F9',
-                        paddingVertical: 14,
-                        paddingHorizontal: 32,
-                        borderRadius: 14,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 8,
-                    }}
-                    accessibilityLabel="Go back"
-                    accessibilityRole="button"
-                >
-                    <HugeiconsIcon icon={ArrowLeft01Icon} size={18} color="#64748B" />
-                    <Text className="text-sm font-semibold text-slate-600">Go Back</Text>
-                </PressableScale>
-            </View>
-        </SafeAreaView>
+        <View className="happy-brand-screen flex-1">
+            <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
+                <View className="flex-1 items-center justify-center px-8">
+                    <Text className="text-5xl mb-4">🚧</Text>
+                    <Text className="happy-font-heading-bold text-center text-[34px] leading-10 text-ink">
+                        Coming Soon
+                    </Text>
+                    <Text className="happy-font-body-medium mt-3 text-center text-base leading-6 text-ink-muted">
+                        The "{nodeType}" node type is not yet available.
+                    </Text>
+                    <PressableScale
+                        onPress={onClose}
+                        scale={0.96}
+                        hapticStyle="light"
+                        style={{
+                            backgroundColor: SAGE.pill,
+                            paddingVertical: 14,
+                            paddingHorizontal: 32,
+                            borderRadius: 22,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 8,
+                            marginTop: 32,
+                        }}
+                        accessibilityLabel="Go back"
+                        accessibilityRole="button"
+                    >
+                        <HugeiconsIcon icon={ArrowLeft01Icon} size={18} color={INK_MUTED} />
+                        <Text className="happy-font-body-bold text-sm text-sage-600">Go Back</Text>
+                    </PressableScale>
+                </View>
+            </SafeAreaView>
+        </View>
     );
 }
 
@@ -148,6 +152,7 @@ export default function NodeRenderer({
                     content={content as LearnContent}
                     title={title}
                     estimatedMinutes={estimatedMinutes}
+                    xpReward={xpReward}
                     onComplete={() => handleCompleteGeneric({})}
                     onBack={onClose}
                 />
@@ -159,6 +164,7 @@ export default function NodeRenderer({
                 <ExerciseNodeRenderer
                     content={content as ExerciseContent}
                     title={title}
+                    xpReward={xpReward}
                     onComplete={(data: ExerciseResponseData) => handleCompleteGeneric(data)}
                     onBack={onClose}
                 />
@@ -170,6 +176,7 @@ export default function NodeRenderer({
                 <JournalNodeRenderer
                     content={content as JournalContent}
                     title={title}
+                    xpReward={xpReward}
                     onComplete={(data: JournalResponseData) => handleCompleteGeneric(data)}
                     onSaveToJournal={onSaveToJournal ?? (() => { })}
                     onBack={onClose}
@@ -182,6 +189,7 @@ export default function NodeRenderer({
                 <QuizNodeRenderer
                     content={content as QuizContent}
                     title={title}
+                    xpReward={xpReward}
                     onComplete={(data: QuizResponseData) => handleCompleteGeneric(data)}
                     onBack={onClose}
                 />
@@ -193,6 +201,7 @@ export default function NodeRenderer({
                 <MoodCheckRenderer
                     content={content as MoodCheckContent}
                     title={title}
+                    xpReward={xpReward}
                     onComplete={(data: MoodCheckResponseData) => handleCompleteGeneric(data)}
                     onBack={onClose}
                 />

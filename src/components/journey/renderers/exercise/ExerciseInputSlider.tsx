@@ -6,11 +6,7 @@
 
 import React, { useCallback } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    withSpring,
-} from 'react-native-reanimated';
+import { RendererSectionCard } from '../RendererFrame';
 
 // ============================================================================
 // Types
@@ -75,62 +71,59 @@ export default function ExerciseInputSlider({
 
     return (
         <View className="flex-1 justify-center">
-            {/* Prompt */}
-            <Text className="text-lg font-semibold text-slate-800 mb-6 leading-7">
-                {prompt}
-            </Text>
+            <RendererSectionCard eyebrow="Now: rate yours">
+                <Text className="happy-font-heading-bold mb-5 text-[23px] leading-8 text-ink">
+                    {prompt}
+                </Text>
 
-            {/* Animated value display */}
-            <View className="items-center mb-8">
-                <View className="bg-purple-500 px-6 py-3 rounded-2xl">
-                    <Text className="text-3xl font-bold text-white">{value}</Text>
+                <View className="items-center mb-8">
+                    <View className="happy-brand-score-badge px-6 py-3">
+                        <Text className="happy-font-heading-bold text-2xl text-sage-700">{value}</Text>
+                    </View>
                 </View>
-            </View>
 
-            {/* Track */}
-            <View className="px-2 mb-3">
-                <View className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                    <View
-                        className="h-full bg-purple-500 rounded-full"
-                        style={{ width: `${fillPercent}%` }}
-                    />
+                <View className="px-2 mb-3">
+                    <View className="h-3 overflow-hidden rounded-full bg-sage-100">
+                        <View
+                            className="h-full rounded-full bg-sage-500"
+                            style={{ width: `${fillPercent}%` }}
+                        />
+                    </View>
                 </View>
-            </View>
 
-            {/* Step buttons row */}
-            <View className="flex-row flex-wrap justify-between px-1 mb-4 gap-1">
-                {uniqueSteps.map((stepVal: number) => {
-                    const isSelected: boolean = stepVal === value;
-                    return (
-                        <Pressable
-                            key={stepVal}
-                            onPress={() => handleStepPress(stepVal)}
-                            className={`min-w-[36px] h-9 items-center justify-center rounded-lg ${isSelected ? 'bg-purple-500' : 'bg-slate-100'
-                                }`}
-                            accessibilityLabel={`Set value to ${stepVal}`}
-                            accessibilityRole="button"
-                            accessibilityState={{ selected: isSelected }}
-                        >
-                            <Text
-                                className={`text-xs font-semibold ${isSelected ? 'text-white' : 'text-slate-500'
+                <View className="flex-row flex-wrap justify-between px-1 mb-4 gap-1">
+                    {uniqueSteps.map((stepVal: number) => {
+                        const isSelected: boolean = stepVal === value;
+                        return (
+                            <Pressable
+                                key={stepVal}
+                                onPress={() => handleStepPress(stepVal)}
+                                className={`h-9 min-w-[36px] items-center justify-center rounded-lg ${isSelected ? 'bg-sage-500' : 'bg-sage-50'
                                     }`}
+                                accessibilityLabel={`Set value to ${stepVal}`}
+                                accessibilityRole="button"
+                                accessibilityState={{ selected: isSelected }}
                             >
-                                {stepVal}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
-            </View>
+                                <Text
+                                    className={`happy-font-body-bold text-xs ${isSelected ? 'text-brand-surface' : 'text-ink-muted'
+                                        }`}
+                                >
+                                    {stepVal}
+                                </Text>
+                            </Pressable>
+                        );
+                    })}
+                </View>
 
-            {/* Min/Max labels */}
-            <View className="flex-row items-center justify-between px-2">
-                <Text className="text-xs text-slate-400">
-                    {labelMin ?? String(min)}
-                </Text>
-                <Text className="text-xs text-slate-400">
-                    {labelMax ?? String(max)}
-                </Text>
-            </View>
+                <View className="flex-row items-center justify-between px-2">
+                    <Text className="happy-font-body-medium text-xs text-ink-muted">
+                        {labelMin ?? String(min)}
+                    </Text>
+                    <Text className="happy-font-body-medium text-xs text-ink-muted">
+                        {labelMax ?? String(max)}
+                    </Text>
+                </View>
+            </RendererSectionCard>
         </View>
     );
 }

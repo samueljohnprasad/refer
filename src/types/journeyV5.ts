@@ -6,11 +6,7 @@
 // ── Status types ────────────────────────────────────────────────────────────
 
 /** All possible statuses a node can have. 'locked' is client-only — never stored in DB. */
-export type NodeStatus =
-  | "locked"
-  | "in_progress"
-  | "attempted"
-  | "completed";
+export type NodeStatus = "locked" | "in_progress" | "attempted" | "completed";
 
 /**
  * Visual status used by the journey map renderer.
@@ -27,7 +23,7 @@ export type DerivedStatus = "locked" | "in_progress" | "completed";
 /** Course-level progression status — stored in user_course_progress. */
 export type CourseStatus = "in_progress" | "completed";
 
-/** The 7 node content types. Determines which content table and renderer component to use. */
+/** Node content types. Determines which content table and renderer component to use. */
 export type NodeType =
   | "lesson"
   | "story"
@@ -35,7 +31,12 @@ export type NodeType =
   | "exercise"
   | "practice"
   | "challenge"
-  | "boss";
+  | "boss"
+  | "mood_check"
+  | "journal"
+  | "checkpoint"
+  | "chest"
+  | "ai_insight";
 
 // ── Entity types (mirrors DB schema, camelCase) ──────────────────────────────
 

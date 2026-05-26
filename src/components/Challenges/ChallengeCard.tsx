@@ -26,50 +26,49 @@ import {
   StarsIcon,
   Coins01Icon,
 } from "@hugeicons/core-free-icons";
+import { GOLD, SAGE, TERRACOTTA } from "@/lib/tokens";
 
 interface ChallengeCardProps {
   challenge: ActiveChallenge;
   compact?: boolean;
 }
 
-/** Map challenge emoji icon → { hugeicon, bg color, icon color } */
-const ICON_MAP: Record<string, { icon: any; bg: string; color: string }> = {
-  "😊": { icon: SmileDizzyIcon, bg: "#FEF9E7", color: "#F6BE5A" },
-  "📝": { icon: NoteIcon, bg: "#F3F0FF", color: "#A78BFA" },
-  "✅": { icon: TaskAdd01Icon, bg: "#ECFDF5", color: "#6EE7B7" },
-  "🍎": { icon: HealthIcon, bg: "#FFF1F2", color: "#FDA4AF" },
-  "🧘": { icon: StarsIcon, bg: "#EFF6FF", color: "#93C5FD" },
-  "🎙️": { icon: Mic01Icon, bg: "#FAF5FF", color: "#C4B5FD" },
-  "☀️": { icon: Sun01Icon, bg: "#FEFCE8", color: "#FCD34D" },
-  "🌙": { icon: MoonIcon, bg: "#EFF6FF", color: "#93C5FD" },
-  "📚": { icon: BookOpen01Icon, bg: "#F3F0FF", color: "#A78BFA" },
-  "💡": { icon: BulbIcon, bg: "#FEFCE8", color: "#FCD34D" },
-  "📷": { icon: Camera01Icon, bg: "#FDF2F8", color: "#F9A8D4" },
-  "🥗": { icon: HealthIcon, bg: "#ECFDF5", color: "#6EE7B7" },
-  "🔥": { icon: Fire02Icon, bg: "#FFF1F2", color: "#FDA4AF" },
-  "🏆": { icon: Medal01Icon, bg: "#FEF9E7", color: "#F6BE5A" },
+/** Map challenge emoji icon to a Happy Sage icon treatment. */
+const ICON_MAP: Record<string, { icon: any; bgClassName: string; color: string }> = {
+  "😊": { icon: SmileDizzyIcon, bgClassName: "bg-gold/15", color: GOLD },
+  "📝": { icon: NoteIcon, bgClassName: "bg-sage-50", color: SAGE[600] },
+  "✅": { icon: TaskAdd01Icon, bgClassName: "bg-sage-pill", color: SAGE[600] },
+  "🍎": { icon: HealthIcon, bgClassName: "bg-terracotta-light/15", color: TERRACOTTA },
+  "🧘": { icon: StarsIcon, bgClassName: "bg-sage-50", color: SAGE[500] },
+  "🎙️": { icon: Mic01Icon, bgClassName: "bg-sage-50", color: SAGE[500] },
+  "☀️": { icon: Sun01Icon, bgClassName: "bg-gold/15", color: GOLD },
+  "🌙": { icon: MoonIcon, bgClassName: "bg-sage-50", color: SAGE[500] },
+  "📚": { icon: BookOpen01Icon, bgClassName: "bg-sage-50", color: SAGE[600] },
+  "💡": { icon: BulbIcon, bgClassName: "bg-gold/15", color: GOLD },
+  "📷": { icon: Camera01Icon, bgClassName: "bg-sage-50", color: SAGE[500] },
+  "🥗": { icon: HealthIcon, bgClassName: "bg-sage-pill", color: SAGE[600] },
+  "🔥": { icon: Fire02Icon, bgClassName: "bg-terracotta-light/15", color: TERRACOTTA },
+  "🏆": { icon: Medal01Icon, bgClassName: "bg-gold/15", color: GOLD },
 };
 
-const DEFAULT_ICON = { icon: StarsIcon, bg: "#F8F7FF", color: "#C4B5FD" };
+const DEFAULT_ICON = {
+  icon: StarsIcon,
+  bgClassName: "bg-sage-50",
+  color: SAGE[500],
+};
 
 const ChallengeIconBubble: React.FC<{
   iconKey: string;
   size?: "sm" | "lg";
 }> = ({ iconKey, size = "sm" }) => {
   const config = ICON_MAP[iconKey] ?? DEFAULT_ICON;
-  const bubbleSize = size === "lg" ? 48 : 40;
   const iconSize = size === "lg" ? 22 : 18;
 
   return (
     <View
-      style={{
-        width: bubbleSize,
-        height: bubbleSize,
-        borderRadius: bubbleSize / 2,
-        backgroundColor: config.bg,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+      className={`items-center justify-center rounded-full border border-sage-100 ${
+        size === "lg" ? "h-12 w-12" : "h-10 w-10"
+      } ${config.bgClassName}`}
     >
       <HugeiconsIcon
         icon={config.icon}
@@ -124,42 +123,42 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       >
         <Animated.View
           style={animatedStyle}
-          className="py-1"
+          className="py-0.5"
         >
           <View className="flex-row items-center">
             <ChallengeIconBubble iconKey={challenge.icon} size="sm" />
 
-            <View className="flex-1 ml-3">
+            <View className="ml-3 flex-1">
               <View className="flex-row items-center justify-between">
                 <Text
-                  className="text-gray-900 font-bold text-[15px] tracking-tight"
+                  className="happy-font-body-bold flex-1 pr-3 text-[15px] leading-5 text-ink"
                   numberOfLines={1}
                 >
                   {challenge.title}
                 </Text>
                 {isComplete ? (
-                  <View className="bg-emerald-50 px-2 py-0.5 rounded-full flex-row items-center gap-1 border border-emerald-100/50">
+                  <View className="flex-row items-center gap-1 rounded-full bg-sage-pill px-2 py-0.5">
                     <HugeiconsIcon
                       icon={CheckmarkBadge01Icon}
                       size={10}
-                      color="#059669"
+                      color={SAGE[600]}
                       strokeWidth={2.5}
                     />
-                    <Text className="text-emerald-700 text-[10px] font-bold uppercase tracking-wider">
+                    <Text className="happy-font-body-bold text-[10px] uppercase tracking-wider text-sage-600">
                       Done
                     </Text>
                   </View>
                 ) : (
-                  <Text className="text-gray-400 text-xs font-semibold">
+                  <Text className="happy-font-body-bold text-xs text-ink-muted">
                     {challenge.progress}/{challenge.condition.target}
                   </Text>
                 )}
               </View>
 
-              <View className="h-1 bg-gray-100 rounded-full mt-2.5 overflow-hidden">
+              <View className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-sage-100">
                 <View
                   className={`h-full rounded-full ${
-                    isComplete ? "bg-emerald-400" : "bg-indigo-400"
+                    isComplete ? "bg-sage-500" : "bg-sage-400"
                   }`}
                   style={{ width: `${progressPercent}%` }}
                 />
@@ -185,22 +184,20 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
     >
       <Animated.View
         style={animatedStyle}
-        className={`bg-white rounded-2xl p-4 mb-2.5 border ${
-          isComplete ? "border-emerald-100" : "border-gray-100"
-        }`}
+        className="happy-brand-preview-tile mb-2.5 rounded-[28px] p-4"
       >
         {/* Header */}
         <View className="flex-row items-start">
           <ChallengeIconBubble iconKey={challenge.icon} size="lg" />
 
-          <View className="flex-1 ml-4">
+          <View className="ml-4 flex-1">
             <View className="flex-row items-start justify-between">
               <View className="flex-1">
-                <Text className="text-gray-900 font-semibold text-lg">
+                <Text className="happy-font-body-bold text-lg text-ink">
                   {challenge.title}
                 </Text>
                 <Text
-                  className="text-gray-500 text-sm mt-0.5"
+                  className="happy-font-body-medium mt-0.5 text-sm text-ink-muted"
                   numberOfLines={2}
                 >
                   {challenge.description}
@@ -208,14 +205,14 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
               </View>
 
               {isComplete && (
-                <View className="bg-green-100 px-2.5 py-1 rounded-full ml-2 flex-row items-center gap-1">
+                <View className="ml-2 flex-row items-center gap-1 rounded-full bg-sage-pill px-2.5 py-1">
                   <HugeiconsIcon
                     icon={CheckmarkBadge01Icon}
                     size={12}
-                    color="#059669"
+                    color={SAGE[600]}
                     strokeWidth={2.5}
                   />
-                  <Text className="text-green-700 text-xs font-semibold">
+                  <Text className="happy-font-body-bold text-xs text-sage-600">
                     Done
                   </Text>
                 </View>
@@ -227,18 +224,18 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
         {/* Progress */}
         <View className="mt-4">
           <View className="flex-row items-center justify-between mb-2">
-            <Text className="text-gray-500 text-sm">
+            <Text className="happy-font-body-medium text-sm text-ink-muted">
               {challenge.progress} of {challenge.condition.target}
             </Text>
-            <Text className="text-gray-900 font-semibold text-sm">
+            <Text className="happy-font-body-bold text-sm text-ink">
               {Math.round(progressPercent)}%
             </Text>
           </View>
 
-          <View className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <View className="h-1.5 overflow-hidden rounded-full bg-sage-100">
             <View
               className={`h-full rounded-full ${
-                isComplete ? "bg-emerald-400" : "bg-indigo-400"
+                isComplete ? "bg-sage-500" : "bg-sage-400"
               }`}
               style={{ width: `${progressPercent}%` }}
             />
@@ -248,26 +245,26 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
         {/* Rewards */}
         {!isComplete && (
           <View className="flex-row items-center mt-3 gap-3">
-            <Text className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Reward</Text>
-            <View className="flex-row items-center gap-1 bg-amber-50 px-2 py-0.5 rounded-lg">
+            <Text className="happy-brand-eyebrow text-[10px]">Reward</Text>
+            <View className="flex-row items-center gap-1 rounded-lg bg-gold/15 px-2 py-0.5">
               <HugeiconsIcon
                 icon={StarsIcon}
                 size={12}
-                color="#D97706"
+                color={GOLD}
                 strokeWidth={1.8}
               />
-              <Text className="text-amber-700 text-xs font-bold">
+              <Text className="happy-font-body-bold text-xs text-ink-soft">
                 {challenge.reward.xp} XP
               </Text>
             </View>
-            <View className="flex-row items-center gap-1 bg-gray-100/80 px-2 py-0.5 rounded-lg">
+            <View className="flex-row items-center gap-1 rounded-lg bg-sage-50 px-2 py-0.5">
               <HugeiconsIcon
                 icon={Coins01Icon}
                 size={12}
-                color="#92400E"
+                color={SAGE[600]}
                 strokeWidth={1.8}
               />
-              <Text className="text-gray-600 text-xs font-bold">
+              <Text className="happy-font-body-bold text-xs text-ink-soft">
                 {challenge.reward.coins}
               </Text>
             </View>

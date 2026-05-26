@@ -35,6 +35,13 @@ import type {
     QuizResponseData,
 } from "@/src/types/journey/mentalHealth";
 import { PressableScale } from "@/src/components/ui/PressableScale";
+import { BRAND_SURFACE, INK_MUTED, SAGE, TERRACOTTA } from "@/lib/tokens";
+import {
+    RendererPrimaryCTA,
+    RendererSectionCard,
+    RendererTitleBlock,
+    RendererTopProgress,
+} from "../RendererFrame";
 
 import QuizOptionCard, { type OptionState } from "./QuizOptionCard";
 import QuizScoreSummary, { type QuizAnswer } from "./QuizScoreSummary";
@@ -48,6 +55,8 @@ export interface QuizNodeRendererProps {
     content: QuizContent;
     /** Node title (shown in header) */
     title: string;
+    /** XP reward displayed in the renderer header */
+    xpReward?: number;
     /** Called when user completes the quiz */
     onComplete: (responseData: QuizResponseData) => void;
     /** Called when user taps back */
@@ -76,7 +85,7 @@ function QuizHeader({
     onBack: () => void;
 }): React.JSX.Element {
     return (
-        <View className="flex-row items-center px-4 pt-2 pb-3">
+        <View className="flex-row items-center px-5 pb-4 pt-4">
             <PressableScale
                 onPress={onBack}
                 scale={0.9}
@@ -85,7 +94,7 @@ function QuizHeader({
                     width: 40,
                     height: 40,
                     borderRadius: 20,
-                    backgroundColor: "#F1F5F9",
+                    backgroundColor: SAGE.pill,
                     alignItems: "center",
                     justifyContent: "center",
                 }}
@@ -95,29 +104,29 @@ function QuizHeader({
                 <HugeiconsIcon
                     icon={ArrowLeft01Icon}
                     size={20}
-                    color="#475569"
+                    color={INK_MUTED}
                 />
             </PressableScale>
 
             <View className="flex-1 mx-3">
                 <Text
-                    className="text-sm font-bold text-slate-800"
+                    className="happy-font-body-bold text-sm text-ink"
                     numberOfLines={1}
                 >
                     {title}
                 </Text>
-                <Text className="text-xs text-slate-400">
+                <Text className="happy-font-body-medium text-xs text-ink-muted">
                     {showingSummary
                         ? "Results"
                         : `Question ${currentQuestion + 1} of ${totalQuestions}`}
                 </Text>
             </View>
 
-            <View className="bg-amber-50 px-3 py-1.5 rounded-full">
+            <View className="happy-brand-status-chip px-3 py-1.5">
                 <HugeiconsIcon
                     icon={AlertCircleIcon}
                     size={16}
-                    color="#D97706"
+                    color={SAGE[600]}
                 />
             </View>
         </View>
@@ -141,9 +150,9 @@ function QuizProgressBar({
             : 0;
 
     return (
-        <View className="h-1.5 bg-slate-100 mx-4 rounded-full overflow-hidden">
+        <View className="mx-5 h-1.5 overflow-hidden rounded-full bg-sage-100">
             <View
-                className="h-full bg-amber-500 rounded-full"
+                className="h-full rounded-full bg-sage-500"
                 style={{ width: `${progressPercent}%` }}
             />
         </View>
@@ -160,17 +169,17 @@ function FeedbackBanner({
 }): React.JSX.Element {
     return (
         <View
-            className={`rounded-2xl p-4 mt-4 border ${isCorrect ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
+            className={`mt-4 rounded-[24px] p-4 ${isCorrect ? "happy-brand-card-selected" : "border-2 border-terracotta-light bg-brand-surface"
                 }`}
         >
             <Text
-                className={`text-base font-bold mb-1 ${isCorrect ? "text-green-700" : "text-red-700"
+                className={`happy-font-body-bold mb-1 text-base ${isCorrect ? "text-sage-700" : "text-terracotta"
                     }`}
             >
                 {isCorrect ? "Correct! 🎉" : "That's okay! 💪"}
             </Text>
             <Text
-                className={`text-sm leading-5 ${isCorrect ? "text-green-600" : "text-red-600"
+                className={`happy-font-body-medium text-sm leading-5 ${isCorrect ? "text-sage-600" : "text-ink-soft"
                     }`}
             >
                 {explanation}
@@ -186,6 +195,7 @@ function FeedbackBanner({
 export default function QuizNodeRenderer({
     content,
     title,
+    xpReward,
     onComplete,
     onBack,
 }: QuizNodeRendererProps): React.JSX.Element {
@@ -304,24 +314,20 @@ export default function QuizNodeRenderer({
     // ── Score summary ──
     if (showingSummary) {
         return (
-            <SafeAreaView
-                className="flex-1 bg-white"
-                edges={["top", "bottom"]}
-            >
-                <QuizHeader
-                    title={title}
-                    currentQuestion={currentIndex}
-                    totalQuestions={totalQuestions}
-                    showingSummary
-                    onBack={handleBack}
+            <View className="happy-brand-screen flex-1">
+                <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+                <RendererTopProgress
+                    progress={1}
+                    xpReward={xpReward}
+                    onClose={onBack}
                 />
-                <QuizProgressBar
-                    current={totalQuestions}
-                    total={totalQuestions}
-                    showingSummary
+                <RendererTitleBlock
+                    eyebrow="Results"
+                    title="Quiz complete."
+                    subtitle="Review what landed, then keep moving."
                 />
 
-                <View className="flex-1 px-5 pt-5">
+                <View className="flex-1 px-7">
                     <QuizScoreSummary
                         questions={questions}
                         answers={answers}
@@ -331,7 +337,8 @@ export default function QuizNodeRenderer({
                         onComplete={handleComplete}
                     />
                 </View>
-            </SafeAreaView>
+                </SafeAreaView>
+            </View>
         );
     }
 
@@ -339,55 +346,49 @@ export default function QuizNodeRenderer({
     if (!currentQuestion) return <View />;
 
     return (
-        <SafeAreaView
-            className="flex-1 bg-white"
-            edges={["top", "bottom"]}
-        >
-            {/* Header */}
-            <QuizHeader
-                title={title}
-                currentQuestion={currentIndex}
-                totalQuestions={totalQuestions}
-                showingSummary={false}
-                onBack={handleBack}
+        <View className="happy-brand-screen flex-1">
+            <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+            <RendererTopProgress
+                progress={totalQuestions > 0 ? (currentIndex + 1) / (totalQuestions + 1) : 0}
+                xpReward={xpReward}
+                onClose={onBack}
             />
 
-            {/* Progress bar */}
-            <QuizProgressBar
-                current={currentIndex}
-                total={totalQuestions}
-                showingSummary={false}
+            <RendererTitleBlock
+                eyebrow={`Quiz ${currentIndex + 1} of ${totalQuestions}`}
+                title={title}
+                subtitle="Pick the answer that fits best."
             />
 
             {/* Question content */}
-            <View className="flex-1 px-5 pt-6">
+            <View className="flex-1 px-7">
                 {/* Score counter */}
                 <View className="flex-row items-center justify-end mb-4">
-                    <View className="bg-green-50 px-3 py-1 rounded-full">
-                        <Text className="text-xs font-bold text-green-600">
+                    <View className="happy-brand-status-chip px-3 py-1">
+                        <Text className="happy-font-body-bold text-xs text-sage-600">
                             {score} correct
                         </Text>
                     </View>
                 </View>
 
-                {/* Question text */}
-                <Text className="text-xl font-bold text-slate-900 mb-6 leading-8">
-                    {currentQuestion.text}
-                </Text>
+                <RendererSectionCard eyebrow="Question">
+                    <Text className="happy-font-heading-bold mb-5 text-[24px] leading-8 text-ink">
+                        {currentQuestion.text}
+                    </Text>
 
-                {/* Options */}
-                <View>
-                    {currentQuestion.options.map((option: string, optIndex: number) => (
-                        <QuizOptionCard
-                            key={optIndex}
-                            index={optIndex}
-                            text={option}
-                            state={getOptionState(optIndex)}
-                            disabled={questionState === "feedback"}
-                            onPress={handleOptionPress}
-                        />
-                    ))}
-                </View>
+                    <View>
+                        {currentQuestion.options.map((option: string, optIndex: number) => (
+                            <QuizOptionCard
+                                key={optIndex}
+                                index={optIndex}
+                                text={option}
+                                state={getOptionState(optIndex)}
+                                disabled={questionState === "feedback"}
+                                onPress={handleOptionPress}
+                            />
+                        ))}
+                    </View>
+                </RendererSectionCard>
 
                 {/* Feedback banner */}
                 {questionState === "feedback" ? (
@@ -399,70 +400,24 @@ export default function QuizNodeRenderer({
             </View>
 
             {/* Bottom buttons */}
-            <View className="px-5 pb-4 pt-2">
+            <View className="px-7 pb-4 pt-2">
                 {questionState === "answering" ? (
                     /* Check Answer button — only shown after selecting */
-                    <PressableScale
+                    <RendererPrimaryCTA
+                        label="Check Answer"
                         onPress={handleCheckAnswer}
-                        scale={0.96}
-                        hapticStyle="light"
                         disabled={selectedOption === null}
-                        style={{
-                            backgroundColor: selectedOption !== null ? "#D97706" : "#E2E8F0",
-                            paddingVertical: 16,
-                            borderRadius: 16,
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderBottomWidth: selectedOption !== null ? 4 : 0,
-                            borderBottomColor: "#B45309",
-                            opacity: selectedOption !== null ? 1 : 0.6,
-                        }}
-                        accessibilityLabel="Check your answer"
-                        accessibilityRole="button"
-                        accessibilityState={{ disabled: selectedOption === null }}
-                    >
-                        <Text
-                            className={`text-base font-bold ${selectedOption !== null ? "text-white" : "text-slate-400"
-                                }`}
-                        >
-                            Check Answer
-                        </Text>
-                    </PressableScale>
+                    />
                 ) : (
                     /* Continue button — shown after feedback */
-                    <PressableScale
+                    <RendererPrimaryCTA
+                        label={currentIndex === totalQuestions - 1 ? "See Results" : "Continue"}
                         onPress={handleContinue}
-                        scale={0.96}
-                        hapticStyle="medium"
-                        style={{
-                            backgroundColor: isCorrectAnswer ? "#16A34A" : "#3B82F6",
-                            paddingVertical: 16,
-                            borderRadius: 16,
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderBottomWidth: 4,
-                            borderBottomColor: isCorrectAnswer ? "#15803D" : "#2563EB",
-                        }}
-                        accessibilityLabel={
-                            currentIndex === totalQuestions - 1
-                                ? "See your results"
-                                : "Continue to next question"
-                        }
-                        accessibilityRole="button"
-                    >
-                        <Text className="text-base font-bold text-white mr-1">
-                            {currentIndex === totalQuestions - 1 ? "See Results" : "Continue"}
-                        </Text>
-                        <HugeiconsIcon
-                            icon={ArrowRight01Icon}
-                            size={18}
-                            color="#FFFFFF"
-                        />
-                    </PressableScale>
+                        tone={isCorrectAnswer ? "sage" : "terracotta"}
+                    />
                 )}
             </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        </View>
     );
 }

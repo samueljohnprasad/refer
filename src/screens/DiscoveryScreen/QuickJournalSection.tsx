@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { View, Text, ScrollView } from "react-native";
-import { XPBadge } from "@/src/components/XP/XPBadge";
-import { XPActionType, XP_REWARDS } from "@/src/types/xp";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import Animated, {
   useSharedValue,
@@ -32,9 +30,9 @@ const QUICK_JOURNAL_PROMPTS: QuickJournalPrompt[] = [
     emoji: "🌿",
     description: "What are you grateful for today?",
     category: "Personal",
-    bgColorClass: "bg-amber-50",
-    categoryTextColorClass: "text-amber-800",
-    categoryBgColorClass: "bg-white/50",
+    bgColorClass: "bg-brand-surface",
+    categoryTextColorClass: "text-sage-600",
+    categoryBgColorClass: "bg-sage-pill",
   },
   {
     id: "2",
@@ -42,9 +40,9 @@ const QUICK_JOURNAL_PROMPTS: QuickJournalPrompt[] = [
     emoji: "😊",
     description: "How do you want to feel?",
     category: "Family",
-    bgColorClass: "bg-violet-50",
-    categoryTextColorClass: "text-violet-800",
-    categoryBgColorClass: "bg-white/50",
+    bgColorClass: "bg-brand-surface",
+    categoryTextColorClass: "text-sage-600",
+    categoryBgColorClass: "bg-sage-pill",
   },
   {
     id: "3",
@@ -52,9 +50,9 @@ const QUICK_JOURNAL_PROMPTS: QuickJournalPrompt[] = [
     emoji: "💚",
     description: "Let go of stress and anxiety",
     category: "Health",
-    bgColorClass: "bg-emerald-50",
-    categoryTextColorClass: "text-emerald-800",
-    categoryBgColorClass: "bg-white/50",
+    bgColorClass: "bg-brand-surface",
+    categoryTextColorClass: "text-sage-600",
+    categoryBgColorClass: "bg-sage-pill",
   },
   {
     id: "4",
@@ -62,9 +60,9 @@ const QUICK_JOURNAL_PROMPTS: QuickJournalPrompt[] = [
     emoji: "🏆",
     description: "What went well today?",
     category: "Work",
-    bgColorClass: "bg-red-50",
-    categoryTextColorClass: "text-red-800",
-    categoryBgColorClass: "bg-white/50",
+    bgColorClass: "bg-brand-surface",
+    categoryTextColorClass: "text-sage-600",
+    categoryBgColorClass: "bg-sage-pill",
   },
 ];
 
@@ -94,41 +92,40 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
     }));
 
     return (
-      <Animated.View style={entranceStyle} className="mr-4">
+      <Animated.View style={entranceStyle} className="mr-3">
         <PressableScale
           onPress={() => onPress(prompt)}
-          scale={0.95}
+          scale={0.97}
           hapticStyle="light"
           accessible={true}
           accessibilityRole="button"
           accessibilityLabel={`${prompt.title}. ${prompt.description}. ${prompt.category} prompt`}
           accessibilityHint="Starts a journaling session with this prompt"
         >
-          <View className={`w-44 rounded-2xl p-4 ${prompt.bgColorClass || "bg-gray-50"}`}>
-            {/* Top row: Emoji */}
-            <View className="mb-3">
-              <View className="w-10 h-10 rounded-2xl items-center justify-center">
-                <Text style={{ fontSize: 24 }}>{prompt.emoji}</Text>
+          <View className="happy-brand-preview-tile w-44 rounded-[30px] p-4">
+            <View className="mb-4">
+              <View className="h-11 w-11 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50">
+                <Text className="text-[24px]">{prompt.emoji}</Text>
               </View>
             </View>
- 
-            <View className="flex-row items-center gap-2 mb-1">
+
+            <View className="mb-1 flex-row items-center gap-2">
               <Text
-                className="text-gray-900 text-base font-semibold flex-1 tracking-tight"
+                className="happy-font-body-bold flex-1 text-[16px] leading-5 text-ink"
                 numberOfLines={1}
               >
                 {prompt.title}
               </Text>
             </View>
             <Text
-              className="text-sm text-gray-700 mb-3 leading-normal"
-              numberOfLines={3}
+              className="happy-font-body-medium mb-4 text-[13px] leading-5 text-ink-muted"
+              numberOfLines={2}
               ellipsizeMode="tail"
             >
               {prompt.description}
             </Text>
-            <View className={`self-start px-2 py-1 rounded-md mt-2 ${prompt.categoryBgColorClass || "bg-white/50"}`}>
-              <Text className={`text-xs font-bold tracking-wide uppercase ${prompt.categoryTextColorClass || "text-gray-600"}`}>
+            <View className={`mt-auto self-start rounded-full px-2.5 py-1 ${prompt.categoryBgColorClass || "bg-sage-pill"}`}>
+              <Text className={`happy-font-body-bold text-[10px] uppercase tracking-wider ${prompt.categoryTextColorClass || "text-sage-600"}`}>
                 {prompt.category}
               </Text>
             </View>
@@ -149,11 +146,11 @@ interface QuickJournalSectionProps {
 export const QuickJournalSection: React.FC<QuickJournalSectionProps> =
   React.memo(({ onCardPress, onSeeAllPress }) => {
     return (
-      <View className="mt-8 mb-4">
+      <View className="mb-4 mt-8">
         {/* Header */}
-        <View className="flex-row justify-between items-center mb-2 px-1 min-h-[44px]">
+        <View className="mb-3 min-h-[44px] flex-row items-center justify-between px-1">
           <View className="flex-row items-center gap-2">
-            <Text className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+            <Text className="happy-brand-eyebrow text-[11px]">
               Quick Journal
             </Text>
           </View>
@@ -164,9 +161,9 @@ export const QuickJournalSection: React.FC<QuickJournalSectionProps> =
             accessibilityRole="button"
             accessibilityLabel="See all quick journal prompts"
             accessibilityHint="Navigates to the full list of journaling prompts"
-            className="px-2 min-h-[44px] justify-center items-center"
+            className="min-h-[44px] items-center justify-center px-2"
           >
-            <Text className="text-[13px] text-gray-500 font-medium">See all</Text>
+            <Text className="happy-font-body-bold text-[13px] text-ink-muted">See all</Text>
           </PressableScale>
         </View>
 

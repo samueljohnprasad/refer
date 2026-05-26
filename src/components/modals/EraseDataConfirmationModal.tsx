@@ -2,11 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
 import ShortBottomModal from "@/src/components/ShortBottomModal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { BRAND_SURFACE, DANGER, GOLD, INK } from "@/lib/tokens";
+import { BRAND_SURFACE, GOLD, SAGE, TERRACOTTA } from "@/lib/tokens";
 
 interface EraseDataConfirmationModalProps {
   visible: boolean;
@@ -46,94 +44,90 @@ export const EraseDataConfirmationModal: React.FC<
         onClose();
       }}
       ref={sheetRef}
-      snapPoints={["70%"]}
+      snapPoints={["72%"]}
     >
-      <VStack
-        className="flex-1 px-5 pt-1 items-center justify-between pb-6"
-        space="sm"
-      >
+      <View className="flex-1 items-center justify-between px-5 pb-6 pt-1">
         <View className="items-center w-full">
-          {/* Icon Header */}
-          <View className="w-14 h-14 rounded-full bg-red-50 items-center justify-center mb-4">
-            <Feather name="trash-2" size={26} color={DANGER} />
+          <View className="mb-4 h-16 w-16 items-center justify-center rounded-[24px] border-2 border-terracotta-light bg-brand-surface">
+            <Feather name="trash-2" size={28} color={TERRACOTTA} />
           </View>
 
-          <Heading className="happy-font-heading-bold text-center text-3xl text-ink mb-2 leading-9">
+          <Text className="happy-font-heading-bold mb-2 text-center text-[30px] leading-9 text-ink">
             Erase All Data?
-          </Heading>
-
-          <Text className="happy-font-body-medium text-ink-soft text-center text-base px-1 mb-4 leading-6">
-            This will permanently delete:
           </Text>
 
-          {/* Data Items List */}
-          <View className="w-full bg-red-50/50 rounded-2xl p-4 mb-4">
-            <VStack space="sm">
-              <DataItem text="All journal entries and transcripts" />
-              <DataItem text="Mood tracking history and emotions" />
-              <DataItem text="AI-generated insights and analysis" />
-              <DataItem text="Streaks and engagement statistics" />
+          <Text className="happy-font-body-medium mb-4 px-2 text-center text-base leading-6 text-ink-soft">
+            This permanently removes the private history saved in Happy.
+          </Text>
+
+          <View className="happy-brand-preview-tile mb-4 w-full rounded-[28px] p-4">
+            <Text className="happy-brand-eyebrow mb-3">Will be deleted</Text>
+            <View className="gap-3">
+              <DataItem text="Journal entries and transcripts" />
+              <DataItem text="Mood history and emotions" />
+              <DataItem text="AI insights and analysis" />
+              <DataItem text="Streaks and engagement stats" />
               <DataItem text="Profile and account information" />
-            </VStack>
+            </View>
           </View>
 
-          {/* Warning */}
-          <View className="flex-row items-start bg-amber-50 p-3 rounded-xl border border-amber-100">
+          <View className="happy-brand-card-selected flex-row items-start rounded-[24px] p-4">
             <Feather
               name="alert-triangle"
-              size={18}
+              size={20}
               color={GOLD}
-              style={{ marginTop: 2 }}
+              style={{ marginTop: 1 }}
             />
-            <Text className="text-amber-900 text-sm ml-2.5 flex-1 leading-5 font-medium">
-              You will be immediately logged out. Your account cannot be
-              recovered.
+            <Text className="happy-font-body-semibold ml-3 flex-1 text-sm leading-5 text-sage-700">
+              You'll be logged out immediately. This can't be recovered later.
             </Text>
           </View>
         </View>
 
-        {/* Buttons */}
-        <View className="flex-row gap-4 w-full mt-2">
+        <View className="mt-4 flex-row gap-3 w-full">
           <Pressable
             onPress={handleClose}
             disabled={isDeleting}
-            className="flex-1 bg-sage-pill rounded-full flex-row items-center justify-center py-4 active:opacity-80"
+            className="happy-brand-card flex-1 flex-row items-center justify-center rounded-[24px] py-4 active:opacity-80"
           >
-            <Text className="happy-font-body-bold text-ink text-xl mr-2">Cancel</Text>
-            <Feather name="x" size={24} color={INK} />
+            <Text className="happy-font-body-bold mr-2 text-[17px] text-sage-700">
+              Cancel
+            </Text>
+            <Feather name="x" size={20} color={SAGE[700]} />
           </Pressable>
 
           <Pressable
             onPress={handleConfirm}
             disabled={isDeleting}
-            className="flex-1 bg-red-500 rounded-full flex-row items-center justify-center py-4 active:opacity-90 shadow-sm"
+            className="flex-1 flex-row items-center justify-center rounded-[24px] bg-terracotta py-4 active:opacity-90"
+            style={{ borderBottomWidth: 4, borderBottomColor: TERRACOTTA }}
           >
             {isDeleting ? (
               <>
-                <Text className="text-white font-bold text-xl mr-2">
+                <Text className="happy-font-body-bold mr-2 text-[17px] text-brand-surface">
                   Erasing...
                 </Text>
                 <ActivityIndicator color={BRAND_SURFACE} size="small" />
               </>
             ) : (
               <>
-                <Text className="text-white font-bold text-xl mr-2">
+                <Text className="happy-font-body-bold mr-2 text-[17px] text-brand-surface">
                   Delete
                 </Text>
-                <Feather name="trash" size={24} color={BRAND_SURFACE} />
+                <Feather name="trash" size={20} color={BRAND_SURFACE} />
               </>
             )}
           </Pressable>
         </View>
-      </VStack>
+      </View>
     </ShortBottomModal>
   );
 };
 
 const DataItem = ({ text }: { text: string }) => (
   <View className="flex-row items-center">
-    <View className="w-1.5 h-1.5 rounded-full bg-red-400 mr-2.5" />
-    <Text className="happy-font-body-medium text-ink text-sm tracking-tight">
+    <View className="mr-3 h-2 w-2 rounded-full bg-terracotta-light" />
+    <Text className="happy-font-body-medium text-sm leading-5 text-ink">
       {text}
     </Text>
   </View>

@@ -11,6 +11,7 @@ import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons';
 
 import type { ExerciseStep, ExerciseInputType } from '@/src/types/journey/mentalHealth';
 import { PressableScale } from '@/src/components/ui/PressableScale';
+import { BRAND_SURFACE, SAGE } from '@/lib/tokens';
 
 // ============================================================================
 // Types
@@ -82,13 +83,13 @@ export default function ExerciseSummary({
             >
                 {/* Header */}
                 <View className="items-center mb-6">
-                    <View className="w-16 h-16 rounded-full bg-green-100 items-center justify-center mb-3">
-                        <HugeiconsIcon icon={CheckmarkCircle02Icon} size={32} color="#16A34A" />
+                    <View className="mb-3 h-16 w-16 items-center justify-center rounded-full bg-sage-pill">
+                        <HugeiconsIcon icon={CheckmarkCircle02Icon} size={32} color={SAGE[600]} />
                     </View>
-                    <Text className="text-xl font-bold text-slate-900 mb-1">
+                    <Text className="happy-font-heading-bold mb-1 text-[26px] leading-8 text-ink">
                         Exercise Complete!
                     </Text>
-                    <Text className="text-sm text-slate-400 text-center">
+                    <Text className="happy-font-body-medium text-center text-sm text-ink-muted">
                         Here's a summary of your responses
                     </Text>
                 </View>
@@ -106,17 +107,17 @@ export default function ExerciseSummary({
                         return (
                             <View
                                 key={index}
-                                className="bg-slate-50 rounded-2xl p-4 border border-slate-100"
+                                className="happy-brand-card rounded-[24px] p-4"
                             >
                                 <View className="flex-row items-start justify-between mb-2">
                                     <View className="flex-row items-center gap-2 flex-1">
-                                        <View className="w-6 h-6 rounded-full bg-purple-100 items-center justify-center">
-                                            <Text className="text-xs font-bold text-purple-600">
+                                        <View className="h-6 w-6 items-center justify-center rounded-full bg-sage-pill">
+                                            <Text className="happy-font-body-bold text-xs text-sage-600">
                                                 {index + 1}
                                             </Text>
                                         </View>
                                         <Text
-                                            className="text-sm font-semibold text-slate-700 flex-1"
+                                            className="happy-font-body-bold flex-1 text-sm text-ink"
                                             numberOfLines={2}
                                         >
                                             {step.prompt}
@@ -130,12 +131,12 @@ export default function ExerciseSummary({
                                             paddingHorizontal: 10,
                                             paddingVertical: 4,
                                             borderRadius: 8,
-                                            backgroundColor: '#F1F5F9',
+                                            backgroundColor: SAGE.pill,
                                         }}
                                         accessibilityLabel={`Edit step ${index + 1}`}
                                         accessibilityRole="button"
                                     >
-                                        <Text className="text-xs font-medium text-slate-500">
+                                        <Text className="happy-font-body-bold text-xs text-sage-600">
                                             Edit
                                         </Text>
                                     </PressableScale>
@@ -143,7 +144,7 @@ export default function ExerciseSummary({
 
                                 {/* Response value */}
                                 <Text
-                                    className="text-sm text-slate-600 leading-5 ml-8"
+                                    className="happy-font-body-medium ml-8 text-sm leading-5 text-ink-soft"
                                     numberOfLines={step.input_type === 'text' ? 4 : 2}
                                 >
                                     {displayValue}
@@ -161,20 +162,20 @@ export default function ExerciseSummary({
                     scale={0.96}
                     hapticStyle="medium"
                     style={{
-                        backgroundColor: '#16A34A',
+                        backgroundColor: SAGE[500],
                         paddingVertical: 16,
-                        borderRadius: 16,
+                        borderRadius: 22,
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
                         borderBottomWidth: 4,
-                        borderBottomColor: '#15803D',
+                        borderBottomColor: SAGE[700],
                     }}
                     accessibilityLabel="Complete this exercise"
                     accessibilityRole="button"
                 >
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color="#FFFFFF" />
-                    <Text className="text-base font-bold text-white ml-2">
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color={BRAND_SURFACE} />
+                    <Text className="happy-font-body-bold ml-2 text-base text-brand-surface">
                         Complete Exercise
                     </Text>
                 </PressableScale>

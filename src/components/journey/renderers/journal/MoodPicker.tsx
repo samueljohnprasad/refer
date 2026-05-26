@@ -50,11 +50,11 @@ export default function MoodPicker({
 
     return (
         <View className="mb-6">
-            <Text className="text-lg font-semibold text-slate-800 mb-4 text-center">
+            <Text className="happy-font-heading-bold mb-4 text-center text-[24px] leading-8 text-ink">
                 {label}
             </Text>
 
-            <View className="flex-row items-center justify-center gap-3">
+            <View className="flex-row items-start justify-between">
                 {MOOD_OPTIONS.map((option) => {
                     const isSelected: boolean = value === option.key;
                     const source: ImageSourcePropType = emotions[option.key];
@@ -63,9 +63,9 @@ export default function MoodPicker({
                         <Pressable
                             key={option.key}
                             onPress={() => handlePress(option.key)}
-                            className={`items-center p-2 rounded-2xl ${isSelected
-                                ? 'bg-purple-50 border-2 border-purple-300'
-                                : 'border-2 border-transparent'
+                            className={`items-center rounded-[22px] p-2 ${isSelected
+                                ? 'happy-brand-card-selected'
+                                : 'happy-brand-card'
                                 }`}
                             accessibilityLabel={`${option.label} mood`}
                             accessibilityRole="button"
@@ -73,11 +73,11 @@ export default function MoodPicker({
                         >
                             <Image
                                 source={source}
-                                className="w-12 h-12"
+                                className="h-11 w-11"
                                 resizeMode="contain"
                             />
                             <Text
-                                className={`text-xs mt-1 font-medium ${isSelected ? 'text-purple-600' : 'text-slate-400'
+                                className={`happy-font-body-bold mt-2 text-xs ${isSelected ? 'text-sage-600' : 'text-ink-muted'
                                     }`}
                             >
                                 {option.label}

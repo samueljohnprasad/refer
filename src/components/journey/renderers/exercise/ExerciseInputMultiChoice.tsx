@@ -11,6 +11,8 @@ import {
     CheckmarkCircle02Icon,
     Cancel01Icon,
 } from '@hugeicons/core-free-icons';
+import { BRAND_SURFACE } from '@/lib/tokens';
+import { RendererSectionCard } from '../RendererFrame';
 
 // ============================================================================
 // Types
@@ -80,88 +82,86 @@ export default function ExerciseInputMultiChoice({
 
     const OPTION_STYLES: Record<string, { container: string; text: string }> = {
         default: {
-            container: 'bg-white border-slate-100',
-            text: 'text-slate-700',
+            container: 'happy-brand-card',
+            text: 'text-ink',
         },
         selected: {
-            container: 'bg-purple-50 border-purple-400',
-            text: 'text-purple-700',
+            container: 'happy-brand-card-selected',
+            text: 'text-sage-700',
         },
         correct: {
-            container: 'bg-green-50 border-green-400',
-            text: 'text-green-700',
+            container: 'happy-brand-card-selected',
+            text: 'text-sage-700',
         },
         incorrect: {
-            container: 'bg-red-50 border-red-400',
-            text: 'text-red-700',
+            container: 'border-2 border-terracotta-light bg-brand-surface',
+            text: 'text-terracotta',
         },
     };
 
     return (
         <View className="flex-1">
-            {/* Prompt */}
-            <Text className="text-lg font-semibold text-slate-800 mb-5 leading-7">
-                {prompt}
-            </Text>
+            <RendererSectionCard eyebrow="Now: choose yours">
+                <Text className="happy-font-heading-bold mb-4 text-[23px] leading-8 text-ink">
+                    {prompt}
+                </Text>
 
-            {/* Options list */}
-            <View className="gap-3">
-                {options.map((option: string, index: number) => {
-                    const state = getOptionState(index);
-                    const styles = OPTION_STYLES[state];
+                <View className="gap-3">
+                    {options.map((option: string, index: number) => {
+                        const state = getOptionState(index);
+                        const styles = OPTION_STYLES[state];
 
-                    return (
-                        <Pressable
-                            key={index}
-                            onPress={() => handleOptionPress(index)}
-                            className={`flex-row items-center p-4 rounded-2xl border-2 ${styles.container}`}
-                            accessibilityLabel={`Option ${index + 1}: ${option}${value.includes(index) ? ', selected' : ''
-                                }`}
-                            accessibilityRole="button"
-                            accessibilityState={{ selected: value.includes(index) }}
-                            disabled={hasCorrectAnswer && hasAnswered}
-                        >
-                            {/* Index indicator */}
-                            <View
-                                className={`w-8 h-8 rounded-full items-center justify-center mr-3 ${state === 'selected'
-                                    ? 'bg-purple-500'
-                                    : state === 'correct'
-                                        ? 'bg-green-500'
-                                        : state === 'incorrect'
-                                            ? 'bg-red-500'
-                                            : 'bg-slate-100'
+                        return (
+                            <Pressable
+                                key={index}
+                                onPress={() => handleOptionPress(index)}
+                                className={`flex-row items-center rounded-[24px] p-4 ${styles.container}`}
+                                accessibilityLabel={`Option ${index + 1}: ${option}${value.includes(index) ? ', selected' : ''
                                     }`}
+                                accessibilityRole="button"
+                                accessibilityState={{ selected: value.includes(index) }}
+                                disabled={hasCorrectAnswer && hasAnswered}
                             >
-                                {state === 'correct' ? (
-                                    <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} color="#FFFFFF" />
-                                ) : state === 'incorrect' ? (
-                                    <HugeiconsIcon icon={Cancel01Icon} size={16} color="#FFFFFF" />
-                                ) : (
-                                    <Text
-                                        className={`text-sm font-bold ${state === 'selected' ? 'text-white' : 'text-slate-400'
-                                            }`}
-                                    >
-                                        {String.fromCharCode(65 + index)}
-                                    </Text>
-                                )}
-                            </View>
+                                <View
+                                    className={`mr-3 h-8 w-8 items-center justify-center rounded-full ${state === 'selected'
+                                        ? 'bg-sage-500'
+                                        : state === 'correct'
+                                            ? 'bg-sage-500'
+                                            : state === 'incorrect'
+                                                ? 'bg-terracotta'
+                                                : 'bg-sage-50'
+                                        }`}
+                                >
+                                    {state === 'correct' ? (
+                                        <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} color={BRAND_SURFACE} />
+                                    ) : state === 'incorrect' ? (
+                                        <HugeiconsIcon icon={Cancel01Icon} size={16} color={BRAND_SURFACE} />
+                                    ) : (
+                                        <Text
+                                            className={`happy-font-body-bold text-sm ${state === 'selected' ? 'text-brand-surface' : 'text-ink-muted'
+                                                }`}
+                                        >
+                                            {String.fromCharCode(65 + index)}
+                                        </Text>
+                                    )}
+                                </View>
 
-                            {/* Option text */}
-                            <Text className={`flex-1 text-base font-medium ${styles.text}`}>
-                                {option}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
-            </View>
+                                <Text className={`happy-font-body-semibold flex-1 text-[15px] leading-5 ${styles.text}`}>
+                                    {option}
+                                </Text>
+                            </Pressable>
+                        );
+                    })}
+                </View>
+            </RendererSectionCard>
 
             {/* Explanation (shown after answering a scored question) */}
             {hasAnswered && explanation ? (
-                <View className="mt-4 bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                    <Text className="text-sm font-semibold text-blue-700 mb-1">
+                <View className="happy-brand-card mt-4 rounded-[24px] p-4">
+                    <Text className="happy-font-body-bold mb-1 text-sm text-sage-700">
                         Explanation
                     </Text>
-                    <Text className="text-sm text-blue-600 leading-5">
+                    <Text className="happy-font-body-medium text-sm leading-5 text-ink-soft">
                         {explanation}
                     </Text>
                 </View>

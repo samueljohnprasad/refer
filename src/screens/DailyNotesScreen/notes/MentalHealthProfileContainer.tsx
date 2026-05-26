@@ -89,15 +89,17 @@ const MentalHealthProfileContainerComponent: React.FC<
       <View className="p-4 flex-1">
         <Center className="h-64">
           <VStack space="md" className="items-center">
-            <Icon as={AlertCircleIcon} className="text-theme-text-secondary h-12 w-12 opacity-60" />
-            <Text className="text-theme-text-secondary text-center px-8">
+            <Icon as={AlertCircleIcon} className="text-ink-muted h-12 w-12 opacity-60" />
+            <Text className="happy-font-body-medium text-ink-muted text-center px-8">
               Unable to load mental health data. Please try again.
             </Text>
             <Button
               onPress={handleRefetch}
-              className="bg-theme-purple-primary rounded-full"
+              className="happy-brand-primary-cta rounded-full"
             >
-              <ButtonText className="text-white font-semibold">Retry</ButtonText>
+              <ButtonText className="happy-font-body-bold text-white">
+                Retry
+              </ButtonText>
             </Button>
           </VStack>
         </Center>

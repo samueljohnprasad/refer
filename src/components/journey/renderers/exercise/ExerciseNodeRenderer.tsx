@@ -29,7 +29,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
     ArrowLeft01Icon,
-    ArrowRight01Icon,
     Dumbbell01Icon,
 } from "@hugeicons/core-free-icons";
 import * as Haptics from "expo-haptics";
@@ -41,6 +40,12 @@ import type {
     ExerciseResponseData,
 } from "@/src/types/journey/mentalHealth";
 import { PressableScale } from "@/src/components/ui/PressableScale";
+import { INK_MUTED, SAGE } from "@/lib/tokens";
+import {
+    RendererPrimaryCTA,
+    RendererTitleBlock,
+    RendererTopProgress,
+} from "../RendererFrame";
 
 import ExerciseInputText from "./ExerciseInputText";
 import ExerciseInputSlider from "./ExerciseInputSlider";
@@ -58,6 +63,8 @@ export interface ExerciseNodeRendererProps {
     content: ExerciseContent;
     /** Node title (shown in header) */
     title: string;
+    /** XP reward displayed in the renderer header */
+    xpReward?: number;
     /** Called when user completes the exercise */
     onComplete: (responseData: ExerciseResponseData) => void;
     /** Called when user taps back button (exit exercise) */
@@ -82,6 +89,41 @@ const HAPTIC_MAP: Record<string, Haptics.ImpactFeedbackStyle> = {
     medium: Haptics.ImpactFeedbackStyle.Medium,
     heavy: Haptics.ImpactFeedbackStyle.Heavy,
 };
+
+function buildFallbackExerciseStep(
+    content: ExerciseContent,
+    title: string,
+): ExerciseStep {
+    const exerciseLabel = title.trim() || "this reset";
+    const isBreathingExercise = content.exercise_type === "breathing";
+    const prompt = isBreathingExercise
+        ? `Practice ${exerciseLabel} slowly for a few rounds.\n\nWhen you finish, write one thing you noticed in your body.`
+        : `Take a quiet minute with ${exerciseLabel}.\n\nWhen you finish, write one thing you noticed.`;
+
+    return {
+        prompt,
+        input_type: "text",
+        placeholder: isBreathingExercise
+            ? "What changed after this reset?"
+            : "Write one thing you noticed.",
+    };
+}
+
+function getRenderableSteps(
+    content: ExerciseContent,
+    title: string,
+): ExerciseStep[] {
+    const sourceSteps = Array.isArray(content.steps) ? content.steps : [];
+    const usableSteps = sourceSteps.filter(
+        (step) => typeof step.prompt === "string" && step.prompt.trim().length > 0,
+    );
+
+    if (usableSteps.length > 0) {
+        return usableSteps;
+    }
+
+    return [buildFallbackExerciseStep(content, title)];
+}
 
 // ============================================================================
 // Helpers
@@ -187,7 +229,7 @@ function ExerciseHeader({
     onBack: () => void;
 }): React.JSX.Element {
     return (
-        <View className="flex-row items-center px-4 pt-2 pb-3">
+        <View className="flex-row items-center px-5 pb-4 pt-4">
             <PressableScale
                 onPress={onBack}
                 scale={0.9}
@@ -196,7 +238,7 @@ function ExerciseHeader({
                     width: 40,
                     height: 40,
                     borderRadius: 20,
-                    backgroundColor: "#F1F5F9",
+                    backgroundColor: SAGE.pill,
                     alignItems: "center",
                     justifyContent: "center",
                 }}
@@ -206,29 +248,29 @@ function ExerciseHeader({
                 <HugeiconsIcon
                     icon={ArrowLeft01Icon}
                     size={20}
-                    color="#475569"
+                    color={INK_MUTED}
                 />
             </PressableScale>
 
             <View className="flex-1 mx-3">
                 <Text
-                    className="text-sm font-bold text-slate-800"
+                    className="happy-font-body-bold text-sm text-ink"
                     numberOfLines={1}
                 >
                     {title}
                 </Text>
-                <Text className="text-xs text-slate-400">
+                <Text className="happy-font-body-medium text-xs text-ink-muted">
                     {showingSummary
                         ? "Summary"
                         : `Step ${currentStep + 1} of ${totalSteps}`}
                 </Text>
             </View>
 
-            <View className="bg-green-50 px-3 py-1.5 rounded-full">
+            <View className="happy-brand-status-chip px-3 py-1.5">
                 <HugeiconsIcon
                     icon={Dumbbell01Icon}
                     size={16}
-                    color="#16A34A"
+                    color={SAGE[600]}
                 />
             </View>
         </View>
@@ -252,9 +294,9 @@ function StepProgressBar({
             : 0;
 
     return (
-        <View className="h-1 bg-slate-100 mx-4 rounded-full overflow-hidden">
+        <View className="mx-5 h-1 overflow-hidden rounded-full bg-sage-100">
             <View
-                className="h-full bg-green-500 rounded-full"
+                className="h-full rounded-full bg-sage-500"
                 style={{ width: `${progressPercent}%` }}
             />
         </View>
@@ -268,10 +310,14 @@ function StepProgressBar({
 export default function ExerciseNodeRenderer({
     content,
     title,
+    xpReward,
     onComplete,
     onBack,
 }: ExerciseNodeRendererProps): React.JSX.Element {
-    const steps: ExerciseStep[] = content.steps;
+    const steps: ExerciseStep[] = useMemo(
+        () => getRenderableSteps(content, title),
+        [content, title],
+    );
     const totalSteps: number = steps.length;
 
     // ── Wizard state ──
@@ -288,6 +334,11 @@ export default function ExerciseNodeRenderer({
     });
 
     const currentExerciseStep: ExerciseStep | undefined = steps[currentStep];
+    const progressValue: number = showingSummary
+        ? 1
+        : totalSteps > 0
+            ? (currentStep + 1) / (totalSteps + 1)
+            : 0;
     const canGoNext: boolean = currentExerciseStep
         ? isStepValid(currentExerciseStep, currentStep, stepState)
         : false;
@@ -465,7 +516,7 @@ export default function ExerciseNodeRenderer({
             default:
                 return (
                     <View className="flex-1 items-center justify-center">
-                        <Text className="text-slate-400">
+                        <Text className="happy-font-body-medium text-ink-muted">
                             Unknown input type: {currentExerciseStep.input_type}
                         </Text>
                     </View>
@@ -474,128 +525,101 @@ export default function ExerciseNodeRenderer({
     };
 
     return (
-        <SafeAreaView
-            className="flex-1 bg-white"
-            edges={["top", "bottom"]}
-        >
-            {/* Header */}
-            <ExerciseHeader
-                title={title}
-                currentStep={currentStep}
-                totalSteps={totalSteps}
-                showingSummary={showingSummary}
-                onBack={handleBack}
-            />
+        <View className="happy-brand-screen flex-1">
+            <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+                <RendererTopProgress
+                    progress={progressValue}
+                    xpReward={xpReward}
+                    onClose={onBack}
+                />
 
-            {/* Progress bar */}
-            <StepProgressBar
-                current={currentStep}
-                total={totalSteps}
-                showingSummary={showingSummary}
-            />
+                <RendererTitleBlock
+                    eyebrow={
+                        showingSummary
+                            ? "Review"
+                            : `Step ${currentStep + 1} of ${totalSteps}`
+                    }
+                    title={showingSummary ? "Your reset summary." : title}
+                    subtitle={
+                        showingSummary
+                            ? "Check your reflections, then save this practice."
+                            : "A short reset, then we'll reflect."
+                    }
+                />
 
-            {/* Content area */}
-            <KeyboardAvoidingView
-                className="flex-1"
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={100}
-            >
-                {showingSummary ? (
-                    <View className="flex-1 px-5 pt-5">
-                        <ExerciseSummary
-                            steps={steps}
-                            responses={summaryResponses}
-                            onComplete={handleComplete}
-                            onEditStep={handleEditStep}
-                        />
-                    </View>
-                ) : (
-                    <>
-                        {/* Step content */}
-                        <ScrollView
-                            className="flex-1 px-5 pt-5"
-                            showsVerticalScrollIndicator={false}
-                            keyboardShouldPersistTaps="handled"
-                            contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-                        >
-                            {renderStepInput()}
-                        </ScrollView>
-
-                        {/* Navigation buttons */}
-                        <View className="flex-row items-center gap-3 px-5 pb-4 pt-2">
-                            {/* Back button */}
-                            {canGoBack ? (
-                                <PressableScale
-                                    onPress={handleBack}
-                                    scale={0.96}
-                                    hapticStyle="light"
-                                    style={{
-                                        paddingVertical: 14,
-                                        paddingHorizontal: 20,
-                                        borderRadius: 14,
-                                        backgroundColor: "#F1F5F9",
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                    accessibilityLabel="Go to previous step"
-                                    accessibilityRole="button"
-                                >
-                                    <HugeiconsIcon
-                                        icon={ArrowLeft01Icon}
-                                        size={18}
-                                        color="#64748B"
-                                    />
-                                    <Text className="text-sm font-semibold text-slate-500 ml-1">
-                                        Back
-                                    </Text>
-                                </PressableScale>
-                            ) : (
-                                <View style={{ width: 80 }} />
-                            )}
-
-                            {/* Next / Review button */}
-                            <PressableScale
-                                onPress={handleNext}
-                                scale={0.96}
-                                hapticStyle="medium"
-                                disabled={!canGoNext}
-                                style={{
-                                    flex: 1,
-                                    paddingVertical: 14,
-                                    borderRadius: 14,
-                                    backgroundColor: canGoNext ? "#16A34A" : "#E2E8F0",
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    borderBottomWidth: canGoNext ? 4 : 0,
-                                    borderBottomColor: "#15803D",
-                                    opacity: canGoNext ? 1 : 0.6,
-                                }}
-                                accessibilityLabel={
-                                    currentStep === totalSteps - 1
-                                        ? "Review answers"
-                                        : "Next step"
-                                }
-                                accessibilityRole="button"
-                                accessibilityState={{ disabled: !canGoNext }}
-                            >
-                                <Text
-                                    className={`text-base font-bold ${canGoNext ? "text-white" : "text-slate-400"
-                                        } mr-1`}
-                                >
-                                    {currentStep === totalSteps - 1 ? "Review" : "Next"}
-                                </Text>
-                                <HugeiconsIcon
-                                    icon={ArrowRight01Icon}
-                                    size={18}
-                                    color={canGoNext ? "#FFFFFF" : "#94A3B8"}
-                                />
-                            </PressableScale>
+                {/* Content area */}
+                <KeyboardAvoidingView
+                    className="flex-1"
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    keyboardVerticalOffset={100}
+                >
+                    {showingSummary ? (
+                        <View className="flex-1 px-7">
+                            <ExerciseSummary
+                                steps={steps}
+                                responses={summaryResponses}
+                                onComplete={handleComplete}
+                                onEditStep={handleEditStep}
+                            />
                         </View>
-                    </>
-                )}
-            </KeyboardAvoidingView>
-        </SafeAreaView>
+                    ) : (
+                        <>
+                            {/* Step content */}
+                            <ScrollView
+                                className="flex-1 px-7"
+                                showsVerticalScrollIndicator={false}
+                                keyboardShouldPersistTaps="handled"
+                                contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+                            >
+                                {renderStepInput()}
+                            </ScrollView>
+
+                            {/* Navigation buttons */}
+                            <View className="flex-row items-center gap-3 px-7 pb-4 pt-2">
+                                {/* Back button */}
+                                {canGoBack ? (
+                                    <PressableScale
+                                        onPress={handleBack}
+                                        scale={0.96}
+                                        hapticStyle="light"
+                                        style={{
+                                            paddingVertical: 14,
+                                            paddingHorizontal: 20,
+                                            borderRadius: 14,
+                                            backgroundColor: SAGE.pill,
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}
+                                        accessibilityLabel="Go to previous step"
+                                        accessibilityRole="button"
+                                    >
+                                        <HugeiconsIcon
+                                            icon={ArrowLeft01Icon}
+                                            size={18}
+                                            color={INK_MUTED}
+                                        />
+                                        <Text className="happy-font-body-bold ml-1 text-sm text-sage-600">
+                                            Back
+                                        </Text>
+                                    </PressableScale>
+                                ) : (
+                                    <View style={{ width: 80 }} />
+                                )}
+
+                                {/* Next / Review button */}
+                                <View className="flex-1">
+                                    <RendererPrimaryCTA
+                                        label={currentStep === totalSteps - 1 ? "Review" : "Continue"}
+                                        onPress={handleNext}
+                                        disabled={!canGoNext}
+                                    />
+                                </View>
+                            </View>
+                        </>
+                    )}
+                </KeyboardAvoidingView>
+            </SafeAreaView>
+        </View>
     );
 }

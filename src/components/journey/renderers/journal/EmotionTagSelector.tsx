@@ -57,7 +57,7 @@ export default function EmotionTagSelector({
 
     return (
         <View className="mb-4">
-            <Text className="text-sm font-semibold text-slate-600 mb-3">
+            <Text className="happy-font-body-bold mb-3 text-sm text-ink-soft">
                 How are you feeling? (optional)
             </Text>
             <View className="flex-row flex-wrap gap-2">
@@ -67,9 +67,9 @@ export default function EmotionTagSelector({
                         <Pressable
                             key={tag.key}
                             onPress={() => handleToggle(tag.key)}
-                            className={`flex-row items-center px-3 py-2 rounded-full border ${isSelected
-                                ? 'bg-purple-50 border-purple-300'
-                                : 'bg-white border-slate-100'
+                            className={`flex-row items-center rounded-full px-3 py-2 ${isSelected
+                                ? 'happy-brand-card-selected'
+                                : 'happy-brand-card'
                                 }`}
                             accessibilityLabel={`${tag.label}${isSelected ? ', selected' : ''}`}
                             accessibilityRole="button"
@@ -77,7 +77,7 @@ export default function EmotionTagSelector({
                         >
                             <Text className="text-sm mr-1">{tag.emoji}</Text>
                             <Text
-                                className={`text-xs font-medium ${isSelected ? 'text-purple-600' : 'text-slate-500'
+                                className={`happy-font-body-bold text-xs ${isSelected ? 'text-sage-600' : 'text-ink-muted'
                                     }`}
                             >
                                 {tag.label}

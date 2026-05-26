@@ -4,7 +4,6 @@ import {
   View,
   ActivityIndicator,
   TouchableOpacity,
-  Image as RNImage,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -23,7 +22,6 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   Bookmark02Icon,
   Delete02Icon,
-  Add01Icon,
   NoteIcon,
   Mic01Icon,
 } from "@hugeicons/core-free-icons";
@@ -31,18 +29,9 @@ import { useAtom } from "jotai";
 import { DeleteJournal, selectedDateAtom } from "../atoms";
 import { getDuration } from "@/src/utils/date";
 import { ConfirmationModal } from "@/src/components/modals/ConfirmationModal";
-import { search } from "@/assets/images";
 import { useRouter } from "expo-router";
 import { EmptyState } from "@/src/components/ui/EmptyState";
-
-/** Shared subtle card shadow — matches CalorieWidget/HabitsSection */
-const CARD_SHADOW = {
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.04,
-  shadowRadius: 8,
-  elevation: 1,
-} as const;
+import { BRAND_SURFACE, GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
 
 interface EntryCardsViewProps {
   entries: JournalEntry[];
@@ -94,10 +83,13 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         <SectionHeader title="Journal Entries" icon={NoteIcon} />
         <View className="gap-3">
           {[1, 2, 3].map((i) => (
-            <View key={i} className="bg-white rounded-2xl p-4 animate-pulse">
-              <View className="h-4 bg-gray-200 rounded mb-2 w-3/4" />
-              <View className="h-3 bg-gray-200 rounded mb-2 w-1/2" />
-              <View className="h-3 bg-gray-200 rounded w-full" />
+            <View
+              key={i}
+              className="happy-brand-preview-tile rounded-[24px] p-4"
+            >
+              <View className="h-4 bg-sage-100 rounded mb-2 w-3/4" />
+              <View className="h-3 bg-sage-100 rounded mb-2 w-1/2" />
+              <View className="h-3 bg-sage-100 rounded w-full" />
             </View>
           ))}
         </View>
@@ -108,10 +100,10 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   const ctaButton = (
     <TouchableOpacity
       onPress={() => router.push("/tabs/(tabs)/record")}
-      className="bg-gray-800 p-2 rounded-xl"
+      className="happy-brand-primary-cta p-2 rounded-xl"
       activeOpacity={0.7}
     >
-      <HugeiconsIcon icon={Mic01Icon} size={18} color="white" />
+      <HugeiconsIcon icon={Mic01Icon} size={18} color={BRAND_SURFACE} />
     </TouchableOpacity>
   );
 
@@ -139,7 +131,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         {entries.map((entry, index) => (
           <View key={entry.id}>
             {showDateHeaders && (
-              <Text className="text-sm font-semibold text-gray-600 mb-2">
+              <Text className="happy-font-body-bold text-sm text-ink-muted mb-2">
                 {entry.selected_date
                   ? `${format(parseISO(entry.selected_date), "MMM d, yyyy")} · ${format(parseISO(entry.selected_date), "EEE")}`
                   : "No Date"}
@@ -233,44 +225,39 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
     >
-      {/* GPU-cached shadow container — shouldRasterizeIOS prevents per-frame
-          shadow recalculation during scroll which was causing the flicker */}
-      <View
-        className="bg-white rounded-2xl"
-        style={CARD_SHADOW}
-        shouldRasterizeIOS
-        renderToHardwareTextureAndroid
-      >
-        <Animated.View
-          className="p-4 rounded-2xl overflow-hidden"
-          style={cardAnimatedStyle}
+      <Animated.View style={cardAnimatedStyle}>
+        <View
+          className="happy-brand-preview-tile rounded-[24px] p-4"
+          shouldRasterizeIOS
+          renderToHardwareTextureAndroid
         >
           {/* Header */}
           <View className="flex-row items-start justify-between mb-3">
             <View className="flex-1">
-              <Text className="text-base font-semibold text-gray-800 mb-1">
+              <Text className="happy-font-body-bold text-base text-ink mb-1">
                 {entry.title}
               </Text>
               <View className="flex-row items-center">
                 {entry.selected_date && (
-                  <Text className="text-sm text-gray-500">
+                  <Text className="happy-font-body-medium text-sm text-ink-muted">
                     {format(new Date(entry.selected_date), "h:mm a")}
                   </Text>
                 )}
-                <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
+                <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
                 <HugeiconsIcon
                   size={12}
                   icon={getEntryTypeIcon(entry.input_type)}
+                  color={INK_MUTED}
                 />
                 {!!entry.duration_seconds && (
-                  <Text className="text-sm text-gray-500 ml-1">
+                  <Text className="happy-font-body-medium text-sm text-ink-muted ml-1">
                     {getDuration(entry.duration_seconds)}
                   </Text>
                 )}
                 {!!entry.words_count && (
                   <>
-                    <View className="w-1 h-1 bg-gray-400 rounded-full mx-2" />
-                    <Text className="text-sm text-gray-500">
+                    <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
+                    <Text className="happy-font-body-medium text-sm text-ink-muted">
                       {entry.words_count} words
                     </Text>
                   </>
@@ -289,7 +276,7 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
           </View>
 
           {/* Excerpt */}
-          <Text className="text-gray-700 text-sm leading-5 mb-3">
+          <Text className="happy-font-body-medium text-ink-soft text-sm leading-5 mb-3">
             {entry.transcripts?.substring(0, 100) + "..."}
           </Text>
 
@@ -298,27 +285,20 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
             {(feelings || []).map((emotion, idx) => (
               <View
                 key={`${emotion}-${idx}`}
-                className="bg-gray-50 border border-gray-100 rounded-full px-2 py-1 mr-2 mb-1"
+                className="bg-sage-50 border border-sage-100 rounded-full px-2 py-1 mr-2 mb-1"
               >
-                <Text className="text-gray-700 text-xs font-medium capitalize">
+                <Text className="happy-font-body-medium text-ink-soft text-xs capitalize">
                   {emotion.emoji} {emotion.name}
                 </Text>
               </View>
             ))}
-            {/* {entry.emotions.length > 3 && (
-            <View className="bg-gray-100 rounded-full px-2 py-1">
-              <Text className="text-gray-600 text-xs">
-                +{entry.emotions.length - 3} more
-              </Text>
-            </View>
-          )} */}
           </View>
 
           {/* Footer */}
-          <View className="flex-row items-center justify-between pt-2 border-t border-gray-100">
+          <View className="flex-row items-center justify-between pt-2 border-t border-sage-100">
             <View className="flex-row items-center gap-2">
               {entry.moods?.main_mood && (
-                <Text className="text-xs text-gray-500 capitalize">
+                <Text className="happy-font-body-medium text-xs text-ink-muted capitalize">
                   {entry.moods?.main_mood} mood
                 </Text>
               )}
@@ -335,13 +315,13 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
                     disabled={isBookmarking}
                   >
                     {isBookmarking ? (
-                      <ActivityIndicator size="small" color="#F59E0B" />
+                      <ActivityIndicator size="small" color={GOLD} />
                     ) : (
                       <HugeiconsIcon
                         icon={Bookmark02Icon}
                         size={18}
-                        fill={isBookmarked ? "#F59E0B" : "#d1d5db"}
-                        color={isBookmarked ? "#F59E0B" : "#d1d5db"}
+                        fill={isBookmarked ? GOLD : SAGE[200]}
+                        color={isBookmarked ? GOLD : SAGE[200]}
                       />
                     )}
                   </Pressable>
@@ -351,14 +331,18 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
                     className="w-9 h-9 items-center justify-center active:opacity-70"
                     accessibilityLabel="Delete journal"
                   >
-                    <HugeiconsIcon icon={Delete02Icon} size={18} color="grey" />
+                    <HugeiconsIcon
+                      icon={Delete02Icon}
+                      size={18}
+                      color={INK_MUTED}
+                    />
                   </Pressable>
                 </>
               )}
             </View>
           </View>
-        </Animated.View>
-      </View>
+        </View>
+      </Animated.View>
     </Pressable>
   );
 });

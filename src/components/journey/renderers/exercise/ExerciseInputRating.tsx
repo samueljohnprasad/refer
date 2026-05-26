@@ -6,6 +6,7 @@
 
 import React, { useCallback } from 'react';
 import { View, Text, Pressable, ScrollView } from 'react-native';
+import { RendererSectionCard } from '../RendererFrame';
 
 // ============================================================================
 // Types
@@ -56,69 +57,67 @@ export default function ExerciseInputRating({
 
     return (
         <View className="flex-1 justify-center">
-            {/* Prompt */}
-            <Text className="text-lg font-semibold text-slate-800 mb-6 leading-7">
-                {prompt}
-            </Text>
+            <RendererSectionCard eyebrow="Now: rate yours">
+                <Text className="happy-font-heading-bold mb-5 text-[23px] leading-8 text-ink">
+                    {prompt}
+                </Text>
 
-            {/* Selected value display */}
-            {value !== null ? (
-                <View className="items-center mb-6">
-                    <View className="bg-purple-500 w-16 h-16 rounded-2xl items-center justify-center">
-                        <Text className="text-2xl font-bold text-white">{value}</Text>
+                {value !== null ? (
+                    <View className="items-center mb-6">
+                        <View className="happy-brand-score-badge h-16 w-16 items-center justify-center">
+                            <Text className="happy-font-heading-bold text-xl text-sage-700">{value}</Text>
+                        </View>
                     </View>
-                </View>
-            ) : (
-                <View className="items-center mb-6">
-                    <View className="bg-slate-100 w-16 h-16 rounded-2xl items-center justify-center">
-                        <Text className="text-lg text-slate-400">?</Text>
+                ) : (
+                    <View className="items-center mb-6">
+                        <View className="h-16 w-16 items-center justify-center rounded-[22px] bg-sage-50">
+                            <Text className="happy-font-heading-bold text-lg text-ink-muted">?</Text>
+                        </View>
                     </View>
-                </View>
-            )}
+                )}
 
-            {/* Rating buttons row */}
-            <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{
-                    paddingHorizontal: 4,
-                    gap: 8,
-                    justifyContent: 'center',
-                    flexGrow: 1,
-                }}
-            >
-                {numbers.map((num: number) => {
-                    const isSelected: boolean = value === num;
-                    return (
-                        <Pressable
-                            key={num}
-                            onPress={() => handlePress(num)}
-                            className={`w-11 h-11 rounded-xl items-center justify-center ${isSelected ? 'bg-purple-500' : 'bg-slate-100'
-                                }`}
-                            accessibilityLabel={`Rate ${num}`}
-                            accessibilityRole="button"
-                            accessibilityState={{ selected: isSelected }}
-                        >
-                            <Text
-                                className={`text-base font-bold ${isSelected ? 'text-white' : 'text-slate-500'
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingHorizontal: 4,
+                        gap: 8,
+                        justifyContent: 'center',
+                        flexGrow: 1,
+                    }}
+                >
+                    {numbers.map((num: number) => {
+                        const isSelected: boolean = value === num;
+                        return (
+                            <Pressable
+                                key={num}
+                                onPress={() => handlePress(num)}
+                                className={`h-11 w-11 items-center justify-center rounded-xl ${isSelected ? 'bg-sage-500' : 'bg-sage-50'
                                     }`}
+                                accessibilityLabel={`Rate ${num}`}
+                                accessibilityRole="button"
+                                accessibilityState={{ selected: isSelected }}
                             >
-                                {num}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
-            </ScrollView>
+                                <Text
+                                    className={`happy-font-body-bold text-base ${isSelected ? 'text-brand-surface' : 'text-ink-muted'
+                                        }`}
+                                >
+                                    {num}
+                                </Text>
+                            </Pressable>
+                        );
+                    })}
+                </ScrollView>
 
-            {/* Min/Max labels */}
-            <View className="flex-row items-center justify-between px-2 mt-3">
-                <Text className="text-xs text-slate-400">
-                    {labelMin ?? `${min} — Low`}
-                </Text>
-                <Text className="text-xs text-slate-400">
-                    {labelMax ?? `${max} — High`}
-                </Text>
-            </View>
+                <View className="flex-row items-center justify-between px-2 mt-3">
+                    <Text className="happy-font-body-medium text-xs text-ink-muted">
+                        {labelMin ?? `${min} - Low`}
+                    </Text>
+                    <Text className="happy-font-body-medium text-xs text-ink-muted">
+                        {labelMax ?? `${max} - High`}
+                    </Text>
+                </View>
+            </RendererSectionCard>
         </View>
     );
 }

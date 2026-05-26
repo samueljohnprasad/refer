@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, LayoutAnimation, UIManager, Platform } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  LayoutAnimation,
+  UIManager,
+  Platform,
+} from "react-native";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -8,10 +15,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 import { router } from "expo-router";
 import { useChallenges } from "@/hooks/data/useChallenges";
 import { ChallengeCard } from "./ChallengeCard";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Target02Icon } from "@hugeicons/core-free-icons";
-import { CARD_SHADOW } from "@/constants/shadows";
-import { SEMANTIC } from "@/constants/palette";
+import { SAGE } from "@/lib/tokens";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -29,16 +33,19 @@ const ChallengesShimmer: React.FC = () => {
   const shimmer = useSharedValue(0.4);
   useEffect(() => {
     shimmer.value = withRepeat(
-      withSequence(withTiming(0.6, { duration: 800 }), withTiming(0.4, { duration: 800 })),
+      withSequence(
+        withTiming(0.6, { duration: 800 }),
+        withTiming(0.4, { duration: 800 }),
+      ),
       -1,
       true,
     );
-  }, []);
+  }, [shimmer]);
   const style = useAnimatedStyle(() => ({ opacity: shimmer.value }));
   return (
     <Animated.View
-      className="bg-white rounded-2xl"
-      style={[style, { height: 120 }, CARD_SHADOW]}
+      className="happy-brand-preview-tile rounded-[30px]"
+      style={[style, { height: 132 }]}
     />
   );
 };
@@ -71,8 +78,8 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
 
   if (isLoading) {
     return (
-      <View className="bg-white rounded-2xl p-6 items-center border border-gray-100 min-h-[120px] justify-center">
-        <ActivityIndicator size="small" color="#6B7280" />
+      <View className="happy-brand-preview-tile min-h-[132px] items-center justify-center rounded-[30px] p-6">
+        <ActivityIndicator size="small" color={SAGE[600]} />
       </View>
     );
   }
@@ -84,10 +91,10 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
   return (
     <View className="mb-2">
       {/* Header */}
-      <View className="flex-row items-center justify-between px-1 mb-3 min-h-[44px]">
+      <View className="mb-3 min-h-[44px] flex-row items-center justify-between px-1">
         <PressableScale
           onPress={handleToggleExpand}
-          className="flex-row items-center flex-1"
+          className="min-h-[44px] flex-1 flex-row items-center"
           scale={0.97}
           hapticStyle="light"
           accessibilityRole="button"
@@ -95,10 +102,10 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
           accessibilityLabel="Toggle challenges list"
         >
           <View className="flex-row items-center gap-2">
-            <Text className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+            <Text className="happy-brand-eyebrow text-[11px]">
               Daily Challenges
             </Text>
-            <Text className="text-gray-400 text-[10px] font-medium tracking-wide">
+            <Text className="happy-font-body-bold text-[11px] uppercase tracking-wider text-ink-muted">
               {completedCount} OF {totalCount}
             </Text>
           </View>
@@ -108,22 +115,26 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
           onPress={handleViewAll}
           scale={0.94}
           hapticStyle="light"
-          className="px-2 min-h-[44px] justify-center items-center"
+          className="min-h-[44px] items-center justify-center px-2"
           accessibilityRole="button"
           accessibilityHint="Opens the full challenges screen"
         >
-          <Text className="text-gray-500 font-medium text-[13px]">
+          <Text className="happy-font-body-bold text-[13px] text-ink-muted">
             See all
           </Text>
         </PressableScale>
       </View>
 
       {expanded && (
-        <View className="bg-white rounded-3xl p-4" style={CARD_SHADOW}>
+        <View className="happy-brand-preview-tile rounded-[30px] px-4 py-3">
           {displayChallenges.map((challenge, i) => (
-            <View 
-              key={challenge.id} 
-              className={i < displayChallenges.length - 1 ? "mb-3 border-b border-gray-50 pb-3" : ""}
+            <View
+              key={challenge.id}
+              className={
+                i < displayChallenges.length - 1
+                  ? "border-b border-sage-100 py-3"
+                  : "py-3"
+              }
             >
               <ChallengeCard challenge={challenge} compact />
             </View>
