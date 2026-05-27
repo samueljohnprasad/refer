@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
 import { router } from "expo-router";
 import { useInsightNudge } from "@/src/hooks/insights/useInsightNudge";
+import { Card } from "@/src/components/ui/Card";
 
 export const InsightNudgeCard: React.FC = React.memo(() => {
   const nudge = useInsightNudge();
@@ -14,10 +14,11 @@ export const InsightNudgeCard: React.FC = React.memo(() => {
   };
 
   return (
-    <Pressable
+    <Card
       onPress={handlePress}
-      className="happy-brand-card rounded-2xl p-4 active:opacity-90"
-      accessibilityRole="button"
+      variant="tile"
+      radius="xl"
+      contentClassName="p-4"
       accessibilityLabel={`${nudge.message} ${nudge.detail}`}
     >
       <Text className="happy-brand-eyebrow mb-1.5">Your Pattern</Text>
@@ -30,7 +31,7 @@ export const InsightNudgeCard: React.FC = React.memo(() => {
       <Text className="happy-font-body-bold text-[13px] text-sage-600 mt-3">
         {nudge.ctaLabel} →
       </Text>
-    </Pressable>
+    </Card>
   );
 });
 

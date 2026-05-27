@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { PressableScale } from "@/src/components/ui/PressableScale";
+import { Card } from "@/src/components/ui/Card";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -93,44 +94,51 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
 
     return (
       <Animated.View style={entranceStyle} className="mr-3">
-        <PressableScale
+        <Card
+          variant="tile"
+          radius="xl"
           onPress={() => onPress(prompt)}
-          scale={0.97}
-          hapticStyle="light"
-          accessible={true}
-          accessibilityRole="button"
+          haptic="light"
+          className="w-44"
+          contentClassName="p-4"
           accessibilityLabel={`${prompt.title}. ${prompt.description}. ${prompt.category} prompt`}
           accessibilityHint="Starts a journaling session with this prompt"
         >
-          <View className="happy-brand-preview-tile w-44 rounded-[30px] p-4">
-            <View className="mb-4">
-              <View className="h-11 w-11 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50">
-                <Text className="text-[24px]">{prompt.emoji}</Text>
-              </View>
-            </View>
-
-            <View className="mb-1 flex-row items-center gap-2">
-              <Text
-                className="happy-font-body-bold flex-1 text-[16px] leading-5 text-ink"
-                numberOfLines={1}
-              >
-                {prompt.title}
-              </Text>
-            </View>
-            <Text
-              className="happy-font-body-medium mb-4 text-[13px] leading-5 text-ink-muted"
-              numberOfLines={2}
-              ellipsizeMode="tail"
-            >
-              {prompt.description}
-            </Text>
-            <View className={`mt-auto self-start rounded-full px-2.5 py-1 ${prompt.categoryBgColorClass || "bg-sage-pill"}`}>
-              <Text className={`happy-font-body-bold text-[10px] uppercase tracking-wider ${prompt.categoryTextColorClass || "text-sage-600"}`}>
-                {prompt.category}
-              </Text>
+          <View className="mb-4">
+            <View className="h-11 w-11 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50">
+              <Text className="text-[24px]">{prompt.emoji}</Text>
             </View>
           </View>
-        </PressableScale>
+
+          <View className="mb-1 flex-row items-center gap-2">
+            <Text
+              className="happy-font-body-bold flex-1 text-[16px] leading-5 text-ink"
+              numberOfLines={1}
+            >
+              {prompt.title}
+            </Text>
+          </View>
+          <Text
+            className="happy-font-body-medium mb-4 text-[13px] leading-5 text-ink-muted"
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {prompt.description}
+          </Text>
+          <View
+            className={`mt-auto self-start rounded-full px-2.5 py-1 ${
+              prompt.categoryBgColorClass || "bg-sage-pill"
+            }`}
+          >
+            <Text
+              className={`happy-font-body-bold text-[10px] uppercase tracking-wider ${
+                prompt.categoryTextColorClass || "text-sage-600"
+              }`}
+            >
+              {prompt.category}
+            </Text>
+          </View>
+        </Card>
       </Animated.View>
     );
   },

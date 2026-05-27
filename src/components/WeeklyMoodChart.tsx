@@ -41,6 +41,7 @@ import {
 import dayjs from "dayjs";
 import { ISO_DATE_FORMAT } from "../utils/date";
 import Loading from "./Loading";
+import { Card } from "@/src/components/ui/Card";
 
 export interface WeeklyMoodChartProps {
   startDate: Date; // inclusive
@@ -163,7 +164,7 @@ const DAILY_TIME_SLOTS = [
 const buildChartData = (
   start: Date,
   end: Date,
-  moodMap: MoodsMap
+  moodMap: MoodsMap,
 ): ChartPoint[] => {
   const totalDays: number = differenceInCalendarDays(end, start) + 1;
   const points: ChartPoint[] = [];
@@ -256,7 +257,7 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
   ({ startDate, endDate, width, height, padding, emotionsData, isLoading }) => {
     const points: ChartPoint[] = useMemo(
       () => buildChartData(startDate, endDate, emotionsData ?? new Map()),
-      [startDate, endDate, emotionsData]
+      [startDate, endDate, emotionsData],
     );
 
     const totalDays: number = points.length;
@@ -264,19 +265,19 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
       () =>
         points
           .map((p, idx) =>
-            p.y !== null ? { x: idx + 1, y: p.y, label: p.x } : null
+            p.y !== null ? { x: idx + 1, y: p.y, label: p.x } : null,
           )
           .filter((p): p is NumericPoint => p !== null),
-      [points]
+      [points],
     );
 
     const xTickValues: number[] = useMemo(
       () => Array.from({ length: totalDays }, (_, i) => i + 1),
-      [totalDays]
+      [totalDays],
     );
     const xTickLabels: string[] = useMemo(
       () => points.map((p) => p.x),
-      [points]
+      [points],
     );
 
     const hasData: boolean = numericPoints5.length > 0;
@@ -288,13 +289,13 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
           acc[lvl].push(p);
           return acc;
         },
-        { Great: [], Good: [], Fine: [], Bad: [], Terrible: [] }
+        { Great: [], Good: [], Fine: [], Bad: [], Terrible: [] },
       );
     }, [numericPoints5]);
 
     const gradientId: string = `weeklyMoodLineGradient-${format(
       startDate,
-      "yyyyMMdd"
+      "yyyyMMdd",
     )}`;
 
     const [selectedPoint, setSelectedPoint] = useState<{
@@ -311,7 +312,7 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
     const renderScatter = (
       level: MoodLevel,
       score: number,
-      data: NumericPoint[]
+      data: NumericPoint[],
     ) => {
       if (data.length === 0) return null;
       return (
@@ -409,7 +410,12 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
               tickFormat={xTickLabels}
               style={{
                 axis: { stroke: "#EEF2F7" },
-                tickLabels: { fontSize: 12, padding: 10, fill: "#9AA4B2", fontWeight: "600" },
+                tickLabels: {
+                  fontSize: 12,
+                  padding: 10,
+                  fill: "#9AA4B2",
+                  fontWeight: "600",
+                },
                 grid: { stroke: "transparent" },
               }}
             />
@@ -427,7 +433,11 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
 
             {hasData && (
               <VictoryArea
-                data={numericPoints5.map((p) => ({ x: p.x, y: p.y + 0.5, y0: 1 }))}
+                data={numericPoints5.map((p) => ({
+                  x: p.x,
+                  y: p.y + 0.5,
+                  y0: 1,
+                }))}
                 interpolation="monotoneX"
                 animate={{
                   duration: 800,
@@ -464,7 +474,7 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
             )}
 
             {levels.map(({ level, score }) =>
-              renderScatter(level, score, byLevel[level])
+              renderScatter(level, score, byLevel[level]),
             )}
           </VictoryChart>
           {selectedPoint && (
@@ -472,7 +482,7 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
               x={selectedPoint.x}
               y={selectedPoint.y}
               title={`Mood: ${moodLevelForScore(
-                selectedPoint.datum.original.y
+                selectedPoint.datum.original.y,
               )}`}
               subtitle={`Day: ${selectedPoint.datum.original.label}`}
             />
@@ -497,7 +507,7 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
         )}
       </View>
     );
-  }
+  },
 );
 
 interface DailyChartPageProps {
@@ -513,7 +523,7 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
   ({ targetDate, width, height, padding, emotionsData, isLoading }) => {
     const points: DailyChartPoint[] = useMemo(
       () => buildDailyChartData(emotionsData ?? new Map()),
-      [emotionsData]
+      [emotionsData],
     );
 
     const totalSlots: number = points.length;
@@ -530,16 +540,16 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
                   label: p.x,
                   exactTime: p.exactTime,
                 } as NumericPoint)
-              : null
+              : null,
           )
           .filter((p): p is NumericPoint => p !== null),
-      [points]
+      [points],
     );
 
     // Show ticks at every 4th slot (every 2 hours)
     const xTickValues: number[] = useMemo(
       () => [1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45],
-      []
+      [],
     );
     const xTickLabels: string[] = useMemo(
       () => [
@@ -556,7 +566,7 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
         "8PM",
         "10PM",
       ],
-      []
+      [],
     );
 
     const hasData: boolean = numericPoints.length > 0;
@@ -568,13 +578,13 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
           acc[lvl].push(p);
           return acc;
         },
-        { Great: [], Good: [], Fine: [], Bad: [], Terrible: [] }
+        { Great: [], Good: [], Fine: [], Bad: [], Terrible: [] },
       );
     }, [numericPoints]);
 
     const gradientId: string = `dailyMoodLineGradient-${format(
       targetDate,
-      "yyyyMMdd"
+      "yyyyMMdd",
     )}`;
 
     const [selectedPoint, setSelectedPoint] = useState<{
@@ -591,7 +601,7 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
     const renderScatter = (
       level: MoodLevel,
       score: number,
-      data: NumericPoint[]
+      data: NumericPoint[],
     ) => {
       if (data.length === 0) return null;
       return (
@@ -692,7 +702,12 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
               }}
               style={{
                 axis: { stroke: "#EEF2F7" },
-                tickLabels: { fontSize: 10, padding: 8, fill: "#9AA4B2", fontWeight: "600" },
+                tickLabels: {
+                  fontSize: 10,
+                  padding: 8,
+                  fill: "#9AA4B2",
+                  fontWeight: "600",
+                },
                 grid: { stroke: "transparent" },
               }}
             />
@@ -710,7 +725,11 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
 
             {hasData && (
               <VictoryArea
-                data={numericPoints.map((p) => ({ x: p.x, y: p.y + 0.5, y0: 1 }))}
+                data={numericPoints.map((p) => ({
+                  x: p.x,
+                  y: p.y + 0.5,
+                  y0: 1,
+                }))}
                 interpolation="monotoneX"
                 animate={{
                   duration: 800,
@@ -747,7 +766,7 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
             )}
 
             {levels.map(({ level, score }) =>
-              renderScatter(level, score, byLevel[level])
+              renderScatter(level, score, byLevel[level]),
             )}
           </VictoryChart>
           {selectedPoint && (
@@ -755,12 +774,12 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
               x={selectedPoint.x}
               y={selectedPoint.y}
               title={`Mood: ${moodLevelForScore(
-                selectedPoint.datum.original.y
+                selectedPoint.datum.original.y,
               )}`}
               subtitle={`Time: ${
                 selectedPoint.datum.original.exactTime
                   ? dayjs(selectedPoint.datum.original.exactTime).format(
-                      "h:mm A"
+                      "h:mm A",
                     )
                   : selectedPoint.datum.original.label
               }`}
@@ -786,7 +805,7 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
         )}
       </View>
     );
-  }
+  },
 );
 
 // Wrapper component that fetches data for a specific day
@@ -802,11 +821,11 @@ const DailyChartPageWithData: React.FC<DailyChartPageWithDataProps> =
   React.memo(({ dayOffset, baseDate, width, height, padding }) => {
     const targetDate = useMemo(
       () => addDays(baseDate, dayOffset),
-      [baseDate, dayOffset]
+      [baseDate, dayOffset],
     );
     const targetDateStr = useMemo(
       () => dayjs(targetDate).format(ISO_DATE_FORMAT),
-      [targetDate]
+      [targetDate],
     );
 
     const { groupedMoods, isLoading } = useFetchDailyMoods({
@@ -836,7 +855,7 @@ const TAB_GAP = 16;
 
 const TabSelector: React.FC<TabProps> = ({ activeTab, onTabChange }) => {
   const indicatorPosition = useSharedValue(
-    activeTab === "day" ? 0 : TAB_WIDTH + TAB_GAP
+    activeTab === "day" ? 0 : TAB_WIDTH + TAB_GAP,
   );
 
   // Update indicator position when tab changes
@@ -846,7 +865,7 @@ const TabSelector: React.FC<TabProps> = ({ activeTab, onTabChange }) => {
       {
         damping: 20,
         stiffness: 200,
-      }
+      },
     );
   }, [activeTab, indicatorPosition]);
 
@@ -925,11 +944,11 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
 
   const effectiveStartDate: Date = useMemo(
     () => addDays(startDate, weekIndex * spanDays),
-    [startDate, weekIndex, spanDays]
+    [startDate, weekIndex, spanDays],
   );
   const effectiveEndDate: Date = useMemo(
     () => addDays(endDate, weekIndex * spanDays),
-    [endDate, weekIndex, spanDays]
+    [endDate, weekIndex, spanDays],
   );
 
   // Pager state for sliding days
@@ -937,11 +956,11 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   const today = useMemo(() => new Date(), []);
   const effectiveDay: Date = useMemo(
     () => addDays(today, dayIndex),
-    [today, dayIndex]
+    [today, dayIndex],
   );
   const effectiveDayStr = useMemo(
     () => dayjs(effectiveDay).format(ISO_DATE_FORMAT),
-    [effectiveDay]
+    [effectiveDay],
   );
 
   // Fetch daily data for the current day (for Day tab average)
@@ -969,9 +988,9 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       buildChartData(
         effectiveStartDate,
         effectiveEndDate,
-        (weeklyData as MoodsMap) ?? new Map<string, number>()
+        (weeklyData as MoodsMap) ?? new Map<string, number>(),
       ),
-    [effectiveStartDate, effectiveEndDate, weeklyData]
+    [effectiveStartDate, effectiveEndDate, weeklyData],
   );
 
   const weeklyNumericPoints: NumericPoint[] = weeklyPoints
@@ -989,7 +1008,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   // Calculate average for daily view
   const dailyPoints: DailyChartPoint[] = useMemo(
     () => buildDailyChartData(dailyData ?? new Map()),
-    [dailyData]
+    [dailyData],
   );
 
   const dailyNumericPoints: NumericPoint[] = dailyPoints
@@ -1022,7 +1041,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     activeTab === "week"
       ? `${format(effectiveStartDate, "LLLL d")} - ${format(
           effectiveEndDate,
-          "d, yyyy"
+          "d, yyyy",
         )}`
       : format(effectiveDay, "LLLL d, yyyy");
 
@@ -1040,9 +1059,9 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     () =>
       Array.from(
         { length: PRELOAD_PAST_WEEKS + 1 },
-        (_, i) => i - PRELOAD_PAST_WEEKS
+        (_, i) => i - PRELOAD_PAST_WEEKS,
       ),
-    []
+    [],
   );
   const CURRENT_INDEX: number = pages.length - 1; // index of offset 0 (current week)
 
@@ -1058,7 +1077,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
         setWeekIndex(offset);
       }
     },
-    [pages, CURRENT_INDEX]
+    [pages, CURRENT_INDEX],
   );
   const viewabilityConfig = useRef({
     viewAreaCoveragePercentThreshold: 60,
@@ -1067,7 +1086,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   // Use an integer page width everywhere to avoid subpixel drift
   const pageWidth: number = useMemo(
     () => (layoutWidth > 0 ? Math.round(layoutWidth) : 0),
-    [layoutWidth]
+    [layoutWidth],
   );
 
   const renderItem = useCallback(
@@ -1091,7 +1110,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       padding,
       weeklyData,
       isWeeklyLoading,
-    ]
+    ],
   );
 
   const keyExtractor = useCallback((item: WeekOffset) => `week-${item}`, []);
@@ -1101,7 +1120,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       offset: pageWidth * index,
       index,
     }),
-    [pageWidth]
+    [pageWidth],
   );
 
   const onMomentumScrollEnd = useCallback(
@@ -1112,7 +1131,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       // Clamp to exact page to eliminate any pixel drift
       listRef.current?.scrollToIndex({ index: idx, animated: false });
     },
-    [pageWidth]
+    [pageWidth],
   );
 
   // Daily pager (virtualized days)
@@ -1122,9 +1141,9 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     () =>
       Array.from(
         { length: PRELOAD_PAST_DAYS + 1 },
-        (_, i) => i - PRELOAD_PAST_DAYS
+        (_, i) => i - PRELOAD_PAST_DAYS,
       ),
-    []
+    [],
   );
   const CURRENT_DAY_INDEX: number = dayPages.length - 1; // index of offset 0 (today)
 
@@ -1140,7 +1159,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
         setDayIndex(offset);
       }
     },
-    [dayPages, CURRENT_DAY_INDEX]
+    [dayPages, CURRENT_DAY_INDEX],
   );
   const dayViewabilityConfig = useRef({
     viewAreaCoveragePercentThreshold: 60,
@@ -1156,7 +1175,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
         padding={padding}
       />
     ),
-    [today, pageWidth, chartHeight, padding]
+    [today, pageWidth, chartHeight, padding],
   );
 
   const dayKeyExtractor = useCallback((item: DayOffset) => `day-${item}`, []);
@@ -1166,7 +1185,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       offset: pageWidth * index,
       index,
     }),
-    [pageWidth]
+    [pageWidth],
   );
 
   const onDayMomentumScrollEnd = useCallback(
@@ -1176,20 +1195,22 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
       const idx = Math.round(x / pageWidth);
       dayListRef.current?.scrollToIndex({ index: idx, animated: false });
     },
-    [pageWidth]
+    [pageWidth],
   );
 
   if (isLoading && layoutWidth === 0) {
     return (
       <View className="w-full gap-2">
         <View className="flex-row items-center justify-between px-1">
-          <Text className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">{headerTitle}</Text>
+          <Text className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">
+            {headerTitle}
+          </Text>
         </View>
-        <View className="w-full rounded-3xl bg-white p-4 border border-gray-100">
+        <Card variant="tile" radius="xl" haptic="none" contentClassName="p-4">
           <View className="py-10 items-center justify-center">
             <Loading />
           </View>
-        </View>
+        </Card>
       </View>
     );
   }
@@ -1197,11 +1218,19 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     return (
       <View className="w-full gap-2">
         <View className="flex-row items-center justify-between px-1">
-          <Text className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">{headerTitle}</Text>
+          <Text className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">
+            {headerTitle}
+          </Text>
         </View>
-        <View className="w-full rounded-3xl bg-white p-4 border border-gray-100">
+        <Card
+          showDepth={false}
+          variant="tile"
+          radius="xl"
+          haptic="none"
+          contentClassName="p-4"
+        >
           <Text className="text-red-500">Failed to load mood data.</Text>
-        </View>
+        </Card>
       </View>
     );
   }
@@ -1214,158 +1243,166 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
         </Text>
       </View>
 
-      <View className="w-full rounded-3xl bg-white py-4 border border-gray-100">
+      <Card
+        showDepth={false}
+        variant="tile"
+        radius="xl"
+        haptic="none"
+        contentClassName="px-0 py-4"
+      >
         {/* Tab Header */}
-      <View className="px-4 mb-4">
-        <TabSelector activeTab={activeTab} onTabChange={setActiveTab} />
-      </View>
-
-      {/* Subtitle and Average Row */}
-      <View className="flex-row items-end justify-between px-4 mb-2">
-        <View className="flex-1">
-          <Text className="text-xs text-gray-500 font-medium">{headerSubtitle}</Text>
+        <View className="px-4 mb-4">
+          <TabSelector activeTab={activeTab} onTabChange={setActiveTab} />
         </View>
-        <View className="flex-row items-center">
-          <View
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 4,
-              backgroundColor: moodScoreToColor(avgRounded),
-              marginRight: 6,
-            }}
-          />
-          <Text className="text-xs text-gray-500">
-            Average:{" "}
-            <Text className="font-semibold text-gray-700">
-              {avg ? avgLabel : "-"}
+
+        {/* Subtitle and Average Row */}
+        <View className="flex-row items-end justify-between px-4 mb-2">
+          <View className="flex-1">
+            <Text className="text-xs text-gray-500 font-medium">
+              {headerSubtitle}
             </Text>
-          </Text>
-        </View>
-      </View>
-
-      {/* Chart area */}
-      <View className="overflow-hidden" onLayout={onLayout}>
-        {layoutWidth === 0 ? (
-          <View
-            style={{
-              height: chartHeight,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Loading />
           </View>
-        ) : activeTab === "week" ? (
-          <Animated.FlatList
-            key="week-list"
-            ref={listRef}
-            data={pages}
-            horizontal
-            pagingEnabled
-            snapToInterval={pageWidth}
-            snapToAlignment="start"
-            disableIntervalMomentum
-            scrollEventThrottle={16}
-            initialScrollIndex={CURRENT_INDEX + weekIndex}
-            showsHorizontalScrollIndicator={false}
-            bounces={false}
-            overScrollMode="never"
-            decelerationRate="fast"
-            nestedScrollEnabled
-            hitSlop={{ left: 124, right: 124 }}
-            renderItem={renderItem}
-            keyExtractor={keyExtractor}
-            getItemLayout={getItemLayout}
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={viewabilityConfig}
-            onScrollEndDrag={onMomentumScrollEnd}
-            windowSize={5}
-            maxToRenderPerBatch={3}
-            directionalLockEnabled
-            removeClippedSubviews={false}
-          />
-        ) : (
-          <Animated.FlatList
-            key="day-list"
-            ref={dayListRef}
-            data={dayPages}
-            horizontal
-            pagingEnabled
-            snapToInterval={pageWidth}
-            snapToAlignment="start"
-            disableIntervalMomentum
-            scrollEventThrottle={16}
-            initialScrollIndex={CURRENT_DAY_INDEX + dayIndex}
-            showsHorizontalScrollIndicator={false}
-            bounces={false}
-            overScrollMode="never"
-            decelerationRate="fast"
-            nestedScrollEnabled
-            hitSlop={{ left: 124, right: 124 }}
-            renderItem={renderDailyItem}
-            keyExtractor={dayKeyExtractor}
-            getItemLayout={getDayItemLayout}
-            onViewableItemsChanged={onDayViewableItemsChanged}
-            viewabilityConfig={dayViewabilityConfig}
-            onScrollEndDrag={onDayMomentumScrollEnd}
-            windowSize={5}
-            maxToRenderPerBatch={3}
-            directionalLockEnabled
-            removeClippedSubviews={false}
-          />
-        )}
-      </View>
-
-      {/* Emoji rail on the right */}
-      {layoutWidth > 0 && (
-        <View
-          pointerEvents="none"
-          style={{
-            position: "absolute",
-            right: 5,
-            top: 120,
-            bottom: 50,
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-          accessibilityLabel="Mood scale from Great to Terrible"
-          accessibilityRole="image"
-        >
-          {[
-            { score: 5, key: "great", label: "Great" },
-            { score: 4, key: "good", label: "Good" },
-            { score: 3, key: "fine", label: "Okay" },
-            { score: 2, key: "bad", label: "Bad" },
-            { score: 1, key: "terrible", label: "Terrible" },
-          ].map((it) => (
+          <View className="flex-row items-center">
             <View
-              key={it.key}
               style={{
-                width: 28,
-                height: 28,
-                borderRadius: 14,
-                backgroundColor: moodScoreToPale(it.score),
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: moodScoreToColor(avgRounded),
+                marginRight: 6,
+              }}
+            />
+            <Text className="text-xs text-gray-500">
+              Average:{" "}
+              <Text className="font-semibold text-gray-700">
+                {avg ? avgLabel : "-"}
+              </Text>
+            </Text>
+          </View>
+        </View>
+
+        {/* Chart area */}
+        <View className="overflow-hidden" onLayout={onLayout}>
+          {layoutWidth === 0 ? (
+            <View
+              style={{
+                height: chartHeight,
                 alignItems: "center",
                 justifyContent: "center",
-                shadowColor: "#000",
-                shadowOpacity: 0.05,
-                shadowRadius: 4,
               }}
-              accessibilityLabel={`Mood level: ${it.label}`}
             >
-              <Image
-                source={emotions[it.key as keyof typeof emotions]}
-                style={{ width: 18, height: 18 }}
-                resizeMode="contain"
-                progressiveRenderingEnabled={true}
-                accessibilityLabel={`${it.label} mood emoji`}
-              />
+              <Loading />
             </View>
-          ))}
+          ) : activeTab === "week" ? (
+            <Animated.FlatList
+              key="week-list"
+              ref={listRef}
+              data={pages}
+              horizontal
+              pagingEnabled
+              snapToInterval={pageWidth}
+              snapToAlignment="start"
+              disableIntervalMomentum
+              scrollEventThrottle={16}
+              initialScrollIndex={CURRENT_INDEX + weekIndex}
+              showsHorizontalScrollIndicator={false}
+              bounces={false}
+              overScrollMode="never"
+              decelerationRate="fast"
+              nestedScrollEnabled
+              hitSlop={{ left: 124, right: 124 }}
+              renderItem={renderItem}
+              keyExtractor={keyExtractor}
+              getItemLayout={getItemLayout}
+              onViewableItemsChanged={onViewableItemsChanged}
+              viewabilityConfig={viewabilityConfig}
+              onScrollEndDrag={onMomentumScrollEnd}
+              windowSize={5}
+              maxToRenderPerBatch={3}
+              directionalLockEnabled
+              removeClippedSubviews={false}
+            />
+          ) : (
+            <Animated.FlatList
+              key="day-list"
+              ref={dayListRef}
+              data={dayPages}
+              horizontal
+              pagingEnabled
+              snapToInterval={pageWidth}
+              snapToAlignment="start"
+              disableIntervalMomentum
+              scrollEventThrottle={16}
+              initialScrollIndex={CURRENT_DAY_INDEX + dayIndex}
+              showsHorizontalScrollIndicator={false}
+              bounces={false}
+              overScrollMode="never"
+              decelerationRate="fast"
+              nestedScrollEnabled
+              hitSlop={{ left: 124, right: 124 }}
+              renderItem={renderDailyItem}
+              keyExtractor={dayKeyExtractor}
+              getItemLayout={getDayItemLayout}
+              onViewableItemsChanged={onDayViewableItemsChanged}
+              viewabilityConfig={dayViewabilityConfig}
+              onScrollEndDrag={onDayMomentumScrollEnd}
+              windowSize={5}
+              maxToRenderPerBatch={3}
+              directionalLockEnabled
+              removeClippedSubviews={false}
+            />
+          )}
         </View>
-      )}
-      </View>
+
+        {/* Emoji rail on the right */}
+        {layoutWidth > 0 && (
+          <View
+            pointerEvents="none"
+            style={{
+              position: "absolute",
+              right: 5,
+              top: 120,
+              bottom: 50,
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+            accessibilityLabel="Mood scale from Great to Terrible"
+            accessibilityRole="image"
+          >
+            {[
+              { score: 5, key: "great", label: "Great" },
+              { score: 4, key: "good", label: "Good" },
+              { score: 3, key: "fine", label: "Okay" },
+              { score: 2, key: "bad", label: "Bad" },
+              { score: 1, key: "terrible", label: "Terrible" },
+            ].map((it) => (
+              <View
+                key={it.key}
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 14,
+                  backgroundColor: moodScoreToPale(it.score),
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowColor: "#000",
+                  shadowOpacity: 0.05,
+                  shadowRadius: 4,
+                }}
+                accessibilityLabel={`Mood level: ${it.label}`}
+              >
+                <Image
+                  source={emotions[it.key as keyof typeof emotions]}
+                  style={{ width: 18, height: 18 }}
+                  resizeMode="contain"
+                  progressiveRenderingEnabled={true}
+                  accessibilityLabel={`${it.label} mood emoji`}
+                />
+              </View>
+            ))}
+          </View>
+        )}
+      </Card>
     </View>
   );
 };

@@ -36,7 +36,7 @@ import type {
 } from "@/src/types/exerciseFlow";
 import { useCBTHistory, type HistoryLogItem } from "./hooks/useCBTHistory";
 import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
-import { PressableScale } from "@/src/components/ui/PressableScale";
+import { Card } from "@/src/components/ui/Card";
 import { GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
 
 type TabKey = "discover" | "log";
@@ -110,61 +110,65 @@ const ExerciseCard = memo(function ExerciseCard({
   }, [exercise, onPress]);
 
   return (
-    <PressableScale
+    <Card
+      variant="tile"
+      radius="xl"
       onPress={handlePress}
-      scale={0.98}
-      hapticStyle="light"
-      accessibilityRole="button"
+      haptic="light"
+      className="mb-4"
       accessibilityLabel={`${exercise.title}: ${exercise.subtitle}. Duration: ${exercise.duration}.`}
-      className="mb-4 rounded-[30px]"
     >
-      <View className="happy-brand-preview-tile rounded-[30px] px-4 py-4">
-        <View className="flex-row items-center gap-3">
-          <View
-            className="h-12 w-12 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50"
-            accessible={false}
+      <View className="flex-row items-center gap-3">
+        <View
+          className="h-12 w-12 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50"
+          accessible={false}
+        >
+          <HugeiconsIcon icon={icon} size={24} color={SAGE[600]} />
+        </View>
+
+        <View className="min-w-0 flex-1">
+          <Text
+            className="happy-font-body-bold text-[17px] leading-5 text-ink"
+            numberOfLines={1}
           >
-            <HugeiconsIcon icon={icon} size={24} color={SAGE[600]} />
-          </View>
+            {exercise.title}
+          </Text>
+          <Text
+            className="happy-font-body-medium mt-1 text-[14px] leading-5 text-ink-soft"
+            numberOfLines={2}
+          >
+            {exercise.subtitle}
+          </Text>
 
-          <View className="min-w-0 flex-1">
-            <Text
-              className="happy-font-body-bold text-[17px] leading-5 text-ink"
-              numberOfLines={1}
-            >
-              {exercise.title}
-            </Text>
-            <Text
-              className="happy-font-body-medium mt-1 text-[14px] leading-5 text-ink-soft"
-              numberOfLines={2}
-            >
-              {exercise.subtitle}
-            </Text>
-
-            <View className="mt-3 flex-row items-center gap-2">
-              <View className="flex-row items-center rounded-full bg-brand-surface-soft px-2.5 py-1">
-                <Text size="xs">⏱️</Text>
-                <Text className="happy-font-body-bold ml-1 text-ink-soft" size="xs">
-                  {exercise.duration}
-                </Text>
-              </View>
-              <View className="flex-row items-center rounded-full bg-gold/15 px-2.5 py-1">
-                <Text size="xs">⚡</Text>
-                <Text className="happy-font-body-bold ml-1 text-ink-soft" size="xs">
-                  +{exercise.xp} XP
-                </Text>
-              </View>
+          <View className="mt-3 flex-row items-center gap-2">
+            <View className="flex-row items-center rounded-full bg-brand-surface-soft px-2.5 py-1">
+              <Text size="xs">⏱️</Text>
+              <Text
+                className="happy-font-body-bold ml-1 text-ink-soft"
+                size="xs"
+              >
+                {exercise.duration}
+              </Text>
+            </View>
+            <View className="flex-row items-center rounded-full bg-gold/15 px-2.5 py-1">
+              <Text size="xs">⚡</Text>
+              <Text
+                className="happy-font-body-bold ml-1 text-ink-soft"
+                size="xs"
+              >
+                +{exercise.xp} XP
+              </Text>
             </View>
           </View>
+        </View>
 
-          <View className="h-11 w-11 items-center justify-center rounded-full border-b-4 border-b-terracotta bg-terracotta">
-            <Text className="happy-font-body-bold text-[18px] leading-5 text-brand-surface">
-              ›
-            </Text>
-          </View>
+        <View className="h-11 w-11 items-center justify-center rounded-full bg-sage-500">
+          <Text className="happy-font-body-bold text-[18px] leading-5 text-brand-surface">
+            ›
+          </Text>
         </View>
       </View>
-    </PressableScale>
+    </Card>
   );
 });
 
@@ -339,70 +343,65 @@ const LogCard = memo(function LogCard({
   }, [item, onPress]);
 
   return (
-    <PressableScale
+    <Card
+      variant="answer"
+      radius="xl"
       onPress={handlePress}
-      scale={0.98}
-      hapticStyle="light"
-      className="mb-3 rounded-[26px]"
-      accessibilityRole="button"
+      haptic="light"
+      className={`mb-3 ${cardBorderClassName}`}
     >
-      <View
-        className={`rounded-[26px] border-2 border-b-4 bg-white p-4 ${cardBorderClassName}`}
-      >
-        <View className="flex-row items-center gap-3">
-          <View className="h-12 w-12 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50">
-            <HugeiconsIcon
-              icon={presentation.icon}
-              size={22}
-              color={SAGE[600]}
-            />
+      <View className="flex-row items-center gap-3">
+        <View className="h-12 w-12 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50">
+          <HugeiconsIcon icon={presentation.icon} size={22} color={SAGE[600]} />
+        </View>
+
+        <View className="min-w-0 flex-1">
+          <View className="mb-0.5 flex-row items-center justify-between">
+            <Text className="happy-brand-eyebrow text-[10px]">
+              {presentation.heading}
+            </Text>
+            <Text className="happy-font-body-medium text-ink-muted" size="xs">
+              {format(new Date(item.date), "MMM d, h:mm a")}
+            </Text>
           </View>
 
-          <View className="min-w-0 flex-1">
-            <View className="mb-0.5 flex-row items-center justify-between">
-              <Text className="happy-brand-eyebrow text-[10px]">
-                {presentation.heading}
-              </Text>
-              <Text className="happy-font-body-medium text-xs text-ink-muted" size="xs">
-                {format(new Date(item.date), "MMM d, h:mm a")}
+          <Text
+            className="happy-font-body-bold mb-2 text-[16px] text-ink"
+            numberOfLines={1}
+          >
+            {presentation.title}
+          </Text>
+
+          <View className="flex-row items-center gap-2">
+            <View
+              className={`flex-row items-center rounded-full px-2.5 py-1 ${badgeClassName}`}
+            >
+              <HugeiconsIcon
+                icon={isComplete ? CheckmarkBadge01Icon : Time02Icon}
+                size={12}
+                color={badgeIconColor}
+              />
+              <Text
+                className={`ml-1 text-[10px] font-extrabold uppercase tracking-wider ${badgeTextClassName}`}
+              >
+                {label}
               </Text>
             </View>
-
-            <Text
-              className="happy-font-body-bold mb-2 text-[16px] text-ink"
-              numberOfLines={1}
-            >
-              {presentation.title}
-            </Text>
-
-            <View className="flex-row items-center gap-2">
-              <View
-                className={`flex-row items-center rounded-full px-2.5 py-1 ${badgeClassName}`}
-              >
-                <HugeiconsIcon
-                  icon={isComplete ? CheckmarkBadge01Icon : Time02Icon}
-                  size={12}
-                  color={badgeIconColor}
-                />
+            {isComplete && xpEarned > 0 ? (
+              <View className="flex-row items-center rounded-full bg-gold/15 px-2 py-1">
+                <Text size="xs">⚡</Text>
                 <Text
-                  className={`ml-1 text-[10px] font-extrabold uppercase tracking-wider ${badgeTextClassName}`}
+                  className="happy-font-body-bold ml-0.5 text-ink-soft"
+                  size="xs"
                 >
-                  {label}
+                  +{xpEarned} XP
                 </Text>
               </View>
-              {isComplete && xpEarned > 0 ? (
-                <View className="flex-row items-center rounded-full bg-gold/15 px-2 py-1">
-                  <Text size="xs">⚡</Text>
-                  <Text className="happy-font-body-bold ml-0.5 text-ink-soft" size="xs">
-                    +{xpEarned} XP
-                  </Text>
-                </View>
-              ) : null}
-            </View>
+            ) : null}
           </View>
         </View>
       </View>
-    </PressableScale>
+    </Card>
   );
 });
 

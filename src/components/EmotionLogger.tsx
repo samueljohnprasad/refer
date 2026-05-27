@@ -16,6 +16,7 @@ import { useXPOptional } from "../context/XPContext";
 import { XPActionType } from "../types/xp";
 import { useRewardsContext } from "../context/RewardsContext";
 import { useChallengesOptional } from "../context/ChallengesContext";
+import { Card } from "@/src/components/ui/Card";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { SAGE } from "@/lib/tokens";
 
@@ -30,6 +31,7 @@ const EMOTIONS = [
 interface EmotionLoggerProps {
   selectedDate?: Date;
   onEmotionLogged?: (emotionScore: number, updated: boolean) => void;
+  showDepth?: boolean;
 }
 
 const EmotionItem: React.FC<{
@@ -118,7 +120,7 @@ const EmotionItem: React.FC<{
 const MemoizedEmotionItem = React.memo(EmotionItem);
 
 export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
-  ({ selectedDate = new Date(), onEmotionLogged }) => {
+  ({ selectedDate = new Date(), onEmotionLogged, showDepth = true }) => {
     const {
       emotionCounts,
       logEmotion: logEmotionToSupabase,
@@ -166,7 +168,13 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
           <Text className="happy-brand-eyebrow">Daily Mood Log</Text>
         </View>
 
-        <View className="happy-brand-raised-panel rounded-[28px] p-4">
+        <Card
+          variant="tile"
+          radius="xl"
+          haptic="none"
+          showDepth={showDepth}
+          contentClassName="p-4"
+        >
           <View className="flex-row justify-between px-2 pt-1 pb-1">
             {EMOTIONS.map((emotion) => (
               <MemoizedEmotionItem
@@ -180,7 +188,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
               />
             ))}
           </View>
-        </View>
+        </Card>
       </View>
     );
   },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Platform,
 } from "react-native";
 import { PressableScale } from "@/src/components/ui/PressableScale";
+import { Card } from "@/src/components/ui/Card";
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -16,45 +17,18 @@ import { router } from "expo-router";
 import { useChallenges } from "@/hooks/data/useChallenges";
 import { ChallengeCard } from "./ChallengeCard";
 import { SAGE } from "@/lib/tokens";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withSequence,
-  withTiming,
-} from "react-native-reanimated";
 
 interface ChallengesSectionProps {
   maxItems?: number;
+  showDepth?: boolean;
 }
-
-/** Shimmer skeleton matching the challenges card shape */
-const ChallengesShimmer: React.FC = () => {
-  const shimmer = useSharedValue(0.4);
-  useEffect(() => {
-    shimmer.value = withRepeat(
-      withSequence(
-        withTiming(0.6, { duration: 800 }),
-        withTiming(0.4, { duration: 800 }),
-      ),
-      -1,
-      true,
-    );
-  }, [shimmer]);
-  const style = useAnimatedStyle(() => ({ opacity: shimmer.value }));
-  return (
-    <Animated.View
-      className="happy-brand-preview-tile rounded-[30px]"
-      style={[style, { height: 132 }]}
-    />
-  );
-};
 
 /**
  * Minimalist challenges section for home screen
  */
 export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
   maxItems = 3,
+  showDepth = true,
 }) => {
   const { dailyChallenges, weeklyChallenges, isLoading } = useChallenges();
   const [expanded, setExpanded] = useState<boolean>(true);
@@ -78,9 +52,16 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
 
   if (isLoading) {
     return (
-      <View className="happy-brand-preview-tile min-h-[132px] items-center justify-center rounded-[30px] p-6">
+      <Card
+        variant="tile"
+        radius="xl"
+        haptic="none"
+        showDepth={showDepth}
+        className="min-h-[132px]"
+        contentClassName="min-h-[128px] items-center justify-center p-6"
+      >
         <ActivityIndicator size="small" color={SAGE[600]} />
-      </View>
+      </Card>
     );
   }
 
@@ -126,7 +107,13 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
       </View>
 
       {expanded && (
-        <View className="happy-brand-preview-tile rounded-[30px] px-4 py-3">
+        <Card
+          variant="tile"
+          radius="xl"
+          haptic="none"
+          showDepth={showDepth}
+          contentClassName="px-4 py-3"
+        >
           {displayChallenges.map((challenge, i) => (
             <View
               key={challenge.id}
@@ -139,7 +126,7 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
               <ChallengeCard challenge={challenge} compact />
             </View>
           ))}
-        </View>
+        </Card>
       )}
     </View>
   );

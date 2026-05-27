@@ -17,10 +17,7 @@ import { router } from "expo-router";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
 import { ChallengesSection } from "@/src/components/Challenges";
 import { FeaturedPromptCard } from "@/src/components/FeaturedPromptCard";
-import {
-  Settings02Icon,
-  Medal01Icon,
-} from "@hugeicons/core-free-icons";
+import { Settings02Icon, Medal01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { usePostHog } from "posthog-react-native";
 import { UpdateModal } from "@/src/components/modals";
@@ -28,6 +25,7 @@ import { useAppUpdate } from "@/src/hooks/useAppUpdate";
 import { StreakDisplay, WeeklyStreakWidget } from "@/src/components/Streak";
 import { useStreakTracker } from "@/hooks/data/useStreakTracker";
 import { PressableScale } from "@/src/components/ui/PressableScale";
+import { Card } from "@/src/components/ui/Card";
 
 import {
   QuickJournalPrompt,
@@ -136,10 +134,17 @@ const ShimmerSkeleton = React.memo<{ height?: number }>(({ height = 240 }) => {
   }, []);
   const style = useAnimatedStyle(() => ({ opacity: shimmer.value }));
   return (
-    <Animated.View
-      className="happy-brand-raised-panel rounded-[28px]"
-      style={[style, { height, width: "100%" }]}
-    />
+    <Animated.View style={[style, { height, width: "100%" }]}>
+      <Card
+        variant="tile"
+        radius="xl"
+        haptic="none"
+        className="h-full"
+        contentClassName="h-full p-0"
+      >
+        <View className="h-full" />
+      </Card>
+    </Animated.View>
   );
 });
 
@@ -171,11 +176,7 @@ export default function JournalCalendarScreen() {
       setRecorderOpen(true);
       router.push("/tabs/(tabs)/record");
     },
-    [
-      setPrompt,
-      setStartRecording,
-      setRecorderOpen,
-    ],
+    [setPrompt, setStartRecording, setRecorderOpen],
   );
 
   const handleSeeAllPrompts = useCallback(() => {
@@ -247,6 +248,7 @@ export default function JournalCalendarScreen() {
               )}
             >
               <WeeklyStreakWidget
+                showDepth={false}
                 onPress={() =>
                   handleQuickJournalPress({
                     id: "initial_streak",
@@ -299,6 +301,7 @@ export default function JournalCalendarScreen() {
               <EmotionLogger
                 selectedDate={selectedEmotionDate}
                 onEmotionLogged={handleEmotionLogged}
+                showDepth={false}
               />
             </Animated.View>
 
@@ -342,7 +345,7 @@ export default function JournalCalendarScreen() {
                 STAGGER_DELAY_MS * 6,
               )}
             >
-              <ChallengesSection maxItems={3} />
+              <ChallengesSection showDepth={false} maxItems={3} />
             </Animated.View>
 
             {/* Quick Journal — same group as journaling, tighter spacing */}

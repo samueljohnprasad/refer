@@ -3,15 +3,17 @@ import { View, Text } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Fire02Icon } from "@hugeicons/core-free-icons";
 import { useStreakTracker } from "@/hooks/data/useStreakTracker";
-import { PressableScale } from "@/src/components/ui/PressableScale";
+import { Card } from "@/src/components/ui/Card";
 import { GOLD, SAGE } from "@/lib/tokens";
 
 interface WeeklyStreakWidgetProps {
   onPress?: () => void;
+  showDepth?: boolean;
 }
 
 export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
   onPress,
+  showDepth = true,
 }) => {
   const { streakData, isLoading } = useStreakTracker();
 
@@ -20,12 +22,13 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
   const labels = ["S", "M", "T", "W", "T", "F", "S"];
 
   return (
-    <PressableScale
+    <Card
+      variant="tile"
+      radius="xl"
       onPress={onPress}
-      scale={0.97}
-      hapticStyle="light"
-      className="happy-brand-raised-panel rounded-[32px]"
-      accessibilityRole="button"
+      haptic="light"
+      showDepth={showDepth}
+      contentClassName="p-0"
       accessibilityLabel={`Current streak: ${currentStreak} days`}
     >
       <View className="w-full flex-row items-center justify-between p-5">
@@ -93,6 +96,6 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
           })}
         </View>
       </View>
-    </PressableScale>
+    </Card>
   );
 };
