@@ -6,8 +6,9 @@ import {
   useState,
   type ReactElement,
 } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Text } from "@/components/ui/text";
 import { router, useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -115,7 +116,7 @@ const ExerciseCard = memo(function ExerciseCard({
       hapticStyle="light"
       accessibilityRole="button"
       accessibilityLabel={`${exercise.title}: ${exercise.subtitle}. Duration: ${exercise.duration}.`}
-      className="mb-3 rounded-[30px]"
+      className="mb-4 rounded-[30px]"
     >
       <View className="happy-brand-preview-tile rounded-[30px] px-4 py-4">
         <View className="flex-row items-center gap-3">
@@ -134,29 +135,29 @@ const ExerciseCard = memo(function ExerciseCard({
               {exercise.title}
             </Text>
             <Text
-              className="happy-font-body-medium mt-1 text-[14px] leading-5 text-ink-muted"
+              className="happy-font-body-medium mt-1 text-[14px] leading-5 text-ink-soft"
               numberOfLines={2}
             >
               {exercise.subtitle}
             </Text>
 
             <View className="mt-3 flex-row items-center gap-2">
-              <View className="flex-row items-center rounded-full bg-sage-50 px-2.5 py-1">
-                <Text className="text-xs">⏱️</Text>
-                <Text className="happy-font-body-bold ml-1 text-xs text-ink-soft">
+              <View className="flex-row items-center rounded-full bg-brand-surface-soft px-2.5 py-1">
+                <Text size="xs">⏱️</Text>
+                <Text className="happy-font-body-bold ml-1 text-ink-soft" size="xs">
                   {exercise.duration}
                 </Text>
               </View>
               <View className="flex-row items-center rounded-full bg-gold/15 px-2.5 py-1">
-                <Text className="text-xs">⚡</Text>
-                <Text className="happy-font-body-bold ml-1 text-xs text-ink-soft">
+                <Text size="xs">⚡</Text>
+                <Text className="happy-font-body-bold ml-1 text-ink-soft" size="xs">
                   +{exercise.xp} XP
                 </Text>
               </View>
             </View>
           </View>
 
-          <View className="h-10 w-10 items-center justify-center rounded-full bg-sage-500">
+          <View className="h-11 w-11 items-center justify-center rounded-full border-b-4 border-b-terracotta bg-terracotta">
             <Text className="happy-font-body-bold text-[18px] leading-5 text-brand-surface">
               ›
             </Text>
@@ -194,13 +195,13 @@ const DiscoverSection = memo(function DiscoverSection({
             {label}
           </Text>
           <Text
-            className="happy-font-body-medium mt-0.5 text-[14px] leading-5 text-ink-muted"
+            className="happy-font-body-medium mt-0.5 text-[14px] leading-5 text-ink-soft"
             numberOfLines={1}
           >
             {categoryMeta.description}
           </Text>
         </View>
-        <View className="happy-brand-status-chip ml-3 px-3 py-1">
+        <View className="happy-brand-status-chip ml-3 rounded-full px-3 py-1">
           <Text className="happy-font-body-bold text-xs text-sage-600">
             {exercises.length}
           </Text>
@@ -362,7 +363,7 @@ const LogCard = memo(function LogCard({
               <Text className="happy-brand-eyebrow text-[10px]">
                 {presentation.heading}
               </Text>
-              <Text className="happy-font-body-medium text-xs text-ink-muted">
+              <Text className="happy-font-body-medium text-xs text-ink-muted" size="xs">
                 {format(new Date(item.date), "MMM d, h:mm a")}
               </Text>
             </View>
@@ -391,8 +392,8 @@ const LogCard = memo(function LogCard({
               </View>
               {isComplete && xpEarned > 0 ? (
                 <View className="flex-row items-center rounded-full bg-gold/15 px-2 py-1">
-                  <Text className="text-[10px]">⚡</Text>
-                  <Text className="happy-font-body-bold ml-0.5 text-[10px] text-ink-soft">
+                  <Text size="xs">⚡</Text>
+                  <Text className="happy-font-body-bold ml-0.5 text-ink-soft" size="xs">
                     +{xpEarned} XP
                   </Text>
                 </View>
