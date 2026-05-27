@@ -45,22 +45,37 @@ export const TRANSPARENT = SAGE_OVERLAY.clear;
 
 // ─── Brand Surfaces ─────────────────────────────────────────────────────
 export const CREAM = "#ffffff" as const;
-export const CREAM_RAISED = "#f8fbf6" as const;
+export const CREAM_RAISED = "#F7F7F7" as const;
 export const WARM_WHITE = "#ffffff" as const;
 export const BRAND_CANVAS = "#ffffff" as const;
 export const BRAND_SURFACE = "#ffffff" as const;
-export const BRAND_SURFACE_SOFT = "#f8fbf6" as const;
+export const BRAND_SURFACE_SOFT = "#F7F7F7" as const;
 export const MASCOT_STAGE = "#ffffff" as const;
-export const TERRACOTTA = "#c8694b" as const;
-export const TERRACOTTA_LIGHT = "#e8a88e" as const;
-export const GOLD = "#d4a943" as const;
+// Duolingo Cardinal Red — adopted directly
+export const TERRACOTTA = "#FF4B4B" as const;
+export const TERRACOTTA_LIGHT = "#FF9090" as const;
+export const TERRACOTTA_TINT = "#FFDFE0" as const;
+// Duolingo Bee Yellow — adopted directly
+export const GOLD = "#FFD900" as const;
+export const GOLD_TINT = "#FFF5D6" as const;
+// Duolingo Otter Blue — adopted directly
+export const OTTER_BLUE = "#1CB0F6" as const;
+export const OTTER_BLUE_TINT = "#DDF4FF" as const;
+// Duolingo Macaw Purple — adopted directly
+export const MACAW_PURPLE = "#CE82FF" as const;
+export const MACAW_PURPLE_TINT = "#F0DEFF" as const;
+// Duolingo Parrot Orange — adopted directly
+export const PARROT_ORANGE = "#FF9600" as const;
+export const PARROT_ORANGE_TINT = "#FEEDE0" as const;
 export const DANGER = "#e7000b" as const;
 export const INK = "#142414" as const;
-export const INK_SOFT = "#505050" as const;
-export const INK_MUTED = "#898989" as const;
-export const BRAND_BORDER = "#e8eaeb" as const;
-export const BRAND_BORDER_STRONG = "#d4d7d8" as const;
+// Duolingo Wolf Grey 400 / Wolf Grey 200 — adopted directly
+export const INK_SOFT = "#777777" as const;
+export const INK_MUTED = "#AFAFAF" as const;
 export const OFFWHITE = "#ffffff" as const;
+// Duolingo Wolf Grey 300 / Wolf Grey 200 — adopted directly
+export const BRAND_BORDER = "#E5E5E5" as const;
+export const BRAND_BORDER_STRONG = "#AFAFAF" as const;
 export const SAGE_DISCOVERY_GRADIENT = [
   BRAND_SURFACE,
   BRAND_SURFACE_SOFT,
@@ -69,14 +84,14 @@ export const SAGE_DISCOVERY_GRADIENT = [
 // ─── App Semantic Theme ─────────────────────────────────────────────────
 export const THEME = {
   backgroundPrimary: "#ffffff",
-  backgroundSecondary: "#f8fbf6",
+  backgroundSecondary: "#F7F7F7",
   backgroundCard: "#ffffff",
-  textPrimary: "#1f2937",
-  textSecondary: "#64748b",
-  border: "#e5ede1",
-  purpleLight: "#eee9ff",
-  purplePrimary: "#7b61ff",
-  purpleDeep: "#5f46e8",
+  textPrimary: "#142414",
+  textSecondary: "#777777",
+  border: "#E5E5E5",
+  purpleLight: "#F0DEFF",
+  purplePrimary: "#CE82FF",
+  purpleDeep: "#9B59B6",
 } as const;
 
 // ─── Light/Dark Resolved Tokens ─────────────────────────────────────────
