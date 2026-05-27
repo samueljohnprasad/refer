@@ -7,6 +7,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import type { CustomerInfo } from "react-native-purchases";
 import { GOLD, SAGE } from "@/lib/tokens";
+import { Card } from "@/src/components/ui/Card";
 
 interface PremiumStatusCardProps {
   customerInfo: CustomerInfo | null;
@@ -41,8 +42,14 @@ export const PremiumStatusCard: React.FC<PremiumStatusCardProps> = ({
   }, [entitlement, isLoading]);
 
   return (
-    <View className="happy-brand-raised-panel mb-5 overflow-hidden rounded-[28px]">
-      <View className="flex-row items-center gap-3 p-4">
+    <Card
+      variant="tile"
+      radius="xl"
+      showDepth={true}
+      className="mb-5"
+      contentClassName="p-4"
+    >
+      <View className="flex-row items-center gap-3">
         <View className="h-12 w-12 items-center justify-center rounded-[18px] bg-gold/15">
           <HugeiconsIcon
             icon={CrownIcon}
@@ -74,6 +81,6 @@ export const PremiumStatusCard: React.FC<PremiumStatusCardProps> = ({
           </Text>
         </View>
       </View>
-    </View>
+    </Card>
   );
 };

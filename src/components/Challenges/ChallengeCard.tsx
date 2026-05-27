@@ -8,6 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { ActiveChallenge } from "@/src/types/challenges";
 import * as Haptics from "expo-haptics";
+import { Card } from "@/src/components/ui/Card";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   Mic01Icon,
@@ -171,10 +172,13 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
   }
 
   return (
-    <Pressable
+    <Card
+      variant="tile"
+      radius="xl"
       onPress={handlePress}
-      accessible={true}
-      accessibilityRole="button"
+      showDepth={true}
+      className="mb-2.5"
+      contentClassName="p-4"
       accessibilityLabel={
         isComplete
           ? `Challenge completed: ${challenge.title}`
@@ -182,95 +186,90 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       }
       accessibilityHint="Opens challenge details"
     >
-      <Animated.View
-        style={animatedStyle}
-        className="happy-brand-preview-tile mb-2.5 rounded-[28px] p-4"
-      >
-        {/* Header */}
-        <View className="flex-row items-start">
-          <ChallengeIconBubble iconKey={challenge.icon} size="lg" />
+      {/* Header */}
+      <View className="flex-row items-start">
+        <ChallengeIconBubble iconKey={challenge.icon} size="lg" />
 
-          <View className="ml-4 flex-1">
-            <View className="flex-row items-start justify-between">
-              <View className="flex-1">
-                <Text className="happy-font-body-bold text-lg text-ink">
-                  {challenge.title}
-                </Text>
-                <Text
-                  className="happy-font-body-medium mt-0.5 text-sm text-ink-muted"
-                  numberOfLines={2}
-                >
-                  {challenge.description}
+        <View className="ml-4 flex-1">
+          <View className="flex-row items-start justify-between">
+            <View className="flex-1">
+              <Text className="happy-font-body-bold text-lg text-ink">
+                {challenge.title}
+              </Text>
+              <Text
+                className="happy-font-body-medium mt-0.5 text-sm text-ink-muted"
+                numberOfLines={2}
+              >
+                {challenge.description}
+              </Text>
+            </View>
+
+            {isComplete && (
+              <View className="ml-2 flex-row items-center gap-1 rounded-full bg-sage-pill px-2.5 py-1">
+                <HugeiconsIcon
+                  icon={CheckmarkBadge01Icon}
+                  size={12}
+                  color={SAGE[600]}
+                  strokeWidth={2.5}
+                />
+                <Text className="happy-font-body-bold text-xs text-sage-600">
+                  Done
                 </Text>
               </View>
-
-              {isComplete && (
-                <View className="ml-2 flex-row items-center gap-1 rounded-full bg-sage-pill px-2.5 py-1">
-                  <HugeiconsIcon
-                    icon={CheckmarkBadge01Icon}
-                    size={12}
-                    color={SAGE[600]}
-                    strokeWidth={2.5}
-                  />
-                  <Text className="happy-font-body-bold text-xs text-sage-600">
-                    Done
-                  </Text>
-                </View>
-              )}
-            </View>
+            )}
           </View>
         </View>
+      </View>
 
-        {/* Progress */}
-        <View className="mt-4">
-          <View className="flex-row items-center justify-between mb-2">
-            <Text className="happy-font-body-medium text-sm text-ink-muted">
-              {challenge.progress} of {challenge.condition.target}
-            </Text>
-            <Text className="happy-font-body-bold text-sm text-ink">
-              {Math.round(progressPercent)}%
-            </Text>
-          </View>
+      {/* Progress */}
+      <View className="mt-4">
+        <View className="flex-row items-center justify-between mb-2">
+          <Text className="happy-font-body-medium text-sm text-ink-muted">
+            {challenge.progress} of {challenge.condition.target}
+          </Text>
+          <Text className="happy-font-body-bold text-sm text-ink">
+            {Math.round(progressPercent)}%
+          </Text>
+        </View>
 
-          <View className="h-1.5 overflow-hidden rounded-full bg-sage-100">
-            <View
-              className={`h-full rounded-full ${
-                isComplete ? "bg-sage-500" : "bg-sage-400"
-              }`}
-              style={{ width: `${progressPercent}%` }}
+        <View className="h-1.5 overflow-hidden rounded-full bg-sage-100">
+          <View
+            className={`h-full rounded-full ${
+              isComplete ? "bg-sage-500" : "bg-sage-400"
+            }`}
+            style={{ width: `${progressPercent}%` }}
+          />
+        </View>
+      </View>
+
+      {/* Rewards */}
+      {!isComplete && (
+        <View className="flex-row items-center mt-3 gap-3">
+          <Text className="happy-brand-eyebrow text-[10px]">Reward</Text>
+          <View className="flex-row items-center gap-1 rounded-lg bg-gold/15 px-2 py-0.5">
+            <HugeiconsIcon
+              icon={StarsIcon}
+              size={12}
+              color={GOLD}
+              strokeWidth={1.8}
             />
+            <Text className="happy-font-body-bold text-xs text-ink-soft">
+              {challenge.reward.xp} XP
+            </Text>
+          </View>
+          <View className="flex-row items-center gap-1 rounded-lg bg-sage-50 px-2 py-0.5">
+            <HugeiconsIcon
+              icon={Coins01Icon}
+              size={12}
+              color={SAGE[600]}
+              strokeWidth={1.8}
+            />
+            <Text className="happy-font-body-bold text-xs text-ink-soft">
+              {challenge.reward.coins}
+            </Text>
           </View>
         </View>
-
-        {/* Rewards */}
-        {!isComplete && (
-          <View className="flex-row items-center mt-3 gap-3">
-            <Text className="happy-brand-eyebrow text-[10px]">Reward</Text>
-            <View className="flex-row items-center gap-1 rounded-lg bg-gold/15 px-2 py-0.5">
-              <HugeiconsIcon
-                icon={StarsIcon}
-                size={12}
-                color={GOLD}
-                strokeWidth={1.8}
-              />
-              <Text className="happy-font-body-bold text-xs text-ink-soft">
-                {challenge.reward.xp} XP
-              </Text>
-            </View>
-            <View className="flex-row items-center gap-1 rounded-lg bg-sage-50 px-2 py-0.5">
-              <HugeiconsIcon
-                icon={Coins01Icon}
-                size={12}
-                color={SAGE[600]}
-                strokeWidth={1.8}
-              />
-              <Text className="happy-font-body-bold text-xs text-ink-soft">
-                {challenge.reward.coins}
-              </Text>
-            </View>
-          </View>
-        )}
-      </Animated.View>
-    </Pressable>
+      )}
+    </Card>
   );
 };

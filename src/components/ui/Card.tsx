@@ -126,6 +126,9 @@ export function Card({
     onPress?.();
   }, [isInteractive, haptic, onPress]);
 
+  const hasPadding = contentClassName.includes("p-") || contentClassName.includes("px-") || contentClassName.includes("py-");
+  const paddingClass = hasPadding ? "" : "p-4";
+
   const cardLayers = (
     <>
       {showDepth ? (
@@ -148,7 +151,7 @@ export function Card({
         style={animatedFaceStyle}
         className={`${config.faceClass} ${radiusClass}`}
       >
-        <View className={`p-4 ${contentClassName}`}>{children}</View>
+        <View className={`${paddingClass} ${contentClassName}`}>{children}</View>
       </Animated.View>
     </>
   );

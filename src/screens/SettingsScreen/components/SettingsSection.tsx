@@ -1,11 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
+import { Card } from "@/src/components/ui/Card";
 
 interface SettingsSectionProps {
-  children: React.ReactNode;
   // FIX #14: Remove className prop — callers should not control layout via className. Use `style` instead.
   // FIX #15: Added optional section title label (e.g. "Account", "About")
   title?: string;
+  children: React.ReactNode;
 }
 
 export const SettingsSection: React.FC<SettingsSectionProps> = ({
@@ -20,10 +21,15 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
           {title}
         </Text>
       )}
-      {/* FIX #16: Added soft shadow for section card depth */}
-      <View className="happy-brand-raised-panel overflow-hidden rounded-[28px]">
+      {/* Use premium interactive-style depth card but non-interactive */}
+      <Card
+        variant="tile"
+        radius="xl"
+        showDepth={true}
+        contentClassName="p-0 overflow-hidden"
+      >
         {children}
-      </View>
+      </Card>
     </View>
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text } from "react-native";
+import { Card } from "@/src/components/ui/Card";
 
 interface PromoCardProps {
   onLayout: (event: any) => void;
@@ -11,7 +12,16 @@ export const PromoCard: React.FC<PromoCardProps> = ({
   onPromoPress,
 }) => {
   return (
-    <View className="happy-brand-raised-panel mb-5 rounded-[28px] p-5">
+    <Card
+      variant="tile"
+      radius="xl"
+      onPress={onPromoPress}
+      onLayout={onLayout}
+      className="mb-5"
+      contentClassName="p-5"
+      accessibilityLabel="Upgrade to Pro. AI Insights, Weekly Summaries, Advanced Dashboard, Longer Recordings, and more."
+      accessibilityHint="Double tap to upgrade to Pro"
+    >
       {/* FIX #21: Added a top-row spark emoji icon for visual personality */}
       <View className="flex-row items-center gap-2 mb-2">
         <Text className="text-lg">✨</Text>
@@ -31,21 +41,14 @@ export const PromoCard: React.FC<PromoCardProps> = ({
         and more.
       </Text>
 
-      {/* Wrap in View to prevent LinearGradient from stretching full-width */}
+      {/* Wrap in View to prevent stretching full-width */}
       <View className="items-start">
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Upgrade to Premium"
-          onPress={onPromoPress}
-          onLayout={onLayout}
-          className="happy-brand-primary-cta rounded-[18px] px-5 py-3"
-          style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
-        >
+        <View className="happy-brand-primary-cta rounded-[18px] px-5 py-3">
           <Text className="happy-font-body-bold text-brand-surface text-[16px] tracking-wide">
             Upgrade to Pro →
           </Text>
-        </Pressable>
+        </View>
       </View>
-    </View>
+    </Card>
   );
 };

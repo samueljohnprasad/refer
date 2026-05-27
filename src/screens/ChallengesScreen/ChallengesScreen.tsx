@@ -14,6 +14,8 @@ import { useChallenges } from "@/hooks/data/useChallenges";
 import { ChallengeCard } from "@/src/components/Challenges";
 import { BRAND_SURFACE, GOLD, SAGE } from "@/lib/tokens";
 
+import { Card } from "@/src/components/ui/Card";
+
 type TabType = "daily" | "weekly";
 
 export const ChallengesScreen: React.FC = () => {
@@ -63,33 +65,45 @@ export const ChallengesScreen: React.FC = () => {
           </Text>
         </View>
 
-      <View className="flex-row px-4 pt-2 gap-3 pb-4">
-        {/* XP Card */}
-        <View className="happy-brand-raised-panel flex-1 rounded-[28px] p-5">
-          <View className="w-11 h-11 rounded-full bg-gold/15 items-center justify-center mb-4">
-            <HugeiconsIcon icon={StarsIcon} size={22} color={GOLD} />
-          </View>
-          <Text className="happy-font-heading-bold text-[34px] text-ink">
-            {totalXP}
-          </Text>
-          <Text className="happy-brand-eyebrow mt-1">
-            XP Available
-          </Text>
-        </View>
+        <View className="flex-row px-4 pt-2 gap-3 pb-4">
+          {/* XP Card */}
+          <Card
+            variant="tile"
+            radius="xl"
+            showDepth={true}
+            className="flex-1"
+            contentClassName="p-5"
+          >
+            <View className="w-11 h-11 rounded-full bg-gold/15 items-center justify-center mb-4">
+              <HugeiconsIcon icon={StarsIcon} size={22} color={GOLD} />
+            </View>
+            <Text className="happy-font-heading-bold text-[34px] text-ink">
+              {totalXP}
+            </Text>
+            <Text className="happy-brand-eyebrow mt-1">
+              XP Available
+            </Text>
+          </Card>
 
-        {/* Coins Card */}
-        <View className="happy-brand-raised-panel flex-1 rounded-[28px] p-5">
-          <View className="w-11 h-11 rounded-full bg-sage-pill items-center justify-center mb-4">
-            <HugeiconsIcon icon={Coins01Icon} size={22} color={SAGE[600]} />
-          </View>
-          <Text className="happy-font-heading-bold text-[34px] text-ink">
-            {totalCoins}
-          </Text>
-          <Text className="happy-brand-eyebrow mt-1">
-            Coins Available
-          </Text>
+          {/* Coins Card */}
+          <Card
+            variant="tile"
+            radius="xl"
+            showDepth={true}
+            className="flex-1"
+            contentClassName="p-5"
+          >
+            <View className="w-11 h-11 rounded-full bg-sage-pill items-center justify-center mb-4">
+              <HugeiconsIcon icon={Coins01Icon} size={22} color={SAGE[600]} />
+            </View>
+            <Text className="happy-font-heading-bold text-[34px] text-ink">
+              {totalCoins}
+            </Text>
+            <Text className="happy-brand-eyebrow mt-1">
+              Coins Available
+            </Text>
+          </Card>
         </View>
-      </View>
 
       {/* Segmented Control Tabs */}
       <View className="px-4 mb-4">
