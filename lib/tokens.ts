@@ -29,11 +29,7 @@ export const SAGE_RECORDING_GRADIENT = [
   "#ffffff",
 ] as const;
 
-export const SAGE_LOADING_GRADIENT = [
-  "#ffffff",
-  "#f8fbf6",
-  "#f2f8ef",
-] as const;
+export const SAGE_LOADING_GRADIENT = ["#ffffff", "#f8fbf6", "#f2f8ef"] as const;
 
 export const SAGE_OVERLAY = {
   clear: "transparent",
@@ -60,8 +56,10 @@ export const TERRACOTTA_LIGHT = "#e8a88e" as const;
 export const GOLD = "#d4a943" as const;
 export const DANGER = "#e7000b" as const;
 export const INK = "#142414" as const;
-export const INK_SOFT = "#4f604f" as const;
-export const INK_MUTED = "#7d8d7b" as const;
+export const INK_SOFT = "#505050" as const;
+export const INK_MUTED = "#898989" as const;
+export const BRAND_BORDER = "#e8eaeb" as const;
+export const BRAND_BORDER_STRONG = "#d4d7d8" as const;
 export const OFFWHITE = "#ffffff" as const;
 export const SAGE_DISCOVERY_GRADIENT = [
   BRAND_SURFACE,

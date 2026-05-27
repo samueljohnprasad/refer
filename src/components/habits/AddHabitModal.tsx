@@ -1,20 +1,19 @@
-import React, { useState, useCallback } from "react";
+import React, { forwardRef, useState } from "react";
 import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { forwardRef } from "react";
 import ShortBottomModal from "@/src/components/ShortBottomModal";
 import { CreateHabitFormData, PresetHabit } from "@/src/types/habits";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Add01Icon, Tick01Icon } from "@hugeicons/core-free-icons";
-import * as Haptics from "expo-haptics";
+import { PressableScale } from "@/src/components/ui/PressableScale";
+import { INK_MUTED, SAGE } from "@/lib/tokens";
 
 interface AddHabitModalProps {
   onSubmit: (formData: CreateHabitFormData) => Promise<void>;
@@ -72,6 +71,35 @@ const PRESET_HABITS: PresetHabit[] = [
   },
 ];
 
+type PresetHabitTone = {
+  iconBgClassName: string;
+  iconBorderClassName: string;
+  chipClassName: string;
+};
+
+const PRESET_TONES: Record<PresetHabit["category"], PresetHabitTone> = {
+  health: {
+    iconBgClassName: "bg-terracotta/15",
+    iconBorderClassName: "border-terracotta-light/60",
+    chipClassName: "bg-terracotta/15",
+  },
+  productivity: {
+    iconBgClassName: "bg-gold/15",
+    iconBorderClassName: "border-gold/30",
+    chipClassName: "bg-gold/15",
+  },
+  selfcare: {
+    iconBgClassName: "bg-terracotta/15",
+    iconBorderClassName: "border-terracotta-light/60",
+    chipClassName: "bg-terracotta/15",
+  },
+  mindfulness: {
+    iconBgClassName: "bg-sage-50",
+    iconBorderClassName: "border-sage-100",
+    chipClassName: "bg-sage-pill",
+  },
+};
+
 export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
   (props, ref) => {
     const { onSubmit } = props;
@@ -82,8 +110,6 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
     const [loading, setLoading] = useState(false);
 
     const handlePresetSelect = async (preset: PresetHabit) => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
       setLoading(true);
       await onSubmit({
         name: preset.name,
@@ -100,8 +126,6 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
 
     const handleCustomSubmit = async () => {
       if (!habitName.trim()) return;
-
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
       setLoading(true);
       await onSubmit({
@@ -121,18 +145,18 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
     };
 
     return (
-      <ShortBottomModal marginHorizontal={8} ref={ref} snapPoints={["80%"]}>
+      <ShortBottomModal marginHorizontal={10} ref={ref} snapPoints={["82%"]}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           className="flex-1"
         >
-          <View className="flex-1 px-6 pt-4">
+          <View className="flex-1 px-5 pt-4">
             {/* Header */}
-            <Text className="text-3xl text-theme-text-primary mb-2 font-cormorantSemiBold">
+            <Text className="happy-font-heading-bold mb-1 text-[32px] leading-10 text-ink">
               Add a Habit
             </Text>
-            <Text className="text-theme-text-secondary text-base mb-6">
-              Choose from presets or create your own
+            <Text className="happy-font-body-medium mb-5 text-[15px] leading-6 text-ink-muted">
+              Pick a gentle preset, or create one that fits your routine.
             </Text>
 
             {!showCustomForm ? (
@@ -141,46 +165,74 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
                 <ScrollView
                   showsVerticalScrollIndicator={false}
                   className="flex-1"
+                  contentContainerClassName="pb-4"
                 >
-                  {PRESET_HABITS.map((preset, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() => handlePresetSelect(preset)}
-                      disabled={loading}
-                      className="bg-theme-background-secondary rounded-2xl p-4 mb-3 border border-theme-border"
-                      activeOpacity={0.7}
-                    >
-                      <View className="flex-row items-center">
-                        <View className="w-12 h-12 rounded-full bg-theme-background-primary items-center justify-center mr-3">
-                          <Text style={{ fontSize: 24 }}>{preset.icon}</Text>
+                  {PRESET_HABITS.map((preset) => {
+                    const tone = PRESET_TONES[preset.category];
+
+                    return (
+                      <PressableScale
+                        key={preset.name}
+                        onPress={() => handlePresetSelect(preset)}
+                        disabled={loading}
+                        scale={0.98}
+                        hapticStyle="light"
+                        className="mb-3 rounded-[28px]"
+                        accessibilityRole="button"
+                        accessibilityLabel={`Add habit: ${preset.name}. ${preset.description}`}
+                      >
+                        <View className="happy-brand-preview-tile rounded-[28px] px-4 py-4">
+                          <View className="flex-row items-center">
+                            <View
+                              className={`mr-3 h-12 w-12 items-center justify-center rounded-[18px] border ${tone.iconBorderClassName} ${tone.iconBgClassName}`}
+                            >
+                              <Text style={{ fontSize: 23 }}>
+                                {preset.icon}
+                              </Text>
+                            </View>
+                            <View className="min-w-0 flex-1">
+                              <View className="mb-1 flex-row items-center">
+                                <Text
+                                  className="happy-font-body-bold flex-1 text-[16px] leading-5 text-ink"
+                                  numberOfLines={1}
+                                >
+                                  {preset.name}
+                                </Text>
+                                <View
+                                  className={`ml-2 h-2.5 w-2.5 rounded-full ${tone.chipClassName}`}
+                                />
+                              </View>
+                              <Text
+                                className="happy-font-body-medium text-[14px] leading-5 text-ink-muted"
+                                numberOfLines={2}
+                              >
+                                {preset.description}
+                              </Text>
+                            </View>
+                          </View>
                         </View>
-                        <View className="flex-1">
-                          <Text className="text-base font-semibold text-theme-text-primary mb-1">
-                            {preset.name}
-                          </Text>
-                          <Text className="text-sm text-theme-text-secondary">
-                            {preset.description}
-                          </Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  ))}
+                      </PressableScale>
+                    );
+                  })}
                 </ScrollView>
 
                 {/* Custom Habit Button */}
-                <TouchableOpacity
+                <PressableScale
                   onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     setShowCustomForm(true);
                   }}
-                  className="w-full bg-[#7B61FF] rounded-full py-4 flex-row items-center justify-center gap-2 mb-4"
-                  activeOpacity={0.8}
+                  scale={0.97}
+                  hapticStyle="light"
+                  className="mb-4 rounded-[24px]"
+                  accessibilityRole="button"
                 >
-                  <HugeiconsIcon icon={Add01Icon} size={20} color="#FFFFFF" />
-                  <Text className="text-white font-semibold text-base">
-                    Create Custom Habit
-                  </Text>
-                </TouchableOpacity>
+                  <View className="flex-row items-center justify-center rounded-[24px] border-b-4 border-b-terracotta bg-terracotta py-4">
+                    <HugeiconsIcon icon={Add01Icon} size={20} color="#FFFFFF" />
+                    <Text className="happy-font-body-bold ml-2 text-[15px] text-brand-surface">
+                      Create Custom Habit
+                    </Text>
+                  </View>
+                </PressableScale>
               </>
             ) : (
               <>
@@ -188,40 +240,41 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
                 <ScrollView
                   showsVerticalScrollIndicator={false}
                   className="flex-1"
+                  contentContainerClassName="pb-4"
                 >
                   <View className="mb-4">
-                    <Text className="text-sm font-semibold text-theme-text-secondary mb-2">
+                    <Text className="happy-brand-eyebrow mb-2 text-[11px]">
                       Habit Name *
                     </Text>
                     <TextInput
                       value={habitName}
                       onChangeText={setHabitName}
                       placeholder="e.g., Morning stretch routine"
-                      placeholderTextColor="#9CA3AF"
+                      placeholderTextColor={INK_MUTED}
                       maxLength={50}
-                      className="bg-theme-background-secondary rounded-xl px-4 py-3 text-base text-theme-text-primary border border-theme-border"
+                      className="happy-font-body-medium rounded-[22px] border-2 border-sage-100 bg-brand-surface-soft px-4 py-3 text-[15px] leading-6 text-ink"
                     />
-                    <Text className="text-xs text-gray-500 mt-1">
+                    <Text className="happy-font-body-medium mt-1 text-xs text-ink-muted">
                       {habitName.length}/50
                     </Text>
                   </View>
 
                   <View className="mb-6">
-                    <Text className="text-sm font-semibold text-theme-text-secondary mb-2">
+                    <Text className="happy-brand-eyebrow mb-2 text-[11px]">
                       Why is this important to you?
                     </Text>
                     <TextInput
                       value={habitDescription}
                       onChangeText={setHabitDescription}
                       placeholder="To feel more energized and focused..."
-                      placeholderTextColor="#9CA3AF"
+                      placeholderTextColor={INK_MUTED}
                       maxLength={200}
                       multiline
                       numberOfLines={3}
                       textAlignVertical="top"
-                      className="bg-theme-background-secondary rounded-xl px-4 py-3 text-base text-theme-text-primary border border-theme-border min-h-[80px]"
+                      className="happy-font-body-medium min-h-[96px] rounded-[22px] border-2 border-sage-100 bg-brand-surface-soft px-4 py-3 text-[15px] leading-6 text-ink"
                     />
-                    <Text className="text-xs text-gray-500 mt-1">
+                    <Text className="happy-font-body-medium mt-1 text-xs text-ink-muted">
                       {habitDescription.length}/200
                     </Text>
                   </View>
@@ -229,48 +282,55 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
 
                 {/* Action Buttons */}
                 <View className="flex-row gap-3 mb-4">
-                  <TouchableOpacity
+                  <PressableScale
                     onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                       setShowCustomForm(false);
                       setHabitName("");
                       setHabitDescription("");
                     }}
-                    className="flex-1 bg-gray-100 rounded-full py-4 items-center justify-center"
-                    activeOpacity={0.8}
+                    scale={0.97}
+                    hapticStyle="light"
+                    className="flex-1 rounded-[22px]"
                   >
-                    <Text className="text-gray-700 font-semibold text-base">
-                      Back
-                    </Text>
-                  </TouchableOpacity>
+                    <View className="items-center justify-center rounded-[22px] bg-sage-pill py-4">
+                      <Text className="happy-font-body-bold text-[15px] text-sage-700">
+                        Back
+                      </Text>
+                    </View>
+                  </PressableScale>
 
-                  <TouchableOpacity
+                  <PressableScale
                     onPress={handleCustomSubmit}
                     disabled={!habitName.trim() || loading}
-                    className={`flex-1 rounded-full py-4 flex-row items-center justify-center gap-2 ${
-                      !habitName.trim() || loading
-                        ? "bg-gray-300"
-                        : "bg-[#7B61FF]"
-                    }`}
-                    activeOpacity={0.8}
+                    scale={0.97}
+                    hapticStyle="medium"
+                    className="flex-1 rounded-[22px]"
                   >
-                    <HugeiconsIcon
-                      icon={Tick01Icon}
-                      size={20}
-                      color={
-                        !habitName.trim() || loading ? "#9CA3AF" : "#FFFFFF"
-                      }
-                    />
-                    <Text
-                      className={`font-semibold text-base ${
+                    <View
+                      className={`flex-row items-center justify-center rounded-[22px] border-b-4 py-4 ${
                         !habitName.trim() || loading
-                          ? "text-gray-500"
-                          : "text-white"
+                          ? "border-b-sage-300 bg-sage-200"
+                          : "border-b-terracotta bg-terracotta"
                       }`}
                     >
-                      Create Habit
-                    </Text>
-                  </TouchableOpacity>
+                      <HugeiconsIcon
+                        icon={Tick01Icon}
+                        size={20}
+                        color={
+                          !habitName.trim() || loading ? SAGE[400] : "#FFFFFF"
+                        }
+                      />
+                      <Text
+                        className={`happy-font-body-bold ml-2 text-[15px] ${
+                          !habitName.trim() || loading
+                            ? "text-ink-muted"
+                            : "text-brand-surface"
+                        }`}
+                      >
+                        Create Habit
+                      </Text>
+                    </View>
+                  </PressableScale>
                 </View>
               </>
             )}
