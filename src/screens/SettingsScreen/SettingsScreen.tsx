@@ -1,8 +1,7 @@
 import React from "react";
-import { View, Animated, Modal, Share } from "react-native";
+import { View, Animated, Modal, Share, useWindowDimensions } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/elements";
 import * as Haptics from "expo-haptics";
 import {
   AlertSquareIcon,
@@ -43,7 +42,8 @@ import { PremiumStatusCard } from "./components/PremiumStatusCard";
 
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
-  const headerHeight = useHeaderHeight();
+  const { height: windowHeight } = useWindowDimensions();
+  const headerHeight = windowHeight * 0.14;
   const signInSheetRef = React.useRef<BottomSheetModal>(null);
   const { customerInfo, hasPro, isLoadingRevenueCat, presentPaywall } =
     useRevenueCat();
@@ -96,18 +96,10 @@ export default React.memo(function SettingsScreen() {
     <View className="flex-1 bg-offwhite">
       <Stack.Screen
         options={{
-          headerShown: true,
-          headerTransparent: true,
-          headerBlurEffect: "regular",
-          header: () => (
-            <SettingsHeader
-              scrollY={scrollY}
-              upgradeY={upgradeY}
-            />
-          ),
+          headerShown: false,
         }}
       />
-      <View className="flex-1 px-0">
+      <View className="flex-1 px-0 relative">
         <Animated.ScrollView
           contentContainerClassName="flex-grow px-4"
           contentContainerStyle={{
@@ -271,6 +263,11 @@ export default React.memo(function SettingsScreen() {
             )}
           </SettingsSection>
         </Animated.ScrollView>
+
+        {/* Custom sticky header absolutely positioned to prevent native overlap */}
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 50 }}>
+          <SettingsHeader scrollY={scrollY} upgradeY={upgradeY} />
+        </View>
       </View>
 
       <Modal

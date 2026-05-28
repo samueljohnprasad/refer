@@ -6,11 +6,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Modal,
 } from "react-native";
-import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
+import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
+import {
+  presentationDetents,
+  presentationDragIndicator,
+} from "@expo/ui/swift-ui/modifiers";
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { extractTextFromImage } from "@/src/network/extractTextFromImage";
 import { callMyFunction } from "@/src/network/transcribeAudio";
 import { InsightsType } from "@/src/network/genAi";
@@ -18,7 +22,7 @@ import { BRAND_SURFACE, INK_SOFT, SAGE } from "@/lib/tokens";
 import { Button } from "@/src/components/ui/Button";
 
 interface ImageJournalModalProps {
-  sheetRef: React.RefObject<BottomSheetModal>;
+  visible: boolean;
   onClose: () => void;
   onInsightsReady: (insights: InsightsType, transcript: string) => void;
   selectedDate: Date;
@@ -42,12 +46,12 @@ const STEP_MESSAGES: Record<ProcessingStep, string> = {
 };
 
 export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
-  sheetRef,
+  visible,
   onClose,
   onInsightsReady,
-  selectedDate,
 }) => {
-  const { bottom } = useSafeAreaInsets();
+  if (!visible) return null;
+
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [step, setStep] = useState<ProcessingStep>("idle");
   const [extractedText, setExtractedText] = useState<string>("");
@@ -172,147 +176,151 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
   }, [resetState, captureImage]);
 
   return (
-    <BottomSheetModal
-      ref={sheetRef}
-      snapPoints={["85%"]}
-      onDismiss={handleClose}
-      style={{
-        marginHorizontal: 8,
-        borderRadius: 32,
-        shadowColor: SAGE[600],
-        shadowOffset: {
-          width: 0,
-          height: -6,
-        },
-        shadowOpacity: 0.12,
-        shadowRadius: 18,
-        elevation: 5,
-      }}
-      backgroundStyle={{
-        backgroundColor: BRAND_SURFACE,
-        borderTopLeftRadius: 32,
-        borderTopRightRadius: 32,
-      }}
-      handleIndicatorStyle={{ backgroundColor: SAGE[100], width: 48 }}
+    <Modal
+      visible={visible}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={onClose}
     >
-      <BottomSheetView
-        style={{ flex: 1, paddingBottom: bottom + 16, paddingHorizontal: 20 }}
-      >
-        {/* Header */}
-        <View className="flex-row items-center justify-between mb-6 pt-1">
-          <View className="flex-row items-center">
-            <View className="w-12 h-12 rounded-[18px] bg-sage-pill items-center justify-center">
-              <Feather name="camera" size={22} color={SAGE[600]} />
-            </View>
-            <Text className="text-2xl happy-font-body-bold text-ink ml-3">
-              Scan Journal
-            </Text>
-          </View>
-          <TouchableOpacity onPress={handleClose} className="p-2">
-            <Feather name="x" size={26} color={INK_SOFT} />
-          </TouchableOpacity>
-        </View>
+      <Host>
+        <BottomSheet
+          isPresented={visible}
+          onIsPresentedChange={(val: boolean) => {
+            if (!val) {
+              handleClose();
+            }
+          }}
+        >
+          <Group
+            modifiers={[
+              presentationDetents([{ fraction: 0.85 }]),
+              presentationDragIndicator("visible"),
+            ]}
+          >
+            <RNHostView>
+              <View
+                style={{ flex: 1, paddingBottom: 24, paddingHorizontal: 20 }}
+              >
+                {/* Header */}
+                <View className="flex-row items-center justify-between mb-6 pt-5">
+                  <View className="flex-row items-center">
+                    <View className="w-12 h-12 rounded-[18px] bg-sage-pill items-center justify-center">
+                      <Feather name="camera" size={22} color={SAGE[600]} />
+                    </View>
+                    <Text className="text-2xl happy-font-body-bold text-ink ml-3">
+                      Scan Journal
+                    </Text>
+                  </View>
+                  <TouchableOpacity onPress={handleClose} className="p-2">
+                    <Feather name="x" size={26} color={INK_SOFT} />
+                  </TouchableOpacity>
+                </View>
 
-        {/* Content */}
-        <View className="flex-1">
-          {!imageUri ? (
-            // Capture prompt
-            <View className="flex-1 items-center justify-center">
-              <View className="happy-mascot-stage w-40 h-40 rounded-[44px] bg-sage-50 border-0 items-center justify-center mb-7">
-                <Feather name="camera" size={54} color={SAGE[600]} />
-              </View>
-              <Text className="text-[28px] leading-8 happy-font-heading-bold text-ink text-center mb-3">
-                Capture Your Journal Page
-              </Text>
-              <Text className="text-base happy-font-body text-ink-muted text-center px-8 mb-8 leading-6">
-                Take a photo of your handwritten or printed journal to extract
-                text and get AI insights
-              </Text>
-              <Button
-                label="Open Camera"
-                variant="primary"
-                onPress={captureImage}
-                leftIcon={<Feather name="camera" size={20} color={BRAND_SURFACE} />}
-                className="mb-4"
-              />
-
-              <Button
-                label="Select from Gallery"
-                variant="secondary"
-                onPress={pickImage}
-                leftIcon={<Feather name="image" size={20} color={INK_SOFT} />}
-              />
-            </View>
-          ) : (
-            // Image preview and processing
-            <View className="flex-1">
-              {/* Image Preview */}
-              <View className="flex-1 rounded-[28px] overflow-hidden bg-sage-50 mb-4 border border-sage-100">
-                <Image
-                  source={{ uri: imageUri }}
-                  className="w-full h-full"
-                  resizeMode="contain"
-                />
-                {/* Processing overlay */}
-                {step !== "idle" && step !== "done" && (
-                  <View className="absolute inset-0 bg-black/50 items-center justify-center">
-                    <View className="bg-white rounded-[28px] p-6 items-center mx-8 border border-sage-100">
-                      <ActivityIndicator size="large" color={SAGE[500]} />
-                      <Text className="text-ink happy-font-body-bold mt-4 text-center">
-                        {STEP_MESSAGES[step]}
+                {/* Content */}
+                <View className="flex-1">
+                  {!imageUri ? (
+                    // Capture prompt
+                    <View className="flex-1 items-center justify-center">
+                      <View className="happy-mascot-stage w-40 h-40 rounded-[44px] bg-sage-50 border-0 items-center justify-center mb-7">
+                        <Feather name="camera" size={54} color={SAGE[600]} />
+                      </View>
+                      <Text className="text-[28px] leading-8 happy-font-heading-bold text-ink text-center mb-3">
+                        Capture Your Journal Page
                       </Text>
-                      {step === "extracting" && (
-                        <Text className="text-ink-muted happy-font-body text-sm mt-2 text-center">
-                          Reading handwritten text...
-                        </Text>
+                      <Text className="text-base happy-font-body text-ink-muted text-center px-8 mb-8 leading-6">
+                        Take a photo of your handwritten or printed journal to extract
+                        text and get AI insights
+                      </Text>
+                      <Button
+                        label="Open Camera"
+                        variant="primary"
+                        onPress={captureImage}
+                        leftIcon={<Feather name="camera" size={20} color={BRAND_SURFACE} />}
+                        className="mb-4"
+                      />
+
+                      <Button
+                        label="Select from Gallery"
+                        variant="secondary"
+                        onPress={pickImage}
+                        leftIcon={<Feather name="image" size={20} color={INK_SOFT} />}
+                      />
+                    </View>
+                  ) : (
+                    // Image preview and processing
+                    <View className="flex-1">
+                      {/* Image Preview */}
+                      <View className="flex-1 rounded-[28px] overflow-hidden bg-sage-50 mb-4 border border-sage-100">
+                        <Image
+                          source={{ uri: imageUri }}
+                          className="w-full h-full"
+                          resizeMode="contain"
+                        />
+                        {/* Processing overlay */}
+                        {step !== "idle" && step !== "done" && (
+                          <View className="absolute inset-0 bg-black/50 items-center justify-center">
+                            <View className="bg-white rounded-[28px] p-6 items-center mx-8 border border-sage-100">
+                              <ActivityIndicator size="large" color={SAGE[500]} />
+                              <Text className="text-ink happy-font-body-bold mt-4 text-center">
+                                {STEP_MESSAGES[step]}
+                              </Text>
+                              {step === "extracting" && (
+                                <Text className="text-ink-muted happy-font-body text-sm mt-2 text-center">
+                                  Reading handwritten text...
+                                </Text>
+                              )}
+                              {step === "analyzing" && (
+                                <Text className="text-ink-muted happy-font-body text-sm mt-2 text-center">
+                                  Creating personalized insights...
+                                </Text>
+                              )}
+                            </View>
+                          </View>
+                        )}
+                      </View>
+
+                      {/* Extracted text preview */}
+                      {extractedText && step === "analyzing" && (
+                        <View className="bg-sage-50 rounded-2xl p-4 mb-4 max-h-32 border border-sage-100">
+                          <Text className="text-xs text-sage-500 mb-1 happy-font-body-bold uppercase tracking-widest">
+                            Extracted Text:
+                          </Text>
+                          <Text
+                            className="text-sm text-ink-soft happy-font-body"
+                            numberOfLines={4}
+                          >
+                            {extractedText}
+                          </Text>
+                        </View>
                       )}
-                      {step === "analyzing" && (
-                        <Text className="text-ink-muted happy-font-body text-sm mt-2 text-center">
-                          Creating personalized insights...
-                        </Text>
+
+                      {/* Action buttons */}
+                      {step === "error" && (
+                        <View className="flex-row gap-3">
+                          <Button
+                            label="Cancel"
+                            variant="secondary"
+                            onPress={handleClose}
+                            className="flex-1"
+                          />
+                          <Button
+                            label="Try Again"
+                            variant="primary"
+                            onPress={handleRetake}
+                            className="flex-1"
+                          />
+                        </View>
                       )}
                     </View>
-                  </View>
-                )}
+                  )}
+                </View>
               </View>
-
-              {/* Extracted text preview */}
-              {extractedText && step === "analyzing" && (
-                <View className="bg-sage-50 rounded-2xl p-4 mb-4 max-h-32 border border-sage-100">
-                  <Text className="text-xs text-sage-500 mb-1 happy-font-body-bold uppercase tracking-widest">
-                    Extracted Text:
-                  </Text>
-                  <Text
-                    className="text-sm text-ink-soft happy-font-body"
-                    numberOfLines={4}
-                  >
-                    {extractedText}
-                  </Text>
-                </View>
-              )}
-
-              {/* Action buttons */}
-              {step === "error" && (
-                <View className="flex-row gap-3">
-                  <Button
-                    label="Cancel"
-                    variant="secondary"
-                    onPress={handleClose}
-                    className="flex-1"
-                  />
-                  <Button
-                    label="Try Again"
-                    variant="primary"
-                    onPress={handleRetake}
-                    className="flex-1"
-                  />
-                </View>
-              )}
-            </View>
-          )}
-        </View>
-      </BottomSheetView>
-    </BottomSheetModal>
+            </RNHostView>
+          </Group>
+        </BottomSheet>
+      </Host>
+    </Modal>
   );
 };
 

@@ -1,18 +1,13 @@
-import React, { useRef, useState, useEffect, useMemo } from "react";
-import { View, Text, TouchableOpacity, Alert } from "react-native";
+import React, { useRef, useState, useMemo } from "react";
+import { View, Text, Alert } from "react-native";
 import { isFuture } from "date-fns";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withSpring,
-} from "react-native-reanimated";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useHabits } from "@/hooks/data/useHabits";
 import { useHabitCompletions } from "@/hooks/data/useHabitCompletions";
 import { useHabitStreaks } from "@/src/hooks/data/useHabitStreaks";
 
 import { HabitCard } from "@/src/components/habits/HabitCard";
+import { SvgAppButton } from "@/src/components/journey/svg-app-button";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { AddHabitModal } from "@/src/components/habits/AddHabitModal";
 import { HabitDetailsModal } from "@/src/components/habits/HabitDetailsModal";
@@ -71,9 +66,6 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     currentStreak: streaks[h.id]?.currentStreak || 0,
     longestStreak: streaks[h.id]?.longestStreak || 0,
   }));
-
-  // Animated progress bar
-  const progressWidth = useSharedValue(0);
 
   const handleCreateHabit = async (formData: CreateHabitFormData) => {
     const created = await createHabit(formData);
@@ -143,20 +135,6 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   const completedCount = habitsWithStatus.filter((h) => h.isCompleted).length;
   const totalCount = habitsWithStatus.length;
 
-  // Animate progress bar when completion changes
-  useEffect(() => {
-    const targetProgress =
-      totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
-    progressWidth.value = withSpring(targetProgress, {
-      damping: 20,
-      stiffness: 150,
-    });
-  }, [completedCount, totalCount]);
-
-  const progressAnimatedStyle = useAnimatedStyle(() => ({
-    width: `${progressWidth.value}%`,
-  }));
-
   const selectedHabitWithStatus = selectedHabit
     ? habitsWithStatus.find((h) => h.id === selectedHabit.id)
     : null;
@@ -184,39 +162,30 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           rightElement={
             <>
               <XPBadge amount={XP_REWARDS[XPActionType.HABIT_COMPLETION]} />
-              <TouchableOpacity
+              <SvgAppButton
                 onPress={handleAddHabitPress}
-                className="happy-brand-primary-cta h-12 w-12 items-center justify-center rounded-[18px]"
-                activeOpacity={0.7}
+                width={46}
+                height={42}
+                color={SAGE[500]}
+                backgroundColor={SAGE[700]}
+                leftRadius={16}
+                rightRadius={16}
+                pressDepth={4}
               >
-                <HugeiconsIcon
-                  icon={Add01Icon}
-                  size={22}
-                  color={BRAND_SURFACE}
-                />
-              </TouchableOpacity>
+                <View className="flex-1 items-center justify-center">
+                  <HugeiconsIcon
+                    icon={Add01Icon}
+                    size={20}
+                    color={BRAND_SURFACE}
+                  />
+                </View>
+              </SvgAppButton>
             </>
           }
         />
       )}
 
-      {/* Progress Bar Card */}
-      {totalCount > 0 && (
-        <View
-          className="happy-brand-card mb-5 rounded-[26px] p-5"
-          style={SECTION_SHADOW}
-        >
-          <Text className="happy-font-body-bold mb-3 text-[16px] text-ink">
-            Daily Progress
-          </Text>
-          <View className="h-2.5 w-full overflow-hidden rounded-full bg-sage-100">
-            <Animated.View
-              className="h-full rounded-full"
-              style={[progressAnimatedStyle, { backgroundColor: SAGE[500] }]}
-            />
-          </View>
-        </View>
-      )}
+
 
       {/* Empty State */}
       {habitsWithStatus.length === 0 ? (

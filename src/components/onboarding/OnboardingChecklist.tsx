@@ -34,8 +34,9 @@ const ChecklistRow: React.FC<ChecklistRowProps> = ({ item, index, onPress }) => 
                 )}
             </View>
             <Text
-                className={`happy-font-body-medium flex-1 text-[15px] ${item.completed ? 'text-ink-muted line-through' : 'text-ink-soft'
+                className={`happy-font-body-medium flex-1 text-[15px] ${item.completed ? 'text-ink-muted' : 'text-ink-soft'
                     }`}
+                style={{ opacity: item.completed ? 0.45 : 1 }}
             >
                 {item.label}
             </Text>

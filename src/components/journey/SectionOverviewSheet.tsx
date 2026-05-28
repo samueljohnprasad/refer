@@ -27,7 +27,6 @@ const PALETTE = {
 } as const;
 
 export interface SectionOverviewSheetProps {
-  onClose: () => void;
   sections: SectionOverviewItem[];
   onPreviewSection: (sectionId: string) => void;
   journeyTitle: string;
@@ -42,13 +41,12 @@ function SectionCard({
   section,
   onPress,
 }: SectionCardProps): React.JSX.Element {
-  const unitRangeLabel = `Section ${section.sectionNumber}${
-    section.unitCount > 0
-      ? ` • ${section.unitCount} ${section.unitCount === 1 ? "unit" : "units"}`
-      : ""
-  }`;
+  const unitRangeLabel = `Section ${section.sectionNumber}${section.unitCount > 0
+    ? ` • ${section.unitCount} ${section.unitCount === 1 ? "unit" : "units"}`
+    : ""
+    }`;
   const isComplete = section.progressPercent >= 100;
-  
+
   // Resolve standard Card variant based on section state
   const cardVariant = section.isCurrent ? "answer-selected" : "answer";
 
@@ -138,7 +136,6 @@ function SectionCard({
 }
 
 export function SectionOverviewSheet({
-  onClose,
   sections,
   onPreviewSection,
   journeyTitle,
@@ -147,14 +144,13 @@ export function SectionOverviewSheet({
   const handlePreviewAndClose = useCallback(
     (sectionId: string): void => {
       onPreviewSection(sectionId);
-      onClose();
     },
-    [onClose, onPreviewSection],
+    [onPreviewSection],
   );
 
   return (
     <View className="flex-1 happy-brand-screen">
-      <View 
+      <View
         className="flex-row items-start justify-between border-b-2 border-sage-100 happy-brand-screen px-6 pb-5"
         style={{ paddingTop: Math.max(18, insets.top) }}
       >
@@ -169,15 +165,7 @@ export function SectionOverviewSheet({
             {sections.length} {sections.length === 1 ? "section" : "sections"}
           </Text>
         </View>
-        <PressableScale
-          onPress={onClose}
-          scale={0.9}
-          className="h-11 w-11 items-center justify-center rounded-full border-2 border-b-4 border-brand-border border-b-brand-border-strong bg-brand-surface"
-          accessibilityRole="button"
-          accessibilityLabel="Close section overview"
-        >
-          <HugeiconsIcon icon={Cancel01Icon} size={20} color={PALETTE.sage600} />
-        </PressableScale>
+
       </View>
 
       <ScrollView

@@ -38,7 +38,6 @@ function JourneyMapFlashListInner({
     bottomSpacerHeight,
     courseTitle,
     flashListData,
-    handleCloseSections,
     handleListLoad,
     handleNodePress,
     handleOpenSections,
@@ -121,7 +120,6 @@ function JourneyMapFlashListInner({
           setIsPresented={setIsSectionSheetOpen}
         >
           <SectionOverviewSheet
-            onClose={handleCloseSections}
             sections={sectionOverviewItems}
             onPreviewSection={handleSelectSection}
             journeyTitle={courseTitle}

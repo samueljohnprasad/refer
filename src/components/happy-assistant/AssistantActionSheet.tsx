@@ -34,7 +34,7 @@ export function AssistantActionSheet({
   }, [onCommandPress]);
 
   return (
-    <View className="rounded-[32px] border-2 border-sage-100 bg-white px-5 pb-5 pt-4">
+    <View className="flex-1 bg-white px-5 pt-4">
       <View className="mb-4 flex-row items-center gap-3">
         <View className="happy-mascot-stage h-14 w-14 items-center justify-center rounded-[20px]">
           <Mascot state="panda-happy" size={46} />

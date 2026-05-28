@@ -8,6 +8,7 @@ import Animated, {
 import { Reward } from "@/src/types/rewards";
 import * as Haptics from "expo-haptics";
 import { Card } from "@/src/components/ui/Card";
+import { Button } from "@/src/components/ui/Button";
 
 interface RewardPurchaseModalProps {
   visible: boolean;
@@ -109,31 +110,25 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
             </View>
           </View>
 
-          <View className="flex-row w-full gap-3">
-            <Pressable
+          <View className="flex-row w-full gap-3 mt-2">
+            <Button
+              label="Cancel"
+              variant="secondary"
+              size="md"
+              className="flex-1"
               onPress={onCancel}
-              className="flex-1 rounded-[18px] bg-sage-50 py-3 active:opacity-80"
-            >
-              <Text className="happy-font-body-bold text-center text-ink-muted">
-                Cancel
-              </Text>
-            </Pressable>
+              disabled={isPurchasing}
+            />
 
-            <Pressable
-              onPress={canAfford ? onConfirm : undefined}
-              className={`flex-1 rounded-[18px] py-3 active:opacity-80 ${
-                canAfford ? "happy-brand-primary-cta" : "bg-sage-100"
-              }`}
+            <Button
+              label={isPurchasing ? "Buying..." : canAfford ? "Buy Now" : "Not Enough"}
+              variant="primary"
+              size="md"
+              className="flex-1"
+              onPress={onConfirm}
               disabled={!canAfford || isPurchasing}
-            >
-              <Text
-                className={`happy-font-body-bold text-center ${
-                  canAfford ? "text-white" : "text-sage-300"
-                }`}
-              >
-                {isPurchasing ? "..." : canAfford ? "Buy Now" : "Not Enough"}
-              </Text>
-            </Pressable>
+              loading={isPurchasing}
+            />
           </View>
           </Card>
         </Animated.View>

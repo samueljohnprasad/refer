@@ -1,7 +1,10 @@
-import React, { useCallback, useEffect, useRef } from "react";
-import { View, Text, Pressable, ActivityIndicator } from "react-native";
-import ShortBottomModal from "../ShortBottomModal";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import React, { useCallback } from "react";
+import { View, Text, Pressable, ActivityIndicator, Modal } from "react-native";
+import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
+import {
+  presentationDetents,
+  presentationDragIndicator,
+} from "@expo/ui/swift-ui/modifiers";
 import { useJournalOperations } from "@/hooks/journals/useJournalOperations";
 import { DeleteJournal } from "@/src/screens/DailyNotesScreen/atoms";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -15,6 +18,7 @@ import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import * as Haptics from "expo-haptics";
 import { BRAND_SURFACE, DANGER, INK, SAGE } from "@/lib/tokens";
+import { Button } from "@/src/components/ui/Button";
 
 interface ConfirmationModalProps {
   title: string;
@@ -37,15 +41,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   deleteEntry,
   onDismiss,
 }) => {
-  const sheetRef = useRef<BottomSheetModal>(null);
   const { deleteJournal, deleting } = useJournalOperations();
-
-  useEffect(() => {
-    if (deleteEntry.flag) {
-      return sheetRef.current?.present();
-    }
-    return sheetRef.current?.close();
-  }, [deleteEntry.flag]);
 
   const handleDeleteConfirm = useCallback(async (): Promise<void> => {
     if (!deleteEntry) return;
@@ -60,79 +56,106 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
       onDelete?.();
     } catch (error) {}
-  }, [deleteJournal, deleteEntry.selectedDate, onDelete]);
+  }, [deleteJournal, deleteEntry.selectedDate, onDelete, deleteEntry]);
 
   const handleCancel = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    sheetRef.current?.close();
+    onDismiss?.();
   };
+
+  if (!deleteEntry.flag) return null;
 
   const isDestructive = confirmVariant === "destructive";
 
   return (
-    <ShortBottomModal onDismiss={onDismiss} ref={sheetRef} snapPoints={["45%"]}>
-      <VStack
-        className="flex-1 px-5 pt-1 items-center justify-between pb-6"
-        space="sm"
-      >
-        <View className="items-center w-full">
-          {/* Icon Header */}
-          <View
-            className={`w-12 h-12 rounded-full items-center justify-center mb-4 ${
-              isDestructive ? "bg-red-50" : "bg-sage-pill"
-            }`}
+    <Modal
+      visible={deleteEntry.flag}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={onDismiss}
+    >
+      <Host>
+        <BottomSheet
+          isPresented={deleteEntry.flag}
+          onIsPresentedChange={(val: boolean) => {
+            if (!val) {
+              onDismiss?.();
+            }
+          }}
+        >
+          <Group
+            modifiers={[
+              presentationDetents([{ height: 330 }]),
+              presentationDragIndicator("visible"),
+            ]}
           >
-            <HugeiconsIcon
-              icon={isDestructive ? AlertCircleIcon : Tick02Icon}
-              size={22}
-              color={isDestructive ? DANGER : SAGE[600]}
-            />
-          </View>
+            <RNHostView>
+              <View className="flex-1">
+                <VStack
+                  className="flex-1 px-5 pt-3 items-center justify-between pb-6"
+                  space="sm"
+                >
+                  <View className="items-center w-full">
+                    {/* Icon Header */}
+                    <View
+                      className={`w-12 h-12 rounded-full items-center justify-center mb-4 ${
+                        isDestructive ? "bg-red-50" : "bg-sage-pill"
+                      }`}
+                    >
+                      <HugeiconsIcon
+                        icon={isDestructive ? AlertCircleIcon : Tick02Icon}
+                        size={22}
+                        color={isDestructive ? DANGER : SAGE[600]}
+                      />
+                    </View>
 
-          <Heading className="happy-font-heading-bold text-center text-3xl text-ink mb-2 leading-9">
-            {title}
-          </Heading>
+                    <Heading className="happy-font-heading-bold text-center text-3xl text-ink mb-2 leading-9">
+                      {title}
+                    </Heading>
 
-          <Text className="happy-font-body-medium text-ink-soft text-center text-base px-1 leading-6">
-            {message}
-          </Text>
-        </View>
+                    <Text className="happy-font-body-medium text-ink-soft text-center text-base px-1 leading-6">
+                      {message}
+                    </Text>
+                  </View>
 
-        {/* Buttons */}
-        <View className="flex-row gap-3 w-full mt-4">
-          <Pressable
-            onPress={handleCancel}
-            disabled={deleting}
-            className="flex-1 bg-sage-pill rounded-full flex-row items-center justify-center py-4 active:opacity-80"
-          >
-            <Text className="happy-font-body-bold text-ink text-lg mr-2">
-              {cancelText}
-            </Text>
-            <HugeiconsIcon icon={Cancel01Icon} size={20} color={INK} />
-          </Pressable>
+                  {/* Buttons */}
+                  <View className="flex-row gap-3 w-full mt-4">
+                    <Button
+                      label={cancelText}
+                      variant="secondary"
+                      size="md"
+                      className="flex-1"
+                      onPress={handleCancel}
+                      disabled={deleting}
+                      rightIcon={<HugeiconsIcon icon={Cancel01Icon} size={18} color={INK} />}
+                    />
 
-          <Pressable
-            onPress={handleDeleteConfirm}
-            disabled={deleting}
-            className={`flex-1 rounded-full flex-row items-center justify-center py-4 active:opacity-90 ${
-              isDestructive ? "bg-red-500" : "happy-brand-primary-cta"
-            } ${deleting ? "opacity-70" : ""}`}
-          >
-            <Text className="happy-font-body-bold text-brand-surface text-lg mr-2">
-              {deleting ? "Processing..." : confirmText}
-            </Text>
-            {deleting ? (
-              <ActivityIndicator color={BRAND_SURFACE} size="small" />
-            ) : (
-              <HugeiconsIcon
-                icon={isDestructive ? Delete02Icon : Tick02Icon}
-                size={20}
-                color={BRAND_SURFACE}
-              />
-            )}
-          </Pressable>
-        </View>
-      </VStack>
-    </ShortBottomModal>
+                    <Button
+                      label={deleting ? "Processing..." : confirmText}
+                      variant={isDestructive ? "danger" : "primary"}
+                      size="md"
+                      className="flex-1"
+                      onPress={handleDeleteConfirm}
+                      loading={deleting}
+                      disabled={deleting}
+                      rightIcon={
+                        !deleting ? (
+                          <HugeiconsIcon
+                            icon={isDestructive ? Delete02Icon : Tick02Icon}
+                            size={18}
+                            color={BRAND_SURFACE}
+                          />
+                        ) : undefined
+                      }
+                    />
+                  </View>
+                </VStack>
+              </View>
+            </RNHostView>
+          </Group>
+        </BottomSheet>
+      </Host>
+    </Modal>
   );
 };

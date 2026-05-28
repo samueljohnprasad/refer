@@ -266,7 +266,6 @@ function DiscoveryScreen() {
   const [isOptionsVisible, setIsOptionsVisible] = useState<boolean>(false);
   const [isImageJournalVisible, setIsImageJournalVisible] =
     useState<boolean>(false);
-  const imageJournalRef = useRef<any>(null);
   const { currentPrompt, shufflePrompt, setPrompt, allPrompts } =
     useJournalEntry();
 
@@ -313,9 +312,6 @@ function DiscoveryScreen() {
       return;
     }
     setIsImageJournalVisible(true);
-    setTimeout(() => {
-      imageJournalRef.current?.present();
-    }, 100);
   }, [shouldShowPaywall, presentPaywall]);
 
   const handleImageInsightsReady = useCallback(
@@ -505,14 +501,12 @@ function DiscoveryScreen() {
             currentPrompt={currentPrompt}
             onScanJournal={handleScanJournal}
           />
-          {isImageJournalVisible && (
-            <ImageJournalModal
-              sheetRef={imageJournalRef}
-              onClose={() => setIsImageJournalVisible(false)}
-              onInsightsReady={handleImageInsightsReady}
-              selectedDate={selectedDate}
-            />
-          )}
+          <ImageJournalModal
+            visible={isImageJournalVisible}
+            onClose={() => setIsImageJournalVisible(false)}
+            onInsightsReady={handleImageInsightsReady}
+            selectedDate={selectedDate}
+          />
         </SuspensLoader>
       </ScrollView>
 

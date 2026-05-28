@@ -38,7 +38,6 @@ type JourneyMapController = {
   bottomSpacerHeight: number;
   courseTitle: string;
   flashListData: JourneyFlashListItem[];
-  handleCloseSections: () => void;
   handleListLoad: () => void;
   handleNodePress: (node: PathNodeData) => void;
   handleOpenSections: () => void;
@@ -158,10 +157,6 @@ export function useJourneyMapController(
     setIsSectionSheetOpen(true);
   }, [canOpenSections]);
 
-  const handleCloseSections = useCallback((): void => {
-    setIsSectionSheetOpen(false);
-  }, []);
-
   const handleSelectSection = useCallback(
     (sectionId: string): void => {
       if (!sectionId || sectionId === currentSectionId) {
@@ -170,6 +165,7 @@ export function useJourneyMapController(
       }
 
       dispatch(setPreviewSection({ courseId, sectionId }));
+      setIsSectionSheetOpen(false);
     },
     [courseId, currentSectionId, dispatch],
   );
@@ -180,7 +176,6 @@ export function useJourneyMapController(
     bottomSpacerHeight: LIST_BOTTOM_SPACER_HEIGHT + insets.bottom,
     courseTitle: course?.title ?? "Journey",
     flashListData,
-    handleCloseSections,
     handleListLoad,
     handleNodePress,
     handleOpenSections,

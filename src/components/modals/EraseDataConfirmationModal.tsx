@@ -14,7 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 
-import { GOLD, SAGE, TERRACOTTA } from "@/lib/tokens";
+import { GOLD, SAGE, TERRACOTTA, INK_SOFT } from "@/lib/tokens";
 import { Button } from "@/src/components/ui/Button";
 import { Card } from "@/src/components/ui/Card";
 import { Text } from "@/src/components/ui/Text";
@@ -141,11 +141,11 @@ export const EraseDataConfirmationModal: React.FC<
                   onPress={handleClose}
                   disabled={isDeleting}
                   className="flex-1"
-                  rightIcon={<HugeiconsIcon icon={Cancel01Icon} size={16} color={SAGE[700]} />}
+                  rightIcon={<HugeiconsIcon icon={Cancel01Icon} size={16} color={INK_SOFT} />}
                 />
                 <Button
                   label={isDeleting ? "Erasing..." : "Delete"}
-                  variant="destructive"
+                  variant="danger"
                   size="md"
                   onPress={handleConfirm}
                   loading={isDeleting}

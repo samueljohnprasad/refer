@@ -1,5 +1,10 @@
 import { type ReactElement, type ReactNode } from "react";
-import { Modal, Pressable, View } from "react-native";
+import { View, Modal } from "react-native";
+import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
+import {
+  presentationDetents,
+  presentationDragIndicator,
+} from "@expo/ui/swift-ui/modifiers";
 
 interface AssistantActionModalProps {
   visible: boolean;
@@ -10,35 +15,42 @@ interface AssistantActionModalProps {
 
 export function AssistantActionModal({
   visible,
-  bottomInset,
   children,
   onClose,
-}: AssistantActionModalProps): ReactElement {
+}: AssistantActionModalProps): ReactElement | null {
+  if (!visible) return null;
+
   return (
     <Modal
       visible={visible}
       transparent
-      animationType="fade"
+      animationType="none"
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-end bg-sage-800/35">
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Close Happy Assistant"
-          className="absolute inset-0"
-          onPress={onClose}
-        />
-        <View
-          className="px-4"
-          style={{ paddingBottom: bottomInset }}
-          pointerEvents="box-none"
+      <Host>
+        <BottomSheet
+          isPresented={visible}
+          onIsPresentedChange={(val: boolean) => {
+            if (!val) {
+              onClose();
+            }
+          }}
         >
-          <View className="overflow-hidden rounded-[32px] bg-white">
-            {children}
-          </View>
-        </View>
-      </View>
+          <Group
+            modifiers={[
+              presentationDetents([{ height: 440 }]),
+              presentationDragIndicator("visible"),
+            ]}
+          >
+            <RNHostView>
+              <View className="flex-1">
+                {children}
+              </View>
+            </RNHostView>
+          </Group>
+        </BottomSheet>
+      </Host>
     </Modal>
   );
 }

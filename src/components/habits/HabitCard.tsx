@@ -103,12 +103,12 @@ export const HabitCard: React.FC<HabitCardProps> = ({
           </View>
 
           {/* Content */}
-          <View className="flex-1">
+          <View className="flex-1" style={{ opacity: habit.isCompleted ? 0.45 : 1 }}>
             {/* Habit Name */}
             <Text
               className={`happy-font-body-bold text-[16px] ${
                 habit.isCompleted
-                  ? "text-ink-muted line-through"
+                  ? "text-ink-muted"
                   : "text-ink"
               }`}
             >

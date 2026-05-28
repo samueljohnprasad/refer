@@ -26,7 +26,8 @@ type Variant =
   | "premium"
   | "streak"
   | "ghost"
-  | "pill";
+  | "pill"
+  | "danger";
 
 interface VariantConfig {
   faceColor: string;
@@ -70,6 +71,13 @@ const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
     rimColor: TERRACOTTA,
     labelColor: TERRACOTTA,
     disabledFaceColor: "#F7F7F7",
+    disabledRimColor: "#FFA0A0",
+  },
+  danger: {
+    faceColor: TERRACOTTA,
+    rimColor: "#C1272D",
+    labelColor: BRAND_SURFACE,
+    disabledFaceColor: "#FFF0F0",
     disabledRimColor: "#FFA0A0",
   },
   premium: {

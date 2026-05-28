@@ -27,7 +27,7 @@ export default function BottomSheetWithRNContent({
           ]}
         >
           <RNHostView>
-            <View className="flex-1 happy-brand-screen">{children}</View>
+            <View className="flex-1">{children}</View>
           </RNHostView>
         </Group>
       </BottomSheet>
