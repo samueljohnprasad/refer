@@ -237,13 +237,14 @@ Sage borders on a card communicate "this is selected" or "this is active." If ev
 ## Radius Scale
 
 ```
-sm    4px    —
-md    8px    —
-lg    12px   CTA buttons, modal containers
-xl    16px   Answer cards, most cards (default)
-2xl   20px   Hero panels, prominent widgets
-3xl   24px   Bottom sheet top corners
-full  9999px Pill chips, word-bank tiles
+sm        4px    —
+md        8px    —
+lg        12px   CTA buttons, modal containers
+xl        16px   Answer cards, most cards (default)
+icon-well 18px   Icon well squares inside cards (h-12 / h-14 containers)
+2xl       20px   Hero panels, prominent widgets
+3xl       24px   Bottom sheet top corners
+full      9999px Pill chips, word-bank tiles
 ```
 
 Always use the named utilities — don't invent one-off pixel values.

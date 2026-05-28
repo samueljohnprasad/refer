@@ -10,7 +10,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { format, parseISO } from "date-fns";
 import { getEntryTypeIcon } from "../../../components/lib/entryTypeUtils";
 import { JournalEntry } from "@/hooks/data/types";
@@ -131,7 +131,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         {entries.map((entry, index) => (
           <View key={entry.id}>
             {showDateHeaders && (
-              <Text className="happy-font-body-bold text-sm text-ink-muted mb-2">
+              <Text variant="label" color="muted" className="mb-2">
                 {entry.selected_date
                   ? `${format(parseISO(entry.selected_date), "MMM d, yyyy")} · ${format(parseISO(entry.selected_date), "EEE")}`
                   : "No Date"}
@@ -234,12 +234,12 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
           {/* Header */}
           <View className="flex-row items-start justify-between mb-3">
             <View className="flex-1">
-              <Text className="happy-font-body-bold text-base text-ink mb-1">
+              <Text variant="body-bold" className="mb-1">
                 {entry.title}
               </Text>
               <View className="flex-row items-center">
                 {entry.selected_date && (
-                  <Text className="happy-font-body-medium text-sm text-ink-muted">
+                  <Text variant="caption-muted">
                     {format(new Date(entry.selected_date), "h:mm a")}
                   </Text>
                 )}
@@ -250,14 +250,14 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
                   color={INK_MUTED}
                 />
                 {!!entry.duration_seconds && (
-                  <Text className="happy-font-body-medium text-sm text-ink-muted ml-1">
+                  <Text variant="caption-muted" className="ml-1">
                     {getDuration(entry.duration_seconds)}
                   </Text>
                 )}
                 {!!entry.words_count && (
                   <>
                     <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
-                    <Text className="happy-font-body-medium text-sm text-ink-muted">
+                    <Text variant="caption-muted">
                       {entry.words_count} words
                     </Text>
                   </>
@@ -276,7 +276,7 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
           </View>
 
           {/* Excerpt */}
-          <Text className="happy-font-body-medium text-ink-soft text-sm leading-5 mb-3">
+          <Text variant="label" color="soft" className="leading-5 mb-3">
             {entry.transcripts?.substring(0, 100) + "..."}
           </Text>
 
@@ -287,7 +287,7 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
                 key={`${emotion}-${idx}`}
                 className="bg-sage-50 border border-sage-100 rounded-full px-2 py-1 mr-2 mb-1"
               >
-                <Text className="happy-font-body-medium text-ink-soft text-xs capitalize">
+                <Text variant="chip" className="capitalize">
                   {emotion.emoji} {emotion.name}
                 </Text>
               </View>
@@ -298,7 +298,7 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
           <View className="flex-row items-center justify-between pt-2 border-t border-sage-100">
             <View className="flex-row items-center gap-2">
               {entry.moods?.main_mood && (
-                <Text className="happy-font-body-medium text-xs text-ink-muted capitalize">
+                <Text variant="chip" color="muted" className="capitalize">
                   {entry.moods?.main_mood} mood
                 </Text>
               )}

@@ -139,7 +139,7 @@ const ExerciseCard = memo(function ExerciseCard({
       )}
       <View className="flex-row items-center gap-3">
         <View
-          className={`items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50 ${featured ? "h-14 w-14" : "h-12 w-12"}`}
+          className={`items-center justify-center rounded-icon-well border border-sage-100 bg-sage-50 ${featured ? "h-14 w-14" : "h-12 w-12"}`}
           accessible={false}
         >
           <HugeiconsIcon icon={icon} size={featured ? 28 : 24} color={SAGE[600]} />
@@ -357,7 +357,7 @@ const LogCard = memo(function LogCard({
       className={`mb-3 ${cardBorderClassName}`}
     >
       <View className="flex-row items-center gap-3">
-        <View className="h-12 w-12 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50">
+        <View className="h-12 w-12 items-center justify-center rounded-icon-well border border-sage-100 bg-sage-50">
           <HugeiconsIcon icon={presentation.icon} size={22} color={SAGE[600]} />
         </View>
 
@@ -601,7 +601,7 @@ export default function ExercisesScreen(): ReactElement {
             </View>
             {completedCount > 0 ? (
               <View className="flex-row items-center rounded-full bg-gold/15 px-3 py-1.5">
-                <Text variant="chip" className="text-sm">🔥</Text>
+                <Text variant="chip">🔥</Text>
                 <Text variant="chip" className="ml-1">
                   {completedCount} done
                 </Text>

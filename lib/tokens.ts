@@ -145,6 +145,7 @@ export const RADIUS = {
   md: 8,
   lg: 12,
   xl: 16,
+  "icon-well": 18,  // icon well squares — used on h-12/h-14 icon containers
   "2xl": 20,
   "3xl": 24,
   full: 9999,

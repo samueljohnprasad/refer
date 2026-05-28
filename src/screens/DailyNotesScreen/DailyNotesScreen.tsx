@@ -353,13 +353,13 @@ function DailyNotesScreenComponent(): ReactElement {
   );
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 happy-brand-screen">
       <SafeAreaView edges={[]} style={{ flex: 1 }}>
         <Stack.Screen options={screenOptions} />
-        <View className="flex-1 relative bg-theme-background-card">
+        <View className="flex-1 relative">
           <GestureDetector gesture={contentPanGesture}>
             <ScrollView
-              className="flex-1 bg-theme-background-card"
+              className="flex-1"
               style={{ flex: 1 }}
               contentContainerStyle={{ flexGrow: 1 }}
               showsVerticalScrollIndicator={false}
@@ -386,7 +386,7 @@ function DailyNotesScreenComponent(): ReactElement {
 
               {/* Unified Animated Container for Swipe Transitions */}
               <Animated.View
-                className="flex-1 bg-theme-background-primary px-4 pb-8"
+                className="flex-1 px-4 pb-8"
                 style={contentAnimatedStyle}
               >
                 {/* Calorie Tracker Widget */}

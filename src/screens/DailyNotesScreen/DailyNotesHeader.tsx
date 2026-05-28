@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, useState, Suspense } from "react";
 import { View, Pressable, Dimensions, Platform } from "react-native";
-import { Text } from "@/components/Themed";
+import { Text } from "@/src/components/ui/Text";
 import {
   format,
   startOfWeek,
@@ -276,146 +276,144 @@ const DailyNotesHeader = React.memo(
     };
 
     return (
-      <View className="bg-white">
+      <View className="bg-brand-surface">
         <SafeAreaView
           edges={["top"]}
           style={{ paddingTop: insets.top - 30 }}
         >
           <Animated.View
-            className="bg-white justify-end relative border-b border-sage-100"
+            className="bg-brand-surface justify-end relative border-b border-brand-border"
             style={[
               headerContainerAnimatedStyle,
               { backgroundColor: BRAND_SURFACE },
             ]}
           >
-          {/* Calendar Header */}
-          <Animated.View
-            className="flex-row items-center justify-between px-4 pb-2 rounded-3xl"
-            style={[headerControlsAnimatedStyle]}
-          >
-            <Pressable
-              className="min-h-[44px] min-w-[44px] justify-center items-center -ml-1 rounded-full"
-              onPress={() => toggle()}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              accessibilityRole="button"
-              accessibilityLabel={
-                isExpanded ? "Collapse calendar" : "Expand calendar"
-              }
-              accessibilityHint="Toggles between weekly and monthly calendar views"
+            {/* Calendar Header */}
+            <Animated.View
+              className="flex-row items-center justify-between px-4 pb-2 rounded-3xl"
+              style={[headerControlsAnimatedStyle]}
             >
-              <HugeiconsIcon
-                icon={Calendar01Icon}
-                size={20}
-                color={SAGE[600]}
-                strokeWidth={2}
-              />
-            </Pressable>
-
-            <View className="flex-row items-center justify-center flex-1">
-              <Text
-                className="happy-font-heading-bold text-[30px] text-center text-ink"
-              >
-                {currentMonthView || ""}
-              </Text>
-            </View>
-
-            <View className="flex-row items-center gap-1">
               <Pressable
-                className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
-                onPress={onBookmarksPress}
+                className="min-h-[44px] min-w-[44px] justify-center items-center -ml-1 rounded-full"
+                onPress={() => toggle()}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 accessibilityRole="button"
-                accessibilityLabel="Bookmarks"
+                accessibilityLabel={
+                  isExpanded ? "Collapse calendar" : "Expand calendar"
+                }
+                accessibilityHint="Toggles between weekly and monthly calendar views"
               >
                 <HugeiconsIcon
-                  icon={Bookmark03Icon}
+                  icon={Calendar01Icon}
                   size={20}
                   color={SAGE[600]}
                   strokeWidth={2}
                 />
               </Pressable>
-            </View>
-          </Animated.View>
-          {/* Week View */}
-          <View className="px-4 pb-5 w-full relative" {...panHandlers}>
-            <Animated.View
-              className="flex-row w-full"
-              style={[weekHeaderAnimatedStyle]}
-            >
+
+              <View className="flex-row items-center justify-center flex-1">
+                <Text variant="h1" className="text-[30px] text-center">
+                  {currentMonthView || ""}
+                </Text>
+              </View>
+
+              <View className="flex-row items-center gap-1">
+                <Pressable
+                  className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
+                  onPress={onBookmarksPress}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Bookmarks"
+                >
+                  <HugeiconsIcon
+                    icon={Bookmark03Icon}
+                    size={20}
+                    color={SAGE[600]}
+                    strokeWidth={2}
+                  />
+                </Pressable>
+              </View>
+            </Animated.View>
+            {/* Week View */}
+            <View className="px-4 pb-5 w-full relative" {...panHandlers}>
               <Animated.View
-                className="flex flex-1 flex-row gap-1"
-                style={[weekSlideAnimatedStyle]}
-                accessibilityElementsHidden={isExpanded}
+                className="flex-row w-full"
+                style={[weekHeaderAnimatedStyle]}
+              >
+                <Animated.View
+                  className="flex flex-1 flex-row gap-1"
+                  style={[weekSlideAnimatedStyle]}
+                  accessibilityElementsHidden={isExpanded}
+                  importantForAccessibility={
+                    isExpanded ? "no-hide-descendants" : "auto"
+                  }
+                >
+                  {weekDaysData.map((dayData) => (
+                    <View className="flex-1 gap-2 mb-2" key={dayData.dayStr}>
+                      <DayButton
+                        day={dayData.day}
+                        dayName={dayData.dayName}
+                        isSelected={dayData.isSelectedDay}
+                        isToday={dayData.isTodayDate}
+                        disabled={dayData.disabled}
+                        onPress={dayPressHandlers(dayData)}
+                      />
+                      <View className="flex-1 items-center mb-1">
+                        <MoodBadge
+                          disabled={dayData.disabled}
+                          moodscore={Math.round(dayData.mood || 0)}
+                          active={dayData.isSelectedDay}
+                          size={24}
+                          onPress={() => onEmojiPress(dayData.day, dayData.mood)}
+                        />
+                      </View>
+                    </View>
+                  ))}
+                </Animated.View>
+              </Animated.View>
+            </View>
+            {/* Only render CalendarPicker after first expansion for smooth animations */}
+            {hasBeenExpanded && (
+              <Animated.View
+                className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-brand-surface top-0"
+                style={[inlineCalendarAnimatedStyle]}
+                accessibilityElementsHidden={!isExpanded}
                 importantForAccessibility={
-                  isExpanded ? "no-hide-descendants" : "auto"
+                  !isExpanded ? "no-hide-descendants" : "yes"
                 }
               >
-                {weekDaysData.map((dayData) => (
-                  <View className="flex-1 gap-2 mb-2" key={dayData.dayStr}>
-                    <DayButton
-                      day={dayData.day}
-                      dayName={dayData.dayName}
-                      isSelected={dayData.isSelectedDay}
-                      isToday={dayData.isTodayDate}
-                      disabled={dayData.disabled}
-                      onPress={dayPressHandlers(dayData)}
-                    />
-                    <View className="flex-1 items-center mb-1">
-                      <MoodBadge
-                        disabled={dayData.disabled}
-                        moodscore={Math.round(dayData.mood || 0)}
-                        active={dayData.isSelectedDay}
-                        size={24}
-                        onPress={() => onEmojiPress(dayData.day, dayData.mood)}
-                      />
-                    </View>
-                  </View>
-                ))}
+                <SuspensLoader>
+                  <CalendarPicker
+                    moodMap={moodMap}
+                    selectedDate={isSelectedDateValid ? selectedDate : new Date()}
+                    visible={isExpanded}
+                    onDateSelect={(date: Date) => {
+                      // First collapse smoothly, then update date so header morph feels natural
+                      collapse(() => {
+                        selectDate(date);
+                      });
+                    }}
+                  />
+                </SuspensLoader>
               </Animated.View>
-            </Animated.View>
-          </View>
-          {/* Only render CalendarPicker after first expansion for smooth animations */}
-          {hasBeenExpanded && (
-            <Animated.View
-              className="absolute left-0 right-0 z-20 overflow-hidden px-4 pb-3 rounded-t-none bg-white top-0"
-              style={[inlineCalendarAnimatedStyle]}
-              accessibilityElementsHidden={!isExpanded}
-              importantForAccessibility={
-                !isExpanded ? "no-hide-descendants" : "yes"
-              }
+            )}
+            {/* Today tag - animated reusable component */}
+            <TodayPill visible={showTodayPill} onPress={handleGoToToday} />
+            {/* Drag handle for calendar expansion */}
+            <View
+              className="absolute bottom-2 left-0 right-0 items-center z-10"
+              pointerEvents="box-none"
             >
-              <SuspensLoader>
-                <CalendarPicker
-                  moodMap={moodMap}
-                  selectedDate={isSelectedDateValid ? selectedDate : new Date()}
-                  visible={isExpanded}
-                  onDateSelect={(date: Date) => {
-                    // First collapse smoothly, then update date so header morph feels natural
-                    collapse(() => {
-                      selectDate(date);
-                    });
-                  }}
-                />
-              </SuspensLoader>
-            </Animated.View>
-          )}
-          {/* Today tag - animated reusable component */}
-          <TodayPill visible={showTodayPill} onPress={handleGoToToday} />
-          {/* Drag handle for calendar expansion */}
-          <View
-            className="absolute bottom-2 left-0 right-0 items-center z-10"
-            pointerEvents="box-none"
-          >
-            <GestureDetector gesture={gesture}>
-              <View
-                className="min-h-[44px] justify-center px-8"
-                accessibilityRole="adjustable"
-                accessibilityLabel="Calendar drag handle"
-              >
-                <View className="w-12 h-1.5 rounded-full bg-sage-200" />
-              </View>
-            </GestureDetector>
-          </View>
+              <GestureDetector gesture={gesture}>
+                <View
+                  className="min-h-[44px] justify-center px-8"
+                  accessibilityRole="adjustable"
+                  accessibilityLabel="Calendar drag handle"
+                >
+                  <View className="w-12 h-1.5 rounded-full bg-sage-200" />
+                </View>
+              </GestureDetector>
+            </View>
           </Animated.View>
 
           <EmotionDetailsModal
