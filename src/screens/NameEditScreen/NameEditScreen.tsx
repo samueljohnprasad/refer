@@ -8,6 +8,7 @@ import { useUpdateDisplayName } from "@/hooks/post/useUpdateDisplayName";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon, Tick02Icon, UserIcon } from "@hugeicons/core-free-icons";
 import { BRAND_SURFACE, INK, INK_MUTED, SAGE } from "@/lib/tokens";
+import { Button } from "@/src/components/ui/Button";
 
 interface NameEditScreenProps {
   setShowModal: (show: boolean) => void;
@@ -92,31 +93,24 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
 
         {/* Bottom buttons */}
         <View className="flex-row justify-between gap-4 mb-2">
-          <TouchableOpacity
-            className="flex-1 bg-sage-pill rounded-full flex-row items-center justify-center py-4 active:opacity-80"
+          <Button
+            label="Cancel"
+            variant="secondary"
             onPress={() => setShowModal(false)}
             disabled={isUpdating}
-          >
-            <Text className="happy-font-body-bold text-ink text-lg mr-2">
-              Cancel
-            </Text>
-            <HugeiconsIcon icon={Cancel01Icon} size={20} color={INK} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            className={`happy-brand-primary-cta flex-1 rounded-full flex-row items-center justify-center py-4 ${
-              isUpdating ? "opacity-80" : ""
-            }`}
+            fullWidth={false}
+            className="flex-1"
+            rightIcon={<HugeiconsIcon icon={Cancel01Icon} size={18} color={INK} />}
+          />
+          <Button
+            label={isUpdating ? "Saving..." : "Save"}
+            variant="primary"
             onPress={handleSave}
-            disabled={isUpdating}
-          >
-            <Text className="happy-font-body-bold text-brand-surface text-lg mr-2">
-              {isUpdating ? "Saving..." : "Save"}
-            </Text>
-            {!isUpdating && (
-              <HugeiconsIcon icon={Tick02Icon} size={20} color={BRAND_SURFACE} />
-            )}
-          </TouchableOpacity>
+            loading={isUpdating}
+            fullWidth={false}
+            className="flex-1"
+            rightIcon={!isUpdating ? <HugeiconsIcon icon={Tick02Icon} size={18} color={BRAND_SURFACE} /> : undefined}
+          />
         </View>
         <Animated.View style={keyboardPadding} />
       </View>

@@ -5,6 +5,8 @@ import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import { OnboardingChecklistItem } from '@/src/screens/OnboardingScreen/types';
 import { useOnboardingChecklist } from '@/hooks/data/useOnboardingChecklist';
+import { Card } from '@/src/components/ui/Card';
+import StageProgressBar from '@/src/components/ui/StageProgressBar';
 
 interface ChecklistRowProps {
     item: OnboardingChecklistItem;
@@ -70,52 +72,55 @@ const OnboardingChecklist: React.FC = () => {
     };
 
     return (
-        <Animated.View
-            entering={FadeIn.duration(500)}
-            className="happy-brand-raised-panel rounded-[28px] p-5 mb-5"
-        >
-            <View className="flex-row items-center justify-between mb-3">
-                <View className="flex-row items-center">
-                    <Text style={{ fontSize: 16 }} className="mr-2">🚀</Text>
-                    <Text className="happy-font-body-bold text-[18px] text-ink">Getting Started</Text>
+        <Animated.View entering={FadeIn.duration(500)}>
+            <Card
+                variant="tile"
+                radius="xl"
+                showDepth={true}
+                className="mb-5"
+                contentClassName="p-5"
+            >
+                <View className="flex-row items-center justify-between mb-3">
+                    <View className="flex-row items-center">
+                        <Text style={{ fontSize: 16 }} className="mr-2">🚀</Text>
+                        <Text className="happy-font-body-bold text-[18px] text-ink">Getting Started</Text>
+                    </View>
+                    <TouchableOpacity
+                        onPress={handleDismiss}
+                        className="p-1"
+                        accessibilityLabel="Dismiss checklist"
+                        accessibilityRole="button"
+                    >
+                        <Text className="happy-font-body-bold text-ink-muted text-xs">✕</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                    onPress={handleDismiss}
-                    className="p-1"
-                    accessibilityLabel="Dismiss checklist"
-                    accessibilityRole="button"
-                >
-                    <Text className="happy-font-body-bold text-ink-muted text-xs">✕</Text>
-                </TouchableOpacity>
-            </View>
 
-            <View className="mb-4">
-                <View className="flex-row items-center justify-between mb-2">
-                    <Text className="happy-font-body-semibold text-xs text-ink-muted">
-                        {completedCount}/{totalCount} complete
-                    </Text>
-                    <Text className="happy-font-body-bold text-xs text-sage-600">
-                        Earn {totalXpReward} XP
-                    </Text>
-                </View>
-                <View className="h-2 bg-sage-100 rounded-full overflow-hidden">
-                    <View
-                        className="h-full bg-sage-500 rounded-full"
-                        style={{ width: `${progressPercent}%` }}
+                <View className="mb-4">
+                    <View className="flex-row items-center justify-between mb-2">
+                        <Text className="happy-font-body-semibold text-xs text-ink-muted">
+                            {completedCount}/{totalCount} complete
+                        </Text>
+                        <Text className="happy-font-body-bold text-xs text-sage-600">
+                            Earn {totalXpReward} XP
+                        </Text>
+                    </View>
+                    <StageProgressBar
+                        progress={progressPercent}
+                        height={8}
                     />
                 </View>
-            </View>
 
-            <View className="border-t border-sage-100 pt-1">
-                {items.map((item: OnboardingChecklistItem, index: number) => (
-                    <ChecklistRow
-                        key={item.id}
-                        item={item}
-                        index={index}
-                        onPress={handleItemPress}
-                    />
-                ))}
-            </View>
+                <View className="border-t border-sage-100 pt-1">
+                    {items.map((item: OnboardingChecklistItem, index: number) => (
+                        <ChecklistRow
+                            key={item.id}
+                            item={item}
+                            index={index}
+                            onPress={handleItemPress}
+                        />
+                    ))}
+                </View>
+            </Card>
         </Animated.View>
     );
 };

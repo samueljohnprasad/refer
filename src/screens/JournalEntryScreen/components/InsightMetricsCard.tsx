@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "@/src/components/ui/Text";
 import { Feather } from "@expo/vector-icons";
 import Svg, { Circle } from "react-native-svg";
 
@@ -65,7 +66,7 @@ const CircularProgress: React.FC<{
         />
       </Svg>
       <View className="absolute items-center justify-center">
-        <Text className="text-sm font-bold text-theme-text-primary">
+        <Text variant="chip" className="font-bold text-ink text-[11px] leading-[11px] -mt-0.5">
           {value}/{maxValue}
         </Text>
       </View>
@@ -92,8 +93,8 @@ const MetricItem: React.FC<MetricItemProps> = ({
         <CircularProgress value={value} maxValue={maxValue} color={color} />
       </View>
       <View className="flex-row items-center">
-        <Feather name={icon} size={14} color={color} />
-        <Text className="text-xs text-theme-text-secondary ml-1 font-medium">
+        <Feather name={icon} size={13} color={color} />
+        <Text variant="caption" className="ml-1 font-semibold text-ink-soft">
           {label}
         </Text>
       </View>
@@ -112,10 +113,10 @@ export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
     if (!hasData) return null;
 
     return (
-      <View className="bg-transparent rounded-xl p-4 mb-4 border border-theme-border/30">
+      <View className="bg-white/40 rounded-xl p-4 mb-4 border border-sage-100/60 shadow-sm">
         <View className="flex-row items-center mb-4">
-          <Feather name="activity" size={16} className="text-theme-text-secondary" />
-          <Text className="text-base font-semibold text-theme-text-primary ml-2">
+          <Feather name="activity" size={15} color="#767676" />
+          <Text variant="body-bold" className="ml-2 text-[15px]">
             Wellness Metrics
           </Text>
         </View>

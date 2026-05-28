@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -15,6 +15,7 @@ import { AIInsightsSectionProps } from "../types";
 import { INSIGHTS_ANIMATION_CONFIG } from "../constants";
 import { InsightMetricsCard } from "./InsightMetricsCard";
 import { InsightTagsSection, INSIGHT_TAG_CONFIGS } from "./InsightTagsSection";
+import { Text } from "@/src/components/ui/Text";
 
 /**
  * Enhanced AI insights section with metrics and tag cards
@@ -80,20 +81,20 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
     if (!hasAnyData) return null;
 
     return (
-      <View className="bg-theme-background-card/80 rounded-2xl p-4 mb-6 border border-theme-border/50">
+      <View className="bg-white/70 rounded-2xl p-5 mb-8 border border-brand-border shadow-sm">
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel="Toggle AI Insights"
           accessibilityState={{ expanded: isInsightsOpen }}
           activeOpacity={0.8}
           onPress={toggleInsights}
-          className="flex-row items-center mb-4 pb-3 border-b border-theme-border/50 justify-between"
+          className="flex-row items-center mb-4 pb-3 border-b border-brand-border/40 justify-between"
         >
           <View className="flex-row items-center">
-            <View className="w-8 h-8 rounded-full bg-theme-purple-light items-center justify-center">
-              <Feather name="cpu" size={16} className="text-theme-purple-primary" />
+            <View className="w-8 h-8 rounded-xl bg-macaw-purple-tint border border-macaw-purple/20 items-center justify-center">
+              <Feather name="cpu" size={16} color="#CE82FF" />
             </View>
-            <Text className="text-lg font-semibold text-theme-text-primary ml-3">
+            <Text variant="h3" className="ml-3">
               AI Insights
             </Text>
           </View>
@@ -166,14 +167,14 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
 
             {/* AI Summary Text */}
             {aiInsights && (
-              <View className="bg-theme-background-secondary/50 rounded-xl p-4 mt-2">
-                <View className="flex-row items-center mb-2">
-                  <Feather name="message-circle" size={16} className="text-theme-text-secondary" />
-                  <Text className="text-sm font-medium text-theme-text-secondary ml-2">
+              <View className="bg-macaw-purple-tint/30 rounded-xl p-4 mt-3 border border-macaw-purple/10">
+                <View className="flex-row items-center mb-2 gap-2">
+                  <Feather name="message-circle" size={15} color="#CE82FF" />
+                  <Text variant="label-bold" className="text-macaw-purple">
                     Summary
                   </Text>
                 </View>
-                <Text className="text-base leading-6 text-theme-text-primary tracking-wide">
+                <Text variant="body" className="text-ink text-[15px] leading-[22px]">
                   {aiInsights}
                 </Text>
               </View>

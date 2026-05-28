@@ -1,4 +1,4 @@
-import { ActivityIndicator, View, Text, TouchableOpacity } from "react-native";
+import { View } from "react-native";
 import { useRouter } from "expo-router";
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import ShortBottomModal from "./ShortBottomModal";
@@ -8,7 +8,11 @@ import { useAuth, type AuthProviderId } from "@/src/context/AuthContext";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { clearGuestProgress } from "@/hooks/data/useGuestProgress";
 import type { CustomerInfo } from "react-native-purchases";
-import { BRAND_SURFACE, INK } from "@/lib/tokens";
+import { INK } from "@/lib/tokens";
+import { Text } from "@/src/components/ui/Text";
+import { Button } from "@/src/components/ui/Button";
+import { Card } from "@/src/components/ui/Card";
+import { FontAwesome } from "@expo/vector-icons";
 
 interface PremiumRecoveryState {
   appUserID: string | null;
@@ -236,66 +240,65 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
     return (
       <ShortBottomModal
         ref={ref}
-        snapPoints={["52%"]}
+        snapPoints={["54%"]}
         onDismiss={handleSheetDismiss}
       >
         <View className="flex-1 px-6 pt-5 pb-8 justify-between bg-brand-surface rounded-[24px]">
           <View>
             <Text
-              className="happy-font-heading-bold text-[32px] leading-9 text-ink text-center mb-4"
+              variant="h1"
+              className="text-center mb-3"
             >
               {premiumRecovery.reason === "claim"
                 ? "Premium Refresh Needed"
                 : "Premium Restore Needed"}
             </Text>
-            <Text className="happy-font-body-medium text-ink-muted text-base leading-6 text-center mb-5">
+            <Text variant="body" className="text-center mb-5 leading-[22px]">
               {premiumRecovery.reason === "claim"
                 ? "Your profile is saved, but Premium could not be refreshed on this login. Try restore again, or share these IDs with support."
                 : "You're now on the existing account, but Premium could not be restored automatically. Try restore again, or share these IDs with support."}
             </Text>
-            <View className="bg-sage-50 rounded-2xl p-4 gap-2">
-              <Text className="happy-brand-eyebrow">
+            <Card
+              variant="tile"
+              radius="lg"
+              showDepth={false}
+              className="mb-5 bg-brand-surface-soft border border-brand-border"
+              contentClassName="p-4 gap-2"
+            >
+              <Text variant="eyebrow">
                 RevenueCat App User ID
               </Text>
-              <Text className="happy-font-body text-ink text-sm">
+              <Text variant="label" className="text-ink-soft select-text">
                 {premiumRecovery.appUserID ?? "Unavailable"}
               </Text>
-              <Text className="happy-brand-eyebrow mt-2">
+              <Text variant="eyebrow" className="mt-2">
                 Supabase User ID
               </Text>
-              <Text className="happy-font-body text-ink text-sm">
+              <Text variant="label" className="text-ink-soft select-text">
                 {premiumRecovery.supabaseUserId}
               </Text>
-            </View>
+            </Card>
           </View>
 
           <View className="gap-3">
-            <TouchableOpacity
+            <Button
+              label="Try Restore Again"
+              variant="primary"
               onPress={handleRetryRestore}
-              disabled={busyRestore}
-              className="happy-brand-primary-cta w-full h-14 rounded-full items-center justify-center flex-row"
-              activeOpacity={0.8}
-            >
-              {busyRestore ? (
-                <ActivityIndicator size="small" color={BRAND_SURFACE} />
-              ) : (
-                <Text className="happy-font-body-bold text-brand-surface text-lg">
-                  Try Restore Again
-                </Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
+              loading={busyRestore}
+              fullWidth
+            />
+            <Button
+              label={
+                premiumRecovery.reason === "claim"
+                  ? "Continue"
+                  : "Continue Without Premium"
+              }
+              variant="secondary"
               onPress={handleContinueAfterRecovery}
               disabled={busyRestore}
-              className="w-full bg-sage-pill h-14 rounded-full items-center justify-center flex-row"
-              activeOpacity={0.8}
-            >
-              <Text className="happy-font-body-bold text-ink text-lg">
-                {premiumRecovery.reason === "claim"
-                  ? "Continue"
-                  : "Continue Without Premium"}
-              </Text>
-            </TouchableOpacity>
+              fullWidth
+            />
           </View>
         </View>
       </ShortBottomModal>
@@ -306,17 +309,18 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
     return (
       <ShortBottomModal
         ref={ref}
-        snapPoints={["52%"]}
+        snapPoints={["54%"]}
         onDismiss={handleSheetDismiss}
       >
         <View className="flex-1 px-6 pt-5 pb-8 justify-between bg-brand-surface rounded-[24px]">
           <View>
             <Text
-              className="happy-font-heading-bold text-[32px] leading-9 text-ink text-center mb-4"
+              variant="h1"
+              className="text-center mb-3"
             >
               {hasPro ? "Premium Is Active Here" : "Existing Account Found"}
             </Text>
-            <Text className="happy-font-body-medium text-ink-muted text-base leading-6 text-center">
+            <Text variant="body" className="text-center leading-[22px]">
               {hasPro
                 ? `Your Premium and current progress belong to this profile. This ${providerLabel} login is already linked to another Happy account. You can keep this profile, or switch to your existing account and try to restore Premium there. Your current progress won't be transferred.`
                 : `This ${providerLabel} login is already linked to another Happy account. If you continue, you'll switch to that account and your current progress won't be transferred.`}
@@ -324,35 +328,22 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
           </View>
 
           <View className="gap-3">
-            <TouchableOpacity
+            <Button
+              label={hasPro ? "Keep This Premium Profile" : "Continue to Existing Account"}
+              variant="primary"
               onPress={hasPro ? handleStay : handleMove}
+              loading={busyMove && !hasPro}
               disabled={busyMove}
-              className="happy-brand-primary-cta w-full h-14 rounded-full items-center justify-center flex-row"
-              activeOpacity={0.8}
-            >
-              {busyMove && !hasPro ? (
-                <ActivityIndicator size="small" color={BRAND_SURFACE} />
-              ) : (
-                <Text className="happy-font-body-bold text-brand-surface text-lg">
-                  {hasPro ? "Keep This Premium Profile" : "Continue to Existing Account"}
-                </Text>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
+              fullWidth
+            />
+            <Button
+              label={hasPro ? "Move to Existing Account" : "Stay on Current Progress"}
+              variant="secondary"
               onPress={hasPro ? handleMove : handleStay}
+              loading={busyMove && hasPro}
               disabled={busyMove}
-              className="w-full bg-sage-pill h-14 rounded-full items-center justify-center flex-row"
-              activeOpacity={0.8}
-            >
-              {busyMove && hasPro ? (
-                <ActivityIndicator size="small" color={INK} />
-              ) : (
-                <Text className="happy-font-body-bold text-ink text-lg">
-                  {hasPro ? "Move to Existing Account" : "Stay on Current Progress"}
-                </Text>
-              )}
-            </TouchableOpacity>
+              fullWidth
+            />
           </View>
         </View>
       </ShortBottomModal>
@@ -362,13 +353,14 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
   return (
     <ShortBottomModal
       ref={ref}
-      snapPoints={showSkipButton ? ["42%"] : ["35%"]}
+      snapPoints={showSkipButton ? ["45%"] : ["38%"]}
       onDismiss={handleSheetDismiss}
     >
       <View className="flex-1 px-6 pt-4 pb-8 justify-between bg-brand-surface rounded-[24px]">
         <View>
           <Text
-            className="happy-font-heading-bold text-3xl text-ink mb-2"
+            variant="h1"
+            className="mb-2"
           >
             {isAnonymous
               ? hasPro
@@ -376,7 +368,7 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
                 : "Save Your Progress"
               : "Welcome Back"}
           </Text>
-          <Text className="happy-font-body-medium text-ink-muted text-base leading-5">
+          <Text variant="body" className="leading-[22px]">
             {isAnonymous
               ? "Add a login to keep your current Happy profile, progress, and Premium access safe."
               : "Sign in to sync your journals, moods, and calories across all your devices."}
@@ -384,47 +376,35 @@ export default forwardRef<BottomSheetModal | null, SignInBottomSheetProps>(({
         </View>
 
         <View className="gap-3">
-          <TouchableOpacity
+          <Button
+            label="Continue with Apple"
+            variant="primary"
             onPress={() => handleProviderPress("apple")}
+            loading={busyProvider === "apple"}
             disabled={busyProvider !== null}
-            className="happy-brand-primary-cta w-full h-14 rounded-full items-center justify-center flex-row"
-            activeOpacity={0.8}
-          >
-            {busyProvider === "apple" ? (
-              <ActivityIndicator size="small" color={BRAND_SURFACE} />
-            ) : (
-              <Text className="happy-font-body-bold text-brand-surface text-lg">
-                Continue with Apple
-              </Text>
-            )}
-          </TouchableOpacity>
+            fullWidth
+            leftIcon={<FontAwesome name="apple" size={20} color="white" />}
+          />
 
-          <TouchableOpacity
+          <Button
+            label="Continue with Google"
+            variant="secondary"
             onPress={() => handleProviderPress("google")}
+            loading={busyProvider === "google"}
             disabled={busyProvider !== null}
-            className="w-full bg-brand-surface border border-sage-100 h-14 rounded-full items-center justify-center flex-row"
-            activeOpacity={0.8}
-          >
-            {busyProvider === "google" ? (
-              <ActivityIndicator size="small" color={INK} />
-            ) : (
-              <Text className="happy-font-body-bold text-ink text-lg">
-                Continue with Google
-              </Text>
-            )}
-          </TouchableOpacity>
+            fullWidth
+            leftIcon={<FontAwesome name="google" size={18} color={INK} />}
+          />
 
           {showSkipButton ? (
-            <TouchableOpacity
+            <Button
+              label="Maybe later"
+              variant="ghost"
               onPress={handleSkip}
               disabled={busyProvider !== null}
-              className="w-full h-11 items-center justify-center"
-              activeOpacity={0.7}
-            >
-              <Text className="happy-font-body-medium text-ink-muted text-sm">
-                Maybe later
-              </Text>
-            </TouchableOpacity>
+              fullWidth
+              className="mt-1"
+            />
           ) : null}
         </View>
       </View>

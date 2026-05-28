@@ -1,5 +1,5 @@
 import { memo, useCallback, type ReactElement } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   ArrowRight01Icon,
@@ -13,6 +13,8 @@ import {
 } from "@/src/store/slices/happyAssistantSlice";
 import type { HappyAssistantActionDescriptor } from "./types";
 import { INK_MUTED, SAGE } from "@/lib/tokens";
+import { Card } from "@/src/components/ui/Card";
+import { Text } from "@/src/components/ui/Text";
 
 interface AssistantActionSheetProps {
   title: string;
@@ -39,11 +41,12 @@ export function AssistantActionSheet({
         </View>
         <View className="flex-1">
           <Text
-            className="happy-font-heading-bold text-[30px] leading-9 text-ink"
+            variant="h1"
+            className="text-[30px] leading-9"
           >
             {title}
           </Text>
-          <Text className="happy-font-body-medium mt-0.5 text-[15px] leading-5 text-ink-muted">
+          <Text variant="body" color="soft" className="mt-0.5 text-[15px] leading-5">
             {subtitle}
           </Text>
         </View>
@@ -82,28 +85,34 @@ const AssistantActionRow = memo(function AssistantActionRow({
   }, [action.command, onCommandPress]);
 
   return (
-    <Pressable
+    <Card
+      variant="tile"
+      radius="xl"
+      showDepth={true}
+      onPress={handlePress}
+      className="mb-1"
+      contentClassName="min-h-[72px] flex-row items-center px-3.5 py-3"
       accessibilityRole="button"
       accessibilityLabel={action.label}
       accessibilityHint={action.description}
-      onPress={handlePress}
-      className="min-h-[72px] flex-row items-center rounded-[22px] border-2 border-sage-100 bg-sage-50/60 px-3.5 py-3 active:opacity-80"
     >
       <View className="mr-3 h-11 w-11 items-center justify-center rounded-[18px] bg-sage-pill">
         <HugeiconsIcon icon={action.icon} size={22} color={SAGE[600]} />
       </View>
       <View className="flex-1">
-        <Text className="happy-font-body-bold text-[15px] text-ink">
+        <Text variant="body-bold" className="text-[15px]">
           {action.label}
         </Text>
         <Text
-          className="happy-font-body-medium mt-0.5 text-[13px] leading-4 text-ink-muted"
+          variant="body"
+          color="muted"
+          className="mt-0.5 text-[13px] leading-4"
           numberOfLines={2}
         >
           {action.description}
         </Text>
       </View>
       <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={INK_MUTED} />
-    </Pressable>
+    </Card>
   );
 });

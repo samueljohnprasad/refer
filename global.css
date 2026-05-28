@@ -168,7 +168,7 @@
      brand-surface  #FFFFFF  Card and panel face — pure white. Always on top
                              of brand-canvas. Never use as a screen background.
      brand-surface-soft      Icon wells, secondary card tints — use sparingly.*/
-  --color-brand-canvas: #fafaf8;
+  --color-brand-canvas: #f8faf7;
   --color-brand-surface: #ffffff;
   --color-brand-surface-soft: #f7f7f7;
   --color-mascot-stage: #ffffff;

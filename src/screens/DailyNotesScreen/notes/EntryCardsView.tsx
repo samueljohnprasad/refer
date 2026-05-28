@@ -32,6 +32,7 @@ import { ConfirmationModal } from "@/src/components/modals/ConfirmationModal";
 import { useRouter } from "expo-router";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { BRAND_SURFACE, GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
+import { Card } from "@/src/components/ui/Card";
 
 interface EntryCardsViewProps {
   entries: JournalEntry[];
@@ -83,14 +84,17 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         <SectionHeader title="Journal Entries" icon={NoteIcon} />
         <View className="gap-3">
           {[1, 2, 3].map((i) => (
-            <View
+            <Card
               key={i}
-              className="happy-brand-preview-tile rounded-[24px] p-4"
+              variant="tile"
+              radius="xl"
+              showDepth={true}
+              contentClassName="p-4"
             >
               <View className="h-4 bg-sage-100 rounded mb-2 w-3/4" />
               <View className="h-3 bg-sage-100 rounded mb-2 w-1/2" />
               <View className="h-3 bg-sage-100 rounded w-full" />
-            </View>
+            </Card>
           ))}
         </View>
       </View>
@@ -182,21 +186,6 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
   index,
   isBookmarking = false,
 }) {
-  // Reanimated shared values — run on UI thread, zero JS-thread overhead during scroll
-  const scaleAnim = useSharedValue(1);
-
-  const cardAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scaleAnim.value }],
-  }));
-
-  const handlePressIn = useCallback(() => {
-    scaleAnim.value = withSpring(0.97, { damping: 20, stiffness: 300 });
-  }, [scaleAnim]);
-
-  const handlePressOut = useCallback(() => {
-    scaleAnim.value = withSpring(1, { damping: 20, stiffness: 300 });
-  }, [scaleAnim]);
-
   const feelings: FeelingsType[] = entry.journal_ai_insights
     ?.feelings as FeelingsType[];
 
@@ -220,129 +209,123 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
   );
 
   return (
-    <Pressable
+    <Card
+      variant="tile"
+      radius="xl"
+      showDepth={true}
       onPress={() => onPress(entry)}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
+      contentClassName="p-4"
     >
-      <Animated.View style={cardAnimatedStyle}>
-        <View
-          className="happy-brand-preview-tile rounded-[24px] p-4"
-          shouldRasterizeIOS
-          renderToHardwareTextureAndroid
-        >
-          {/* Header */}
-          <View className="flex-row items-start justify-between mb-3">
-            <View className="flex-1">
-              <Text variant="body-bold" className="mb-1">
-                {entry.title}
-              </Text>
-              <View className="flex-row items-center">
-                {entry.selected_date && (
-                  <Text variant="caption-muted">
-                    {format(new Date(entry.selected_date), "h:mm a")}
-                  </Text>
-                )}
-                <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
-                <HugeiconsIcon
-                  size={12}
-                  icon={getEntryTypeIcon(entry.input_type)}
-                  color={INK_MUTED}
-                />
-                {!!entry.duration_seconds && (
-                  <Text variant="caption-muted" className="ml-1">
-                    {getDuration(entry.duration_seconds)}
-                  </Text>
-                )}
-                {!!entry.words_count && (
-                  <>
-                    <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
-                    <Text variant="caption-muted">
-                      {entry.words_count} words
-                    </Text>
-                  </>
-                )}
-              </View>
-            </View>
-
-            <View className="items-end justify-center mb-1">
-              <Image
-                source={emotions[entry.moods?.main_mood as Emotion]}
-                className="w-6 h-6 opacity-60"
-                alt={entry.moods?.main_mood || "-"}
-                progressiveRenderingEnabled={true}
-              />
-            </View>
-          </View>
-
-          {/* Excerpt */}
-          <Text variant="label" color="soft" className="leading-5 mb-3">
-            {entry.transcripts?.substring(0, 100) + "..."}
+      {/* Header */}
+      <View className="flex-row items-start justify-between mb-3">
+        <View className="flex-1">
+          <Text variant="body-bold" className="mb-1">
+            {entry.title}
           </Text>
-
-          {/* Emotion Tags */}
-          <View className="flex-row flex-wrap mb-3">
-            {(feelings || []).map((emotion, idx) => (
-              <View
-                key={`${emotion}-${idx}`}
-                className="bg-sage-50 border border-sage-100 rounded-full px-2 py-1 mr-2 mb-1"
-              >
-                <Text variant="chip" className="capitalize">
-                  {emotion.emoji} {emotion.name}
+          <View className="flex-row items-center">
+            {entry.selected_date && (
+              <Text variant="caption-muted">
+                {format(new Date(entry.selected_date), "h:mm a")}
+              </Text>
+            )}
+            <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
+            <HugeiconsIcon
+              size={12}
+              icon={getEntryTypeIcon(entry.input_type)}
+              color={INK_MUTED}
+            />
+            {!!entry.duration_seconds && (
+              <Text variant="caption-muted" className="ml-1">
+                {getDuration(entry.duration_seconds)}
+              </Text>
+            )}
+            {!!entry.words_count && (
+              <>
+                <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
+                <Text variant="caption-muted">
+                  {entry.words_count} words
                 </Text>
-              </View>
-            ))}
-          </View>
-
-          {/* Footer */}
-          <View className="flex-row items-center justify-between pt-2 border-t border-sage-100">
-            <View className="flex-row items-center gap-2">
-              {entry.moods?.main_mood && (
-                <Text variant="chip" color="muted" className="capitalize">
-                  {entry.moods?.main_mood} mood
-                </Text>
-              )}
-            </View>
-            <View className="flex-row items-center gap-2 ">
-              {showActions && (
-                <>
-                  <Pressable
-                    onPress={handleBookmarkPress}
-                    className="w-9 h-9 items-center justify-center active:opacity-70"
-                    accessibilityLabel={
-                      isBookmarked ? "Remove bookmark" : "Bookmark"
-                    }
-                    disabled={isBookmarking}
-                  >
-                    {isBookmarking ? (
-                      <ActivityIndicator size="small" color={GOLD} />
-                    ) : (
-                      <HugeiconsIcon
-                        icon={Bookmark02Icon}
-                        size={18}
-                        fill={isBookmarked ? GOLD : SAGE[200]}
-                        color={isBookmarked ? GOLD : SAGE[200]}
-                      />
-                    )}
-                  </Pressable>
-
-                  <Pressable
-                    onPress={handleDeletePress}
-                    className="w-9 h-9 items-center justify-center active:opacity-70"
-                    accessibilityLabel="Delete journal"
-                  >
-                    <HugeiconsIcon
-                      icon={Delete02Icon}
-                      size={18}
-                      color={INK_MUTED}
-                    />
-                  </Pressable>
-                </>
-              )}
-            </View>
+              </>
+            )}
           </View>
         </View>
-      </Animated.View>
-    </Pressable>
+
+        <View className="items-end justify-center mb-1">
+          <Image
+            source={emotions[entry.moods?.main_mood as Emotion]}
+            className="w-6 h-6 opacity-60"
+            alt={entry.moods?.main_mood || "-"}
+            progressiveRenderingEnabled={true}
+          />
+        </View>
+      </View>
+
+      {/* Excerpt */}
+      <Text variant="label" color="soft" className="leading-5 mb-3">
+        {entry.transcripts?.substring(0, 100) + "..."}
+      </Text>
+
+      {/* Emotion Tags */}
+      <View className="flex-row flex-wrap mb-3">
+        {(feelings || []).map((emotion, idx) => (
+          <View
+            key={`${emotion}-${idx}`}
+            className="bg-sage-50 border border-sage-100 rounded-full px-2 py-1 mr-2 mb-1"
+          >
+            <Text variant="chip" className="capitalize">
+              {emotion.emoji} {emotion.name}
+            </Text>
+          </View>
+        ))}
+      </View>
+
+      {/* Footer */}
+      <View className="flex-row items-center justify-between pt-2 border-t border-sage-100">
+        <View className="flex-row items-center gap-2">
+          {entry.moods?.main_mood && (
+            <Text variant="chip" color="muted" className="capitalize">
+              {entry.moods?.main_mood} mood
+            </Text>
+          )}
+        </View>
+        <View className="flex-row items-center gap-2 ">
+          {showActions && (
+            <>
+              <Pressable
+                onPress={handleBookmarkPress}
+                className="w-9 h-9 items-center justify-center active:opacity-70"
+                accessibilityLabel={
+                  isBookmarked ? "Remove bookmark" : "Bookmark"
+                }
+                disabled={isBookmarking}
+              >
+                {isBookmarking ? (
+                  <ActivityIndicator size="small" color={GOLD} />
+                ) : (
+                  <HugeiconsIcon
+                    icon={Bookmark02Icon}
+                    size={18}
+                    fill={isBookmarked ? GOLD : SAGE[200]}
+                    color={isBookmarked ? GOLD : SAGE[200]}
+                  />
+                )}
+              </Pressable>
+
+              <Pressable
+                onPress={handleDeletePress}
+                className="w-9 h-9 items-center justify-center active:opacity-70"
+                accessibilityLabel="Delete journal"
+              >
+                <HugeiconsIcon
+                  icon={Delete02Icon}
+                  size={18}
+                  color={INK_MUTED}
+                />
+              </Pressable>
+            </>
+          )}
+        </View>
+      </View>
+    </Card>
   );
 });

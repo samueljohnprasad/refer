@@ -104,12 +104,13 @@ interface SizeConfig {
   radius: number;
   pressDepth: number;
   labelSize: number;
+  defaultWidth: number;
 }
 
 const SIZES: Record<Size, SizeConfig> = {
-  sm: { height: 44, radius: 22, pressDepth: 3, labelSize: 15 },
-  md: { height: 48, radius: 22, pressDepth: 4, labelSize: 16 },
-  lg: { height: 56, radius: 22, pressDepth: 4, labelSize: 17 },
+  sm: { height: 44, radius: 22, pressDepth: 3, labelSize: 15, defaultWidth: 120 },
+  md: { height: 48, radius: 22, pressDepth: 4, labelSize: 16, defaultWidth: 150 },
+  lg: { height: 56, radius: 22, pressDepth: 4, labelSize: 17, defaultWidth: 200 },
 };
 
 // ─── Props ───────────────────────────────────────────────────────────────────
@@ -119,6 +120,7 @@ interface ButtonProps {
   variant?: Variant;
   size?: Size;
   fullWidth?: boolean;
+  width?: number;
   onPress?: () => void;
   disabled?: boolean;
   loading?: boolean;
@@ -137,6 +139,7 @@ export function Button({
   variant = "primary",
   size = "lg",
   fullWidth = true,
+  width,
   onPress,
   disabled = false,
   loading = false,
@@ -144,6 +147,7 @@ export function Button({
   rightIcon,
   accessibilityLabel,
   haptic = "light",
+  className = "",
 }: ButtonProps) {
   const sizeConfig = SIZES[size];
   const isDisabled = disabled || loading;
@@ -161,6 +165,10 @@ export function Button({
     onPress?.();
   };
 
+  const isFlexGrow = className.includes("flex-1") || className.includes("flex-grow") || className.includes("flex-shrink");
+  const shouldBeFullWidth = fullWidth || isFlexGrow;
+  const computedWidth = shouldBeFullWidth ? "100%" : (width ?? sizeConfig.defaultWidth);
+
   // Ghost variant — plain pressable, no depth
   if (variant === "ghost") {
     return (
@@ -170,12 +178,14 @@ export function Button({
         accessibilityLabel={accessibilityLabel ?? label}
         accessibilityRole="button"
         accessibilityState={{ disabled: isDisabled, busy: loading }}
+        className={className}
         style={{
           height: sizeConfig.height,
           alignItems: "center",
           justifyContent: "center",
           opacity: isDisabled ? 0.5 : 1,
-          alignSelf: fullWidth ? "stretch" : "flex-start",
+          alignSelf: shouldBeFullWidth ? "stretch" : "flex-start",
+          width: computedWidth,
         }}
       >
         {loading ? (
@@ -212,10 +222,14 @@ export function Button({
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityRole="button"
       accessibilityState={{ disabled: isDisabled, busy: loading }}
-      style={{ alignSelf: fullWidth ? "stretch" : "flex-start" }}
+      style={{
+        alignSelf: shouldBeFullWidth ? "stretch" : "flex-start",
+        width: computedWidth,
+      }}
+      className={className}
     >
       <SvgAppButton
-        width={fullWidth ? "100%" : 200}
+        width={computedWidth}
         height={sizeConfig.height}
         color={faceColor}
         backgroundColor={rimColor}

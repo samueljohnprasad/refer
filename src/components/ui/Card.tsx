@@ -14,7 +14,7 @@ import { BRAND_BORDER_STRONG, SAGE } from "@/lib/tokens";
 // Each variant defines the face border, shadow colour, and shadow depth.
 // The face uses a uniform border — depth comes only from the shadow layer.
 
-type Variant = "tile" | "answer" | "answer-selected" | "word-bank";
+type Variant = "tile" | "answer" | "answer-selected" | "word-bank" | "dashed";
 
 interface VariantConfig {
   faceClass: string;
@@ -43,6 +43,11 @@ const VARIANTS: Record<Variant, VariantConfig> = {
     shadowColor: BRAND_BORDER_STRONG,
     shadowDepth: 3,
   },
+  dashed: {
+    faceClass: "border-2 border-dashed border-sage-200 bg-brand-surface",
+    shadowColor: "transparent",
+    shadowDepth: 0,
+  },
 };
 
 // ─── Radius ───────────────────────────────────────────────────────────────────
@@ -59,7 +64,7 @@ const RADIUS_CLASS: Record<Radius, string> = {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface CardProps extends Omit<ViewProps, "style"> {
+interface CardProps extends ViewProps {
   variant?: Variant;
   radius?: Radius;
   onPress?: () => void;
@@ -68,6 +73,7 @@ interface CardProps extends Omit<ViewProps, "style"> {
   disabled?: boolean;
   className?: string;
   contentClassName?: string;
+  faceStyle?: any;
   children: React.ReactNode;
 }
 
@@ -84,6 +90,8 @@ export function Card({
   disabled = false,
   className = "",
   contentClassName = "",
+  faceStyle,
+  style,
   children,
   ...rest
 }: CardProps) {
@@ -148,7 +156,7 @@ export function Card({
 
       {/* Face — springs down into shadow on press */}
       <Animated.View
-        style={animatedFaceStyle}
+        style={[animatedFaceStyle, faceStyle]}
         className={`${config.faceClass} ${radiusClass}`}
       >
         <View className={`${paddingClass} ${contentClassName}`}>{children}</View>
@@ -156,10 +164,15 @@ export function Card({
     </>
   );
 
+  const containerStyle = [
+    { position: "relative", paddingBottom: shadowDepth } as const,
+    style,
+  ];
+
   if (!isInteractive) {
     return (
       <View
-        style={{ position: "relative", paddingBottom: shadowDepth }}
+        style={containerStyle}
         className={className}
         {...rest}
       >
@@ -176,7 +189,7 @@ export function Card({
       disabled={disabled}
       accessibilityRole="button"
       accessibilityState={{ disabled }}
-      style={{ position: "relative", paddingBottom: shadowDepth }}
+      style={containerStyle}
       className={className}
       {...rest}
     >

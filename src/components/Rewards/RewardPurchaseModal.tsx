@@ -7,6 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Reward } from "@/src/types/rewards";
 import * as Haptics from "expo-haptics";
+import { Card } from "@/src/components/ui/Card";
 
 interface RewardPurchaseModalProps {
   visible: boolean;
@@ -54,10 +55,14 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
         className="flex-1 items-center justify-center bg-black/35"
         onPress={onCancel}
       >
-        <Animated.View
-          style={animatedStyle}
-          className="happy-brand-raised-panel mx-6 w-80 items-center rounded-[32px] p-6"
-        >
+        <Animated.View style={animatedStyle}>
+          <Card
+            variant="tile"
+            radius="xl"
+            showDepth={true}
+            className="mx-6 w-80"
+            contentClassName="items-center p-6"
+          >
           <View
             className="mb-4 h-20 w-20 items-center justify-center rounded-[24px]"
             style={{ backgroundColor: reward.color + "20" }}
@@ -130,6 +135,7 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
               </Text>
             </Pressable>
           </View>
+          </Card>
         </Animated.View>
       </Pressable>
     </Modal>

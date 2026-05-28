@@ -14,6 +14,7 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Add01Icon, Tick01Icon } from "@hugeicons/core-free-icons";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { INK_MUTED, SAGE } from "@/lib/tokens";
+import { Card } from "@/src/components/ui/Card";
 
 interface AddHabitModalProps {
   onSubmit: (formData: CreateHabitFormData) => Promise<void>;
@@ -79,24 +80,24 @@ type PresetHabitTone = {
 
 const PRESET_TONES: Record<PresetHabit["category"], PresetHabitTone> = {
   health: {
-    iconBgClassName: "bg-terracotta/15",
-    iconBorderClassName: "border-terracotta-light/60",
-    chipClassName: "bg-terracotta/15",
+    iconBgClassName: "bg-otter-blue-tint",
+    iconBorderClassName: "border-otter-blue/30",
+    chipClassName: "bg-otter-blue",
   },
   productivity: {
-    iconBgClassName: "bg-gold/15",
+    iconBgClassName: "bg-gold-tint",
     iconBorderClassName: "border-gold/30",
-    chipClassName: "bg-gold/15",
+    chipClassName: "bg-gold",
   },
   selfcare: {
-    iconBgClassName: "bg-terracotta/15",
-    iconBorderClassName: "border-terracotta-light/60",
-    chipClassName: "bg-terracotta/15",
+    iconBgClassName: "bg-macaw-purple-tint",
+    iconBorderClassName: "border-macaw-purple/30",
+    chipClassName: "bg-macaw-purple",
   },
   mindfulness: {
-    iconBgClassName: "bg-sage-50",
-    iconBorderClassName: "border-sage-100",
-    chipClassName: "bg-sage-pill",
+    iconBgClassName: "bg-sage-selected",
+    iconBorderClassName: "border-sage-200",
+    chipClassName: "bg-sage-500",
   },
 };
 
@@ -171,47 +172,47 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
                     const tone = PRESET_TONES[preset.category];
 
                     return (
-                      <PressableScale
+                      <Card
                         key={preset.name}
+                        variant="tile"
+                        radius="xl"
+                        showDepth={true}
                         onPress={() => handlePresetSelect(preset)}
                         disabled={loading}
-                        scale={0.98}
-                        hapticStyle="light"
-                        className="mb-3 rounded-[28px]"
+                        className="mb-3"
+                        contentClassName="px-4 py-4"
                         accessibilityRole="button"
                         accessibilityLabel={`Add habit: ${preset.name}. ${preset.description}`}
                       >
-                        <View className="happy-brand-preview-tile rounded-[28px] px-4 py-4">
-                          <View className="flex-row items-center">
-                            <View
-                              className={`mr-3 h-12 w-12 items-center justify-center rounded-[18px] border ${tone.iconBorderClassName} ${tone.iconBgClassName}`}
-                            >
-                              <Text style={{ fontSize: 23 }}>
-                                {preset.icon}
-                              </Text>
-                            </View>
-                            <View className="min-w-0 flex-1">
-                              <View className="mb-1 flex-row items-center">
-                                <Text
-                                  className="happy-font-body-bold flex-1 text-[16px] leading-5 text-ink"
-                                  numberOfLines={1}
-                                >
-                                  {preset.name}
-                                </Text>
-                                <View
-                                  className={`ml-2 h-2.5 w-2.5 rounded-full ${tone.chipClassName}`}
-                                />
-                              </View>
+                        <View className="flex-row items-center">
+                          <View
+                            className={`mr-3 h-12 w-12 items-center justify-center rounded-[18px] border ${tone.iconBorderClassName} ${tone.iconBgClassName}`}
+                          >
+                            <Text style={{ fontSize: 23 }}>
+                              {preset.icon}
+                            </Text>
+                          </View>
+                          <View className="min-w-0 flex-1">
+                            <View className="mb-1 flex-row items-center">
                               <Text
-                                className="happy-font-body-medium text-[14px] leading-5 text-ink-muted"
-                                numberOfLines={2}
+                                className="happy-font-body-bold flex-1 text-[16px] leading-5 text-ink"
+                                numberOfLines={1}
                               >
-                                {preset.description}
+                                {preset.name}
                               </Text>
+                              <View
+                                className={`ml-2 h-2.5 w-2.5 rounded-full ${tone.chipClassName}`}
+                              />
                             </View>
+                            <Text
+                              className="happy-font-body-medium text-[14px] leading-5 text-ink-muted"
+                              numberOfLines={2}
+                            >
+                              {preset.description}
+                            </Text>
                           </View>
                         </View>
-                      </PressableScale>
+                      </Card>
                     );
                   })}
                 </ScrollView>
@@ -226,7 +227,7 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
                   className="mb-4 rounded-[24px]"
                   accessibilityRole="button"
                 >
-                  <View className="flex-row items-center justify-center rounded-[24px] border-b-4 border-b-terracotta bg-terracotta py-4">
+                  <View className="flex-row items-center justify-center rounded-[24px] border-b-4 border-b-sage-700 bg-sage-500 py-4">
                     <HugeiconsIcon icon={Add01Icon} size={20} color="#FFFFFF" />
                     <Text className="happy-font-body-bold ml-2 text-[15px] text-brand-surface">
                       Create Custom Habit
@@ -310,7 +311,7 @@ export const AddHabitModal = forwardRef<BottomSheetModal, AddHabitModalProps>(
                       className={`flex-row items-center justify-center rounded-[22px] border-b-4 py-4 ${
                         !habitName.trim() || loading
                           ? "border-b-sage-300 bg-sage-200"
-                          : "border-b-terracotta bg-terracotta"
+                          : "border-b-sage-700 bg-sage-500"
                       }`}
                     >
                       <HugeiconsIcon

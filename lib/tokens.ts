@@ -78,7 +78,7 @@ export const INK_MUTED = "#AFAFAF" as const;
 export const OFFWHITE = "#ffffff" as const;
 // Duolingo Wolf Grey 300 / Wolf Grey 200 — adopted directly
 export const BRAND_BORDER = "#E5E5E5" as const;
-export const BRAND_BORDER_STRONG = "#AFAFAF" as const;
+export const BRAND_BORDER_STRONG = "#E5E5E5" as const;
 export const SAGE_DISCOVERY_GRADIENT = [
   BRAND_SURFACE,
   BRAND_SURFACE_SOFT,

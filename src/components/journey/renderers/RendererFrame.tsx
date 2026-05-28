@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SAGE, TERRACOTTA } from "@/lib/tokens";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import StageProgressBar from "@/src/components/ui/StageProgressBar";
+import { Button } from "@/src/components/ui/Button";
 
 export function getDisplayXp(xpReward?: number): number {
   return xpReward && xpReward > 0 ? xpReward : 10;
@@ -114,36 +115,13 @@ export function RendererPrimaryCTA({
   disabled?: boolean;
   tone?: "sage" | "terracotta";
 }): React.JSX.Element {
-  const enabledBackground = tone === "terracotta" ? TERRACOTTA : SAGE[500];
-  const enabledBorder = tone === "terracotta" ? TERRACOTTA : SAGE[700];
-
   return (
-    <PressableScale
+    <Button
+      label={label}
       onPress={onPress}
-      scale={0.96}
-      hapticStyle="medium"
       disabled={disabled}
-      style={{
-        minHeight: 56,
-        borderRadius: 24,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: disabled ? SAGE[200] : enabledBackground,
-        borderBottomWidth: 5,
-        borderBottomColor: disabled ? SAGE[300] : enabledBorder,
-        opacity: disabled ? 0.72 : 1,
-      }}
-      accessibilityLabel={label}
-      accessibilityRole="button"
-      accessibilityState={{ disabled }}
-    >
-      <Text
-        className={`happy-font-body-bold text-[15px] uppercase tracking-wider ${
-          disabled ? "text-ink-muted" : "text-brand-surface"
-        }`}
-      >
-        {label}
-      </Text>
-    </PressableScale>
+      variant={tone === "terracotta" ? "incorrect" : "primary"}
+      fullWidth
+    />
   );
 }

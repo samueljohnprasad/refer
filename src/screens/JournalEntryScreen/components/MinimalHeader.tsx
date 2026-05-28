@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { formattedDateTime } from "@/src/utils/date";
+import { Text } from "@/src/components/ui/Text";
 
 interface MinimalHeaderProps {
   isEditing: boolean;
@@ -28,13 +29,13 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
           accessibilityLabel="Close"
           accessibilityHint="Closes the journal entry"
         >
-          <Feather name="x" size={24} className="text-theme-text-primary" />
+          <Feather name="x" size={24} className="text-ink" />
         </TouchableOpacity>
 
         {/* Date/Time */}
         <View className="flex-1 items-center">
-          <Text className="text-theme-text-primary text-base font-cormorantBold">Today</Text>
-          <Text className="text-theme-text-secondary text-xs mt-0.5">
+          <Text variant="body-bold">Today</Text>
+          <Text variant="caption-muted" className="mt-0.5">
             {formattedDateTime(date)}
           </Text>
         </View>
@@ -47,7 +48,7 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
           accessibilityRole="button"
           accessibilityLabel={isEditing ? "Done editing" : "Edit journal"}
         >
-          <Text className="text-theme-text-primary text-base font-medium">
+          <Text variant="body-bold" className="text-sage-600">
             {isEditing ? "Done" : "Edit"}
           </Text>
         </TouchableOpacity>

@@ -1,13 +1,9 @@
 import React from "react";
 import { View, Text } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  withSpring,
-  useSharedValue,
-} from "react-native-reanimated";
 import { useUserLevel } from "@/hooks/data/useUserLevel";
 import { LevelBadge } from "./LevelBadge";
-import { SAGE } from "@/lib/tokens";
+import { Card } from "@/src/components/ui/Card";
+import StageProgressBar from "@/src/components/ui/StageProgressBar";
 
 interface LevelProgressBarProps {
   showBadge?: boolean;
@@ -32,30 +28,15 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
     totalXP,
   } = useUserLevel();
 
-  const progressWidth = useSharedValue(0);
-
-  // Animate progress bar
-  React.useEffect(() => {
-    progressWidth.value = withSpring(progress, {
-      damping: 15,
-      stiffness: 100,
-    });
-  }, [progress]);
-
-  const progressAnimatedStyle = useAnimatedStyle(() => ({
-    width: `${progressWidth.value}%`,
-  }));
-
   if (compact) {
     return (
       <View className="flex-row items-center gap-2">
         {showBadge && <LevelBadge level={currentLevel} size="sm" />}
-        <View className="flex-1 h-2 bg-sage-100 rounded-full overflow-hidden">
-          <Animated.View
-            className="h-full rounded-full"
-            style={[{ backgroundColor: SAGE[500] }, progressAnimatedStyle]}
-          />
-        </View>
+        <StageProgressBar
+          progress={progress}
+          height={8}
+          className="flex-1"
+        />
         <Text className="happy-font-body-medium text-xs text-ink-muted">
           {isMaxLevel ? "MAX" : `${progress}%`}
         </Text>
@@ -64,7 +45,12 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
   }
 
   return (
-    <View className="happy-brand-raised-panel rounded-[24px] p-4">
+    <Card
+      variant="tile"
+      radius="lg"
+      showDepth={false}
+      contentClassName="p-4"
+    >
       {/* Header with Level Badge */}
       <View className="flex-row items-center justify-between mb-3">
         {showBadge && <LevelBadge level={currentLevel} size="md" />}
@@ -74,12 +60,11 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
       </View>
 
       {/* Progress Bar */}
-      <View className="h-3 bg-sage-100 rounded-full overflow-hidden mb-2">
-        <Animated.View
-          className="h-full rounded-full"
-          style={[{ backgroundColor: SAGE[500] }, progressAnimatedStyle]}
-        />
-      </View>
+      <StageProgressBar
+        progress={progress}
+        height={12}
+        className="mb-2"
+      />
 
       {/* Progress Text */}
       <View className="flex-row justify-between">
@@ -94,6 +79,6 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
           </Text>
         )}
       </View>
-    </View>
+    </Card>
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
+import { Text } from "@/src/components/ui/Text";
 import { Enums } from "@/database.types";
 
 interface MoodSelectorProps {
@@ -39,29 +40,31 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
     viewOnly = false,
     title,
   }: MoodSelectorProps) => {
-    if (viewOnly) {
-      const currentMood = MOODS.find((m) => m.id === selectedMood) || MOODS[4];
-      return (
-        <View 
-          className="mb-4"
-          accessible={true}
-          accessibilityLabel={`Journal entry titled ${title || "Daily Reflections"}. Mood is ${currentMood.label}.`}
-        >
-          <View className="flex-row items-center gap-2">
-            <Image
-              source={EMOTION_IMAGES[currentMood.id as EmotionType]}
-              className="w-8 h-8 opacity-90"
-              resizeMode="contain"
-            />
-            <View className="flex-1">
-              <Text className="text-2xl font-cormorantBold text-theme-text-primary">
-                {title || "Daily Reflections"}
-              </Text>
+      if (viewOnly) {
+        const currentMood = MOODS.find((m) => m.id === selectedMood) || MOODS[4];
+        return (
+          <View 
+            className="mb-6"
+            accessible={true}
+            accessibilityLabel={`Journal entry titled ${title || "Daily Reflections"}. Mood is ${currentMood.label}.`}
+          >
+            <View className="flex-row items-center gap-3.5">
+              <View className="h-13 w-13 items-center justify-center rounded-[18px] bg-white/60 border border-white/80 shadow-sm">
+                <Image
+                  source={EMOTION_IMAGES[currentMood.id as EmotionType]}
+                  className="w-9 h-9"
+                  resizeMode="contain"
+                />
+              </View>
+              <View className="flex-1">
+                <Text variant="h1" className="text-[26px] leading-[30px]">
+                  {title || "Daily Reflections"}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-      );
-    }
+        );
+      }
 
     return (
       <View className="px-4 pb-4">
@@ -82,10 +85,9 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
                 resizeMode="contain"
               />
               <Text
-                className={`text-xs mt-1 ${
-                  selectedMood === mood.id
-                    ? "text-theme-text-primary font-semibold"
-                    : "text-theme-text-secondary"
+                variant="caption"
+                className={`mt-1 font-semibold ${
+                  selectedMood === mood.id ? "text-ink" : "text-ink-muted"
                 }`}
               >
                 {mood.label}

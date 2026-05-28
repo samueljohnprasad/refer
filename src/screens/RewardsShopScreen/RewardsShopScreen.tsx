@@ -26,6 +26,7 @@ import {
 } from "@/src/types/rewards";
 import * as Haptics from "expo-haptics";
 import { GOLD, SAGE } from "@/lib/tokens";
+import { Card } from "@/src/components/ui/Card";
 
 const CATEGORY_TABS: { key: RewardCategory; label: string; emoji: string }[] = [
   { key: "themes", label: "Themes", emoji: "🎨" },
@@ -149,7 +150,12 @@ export const RewardsShopScreen: React.FC = () => {
       </View>
 
       <View className="px-4 pb-4">
-        <View className="happy-brand-raised-panel rounded-[28px] p-4">
+        <Card
+          variant="tile"
+          radius="xl"
+          showDepth={true}
+          contentClassName="p-4"
+        >
           <View className="flex-row items-center justify-between">
             <View>
               <Text className="happy-font-body-medium text-sm text-ink-muted">
@@ -178,7 +184,7 @@ export const RewardsShopScreen: React.FC = () => {
               </Text>
             </View>
           </View>
-        </View>
+        </Card>
       </View>
 
       <ScrollView

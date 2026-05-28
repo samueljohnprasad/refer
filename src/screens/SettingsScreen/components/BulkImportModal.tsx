@@ -5,10 +5,8 @@ import {
   Modal,
   TextInput,
   ActivityIndicator,
-  TouchableOpacity,
 } from "react-native";
 import { BlurView } from "expo-blur";
-// FIX #26: Replaced @expo/vector-icons Feather with HugeiconsIcon (consistent icon system)
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   Calendar01Icon,
@@ -16,6 +14,9 @@ import {
 } from "@hugeicons/core-free-icons";
 import { format } from "date-fns";
 import { INK_MUTED, SAGE } from "@/lib/tokens";
+import { Card } from "@/src/components/ui/Card";
+import { Button } from "@/src/components/ui/Button";
+import StageProgressBar from "@/src/components/ui/StageProgressBar";
 
 interface BulkImportModalProps {
   visible: boolean;
@@ -38,7 +39,6 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
   importDaysCount,
   setImportDaysCount,
 }) => {
-  // FIX #27: Memoize import progress percentage
   const progressPercent =
     progress.total > 0
       ? Math.round((progress.current / progress.total) * 100)
@@ -50,7 +50,6 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
       transparent={true}
       visible={visible}
       onRequestClose={() => !importing && onClose()}
-      // FIX #28: Accessibility for screen readers
       accessibilityViewIsModal={true}
     >
       <BlurView
@@ -58,8 +57,14 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
         tint="dark"
         className="flex-1 justify-center items-center px-5"
       >
-        <View className="happy-brand-raised-panel w-full max-w-[400px] overflow-hidden rounded-[28px]">
-          {/* FIX #30: Header strip with violet background for visual hierarchy */}
+        <Card
+          variant="tile"
+          radius="xl"
+          showDepth={true}
+          className="w-full max-w-[400px]"
+          contentClassName="overflow-hidden"
+        >
+          {/* Header strip with violet background for visual hierarchy */}
           <View className="rounded-t-[28px] border-b border-sage-100 bg-sage-50 px-6 pb-4 pt-6">
             <View className="flex-row items-center gap-3 mb-1">
               <View className="h-10 w-10 items-center justify-center rounded-[16px] bg-sage-pill">
@@ -70,7 +75,6 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                   strokeWidth={1.8}
                 />
               </View>
-              {/* FIX #31: Title uses font-black instead of font-extrabold */}
               <Text className="happy-font-body-bold text-xl text-ink">
                 Bulk Import
               </Text>
@@ -87,7 +91,6 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                 Start Date
               </Text>
               <View className="flex-row items-center bg-sage-50 p-3.5 rounded-xl border border-sage-100 gap-2.5">
-                {/* FIX #26: HugeiconsIcon instead of Feather */}
                 <HugeiconsIcon
                   icon={Calendar01Icon}
                   size={18}
@@ -114,7 +117,6 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                 onChangeText={setImportDaysCount}
                 keyboardType="number-pad"
                 placeholder="20"
-                // FIX #32: placeholder text color
                 placeholderTextColor={INK_MUTED}
                 maxLength={2}
                 editable={!importing}
@@ -127,7 +129,7 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
               </Text>
             </View>
 
-            {/* FIX #33: Progress bar instead of just ActivityIndicator + text */}
+            {/* Progress bar instead of just ActivityIndicator + text */}
             {importing && (
               <View className="mb-4 items-center">
                 <ActivityIndicator size="small" color={SAGE[600]} />
@@ -135,12 +137,12 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
                   Importing {progress.current} of {progress.total}...
                 </Text>
                 {/* Progress bar */}
-                <View className="w-full h-1.5 bg-sage-100 rounded-full overflow-hidden">
-                  <View
-                    className="h-full bg-sage-500 rounded-full"
-                    style={{ width: `${progressPercent}%` }}
-                  />
-                </View>
+                <StageProgressBar
+                  progress={progressPercent}
+                  height={8}
+                  fillColor={SAGE[500]}
+                  className="w-full"
+                />
                 <Text className="happy-font-body-bold text-[11px] text-sage-600 mt-1">
                   {progressPercent}%
                 </Text>
@@ -149,34 +151,25 @@ export const BulkImportModal: React.FC<BulkImportModalProps> = ({
 
             {/* Action Buttons */}
             <View className="flex-row gap-3">
-              <TouchableOpacity
-                className="flex-1 bg-sage-pill rounded-2xl py-3.5 items-center justify-center"
+              <Button
+                label="Cancel"
+                variant="secondary"
                 onPress={onClose}
                 disabled={importing}
-                style={{ opacity: importing ? 0.5 : 1 }}
-                accessibilityRole="button"
-                accessibilityLabel="Cancel"
-              >
-                <Text className="happy-font-body-bold text-base text-ink-soft">
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                className="happy-brand-primary-cta flex-1 rounded-2xl overflow-hidden py-3.5 items-center justify-center"
+                fullWidth={false}
+                className="flex-1"
+              />
+              <Button
+                label={importing ? "Importing…" : "Import"}
+                variant="primary"
                 onPress={onImport}
-                disabled={importing}
-                accessibilityRole="button"
-                accessibilityLabel={importing ? "Importing" : "Start import"}
-                style={{ opacity: importing ? 0.65 : 1 }}
-              >
-                <Text className="happy-font-body-bold text-base text-brand-surface">
-                  {importing ? "Importing…" : "Import"}
-                </Text>
-              </TouchableOpacity>
+                loading={importing}
+                fullWidth={false}
+                className="flex-1"
+              />
             </View>
           </View>
-        </View>
+        </Card>
       </BlurView>
     </Modal>
   );

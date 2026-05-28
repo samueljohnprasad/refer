@@ -5,7 +5,6 @@ import {
   FlatList,
   Pressable,
   ScrollView,
-  Text,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -14,6 +13,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { FullWindowOverlay } from "react-native-screens";
+import { Card } from "@/src/components/ui/Card";
+import { Button } from "@/src/components/ui/Button";
+import { Text } from "@/src/components/ui/Text";
 import Animated, {
   Easing,
   runOnJS,
@@ -148,12 +150,19 @@ const CourseCard = React.memo(function CourseCard({
       accessibilityRole="button"
       accessibilityLabel={`Preview ${course.title}`}
     >
-      <View
-        className={
-          isSelected
-            ? "happy-brand-pressed-card-selected h-[78px] w-[92px] items-center justify-center rounded-2xl"
-            : "happy-brand-pressed-card h-[78px] w-[92px] items-center justify-center rounded-2xl"
-        }
+      <Card
+        variant="tile"
+        radius="xl"
+        showDepth={true}
+        className="h-[78px] w-[92px]"
+        contentClassName="items-center justify-center h-full w-full"
+        faceStyle={{
+          borderColor: isSelected ? courseAccentColor : PALETTE.sage100,
+          backgroundColor: isSelected ? `${courseAccentColor}12` : PALETTE.warmWhite,
+        }}
+        style={{
+          shadowColor: isSelected ? courseAccentColor : "transparent",
+        }}
       >
         {course.iconUrl ? (
           <Image
@@ -165,19 +174,19 @@ const CourseCard = React.memo(function CourseCard({
           />
         ) : (
           <Text
-            className="happy-font-heading text-[30px]"
+            variant="h2"
+            className="text-[30px]"
             style={{ color: courseAccentColor }}
           >
             {getCourseMonogram(course.title)}
           </Text>
         )}
-      </View>
+      </Card>
 
       <Text
+        variant="caption"
         numberOfLines={1}
-        className={`happy-font-body-medium w-full text-center text-[15px] ${
-          isSelected ? "text-sage-700" : "text-ink-muted"
-        }`}
+        className={`w-full text-center text-[15px] ${isSelected ? "text-sage-700 happy-font-body-bold" : "text-ink-muted"}`}
       >
         {course.title}
       </Text>
@@ -185,7 +194,9 @@ const CourseCard = React.memo(function CourseCard({
       {isEnrolled ? (
         <View className="rounded-full bg-sage-100 px-3 py-[5px]">
           <Text
-            className="happy-font-body-bold text-xs uppercase tracking-[0.4px] text-sage-600"
+            variant="chip"
+            color="sage"
+            className="uppercase tracking-[0.4px]"
           >
             Enrolled
           </Text>
@@ -200,24 +211,32 @@ const CourseMetricCard = React.memo(function CourseMetricCard({
   label,
 }: CourseMetricCardProps): React.JSX.Element {
   return (
-    <View className="happy-brand-metric-card min-h-[70px] flex-1 items-center justify-center gap-1 rounded-[18px] px-1">
+    <Card
+      variant="tile"
+      radius="md"
+      showDepth={false}
+      className="min-h-[70px] flex-1"
+      contentClassName="items-center justify-center gap-1 p-2"
+    >
       <Text
+        variant="body-bold"
         numberOfLines={1}
         adjustsFontSizeToFit
         minimumFontScale={0.82}
-        className="happy-font-body-bold w-full text-center text-[19px] text-ink"
+        className="w-full text-center text-[19px]"
       >
         {value}
       </Text>
       <Text
+        variant="body"
         numberOfLines={1}
         adjustsFontSizeToFit
         minimumFontScale={0.62}
-        className="happy-font-body w-full text-center text-[11px] text-ink-muted"
+        className="w-full text-center text-[11px]"
       >
         {label}
       </Text>
-    </View>
+    </Card>
   );
 });
 
@@ -229,20 +248,27 @@ const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
   const hiddenUnitCount = Math.max(section.unitCount - visibleUnitSegments, 0);
 
   return (
-    <View className="happy-brand-preview-tile overflow-hidden rounded-[24px] p-4">
+    <Card
+      variant="tile"
+      radius="xl"
+      showDepth={false}
+      contentClassName="p-0 overflow-hidden"
+    >
+      {/* Accent border strip on the left edge */}
       <View
-        className="absolute bottom-0 left-0 top-0 w-1.5"
+        className="absolute bottom-0 left-0 top-0 w-2 z-10"
         style={{ backgroundColor: accentColor }}
       />
 
-      <View className="gap-3 pl-2">
+      <View className="p-4 pl-6 gap-3">
         <View className="flex-row items-start gap-3">
           <View
             className="h-12 w-12 items-center justify-center rounded-2xl"
             style={{ backgroundColor: `${accentColor}1A` }}
           >
             <Text
-              className="happy-font-body-bold text-[18px]"
+              variant="label-bold"
+              className="text-[18px]"
               style={{ color: accentColor }}
             >
               {section.orderIndex}
@@ -251,25 +277,26 @@ const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
 
           <View className="flex-1 gap-1">
             <Text
-              className="happy-font-body-bold text-[18px] leading-[23px] text-ink"
+              variant="body-bold"
+              className="text-[18px] leading-[23px] text-ink"
               numberOfLines={2}
             >
               {section.title}
             </Text>
-            <Text className="happy-font-body text-[13px] uppercase tracking-[0.8px] text-ink-muted">
+            <Text variant="caption-muted" className="uppercase tracking-[0.8px]">
               Section {section.orderIndex}
             </Text>
           </View>
         </View>
 
         <View className="flex-row flex-wrap gap-2">
-          <View className="happy-brand-soft-chip px-3 py-1.5">
-            <Text className="happy-font-body-bold text-[13px] text-ink-soft">
+          <View className="happy-brand-status-chip px-3 py-1.5">
+            <Text variant="chip" color="soft">
               {formatPreviewCount(section.unitCount, "unit")}
             </Text>
           </View>
-          <View className="happy-brand-soft-chip px-3 py-1.5">
-            <Text className="happy-font-body-bold text-[13px] text-ink-soft">
+          <View className="happy-brand-status-chip px-3 py-1.5">
+            <Text variant="chip" color="soft">
               {formatPreviewCount(section.nodeCount, "lesson")}
             </Text>
           </View>
@@ -287,15 +314,15 @@ const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
             />
           ))}
           {hiddenUnitCount > 0 ? (
-            <View className="happy-brand-soft-chip px-2.5 py-1">
-              <Text className="happy-font-body-bold text-[11px] text-ink-muted">
+            <View className="happy-brand-status-chip px-2.5 py-1">
+              <Text variant="chip" color="muted" className="text-[11px]">
                 +{hiddenUnitCount}
               </Text>
             </View>
           ) : null}
         </View>
       </View>
-    </View>
+    </Card>
   );
 });
 
@@ -451,7 +478,7 @@ function CourseCatalogSheetContent({
                 </View>
               ) : (
                 <View className="min-h-[92px] min-w-[240px] items-center justify-center px-5">
-                  <Text className="happy-font-body text-center text-[15px] text-ink-muted">
+                  <Text variant="body" className="text-center text-[15px]">
                     No published courses are available yet.
                   </Text>
                 </View>
@@ -461,7 +488,12 @@ function CourseCatalogSheetContent({
 
           {selectedCourse ? (
             <View className="mx-5 gap-5">
-              <View className="happy-brand-raised-panel gap-5 rounded-[28px] p-5">
+              <Card
+                variant="tile"
+                radius="xl"
+                showDepth={false}
+                contentClassName="p-5 gap-5"
+              >
                 <View className="flex-row items-center gap-4">
                   <View
                     className="h-[86px] w-[86px] items-center justify-center rounded-[24px]"
@@ -489,14 +521,14 @@ function CourseCatalogSheetContent({
 
                   <View className="flex-1 gap-2">
                     <View className="happy-brand-soft-chip self-start px-3 py-1">
-                      <Text className="happy-font-body-bold text-[11px] uppercase tracking-[0.8px] text-sage-600">
+                      <Text variant="chip" color="sage" className="uppercase tracking-[0.8px] text-[11px]">
                         {isSelectedCourseEnrolled ? "Enrolled" : "New journey"}
                       </Text>
                     </View>
-                    <Text className="happy-font-heading text-[28px] leading-[32px] text-ink">
+                    <Text variant="h1">
                       {selectedCourse.title}
                     </Text>
-                    <Text className="happy-font-body text-[15px] leading-[22px] text-ink-soft">
+                    <Text variant="body" className="text-[15px] leading-[22px]">
                       {selectedCourse.description ||
                         "A guided journey you can start today."}
                     </Text>
@@ -525,20 +557,20 @@ function CourseCatalogSheetContent({
                     label="Time"
                   />
                 </View>
-              </View>
+              </Card>
 
               <View className="gap-3">
                 <View className="flex-row items-center justify-between gap-3 px-1">
                   <View>
-                    <Text className="happy-font-heading text-[24px] leading-[28px] text-ink">
+                    <Text variant="h2">
                       Journey Preview
                     </Text>
-                    <Text className="happy-font-body text-sm text-ink-muted">
+                    <Text variant="body" color="soft" className="text-sm">
                       The path you will move through
                     </Text>
                   </View>
                   <View className="happy-brand-status-chip px-3 py-1.5">
-                    <Text className="happy-font-body-bold text-xs uppercase tracking-[0.7px] text-sage-600">
+                    <Text variant="chip" color="sage" className="uppercase tracking-[0.7px]">
                       {isSelectedCourseEnrolled ? "In progress" : "Ready"}
                     </Text>
                   </View>
@@ -547,13 +579,13 @@ function CourseCatalogSheetContent({
                 {isPreviewLoading ? (
                   <View className="min-h-[132px] items-center justify-center gap-2.5 rounded-[24px] bg-warm-white">
                     <ActivityIndicator color={interactionColor} />
-                    <Text className="happy-font-body text-sm text-ink-muted">
+                    <Text variant="body" color="soft" className="text-sm">
                       Loading journey preview...
                     </Text>
                   </View>
                 ) : isPreviewError ? (
                   <View className="min-h-[132px] items-center justify-center gap-2.5 rounded-[24px] bg-warm-white px-6">
-                    <Text className="happy-font-body text-center text-[15px] text-ink-muted">
+                    <Text variant="body" className="text-center text-[15px]">
                       Unable to load this course preview right now.
                     </Text>
                   </View>
@@ -575,21 +607,13 @@ function CourseCatalogSheetContent({
           ) : null}
         </ScrollView>
 
-        <Pressable
-          disabled={!selectedCourse || isStartingCourse}
+        <Button
+          label={primaryButtonLabel}
+          disabled={!selectedCourse}
+          loading={isStartingCourse}
           onPress={handlePrimaryActionPress}
-          className={`mx-5 mt-4 min-h-14 items-center justify-center rounded-2xl ${
-            selectedCourse
-              ? "happy-brand-primary-cta opacity-100"
-              : "happy-brand-primary-cta-disabled opacity-70"
-          }`}
-        >
-          <Text
-            className="happy-font-body-bold text-base uppercase tracking-[0.4px] text-warm-white"
-          >
-            {primaryButtonLabel}
-          </Text>
-        </Pressable>
+          className="mx-5 mt-4"
+        />
       </View>
     </View>
   );

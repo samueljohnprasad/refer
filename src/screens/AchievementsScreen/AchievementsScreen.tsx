@@ -33,6 +33,7 @@ import { AchievementBadgeDetailSheet } from "./components/AchievementBadgeDetail
 import type { AchievementProgressItem } from "./components/AchievementBadgeDetailSheet";
 import { GOLD, SAGE, TERRACOTTA } from "@/lib/tokens";
 import * as Haptics from "expo-haptics";
+import { Card } from "@/src/components/ui/Card";
 
 // ─── Utility ────────────────────────────────────────────────────────────────
 /** Convert a 6-digit hex color to rgba() for safe cross-platform tinting. */
@@ -125,22 +126,16 @@ const StatCard: React.FC<StatCardProps> = ({
   accessibilityHint,
   onPress,
 }) => (
-  <TouchableOpacity
-    activeOpacity={onPress ? 0.78 : 1}
-    disabled={!onPress}
+  <Card
+    variant="tile"
+    radius="lg"
     onPress={onPress}
-    className="happy-brand-raised-panel rounded-[24px] p-4 mb-3"
-    accessible={true}
-    accessibilityRole={onPress ? "button" : "summary"}
+    showDepth={true}
+    disabled={!onPress}
+    className="mb-3"
+    contentClassName="p-4"
     accessibilityLabel={accessibilityLabel ?? `${label}: ${value}. ${subtext}`}
     accessibilityHint={accessibilityHint}
-    style={{
-      shadowColor: color,
-      shadowOffset: { width: 0, height: 3 },
-      shadowOpacity: 0.05,
-      shadowRadius: 10,
-      elevation: 2,
-    }}
   >
     <View className="flex-row items-center justify-between mb-1.5">
       <View className="flex-row items-center gap-2.5">
@@ -186,7 +181,7 @@ const StatCard: React.FC<StatCardProps> = ({
         </Text>
       </View>
     )}
-  </TouchableOpacity>
+  </Card>
 );
 
 /** Shown when the achievements list is empty after loading. */
@@ -392,8 +387,13 @@ export const AchievementsScreen: React.FC = () => {
         accessibilityLabel="Achievements scroll view"
       >
         <View className="px-4 pt-1 pb-4">
-          <View className="happy-brand-card rounded-[24px] px-4 py-3 flex-row items-center gap-3">
-            <View className="happy-mascot-stage h-14 w-14 items-center justify-center rounded-[20px]">
+          <Card
+            variant="tile"
+            radius="lg"
+            showDepth={false}
+            contentClassName="px-4 py-3 flex-row items-center gap-3"
+          >
+            <View className="h-14 w-14 items-center justify-center rounded-2xl">
               <Mascot state="panda-super-excite" size={44} />
             </View>
             <View className="flex-1">
@@ -405,7 +405,7 @@ export const AchievementsScreen: React.FC = () => {
                 collection.
               </Text>
             </View>
-          </View>
+          </Card>
         </View>
 
         {/* ── Your Progress ── */}
@@ -526,7 +526,12 @@ export const AchievementsScreen: React.FC = () => {
                   </View>
                 </View>
 
-                <View className="happy-brand-card rounded-[24px] px-2.5 py-3">
+                <Card
+                  variant="tile"
+                  radius="lg"
+                  showDepth={false}
+                  contentClassName="px-2.5 py-3"
+                >
                   <View className="flex-row flex-wrap">
                     {categoryAchievements.map((item) => (
                       <View
@@ -548,7 +553,7 @@ export const AchievementsScreen: React.FC = () => {
                       </View>
                     ))}
                   </View>
-                </View>
+                </Card>
               </View>
             );
           },

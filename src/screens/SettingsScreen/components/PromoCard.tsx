@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { Card } from "@/src/components/ui/Card";
+import { Button } from "@/src/components/ui/Button";
 
 interface PromoCardProps {
   onLayout: (event: any) => void;
@@ -22,7 +23,7 @@ export const PromoCard: React.FC<PromoCardProps> = ({
       accessibilityLabel="Upgrade to Pro. AI Insights, Weekly Summaries, Advanced Dashboard, Longer Recordings, and more."
       accessibilityHint="Double tap to upgrade to Pro"
     >
-      {/* FIX #21: Added a top-row spark emoji icon for visual personality */}
+      {/* Top-row spark emoji icon for visual personality */}
       <View className="flex-row items-center gap-2 mb-2">
         <Text className="text-lg">✨</Text>
         <Text className="happy-brand-eyebrow">
@@ -30,12 +31,12 @@ export const PromoCard: React.FC<PromoCardProps> = ({
         </Text>
       </View>
 
-      {/* FIX #22: Title uses system sans-serif, not cormorantBold — consistent with rest of screen */}
+      {/* Title uses system sans-serif */}
       <Text className="happy-font-body-bold text-[22px] text-ink mb-2">
         Unlock All Features
       </Text>
 
-      {/* FIX #23: Feature list as single clean string instead of hard-coded newlines */}
+      {/* Feature list as single clean string */}
       <Text className="happy-font-body-medium text-ink-muted text-[15px] leading-6 mb-5">
         AI Insights, Weekly Summaries, Advanced Dashboard, Longer Recordings,
         and more.
@@ -43,11 +44,13 @@ export const PromoCard: React.FC<PromoCardProps> = ({
 
       {/* Wrap in View to prevent stretching full-width */}
       <View className="items-start">
-        <View className="happy-brand-primary-cta rounded-[18px] px-5 py-3">
-          <Text className="happy-font-body-bold text-brand-surface text-[16px] tracking-wide">
-            Upgrade to Pro →
-          </Text>
-        </View>
+        <Button
+          label="Upgrade to Pro →"
+          variant="primary"
+          size="md"
+          fullWidth={false}
+          onPress={onPromoPress}
+        />
       </View>
     </Card>
   );

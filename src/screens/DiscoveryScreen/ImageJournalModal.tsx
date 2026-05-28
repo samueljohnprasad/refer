@@ -15,6 +15,7 @@ import { extractTextFromImage } from "@/src/network/extractTextFromImage";
 import { callMyFunction } from "@/src/network/transcribeAudio";
 import { InsightsType } from "@/src/network/genAi";
 import { BRAND_SURFACE, INK_SOFT, SAGE } from "@/lib/tokens";
+import { Button } from "@/src/components/ui/Button";
 
 interface ImageJournalModalProps {
   sheetRef: React.RefObject<BottomSheetModal>;
@@ -227,27 +228,20 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
                 Take a photo of your handwritten or printed journal to extract
                 text and get AI insights
               </Text>
-              <TouchableOpacity
+              <Button
+                label="Open Camera"
+                variant="primary"
                 onPress={captureImage}
-                className="happy-brand-primary-cta px-9 py-4 rounded-full flex-row items-center mb-4"
-                activeOpacity={0.88}
-              >
-                <Feather name="camera" size={20} color={BRAND_SURFACE} />
-                <Text className="text-white happy-font-body-bold text-base ml-2">
-                  Open Camera
-                </Text>
-              </TouchableOpacity>
+                leftIcon={<Feather name="camera" size={20} color={BRAND_SURFACE} />}
+                className="mb-4"
+              />
 
-              <TouchableOpacity
+              <Button
+                label="Select from Gallery"
+                variant="secondary"
                 onPress={pickImage}
-                className="bg-sage-pill px-8 py-4 rounded-full flex-row items-center"
-                activeOpacity={0.82}
-              >
-                <Feather name="image" size={20} color={SAGE[600]} />
-                <Text className="text-sage-600 happy-font-body-bold text-base ml-2">
-                  Select from Gallery
-                </Text>
-              </TouchableOpacity>
+                leftIcon={<Feather name="image" size={20} color={INK_SOFT} />}
+              />
             </View>
           ) : (
             // Image preview and processing
@@ -300,22 +294,18 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
               {/* Action buttons */}
               {step === "error" && (
                 <View className="flex-row gap-3">
-                  <TouchableOpacity
+                  <Button
+                    label="Cancel"
+                    variant="secondary"
                     onPress={handleClose}
-                    className="flex-1 bg-sage-pill py-4 rounded-full items-center"
-                  >
-                    <Text className="text-sage-600 happy-font-body-bold">
-                      Cancel
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
+                    className="flex-1"
+                  />
+                  <Button
+                    label="Try Again"
+                    variant="primary"
                     onPress={handleRetake}
-                    className="flex-1 happy-brand-primary-cta py-4 rounded-full items-center"
-                  >
-                    <Text className="text-white happy-font-body-bold">
-                      Try Again
-                    </Text>
-                  </TouchableOpacity>
+                    className="flex-1"
+                  />
                 </View>
               )}
             </View>

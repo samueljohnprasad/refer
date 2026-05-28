@@ -4,6 +4,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { useRevenueCat } from '@/src/context/RevenueCatProvider';
 import { useTrialStatus } from '@/hooks/data/useTrialStatus';
+import { Card } from '@/src/components/ui/Card';
 import {
   POST_TRIAL_DISCOUNT_PERCENT,
   POST_TRIAL_ANNUAL_PRICE,
@@ -35,11 +36,14 @@ const PostTrialDiscountBanner: React.FC<PostTrialDiscountBannerProps> = ({
   };
 
   return (
-    <Animated.View
-      entering={FadeInDown.duration(500).springify()}
-      className="happy-brand-raised-panel mb-5 rounded-[28px] overflow-hidden"
-    >
-      <View className="bg-sage-50 p-5">
+    <Animated.View entering={FadeInDown.duration(500).springify()}>
+      <Card
+        variant="tile"
+        radius="xl"
+        showDepth={true}
+        className="mb-5"
+        contentClassName="p-5 bg-sage-50"
+      >
         <View className="rounded-[24px] border border-sage-100 bg-brand-surface p-5">
           <View className="flex-row items-center justify-between mb-3">
             <View className="flex-row items-center">
@@ -106,7 +110,7 @@ const PostTrialDiscountBanner: React.FC<PostTrialDiscountBannerProps> = ({
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Card>
     </Animated.View>
   );
 };
