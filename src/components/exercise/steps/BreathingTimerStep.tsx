@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { View, Pressable, Animated } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
+import { Button } from "@/src/components/ui/Button";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { WellnessIcon } from "@hugeicons/core-free-icons";
 import { StepLayout } from "./StepLayout";
@@ -143,22 +144,23 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
         <View className="flex-1 justify-center items-center">
           {/* Animated breathing visual */}
           <Animated.View
-            className={`w-52 h-52 ${circleSize} items-center justify-center mb-8`}
+            className={`w-52 h-52 ${circleSize} items-center justify-center mb-8 border-4`}
             style={{
-              backgroundColor: completed ? "#D1FAE5" : "#E0F2FE",
-              borderWidth: 3,
-              borderColor: completed ? "#58CC02" : "#93C5FD",
+              backgroundColor: completed ? "#D1FAE5" : isRunning ? "#DDF4FF" : "#F8FAFC",
+              borderColor: completed ? "#10B981" : isRunning ? "#84D8FF" : "#E2E8F0",
               transform: [{ scale: scaleAnim }],
             }}
           >
             {completed ? (
-              <Text className="text-4xl">✓</Text>
+              <Text variant="display" className="text-emerald-600 text-5xl">
+                ✓
+              </Text>
             ) : isRunning ? (
               <View className="items-center">
-                <Text className="text-2xl font-extrabold text-slate-900">
+                <Text variant="display" className="text-ink text-[36px] font-bold">
                   {phaseTime}s
                 </Text>
-                <Text className="text-base font-bold text-blue-600 mt-1">
+                <Text variant="body-bold" className="text-blue-500 mt-1">
                   {PHASE_LABELS[currentPhase]}
                 </Text>
               </View>
@@ -174,24 +176,20 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
 
           {/* Round indicator */}
           {isRunning && (
-            <Text className="text-xs text-slate-400 mb-4">
-              Round {currentRound + 1} / {pattern.rounds}
+            <Text variant="caption-muted" className="mb-4 font-bold text-center">
+              Round {currentRound + 1} of {pattern.rounds}
             </Text>
           )}
 
           {/* Start button */}
           {!isRunning && !completed && (
-            <Pressable
+            <Button
+              label="Start Breathing"
               onPress={() => setIsRunning(true)}
-              accessibilityRole="button"
-              accessibilityLabel="Start breathing exercise"
-              className="h-14 w-full rounded-2xl items-center justify-center active:opacity-90"
-              style={{ backgroundColor: "#58CC02" }}
-            >
-              <Text className="text-base font-extrabold text-white uppercase tracking-wider">
-                Start Breathing
-              </Text>
-            </Pressable>
+              variant="primary"
+              size="lg"
+              fullWidth={true}
+            />
           )}
         </View>
       </StepLayout>

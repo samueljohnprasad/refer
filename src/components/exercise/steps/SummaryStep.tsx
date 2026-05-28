@@ -1,10 +1,15 @@
 import React from "react";
-import { View, Pressable, ScrollView } from "react-native";
-import { Text } from "@/components/ui/text";
+import { View, ScrollView } from "react-native";
+import { Text } from "@/src/components/ui/Text";
+import { Card } from "@/src/components/ui/Card";
+import { Button } from "@/src/components/ui/Button";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
-import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
+import { getExerciseIcon, getCategoryTint } from "@/src/data/exerciseIconRegistry";
+import { getExerciseConfig } from "@/src/data/exerciseRegistry";
 import { PostExerciseInsight } from "@/src/components/insights/PostExerciseInsight";
+import { FadeInItem } from "@/src/components/ui/FadeInItem";
+import { SAGE } from "@/lib/tokens";
 import type { StepProps, ExerciseType } from "@/src/types/exerciseFlow";
 
 interface SummaryField {
@@ -14,9 +19,7 @@ interface SummaryField {
 
 interface SummaryStepProps extends StepProps {
   title?: string;
-  /** Exercise type key — resolved to a Hugeicon from the registry */
   exerciseType?: string;
-  /** @deprecated Use exerciseType instead. Kept for backward compat. */
   icon?: string;
   fields: SummaryField[];
   onSave: () => void;
@@ -33,6 +36,10 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
     isSaving,
     response,
   }) => {
+    const config = exerciseType ? getExerciseConfig(exerciseType as any) : null;
+    const category = config?.category ?? "cbt_core";
+    const tint = getCategoryTint(category);
+
     const iconObj = exerciseType
       ? getExerciseIcon(exerciseType)
       : CheckmarkCircle01Icon;
@@ -45,83 +52,80 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
     };
 
     return (
-      <View className="flex-1">
+      <View className="flex-1 w-full">
         <View className="items-center mb-6 pt-4">
-          <View
-            className="h-16 w-16 rounded-full items-center justify-center mb-3"
-            style={{ backgroundColor: "#ECFDF5" }}
-          >
-            <HugeiconsIcon
-              icon={iconObj}
-              size={32}
-              color="#22C55E"
-              strokeWidth={1.6}
-            />
-          </View>
-          <Text className="text-[26px] font-extrabold text-slate-900 text-center">
-            {title}
-          </Text>
+          <FadeInItem index={0}>
+            <View
+              className={`h-16 w-16 rounded-full items-center justify-center mb-3.5 shadow-sm ${tint.iconBg}`}
+            >
+              <HugeiconsIcon
+                icon={iconObj}
+                size={30}
+                color={tint.iconColor}
+                strokeWidth={2}
+              />
+            </View>
+          </FadeInItem>
+          <FadeInItem index={1}>
+            <Text variant="display" className="text-center leading-none">
+              {title}
+            </Text>
+          </FadeInItem>
         </View>
 
         {exerciseType && response && (
-          <PostExerciseInsight
-            exerciseType={exerciseType as ExerciseType}
-            response={response}
-          />
+          <FadeInItem index={2} className="mb-4">
+            <PostExerciseInsight
+              exerciseType={exerciseType as ExerciseType}
+              response={response}
+            />
+          </FadeInItem>
         )}
 
-        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-          <View
-            className="bg-slate-50 rounded-2xl p-4 mb-6"
-            style={{ borderWidth: 1, borderColor: "#E2E8F0" }}
-          >
-            {fields.map((field, i) => {
-              const display = formatValue(field.value);
-              if (display === "—") return null;
-              return (
-                <View
-                  key={i}
-                  className="py-3"
-                  style={
-                    i < fields.length - 1
-                      ? { borderBottomWidth: 1, borderBottomColor: "#F1F5F9" }
-                      : undefined
-                  }
-                >
-                  <Text className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                    {field.label}
-                  </Text>
-                  <Text className="text-sm text-slate-700 leading-relaxed">
-                    {display}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
+        <ScrollView className="flex-1 w-full" showsVerticalScrollIndicator={false}>
+          <FadeInItem index={3}>
+            <Card
+              variant="tile"
+              radius="xl"
+              showDepth={true}
+              className="mb-8"
+              contentClassName="p-4"
+            >
+              {fields.map((field, i) => {
+                const display = formatValue(field.value);
+                if (display === "—" || !display.trim()) return null;
+                const isLast = i === fields.length - 1;
+
+                return (
+                  <View
+                    key={i}
+                    className={`py-3.5 ${
+                      !isLast ? "border-b border-brand-border/40" : ""
+                    }`}
+                  >
+                    <Text variant="overline" className="mb-1 text-sage-600 font-bold">
+                      {field.label}
+                    </Text>
+                    <Text variant="body-bold" color="ink" className="leading-relaxed">
+                      {display}
+                    </Text>
+                  </View>
+                );
+              })}
+            </Card>
+          </FadeInItem>
         </ScrollView>
 
-        <View className="pt-4 pb-2">
-          <Pressable
+        <FadeInItem index={4} className="pt-4 pb-2 w-full">
+          <Button
+            label={saveLabel}
             onPress={onSave}
-            disabled={isSaving}
-            accessibilityRole="button"
-            accessibilityLabel={saveLabel}
-            className="h-14 rounded-2xl items-center justify-center active:opacity-90"
-            style={{
-              backgroundColor: "#58CC02",
-              shadowColor: "#58CC02",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 0,
-              elevation: 4,
-              opacity: isSaving ? 0.7 : 1,
-            }}
-          >
-            <Text className="text-base font-extrabold text-white uppercase tracking-wider">
-              {isSaving ? "Saving..." : saveLabel}
-            </Text>
-          </Pressable>
-        </View>
+            loading={isSaving}
+            variant="primary"
+            size="lg"
+            fullWidth={true}
+          />
+        </FadeInItem>
       </View>
     );
   },

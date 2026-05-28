@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { View, Pressable } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
+import { Button } from "@/src/components/ui/Button";
 import { StepLayout } from "./StepLayout";
 import type { StepProps, TimerStepConfig } from "@/src/types/exerciseFlow";
 
@@ -95,17 +96,18 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
         <View className="flex-1 justify-center items-center">
           {/* Circular timer display */}
           <View
-            className="w-48 h-48 rounded-full items-center justify-center mb-8"
+            className="w-48 h-48 rounded-full items-center justify-center mb-8 border-4"
             style={{
               backgroundColor: completed ? "#D1FAE5" : "#F8FAFC",
-              borderWidth: 4,
-              borderColor: completed ? "#58CC02" : "#E2E8F0",
+              borderColor: completed ? "#10B981" : "#E2E8F0",
             }}
           >
             {completed ? (
-              <Text className="text-4xl">✓</Text>
+              <Text variant="display" className="text-emerald-600 text-5xl">
+                ✓
+              </Text>
             ) : (
-              <Text className="text-4xl font-extrabold text-slate-900">
+              <Text variant="counter" className="text-ink text-[40px] font-bold">
                 {minutes}:{seconds.toString().padStart(2, "0")}
               </Text>
             )}
@@ -113,16 +115,16 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
 
           {/* Timer progress bar */}
           {isRunning && (
-            <View className="w-full h-2 bg-slate-200 rounded-full overflow-hidden mb-4">
+            <View className="w-full h-3.5 bg-brand-border/60 rounded-full overflow-hidden mb-4">
               <View
-                className="h-full rounded-full bg-green-500"
+                className="h-full rounded-full bg-sage-500"
                 style={{ width: `${progressPct * 100}%` }}
               />
             </View>
           )}
 
           {timerConfig.label && isRunning && (
-            <Text className="text-sm text-slate-500 mb-4">
+            <Text variant="body" className="text-sm text-center mb-4">
               {timerConfig.label}
             </Text>
           )}
@@ -133,9 +135,9 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
               onPress={handleTap}
               accessibilityRole="button"
               accessibilityLabel="Tap when mind wanders"
-              className="bg-slate-100 rounded-xl px-6 py-3 mb-4"
+              className="bg-slate-100 active:bg-slate-200 rounded-xl px-6 py-3 mb-4 border-b-2 border-slate-200"
             >
-              <Text className="text-sm font-medium text-slate-600">
+              <Text variant="body-bold" className="text-sm text-slate-700">
                 Tap here (
                 {(response as Record<string, any>)[tapCountFieldKey] ?? 0})
               </Text>
@@ -144,17 +146,13 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
 
           {/* Start / Skip buttons */}
           {!isRunning && !completed && (
-            <Pressable
+            <Button
+              label="Start"
               onPress={startTimer}
-              accessibilityRole="button"
-              accessibilityLabel="Start timer"
-              className="h-14 w-full rounded-2xl items-center justify-center active:opacity-90"
-              style={{ backgroundColor: "#58CC02" }}
-            >
-              <Text className="text-base font-extrabold text-white uppercase tracking-wider">
-                Start
-              </Text>
-            </Pressable>
+              variant="primary"
+              size="lg"
+              fullWidth={true}
+            />
           )}
 
           {isRunning && timerConfig.skippable && (

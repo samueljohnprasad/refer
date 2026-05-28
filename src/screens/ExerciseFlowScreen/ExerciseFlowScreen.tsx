@@ -6,8 +6,9 @@ import {
   Pressable,
   Alert,
   BackHandler,
+  Text as RNText,
 } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { useRouter } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import { useExerciseFlow } from "@/src/hooks/useExerciseFlow";
@@ -58,6 +59,9 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
   );
 };
 
+import StageProgressBar from "@/src/components/ui/StageProgressBar";
+import { SAGE, OTTER_BLUE, PARROT_ORANGE, MACAW_PURPLE } from "@/lib/tokens";
+
 interface ResolvedExerciseFlowScreenProps {
   config: ExerciseConfig<any>;
   entryId?: string;
@@ -72,6 +76,21 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const router = useRouter();
   const exerciseType = config.type;
   const isConfirmedExitRef = useRef(false);
+
+  // Dynamic category-based accent color mapping matching design philosophy
+  const accentColor = useMemo(() => {
+    switch (config.category) {
+      case "mindfulness":
+        return OTTER_BLUE;
+      case "anxiety":
+        return PARROT_ORANGE;
+      case "overthinking":
+        return MACAW_PURPLE;
+      case "cbt_core":
+      default:
+        return SAGE[500];
+    }
+  }, [config.category]);
 
   // ─── Resume: load existing entry if entryId provided ──────────────
   const { entry: existingEntry, isLoading: isLoadingEntry } =
@@ -210,22 +229,46 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
     );
   }
 
+  const pct = Math.round(flow.progress * 100);
+
   return (
     <SafeAreaView
       className="flex-1"
       style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
     >
       {!usesEmbeddedHeader ? (
-        <View className="flex-row justify-end px-4 pt-2">
+        <View className="flex-row items-center px-5 py-3 gap-2.5">
           <Pressable
             onPress={handleClose}
             accessibilityRole="button"
             accessibilityLabel="Close exercise"
             hitSlop={12}
-            className="w-9 h-9 rounded-full bg-slate-100 items-center justify-center"
+            className="w-11 h-11 rounded-full items-center justify-center active:bg-slate-100 bg-transparent"
           >
-            <Text className="text-slate-500 text-lg font-bold">✕</Text>
+            <Text
+              variant="h3"
+              className="text-ink-soft text-[20px] font-bold"
+            >
+              ✕
+            </Text>
           </Pressable>
+
+          <View className="flex-1">
+            <StageProgressBar
+              progress={flow.progress}
+              fillColor={accentColor}
+              trackColor="#E5E5E5"
+              height={12}
+              showGlow={true}
+            />
+          </View>
+
+          <RNText
+            className="happy-font-body-bold text-[12px] leading-[16px] text-ink-soft min-w-[36px] text-right ml-2.5"
+            style={{ color: accentColor }}
+          >
+            {pct}%
+          </RNText>
         </View>
       ) : null}
 

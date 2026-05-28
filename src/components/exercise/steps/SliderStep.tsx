@@ -1,8 +1,10 @@
 import React from "react";
 import { View } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import Slider from "@react-native-community/slider";
 import { StepLayout } from "./StepLayout";
+import { SAGE } from "@/lib/tokens";
+import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import type { StepProps } from "@/src/types/exerciseFlow";
 
 interface SliderStepProps extends StepProps {
@@ -41,7 +43,7 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
     showValue = true,
     isSaving,
   }) => {
-    const value =
+    const value: number =
       (response as Record<string, any>)[fieldKey] ??
       Math.round((min + max) / 2);
 
@@ -60,29 +62,34 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
       >
         <View className="flex-1 justify-center px-2">
           {showValue && (
-            <Text className="text-5xl font-extrabold text-slate-900 text-center mb-8">
-              {value}
-              {unit}
-            </Text>
+            <FadeInItem index={0}>
+              <Text variant="counter" color="sage" className="text-6xl text-center mb-10 happy-font-heading-bold">
+                {value}
+                {unit}
+              </Text>
+            </FadeInItem>
           )}
 
-          <Slider
-            minimumValue={min}
-            maximumValue={max}
-            step={step}
-            value={value}
-            onValueChange={(v: number) => onUpdate({ [fieldKey]: v } as any)}
-            minimumTrackTintColor="#1E293B"
-            maximumTrackTintColor="#E2E8F0"
-            thumbTintColor="#1E293B"
-            accessibilityLabel={title}
-            accessibilityValue={{ min, max, now: value }}
-          />
+          <FadeInItem index={1}>
+            <Slider
+              minimumValue={min}
+              maximumValue={max}
+              step={step}
+              value={value}
+              onValueChange={(v: number) => onUpdate({ [fieldKey]: v } as any)}
+              minimumTrackTintColor={SAGE[500]}
+              maximumTrackTintColor="#E5E5E5"
+              thumbTintColor={SAGE[500]}
+              accessibilityLabel={title}
+              accessibilityValue={{ min, max, now: value }}
+              style={{ height: 40 }}
+            />
 
-          <View className="flex-row justify-between mt-2">
-            <Text className="text-xs text-slate-400">{minLabel}</Text>
-            <Text className="text-xs text-slate-400">{maxLabel}</Text>
-          </View>
+            <View className="flex-row justify-between mt-3 px-1">
+              <Text variant="caption-muted" color="soft" className="font-semibold">{minLabel}</Text>
+              <Text variant="caption-muted" color="soft" className="font-semibold">{maxLabel}</Text>
+            </View>
+          </FadeInItem>
         </View>
       </StepLayout>
     );

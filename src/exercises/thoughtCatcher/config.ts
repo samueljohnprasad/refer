@@ -45,7 +45,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
   icon: "thought_catcher",
   duration: "3-5 min",
   xp: 10,
-  backgroundColor: "#fff",
+  backgroundColor: "#F8FAF7",
   schemaVersion: 2,
   initialResponse: THOUGHT_CATCHER_INITIAL,
 
