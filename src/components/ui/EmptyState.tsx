@@ -1,7 +1,8 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
+import { View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Mascot, MascotState } from "./Mascot";
+import { Button } from "@/src/components/ui/Button";
 import { BRAND_SURFACE } from "@/lib/tokens";
 
 interface EmptyStateProps {
@@ -22,18 +23,19 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       <View className="happy-mascot-stage h-44 w-44 items-center justify-center rounded-[44px] border-0">
         <Mascot state={mascotState} size={156} />
       </View>
-      <TouchableOpacity
-        onPress={onButtonPress}
-        className="happy-brand-primary-cta mt-7 min-h-[56px] flex-row items-center gap-2 rounded-[22px] px-7"
-        activeOpacity={0.7}
-      >
-        {buttonIcon && (
-          <HugeiconsIcon icon={buttonIcon} size={18} color={BRAND_SURFACE} />
-        )}
-        <Text className="happy-font-body-bold text-[16px] text-white">
-          {buttonText}
-        </Text>
-      </TouchableOpacity>
+      <View className="mt-7 px-12 self-stretch">
+        <Button
+          label={buttonText}
+          variant="primary"
+          size="lg"
+          onPress={onButtonPress}
+          leftIcon={
+            buttonIcon ? (
+              <HugeiconsIcon icon={buttonIcon} size={18} color={BRAND_SURFACE} />
+            ) : undefined
+          }
+        />
+      </View>
     </View>
   );
 };

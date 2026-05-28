@@ -1,133 +1,123 @@
-import React, { ReactElement } from "react";
+import React, { type ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { tv, type VariantProps } from "@/lib/tv";
+import { SvgAppButton } from "@/src/components/journey/svg-app-button";
+import {
+  SAGE,
+  BRAND_BORDER_STRONG,
+  BRAND_SURFACE,
+  OTTER_BLUE,
+  OTTER_BLUE_TINT,
+  TERRACOTTA,
+  TERRACOTTA_TINT,
+  GOLD,
+  INK,
+  INK_SOFT,
+} from "@/lib/tokens";
 
-/**
- * Button — full-width tactile CTA with 3D border-press mechanic.
- *
- * Variant guide
- * ─────────────
- * primary      The one clear next action on every screen. Sage green fill.
- *              Use at the bottom of lesson flows, onboarding steps, form submits.
- *              Never put two primary buttons on the same screen.
- *
- * secondary    Decline / skip action that lives beside a primary CTA.
- *              White surface, neutral border. Lighter visual weight so the eye
- *              goes to primary first. "Skip", "Remind me later", "Maybe later".
- *
- * correct      Appears after a correct answer. Blue tint mirrors the answer card
- *              feedback state. "Got It", "Continue" in the correct-answer moment.
- *
- * incorrect    Appears after a wrong answer. Red tint mirrors the incorrect card.
- *              "Got It", "Try Again". Same copy as correct — colour carries meaning.
- *
- * destructive  Irreversible actions on white fill, red border. Account deletion,
- *              data clearing. Always paired with a secondary "Cancel" button.
- *
- * premium      Purple fill — reserved for Super / premium upsell flows. Users read
- *              purple as "this costs something" without needing copy to say so.
- *
- * streak       Bee-yellow fill — streak freeze purchase, XP boost activation.
- *              Yellow creates a direct visual link to the streak counter nearby.
- *
- * ghost        No fill, no border. Inline text-style dismiss action.
- *              "No thanks", "Skip for now" beneath a primary CTA. Lowest weight.
- *
- * pill         Rounded-full, shallow depth (border-b-3). Word-bank hint words,
- *              filter chips that behave like toggles, tag-style actions.
- */
-const buttonTv = tv({
-  slots: {
-    root: "items-center justify-center overflow-hidden rounded-xl active:border-b-2 active:translate-y-[2px]",
-    row: "flex-row items-center justify-center",
-    label: "happy-font-body-bold leading-none",
+// ─── Variant config ──────────────────────────────────────────────────────────
+
+type Variant =
+  | "primary"
+  | "secondary"
+  | "correct"
+  | "incorrect"
+  | "destructive"
+  | "premium"
+  | "streak"
+  | "ghost"
+  | "pill";
+
+interface VariantConfig {
+  faceColor: string;
+  rimColor: string;
+  labelColor: string;
+  disabledFaceColor: string;
+  disabledRimColor: string;
+}
+
+const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
+  primary: {
+    faceColor: SAGE[500],
+    rimColor: SAGE[700],
+    labelColor: BRAND_SURFACE,
+    disabledFaceColor: SAGE[200],
+    disabledRimColor: SAGE[300],
   },
-  variants: {
-    variant: {
-      primary: {
-        root: "bg-sage-500 border-b-4 border-b-sage-700",
-        label: "text-brand-surface",
-      },
-      secondary: {
-        root: "border-2 border-b-4 border-brand-border border-b-brand-border-strong bg-brand-surface",
-        label: "text-ink-soft",
-      },
-      correct: {
-        root: "border-2 border-b-4 border-otter-blue/50 border-b-otter-blue bg-otter-blue-tint",
-        label: "text-otter-blue",
-      },
-      incorrect: {
-        root: "border-2 border-b-4 border-cardinal-red-border border-b-cardinal-red bg-cardinal-red-tint",
-        label: "text-cardinal-red",
-      },
-      destructive: {
-        root: "border-2 border-b-4 border-cardinal-red-border border-b-cardinal-red bg-brand-surface",
-        label: "text-cardinal-red",
-      },
-      premium: {
-        root: "border-2 border-b-4 border-[#9B59B6] border-b-[#7B3AAD] bg-macaw-purple",
-        label: "text-brand-surface",
-      },
-      streak: {
-        root: "border-2 border-b-4 border-[#F0B400] border-b-[#C89400] bg-bee-yellow",
-        label: "text-ink",
-      },
-      ghost: {
-        root: "bg-transparent active:opacity-70 active:border-b-0 active:translate-y-0",
-        label: "text-ink-soft",
-      },
-      pill: {
-        root: "rounded-full border-2 border-b-[3px] border-brand-border border-b-brand-border-strong bg-brand-surface active:border-b-[1px]",
-        label: "text-ink",
-      },
-    },
-    size: {
-      sm: { root: "h-10 px-4", row: "gap-1.5", label: "text-[15px]" },
-      md: { root: "h-12 px-6", row: "gap-2", label: "text-[16px]" },
-      lg: { root: "h-14 px-6", row: "gap-2", label: "text-[17px]" },
-    },
-    fullWidth: {
-      true: { root: "w-full" },
-      false: { root: "self-start" },
-    },
-    disabled: {
-      true: { root: "opacity-50" },
-    },
-    loading: {
-      true: { root: "opacity-50" },
-    },
+  secondary: {
+    faceColor: BRAND_SURFACE,
+    rimColor: BRAND_BORDER_STRONG,
+    labelColor: INK_SOFT,
+    disabledFaceColor: "#F7F7F7",
+    disabledRimColor: "#E5E5E5",
   },
-  compoundVariants: [
-    {
-      variant: "primary",
-      disabled: true,
-      class: { root: "bg-sage-200 border-b-sage-300 opacity-100" },
-    },
-  ],
-  defaultVariants: { variant: "primary", size: "lg", fullWidth: true },
-});
-
-type ButtonVariant = NonNullable<VariantProps<typeof buttonTv>["variant"]>;
-
-const SPINNER_COLOR: Record<ButtonVariant, string> = {
-  primary: "accent-brand-surface",
-  secondary: "accent-ink-soft",
-  correct: "accent-otter-blue",
-  incorrect: "accent-cardinal-red",
-  destructive: "accent-cardinal-red",
-  premium: "accent-brand-surface",
-  streak: "accent-ink",
-  ghost: "accent-ink-soft",
-  pill: "accent-ink",
+  correct: {
+    faceColor: OTTER_BLUE_TINT,
+    rimColor: OTTER_BLUE,
+    labelColor: "#0A7DB8",
+    disabledFaceColor: "#F0F9FF",
+    disabledRimColor: "#A0D8F8",
+  },
+  incorrect: {
+    faceColor: TERRACOTTA_TINT,
+    rimColor: TERRACOTTA,
+    labelColor: "#D10000",
+    disabledFaceColor: "#FFF0F0",
+    disabledRimColor: "#FFA0A0",
+  },
+  destructive: {
+    faceColor: BRAND_SURFACE,
+    rimColor: TERRACOTTA,
+    labelColor: TERRACOTTA,
+    disabledFaceColor: "#F7F7F7",
+    disabledRimColor: "#FFA0A0",
+  },
+  premium: {
+    faceColor: "#9B59B6",
+    rimColor: "#7B3AAD",
+    labelColor: BRAND_SURFACE,
+    disabledFaceColor: "#E8D4FF",
+    disabledRimColor: "#B880D8",
+  },
+  streak: {
+    faceColor: GOLD,
+    rimColor: "#C89400",
+    labelColor: INK,
+    disabledFaceColor: "#FFF5D6",
+    disabledRimColor: "#E0C060",
+  },
+  pill: {
+    faceColor: BRAND_SURFACE,
+    rimColor: BRAND_BORDER_STRONG,
+    labelColor: INK,
+    disabledFaceColor: "#F7F7F7",
+    disabledRimColor: "#E5E5E5",
+  },
 };
 
-type ButtonVariants = VariantProps<typeof buttonTv>;
+// ─── Size config ─────────────────────────────────────────────────────────────
+
+type Size = "sm" | "md" | "lg";
+
+interface SizeConfig {
+  height: number;
+  radius: number;
+  pressDepth: number;
+  labelSize: number;
+}
+
+const SIZES: Record<Size, SizeConfig> = {
+  sm: { height: 44, radius: 22, pressDepth: 3, labelSize: 15 },
+  md: { height: 48, radius: 22, pressDepth: 4, labelSize: 16 },
+  lg: { height: 56, radius: 22, pressDepth: 4, labelSize: 17 },
+};
+
+// ─── Props ───────────────────────────────────────────────────────────────────
 
 interface ButtonProps {
   label: string;
-  variant?: ButtonVariants["variant"];
-  size?: ButtonVariants["size"];
+  variant?: Variant;
+  size?: Size;
   fullWidth?: boolean;
   onPress?: () => void;
   disabled?: boolean;
@@ -139,6 +129,8 @@ interface ButtonProps {
   className?: string;
   labelClassName?: string;
 }
+
+// ─── Component ───────────────────────────────────────────────────────────────
 
 export function Button({
   label,
@@ -152,52 +144,113 @@ export function Button({
   rightIcon,
   accessibilityLabel,
   haptic = "light",
-  className,
-  labelClassName,
 }: ButtonProps) {
-  const {
-    root,
-    row,
-    label: labelCls,
-  } = buttonTv({
-    variant,
-    size,
-    fullWidth,
-    disabled,
-    loading,
-  });
+  const sizeConfig = SIZES[size];
+  const isDisabled = disabled || loading;
+
+  const handlePressIn = () => {
+    if (isDisabled) return;
+    if (haptic === "light")
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (haptic === "medium")
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  };
 
   const handlePress = () => {
-    if (haptic === "light") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    } else if (haptic === "medium") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
+    if (isDisabled) return;
     onPress?.();
   };
 
-  const spinnerColorClass = SPINNER_COLOR[variant];
+  // Ghost variant — plain pressable, no depth
+  if (variant === "ghost") {
+    return (
+      <Pressable
+        onPress={handlePress}
+        disabled={isDisabled}
+        accessibilityLabel={accessibilityLabel ?? label}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isDisabled, busy: loading }}
+        style={{
+          height: sizeConfig.height,
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: isDisabled ? 0.5 : 1,
+          alignSelf: fullWidth ? "stretch" : "flex-start",
+        }}
+      >
+        {loading ? (
+          <ActivityIndicator size="small" color={INK_SOFT} />
+        ) : (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            {leftIcon}
+            <Text
+              style={{
+                fontFamily: "GeistBold",
+                fontSize: sizeConfig.labelSize,
+                color: INK_SOFT,
+              }}
+            >
+              {label}
+            </Text>
+            {rightIcon}
+          </View>
+        )}
+      </Pressable>
+    );
+  }
+
+  // All other variants — SvgAppButton with 3D depth
+  const config = VARIANTS[variant];
+  const faceColor = isDisabled ? config.disabledFaceColor : config.faceColor;
+  const rimColor = isDisabled ? config.disabledRimColor : config.rimColor;
+  const labelColor = isDisabled ? `${config.labelColor}80` : config.labelColor;
+  const radius = variant === "pill" ? 9999 : sizeConfig.radius;
 
   return (
-    <Pressable
-      className={root({ class: className })}
-      onPress={onPress ? handlePress : undefined}
-      disabled={disabled || loading}
+    <View
+      accessible
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityRole="button"
-      accessibilityState={{ disabled: disabled || loading, busy: loading }}
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
+      style={{ alignSelf: fullWidth ? "stretch" : "flex-start" }}
     >
-      <View className={row()}>
+      <SvgAppButton
+        width={fullWidth ? "100%" : 200}
+        height={sizeConfig.height}
+        color={faceColor}
+        backgroundColor={rimColor}
+        leftRadius={radius}
+        rightRadius={radius}
+        pressDepth={sizeConfig.pressDepth}
+        onPress={handlePress}
+        onPressIn={handlePressIn}
+        disabled={isDisabled}
+        contentContainerStyle={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         {loading ? (
-          <ActivityIndicator colorClassName={spinnerColorClass} size="small" />
+          <ActivityIndicator size="small" color={labelColor} />
         ) : (
-          <>
+          <View
+            style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+          >
             {leftIcon}
-            <Text className={labelCls({ class: labelClassName })}>{label}</Text>
+            <Text
+              style={{
+                fontFamily: "GeistBold",
+                fontSize: sizeConfig.labelSize,
+                letterSpacing: 0.01 * sizeConfig.labelSize,
+                color: labelColor,
+              }}
+            >
+              {label}
+            </Text>
             {rightIcon}
-          </>
+          </View>
         )}
-      </View>
-    </Pressable>
+      </SvgAppButton>
+    </View>
   );
 }
