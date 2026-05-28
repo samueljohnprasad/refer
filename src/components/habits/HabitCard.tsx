@@ -31,15 +31,19 @@ export const HabitCard: React.FC<HabitCardProps> = ({
 }) => {
   const [showConfetti, setShowConfetti] = React.useState(false);
   const checkScale = useSharedValue(habit.isCompleted ? 1 : 0);
+  const isFirstRender = React.useRef(true);
 
   // Update animation when completion status changes
   React.useEffect(() => {
     if (habit.isCompleted) {
       checkScale.value = withTiming(1, { duration: 200 });
-      setShowConfetti(true);
+      if (!isFirstRender.current) {
+        setShowConfetti(true);
+      }
     } else {
       checkScale.value = withTiming(0, { duration: 200 });
     }
+    isFirstRender.current = false;
   }, [habit.isCompleted]);
 
   const checkmarkAnimatedStyle = useAnimatedStyle(() => ({
@@ -95,9 +99,8 @@ export const HabitCard: React.FC<HabitCardProps> = ({
         <View className="flex-row items-center">
           {/* Emoji Icon */}
           <View
-            className={`mr-3 h-12 w-12 items-center justify-center rounded-[18px] ${
-              habit.isCompleted ? "bg-sage-pill" : "bg-sage-50"
-            }`}
+            className={`mr-3 h-12 w-12 items-center justify-center rounded-[18px] ${habit.isCompleted ? "bg-sage-pill" : "bg-sage-50"
+              }`}
           >
             <Text style={{ fontSize: 20 }}>{habit.icon || "✓"}</Text>
           </View>
@@ -106,11 +109,10 @@ export const HabitCard: React.FC<HabitCardProps> = ({
           <View className="flex-1" style={{ opacity: habit.isCompleted ? 0.45 : 1 }}>
             {/* Habit Name */}
             <Text
-              className={`happy-font-body-bold text-[16px] ${
-                habit.isCompleted
+              className={`happy-font-body-bold text-[16px] ${habit.isCompleted
                   ? "text-ink-muted"
                   : "text-ink"
-              }`}
+                }`}
             >
               {habit.name}
             </Text>

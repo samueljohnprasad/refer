@@ -1,7 +1,6 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { View, Text, Alert } from "react-native";
 import { isFuture } from "date-fns";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useHabits } from "@/hooks/data/useHabits";
 import { useHabitCompletions } from "@/hooks/data/useHabitCompletions";
 import { useHabitStreaks } from "@/src/hooks/data/useHabitStreaks";
@@ -27,7 +26,6 @@ import {
   categorizeHabits,
   getActiveCategories,
   TIME_CATEGORY_CONFIG,
-  TimeCategory,
 } from "@/src/utils/habitCategories";
 import { XPBadge } from "@/src/components/XP";
 import { XPActionType, XP_REWARDS } from "@/src/types/xp";
@@ -50,8 +48,8 @@ interface HabitsSectionProps {
 export const HabitsSection: React.FC<HabitsSectionProps> = ({
   selectedDate,
 }) => {
-  const addHabitModalRef = useRef<BottomSheetModal>(null);
-  const detailsModalRef = useRef<BottomSheetModal>(null);
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
 
   const { habits, createHabit, updateHabit, deleteHabit } = useHabits();
@@ -80,7 +78,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     const habit = habits.find((h) => h.id === habitId);
     if (habit) {
       setSelectedHabit(habit);
-      detailsModalRef.current?.present();
+      setDetailsModalVisible(true);
     }
   };
 
@@ -129,7 +127,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
   const handleAddHabitPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    addHabitModalRef.current?.present();
+    setAddModalVisible(true);
   };
 
   const completedCount = habitsWithStatus.filter((h) => h.isCompleted).length;
@@ -151,7 +149,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   );
 
   return (
-    <View style={{ paddingBottom: 120 }}>
+    <View style={{ paddingBottom: 80 }}>
       {/* Header - Only show when not empty */}
       {habitsWithStatus.length > 0 && (
         <SectionHeader
@@ -185,14 +183,12 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
         />
       )}
 
-
-
       {/* Empty State */}
       {habitsWithStatus.length === 0 ? (
         <EmptyState
           mascotState="panda-yet-sleep-pillow"
           buttonText="Add Habit"
-          onButtonPress={() => addHabitModalRef.current?.present()}
+          onButtonPress={() => setAddModalVisible(true)}
           buttonIcon={Add01Icon}
         />
       ) : (
@@ -240,24 +236,29 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
                     isLast={index === categorizedHabits[category].length - 1}
                   />
                 ))}
-              </View>
+            </View>
             </View>
           ))}
         </>
       )}
 
       {/* Add Habit Modal */}
-      <AddHabitModal ref={addHabitModalRef} onSubmit={handleCreateHabit} />
+      {addModalVisible && <AddHabitModal
+        visible={addModalVisible}
+        onClose={() => setAddModalVisible(false)}
+        onSubmit={handleCreateHabit}
+      />}
 
       {/* Habit Details Modal */}
-      <HabitDetailsModal
-        ref={detailsModalRef}
+      {detailsModalVisible && <HabitDetailsModal
+        visible={detailsModalVisible}
+        onClose={() => setDetailsModalVisible(false)}
         habit={selectedHabit}
         isCompleted={selectedHabitWithStatus?.isCompleted || false}
         onSave={handleSaveScheduling}
         onToggleCompletion={handleToggleCompletion}
         onDelete={handleDeleteHabit}
-      />
+      />}
     </View>
   );
 };

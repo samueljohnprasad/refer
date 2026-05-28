@@ -7,6 +7,7 @@ import {
   ScrollView,
   useWindowDimensions,
   View,
+  Text as RNText,
 } from "react-native";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -39,11 +40,7 @@ import {
   getCourseMonogram,
   resolveCourseAccentColor,
 } from "./courseVisuals";
-
-const PALETTE = {
-  sage500: "#5F7F58",
-  sage600: "#44633F",
-} as const;
+import { SAGE, BRAND_SURFACE } from "@/lib/tokens";
 
 type CourseCatalogSheetProps = {
   isPresented: boolean;
@@ -157,8 +154,8 @@ const CourseCard = React.memo(function CourseCard({
         className="h-[78px] w-[92px]"
         contentClassName="items-center justify-center h-full w-full"
         faceStyle={{
-          borderColor: isSelected ? courseAccentColor : PALETTE.sage100,
-          backgroundColor: isSelected ? `${courseAccentColor}12` : PALETTE.warmWhite,
+          borderColor: isSelected ? courseAccentColor : SAGE[100],
+          backgroundColor: isSelected ? `${courseAccentColor}12` : BRAND_SURFACE,
         }}
         style={{
           shadowColor: isSelected ? courseAccentColor : "transparent",
@@ -173,13 +170,12 @@ const CourseCard = React.memo(function CourseCard({
             transition={150}
           />
         ) : (
-          <Text
-            variant="h2"
-            className="text-[30px]"
+          <RNText
+            className="happy-font-title-bold text-[30px]"
             style={{ color: courseAccentColor }}
           >
             {getCourseMonogram(course.title)}
-          </Text>
+          </RNText>
         )}
       </Card>
 
@@ -266,13 +262,12 @@ const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
             className="h-12 w-12 items-center justify-center rounded-2xl"
             style={{ backgroundColor: `${accentColor}1A` }}
           >
-            <Text
-              variant="label-bold"
-              className="text-[18px]"
+            <RNText
+              className="happy-font-body-bold text-[18px]"
               style={{ color: accentColor }}
             >
               {section.orderIndex}
-            </Text>
+            </RNText>
           </View>
 
           <View className="flex-1 gap-1">
@@ -390,7 +385,7 @@ function CourseCatalogSheetContent({
     ? enrolledCourseIds.has(selectedCourse.id)
     : false;
   const courseAccentColor = resolveCourseAccentColor(selectedCourse?.colorHex);
-  const interactionColor = PALETTE.sage500;
+  const interactionColor = SAGE[500];
 
   const handleCoursePress = useCallback((courseId: string) => {
     setSelectedCourseId(courseId);
@@ -432,7 +427,7 @@ function CourseCatalogSheetContent({
           accessibilityRole="button"
           accessibilityLabel="Close journey explorer"
         >
-          <HugeiconsIcon icon={Cancel01Icon} size={20} color={PALETTE.sage600} />
+          <HugeiconsIcon icon={Cancel01Icon} size={20} color={SAGE[600]} />
         </Pressable>
       </View>
 
@@ -509,12 +504,12 @@ function CourseCatalogSheetContent({
                           transition={150}
                         />
                       ) : (
-                        <Text
+                        <RNText
                           className="happy-font-heading text-[32px]"
                           style={{ color: courseAccentColor }}
                         >
                           {getCourseMonogram(selectedCourse.title)}
-                        </Text>
+                        </RNText>
                       )}
                     </View>
                   </View>

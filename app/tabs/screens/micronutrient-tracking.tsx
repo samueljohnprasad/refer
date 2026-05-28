@@ -22,6 +22,17 @@ import MicronutrientTrackingScreen from "@/src/screens/MicronutrientTrackingScre
 import { MICRONUTRIENTS_CONFIG } from "@/src/config/micronutrients";
 import { SAGE } from "@/lib/tokens";
 
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withTiming,
+  Easing,
+} from "react-native-reanimated";
+import { Mascot } from "@/src/components/ui/Mascot";
+import { useReducedMotion } from "@/src/hooks/useReducedMotion";
+
 const STORAGE_KEY = "tracked_micronutrients";
 
 const MicronutrientHeader: React.FC = () => {
@@ -31,6 +42,9 @@ const MicronutrientHeader: React.FC = () => {
   const [trackedCount, setTrackedCount] = useState<number>(
     MICRONUTRIENTS_CONFIG.length
   );
+
+  const breathe = useSharedValue<number>(1);
+  const reducedMotion: boolean = useReducedMotion();
 
   useEffect(() => {
     const loadCount = async (): Promise<void> => {
@@ -50,6 +64,22 @@ const MicronutrientHeader: React.FC = () => {
     const interval = setInterval(loadCount, 500);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    breathe.value = withRepeat(
+      withSequence(
+        withTiming(1.025, { duration: 2200, easing: Easing.inOut(Easing.sin) }),
+        withTiming(1.0, { duration: 2200, easing: Easing.inOut(Easing.sin) })
+      ),
+      -1,
+      false
+    );
+  }, [reducedMotion]);
+
+  const mascotStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: breathe.value }],
+  }));
 
   return (
     <BlurView
@@ -97,7 +127,9 @@ const MicronutrientHeader: React.FC = () => {
         </View>
       </View>
 
-      <View style={{ width: 40 }} />
+      <Animated.View style={[mascotStyle, { width: 44, height: 44, alignItems: "center", justifyContent: "center" }]}>
+        <Mascot state="panda-plant" size={40} />
+      </Animated.View>
     </BlurView>
   );
 };

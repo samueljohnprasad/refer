@@ -10,6 +10,8 @@ interface SectionHeaderProps {
   count?: ReactNode;
   rightElement?: ReactNode;
   className?: string;
+  iconBgClass?: string;
+  iconColor?: string;
 }
 
 export const SectionHeader: React.FC<SectionHeaderProps> = ({
@@ -18,14 +20,16 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   count,
   rightElement,
   className = "",
+  iconBgClass,
+  iconColor,
 }) => {
   return (
     <View className={`flex-row items-center justify-between ${className}`}>
       <View className="flex-row items-center">
-        <View className="mr-3 h-11 w-11 items-center justify-center rounded-full bg-sage-50">
-          <HugeiconsIcon icon={icon} size={22} color={SAGE[600]} />
+        <View className={`mr-3 h-11 w-11 items-center justify-center rounded-full ${iconBgClass || "bg-sage-50"}`}>
+          <HugeiconsIcon icon={icon} size={22} color={iconColor || SAGE[600]} />
         </View>
-        <Text variant="body-bold">{title}</Text>
+        <Text variant="h2">{title}</Text>
         {count !== undefined && (
           <View className="ml-2 rounded-full bg-sage-pill px-2.5 py-1">
             <Text variant="chip" color="sage">

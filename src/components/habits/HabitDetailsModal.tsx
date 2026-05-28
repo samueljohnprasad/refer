@@ -1,18 +1,11 @@
-import React, {
-  useState,
-  useRef,
-  useCallback,
-  useMemo,
-  useEffect,
-} from "react";
-import { View, Text, TouchableOpacity, TextInput, Switch } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, TextInput, Switch, ScrollView, Text as RNText } from "react-native";
+import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
 import {
-  BottomSheetModal,
-  BottomSheetScrollView,
-  BottomSheetBackdrop,
-} from "@gorhom/bottom-sheet";
-import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
-import { forwardRef, useImperativeHandle } from "react";
+  presentationDetents,
+  presentationDragIndicator,
+} from "@expo/ui/swift-ui/modifiers";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Habit,
   HabitSchedulingData,
@@ -23,13 +16,16 @@ import {
 import * as Haptics from "expo-haptics";
 import { format } from "date-fns";
 import { RepeatOptionsModal } from "./RepeatOptionsModal";
-import {
-  Host,
-  DateTimePicker as SwiftUIDateTimePicker,
-} from "@expo/ui/swift-ui";
-import ShortBottomModal from "@/src/components/ShortBottomModal";
+import { DatePicker as SwiftUIDateTimePicker } from "@expo/ui/swift-ui";
+import { Button } from "@/src/components/ui/Button";
+import { Card } from "@/src/components/ui/Card";
+import { Text } from "@/src/components/ui/Text";
+import { PressableScale } from "@/src/components/ui/PressableScale";
+import { INK_MUTED, SAGE } from "@/lib/tokens";
 
 interface HabitDetailsModalProps {
+  visible: boolean;
+  onClose: () => void;
   habit: Habit | null;
   onSave: (
     habitId: string,
@@ -44,15 +40,15 @@ interface HabitDetailsModalProps {
   isCompleted: boolean;
 }
 
-export const HabitDetailsModal = forwardRef<
-  BottomSheetModal,
-  HabitDetailsModalProps
->((props, ref) => {
-  const { habit, onSave, onToggleCompletion, onDelete, isCompleted } = props;
-
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
-
-  // State - Must be declared before any conditional returns
+export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
+  visible,
+  onClose,
+  habit,
+  onSave,
+  onToggleCompletion,
+  onDelete,
+  isCompleted,
+}) => {
   const [timeOption, setTimeOption] = useState<TimeOption>("anytime");
   const [scheduledTime, setScheduledTime] = useState<Date>(new Date());
   const [durationMinutes, setDurationMinutes] = useState(30);
@@ -63,27 +59,9 @@ export const HabitDetailsModal = forwardRef<
   const [reminderEnabled, setReminderEnabled] = useState(false);
   const [notes, setNotes] = useState("");
 
-  // Modal refs
-  const datePickerModalRef = useRef<BottomSheetModal>(null);
-
-  // Modal states
   const [showRepeatModal, setShowRepeatModal] = useState(false);
-
-  // Snap points
-  const snapPoints = useMemo(() => ["90%"], []);
-
-  // Expose present and close methods
-  useImperativeHandle(ref, () => ({
-    present: () => bottomSheetRef.current?.present(),
-    close: () => bottomSheetRef.current?.dismiss(),
-    dismiss: () => bottomSheetRef.current?.dismiss(),
-    snapToIndex: (index: number) => bottomSheetRef.current?.snapToIndex(index),
-    snapToPosition: (position: string | number) =>
-      bottomSheetRef.current?.snapToPosition(position),
-    expand: () => bottomSheetRef.current?.expand(),
-    collapse: () => bottomSheetRef.current?.collapse(),
-    forceClose: () => bottomSheetRef.current?.forceClose(),
-  }));
+  const [showDatePickerSheet, setShowDatePickerSheet] = useState(false);
+  const insets = useSafeAreaInsets();
 
   // Sync state when habit changes
   useEffect(() => {
@@ -107,19 +85,12 @@ export const HabitDetailsModal = forwardRef<
     }
   }, [habit]);
 
-  // Render backdrop
-  const renderBackdrop = useCallback(
-    (backdropProps: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop
-        {...backdropProps}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        opacity={0.5}
-        pressBehavior="close"
-      />
-    ),
-    [],
-  );
+  if (!habit) return null;
+
+  const handleClose = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onClose();
+  };
 
   const handleTimeOptionChange = (option: TimeOption) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -127,8 +98,6 @@ export const HabitDetailsModal = forwardRef<
   };
 
   const handleSave = async () => {
-    if (!habit) return;
-
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     const schedulingData: HabitSchedulingData = {
@@ -150,281 +119,313 @@ export const HabitDetailsModal = forwardRef<
     };
 
     await onSave(habit.id, schedulingData);
-    bottomSheetRef.current?.dismiss();
+    onClose();
   };
 
   const handleToggle = async () => {
-    if (!habit) return;
     await onToggleCompletion(habit.id, isCompleted, habit.name);
-    bottomSheetRef.current?.dismiss();
+    onClose();
   };
 
-  // Early return AFTER all hooks
-  if (!habit) return null;
+  const paddingBottom = Math.max(insets.bottom, 24) + 8;
 
   return (
     <>
-      <BottomSheetModal
-        ref={bottomSheetRef}
-        index={0}
-        snapPoints={snapPoints}
-        backdropComponent={renderBackdrop}
-        enablePanDownToClose={true}
-        handleIndicatorStyle={{ backgroundColor: "#D1D5DB", width: 40 }}
-      >
-        <View className="items-center px-6 pt-2 pb-4 border-b border-theme-border bg-theme-background-primary">
-          <View
-            className="w-14 h-14 rounded-full items-center justify-center mb-2"
-            style={{ backgroundColor: habit.color + "20" }}
-          >
-            <Text style={{ fontSize: 28 }}>{habit.icon}</Text>
-          </View>
-          <Text className="text-xl font-cormorantSemiBold text-theme-text-primary">
-            {habit.name}
-          </Text>
-          {habit.description && (
-            <Text className="text-sm text-theme-text-secondary mt-1 text-center">
-              {habit.description}
-            </Text>
-          )}
-        </View>
-
-        <BottomSheetScrollView
-          className="flex-1 px-6"
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 40 }}
+      <Host>
+        <BottomSheet
+          isPresented={visible}
+          onIsPresentedChange={(val) => {
+            if (!val) {
+              handleClose();
+            }
+          }}
         >
-          {/* Time Options */}
-          <View className="mt-5 mb-4">
-            <Text className="text-sm font-semibold text-theme-text-secondary mb-3 uppercase tracking-wide">
-              Time
-            </Text>
-            <View className="flex-row gap-3">
-              <TouchableOpacity
-                onPress={() => handleTimeOptionChange("anytime")}
-                className={`flex-1 py-3.5 rounded-xl ${
-                  timeOption === "anytime"
-                    ? "bg-[#7B61FF]"
-                    : "bg-theme-background-primary border border-theme-border"
-                }`}
-                activeOpacity={0.7}
-              >
-                <Text
-                  className={`text-center font-semibold text-base ${
-                    timeOption === "anytime" ? "text-white" : "text-theme-text-primary"
-                  }`}
-                >
-                  Anytime
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => handleTimeOptionChange("at_time")}
-                className={`flex-1 py-3.5 rounded-xl ${
-                  timeOption === "at_time"
-                    ? "bg-[#7B61FF]"
-                    : "bg-theme-background-primary border border-theme-border"
-                }`}
-                activeOpacity={0.7}
-              >
-                <Text
-                  className={`text-center font-semibold text-base ${
-                    timeOption === "at_time" ? "text-white" : "text-theme-text-primary"
-                  }`}
-                >
-                  At time
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View className="bg-theme-background-primary rounded-2xl border border-theme-border overflow-hidden mb-5">
-            {/* Date Picker */}
-            <TouchableOpacity
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                datePickerModalRef.current?.present();
-              }}
-              className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100"
-              activeOpacity={0.7}
-            >
-              <Text className="text-base text-theme-text-secondary font-medium">Date</Text>
-              <Text className="text-base text-theme-text-primary font-semibold">
-                {format(startDate, "MMM dd, yyyy")}
-              </Text>
-            </TouchableOpacity>
-
-            {/* Time Section - Only visible if "At time" is selected */}
-            {timeOption === "at_time" && (
-              <>
-                {/* Time Picker */}
-                <View className="border-b border-gray-100">
-                  <View className="px-4 py-4">
-                    <Host matchContents>
-                      <SwiftUIDateTimePicker
-                        onDateSelected={(date) => {
-                          Haptics.impactAsync(
-                            Haptics.ImpactFeedbackStyle.Light,
-                          );
-                          setScheduledTime(new Date(date));
-                        }}
-                        displayedComponents={"hourAndMinute"}
-                        title="Select Time"
-                        initialDate={scheduledTime.toISOString()}
-                        variant={"graphical"}
-                      />
-                    </Host>
-                  </View>
-                </View>
-
-                {/* Duration */}
-                <View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100">
-                  <Text className="text-base text-theme-text-secondary font-medium">
-                    Duration
-                  </Text>
-                  <Text className="text-base text-theme-text-primary font-semibold">
-                    {durationMinutes} mins
-                  </Text>
-                </View>
-              </>
-            )}
-
-            {/* Repeat Pattern */}
-            <TouchableOpacity
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setShowRepeatModal(true);
-              }}
-              className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100"
-              activeOpacity={0.7}
-            >
-              <Text className="text-base text-theme-text-secondary font-medium">
-                Repeat
-              </Text>
-              <Text className="text-base text-theme-text-primary font-semibold capitalize">
-                {repeatPattern === "weekly"
-                  ? "Weekly on Thursday"
-                  : repeatPattern}
-              </Text>
-            </TouchableOpacity>
-
-            {/* End Repeat */}
-            <View className="flex-row items-center justify-between px-4 py-4 border-b border-gray-100">
-              <Text className="text-base text-theme-text-secondary font-medium">
-                End Repeat
-              </Text>
-              <Text className="text-base text-theme-text-primary font-semibold capitalize">
-                {endRepeatOption}
-              </Text>
-            </View>
-
-            {/* Reminder Toggle */}
-            <View className="flex-row items-center justify-between px-4 py-4">
-              <Text className="text-base text-theme-text-secondary font-medium">
-                Reminder
-              </Text>
-              <Switch
-                value={reminderEnabled}
-                onValueChange={(value) => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setReminderEnabled(value);
-                }}
-                trackColor={{ false: "#E5E7EB", true: "#7B61FF" }}
-                thumbColor="#FFFFFF"
-              />
-            </View>
-          </View>
-
-          {/* Notes */}
-          <View className="mb-6">
-            <Text className="text-sm font-semibold text-theme-text-secondary mb-3 uppercase tracking-wide">
-              Notes
-            </Text>
-            <TextInput
-              value={notes}
-              onChangeText={setNotes}
-              placeholder="Add notes about this habit..."
-              placeholderTextColor="#9CA3AF"
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-              className="bg-theme-background-primary rounded-2xl p-4 text-base text-theme-text-primary border border-theme-border min-h-[100px]"
-            />
-          </View>
-
-          {/* Action Buttons */}
-          <View className="flex-row gap-3 mb-6">
-            <TouchableOpacity
-              onPress={handleToggle}
-              className={`flex-1 py-4 rounded-2xl ${
-                isCompleted
-                  ? "bg-theme-background-primary border-2 border-theme-border"
-                  : "bg-[#7B61FF]"
-              }`}
-              activeOpacity={0.8}
-            >
-              <Text
-                className={`text-center font-bold text-base ${
-                  isCompleted ? "text-theme-text-primary" : "text-white"
-                }`}
-              >
-                {isCompleted ? "Mark Incomplete" : "✓ Complete"}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={handleSave}
-              className="flex-1 bg-gray-900 py-4 rounded-2xl"
-              activeOpacity={0.8}
-            >
-              <Text className="text-white text-center font-bold text-base">
-                Save
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Delete Button */}
-          <TouchableOpacity
-            onPress={async () => {
-              if (!habit) return;
-              Haptics.notificationAsync(
-                Haptics.NotificationFeedbackType.Warning,
-              );
-              await onDelete(habit.id);
-              bottomSheetRef.current?.dismiss();
-            }}
-            className="py-3 mb-6"
-            activeOpacity={0.7}
+          <Group
+            modifiers={[
+              presentationDetents([{ height: 750 }]),
+              presentationDragIndicator("visible"),
+            ]}
           >
-            <Text className="text-center text-red-500 font-semibold text-base">
-              Delete Habit
-            </Text>
-          </TouchableOpacity>
-        </BottomSheetScrollView>
-      </BottomSheetModal>
+            <RNHostView>
+              <View
+                style={{ paddingBottom }}
+                className="flex-1 px-5 pt-6 bg-brand-surface"
+              >
+                {/* Header info */}
+                <View className="items-center pb-4 border-b border-sage-100 w-full">
+                  <View className="w-14 h-14 rounded-[20px] bg-sage-50 border border-sage-100 items-center justify-center mb-2">
+                    <RNText style={{ fontSize: 28 }}>{habit.icon}</RNText>
+                  </View>
+                  <Text
+                    variant="h3"
+                    className="text-2xl font-bold text-ink text-center leading-8"
+                  >
+                    {habit.name}
+                  </Text>
+                  {habit.description && (
+                    <Text
+                      variant="body"
+                      className="text-[14px] leading-5 text-ink-soft text-center mt-1"
+                    >
+                      {habit.description}
+                    </Text>
+                  )}
+                </View>
 
-      {/* Date Picker Bottom Sheet Modal */}
-      <ShortBottomModal ref={datePickerModalRef} snapPoints={["50%"]}>
-        <View className="flex-1 px-6 pt-4 pb-6">
-          <Text className="text-xl font-cormorantSemiBold text-gray-900 mb-4">
-            Select Date
-          </Text>
-          <View>
-            <Host matchContents>
-              <SwiftUIDateTimePicker
-                onDateSelected={(date) => {
-                  setStartDate(new Date(date));
-                  datePickerModalRef.current?.close();
-                }}
-                displayedComponents={"date"}
-                title="Select Date"
-                initialDate={startDate.toISOString()}
-                variant={"graphical"}
-              />
-            </Host>
-          </View>
-        </View>
-      </ShortBottomModal>
+                <ScrollView
+                  className="flex-1 mt-4"
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ paddingBottom: 16 }}
+                >
+                  {/* Time Segment Options */}
+                  <View className="mb-4">
+                    <Text
+                      variant="label"
+                      className="happy-brand-eyebrow mb-2 text-[11px] text-ink-soft"
+                    >
+                      TIME
+                    </Text>
+                    <View className="flex-row gap-3">
+                      <PressableScale
+                        onPress={() => handleTimeOptionChange("anytime")}
+                        className={`flex-1 rounded-[16px] border ${
+                          timeOption === "anytime"
+                            ? "bg-sage-pill border-sage-200"
+                            : "bg-brand-surface-soft border-sage-100"
+                        }`}
+                      >
+                        <View className="py-3.5 items-center justify-center">
+                          <Text
+                            className={`happy-font-body-bold text-[15px] ${
+                              timeOption === "anytime"
+                                ? "text-sage-700"
+                                : "text-ink-soft"
+                            }`}
+                          >
+                            Anytime
+                          </Text>
+                        </View>
+                      </PressableScale>
+
+                      <PressableScale
+                        onPress={() => handleTimeOptionChange("at_time")}
+                        className={`flex-1 rounded-[16px] border ${
+                          timeOption === "at_time"
+                            ? "bg-sage-pill border-sage-200"
+                            : "bg-brand-surface-soft border-sage-100"
+                        }`}
+                      >
+                        <View className="py-3.5 items-center justify-center">
+                          <Text
+                            className={`happy-font-body-bold text-[15px] ${
+                              timeOption === "at_time"
+                                ? "text-sage-700"
+                                : "text-ink-soft"
+                            }`}
+                          >
+                            At time
+                          </Text>
+                        </View>
+                      </PressableScale>
+                    </View>
+                  </View>
+
+                  {/* Settings Card */}
+                  <Card variant="tile" radius="xl" showDepth={false} className="mb-5 border border-sage-100">
+                    <View className="divide-y divide-sage-100/50">
+                      {/* Date Picker Trigger */}
+                      <PressableScale
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          setShowDatePickerSheet(true);
+                        }}
+                        className="flex-row items-center justify-between px-4 py-4"
+                      >
+                        <Text className="happy-font-body-medium text-base text-ink-soft">
+                          Date
+                        </Text>
+                        <Text className="happy-font-body-bold text-base text-ink">
+                          {format(startDate, "MMM dd, yyyy")}
+                        </Text>
+                      </PressableScale>
+
+                      {/* Time and Duration Sub-fields if At Time is active */}
+                      {timeOption === "at_time" && (
+                        <>
+                          <View className="px-4 py-3 bg-brand-surface-soft/40">
+                            <Host matchContents>
+                              <SwiftUIDateTimePicker
+                                onDateChange={(date: Date) => {
+                                  Haptics.impactAsync(
+                                    Haptics.ImpactFeedbackStyle.Light,
+                                  );
+                                  setScheduledTime(date);
+                                }}
+                                displayedComponents={["hourAndMinute"]}
+                                title="Select Time"
+                                selection={scheduledTime}
+                              />
+                            </Host>
+                          </View>
+
+                          <View className="flex-row items-center justify-between px-4 py-4">
+                            <Text className="happy-font-body-medium text-base text-ink-soft">
+                              Duration
+                            </Text>
+                            <Text className="happy-font-body-bold text-base text-ink">
+                              {durationMinutes} mins
+                            </Text>
+                          </View>
+                        </>
+                      )}
+
+                      {/* Repeat Trigger */}
+                      <PressableScale
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          setShowRepeatModal(true);
+                        }}
+                        className="flex-row items-center justify-between px-4 py-4"
+                      >
+                        <Text className="happy-font-body-medium text-base text-ink-soft">
+                          Repeat
+                        </Text>
+                        <Text className="happy-font-body-bold text-base text-ink capitalize">
+                          {repeatPattern === "weekly"
+                            ? "Weekly on Thursday"
+                            : repeatPattern}
+                        </Text>
+                      </PressableScale>
+
+                      {/* End Repeat */}
+                      <View className="flex-row items-center justify-between px-4 py-4">
+                        <Text className="happy-font-body-medium text-base text-ink-soft">
+                          End Repeat
+                        </Text>
+                        <Text className="happy-font-body-bold text-base text-ink capitalize">
+                          {endRepeatOption}
+                        </Text>
+                      </View>
+
+                      {/* Reminder Switch */}
+                      <View className="flex-row items-center justify-between px-4 py-4">
+                        <Text className="happy-font-body-medium text-base text-ink-soft">
+                          Reminder
+                        </Text>
+                        <Switch
+                          value={reminderEnabled}
+                          onValueChange={(value) => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            setReminderEnabled(value);
+                          }}
+                          trackColor={{ false: "#E5E7EB", true: SAGE[500] }}
+                          thumbColor="#FFFFFF"
+                        />
+                      </View>
+                    </View>
+                  </Card>
+
+                  {/* Notes Section */}
+                  <View className="mb-6">
+                    <Text
+                      variant="label"
+                      className="happy-brand-eyebrow mb-2 text-[11px] text-ink-soft"
+                    >
+                      NOTES
+                    </Text>
+                    <TextInput
+                      value={notes}
+                      onChangeText={setNotes}
+                      placeholder="Add notes about this habit..."
+                      placeholderTextColor={INK_MUTED}
+                      multiline
+                      numberOfLines={4}
+                      textAlignVertical="top"
+                      className="happy-font-body-medium rounded-[22px] border-2 border-sage-100 bg-brand-surface-soft p-4 text-[15px] leading-6 text-ink min-h-[100px]"
+                    />
+                  </View>
+
+                  {/* Action Buttons */}
+                  <View className="flex-row gap-3 mb-2">
+                    <View className="flex-1">
+                      <Button
+                        label={isCompleted ? "Mark Incomplete" : "✓ Complete"}
+                        variant={isCompleted ? "secondary" : "primary"}
+                        size="lg"
+                        onPress={handleToggle}
+                      />
+                    </View>
+                    <View className="flex-1">
+                      <Button
+                        label="Save"
+                        variant="primary"
+                        size="lg"
+                        onPress={handleSave}
+                      />
+                    </View>
+                  </View>
+
+                  {/* Delete Button */}
+                  <View className="mt-2 w-full">
+                    <Button
+                      label="Delete Habit"
+                      variant="danger"
+                      size="lg"
+                      onPress={async () => {
+                        Haptics.notificationAsync(
+                          Haptics.NotificationFeedbackType.Warning,
+                        );
+                        await onDelete(habit.id);
+                        onClose();
+                      }}
+                    />
+                  </View>
+                </ScrollView>
+              </View>
+            </RNHostView>
+          </Group>
+        </BottomSheet>
+      </Host>
+
+      {/* Date Picker Sheet Modal */}
+      <Host>
+        <BottomSheet
+          isPresented={showDatePickerSheet}
+          onIsPresentedChange={(val) => {
+            if (!val) {
+              setShowDatePickerSheet(false);
+            }
+          }}
+        >
+          <Group
+            modifiers={[
+              presentationDetents([{ height: 420 }]),
+              presentationDragIndicator("visible"),
+            ]}
+          >
+            <RNHostView>
+              <View className="flex-1 px-6 pt-6 pb-8 bg-brand-surface">
+                <Text variant="h3" className="text-xl font-bold text-ink mb-4">
+                  Select Date
+                </Text>
+                <View>
+                  <Host matchContents>
+                    <SwiftUIDateTimePicker
+                      onDateChange={(date: Date) => {
+                        setStartDate(date);
+                        setShowDatePickerSheet(false);
+                      }}
+                      displayedComponents={["date"]}
+                      title="Select Date"
+                      selection={startDate}
+                    />
+                  </Host>
+                </View>
+              </View>
+            </RNHostView>
+          </Group>
+        </BottomSheet>
+      </Host>
 
       {/* Repeat Options Modal */}
       <RepeatOptionsModal
@@ -435,6 +436,4 @@ export const HabitDetailsModal = forwardRef<
       />
     </>
   );
-});
-
-HabitDetailsModal.displayName = "HabitDetailsModal";
+};

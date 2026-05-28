@@ -1,230 +1,232 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import React from "react";
+import { View, ScrollView } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { CheckmarkCircle02Icon, Idea01Icon } from "@hugeicons/core-free-icons";
-import { useHeaderHeight } from "@react-navigation/elements";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  MICRONUTRIENTS_CONFIG,
+  CheckmarkCircle02Icon,
+  Idea01Icon,
+  WellnessIcon,
+  SparklesIcon,
+} from "@hugeicons/core-free-icons";
+import { useHeaderHeight } from "@react-navigation/elements";
+import {
   getMicronutrientsByCategory,
   type MicronutrientConfig,
 } from "@/src/config/micronutrients";
-import { BRAND_SURFACE, GOLD, SAGE } from "@/lib/tokens";
+import { useMicronutrientTracking } from "./hooks/useMicronutrientTracking";
+import { Card } from "@/src/components/ui/Card";
+import { Button } from "@/src/components/ui/Button";
+import { Text } from "@/src/components/ui/Text";
+import { SectionHeader } from "@/src/components/ui/SectionHeader";
+import { FadeInItem } from "@/src/components/ui/FadeInItem";
+import { SAGE, OTTER_BLUE } from "@/lib/tokens";
 
-const STORAGE_KEY = "tracked_micronutrients";
+// ─── Presentational Layer ───────────────────────────────────────────────────
 
-const MicronutrientTrackingScreen: React.FC = () => {
-  const headerHeight = useHeaderHeight();
-  const [trackedNutrients, setTrackedNutrients] = useState<Set<string>>(
-    new Set(MICRONUTRIENTS_CONFIG.map((n) => n.id))
-  );
+interface MicronutrientTrackingViewProps {
+  trackedNutrients: Set<string>;
+  toggleNutrient: (id: string) => void;
+  selectAll: () => void;
+  deselectAll: () => void;
+  headerHeight: number;
+}
 
-  // Load saved preferences
-  useEffect(() => {
-    loadTrackedNutrients();
-  }, []);
+const MicronutrientTrackingView: React.FC<MicronutrientTrackingViewProps> = ({
+  trackedNutrients,
+  toggleNutrient,
+  selectAll,
+  deselectAll,
+  headerHeight,
+}) => {
+  const vitamins: MicronutrientConfig[] = getMicronutrientsByCategory("vitamin");
+  const minerals: MicronutrientConfig[] = getMicronutrientsByCategory("mineral");
 
-  const loadTrackedNutrients = async (): Promise<void> => {
-    try {
-      const saved = await AsyncStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        setTrackedNutrients(new Set(JSON.parse(saved)));
-      }
-    } catch (error) {
-      console.error("Failed to load tracked nutrients:", error);
-    }
-  };
+  const trackedVitaminsCount: number = vitamins.filter((v: MicronutrientConfig) =>
+    trackedNutrients.has(v.id)
+  ).length;
 
-  const saveTrackedNutrients = async (
-    nutrients: Set<string>
-  ): Promise<void> => {
-    try {
-      await AsyncStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(Array.from(nutrients))
-      );
-    } catch (error) {
-      console.error("Failed to save tracked nutrients:", error);
-    }
-  };
-
-  const toggleNutrient = (id: string): void => {
-    const newTracked = new Set(trackedNutrients);
-    if (newTracked.has(id)) {
-      newTracked.delete(id);
-    } else {
-      newTracked.add(id);
-    }
-    setTrackedNutrients(newTracked);
-    saveTrackedNutrients(newTracked);
-  };
-
-  const selectAll = (): void => {
-    const all = new Set(MICRONUTRIENTS_CONFIG.map((n) => n.id));
-    setTrackedNutrients(all);
-    saveTrackedNutrients(all);
-  };
-
-  const deselectAll = (): void => {
-    setTrackedNutrients(new Set());
-    saveTrackedNutrients(new Set());
-  };
+  const trackedMineralsCount: number = minerals.filter((m: MicronutrientConfig) =>
+    trackedNutrients.has(m.id)
+  ).length;
 
   const renderNutrientItem = (
-    nutrient: MicronutrientConfig
+    nutrient: MicronutrientConfig,
+    index: number
   ): React.ReactNode => {
-    const isTracked = trackedNutrients.has(nutrient.id);
-    const categoryColor =
-      nutrient.category === "vitamin"
-        ? {
-            bg: "bg-sage-pill",
-            text: "text-sage-600",
-            checkColor: SAGE[600],
-          }
-        : {
-            bg: "bg-gold/15",
-            text: "text-ink-soft",
-            checkColor: GOLD,
-          };
+    const isTracked: boolean = trackedNutrients.has(nutrient.id);
 
     return (
-      <TouchableOpacity
-        key={nutrient.id}
-        className={`mb-3 flex-row items-center rounded-[24px] p-4 ${
-          isTracked
-            ? "happy-brand-pressed-card-selected"
-            : "happy-brand-pressed-card"
-        }`}
-        onPress={() => toggleNutrient(nutrient.id)}
-        activeOpacity={0.7}
-      >
-        <View className="flex-1">
-          <View className="flex-row items-center mb-1">
-            <Text
-              className={`happy-font-body-bold text-[17px] ${
-                isTracked ? "text-ink" : "text-ink-soft"
-              }`}
-            >
-              {nutrient.name}
-            </Text>
-            <View
-              className={`ml-2 px-2 py-0.5 rounded-full ${categoryColor.bg}`}
-            >
+      <FadeInItem key={nutrient.id} index={index}>
+        <Card
+          variant={isTracked ? "answer-selected" : "answer"}
+          radius="xl"
+          showDepth={true}
+          onPress={() => toggleNutrient(nutrient.id)}
+          className="mb-3"
+          contentClassName="flex-row items-center justify-between p-4"
+        >
+          <View className="flex-1 mr-3">
+            <View className="flex-row items-center mb-1">
               <Text
-                className={`text-xs font-medium capitalize ${categoryColor.text}`}
+                variant="body-bold"
+                color={isTracked ? "ink" : "soft"}
               >
-                {nutrient.category}
+                {nutrient.name}
               </Text>
+              <View className="ml-2 px-2.5 py-0.5 rounded-full happy-brand-status-chip">
+                <Text
+                  variant="chip"
+                  className={
+                    nutrient.category === "vitamin"
+                      ? "text-sage-600"
+                      : "text-amber-600"
+                  }
+                >
+                  {nutrient.category}
+                </Text>
+              </View>
             </View>
-          </View>
-          <Text className="happy-font-body-medium text-ink-muted text-[15px] leading-5">
-            {nutrient.description}
-          </Text>
-          <Text className="happy-font-body text-ink-muted text-xs mt-1">
-            Daily: {nutrient.dailyValue} {nutrient.unit}
-          </Text>
-        </View>
-        <View className="ml-3">
-          {isTracked ? (
-            <View
-              className="w-8 h-8 rounded-full items-center justify-center"
-              style={{ backgroundColor: categoryColor.checkColor }}
+            <Text
+              variant="body"
+              color="soft"
+              className="text-[15px] leading-5 mb-1"
             >
-              <HugeiconsIcon
-                icon={CheckmarkCircle02Icon}
-                size={20}
-                color={BRAND_SURFACE}
-              />
-            </View>
-          ) : (
-            <View className="w-8 h-8 rounded-full border-2 border-sage-200" />
-          )}
-        </View>
-      </TouchableOpacity>
+              {nutrient.description}
+            </Text>
+            <Text variant="caption-muted">
+              Daily Target: {nutrient.dailyValue} {nutrient.unit}
+            </Text>
+          </View>
+
+          <View className="ml-2">
+            {isTracked ? (
+              <View className="w-8 h-8 rounded-full items-center justify-center bg-sage-500 border border-sage-600">
+                <HugeiconsIcon
+                  icon={CheckmarkCircle02Icon}
+                  size={20}
+                  color="#FFFFFF"
+                />
+              </View>
+            ) : (
+              <View className="w-8 h-8 rounded-full border-2 border-brand-border bg-brand-surface" />
+            )}
+          </View>
+        </Card>
+      </FadeInItem>
     );
   };
-
-  const vitamins = getMicronutrientsByCategory("vitamin");
-  const minerals = getMicronutrientsByCategory("mineral");
 
   return (
     <View className="flex-1 happy-brand-screen">
       <ScrollView
         className="flex-1"
         contentContainerStyle={{
-          paddingTop: headerHeight,
+          paddingTop: headerHeight + 16,
           paddingHorizontal: 16,
-          paddingBottom: 100,
+          paddingBottom: 140,
         }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Quick Actions */}
-        <View className="flex-row gap-3 mb-5">
-          <TouchableOpacity
-            onPress={selectAll}
-            className="happy-brand-primary-cta flex-1 rounded-[20px] py-4 items-center"
-            activeOpacity={0.8}
+        {/* Quick Actions - Stagger 0 */}
+        <FadeInItem index={0}>
+          <View className="flex-row gap-3 mb-10">
+            <Button
+              label="Select All"
+              variant="primary"
+              size="lg"
+              onPress={selectAll}
+              className="flex-1"
+            />
+            <Button
+              label="Clear All"
+              variant="secondary"
+              size="lg"
+              onPress={deselectAll}
+              className="flex-1"
+            />
+          </View>
+        </FadeInItem>
+
+        {/* How it works Info Card - Stagger 1 */}
+        <FadeInItem index={1}>
+          <Card
+            variant="tile"
+            radius="xl"
+            showDepth={true}
+            className="mb-12"
+            contentClassName="p-5"
           >
-            <Text className="happy-font-body-bold text-brand-surface">
-              Select All
+            <View className="flex-row items-center mb-1.5">
+              <View className="w-8 h-8 rounded-full bg-sage-50 items-center justify-center mr-2">
+                <HugeiconsIcon icon={Idea01Icon} size={18} color="#44633F" />
+              </View>
+              <Text variant="body-bold" color="sage">
+                How it works
+              </Text>
+            </View>
+            <Text variant="body" color="soft" className="text-[15px] leading-6">
+              Select nutrients to track. AI will analyze your meals and show how
+              much of each you're consuming in your daily summary.
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={deselectAll}
-            className="flex-1 bg-brand-surface border-2 border-sage-100 rounded-[20px] py-4 items-center"
-            activeOpacity={0.8}
-          >
-            <Text className="happy-font-body-bold text-ink-soft">
-              Clear All
-            </Text>
-          </TouchableOpacity>
+          </Card>
+        </FadeInItem>
+
+        {/* Vitamins Section - Stagger 2 for header, then vitamins */}
+        <View className="mb-12">
+          <FadeInItem index={2}>
+            <SectionHeader
+              title="Vitamins"
+              icon={WellnessIcon}
+              count={`${trackedVitaminsCount} / ${vitamins.length}`}
+              iconBgClass="bg-sage-50"
+              iconColor={SAGE[500]}
+              className="mb-4"
+            />
+          </FadeInItem>
+          {vitamins.map((nutrient: MicronutrientConfig, idx: number) =>
+            renderNutrientItem(nutrient, 3 + idx)
+          )}
         </View>
 
-        {/* Info Card */}
-        <View className="happy-brand-card rounded-[24px] p-5 mb-6">
-          <View className="flex-row items-center mb-1">
-            <HugeiconsIcon icon={Idea01Icon} size={19} color={SAGE[600]} />
-            <Text className="happy-font-body-bold text-sage-600 ml-1.5">
-              How it works
-            </Text>
-          </View>
-          <Text className="happy-font-body-medium text-ink-soft text-[15px] leading-6">
-            Select nutrients to track. AI will analyze your meals and show how
-            much of each you're consuming in your daily summary.
-          </Text>
-        </View>
-
-        {/* Vitamins Section */}
-        <View className="mb-5">
-          <View className="flex-row items-center mb-3">
-            <View className="w-1 h-4 bg-sage-500 rounded-full mr-2" />
-            <Text className="happy-font-body-bold text-ink text-[17px]">
-              Vitamins
-            </Text>
-            <Text className="happy-font-body-medium text-ink-muted text-sm ml-2">
-              ({vitamins.filter((v) => trackedNutrients.has(v.id)).length}/
-              {vitamins.length})
-            </Text>
-          </View>
-          {vitamins.map(renderNutrientItem)}
-        </View>
-
-        {/* Minerals Section */}
-        <View className="mb-5">
-          <View className="flex-row items-center mb-3">
-            <View className="w-1 h-4 bg-gold rounded-full mr-2" />
-            <Text className="happy-font-body-bold text-ink text-[17px]">
-              Minerals
-            </Text>
-            <Text className="happy-font-body-medium text-ink-muted text-sm ml-2">
-              ({minerals.filter((m) => trackedNutrients.has(m.id)).length}/
-              {minerals.length})
-            </Text>
-          </View>
-          {minerals.map(renderNutrientItem)}
+        {/* Minerals Section - Staggered index follows vitamins list */}
+        <View className="mb-12 pt-8 border-t border-brand-border/40">
+          <FadeInItem index={3 + vitamins.length}>
+            <SectionHeader
+              title="Minerals"
+              icon={SparklesIcon}
+              count={`${trackedMineralsCount} / ${minerals.length}`}
+              iconBgClass="bg-otter-blue/10"
+              iconColor={OTTER_BLUE}
+              className="mb-4"
+            />
+          </FadeInItem>
+          {minerals.map((nutrient: MicronutrientConfig, idx: number) =>
+            renderNutrientItem(nutrient, 4 + vitamins.length + idx)
+          )}
         </View>
       </ScrollView>
     </View>
+  );
+};
+
+// ─── Container Layer ─────────────────────────────────────────────────────────
+
+const MicronutrientTrackingScreen: React.FC = () => {
+  const headerHeight: number = useHeaderHeight();
+  const {
+    trackedNutrients,
+    toggleNutrient,
+    selectAll,
+    deselectAll,
+  } = useMicronutrientTracking();
+
+  return (
+    <MicronutrientTrackingView
+      trackedNutrients={trackedNutrients}
+      toggleNutrient={toggleNutrient}
+      selectAll={selectAll}
+      deselectAll={deselectAll}
+      headerHeight={headerHeight}
+    />
   );
 };
 
