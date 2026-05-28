@@ -8,7 +8,7 @@ import Animated, {
 import * as Haptics from "expo-haptics";
 import { SPRING_DUOLINGO_PRESS } from "@/src/utils/motionTokens";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import { BRAND_BORDER, SAGE } from "@/lib/tokens";
+import { BRAND_BORDER_STRONG, SAGE } from "@/lib/tokens";
 
 // ─── Variant config ───────────────────────────────────────────────────────────
 // Each variant defines the face border, shadow colour, and shadow depth.
@@ -25,12 +25,12 @@ interface VariantConfig {
 const VARIANTS: Record<Variant, VariantConfig> = {
   tile: {
     faceClass: "border-2 border-brand-border bg-brand-surface",
-    shadowColor: BRAND_BORDER,
+    shadowColor: BRAND_BORDER_STRONG,
     shadowDepth: 3,
   },
   answer: {
     faceClass: "border-2 border-brand-border bg-brand-surface",
-    shadowColor: BRAND_BORDER,
+    shadowColor: BRAND_BORDER_STRONG,
     shadowDepth: 4,
   },
   "answer-selected": {
@@ -40,7 +40,7 @@ const VARIANTS: Record<Variant, VariantConfig> = {
   },
   "word-bank": {
     faceClass: "border-2 border-brand-border bg-brand-surface rounded-full",
-    shadowColor: BRAND_BORDER,
+    shadowColor: BRAND_BORDER_STRONG,
     shadowDepth: 3,
   },
 };

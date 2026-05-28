@@ -162,12 +162,13 @@
   --color-sage-pill: #edf5e9;
 
   /* ── Surfaces ────────────────────────────────────────────────────────────
-     All surfaces are white or near-white. The distinction between
-     brand-canvas and brand-surface is semantic only (screen vs card).
-     brand-surface-soft is the sage-tinted alternative for icon wells
-     and secondary card backgrounds — use sparingly so the tint stays
-     intentional.                                                            */
-  --color-brand-canvas: #ffffff;
+     brand-canvas   #F8FAF7  Screen root background — sage whisper. Cards
+                             (brand-surface #FFFFFF) sit on this and float.
+                             The 2% luminance delta is the premium depth signal.
+     brand-surface  #FFFFFF  Card and panel face — pure white. Always on top
+                             of brand-canvas. Never use as a screen background.
+     brand-surface-soft      Icon wells, secondary card tints — use sparingly.*/
+  --color-brand-canvas: #fafaf8;
   --color-brand-surface: #ffffff;
   --color-brand-surface-soft: #f7f7f7;
   --color-mascot-stage: #ffffff;
@@ -261,7 +262,8 @@
      Wolf Grey 2  #AFAFAF   →  ink-muted + border-strong ADOPTED directly
      Wolf Grey 3  #E5E5E5   →  brand-border              ADOPTED directly
      Wolf Grey 4  #777777   →  ink-soft (darkened to #767676 for AA)
-     Feather Wht  #FFFFFF   →  brand-surface             ADOPTED directly
+     Feather Wht  #FFFFFF   →  brand-surface (card face)  ADOPTED directly
+     —            #F8FAF7   →  brand-canvas (screen bg)  CUSTOM (premium canvas)
      Cardinal Red #FF4B4B   →  terracotta + cardinal-red ADOPTED directly
      Bee Yellow   #FFD900   →  gold + bee-yellow         ADOPTED directly
      Otter Blue   #1CB0F6   →  otter-blue                ADOPTED directly
@@ -364,7 +366,7 @@
    Hierarchy (pick the right level for the context):
 
    happy-brand-screen          Screen root background. Wrap every screen's
-                               outermost View. bg-brand-canvas (#fff).
+                               outermost View. bg-brand-canvas (#f8faf7 — sage whisper, cards float).
 
    happy-brand-card            Flat card. Static info — no press affordance.
                                Use for settings rows, stat panels, list items

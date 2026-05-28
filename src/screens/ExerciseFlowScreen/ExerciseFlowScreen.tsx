@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useRef } from "react";
+import * as Haptics from "expo-haptics";
 import {
   View,
   SafeAreaView,
@@ -12,13 +13,13 @@ import { useNavigation } from "@react-navigation/native";
 import { useExerciseFlow } from "@/src/hooks/useExerciseFlow";
 import { useExerciseMutation } from "@/src/hooks/useExerciseMutation";
 import { useExerciseAI } from "@/src/hooks/useExerciseAI";
-import { getExerciseConfig } from "@/src/data/exerciseRegistry";
 import type {
   ExerciseType,
   ExerciseConfig,
   StepProps,
 } from "@/src/types/exerciseFlow";
 import { useSingleExerciseEntry } from "@/src/hooks/useSingleExerciseEntry";
+import { getExerciseConfig } from "@/src/data/exerciseRegistry";
 
 interface ExerciseFlowScreenProps {
   exerciseType: ExerciseType;
@@ -138,6 +139,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
     try {
       const payload = flow.getSavePayload("completed");
       await save(payload, entryId);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       exitScreen();
     } catch (err) {
       Alert.alert("Save failed", "Please try again.");

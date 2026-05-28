@@ -44,13 +44,16 @@ export const SAGE_OVERLAY = {
 export const TRANSPARENT = SAGE_OVERLAY.clear;
 
 // ─── Brand Surfaces ─────────────────────────────────────────────────────
-export const CREAM = "#ffffff" as const;
-export const CREAM_RAISED = "#F7F7F7" as const;
-export const WARM_WHITE = "#ffffff" as const;
-export const BRAND_CANVAS = "#ffffff" as const;
+// brand-canvas: screen background — sage whisper, cards float above it
+// brand-surface: card/panel face — pure white
+export const BRAND_CANVAS = "#F8FAF7" as const;
 export const BRAND_SURFACE = "#ffffff" as const;
 export const BRAND_SURFACE_SOFT = "#F7F7F7" as const;
 export const MASCOT_STAGE = "#ffffff" as const;
+// Legacy aliases — prefer BRAND_CANVAS / BRAND_SURFACE in new code
+export const CREAM = "#ffffff" as const;
+export const CREAM_RAISED = "#F7F7F7" as const;
+export const WARM_WHITE = "#ffffff" as const;
 // Duolingo Cardinal Red — adopted directly
 export const TERRACOTTA = "#FF4B4B" as const;
 export const TERRACOTTA_LIGHT = "#FF9090" as const;
@@ -83,9 +86,9 @@ export const SAGE_DISCOVERY_GRADIENT = [
 
 // ─── App Semantic Theme ─────────────────────────────────────────────────
 export const THEME = {
-  backgroundPrimary: "#ffffff",
+  backgroundPrimary: "#F8FAF7",  // screen canvas — sage whisper
   backgroundSecondary: "#F7F7F7",
-  backgroundCard: "#ffffff",
+  backgroundCard: "#ffffff",     // card face — pure white
   textPrimary: "#142414",
   textSecondary: "#767676",
   border: "#E5E5E5",

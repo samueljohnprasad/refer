@@ -52,6 +52,7 @@ import {
 
 import type { HugeIconObject } from "@/src/data/journey/hugeiconsRegistry";
 import type { ExerciseType, ExerciseCategory } from "@/src/types/exerciseFlow";
+import { SAGE, OTTER_BLUE, GOLD, MACAW_PURPLE } from "@/lib/tokens";
 
 // ─── Exercise Type → Icon ────────────────────────────────────────────────────
 
@@ -87,6 +88,26 @@ export const CATEGORY_ICON_REGISTRY: Record<ExerciseCategory, HugeIconObject> =
   anxiety: CloudIcon,
   overthinking: AiBrain01Icon,
 };
+
+// ─── Category tint ────────────────────────────────────────────────────────────
+// Applied to icon wells and section eyebrows only — card face stays white.
+
+export interface CategoryTint {
+  iconBg: string;   // Tailwind class for icon well background
+  iconColor: string; // Hex for the icon itself
+  eyebrowColor: string; // Tailwind class for eyebrow text color
+}
+
+export const CATEGORY_TINT: Record<ExerciseCategory, CategoryTint> = {
+  cbt_core: { iconBg: "bg-sage-50", iconColor: SAGE[600], eyebrowColor: "text-sage-500" },
+  mindfulness: { iconBg: "bg-otter-blue/10", iconColor: OTTER_BLUE, eyebrowColor: "text-otter-blue" },
+  anxiety: { iconBg: "bg-gold/10", iconColor: GOLD, eyebrowColor: "text-bee-yellow" },
+  overthinking: { iconBg: "bg-macaw-purple/10", iconColor: MACAW_PURPLE, eyebrowColor: "text-macaw-purple" },
+};
+
+export function getCategoryTint(category: string): CategoryTint {
+  return CATEGORY_TINT[category as ExerciseCategory] ?? CATEGORY_TINT.cbt_core;
+}
 
 // ─── Lookup helpers ──────────────────────────────────────────────────────────
 

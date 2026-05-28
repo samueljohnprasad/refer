@@ -7,12 +7,23 @@ import {
   type ReactElement,
 } from "react";
 import { Pressable, ScrollView, View } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withTiming,
+  withSpring,
+  Easing,
+} from "react-native-reanimated";
+import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/src/components/ui/Text";
 import { router, useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
+  ArrowRight01Icon,
   Brain01Icon,
   CheckmarkBadge01Icon,
   SparklesIcon,
@@ -26,6 +37,7 @@ import {
 } from "@/src/data/exerciseRegistry";
 import {
   getCategoryIcon,
+  getCategoryTint,
   getExerciseIcon,
 } from "@/src/data/exerciseIconRegistry";
 import { Mascot } from "@/src/components/ui/Mascot";
@@ -38,6 +50,7 @@ import { useCBTHistory, type HistoryLogItem } from "./hooks/useCBTHistory";
 import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
 import { Card } from "@/src/components/ui/Card";
 import { GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
+import { FadeInItem } from "@/src/components/ui/FadeInItem";
 
 type TabKey = "discover" | "log";
 const TAB_KEYS = ["discover", "log"] as const;
@@ -96,11 +109,13 @@ function buildExerciseRoute(
 interface ExerciseCardProps {
   exercise: ExerciseConfig<any>;
   onPress: (exercise: ExerciseConfig<any>) => void;
+  featured?: boolean;
 }
 
 const ExerciseCard = memo(function ExerciseCard({
   exercise,
   onPress,
+  featured = false,
 }: ExerciseCardProps): ReactElement {
   const icon = getExerciseIcon(exercise.type);
   const handlePress = useCallback((): void => {
@@ -114,21 +129,27 @@ const ExerciseCard = memo(function ExerciseCard({
       onPress={handlePress}
       haptic="light"
       className="mb-4"
+      contentClassName={featured ? "p-5" : "p-4"}
       accessibilityLabel={`${exercise.title}: ${exercise.subtitle}. Duration: ${exercise.duration}.`}
     >
+      {featured && (
+        <Text variant="eyebrow" className="mb-3">
+          Start here
+        </Text>
+      )}
       <View className="flex-row items-center gap-3">
         <View
-          className="h-12 w-12 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50"
+          className={`items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50 ${featured ? "h-14 w-14" : "h-12 w-12"}`}
           accessible={false}
         >
-          <HugeiconsIcon icon={icon} size={24} color={SAGE[600]} />
+          <HugeiconsIcon icon={icon} size={featured ? 28 : 24} color={SAGE[600]} />
         </View>
 
         <View className="min-w-0 flex-1">
           <Text variant="body-bold" numberOfLines={1}>
             {exercise.title}
           </Text>
-          <Text variant="label" color="soft" className="mt-1" numberOfLines={2}>
+          <Text variant="label" color="soft" className="mt-1" numberOfLines={featured ? 3 : 2}>
             {exercise.subtitle}
           </Text>
 
@@ -148,10 +169,8 @@ const ExerciseCard = memo(function ExerciseCard({
           </View>
         </View>
 
-        <View className="h-11 w-11 items-center justify-center rounded-full bg-sage-500">
-          <Text variant="body-bold" color="surface" className="text-[18px]">
-            ›
-          </Text>
+        <View className="h-9 w-9 items-center justify-center rounded-full border border-sage-200 bg-sage-50">
+          <HugeiconsIcon icon={ArrowRight01Icon} size={16} color={SAGE[500]} />
         </View>
       </View>
     </Card>
@@ -163,6 +182,7 @@ interface DiscoverSectionProps {
   category: ExerciseCategory;
   exercises: ExerciseConfig<any>[];
   onPress: (exercise: ExerciseConfig<any>) => void;
+  isFirst?: boolean;
 }
 
 const DiscoverSection = memo(function DiscoverSection({
@@ -170,36 +190,39 @@ const DiscoverSection = memo(function DiscoverSection({
   category,
   exercises,
   onPress,
+  isFirst = false,
 }: DiscoverSectionProps): ReactElement {
   const categoryMeta = getCategoryMeta(category);
   const categoryIcon = getCategoryIcon(category);
+  const tint = getCategoryTint(category);
 
   return (
-    <View className="mb-7">
-      <View className="mb-3 flex-row items-center px-1">
-        <View className="mr-3 h-12 w-12 items-center justify-center rounded-2xl border border-sage-100 bg-sage-50">
-          <HugeiconsIcon icon={categoryIcon} size={22} color={SAGE[600]} />
+    <View className="mb-10">
+      <View className={`mb-4 flex-row items-center px-1 ${isFirst ? "" : "pt-6"}`}>
+        <View className={`mr-3 h-12 w-12 items-center justify-center rounded-2xl border border-sage-100 ${tint.iconBg}`}>
+          <HugeiconsIcon icon={categoryIcon} size={22} color={tint.iconColor} />
         </View>
         <View className="min-w-0 flex-1">
           <Text variant="h2" className="text-[20px]">
             {label}
           </Text>
-          <Text variant="label" color="soft" className="mt-0.5" numberOfLines={1}>
+          <Text variant="label" color="soft" className="mt-0.5" numberOfLines={2}>
             {categoryMeta.description}
           </Text>
         </View>
-        <View className="happy-brand-status-chip ml-3 rounded-full px-3 py-1">
-          <Text variant="chip" color="sage">
+        <View className="ml-3 rounded-full border border-sage-200 bg-sage-100 px-3 py-1">
+          <Text variant="chip" className={tint.eyebrowColor}>
             {exercises.length}
           </Text>
         </View>
       </View>
 
-      {exercises.map((exercise) => (
+      {exercises.map((exercise, i) => (
         <ExerciseCard
           key={exercise.type}
           exercise={exercise}
           onPress={onPress}
+          featured={i === 0}
         />
       ))}
     </View>
@@ -455,7 +478,9 @@ const ExerciseTabButton = memo(function ExerciseTabButton({
       onPress={handlePress}
       accessibilityRole="tab"
       accessibilityState={{ selected: isActive }}
-      className={`flex-1 items-center justify-center rounded-full py-3 ${isActive ? "bg-brand-surface" : ""
+      className={`flex-1 items-center justify-center rounded-full py-3 ${isActive
+        ? "border border-brand-border bg-brand-surface shadow-sm"
+        : ""
         }`}
     >
       <Text
@@ -469,11 +494,45 @@ const ExerciseTabButton = memo(function ExerciseTabButton({
   );
 });
 
+function getContextualEyebrow(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "MORNING PRACTICE";
+  if (hour < 17) return "EXERCISES";
+  return "EVENING SESSION";
+}
+
 export default function ExercisesScreen(): ReactElement {
   const [activeTab, setActiveTab] = useState<TabKey>("discover");
   const params = useLocalSearchParams<{ tab?: string }>();
   const { data: history = [], isLoading: isLoadingHistory } = useCBTHistory();
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
+  const reducedMotion = useReducedMotion();
+
+  // Mascot ambient breathing — slow scale pulse, 2.2s per phase
+  const mascotScale = useSharedValue(1);
+  useEffect(() => {
+    if (reducedMotion) return;
+    mascotScale.value = withRepeat(
+      withSequence(
+        withTiming(1.018, { duration: 2200, easing: Easing.inOut(Easing.sin) }),
+        withTiming(1.0, { duration: 2200, easing: Easing.inOut(Easing.sin) }),
+      ),
+      -1,
+      false,
+    );
+  }, [reducedMotion]);
+  const mascotStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: mascotScale.value }],
+  }));
+
+  // Active tab pill — spring in on mount
+  const tabScale = useSharedValue(reducedMotion ? 1 : 0.92);
+  useEffect(() => {
+    tabScale.value = withSpring(1, { damping: 18, stiffness: 260 });
+  }, []);
+  const tabPillStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: tabScale.value }],
+  }));
 
   useEffect(() => {
     if (isTabKey(params.tab)) {
@@ -528,10 +587,17 @@ export default function ExercisesScreen(): ReactElement {
         <View className="px-5 pb-3 pt-3">
           <View className="mb-4 flex-row items-center justify-between">
             <View className="flex-row items-center gap-3">
-              <Mascot state="panda-love-hug-2" size={38} />
-              <Text variant="display" className="text-[40px] leading-[46px]">
-                Exercises
-              </Text>
+              <Animated.View style={mascotStyle}>
+                <Mascot state="panda-love-hug-2" size={38} />
+              </Animated.View>
+              <View>
+                <Text variant="eyebrow" className="mb-0.5">
+                  {getContextualEyebrow()}
+                </Text>
+                <Text variant="display" className="text-[40px] leading-[46px]">
+                  Exercises
+                </Text>
+              </View>
             </View>
             {completedCount > 0 ? (
               <View className="flex-row items-center rounded-full bg-gold/15 px-3 py-1.5">
@@ -543,7 +609,7 @@ export default function ExercisesScreen(): ReactElement {
             ) : null}
           </View>
 
-          <View className="happy-brand-card flex-row rounded-full bg-sage-50 p-1">
+          <Animated.View style={tabPillStyle} className="happy-brand-card flex-row rounded-full bg-sage-50 p-1">
             {TAB_KEYS.map((tab) => (
               <ExerciseTabButton
                 key={tab}
@@ -552,7 +618,7 @@ export default function ExercisesScreen(): ReactElement {
                 onPress={handleTabPress}
               />
             ))}
-          </View>
+          </Animated.View>
         </View>
 
         <ScrollView
@@ -567,14 +633,16 @@ export default function ExercisesScreen(): ReactElement {
               {exerciseGroups.length === 0 ? (
                 <EmptyDiscoverState />
               ) : (
-                exerciseGroups.map((group) => (
-                  <DiscoverSection
-                    key={group.category}
-                    label={group.label}
-                    category={group.category}
-                    exercises={group.exercises}
-                    onPress={handleExercisePress}
-                  />
+                exerciseGroups.map((group, i) => (
+                  <FadeInItem key={group.category} index={i}>
+                    <DiscoverSection
+                      label={group.label}
+                      category={group.category}
+                      exercises={group.exercises}
+                      onPress={handleExercisePress}
+                      isFirst={i === 0}
+                    />
+                  </FadeInItem>
                 ))
               )}
             </>
@@ -583,12 +651,13 @@ export default function ExercisesScreen(): ReactElement {
           ) : history.length === 0 ? (
             <EmptyExerciseLogState />
           ) : (
-            history.map((item) => (
-              <LogCard
-                key={`${item.type}-${item.id}`}
-                item={item}
-                onPress={handleLogPress}
-              />
+            history.map((item, i) => (
+              <FadeInItem key={`${item.type}-${item.id}`} index={i}>
+                <LogCard
+                  item={item}
+                  onPress={handleLogPress}
+                />
+              </FadeInItem>
             ))
           )}
         </ScrollView>

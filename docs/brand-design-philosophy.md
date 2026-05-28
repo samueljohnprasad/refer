@@ -1,5 +1,7 @@
 # Happy Brand Design Philosophy
 
+**Related:** [Premium Feel Research](./premium-feel-research.md) — what makes Apple, Duolingo, Headspace, and Bitepal feel premium, and how to get Happy there.
+
 ## Core Idea
 
 **Neutral canvas. Intentional sage.**
@@ -170,7 +172,7 @@ Release: translateY(0) with natural bounce
 ### Surface Hierarchy
 
 ```
-happy-brand-screen          Screen root. bg-brand-canvas (#fff).
+happy-brand-screen          Screen root. bg-brand-canvas (#f8faf7).
 happy-brand-card            Flat — static info, not tappable.
 happy-brand-card-strong     Flat with heavier border — on tinted backgrounds.
 happy-brand-card-selected   Active flat card. Sage border + sage-selected bg.
@@ -259,6 +261,171 @@ Gold/Bee Yellow appears only in:
 - Achievement unlocked moments
 
 Using gold for generic highlights kills its premium signal. The same rule applies to the other Duolingo accent colours (Otter Blue, Macaw Purple, Parrot Orange) — each has a single semantic job and must not bleed into other contexts.
+
+---
+
+## Premium Feel
+
+What separates a clean app from a premium one is **intentional contrast** — variation in visual weight, motion, and density that creates composition rather than uniformity. These are the rules that apply directly to Happy's design system.
+
+### 1. Cards must float — never place white on white
+
+White card (`bg-brand-surface`) on a white screen (`bg-brand-surface`) = invisible. The screen background must be a distinct surface:
+
+```
+brand-canvas: #F8FAF7   ← sage whisper, 1.5% below white
+```
+
+`happy-brand-screen` should use `bg-brand-canvas`, not `bg-brand-surface`. Every card then reads as elevated without any extra work.
+
+### 2. Shadow contrast must be visible
+
+A geometric shadow only communicates depth if it's darker than the card face. The rule:
+
+```
+Card on brand-canvas background  →  shadowColor: BRAND_BORDER (#E5E5E5)   ✓
+Card on brand-surface (white)    →  shadowColor: BRAND_BORDER_STRONG (#AFAFAF)  ✓
+```
+
+`BRAND_BORDER` on a white background = 10% delta = invisible. If the background is white, use `BRAND_BORDER_STRONG`. Fix the background first (rule 1) and the shadow works at `BRAND_BORDER`.
+
+### 3. Depth signals pressability — and nothing else
+
+Only tappable elements get depth. This creates a silent affordance vocabulary: if it has a shadow, it can be pressed. If it's flat, it's static. Never add `border-b` depth to a non-interactive container.
+
+### 4. Fraunces must be visible on every major screen
+
+The Fraunces/Geist contrast is the emotional signal that differentiates Happy from a generic app. Every screen needs at least one `display`, `h1`, or `h2` variant rendering in Fraunces. If a screen uses only `body-bold` through `label`, the brand voice is absent.
+
+Always use `<Text variant="h2">` for section headings — never `className="happy-font-body-bold text-[20px]"`. Raw font utilities bypass the variant system.
+
+### 5. Type range must span at least 3:1 within a screen
+
+Premium screens have dramatic size contrast. If the largest and smallest text on a screen are within 6px of each other, the screen reads as a form, not a crafted experience.
+
+```
+Minimum viable range: display (36-40px) → eyebrow/chip (11-12px) = 3:1+
+```
+
+The variant system already covers this. Use the extremes — `display` for hero titles, `eyebrow` for section identifiers, `chip` for badges.
+
+### 6. Sage occupies less than 10% of screen pixels
+
+Sage is scarce by design. When it appears, it means something. Every dilution reduces that signal:
+
+- Sage-pill backgrounds on every card → sage stops meaning "active"
+- Sage borders on non-selected cards → sage stops meaning "selected"
+- Sage text in body copy → sage stops meaning "brand"
+
+Audit any screen where sage appears more than 3–4 times per viewport. If it appears on every card, remove it from at least two of those uses.
+
+### 7. Accent colours each have exactly one semantic job
+
+```
+Sage         Active states, CTAs, progress — "do this" / "this is on"
+Gold         XP, streaks, achievements — "you earned this"
+Otter Blue   Correct answers, info — "this is right"
+Cardinal Red Errors, destructive, wrong answers — "something is wrong"
+Macaw Purple Premium/Super tier — "this costs something"
+```
+
+Never use an accent colour outside its semantic context. A gold chip on a non-reward card confuses the system. A red border on a non-error card creates false alarm.
+
+### 8. Entry animation — screens must feel alive on arrival
+
+Static screens feel like rendered HTML. Premium apps animate elements in. Staggered fade-up is the standard:
+
+```
+Each card: opacity 0→1 + translateY 14→0, spring {damping:20, stiffness:200}
+Stagger:   40–60ms delay per item
+Total:     ~300–500ms for a 6-card screen
+```
+
+Use the `FadeInItem` component (`src/components/ui/FadeInItem.tsx`). Always skip animation if `useReducedMotion()` is true — show elements at final state immediately.
+
+### 9. One ambient motion element per screen
+
+Ambient motion (something moving at rest, before the user touches anything) is the most powerful premium signal. One element is enough. More creates noise.
+
+**In Happy:** the `Mascot` component on screen headers is the ambient element. It should have a slow breathing loop:
+
+```
+scale: 1.0 → 1.018 → 1.0, duration 2200ms per phase, Easing.inOut(Easing.sin), repeat infinite
+```
+
+Skip if `useReducedMotion()` is true. No other element on the same screen should also animate at rest.
+
+### 10. Press interaction is asymmetric — snap down, spring up
+
+The tactile press feel comes from asymmetric timing:
+
+```
+Press-in:  withTiming(shadowDepth, { duration: 30 })   — immediate, no bounce
+Release:   withSpring(0, SPRING_DUOLINGO_PRESS)         — bounce back with overshoot
+```
+
+`SPRING_DUOLINGO_PRESS = { stiffness: 300, damping: 20, mass: 0.4 }` is defined in `motionTokens.ts`. Never use the same spring for both press-in and release — instant down, springy up is the mechanic.
+
+### 11. Spacing is confidence — generous gaps between sections
+
+Tight spacing signals "we're fitting everything in." Generous spacing signals "we have conviction in this content." Between major sections:
+
+```
+mb-7  (28px)  → utility app spacing  ✗
+mb-10 (40px)  → minimum premium      ✓
+mb-12 (48px)  → Apple/Headspace standard  ✓
+```
+
+Section headers also need top breathing room. A `DiscoverSection` that's not the first on screen should have `pt-8` (32px) above the eyebrow.
+
+### 12. Haptic vocabulary — match feedback intensity to event weight
+
+```
+Tap any card/button        →  impactAsync(Light)           ← current, correct
+Toggle / bookmark          →  selectionAsync()
+Exercise complete          →  notificationAsync(Success)
+Wrong answer / error       →  notificationAsync(Warning)
+Streak milestone / major   →  impactAsync(Heavy) then notificationAsync(Success) +80ms
+```
+
+Never fire haptics on non-interactive elements. Never stack two haptics within 80ms — they merge into noise.
+
+### 13. Icon wells use category tinting, not uniform sage-50
+
+Every exercise category has a distinct accent from the existing palette. Apply tint to the icon well background and eyebrow only — card face stays white:
+
+```
+CBT / Core       bg-sage-50        icon: SAGE[600]
+Mindfulness      bg-otter-blue/10  icon: #1CB0F6
+Gratitude        bg-gold/10        icon: GOLD
+Journaling       bg-macaw-purple/10 icon: #CE82FF
+```
+
+Category tinting creates visual rhythm as the user scrolls — each section has a distinct atmosphere without breaking the neutral canvas rule.
+
+### 14. List rhythm — not every card is equal weight
+
+Monotone lists (all items identical) read as data tables, not experiences. Break the rhythm:
+
+- First card in a section → slightly featured: more padding, visible subtitle (`numberOfLines={2}`), eyebrow above
+- Regular cards → standard
+- Section separator → breathing gap (`mb-10`) + eyebrow header
+
+The eye needs places to rest and places to focus. Identical weight across all items removes both.
+
+### 15. Mascot state reflects context, not decoration
+
+The `Mascot` component has multiple `MascotState` values. Use them semantically:
+
+```
+Screen idle / header     →  neutral/default state
+Starting an exercise     →  encouraging state
+Exercise complete        →  celebrating state
+Empty state / no data    →  gentle nudge state
+Streak milestone         →  excited state
+```
+
+A mascot frozen in one state regardless of context is furniture. A mascot that reacts to what just happened is a character.
 
 ---
 
