@@ -23,11 +23,11 @@ import { tv, type VariantProps } from "@/lib/tv";
  *                Expressive serif italics. Hero pull quotes, celebratory moments,
  *                onboarding emotional beats. Use sparingly — one per screen.
  *
- * body-bold      16px bold Geist. Interactive text — anything the user reads before
+ * body-bold      17px bold Geist. Interactive text — anything the user reads before
  *                making a decision. Answer option text, key instructions, form labels
  *                that precede a tap target.
  *
- * body           16px regular Geist. Informational / non-interactive copy. Explanation
+ * body           17px regular Geist. Informational / non-interactive copy. Explanation
  *                after a correct/incorrect answer, tips, help text, descriptions.
  *                Default color is ink-soft to signal "context, not a prompt to act."
  *
@@ -52,6 +52,10 @@ import { tv, type VariantProps } from "@/lib/tv";
  *
  * overline       Same as eyebrow but ink-muted. Neutral section label with no brand
  *                accent. Use when the sage colour would compete with nearby content.
+ *
+ * chip           12px bold. Compact text inside pills, badges, and status chips.
+ *                XP labels, duration labels, filter counts — anything inside a
+ *                rounded-full container. Inherits ink-soft by default.
  *
  * counter        36px bold Fraunces with tabular numerals. Streak count, XP total,
  *                hearts remaining. Tabular numerals prevent layout shift during
@@ -89,10 +93,10 @@ const textTv = tv({
         "happy-font-heading-medium-italic text-[22px] leading-[26px] text-ink",
 
       // ── Body family (Geist) ────────────────────────────────────────────────
-      // §3 Body Bold — 16px, line-height 1.4 — interactive text, answer options
-      "body-bold": "happy-font-body-bold text-[16px] leading-[22px] text-ink",
-      // §3 Body Regular — 16px, line-height 1.5 — explanatory / non-interactive
-      body: "happy-font-body text-[16px] leading-[24px] text-ink-soft",
+      // §3 Body Bold — 17px, line-height 1.29 — interactive text, answer options
+      "body-bold": "happy-font-body-bold text-[17px] leading-[22px] text-ink",
+      // §3 Body Regular — 17px, line-height 1.41 — explanatory / non-interactive
+      body: "happy-font-body text-[17px] leading-[24px] text-ink-soft",
       // §3 Caption / Metadata — 13px, medium weight, +0.01em tracking
       caption:
         "happy-font-body-medium text-[13px] leading-[19px] tracking-[0.01em] text-ink-soft",
@@ -101,15 +105,17 @@ const textTv = tv({
       // Label — 14px medium, for form labels and secondary UI text
       label: "happy-font-body-medium text-[14px] leading-[20px] text-ink",
       "label-bold": "happy-font-body-bold text-[14px] leading-[20px] text-ink",
-      // §3 Button Label — 16–17px bold, title case, +0.01em tracking
+      // §3 Button Label — 17px bold, title case, +0.01em tracking
       "button-label":
-        "happy-font-body-bold text-[17px] leading-[17px] tracking-[0.01em] text-brand-surface",
+        "happy-font-body-bold text-[17px] leading-[22px] tracking-[0.01em] text-brand-surface",
       // §3 Eyebrow — 11px, ALL CAPS, +0.08em tracking, sage accent
       eyebrow:
-        "happy-font-body-bold text-[11px] leading-[11px] uppercase tracking-widest text-sage-500",
+        "happy-font-body-bold text-[11px] leading-[16px] uppercase tracking-widest text-sage-500",
       // §3 Overline — neutral eyebrow (no sage), for generic section labels
       overline:
-        "happy-font-body-bold text-[11px] leading-[11px] uppercase tracking-widest text-ink-muted",
+        "happy-font-body-bold text-[11px] leading-[16px] uppercase tracking-widest text-ink-muted",
+      // §3 Chip — 12px bold, compact pill/badge text
+      chip: "happy-font-body-bold text-[12px] leading-[16px] text-ink-soft",
       // §3 Counter / Numeric — tabular numerals, contextual size set via className
       counter:
         "happy-font-heading-bold text-[36px] leading-[36px] tracking-[-0.01em] tabular-nums text-ink",

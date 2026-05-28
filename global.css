@@ -215,16 +215,20 @@
 
      ink         #142414  Dark green-black. Screen titles, card headings,
                           primary labels. Our custom sage ink — kept as-is.
-     ink-soft    #777777  Duolingo Wolf Grey 400. Body copy, descriptions,
-                          secondary labels.
-     ink-muted   #AFAFAF  Duolingo Wolf Grey 200. Timestamps, metadata,
-                          captions, helper text, inactive labels.
+     ink-soft    #767676  Body copy, descriptions, secondary labels.
+                          Darkened from Duolingo #777777 → 4.54:1 on white
+                          (WCAG AA compliant; #777777 was 4.48:1, 0.02 short).
+     ink-muted   #AFAFAF  Timestamps, metadata, captions, inactive labels.
+                          2.19:1 on white — decorative / non-essential only.
+                          Never use for text that must be readable (errors,
+                          instructions, interactive labels). Use ink-soft for
+                          anything the user needs to read.
 
      NEVER use text-gray-* or text-slate-* in brand components.
      Map: gray-900/800 → text-ink, gray-700/600 → text-ink-soft,
           gray-500/400/300 → text-ink-muted. Same for slate-*.            */
   --color-ink: #142414;
-  --color-ink-soft: #777777;
+  --color-ink-soft: #767676;
   --color-ink-muted: #afafaf;
 
   /* ── Structural borders ──────────────────────────────────────────────────
@@ -256,7 +260,7 @@
      Wolf Grey 1  #F7F7F7   →  brand-surface-soft        ADOPTED directly
      Wolf Grey 2  #AFAFAF   →  ink-muted + border-strong ADOPTED directly
      Wolf Grey 3  #E5E5E5   →  brand-border              ADOPTED directly
-     Wolf Grey 4  #777777   →  ink-soft                  ADOPTED directly
+     Wolf Grey 4  #777777   →  ink-soft (darkened to #767676 for AA)
      Feather Wht  #FFFFFF   →  brand-surface             ADOPTED directly
      Cardinal Red #FF4B4B   →  terracotta + cardinal-red ADOPTED directly
      Bee Yellow   #FFD900   →  gold + bee-yellow         ADOPTED directly
@@ -286,7 +290,7 @@
   --color-theme-background-secondary: #f7f7f7;
   --color-theme-background-card: #ffffff;
   --color-theme-text-primary: #142414;
-  --color-theme-text-secondary: #777777;
+  --color-theme-text-secondary: #767676;
   --color-theme-border: #e5e5e5;
   --color-theme-purple-light: #eee9ff;
   --color-theme-purple-primary: #7b61ff;

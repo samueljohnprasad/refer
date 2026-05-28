@@ -8,7 +8,7 @@ import {
 } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { router, useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -40,8 +40,6 @@ import { Card } from "@/src/components/ui/Card";
 import { GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
 
 type TabKey = "discover" | "log";
-type ExerciseGroup = ReturnType<typeof getExercisesGrouped>[number];
-
 const TAB_KEYS = ["discover", "log"] as const;
 const COMPLETE_HISTORY_STATUSES = new Set<string>([
   "completed",
@@ -127,35 +125,23 @@ const ExerciseCard = memo(function ExerciseCard({
         </View>
 
         <View className="min-w-0 flex-1">
-          <Text
-            className="happy-font-body-bold text-[17px] leading-5 text-ink"
-            numberOfLines={1}
-          >
+          <Text variant="body-bold" numberOfLines={1}>
             {exercise.title}
           </Text>
-          <Text
-            className="happy-font-body-medium mt-1 text-[14px] leading-5 text-ink-soft"
-            numberOfLines={2}
-          >
+          <Text variant="label" color="soft" className="mt-1" numberOfLines={2}>
             {exercise.subtitle}
           </Text>
 
           <View className="mt-3 flex-row items-center gap-2">
             <View className="flex-row items-center rounded-full bg-brand-surface-soft px-2.5 py-1">
-              <Text size="xs">⏱️</Text>
-              <Text
-                className="happy-font-body-bold ml-1 text-ink-soft"
-                size="xs"
-              >
+              <Text variant="chip">⏱️</Text>
+              <Text variant="chip" className="ml-1">
                 {exercise.duration}
               </Text>
             </View>
             <View className="flex-row items-center rounded-full bg-gold/15 px-2.5 py-1">
-              <Text size="xs">⚡</Text>
-              <Text
-                className="happy-font-body-bold ml-1 text-ink-soft"
-                size="xs"
-              >
+              <Text variant="chip">⚡</Text>
+              <Text variant="chip" className="ml-1">
                 +{exercise.xp} XP
               </Text>
             </View>
@@ -163,7 +149,7 @@ const ExerciseCard = memo(function ExerciseCard({
         </View>
 
         <View className="h-11 w-11 items-center justify-center rounded-full bg-sage-500">
-          <Text className="happy-font-body-bold text-[18px] leading-5 text-brand-surface">
+          <Text variant="body-bold" color="surface" className="text-[18px]">
             ›
           </Text>
         </View>
@@ -191,22 +177,19 @@ const DiscoverSection = memo(function DiscoverSection({
   return (
     <View className="mb-7">
       <View className="mb-3 flex-row items-center px-1">
-        <View className="mr-3 h-12 w-12 items-center justify-center rounded-[20px] border border-sage-100 bg-sage-50">
+        <View className="mr-3 h-12 w-12 items-center justify-center rounded-2xl border border-sage-100 bg-sage-50">
           <HugeiconsIcon icon={categoryIcon} size={22} color={SAGE[600]} />
         </View>
         <View className="min-w-0 flex-1">
-          <Text className="happy-font-body-bold text-[20px] leading-6 text-ink">
+          <Text variant="h2" className="text-[20px]">
             {label}
           </Text>
-          <Text
-            className="happy-font-body-medium mt-0.5 text-[14px] leading-5 text-ink-soft"
-            numberOfLines={1}
-          >
+          <Text variant="label" color="soft" className="mt-0.5" numberOfLines={1}>
             {categoryMeta.description}
           </Text>
         </View>
         <View className="happy-brand-status-chip ml-3 rounded-full px-3 py-1">
-          <Text className="happy-font-body-bold text-xs text-sage-600">
+          <Text variant="chip" color="sage">
             {exercises.length}
           </Text>
         </View>
@@ -357,18 +340,15 @@ const LogCard = memo(function LogCard({
 
         <View className="min-w-0 flex-1">
           <View className="mb-0.5 flex-row items-center justify-between">
-            <Text className="happy-brand-eyebrow text-[10px]">
+            <Text variant="eyebrow">
               {presentation.heading}
             </Text>
-            <Text className="happy-font-body-medium text-ink-muted" size="xs">
+            <Text variant="caption-muted">
               {format(new Date(item.date), "MMM d, h:mm a")}
             </Text>
           </View>
 
-          <Text
-            className="happy-font-body-bold mb-2 text-[16px] text-ink"
-            numberOfLines={1}
-          >
+          <Text variant="body-bold" className="mb-2" numberOfLines={1}>
             {presentation.title}
           </Text>
 
@@ -382,18 +362,16 @@ const LogCard = memo(function LogCard({
                 color={badgeIconColor}
               />
               <Text
-                className={`ml-1 text-[10px] font-extrabold uppercase tracking-wider ${badgeTextClassName}`}
+                variant="eyebrow"
+                className={`ml-1 text-[10px] ${badgeTextClassName}`}
               >
                 {label}
               </Text>
             </View>
             {isComplete && xpEarned > 0 ? (
               <View className="flex-row items-center rounded-full bg-gold/15 px-2 py-1">
-                <Text size="xs">⚡</Text>
-                <Text
-                  className="happy-font-body-bold ml-0.5 text-ink-soft"
-                  size="xs"
-                >
+                <Text variant="chip">⚡</Text>
+                <Text variant="chip" className="ml-0.5">
                   +{xpEarned} XP
                 </Text>
               </View>
@@ -420,10 +398,10 @@ function EmptyDiscoverState(): ReactElement {
           🏋️
         </Text>
       </View>
-      <Text className="happy-font-body-bold mb-2 text-center text-xl text-ink">
+      <Text variant="h3" className="mb-2 text-center">
         No exercises yet
       </Text>
-      <Text className="happy-font-body-medium text-center text-sm leading-relaxed text-ink-muted">
+      <Text variant="body" className="text-center">
         Exercises will appear here as they become available.
       </Text>
     </View>
@@ -433,7 +411,7 @@ function EmptyDiscoverState(): ReactElement {
 function LoadingHistoryState(): ReactElement {
   return (
     <View className="items-center py-12">
-      <Text className="happy-font-body-bold text-sm text-ink-muted">
+      <Text variant="caption-muted">
         Loading history...
       </Text>
     </View>
@@ -446,10 +424,10 @@ function EmptyExerciseLogState(): ReactElement {
       <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-sage-50">
         <Text className="text-[40px]">📚</Text>
       </View>
-      <Text className="happy-font-body-bold mb-2 text-center text-xl text-ink">
+      <Text variant="h3" className="mb-2 text-center">
         Your exercise journal
       </Text>
-      <Text className="happy-font-body-medium text-center text-sm leading-relaxed text-ink-muted">
+      <Text variant="body" className="text-center">
         Complete your first exercise to see it here.
       </Text>
     </View>
@@ -477,14 +455,13 @@ const ExerciseTabButton = memo(function ExerciseTabButton({
       onPress={handlePress}
       accessibilityRole="tab"
       accessibilityState={{ selected: isActive }}
-      className={`flex-1 items-center justify-center rounded-full py-3 ${
-        isActive ? "bg-brand-surface" : ""
-      }`}
+      className={`flex-1 items-center justify-center rounded-full py-3 ${isActive ? "bg-brand-surface" : ""
+        }`}
     >
       <Text
-        className={`happy-font-body-bold text-[15px] ${
-          isActive ? "text-ink" : "text-ink-muted"
-        }`}
+        variant="label-bold"
+        color={isActive ? "ink" : "muted"}
+        className="text-[15px]"
       >
         {label}
       </Text>
@@ -552,14 +529,14 @@ export default function ExercisesScreen(): ReactElement {
           <View className="mb-4 flex-row items-center justify-between">
             <View className="flex-row items-center gap-3">
               <Mascot state="panda-love-hug-2" size={38} />
-              <Text className="happy-font-heading-bold text-[40px] leading-[46px] text-ink">
+              <Text variant="display" className="text-[40px] leading-[46px]">
                 Exercises
               </Text>
             </View>
             {completedCount > 0 ? (
               <View className="flex-row items-center rounded-full bg-gold/15 px-3 py-1.5">
-                <Text className="text-sm">🔥</Text>
-                <Text className="happy-font-body-bold ml-1 text-xs text-ink-soft">
+                <Text variant="chip" className="text-sm">🔥</Text>
+                <Text variant="chip" className="ml-1">
                   {completedCount} done
                 </Text>
               </View>

@@ -70,7 +70,7 @@ export const PARROT_ORANGE_TINT = "#FEEDE0" as const;
 export const DANGER = "#e7000b" as const;
 export const INK = "#142414" as const;
 // Duolingo Wolf Grey 400 / Wolf Grey 200 — adopted directly
-export const INK_SOFT = "#777777" as const;
+export const INK_SOFT = "#767676" as const;
 export const INK_MUTED = "#AFAFAF" as const;
 export const OFFWHITE = "#ffffff" as const;
 // Duolingo Wolf Grey 300 / Wolf Grey 200 — adopted directly
@@ -87,7 +87,7 @@ export const THEME = {
   backgroundSecondary: "#F7F7F7",
   backgroundCard: "#ffffff",
   textPrimary: "#142414",
-  textSecondary: "#777777",
+  textSecondary: "#767676",
   border: "#E5E5E5",
   purpleLight: "#F0DEFF",
   purplePrimary: "#CE82FF",
