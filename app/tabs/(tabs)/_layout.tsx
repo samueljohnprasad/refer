@@ -20,7 +20,7 @@ export default function TabLayout() {
   useWidgetWeekMoods();
 
   // Design system colors
-  const accentColor = "#7B61FF"; // brand purple
+  const accentColor = "#5f7f58"; // brand sage
   const inactiveColor = "#94A3B8"; // slate-400-ish
 
   return (

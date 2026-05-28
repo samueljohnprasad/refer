@@ -1,7 +1,6 @@
 import { ActivityIndicator, View } from "react-native";
 import React, { Suspense } from "react";
-import Loading from "./Loading";
-import { isIOS } from "../utils/mood";
+import { SAGE } from "@/lib/tokens";
 
 type SuspenseLoaderProps = {
   children: React.ReactNode;
@@ -11,7 +10,7 @@ const SuspensLoader: React.FC<SuspenseLoaderProps> = ({ children }) => {
     <Suspense
       fallback={
         <View className="flex-1 w-full h-full items-center justify-center">
-          {isIOS ? <Loading /> : <ActivityIndicator />}
+          <ActivityIndicator color={SAGE[500]} size="large" />
         </View>
       }
     >
