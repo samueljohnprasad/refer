@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  LayoutChangeEvent,
   Pressable,
   ScrollView,
   Text,
@@ -16,8 +15,7 @@ import Animated, {
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Card } from "@/src/components/ui/Card";
-
-import ProgressBar from "../ProgressBar";
+import StageProgressBar from "@/src/components/ui/StageProgressBar";
 import type {
   CourseHeaderSummary,
   EnrolledCourseListItem,
@@ -118,14 +116,6 @@ const HeaderOverlayContent = ({
   onCourseSelect,
 }: HeaderOverlayContentProps): React.JSX.Element => {
   const { width } = useWindowDimensions();
-  const [scoreBarWidth, setScoreBarWidth] = useState(180);
-
-  const handleScoreBarLayout = (event: LayoutChangeEvent) => {
-    const nextWidth = event.nativeEvent.layout.width;
-    if (nextWidth > 0 && Math.abs(nextWidth - scoreBarWidth) > 1) {
-      setScoreBarWidth(nextWidth);
-    }
-  };
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
@@ -258,7 +248,7 @@ const HeaderOverlayContent = ({
                 className="text-xs uppercase tracking-[1px] text-sage-500"
                 style={{ fontFamily: FONTS.bodyBold }}
               >
-                Current score
+                Current program
               </Text>
               <Text
                 className="text-[25px] leading-[30px] text-ink"
@@ -301,14 +291,13 @@ const HeaderOverlayContent = ({
               </Text>
             </View>
 
-            <View className="w-full" onLayout={handleScoreBarLayout}>
-              <ProgressBar
+            <View className="w-full">
+              <StageProgressBar
                 progress={progress}
-                width={scoreBarWidth}
                 height={16}
                 trackColor={PALETTE.sage100}
                 fillColor={PALETTE.sage500}
-                glossColor={PALETTE.sage300}
+                showGlow={true}
               />
             </View>
           </View>

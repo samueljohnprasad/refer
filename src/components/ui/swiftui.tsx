@@ -79,6 +79,8 @@ const WaveBar = ({ delay, isActive, height, color }: WaveBarProps) => {
   );
 };
 
+import { Button } from "@/src/components/ui/Button";
+
 // Sound Wave Icon Component
 interface SoundWaveIconProps {
   isActive: boolean;
@@ -88,7 +90,7 @@ interface SoundWaveIconProps {
 const SoundWaveIcon = ({ isActive, size = 20 }: SoundWaveIconProps) => {
   const barHeights = [size * 0.5, size * 0.8, size, size * 0.8, size * 0.5];
   const delays = [0, 50, 100, 150, 200];
-  const color = isActive ? BRAND_SURFACE : SAGE[500];
+  const color = BRAND_SURFACE; // Always white for contrast against the 3D sage background
 
   return (
     <View
@@ -130,35 +132,22 @@ const SpeakButton = ({
   };
 
   return (
-    <View className="overflow-hidden rounded-full">
-      <TouchableOpacity
-        className={`min-w-[132px] flex-row items-center justify-center gap-2.5 rounded-full border px-6 py-3.5 ${
-          isActive
-            ? "border-sage-600 bg-sage-500"
-            : "border-sage-100 bg-sage-selected"
-        }`}
-        style={{ opacity: isDisabled || isLoading ? 0.5 : 1 }}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          onPress();
-        }}
-        disabled={isDisabled || isLoading}
-        activeOpacity={0.8}
-      >
-        {isLoading ? (
-          <ActivityIndicator size="small" color={SAGE[500]} />
+    <Button
+      disabled={isDisabled || isLoading}
+      onPress={onPress}
+      variant="primary"
+      size="lg"
+      fullWidth={false}
+      width={140}
+      leftIcon={
+        isLoading ? (
+          <ActivityIndicator size="small" color={BRAND_SURFACE} />
         ) : (
           <SoundWaveIcon isActive={isActive} size={18} />
-        )}
-        <Text
-          className={`text-[17px] happy-font-body-bold ${
-            isActive ? "text-white" : "text-ink"
-          }`}
-        >
-          {getButtonText()}
-        </Text>
-      </TouchableOpacity>
-    </View>
+        )
+      }
+      label={getButtonText()}
+    />
   );
 };
 

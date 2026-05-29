@@ -34,10 +34,16 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
       <View className="w-full flex-row items-center justify-between p-5">
         {/* Left Streak Number Box */}
         <View className="items-center justify-center pr-5 min-w-[75px]">
-          <Text className="happy-font-heading-bold text-[46px] leading-tight tracking-tighter text-ink">
+          <Text
+            className="text-[46px] leading-tight tracking-tighter"
+            style={{ fontFamily: "FrauncesBold", color: "#2B3A22" }}
+          >
             {isLoading ? "-" : currentStreak}
           </Text>
-          <Text className="happy-brand-eyebrow mt-[-2px] text-[10px]">
+          <Text
+            className="text-[10px] tracking-[1.5px] uppercase mt-[-2px]"
+            style={{ fontFamily: "GeistBold", color: "#5F7F58" }}
+          >
             STREAK
           </Text>
         </View>
@@ -50,44 +56,64 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
 
             return (
               <View key={i} className="flex-1 items-center relative py-1">
-                {/* Connection Pill BGs */}
+                {/* Center-aligned Connection Pill BGs */}
                 {isCompleted && (
-                  <View className="absolute top-1 bottom-1 flex-row w-full z-0 h-8 mt-[2px]">
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: 14, // Center vertically relative to 32px height circle (32/2 - 4/2 = 14px)
+                      left: 0,
+                      right: 0,
+                      height: 4,
+                      flexDirection: "row",
+                      zIndex: 0,
+                    }}
+                  >
                     <View
-                      className={`flex-1 h-full ${
-                        isPrevCompleted ? "bg-gold/15" : "bg-transparent"
-                      }`}
+                      style={{
+                        flex: 1,
+                        height: "100%",
+                        backgroundColor: isPrevCompleted
+                          ? "rgba(255, 217, 0, 0.45)"
+                          : "transparent",
+                      }}
                     />
                     <View
-                      className={`flex-1 h-full ${
-                        isNextCompleted ? "bg-gold/15" : "bg-transparent"
-                      }`}
+                      style={{
+                        flex: 1,
+                        height: "100%",
+                        backgroundColor: isNextCompleted
+                          ? "rgba(255, 217, 0, 0.45)"
+                          : "transparent",
+                      }}
                     />
                   </View>
                 )}
 
                 {/* Day Circle */}
                 <View
-                  className={`w-8 h-8 rounded-full items-center justify-center z-10 border ${
-                    isCompleted
-                      ? "bg-gold/15 border-gold/20"
-                      : "border-sage-100 bg-sage-50"
-                  }`}
+                  className="w-8 h-8 rounded-full items-center justify-center z-10 border"
+                  style={{
+                    borderColor: isCompleted ? "rgba(255, 217, 0, 0.6)" : "#E5EDE1",
+                    backgroundColor: isCompleted
+                      ? "rgba(255, 217, 0, 0.15)"
+                      : "#FFFFFF",
+                  }}
                 >
                   <HugeiconsIcon
                     icon={Fire02Icon}
                     size={16}
-                    color={isCompleted ? GOLD : SAGE[200]}
+                    color={isCompleted ? GOLD : "#ABC0A2"}
                     fill={isCompleted ? GOLD : "none"}
                   />
                 </View>
 
                 <Text
-                  className={`text-[10px] mt-2 ${
-                    isCompleted
-                      ? "happy-font-body-bold text-ink-soft"
-                      : "happy-font-body-medium text-ink-muted"
-                  }`}
+                  className="text-[10px] mt-2"
+                  style={{
+                    fontFamily: isCompleted ? "GeistBold" : "GeistMedium",
+                    color: isCompleted ? "#2B3A22" : "#8A9F82",
+                  }}
                 >
                   {labels[i]}
                 </Text>

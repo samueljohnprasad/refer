@@ -257,17 +257,6 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
               {challenge.reward.xp} XP
             </Text>
           </View>
-          <View className="flex-row items-center gap-1 rounded-lg bg-sage-50 px-2 py-0.5">
-            <HugeiconsIcon
-              icon={Coins01Icon}
-              size={12}
-              color={SAGE[600]}
-              strokeWidth={1.8}
-            />
-            <Text className="happy-font-body-bold text-xs text-ink-soft">
-              {challenge.reward.coins}
-            </Text>
-          </View>
         </View>
       )}
     </Card>

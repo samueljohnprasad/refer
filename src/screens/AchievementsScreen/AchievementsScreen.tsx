@@ -360,21 +360,6 @@ export const AchievementsScreen: React.FC = () => {
               {totalXP.toLocaleString()}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => router.push("/tabs/screens/rewards-shop")}
-            activeOpacity={0.7}
-            className="happy-brand-status-chip flex-row items-center px-2.5 py-1.5"
-          >
-            <HugeiconsIcon
-              icon={Coins01Icon}
-              size={16}
-              color={TERRACOTTA}
-              strokeWidth={2}
-            />
-            <Text className="happy-font-body-bold ml-1 text-sm text-ink">
-              {(wallet?.coins ?? 0).toLocaleString()}
-            </Text>
-          </TouchableOpacity>
         </View>
       </View>
 

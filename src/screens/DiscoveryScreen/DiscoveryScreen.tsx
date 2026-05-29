@@ -103,7 +103,7 @@ const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(
     <View className="flex-row items-center justify-between my-1.5">
       <View className="flex-row items-center"></View>
       <View className="flex-row items-center gap-1.5">
-        <Text className="text-amber-500 text-lg font-extrabold">
+        <Text className="text-bee-yellow text-lg font-extrabold">
           {isLoading ? "—" : currentStreak}
         </Text>
         <MaterialCommunityIcons
@@ -389,7 +389,7 @@ function DiscoveryScreen() {
                     accessibilityRole="button"
                     accessibilityLabel="Scan journal with camera"
                   >
-                    <View className="h-[50px] w-[66px] items-center justify-center rounded-full border border-sage-100 bg-sage-pill">
+                    <View className="h-[50px] w-[66px] items-center justify-center rounded-full border border-brand-border bg-brand-surface">
                       <HugeiconsIcon
                         icon={Camera02Icon}
                         size={24}
@@ -407,7 +407,7 @@ function DiscoveryScreen() {
                     accessibilityRole="button"
                     accessibilityLabel="Scan journal from gallery"
                   >
-                    <View className="h-[50px] w-[66px] items-center justify-center rounded-full border border-sage-100 bg-sage-pill">
+                    <View className="h-[50px] w-[66px] items-center justify-center rounded-full border border-brand-border bg-brand-surface">
                       <HugeiconsIcon
                         icon={Image02Icon}
                         size={24}
@@ -462,7 +462,7 @@ function DiscoveryScreen() {
                   accessibilityRole="button"
                   accessibilityLabel="Open keyboard journal"
                 >
-                  <View className="h-[50px] w-[66px] items-center justify-center rounded-full border border-sage-100 bg-sage-pill">
+                  <View className="h-[50px] w-[66px] items-center justify-center rounded-full border border-brand-border bg-brand-surface">
                     <HugeiconsIcon
                       icon={KeyboardIcon}
                       size={24}

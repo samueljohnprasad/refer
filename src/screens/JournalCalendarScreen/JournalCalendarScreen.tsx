@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useCallback, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -371,15 +371,11 @@ export default function JournalCalendarScreen() {
           latestVersion={latestVersion}
         />
 
-        {/* Streak Modal */}
-        <Modal
+        {/* Streak Bottom Sheet — SwiftUI BottomSheet managed inside StreakDisplay */}
+        <StreakDisplay
           visible={showStreakModal}
-          animationType="slide"
-          presentationStyle="pageSheet"
-          onRequestClose={() => setShowStreakModal(false)}
-        >
-          <StreakDisplay onContinue={() => setShowStreakModal(false)} />
-        </Modal>
+          onClose={() => setShowStreakModal(false)}
+        />
       </SafeAreaView>
     </View>
   );

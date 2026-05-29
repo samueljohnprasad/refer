@@ -19,7 +19,7 @@ import Animated, {
 import {
   BRAND_SURFACE,
   INK,
-  INK_MUTED,
+  INK_SOFT,
   SAGE,
   SAGE_LOADING_GRADIENT,
   SAGE_OVERLAY,
@@ -95,22 +95,72 @@ const FloatingOrb: React.FC<{
   );
 };
 
-// Progress dots
+// Animated Sparkles component
+const AnimatedSparkles = () => {
+  const scale = useSharedValue(1);
+  const rotate = useSharedValue(0);
+
+  useEffect(() => {
+    scale.value = withRepeat(
+      withSequence(
+        withTiming(1.15, { duration: 1200, easing: Easing.inOut(Easing.ease) }),
+        withTiming(1, { duration: 1200, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1,
+      true
+    );
+    rotate.value = withRepeat(
+      withSequence(
+        withTiming(8, { duration: 1800, easing: Easing.inOut(Easing.ease) }),
+        withTiming(-8, { duration: 1800, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1,
+      true
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: scale.value },
+      { rotate: `${rotate.value}deg` }
+    ]
+  }));
+
+  return (
+    <Animated.View style={[animatedStyle, { marginBottom: 28 }]}>
+      <Text style={{ fontSize: 52 }}>✨</Text>
+    </Animated.View>
+  );
+};
+
+// Progress dots with pulse & scale animations
 const ProgressDots = () => {
   const dots = [0, 1, 2];
   
   return (
-    <View style={{ flexDirection: "row", marginTop: 32, gap: 8 }}>
+    <View style={{ flexDirection: "row", marginTop: 32, gap: 10 }}>
       {dots.map((index) => {
         const opacity = useSharedValue(0.3);
+        const scale = useSharedValue(1);
         
         useEffect(() => {
           opacity.value = withDelay(
-            index * 300,
+            index * 250,
             withRepeat(
               withSequence(
-                withTiming(1, { duration: 500 }),
-                withTiming(0.3, { duration: 500 })
+                withTiming(1, { duration: 600 }),
+                withTiming(0.3, { duration: 600 })
+              ),
+              -1,
+              true
+            )
+          );
+          scale.value = withDelay(
+            index * 250,
+            withRepeat(
+              withSequence(
+                withTiming(1.3, { duration: 600 }),
+                withTiming(1, { duration: 600 })
               ),
               -1,
               true
@@ -120,6 +170,7 @@ const ProgressDots = () => {
         
         const animatedStyle = useAnimatedStyle(() => ({
           opacity: opacity.value,
+          transform: [{ scale: scale.value }],
         }));
         
         return (
@@ -127,9 +178,9 @@ const ProgressDots = () => {
             key={index}
             style={[
               {
-                width: 8,
-                height: 8,
-                borderRadius: 4,
+                width: 9,
+                height: 9,
+                borderRadius: 4.5,
                 backgroundColor: SAGE[500],
               },
               animatedStyle,
@@ -205,17 +256,18 @@ const EmotionAnalysisLoadingScreen: React.FC<
           paddingHorizontal: 40,
         }}
       >
-        {/* Sparkle emoji */}
-        <Text style={{ fontSize: 48, marginBottom: 24 }}>✨</Text>
+        {/* Animated Sparkles */}
+        <AnimatedSparkles />
 
         {/* Date */}
         <Text
           style={{
-            color: INK_MUTED,
-            fontSize: 14,
-            fontWeight: "500",
+            fontFamily: "GeistBold",
+            color: SAGE[400],
+            fontSize: 13,
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
             textAlign: "center",
-            letterSpacing: 0.5,
           }}
         >
           {dayjs(selectedDate).format("MMMM D, YYYY")}
@@ -224,14 +276,13 @@ const EmotionAnalysisLoadingScreen: React.FC<
         {/* Processing phase text */}
         <Text
           style={{
+            fontFamily: "FrauncesBold",
             color: INK,
-            fontSize: 22,
-            fontWeight: "600",
+            fontSize: 28,
             textAlign: "center",
-            marginTop: 16,
-            lineHeight: 30,
+            marginTop: 18,
+            lineHeight: 36,
           }}
-          className="happy-font-heading-bold"
         >
           {processingPhase}
         </Text>
@@ -242,13 +293,13 @@ const EmotionAnalysisLoadingScreen: React.FC<
         {/* Subtle hint text */}
         <Text
           style={{
-            color: INK_MUTED,
-            fontSize: 13,
-            fontWeight: "400",
+            fontFamily: "GeistMedium",
+            color: INK_SOFT,
+            fontSize: 15,
             textAlign: "center",
-            marginTop: 24,
-            lineHeight: 20,
-            maxWidth: 280,
+            marginTop: 28,
+            lineHeight: 22,
+            maxWidth: 300,
           }}
         >
           Analyzing your thoughts and emotions to provide personalized insights

@@ -32,10 +32,6 @@ export const ChallengesScreen: React.FC = () => {
     dailyChallenges.reduce((sum, c) => sum + c.reward.xp, 0) +
     weeklyChallenges.reduce((sum, c) => sum + c.reward.xp, 0);
 
-  const totalCoins =
-    dailyChallenges.reduce((sum, c) => sum + c.reward.coins, 0) +
-    weeklyChallenges.reduce((sum, c) => sum + c.reward.coins, 0);
-
   if (isLoading) {
     return (
       <View className="flex-1 happy-brand-screen">
@@ -65,16 +61,19 @@ export const ChallengesScreen: React.FC = () => {
           </Text>
         </View>
 
-        <View className="flex-row px-4 pt-2 gap-3 pb-4">
+        <View className="px-4 pt-2 pb-4">
           {/* XP Card */}
           <Card
             variant="tile"
             radius="xl"
             showDepth={true}
-            className="flex-1"
+            className="w-full"
             contentClassName="p-5"
           >
-            <View className="w-11 h-11 rounded-full bg-gold/15 items-center justify-center mb-4">
+            <View
+              className="w-11 h-11 rounded-full items-center justify-center mb-4"
+              style={{ backgroundColor: "rgba(255, 217, 0, 0.15)" }}
+            >
               <HugeiconsIcon icon={StarsIcon} size={22} color={GOLD} />
             </View>
             <Text className="happy-font-heading-bold text-[34px] text-ink">
@@ -82,25 +81,6 @@ export const ChallengesScreen: React.FC = () => {
             </Text>
             <Text className="happy-brand-eyebrow mt-1">
               XP Available
-            </Text>
-          </Card>
-
-          {/* Coins Card */}
-          <Card
-            variant="tile"
-            radius="xl"
-            showDepth={true}
-            className="flex-1"
-            contentClassName="p-5"
-          >
-            <View className="w-11 h-11 rounded-full bg-sage-pill items-center justify-center mb-4">
-              <HugeiconsIcon icon={Coins01Icon} size={22} color={SAGE[600]} />
-            </View>
-            <Text className="happy-font-heading-bold text-[34px] text-ink">
-              {totalCoins}
-            </Text>
-            <Text className="happy-brand-eyebrow mt-1">
-              Coins Available
             </Text>
           </Card>
         </View>

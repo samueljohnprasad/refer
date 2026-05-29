@@ -31,6 +31,7 @@ const VoiceRecorderModalWrapper = () => {
       <SuspensLoader>
         {stepper === 0 && (
           <VoiceRecorder
+            onClose={onClose}
             onStop={(path) => {
               setRecordingUri(path);
               setStepper(1);

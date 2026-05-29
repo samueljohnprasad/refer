@@ -7,7 +7,6 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   Platform,
   Modal,
   Pressable,
@@ -19,7 +18,6 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import { Feather } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import Animated, {
@@ -33,6 +31,14 @@ import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtom } from "jotai";
 import WhisperUI from "@/src/components/ui/swiftui";
 import * as Haptics from "expo-haptics";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  Cancel01Icon,
+  Tick01Icon,
+  SparklesIcon,
+  CircleArrowReload01Icon,
+} from "@hugeicons/core-free-icons";
+import { Button } from "@/src/components/ui/Button";
 import { BRAND_SURFACE, INK_MUTED, INK_SOFT, SAGE } from "@/lib/tokens";
 
 interface KeyboardJournalScreenProps {
@@ -113,15 +119,29 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
   return (
     <>
-      <SafeAreaView className="flex-1 bg-white" edges={["top"]} style={{ flex: 1 }}>
+      <View className="flex-1 bg-white" style={{ flex: 1, paddingTop: insets.top }}>
         <KeyboardAvoidingView
-          behavior="padding"
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
           className="flex-1"
           style={{ flex: 1 }}
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
         >
           {/* Date Header - Centered and Clickable */}
-          <View className="items-center border-b border-sage-100 px-6 pb-4 pt-4">
+          <View className="flex-row justify-between items-center border-b border-sage-100 px-6 pb-4 pt-4">
+            <Pressable
+              disabled={isRealtimeActive}
+              onPress={() => {
+                Keyboard.dismiss();
+                onClose();
+              }}
+              className="p-2 -ml-2 rounded-full"
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.7 : 1,
+              })}
+            >
+              <HugeiconsIcon icon={Cancel01Icon} size={22} color={INK_SOFT} />
+            </Pressable>
+
             <Pressable
               onPress={handleDatePress}
               className="rounded-full bg-sage-pill px-4 py-2"
@@ -130,6 +150,8 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                 {formattedDate}
               </Text>
             </Pressable>
+
+            <View className="w-8" />
           </View>
 
           {/* Content */}
@@ -142,26 +164,31 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           >
             {/* Prompt - No Card, Just Text with Icon */}
             <View className="flex-row justify-between items-start mb-6">
-              <Text className="flex-1 text-ink text-[30px] leading-9 pr-4 happy-font-heading-bold">
+              <Text className="flex-1 text-ink text-[24px] leading-7 pr-4 happy-font-heading-bold">
                 {currentPrompt}
               </Text>
-              <TouchableOpacity
+              <Pressable
                 onPress={handleShufflePrompt}
                 className="p-2"
-                activeOpacity={0.7}
+                style={({ pressed }) => ({
+                  opacity: pressed ? 0.7 : 1,
+                })}
               >
                 <Animated.View style={rotateStyle}>
-                  <Feather
-                    name="refresh-cw"
+                  <HugeiconsIcon
+                    icon={CircleArrowReload01Icon}
                     size={22}
                     color={SAGE[600]}
                   />
                 </Animated.View>
-              </TouchableOpacity>
+              </Pressable>
             </View>
 
             {/* Text Input */}
-            <View className="happy-brand-card min-h-[360px] rounded-[28px] p-5">
+            <View
+              className="happy-brand-card flex-1 rounded-[28px] p-5"
+              style={{ minHeight: 200 }}
+            >
               <TextInput
                 focusable
                 maxLength={7000}
@@ -173,7 +200,8 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                 textAlignVertical="top"
                 className="text-ink text-[17px] leading-7 happy-font-body"
                 style={{
-                  minHeight: 320,
+                  flex: 1,
+                  minHeight: 140,
                 }}
                 autoFocus
               />
@@ -183,7 +211,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           {/* Bottom Actions */}
           <View
             className="px-6 pt-4 bg-white border-t border-sage-100"
-            style={{ paddingBottom: Math.max(insets.bottom, 24) }}
+            style={{ paddingBottom: 24}}
           >
             {/* XP Counter */}
             <View className="mb-4 items-center">
@@ -195,18 +223,6 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
             {/* Action Buttons */}
             <View className="flex-row items-center justify-between gap-3">
-              <TouchableOpacity
-                disabled={isRealtimeActive}
-                onPress={() => {
-                  Keyboard.dismiss();
-                  onClose();
-                }}
-                className="w-14 h-14 rounded-full bg-sage-pill items-center justify-center"
-                activeOpacity={0.7}
-              >
-                <Feather name="x" size={24} color={INK_SOFT} />
-              </TouchableOpacity>
-
               <WhisperUI
                 setRealtimeResult={(text) => {
                   setRealtimeResult(text);
@@ -219,42 +235,42 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                 setIsRealtimeActive={setIsRealtimeActive}
               />
 
-              <TouchableOpacity
-                onPress={() => setEnableAIInsights(!enableAIInsights)}
-                disabled={isRealtimeActive}
-                className={`w-14 h-14 rounded-full items-center justify-center ${
-                  enableAIInsights ? "bg-sage-500" : "bg-sage-pill"
-                }`}
-                activeOpacity={0.7}
-              >
-                <Feather
-                  name="zap"
-                  size={20}
-                  color={enableAIInsights ? BRAND_SURFACE : INK_MUTED}
+              <View className="flex-row items-center gap-3">
+                <Button
+                  disabled={isRealtimeActive}
+                  onPress={() => setEnableAIInsights(!enableAIInsights)}
+                  variant={enableAIInsights ? "primary" : "secondary"}
+                  size="lg"
+                  width={56}
+                  fullWidth={false}
+                  leftIcon={
+                    <HugeiconsIcon
+                      icon={SparklesIcon}
+                      size={22}
+                      color={enableAIInsights ? BRAND_SURFACE : INK_SOFT}
+                    />
+                  }
                 />
-              </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={handleSubmit}
-                disabled={isSubmitDisabled || isRealtimeActive}
-                className={`w-14 h-14 rounded-full items-center justify-center ${
-                  isSubmitDisabled ? "bg-sage-100" : "bg-sage-600"
-                }`}
-                activeOpacity={0.7}
-              >
-                <Feather
-                  name="check"
-                  size={24}
-                  color={isSubmitDisabled ? INK_MUTED : BRAND_SURFACE}
+                <Button
+                  disabled={isSubmitDisabled || isRealtimeActive}
+                  onPress={handleSubmit}
+                  variant="primary"
+                  size="lg"
+                  width={56}
+                  fullWidth={false}
+                  leftIcon={
+                    <HugeiconsIcon icon={Tick01Icon} size={22} color={BRAND_SURFACE} />
+                  }
                 />
-              </TouchableOpacity>
+              </View>
             </View>
           </View>
         </KeyboardAvoidingView>
-      </SafeAreaView>
+      </View>
 
       {/* Calendar Modal */}
-      <Modal
+      < Modal
         visible={isCalendarVisible}
         transparent
         animationType="fade"
@@ -287,7 +303,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                   </Pressable>
                 </View>
                 <Pressable onPress={handleCloseCalendar} className="p-2">
-                  <Feather name="x" size={24} color={INK_SOFT} />
+                  <HugeiconsIcon icon={Cancel01Icon} size={24} color={INK_SOFT} />
                 </Pressable>
               </View>
               <CalendarPicker
@@ -300,7 +316,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             </Pressable>
           </Pressable>
         </AnimatedBlurView>
-      </Modal>
+      </Modal >
     </>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from "react";
 import {
   View,
-  Text,
   Image,
   TouchableOpacity,
   ActivityIndicator,
@@ -20,6 +19,7 @@ import { callMyFunction } from "@/src/network/transcribeAudio";
 import { InsightsType } from "@/src/network/genAi";
 import { BRAND_SURFACE, INK_SOFT, SAGE } from "@/lib/tokens";
 import { Button } from "@/src/components/ui/Button";
+import { Text } from "@/src/components/ui/Text";
 
 interface ImageJournalModalProps {
   visible: boolean;
@@ -205,10 +205,10 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
                 {/* Header */}
                 <View className="flex-row items-center justify-between mb-6 pt-5">
                   <View className="flex-row items-center">
-                    <View className="w-12 h-12 rounded-[18px] bg-sage-pill items-center justify-center">
+                    <View className="w-12 h-12 rounded-[18px] bg-sage-50 items-center justify-center">
                       <Feather name="camera" size={22} color={SAGE[600]} />
                     </View>
-                    <Text className="text-2xl happy-font-body-bold text-ink ml-3">
+                    <Text variant="h2" className="ml-3">
                       Scan Journal
                     </Text>
                   </View>
@@ -225,10 +225,10 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
                       <View className="happy-mascot-stage w-40 h-40 rounded-[44px] bg-sage-50 border-0 items-center justify-center mb-7">
                         <Feather name="camera" size={54} color={SAGE[600]} />
                       </View>
-                      <Text className="text-[28px] leading-8 happy-font-heading-bold text-ink text-center mb-3">
+                      <Text variant="h1" className="text-center mb-3">
                         Capture Your Journal Page
                       </Text>
-                      <Text className="text-base happy-font-body text-ink-muted text-center px-8 mb-8 leading-6">
+                      <Text variant="body" color="muted" className="text-center px-8 mb-8">
                         Take a photo of your handwritten or printed journal to extract
                         text and get AI insights
                       </Text>
@@ -251,7 +251,7 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
                     // Image preview and processing
                     <View className="flex-1">
                       {/* Image Preview */}
-                      <View className="flex-1 rounded-[28px] overflow-hidden bg-sage-50 mb-4 border border-sage-100">
+                      <View className="flex-1 rounded-[28px] overflow-hidden bg-sage-50 mb-4 border border-brand-border">
                         <Image
                           source={{ uri: imageUri }}
                           className="w-full h-full"
@@ -260,18 +260,18 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
                         {/* Processing overlay */}
                         {step !== "idle" && step !== "done" && (
                           <View className="absolute inset-0 bg-black/50 items-center justify-center">
-                            <View className="bg-white rounded-[28px] p-6 items-center mx-8 border border-sage-100">
+                            <View className="bg-white rounded-[28px] p-6 items-center mx-8 border border-brand-border">
                               <ActivityIndicator size="large" color={SAGE[500]} />
-                              <Text className="text-ink happy-font-body-bold mt-4 text-center">
+                              <Text variant="body-bold" className="mt-4 text-center">
                                 {STEP_MESSAGES[step]}
                               </Text>
                               {step === "extracting" && (
-                                <Text className="text-ink-muted happy-font-body text-sm mt-2 text-center">
+                                <Text variant="caption" color="muted" className="mt-2 text-center">
                                   Reading handwritten text...
                                 </Text>
                               )}
                               {step === "analyzing" && (
-                                <Text className="text-ink-muted happy-font-body text-sm mt-2 text-center">
+                                <Text variant="caption" color="muted" className="mt-2 text-center">
                                   Creating personalized insights...
                                 </Text>
                               )}
@@ -282,12 +282,13 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
 
                       {/* Extracted text preview */}
                       {extractedText && step === "analyzing" && (
-                        <View className="bg-sage-50 rounded-2xl p-4 mb-4 max-h-32 border border-sage-100">
-                          <Text className="text-xs text-sage-500 mb-1 happy-font-body-bold uppercase tracking-widest">
+                        <View className="bg-sage-50 rounded-2xl p-4 mb-4 max-h-32 border border-brand-border">
+                          <Text variant="eyebrow" className="mb-1">
                             Extracted Text:
                           </Text>
                           <Text
-                            className="text-sm text-ink-soft happy-font-body"
+                            variant="caption"
+                            color="soft"
                             numberOfLines={4}
                           >
                             {extractedText}

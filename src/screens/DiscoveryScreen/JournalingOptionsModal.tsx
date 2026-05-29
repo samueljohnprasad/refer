@@ -1,5 +1,6 @@
 import React from "react";
-import { Pressable, View, Text, ScrollView, Modal } from "react-native";
+import { Pressable, View, ScrollView, Modal } from "react-native";
+import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   PencilEdit02Icon,
@@ -68,14 +69,14 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
                 >
                   {/* Header */}
                   <View className="mb-6 items-center">
-                    <View className="mb-4 h-16 w-16 items-center justify-center rounded-[22px] bg-sage-pill">
+                    <View className="mb-4 h-16 w-16 items-center justify-center rounded-2xl bg-sage-50">
                       <HugeiconsIcon
                         icon={BookOpen01Icon}
                         size={32}
                         color={SAGE[600]}
                       />
                     </View>
-                    <Text className="text-center text-4xl happy-font-heading-bold text-ink">
+                    <Text variant="display" className="text-center">
                       Journaling Options
                     </Text>
                   </View>
@@ -86,9 +87,9 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
                       onSelectPrompt("Free Write");
                       onClose();
                     }}
-                    className="mb-6 flex-row items-center rounded-3xl border-2 border-sage-100 bg-sage-50 p-5"
+                    className="mb-6 flex-row items-center rounded-3xl border-2 border-brand-border bg-brand-surface p-5"
                   >
-                    <View className="mr-4 h-12 w-12 items-center justify-center rounded-[18px] bg-white">
+                    <View className="mr-4 h-12 w-12 items-center justify-center rounded-[18px] bg-sage-50">
                       <HugeiconsIcon
                         icon={PencilEdit02Icon}
                         size={24}
@@ -96,10 +97,8 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
                       />
                     </View>
                     <View className="flex-1">
-                      <Text className="text-xl leading-6 happy-font-body-bold text-ink">
-                        Free Write
-                      </Text>
-                      <Text className="text-base happy-font-body-medium text-ink-muted">
+                      <Text variant="body-bold">Free Write</Text>
+                      <Text variant="body" color="soft">
                         Write without a prompt
                       </Text>
                     </View>
@@ -111,9 +110,9 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
                       onScanJournal?.();
                       onClose();
                     }}
-                    className="mb-4 flex-row items-center rounded-3xl border-2 border-sage-100 bg-sage-50 p-5"
+                    className="mb-4 flex-row items-center rounded-3xl border-2 border-brand-border bg-brand-surface p-5"
                   >
-                    <View className="mr-4 h-12 w-12 items-center justify-center rounded-[18px] bg-white">
+                    <View className="mr-4 h-12 w-12 items-center justify-center rounded-[18px] bg-sage-50">
                       <HugeiconsIcon
                         icon={Camera01Icon}
                         size={24}
@@ -121,16 +120,14 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
                       />
                     </View>
                     <View className="flex-1">
-                      <Text className="text-xl leading-6 happy-font-body-bold text-ink">
-                        Scan Journal Page
-                    </Text>
-                      <Text className="text-base happy-font-body-medium text-ink-muted">
+                      <Text variant="body-bold">Scan Journal Page</Text>
+                      <Text variant="body" color="soft">
                         Capture handwritten entries
                       </Text>
                     </View>
                   </Pressable>
 
-                  <Text className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-sage-500">
+                  <Text variant="eyebrow" className="mb-4 ml-1">
                     Or select a Prompt
                   </Text>
 
@@ -146,12 +143,13 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
                         className={`mb-3 flex-row items-center rounded-2xl border-2 p-5 ${
                           isSelected
                             ? "border-sage-600 bg-sage-500"
-                            : "border-sage-100 bg-white"
+                            : "border-brand-border bg-brand-surface"
                         }`}
                       >
                         <Text
-                          className={`flex-1 text-lg leading-6 happy-font-body-medium ${
-                            isSelected ? "text-white" : "text-ink-soft"
+                          variant="body"
+                          className={`flex-1 ${
+                            isSelected ? "text-white" : ""
                           }`}
                         >
                           {prompt}

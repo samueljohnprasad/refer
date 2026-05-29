@@ -105,7 +105,7 @@ const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
 
 // ─── Size config ─────────────────────────────────────────────────────────────
 
-type Size = "sm" | "md" | "lg";
+type Size = "sm" | "md" | "lg" | "xl";
 
 interface SizeConfig {
   height: number;
@@ -119,12 +119,13 @@ const SIZES: Record<Size, SizeConfig> = {
   sm: { height: 44, radius: 22, pressDepth: 3, labelSize: 15, defaultWidth: 120 },
   md: { height: 48, radius: 22, pressDepth: 4, labelSize: 16, defaultWidth: 150 },
   lg: { height: 56, radius: 22, pressDepth: 4, labelSize: 17, defaultWidth: 200 },
+  xl: { height: 80, radius: 40, pressDepth: 6, labelSize: 20, defaultWidth: 80 },
 };
 
 // ─── Props ───────────────────────────────────────────────────────────────────
 
 interface ButtonProps {
-  label: string;
+  label?: string;
   variant?: Variant;
   size?: Size;
   fullWidth?: boolean;
@@ -143,7 +144,7 @@ interface ButtonProps {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function Button({
-  label,
+  label = "",
   variant = "primary",
   size = "lg",
   fullWidth = true,
@@ -198,7 +199,7 @@ export function Button({
       >
         {loading ? (
           <ActivityIndicator size="small" color={INK_SOFT} />
-        ) : (
+        ) : label ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
             {leftIcon}
             <Text
@@ -212,6 +213,8 @@ export function Button({
             </Text>
             {rightIcon}
           </View>
+        ) : (
+          leftIcon ?? rightIcon
         )}
       </Pressable>
     );
@@ -254,7 +257,7 @@ export function Button({
       >
         {loading ? (
           <ActivityIndicator size="small" color={labelColor} />
-        ) : (
+        ) : label ? (
           <View
             style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
           >
@@ -271,6 +274,8 @@ export function Button({
             </Text>
             {rightIcon}
           </View>
+        ) : (
+          leftIcon ?? rightIcon
         )}
       </SvgAppButton>
     </View>
