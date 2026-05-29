@@ -31,9 +31,9 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
       contentClassName="p-0"
       accessibilityLabel={`Current streak: ${currentStreak} days`}
     >
-      <View className="w-full flex-row items-center justify-between p-5">
+      <View className="w-full flex-row items-center justify-between py-5 px-5">
         {/* Left Streak Number Box */}
-        <View className="items-center justify-center pr-5 min-w-[75px]">
+        <View className="items-center justify-center pr-6 min-w-[75px]">
           <Text
             className="text-[46px] leading-tight tracking-tighter"
             style={{ fontFamily: "FrauncesBold", color: "#2B3A22" }}
@@ -41,7 +41,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
             {isLoading ? "-" : currentStreak}
           </Text>
           <Text
-            className="text-[10px] tracking-[1.5px] uppercase mt-[-2px]"
+            className="text-[10px] tracking-[1.5px] uppercase mt-1"
             style={{ fontFamily: "GeistBold", color: "#5F7F58" }}
           >
             STREAK
@@ -49,7 +49,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
         </View>
 
         {/* Right Weekly Grid */}
-        <View className="flex-1 flex-row items-center justify-between pl-4 pr-1">
+        <View className="flex-1 flex-row items-center justify-between">
           {streakData.weeklyProgress.map((isCompleted, i) => {
             const isPrevCompleted = i > 0 && streakData.weeklyProgress[i - 1];
             const isNextCompleted = i < 6 && streakData.weeklyProgress[i + 1];
