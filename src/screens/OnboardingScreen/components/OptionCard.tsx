@@ -3,6 +3,71 @@ import { Text, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { Card } from "@/src/components/ui/Card";
 import { QuizOption } from "../types";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  Yoga01Icon,
+  SmileIcon,
+  WorryIcon,
+  Compass01Icon,
+  Moon01Icon,
+  Leaf01Icon,
+  CloudIcon,
+  Alert01Icon,
+  SparklesIcon,
+  ShuffleIcon,
+  Notebook01Icon,
+  Timer01Icon,
+  MoonCloudIcon,
+  BedIcon,
+} from "@hugeicons/core-free-icons";
+import { SAGE } from "@/lib/tokens";
+
+export function getQuizIcon(id: string) {
+  switch (id) {
+    // Motivation
+    case "anxiety":
+      return Yoga01Icon;
+    case "mood":
+      return SmileIcon;
+    case "stress":
+      return WorryIcon;
+    case "self_understanding":
+      return Compass01Icon;
+    case "sleep":
+      return Moon01Icon;
+
+    // Stress Level
+    case "light":
+      return Leaf01Icon;
+    case "moderate":
+      return CloudIcon;
+    case "heavy":
+      return WorryIcon;
+    case "overwhelming":
+      return Alert01Icon;
+
+    // Experience
+    case "never":
+      return SparklesIcon;
+    case "tried_quit":
+      return ShuffleIcon;
+    case "active":
+      return Notebook01Icon;
+
+    // Timing
+    case "morning":
+      return Timer01Icon;
+    case "afternoon":
+      return SparklesIcon;
+    case "evening":
+      return MoonCloudIcon;
+    case "night":
+      return BedIcon;
+
+    default:
+      return SparklesIcon;
+  }
+}
 
 interface OptionCardProps<T extends string> {
   option: QuizOption<T>;
@@ -32,7 +97,11 @@ function OptionCardInner<T extends string>({
             isSelected ? "bg-sage-500" : "bg-sage-50"
           }`}
         >
-          <Text className="text-[22px]">{option.emoji}</Text>
+          <HugeiconsIcon
+            icon={getQuizIcon(option.id)}
+            size={22}
+            color={isSelected ? "#FFFFFF" : SAGE[600]}
+          />
         </View>
         <View className="flex-1">
           <Text

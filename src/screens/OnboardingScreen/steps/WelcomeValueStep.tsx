@@ -5,16 +5,27 @@ import Animated, {
 } from "react-native-reanimated";
 import { SOCIAL_PROOF_COUNT } from "../constants";
 import PremiumBadge from "../../../components/premium/PremiumBadge";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  Leaf01Icon,
+  SmileIcon,
+  SparklesIcon,
+  Brain01Icon,
+  CheckmarkCircle01Icon,
+  Timer01Icon,
+} from "@hugeicons/core-free-icons";
+import { SAGE } from "@/lib/tokens";
+import type { HugeIconObject } from "@/src/data/journey/hugeiconsRegistry";
 
 interface BenefitItemProps {
-    emoji: string;
+    icon: HugeIconObject;
     title: string;
     isPremium: boolean;
     delay: number;
 }
 
 const BenefitItem: React.FC<BenefitItemProps> = ({
-    emoji,
+    icon,
     title,
     isPremium,
     delay,
@@ -32,12 +43,9 @@ const BenefitItem: React.FC<BenefitItemProps> = ({
         accessible
         accessibilityLabel={`${title}${isPremium ? ", premium feature" : ""}`}
     >
-        <Text
-            className="text-2xl mr-4"
-            accessibilityElementsHidden
-        >
-            {emoji}
-        </Text>
+        <View className="mr-4">
+            <HugeiconsIcon icon={icon} size={24} color={isPremium ? "#CE82FF" : SAGE[600]} />
+        </View>
         <Text className="flex-1 text-base font-semibold text-gray-800 dark:text-gray-100">
             {title}
         </Text>
@@ -57,7 +65,9 @@ const WelcomeValueStep: React.FC = () => {
                 entering={FadeIn.duration(180).delay(80)}
                 className="items-center mb-8"
             >
-                <Text className="text-5xl mb-4">🌿</Text>
+                <View className="mb-4">
+                    <HugeiconsIcon icon={Leaf01Icon} size={48} color={SAGE[500]} />
+                </View>
                 <Text
                     className="text-center text-gray-900 dark:text-white mb-3"
                     style={{
@@ -82,25 +92,25 @@ const WelcomeValueStep: React.FC = () => {
             </Animated.View>
 
             <BenefitItem
-                emoji="📊"
+                icon={SmileIcon}
                 title="Track your mood patterns"
                 isPremium={false}
                 delay={220}
             />
             <BenefitItem
-                emoji="✨"
+                icon={SparklesIcon}
                 title="AI-powered insights"
                 isPremium={true}
                 delay={280}
             />
             <BenefitItem
-                emoji="🧠"
+                icon={Brain01Icon}
                 title="Science-backed CBT exercises"
                 isPremium={true}
                 delay={340}
             />
             <BenefitItem
-                emoji="✅"
+                icon={CheckmarkCircle01Icon}
                 title="Build positive daily habits"
                 isPremium={false}
                 delay={400}
@@ -110,9 +120,10 @@ const WelcomeValueStep: React.FC = () => {
                 entering={FadeIn.duration(180).delay(460)}
                 className="items-center mt-6"
             >
-                <View className="flex-row items-center bg-purple-50 rounded-full px-4 py-2">
+                <View className="flex-row items-center bg-purple-50 rounded-full px-4 py-2 gap-2">
+                    <HugeiconsIcon icon={Timer01Icon} size={16} color="#9333ea" />
                     <Text className="text-purple-600 text-sm font-semibold">
-                        ⏱ Takes less than 2 minutes
+                        Takes less than 2 minutes
                     </Text>
                 </View>
             </Animated.View>

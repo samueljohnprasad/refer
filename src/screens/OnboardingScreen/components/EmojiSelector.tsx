@@ -10,8 +10,43 @@ import Animated, {
 import * as Haptics from "expo-haptics";
 import { FeelingEmoji, FeelingOption } from "../types";
 import { FEELINGS } from "../constants";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  SmileIcon,
+  WorryIcon,
+  HappyIcon,
+  Sad01Icon,
+  AngryIcon,
+  StarIcon,
+  SleepingIcon,
+  HandPrayerIcon,
+} from "@hugeicons/core-free-icons";
+import { SAGE } from "@/lib/tokens";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+export function getFeelingIcon(id: string) {
+  switch (id) {
+    case "calm":
+      return SmileIcon;
+    case "anxious":
+      return WorryIcon;
+    case "happy":
+      return HappyIcon;
+    case "sad":
+      return Sad01Icon;
+    case "angry":
+      return AngryIcon;
+    case "hopeful":
+      return StarIcon;
+    case "tired":
+      return SleepingIcon;
+    case "grateful":
+      return HandPrayerIcon;
+    default:
+      return SmileIcon;
+  }
+}
 
 interface EmojiSelectorProps {
   selected?: FeelingEmoji;
@@ -70,9 +105,13 @@ const EmojiButton: React.FC<{
           isSelected ? "border-2 border-sage-500 bg-sage-50" : "bg-cream"
         }`}
       >
-        <Animated.Text style={emojiAnimStyle} className="text-[28px]">
-          {option.emoji}
-        </Animated.Text>
+        <Animated.View style={emojiAnimStyle}>
+          <HugeiconsIcon
+            icon={getFeelingIcon(option.id)}
+            size={28}
+            color={isSelected ? SAGE[600] : SAGE[500]}
+          />
+        </Animated.View>
       </AnimatedPressable>
       <Text className="mt-1 text-[10px] font-medium text-ink-muted">
         {option.label}

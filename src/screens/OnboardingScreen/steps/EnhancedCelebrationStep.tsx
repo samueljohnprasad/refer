@@ -4,6 +4,18 @@ import Animated, {
     FadeIn,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  SparklesIcon,
+  StarIcon,
+  HappyIcon,
+  SmileIcon,
+  Brain01Icon,
+  Idea01Icon,
+  Mic01Icon,
+} from "@hugeicons/core-free-icons";
+import { SAGE, OTTER_BLUE, MACAW_PURPLE } from "@/lib/tokens";
+import type { HugeIconObject } from "@/src/data/journey/hugeiconsRegistry";
 
 interface EnhancedCelebrationStepProps {
     userName: string;
@@ -11,18 +23,20 @@ interface EnhancedCelebrationStepProps {
 };
 
 interface StatBadgeProps {
-    emoji: string;
+    icon: HugeIconObject;
     value: string;
     label: string;
     bgColor: string;
+    iconColor: string;
     delay: number;
 }
 
 const StatBadge: React.FC<StatBadgeProps> = ({
-    emoji,
+    icon,
     value,
     label,
     bgColor,
+    iconColor,
     delay,
 }) => {
     return (
@@ -34,7 +48,7 @@ const StatBadge: React.FC<StatBadgeProps> = ({
                 className="w-16 h-16 rounded-2xl items-center justify-center mb-2"
                 style={{ backgroundColor: bgColor }}
             >
-                <Text style={{ fontSize: 28 }}>{emoji}</Text>
+                <HugeiconsIcon icon={icon} size={28} color={iconColor} />
             </View>
             <Text
                 className="text-gray-900 dark:text-white mb-0.5"
@@ -70,7 +84,9 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                 entering={FadeIn.duration(180).delay(80)}
                 className="items-center mb-6"
             >
-                <Text style={{ fontSize: 64, marginBottom: 16 }}>🎉</Text>
+                <View className="mb-4">
+                    <HugeiconsIcon icon={SparklesIcon} size={64} color="#D97706" />
+                </View>
                 <Text
                     className="text-center text-gray-900 dark:text-white mb-3"
                     style={{
@@ -90,7 +106,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                         lineHeight: 30,
                     }}
                 >
-                    You're all set ✨
+                    You're all set!
                 </Text>
             </Animated.View>
 
@@ -100,12 +116,9 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                     className="bg-purple-50 rounded-2xl px-5 py-4 mb-6 w-full border border-purple-100"
                 >
                     <View className="flex-row items-center">
-                        <Text
-                            style={{ fontSize: 20 }}
-                            className="mr-3"
-                        >
-                            👑
-                        </Text>
+                        <View className="mr-3 bg-purple-200 p-2 rounded-xl">
+                            <HugeiconsIcon icon={StarIcon} size={20} color={MACAW_PURPLE} />
+                        </View>
                         <View className="flex-1">
                             <Text className="text-purple-800 text-sm font-bold">
                                 Premium Trial Active
@@ -124,24 +137,27 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                 </Text>
                 <View className="flex-row gap-3">
                     <StatBadge
-                        emoji="😊"
+                        icon={HappyIcon}
                         value="92%"
                         label="Better mood"
                         bgColor="#D1FAE5"
+                        iconColor="#059669"
                         delay={220}
                     />
                     <StatBadge
-                        emoji="😌"
+                        icon={SmileIcon}
                         value="78%"
                         label="Less stress"
-                        bgColor="#FEE2E2"
+                        bgColor="#FEF3C7"
+                        iconColor="#D97706"
                         delay={280}
                     />
                     <StatBadge
-                        emoji="💪"
+                        icon={Brain01Icon}
                         value="95%"
                         label="More aware"
                         bgColor="#DBEAFE"
+                        iconColor="#2563EB"
                         delay={340}
                     />
                 </View>
@@ -149,7 +165,7 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
 
             <Animated.View
                 entering={FadeIn.duration(180).delay(420)}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-5 w-full"
+                className="bg-white dark:bg-gray-800 rounded-2xl p-5 w-full border border-sage-100"
                 style={{
                     shadowColor: "#000",
                     shadowOffset: { width: 0, height: 2 },
@@ -158,9 +174,12 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                     elevation: 2,
                 }}
             >
-                <Text className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3">
-                    💡 Quick Tips to Get Started
-                </Text>
+                <View className="flex-row items-center gap-2 mb-3">
+                    <HugeiconsIcon icon={Idea01Icon} size={18} color="#D97706" />
+                    <Text className="text-sm font-bold text-gray-800 dark:text-gray-100">
+                        Quick Tips to Get Started
+                    </Text>
+                </View>
                 <View className="gap-3">
                     <View className="flex-row items-start">
                         <Text className="text-gray-400 text-sm mr-2 mt-0.5">1.</Text>
@@ -172,9 +191,12 @@ const EnhancedCelebrationStep: React.FC<EnhancedCelebrationStepProps> = ({
                         <Text className="text-gray-400 dark:text-gray-500 text-sm mr-2 mt-0.5">
                             2.
                         </Text>
-                        <Text className="flex-1 text-gray-600 dark:text-gray-300 text-sm font-medium leading-5">
-                            Try voice journaling — just talk it out 🎙️
-                        </Text>
+                        <View className="flex-1 flex-row items-center flex-wrap gap-1">
+                            <Text className="text-gray-600 dark:text-gray-300 text-sm font-medium leading-5">
+                                Try voice journaling — just talk it out
+                            </Text>
+                            <HugeiconsIcon icon={Mic01Icon} size={14} color={SAGE[600]} />
+                        </View>
                     </View>
                     <View className="flex-row items-start">
                         <Text className="text-gray-400 dark:text-gray-500 text-sm mr-2 mt-0.5">

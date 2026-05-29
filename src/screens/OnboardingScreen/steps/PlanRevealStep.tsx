@@ -14,6 +14,7 @@ import Svg, {
 
 import { PLAN_STATS } from "../constants";
 import { MotivationAnswer } from "../types";
+import TestimonialCard from "../components/TestimonialCard";
 
 interface PlanRevealStepProps {
   planName: string;
@@ -535,48 +536,14 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
         </LinearGradient>
       </Animated.View>
 
-      <Animated.View
-        entering={FadeIn.duration(180).delay(400)}
-        className="mt-4 flex-row gap-3 rounded-[14px] border border-sage-200 border-l-[3px] border-l-gold bg-warm-white px-4 py-4"
-      >
-        <LinearGradient
-          colors={["#B0CCDB", "#94B5C9"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 999,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text style={{ fontFamily: "FrauncesBold", color: "#FFFFFF" }}>
-            {planMeta.testimonialInitial}
-          </Text>
-        </LinearGradient>
-        <View className="flex-1">
-          <Text
-            style={{ fontFamily: "FrauncesRegularItalic" }}
-            className="text-[13px] leading-[1.45] text-ink"
-          >
-            {planMeta.testimonial}
-          </Text>
-          <View className="mt-1 flex-row items-center gap-2">
-            <Text
-              style={{ fontFamily: "GeistMedium" }}
-              className="text-[11px] text-ink-muted"
-            >
-              Jordan, 35
-            </Text>
-            <Text
-              style={{ fontFamily: "GeistBold" }}
-              className="text-[10px] tracking-[-0.04em] text-gold"
-            >
-              ★★★★★
-            </Text>
-          </View>
-        </View>
+      <Animated.View entering={FadeIn.duration(180).delay(400)} className="mt-4">
+        <TestimonialCard
+          initial={planMeta.testimonialInitial}
+          name="Jordan"
+          age={35}
+          quote={planMeta.testimonial.replace(/^"|"$/g, "")}
+          tone="sky"
+        />
       </Animated.View>
 
       <Animated.View entering={FadeIn.duration(180).delay(480)} className="mt-5">

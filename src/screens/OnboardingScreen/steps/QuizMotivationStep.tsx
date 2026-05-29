@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
+import TestimonialCard from "../components/TestimonialCard";
 import { MotivationAnswer } from "../types";
 import { MOTIVATION_OPTIONS } from "../constants";
 
@@ -78,16 +79,15 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
 
       <Animated.View
         entering={FadeIn.duration(180).delay(PROOF_ENTER_DELAY_MS)}
-        className="mt-5 rounded-[14px] border-l-[3px] border-gold bg-warm-white px-4 py-3"
+        className="mt-5"
       >
-        <Text
-          style={{ fontFamily: "FrauncesMedium" }}
-          className="text-[13px] italic leading-[1.4] text-ink"
-        >
-          "I'd downloaded 6 anxiety apps before this. Happy is the first one I
-          actually opened on day 8."
-        </Text>
-        <Text className="mt-1 text-[11px] text-ink-muted">— Maya, 32</Text>
+        <TestimonialCard
+          initial="M"
+          name="Maya"
+          age={32}
+          quote="I'd downloaded 6 anxiety apps before this. Happy is the first one I actually opened on day 8."
+          tone="sage"
+        />
       </Animated.View>
     </ScrollView>
   );

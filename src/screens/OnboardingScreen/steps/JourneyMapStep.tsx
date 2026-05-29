@@ -3,6 +3,8 @@ import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import JourneyNode from "../components/JourneyNode";
 import { JOURNEY_MAP_NODES } from "../constants";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Fire02Icon } from "@hugeicons/core-free-icons";
 
 interface JourneyMapStepProps {
   planName: string;
@@ -29,8 +31,9 @@ const JourneyMapStep: React.FC<JourneyMapStepProps> = ({ planName }) => {
               {planName}
             </Text>
           </View>
-          <View className="flex-row items-center gap-1.5 rounded-full bg-terracotta px-3 py-1.5">
-            <Text className="text-sm font-bold text-white">🔥 1</Text>
+          <View className="flex-row items-center gap-1 bg-terracotta px-3 py-1.5 rounded-full">
+            <HugeiconsIcon icon={Fire02Icon} size={14} color="#FFFFFF" />
+            <Text className="text-sm font-bold text-white">1</Text>
           </View>
         </View>
       </Animated.View>

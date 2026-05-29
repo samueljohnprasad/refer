@@ -4,6 +4,9 @@ import Animated, { FadeIn } from "react-native-reanimated";
 
 import EmojiSelector from "../components/EmojiSelector";
 import { FeelingEmoji } from "../types";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { WorryIcon, Notebook01Icon, Leaf01Icon } from "@hugeicons/core-free-icons";
+import { SAGE } from "@/lib/tokens";
 
 interface MoodCheckLessonStepProps {
   selected?: FeelingEmoji;
@@ -113,7 +116,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
         >
           <View className="flex-1 items-center">
             <View className="h-[38px] w-[38px] items-center justify-center rounded-full border-2 border-sage-200 bg-white">
-              <Text className="text-[18px]">😨</Text>
+              <HugeiconsIcon icon={WorryIcon} size={18} color={SAGE[600]} />
             </View>
             <Text
               style={{ fontFamily: "GeistMedium" }}
@@ -130,7 +133,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           </Text>
           <View className="flex-1 items-center">
             <View className="h-[38px] w-[38px] items-center justify-center rounded-full border-2 border-sage-200 bg-white">
-              <Text className="text-[18px]">📝</Text>
+              <HugeiconsIcon icon={Notebook01Icon} size={18} color={SAGE[600]} />
             </View>
             <Text
               style={{ fontFamily: "GeistMedium" }}
@@ -147,7 +150,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           </Text>
           <View className="flex-1 items-center">
             <View className="h-[38px] w-[38px] items-center justify-center rounded-full border-2 border-sage-200 bg-white">
-              <Text className="text-[18px]">❄️</Text>
+              <HugeiconsIcon icon={Leaf01Icon} size={18} color={SAGE[600]} />
             </View>
             <Text
               style={{ fontFamily: "GeistMedium" }}

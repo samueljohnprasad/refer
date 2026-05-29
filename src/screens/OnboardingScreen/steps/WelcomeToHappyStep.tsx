@@ -3,6 +3,8 @@ import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import MochiMascot from "../components/MochiMascot";
 import { DailyGoalMinutes } from "../types";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { WellnessIcon } from "@hugeicons/core-free-icons";
 
 interface WelcomeToHappyStepProps {
   planName: string;
@@ -27,12 +29,15 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
           entering={FadeIn.duration(180).delay(120)}
           className="mt-6 items-center"
         >
-          <Text
-            style={{ fontFamily: "FrauncesSemiBold" }}
-            className="text-[28px] text-ink"
-          >
-            Welcome to the Grove 🌿
-          </Text>
+          <View className="flex-row items-center gap-1.5 justify-center">
+            <Text
+              style={{ fontFamily: "FrauncesSemiBold" }}
+              className="text-[28px] text-ink"
+            >
+              Welcome to the Grove
+            </Text>
+            <HugeiconsIcon icon={WellnessIcon} size={24} color="#5F7F58" />
+          </View>
           <Text className="mt-3 text-center text-sm leading-relaxed text-ink-soft">
             Your journey begins now. {dailyGoal} minutes a day.{"\n"}Mochi will
             be here every step.
@@ -63,7 +68,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
           className="mt-6 text-center text-sm italic text-ink-soft"
         >
           Until tomorrow, friend.{"\n"}
-          <Text className="not-italic">— Mochi 🐼</Text>
+          <Text className="not-italic">— Mochi</Text>
         </Animated.Text>
       </View>
     </ScrollView>

@@ -4,6 +4,8 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
 import MochiMascot from "../components/MochiMascot";
 import { DailyGoalMinutes, StressTiming } from "../types";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Mail01Icon } from "@hugeicons/core-free-icons";
 
 interface LetterFromFutureStepProps {
   dailyGoal: DailyGoalMinutes;
@@ -63,8 +65,13 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             backgroundColor: "#D4A943",
             paddingHorizontal: 18,
             paddingVertical: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
           }}
         >
+          <HugeiconsIcon icon={Mail01Icon} size={13} color="#29452A" />
           <Text
             style={{
               fontFamily: "GeistBold",
@@ -75,7 +82,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
               textTransform: "uppercase",
             }}
           >
-            📨 Something arrived for you
+            Something arrived for you
           </Text>
         </View>
 

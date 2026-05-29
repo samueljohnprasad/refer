@@ -68,12 +68,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
             key={option.id}
             option={{
               id: option.id,
-              emoji:
-                option.id === "morning"
-                  ? "🌅"
-                  : option.id === "afternoon"
-                    ? "☀️"
-                    : "🌆",
+              emoji: "",
               title: option.label,
               subtitle: option.time,
             }}

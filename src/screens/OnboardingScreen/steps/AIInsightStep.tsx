@@ -5,9 +5,12 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import MochiMascot from "../components/MochiMascot";
 import { FEELINGS } from "../constants";
 import { FeelingEmoji, StressTiming } from "../types";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { SparklesIcon, Book01Icon } from "@hugeicons/core-free-icons";
 
 interface AIInsightStepProps {
   feeling?: FeelingEmoji;
+  onSelect?: (feeling: FeelingEmoji) => void;
   timing?: StressTiming;
 }
 
@@ -63,15 +66,18 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
         entering={FadeIn.duration(180).delay(160)}
         className="mt-4 rounded-[20px] border-2 border-gold bg-cream px-5 py-5"
       >
-        <Text
-          style={{ fontFamily: "GeistBold" }}
-          className="text-[11px] uppercase tracking-[0.1em] text-terracotta"
-        >
-          ✨ AI Insight
-        </Text>
+        <View className="flex-row items-center gap-1.5 mb-2">
+          <HugeiconsIcon icon={SparklesIcon} size={14} color="#D97706" />
+          <Text
+            style={{ fontFamily: "GeistBold" }}
+            className="text-[11px] uppercase tracking-[0.1em] text-terracotta"
+          >
+            AI Insight
+          </Text>
+        </View>
         <Text
           style={{ fontFamily: "FrauncesRegularItalic" }}
-          className="mt-3 text-[16px] leading-[1.5] text-ink"
+          className="text-[16px] leading-[1.5] text-ink"
         >
           You named{" "}
           <Text
@@ -157,8 +163,10 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           ))}
         </View>
 
-        <View className="mt-4 flex-row items-start gap-2 rounded-[10px] bg-sage-300/15 px-3 py-3">
-          <Text className="text-[13px] text-sage-600">📖</Text>
+        <View className="mt-4 flex-row items-start gap-2.5 rounded-[10px] bg-sage-300/15 px-3 py-3">
+          <View className="mt-0.5">
+            <HugeiconsIcon icon={Book01Icon} size={14} color="#5F7F58" />
+          </View>
           <Text
             style={{ fontFamily: "GeistRegular" }}
             className="flex-1 text-[11px] leading-[1.4] text-ink-soft"

@@ -14,7 +14,9 @@ import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Button, Host } from "@expo/ui/swift-ui";
 import { buttonStyle, controlSize, labelStyle, tint } from "@expo/ui/swift-ui/modifiers";
+import * as Haptics from "expo-haptics";
 import { SAGE } from "@/lib/tokens";
+import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 
 interface SettingsHeaderProps {
   scrollY: Animated.Value;
@@ -28,6 +30,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
   const router = useRouter();
   const { height } = useWindowDimensions();
   const isLiquidGlass = isLiquidGlassAvailable();
+  const { hasPro, presentPaywall } = useRevenueCat();
 
   return (
     <BlurView
@@ -70,7 +73,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
         Settings
       </Text>
       {/* </View> */}
-      {upgradeY !== null && (
+      {upgradeY !== null && !hasPro && (
         <Animated.View
           style={{
             position: "absolute",
@@ -85,8 +88,11 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
         >
           <Pressable
             android_ripple={{ color: SAGE[700] }}
-            onPress={() => router.push("/tabs/screens/paywall")}
-            className="happy-brand-primary-cta overflow-hidden rounded-full px-4 py-2"
+            onPress={() => {
+              void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+              void presentPaywall();
+            }}
+            className="bg-sage-400 border-b-4 border-b-sage-500 overflow-hidden rounded-full px-4 py-1.5"
           >
             <Text className="happy-font-body-bold text-[15px] text-brand-surface">
               Upgrade

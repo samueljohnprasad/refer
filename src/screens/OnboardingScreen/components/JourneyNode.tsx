@@ -2,6 +2,37 @@ import React from "react";
 import { Text, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { JourneyMapNode } from "../types";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import {
+  SmileIcon,
+  Brain01Icon,
+  WellnessIcon,
+  Notebook01Icon,
+  Yoga01Icon,
+  AiBrain01Icon,
+  Compass01Icon,
+} from "@hugeicons/core-free-icons";
+
+export function getJourneyNodeIcon(id: string) {
+  switch (id) {
+    case "1":
+      return SmileIcon;
+    case "2":
+      return Brain01Icon;
+    case "3":
+      return WellnessIcon;
+    case "4":
+      return Notebook01Icon;
+    case "5":
+      return Yoga01Icon;
+    case "6":
+      return AiBrain01Icon;
+    case "7":
+      return Compass01Icon;
+    default:
+      return Brain01Icon;
+  }
+}
 
 interface JourneyNodeProps {
   node: JourneyMapNode;
@@ -38,7 +69,17 @@ const JourneyNode: React.FC<JourneyNodeProps> = ({ node, isLast, index }) => {
         <View
           className={`h-16 w-16 items-center justify-center rounded-full ${circleStyle}`}
         >
-          <Text className="text-[26px]">{node.emoji}</Text>
+          <HugeiconsIcon
+            icon={getJourneyNodeIcon(node.id)}
+            size={26}
+            color={
+              node.status === "completed"
+                ? "#FFFFFF"
+                : node.status === "current"
+                  ? "#FFFFFF"
+                  : "#5F7F58"
+            }
+          />
         </View>
       </View>
       <View className="flex-1">

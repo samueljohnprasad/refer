@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
+import TestimonialCard from "../components/TestimonialCard";
 import { StressTiming } from "../types";
 import { TIMING_OPTIONS } from "../constants";
 
@@ -64,15 +65,14 @@ const QuizTimingStep: React.FC<QuizTimingStepProps> = ({
         ))}
       </View>
 
-      <View className="mt-5 rounded-[14px] border-l-[3px] border-gold bg-warm-white px-4 py-3">
-        <Text
-          style={{ fontFamily: "FrauncesMedium" }}
-          className="text-[13px] italic leading-[1.4] text-ink"
-        >
-          "5 minutes felt fake at first. But I have ADHD — anything longer than
-          10 minutes I'd quit. This actually works for my brain."
-        </Text>
-        <Text className="mt-1 text-[11px] text-ink-muted">— Dani, 28</Text>
+      <View className="mt-5">
+        <TestimonialCard
+          initial="D"
+          name="Dani"
+          age={28}
+          quote="5 minutes felt fake at first. But I have ADHD — anything longer than 10 minutes I'd quit. This actually works for my brain."
+          tone="lavender"
+        />
       </View>
     </ScrollView>
   );
