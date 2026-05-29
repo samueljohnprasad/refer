@@ -249,6 +249,12 @@
       "sourceType": "github",
       "computedHash": "bce560b25029037d424b5ec55bb9b3ec2b399ef98fd12c572327292744de84fe"
     },
+    "react-native-mobile": {
+      "source": "miospotdevteam/claude-control",
+      "sourceType": "github",
+      "skillPath": "look-before-you-leap/skills/react-native-mobile/SKILL.md",
+      "computedHash": "3130c24511b3313e06f3d359ae7ab558a66778e632b8b7d8f5a1bba43052d1f7"
+    },
     "react-patterns": {
       "source": "claude-dev-suite/claude-dev-suite",
       "sourceType": "github",
