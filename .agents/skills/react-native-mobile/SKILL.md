@@ -22,7 +22,7 @@ this mobile experience."
 
 ## Routing Directive
 
-```text
+```text`
 UI/UX (animations, haptics, gestures, visual polish) → claude.
 Code-heavy (data flow, networking, native modules, non-visual logic) → codex.
 ```
@@ -58,7 +58,7 @@ decisions and skip the Design Direction assessment in Phase 1.
 visual direction (colors, typography, animation feel): skip the Design
 Direction assessment. Use the approved choices directly. If the design
 includes a **Creative Brief**, its Visual Direction maps to the App
-Personality questions (animation feel, color temperature, visual
+Personality questions (animation feel, color tempera`ture, visual
 density), and its Copy Voice section guides all in-app text — from
 onboarding copy to empty states to error messages.
 

@@ -119,6 +119,12 @@
       "sourceType": "github",
       "computedHash": "9b4001b9916670f52ffff4b7d710d3ef0049a0ea003722c7ff5e967d25eb0121"
     },
+    "engineering-discipline": {
+      "source": "miospotdevteam/claude-control",
+      "sourceType": "github",
+      "skillPath": "look-before-you-leap/skills/engineering-discipline/SKILL.md",
+      "computedHash": "c526120a97258ee7a17bd717dd75e0b283651f8f4813c251529af5f40f0dbf38"
+    },
     "expo": {
       "source": "claude-dev-suite/claude-dev-suite",
       "sourceType": "github",
@@ -131,9 +137,10 @@
       "computedHash": "426dcf33f23419643f2aab71e2253e1a5b5684a808fabb8a4ad135e489ed7a0f"
     },
     "frontend-design": {
-      "source": "ecocee/skills",
+      "source": "miospotdevteam/claude-control",
       "sourceType": "github",
-      "computedHash": "7218eba7f77d28398485ba21102384e9fc51f48cbdbd3a8717bb700694619727"
+      "skillPath": "look-before-you-leap/skills/frontend-design/SKILL.md",
+      "computedHash": "279a5d1356b20fb7d679ad7647023330a556a87dd01e249931658ebd085315be"
     },
     "game-design": {
       "source": "omer-metin/skills-for-antigravity",
@@ -280,6 +287,12 @@
       "sourceType": "github",
       "computedHash": "414ca27b21e8669775f33a450320c197eb431470b69a7af58cdca5bcbb9e6bca"
     },
+    "refactoring": {
+      "source": "miospotdevteam/claude-control",
+      "sourceType": "github",
+      "skillPath": "look-before-you-leap/skills/refactoring/SKILL.md",
+      "computedHash": "a54963fb6049b67c6b12c9e57c5cf43401c55b181bc75c30b52b7c02cac3f777"
+    },
     "retention-engagement": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
@@ -306,6 +319,12 @@
       "source": "ecocee/skills",
       "sourceType": "github",
       "computedHash": "2cd83130ba699f391d5251f2bb471db0cdbbe35efdcd2e053a6254e8075c5e72"
+    },
+    "svg-art": {
+      "source": "miospotdevteam/claude-control",
+      "sourceType": "github",
+      "skillPath": "look-before-you-leap/skills/svg-art/SKILL.md",
+      "computedHash": "490af8dbe98af5873a4a79a365ff26e2c8caa734c9329e1e028b13740a384111"
     },
     "tailwindcss": {
       "source": "claude-dev-suite/claude-dev-suite",
