@@ -18,7 +18,6 @@ export function AssistantActionModal({
   children,
   onClose,
 }: AssistantActionModalProps): ReactElement | null {
-  if (!visible) return null;
 
   return (
     <Modal

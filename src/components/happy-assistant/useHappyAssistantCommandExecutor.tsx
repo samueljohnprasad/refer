@@ -34,7 +34,7 @@ import {
   HAPPY_ASSISTANT_ROUTES,
 } from "./constants";
 
-const ASSISTANT_COMMAND_EXECUTION_DELAY_MS = 120;
+const ASSISTANT_COMMAND_EXECUTION_DELAY_MS = 450;
 const PREMIUM_ENTITLEMENT_ID = "Premium journals";
 
 type AssistantToastAction = "success" | "error" | "info";

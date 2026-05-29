@@ -254,7 +254,6 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
     }
   };
 
-  if (!isOpen) return null;
 
   const sheetHeight = premiumRecovery || accountConflict ? 380 : showSkipButton ? 340 : 290;
 
