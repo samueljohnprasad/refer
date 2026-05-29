@@ -61,7 +61,7 @@ function AssistantButtonChrome(): ReactElement {
     <View style={styles.outerRing}>
       <BlurView intensity={36} tint="light" style={styles.button}>
         <View style={styles.mascotShell}>
-          <Mascot state="panda-happy" size={46} />
+          <Mascot state="panda-happy" size={36} />
         </View>
       </BlurView>
     </View>

@@ -20,17 +20,52 @@ import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
 
-// Extended prompts list with more options
+// Extended prompts list with more options with gorgeous, premium pastel tones
 const ALL_PROMPTS: QuickJournalPrompt[] = [
-  ...QUICK_JOURNAL_PROMPTS,
+  {
+    id: "1",
+    title: "Pause & reflect",
+    emoji: "🌿",
+    description: "What are you grateful for today?",
+    category: "Personal",
+    bgColor: "#F1F7F0", // Soft Sage Green
+    categoryColor: "#5F7F58",
+  },
+  {
+    id: "2",
+    title: "Set Intentions",
+    emoji: "😊",
+    description: "How do you want to feel?",
+    category: "Family",
+    bgColor: "#FAF5EE", // Soft Honey/Cream
+    categoryColor: "#B38F4D",
+  },
+  {
+    id: "3",
+    title: "Emotional Check-in",
+    emoji: "💚",
+    description: "Let go of stress and anxiety",
+    category: "Health",
+    bgColor: "#EDF7F6", // Soft Mint
+    categoryColor: "#3D8076",
+  },
+  {
+    id: "4",
+    title: "Daily Wins",
+    emoji: "🏆",
+    description: "What went well today?",
+    category: "Work",
+    bgColor: "#FAF2EE", // Soft Terracotta
+    categoryColor: "#C77A58",
+  },
   {
     id: "5",
     title: "Morning Reflection",
     emoji: "☀️",
     description: "What are you looking forward to today?",
     category: "Personal",
-    bgColor: "#FEFCE8",
-    categoryColor: "#CA8A04",
+    bgColor: "#FAF7E8", // Soft Buttercream
+    categoryColor: "#8E753E",
   },
   {
     id: "6",
@@ -38,8 +73,8 @@ const ALL_PROMPTS: QuickJournalPrompt[] = [
     emoji: "🌙",
     description: "What made you smile today?",
     category: "Gratitude",
-    bgColor: "#F3E8FF",
-    categoryColor: "#7C3AED",
+    bgColor: "#F6F2FC", // Dusty Lavender
+    categoryColor: "#7E63A8",
   },
   {
     id: "7",
@@ -47,8 +82,8 @@ const ALL_PROMPTS: QuickJournalPrompt[] = [
     emoji: "💼",
     description: "What challenges did you overcome?",
     category: "Work",
-    bgColor: "#DBEAFE",
-    categoryColor: "#2563EB",
+    bgColor: "#F2F6FC", // Ice Blue
+    categoryColor: "#4A729D",
   },
   {
     id: "8",
@@ -56,8 +91,8 @@ const ALL_PROMPTS: QuickJournalPrompt[] = [
     emoji: "🧘",
     description: "How are you taking care of yourself?",
     category: "Health",
-    bgColor: "#FEE2E2",
-    categoryColor: "#DC2626",
+    bgColor: "#FCF2F2", // Soft Dusty Rose
+    categoryColor: "#9C5B5B",
   },
   {
     id: "9",
@@ -65,8 +100,8 @@ const ALL_PROMPTS: QuickJournalPrompt[] = [
     emoji: "❤️",
     description: "Who made your day better?",
     category: "Family",
-    bgColor: "#FCE7F3",
-    categoryColor: "#DB2777",
+    bgColor: "#FCF2F7", // Soft Blossom
+    categoryColor: "#A05A7B",
   },
   {
     id: "10",
@@ -74,8 +109,8 @@ const ALL_PROMPTS: QuickJournalPrompt[] = [
     emoji: "📚",
     description: "What did you learn today?",
     category: "Personal",
-    bgColor: "#D1FAE5",
-    categoryColor: "#059669",
+    bgColor: "#F2FAF6", // Soft Tea Green
+    categoryColor: "#4D8F70",
   },
 ];
 
@@ -90,30 +125,55 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
       <TouchableOpacity
         onPress={() => onPress(prompt)}
         activeOpacity={0.85}
-        className="flex-1 rounded-2xl p-4 m-1.5 min-h-[120px]"
-        style={{ backgroundColor: prompt.bgColor }}
+        className="flex-1 rounded-2xl p-4 m-1.5 min-h-[128px] justify-between"
+        style={{
+          backgroundColor: prompt.bgColor,
+          borderWidth: 1,
+          borderColor: prompt.categoryColor ? prompt.categoryColor + "24" : "#E5EDE1",
+          shadowColor: "#2B3A22",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.03,
+          shadowRadius: 6,
+          elevation: 1,
+        }}
       >
-        <Text className="text-base font-semibold text-gray-900 mb-1">
-          {prompt.title} {prompt.emoji}
-        </Text>
-        <Text className="text-sm text-gray-600 mb-3 flex-1" numberOfLines={2}>
-          {prompt.description}
-        </Text>
-        <View className="flex-row items-center gap-2">
-          <View className="bg-white/80 px-2.5 py-1 rounded-full">
-            <Text className="text-xs text-gray-600 font-medium">Today</Text>
+        <View className="flex-1">
+          <Text
+            style={{ fontFamily: "FrauncesSemiBold" }}
+            className="text-[16px] text-ink mb-1.5"
+            numberOfLines={1}
+          >
+            {prompt.title} <Text className="text-[15px]">{prompt.emoji}</Text>
+          </Text>
+          <Text
+            style={{ fontFamily: "GeistMedium" }}
+            className="text-[13px] leading-[1.45] text-ink-soft mb-3"
+            numberOfLines={2}
+          >
+            {prompt.description}
+          </Text>
+        </View>
+
+        <View className="flex-row items-center gap-2 mt-auto">
+          <View className="bg-white/90 px-2.5 py-1 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+            <Text
+              style={{ fontFamily: "GeistMedium" }}
+              className="text-[10px] text-ink-soft uppercase tracking-wider"
+            >
+              Today
+            </Text>
           </View>
           <View
             className="px-2.5 py-1 rounded-full"
             style={{
               backgroundColor: "transparent",
               borderWidth: 1,
-              borderColor: prompt.categoryColor,
+              borderColor: prompt.categoryColor ? prompt.categoryColor + "3B" : "#E5EDE1",
             }}
           >
             <Text
-              className="text-xs font-medium"
-              style={{ color: prompt.categoryColor }}
+              style={{ fontFamily: "GeistBold", color: prompt.categoryColor }}
+              className="text-[10px] uppercase tracking-wider"
             >
               {prompt.category}
             </Text>
@@ -161,11 +221,11 @@ export default function AllPromptsScreen() {
   }, []);
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-[#F8FAF7]">
       {/* Prompts Grid */}
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ padding: 12, paddingBottom: 32 }}
+        contentContainerStyle={{ padding: 10, paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
       >
         <View className="flex-row flex-wrap">

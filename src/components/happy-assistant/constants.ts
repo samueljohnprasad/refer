@@ -1,7 +1,7 @@
 import type { ExerciseType } from "@/src/types/exerciseFlow";
 
-export const ASSISTANT_BUTTON_SIZE = 64;
-export const ASSISTANT_BUTTON_INNER_SIZE = 54;
+export const ASSISTANT_BUTTON_SIZE = 54;
+export const ASSISTANT_BUTTON_INNER_SIZE = 44;
 export const ASSISTANT_EDGE_MARGIN = 12;
 export const ASSISTANT_BOTTOM_CLEARANCE = 112;
 export const ASSISTANT_TAP_DISTANCE = 6;
