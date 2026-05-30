@@ -5,7 +5,8 @@
  */
 
 import React from "react";
-import { View, Text, TextInput } from "react-native";
+import { View, TextInput } from "react-native";
+import { Text } from "@/src/components/ui/Text";
 import { INK_MUTED } from "@/lib/tokens";
 import { RendererSectionCard } from "../RendererFrame";
 
@@ -48,9 +49,9 @@ export default function ExerciseInputText({
         ENCOURAGEMENTS.find((e) => charCount >= e.min)?.message ?? "";
 
     return (
-        <View className="flex-1">
+        <View className="w-full">
             <RendererSectionCard eyebrow="Now: try it">
-                <Text className="happy-font-heading-bold mb-4 text-[20px] leading-7 text-ink">
+                <Text variant="h3" className="mb-4">
                     {prompt}
                 </Text>
 
@@ -72,10 +73,10 @@ export default function ExerciseInputText({
 
             {/* Character count + encouragement */}
             <View className="flex-row items-center justify-between mt-2 px-1">
-                <Text className="happy-font-body-bold text-xs text-sage-600">
+                <Text variant="label-bold" color="sage">
                     {encouragement}
                 </Text>
-                <Text className="happy-font-body-medium text-xs text-ink-muted">{charCount} chars</Text>
+                <Text variant="caption-muted">{charCount} chars</Text>
             </View>
         </View>
     );

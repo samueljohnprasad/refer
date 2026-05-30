@@ -5,7 +5,8 @@
  */
 
 import React, { useCallback } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
 import { RendererSectionCard } from '../RendererFrame';
 
 // ============================================================================
@@ -50,13 +51,13 @@ export default function ExerciseInputPicker({
     );
 
     return (
-        <View className="flex-1">
+        <View className="w-full">
             <RendererSectionCard eyebrow="Now: choose yours">
-                <Text className="happy-font-heading-bold mb-2 text-[20px] leading-7 text-ink">
+                <Text variant="h3" className="mb-2">
                     {prompt}
                 </Text>
 
-                <Text className="happy-font-body-medium mb-5 text-sm text-ink-muted">
+                <Text variant="caption-muted" className="mb-5">
                     {allowMultiple
                         ? `Select ${minSelections > 1 ? `at least ${minSelections}` : 'one or more'}`
                         : 'Tap to select one'}
@@ -78,8 +79,8 @@ export default function ExerciseInputPicker({
                                 accessibilityState={{ selected: isSelected }}
                             >
                                 <Text
-                                    className={`happy-font-body-bold text-sm ${isSelected ? 'text-sage-700' : 'text-ink-soft'
-                                        }`}
+                                    variant="body-bold"
+                                    color={isSelected ? "sage" : "soft"}
                                 >
                                     {option}
                                 </Text>
@@ -91,7 +92,7 @@ export default function ExerciseInputPicker({
 
             {/* Selection count */}
             {allowMultiple && value.length > 0 ? (
-                <Text className="happy-font-body-bold mt-3 text-xs text-sage-600">
+                <Text variant="label-bold" color="sage" className="mt-3">
                     {value.length} selected
                 </Text>
             ) : null}

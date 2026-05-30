@@ -5,7 +5,8 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import {
     CheckmarkCircle02Icon,
@@ -101,9 +102,9 @@ export default function ExerciseInputMultiChoice({
     };
 
     return (
-        <View className="flex-1">
+        <View className="w-full">
             <RendererSectionCard eyebrow="Now: choose yours">
-                <Text className="happy-font-heading-bold mb-4 text-[20px] leading-7 text-ink">
+                <Text variant="h3" className="mb-4">
                     {prompt}
                 </Text>
 
@@ -139,8 +140,8 @@ export default function ExerciseInputMultiChoice({
                                         <HugeiconsIcon icon={Cancel01Icon} size={16} color={BRAND_SURFACE} />
                                     ) : (
                                         <Text
-                                            className={`happy-font-body-bold text-xs ${state === 'selected' ? 'text-brand-surface' : 'text-ink-muted'
-                                                }`}
+                                            variant="body-bold"
+                                            color={state === 'selected' ? 'surface' : 'muted'}
                                         >
                                             {String.fromCharCode(65 + index)}
                                         </Text>
@@ -159,10 +160,10 @@ export default function ExerciseInputMultiChoice({
             {/* Explanation (shown after answering a scored question) */}
             {hasAnswered && explanation ? (
                 <Card variant="tile" radius="xl" showDepth={false} className="mt-4" contentClassName="p-4">
-                    <Text className="happy-font-body-bold mb-1 text-sm text-sage-700">
+                    <Text variant="label-bold" color="sage" className="mb-1">
                         Explanation
                     </Text>
-                    <Text className="happy-font-body-medium text-sm leading-5 text-ink-soft">
+                    <Text variant="body" className="text-sm leading-5">
                         {explanation}
                     </Text>
                 </Card>

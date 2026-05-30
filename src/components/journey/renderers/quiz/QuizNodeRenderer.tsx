@@ -19,7 +19,7 @@
  */
 
 import React, { useCallback, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -365,7 +365,11 @@ export default function QuizNodeRenderer({
             />
 
             {/* Question content */}
-            <View className="flex-1 px-7">
+            <ScrollView
+                className="flex-1"
+                contentContainerStyle={{ paddingHorizontal: 28, paddingBottom: 16 }}
+                showsVerticalScrollIndicator={false}
+            >
                 {/* Score counter */}
                 <View className="flex-row items-center justify-end mb-4">
                     <View className="happy-brand-status-chip px-3 py-1">
@@ -401,7 +405,7 @@ export default function QuizNodeRenderer({
                         explanation={currentQuestion.explanation}
                     />
                 ) : null}
-            </View>
+            </ScrollView>
 
             {/* Bottom buttons */}
             <View className="px-7 pb-4 pt-2">

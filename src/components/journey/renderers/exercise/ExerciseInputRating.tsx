@@ -5,7 +5,8 @@
  */
 
 import React, { useCallback } from 'react';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { View, Pressable, ScrollView } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
 import { RendererSectionCard } from '../RendererFrame';
 
 // ============================================================================
@@ -56,22 +57,22 @@ export default function ExerciseInputRating({
     );
 
     return (
-        <View className="flex-1 justify-center">
+        <View className="w-full">
             <RendererSectionCard eyebrow="Now: rate yours">
-                <Text className="happy-font-heading-bold mb-4 text-[20px] leading-7 text-ink">
+                <Text variant="h3" className="mb-4">
                     {prompt}
                 </Text>
 
                 {value !== null ? (
                     <View className="items-center mb-6">
                         <View className="happy-brand-score-badge h-16 w-16 items-center justify-center">
-                            <Text className="happy-font-heading-bold text-xl text-sage-700">{value}</Text>
+                            <Text variant="h2" color="sage">{value}</Text>
                         </View>
                     </View>
                 ) : (
                     <View className="items-center mb-6">
                         <View className="h-16 w-16 items-center justify-center rounded-[22px] bg-sage-50">
-                            <Text className="happy-font-heading-bold text-lg text-ink-muted">?</Text>
+                            <Text variant="h2" color="muted">?</Text>
                         </View>
                     </View>
                 )}
@@ -99,8 +100,8 @@ export default function ExerciseInputRating({
                                 accessibilityState={{ selected: isSelected }}
                             >
                                 <Text
-                                    className={`happy-font-body-bold text-sm ${isSelected ? 'text-brand-surface' : 'text-ink-muted'
-                                        }`}
+                                    variant="body-bold"
+                                    color={isSelected ? "surface" : "muted"}
                                 >
                                     {num}
                                 </Text>
@@ -110,10 +111,10 @@ export default function ExerciseInputRating({
                 </ScrollView>
 
                 <View className="flex-row items-center justify-between px-2 mt-3">
-                    <Text className="happy-font-body-medium text-xs text-ink-muted">
+                    <Text variant="caption-muted">
                         {labelMin ?? `${min} - Low`}
                     </Text>
-                    <Text className="happy-font-body-medium text-xs text-ink-muted">
+                    <Text variant="caption-muted">
                         {labelMax ?? `${max} - High`}
                     </Text>
                 </View>

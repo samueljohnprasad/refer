@@ -5,8 +5,11 @@
  */
 
 import React, { useCallback } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View } from 'react-native';
+import Slider from '@react-native-community/slider';
+import { Text } from '@/src/components/ui/Text';
 import { RendererSectionCard } from '../RendererFrame';
+import { SAGE } from '@/lib/tokens';
 
 // ============================================================================
 // Types
@@ -46,80 +49,45 @@ export default function ExerciseInputSlider({
     labelMin,
     labelMax,
 }: ExerciseInputSliderProps): React.JSX.Element {
-    const range: number = max - min;
-    const normalizedValue: number = range > 0 ? (value - min) / range : 0;
-    const fillPercent: number = Math.round(normalizedValue * 100);
-
-    // Generate step buttons for a segmented slider
-    const stepCount: number = Math.min(Math.floor(range / step) + 1, TRACK_SEGMENTS + 1);
-    const steps: number[] = Array.from(
-        { length: stepCount },
-        (_, i: number) => min + i * Math.ceil(range / (stepCount - 1)),
-    ).map((v: number) => Math.min(v, max));
-
-    // Deduplicate and ensure max is included
-    const uniqueSteps: number[] = [...new Set([...steps, max])].sort(
-        (a: number, b: number) => a - b,
-    );
-
-    const handleStepPress = useCallback(
-        (stepValue: number): void => {
-            onChange(stepValue);
+    const handleSliderChange = useCallback(
+        (sliderValue: number): void => {
+            onChange(sliderValue);
         },
         [onChange],
     );
 
     return (
-        <View className="flex-1 justify-center">
+        <View className="w-full">
             <RendererSectionCard eyebrow="Now: rate yours">
-                <Text className="happy-font-heading-bold mb-4 text-[20px] leading-7 text-ink">
+                <Text variant="h3" className="mb-4">
                     {prompt}
                 </Text>
 
                 <View className="items-center mb-8">
                     <View className="happy-brand-score-badge px-6 py-3">
-                        <Text className="happy-font-heading-bold text-2xl text-sage-700">{value}</Text>
+                        <Text variant="h2" color="sage">{value}</Text>
                     </View>
                 </View>
 
-                <View className="px-2 mb-3">
-                    <View className="h-3 overflow-hidden rounded-full bg-sage-100">
-                        <View
-                            className="h-full rounded-full bg-sage-500"
-                            style={{ width: `${fillPercent}%` }}
-                        />
-                    </View>
-                </View>
-
-                <View className="flex-row flex-wrap justify-between px-1 mb-4 gap-1">
-                    {uniqueSteps.map((stepVal: number) => {
-                        const isSelected: boolean = stepVal === value;
-                        return (
-                            <Pressable
-                                key={stepVal}
-                                onPress={() => handleStepPress(stepVal)}
-                                className={`h-9 min-w-[36px] items-center justify-center rounded-lg ${isSelected ? 'bg-sage-500' : 'bg-sage-50'
-                                    }`}
-                                accessibilityLabel={`Set value to ${stepVal}`}
-                                accessibilityRole="button"
-                                accessibilityState={{ selected: isSelected }}
-                            >
-                                <Text
-                                    className={`happy-font-body-bold text-xs ${isSelected ? 'text-brand-surface' : 'text-ink-muted'
-                                        }`}
-                                >
-                                    {stepVal}
-                                </Text>
-                            </Pressable>
-                        );
-                    })}
+                <View className="px-2 mb-6">
+                    <Slider
+                        style={{ width: '100%', height: 40 }}
+                        minimumValue={min}
+                        maximumValue={max}
+                        step={step}
+                        value={value}
+                        onValueChange={handleSliderChange}
+                        minimumTrackTintColor={SAGE[500]}
+                        maximumTrackTintColor={SAGE[100]}
+                        thumbTintColor="#FFFFFF"
+                    />
                 </View>
 
                 <View className="flex-row items-center justify-between px-2">
-                    <Text className="happy-font-body-medium text-xs text-ink-muted">
+                    <Text variant="caption-muted">
                         {labelMin ?? String(min)}
                     </Text>
-                    <Text className="happy-font-body-medium text-xs text-ink-muted">
+                    <Text variant="caption-muted">
                         {labelMax ?? String(max)}
                     </Text>
                 </View>
