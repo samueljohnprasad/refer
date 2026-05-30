@@ -12,6 +12,12 @@
       "sourceType": "github",
       "computedHash": "bc258b331aab9f3c8ff2e8fd9c15e4c5129b3cecc0bb52dbde7df1ad07520ad0"
     },
+    "add-app-clip": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/add-app-clip/SKILL.md",
+      "computedHash": "6bbeeae2814231780a4ee1bbd89e6916e35803a78a9a57778dc883cc3113c6fc"
+    },
     "ai-slides": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -130,6 +136,42 @@
       "sourceType": "github",
       "computedHash": "9b868ba1777f43ed1d7032a375ab1db6b7b5734fb80b76221bd9819c4d2f2d8a"
     },
+    "expo-api-routes": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/expo-api-routes/SKILL.md",
+      "computedHash": "015c6b849507fda73fcc32d2448f033aaaaa21f5229085342b8421727a90cafb"
+    },
+    "expo-brownfield": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/expo-brownfield/SKILL.md",
+      "computedHash": "4778b0cfb6e52c0b04d2a9f838d18c0520b5da621c10286a1e888810b3169e57"
+    },
+    "expo-deployment": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/expo-deployment/SKILL.md",
+      "computedHash": "9ea9f16374765c1b16764a51bd43a64098921b33f48e94d9c5c1cce24b335c10"
+    },
+    "expo-dev-client": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/expo-dev-client/SKILL.md",
+      "computedHash": "234e2633b7fbcef2d479f8fe8ab20d53d08ed3e4beec7c965da4aff5b43affe7"
+    },
+    "expo-module": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/expo-module/SKILL.md",
+      "computedHash": "6da487764496337c984d86a0ae1fdb35838c40bebbe871d9d773a4cdcc41346a"
+    },
+    "expo-tailwind-setup": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/expo-tailwind-setup/SKILL.md",
+      "computedHash": "d39e806942fe880347f161056729b588a3cb0f1796270eebf52633fe11cfdce1"
+    },
     "fixing-motion-performance": {
       "source": "ibelick/ui-skills",
       "sourceType": "github",
@@ -235,6 +277,12 @@
       "source": "tinh2/skills-hub-registry",
       "sourceType": "github",
       "computedHash": "c8b18eb5797e95dc6e16829f3c952e9247e775283e39e0651eaf9b0a1218a76b"
+    },
+    "native-data-fetching": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/native-data-fetching/SKILL.md",
+      "computedHash": "3cd0ba91f359f9f84cd40f36f356287994a0e952520fac6e03ef7952d0397879"
     },
     "player-onboarding": {
       "source": "omer-metin/skills-for-antigravity",
@@ -350,6 +398,12 @@
       "source": "deichworx/smart-swap",
       "sourceType": "github",
       "computedHash": "92cc938ff28c8a69080769bf94936007a2dfbe0b4cde99f34fe99fc2afad46f8"
+    },
+    "upgrading-expo": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/upgrading-expo/SKILL.md",
+      "computedHash": "2c65483a035341da654b92b130fd5b45690b139b624613dc94c414bae1067f6c"
     },
     "visual-hierarchy": {
       "source": "claude-dev-suite/claude-dev-suite",

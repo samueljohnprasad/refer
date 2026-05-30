@@ -367,7 +367,7 @@ function DailyNotesScreenComponent(): ReactElement {
               {/* Tab Picker */}
               <View className="px-4 pb-3 pt-4">
                 <View className="rounded-full border border-sage-100 bg-sage-50 p-1">
-                  <Host matchContents>
+                  <Host style={{ width: "100%", height: 32 }}>
                     <Picker
                       modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
                       label="View"

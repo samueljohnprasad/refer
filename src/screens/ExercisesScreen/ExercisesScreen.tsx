@@ -51,9 +51,31 @@ import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerci
 import { Card } from "@/src/components/ui/Card";
 import { GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
+import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
+import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
 
 type TabKey = "discover" | "log";
 const TAB_KEYS = ["discover", "log"] as const;
+
+const EXERCISE_TAB_OPTIONS = ["Lessons", "My Log"] as const;
+type ExerciseTabLabel = (typeof EXERCISE_TAB_OPTIONS)[number];
+
+const EXERCISE_TAB_BY_LABEL: Record<ExerciseTabLabel, TabKey> = {
+  Lessons: "discover",
+  "My Log": "log",
+};
+
+const EXERCISE_TAB_LABEL_BY_KEY: Record<TabKey, ExerciseTabLabel> = {
+  discover: "Lessons",
+  log: "My Log",
+};
+
+function isExerciseTabLabel(selection: unknown): selection is ExerciseTabLabel {
+  return (
+    typeof selection === "string" &&
+    EXERCISE_TAB_OPTIONS.includes(selection as ExerciseTabLabel)
+  );
+}
 const COMPLETE_HISTORY_STATUSES = new Set<string>([
   "completed",
   "summary",
@@ -457,42 +479,7 @@ function EmptyExerciseLogState(): ReactElement {
   );
 }
 
-interface ExerciseTabButtonProps {
-  tab: TabKey;
-  isActive: boolean;
-  onPress: (tab: TabKey) => void;
-}
 
-const ExerciseTabButton = memo(function ExerciseTabButton({
-  tab,
-  isActive,
-  onPress,
-}: ExerciseTabButtonProps): ReactElement {
-  const handlePress = useCallback((): void => {
-    onPress(tab);
-  }, [onPress, tab]);
-  const label = tab === "discover" ? "Lessons" : "My Log";
-
-  return (
-    <Pressable
-      onPress={handlePress}
-      accessibilityRole="tab"
-      accessibilityState={{ selected: isActive }}
-      className={`flex-1 items-center justify-center rounded-full py-3 ${isActive
-        ? "border border-brand-border bg-brand-surface shadow-sm"
-        : ""
-        }`}
-    >
-      <Text
-        variant="label-bold"
-        color={isActive ? "ink" : "muted"}
-        className="text-[15px]"
-      >
-        {label}
-      </Text>
-    </Pressable>
-  );
-});
 
 function getContextualEyebrow(): string {
   const hour = new Date().getHours();
@@ -556,6 +543,17 @@ export default function ExercisesScreen(): ReactElement {
     router.setParams({ tab });
   }, []);
 
+  const handleFilterSelectionChange = useCallback(
+    (selection: unknown): void => {
+      if (isExerciseTabLabel(selection)) {
+        const tab = EXERCISE_TAB_BY_LABEL[selection];
+        setActiveTab(tab);
+        router.setParams({ tab });
+      }
+    },
+    [],
+  );
+
   const handleLogPress = useCallback((item: HistoryLogItem): void => {
     if (item.type === "unified" && item.exerciseType) {
       router.push(
@@ -609,15 +607,21 @@ export default function ExercisesScreen(): ReactElement {
             ) : null}
           </View>
 
-          <Animated.View style={tabPillStyle} className="happy-brand-card flex-row rounded-full bg-sage-50 p-1">
-            {TAB_KEYS.map((tab) => (
-              <ExerciseTabButton
-                key={tab}
-                tab={tab}
-                isActive={activeTab === tab}
-                onPress={handleTabPress}
-              />
-            ))}
+          <Animated.View style={tabPillStyle} className="rounded-full border border-sage-100 bg-sage-50 p-1">
+            <Host style={{ width: "100%", height: 32 }}>
+              <Picker
+                modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                label="Exercises View"
+                selection={EXERCISE_TAB_LABEL_BY_KEY[activeTab]}
+                onSelectionChange={handleFilterSelectionChange}
+              >
+                {EXERCISE_TAB_OPTIONS.map((option) => (
+                  <SwiftUIText key={option} modifiers={[tag(option)]}>
+                    {option}
+                  </SwiftUIText>
+                ))}
+              </Picker>
+            </Host>
           </Animated.View>
         </View>
 
