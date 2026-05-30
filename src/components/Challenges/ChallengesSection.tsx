@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  ActivityIndicator,
   LayoutAnimation,
   UIManager,
   Platform,
 } from "react-native";
+import { SkeletonCard } from "@/src/components/ui/Skeleton";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { Card } from "@/src/components/ui/Card";
 
@@ -51,18 +51,7 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
   const totalCount = displayChallenges.length;
 
   if (isLoading) {
-    return (
-      <Card
-        variant="tile"
-        radius="xl"
-        haptic="none"
-        showDepth={showDepth}
-        className="min-h-[132px]"
-        contentClassName="min-h-[128px] items-center justify-center p-6"
-      >
-        <ActivityIndicator size="small" color={SAGE[600]} />
-      </Card>
-    );
+    return <SkeletonCard lines={3} className="min-h-[132px]" />;
   }
 
   if (displayChallenges.length === 0) {

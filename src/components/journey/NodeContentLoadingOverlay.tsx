@@ -1,5 +1,7 @@
 import React from "react";
-import { View, Text as RNText, ActivityIndicator, Pressable } from "react-native";
+import { View, Pressable } from "react-native";
+import { Text } from "@/src/components/ui/Text";
+import { Skeleton } from "@/src/components/ui/Skeleton";
 
 interface NodeContentLoadingOverlayProps {
   isVisible: boolean;
@@ -17,12 +19,10 @@ export default function NodeContentLoadingOverlay({
       className="absolute inset-0 items-center justify-center bg-black/20 z-50"
       onPress={onCancel}
     >
-      <View className="rounded-2xl bg-white px-6 py-4 items-center shadow-lg">
-        <ActivityIndicator size="large" color="#58CC02" />
-        <RNText className="mt-2 text-sm font-medium text-gray-600">
-          Loading content…
-        </RNText>
-        <RNText className="mt-1 text-xs text-gray-400">Tap to cancel</RNText>
+      <View className="rounded-2xl bg-brand-surface px-6 py-5 items-center shadow-lg gap-3">
+        <Skeleton width={120} height={16} radius={8} />
+        <Skeleton width={80} height={12} radius={6} />
+        <Text variant="caption-muted" className="mt-1">Tap to cancel</Text>
       </View>
     </Pressable>
   );

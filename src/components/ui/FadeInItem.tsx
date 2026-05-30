@@ -6,11 +6,13 @@ import Animated, {
     withSpring,
 } from "react-native-reanimated";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
+import { APP_SPRING } from "@/src/utils/motionTokens";
 
 interface FadeInItemProps {
     index: number;
     delayPerItem?: number;
     translateY?: number;
+    className?: string;
     children: React.ReactNode;
 }
 
@@ -30,6 +32,7 @@ export function FadeInItem({
     index,
     delayPerItem = 50,
     translateY = 14,
+    className,
     children,
 }: FadeInItemProps) {
     const reducedMotion = useReducedMotion();
@@ -39,9 +42,8 @@ export function FadeInItem({
     useEffect(() => {
         if (reducedMotion) return;
         const delay = index * delayPerItem;
-        const config = { damping: 20, stiffness: 200 };
-        opacity.value = withDelay(delay, withSpring(1, config));
-        y.value = withDelay(delay, withSpring(0, config));
+        opacity.value = withDelay(delay, withSpring(1, APP_SPRING));
+        y.value = withDelay(delay, withSpring(0, APP_SPRING));
     }, []);
 
     const style = useAnimatedStyle(() => ({
@@ -49,5 +51,5 @@ export function FadeInItem({
         transform: [{ translateY: y.value }],
     }));
 
-    return <Animated.View style={style}>{children}</Animated.View>;
+    return <Animated.View style={style} className={className}>{children}</Animated.View>;
 }

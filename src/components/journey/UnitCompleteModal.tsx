@@ -83,8 +83,8 @@ function StatCard({
       >
         <Text className="text-2xl">{icon}</Text>
       </View>
-      <Text className="text-lg font-extrabold text-slate-900">{value}</Text>
-      <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+      <Text className="text-lg font-extrabold text-ink">{value}</Text>
+      <Text className="text-xs font-bold text-ink-muted uppercase tracking-wider">
         {label}
       </Text>
     </Animated.View>
@@ -147,12 +147,12 @@ const UnitCompleteModal = forwardRef<BottomSheetModal, UnitCompleteModalProps>(
     // ── Compute stats from unit data ──
     const lessonCount: number = unit
       ? unit.nodes.filter((n: PathNodeData) => n.type === NodeType.LESSON)
-          .length
+        .length
       : 0;
 
     const checkpointCount: number = unit
       ? unit.nodes.filter((n: PathNodeData) => n.type === NodeType.CHECKPOINT)
-          .length
+        .length
       : 0;
 
     const chestCount: number = unit
@@ -220,10 +220,10 @@ const UnitCompleteModal = forwardRef<BottomSheetModal, UnitCompleteModalProps>(
                 entering={FadeInUp.delay(200).duration(300).springify()}
                 className="items-center mb-2"
               >
-                <Text className="text-2xl font-extrabold text-slate-900 text-center">
+                <Text className="text-2xl font-extrabold text-ink text-center">
                   Unit Complete!
                 </Text>
-                <Text className="text-base text-slate-500 text-center mt-1">
+                <Text className="text-base text-ink-soft text-center mt-1">
                   You finished {unit.title}: {unit.description}
                 </Text>
               </Animated.View>

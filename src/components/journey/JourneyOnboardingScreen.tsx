@@ -67,10 +67,10 @@ function WelcomeHero({
                 <Text className="text-5xl">🧭</Text>
             </View>
 
-            <Text className="text-3xl font-bold text-gray-900 text-center mb-3">
+            <Text className="text-3xl font-bold text-ink text-center mb-3">
                 Find Your Path
             </Text>
-            <Text className="text-base text-gray-500 text-center leading-6 mb-8 px-4">
+            <Text className="text-base text-ink-soft text-center leading-6 mb-8 px-4">
                 Answer 2 quick questions and we'll recommend the perfect journey to
                 start your mental wellness practice.
             </Text>
@@ -88,7 +88,7 @@ function WelcomeHero({
             </Pressable>
 
             {/* Skip link */}
-            <Text className="text-sm text-gray-400">
+            <Text className="text-sm text-ink-muted">
                 Takes less than 30 seconds
             </Text>
         </View>
@@ -107,10 +107,10 @@ function QuestionCard({
 }): React.JSX.Element {
     return (
         <View className="flex-1 px-6 pt-6">
-            <Text className="text-2xl font-bold text-gray-900 mb-2">
+            <Text className="text-2xl font-bold text-ink mb-2">
                 {question.title}
             </Text>
-            <Text className="text-sm text-gray-400 mb-6">
+            <Text className="text-sm text-ink-muted mb-6">
                 {question.subtitle}
             </Text>
 
@@ -127,26 +127,26 @@ function QuestionCard({
                                 onPress={() => onSelect(option.id)}
                                 className={`flex-row items-center p-4 rounded-2xl mb-3 border-2 ${isSelected
                                     ? "border-purple-500 bg-purple-50"
-                                    : "border-gray-100 bg-white"
+                                    : "border-gray-100 bg-brand-surface"
                                     }`}
                                 accessibilityRole="radio"
                                 accessibilityState={{ selected: isSelected }}
                                 accessibilityLabel={`${option.label}: ${option.description}`}
                             >
                                 <View
-                                    className={`w-12 h-12 rounded-xl items-center justify-center mr-4 ${isSelected ? "bg-purple-100" : "bg-gray-50"
+                                    className={`w-12 h-12 rounded-xl items-center justify-center mr-4 ${isSelected ? "bg-purple-100" : "bg-brand-canvas"
                                         }`}
                                 >
                                     <Text className="text-2xl">{option.emoji}</Text>
                                 </View>
                                 <View className="flex-1">
                                     <Text
-                                        className={`text-base font-bold ${isSelected ? "text-purple-700" : "text-gray-800"
+                                        className={`text-base font-bold ${isSelected ? "text-purple-700" : "text-ink"
                                             }`}
                                     >
                                         {option.label}
                                     </Text>
-                                    <Text className="text-sm text-gray-400 mt-0.5">
+                                    <Text className="text-sm text-ink-muted mt-0.5">
                                         {option.description}
                                     </Text>
                                 </View>
@@ -171,10 +171,10 @@ function EnrollingState(): React.JSX.Element {
             <View className="w-20 h-20 rounded-full bg-green-50 items-center justify-center mb-6">
                 <Text className="text-4xl">✨</Text>
             </View>
-            <Text className="text-xl font-bold text-gray-900 mb-2">
+            <Text className="text-xl font-bold text-ink mb-2">
                 Setting up your journey...
             </Text>
-            <Text className="text-sm text-gray-400 text-center">
+            <Text className="text-sm text-ink-muted text-center">
                 We're preparing your personalized learning path
             </Text>
         </View>
@@ -232,7 +232,7 @@ export default function JourneyOnboardingScreen({
     // Enrolling state
     if (screenState === "enrolling" || isEnrolling) {
         return (
-            <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
+            <SafeAreaView className="flex-1 bg-brand-surface" edges={["top"]}>
                 <EnrollingState />
             </SafeAreaView>
         );
@@ -241,7 +241,7 @@ export default function JourneyOnboardingScreen({
     // Welcome hero
     if (screenState === "welcome") {
         return (
-            <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
+            <SafeAreaView className="flex-1 bg-brand-surface" edges={["top"]}>
                 <WelcomeHero onStart={handleStart} />
                 {/* Skip at bottom */}
                 <View className="px-8 pb-8">
@@ -262,7 +262,7 @@ export default function JourneyOnboardingScreen({
 
     // Quiz flow
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
+        <SafeAreaView className="flex-1 bg-brand-surface" edges={["top"]}>
             {/* Progress bar + back/skip */}
             <View className="px-6 pt-4 pb-2">
                 <View className="flex-row items-center justify-between mb-3">
@@ -274,7 +274,7 @@ export default function JourneyOnboardingScreen({
                                     Math.max(0, prev - 1),
                                 )
                             }
-                            className="w-9 h-9 rounded-full bg-gray-50 items-center justify-center"
+                            className="w-9 h-9 rounded-full bg-brand-canvas items-center justify-center"
                             accessibilityRole="button"
                             accessibilityLabel="Previous question"
                         >
@@ -285,7 +285,7 @@ export default function JourneyOnboardingScreen({
                     )}
 
                     {/* Step indicator */}
-                    <Text className="text-sm font-semibold text-gray-400">
+                    <Text className="text-sm font-semibold text-ink-muted">
                         {currentQuestionIndex + 1} of {totalQuestions}
                     </Text>
 
@@ -300,7 +300,7 @@ export default function JourneyOnboardingScreen({
                 </View>
 
                 {/* Progress bar */}
-                <View className="h-1.5 bg-gray-100 rounded-full">
+                <View className="h-1.5 bg-sage-50 rounded-full">
                     <View
                         className="h-1.5 bg-purple-500 rounded-full"
                         style={{

@@ -32,6 +32,7 @@ import * as Haptics from 'expo-haptics';
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { ConfettiExplosion } from '@/src/components/animations/ConfettiExplosion';
 import { BRAND_SURFACE, SAGE } from '@/lib/tokens';
+import { SPRING_BOUNCY, SHEET_SPRING } from '@/src/utils/motionTokens';
 
 // ============================================================================
 // Types
@@ -108,7 +109,7 @@ function XPCounter({ xp }: { xp: number }): React.JSX.Element {
     }, [xp, progress]);
 
     const scaleStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: withDelay(200, withSpring(1, { damping: 8, stiffness: 100 })) }],
+        transform: [{ scale: withDelay(200, withSpring(1, SPRING_BOUNCY)) }],
     }));
 
     return (
@@ -135,7 +136,7 @@ function StreakDisplay({
     const scale = useSharedValue<number>(0.8);
 
     useEffect(() => {
-        scale.value = withDelay(400, withSpring(1, { damping: 10, stiffness: 120 }));
+        scale.value = withDelay(400, withSpring(1, SPRING_BOUNCY));
     }, [scale]);
 
     const style = useAnimatedStyle(() => ({
@@ -169,7 +170,7 @@ function NextNodePreviewCard({
     useEffect(() => {
         glowOpacity.value = withDelay(
             600,
-            withSpring(0.6, { damping: 15, stiffness: 80 }),
+            withSpring(0.6, SHEET_SPRING),
         );
     }, [glowOpacity]);
 
@@ -267,85 +268,85 @@ export default function NodeCompletionCelebration({
     return (
         <View className="happy-brand-screen flex-1">
             <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
-            {/* Light confetti */}
-            <ConfettiExplosion
-                isVisible={showConfetti}
-                count={16}
-                duration={1000}
-                onAnimationComplete={handleConfettiComplete}
-            />
-
-            <View className="flex-1 items-center justify-center px-6">
-                {/* Celebration emoji */}
-                <Text className="text-5xl mb-4">🎊</Text>
-
-                {/* Title */}
-                <Text className="happy-font-heading-bold mb-6 text-center text-[34px] leading-10 text-ink">
-                    Well Done!
-                </Text>
-
-                {/* XP counter */}
-                <XPCounter xp={xpEarned} />
-
-                {/* Streak */}
-                <StreakDisplay
-                    days={streakDays}
-                    milestoneHit={streakMilestoneHit}
-                    milestoneLabel={streakMilestoneLabel}
+                {/* Light confetti */}
+                <ConfettiExplosion
+                    isVisible={showConfetti}
+                    count={16}
+                    duration={1000}
+                    onAnimationComplete={handleConfettiComplete}
                 />
 
-                {/* Next node preview */}
-                {nextNode ? <NextNodePreviewCard nextNode={nextNode} /> : null}
-            </View>
+                <View className="flex-1 items-center justify-center px-6">
+                    {/* Celebration emoji */}
+                    <Text className="text-5xl mb-4">🎊</Text>
 
-            {/* CTAs */}
-            <View className="px-5 pb-4 pt-2 gap-3">
-                {/* Continue to next node */}
-                {nextNode ? (
+                    {/* Title */}
+                    <Text className="happy-font-heading-bold mb-6 text-center text-[34px] leading-10 text-ink">
+                        Well Done!
+                    </Text>
+
+                    {/* XP counter */}
+                    <XPCounter xp={xpEarned} />
+
+                    {/* Streak */}
+                    <StreakDisplay
+                        days={streakDays}
+                        milestoneHit={streakMilestoneHit}
+                        milestoneLabel={streakMilestoneLabel}
+                    />
+
+                    {/* Next node preview */}
+                    {nextNode ? <NextNodePreviewCard nextNode={nextNode} /> : null}
+                </View>
+
+                {/* CTAs */}
+                <View className="px-5 pb-4 pt-2 gap-3">
+                    {/* Continue to next node */}
+                    {nextNode ? (
+                        <PressableScale
+                            onPress={handleContinue}
+                            scale={0.96}
+                            hapticStyle="medium"
+                            style={{
+                                backgroundColor: SAGE[500],
+                                paddingVertical: 16,
+                                borderRadius: 22,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderBottomWidth: 4,
+                                borderBottomColor: SAGE[700],
+                            }}
+                            accessibilityLabel="Continue to next activity"
+                            accessibilityRole="button"
+                        >
+                            <Text className="happy-font-body-bold mr-1 text-base text-brand-surface">
+                                Continue
+                            </Text>
+                            <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={BRAND_SURFACE} />
+                        </PressableScale>
+                    ) : null}
+
+                    {/* Done for now */}
                     <PressableScale
-                        onPress={handleContinue}
+                        onPress={handleDone}
                         scale={0.96}
-                        hapticStyle="medium"
+                        hapticStyle="light"
                         style={{
-                            backgroundColor: SAGE[500],
-                            paddingVertical: 16,
+                            backgroundColor: SAGE.pill,
+                            paddingVertical: 14,
                             borderRadius: 22,
-                            flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            borderBottomWidth: 4,
-                            borderBottomColor: SAGE[700],
                         }}
-                        accessibilityLabel="Continue to next activity"
+                        accessibilityLabel="Return to journey map"
                         accessibilityRole="button"
                     >
-                        <Text className="happy-font-body-bold mr-1 text-base text-brand-surface">
-                            Continue
+                        <Text className="happy-font-body-bold text-sm text-sage-600">
+                            Done for now
                         </Text>
-                        <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={BRAND_SURFACE} />
                     </PressableScale>
-                ) : null}
-
-                {/* Done for now */}
-                <PressableScale
-                    onPress={handleDone}
-                    scale={0.96}
-                    hapticStyle="light"
-                    style={{
-                        backgroundColor: SAGE.pill,
-                        paddingVertical: 14,
-                        borderRadius: 22,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                    accessibilityLabel="Return to journey map"
-                    accessibilityRole="button"
-                >
-                    <Text className="happy-font-body-bold text-sm text-sage-600">
-                        Done for now
-                    </Text>
-                </PressableScale>
-            </View>
+                </View>
             </SafeAreaView>
         </View>
     );

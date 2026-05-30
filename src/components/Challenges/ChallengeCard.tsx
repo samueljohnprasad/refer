@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Pressable } from "react-native";
+import { Text } from "@/src/components/ui/Text";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -67,9 +68,8 @@ const ChallengeIconBubble: React.FC<{
 
   return (
     <View
-      className={`items-center justify-center rounded-full border border-sage-100 ${
-        size === "lg" ? "h-12 w-12" : "h-10 w-10"
-      } ${config.bgClassName}`}
+      className={`items-center justify-center rounded-full border border-sage-100 ${size === "lg" ? "h-12 w-12" : "h-10 w-10"
+        } ${config.bgClassName}`}
     >
       <HugeiconsIcon
         icon={config.icon}
@@ -132,7 +132,8 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
             <View className="ml-3 flex-1">
               <View className="flex-row items-center justify-between">
                 <Text
-                  className="happy-font-body-bold flex-1 pr-3 text-[15px] leading-5 text-ink"
+                  variant="body-bold"
+                  className="flex-1 pr-3 text-[15px] leading-5"
                   numberOfLines={1}
                 >
                   {challenge.title}
@@ -145,12 +146,10 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
                       color={SAGE[600]}
                       strokeWidth={2.5}
                     />
-                    <Text className="happy-font-body-bold text-[10px] uppercase tracking-wider text-sage-600">
-                      Done
-                    </Text>
+                    <Text variant="eyebrow" className="text-[10px]">Done</Text>
                   </View>
                 ) : (
-                  <Text className="happy-font-body-bold text-xs text-ink-muted">
+                  <Text variant="chip" color="muted">
                     {challenge.progress}/{challenge.condition.target}
                   </Text>
                 )}
@@ -158,9 +157,8 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
 
               <View className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-sage-100">
                 <View
-                  className={`h-full rounded-full ${
-                    isComplete ? "bg-sage-500" : "bg-sage-400"
-                  }`}
+                  className={`h-full rounded-full ${isComplete ? "bg-sage-500" : "bg-sage-400"
+                    }`}
                   style={{ width: `${progressPercent}%` }}
                 />
               </View>
@@ -193,13 +191,8 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
         <View className="ml-4 flex-1">
           <View className="flex-row items-start justify-between">
             <View className="flex-1">
-              <Text className="happy-font-body-bold text-lg text-ink">
-                {challenge.title}
-              </Text>
-              <Text
-                className="happy-font-body-medium mt-0.5 text-sm text-ink-muted"
-                numberOfLines={2}
-              >
+              <Text variant="h3">{challenge.title}</Text>
+              <Text variant="caption-muted" className="mt-0.5" numberOfLines={2}>
                 {challenge.description}
               </Text>
             </View>
@@ -212,9 +205,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
                   color={SAGE[600]}
                   strokeWidth={2.5}
                 />
-                <Text className="happy-font-body-bold text-xs text-sage-600">
-                  Done
-                </Text>
+                <Text variant="chip" color="sage">Done</Text>
               </View>
             )}
           </View>
@@ -224,19 +215,16 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       {/* Progress */}
       <View className="mt-4">
         <View className="flex-row items-center justify-between mb-2">
-          <Text className="happy-font-body-medium text-sm text-ink-muted">
+          <Text variant="caption-muted">
             {challenge.progress} of {challenge.condition.target}
           </Text>
-          <Text className="happy-font-body-bold text-sm text-ink">
-            {Math.round(progressPercent)}%
-          </Text>
+          <Text variant="label-bold">{Math.round(progressPercent)}%</Text>
         </View>
 
         <View className="h-1.5 overflow-hidden rounded-full bg-sage-100">
           <View
-            className={`h-full rounded-full ${
-              isComplete ? "bg-sage-500" : "bg-sage-400"
-            }`}
+            className={`h-full rounded-full ${isComplete ? "bg-sage-500" : "bg-sage-400"
+              }`}
             style={{ width: `${progressPercent}%` }}
           />
         </View>
@@ -245,7 +233,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
       {/* Rewards */}
       {!isComplete && (
         <View className="flex-row items-center mt-3 gap-3">
-          <Text className="happy-brand-eyebrow text-[10px]">Reward</Text>
+          <Text variant="eyebrow" className="text-[10px]">Reward</Text>
           <View className="flex-row items-center gap-1 rounded-lg bg-gold/15 px-2 py-0.5">
             <HugeiconsIcon
               icon={StarsIcon}
@@ -253,7 +241,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
               color={GOLD}
               strokeWidth={1.8}
             />
-            <Text className="happy-font-body-bold text-xs text-ink-soft">
+            <Text variant="chip" color="soft">
               {challenge.reward.xp} XP
             </Text>
           </View>

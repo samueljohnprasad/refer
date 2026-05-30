@@ -75,7 +75,7 @@ function JourneyMapHeaderInner({
     const progressPercent: number = Math.round(progressFraction * 100);
 
     return (
-        <SafeAreaView className="bg-white border-b border-slate-100" edges={['top']}>
+        <SafeAreaView className="bg-brand-surface border-b border-slate-100" edges={['top']}>
             {/* Main row */}
             <View className="flex-row items-center px-4 py-2 gap-2">
                 {/* Back button */}
@@ -90,10 +90,10 @@ function JourneyMapHeaderInner({
 
                 {/* Title + progress */}
                 <View className="flex-1 ml-1">
-                    <Text className="text-sm font-bold text-slate-900" numberOfLines={1}>
+                    <Text className="text-sm font-bold text-ink" numberOfLines={1}>
                         {title}
                     </Text>
-                    <Text className="text-xs text-slate-400">
+                    <Text className="text-xs text-ink-muted">
                         {completedNodes}/{totalNodes} completed
                     </Text>
                 </View>

@@ -78,10 +78,10 @@ function RewardBadge({ reward }: RewardBadgeProps): React.JSX.Element {
     >
       <Text className="text-2xl mr-2">{icon}</Text>
       <View>
-        <Text className="text-lg font-extrabold text-slate-800">
+        <Text className="text-lg font-extrabold text-ink">
           +{reward.amount}
         </Text>
-        <Text className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <Text className="text-xs font-bold text-ink-soft uppercase tracking-wider">
           {label}
         </Text>
       </View>
@@ -144,10 +144,10 @@ const NodeCompletionModal = forwardRef<BottomSheetModal, NodeCompletionModalProp
                 >
                   <Text className="text-4xl">🎉</Text>
                 </View>
-                <Text className="text-2xl font-extrabold text-slate-900 text-center">
+                <Text className="text-2xl font-extrabold text-ink text-center">
                   Lesson Complete!
                 </Text>
-                <Text className="text-base text-slate-500 text-center mt-1">
+                <Text className="text-base text-ink-soft text-center mt-1">
                   Great job finishing lesson {node.index + 1}
                 </Text>
               </View>
@@ -155,7 +155,7 @@ const NodeCompletionModal = forwardRef<BottomSheetModal, NodeCompletionModalProp
               {/* Rewards */}
               {node.rewards.length > 0 && (
                 <View className="mb-6">
-                  <Text className="text-sm font-extrabold text-slate-400 uppercase tracking-wider mb-3">
+                  <Text className="text-sm font-extrabold text-ink-muted uppercase tracking-wider mb-3">
                     Rewards Earned
                   </Text>
                   <View className="flex-row flex-wrap">

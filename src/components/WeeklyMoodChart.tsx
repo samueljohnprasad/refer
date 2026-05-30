@@ -42,6 +42,7 @@ import dayjs from "dayjs";
 import { ISO_DATE_FORMAT } from "../utils/date";
 import Loading from "./Loading";
 import { Card } from "@/src/components/ui/Card";
+import { Skeleton } from "@/src/components/ui/Skeleton";
 
 export interface WeeklyMoodChartProps {
   startDate: Date; // inclusive
@@ -222,9 +223,9 @@ const ChartTooltip = ({
     }}
     pointerEvents="none"
   >
-    <View className="bg-gray-800 px-3 py-2 rounded-lg shadow-lg items-center">
+    <View className="bg-ink px-3 py-2 rounded-lg shadow-lg items-center">
       <Text className="text-white text-xs font-bold">{title}</Text>
-      <Text className="text-gray-300 text-[10px]">{subtitle}</Text>
+      <Text className="text-ink-muted text-[10px]">{subtitle}</Text>
       <View
         style={{
           position: "absolute",
@@ -388,9 +389,8 @@ const ChartPage: React.FC<ChartPageProps> = React.memo(
                       const xMin: number = 0.5;
                       const xMax: number = totalDays + 0.5;
                       const t: number = (p.x - xMin) / (xMax - xMin);
-                      const offset: string = `${
-                        Math.max(0, Math.min(1, t)) * 100
-                      }%`;
+                      const offset: string = `${Math.max(0, Math.min(1, t)) * 100
+                        }%`;
                       const color: string = moodScoreToPale(p.y);
                       return (
                         <Stop
@@ -535,11 +535,11 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
           .map((p, idx) =>
             p.y !== null
               ? ({
-                  x: idx + 1,
-                  y: p.y,
-                  label: p.x,
-                  exactTime: p.exactTime,
-                } as NumericPoint)
+                x: idx + 1,
+                y: p.y,
+                label: p.x,
+                exactTime: p.exactTime,
+              } as NumericPoint)
               : null,
           )
           .filter((p): p is NumericPoint => p !== null),
@@ -677,9 +677,8 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
                       const xMin: number = 0.5;
                       const xMax: number = totalSlots + 0.5;
                       const t: number = (p.x - xMin) / (xMax - xMin);
-                      const offset: string = `${
-                        Math.max(0, Math.min(1, t)) * 100
-                      }%`;
+                      const offset: string = `${Math.max(0, Math.min(1, t)) * 100
+                        }%`;
                       const color: string = moodScoreToPale(p.y);
                       return (
                         <Stop
@@ -776,13 +775,12 @@ const DailyChartPage: React.FC<DailyChartPageProps> = React.memo(
               title={`Mood: ${moodLevelForScore(
                 selectedPoint.datum.original.y,
               )}`}
-              subtitle={`Time: ${
-                selectedPoint.datum.original.exactTime
-                  ? dayjs(selectedPoint.datum.original.exactTime).format(
-                      "h:mm A",
-                    )
-                  : selectedPoint.datum.original.label
-              }`}
+              subtitle={`Time: ${selectedPoint.datum.original.exactTime
+                ? dayjs(selectedPoint.datum.original.exactTime).format(
+                  "h:mm A",
+                )
+                : selectedPoint.datum.original.label
+                }`}
             />
           )}
         </View>
@@ -887,9 +885,8 @@ const TabSelector: React.FC<TabProps> = ({ activeTab, onTabChange }) => {
           accessibilityHint="Show mood chart for individual days"
         >
           <Text
-            className={`text-base font-medium ${
-              activeTab === "day" ? "text-gray-900" : "text-gray-400"
-            }`}
+            className={`text-base font-medium ${activeTab === "day" ? "text-ink" : "text-ink-muted"
+              }`}
           >
             Day
           </Text>
@@ -903,9 +900,8 @@ const TabSelector: React.FC<TabProps> = ({ activeTab, onTabChange }) => {
           accessibilityHint="Show mood chart for weekly averages"
         >
           <Text
-            className={`text-base font-medium ${
-              activeTab === "week" ? "text-gray-900" : "text-gray-400"
-            }`}
+            className={`text-base font-medium ${activeTab === "week" ? "text-ink" : "text-ink-muted"
+              }`}
           >
             Week
           </Text>
@@ -1000,7 +996,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   const weeklyAvg: number =
     weeklyNumericPoints.length > 0
       ? weeklyNumericPoints.reduce((s, p) => s + p.y, 0) /
-        weeklyNumericPoints.length
+      weeklyNumericPoints.length
       : 0;
   const weeklyAvgRounded = clampToMoodScore(weeklyAvg);
   const weeklyAvgLabel: MoodLevel = moodLevelForScore(weeklyAvgRounded);
@@ -1018,7 +1014,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   const dailyAvg: number =
     dailyNumericPoints.length > 0
       ? dailyNumericPoints.reduce((s, p) => s + p.y, 0) /
-        dailyNumericPoints.length
+      dailyNumericPoints.length
       : 0;
   const dailyAvgRounded = clampToMoodScore(dailyAvg);
   const dailyAvgLabel: MoodLevel = moodLevelForScore(dailyAvgRounded);
@@ -1040,9 +1036,9 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   const headerSubtitle: string =
     activeTab === "week"
       ? `${format(effectiveStartDate, "LLLL d")} - ${format(
-          effectiveEndDate,
-          "d, yyyy",
-        )}`
+        effectiveEndDate,
+        "d, yyyy",
+      )}`
       : format(effectiveDay, "LLLL d, yyyy");
 
   const chartHeight: number = 330;
@@ -1202,13 +1198,21 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     return (
       <View className="w-full gap-2">
         <View className="flex-row items-center justify-between px-1">
-          <Text className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">
+          <Text className="text-[11px] text-ink-muted font-bold uppercase tracking-widest">
             {headerTitle}
           </Text>
         </View>
         <Card variant="tile" radius="xl" haptic="none" contentClassName="p-4">
-          <View className="py-10 items-center justify-center">
-            <Loading />
+          <View className="gap-3 py-4">
+            <Skeleton height={12} width="40%" />
+            <Skeleton height={160} radius={12} />
+            <View className="flex-row justify-between">
+              <Skeleton height={10} width="15%" />
+              <Skeleton height={10} width="15%" />
+              <Skeleton height={10} width="15%" />
+              <Skeleton height={10} width="15%" />
+              <Skeleton height={10} width="15%" />
+            </View>
           </View>
         </Card>
       </View>
@@ -1218,7 +1222,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
     return (
       <View className="w-full gap-2">
         <View className="flex-row items-center justify-between px-1">
-          <Text className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">
+          <Text className="text-[11px] text-ink-muted font-bold uppercase tracking-widest">
             {headerTitle}
           </Text>
         </View>
@@ -1238,7 +1242,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
   return (
     <View className="w-full gap-2">
       <View className="flex-row items-center justify-between px-1">
-        <Text className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">
+        <Text className="text-[11px] text-ink-muted font-bold uppercase tracking-widest">
           {headerTitle}
         </Text>
       </View>
@@ -1258,7 +1262,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
         {/* Subtitle and Average Row */}
         <View className="flex-row items-end justify-between px-4 mb-2">
           <View className="flex-1">
-            <Text className="text-xs text-gray-500 font-medium">
+            <Text className="text-xs text-ink-soft font-medium">
               {headerSubtitle}
             </Text>
           </View>
@@ -1272,9 +1276,9 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
                 marginRight: 6,
               }}
             />
-            <Text className="text-xs text-gray-500">
+            <Text className="text-xs text-ink-soft">
               Average:{" "}
-              <Text className="font-semibold text-gray-700">
+              <Text className="font-semibold text-ink">
                 {avg ? avgLabel : "-"}
               </Text>
             </Text>

@@ -23,6 +23,7 @@ import * as Haptics from 'expo-haptics';
 
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { ConfettiExplosion } from '@/src/components/animations/ConfettiExplosion';
+import { SPRING_BOUNCY } from '@/src/utils/motionTokens';
 
 // ============================================================================
 // Types
@@ -72,8 +73,8 @@ function MilestoneBadge({ days, emoji }: { days: number; emoji: string }): React
 
     useEffect(() => {
         scale.value = withDelay(300, withSequence(
-            withSpring(1.3, { damping: 6, stiffness: 150 }),
-            withSpring(1, { damping: 10, stiffness: 120 }),
+            withSpring(1.3, SPRING_BOUNCY),
+            withSpring(1, SPRING_BOUNCY),
         ));
         glowOpacity.value = withDelay(300, withSequence(
             withTiming(0.8, { duration: 300 }),
@@ -110,7 +111,7 @@ function MilestoneTitle({ title }: { title: string }): React.JSX.Element {
     const opacity = useSharedValue<number>(0);
 
     useEffect(() => {
-        scale.value = withDelay(500, withSpring(1, { damping: 8, stiffness: 100 }));
+        scale.value = withDelay(500, withSpring(1, SPRING_BOUNCY));
         opacity.value = withDelay(500, withTiming(1, { duration: 400 }));
     }, [scale, opacity]);
 
@@ -121,7 +122,7 @@ function MilestoneTitle({ title }: { title: string }): React.JSX.Element {
 
     return (
         <Animated.View style={style} className="items-center mb-3">
-            <Text className="text-3xl font-bold text-slate-900 text-center">{title}</Text>
+            <Text className="text-3xl font-bold text-ink text-center">{title}</Text>
         </Animated.View>
     );
 }
@@ -137,7 +138,7 @@ function RewardDescription({ reward }: { reward: string }): React.JSX.Element {
 
     return (
         <Animated.View style={style} className="items-center mb-8 px-8">
-            <Text className="text-base text-slate-500 text-center leading-6">{reward}</Text>
+            <Text className="text-base text-ink-soft text-center leading-6">{reward}</Text>
         </Animated.View>
     );
 }
@@ -173,7 +174,7 @@ export default function StreakMilestoneModal({
 
     return (
         <Modal visible={visible} animationType="fade" transparent={false} onRequestClose={onDismiss}>
-            <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
+            <SafeAreaView className="flex-1 bg-brand-surface" edges={['top', 'bottom']}>
                 <ConfettiExplosion
                     isVisible={showConfetti}
                     count={config.confettiCount}

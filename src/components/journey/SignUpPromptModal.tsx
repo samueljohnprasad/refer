@@ -110,7 +110,7 @@ export default function SignUpPromptModal({
                 ]}
             >
                 <SafeAreaView
-                    className="bg-white rounded-t-3xl px-6 pt-6 pb-4"
+                    className="bg-brand-surface rounded-t-3xl px-6 pt-6 pb-4"
                     edges={['bottom']}
                 >
                     {/* Handle bar */}
@@ -124,12 +124,12 @@ export default function SignUpPromptModal({
                     </View>
 
                     {/* Title */}
-                    <Text className="text-2xl font-bold text-slate-900 text-center mb-2">
+                    <Text className="text-2xl font-bold text-ink text-center mb-2">
                         You're doing great!
                     </Text>
 
                     {/* Subtitle */}
-                    <Text className="text-base text-slate-500 text-center leading-6 mb-5 px-2">
+                    <Text className="text-base text-ink-soft text-center leading-6 mb-5 px-2">
                         Sign up to save your progress and continue your journey.
                     </Text>
 
@@ -139,7 +139,7 @@ export default function SignUpPromptModal({
                             <Text className="text-2xl font-bold text-violet-600">
                                 {completedNodes}
                             </Text>
-                            <Text className="text-xs text-slate-400">
+                            <Text className="text-xs text-ink-muted">
                                 {completedNodes === 1 ? 'node done' : 'nodes done'}
                             </Text>
                         </View>
@@ -148,7 +148,7 @@ export default function SignUpPromptModal({
                             <Text className="text-2xl font-bold text-amber-600">
                                 {guestXP}
                             </Text>
-                            <Text className="text-xs text-slate-400">IP earned</Text>
+                            <Text className="text-xs text-ink-muted">IP earned</Text>
                         </View>
                     </View>
 
@@ -189,7 +189,7 @@ export default function SignUpPromptModal({
                         accessibilityLabel="Maybe later"
                         accessibilityRole="button"
                     >
-                        <Text className="text-sm text-slate-400">Maybe later</Text>
+                        <Text className="text-sm text-ink-muted">Maybe later</Text>
                     </Pressable>
                 </SafeAreaView>
             </Animated.View>

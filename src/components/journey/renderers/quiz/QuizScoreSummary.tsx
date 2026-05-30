@@ -20,6 +20,7 @@ import Animated, {
 import type { QuizQuestion } from '@/src/types/journey/mentalHealth';
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { BRAND_SURFACE, GOLD, SAGE } from '@/lib/tokens';
+import { SPRING_BOUNCY } from '@/src/utils/motionTokens';
 
 // ============================================================================
 // Types
@@ -55,7 +56,7 @@ function ScoreCircle({
     isPerfect: boolean;
 }): React.JSX.Element {
     const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: withDelay(200, withSpring(1, { damping: 8, stiffness: 100 })) }],
+        transform: [{ scale: withDelay(200, withSpring(1, SPRING_BOUNCY)) }],
         opacity: withDelay(200, withSpring(1)),
     }));
 

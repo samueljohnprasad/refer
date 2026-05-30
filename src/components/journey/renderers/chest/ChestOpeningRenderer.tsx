@@ -39,6 +39,7 @@ import type { ChestContent, ChestRarity, ChestResponseData } from '@/src/types/j
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { ConfettiExplosion } from '@/src/components/animations/ConfettiExplosion';
 import { GOLD, SAGE } from '@/lib/tokens';
+import { SPRING_BOUNCY } from '@/src/utils/motionTokens';
 
 // ============================================================================
 // Types
@@ -159,7 +160,7 @@ function ChestShimmer({
     return (
         <Animated.View
             style={[shimmerStyle, { backgroundColor: glowColor }]}
-                className="absolute h-40 w-40 rounded-full"
+            className="absolute h-40 w-40 rounded-full"
             pointerEvents="none"
         />
     );
@@ -187,8 +188,8 @@ function ChestBody({
                 withTiming(0, { duration: 50 }),
             );
             chestScale.value = withSequence(
-                withSpring(1.15, { damping: 6, stiffness: 200 }),
-                withSpring(0.85, { damping: 12, stiffness: 150 }),
+                withSpring(1.15, SPRING_BOUNCY),
+                withSpring(0.85, SPRING_BOUNCY),
             );
         }
     }, [phase, shakeX, chestScale]);
@@ -316,69 +317,69 @@ export default function ChestOpeningRenderer({
     return (
         <View className="happy-brand-screen flex-1">
             <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
-            {/* Confetti */}
-            <ConfettiExplosion
-                isVisible={showConfetti}
-                count={config.particleCount}
-                duration={1400}
-                onAnimationComplete={handleConfettiComplete}
-            />
+                {/* Confetti */}
+                <ConfettiExplosion
+                    isVisible={showConfetti}
+                    count={config.particleCount}
+                    duration={1400}
+                    onAnimationComplete={handleConfettiComplete}
+                />
 
-            <View className="flex-1 items-center justify-center px-5">
-                {/* Title */}
-                <Text className="happy-brand-eyebrow mb-8">
-                    {title}
-                </Text>
+                <View className="flex-1 items-center justify-center px-5">
+                    {/* Title */}
+                    <Text className="happy-brand-eyebrow mb-8">
+                        {title}
+                    </Text>
 
-                {/* Chest area */}
-                <View className="items-center justify-center relative">
-                    <ChestShimmer glowColor={config.glowColor} visible={phase === 'idle'} />
-                    <ChestBody phase={phase} onTap={handleTapOpen} />
+                    {/* Chest area */}
+                    <View className="items-center justify-center relative">
+                        <ChestShimmer glowColor={config.glowColor} visible={phase === 'idle'} />
+                        <ChestBody phase={phase} onTap={handleTapOpen} />
+                    </View>
+
+                    {/* Tap to open prompt (idle only) */}
+                    {phase === 'idle' ? (
+                        <View className="mt-6 items-center">
+                            <Text className="happy-font-body-bold mb-1 text-base text-sage-600">
+                                Tap to Open!
+                            </Text>
+                            <Text className="happy-font-body-medium text-xs text-ink-muted">
+                                A reward awaits inside
+                            </Text>
+                        </View>
+                    ) : null}
+
+                    {/* Reward reveal (after opening) */}
+                    {phase === 'revealed' ? (
+                        <RewardReveal content={content} rarity={rarity} />
+                    ) : null}
                 </View>
 
-                {/* Tap to open prompt (idle only) */}
-                {phase === 'idle' ? (
-                    <View className="mt-6 items-center">
-                        <Text className="happy-font-body-bold mb-1 text-base text-sage-600">
-                            Tap to Open!
-                        </Text>
-                        <Text className="happy-font-body-medium text-xs text-ink-muted">
-                            A reward awaits inside
-                        </Text>
+                {/* CTA (only after reveal) */}
+                {phase === 'revealed' ? (
+                    <View className="px-5 pb-4 pt-2">
+                        <PressableScale
+                            onPress={handleComplete}
+                            scale={0.96}
+                            hapticStyle="medium"
+                            style={{
+                                backgroundColor: SAGE[500],
+                                paddingVertical: 16,
+                                borderRadius: 22,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderBottomWidth: 4,
+                                borderBottomColor: SAGE[700],
+                            }}
+                            accessibilityLabel="Continue"
+                            accessibilityRole="button"
+                        >
+                            <Text className="happy-font-body-bold text-base text-brand-surface">
+                                Awesome! 🎉
+                            </Text>
+                        </PressableScale>
                     </View>
                 ) : null}
-
-                {/* Reward reveal (after opening) */}
-                {phase === 'revealed' ? (
-                    <RewardReveal content={content} rarity={rarity} />
-                ) : null}
-            </View>
-
-            {/* CTA (only after reveal) */}
-            {phase === 'revealed' ? (
-                <View className="px-5 pb-4 pt-2">
-                    <PressableScale
-                        onPress={handleComplete}
-                        scale={0.96}
-                        hapticStyle="medium"
-                        style={{
-                            backgroundColor: SAGE[500],
-                            paddingVertical: 16,
-                            borderRadius: 22,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderBottomWidth: 4,
-                            borderBottomColor: SAGE[700],
-                        }}
-                        accessibilityLabel="Continue"
-                        accessibilityRole="button"
-                    >
-                        <Text className="happy-font-body-bold text-base text-brand-surface">
-                            Awesome! 🎉
-                        </Text>
-                    </PressableScale>
-                </View>
-            ) : null}
             </SafeAreaView>
         </View>
     );

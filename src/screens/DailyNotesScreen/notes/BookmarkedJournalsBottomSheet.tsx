@@ -12,6 +12,7 @@ import {
   presentationDragIndicator,
 } from "@expo/ui/swift-ui/modifiers";
 import { BRAND_SURFACE, INK_MUTED, SAGE } from "@/lib/tokens";
+import { SkeletonList } from "@/src/components/ui/Skeleton";
 
 interface BookmarkedJournalsBottomSheetProps {
   isOpen: boolean;
@@ -92,14 +93,7 @@ export const BookmarkedJournalsBottomSheet: React.FC<
                 >
                   <View className="px-6">
                     {isLoading && bookmarkedJournals.length === 0 ? (
-                      <View className="gap-3 pt-4">
-                        {[1, 2, 3].map((i) => (
-                          <View
-                            key={i}
-                            className="h-32 animate-pulse rounded-[24px] bg-sage-50"
-                          />
-                        ))}
-                      </View>
+                      <SkeletonList count={3} className="pt-4" />
                     ) : bookmarkedJournals && bookmarkedJournals.length > 0 ? (
                       <View className="pt-4">
                         <EntryCardsView

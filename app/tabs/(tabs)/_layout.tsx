@@ -15,20 +15,17 @@ import {
   Notebook02Icon,
 } from "@hugeicons/core-free-icons";
 import { useWidgetWeekMoods } from "@/hooks/data/useWidgetWeekMoods";
+import { SAGE, INK_MUTED } from "@/lib/tokens";
 
 export default function TabLayout() {
   useWidgetWeekMoods();
 
-  // Design system colors
-  const accentColor = "#5f7f58"; // brand sage
-  const inactiveColor = "#94A3B8"; // slate-400-ish
-
   return (
     <NativeTabs
-      tintColor={accentColor}
+      tintColor={SAGE[500]}
       minimizeBehavior="onScrollDown"
       labelStyle={{
-        color: inactiveColor, // inactive label color
+        color: INK_MUTED,
       }}
     // labelStyle={{
     //   // For the text color

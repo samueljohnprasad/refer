@@ -138,6 +138,21 @@ export type ThemeTokens = {
   readonly [K in keyof typeof LIGHT_TOKENS]: string;
 };
 
+// ─── Brand Dark Mode Tokens (groundwork — not yet active) ───────────────
+// Sage-tinted dark surfaces: near-black with a green cast, not pure grey.
+// When dark mode ships, these replace the light brand tokens.
+export const BRAND_DARK = {
+  canvas: "#0f1a0f",           // screen background — sage-tinted near-black
+  surface: "#1a2a1a",          // card face — slightly lifted from canvas
+  surfaceSoft: "#142414",      // icon wells, secondary surfaces
+  border: "#2a3a2a",           // card edges — sage-tinted dark grey
+  borderStrong: "#3a4a3a",     // shadow layer on 3D cards
+  ink: "#f0f5f0",              // primary text — warm white
+  inkSoft: "#a0b0a0",          // secondary text — sage-tinted mid
+  inkMuted: "#5a6a5a",         // decorative text — sage-tinted dark
+  tooltip: "#1a2a1a",          // tooltip/popover background
+} as const;
+
 // ─── Border Radius (numeric px values) ──────────────────────────────────
 export const RADIUS = {
   none: 0,

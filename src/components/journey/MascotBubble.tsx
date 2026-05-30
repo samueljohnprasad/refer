@@ -64,9 +64,9 @@ function getRandomMessage(exclude: string): string {
 // Sub-components
 // ---------------------------------------------------------------------------
 
-interface OwlAvatarProps {}
+interface OwlAvatarProps { }
 
-function OwlAvatar({}: OwlAvatarProps): React.JSX.Element {
+function OwlAvatar({ }: OwlAvatarProps): React.JSX.Element {
   return (
     <View
       className="items-center justify-center rounded-full"
@@ -99,7 +99,7 @@ function SpeechBubble({ message, side }: SpeechBubbleProps): React.JSX.Element {
 
   return (
     <View
-      className="rounded-2xl px-3 py-2 bg-white"
+      className="rounded-2xl px-3 py-2 bg-brand-surface"
       accessibilityRole="text"
       accessibilityLabel={`Mascot says: ${message}`}
       accessibilityLiveRegion="polite"
@@ -112,12 +112,12 @@ function SpeechBubble({ message, side }: SpeechBubbleProps): React.JSX.Element {
         elevation: 3,
       }}
     >
-      <Text className="text-xs font-bold text-slate-700 leading-4">
+      <Text className="text-xs font-bold text-ink leading-4">
         {message}
       </Text>
       {/* Speech bubble arrow pointing toward the owl */}
       <View
-        className="absolute bg-white"
+        className="absolute bg-brand-surface"
         style={{
           width: 10,
           height: 10,

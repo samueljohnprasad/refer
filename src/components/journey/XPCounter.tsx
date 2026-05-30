@@ -196,7 +196,7 @@ function XPCounterInner({
 
             {/* IP label (full mode only) */}
             {!compact ? (
-                <Text className="text-xs text-slate-400 ml-0.5">IP</Text>
+                <Text className="text-xs text-ink-muted ml-0.5">IP</Text>
             ) : null}
 
             {/* Flyover animations */}

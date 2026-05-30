@@ -211,7 +211,7 @@ function BouncingTooltip({
 
   return (
     <Animated.View
-      className="absolute -top-10 bg-white rounded-lg px-3 py-1.5 z-10"
+      className="absolute -top-10 bg-brand-surface rounded-lg px-3 py-1.5 z-10"
       style={[
         bounceStyle,
         {
@@ -233,7 +233,7 @@ function BouncingTooltip({
         {label ?? ""}
       </Text>
       <View
-        className="absolute -bottom-1.5 self-center w-3 h-3 bg-white"
+        className="absolute -bottom-1.5 self-center w-3 h-3 bg-brand-surface"
         style={{ transform: [{ rotate: "45deg" }], left: "42%" }}
       />
     </Animated.View>
@@ -342,7 +342,7 @@ function ConfigDrivenNodeInner({
   const handlePress = (): void => {
     if (!isInteractive) return;
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(
-      () => {},
+      () => { },
     );
     onPress(node);
   };
@@ -363,11 +363,10 @@ function ConfigDrivenNodeInner({
 
   const progressPercent: number = (node.progress ?? 0) * 100;
 
-  const a11yLabel: string = `${variant.label} ${node.index + 1}, ${node.status}${
-    isActive && node.progress !== undefined
-      ? `, ${Math.round(node.progress * 100)}% complete`
-      : ""
-  }`;
+  const a11yLabel: string = `${variant.label} ${node.index + 1}, ${node.status}${isActive && node.progress !== undefined
+    ? `, ${Math.round(node.progress * 100)}% complete`
+    : ""
+    }`;
 
   return (
     <View

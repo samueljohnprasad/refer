@@ -194,8 +194,8 @@ export default function SpotlightTooltip({
                 ) : null}
 
                 {/* Bubble */}
-                <View className="bg-white rounded-2xl px-5 py-4" style={{ elevation: 8, shadowColor: '#000', shadowOpacity: 0.15, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } }}>
-                    <Text className="text-sm text-slate-700 leading-5 mb-3 text-center">
+                <View className="bg-brand-surface rounded-2xl px-5 py-4" style={{ elevation: 8, shadowColor: '#000', shadowOpacity: 0.15, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } }}>
+                    <Text className="text-sm text-ink leading-5 mb-3 text-center">
                         {message}
                     </Text>
 

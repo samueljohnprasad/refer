@@ -1,150 +1,138 @@
 /**
- * DailyPracticeBonusNode (P1.4.6)
+ * GuestSignUpSheet
  *
- * Special "Daily Practice" node injected at the top of the journey map.
- * - Content: rotating exercise from completed sections
- * - Replayable — can be completed once per day
- * - Bonus XP: +15 IP
- * - Distinct visual: sparkle icon, different color than regular nodes
+ * Bottom sheet presented to guest users when they attempt to access
+ * a node beyond the free trial (node index >= 2).
  *
- * Pure presentational — all data and actions via props.
+ * Shows:
+ * - How many nodes + XP they earned so far (social proof)
+ * - Primary CTA: "Save My Progress" → opens SignInBottomSheet
+ * - Secondary: "Not Now" → dismiss
+ *
+ * Presentation:
+ * - Uses ShortBottomModal (existing pattern)
+ * - forwardRef so the parent can call .present() / .dismiss()
  */
 
-import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    withRepeat,
-    withSequence,
-    withTiming,
-    Easing,
-} from 'react-native-reanimated';
+import React, { forwardRef, useCallback, useRef } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import { LockIcon, SparklesIcon } from '@hugeicons/core-free-icons';
+import * as Haptics from 'expo-haptics';
 
-import { PressableScale } from '@/src/components/ui/PressableScale';
+import ShortBottomModal from '@/src/components/ShortBottomModal';
+import SignInBottomSheet from '@/src/components/SignInBottomSheet';
+import type { GuestProgress } from '@/hooks/data/useGuestProgress';
 
-// ============================================================================
+// ---------------------------------------------------------------------------
 // Types
-// ============================================================================
+// ---------------------------------------------------------------------------
 
-export interface DailyPracticeBonusNodeProps {
-    /** Title of today's exercise (e.g., "Today: Try Box Breathing") */
-    exerciseTitle: string;
-    /** Whether this has already been completed today */
-    completedToday: boolean;
-    /** XP reward amount */
-    xpReward: number;
-    /** Called when user taps the bonus node */
-    onPress: () => void;
+interface GuestSignUpSheetProps {
+    guestProgress: GuestProgress;
+    onDismiss?: () => void;
 }
 
-// ============================================================================
-// Constants
-// ============================================================================
-
-const SPARKLE_DURATION: number = 2000;
-
-// ============================================================================
+// ---------------------------------------------------------------------------
 // Component
-// ============================================================================
+// ---------------------------------------------------------------------------
 
-function DailyPracticeBonusNodeInner({
-    exerciseTitle,
-    completedToday,
-    xpReward,
-    onPress,
-}: DailyPracticeBonusNodeProps): React.JSX.Element {
-    const sparkleRotate = useSharedValue<number>(0);
-    const glowScale = useSharedValue<number>(1);
+const GuestSignUpSheet = forwardRef<BottomSheetModal | null, GuestSignUpSheetProps>(
+    ({ guestProgress, onDismiss }, ref) => {
+        const signInSheetRef = useRef<BottomSheetModal>(null);
 
-    // Sparkle animation (only when not completed)
-    useEffect(() => {
-        if (!completedToday) {
-            sparkleRotate.value = withRepeat(
-                withTiming(360, { duration: 4000, easing: Easing.linear }),
-                -1,
-                false,
-            );
-            glowScale.value = withRepeat(
-                withSequence(
-                    withTiming(1.08, { duration: SPARKLE_DURATION / 2 }),
-                    withTiming(1, { duration: SPARKLE_DURATION / 2 }),
-                ),
-                -1,
-                true,
-            );
-        }
-    }, [completedToday, sparkleRotate, glowScale]);
+        const handleSaveProgress = useCallback((): void => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            // Dismiss this sheet first, then present sign-in
+            (ref as React.RefObject<BottomSheetModal>)?.current?.dismiss();
+            setTimeout(() => {
+                signInSheetRef.current?.present();
+            }, 300);
+        }, [ref]);
 
-    const glowStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: glowScale.value }],
-    }));
+        const handleNotNow = useCallback((): void => {
+            Haptics.selectionAsync();
+            (ref as React.RefObject<BottomSheetModal>)?.current?.dismiss();
+            onDismiss?.();
+        }, [ref, onDismiss]);
 
-    return (
-        <View className="w-full items-center py-3">
-            <PressableScale
-                onPress={onPress}
-                scale={0.95}
-                hapticStyle="light"
-                disabled={completedToday}
-                style={{ alignItems: 'center', opacity: completedToday ? 0.6 : 1 }}
-                accessibilityLabel={
-                    completedToday
-                        ? 'Daily practice completed'
-                        : `Daily practice: ${exerciseTitle}. Tap to start.`
-                }
-                accessibilityRole="button"
-                accessibilityState={{ disabled: completedToday }}
-            >
-                {/* Glow ring (animated) */}
-                {!completedToday ? (
-                    <Animated.View
-                        style={[glowStyle, { position: 'absolute', width: 80, height: 80, borderRadius: 40 }]}
-                        className="bg-amber-100"
-                        pointerEvents="none"
-                    />
-                ) : null}
+        const completedCount: number = guestProgress.completedNodeIds.length;
 
-                {/* Node circle */}
-                <View
-                    className={`w-16 h-16 rounded-full items-center justify-center border-2 ${completedToday
-                            ? 'bg-green-100 border-green-300'
-                            : 'bg-amber-50 border-amber-300'
-                        }`}
+        return (
+            <>
+                <ShortBottomModal
+                    ref={ref}
+                    snapPoints={['48%']}
+                    onDismiss={onDismiss}
                 >
-                    <Text style={{ fontSize: 28 }}>
-                        {completedToday ? '✅' : '✨'}
-                    </Text>
-                </View>
+                    <View className="flex-1 px-6 pt-5 pb-8">
+                        {/* Icon */}
+                        <View className="w-14 h-14 rounded-2xl bg-purple-100 items-center justify-center mb-4">
+                            <HugeiconsIcon icon={LockIcon} size={28} color="#7B61FF" />
+                        </View>
 
-                {/* Label */}
-                <Text
-                    className={`text-xs font-bold mt-2 text-center ${completedToday ? 'text-green-600' : 'text-amber-700'
-                        }`}
-                >
-                    {completedToday ? 'Done for Today!' : 'Daily Practice'}
-                </Text>
-
-                {/* Exercise title */}
-                <Text
-                    className="text-xs text-slate-500 mt-0.5 text-center px-4"
-                    numberOfLines={1}
-                >
-                    {exerciseTitle}
-                </Text>
-
-                {/* XP badge */}
-                {!completedToday ? (
-                    <View className="bg-amber-50 border border-amber-200 px-3 py-1 rounded-full mt-2">
-                        <Text className="text-xs font-bold text-amber-600">
-                            +{xpReward} IP
+                        {/* Headline */}
+                        <Text
+                            className="text-ink mb-1"
+                            style={{ fontFamily: 'CormorantSemiBold', fontSize: 26, lineHeight: 32 }}
+                        >
+                            Sign up to keep going
                         </Text>
-                    </View>
-                ) : null}
-            </PressableScale>
-        </View>
-    );
-}
+                        <Text className="text-ink-soft text-[15px] leading-6 mb-5">
+                            You've completed{' '}
+                            <Text className="text-purple-600 font-semibold">
+                                {completedCount} {completedCount === 1 ? 'node' : 'nodes'}
+                            </Text>{' '}
+                            and earned{' '}
+                            <Text className="text-purple-600 font-semibold">
+                                {guestProgress.tempXP} IP
+                            </Text>
+                            . Create a free account to save your progress and unlock the rest of your journey.
+                        </Text>
 
-export const DailyPracticeBonusNode = React.memo(DailyPracticeBonusNodeInner);
-export default DailyPracticeBonusNode;
+                        {/* Progress recap pill */}
+                        {completedCount > 0 && (
+                            <View className="flex-row items-center gap-2 bg-purple-50 rounded-2xl px-4 py-3 mb-5">
+                                <HugeiconsIcon icon={SparklesIcon} size={18} color="#7B61FF" />
+                                <Text className="text-purple-700 text-sm font-semibold">
+                                    {completedCount} {completedCount === 1 ? 'lesson' : 'lessons'} · {guestProgress.tempXP} Insight Points saved
+                                </Text>
+                            </View>
+                        )}
+
+                        {/* Primary CTA */}
+                        <TouchableOpacity
+                            onPress={handleSaveProgress}
+                            activeOpacity={0.8}
+                            className="w-full bg-sage-700 rounded-full h-14 items-center justify-center mb-3"
+                            accessibilityRole="button"
+                            accessibilityLabel="Save my progress and create account"
+                        >
+                            <Text className="text-white font-semibold text-base">
+                                Save My Progress
+                            </Text>
+                        </TouchableOpacity>
+
+                        {/* Secondary */}
+                        <TouchableOpacity
+                            onPress={handleNotNow}
+                            activeOpacity={0.7}
+                            className="w-full h-11 items-center justify-center"
+                            accessibilityRole="button"
+                            accessibilityLabel="Dismiss, not now"
+                        >
+                            <Text className="text-ink-muted text-sm font-medium">Not Now</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ShortBottomModal>
+
+                {/* Sign-in sheet — stacked behind the guest sheet */}
+                <SignInBottomSheet ref={signInSheetRef} />
+            </>
+        );
+    },
+);
+
+GuestSignUpSheet.displayName = 'GuestSignUpSheet';
+export default GuestSignUpSheet;

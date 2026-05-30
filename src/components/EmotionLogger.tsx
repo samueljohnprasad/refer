@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "@/src/components/ui/Text";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -102,14 +103,14 @@ const EmotionItem: React.FC<{
               className="absolute -right-[2px] -top-[2px] h-[18px] min-w-[18px] items-center justify-center rounded-full border-[1.5px] border-brand-surface bg-sage-pill px-1"
               style={animatedCountStyle}
             >
-              <Text className="happy-font-body-bold z-10 text-[10px] text-sage-600">
+              <Text variant="chip" color="sage" className="z-10 text-[10px]">
                 {count > 99 ? "99+" : count}
               </Text>
             </Animated.View>
           )}
         </Animated.View>
       </PressableScale>
-      <Text className="happy-font-body-semibold mt-1 text-[11px] text-ink-muted">
+      <Text variant="chip" color="muted" className="mt-1 text-[11px]">
         {emotion.name}
       </Text>
     </View>
@@ -151,7 +152,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
             challenges?.updateProgress("mood_count");
             onEmotionLogged?.(emotionScore, updated);
           });
-        } catch {}
+        } catch { }
       },
       [
         challenges,
@@ -165,7 +166,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     return (
       <View className="gap-2">
         <View className="flex-row items-center justify-between px-1 mb-2">
-          <Text className="happy-brand-eyebrow">Daily Mood Log</Text>
+          <Text variant="eyebrow">Daily Mood Log</Text>
         </View>
 
         <Card

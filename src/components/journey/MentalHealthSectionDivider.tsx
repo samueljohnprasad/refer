@@ -57,7 +57,7 @@ function MentalHealthSectionDividerInner({
                     ? 'bg-slate-50 border-slate-200'
                     : isComplete
                         ? 'bg-green-50 border-green-200'
-                        : 'bg-white border-slate-200'
+                        : 'bg-brand-surface border-slate-200'
                     }`}
             >
                 {/* Icon */}
@@ -66,14 +66,14 @@ function MentalHealthSectionDividerInner({
                 ) : isComplete ? (
                     <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} color="#16A34A" />
                 ) : (
-                    <Text className="text-sm font-bold text-slate-500">
+                    <Text className="text-sm font-bold text-ink-soft">
                         {sectionNumber}
                     </Text>
                 )}
 
                 {/* Title */}
                 <Text
-                    className={`text-sm font-semibold ${isLocked ? 'text-slate-400' : 'text-slate-700'
+                    className={`text-sm font-semibold ${isLocked ? 'text-ink-muted' : 'text-ink'
                         }`}
                     numberOfLines={1}
                 >
@@ -83,12 +83,12 @@ function MentalHealthSectionDividerInner({
 
             {/* Progress or locked message */}
             {isLocked ? (
-                <Text className="text-xs text-slate-400 mt-2 text-center">
+                <Text className="text-xs text-ink-muted mt-2 text-center">
                     Complete previous section to unlock
                 </Text>
             ) : (
                 <Text
-                    className={`text-xs mt-2 text-center ${isComplete ? 'text-green-600 font-semibold' : 'text-slate-400'
+                    className={`text-xs mt-2 text-center ${isComplete ? 'text-green-600 font-semibold' : 'text-ink-muted'
                         }`}
                 >
                     {isComplete

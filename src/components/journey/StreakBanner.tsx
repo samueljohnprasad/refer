@@ -156,12 +156,12 @@ function StreakBannerInner({
                         >
                             {currentStreak}
                         </Text>
-                        <Text className="text-xs text-slate-500">
+                        <Text className="text-xs text-ink-soft">
                             {currentStreak === 1 ? 'day' : 'day streak'}
                         </Text>
                     </View>
                 ) : (
-                    <Text className="text-xs font-semibold text-slate-500">
+                    <Text className="text-xs font-semibold text-ink-soft">
                         Start your streak!
                     </Text>
                 )}

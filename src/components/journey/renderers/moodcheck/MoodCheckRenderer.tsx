@@ -70,7 +70,7 @@ const MOOD_OPTIONS: Array<{
         { rating: 5, emotion: Emotion.Great, label: 'Great' },
     ];
 
-const SPRING_CONFIG = { damping: 10, stiffness: 180 };
+import { APP_SPRING as SPRING_CONFIG } from "@/src/utils/motionTokens";
 
 // ============================================================================
 // Sub-components
@@ -203,16 +203,16 @@ export default function MoodCheckRenderer({
                                     How are you, really?
                                 </Text>
                                 <View className="flex-row items-start justify-between">
-                                {MOOD_OPTIONS.map((option) => (
-                                    <MoodEmojiButton
-                                        key={option.rating}
-                                        rating={option.rating}
-                                        emotion={option.emotion}
-                                        label={option.label}
-                                        isSelected={selectedRating === option.rating}
-                                        onPress={handleSelectMood}
-                                    />
-                                ))}
+                                    {MOOD_OPTIONS.map((option) => (
+                                        <MoodEmojiButton
+                                            key={option.rating}
+                                            rating={option.rating}
+                                            emotion={option.emotion}
+                                            label={option.label}
+                                            isSelected={selectedRating === option.rating}
+                                            onPress={handleSelectMood}
+                                        />
+                                    ))}
                                 </View>
                             </RendererSectionCard>
 

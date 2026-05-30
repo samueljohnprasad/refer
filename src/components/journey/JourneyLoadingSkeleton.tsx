@@ -48,7 +48,7 @@ function SkeletonBox({
 
   return (
     <Animated.View
-      className={`bg-gray-200 ${className}`}
+      className={`bg-sage-100 ${className}`}
       style={[{ width: width as number, height, borderRadius }, animatedStyle]}
     />
   );
@@ -71,9 +71,9 @@ export default function JourneyLoadingSkeleton(): React.JSX.Element {
   }));
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-brand-canvas">
       {/* Header skeleton */}
-      <View className="w-full px-5 pt-2 pb-5 bg-gray-300">
+      <View className="w-full px-5 pt-2 pb-5 bg-brand-border">
         <SafeAreaView edges={["top"]}>
           <View className="flex-row items-center justify-between mb-4">
             <SkeletonBox width={32} height={32} borderRadius={8} />

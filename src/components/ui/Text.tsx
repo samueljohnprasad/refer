@@ -140,6 +140,7 @@ interface TextProps extends Omit<RNTextProps, "style"> {
   variant?: TextVariants["variant"];
   color?: TextVariants["color"];
   className?: string;
+  allowFontScaling?: boolean;
   children: React.ReactNode;
 }
 
@@ -147,11 +148,17 @@ export function Text({
   variant,
   color,
   className,
+  allowFontScaling = true,
   children,
   ...rest
 }: TextProps) {
   return (
-    <RNText className={textTv({ variant, color, class: className })} {...rest}>
+    <RNText
+      className={textTv({ variant, color, class: className })}
+      allowFontScaling={allowFontScaling}
+      maxFontSizeMultiplier={1.5}
+      {...rest}
+    >
       {children}
     </RNText>
   );

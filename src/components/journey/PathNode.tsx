@@ -127,7 +127,7 @@ function BouncingTooltip({ label }: BouncingTooltipProps): React.JSX.Element {
   // Always render — hiding via opacity keeps hook call count stable
   return (
     <Animated.View
-      className="absolute -top-10 bg-white rounded-lg px-3 py-1.5 z-10"
+      className="absolute -top-10 bg-brand-surface rounded-lg px-3 py-1.5 z-10"
       style={[
         bounceStyle,
         {
@@ -148,7 +148,7 @@ function BouncingTooltip({ label }: BouncingTooltipProps): React.JSX.Element {
         {label ?? ""}
       </Text>
       <View
-        className="absolute -bottom-1.5 self-center w-3 h-3 bg-white"
+        className="absolute -bottom-1.5 self-center w-3 h-3 bg-brand-surface"
         style={{ transform: [{ rotate: "45deg" }], left: "42%" }}
       />
     </Animated.View>

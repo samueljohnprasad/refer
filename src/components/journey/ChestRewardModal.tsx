@@ -76,10 +76,10 @@ const ChestRewardModal = forwardRef<BottomSheetModal, ChestRewardModalProps>(
             <View className="w-16 h-16 bg-yellow-100 rounded-2xl items-center justify-center mb-3">
               <Text className="text-3xl">{isLocked ? "🔒" : "🎁"}</Text>
             </View>
-            <Text className="text-xl font-semibold text-gray-900 text-center">
+            <Text className="text-xl font-semibold text-ink text-center">
               {isLocked ? "Locked Chest" : "Treasure Chest!"}
             </Text>
-            <Text className="text-sm text-gray-600 text-center mt-1">
+            <Text className="text-sm text-ink-soft text-center mt-1">
               {isLocked
                 ? "Complete more nodes to unlock this chest"
                 : `You've found chest ${node.index + 1}!`}
@@ -89,7 +89,7 @@ const ChestRewardModal = forwardRef<BottomSheetModal, ChestRewardModalProps>(
           {/* Rewards Section */}
           {!isLocked && node.rewards && node.rewards.length > 0 && (
             <View className="mb-6">
-              <Text className="text-lg font-semibold text-gray-900 mb-3">
+              <Text className="text-lg font-semibold text-ink mb-3">
                 Rewards
               </Text>
               <View className="flex-row flex-wrap">
@@ -107,7 +107,7 @@ const ChestRewardModal = forwardRef<BottomSheetModal, ChestRewardModalProps>(
                             ? "❤️"
                             : "🏆"}
                     </Text>
-                    <Text className="text-sm font-medium text-gray-900">
+                    <Text className="text-sm font-medium text-ink">
                       {reward.amount} {reward.type}
                     </Text>
                   </View>
@@ -121,14 +121,12 @@ const ChestRewardModal = forwardRef<BottomSheetModal, ChestRewardModalProps>(
             onPress={handleClaim}
             disabled={isLocked}
             scale={0.95}
-            className={`w-full py-4 rounded-2xl items-center ${
-              isLocked ? "bg-gray-200" : "bg-violet-600"
-            }`}
+            className={`w-full py-4 rounded-2xl items-center ${isLocked ? "bg-sage-100" : "bg-violet-600"
+              }`}
           >
             <Text
-              className={`text-lg font-semibold ${
-                isLocked ? "text-gray-400" : "text-white"
-              }`}
+              className={`text-lg font-semibold ${isLocked ? "text-ink-muted" : "text-white"
+                }`}
             >
               {isLocked ? "Locked" : "Claim Rewards"}
             </Text>

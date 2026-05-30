@@ -66,7 +66,7 @@ const STATE_STYLES: Record<OptionState, { container: string; badge: string; text
     },
 };
 
-const SPRING_CONFIG = { damping: 12, stiffness: 200 };
+import { APP_SPRING as SPRING_CONFIG } from "@/src/utils/motionTokens";
 
 // ============================================================================
 // Component

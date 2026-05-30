@@ -145,7 +145,7 @@ function JourneyRow({
                 <Animated.View style={rowAnimatedStyle}>
                     <Pressable
                         onPress={handlePress}
-                        className={`flex-row items-center px-5 py-4 rounded-2xl bg-white ${item.isActive ? "border-2" : "border border-gray-100"
+                        className={`flex-row items-center px-5 py-4 rounded-2xl bg-brand-surface ${item.isActive ? "border-2" : "border border-gray-100"
                             }`}
                         style={item.isActive ? { borderColor: accentColor } : undefined}
                         accessibilityRole="button"
@@ -175,7 +175,7 @@ function JourneyRow({
                         <View className="flex-1 mr-3">
                             <View className="flex-row items-center gap-2">
                                 <Text
-                                    className={`text-base font-bold ${item.isActive ? "text-gray-900" : "text-gray-700"
+                                    className={`text-base font-bold ${item.isActive ? "text-ink" : "text-ink"
                                         }`}
                                     numberOfLines={1}
                                 >
@@ -198,7 +198,7 @@ function JourneyRow({
 
                             {/* Current unit or status */}
                             <Text
-                                className="text-sm text-gray-400 mt-0.5"
+                                className="text-sm text-ink-muted mt-0.5"
                                 numberOfLines={1}
                             >
                                 {isCompleted
@@ -209,7 +209,7 @@ function JourneyRow({
 
                             {/* Progress bar */}
                             {!isCompleted && (
-                                <View className="h-1.5 bg-gray-100 rounded-full mt-2">
+                                <View className="h-1.5 bg-sage-50 rounded-full mt-2">
                                     <View
                                         className="h-1.5 rounded-full"
                                         style={{
@@ -314,10 +314,10 @@ export function JourneySwitcherSheet({
                         <Text className="text-lg">🏳️</Text>
                     </View>
                     <View>
-                        <Text className="text-2xl font-bold text-gray-900">
+                        <Text className="text-2xl font-bold text-ink">
                             My Journeys
                         </Text>
-                        <Text className="text-sm text-gray-500">
+                        <Text className="text-sm text-ink-soft">
                             {items.length} {items.length === 1 ? "journey" : "journeys"}{" "}
                             enrolled
                         </Text>
@@ -334,7 +334,7 @@ export function JourneySwitcherSheet({
                 {/* Active journeys */}
                 {activeItems.length > 0 && (
                     <View className="pt-5">
-                        <Text className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">
+                        <Text className="text-xs font-bold uppercase tracking-widest text-ink-muted mb-3 px-1">
                             In Progress
                         </Text>
                         {activeItems.map(
@@ -353,7 +353,7 @@ export function JourneySwitcherSheet({
                 {/* Completed journeys */}
                 {completedItems.length > 0 && (
                     <View className="pt-4">
-                        <Text className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">
+                        <Text className="text-xs font-bold uppercase tracking-widest text-ink-muted mb-3 px-1">
                             Completed
                         </Text>
                         {completedItems.map(
@@ -372,17 +372,17 @@ export function JourneySwitcherSheet({
                 {/* Empty state */}
                 {items.length === 0 && (
                     <View className="items-center justify-center py-20">
-                        <View className="w-20 h-20 rounded-full bg-gray-100 items-center justify-center mb-4">
+                        <View className="w-20 h-20 rounded-full bg-sage-50 items-center justify-center mb-4">
                             <Feather
                                 name="map"
                                 size={40}
                                 color="#9CA3AF"
                             />
                         </View>
-                        <Text className="text-lg font-semibold text-gray-800 mb-2">
+                        <Text className="text-lg font-semibold text-ink mb-2">
                             No Journeys Yet
                         </Text>
-                        <Text className="text-sm text-gray-500 text-center px-8">
+                        <Text className="text-sm text-ink-soft text-center px-8">
                             Start your first journey to begin tracking your progress
                         </Text>
                     </View>

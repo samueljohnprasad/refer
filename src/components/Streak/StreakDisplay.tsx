@@ -44,9 +44,8 @@ const WeekDayLabels: React.FC<{ weeklyProgress: boolean[] }> = React.memo(
         <Text
           key={day}
           variant="label-bold"
-          className={`w-9 text-center ${
-            weeklyProgress[index] ? "text-bee-yellow" : "text-ink-muted"
-          }`}
+          className={`w-9 text-center ${weeklyProgress[index] ? "text-bee-yellow" : "text-ink-muted"
+            }`}
         >
           {day}
         </Text>
@@ -198,8 +197,9 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                     />
                     {/* Streak number overlaid on the lottie flame */}
                     <RNText
-                      className="happy-font-heading-bold text-white text-[52px] z-10 mt-5 text-center"
+                      className="text-[52px] z-10 mt-5 text-center text-brand-surface"
                       style={{
+                        fontFamily: "FrauncesBold",
                         textShadowColor: "rgba(0,0,0,0.45)",
                         textShadowOffset: { width: 0, height: 2 },
                         textShadowRadius: 6,
@@ -211,8 +211,8 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
 
                   {/* "day streak!" label — parrot-orange matches the flame */}
                   <RNText
-                    className="happy-font-heading text-[22px] leading-[26px] mt-2 text-center"
-                    style={{ color: PARROT_ORANGE }}
+                    className="text-[22px] leading-[26px] mt-2 text-center"
+                    style={{ fontFamily: "FrauncesSemiBold", color: PARROT_ORANGE }}
                   >
                     day streak!
                   </RNText>
@@ -233,21 +233,22 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                       className="text-center mt-4"
                     >
                       You're halfway to your{" "}
-                      <RNText
-                        className="happy-font-body-bold text-[17px] leading-[22px]"
+                      <Text
+                        variant="body-bold"
                         style={{ color: PARROT_ORANGE }}
                       >
                         perfect week!
-                      </RNText>
+                      </Text>
                     </Text>
                   )}
                   {isPerfectWeek && (
-                    <RNText
-                      className="happy-font-body-bold text-[17px] leading-[22px] text-center mt-4"
+                    <Text
+                      variant="body-bold"
+                      className="text-center mt-4"
                       style={{ color: PARROT_ORANGE }}
                     >
                       🎉 Perfect week achieved!
-                    </RNText>
+                    </Text>
                   )}
 
                   {/* ── Stat row: Longest | Freezes ─────────────────── */}

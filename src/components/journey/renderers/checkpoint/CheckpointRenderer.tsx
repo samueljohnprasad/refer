@@ -73,8 +73,7 @@ const BADGE_MAP: Record<string, string> = {
     default: '⭐',
 };
 
-const SPRING_BOUNCY = { damping: 8, stiffness: 100 };
-const SPRING_GENTLE = { damping: 15, stiffness: 120 };
+import { SPRING_BOUNCY, SHEET_SPRING as SPRING_GENTLE } from "@/src/utils/motionTokens";
 
 // ============================================================================
 // Sub-components
@@ -308,87 +307,87 @@ export default function CheckpointRenderer({
     return (
         <View className="happy-brand-screen flex-1">
             <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
-            {/* Confetti overlay */}
-            <ConfettiExplosion
-                isVisible={showConfetti}
-                count={30}
-                duration={1200}
-                onAnimationComplete={handleConfettiComplete}
-            />
-
-            <ScrollView
-                className="flex-1"
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingTop: 40, paddingBottom: 120 }}
-            >
-                {/* Animated title */}
-                <CelebrationTitle isJourneyComplete={isJourneyComplete} />
-
-                {/* Badge reveal */}
-                <BadgeReveal
-                    badgeKey={content.badge_key}
-                    badgeName={content.badge_name}
+                {/* Confetti overlay */}
+                <ConfettiExplosion
+                    isVisible={showConfetti}
+                    count={30}
+                    duration={1200}
+                    onAnimationComplete={handleConfettiComplete}
                 />
 
-                {/* Badge description */}
-                <Text className="happy-font-body-medium mb-6 px-4 text-center text-sm leading-5 text-ink-muted">
-                    {content.badge_description}
-                </Text>
-
-                {/* XP earned */}
-                <XPBadge xp={xpEarned} />
-
-                {/* Skills recap */}
-                <SkillsRecap skills={content.skills_recap} />
-
-                {/* Mood comparison */}
-                {showMoodComparison && moodBefore && moodAfter ? (
-                    <MoodComparison moodBefore={moodBefore} moodAfter={moodAfter} />
-                ) : null}
-
-                {/* Next journey suggestion (if journey complete) */}
-                {isJourneyComplete && content.next_journey_suggestion ? (
-                    <View className="happy-brand-preview-tile mb-5 rounded-[24px] p-5">
-                        <Text className="happy-brand-eyebrow mb-2">
-                            Recommended Next
-                        </Text>
-                        <Text className="happy-font-body-bold mb-1 text-base text-ink">
-                            {content.next_journey_suggestion.title}
-                        </Text>
-                        <Text className="happy-font-body-medium text-sm leading-5 text-ink-soft">
-                            {content.next_journey_suggestion.reason}
-                        </Text>
-                    </View>
-                ) : null}
-            </ScrollView>
-
-            {/* CTA button */}
-            <View className="px-5 pb-4 pt-2">
-                <PressableScale
-                    onPress={onComplete}
-                    scale={0.96}
-                    hapticStyle="medium"
-                    style={{
-                        backgroundColor: SAGE[500],
-                        paddingVertical: 16,
-                        borderRadius: 22,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderBottomWidth: 4,
-                        borderBottomColor: SAGE[700],
-                    }}
-                    accessibilityLabel={
-                        isJourneyComplete ? 'Complete journey' : 'Continue to next section'
-                    }
-                    accessibilityRole="button"
+                <ScrollView
+                    className="flex-1"
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingTop: 40, paddingBottom: 120 }}
                 >
-                    <Text className="happy-font-body-bold mr-1 text-base text-brand-surface">
-                        {isJourneyComplete ? 'Journey Complete!' : 'Continue'}
+                    {/* Animated title */}
+                    <CelebrationTitle isJourneyComplete={isJourneyComplete} />
+
+                    {/* Badge reveal */}
+                    <BadgeReveal
+                        badgeKey={content.badge_key}
+                        badgeName={content.badge_name}
+                    />
+
+                    {/* Badge description */}
+                    <Text className="happy-font-body-medium mb-6 px-4 text-center text-sm leading-5 text-ink-muted">
+                        {content.badge_description}
                     </Text>
-                    <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={BRAND_SURFACE} />
-                </PressableScale>
-            </View>
+
+                    {/* XP earned */}
+                    <XPBadge xp={xpEarned} />
+
+                    {/* Skills recap */}
+                    <SkillsRecap skills={content.skills_recap} />
+
+                    {/* Mood comparison */}
+                    {showMoodComparison && moodBefore && moodAfter ? (
+                        <MoodComparison moodBefore={moodBefore} moodAfter={moodAfter} />
+                    ) : null}
+
+                    {/* Next journey suggestion (if journey complete) */}
+                    {isJourneyComplete && content.next_journey_suggestion ? (
+                        <View className="happy-brand-preview-tile mb-5 rounded-[24px] p-5">
+                            <Text className="happy-brand-eyebrow mb-2">
+                                Recommended Next
+                            </Text>
+                            <Text className="happy-font-body-bold mb-1 text-base text-ink">
+                                {content.next_journey_suggestion.title}
+                            </Text>
+                            <Text className="happy-font-body-medium text-sm leading-5 text-ink-soft">
+                                {content.next_journey_suggestion.reason}
+                            </Text>
+                        </View>
+                    ) : null}
+                </ScrollView>
+
+                {/* CTA button */}
+                <View className="px-5 pb-4 pt-2">
+                    <PressableScale
+                        onPress={onComplete}
+                        scale={0.96}
+                        hapticStyle="medium"
+                        style={{
+                            backgroundColor: SAGE[500],
+                            paddingVertical: 16,
+                            borderRadius: 22,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderBottomWidth: 4,
+                            borderBottomColor: SAGE[700],
+                        }}
+                        accessibilityLabel={
+                            isJourneyComplete ? 'Complete journey' : 'Continue to next section'
+                        }
+                        accessibilityRole="button"
+                    >
+                        <Text className="happy-font-body-bold mr-1 text-base text-brand-surface">
+                            {isJourneyComplete ? 'Journey Complete!' : 'Continue'}
+                        </Text>
+                        <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={BRAND_SURFACE} />
+                    </PressableScale>
+                </View>
             </SafeAreaView>
         </View>
     );

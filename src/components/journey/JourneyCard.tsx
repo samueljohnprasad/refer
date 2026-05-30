@@ -153,14 +153,14 @@ function JourneyCard({
                     </View>
                 ) : (
                     <View className="bg-slate-100 px-2.5 py-1 rounded-full">
-                        <Text className="text-xs font-semibold text-slate-500">New</Text>
+                        <Text className="text-xs font-semibold text-ink-soft">New</Text>
                     </View>
                 )}
             </View>
 
             {/* Title */}
             <Text
-                className="text-base font-bold text-slate-900 mb-1"
+                className="text-base font-bold text-ink mb-1"
                 numberOfLines={1}
             >
                 {journey.title}
@@ -168,7 +168,7 @@ function JourneyCard({
 
             {/* Description */}
             <Text
-                className="text-sm text-slate-500 mb-3 leading-5"
+                className="text-sm text-ink-soft mb-3 leading-5"
                 numberOfLines={2}
             >
                 {journey.description}
@@ -184,7 +184,7 @@ function JourneyCard({
                             size={14}
                             color="#94A3B8"
                         />
-                        <Text className="text-xs text-slate-400">
+                        <Text className="text-xs text-ink-muted">
                             {journey.estimatedDays}d
                         </Text>
                     </View>
@@ -197,7 +197,7 @@ function JourneyCard({
                         size={14}
                         color="#94A3B8"
                     />
-                    <Text className="text-xs text-slate-400">
+                    <Text className="text-xs text-ink-muted">
                         {journey.totalNodes} nodes
                     </Text>
                 </View>
@@ -216,7 +216,7 @@ function JourneyCard({
             {isEnrolled && !isCompleted ? (
                 <View className="mb-2">
                     <View className="flex-row items-center justify-between mb-1">
-                        <Text className="text-xs text-slate-400">
+                        <Text className="text-xs text-ink-muted">
                             {journey.completedNodes}/{journey.totalNodes} nodes
                         </Text>
                         <Text className={`text-xs font-semibold ${theme.text}`}>
