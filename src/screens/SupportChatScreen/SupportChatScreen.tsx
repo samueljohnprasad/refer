@@ -20,7 +20,7 @@ import {
 } from "react-native-gifted-chat";
 import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
-import { useHeaderHeight } from "@react-navigation/elements";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   ArrowLeft02Icon,

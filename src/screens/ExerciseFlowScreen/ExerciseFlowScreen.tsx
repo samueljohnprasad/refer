@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { useRouter } from "expo-router";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router/react-navigation";
 import { useExerciseFlow } from "@/src/hooks/useExerciseFlow";
 import { useExerciseMutation } from "@/src/hooks/useExerciseMutation";
 import { useExerciseAI } from "@/src/hooks/useExerciseAI";
