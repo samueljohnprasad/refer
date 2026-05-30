@@ -20,13 +20,13 @@
 import React, { useCallback, useMemo, useState } from "react";
 import {
     View,
-    Text,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Text } from "@/src/components/ui/Text";
 import {
     ArrowLeft01Icon,
     Dumbbell01Icon,
@@ -234,14 +234,7 @@ function ExerciseHeader({
                 onPress={onBack}
                 scale={0.9}
                 hapticStyle="light"
-                style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 20,
-                    backgroundColor: SAGE.pill,
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
+                className="w-10 h-10 rounded-full bg-sage-pill items-center justify-center"
                 accessibilityLabel="Go back"
                 accessibilityRole="button"
             >
@@ -582,15 +575,7 @@ export default function ExerciseNodeRenderer({
                                         onPress={handleBack}
                                         scale={0.96}
                                         hapticStyle="light"
-                                        style={{
-                                            paddingVertical: 14,
-                                            paddingHorizontal: 20,
-                                            borderRadius: 14,
-                                            backgroundColor: SAGE.pill,
-                                            flexDirection: "row",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                        }}
+                                        className="bg-sage-pill py-[14px] px-5 rounded-[14px] flex-row items-center justify-center"
                                         accessibilityLabel="Go to previous step"
                                         accessibilityRole="button"
                                     >
@@ -599,12 +584,12 @@ export default function ExerciseNodeRenderer({
                                             size={18}
                                             color={INK_MUTED}
                                         />
-                                        <Text className="happy-font-body-bold ml-1 text-sm text-sage-600">
+                                        <Text variant="body-bold" className="ml-1 text-sm text-sage-600">
                                             Back
                                         </Text>
                                     </PressableScale>
                                 ) : (
-                                    <View style={{ width: 80 }} />
+                                    <View className="w-20" />
                                 )}
 
                                 {/* Next / Review button */}

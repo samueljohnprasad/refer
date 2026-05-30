@@ -192,12 +192,12 @@ function BouncingTooltip({
 
   useEffect(() => {
     translateY.value = withRepeat(
-      withTiming(-6, {
-        duration: ANIMATION_TIMING.tooltipBounce,
-        easing: Easing.inOut(Easing.ease),
-      }),
+      withSequence(
+        withSpring(-8, { damping: 8, stiffness: 120 }),  // Float up — physical spring
+        withSpring(0, { damping: 12, stiffness: 150 }),   // Settle back
+      ),
       -1,
-      true,
+      false,
     );
   }, [translateY]);
 

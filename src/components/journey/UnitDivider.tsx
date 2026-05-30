@@ -103,12 +103,13 @@ function UnitDivider({
       }}
     >
       <Text
-        className="text-[14px] font-medium text-center"
-        numberOfLines={1}
         style={{
+          fontFamily: "GeistMedium",
           color: DIVIDER_LAYOUT.titleTextColor,
           letterSpacing: -0.1,
         }}
+        className="text-[13px] text-center"
+        numberOfLines={1}
         accessibilityRole="header"
       >
         {title}

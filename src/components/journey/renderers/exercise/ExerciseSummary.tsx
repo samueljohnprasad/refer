@@ -5,12 +5,15 @@
  */
 
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons';
 
 import type { ExerciseStep, ExerciseInputType } from '@/src/types/journey/mentalHealth';
 import { PressableScale } from '@/src/components/ui/PressableScale';
+import { Text } from '@/src/components/ui/Text';
+import { Card } from '@/src/components/ui/Card';
+import { Button } from '@/src/components/ui/Button';
 import { BRAND_SURFACE, SAGE } from '@/lib/tokens';
 
 // ============================================================================
@@ -86,10 +89,10 @@ export default function ExerciseSummary({
                     <View className="mb-3 h-16 w-16 items-center justify-center rounded-full bg-sage-pill">
                         <HugeiconsIcon icon={CheckmarkCircle02Icon} size={32} color={SAGE[600]} />
                     </View>
-                    <Text className="happy-font-heading-bold mb-1 text-[24px] leading-8 text-ink">
+                    <Text variant="h1" className="mb-1 text-center text-ink">
                         Exercise Complete!
                     </Text>
-                    <Text className="happy-font-body-medium text-center text-sm text-ink-muted">
+                    <Text variant="body" className="text-center text-sm text-ink-muted">
                         Here's a summary of your responses
                     </Text>
                 </View>
@@ -105,19 +108,22 @@ export default function ExerciseSummary({
                             : '(skipped)';
 
                         return (
-                            <View
+                            <Card
                                 key={index}
-                                className="happy-brand-card rounded-[24px] p-4"
+                                variant="tile"
+                                className="mb-3 p-4"
+                                showDepth
                             >
                                 <View className="flex-row items-start justify-between mb-2">
                                     <View className="flex-row items-center gap-2 flex-1">
                                         <View className="h-6 w-6 items-center justify-center rounded-full bg-sage-pill">
-                                            <Text className="happy-font-body-bold text-xs text-sage-600">
+                                            <Text variant="label-bold" className="text-xs text-sage-600">
                                                 {index + 1}
                                             </Text>
                                         </View>
                                         <Text
-                                            className="happy-font-body-bold flex-1 text-sm text-ink"
+                                            variant="body-bold"
+                                            className="flex-1 text-sm text-ink"
                                             numberOfLines={2}
                                         >
                                             {step.prompt}
@@ -127,16 +133,11 @@ export default function ExerciseSummary({
                                         onPress={() => onEditStep(index)}
                                         scale={0.95}
                                         hapticStyle="light"
-                                        style={{
-                                            paddingHorizontal: 10,
-                                            paddingVertical: 4,
-                                            borderRadius: 8,
-                                            backgroundColor: SAGE.pill,
-                                        }}
+                                        className="bg-sage-pill px-2.5 py-1 rounded-lg"
                                         accessibilityLabel={`Edit step ${index + 1}`}
                                         accessibilityRole="button"
                                     >
-                                        <Text className="happy-font-body-bold text-xs text-sage-600">
+                                        <Text variant="label-bold" className="text-xs text-sage-600">
                                             Edit
                                         </Text>
                                     </PressableScale>
@@ -144,12 +145,13 @@ export default function ExerciseSummary({
 
                                 {/* Response value */}
                                 <Text
-                                    className="happy-font-body-medium ml-8 text-sm leading-5 text-ink-soft"
+                                    variant="body"
+                                    className="ml-8 text-sm leading-5 text-ink-soft"
                                     numberOfLines={step.input_type === 'text' ? 4 : 2}
                                 >
                                     {displayValue}
                                 </Text>
-                            </View>
+                            </Card>
                         );
                     })}
                 </View>
@@ -157,28 +159,13 @@ export default function ExerciseSummary({
 
             {/* Complete button — fixed at bottom */}
             <View className="pt-4 pb-2">
-                <PressableScale
+                <Button
+                    label="Complete Exercise"
                     onPress={onComplete}
-                    scale={0.96}
-                    hapticStyle="medium"
-                    style={{
-                        backgroundColor: SAGE[500],
-                        paddingVertical: 16,
-                        borderRadius: 22,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderBottomWidth: 4,
-                        borderBottomColor: SAGE[700],
-                    }}
+                    variant="primary"
+                    leftIcon={<HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color={BRAND_SURFACE} />}
                     accessibilityLabel="Complete this exercise"
-                    accessibilityRole="button"
-                >
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color={BRAND_SURFACE} />
-                    <Text className="happy-font-body-bold ml-2 text-base text-brand-surface">
-                        Complete Exercise
-                    </Text>
-                </PressableScale>
+                />
             </View>
         </View>
     );

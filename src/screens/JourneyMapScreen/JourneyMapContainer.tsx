@@ -56,7 +56,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
+      <View className="flex-1 bg-brand-canvas" style={{ paddingTop: insets.top }}>
         <DuolingoHeader
           stats={STUB_STATS}
           enrolledCourses={enrolledCourses}

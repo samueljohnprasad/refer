@@ -6,7 +6,7 @@ import Animated, {
     withSpring,
 } from "react-native-reanimated";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import { APP_SPRING } from "@/src/utils/motionTokens";
+import { SPRING_DEFAULT as APP_SPRING } from "@/src/utils/motionTokens";
 
 interface FadeInItemProps {
     index: number;

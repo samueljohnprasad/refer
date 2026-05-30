@@ -20,7 +20,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import {
     View,
-    Text,
     TextInput,
     KeyboardAvoidingView,
     Platform,
@@ -42,6 +41,8 @@ import type {
 } from '@/src/types/journey/mentalHealth';
 import { Emotion } from '@/assets/emojis';
 import { PressableScale } from '@/src/components/ui/PressableScale';
+import { Text } from '@/src/components/ui/Text';
+import { Card } from '@/src/components/ui/Card';
 import { countWords } from '@/src/utils/textUtils';
 import { INK_MUTED, SAGE } from '@/lib/tokens';
 import {
@@ -122,14 +123,7 @@ function JournalHeader({
                 onPress={onBack}
                 scale={0.9}
                 hapticStyle="light"
-                style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 20,
-                    backgroundColor: SAGE.pill,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
+                className="w-10 h-10 rounded-full bg-sage-pill items-center justify-center"
                 accessibilityLabel="Go back"
                 accessibilityRole="button"
             >
@@ -137,10 +131,10 @@ function JournalHeader({
             </PressableScale>
 
             <View className="flex-1 mx-3">
-                <Text className="happy-font-body-bold text-sm text-ink" numberOfLines={1}>
+                <Text variant="body-bold" className="text-sm text-ink" numberOfLines={1}>
                     {title}
                 </Text>
-                <Text className="happy-font-body-medium text-xs text-ink-muted">Guided Journal</Text>
+                <Text variant="caption-muted" className="text-xs text-ink-muted">Guided Journal</Text>
             </View>
 
             <View className="happy-brand-status-chip px-3 py-1.5">
@@ -170,8 +164,8 @@ function VoiceButton(): React.JSX.Element {
                 <HugeiconsIcon icon={Mic01Icon} size={20} color={INK_MUTED} />
             </Pressable>
             {showTooltip ? (
-                <View className="absolute -left-8 -top-10 rounded-lg bg-ink px-3 py-1.5">
-                    <Text className="happy-font-body-medium text-xs text-brand-surface">Coming soon!</Text>
+                <View className="absolute -left-8 -top-10 rounded-lg bg-ink px-3 py-1.5 z-50">
+                    <Text variant="caption" className="text-xs text-brand-surface">Coming soon!</Text>
                 </View>
             ) : null}
         </View>
@@ -273,122 +267,121 @@ export default function JournalNodeRenderer({
     return (
         <View className="happy-brand-screen flex-1">
             <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
-            <RendererTopProgress
-                progress={progressPercent / 100}
-                xpReward={xpReward}
-                onClose={onBack}
-            />
+                <RendererTopProgress
+                    progress={progressPercent / 100}
+                    xpReward={xpReward}
+                    onClose={onBack}
+                />
 
-            <RendererTitleBlock
-                eyebrow={`Journal ${currentPhaseIndex + 1} of ${phases.length}`}
-                title={title}
-                subtitle="A quick reflection. Keep it honest, not perfect."
-            />
+                <RendererTitleBlock
+                    eyebrow={`Journal ${currentPhaseIndex + 1} of ${phases.length}`}
+                    title={title}
+                    subtitle="A quick reflection. Keep it honest, not perfect."
+                />
 
-            {/* Content */}
-            <KeyboardAvoidingView
-                className="flex-1"
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={100}
-            >
-                <ScrollView
-                    className="flex-1 px-7"
-                    showsVerticalScrollIndicator={false}
-                    keyboardShouldPersistTaps="handled"
-                    contentContainerStyle={{ flexGrow: 1 }}
+                {/* Content */}
+                <KeyboardAvoidingView
+                    className="flex-1"
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    keyboardVerticalOffset={100}
                 >
-                    {/* === Phase: Mood Before === */}
-                    {currentPhase === 'mood_before' ? (
-                        <View className="flex-1 justify-center">
-                            <MoodPicker
-                                label="How are you feeling right now?"
-                                value={moodBefore}
-                                onChange={setMoodBefore}
-                            />
-                            <Text className="happy-font-body-medium mt-2 text-center text-xs text-ink-muted">
-                                This helps track how journaling affects your mood
-                            </Text>
-                        </View>
-                    ) : null}
-
-                    {/* === Phase: Writing === */}
-                    {currentPhase === 'writing' ? (
-                        <View className="flex-1">
-                            {/* Guided prompt */}
-                            <View className="happy-brand-preview-tile mb-4 rounded-[24px] p-4">
-                                <Text className="happy-font-body-semibold text-base leading-6 text-ink">
-                                    {content.prompt}
+                    <ScrollView
+                        className="flex-1 px-7"
+                        showsVerticalScrollIndicator={false}
+                        keyboardShouldPersistTaps="handled"
+                        contentContainerStyle={{ flexGrow: 1 }}
+                    >
+                        {/* === Phase: Mood Before === */}
+                        {currentPhase === 'mood_before' ? (
+                            <View className="flex-1 justify-center">
+                                <MoodPicker
+                                    label="How are you feeling right now?"
+                                    value={moodBefore}
+                                    onChange={setMoodBefore}
+                                />
+                                <Text variant="caption-muted" className="mt-2 text-center text-xs text-ink-muted">
+                                    This helps track how journaling affects your mood
                                 </Text>
                             </View>
+                        ) : null}
 
-                            {/* Writing area */}
-                            <View className="happy-brand-preview-tile mb-3 flex-1 rounded-[24px] p-4">
-                                <TextInput
-                                    ref={textInputRef}
-                                    value={journalText}
-                                    onChangeText={setJournalText}
-                                    placeholder="Start writing here..."
-                                    placeholderTextColor={INK_MUTED}
-                                    multiline
-                                    textAlignVertical="top"
-                                    autoFocus
-                                    className="happy-font-body-medium flex-1 text-base leading-6 text-ink"
-                                    style={{ minHeight: 200 }}
-                                    accessibilityLabel="Journal writing area"
-                                    accessibilityHint={content.prompt}
+                        {/* === Phase: Writing === */}
+                        {currentPhase === 'writing' ? (
+                            <View className="flex-1">
+                                {/* Guided prompt */}
+                                <Card variant="tile" className="mb-4 p-4" showDepth>
+                                    <Text variant="body-bold" className="text-base leading-6 text-ink">
+                                        {content.prompt}
+                                    </Text>
+                                </Card>
+
+                                {/* Writing area */}
+                                <Card variant="tile" className="mb-3 flex-1 p-4" showDepth>
+                                    <TextInput
+                                        ref={textInputRef}
+                                        value={journalText}
+                                        onChangeText={setJournalText}
+                                        placeholder="Start writing here..."
+                                        placeholderTextColor={INK_MUTED}
+                                        multiline
+                                        textAlignVertical="top"
+                                        autoFocus
+                                        className="happy-font-body-medium flex-1 text-base leading-6 text-ink min-h-[200px]"
+                                        accessibilityLabel="Journal writing area"
+                                        accessibilityHint={content.prompt}
+                                    />
+                                </Card>
+
+                                {/* Word count + encouragement + voice button */}
+                                <View className="flex-row items-center justify-between mb-4">
+                                    <View className="flex-1">
+                                        <Text variant="body-bold" className="text-sm text-sage-600">
+                                            {wordCount > 0 ? `${wordCount} words — ${encouragement}` : encouragement}
+                                        </Text>
+                                    </View>
+                                    <VoiceButton />
+                                </View>
+
+                                {/* Emotion tags */}
+                                <EmotionTagSelector
+                                    value={emotionTags}
+                                    onChange={setEmotionTags}
                                 />
                             </View>
+                        ) : null}
 
-                            {/* Word count + encouragement + voice button */}
-                            <View className="flex-row items-center justify-between mb-4">
-                                <View className="flex-1">
-                                    <Text className="happy-font-body-bold text-sm text-sage-600">
-                                        {wordCount > 0 ? `${wordCount} words — ${encouragement}` : encouragement}
-                                    </Text>
-                                </View>
-                                <VoiceButton />
+                        {/* === Phase: Mood After === */}
+                        {currentPhase === 'mood_after' ? (
+                            <View className="flex-1 justify-center">
+                                <MoodPicker
+                                    label="How are you feeling now?"
+                                    value={moodAfter}
+                                    onChange={setMoodAfter}
+                                />
+
+                                {/* Mood shift indicator */}
+                                {moodBefore && moodAfter ? (
+                                    <Card variant="answer-selected" className="mt-4 p-4" showDepth={false}>
+                                        <Text variant="label-bold" className="text-center text-sm text-sage-700">
+                                            {moodBefore === moodAfter
+                                                ? 'Your mood stayed steady — that\'s okay! 🤝'
+                                                : 'Your mood shifted — journaling makes a difference! ✨'}
+                                        </Text>
+                                    </Card>
+                                ) : null}
                             </View>
+                        ) : null}
+                    </ScrollView>
 
-                            {/* Emotion tags */}
-                            <EmotionTagSelector
-                                value={emotionTags}
-                                onChange={setEmotionTags}
-                            />
-                        </View>
-                    ) : null}
-
-                    {/* === Phase: Mood After === */}
-                    {currentPhase === 'mood_after' ? (
-                        <View className="flex-1 justify-center">
-                            <MoodPicker
-                                label="How are you feeling now?"
-                                value={moodAfter}
-                                onChange={setMoodAfter}
-                            />
-
-                            {/* Mood shift indicator */}
-                            {moodBefore && moodAfter ? (
-                                <View className="happy-brand-card-selected mt-4 rounded-[24px] p-4">
-                                    <Text className="happy-font-body-semibold text-center text-sm text-sage-700">
-                                        {moodBefore === moodAfter
-                                            ? 'Your mood stayed steady — that\'s okay! 🤝'
-                                            : 'Your mood shifted — journaling makes a difference! ✨'}
-                                    </Text>
-                                </View>
-                            ) : null}
-                        </View>
-                    ) : null}
-                </ScrollView>
-
-                {/* CTA Button */}
-                <View className="px-7 pb-4 pt-2">
-                    <RendererPrimaryCTA
-                        label={ctaLabel}
-                        onPress={handleNext}
-                        disabled={!canContinue}
-                    />
-                </View>
-            </KeyboardAvoidingView>
+                    {/* CTA Button */}
+                    <View className="px-7 pb-4 pt-2">
+                        <RendererPrimaryCTA
+                            label={ctaLabel}
+                            onPress={handleNext}
+                            disabled={!canContinue}
+                        />
+                    </View>
+                </KeyboardAvoidingView>
             </SafeAreaView>
         </View>
     );

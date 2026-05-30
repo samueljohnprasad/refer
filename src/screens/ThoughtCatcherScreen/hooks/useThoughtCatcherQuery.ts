@@ -18,7 +18,7 @@ export const useThoughtCatcherQuery = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as ThoughtCatcherEntry[];
+      return data as unknown as ThoughtCatcherEntry[];
     },
     enabled: !!user?.id,
   });
@@ -48,7 +48,7 @@ export const useSingleThoughtCatcherQuery = (id: string | null) => {
         .single();
 
       if (error) throw error;
-      return data as ThoughtCatcherEntry;
+      return data as unknown as ThoughtCatcherEntry;
     },
     enabled: !!user?.id && !!id,
   });

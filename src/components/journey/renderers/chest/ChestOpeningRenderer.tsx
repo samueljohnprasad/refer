@@ -20,7 +20,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
     useSharedValue,
@@ -35,11 +35,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 
-import type { ChestContent, ChestRarity, ChestResponseData } from '@/src/types/journey/mentalHealth';
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { ConfettiExplosion } from '@/src/components/animations/ConfettiExplosion';
+import { Button } from '@/src/components/ui/Button';
+import { Card } from '@/src/components/ui/Card';
+import { Text } from '@/src/components/ui/Text';
 import { GOLD, SAGE } from '@/lib/tokens';
 import { SPRING_BOUNCY } from '@/src/utils/motionTokens';
+import type { ChestContent, ChestRarity, ChestResponseData } from '@/src/types/journey/mentalHealth';
 
 // ============================================================================
 // Types
@@ -210,7 +213,7 @@ function ChestBody({
                 accessibilityLabel={isIdle ? 'Tap to open treasure chest' : 'Chest'}
                 accessibilityRole="button"
             >
-                <Text style={{ fontSize: 52 }}>{chestEmoji}</Text>
+                <Text className="text-[52px]">{chestEmoji}</Text>
             </Pressable>
         </Animated.View>
     );
@@ -246,23 +249,23 @@ function RewardReveal({
         <Animated.View style={style} className="items-center mt-6">
             {/* Rarity label */}
             <View className="mb-3">
-                <Text className={`happy-brand-eyebrow ${config.labelColor}`}>
+                <Text variant="eyebrow" className={config.labelColor}>
                     {config.label}
                 </Text>
             </View>
 
             {/* Reward icon */}
             <View className={`mb-4 h-20 w-20 items-center justify-center rounded-[24px] border-2 ${config.bgColor} ${config.borderColor}`}>
-                <Text style={{ fontSize: 40 }}>{rewardEmoji}</Text>
+                <Text className="text-[40px]">{rewardEmoji}</Text>
             </View>
 
             {/* Reward name */}
-            <Text className="happy-font-heading-bold mb-2 text-center text-[30px] leading-9 text-ink">
+            <Text variant="display" className="mb-2 text-center text-[30px] leading-9 text-ink">
                 {content.reward_name}
             </Text>
 
             {/* Reward description */}
-            <Text className="happy-font-body-medium px-8 text-center text-sm leading-5 text-ink-muted">
+            <Text variant="body" className="px-8 text-center text-sm leading-5 text-ink-muted">
                 {content.reward_description}
             </Text>
         </Animated.View>
@@ -327,7 +330,7 @@ export default function ChestOpeningRenderer({
 
                 <View className="flex-1 items-center justify-center px-5">
                     {/* Title */}
-                    <Text className="happy-brand-eyebrow mb-8">
+                    <Text variant="eyebrow" className="mb-8">
                         {title}
                     </Text>
 
@@ -340,10 +343,10 @@ export default function ChestOpeningRenderer({
                     {/* Tap to open prompt (idle only) */}
                     {phase === 'idle' ? (
                         <View className="mt-6 items-center">
-                            <Text className="happy-font-body-bold mb-1 text-base text-sage-600">
+                            <Text variant="body-bold" className="mb-1 text-base text-sage-600">
                                 Tap to Open!
                             </Text>
-                            <Text className="happy-font-body-medium text-xs text-ink-muted">
+                            <Text variant="caption-muted" className="text-xs text-ink-muted">
                                 A reward awaits inside
                             </Text>
                         </View>
@@ -358,26 +361,12 @@ export default function ChestOpeningRenderer({
                 {/* CTA (only after reveal) */}
                 {phase === 'revealed' ? (
                     <View className="px-5 pb-4 pt-2">
-                        <PressableScale
+                        <Button
+                            label="Awesome! 🎉"
                             onPress={handleComplete}
-                            scale={0.96}
-                            hapticStyle="medium"
-                            style={{
-                                backgroundColor: SAGE[500],
-                                paddingVertical: 16,
-                                borderRadius: 22,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderBottomWidth: 4,
-                                borderBottomColor: SAGE[700],
-                            }}
+                            variant="primary"
                             accessibilityLabel="Continue"
-                            accessibilityRole="button"
-                        >
-                            <Text className="happy-font-body-bold text-base text-brand-surface">
-                                Awesome! 🎉
-                            </Text>
-                        </PressableScale>
+                        />
                     </View>
                 ) : null}
             </SafeAreaView>

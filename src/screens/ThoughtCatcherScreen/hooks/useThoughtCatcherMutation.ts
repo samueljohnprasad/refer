@@ -39,7 +39,7 @@ export const useThoughtCatcherMutation = () => {
         .single();
 
       if (error) throw error;
-      return data as ThoughtCatcherEntry;
+      return data as unknown as ThoughtCatcherEntry;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['thought_catcher'] });
@@ -64,7 +64,7 @@ export const useThoughtCatcherMutation = () => {
         .single();
 
       if (error) throw error;
-      return data as ThoughtCatcherEntry;
+      return data as unknown as ThoughtCatcherEntry;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['thought_catcher'] });

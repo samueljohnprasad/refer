@@ -13,6 +13,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { BRAND_SURFACE } from '@/lib/tokens';
 import { RendererSectionCard } from '../RendererFrame';
+import { Card } from '@/src/components/ui/Card';
 
 // ============================================================================
 // Types
@@ -157,14 +158,14 @@ export default function ExerciseInputMultiChoice({
 
             {/* Explanation (shown after answering a scored question) */}
             {hasAnswered && explanation ? (
-                <View className="happy-brand-card mt-4 rounded-[24px] p-4">
+                <Card variant="tile" radius="xl" showDepth={false} className="mt-4" contentClassName="p-4">
                     <Text className="happy-font-body-bold mb-1 text-sm text-sage-700">
                         Explanation
                     </Text>
                     <Text className="happy-font-body-medium text-sm leading-5 text-ink-soft">
                         {explanation}
                     </Text>
-                </View>
+                </Card>
             ) : null}
         </View>
     );

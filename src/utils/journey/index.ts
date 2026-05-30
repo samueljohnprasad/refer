@@ -19,8 +19,7 @@ export {
 export { calculatePathDimensions } from "./dimensions";
 export type { PathDimensions } from "./dimensions";
 
-// Template + progress merge (multi-journey)
-export { mergeJourneyState, createInitialProgress } from "./mergeJourneyState";
+
 
 // FlashList pre-computation (segment-per-cell)
 export {

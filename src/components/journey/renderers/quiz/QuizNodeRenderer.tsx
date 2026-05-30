@@ -45,6 +45,7 @@ import {
 
 import QuizOptionCard, { type OptionState } from "./QuizOptionCard";
 import QuizScoreSummary, { type QuizAnswer } from "./QuizScoreSummary";
+import { Card } from "@/src/components/ui/Card";
 
 // ============================================================================
 // Types
@@ -168,9 +169,12 @@ function FeedbackBanner({
     explanation: string;
 }): React.JSX.Element {
     return (
-        <View
-            className={`mt-4 rounded-[24px] p-4 ${isCorrect ? "happy-brand-card-selected" : "border-2 border-terracotta-light bg-brand-surface"
-                }`}
+        <Card
+            variant={isCorrect ? "answer-selected" : "tile"}
+            radius="xl"
+            showDepth={false}
+            className={isCorrect ? "mt-4" : "mt-4 border-2 border-terracotta-light bg-brand-surface"}
+            contentClassName="p-4"
         >
             <Text
                 className={`happy-font-body-bold mb-1 text-base ${isCorrect ? "text-sage-700" : "text-terracotta"
@@ -184,7 +188,7 @@ function FeedbackBanner({
             >
                 {explanation}
             </Text>
-        </View>
+        </Card>
     );
 }
 

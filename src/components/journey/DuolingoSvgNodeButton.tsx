@@ -1,9 +1,11 @@
 import React, { useCallback, useId, useMemo } from "react";
 import { Pressable } from "react-native";
+import * as Haptics from "expo-haptics";
 import Animated, {
   interpolate,
   useAnimatedProps,
   useSharedValue,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import Svg, { ClipPath, Defs, Ellipse, G, Rect } from "react-native-svg";
@@ -79,16 +81,18 @@ function DuolingoSvgNodeButtonInner({
     [disabled, size],
   );
 
+  /** Spring config for the node press-release — quick rebound */
+  const PRESS_SPRING = useMemo(() => ({ damping: 14, stiffness: 400 }), []);
+
   const handlePressIn = useCallback(() => {
-    if (disabled) {
-      return;
-    }
-    cy.value = withTiming(FACE_PRESSED_CY, { duration: 100 });
+    if (disabled) return;
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    cy.value = withTiming(FACE_PRESSED_CY, { duration: 80 });
   }, [cy, disabled]);
 
   const handlePressOut = useCallback(() => {
-    cy.value = withTiming(FACE_BASE_CY, { duration: 100 });
-  }, [cy]);
+    cy.value = withSpring(FACE_BASE_CY, PRESS_SPRING);
+  }, [cy, PRESS_SPRING]);
 
   return (
     <Pressable

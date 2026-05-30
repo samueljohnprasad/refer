@@ -18,6 +18,7 @@ import {
   presentationDragIndicator,
 } from "@expo/ui/swift-ui/modifiers";
 import { Text } from "@/src/components/ui/Text";
+import { Card } from "@/src/components/ui/Card";
 import { Button } from "@/src/components/ui/Button";
 import { GOLD, PARROT_ORANGE } from "@/lib/tokens";
 
@@ -219,7 +220,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                 </View>
 
                 {/* ── Weekly calendar card ───────────────────────────── */}
-                <View className="happy-brand-card rounded-3xl p-6 w-full mb-6">
+                <Card variant="tile" radius="xl" showDepth={false} className="w-full mb-6" contentClassName="p-6">
                   <WeekDayLabels weeklyProgress={streakData.weeklyProgress} />
                   <WeekProgressCircles
                     weeklyProgress={streakData.weeklyProgress}
@@ -233,22 +234,21 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                       className="text-center mt-4"
                     >
                       You're halfway to your{" "}
-                      <Text
-                        variant="body-bold"
+                      <RNText
+                        className="happy-font-body-bold text-[17px] leading-[22px]"
                         style={{ color: PARROT_ORANGE }}
                       >
                         perfect week!
-                      </Text>
+                      </RNText>
                     </Text>
                   )}
                   {isPerfectWeek && (
-                    <Text
-                      variant="body-bold"
-                      className="text-center mt-4"
+                    <RNText
+                      className="happy-font-body-bold text-[17px] leading-[22px] text-center mt-4"
                       style={{ color: PARROT_ORANGE }}
                     >
                       🎉 Perfect week achieved!
-                    </Text>
+                    </RNText>
                   )}
 
                   {/* ── Stat row: Longest | Freezes ─────────────────── */}
@@ -298,7 +298,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                       </Text>
                     </View>
                   )}
-                </View>
+                </Card>
 
                 {/* ── Action buttons ─────────────────────────────────── */}
                 <View className="w-full gap-3">

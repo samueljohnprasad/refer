@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { LegendListRef, ViewToken } from "@legendapp/list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import * as Haptics from "expo-haptics";
 
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import {
@@ -135,6 +136,7 @@ export function useJourneyMapController(
   const handleNodePress = useCallback(
     (node: PathNodeData): void => {
       if (node.status === "locked") {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
         toast.show({
           placement: "top",
           render: ({ id }) => (
@@ -153,7 +155,7 @@ export function useJourneyMapController(
 
   const handleOpenSections = useCallback((): void => {
     if (!canOpenSections) return;
-
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setIsSectionSheetOpen(true);
   }, [canOpenSections]);
 

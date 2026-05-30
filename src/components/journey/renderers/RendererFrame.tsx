@@ -6,6 +6,7 @@ import { SAGE, TERRACOTTA } from "@/lib/tokens";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import StageProgressBar from "@/src/components/ui/StageProgressBar";
 import { Button } from "@/src/components/ui/Button";
+import { Card } from "@/src/components/ui/Card";
 
 export function getDisplayXp(xpReward?: number): number {
   return xpReward && xpReward > 0 ? xpReward : 10;
@@ -32,12 +33,7 @@ export function RendererTopProgress({
         onPress={onClose}
         scale={0.9}
         hapticStyle="light"
-        style={{
-          minHeight: 44,
-          minWidth: 44,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        className="min-h-11 min-w-11 items-center justify-center"
         accessibilityLabel="Close activity"
         accessibilityRole="button"
       >
@@ -97,10 +93,16 @@ export function RendererSectionCard({
   className?: string;
 }): React.JSX.Element {
   return (
-    <View className={`happy-brand-preview-tile rounded-[28px] p-4 ${className}`}>
+    <Card
+      variant="tile"
+      radius="xl"
+      showDepth={false}
+      className={className}
+      contentClassName="p-4"
+    >
       {eyebrow ? <Text className="happy-brand-eyebrow mb-4">{eyebrow}</Text> : null}
       {children}
-    </View>
+    </Card>
   );
 }
 

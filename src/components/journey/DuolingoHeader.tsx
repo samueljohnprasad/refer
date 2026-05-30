@@ -6,6 +6,7 @@ import {
 } from "react-native";
 
 import { SvgProps } from "react-native-svg";
+import * as Haptics from "expo-haptics";
 
 import { Battery, Fire, Flag, Gem } from "@/assets/icons";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
@@ -14,7 +15,7 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
+  withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FullWindowOverlay } from "react-native-screens";
@@ -25,6 +26,9 @@ import type {
   EnrolledCourseListItem,
 } from "@/src/types/journeyV5";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+/** Spring config for the course switcher overlay — sheet-like feel */
+const SHEET_SPRING = { damping: 14, stiffness: 50, mass: 1, } as const;
 
 export interface DuolingoHeaderStats {
   streak: number;
@@ -91,14 +95,15 @@ export const DuolingoHeader = ({
   const previousActiveCourseIdRef = useRef(activeCourseId);
 
   const openCourseOverlay = useCallback((): void => {
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setShowCourseOverlay(true);
-    translateY.value = withTiming(0, { duration: 400 });
+    translateY.value = withSpring(0, SHEET_SPRING);
   }, [translateY]);
 
   const handleTouchStart = useCallback(() => {
-    translateY.value = withTiming(
+    translateY.value = withSpring(
       -windowHeight / 2,
-      { duration: 400 },
+      { damping: 14, stiffness: 50, mass: 1 },
       (finished) => {
         if (finished) {
           scheduleOnRN(setShowCourseOverlay, false);
@@ -194,7 +199,7 @@ export const DuolingoHeader = ({
       {showCourseOverlay && (
         <FullWindowOverlay>
           <Animated.View
-            exiting={FadeOut.duration(50)}
+            exiting={FadeOut.duration(150)}
             pointerEvents="box-none"
             className="absolute left-0 right-0 overflow-hidden"
             style={{

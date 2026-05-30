@@ -66,7 +66,7 @@ const STATE_STYLES: Record<OptionState, { container: string; badge: string; text
     },
 };
 
-import { APP_SPRING as SPRING_CONFIG } from "@/src/utils/motionTokens";
+import { SPRING_DEFAULT as SPRING_CONFIG } from "@/src/utils/motionTokens";
 
 // ============================================================================
 // Component

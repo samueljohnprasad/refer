@@ -95,18 +95,6 @@ function ChestNode({
   // ── Shake animation (triggered on tap) ──
   const shakeX = useSharedValue(0);
 
-  const triggerShake = useCallback((): void => {
-    if (reducedMotion) return;
-    const d: number = ANIMATION_TIMING.chestShake;
-    shakeX.value = withSequence(
-      withTiming(-4, { duration: d }),
-      withTiming(4, { duration: d }),
-      withTiming(-3, { duration: d }),
-      withTiming(3, { duration: d }),
-      withTiming(0, { duration: d }),
-    );
-  }, [shakeX, reducedMotion]);
-
   const shakeStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: shakeX.value }],
   }));
@@ -114,10 +102,25 @@ function ChestNode({
   // ── Press handler ──
   const handlePress = useCallback((): void => {
     if (!isInteractive) return;
-    triggerShake();
-    // Small delay so shake plays before the modal opens
-    setTimeout(() => onPress(node), ANIMATION_TIMING.chestShake * 5);
-  }, [isInteractive, triggerShake, onPress, node]);
+
+    if (reducedMotion) {
+      onPress(node);
+      return;
+    }
+
+    const d: number = ANIMATION_TIMING.chestShake;
+    shakeX.value = withSequence(
+      withTiming(-4, { duration: d }),
+      withTiming(4, { duration: d }),
+      withTiming(-3, { duration: d }),
+      withTiming(3, { duration: d }),
+      withTiming(0, { duration: d }, (finished) => {
+        if (finished) {
+          runOnJS(onPress)(node);
+        }
+      }),
+    );
+  }, [isInteractive, shakeX, reducedMotion, onPress, node]);
 
   // Colors based on locked state
   const bodyColor: string = isLocked ? CHEST_COLORS.locked : CHEST_COLORS.body;

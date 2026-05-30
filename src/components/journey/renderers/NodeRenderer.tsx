@@ -98,16 +98,7 @@ function UnknownNodeFallback({
                         onPress={onClose}
                         scale={0.96}
                         hapticStyle="light"
-                        style={{
-                            backgroundColor: SAGE.pill,
-                            paddingVertical: 14,
-                            paddingHorizontal: 32,
-                            borderRadius: 22,
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            gap: 8,
-                            marginTop: 32,
-                        }}
+                        className="bg-sage-pill py-[14px] px-8 rounded-[22px] flex-row items-center gap-2 mt-8"
                         accessibilityLabel="Go back"
                         accessibilityRole="button"
                     >

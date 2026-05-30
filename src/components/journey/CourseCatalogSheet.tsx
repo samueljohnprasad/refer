@@ -23,6 +23,8 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
+  withSpring,
+  interpolate,
 } from "react-native-reanimated";
 
 import {
@@ -416,9 +418,11 @@ function CourseCatalogSheetContent({
 
   return (
     <View className="flex-1 happy-brand-screen">
+      {/* Centered grab handle affordance */}
+      <View className="w-12 h-1 bg-sage-200/80 rounded-full self-center mt-3 mb-1" />
+
       <View
-        className="flex-row items-center justify-between happy-brand-screen px-5"
-        style={{ paddingTop: Math.max(insets.top, 16) }}
+        className="flex-row items-center justify-between happy-brand-screen px-5 pt-2 pb-1"
       >
         <View className="h-11 w-11" />
         <Pressable
@@ -617,64 +621,39 @@ function CourseCatalogSheetContent({
 export default function CourseCatalogSheet(
   props: CourseCatalogSheetProps,
 ): React.JSX.Element | null {
-  const { height: windowHeight } = useWindowDimensions();
-  const [isMounted, setIsMounted] = useState(props.isPresented);
-  const translateY = useSharedValue(windowHeight);
-
-  useEffect(() => {
-    if (props.isPresented) {
-      setIsMounted(true);
-      translateY.value = windowHeight;
-      translateY.value = withTiming(0, {
-        duration: 320,
-        easing: Easing.out(Easing.cubic),
-      });
-      return;
-    }
-
-    translateY.value = withTiming(
-      windowHeight,
-      {
-        duration: 260,
-        easing: Easing.in(Easing.cubic),
-      },
-      (finished) => {
-        if (finished) {
-          runOnJS(setIsMounted)(false);
-        }
-      },
-    );
-  }, [props.isPresented, translateY, windowHeight]);
-
-  const handleClose = useCallback(() => {
-    translateY.value = withTiming(
-      windowHeight,
-      {
-        duration: 260,
-        easing: Easing.in(Easing.cubic),
-      },
-      (finished) => {
-        if (finished) {
-          runOnJS(props.onClose)();
-        }
-      },
-    );
-  }, [props.onClose, translateY, windowHeight]);
-
-  const animatedSheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-  }));
-
-  if (!isMounted) {
+  if (!props.isPresented) {
     return null;
   }
 
   return (
     <FullWindowOverlay>
       <View className="absolute inset-0">
-        <Animated.View className="absolute inset-0" style={animatedSheetStyle}>
-          <CourseCatalogSheetContent {...props} onClose={handleClose} />
-        </Animated.View>
+        {/* Instant static dark backdrop with press to close */}
+        <Pressable
+          className="absolute inset-0 bg-black/40"
+          onPress={props.onClose}
+        />
+        {/* Rounded top sheet drawer overlay positioned at top: 60 */}
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            top: 60,
+            borderTopLeftRadius: 32,
+            borderTopRightRadius: 32,
+            backgroundColor: "#F8FAF7", // Sage canvas
+            shadowColor: "#2B3A22",
+            shadowOffset: { width: 0, height: -4 },
+            shadowOpacity: 0.12,
+            shadowRadius: 16,
+            elevation: 24,
+            overflow: "hidden",
+          }}
+        >
+          <CourseCatalogSheetContent {...props} onClose={props.onClose} />
+        </View>
       </View>
     </FullWindowOverlay>
   );

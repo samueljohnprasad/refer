@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { AiGenerativeIcon, File01Icon } from "@hugeicons/core-free-icons";
 
 import { useAppSelector, useAppDispatch } from "@/src/store/hooks";
 import {
@@ -178,9 +180,14 @@ export function NodeContentModal({
       >
         <NodeModalShell>
           <View className="flex-1 items-center justify-center px-8">
-            <Text className="mb-4 text-5xl">
-              {node.type === "ai_insight" ? "🤖" : "📄"}
-            </Text>
+            <View className="mb-4 w-16 h-16 rounded-2xl bg-sage-50 items-center justify-center">
+              <HugeiconsIcon
+                icon={node.type === "ai_insight" ? AiGenerativeIcon : File01Icon}
+                size={32}
+                color="#5F7F58"
+                strokeWidth={1.5}
+              />
+            </View>
             <Text className="happy-font-heading-bold text-center text-[34px] leading-10 text-ink">
               {node.title}
             </Text>

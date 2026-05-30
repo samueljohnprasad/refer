@@ -13,7 +13,7 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import { KeyboardAvoidingView, View, Text, TextInput, Image, Platform } from 'react-native';
+import { KeyboardAvoidingView, View, TextInput, Image, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
     useSharedValue,
@@ -28,6 +28,8 @@ import type {
 } from '@/src/types/journey/mentalHealth';
 import { Emotion, emotions } from '@/assets/emojis';
 import { PressableScale } from '@/src/components/ui/PressableScale';
+import { Text } from '@/src/components/ui/Text';
+import { Card } from '@/src/components/ui/Card';
 import { INK_MUTED } from '@/lib/tokens';
 import {
     RendererPrimaryCTA,
@@ -63,14 +65,14 @@ const MOOD_OPTIONS: Array<{
     emotion: Emotion;
     label: string;
 }> = [
-        { rating: 1, emotion: Emotion.Terrible, label: 'Terrible' },
-        { rating: 2, emotion: Emotion.Bad, label: 'Bad' },
-        { rating: 3, emotion: Emotion.Fine, label: 'Okay' },
-        { rating: 4, emotion: Emotion.Good, label: 'Good' },
-        { rating: 5, emotion: Emotion.Great, label: 'Great' },
-    ];
+    { rating: 1, emotion: Emotion.Terrible, label: 'Terrible' },
+    { rating: 2, emotion: Emotion.Bad, label: 'Bad' },
+    { rating: 3, emotion: Emotion.Fine, label: 'Okay' },
+    { rating: 4, emotion: Emotion.Good, label: 'Good' },
+    { rating: 5, emotion: Emotion.Great, label: 'Great' },
+];
 
-import { APP_SPRING as SPRING_CONFIG } from "@/src/utils/motionTokens";
+import { SPRING_DEFAULT as SPRING_CONFIG } from "@/src/utils/motionTokens";
 
 // ============================================================================
 // Sub-components
@@ -110,12 +112,7 @@ function MoodEmojiButton({
             onPress={handlePress}
             scale={0.9}
             hapticStyle="light"
-            style={{
-                alignItems: 'center',
-                width: 60,
-                minHeight: 76,
-                paddingVertical: 4,
-            }}
+            className="items-center w-[60px] min-h-[76px] py-1"
             accessibilityLabel={`${label} mood, rating ${rating} of 5`}
             accessibilityRole="button"
             accessibilityState={{ selected: isSelected }}
@@ -135,9 +132,9 @@ function MoodEmojiButton({
                 </View>
             </Animated.View>
             <Text
+                variant="label-bold"
                 numberOfLines={1}
-                className={`happy-font-body-bold mt-2 text-xs ${isSelected ? 'text-sage-600' : 'text-ink-muted'
-                    }`}
+                className={`mt-2 text-xs text-center ${isSelected ? 'text-sage-600' : 'text-ink-muted'}`}
             >
                 {label}
             </Text>
@@ -194,12 +191,13 @@ export default function MoodCheckRenderer({
                 />
                 <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                    style={{ flex: 1 }}
+                    className="flex-1"
                 >
                     <View className="flex-1 justify-between px-7 pb-5">
                         <View>
-                            <RendererSectionCard eyebrow="Now: name yours">
-                                <Text className="happy-font-heading-bold mb-4 text-[21px] leading-7 text-ink">
+                            <Card variant="tile" className="p-4" showDepth>
+                                <Text variant="eyebrow" className="mb-4">Now: name yours</Text>
+                                <Text variant="h3" className="mb-4 text-ink">
                                     How are you, really?
                                 </Text>
                                 <View className="flex-row items-start justify-between">
@@ -214,21 +212,20 @@ export default function MoodCheckRenderer({
                                         />
                                     ))}
                                 </View>
-                            </RendererSectionCard>
+                            </Card>
 
                             {content.note_enabled ? (
-                                <View className="happy-brand-preview-tile mt-10 rounded-[24px] px-4 py-3">
+                                <Card variant="tile" className="mt-10 p-4" showDepth={false}>
                                     <TextInput
                                         value={note}
                                         onChangeText={setNote}
                                         placeholder="Anything you'd like to add? (optional)"
                                         placeholderTextColor={INK_MUTED}
                                         maxLength={200}
-                                        className="happy-font-body-medium text-base text-ink"
-                                        style={{ minHeight: 44 }}
+                                        className="happy-font-body-medium text-base text-ink min-h-11"
                                         accessibilityLabel="Optional note about your mood"
                                     />
-                                </View>
+                                </Card>
                             ) : null}
                         </View>
 

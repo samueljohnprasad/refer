@@ -105,9 +105,9 @@ function SpeechBubble({ message, side }: SpeechBubbleProps): React.JSX.Element {
       accessibilityLiveRegion="polite"
       style={{
         maxWidth: MASCOT_SIZE.bubbleMaxWidth,
-        shadowColor: "#000",
+        shadowColor: "#2B3A22",
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
+        shadowOpacity: 0.10,
         shadowRadius: 6,
         elevation: 3,
       }}
@@ -199,19 +199,18 @@ function MascotBubble({
           backgroundColor: "transparent",
         }}
       >
-        {/* <PressableScale
+        <PressableScale
           onPress={handleTap}
           scale={0.9}
           hapticStyle="light"
           accessibilityRole="button"
           accessibilityLabel="Tap for encouragement"
         >
-          {imageKey ? (
-            <Mascot state={imageKey as any} size={resolvedAvatarSize} />
-          ) : (
-            <OwlAvatar />
-          )}
-        </PressableScale> */}
+          <Mascot
+            state={(imageKey as any) ?? "panda-happy"}
+            size={resolvedAvatarSize}
+          />
+        </PressableScale>
       </View>
     </Animated.View>
   );

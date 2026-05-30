@@ -122,6 +122,7 @@ function JourneyMapFlashListInner({
           <SectionOverviewSheet
             sections={sectionOverviewItems}
             onPreviewSection={handleSelectSection}
+            onClose={() => setIsSectionSheetOpen(false)}
             journeyTitle={courseTitle}
           />
         </BottomSheetWithRNContent>

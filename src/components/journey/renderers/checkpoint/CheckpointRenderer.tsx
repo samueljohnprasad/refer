@@ -14,7 +14,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
     useSharedValue,
@@ -33,7 +33,10 @@ import * as Haptics from 'expo-haptics';
 
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { ConfettiExplosion } from '@/src/components/animations/ConfettiExplosion';
-import { CheckpointContent } from '@/src/types/journey';
+import { Text } from '@/src/components/ui/Text';
+import { Card } from '@/src/components/ui/Card';
+import { Button } from '@/src/components/ui/Button';
+import { CheckpointContent } from '@/src/types/journey/mentalHealth';
 import { BRAND_SURFACE, SAGE } from '@/lib/tokens';
 
 // ============================================================================
@@ -73,7 +76,7 @@ const BADGE_MAP: Record<string, string> = {
     default: '⭐',
 };
 
-import { SPRING_BOUNCY, SHEET_SPRING as SPRING_GENTLE } from "@/src/utils/motionTokens";
+import { SPRING_BOUNCY, SPRING_GENTLE } from "@/src/utils/motionTokens";
 
 // ============================================================================
 // Sub-components
@@ -128,8 +131,8 @@ function BadgeReveal({
         <View className="items-center mb-6">
             {/* Glow ring */}
             <Animated.View
-                style={[glowStyle, { position: 'absolute', width: 140, height: 140, borderRadius: 70 }]}
-                className="bg-sage-100"
+                style={glowStyle}
+                className="bg-sage-100 absolute w-[140px] h-[140px] rounded-[70px]"
             />
 
             {/* Badge */}
@@ -137,12 +140,12 @@ function BadgeReveal({
                 style={badgeStyle}
                 className="h-28 w-28 items-center justify-center rounded-full border-4 border-sage-300 bg-sage-pill"
             >
-                <Text style={{ fontSize: 52 }}>{emoji}</Text>
+                <Text className="text-[52px]">{emoji}</Text>
             </Animated.View>
 
             {/* Badge name */}
             <Animated.View style={badgeStyle}>
-                <Text className="happy-font-heading-bold mt-3 text-center text-xl text-ink">
+                <Text variant="h2" className="mt-3 text-center text-ink">
                     {badgeName}
                 </Text>
             </Animated.View>
@@ -171,7 +174,7 @@ function CelebrationTitle({
 
     return (
         <Animated.View style={style} className="items-center mb-4">
-            <Text className="happy-font-heading-bold text-center text-[36px] leading-10 text-ink">
+            <Text variant="display" className="text-center text-ink">
                 {isJourneyComplete ? 'Journey Complete! 🎉' : 'Section Complete! ⭐'}
             </Text>
         </Animated.View>
@@ -187,8 +190,8 @@ function SkillsRecap({
     if (skills.length === 0) return null;
 
     return (
-        <View className="happy-brand-preview-tile mb-5 rounded-[24px] p-5">
-            <Text className="happy-brand-eyebrow mb-3">
+        <Card variant="tile" className="mb-5 p-5" showDepth>
+            <Text variant="eyebrow" className="mb-3">
                 Skills You've Learned
             </Text>
             <View className="gap-2">
@@ -197,13 +200,13 @@ function SkillsRecap({
                         <View className="mt-0.5 h-5 w-5 items-center justify-center rounded-full bg-sage-pill">
                             <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} color={SAGE[600]} />
                         </View>
-                        <Text className="happy-font-body-medium flex-1 text-sm leading-5 text-ink-soft">
+                        <Text variant="body" className="flex-1 text-sm leading-5 text-ink-soft">
                             {skill}
                         </Text>
                     </View>
                 ))}
             </View>
-        </View>
+        </Card>
     );
 }
 
@@ -219,8 +222,8 @@ function MoodComparison({
     const same: boolean = moodAfter.rating === moodBefore.rating;
 
     return (
-        <View className="happy-brand-preview-tile mb-5 rounded-[24px] p-5">
-            <Text className="happy-brand-eyebrow mb-3">
+        <Card variant="tile" className="mb-5 p-5" showDepth>
+            <Text variant="eyebrow" className="mb-3">
                 Your Mood Journey
             </Text>
 
@@ -228,29 +231,29 @@ function MoodComparison({
                 {/* Before */}
                 <View className="items-center">
                     <Text className="text-3xl mb-1">{moodBefore.emoji}</Text>
-                    <Text className="happy-font-body-medium text-xs text-ink-muted">Section start</Text>
-                    <Text className="happy-font-body-bold text-sm text-ink">{moodBefore.rating}/5</Text>
+                    <Text variant="caption-muted" className="text-xs text-ink-muted">Section start</Text>
+                    <Text variant="body-bold" className="text-sm text-ink">{moodBefore.rating}/5</Text>
                 </View>
 
                 {/* Arrow */}
-                <Text className="text-2xl text-sage-300">→</Text>
+                <Text variant="h2" className="text-sage-300">→</Text>
 
                 {/* After */}
                 <View className="items-center">
                     <Text className="text-3xl mb-1">{moodAfter.emoji}</Text>
-                    <Text className="happy-font-body-medium text-xs text-ink-muted">Now</Text>
-                    <Text className="happy-font-body-bold text-sm text-ink">{moodAfter.rating}/5</Text>
+                    <Text variant="caption-muted" className="text-xs text-ink-muted">Now</Text>
+                    <Text variant="body-bold" className="text-sm text-ink">{moodAfter.rating}/5</Text>
                 </View>
             </View>
 
-            <Text className="happy-font-body-semibold text-center text-sm text-sage-600">
+            <Text variant="label-bold" className="text-center text-sm text-sage-600">
                 {improved
                     ? 'Your mood improved — great progress! 🌟'
                     : same
                         ? 'Your mood stayed steady — consistency is key! 🤝'
                         : 'Some sessions feel harder — and that\'s okay 💙'}
             </Text>
-        </View>
+        </Card>
     );
 }
 
@@ -269,8 +272,8 @@ function XPBadge({ xp }: { xp: number }): React.JSX.Element {
     return (
         <Animated.View style={style} className="items-center mb-6">
             <View className="flex-row items-center gap-2 rounded-[22px] border-2 border-sage-200 bg-sage-50 px-6 py-3">
-                <Text className="text-2xl">⚡</Text>
-                <Text className="happy-font-heading-bold text-xl text-sage-700">+{xp} IP</Text>
+                <Text variant="h2" className="text-2xl">⚡</Text>
+                <Text variant="body-bold" className="text-xl text-sage-700">+{xp} IP</Text>
             </View>
         </Animated.View>
     );
@@ -330,7 +333,7 @@ export default function CheckpointRenderer({
                     />
 
                     {/* Badge description */}
-                    <Text className="happy-font-body-medium mb-6 px-4 text-center text-sm leading-5 text-ink-muted">
+                    <Text variant="body" className="mb-6 px-4 text-center text-sm leading-5 text-ink-muted">
                         {content.badge_description}
                     </Text>
 
@@ -347,46 +350,31 @@ export default function CheckpointRenderer({
 
                     {/* Next journey suggestion (if journey complete) */}
                     {isJourneyComplete && content.next_journey_suggestion ? (
-                        <View className="happy-brand-preview-tile mb-5 rounded-[24px] p-5">
-                            <Text className="happy-brand-eyebrow mb-2">
+                        <Card variant="tile" className="mb-5 p-5" showDepth>
+                            <Text variant="eyebrow" className="mb-2">
                                 Recommended Next
                             </Text>
-                            <Text className="happy-font-body-bold mb-1 text-base text-ink">
+                            <Text variant="body-bold" className="mb-1 text-base text-ink">
                                 {content.next_journey_suggestion.title}
                             </Text>
-                            <Text className="happy-font-body-medium text-sm leading-5 text-ink-soft">
+                            <Text variant="body" className="text-sm leading-5 text-ink-soft">
                                 {content.next_journey_suggestion.reason}
                             </Text>
-                        </View>
+                        </Card>
                     ) : null}
                 </ScrollView>
 
                 {/* CTA button */}
                 <View className="px-5 pb-4 pt-2">
-                    <PressableScale
+                    <Button
+                        label={isJourneyComplete ? 'Journey Complete!' : 'Continue'}
                         onPress={onComplete}
-                        scale={0.96}
-                        hapticStyle="medium"
-                        style={{
-                            backgroundColor: SAGE[500],
-                            paddingVertical: 16,
-                            borderRadius: 22,
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderBottomWidth: 4,
-                            borderBottomColor: SAGE[700],
-                        }}
+                        variant="primary"
+                        rightIcon={<HugeiconsIcon icon={ArrowRight01Icon} size={18} color={BRAND_SURFACE} />}
                         accessibilityLabel={
                             isJourneyComplete ? 'Complete journey' : 'Continue to next section'
                         }
-                        accessibilityRole="button"
-                    >
-                        <Text className="happy-font-body-bold mr-1 text-base text-brand-surface">
-                            {isJourneyComplete ? 'Journey Complete!' : 'Continue'}
-                        </Text>
-                        <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={BRAND_SURFACE} />
-                    </PressableScale>
+                    />
                 </View>
             </SafeAreaView>
         </View>

@@ -15,7 +15,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
     useSharedValue,
@@ -31,8 +31,11 @@ import * as Haptics from 'expo-haptics';
 
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { ConfettiExplosion } from '@/src/components/animations/ConfettiExplosion';
+import { Button } from '@/src/components/ui/Button';
+import { Card } from '@/src/components/ui/Card';
+import { Text } from '@/src/components/ui/Text';
 import { BRAND_SURFACE, SAGE } from '@/lib/tokens';
-import { SPRING_BOUNCY, SHEET_SPRING } from '@/src/utils/motionTokens';
+import { SPRING_BOUNCY, SPRING_GENTLE } from '@/src/utils/motionTokens';
 
 // ============================================================================
 // Types
@@ -115,7 +118,7 @@ function XPCounter({ xp }: { xp: number }): React.JSX.Element {
     return (
         <Animated.View style={scaleStyle} className="items-center mb-4">
             <View className="rounded-[24px] border-2 border-sage-200 bg-sage-50 px-8 py-4">
-                <Text className="happy-font-heading-bold text-3xl text-sage-700">
+                <Text variant="display" className="text-[34px] leading-10 text-sage-700">
                     +{displayValue} IP
                 </Text>
             </View>
@@ -145,12 +148,12 @@ function StreakDisplay({
 
     return (
         <Animated.View style={style} className="items-center mb-6">
-            <Text className="happy-font-body-bold text-lg text-sage-600">
+            <Text variant="h2" className="text-sage-600">
                 🔥 {days === 1 ? 'Streak started!' : `Day ${days}!`}
             </Text>
             {milestoneHit && milestoneLabel ? (
                 <View className="happy-brand-status-chip mt-2 px-4 py-1.5">
-                    <Text className="happy-brand-eyebrow">
+                    <Text variant="eyebrow">
                         {milestoneLabel}
                     </Text>
                 </View>
@@ -170,7 +173,7 @@ function NextNodePreviewCard({
     useEffect(() => {
         glowOpacity.value = withDelay(
             600,
-            withSpring(0.6, SHEET_SPRING),
+            withSpring(0.6, SPRING_GENTLE),
         );
     }, [glowOpacity]);
 
@@ -181,28 +184,28 @@ function NextNodePreviewCard({
     const emoji: string = NODE_TYPE_EMOJI[nextNode.nodeType] ?? NODE_TYPE_EMOJI.default;
 
     return (
-        <View className="items-center mb-6">
-            <Text className="happy-brand-eyebrow mb-3">
+        <Card variant="tile" className="p-5 items-center w-full max-w-[280px]" showDepth>
+            <Text variant="eyebrow" className="mb-3">
                 Next Up
             </Text>
-            <View className="relative items-center">
+            <View className="relative items-center mb-2">
                 {/* Glow */}
                 <Animated.View
-                    style={[glowStyle, { position: 'absolute', width: 80, height: 80, borderRadius: 40 }]}
-                    className="bg-sage-200"
+                    style={glowStyle}
+                    className="absolute w-20 h-20 rounded-full bg-sage-200"
                 />
                 {/* Icon */}
-                <View className="mb-2 h-16 w-16 items-center justify-center rounded-[22px] border-2 border-sage-200 bg-sage-50">
-                    <Text style={{ fontSize: 28 }}>{emoji}</Text>
+                <View className="h-16 w-16 items-center justify-center rounded-[22px] border-2 border-sage-200 bg-sage-50 z-10">
+                    <Text className="text-[28px]">{emoji}</Text>
                 </View>
             </View>
-            <Text className="happy-font-body-bold text-center text-sm text-ink">
+            <Text variant="body-bold" className="text-center text-sm text-ink">
                 {nextNode.title}
             </Text>
-            <Text className="happy-font-body-bold mt-1 text-xs text-sage-600">
+            <Text variant="chip" className="mt-1 text-xs text-sage-600">
                 Just one more! ✨
             </Text>
-        </View>
+        </Card>
     );
 }
 
@@ -281,7 +284,7 @@ export default function NodeCompletionCelebration({
                     <Text className="text-5xl mb-4">🎊</Text>
 
                     {/* Title */}
-                    <Text className="happy-font-heading-bold mb-6 text-center text-[34px] leading-10 text-ink">
+                    <Text variant="display" className="mb-6 text-center text-ink">
                         Well Done!
                     </Text>
 
@@ -303,49 +306,22 @@ export default function NodeCompletionCelebration({
                 <View className="px-5 pb-4 pt-2 gap-3">
                     {/* Continue to next node */}
                     {nextNode ? (
-                        <PressableScale
+                        <Button
+                            label="Continue"
                             onPress={handleContinue}
-                            scale={0.96}
-                            hapticStyle="medium"
-                            style={{
-                                backgroundColor: SAGE[500],
-                                paddingVertical: 16,
-                                borderRadius: 22,
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderBottomWidth: 4,
-                                borderBottomColor: SAGE[700],
-                            }}
+                            variant="primary"
+                            rightIcon={<HugeiconsIcon icon={ArrowRight01Icon} size={18} color={BRAND_SURFACE} />}
                             accessibilityLabel="Continue to next activity"
-                            accessibilityRole="button"
-                        >
-                            <Text className="happy-font-body-bold mr-1 text-base text-brand-surface">
-                                Continue
-                            </Text>
-                            <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={BRAND_SURFACE} />
-                        </PressableScale>
+                        />
                     ) : null}
 
                     {/* Done for now */}
-                    <PressableScale
+                    <Button
+                        label="Done for now"
                         onPress={handleDone}
-                        scale={0.96}
-                        hapticStyle="light"
-                        style={{
-                            backgroundColor: SAGE.pill,
-                            paddingVertical: 14,
-                            borderRadius: 22,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
+                        variant="secondary"
                         accessibilityLabel="Return to journey map"
-                        accessibilityRole="button"
-                    >
-                        <Text className="happy-font-body-bold text-sm text-sage-600">
-                            Done for now
-                        </Text>
-                    </PressableScale>
+                    />
                 </View>
             </SafeAreaView>
         </View>

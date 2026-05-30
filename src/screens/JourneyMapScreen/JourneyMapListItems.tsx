@@ -4,6 +4,8 @@ import { Dimensions, Text, View } from "react-native";
 import { DividerCell } from "@/src/components/journey/DividerCell";
 import { JourneyNodeCell } from "@/src/components/journey/JourneyNodeCell";
 import { MascotCell } from "@/src/components/journey/MascotCell";
+import JourneyLoadingSkeleton from "@/src/components/journey/JourneyLoadingSkeleton";
+import MochiMascot from "@/src/screens/OnboardingScreen/components/MochiMascot";
 import type { JourneyFlashListItem, PathNodeData } from "@/src/types/journey";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -62,17 +64,25 @@ export const JourneyMapListFooter = React.memo(function JourneyMapListFooter({
 });
 
 export function JourneyMapLoadingState(): React.JSX.Element {
-  return (
-    <View className="flex-1 items-center justify-center">
-      <Text className="text-ink-muted">Loading...</Text>
-    </View>
-  );
+  return <JourneyLoadingSkeleton />;
 }
 
 export function JourneyMapEmptyState(): React.JSX.Element {
   return (
-    <View>
-      <Text>This course is being prepared. Check back shortly.</Text>
+    <View className="flex-1 items-center justify-center px-8 pb-16">
+      <MochiMascot expression="concentrating" size={100} delay={0} />
+      <Text
+        style={{ fontFamily: "FrauncesSemiBold" }}
+        className="mt-5 text-center text-[24px] leading-tight text-ink"
+      >
+        Your journey is being prepared
+      </Text>
+      <Text
+        style={{ fontFamily: "GeistMedium" }}
+        className="mt-2.5 text-center text-[15px] leading-relaxed text-ink-soft"
+      >
+        Check back shortly — your personalized path will be ready soon.
+      </Text>
     </View>
   );
 }

@@ -21,7 +21,7 @@ export const HomeMainButton = ({
 }: HomeMainButtonProps) => {
   const { width } = useWindowDimensions();
   return (
-    <View className="flex-row  items-center self-center">
+    <View className="flex-row items-center self-center">
       <SvgAppButton
         width={width * 0.8}
         height={78}
@@ -39,10 +39,18 @@ export const HomeMainButton = ({
           paddingHorizontal: 16,
         }}
       >
-        <Text className="text-lg font-rd-medium" style={{ color: "#ecffde" }}>
+        <Text
+          style={{ fontFamily: "FrauncesRegular" }}
+          className="text-sm text-white/80"
+        >
           {unitLabel}
         </Text>
-        <Text className="text-white text-xl font-bold">{unitTitle}</Text>
+        <Text
+          style={{ fontFamily: "FrauncesSemiBold" }}
+          className="text-[18px] text-white"
+        >
+          {unitTitle}
+        </Text>
       </SvgAppButton>
       <SvgAppButton
         width={55}

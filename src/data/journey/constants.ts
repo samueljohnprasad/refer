@@ -6,15 +6,15 @@
 
 /** Node visual colors by status */
 export const NODE_COLORS = {
-  locked: "rgba(226, 232, 240, 0.25)", // Semi-transparent light gray
+  locked: "#DDE5D8",   // Sage-tinted locked gray — visible but clearly de-emphasized
   active: "#58CC02",
   completed: "#FFC800",
 } as const;
 
 /** Path stroke colors */
 export const PATH_COLORS = {
-  inactive: "#F1F5F9", // Very light gray for minimal visual weight
-  active: "#DCFCE7", // Subtle light green
+  inactive: "#EAF0E7", // Warm sage-gray path — harmonizes with canvas
+  active: "#C8DEC0",  // Muted sage green progress path
 } as const;
 
 /** Unit header gradient pairs by color scheme */
@@ -68,11 +68,11 @@ export const DIVIDER_LAYOUT = {
   /** Minimum visible line width on either side of the title */
   minLineWidth: 24,
   /** Background behind the title pill */
-  titlePillColor: "rgba(241, 245, 249, 0.9)",
+  titlePillColor: "rgba(232, 240, 229, 0.9)", // Soft sage-green pill tint
   /** Divider title color */
-  titleTextColor: "#64748B",
+  titleTextColor: "#767676", // Sage ink-soft — matches text-ink-soft everywhere else
   /** Divider rule color */
-  lineColor: "rgba(203, 213, 225, 0.92)",
+  lineColor: "rgba(180, 200, 175, 0.7)", // Warm sage line, softer than cool slate
 } as const;
 
 /** Animation timing constants (ms) */
@@ -111,16 +111,16 @@ export const MASCOT_SIZE = {
   bubbleMaxWidth: 160,
 } as const;
 
-/** Mascot encouragement messages */
+/** Mascot speech bubble messages — warm Sage voice, no emoji */
 export const MASCOT_MESSAGES: readonly string[] = [
-  "Great job! Keep going! 🎉",
-  "You're on fire! 🔥",
-  "Almost there! 💪",
-  "Incredible progress! ⭐",
-  "You're a star learner! 🌟",
-  "Way to go! 🚀",
-  "Keep it up! 👏",
-  "You've got this! 💯",
-  "Amazing work! ✨",
-  "One step at a time! 🐾",
+  "You're making real progress.",
+  "One step at a time.",
+  "Every session counts.",
+  "You're doing great.",
+  "Keep going — you've got this.",
+  "Each step builds on the last.",
+  "You're showing up. That matters.",
+  "Nice work today.",
+  "Consistency is your superpower.",
+  "Take a breath. You're doing well.",
 ] as const;

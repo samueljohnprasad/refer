@@ -29,6 +29,7 @@ const PALETTE = {
 export interface SectionOverviewSheetProps {
   sections: SectionOverviewItem[];
   onPreviewSection: (sectionId: string) => void;
+  onClose: () => void;
   journeyTitle: string;
 }
 
@@ -89,7 +90,8 @@ function SectionCard({
           {section.unitTitles.map((unitTitle, index) => (
             <View
               key={`${section.id}-${unitTitle}-${index}`}
-              className="flex-row items-center rounded-full bg-brand-canvas px-3 py-1.5 border border-brand-border/60"
+              className="flex-row items-center rounded-full bg-brand-canvas px-3 py-1.5"
+              style={{ borderWidth: 1, borderColor: "rgba(213, 228, 207, 0.7)" }}
             >
               <JourneyUnitIcon
                 iconKey={section.unitIconKeys[index]}
@@ -138,6 +140,7 @@ function SectionCard({
 export function SectionOverviewSheet({
   sections,
   onPreviewSection,
+  onClose,
   journeyTitle,
 }: SectionOverviewSheetProps): React.JSX.Element {
   const insets = useSafeAreaInsets();
@@ -151,8 +154,12 @@ export function SectionOverviewSheet({
   return (
     <View className="flex-1 happy-brand-screen">
       <View
-        className="flex-row items-start justify-between border-b-2 border-sage-100 happy-brand-screen px-6 pb-5"
-        style={{ paddingTop: Math.max(18, insets.top) }}
+        className="flex-row items-start justify-between happy-brand-screen px-6 pb-5"
+        style={{
+          paddingTop: Math.max(18, insets.top),
+          borderBottomWidth: 1,
+          borderBottomColor: "#E5EDE1",
+        }}
       >
         <View className="flex-1 pr-4">
           <Text variant="eyebrow">
@@ -166,6 +173,20 @@ export function SectionOverviewSheet({
           </Text>
         </View>
 
+        <PressableScale
+          onPress={onClose}
+          scale={0.9}
+          hapticStyle="light"
+          accessibilityRole="button"
+          accessibilityLabel="Close sections"
+        >
+          <View
+            className="w-9 h-9 rounded-full items-center justify-center"
+            style={{ backgroundColor: "#EAF0E7" }}
+          >
+            <HugeiconsIcon icon={Cancel01Icon} size={18} color="#5F7F58" />
+          </View>
+        </PressableScale>
       </View>
 
       <ScrollView

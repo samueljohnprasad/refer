@@ -19,6 +19,7 @@ import Animated, {
 
 import type { QuizQuestion } from '@/src/types/journey/mentalHealth';
 import { PressableScale } from '@/src/components/ui/PressableScale';
+import { Card } from '@/src/components/ui/Card';
 import { BRAND_SURFACE, GOLD, SAGE } from '@/lib/tokens';
 import { SPRING_BOUNCY } from '@/src/utils/motionTokens';
 
@@ -138,10 +139,13 @@ export default function QuizScoreSummary({
                         const correctOption: string = question.options[question.correct_index];
 
                         return (
-                            <View
+                            <Card
                                 key={qIndex}
-                                className={`rounded-[24px] p-4 ${isCorrect ? 'happy-brand-card-selected' : 'border-2 border-terracotta-light bg-brand-surface'
-                                    }`}
+                                variant={isCorrect ? "answer-selected" : "tile"}
+                                radius="xl"
+                                showDepth={false}
+                                className={isCorrect ? "" : "border-2 border-terracotta-light bg-brand-surface"}
+                                contentClassName="p-4"
                             >
                                 {/* Question header */}
                                 <View className="flex-row items-start gap-2 mb-2">
@@ -182,7 +186,7 @@ export default function QuizScoreSummary({
                                 >
                                     {question.explanation}
                                 </Text>
-                            </View>
+                            </Card>
                         );
                     })}
                 </View>

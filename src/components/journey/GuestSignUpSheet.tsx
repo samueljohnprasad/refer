@@ -29,7 +29,7 @@ import type { GuestProgress } from '@/hooks/data/useGuestProgress';
 // Types
 // ---------------------------------------------------------------------------
 
-interface GuestSignUpSheetProps {
+export interface GuestSignUpSheetProps {
     guestProgress: GuestProgress;
     onDismiss?: () => void;
 }
