@@ -26,6 +26,7 @@ import Animated, {
   withTiming,
   withSpring,
   withSequence,
+  withDelay,
   Easing,
   interpolate,
   type SharedValue,
@@ -193,7 +194,7 @@ function BouncingTooltip({
   useEffect(() => {
     translateY.value = withRepeat(
       withSequence(
-        withSpring(-8, { damping: 8, stiffness: 120 }),  // Float up — physical spring
+        withDelay(2000, withSpring(-8, { damping: 8, stiffness: 120 })),  // Float up after a pause
         withSpring(0, { damping: 12, stiffness: 150 }),   // Settle back
       ),
       -1,
@@ -301,7 +302,7 @@ function ConfigDrivenNodeInner({
 
   // Breathing/shine scale style
   const activeScaleStyle = useAnimatedStyle(() => {
-    const scale: number = interpolate(animProgress.value, [0, 1], [1, 1.08]);
+    const scale: number = interpolate(animProgress.value, [0, 1], [1, 1.12]);
     return { transform: [{ scale }] };
   });
 

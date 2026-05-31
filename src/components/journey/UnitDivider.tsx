@@ -22,6 +22,8 @@ export interface UnitDividerProps {
   connectorLaneX?: number;
   /** Screen width used to route the title away from the connector lane */
   screenWidth: number;
+  /** Dynamic accent color derived from the unit theme (optional) */
+  accentColor?: string;
 }
 
 interface DividerLineProps {
@@ -81,6 +83,7 @@ function UnitDivider({
   title,
   connectorLaneX,
   screenWidth,
+  accentColor,
 }: UnitDividerProps): React.JSX.Element {
   const laneCenterX = resolveConnectorLaneX(connectorLaneX, screenWidth);
   const isConnectorLaneLeftOfCenter = laneCenterX <= screenWidth / 2;
@@ -96,9 +99,9 @@ function UnitDivider({
 
   const titlePill = (
     <View
-      className="rounded-full px-2.5 py-1"
+      className="rounded-full px-4 py-1.5 shadow-sm"
       style={{
-        backgroundColor: DIVIDER_LAYOUT.titlePillColor,
+        backgroundColor: accentColor || DIVIDER_LAYOUT.titlePillColor,
         maxWidth: screenWidth * DIVIDER_LAYOUT.titleMaxWidthRatio,
       }}
     >

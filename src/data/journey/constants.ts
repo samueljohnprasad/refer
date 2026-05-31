@@ -68,11 +68,11 @@ export const DIVIDER_LAYOUT = {
   /** Minimum visible line width on either side of the title */
   minLineWidth: 24,
   /** Background behind the title pill */
-  titlePillColor: "rgba(232, 240, 229, 0.9)", // Soft sage-green pill tint
+  titlePillColor: "#58CC02", // Bold, vibrant theme color
   /** Divider title color */
-  titleTextColor: "#767676", // Sage ink-soft — matches text-ink-soft everywhere else
+  titleTextColor: "#FFFFFF", // High contrast white
   /** Divider rule color */
-  lineColor: "rgba(180, 200, 175, 0.7)", // Warm sage line, softer than cool slate
+  lineColor: "#EAF0E7", // Clean slate line
 } as const;
 
 /** Animation timing constants (ms) */

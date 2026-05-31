@@ -18,6 +18,12 @@
       "skillPath": "plugins/expo/skills/add-app-clip/SKILL.md",
       "computedHash": "6bbeeae2814231780a4ee1bbd89e6916e35803a78a9a57778dc883cc3113c6fc"
     },
+    "agent-device": {
+      "source": "callstackincubator/agent-device",
+      "sourceType": "github",
+      "skillPath": "skills/agent-device/SKILL.md",
+      "computedHash": "a09ff3456969a416fb35de14484a933e70df307bc11ba77bf3b0a9ea2f723c07"
+    },
     "ai-slides": {
       "source": "TerminalSkills/skills",
       "sourceType": "github",
@@ -124,6 +130,12 @@
       "source": "tim-hub/role-based-skills",
       "sourceType": "github",
       "computedHash": "9b4001b9916670f52ffff4b7d710d3ef0049a0ea003722c7ff5e967d25eb0121"
+    },
+    "dogfood": {
+      "source": "callstackincubator/agent-device",
+      "sourceType": "github",
+      "skillPath": "skills/dogfood/SKILL.md",
+      "computedHash": "7c14b806787e7793e7b0846c310f66430ffca06bd16c5848c29f09f2fd9dbe65"
     },
     "engineering-discipline": {
       "source": "miospotdevteam/claude-control",

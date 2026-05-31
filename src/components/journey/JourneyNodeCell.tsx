@@ -94,8 +94,12 @@ function JourneyNodeCellInner({
   const dashLength = 20; // 10px dash + 10px gap
   const dashOffset = useSharedValue(0);
 
+  // OPTIMIZATION: Only run the infinite flowing animation for the currently active segment
+  // instead of ALL completed segments. This prevents 50+ concurrent infinite loops.
+  const isActiveSegment = activeGlobalIndex >= 0 && item.globalIndex === activeGlobalIndex;
+
   useEffect(() => {
-    if (isProgressSegment) {
+    if (isActiveSegment) {
       dashOffset.value = withRepeat(
         withTiming(-dashLength, { duration: 1000, easing: Easing.linear }),
         -1, // infinite
@@ -104,7 +108,7 @@ function JourneyNodeCellInner({
     } else {
       dashOffset.value = 0;
     }
-  }, [isProgressSegment, dashOffset]);
+  }, [isActiveSegment, dashOffset]);
 
   const animatedPathProps = useAnimatedProps(() => ({
     strokeDashoffset: dashOffset.value,
@@ -128,7 +132,6 @@ function JourneyNodeCellInner({
 
   return (
     <Animated.View
-      entering={FadeInDown.springify().damping(20).stiffness(150).delay(Math.min(item.globalIndex, 15) * 50)}
       style={{
         height: item.cellHeight,
         width: screenWidth,

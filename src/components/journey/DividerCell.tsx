@@ -111,7 +111,7 @@ export function DividerCell({
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeDasharray="10 10"
+              strokeDasharray="12 16"
               animatedProps={animatedPathProps}
             />
           )}
@@ -121,6 +121,7 @@ export function DividerCell({
         title={item.title}
         connectorLaneX={item.connectorLaneX}
         screenWidth={screenWidth}
+        accentColor={item.accentColor}
       />
     </View>
   );

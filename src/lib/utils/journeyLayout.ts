@@ -20,7 +20,7 @@ import type {
   Node,
   UserNodeProgress,
 } from "@/src/types/journeyV5";
-import { PATH_LAYOUT, DIVIDER_LAYOUT } from "@/src/data/journey/constants";
+import { PATH_LAYOUT, DIVIDER_LAYOUT, UNIT_GRADIENTS } from "@/src/data/journey/constants";
 import {
   findCurrentNodeIdInCourse,
   resolveNodeVisualStatus,
@@ -129,13 +129,15 @@ function createDividerItem(
   exitX: number,
   previousNodeVisualStatus: NodeVisualStatus | null,
   previousNodeGlobalIndex: number | undefined,
+  colorThemeKey: string,
 ): JourneyDividerItem {
+  const accentColor = UNIT_GRADIENTS[colorThemeKey]?.[0];
   return {
     id: `divider-${unit.id}`,
     itemType: "divider",
     cellHeight: DIVIDER_LAYOUT.cellHeight,
     title: unit.title,
-    accentColor: undefined,
+    accentColor,
     connectorLaneX: resolveDividerConnectorLaneX(entryX, exitX),
     segmentD: buildDividerSegmentD(entryX, exitX, DIVIDER_LAYOUT.cellHeight),
     isConnectorActive: previousNodeVisualStatus === "completed",
@@ -338,6 +340,7 @@ export function buildJourneyFlashListData(
             firstNodeX,
             previousNodeVisualStatus,
             lastNodeGlobalIndex >= 0 ? lastNodeGlobalIndex : undefined,
+            colorThemeKey,
           ),
         );
       }
