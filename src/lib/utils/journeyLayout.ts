@@ -75,9 +75,8 @@ function buildSegmentD(
   thisX: number,
   cellHeight: number,
 ): string {
-  const nodeY = cellHeight * NODE_VERTICAL_POSITION_RATIO;
   const controlY = cellHeight / 2;
-  return `M ${prevX} 0 C ${prevX} ${controlY} ${thisX} ${controlY} ${thisX} ${nodeY}`;
+  return `M ${prevX} 0 C ${prevX} ${controlY} ${thisX} ${controlY} ${thisX} ${cellHeight}`;
 }
 
 /**

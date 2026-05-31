@@ -10,7 +10,7 @@ import {
 } from "date-fns";
 import React, { useMemo } from "react";
 import { Pressable, View, DimensionValue } from "react-native";
-import { Text } from "@/components/Themed";
+import { Text } from "@/src/components/ui/Text";
 import useCalendarMonth from "./hooks/useCalendarMonth";
 import MoodBadge from "@/src/components/MoodBadge";
 import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
@@ -81,17 +81,15 @@ const DayCell = React.memo<DayCellProps>(
       []
     );
 
-    const textClassName = useMemo(() => {
-      if (disabled) return "happy-font-body-semibold text-[18px]";
-      if (isTodayDate && !isSelected) return "happy-font-body-bold text-[18px]";
-      if (isSelected) return "happy-font-body-bold text-[18px]";
-      return "happy-font-body-medium text-[18px]";
-    }, [isTodayDate, isSelected, disabled]);
+    const textVariant = useMemo(() => {
+      if (isTodayDate || isSelected) return "body-bold";
+      return "body";
+    }, [isTodayDate, isSelected]);
 
-    const textColor = useMemo(() => {
-      if (disabled) return SAGE_OVERLAY.disabled;
-      if (isSelected) return SAGE[600];
-      return isTodayDate ? INK : INK_MUTED;
+    const textColorVariant = useMemo(() => {
+      if (disabled) return "muted";
+      if (isSelected) return "sage";
+      return isTodayDate ? "ink" : "muted";
     }, [disabled, isSelected, isTodayDate]);
 
     const containerStyle = useMemo(() => {
@@ -137,7 +135,7 @@ const DayCell = React.memo<DayCellProps>(
         accessibilityState={{ selected: isSelected, disabled }}
       >
         <View className={containerClassName} style={containerStyle}>
-          <Text className={textClassName} style={{ color: textColor }}>
+          <Text variant={textVariant as any} color={textColorVariant as any}>
             {dayLabel}
           </Text>
           {showMoodBadge && (
@@ -177,14 +175,18 @@ const WeekDayHeader = React.memo(() => (
     accessibilityElementsHidden={true}
     importantForAccessibility="no"
   >
-    {WEEKDAY_LABELS.map((day) => (
-      <Text
-        key={day}
-        className="happy-font-body-bold flex-1 text-center text-xs uppercase tracking-widest py-2 text-ink-muted"
-      >
-        {day}
-      </Text>
-    ))}
+    {WEEKDAY_LABELS.map((label, index) => {
+      const isWeekend = index === 0 || index === 6;
+      const colorVariant = isWeekend ? "muted" : "ink";
+
+      return (
+        <View key={label} className="flex-1 items-center py-2">
+          <Text variant="overline" color={colorVariant}>
+            {label}
+          </Text>
+        </View>
+      );
+    })}
   </View>
 ));
 
@@ -241,14 +243,14 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
 
     return (
       <View className="px-2">
-        {/* Month header with title on left, arrows on right */}
-        <View className="flex-row justify-between items-center mb-3 py-2">
-          <Text
-            className="happy-font-heading-bold text-[30px] tracking-tight text-ink"
-          >
+        {/* Month header with title centered, arrows on right */}
+        <View className="flex-row justify-between items-center mb-3 py-2 ml-4">
+          <View />
+          <Text variant="h1" color="ink">
             {monthTitle}
           </Text>
-          <View className="flex-row items-center gap-2">
+
+          <View className="flex-row items-center gap-2 justify-end">
             <Pressable
               className="h-10 w-10 items-center justify-center rounded-full bg-sage-50"
               onPress={goToPreviousMonth}

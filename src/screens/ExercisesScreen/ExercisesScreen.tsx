@@ -28,6 +28,7 @@ import {
   CheckmarkBadge01Icon,
   SparklesIcon,
   Time02Icon,
+  ZapIcon,
 } from "@hugeicons/core-free-icons";
 
 import {
@@ -40,7 +41,6 @@ import {
   getCategoryTint,
   getExerciseIcon,
 } from "@/src/data/exerciseIconRegistry";
-import { Mascot } from "@/src/components/ui/Mascot";
 import type {
   ExerciseCategory,
   ExerciseConfig,
@@ -155,7 +155,7 @@ const ExerciseCard = memo(function ExerciseCard({
       accessibilityLabel={`${exercise.title}: ${exercise.subtitle}. Duration: ${exercise.duration}.`}
     >
       {featured && (
-        <Text variant="eyebrow" className="mb-3">
+        <Text variant="eyebrow" className="mt-1 mb-4">
           Start here
         </Text>
       )}
@@ -176,15 +176,15 @@ const ExerciseCard = memo(function ExerciseCard({
           </Text>
 
           <View className="mt-3 flex-row items-center gap-2">
-            <View className="flex-row items-center rounded-full bg-brand-surface-soft px-2.5 py-1">
-              <Text variant="chip">⏱️</Text>
-              <Text variant="chip" className="ml-1">
+            <View className="flex-row items-center justify-center rounded-full bg-brand-surface-soft px-3 py-1.5">
+              <HugeiconsIcon icon={Time02Icon} size={14} color={INK_MUTED} />
+              <Text variant="chip" className="ml-1.5">
                 {exercise.duration}
               </Text>
             </View>
-            <View className="flex-row items-center rounded-full bg-gold/15 px-2.5 py-1">
-              <Text variant="chip">⚡</Text>
-              <Text variant="chip" className="ml-1">
+            <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
+              <HugeiconsIcon icon={ZapIcon} size={14} color="#C89400" />
+              <Text variant="chip" className="ml-1.5 text-ink-soft">
                 +{exercise.xp} XP
               </Text>
             </View>
@@ -414,9 +414,9 @@ const LogCard = memo(function LogCard({
               </Text>
             </View>
             {isComplete && xpEarned > 0 ? (
-              <View className="flex-row items-center rounded-full bg-gold/15 px-2 py-1">
-                <Text variant="chip">⚡</Text>
-                <Text variant="chip" className="ml-0.5">
+              <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
+                <HugeiconsIcon icon={ZapIcon} size={14} color="#C89400" />
+                <Text variant="chip" className="ml-1.5 text-ink-soft">
                   +{xpEarned} XP
                 </Text>
               </View>
@@ -495,22 +495,6 @@ export default function ExercisesScreen(): ReactElement {
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
   const reducedMotion = useReducedMotion();
 
-  // Mascot ambient breathing — slow scale pulse, 2.2s per phase
-  const mascotScale = useSharedValue(1);
-  useEffect(() => {
-    if (reducedMotion) return;
-    mascotScale.value = withRepeat(
-      withSequence(
-        withTiming(1.018, { duration: 2200, easing: Easing.inOut(Easing.sin) }),
-        withTiming(1.0, { duration: 2200, easing: Easing.inOut(Easing.sin) }),
-      ),
-      -1,
-      false,
-    );
-  }, [reducedMotion]);
-  const mascotStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: mascotScale.value }],
-  }));
 
   // Active tab pill — spring in on mount
   const tabScale = useSharedValue(reducedMotion ? 1 : 0.92);
@@ -585,9 +569,6 @@ export default function ExercisesScreen(): ReactElement {
         <View className="px-5 pb-3 pt-3">
           <View className="mb-4 flex-row items-center justify-between">
             <View className="flex-row items-center gap-3">
-              <Animated.View style={mascotStyle}>
-                <Mascot state="panda-love-hug-2" size={38} />
-              </Animated.View>
               <View>
                 <Text variant="eyebrow" className="mb-0.5">
                   {getContextualEyebrow()}
@@ -598,9 +579,9 @@ export default function ExercisesScreen(): ReactElement {
               </View>
             </View>
             {completedCount > 0 ? (
-              <View className="flex-row items-center rounded-full bg-gold/15 px-3 py-1.5">
-                <Text variant="chip">🔥</Text>
-                <Text variant="chip" className="ml-1">
+              <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
+                <HugeiconsIcon icon={ZapIcon} size={16} color="#C89400" />
+                <Text variant="chip" className="ml-1.5 text-ink-soft">
                   {completedCount} done
                 </Text>
               </View>

@@ -168,7 +168,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
       >
         <Group
           modifiers={[
-            presentationDetents([{ height: 740 }]),
+            presentationDetents(["large"]),
             presentationDragIndicator("visible"),
           ]}
         >

@@ -215,6 +215,7 @@ export const SvgAppButton = ({
               width={resolvedWidth}
               height={height}
               viewBox={`0 0 ${resolvedWidth} ${height}`}
+              style={{ position: "absolute", top: 0, left: 0, zIndex: 0 }}
             >
               <Defs>
                 <ClipPath id={clipId}>
@@ -245,7 +246,13 @@ export const SvgAppButton = ({
               ) : null}
             </Svg>
 
-            <View style={[styles.content, contentContainerStyle]}>
+            <View
+              style={[
+                { flex: 1, zIndex: 10, elevation: 10 },
+                contentContainerStyle,
+              ]}
+              pointerEvents="box-none"
+            >
               {children}
             </View>
           </AnimatedPressable>
@@ -255,8 +262,4 @@ export const SvgAppButton = ({
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    ...StyleSheet.absoluteFillObject,
-  },
-});
+const styles = StyleSheet.create({});

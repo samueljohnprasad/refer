@@ -59,7 +59,7 @@ export interface QuizNodeRendererProps {
     /** XP reward displayed in the renderer header */
     xpReward?: number;
     /** Called when user completes the quiz */
-    onComplete: (responseData: QuizResponseData) => void;
+    onComplete: (responseData: QuizResponseData) => void | Promise<void>;
     /** Called when user taps back */
     onBack: () => void;
 }
@@ -213,6 +213,7 @@ export default function QuizNodeRenderer({
         useState<QuestionState>("answering");
     const [answers, setAnswers] = useState<QuizAnswer[]>([]);
     const [showingSummary, setShowingSummary] = useState<boolean>(false);
+    const [isCompleting, setIsCompleting] = useState<boolean>(false);
 
     const currentQuestion: QuizQuestion | undefined = questions[currentIndex];
     const isCorrectAnswer: boolean =
@@ -285,7 +286,8 @@ export default function QuizNodeRenderer({
         }
     }, [currentIndex, totalQuestions]);
 
-    const handleComplete = useCallback((): void => {
+    const handleComplete = useCallback(async (): Promise<void> => {
+        if (isCompleting) return;
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
 
         const finalScore: number = answers.filter(
@@ -304,8 +306,13 @@ export default function QuizNodeRenderer({
             perfectBonus: perfect,
         };
 
-        onComplete(responseData);
-    }, [answers, totalQuestions, onComplete]);
+        setIsCompleting(true);
+        try {
+            await onComplete(responseData);
+        } finally {
+            setIsCompleting(false);
+        }
+    }, [answers, totalQuestions, isCompleting, onComplete]);
 
     const handleBack = useCallback((): void => {
         if (showingSummary) {
@@ -338,6 +345,7 @@ export default function QuizNodeRenderer({
                         score={score}
                         total={totalQuestions}
                         isPerfect={isPerfect}
+                        isCompleting={isCompleting}
                         onComplete={handleComplete}
                     />
                 </View>

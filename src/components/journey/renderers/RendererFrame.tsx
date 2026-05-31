@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SAGE, TERRACOTTA } from "@/lib/tokens";
 import { PressableScale } from "@/src/components/ui/PressableScale";
-import StageProgressBar from "@/src/components/ui/StageProgressBar";
+import { LessonHeader } from "@/src/components/ui/LessonHeader";
 import { Button } from "@/src/components/ui/Button";
 import { Card } from "@/src/components/ui/Card";
 
@@ -25,34 +25,13 @@ export function RendererTopProgress({
   const clampedProgress = Math.max(0, Math.min(1, progress));
 
   return (
-    <View
-      className="flex-row items-center gap-3 px-7 pb-4"
-      style={{ paddingTop: Math.max(insets.top + 20, 56) }}
-    >
-      <PressableScale
-        onPress={onClose}
-        scale={0.9}
-        hapticStyle="light"
-        className="min-h-11 min-w-11 items-center justify-center"
-        accessibilityLabel="Close activity"
-        accessibilityRole="button"
-      >
-        <Text className="happy-font-body-bold text-[20px] text-sage-700">
-          X
-        </Text>
-      </PressableScale>
-
-      <View className="flex-1">
-        <StageProgressBar
-          progress={clampedProgress}
-          fillColor={TERRACOTTA}
-          trackColor={SAGE[100]}
-        />
-      </View>
-
-      <Text className="happy-font-body-bold min-w-[54px] text-right text-[14px] text-terracotta">
-        +{getDisplayXp(xpReward)} XP
-      </Text>
+    <View style={{ paddingTop: Math.max(insets.top + 8, 48) }}>
+      <LessonHeader
+        onClose={onClose}
+        progress={clampedProgress}
+        trailingLabel={`+${getDisplayXp(xpReward)} XP`}
+        style={{ paddingHorizontal: 28 }}
+      />
     </View>
   );
 }
@@ -110,11 +89,13 @@ export function RendererPrimaryCTA({
   label,
   onPress,
   disabled = false,
+  loading = false,
   tone = "sage",
 }: {
   label: string;
   onPress: () => void;
   disabled?: boolean;
+  loading?: boolean;
   tone?: "sage" | "terracotta";
 }): React.JSX.Element {
   return (
@@ -122,6 +103,7 @@ export function RendererPrimaryCTA({
       label={label}
       onPress={onPress}
       disabled={disabled}
+      loading={loading}
       variant={tone === "terracotta" ? "incorrect" : "primary"}
       fullWidth
     />

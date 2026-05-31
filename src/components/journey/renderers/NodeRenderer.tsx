@@ -62,7 +62,7 @@ export interface NodeRendererProps {
     /** XP reward for this node */
     xpReward: number;
     /** Called when user completes the node with response data */
-    onComplete: (responseData: NodeResponseData) => void;
+    onComplete: (responseData: NodeResponseData) => void | Promise<void>;
     /** Called when user taps back / close without completing */
     onClose: () => void;
     /** Called to save journal entries to the main journal system */
@@ -129,8 +129,8 @@ export default function NodeRenderer({
 }: NodeRendererProps): React.JSX.Element {
     // ── Generic complete handler that wraps response data ──
     const handleCompleteGeneric = useCallback(
-        (responseData: NodeResponseData): void => {
-            onComplete(responseData);
+        (responseData: NodeResponseData) => {
+            return onComplete(responseData);
         },
         [onComplete],
     );

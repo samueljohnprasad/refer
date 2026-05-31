@@ -13,15 +13,19 @@
  * - Touch via existing ConfigDrivenNode pattern
  */
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { View } from "react-native";
+import Animated, { FadeInDown, useSharedValue, useAnimatedProps, withRepeat, withTiming, Easing } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 import type { JourneyNode } from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
 import type { PathNodeData, NodePosition } from "@/src/types/journey";
 import { useHighContrast } from "@/src/hooks/useHighContrast";
 import ConfigDrivenNode from "./ConfigDrivenNode";
+import { ResidualHeatParticles } from "../ui/ResidualHeatParticles";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -86,6 +90,26 @@ function JourneyNodeCellInner({
     ? pathColors.active
     : pathColors.inactive;
 
+  // Flowing energy animation state
+  const dashLength = 20; // 10px dash + 10px gap
+  const dashOffset = useSharedValue(0);
+
+  useEffect(() => {
+    if (isProgressSegment) {
+      dashOffset.value = withRepeat(
+        withTiming(-dashLength, { duration: 1000, easing: Easing.linear }),
+        -1, // infinite
+        false // no reverse
+      );
+    } else {
+      dashOffset.value = 0;
+    }
+  }, [isProgressSegment, dashOffset]);
+
+  const animatedPathProps = useAnimatedProps(() => ({
+    strokeDashoffset: dashOffset.value,
+  }));
+
   // Node position within the cell (centered at bottom of segment)
   const nodePosition: NodePosition = {
     x: item.x,
@@ -103,7 +127,8 @@ function JourneyNodeCellInner({
   const pathNodeData: PathNodeData = toPathNodeData(item);
 
   return (
-    <View
+    <Animated.View
+      entering={FadeInDown.springify().damping(20).stiffness(150).delay(Math.min(item.globalIndex, 15) * 50)}
       style={{
         height: item.cellHeight,
         width: screenWidth,
@@ -127,10 +152,33 @@ function JourneyNodeCellInner({
             strokeLinecap="round"
             strokeLinejoin="round"
           />
+          {isProgressSegment && (
+            <AnimatedPath
+              d={item.segmentD}
+              stroke="rgba(255, 255, 255, 0.4)"
+              strokeWidth={pathStrokeWidth * 0.5}
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray="10 10"
+              animatedProps={animatedPathProps}
+            />
+          )}
         </Svg>
       )}
 
       {/* Node circle — absolutely positioned over the path endpoint */}
+      <View
+        style={{
+          position: "absolute",
+          left: nodePosition.x,
+          top: nodePosition.y,
+          width: 0,
+          height: 0,
+        }}
+        pointerEvents="none"
+      >
+      </View>
       <ConfigDrivenNode
         node={pathNodeData}
         position={nodePosition}
@@ -138,7 +186,7 @@ function JourneyNodeCellInner({
         colorThemeKey={item.colorThemeKey}
         onPress={handlePress}
       />
-    </View>
+    </Animated.View>
   );
 }
 

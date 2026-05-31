@@ -5,6 +5,15 @@ import { Fire02Icon } from "@hugeicons/core-free-icons";
 import { useStreakTracker } from "@/hooks/data/useStreakTracker";
 import { Card } from "@/src/components/ui/Card";
 import { GOLD, SAGE } from "@/lib/tokens";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+  withTiming,
+  Easing,
+  withDelay,
+} from "react-native-reanimated";
 
 interface WeeklyStreakWidgetProps {
   onPress?: () => void;
@@ -17,7 +26,43 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
 }) => {
   const { streakData, isLoading } = useStreakTracker();
 
+  // Create an infinite heartbeat pulse for the most recent active day
+  const heartbeatScale = useSharedValue(1);
+  const heartbeatOpacity = useSharedValue(0);
+
+  React.useEffect(() => {
+    heartbeatScale.value = withRepeat(
+      withSequence(
+        withTiming(1, { duration: 0 }),
+        withTiming(1.6, { duration: 1200, easing: Easing.out(Easing.quad) }),
+        withTiming(1, { duration: 0 }),
+        withDelay(2000, withTiming(1, { duration: 0 }))
+      ),
+      -1,
+      false
+    );
+
+    heartbeatOpacity.value = withRepeat(
+      withSequence(
+        withTiming(0.4, { duration: 0 }),
+        withTiming(0, { duration: 1200, easing: Easing.out(Easing.quad) }),
+        withTiming(0, { duration: 0 }),
+        withDelay(2000, withTiming(0, { duration: 0 }))
+      ),
+      -1,
+      false
+    );
+  }, []);
+
+  const pulseStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: heartbeatScale.value }],
+    opacity: heartbeatOpacity.value,
+  }));
+
   const currentStreak = streakData.currentStreak || 0;
+  
+  // Find the index of the most recently completed day
+  const mostRecentCompletedIndex = [...streakData.weeklyProgress].findLastIndex(Boolean);
 
   const labels = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -100,6 +145,21 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
                       : "#FFFFFF",
                   }}
                 >
+                  {i === mostRecentCompletedIndex && (
+                    <Animated.View
+                      style={[
+                        {
+                          position: "absolute",
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: 16,
+                          backgroundColor: GOLD,
+                        },
+                        pulseStyle,
+                      ]}
+                      pointerEvents="none"
+                    />
+                  )}
                   <HugeiconsIcon
                     icon={Fire02Icon}
                     size={16}

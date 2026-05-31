@@ -4,6 +4,7 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  withSpring,
   withRepeat,
   withSequence,
   FadeInDown,
@@ -64,30 +65,60 @@ const TopBar = React.memo<{
     router.push("/tabs/screens/settings");
   }, []);
 
+  const gearRotation = useSharedValue(0);
+  const medalRotation = useSharedValue(0);
+
+  const gearStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${gearRotation.value}deg` }],
+  }));
+
+  const medalStyle = useAnimatedStyle(() => ({
+    transform: [{ rotateZ: `${medalRotation.value}deg` }],
+  }));
+
   return (
     <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
-      <TouchableOpacity
+      <PressableScale
         onPress={onAchievementsPress}
+        onPressIn={() => {
+          // Physics: A highly springy, swinging motion mimicking a medal on a ribbon
+          medalRotation.value = withSpring(15, { damping: 4, stiffness: 150 });
+        }}
+        onPressOut={() => {
+          medalRotation.value = withSpring(0, { damping: 4, stiffness: 150 });
+        }}
         className="happy-brand-soft-chip h-12 flex-row items-center justify-center gap-2 px-4"
-        activeOpacity={0.7}
+        scale={0.96}
+        hapticStyle="light"
         accessibilityRole="button"
         accessibilityLabel="View achievements"
       >
-        <HugeiconsIcon icon={Medal01Icon} size={18} color={GOLD} />
+        <Animated.View style={medalStyle}>
+          <HugeiconsIcon icon={Medal01Icon} size={18} color={GOLD} />
+        </Animated.View>
         <Text className="happy-font-body-bold text-[14px] text-ink-soft">
           Awards
         </Text>
-      </TouchableOpacity>
+      </PressableScale>
 
       <PressableScale
         className="w-11 h-11 items-center justify-center -mr-2"
         onPress={handleSettingsPress}
+        onPressIn={() => {
+          // Physics: A stiff mechanical gear rotation
+          gearRotation.value = withSpring(45, { damping: 12, stiffness: 200 });
+        }}
+        onPressOut={() => {
+          gearRotation.value = withSpring(0, { damping: 12, stiffness: 200 });
+        }}
         scale={0.9}
         hapticStyle="light"
         accessibilityRole="button"
         accessibilityLabel="Open settings"
       >
-        <HugeiconsIcon icon={Settings02Icon} color={SAGE[600]} size={23} />
+        <Animated.View style={gearStyle}>
+          <HugeiconsIcon icon={Settings02Icon} color={SAGE[600]} size={23} />
+        </Animated.View>
       </PressableScale>
     </View>
   );

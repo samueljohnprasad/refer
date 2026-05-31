@@ -142,13 +142,12 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
         >
           <Group
             modifiers={[
-              presentationDetents([{ height: 750 }]),
+              presentationDetents(["large"]),
               presentationDragIndicator("visible"),
             ]}
           >
             <RNHostView>
               <View
-                style={{ paddingBottom }}
                 className="flex-1 px-5 pt-6 bg-brand-surface"
               >
                 {/* Header info */}
@@ -175,7 +174,7 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                 <ScrollView
                   className="flex-1 mt-4"
                   showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{ paddingBottom: 16 }}
+                  contentContainerStyle={{ paddingBottom: paddingBottom + 40 }}
                 >
                   {/* Time Segment Options */}
                   <View className="mb-4">

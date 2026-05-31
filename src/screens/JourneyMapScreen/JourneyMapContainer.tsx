@@ -7,6 +7,9 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated from "react-native-reanimated";
+import { useFocusTunneling } from "@/src/hooks/ui/useFocusTunneling";
+import { AmbientTapDust } from "@/src/components/ui/AmbientTapDust";
 
 import CourseCatalogSheet from "@/src/components/journey/CourseCatalogSheet";
 import {
@@ -16,7 +19,10 @@ import {
 import {
   useGetEnrolledCoursesQuery,
 } from "@/src/features/journey/journeyApi";
-import { selectCourseHeaderSummaryForCourse } from "@/src/features/journey/journeySelectors";
+import {
+  selectCourseHeaderSummaryForCourse,
+  selectActiveNodeModalIdForCourse,
+} from "@/src/features/journey/journeySelectors";
 import JourneyLoadingSkeleton from "@/src/components/journey/JourneyLoadingSkeleton";
 import { useAppSelector } from "@/src/store/hooks";
 import JourneyMapFlashList from "./JourneyMapFlashList";
@@ -48,6 +54,13 @@ export default function JourneyMapContainer(): React.JSX.Element {
   const activeCourseSummary = useAppSelector((state) =>
     courseId ? selectCourseHeaderSummaryForCourse(state, courseId) : null,
   );
+  
+  const activeNodeId = useAppSelector((state) =>
+    courseId ? selectActiveNodeModalIdForCourse(state, courseId) : null,
+  );
+  const isModalOpen = activeNodeId !== null;
+
+  const animatedStyle = useFocusTunneling(isModalOpen);
 
   if (!courseId || (isLoading && !isLoaded)) {
     return <JourneyLoadingSkeleton />;
@@ -56,18 +69,25 @@ export default function JourneyMapContainer(): React.JSX.Element {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <View className="flex-1 bg-brand-canvas" style={{ paddingTop: insets.top }}>
-        <DuolingoHeader
-          stats={STUB_STATS}
-          enrolledCourses={enrolledCourses}
-          activeCourseId={courseId}
-          activeCourseSummary={activeCourseSummary}
-          onAddCoursePress={() => setIsCourseCatalogPresented(true)}
-          onCourseSelect={setActiveCourseId}
-        />
-        <View style={{ flex: 1 }}>
-          <JourneyMapFlashList courseId={courseId} />
-        </View>
+      <View className="flex-1 bg-black">
+        <AmbientTapDust>
+          <Animated.View 
+            className="flex-1 bg-brand-canvas" 
+            style={[{ paddingTop: insets.top }, animatedStyle]}
+          >
+            <DuolingoHeader
+              stats={STUB_STATS}
+            enrolledCourses={enrolledCourses}
+            activeCourseId={courseId}
+            activeCourseSummary={activeCourseSummary}
+            onAddCoursePress={() => setIsCourseCatalogPresented(true)}
+            onCourseSelect={setActiveCourseId}
+          />
+          <View style={{ flex: 1 }}>
+            <JourneyMapFlashList courseId={courseId} />
+          </View>
+        </Animated.View>
+        </AmbientTapDust>
         <CourseCatalogSheet
           isPresented={isCourseCatalogPresented}
           activeCourseId={courseId}

@@ -1,10 +1,9 @@
 import React from "react";
 import { View } from "react-native";
 import Animated, {
-  Easing,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
+  withSpring,
 } from "react-native-reanimated";
 
 import { SAGE, SAGE_OVERLAY } from "@/lib/tokens";
@@ -37,9 +36,10 @@ const StageProgressBar: React.FC<StageProgressBarProps> = ({
   const animatedProgress = useSharedValue(clampedProgress);
 
   React.useEffect(() => {
-    animatedProgress.value = withTiming(clampedProgress, {
-      duration: 220,
-      easing: Easing.out(Easing.cubic),
+    animatedProgress.value = withSpring(clampedProgress, {
+      damping: 12,
+      stiffness: 90,
+      mass: 0.8,
     });
   }, [animatedProgress, clampedProgress]);
 

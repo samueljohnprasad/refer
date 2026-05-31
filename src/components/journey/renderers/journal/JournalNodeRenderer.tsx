@@ -66,7 +66,7 @@ export interface JournalNodeRendererProps {
     /** XP reward displayed in the renderer header */
     xpReward?: number;
     /** Called when user saves the journal entry */
-    onComplete: (responseData: JournalResponseData) => void;
+    onComplete: (responseData: JournalResponseData) => void | Promise<void>;
     /** Called when user also wants to save to the main journal system */
     onSaveToJournal: (text: string, moodBefore?: string, moodAfter?: string) => void;
     /** Called when user taps back */
@@ -195,6 +195,7 @@ export default function JournalNodeRenderer({
     const [journalText, setJournalText] = useState<string>('');
     const [emotionTags, setEmotionTags] = useState<string[]>([]);
     const [moodAfter, setMoodAfter] = useState<Emotion | null>(null);
+    const [isCompleting, setIsCompleting] = useState<boolean>(false);
 
     const wordCount: number = countWords(journalText);
     const encouragement: string = getEncouragement(wordCount);
@@ -216,7 +217,8 @@ export default function JournalNodeRenderer({
     const isLastPhase: boolean = currentPhaseIndex === phases.length - 1;
 
     // ── Navigation ──
-    const handleNext = useCallback((): void => {
+    const handleNext = useCallback(async (): Promise<void> => {
+        if (isCompleting) return;
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
         if (isLastPhase) {
@@ -234,7 +236,12 @@ export default function JournalNodeRenderer({
                 moodAfter ?? undefined,
             );
 
-            onComplete(responseData);
+            setIsCompleting(true);
+            try {
+                await onComplete(responseData);
+            } finally {
+                setIsCompleting(false);
+            }
         } else {
             setCurrentPhaseIndex((prev: number) => prev + 1);
         }
@@ -379,6 +386,7 @@ export default function JournalNodeRenderer({
                             label={ctaLabel}
                             onPress={handleNext}
                             disabled={!canContinue}
+                            loading={isCompleting}
                         />
                     </View>
                 </KeyboardAvoidingView>

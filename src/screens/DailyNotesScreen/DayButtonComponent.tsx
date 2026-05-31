@@ -1,6 +1,6 @@
 import { format } from "date-fns/format";
 import { memo } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, View, LayoutChangeEvent } from "react-native";
 import { Text } from "@/components/Themed";
 import {
   BRAND_SURFACE_SOFT,
@@ -19,6 +19,7 @@ export interface DayButtonProps {
   isToday: boolean;
   onPress: () => void;
   disabled?: boolean;
+  onLayout?: (e: LayoutChangeEvent) => void;
 }
 
 // Simplified version without individual shared values - much more performant
@@ -29,6 +30,7 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   isToday,
   onPress,
   disabled = false,
+  onLayout,
 }) => {
   const handlePress = (): void => {
     if (disabled) return;
@@ -42,7 +44,7 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
   };
 
   const backgroundColor = isSelected
-    ? SAGE.selected
+    ? TRANSPARENT
     : isToday && !isSelected
     ? BRAND_SURFACE_SOFT
     : TRANSPARENT;
@@ -55,10 +57,11 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
       accessibilityLabel={`${dayName} ${format(day, "d")}`}
     >
       <View
+        onLayout={onLayout}
         className="items-center px-1 py-1.5 rounded-xl"
         style={{
           backgroundColor,
-          borderColor: isSelected ? SAGE[200] : TRANSPARENT,
+          borderColor: isSelected ? TRANSPARENT : TRANSPARENT, // Always transparent if selected to show pill
           borderWidth: 1,
         }}
       >

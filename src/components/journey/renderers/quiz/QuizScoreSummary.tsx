@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import {
     CheckmarkCircle02Icon,
@@ -39,6 +39,7 @@ export interface QuizScoreSummaryProps {
     score: number;
     total: number;
     isPerfect: boolean;
+    isCompleting?: boolean;
     onComplete: () => void;
 }
 
@@ -93,6 +94,7 @@ export default function QuizScoreSummary({
     score,
     total,
     isPerfect,
+    isCompleting = false,
     onComplete,
 }: QuizScoreSummaryProps): React.JSX.Element {
     const percentage: number = total > 0 ? Math.round((score / total) * 100) : 0;
@@ -210,11 +212,18 @@ export default function QuizScoreSummary({
                     }}
                     accessibilityLabel="Complete quiz and continue"
                     accessibilityRole="button"
+                    disabled={isCompleting}
                 >
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color={BRAND_SURFACE} />
-                    <Text className="happy-font-body-bold ml-2 text-base text-brand-surface">
-                        Continue
-                    </Text>
+                    {isCompleting ? (
+                        <ActivityIndicator color={BRAND_SURFACE} />
+                    ) : (
+                        <>
+                            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color={BRAND_SURFACE} />
+                            <Text className="happy-font-body-bold ml-2 text-base text-brand-surface">
+                                Continue
+                            </Text>
+                        </>
+                    )}
                 </PressableScale>
             </View>
         </View>

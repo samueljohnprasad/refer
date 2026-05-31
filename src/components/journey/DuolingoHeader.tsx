@@ -8,7 +8,8 @@ import {
 import { SvgProps } from "react-native-svg";
 import * as Haptics from "expo-haptics";
 
-import { Battery, Fire, Flag, Gem } from "@/assets/icons";
+import { Battery, Flag } from "@/assets/icons";
+import { AnimatedFireIcon, AnimatedGemIcon } from "../ui/AnimatedStatIcon";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import Animated, {
   FadeOut,
@@ -21,6 +22,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FullWindowOverlay } from "react-native-screens";
 import { scheduleOnRN } from "react-native-worklets";
 import HeaderOverlayContent from "./header-overlay-content";
+import { AnimatedOdometer } from "../ui/AnimatedOdometer";
+import { StreakDisplay } from "@/src/components/Streak";
 import type {
   CourseHeaderSummary,
   EnrolledCourseListItem,
@@ -70,12 +73,7 @@ const HeaderButton = memo(function HeaderButton({
       className="min-h-11 flex-row items-center gap-1.5 px-2.5"
     >
       <Icon width={28} height={28} />
-      <Text
-        className={`text-base ${textClassName}`}
-        style={{ fontFamily: "GeistBold" }}
-      >
-        {title}
-      </Text>
+      <AnimatedOdometer value={title} textClassName={textClassName} />
     </Pressable>
   );
 });
@@ -92,13 +90,20 @@ export const DuolingoHeader = ({
   const { height: windowHeight } = useWindowDimensions();
   const translateY = useSharedValue(0);
   const [showCourseOverlay, setShowCourseOverlay] = useState(false);
+  const [showStreakOverlay, setShowStreakOverlay] = useState(false);
   const previousActiveCourseIdRef = useRef(activeCourseId);
 
   const openCourseOverlay = useCallback((): void => {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setShowCourseOverlay(true);
+    setShowStreakOverlay(false);
     translateY.value = withSpring(0, SHEET_SPRING);
   }, [translateY]);
+
+  const openStreakOverlay = useCallback((): void => {
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setShowStreakOverlay(true);
+  }, []);
 
   const handleTouchStart = useCallback(() => {
     translateY.value = withSpring(
@@ -160,14 +165,15 @@ export const DuolingoHeader = ({
     {
       accessibilityLabel: `${stats?.streak ?? 0} day streak`,
       name: "Fire",
-      Icon: Fire,
+      Icon: AnimatedFireIcon,
+      onPress: openStreakOverlay,
       title: String(stats?.streak ?? 0),
       textClassName: "text-gold",
     },
     {
       accessibilityLabel: `${stats?.gems ?? 0} gems`,
       name: "Gem",
-      Icon: Gem,
+      Icon: AnimatedGemIcon,
       title: String(stats?.gems ?? 0),
       textClassName: "text-sage-500",
     },
@@ -223,6 +229,11 @@ export const DuolingoHeader = ({
           </Animated.View>
         </FullWindowOverlay>
       )}
+
+      <StreakDisplay 
+        visible={showStreakOverlay} 
+        onClose={() => setShowStreakOverlay(false)} 
+      />
     </View>
   );
 };

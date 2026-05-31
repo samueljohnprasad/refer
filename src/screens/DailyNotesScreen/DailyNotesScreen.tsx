@@ -22,6 +22,7 @@ import {
 } from "date-fns";
 import { useAtom, useSetAtom } from "jotai";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Haptics from "expo-haptics";
 import Animated, {
   interpolate,
   runOnJS,
@@ -29,6 +30,8 @@ import Animated, {
   useSharedValue,
   withSpring,
   withTiming,
+  FadeIn,
+  Easing,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -330,7 +333,7 @@ function DailyNotesScreenComponent(): ReactElement {
   const handleFilterSelectionChange = useCallback(
     (selection: unknown): void => {
       if (!isTabFilterLabel(selection)) return;
-
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       setTabFilter(TAB_FILTER_BY_LABEL[selection]);
     },
     [],
@@ -391,23 +394,23 @@ function DailyNotesScreenComponent(): ReactElement {
               >
                 {/* Calorie Tracker Widget */}
                 {tabFilter === "calories" ? (
-                  <View className="flex-1 pt-4">
+                  <Animated.View entering={FadeIn.duration(500).easing(Easing.bezier(0.4, 0.0, 0.2, 1))} className="flex-1 pt-4">
                     <CalorieTrackerScreen selectedDate={selectedDate} />
-                  </View>
+                  </Animated.View>
                 ) : null}
 
                 {/* Habits Section */}
                 {tabFilter === "habits" ? (
-                  <View className="flex-1 pt-4">
+                  <Animated.View entering={FadeIn.duration(500).easing(Easing.bezier(0.4, 0.0, 0.2, 1))} className="flex-1 pt-4">
                     <HabitsSection selectedDate={selectedDate} />
-                  </View>
+                  </Animated.View>
                 ) : null}
 
                 {/* Journal Section */}
                 {tabFilter === "journal" ? (
-                  <View className="min-h-[520px] flex-1">
+                  <Animated.View entering={FadeIn.duration(500).easing(Easing.bezier(0.4, 0.0, 0.2, 1))} className="min-h-[520px] flex-1">
                     {mentalHealthContent}
-                  </View>
+                  </Animated.View>
                 ) : null}
               </Animated.View>
             </ScrollView>

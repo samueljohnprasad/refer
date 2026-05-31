@@ -50,7 +50,7 @@ export interface MoodCheckRendererProps {
     /** XP reward displayed in the renderer header */
     xpReward?: number;
     /** Called when user taps continue */
-    onComplete: (responseData: MoodCheckResponseData) => void;
+    onComplete: (responseData: MoodCheckResponseData) => void | Promise<void>;
     /** Called when user taps back */
     onBack: () => void;
 }
@@ -155,6 +155,7 @@ export default function MoodCheckRenderer({
 }: MoodCheckRendererProps): React.JSX.Element {
     const [selectedRating, setSelectedRating] = useState<number | null>(null);
     const [note, setNote] = useState<string>('');
+    const [isCompleting, setIsCompleting] = useState<boolean>(false);
 
     const canContinue: boolean = selectedRating !== null;
 
@@ -163,8 +164,8 @@ export default function MoodCheckRenderer({
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }, []);
 
-    const handleComplete = useCallback((): void => {
-        if (selectedRating === null) return;
+    const handleComplete = useCallback(async (): Promise<void> => {
+        if (selectedRating === null || isCompleting) return;
 
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
@@ -173,8 +174,13 @@ export default function MoodCheckRenderer({
             note: note.trim().length > 0 ? note.trim() : null,
         };
 
-        onComplete(responseData);
-    }, [selectedRating, note, onComplete]);
+        setIsCompleting(true);
+        try {
+            await onComplete(responseData);
+        } finally {
+            setIsCompleting(false);
+        }
+    }, [selectedRating, note, isCompleting, onComplete]);
 
     return (
         <View className="happy-brand-screen flex-1">
@@ -233,6 +239,7 @@ export default function MoodCheckRenderer({
                             label="Continue"
                             onPress={handleComplete}
                             disabled={!canContinue}
+                            loading={isCompleting}
                         />
                     </View>
                 </KeyboardAvoidingView>

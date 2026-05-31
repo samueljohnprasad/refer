@@ -56,7 +56,10 @@ export const HabitCard: React.FC<HabitCardProps> = ({
     onPress();
   };
 
-  const handleCheckboxPress = () => {
+  const handleCheckboxPress = (e: any) => {
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
+    }
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onToggleComplete();
   };

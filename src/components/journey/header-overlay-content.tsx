@@ -134,7 +134,7 @@ const HeaderOverlayContent = ({
 
   return (
     <Animated.View
-      className="w-full happy-brand-screen pb-4"
+      className="w-full happy-brand-screen pb-4 rounded-b-[32px]"
       style={animatedStyle}
     >
       <Svg
@@ -238,7 +238,7 @@ const HeaderOverlayContent = ({
         <Card
           variant="tile"
           radius="xl"
-          showDepth={true}
+          showDepth={false}
           className="mt-5 w-full"
           contentClassName="p-5 gap-5"
         >
@@ -318,14 +318,14 @@ const HeaderOverlayContent = ({
               </Text>
             </View>
 
-            <View className="happy-brand-status-chip px-4 py-2">
+            {/* <View className="happy-brand-status-chip px-4 py-2">
               <Text
                 className="text-xs uppercase tracking-[0.8px] text-sage-600"
                 style={{ fontFamily: FONTS.bodyBold }}
               >
                 Details
               </Text>
-            </View>
+            </View> */}
           </View>
         </Card>
       </View>

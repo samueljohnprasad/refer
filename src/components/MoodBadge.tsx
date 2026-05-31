@@ -4,6 +4,12 @@ import {
   type StyleProp,
   type ViewStyle,
 } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
 import { bad, fine, good, great, terrible } from "@/assets/emojis";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/Themed";
@@ -33,6 +39,28 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
     const moodEmoji = moodscore
       ? moodEmojiMap[moodscore as keyof typeof moodEmojiMap]
       : null;
+
+    const plusScale = useSharedValue(1);
+    const plusRotation = useSharedValue(active ? 0 : -360);
+
+    React.useEffect(() => {
+      if (!moodEmoji) {
+        if (active) {
+          plusRotation.value = -360;
+          plusRotation.value = withTiming(0, { duration: 400 });
+        } else {
+          plusRotation.value = -360;
+        }
+      }
+    }, [active, moodEmoji, plusRotation]);
+
+    const plusAnimatedStyle = useAnimatedStyle(() => ({
+      transform: [
+        { scale: plusScale.value },
+        { rotate: `${plusRotation.value}deg` }
+      ]
+    }));
+
     return (
       <PressableOpacity
         style={{ width: diameter, height: diameter }}
@@ -66,12 +94,14 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
               />
             )}
             {!moodEmoji && (
-              <Text
-                className="text-theme-text-secondary text-sm font-medium"
-                style={{ color: "#64748B" }}
-              >
-                +
-              </Text>
+              <Animated.View style={plusAnimatedStyle}>
+                <Text
+                  className="text-theme-text-secondary text-sm font-medium"
+                  style={{ color: "#64748B" }}
+                >
+                  +
+                </Text>
+              </Animated.View>
             )}
           </View>
         </View>

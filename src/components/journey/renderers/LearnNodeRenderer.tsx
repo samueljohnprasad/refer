@@ -59,7 +59,7 @@ export interface LearnNodeRendererProps {
     /** XP reward displayed in the renderer header */
     xpReward?: number;
     /** Called when user taps "Continue" on the last card */
-    onComplete: () => void;
+    onComplete: () => void | Promise<void>;
     /** Called when user taps back button */
     onBack: () => void;
 }
@@ -248,6 +248,7 @@ export default function LearnNodeRenderer({
     const { width: screenWidth } = useWindowDimensions();
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [highestViewed, setHighestViewed] = useState<number>(0);
+    const [isCompleting, setIsCompleting] = useState<boolean>(false);
     const flatListRef = useRef<FlatList>(null);
     const scrollX = useSharedValue<number>(0);
 
@@ -321,9 +322,14 @@ export default function LearnNodeRenderer({
         [],
     );
 
-    const handleContinuePress = useCallback((): void => {
+    const handleContinuePress = useCallback(async (): Promise<void> => {
         if (isOnLastCard || totalCards <= 1) {
-            onComplete();
+            setIsCompleting(true);
+            try {
+                await onComplete();
+            } finally {
+                setIsCompleting(false);
+            }
             return;
         }
 
@@ -397,6 +403,7 @@ export default function LearnNodeRenderer({
                 <RendererPrimaryCTA
                     label="Continue"
                     onPress={handleContinuePress}
+                    loading={isCompleting}
                 />
             </View>
             </SafeAreaView>

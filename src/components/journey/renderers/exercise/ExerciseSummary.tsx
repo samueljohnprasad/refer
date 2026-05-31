@@ -34,6 +34,7 @@ export interface StepResponse {
 export interface ExerciseSummaryProps {
     steps: ExerciseStep[];
     responses: StepResponse[];
+    isCompleting?: boolean;
     onComplete: () => void;
     onEditStep: (stepIndex: number) => void;
 }
@@ -74,6 +75,7 @@ function formatResponse(step: ExerciseStep, response: StepResponse): string {
 export default function ExerciseSummary({
     steps,
     responses,
+    isCompleting = false,
     onComplete,
     onEditStep,
 }: ExerciseSummaryProps): React.JSX.Element {
@@ -163,6 +165,7 @@ export default function ExerciseSummary({
                     label="Complete Exercise"
                     onPress={onComplete}
                     variant="primary"
+                    loading={isCompleting}
                     leftIcon={<HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color={BRAND_SURFACE} />}
                     accessibilityLabel="Complete this exercise"
                 />

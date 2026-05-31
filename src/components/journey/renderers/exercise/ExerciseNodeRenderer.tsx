@@ -66,7 +66,7 @@ export interface ExerciseNodeRendererProps {
     /** XP reward displayed in the renderer header */
     xpReward?: number;
     /** Called when user completes the exercise */
-    onComplete: (responseData: ExerciseResponseData) => void;
+    onComplete: (responseData: ExerciseResponseData) => void | Promise<void>;
     /** Called when user taps back button (exit exercise) */
     onBack: () => void;
 }
@@ -316,6 +316,7 @@ export default function ExerciseNodeRenderer({
     // ── Wizard state ──
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [showingSummary, setShowingSummary] = useState<boolean>(false);
+    const [isCompleting, setIsCompleting] = useState<boolean>(false);
 
     // ── Input state (all steps) ──
     const [stepState, setStepState] = useState<StepState>({
@@ -420,14 +421,20 @@ export default function ExerciseNodeRenderer({
         setCurrentStep(stepIndex);
     }, []);
 
-    const handleComplete = useCallback((): void => {
+    const handleComplete = useCallback(async (): Promise<void> => {
+        if (isCompleting) return;
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         const responseData: ExerciseResponseData = buildResponseData(
             steps,
             stepState,
         );
-        onComplete(responseData);
-    }, [steps, stepState, onComplete]);
+        setIsCompleting(true);
+        try {
+            await onComplete(responseData);
+        } finally {
+            setIsCompleting(false);
+        }
+    }, [steps, stepState, isCompleting, onComplete]);
 
     // ── Build summary responses ──
     const summaryResponses: StepResponse[] = useMemo(
@@ -551,6 +558,7 @@ export default function ExerciseNodeRenderer({
                             <ExerciseSummary
                                 steps={steps}
                                 responses={summaryResponses}
+                                isCompleting={isCompleting}
                                 onComplete={handleComplete}
                                 onEditStep={handleEditStep}
                             />

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, Suspense } from "react";
+import React, { useMemo, useCallback, useState, Suspense, useEffect } from "react";
 import { View, Pressable, Dimensions, Platform } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import {
@@ -18,6 +18,10 @@ import { useAtom } from "jotai";
 import Animated, {
   interpolate,
   useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+  Easing,
 } from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
 import {
@@ -32,7 +36,7 @@ import useCalendarExpandReanimated from "./hooks/useCalendarExpandReanimated";
 import TodayPill from "@/src/components/TodayPill";
 import { router } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Bookmark03Icon, Calendar01Icon } from "@hugeicons/core-free-icons";
+import { Bookmark03Icon, Calendar01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { isIOS } from "@/src/utils/mood";
 import { DayButton } from "./DayButtonComponent";
 import SuspensLoader from "@/src/components/SuspensLoader";
@@ -47,8 +51,8 @@ const CalendarPicker = React.lazy(() =>
 );
 
 const { height } = Dimensions.get("window");
-// Replaced magic number variable name to match exact scaling
-const HEADER_MIN_HEIGHT = 132;
+// Use exact content height to prevent overflow and align headers natively
+const HEADER_MIN_HEIGHT = 157;
 
 // Move constants outside component to avoid recreation
 const DAY_NAMES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -113,8 +117,12 @@ const DailyNotesHeader = React.memo(
         [HEADER_MIN_HEIGHT, CALENDAR_EXPANDED_HEIGHT + 24]
       ),
     }));
-    const headerControlsAnimatedStyle = useAnimatedStyle(() => ({
+    const titleAndBookmarkStyle = useAnimatedStyle(() => ({
       opacity: interpolate(progress.value, [0, 1], [1, 0]),
+      pointerEvents: progress.value > 0.5 ? 'none' : 'auto',
+    }));
+    const headerControlsAnimatedStyle = useAnimatedStyle(() => ({
+      zIndex: 30,
     }));
     const weekHeaderAnimatedStyle = useAnimatedStyle(() => ({
       opacity: interpolate(progress.value, [0, 0.2, 1], [1, 0.5, 0]),
@@ -220,6 +228,55 @@ const DailyNotesHeader = React.memo(
       });
     }, [weekDays, selectedDateStr, moodMap, currentWeekViewSafe]);
 
+    // Morphing Pill Logic for Week View
+    const [weekWidth, setWeekWidth] = useState(0);
+    const [buttonHeight, setButtonHeight] = useState(55); // Fallback
+    const pillX = useSharedValue(0);
+    const pillOpacity = useSharedValue(0);
+
+    const selectedIndex = useMemo(
+      () => weekDaysData.findIndex((d) => d.isSelectedDay),
+      [weekDaysData]
+    );
+
+    useEffect(() => {
+      if (selectedIndex !== -1 && weekWidth > 0) {
+        const cellWidth = (weekWidth - 24) / 7;
+        const xPos = selectedIndex * (cellWidth + 4);
+
+        const TimingConfig = {
+          duration: 600, // Slightly longer duration to appreciate the curve
+          easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+        };
+
+        if (pillOpacity.value === 0) {
+          pillX.value = xPos;
+          pillOpacity.value = withTiming(1, { duration: 150 });
+        } else {
+          pillX.value = withTiming(xPos, TimingConfig);
+        }
+      } else {
+        pillOpacity.value = withTiming(0, { duration: 150 });
+      }
+    }, [selectedIndex, weekWidth]);
+
+    const animatedPillStyle = useAnimatedStyle(() => {
+      if (weekWidth === 0) return { opacity: 0 };
+      const cellWidth = (weekWidth - 24) / 7;
+      return {
+        position: "absolute",
+        width: cellWidth,
+        height: buttonHeight,
+        transform: [{ translateX: pillX.value }],
+        opacity: pillOpacity.value,
+        zIndex: 0,
+        backgroundColor: SAGE.selected,
+        borderColor: SAGE[200],
+        borderWidth: 1,
+        borderRadius: 12,
+      };
+    });
+
     const dayPressHandlers = useCallback(
       (dayData: (typeof weekDaysData)[number]) => {
         return () => selectDate(dayData.day);
@@ -275,6 +332,29 @@ const DailyNotesHeader = React.memo(
       });
     };
 
+    const handleCalendarPress = useCallback(() => {
+      toggle();
+    }, [toggle]);
+
+    const calendarIconStyle = useAnimatedStyle(() => ({
+      transform: [{ rotateY: `${progress.value * 180}deg` }],
+    }));
+
+    const bookmarkWobble = useSharedValue(0);
+    const handleBookmarkPressInternal = useCallback(() => {
+      bookmarkWobble.value = -30;
+      bookmarkWobble.value = withSpring(0, {
+        damping: 3,
+        stiffness: 200,
+      });
+      onBookmarksPress?.();
+    }, [onBookmarksPress, bookmarkWobble]);
+
+    const bookmarkIconStyle = useAnimatedStyle(() => ({
+      transform: [{ rotateZ: `${bookmarkWobble.value}deg` }],
+      transformOrigin: 'top center' as any
+    }));
+
     return (
       <View className="bg-brand-surface">
         <SafeAreaView
@@ -282,56 +362,61 @@ const DailyNotesHeader = React.memo(
           style={{ paddingTop: insets.top - 30 }}
         >
           <Animated.View
-            className="bg-brand-surface justify-end relative border-b border-brand-border"
+            className="bg-brand-surface justify-start relative border-b border-brand-border"
             style={[
               headerContainerAnimatedStyle,
-              { backgroundColor: BRAND_SURFACE },
+              { backgroundColor: BRAND_SURFACE, marginTop: -25 },
             ]}
           >
             {/* Calendar Header */}
-            <Animated.View
-              className="flex-row items-center justify-between px-4 pb-2 rounded-3xl"
-              style={[headerControlsAnimatedStyle]}
-            >
-              <Pressable
-                className="min-h-[44px] min-w-[44px] justify-center items-center -ml-1 rounded-full"
-                onPress={() => toggle()}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                accessibilityRole="button"
-                accessibilityLabel={
-                  isExpanded ? "Collapse calendar" : "Expand calendar"
-                }
-                accessibilityHint="Toggles between weekly and monthly calendar views"
+            <Animated.View style={headerControlsAnimatedStyle}>
+              <View
+                className="flex-row items-center justify-between px-4 pt-1 pb-2 rounded-3xl"
               >
-                <HugeiconsIcon
-                  icon={Calendar01Icon}
-                  size={20}
-                  color={SAGE[600]}
-                  strokeWidth={2}
-                />
-              </Pressable>
-
-              <View className="flex-row items-center justify-center flex-1">
-                <Text variant="h1" className="text-[30px] text-center">
-                  {currentMonthView || ""}
-                </Text>
-              </View>
-
-              <View className="flex-row items-center gap-1">
                 <Pressable
-                  className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
-                  onPress={onBookmarksPress}
+                  className="min-h-[44px] min-w-[44px] justify-center items-center -ml-1 rounded-full"
+                  onPress={handleCalendarPress}
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                   accessibilityRole="button"
-                  accessibilityLabel="Bookmarks"
+                  accessibilityLabel={
+                    isExpanded ? "Collapse calendar" : "Expand calendar"
+                  }
+                  accessibilityHint="Toggles between weekly and monthly calendar views"
                 >
-                  <HugeiconsIcon
-                    icon={Bookmark03Icon}
-                    size={20}
-                    color={SAGE[600]}
-                    strokeWidth={2}
-                  />
+                  <Animated.View style={calendarIconStyle}>
+                    <HugeiconsIcon
+                      icon={isExpanded ? Cancel01Icon : Calendar01Icon}
+                      size={20}
+                      color={SAGE[600]}
+                      strokeWidth={2}
+                    />
+                  </Animated.View>
                 </Pressable>
+
+                <Animated.View style={titleAndBookmarkStyle} className="flex-row items-center justify-center flex-1">
+                  <Text variant="h1" className="text-[30px] text-center">
+                    {currentMonthView || ""}
+                  </Text>
+                </Animated.View>
+
+                <Animated.View style={titleAndBookmarkStyle} className="flex-row items-center gap-1">
+                  <Pressable
+                    className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
+                    onPress={handleBookmarkPressInternal}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    accessibilityRole="button"
+                    accessibilityLabel="Bookmarks"
+                  >
+                    <Animated.View style={bookmarkIconStyle}>
+                      <HugeiconsIcon
+                        icon={Bookmark03Icon}
+                        size={20}
+                        color={SAGE[600]}
+                        strokeWidth={2}
+                      />
+                    </Animated.View>
+                  </Pressable>
+                </Animated.View>
               </View>
             </Animated.View>
             {/* Week View */}
@@ -341,14 +426,18 @@ const DailyNotesHeader = React.memo(
                 style={[weekHeaderAnimatedStyle]}
               >
                 <Animated.View
-                  className="flex flex-1 flex-row gap-1"
+                  className="flex flex-1 flex-row gap-1 relative"
                   style={[weekSlideAnimatedStyle]}
                   accessibilityElementsHidden={isExpanded}
                   importantForAccessibility={
                     isExpanded ? "no-hide-descendants" : "auto"
                   }
+                  onLayout={(e) => setWeekWidth(e.nativeEvent.layout.width)}
                 >
-                  {weekDaysData.map((dayData) => (
+                  {/* The Morphing Selection Pill */}
+                  <Animated.View style={animatedPillStyle} pointerEvents="none" />
+
+                  {weekDaysData.map((dayData, index) => (
                     <View className="flex-1 gap-2 mb-2" key={dayData.dayStr}>
                       <DayButton
                         day={dayData.day}
@@ -357,6 +446,7 @@ const DailyNotesHeader = React.memo(
                         isToday={dayData.isTodayDate}
                         disabled={dayData.disabled}
                         onPress={dayPressHandlers(dayData)}
+                        onLayout={index === 0 ? (e) => setButtonHeight(e.nativeEvent.layout.height) : undefined}
                       />
                       <View className="flex-1 items-center mb-1">
                         <MoodBadge

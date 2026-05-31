@@ -2,7 +2,7 @@
 // Full-screen modal shown when a node is tapped on the map.
 // Fetches content on-demand from the content table, then routes to the correct renderer.
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import {
   Modal,
   View,
@@ -33,6 +33,7 @@ import {
   fetchNodeContent,
   mapNodeTypeToRendererType,
 } from "./nodeContentAdapter";
+import { Skeleton, SkeletonCard } from "@/src/components/ui/Skeleton";
 
 interface NodeContentModalProps {
   courseId: string;
@@ -109,6 +110,22 @@ export function NodeContentModal({
     return adaptNodeContent(node.type, rawContent);
   }, [node, rawContent]);
 
+  // Cache node and content so the exit animation can play when activeNodeId becomes null
+  const cachedNodeRef = useRef(node);
+  const cachedContentRef = useRef(adaptedContent);
+
+  useEffect(() => {
+    if (node && activeNodeId) cachedNodeRef.current = node;
+  }, [node, activeNodeId]);
+
+  useEffect(() => {
+    if (adaptedContent && activeNodeId) cachedContentRef.current = adaptedContent;
+  }, [adaptedContent, activeNodeId]);
+
+  const isClosing = activeNodeId === null;
+  const displayNode = isClosing ? cachedNodeRef.current : node;
+  const displayContent = isClosing ? cachedContentRef.current : adaptedContent;
+
   const handleDismiss = useCallback(() => {
     dispatch(setActiveNodeModal({ courseId, nodeId: null }));
   }, [courseId, dispatch]);
@@ -146,90 +163,91 @@ export function NodeContentModal({
   );
 
   const visible = activeNodeId !== null;
-  if (!visible) return <Modal visible={false} />;
 
-  // Loading state
-  if (isLoadingContent || !node) {
-    return (
-      <Modal
-        visible
-        animationType="slide"
-        presentationStyle="fullScreen"
-        onRequestClose={handleDismiss}
-      >
+  return (
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="fullScreen"
+      onRequestClose={handleDismiss}
+    >
+      {!displayNode || isLoadingContent ? (
         <NodeModalShell>
-          <View className="flex-1 items-center justify-center px-8">
-            <ActivityIndicator size="large" color={SAGE[600]} />
-            <Text className="happy-font-body-medium mt-4 text-base text-ink-muted">
-              Loading your next step...
-            </Text>
+          <View className="flex-1">
+            {/* Header Skeleton */}
+            <View className="flex-row items-center justify-between px-5 pb-4 pt-4 mt-8">
+              <Skeleton width={40} height={40} radius={20} />
+              <View className="flex-1 mx-3 items-center">
+                <Skeleton width={120} height={12} radius={6} />
+              </View>
+              <Skeleton width={60} height={24} radius={12} />
+            </View>
+
+            {/* Title Block Skeleton */}
+            <View className="px-8 pb-4 pt-4 items-center">
+              <Skeleton width={80} height={12} radius={6} className="mb-4" />
+              <Skeleton width="80%" height={28} radius={8} className="mb-2" />
+              <Skeleton width="60%" height={28} radius={8} className="mb-6" />
+              <Skeleton width="90%" height={16} radius={6} className="mb-2" />
+              <Skeleton width="70%" height={16} radius={6} />
+            </View>
+
+            {/* Content Area Skeleton */}
+            <View className="flex-1 px-7 mt-6 gap-4">
+              <SkeletonCard lines={4} />
+              <SkeletonCard lines={2} />
+            </View>
+
+            {/* Bottom CTA Skeleton */}
+            <View className="px-7 pb-4 pt-2 mb-2">
+              <Skeleton width="100%" height={56} radius={22} />
+            </View>
           </View>
         </NodeModalShell>
-      </Modal>
-    );
-  }
-
-  // AI insight or missing content fallback
-  if (!adaptedContent) {
-    return (
-      <Modal
-        visible
-        animationType="slide"
-        presentationStyle="fullScreen"
-        onRequestClose={handleDismiss}
-      >
+      ) : !displayContent ? (
         <NodeModalShell>
           <View className="flex-1 items-center justify-center px-8">
             <View className="mb-4 w-16 h-16 rounded-2xl bg-sage-50 items-center justify-center">
               <HugeiconsIcon
-                icon={node.type === "ai_insight" ? AiGenerativeIcon : File01Icon}
+                icon={displayNode.type === "ai_insight" ? AiGenerativeIcon : File01Icon}
                 size={32}
                 color="#5F7F58"
                 strokeWidth={1.5}
               />
             </View>
             <Text className="happy-font-heading-bold text-center text-[34px] leading-10 text-ink">
-              {node.title}
+              {displayNode.title}
             </Text>
             <Text className="happy-font-body-medium mt-3 text-center text-base leading-6 text-ink-muted">
-              {node.type === "ai_insight"
+              {displayNode.type === "ai_insight"
                 ? "AI Insights will be available soon."
                 : "Content not available."}
             </Text>
             <TouchableOpacity
               className="happy-brand-primary-cta mt-10 rounded-[22px] px-12 py-4 active:opacity-80"
               onPress={
-                node.type === "ai_insight"
-                  ? () => handleComplete({})
+                displayNode.type === "ai_insight"
+                  ? () => handleComplete({} as any)
                   : handleDismiss
               }
             >
               <Text className="happy-font-body-bold text-[17px] text-brand-surface">
-                {node.type === "ai_insight" ? "Continue" : "Close"}
+                {displayNode.type === "ai_insight" ? "Continue" : "Close"}
               </Text>
             </TouchableOpacity>
           </View>
         </NodeModalShell>
-      </Modal>
-    );
-  }
-
-  return (
-    <Modal
-      visible
-      animationType="slide"
-      presentationStyle="fullScreen"
-      onRequestClose={handleDismiss}
-    >
-      <NodeRenderer
-        nodeType={mapNodeTypeToRendererType(node.type)}
-        content={adaptedContent}
-        title={node.title}
-        estimatedMinutes={node.estimatedMins}
-        xpReward={0}
-        onComplete={handleComplete}
-        onClose={handleDismiss}
-      />
+      ) : (
+        <NodeRenderer
+          nodeType={mapNodeTypeToRendererType(displayNode.type)}
+          content={displayContent}
+          title={displayNode.title}
+          estimatedMinutes={displayNode.estimatedMins}
+          xpReward={0}
+          onComplete={handleComplete}
+          onClose={handleDismiss}
+        />
+      )}
     </Modal>
   );
 }

@@ -23,7 +23,7 @@ import { useCompleteOnboarding } from "@/hooks/data/useCompleteOnboarding";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { ONBOARDING_STEPS } from "./constants";
 
-import StageProgressBar from "./components/StageProgressBar";
+import { LessonHeader } from "@/src/components/ui/LessonHeader";
 import TactileButton from "./components/TactileButton";
 
 import WelcomeStep from "./steps/WelcomeStep";
@@ -70,7 +70,7 @@ const STEP_CTA_REVEAL_DURATION_MS = 180;
 const STEP_CTA_REVEAL_OFFSET = 6;
 const STEP_ENTER_DURATION_MS = 200;
 const STEP_ENTER_TRAVEL_PX = 18;
-const LESSON_PROGRESS_FILL = "#C8694B";
+const LESSON_PROGRESS_FILL = "#5f7f58";
 const HEADER_ICON_COLOR = "#4F604F";
 
 const getHeaderConfig = (stepName: string): HeaderConfig => {
@@ -499,92 +499,18 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           header: () => (
             <View
               style={{ backgroundColor: containerBackgroundColor }}
-              className="h-28 justify-end pb-3"
+              className="h-28 justify-end"
             >
-              <View className="flex-row items-center gap-3 px-5">
-                {headerConfig.showBackButton ? (
-                  <TouchableOpacity
-                    onPress={handleBack}
-                    activeOpacity={0.65}
-                    className="h-8 w-8 items-center justify-center"
-                    accessibilityLabel={
-                      headerConfig.backButtonVariant === "close"
-                        ? "Close"
-                        : "Go back"
-                    }
-                    accessibilityRole="button"
-                  >
-                    {headerConfig.backButtonVariant === "close" ? (
-                      <Text
-                        style={{
-                          fontSize: 24,
-                          lineHeight: 24,
-                          color: HEADER_ICON_COLOR,
-                          fontWeight: "400",
-                        }}
-                      >
-                        x
-                      </Text>
-                    ) : (
-                      <HugeiconsIcon
-                        icon={ArrowLeft02Icon}
-                        size={18}
-                        color={HEADER_ICON_COLOR}
-                      />
-                    )}
-                  </TouchableOpacity>
-                ) : null}
-                {typeof headerConfig.progress === "number" ? (
-                  <View className="flex-1">
-                    <StageProgressBar
-                      progress={headerConfig.progress}
-                      fillColor={headerConfig.progressFillColor}
-                      trackColor={headerConfig.progressTrackColor}
-                    />
-                  </View>
-                ) : (
-                  <>
-                    <View
-                      className={`flex-1 ${
-                        headerConfig.trailingLabelAlignment === "center"
-                          ? "items-center"
-                          : "items-end"
-                      }`}
-                    >
-                      {headerConfig.trailingLabel ? (
-                        <Text
-                          style={{
-                            color:
-                              headerConfig.trailingLabelColor ?? "#7D8D7B",
-                            fontSize: 11,
-                            letterSpacing:
-                              headerConfig.trailingLabelTracking ?? 0.5,
-                          }}
-                          className="happy-font-body-semibold"
-                        >
-                          {headerConfig.trailingLabel}
-                        </Text>
-                      ) : null}
-                    </View>
-                    {headerConfig.trailingLabelAlignment === "center" &&
-                    headerConfig.showBackButton ? (
-                      <View className="h-8 w-8" />
-                    ) : null}
-                  </>
-                )}
-                {typeof headerConfig.progress === "number" &&
-                headerConfig.trailingLabel ? (
-                  <Text
-                    style={{
-                      color: headerConfig.trailingLabelColor ?? "#7D8D7B",
-                      fontSize: 12,
-                    }}
-                    className="happy-font-body-bold"
-                  >
-                    {headerConfig.trailingLabel}
-                  </Text>
-                ) : null}
-              </View>
+              <LessonHeader
+                onClose={headerConfig.showBackButton ? handleBack : undefined}
+                backButtonVariant={headerConfig.backButtonVariant === "close" ? "close-icon" : "arrow"}
+                progress={headerConfig.progress}
+                trailingLabel={headerConfig.trailingLabel}
+                iconColor={HEADER_ICON_COLOR}
+                trailingLabelColor={headerConfig.trailingLabelColor ?? "#7D8D7B"}
+                progressFillColor={headerConfig.progressFillColor}
+                progressTrackColor={headerConfig.progressTrackColor}
+              />
             </View>
           ),
         }}

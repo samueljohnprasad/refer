@@ -5,9 +5,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { View, ScrollView, Alert } from "react-native";
+import { View, ScrollView, Alert, TouchableOpacity, Text as RNText } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, Stack } from "expo-router";
+import { LessonHeader } from "@/src/components/ui/LessonHeader";
 import { useThoughtReframingFlow } from "./hooks/useThoughtReframingFlow";
 import { useThoughtReframingMutation } from "./hooks/useThoughtReframingMutation";
 import { useThoughtReframingAI } from "./hooks/useThoughtReframingAI";
@@ -422,9 +423,25 @@ const ThoughtReframingScreen: React.FC = () => {
 
   return (
     <SafeAreaView
-      className="flex-1 bg-white"
+      className="flex-1 bg-[#FAFAFA]" // Soft background to match onboarding
       edges={["top", "bottom"]}
     >
+      <Stack.Screen options={{
+        headerShown: true, header: () => <LessonHeader
+          onClose={handleClose}
+          backButtonVariant="close-text"
+          iconColor="#1A4032"
+          progressFillColor="#FF5A5F"
+          progressTrackColor="#FFE9E9"
+          trailingLabelColor="#FF5A5F"
+          progress={progress}
+          trailingLabel="+10 XP"
+        />
+      }} />
+
+      {/* Reusable Lesson Header */}
+
+
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,

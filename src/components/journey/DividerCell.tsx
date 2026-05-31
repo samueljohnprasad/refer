@@ -4,6 +4,9 @@ import Svg, { Path } from "react-native-svg";
 import type { JourneyDividerItem } from "@/src/types/journey";
 import { useHighContrast } from "@/src/hooks/useHighContrast";
 import UnitDivider from "./UnitDivider";
+import Animated, { useSharedValue, useAnimatedProps, withRepeat, withTiming, Easing } from "react-native-reanimated";
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 export interface DividerCellProps {
   item: JourneyDividerItem;
@@ -60,6 +63,29 @@ export function DividerCell({
     pathColors,
   );
 
+  const isConnectorActive =
+    item.isConnectorActive ??
+    isActiveDividerSegment(item.prevNodeGlobalIndex, activeGlobalIndex);
+
+  const dashLength = 20;
+  const dashOffset = useSharedValue(0);
+
+  React.useEffect(() => {
+    if (isConnectorActive) {
+      dashOffset.value = withRepeat(
+        withTiming(-dashLength, { duration: 1000, easing: Easing.linear }),
+        -1,
+        false
+      );
+    } else {
+      dashOffset.value = 0;
+    }
+  }, [isConnectorActive, dashOffset]);
+
+  const animatedPathProps = useAnimatedProps(() => ({
+    strokeDashoffset: dashOffset.value,
+  }));
+
   return (
     <View style={{ height: item.cellHeight }}>
       {item.segmentD ? (
@@ -77,6 +103,18 @@ export function DividerCell({
             strokeLinecap="round"
             strokeLinejoin="round"
           />
+          {isConnectorActive && (
+            <AnimatedPath
+              d={item.segmentD}
+              stroke="rgba(255, 255, 255, 0.4)"
+              strokeWidth={pathStrokeWidth * 0.5}
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray="10 10"
+              animatedProps={animatedPathProps}
+            />
+          )}
         </Svg>
       ) : null}
       <UnitDivider
