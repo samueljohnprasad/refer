@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Pressable } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
+import { Button } from "@/src/components/ui/Button";
 import { LinearGradient } from "expo-linear-gradient";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ChartHistogramIcon, StarIcon } from "@hugeicons/core-free-icons";
@@ -45,45 +46,26 @@ export const AdvancedAnalyticsCharts: React.FC<
                 color="#7B61FF"
               />
             </View>
-            <Text
-              style={{
-                fontSize: 22,
-                fontFamily: "CormorantSemiBold",
-                color: "#1f2937",
-                letterSpacing: -0.5,
-              }}
-            >
+            <Text variant="h2">
               Advanced Analytics
             </Text>
           </View>
           {showPremiumBadge && (
-            <Pressable
-              className="rounded-xl overflow-hidden active:opacity-80"
+            <Button
+              variant="premium"
+              size="sm"
+              label="PREMIUM"
               onPress={onPremiumPress}
-            >
-              <LinearGradient
-                colors={["#7B61FF", "#9C7CFF"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{
-                  paddingHorizontal: 12,
-                  paddingVertical: 6,
-                  gap: 6,
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
+              fullWidth={false}
+              leftIcon={
                 <HugeiconsIcon
                   icon={StarIcon}
                   size={14}
                   color="#FFF"
                   fill="#FFF"
                 />
-                <Text className="text-xs font-extrabold text-white tracking-widest">
-                  PREMIUM
-                </Text>
-              </LinearGradient>
-            </Pressable>
+              }
+            />
           )}
         </View>
       )}

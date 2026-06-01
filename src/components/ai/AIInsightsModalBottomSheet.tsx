@@ -8,7 +8,8 @@ import {
 import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon, SparklesIcon } from "@hugeicons/core-free-icons";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
+import { Button } from "@/src/components/ui/Button";
 import SuspensLoader from "@/src/components/SuspensLoader";
 
 // Lazy load heavy component
@@ -69,20 +70,22 @@ export const AIInsightsModalBottomSheet = forwardRef<
             <HugeiconsIcon icon={SparklesIcon} size={20} color="#7B61FF" />
           </View>
           <View className="flex-1">
-            <Text className="text-2xl font-cormorantSemiBold text-theme-text-primary tracking-tight">
+            <Text variant="h2">
               AI Weekly Insights
             </Text>
-            <Text className="text-sm text-gray-500 font-medium mt-0.5">
+            <Text variant="caption-muted" className="mt-0.5">
               {weekStart} - {weekEnd}
             </Text>
           </View>
         </View>
-        <Pressable
+        <Button
+          variant="ghost"
+          size="sm"
           onPress={onClose}
-          className="w-11 h-11 items-center justify-center rounded-full active:bg-gray-100"
-        >
-          <HugeiconsIcon icon={Cancel01Icon} size={24} color="#6B7280" />
-        </Pressable>
+          fullWidth={false}
+          width={44}
+          leftIcon={<HugeiconsIcon icon={Cancel01Icon} size={24} color="#6B7280" />}
+        />
       </View>
 
       {/* Content */}
