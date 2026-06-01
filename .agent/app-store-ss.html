@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Happy: AI Journal — All 6 App Store Screens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0a0814;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #e2e8f0;
+        }
+
+        .page-header {
+            background: #0D0520;
+            border-bottom: 1px solid #1e1040;
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #f1f5f9;
+            letter-spacing: -0.02em;
+        }
+
+        .page-sub {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .export-note {
+            font-size: 11px;
+            color: #C4B5FD;
+            background: rgba(196, 181, 253, 0.08);
+            border: 1px solid rgba(196, 181, 253, 0.20);
+            border-radius: 6px;
+            padding: 8px 14px;
+            line-height: 1.6;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            padding: 24px 32px;
+            background: #0D0520;
+            border-bottom: 1px solid #1e1040;
+        }
+
+        .thumb-card {
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1.5px solid #1e1040;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.15s;
+        }
+
+        .thumb-card:hover {
+            border-color: #C4B5FD;
+        }
+
+        .thumb-label {
+            padding: 6px 8px;
+            background: #0f0d1a;
+            border-top: 1px solid #1e1040;
+        }
+
+        .thumb-num {
+            font-size: 9px;
+            font-weight: 700;
+            color: #C4B5FD;
+            margin-bottom: 1px;
+        }
+
+        .thumb-name {
+            font-size: 8px;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .goto-btn {
+            margin: 4px 6px 6px;
+            background: rgba(196, 181, 253, 0.08);
+            border: none;
+            border-radius: 4px;
+            padding: 4px 0;
+            font-size: 9px;
+            font-weight: 700;
+            color: #C4B5FD;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            width: calc(100% - 12px);
+        }
+
+        .goto-btn:hover {
+            background: rgba(196, 181, 253, 0.16);
+        }
+
+        .artboard-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 48px 0 0;
+        }
+
+        .artboard-section:last-child {
+            padding-bottom: 80px;
+        }
+
+        .ab-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .ab-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #C4B5FD;
+            color: #1E0A3C;
+            font-size: 12px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ab-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .ab-role {
+            font-size: 11px;
+            color: #64748b;
+            margin-left: 4px;
+        }
+
+        .ab-footer {
+            margin-top: 12px;
+            font-size: 10px;
+            color: #475569;
+            text-align: center;
+            line-height: 1.7;
+        }
+
+        .artboard {
+            width: 390px;
+            height: 844px;
+            background: #1E0A3C;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .za {
+            position: absolute;
+            top: 20px;
+            left: 28px;
+            right: 28px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            z-index: 10;
+        }
+
+        .bdot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #C4B5FD;
+            flex-shrink: 0;
+        }
+
+        .bname {
+            font-size: 10px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.50);
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+        }
+
+        .zb {
+            position: absolute;
+            top: 46px;
+            left: 28px;
+            right: 28px;
+            z-index: 10;
+        }
+
+        .ey {
+            font-size: 12px;
+            font-weight: 600;
+            color: #C4B5FD;
+            letter-spacing: 0.05em;
+            margin-bottom: 9px;
+        }
+
+        .hl {
+            font-size: 52px;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.06;
+            letter-spacing: -0.025em;
+            margin-bottom: 13px;
+        }
+
+        .hl .ac {
+            color: #C4B5FD;
+        }
+
+        .sh {
+            font-size: 13.5px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.58);
+            line-height: 1.52;
+            max-width: 295px;
+        }
+
+        .zc {
+            position: absolute;
+            top: 232px;
+            left: 11px;
+            right: 11px;
+            bottom: 42px;
+            z-index: 5;
+        }
+
+        .phone {
+            width: 100%;
+            height: 100%;
+            background: #2A1455;
+            border-radius: 46px;
+            border: 2px solid #3D1F7A;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .phone-inner {
+            position: absolute;
+            inset: 2px;
+            background: #F7F3FF;
+            border-radius: 44px;
+            overflow: hidden;
+        }
+
+        .sbar {
+            height: 52px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 15px 22px 0;
+            position: relative;
+            z-index: 5;
+        }
+
+        .stime {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a0a2e;
+            letter-spacing: -0.01em;
+        }
+
+        .sicons {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 2px;
+        }
+
+        .sbars {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5px;
+            height: 10px;
+        }
+
+        .sbars span {
+            width: 2.5px;
+            background: #1a0a2e;
+            border-radius: 1px;
+        }
+
+        .batt {
+            width: 23px;
+            height: 11px;
+            border: 1.5px solid #1a0a2e;
+            border-radius: 3px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 1.5px;
+        }
+
+        .batt::after {
+            content: '';
+            position: absolute;
+            right: -4.5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2.5px;
+            height: 5px;
+            background: #1a0a2e;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .batt-fill {
+            height: 100%;
+            width: 88%;
+            background: #1a0a2e;
+            border-radius: 1px;
+        }
+
+        .di {
+            width: 114px;
+            height: 32px;
+            background: #000;
+            border-radius: 20px;
+            position: absolute;
+            top: 11px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .sc {
+            padding: 0 16px;
+            overflow: hidden;
+        }
+
+        .zd {
+            position: absolute;
+            bottom: 13px;
+            left: 28px;
+            right: 28px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            z-index: 10;
+        }
+
+        .stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .star {
+            width: 13px;
+            height: 13px;
+            background: #F59E0B;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+
+        .ptxt {
+            font-size: 11px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.52);
+        }
+
+        .ph {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 9px;
+        }
+
+        .pt2 {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: #1E0A3C;
+        }
+
+        .pill {
+            font-size: 9px;
+            font-weight: 600;
+            color: #7C3AED;
+            background: rgba(124, 58, 237, 0.10);
+            padding: 3px 7px;
+            border-radius: 6px;
+        }
+
+        .ic {
+            background: #2D1356;
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-bottom: 9px;
+        }
+
+        .il {
+            font-size: 7.5px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: #C4B5FD;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .it {
+            font-size: 10.5px;
+            font-weight: 400;
+            color: #EDE9FF;
+            line-height: 1.5;
+        }
+
+        .it strong {
+            color: #C4B5FD;
+            font-weight: 700;
+        }
+
+        .sk {
+            display: flex;
+            align-items: center;
+            background: rgba(196, 181, 253, 0.14);
+            border: 1px solid rgba(196, 181, 253, 0.32);
+            border-radius: 11px;
+            padding: 9px 13px;
+            margin-bottom: 9px;
+        }
+
+        .sc1 {
+            flex: 1;
+        }
+
+        .skl {
+            font-size: 7.5px;
+            font-weight: 700;
+            color: #9580B8;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 2px;
+        }
+
+        .skv {
+            font-size: 20px;
+            font-weight: 900;
+            color: #1E0A3C;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .skdiv {
+            width: 1px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.10);
+            margin: 0 13px;
+        }
+
+        .ei {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            padding: 5.5px 0;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.055);
+        }
+
+        .ei:last-child {
+            border-bottom: none;
+        }
+
+        .ed {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .eb {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ett {
+            font-size: 10.5px;
+            font-weight: 800;
+            color: #1E0A3C;
+            margin-bottom: 1.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .em {
+            font-size: 8.5px;
+            color: #9580B8;
+        }
+
+        .ec {
+            font-size: 7.5px;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        .el {
+            border-top: 0.5px solid rgba(0, 0, 0, 0.07);
+            padding-top: 7px;
+        }
+
+        .mr {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 8px;
+        }
+
+        .mrl {
+            font-size: 8.5px;
+            font-weight: 500;
+            color: #9580B8;
+            width: 48px;
+            flex-shrink: 0;
+        }
+
+        .mds {
+            display: flex;
+            gap: 5px;
+        }
+
+        .md {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+        }
+
+        .export-bar {
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+            background: #0D0520;
+            border-top: 1px solid #1e1040;
+            padding: 10px 32px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-lbl {
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .nav-btn {
+            background: rgba(196, 181, 253, 0.08);
+            border: 1px solid rgba(196, 181, 253, 0.20);
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #C4B5FD;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .main-area {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .main-area {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .export-bar {
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+            background: #0D0520;
+            border-top: 1px solid #1e1040;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn:hover {
+            background: rgba(196, 181, 253, 0.16) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-header">
+        <div>
+            <div class="page-title">Happy: AI Journal — App Store Screenshots</div>
+            <div class="page-sub">6 screens · 390×844 px each · Export at Chrome @3x = 1170×2532 px PNG for App Store
+                Connect</div>
+        </div>
+        <div class="export-note">Run <strong>exportScreen(N)</strong> in DevTools Console (F12) to isolate any screen
+            for export.<br>Each screen exports as a 1170×2532 px PNG — ready to upload directly.</div>
+    </div>
+    <div class="gallery">
+        <div class="thumb-card" onclick="document.getElementById('screen-1').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">
+            <div style="height:120px;background:#1E0A3C;overflow:hidden;position:relative;">
+                <div
+                    style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
+                    <div
+                        style="width:70px;height:151px;background:#2A1455;border-radius:12px;border:1px solid #3D1F7A;position:relative;overflow:hidden;">
+                        <div style="position:absolute;top:4px;left:0;right:0;text-align:center;">
+                            <div style="display:inline-block;width:24px;height:6px;background:#000;border-radius:4px;">
+                            </div>
+                        </div>
+                        <div style="margin:12px 5px 0;height:10px;background:rgba(196,181,253,0.6);border-radius:2px;">
+                        </div>
+                        <div style="margin:4px 5px 0;height:6px;background:rgba(255,255,255,0.3);border-radius:2px;">
+                        </div>
+                        <div
+                            style="margin:3px 5px 0;height:6px;width:60%;background:rgba(255,255,255,0.2);border-radius:2px;">
+                        </div>
+                        <div style="margin:8px 5px 0;height:30px;background:rgba(45,19,86,0.8);border-radius:5px;">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="position:absolute;top:6px;left:6px;background:rgba(196,181,253,0.9);color:#1E0A3C;font-size:8px;font-weight:900;padding:1px 5px;border-radius:3px;">
+                    S1</div>
+            </div>
+            <div class="thumb-label">
+                <div class="thumb-num">Screen 1</div>
+                <div class="thumb-name">Weekly AI Insights</div>
+            </div><button class="goto-btn">View screen 1 ↓</button>
+        </div>
+        <div class="thumb-card" onclick="document.getElementById('screen-2').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">
+            <div style="height:120px;background:#1E0A3C;overflow:hidden;position:relative;">
+                <div
+                    style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
+                    <div
+                        style="width:70px;height:151px;background:#2A1455;border-radius:12px;border:1px solid #3D1F7A;position:relative;overflow:hidden;">
+                        <div style="position:absolute;top:4px;left:0;right:0;text-align:center;">
+                            <div style="display:inline-block;width:24px;height:6px;background:#000;border-radius:4px;">
+                            </div>
+                        </div>
+                        <div style="margin:12px 5px 0;height:10px;background:rgba(196,181,253,0.6);border-radius:2px;">
+                        </div>
+                        <div style="margin:4px 5px 0;height:6px;background:rgba(255,255,255,0.3);border-radius:2px;">
+                        </div>
+                        <div
+                            style="margin:3px 5px 0;height:6px;width:60%;background:rgba(255,255,255,0.2);border-radius:2px;">
+                        </div>
+                        <div style="margin:8px 5px 0;height:30px;background:rgba(45,19,86,0.8);border-radius:5px;">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="position:absolute;top:6px;left:6px;background:rgba(196,181,253,0.9);color:#1E0A3C;font-size:8px;font-weight:900;padding:1px 5px;border-radius:3px;">
+                    S2</div>
+            </div>
+            <div class="thumb-label">
+                <div class="thumb-num">Screen 2</div>
+                <div class="thumb-name">Mood Calendar</div>
+            </div><button class="goto-btn">View screen 2 ↓</button>
+        </div>
+        <div class="thumb-card" onclick="document.getElementById('screen-3').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">
+            <div style="height:120px;background:#1E0A3C;overflow:hidden;position:relative;">
+                <div
+                    style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
+                    <div
+                        style="width:70px;height:151px;background:#2A1455;border-radius:12px;border:1px solid #3D1F7A;position:relative;overflow:hidden;">
+                        <div style="position:absolute;top:4px;left:0;right:0;text-align:center;">
+                            <div style="display:inline-block;width:24px;height:6px;background:#000;border-radius:4px;">
+                            </div>
+                        </div>
+                        <div style="margin:12px 5px 0;height:10px;background:rgba(196,181,253,0.6);border-radius:2px;">
+                        </div>
+                        <div style="margin:4px 5px 0;height:6px;background:rgba(255,255,255,0.3);border-radius:2px;">
+                        </div>
+                        <div
+                            style="margin:3px 5px 0;height:6px;width:60%;background:rgba(255,255,255,0.2);border-radius:2px;">
+                        </div>
+                        <div style="margin:8px 5px 0;height:30px;background:rgba(45,19,86,0.8);border-radius:5px;">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="position:absolute;top:6px;left:6px;background:rgba(196,181,253,0.9);color:#1E0A3C;font-size:8px;font-weight:900;padding:1px 5px;border-radius:3px;">
+                    S3</div>
+            </div>
+            <div class="thumb-label">
+                <div class="thumb-num">Screen 3</div>
+                <div class="thumb-name">Life Domain Balance</div>
+            </div><button class="goto-btn">View screen 3 ↓</button>
+        </div>
+        <div class="thumb-card" onclick="document.getElementById('screen-4').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">
+            <div style="height:120px;background:#1E0A3C;overflow:hidden;position:relative;">
+                <div
+                    style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
+                    <div
+                        style="width:70px;height:151px;background:#2A1455;border-radius:12px;border:1px solid #3D1F7A;position:relative;overflow:hidden;">
+                        <div style="position:absolute;top:4px;left:0;right:0;text-align:center;">
+                            <div style="display:inline-block;width:24px;height:6px;background:#000;border-radius:4px;">
+                            </div>
+                        </div>
+                        <div style="margin:12px 5px 0;height:10px;background:rgba(196,181,253,0.6);border-radius:2px;">
+                        </div>
+                        <div style="margin:4px 5px 0;height:6px;background:rgba(255,255,255,0.3);border-radius:2px;">
+                        </div>
+                        <div
+                            style="margin:3px 5px 0;height:6px;width:60%;background:rgba(255,255,255,0.2);border-radius:2px;">
+                        </div>
+                        <div style="margin:8px 5px 0;height:30px;background:rgba(45,19,86,0.8);border-radius:5px;">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="position:absolute;top:6px;left:6px;background:rgba(196,181,253,0.9);color:#1E0A3C;font-size:8px;font-weight:900;padding:1px 5px;border-radius:3px;">
+                    S4</div>
+            </div>
+            <div class="thumb-label">
+                <div class="thumb-num">Screen 4</div>
+                <div class="thumb-name">Audio Journaling</div>
+            </div><button class="goto-btn">View screen 4 ↓</button>
+        </div>
+        <div class="thumb-card" onclick="document.getElementById('screen-5').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">
+            <div style="height:120px;background:#1E0A3C;overflow:hidden;position:relative;">
+                <div
+                    style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
+                    <div
+                        style="width:70px;height:151px;background:#2A1455;border-radius:12px;border:1px solid #3D1F7A;position:relative;overflow:hidden;">
+                        <div style="position:absolute;top:4px;left:0;right:0;text-align:center;">
+                            <div style="display:inline-block;width:24px;height:6px;background:#000;border-radius:4px;">
+                            </div>
+                        </div>
+                        <div style="margin:12px 5px 0;height:10px;background:rgba(196,181,253,0.6);border-radius:2px;">
+                        </div>
+                        <div style="margin:4px 5px 0;height:6px;background:rgba(255,255,255,0.3);border-radius:2px;">
+                        </div>
+                        <div
+                            style="margin:3px 5px 0;height:6px;width:60%;background:rgba(255,255,255,0.2);border-radius:2px;">
+                        </div>
+                        <div style="margin:8px 5px 0;height:30px;background:rgba(45,19,86,0.8);border-radius:5px;">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="position:absolute;top:6px;left:6px;background:rgba(196,181,253,0.9);color:#1E0A3C;font-size:8px;font-weight:900;padding:1px 5px;border-radius:3px;">
+                    S5</div>
+            </div>
+            <div class="thumb-label">
+                <div class="thumb-num">Screen 5</div>
+                <div class="thumb-name">Achievements</div>
+            </div><button class="goto-btn">View screen 5 ↓</button>
+        </div>
+        <div class="thumb-card" onclick="document.getElementById('screen-6').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">
+            <div style="height:120px;background:#1E0A3C;overflow:hidden;position:relative;">
+                <div
+                    style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;">
+                    <div
+                        style="width:70px;height:151px;background:#2A1455;border-radius:12px;border:1px solid #3D1F7A;position:relative;overflow:hidden;">
+                        <div style="position:absolute;top:4px;left:0;right:0;text-align:center;">
+                            <div style="display:inline-block;width:24px;height:6px;background:#000;border-radius:4px;">
+                            </div>
+                        </div>
+                        <div style="margin:12px 5px 0;height:10px;background:rgba(196,181,253,0.6);border-radius:2px;">
+                        </div>
+                        <div style="margin:4px 5px 0;height:6px;background:rgba(255,255,255,0.3);border-radius:2px;">
+                        </div>
+                        <div
+                            style="margin:3px 5px 0;height:6px;width:60%;background:rgba(255,255,255,0.2);border-radius:2px;">
+                        </div>
+                        <div style="margin:8px 5px 0;height:30px;background:rgba(45,19,86,0.8);border-radius:5px;">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="position:absolute;top:6px;left:6px;background:rgba(196,181,253,0.9);color:#1E0A3C;font-size:8px;font-weight:900;padding:1px 5px;border-radius:3px;">
+                    S6</div>
+            </div>
+            <div class="thumb-label">
+                <div class="thumb-num">Screen 6</div>
+                <div class="thumb-name">The Close</div>
+            </div><button class="goto-btn">View screen 6 ↓</button>
+        </div>
+    </div>
+    <div class="main-area">
+        <div class="artboard-section" id="screen-1">
+            <div class="ab-header">
+                <div class="ab-num">1</div>
+                <div class="ab-name">Weekly AI Insights</div>
+                <div class="ab-role">— Promise</div>
+            </div>
+            <div class="artboard">
+                <div
+                    style="position:absolute;top:-50px;right:-50px;;width:220px;height:220px;background:radial-gradient(circle,rgba(124,58,237,0.15) 0%,transparent 70%);pointer-events:none;z-index:1;">
+                </div>
+                <div class="za">
+                    <div class="bdot"></div>
+                    <div class="bname">Happy · AI Journal</div>
+                </div>
+                <div class="zb">
+                    <div class="ey">AI-powered journaling</div>
+                    <div class="hl">Your journal<br>that <span class="ac">writes back</span></div>
+                    <div class="sh">Understand your emotions. Track what matters. Let AI reveal your patterns.</div>
+                </div>
+                <div class="zc" style="top:228px;">
+                    <div class="phone">
+                        <div class="phone-inner">
+                            <div class="sbar">
+                                <div class="stime">9:41</div>
+                                <div class="sicons">
+                                    <div class="sbars"><span style="height:3px;"></span><span
+                                            style="height:5px;"></span><span style="height:7px;"></span><span
+                                            style="height:9px;"></span></div><svg width="15" height="11"
+                                        viewBox="0 0 15 11" fill="none">
+                                        <path d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z" fill="#1a0a2e" />
+                                        <path d="M4.2 6.8a4.7 4.7 0 016.6 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                        <path d="M1.5 4.2a8.4 8.4 0 0112 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    <div class="batt">
+                                        <div class="batt-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="di"></div>
+                            <div class="sc" style="padding:4px 15px 0;">
+                                <div class="ph">
+                                    <div class="pt2">Weekly AI Insights</div>
+                                    <div class="pill">Nov 2–8, 2025</div>
+                                </div>
+                                <div class="sk">
+                                    <div class="sc1">
+                                        <div class="skl">Current Streak</div>
+                                        <div class="skv">🔥 21</div>
+                                    </div>
+                                    <div class="skdiv"></div>
+                                    <div class="sc1">
+                                        <div class="skl">Next Milestone</div>
+                                        <div class="skv">30</div>
+                                    </div>
+                                </div>
+                                <div class="ic">
+                                    <div class="il">This week's pattern</div>
+                                    <div class="it">You feel most at ease on <strong>evenings after exercise.</strong>
+                                        Your stress peaks Monday mornings — try a 5-min entry before work.</div>
+                                </div>
+                                <div class="mr">
+                                    <div class="mrl">Mon–Fri</div>
+                                    <div class="mds">
+                                        <div class="md" style="background:#F87171;"></div>
+                                        <div class="md" style="background:#FBBF24;"></div>
+                                        <div class="md" style="background:#86EFAC;"></div>
+                                        <div class="md" style="background:#34D399;"></div>
+                                        <div class="md" style="background:#059669;"></div>
+                                    </div>
+                                </div>
+                                <div class="el">
+                                    <div class="ei">
+                                        <div class="ed" style="background:#7C3AED;"></div>
+                                        <div class="eb">
+                                            <div class="ett">Long day at the office</div>
+                                            <div class="em">Today · 6m read · Mood: Okay</div>
+                                        </div>
+                                        <div class="ec" style="background:rgba(251,191,36,0.15);color:#92400E;">😐 Okay
+                                        </div>
+                                    </div>
+                                    <div class="ei">
+                                        <div class="ed" style="background:#C4B5FD;"></div>
+                                        <div class="eb">
+                                            <div class="ett">Morning run felt amazing</div>
+                                            <div class="em">Yesterday · 3m read · Mood: Great</div>
+                                        </div>
+                                        <div class="ec" style="background:rgba(5,150,105,0.12);color:#065F46;">😄 Great
+                                        </div>
+                                    </div>
+                                    <div class="ei">
+                                        <div class="ed" style="background:#86EFAC;"></div>
+                                        <div class="eb">
+                                            <div class="ett">Dinner with the family</div>
+                                            <div class="em">Mon · 2m read · Mood: Good</div>
+                                        </div>
+                                        <div class="ec" style="background:rgba(52,211,153,0.12);color:#065F46;">🙂 Good
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="zd">
+                    <div class="stars">
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                    </div>
+                    <div class="ptxt">4.8 · Health &amp; Fitness</div>
+                </div>
+            </div>
+            <div class="ab-footer">Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px PNG<br>Console:
+                <code
+                    style="background:#1a1a2e;padding:1px 5px;border-radius:3px;font-family:monospace;color:#C4B5FD;">exportScreen(1)</code>
+            </div>
+        </div>
+        <div class="artboard-section" id="screen-2">
+            <div class="ab-header">
+                <div class="ab-num">2</div>
+                <div class="ab-name">Mood Calendar</div>
+                <div class="ab-role">— Proof</div>
+            </div>
+            <div class="artboard">
+                <div
+                    style="position:absolute;top:-50px;left:-50px;;width:220px;height:220px;background:radial-gradient(circle,rgba(124,58,237,0.15) 0%,transparent 70%);pointer-events:none;z-index:1;">
+                </div>
+                <div class="za">
+                    <div class="bdot"></div>
+                    <div class="bname">Happy · AI Journal</div>
+                </div>
+                <div class="zb">
+                    <div class="ey">Mood calendar</div>
+                    <div class="hl">Every mood tracked.<br>Every <span class="ac">pattern found.</span></div>
+                    <div class="sh">30 days of emotions, beautifully visualized. Spot what's affecting your wellbeing.
+                    </div>
+                </div>
+                <div class="zc">
+                    <div class="phone">
+                        <div class="phone-inner">
+                            <div class="sbar">
+                                <div class="stime">9:41</div>
+                                <div class="sicons">
+                                    <div class="sbars"><span style="height:3px;"></span><span
+                                            style="height:5px;"></span><span style="height:7px;"></span><span
+                                            style="height:9px;"></span></div><svg width="15" height="11"
+                                        viewBox="0 0 15 11" fill="none">
+                                        <path d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z" fill="#1a0a2e" />
+                                        <path d="M4.2 6.8a4.7 4.7 0 016.6 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                        <path d="M1.5 4.2a8.4 8.4 0 0112 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    <div class="batt">
+                                        <div class="batt-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="di"></div>
+                            <div class="sc" style="padding:0 15px;">
+                                <div class="ph">
+                                    <div class="pt2">Mood Calendar</div>
+                                    <div style="display:flex;align-items:center;gap:5px;">
+                                        <div
+                                            style="width:18px;height:18px;border-radius:50%;background:rgba(124,58,237,0.10);display:flex;align-items:center;justify-content:center;font-size:9px;color:#7C3AED;font-weight:700;">
+                                            &#8249;</div>
+                                        <div style="font-size:10px;font-weight:700;color:#7C3AED;">Nov 2025</div>
+                                        <div
+                                            style="width:18px;height:18px;border-radius:50%;background:rgba(124,58,237,0.10);display:flex;align-items:center;justify-content:center;font-size:9px;color:#7C3AED;font-weight:700;">
+                                            &#8250;</div>
+                                    </div>
+                                </div>
+                                <div
+                                    style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;">
+                                    <div style="font-size:8px;font-weight:700;color:#9580B8;text-align:center;">S</div>
+                                    <div style="font-size:8px;font-weight:700;color:#9580B8;text-align:center;">M</div>
+                                    <div style="font-size:8px;font-weight:700;color:#9580B8;text-align:center;">T</div>
+                                    <div style="font-size:8px;font-weight:700;color:#9580B8;text-align:center;">W</div>
+                                    <div style="font-size:8px;font-weight:700;color:#9580B8;text-align:center;">T</div>
+                                    <div style="font-size:8px;font-weight:700;color:#9580B8;text-align:center;">F</div>
+                                    <div style="font-size:8px;font-weight:700;color:#9580B8;text-align:center;">S</div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;">
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        1</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        2</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#FBBF24;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(0,0,0,0.45);">
+                                        3</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        4</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        5</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        6</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        7</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75); outline:2.5px solid #7C3AED;outline-offset:1.5px;">
+                                        8</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        9</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#FBBF24;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(0,0,0,0.45);">
+                                        10</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        11</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        12</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        13</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        14</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        15</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        16</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#F87171;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        17</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#FBBF24;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(0,0,0,0.45);">
+                                        18</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        19</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        20</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        21</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        22</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        23</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#FBBF24;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(0,0,0,0.45);">
+                                        24</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        25</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        26</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        27</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        28</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        29</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:#34D399;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:rgba(255,255,255,0.75);">
+                                        30</div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                    <div
+                                        style="aspect-ratio:1;border-radius:50%;background:rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:transparent;">
+                                    </div>
+                                </div>
+                                <div
+                                    style="display:flex;border-top:0.5px solid rgba(0,0,0,0.08);margin-top:7px;padding-top:7px;">
+                                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+                                        <div style="font-size:15px;font-weight:900;color:#059669;">78%</div>
+                                        <div
+                                            style="font-size:6.5px;font-weight:700;color:#9580B8;text-transform:uppercase;letter-spacing:0.05em;">
+                                            Positive days</div>
+                                    </div>
+                                    <div
+                                        style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border-left:0.5px solid rgba(0,0,0,0.08);">
+                                        <div style="font-size:15px;font-weight:900;color:#1E0A3C;">4.1</div>
+                                        <div
+                                            style="font-size:6.5px;font-weight:700;color:#9580B8;text-transform:uppercase;letter-spacing:0.05em;">
+                                            Avg mood</div>
+                                    </div>
+                                    <div
+                                        style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border-left:0.5px solid rgba(0,0,0,0.08);">
+                                        <div style="font-size:15px;font-weight:900;color:#34D399;">+0.4</div>
+                                        <div
+                                            style="font-size:6.5px;font-weight:700;color:#9580B8;text-transform:uppercase;letter-spacing:0.05em;">
+                                            vs last month</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top:7px;">
+                                    <div style="font-size:8px;font-weight:700;color:#1E0A3C;margin-bottom:3px;">Month
+                                        breakdown</div>
+                                    <div style="display:flex;height:6px;border-radius:3px;overflow:hidden;gap:1.5px;">
+                                        <div style="width:33%;height:100%;background:#059669;border-radius:3px;"></div>
+                                        <div style="width:45%;height:100%;background:#34D399;border-radius:3px;"></div>
+                                        <div style="width:13%;height:100%;background:#FBBF24;border-radius:3px;"></div>
+                                        <div style="width:3%;height:100%;background:#F87171;border-radius:3px;"></div>
+                                    </div>
+                                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">
+                                        <div style="display:flex;align-items:center;gap:3px;">
+                                            <div style="width:6px;height:6px;border-radius:50%;background:#059669;">
+                                            </div>
+                                            <div style="font-size:7px;color:#9580B8;">Great 33%</div>
+                                        </div>
+                                        <div style="display:flex;align-items:center;gap:3px;">
+                                            <div style="width:6px;height:6px;border-radius:50%;background:#34D399;">
+                                            </div>
+                                            <div style="font-size:7px;color:#9580B8;">Good 45%</div>
+                                        </div>
+                                        <div style="display:flex;align-items:center;gap:3px;">
+                                            <div style="width:6px;height:6px;border-radius:50%;background:#FBBF24;">
+                                            </div>
+                                            <div style="font-size:7px;color:#9580B8;">Okay 13%</div>
+                                        </div>
+                                        <div style="display:flex;align-items:center;gap:3px;">
+                                            <div style="width:6px;height:6px;border-radius:50%;background:#F87171;">
+                                            </div>
+                                            <div style="font-size:7px;color:#9580B8;">Bad 3%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    style="margin-top:7px;background:rgba(124,58,237,0.08);border:0.8px solid rgba(124,58,237,0.22);border-radius:9px;padding:7px 10px;display:flex;align-items:flex-start;gap:6px;">
+                                    <div style="font-size:12px;flex-shrink:0;line-height:1.2;">&#9889;</div>
+                                    <div>
+                                        <div
+                                            style="font-size:7.5px;font-weight:800;color:#4C1D95;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px;">
+                                            AI pattern detected</div>
+                                        <div style="font-size:8.5px;font-weight:500;color:#5B21B6;line-height:1.4;">
+                                            <strong style="font-weight:800;color:#3B0764;">Mondays are your hardest
+                                                day</strong> — 4 out of 4 logged as Okay or below this month.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="zd">
+                    <div class="stars">
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                    </div>
+                    <div class="ptxt">4.8 · Health &amp; Fitness</div>
+                </div>
+            </div>
+            <div class="ab-footer">Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px PNG<br>Console:
+                <code
+                    style="background:#1a1a2e;padding:1px 5px;border-radius:3px;font-family:monospace;color:#C4B5FD;">exportScreen(2)</code>
+            </div>
+        </div>
+        <div class="artboard-section" id="screen-3">
+            <div class="ab-header">
+                <div class="ab-num">3</div>
+                <div class="ab-name">Life Domain Balance</div>
+                <div class="ab-role">— Differentiator</div>
+            </div>
+            <div class="artboard">
+                <div
+                    style="position:absolute;top:-40px;right:-40px;;width:220px;height:220px;background:radial-gradient(circle,rgba(124,58,237,0.15) 0%,transparent 70%);pointer-events:none;z-index:1;">
+                </div>
+                <div class="za">
+                    <div class="bdot"></div>
+                    <div class="bname">Happy · AI Journal</div>
+                </div>
+                <div class="zb">
+                    <div class="ey">Life domain balance</div>
+                    <div class="hl">See your whole life,<br><span class="ac">not just your mood.</span></div>
+                    <div class="sh">Track 8 life dimensions. Know exactly where you're thriving — and where to focus
+                        next.</div>
+                </div>
+                <div class="zc">
+                    <div class="phone">
+                        <div class="phone-inner">
+                            <div class="sbar">
+                                <div class="stime">9:41</div>
+                                <div class="sicons">
+                                    <div class="sbars"><span style="height:3px;"></span><span
+                                            style="height:5px;"></span><span style="height:7px;"></span><span
+                                            style="height:9px;"></span></div><svg width="15" height="11"
+                                        viewBox="0 0 15 11" fill="none">
+                                        <path d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z" fill="#1a0a2e" />
+                                        <path d="M4.2 6.8a4.7 4.7 0 016.6 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                        <path d="M1.5 4.2a8.4 8.4 0 0112 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    <div class="batt">
+                                        <div class="batt-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="di"></div>
+                            <div class="sc" style="padding:0 15px;">
+                                <div class="ph">
+                                    <div class="pt2">Life Domain Balance</div>
+                                    <div class="pill">November</div>
+                                </div>
+                                <div style="text-align:center;margin-bottom:10px;">
+                                    <div style="font-size:48px;font-weight:900;color:#1E0A3C;line-height:1;">81<span
+                                            style="font-size:22px;color:#9580B8;">%</span></div>
+                                    <div
+                                        style="font-size:8px;font-weight:600;color:#9580B8;text-transform:uppercase;letter-spacing:0.06em;">
+                                        Overall balance score</div>
+                                    <div
+                                        style="display:flex;align-items:center;justify-content:center;gap:4px;margin-top:3px;">
+                                        <div style="font-size:9px;font-weight:700;color:#34D399;">&#8593; +6 pts</div>
+                                        <div style="font-size:8px;color:#9580B8;">vs last month</div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:5px;">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+                                        <div style="font-size:8.5px;font-weight:600;color:#1E0A3C;">Work</div>
+                                        <div style="font-size:8.5px;font-weight:800;color:#7C3AED;">72%</div>
+                                    </div>
+                                    <div
+                                        style="height:5px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden;">
+                                        <div style="height:100%;width:72%;background:#7C3AED;border-radius:3px;"></div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:5px;">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+                                        <div style="font-size:8.5px;font-weight:600;color:#1E0A3C;">Health</div>
+                                        <div style="font-size:8.5px;font-weight:800;color:#059669;">85%</div>
+                                    </div>
+                                    <div
+                                        style="height:5px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden;">
+                                        <div style="height:100%;width:85%;background:#059669;border-radius:3px;"></div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:5px;">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+                                        <div style="font-size:8.5px;font-weight:600;color:#1E0A3C;">Family</div>
+                                        <div style="font-size:8.5px;font-weight:800;color:#34D399;">91%</div>
+                                    </div>
+                                    <div
+                                        style="height:5px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden;">
+                                        <div style="height:100%;width:91%;background:#34D399;border-radius:3px;"></div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:5px;">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+                                        <div style="font-size:8.5px;font-weight:600;color:#1E0A3C;">Social</div>
+                                        <div style="font-size:8.5px;font-weight:800;color:#C4B5FD;">68%</div>
+                                    </div>
+                                    <div
+                                        style="height:5px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden;">
+                                        <div style="height:100%;width:68%;background:#C4B5FD;border-radius:3px;"></div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:5px;">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+                                        <div style="font-size:8.5px;font-weight:600;color:#1E0A3C;">Finances</div>
+                                        <div style="font-size:8.5px;font-weight:800;color:#F87171;">54%</div>
+                                    </div>
+                                    <div
+                                        style="height:5px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden;">
+                                        <div style="height:100%;width:54%;background:#F87171;border-radius:3px;"></div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:5px;">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+                                        <div style="font-size:8.5px;font-weight:600;color:#1E0A3C;">Growth</div>
+                                        <div style="font-size:8.5px;font-weight:800;color:#FBBF24;">78%</div>
+                                    </div>
+                                    <div
+                                        style="height:5px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden;">
+                                        <div style="height:100%;width:78%;background:#FBBF24;border-radius:3px;"></div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:5px;">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+                                        <div style="font-size:8.5px;font-weight:600;color:#1E0A3C;">Purpose</div>
+                                        <div style="font-size:8.5px;font-weight:800;color:#7DD3FC;">82%</div>
+                                    </div>
+                                    <div
+                                        style="height:5px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden;">
+                                        <div style="height:100%;width:82%;background:#7DD3FC;border-radius:3px;"></div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:5px;">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+                                        <div style="font-size:8.5px;font-weight:600;color:#1E0A3C;">Rest</div>
+                                        <div style="font-size:8.5px;font-weight:800;color:#F472B6;">61%</div>
+                                    </div>
+                                    <div
+                                        style="height:5px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden;">
+                                        <div style="height:100%;width:61%;background:#F472B6;border-radius:3px;"></div>
+                                    </div>
+                                </div>
+                                <div
+                                    style="margin-top:6px;background:rgba(248,113,113,0.08);border:0.8px solid rgba(248,113,113,0.25);border-radius:9px;padding:7px 10px;display:flex;align-items:flex-start;gap:6px;">
+                                    <div style="font-size:12px;flex-shrink:0;">&#9888;</div>
+                                    <div style="font-size:8px;font-weight:500;color:#991B1B;line-height:1.45;"><strong
+                                            style="font-weight:800;">Finances (54%) needs attention.</strong> Consider
+                                        reviewing your budget this week.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="zd">
+                    <div class="stars">
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                    </div>
+                    <div class="ptxt">4.8 · Health &amp; Fitness</div>
+                </div>
+            </div>
+            <div class="ab-footer">Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px PNG<br>Console:
+                <code
+                    style="background:#1a1a2e;padding:1px 5px;border-radius:3px;font-family:monospace;color:#C4B5FD;">exportScreen(3)</code>
+            </div>
+        </div>
+        <div class="artboard-section" id="screen-4">
+            <div class="ab-header">
+                <div class="ab-num">4</div>
+                <div class="ab-name">Audio Journaling</div>
+                <div class="ab-role">— Delight</div>
+            </div>
+            <div class="artboard">
+                <div
+                    style="position:absolute;top:-40px;left:-40px;;width:220px;height:220px;background:radial-gradient(circle,rgba(124,58,237,0.15) 0%,transparent 70%);pointer-events:none;z-index:1;">
+                </div>
+                <div class="za">
+                    <div class="bdot"></div>
+                    <div class="bname">Happy · AI Journal</div>
+                </div>
+                <div class="zb">
+                    <div class="ey">Audio journaling</div>
+                    <div class="hl">Just speak.<br><span class="ac">We'll listen.</span></div>
+                    <div class="sh">Record your thoughts in seconds. Happy transcribes, analyses, and writes back —
+                        automatically.</div>
+                </div>
+                <div class="zc">
+                    <div class="phone">
+                        <div class="phone-inner">
+                            <div class="sbar">
+                                <div class="stime">9:41</div>
+                                <div class="sicons">
+                                    <div class="sbars"><span style="height:3px;"></span><span
+                                            style="height:5px;"></span><span style="height:7px;"></span><span
+                                            style="height:9px;"></span></div><svg width="15" height="11"
+                                        viewBox="0 0 15 11" fill="none">
+                                        <path d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z" fill="#1a0a2e" />
+                                        <path d="M4.2 6.8a4.7 4.7 0 016.6 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                        <path d="M1.5 4.2a8.4 8.4 0 0112 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    <div class="batt">
+                                        <div class="batt-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="di"></div>
+                            <div class="sc" style="padding:0 15px;">
+                                <div class="ph">
+                                    <div class="pt2">Audio Journal</div>
+                                    <div class="pill">Nov 8, 2025</div>
+                                </div>
+                                <div
+                                    style="background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.18);border-radius:12px;padding:10px 12px;margin-bottom:9px;">
+                                    <div
+                                        style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                                        <div
+                                            style="font-size:8px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:0.06em;">
+                                            Recording complete</div>
+                                        <div style="font-size:8px;color:#9580B8;">2:34</div>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:2.5px;height:48px;padding:0 4px;">
+                                        <div style="width:3px;height:22px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:30px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:18px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:40px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:35px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:15px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:45px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:28px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:38px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:20px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:42px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:25px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:35px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:18px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:44px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div style="width:3px;height:30px;background:#7C3AED;border-radius:2px;"></div>
+                                        <div
+                                            style="width:3px;height:22px;background:rgba(124,58,237,0.25);border-radius:2px;">
+                                        </div>
+                                        <div
+                                            style="width:3px;height:38px;background:rgba(124,58,237,0.25);border-radius:2px;">
+                                        </div>
+                                        <div
+                                            style="width:3px;height:28px;background:rgba(124,58,237,0.25);border-radius:2px;">
+                                        </div>
+                                        <div
+                                            style="width:3px;height:42px;background:rgba(124,58,237,0.25);border-radius:2px;">
+                                        </div>
+                                        <div
+                                            style="width:3px;height:16px;background:rgba(124,58,237,0.25);border-radius:2px;">
+                                        </div>
+                                        <div
+                                            style="width:3px;height:36px;background:rgba(124,58,237,0.25);border-radius:2px;">
+                                        </div>
+                                        <div
+                                            style="width:3px;height:24px;background:rgba(124,58,237,0.25);border-radius:2px;">
+                                        </div>
+                                        <div
+                                            style="width:3px;height:40px;background:rgba(124,58,237,0.25);border-radius:2px;">
+                                        </div>
+                                    </div>
+                                    <div
+                                        style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:8px;">
+                                        <div
+                                            style="width:28px;height:28px;border-radius:50%;background:rgba(124,58,237,0.12);display:flex;align-items:center;justify-content:center;font-size:12px;">
+                                            &#9654;</div>
+                                        <div
+                                            style="width:36px;height:36px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;">
+                                            <div style="width:10px;height:10px;background:#fff;border-radius:2px;">
+                                            </div>
+                                        </div>
+                                        <div
+                                            style="width:28px;height:28px;border-radius:50%;background:rgba(124,58,237,0.12);display:flex;align-items:center;justify-content:center;font-size:11px;color:#7C3AED;font-weight:700;">
+                                            &#8635;</div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:9px;">
+                                    <div
+                                        style="font-size:8px;font-weight:700;color:#1E0A3C;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em;">
+                                        Transcription</div>
+                                    <div style="font-size:9.5px;color:#3B2460;line-height:1.55;">Had a tough meeting
+                                        this morning but managed to stay calm. The afternoon was much better — finished
+                                        the project ahead of schedule. Feeling proud of that.</div>
+                                </div>
+                                <div class="ic">
+                                    <div class="il">Happy's response</div>
+                                    <div class="it">You navigated a <strong>stressful moment with composure</strong> and
+                                        followed it with a win. That's resilience in action — worth logging how you
+                                        stayed calm.</div>
+                                </div>
+                                <div style="display:flex;gap:6px;">
+                                    <div
+                                        style="flex:1;background:rgba(196,181,253,0.12);border:0.8px solid rgba(196,181,253,0.28);border-radius:8px;padding:6px 8px;text-align:center;">
+                                        <div style="font-size:8px;font-weight:700;color:#7C3AED;margin-bottom:1px;">Mood
+                                            detected</div>
+                                        <div style="font-size:11px;font-weight:900;color:#1E0A3C;">😊 Good</div>
+                                    </div>
+                                    <div
+                                        style="flex:1;background:rgba(196,181,253,0.12);border:0.8px solid rgba(196,181,253,0.28);border-radius:8px;padding:6px 8px;text-align:center;">
+                                        <div style="font-size:8px;font-weight:700;color:#7C3AED;margin-bottom:1px;">Key
+                                            themes</div>
+                                        <div style="font-size:7.5px;font-weight:700;color:#3B2460;">Work · Resilience
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="zd">
+                    <div class="stars">
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                    </div>
+                    <div class="ptxt">4.8 · Health &amp; Fitness</div>
+                </div>
+            </div>
+            <div class="ab-footer">Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px PNG<br>Console:
+                <code
+                    style="background:#1a1a2e;padding:1px 5px;border-radius:3px;font-family:monospace;color:#C4B5FD;">exportScreen(4)</code>
+            </div>
+        </div>
+        <div class="artboard-section" id="screen-5">
+            <div class="ab-header">
+                <div class="ab-num">5</div>
+                <div class="ab-name">Achievements & Rewards</div>
+                <div class="ab-role">— Depth</div>
+            </div>
+            <div class="artboard">
+                <div
+                    style="position:absolute;top:-50px;right:-50px;;width:220px;height:220px;background:radial-gradient(circle,rgba(124,58,237,0.15) 0%,transparent 70%);pointer-events:none;z-index:1;">
+                </div>
+                <div class="za">
+                    <div class="bdot"></div>
+                    <div class="bname">Happy · AI Journal</div>
+                </div>
+                <div class="zb">
+                    <div class="ey">Achievements &amp; rewards</div>
+                    <div class="hl">Build habits.<br><span class="ac">Earn rewards.</span></div>
+                    <div class="sh">Every entry earns XP. Unlock badges. Exchange coins for premium rewards in the shop.
+                    </div>
+                </div>
+                <div class="zc">
+                    <div class="phone">
+                        <div class="phone-inner">
+                            <div class="sbar">
+                                <div class="stime">9:41</div>
+                                <div class="sicons">
+                                    <div class="sbars"><span style="height:3px;"></span><span
+                                            style="height:5px;"></span><span style="height:7px;"></span><span
+                                            style="height:9px;"></span></div><svg width="15" height="11"
+                                        viewBox="0 0 15 11" fill="none">
+                                        <path d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z" fill="#1a0a2e" />
+                                        <path d="M4.2 6.8a4.7 4.7 0 016.6 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                        <path d="M1.5 4.2a8.4 8.4 0 0112 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    <div class="batt">
+                                        <div class="batt-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="di"></div>
+                            <div class="sc" style="padding:0 15px;">
+                                <div class="ph">
+                                    <div class="pt2">Your Progress</div>
+                                    <div class="pill">Level 7</div>
+                                </div>
+                                <div
+                                    style="background:rgba(196,181,253,0.10);border:1px solid rgba(196,181,253,0.25);border-radius:12px;padding:10px 13px;margin-bottom:9px;">
+                                    <div
+                                        style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                                        <div>
+                                            <div
+                                                style="font-size:8px;font-weight:700;color:#9580B8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:1px;">
+                                                Explorer</div>
+                                            <div style="font-size:13px;font-weight:900;color:#1E0A3C;">Level 7</div>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:8px;color:#9580B8;margin-bottom:1px;">Total XP</div>
+                                            <div style="font-size:15px;font-weight:900;color:#7C3AED;">1,840</div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        style="height:6px;background:rgba(0,0,0,0.08);border-radius:3px;overflow:hidden;margin-bottom:3px;">
+                                        <div style="height:100%;width:72%;background:#7C3AED;border-radius:3px;"></div>
+                                    </div>
+                                    <div style="display:flex;justify-content:space-between;">
+                                        <div style="font-size:7px;color:#9580B8;">1,840 / 2,500 XP</div>
+                                        <div style="font-size:7px;color:#7C3AED;font-weight:700;">Level 8 →</div>
+                                    </div>
+                                </div>
+                                <div
+                                    style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+                                    <div style="font-size:9px;font-weight:800;color:#1E0A3C;">Badges earned</div>
+                                    <div style="font-size:8px;font-weight:700;color:#7C3AED;">4 / 6 unlocked</div>
+                                </div>
+                                <div
+                                    style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:9px;">
+                                    <div
+                                        style="display:flex;flex-direction:column;align-items:center;gap:2px;opacity:1;">
+                                        <div
+                                            style="width:38px;height:38px;border-radius:50%;background:rgba(249,115,22,0.08);border:1px solid #F9731630;display:flex;align-items:center;justify-content:center;font-size:17px;">
+                                            🔥</div>
+                                        <div
+                                            style="font-size:6.5px;font-weight:700;color:#1E0A3C;text-align:center;line-height:1.2;">
+                                            21-Day Streak</div>
+                                        <div style="font-size:6px;color:#059669;font-weight:600;">Unlocked</div>
+                                    </div>
+                                    <div
+                                        style="display:flex;flex-direction:column;align-items:center;gap:2px;opacity:1;">
+                                        <div
+                                            style="width:38px;height:38px;border-radius:50%;background:rgba(124,58,237,0.08);border:1px solid #7C3AED30;display:flex;align-items:center;justify-content:center;font-size:17px;">
+                                            📝</div>
+                                        <div
+                                            style="font-size:6.5px;font-weight:700;color:#1E0A3C;text-align:center;line-height:1.2;">
+                                            10 Entries</div>
+                                        <div style="font-size:6px;color:#059669;font-weight:600;">Unlocked</div>
+                                    </div>
+                                    <div
+                                        style="display:flex;flex-direction:column;align-items:center;gap:2px;opacity:1;">
+                                        <div
+                                            style="width:38px;height:38px;border-radius:50%;background:rgba(5,150,105,0.08);border:1px solid #05966930;display:flex;align-items:center;justify-content:center;font-size:17px;">
+                                            🎯</div>
+                                        <div
+                                            style="font-size:6.5px;font-weight:700;color:#1E0A3C;text-align:center;line-height:1.2;">
+                                            First Goal</div>
+                                        <div style="font-size:6px;color:#059669;font-weight:600;">Unlocked</div>
+                                    </div>
+                                    <div
+                                        style="display:flex;flex-direction:column;align-items:center;gap:2px;opacity:1;">
+                                        <div
+                                            style="width:38px;height:38px;border-radius:50%;background:rgba(14,165,233,0.08);border:1px solid #0EA5E930;display:flex;align-items:center;justify-content:center;font-size:17px;">
+                                            🌙</div>
+                                        <div
+                                            style="font-size:6.5px;font-weight:700;color:#1E0A3C;text-align:center;line-height:1.2;">
+                                            Night Owl</div>
+                                        <div style="font-size:6px;color:#059669;font-weight:600;">Unlocked</div>
+                                    </div>
+                                    <div
+                                        style="display:flex;flex-direction:column;align-items:center;gap:2px;opacity:0.45;">
+                                        <div
+                                            style="width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;font-size:17px;">
+                                            💎</div>
+                                        <div
+                                            style="font-size:6.5px;font-weight:700;color:#1E0A3C;text-align:center;line-height:1.2;">
+                                            30-Day Streak</div>
+                                        <div style="font-size:6px;color:#9580B8;font-weight:600;">9 to go</div>
+                                    </div>
+                                    <div
+                                        style="display:flex;flex-direction:column;align-items:center;gap:2px;opacity:0.45;">
+                                        <div
+                                            style="width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;font-size:17px;">
+                                            🏆</div>
+                                        <div
+                                            style="font-size:6.5px;font-weight:700;color:#1E0A3C;text-align:center;line-height:1.2;">
+                                            Month Master</div>
+                                        <div style="font-size:6px;color:#9580B8;font-weight:600;">Locked</div>
+                                    </div>
+                                </div>
+                                <div
+                                    style="background:#2D1356;border-radius:11px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;">
+                                    <div>
+                                        <div
+                                            style="font-size:8px;font-weight:700;color:#C4B5FD;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px;">
+                                            Daily challenge</div>
+                                        <div style="font-size:10px;font-weight:700;color:#EDE9FF;">Write for 3
+                                            consecutive days</div>
+                                        <div style="font-size:8px;color:#9580B8;margin-top:1px;">2 / 3 complete ·
+                                            Reward: 50 coins</div>
+                                    </div>
+                                    <div
+                                        style="width:36px;height:36px;border-radius:50%;background:rgba(196,181,253,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;">
+                                        &#127381;</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="zd">
+                    <div class="stars">
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                    </div>
+                    <div class="ptxt">4.8 · Health &amp; Fitness</div>
+                </div>
+            </div>
+            <div class="ab-footer">Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px PNG<br>Console:
+                <code
+                    style="background:#1a1a2e;padding:1px 5px;border-radius:3px;font-family:monospace;color:#C4B5FD;">exportScreen(5)</code>
+            </div>
+        </div>
+        <div class="artboard-section" id="screen-6">
+            <div class="ab-header">
+                <div class="ab-num">6</div>
+                <div class="ab-name">The Close</div>
+                <div class="ab-role">— CTA</div>
+            </div>
+            <div class="artboard">
+                <div
+                    style="position:absolute;top:-40px;left:-40px;;width:220px;height:220px;background:radial-gradient(circle,rgba(124,58,237,0.15) 0%,transparent 70%);pointer-events:none;z-index:1;">
+                </div>
+                <div class="za">
+                    <div class="bdot"></div>
+                    <div class="bname">Happy · AI Journal</div>
+                </div>
+                <div class="zb">
+                    <div class="ey">Start today — it's free</div>
+                    <div class="hl">Your first entry<br>takes <span class="ac">60 seconds.</span></div>
+                    <div class="sh">Write or speak. Happy listens, reflects, and responds. Your private sanctuary
+                        awaits.</div>
+                </div>
+                <div class="zc">
+                    <div class="phone">
+                        <div class="phone-inner">
+                            <div class="sbar">
+                                <div class="stime">9:41</div>
+                                <div class="sicons">
+                                    <div class="sbars"><span style="height:3px;"></span><span
+                                            style="height:5px;"></span><span style="height:7px;"></span><span
+                                            style="height:9px;"></span></div><svg width="15" height="11"
+                                        viewBox="0 0 15 11" fill="none">
+                                        <path d="M7.5 8.5a1 1 0 110 2 1 1 0 010-2z" fill="#1a0a2e" />
+                                        <path d="M4.2 6.8a4.7 4.7 0 016.6 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                        <path d="M1.5 4.2a8.4 8.4 0 0112 0" stroke="#1a0a2e" stroke-width="1.2"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    <div class="batt">
+                                        <div class="batt-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="di"></div>
+                            <div class="sc" style="padding:0 15px;">
+                                <div class="ph">
+                                    <div class="pt2">Journal · Today</div>
+                                    <div class="pill">Nov 8, 2025</div>
+                                </div>
+                                <div
+                                    style="background:#fff;border:1px solid rgba(124,58,237,0.15);border-radius:12px;padding:12px;margin-bottom:9px;">
+                                    <div
+                                        style="font-size:8px;font-weight:700;color:#C4B5FD;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">
+                                        Your entry</div>
+                                    <div style="font-size:10px;color:#3B2460;line-height:1.6;margin-bottom:8px;">Woke up
+                                        early today and went for a walk before work. The morning air was so clear —
+                                        reminded me to slow down more often. Feeling grateful.</div>
+                                    <div
+                                        style="display:flex;align-items:center;gap:4px;padding-top:6px;border-top:0.5px solid rgba(0,0,0,0.07);">
+                                        <div style="font-size:8px;color:#9580B8;">Mood:</div>
+                                        <div style="font-size:9px;font-weight:700;color:#059669;">😊 Great</div>
+                                        <div style="margin-left:auto;font-size:8px;color:#9580B8;">48 words · 1m read
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ic" style="margin-bottom:9px;">
+                                    <div class="il">Happy's reply</div>
+                                    <div class="it">Starting the day with movement and presence is a <strong>powerful
+                                            ritual.</strong> You're building something here — one morning at a time.
+                                        Keep it going.</div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;">
+                                    <div
+                                        style="background:rgba(5,150,105,0.08);border:0.8px solid rgba(5,150,105,0.22);border-radius:9px;padding:8px;text-align:center;">
+                                        <div style="font-size:20px;font-weight:900;color:#059669;">21</div>
+                                        <div
+                                            style="font-size:7px;font-weight:700;color:#9580B8;text-transform:uppercase;letter-spacing:0.05em;">
+                                            Day streak 🔥</div>
+                                    </div>
+                                    <div
+                                        style="background:rgba(124,58,237,0.08);border:0.8px solid rgba(124,58,237,0.22);border-radius:9px;padding:8px;text-align:center;">
+                                        <div style="font-size:20px;font-weight:900;color:#7C3AED;">84</div>
+                                        <div
+                                            style="font-size:7px;font-weight:700;color:#9580B8;text-transform:uppercase;letter-spacing:0.05em;">
+                                            Total entries</div>
+                                    </div>
+                                </div>
+                                <div style="background:#7C3AED;border-radius:12px;padding:12px 16px;text-align:center;">
+                                    <div style="font-size:12px;font-weight:900;color:#fff;margin-bottom:2px;">Start your
+                                        journey free</div>
+                                    <div style="font-size:9px;color:rgba(255,255,255,0.72);">No credit card · Cancel
+                                        anytime</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="zd">
+                    <div class="stars">
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                    </div>
+                    <div class="ptxt">4.8 · Health &amp; Fitness</div>
+                </div>
+            </div>
+            <div class="ab-footer">Export: Chrome F12 → 390×844 @3x → Capture screenshot → 1170×2532px PNG<br>Console:
+                <code
+                    style="background:#1a1a2e;padding:1px 5px;border-radius:3px;font-family:monospace;color:#C4B5FD;">exportScreen(6)</code>
+            </div>
+        </div>
+    </div>
+    <div class="export-bar"><span class="nav-lbl">Jump to:</span><button class="nav-btn"
+            onclick="document.getElementById('screen-1').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">S1: Weekly AI Insights</button><button class="nav-btn"
+            onclick="document.getElementById('screen-2').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">S2: Mood Calendar</button><button class="nav-btn"
+            onclick="document.getElementById('screen-3').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">S3: Life Domain Balance</button><button class="nav-btn"
+            onclick="document.getElementById('screen-4').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">S4: Audio Journaling</button><button class="nav-btn"
+            onclick="document.getElementById('screen-5').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">S5: Achievements</button><button class="nav-btn"
+            onclick="document.getElementById('screen-6').scrollIntoView({behavior:'smooth'})"
+            style="user-select:none;">S6: The Close</button><span
+            style="margin-left:auto;font-size:10px;color:#475569;">Console: <code
+                style="background:#1a1a2e;padding:1px 5px;border-radius:3px;font-family:monospace;color:#C4B5FD;">exportScreen(1)</code>
+            isolates a screen for screenshot export</span></div>
+    <script>
+        function exportScreen(n) {
+            const secs = document.querySelectorAll('.artboard-section');
+            secs.forEach((s, i) => { if (i !== n - 1) s.style.display = 'none'; else { s.style.padding = '0'; s.style.margin = '0'; } });
+            document.querySelector('.page-header').style.display = 'none';
+            document.querySelector('.gallery').style.display = 'none';
+            document.querySelector('.export-bar').style.display = 'none';
+            alert('Screen ' + n + ' isolated!\n\nNow:\n1. F12 → device toolbar → 390×844 @3x\n2. Three-dot menu → Capture screenshot\n3. You have a 1170×2532px PNG\n\nRefresh page to restore all screens.');
+        }</script>
+</body>
+
+</html>

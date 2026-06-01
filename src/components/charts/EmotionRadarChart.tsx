@@ -1,5 +1,7 @@
 import React, { useMemo } from "react";
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator } from "react-native";
+import { Text } from "@/src/components/ui/Text";
+import { Card } from "@/src/components/ui/Card";
 import {
   VictoryChart,
   VictoryTheme,
@@ -92,7 +94,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
   if (loading) {
     return (
       <View>
-        <Text>Analyzing emotions...</Text>
+        <Text variant="body">Analyzing emotions...</Text>
       </View>
     );
   }
@@ -100,22 +102,22 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
   // No data state
   if (!data || data?.length === 0) {
     return (
-      <View className="w-full rounded-3xl bg-white p-6 border border-gray-200">
+      <Card variant="tile">
         <View className="items-center justify-center py-20">
           <Text className="text-6xl mb-4">📊</Text>
-          <Text className="text-lg font-bold text-gray-800 mb-2">
+          <Text variant="h3" className="mb-2">
             No Emotion Data Yet
           </Text>
-          <Text className="text-sm text-gray-500 text-center px-4">
+          <Text variant="body" className="text-center px-4">
             Start journaling this week to see your emotional balance insights
           </Text>
         </View>
-      </View>
+      </Card>
     );
   }
 
   return (
-    <View className="w-full rounded-3xl bg-white border border-gray-200 overflow-hidden">
+    <Card variant="tile" className="w-full p-0 overflow-hidden">
       {/* Premium Badge */}
       {premium && (
         <LinearGradient
@@ -142,10 +144,10 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
       <View className="p-5 pb-0">
         <View className="flex-row items-center justify-between">
           <View>
-            <Text className="text-xl font-extrabold text-gray-800">
+            <Text variant="h2">
               Emotional Balance
             </Text>
-            <Text className="text-xs text-gray-500 mt-1">
+            <Text variant="caption-muted" className="mt-1">
               {format(startDate, "MMM d")} - {format(endDate, "MMM d, yyyy")}
             </Text>
           </View>
@@ -158,7 +160,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
               }}
             >
               <Text
-                className="text-3xl font-extrabold"
+                variant="h2"
                 style={{
                   color: emotionalBalance.balance > 0 ? "#10B981" : "#EF4444",
                 }}
@@ -167,7 +169,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
                 {emotionalBalance.balance.toFixed(0)}%
               </Text>
             </View>
-            <Text className="text-xs text-gray-500 mt-1.5 font-medium">
+            <Text variant="caption-muted" className="mt-1.5 font-medium">
               Balance Score
             </Text>
           </View>
@@ -179,10 +181,10 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
             className="mt-4 p-3 rounded-2xl"
             style={{ backgroundColor: "#F0F9FF" }}
           >
-            <Text className="text-sm font-semibold text-blue-700 mb-1">
+            <Text variant="label-bold" className="text-blue-700 mb-1">
               🤖 AI Insight
             </Text>
-            <Text className="text-xs text-blue-600 leading-5">
+            <Text variant="body" className="text-blue-600">
               {emotionInsight}
             </Text>
           </View>
@@ -277,14 +279,14 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
                     : "#EF4444",
                 }}
               />
-              <Text className="text-xs font-medium text-gray-700">
+              <Text variant="caption-muted" className="font-medium text-gray-700">
                 {emotion.emotion}: {emotion.score.toFixed(0)}%
               </Text>
             </View>
           ))}
         </View>
       </View>
-    </View>
+    </Card>
   );
 };
 

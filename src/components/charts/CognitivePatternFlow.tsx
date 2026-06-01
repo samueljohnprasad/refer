@@ -1,8 +1,10 @@
 import React, { useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+  View,
+  ScrollView,
 import { Feather } from '@expo/vector-icons';
 import { Tooltip, TooltipContent, TooltipText } from '@/components/ui/tooltip';
+import { Text } from "@/src/components/ui/Text";
+import { Card } from "@/src/components/ui/Card";
 import {
   VictoryChart,
   VictoryTheme,
@@ -114,14 +116,14 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
             <View className="w-20 h-20 bg-white/30 rounded-full items-center justify-center mb-5">
               <Feather name="git-branch" size={36} color="#FFF" />
             </View>
-            <Text className="text-white text-2xl font-extrabold mb-3">
+            <Text variant="h2" className="text-white mb-3">
               Cognitive Pattern Flow
             </Text>
-            <Text className="text-white/90 text-center text-base mb-5 leading-6 font-medium">
+            <Text variant="body" className="text-white/90 text-center mb-5 font-medium">
               Visualize how your thoughts and emotions connect
             </Text>
             <View className="bg-white/30 px-5 py-2.5 rounded-full">
-              <Text className="text-white font-bold text-sm">🔒 Premium Feature</Text>
+              <Text variant="label-bold" className="text-white">🔒 Premium Feature</Text>
             </View>
           </View>
         </LinearGradient>
@@ -131,30 +133,30 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
 
   if (loading) {
     return (
-      <View className="bg-white rounded-2xl p-6 shadow-sm">
+      <Card variant="tile">
         <View className="items-center py-8">
           <ActivityIndicator size="large" color="#7B61FF" />
-          <Text className="text-gray-500 mt-4">Analyzing thought patterns...</Text>
+          <Text variant="body" className="text-gray-500 mt-4">Analyzing thought patterns...</Text>
         </View>
-      </View>
+      </Card>
     );
   }
 
   if (!data || data.length === 0) {
     return (
-      <View className="bg-white rounded-2xl p-6 shadow-sm">
+      <Card variant="tile">
         <View className="items-center py-8">
           <View className="w-16 h-16 bg-purple-100 rounded-full items-center justify-center mb-4">
             <Feather name="git-branch" size={32} color="#7B61FF" />
           </View>
-          <Text className="text-gray-900 text-lg font-semibold mb-2">
+          <Text variant="h3" className="mb-2">
             No Pattern Data Yet
           </Text>
-          <Text className="text-gray-500 text-center text-sm">
+          <Text variant="body" className="text-center text-gray-500">
             Journal more to discover your cognitive patterns
           </Text>
         </View>
-      </View>
+      </Card>
     );
   }
 
@@ -168,13 +170,12 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
   };
 
   return (
-    <View className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
-      {/* Header */}
+    <Card variant="tile" className="p-0 overflow-hidden">
       <View className="p-5 pb-3 bg-white">
         <View className="flex-row items-center justify-between mb-2">
           <View className="flex-1">
             <View className="flex-row items-center">
-              <Text className="text-xl font-extrabold text-gray-800">
+              <Text variant="h2">
                 Cognitive Pattern Flow
               </Text>
               <Tooltip
@@ -197,15 +198,15 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
                 </TooltipContent>
               </Tooltip>
             </View>
-            <Text className="text-xs text-gray-500 mt-1">
+            <Text variant="caption-muted" className="mt-1">
               How your thoughts connect
             </Text>
           </View>
           <View className="items-end">
-            <Text className="text-2xl font-extrabold text-gray-800">
+            <Text variant="h2">
               {stats.totalPatterns}
             </Text>
-            <Text className="text-xs text-gray-500">Patterns</Text>
+            <Text variant="caption-muted">Patterns</Text>
           </View>
         </View>
       </View>
@@ -215,9 +216,9 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
         <View className="items-center flex-1">
           <View className="flex-row items-center">
             <View className="w-3 h-3 bg-green-500 rounded-full mr-1" />
-            <Text className="text-gray-900 font-bold text-sm">{stats.positiveCount}</Text>
+            <Text variant="label-bold">{stats.positiveCount}</Text>
           </View>
-          <Text className="text-gray-500 text-xs mt-1">Positive</Text>
+          <Text variant="caption-muted" className="mt-1">Positive</Text>
         </View>
         
         <View className="w-px bg-gray-300" />
@@ -225,18 +226,18 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
         <View className="items-center flex-1">
           <View className="flex-row items-center">
             <View className="w-3 h-3 bg-red-500 rounded-full mr-1" />
-            <Text className="text-gray-900 font-bold text-sm">{stats.negativeCount}</Text>
+            <Text variant="label-bold">{stats.negativeCount}</Text>
           </View>
-          <Text className="text-gray-500 text-xs mt-1">Negative</Text>
+          <Text variant="caption-muted" className="mt-1">Negative</Text>
         </View>
         
         <View className="w-px bg-gray-300" />
         
         <View className="items-center flex-1">
-          <Text className="text-gray-900 font-bold text-sm">
+          <Text variant="label-bold">
             {stats.avgStrength?.toFixed(0)}%
           </Text>
-          <Text className="text-gray-500 text-xs mt-1">Avg Strength</Text>
+          <Text variant="caption-muted" className="mt-1">Avg Strength</Text>
         </View>
       </View>
 
@@ -303,15 +304,15 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
         <View className="flex-row justify-around">
           <View className="flex-row items-center">
             <View className="w-3 h-3 bg-green-500 rounded-full mr-1" />
-            <Text className="text-xs text-gray-600">Positive Flow</Text>
+            <Text variant="caption-muted">Positive Flow</Text>
           </View>
           <View className="flex-row items-center">
             <View className="w-3 h-3 bg-red-500 rounded-full mr-1" />
-            <Text className="text-xs text-gray-600">Negative Flow</Text>
+            <Text variant="caption-muted">Negative Flow</Text>
           </View>
           <View className="flex-row items-center">
             <View className="w-3 h-3 bg-gray-500 rounded-full mr-1" />
-            <Text className="text-xs text-gray-600">Neutral Flow</Text>
+            <Text variant="caption-muted">Neutral Flow</Text>
           </View>
         </View>
       </View>
@@ -322,10 +323,10 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
           <View className="flex-row items-start">
             <Text className="text-lg mr-2">🧠</Text>
             <View className="flex-1">
-              <Text className="text-purple-900 font-semibold text-sm mb-1">
+              <Text variant="label-bold" className="text-purple-900 mb-1">
                 Pattern Insight
               </Text>
-              <Text className="text-purple-700 text-sm leading-5">
+              <Text variant="body" className="text-purple-700">
                 {insight}
               </Text>
             </View>
@@ -336,7 +337,7 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
       {/* Strongest Pattern */}
       {stats.strongestPattern && (
         <View className="px-6 py-4 border-t border-gray-100">
-          <Text className="text-gray-900 font-semibold text-sm mb-2">
+          <Text variant="label-bold" className="mb-2">
             Strongest Pattern
           </Text>
           <View className="bg-gray-50 rounded-lg p-3">
@@ -346,7 +347,7 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
                   className="px-2 py-1 rounded-md mr-2"
                   style={{ backgroundColor: typeColors[stats.strongestPattern.type] + '20' }}
                 >
-                  <Text className="text-xs font-semibold" style={{ color: typeColors[stats.strongestPattern.type] }}>
+                  <Text variant="label-bold" style={{ color: typeColors[stats.strongestPattern.type] }}>
                     {stats.strongestPattern.source}
                   </Text>
                 </View>
@@ -355,24 +356,24 @@ export const CognitivePatternFlow: React.FC<CognitivePatternFlowProps> = ({
                   className="px-2 py-1 rounded-md ml-2"
                   style={{ backgroundColor: typeColors[stats.strongestPattern.type] + '20' }}
                 >
-                  <Text className="text-xs font-semibold" style={{ color: typeColors[stats.strongestPattern.type] }}>
+                  <Text variant="label-bold" style={{ color: typeColors[stats.strongestPattern.type] }}>
                     {stats.strongestPattern.target}
                   </Text>
                 </View>
               </View>
               <View className="items-center ml-2">
-                <Text className="text-lg font-bold text-gray-900">
+                <Text variant="h3" className="text-gray-900">
                   {stats.strongestPattern.value}%
                 </Text>
-                <Text className="text-xs text-gray-500">strength</Text>
+                <Text variant="caption-muted">strength</Text>
               </View>
             </View>
-            <Text className="text-xs text-gray-600 mt-2">
+            <Text variant="caption-muted" className="mt-2">
               Occurs {stats.strongestPattern.frequency} times per week
             </Text>
           </View>
         </View>
       )}
-    </View>
+    </Card>
   );
 };

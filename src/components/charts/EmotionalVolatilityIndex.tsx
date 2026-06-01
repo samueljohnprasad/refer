@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import {
   View,
-  Text,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
@@ -11,6 +10,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
 import { Tooltip, TooltipContent, TooltipText } from "@/components/ui/tooltip";
+import { Text } from "@/src/components/ui/Text";
+import { Card } from "@/src/components/ui/Card";
 import { CartesianChart, Line, Area } from "victory-native-v4";
 import { Circle, useFont } from "@shopify/react-native-skia";
 import { format, parseISO } from "date-fns";
@@ -116,14 +117,14 @@ export const EmotionalVolatilityIndex: React.FC<
             <View className="w-20 h-20 bg-white/30 rounded-full items-center justify-center mb-5">
               <Feather name="activity" size={36} color="#FFF" />
             </View>
-            <Text className="text-white text-2xl font-extrabold mb-3">
+            <Text variant="h2" className="text-white mb-3">
               Emotional Volatility Index
             </Text>
-            <Text className="text-white/90 text-center text-base mb-5 leading-6 font-medium">
+            <Text variant="body" className="text-white/90 text-center mb-5 font-medium">
               Track your emotional stability patterns and identify triggers
             </Text>
             <View className="bg-white/30 px-5 py-2.5 rounded-full">
-              <Text className="text-white font-bold text-sm">🔒 Premium Feature</Text>
+              <Text variant="label-bold" className="text-white">🔒 Premium Feature</Text>
             </View>
           </View>
         </LinearGradient>
@@ -133,44 +134,44 @@ export const EmotionalVolatilityIndex: React.FC<
 
   if (loading) {
     return (
-      <View className="bg-white rounded-2xl p-6 shadow-sm">
+      <Card variant="tile">
         <View className="items-center py-8">
           <ActivityIndicator size="large" color="#7B61FF" />
-          <Text className="text-gray-500 mt-4">
+          <Text variant="body" className="text-gray-500 mt-4">
             Analyzing emotional patterns...
           </Text>
         </View>
-      </View>
+      </Card>
     );
   }
 
   if (!data || data.length === 0) {
     return (
-      <View className="bg-white rounded-2xl p-6 shadow-sm">
+      <Card variant="tile">
         <View className="items-center py-8">
           <View className="w-16 h-16 bg-purple-100 rounded-full items-center justify-center mb-4">
             <Feather name="activity" size={32} color="#7B61FF" />
           </View>
-          <Text className="text-gray-900 text-lg font-semibold mb-2">
+          <Text variant="h3" className="mb-2">
             No Volatility Data Yet
           </Text>
-          <Text className="text-gray-500 text-center text-sm">
+          <Text variant="body" className="text-center">
             Start journaling consistently to see your emotional stability
             patterns
           </Text>
         </View>
-      </View>
+      </Card>
     );
   }
 
   return (
-    <View className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
+    <Card variant="tile" className="p-0 overflow-hidden">
       {/* Header */}
       <View className="p-5 pb-3 bg-white">
         <View className="flex-row items-center justify-between mb-2">
           <View className="flex-1">
             <View className="flex-row items-center">
-              <Text className="text-xl font-extrabold text-gray-800">
+              <Text variant="h2">
                 Emotional Volatility Index
               </Text>
               <Tooltip
@@ -209,15 +210,15 @@ export const EmotionalVolatilityIndex: React.FC<
                 </TooltipContent>
               </Tooltip>
             </View>
-            <Text className="text-xs text-gray-500 mt-1">
+            <Text variant="caption-muted" className="mt-1">
               Your emotional stability over time
             </Text>
           </View>
           <View className="items-end">
-            <Text className="text-2xl font-extrabold text-gray-800">
+            <Text variant="h2">
               {stats.avg.toFixed(0)}
             </Text>
-            <Text className="text-xs text-gray-500">Avg Score</Text>
+            <Text variant="caption-muted">Avg Score</Text>
           </View>
         </View>
       </View>
@@ -233,7 +234,7 @@ export const EmotionalVolatilityIndex: React.FC<
             ) : (
               <Feather name="minus" size={16} color="#F59E0B" />
             )}
-            <Text className="text-gray-900 font-bold ml-1 text-sm">
+            <Text variant="label-bold" className="ml-1">
               {stats.trend === "increasing"
                 ? "Rising"
                 : stats.trend === "decreasing"
@@ -241,25 +242,25 @@ export const EmotionalVolatilityIndex: React.FC<
                 : "Stable"}
             </Text>
           </View>
-          <Text className="text-gray-500 text-xs mt-1">Trend</Text>
+          <Text variant="caption-muted" className="mt-1">Trend</Text>
         </View>
 
         <View className="w-px bg-gray-300" />
 
         <View className="items-center flex-1">
-          <Text className="text-gray-900 font-bold text-sm capitalize">
+          <Text variant="label-bold" className="capitalize">
             {data[data.length - 1]?.stability.replace("_", " ") || "Unknown"}
           </Text>
-          <Text className="text-gray-500 text-xs mt-1">Current State</Text>
+          <Text variant="caption-muted" className="mt-1">Current State</Text>
         </View>
 
         <View className="w-px bg-gray-300" />
 
         <View className="items-center flex-1">
-          <Text className="text-gray-900 font-bold text-sm">
+          <Text variant="label-bold">
             {stats.maxVolatility}
           </Text>
-          <Text className="text-gray-500 text-xs mt-1">Peak Score</Text>
+          <Text variant="caption-muted" className="mt-1">Peak Score</Text>
         </View>
       </View>
 
@@ -269,7 +270,7 @@ export const EmotionalVolatilityIndex: React.FC<
           {!font ? (
             <View className="items-center justify-center flex-1">
               <ActivityIndicator size="small" color="#7B61FF" />
-              <Text className="text-gray-500 text-xs mt-2">Loading chart...</Text>
+              <Text variant="caption-muted" className="mt-2">Loading chart...</Text>
             </View>
           ) : chartData.length > 0 ? (
             <CartesianChart
@@ -365,7 +366,7 @@ export const EmotionalVolatilityIndex: React.FC<
                 style={{ backgroundColor: color }}
                 className="w-2.5 h-2.5 rounded-full mr-1.5"
               />
-              <Text className="text-xs text-gray-600 capitalize">
+              <Text variant="caption-muted" className="capitalize">
                 {key.replace("_", " ")}
               </Text>
             </View>
@@ -379,10 +380,10 @@ export const EmotionalVolatilityIndex: React.FC<
           <View className="flex-row items-start">
             <Text className="text-lg mr-2">💡</Text>
             <View className="flex-1">
-              <Text className="text-purple-900 font-semibold text-sm mb-1">
+              <Text variant="label-bold" className="text-purple-900 mb-1">
                 AI Insight
               </Text>
-              <Text className="text-purple-700 text-sm leading-5">
+              <Text variant="body" className="text-purple-700">
                 {insight}
               </Text>
             </View>
@@ -395,7 +396,7 @@ export const EmotionalVolatilityIndex: React.FC<
         data.length > 0 &&
         Array.from(new Set(data.flatMap((d) => d.triggers))).length > 0 && (
           <View className="px-5 py-3 bg-white border-t border-gray-100">
-            <Text className="text-gray-900 font-semibold text-sm mb-2">
+            <Text variant="label-bold" className="mb-2">
               Common Volatility Triggers
             </Text>
             <View>
@@ -404,7 +405,7 @@ export const EmotionalVolatilityIndex: React.FC<
                 .map((trigger, i) => (
                   <View key={i} className="flex-row items-center mb-1.5">
                     <View className="w-1.5 h-1.5 bg-orange-400 rounded-full mr-2" />
-                    <Text className="text-gray-600 text-sm flex-1">
+                    <Text variant="body" className="flex-1">
                       {trigger}
                     </Text>
                   </View>
@@ -412,6 +413,6 @@ export const EmotionalVolatilityIndex: React.FC<
             </View>
           </View>
         )}
-    </View>
+    </Card>
   );
 };

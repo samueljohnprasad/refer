@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { Tooltip, TooltipContent, TooltipText } from '@/components/ui/tooltip';
+import { Text } from "@/src/components/ui/Text";
+import { Card } from "@/src/components/ui/Card";
 import {
   VictoryChart,
   VictoryPolarAxis,
@@ -11,6 +10,10 @@ import {
   VictoryContainer,
 } from 'victory-native';
 import { LifeDomainScore } from '@/src/network/genAi';
+import { View } from '@/components/Themed';
+import { Pressable } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface LifeDomainBalanceWheelProps {
   data: LifeDomainScore[];
@@ -107,14 +110,14 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
             <View className="w-20 h-20 bg-white/30 rounded-full items-center justify-center mb-5">
               <MaterialIcons name="donut-large" size={36} color="#FFF" />
             </View>
-            <Text className="text-white text-2xl font-extrabold mb-3">
+            <Text variant="h2" className="text-white mb-3">
               Life Domain Balance Wheel
             </Text>
-            <Text className="text-white/90 text-center text-base mb-5 leading-6 font-medium">
+            <Text variant="body" className="text-white/90 text-center mb-5 font-medium">
               Visualize balance across all areas of your life
             </Text>
             <View className="bg-white/30 px-5 py-2.5 rounded-full">
-              <Text className="text-white font-bold text-sm">🔒 Premium Feature</Text>
+              <Text variant="label-bold" className="text-white">🔒 Premium Feature</Text>
             </View>
           </View>
         </LinearGradient>
@@ -124,41 +127,40 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
 
   if (loading) {
     return (
-      <View className="bg-white rounded-2xl p-6 shadow-sm">
+      <Card variant="tile">
         <View className="items-center py-8">
           <ActivityIndicator size="large" color="#7B61FF" />
-          <Text className="text-gray-500 mt-4">Analyzing life balance...</Text>
+          <Text variant="body" className="text-gray-500 mt-4">Analyzing life balance...</Text>
         </View>
-      </View>
+      </Card>
     );
   }
 
   if (!data || data.length === 0) {
     return (
-      <View className="bg-white rounded-2xl p-6 shadow-sm">
+      <Card variant="tile">
         <View className="items-center py-8">
           <View className="w-16 h-16 bg-purple-100 rounded-full items-center justify-center mb-4">
             <MaterialIcons name="donut-large" size={32} color="#7B61FF" />
           </View>
-          <Text className="text-gray-900 text-lg font-semibold mb-2">
+          <Text variant="h3" className="mb-2">
             No Balance Data Yet
           </Text>
-          <Text className="text-gray-500 text-center text-sm">
+          <Text variant="body" className="text-center text-gray-500">
             Journal about different life areas to see your balance wheel
           </Text>
         </View>
-      </View>
+      </Card>
     );
   }
 
   return (
-    <View className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
-      {/* Header */}
+    <Card variant="tile" className="p-0 overflow-hidden">
       <View className="p-5 pb-3 bg-white">
         <View className="flex-row items-center justify-between mb-2">
           <View className="flex-1">
             <View className="flex-row items-center">
-              <Text className="text-xl font-extrabold text-gray-800">
+              <Text variant="h2">
                 Life Domain Balance
               </Text>
               <Tooltip
@@ -181,21 +183,18 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
                 </TooltipContent>
               </Tooltip>
             </View>
-            <Text className="text-xs text-gray-500 mt-1">
+            <Text variant="caption-muted" className="mt-1">
               Your life areas at a glance
             </Text>
           </View>
           <View className="items-end">
             <Text 
-              className="text-3xl font-extrabold"
-              style={{
-                color: stats.balanceScore >= 70 ? '#10B981' : 
-                       stats.balanceScore >= 50 ? '#F59E0B' : '#EF4444'
-              }}
+              variant="h2"
+  
             >
               {stats.balanceScore.toFixed(0)}%
             </Text>
-            <Text className="text-xs text-gray-500 font-medium">Balance Score</Text>
+            <Text variant="caption-muted">Balance Score</Text>
           </View>
         </View>
       </View>
@@ -254,25 +253,25 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
 
       {/* Domain Details */}
       <ScrollView className="px-6 pb-4 max-h-48">
-        <Text className="text-gray-900 font-semibold text-sm mb-3">
+        <Text variant="label-bold" className="mb-3">
           Domain Breakdown
         </Text>
         {data.map((domain, i) => (
           <View key={i} className="mb-3">
             <View className="flex-row items-center justify-between mb-1">
               <View className="flex-row items-center flex-1">
-                <Text className="text-lg mr-2">{domainIcons[domain.domain]}</Text>
-                <Text className="text-gray-900 font-medium text-sm">
+                <Text variant="body" className="text-lg mr-2">{domainIcons[domain.domain]}</Text>
+                <Text variant="body" className="font-medium">
                   {domain.domain}
                 </Text>
-                <Text className="ml-2">{trendIcons[domain.trend]}</Text>
+                <Text variant="body" className="ml-2">{trendIcons[domain.trend]}</Text>
                 {domain.attention_needed && (
                   <View className="ml-2 bg-red-100 px-2 py-0.5 rounded-full">
-                    <Text className="text-red-700 text-xs font-medium">Needs Attention</Text>
+                    <Text variant="caption-muted" className="text-red-700 font-medium">Needs Attention</Text>
                   </View>
                 )}
               </View>
-              <Text className="text-gray-900 font-semibold">{domain.score}%</Text>
+              <Text variant="label-bold">{domain.score}%</Text>
             </View>
             <View className="bg-gray-200 rounded-full h-2 overflow-hidden">
               <View 
@@ -284,7 +283,7 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
               />
             </View>
             {domain.insights && (
-              <Text className="text-gray-600 text-xs mt-1 leading-4">
+              <Text variant="caption-muted" className="mt-1">
                 {domain.insights}
               </Text>
             )}
@@ -294,15 +293,15 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
 
       {/* Key Insights */}
       <View className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-        <Text className="text-gray-900 font-semibold text-sm mb-2">
+        <Text variant="label-bold" className="mb-2">
           Key Insights
         </Text>
         <View className="space-y-2">
           {stats.lowestDomain && (
             <View className="flex-row items-start">
               <View className="w-2 h-2 bg-red-400 rounded-full mt-1.5 mr-2" />
-              <Text className="text-gray-600 text-sm flex-1">
-                <Text className="font-medium">{stats.lowestDomain.domain}</Text> needs the most attention 
+              <Text variant="body" className="flex-1">
+                <Text variant="label-bold">{stats.lowestDomain.domain}</Text> needs the most attention 
                 ({stats.lowestDomain.score}%)
               </Text>
             </View>
@@ -310,8 +309,8 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
           {stats.highestDomain && (
             <View className="flex-row items-start">
               <View className="w-2 h-2 bg-green-400 rounded-full mt-1.5 mr-2" />
-              <Text className="text-gray-600 text-sm flex-1">
-                <Text className="font-medium">{stats.highestDomain.domain}</Text> is your strongest area 
+              <Text variant="body" className="flex-1">
+                <Text variant="label-bold">{stats.highestDomain.domain}</Text> is your strongest area 
                 ({stats.highestDomain.score}%)
               </Text>
             </View>
@@ -319,7 +318,7 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
           {stats.needsAttention.length > 1 && (
             <View className="flex-row items-start">
               <View className="w-2 h-2 bg-orange-400 rounded-full mt-1.5 mr-2" />
-              <Text className="text-gray-600 text-sm flex-1">
+              <Text variant="body" className="flex-1">
                 {stats.needsAttention.length} domains need immediate attention
               </Text>
             </View>
@@ -331,12 +330,12 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
       {insight && (
         <View className="px-6 py-4 bg-purple-50 border-t border-purple-100">
           <View className="flex-row items-start">
-            <Text className="text-lg mr-2">🎯</Text>
+            <Text variant="body" className="text-lg mr-2">🎯</Text>
             <View className="flex-1">
-              <Text className="text-purple-900 font-semibold text-sm mb-1">
+              <Text variant="label-bold" className="text-purple-900 mb-1">
                 Balance Recommendation
               </Text>
-              <Text className="text-purple-700 text-sm leading-5">
+              <Text variant="body" className="text-purple-700">
                 {insight}
               </Text>
             </View>
@@ -346,14 +345,14 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
 
       {/* Predicted Changes */}
       <View className="px-6 py-4 border-t border-gray-100">
-        <Text className="text-gray-900 font-semibold text-sm mb-2">
+        <Text variant="label-bold" className="mb-2">
           Next Month Prediction
         </Text>
         <View className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-3">
           <View className="flex-row flex-wrap">
             {predictions.map((pred, i) => (
               <View key={i} className="flex-row items-center mr-4 mb-2">
-                <Text className="text-xs font-medium text-gray-700">
+                <Text variant="caption-muted" className="font-medium text-gray-700">
                   {pred.domain.split('/')[0]}:
                 </Text>
                 <View className="flex-row items-center ml-1">
@@ -364,11 +363,8 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
                   ) : (
                     <Feather name="minus" size={12} color="#6B7280" />
                   )}
-                  <Text className="text-xs font-semibold ml-1" 
-                    style={{ 
-                      color: pred.trend === 'improving' ? '#10B981' : 
-                             pred.trend === 'declining' ? '#EF4444' : '#6B7280' 
-                    }}>
+                  <Text variant="caption-muted" className="ml-1 font-semibold" 
+                  >
                     {pred.predicted}%
                   </Text>
                 </View>
@@ -377,6 +373,6 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
           </View>
         </View>
       </View>
-    </View>
+    </Card>
   );
 };
