@@ -269,6 +269,14 @@ function DiscoveryScreen() {
   const { currentPrompt, shufflePrompt, setPrompt, allPrompts } =
     useJournalEntry();
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      shufflePrompt();
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearInterval(interval);
+  }, [shufflePrompt]);
+
   const currentStreak = userProfile?.currentStreak ?? 0;
 
   const handleOpenRecorder = useCallback(() => {

@@ -6,6 +6,8 @@ import type {
   UnitData,
 } from "@/src/types/journey";
 
+import * as Haptics from "expo-haptics";
+
 interface UseVisibleUnitProps {
   units: UnitData[];
 }
@@ -42,6 +44,9 @@ export function useVisibleUnit({ units }: UseVisibleUnitProps) {
       const hasVisibleUnit = units.some((unit) => unit.id === targetUnitId);
 
       if (hasVisibleUnit && targetUnitId !== visibleUnitId) {
+        if (visibleUnitId !== null) {
+          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
         setVisibleUnitId(targetUnitId);
       }
     },

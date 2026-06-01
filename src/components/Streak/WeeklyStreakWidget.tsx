@@ -4,6 +4,7 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Fire02Icon } from "@hugeicons/core-free-icons";
 import { useStreakTracker } from "@/hooks/data/useStreakTracker";
 import { Card } from "@/src/components/ui/Card";
+import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
 import { GOLD, SAGE } from "@/lib/tokens";
 import Animated, {
   useSharedValue,
@@ -135,15 +136,9 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
                   </View>
                 )}
 
-                {/* Day Circle */}
+                {/* Day Icon */}
                 <View
-                  className="w-8 h-8 rounded-full items-center justify-center z-10 border"
-                  style={{
-                    borderColor: isCompleted ? "rgba(255, 217, 0, 0.6)" : "#E5EDE1",
-                    backgroundColor: isCompleted
-                      ? "rgba(255, 217, 0, 0.15)"
-                      : "#FFFFFF",
-                  }}
+                  className="w-8 h-8 items-center justify-center z-10"
                 >
                   {i === mostRecentCompletedIndex && (
                     <Animated.View
@@ -160,12 +155,11 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
                       pointerEvents="none"
                     />
                   )}
-                  <HugeiconsIcon
-                    icon={Fire02Icon}
-                    size={16}
-                    color={isCompleted ? GOLD : "#ABC0A2"}
-                    fill={isCompleted ? GOLD : "none"}
-                  />
+                  {isCompleted ? (
+                    <AnimatedFireIcon width={28} height={28} />
+                  ) : (
+                    <GrayFireIcon width={24} height={24} />
+                  )}
                 </View>
 
                 <Text

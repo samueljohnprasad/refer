@@ -51,8 +51,8 @@ export const PATH_LAYOUT = {
 
 /** Divider layout constants for unit transition rows */
 export const DIVIDER_LAYOUT = {
-  /** Divider row height in dp */
-  cellHeight: 80,
+  /** Divider row height in dp (matches node gap) */
+  cellHeight: PATH_LAYOUT.verticalGap,
   /** Fraction of the entry→exit connector span used for the text-avoidance lane */
   connectorLaneInterpolation: 0.5,
   /** Fraction of screen width reserved for the title-avoidance lane */

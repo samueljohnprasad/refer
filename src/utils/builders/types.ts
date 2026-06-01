@@ -22,7 +22,7 @@ import type {
 // ---------------------------------------------------------------------------
 
 /** Fixed pixel height for the visual separator rendered between units */
-export const DIVIDER_CELL_HEIGHT = 180;
+export const DIVIDER_CELL_HEIGHT = 200;
 
 /** Fixed pixel height for a mascot speech-bubble row in the list */
 export const MASCOT_CELL_HEIGHT = 80;

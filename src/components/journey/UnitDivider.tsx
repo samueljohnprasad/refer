@@ -18,8 +18,6 @@ import { DIVIDER_LAYOUT } from "@/src/data/journey/constants";
 export interface UnitDividerProps {
   /** Title shown in the divider (e.g. "Describe your family") */
   title: string;
-  /** Approximate X position of the connector lane for this divider row */
-  connectorLaneX?: number;
   /** Screen width used to route the title away from the connector lane */
   screenWidth: number;
   /** Dynamic accent color derived from the unit theme (optional) */
@@ -44,62 +42,19 @@ function DividerLine({ flex = 1, width }: DividerLineProps): React.JSX.Element {
   );
 }
 
-function resolveConnectorLaneX(
-  connectorLaneX: number | undefined,
-  screenWidth: number,
-): number {
-  const fallbackLaneX = Math.round(screenWidth / 2);
-  const rawLaneX =
-    typeof connectorLaneX === "number" ? connectorLaneX : fallbackLaneX;
-  const minLaneX = DIVIDER_LAYOUT.edgePadding + DIVIDER_LAYOUT.minLineWidth;
-  const maxLaneX =
-    screenWidth - DIVIDER_LAYOUT.edgePadding - DIVIDER_LAYOUT.minLineWidth;
-
-  return Math.round(Math.min(Math.max(rawLaneX, minLaneX), maxLaneX));
-}
-
-function resolveLaneWidth(screenWidth: number): number {
-  return Math.max(
-    DIVIDER_LAYOUT.laneClearance,
-    Math.min(
-      screenWidth * DIVIDER_LAYOUT.laneWidthFactor,
-      screenWidth - DIVIDER_LAYOUT.edgePadding * 2,
-    ),
-  );
-}
-
-function resolveFixedLineWidth(
-  availableWidth: number,
-  minimumWidth: number,
-): number {
-  return Math.max(availableWidth, minimumWidth);
-}
-
 // ---------------------------------------------------------------------------
 // UnitDivider
 // ---------------------------------------------------------------------------
 
 function UnitDivider({
   title,
-  connectorLaneX,
   screenWidth,
   accentColor,
 }: UnitDividerProps): React.JSX.Element {
-  const laneCenterX = resolveConnectorLaneX(connectorLaneX, screenWidth);
-  const isConnectorLaneLeftOfCenter = laneCenterX <= screenWidth / 2;
-  const laneWidth = resolveLaneWidth(screenWidth);
-  const leftLineWidth = resolveFixedLineWidth(
-    laneCenterX - DIVIDER_LAYOUT.edgePadding,
-    DIVIDER_LAYOUT.minLineWidth,
-  );
-  const rightLineWidth = resolveFixedLineWidth(
-    screenWidth - laneCenterX - DIVIDER_LAYOUT.edgePadding,
-    DIVIDER_LAYOUT.minLineWidth,
-  );
 
   const titlePill = (
     <View
-      className="rounded-full px-4 py-1.5 shadow-sm"
+      className="rounded-full px-4 py-1.5 shadow-sm border-2 border-sage-50"
       style={{
         backgroundColor: accentColor || DIVIDER_LAYOUT.titlePillColor,
         maxWidth: screenWidth * DIVIDER_LAYOUT.titleMaxWidthRatio,
@@ -122,29 +77,17 @@ function UnitDivider({
 
   return (
     <View
-      className="w-full h-full justify-center"
+      className="w-full"
       style={{
         paddingHorizontal: DIVIDER_LAYOUT.edgePadding,
       }}
     >
-      <View className="flex-row items-center">
-        {isConnectorLaneLeftOfCenter ? (
-          <>
-            <DividerLine width={leftLineWidth} />
-            <View style={{ width: laneWidth }} />
-            {titlePill}
-            <View style={{ width: DIVIDER_LAYOUT.titleGap }} />
-            <DividerLine />
-          </>
-        ) : (
-          <>
-            <DividerLine />
-            <View style={{ width: DIVIDER_LAYOUT.titleGap }} />
-            {titlePill}
-            <View style={{ width: laneWidth }} />
-            <DividerLine width={rightLineWidth} />
-          </>
-        )}
+      <View className="flex-row items-center w-full">
+        <DividerLine flex={1} />
+        <View style={{ width: DIVIDER_LAYOUT.titleGap }} />
+        {titlePill}
+        <View style={{ width: DIVIDER_LAYOUT.titleGap }} />
+        <DividerLine flex={1} />
       </View>
     </View>
   );

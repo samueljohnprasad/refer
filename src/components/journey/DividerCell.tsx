@@ -117,12 +117,22 @@ export function DividerCell({
           )}
         </Svg>
       ) : null}
-      <UnitDivider
-        title={item.title}
-        connectorLaneX={item.connectorLaneX}
-        screenWidth={screenWidth}
-        accentColor={item.accentColor}
-      />
+      <View
+        style={{
+
+          position: "absolute",
+          top: item.cellHeight * 0.85,
+          left: 0,
+          right: 0,
+          transform: [{ translateY: -14 }], // Center the pill itself vertically on the 85% mark
+        }}
+      >
+        <UnitDivider
+          title={item.title}
+          screenWidth={screenWidth}
+          accentColor={item.accentColor}
+        />
+      </View>
     </View>
   );
 }
