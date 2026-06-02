@@ -194,6 +194,39 @@ export type Database = {
           },
         ]
       }
+      courses: {
+        Row: {
+          color_hex: string
+          created_at: string
+          description: string | null
+          icon_url: string | null
+          id: string
+          is_published: boolean
+          order_index: number
+          title: string
+        }
+        Insert: {
+          color_hex?: string
+          created_at?: string
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_published?: boolean
+          order_index?: number
+          title: string
+        }
+        Update: {
+          color_hex?: string
+          created_at?: string
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_published?: boolean
+          order_index?: number
+          title?: string
+        }
+        Relationships: []
+      }
       daily_moods: {
         Row: {
           day: string
@@ -253,6 +286,38 @@ export type Database = {
           UID?: string | null
         }
         Relationships: []
+      }
+      exercise_contents: {
+        Row: {
+          created_at: string
+          id: string
+          instruction: string
+          node_id: string
+          steps: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          instruction: string
+          node_id: string
+          steps?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          instruction?: string
+          node_id?: string
+          steps?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercise_contents_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       exercise_entries: {
         Row: {
@@ -846,6 +911,35 @@ export type Database = {
         }
         Relationships: []
       }
+      lesson_contents: {
+        Row: {
+          created_at: string
+          id: string
+          node_id: string
+          screens: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          node_id: string
+          screens?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          node_id?: string
+          screens?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_contents_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       moods: {
         Row: {
           id: number
@@ -887,6 +981,88 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      node_attempts: {
+        Row: {
+          attempt_number: number
+          id: string
+          node_id: string
+          score: number | null
+          started_at: string
+          submitted_at: string | null
+          user_id: string
+        }
+        Insert: {
+          attempt_number: number
+          id?: string
+          node_id: string
+          score?: number | null
+          started_at?: string
+          submitted_at?: string | null
+          user_id: string
+        }
+        Update: {
+          attempt_number?: number
+          id?: string
+          node_id?: string
+          score?: number | null
+          started_at?: string
+          submitted_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "node_attempts_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nodes: {
+        Row: {
+          content_id: string | null
+          content_type: string | null
+          estimated_mins: number
+          id: string
+          order_index: number
+          pass_threshold: number | null
+          title: string
+          type: string
+          unit_id: string
+        }
+        Insert: {
+          content_id?: string | null
+          content_type?: string | null
+          estimated_mins?: number
+          id?: string
+          order_index?: number
+          pass_threshold?: number | null
+          title: string
+          type: string
+          unit_id: string
+        }
+        Update: {
+          content_id?: string | null
+          content_type?: string | null
+          estimated_mins?: number
+          id?: string
+          order_index?: number
+          pass_threshold?: number | null
+          title?: string
+          type?: string
+          unit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nodes_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
             referencedColumns: ["id"]
           },
         ]
@@ -1014,6 +1190,41 @@ export type Database = {
         }
         Relationships: []
       }
+      practice_contents: {
+        Row: {
+          created_at: string
+          id: string
+          instruction: string
+          node_id: string
+          repeat_count: number
+          steps: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          instruction: string
+          node_id: string
+          repeat_count?: number
+          steps?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          instruction?: string
+          node_id?: string
+          repeat_count?: number
+          steps?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "practice_contents_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           age_range: Database["public"]["Enums"]["age_range_enum"] | null
@@ -1117,6 +1328,93 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_contents: {
+        Row: {
+          created_at: string
+          id: string
+          node_id: string
+          questions: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          node_id: string
+          questions?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          node_id?: string
+          questions?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_contents_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sections: {
+        Row: {
+          course_id: string
+          id: string
+          order_index: number
+          title: string
+        }
+        Insert: {
+          course_id: string
+          id?: string
+          order_index?: number
+          title: string
+        }
+        Update: {
+          course_id?: string
+          id?: string
+          order_index?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sections_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_contents: {
+        Row: {
+          created_at: string
+          dialogues: Json
+          id: string
+          node_id: string
+        }
+        Insert: {
+          created_at?: string
+          dialogues?: Json
+          id?: string
+          node_id: string
+        }
+        Update: {
+          created_at?: string
+          dialogues?: Json
+          id?: string
+          node_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_contents_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
             referencedColumns: ["id"]
           },
         ]
@@ -1256,6 +1554,38 @@ export type Database = {
         }
         Relationships: []
       }
+      units: {
+        Row: {
+          icon_key: string
+          id: string
+          order_index: number
+          section_id: string
+          title: string
+        }
+        Insert: {
+          icon_key?: string
+          id?: string
+          order_index?: number
+          section_id: string
+          title: string
+        }
+        Update: {
+          icon_key?: string
+          id?: string
+          order_index?: number
+          section_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "units_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_achievements: {
         Row: {
           achievement_id: string
@@ -1331,6 +1661,79 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_course_node_progress: {
+        Row: {
+          attempts: number
+          best_score: number | null
+          completed_at: string | null
+          last_attempted_at: string | null
+          last_score: number | null
+          node_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          best_score?: number | null
+          completed_at?: string | null
+          last_attempted_at?: string | null
+          last_score?: number | null
+          node_id: string
+          status: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          best_score?: number | null
+          completed_at?: string | null
+          last_attempted_at?: string | null
+          last_score?: number | null
+          node_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_course_node_progress_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_course_progress: {
+        Row: {
+          completed_at: string | null
+          course_id: string
+          started_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          course_id: string
+          started_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          course_id?: string
+          started_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_course_progress_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
             referencedColumns: ["id"]
           },
         ]
@@ -1597,6 +2000,48 @@ export type Database = {
             columns: ["node_id"]
             isOneToOne: false
             referencedRelation: "journey_template_nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_node_responses: {
+        Row: {
+          attempt_id: string
+          id: string
+          node_id: string
+          responses: Json
+          submitted_at: string
+          user_id: string
+        }
+        Insert: {
+          attempt_id: string
+          id?: string
+          node_id: string
+          responses: Json
+          submitted_at?: string
+          user_id: string
+        }
+        Update: {
+          attempt_id?: string
+          id?: string
+          node_id?: string
+          responses?: Json
+          submitted_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_node_responses_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "node_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_node_responses_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
             referencedColumns: ["id"]
           },
         ]
@@ -1921,10 +2366,6 @@ export type Database = {
     }
     Functions: {
       cleanup_old_challenges: { Args: never; Returns: undefined }
-      complete_journey_node: {
-        Args: { p_enrollment_id: string; p_node_id: string }
-        Returns: Json
-      }
       get_journey_catalog: { Args: never; Returns: Json }
       get_journey_template: { Args: { p_slug: string }; Returns: Json }
       get_node_content: { Args: { p_node_id: string }; Returns: Json }
@@ -1938,6 +2379,10 @@ export type Database = {
             }
             Returns: Json
           }
+      get_section_units: {
+        Args: { p_section_number: number; p_slug: string }
+        Returns: Json
+      }
       get_user_journey_progress: {
         Args: { p_journey_id: string }
         Returns: Json
