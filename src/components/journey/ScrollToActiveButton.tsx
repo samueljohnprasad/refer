@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform, PlatformColor } from "react-native";
 import { ArrowDown01Icon, ArrowUp01Icon, FocusPointIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Text } from "@/components/ui/text";
 import { PressableScale } from "@/src/components/ui/PressableScale";
+import { GlassView } from "expo-glass-effect";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+
 
 export type ScrollToActiveButtonDirection = "up" | "down";
 export type ScrollToActiveButtonMode = "direction" | "focus";
@@ -88,7 +89,9 @@ function ScrollToActiveButton({
         accessibilityRole="button"
         accessibilityLabel={getAccessibilityLabel(mode, direction)}
       >
-        <View
+        <GlassView
+          glassEffectStyle="regular"
+          tintColor="rgba(250, 250, 250, 0.5)"
           style={[
             styles.button,
             mode === "focus" ? styles.focusButton : styles.directionButton,
@@ -98,18 +101,18 @@ function ScrollToActiveButton({
             <HugeiconsIcon
               icon={FocusPointIcon}
               size={FOCUS_ICON_SIZE}
-              color="#FFFFFF"
+              color="#1A1D1E"
               strokeWidth={2.4}
             />
           ) : (
             <HugeiconsIcon
               icon={direction === "down" ? ArrowDown01Icon : ArrowUp01Icon}
-              size={18}
-              color="#FFFFFF"
+              size={20}
+              color="#1A1D1E"
               strokeWidth={2.5}
             />
           )}
-        </View>
+        </GlassView>
       </PressableScale>
     </Animated.View>
   );
@@ -122,18 +125,19 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: FLOATING_BUTTON_RIGHT_OFFSET,
     zIndex: 100,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 8,
   },
   button: {
     alignItems: "center",
-    backgroundColor: BUTTON_COLOR,
     borderRadius: 999,
-    elevation: 6,
     flexDirection: "row",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(0, 0, 0, 0.15)",
   },
   directionButton: {
     paddingHorizontal: 20,

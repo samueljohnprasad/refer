@@ -3,19 +3,53 @@ import { NativeTabs } from "expo-router/unstable-native-tabs";
 
 const Label = NativeTabs.Trigger.Label;
 const Icon = NativeTabs.Trigger.Icon;
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { DynamicColorIOS, Platform, StyleSheet } from "react-native";
-import { BlurView } from "expo-blur";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import {
-  ArtificialIntelligence04Icon,
-  Home03Icon,
-  Mic01Icon,
-  Notebook02Icon,
-} from "@hugeicons/core-free-icons";
 import { useWidgetWeekMoods } from "@/hooks/data/useWidgetWeekMoods";
-import { SAGE, INK_MUTED } from "@/lib/tokens";
+import { BRAND_BORDER, INK_MUTED, SAGE } from "@/lib/tokens";
+
+const TAB_BAR_BACKGROUND = "rgba(255, 255, 255, 0.92)";
+
+import { View, Text, Pressable } from "react-native";
+
+function SimpleBottomAccessory() {
+  const placement = NativeTabs.BottomAccessory.usePlacement();
+
+  if (placement === 'inline') {
+    // Compact UI for inline placement (like iPad or standard compact)
+    return (
+      <Pressable style={{ padding: 8, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ fontSize: 18 }}>✨</Text>
+      </Pressable>
+    );
+  }
+
+  // Full UI for regular placement (standard bottom tab bar accessory)
+  return (
+    <View 
+      style={{ 
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        justifyContent: 'space-between', 
+        paddingHorizontal: 16, 
+        paddingVertical: 10, 
+        // backgroundColor: SAGE[50], 
+        // borderTopWidth: 1, 
+        // borderColor: SAGE[200] 
+      }}
+    >
+      <Text style={{ color: SAGE[800], fontWeight: '500', fontSize: 14 }}>Daily Reflection</Text>
+      <Pressable 
+        style={{ 
+          backgroundColor: SAGE[500], 
+          paddingHorizontal: 12, 
+          paddingVertical: 6, 
+          borderRadius: 16 
+        }}
+      >
+        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 13 }}>Start</Text>
+      </Pressable>
+    </View>
+  );
+}
 
 export default function TabLayout() {
   useWidgetWeekMoods();
@@ -23,7 +57,13 @@ export default function TabLayout() {
   return (
     <NativeTabs
       tintColor={SAGE[500]}
+      backgroundColor={TAB_BAR_BACKGROUND}
+      shadowColor={BRAND_BORDER}
+      blurEffect="systemUltraThinMaterialLight"
+      disableTransparentOnScrollEdge
       minimizeBehavior="onScrollDown"
+      indicatorColor="rgba(229, 229, 229, 0.52)"
+      rippleColor="rgba(93, 126, 87, 0.12)"
       labelStyle={{
         color: INK_MUTED,
       }}
@@ -40,6 +80,10 @@ export default function TabLayout() {
     //   light: "red",
     // })}
     >
+      {/* <NativeTabs.BottomAccessory>
+        <SimpleBottomAccessory />
+      </NativeTabs.BottomAccessory> */}
+      
       <NativeTabs.Trigger name="exercises">
         <Label>Exercises</Label>
         <Icon
@@ -47,7 +91,6 @@ export default function TabLayout() {
             default: "doc.text", // inactive
             selected: "doc.text.fill", // active
           }}
-          drawable="custom_android_drawable"
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="home">
@@ -57,7 +100,6 @@ export default function TabLayout() {
             default: "house", // inactive
             selected: "house.fill", // active
           }}
-          drawable="custom_android_drawable"
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="journal">
@@ -67,7 +109,6 @@ export default function TabLayout() {
             default: "book.closed", // inactive
             selected: "book.closed.fill", // active
           }}
-          drawable="custom_android_drawable"
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="record">
@@ -77,18 +118,22 @@ export default function TabLayout() {
             default: "mic", // inactive
             selected: "mic.fill", // active
           }}
-          drawable="custom_settings_drawable"
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="journeys">
-        <Label>Journeys</Label>
+      <NativeTabs.Trigger name="journeys" role="search">
         <Icon
           sf={{
-            default: "map",
-            selected: "map.fill",
+            default: "map", // inactive
+            selected: "map.fill", // active
           }}
-          drawable="custom_settings_drawable"
         />
+        <Label>Journeys</Label>
+
+
+        {/* <Icon
+          src={require("@/assets/icons/map.png")}
+          renderingMode="original"
+        /> */}
       </NativeTabs.Trigger>
     </NativeTabs>
   );

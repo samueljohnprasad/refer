@@ -248,16 +248,15 @@ export default function JournalCalendarScreen() {
   }, [posthog]);
 
   return (
-    <View className="flex-1 happy-brand-screen">
-      <SafeAreaView edges={[]} style={{ flex: 1 }}>
-        <ScrollView
-          removeClippedSubviews={true}
-          showsVerticalScrollIndicator={false}
-          nestedScrollEnabled={true}
-          scrollEventThrottle={16}
-          contentInsetAdjustmentBehavior="automatic"
-          keyboardShouldPersistTaps="handled"
-          style={{ flex: 1 }}
+    <>
+      <ScrollView
+        className="flex-1 happy-brand-screen"
+        removeClippedSubviews={true}
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled={true}
+        scrollEventThrottle={16}
+        contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
           contentContainerClassName="pb-28"
         >
           {/* Top Bar */}
@@ -407,7 +406,6 @@ export default function JournalCalendarScreen() {
           visible={showStreakModal}
           onClose={() => setShowStreakModal(false)}
         />
-      </SafeAreaView>
-    </View>
+    </>
   );
 }

@@ -6,7 +6,8 @@ import {
   useState,
   type ReactElement,
 } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View, StyleSheet } from "react-native";
+import { GlassView } from "expo-glass-effect";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -17,9 +18,9 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text } from "@/src/components/ui/Text";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -494,6 +495,7 @@ export default function ExercisesScreen(): ReactElement {
   const { data: history = [], isLoading: isLoadingHistory } = useCBTHistory();
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
   const reducedMotion = useReducedMotion();
+  const insets = useSafeAreaInsets();
 
 
   // Active tab pill — spring in on mount
@@ -563,90 +565,112 @@ export default function ExercisesScreen(): ReactElement {
       router.push(`/tabs/screens/gratitude-reframe?id=${item.id}` as never);
     }
   }, []);
+
+
   return (
-    <View className="flex-1 happy-brand-screen">
-      <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
-        <View className="px-5 pb-3 pt-3">
-          <View className="mb-4 flex-row items-center justify-between">
-            <View className="flex-row items-center gap-3">
-              <View>
-                <Text variant="eyebrow" className="mb-0.5">
-                  {getContextualEyebrow()}
-                </Text>
-                <Text variant="display" className="text-[40px] leading-[46px]">
-                  Exercises
-                </Text>
-              </View>
-            </View>
-            {completedCount > 0 ? (
-              <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
-                <HugeiconsIcon icon={ZapIcon} size={16} color="#C89400" />
-                <Text variant="chip" className="ml-1.5 text-ink-soft">
-                  {completedCount} done
-                </Text>
-              </View>
-            ) : null}
-          </View>
+    <>
+      <Stack.Screen options={{
+        headerTransparent: true,
+        headerShown: true,
+        headerBlurEffect: "systemUltraThinMaterialLight",
+        headerLargeTitle: true,
+        headerLargeTitleStyle: {
+          fontFamily: "GeistBold",
+        },
+        headerTitle: "Exercises",
+        headerShadowVisible: false,
+        headerStyle: {
+          backgroundColor: 'transparent'
+        },
+        header: () => (
+          <GlassView
+            glassEffectStyle="regular"
+          >
+            <SafeAreaView edges={["top"]}>
+              <View className="px-5 pb-3 pt-3">
+                <View className="mb-4 flex-row items-center justify-between">
+                  <View className="flex-row items-center gap-3">
+                    <View>
+                      <Text variant="eyebrow" className="mb-0.5">
+                        {getContextualEyebrow()}
+                      </Text>
+                      <Text variant="display" className="text-[40px] leading-[46px]">
+                        Exercises
+                      </Text>
+                    </View>
+                  </View>
+                  {completedCount > 0 ? (
+                    <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
+                      <HugeiconsIcon icon={ZapIcon} size={16} color="#C89400" />
+                      <Text variant="chip" className="ml-1.5 text-ink-soft">
+                        {completedCount} done
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
 
-          <Animated.View style={tabPillStyle} className="rounded-full border border-sage-100 bg-sage-50 p-1">
-            <Host style={{ width: "100%", height: 32 }}>
-              <Picker
-                modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
-                label="Exercises View"
-                selection={EXERCISE_TAB_LABEL_BY_KEY[activeTab]}
-                onSelectionChange={handleFilterSelectionChange}
-              >
-                {EXERCISE_TAB_OPTIONS.map((option) => (
-                  <SwiftUIText key={option} modifiers={[tag(option)]}>
-                    {option}
-                  </SwiftUIText>
-                ))}
-              </Picker>
-            </Host>
-          </Animated.View>
-        </View>
+                <Animated.View style={tabPillStyle} className="rounded-full border border-sage-100 bg-sage-50 p-1">
+                  <Host style={{ width: "100%", height: 32 }}>
+                    <Picker
+                      modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                      label="Exercises View"
+                      selection={EXERCISE_TAB_LABEL_BY_KEY[activeTab]}
+                      onSelectionChange={handleFilterSelectionChange}
+                    >
+                      {EXERCISE_TAB_OPTIONS.map((option) => (
+                        <SwiftUIText key={option} modifiers={[tag(option)]}>
+                          {option}
+                        </SwiftUIText>
+                      ))}
+                    </Picker>
+                  </Host>
+                </Animated.View>
+              </View>
+            </SafeAreaView>
+          </GlassView>
+        )
+      }} />
 
-        <ScrollView
-          className="flex-1"
-          style={{ flex: 1 }}
-          contentContainerClassName="px-5 pt-3 pb-[128px]"
-          showsVerticalScrollIndicator={false}
-        >
-          {activeTab === "discover" ? (
-            <>
-              <SuggestedExerciseCard />
-              {exerciseGroups.length === 0 ? (
-                <EmptyDiscoverState />
-              ) : (
-                exerciseGroups.map((group, i) => (
-                  <FadeInItem key={group.category} index={i}>
-                    <DiscoverSection
-                      label={group.label}
-                      category={group.category}
-                      exercises={group.exercises}
-                      onPress={handleExercisePress}
-                      isFirst={i === 0}
-                    />
-                  </FadeInItem>
-                ))
-              )}
-            </>
-          ) : isLoadingHistory ? (
-            <LoadingHistoryState />
-          ) : history.length === 0 ? (
-            <EmptyExerciseLogState />
-          ) : (
-            history.map((item, i) => (
-              <FadeInItem key={`${item.type}-${item.id}`} index={i}>
-                <LogCard
-                  item={item}
-                  onPress={handleLogPress}
-                />
-              </FadeInItem>
-            ))
-          )}
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+      <ScrollView
+        className="flex-1 happy-brand-screen"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{ paddingTop: insets.top + 120, paddingBottom: 128, paddingHorizontal: 20 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {activeTab === "discover" ? (
+          <>
+            <SuggestedExerciseCard />
+            {exerciseGroups.length === 0 ? (
+              <EmptyDiscoverState />
+            ) : (
+              exerciseGroups.map((group, i) => (
+                <FadeInItem key={group.category} index={i}>
+                  <DiscoverSection
+                    label={group.label}
+                    category={group.category}
+                    exercises={group.exercises}
+                    onPress={handleExercisePress}
+                    isFirst={i === 0}
+                  />
+                </FadeInItem>
+              ))
+            )}
+          </>
+        ) : isLoadingHistory ? (
+          <LoadingHistoryState />
+        ) : history.length === 0 ? (
+          <EmptyExerciseLogState />
+        ) : (
+          history.map((item, i) => (
+            <FadeInItem key={`${item.type}-${item.id}`} index={i}>
+              <LogCard
+                item={item}
+                onPress={handleLogPress}
+              />
+            </FadeInItem>
+          ))
+        )}
+      </ScrollView>
+    </>
   );
 }
