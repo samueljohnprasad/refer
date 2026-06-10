@@ -1,4 +1,6 @@
 import React from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import GoalCard from "../components/GoalCard";
@@ -15,10 +17,12 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
   selected,
   onSelect,
 }) => {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24 }}
+      contentContainerStyle={{ paddingBottom: 24, paddingTop: headerHeight - insets.top }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-8"
     >

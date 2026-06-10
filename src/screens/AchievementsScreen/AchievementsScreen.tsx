@@ -30,7 +30,8 @@ import { AchievementBadge } from "@/src/components/Achievements";
 import { Mascot } from "@/src/components/ui/Mascot";
 import { RewardsOwnedProgress } from "@/src/components/Rewards";
 import { AchievementBadgeDetailSheet } from "./components/AchievementBadgeDetailSheet";
-import type { AchievementProgressItem } from "./components/AchievementBadgeDetailSheet";
+import { AchievementProgressItem } from "./components/AchievementBadgeDetailSheet";
+import { AchievementsSkeleton } from "./components/AchievementsSkeleton";
 import { GOLD, SAGE, TERRACOTTA } from "@/lib/tokens";
 import * as Haptics from "expo-haptics";
 import { Card } from "@/src/components/ui/Card";
@@ -290,24 +291,7 @@ export const AchievementsScreen: React.FC = () => {
 
   // ── Loading ──
   if (isLoading) {
-    return (
-      <SafeAreaView
-        className="happy-brand-screen flex-1 items-center justify-center"
-        style={[styles.screen, styles.loadingScreen]}
-      >
-        <View className="happy-mascot-stage w-16 h-16 rounded-[22px] items-center justify-center mb-4">
-          <HugeiconsIcon
-            icon={Medal01Icon}
-            size={32}
-            color={SAGE[500]}
-          />
-        </View>
-        <ActivityIndicator size="large" color={SAGE[500]} />
-        <Text className="happy-font-body-medium text-ink-muted mt-3 text-sm">
-          Loading achievements...
-        </Text>
-      </SafeAreaView>
-    );
+    return <AchievementsSkeleton />;
   }
 
   return (

@@ -1,4 +1,6 @@
 import React from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 
@@ -29,6 +31,8 @@ const TIME_WINDOWS: Record<StressTiming, string> = {
 };
 
 const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const feelingLabel =
     FEELINGS.find((option) => option.id === feeling)?.label.toLowerCase() ??
     "that";
@@ -38,7 +42,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 140 }}
+      contentContainerStyle={{ paddingBottom: 140, paddingTop: headerHeight - insets.top }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-3"
     >

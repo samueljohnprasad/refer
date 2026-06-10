@@ -1,6 +1,4 @@
-import React, { useMemo } from 'react';
-  View,
-  ScrollView,
+
 import { Feather } from '@expo/vector-icons';
 import { Tooltip, TooltipContent, TooltipText } from '@/components/ui/tooltip';
 import { Text } from "@/src/components/ui/Text";
@@ -13,6 +11,10 @@ import {
 } from 'victory-native';
 import Svg, { Path, Circle, Text as SvgText, G, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
 import { CognitivePatternLink } from '@/src/network/genAi';
+import { ActivityIndicator, Pressable, TouchableOpacity, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ScrollView } from 'react-native-gesture-handler';
+import { useMemo } from 'react';
 
 interface CognitivePatternFlowProps {
   data: CognitivePatternLink[];

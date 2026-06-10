@@ -1,4 +1,6 @@
+import React, { useEffect, useRef } from "react";
 import { Text, useWindowDimensions, View } from "react-native";
+import * as Haptics from "expo-haptics";
 import { SvgAppButton } from "./svg-app-button";
 import JourneyUnitIcon from "@/src/components/journey/JourneyUnitIcon";
 
@@ -20,6 +22,17 @@ export const HomeMainButton = ({
   onPress,
 }: HomeMainButtonProps) => {
   const { width } = useWindowDimensions();
+  const isFirstMount = useRef(true);
+
+  useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    // Provide a nice light haptic click when the user scrolls into a new section
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }, [faceColor]);
+
   return (
     <View className="flex-row items-center self-center">
       <SvgAppButton

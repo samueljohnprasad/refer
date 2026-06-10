@@ -16,6 +16,7 @@ import * as Haptics from "expo-haptics";
 import { Stack } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
+import { GlassView } from "expo-glass-effect";
 
 import { useOnboardingFlow } from "./hooks/useOnboardingFlow";
 import { useOnboardingAnalytics } from "./hooks/useOnboardingAnalytics";
@@ -46,6 +47,11 @@ import JourneyMapStep from "./steps/JourneyMapStep";
 import LetterFromFutureStep from "./steps/LetterFromFutureStep";
 import SoftPaywallStep from "./steps/SoftPaywallStep";
 import WelcomeToHappyStep from "./steps/WelcomeToHappyStep";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { SafeHeaderWrapper } from "@/src/components/ui/SafeHeaderWrapper";
 
 interface OnboardingScreenProps {
   onComplete: () => Promise<void>;
@@ -179,6 +185,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const footerOpacity = useSharedValue(
     currentStep === "welcome" ? 0 : showContinueButton ? 1 : 0,
   );
+
   const footerTranslateY = useSharedValue(currentStep === "welcome" ? 12 : 0);
   const hasAnimatedStepRef = useRef(false);
   const currentBackgroundColorRef = useRef(initialBackgroundColor);
@@ -186,8 +193,9 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const direction = useRef<"forward" | "backward">("forward");
   const [containerBackgroundColor, setContainerBackgroundColor] =
     React.useState(initialBackgroundColor);
-  const [transitionOverlayColor, setTransitionOverlayColor] =
-    React.useState(initialBackgroundColor);
+  const [transitionOverlayColor, setTransitionOverlayColor] = React.useState(
+    initialBackgroundColor,
+  );
 
   const backgroundOverlayStyle = useAnimatedStyle(() => ({
     opacity: backgroundOverlayOpacity.value,
@@ -358,7 +366,9 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   }, [updateTrialStarted, goNext]);
 
   const isContinueDisabled =
-    !canContinue || loading || (currentStep === "welcome" && !isStepActionReady);
+    !canContinue ||
+    loading ||
+    (currentStep === "welcome" && !isStepActionReady);
 
   const renderStep = (): React.ReactNode => {
     switch (currentStep) {
@@ -484,7 +494,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
       <Animated.View
         pointerEvents="none"
         style={[
-          StyleSheet.absoluteFillObject,
+          StyleSheet.absoluteFill,
           { backgroundColor: transitionOverlayColor },
           backgroundOverlayStyle,
         ]}
@@ -493,25 +503,47 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         options={{
           headerShown: headerConfig.visible,
           headerShadowVisible: false,
-          headerStyle: {
-            backgroundColor: containerBackgroundColor,
-          },
+          headerTransparent: true,
           header: () => (
-            <View
-              style={{ backgroundColor: containerBackgroundColor }}
-              className="h-28 justify-end"
+            <SafeAreaView
+              edges={["top"]}
+              className="justify-end pb-4"
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: "rgba(255, 255, 255, 0.1)",
+                elevation: 0,
+                shadowOpacity: 0,
+                shadowRadius: 0,
+                overflow: "hidden",
+              }}
             >
+              <GlassView
+                glassEffectStyle="clear"
+                style={StyleSheet.absoluteFill}
+              />
+              <View
+                style={[
+                  StyleSheet.absoluteFill,
+                  { backgroundColor: containerBackgroundColor, opacity: 0.85 },
+                ]}
+              />
               <LessonHeader
                 onClose={headerConfig.showBackButton ? handleBack : undefined}
-                backButtonVariant={headerConfig.backButtonVariant === "close" ? "close-icon" : "arrow"}
+                backButtonVariant={
+                  headerConfig.backButtonVariant === "close"
+                    ? "close-icon"
+                    : "arrow"
+                }
                 progress={headerConfig.progress}
                 trailingLabel={headerConfig.trailingLabel}
                 iconColor={HEADER_ICON_COLOR}
-                trailingLabelColor={headerConfig.trailingLabelColor ?? "#7D8D7B"}
+                trailingLabelColor={
+                  headerConfig.trailingLabelColor ?? "#7D8D7B"
+                }
                 progressFillColor={headerConfig.progressFillColor}
                 progressTrackColor={headerConfig.progressTrackColor}
               />
-            </View>
+            </SafeAreaView>
           ),
         }}
       />

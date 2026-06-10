@@ -16,6 +16,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import * as Haptics from "expo-haptics";
+import { GlassView } from "expo-glass-effect";
 
 import { Text } from "@/components/ui/text";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
@@ -188,23 +189,7 @@ function BouncingTooltip({
   label,
   accentColor,
 }: BouncingTooltipProps): React.JSX.Element | null {
-  const translateY = useSharedValue(0);
   const isVisible: boolean = Boolean(label);
-
-  useEffect(() => {
-    translateY.value = withRepeat(
-      withSequence(
-        withDelay(2000, withSpring(-8, { damping: 8, stiffness: 120 })),  // Float up after a pause
-        withSpring(0, { damping: 12, stiffness: 150 }),   // Settle back
-      ),
-      -1,
-      false,
-    );
-  }, [translateY]);
-
-  const bounceStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: translateY.value }],
-  }));
 
   // If there is no label to display, do not render the tooltip at all.
   // This prevents ghost tooltips from appearing when FlashList recycles cells.
@@ -212,31 +197,54 @@ function BouncingTooltip({
 
   return (
     <Animated.View
-      className="absolute -top-10 bg-brand-surface rounded-lg px-3 py-1.5 z-10"
+      className="absolute z-10 items-center justify-center"
       style={[
-        bounceStyle,
         {
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-          elevation: 3,
+          top: -46, // Adjusted slightly for the pointer
+          width: 120, // Give it plenty of room so the text doesn't wrap
         },
       ]}
       pointerEvents="auto"
       accessibilityRole="text"
       accessibilityLabel={label ? `Current task: ${label}` : undefined}
     >
-      <Text
-        className="text-xs font-extrabold tracking-wider"
-        style={{ color: accentColor }}
-      >
-        {label ?? ""}
-      </Text>
       <View
-        className="absolute -bottom-1.5 self-center w-3 h-3 bg-brand-surface"
-        style={{ transform: [{ rotate: "45deg" }], left: "42%" }}
-      />
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.12,
+          shadowRadius: 10,
+          elevation: 5,
+          alignItems: "center",
+        }}
+      >
+        {/* The pointer triangle (rendered behind the main bubble) */}
+        <View
+          className="absolute -bottom-1.5 w-3.5 h-3.5 overflow-hidden"
+          style={{ transform: [{ rotate: "45deg" }], borderRadius: 2 }}
+        >
+          <GlassView glassEffectStyle="regular" style={{ flex: 1 }} />
+        </View>
+
+        <GlassView 
+          glassEffectStyle="clear" 
+          style={{ 
+            borderRadius: 14, 
+            paddingHorizontal: 16, 
+            paddingVertical: 8,
+            overflow: "hidden", 
+          }}
+          isInteractive
+        >
+          <Text
+            className="text-[13px] font-extrabold tracking-widest"
+            style={{ color: accentColor }}
+            numberOfLines={1}
+          >
+            {label ?? ""}
+          </Text>
+        </GlassView>
+      </View>
     </Animated.View>
   );
 }

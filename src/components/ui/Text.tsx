@@ -136,7 +136,7 @@ const textTv = tv({
 
 type TextVariants = VariantProps<typeof textTv>;
 
-interface TextProps extends Omit<RNTextProps, "style"> {
+interface TextProps extends RNTextProps {
   variant?: TextVariants["variant"];
   color?: TextVariants["color"];
   className?: string;

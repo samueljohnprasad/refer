@@ -4,6 +4,8 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
 import { JournalExperience } from "../types";
 import { EXPERIENCE_OPTIONS } from "../constants";
+import { useHeaderHeight } from "expo-router/react-navigation";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface QuizExperienceStepProps {
   selected?: JournalExperience;
@@ -16,6 +18,8 @@ const QuizExperienceStep: React.FC<QuizExperienceStepProps> = ({
   onSelect,
   onAdvance,
 }) => {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const handleSelect = useCallback(
     (id: JournalExperience) => {
       onSelect(id);
@@ -27,9 +31,12 @@ const QuizExperienceStep: React.FC<QuizExperienceStepProps> = ({
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24 }}
+      contentContainerStyle={{ 
+        paddingBottom: 24,
+        paddingTop: headerHeight - insets.top,
+      }}
       contentInsetAdjustmentBehavior="automatic"
-      className="flex-1 px-6 pt-8"
+      className="flex-1 px-6"
     >
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text className="text-xs font-semibold uppercase tracking-widest text-sage-500">

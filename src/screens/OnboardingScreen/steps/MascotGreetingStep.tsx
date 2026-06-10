@@ -1,4 +1,6 @@
 import React from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import MochiMascot from "../components/MochiMascot";
@@ -9,11 +11,13 @@ const SPEECH_BUBBLE_DELAY_MS = 180;
 const QUOTE_ENTER_DELAY_MS = 420;
 
 const MascotGreetingStep: React.FC = () => {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24, flexGrow: 1 }}
+      contentContainerStyle={{ paddingBottom: 24, flexGrow: 1, paddingTop: headerHeight - insets.top }}
       className="flex-1 px-6"
     >
       <View className="flex-1 items-center justify-center pt-8">

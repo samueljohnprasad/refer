@@ -2,7 +2,6 @@
  * Journey Components barrel export.
  */
 
-export { default as PathNode } from "./PathNode";
 export { default as PathConnector } from "./PathConnector";
 export { default as JourneyHeader } from "./JourneyHeader";
 export { default as JourneyLoadingSkeleton } from "./JourneyLoadingSkeleton";
@@ -19,7 +18,6 @@ export { default as AnimatedNodeButton } from "./AnimatedNodeButton";
 export { JourneyNodeCell } from "./JourneyNodeCell";
 export { DividerCell } from "./DividerCell";
 export { MascotCell } from "./MascotCell";
-export type { PathNodeProps } from "./PathNode";
 export type { ConfigDrivenNodeProps } from "./ConfigDrivenNode";
 export type { UnitDividerProps } from "./UnitDivider";
 export type { SideProgressRailProps } from "./SideProgressRail";
@@ -31,8 +29,8 @@ export type { ChestNodeProps } from "./ChestNode";
 export type { UnitCompleteModalProps } from "./UnitCompleteModal";
 export type { ScrollToActiveButtonProps } from "./ScrollToActiveButton";
 export type {
-    AnimatedNodeButtonProps,
-    NodeHapticStyle,
+  AnimatedNodeButtonProps,
+  NodeHapticStyle,
 } from "./AnimatedNodeButton";
 
 // Mental Health Journey Components
@@ -52,8 +50,8 @@ export { default as SignUpPromptModal } from "./SignUpPromptModal";
 export type { SignUpPromptModalProps } from "./SignUpPromptModal";
 export { default as SpotlightTooltip } from "./SpotlightTooltip";
 export type {
-    SpotlightTooltipProps,
-    SpotlightTarget,
+  SpotlightTooltipProps,
+  SpotlightTarget,
 } from "./SpotlightTooltip";
 export { JourneySwitcherSheet } from "./JourneySwitcherSheet";
 export type { JourneySwitcherSheetProps } from "./JourneySwitcherSheet";
@@ -61,7 +59,7 @@ export { default as JourneyOnboardingScreen } from "./JourneyOnboardingScreen";
 export { default as AnimatedScreenTransition } from "./AnimatedScreenTransition";
 export type { AnimatedScreenTransitionProps } from "./AnimatedScreenTransition";
 export type {
-    JourneyOnboardingScreenProps,
-    OnboardingQuestion,
-    OnboardingOption,
+  JourneyOnboardingScreenProps,
+  OnboardingQuestion,
+  OnboardingOption,
 } from "./JourneyOnboardingScreen";

@@ -1,4 +1,6 @@
 import React, { useCallback } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
@@ -17,6 +19,8 @@ const QuizTimingStep: React.FC<QuizTimingStepProps> = ({
   onSelect,
   onAdvance,
 }) => {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const handleSelect = useCallback(
     (id: StressTiming) => {
       onSelect(id);
@@ -28,9 +32,12 @@ const QuizTimingStep: React.FC<QuizTimingStepProps> = ({
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24 }}
+      contentContainerStyle={{
+        paddingBottom: 24,
+        paddingTop: headerHeight - insets.top,
+      }}
       contentInsetAdjustmentBehavior="automatic"
-      className="flex-1 px-6 pt-8"
+      className="flex-1 px-6"
     >
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text className="text-xs font-semibold uppercase tracking-widest text-sage-500">

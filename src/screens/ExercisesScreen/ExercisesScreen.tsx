@@ -18,9 +18,13 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { Text } from "@/src/components/ui/Text";
 import { router, Stack, useLocalSearchParams } from "expo-router";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -165,14 +169,23 @@ const ExerciseCard = memo(function ExerciseCard({
           className={`items-center justify-center rounded-icon-well border border-sage-100 bg-sage-50 ${featured ? "h-14 w-14" : "h-12 w-12"}`}
           accessible={false}
         >
-          <HugeiconsIcon icon={icon} size={featured ? 28 : 24} color={SAGE[600]} />
+          <HugeiconsIcon
+            icon={icon}
+            size={featured ? 28 : 24}
+            color={SAGE[600]}
+          />
         </View>
 
         <View className="min-w-0 flex-1">
           <Text variant="body-bold" numberOfLines={1}>
             {exercise.title}
           </Text>
-          <Text variant="label" color="soft" className="mt-1" numberOfLines={featured ? 3 : 2}>
+          <Text
+            variant="label"
+            color="soft"
+            className="mt-1"
+            numberOfLines={featured ? 3 : 2}
+          >
             {exercise.subtitle}
           </Text>
 
@@ -221,15 +234,24 @@ const DiscoverSection = memo(function DiscoverSection({
 
   return (
     <View className="mb-10">
-      <View className={`mb-4 flex-row items-center px-1 ${isFirst ? "" : "pt-6"}`}>
-        <View className={`mr-3 h-12 w-12 items-center justify-center rounded-2xl border border-sage-100 ${tint.iconBg}`}>
+      <View
+        className={`mb-4 flex-row items-center px-1 ${isFirst ? "" : "pt-6"}`}
+      >
+        <View
+          className={`mr-3 h-12 w-12 items-center justify-center rounded-2xl border border-sage-100 ${tint.iconBg}`}
+        >
           <HugeiconsIcon icon={categoryIcon} size={22} color={tint.iconColor} />
         </View>
         <View className="min-w-0 flex-1">
           <Text variant="h2" className="text-[20px]">
             {label}
           </Text>
-          <Text variant="label" color="soft" className="mt-0.5" numberOfLines={2}>
+          <Text
+            variant="label"
+            color="soft"
+            className="mt-0.5"
+            numberOfLines={2}
+          >
             {categoryMeta.description}
           </Text>
         </View>
@@ -386,9 +408,7 @@ const LogCard = memo(function LogCard({
 
         <View className="min-w-0 flex-1">
           <View className="mb-0.5 flex-row items-center justify-between">
-            <Text variant="eyebrow">
-              {presentation.heading}
-            </Text>
+            <Text variant="eyebrow">{presentation.heading}</Text>
             <Text variant="caption-muted">
               {format(new Date(item.date), "MMM d, h:mm a")}
             </Text>
@@ -457,9 +477,7 @@ function EmptyDiscoverState(): ReactElement {
 function LoadingHistoryState(): ReactElement {
   return (
     <View className="items-center py-12">
-      <Text variant="caption-muted">
-        Loading history...
-      </Text>
+      <Text variant="caption-muted">Loading history...</Text>
     </View>
   );
 }
@@ -480,8 +498,6 @@ function EmptyExerciseLogState(): ReactElement {
   );
 }
 
-
-
 function getContextualEyebrow(): string {
   const hour = new Date().getHours();
   if (hour < 12) return "MORNING PRACTICE";
@@ -496,7 +512,7 @@ export default function ExercisesScreen(): ReactElement {
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
   const reducedMotion = useReducedMotion();
   const insets = useSafeAreaInsets();
-
+  const headerHeight = useHeaderHeight();
 
   // Active tab pill — spring in on mount
   const tabScale = useSharedValue(reducedMotion ? 1 : 0.92);
@@ -566,75 +582,91 @@ export default function ExercisesScreen(): ReactElement {
     }
   }, []);
 
-
   return (
     <>
-      <Stack.Screen options={{
-        headerTransparent: true,
-        headerShown: true,
-        headerBlurEffect: "systemUltraThinMaterialLight",
-        headerLargeTitle: true,
-        headerLargeTitleStyle: {
-          fontFamily: "GeistBold",
-        },
-        headerTitle: "Exercises",
-        headerShadowVisible: false,
-        headerStyle: {
-          backgroundColor: 'transparent'
-        },
-        header: () => (
-          <GlassView
-            glassEffectStyle="regular"
-          >
-            <SafeAreaView edges={["top"]}>
-              <View className="px-5 pb-3 pt-3">
-                <View className="mb-4 flex-row items-center justify-between">
-                  <View className="flex-row items-center gap-3">
-                    <View>
-                      <Text variant="eyebrow" className="mb-0.5">
-                        {getContextualEyebrow()}
-                      </Text>
-                      <Text variant="display" className="text-[40px] leading-[46px]">
-                        Exercises
-                      </Text>
-                    </View>
-                  </View>
-                  {completedCount > 0 ? (
-                    <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
-                      <HugeiconsIcon icon={ZapIcon} size={16} color="#C89400" />
-                      <Text variant="chip" className="ml-1.5 text-ink-soft">
-                        {completedCount} done
-                      </Text>
-                    </View>
-                  ) : null}
-                </View>
+      <Stack.Screen
+        options={{
+          headerTransparent: true,
+          headerShown: true,
+          // headerBlurEffect: "systemUltraThinMaterialLight",
+          headerShadowVisible: false,
+          header: () => (
+            <GlassView
+              glassEffectStyle="regular"
+              style={{
+                borderBottomWidth: 0,
+                elevation: 0,
+                shadowOpacity: 0,
+                shadowRadius: 0,
+                shadowColor: "transparent", // IMPORTANT
 
-                <Animated.View style={tabPillStyle} className="rounded-full border border-sage-100 bg-sage-50 p-1">
-                  <Host style={{ width: "100%", height: 32 }}>
-                    <Picker
-                      modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
-                      label="Exercises View"
-                      selection={EXERCISE_TAB_LABEL_BY_KEY[activeTab]}
-                      onSelectionChange={handleFilterSelectionChange}
-                    >
-                      {EXERCISE_TAB_OPTIONS.map((option) => (
-                        <SwiftUIText key={option} modifiers={[tag(option)]}>
-                          {option}
-                        </SwiftUIText>
-                      ))}
-                    </Picker>
-                  </Host>
-                </Animated.View>
-              </View>
-            </SafeAreaView>
-          </GlassView>
-        )
-      }} />
+                overflow: "hidden",
+              }}
+            >
+              <SafeAreaView edges={["top"]}>
+                <View className="px-5 pb-3 pt-3">
+                  <View className="mb-4 flex-row items-center justify-between">
+                    <View className="flex-row items-center gap-3">
+                      <View>
+                        <Text variant="eyebrow" className="mb-0.5">
+                          {getContextualEyebrow()}
+                        </Text>
+                        <Text
+                          variant="display"
+                          className="text-[40px] leading-[46px]"
+                        >
+                          Exercises
+                        </Text>
+                      </View>
+                    </View>
+                    {completedCount > 0 ? (
+                      <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
+                        <HugeiconsIcon
+                          icon={ZapIcon}
+                          size={16}
+                          color="#C89400"
+                        />
+                        <Text variant="chip" className="ml-1.5 text-ink-soft">
+                          {completedCount} done
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+
+                  <Animated.View
+                    style={tabPillStyle}
+                    className="rounded-full border border-sage-100 bg-sage-50 p-1"
+                  >
+                    <Host style={{ width: "100%", height: 32 }}>
+                      <Picker
+                        modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                        label="Exercises View"
+                        selection={EXERCISE_TAB_LABEL_BY_KEY[activeTab]}
+                        onSelectionChange={handleFilterSelectionChange}
+                      >
+                        {EXERCISE_TAB_OPTIONS.map((option) => (
+                          <SwiftUIText key={option} modifiers={[tag(option)]}>
+                            {option}
+                          </SwiftUIText>
+                        ))}
+                      </Picker>
+                    </Host>
+                  </Animated.View>
+                </View>
+              </SafeAreaView>
+            </GlassView>
+          ),
+        }}
+      />
 
       <ScrollView
         className="flex-1 happy-brand-screen"
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ paddingTop: insets.top + 120, paddingBottom: 128, paddingHorizontal: 20 }}
+        contentContainerStyle={{
+          paddingTop: headerHeight - insets.top + 16,
+          paddingBottom: 128,
+          paddingHorizontal: 20,
+        }}
         showsVerticalScrollIndicator={false}
       >
         {activeTab === "discover" ? (
@@ -663,10 +695,7 @@ export default function ExercisesScreen(): ReactElement {
         ) : (
           history.map((item, i) => (
             <FadeInItem key={`${item.type}-${item.id}`} index={i}>
-              <LogCard
-                item={item}
-                onPress={handleLogPress}
-              />
+              <LogCard item={item} onPress={handleLogPress} />
             </FadeInItem>
           ))
         )}

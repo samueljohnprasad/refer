@@ -5,6 +5,8 @@ import OptionCard from "../components/OptionCard";
 import TestimonialCard from "../components/TestimonialCard";
 import { MotivationAnswer } from "../types";
 import { MOTIVATION_OPTIONS } from "../constants";
+import { useHeaderHeight } from "expo-router/react-navigation";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const STEP_LABEL_ENTER_DELAY_MS = 80;
 const TITLE_ENTER_DELAY_MS = 140;
@@ -22,6 +24,9 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
   onSelect,
   onAdvance,
 }) => {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
+
   const handleSelect = useCallback(
     (id: MotivationAnswer) => {
       onSelect(id);
@@ -34,8 +39,11 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24 }}
-      className="flex-1 px-6 pt-8"
+      contentContainerStyle={{
+        paddingBottom: 24,
+        paddingTop: headerHeight - insets.top,
+      }}
+      className="flex-1 px-6"
     >
       <Animated.Text
         entering={FadeIn.duration(160).delay(STEP_LABEL_ENTER_DELAY_MS)}

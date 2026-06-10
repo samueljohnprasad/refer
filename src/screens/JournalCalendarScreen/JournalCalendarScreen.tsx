@@ -14,7 +14,9 @@ import { useUserProfile } from "@/hooks/data/useUserProfile";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
 
 import { SafeAreaView } from "@/components/ui/safe-area-view";
-import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Stack, router } from "expo-router";
+import { GlassView } from "expo-glass-effect";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
 import { ChallengesSection } from "@/src/components/Challenges";
 import { FeaturedPromptCard } from "@/src/components/FeaturedPromptCard";
@@ -77,7 +79,7 @@ const TopBar = React.memo<{
   }));
 
   return (
-    <View className="flex-row items-center justify-between px-5 pb-2 pt-4">
+    <View className="flex-row items-center justify-between px-5 pb-2">
       <PressableScale
         onPress={onAchievementsPress}
         onPressIn={() => {
@@ -180,6 +182,7 @@ const ShimmerSkeleton = React.memo<{ height?: number }>(({ height = 240 }) => {
 });
 
 export default function JournalCalendarScreen() {
+  const insets = useSafeAreaInsets();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const posthog = usePostHog();
 
@@ -249,6 +252,30 @@ export default function JournalCalendarScreen() {
 
   return (
     <>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerTransparent: true,
+          headerShadowVisible: false,
+          header: () => (
+            <GlassView
+              glassEffectStyle="regular"
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: "rgba(255, 255, 255, 0.1)",
+                elevation: 0,
+                shadowOpacity: 0,
+                shadowRadius: 0,
+                overflow: "hidden",
+              }}
+            >
+              <SafeAreaView edges={["top"]}>
+                <TopBar onAchievementsPress={handleAchievementsPress} />
+              </SafeAreaView>
+            </GlassView>
+          ),
+        }}
+      />
       <ScrollView
         className="flex-1 happy-brand-screen"
         removeClippedSubviews={true}
@@ -257,155 +284,153 @@ export default function JournalCalendarScreen() {
         scrollEventThrottle={16}
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
-          contentContainerClassName="pb-28"
-        >
-          {/* Top Bar */}
-          <TopBar onAchievementsPress={handleAchievementsPress} />
-          <View className="px-5 pb-12 pt-4">
-            {/* Greeting — entrance animation index 0 */}
-            <Animated.View entering={FadeInDown.duration(ENTRANCE_DURATION_MS)}>
-              <Greeting
-                displayName={userProfile?.displayName}
-                isLoading={isLoadingProfile}
-              />
-            </Animated.View>
+        contentContainerStyle={{ paddingTop: insets.top, paddingBottom: 112 }}
+      >
+        <View className="px-5 pb-12 pt-4">
+          {/* Greeting — entrance animation index 0 */}
+          <Animated.View entering={FadeInDown.duration(ENTRANCE_DURATION_MS)}>
+            <Greeting
+              displayName={userProfile?.displayName}
+              isLoading={isLoadingProfile}
+            />
+          </Animated.View>
 
-            {/* Streak Widget — entrance animation index 1 */}
-            <Animated.View
-              className="mt-6"
-              entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-                STAGGER_DELAY_MS * 1,
-              )}
-            >
-              <WeeklyStreakWidget
-                showDepth={false}
-                onPress={() =>
-                  handleQuickJournalPress({
-                    id: "initial_streak",
-                    title: "Daily Log",
-                    description: "Recording today's journey",
-                    category: "Personal",
-                    emoji: "✍️",
-                    bgColor: SAGE[50],
-                    categoryColor: SAGE[600],
-                  })
-                }
-              />
-            </Animated.View>
+          {/* Streak Widget — entrance animation index 1 */}
+          <Animated.View
+            className="mt-6"
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 1,
+            )}
+          >
+            <WeeklyStreakWidget
+              showDepth={false}
+              onPress={() =>
+                handleQuickJournalPress({
+                  id: "initial_streak",
+                  title: "Daily Log",
+                  description: "Recording today's journey",
+                  category: "Personal",
+                  emoji: "✍️",
+                  bgColor: SAGE[50],
+                  categoryColor: SAGE[600],
+                })
+              }
+            />
+          </Animated.View>
 
-            {/* GROUP 2: Journal */}
-            <Animated.View
-              className="mt-10"
-              entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-                STAGGER_DELAY_MS * 2,
-              )}
-            >
-              <View className="mb-3 px-1">
-                <Text className="happy-brand-eyebrow">Daily Reflection</Text>
+          {/* GROUP 2: Journal */}
+          <Animated.View
+            className="mt-10"
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 2,
+            )}
+          >
+            <View className="mb-3 px-1">
+              <Text className="happy-brand-eyebrow">Daily Reflection</Text>
+            </View>
+            <FeaturedPromptCard
+              prompt="What's making you smile today?"
+              xpReward={XP_REWARDS[XPActionType.JOURNAL_ENTRY]}
+              emoji="✨"
+              onPress={() =>
+                handleQuickJournalPress({
+                  id: "featured_apple",
+                  title: "Reflections",
+                  description: "What's making you smile today?",
+                  category: "Gratitude",
+                  emoji: "✨",
+                  bgColor: SAGE[50],
+                  categoryColor: SAGE[600],
+                })
+              }
+            />
+          </Animated.View>
+
+          {/* ── GROUP 3: Track — entrance animation index 3 ── */}
+          <Animated.View
+            className="mt-10"
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 3,
+            )}
+          >
+            <EmotionLogger
+              selectedDate={selectedEmotionDate}
+              onEmotionLogged={handleEmotionLogged}
+              showDepth={false}
+            />
+          </Animated.View>
+
+          {/* Mood Chart — same group as emotion logger, tighter spacing */}
+          <Animated.View
+            className="mt-6"
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 4,
+            )}
+          >
+            {shouldLoadChart ? (
+              <WeeklyMoodChart
+                startDate={startOfWeekDate}
+                endDate={endOfWeekDate}
+                title="Mood Trends"
+              />
+            ) : (
+              <View className="mb-4">
+                <Text className="happy-brand-eyebrow mb-3 px-1">
+                  Mood Trends
+                </Text>
+                <ShimmerSkeleton height={240} />
               </View>
-              <FeaturedPromptCard
-                prompt="What's making you smile today?"
-                xpReward={XP_REWARDS[XPActionType.JOURNAL_ENTRY]}
-                emoji="✨"
-                onPress={() =>
-                  handleQuickJournalPress({
-                    id: "featured_apple",
-                    title: "Reflections",
-                    description: "What's making you smile today?",
-                    category: "Gratitude",
-                    emoji: "✨",
-                    bgColor: SAGE[50],
-                    categoryColor: SAGE[600],
-                  })
-                }
-              />
-            </Animated.View>
+            )}
+          </Animated.View>
 
-            {/* ── GROUP 3: Track — entrance animation index 3 ── */}
-            <Animated.View
-              className="mt-10"
-              entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-                STAGGER_DELAY_MS * 3,
-              )}
-            >
-              <EmotionLogger
-                selectedDate={selectedEmotionDate}
-                onEmotionLogged={handleEmotionLogged}
-                showDepth={false}
-              />
-            </Animated.View>
+          {/* Pattern Insight Nudge — entrance animation index 5 */}
+          <Animated.View
+            className="mt-8"
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 5,
+            )}
+          >
+            <InsightNudgeCard />
+          </Animated.View>
 
-            {/* Mood Chart — same group as emotion logger, tighter spacing */}
-            <Animated.View
-              className="mt-6"
-              entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-                STAGGER_DELAY_MS * 4,
-              )}
-            >
-              {shouldLoadChart ? (
-                <WeeklyMoodChart
-                  startDate={startOfWeekDate}
-                  endDate={endOfWeekDate}
-                  title="Mood Trends"
-                />
-              ) : (
-                <View className="mb-4">
-                  <Text className="happy-brand-eyebrow mb-3 px-1">
-                    Mood Trends
-                  </Text>
-                  <ShimmerSkeleton height={240} />
-                </View>
-              )}
-            </Animated.View>
+          {/* ── GROUP 4: Progress — entrance animation index 6 ── */}
+          <Animated.View
+            className="mt-10"
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 6,
+            )}
+          >
+            <ChallengesSection showDepth={false} maxItems={3} />
+          </Animated.View>
 
-            {/* Pattern Insight Nudge — entrance animation index 5 */}
-            <Animated.View
-              className="mt-8"
-              entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-                STAGGER_DELAY_MS * 5,
-              )}
-            >
-              <InsightNudgeCard />
-            </Animated.View>
+          {/* Quick Journal — same group as journaling, tighter spacing */}
+          <Animated.View
+            className="mt-8 mb-6"
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 7,
+            )}
+          >
+            <QuickJournalSection
+              onCardPress={handleQuickJournalPress}
+              onSeeAllPress={handleSeeAllPrompts}
+            />
+          </Animated.View>
+        </View>
+      </ScrollView>
 
-            {/* ── GROUP 4: Progress — entrance animation index 6 ── */}
-            <Animated.View
-              className="mt-10"
-              entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-                STAGGER_DELAY_MS * 6,
-              )}
-            >
-              <ChallengesSection showDepth={false} maxItems={3} />
-            </Animated.View>
+      {/* Update Modal */}
+      <UpdateModal
+        isVisible={showUpdateModal}
+        onDismiss={hideModal}
+        currentVersion={currentVersion}
+        latestVersion={latestVersion}
+      />
 
-            {/* Quick Journal — same group as journaling, tighter spacing */}
-            <Animated.View
-              className="mt-8 mb-6"
-              entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-                STAGGER_DELAY_MS * 7,
-              )}
-            >
-              <QuickJournalSection
-                onCardPress={handleQuickJournalPress}
-                onSeeAllPress={handleSeeAllPrompts}
-              />
-            </Animated.View>
-          </View>
-        </ScrollView>
-
-        {/* Update Modal */}
-        <UpdateModal
-          isVisible={showUpdateModal}
-          onDismiss={hideModal}
-          currentVersion={currentVersion}
-          latestVersion={latestVersion}
-        />
-
-        {/* Streak Bottom Sheet — SwiftUI BottomSheet managed inside StreakDisplay */}
-        <StreakDisplay
-          visible={showStreakModal}
-          onClose={() => setShowStreakModal(false)}
-        />
+      {/* Streak Bottom Sheet — SwiftUI BottomSheet managed inside StreakDisplay */}
+      <StreakDisplay
+        visible={showStreakModal}
+        onClose={() => setShowStreakModal(false)}
+      />
     </>
   );
 }

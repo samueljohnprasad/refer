@@ -1,4 +1,6 @@
 import React from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
@@ -358,13 +360,15 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
   planName,
   motivation = "anxiety",
 }) => {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const planMeta = PLAN_META[motivation];
   const displayPlanName = planName.endsWith(".") ? planName : `${planName}.`;
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 144 }}
+      contentContainerStyle={{ paddingBottom: 144, paddingTop: headerHeight - insets.top }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-4"
     >

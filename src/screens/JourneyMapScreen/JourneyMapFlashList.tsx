@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from "react";
 import Animated from "react-native-reanimated";
 import { LegendList } from "@legendapp/list";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import type { JourneyFlashListItem, PathNodeData } from "@/src/types/journey";
 
 import BottomSheetWithRNContent from "@/src/components/BottomSheetWithRNContent";
-import { HomeMainButton } from "@/src/components/journey/home-main-button";
 import { SectionOverviewSheet } from "@/src/components/journey/SectionOverviewSheet";
 import ScrollToActiveButton from "@/src/components/journey/ScrollToActiveButton";
 import { NodeContentModal } from "./NodeContentModal";
@@ -20,6 +20,7 @@ import {
   getJourneyMapItemType,
 } from "./JourneyMapListItems";
 import { useJourneyMapController } from "./useJourneyMapController";
+import { View } from "react-native";
 
 const AnimatedLegendList = Animated.createAnimatedComponent(
   LegendList,
@@ -27,11 +28,14 @@ const AnimatedLegendList = Animated.createAnimatedComponent(
 
 export interface JourneyMapFlashListProps {
   courseId: string;
+  controller: ReturnType<typeof useJourneyMapController>;
 }
 
 function JourneyMapFlashListInner({
   courseId,
+  controller,
 }: JourneyMapFlashListProps): React.JSX.Element {
+  const insets = useSafeAreaInsets();
   const {
     activeGlobalIndex,
     activeNodeInitialScrollIndex,
@@ -52,7 +56,7 @@ function JourneyMapFlashListInner({
     scrollHint,
     sectionOverviewItems,
     setIsSectionSheetOpen,
-  } = useJourneyMapController(courseId);
+  } = controller;
 
   const renderItem = useCallback(
     ({ item }: { item: JourneyFlashListItem }): React.JSX.Element => {
@@ -74,14 +78,6 @@ function JourneyMapFlashListInner({
 
   return (
     <>
-      <HomeMainButton
-        onPress={handleOpenSections}
-        unitLabel={headerState.label}
-        unitTitle={headerState.title}
-        faceColor={headerState.faceColor}
-        rimColor={headerState.rimColor}
-        unitIconKey={headerState.iconKey}
-      />
 
       {!isLoaded ? (
         <JourneyMapLoadingState />
@@ -102,6 +98,8 @@ function JourneyMapFlashListInner({
           ListFooterComponent={listFooterComponent}
           onViewableItemsChanged={handleViewableItemsChanged}
           viewabilityConfig={JOURNEY_VIEWABILITY_CONFIG}
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{ paddingTop: insets.top + 100 }}
         />
       ) : (
         <JourneyMapEmptyState />

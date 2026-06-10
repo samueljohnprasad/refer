@@ -8,6 +8,7 @@
 
 import React from "react";
 import { View } from "react-native";
+import { GlassView } from "expo-glass-effect";
 import { Text } from "@/components/ui/text";
 import { DIVIDER_LAYOUT } from "@/src/data/journey/constants";
 
@@ -51,27 +52,54 @@ function UnitDivider({
   screenWidth,
   accentColor,
 }: UnitDividerProps): React.JSX.Element {
+  const baseColor = accentColor || DIVIDER_LAYOUT.titlePillColor;
 
   const titlePill = (
     <View
-      className="rounded-full px-4 py-1.5 shadow-sm border-2 border-sage-50"
       style={{
-        backgroundColor: accentColor || DIVIDER_LAYOUT.titlePillColor,
         maxWidth: screenWidth * DIVIDER_LAYOUT.titleMaxWidthRatio,
       }}
     >
-      <Text
+      <View
         style={{
-          fontFamily: "GeistMedium",
-          color: DIVIDER_LAYOUT.titleTextColor,
-          letterSpacing: -0.1,
+          borderRadius: 20,
+          overflow: "hidden",
         }}
-        className="text-[13px] text-center"
-        numberOfLines={1}
-        accessibilityRole="header"
       >
-        {title}
-      </Text>
+        <View
+          style={{
+            backgroundColor: baseColor,
+            opacity: 0.75,
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+          }}
+        />
+
+        {/* The text content */}
+        <GlassView
+          glassEffectStyle="clear"
+          isInteractive
+          style={{
+            borderRadius: 20,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "GeistMedium",
+              color: DIVIDER_LAYOUT.titleTextColor,
+              letterSpacing: -0.1,
+            }}
+            className="text-[13px] text-center"
+            numberOfLines={1}
+            accessibilityRole="header"
+          >
+            {title}
+          </Text>
+        </GlassView>
+      </View>
     </View>
   );
 

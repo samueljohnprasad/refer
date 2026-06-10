@@ -1,16 +1,20 @@
 import React, { useEffect } from "react";
 import { StyleSheet, View, Platform, PlatformColor } from "react-native";
-import { ArrowDown01Icon, ArrowUp01Icon, FocusPointIcon } from "@hugeicons/core-free-icons";
+import {
+  ArrowDown01Icon,
+  ArrowUp01Icon,
+  FocusPointIcon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { GlassView } from "expo-glass-effect";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
   withTiming,
+  Easing,
 } from "react-native-reanimated";
-
+import { Text } from "@/components/ui/text";
 
 export type ScrollToActiveButtonDirection = "up" | "down";
 export type ScrollToActiveButtonMode = "direction" | "focus";
@@ -23,10 +27,7 @@ export interface ScrollToActiveButtonProps {
 }
 
 const FADE_DURATION = 150;
-const BUTTON_COLOR = "#5F7F58"; // Sage-500 — on-brand, premium
-const BUTTON_SPRING = { damping: 20, stiffness: 280 } as const; // Snappy entrance
-const FOCUS_BUTTON_SIZE = 52;
-const FOCUS_ICON_SIZE = 22;
+const SLIDE_DURATION = 300;
 const FLOATING_BUTTON_BOTTOM_OFFSET = 104;
 const FLOATING_BUTTON_RIGHT_OFFSET = 24;
 
@@ -34,21 +35,22 @@ const getHiddenOffset = (
   mode: ScrollToActiveButtonMode,
   direction: ScrollToActiveButtonDirection,
 ): number => {
-  if (mode === "focus") {
-    return 20;
-  }
-
   return direction === "down" ? 20 : -20;
+};
+
+const getButtonText = (
+  mode: ScrollToActiveButtonMode,
+  direction: ScrollToActiveButtonDirection,
+): string => {
+  if (mode === "focus") return "Current lesson";
+  return direction === "down" ? "Scroll down" : "Back to top";
 };
 
 const getAccessibilityLabel = (
   mode: ScrollToActiveButtonMode,
   direction: ScrollToActiveButtonDirection,
 ): string => {
-  if (mode === "focus") {
-    return "Return to current lesson";
-  }
-
+  if (mode === "focus") return "Return to current lesson";
   return `Scroll ${direction} to active lesson`;
 };
 
@@ -63,12 +65,13 @@ function ScrollToActiveButton({
   const translateY = useSharedValue(hiddenOffset);
 
   useEffect(() => {
+    const timingConfig = { duration: SLIDE_DURATION, easing: Easing.out(Easing.quad) };
     if (isVisible) {
-      opacity.value = withSpring(1, BUTTON_SPRING);
-      translateY.value = withSpring(0, BUTTON_SPRING);
+      opacity.value = withTiming(1, timingConfig);
+      translateY.value = withTiming(0, timingConfig);
     } else {
       opacity.value = withTiming(0, { duration: FADE_DURATION });
-      translateY.value = withSpring(hiddenOffset, BUTTON_SPRING);
+      translateY.value = withTiming(hiddenOffset, timingConfig);
     }
   }, [isVisible, hiddenOffset, opacity, translateY]);
 
@@ -89,30 +92,39 @@ function ScrollToActiveButton({
         accessibilityRole="button"
         accessibilityLabel={getAccessibilityLabel(mode, direction)}
       >
-        <GlassView
-          glassEffectStyle="regular"
-          tintColor="rgba(250, 250, 250, 0.5)"
-          style={[
-            styles.button,
-            mode === "focus" ? styles.focusButton : styles.directionButton,
-          ]}
-        >
-          {mode === "focus" ? (
-            <HugeiconsIcon
-              icon={FocusPointIcon}
-              size={FOCUS_ICON_SIZE}
-              color="#1A1D1E"
-              strokeWidth={2.4}
-            />
-          ) : (
-            <HugeiconsIcon
-              icon={direction === "down" ? ArrowDown01Icon : ArrowUp01Icon}
-              size={20}
-              color="#1A1D1E"
-              strokeWidth={2.5}
-            />
-          )}
-        </GlassView>
+        <View style={styles.button}>
+          {/* The glass blur layer */}
+          <GlassView
+            glassEffectStyle="regular"
+            style={StyleSheet.absoluteFill}
+          />
+
+          {/* Light white frosted overlay to brighten the glass */}
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              { backgroundColor: "#FFFFFF", opacity: 0.65 },
+            ]}
+          />
+
+          <View style={styles.contentContainer}>
+            {mode === "focus" ? (
+              <HugeiconsIcon
+                icon={FocusPointIcon}
+                size={20}
+                color="#1A1D1E"
+                strokeWidth={2.5}
+              />
+            ) : (
+              <HugeiconsIcon
+                icon={direction === "down" ? ArrowDown01Icon : ArrowUp01Icon}
+                size={20}
+                color="#1A1D1E"
+                strokeWidth={2.5}
+              />
+            )}
+          </View>
+        </View>
       </PressableScale>
     </Animated.View>
   );
@@ -126,26 +138,31 @@ const styles = StyleSheet.create({
     right: FLOATING_BUTTON_RIGHT_OFFSET,
     zIndex: 100,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 5,
+    borderRadius: 999,
   },
   button: {
-    alignItems: "center",
     borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.8)",
+    overflow: "hidden",
+  },
+  contentContainer: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(0, 0, 0, 0.15)",
-  },
-  directionButton: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 18,
     paddingVertical: 12,
+    gap: 8,
   },
-  focusButton: {
-    height: FOCUS_BUTTON_SIZE,
-    width: FOCUS_BUTTON_SIZE,
+  text: {
+    fontFamily: "GeistBold",
+    fontSize: 14,
+    color: "#1A1D1E",
+    letterSpacing: -0.2,
   },
 });
 

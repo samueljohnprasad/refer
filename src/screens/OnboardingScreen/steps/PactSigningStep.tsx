@@ -1,10 +1,10 @@
 import React from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView, Pressable } from "react-native";
-import Animated, {
-  FadeIn,
-  useAnimatedStyle,
-  interpolate,
-} from "react-native-reanimated";
+import Animated, { FadeIn, useAnimatedStyle, interpolate } from "react-native-reanimated";
+import { SvgAppButton } from "@/src/components/journey/svg-app-button";
+import { SAGE } from "@/lib/tokens";
 import { useHoldToCommit } from "../hooks/useHoldToCommit";
 import { DailyGoalMinutes } from "../types";
 
@@ -19,6 +19,8 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
   dailyGoal,
   onCommit,
 }) => {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const { progress, isHolding, committed, onPressIn, onPressOut } =
     useHoldToCommit(onCommit);
   const [buttonWidth, setButtonWidth] = React.useState(0);
@@ -29,14 +31,14 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
   }));
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24, flexGrow: 1 }}
-      contentInsetAdjustmentBehavior="automatic"
-      className="flex-1 px-6 pt-3"
-    >
-      <View className="flex-1 justify-between">
-        <View>
+    <View className="flex-1">
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 24, flexGrow: 1, paddingTop: headerHeight - insets.top }}
+        contentInsetAdjustmentBehavior="automatic"
+        className="flex-1 px-6 pt-3"
+      >
+        <View className="flex-1">
           <Animated.View
             entering={FadeIn.duration(180).delay(80)}
             className="items-center"
@@ -120,57 +122,70 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
             Hold to make it official.
           </Animated.Text>
         </View>
+      </ScrollView>
 
-        <Animated.View
-          entering={FadeIn.duration(180).delay(300)}
-          className="pb-2"
+      <Animated.View
+        entering={FadeIn.duration(180).delay(300)}
+        className="px-6 pb-8 pt-4 bg-transparent"
+        style={{ paddingBottom: Math.max(insets.bottom + 8, 32) }}
+      >
+        <SvgAppButton
+          width="100%"
+          height={56}
+          color={SAGE[500]}
+          backgroundColor={SAGE[700]}
+          leftRadius={22}
+          rightRadius={22}
+          pressDepth={4}
+          onPress={() => {}}
+          onPressIn={onPressIn}
+          onPressOut={onPressOut}
+          disabled={committed}
+          contentContainerStyle={{
+            justifyContent: "center",
+            alignItems: "center",
+            overflow: "hidden",
+            borderRadius: 22,
+          }}
         >
-          <Pressable
-            onPressIn={onPressIn}
-            onPressOut={onPressOut}
-            disabled={committed}
-            accessibilityRole="button"
-            accessibilityLabel="Hold to commit"
+          <View
+            onLayout={(event) => {
+              setButtonWidth(event.nativeEvent.layout.width);
+            }}
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: "100%",
+            }}
           >
-            <View
-              onLayout={(event) => {
-                setButtonWidth(event.nativeEvent.layout.width);
-              }}
-              style={{
-                position: "relative",
-                overflow: "hidden",
-                borderRadius: 16,
-                borderCurve: "continuous",
-              }}
-              className="w-full border-b-4 border-b-sage-700 bg-sage-500 px-6 py-[18px]"
-            >
-              <Animated.View
-                style={[
-                  {
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    backgroundColor: "#29452A",
-                  },
-                  commitFillStyle,
-                ]}
-              />
-              <Text
-                style={{ fontFamily: "GeistBold" }}
-                className="text-center text-base font-bold uppercase tracking-[0.02em] text-white"
-              >
-                {committed
-                  ? "Pact sealed"
-                  : isHolding
-                    ? "Keep holding..."
-                    : "Hold to commit"}
-              </Text>
-            </View>
-          </Pressable>
-        </Animated.View>
-      </View>
-    </ScrollView>
+            <Animated.View
+              style={[
+                {
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  backgroundColor: "#29452A",
+                },
+                commitFillStyle,
+              ]}
+            />
+          </View>
+          <Text
+            style={{ fontFamily: "GeistBold" }}
+            className="text-center text-[17px] font-bold uppercase tracking-[0.02em] text-white z-10"
+          >
+            {committed
+              ? "Pact sealed"
+              : isHolding
+                ? "Keep holding..."
+                : "Hold to commit"}
+          </Text>
+        </SvgAppButton>
+      </Animated.View>
+    </View>
   );
 };
 

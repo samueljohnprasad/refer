@@ -1,4 +1,6 @@
 import React, { useMemo } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,6 +24,8 @@ const TIMING_MOMENTS: Record<StressTiming, string> = {
 const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
   timing,
 }) => {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const futureLetterMeta = useMemo(() => {
     const date = new Date();
     date.setDate(date.getDate() + 30);
@@ -45,11 +49,9 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{
-        paddingTop: 8,
+      contentContainerStyle={{ paddingTop: 8,
         paddingBottom: 156,
-        paddingHorizontal: 24,
-      }}
+        paddingHorizontal: 24, paddingTop: headerHeight - insets.top }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1"
     >

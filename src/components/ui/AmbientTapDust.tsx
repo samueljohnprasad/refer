@@ -8,6 +8,7 @@ import Animated, {
   Easing,
   runOnJS,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Ripple {
   id: number;
@@ -55,6 +56,7 @@ const RippleEffect = ({ x, y, onComplete }: Ripple & { onComplete: () => void })
 export const AmbientTapDust = ({ children }: { children: React.ReactNode }) => {
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const rippleIdCounter = useRef(0);
+  const insets = useSafeAreaInsets();
 
   const handleTap = useCallback((x: number, y: number) => {
     const id = rippleIdCounter.current++;

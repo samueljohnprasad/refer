@@ -1,4 +1,6 @@
 import React from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
@@ -24,6 +26,8 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   onSelectTime,
   stressTiming,
 }) => {
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
   const suggestedTime = stressTiming
     ? TIMING_TO_DEFAULT[stressTiming]
     : "evening";
@@ -31,7 +35,7 @@ const NotificationPermissionStep: React.FC<NotificationPermissionStepProps> = ({
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24 }}
+      contentContainerStyle={{ paddingBottom: 24, paddingTop: headerHeight - insets.top }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-6"
     >
