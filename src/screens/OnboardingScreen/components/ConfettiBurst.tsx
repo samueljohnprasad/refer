@@ -37,15 +37,15 @@ const Particle: React.FC<{
 
     scale.value = withDelay(
       index * 30,
-      withSpring(1, { damping: 8, stiffness: 300 }),
+      withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
     );
     translateX.value = withDelay(
       index * 30,
-      withSpring(targetX, { damping: 12, stiffness: 150 }),
+      withSpring(targetX, { damping: 20, stiffness: 100, overshootClamping: true }),
     );
     translateY.value = withDelay(
       index * 30,
-      withSpring(targetY, { damping: 12, stiffness: 150 }),
+      withSpring(targetY, { damping: 20, stiffness: 100, overshootClamping: true }),
     );
     rotation.value = withDelay(
       index * 30,

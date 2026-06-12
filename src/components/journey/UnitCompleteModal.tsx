@@ -128,8 +128,8 @@ const UnitCompleteModal = forwardRef<BottomSheetModal, UnitCompleteModalProps>(
         trophyScale.value = withDelay(
           100,
           withSequence(
-            withSpring(1.2, { damping: 6, stiffness: 200 }),
-            withSpring(1, { damping: 10, stiffness: 180 }),
+            withSpring(1.2, { damping: 20, stiffness: 100, overshootClamping: true }),
+            withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
           ),
         );
 

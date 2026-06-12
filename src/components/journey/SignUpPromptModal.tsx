@@ -62,7 +62,7 @@ export default function SignUpPromptModal({
     useEffect(() => {
         if (visible) {
             backdropOpacity.value = withTiming(1, { duration: 250 });
-            slideY.value = withDelay(100, withSpring(0, { damping: 18, stiffness: 120 }));
+            slideY.value = withDelay(100, withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true }));
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         } else {
             slideY.value = 300;

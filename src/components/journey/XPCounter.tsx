@@ -81,8 +81,8 @@ function AnimatedNumber({
 
         // Bounce animation on change
         scale.value = withSequence(
-            withSpring(1.2, { damping: 6, stiffness: 200 }),
-            withSpring(1, { damping: 10, stiffness: 150 }),
+            withSpring(1.2, { damping: 20, stiffness: 100, overshootClamping: true }),
+            withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
         );
 
         // Count up animation

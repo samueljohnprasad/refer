@@ -99,13 +99,27 @@ export function Card({
   const radiusClass = RADIUS_CLASS[radius];
   const shadowDepth = showDepth ? config.shadowDepth : 0;
   const isInteractive = Boolean(onPress) && !disabled;
+  const isSelected = variant === "answer-selected";
 
   const reducedMotion = useReducedMotion();
   const pressY = useSharedValue(0);
+  const selectionScale = useSharedValue(1);
   const pressLock = useRef(false);
+  const wasSelectedRef = useRef(isSelected);
+
+  // Juicy pop on selection
+  React.useEffect(() => {
+    if (isSelected && !wasSelectedRef.current && !reducedMotion) {
+      selectionScale.value = withSpring(1.04, { damping: 20, stiffness: 100, overshootClamping: true });
+      setTimeout(() => {
+        selectionScale.value = withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true });
+      }, 100);
+    }
+    wasSelectedRef.current = isSelected;
+  }, [isSelected, reducedMotion]);
 
   const animatedFaceStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: pressY.value }],
+    transform: [{ translateY: pressY.value }, { scale: selectionScale.value }],
   }));
 
   const handlePressIn = useCallback(() => {
@@ -134,7 +148,10 @@ export function Card({
     onPress?.();
   }, [isInteractive, haptic, onPress]);
 
-  const hasPadding = contentClassName.includes("p-") || contentClassName.includes("px-") || contentClassName.includes("py-");
+  const hasPadding =
+    contentClassName.includes("p-") ||
+    contentClassName.includes("px-") ||
+    contentClassName.includes("py-");
   const paddingClass = hasPadding ? "" : "p-4";
 
   const cardLayers = (
@@ -159,7 +176,9 @@ export function Card({
         style={[animatedFaceStyle, faceStyle]}
         className={`${config.faceClass} ${radiusClass}`}
       >
-        <View className={`${paddingClass} ${contentClassName}`}>{children}</View>
+        <View className={`${paddingClass} ${contentClassName}`}>
+          {children}
+        </View>
       </Animated.View>
     </>
   );
@@ -171,11 +190,7 @@ export function Card({
 
   if (!isInteractive) {
     return (
-      <View
-        style={containerStyle}
-        className={className}
-        {...rest}
-      >
+      <View style={containerStyle} className={className} {...rest}>
         {cardLayers}
       </View>
     );

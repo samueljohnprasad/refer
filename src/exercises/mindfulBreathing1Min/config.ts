@@ -3,7 +3,7 @@ import type {
   MindfulBreathing1MinResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { CountdownTimerStep } from "@/src/components/exercise/steps/CountdownTimerStep";
@@ -110,17 +110,15 @@ export const mindfulBreathing1MinConfig: ExerciseConfig<MindfulBreathing1MinResp
       },
       {
         id: "summary",
-        component: createSummaryStep<MindfulBreathing1MinResponse>(
-          [
-            { label: "Before", key: "preRating" },
-            { label: "After", key: "postRating" },
-            { label: "Mind Wandered", key: "wanderCount" },
-          ],
-          {
-            title: "Mindful moment complete!",
-            exerciseType: "mindful_breathing_1min",
-          },
-        ),
+        component: createDynamicSummaryStep({
+          title: "Mindful moment complete!",
+          celebrationEmoji: "🍃",
+          exerciseType: "mindful_breathing_1min",
+          preScoreKey: "preRating",
+          postScoreKey: "postRating",
+          scoreLabel: "Presence level",
+          scoreMax: 10,
+        }),
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,

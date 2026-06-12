@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import * as Haptics from "expo-haptics";
 import {
   View,
@@ -8,6 +8,15 @@ import {
   BackHandler,
   Text as RNText,
 } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSpring,
+  withDelay,
+  runOnJS,
+  Easing,
+} from "react-native-reanimated";
 import { Text } from "@/src/components/ui/Text";
 import { useRouter } from "expo-router";
 import { useNavigation } from "expo-router/react-navigation";
@@ -21,6 +30,55 @@ import type {
 } from "@/src/types/exerciseFlow";
 import { useSingleExerciseEntry } from "@/src/hooks/useSingleExerciseEntry";
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
+
+// ─── Animated step transition wrapper ────────────────────────────────────────
+
+function AnimatedStepContainer({
+  stepIndex,
+  className,
+  children,
+}: {
+  stepIndex: number;
+  className: string;
+  children: React.ReactNode;
+}) {
+  const opacity = useSharedValue(1);
+  const translateX = useSharedValue(0);
+  const prevStepRef = useRef(stepIndex);
+
+  useEffect(() => {
+    if (prevStepRef.current === stepIndex) return;
+    const isForward = stepIndex > prevStepRef.current;
+    prevStepRef.current = stepIndex;
+
+    // Exit: fade out + slight slide in direction of travel
+    opacity.value = 0;
+    translateX.value = isForward ? 24 : -24;
+
+    // Enter: spring in from offset
+    opacity.value = withDelay(
+      60,
+      withTiming(1, { duration: 220, easing: Easing.out(Easing.cubic) }),
+    );
+    translateX.value = withDelay(
+      60,
+      withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true }),
+    );
+  }, [stepIndex]);
+
+  const animStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  return (
+    <Animated.View className={className} style={animStyle}>
+      {children}
+    </Animated.View>
+  );
+}
+
+// ─── Types ───────────────────────────────────────────────────────────────────
 
 interface ExerciseFlowScreenProps {
   exerciseType: ExerciseType;
@@ -40,10 +98,7 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-white">
         <Text className="text-lg text-slate-500">Exercise not found</Text>
-        <Pressable
-          onPress={() => router.back()}
-          className="mt-4"
-        >
+        <Pressable onPress={() => router.back()} className="mt-4">
           <Text className="text-base font-bold text-blue-500">Go back</Text>
         </Pressable>
       </SafeAreaView>
@@ -106,8 +161,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const currentStep = config?.steps[flow.currentStepIndex];
   const ai = useExerciseAI(currentStep?.ai);
   const isFinalStep = flow.currentStepIndex === flow.totalSteps - 1;
-  const usesEmbeddedHeader =
-    exerciseType === "abc_analysis";
+  const usesEmbeddedHeader = exerciseType === "abc_analysis";
 
   const exitScreen = useCallback(() => {
     isConfirmedExitRef.current = true;
@@ -245,10 +299,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
             hitSlop={12}
             className="w-11 h-11 rounded-full items-center justify-center active:bg-slate-100 bg-transparent"
           >
-            <Text
-              variant="h3"
-              className="text-ink-soft text-[20px] font-bold"
-            >
+            <Text variant="h3" className="text-ink-soft text-[20px] font-bold">
               ✕
             </Text>
           </Pressable>
@@ -272,7 +323,10 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
         </View>
       ) : null}
 
-      <View className={`flex-1 ${usesEmbeddedHeader ? "px-5 pb-6 pt-4" : "px-5 pb-4"}`}>
+      <AnimatedStepContainer
+        stepIndex={flow.currentStepIndex}
+        className={`flex-1 ${usesEmbeddedHeader ? "px-5 pb-6 pt-4" : "px-5 pb-4"}`}
+      >
         {StepComponent ? (
           <StepComponent {...stepProps} />
         ) : (
@@ -280,7 +334,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
             <Text className="text-slate-400">Unknown step</Text>
           </View>
         )}
-      </View>
+      </AnimatedStepContainer>
     </SafeAreaView>
   );
 };

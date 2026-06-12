@@ -29,16 +29,9 @@ export const Dots: React.FC<DotsProps> = React.memo(
 
       return {
         // Premium spring animation with custom config
-        width: withSpring(activeWidth, {
-          damping: 18,
-          stiffness: 120,
-          mass: 1,
-        }),
+        width: withSpring(activeWidth, { damping: 20, stiffness: 100, overshootClamping: true }),
         // Subtle opacity animation for smoothness
-        opacity: withSpring(0.95, {
-          damping: 20,
-          stiffness: 100,
-        }),
+        opacity: withSpring(0.95, { damping: 20, stiffness: 100, overshootClamping: true }),
       };
     }, []);
 

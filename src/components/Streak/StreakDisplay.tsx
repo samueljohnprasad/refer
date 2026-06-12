@@ -20,7 +20,7 @@ import {
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { Button } from "@/src/components/ui/Button";
-import { GOLD, PARROT_ORANGE } from "@/lib/tokens";
+import { GOLD, PARROT_ORANGE, SAGE } from "@/lib/tokens";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -45,20 +45,21 @@ const WeekDayLabels: React.FC<{ weeklyProgress: boolean[] }> = React.memo(
         <Text
           key={day}
           variant="label-bold"
-          className={`w-9 text-center ${weeklyProgress[index] ? "text-bee-yellow" : "text-ink-muted"
-            }`}
+          className={`w-9 text-center ${
+            weeklyProgress[index] ? "text-bee-yellow" : "text-ink-muted"
+          }`}
         >
           {day}
         </Text>
       ))}
     </View>
-  )
+  ),
 );
 WeekDayLabels.displayName = "WeekDayLabels";
 
 /** Day progress circles — filled for completed, star for last day */
-const WeekProgressCircles: React.FC<{ weeklyProgress: boolean[] }> =
-  React.memo(({ weeklyProgress }) => (
+const WeekProgressCircles: React.FC<{ weeklyProgress: boolean[] }> = React.memo(
+  ({ weeklyProgress }) => (
     <View className="flex-row justify-between items-center">
       {weeklyProgress.map((completed, index) => (
         <View
@@ -89,7 +90,8 @@ const WeekProgressCircles: React.FC<{ weeklyProgress: boolean[] }> =
         </View>
       ))}
     </View>
-  ));
+  ),
+);
 WeekProgressCircles.displayName = "WeekProgressCircles";
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -109,30 +111,30 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
   const handleUseFreeze = async (): Promise<void> => {
     if (streakData.streakFreezeCount <= 0) {
       Alert.alert(
-        "No Freezes Available",
-        "You don't have any streak freezes remaining."
+        "No rest days left",
+        "You've used all your rest days this period. Keep showing up and you'll earn more!",
       );
       return;
     }
 
     Alert.alert(
-      "Use Streak Freeze?",
-      `You have ${streakData.streakFreezeCount} freeze(s) available. Using one will protect your streak for today.`,
+      "Take a rest day?",
+      `You have ${streakData.streakFreezeCount} rest day${streakData.streakFreezeCount === 1 ? "" : "s"} available. Using one keeps your streak safe while you take a break.`,
       [
-        { text: "Cancel", style: "cancel" },
+        { text: "Not now", style: "cancel" },
         {
-          text: "Use Freeze",
+          text: "Take rest day",
           onPress: async () => {
             const success = await useStreakFreeze();
             if (success) {
               Alert.alert(
-                "Streak Protected!",
-                "Your streak freeze has been applied."
+                "Rest day saved ✓",
+                "Your streak is safe. Rest well — you've earned it.",
               );
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -175,7 +177,6 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
           >
             <RNHostView>
               <View className="flex-1 happy-brand-screen items-center px-6 pt-4 pb-8">
-
                 {/* ── Fire Lottie + streak number ────────────────────── */}
                 <View className="items-center mb-6">
                   <View
@@ -213,14 +214,23 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                   {/* "day streak!" label — parrot-orange matches the flame */}
                   <RNText
                     className="text-[22px] leading-[26px] mt-2 text-center"
-                    style={{ fontFamily: "FrauncesSemiBold", color: PARROT_ORANGE }}
+                    style={{
+                      fontFamily: "FrauncesSemiBold",
+                      color: PARROT_ORANGE,
+                    }}
                   >
                     day streak!
                   </RNText>
                 </View>
 
                 {/* ── Weekly calendar card ───────────────────────────── */}
-                <Card variant="tile" radius="xl" showDepth={false} className="w-full mb-6" contentClassName="p-6">
+                <Card
+                  variant="tile"
+                  radius="xl"
+                  showDepth={false}
+                  className="w-full mb-6"
+                  contentClassName="p-6"
+                >
                   <WeekDayLabels weeklyProgress={streakData.weeklyProgress} />
                   <WeekProgressCircles
                     weeklyProgress={streakData.weeklyProgress}
@@ -264,7 +274,9 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                           size={16}
                           color={PARROT_ORANGE}
                         />
-                        <Text variant="h3">{String(streakData.longestStreak)}</Text>
+                        <Text variant="h3">
+                          {String(streakData.longestStreak)}
+                        </Text>
                       </View>
                     </View>
 
@@ -282,19 +294,17 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                     />
                   </View>
 
-                  {/* Streak-at-risk warning */}
+                  {/* Gentle streak reminder */}
                   {streakData.isStreakAtRisk && (
-                    <View className="bg-bee-yellow-tint rounded-xl p-3 mt-4 flex-row items-center gap-2">
+                    <View className="bg-sage-pill rounded-xl p-3 mt-4 flex-row items-center gap-2">
                       <HugeiconsIcon
                         icon={Alert02Icon}
                         size={20}
-                        color={GOLD}
+                        color={SAGE[500]}
                       />
-                      <Text
-                        variant="caption"
-                        className="flex-1 text-ink-soft"
-                      >
-                        Your streak is at risk! Journal now to keep it alive.
+                      <Text variant="caption" className="flex-1 text-sage-700">
+                        A quick check-in today would keep your streak going. No
+                        pressure though — rest days exist for a reason.
                       </Text>
                     </View>
                   )}

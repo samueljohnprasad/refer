@@ -3,7 +3,7 @@ import type {
   Breathing478Response,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { BreathingTimerStep } from "@/src/components/exercise/steps/BreathingTimerStep";
@@ -104,13 +104,15 @@ export const breathing478Config: ExerciseConfig<Breathing478Response> = {
     },
     {
       id: "summary",
-      component: createSummaryStep<Breathing478Response>(
-        [
-          { label: "Before", key: "preCalmRating" },
-          { label: "After", key: "postCalmRating" },
-        ],
-        { title: "Well done!", exerciseType: "breathing_478" },
-      ),
+      component: createDynamicSummaryStep({
+        title: "Breathing complete!",
+        celebrationEmoji: "🌊",
+        exerciseType: "breathing_478",
+        preScoreKey: "preCalmRating",
+        postScoreKey: "postCalmRating",
+        scoreLabel: "Calm level",
+        scoreMax: 10,
+      }),
       label: "Summary",
       validate: () => true,
       excludeFromProgress: true,

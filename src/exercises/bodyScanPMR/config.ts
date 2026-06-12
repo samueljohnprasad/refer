@@ -3,7 +3,7 @@ import type {
   BodyScanPMRResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { ChecklistStep } from "@/src/components/exercise/steps/ChecklistStep";
@@ -95,14 +95,15 @@ export const bodyScanPMRConfig: ExerciseConfig<BodyScanPMRResponse> = {
     },
     {
       id: "summary",
-      component: createSummaryStep<BodyScanPMRResponse>(
-        [
-          { label: "Tension Before", key: "preTensionRating" },
-          { label: "Tension After", key: "postTensionRating" },
-          { label: "Areas Completed", key: "completedAreas" },
-        ],
-        { title: "Body released!", exerciseType: "body_scan_pmr" },
-      ),
+      component: createDynamicSummaryStep({
+        title: "Body released!",
+        celebrationEmoji: "💆",
+        exerciseType: "body_scan_pmr",
+        preScoreKey: "preTensionRating",
+        postScoreKey: "postTensionRating",
+        scoreLabel: "Tension level",
+        scoreMax: 10,
+      }),
       label: "Summary",
       validate: () => true,
       excludeFromProgress: true,

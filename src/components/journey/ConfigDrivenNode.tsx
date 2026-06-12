@@ -341,8 +341,8 @@ function ConfigDrivenNodeInner({
   useEffect(() => {
     if (isCompleted && prevStatusRef.current === "active" && !reducedMotion) {
       popScale.value = withSequence(
-        withSpring(1.3, { damping: 8, stiffness: 200 }),
-        withSpring(1, { damping: 12, stiffness: 180 }),
+        withSpring(1.3, { damping: 20, stiffness: 100, overshootClamping: true }),
+        withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
       );
     }
     prevStatusRef.current = node.status;

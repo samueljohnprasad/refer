@@ -49,7 +49,7 @@ export const XPGainAnimation: React.FC<XPGainAnimationProps> = ({
 
     // Float upward: spring to -20px, then drift further and fade out
     translateY.value = withSequence(
-      withSpring(-22, { stiffness: 280, damping: 18 }),
+      withSpring(-22, { damping: 20, stiffness: 100, overshootClamping: true }),
       withDelay(
         1100,
         withTiming(-44, { duration: DURATION.slow }),

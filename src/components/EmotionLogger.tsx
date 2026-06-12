@@ -48,8 +48,8 @@ const EmotionItem: React.FC<{
   useEffect(() => {
     if (count > 0) {
       countScale.value = withSequence(
-        withSpring(1.2, { damping: 12, stiffness: 200 }),
-        withSpring(1, { damping: 14, stiffness: 150 }),
+        withSpring(1.2, { damping: 20, stiffness: 100, overshootClamping: true }),
+        withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
       );
     }
   }, [count]);

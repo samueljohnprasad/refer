@@ -43,10 +43,7 @@ export const ReminderCard: React.FC<ReminderCardProps> = React.memo(
     const toggleScale = useSharedValue(isSelected ? 1 : 0);
 
     React.useEffect(() => {
-      toggleScale.value = withSpring(isSelected ? 1 : 0, {
-        damping: 15,
-        stiffness: 100,
-      });
+      toggleScale.value = withSpring(isSelected ? 1 : 0, { damping: 20, stiffness: 100, overshootClamping: true });
     }, [isSelected]);
 
     const toggleAnimatedStyle = useAnimatedStyle(() => {

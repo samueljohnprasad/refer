@@ -15,39 +15,34 @@ import {
 
 // ─── Spring Presets ───────────────────────────────────────────────────────────
 
-/** For modals, full-screen transitions (~500ms settle) */
 export const SPRING_GENTLE: WithSpringConfig = {
-  stiffness: 120,
-  damping: 14,
-  mass: 1,
-};
-
-/** General-purpose buttons, state changes (~350ms settle) */
-export const SPRING_DEFAULT: WithSpringConfig = {
-  stiffness: 220,
-  damping: 22,
-  mass: 1,
-};
-
-/** Toggles, tabs, quick press feedback (~200ms settle) */
-export const SPRING_SNAPPY: WithSpringConfig = {
-  stiffness: 420,
-  damping: 28,
-  mass: 1,
-};
-
-/** Celebrations, XP gains, achievements (~600ms settle) */
-export const SPRING_BOUNCY: WithSpringConfig = {
-  stiffness: 320,
-  damping: 10,
-  mass: 1,
-};
-
-/** Duolingo-style 3D press: snappy down, natural bounce-back (~250ms settle) */
-export const SPRING_DUOLINGO_PRESS: WithSpringConfig = {
-  stiffness: 300,
+  stiffness: 100,
   damping: 20,
-  mass: 0.4,
+  overshootClamping: true,
+};
+
+export const SPRING_DEFAULT: WithSpringConfig = {
+  stiffness: 100,
+  damping: 20,
+  overshootClamping: true,
+};
+
+export const SPRING_SNAPPY: WithSpringConfig = {
+  stiffness: 100,
+  damping: 20,
+  overshootClamping: true,
+};
+
+export const SPRING_BOUNCY: WithSpringConfig = {
+  stiffness: 100,
+  damping: 20,
+  overshootClamping: true,
+};
+
+export const SPRING_DUOLINGO_PRESS: WithSpringConfig = {
+  stiffness: 100,
+  damping: 20,
+  overshootClamping: true,
 };
 
 // ─── Timing Durations (ms) ────────────────────────────────────────────────────

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { View, TextInput, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
 import { StepLayout } from "./StepLayout";
+import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
+import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
 
 interface MultiTextInputStepProps extends StepProps {
@@ -12,6 +14,8 @@ interface MultiTextInputStepProps extends StepProps {
   minItems?: number;
   maxItems?: number;
   maxLength?: number;
+  validationMessage?: string;
+  psychoeducationText?: string;
 }
 
 export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
@@ -33,6 +37,8 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     maxItems = 10,
     maxLength = 200,
     isSaving,
+    validationMessage,
+    psychoeducationText,
   }) => {
     const items: string[] = (response as Record<string, any>)[fieldKey] ?? [];
     const [draft, setDraft] = useState("");
@@ -62,6 +68,13 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
         isLoading={isSaving}
         scrollable
       >
+        <PsychoeducationCard content={psychoeducationText ?? ""} />
+
+        <ValidationMessage
+          message={validationMessage ?? ""}
+          visible={!!validationMessage && items.length > 0}
+        />
+
         {/* Existing items */}
         {items.map((item, i) => (
           <View

@@ -4,6 +4,7 @@ import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { StepLayout } from "./StepLayout";
+import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import { SAGE, INK_SOFT } from "@/lib/tokens";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
@@ -23,6 +24,7 @@ interface ChoiceStepProps extends StepProps {
   fieldKey: string;
   options: ChoiceOption[];
   autoAdvance?: boolean;
+  psychoeducationText?: string;
 }
 
 export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
@@ -42,6 +44,7 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
     options,
     autoAdvance = false,
     isSaving,
+    psychoeducationText,
   }) => {
     const selected = (response as Record<string, any>)[fieldKey];
 
@@ -66,10 +69,14 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
         isLoading={isSaving}
         scrollable
       >
+        <PsychoeducationCard content={psychoeducationText ?? ""} />
+
         <View className="gap-3 w-full">
           {options.map((opt, i) => {
             const isSelected = selected === opt.value;
-            const resolvedIcon = opt.iconKey ? getContentIcon(opt.iconKey) : null;
+            const resolvedIcon = opt.iconKey
+              ? getContentIcon(opt.iconKey)
+              : null;
 
             return (
               <FadeInItem key={opt.value} index={i} delayPerItem={40}>
@@ -111,7 +118,13 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
                   <View className="ml-2">
                     {isSelected ? (
                       <View className="w-6 h-6 rounded-full items-center justify-center bg-sage-500 border border-sage-600">
-                        <Text variant="chip" color="surface" className="font-extrabold text-[11px] leading-none">✓</Text>
+                        <Text
+                          variant="chip"
+                          color="surface"
+                          className="font-extrabold text-[11px] leading-none"
+                        >
+                          ✓
+                        </Text>
                       </View>
                     ) : (
                       <View className="w-6 h-6 rounded-full border-2 border-brand-border bg-brand-surface" />

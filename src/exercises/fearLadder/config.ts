@@ -3,7 +3,7 @@ import type {
   FearLadderResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
@@ -54,6 +54,8 @@ export const fearLadderConfig: ExerciseConfig<FearLadderResponse> = {
         fieldKey: "fears",
         placeholder: "A situation I fear...",
         minItems: 1,
+        validationMessage:
+          "Every fear on that list took courage to write. We'll start with the smallest one.",
       }),
       label: "List your fears",
       validate: (r) => r.fears.length >= 1,
@@ -88,6 +90,8 @@ export const fearLadderConfig: ExerciseConfig<FearLadderResponse> = {
         subtitle: "How will you safely face this fear?",
         fieldKey: "exposurePlan",
         placeholder: "My plan is to...",
+        psychoeducationText:
+          "Each safe exposure updates your brain's threat map. Anxiety decreases predictably with repetition — it's not courage, it's science.",
       }),
       label: "Plan your exposure",
       validate: (r) => r.exposurePlan.trim().length >= 1,
@@ -133,15 +137,17 @@ export const fearLadderConfig: ExerciseConfig<FearLadderResponse> = {
     },
     {
       id: "summary",
-      component: createSummaryStep<FearLadderResponse>(
-        [
-          { label: "First Rung", key: "firstRung" },
-          { label: "Anxiety Before", key: "anxietyBefore" },
-          { label: "Anxiety After", key: "anxietyAfter" },
-          { label: "Insight", key: "habituationInsight" },
-        ],
-        { title: "Brave step taken!", exerciseType: "fear_ladder" },
-      ),
+      component: createDynamicSummaryStep({
+        title: "Brave step taken!",
+        celebrationEmoji: "🪜",
+        exerciseType: "fear_ladder",
+        preScoreKey: "anxietyBefore",
+        postScoreKey: "anxietyAfter",
+        scoreLabel: "Anxiety level",
+        scoreMax: 10,
+        keyTakeawayKey: "habituationInsight",
+        keyTakeawayLabel: "What you learned",
+      }),
       label: "Summary",
       validate: () => true,
       excludeFromProgress: true,

@@ -343,10 +343,7 @@ const DailyNotesHeader = React.memo(
     const bookmarkWobble = useSharedValue(0);
     const handleBookmarkPressInternal = useCallback(() => {
       bookmarkWobble.value = -30;
-      bookmarkWobble.value = withSpring(0, {
-        damping: 3,
-        stiffness: 200,
-      });
+      bookmarkWobble.value = withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true });
       onBookmarksPress?.();
     }, [onBookmarksPress, bookmarkWobble]);
 

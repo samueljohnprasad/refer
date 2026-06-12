@@ -3,7 +3,7 @@ import type {
   AttentionTrainingResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { CountdownTimerStep } from "@/src/components/exercise/steps/CountdownTimerStep";
@@ -74,6 +74,8 @@ export const attentionTrainingConfig: ExerciseConfig<AttentionTrainingResponse> 
             label: "Focus on sound 1",
           },
           completedFieldKey: "sound1Completed",
+          psychoeducationText:
+            "Self-focused attention maintains anxiety. Training your attention to move outward interrupts the anxiety cycle at its source.",
         }),
         label: "Focus on sound 1 (30s)",
         validate: (r) => r.sound1Completed,
@@ -159,13 +161,15 @@ export const attentionTrainingConfig: ExerciseConfig<AttentionTrainingResponse> 
       },
       {
         id: "summary",
-        component: createSummaryStep<AttentionTrainingResponse>(
-          [
-            { label: "Before", key: "preRating" },
-            { label: "After", key: "postRating" },
-          ],
-          { title: "Attention trained!", exerciseType: "attention_training" },
-        ),
+        component: createDynamicSummaryStep({
+          title: "Attention trained!",
+          celebrationEmoji: "🎯",
+          exerciseType: "attention_training",
+          preScoreKey: "preRating",
+          postScoreKey: "postRating",
+          scoreLabel: "How stuck in head",
+          scoreMax: 10,
+        }),
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,

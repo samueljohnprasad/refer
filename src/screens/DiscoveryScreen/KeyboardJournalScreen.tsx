@@ -66,10 +66,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const formattedDate = format(localSelectedDate, "MMMM d, yyyy");
 
   const handleShufflePrompt = useCallback(() => {
-    rotation.value = withSpring(rotation.value + 360, {
-      damping: 15,
-      stiffness: 150,
-    });
+    rotation.value = withSpring(rotation.value + 360, { damping: 20, stiffness: 100, overshootClamping: true });
     shufflePrompt();
   }, [rotation, shufflePrompt]);
 

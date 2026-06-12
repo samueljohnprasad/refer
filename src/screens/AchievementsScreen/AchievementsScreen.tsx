@@ -97,7 +97,12 @@ const IconBubble: React.FC<{
     className="happy-brand-soft-chip items-center justify-center"
     style={{ width: size, height: size, backgroundColor: bg }}
   >
-    <HugeiconsIcon icon={icon} size={iconSize} color={color} strokeWidth={1.8} />
+    <HugeiconsIcon
+      icon={icon}
+      size={iconSize}
+      color={color}
+      strokeWidth={1.8}
+    />
   </View>
 );
 
@@ -188,9 +193,7 @@ const StatCard: React.FC<StatCardProps> = ({
 /** Shown when the achievements list is empty after loading. */
 const EmptyState: React.FC = () => (
   <View className="items-center justify-center px-8 py-12">
-    <View
-      className="happy-mascot-stage w-20 h-20 rounded-[28px] items-center justify-center mb-4"
-    >
+    <View className="happy-mascot-stage w-20 h-20 rounded-[28px] items-center justify-center mb-4">
       <Mascot state="panda-yet-sleep-pillow" size={52} />
     </View>
     <Text className="happy-font-heading-bold text-lg text-ink text-center mb-1">
@@ -355,41 +358,13 @@ export const AchievementsScreen: React.FC = () => {
         contentContainerStyle={styles.scrollContent}
         accessibilityLabel="Achievements scroll view"
       >
-        <View className="px-4 pt-1 pb-4">
-          <Card
-            variant="tile"
-            radius="lg"
-            showDepth={false}
-            contentClassName="px-4 py-3 flex-row items-center gap-3"
-          >
-            <View className="h-14 w-14 items-center justify-center rounded-2xl">
-              <Mascot state="panda-super-excite" size={44} />
-            </View>
-            <View className="flex-1">
-              <Text className="happy-font-body-bold text-base text-ink">
-                Small wins add up
-              </Text>
-              <Text className="happy-font-body-medium mt-0.5 text-[13px] leading-5 text-ink-muted">
-                Complete journals, streaks, and habits to grow your badge
-                collection.
-              </Text>
-            </View>
-          </Card>
-        </View>
-
         {/* ── Your Progress ── */}
         <View className="px-4 pt-3 pb-2">
-          <Text className="happy-brand-eyebrow mb-3">
-            Your Progress
-          </Text>
+          <Text className="happy-brand-eyebrow mb-3">Your Progress</Text>
 
           <StatCard
             icon={
-              <IconBubble
-                icon={Medal01Icon}
-                color={SAGE[500]}
-                bg={SAGE.pill}
-              />
+              <IconBubble icon={Medal01Icon} color={SAGE[500]} bg={SAGE.pill} />
             }
             label="Badges Unlocked"
             value={String(unlockedCount)}
@@ -443,9 +418,7 @@ export const AchievementsScreen: React.FC = () => {
             allBadgesOffsetY.current = event.nativeEvent.layout.y;
           }}
         >
-          <Text className="happy-brand-eyebrow">
-            All Badges
-          </Text>
+          <Text className="happy-brand-eyebrow">All Badges</Text>
         </View>
 
         {/* Empty state */}
@@ -457,8 +430,12 @@ export const AchievementsScreen: React.FC = () => {
             const categoryAchievements = getAchievementsByCategory(category);
             if (categoryAchievements.length === 0) return null;
 
-            const { label, icon: categoryIcon, color, bg } =
-              CATEGORY_CONFIG[category];
+            const {
+              label,
+              icon: categoryIcon,
+              color,
+              bg,
+            } = CATEGORY_CONFIG[category];
             const categoryUnlocked = categoryAchievements.filter(
               (a) => a.isUnlocked,
             ).length;

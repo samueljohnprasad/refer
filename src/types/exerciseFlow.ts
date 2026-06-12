@@ -301,6 +301,8 @@ export interface ThoughtReframingResponse {
   evidenceFor: string[];
   evidenceAgainst: string[];
   balancedThought: string;
+  intensity: number;
+  postIntensity?: number;
 }
 
 export interface GratitudeReframeResponse {
@@ -366,6 +368,7 @@ export interface WorryTimeResponse {
   worries: string[];
   resolvedWorries: string[];
   actionPlans: Record<string, string>;
+  actionOrAcceptStatement: string;
   reflection: string;
   preAnxietyRating: number;
   postAnxietyRating: number;
@@ -463,3 +466,18 @@ export type ResponseForType<T extends ExerciseType> = ExerciseResponseMap[T];
 
 /** Union of all exercise response types */
 export type ExerciseResponse = ExerciseResponseMap[ExerciseType];
+
+// ─── Coping Card ─────────────────────────────────────────────────────────────
+
+export interface CopingCard {
+  id: string;
+  user_id: string;
+  exercise_type: ExerciseType;
+  exercise_entry_id?: string;
+  original_thought?: string;
+  reframe_text: string;
+  reframe_label: string;
+  starred: boolean;
+  archived: boolean;
+  created_at: string;
+}

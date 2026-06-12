@@ -36,8 +36,8 @@ export const CoinsBadge: React.FC<CoinsBadgeProps> = ({
 
   const handlePress = (): void => {
     scale.value = withSequence(
-      withSpring(1.2, { damping: 10 }),
-      withSpring(1, { damping: 10 }),
+      withSpring(1.2, { damping: 20, stiffness: 100, overshootClamping: true }),
+      withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
     );
     onPress?.();
   };

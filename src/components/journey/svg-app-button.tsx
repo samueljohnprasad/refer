@@ -168,13 +168,7 @@ export const SvgAppButton = ({
 
   const handlePressOut = () => {
     onPressOut?.();
-    pressY.value = withSpring(0, {
-      damping: 16,
-      stiffness: 240,
-      mass: 0.9,
-      overshootClamping: false,
-      reduceMotion: ReduceMotion.System,
-    });
+    pressY.value = withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true });
   };
 
   return (

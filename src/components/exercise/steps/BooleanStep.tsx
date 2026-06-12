@@ -3,6 +3,7 @@ import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { StepLayout } from "./StepLayout";
+import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
 
@@ -21,6 +22,7 @@ interface BooleanStepProps extends StepProps {
   /** @deprecated Use noIconKey instead */
   noEmoji?: string;
   autoAdvance?: boolean;
+  psychoeducationText?: string;
 }
 
 export const BooleanStep: React.FC<BooleanStepProps> = React.memo(
@@ -45,6 +47,7 @@ export const BooleanStep: React.FC<BooleanStepProps> = React.memo(
     noEmoji = "❌",
     autoAdvance = true,
     isSaving,
+    psychoeducationText,
   }) => {
     const value = (response as Record<string, any>)[fieldKey];
 
@@ -68,6 +71,8 @@ export const BooleanStep: React.FC<BooleanStepProps> = React.memo(
         onNext={onNext}
         isLoading={isSaving}
       >
+        <PsychoeducationCard content={psychoeducationText ?? ""} />
+
         <View className="flex-1 justify-center gap-4">
           {[
             {

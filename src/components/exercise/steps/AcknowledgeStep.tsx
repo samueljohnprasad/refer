@@ -2,6 +2,7 @@ import React from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
 import { StepLayout } from "./StepLayout";
+import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
 
 interface AcknowledgeStepProps extends StepProps {
@@ -10,6 +11,7 @@ interface AcknowledgeStepProps extends StepProps {
   fieldKey: string;
   body: string;
   buttonLabel?: string;
+  psychoeducationText?: string;
 }
 
 export const AcknowledgeStep: React.FC<AcknowledgeStepProps> = React.memo(
@@ -29,6 +31,7 @@ export const AcknowledgeStep: React.FC<AcknowledgeStepProps> = React.memo(
     body,
     buttonLabel = "I understand",
     isSaving,
+    psychoeducationText,
   }) => {
     const acknowledged = (response as Record<string, any>)[fieldKey] === true;
 
@@ -46,6 +49,8 @@ export const AcknowledgeStep: React.FC<AcknowledgeStepProps> = React.memo(
         isLoading={isSaving}
       >
         <View className="flex-1">
+          <PsychoeducationCard content={psychoeducationText ?? ""} />
+
           <View
             className="bg-slate-50 rounded-2xl p-5 mb-6"
             style={{ borderWidth: 1, borderColor: "#E2E8F0" }}

@@ -3,6 +3,7 @@ import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { StepLayout } from "./StepLayout";
+import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
 
@@ -21,6 +22,7 @@ interface MultiChoiceStepProps extends StepProps {
   fieldKey: string;
   options: MultiChoiceOption[];
   maxSelections?: number;
+  psychoeducationText?: string;
 }
 
 export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
@@ -40,6 +42,7 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
     options,
     maxSelections = 5,
     isSaving,
+    psychoeducationText,
   }) => {
     const selected: string[] =
       (response as Record<string, any>)[fieldKey] ?? [];
@@ -67,6 +70,8 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
         isLoading={isSaving}
         scrollable
       >
+        <PsychoeducationCard content={psychoeducationText ?? ""} />
+
         <View className="flex-row flex-wrap gap-2">
           {options.map((opt) => {
             const isSelected = selected.includes(opt.value);

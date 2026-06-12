@@ -1,11 +1,18 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { View, TextInput, Pressable, ActivityIndicator } from 'react-native';
-import { Text } from '@/components/ui/text';
-import { HugeiconsIcon } from '@hugeicons/react-native';
-import { Mic01Icon, StopIcon } from '@hugeicons/core-free-icons';
-import useAudioRecording from '@/hooks/useAudioRecording';
-import { useTranscribeAudio } from '@/hooks/useTranscribeAudio';
-import * as Haptics from 'expo-haptics';
+import React, { useState, useCallback, useEffect } from "react";
+import { View, TextInput, Pressable, ActivityIndicator } from "react-native";
+import { Text } from "@/components/ui/text";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Mic01Icon, StopCircleIcon } from "@hugeicons/core-free-icons";
+import useAudioRecording from "@/hooks/useAudioRecording";
+import { useTranscribeAudio } from "@/hooks/useTranscribeAudio";
+import {
+  SAGE,
+  BRAND_SURFACE,
+  BRAND_BORDER,
+  INK,
+  INK_MUTED,
+} from "@/lib/tokens";
+import * as Haptics from "expo-haptics";
 
 interface VoiceTextInputProps {
   /** Current text value */
@@ -32,16 +39,17 @@ export const VoiceTextInput: React.FC<VoiceTextInputProps> = React.memo(
   ({
     value,
     onChangeText,
-    placeholder = 'Start typing or tap mic to speak...',
+    placeholder = "Start typing or tap mic to speak...",
     maxLength = 500,
     showCharCount = true,
     minHeight = 140,
   }) => {
-    const { recordingCurrentState, record, stopRecording } = useAudioRecording();
+    const { recordingCurrentState, record, stopRecording } =
+      useAudioRecording();
     const { transcribeAudio, isTranscribing } = useTranscribeAudio();
     const [localValue, setLocalValue] = useState(value);
-    
-    const isRecording = recordingCurrentState === 'recording';
+
+    const isRecording = recordingCurrentState === "recording";
 
     // Sync local value with prop when not transcribing
     useEffect(() => {
@@ -58,15 +66,25 @@ export const VoiceTextInput: React.FC<VoiceTextInputProps> = React.memo(
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           const result = await transcribeAudio(uri);
           if (result && result.transcript) {
-            const separator: string = value.trim().length > 0 ? '\n' : '';
-            onChangeText((value + separator + result.transcript).slice(0, maxLength));
+            const separator: string = value.trim().length > 0 ? "\n" : "";
+            onChangeText(
+              (value + separator + result.transcript).slice(0, maxLength),
+            );
           }
         }
       } else {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         await record();
       }
-    }, [isRecording, record, stopRecording, transcribeAudio, value, onChangeText, maxLength]);
+    }, [
+      isRecording,
+      record,
+      stopRecording,
+      transcribeAudio,
+      value,
+      onChangeText,
+      maxLength,
+    ]);
 
     const charCount: number = value.length;
 
@@ -81,42 +99,58 @@ export const VoiceTextInput: React.FC<VoiceTextInputProps> = React.memo(
                 onChangeText(text);
               }
             }}
-            placeholder={isRecording ? 'Listening...' : placeholder}
-            placeholderTextColor="#94A3B8"
+            placeholder={isRecording ? "Listening..." : placeholder}
+            placeholderTextColor={INK_MUTED}
             multiline
             textAlignVertical="top"
             maxLength={maxLength}
             editable={!isTranscribing}
-            className={`bg-white border rounded-2xl p-4 pb-16 text-base text-slate-700 ${
-              isRecording ? 'border-red-200 bg-red-50/30' : 'border-slate-100'
-            }`}
-            style={{ minHeight }}
+            className="rounded-2xl p-4 pb-16 text-[17px] happy-font-body border-2"
+            style={{
+              minHeight,
+              backgroundColor: isRecording ? SAGE[50] : BRAND_SURFACE,
+              borderColor: isRecording ? SAGE[300] : BRAND_BORDER,
+              color: INK,
+            }}
           />
 
-          {/* Recording Button */}
+          {/* Recording button */}
           <View className="absolute right-3 bottom-3 flex-row items-center">
             {isTranscribing && (
-              <View className="mr-3 flex-row items-center bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
-                <ActivityIndicator size="small" color="#3B82F6" />
-                <Text className="text-[13px] font-bold text-slate-400 ml-2 tracking-tight">
+              <View
+                className="mr-3 flex-row items-center px-3 py-1.5 rounded-full border border-sage-200/50"
+                style={{ backgroundColor: SAGE[50] }}
+              >
+                <ActivityIndicator size="small" color={SAGE[500]} />
+                <Text className="text-[13px] font-bold text-sage-600 ml-2 tracking-tight">
                   Transcribing...
                 </Text>
               </View>
             )}
-            
+
             <Pressable
               onPress={handleToggleRecording}
               disabled={isTranscribing}
               accessibilityRole="button"
-              accessibilityLabel={isRecording ? 'Stop recording' : 'Start voice input'}
-              className={`h-12 w-12 rounded-full items-center justify-center shadow-sm ${
-                isRecording ? 'bg-red-500' : 'bg-blue-500'
-              } ${isTranscribing ? 'opacity-50' : ''}`}
+              accessibilityLabel={
+                isRecording ? "Stop recording" : "Start voice input"
+              }
+              className="h-11 w-11 rounded-full items-center justify-center"
+              style={{
+                backgroundColor: isRecording ? SAGE[600] : SAGE[500],
+                opacity: isTranscribing ? 0.5 : 1,
+                shadowColor: SAGE[700],
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 3,
+              }}
             >
               <HugeiconsIcon
-                icon={isRecording ? StopIcon : Mic01Icon}
-                size={24}
+                icon={isRecording ? StopCircleIcon : Mic01Icon}
+                size={20}
                 color="#ffffff"
+                strokeWidth={2}
               />
             </Pressable>
           </View>
@@ -124,16 +158,14 @@ export const VoiceTextInput: React.FC<VoiceTextInputProps> = React.memo(
 
         {showCharCount && (
           <Text
-            className={`text-xs mt-2 text-right ${
-              charCount > maxLength * 0.9 ? 'text-amber-500' : 'text-slate-400'
-            }`}
+            className={`text-right mt-1.5 text-[13px] text-slate-500 ${charCount > maxLength * 0.9 ? "text-amber-500" : ""}`}
           >
-            {charCount}/{maxLength}
+            {charCount} / {maxLength}
           </Text>
         )}
       </View>
     );
-  }
+  },
 );
 
-VoiceTextInput.displayName = 'VoiceTextInput';
+VoiceTextInput.displayName = "VoiceTextInput";

@@ -39,7 +39,11 @@ export type JourneySoundKey =
   | "chestClaim"
   | "unitComplete"
   | "lockedTap"
-  | "mascotTap";
+  | "mascotTap"
+  | "exerciseContinue"
+  | "exerciseSelect"
+  | "exerciseComplete"
+  | "timerDone";
 
 /**
  * Map of sound keys to require()-based asset sources.
@@ -49,13 +53,17 @@ export type JourneySoundKey =
  * The hook will gracefully skip null entries.
  */
 const SOUND_SOURCES: Record<JourneySoundKey, number | null> = {
-  nodeComplete: null, // TODO: require('@/assets/sounds/journey/node-complete.mp3')
-  nodeTap: null, // TODO: require('@/assets/sounds/journey/node-tap.mp3')
-  chestOpen: null, // TODO: require('@/assets/sounds/journey/chest-open.mp3')
-  chestClaim: null, // TODO: require('@/assets/sounds/journey/chest-claim.mp3')
-  unitComplete: null, // TODO: require('@/assets/sounds/journey/unit-complete.mp3')
-  lockedTap: null, // TODO: require('@/assets/sounds/journey/locked-tap.mp3')
-  mascotTap: null, // TODO: require('@/assets/sounds/journey/mascot-tap.mp3')
+  nodeComplete: null,
+  nodeTap: null,
+  chestOpen: null,
+  chestClaim: null,
+  unitComplete: null,
+  lockedTap: null,
+  mascotTap: null,
+  exerciseContinue: null,
+  exerciseSelect: null,
+  exerciseComplete: null,
+  timerDone: null,
 };
 
 // ---------------------------------------------------------------------------

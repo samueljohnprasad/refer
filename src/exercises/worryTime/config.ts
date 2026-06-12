@@ -3,7 +3,7 @@ import type {
   WorryTimeResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
@@ -15,6 +15,7 @@ const INITIAL: WorryTimeResponse = {
   worries: [],
   resolvedWorries: [],
   actionPlans: {},
+  actionOrAcceptStatement: "",
   reflection: "",
   preAnxietyRating: 5,
   postAnxietyRating: 5,
@@ -29,8 +30,14 @@ export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
   duration: "10-15 min",
   xp: 12,
   backgroundColor: "#fff",
-  schemaVersion: 2,
+  schemaVersion: 3,
   initialResponse: INITIAL,
+  migrate: (old, fromVersion) => {
+    if (fromVersion < 3) {
+      return { ...INITIAL, ...old, actionOrAcceptStatement: "" };
+    }
+    return old;
+  },
 
   steps: [
     {
@@ -67,6 +74,8 @@ export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
         subtitle: "Pick a 15-minute window for today's worry session.",
         fieldKey: "worryTimeSlot",
         placeholder: "e.g. 6:00 PM – 6:15 PM",
+        psychoeducationText:
+          "Postponing worry to a fixed window breaks the habit of constant background worrying that drains energy all day.",
       }),
       label: "Set your worry time",
       validate: (r) => r.worryTimeSlot.length > 0,
@@ -79,6 +88,8 @@ export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
         fieldKey: "worries",
         placeholder: "Add a worry...",
         minItems: 1,
+        validationMessage:
+          "It makes sense these feel heavy. Naming them is already the first step.",
       }),
       label: "List your worries",
       validate: (r) => r.worries.length >= 1,
@@ -99,7 +110,7 @@ export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
         title: "Action or Accept",
         subtitle:
           "For remaining worries, write an action plan or acceptance statement.",
-        fieldKey: "reflection",
+        fieldKey: "actionOrAcceptStatement",
         placeholder: "For this worry I will...",
       }),
       label: "Action plan or acceptance",
@@ -132,14 +143,17 @@ export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
     },
     {
       id: "summary",
-      component: createSummaryStep<WorryTimeResponse>(
-        [
-          { label: "Worry Time", key: "worryTimeSlot" },
-          { label: "Worries Captured", key: "worries" },
-          { label: "Reflection", key: "reflection" },
-        ],
-        { title: "Worry time done!", exerciseType: "worry_time" },
-      ),
+      component: createDynamicSummaryStep({
+        title: "Worry time done!",
+        celebrationEmoji: "📋",
+        exerciseType: "worry_time",
+        preScoreKey: "preAnxietyRating",
+        postScoreKey: "postAnxietyRating",
+        scoreLabel: "Anxiety level",
+        scoreMax: 10,
+        keyTakeawayKey: "actionOrAcceptStatement",
+        keyTakeawayLabel: "Your plan",
+      }),
       label: "Summary",
       validate: () => true,
       excludeFromProgress: true,

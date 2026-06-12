@@ -3,7 +3,7 @@ import type {
   Grounding54321Response,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
@@ -145,17 +145,15 @@ export const grounding54321Config: ExerciseConfig<Grounding54321Response> = {
     },
     {
       id: "summary",
-      component: createSummaryStep<Grounding54321Response>(
-        [
-          { label: "See", key: "see" },
-          { label: "Touch", key: "touch" },
-          { label: "Hear", key: "hear" },
-          { label: "Smell", key: "smell" },
-          { label: "Taste", key: "taste" },
-          { label: "Presence", key: "presenceRating" },
-        ],
-        { title: "Grounded!", exerciseType: "grounding_54321" },
-      ),
+      component: createDynamicSummaryStep({
+        title: "Grounded!",
+        celebrationEmoji: "🌱",
+        exerciseType: "grounding_54321",
+        preScoreKey: "prePresenceRating",
+        postScoreKey: "presenceRating",
+        scoreLabel: "Presence level",
+        scoreMax: 10,
+      }),
       label: "Summary",
       validate: () => true,
       excludeFromProgress: true,

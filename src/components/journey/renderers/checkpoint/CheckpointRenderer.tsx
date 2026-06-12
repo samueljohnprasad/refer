@@ -98,8 +98,8 @@ function BadgeReveal({
         scale.value = withDelay(
             400,
             withSequence(
-                withSpring(1.3, { damping: 6, stiffness: 150 }),
-                withSpring(1, { damping: 10, stiffness: 120 }),
+                withSpring(1.3, { damping: 20, stiffness: 100, overshootClamping: true }),
+                withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
             ),
         );
         // Glow pulse

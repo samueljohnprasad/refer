@@ -3,7 +3,7 @@ import type {
   DecatastrophizingResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
@@ -28,11 +28,22 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
     title: "Decatastrophizing",
     subtitle: "Put feared outcomes in perspective",
     icon: "decatastrophizing",
-    duration: "5-7 min",
+    duration: "7-10 min",
     xp: 12,
     backgroundColor: "#fff",
-    schemaVersion: 2,
+    schemaVersion: 3,
     initialResponse: INITIAL,
+    migrate: (old, fromVersion) => {
+      if (fromVersion < 3) {
+        return {
+          ...INITIAL,
+          ...old,
+          perspective1Month: old.perspective1Month ?? "",
+          perspective1Year: old.perspective1Year ?? "",
+        };
+      }
+      return old;
+    },
 
     steps: [
       {
@@ -42,7 +53,7 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
           subtitle:
             "Feared outcomes rarely come true. Let's put them in perspective.",
           exerciseType: "decatastrophizing",
-          duration: "5-7 min",
+          duration: "7-10 min",
         }),
         label: "Welcome",
         validate: () => true,
@@ -69,6 +80,8 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
           subtitle: "What catastrophe are you imagining?",
           fieldKey: "fearedCatastrophe",
           placeholder: "I fear that...",
+          validationMessage:
+            "Catastrophic thoughts feel absolutely real when they hit. Let's slow down and look at the full picture together.",
         }),
         label: "What catastrophe do you fear?",
         validate: (r) => r.fearedCatastrophe.trim().length >= 1,
@@ -84,6 +97,8 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
           minLabel: "Impossible",
           maxLabel: "Certain",
           unit: "%",
+          psychoeducationText:
+            "Anxiety inflates probability estimates. Explicitly rating likelihood activates your rational brain and deflates the fear.",
         }),
         label: "How likely is this? (0-100%)",
         validate: () => true,
@@ -95,6 +110,8 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
           subtitle: "If it did happen, how could you cope?",
           fieldKey: "copingPlan",
           placeholder: "I could cope by...",
+          psychoeducationText:
+            "Having a plan reduces anxiety even if you never use it. Your brain settles when it knows you have a response ready.",
         }),
         label: "How could you cope?",
         validate: (r) => r.copingPlan.trim().length >= 1,
@@ -124,15 +141,44 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
         },
       },
       {
-        id: "time_perspective",
+        id: "perspective_1_week",
         component: createStep(TextInputStep, {
-          title: "Time Perspective",
-          subtitle: "How will this look in 1 week, 1 month, 1 year?",
+          title: "In One Week",
+          subtitle: "How will this situation look in 7 days?",
           fieldKey: "perspective1Week",
-          placeholder: "In a week: ... In a month: ... In a year: ...",
+          placeholder: "In a week, this will probably...",
+          tipText:
+            "Most feared outcomes feel less urgent after just a few days.",
+          validationMessage: "That's a useful perspective shift. Keep going.",
+          psychoeducationText:
+            "Anxiety narrows your time horizon to right now. Zooming out reveals that most threats shrink with time.",
         }),
-        label: "How will this look in 1 week / 1 month / 1 year?",
+        label: "One week from now",
         validate: (r) => r.perspective1Week.trim().length >= 1,
+      },
+      {
+        id: "perspective_1_month",
+        component: createStep(TextInputStep, {
+          title: "In One Month",
+          subtitle: "What else will have happened by then?",
+          fieldKey: "perspective1Month",
+          placeholder: "In a month, I'll probably...",
+          tipText: "Life keeps moving. What else might change by then?",
+        }),
+        label: "One month from now",
+        validate: (r) => r.perspective1Month.trim().length >= 1,
+      },
+      {
+        id: "perspective_1_year",
+        component: createStep(TextInputStep, {
+          title: "In One Year",
+          subtitle: "How much will this matter in the bigger picture?",
+          fieldKey: "perspective1Year",
+          placeholder: "In a year, this will...",
+          tipText: "A year from now, how much mental space will this take up?",
+        }),
+        label: "One year from now",
+        validate: (r) => r.perspective1Year.trim().length >= 1,
       },
       {
         id: "anxiety_after",
@@ -150,18 +196,17 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
       },
       {
         id: "summary",
-        component: createSummaryStep<DecatastrophizingResponse>(
-          [
-            { label: "Fear", key: "fearedCatastrophe" },
-            { label: "Probability", key: "probability" },
-            { label: "Most Likely", key: "mostLikelyOutcome" },
-            { label: "Coping Plan", key: "copingPlan" },
-          ],
-          {
-            title: "Fear put in perspective!",
-            exerciseType: "decatastrophizing",
-          },
-        ),
+        component: createDynamicSummaryStep({
+          title: "Fear put in perspective!",
+          celebrationEmoji: "🔭",
+          exerciseType: "decatastrophizing",
+          preScoreKey: "anxietyBefore",
+          postScoreKey: "anxietyAfter",
+          scoreLabel: "Anxiety level",
+          scoreMax: 10,
+          keyTakeawayKey: "copingPlan",
+          keyTakeawayLabel: "Your coping plan",
+        }),
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,

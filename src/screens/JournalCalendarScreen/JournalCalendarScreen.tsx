@@ -84,10 +84,10 @@ const TopBar = React.memo<{
         onPress={onAchievementsPress}
         onPressIn={() => {
           // Physics: A highly springy, swinging motion mimicking a medal on a ribbon
-          medalRotation.value = withSpring(15, { damping: 4, stiffness: 150 });
+          medalRotation.value = withSpring(15, { damping: 20, stiffness: 100, overshootClamping: true });
         }}
         onPressOut={() => {
-          medalRotation.value = withSpring(0, { damping: 4, stiffness: 150 });
+          medalRotation.value = withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true });
         }}
         className="happy-brand-soft-chip h-12 flex-row items-center justify-center gap-2 px-4"
         scale={0.96}
@@ -108,10 +108,10 @@ const TopBar = React.memo<{
         onPress={handleSettingsPress}
         onPressIn={() => {
           // Physics: A stiff mechanical gear rotation
-          gearRotation.value = withSpring(45, { damping: 12, stiffness: 200 });
+          gearRotation.value = withSpring(45, { damping: 20, stiffness: 100, overshootClamping: true });
         }}
         onPressOut={() => {
-          gearRotation.value = withSpring(0, { damping: 12, stiffness: 200 });
+          gearRotation.value = withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true });
         }}
         scale={0.9}
         hapticStyle="light"

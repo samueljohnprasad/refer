@@ -189,10 +189,7 @@ function DailyNotesScreenComponent(): ReactElement {
               // Fade back in with spring motion
               contentOpacity.set(withTiming(1, { duration: 250 }));
               contentTranslateX.set(
-                withSpring(0, {
-                  damping: 20,
-                  stiffness: 200,
-                }),
+                withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true }),
               );
             }
           },
@@ -268,31 +265,19 @@ function DailyNotesScreenComponent(): ReactElement {
 
           // Smoother, less bouncy spring animation
           contentTranslateX.set(
-            withSpring(0, {
-              damping: 30,
-              stiffness: 200,
-            }),
+            withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true }),
           );
           contentOpacity.set(
-            withSpring(1, {
-              damping: 30,
-              stiffness: 200,
-            }),
+            withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
           );
           contentScale.set(
-            withSpring(1, {
-              damping: 30,
-              stiffness: 200,
-            }),
+            withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
           );
         })
         .onFinalize(() => {
           "worklet";
           contentTranslateX.set(
-            withSpring(0, {
-              damping: 30,
-              stiffness: 180,
-            }),
+            withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true }),
           );
           contentOpacity.set(withSpring(1));
           contentScale.set(withSpring(1));

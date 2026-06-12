@@ -3,7 +3,7 @@ import type {
   DetachedMindfulnessResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { AcknowledgeStep } from "@/src/components/exercise/steps/AcknowledgeStep";
@@ -68,6 +68,8 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
           subtitle: "Write down a thought that keeps showing up.",
           fieldKey: "observedThought",
           placeholder: "The thought I notice is...",
+          validationMessage:
+            "You don't have to fight this thought or believe it. Just watch it for a moment.",
         }),
         label: "Write the thought you notice",
         validate: (r) => r.observedThought.trim().length >= 1,
@@ -80,6 +82,8 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
           fieldKey: "labelConfirmed",
           body: '"I notice I am having the thought that..."',
           buttonLabel: "I've labeled it",
+          psychoeducationText:
+            "Labelling a thought as 'a thought' weakens its grip. The thought doesn't change — your relationship to it does.",
         }),
         label: 'Label it: "I notice I am having the thought that..."',
         validate: (r) => r.labelConfirmed,
@@ -136,16 +140,17 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
       },
       {
         id: "summary",
-        component: createSummaryStep<DetachedMindfulnessResponse>(
-          [
-            { label: "Thought", key: "observedThought" },
-            { label: "Loudness After", key: "checkInRating" },
-          ],
-          {
-            title: "Observation complete!",
-            exerciseType: "detached_mindfulness",
-          },
-        ),
+        component: createDynamicSummaryStep({
+          title: "Observation complete!",
+          celebrationEmoji: "☁️",
+          exerciseType: "detached_mindfulness",
+          preScoreKey: "preRating",
+          postScoreKey: "checkInRating",
+          scoreLabel: "Thought loudness",
+          scoreMax: 10,
+          keyTakeawayKey: "observedThought",
+          keyTakeawayLabel: "The thought you observed",
+        }),
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,

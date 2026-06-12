@@ -109,11 +109,11 @@ function JourneyRow({
         .onEnd(() => {
             if (translateX.value < ARCHIVE_THRESHOLD) {
                 // Snap off-screen then archive
-                translateX.value = withSpring(-200, { damping: 20 });
+                translateX.value = withSpring(-200, { damping: 20, stiffness: 100, overshootClamping: true });
                 runOnJS(triggerArchive)();
             } else {
                 // Snap back
-                translateX.value = withSpring(0, { damping: 20 });
+                translateX.value = withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true });
             }
         });
 

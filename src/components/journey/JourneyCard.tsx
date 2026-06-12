@@ -87,11 +87,11 @@ function JourneyCard({
     }));
 
     const handlePressIn = useCallback((): void => {
-        scale.value = withSpring(0.97, { damping: 15, stiffness: 300 });
+        scale.value = withSpring(0.97, { damping: 20, stiffness: 100, overshootClamping: true });
     }, [scale]);
 
     const handlePressOut = useCallback((): void => {
-        scale.value = withSpring(1, { damping: 15, stiffness: 300 });
+        scale.value = withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true });
     }, [scale]);
 
     const handlePress = useCallback((): void => {

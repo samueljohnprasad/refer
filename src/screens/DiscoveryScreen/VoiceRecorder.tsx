@@ -38,10 +38,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
 
   const handleShufflePrompt = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    rotation.value = withSpring(rotation.value + 360, {
-      damping: 15,
-      stiffness: 150,
-    });
+    rotation.value = withSpring(rotation.value + 360, { damping: 20, stiffness: 100, overshootClamping: true });
     shufflePrompt();
   }, [shufflePrompt, rotation]);
 

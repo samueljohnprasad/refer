@@ -165,6 +165,15 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="screens/coping-cards"
+        options={{
+          headerShown: false,
+          title: "My Coping Cards",
+          freezeOnBlur: true,
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
         name="screens/journey/[slug]"
         options={{
           headerShown: false,

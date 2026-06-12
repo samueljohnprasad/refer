@@ -19,6 +19,13 @@ import { ActivityHeatmap } from "./components/ActivityHeatmap";
 import { TimeRangeSelector } from "./components/TimeRangeSelector";
 import { WeeklySummaryCard } from "@/src/components/insights/WeeklySummaryCard";
 import { ThoughtPatternsCard } from "@/src/components/insights/ThoughtPatternsCard";
+import { PersonalEffectivenessCard } from "@/src/components/insights/PersonalEffectivenessCard";
+import { SkillProgressionCard } from "@/src/components/insights/SkillProgressionCard";
+import { TriggerClusterCard } from "@/src/components/insights/TriggerClusterCard";
+import { BeliefDecayCard } from "@/src/components/insights/BeliefDecayCard";
+import { InsightNarrativeCard } from "@/src/components/insights/InsightNarrativeCard";
+import { TherapistNotebookCard } from "@/src/components/insights/TherapistNotebookCard";
+import { useTemporalPatterns } from "@/src/hooks/insights/useTemporalPatterns";
 import type { ExerciseCategory } from "@/src/types/exerciseFlow";
 
 const CATEGORY_ICONS = {
@@ -75,8 +82,27 @@ export default function InsightsScreen() {
           streak={data.currentStreak}
           successRate={data.reframeSuccessRate}
         />
-        <View className="px-5 mt-6">
+        <View className="px-5 mt-5">
+          <InsightNarrativeCard />
+        </View>
+        <View className="px-5 mt-4">
           <WeeklySummaryCard />
+        </View>
+        <View className="px-5 mt-4">
+          <SkillProgressionCard />
+        </View>
+        <TemporalPatternRow />
+        <View className="px-5 mt-4">
+          <PersonalEffectivenessCard />
+        </View>
+        <View className="px-5 mt-4">
+          <TriggerClusterCard />
+        </View>
+        <View className="px-5 mt-4">
+          <BeliefDecayCard />
+        </View>
+        <View className="px-5 mt-4">
+          <TherapistNotebookCard />
         </View>
         <View className="px-5 mt-4">
           <ThoughtPatternsCard />
@@ -193,6 +219,34 @@ function CategoryCard({ summary }: { summary: CategorySummary }) {
         </Text>
       )}
     </Pressable>
+  );
+}
+
+function TemporalPatternRow() {
+  const { data } = useTemporalPatterns();
+  if (!data) return null;
+
+  return (
+    <View className="px-5 mt-4">
+      <View className="happy-brand-card rounded-2xl p-4 flex-row flex-wrap gap-3">
+        {data.timeOfDay && (
+          <View className="flex-row items-center gap-1.5">
+            <Text className="text-[13px]">🕙</Text>
+            <Text className="happy-font-body-medium text-[12px] text-ink-soft">
+              {data.timeOfDay.label}
+            </Text>
+          </View>
+        )}
+        {data.dayOfWeek && (
+          <View className="flex-row items-center gap-1.5">
+            <Text className="text-[13px]">📅</Text>
+            <Text className="happy-font-body-medium text-[12px] text-ink-soft">
+              {data.dayOfWeek.label}
+            </Text>
+          </View>
+        )}
+      </View>
+    </View>
   );
 }
 

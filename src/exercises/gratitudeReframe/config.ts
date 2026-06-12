@@ -3,7 +3,7 @@ import type {
   GratitudeReframeResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { ChoiceStep } from "@/src/components/exercise/steps/ChoiceStep";
@@ -113,6 +113,8 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
           placeholder: "I'm grateful for...",
           minItems: 1,
           maxItems: 5,
+          validationMessage:
+            "Even small things count. Gratitude doesn't mean ignoring pain — it means noticing what's also there.",
         }),
         label: "Write your gratitude reflections",
         validate: (r) =>
@@ -136,14 +138,17 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
       },
       {
         id: "summary",
-        component: createSummaryStep<GratitudeReframeResponse>(
-          [
-            { label: "Mood", key: "currentMood" },
-            { label: "Gratitude Entries", key: "gratitudeEntries" },
-            { label: "Mood After", key: "finalMoodIntensity" },
-          ],
-          { title: "Gratitude captured!", exerciseType: "gratitude_reframe" },
-        ),
+        component: createDynamicSummaryStep({
+          title: "Gratitude captured!",
+          celebrationEmoji: "🌿",
+          exerciseType: "gratitude_reframe",
+          preScoreKey: "moodIntensity",
+          postScoreKey: "finalMoodIntensity",
+          scoreLabel: "Mood shift",
+          scoreMax: 100,
+          keyTakeawayKey: "gratitudeEntries",
+          keyTakeawayLabel: "What you're grateful for",
+        }),
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,

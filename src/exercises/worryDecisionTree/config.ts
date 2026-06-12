@@ -3,7 +3,7 @@ import type {
   WorryDecisionTreeResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { BooleanStep } from "@/src/components/exercise/steps/BooleanStep";
@@ -66,6 +66,8 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
           subtitle: "Describe the worry that's on your mind.",
           fieldKey: "worry",
           placeholder: "I'm worried about...",
+          validationMessage:
+            "It's okay that this is on your mind. Let's figure out what, if anything, you can do.",
         }),
         label: "Describe your worry",
         validate: (r) => r.worry.trim().length >= 1,
@@ -80,6 +82,8 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
           noLabel: "No, I can't control this",
           yesIconKey: "check",
           noIconKey: "no",
+          psychoeducationText:
+            "Around 80% of worries are about things outside our control. Sorting them is the first step to letting them go.",
         }),
         label: "Can you do something about it?",
         validate: (r) => r.canAct !== null,
@@ -138,14 +142,17 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
       },
       {
         id: "summary",
-        component: createSummaryStep<WorryDecisionTreeResponse>(
-          [
-            { label: "Worry", key: "worry" },
-            { label: "Can Act?", key: "canAct" },
-            { label: "Plan", key: "actionPlan" },
-          ],
-          { title: "Worry processed!", exerciseType: "worry_decision_tree" },
-        ),
+        component: createDynamicSummaryStep({
+          title: "Worry processed!",
+          celebrationEmoji: "🌳",
+          exerciseType: "worry_decision_tree",
+          preScoreKey: "preAnxietyRating",
+          postScoreKey: "postAnxietyRating",
+          scoreLabel: "Anxiety level",
+          scoreMax: 10,
+          keyTakeawayKey: "actionPlan",
+          keyTakeawayLabel: "Your action plan",
+        }),
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,

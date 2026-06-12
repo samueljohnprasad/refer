@@ -1,11 +1,13 @@
 import { useMemo } from "react";
 import { useExerciseStats } from "./useExerciseStats";
+import { usePersonalEffectiveness } from "./usePersonalEffectiveness";
+import { useTemporalPatterns } from "./useTemporalPatterns";
 import type { ExerciseType, ExerciseCategory } from "@/src/types/exerciseFlow";
 import {
   EXERCISE_CATEGORY_MAP,
   getExerciseTypesByCategory,
 } from "@/src/data/exerciseCategoryMap";
-import { CATEGORY_LABELS } from "@/src/constants/insights";
+import { CATEGORY_LABELS, EXERCISE_LABELS } from "@/src/constants/insights";
 import { countBy } from "@/src/utils/insights";
 
 export interface ExerciseRecommendation {
@@ -34,13 +36,48 @@ function getLeastPracticedCategory(
 
 export function useExerciseRecommendation(): ExerciseRecommendation | null {
   const { data: stats } = useExerciseStats();
+  const { data: effectiveness } = usePersonalEffectiveness();
+  const { data: temporalPatterns } = useTemporalPatterns();
 
   return useMemo(() => {
     if (!stats || stats.totalCompleted < 5) return null;
 
     const { entries, categoryCount } = stats;
 
-    // Rule 1: Top distortion is catastrophizing → suggest decatastrophizing
+    // ── Priority 1: Temporal context ────────────────────────────────────────
+    // If we're within 1 hour of detected peak, suggest the pattern's best exercise
+    if (temporalPatterns?.timeOfDay) {
+      const now = new Date().getHours();
+      const peakStart = temporalPatterns.timeOfDay.peakWindow.start;
+      const hoursBefore = peakStart - now;
+      if (
+        hoursBefore >= 0 &&
+        hoursBefore <= 1 &&
+        temporalPatterns.timeOfDay.bestExercise
+      ) {
+        const label =
+          EXERCISE_LABELS[temporalPatterns.timeOfDay.bestExercise] ??
+          "this exercise";
+        return {
+          exerciseType: temporalPatterns.timeOfDay.bestExercise,
+          reason: `Your anxiety usually peaks soon. ${label} works best for you right now.`,
+        };
+      }
+    }
+
+    // ── Priority 2: Personal effectiveness data ─────────────────────────────
+    // Use actual measured effectiveness when available
+    if (effectiveness?.bestOverall) {
+      const best = effectiveness.bestOverall;
+      return {
+        exerciseType: best.exerciseType,
+        reason: `Works best for you — drops intensity by ${best.avgDrop} per session.`,
+      };
+    }
+
+    // ── Priority 3: Heuristic fallbacks (when < 5 entries with pre/post) ────
+
+    // Rule: Top distortion is catastrophizing → suggest decatastrophizing
     const reframingEntries = entries.filter(
       (e) => e.exercise_type === "thought_reframing",
     );
@@ -53,7 +90,7 @@ export function useExerciseRecommendation(): ExerciseRecommendation | null {
       };
     }
 
-    // Rule 2: User only does catchers, never reframing
+    // Rule: User only does catchers, never reframing
     const catcherCount = entries.filter(
       (e) => e.exercise_type === "thought_catcher",
     ).length;
@@ -66,7 +103,7 @@ export function useExerciseRecommendation(): ExerciseRecommendation | null {
       };
     }
 
-    // Rule 3: No mindfulness in 7+ days
+    // Rule: No mindfulness in 7+ days
     const mindfulnessEntries = entries.filter(
       (e) => EXERCISE_CATEGORY_MAP[e.exercise_type] === "mindfulness",
     );
@@ -78,7 +115,7 @@ export function useExerciseRecommendation(): ExerciseRecommendation | null {
       };
     }
 
-    // Rule 4: Anxiety exercises show high scores
+    // Rule: Anxiety exercises show high scores
     const anxietyEntries = entries.filter(
       (e) => EXERCISE_CATEGORY_MAP[e.exercise_type] === "anxiety",
     );
@@ -99,7 +136,7 @@ export function useExerciseRecommendation(): ExerciseRecommendation | null {
       }
     }
 
-    // Rule 5: Suggest least-practiced category
+    // Rule: Suggest least-practiced category
     const leastCategory = getLeastPracticedCategory(categoryCount);
     const typesInCategory = getExerciseTypesByCategory(leastCategory);
     if (typesInCategory.length > 0) {
@@ -110,7 +147,7 @@ export function useExerciseRecommendation(): ExerciseRecommendation | null {
     }
 
     return null;
-  }, [stats]);
+  }, [stats, effectiveness, temporalPatterns]);
 }
 
 function daysSince(dateStr: string): number {

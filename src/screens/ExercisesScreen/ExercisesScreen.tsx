@@ -6,8 +6,7 @@ import {
   useState,
   type ReactElement,
 } from "react";
-import { Pressable, ScrollView, View, StyleSheet } from "react-native";
-import { GlassView } from "expo-glass-effect";
+import { Pressable, ScrollView, View } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -18,17 +17,14 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text } from "@/src/components/ui/Text";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useHeaderHeight } from "expo-router/react-navigation";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   ArrowRight01Icon,
+  BookmarkAdd01Icon,
   Brain01Icon,
   CheckmarkBadge01Icon,
   SparklesIcon,
@@ -53,11 +49,14 @@ import type {
 } from "@/src/types/exerciseFlow";
 import { useCBTHistory, type HistoryLogItem } from "./hooks/useCBTHistory";
 import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
+import { RecommendedForYouCard } from "@/src/components/insights/RecommendedForYouCard";
 import { Card } from "@/src/components/ui/Card";
 import { GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
+import { GlassView } from "expo-glass-effect";
+import { useHeaderHeight } from "expo-router/react-navigation";
 
 type TabKey = "discover" | "log";
 const TAB_KEYS = ["discover", "log"] as const;
@@ -511,13 +510,13 @@ export default function ExercisesScreen(): ReactElement {
   const { data: history = [], isLoading: isLoadingHistory } = useCBTHistory();
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
   const reducedMotion = useReducedMotion();
-  const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
 
   // Active tab pill — spring in on mount
   const tabScale = useSharedValue(reducedMotion ? 1 : 0.92);
   useEffect(() => {
-    tabScale.value = withSpring(1, { damping: 18, stiffness: 260 });
+    tabScale.value = withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true });
   }, []);
   const tabPillStyle = useAnimatedStyle(() => ({
     transform: [{ scale: tabScale.value }],
@@ -581,7 +580,6 @@ export default function ExercisesScreen(): ReactElement {
       router.push(`/tabs/screens/gratitude-reframe?id=${item.id}` as never);
     }
   }, []);
-
   return (
     <>
       <Stack.Screen
@@ -619,18 +617,36 @@ export default function ExercisesScreen(): ReactElement {
                         </Text>
                       </View>
                     </View>
-                    {completedCount > 0 ? (
-                      <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
+                    <View className="flex-row items-center gap-2">
+                      {completedCount > 0 ? (
+                        <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
+                          <HugeiconsIcon
+                            icon={ZapIcon}
+                            size={16}
+                            color="#C89400"
+                          />
+                          <Text variant="chip" className="ml-1.5 text-ink-soft">
+                            {completedCount} done
+                          </Text>
+                        </View>
+                      ) : null}
+                      <Pressable
+                        onPress={() =>
+                          router.push("/tabs/screens/coping-cards" as never)
+                        }
+                        accessibilityRole="button"
+                        accessibilityLabel="My Coping Cards"
+                        hitSlop={8}
+                        className="w-9 h-9 rounded-full bg-sage-pill items-center justify-center active:opacity-70"
+                      >
                         <HugeiconsIcon
-                          icon={ZapIcon}
-                          size={16}
-                          color="#C89400"
+                          icon={BookmarkAdd01Icon}
+                          size={18}
+                          color={SAGE[600]}
+                          strokeWidth={2}
                         />
-                        <Text variant="chip" className="ml-1.5 text-ink-soft">
-                          {completedCount} done
-                        </Text>
-                      </View>
-                    ) : null}
+                      </Pressable>
+                    </View>
                   </View>
 
                   <Animated.View
@@ -658,7 +674,6 @@ export default function ExercisesScreen(): ReactElement {
           ),
         }}
       />
-
       <ScrollView
         className="flex-1 happy-brand-screen"
         contentInsetAdjustmentBehavior="automatic"
@@ -671,6 +686,7 @@ export default function ExercisesScreen(): ReactElement {
       >
         {activeTab === "discover" ? (
           <>
+            <RecommendedForYouCard />
             <SuggestedExerciseCard />
             {exerciseGroups.length === 0 ? (
               <EmptyDiscoverState />

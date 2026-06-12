@@ -64,23 +64,30 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
   const handleUpdate = useCallback(async (): Promise<void> => {
     try {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      const canOpen = await Linking.canOpenURL(appStoreUrl);
-      const storeUrl = await VersionCheck.getStoreUrl({
-        appID: "6755650433",
-        packageName: "com.samuelprasad.happy",
-      });
-      if (canOpen) {
-        await Linking.openURL(storeUrl);
-      } else {
-        console.error("Cannot open App Store URL:", appStoreUrl);
+      
+      let targetUrl = appStoreUrl;
+      try {
+        const storeUrl = await VersionCheck.getStoreUrl({
+          appID: "6755650433",
+          packageName: "com.samuelprasad.happy",
+        });
+        if (storeUrl) {
+          targetUrl = storeUrl;
+        }
+      } catch (e) {
+        console.warn("Could not fetch dynamic store URL, using fallback", e);
       }
+
+      // Some simulators or devices might return false for canOpenURL if schemes aren't configured,
+      // but openURL will still work for standard https:// links.
+      await Linking.openURL(targetUrl);
 
       // Close modal after opening store
       closeHandler();
     } catch (error) {
       console.error("Error opening App Store:", error);
     }
-  }, [appStoreUrl]);
+  }, [appStoreUrl, closeHandler]);
 
   return (
     <ShortBottomModal ref={sheetRef} snapPoints={["45%"]}>

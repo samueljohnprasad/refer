@@ -34,7 +34,7 @@ export const RewardPurchaseModal: React.FC<RewardPurchaseModalProps> = ({
 
   React.useEffect(() => {
     if (visible) {
-      scale.value = withSpring(1, { damping: 12 });
+      scale.value = withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true });
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     } else {
       scale.value = 0;

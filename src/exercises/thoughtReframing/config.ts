@@ -3,13 +3,18 @@ import type {
   ThoughtReframingResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
-import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
-import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
-import { AITextInputStep } from "@/src/components/exercise/steps/AITextInputStep";
-import { MultiChoiceStep } from "@/src/components/exercise/steps/MultiChoiceStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
+import {
+  TRSituationStep,
+  TRAutomaticThoughtStep,
+  TREmotionsStep,
+  TRDistortionsStep,
+  TREvidenceForStep,
+  TREvidenceAgainstStep,
+  TRBalancedThoughtStep,
+} from "./customSteps";
 
 export const THOUGHT_REFRAMING_INITIAL: ThoughtReframingResponse = {
   situation: "",
@@ -19,6 +24,8 @@ export const THOUGHT_REFRAMING_INITIAL: ThoughtReframingResponse = {
   evidenceFor: [],
   evidenceAgainst: [],
   balancedThought: "",
+  intensity: 50,
+  postIntensity: undefined,
 };
 
 export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
@@ -31,8 +38,18 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
     duration: "10-15 min",
     xp: 15,
     backgroundColor: "#fff",
-    schemaVersion: 1,
+    schemaVersion: 2,
     initialResponse: THOUGHT_REFRAMING_INITIAL,
+    migrate: (old, fromVersion) => {
+      if (fromVersion < 2) {
+        return {
+          ...THOUGHT_REFRAMING_INITIAL,
+          ...old,
+          postIntensity: undefined,
+        };
+      }
+      return old;
+    },
 
     steps: [
       {
@@ -50,50 +67,34 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
       },
       {
         id: "situation",
-        component: createStep(TextInputStep, {
-          title: "The Situation",
-          subtitle: "What happened that triggered this thought?",
-          fieldKey: "situation",
-          placeholder: "Describe the event or situation...",
-        }),
+        component: TRSituationStep,
         label: "Describe the situation",
         validate: (r) => r.situation.trim().length >= 5,
       },
       {
         id: "automatic_thought",
-        component: createStep(TextInputStep, {
-          title: "Automatic Thought",
-          subtitle: "What thought popped into your head?",
-          fieldKey: "automaticThought",
-          placeholder: "Write the exact thought...",
-        }),
+        component: TRAutomaticThoughtStep,
         label: "What was the automatic thought?",
         validate: (r) => r.automaticThought.trim().length >= 5,
       },
       {
-        id: "emotions",
-        component: createStep(MultiChoiceStep, {
-          title: "Emotions",
-          subtitle: "What emotions did you feel? (select up to 3)",
-          fieldKey: "selectedEmotions",
-          options: [
-            { value: "anxious", label: "Anxious", iconKey: "anxious" },
-            { value: "sad", label: "Sad", iconKey: "sad" },
-            { value: "angry", label: "Angry", iconKey: "angry" },
-            { value: "fearful", label: "Fearful", iconKey: "fearful" },
-            { value: "guilty", label: "Guilty", iconKey: "guilty" },
-            { value: "ashamed", label: "Ashamed", iconKey: "ashamed" },
-            { value: "frustrated", label: "Frustrated", iconKey: "frustrated" },
-            { value: "hopeless", label: "Hopeless", iconKey: "hopeless" },
-            {
-              value: "overwhelmed",
-              label: "Overwhelmed",
-              iconKey: "overwhelmed",
-            },
-            { value: "lonely", label: "Lonely", iconKey: "lonely" },
-          ],
-          maxSelections: 3,
+        id: "intensity",
+        component: createStep(SliderStep, {
+          title: "Thought Intensity",
+          subtitle: "How strongly do you believe this thought right now?",
+          fieldKey: "intensity",
+          min: 0,
+          max: 100,
+          minLabel: "Not at all",
+          maxLabel: "Completely",
+          unit: "%",
         }),
+        label: "How strongly do you believe this thought?",
+        validate: () => true,
+      },
+      {
+        id: "emotions",
+        component: TREmotionsStep,
         label: "Select emotions (max 3)",
         validate: (r) => r.selectedEmotions.length >= 1,
         ai: {
@@ -129,60 +130,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
       },
       {
         id: "distortions",
-        component: createStep(MultiChoiceStep, {
-          title: "Cognitive Distortions",
-          subtitle: "Which thinking traps do you notice?",
-          fieldKey: "selectedDistortions",
-          options: [
-            {
-              value: "all_or_nothing",
-              label: "All-or-Nothing",
-              iconKey: "all_or_nothing",
-            },
-            {
-              value: "catastrophizing",
-              label: "Catastrophizing",
-              iconKey: "catastrophizing",
-            },
-            {
-              value: "mind_reading",
-              label: "Mind Reading",
-              iconKey: "mind_reading",
-            },
-            {
-              value: "overgeneralizing",
-              label: "Overgeneralizing",
-              iconKey: "magnification",
-            },
-            {
-              value: "personalizing",
-              label: "Personalizing",
-              iconKey: "personalization",
-            },
-            {
-              value: "filtering",
-              label: "Filtering",
-              iconKey: "disqualifying_positive",
-            },
-            {
-              value: "should_statements",
-              label: "Should Statements",
-              iconKey: "should_statements",
-            },
-            {
-              value: "fortune_telling",
-              label: "Fortune Telling",
-              iconKey: "fortune_telling",
-            },
-            {
-              value: "emotional_reasoning",
-              label: "Emotional Reasoning",
-              iconKey: "emotional_reasoning",
-            },
-            { value: "labeling", label: "Labeling", iconKey: "labeling" },
-          ],
-          maxSelections: 2,
-        }),
+        component: TRDistortionsStep,
         label: "Identify cognitive distortions (max 2)",
         validate: (r) => r.selectedDistortions.length >= 1,
         ai: {
@@ -219,36 +167,19 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
       },
       {
         id: "evidence_for",
-        component: createStep(MultiTextInputStep, {
-          title: "Evidence For",
-          subtitle: "What evidence supports this thought?",
-          fieldKey: "evidenceFor",
-          placeholder: "Add evidence...",
-          minItems: 0,
-        }),
+        component: TREvidenceForStep,
         label: "Evidence supporting this thought",
-        validate: () => true, // optional
+        validate: () => true,
       },
       {
         id: "evidence_against",
-        component: createStep(MultiTextInputStep, {
-          title: "Evidence Against",
-          subtitle: "What evidence contradicts this thought?",
-          fieldKey: "evidenceAgainst",
-          placeholder: "Add counter-evidence...",
-          minItems: 0,
-        }),
+        component: TREvidenceAgainstStep,
         label: "Evidence against this thought",
-        validate: () => true, // optional
+        validate: () => true,
       },
       {
         id: "balanced_thought",
-        component: createStep(AITextInputStep, {
-          title: "Balanced Thought",
-          subtitle: "Rewrite the thought in a more balanced way.",
-          fieldKey: "balancedThought",
-          placeholder: "A more balanced perspective...",
-        }),
+        component: TRBalancedThoughtStep,
         label: "Write a balanced thought",
         validate: (r) => r.balancedThought.trim().length >= 5,
         ai: {
@@ -283,26 +214,31 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
           title: "Re-evaluate",
           subtitle:
             "After reframing, how much do you believe the original thought?",
-          fieldKey: "intensity",
+          fieldKey: "postIntensity",
+          psychoeducationText:
+            "After reframing, your belief score often drops. That shift is real — it means your rational mind just got louder.",
           min: 0,
           max: 100,
           minLabel: "Not at all",
           maxLabel: "Completely",
           unit: "%",
         }),
-        label: "Re-evaluate your emotions",
+        label: "Re-evaluate your belief",
         validate: () => true,
       },
       {
         id: "summary",
-        component: createSummaryStep<ThoughtReframingResponse>(
-          [
-            { label: "Situation", key: "situation" },
-            { label: "Automatic Thought", key: "automaticThought" },
-            { label: "Balanced Thought", key: "balancedThought" },
-          ],
-          { title: "Great work!", exerciseType: "thought_reframing" },
-        ),
+        component: createDynamicSummaryStep({
+          title: "Thought reframed!",
+          celebrationEmoji: "✨",
+          exerciseType: "thought_reframing",
+          preScoreKey: "intensity",
+          postScoreKey: "postIntensity",
+          scoreLabel: "Belief intensity",
+          scoreMax: 100,
+          keyTakeawayKey: "balancedThought",
+          keyTakeawayLabel: "Your balanced thought",
+        }),
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,

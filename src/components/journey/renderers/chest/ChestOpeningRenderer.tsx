@@ -232,9 +232,9 @@ function RewardReveal({
     const scale = useSharedValue<number>(0.8);
 
     useEffect(() => {
-        translateY.value = withDelay(200, withSpring(0, { damping: 12, stiffness: 100 }));
+        translateY.value = withDelay(200, withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true }));
         opacity.value = withDelay(200, withTiming(1, { duration: 400 }));
-        scale.value = withDelay(200, withSpring(1, { damping: 10, stiffness: 120 }));
+        scale.value = withDelay(200, withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }));
     }, [translateY, opacity, scale]);
 
     const style = useAnimatedStyle(() => ({

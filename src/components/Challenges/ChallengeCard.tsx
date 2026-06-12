@@ -97,8 +97,8 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
 
   const handlePress = (): void => {
     scale.value = withSequence(
-      withSpring(0.98, { damping: 15 }),
-      withSpring(1, { damping: 15 }),
+      withSpring(0.98, { damping: 20, stiffness: 100, overshootClamping: true }),
+      withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
     );
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };

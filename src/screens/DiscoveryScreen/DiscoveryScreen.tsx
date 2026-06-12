@@ -167,10 +167,7 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
     );
 
     const handleShuffle = useCallback(() => {
-      rotation.value = withSpring(rotation.value + 360, {
-        damping: 15,
-        stiffness: 150,
-      });
+      rotation.value = withSpring(rotation.value + 360, { damping: 20, stiffness: 100, overshootClamping: true });
       onShufflePrompt();
     }, [onShufflePrompt, rotation]);
 

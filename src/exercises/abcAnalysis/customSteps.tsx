@@ -12,7 +12,16 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 
 import { Text } from "@/components/ui/text";
-import type { ABCAnalysisResponse, StepProps } from "@/src/types/exerciseFlow";
+import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
+import { DynamicSummary } from "@/src/components/exercise/DynamicSummary";
+import { useRouter } from "expo-router";
+import type {
+  ABCAnalysisResponse,
+  ExerciseType,
+  StepProps,
+} from "@/src/types/exerciseFlow";
+import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
+import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
 
 const ACCENT = "#58CC02";
 const PROMPT_STEP_COUNT = 5;
@@ -91,11 +100,7 @@ function Header({
             accessibilityRole="button"
             accessibilityLabel="Close"
           >
-            <HugeiconsIcon
-              icon={Cancel01Icon}
-              size={20}
-              color="#94A3B8"
-            />
+            <HugeiconsIcon icon={Cancel01Icon} size={20} color="#94A3B8" />
           </Pressable>
         )}
 
@@ -111,15 +116,18 @@ function Header({
       </View>
 
       <View className="flex-row items-center justify-center gap-1.5 mb-6">
-        {Array.from({ length: PROMPT_STEP_COUNT }, (_: unknown, index: number) => (
-          <View
-            key={index}
-            className={`rounded-full ${index === stepNumber - 1 ? "h-2.5 w-2.5" : "h-2 w-2"}`}
-            style={{
-              backgroundColor: index < stepNumber ? ACCENT : "#E2E8F0",
-            }}
-          />
-        ))}
+        {Array.from(
+          { length: PROMPT_STEP_COUNT },
+          (_: unknown, index: number) => (
+            <View
+              key={index}
+              className={`rounded-full ${index === stepNumber - 1 ? "h-2.5 w-2.5" : "h-2 w-2"}`}
+              style={{
+                backgroundColor: index < stepNumber ? ACCENT : "#E2E8F0",
+              }}
+            />
+          ),
+        )}
       </View>
     </>
   );
@@ -234,6 +242,8 @@ function TextQuestionStep({
   suggestionTitle,
   suggestions,
   stepProps,
+  validationMessage,
+  psychoeducationText,
 }: {
   title: string;
   subtitle: string;
@@ -244,9 +254,19 @@ function TextQuestionStep({
   suggestionTitle: string;
   suggestions: SuggestionItem[];
   stepProps: StepProps<ABCAnalysisResponse>;
+  validationMessage?: string;
+  psychoeducationText?: string;
 }): React.JSX.Element {
-  const { onNext, onBack, onClose, canGoBack, isValid, progress, stepIndex, readOnly } =
-    stepProps;
+  const {
+    onNext,
+    onBack,
+    onClose,
+    canGoBack,
+    isValid,
+    progress,
+    stepIndex,
+    readOnly,
+  } = stepProps;
 
   return (
     <KeyboardAvoidingView
@@ -269,9 +289,16 @@ function TextQuestionStep({
         <Text className="text-[24px] font-extrabold text-slate-900 mb-2">
           {title}
         </Text>
-        <Text className="text-[15px] text-slate-500 mb-6 font-medium">
+        <Text className="text-[15px] text-slate-500 mb-3 font-medium">
           {subtitle}
         </Text>
+
+        <ValidationMessage
+          message={validationMessage ?? ""}
+          visible={!!validationMessage && value.trim().length > 0}
+        />
+
+        <PsychoeducationCard content={psychoeducationText ?? ""} />
 
         {helper ? (
           <View
@@ -344,6 +371,7 @@ export function ABCActivatingEventStep(
       suggestionTitle="Quick picks"
       suggestions={EVENT_SUGGESTIONS}
       stepProps={stepProps}
+      validationMessage="That's the raw event. Now let's look at the story your mind told about it."
     />
   );
 }
@@ -362,6 +390,8 @@ export function ABCBeliefStep(
       suggestionTitle="Common beliefs"
       suggestions={BELIEF_SUGGESTIONS}
       stepProps={stepProps}
+      validationMessage="That belief makes sense given how things felt in that moment."
+      psychoeducationText="The same event can trigger completely different emotions depending on the belief attached to it. Beliefs are changeable."
     />
   );
 }
@@ -507,9 +537,11 @@ export function ABCAlternativeBeliefStep({
         <Text className="text-[24px] font-extrabold text-slate-900 mb-2">
           What's a more balanced belief?
         </Text>
-        <Text className="text-[15px] text-slate-500 mb-6 font-medium">
+        <Text className="text-[15px] text-slate-500 mb-3 font-medium">
           Keep it believable, kind, and grounded in the facts.
         </Text>
+
+        <PsychoeducationCard content="A balanced belief doesn't have to be positive. It just needs to be more accurate and less absolute than the original." />
 
         <View
           className="rounded-2xl p-3.5 mb-6 flex-row items-start"
@@ -554,10 +586,7 @@ export function ABCAlternativeBeliefStep({
               </Text>
               {isAiLoading ? (
                 <View className="flex-row items-center">
-                  <ActivityIndicator
-                    size="small"
-                    color="#94A3B8"
-                  />
+                  <ActivityIndicator size="small" color="#94A3B8" />
                   <Text className="text-xs font-bold text-slate-400 ml-2">
                     Thinking...
                   </Text>
@@ -642,6 +671,9 @@ export function ABCSummaryStep({
   isSaving,
   readOnly,
 }: StepProps<ABCAnalysisResponse>): React.JSX.Element {
+  const router = useRouter();
+  const link = EXERCISE_LINKING_MAP["abc_analysis"];
+
   const fields: Array<{ label: string; value: string }> = [
     { label: "Activating Event", value: response.activatingEvent },
     { label: "Belief", value: response.belief },
@@ -651,94 +683,50 @@ export function ABCSummaryStep({
     { label: "New Consequence", value: response.newConsequence },
   ];
 
+  const handleNavigate = (type: ExerciseType) => {
+    onNext();
+    router.push({ pathname: "/tabs/screens/exercise-flow", params: { type } });
+  };
+
   return (
-    <View className="flex-1">
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 24 }}
-        showsVerticalScrollIndicator={false}
-      >
-        <View className="items-center justify-center p-6 pb-4">
-          <View
-            className="h-24 w-24 rounded-full items-center justify-center mb-6"
-            style={{ backgroundColor: "#F0FFF0" }}
-          >
-            <Text
-              className="text-[52px]"
-              accessible={false}
-            >
-              🧩
-            </Text>
-          </View>
-
-          <Text className="text-[26px] font-extrabold text-slate-900 text-center mb-2">
-            ABC complete!
+    <DynamicSummary
+      title="ABC complete!"
+      celebrationEmoji="🧩"
+      preScore={response.preEmotionalIntensity}
+      postScore={response.postEmotionalIntensity}
+      scoreLabel="Emotional intensity"
+      scoreMax={10}
+      keyTakeaway={response.alternativeBelief}
+      keyTakeawayLabel="Your alternative belief"
+      nextExerciseType={link?.exerciseType}
+      nextExerciseLabel={link?.label}
+      onNavigateToExercise={handleNavigate}
+      onComplete={onNext}
+      onEdit={readOnly ? undefined : onBack}
+      isSaving={isSaving}
+      readOnly={readOnly}
+    >
+      {/* ABC-specific detail cards below the summary header */}
+      {fields.map((field) => (
+        <View
+          key={field.label}
+          className="rounded-2xl p-4 mx-1 mb-3"
+          style={{
+            backgroundColor: "#FFFFFF",
+            borderWidth: 2,
+            borderColor: "#E2E8F0",
+            borderBottomWidth: 4,
+            borderBottomColor: "#CBD5E1",
+          }}
+        >
+          <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">
+            {field.label}
           </Text>
-          <Text className="text-[15px] text-slate-500 text-center leading-relaxed mb-6">
-            You mapped the event, the belief, and a healthier next interpretation.
+          <Text className="text-[15px] text-slate-800 leading-relaxed">
+            {field.value?.trim() || "Not filled in"}
           </Text>
-
-          {!readOnly ? (
-            <View
-              className="flex-row items-center px-5 py-2.5 rounded-full mb-6"
-              style={{
-                backgroundColor: "#FFF3CD",
-                borderWidth: 2,
-                borderColor: "#FBBF24",
-              }}
-            >
-              <Text className="text-lg mr-1.5">⚡</Text>
-              <Text className="text-base font-extrabold text-amber-700">
-                +{XP_EARNED} XP earned!
-              </Text>
-            </View>
-          ) : null}
         </View>
-
-        <View className="gap-y-3 px-1">
-          {fields.map((field) => (
-            <View
-              key={field.label}
-              className="rounded-2xl p-4"
-              style={{
-                backgroundColor: "#FFFFFF",
-                borderWidth: 2,
-                borderColor: "#E2E8F0",
-                borderBottomWidth: 4,
-                borderBottomColor: "#CBD5E1",
-              }}
-            >
-              <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">
-                {field.label}
-              </Text>
-              <Text className="text-[15px] text-slate-800 leading-relaxed">
-                {field.value?.trim() || "Not filled in"}
-              </Text>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-
-      <View className="px-2 pb-8 pt-4">
-        <PrimaryButton
-          label={readOnly ? "Done" : "Finish"}
-          onPress={onNext}
-          isLoading={isSaving}
-        />
-
-        {!readOnly ? (
-          <Pressable
-            onPress={onBack}
-            accessibilityRole="button"
-            accessibilityLabel="Edit answers"
-            className="mt-3 h-11 rounded-2xl items-center justify-center active:bg-slate-100"
-          >
-            <Text className="text-sm font-bold text-slate-400">
-              Edit answers
-            </Text>
-          </Pressable>
-        ) : null}
-      </View>
-    </View>
+      ))}
+    </DynamicSummary>
   );
 }

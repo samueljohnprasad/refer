@@ -83,7 +83,7 @@ const QuickJournalCard: React.FC<QuickJournalCardProps> = React.memo(
       if (reducedMotion) return;
       const delay = index * STAGGER.fast; // 30ms stagger between cards
       scale.value = withDelay(delay, withSpring(1, SPRING_DEFAULT));
-      opacity.value = withDelay(delay, withSpring(1, { stiffness: 200, damping: 20 }));
+      opacity.value = withDelay(delay, withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

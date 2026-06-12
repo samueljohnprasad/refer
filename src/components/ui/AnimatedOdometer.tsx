@@ -21,11 +21,7 @@ function Tick({ digit, textClassName }: TickProps) {
 
   useEffect(() => {
     if (isNumber) {
-      animatedValue.value = withSpring(parsed, {
-        damping: 18,
-        stiffness: 150,
-        mass: 0.8,
-      });
+      animatedValue.value = withSpring(parsed, { damping: 20, stiffness: 100, overshootClamping: true });
     }
   }, [parsed, isNumber, animatedValue]);
 

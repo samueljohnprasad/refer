@@ -26,10 +26,7 @@ export function useScrollVelocityTracker() {
         const rawVelocity = deltaY / deltaTime; 
         
         // We use a looser spring here so it feels slightly fluid and decoupled from rigid scrolling
-        scrollVelocity.value = withSpring(rawVelocity * 10, { 
-          damping: 12, 
-          stiffness: 150 
-        });
+        scrollVelocity.value = withSpring(rawVelocity * 10, { damping: 20, stiffness: 100, overshootClamping: true });
       }
       
       lastOffset.value = currentOffset;
@@ -37,12 +34,12 @@ export function useScrollVelocityTracker() {
     },
     onMomentumEnd: () => {
       // Slosh back into place when scrolling fully stops
-      scrollVelocity.value = withSpring(0, { damping: 8, stiffness: 120 });
+      scrollVelocity.value = withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true });
     },
     onEndDrag: (event) => {
       // If user lifts finger without flicking
       if (Math.abs(event.velocity?.y || 0) < 0.1) {
-         scrollVelocity.value = withSpring(0, { damping: 8, stiffness: 120 });
+         scrollVelocity.value = withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true });
       }
     }
   });

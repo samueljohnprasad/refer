@@ -108,11 +108,11 @@ const StatCard: React.FC<{
   useEffect(() => {
     cardRotation.value = withDelay(
       delay ?? 0,
-      withSpring(1, { damping: 12, stiffness: 80 })
+      withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true })
     );
     cardScale.value = withDelay(
       delay ?? 0,
-      withSpring(1, { damping: 10, stiffness: 60 })
+      withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true })
     );
   }, []);
 
@@ -257,7 +257,7 @@ export const GreatCelebration: React.FC<GreatCelebrationProps> = ({
   useEffect(() => {
     titleScale.value = withDelay(
       100,
-      withSpring(1, { damping: 20, stiffness: 80 })
+      withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true })
     );
   }, []);
 

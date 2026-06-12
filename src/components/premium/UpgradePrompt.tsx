@@ -77,10 +77,10 @@ const UpgradePrompt: React.FC<UpgradePromptProps> = ({
             <TouchableOpacity
                 onPress={handleUpgrade}
                 onPressIn={() => {
-                    scale.value = withSpring(0.97, { damping: 15, stiffness: 400 });
+                    scale.value = withSpring(0.97, { damping: 20, stiffness: 100, overshootClamping: true });
                 }}
                 onPressOut={() => {
-                    scale.value = withSpring(1, { damping: 15, stiffness: 400 });
+                    scale.value = withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true });
                 }}
                 activeOpacity={1}
                 accessibilityLabel={ctaLabel}

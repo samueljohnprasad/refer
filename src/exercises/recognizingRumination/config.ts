@@ -3,7 +3,7 @@ import type {
   RecognizingRuminationResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { ChoiceStep } from "@/src/components/exercise/steps/ChoiceStep";
@@ -68,6 +68,8 @@ export const recognizingRuminationConfig: ExerciseConfig<RecognizingRuminationRe
           subtitle: "What thought keeps repeating in your mind?",
           fieldKey: "currentThoughtLoop",
           placeholder: "The thought that keeps looping is...",
+          validationMessage:
+            "Getting stuck in loops is exhausting. You noticed it — that's already progress.",
         }),
         label: "What thought keeps repeating?",
         validate: (r) => r.currentThoughtLoop.trim().length >= 1,
@@ -78,6 +80,8 @@ export const recognizingRuminationConfig: ExerciseConfig<RecognizingRuminationRe
           title: "Theme",
           subtitle: "What category does this rumination fall under?",
           fieldKey: "theme",
+          psychoeducationText:
+            "Naming the theme of a thought loop creates distance from it. You shift from being inside it to observing it.",
           options: [
             {
               value: "past_regret",
@@ -189,18 +193,15 @@ export const recognizingRuminationConfig: ExerciseConfig<RecognizingRuminationRe
       },
       {
         id: "summary",
-        component: createSummaryStep<RecognizingRuminationResponse>(
-          [
-            { label: "Loop", key: "currentThoughtLoop" },
-            { label: "Theme", key: "theme" },
-            { label: "Technique", key: "interruptTechnique" },
-            { label: "Stuck After", key: "postRating" },
-          ],
-          {
-            title: "Loop interrupted!",
-            exerciseType: "recognizing_rumination",
-          },
-        ),
+        component: createDynamicSummaryStep({
+          title: "Loop interrupted!",
+          celebrationEmoji: "🔓",
+          exerciseType: "recognizing_rumination",
+          preScoreKey: "preRating",
+          postScoreKey: "postRating",
+          scoreLabel: "How stuck",
+          scoreMax: 10,
+        }),
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,

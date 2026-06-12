@@ -5,6 +5,7 @@ import Slider from "@react-native-community/slider";
 import { StepLayout } from "./StepLayout";
 import { SAGE } from "@/lib/tokens";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
+import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
 
 interface SliderStepProps extends StepProps {
@@ -18,6 +19,7 @@ interface SliderStepProps extends StepProps {
   maxLabel?: string;
   unit?: string;
   showValue?: boolean;
+  psychoeducationText?: string;
 }
 
 export const SliderStep: React.FC<SliderStepProps> = React.memo(
@@ -42,6 +44,7 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
     unit = "",
     showValue = true,
     isSaving,
+    psychoeducationText,
   }) => {
     const value: number =
       (response as Record<string, any>)[fieldKey] ??
@@ -60,10 +63,16 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
         onNext={onNext}
         isLoading={isSaving}
       >
+        <PsychoeducationCard content={psychoeducationText ?? ""} />
+
         <View className="flex-1 justify-center px-2">
           {showValue && (
             <FadeInItem index={0}>
-              <Text variant="counter" color="sage" className="text-6xl text-center mb-10 happy-font-heading-bold">
+              <Text
+                variant="counter"
+                color="sage"
+                className="text-6xl text-center mb-10 happy-font-heading-bold"
+              >
                 {value}
                 {unit}
               </Text>
@@ -86,8 +95,20 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
             />
 
             <View className="flex-row justify-between mt-3 px-1">
-              <Text variant="caption-muted" color="soft" className="font-semibold">{minLabel}</Text>
-              <Text variant="caption-muted" color="soft" className="font-semibold">{maxLabel}</Text>
+              <Text
+                variant="caption-muted"
+                color="soft"
+                className="font-semibold"
+              >
+                {minLabel}
+              </Text>
+              <Text
+                variant="caption-muted"
+                color="soft"
+                className="font-semibold"
+              >
+                {maxLabel}
+              </Text>
             </View>
           </FadeInItem>
         </View>

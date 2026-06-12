@@ -36,11 +36,7 @@ const StageProgressBar: React.FC<StageProgressBarProps> = ({
   const animatedProgress = useSharedValue(clampedProgress);
 
   React.useEffect(() => {
-    animatedProgress.value = withSpring(clampedProgress, {
-      damping: 12,
-      stiffness: 90,
-      mass: 0.8,
-    });
+    animatedProgress.value = withSpring(clampedProgress, { damping: 20, stiffness: 100, overshootClamping: true });
   }, [animatedProgress, clampedProgress]);
 
   const fillStyle = useAnimatedStyle(() => ({

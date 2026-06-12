@@ -31,9 +31,16 @@ const styles = StyleSheet.create({
 export const XPHistoryScreen: React.FC = () => {
   const { totalXP, todayXP, getXPHistory, history, isLoading } = useXP();
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
 
   useEffect(() => {
-    getXPHistory(100);
+    const loadInitial = async () => {
+      const initialHistory = await getXPHistory(100);
+      if (initialHistory.length < 100) {
+        setHasMore(false);
+      }
+    };
+    loadInitial();
   }, [getXPHistory]);
 
   const handleBackPress = (): void => {
@@ -42,11 +49,18 @@ export const XPHistoryScreen: React.FC = () => {
   };
 
   const handleLoadMore = async (): Promise<void> => {
-    if (isLoadingMore) return;
+    if (isLoadingMore || !hasMore) return;
 
     setIsLoadingMore(true);
     try {
-      await getXPHistory(history.length + 50);
+      const prevLength = history.length;
+      const limit = prevLength + 50;
+      const newHistory = await getXPHistory(limit);
+      
+      // If we didn't get as many items as we requested, there's no more data
+      if (newHistory.length < limit) {
+        setHasMore(false);
+      }
     } finally {
       setIsLoadingMore(false);
     }

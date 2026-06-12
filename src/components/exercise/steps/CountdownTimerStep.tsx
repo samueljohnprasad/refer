@@ -3,6 +3,7 @@ import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Button } from "@/src/components/ui/Button";
 import { StepLayout } from "./StepLayout";
+import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps, TimerStepConfig } from "@/src/types/exerciseFlow";
 
 interface CountdownTimerStepProps extends StepProps {
@@ -12,6 +13,7 @@ interface CountdownTimerStepProps extends StepProps {
   completedFieldKey: string;
   /** Optional field to increment on each tap during the timer (e.g. mind wandering count) */
   tapCountFieldKey?: string;
+  psychoeducationText?: string;
 }
 
 export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
@@ -31,6 +33,7 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
     completedFieldKey,
     tapCountFieldKey,
     isSaving,
+    psychoeducationText,
   }) => {
     const [remaining, setRemaining] = useState(timerConfig.durationMs);
     const [isRunning, setIsRunning] = useState(false);
@@ -93,6 +96,8 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
         onNext={onNext}
         isLoading={isSaving}
       >
+        <PsychoeducationCard content={psychoeducationText ?? ""} />
+
         <View className="flex-1 justify-center items-center">
           {/* Circular timer display */}
           <View
@@ -107,7 +112,10 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
                 ✓
               </Text>
             ) : (
-              <Text variant="counter" className="text-ink text-[40px] font-bold">
+              <Text
+                variant="counter"
+                className="text-ink text-[40px] font-bold"
+              >
                 {minutes}:{seconds.toString().padStart(2, "0")}
               </Text>
             )}

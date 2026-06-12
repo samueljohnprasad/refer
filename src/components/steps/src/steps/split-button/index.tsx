@@ -67,10 +67,7 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
       }),
       transform: [
         {
-          scale: withSpring(splitted ? 1 : 0.95, {
-            damping: 15,
-            stiffness: 100,
-          }),
+          scale: withSpring(splitted ? 1 : 0.95, { damping: 20, stiffness: 100, overshootClamping: true }),
         },
       ],
     };
@@ -103,10 +100,7 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
       ),
       transform: [
         {
-          scale: withSpring(1, {
-            damping: 15,
-            stiffness: 100,
-          }),
+          scale: withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
         },
       ],
     };

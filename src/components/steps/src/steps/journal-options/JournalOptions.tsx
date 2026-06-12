@@ -228,10 +228,7 @@ const OptionCard: React.FC<{
   const scale = useSharedValue(1);
 
   React.useEffect(() => {
-    scale.value = withSpring(selected ? 1.02 : 1, {
-      damping: 15,
-      stiffness: 100,
-    });
+    scale.value = withSpring(selected ? 1.02 : 1, { damping: 20, stiffness: 100, overshootClamping: true });
   }, [selected]);
 
   return (

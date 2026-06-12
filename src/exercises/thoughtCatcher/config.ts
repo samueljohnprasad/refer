@@ -4,6 +4,7 @@ import type {
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
 import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
+import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
@@ -27,15 +28,17 @@ const CatcherSummary = createSummaryStep<ThoughtCatcherResponse>(
   { title: "Thought Caught!", exerciseType: "thought_catcher" },
 );
 
-const CheckerSummary = createSummaryStep<ThoughtCatcherResponse>(
-  [
-    { label: "Situation", key: "situation" },
-    { label: "Automatic Thought", key: "automaticThought" },
-    { label: "Is it true?", key: "isTrue" },
-    { label: "Balanced Thought", key: "balancedThought" },
-  ],
-  { title: "Thought Checked!", exerciseType: "thought_catcher" },
-);
+const CheckerSummary = createDynamicSummaryStep({
+  title: "Thought checked!",
+  celebrationEmoji: "🧠",
+  exerciseType: "thought_catcher",
+  preScoreKey: "intensity",
+  postScoreKey: "postIntensity",
+  scoreLabel: "Belief intensity",
+  scoreMax: 100,
+  keyTakeawayKey: "balancedThought",
+  keyTakeawayLabel: "Your balanced thought",
+});
 
 export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
   type: "thought_catcher",
@@ -79,6 +82,8 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
         placeholder: "e.g. I was at work and my boss called a meeting...",
         tipText:
           "Describe the event as factually as possible — who, what, where, when.",
+        validationMessage:
+          "That sounds like it was a lot. Let's look at this thought together.",
       }),
       label: "Describe the situation",
       validate: (r) => r.situation.trim().length >= 1,
@@ -91,6 +96,8 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
         fieldKey: "automaticThought",
         placeholder: "e.g. I'm going to get fired...",
         tipText: "Write the exact thought, even if it sounds irrational.",
+        validationMessage:
+          "It takes courage to write that down. Let's see what's really going on.",
       }),
       label: "What went through your mind?",
       validate: (r) => r.automaticThought.trim().length >= 1,
