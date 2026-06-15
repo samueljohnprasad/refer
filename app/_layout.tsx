@@ -15,7 +15,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import * as Notifications from "expo-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import SuspensLoader from "@/src/components/SuspensLoader";
+
 import RevenueCatProvider from "@/src/context/RevenueCatProvider";
 import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
 import { FloatingHappyAssistant } from "@/src/components/happy-assistant/FloatingHappyAssistant";
@@ -170,7 +170,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <SuspensLoader>
+
       <ReduxProvider>
         <PostHogProvider
           apiKey="phc_3A3cPPqkAbVXBfiskxZlaOcORt0AxADK0sNMgz0I7oU"
@@ -217,7 +217,7 @@ function RootLayoutNav() {
           </QueryClientProvider>
         </PostHogProvider>
       </ReduxProvider>
-    </SuspensLoader>
+
   );
 }
 function NotificationIntegration() {

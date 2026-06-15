@@ -1,10 +1,6 @@
-import SuspensLoader from "@/src/components/SuspensLoader";
-import React, { lazy } from "react";
+import React from "react";
 import { Stack } from "expo-router";
-
-const AllPromptsScreen = lazy(
-  () => import("@/src/screens/AllPromptsScreen/AllPromptsScreen")
-);
+import AllPromptsScreen from "@/src/screens/AllPromptsScreen/AllPromptsScreen";
 
 export const options = {
   headerTitle: "Journal Prompts",
@@ -13,9 +9,5 @@ export const options = {
 };
 
 export default function AllPromptsScreenRoute() {
-  return (
-    <SuspensLoader>
-      <AllPromptsScreen />
-    </SuspensLoader>
-  );
+  return <AllPromptsScreen />;
 }

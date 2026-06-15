@@ -1,13 +1,7 @@
-import React, { lazy } from "react";
+import React from "react";
 import { useLocalSearchParams } from "expo-router";
-import SuspensLoader from "@/src/components/SuspensLoader";
 import { ExerciseType } from "@/src/types/exerciseFlow";
-
-const ExerciseFlowScreen = lazy(() =>
-  import("@/src/screens/ExerciseFlowScreen/ExerciseFlowScreen").then((m) => ({
-    default: m.ExerciseFlowScreen,
-  })),
-);
+import { ExerciseFlowScreen } from "@/src/screens/ExerciseFlowScreen/ExerciseFlowScreen";
 
 export default function ExerciseFlowRoute() {
   const params = useLocalSearchParams<{
@@ -17,12 +11,10 @@ export default function ExerciseFlowRoute() {
   }>();
 
   return (
-    <SuspensLoader>
-      <ExerciseFlowScreen
-        exerciseType={params.type as ExerciseType}
-        entryId={params.entryId}
-        readOnly={params.readOnly === "true"}
-      />
-    </SuspensLoader>
+    <ExerciseFlowScreen
+      exerciseType={params.type as ExerciseType}
+      entryId={params.entryId}
+      readOnly={params.readOnly === "true"}
+    />
   );
 }

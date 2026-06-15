@@ -1,11 +1,6 @@
-import SuspensLoader from "@/src/components/SuspensLoader";
-import React, { lazy } from "react";
+import React from "react";
 import JournalCalendarScreen from "@/src/screens/JournalCalendarScreen/JournalCalendarScreen";
 
 export default function HomeTab() {
-    return (
-        <SuspensLoader>
-            <JournalCalendarScreen />
-        </SuspensLoader>
-    );
+    return <JournalCalendarScreen />;
 }

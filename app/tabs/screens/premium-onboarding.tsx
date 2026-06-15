@@ -1,14 +1,10 @@
-import React, { lazy, useCallback, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import SuspensLoader from '@/src/components/SuspensLoader';
 import { useRouter } from 'expo-router';
 import SignInBottomSheet from '@/src/components/SignInBottomSheet';
 import { useAuth } from '@/src/context/AuthContext';
-
-const OnboardingScreen = lazy(
-  () => import('@/src/screens/OnboardingScreen/OnboardingScreen')
-);
+import OnboardingScreen from '@/src/screens/OnboardingScreen/OnboardingScreen';
 
 export default function PremiumOnboardingRoute(): React.JSX.Element {
   const router = useRouter();
@@ -35,9 +31,7 @@ export default function PremiumOnboardingRoute(): React.JSX.Element {
 
   return (
     <View className="flex-1">
-      <SuspensLoader>
-        <OnboardingScreen onComplete={handleComplete} />
-      </SuspensLoader>
+      <OnboardingScreen onComplete={handleComplete} />
       <SignInBottomSheet
         ref={signInSheetRef}
         showSkipButton

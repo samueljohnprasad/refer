@@ -7,11 +7,11 @@ import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import useNotifications from "@/hooks/data/useNotifications";
-import SuspensLoader from "@/src/components/SuspensLoader";
+
 import { SAGE } from "@/lib/tokens";
 import { GlassView } from "expo-glass-effect";
 
-const NotificationsUI = lazy(() => import("@/src/components/NotificationsUI"));
+import NotificationsUI from "@/src/components/NotificationsUI";
 
 /**
  * Reminders Screen
@@ -56,11 +56,9 @@ const RemindersScreen = () => {
             headerBackground: () => <GlassView glassEffectStyle="clear" style={{ flex: 1 }} />,
           }}
         />
-        <SuspensLoader>
-          <View className="flex-1 w-full">
-            <NotificationsUI />
-          </View>
-        </SuspensLoader>
+        <View className="flex-1 w-full">
+          <NotificationsUI />
+        </View>
       </SafeAreaView>
     </View>
   );
