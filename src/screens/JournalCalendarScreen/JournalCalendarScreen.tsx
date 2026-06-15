@@ -40,7 +40,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { XP_REWARDS, XPActionType } from "@/src/types/xp";
 import { InsightNudgeCard } from "@/src/components/insights/InsightNudgeCard";
-import { GOLD, SAGE } from "@/lib/tokens";
+import { GOLD, SAGE, INK, INK_SOFT, INK_MUTED } from "@/lib/tokens";
 
 // Re-export for backward compat from other files that import from here.
 export { PALETTE } from "@/constants/palette";
@@ -429,6 +429,48 @@ export default function JournalCalendarScreen() {
             )}
           >
             <InsightNudgeCard />
+          </Animated.View>
+
+          {/* Apple Intelligence — entrance animation index 5.5 */}
+          <Animated.View
+            className="mt-6"
+            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
+              STAGGER_DELAY_MS * 5.5,
+            )}
+          >
+            <PressableScale
+              onPress={() => router.push("/tabs/screens/apple-intelligence")}
+              scale={0.97}
+              hapticStyle="light"
+              accessibilityRole="button"
+              accessibilityLabel="Open Apple Intelligence"
+            >
+              <Card variant="tile" radius="xl" haptic="none">
+                <View className="flex-row items-center gap-4 p-4">
+                  <View
+                    className="w-12 h-12 rounded-2xl items-center justify-center"
+                    style={{ backgroundColor: SAGE[50] }}
+                  >
+                    <Text className="text-[24px]">🧠</Text>
+                  </View>
+                  <View className="flex-1">
+                    <Text
+                      className="happy-font-body-bold text-[15px]"
+                      style={{ color: INK }}
+                    >
+                      Apple Intelligence
+                    </Text>
+                    <Text
+                      className="happy-font-body text-[13px] mt-0.5"
+                      style={{ color: INK_SOFT }}
+                    >
+                      On-device AI · Private & secure
+                    </Text>
+                  </View>
+                  <Text style={{ color: INK_MUTED, fontSize: 18 }}>›</Text>
+                </View>
+              </Card>
+            </PressableScale>
           </Animated.View>
 
           {/* ── GROUP 4: Progress — entrance animation index 6 ── */}

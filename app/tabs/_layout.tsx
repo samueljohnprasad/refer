@@ -34,6 +34,20 @@ export default function AppLayout() {
       />
 
       <Stack.Screen
+        name="screens/apple-intelligence"
+        options={{
+          headerShown: true,
+          title: "Apple Intelligence",
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
+          headerTransparent: true,
+          headerBackground: () => (
+            <GlassView glassEffectStyle="clear" style={{ flex: 1 }} />
+          ),
+        }}
+      />
+      <Stack.Screen
         name="screens/paywall"
         options={{
           headerShown: false,
@@ -206,15 +220,6 @@ export default function AppLayout() {
         options={{
           headerShown: false,
           title: "Exercise",
-          freezeOnBlur: true,
-          animation: "slide_from_bottom",
-        }}
-      />
-      <Stack.Screen
-        name="screens/task/[id]"
-        options={{
-          headerShown: false,
-          title: "Task",
           freezeOnBlur: true,
           animation: "slide_from_bottom",
         }}
