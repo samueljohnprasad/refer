@@ -106,7 +106,7 @@ const TopBar = React.memo<{
             onPress={handleSettingsPress}
             modifiers={[
               labelStyle("iconOnly"),
-              buttonStyle("glass"),
+              buttonStyle("borderless"),
               controlSize("large"),
               tint(SAGE[600]),
             ]}
