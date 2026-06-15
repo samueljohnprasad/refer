@@ -14,6 +14,8 @@ import { bad, fine, good, great, terrible } from "@/assets/emojis";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/Themed";
 import { PressableOpacity } from "pressto";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Add01Icon } from "@hugeicons/core-free-icons";
 
 export type MoodBadgeProps = {
   moodscore?: number;
@@ -94,13 +96,13 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
               />
             )}
             {!moodEmoji && (
-              <Animated.View style={plusAnimatedStyle}>
-                <Text
-                  className="text-theme-text-secondary text-sm font-medium"
-                  style={{ color: "#64748B" }}
-                >
-                  +
-                </Text>
+              <Animated.View style={[plusAnimatedStyle, { width: 16, height: 16, justifyContent: 'center', alignItems: 'center' }]}>
+                <HugeiconsIcon
+                  icon={Add01Icon}
+                  size={16}
+                  color="#64748B"
+                  strokeWidth={2}
+                />
               </Animated.View>
             )}
           </View>

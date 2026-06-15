@@ -5,22 +5,10 @@ import { currentWeekViewAtom } from "../atoms";
 import { useAtomValue } from "jotai";
 import SuspensLoader from "@/src/components/SuspensLoader";
 
-// Lazy load AI components
-const AIInsightsContent = React.lazy(() =>
-  import("@/src/components/ai/AIInsightsContent").then((module) => ({
-    default: module.AIInsightsContent,
-  }))
-);
-const WeeklySummaryCard = React.lazy(() =>
-  import("@/src/components/ai/WeeklySummaryCard").then((module) => ({
-    default: module.WeeklySummaryCard,
-  }))
-);
-const AdvancedAnalyticsCharts = React.lazy(() =>
-  import("@/src/components/ai/AdvancedAnalyticsCharts").then((module) => ({
-    default: module.AdvancedAnalyticsCharts,
-  }))
-);
+// Static imports to avoid Metro bundler React.lazy chunk resolution crashes
+import { AIInsightsContent } from "@/src/components/ai/AIInsightsContent";
+import { WeeklySummaryCard } from "@/src/components/ai/WeeklySummaryCard";
+import { AdvancedAnalyticsCharts } from "@/src/components/ai/AdvancedAnalyticsCharts";
 
 const WeekyScreenAIWrapper = () => {
   const currentWeekView = useAtomValue(currentWeekViewAtom);

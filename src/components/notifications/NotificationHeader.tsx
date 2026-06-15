@@ -31,13 +31,7 @@ export const NotificationHeader: React.FC = () => {
   return (
     <>
       {/* Header Text */}
-      <Animated.View style={headerAnimatedStyle} className="mt-6">
-        {/* FIX #4: Replaced cormorantSemiBold with system font-black for consistency */}
-        <Text className="happy-font-heading-bold text-center text-[32px] text-ink leading-tight mb-2">
-          Daily Reminders
-        </Text>
-        {/* FIX #5: text-[15px] instead of text-lg — supporting copy should be smaller */}
-        {/* FIX #6: Removed hard \"\\n\" — let text reflow naturally */}
+      <Animated.View style={headerAnimatedStyle} className="mt-2">
         <Text className="happy-font-body-medium text-center text-ink-muted text-[15px] leading-6 px-6">
           Set up gentle nudges to help you build a consistent journaling habit
         </Text>

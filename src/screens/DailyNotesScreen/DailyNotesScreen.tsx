@@ -48,18 +48,9 @@ import { HabitsSection } from "@/src/components/habits/HabitsSection";
 import CalorieTrackerScreen from "../CalorieTrackerScreen/CalorieTrackerScreen";
 import { SAGE } from "@/lib/tokens";
 
-// Lazy load heavy components
-const MentalHealthProfileContainer = lazy(() =>
-  import("./notes/MentalHealthProfileContainer").then((module) => ({
-    default: module.MentalHealthProfileContainer,
-  })),
-);
-
-const AIInsightsModalBottomSheet = lazy(() =>
-  import("@/src/components/ai/AIInsightsModalBottomSheet").then((module) => ({
-    default: module.AIInsightsModalBottomSheet,
-  })),
-);
+// Static imports to avoid Metro bundler React.lazy chunk resolution crashes
+import { MentalHealthProfileContainer } from "./notes/MentalHealthProfileContainer";
+import { AIInsightsModalBottomSheet } from "@/src/components/ai/AIInsightsModalBottomSheet";
 
 const TAB_FILTER_OPTIONS = ["Journal", "Calories", "Habits"] as const;
 type TabFilter = "habits" | "journal" | "calories";

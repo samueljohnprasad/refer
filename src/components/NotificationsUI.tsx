@@ -36,6 +36,7 @@ const NotificationsUI: React.FC = () => {
       <ScrollView
         className="flex-1 px-4"
         showsVerticalScrollIndicator={false}
+        contentInsetAdjustmentBehavior="automatic"
         // FIX #3: Proper bottom padding so last card isn't clipped by home indicator
         contentContainerStyle={{ paddingBottom: 48 }}
       >

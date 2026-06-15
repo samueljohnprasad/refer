@@ -1,7 +1,9 @@
 import { Stack } from "expo-router";
 import SupportChatScreen, {
-  SupportChatHeader,
+  SupportChatHeaderLeft,
+  SupportChatHeaderRight,
 } from "@/src/screens/SupportChatScreen/SupportChatScreen";
+import { GlassView } from "expo-glass-effect";
 
 export default function SupportChat() {
   return (
@@ -9,9 +11,11 @@ export default function SupportChat() {
       <Stack.Screen
         options={{
           headerShown: true,
+          headerTitle: "Support",
           headerTransparent: true,
-          headerBlurEffect: "regular",
-          header: () => <SupportChatHeader />,
+          headerBackground: () => <GlassView glassEffectStyle="clear" style={{ flex: 1 }} />,
+          headerLeft: () => <SupportChatHeaderLeft />,
+          headerRight: () => <SupportChatHeaderRight />,
         }}
       />
       <SupportChatScreen />

@@ -9,6 +9,8 @@ import * as Haptics from "expo-haptics";
 import useNotifications from "@/hooks/data/useNotifications";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { SAGE } from "@/lib/tokens";
+import { GlassView } from "expo-glass-effect";
+
 const NotificationsUI = lazy(() => import("@/src/components/NotificationsUI"));
 
 /**
@@ -48,33 +50,14 @@ const RemindersScreen = () => {
         <Stack.Screen
           options={{
             headerShown: true,
+            headerTitle: "Daily Reminders",
             headerTransparent: true,
-            headerBlurEffect: "regular",
-            header: () => (
-              <BlurView
-                intensity={50}
-                tint="light"
-                className="flex-row items-end justify-between px-4 pb-4 pt-[60px]"
-              >
-                <TouchableOpacity
-                  className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill"
-                  activeOpacity={0.7}
-                  onPress={handleBack}
-                >
-                  <Ionicons name="arrow-back" size={21} color={SAGE[600]} />
-                </TouchableOpacity>
-
-                <Text className="happy-font-heading-bold text-[30px] text-ink">
-                  Daily Reminders
-                </Text>
-
-                <View className="w-11" />
-              </BlurView>
-            ),
+            headerBackButtonDisplayMode: "minimal",
+            headerBackground: () => <GlassView glassEffectStyle="clear" style={{ flex: 1 }} />,
           }}
         />
         <SuspensLoader>
-          <View className="flex-1 w-full pt-24">
+          <View className="flex-1 w-full">
             <NotificationsUI />
           </View>
         </SuspensLoader>

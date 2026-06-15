@@ -12,14 +12,8 @@ import { JournalEntry } from "@/hooks/data/types";
 import { useJournalOperations } from "@/hooks/journals/useJournalOperations";
 import SuspensLoader from "@/src/components/SuspensLoader";
 
-const JournalEntryScreen = React.lazy(
-  () => import("../../JournalEntryScreen/JournalEntryScreen")
-);
-const BookmarkedJournalsBottomSheet = React.lazy(() =>
-  import("./BookmarkedJournalsBottomSheet").then((module) => ({
-    default: module.BookmarkedJournalsBottomSheet,
-  }))
-);
+import JournalEntryScreen from "../../JournalEntryScreen/JournalEntryScreen";
+import { BookmarkedJournalsBottomSheet } from "./BookmarkedJournalsBottomSheet";
 
 interface MentalHealthProfileContainerProps {
   selectedDate: Date;

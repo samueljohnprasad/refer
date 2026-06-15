@@ -27,7 +27,11 @@ import Animated, {
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { PressableScale } from "@/src/components/ui/PressableScale";
-import { SPRING_SNAPPY, SPRING_DEFAULT, TIMING_FADE } from "@/src/utils/motionTokens";
+import {
+  SPRING_SNAPPY,
+  SPRING_DEFAULT,
+  TIMING_FADE,
+} from "@/src/utils/motionTokens";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import {
   recorderOpenAtom,
@@ -70,24 +74,12 @@ import {
   SAGE_DISCOVERY_GRADIENT,
 } from "@/lib/tokens";
 
-// Lazy load components
-const VoiceRecorderModalWrapper = React.lazy(
-  () => import("./VoiceRecorderModalWrapper")
-);
-const KeyboardJournalModalWrapper = React.lazy(
-  () => import("./KeyboardJournalModalWrapper")
-);
-const JournalingOptionsModal = React.lazy(() =>
-  import("./JournalingOptionsModal").then((module) => ({
-    default: module.JournalingOptionsModal,
-  }))
-);
-const CalendarPicker = React.lazy(() =>
-  import("../DailyNotesScreen/CalendarPicker").then((module) => ({
-    default: module.CalendarPicker,
-  }))
-);
-const ImageJournalModal = React.lazy(() => import("./ImageJournalModal"));
+// Static imports to avoid Metro bundler React.lazy chunk resolution crashes
+import VoiceRecorderModalWrapper from "./VoiceRecorderModalWrapper";
+import KeyboardJournalModalWrapper from "./KeyboardJournalModalWrapper";
+import { JournalingOptionsModal } from "./JournalingOptionsModal";
+import ImageJournalModal from "./ImageJournalModal";
+import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
 
 const GRADIENT_START = { x: 0, y: 0 } as const;
 const GRADIENT_END = { x: 1, y: 1 } as const;
@@ -106,14 +98,10 @@ const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(
         <Text className="text-bee-yellow text-lg font-extrabold">
           {isLoading ? "—" : currentStreak}
         </Text>
-        <MaterialCommunityIcons
-          name="fire"
-          size={22}
-          color={GOLD}
-        />
+        <MaterialCommunityIcons name="fire" size={22} color={GOLD} />
       </View>
     </View>
-  )
+  ),
 );
 
 DiscoveryHeader.displayName = "DiscoveryHeader";
@@ -136,11 +124,14 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
     const promptTranslateY = useSharedValue<number>(0);
     const [displayedPrompt, setDisplayedPrompt] = useState<string>(prompt);
 
-    const updatePromptAndAnimateIn = useCallback((newPrompt: string) => {
-      setDisplayedPrompt(newPrompt);
-      promptOpacity.value = withTiming(1, TIMING_FADE);
-      promptTranslateY.value = withSpring(0, SPRING_DEFAULT);
-    }, [promptOpacity, promptTranslateY]);
+    const updatePromptAndAnimateIn = useCallback(
+      (newPrompt: string) => {
+        setDisplayedPrompt(newPrompt);
+        promptOpacity.value = withTiming(1, TIMING_FADE);
+        promptTranslateY.value = withSpring(0, SPRING_DEFAULT);
+      },
+      [promptOpacity, promptTranslateY],
+    );
 
     useEffect(() => {
       if (reducedMotion) {
@@ -154,7 +145,13 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
           runOnJS(updatePromptAndAnimateIn)(prompt);
         }
       });
-    }, [prompt, reducedMotion, promptOpacity, promptTranslateY, updatePromptAndAnimateIn]);
+    }, [
+      prompt,
+      reducedMotion,
+      promptOpacity,
+      promptTranslateY,
+      updatePromptAndAnimateIn,
+    ]);
 
     const promptAnimStyle = useAnimatedStyle(() => ({
       opacity: promptOpacity.value,
@@ -163,11 +160,15 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
 
     const formattedDate = useMemo(
       () => format(selectedDate, "MMMM d"),
-      [selectedDate]
+      [selectedDate],
     );
 
     const handleShuffle = useCallback(() => {
-      rotation.value = withSpring(rotation.value + 360, { damping: 20, stiffness: 100, overshootClamping: true });
+      rotation.value = withSpring(rotation.value + 360, {
+        damping: 20,
+        stiffness: 100,
+        overshootClamping: true,
+      });
       onShufflePrompt();
     }, [onShufflePrompt, rotation]);
 
@@ -204,19 +205,11 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
           </Pressable>
           <View className="flex-row items-center gap-1">
             <Pressable onPress={onOpenOptions} className="p-2">
-              <HugeiconsIcon
-                icon={ListViewIcon}
-                size={22}
-                color={SAGE[600]}
-              />
+              <HugeiconsIcon icon={ListViewIcon} size={22} color={SAGE[600]} />
             </Pressable>
             <Pressable onPress={handleShuffle} className="p-2">
               <Animated.View style={rotateStyle}>
-                <HugeiconsIcon
-                  icon={ReloadIcon}
-                  size={22}
-                  color={SAGE[600]}
-                />
+                <HugeiconsIcon icon={ReloadIcon} size={22} color={SAGE[600]} />
               </Animated.View>
             </Pressable>
           </View>
@@ -229,7 +222,7 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
         </Animated.Text>
       </Box>
     );
-  }
+  },
 );
 
 PromptCardContent.displayName = "PromptCardContent";
@@ -267,9 +260,12 @@ function DiscoveryScreen() {
     useJournalEntry();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      shufflePrompt();
-    }, 5 * 60 * 1000); // 5 minutes
+    const interval = setInterval(
+      () => {
+        shufflePrompt();
+      },
+      5 * 60 * 1000,
+    ); // 5 minutes
 
     return () => clearInterval(interval);
   }, [shufflePrompt]);
@@ -326,7 +322,7 @@ function DiscoveryScreen() {
       console.log("Insights ready:", insights);
       setIsImageJournalVisible(false);
     },
-    []
+    [],
   );
 
   const scrollContentStyle = useMemo(
@@ -336,14 +332,20 @@ function DiscoveryScreen() {
       paddingBottom: Math.max(24, 64),
       flexGrow: 1,
     }),
-    []
+    [],
   );
 
-  const cardShadowStyle = useMemo(() => [CARD_SHADOW, { borderRadius: 32 }], []);
+  const cardShadowStyle = useMemo(
+    () => [CARD_SHADOW, { borderRadius: 32 }],
+    [],
+  );
   const isLiquidGlass = isLiquidGlassAvailable();
 
   return (
-    <SafeAreaView className="flex-1 happy-brand-screen" edges={["top", "bottom"]}>
+    <SafeAreaView
+      className="flex-1 happy-brand-screen"
+      edges={["top", "bottom"]}
+    >
       <ScrollView
         contentContainerStyle={scrollContentStyle}
         showsVerticalScrollIndicator={false}
@@ -428,10 +430,10 @@ function DiscoveryScreen() {
                     onPress={handleScanJournal}
                     label="Scan"
                     modifiers={[
-                      buttonStyle('glass'),
-                      controlSize('extraLarge'),
+                      buttonStyle("glass"),
+                      controlSize("extraLarge"),
                       foregroundStyle(SAGE[600]),
-                      labelStyle('iconOnly')
+                      labelStyle("iconOnly"),
                     ]}
                     systemImage="camera.fill"
                   />
@@ -482,10 +484,10 @@ function DiscoveryScreen() {
                     onPress={handleKeyboardPress}
                     label="Keyboard"
                     modifiers={[
-                      buttonStyle('glass'),
-                      controlSize('extraLarge'),
+                      buttonStyle("glass"),
+                      controlSize("extraLarge"),
                       foregroundStyle(SAGE[600]),
-                      labelStyle('iconOnly')
+                      labelStyle("iconOnly"),
                     ]}
                     systemImage="keyboard.fill"
                   />
@@ -586,19 +588,19 @@ const CircleAction = React.memo<CircleActionProps>(
     const pressScale = useSharedValue<number>(1);
 
     const buttonBaseStyle = useMemo(
-      () => ([
+      () => [
         {
           width: size,
           height: size,
           borderRadius: size / 2,
           backgroundColor: bg,
           zIndex: elevation ? 2 : 1,
-          alignItems: 'center' as const,
-          justifyContent: 'center' as const,
+          alignItems: "center" as const,
+          justifyContent: "center" as const,
         },
         elevation ? ELEVATED_SHADOW : null,
-      ]),
-      [size, bg, elevation]
+      ],
+      [size, bg, elevation],
     );
 
     const animatedStyle = useAnimatedStyle(() => ({
@@ -631,11 +633,9 @@ const CircleAction = React.memo<CircleActionProps>(
         </Animated.View>
       </Pressable>
     );
-  }
+  },
 );
 
 CircleAction.displayName = "CircleAction";
-
-
 
 export default React.memo(DiscoveryScreen);

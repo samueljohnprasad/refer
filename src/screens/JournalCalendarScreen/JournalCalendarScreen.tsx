@@ -59,6 +59,10 @@ const getGreeting = (hour: number): string => {
 const STAGGER_DELAY_MS = 60 as const;
 const ENTRANCE_DURATION_MS = 300 as const;
 
+import { Platform } from "react-native";
+import { Host, Button } from "@expo/ui/swift-ui";
+import { buttonStyle, tint, controlSize, labelStyle } from "@expo/ui/swift-ui/modifiers";
+
 // Memoized TopBar component
 const TopBar = React.memo<{
   onAchievementsPress: () => void;
@@ -78,12 +82,46 @@ const TopBar = React.memo<{
     transform: [{ rotateZ: `${medalRotation.value}deg` }],
   }));
 
+  if (Platform.OS === "ios") {
+    return (
+      <View className="flex-row items-center justify-between px-5 pb-2 pt-1">
+        <Host style={{ width: 120, height: 44 }}>
+          <Button
+            label="Awards"
+            
+            systemImage="rosette"
+            onPress={onAchievementsPress}
+            modifiers={[
+              buttonStyle("bordered"),
+              controlSize("regular"),
+              tint(GOLD),
+            ]}
+          />
+        </Host>
+
+        <Host style={{ width: 44, height: 44 }}>
+          <Button
+            label="Settings"
+            systemImage="gearshape.fill"
+            onPress={handleSettingsPress}
+            modifiers={[
+              labelStyle("iconOnly"),
+              buttonStyle("glass"),
+              controlSize("large"),
+              tint(SAGE[600]),
+            ]}
+          />
+        </Host>
+      </View>
+    );
+  }
+
+  // Fallback for Android/Web
   return (
     <View className="flex-row items-center justify-between px-5 pb-2">
       <PressableScale
         onPress={onAchievementsPress}
         onPressIn={() => {
-          // Physics: A highly springy, swinging motion mimicking a medal on a ribbon
           medalRotation.value = withSpring(15, { damping: 20, stiffness: 100, overshootClamping: true });
         }}
         onPressOut={() => {
@@ -107,7 +145,6 @@ const TopBar = React.memo<{
         className="w-11 h-11 items-center justify-center -mr-2"
         onPress={handleSettingsPress}
         onPressIn={() => {
-          // Physics: A stiff mechanical gear rotation
           gearRotation.value = withSpring(45, { damping: 20, stiffness: 100, overshootClamping: true });
         }}
         onPressOut={() => {
@@ -260,6 +297,7 @@ export default function JournalCalendarScreen() {
           header: () => (
             <GlassView
               glassEffectStyle="regular"
+              // isInteractive={true}
               style={{
                 borderBottomWidth: 1,
                 borderBottomColor: "rgba(255, 255, 255, 0.1)",

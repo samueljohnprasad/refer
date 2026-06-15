@@ -12,10 +12,8 @@ import { Text } from "@/src/components/ui/Text";
 import { Button } from "@/src/components/ui/Button";
 import SuspensLoader from "@/src/components/SuspensLoader";
 
-// Lazy load heavy component
-const WeekyScreenAIWrapper = React.lazy(
-  () => import("@/src/screens/DailyNotesScreen/components/WeekyScreenAIWrapper")
-);
+// Static imports to avoid Metro bundler React.lazy chunk resolution crashes
+import WeekyScreenAIWrapper from "@/src/screens/DailyNotesScreen/components/WeekyScreenAIWrapper";
 
 interface AIInsightsModalBottomSheetProps {
   weekStart: string;

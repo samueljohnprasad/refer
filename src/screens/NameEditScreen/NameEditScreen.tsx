@@ -9,6 +9,9 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon, Tick02Icon, UserIcon } from "@hugeicons/core-free-icons";
 import { BRAND_SURFACE, INK, INK_MUTED, SAGE } from "@/lib/tokens";
 import { Button } from "@/src/components/ui/Button";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
+import { Host, Button as ExpoUIButton } from "@expo/ui/swift-ui";
+import { labelStyle, buttonStyle, controlSize, tint, foregroundStyle, buttonBorderShape } from "@expo/ui/swift-ui/modifiers";
 
 interface NameEditScreenProps {
   setShowModal: (show: boolean) => void;
@@ -55,13 +58,30 @@ export default function NameEditScreen({ setShowModal }: NameEditScreenProps) {
       <View className="flex-1 p-5 justify-between">
         {/* Top bar */}
         <View className="flex-row justify-between items-center mt-16">
-          <TouchableOpacity
-            className="w-11 h-11 rounded-full justify-center items-center bg-sage-pill"
-            onPress={() => setShowModal(false)}
-            activeOpacity={0.7}
-          >
-            <HugeiconsIcon icon={Cancel01Icon} size={21} color={SAGE[600]} />
-          </TouchableOpacity>
+          {isLiquidGlassAvailable() ? (
+            <Host matchContents>
+              <ExpoUIButton
+                label="Close"
+                onPress={() => setShowModal(false)}
+                modifiers={[
+                  labelStyle("iconOnly"),
+                  buttonBorderShape("circle"),
+                  buttonStyle("bordered"),
+                  controlSize("regular"),
+                  tint(SAGE[600]),
+                ]}
+                systemImage="xmark"
+              />
+            </Host>
+          ) : (
+            <TouchableOpacity
+              className="w-11 h-11 rounded-full justify-center items-center bg-sage-pill"
+              onPress={() => setShowModal(false)}
+              activeOpacity={0.7}
+            >
+              <HugeiconsIcon icon={Cancel01Icon} size={21} color={SAGE[600]} />
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Main content */}

@@ -5,13 +5,9 @@ import VoiceRecorderModal from "./VoiceRecorderModal";
 import { JournalEntry } from "@/hooks/data/types";
 import SuspensLoader from "@/src/components/SuspensLoader";
 
-const VoiceRecorder = React.lazy(() => import("./VoiceRecorder"));
-const JournalEntryScreen = React.lazy(
-  () => import("../JournalEntryScreen/JournalEntryScreen")
-);
-const EmotionAnalysisLoadingScreen = React.lazy(
-  () => import("./EmotionAnalysisLoadingScreen")
-);
+import VoiceRecorder from "./VoiceRecorder";
+import JournalEntryScreen from "../JournalEntryScreen/JournalEntryScreen";
+import EmotionAnalysisLoadingScreen from "./EmotionAnalysisLoadingScreen";
 
 const VoiceRecorderModalWrapper = () => {
   const [recorderOpen, setRecorderOpen] = useAtom(recorderOpenAtom);

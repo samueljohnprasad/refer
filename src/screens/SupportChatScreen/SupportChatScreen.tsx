@@ -17,6 +17,9 @@ import {
   InputToolbar,
   Composer,
   Send,
+  Day,
+  Time,
+  MessageText,
 } from "react-native-gifted-chat";
 import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
@@ -34,10 +37,12 @@ import {
   controlSize,
   labelStyle,
   tint,
+  foregroundStyle,
+  buttonBorderShape,
 } from "@expo/ui/swift-ui/modifiers";
 import { useAuth } from "@/src/context/AuthContext";
 import { useSupportMessages } from "@/hooks/data/useSupportMessages";
-import { BRAND_SURFACE, INK, INK_MUTED, SAGE } from "@/lib/tokens";
+import { BRAND_SURFACE, BRAND_CANVAS, INK, INK_MUTED, SAGE, DANGER } from "@/lib/tokens";
 
 interface SupportChatScreenProps {
   onClose?: () => void;
@@ -63,7 +68,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
         console.error("Error sending message:", error);
       }
     },
-    [sendMessage]
+    [sendMessage],
   );
 
   const renderAvatar = (props: any) => {
@@ -115,24 +120,76 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
       {...props}
       wrapperStyle={{
         right: {
-          backgroundColor: SAGE[500],
-          borderRadius: 16,
+          backgroundColor: SAGE[600],
+          borderRadius: 20,
           paddingHorizontal: 4,
           paddingVertical: 2,
         },
         left: {
-          backgroundColor: SAGE[50],
-          borderRadius: 16,
+          backgroundColor: BRAND_CANVAS,
+          borderRadius: 20,
           paddingHorizontal: 4,
           paddingVertical: 2,
         },
       }}
+    />
+  );
+
+  const renderMessageText = (props: any) => (
+    <MessageText
+      {...props}
       textStyle={{
+        left: {
+          fontFamily: "GeistRegular",
+          color: INK,
+          fontSize: 16,
+          lineHeight: 24,
+        },
+        right: {
+          fontFamily: "GeistRegular",
+          color: BRAND_SURFACE,
+          fontSize: 16,
+          lineHeight: 24,
+        },
+      }}
+    />
+  );
+
+  const renderDay = (props: any) => (
+    <Day
+      {...props}
+      wrapperStyle={{
+        backgroundColor: INK_MUTED,
+        borderRadius: 16,
+        paddingHorizontal: 16,
+        paddingVertical: 6,
+        alignSelf: "center",
+        marginTop: 16,
+        marginBottom: 8,
+      }}
+      textStyle={{
+        color: BRAND_SURFACE,
+        fontFamily: "GeistMedium",
+        fontSize: 12,
+        fontWeight: "600",
+      }}
+    />
+  );
+
+  const renderTime = (props: any) => (
+    <Time
+      {...props}
+      timeTextStyle={{
+        left: {
+          color: INK_MUTED,
+          fontFamily: "GeistRegular",
+          fontSize: 11,
+        },
         right: {
           color: BRAND_SURFACE,
-        },
-        left: {
-          color: INK,
+          opacity: 0.8,
+          fontFamily: "GeistRegular",
+          fontSize: 11,
         },
       }}
     />
@@ -158,7 +215,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
     <Composer
       {...props}
       textInputStyle={{
-        backgroundColor: SAGE[50],
+        backgroundColor: BRAND_CANVAS,
         borderRadius: 20,
         paddingHorizontal: 16,
         paddingTop: 10,
@@ -166,8 +223,10 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
         marginRight: 8,
         fontSize: 16,
         lineHeight: 20,
+        fontFamily: "GeistRegular",
+        color: INK,
       }}
-      placeholder="Type your message..."
+      placeholder="Type a message..."
       placeholderTextColor={INK_MUTED}
     />
   );
@@ -217,6 +276,9 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
           }}
           renderAvatar={renderAvatar}
           renderBubble={renderBubble}
+          renderMessageText={renderMessageText}
+          renderDay={renderDay}
+          renderTime={renderTime}
           renderInputToolbar={renderInputToolbar}
           renderComposer={renderComposer}
           renderSend={renderSend}
@@ -234,10 +296,42 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
   );
 };
 
-// Header component for the route file
-export const SupportChatHeader: React.FC = () => {
+// Header Left component for the route file
+export const SupportChatHeaderLeft: React.FC = () => {
   const router = useRouter();
-  const { height } = useWindowDimensions();
+  const isLiquidGlass = isLiquidGlassAvailable();
+
+  if (isLiquidGlass) {
+    return (
+      <Host matchContents>
+        <Button
+          label="Back"
+          onPress={() => router.back()}
+          modifiers={[
+            labelStyle("iconOnly"),
+            buttonBorderShape("circle"),
+            buttonStyle("bordered"),
+            controlSize("regular"),
+          ]}
+          systemImage="chevron.left"
+        />
+      </Host>
+    );
+  }
+
+  return (
+    <TouchableOpacity
+      onPress={() => router.back()}
+      className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill ml-4"
+      activeOpacity={0.7}
+    >
+      <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SAGE[600]} />
+    </TouchableOpacity>
+  );
+};
+
+// Header Right component for the route file
+export const SupportChatHeaderRight: React.FC = () => {
   const isLiquidGlass = isLiquidGlassAvailable();
   const { deleteAllMessages } = useSupportMessages();
 
@@ -260,73 +354,41 @@ export const SupportChatHeader: React.FC = () => {
               console.error("Error deleting messages:", error);
               Alert.alert(
                 "Error",
-                "Failed to delete messages. Please try again."
+                "Failed to delete messages. Please try again.",
               );
             }
           },
         },
-      ]
+      ],
     );
   };
 
+  if (isLiquidGlass) {
+    return (
+      <Host matchContents>
+        <Button
+          label="Delete"
+          onPress={handleDeleteChat}
+          modifiers={[
+            labelStyle("iconOnly"),
+            buttonBorderShape("circle"),
+            buttonStyle("bordered"),
+            controlSize("regular"),
+          ]}
+          systemImage="trash"
+        />
+      </Host>
+    );
+  }
+
   return (
-    <BlurView
-      intensity={50}
-      tint="light"
-      className="relative flex-row items-end justify-between"
-      style={{
-        height: Math.max(108, height * 0.13),
-        paddingHorizontal: 16,
-        paddingBottom: 16,
-      }}
+    <TouchableOpacity
+      onPress={handleDeleteChat}
+      className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill mr-4"
+      activeOpacity={0.7}
     >
-      {!isLiquidGlass && (
-        <TouchableOpacity
-          className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill"
-          activeOpacity={0.7}
-          onPress={() => router.back()}
-        >
-          <HugeiconsIcon icon={ArrowLeft02Icon} size={21} color={SAGE[600]} />
-        </TouchableOpacity>
-      )}
-      {isLiquidGlass && (
-        <Host matchContents>
-          <Button
-            onPress={() => router.back()}
-            modifiers={[
-              labelStyle("iconOnly"),
-              buttonStyle("glassProminent"),
-              controlSize("regular"),
-              tint(SAGE[600]),
-            ]}
-            systemImage="chevron.left"
-          />
-        </Host>
-      )}
-
-      <View
-        className="absolute left-20 right-20 items-center"
-        style={{ bottom: 17 }}
-        pointerEvents="none"
-      >
-        <Text
-          className="happy-font-body-bold text-[22px] text-ink"
-          numberOfLines={1}
-          adjustsFontSizeToFit
-        >
-          Support
-        </Text>
-      </View>
-
-      {/* Delete Chat Button */}
-      <TouchableOpacity
-        onPress={handleDeleteChat}
-        className="h-11 w-11 items-center justify-center rounded-full bg-sage-pill"
-        activeOpacity={0.7}
-      >
-        <HugeiconsIcon icon={Delete02Icon} size={20} color={SAGE[600]} />
-      </TouchableOpacity>
-    </BlurView>
+      <HugeiconsIcon icon={Delete02Icon} size={20} color={SAGE[600]} />
+    </TouchableOpacity>
   );
 };
 

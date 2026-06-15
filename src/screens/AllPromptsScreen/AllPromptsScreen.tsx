@@ -129,7 +129,9 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
         style={{
           backgroundColor: prompt.bgColor,
           borderWidth: 1,
-          borderColor: prompt.categoryColor ? prompt.categoryColor + "24" : "#E5EDE1",
+          borderColor: prompt.categoryColor
+            ? prompt.categoryColor + "24"
+            : "#E5EDE1",
           shadowColor: "#2B3A22",
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.03,
@@ -168,7 +170,9 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
             style={{
               backgroundColor: "transparent",
               borderWidth: 1,
-              borderColor: prompt.categoryColor ? prompt.categoryColor + "3B" : "#E5EDE1",
+              borderColor: prompt.categoryColor
+                ? prompt.categoryColor + "3B"
+                : "#E5EDE1",
             }}
           >
             <Text
@@ -225,7 +229,11 @@ export default function AllPromptsScreen() {
       {/* Prompts Grid */}
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ padding: 10, paddingBottom: 32 }}
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{
+          paddingHorizontal: 10,
+          paddingBottom: 32,
+        }}
         showsVerticalScrollIndicator={false}
       >
         <View className="flex-row flex-wrap">

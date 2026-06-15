@@ -16,11 +16,11 @@ import * as Haptics from "expo-haptics";
 
 import { XPHistorySummary } from "./components/XPHistorySummary";
 import { XPHistoryTimeline } from "./components/XPHistoryTimeline";
+import { useHeaderHeight } from "expo-router/react-navigation";
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
   },
   loadingScreen: {
     alignItems: "center",
@@ -32,6 +32,7 @@ export const XPHistoryScreen: React.FC = () => {
   const { totalXP, todayXP, getXPHistory, history, isLoading } = useXP();
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
+  const headerHeight = useHeaderHeight();
 
   useEffect(() => {
     const loadInitial = async () => {
@@ -56,7 +57,7 @@ export const XPHistoryScreen: React.FC = () => {
       const prevLength = history.length;
       const limit = prevLength + 50;
       const newHistory = await getXPHistory(limit);
-      
+
       // If we didn't get as many items as we requested, there's no more data
       if (newHistory.length < limit) {
         setHasMore(false);
@@ -81,44 +82,17 @@ export const XPHistoryScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView className="happy-brand-screen flex-1" style={styles.screen}>
-      <View className="flex-row items-center px-4 pt-2 pb-4">
-        <Pressable
-          onPress={handleBackPress}
-          className="happy-brand-soft-chip mr-3 h-11 w-11 items-center justify-center active:opacity-80"
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-        >
-          <HugeiconsIcon
-            icon={ArrowLeft02Icon}
-            size={20}
-            color={SAGE[600]}
-            strokeWidth={2}
-          />
-        </Pressable>
-        <View className="flex-1 min-w-0">
-          <Text
-            className="happy-font-heading-bold text-[24px] leading-tight text-ink"
-            numberOfLines={1}
-          >
-            XP History
-          </Text>
-          <Text
-            className="happy-font-body-medium text-[13px] text-ink-muted"
-            numberOfLines={1}
-          >
-            Track the effort you are building
-          </Text>
-        </View>
-      </View>
-
+    <View
+      className="happy-brand-screen flex-1"
+      style={[styles.screen]}
+    >
       <XPHistoryTimeline
         entries={history}
         header={<XPHistorySummary totalXP={totalXP} todayXP={todayXP} />}
         isLoadingMore={isLoadingMore}
         onEndReached={handleLoadMore}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

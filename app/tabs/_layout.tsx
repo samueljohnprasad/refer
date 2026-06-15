@@ -11,6 +11,7 @@ import { enableScreens } from "react-native-screens";
 enableScreens(true);
 
 import { Stack } from "expo-router";
+import { GlassView } from "expo-glass-effect";
 
 export default function AppLayout() {
   return (
@@ -23,10 +24,12 @@ export default function AppLayout() {
       <Stack.Screen
         name="screens/settings"
         options={{
-          headerShown: false,
+          headerShown: true,
           title: "Settings",
-          animation: "slide_from_right",
           freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "slide_from_right",
+          headerTransparent: true,
         }}
       />
 
@@ -96,15 +99,29 @@ export default function AppLayout() {
           freezeOnBlur: true,
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
+          headerTransparent: true,
+          headerBackground: () => (
+            <GlassView glassEffectStyle="clear" style={{ flex: 1 }} />
+          ),
         }}
       />
       <Stack.Screen
         name="screens/achievements"
         options={{
-          headerShown: false,
+          headerShown: true,
           title: "Achievements",
+          headerTransparent: true,
+
           freezeOnBlur: true,
+          headerBackTitle: "Home",
           animation: "slide_from_right",
+          // headerBackground: () => (
+          //   <GlassView
+          //     glassEffectStyle="clear"
+          //     tintColor="#f8faf7"
+          //     style={{ flex: 1 }}
+          //   />
+          // ),
         }}
       />
       <Stack.Screen
@@ -119,10 +136,12 @@ export default function AppLayout() {
       <Stack.Screen
         name="screens/xp-history"
         options={{
-          headerShown: false,
+          headerShown: true,
           title: "XP History",
           freezeOnBlur: true,
+          headerBackTitle: "Achievements",
           animation: "slide_from_right",
+          headerTransparent: true,
         }}
       />
       <Stack.Screen

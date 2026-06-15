@@ -42,13 +42,13 @@ import { DayButton } from "./DayButtonComponent";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { EmotionDetailsModal } from "@/src/components/modals";
 import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
+import { GlassView, isGlassEffectAPIAvailable } from "expo-glass-effect";
+import { BlurView } from "expo-blur";
 
-// Lazy load CalendarPicker
-const CalendarPicker = React.lazy(() =>
-  import("./CalendarPicker").then((module) => ({
-    default: module.CalendarPicker,
-  }))
-);
+const AnimatedGlassView = Animated.createAnimatedComponent(GlassView);
+const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
+// Static imports to avoid Metro bundler React.lazy chunk resolution crashes
+import { CalendarPicker } from "./CalendarPicker";
 
 const { height } = Dimensions.get("window");
 // Use exact content height to prevent overflow and align headers natively
@@ -270,10 +270,10 @@ const DailyNotesHeader = React.memo(
         transform: [{ translateX: pillX.value }],
         opacity: pillOpacity.value,
         zIndex: 0,
-        backgroundColor: SAGE.selected,
-        borderColor: SAGE[200],
+        borderColor: "rgba(187, 199, 185, 0.4)", // SAGE[200] with some transparency
         borderWidth: 1,
-        borderRadius: 12,
+        borderRadius: 16,
+        overflow: "hidden", // Important for BlurView clipping
       };
     });
 
@@ -366,9 +366,10 @@ const DailyNotesHeader = React.memo(
             ]}
           >
             {/* Calendar Header */}
-            <Animated.View style={headerControlsAnimatedStyle}>
+            <Animated.View style={headerControlsAnimatedStyle} pointerEvents="box-none">
               <View
                 className="flex-row items-center justify-between px-4 pt-1 pb-2 rounded-3xl"
+                pointerEvents="box-none"
               >
                 <Pressable
                   className="min-h-[44px] min-w-[44px] justify-center items-center -ml-1 rounded-full"
@@ -390,13 +391,21 @@ const DailyNotesHeader = React.memo(
                   </Animated.View>
                 </Pressable>
 
-                <Animated.View style={titleAndBookmarkStyle} className="flex-row items-center justify-center flex-1">
+                <Animated.View 
+                  style={titleAndBookmarkStyle} 
+                  className="flex-row items-center justify-center flex-1"
+                  pointerEvents={isExpanded ? "none" : "auto"}
+                >
                   <Text variant="h1" className="text-[30px] text-center">
                     {currentMonthView || ""}
                   </Text>
                 </Animated.View>
 
-                <Animated.View style={titleAndBookmarkStyle} className="flex-row items-center gap-1">
+                <Animated.View 
+                  style={titleAndBookmarkStyle} 
+                  className="flex-row items-center gap-1"
+                  pointerEvents={isExpanded ? "none" : "auto"}
+                >
                   <Pressable
                     className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
                     onPress={handleBookmarkPressInternal}
@@ -432,7 +441,29 @@ const DailyNotesHeader = React.memo(
                   onLayout={(e) => setWeekWidth(e.nativeEvent.layout.width)}
                 >
                   {/* The Morphing Selection Pill */}
-                  <Animated.View style={animatedPillStyle} pointerEvents="none" />
+                  {isGlassEffectAPIAvailable() ? (
+                    <AnimatedGlassView
+                      style={animatedPillStyle}
+                      pointerEvents="none"
+                      glassEffectStyle="regular"
+                      tintColor={SAGE.selected}
+                    />
+                  ) : Platform.OS === "ios" ? (
+                    <AnimatedBlurView
+                      style={animatedPillStyle}
+                      pointerEvents="none"
+                      intensity={20}
+                      tint="light"
+                      experimentalBlurMethod="dimezisBlurView"
+                    >
+                      <View style={{ flex: 1, backgroundColor: SAGE.selected, opacity: 0.8 }} />
+                    </AnimatedBlurView>
+                  ) : (
+                    <Animated.View
+                      style={[animatedPillStyle, { backgroundColor: SAGE.selected }]}
+                      pointerEvents="none"
+                    />
+                  )}
 
                   {weekDaysData.map((dayData, index) => (
                     <View className="flex-1 gap-2 mb-2" key={dayData.dayStr}>

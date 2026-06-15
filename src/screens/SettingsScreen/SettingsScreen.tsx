@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Animated, Modal, Share, useWindowDimensions } from "react-native";
+import {
+  View,
+  Animated,
+  Modal,
+  Share,
+  useWindowDimensions,
+  Pressable,
+} from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
@@ -43,7 +50,6 @@ import { PremiumStatusCard } from "./components/PremiumStatusCard";
 export default React.memo(function SettingsScreen() {
   const router = useRouter();
   const { height: windowHeight } = useWindowDimensions();
-  const headerHeight = windowHeight * 0.14;
   const signInSheetRef = React.useRef<BottomSheetModal>(null);
   const { customerInfo, hasPro, isLoadingRevenueCat, presentPaywall } =
     useRevenueCat();
@@ -94,16 +100,12 @@ export default React.memo(function SettingsScreen() {
 
   return (
     <View className="flex-1 bg-offwhite">
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-      />
-      <View className="flex-1 px-0 relative">
+      <View className="flex-1 px-0 relative ">
         <Animated.ScrollView
           contentContainerClassName="flex-grow px-4"
           contentContainerStyle={{
-            paddingTop: headerHeight,
+            paddingBottom: 48,
+            paddingTop: 10,
           }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
@@ -215,7 +217,7 @@ export default React.memo(function SettingsScreen() {
               tone="gold"
               title="App Info"
               subtitle="Version 1.0.0 (Build 1)"
-              onPress={() => { }}
+              onPress={() => {}}
               showArrow={false}
             />
             <SettingsItem
@@ -263,11 +265,6 @@ export default React.memo(function SettingsScreen() {
             )}
           </SettingsSection>
         </Animated.ScrollView>
-
-        {/* Custom sticky header absolutely positioned to prevent native overlap */}
-        <View style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 50 }}>
-          <SettingsHeader scrollY={scrollY} upgradeY={upgradeY} />
-        </View>
       </View>
 
       <Modal

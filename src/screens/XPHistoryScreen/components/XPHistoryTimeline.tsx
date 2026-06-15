@@ -21,6 +21,7 @@ interface XPHistoryTimelineProps {
   header: React.ReactElement;
   isLoadingMore: boolean;
   onEndReached: () => void;
+  contentPaddingTop?: number;
 }
 
 interface XPHistoryTimelineRow extends TimelineData {
@@ -183,7 +184,7 @@ const XPHistoryTimelineFooter: React.FC<{ isLoadingMore: boolean }> = ({
 };
 
 export const XPHistoryTimeline: React.FC<XPHistoryTimelineProps> = React.memo(
-  ({ entries, header, isLoadingMore, onEndReached }) => {
+  ({ entries, header, isLoadingMore, onEndReached, contentPaddingTop }) => {
     const timelineRows = useMemo(
       () => entries.map(createTimelineRow),
       [entries]
@@ -216,7 +217,8 @@ export const XPHistoryTimeline: React.FC<XPHistoryTimelineProps> = React.memo(
             <XPHistoryTimelineFooter isLoadingMore={isLoadingMore} />
           ),
           ListHeaderComponent: header,
-          contentContainerStyle: styles.listContent,
+          contentContainerStyle: [styles.listContent, { paddingTop: contentPaddingTop }],
+          contentInsetAdjustmentBehavior: "automatic",
           keyExtractor: (item) => (item as XPHistoryTimelineRow).id,
           onEndReached,
           onEndReachedThreshold: 0.5,

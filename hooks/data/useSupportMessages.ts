@@ -24,22 +24,22 @@ const createDailySupportPrompt = (): IMessage => {
   return {
     _id: "daily-prompt-" + today.toDateString(),
     text: `Hello! 👋 We're here to assist you.
-          
+
 How can we help improve your experience today?
 
-❓ **General Queries**
+❓ GENERAL QUERIES
 Questions about features or how things work?
 
-✨ **Feature Requests**
+✨ FEATURE REQUESTS
 Have a great idea for the app? We'd love to hear it!
 
-🐞 **Bug Reports**
+🐞 BUG REPORTS
 Found an issue? Please tell us what happened.
 
-🔐 **Account & Data**
+🔐 ACCOUNT & DATA
 Need help with your profile, subscription, or privacy?
 
-❤️ **Feedback**
+❤️ FEEDBACK
 Any other thoughts or suggestions?
 
 Drop us a message below!`,

@@ -21,6 +21,7 @@ import {
   Coins01Icon,
 } from "@hugeicons/core-free-icons";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useAchievements } from "@/hooks/data/useAchievements";
 import { AchievementCategory, ACHIEVEMENTS } from "@/src/types/achievements";
@@ -35,6 +36,121 @@ import { AchievementsSkeleton } from "./components/AchievementsSkeleton";
 import { GOLD, SAGE, TERRACOTTA } from "@/lib/tokens";
 import * as Haptics from "expo-haptics";
 import { Card } from "@/src/components/ui/Card";
+import { Stack } from "expo-router";
+import { GlassView } from "expo-glass-effect";
+import { Platform } from "react-native";
+import { Host, Button } from "@expo/ui/swift-ui";
+import {
+  buttonStyle,
+  tint,
+  controlSize,
+  labelStyle,
+} from "@expo/ui/swift-ui/modifiers";
+
+// ─── TopBar ──────────────────────────────────────────────────────────────────
+const TopBar = React.memo<{
+  totalXP: number;
+}>(({ totalXP }) => {
+  if (Platform.OS === "ios") {
+    return (
+      <View className="flex-row items-center px-4 pt-2 pb-2">
+        <Host style={{ width: 44, height: 44 }}>
+          <Button
+            label="Back"
+            systemImage="arrow.left"
+            onPress={() => router.back()}
+            modifiers={[
+              labelStyle("iconOnly"),
+              buttonStyle("glass"),
+              controlSize("large"),
+              tint(SAGE[600]),
+            ]}
+          />
+        </Host>
+
+        <View className="flex-1 min-w-0 ml-3">
+          <Text
+            className="happy-font-heading-bold text-[24px] text-ink leading-tight"
+            numberOfLines={1}
+          >
+            Achievements
+          </Text>
+          <Text
+            className="happy-font-body-medium text-[13px] text-ink-muted"
+            numberOfLines={1}
+          >
+            Earn badges as you practice
+          </Text>
+        </View>
+
+        <Host style={{ width: 80, height: 44 }}>
+          <Button
+            label={totalXP.toLocaleString()}
+            systemImage="sparkles"
+            onPress={() => router.push("/tabs/screens/xp-history")}
+            modifiers={[
+              buttonStyle("glass"),
+              controlSize("regular"),
+              tint(GOLD),
+            ]}
+          />
+        </Host>
+      </View>
+    );
+  }
+
+  return (
+    <View className="flex-row items-center px-4 pt-2 pb-4">
+      <TouchableOpacity
+        onPress={() => router.back()}
+        className="happy-brand-soft-chip w-11 h-11 items-center justify-center mr-3"
+        accessibilityRole="button"
+        accessibilityLabel="Go back"
+      >
+        <HugeiconsIcon
+          icon={ArrowLeft02Icon}
+          size={20}
+          color={SAGE[600]}
+          strokeWidth={2}
+        />
+      </TouchableOpacity>
+      <View className="flex-1 flex-row items-center gap-2.5">
+        <View className="flex-1 min-w-0">
+          <Text
+            className="happy-font-heading-bold text-[24px] text-ink leading-tight"
+            numberOfLines={1}
+          >
+            Achievements
+          </Text>
+          <Text
+            className="happy-font-body-medium text-[13px] text-ink-muted"
+            numberOfLines={1}
+          >
+            Earn badges as you practice
+          </Text>
+        </View>
+      </View>
+
+      <View className="flex-row items-center gap-2">
+        <TouchableOpacity
+          activeOpacity={0.75}
+          onPress={() => router.push("/tabs/screens/xp-history")}
+          className="happy-brand-status-chip flex-row items-center px-2.5 py-1.5"
+        >
+          <HugeiconsIcon
+            icon={StarsIcon}
+            size={16}
+            color={GOLD}
+            strokeWidth={2}
+          />
+          <Text className="happy-font-body-bold ml-1 text-sm text-ink">
+            {totalXP.toLocaleString()}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+});
 
 // ─── Utility ────────────────────────────────────────────────────────────────
 /** Convert a 6-digit hex color to rgba() for safe cross-platform tinting. */
@@ -208,7 +324,6 @@ const EmptyState: React.FC = () => (
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
   },
   loadingScreen: {
     alignItems: "center",
@@ -226,6 +341,7 @@ const styles = StyleSheet.create({
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 export const AchievementsScreen: React.FC = () => {
+  const insets = useSafeAreaInsets();
   const { achievements, isLoading, unlockedAchievements } = useAchievements();
   const { wallet } = useRewardsContext();
   const { totalXP } = useXP();
@@ -298,231 +414,212 @@ export const AchievementsScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView className="happy-brand-screen flex-1" style={styles.screen}>
-      {/* ── Header ── */}
-      <View className="flex-row items-center px-4 pt-2 pb-4">
-        <TouchableOpacity
-          onPress={() => router.back()}
-          className="happy-brand-soft-chip w-11 h-11 items-center justify-center mr-3"
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-        >
-          <HugeiconsIcon
-            icon={ArrowLeft02Icon}
-            size={20}
-            color={SAGE[600]}
-            strokeWidth={2}
-          />
-        </TouchableOpacity>
-        <View className="flex-1 flex-row items-center gap-2.5">
-          <View className="flex-1 min-w-0">
-            <Text
-              className="happy-font-heading-bold text-[24px] text-ink leading-tight"
-              numberOfLines={1}
+    <>
+      <Stack.Screen
+        options={{
+          headerRight: () => (
+            <TouchableOpacity
+              activeOpacity={0.75}
+              onPress={() => router.push("/tabs/screens/xp-history")}
+              className="happy-brand-status-chip flex-row items-center px-2.5 py-1.5"
             >
-              Achievements
-            </Text>
-            <Text
-              className="happy-font-body-medium text-[13px] text-ink-muted"
-              numberOfLines={1}
-            >
-              Earn badges as you practice
-            </Text>
-          </View>
-        </View>
-
-        <View className="flex-row items-center gap-2">
-          <TouchableOpacity
-            activeOpacity={0.75}
-            onPress={() => router.push("/tabs/screens/xp-history")}
-            className="happy-brand-status-chip flex-row items-center px-2.5 py-1.5"
-          >
-            <HugeiconsIcon
-              icon={StarsIcon}
-              size={16}
-              color={GOLD}
-              strokeWidth={2}
-            />
-            <Text className="happy-font-body-bold ml-1 text-sm text-ink">
-              {totalXP.toLocaleString()}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <ScrollView
-        ref={scrollViewRef}
-        className="flex-1"
-        style={styles.scroll}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-        accessibilityLabel="Achievements scroll view"
-      >
-        {/* ── Your Progress ── */}
-        <View className="px-4 pt-3 pb-2">
-          <Text className="happy-brand-eyebrow mb-3">Your Progress</Text>
-
-          <StatCard
-            icon={
-              <IconBubble icon={Medal01Icon} color={SAGE[500]} bg={SAGE.pill} />
-            }
-            label="Badges Unlocked"
-            value={String(unlockedCount)}
-            subtext={`${unlockedCount} of ${totalCount} badges collected`}
-            color={SAGE[500]}
-            progressCounts={{ current: unlockedCount, total: totalCount }}
-            accessibilityLabel={`Badges unlocked: ${unlockedCount} of ${totalCount}. ${Math.round(overallProgress)}% complete.`}
-            accessibilityHint="Scrolls to all badge categories."
-            onPress={handleScrollToBadges}
-          />
-
-          <StatCard
-            icon={
-              <IconBubble
+              <HugeiconsIcon
                 icon={StarsIcon}
+                size={16}
                 color={GOLD}
-                bg={hexToRgba(GOLD, 0.14)}
+                strokeWidth={2}
               />
-            }
-            label="XP from Badges"
-            value={`${totalXPEarned}`}
-            subtext="XP earned from all unlocked badges"
-            color={GOLD}
-            accessibilityLabel={`XP earned from badges: ${totalXPEarned} points`}
-            accessibilityHint="Opens XP history."
-            onPress={handleXPHistoryPress}
-          />
-
-          <StatCard
-            icon={
-              <IconBubble
-                icon={CheckmarkCircle02Icon}
-                color={SAGE[600]}
-                bg={SAGE.selected}
-              />
-            }
-            label="Categories Mastered"
-            value={`${masteredCategoryCount}/5`}
-            subtext="Complete all badges in a category"
-            color={SAGE[600]}
-            accessibilityLabel={`Categories mastered: ${masteredCategoryCount} of 5`}
-            accessibilityHint="Scrolls to all badge categories."
-            onPress={handleScrollToBadges}
-          />
-        </View>
-
-        {/* ── All Badges ── */}
-        <View
-          className="px-4 mt-4 mb-3"
-          onLayout={(event) => {
-            allBadgesOffsetY.current = event.nativeEvent.layout.y;
-          }}
-        >
-          <Text className="happy-brand-eyebrow">All Badges</Text>
-        </View>
-
-        {/* Empty state */}
-        {!hasAchievements && <EmptyState />}
-
-        {/* Achievement Categories */}
-        {(Object.keys(CATEGORY_CONFIG) as AchievementCategory[]).map(
-          (category) => {
-            const categoryAchievements = getAchievementsByCategory(category);
-            if (categoryAchievements.length === 0) return null;
-
-            const {
-              label,
-              icon: categoryIcon,
-              color,
-              bg,
-            } = CATEGORY_CONFIG[category];
-            const categoryUnlocked = categoryAchievements.filter(
-              (a) => a.isUnlocked,
-            ).length;
-
-            return (
-              <View key={category} className="mb-6 px-4">
-                <View className="mb-2.5 flex-row items-center justify-between">
-                  <View className="min-w-0 flex-1 flex-row items-center gap-3">
-                    <IconBubble
-                      icon={categoryIcon}
-                      color={color}
-                      bg={bg}
-                      size={46}
-                      iconSize={21}
-                    />
-                    <Text
-                      className="happy-font-body-bold text-[17px] text-ink"
-                      numberOfLines={1}
-                    >
-                      {label}
-                    </Text>
-                  </View>
-
-                  <View
-                    className="happy-brand-status-chip rounded-full px-3 py-1.5"
-                    style={{ backgroundColor: bg }}
-                  >
-                    <Text
-                      className="happy-font-body-bold text-sm"
-                      style={{ color }}
-                    >
-                      {categoryUnlocked}/{categoryAchievements.length}
-                    </Text>
-                  </View>
-                </View>
-
-                <Card
-                  variant="tile"
-                  radius="lg"
-                  showDepth={false}
-                  contentClassName="px-2.5 py-3"
-                >
-                  <View className="flex-row flex-wrap">
-                    {categoryAchievements.map((item) => (
-                      <View
-                        key={item.achievement.id}
-                        className="items-center"
-                        style={{ width: "33.333%", paddingVertical: 6 }}
-                      >
-                        <AchievementBadge
-                          achievement={item.achievement}
-                          currentProgress={item.currentProgress}
-                          isUnlocked={item.isUnlocked}
-                          onPress={() => handleBadgePress(item)}
-                          showDescription={false}
-                          showProgressBar={false}
-                          showProgressText={true}
-                          showUnlockedProgress={true}
-                          size="md"
-                        />
-                      </View>
-                    ))}
-                  </View>
-                </Card>
-              </View>
-            );
-          },
-        )}
-
-        {/* Motivational footer */}
-        {hasAchievements && unlockedCount < totalCount && (
-          <View className="px-4 items-center">
-            <Text className="happy-font-body-medium text-ink-muted text-xs text-center">
-              {totalCount - unlockedCount} badge
-              {totalCount - unlockedCount !== 1 ? "s" : ""} away from a full
-              collection
-            </Text>
-          </View>
-        )}
-      </ScrollView>
-
-      <AchievementBadgeDetailSheet
-        isPresented={selectedAchievement !== null}
-        item={selectedAchievement}
-        onIsPresentedChange={handleBadgeSheetPresentationChange}
+              <Text className="happy-font-body-bold ml-1 text-sm text-ink">
+                {totalXP.toLocaleString()}
+              </Text>
+            </TouchableOpacity>
+          ),
+        }}
       />
-    </SafeAreaView>
+      <SafeAreaView
+        className="happy-brand-screen flex-1"
+        style={styles.screen}
+        edges={["left", "right"]}
+      >
+        <ScrollView
+          ref={scrollViewRef}
+          className="flex-1"
+          style={styles.scroll}
+          showsVerticalScrollIndicator={false}
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={[styles.scrollContent]}
+          accessibilityLabel="Achievements scroll view"
+        >
+          {/* ── Your Progress ── */}
+          <View className="px-4 pt-3 pb-2">
+            <Text className="happy-brand-eyebrow mb-3">Your Progress</Text>
+
+            <StatCard
+              icon={
+                <IconBubble
+                  icon={Medal01Icon}
+                  color={SAGE[500]}
+                  bg={SAGE.pill}
+                />
+              }
+              label="Badges Unlocked"
+              value={String(unlockedCount)}
+              subtext={`${unlockedCount} of ${totalCount} badges collected`}
+              color={SAGE[500]}
+              progressCounts={{ current: unlockedCount, total: totalCount }}
+              accessibilityLabel={`Badges unlocked: ${unlockedCount} of ${totalCount}. ${Math.round(overallProgress)}% complete.`}
+              accessibilityHint="Scrolls to all badge categories."
+              onPress={handleScrollToBadges}
+            />
+
+            <StatCard
+              icon={
+                <IconBubble
+                  icon={StarsIcon}
+                  color={GOLD}
+                  bg={hexToRgba(GOLD, 0.14)}
+                />
+              }
+              label="XP from Badges"
+              value={`${totalXPEarned}`}
+              subtext="XP earned from all unlocked badges"
+              color={GOLD}
+              accessibilityLabel={`XP earned from badges: ${totalXPEarned} points`}
+              accessibilityHint="Opens XP history."
+              onPress={handleXPHistoryPress}
+            />
+
+            <StatCard
+              icon={
+                <IconBubble
+                  icon={CheckmarkCircle02Icon}
+                  color={SAGE[600]}
+                  bg={SAGE.selected}
+                />
+              }
+              label="Categories Mastered"
+              value={`${masteredCategoryCount}/5`}
+              subtext="Complete all badges in a category"
+              color={SAGE[600]}
+              accessibilityLabel={`Categories mastered: ${masteredCategoryCount} of 5`}
+              accessibilityHint="Scrolls to all badge categories."
+              onPress={handleScrollToBadges}
+            />
+          </View>
+
+          {/* ── All Badges ── */}
+          <View
+            className="px-4 mt-4 mb-3"
+            onLayout={(event) => {
+              allBadgesOffsetY.current = event.nativeEvent.layout.y;
+            }}
+          >
+            <Text className="happy-brand-eyebrow">All Badges</Text>
+          </View>
+
+          {/* Empty state */}
+          {!hasAchievements && <EmptyState />}
+
+          {/* Achievement Categories */}
+          {(Object.keys(CATEGORY_CONFIG) as AchievementCategory[]).map(
+            (category) => {
+              const categoryAchievements = getAchievementsByCategory(category);
+              if (categoryAchievements.length === 0) return null;
+
+              const {
+                label,
+                icon: categoryIcon,
+                color,
+                bg,
+              } = CATEGORY_CONFIG[category];
+              const categoryUnlocked = categoryAchievements.filter(
+                (a) => a.isUnlocked,
+              ).length;
+
+              return (
+                <View key={category} className="mb-6 px-4">
+                  <View className="mb-2.5 flex-row items-center justify-between">
+                    <View className="min-w-0 flex-1 flex-row items-center gap-3">
+                      <IconBubble
+                        icon={categoryIcon}
+                        color={color}
+                        bg={bg}
+                        size={46}
+                        iconSize={21}
+                      />
+                      <Text
+                        className="happy-font-body-bold text-[17px] text-ink"
+                        numberOfLines={1}
+                      >
+                        {label}
+                      </Text>
+                    </View>
+
+                    <View
+                      className="happy-brand-status-chip rounded-full px-3 py-1.5"
+                      style={{ backgroundColor: bg }}
+                    >
+                      <Text
+                        className="happy-font-body-bold text-sm"
+                        style={{ color }}
+                      >
+                        {categoryUnlocked}/{categoryAchievements.length}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <Card
+                    variant="tile"
+                    radius="lg"
+                    showDepth={false}
+                    contentClassName="px-2.5 py-3"
+                  >
+                    <View className="flex-row flex-wrap">
+                      {categoryAchievements.map((item) => (
+                        <View
+                          key={item.achievement.id}
+                          className="items-center"
+                          style={{ width: "33.333%", paddingVertical: 6 }}
+                        >
+                          <AchievementBadge
+                            achievement={item.achievement}
+                            currentProgress={item.currentProgress}
+                            isUnlocked={item.isUnlocked}
+                            onPress={() => handleBadgePress(item)}
+                            showDescription={false}
+                            showProgressBar={false}
+                            showProgressText={true}
+                            showUnlockedProgress={true}
+                            size="md"
+                          />
+                        </View>
+                      ))}
+                    </View>
+                  </Card>
+                </View>
+              );
+            },
+          )}
+
+          {/* Motivational footer */}
+          {hasAchievements && unlockedCount < totalCount && (
+            <View className="px-4 items-center">
+              <Text className="happy-font-body-medium text-ink-muted text-xs text-center">
+                {totalCount - unlockedCount} badge
+                {totalCount - unlockedCount !== 1 ? "s" : ""} away from a full
+                collection
+              </Text>
+            </View>
+          )}
+        </ScrollView>
+
+        <AchievementBadgeDetailSheet
+          isPresented={selectedAchievement !== null}
+          item={selectedAchievement}
+          onIsPresentedChange={handleBadgeSheetPresentationChange}
+        />
+      </SafeAreaView>
+    </>
   );
 };
 
