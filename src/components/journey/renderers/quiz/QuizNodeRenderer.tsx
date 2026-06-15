@@ -47,6 +47,8 @@ import QuizOptionCard, { type OptionState } from "./QuizOptionCard";
 import QuizScoreSummary, { type QuizAnswer } from "./QuizScoreSummary";
 import { Card } from "@/src/components/ui/Card";
 
+import { useAudioPlayer } from "expo-audio";
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -206,6 +208,10 @@ export default function QuizNodeRenderer({
     const questions: QuizQuestion[] = content.questions;
     const totalQuestions: number = questions.length;
 
+    // ── Sounds ──
+    const correctSound = useAudioPlayer(require("@/assets/sounds/correct.mp3"));
+    const incorrectSound = useAudioPlayer(require("@/assets/sounds/incorrect.wav"));
+
     // ── State ──
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -258,11 +264,15 @@ export default function QuizNodeRenderer({
 
         const correct: boolean = selectedOption === currentQuestion.correct_index;
 
-        // Haptic feedback
+        // Sound and haptic feedback
         if (correct) {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            correctSound.seekTo(0);
+            correctSound.play();
         } else {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+            incorrectSound.seekTo(0);
+            incorrectSound.play();
         }
 
         // Record answer
@@ -273,7 +283,7 @@ export default function QuizNodeRenderer({
         };
         setAnswers((prev: QuizAnswer[]) => [...prev, answer]);
         setQuestionState("feedback");
-    }, [selectedOption, currentQuestion, currentIndex]);
+    }, [selectedOption, currentQuestion, currentIndex, correctSound, incorrectSound]);
 
     const handleContinue = useCallback((): void => {
         if (currentIndex < totalQuestions - 1) {

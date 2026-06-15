@@ -16,6 +16,9 @@ import { BRAND_SURFACE } from '@/lib/tokens';
 import { RendererSectionCard } from '../RendererFrame';
 import { Card } from '@/src/components/ui/Card';
 
+import { useAudioPlayer } from "expo-audio";
+import * as Haptics from "expo-haptics";
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -46,6 +49,9 @@ export default function ExerciseInputMultiChoice({
     const [hasAnswered, setHasAnswered] = useState<boolean>(false);
     const hasCorrectAnswer: boolean = correctIndex !== undefined;
 
+    const correctSound = useAudioPlayer(require("@/assets/sounds/correct.mp3"));
+    const incorrectSound = useAudioPlayer(require("@/assets/sounds/incorrect.wav"));
+
     const handleOptionPress = useCallback(
         (index: number): void => {
             // If scored and already answered, don't allow changes
@@ -61,10 +67,20 @@ export default function ExerciseInputMultiChoice({
                 onChange([index]);
                 if (hasCorrectAnswer) {
                     setHasAnswered(true);
+                    const correct = index === correctIndex;
+                    if (correct) {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        correctSound.seekTo(0);
+                        correctSound.play();
+                    } else {
+                        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+                        incorrectSound.seekTo(0);
+                        incorrectSound.play();
+                    }
                 }
             }
         },
-        [value, onChange, allowMultiple, hasCorrectAnswer, hasAnswered],
+        [value, onChange, allowMultiple, hasCorrectAnswer, hasAnswered, correctIndex, correctSound, incorrectSound],
     );
 
     const getOptionState = (

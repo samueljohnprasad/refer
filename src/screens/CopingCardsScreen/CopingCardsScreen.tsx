@@ -138,7 +138,7 @@ export const CopingCardsScreen: React.FC = () => {
 
 function EmptyState() {
   return (
-    <View className="flex-1 items-center justify-center pt-10 pb-20 px-6">
+    <View className="items-center justify-center pt-10 pb-20 px-6 mt-20">
       <View className="h-20 w-20 rounded-full bg-sage-50 items-center justify-center mb-5">
         <HugeiconsIcon
           icon={BookmarkAdd01Icon}
