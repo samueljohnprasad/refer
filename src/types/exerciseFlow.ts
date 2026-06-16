@@ -144,7 +144,7 @@ export interface TimerStepConfig {
 
 export interface AIStepConfig<T = Record<string, any>> {
   /** Builds the prompt from the current exercise response state */
-  promptBuilder: (response: T) => string;
+  promptBuilder: (response: T, context?: { seed: number }) => string;
   /** JSON Schema for Gemini's structured output */
   responseSchema: Record<string, any>;
   /** Model to use (defaults to 'gemini-3-flash-preview') */

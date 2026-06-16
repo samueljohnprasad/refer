@@ -9,6 +9,7 @@ import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import { VoiceTextInput } from "@/src/screens/ThoughtReframingScreen/components/VoiceTextInput";
+import { SuggestionCards, type SuggestionItem } from "@/src/components/exercise/SuggestionCards";
 import type { StepProps } from "@/src/types/exerciseFlow";
 
 interface TextInputStepProps extends StepProps {
@@ -20,6 +21,8 @@ interface TextInputStepProps extends StepProps {
   tipText?: string;
   validationMessage?: string;
   psychoeducationText?: string;
+  suggestions?: SuggestionItem[];
+  suggestionsTitle?: string;
 }
 
 export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
@@ -42,6 +45,11 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
     isSaving,
     validationMessage,
     psychoeducationText,
+    aiSuggestions,
+    isAiLoading,
+    suggestions,
+    suggestionsTitle,
+    readOnly,
   }) => {
     const value: string = (response as Record<string, any>)[fieldKey] ?? "";
 
@@ -88,6 +96,30 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
         )}
 
         <FadeInItem index={tipText ? 1 : 0} className="flex-1">
+          {suggestions && suggestions.length > 0 && (
+            <SuggestionCards
+              title={suggestionsTitle || "Quick picks"}
+              suggestions={suggestions}
+              currentValue={value}
+              onSelect={(text) => onUpdate({ [fieldKey]: text } as any)}
+              readOnly={readOnly}
+            />
+          )}
+
+          {(isAiLoading || (aiSuggestions && aiSuggestions.length > 0)) && (
+            <SuggestionCards
+              title="Tap a suggestion to use it"
+              suggestions={aiSuggestions?.map((s: any) => ({
+                label: s.text,
+                emoji: s.emoji,
+                rationale: s.rationale,
+              }))}
+              isLoading={isAiLoading}
+              onSelect={(text) => onUpdate({ [fieldKey]: text } as any)}
+              currentValue={value}
+            />
+          )}
+
           <VoiceTextInput
             value={value}
             onChangeText={(text) => onUpdate({ [fieldKey]: text } as any)}

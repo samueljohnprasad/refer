@@ -53,9 +53,8 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
     };
 
     return (
-      <LessonScreen hideHeader>
-        <LessonScreen.Content hasHeader={false} showsVerticalScrollIndicator={false}>
-          <View className="items-center mb-6 pt-8">
+      <View className="w-full px-1">
+          <View className="items-center mb-6 pt-2">
             <FadeInItem index={0}>
               <View
                 className={`h-16 w-16 rounded-full items-center justify-center mb-3.5 shadow-sm ${tint.iconBg}`}
@@ -87,7 +86,7 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
             <Card
               variant="tile"
               radius="xl"
-              showDepth={true}
+              showDepth={false}
               className="mb-8"
               contentClassName="p-4"
             >
@@ -114,16 +113,7 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
               })}
             </Card>
           </FadeInItem>
-        </LessonScreen.Content>
-
-        <FadeInItem index={4}>
-          <LessonScreen.ActionFooter
-            primaryLabel={saveLabel}
-            onPrimaryPress={onSave}
-            primaryLoading={isSaving}
-          />
-        </FadeInItem>
-      </LessonScreen>
+      </View>
     );
   },
 );

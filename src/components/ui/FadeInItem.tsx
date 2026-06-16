@@ -3,10 +3,10 @@ import Animated, {
     useSharedValue,
     useAnimatedStyle,
     withDelay,
-    withSpring,
+    withTiming,
+    Easing,
 } from "react-native-reanimated";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import { SPRING_DEFAULT as APP_SPRING } from "@/src/utils/motionTokens";
 
 interface FadeInItemProps {
     index: number;
@@ -30,25 +30,21 @@ interface FadeInItemProps {
  */
 export function FadeInItem({
     index,
-    delayPerItem = 50,
-    translateY = 14,
+    delayPerItem = 40,
     className,
     children,
 }: FadeInItemProps) {
     const reducedMotion = useReducedMotion();
     const opacity = useSharedValue(reducedMotion ? 1 : 0);
-    const y = useSharedValue(reducedMotion ? 0 : translateY);
 
     useEffect(() => {
         if (reducedMotion) return;
         const delay = index * delayPerItem;
-        opacity.value = withDelay(delay, withSpring(1, APP_SPRING));
-        y.value = withDelay(delay, withSpring(0, APP_SPRING));
+        opacity.value = withDelay(delay, withTiming(1, { duration: 220, easing: Easing.out(Easing.cubic) }));
     }, []);
 
     const style = useAnimatedStyle(() => ({
         opacity: opacity.value,
-        transform: [{ translateY: y.value }],
     }));
 
     return <Animated.View style={style} className={className}>{children}</Animated.View>;

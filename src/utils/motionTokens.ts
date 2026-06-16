@@ -28,15 +28,14 @@ export const SPRING_DEFAULT: WithSpringConfig = {
 };
 
 export const SPRING_SNAPPY: WithSpringConfig = {
-  stiffness: 100,
+  stiffness: 200,
   damping: 20,
   overshootClamping: true,
 };
 
 export const SPRING_BOUNCY: WithSpringConfig = {
-  stiffness: 100,
-  damping: 20,
-  overshootClamping: true,
+  stiffness: 150,
+  damping: 10,
 };
 
 export const SPRING_DUOLINGO_PRESS: WithSpringConfig = {

@@ -6,7 +6,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { SPRING_DUOLINGO_PRESS } from "@/src/utils/motionTokens";
+import { SPRING_DUOLINGO_PRESS, SPRING_BOUNCY } from "@/src/utils/motionTokens";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { BRAND_BORDER_STRONG, SAGE } from "@/lib/tokens";
 
@@ -107,25 +107,20 @@ export function Card({
   const pressLock = useRef(false);
   const wasSelectedRef = useRef(isSelected);
 
-  // Juicy pop on selection
-  React.useEffect(() => {
-    if (isSelected && !wasSelectedRef.current && !reducedMotion) {
-      selectionScale.value = withSpring(1.04, { damping: 20, stiffness: 100, overshootClamping: true });
-      setTimeout(() => {
-        selectionScale.value = withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true });
-      }, 100);
-    }
-    wasSelectedRef.current = isSelected;
-  }, [isSelected, reducedMotion]);
-
   const animatedFaceStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: pressY.value }, { scale: selectionScale.value }],
+    transform: [{ translateY: pressY.value }],
   }));
 
   const handlePressIn = useCallback(() => {
     if (!isInteractive || reducedMotion) return;
     pressY.value = withSpring(shadowDepth, SPRING_DUOLINGO_PRESS);
-  }, [isInteractive, reducedMotion, pressY, shadowDepth]);
+
+    if (haptic === "light") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    } else if (haptic === "medium") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+  }, [isInteractive, reducedMotion, pressY, shadowDepth, haptic]);
 
   const handlePressOut = useCallback(() => {
     if (!isInteractive || reducedMotion) return;
@@ -140,13 +135,8 @@ export function Card({
       pressLock.current = false;
     }, DOUBLE_TAP_GUARD_MS);
 
-    if (haptic === "light")
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (haptic === "medium")
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
     onPress?.();
-  }, [isInteractive, haptic, onPress]);
+  }, [isInteractive, onPress]);
 
   const hasPadding =
     contentClassName.includes("p-") ||

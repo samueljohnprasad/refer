@@ -1,13 +1,12 @@
 import { useState, useCallback, useRef } from "react";
+import { Platform } from "react-native";
+import { generateObject } from "ai";
+import { jsonSchema } from "ai";
+import { apple } from "@react-native-ai/apple";
 import { GoogleGenAI } from "@google/genai";
 import type { AIStepConfig } from "@/src/types/exerciseFlow";
 
-// Reuse the same Gemini client + API key from existing AI hooks
-const ai = new GoogleGenAI({
-  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
-});
-
-const AI_TIMEOUT_MS = 10_000;
+const AI_TIMEOUT_MS = 20_000;
 
 export interface UseExerciseAIReturn {
   suggestions: any[];
@@ -24,37 +23,76 @@ export function useExerciseAI<T extends Record<string, any>>(
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Cache: avoid re-fetching if prompt hasn't changed
+  const sessionSeedRef = useRef<number>(Math.random());
+  const cacheRef = useRef<Record<string, any[]>>({});
   const lastPromptRef = useRef<string>("");
 
   const generate = useCallback(
     async (response: Record<string, any>): Promise<void> => {
       if (!aiConfig) return;
 
-      const prompt = aiConfig.promptBuilder(response as T);
+      const prompt = aiConfig.promptBuilder(response as T, { seed: sessionSeedRef.current });
       if (!prompt.trim()) return;
 
-      // Skip if same prompt already fetched
+      // Skip if same prompt already fetched, or instantly restore from cache
       if (prompt === lastPromptRef.current && suggestions.length > 0) return;
+      if (cacheRef.current[prompt]) {
+        setSuggestions(cacheRef.current[prompt]);
+        lastPromptRef.current = prompt;
+        return;
+      }
+
       lastPromptRef.current = prompt;
 
       setIsLoading(true);
       setError(null);
 
-      const model = aiConfig.model ?? "gemini-3-flash-preview";
       const maxResults = aiConfig.maxResults ?? 5;
+      const isAppleAIAvailable =
+        Platform.OS === "ios" && typeof apple.isAvailable === "function"
+          ? apple.isAvailable()
+          : false;
 
       try {
+        let items: any[] = [];
+
         // Race against timeout
-        const result = await Promise.race([
-          ai.models.generateContent({
-            model,
-            contents: prompt,
-            config: {
-              responseMimeType: "application/json",
-              responseSchema: aiConfig.responseSchema,
-            },
-          }),
+        await Promise.race([
+          (async () => {
+            if (isAppleAIAvailable) {
+              const { object } = await generateObject({
+                model: apple(),
+                schema: jsonSchema(aiConfig.responseSchema),
+                prompt: prompt,
+              });
+              const parsed = object as any;
+              items = Array.isArray(parsed)
+                ? parsed.slice(0, maxResults)
+                : [parsed];
+            } else {
+              // Fallback to Gemini if Apple Intelligence is unavailable
+              const ai = new GoogleGenAI({
+                apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
+              });
+              const model = aiConfig.model ?? "gemini-3-flash-preview";
+
+              const result = await ai.models.generateContent({
+                model,
+                contents: prompt,
+                config: {
+                  responseMimeType: "application/json",
+                  responseSchema: aiConfig.responseSchema,
+                },
+              });
+
+              if (result.text) {
+                const parsed = JSON.parse(result.text);
+                items = Array.isArray(parsed)
+                  ? parsed.slice(0, maxResults)
+                  : [parsed];
+              }
+            }
+          })(),
           new Promise<never>((_, reject) =>
             setTimeout(
               () => reject(new Error("AI request timed out")),
@@ -63,25 +101,11 @@ export function useExerciseAI<T extends Record<string, any>>(
           ),
         ]);
 
-        if (result.text) {
-          try {
-            const parsed = JSON.parse(result.text);
-            const items = Array.isArray(parsed)
-              ? parsed.slice(0, maxResults)
-              : [parsed];
-            setSuggestions(items);
-          } catch {
-            console.error("AI JSON parse failure:", result.text);
-            setError("Failed to parse AI response");
-            setSuggestions([]);
-          }
-        } else {
-          setSuggestions([]);
-        }
+        cacheRef.current[prompt] = items;
+        setSuggestions(items);
       } catch (err: any) {
         console.error("AI generation failed:", err);
         setError(err?.message ?? "AI request failed");
-        // Exercises must work without AI — return empty
         setSuggestions([]);
       } finally {
         setIsLoading(false);

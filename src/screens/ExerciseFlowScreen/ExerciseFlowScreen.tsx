@@ -51,19 +51,18 @@ function AnimatedStepContainer({
     const isForward = stepIndex > prevStepRef.current;
     prevStepRef.current = stepIndex;
 
-    // Exit: fade out + slight slide in direction of travel
+    // Enter: slide and fade smoothly (matching OnboardingScreen exactly)
     opacity.value = 0;
-    translateX.value = isForward ? 24 : -24;
+    translateX.value = isForward ? 18 : -18;
 
-    // Enter: spring in from offset
-    opacity.value = withDelay(
-      60,
-      withTiming(1, { duration: 220, easing: Easing.out(Easing.cubic) }),
-    );
-    translateX.value = withDelay(
-      60,
-      withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true }),
-    );
+    translateX.value = withTiming(0, {
+      duration: 200,
+      easing: Easing.out(Easing.cubic),
+    });
+    opacity.value = withTiming(1, {
+      duration: 200,
+      easing: Easing.out(Easing.cubic),
+    });
   }, [stepIndex]);
 
   const animStyle = useAnimatedStyle(() => ({
@@ -292,23 +291,15 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
     <LessonScreen
       className="flex-1"
       style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
-      hideHeader={currentStep?.hideHeader}
-      hideFooter={currentStep?.hideFooter}
-      progress={flow.progress}
-      onClose={flow.canGoBack ? flow.goBack : handleClose}
-      backButtonVariant={flow.canGoBack ? "arrow" : "close-icon"}
-      primaryLabel={readOnly && isFinalStep ? "Done" : primaryLabel}
-      onPrimaryPress={onPrimaryPress}
-      primaryDisabled={!flow.isCurrentStepValid || isSaving}
-      primaryLoading={isSaving}
-      primaryRightIcon={
-        isFinalStep && !isSaving ? (
-          <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={BRAND_SURFACE} strokeWidth={2} />
-        ) : undefined
-      }
-      secondaryLabel={isFinalStep && !readOnly ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
-      onSecondaryPress={flow.canGoBack ? flow.goBack : undefined}
     >
+      {!currentStep?.hideHeader && (
+        <LessonScreen.ProgressHeader
+          progress={flow.progress}
+          onClose={flow.canGoBack ? flow.goBack : handleClose}
+          backButtonVariant={flow.canGoBack ? "arrow" : "close-icon"}
+        />
+      )}
+
       <AnimatedStepContainer
         stepIndex={flow.currentStepIndex}
         className="flex-1"
@@ -323,6 +314,22 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
           )}
         </LessonScreen.Content>
       </AnimatedStepContainer>
+
+      {!currentStep?.hideFooter && onPrimaryPress && (
+        <LessonScreen.ActionFooter
+          primaryLabel={readOnly && isFinalStep ? "Done" : primaryLabel}
+          onPrimaryPress={onPrimaryPress}
+          primaryDisabled={!flow.isCurrentStepValid || isSaving}
+          primaryLoading={isSaving}
+          primaryRightIcon={
+            isFinalStep && !isSaving ? (
+              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={BRAND_SURFACE} strokeWidth={2} />
+            ) : undefined
+          }
+          secondaryLabel={isFinalStep && !readOnly ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
+          onSecondaryPress={flow.canGoBack ? flow.goBack : undefined}
+        />
+      )}
     </LessonScreen>
   );
 };

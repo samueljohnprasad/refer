@@ -87,6 +87,42 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
       }),
       label: "Describe the situation",
       validate: (r) => r.situation.trim().length >= 1,
+      ai: {
+        promptBuilder: (r, context) => {
+          const seed = context?.seed ?? Math.random();
+          const themes = [
+            "work or career",
+            "family or relationships",
+            "personal goals or mistakes",
+            "social situations",
+            "health or daily stress",
+            "imposter syndrome",
+            "feeling overwhelmed",
+          ];
+          
+          // Deterministic shuffle based on seed
+          const shuffledThemes = [...themes].sort((a, b) => {
+             const hashA = (a.charCodeAt(0) * seed) % 1;
+             const hashB = (b.charCodeAt(0) * seed) % 1;
+             return hashA - hashB;
+          });
+          const randomThemes = shuffledThemes.slice(0, 3);
+          
+          return `You are a CBT therapist assistant. Generate 3 distinct, relatable stressful situations someone might want to analyze using CBT. Theme 1: ${randomThemes[0]}. Theme 2: ${randomThemes[1]}. Theme 3: ${randomThemes[2]}. Make them highly specific, highly varied, and completely different every time (Random seed: ${seed}). Keep each concise (1 short sentence) and written in the first person. Provide a relevant emoji for each.`;
+        },
+        responseSchema: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              text: { type: "string" },
+              emoji: { type: "string" },
+            },
+            required: ["text", "emoji"],
+          },
+        },
+        maxResults: 3,
+      },
     },
     {
       id: "automatic_thought",
@@ -101,6 +137,23 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
       }),
       label: "What went through your mind?",
       validate: (r) => r.automaticThought.trim().length >= 1,
+      ai: {
+        promptBuilder: (r, context) => {
+          const seed = context?.seed ?? Math.random();
+          return `You are a CBT therapist assistant. The user just described a stressful situation: "${r.situation}". Generate 3 highly varied, distinct automatic negative thoughts they might be having right now (Random seed: ${seed}). Make them sound like natural, spontaneous human fears. Each thought should be written in first person and be concise (1 sentence).`;
+        },
+        responseSchema: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              text: { type: "string" },
+            },
+            required: ["text"],
+          },
+        },
+        maxResults: 3,
+      },
     },
     {
       id: "intensity",
@@ -155,6 +208,22 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
       label: "Write a balanced thought",
       validate: (r) => (r.balancedThought ?? "").trim().length >= 1,
       optional: true,
+      ai: {
+        promptBuilder: (r) =>
+          `You are a CBT therapist assistant. Help the user reframe their automatic thought into a more balanced perspective.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nGenerate 3 alternative balanced thoughts. Each should be realistic, based on evidence, written in first person, and concise (1-2 sentences). For each, provide a brief rationale.`,
+        responseSchema: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              text: { type: "string" },
+              rationale: { type: "string" },
+            },
+            required: ["text", "rationale"],
+          },
+        },
+        maxResults: 3,
+      },
     },
     {
       id: "post_intensity",

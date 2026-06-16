@@ -99,6 +99,8 @@ interface LessonScreenProps extends ViewProps, Partial<Omit<ProgressHeaderProps,
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
+import { BlurView } from "expo-blur";
+
 /**
  * Fixed top bar with close/back navigation, animated progress bar, and
  * optional trailing label (XP, percentage, etc.).
@@ -118,9 +120,11 @@ const ProgressHeader: React.FC<ProgressHeaderProps> = ({
   const insets = useSafeAreaInsets();
 
   return (
-    <View
+    <BlurView
+      intensity={50}
+      tint="light"
       style={[{ paddingTop: Math.max(insets.top + 8, 48) }, style]}
-      className="z-10"
+      className="absolute top-0 left-0 right-0 z-20"
     >
       <LessonHeader
         onClose={onClose}
@@ -133,7 +137,7 @@ const ProgressHeader: React.FC<ProgressHeaderProps> = ({
         iconColor={iconColor}
         trailingLabelColor={trailingLabelColor}
       />
-    </View>
+    </BlurView>
   );
 };
 

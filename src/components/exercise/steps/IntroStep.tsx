@@ -22,28 +22,28 @@ interface IntroStepProps extends StepProps {
 export const IntroStep: React.FC<IntroStepProps> = React.memo(
   ({ title, subtitle, duration, bulletPoints, onNext }) => {
     return (
-      <View className="flex-1 items-center px-6 pt-[124px] pb-6">
+      <View className="flex-1 items-center pt-4 pb-4">
           {/* Brand Mascot illustration replacing generic blue icon wells */}
           <FadeInItem index={0}>
-            <View className="items-center justify-center mt-2 mb-6">
-              <Mascot state="panda-happy" size={110} />
+            <View className="items-center justify-center mb-3">
+              <Mascot state="panda-happy" size={90} />
             </View>
           </FadeInItem>
 
           <FadeInItem index={1}>
-            <Text variant="h1" className="text-center mb-2.5">
+            <Text variant="h1" className="text-center mb-1.5">
               {title}
             </Text>
           </FadeInItem>
 
           <FadeInItem index={2}>
-            <Text variant="body" color="soft" className="text-center mb-6 leading-relaxed">
+            <Text variant="body" color="soft" className="text-center mb-4 leading-relaxed">
               {subtitle}
             </Text>
           </FadeInItem>
 
           <FadeInItem index={3}>
-            <View className="bg-sage-pill rounded-full px-4 py-1.5 mb-6 flex-row items-center">
+            <View className="bg-sage-pill rounded-full px-4 py-1.5 mb-4 flex-row items-center">
               <HugeiconsIcon
                 icon={Timer01Icon}
                 size={14}
@@ -60,9 +60,9 @@ export const IntroStep: React.FC<IntroStepProps> = React.memo(
             <View className="w-full">
               {bulletPoints.map((point: string, i: number) => (
                 <FadeInItem key={i} index={4 + i} delayPerItem={60}>
-                  <View className="flex-row items-center mb-3 px-4 py-3.5 bg-brand-surface border border-brand-border/60 rounded-2xl shadow-sm">
+                  <View className="flex-row items-center mb-2 px-4 py-3 bg-brand-surface border border-brand-border/60 rounded-2xl shadow-sm">
                     <View className="w-2 h-2 rounded-full bg-sage-500 mr-3.5" />
-                    <Text variant="body-bold" color="ink" className="flex-1 leading-normal text-[15px]">
+                    <Text variant="body-bold" color="ink" className="flex-1 leading-normal text-[14px]">
                       {point}
                     </Text>
                   </View>

@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { View, ScrollView, ViewProps, ScrollViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BlurView } from "expo-blur";
 
 interface ScreenLayoutProps extends ViewProps {
   children: ReactNode;
@@ -9,21 +10,6 @@ interface ScreenLayoutProps extends ViewProps {
 /**
  * A reusable screen layout component using the compound component pattern.
  * Provides a fixed top header, scrollable content area, and a fixed bottom footer.
- *
- * @example
- * <ScreenLayout>
- *   <ScreenLayout.Header>
- *     <Text>Top Header</Text>
- *   </ScreenLayout.Header>
- *   
- *   <ScreenLayout.Content>
- *     <Text>Scrollable Content goes here...</Text>
- *   </ScreenLayout.Content>
- *   
- *   <ScreenLayout.Footer>
- *     <Button label="Continue" />
- *   </ScreenLayout.Footer>
- * </ScreenLayout>
  */
 const ScreenLayout = ({ children, className = "", ...props }: ScreenLayoutProps) => {
   return (
@@ -36,13 +22,15 @@ const ScreenLayout = ({ children, className = "", ...props }: ScreenLayoutProps)
 const Header = ({ children, className = "", ...props }: ViewProps) => {
   const insets = useSafeAreaInsets();
   return (
-    <View
+    <BlurView
+      intensity={50}
+      tint="light"
       style={{ paddingTop: Math.max(insets.top, 16) }}
-      className={`bg-brand-surface z-10 px-6 pb-2 ${className}`}
+      className={`z-10 px-6 pb-2 ${className}`}
       {...props}
     >
       {children}
-    </View>
+    </BlurView>
   );
 };
 
@@ -60,8 +48,8 @@ const Content = ({ children, className = "", contentContainerStyle, hasFooter = 
       contentContainerStyle={[
         { 
           paddingBottom: hasFooter ? 120 : Math.max(insets.bottom, 24), 
-          paddingTop: hasHeader ? 16 : Math.max(insets.top, 24), 
-          paddingHorizontal: 24 
+          paddingTop: hasHeader ? Math.max(insets.top, 24) + 100 : Math.max(insets.top, 24), 
+          paddingHorizontal: 16 
         },
         contentContainerStyle,
       ]}
@@ -84,7 +72,6 @@ const Footer = ({ children, className = "", style, variant = "solid", ...props }
     <View
       style={[
         { 
-          paddingBottom: Math.max(insets.bottom, 24),
           ...(isTransparent ? {} : {
             shadowColor: "#000",
             shadowOffset: { width: 0, height: -8 },
@@ -95,10 +82,17 @@ const Footer = ({ children, className = "", style, variant = "solid", ...props }
         },
         style
       ]}
-      className={`absolute bottom-0 left-0 right-0 px-6 pt-6 z-10 ${isTransparent ? 'bg-transparent' : 'bg-brand-surface rounded-t-[32px]'} ${className}`}
+      className={`absolute bottom-0 left-0 right-0 z-10 ${className}`}
       {...props}
     >
-      {children}
+      <BlurView
+        intensity={isTransparent ? 0 : 50}
+        tint="light"
+        className={`px-6 pt-6 ${isTransparent ? 'bg-transparent' : 'rounded-t-[32px] overflow-hidden'}`}
+        style={{ paddingBottom: Math.max(insets.bottom, 24) }}
+      >
+        {children}
+      </BlurView>
     </View>
   );
 };
