@@ -1,5 +1,3 @@
-
-
 /**
  * ChestNode (Task 4.2.1)
  * Treasure chest node on the journey path — larger than regular nodes (80px).
@@ -35,6 +33,8 @@ import {
   NODE_SIZE,
 } from "@/src/data/journey/constants";
 import { darkenHex } from "@/src/utils/colorUtils";
+import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
+import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -76,6 +76,9 @@ function ChestNode({
       );
     } else {
       shineProgress.value = 0;
+      if (isLocked) {
+        void triggerIfEnabledSync("whisper", HAPTIC_INTENSITIES.WHISPER_SUBTLE);
+      }
     }
   }, [isLocked, shineProgress, reducedMotion]);
 
@@ -195,6 +198,3 @@ function ChestNode({
 }
 
 export default React.memo(ChestNode);
-
-
-

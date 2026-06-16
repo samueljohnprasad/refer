@@ -37,6 +37,12 @@ import { PressableScale } from "@/src/components/ui/PressableScale";
 import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
 import type { UnitData, PathNodeData } from "@/src/types/journey";
 import { NodeType } from "@/src/types/journey";
+import {
+  triggerIfEnabledSync,
+  triggerStaggeredItems,
+  triggerSequence,
+} from "@/lib/haptics/hapticUtils";
+import { HAPTIC_INTENSITIES, HAPTIC_TIMING } from "@/lib/haptics/hapticConfig";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -70,6 +76,15 @@ function StatCard({
   bgColor,
   index,
 }: StatCardProps): React.JSX.Element {
+  useEffect(() => {
+    const delay =
+      HAPTIC_TIMING.STAT_BASE_DELAY + index * HAPTIC_TIMING.STAT_DELAY_STEP;
+    const timer = setTimeout(() => {
+      void triggerIfEnabledSync("pulse", HAPTIC_INTENSITIES.PULSE_LIGHT);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [index]);
+
   return (
     <Animated.View
       entering={FadeInUp.delay(400 + index * 120)
@@ -121,19 +136,33 @@ const UnitCompleteModal = forwardRef<BottomSheetModal, UnitCompleteModalProps>(
 
     useEffect(() => {
       if (unit) {
-        // Trigger confetti after a brief delay
         const timer = setTimeout(() => setShowConfetti(true), 200);
-
-        // Trophy entrance bounce
         trophyScale.value = withDelay(
           100,
           withSequence(
-            withSpring(1.2, { damping: 20, stiffness: 100, overshootClamping: true }),
-            withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
+            withSpring(1.2, {
+              damping: 20,
+              stiffness: 100,
+              overshootClamping: true,
+            }),
+            withSpring(1, {
+              damping: 20,
+              stiffness: 100,
+              overshootClamping: true,
+            }),
           ),
         );
-
-        return () => clearTimeout(timer);
+        void triggerIfEnabledSync("swell", HAPTIC_INTENSITIES.SWELL);
+        const burstTimer = setTimeout(() => {
+          void triggerIfEnabledSync(
+            "heartbeat",
+            HAPTIC_INTENSITIES.HEARTBEAT_STRONG,
+          );
+        }, 350);
+        return () => {
+          clearTimeout(timer);
+          clearTimeout(burstTimer);
+        };
       } else {
         setShowConfetti(false);
         trophyScale.value = 0;
@@ -147,12 +176,12 @@ const UnitCompleteModal = forwardRef<BottomSheetModal, UnitCompleteModalProps>(
     // ── Compute stats from unit data ──
     const lessonCount: number = unit
       ? unit.nodes.filter((n: PathNodeData) => n.type === NodeType.LESSON)
-        .length
+          .length
       : 0;
 
     const checkpointCount: number = unit
       ? unit.nodes.filter((n: PathNodeData) => n.type === NodeType.CHECKPOINT)
-        .length
+          .length
       : 0;
 
     const chestCount: number = unit
@@ -164,6 +193,7 @@ const UnitCompleteModal = forwardRef<BottomSheetModal, UnitCompleteModalProps>(
     }, []);
 
     const handleContinue = useCallback((): void => {
+      void triggerIfEnabledSync("bloom", HAPTIC_INTENSITIES.BLOOM_STRONG);
       if (ref && "current" in ref && ref.current) {
         ref.current.dismiss();
       }

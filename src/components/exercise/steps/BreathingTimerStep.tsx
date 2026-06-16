@@ -6,6 +6,7 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { WellnessIcon } from "@hugeicons/core-free-icons";
 import { StepLayout } from "./StepLayout";
 import type { StepProps, BreathingPattern } from "@/src/types/exerciseFlow";
+import { useBreathingHaptic } from "@/lib/haptics/useHaptic";
 
 type Phase = "inhale" | "holdIn" | "exhale" | "holdOut";
 
@@ -49,6 +50,25 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
     const completed =
       (response as Record<string, any>)[completedFieldKey] === true;
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    const haptic = useBreathingHaptic(0.35, 0.25);
+
+    // Drive haptic amplitude from the scale animation — no React state needed.
+    // Scale range [0.6, 1.0] maps to progress [0, 1].
+    useEffect(() => {
+      const id = scaleAnim.addListener(({ value }) => {
+        haptic.setProgress((value - 0.6) / 0.4);
+      });
+      return () => scaleAnim.removeListener(id);
+    }, [scaleAnim, haptic.setProgress]);
+
+    useEffect(() => {
+      if (isRunning) {
+        haptic.start();
+      } else {
+        haptic.stop();
+      }
+    }, [isRunning]);
 
     const getPhaseSequence = useCallback((): {
       phase: Phase;
@@ -146,8 +166,16 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
           <Animated.View
             className={`w-52 h-52 ${circleSize} items-center justify-center mb-8 border-4`}
             style={{
-              backgroundColor: completed ? "#D1FAE5" : isRunning ? "#DDF4FF" : "#F8FAFC",
-              borderColor: completed ? "#10B981" : isRunning ? "#84D8FF" : "#E2E8F0",
+              backgroundColor: completed
+                ? "#D1FAE5"
+                : isRunning
+                  ? "#DDF4FF"
+                  : "#F8FAFC",
+              borderColor: completed
+                ? "#10B981"
+                : isRunning
+                  ? "#84D8FF"
+                  : "#E2E8F0",
               transform: [{ scale: scaleAnim }],
             }}
           >
@@ -157,7 +185,10 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
               </Text>
             ) : isRunning ? (
               <View className="items-center">
-                <Text variant="display" className="text-ink text-[36px] font-bold">
+                <Text
+                  variant="display"
+                  className="text-ink text-[36px] font-bold"
+                >
                   {phaseTime}s
                 </Text>
                 <Text variant="body-bold" className="text-blue-500 mt-1">
@@ -176,7 +207,10 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
 
           {/* Round indicator */}
           {isRunning && (
-            <Text variant="caption-muted" className="mb-4 font-bold text-center">
+            <Text
+              variant="caption-muted"
+              className="mb-4 font-bold text-center"
+            >
               Round {currentRound + 1} of {pattern.rounds}
             </Text>
           )}

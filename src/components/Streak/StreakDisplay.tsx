@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Share, Alert, Modal, Text as RNText } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -21,6 +21,8 @@ import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { Button } from "@/src/components/ui/Button";
 import { GOLD, PARROT_ORANGE, SAGE } from "@/lib/tokens";
+import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
+import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -101,6 +103,12 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
   onClose,
 }) => {
   const { streakData, isLoading, useStreakFreeze } = useStreakTracker();
+
+  useEffect(() => {
+    if (visible && streakData.currentStreak > 0) {
+      void triggerIfEnabledSync("heartbeat", HAPTIC_INTENSITIES.HEARTBEAT);
+    }
+  }, [visible, streakData.currentStreak]);
 
   // Trigger review prompt at 1-day streak milestone
   useReviewPrompt({
