@@ -2,15 +2,20 @@ import React from "react";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import JourneyNode from "../components/JourneyNode";
-import { JOURNEY_MAP_NODES } from "../constants";
+import { MOTIVATION_COURSE_MAP } from "../constants";
+import { MotivationAnswer } from "../types";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Fire02Icon } from "@hugeicons/core-free-icons";
 
 interface JourneyMapStepProps {
-  planName: string;
+  motivation?: MotivationAnswer;
 }
 
-const JourneyMapStep: React.FC<JourneyMapStepProps> = ({ planName }) => {
+const JourneyMapStep: React.FC<JourneyMapStepProps> = ({
+  motivation = "anxiety",
+}) => {
+  const course = MOTIVATION_COURSE_MAP[motivation];
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -28,7 +33,7 @@ const JourneyMapStep: React.FC<JourneyMapStepProps> = ({ planName }) => {
               Your journey
             </Text>
             <Text className="mt-0.5 text-[13px] text-ink-muted">
-              {planName}
+              {course.title}
             </Text>
           </View>
           <View className="flex-row items-center gap-1 bg-terracotta px-3 py-1.5 rounded-full">
@@ -43,13 +48,13 @@ const JourneyMapStep: React.FC<JourneyMapStepProps> = ({ planName }) => {
         className="mt-6"
       >
         <Text className="mb-3 text-[11px] font-bold uppercase tracking-[0.12em] text-sage-500">
-          {planName}
+          {course.tagline}
         </Text>
-        {JOURNEY_MAP_NODES.map((node, index) => (
+        {course.nodes.map((node, index) => (
           <JourneyNode
             key={node.id}
             node={node}
-            isLast={index === JOURNEY_MAP_NODES.length - 1}
+            isLast={index === course.nodes.length - 1}
             index={index}
           />
         ))}

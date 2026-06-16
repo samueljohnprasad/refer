@@ -31,17 +31,13 @@ import WelcomeStep from "./steps/WelcomeStep";
 import MascotGreetingStep from "./steps/MascotGreetingStep";
 import QuizMotivationStep from "./steps/QuizMotivationStep";
 import QuizStressLevelStep from "./steps/QuizStressLevelStep";
-import QuizExperienceStep from "./steps/QuizExperienceStep";
-import QuizTimingStep from "./steps/QuizTimingStep";
 import DailyGoalStep from "./steps/DailyGoalStep";
 import PactSigningStep from "./steps/PactSigningStep";
 import BuildingJourneyStep from "./steps/BuildingJourneyStep";
 import PlanRevealStep from "./steps/PlanRevealStep";
-import JourneyStepPreviewStep from "./steps/JourneyStepPreviewStep";
 import MoodCheckLessonStep from "./steps/MoodCheckLessonStep";
 import AIInsightStep from "./steps/AIInsightStep";
 import LessonCompleteStep from "./steps/LessonCompleteStep";
-import CbtStepPreviewStep from "./steps/CbtStepPreviewStep";
 import NotificationPermissionStep from "./steps/NotificationPermissionStep";
 import JourneyMapStep from "./steps/JourneyMapStep";
 import LetterFromFutureStep from "./steps/LetterFromFutureStep";
@@ -84,26 +80,18 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
     case "welcome":
     case "building_journey":
     case "lesson_complete":
-    case "journey_step_preview":
-    case "cbt_step_preview":
     case "journey_map":
     case "soft_paywall":
     case "welcome_to_happy":
       return { visible: false };
     case "mascot_greeting":
-      return { visible: true, showBackButton: true, progress: 0.08 };
+      return { visible: true, showBackButton: true, progress: 0.13 };
     case "quiz_motivation":
-      return { visible: true, showBackButton: true, progress: 0.16 };
+      return { visible: true, showBackButton: true, progress: 0.25 };
     case "quiz_stress_level":
-      return { visible: true, showBackButton: true, progress: 0.24 };
-    case "quiz_experience":
-      return { visible: true, showBackButton: true, progress: 0.32 };
-    case "quiz_timing":
-      return { visible: true, showBackButton: true, progress: 0.42 };
+      return { visible: true, showBackButton: true, progress: 0.38 };
     case "daily_goal":
-      return { visible: true, showBackButton: true, progress: 0.54 };
-    case "pact_signing":
-      return { visible: true, showBackButton: true, progress: 0.63 };
+      return { visible: true, showBackButton: true, progress: 0.5 };
     case "plan_reveal":
       return {
         visible: true,
@@ -112,6 +100,8 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
         trailingLabelTracking: 0.6,
         trailingLabelAlignment: "end",
       };
+    case "pact_signing":
+      return { visible: true, showBackButton: true, progress: 0.6 };
     case "mood_check_lesson":
       return {
         visible: true,
@@ -130,17 +120,17 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
         trailingLabel: "+10 XP",
         trailingLabelColor: LESSON_PROGRESS_FILL,
       };
-    case "notification_permission":
-      return { visible: true, progress: 1 };
     case "letter_from_future":
       return {
         visible: true,
-        showBackButton: true,
+        showBackButton: false,
         trailingLabel: "A QUIET MOMENT",
         trailingLabelColor: "#7D8D7B",
         trailingLabelTracking: 0.6,
         trailingLabelAlignment: "center",
       };
+    case "notification_permission":
+      return { visible: true, progress: 1 };
     default:
       return { visible: false };
   }
@@ -164,8 +154,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     goBack,
     updateMotivation,
     updateStressLevel,
-    updateExperience,
-    updateTiming,
     updateDailyGoal,
     updatePactSigned,
     updateFeeling,
@@ -305,6 +293,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           name: "",
           reasons: formData.motivation ? [formData.motivation] : [],
           cfg: {} as never,
+          motivation: formData.motivation,
         });
         await onComplete();
       } catch (error) {
@@ -388,23 +377,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         return (
           <QuizStressLevelStep
             selected={formData.stressLevel}
+            motivation={formData.motivation}
             onSelect={updateStressLevel}
-            onAdvance={goNext}
-          />
-        );
-      case "quiz_experience":
-        return (
-          <QuizExperienceStep
-            selected={formData.journalExperience}
-            onSelect={updateExperience}
-            onAdvance={goNext}
-          />
-        );
-      case "quiz_timing":
-        return (
-          <QuizTimingStep
-            selected={formData.stressTiming}
-            onSelect={updateTiming}
             onAdvance={goNext}
           />
         );
@@ -412,6 +386,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         return (
           <DailyGoalStep
             selected={formData.dailyGoal}
+            motivation={formData.motivation}
             onSelect={updateDailyGoal}
           />
         );
@@ -431,8 +406,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
             motivation={formData.motivation}
           />
         );
-      case "journey_step_preview":
-        return <JourneyStepPreviewStep />;
       case "mood_check_lesson":
         return (
           <MoodCheckLessonStep
@@ -449,8 +422,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         );
       case "lesson_complete":
         return <LessonCompleteStep />;
-      case "cbt_step_preview":
-        return <CbtStepPreviewStep />;
       case "notification_permission":
         return (
           <NotificationPermissionStep
@@ -460,7 +431,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           />
         );
       case "journey_map":
-        return <JourneyMapStep planName={derivedPlanName} />;
+        return <JourneyMapStep motivation={formData.motivation} />;
       case "letter_from_future":
         return (
           <LetterFromFutureStep

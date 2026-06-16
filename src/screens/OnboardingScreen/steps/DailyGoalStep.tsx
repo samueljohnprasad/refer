@@ -5,58 +5,66 @@ import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import GoalCard from "../components/GoalCard";
 import TestimonialCard from "../components/TestimonialCard";
-import { DailyGoalMinutes } from "../types";
-import { DAILY_GOAL_CARDS } from "../constants";
+import { DailyGoalMinutes, MotivationAnswer } from "../types";
+import { DAILY_GOAL_CARDS, DAILY_GOAL_CONTEXT } from "../constants";
 
 interface DailyGoalStepProps {
   selected: DailyGoalMinutes;
+  motivation?: MotivationAnswer;
   onSelect: (minutes: DailyGoalMinutes) => void;
 }
 
 const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
   selected,
+  motivation = "anxiety",
   onSelect,
 }) => {
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
+  const ctx = DAILY_GOAL_CONTEXT[motivation];
+  const [headlineMain, headlineItalic] = ctx.headline.split(/(?=\s\w+$)/);
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24, paddingTop: headerHeight - insets.top }}
+      contentContainerStyle={{
+        paddingBottom: 24,
+        paddingTop: headerHeight - insets.top,
+      }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6 pt-8"
     >
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
-        <Text className="text-xs font-semibold uppercase tracking-widest text-sage-500">
-          Step 6 of 6
-        </Text>
         <Text
           style={{ fontFamily: "FrauncesRegular" }}
           className="mt-2 text-[30px] leading-[1.1] text-ink"
         >
-          How much time can you give{" "}
+          {headlineMain}
           <Text
             style={{ fontFamily: "FrauncesRegularItalic" }}
             className="italic text-sage-500"
           >
-            yourself?
+            {headlineItalic}?
           </Text>
         </Text>
         <Text
           style={{ fontFamily: "GeistRegular" }}
           className="mt-3 text-[15px] leading-relaxed text-ink-soft"
         >
-          5 minutes a day beats 30 minutes once a week. Pick something honest.
+          {ctx.subtext}
         </Text>
       </Animated.View>
 
-      <Animated.View entering={FadeIn.duration(180).delay(180)} className="mt-5">
+      <Animated.View
+        entering={FadeIn.duration(180).delay(180)}
+        className="mt-5"
+      >
         <TestimonialCard
-          initial="D"
-          tone="lavender"
-          quote={`"5 minutes felt fake at first. But I have ADHD — anything longer than 10 minutes I'd quit. This actually works for my brain. Day 142."`}
-          name="Dani"
-          age={28}
+          initial={ctx.testimonial.initial}
+          tone={ctx.testimonial.tone}
+          quote={ctx.testimonial.quote}
+          name={ctx.testimonial.name}
+          age={ctx.testimonial.age}
         />
       </Animated.View>
 
