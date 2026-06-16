@@ -21,6 +21,7 @@ import {
 import { SAGE, INK_SOFT, TERRACOTTA_TINT, BRAND_SURFACE } from "@/lib/tokens";
 import type { ExerciseType } from "@/src/types/exerciseFlow";
 
+
 interface DynamicSummaryProps {
   title: string;
   celebrationEmoji?: string;
@@ -175,12 +176,8 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
   }));
 
   return (
-    <View className="flex-1">
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 24 }}
-        showsVerticalScrollIndicator={false}
-      >
+    <View className="flex-1 pb-10">
+      <View className="flex-1 px-1">
         {/* Header — animated */}
         <View className="items-center pt-6 pb-4 px-2">
           <Animated.View
@@ -320,36 +317,6 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
               </Pressable>
             )}
         </Animated.View>
-      </ScrollView>
-
-      {/* Bottom actions */}
-      <View className="px-1 pb-8 pt-3 gap-3">
-        <Button
-          label={readOnly ? "Done" : isSaving ? "Saving..." : "Complete"}
-          variant="primary"
-          size="lg"
-          onPress={onComplete}
-          loading={isSaving}
-          disabled={isSaving}
-          rightIcon={
-            !isSaving ? (
-              <HugeiconsIcon
-                icon={CheckmarkCircle01Icon}
-                size={20}
-                color={BRAND_SURFACE}
-                strokeWidth={2}
-              />
-            ) : undefined
-          }
-        />
-        {onEdit && !readOnly && (
-          <Button
-            label="Edit answers"
-            variant="ghost"
-            size="md"
-            onPress={onEdit}
-          />
-        )}
       </View>
     </View>
   );

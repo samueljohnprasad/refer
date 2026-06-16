@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Text } from '@/components/ui/text';
 import Slider from '@react-native-community/slider';
 import { StepHeader } from '../components/StepHeader';
-import { StepNavigation } from '../components/StepNavigation';
+import { LessonScreen } from '@/src/components/ui/LessonScreen';
 import { EMOTION_OPTIONS, type EmotionOption } from '../data/emotions';
 import type { EmotionName, EmotionRating } from '../types';
 
@@ -15,6 +15,7 @@ interface ReEvaluateStepProps {
   canGoBack: boolean;
   isValid: boolean;
   progress: number;
+  onClose?: () => void;
 }
 
 export const ReEvaluateStep: React.FC<ReEvaluateStepProps> = React.memo(
@@ -26,15 +27,23 @@ export const ReEvaluateStep: React.FC<ReEvaluateStepProps> = React.memo(
     canGoBack,
     isValid,
     progress,
+    onClose,
   }) => {
     return (
-      <View className="flex-1">
+      <LessonScreen
+        progress={progress}
+        trailingLabel="+10 XP"
+        onClose={onClose}
+        primaryLabel="See Results"
+        onPrimaryPress={onNext}
+        primaryDisabled={!isValid}
+        secondaryLabel={canGoBack ? "Back" : undefined}
+        onSecondaryPress={canGoBack ? onBack : undefined}
+        backButtonVariant="close-text"
+      >
         <StepHeader
           title="How do you feel now?"
           subtitle="Re-rate your emotions after reflecting on the evidence."
-          progress={progress}
-          stepNumber={8}
-          totalSteps={8}
         />
 
         <View className="flex-1">
@@ -88,14 +97,7 @@ export const ReEvaluateStep: React.FC<ReEvaluateStepProps> = React.memo(
           })}
         </View>
 
-        <StepNavigation
-          canGoBack={canGoBack}
-          canGoNext={isValid}
-          onBack={onBack}
-          onNext={onNext}
-          nextLabel="See Results"
-        />
-      </View>
+      </LessonScreen>
     );
   }
 );

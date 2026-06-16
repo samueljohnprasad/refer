@@ -210,6 +210,14 @@ export interface ExerciseStepDef<T = Record<string, any>> {
   timerConfig?: TimerStepConfig;
   /** Whether this step should be excluded from progress calculation */
   excludeFromProgress?: boolean;
+  /** Override the primary button label for this step (default: 'Continue') */
+  nextLabel?: string;
+  /** Override the secondary button label for this step */
+  secondaryLabel?: string;
+  /** Hide the progress header for this step (default: false) */
+  hideHeader?: boolean;
+  /** Hide the action footer for this step (default: false) */
+  hideFooter?: boolean;
 }
 
 // ─── Exercise Config — the full definition of an exercise ───────────────────

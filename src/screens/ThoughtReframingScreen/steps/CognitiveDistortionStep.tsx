@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { StepHeader } from '../components/StepHeader';
-import { StepNavigation } from '../components/StepNavigation'
+import { LessonScreen } from '@/src/components/ui/LessonScreen';
 import { DistortionCard } from '../components/DistortionCard';
 import { COGNITIVE_DISTORTIONS } from '../data/cognitiveDistortions';
 import type { CognitiveDistortionKey, CognitiveDistortion } from '../types';
@@ -18,6 +18,7 @@ interface CognitiveDistortionStepProps {
   progress: number;
   aiSuggestedDistortions?: AIDistortionSuggestion[];
   isDetectingDistortions?: boolean;
+  onClose?: () => void;
 }
 
 const MAX_DISTORTIONS: number = 2;
@@ -33,6 +34,7 @@ export const CognitiveDistortionStep: React.FC<CognitiveDistortionStepProps> = R
     progress,
     aiSuggestedDistortions = [],
     isDetectingDistortions = false,
+    onClose,
   }) => {
     const selectedSet: Set<CognitiveDistortionKey> = useMemo(
       () => new Set(selectedDistortions),
@@ -61,13 +63,20 @@ export const CognitiveDistortionStep: React.FC<CognitiveDistortionStepProps> = R
     }, [aiSuggestedDistortions, aiSuggestedKeys]);
 
     return (
-      <View className="flex-1">
+      <LessonScreen
+        progress={progress}
+        trailingLabel="+10 XP"
+        onClose={onClose}
+        primaryLabel="Continue"
+        onPrimaryPress={onNext}
+        primaryDisabled={!isValid}
+        secondaryLabel={canGoBack ? "Back" : undefined}
+        onSecondaryPress={canGoBack ? onBack : undefined}
+        backButtonVariant="close-text"
+      >
         <StepHeader
           title="Spot the thinking trap"
           subtitle={`Which pattern might be at play? Pick up to ${MAX_DISTORTIONS}.`}
-          progress={progress}
-          stepNumber={4}
-          totalSteps={8}
         />
 
         {/* AI state — quiet inline indicator */}
@@ -111,13 +120,7 @@ export const CognitiveDistortionStep: React.FC<CognitiveDistortionStepProps> = R
           })}
         </View>
 
-        <StepNavigation
-          canGoBack={canGoBack}
-          canGoNext={isValid}
-          onBack={onBack}
-          onNext={onNext}
-        />
-      </View>
+      </LessonScreen>
     );
   }
 );

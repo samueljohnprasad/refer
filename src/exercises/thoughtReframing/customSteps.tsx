@@ -22,7 +22,7 @@ import { EmotionChip } from "@/src/screens/ThoughtReframingScreen/components/Emo
 import { DistortionCard } from "@/src/screens/ThoughtReframingScreen/components/DistortionCard";
 import { BulletListInput } from "@/src/screens/ThoughtReframingScreen/components/BulletListInput";
 import { VoiceTextInput } from "@/src/screens/ThoughtReframingScreen/components/VoiceTextInput";
-import { StepNavigation } from "@/src/screens/ThoughtReframingScreen/components/StepNavigation";
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { EMOTION_OPTIONS } from "@/src/screens/ThoughtReframingScreen/data/emotions";
 import { COGNITIVE_DISTORTIONS } from "@/src/screens/ThoughtReframingScreen/data/cognitiveDistortions";
 
@@ -50,6 +50,8 @@ function StepShell({
   isValid,
   isSaving,
   nextLabel,
+  progress,
+  onClose,
   children,
 }: {
   onNext: () => void;
@@ -58,6 +60,8 @@ function StepShell({
   isValid: boolean;
   isSaving?: boolean;
   nextLabel?: string;
+  progress: number;
+  onClose: () => void;
   children: React.ReactNode;
 }) {
   return (
@@ -65,22 +69,9 @@ function StepShell({
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1"
     >
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+      <View className="flex-1">
         {children}
-      </ScrollView>
-      <StepNavigation
-        canGoBack={canGoBack}
-        canGoNext={isValid}
-        onBack={onBack}
-        onNext={onNext}
-        nextLabel={nextLabel}
-        isLoading={isSaving}
-      />
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -205,6 +196,8 @@ export function TRSituationStep({
   isValid,
   isSaving,
   readOnly,
+  progress,
+  onClose,
 }: StepProps<ThoughtReframingResponse>) {
   return (
     <StepShell
@@ -213,6 +206,8 @@ export function TRSituationStep({
       canGoBack={canGoBack}
       isValid={isValid}
       isSaving={isSaving}
+      progress={progress}
+      onClose={onClose}
     >
       <StepTitle
         title="What happened?"
@@ -262,6 +257,8 @@ export function TRAutomaticThoughtStep({
   isValid,
   isSaving,
   readOnly,
+  progress,
+  onClose,
 }: StepProps<ThoughtReframingResponse>) {
   return (
     <StepShell
@@ -270,6 +267,8 @@ export function TRAutomaticThoughtStep({
       canGoBack={canGoBack}
       isValid={isValid}
       isSaving={isSaving}
+      progress={progress}
+      onClose={onClose}
     >
       <StepTitle
         title="Automatic Thought"
@@ -315,6 +314,8 @@ export function TREmotionsStep({
   aiSuggestions,
   isAiLoading,
   readOnly,
+  progress,
+  onClose,
 }: StepProps<ThoughtReframingResponse>) {
   const MAX_EMOTIONS = 3;
 
@@ -367,6 +368,8 @@ export function TREmotionsStep({
       canGoBack={canGoBack}
       isValid={isValid}
       isSaving={isSaving}
+      progress={progress}
+      onClose={onClose}
     >
       <StepTitle
         title="How did it make you feel?"
@@ -427,6 +430,8 @@ export function TRDistortionsStep({
   aiSuggestions,
   isAiLoading,
   readOnly,
+  progress,
+  onClose,
 }: StepProps<ThoughtReframingResponse>) {
   const MAX_DISTORTIONS = 2;
 
@@ -477,6 +482,8 @@ export function TRDistortionsStep({
       canGoBack={canGoBack}
       isValid={isValid}
       isSaving={isSaving}
+      progress={progress}
+      onClose={onClose}
     >
       <StepTitle
         title="Spot the thinking trap"
@@ -544,6 +551,8 @@ export function TREvidenceForStep({
   isValid,
   isSaving,
   readOnly,
+  progress,
+  onClose,
 }: StepProps<ThoughtReframingResponse>) {
   const items = response.evidenceFor ?? [];
 
@@ -555,6 +564,8 @@ export function TREvidenceForStep({
       isValid={isValid}
       isSaving={isSaving}
       nextLabel={items.length === 0 ? "Skip" : "Continue"}
+      progress={progress}
+      onClose={onClose}
     >
       <StepTitle
         title="Evidence for this thought"
@@ -606,6 +617,8 @@ export function TREvidenceAgainstStep({
   isValid,
   isSaving,
   readOnly,
+  progress,
+  onClose,
 }: StepProps<ThoughtReframingResponse>) {
   const items = response.evidenceAgainst ?? [];
   const forItems = response.evidenceFor ?? [];
@@ -620,6 +633,8 @@ export function TREvidenceAgainstStep({
       isValid={isValid}
       isSaving={isSaving}
       nextLabel={items.length === 0 ? "Skip" : "Continue"}
+      progress={progress}
+      onClose={onClose}
     >
       <StepTitle
         title="Evidence against this thought"
@@ -673,6 +688,8 @@ export function TRBalancedThoughtStep({
   aiSuggestions,
   isAiLoading,
   readOnly,
+  progress,
+  onClose,
 }: StepProps<ThoughtReframingResponse>) {
   const suggestions = (aiSuggestions ?? []) as Array<{
     text?: string;
@@ -686,6 +703,8 @@ export function TRBalancedThoughtStep({
       canGoBack={canGoBack}
       isValid={isValid}
       isSaving={isSaving}
+      progress={progress}
+      onClose={onClose}
     >
       <StepTitle
         title="Write a balanced thought"

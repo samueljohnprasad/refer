@@ -23,6 +23,7 @@ import { useOnboardingAnalytics } from "./hooks/useOnboardingAnalytics";
 import { useCompleteOnboarding } from "@/hooks/data/useCompleteOnboarding";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { ONBOARDING_STEPS } from "./constants";
+import { ScreenLayout } from "@/src/components/ui/ScreenLayout";
 
 import { LessonHeader } from "@/src/components/ui/LessonHeader";
 import TactileButton from "./components/TactileButton";
@@ -461,7 +462,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: containerBackgroundColor }}>
+    <ScreenLayout style={{ backgroundColor: containerBackgroundColor }}>
       <Animated.View
         pointerEvents="none"
         style={[
@@ -524,33 +525,36 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
       </Animated.View>
 
       {showContinueButton && (
-        <Animated.View
-          style={[
-            footerAnimatedStyle,
-            currentStep === "welcome" ? styles.welcomeFooter : null,
-          ]}
-          className="px-6 pb-8 pt-4"
+        <ScreenLayout.Footer
+          pointerEvents="box-none"
+          variant={currentStepConfig.transparentFooter ? "transparent" : "solid"}
+          style={!currentStepConfig.transparentFooter ? { backgroundColor: containerBackgroundColor } : undefined}
         >
-          <TactileButton
-            label={
-              loading ? "Setting up..." : currentStepConfig.continueButtonLabel
-            }
-            onPress={handleContinue}
-            disabled={isContinueDisabled}
-          />
-          {currentStepConfig.canSkip && (
+          <Animated.View
+            style={footerAnimatedStyle}
+            className="w-full"
+          >
             <TactileButton
-              label="Skip for now"
-              onPress={() => {
-                analytics.trackStepSkipped(currentStep);
-                goNext();
-              }}
-              variant="secondary"
+              label={
+                loading ? "Setting up..." : currentStepConfig.continueButtonLabel
+              }
+              onPress={handleContinue}
+              disabled={isContinueDisabled}
             />
-          )}
-        </Animated.View>
+            {currentStepConfig.canSkip && (
+              <TactileButton
+                label="Skip for now"
+                onPress={() => {
+                  analytics.trackStepSkipped(currentStep);
+                  goNext();
+                }}
+                variant="secondary"
+              />
+            )}
+          </Animated.View>
+        </ScreenLayout.Footer>
       )}
-    </View>
+    </ScreenLayout>
   );
 };
 

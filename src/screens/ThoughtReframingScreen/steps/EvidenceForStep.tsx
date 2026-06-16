@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { StepHeader } from "../components/StepHeader";
-import { StepNavigation } from "../components/StepNavigation";
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { BulletListInput } from "../components/BulletListInput";
 
 interface EvidenceForStepProps {
@@ -14,6 +14,7 @@ interface EvidenceForStepProps {
   canGoBack: boolean;
   isValid: boolean;
   progress: number;
+  onClose?: () => void;
 }
 
 export const EvidenceForStep: React.FC<EvidenceForStepProps> = React.memo(
@@ -26,15 +27,23 @@ export const EvidenceForStep: React.FC<EvidenceForStepProps> = React.memo(
     canGoBack,
     isValid,
     progress,
+    onClose,
   }) => {
     return (
-      <View className="flex-1">
+      <LessonScreen
+        progress={progress}
+        trailingLabel="+10 XP"
+        onClose={onClose}
+        primaryLabel={items.length === 0 ? "Skip" : "Continue"}
+        onPrimaryPress={onNext}
+        primaryDisabled={!isValid}
+        secondaryLabel={canGoBack ? "Back" : undefined}
+        onSecondaryPress={canGoBack ? onBack : undefined}
+        backButtonVariant="close-text"
+      >
         <StepHeader
           title="Evidence for this thought"
           subtitle="What facts support this thought? Try to stick to evidence, not feelings."
-          progress={progress}
-          stepNumber={5}
-          totalSteps={8}
         />
 
         <View className="flex-1">
@@ -65,14 +74,7 @@ export const EvidenceForStep: React.FC<EvidenceForStepProps> = React.memo(
           )}
         </View>
 
-        <StepNavigation
-          canGoBack={canGoBack}
-          canGoNext={isValid}
-          onBack={onBack}
-          onNext={onNext}
-          nextLabel={items.length === 0 ? "Skip" : "Continue"}
-        />
-      </View>
+      </LessonScreen>
     );
   },
 );

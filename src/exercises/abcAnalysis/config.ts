@@ -11,6 +11,7 @@ import {
   ABCSummaryStep,
 } from "./customSteps";
 import { createStep } from "@/src/components/exercise/steps/createStep";
+import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 
 const INITIAL: ABCAnalysisResponse = {
@@ -37,6 +38,19 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
   initialResponse: INITIAL,
 
   steps: [
+    {
+      id: "intro",
+      component: createStep(IntroStep, {
+        title: "ABC Analysis",
+        subtitle:
+          "Understand the link between events, beliefs, and consequences.",
+        exerciseType: "abc_analysis",
+        duration: "7-10 min",
+      }),
+      label: "Welcome",
+      validate: () => true,
+      excludeFromProgress: true,
+    },
     {
       id: "pre_emotional_intensity",
       component: createStep(SliderStep, {

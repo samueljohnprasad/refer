@@ -9,6 +9,7 @@ import { Timer01Icon } from "@hugeicons/core-free-icons";
 import { SAGE } from "@/lib/tokens";
 import type { StepProps } from "@/src/types/exerciseFlow";
 
+
 interface IntroStepProps extends StepProps {
   title: string;
   subtitle: string;
@@ -21,17 +22,7 @@ interface IntroStepProps extends StepProps {
 export const IntroStep: React.FC<IntroStepProps> = React.memo(
   ({ title, subtitle, duration, bulletPoints, onNext }) => {
     return (
-      <View className="flex-1 w-full justify-between">
-        {/* Scrollable Upper Body — keeps content beautifully scrollable on smaller screens */}
-        <ScrollView
-          className="flex-1 w-full"
-          contentContainerStyle={{
-            alignItems: "center",
-            paddingHorizontal: 4,
-            paddingBottom: 24,
-          }}
-          showsVerticalScrollIndicator={false}
-        >
+      <View className="flex-1 items-center px-6 pt-[124px] pb-6">
           {/* Brand Mascot illustration replacing generic blue icon wells */}
           <FadeInItem index={0}>
             <View className="items-center justify-center mt-2 mb-6">
@@ -79,18 +70,6 @@ export const IntroStep: React.FC<IntroStepProps> = React.memo(
               ))}
             </View>
           )}
-        </ScrollView>
-
-        {/* Pinned Bottom primary CTA — GUARANTEED to be visible and never pushed off-screen */}
-        <FadeInItem index={4 + (bulletPoints?.length ?? 0)} className="w-full pt-3 pb-2 bg-[#F8FAF7]">
-          <Button
-            label="Let's Go"
-            variant="primary"
-            size="lg"
-            onPress={onNext}
-            className="w-full"
-          />
-        </FadeInItem>
       </View>
     );
   },

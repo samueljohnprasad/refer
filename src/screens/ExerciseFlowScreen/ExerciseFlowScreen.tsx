@@ -114,8 +114,10 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
   );
 };
 
-import StageProgressBar from "@/src/components/ui/StageProgressBar";
-import { SAGE, OTTER_BLUE, PARROT_ORANGE, MACAW_PURPLE } from "@/lib/tokens";
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
+import { SAGE, OTTER_BLUE, PARROT_ORANGE, MACAW_PURPLE, BRAND_SURFACE } from "@/lib/tokens";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
 
 interface ResolvedExerciseFlowScreenProps {
   config: ExerciseConfig<any>;
@@ -161,7 +163,6 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const currentStep = config?.steps[flow.currentStepIndex];
   const ai = useExerciseAI(currentStep?.ai);
   const isFinalStep = flow.currentStepIndex === flow.totalSteps - 1;
-  const usesEmbeddedHeader = exerciseType === "abc_analysis";
 
   const exitScreen = useCallback(() => {
     isConfirmedExitRef.current = true;
@@ -284,58 +285,45 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   }
 
   const pct = Math.round(flow.progress * 100);
+  const primaryLabel = currentStep?.nextLabel || (isFinalStep ? "Finish" : "Continue");
+  const onPrimaryPress = readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext;
 
   return (
-    <SafeAreaView
+    <LessonScreen
       className="flex-1"
       style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
+      hideHeader={currentStep?.hideHeader}
+      hideFooter={currentStep?.hideFooter}
+      progress={flow.progress}
+      onClose={flow.canGoBack ? flow.goBack : handleClose}
+      backButtonVariant={flow.canGoBack ? "arrow" : "close-icon"}
+      primaryLabel={readOnly && isFinalStep ? "Done" : primaryLabel}
+      onPrimaryPress={onPrimaryPress}
+      primaryDisabled={!flow.isCurrentStepValid || isSaving}
+      primaryLoading={isSaving}
+      primaryRightIcon={
+        isFinalStep && !isSaving ? (
+          <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={BRAND_SURFACE} strokeWidth={2} />
+        ) : undefined
+      }
+      secondaryLabel={isFinalStep && !readOnly ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
+      onSecondaryPress={flow.canGoBack ? flow.goBack : undefined}
     >
-      {!usesEmbeddedHeader ? (
-        <View className="flex-row items-center px-5 py-3 gap-2.5">
-          <Pressable
-            onPress={handleClose}
-            accessibilityRole="button"
-            accessibilityLabel="Close exercise"
-            hitSlop={12}
-            className="w-11 h-11 rounded-full items-center justify-center active:bg-slate-100 bg-transparent"
-          >
-            <Text variant="h3" className="text-ink-soft text-[20px] font-bold">
-              ✕
-            </Text>
-          </Pressable>
-
-          <View className="flex-1">
-            <StageProgressBar
-              progress={flow.progress}
-              fillColor={accentColor}
-              trackColor="#E5E5E5"
-              height={12}
-              showGlow={true}
-            />
-          </View>
-
-          <RNText
-            className="happy-font-body-bold text-[12px] leading-[16px] text-ink-soft min-w-[36px] text-right ml-2.5"
-            style={{ color: accentColor }}
-          >
-            {pct}%
-          </RNText>
-        </View>
-      ) : null}
-
       <AnimatedStepContainer
         stepIndex={flow.currentStepIndex}
-        className={`flex-1 ${usesEmbeddedHeader ? "px-5 pb-6 pt-4" : "px-5 pb-4"}`}
+        className="flex-1"
       >
-        {StepComponent ? (
-          <StepComponent {...stepProps} />
-        ) : (
-          <View className="flex-1 justify-center items-center">
-            <Text className="text-slate-400">Unknown step</Text>
-          </View>
-        )}
+        <LessonScreen.Content hasHeader={!currentStep?.hideHeader} hasFooter={!currentStep?.hideFooter}>
+          {StepComponent ? (
+            <StepComponent {...stepProps} />
+          ) : (
+            <View className="flex-1 justify-center items-center">
+              <Text className="text-slate-400">Unknown step</Text>
+            </View>
+          )}
+        </LessonScreen.Content>
       </AnimatedStepContainer>
-    </SafeAreaView>
+    </LessonScreen>
   );
 };
 

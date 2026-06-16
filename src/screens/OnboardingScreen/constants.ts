@@ -24,6 +24,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
     autoAdvance: false,
     canSkip: false,
     analyticsLabel: "welcome",
+    transparentFooter: true,
   },
   {
     name: "mascot_greeting",
@@ -147,6 +148,7 @@ export const ONBOARDING_STEPS: readonly OnboardingStepConfig[] = [
     autoAdvance: false,
     canSkip: false,
     analyticsLabel: "journey_map",
+    transparentFooter: true,
   },
   {
     name: "letter_from_future",

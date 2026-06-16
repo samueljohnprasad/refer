@@ -64,6 +64,8 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         label: "Welcome",
         validate: () => true,
         excludeFromProgress: true,
+        hideHeader: true,
+        nextLabel: "Let's Go",
       },
       {
         id: "situation",
@@ -242,6 +244,9 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,
+        hideHeader: true,
+        nextLabel: "Complete",
+        secondaryLabel: "Edit answers",
       },
     ],
   };

@@ -6,9 +6,7 @@ import React, {
   useState,
 } from "react";
 import { View, ScrollView, Alert, TouchableOpacity, Text as RNText } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams, Stack } from "expo-router";
-import { LessonHeader } from "@/src/components/ui/LessonHeader";
 import { useThoughtReframingFlow } from "./hooks/useThoughtReframingFlow";
 import { useThoughtReframingMutation } from "./hooks/useThoughtReframingMutation";
 import { useThoughtReframingAI } from "./hooks/useThoughtReframingAI";
@@ -282,7 +280,7 @@ const ThoughtReframingScreen: React.FC = () => {
   const renderStep = (): React.ReactNode => {
     switch (currentStep) {
       case "intro":
-        return <ThoughtReframingIntro onBegin={goNext} />;
+        return <ThoughtReframingIntro onBegin={goNext} onClose={handleClose} />;
 
       case "situation":
         return (
@@ -294,6 +292,7 @@ const ThoughtReframingScreen: React.FC = () => {
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
             progress={progress}
+            onClose={handleClose}
           />
         );
 
@@ -307,6 +306,7 @@ const ThoughtReframingScreen: React.FC = () => {
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
             progress={progress}
+            onClose={handleClose}
           />
         );
 
@@ -323,6 +323,7 @@ const ThoughtReframingScreen: React.FC = () => {
             progress={progress}
             aiSuggestedEmotions={suggestedEmotions}
             isDetectingEmotions={isDetectingEmotions}
+            onClose={handleClose}
           />
         );
 
@@ -338,6 +339,7 @@ const ThoughtReframingScreen: React.FC = () => {
             progress={progress}
             aiSuggestedDistortions={suggestedDistortions}
             isDetectingDistortions={isDetectingDistortions}
+            onClose={handleClose}
           />
         );
 
@@ -352,6 +354,7 @@ const ThoughtReframingScreen: React.FC = () => {
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
             progress={progress}
+            onClose={handleClose}
           />
         );
 
@@ -366,6 +369,7 @@ const ThoughtReframingScreen: React.FC = () => {
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
             progress={progress}
+            onClose={handleClose}
           />
         );
 
@@ -382,6 +386,7 @@ const ThoughtReframingScreen: React.FC = () => {
             progress={progress}
             aiSuggestions={suggestedBalancedThoughts}
             isSuggestingBalanced={isSuggestingBalanced}
+            onClose={handleClose}
           />
         );
 
@@ -395,6 +400,7 @@ const ThoughtReframingScreen: React.FC = () => {
             canGoBack={canGoBack}
             isValid={isCurrentStepValid}
             progress={progress}
+            onClose={handleClose}
           />
         );
 
@@ -405,6 +411,7 @@ const ThoughtReframingScreen: React.FC = () => {
             onSave={handleSave}
             onDone={handleDone}
             isSaving={isSaving}
+            onClose={handleClose}
           />
         );
 
@@ -415,45 +422,17 @@ const ThoughtReframingScreen: React.FC = () => {
 
   if (isLoadingEntry) {
     return (
-      <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      <View className="flex-1 bg-white items-center justify-center">
         {/* Spinner could be added here */}
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-[#FAFAFA]" // Soft background to match onboarding
-      edges={["top", "bottom"]}
-    >
-      <Stack.Screen options={{
-        headerShown: true, header: () => <LessonHeader
-          onClose={handleClose}
-          backButtonVariant="close-text"
-          iconColor="#1A4032"
-          progressFillColor="#FF5A5F"
-          progressTrackColor="#FFE9E9"
-          trailingLabelColor="#FF5A5F"
-          progress={progress}
-          trailingLabel="+10 XP"
-        />
-      }} />
-
-      {/* Reusable Lesson Header */}
-
-
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: 20,
-          paddingBottom: 24,
-        }}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        {renderStep()}
-      </ScrollView>
-    </SafeAreaView>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      {renderStep()}
+    </>
   );
 };
 

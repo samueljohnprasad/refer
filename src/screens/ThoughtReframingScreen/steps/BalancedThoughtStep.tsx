@@ -2,7 +2,7 @@ import React from "react";
 import { View, Pressable, ActivityIndicator } from "react-native";
 import { Text } from "@/components/ui/text";
 import { StepHeader } from "../components/StepHeader";
-import { StepNavigation } from "../components/StepNavigation";
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { VoiceTextInput } from "../components/VoiceTextInput";
 import type { AIBalancedThoughtSuggestion } from "../hooks/useThoughtReframingAI";
 
@@ -17,6 +17,7 @@ interface BalancedThoughtStepProps {
   progress: number;
   aiSuggestions?: AIBalancedThoughtSuggestion[];
   isSuggestingBalanced?: boolean;
+  onClose?: () => void;
 }
 
 export const BalancedThoughtStep: React.FC<BalancedThoughtStepProps> =
@@ -32,15 +33,23 @@ export const BalancedThoughtStep: React.FC<BalancedThoughtStepProps> =
       progress,
       aiSuggestions = [],
       isSuggestingBalanced = false,
+      onClose,
     }) => {
       return (
-        <View className="flex-1">
+        <LessonScreen
+          progress={progress}
+          trailingLabel="+10 XP"
+          onClose={onClose}
+          primaryLabel="Continue"
+          onPrimaryPress={onNext}
+          primaryDisabled={!isValid}
+          secondaryLabel={canGoBack ? "Back" : undefined}
+          onSecondaryPress={canGoBack ? onBack : undefined}
+          backButtonVariant="close-text"
+        >
           <StepHeader
             title="Write a balanced thought"
             subtitle="Replace the original with something realistic and fair."
-            progress={progress}
-            stepNumber={7}
-            totalSteps={8}
           />
 
           {/* Original thought — bordered card */}
@@ -151,13 +160,7 @@ export const BalancedThoughtStep: React.FC<BalancedThoughtStepProps> =
             </View>
           </View>
 
-          <StepNavigation
-            canGoBack={canGoBack}
-            canGoNext={isValid}
-            onBack={onBack}
-            onNext={onNext}
-          />
-        </View>
+        </LessonScreen>
       );
     },
   );

@@ -1,9 +1,11 @@
 import React from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
 
 interface ThoughtReframingIntroProps {
   onBegin: () => void;
+  onClose?: () => void;
 }
 
 interface StepItem {
@@ -24,9 +26,16 @@ const ACCENT = "#58CC02";
 const XP_REWARD = 15;
 
 export const ThoughtReframingIntro: React.FC<ThoughtReframingIntroProps> =
-  React.memo(({ onBegin }) => {
+  React.memo(({ onBegin, onClose }) => {
     return (
-      <View className="flex-1 justify-center px-2">
+      <LessonScreen 
+        hideHeader 
+        onClose={onClose}
+        primaryLabel="Start Lesson"
+        onPrimaryPress={onBegin}
+      >
+        <LessonScreen.Content hasHeader={false} showsVerticalScrollIndicator={false}>
+          <View className="flex-1 justify-center px-2">
         {/* Hero icon with badge */}
         <View className="items-center mb-8">
           <View
@@ -85,26 +94,9 @@ export const ThoughtReframingIntro: React.FC<ThoughtReframingIntroProps> =
           ))}
         </View>
 
-        {/* Big CTA */}
-        <Pressable
-          onPress={onBegin}
-          accessibilityRole="button"
-          accessibilityLabel="Begin exercise"
-          className="h-14 rounded-2xl items-center justify-center active:opacity-90"
-          style={{
-            backgroundColor: ACCENT,
-            shadowColor: ACCENT,
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 0,
-            elevation: 4,
-          }}
-        >
-          <Text className="text-base font-extrabold text-white uppercase tracking-wider">
-            Start Lesson
-          </Text>
-        </Pressable>
-      </View>
+          </View>
+        </LessonScreen.Content>
+      </LessonScreen>
     );
   });
 

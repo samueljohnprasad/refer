@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { StepHeader } from '../components/StepHeader';
-import { StepNavigation } from '../components/StepNavigation';
+import { LessonScreen } from '@/src/components/ui/LessonScreen';
 import { VoiceTextInput } from '../components/VoiceTextInput';
 
 interface SituationStepProps {
@@ -12,18 +12,26 @@ interface SituationStepProps {
   canGoBack: boolean;
   isValid: boolean;
   progress: number;
+  onClose?: () => void;
 }
 
 export const SituationStep: React.FC<SituationStepProps> = React.memo(
-  ({ value, onChange, onNext, onBack, canGoBack, isValid, progress }) => {
+  ({ value, onChange, onNext, onBack, canGoBack, isValid, progress, onClose }) => {
     return (
-      <View className="flex-1">
+      <LessonScreen
+        progress={progress}
+        trailingLabel="+10 XP"
+        onClose={onClose}
+        primaryLabel="Continue"
+        onPrimaryPress={onNext}
+        primaryDisabled={!isValid}
+        secondaryLabel={canGoBack ? "Back" : undefined}
+        onSecondaryPress={canGoBack ? onBack : undefined}
+        backButtonVariant="close-text"
+      >
         <StepHeader
           title="What happened?"
           subtitle="Briefly describe the situation that triggered your thoughts."
-          progress={progress}
-          stepNumber={1}
-          totalSteps={8}
         />
 
         <View className="flex-1">
@@ -35,13 +43,7 @@ export const SituationStep: React.FC<SituationStepProps> = React.memo(
           />
         </View>
 
-        <StepNavigation
-          canGoBack={canGoBack}
-          canGoNext={isValid}
-          onBack={onBack}
-          onNext={onNext}
-        />
-      </View>
+      </LessonScreen>
     );
   }
 );

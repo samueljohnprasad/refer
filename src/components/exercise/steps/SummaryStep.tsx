@@ -11,6 +11,7 @@ import { PostExerciseInsight } from "@/src/components/insights/PostExerciseInsig
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import { SAGE } from "@/lib/tokens";
 import type { StepProps, ExerciseType } from "@/src/types/exerciseFlow";
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
 
 interface SummaryField {
   label: string;
@@ -52,37 +53,36 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
     };
 
     return (
-      <View className="flex-1 w-full">
-        <View className="items-center mb-6 pt-4">
-          <FadeInItem index={0}>
-            <View
-              className={`h-16 w-16 rounded-full items-center justify-center mb-3.5 shadow-sm ${tint.iconBg}`}
-            >
-              <HugeiconsIcon
-                icon={iconObj}
-                size={30}
-                color={tint.iconColor}
-                strokeWidth={2}
+      <LessonScreen hideHeader>
+        <LessonScreen.Content hasHeader={false} showsVerticalScrollIndicator={false}>
+          <View className="items-center mb-6 pt-8">
+            <FadeInItem index={0}>
+              <View
+                className={`h-16 w-16 rounded-full items-center justify-center mb-3.5 shadow-sm ${tint.iconBg}`}
+              >
+                <HugeiconsIcon
+                  icon={iconObj}
+                  size={30}
+                  color={tint.iconColor}
+                  strokeWidth={2}
+                />
+              </View>
+            </FadeInItem>
+            <FadeInItem index={1}>
+              <Text variant="display" className="text-center leading-none">
+                {title}
+              </Text>
+            </FadeInItem>
+          </View>
+
+          {exerciseType && response && (
+            <FadeInItem index={2} className="mb-4">
+              <PostExerciseInsight
+                exerciseType={exerciseType as ExerciseType}
+                response={response}
               />
-            </View>
-          </FadeInItem>
-          <FadeInItem index={1}>
-            <Text variant="display" className="text-center leading-none">
-              {title}
-            </Text>
-          </FadeInItem>
-        </View>
-
-        {exerciseType && response && (
-          <FadeInItem index={2} className="mb-4">
-            <PostExerciseInsight
-              exerciseType={exerciseType as ExerciseType}
-              response={response}
-            />
-          </FadeInItem>
-        )}
-
-        <ScrollView className="flex-1 w-full" showsVerticalScrollIndicator={false}>
+            </FadeInItem>
+          )}
           <FadeInItem index={3}>
             <Card
               variant="tile"
@@ -114,19 +114,16 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
               })}
             </Card>
           </FadeInItem>
-        </ScrollView>
+        </LessonScreen.Content>
 
-        <FadeInItem index={4} className="pt-4 pb-2 w-full">
-          <Button
-            label={saveLabel}
-            onPress={onSave}
-            loading={isSaving}
-            variant="primary"
-            size="lg"
-            fullWidth={true}
+        <FadeInItem index={4}>
+          <LessonScreen.ActionFooter
+            primaryLabel={saveLabel}
+            onPrimaryPress={onSave}
+            primaryLoading={isSaving}
           />
         </FadeInItem>
-      </View>
+      </LessonScreen>
     );
   },
 );

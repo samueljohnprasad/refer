@@ -81,94 +81,76 @@ export default function ExerciseSummary({
 }: ExerciseSummaryProps): React.JSX.Element {
     return (
         <View className="flex-1">
-            <ScrollView
-                className="flex-1"
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 120 }}
-            >
-                {/* Header */}
-                <View className="items-center mb-6">
-                    <View className="mb-3 h-16 w-16 items-center justify-center rounded-full bg-sage-pill">
-                        <HugeiconsIcon icon={CheckmarkCircle02Icon} size={32} color={SAGE[600]} />
-                    </View>
-                    <Text variant="h1" className="mb-1 text-center text-ink">
-                        Exercise Complete!
-                    </Text>
-                    <Text variant="body" className="text-center text-sm text-ink-muted">
-                        Here's a summary of your responses
-                    </Text>
+            {/* Header */}
+            <View className="items-center mb-6">
+                <View className="mb-3 h-16 w-16 items-center justify-center rounded-full bg-sage-pill">
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} size={32} color={SAGE[600]} />
                 </View>
+                <Text variant="h1" className="mb-1 text-center text-ink">
+                    Exercise Complete!
+                </Text>
+                <Text variant="body" className="text-center text-sm text-ink-muted">
+                    Here's a summary of your responses
+                </Text>
+            </View>
 
-                {/* Responses list */}
-                <View className="gap-3">
-                    {steps.map((step: ExerciseStep, index: number) => {
-                        const response: StepResponse | undefined = responses.find(
-                            (r: StepResponse) => r.stepIndex === index,
-                        );
-                        const displayValue: string = response
-                            ? formatResponse(step, response)
-                            : '(skipped)';
+            {/* Responses list */}
+            <View className="gap-3">
+                {steps.map((step: ExerciseStep, index: number) => {
+                    const response: StepResponse | undefined = responses.find(
+                        (r: StepResponse) => r.stepIndex === index,
+                    );
+                    const displayValue: string = response
+                        ? formatResponse(step, response)
+                        : '(skipped)';
 
-                        return (
-                            <Card
-                                key={index}
-                                variant="tile"
-                                className="mb-3 p-4"
-                                showDepth
-                            >
-                                <View className="flex-row items-start justify-between mb-2">
-                                    <View className="flex-row items-center gap-2 flex-1">
-                                        <View className="h-6 w-6 items-center justify-center rounded-full bg-sage-pill">
-                                            <Text variant="label-bold" className="text-xs text-sage-600">
-                                                {index + 1}
-                                            </Text>
-                                        </View>
-                                        <Text
-                                            variant="body-bold"
-                                            className="flex-1 text-sm text-ink"
-                                            numberOfLines={2}
-                                        >
-                                            {step.prompt}
+                    return (
+                        <Card
+                            key={index}
+                            variant="tile"
+                            className="mb-3 p-4"
+                            showDepth
+                        >
+                            <View className="flex-row items-start justify-between mb-2">
+                                <View className="flex-row items-center gap-2 flex-1">
+                                    <View className="h-6 w-6 items-center justify-center rounded-full bg-sage-pill">
+                                        <Text variant="label-bold" className="text-xs text-sage-600">
+                                            {index + 1}
                                         </Text>
                                     </View>
-                                    <PressableScale
-                                        onPress={() => onEditStep(index)}
-                                        scale={0.95}
-                                        hapticStyle="light"
-                                        className="bg-sage-pill px-2.5 py-1 rounded-lg"
-                                        accessibilityLabel={`Edit step ${index + 1}`}
-                                        accessibilityRole="button"
+                                    <Text
+                                        variant="body-bold"
+                                        className="flex-1 text-sm text-ink"
+                                        numberOfLines={2}
                                     >
-                                        <Text variant="label-bold" className="text-xs text-sage-600">
-                                            Edit
-                                        </Text>
-                                    </PressableScale>
+                                        {step.prompt}
+                                    </Text>
                                 </View>
-
-                                {/* Response value */}
-                                <Text
-                                    variant="body"
-                                    className="ml-8 text-sm leading-5 text-ink-soft"
-                                    numberOfLines={step.input_type === 'text' ? 4 : 2}
+                                <PressableScale
+                                    onPress={() => onEditStep(index)}
+                                    scale={0.95}
+                                    hapticStyle="light"
+                                    className="bg-sage-pill px-2.5 py-1 rounded-lg"
+                                    accessibilityLabel={`Edit step ${index + 1}`}
+                                    accessibilityRole="button"
                                 >
-                                    {displayValue}
-                                </Text>
-                            </Card>
-                        );
-                    })}
-                </View>
-            </ScrollView>
+                                    <Text variant="label-bold" className="text-xs text-sage-600">
+                                        Edit
+                                    </Text>
+                                </PressableScale>
+                            </View>
 
-            {/* Complete button — fixed at bottom */}
-            <View className="pt-4 pb-2">
-                <Button
-                    label="Complete Exercise"
-                    onPress={onComplete}
-                    variant="primary"
-                    loading={isCompleting}
-                    leftIcon={<HugeiconsIcon icon={CheckmarkCircle02Icon} size={20} color={BRAND_SURFACE} />}
-                    accessibilityLabel="Complete this exercise"
-                />
+                            {/* Response value */}
+                            <Text
+                                variant="body"
+                                className="ml-8 text-sm leading-5 text-ink-soft"
+                                numberOfLines={step.input_type === 'text' ? 4 : 2}
+                            >
+                                {displayValue}
+                            </Text>
+                        </Card>
+                    );
+                })}
             </View>
         </View>
     );

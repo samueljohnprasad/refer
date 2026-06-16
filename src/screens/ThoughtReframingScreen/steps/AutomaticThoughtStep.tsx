@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { StepHeader } from "../components/StepHeader";
-import { StepNavigation } from "../components/StepNavigation";
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { VoiceTextInput } from "../components/VoiceTextInput";
 
 interface AutomaticThoughtStepProps {
@@ -13,19 +13,27 @@ interface AutomaticThoughtStepProps {
   canGoBack: boolean;
   isValid: boolean;
   progress: number;
+  onClose?: () => void;
 }
 
 export const AutomaticThoughtStep: React.FC<AutomaticThoughtStepProps> =
   React.memo(
-    ({ value, onChange, onNext, onBack, canGoBack, isValid, progress }) => {
+    ({ value, onChange, onNext, onBack, canGoBack, isValid, progress, onClose }) => {
       return (
-        <View className="flex-1">
+        <LessonScreen
+          progress={progress}
+          trailingLabel="+10 XP"
+          onClose={onClose}
+          primaryLabel="Continue"
+          onPrimaryPress={onNext}
+          primaryDisabled={!isValid}
+          secondaryLabel={canGoBack ? "Back" : undefined}
+          onSecondaryPress={canGoBack ? onBack : undefined}
+          backButtonVariant="close-text"
+        >
           <StepHeader
             title="What thought popped up?"
             subtitle="Write down the first thought that came to mind."
-            progress={progress}
-            stepNumber={2}
-            totalSteps={8}
           />
 
           {/* Educational tip — Duolingo-style info card */}
@@ -55,13 +63,7 @@ export const AutomaticThoughtStep: React.FC<AutomaticThoughtStepProps> =
             />
           </View>
 
-          <StepNavigation
-            canGoBack={canGoBack}
-            canGoNext={isValid}
-            onBack={onBack}
-            onNext={onNext}
-          />
-        </View>
+        </LessonScreen>
       );
     },
   );

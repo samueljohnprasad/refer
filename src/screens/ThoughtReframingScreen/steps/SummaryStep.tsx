@@ -1,6 +1,7 @@
 import React from "react";
-import { View, ScrollView, Pressable } from "react-native";
+import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { EmotionShiftBar } from "../components/EmotionShiftBar";
 import { COGNITIVE_DISTORTIONS } from "../data/cognitiveDistortions";
 import type {
@@ -14,6 +15,7 @@ interface SummaryStepProps {
   onSave: () => void;
   onDone: () => void;
   isSaving: boolean;
+  onClose?: () => void;
 }
 
 interface SectionProps {
@@ -34,7 +36,7 @@ const Section: React.FC<SectionProps> = ({ label, children }) => (
 );
 
 export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
-  ({ formState, onSave, onDone, isSaving }) => {
+  ({ formState, onSave, onDone, isSaving, onClose }) => {
     const distortionLabels: string[] = formState.selectedDistortions.map(
       (key: CognitiveDistortionKey) => {
         const found: CognitiveDistortion | undefined =
@@ -44,11 +46,16 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
     );
 
     return (
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 24 }}
-        showsVerticalScrollIndicator={false}
+      <LessonScreen 
+        hideHeader 
+        onClose={onClose}
+        primaryLabel={isSaving ? "Saving…" : "Save to Journal"}
+        onPrimaryPress={onSave}
+        primaryDisabled={isSaving}
+        secondaryLabel="Skip"
+        onSecondaryPress={onDone}
       >
+        <LessonScreen.Content hasHeader={false} showsVerticalScrollIndicator={false}>
         {/* ── Duolingo celebration header ── */}
         <View className="items-center mb-8 pt-4">
           <View
@@ -187,37 +194,8 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
         )}
 
         {/* ── Actions — Duolingo-style CTAs ── */}
-        <View className="gap-3 mt-4">
-          <Pressable
-            onPress={onSave}
-            disabled={isSaving}
-            accessibilityRole="button"
-            accessibilityLabel="Save to journal"
-            className="h-14 rounded-2xl items-center justify-center active:opacity-90"
-            style={{
-              backgroundColor: isSaving ? "#E2E8F0" : ACCENT,
-              shadowColor: isSaving ? "#000" : ACCENT,
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: isSaving ? 0 : 0.3,
-              shadowRadius: 0,
-              elevation: isSaving ? 0 : 4,
-            }}
-          >
-            <Text className="text-base font-extrabold text-white uppercase tracking-wider">
-              {isSaving ? "Saving…" : "Save to Journal"}
-            </Text>
-          </Pressable>
-
-          <Pressable
-            onPress={onDone}
-            accessibilityRole="button"
-            accessibilityLabel="Done"
-            className="h-11 rounded-2xl items-center justify-center active:bg-slate-100"
-          >
-            <Text className="text-sm font-bold text-slate-400">Skip</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
+        </LessonScreen.Content>
+      </LessonScreen>
     );
   },
 );

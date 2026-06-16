@@ -62,113 +62,7 @@ const NEW_CONSEQUENCE_SUGGESTIONS: SuggestionItem[] = [
   { label: "I'd take one useful next step", emoji: "✅" },
 ];
 
-function clampStepNumber(stepIndex: number): number {
-  return Math.min(stepIndex + 1, PROMPT_STEP_COUNT);
-}
-
-function Header({
-  stepIndex,
-  canGoBack,
-  onBack,
-  onClose,
-  progress,
-}: {
-  stepIndex: number;
-  canGoBack: boolean;
-  onBack: () => void;
-  onClose: () => void;
-  progress: number;
-}): React.JSX.Element {
-  const stepNumber = clampStepNumber(stepIndex);
-
-  return (
-    <>
-      <View className="flex-row items-center mb-6">
-        {canGoBack ? (
-          <Pressable
-            onPress={onBack}
-            className="p-2 -ml-2 rounded-full active:bg-slate-100 mr-3"
-            accessibilityRole="button"
-            accessibilityLabel="Go back"
-          >
-            <Text className="text-lg text-slate-400">←</Text>
-          </Pressable>
-        ) : (
-          <Pressable
-            onPress={onClose}
-            className="p-2 -ml-2 rounded-full active:bg-slate-100 mr-3"
-            accessibilityRole="button"
-            accessibilityLabel="Close"
-          >
-            <HugeiconsIcon icon={Cancel01Icon} size={20} color="#94A3B8" />
-          </Pressable>
-        )}
-
-        <View className="flex-1 h-4 bg-slate-100 rounded-full overflow-hidden">
-          <View
-            className="h-full rounded-full"
-            style={{ width: `${progress * 100}%`, backgroundColor: ACCENT }}
-          />
-        </View>
-        <Text className="text-xs font-extrabold text-slate-400 ml-3">
-          {Math.round(progress * 100)}%
-        </Text>
-      </View>
-
-      <View className="flex-row items-center justify-center gap-1.5 mb-6">
-        {Array.from(
-          { length: PROMPT_STEP_COUNT },
-          (_: unknown, index: number) => (
-            <View
-              key={index}
-              className={`rounded-full ${index === stepNumber - 1 ? "h-2.5 w-2.5" : "h-2 w-2"}`}
-              style={{
-                backgroundColor: index < stepNumber ? ACCENT : "#E2E8F0",
-              }}
-            />
-          ),
-        )}
-      </View>
-    </>
-  );
-}
-
-function PrimaryButton({
-  label,
-  onPress,
-  disabled = false,
-  isLoading = false,
-}: {
-  label: string;
-  onPress: () => void;
-  disabled?: boolean;
-  isLoading?: boolean;
-}): React.JSX.Element {
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled || isLoading}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      className="w-full rounded-2xl h-14 items-center justify-center active:opacity-90"
-      style={{
-        backgroundColor: disabled || isLoading ? "#E2E8F0" : ACCENT,
-        shadowColor: disabled || isLoading ? "#000" : ACCENT,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: disabled || isLoading ? 0 : 0.3,
-        shadowRadius: 0,
-        elevation: disabled || isLoading ? 0 : 4,
-      }}
-    >
-      <Text
-        className="text-base font-extrabold uppercase tracking-wider"
-        style={{ color: disabled || isLoading ? "#94A3B8" : "#FFFFFF" }}
-      >
-        {isLoading ? "Saving..." : label}
-      </Text>
-    </Pressable>
-  );
-}
+import { StepLayout } from "@/src/components/exercise/steps/StepLayout";
 
 function SuggestionCards({
   title,
@@ -265,34 +159,26 @@ function TextQuestionStep({
     isValid,
     progress,
     stepIndex,
+    totalSteps,
     readOnly,
   } = stepProps;
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
+    <StepLayout
+      title={title}
+      subtitle={subtitle}
+      progress={progress}
+      stepIndex={stepIndex}
+      totalSteps={totalSteps}
+      canGoBack={canGoBack}
+      isValid={isValid || !!readOnly}
+      onBack={onBack}
+      onNext={readOnly ? onClose : onNext}
+      onClose={onClose}
+      nextLabel={readOnly ? "Done" : "Continue"}
+      scrollable
     >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <Header
-          stepIndex={stepIndex}
-          canGoBack={canGoBack}
-          onBack={onBack}
-          onClose={onClose}
-          progress={progress}
-        />
-
-        <Text className="text-[24px] font-extrabold text-slate-900 mb-2">
-          {title}
-        </Text>
-        <Text className="text-[15px] text-slate-500 mb-3 font-medium">
-          {subtitle}
-        </Text>
-
+      <View className="px-1">
         <ValidationMessage
           message={validationMessage ?? ""}
           visible={!!validationMessage && value.trim().length > 0}
@@ -344,16 +230,8 @@ function TextQuestionStep({
             onSelect={onChange}
           />
         ) : null}
-
-        <View className="mt-auto">
-          <PrimaryButton
-            label={readOnly ? "Done" : "Continue"}
-            onPress={readOnly ? onClose : onNext}
-            disabled={!readOnly && !isValid}
-          />
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </StepLayout>
   );
 }
 
@@ -407,32 +285,24 @@ export function ABCConsequenceStep({
   progress,
   stepIndex,
   readOnly,
+  totalSteps,
 }: StepProps<ABCAnalysisResponse>): React.JSX.Element {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
+    <StepLayout
+      title="What happened next?"
+      subtitle="Name the feeling and what you did right after that belief."
+      progress={progress}
+      stepIndex={stepIndex}
+      totalSteps={totalSteps}
+      canGoBack={canGoBack}
+      isValid={isValid || !!readOnly}
+      onBack={onBack}
+      onNext={readOnly ? onClose : onNext}
+      onClose={onClose}
+      nextLabel={readOnly ? "Done" : "Continue"}
+      scrollable
     >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <Header
-          stepIndex={stepIndex}
-          canGoBack={canGoBack}
-          onBack={onBack}
-          onClose={onClose}
-          progress={progress}
-        />
-
-        <Text className="text-[24px] font-extrabold text-slate-900 mb-2">
-          What happened next?
-        </Text>
-        <Text className="text-[15px] text-slate-500 mb-6 font-medium">
-          Name the feeling and what you did right after that belief.
-        </Text>
-
+      <View className="px-1">
         <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">
           Emotion
         </Text>
@@ -456,7 +326,7 @@ export function ABCConsequenceStep({
           />
         ) : null}
 
-        <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">
+        <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2 mt-4">
           Behavior
         </Text>
         <TextInput
@@ -484,16 +354,8 @@ export function ABCConsequenceStep({
             onSelect={(value) => onUpdate({ consequenceBehavior: value })}
           />
         ) : null}
-
-        <View className="mt-auto">
-          <PrimaryButton
-            label={readOnly ? "Done" : "Continue"}
-            onPress={readOnly ? onClose : onNext}
-            disabled={!readOnly && !isValid}
-          />
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </StepLayout>
   );
 }
 
@@ -510,6 +372,7 @@ export function ABCAlternativeBeliefStep({
   aiSuggestions,
   isAiLoading,
   readOnly,
+  totalSteps,
 }: StepProps<ABCAnalysisResponse>): React.JSX.Element {
   const suggestions = (aiSuggestions ?? []) as Array<{
     text?: string;
@@ -517,30 +380,22 @@ export function ABCAlternativeBeliefStep({
   }>;
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
+    <StepLayout
+      title="What's a more balanced belief?"
+      subtitle="Keep it believable, kind, and grounded in the facts."
+      progress={progress}
+      stepIndex={stepIndex}
+      totalSteps={totalSteps}
+      canGoBack={canGoBack}
+      isValid={isValid || !!readOnly}
+      onBack={onBack}
+      onNext={readOnly ? onClose : onNext}
+      onClose={onClose}
+      nextLabel={readOnly ? "Done" : "Continue"}
+      isLoading={isAiLoading}
+      scrollable
     >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <Header
-          stepIndex={stepIndex}
-          canGoBack={canGoBack}
-          onBack={onBack}
-          onClose={onClose}
-          progress={progress}
-        />
-
-        <Text className="text-[24px] font-extrabold text-slate-900 mb-2">
-          What's a more balanced belief?
-        </Text>
-        <Text className="text-[15px] text-slate-500 mb-3 font-medium">
-          Keep it believable, kind, and grounded in the facts.
-        </Text>
-
+      <View className="px-1">
         <PsychoeducationCard content="A balanced belief doesn't have to be positive. It just needs to be more accurate and less absolute than the original." />
 
         <View
@@ -633,16 +488,8 @@ export function ABCAlternativeBeliefStep({
             </View>
           </>
         ) : null}
-
-        <View className="mt-auto">
-          <PrimaryButton
-            label={readOnly ? "Done" : "Continue"}
-            onPress={readOnly ? onClose : onNext}
-            disabled={!readOnly && !isValid}
-          />
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </StepLayout>
   );
 }
 

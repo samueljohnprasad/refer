@@ -42,11 +42,10 @@ import type {
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { INK_MUTED, SAGE } from "@/lib/tokens";
 import {
-    RendererPrimaryCTA,
     RendererTitleBlock,
-    RendererTopProgress,
 } from "../RendererFrame";
 
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import ExerciseInputText from "./ExerciseInputText";
 import ExerciseInputSlider from "./ExerciseInputSlider";
 import ExerciseInputPicker from "./ExerciseInputPicker";
@@ -525,14 +524,19 @@ export default function ExerciseNodeRenderer({
     };
 
     return (
-        <View className="happy-brand-screen flex-1">
-            <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
-                <RendererTopProgress
-                    progress={progressValue}
-                    xpReward={xpReward}
-                    onClose={onBack}
-                />
-
+        <LessonScreen
+            progress={progressValue}
+            trailingLabel={xpReward ? `+${xpReward} XP` : undefined}
+            onClose={handleBack}
+            backButtonVariant={canGoBack || showingSummary ? "arrow" : "close-icon"}
+            primaryLabel={showingSummary ? "Complete Exercise" : currentStep === totalSteps - 1 ? "Review" : "Continue"}
+            onPrimaryPress={showingSummary ? handleComplete : handleNext}
+            primaryDisabled={showingSummary ? isCompleting : !canGoNext}
+            primaryLoading={showingSummary ? isCompleting : false}
+            scrollable
+            className="flex-1"
+        >
+            <View className="flex-1 px-3 mt-4">
                 <RendererTitleBlock
                     eyebrow={
                         showingSummary
@@ -547,72 +551,18 @@ export default function ExerciseNodeRenderer({
                     }
                 />
 
-                {/* Content area */}
-                <KeyboardAvoidingView
-                    className="flex-1"
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    keyboardVerticalOffset={100}
-                >
-                    {showingSummary ? (
-                        <View className="flex-1 px-7">
-                            <ExerciseSummary
-                                steps={steps}
-                                responses={summaryResponses}
-                                isCompleting={isCompleting}
-                                onComplete={handleComplete}
-                                onEditStep={handleEditStep}
-                            />
-                        </View>
-                    ) : (
-                        <>
-                            {/* Step content */}
-                            <ScrollView
-                                className="flex-1 px-7"
-                                showsVerticalScrollIndicator={false}
-                                keyboardShouldPersistTaps="handled"
-                                contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
-                            >
-                                {renderStepInput()}
-                            </ScrollView>
-
-                            {/* Navigation buttons */}
-                            <View className="flex-row items-center gap-3 px-7 pb-4 pt-2">
-                                {/* Back button */}
-                                {canGoBack ? (
-                                    <PressableScale
-                                        onPress={handleBack}
-                                        scale={0.96}
-                                        hapticStyle="light"
-                                        className="bg-sage-pill py-[14px] px-5 rounded-[14px] flex-row items-center justify-center"
-                                        accessibilityLabel="Go to previous step"
-                                        accessibilityRole="button"
-                                    >
-                                        <HugeiconsIcon
-                                            icon={ArrowLeft01Icon}
-                                            size={18}
-                                            color={INK_MUTED}
-                                        />
-                                        <Text variant="body-bold" className="ml-1 text-sm text-sage-600">
-                                            Back
-                                        </Text>
-                                    </PressableScale>
-                                ) : (
-                                    <View className="w-20" />
-                                )}
-
-                                {/* Next / Review button */}
-                                <View className="flex-1">
-                                    <RendererPrimaryCTA
-                                        label={currentStep === totalSteps - 1 ? "Review" : "Continue"}
-                                        onPress={handleNext}
-                                        disabled={!canGoNext}
-                                    />
-                                </View>
-                            </View>
-                        </>
-                    )}
-                </KeyboardAvoidingView>
-            </SafeAreaView>
-        </View>
+                {showingSummary ? (
+                    <ExerciseSummary
+                        steps={steps}
+                        responses={summaryResponses}
+                        isCompleting={isCompleting}
+                        onComplete={handleComplete}
+                        onEditStep={handleEditStep}
+                    />
+                ) : (
+                    renderStepInput()
+                )}
+            </View>
+        </LessonScreen>
     );
 }

@@ -1,15 +1,8 @@
 import React, { useCallback, useRef } from "react";
-import {
-  View,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
-  Pressable,
-} from "react-native";
+import { Keyboard, Pressable, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { StepHeader } from "@/src/screens/ThoughtReframingScreen/components/StepHeader";
-import { StepNavigation } from "@/src/screens/ThoughtReframingScreen/components/StepNavigation";
+
 
 const DEBOUNCE_MS = 400;
 
@@ -23,6 +16,7 @@ interface StepLayoutProps {
   isValid: boolean;
   onBack: () => void;
   onNext: () => void;
+  onClose?: () => void;
   nextLabel?: string;
   isLoading?: boolean;
   children: React.ReactNode;
@@ -41,6 +35,7 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
     isValid,
     onBack,
     onNext,
+    onClose,
     nextLabel,
     isLoading,
     children,
@@ -66,7 +61,7 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
       onBack();
     }, [onBack]);
 
-    const content = (
+    return (
       <Pressable
         className="flex-1"
         onPress={Keyboard.dismiss}
@@ -79,42 +74,9 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
           stepNumber={stepIndex + 1}
           totalSteps={totalSteps}
         />
-
-        {scrollable ? (
-          <ScrollView
-            className="flex-1"
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            {children}
-          </ScrollView>
-        ) : (
-          <View className="flex-1">{children}</View>
-        )}
-
-        <StepNavigation
-          canGoBack={canGoBack}
-          canGoNext={isValid}
-          onBack={guardedBack}
-          onNext={guardedNext}
-          nextLabel={nextLabel}
-          isLoading={isLoading}
-        />
+        <View className="flex-1">{children}</View>
       </Pressable>
     );
-
-    if (Platform.OS === "ios") {
-      return (
-        <KeyboardAvoidingView
-          behavior="padding"
-          className="flex-1"
-        >
-          {content}
-        </KeyboardAvoidingView>
-      );
-    }
-
-    return content;
   },
 );
 

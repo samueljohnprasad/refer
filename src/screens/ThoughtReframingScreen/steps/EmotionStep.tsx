@@ -3,7 +3,7 @@ import { View, ActivityIndicator } from 'react-native';
 import { Text } from '@/components/ui/text';
 import Slider from '@react-native-community/slider';
 import { StepHeader } from '../components/StepHeader';
-import { StepNavigation } from '../components/StepNavigation';
+import { LessonScreen } from '@/src/components/ui/LessonScreen';
 import { EmotionChip } from '../components/EmotionChip';
 import { EMOTION_OPTIONS, type EmotionOption } from '../data/emotions';
 import type { EmotionName, EmotionRating } from '../types';
@@ -20,6 +20,7 @@ interface EmotionStepProps {
   progress: number;
   aiSuggestedEmotions?: AIEmotionSuggestion[];
   isDetectingEmotions?: boolean;
+  onClose?: () => void;
 }
 
 const MAX_EMOTIONS: number = 3;
@@ -36,6 +37,7 @@ export const EmotionStep: React.FC<EmotionStepProps> = React.memo(
     progress,
     aiSuggestedEmotions = [],
     isDetectingEmotions = false,
+    onClose,
   }) => {
     const selectedNames: Set<EmotionName> = useMemo(
       () => new Set(selectedEmotions.map((e) => e.name)),
@@ -50,13 +52,20 @@ export const EmotionStep: React.FC<EmotionStepProps> = React.memo(
     const atLimit: boolean = selectedEmotions.length >= MAX_EMOTIONS;
 
     return (
-      <View className="flex-1">
+      <LessonScreen
+        progress={progress}
+        trailingLabel="+10 XP"
+        onClose={onClose}
+        primaryLabel="Continue"
+        onPrimaryPress={onNext}
+        primaryDisabled={!isValid}
+        secondaryLabel={canGoBack ? "Back" : undefined}
+        onSecondaryPress={canGoBack ? onBack : undefined}
+        backButtonVariant="close-text"
+      >
         <StepHeader
           title="How did it make you feel?"
           subtitle={`Select up to ${MAX_EMOTIONS} emotions, then rate intensity.`}
-          progress={progress}
-          stepNumber={3}
-          totalSteps={8}
         />
 
         {/* AI state — minimal pill, not a banner */}
@@ -152,13 +161,7 @@ export const EmotionStep: React.FC<EmotionStepProps> = React.memo(
           </View>
         )}
 
-        <StepNavigation
-          canGoBack={canGoBack}
-          canGoNext={isValid}
-          onBack={onBack}
-          onNext={onNext}
-        />
-      </View>
+      </LessonScreen>
     );
   }
 );

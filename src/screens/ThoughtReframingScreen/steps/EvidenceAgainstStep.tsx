@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { StepHeader } from "../components/StepHeader";
-import { StepNavigation } from "../components/StepNavigation";
+import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { BulletListInput } from "../components/BulletListInput";
 import { getRandomSocraticPrompt } from "../data/cognitiveDistortions";
 
@@ -15,6 +15,7 @@ interface EvidenceAgainstStepProps {
   canGoBack: boolean;
   isValid: boolean;
   progress: number;
+  onClose?: () => void;
 }
 
 export const EvidenceAgainstStep: React.FC<EvidenceAgainstStepProps> =
@@ -28,6 +29,7 @@ export const EvidenceAgainstStep: React.FC<EvidenceAgainstStepProps> =
       canGoBack,
       isValid,
       progress,
+      onClose,
     }) => {
       // Stable random prompt per mount
       const socraticPrompt: string = useMemo(
@@ -36,13 +38,20 @@ export const EvidenceAgainstStep: React.FC<EvidenceAgainstStepProps> =
       );
 
       return (
-        <View className="flex-1">
+        <LessonScreen
+          progress={progress}
+          trailingLabel="+10 XP"
+          onClose={onClose}
+          primaryLabel={items.length === 0 ? "Skip" : "Continue"}
+          onPrimaryPress={onNext}
+          primaryDisabled={!isValid}
+          secondaryLabel={canGoBack ? "Back" : undefined}
+          onSecondaryPress={canGoBack ? onBack : undefined}
+          backButtonVariant="close-text"
+        >
           <StepHeader
             title="Evidence against this thought"
             subtitle="What facts contradict this thought?"
-            progress={progress}
-            stepNumber={6}
-            totalSteps={8}
           />
 
           {/* Socratic prompt nudge — Duolingo-style tip card */}
@@ -72,14 +81,7 @@ export const EvidenceAgainstStep: React.FC<EvidenceAgainstStepProps> =
             />
           </View>
 
-          <StepNavigation
-            canGoBack={canGoBack}
-            canGoNext={isValid}
-            onBack={onBack}
-            onNext={onNext}
-            nextLabel={items.length === 0 ? "Skip" : "Continue"}
-          />
-        </View>
+        </LessonScreen>
       );
     },
   );
