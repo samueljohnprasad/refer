@@ -10,12 +10,12 @@ import React, { useMemo } from "react";
 import {
   View,
   ScrollView,
-  KeyboardAvoidingView,
   Platform,
   Pressable,
   ActivityIndicator,
 } from "react-native";
 import { Text } from "@/src/components/ui/Text";
+import { Card } from "@/src/components/ui/Card";
 
 // ── Reused legacy components ─────────────────────────────────────────────────
 import { EmotionChip } from "@/src/screens/ThoughtReframingScreen/components/EmotionChip";
@@ -65,14 +65,9 @@ function StepShell({
   children: React.ReactNode;
 }) {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
-    >
-      <View className="flex-1">
-        {children}
-      </View>
-    </KeyboardAvoidingView>
+    <View className="flex-1">
+      {children}
+    </View>
   );
 }
 
@@ -128,7 +123,7 @@ function SuggestionCards({
 }: {
   title: string;
   suggestions: SuggestionItem[];
-  currentValue: string;
+  currentValue: string | string[];
   onSelect: (value: string) => void;
 }) {
   return (
@@ -136,25 +131,20 @@ function SuggestionCards({
       <Text className="text-xs font-extrabold text-ink-muted uppercase tracking-wider mb-3">
         {title}
       </Text>
-      {suggestions.map((s) => {
-        const isSelected = currentValue === s.label;
+      {suggestions.map((s, index: number) => {
+        const isSelected = Array.isArray(currentValue)
+          ? currentValue.includes(s.label)
+          : currentValue === s.label;
         return (
-          <Pressable
-            key={s.label}
+          <Card
+            key={`${s.label || ""}-${index}`}
+            variant={isSelected ? "answer-selected" : "answer"}
             onPress={() => onSelect(s.label)}
-            accessibilityRole="button"
+            className="mb-3"
+            contentClassName="flex-row items-center p-4"
             accessibilityState={{ selected: isSelected }}
-            className="rounded-2xl p-4 mb-3 active:opacity-80"
-            style={{
-              borderWidth: 2,
-              borderColor: isSelected ? SAGE[500] : "#E2E8F0",
-              backgroundColor: isSelected ? SAGE.selected : "#FFFFFF",
-              borderBottomWidth: isSelected ? 2 : 4,
-              borderBottomColor: isSelected ? SAGE[500] : "#CBD5E1",
-            }}
           >
-            <View className="flex-row items-center">
-              <View className="h-9 w-9 rounded-xl bg-slate-100 items-center justify-center mr-3">
+            <View className="h-9 w-9 rounded-xl bg-slate-100 items-center justify-center mr-3">
                 <Text className="text-lg">{s.emoji}</Text>
               </View>
               <Text
@@ -171,8 +161,7 @@ function SuggestionCards({
                   <Text className="text-white text-xs font-extrabold">✓</Text>
                 </View>
               )}
-            </View>
-          </Pressable>
+          </Card>
         );
       })}
     </View>
@@ -198,7 +187,33 @@ export function TRSituationStep({
   readOnly,
   progress,
   onClose,
+  aiSuggestions,
+  isAiLoading,
 }: StepProps<ThoughtReframingResponse>) {
+  const suggestions = useMemo<SuggestionItem[]>(() => {
+    if (aiSuggestions && aiSuggestions.length > 0) {
+      const uniqueLabels = new Set<string>();
+      const result: SuggestionItem[] = [];
+      for (const s of (aiSuggestions as Array<{ text?: string; label?: string }>)) {
+        const txt = s?.text || s?.label;
+        if (txt && typeof txt === "string" && txt.trim()) {
+          const normalized = txt.trim();
+          if (!uniqueLabels.has(normalized)) {
+            uniqueLabels.add(normalized);
+            result.push({
+              label: normalized,
+              emoji: "✨",
+            });
+          }
+        }
+      }
+      if (result.length > 0) {
+        return result;
+      }
+    }
+    return SITUATION_SUGGESTIONS;
+  }, [aiSuggestions]);
+
   return (
     <StepShell
       onNext={onNext}
@@ -215,10 +230,19 @@ export function TRSituationStep({
       />
       <HelperCard text="Stick to facts a camera could capture — no interpretations yet." />
 
-      {!readOnly && (
+      {isAiLoading && (
+        <View className="flex-row items-center mb-4">
+          <ActivityIndicator size="small" color={INK_MUTED} />
+          <Text className="text-[11px] text-ink-muted ml-2 uppercase tracking-wider">
+            Generating situations…
+          </Text>
+        </View>
+      )}
+
+      {!readOnly && (!isAiLoading) && (
         <SuggestionCards
-          title="Quick picks"
-          suggestions={SITUATION_SUGGESTIONS}
+          title={aiSuggestions?.length ? "AI Suggestions" : "Quick picks"}
+          suggestions={suggestions}
           currentValue={response.situation}
           onSelect={(v) => onUpdate({ situation: v })}
         />
@@ -259,7 +283,33 @@ export function TRAutomaticThoughtStep({
   readOnly,
   progress,
   onClose,
+  aiSuggestions,
+  isAiLoading,
 }: StepProps<ThoughtReframingResponse>) {
+  const suggestions = useMemo<SuggestionItem[]>(() => {
+    if (aiSuggestions && aiSuggestions.length > 0) {
+      const uniqueLabels = new Set<string>();
+      const result: SuggestionItem[] = [];
+      for (const s of (aiSuggestions as Array<{ text?: string; label?: string }>)) {
+        const txt = s?.text || s?.label;
+        if (txt && typeof txt === "string" && txt.trim()) {
+          const normalized = txt.trim();
+          if (!uniqueLabels.has(normalized)) {
+            uniqueLabels.add(normalized);
+            result.push({
+              label: normalized,
+              emoji: "✨",
+            });
+          }
+        }
+      }
+      if (result.length > 0) {
+        return result;
+      }
+    }
+    return THOUGHT_SUGGESTIONS;
+  }, [aiSuggestions]);
+
   return (
     <StepShell
       onNext={onNext}
@@ -276,10 +326,19 @@ export function TRAutomaticThoughtStep({
       />
       <HelperCard text="Write the exact thought, word for word. Even if it sounds dramatic — especially then." />
 
-      {!readOnly && (
+      {isAiLoading && (
+        <View className="flex-row items-center mb-4">
+          <ActivityIndicator size="small" color={INK_MUTED} />
+          <Text className="text-[11px] text-ink-muted ml-2 uppercase tracking-wider">
+            Generating thoughts…
+          </Text>
+        </View>
+      )}
+
+      {!readOnly && (!isAiLoading) && (
         <SuggestionCards
-          title="Common thoughts"
-          suggestions={THOUGHT_SUGGESTIONS}
+          title={aiSuggestions?.length ? "AI Suggestions" : "Common thoughts"}
+          suggestions={suggestions}
           currentValue={response.automaticThought}
           onSelect={(v) => onUpdate({ automaticThought: v })}
         />
@@ -553,8 +612,31 @@ export function TREvidenceForStep({
   readOnly,
   progress,
   onClose,
+  aiSuggestions,
+  isAiLoading,
 }: StepProps<ThoughtReframingResponse>) {
   const items = response.evidenceFor ?? [];
+  const aiGeneratedSuggestions = useMemo<SuggestionItem[]>(() => {
+    if (aiSuggestions && aiSuggestions.length > 0) {
+      const uniqueLabels = new Set<string>();
+      const result: SuggestionItem[] = [];
+      for (const s of (aiSuggestions as Array<{ text?: string; label?: string }>)) {
+        const txt = s?.text || s?.label;
+        if (txt && typeof txt === "string" && txt.trim()) {
+          const normalized = txt.trim();
+          if (!uniqueLabels.has(normalized)) {
+            uniqueLabels.add(normalized);
+            result.push({
+              label: normalized,
+              emoji: "✨",
+            });
+          }
+        }
+      }
+      return result;
+    }
+    return [];
+  }, [aiSuggestions]);
 
   return (
     <StepShell
@@ -573,6 +655,30 @@ export function TREvidenceForStep({
       />
       <HelperCard text="Even if the evidence feels flimsy, write it. We're looking at ALL the data." />
 
+      {isAiLoading && (
+        <View className="flex-row items-center mb-4">
+          <ActivityIndicator size="small" color={INK_MUTED} />
+          <Text className="text-[11px] text-ink-muted ml-2 uppercase tracking-wider">
+            Finding potential evidence…
+          </Text>
+        </View>
+      )}
+
+      {!readOnly && (!isAiLoading) && aiGeneratedSuggestions.length > 0 && (
+        <SuggestionCards
+          title="AI Suggestions"
+          suggestions={aiGeneratedSuggestions}
+          currentValue={items}
+          onSelect={(text) => {
+            if (items.includes(text)) {
+              onUpdate({ evidenceFor: items.filter(i => i !== text) });
+            } else {
+              onUpdate({ evidenceFor: [...items, text] });
+            }
+          }}
+        />
+      )}
+
       {!readOnly && (
         <BulletListInput
           items={items}
@@ -580,7 +686,6 @@ export function TREvidenceForStep({
           onRemove={(i) =>
             onUpdate({ evidenceFor: items.filter((_, idx) => idx !== i) })
           }
-          maxItems={5}
           placeholder="Add a fact that supports the thought..."
         />
       )}
@@ -619,11 +724,34 @@ export function TREvidenceAgainstStep({
   readOnly,
   progress,
   onClose,
+  aiSuggestions,
+  isAiLoading,
 }: StepProps<ThoughtReframingResponse>) {
   const items = response.evidenceAgainst ?? [];
   const forItems = response.evidenceFor ?? [];
-
   const showBiasNote = items.length < forItems.length && items.length > 0;
+
+  const aiGeneratedSuggestions = useMemo<SuggestionItem[]>(() => {
+    if (aiSuggestions && aiSuggestions.length > 0) {
+      const uniqueLabels = new Set<string>();
+      const result: SuggestionItem[] = [];
+      for (const s of (aiSuggestions as Array<{ text?: string; label?: string }>)) {
+        const txt = s?.text || s?.label;
+        if (txt && typeof txt === "string" && txt.trim()) {
+          const normalized = txt.trim();
+          if (!uniqueLabels.has(normalized)) {
+            uniqueLabels.add(normalized);
+            result.push({
+              label: normalized,
+              emoji: "✨",
+            });
+          }
+        }
+      }
+      return result;
+    }
+    return [];
+  }, [aiSuggestions]);
 
   return (
     <StepShell
@@ -643,6 +771,30 @@ export function TREvidenceAgainstStep({
 
       <PsychoeducationCard content="Your brain's threat system actively ignores positive evidence. This step forces it to look at the full picture." />
 
+      {isAiLoading && (
+        <View className="flex-row items-center mb-4">
+          <ActivityIndicator size="small" color={INK_MUTED} />
+          <Text className="text-[11px] text-ink-muted ml-2 uppercase tracking-wider">
+            Finding counter-evidence…
+          </Text>
+        </View>
+      )}
+
+      {!readOnly && (!isAiLoading) && aiGeneratedSuggestions.length > 0 && (
+        <SuggestionCards
+          title="AI Suggestions"
+          suggestions={aiGeneratedSuggestions}
+          currentValue={items}
+          onSelect={(text) => {
+            if (items.includes(text)) {
+              onUpdate({ evidenceAgainst: items.filter(i => i !== text) });
+            } else {
+              onUpdate({ evidenceAgainst: [...items, text] });
+            }
+          }}
+        />
+      )}
+
       {!readOnly && (
         <BulletListInput
           items={items}
@@ -650,8 +802,7 @@ export function TREvidenceAgainstStep({
           onRemove={(i) =>
             onUpdate({ evidenceAgainst: items.filter((_, idx) => idx !== i) })
           }
-          maxItems={5}
-          placeholder="Add counter-evidence..."
+          placeholder="Add a fact that contradicts the thought..."
         />
       )}
 
@@ -750,20 +901,14 @@ export function TRBalancedThoughtStep({
           {suggestions.map((s, i) => {
             const isSelected = response.balancedThought === s.text;
             return (
-              <Pressable
+              <Card
                 key={i}
+                variant={isSelected ? "answer-selected" : "answer"}
                 onPress={() =>
                   !readOnly && onUpdate({ balancedThought: s.text ?? "" })
                 }
-                accessibilityRole="button"
-                className="rounded-2xl p-4 mb-3 active:opacity-80"
-                style={{
-                  borderWidth: 2,
-                  borderColor: isSelected ? SAGE[500] : "#E2E8F0",
-                  backgroundColor: isSelected ? SAGE.selected : "#FFFFFF",
-                  borderBottomWidth: isSelected ? 2 : 4,
-                  borderBottomColor: isSelected ? SAGE[500] : "#CBD5E1",
-                }}
+                className="mb-3"
+                contentClassName="p-4"
               >
                 <Text
                   className="text-sm leading-relaxed mb-1 font-medium"
@@ -784,7 +929,7 @@ export function TRBalancedThoughtStep({
                     </Text>
                   </View>
                 )}
-              </Pressable>
+              </Card>
             );
           })}
         </View>

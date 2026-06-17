@@ -76,7 +76,6 @@ export const EvidenceAgainstStep: React.FC<EvidenceAgainstStepProps> =
               items={items}
               onAdd={onAdd}
               onRemove={onRemove}
-              maxItems={5}
               placeholder="Add a fact that contradicts the thought..."
             />
           </View>

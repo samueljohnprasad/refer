@@ -11,7 +11,7 @@ interface BulletListInputProps {
   items: string[];
   onAdd: (item: string) => void;
   onRemove: (index: number) => void;
-  maxItems: number;
+  maxItems?: number;
   placeholder?: string;
 }
 
@@ -53,7 +53,7 @@ export const BulletListInput: React.FC<BulletListInputProps> = React.memo(
       }
     }, [isRecording, record, stopRecording, transcribeAudio, onAdd]);
 
-    const canAdd: boolean = items.length < maxItems && inputValue.trim().length > 0;
+    const canAdd: boolean = inputValue.trim().length > 0 && (!maxItems || items.length < maxItems);
 
     return (
       <View>
@@ -74,61 +74,61 @@ export const BulletListInput: React.FC<BulletListInputProps> = React.memo(
           </View>
         ))}
 
-        {items.length < maxItems && (
-          <View className={`flex-row items-center bg-white rounded-xl border overflow-hidden ${isRecording ? 'border-red-200' : 'border-slate-100'}`}>
-            <TextInput
-              value={inputValue}
-              onChangeText={setInputValue}
-              placeholder={isRecording ? 'Listening...' : placeholder}
-              placeholderTextColor="#94A3B8"
-              onSubmitEditing={handleAdd}
-              returnKeyType="done"
-              maxLength={200}
-              editable={!isTranscribing}
-              className="flex-1 px-4 py-3 text-sm text-slate-700"
-            />
+        <View className={`flex-row items-center bg-white rounded-xl border overflow-hidden ${isRecording ? 'border-red-200' : 'border-slate-100'}`}>
+          <TextInput
+            value={inputValue}
+            onChangeText={setInputValue}
+            placeholder={isRecording ? 'Listening...' : placeholder}
+            placeholderTextColor="#94A3B8"
+            onSubmitEditing={handleAdd}
+            returnKeyType="done"
+            maxLength={200}
+            editable={!isTranscribing}
+            className="flex-1 px-4 py-3 text-sm text-slate-700"
+          />
 
-            {/* Voice button */}
+          {/* Voice button */}
+          <Pressable
+            onPress={handleToggleRecording}
+            disabled={isTranscribing}
+            className={`h-10 w-10 items-center justify-center rounded-xl mr-1 ${
+              isRecording ? 'bg-red-50' : 'bg-slate-50'
+            }`}
+          >
+            {isTranscribing ? (
+              <ActivityIndicator size="small" color="#3B82F6" />
+            ) : (
+              <HugeiconsIcon
+                icon={isRecording ? StopIcon : Mic01Icon}
+                size={18}
+                color={isRecording ? '#EF4444' : '#64748B'}
+              />
+            )}
+          </Pressable>
+
+          {/* Add button */}
+          {!isRecording && (
             <Pressable
-              onPress={handleToggleRecording}
-              disabled={isTranscribing}
-              className={`h-10 w-10 items-center justify-center rounded-xl mr-1 ${
-                isRecording ? 'bg-red-50' : 'bg-slate-50'
+              onPress={handleAdd}
+              disabled={!canAdd || isTranscribing}
+              className={`h-10 w-10 mr-1 rounded-xl items-center justify-center ${
+                canAdd ? 'bg-blue-500 active:bg-blue-600' : 'bg-slate-100'
               }`}
             >
-              {isTranscribing ? (
-                <ActivityIndicator size="small" color="#3B82F6" />
-              ) : (
-                <HugeiconsIcon
-                  icon={isRecording ? StopIcon : Mic01Icon}
-                  size={18}
-                  color={isRecording ? '#EF4444' : '#64748B'}
-                />
-              )}
+              <HugeiconsIcon
+                icon={Add01Icon}
+                size={16}
+                color={canAdd ? '#ffffff' : '#CBD5E1'}
+              />
             </Pressable>
+          )}
+        </View>
 
-            {/* Add button */}
-            {!isRecording && (
-              <Pressable
-                onPress={handleAdd}
-                disabled={!canAdd || isTranscribing}
-                className={`h-10 w-10 mr-1 rounded-xl items-center justify-center ${
-                  canAdd ? 'bg-blue-500 active:bg-blue-600' : 'bg-slate-100'
-                }`}
-              >
-                <HugeiconsIcon
-                  icon={Add01Icon}
-                  size={16}
-                  color={canAdd ? '#ffffff' : '#CBD5E1'}
-                />
-              </Pressable>
-            )}
-          </View>
+        {maxItems && (
+          <Text className="text-xs text-slate-400 mt-2 text-right">
+            {items.length}/{maxItems} items
+          </Text>
         )}
-
-        <Text className="text-xs text-slate-400 mt-2 text-right">
-          {items.length}/{maxItems} items
-        </Text>
       </View>
     );
   }

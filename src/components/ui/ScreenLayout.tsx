@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
-import { View, ScrollView, ViewProps, ScrollViewProps } from "react-native";
+import { View, ViewProps, ScrollViewProps } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 
@@ -42,12 +43,13 @@ interface ContentProps extends ScrollViewProps {
 const Content = ({ children, className = "", contentContainerStyle, hasFooter = true, hasHeader = true, ...props }: ContentProps) => {
   const insets = useSafeAreaInsets();
   return (
-    <ScrollView
+    <KeyboardAwareScrollView
       showsVerticalScrollIndicator={false}
+      bottomOffset={hasFooter ? 140 : 20}
       className={`flex-1 ${className}`}
       contentContainerStyle={[
         { 
-          paddingBottom: hasFooter ? 120 : Math.max(insets.bottom, 24), 
+          paddingBottom: hasFooter ? 200 : Math.max(insets.bottom, 24), 
           paddingTop: hasHeader ? Math.max(insets.top, 24) + 100 : Math.max(insets.top, 24), 
           paddingHorizontal: 16 
         },
@@ -56,7 +58,7 @@ const Content = ({ children, className = "", contentContainerStyle, hasFooter = 
       {...props}
     >
       {children}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 

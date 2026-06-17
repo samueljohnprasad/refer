@@ -72,12 +72,38 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         component: TRSituationStep,
         label: "Describe the situation",
         validate: (r) => r.situation.trim().length >= 5,
+        ai: {
+          promptBuilder: (r, context) =>
+            `You are a CBT therapist assistant. Generate 3 common, relatable everyday situations that often trigger negative automatic thoughts or anxiety. Keep them brief (1 sentence), realistic, and in the first person ("I...").\n\nRandom seed: ${context?.seed ?? Math.random()}`,
+          responseSchema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: { text: { type: "string" } },
+              required: ["text"],
+            },
+          },
+          maxResults: 3,
+        },
       },
       {
         id: "automatic_thought",
         component: TRAutomaticThoughtStep,
         label: "What was the automatic thought?",
         validate: (r) => r.automaticThought.trim().length >= 5,
+        ai: {
+          promptBuilder: (r) =>
+            `You are a CBT therapist assistant. Based on this situation:\n"${r.situation}"\n\nGenerate 3 likely automatic negative thoughts the user might have had. Keep them in the first person ("I...", "They..."), brief (1 sentence), and realistic.`,
+          responseSchema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: { text: { type: "string" } },
+              required: ["text"],
+            },
+          },
+          maxResults: 3,
+        },
       },
       {
         id: "intensity",
@@ -172,12 +198,38 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         component: TREvidenceForStep,
         label: "Evidence supporting this thought",
         validate: () => true,
+        ai: {
+          promptBuilder: (r) =>
+            `You are a CBT therapist assistant. Given the situation and automatic thought below, identify some likely "evidence" the user might think supports this thought. Even if flawed, what facts might they be pointing to?\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nProvide 3 plausible pieces of evidence FOR the thought. Keep them brief.`,
+          responseSchema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: { text: { type: "string" } },
+              required: ["text"],
+            },
+          },
+          maxResults: 3,
+        },
       },
       {
         id: "evidence_against",
         component: TREvidenceAgainstStep,
         label: "Evidence against this thought",
         validate: () => true,
+        ai: {
+          promptBuilder: (r) =>
+            `You are a CBT therapist assistant. Given the situation and automatic thought below, identify objective evidence AGAINST this thought. What facts contradict it?\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nProvide 3 plausible pieces of counter-evidence. Keep them objective and brief.`,
+          responseSchema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: { text: { type: "string" } },
+              required: ["text"],
+            },
+          },
+          maxResults: 3,
+        },
       },
       {
         id: "balanced_thought",

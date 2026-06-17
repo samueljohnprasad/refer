@@ -1,14 +1,13 @@
 import React from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Mascot } from "@/src/components/ui/Mascot";
 import { Button } from "@/src/components/ui/Button";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Timer01Icon } from "@hugeicons/core-free-icons";
-import { SAGE } from "@/lib/tokens";
+import { Timer01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { INK_MUTED, SAGE } from "@/lib/tokens";
 import type { StepProps } from "@/src/types/exerciseFlow";
-
 
 interface IntroStepProps extends StepProps {
   title: string;
@@ -20,9 +19,19 @@ interface IntroStepProps extends StepProps {
 }
 
 export const IntroStep: React.FC<IntroStepProps> = React.memo(
-  ({ title, subtitle, duration, bulletPoints, onNext }) => {
+  ({ title, subtitle, duration, bulletPoints, onNext, onClose }) => {
     return (
       <View className="flex-1 items-center pt-4 pb-4">
+          {onClose && (
+            <Pressable
+              onPress={onClose}
+              className="absolute top-2 right-4 z-50 h-10 w-10 items-center justify-center rounded-full bg-brand-surface/80"
+              accessibilityRole="button"
+              accessibilityLabel="Close"
+            >
+              <HugeiconsIcon icon={Cancel01Icon} size={24} color={INK_MUTED} />
+            </Pressable>
+          )}
           {/* Brand Mascot illustration replacing generic blue icon wells */}
           <FadeInItem index={0}>
             <View className="items-center justify-center mb-3">
