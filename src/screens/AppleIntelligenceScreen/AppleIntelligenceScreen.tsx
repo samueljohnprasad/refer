@@ -12,8 +12,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PressableScale } from '@/src/components/ui/PressableScale';
 import { Card } from '@/src/components/ui/Card';
 import {
-  useAppleIntelligence,
-  AppleAIStatus,
+  useLocalAI,
+  LocalAIStatus,
 } from '@/src/hooks/useAppleIntelligence';
 import { SAGE, INK, INK_SOFT, INK_MUTED, BRAND_SURFACE } from '@/lib/tokens';
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -81,26 +81,36 @@ const PRESET_PROMPTS: readonly PresetPrompt[] = [
 
 // ─── Status Indicator ────────────────────────────────────────────────────────
 
-const STATUS_LABELS: Record<AppleAIStatus, string> = {
-  [AppleAIStatus.IDLE]: '',
-  [AppleAIStatus.LOADING]: 'Thinking…',
-  [AppleAIStatus.STREAMING]: 'Writing…',
-  [AppleAIStatus.DONE]: 'Complete',
-  [AppleAIStatus.ERROR]: 'Something went wrong',
-  [AppleAIStatus.UNAVAILABLE]: 'Not available',
+const STATUS_LABELS: Record<LocalAIStatus, string> = {
+  [LocalAIStatus.IDLE]: '',
+  [LocalAIStatus.DOWNLOADING]: 'Downloading AI model (first time only)…',
+  [LocalAIStatus.LOADING]: 'Thinking…',
+  [LocalAIStatus.STREAMING]: 'Writing…',
+  [LocalAIStatus.DONE]: 'Complete',
+  [LocalAIStatus.ERROR]: 'Something went wrong',
+  [LocalAIStatus.UNAVAILABLE]: 'Not available',
 };
 
-function resolveStatusDotColor(status: AppleAIStatus): string {
-  if (status === AppleAIStatus.ERROR || status === AppleAIStatus.UNAVAILABLE) return ERROR_COLOR;
-  if (status === AppleAIStatus.DONE) return SAGE[500];
+function resolveStatusDotColor(status: LocalAIStatus): string {
+  if (status === LocalAIStatus.ERROR || status === LocalAIStatus.UNAVAILABLE) return ERROR_COLOR;
+  if (status === LocalAIStatus.DOWNLOADING) return SAGE[400];
+  if (status === LocalAIStatus.DONE) return SAGE[500];
   return SAGE[400];
 }
 
-const StatusIndicator: React.FC<{ readonly status: AppleAIStatus }> =
-  React.memo(({ status }) => {
-    const label = useMemo(() => STATUS_LABELS[status], [status]);
+const StatusIndicator: React.FC<{ readonly status: LocalAIStatus; readonly downloadProgress?: number }> =
+  React.memo(({ status, downloadProgress = 0 }) => {
+    const label = useMemo(() => {
+      if (status === LocalAIStatus.DOWNLOADING) {
+        const pct = downloadProgress > 1 ? downloadProgress / 100 : downloadProgress;
+        const totalGB = 1.72;
+        const downloadedGB = (pct * totalGB).toFixed(2);
+        return `Downloading AI model (first time only) • ${downloadedGB}GB / ${totalGB}GB`;
+      }
+      return STATUS_LABELS[status];
+    }, [status, downloadProgress]);
 
-    if (status === AppleAIStatus.IDLE) return null;
+    if (status === LocalAIStatus.IDLE) return null;
 
     return (
       <Animated.View
@@ -175,25 +185,26 @@ const UnavailableBanner: React.FC = React.memo(() => (
 
 const ResponseCard: React.FC<{
   readonly response: string;
-  readonly status: AppleAIStatus;
+  readonly status: LocalAIStatus;
+  readonly downloadProgress?: number;
   readonly onReset: () => void;
-}> = React.memo(({ response, status, onReset }) => (
+}> = React.memo(({ response, status, downloadProgress, onReset }) => (
   <Animated.View entering={FadeIn.duration(300)}>
     <View className="mb-4 rounded-3xl bg-sage-50 p-5 border border-sage-100">
-      <StatusIndicator status={status} />
+      <StatusIndicator status={status} downloadProgress={downloadProgress} />
       <Text
         className="happy-font-body text-[16px] leading-7 mt-1"
         style={{ color: SAGE[800] }}
         selectable
       >
         {response}
-        {status === AppleAIStatus.STREAMING && (
+        {status === LocalAIStatus.STREAMING && (
           <Text style={{ color: CURSOR_COLOR }}> ▌</Text>
         )}
       </Text>
     </View>
 
-    {status === AppleAIStatus.DONE && (
+    {status === LocalAIStatus.DONE && (
       <Animated.View entering={FadeIn.duration(200)} className="items-center mb-4">
         <PressableScale
           onPress={onReset}
@@ -259,7 +270,7 @@ const InputBar: React.FC<InputBarProps> = React.memo(
           style={{
             borderWidth: 1.5,
             borderColor: SAGE[200],
-            shadowColor: SAGE[900],
+            shadowColor: SAGE[800],
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.05,
             shadowRadius: 12,
@@ -308,7 +319,8 @@ const InputBar: React.FC<InputBarProps> = React.memo(
 
 interface AppleIntelligencePresentationProps {
   readonly response: string;
-  readonly status: AppleAIStatus;
+  readonly status: LocalAIStatus;
+  readonly downloadProgress: number;
   readonly error: string | null;
   readonly isAvailable: boolean;
   readonly inputValue: string;
@@ -324,6 +336,7 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
     ({
       response,
       status,
+      downloadProgress,
       error,
       isAvailable,
       inputValue,
@@ -334,8 +347,8 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
       onReset,
     }) => {
       const insets = useSafeAreaInsets();
-      const isProcessing = status === AppleAIStatus.LOADING || status === AppleAIStatus.STREAMING;
-      const hasResponse = response.length > 0;
+      const isProcessing = status === LocalAIStatus.DOWNLOADING || status === LocalAIStatus.LOADING || status === LocalAIStatus.STREAMING;
+      const hasResponse = response.length > 0 || status === LocalAIStatus.DOWNLOADING || status === LocalAIStatus.LOADING;
 
       return (
         <KeyboardAvoidingView
@@ -379,8 +392,6 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
                 </Text>
               </Animated.View>
 
-              {!isAvailable && <UnavailableBanner />}
-
               {/* Preset prompts — shown when no response yet */}
               {isAvailable && !hasResponse && (
                 <Animated.View entering={FadeInDown.duration(300).delay(100)}>
@@ -410,11 +421,12 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
                 <ResponseCard
                   response={response}
                   status={status}
+                  downloadProgress={downloadProgress}
                   onReset={onReset}
                 />
               )}
 
-              {error && status === AppleAIStatus.ERROR && <ErrorCard message={error} />}
+              {error && status === LocalAIStatus.ERROR && <ErrorCard message={error} />}
             </ScrollView>
 
             {isAvailable && (
@@ -435,7 +447,7 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
 // ─── Container Component ──────────────────────────────────────────────────────
 
 export default function AppleIntelligenceScreen(): React.ReactElement {
-  const ai = useAppleIntelligence();
+  const ai = useLocalAI();
   const [inputValue, setInputValue] = useState<string>('');
 
   const handleSubmit = useCallback(async (): Promise<void> => {
@@ -462,6 +474,7 @@ export default function AppleIntelligenceScreen(): React.ReactElement {
     <AppleIntelligencePresentation
       response={ai.response}
       status={ai.status}
+      downloadProgress={ai.downloadProgress}
       error={ai.error}
       isAvailable={ai.isAvailable}
       inputValue={inputValue}

@@ -23,7 +23,6 @@ import { EmotionChip } from "@/src/screens/ThoughtReframingScreen/components/Emo
 import { DistortionCard } from "@/src/screens/ThoughtReframingScreen/components/DistortionCard";
 import { BulletListInput } from "@/src/screens/ThoughtReframingScreen/components/BulletListInput";
 import { VoiceTextInput } from "@/src/screens/ThoughtReframingScreen/components/VoiceTextInput";
-import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { EMOTION_OPTIONS } from "@/src/screens/ThoughtReframingScreen/data/emotions";
 import { COGNITIVE_DISTORTIONS } from "@/src/screens/ThoughtReframingScreen/data/cognitiveDistortions";
 

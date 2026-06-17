@@ -1,7 +1,9 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect, useMemo } from 'react';
 import { Platform } from 'react-native';
 import { apple } from '@react-native-ai/apple';
+import { llama, downloadModel } from '@react-native-ai/llama';
 import { streamText } from 'ai';
+import { GLOBAL_AI_CONFIG } from '@/src/constants/ai';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -17,8 +19,9 @@ const DEFAULT_TEMPERATURE = 0.7;
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 /** Possible lifecycle states of a generation. */
-export enum AppleAIStatus {
+export enum LocalAIStatus {
   IDLE = 'idle',
+  DOWNLOADING = 'downloading',
   LOADING = 'loading',
   STREAMING = 'streaming',
   DONE = 'done',
@@ -27,32 +30,35 @@ export enum AppleAIStatus {
 }
 
 /**
- * Configuration for Apple Intelligence — injectable per use case.
+ * Configuration for Local AI (Apple Intelligence or Llama fallback).
  *
  * @example CBT Exercise use case:
  * ```ts
- * const CBT_CONFIG: AppleAIConfig = {
+ * const CBT_CONFIG: LocalAIConfig = {
  *   systemPrompt: 'You are a CBT coach. Help identify cognitive distortions.',
  *   maxOutputTokens: 300,
  *   temperature: 0.5,
  * };
- * const ai = useAppleIntelligence(CBT_CONFIG);
+ * const ai = useLocalAI(CBT_CONFIG);
  * ```
  */
-export interface AppleAIConfig {
+export interface LocalAIConfig {
   /** Persona/identity injected into every generation as a system prompt. */
   readonly systemPrompt?: string;
   /** Max tokens the model will generate. Default: 512. */
   readonly maxOutputTokens?: number;
   /** Sampling temperature (0 = deterministic, 1 = creative). Default: 0.7. */
   readonly temperature?: number;
+  /** HuggingFace ID or URL for the Llama model to download/use. */
+  readonly llamaModelUrl?: string;
 }
 
-/** Public API surface returned by `useAppleIntelligence`. */
-export interface UseAppleIntelligenceResult {
+/** Public API surface returned by `useLocalAI`. */
+export interface UseLocalAIResult {
   readonly response: string;
-  readonly status: AppleAIStatus;
+  readonly status: LocalAIStatus;
   readonly error: string | null;
+  readonly downloadProgress: number;
   readonly isAvailable: boolean;
   /** Stream a response for the given user prompt. */
   readonly generate: (userPrompt: string) => Promise<void>;
@@ -62,11 +68,12 @@ export interface UseAppleIntelligenceResult {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function resolveConfig(config: AppleAIConfig): Required<AppleAIConfig> {
+function resolveConfig(config: LocalAIConfig): Required<LocalAIConfig> {
   return {
     systemPrompt: config.systemPrompt ?? DEFAULT_SYSTEM_PROMPT,
     maxOutputTokens: config.maxOutputTokens ?? DEFAULT_MAX_OUTPUT_TOKENS,
     temperature: config.temperature ?? DEFAULT_TEMPERATURE,
+    llamaModelUrl: config.llamaModelUrl ?? GLOBAL_AI_CONFIG.LLAMA_MODEL_URL,
   };
 }
 
@@ -82,58 +89,86 @@ function extractErrorMessage(err: unknown): string {
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 /**
- * On-device Apple Intelligence hook powered by `@react-native-ai/apple`.
+ * On-device Local AI hook powered by `@react-native-ai/apple` and Llama fallback.
  *
- * Fully configurable via `AppleAIConfig` — swap the system prompt and
+ * Fully configurable via `LocalAIConfig` — swap the system prompt and
  * generation parameters per screen/use-case without touching this hook.
  *
  * @param config - Optional config to override identity and generation params.
  *
  * @example Standalone usage (defaults to Sage wellness identity)
  * ```ts
- * const ai = useAppleIntelligence();
+ * const ai = useLocalAI();
  * await ai.generate('Help me reframe this thought');
  * ```
  *
  * @example CBT-specific usage
  * ```ts
- * const ai = useAppleIntelligence({
+ * const ai = useLocalAI({
  *   systemPrompt: 'You are a CBT coach. Identify cognitive distortions.',
  *   temperature: 0.5,
  * });
  * await ai.generate(cbtStep.prompt);
  * ```
  */
-export function useAppleIntelligence(
-  config: AppleAIConfig = {},
-): UseAppleIntelligenceResult {
+export function useLocalAI(
+  config: LocalAIConfig = {},
+): UseLocalAIResult {
   const [response, setResponse] = useState<string>('');
-  const [status, setStatus] = useState<AppleAIStatus>(AppleAIStatus.IDLE);
+  const [status, setStatus] = useState<LocalAIStatus>(LocalAIStatus.IDLE);
   const [error, setError] = useState<string | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState<number>(0);
 
   const abortRef = useRef<AbortController | null>(null);
+  const llamaModelRef = useRef<any>(null); // Keep a reference to the llama model
 
-  const isAvailable: boolean =
-    Platform.OS === 'ios' && typeof apple.isAvailable === 'function'
+  // Clean up Llama model on unmount
+  useEffect(() => {
+    return () => {
+      if (llamaModelRef.current) {
+        llamaModelRef.current.unload().catch(console.error);
+        llamaModelRef.current = null;
+      }
+    };
+  }, []);
+
+  const isAppleAvailable =
+    !GLOBAL_AI_CONFIG.FORCE_LOCAL_LLM &&
+    Platform.OS === 'ios' &&
+    typeof apple.isAvailable === 'function'
       ? apple.isAvailable()
       : false;
+
+  // Since we fallback to Llama, it's always "available" theoretically.
+  const isAvailable: boolean = true;
 
   const reset = useCallback((): void => {
     abortRef.current?.abort();
     abortRef.current = null;
     setResponse('');
-    setStatus(AppleAIStatus.IDLE);
+    setStatus(LocalAIStatus.IDLE);
     setError(null);
+    setDownloadProgress(0);
   }, []);
+
+  const loadLlamaFallback = async (modelUrl: string, signal: AbortSignal) => {
+    setStatus(LocalAIStatus.DOWNLOADING);
+    const modelPath = await downloadModel(modelUrl, (progress) => {
+      setDownloadProgress(progress.percentage);
+    });
+    
+    if (signal.aborted) return null;
+    
+    setStatus(LocalAIStatus.LOADING);
+    if (!llamaModelRef.current) {
+      llamaModelRef.current = llama.languageModel(modelPath);
+      await llamaModelRef.current.prepare();
+    }
+    return llamaModelRef.current;
+  };
 
   const generate = useCallback(
     async (userPrompt: string): Promise<void> => {
-      if (!isAvailable) {
-        setStatus(AppleAIStatus.UNAVAILABLE);
-        setError('Apple Intelligence is not available on this device.');
-        return;
-      }
-
       // Abort any previous stream before starting a new one
       abortRef.current?.abort();
       const controller = new AbortController();
@@ -141,14 +176,26 @@ export function useAppleIntelligence(
 
       setResponse('');
       setError(null);
-      setStatus(AppleAIStatus.LOADING);
+      setStatus(LocalAIStatus.LOADING);
 
-      const { systemPrompt, maxOutputTokens, temperature } =
+      const { systemPrompt, maxOutputTokens, temperature, llamaModelUrl } =
         resolveConfig(config);
 
       try {
+        let activeModel;
+
+        if (isAppleAvailable) {
+          activeModel = apple();
+        } else {
+          const fallbackModel = await loadLlamaFallback(llamaModelUrl, controller.signal);
+          if (!fallbackModel) return;
+          activeModel = fallbackModel;
+        }
+
+        if (controller.signal.aborted) return;
+
         const result = streamText({
-          model: apple(),
+          model: activeModel,
           system: systemPrompt,
           prompt: userPrompt,
           temperature,
@@ -156,7 +203,7 @@ export function useAppleIntelligence(
           abortSignal: controller.signal,
         });
 
-        setStatus(AppleAIStatus.STREAMING);
+        setStatus(LocalAIStatus.STREAMING);
 
         let accumulated = '';
         for await (const chunk of result.textStream) {
@@ -166,19 +213,30 @@ export function useAppleIntelligence(
         }
 
         if (!controller.signal.aborted) {
-          setStatus(AppleAIStatus.DONE);
+          setStatus(LocalAIStatus.DONE);
         }
       } catch (err: unknown) {
         if (isAbortError(err)) {
-          setStatus(AppleAIStatus.IDLE);
+          setStatus(LocalAIStatus.IDLE);
           return;
         }
         setError(extractErrorMessage(err));
-        setStatus(AppleAIStatus.ERROR);
+        setStatus(LocalAIStatus.ERROR);
       }
     },
-    [isAvailable, config],
+    [isAppleAvailable, config],
   );
 
-  return { response, status, error, isAvailable, generate, reset } as const;
+  return useMemo(
+    () => ({
+      response,
+      status,
+      error,
+      downloadProgress,
+      isAvailable,
+      generate,
+      reset,
+    }),
+    [response, status, error, downloadProgress, isAvailable, generate, reset]
+  );
 }
