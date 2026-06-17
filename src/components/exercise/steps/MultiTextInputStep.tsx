@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { View, TextInput, Pressable } from "react-native";
+import { View, TextInput, Pressable, ActivityIndicator } from "react-native";
 import { Text } from "@/components/ui/text";
 import { StepLayout } from "./StepLayout";
 import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
+import { SuggestionCards, SuggestionItem } from "@/src/components/exercise/SuggestionCards";
 import type { StepProps } from "@/src/types/exerciseFlow";
 
 interface MultiTextInputStepProps extends StepProps {
@@ -39,6 +40,9 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     isSaving,
     validationMessage,
     psychoeducationText,
+    aiSuggestions,
+    isAiLoading,
+    readOnly,
   }) => {
     const items: string[] = (response as Record<string, any>)[fieldKey] ?? [];
     const [draft, setDraft] = useState("");
@@ -53,6 +57,17 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     const removeItem = (index: number) => {
       onUpdate({ [fieldKey]: items.filter((_, i) => i !== index) } as any);
     };
+
+    const handleSuggestionSelect = (text: string) => {
+      if (items.includes(text)) {
+        onUpdate({ [fieldKey]: items.filter((i) => i !== text) } as any);
+      } else {
+        if (items.length >= maxItems) return;
+        onUpdate({ [fieldKey]: [...items, text] } as any);
+      }
+    };
+
+    const suggestions = (aiSuggestions ?? []) as SuggestionItem[];
 
     return (
       <StepLayout
@@ -74,6 +89,24 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
           message={validationMessage ?? ""}
           visible={!!validationMessage && items.length > 0}
         />
+
+        {isAiLoading && (
+          <View className="flex-row items-center mb-4">
+            <ActivityIndicator size="small" color="#94A3B8" />
+            <Text className="text-[11px] text-slate-400 ml-2 uppercase tracking-wider">
+              Finding potential suggestions…
+            </Text>
+          </View>
+        )}
+
+        {!readOnly && (!isAiLoading) && suggestions.length > 0 && (
+          <SuggestionCards
+            title="AI Suggestions"
+            suggestions={suggestions}
+            currentValue={items}
+            onSelect={handleSuggestionSelect}
+          />
+        )}
 
         {/* Existing items */}
         {items.map((item, i) => (

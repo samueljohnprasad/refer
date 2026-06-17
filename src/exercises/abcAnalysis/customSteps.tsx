@@ -12,6 +12,8 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 
 import { Text } from "@/components/ui/text";
+import { Card } from "@/src/components/ui/Card";
+import { SAGE } from "@/lib/tokens";
 import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
 import { DynamicSummary } from "@/src/components/exercise/DynamicSummary";
 import { useRouter } from "expo-router";
@@ -27,10 +29,7 @@ const ACCENT = "#58CC02";
 const PROMPT_STEP_COUNT = 5;
 const XP_EARNED = 15;
 
-interface SuggestionItem {
-  label: string;
-  emoji: string;
-}
+import { SuggestionCards, SuggestionItem } from "@/src/components/exercise/SuggestionCards";
 
 const EVENT_SUGGESTIONS: SuggestionItem[] = [
   { label: "I got difficult feedback", emoji: "🗣️" },
@@ -64,68 +63,6 @@ const NEW_CONSEQUENCE_SUGGESTIONS: SuggestionItem[] = [
 
 import { StepLayout } from "@/src/components/exercise/steps/StepLayout";
 
-function SuggestionCards({
-  title,
-  suggestions,
-  currentValue,
-  onSelect,
-}: {
-  title: string;
-  suggestions: SuggestionItem[];
-  currentValue: string;
-  onSelect: (value: string) => void;
-}): React.JSX.Element {
-  return (
-    <>
-      <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">
-        {title}
-      </Text>
-      <View className="gap-y-3 mb-8">
-        {suggestions.map((suggestion) => {
-          const isSelected = currentValue === suggestion.label;
-
-          return (
-            <Pressable
-              key={suggestion.label}
-              onPress={() => onSelect(suggestion.label)}
-              accessibilityRole="button"
-              accessibilityState={{ selected: isSelected }}
-              className="rounded-2xl p-4 active:opacity-80"
-              style={{
-                borderWidth: 2,
-                borderColor: isSelected ? ACCENT : "#E2E8F0",
-                backgroundColor: isSelected ? "#F0FFF0" : "#FFFFFF",
-                borderBottomWidth: isSelected ? 2 : 4,
-                borderBottomColor: isSelected ? ACCENT : "#CBD5E1",
-                minHeight: 48,
-              }}
-            >
-              <View className="flex-row items-center">
-                <View className="h-9 w-9 rounded-xl bg-slate-100 items-center justify-center mr-3">
-                  <Text className="text-lg">{suggestion.emoji}</Text>
-                </View>
-                <Text
-                  className={`text-[15px] font-bold flex-1 ${isSelected ? "text-green-800" : "text-slate-700"}`}
-                >
-                  {suggestion.label}
-                </Text>
-                {isSelected && (
-                  <View
-                    className="h-6 w-6 rounded-full items-center justify-center"
-                    style={{ backgroundColor: ACCENT }}
-                  >
-                    <Text className="text-white text-xs font-extrabold">✓</Text>
-                  </View>
-                )}
-              </View>
-            </Pressable>
-          );
-        })}
-      </View>
-    </>
-  );
-}
-
 function TextQuestionStep({
   title,
   subtitle,
@@ -140,7 +77,7 @@ function TextQuestionStep({
   psychoeducationText,
 }: {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   placeholder: string;
   value: string;
   onChange: (value: string) => void;
@@ -161,7 +98,33 @@ function TextQuestionStep({
     stepIndex,
     totalSteps,
     readOnly,
+    aiSuggestions,
+    isAiLoading,
   } = stepProps;
+
+  const combinedSuggestions = React.useMemo<SuggestionItem[]>(() => {
+    if (aiSuggestions && aiSuggestions.length > 0) {
+      const uniqueLabels = new Set<string>();
+      const result: SuggestionItem[] = [];
+      for (const s of (aiSuggestions as Array<{ text?: string; label?: string }>)) {
+        const txt = s?.text || s?.label;
+        if (txt && typeof txt === "string" && txt.trim()) {
+          const normalized = txt.trim();
+          if (!uniqueLabels.has(normalized)) {
+            uniqueLabels.add(normalized);
+            result.push({
+              label: normalized,
+              emoji: "✨",
+            });
+          }
+        }
+      }
+      if (result.length > 0) {
+        return result;
+      }
+    }
+    return suggestions;
+  }, [aiSuggestions, suggestions]);
 
   return (
     <StepLayout
@@ -222,10 +185,19 @@ function TextQuestionStep({
           placeholderTextColor="#94A3B8"
         />
 
-        {!readOnly ? (
+        {isAiLoading && (
+          <View className="flex-row items-center mb-4">
+            <ActivityIndicator size="small" color="#64748B" />
+            <Text className="text-[11px] text-slate-500 ml-2 uppercase tracking-wider">
+              Generating ideas…
+            </Text>
+          </View>
+        )}
+
+        {!readOnly && (!isAiLoading) ? (
           <SuggestionCards
-            title={suggestionTitle}
-            suggestions={suggestions}
+            title={aiSuggestions?.length ? "AI Suggestions" : suggestionTitle}
+            suggestions={combinedSuggestions}
             currentValue={value}
             onSelect={onChange}
           />
@@ -286,7 +258,34 @@ export function ABCConsequenceStep({
   stepIndex,
   readOnly,
   totalSteps,
+  aiSuggestions,
+  isAiLoading,
 }: StepProps<ABCAnalysisResponse>): React.JSX.Element {
+  const combinedEmotions = React.useMemo(() => {
+    if (aiSuggestions && aiSuggestions.length > 0) {
+      const result: SuggestionItem[] = [];
+      for (const s of (aiSuggestions as Array<{ emotion?: string }>)) {
+        if (s?.emotion?.trim()) {
+          result.push({ label: s.emotion.trim(), emoji: "✨" });
+        }
+      }
+      if (result.length > 0) return result;
+    }
+    return EMOTION_SUGGESTIONS;
+  }, [aiSuggestions]);
+
+  const combinedBehaviors = React.useMemo(() => {
+    if (aiSuggestions && aiSuggestions.length > 0) {
+      const result: SuggestionItem[] = [];
+      for (const s of (aiSuggestions as Array<{ behavior?: string }>)) {
+        if (s?.behavior?.trim()) {
+          result.push({ label: s.behavior.trim(), emoji: "✨" });
+        }
+      }
+      if (result.length > 0) return result;
+    }
+    return BEHAVIOR_SUGGESTIONS;
+  }, [aiSuggestions]);
   return (
     <StepLayout
       title="What happened next?"
@@ -317,10 +316,19 @@ export function ABCConsequenceStep({
           placeholderTextColor="#94A3B8"
         />
 
-        {!readOnly ? (
+        {isAiLoading && (
+          <View className="flex-row items-center mb-4">
+            <ActivityIndicator size="small" color="#64748B" />
+            <Text className="text-[11px] text-slate-500 ml-2 uppercase tracking-wider">
+              Generating ideas…
+            </Text>
+          </View>
+        )}
+
+        {!readOnly && (!isAiLoading) ? (
           <SuggestionCards
-            title="Quick emotions"
-            suggestions={EMOTION_SUGGESTIONS}
+            title={aiSuggestions?.length ? "AI Emotion Suggestions" : "Quick emotions"}
+            suggestions={combinedEmotions}
             currentValue={response.consequenceEmotion}
             onSelect={(value) => onUpdate({ consequenceEmotion: value })}
           />
@@ -346,10 +354,10 @@ export function ABCConsequenceStep({
           placeholderTextColor="#94A3B8"
         />
 
-        {!readOnly ? (
+        {!readOnly && (!isAiLoading) ? (
           <SuggestionCards
-            title="Common reactions"
-            suggestions={BEHAVIOR_SUGGESTIONS}
+            title={aiSuggestions?.length ? "AI Behavior Suggestions" : "Common reactions"}
+            suggestions={combinedBehaviors}
             currentValue={response.consequenceBehavior}
             onSelect={(value) => onUpdate({ consequenceBehavior: value })}
           />
@@ -450,41 +458,43 @@ export function ABCAlternativeBeliefStep({
             </View>
 
             <View className="gap-y-3 mb-8">
-              {suggestions.map((suggestion, index) => (
-                <Pressable
-                  key={`${suggestion.text ?? "suggestion"}-${index}`}
-                  onPress={() =>
-                    onUpdate({ alternativeBelief: suggestion.text ?? "" })
-                  }
-                  className="rounded-2xl p-4 active:opacity-80"
-                  style={{
-                    borderWidth: 2,
-                    borderColor:
-                      response.alternativeBelief === suggestion.text
-                        ? ACCENT
-                        : "#E2E8F0",
-                    backgroundColor:
-                      response.alternativeBelief === suggestion.text
-                        ? "#F0FFF0"
-                        : "#FFFFFF",
-                    borderBottomWidth:
-                      response.alternativeBelief === suggestion.text ? 2 : 4,
-                    borderBottomColor:
-                      response.alternativeBelief === suggestion.text
-                        ? ACCENT
-                        : "#CBD5E1",
-                  }}
-                >
-                  <Text className="text-[15px] font-bold text-slate-800 mb-1.5">
-                    {suggestion.text}
-                  </Text>
-                  {suggestion.rationale ? (
-                    <Text className="text-sm text-slate-500 leading-relaxed">
-                      {suggestion.rationale}
-                    </Text>
-                  ) : null}
-                </Pressable>
-              ))}
+              {suggestions.map((suggestion, index) => {
+                const isSelected = response.alternativeBelief === suggestion.text;
+                return (
+                  <Card
+                    key={`${suggestion.text ?? "suggestion"}-${index}`}
+                    variant={isSelected ? "answer-selected" : "answer"}
+                    onPress={() => onUpdate({ alternativeBelief: suggestion.text ?? "" })}
+                    className="mb-3"
+                    contentClassName="p-4"
+                    accessibilityState={{ selected: isSelected }}
+                  >
+                    <View className="flex-row items-start">
+                      <View className="flex-1">
+                        <Text
+                          className="text-[15px] font-bold mb-1.5"
+                          style={{ color: isSelected ? SAGE[700] : "#334155" }}
+                        >
+                          {suggestion.text}
+                        </Text>
+                        {suggestion.rationale ? (
+                          <Text className="text-sm text-slate-500 leading-relaxed">
+                            {suggestion.rationale}
+                          </Text>
+                        ) : null}
+                      </View>
+                      {isSelected && (
+                        <View
+                          className="h-6 w-6 rounded-full items-center justify-center ml-3 mt-0.5"
+                          style={{ backgroundColor: SAGE[500] }}
+                        >
+                          <Text className="text-white text-xs font-extrabold">✓</Text>
+                        </View>
+                      )}
+                    </View>
+                  </Card>
+                );
+              })}
             </View>
           </>
         ) : null}

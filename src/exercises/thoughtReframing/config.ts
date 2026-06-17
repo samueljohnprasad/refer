@@ -60,6 +60,13 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             "Challenge negative thinking patterns and build healthier perspectives.",
           exerciseType: "thought_reframing",
           duration: "10-15 min",
+          bulletPoints: [
+            "Describe the triggering situation",
+            "Catch your automatic thought",
+            "Identify cognitive distortions",
+            "Weigh the evidence for and against",
+            "Create a balanced thought",
+          ],
         }),
         label: "Welcome",
         validate: () => true,

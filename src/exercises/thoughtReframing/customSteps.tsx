@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
+import { SuggestionCards, SuggestionItem } from "@/src/components/exercise/SuggestionCards";
 
 // ── Reused legacy components ─────────────────────────────────────────────────
 import { EmotionChip } from "@/src/screens/ThoughtReframingScreen/components/EmotionChip";
@@ -108,65 +109,7 @@ function HelperCard({ text }: { text: string }) {
   );
 }
 
-// ─── Quick-pick suggestion cards ─────────────────────────────────────────────
 
-interface SuggestionItem {
-  label: string;
-  emoji: string;
-}
-
-function SuggestionCards({
-  title,
-  suggestions,
-  currentValue,
-  onSelect,
-}: {
-  title: string;
-  suggestions: SuggestionItem[];
-  currentValue: string | string[];
-  onSelect: (value: string) => void;
-}) {
-  return (
-    <View className="mb-6">
-      <Text className="text-xs font-extrabold text-ink-muted uppercase tracking-wider mb-3">
-        {title}
-      </Text>
-      {suggestions.map((s, index: number) => {
-        const isSelected = Array.isArray(currentValue)
-          ? currentValue.includes(s.label)
-          : currentValue === s.label;
-        return (
-          <Card
-            key={`${s.label || ""}-${index}`}
-            variant={isSelected ? "answer-selected" : "answer"}
-            onPress={() => onSelect(s.label)}
-            className="mb-3"
-            contentClassName="flex-row items-center p-4"
-            accessibilityState={{ selected: isSelected }}
-          >
-            <View className="h-9 w-9 rounded-xl bg-slate-100 items-center justify-center mr-3">
-                <Text className="text-lg">{s.emoji}</Text>
-              </View>
-              <Text
-                className="text-[15px] font-bold flex-1"
-                style={{ color: isSelected ? SAGE[700] : "#334155" }}
-              >
-                {s.label}
-              </Text>
-              {isSelected && (
-                <View
-                  className="h-6 w-6 rounded-full items-center justify-center"
-                  style={{ backgroundColor: SAGE[500] }}
-                >
-                  <Text className="text-white text-xs font-extrabold">✓</Text>
-                </View>
-              )}
-          </Card>
-        );
-      })}
-    </View>
-  );
-}
 
 // ─── STEP 1: Situation ────────────────────────────────────────────────────────
 

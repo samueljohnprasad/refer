@@ -1,5 +1,5 @@
-import React from "react";
-import { View } from "react-native";
+import React, { useMemo } from "react";
+import { View, ActivityIndicator } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -45,8 +45,22 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
     autoAdvance = false,
     isSaving,
     psychoeducationText,
+    aiSuggestions,
+    isAiLoading,
   }) => {
     const selected = (response as Record<string, any>)[fieldKey];
+
+    const aiMappedOptions = useMemo(() => {
+      if (aiSuggestions && aiSuggestions.length > 0) {
+        return aiSuggestions.map((s: any) => ({
+          value: s.text || s.label || (typeof s === "string" ? s : JSON.stringify(s)),
+          label: s.text || s.label || (typeof s === "string" ? s : JSON.stringify(s)),
+          emoji: s.emoji || "✨",
+          description: s.category || s.description,
+        }));
+      }
+      return [];
+    }, [aiSuggestions]);
 
     const handleSelect = (value: string) => {
       onUpdate({ [fieldKey]: value } as any);
@@ -70,6 +84,15 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
         scrollable
       >
         <PsychoeducationCard content={psychoeducationText ?? ""} />
+
+        {isAiLoading && (
+          <View className="flex-row items-center mb-4">
+            <ActivityIndicator size="small" color="#94A3B8" />
+            <Text className="text-[11px] text-slate-400 ml-2 uppercase tracking-wider">
+              Finding personalized options…
+            </Text>
+          </View>
+        )}
 
         <View className="gap-3 w-full">
           {options.map((opt, i) => {
@@ -134,6 +157,67 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
               </FadeInItem>
             );
           })}
+
+          {aiMappedOptions.length > 0 && (
+            <View className="mt-2">
+              <Text className="text-xs font-extrabold text-ink-muted uppercase tracking-wider mb-3 ml-1">
+                AI Picks
+              </Text>
+              <View className="gap-3 w-full">
+                {aiMappedOptions.map((opt, i) => {
+                  const isSelected = selected === opt.value;
+                  return (
+                    <FadeInItem key={`ai-${i}`} index={i} delayPerItem={40}>
+                      <Card
+                        variant={isSelected ? "answer-selected" : "answer"}
+                        radius="xl"
+                        onPress={() => handleSelect(opt.value)}
+                        className="mb-1"
+                        contentClassName="flex-row items-center justify-between p-4.5"
+                      >
+                        {opt.emoji ? (
+                          <View className="mr-3.5 h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
+                            <Text className="text-xl">{opt.emoji}</Text>
+                          </View>
+                        ) : null}
+
+                        <View className="flex-1 mr-2">
+                          <Text
+                            variant="body-bold"
+                            color={isSelected ? "ink" : "soft"}
+                            className="text-[16px] leading-tight"
+                          >
+                            {opt.label}
+                          </Text>
+                          {opt.description && (
+                            <Text variant="caption-muted" className="mt-1">
+                              {opt.description}
+                            </Text>
+                          )}
+                        </View>
+
+                        <View className="ml-2">
+                          {isSelected ? (
+                            <View className="w-6 h-6 rounded-full items-center justify-center bg-sage-500 border border-sage-600">
+                              <Text
+                                variant="chip"
+                                color="surface"
+                                className="font-extrabold text-[11px] leading-none"
+                              >
+                                ✓
+                              </Text>
+                            </View>
+                          ) : (
+                            <View className="w-6 h-6 rounded-full border-2 border-brand-border bg-brand-surface" />
+                          )}
+                        </View>
+                      </Card>
+                    </FadeInItem>
+                  );
+                })}
+              </View>
+            </View>
+          )}
         </View>
       </StepLayout>
     );

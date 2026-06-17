@@ -38,6 +38,12 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
           subtitle: "Shift your focus toward what's good in your life.",
           exerciseType: "gratitude_reframe",
           duration: "5-7 min",
+          bulletPoints: [
+            "Check in with your current mood",
+            "Find a prompt that resonates",
+            "Reflect and write your gratitude",
+            "See how your mood shifts",
+          ],
         }),
         label: "Welcome",
         validate: () => true,
@@ -89,7 +95,7 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
         validate: (r) => r.selectedPrompt.length > 0,
         ai: {
           promptBuilder: (r) =>
-            `You are a gratitude journaling assistant. The user is currently feeling "${r.currentMood}" with intensity ${r.moodIntensity}/100.\n\nGenerate 3 gratitude prompts that are:\n- Relevant to someone experiencing this mood\n- Specific enough to inspire reflection\n- Warm and encouraging\n\nReturn as an array of objects with 'text' (the prompt) and 'category' (e.g., relationships, growth, daily life).`,
+            `You are a gratitude journaling assistant. The user is currently feeling "${r.currentMood}" with intensity ${r.moodIntensity}/100.\n\nGenerate 3 short gratitude topics or prompt ideas that are:\n- Relevant to someone experiencing this mood\n- Specific enough to inspire reflection\n- Warm and encouraging\n- Very brief (just the topic name, e.g. "A recent challenge I overcame" or "Someone who helped me today")\n\nReturn as an array of objects with 'text' (the short topic name) and 'category' (e.g., relationships, growth, daily life).`,
           responseSchema: {
             type: "array",
             items: {
@@ -120,6 +126,22 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
         validate: (r) =>
           r.gratitudeEntries.length >= 1 &&
           r.gratitudeEntries.some((e) => e.trim().length >= 3),
+        ai: {
+          promptBuilder: (r) =>
+            `You are a gratitude journaling assistant. The user is reflecting on the prompt category "${r.selectedPrompt}". \n\nGenerate 3 distinct, specific, and realistic gratitude examples they could use for inspiration. Keep them short (1-2 sentences). Return as an array of objects with 'label' (the example text) and 'emoji'.`,
+          responseSchema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                label: { type: "string" },
+                emoji: { type: "string" },
+              },
+              required: ["label", "emoji"],
+            },
+          },
+          maxResults: 3,
+        },
       },
       {
         id: "reevaluate",

@@ -46,6 +46,12 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
           "Understand the link between events, beliefs, and consequences.",
         exerciseType: "abc_analysis",
         duration: "7-10 min",
+        bulletPoints: [
+          "Describe an activating event",
+          "Identify your automatic beliefs",
+          "Recognize emotional consequences",
+          "Challenge and replace negative beliefs",
+        ],
       }),
       label: "Welcome",
       validate: () => true,
@@ -70,12 +76,43 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       component: ABCActivatingEventStep,
       label: "Activating Event",
       validate: (r) => r.activatingEvent.trim().length >= 1,
+      ai: {
+        promptBuilder: (r, context) => {
+          const themes = ["work/career", "romantic relationships", "friendships", "health and fitness", "daily chores/errands", "finances", "family dynamics", "hobbies/projects", "driving/commuting", "social media/internet", "home maintenance"];
+          const theme1 = themes[Math.floor(Math.random() * themes.length)];
+          const theme2 = themes[Math.floor(Math.random() * themes.length)];
+          const theme3 = themes[Math.floor(Math.random() * themes.length)];
+          return `You are a CBT therapist assistant. Generate 3 extremely brief, objective daily situations (activating events). Do NOT generate the negative thought. Just the concrete event. e.g. 'I received a critical email from my boss' or 'My friend didn't text me back.'\n\nCRITICAL: Be highly creative and diverse. Generate one event related to "${theme1}", one related to "${theme2}", and one related to "${theme3}". Do NOT use generic examples like 'meetings', 'presentations', or 'groceries'.\n\nRandom seed: ${context?.seed ?? Math.random()}`;
+        },
+        responseSchema: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: { text: { type: "string" } },
+            required: ["text"],
+          },
+        },
+        maxResults: 3,
+      },
     },
     {
       id: "belief",
       component: ABCBeliefStep,
       label: "What did you tell yourself?",
       validate: (r) => r.belief.trim().length >= 1,
+      ai: {
+        promptBuilder: (r) =>
+          `You are a CBT therapist assistant. Based on this situation:\n"${r.activatingEvent}"\n\nGenerate 3 likely negative automatic thoughts or beliefs the user might have had. Keep them in the first person ("I...", "They..."), brief (1 sentence), and realistic.`,
+        responseSchema: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: { text: { type: "string" } },
+            required: ["text"],
+          },
+        },
+        maxResults: 3,
+      },
     },
     {
       id: "consequence",
@@ -84,6 +121,19 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       validate: (r) =>
         r.consequenceEmotion.trim().length >= 1 &&
         r.consequenceBehavior.trim().length >= 1,
+      ai: {
+        promptBuilder: (r) =>
+          `You are a CBT therapist assistant. Based on this belief:\n"${r.belief}"\n\nGenerate 3 likely emotional and behavioral consequences the user might have experienced. Keep them brief.`,
+        responseSchema: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: { emotion: { type: "string" }, behavior: { type: "string" } },
+            required: ["emotion", "behavior"],
+          },
+        },
+        maxResults: 3,
+      },
     },
     {
       id: "alternative_belief",
@@ -112,6 +162,19 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       component: ABCNewConsequenceStep,
       label: "Predicted new consequence",
       validate: (r) => r.newConsequence.trim().length >= 1,
+      ai: {
+        promptBuilder: (r) =>
+          `You are a CBT therapist assistant. Based on this alternative belief:\n"${r.alternativeBelief}"\n\nGenerate 3 likely new positive emotional or behavioral consequences the user might experience. Keep them in the first person ("I would..."), brief (1 sentence).`,
+        responseSchema: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: { text: { type: "string" } },
+            required: ["text"],
+          },
+        },
+        maxResults: 3,
+      },
     },
     {
       id: "post_emotional_intensity",
