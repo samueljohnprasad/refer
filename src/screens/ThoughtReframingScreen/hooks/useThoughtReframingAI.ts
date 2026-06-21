@@ -1,6 +1,18 @@
+/**
+ * useThoughtReframingAI — AI Suggestions for Thought Reframing Exercise
+ *
+ * Provides three AI capabilities:
+ * 1. Detect cognitive distortions from an automatic thought
+ * 2. Detect likely emotions from the situation
+ * 3. Suggest balanced alternative thoughts
+ *
+ * Uses the centralized `useLocalAI` hook for structured generation —
+ * automatically selects Apple AI or local LLM based on device capability
+ * and handles timeouts and aborts.
+ */
+
 import { useState, useCallback } from 'react';
-import { generateObject, jsonSchema } from 'ai';
-import { useActiveModel } from '@/src/hooks/useActiveModel';
+import { useLocalAI } from '@/src/hooks/useAppleIntelligence';
 import type {
   EmotionName,
   CognitiveDistortionKey,
@@ -34,6 +46,73 @@ interface ThoughtReframingAIState {
   downloadProgress: number;
 }
 
+// ─── Schemas ─────────────────────────────────────────────────────────
+
+const DISTORTION_SCHEMA: Record<string, unknown> = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      key: {
+        type: 'string',
+        enum: [
+          'all_or_nothing',
+          'catastrophizing',
+          'mind_reading',
+          'overgeneralizing',
+          'personalizing',
+          'filtering',
+          'should_statements',
+          'fortune_telling',
+          'emotional_reasoning',
+          'labeling',
+        ],
+      },
+      confidence: { type: 'number' },
+      explanation: { type: 'string' },
+    },
+    required: ['key', 'confidence', 'explanation'],
+  },
+};
+
+const EMOTION_SCHEMA: Record<string, unknown> = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      name: {
+        type: 'string',
+        enum: [
+          'anxious',
+          'sad',
+          'angry',
+          'fearful',
+          'guilty',
+          'ashamed',
+          'frustrated',
+          'hopeless',
+          'overwhelmed',
+          'lonely',
+        ],
+      },
+      suggestedIntensity: { type: 'number' },
+    },
+    required: ['name', 'suggestedIntensity'],
+  },
+};
+
+const BALANCED_THOUGHT_SCHEMA: Record<string, unknown> = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      text: { type: 'string' },
+      rationale: { type: 'string' },
+    },
+    required: ['text', 'rationale'],
+  },
+};
+
 // ─── Hook ────────────────────────────────────────────────────────────
 
 export function useThoughtReframingAI(): ThoughtReframingAIState & {
@@ -54,7 +133,7 @@ export function useThoughtReframingAI(): ThoughtReframingAIState & {
   const [isDetectingEmotions, setIsDetectingEmotions] = useState<boolean>(false);
   const [isSuggestingBalanced, setIsSuggestingBalanced] = useState<boolean>(false);
 
-  const { getActiveModel, getStructuredPrompt, downloadProgress } = useActiveModel();
+  const ai = useLocalAI();
 
   // ─── Detect Cognitive Distortions ────────────────────────────────
 
@@ -62,9 +141,9 @@ export function useThoughtReframingAI(): ThoughtReframingAIState & {
     async (automaticThought: string, situation: string): Promise<void> => {
       if (!automaticThought?.trim()) return;
       setIsDetectingDistortions(true);
+      let prompt = '';
       try {
-        const model = await getActiveModel();
-        const basePrompt = `You are a CBT therapist assistant. Given the situation and automatic thought below, identify which cognitive distortions are present.
+        prompt = `You are a CBT therapist assistant. Given the situation and automatic thought below, identify which cognitive distortions are present.
 
 Situation: "${situation}"
 Automatic thought: "${automaticThought}"
@@ -74,47 +153,23 @@ all_or_nothing, catastrophizing, mind_reading, overgeneralizing, personalizing, 
 
 For each, provide the key, a confidence score (0-1), and a brief explanation of why this distortion applies.`;
 
-        const { object } = await generateObject({
-          model,
-          prompt: getStructuredPrompt(basePrompt),
-          schema: jsonSchema({
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                key: {
-                  type: 'string',
-                  enum: [
-                    'all_or_nothing',
-                    'catastrophizing',
-                    'mind_reading',
-                    'overgeneralizing',
-                    'personalizing',
-                    'filtering',
-                    'should_statements',
-                    'fortune_telling',
-                    'emotional_reasoning',
-                    'labeling',
-                  ],
-                },
-                confidence: { type: 'number' },
-                explanation: { type: 'string' },
-              },
-              required: ['key', 'confidence', 'explanation'],
-            },
-          }),
+        const items = await ai.generateStructured<AIDistortionSuggestion>({
+          prompt,
+          responseSchema: DISTORTION_SCHEMA,
+          maxResults: 2,
         });
 
-        const parsed = object as AIDistortionSuggestion[];
-        setSuggestedDistortions(parsed.slice(0, 2));
+        if (items.length > 0) {
+          setSuggestedDistortions(items);
+        }
       } catch (error) {
-        console.error('AI distortion detection failed:', error);
+        console.error('AI distortion detection failed:', error, '\nPrompt:', prompt);
         setSuggestedDistortions([]);
       } finally {
         setIsDetectingDistortions(false);
       }
     },
-    [getActiveModel, getStructuredPrompt]
+    [ai]
   );
 
   // ─── Detect Emotions ─────────────────────────────────────────────
@@ -123,9 +178,9 @@ For each, provide the key, a confidence score (0-1), and a brief explanation of 
     async (automaticThought: string, situation: string): Promise<void> => {
       if (!automaticThought?.trim()) return;
       setIsDetectingEmotions(true);
+      let prompt = '';
       try {
-        const model = await getActiveModel();
-        const basePrompt = `You are a CBT therapist assistant. Given the situation and automatic thought below, identify the likely emotions the person is feeling.
+        prompt = `You are a CBT therapist assistant. Given the situation and automatic thought below, identify the likely emotions the person is feeling.
 
 Situation: "${situation}"
 Automatic thought: "${automaticThought}"
@@ -134,46 +189,23 @@ Pick up to 3 emotions from this list ONLY: anxious, sad, angry, fearful, guilty,
 
 For each, estimate an intensity from 0-10.`;
 
-        const { object } = await generateObject({
-          model,
-          prompt: getStructuredPrompt(basePrompt),
-          schema: jsonSchema({
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                name: {
-                  type: 'string',
-                  enum: [
-                    'anxious',
-                    'sad',
-                    'angry',
-                    'fearful',
-                    'guilty',
-                    'ashamed',
-                    'frustrated',
-                    'hopeless',
-                    'overwhelmed',
-                    'lonely',
-                  ],
-                },
-                suggestedIntensity: { type: 'number' },
-              },
-              required: ['name', 'suggestedIntensity'],
-            },
-          }),
+        const items = await ai.generateStructured<AIEmotionSuggestion>({
+          prompt,
+          responseSchema: EMOTION_SCHEMA,
+          maxResults: 3,
         });
 
-        const parsed = object as AIEmotionSuggestion[];
-        setSuggestedEmotions(parsed.slice(0, 3));
+        if (items.length > 0) {
+          setSuggestedEmotions(items);
+        }
       } catch (error) {
-        console.error('AI emotion detection failed:', error);
+        console.error('AI emotion detection failed:', error, '\nPrompt:', prompt);
         setSuggestedEmotions([]);
       } finally {
         setIsDetectingEmotions(false);
       }
     },
-    [getActiveModel, getStructuredPrompt]
+    [ai]
   );
 
   // ─── Suggest Balanced Thoughts ───────────────────────────────────
@@ -187,18 +219,18 @@ For each, estimate an intensity from 0-10.`;
     ): Promise<void> => {
       if (!automaticThought?.trim()) return;
       setIsSuggestingBalanced(true);
+      let prompt = '';
       try {
-        const model = await getActiveModel();
-        const evidenceForText =
+        const evidenceForText: string =
           evidenceFor.length > 0
-            ? evidenceFor.map((e, i) => `${i + 1}. ${e}`).join('\n')
+            ? evidenceFor.map((e: string, i: number) => `${i + 1}. ${e}`).join('\n')
             : 'None provided';
-        const evidenceAgainstText =
+        const evidenceAgainstText: string =
           evidenceAgainst.length > 0
-            ? evidenceAgainst.map((e, i) => `${i + 1}. ${e}`).join('\n')
+            ? evidenceAgainst.map((e: string, i: number) => `${i + 1}. ${e}`).join('\n')
             : 'None provided';
 
-        const basePrompt = `You are a CBT therapist assistant. Help the user reframe their automatic thought into a more balanced perspective.
+        prompt = `You are a CBT therapist assistant. Help the user reframe their automatic thought into a more balanced perspective.
 
 Situation: "${situation}"
 Automatic thought: "${automaticThought}"
@@ -217,32 +249,23 @@ Generate 3 alternative balanced thoughts. Each should be:
 
 For each, provide a brief rationale explaining why it's more balanced.`;
 
-        const { object } = await generateObject({
-          model,
-          prompt: getStructuredPrompt(basePrompt),
-          schema: jsonSchema({
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                text: { type: 'string' },
-                rationale: { type: 'string' },
-              },
-              required: ['text', 'rationale'],
-            },
-          }),
+        const items = await ai.generateStructured<AIBalancedThoughtSuggestion>({
+          prompt,
+          responseSchema: BALANCED_THOUGHT_SCHEMA,
+          maxResults: 3,
         });
 
-        const parsed = object as AIBalancedThoughtSuggestion[];
-        setSuggestedBalancedThoughts(parsed.slice(0, 3));
+        if (items.length > 0) {
+          setSuggestedBalancedThoughts(items);
+        }
       } catch (error) {
-        console.error('AI balanced thought suggestion failed:', error);
+        console.error('AI balanced thought suggestion failed:', error, '\nPrompt:', prompt);
         setSuggestedBalancedThoughts([]);
       } finally {
         setIsSuggestingBalanced(false);
       }
     },
-    [getActiveModel, getStructuredPrompt]
+    [ai]
   );
 
   // ─── Clear ───────────────────────────────────────────────────────
@@ -251,7 +274,8 @@ For each, provide a brief rationale explaining why it's more balanced.`;
     setSuggestedDistortions([]);
     setSuggestedEmotions([]);
     setSuggestedBalancedThoughts([]);
-  }, []);
+    ai.reset(); // Clear any pending ai state/requests
+  }, [ai]);
 
   return {
     suggestedDistortions,
@@ -260,7 +284,7 @@ For each, provide a brief rationale explaining why it's more balanced.`;
     isDetectingDistortions,
     isDetectingEmotions,
     isSuggestingBalanced,
-    downloadProgress,
+    downloadProgress: ai.downloadProgress,
     detectDistortions,
     detectEmotions,
     suggestBalancedThoughts,

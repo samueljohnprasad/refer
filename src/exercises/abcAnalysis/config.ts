@@ -93,6 +93,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
           },
         },
         maxResults: 3,
+        aiLoadingMessage: "Finding relatable situations...",
       },
     },
     {
@@ -112,6 +113,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
           },
         },
         maxResults: 3,
+        aiLoadingMessage: "Identifying core beliefs...",
       },
     },
     {
@@ -133,6 +135,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
           },
         },
         maxResults: 3,
+        aiLoadingMessage: "Analyzing emotional impact...",
       },
     },
     {
@@ -142,7 +145,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       validate: (r) => r.alternativeBelief.trim().length >= 1,
       ai: {
         promptBuilder: (r) =>
-          `You are a CBT therapist. The user experienced:\nEvent: "${r.activatingEvent}"\nBelief: "${r.belief}"\nConsequence: Emotion: "${r.consequenceEmotion}", Behavior: "${r.consequenceBehavior}"\n\nSuggest 3 alternative, more balanced beliefs. Each should be realistic and written in first person.`,
+          `You are a CBT therapist. The user experienced:\nEvent: "${r.activatingEvent}"\nBelief: "${r.belief}"\nConsequence: Emotion: "${r.consequenceEmotion}", Behavior: "${r.consequenceBehavior}"\n\nSuggest 3 alternative, more balanced beliefs. Each should be realistic and written in first person. For each, provide a brief rationale. CRITICAL: Write the rationale addressing the user directly in the second person (e.g., "This reminds you that..."). Do NOT use third-person language.`,
         responseSchema: {
           type: "array",
           items: {
@@ -155,6 +158,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
           },
         },
         maxResults: 3,
+        aiLoadingMessage: "Challenging the thought...",
       },
     },
     {
@@ -174,6 +178,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
           },
         },
         maxResults: 3,
+        aiLoadingMessage: "Visualizing new outcomes...",
       },
     },
     {

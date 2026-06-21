@@ -122,6 +122,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
           },
         },
         maxResults: 3,
+        aiLoadingMessage: "Finding relatable situations...",
       },
     },
     {
@@ -153,6 +154,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
           },
         },
         maxResults: 3,
+        aiLoadingMessage: "Listening to your thoughts...",
       },
     },
     {
@@ -210,7 +212,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
       optional: true,
       ai: {
         promptBuilder: (r) =>
-          `You are a CBT therapist assistant. Help the user reframe their automatic thought into a more balanced perspective.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nGenerate 3 alternative balanced thoughts. Each should be realistic, based on evidence, written in first person, and concise (1-2 sentences). For each, provide a brief rationale.`,
+          `You are a CBT therapist assistant. Help the user reframe their automatic thought into a more balanced perspective.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nGenerate 3 alternative balanced thoughts. Each should be realistic, based on evidence, written in first person, and concise (1-2 sentences). For each, provide a brief rationale. CRITICAL: Write the rationale addressing the user directly in the second person (e.g., "This reminds you that..."). Do NOT use third-person language.`,
         responseSchema: {
           type: "array",
           items: {
@@ -223,6 +225,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
           },
         },
         maxResults: 3,
+        aiLoadingMessage: "Reframing with Sage...",
       },
     },
     {

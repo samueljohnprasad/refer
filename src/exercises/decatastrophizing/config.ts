@@ -138,6 +138,7 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
             },
           },
           maxResults: 2,
+          aiLoadingMessage: "Finding realistic outcomes...",
         },
       },
       {

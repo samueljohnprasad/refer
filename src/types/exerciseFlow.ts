@@ -140,6 +140,15 @@ export interface TimerStepConfig {
   label?: string;
 }
 
+// ─── AI Suggestion Item ───────────────────────────────────────────────────────
+
+export interface AISuggestionItem {
+  readonly text: string;
+  readonly emoji?: string;
+  readonly rationale?: string;
+  readonly [key: string]: unknown;
+}
+
 // ─── AI Step Config ─────────────────────────────────────────────────────────
 
 export interface AIStepConfig<T = Record<string, any>> {
@@ -151,6 +160,8 @@ export interface AIStepConfig<T = Record<string, any>> {
   model?: string;
   /** Maximum number of AI suggestion results */
   maxResults?: number;
+  /** Custom loading message while generating */
+  aiLoadingMessage?: string;
 }
 
 // ─── Step Props — passed to every step component ────────────────────────────
@@ -177,9 +188,11 @@ export interface StepProps<T = Record<string, any>> {
   /** Total number of steps */
   totalSteps: number;
   /** AI suggestions for this step (if any) */
-  aiSuggestions?: any[];
+  aiSuggestions?: AISuggestionItem[];
   /** Whether AI is currently loading */
   isAiLoading?: boolean;
+  /** Loading message to show when AI is generating */
+  aiLoadingMessage?: string;
   /** Whether the exercise is saving */
   isSaving?: boolean;
   /** Whether this is a read-only view (completed entry) */

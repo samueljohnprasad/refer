@@ -1,106 +1,105 @@
-import { useState, useCallback, useRef } from "react";
-import { generateObject, jsonSchema } from "ai";
-import { useActiveModel } from "@/src/hooks/useActiveModel";
-import { GLOBAL_AI_CONFIG } from "@/src/constants/ai";
-import type { AIStepConfig } from "@/src/types/exerciseFlow";
+/**
+ * useExerciseAI — Structured AI Suggestions for Exercise Steps
+ *
+ * Consumes an exercise step's `AIStepConfig` (promptBuilder + responseSchema)
+ * and generates structured suggestions using the centralized AI provider.
+ *
+ * Implements React Query for robust caching, aborting, and isolation.
+ */
 
-export interface UseExerciseAIReturn {
-  suggestions: any[];
-  isLoading: boolean;
-  error: string | null;
-  downloadProgress: number;
-  generate: (response: Record<string, any>) => Promise<void>;
-  clear: () => void;
+import { useRef, useMemo, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { uniqueId } from 'lodash-es';
+import type { ExerciseStepDef, AISuggestionItem } from '@/src/types/exerciseFlow';
+import { useActiveModel } from '@/src/hooks/useActiveModel';
+import { createAIProvider } from '@/src/services/ai';
+
+// ─── Interfaces ─────────────────────────────────────────────────────────────
+
+export interface UseExerciseAIOptions<T> {
+  readonly steps: ExerciseStepDef<T>[];
+  readonly currentStepIndex: number;
+  readonly response: T;
+  readonly readOnly?: boolean;
 }
 
-export function useExerciseAI<T extends Record<string, any>>(
-  aiConfig: AIStepConfig<T> | undefined,
-): UseExerciseAIReturn {
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export interface UseExerciseAIReturn {
+  readonly suggestions: AISuggestionItem[];
+  readonly isLoading: boolean;
+  readonly error: string | null;
+  readonly downloadProgress: number;
+  readonly loadingMessage: string;
+}
 
+// ─── Hook ───────────────────────────────────────────────────────────────────
+
+export function useExerciseAI<T extends Record<string, any>>({
+  steps,
+  currentStepIndex,
+  response,
+  readOnly,
+}: UseExerciseAIOptions<T>): UseExerciseAIReturn {
+  // Session isolation for caching. A new session ID is generated on mount.
+  const sessionIdRef = useRef<string>(uniqueId('exercise-'));
   const sessionSeedRef = useRef<number>(Math.random());
-  const cacheRef = useRef<Record<string, any[]>>({});
-  const lastPromptRef = useRef<string>("");
 
-  const { getActiveModel, getStructuredPrompt, downloadProgress } = useActiveModel();
+  const currentStep = steps[currentStepIndex];
+  const aiConfig = currentStep?.ai;
 
-  const generate = useCallback(
-    async (response: Record<string, any>): Promise<void> => {
-      if (!aiConfig) return;
+  const { getActiveModel, providerType, downloadProgress } = useActiveModel();
 
-      const prompt = aiConfig.promptBuilder(response as T, { seed: sessionSeedRef.current });
-      if (!prompt.trim()) return;
+  // Generate deterministic prompt based on the *current* response state.
+  // If the user modifies an input that the prompt depends on, `prompt` will change.
+  const prompt = useMemo(() => {
+    if (!aiConfig || readOnly) return '';
+    try {
+      return aiConfig.promptBuilder(response, { seed: sessionSeedRef.current });
+    } catch (e) {
+      console.warn("Exercise AI prompt builder failed:", e);
+      return '';
+    }
+  }, [aiConfig, response, readOnly]);
 
-      // Skip if same prompt already fetched, or instantly restore from cache
-      if (prompt === lastPromptRef.current && suggestions.length > 0) return;
-      if (cacheRef.current[prompt]) {
-        setSuggestions(cacheRef.current[prompt]);
-        lastPromptRef.current = prompt;
-        return;
-      }
+  const queryKey = ['exercise-ai', sessionIdRef.current, currentStep?.id, prompt];
 
-      lastPromptRef.current = prompt;
+  const { data, isLoading, error } = useQuery({
+    queryKey,
+    queryFn: async ({ signal }) => {
+      if (!aiConfig || !prompt.trim()) return [];
 
-      setIsLoading(true);
-      setError(null);
+      const activeModel = await getActiveModel();
+      const provider = createAIProvider(providerType);
 
-      const maxResults = aiConfig.maxResults ?? 5;
+      const items = await provider.generateStructured({
+        model: activeModel,
+        prompt,
+        responseSchema: aiConfig.responseSchema,
+        maxResults: aiConfig.maxResults ?? 5,
+        abortSignal: signal,
+      });
 
-      try {
-        let items: any[] = [];
-
-        // Race against timeout
-        await Promise.race([
-          (async () => {
-            const model = await getActiveModel();
-            const structuredPrompt = getStructuredPrompt(prompt);
-
-            const { object } = await generateObject({
-              model,
-              schema: jsonSchema(aiConfig.responseSchema),
-              prompt: structuredPrompt,
-            });
-            
-            const parsed = object as any;
-            items = Array.isArray(parsed)
-              ? parsed.slice(0, maxResults)
-              : [parsed];
-          })(),
-          new Promise<never>((_, reject) =>
-            setTimeout(
-              () => reject(new Error("AI request timed out")),
-              GLOBAL_AI_CONFIG.TIMEOUT_MS,
-            ),
-          ),
-        ]);
-
-        cacheRef.current[prompt] = items;
-        setSuggestions(items);
-      } catch (err: any) {
-        console.error("AI generation failed:", err);
-        setError(err?.message ?? "AI request failed");
-        setSuggestions([]);
-      } finally {
-        setIsLoading(false);
-      }
+      return items as AISuggestionItem[];
     },
-    [aiConfig, suggestions.length, getActiveModel, getStructuredPrompt],
-  );
+    enabled: !!aiConfig && !readOnly && !!prompt.trim(),
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 
-  const clear = useCallback(() => {
-    setSuggestions([]);
-    setError(null);
-    lastPromptRef.current = "";
-  }, []);
+  // Query Client cleanup
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    const sid = sessionIdRef.current;
+    return () => {
+      // Remove all queries associated with this specific exercise session on unmount
+      queryClient.removeQueries({ queryKey: ['exercise-ai', sid] });
+    };
+  }, [queryClient]);
 
   return {
-    suggestions,
+    suggestions: data || [],
     isLoading,
-    error,
+    error: error instanceof Error ? error.message : null,
     downloadProgress,
-    generate,
-    clear,
+    loadingMessage: aiConfig?.aiLoadingMessage || "Sage is thinking...",
   };
 }

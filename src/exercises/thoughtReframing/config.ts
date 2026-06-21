@@ -91,6 +91,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
+          aiLoadingMessage: "Finding relatable situations...",
         },
       },
       {
@@ -110,6 +111,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
+          aiLoadingMessage: "Listening to your thoughts...",
         },
       },
       {
@@ -161,6 +163,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
+          aiLoadingMessage: "Analyzing emotions...",
         },
       },
       {
@@ -170,7 +173,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         validate: (r) => r.selectedDistortions.length >= 1,
         ai: {
           promptBuilder: (r) =>
-            `You are a CBT therapist assistant. Given the situation and automatic thought below, identify which cognitive distortions are present.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nIdentify up to 2 cognitive distortions from this list ONLY:\nall_or_nothing, catastrophizing, mind_reading, overgeneralizing, personalizing, filtering, should_statements, fortune_telling, emotional_reasoning, labeling\n\nFor each, provide the key, a confidence score (0-1), and a brief explanation.`,
+            `You are a CBT therapist assistant. Given the situation and automatic thought below, identify which cognitive distortions are present.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nIdentify up to 2 cognitive distortions from this list ONLY:\nall_or_nothing, catastrophizing, mind_reading, overgeneralizing, personalizing, filtering, should_statements, fortune_telling, emotional_reasoning, labeling\n\nFor each, provide the key, a confidence score (0-1), and a brief explanation. CRITICAL: Write the explanation addressing the user directly in the second person (e.g., "You might be assuming..."). Do NOT use clinical third-person language like "The individual is...".`,
           responseSchema: {
             type: "array",
             items: {
@@ -198,6 +201,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 2,
+          aiLoadingMessage: "Identifying thought patterns...",
         },
       },
       {
@@ -217,6 +221,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
+          aiLoadingMessage: "Finding evidence...",
         },
       },
       {
@@ -236,6 +241,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
+          aiLoadingMessage: "Challenging the thought...",
         },
       },
       {
@@ -253,7 +259,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
               r.evidenceAgainst.length > 0
                 ? r.evidenceAgainst.map((e, i) => `${i + 1}. ${e}`).join("\n")
                 : "None provided";
-            return `You are a CBT therapist assistant. Help the user reframe their automatic thought into a more balanced perspective.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nEvidence supporting the thought:\n${ef}\n\nEvidence against the thought:\n${ea}\n\nGenerate 3 alternative balanced thoughts. Each should be realistic, based on evidence, written in first person, and concise (1-2 sentences). For each, provide a brief rationale.`;
+            return `You are a CBT therapist assistant. Help the user reframe their automatic thought into a more balanced perspective.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nEvidence supporting the thought:\n${ef}\n\nEvidence against the thought:\n${ea}\n\nGenerate 3 alternative balanced thoughts. Each should be realistic, based on evidence, written in first person, and concise (1-2 sentences). For each, provide a brief rationale. CRITICAL: Write the rationale addressing the user directly in the second person (e.g., "This reminds you that..."). Do NOT use third-person language.`;
           },
           responseSchema: {
             type: "array",
@@ -267,6 +273,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
+          aiLoadingMessage: "Reframing with Sage...",
         },
       },
       {

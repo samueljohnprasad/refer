@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -6,18 +6,19 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { PressableScale } from '@/src/components/ui/PressableScale';
-import { Card } from '@/src/components/ui/Card';
-import {
-  useLocalAI,
-  LocalAIStatus,
-} from '@/src/hooks/useAppleIntelligence';
-import { SAGE, INK, INK_SOFT, INK_MUTED, BRAND_SURFACE } from '@/lib/tokens';
+} from "react-native";
+import Animated, { FadeInDown, FadeIn } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PressableScale } from "@/src/components/ui/PressableScale";
+import { Card } from "@/src/components/ui/Card";
+import { useLocalAI, LocalAIStatus } from "@/src/hooks/useAppleIntelligence";
+import { SAGE, INK, INK_SOFT, INK_MUTED, BRAND_SURFACE } from "@/lib/tokens";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { SparklesIcon, ArrowRight01Icon, ArrowUp01Icon } from "@hugeicons/core-free-icons";
+import {
+  SparklesIcon,
+  ArrowRight01Icon,
+  ArrowUp01Icon,
+} from "@hugeicons/core-free-icons";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -25,7 +26,7 @@ const MAX_INPUT_LENGTH = 500;
 const KEYBOARD_VERTICAL_OFFSET = 100;
 const MIN_BOTTOM_PADDING = 12;
 
-const ERROR_COLOR = '#e7000b';
+const ERROR_COLOR = "#e7000b";
 const CURSOR_COLOR = SAGE[400];
 const SEND_ACTIVE_COLOR = SAGE[600];
 const SEND_INACTIVE_BG = SAGE[100];
@@ -43,90 +44,97 @@ interface PresetPrompt {
 
 const PRESET_PROMPTS: readonly PresetPrompt[] = [
   {
-    id: 'reframe',
-    label: 'Reframe a thought',
+    id: "reframe",
+    label: "Reframe a thought",
     prompt:
-      'Help me reframe a negative thought into something more balanced and constructive. Ask me what thought I want to reframe.',
-    emoji: '🔄',
+      "Help me reframe a negative thought into something more balanced and constructive. Ask me what thought I want to reframe.",
+    emoji: "🔄",
   },
   {
-    id: 'gratitude',
-    label: 'Gratitude boost',
+    id: "gratitude",
+    label: "Gratitude boost",
     prompt:
-      'Give me 3 unique and specific gratitude prompts that go beyond the obvious, tailored for someone focused on personal growth.',
-    emoji: '🌟',
+      "Give me 3 unique and specific gratitude prompts that go beyond the obvious, tailored for someone focused on personal growth.",
+    emoji: "🌟",
   },
   {
-    id: 'breathe',
-    label: 'Breathing guide',
+    id: "breathe",
+    label: "Breathing guide",
     prompt:
-      'Guide me through a simple 2-minute box breathing exercise step by step. Be calm and supportive.',
-    emoji: '🌿',
+      "Guide me through a simple 2-minute box breathing exercise step by step. Be calm and supportive.",
+    emoji: "🌿",
   },
   {
-    id: 'journal',
-    label: 'Journal prompt',
+    id: "journal",
+    label: "Journal prompt",
     prompt:
-      'Give me a deep, reflective journal prompt for today that helps me understand my emotions better.',
-    emoji: '📝',
+      "Give me a deep, reflective journal prompt for today that helps me understand my emotions better.",
+    emoji: "📝",
   },
   {
-    id: 'affirm',
-    label: 'Daily affirmation',
+    id: "affirm",
+    label: "Daily affirmation",
     prompt:
-      'Create a powerful, personalized daily affirmation about self-compassion and growth. Make it feel genuine, not generic.',
-    emoji: '💪',
+      "Create a powerful, personalized daily affirmation about self-compassion and growth. Make it feel genuine, not generic.",
+    emoji: "💪",
   },
 ] as const;
 
 // ─── Status Indicator ────────────────────────────────────────────────────────
 
 const STATUS_LABELS: Record<LocalAIStatus, string> = {
-  [LocalAIStatus.IDLE]: '',
-  [LocalAIStatus.DOWNLOADING]: 'Downloading AI model (first time only)…',
-  [LocalAIStatus.LOADING]: 'Thinking…',
-  [LocalAIStatus.STREAMING]: 'Writing…',
-  [LocalAIStatus.DONE]: 'Complete',
-  [LocalAIStatus.ERROR]: 'Something went wrong',
-  [LocalAIStatus.UNAVAILABLE]: 'Not available',
+  [LocalAIStatus.IDLE]: "",
+  [LocalAIStatus.DOWNLOADING]: "Downloading AI model (first time only)…",
+  [LocalAIStatus.LOADING]: "Thinking…",
+  [LocalAIStatus.STREAMING]: "Writing…",
+  [LocalAIStatus.DONE]: "Complete",
+  [LocalAIStatus.ERROR]: "Something went wrong",
+  [LocalAIStatus.UNAVAILABLE]: "Not available",
 };
 
 function resolveStatusDotColor(status: LocalAIStatus): string {
-  if (status === LocalAIStatus.ERROR || status === LocalAIStatus.UNAVAILABLE) return ERROR_COLOR;
+  if (status === LocalAIStatus.ERROR || status === LocalAIStatus.UNAVAILABLE)
+    return ERROR_COLOR;
   if (status === LocalAIStatus.DOWNLOADING) return SAGE[400];
   if (status === LocalAIStatus.DONE) return SAGE[500];
   return SAGE[400];
 }
 
-const StatusIndicator: React.FC<{ readonly status: LocalAIStatus; readonly downloadProgress?: number }> =
-  React.memo(({ status, downloadProgress = 0 }) => {
-    const label = useMemo(() => {
-      if (status === LocalAIStatus.DOWNLOADING) {
-        const pct = downloadProgress > 1 ? downloadProgress / 100 : downloadProgress;
-        const totalGB = 1.72;
-        const downloadedGB = (pct * totalGB).toFixed(2);
-        return `Downloading AI model (first time only) • ${downloadedGB}GB / ${totalGB}GB`;
-      }
-      return STATUS_LABELS[status];
-    }, [status, downloadProgress]);
+const StatusIndicator: React.FC<{
+  readonly status: LocalAIStatus;
+  readonly downloadProgress?: number;
+}> = React.memo(({ status, downloadProgress = 0 }) => {
+  const label = useMemo(() => {
+    if (status === LocalAIStatus.DOWNLOADING) {
+      const pct =
+        downloadProgress > 1 ? downloadProgress / 100 : downloadProgress;
+      const totalGB = 1.72;
+      const downloadedGB = (pct * totalGB).toFixed(2);
+      return `Downloading AI model (first time only) • ${downloadedGB}GB / ${totalGB}GB`;
+    }
+    return STATUS_LABELS[status];
+  }, [status, downloadProgress]);
 
-    if (status === LocalAIStatus.IDLE) return null;
+  if (status === LocalAIStatus.IDLE) return null;
 
-    return (
-      <Animated.View
-        entering={FadeIn.duration(200)}
-        className="flex-row items-center gap-2 px-1 mb-2"
+  return (
+    <Animated.View
+      entering={FadeIn.duration(200)}
+      className="flex-row items-center gap-2 px-1 mb-2"
+    >
+      <View
+        className="w-2 h-2 rounded-full"
+        style={{ backgroundColor: resolveStatusDotColor(status) }}
+      />
+      <Text
+        className="happy-font-body text-[12px]"
+        style={{ color: INK_MUTED }}
       >
-        <View
-          className="w-2 h-2 rounded-full"
-          style={{ backgroundColor: resolveStatusDotColor(status) }}
-        />
-        <Text className="happy-font-body text-[12px]" style={{ color: INK_MUTED }}>
-          {label}
-        </Text>
-      </Animated.View>
-    );
-  });
+        {label}
+      </Text>
+    </Animated.View>
+  );
+});
 
 // ─── Preset Chip ─────────────────────────────────────────────────────────────
 
@@ -149,7 +157,10 @@ const PresetChip: React.FC<{
         <View className="h-8 w-8 rounded-full bg-sage-pill items-center justify-center">
           <Text className="text-[14px]">{preset.emoji}</Text>
         </View>
-        <Text className="happy-font-body-bold text-[15px] flex-1" style={{ color: SAGE[700] }}>
+        <Text
+          className="happy-font-body-bold text-[15px] flex-1"
+          style={{ color: SAGE[700] }}
+        >
           {preset.label}
         </Text>
         <HugeiconsIcon icon={ArrowRight01Icon} size={16} color={SAGE[400]} />
@@ -205,12 +216,11 @@ const ResponseCard: React.FC<{
     </View>
 
     {status === LocalAIStatus.DONE && (
-      <Animated.View entering={FadeIn.duration(200)} className="items-center mb-4">
-        <PressableScale
-          onPress={onReset}
-          scale={0.96}
-          hapticStyle="light"
-        >
+      <Animated.View
+        entering={FadeIn.duration(200)}
+        className="items-center mb-4"
+      >
+        <PressableScale onPress={onReset} scale={0.96} hapticStyle="light">
           <View className="rounded-full bg-sage-pill px-6 py-3 border border-sage-200">
             <Text
               className="happy-font-body-bold text-[14px]"
@@ -298,7 +308,7 @@ const InputBar: React.FC<InputBarProps> = React.memo(
             hapticStyle="medium"
             className="mb-1.5"
           >
-            <View 
+            <View
               className="rounded-full items-center justify-center"
               style={{
                 width: SEND_BTN_SIZE,
@@ -306,7 +316,11 @@ const InputBar: React.FC<InputBarProps> = React.memo(
                 backgroundColor: isDisabled ? SAGE[100] : SAGE[600],
               }}
             >
-              <HugeiconsIcon icon={ArrowUp01Icon} size={20} color={isDisabled ? SAGE[300] : "#ffffff"} />
+              <HugeiconsIcon
+                icon={ArrowUp01Icon}
+                size={20}
+                color={isDisabled ? SAGE[300] : "#ffffff"}
+              />
             </View>
           </PressableScale>
         </View>
@@ -347,12 +361,18 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
       onReset,
     }) => {
       const insets = useSafeAreaInsets();
-      const isProcessing = status === LocalAIStatus.DOWNLOADING || status === LocalAIStatus.LOADING || status === LocalAIStatus.STREAMING;
-      const hasResponse = response.length > 0 || status === LocalAIStatus.DOWNLOADING || status === LocalAIStatus.LOADING;
+      const isProcessing =
+        status === LocalAIStatus.DOWNLOADING ||
+        status === LocalAIStatus.LOADING ||
+        status === LocalAIStatus.STREAMING;
+      const hasResponse =
+        response.length > 0 ||
+        status === LocalAIStatus.DOWNLOADING ||
+        status === LocalAIStatus.LOADING;
 
       return (
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           className="flex-1"
           keyboardVerticalOffset={KEYBOARD_VERTICAL_OFFSET}
         >
@@ -372,11 +392,19 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
                 entering={FadeInDown.duration(300)}
                 className="items-center mb-6 mt-4"
               >
-                <View 
+                <View
                   className="h-16 w-16 rounded-full items-center justify-center mb-4"
-                  style={{ backgroundColor: SAGE[100], borderWidth: 4, borderColor: SAGE[50] }}
+                  style={{
+                    backgroundColor: SAGE[100],
+                    borderWidth: 4,
+                    borderColor: SAGE[50],
+                  }}
                 >
-                  <HugeiconsIcon icon={SparklesIcon} size={32} color={SAGE[600]} />
+                  <HugeiconsIcon
+                    icon={SparklesIcon}
+                    size={32}
+                    color={SAGE[600]}
+                  />
                 </View>
                 <Text
                   className="happy-font-body-bold text-[24px] text-center tracking-tight"
@@ -388,7 +416,8 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
                   className="happy-font-body text-[15px] text-center mt-2 px-6 leading-6"
                   style={{ color: SAGE[600] }}
                 >
-                  I'm your on-device intelligence companion. Private, secure, and ready to help.
+                  I'm your on-device intelligence companion. Private, secure,
+                  and ready to help.
                 </Text>
               </Animated.View>
 
@@ -426,7 +455,9 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
                 />
               )}
 
-              {error && status === LocalAIStatus.ERROR && <ErrorCard message={error} />}
+              {error && status === LocalAIStatus.ERROR && (
+                <ErrorCard message={error} />
+              )}
             </ScrollView>
 
             {isAvailable && (
@@ -444,22 +475,71 @@ const AppleIntelligencePresentation: React.FC<AppleIntelligencePresentationProps
     },
   );
 
+import { llama, downloadModel } from "@react-native-ai/llama";
+import { LOCAL_MODELS } from "@/src/constants/models";
+import { createAIProvider } from "@/src/services/ai";
+
+let isTesting = false;
+
 // ─── Container Component ──────────────────────────────────────────────────────
 
 export default function AppleIntelligenceScreen(): React.ReactElement {
   const ai = useLocalAI();
-  const [inputValue, setInputValue] = useState<string>('');
+
+  useEffect(() => {
+    const testProvider = async (): Promise<void> => {
+      if (isTesting) return;
+      isTesting = true;
+      try {
+        console.log("Provider Test: Starting...");
+
+        // 1. Download and prepare the model
+        const modelPath: string = await downloadModel(LOCAL_MODELS.QWEN_1_5B_INSTRUCT);
+        const model = llama.languageModel(modelPath);
+        await model.prepare();
+        console.log("Provider Test: Model ready");
+
+        // 2. Use the new provider layer
+        const provider = createAIProvider('local-llm');
+
+        // 3. Test with a Thought Catcher–style schema (array of objects)
+        const items = await provider.generateStructured({
+          model,
+          prompt: 'You are a CBT therapist assistant. The user just described a stressful situation: "I dropped my coffee on my lap during a meeting". Generate 3 highly varied, distinct automatic negative thoughts they might be having right now. Make them sound like natural, spontaneous human fears. Each thought should be written in first person and be concise (1 sentence).',
+          responseSchema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                text: { type: "string" },
+              },
+              required: ["text"],
+            },
+          },
+          maxResults: 3,
+        });
+
+        console.log("Provider Test: Success!", JSON.stringify(items, null, 2));
+      } catch (error) {
+        console.error("Provider Test: Error", error);
+      } finally {
+        isTesting = false;
+      }
+    };
+    testProvider();
+  }, []);
+  const [inputValue, setInputValue] = useState<string>("");
 
   const handleSubmit = useCallback(async (): Promise<void> => {
     const trimmed = inputValue.trim();
     if (!trimmed) return;
-    setInputValue('');
+    setInputValue("");
     await ai.generate(trimmed);
   }, [inputValue, ai]);
 
   const handlePresetPress = useCallback(
     async (preset: PresetPrompt): Promise<void> => {
-      setInputValue('');
+      setInputValue("");
       await ai.generate(preset.prompt);
     },
     [ai],
@@ -467,7 +547,7 @@ export default function AppleIntelligenceScreen(): React.ReactElement {
 
   const handleReset = useCallback((): void => {
     ai.reset();
-    setInputValue('');
+    setInputValue("");
   }, [ai]);
 
   return (

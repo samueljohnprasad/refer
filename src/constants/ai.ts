@@ -22,4 +22,11 @@ export const GLOBAL_AI_CONFIG = {
    * on the first run.
    */
   TIMEOUT_MS: 300_000,
+
+  /**
+   * Temperature for structured JSON generation with local LLMs.
+   * Lower values produce more deterministic, schema-compliant output.
+   * Range: 0.0 (deterministic) to 1.0 (creative).
+   */
+  STRUCTURED_TEMPERATURE: 0.3,
 };

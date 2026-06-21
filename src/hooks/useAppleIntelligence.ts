@@ -1,9 +1,9 @@
-import { useCallback, useRef, useState, useEffect, useMemo } from 'react';
-import { Platform } from 'react-native';
-import { apple } from '@react-native-ai/apple';
-import { llama, downloadModel } from '@react-native-ai/llama';
+import { useCallback, useRef, useState, useMemo } from 'react';
 import { streamText } from 'ai';
 import { GLOBAL_AI_CONFIG } from '@/src/constants/ai';
+import { useActiveModel } from '@/src/hooks/useActiveModel';
+import { createAIProvider } from '@/src/services/ai';
+import type { StructuredGenerationOptions } from '@/src/services/ai/types';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -29,28 +29,12 @@ export enum LocalAIStatus {
   UNAVAILABLE = 'unavailable',
 }
 
-/**
- * Configuration for Local AI (Apple Intelligence or Llama fallback).
- *
- * @example CBT Exercise use case:
- * ```ts
- * const CBT_CONFIG: LocalAIConfig = {
- *   systemPrompt: 'You are a CBT coach. Help identify cognitive distortions.',
- *   maxOutputTokens: 300,
- *   temperature: 0.5,
- * };
- * const ai = useLocalAI(CBT_CONFIG);
- * ```
- */
+/** Configuration for Local AI (Apple Intelligence or Llama fallback). */
 export interface LocalAIConfig {
-  /** Persona/identity injected into every generation as a system prompt. */
   readonly systemPrompt?: string;
-  /** Max tokens the model will generate. Default: 512. */
   readonly maxOutputTokens?: number;
-  /** Sampling temperature (0 = deterministic, 1 = creative). Default: 0.7. */
   readonly temperature?: number;
-  /** HuggingFace ID or URL for the Llama model to download/use. */
-  readonly llamaModelUrl?: string;
+  readonly llamaModelUrl?: string; // Kept for backwards compatibility
 }
 
 /** Public API surface returned by `useLocalAI`. */
@@ -62,6 +46,10 @@ export interface UseLocalAIResult {
   readonly isAvailable: boolean;
   /** Stream a response for the given user prompt. */
   readonly generate: (userPrompt: string) => Promise<void>;
+  /** Run a structured request mapped to a response schema */
+  readonly generateStructured: <T = unknown>(
+    options: Omit<StructuredGenerationOptions, 'model' | 'abortSignal'>,
+  ) => Promise<T[]>;
   /** Abort any active generation and reset state. */
   readonly reset: () => void;
 }
@@ -78,6 +66,7 @@ function resolveConfig(config: LocalAIConfig): Required<LocalAIConfig> {
 }
 
 function isAbortError(err: unknown): boolean {
+  if (err instanceof Error && err.name === 'AbortError') return true;
   return (err as Error)?.name === 'AbortError';
 }
 
@@ -86,116 +75,133 @@ function extractErrorMessage(err: unknown): string {
   return 'An unexpected error occurred.';
 }
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
+/**
+ * Creates a promise that rejects after a specified timeout.
+ * Automatically cleans up the timeout if the abort signal is triggered.
+ */
+function createTimeoutPromise(ms: number, signal: AbortSignal): Promise<never> {
+  return new Promise<never>((_, reject) => {
+    const timeoutId = setTimeout(() => {
+      if (!signal.aborted) {
+        reject(new Error(`AI request timed out after ${ms}ms`));
+      }
+    }, ms);
+
+    // Clean up timeout if request completes or aborts earlier
+    signal.addEventListener('abort', () => clearTimeout(timeoutId));
+  });
+}
+
+// ─── Inner Custom Hooks ──────────────────────────────────────────────────────
+
+/**
+ * Manages the lifecycle of an AbortController for cancelable requests.
+ * DRYs up the ref management and abort logic.
+ */
+function useAbortManager() {
+  const abortRef = useRef<AbortController | null>(null);
+
+  const abort = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+  }, []);
+
+  const resetAndCreate = useCallback(() => {
+    abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    return controller;
+  }, [abort]);
+
+  return { abort, resetAndCreate };
+}
+
+/**
+ * Manages the common UI state (status, error, response) for AI generations.
+ * Separates state management concerns from the execution logic.
+ */
+function useGenerationState() {
+  const [response, setResponse] = useState<string>('');
+  const [status, setStatus] = useState<LocalAIStatus>(LocalAIStatus.IDLE);
+  const [error, setError] = useState<string | null>(null);
+
+  const resetState = useCallback(() => {
+    setResponse('');
+    setStatus(LocalAIStatus.IDLE);
+    setError(null);
+  }, []);
+
+  const startGeneration = useCallback(() => {
+    setResponse('');
+    setError(null);
+    setStatus(LocalAIStatus.LOADING);
+  }, []);
+
+  const handleError = useCallback((err: unknown) => {
+    if (isAbortError(err)) {
+      setStatus(LocalAIStatus.IDLE);
+      return { isAbort: true };
+    }
+    setError(extractErrorMessage(err));
+    setStatus(LocalAIStatus.ERROR);
+    return { isAbort: false };
+  }, []);
+
+  return {
+    response,
+    setResponse,
+    status,
+    setStatus,
+    error,
+    resetState,
+    startGeneration,
+    handleError,
+  };
+}
+
+// ─── Main Hook ───────────────────────────────────────────────────────────────
 
 /**
  * On-device Local AI hook powered by `@react-native-ai/apple` and Llama fallback.
  *
  * Fully configurable via `LocalAIConfig` — swap the system prompt and
  * generation parameters per screen/use-case without touching this hook.
- *
- * @param config - Optional config to override identity and generation params.
- *
- * @example Standalone usage (defaults to Sage wellness identity)
- * ```ts
- * const ai = useLocalAI();
- * await ai.generate('Help me reframe this thought');
- * ```
- *
- * @example CBT-specific usage
- * ```ts
- * const ai = useLocalAI({
- *   systemPrompt: 'You are a CBT coach. Identify cognitive distortions.',
- *   temperature: 0.5,
- * });
- * await ai.generate(cbtStep.prompt);
- * ```
  */
-export function useLocalAI(
-  config: LocalAIConfig = {},
-): UseLocalAIResult {
-  const [response, setResponse] = useState<string>('');
-  const [status, setStatus] = useState<LocalAIStatus>(LocalAIStatus.IDLE);
-  const [error, setError] = useState<string | null>(null);
-  const [downloadProgress, setDownloadProgress] = useState<number>(0);
+export function useLocalAI(config: LocalAIConfig = {}): UseLocalAIResult {
+  const { getActiveModel, providerType, downloadProgress } = useActiveModel();
+  
+  const abortManager = useAbortManager();
+  const state = useGenerationState();
 
-  const abortRef = useRef<AbortController | null>(null);
-  const llamaModelRef = useRef<any>(null); // Keep a reference to the llama model
-
-  // Clean up Llama model on unmount
-  useEffect(() => {
-    return () => {
-      if (llamaModelRef.current) {
-        llamaModelRef.current.unload().catch(console.error);
-        llamaModelRef.current = null;
-      }
-    };
-  }, []);
-
-  const isAppleAvailable =
-    !GLOBAL_AI_CONFIG.FORCE_LOCAL_LLM &&
-    Platform.OS === 'ios' &&
-    typeof apple.isAvailable === 'function'
-      ? apple.isAvailable()
-      : false;
-
-  // Since we fallback to Llama, it's always "available" theoretically.
   const isAvailable: boolean = true;
 
-  const reset = useCallback((): void => {
-    abortRef.current?.abort();
-    abortRef.current = null;
-    setResponse('');
-    setStatus(LocalAIStatus.IDLE);
-    setError(null);
-    setDownloadProgress(0);
-  }, []);
+  const reset = useCallback(() => {
+    abortManager.abort();
+    state.resetState();
+  }, [abortManager, state]);
 
-  const loadLlamaFallback = async (modelUrl: string, signal: AbortSignal) => {
-    setStatus(LocalAIStatus.DOWNLOADING);
-    const modelPath = await downloadModel(modelUrl, (progress) => {
-      setDownloadProgress(progress.percentage);
-    });
-    
-    if (signal.aborted) return null;
-    
-    setStatus(LocalAIStatus.LOADING);
-    if (!llamaModelRef.current) {
-      llamaModelRef.current = llama.languageModel(modelPath);
-      await llamaModelRef.current.prepare();
+  // Helper to accurately sync model downloading phase UI
+  const updateDownloadingStatus = useCallback(() => {
+    if (downloadProgress > 0 && downloadProgress < 100) {
+      state.setStatus(LocalAIStatus.DOWNLOADING);
     }
-    return llamaModelRef.current;
-  };
+  }, [downloadProgress, state]);
 
+  // 1. Text Streaming Generation (Conversational)
   const generate = useCallback(
     async (userPrompt: string): Promise<void> => {
-      // Abort any previous stream before starting a new one
-      abortRef.current?.abort();
-      const controller = new AbortController();
-      abortRef.current = controller;
+      const controller = abortManager.resetAndCreate();
+      state.startGeneration();
 
-      setResponse('');
-      setError(null);
-      setStatus(LocalAIStatus.LOADING);
-
-      const { systemPrompt, maxOutputTokens, temperature, llamaModelUrl } =
-        resolveConfig(config);
+      const { systemPrompt, maxOutputTokens, temperature } = resolveConfig(config);
 
       try {
-        let activeModel;
-
-        if (isAppleAvailable) {
-          activeModel = apple();
-        } else {
-          const fallbackModel = await loadLlamaFallback(llamaModelUrl, controller.signal);
-          if (!fallbackModel) return;
-          activeModel = fallbackModel;
-        }
-
+        updateDownloadingStatus();
+        const activeModel = await getActiveModel();
         if (controller.signal.aborted) return;
 
         const result = streamText({
-          model: activeModel,
+          model: activeModel as Parameters<typeof streamText>[0]['model'],
           system: systemPrompt,
           prompt: userPrompt,
           temperature,
@@ -203,40 +209,87 @@ export function useLocalAI(
           abortSignal: controller.signal,
         });
 
-        setStatus(LocalAIStatus.STREAMING);
+        state.setStatus(LocalAIStatus.STREAMING);
 
         let accumulated = '';
         for await (const chunk of result.textStream) {
           if (controller.signal.aborted) break;
           accumulated += chunk;
-          setResponse(accumulated);
+          state.setResponse(accumulated);
         }
 
         if (!controller.signal.aborted) {
-          setStatus(LocalAIStatus.DONE);
+          state.setStatus(LocalAIStatus.DONE);
         }
       } catch (err: unknown) {
-        if (isAbortError(err)) {
-          setStatus(LocalAIStatus.IDLE);
-          return;
-        }
-        setError(extractErrorMessage(err));
-        setStatus(LocalAIStatus.ERROR);
+        state.handleError(err);
       }
     },
-    [isAppleAvailable, config],
+    [config, getActiveModel, updateDownloadingStatus, abortManager, state]
+  );
+
+  // 2. Structured JSON Generation (Tooling/Extraction)
+  const generateStructured = useCallback(
+    async <T = unknown>(
+      options: Omit<StructuredGenerationOptions, 'model' | 'abortSignal'>,
+    ): Promise<T[]> => {
+      const controller = abortManager.resetAndCreate();
+      state.startGeneration();
+
+      try {
+        const fetchTask = (async () => {
+          updateDownloadingStatus();
+          const activeModel = await getActiveModel();
+          if (controller.signal.aborted) return [];
+
+          const provider = createAIProvider(providerType);
+          return provider.generateStructured({
+            ...options,
+            model: activeModel,
+            temperature: options.temperature ?? resolveConfig(config).temperature,
+            abortSignal: controller.signal,
+          });
+        })();
+
+        const items = await Promise.race([
+          fetchTask,
+          createTimeoutPromise(GLOBAL_AI_CONFIG.TIMEOUT_MS, controller.signal),
+        ]);
+
+        if (!controller.signal.aborted) {
+          state.setStatus(LocalAIStatus.DONE);
+          return items as T[];
+        }
+        return [];
+      } catch (err: unknown) {
+        state.handleError(err);
+        throw err; // Original behavior: surface error up to callers
+      }
+    },
+    [config, getActiveModel, providerType, updateDownloadingStatus, abortManager, state]
   );
 
   return useMemo(
     () => ({
-      response,
-      status,
-      error,
+      response: state.response,
+      status: state.status,
+      error: state.error,
       downloadProgress,
       isAvailable,
       generate,
+      generateStructured,
       reset,
     }),
-    [response, status, error, downloadProgress, isAvailable, generate, reset]
+    [
+      state.response,
+      state.status,
+      state.error,
+      downloadProgress,
+      isAvailable,
+      generate,
+      generateStructured,
+      reset,
+    ],
   );
 }
+

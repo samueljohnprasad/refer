@@ -4,8 +4,8 @@ import { Text } from "@/components/ui/text";
 import { StepLayout } from "./StepLayout";
 import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
-import { SuggestionCards, SuggestionItem } from "@/src/components/exercise/SuggestionCards";
-import type { StepProps } from "@/src/types/exerciseFlow";
+import { SuggestionCards, type SuggestionItem } from "@/src/components/exercise/SuggestionCards";
+import type { StepProps, AISuggestionItem } from "@/src/types/exerciseFlow";
 
 interface MultiTextInputStepProps extends StepProps {
   title: string;
@@ -42,6 +42,7 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     psychoeducationText,
     aiSuggestions,
     isAiLoading,
+    aiLoadingMessage,
     readOnly,
   }) => {
     const items: string[] = (response as Record<string, any>)[fieldKey] ?? [];
@@ -67,7 +68,12 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
       }
     };
 
-    const suggestions = (aiSuggestions ?? []) as SuggestionItem[];
+    const mappedSuggestions: SuggestionItem[] = (aiSuggestions || []).map(
+      (s: any) => ({
+        label: s.text || s.label,
+        emoji: s.emoji,
+      })
+    );
 
     return (
       <StepLayout
@@ -90,21 +96,14 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
           visible={!!validationMessage && items.length > 0}
         />
 
-        {isAiLoading && (
-          <View className="flex-row items-center mb-4">
-            <ActivityIndicator size="small" color="#94A3B8" />
-            <Text className="text-[11px] text-slate-400 ml-2 uppercase tracking-wider">
-              Finding potential suggestions…
-            </Text>
-          </View>
-        )}
-
-        {!readOnly && (!isAiLoading) && suggestions.length > 0 && (
+        {!readOnly && (isAiLoading || mappedSuggestions.length > 0) && (
           <SuggestionCards
             title="AI Suggestions"
-            suggestions={suggestions}
+            suggestions={mappedSuggestions}
             currentValue={items}
             onSelect={handleSuggestionSelect}
+            isLoading={isAiLoading}
+            loadingMessage={aiLoadingMessage}
           />
         )}
 

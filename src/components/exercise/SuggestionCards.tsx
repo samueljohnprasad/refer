@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
+import { Skeleton } from "@/src/components/ui/Skeleton";
 import { SAGE } from "@/lib/tokens";
 
 export interface SuggestionItem {
@@ -14,12 +15,36 @@ export function SuggestionCards({
   suggestions,
   currentValue,
   onSelect,
+  isLoading,
+  loadingMessage,
 }: {
   title: string;
   suggestions: SuggestionItem[];
   currentValue: string | string[];
   onSelect: (value: string) => void;
+  isLoading?: boolean;
+  loadingMessage?: string;
 }) {
+  if (isLoading) {
+    return (
+      <View className="mb-6">
+        <Text className="text-xs font-extrabold text-ink-muted uppercase tracking-wider mb-3">
+          {loadingMessage || "Generating suggestions..."}
+        </Text>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <Card key={`skeleton-${index}`} variant="answer" className="mb-3" contentClassName="flex-row items-center p-4">
+            <Skeleton height={36} width={36} radius={12} className="mr-3" />
+            <Skeleton height={16} width="70%" />
+          </Card>
+        ))}
+      </View>
+    );
+  }
+
+  if (!suggestions || suggestions.length === 0) {
+    return null;
+  }
+
   return (
     <View className="mb-6">
       <Text className="text-xs font-extrabold text-ink-muted uppercase tracking-wider mb-3">

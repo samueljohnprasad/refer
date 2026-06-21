@@ -108,6 +108,7 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
             },
           },
           maxResults: 3,
+          aiLoadingMessage: "Finding inspiring prompts...",
         },
       },
       {
@@ -141,6 +142,7 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
             },
           },
           maxResults: 3,
+          aiLoadingMessage: "Finding gratitude examples...",
         },
       },
       {

@@ -160,7 +160,12 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
 
   // ─── AI ───────────────────────────────────────────────────────────
   const currentStep = config?.steps[flow.currentStepIndex];
-  const ai = useExerciseAI(currentStep?.ai);
+  const ai = useExerciseAI({
+    steps: config.steps,
+    currentStepIndex: flow.currentStepIndex,
+    response: flow.response,
+    readOnly,
+  });
   const isFinalStep = flow.currentStepIndex === flow.totalSteps - 1;
 
   const exitScreen = useCallback(() => {
@@ -168,12 +173,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
     router.back();
   }, [router]);
 
-  // Trigger AI when entering a step with AI config
-  React.useEffect(() => {
-    if (currentStep?.ai && !readOnly) {
-      ai.generate(flow.response);
-    }
-  }, [flow.currentStepIndex]);
+  // Trigger AI when entering a step with AI config (now handled internally by useExerciseAI)
 
   // ─── Handlers ─────────────────────────────────────────────────────
   const handleClose = useCallback(() => {
@@ -259,6 +259,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       totalSteps: flow.totalSteps,
       aiSuggestions: ai.suggestions,
       isAiLoading: ai.isLoading,
+      aiLoadingMessage: ai.loadingMessage,
       isSaving,
       readOnly,
     }),
@@ -266,6 +267,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       flow,
       ai.suggestions,
       ai.isLoading,
+      ai.loadingMessage,
       isSaving,
       readOnly,
       handleClose,
