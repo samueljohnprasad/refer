@@ -48,6 +48,12 @@ export const worryTimeConfig: ExerciseConfig<WorryTimeResponse> = {
           "Postpone worrying to a set time, so it doesn't consume your day.",
         exerciseType: "worry_time",
         duration: "10-15 min",
+        bulletPoints: [
+          "Schedule a 15-minute worry window",
+          "Capture worries as they arise",
+          "Review them only during worry time",
+          "Take action or let them go",
+        ],
       }),
       label: "Welcome",
       validate: () => true,

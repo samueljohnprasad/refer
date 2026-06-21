@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAppDispatch } from "@/src/store/hooks";
+import { setAssistantMessage } from "@/src/store/slices/happyAssistantSlice";
 import { View, TextInput, Pressable, ActivityIndicator } from "react-native";
 import { Text } from "@/components/ui/text";
 import { StepLayout } from "./StepLayout";
@@ -45,7 +47,19 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     aiLoadingMessage,
     readOnly,
   }) => {
+    const dispatch = useAppDispatch();
     const items: string[] = (response as Record<string, any>)[fieldKey] ?? [];
+
+    useEffect(() => {
+      if (validationMessage && items.length > 0) {
+        dispatch(setAssistantMessage(validationMessage));
+      } else {
+        dispatch(setAssistantMessage(null));
+      }
+      return () => {
+        dispatch(setAssistantMessage(null));
+      };
+    }, [validationMessage, items.length, dispatch]);
     const [draft, setDraft] = useState("");
 
     const addItem = () => {
@@ -90,11 +104,6 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
         scrollable
       >
         <PsychoeducationCard content={psychoeducationText ?? ""} />
-
-        <ValidationMessage
-          message={validationMessage ?? ""}
-          visible={!!validationMessage && items.length > 0}
-        />
 
         {!readOnly && (isAiLoading || mappedSuggestions.length > 0) && (
           <SuggestionCards

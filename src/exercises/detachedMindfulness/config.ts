@@ -42,6 +42,12 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
             "Learn to observe thoughts without getting caught up in them.",
           exerciseType: "detached_mindfulness",
           duration: "5-7 min",
+          bulletPoints: [
+            "Notice a recurring thought",
+            "Label it simply as 'a thought'",
+            "Shift your attention to sounds",
+            "Observe the thought losing its grip",
+          ],
         }),
         label: "Welcome",
         validate: () => true,
@@ -73,6 +79,25 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
         }),
         label: "Write the thought you notice",
         validate: (r) => r.observedThought.trim().length >= 1,
+        ai: {
+          promptBuilder: (r, context) => {
+            const seed = context?.seed ?? Math.random();
+            return `You are a CBT therapist assistant helping a user practice detached mindfulness. Generate 3 distinct, relatable examples of intrusive or recurring thoughts someone might notice. Make them highly specific, highly varied, and completely different every time (Random seed: ${seed}). Keep each concise (1 short sentence) and written in the first person. Provide a relevant emoji for each.`;
+          },
+          responseSchema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                text: { type: "string" },
+                emoji: { type: "string" },
+              },
+              required: ["text", "emoji"],
+            },
+          },
+          maxResults: 3,
+          aiLoadingMessage: "Finding common intrusive thoughts...",
+        },
       },
       {
         id: "label_it",
@@ -87,6 +112,7 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
         }),
         label: 'Label it: "I notice I am having the thought that..."',
         validate: (r) => r.labelConfirmed,
+        hideFooter: true,
       },
       {
         id: "attention_shift",

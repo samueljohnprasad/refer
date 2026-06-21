@@ -78,11 +78,17 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       validate: (r) => r.activatingEvent.trim().length >= 1,
       ai: {
         promptBuilder: (r, context) => {
+          const seed = context?.seed ?? Math.random();
           const themes = ["work/career", "romantic relationships", "friendships", "health and fitness", "daily chores/errands", "finances", "family dynamics", "hobbies/projects", "driving/commuting", "social media/internet", "home maintenance"];
-          const theme1 = themes[Math.floor(Math.random() * themes.length)];
-          const theme2 = themes[Math.floor(Math.random() * themes.length)];
-          const theme3 = themes[Math.floor(Math.random() * themes.length)];
-          return `You are a CBT therapist assistant. Generate 3 extremely brief, objective daily situations (activating events). Do NOT generate the negative thought. Just the concrete event. e.g. 'I received a critical email from my boss' or 'My friend didn't text me back.'\n\nCRITICAL: Be highly creative and diverse. Generate one event related to "${theme1}", one related to "${theme2}", and one related to "${theme3}". Do NOT use generic examples like 'meetings', 'presentations', or 'groceries'.\n\nRandom seed: ${context?.seed ?? Math.random()}`;
+          const shuffledThemes = [...themes].sort((a, b) => {
+             const hashA = (a.charCodeAt(0) * seed) % 1;
+             const hashB = (b.charCodeAt(0) * seed) % 1;
+             return hashA - hashB;
+          });
+          const theme1 = shuffledThemes[0];
+          const theme2 = shuffledThemes[1];
+          const theme3 = shuffledThemes[2];
+          return `You are a CBT therapist assistant. Generate 3 extremely brief, objective daily situations (activating events). Do NOT generate the negative thought. Just the concrete event. e.g. 'I received a critical email from my boss' or 'My friend didn't text me back.'\n\nCRITICAL: Be highly creative and diverse. Generate one event related to "${theme1}", one related to "${theme2}", and one related to "${theme3}". Do NOT use generic examples like 'meetings', 'presentations', or 'groceries'.\n\nRandom seed: ${seed}`;
         },
         responseSchema: {
           type: "array",

@@ -40,6 +40,12 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
           subtitle: "Is this worry something you can act on? Let's find out.",
           exerciseType: "worry_decision_tree",
           duration: "5-7 min",
+          bulletPoints: [
+            "Describe the worry on your mind",
+            "Decide if it's within your control",
+            "Create an action plan if you can act",
+            "Practice acceptance if you can't",
+          ],
         }),
         label: "Welcome",
         validate: () => true,

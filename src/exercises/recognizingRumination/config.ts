@@ -42,6 +42,12 @@ export const recognizingRuminationConfig: ExerciseConfig<RecognizingRuminationRe
           subtitle: "Spot thought loops early and break free from them.",
           exerciseType: "recognizing_rumination",
           duration: "5-7 min",
+          bulletPoints: [
+            "Identify the looping thought",
+            "Recognize its core theme",
+            "Pick an interrupt technique",
+            "Break the loop for 30 seconds",
+          ],
         }),
         label: "Welcome",
         validate: () => true,
@@ -73,6 +79,25 @@ export const recognizingRuminationConfig: ExerciseConfig<RecognizingRuminationRe
         }),
         label: "What thought keeps repeating?",
         validate: (r) => r.currentThoughtLoop.trim().length >= 1,
+        ai: {
+          promptBuilder: (r, context) => {
+            const seed = context?.seed ?? Math.random();
+            return `You are a therapist assistant helping a user recognize rumination. Generate 3 distinct, relatable examples of obsessive thought loops or ruminations someone might get stuck on. Make them highly specific, highly varied, and completely different every time (Random seed: ${seed}). Keep each concise (1 short sentence) and written in the first person. Provide a relevant emoji for each.`;
+          },
+          responseSchema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                text: { type: "string" },
+                emoji: { type: "string" },
+              },
+              required: ["text", "emoji"],
+            },
+          },
+          maxResults: 3,
+          aiLoadingMessage: "Finding common thought loops...",
+        },
       },
       {
         id: "theme_identification",
@@ -116,6 +141,27 @@ export const recognizingRuminationConfig: ExerciseConfig<RecognizingRuminationRe
         }),
         label: "What triggered it?",
         validate: (r) => r.ruminationTrigger.trim().length >= 1,
+        ai: {
+          promptBuilder: (r, context) => {
+            const seed = context?.seed ?? Math.random();
+            const loop = r.currentThoughtLoop ? `The user's current thought loop is: "${r.currentThoughtLoop}".` : "";
+            const theme = r.theme ? `The theme is ${r.theme}.` : "";
+            return `You are a therapist assistant. ${loop} ${theme} Generate 3 distinct examples of what might have triggered this thought loop. Make them highly specific, highly varied, and completely different every time (Random seed: ${seed}). Keep each concise (1 short sentence) and written in the first person. Provide a relevant emoji for each.`;
+          },
+          responseSchema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                text: { type: "string" },
+                emoji: { type: "string" },
+              },
+              required: ["text", "emoji"],
+            },
+          },
+          maxResults: 3,
+          aiLoadingMessage: "Finding possible triggers...",
+        },
       },
       {
         id: "time_check",

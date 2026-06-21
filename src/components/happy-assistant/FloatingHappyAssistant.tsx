@@ -9,6 +9,7 @@ import {
   openSheet,
   requestCommand,
   setPosition,
+  setAssistantMessage,
   type HappyAssistantCommand,
 } from "@/src/store/slices/happyAssistantSlice";
 import { useHappyAssistantActions } from "./useHappyAssistantActions";
@@ -23,7 +24,7 @@ export function FloatingHappyAssistant(): ReactElement {
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const { title, subtitle, actions } = useHappyAssistantActions();
-  const { isSheetOpen, isVisible, position } = useAppSelector(
+  const { isSheetOpen, isVisible, position, assistantMessage } = useAppSelector(
     (state) => state.happyAssistant,
   );
   const hidden = !isVisible || shouldHideAssistant(pathname);
@@ -60,11 +61,16 @@ export function FloatingHappyAssistant(): ReactElement {
     }
   }, [dispatch, hidden, isSheetOpen]);
 
+  useEffect(() => {
+    // Timer removed as per request. The step itself manages unmounting.
+  }, [assistantMessage, dispatch]);
+
   const assistantOverlay = hidden ? null : (
     <>
       <FloatingAssistantButton
         isDimmed={isSheetOpen}
         position={position}
+        message={assistantMessage}
         onOpen={openAssistant}
         onPositionChange={handlePositionChange}
       />

@@ -28,6 +28,7 @@ export interface HappyAssistantState {
   isVisible: boolean;
   activeCommand: HappyAssistantCommand | null;
   position: HappyAssistantPosition | null;
+  assistantMessage: string | null;
 }
 
 const initialState: HappyAssistantState = {
@@ -35,6 +36,7 @@ const initialState: HappyAssistantState = {
   isVisible: true,
   activeCommand: null,
   position: null,
+  assistantMessage: null,
 };
 
 const happyAssistantSlice = createSlice({
@@ -66,6 +68,9 @@ const happyAssistantSlice = createSlice({
     ) => {
       state.position = action.payload;
     },
+    setAssistantMessage: (state, action: PayloadAction<string | null>) => {
+      state.assistantMessage = action.payload;
+    },
   },
 });
 
@@ -76,6 +81,7 @@ export const {
   requestCommand,
   clearCommand,
   setPosition,
+  setAssistantMessage,
 } = happyAssistantSlice.actions;
 
 export default happyAssistantSlice.reducer;

@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
+import { useAppDispatch } from "@/src/store/hooks";
+import { setAssistantMessage } from "@/src/store/slices/happyAssistantSlice";
 import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Idea01Icon } from "@hugeicons/core-free-icons";
@@ -52,7 +54,19 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
     suggestionsTitle,
     readOnly,
   }) => {
+    const dispatch = useAppDispatch();
     const value: string = (response as Record<string, any>)[fieldKey] ?? "";
+
+    useEffect(() => {
+      if (validationMessage && value.trim().length > 0) {
+        dispatch(setAssistantMessage(validationMessage));
+      } else {
+        dispatch(setAssistantMessage(null));
+      }
+      return () => {
+        dispatch(setAssistantMessage(null));
+      };
+    }, [validationMessage, value, dispatch]);
 
     return (
       <StepLayout
@@ -68,11 +82,6 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
         isLoading={isSaving}
       >
         <PsychoeducationCard content={psychoeducationText ?? ""} />
-
-        <ValidationMessage
-          message={validationMessage ?? ""}
-          visible={!!validationMessage && value.trim().length > 0}
-        />
 
         {tipText && (
           <FadeInItem index={0}>

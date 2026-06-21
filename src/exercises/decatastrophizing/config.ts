@@ -54,6 +54,12 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
             "Feared outcomes rarely come true. Let's put them in perspective.",
           exerciseType: "decatastrophizing",
           duration: "7-10 min",
+          bulletPoints: [
+            "Identify your feared catastrophe",
+            "Estimate its real probability",
+            "Create a practical coping plan",
+            "Put the outcome in perspective",
+          ],
         }),
         label: "Welcome",
         validate: () => true,

@@ -2,13 +2,14 @@ import React, { useState, useCallback } from "react";
 import { View, ScrollView, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   Activity01Icon,
   Brain01Icon,
   Yoga01Icon,
   WindPower01Icon,
+  ArrowLeft01Icon,
 } from "@hugeicons/core-free-icons";
 import {
   useInsightsOverview,
@@ -53,29 +54,55 @@ export default function InsightsScreen() {
   const [timeRange, setTimeRange] = useState<TimeRange>("30d");
   const { data, isLoading } = useInsightsOverview(timeRange);
 
+  const HeaderComponent = (
+    <Stack.Screen
+      options={{
+        title: "Your Practice",
+        headerShown: true,
+        headerTransparent: true,
+        headerLargeTitle: true,
+        // headerBlurEffect: "regular",
+        headerShadowVisible: false,
+        headerRight: () => (
+          <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
+        ),
+      }}
+    />
+  );
+
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 happy-brand-screen" edges={["top"]}>
-        <View className="flex-1 items-center justify-center">
+      <>
+        {HeaderComponent}
+        <View className="flex-1 happy-brand-screen items-center justify-center">
           <Text className="happy-font-body-medium text-sm text-ink-muted">
             Loading insights...
           </Text>
         </View>
-      </SafeAreaView>
+      </>
     );
   }
 
   if (!data || data.totalExercises < 3) {
-    return <EmptyState />;
+    return (
+      <>
+        {HeaderComponent}
+        <View className="flex-1 happy-brand-screen">
+          <EmptyState />
+        </View>
+      </>
+    );
   }
 
   return (
-    <SafeAreaView className="flex-1 happy-brand-screen" edges={["top"]}>
+    <>
+      {HeaderComponent}
       <ScrollView
+        className="flex-1 happy-brand-screen"
         showsVerticalScrollIndicator={false}
+        contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ paddingBottom: 40 }}
       >
-        <Header timeRange={timeRange} onTimeRangeChange={setTimeRange} />
         <StatsRow
           total={data.totalExercises}
           avgShift={data.avgEmotionShift}
@@ -120,24 +147,7 @@ export default function InsightsScreen() {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-function Header({
-  timeRange,
-  onTimeRangeChange,
-}: {
-  timeRange: TimeRange;
-  onTimeRangeChange: (r: TimeRange) => void;
-}) {
-  return (
-    <View className="px-5 pt-4 pb-2 flex-row items-center justify-between">
-      <Text className="happy-font-heading-bold text-[26px] text-ink">
-        Your Practice
-      </Text>
-      <TimeRangeSelector value={timeRange} onChange={onTimeRangeChange} />
-    </View>
+    </>
   );
 }
 
@@ -256,25 +266,23 @@ function EmptyState() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 happy-brand-screen" edges={["top"]}>
-      <View className="flex-1 items-center justify-center px-8">
-        <Text className="text-[48px] mb-4">🌿</Text>
-        <Text className="happy-font-heading-bold text-xl text-ink text-center mb-2">
-          Your patterns will appear here
+    <View className="flex-1 items-center justify-center px-8">
+      <Text className="text-[48px] mb-4">🌿</Text>
+      <Text className="happy-font-heading-bold text-xl text-ink text-center mb-2">
+        Your patterns will appear here
+      </Text>
+      <Text className="happy-font-body-medium text-sm text-ink-muted text-center leading-relaxed mb-6">
+        Complete a few more exercises to unlock insights about your thinking
+        patterns and progress.
+      </Text>
+      <Pressable
+        onPress={handlePress}
+        className="h-12 px-6 rounded-2xl items-center justify-center happy-brand-primary-cta active:opacity-90"
+      >
+        <Text className="happy-font-body-bold text-sm text-white">
+          Start an exercise
         </Text>
-        <Text className="happy-font-body-medium text-sm text-ink-muted text-center leading-relaxed mb-6">
-          Complete a few more exercises to unlock insights about your thinking
-          patterns and progress.
-        </Text>
-        <Pressable
-          onPress={handlePress}
-          className="h-12 px-6 rounded-2xl items-center justify-center happy-brand-primary-cta active:opacity-90"
-        >
-          <Text className="happy-font-body-bold text-sm text-white">
-            Start an exercise
-          </Text>
-        </Pressable>
-      </View>
-    </SafeAreaView>
+      </Pressable>
+    </View>
   );
 }

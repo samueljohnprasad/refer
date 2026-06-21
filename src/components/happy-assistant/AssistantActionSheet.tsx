@@ -34,19 +34,19 @@ export function AssistantActionSheet({
   }, [onCommandPress]);
 
   return (
-    <View className="flex-1 bg-white px-5 pt-4">
+    <View className="flex-1 px-5 pt-8">
       <View className="mb-4 flex-row items-center gap-3">
-        <View className="happy-mascot-stage h-14 w-14 items-center justify-center rounded-[20px]">
+        <View className="h-14 w-14 items-center justify-center rounded-2xl">
           <Mascot state="panda-happy" size={46} />
         </View>
         <View className="flex-1">
           <Text
             variant="h1"
-            className="text-[30px] leading-9"
+            className="text-[28px] leading-9 tracking-tight"
           >
             {title}
           </Text>
-          <Text variant="body" color="soft" className="mt-0.5 text-[15px] leading-5">
+          <Text variant="body" color="muted" className="mt-0.5 text-[15px] leading-5">
             {subtitle}
           </Text>
         </View>
@@ -90,13 +90,13 @@ const AssistantActionRow = memo(function AssistantActionRow({
       radius="xl"
       showDepth={true}
       onPress={handlePress}
-      className="mb-1"
-      contentClassName="min-h-[72px] flex-row items-center px-3.5 py-3"
+      className="mb-1.5"
+      contentClassName="min-h-[72px] flex-row items-center px-4 py-3.5 bg-white/85 border border-white/60 rounded-[20px]"
       accessibilityRole="button"
       accessibilityLabel={action.label}
       accessibilityHint={action.description}
     >
-      <View className="mr-3 h-11 w-11 items-center justify-center rounded-[18px] bg-sage-pill">
+      <View className="mr-3 h-11 w-11 items-center justify-center rounded-icon-well bg-sage-pill">
         <HugeiconsIcon icon={action.icon} size={22} color={SAGE[600]} />
       </View>
       <View className="flex-1">
@@ -112,7 +112,7 @@ const AssistantActionRow = memo(function AssistantActionRow({
           {action.description}
         </Text>
       </View>
-      <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={INK_MUTED} />
+      <HugeiconsIcon icon={ArrowRight01Icon} size={20} color={SAGE[400]} />
     </Card>
   );
 });

@@ -1,6 +1,7 @@
-import React from "react";
-import { View, Pressable } from "react-native";
-import { Text } from "@/components/ui/text";
+import React, { useMemo } from "react";
+import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
+import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
+import { SAGE } from "@/lib/tokens";
 import { TIME_RANGES, type TimeRange } from "@/src/constants/insights";
 
 interface TimeRangeSelectorProps {
@@ -9,25 +10,34 @@ interface TimeRangeSelectorProps {
 }
 
 export function TimeRangeSelector({ value, onChange }: TimeRangeSelectorProps) {
+  const selectedLabel = useMemo(() => {
+    const found = TIME_RANGES.find((r) => r.key === value);
+    return found ? found.label : "7d";
+  }, [value]);
+
+  const handleSelectionChange = (selection: unknown) => {
+    if (typeof selection === "string") {
+      const found = TIME_RANGES.find((r) => r.label === selection);
+      if (found) {
+        onChange(found.key as TimeRange);
+      }
+    }
+  };
+
   return (
-    <View className="flex-row rounded-lg bg-sage-50 p-0.5">
-      {TIME_RANGES.map(({ key, label }) => (
-        <Pressable
-          key={key}
-          onPress={() => onChange(key)}
-          className={`px-2.5 py-1 rounded-md ${
-            value === key ? "bg-warm-white" : ""
-          }`}
-        >
-          <Text
-            className={`happy-font-body-bold text-[10px] ${
-              value === key ? "text-ink" : "text-ink-muted"
-            }`}
-          >
+    <Host style={{ width: 140, height: 32 }}>
+      <Picker
+        modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+        label="Time Range"
+        selection={selectedLabel}
+        onSelectionChange={handleSelectionChange}
+      >
+        {TIME_RANGES.map(({ key, label }) => (
+          <SwiftUIText key={key} modifiers={[tag(label)]}>
             {label}
-          </Text>
-        </Pressable>
-      ))}
-    </View>
+          </SwiftUIText>
+        ))}
+      </Picker>
+    </Host>
   );
 }

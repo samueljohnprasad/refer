@@ -38,28 +38,36 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
     const [remaining, setRemaining] = useState(timerConfig.durationMs);
     const [isRunning, setIsRunning] = useState(false);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const remainingRef = useRef(timerConfig.durationMs);
+
+    // Sync when config changes (e.g. stepping back and forth)
+    useEffect(() => {
+      setRemaining(timerConfig.durationMs);
+      remainingRef.current = timerConfig.durationMs;
+      setIsRunning(false);
+    }, [timerConfig.durationMs]);
+
     const completed =
       (response as Record<string, any>)[completedFieldKey] === true;
 
     useEffect(() => {
-      if (isRunning && remaining > 0) {
+      if (isRunning && remainingRef.current > 0) {
         intervalRef.current = setInterval(() => {
-          setRemaining((prev) => {
-            const next = prev - 100;
-            if (next <= 0) {
-              clearInterval(intervalRef.current!);
-              setIsRunning(false);
-              onUpdate({ [completedFieldKey]: true } as any);
-              return 0;
-            }
-            return next;
-          });
+          remainingRef.current -= 100;
+          
+          if (remainingRef.current <= 0) {
+            remainingRef.current = 0;
+            clearInterval(intervalRef.current!);
+            setIsRunning(false);
+            onUpdate({ [completedFieldKey]: true } as any);
+          }
+          setRemaining(remainingRef.current);
         }, 100);
       }
       return () => {
         if (intervalRef.current) clearInterval(intervalRef.current);
       };
-    }, [isRunning, remaining, completedFieldKey, onUpdate]);
+    }, [isRunning, completedFieldKey, onUpdate]);
 
     const startTimer = useCallback(() => setIsRunning(true), []);
 
@@ -73,6 +81,7 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
 
     const handleSkip = useCallback(() => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      remainingRef.current = 0;
       setIsRunning(false);
       setRemaining(0);
       onUpdate({ [completedFieldKey]: true } as any);

@@ -22,16 +22,7 @@ export const IntroStep: React.FC<IntroStepProps> = React.memo(
   ({ title, subtitle, duration, bulletPoints, onNext, onClose }) => {
     return (
       <View className="flex-1 items-center pt-4 pb-4">
-          {onClose && (
-            <Pressable
-              onPress={onClose}
-              className="absolute top-2 right-4 z-50 h-10 w-10 items-center justify-center rounded-full bg-brand-surface/80"
-              accessibilityRole="button"
-              accessibilityLabel="Close"
-            >
-              <HugeiconsIcon icon={Cancel01Icon} size={24} color={INK_MUTED} />
-            </Pressable>
-          )}
+
           {/* Brand Mascot illustration replacing generic blue icon wells */}
           <FadeInItem index={0}>
             <View className="items-center justify-center mb-3">

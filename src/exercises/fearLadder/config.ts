@@ -41,6 +41,12 @@ export const fearLadderConfig: ExerciseConfig<FearLadderResponse> = {
           "Build a ladder of feared situations and start with the easiest.",
         exerciseType: "fear_ladder",
         duration: "10-15 min",
+        bulletPoints: [
+          "List situations that scare you",
+          "Rank them from least to most scary",
+          "Pick the easiest one to start",
+          "Plan a safe exposure",
+        ],
       }),
       label: "Welcome",
       validate: () => true,
