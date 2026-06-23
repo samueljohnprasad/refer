@@ -1,0 +1,1 @@
+export { NutrieScreen } from "./NutrieScreen";

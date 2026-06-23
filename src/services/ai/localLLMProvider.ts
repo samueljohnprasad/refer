@@ -129,8 +129,11 @@ export const localLLMProvider: AIProvider = {
         abortSignal,
       });
 
+      console.log(`[local-llm] Raw Output:\n${text}`);
+
       // Extract and parse the JSON from raw output
       const jsonString: string = extractJson(text);
+      console.log(`[local-llm] Extracted JSON:\n${jsonString}`);
       const parsed: unknown = JSON.parse(jsonString);
 
       // Normalize: fix array-of-arrays hallucination before slicing

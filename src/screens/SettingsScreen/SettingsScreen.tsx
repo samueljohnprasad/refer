@@ -264,6 +264,21 @@ export default React.memo(function SettingsScreen() {
               />
             )}
           </SettingsSection>
+
+          {/* Developer Section for Testing */}
+          <SettingsSection title="Developer">
+            <SettingsItem
+              icon={StarIcon}
+              tone="gold"
+              title="Test Graph Components"
+              subtitle="View mock graph and UI components"
+              onPress={() => {
+                Haptics.selectionAsync();
+                router.push("/tabs/screens/test-charts" as any);
+              }}
+              isLast={true}
+            />
+          </SettingsSection>
         </Animated.ScrollView>
       </View>
 

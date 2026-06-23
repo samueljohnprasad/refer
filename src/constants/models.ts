@@ -4,4 +4,5 @@ export const LOCAL_MODELS = {
   // Add more models here as needed
   QWEN_1_5B_INSTRUCT:
     "Qwen/Qwen2.5-1.5B-Instruct-GGUF/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+  LFM_2_5_VL_450M: "LiquidAI/LFM2.5-VL-450M-GGUF/LFM2.5-VL-450M-Q4_0.gguf",
 } as const;

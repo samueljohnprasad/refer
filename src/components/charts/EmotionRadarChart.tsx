@@ -2,14 +2,9 @@ import React, { useMemo } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
-import {
-  VictoryChart,
-  VictoryTheme,
-  VictoryPolarAxis,
-  VictoryArea,
-} from "victory-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { format } from "date-fns";
+import { SkiaRadarChart, RadarDataPoint } from "./SkiaRadarChart";
 
 interface EmotionData {
   emotion: string;
@@ -80,16 +75,13 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
     };
   }, [data]);
 
-  // Prepare data for Victory chart
-  const radarData = useMemo(() => {
+  const radarData: RadarDataPoint[] = useMemo(() => {
     if (!data || data.length === 0) return [];
     return data.map((d) => ({
-      x: d.emotion,
-      y: d.score / 100, // Normalize to 0-1 for radar chart
+      label: d.emotion,
+      value: d.score / 100,
     }));
   }, [data]);
-
-  const maxValue = 1;
 
   if (loading) {
     return (
@@ -144,9 +136,7 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
       <View className="p-5 pb-0">
         <View className="flex-row items-center justify-between">
           <View>
-            <Text variant="h2">
-              Emotional Balance
-            </Text>
+            <Text variant="h2">Emotional Balance</Text>
             <Text variant="caption-muted" className="mt-1">
               {format(startDate, "MMM d")} - {format(endDate, "MMM d, yyyy")}
             </Text>
@@ -192,60 +182,20 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
       </View>
 
       {/* Radar Chart */}
-      <View className="pb-5 pt-5">
-        <VictoryChart
-          polar
-          theme={VictoryTheme.material}
-          domain={{ y: [0, maxValue] }}
-          width={380}
-          height={380}
-          padding={{ top: 40, bottom: 40, left: 40, right: 40 }}
-        >
-          <VictoryPolarAxis
-            dependentAxis
-            style={{
-              axis: { stroke: "none" },
-              grid: {
-                stroke: "#E5E7EB",
-                strokeDasharray: "2,4",
-                opacity: 0.5,
-              },
-              tickLabels: { fill: "transparent" },
-            }}
-            tickValues={[0.2, 0.4, 0.6, 0.8, 1]}
-          />
-
-          <VictoryPolarAxis
-            style={{
-              axis: { stroke: "none" },
-              grid: { stroke: "#E5E7EB", strokeWidth: 0.5 },
-              tickLabels: {
-                fontSize: 12,
-                fill: "#374151",
-                fontWeight: "600",
-                textAnchor: "middle",
-              },
-            }}
-          />
-
-          <VictoryArea
-            data={radarData}
-            style={{
-              data: {
-                fill: premium
-                  ? "rgba(123, 97, 255, 0.3)"
-                  : "rgba(16, 185, 129, 0.3)",
-                stroke: premium ? "#7B61FF" : "#10B981",
-                strokeWidth: 2,
-              },
-            }}
-            interpolation="linear"
-            animate={{
-              duration: 1000,
-              onLoad: { duration: 500 },
-            }}
-          />
-        </VictoryChart>
+      <View
+        className="py-5"
+        style={{
+          backgroundColor: "#1A1A2E",
+          borderRadius: 20,
+          marginHorizontal: 16,
+        }}
+      >
+        <SkiaRadarChart
+          data={radarData}
+          size={320}
+          fillColor={premium ? "#9C7CFF" : "#6BA3FF"}
+          strokeColor={premium ? "#7B61FF" : "#4A90E2"}
+        />
       </View>
 
       {/* Emotion Pills */}
@@ -279,7 +229,10 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
                     : "#EF4444",
                 }}
               />
-              <Text variant="caption-muted" className="font-medium text-gray-700">
+              <Text
+                variant="caption-muted"
+                className="font-medium text-gray-700"
+              >
                 {emotion.emotion}: {emotion.score.toFixed(0)}%
               </Text>
             </View>

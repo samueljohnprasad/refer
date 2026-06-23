@@ -494,7 +494,7 @@ export default function AppleIntelligenceScreen(): React.ReactElement {
         console.log("Provider Test: Starting...");
 
         // 1. Download and prepare the model
-        const modelPath: string = await downloadModel(LOCAL_MODELS.QWEN_1_5B_INSTRUCT);
+        const modelPath: string = await downloadModel(LOCAL_MODELS.LFM_2_5_VL_450M);
         const model = llama.languageModel(modelPath);
         await model.prepare();
         console.log("Provider Test: Model ready");

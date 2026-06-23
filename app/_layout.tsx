@@ -9,12 +9,13 @@ import { Slot, router as expoRouter } from "expo-router";
 import { AuthProvider } from "@/src/context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
-import * as Haptics from "expo-haptics";
+import { Presets } from "react-native-pulsar";
 import { PressablesConfig } from "pressto";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import * as Notifications from "expo-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HapticManager } from "@/lib/haptics/HapticManager";
 
 import RevenueCatProvider from "@/src/context/RevenueCatProvider";
 import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
@@ -60,7 +61,7 @@ const APP_COLOR_MODE = "light";
 const queryClient = new QueryClient();
 const globalPressableHandlers = {
   onPress: (): void => {
-    void Haptics.selectionAsync().catch(() => {});
+    Presets.System.selection();
   },
 };
 export {
@@ -120,9 +121,9 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       void SplashScreen.hideAsync().catch(() => {});
-      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(
-        () => {},
-      );
+      // Initialize premium haptic system
+      void HapticManager.initialize().catch(() => {});
+      Presets.System.impactHeavy();
     }
   }, [loaded]);
 
