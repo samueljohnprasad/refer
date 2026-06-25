@@ -62,7 +62,8 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
   const setKeyboardJournalOpen = useSetAtom(keyboardJournalOpenAtom);
   const setOpenAIInsights = useSetAtom(openAIInsightsAtom);
   const { restorePurchases } = useRevenueCat();
-  const { data: history = [] } = useCBTHistory();
+  const { data: historyData } = useCBTHistory();
+  const history = useMemo(() => historyData?.pages.flatMap((p) => p.data) || [], [historyData]);
   const toast = useToast();
 
   const latestIncompleteExercise = useMemo(

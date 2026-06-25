@@ -3,6 +3,7 @@ import { View, Pressable } from "react-native";
 import { Text } from "@/components/ui/text";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useThoughtPatterns } from "@/src/hooks/insights/useThoughtPatterns";
+import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 export function ThoughtPatternsCard() {
   const { hasPro, presentPaywall } = useRevenueCat();
@@ -14,7 +15,7 @@ export function ThoughtPatternsCard() {
 
   if (isLoading) {
     return (
-      <View className="happy-brand-card rounded-2xl p-4">
+      <View style={nutrieStyles.card}>
         <Text className="happy-brand-eyebrow">Analyzing patterns...</Text>
       </View>
     );
@@ -23,20 +24,20 @@ export function ThoughtPatternsCard() {
   if (!data) return null;
 
   return (
-    <View className="happy-brand-card rounded-2xl p-4">
-      <Text className="happy-font-body-bold text-[13px] text-ink mb-3">
+    <View style={nutrieStyles.card}>
+      <Text style={nutrieStyles.sectionTitle}>
         Your Thought Patterns
       </Text>
-      <View className="flex-row flex-wrap gap-2 mb-3">
+      <View className="flex-row flex-wrap gap-2 mb-3 mt-1">
         {data.themes.map((t) => (
           <View
             key={t.theme}
-            className="happy-brand-status-chip px-3 py-1.5 flex-row items-center gap-1"
+            style={[nutrieStyles.inlinePill, { backgroundColor: "#E8FBF0", borderColor: "#A7F3D0" }]}
           >
-            <Text className="happy-font-body-bold text-[11px] text-sage-700">
+            <Text style={[nutrieStyles.inlinePillText, { color: "#166534" }]}>
               {t.theme}
             </Text>
-            <Text className="happy-font-body-bold text-[10px] text-sage-500">
+            <Text style={[nutrieStyles.inlinePillText, { color: "#166534", opacity: 0.7 }]}>
               {t.count}x
             </Text>
           </View>
@@ -56,11 +57,14 @@ function LockedCard({ onUnlock }: { onUnlock: () => void }) {
   return (
     <Pressable
       onPress={onUnlock}
-      className="happy-brand-card rounded-2xl p-4 active:opacity-80"
+      style={({ pressed }) => [
+        nutrieStyles.card,
+        pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] }
+      ]}
     >
       <View className="flex-row items-center gap-2 mb-1">
         <Text className="text-[14px]">🔒</Text>
-        <Text className="happy-font-body-bold text-[13px] text-ink">
+        <Text style={nutrieStyles.sectionTitle} className="mb-0">
           Thought Patterns
         </Text>
       </View>

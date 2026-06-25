@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
-import { View, ScrollView, Pressable } from "react-native";
+import { View, ScrollView, Pressable, StyleSheet } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Stack } from "expo-router";
@@ -98,54 +99,58 @@ export default function InsightsScreen() {
     <>
       {HeaderComponent}
       <ScrollView
-        className="flex-1 happy-brand-screen"
+        style={nutrieStyles.screenBg}
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ paddingBottom: 128, paddingTop: 110 }}
       >
-        <StatsRow
-          total={data.totalExercises}
-          avgShift={data.avgEmotionShift}
-          streak={data.currentStreak}
-          successRate={data.reframeSuccessRate}
-        />
-        <View className="px-5 mt-5">
+        <Animated.View entering={FadeInDown.duration(400).delay(100)}>
+          <StatsRow
+            total={data.totalExercises}
+            avgShift={data.avgEmotionShift}
+            streak={data.currentStreak}
+            successRate={data.reframeSuccessRate}
+          />
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(200)} className="px-4 mt-5">
           <InsightNarrativeCard />
-        </View>
-        <View className="px-5 mt-4">
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(300)} className="px-4 mt-4">
           <WeeklySummaryCard />
-        </View>
-        <View className="px-5 mt-4">
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(400)} className="px-4 mt-4">
           <SkillProgressionCard />
-        </View>
-        <TemporalPatternRow />
-        <View className="px-5 mt-4">
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(450)}>
+          <TemporalPatternRow />
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(500)} className="px-4 mt-4">
           <PersonalEffectivenessCard />
-        </View>
-        <View className="px-5 mt-4">
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(550)} className="px-4 mt-4">
           <TriggerClusterCard />
-        </View>
-        <View className="px-5 mt-4">
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(600)} className="px-4 mt-4">
           <BeliefDecayCard />
-        </View>
-        <View className="px-5 mt-4">
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(650)} className="px-4 mt-4">
           <TherapistNotebookCard />
-        </View>
-        <View className="px-5 mt-4">
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(700)} className="px-4 mt-4">
           <ThoughtPatternsCard />
-        </View>
-        <View className="px-5 mt-6">
-          <Text className="happy-brand-eyebrow mb-3">Activity</Text>
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(750)} className="px-4 mt-6">
+          <Text style={nutrieStyles.sectionTitle}>Activity</Text>
           <ActivityHeatmap data={data.heatmap} />
-        </View>
-        <View className="px-5 mt-8">
-          <Text className="happy-brand-eyebrow mb-3">Categories</Text>
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(800)} className="px-4 mt-8">
+          <Text style={nutrieStyles.sectionTitle}>Categories</Text>
           <View className="flex-row flex-wrap gap-3">
             {data.categories.map((cat) => (
               <CategoryCard key={cat.category} summary={cat} />
             ))}
           </View>
-        </View>
+        </Animated.View>
       </ScrollView>
     </>
   );
@@ -185,11 +190,11 @@ function StatsRow({
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <View className="happy-brand-card rounded-2xl px-4 py-3 min-w-[80px] items-center">
-      <Text className="happy-font-heading-bold text-[22px] text-ink">
+    <View style={nutrieStyles.statCard}>
+      <Text style={nutrieStyles.statValue}>
         {value}
       </Text>
-      <Text className="happy-font-body-bold text-[10px] uppercase tracking-wider text-ink-muted mt-0.5">
+      <Text style={nutrieStyles.statLabel}>
         {label}
       </Text>
     </View>
@@ -209,22 +214,24 @@ function CategoryCard({ summary }: { summary: CategorySummary }) {
   return (
     <Pressable
       onPress={handlePress}
-      className="happy-brand-card rounded-2xl p-4 flex-1 min-w-[45%] active:opacity-80"
+      style={({ pressed }) => [
+        nutrieStyles.categoryCard,
+        pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] }
+      ]}
     >
       <View
-        className="h-10 w-10 rounded-xl items-center justify-center mb-2"
-        style={{ backgroundColor: bgColor }}
+        style={[nutrieStyles.categoryIconWell, { backgroundColor: bgColor }]}
       >
-        <HugeiconsIcon icon={icon} size={20} color="#2a3f2a" />
+        <HugeiconsIcon icon={icon} size={24} color="#2a3f2a" />
       </View>
-      <Text className="happy-font-body-bold text-[15px] text-ink">
+      <Text style={nutrieStyles.categoryLabel}>
         {summary.label}
       </Text>
-      <Text className="happy-font-body text-xs text-ink-muted mt-0.5">
+      <Text style={nutrieStyles.categorySessions}>
         {summary.count > 0 ? `${summary.count} sessions` : "Not started"}
       </Text>
-      {summary.count > 0 && (
-        <Text className="happy-font-body-semibold text-[11px] text-sage-600 mt-1">
+      {summary.count > 0 && summary.topStat && (
+        <Text style={nutrieStyles.categoryTopStat}>
           {summary.topStat}
         </Text>
       )}
@@ -286,3 +293,113 @@ function EmptyState() {
     </View>
   );
 }
+
+// ─── Nutrie-style Stylesheet ──────────────────────────────────────────────────
+export const nutrieStyles = StyleSheet.create({
+  screenBg: {
+    flex: 1,
+    backgroundColor: "#F7F7F8",
+  },
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.03)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  inlinePill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    backgroundColor: "#F4F4F5",
+    borderWidth: 1,
+    borderColor: "#E0E0E2",
+  },
+  inlinePillText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#8E8E93",
+  },
+  statCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.03)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 2,
+    alignItems: "center",
+    minWidth: 90,
+  },
+  statValue: {
+    fontSize: 26,
+    fontWeight: "800",
+    color: "#1C1C1E",
+    letterSpacing: -0.5,
+  },
+  statLabel: {
+    fontSize: 10,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    color: "#8E8E93",
+    marginTop: 4,
+  },
+  categoryCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    padding: 16,
+    flex: 1,
+    minWidth: "45%",
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.03)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  categoryIconWell: {
+    height: 48,
+    width: 48,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  categoryLabel: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1C1C1E",
+    letterSpacing: -0.2,
+  },
+  categorySessions: {
+    fontSize: 13,
+    color: "#8E8E93",
+    marginTop: 2,
+  },
+  categoryTopStat: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#22C55E",
+    marginTop: 6,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#1C1C1E",
+    marginBottom: 12,
+    letterSpacing: -0.2,
+  }
+});

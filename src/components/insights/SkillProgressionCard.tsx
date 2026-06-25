@@ -11,6 +11,7 @@ import {
 } from "@/src/hooks/insights/useSkillProgression";
 import { SAGE, GOLD, INK_MUTED } from "@/lib/tokens";
 import { EXERCISE_LABELS } from "@/src/constants/insights";
+import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 // ─── Mini Sparkline ──────────────────────────────────────────────────────────
 
@@ -65,24 +66,27 @@ function TrendBadge({
   const config = {
     improving: {
       text: `improving${rate > 0 ? ` (+${rate}%/wk)` : ""}`,
-      bg: "bg-sage-pill",
-      color: "text-sage-700",
+      bg: "#E8FBF0",
+      border: "#A7F3D0",
+      color: "#166534",
     },
     stable: {
       text: "stable",
-      bg: "bg-slate-100",
-      color: "text-ink-muted",
+      bg: "#F4F4F5",
+      border: "#E0E0E2",
+      color: "#8E8E93",
     },
     declining: {
       text: "needs attention",
-      bg: "bg-amber-50",
-      color: "text-amber-700",
+      bg: "#FEF3C7",
+      border: "#FDE68A",
+      color: "#92400E",
     },
   }[trend];
 
   return (
-    <View className={`px-2 py-0.5 rounded-full ${config.bg}`}>
-      <Text className={`text-[10px] font-bold ${config.color}`}>
+    <View style={[nutrieStyles.inlinePill, { backgroundColor: config.bg, borderColor: config.border }]}>
+      <Text style={[nutrieStyles.inlinePillText, { color: config.color }]}>
         {config.text}
       </Text>
     </View>
@@ -145,8 +149,8 @@ export function SkillProgressionCard() {
   if (activeTrends.length === 0) return null;
 
   return (
-    <View className="happy-brand-card rounded-2xl p-5 mb-4">
-      <Text className="happy-font-body-bold text-[14px] text-ink mb-1">
+    <View style={nutrieStyles.card}>
+      <Text style={nutrieStyles.sectionTitle}>
         Your Skills
       </Text>
       <Text className="text-[12px] text-ink-muted mb-2">

@@ -117,6 +117,8 @@ import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { SAGE, OTTER_BLUE, PARROT_ORANGE, MACAW_PURPLE, BRAND_SURFACE } from "@/lib/tokens";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
+import { useXPOptional } from "@/src/context/XPContext";
+import { XPActionType } from "@/src/types/xp";
 
 interface ResolvedExerciseFlowScreenProps {
   config: ExerciseConfig<any>;
@@ -157,6 +159,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
 
   // ─── Mutation ─────────────────────────────────────────────────────
   const { save, isSaving } = useExerciseMutation();
+  const xp = useXPOptional();
 
   // ─── AI ───────────────────────────────────────────────────────────
   const currentStep = config?.steps[flow.currentStepIndex];
@@ -213,11 +216,18 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       const payload = flow.getSavePayload("completed");
       await save(payload, entryId);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      
+      if (!existingEntry || existingEntry.status !== "completed") {
+        xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
+          customDescription: config.title || "Exercise completed",
+        });
+      }
+
       exitScreen();
     } catch (err) {
       Alert.alert("Save failed", "Please try again.");
     }
-  }, [flow, entryId, save, exitScreen]);
+  }, [flow, entryId, save, existingEntry, config.title, xp, exitScreen]);
 
   // ─── Android hardware back button ─────────────────────────────────
   React.useEffect(() => {

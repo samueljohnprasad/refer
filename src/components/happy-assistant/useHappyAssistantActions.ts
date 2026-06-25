@@ -20,7 +20,8 @@ export function useHappyAssistantActions(): HappyAssistantActionsResult {
   const pathname = usePathname();
   const { isAnonymous } = useAuth();
   const { hasPro, shouldPromptAccountClaim } = useRevenueCat();
-  const { data: history = [] } = useCBTHistory();
+  const { data: historyData } = useCBTHistory();
+  const history = useMemo(() => historyData?.pages.flatMap((p) => p.data) || [], [historyData]);
   const completedJourneyNodeCount = useAppSelector(selectTotalCompletedCount);
 
   return useMemo(() => {

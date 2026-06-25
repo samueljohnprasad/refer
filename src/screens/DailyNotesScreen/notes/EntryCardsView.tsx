@@ -44,6 +44,9 @@ interface EntryCardsViewProps {
   showActions?: boolean;
   bookmarkingId?: number | null;
   showDateHeaders?: boolean;
+  scrollEnabled?: boolean;
+  onEndReached?: () => void;
+  ListFooterComponent?: React.ReactElement | null;
 }
 
 export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
@@ -55,6 +58,9 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   showActions = true,
   bookmarkingId = null,
   showDateHeaders = false,
+  scrollEnabled = false,
+  onEndReached,
+  ListFooterComponent,
 }) => {
   const [selectedDate] = useAtom(selectedDateAtom);
   const router = useRouter();
@@ -124,7 +130,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   }
 
   return (
-    <View className="gap-4">
+    <View className="gap-4 flex-1">
       <SectionHeader
         title="Journal Entries"
         icon={NoteIcon}
@@ -135,7 +141,10 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
       <LegendList
         data={entries}
         estimatedItemSize={200}
-        scrollEnabled={false}
+        scrollEnabled={scrollEnabled}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={ListFooterComponent}
         contentContainerStyle={{ gap: 12 }}
         keyExtractor={(item: JournalEntry) => item.id ? item.id.toString() : Math.random().toString()}
         renderItem={({ item: entry, index }: { item: JournalEntry, index: number }) => (

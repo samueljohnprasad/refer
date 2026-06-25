@@ -9,6 +9,7 @@ import {
   type TriggerCluster,
 } from "@/src/hooks/insights/useTriggerClusters";
 import { SAGE, INK_MUTED } from "@/lib/tokens";
+import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 function ClusterRow({ cluster }: { cluster: TriggerCluster }) {
   const router = useRouter();
@@ -22,8 +23,8 @@ function ClusterRow({ cluster }: { cluster: TriggerCluster }) {
         >
           {cluster.theme}
         </Text>
-        <View className="bg-sage-pill px-2 py-0.5 rounded-full ml-2">
-          <Text className="text-[11px] font-bold text-sage-700">
+        <View style={[nutrieStyles.inlinePill, { backgroundColor: "#E8FBF0", borderColor: "#A7F3D0" }]}>
+          <Text style={[nutrieStyles.inlinePillText, { color: "#166534" }]}>
             {cluster.percentage}%
           </Text>
         </View>
@@ -82,8 +83,8 @@ export function TriggerClusterCard() {
   if (isLoading || !data || data.clusters.length === 0) return null;
 
   return (
-    <View className="happy-brand-card rounded-2xl p-5 mb-4">
-      <Text className="happy-font-body-bold text-[14px] text-ink mb-1">
+    <View style={nutrieStyles.card}>
+      <Text style={nutrieStyles.sectionTitle}>
         Your Pattern
       </Text>
       <Text className="text-[12px] text-ink-muted mb-2">

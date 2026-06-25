@@ -4,6 +4,7 @@ import { Text } from "@/src/components/ui/Text";
 import { useInsightNarrative } from "@/src/hooks/insights/useInsightNarrative";
 import { SAGE } from "@/lib/tokens";
 import dayjs from "dayjs";
+import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 export function InsightNarrativeCard() {
   const { data, isLoading } = useInsightNarrative();
@@ -14,12 +15,10 @@ export function InsightNarrativeCard() {
 
   return (
     <View
-      className="rounded-2xl p-5 mb-4"
-      style={{
-        backgroundColor: SAGE[50],
-        borderWidth: 1.5,
-        borderColor: SAGE[200],
-      }}
+      style={[
+        nutrieStyles.card,
+        { backgroundColor: SAGE[50], borderColor: SAGE[200], marginBottom: 16 }
+      ]}
     >
       <View className="flex-row items-center gap-1.5 mb-3">
         <Text className="text-[13px]">✨</Text>

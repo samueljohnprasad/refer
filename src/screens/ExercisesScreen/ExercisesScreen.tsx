@@ -6,21 +6,28 @@ import {
   useState,
   type ReactElement,
 } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View, ActivityIndicator, StyleSheet, Platform } from "react-native";
+import { SymbolView } from "expo-symbols";
+import { Feather } from "@expo/vector-icons";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
+  useAnimatedProps,
   withRepeat,
   withSequence,
   withTiming,
   withSpring,
+  withDelay,
+  FadeInDown,
   Easing,
 } from "react-native-reanimated";
+import Svg, { Circle } from "react-native-svg";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text } from "@/src/components/ui/Text";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
+import { LegendList } from "@legendapp/list";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   ArrowRight01Icon,
@@ -47,12 +54,13 @@ import type {
   ExerciseConfig,
   ExerciseType,
 } from "@/src/types/exerciseFlow";
-import { useCBTHistory, type HistoryLogItem } from "./hooks/useCBTHistory";
+import { useCBTHistory, useCompletedExercisesCount, type HistoryLogItem } from "./hooks/useCBTHistory";
 import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
 import { RecommendedForYouCard } from "@/src/components/insights/RecommendedForYouCard";
 import { Card } from "@/src/components/ui/Card";
-import { GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
+import { GOLD, INK_MUTED, SAGE, OTTER_BLUE, MACAW_PURPLE } from "@/lib/tokens";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
+import { useXPOptional } from "@/src/context/XPContext";
 import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
 import { GlassView } from "expo-glass-effect";
@@ -108,6 +116,133 @@ function isTabKey(value: unknown): value is TabKey {
   return typeof value === "string" && TAB_KEYS.includes(value as TabKey);
 }
 
+// ─── Nutrie-style category badge colors ─────────────────────────────────────
+interface NutrieBadgeTheme {
+  bg: string;
+  text: string;
+  iconColor: string;
+  sf: string;
+  feather: string;
+}
+
+const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
+  cbt_core: { bg: "#E8FBF0", text: "#22C55E", iconColor: "#22C55E", sf: "brain.head.profile", feather: "cpu" },
+  mindfulness: { bg: "#E4F6FC", text: "#00A3D9", iconColor: "#00A3D9", sf: "leaf", feather: "feather" },
+  anxiety: { bg: "#FFEDE8", text: "#FF6B4A", iconColor: "#FF6B4A", sf: "cloud", feather: "cloud" },
+  overthinking: { bg: "#F0EDFF", text: "#6B5CE7", iconColor: "#6B5CE7", sf: "sparkles", feather: "zap" },
+};
+
+function getCategoryBadgeTheme(category: string): NutrieBadgeTheme {
+  return CATEGORY_BADGE_THEME[category as ExerciseCategory] ?? CATEGORY_BADGE_THEME.cbt_core;
+}
+
+// ─── Animated progress ring (Nutrie MealScoreCard style) ─────────────────────
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+interface ProgressRingProps {
+  progress: number;
+  size: number;
+  color: string;
+  trackColor: string;
+}
+
+const ProgressRing = memo(function ProgressRing({ progress, size, color, trackColor }: ProgressRingProps) {
+  const strokeWidth = 8;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const cx = size / 2;
+  const cy = size / 2;
+
+  const animProgress = useSharedValue(0);
+
+  useEffect(() => {
+    animProgress.value = withTiming(Math.min(progress, 1), {
+      duration: 1200,
+      easing: Easing.out(Easing.cubic),
+    });
+  }, [progress]);
+
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDashoffset: circumference * (1 - animProgress.value),
+  }));
+
+  return (
+    <Svg width={size} height={size}>
+      <Circle
+        cx={cx}
+        cy={cy}
+        r={radius}
+        stroke={trackColor}
+        strokeWidth={strokeWidth}
+        fill="none"
+      />
+      <AnimatedCircle
+        cx={cx}
+        cy={cy}
+        r={radius}
+        stroke={color}
+        strokeWidth={strokeWidth}
+        fill="none"
+        strokeDasharray={`${circumference}`}
+        animatedProps={animatedProps}
+        strokeLinecap="round"
+        rotation="-90"
+        origin={`${cx}, ${cy}`}
+      />
+    </Svg>
+  );
+});
+
+// ─── Summary stat cards (Nutrie CaloriesCard + DailyGoalCard style) ──────────
+
+interface StatCardData {
+  completedCount: number;
+  todayXP: number;
+}
+
+const SummaryStatCards = memo(function SummaryStatCards({ completedCount, todayXP }: StatCardData) {
+  return (
+    <Animated.View entering={FadeInDown.duration(400).delay(100)} style={nutrieStyles.statRow}>
+      {/* Completed card */}
+      <View style={nutrieStyles.statCard}>
+        <View style={[nutrieStyles.statBadge, { backgroundColor: "#E8FBF0" }]}>
+          {Platform.OS === "ios" ? (
+            <SymbolView name={"checkmark.circle" as any} size={12} tintColor="#22C55E" weight="semibold" style={{ width: 14, height: 14 }} />
+          ) : (
+            <Feather name="check-circle" size={12} color="#22C55E" />
+          )}
+          <Text style={[nutrieStyles.statBadgeText, { color: "#22C55E" }]}>Completed</Text>
+        </View>
+        <View style={nutrieStyles.statValueRow}>
+          <Text style={nutrieStyles.statValue}>{completedCount}</Text>
+        </View>
+        <ProgressRing
+          progress={Math.min(completedCount / 100, 1)}
+          size={44}
+          color="#22C55E"
+          trackColor="#E8FBF0"
+        />
+      </View>
+
+      {/* Today XP card */}
+      <View style={nutrieStyles.statCard}>
+        <View style={[nutrieStyles.statBadge, { backgroundColor: "#FFF5D6" }]}>
+          {Platform.OS === "ios" ? (
+            <SymbolView name={"bolt.fill" as any} size={12} tintColor="#C89400" weight="semibold" style={{ width: 14, height: 14 }} />
+          ) : (
+            <Feather name="zap" size={12} color="#C89400" />
+          )}
+          <Text style={[nutrieStyles.statBadgeText, { color: "#C89400" }]}>Today</Text>
+        </View>
+        <View style={nutrieStyles.statValueRow}>
+          <Text style={nutrieStyles.statValue}>+{todayXP}</Text>
+          <Text style={nutrieStyles.statUnit}>XP</Text>
+        </View>
+      </View>
+    </Animated.View>
+  );
+});
+
 function buildExerciseFlowRoute(
   type: ExerciseType,
   options?: { entryId?: string; readOnly?: boolean },
@@ -144,71 +279,65 @@ const ExerciseCard = memo(function ExerciseCard({
   featured = false,
 }: ExerciseCardProps): ReactElement {
   const icon = getExerciseIcon(exercise.type);
+  const badgeTheme = getCategoryBadgeTheme(exercise.category);
   const handlePress = useCallback((): void => {
     onPress(exercise);
   }, [exercise, onPress]);
 
   return (
-    <Card
-      variant="tile"
-      radius="xl"
+    <Pressable
       onPress={handlePress}
-      haptic="light"
-      className="mb-4"
-      contentClassName={featured ? "p-5" : "p-4"}
+      style={({ pressed }) => [
+        nutrieStyles.exerciseCard,
+        pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] },
+      ]}
       accessibilityLabel={`${exercise.title}: ${exercise.subtitle}. Duration: ${exercise.duration}.`}
+      accessibilityRole="button"
     >
-      {featured && (
-        <Text variant="eyebrow" className="mt-1 mb-4">
-          Start here
-        </Text>
-      )}
-      <View className="flex-row items-center gap-3">
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
         <View
-          className={`items-center justify-center rounded-icon-well border border-sage-100 bg-sage-50 ${featured ? "h-14 w-14" : "h-12 w-12"}`}
-          accessible={false}
+          style={[
+            nutrieStyles.exerciseIconWell,
+            { backgroundColor: badgeTheme.bg },
+            featured && { width: 56, height: 56 },
+          ]}
         >
-          <HugeiconsIcon
-            icon={icon}
-            size={featured ? 28 : 24}
-            color={SAGE[600]}
-          />
+          <HugeiconsIcon icon={icon} size={featured ? 28 : 24} color={badgeTheme.iconColor} />
         </View>
 
-        <View className="min-w-0 flex-1">
-          <Text variant="body-bold" numberOfLines={1}>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <Text style={nutrieStyles.exerciseTitle} numberOfLines={1}>
             {exercise.title}
           </Text>
-          <Text
-            variant="label"
-            color="soft"
-            className="mt-1"
-            numberOfLines={featured ? 3 : 2}
-          >
+          <Text style={nutrieStyles.exerciseSubtitle} numberOfLines={featured ? 3 : 2}>
             {exercise.subtitle}
           </Text>
 
-          <View className="mt-3 flex-row items-center gap-2">
-            <View className="flex-row items-center justify-center rounded-full bg-brand-surface-soft px-3 py-1.5">
-              <HugeiconsIcon icon={Time02Icon} size={14} color={INK_MUTED} />
-              <Text variant="chip" className="ml-1.5">
-                {exercise.duration}
-              </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 10 }}>
+            <View style={nutrieStyles.inlinePill}>
+              {Platform.OS === "ios" ? (
+                <SymbolView name={"clock" as any} size={11} tintColor="#8E8E93" weight="medium" style={{ width: 13, height: 13 }} />
+              ) : (
+                <Feather name="clock" size={11} color="#8E8E93" />
+              )}
+              <Text style={nutrieStyles.inlinePillText}>{exercise.duration}</Text>
             </View>
-            <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
-              <HugeiconsIcon icon={ZapIcon} size={14} color="#C89400" />
-              <Text variant="chip" className="ml-1.5 text-ink-soft">
-                +{exercise.xp} XP
-              </Text>
+            <View style={[nutrieStyles.inlinePill, { backgroundColor: "#FFF5D6", borderColor: "#F5E6B8" }]}>
+              {Platform.OS === "ios" ? (
+                <SymbolView name={"bolt.fill" as any} size={11} tintColor="#C89400" weight="medium" style={{ width: 13, height: 13 }} />
+              ) : (
+                <Feather name="zap" size={11} color="#C89400" />
+              )}
+              <Text style={[nutrieStyles.inlinePillText, { color: "#A67C00" }]}>+{exercise.xp} XP</Text>
             </View>
           </View>
         </View>
 
-        <View className="h-9 w-9 items-center justify-center rounded-full border border-sage-200 bg-sage-50">
-          <HugeiconsIcon icon={ArrowRight01Icon} size={16} color={SAGE[500]} />
+        <View style={nutrieStyles.arrowWell}>
+          <HugeiconsIcon icon={ArrowRight01Icon} size={14} color="#C4C4CC" />
         </View>
       </View>
-    </Card>
+    </Pressable>
   );
 });
 
@@ -228,38 +357,25 @@ const DiscoverSection = memo(function DiscoverSection({
   isFirst = false,
 }: DiscoverSectionProps): ReactElement {
   const categoryMeta = getCategoryMeta(category);
-  const categoryIcon = getCategoryIcon(category);
-  const tint = getCategoryTint(category);
+  const badgeTheme = getCategoryBadgeTheme(category);
 
   return (
-    <View className="mb-10">
-      <View
-        className={`mb-4 flex-row items-center px-1 ${isFirst ? "" : "pt-6"}`}
-      >
-        <View
-          className={`mr-3 h-12 w-12 items-center justify-center rounded-2xl border border-sage-100 ${tint.iconBg}`}
-        >
-          <HugeiconsIcon icon={categoryIcon} size={22} color={tint.iconColor} />
+    <View style={{ marginBottom: 32 }}>
+      <View style={[nutrieStyles.sectionHeader, !isFirst && { paddingTop: 16 }]}>
+        <View style={[nutrieStyles.categoryBadge, { backgroundColor: badgeTheme.bg }]}>
+          {Platform.OS === "ios" ? (
+            <SymbolView name={badgeTheme.sf as any} size={12} tintColor={badgeTheme.text} weight="semibold" style={{ width: 14, height: 14 }} />
+          ) : (
+            <Feather name={badgeTheme.feather as any} size={12} color={badgeTheme.text} />
+          )}
+          <Text style={[nutrieStyles.categoryBadgeText, { color: badgeTheme.text }]}>{label}</Text>
         </View>
-        <View className="min-w-0 flex-1">
-          <Text variant="h2" className="text-[20px]">
-            {label}
-          </Text>
-          <Text
-            variant="label"
-            color="soft"
-            className="mt-0.5"
-            numberOfLines={2}
-          >
-            {categoryMeta.description}
-          </Text>
-        </View>
-        <View className="ml-3 rounded-full border border-sage-200 bg-sage-100 px-3 py-1">
-          <Text variant="chip" className={tint.eyebrowColor}>
-            {exercises.length}
-          </Text>
+        <View style={[nutrieStyles.countBadge, { backgroundColor: badgeTheme.bg }]}>
+          <Text style={[nutrieStyles.countBadgeText, { color: badgeTheme.text }]}>{exercises.length}</Text>
         </View>
       </View>
+
+      <Text style={nutrieStyles.sectionDescription}>{categoryMeta.description}</Text>
 
       {exercises.map((exercise, i) => (
         <ExerciseCard
@@ -381,10 +497,6 @@ const LogCard = memo(function LogCard({
   const {
     label,
     isComplete,
-    badgeIconColor,
-    badgeClassName,
-    badgeTextClassName,
-    cardBorderClassName,
     xpEarned,
   } = formatStatus(item);
   const presentation = getLogPresentation(item);
@@ -392,59 +504,64 @@ const LogCard = memo(function LogCard({
     onPress(item);
   }, [item, onPress]);
 
+  const statusColor = isComplete ? "#22C55E" : "#8E8E93";
+  const statusBg = isComplete ? "#E8FBF0" : "#F4F4F5";
+
   return (
-    <Card
-      variant="answer"
-      radius="xl"
+    <Pressable
       onPress={handlePress}
-      haptic="light"
-      className={`mb-3 ${cardBorderClassName}`}
+      style={({ pressed }) => [
+        nutrieStyles.logCard,
+        pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] },
+      ]}
+      accessibilityRole="button"
     >
-      <View className="flex-row items-center gap-3">
-        <View className="h-12 w-12 items-center justify-center rounded-icon-well border border-sage-100 bg-sage-50">
-          <HugeiconsIcon icon={presentation.icon} size={22} color={SAGE[600]} />
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+        <View style={[nutrieStyles.logIconWell, { backgroundColor: isComplete ? "#E8FBF0" : "#F4F4F5" }]}>
+          <HugeiconsIcon icon={presentation.icon} size={22} color={isComplete ? "#22C55E" : "#8E8E93"} />
         </View>
 
-        <View className="min-w-0 flex-1">
-          <View className="mb-0.5 flex-row items-center justify-between">
-            <Text variant="eyebrow">{presentation.heading}</Text>
-            <Text variant="caption-muted">
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
+            <Text style={nutrieStyles.logHeading}>{presentation.heading}</Text>
+            <Text style={nutrieStyles.logDate}>
               {format(new Date(item.date), "MMM d, h:mm a")}
             </Text>
           </View>
 
-          <Text variant="body-bold" className="mb-2" numberOfLines={1}>
+          <Text style={nutrieStyles.logTitle} numberOfLines={1}>
             {presentation.title}
           </Text>
 
-          <View className="flex-row items-center gap-2">
-            <View
-              className={`flex-row items-center rounded-full px-2.5 py-1 ${badgeClassName}`}
-            >
-              <HugeiconsIcon
-                icon={isComplete ? CheckmarkBadge01Icon : Time02Icon}
-                size={12}
-                color={badgeIconColor}
-              />
-              <Text
-                variant="eyebrow"
-                className={`ml-1 text-[10px] ${badgeTextClassName}`}
-              >
-                {label}
-              </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 8 }}>
+            <View style={[nutrieStyles.inlinePill, { backgroundColor: statusBg, borderColor: isComplete ? "#C5ECD3" : "#E0E0E2" }]}>
+              {Platform.OS === "ios" ? (
+                <SymbolView
+                  name={(isComplete ? "checkmark.circle.fill" : "clock") as any}
+                  size={11}
+                  tintColor={statusColor}
+                  weight="medium"
+                  style={{ width: 13, height: 13 }}
+                />
+              ) : (
+                <Feather name={isComplete ? "check-circle" : "clock"} size={11} color={statusColor} />
+              )}
+              <Text style={[nutrieStyles.inlinePillText, { color: statusColor, fontWeight: "700" }]}>{label}</Text>
             </View>
             {isComplete && xpEarned > 0 ? (
-              <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
-                <HugeiconsIcon icon={ZapIcon} size={14} color="#C89400" />
-                <Text variant="chip" className="ml-1.5 text-ink-soft">
-                  +{xpEarned} XP
-                </Text>
+              <View style={[nutrieStyles.inlinePill, { backgroundColor: "#FFF5D6", borderColor: "#F5E6B8" }]}>
+                {Platform.OS === "ios" ? (
+                  <SymbolView name={"bolt.fill" as any} size={11} tintColor="#C89400" weight="medium" style={{ width: 13, height: 13 }} />
+                ) : (
+                  <Feather name="zap" size={11} color="#C89400" />
+                )}
+                <Text style={[nutrieStyles.inlinePillText, { color: "#A67C00" }]}>+{xpEarned} XP</Text>
               </View>
             ) : null}
           </View>
         </View>
       </View>
-    </Card>
+    </Pressable>
   );
 });
 
@@ -507,7 +624,20 @@ function getContextualEyebrow(): string {
 export default function ExercisesScreen(): ReactElement {
   const [activeTab, setActiveTab] = useState<TabKey>("discover");
   const params = useLocalSearchParams<{ tab?: string }>();
-  const { data: history = [], isLoading: isLoadingHistory } = useCBTHistory();
+  const {
+    data: historyData,
+    isLoading: isLoadingHistory,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useCBTHistory();
+
+  const history = useMemo(() => {
+    if (!historyData) return [];
+    return historyData.pages
+      .flatMap((page) => page.data)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [historyData]);
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
   const reducedMotion = useReducedMotion();
   const headerHeight = useHeaderHeight();
@@ -528,12 +658,8 @@ export default function ExercisesScreen(): ReactElement {
     }
   }, [params.tab]);
 
-  const completedCount = useMemo(
-    () =>
-      history.filter((item) => COMPLETE_HISTORY_STATUSES.has(item.status))
-        .length,
-    [history],
-  );
+  const { data: completedCount = 0 } = useCompletedExercisesCount();
+  const xp = useXPOptional();
 
   const handleExercisePress = useCallback((exercise: ExerciseConfig<any>) => {
     router.push(buildExerciseRoute(exercise.type) as never);
@@ -674,48 +800,279 @@ export default function ExercisesScreen(): ReactElement {
           ),
         }}
       />
-      <ScrollView
-        className="flex-1 happy-brand-screen"
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{
-          paddingTop: headerHeight - insets.top + 16,
-          paddingBottom: 128,
-          paddingHorizontal: 20,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-        {activeTab === "discover" ? (
-          <>
-            <RecommendedForYouCard />
-            <SuggestedExerciseCard />
-            {exerciseGroups.length === 0 ? (
-              <EmptyDiscoverState />
-            ) : (
-              exerciseGroups.map((group, i) => (
-                <FadeInItem key={group.category} index={i}>
-                  <DiscoverSection
-                    label={group.label}
-                    category={group.category}
-                    exercises={group.exercises}
-                    onPress={handleExercisePress}
-                    isFirst={i === 0}
-                  />
-                </FadeInItem>
-              ))
-            )}
-          </>
-        ) : isLoadingHistory ? (
-          <LoadingHistoryState />
-        ) : history.length === 0 ? (
-          <EmptyExerciseLogState />
-        ) : (
-          history.map((item, i) => (
-            <FadeInItem key={`${item.type}-${item.id}`} index={i}>
-              <LogCard item={item} onPress={handleLogPress} />
-            </FadeInItem>
-          ))
-        )}
-      </ScrollView>
+      {activeTab === "discover" ? (
+        <ScrollView
+          style={nutrieStyles.screenBg}
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{
+            paddingTop: headerHeight - insets.top + 16,
+            paddingBottom: 128,
+            paddingHorizontal: 16,
+          }}
+          showsVerticalScrollIndicator={false}
+        >
+          <SummaryStatCards completedCount={completedCount} todayXP={xp?.todayXP ?? 0} />
+          <RecommendedForYouCard />
+          <SuggestedExerciseCard />
+          {exerciseGroups.length === 0 ? (
+            <EmptyDiscoverState />
+          ) : (
+            exerciseGroups.map((group, i) => (
+              <Animated.View key={group.category} entering={FadeInDown.duration(400).delay(200 + i * 100)}>
+                <DiscoverSection
+                  label={group.label}
+                  category={group.category}
+                  exercises={group.exercises}
+                  onPress={handleExercisePress}
+                  isFirst={i === 0}
+                />
+              </Animated.View>
+            ))
+          )}
+        </ScrollView>
+      ) : (
+        <View style={nutrieStyles.screenBg}>
+          {isLoadingHistory ? (
+            <ScrollView
+              contentContainerStyle={{
+                paddingTop: headerHeight - insets.top + 16,
+              }}
+            >
+              <LoadingHistoryState />
+            </ScrollView>
+          ) : history.length === 0 ? (
+            <ScrollView
+              contentContainerStyle={{
+                paddingTop: headerHeight - insets.top + 16,
+              }}
+            >
+              <EmptyExerciseLogState />
+            </ScrollView>
+          ) : (
+            <LegendList
+              data={history}
+              estimatedItemSize={100}
+              contentContainerStyle={{
+                paddingTop: headerHeight - insets.top + 16,
+                paddingBottom: 128,
+                paddingHorizontal: 20,
+              }}
+              onEndReached={() => {
+                if (hasNextPage && !isFetchingNextPage) {
+                  fetchNextPage();
+                }
+              }}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                isFetchingNextPage ? (
+                  <View className="py-6">
+                    <ActivityIndicator size="small" color={SAGE[400]} />
+                  </View>
+                ) : null
+              }
+              keyExtractor={(item) => `${item.type}-${item.id}`}
+              renderItem={({ item, index }) => (
+                <Animated.View entering={FadeInDown.duration(300).delay(Math.min(index, 10) * 60)}>
+                  <LogCard item={item} onPress={handleLogPress} />
+                </Animated.View>
+              )}
+            />
+          )}
+        </View>
+      )}
     </>
   );
 }
+
+// ─── Nutrie-style Stylesheet ──────────────────────────────────────────────────
+const nutrieStyles = StyleSheet.create({
+  screenBg: {
+    flex: 1,
+    backgroundColor: "#F7F7F8",
+  },
+  // Stat Cards
+  statRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 24,
+    paddingHorizontal: 4,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.03)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 2,
+    alignItems: "center",
+  },
+  statBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  statBadgeText: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+  },
+  statValueRow: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    gap: 4,
+    marginBottom: 12,
+  },
+  statValue: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#1C1C1E",
+    letterSpacing: -0.5,
+  },
+  statUnit: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#8E8E93",
+  },
+  // Section Headers
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    paddingHorizontal: 4,
+    gap: 8,
+  },
+  categoryBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  categoryBadgeText: {
+    fontSize: 14,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
+  countBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  countBadgeText: {
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  sectionDescription: {
+    fontSize: 15,
+    color: "#8E8E93",
+    marginBottom: 16,
+    paddingHorizontal: 8,
+    lineHeight: 20,
+  },
+  // Exercise Card
+  exerciseCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.03)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  exerciseIconWell: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    width: 48,
+    height: 48,
+  },
+  exerciseTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#1C1C1E",
+    letterSpacing: -0.2,
+  },
+  exerciseSubtitle: {
+    fontSize: 14,
+    color: "#8E8E93",
+    marginTop: 2,
+    lineHeight: 18,
+  },
+  inlinePill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    backgroundColor: "#F4F4F5",
+    borderWidth: 1,
+    borderColor: "#E0E0E2",
+  },
+  inlinePillText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#8E8E93",
+  },
+  arrowWell: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#F4F4F5",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  // Log Card
+  logCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.03)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  logIconWell: {
+    width: 48,
+    height: 48,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logHeading: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#8E8E93",
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+  },
+  logDate: {
+    fontSize: 12,
+    color: "#C7C7CC",
+    fontWeight: "500",
+  },
+  logTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#1C1C1E",
+    letterSpacing: -0.2,
+  },
+});

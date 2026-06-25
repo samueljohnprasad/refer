@@ -21,6 +21,7 @@ import {
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { SAGE, INK_MUTED } from "@/lib/tokens";
 import dayjs from "dayjs";
+import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 if (
   Platform.OS === "android" &&
@@ -35,16 +36,20 @@ function LockedNotebookCard({ onUnlock }: { onUnlock: () => void }) {
   return (
     <Pressable
       onPress={onUnlock}
-      className="happy-brand-card rounded-2xl p-5 mb-4 active:opacity-80"
+      style={({ pressed }) => [
+        nutrieStyles.card,
+        pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] },
+        { marginBottom: 16 }
+      ]}
     >
       <View className="flex-row items-center gap-2 mb-2">
         <Text className="text-[16px]">📓</Text>
         <HugeiconsIcon icon={LockIcon} size={14} color={INK_MUTED} />
-        <Text className="happy-font-body-bold text-[14px] text-ink">
+        <Text style={nutrieStyles.sectionTitle} className="mb-0">
           Therapist's Notebook
         </Text>
-        <View className="bg-purple-100 px-2 py-0.5 rounded-full">
-          <Text className="text-[10px] font-bold text-purple-700">PRO</Text>
+        <View style={[nutrieStyles.inlinePill, { backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
+          <Text style={[nutrieStyles.inlinePillText, { color: "#7E22CE" }]}>PRO</Text>
         </View>
       </View>
       <Text className="text-[12px] text-ink-muted leading-relaxed">
@@ -177,15 +182,15 @@ export function TherapistNotebookCard() {
   };
 
   return (
-    <View className="happy-brand-card rounded-2xl p-5 mb-4">
+    <View style={[nutrieStyles.card, { marginBottom: 16 }]}>
       <Pressable onPress={toggleExpand} className="active:opacity-80">
         <View className="flex-row items-center gap-2 mb-1">
           <Text className="text-[16px]">📓</Text>
-          <Text className="happy-font-body-bold text-[14px] text-ink">
+          <Text style={nutrieStyles.sectionTitle} className="mb-0">
             Therapist's Notebook
           </Text>
-          <View className="bg-purple-100 px-2 py-0.5 rounded-full">
-            <Text className="text-[10px] font-bold text-purple-700">PRO</Text>
+          <View style={[nutrieStyles.inlinePill, { backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
+            <Text style={[nutrieStyles.inlinePillText, { color: "#7E22CE" }]}>PRO</Text>
           </View>
           <View className="flex-1" />
           <HugeiconsIcon

@@ -10,6 +10,7 @@ import {
 } from "@/src/hooks/insights/usePersonalEffectiveness";
 import { SAGE, INK_MUTED } from "@/lib/tokens";
 import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
+import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
@@ -67,8 +68,8 @@ export function PersonalEffectivenessCard() {
   const top3 = data.ranked.slice(0, 3);
 
   return (
-    <View className="happy-brand-card rounded-2xl p-5 mb-4">
-      <Text className="happy-font-body-bold text-[14px] text-ink mb-1">
+    <View style={nutrieStyles.card}>
+      <Text style={nutrieStyles.sectionTitle}>
         Best Tools for You
       </Text>
       <Text className="text-[12px] text-ink-muted mb-3">
