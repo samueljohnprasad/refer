@@ -8,8 +8,8 @@ import {
   ABCBeliefStep,
   ABCConsequenceStep,
   ABCNewConsequenceStep,
-  ABCSummaryStep,
 } from "./customSteps";
+import { ABCSummaryStep } from "./ABCSummaryStep";
 import { createStep } from "@/src/components/exercise/steps/createStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";

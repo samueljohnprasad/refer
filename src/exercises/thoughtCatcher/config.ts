@@ -4,7 +4,7 @@ import type {
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
 import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
-import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
+import { ThoughtCatcherSummary } from "./ThoughtCatcherSummary";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
@@ -28,17 +28,7 @@ const CatcherSummary = createSummaryStep<ThoughtCatcherResponse>(
   { title: "Thought Caught!", exerciseType: "thought_catcher" },
 );
 
-const CheckerSummary = createDynamicSummaryStep({
-  title: "Thought checked!",
-  celebrationEmoji: "🧠",
-  exerciseType: "thought_catcher",
-  preScoreKey: "intensity",
-  postScoreKey: "postIntensity",
-  scoreLabel: "Belief intensity",
-  scoreMax: 100,
-  keyTakeawayKey: "balancedThought",
-  keyTakeawayLabel: "Your balanced thought",
-});
+
 
 export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
   type: "thought_catcher",
@@ -246,7 +236,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
     },
     {
       id: "checker_summary",
-      component: CheckerSummary,
+      component: ThoughtCatcherSummary,
       label: "Final Summary",
       validate: () => true,
       excludeFromProgress: true,

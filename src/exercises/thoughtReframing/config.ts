@@ -3,7 +3,7 @@ import type {
   ThoughtReframingResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
+import { ThoughtReframingSummary } from "./ThoughtReframingSummary";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import {
@@ -296,17 +296,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
       },
       {
         id: "summary",
-        component: createDynamicSummaryStep({
-          title: "Thought reframed!",
-          celebrationEmoji: "✨",
-          exerciseType: "thought_reframing",
-          preScoreKey: "intensity",
-          postScoreKey: "postIntensity",
-          scoreLabel: "Belief intensity",
-          scoreMax: 100,
-          keyTakeawayKey: "balancedThought",
-          keyTakeawayLabel: "Your balanced thought",
-        }),
+        component: ThoughtReframingSummary,
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,

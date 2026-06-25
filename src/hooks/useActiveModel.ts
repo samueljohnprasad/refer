@@ -6,12 +6,13 @@
  * to the AI provider layer (`src/services/ai/`).
  */
 
-import { useRef, useCallback, useState } from 'react';
-import { Platform } from 'react-native';
-import { apple } from '@react-native-ai/apple';
-import { llama, downloadModel } from '@react-native-ai/llama';
-import { GLOBAL_AI_CONFIG } from '@/src/constants/ai';
-import type { AIProviderType } from '@/src/services/ai';
+import { useRef, useCallback, useState, useEffect } from "react";
+import { Platform } from "react-native";
+import { apple } from "@react-native-ai/apple";
+import { llama, downloadModel } from "@react-native-ai/llama";
+import { GLOBAL_AI_CONFIG } from "@/src/constants/ai";
+import type { AIProviderType } from "@/src/services/ai";
+import { useLocalModelSetting } from "./useLocalModelSetting";
 
 export interface UseActiveModelReturn {
   /** Downloads (if needed) and returns the active model instance. */
@@ -27,33 +28,54 @@ export interface UseActiveModelReturn {
 export function useActiveModel(): UseActiveModelReturn {
   const llamaModelRef = useRef<unknown>(null);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
+  const { modelUrl, isLoading } = useLocalModelSetting();
+  console.log("modelUrl", modelUrl);
+
+  // Keep track of the currently loaded model URL to invalidate the ref if it changes
+  const loadedModelUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (loadedModelUrlRef.current && loadedModelUrlRef.current !== modelUrl) {
+      // Model changed, invalidate the cached instance
+      llamaModelRef.current = null;
+    }
+  }, [modelUrl]);
 
   const isAppleAIAvailable: boolean =
     !GLOBAL_AI_CONFIG.FORCE_LOCAL_LLM &&
-    Platform.OS === 'ios' &&
-    typeof apple.isAvailable === 'function'
+    Platform.OS === "ios" &&
+    typeof apple.isAvailable === "function"
       ? apple.isAvailable()
       : false;
 
-  const providerType: AIProviderType = isAppleAIAvailable ? 'apple' : 'local-llm';
+  const providerType: AIProviderType = isAppleAIAvailable
+    ? "apple"
+    : "local-llm";
 
   const getActiveModel = useCallback(async (): Promise<unknown> => {
     if (isAppleAIAvailable) {
       return apple();
     }
 
+    // Wait for the setting to load
+    if (isLoading) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+
     if (!llamaModelRef.current) {
       const modelPath: string = await downloadModel(
-        GLOBAL_AI_CONFIG.LLAMA_MODEL_URL,
-        (progress: { percentage: number }) => setDownloadProgress(progress.percentage),
+        modelUrl,
+        (progress: { percentage: number }) =>
+          setDownloadProgress(progress.percentage),
       );
       const model = llama.languageModel(modelPath);
       await (model as unknown as { prepare: () => Promise<void> }).prepare();
       llamaModelRef.current = model;
+      loadedModelUrlRef.current = modelUrl;
     }
 
     return llamaModelRef.current;
-  }, [isAppleAIAvailable]);
+  }, [isAppleAIAvailable, modelUrl, isLoading]);
 
   return { getActiveModel, isAppleAIAvailable, providerType, downloadProgress };
 }

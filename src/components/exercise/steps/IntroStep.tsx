@@ -21,7 +21,15 @@ interface IntroStepProps extends StepProps {
 export const IntroStep: React.FC<IntroStepProps> = React.memo(
   ({ title, subtitle, duration, bulletPoints, onNext, onClose }) => {
     return (
-      <View className="flex-1 items-center pt-4 pb-4">
+      <View className="flex-1 items-center pt-4 pb-4 w-full relative">
+          {onClose && (
+            <Pressable
+              onPress={onClose}
+              className="absolute right-0 top-0 z-10 w-10 h-10 items-center justify-center bg-gray-100 rounded-full"
+            >
+              <HugeiconsIcon icon={Cancel01Icon} size={20} color={INK_MUTED} />
+            </Pressable>
+          )}
 
           {/* Brand Mascot illustration replacing generic blue icon wells */}
           <FadeInItem index={0}>

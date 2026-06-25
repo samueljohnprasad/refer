@@ -129,7 +129,7 @@ function TextQuestionStep({
   return (
     <StepLayout
       title={title}
-      subtitle={subtitle}
+      subtitle={subtitle ?? ""}
       progress={progress}
       stepIndex={stepIndex}
       totalSteps={totalSteps}
@@ -521,69 +521,3 @@ export function ABCNewConsequenceStep(
   );
 }
 
-export function ABCSummaryStep({
-  response,
-  onNext,
-  onBack,
-  isSaving,
-  readOnly,
-}: StepProps<ABCAnalysisResponse>): React.JSX.Element {
-  const router = useRouter();
-  const link = EXERCISE_LINKING_MAP["abc_analysis"];
-
-  const fields: Array<{ label: string; value: string }> = [
-    { label: "Activating Event", value: response.activatingEvent },
-    { label: "Belief", value: response.belief },
-    { label: "Emotion", value: response.consequenceEmotion },
-    { label: "Behavior", value: response.consequenceBehavior },
-    { label: "Alternative Belief", value: response.alternativeBelief },
-    { label: "New Consequence", value: response.newConsequence },
-  ];
-
-  const handleNavigate = (type: ExerciseType) => {
-    onNext();
-    router.push({ pathname: "/tabs/screens/exercise-flow", params: { type } });
-  };
-
-  return (
-    <DynamicSummary
-      title="ABC complete!"
-      celebrationEmoji="🧩"
-      preScore={response.preEmotionalIntensity}
-      postScore={response.postEmotionalIntensity}
-      scoreLabel="Emotional intensity"
-      scoreMax={10}
-      keyTakeaway={response.alternativeBelief}
-      keyTakeawayLabel="Your alternative belief"
-      nextExerciseType={link?.exerciseType}
-      nextExerciseLabel={link?.label}
-      onNavigateToExercise={handleNavigate}
-      onComplete={onNext}
-      onEdit={readOnly ? undefined : onBack}
-      isSaving={isSaving}
-      readOnly={readOnly}
-    >
-      {/* ABC-specific detail cards below the summary header */}
-      {fields.map((field) => (
-        <View
-          key={field.label}
-          className="rounded-2xl p-4 mx-1 mb-3"
-          style={{
-            backgroundColor: "#FFFFFF",
-            borderWidth: 2,
-            borderColor: "#E2E8F0",
-            borderBottomWidth: 4,
-            borderBottomColor: "#CBD5E1",
-          }}
-        >
-          <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">
-            {field.label}
-          </Text>
-          <Text className="text-[15px] text-slate-800 leading-relaxed">
-            {field.value?.trim() || "Not filled in"}
-          </Text>
-        </View>
-      ))}
-    </DynamicSummary>
-  );
-}

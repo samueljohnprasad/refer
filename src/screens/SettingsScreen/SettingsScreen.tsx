@@ -258,15 +258,25 @@ export default React.memo(function SettingsScreen() {
                 icon={Logout02Icon}
                 tone="danger"
                 title="Sign Out"
+                subtitle="Sign out of your account"
                 onPress={() => setIsSignoutOPen(true)}
                 isLast={true}
-                danger={true}
               />
             )}
           </SettingsSection>
 
           {/* Developer Section for Testing */}
           <SettingsSection title="Developer">
+            <SettingsItem
+              icon={AlertSquareIcon}
+              tone="gold"
+              title="Active AI Model"
+              subtitle="Configure local LLM"
+              onPress={() => {
+                Haptics.selectionAsync();
+                router.push("/tabs/screens/active-model" as any);
+              }}
+            />
             <SettingsItem
               icon={StarIcon}
               tone="gold"

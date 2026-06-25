@@ -12,6 +12,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Text } from "@/src/components/ui/Text";
 import { format, parseISO } from "date-fns";
+import { LegendList } from "@legendapp/list";
 import { getEntryTypeIcon } from "../../../components/lib/entryTypeUtils";
 import { JournalEntry } from "@/hooks/data/types";
 import { Image } from "@/components/ui/image";
@@ -131,8 +132,13 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         rightElement={ctaButton}
       />
 
-      <View className="gap-3">
-        {entries.map((entry, index) => (
+      <LegendList
+        data={entries}
+        estimatedItemSize={200}
+        scrollEnabled={false}
+        contentContainerStyle={{ gap: 12 }}
+        keyExtractor={(item: JournalEntry) => item.id ? item.id.toString() : Math.random().toString()}
+        renderItem={({ item: entry, index }: { item: JournalEntry, index: number }) => (
           <View key={entry.id}>
             {showDateHeaders && (
               <Text variant="label" color="muted" className="mb-2">
@@ -151,8 +157,8 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
               isBookmarking={bookmarkingId === entry.id}
             />
           </View>
-        ))}
-      </View>
+        )}
+      />
       <ConfirmationModal
         deleteEntry={deleteEntry}
         onDismiss={onDismiss}

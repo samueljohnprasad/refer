@@ -3,7 +3,7 @@ import type {
   GratitudeReframeResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
+import { GratitudeReframeSummary } from "./GratitudeReframeSummary";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { ChoiceStep } from "@/src/components/exercise/steps/ChoiceStep";
@@ -162,17 +162,7 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
       },
       {
         id: "summary",
-        component: createDynamicSummaryStep({
-          title: "Gratitude captured!",
-          celebrationEmoji: "🌿",
-          exerciseType: "gratitude_reframe",
-          preScoreKey: "moodIntensity",
-          postScoreKey: "finalMoodIntensity",
-          scoreLabel: "Mood shift",
-          scoreMax: 100,
-          keyTakeawayKey: "gratitudeEntries",
-          keyTakeawayLabel: "What you're grateful for",
-        }),
+        component: GratitudeReframeSummary as any,
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,
