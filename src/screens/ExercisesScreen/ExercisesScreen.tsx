@@ -6,7 +6,14 @@ import {
   useState,
   type ReactElement,
 } from "react";
-import { Pressable, ScrollView, View, ActivityIndicator, StyleSheet, Platform } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  Platform,
+} from "react-native";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
 import Animated, {
@@ -23,7 +30,10 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { Text } from "@/src/components/ui/Text";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
@@ -54,9 +64,14 @@ import type {
   ExerciseConfig,
   ExerciseType,
 } from "@/src/types/exerciseFlow";
-import { useCBTHistory, useCompletedExercisesCount, type HistoryLogItem } from "./hooks/useCBTHistory";
+import {
+  useCBTHistory,
+  useCompletedExercisesCount,
+  type HistoryLogItem,
+} from "./hooks/useCBTHistory";
 import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
 import { RecommendedForYouCard } from "@/src/components/insights/RecommendedForYouCard";
+import { CBTHistoryTimeline } from "./components/CBTHistoryTimeline";
 import { Card } from "@/src/components/ui/Card";
 import { GOLD, INK_MUTED, SAGE, OTTER_BLUE, MACAW_PURPLE } from "@/lib/tokens";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
@@ -126,122 +141,42 @@ interface NutrieBadgeTheme {
 }
 
 const CATEGORY_BADGE_THEME: Record<ExerciseCategory, NutrieBadgeTheme> = {
-  cbt_core: { bg: "#E8FBF0", text: "#22C55E", iconColor: "#22C55E", sf: "brain.head.profile", feather: "cpu" },
-  mindfulness: { bg: "#E4F6FC", text: "#00A3D9", iconColor: "#00A3D9", sf: "leaf", feather: "feather" },
-  anxiety: { bg: "#FFEDE8", text: "#FF6B4A", iconColor: "#FF6B4A", sf: "cloud", feather: "cloud" },
-  overthinking: { bg: "#F0EDFF", text: "#6B5CE7", iconColor: "#6B5CE7", sf: "sparkles", feather: "zap" },
+  cbt_core: {
+    bg: "#E8FBF0",
+    text: "#22C55E",
+    iconColor: "#22C55E",
+    sf: "brain.head.profile",
+    feather: "cpu",
+  },
+  mindfulness: {
+    bg: "#E4F6FC",
+    text: "#00A3D9",
+    iconColor: "#00A3D9",
+    sf: "leaf",
+    feather: "feather",
+  },
+  anxiety: {
+    bg: "#FFEDE8",
+    text: "#FF6B4A",
+    iconColor: "#FF6B4A",
+    sf: "cloud",
+    feather: "cloud",
+  },
+  overthinking: {
+    bg: "#F0EDFF",
+    text: "#6B5CE7",
+    iconColor: "#6B5CE7",
+    sf: "sparkles",
+    feather: "zap",
+  },
 };
 
 function getCategoryBadgeTheme(category: string): NutrieBadgeTheme {
-  return CATEGORY_BADGE_THEME[category as ExerciseCategory] ?? CATEGORY_BADGE_THEME.cbt_core;
-}
-
-// ─── Animated progress ring (Nutrie MealScoreCard style) ─────────────────────
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
-
-interface ProgressRingProps {
-  progress: number;
-  size: number;
-  color: string;
-  trackColor: string;
-}
-
-const ProgressRing = memo(function ProgressRing({ progress, size, color, trackColor }: ProgressRingProps) {
-  const strokeWidth = 8;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const cx = size / 2;
-  const cy = size / 2;
-
-  const animProgress = useSharedValue(0);
-
-  useEffect(() => {
-    animProgress.value = withTiming(Math.min(progress, 1), {
-      duration: 1200,
-      easing: Easing.out(Easing.cubic),
-    });
-  }, [progress]);
-
-  const animatedProps = useAnimatedProps(() => ({
-    strokeDashoffset: circumference * (1 - animProgress.value),
-  }));
-
   return (
-    <Svg width={size} height={size}>
-      <Circle
-        cx={cx}
-        cy={cy}
-        r={radius}
-        stroke={trackColor}
-        strokeWidth={strokeWidth}
-        fill="none"
-      />
-      <AnimatedCircle
-        cx={cx}
-        cy={cy}
-        r={radius}
-        stroke={color}
-        strokeWidth={strokeWidth}
-        fill="none"
-        strokeDasharray={`${circumference}`}
-        animatedProps={animatedProps}
-        strokeLinecap="round"
-        rotation="-90"
-        origin={`${cx}, ${cy}`}
-      />
-    </Svg>
+    CATEGORY_BADGE_THEME[category as ExerciseCategory] ??
+    CATEGORY_BADGE_THEME.cbt_core
   );
-});
-
-// ─── Summary stat cards (Nutrie CaloriesCard + DailyGoalCard style) ──────────
-
-interface StatCardData {
-  completedCount: number;
-  todayXP: number;
 }
-
-const SummaryStatCards = memo(function SummaryStatCards({ completedCount, todayXP }: StatCardData) {
-  return (
-    <Animated.View entering={FadeInDown.duration(400).delay(100)} style={nutrieStyles.statRow}>
-      {/* Completed card */}
-      <View style={nutrieStyles.statCard}>
-        <View style={[nutrieStyles.statBadge, { backgroundColor: "#E8FBF0" }]}>
-          {Platform.OS === "ios" ? (
-            <SymbolView name={"checkmark.circle" as any} size={12} tintColor="#22C55E" weight="semibold" style={{ width: 14, height: 14 }} />
-          ) : (
-            <Feather name="check-circle" size={12} color="#22C55E" />
-          )}
-          <Text style={[nutrieStyles.statBadgeText, { color: "#22C55E" }]}>Completed</Text>
-        </View>
-        <View style={nutrieStyles.statValueRow}>
-          <Text style={nutrieStyles.statValue}>{completedCount}</Text>
-        </View>
-        <ProgressRing
-          progress={Math.min(completedCount / 100, 1)}
-          size={44}
-          color="#22C55E"
-          trackColor="#E8FBF0"
-        />
-      </View>
-
-      {/* Today XP card */}
-      <View style={nutrieStyles.statCard}>
-        <View style={[nutrieStyles.statBadge, { backgroundColor: "#FFF5D6" }]}>
-          {Platform.OS === "ios" ? (
-            <SymbolView name={"bolt.fill" as any} size={12} tintColor="#C89400" weight="semibold" style={{ width: 14, height: 14 }} />
-          ) : (
-            <Feather name="zap" size={12} color="#C89400" />
-          )}
-          <Text style={[nutrieStyles.statBadgeText, { color: "#C89400" }]}>Today</Text>
-        </View>
-        <View style={nutrieStyles.statValueRow}>
-          <Text style={nutrieStyles.statValue}>+{todayXP}</Text>
-          <Text style={nutrieStyles.statUnit}>XP</Text>
-        </View>
-      </View>
-    </Animated.View>
-  );
-});
 
 function buildExerciseFlowRoute(
   type: ExerciseType,
@@ -302,33 +237,68 @@ const ExerciseCard = memo(function ExerciseCard({
             featured && { width: 56, height: 56 },
           ]}
         >
-          <HugeiconsIcon icon={icon} size={featured ? 28 : 24} color={badgeTheme.iconColor} />
+          <HugeiconsIcon
+            icon={icon}
+            size={featured ? 28 : 24}
+            color={badgeTheme.iconColor}
+          />
         </View>
 
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={nutrieStyles.exerciseTitle} numberOfLines={1}>
             {exercise.title}
           </Text>
-          <Text style={nutrieStyles.exerciseSubtitle} numberOfLines={featured ? 3 : 2}>
+          <Text
+            style={nutrieStyles.exerciseSubtitle}
+            numberOfLines={featured ? 3 : 2}
+          >
             {exercise.subtitle}
           </Text>
 
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+              marginTop: 10,
+            }}
+          >
             <View style={nutrieStyles.inlinePill}>
               {Platform.OS === "ios" ? (
-                <SymbolView name={"clock" as any} size={11} tintColor="#8E8E93" weight="medium" style={{ width: 13, height: 13 }} />
+                <SymbolView
+                  name={"clock" as any}
+                  size={11}
+                  tintColor="#8E8E93"
+                  weight="medium"
+                  style={{ width: 13, height: 13 }}
+                />
               ) : (
                 <Feather name="clock" size={11} color="#8E8E93" />
               )}
-              <Text style={nutrieStyles.inlinePillText}>{exercise.duration}</Text>
+              <Text style={nutrieStyles.inlinePillText}>
+                {exercise.duration}
+              </Text>
             </View>
-            <View style={[nutrieStyles.inlinePill, { backgroundColor: "#FFF5D6", borderColor: "#F5E6B8" }]}>
+            <View
+              style={[
+                nutrieStyles.inlinePill,
+                { backgroundColor: "#FFF5D6", borderColor: "#F5E6B8" },
+              ]}
+            >
               {Platform.OS === "ios" ? (
-                <SymbolView name={"bolt.fill" as any} size={11} tintColor="#C89400" weight="medium" style={{ width: 13, height: 13 }} />
+                <SymbolView
+                  name={"bolt.fill" as any}
+                  size={11}
+                  tintColor="#C89400"
+                  weight="medium"
+                  style={{ width: 13, height: 13 }}
+                />
               ) : (
                 <Feather name="zap" size={11} color="#C89400" />
               )}
-              <Text style={[nutrieStyles.inlinePillText, { color: "#A67C00" }]}>+{exercise.xp} XP</Text>
+              <Text style={[nutrieStyles.inlinePillText, { color: "#A67C00" }]}>
+                +{exercise.xp} XP
+              </Text>
             </View>
           </View>
         </View>
@@ -361,21 +331,50 @@ const DiscoverSection = memo(function DiscoverSection({
 
   return (
     <View style={{ marginBottom: 32 }}>
-      <View style={[nutrieStyles.sectionHeader, !isFirst && { paddingTop: 16 }]}>
-        <View style={[nutrieStyles.categoryBadge, { backgroundColor: badgeTheme.bg }]}>
+      <View
+        style={[nutrieStyles.sectionHeader, !isFirst && { paddingTop: 16 }]}
+      >
+        <View
+          style={[
+            nutrieStyles.categoryBadge,
+            { backgroundColor: badgeTheme.bg },
+          ]}
+        >
           {Platform.OS === "ios" ? (
-            <SymbolView name={badgeTheme.sf as any} size={12} tintColor={badgeTheme.text} weight="semibold" style={{ width: 14, height: 14 }} />
+            <SymbolView
+              name={badgeTheme.sf as any}
+              size={12}
+              tintColor={badgeTheme.text}
+              weight="semibold"
+              style={{ width: 14, height: 14 }}
+            />
           ) : (
-            <Feather name={badgeTheme.feather as any} size={12} color={badgeTheme.text} />
+            <Feather
+              name={badgeTheme.feather as any}
+              size={12}
+              color={badgeTheme.text}
+            />
           )}
-          <Text style={[nutrieStyles.categoryBadgeText, { color: badgeTheme.text }]}>{label}</Text>
+          <Text
+            style={[nutrieStyles.categoryBadgeText, { color: badgeTheme.text }]}
+          >
+            {label}
+          </Text>
         </View>
-        <View style={[nutrieStyles.countBadge, { backgroundColor: badgeTheme.bg }]}>
-          <Text style={[nutrieStyles.countBadgeText, { color: badgeTheme.text }]}>{exercises.length}</Text>
+        <View
+          style={[nutrieStyles.countBadge, { backgroundColor: badgeTheme.bg }]}
+        >
+          <Text
+            style={[nutrieStyles.countBadgeText, { color: badgeTheme.text }]}
+          >
+            {exercises.length}
+          </Text>
         </View>
       </View>
 
-      <Text style={nutrieStyles.sectionDescription}>{categoryMeta.description}</Text>
+      <Text style={nutrieStyles.sectionDescription}>
+        {categoryMeta.description}
+      </Text>
 
       {exercises.map((exercise, i) => (
         <ExerciseCard
@@ -494,11 +493,7 @@ const LogCard = memo(function LogCard({
   item,
   onPress,
 }: LogCardProps): ReactElement {
-  const {
-    label,
-    isComplete,
-    xpEarned,
-  } = formatStatus(item);
+  const { label, isComplete, xpEarned } = formatStatus(item);
   const presentation = getLogPresentation(item);
   const handlePress = useCallback((): void => {
     onPress(item);
@@ -517,12 +512,28 @@ const LogCard = memo(function LogCard({
       accessibilityRole="button"
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
-        <View style={[nutrieStyles.logIconWell, { backgroundColor: isComplete ? "#E8FBF0" : "#F4F4F5" }]}>
-          <HugeiconsIcon icon={presentation.icon} size={22} color={isComplete ? "#22C55E" : "#8E8E93"} />
+        <View
+          style={[
+            nutrieStyles.logIconWell,
+            { backgroundColor: isComplete ? "#E8FBF0" : "#F4F4F5" },
+          ]}
+        >
+          <HugeiconsIcon
+            icon={presentation.icon}
+            size={22}
+            color={isComplete ? "#22C55E" : "#8E8E93"}
+          />
         </View>
 
         <View style={{ flex: 1, minWidth: 0 }}>
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 2,
+            }}
+          >
             <Text style={nutrieStyles.logHeading}>{presentation.heading}</Text>
             <Text style={nutrieStyles.logDate}>
               {format(new Date(item.date), "MMM d, h:mm a")}
@@ -533,8 +544,23 @@ const LogCard = memo(function LogCard({
             {presentation.title}
           </Text>
 
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 8 }}>
-            <View style={[nutrieStyles.inlinePill, { backgroundColor: statusBg, borderColor: isComplete ? "#C5ECD3" : "#E0E0E2" }]}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+              marginTop: 8,
+            }}
+          >
+            <View
+              style={[
+                nutrieStyles.inlinePill,
+                {
+                  backgroundColor: statusBg,
+                  borderColor: isComplete ? "#C5ECD3" : "#E0E0E2",
+                },
+              ]}
+            >
               {Platform.OS === "ios" ? (
                 <SymbolView
                   name={(isComplete ? "checkmark.circle.fill" : "clock") as any}
@@ -544,18 +570,44 @@ const LogCard = memo(function LogCard({
                   style={{ width: 13, height: 13 }}
                 />
               ) : (
-                <Feather name={isComplete ? "check-circle" : "clock"} size={11} color={statusColor} />
+                <Feather
+                  name={isComplete ? "check-circle" : "clock"}
+                  size={11}
+                  color={statusColor}
+                />
               )}
-              <Text style={[nutrieStyles.inlinePillText, { color: statusColor, fontWeight: "700" }]}>{label}</Text>
+              <Text
+                style={[
+                  nutrieStyles.inlinePillText,
+                  { color: statusColor, fontWeight: "700" },
+                ]}
+              >
+                {label}
+              </Text>
             </View>
             {isComplete && xpEarned > 0 ? (
-              <View style={[nutrieStyles.inlinePill, { backgroundColor: "#FFF5D6", borderColor: "#F5E6B8" }]}>
+              <View
+                style={[
+                  nutrieStyles.inlinePill,
+                  { backgroundColor: "#FFF5D6", borderColor: "#F5E6B8" },
+                ]}
+              >
                 {Platform.OS === "ios" ? (
-                  <SymbolView name={"bolt.fill" as any} size={11} tintColor="#C89400" weight="medium" style={{ width: 13, height: 13 }} />
+                  <SymbolView
+                    name={"bolt.fill" as any}
+                    size={11}
+                    tintColor="#C89400"
+                    weight="medium"
+                    style={{ width: 13, height: 13 }}
+                  />
                 ) : (
                   <Feather name="zap" size={11} color="#C89400" />
                 )}
-                <Text style={[nutrieStyles.inlinePillText, { color: "#A67C00" }]}>+{xpEarned} XP</Text>
+                <Text
+                  style={[nutrieStyles.inlinePillText, { color: "#A67C00" }]}
+                >
+                  +{xpEarned} XP
+                </Text>
               </View>
             ) : null}
           </View>
@@ -646,7 +698,11 @@ export default function ExercisesScreen(): ReactElement {
   // Active tab pill — spring in on mount
   const tabScale = useSharedValue(reducedMotion ? 1 : 0.92);
   useEffect(() => {
-    tabScale.value = withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true });
+    tabScale.value = withSpring(1, {
+      damping: 20,
+      stiffness: 100,
+      overshootClamping: true,
+    });
   }, []);
   const tabPillStyle = useAnimatedStyle(() => ({
     transform: [{ scale: tabScale.value }],
@@ -729,57 +785,55 @@ export default function ExercisesScreen(): ReactElement {
             >
               <SafeAreaView edges={["top"]}>
                 <View className="px-5 pb-3 pt-3">
-                  <View className="mb-4 flex-row items-center justify-between">
-                    <View className="flex-row items-center gap-3">
-                      <View>
-                        <Text variant="eyebrow" className="mb-0.5">
-                          {getContextualEyebrow()}
-                        </Text>
-                        <Text
-                          variant="display"
-                          className="text-[40px] leading-[46px]"
-                        >
-                          Exercises
-                        </Text>
-                      </View>
-                    </View>
-                    <View className="flex-row items-center gap-2">
-                      {completedCount > 0 ? (
-                        <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
-                          <HugeiconsIcon
-                            icon={ZapIcon}
-                            size={16}
-                            color="#C89400"
-                          />
-                          <Text variant="chip" className="ml-1.5 text-ink-soft">
-                            {completedCount} done
-                          </Text>
-                        </View>
-                      ) : null}
-                      <Pressable
-                        onPress={() =>
-                          router.push("/tabs/screens/coping-cards" as never)
-                        }
-                        accessibilityRole="button"
-                        accessibilityLabel="My Coping Cards"
-                        hitSlop={8}
-                        className="w-9 h-9 rounded-full bg-sage-pill items-center justify-center active:opacity-70"
+                  <View className="mb-5">
+                    <Text variant="eyebrow" className="mb-1">
+                      {getContextualEyebrow()}
+                    </Text>
+                    <View className="flex-row items-center justify-between">
+                      <Text
+                        variant="display"
+                        className="text-[40px] leading-[46px]"
                       >
-                        <HugeiconsIcon
-                          icon={BookmarkAdd01Icon}
-                          size={18}
-                          color={SAGE[600]}
-                          strokeWidth={2}
-                        />
-                      </Pressable>
+                        Exercises
+                      </Text>
+                      <View className="flex-row items-center gap-3">
+                        {completedCount > 0 ? (
+                          <View className="flex-row items-center justify-center rounded-full bg-[#FFF5D6] px-3 py-1.5">
+                            <HugeiconsIcon
+                              icon={ZapIcon}
+                              size={16}
+                              color="#C89400"
+                            />
+                            <Text variant="chip" className="ml-1.5 text-ink-soft">
+                              {completedCount} done
+                            </Text>
+                          </View>
+                        ) : null}
+                        <Pressable
+                          onPress={() =>
+                            router.push("/tabs/screens/coping-cards" as never)
+                          }
+                          accessibilityRole="button"
+                          accessibilityLabel="My Coping Cards"
+                          hitSlop={8}
+                          className="w-9 h-9 rounded-full bg-sage-pill items-center justify-center active:opacity-70"
+                        >
+                          <HugeiconsIcon
+                            icon={BookmarkAdd01Icon}
+                            size={18}
+                            color={SAGE[600]}
+                            strokeWidth={2}
+                          />
+                        </Pressable>
+                      </View>
                     </View>
                   </View>
 
                   <Animated.View
                     style={tabPillStyle}
-                    className="rounded-full border border-sage-100 bg-sage-50 p-1"
+                    className="w-full"
                   >
-                    <Host style={{ width: "100%", height: 32 }}>
+                    <Host style={{ width: "100%", height: 36 }}>
                       <Picker
                         modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
                         label="Exercises View"
@@ -811,14 +865,16 @@ export default function ExercisesScreen(): ReactElement {
           }}
           showsVerticalScrollIndicator={false}
         >
-          <SummaryStatCards completedCount={completedCount} todayXP={xp?.todayXP ?? 0} />
           <RecommendedForYouCard />
           <SuggestedExerciseCard />
           {exerciseGroups.length === 0 ? (
             <EmptyDiscoverState />
           ) : (
             exerciseGroups.map((group, i) => (
-              <Animated.View key={group.category} entering={FadeInDown.duration(400).delay(200 + i * 100)}>
+              <Animated.View
+                key={group.category}
+                entering={FadeInDown.duration(400).delay(200 + i * 100)}
+              >
                 <DiscoverSection
                   label={group.label}
                   category={group.category}
@@ -849,34 +905,20 @@ export default function ExercisesScreen(): ReactElement {
               <EmptyExerciseLogState />
             </ScrollView>
           ) : (
-            <LegendList
-              data={history}
-              estimatedItemSize={100}
-              contentContainerStyle={{
-                paddingTop: headerHeight - insets.top + 16,
-                paddingBottom: 128,
-                paddingHorizontal: 20,
-              }}
+            <CBTHistoryTimeline
+              entries={history}
+              isLoadingMore={isFetchingNextPage}
               onEndReached={() => {
                 if (hasNextPage && !isFetchingNextPage) {
                   fetchNextPage();
                 }
               }}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={
-                isFetchingNextPage ? (
-                  <View className="py-6">
-                    <ActivityIndicator size="small" color={SAGE[400]} />
-                  </View>
-                ) : null
-              }
-              keyExtractor={(item) => `${item.type}-${item.id}`}
-              renderItem={({ item, index }) => (
-                <Animated.View entering={FadeInDown.duration(300).delay(Math.min(index, 10) * 60)}>
-                  <LogCard item={item} onPress={handleLogPress} />
-                </Animated.View>
-              )}
+              contentPaddingTop={headerHeight - insets.top + 16}
+              onPressItem={handleLogPress}
             />
+            // <View className="flex-1 bg-amber-500">
+            //   <Text>History</Text>
+            // </View>
           )}
         </View>
       )}

@@ -332,7 +332,7 @@ function DailyNotesScreenComponent(): ReactElement {
   );
 
   return (
-    <View className="flex-1 happy-brand-screen">
+    <View className="flex-1 bg-brand-surface">
       <SafeAreaView edges={[]} style={{ flex: 1 }}>
         <Stack.Screen options={screenOptions} />
         <View className="flex-1 relative">

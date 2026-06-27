@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { View, ScrollView, Pressable, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, Stack } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -9,10 +9,12 @@ import { ArrowLeft01Icon, BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { SAGE, INK, BRAND_CANVAS } from "@/lib/tokens";
 import { CopingCardItem } from "./CopingCardItem";
+import { useHeaderHeight } from "expo-router/react-navigation";
 
 export const CopingCardsScreen: React.FC = () => {
   const router = useRouter();
   const [showArchived, setShowArchived] = useState(false);
+  const headerHeight = useHeaderHeight();
 
   const { cards, isLoading, toggleStar, archiveCard, unarchiveCard } =
     useCopingCards(showArchived);
@@ -45,37 +47,27 @@ export const CopingCardsScreen: React.FC = () => {
   const archivedCards = showArchived ? cards.filter((c) => c.archived) : [];
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: BRAND_CANVAS }}>
-      {/* Header */}
-      <View className="flex-row items-center px-5 py-3">
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-          hitSlop={12}
-          className="w-10 h-10 rounded-full items-center justify-center active:bg-sage-pill mr-3"
-        >
-          <HugeiconsIcon
-            icon={ArrowLeft01Icon}
-            size={22}
-            color={INK}
-            strokeWidth={2}
-          />
-        </Pressable>
-        <View className="flex-1">
-          <Text variant="h2" className="text-[22px] font-extrabold text-ink">
-            My Coping Cards
-          </Text>
-          <Text variant="caption-muted" className="text-[13px] mt-0.5">
-            Wisdom you've built through practice
-          </Text>
-        </View>
-      </View>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: BRAND_CANVAS }}
+      edges={["bottom", "left", "right"]}
+    >
+      <Stack.Screen
+        options={{
+          title: "My Coping Cards",
+          headerShown: true,
+          headerBackButtonDisplayMode: "minimal",
+          headerTransparent: true,
+        }}
+      />
 
       <ScrollView
         className="flex-1 px-5"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: 40, paddingTop: 8 }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingBottom: 40,
+          paddingTop: headerHeight + 8,
+        }}
       >
         {isLoading ? (
           <View className="flex-1 items-center justify-center pt-20">

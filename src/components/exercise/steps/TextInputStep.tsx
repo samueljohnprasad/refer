@@ -134,6 +134,7 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
           <VoiceTextInput
             value={value}
             onChangeText={(text) => onUpdate({ [fieldKey]: text } as any)}
+            editable={!readOnly}
             placeholder={placeholder}
             maxLength={maxLength}
             showCharCount

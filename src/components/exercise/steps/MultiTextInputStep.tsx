@@ -127,19 +127,21 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
               {i + 1}.
             </Text>
             <Text className="text-sm text-slate-700 flex-1">{item}</Text>
-            <Pressable
-              onPress={() => removeItem(i)}
-              accessibilityRole="button"
-              accessibilityLabel={`Remove item ${i + 1}`}
-              hitSlop={8}
-            >
-              <Text className="text-slate-400 text-lg">✕</Text>
-            </Pressable>
+            {!readOnly && (
+              <Pressable
+                onPress={() => removeItem(i)}
+                accessibilityRole="button"
+                accessibilityLabel={`Remove item ${i + 1}`}
+                hitSlop={8}
+              >
+                <Text className="text-slate-400 text-lg">✕</Text>
+              </Pressable>
+            )}
           </View>
         ))}
 
         {/* Input row */}
-        {items.length < maxItems && (
+        {!readOnly && items.length < maxItems && (
           <View className="flex-row items-center mt-2">
             <TextInput
               value={draft}

@@ -20,7 +20,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <View className="items-center pt-36 pb-12">
-      <View className="happy-mascot-stage h-44 w-44 items-center justify-center rounded-[44px] border-0">
+      <View className="h-44 w-44 items-center justify-center rounded-[44px] border-0">
         <Mascot state={mascotState} size={156} />
       </View>
       <View className="mt-7 px-12 self-stretch">

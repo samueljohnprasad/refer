@@ -35,6 +35,7 @@ export interface UseExerciseFlowReturn<T> {
 export function useExerciseFlow<T extends Record<string, any>>(
   config: ExerciseConfig<T>,
   existingEntry?: ExerciseEntry | null,
+  readOnly: boolean = false,
 ): UseExerciseFlowReturn<T> {
   const { steps, initialResponse, schemaVersion, type: exerciseType } = config;
 
@@ -55,10 +56,12 @@ export function useExerciseFlow<T extends Record<string, any>>(
 
   const restoredStepIndex = useMemo<number>(() => {
     if (!existingEntry) return 0;
+    if (readOnly) return steps.length - 1; // Force summary screen for read-only completed exercises
+
     // Try to find step by current_step id
     const idx = steps.findIndex((s) => s.id === existingEntry.current_step);
     return idx >= 0 ? idx : (existingEntry.step_index ?? 0);
-  }, [existingEntry, steps]);
+  }, [existingEntry, steps, readOnly]);
 
   const restoredCompletedSteps = useMemo<string[]>(() => {
     if (!existingEntry) return [];
@@ -109,7 +112,7 @@ export function useExerciseFlow<T extends Record<string, any>>(
     return currentCountableIndex / (countableSteps.length - 1);
   }, [steps, currentStepIndex, currentStepDef]);
 
-  const canGoBack = currentStepIndex > 0;
+  const canGoBack = readOnly ? false : currentStepIndex > 0;
   const isIntro = currentStepIndex === 0;
   const isSummary = currentStepIndex === steps.length - 1;
   const totalSteps = steps.length;

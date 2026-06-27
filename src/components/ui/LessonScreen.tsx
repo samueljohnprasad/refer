@@ -81,7 +81,11 @@ interface ActionFooterProps {
   className?: string;
 }
 
-interface LessonScreenProps extends ViewProps, Partial<Omit<ProgressHeaderProps, "style">>, Partial<Omit<ActionFooterProps, "style" | "variant" | "className">> {
+interface LessonScreenProps
+  extends
+    ViewProps,
+    Partial<Omit<ProgressHeaderProps, "style">>,
+    Partial<Omit<ActionFooterProps, "style" | "variant" | "className">> {
   children: ReactNode;
   /** Hide the header entirely when using the monolithic component. @default false */
   hideHeader?: boolean;
@@ -99,7 +103,8 @@ interface LessonScreenProps extends ViewProps, Partial<Omit<ProgressHeaderProps,
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-import { BlurView } from "expo-blur";
+import { GlassView } from "expo-glass-effect";
+import { Stack } from "expo-router";
 
 /**
  * Fixed top bar with close/back navigation, animated progress bar, and
@@ -120,24 +125,45 @@ const ProgressHeader: React.FC<ProgressHeaderProps> = ({
   const insets = useSafeAreaInsets();
 
   return (
-    <BlurView
-      intensity={50}
-      tint="light"
-      style={[{ paddingTop: Math.max(insets.top + 8, 48) }, style]}
-      className="absolute top-0 left-0 right-0 z-20"
-    >
-      <LessonHeader
-        onClose={onClose}
-        progress={progress}
-        trailingLabel={trailingLabel}
-        backButtonVariant={backButtonVariant}
-        progressFillColor={progressFillColor}
-        progressTrackColor={progressTrackColor}
-        progressHeight={progressHeight}
-        iconColor={iconColor}
-        trailingLabelColor={trailingLabelColor}
-      />
-    </BlurView>
+    <Stack.Screen
+      options={{
+        headerShown: true,
+        headerTransparent: true,
+        headerShadowVisible: false,
+        header: () => (
+          <GlassView
+            glassEffectStyle="regular"
+            tintColor="#FFFFFF10"
+            className="pb-2 overflow-hidden"
+            style={[
+              {
+                paddingTop: Math.max(insets.top + 8, 48),
+                borderBottomWidth: 0,
+                elevation: 0,
+                shadowOpacity: 0,
+                shadowRadius: 0,
+                shadowColor: "transparent", // IMPORTANT
+
+                overflow: "hidden",
+              },
+              style,
+            ]}
+          >
+            <LessonHeader
+              onClose={onClose}
+              progress={progress}
+              trailingLabel={trailingLabel}
+              backButtonVariant={backButtonVariant}
+              progressFillColor={progressFillColor}
+              progressTrackColor={progressTrackColor}
+              progressHeight={progressHeight}
+              iconColor={iconColor}
+              trailingLabelColor={trailingLabelColor}
+            />
+          </GlassView>
+        ),
+      }}
+    />
   );
 };
 
@@ -145,9 +171,18 @@ const ProgressHeader: React.FC<ProgressHeaderProps> = ({
  * Scrollable body area. Wraps `ScreenLayout.Content` and forwards all
  * `ScrollViewProps` through.
  */
-const Content: React.FC<ContentProps> = ({ children, hasHeader, hasFooter, ...scrollProps }) => {
+const Content: React.FC<ContentProps> = ({
+  children,
+  hasHeader,
+  hasFooter,
+  ...scrollProps
+}) => {
   return (
-    <ScreenLayout.Content hasHeader={hasHeader} hasFooter={hasFooter} {...scrollProps}>
+    <ScreenLayout.Content
+      hasHeader={hasHeader}
+      hasFooter={hasFooter}
+      {...scrollProps}
+    >
       {children}
     </ScreenLayout.Content>
   );
@@ -222,8 +257,8 @@ const ActionFooter: React.FC<ActionFooterProps> = ({
  * </LessonScreen>
  * ```
  */
-const LessonScreen = ({ 
-  children, 
+const LessonScreen = ({
+  children,
   className = "",
   hideHeader = false,
   hideFooter = false,
@@ -248,62 +283,45 @@ const LessonScreen = ({
   secondaryDisabled,
   footerVariant,
   footerStyle,
-  ...props 
+  ...props
 }: LessonScreenProps) => {
-  // Determine if using as a monolithic component by checking if specific monolithic props are passed
-  const isMonolithic = !!onPrimaryPress || !!onClose || progress !== undefined;
-
-  if (isMonolithic) {
-    return (
-      <ScreenLayout className={className} {...props}>
-        {!hideHeader && (
-          <ProgressHeader
-            progress={progress}
-            trailingLabel={trailingLabel}
-            onClose={onClose}
-            backButtonVariant={backButtonVariant}
-            progressFillColor={progressFillColor}
-            progressTrackColor={progressTrackColor}
-            progressHeight={progressHeight}
-            iconColor={iconColor}
-            trailingLabelColor={trailingLabelColor}
-            style={headerStyle}
-          />
-        )}
-        <Content hasHeader={!hideHeader} hasFooter={!hideFooter}>
-          {children}
-        </Content>
-        {!hideFooter && onPrimaryPress && (
-          <ActionFooter
-            primaryLabel={primaryLabel}
-            onPrimaryPress={onPrimaryPress}
-            primaryDisabled={primaryDisabled}
-            primaryLoading={primaryLoading}
-            primaryLeftIcon={primaryLeftIcon}
-            primaryRightIcon={primaryRightIcon}
-            secondaryLabel={secondaryLabel}
-            onSecondaryPress={onSecondaryPress}
-            secondaryDisabled={secondaryDisabled}
-            variant={footerVariant}
-            style={footerStyle}
-          />
-        )}
-      </ScreenLayout>
-    );
-  }
-
   return (
     <ScreenLayout className={className} {...props}>
-      {children}
+      {!hideHeader && (
+        <ProgressHeader
+          progress={progress}
+          trailingLabel={trailingLabel}
+          onClose={onClose}
+          backButtonVariant={backButtonVariant}
+          progressFillColor={progressFillColor}
+          progressTrackColor={progressTrackColor}
+          progressHeight={progressHeight}
+          iconColor={iconColor}
+          trailingLabelColor={trailingLabelColor}
+          style={headerStyle}
+        />
+      )}
+      <Content hasHeader={!hideHeader} hasFooter={!hideFooter}>
+        {children}
+      </Content>
+      {!hideFooter && onPrimaryPress && (
+        <ActionFooter
+          primaryLabel={primaryLabel}
+          onPrimaryPress={onPrimaryPress}
+          primaryDisabled={primaryDisabled}
+          primaryLoading={primaryLoading}
+          primaryLeftIcon={primaryLeftIcon}
+          primaryRightIcon={primaryRightIcon}
+          secondaryLabel={secondaryLabel}
+          onSecondaryPress={onSecondaryPress}
+          secondaryDisabled={secondaryDisabled}
+          variant={footerVariant}
+          style={footerStyle}
+        />
+      )}
     </ScreenLayout>
   );
 };
-
-// ─── Attach sub-components ───────────────────────────────────────────────────
-
-LessonScreen.ProgressHeader = ProgressHeader;
-LessonScreen.Content = Content;
-LessonScreen.ActionFooter = ActionFooter;
 
 // ─── Exports ─────────────────────────────────────────────────────────────────
 

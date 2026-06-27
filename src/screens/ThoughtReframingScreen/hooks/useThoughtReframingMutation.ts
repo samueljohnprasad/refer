@@ -60,6 +60,9 @@ export const useThoughtReframingMutation = (): UseMutationReturn => {
       // Invalidate any cached thought reframing queries
       queryClient.invalidateQueries({ queryKey: ['thought_reframing'] });
       queryClient.invalidateQueries({ queryKey: ['cbt_history'] });
+      queryClient.invalidateQueries({ queryKey: ['exercises'] });
+      queryClient.invalidateQueries({ queryKey: ['completed_exercises_count'] });
+      queryClient.invalidateQueries({ queryKey: ['exercise_stats'] });
     },
   });
 

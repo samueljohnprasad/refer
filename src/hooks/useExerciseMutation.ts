@@ -72,6 +72,8 @@ export const useExerciseMutation = (): UseExerciseMutationReturn => {
     onSuccess: (_data, { id }): void => {
       queryClient.invalidateQueries({ queryKey: ["exercises"] });
       queryClient.invalidateQueries({ queryKey: ["cbt_history"] });
+      queryClient.invalidateQueries({ queryKey: ["completed_exercises_count"] });
+      queryClient.invalidateQueries({ queryKey: ["exercise_stats"] });
       if (id) {
         queryClient.invalidateQueries({ queryKey: ["exercise_entry", id] });
       }

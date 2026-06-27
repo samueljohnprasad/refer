@@ -17,6 +17,10 @@ import Svg, {
 import { PLAN_STATS } from "../constants";
 import { MotivationAnswer } from "../types";
 import TestimonialCard from "../components/TestimonialCard";
+import { useWindowDimensions } from "react-native";
+import { getScaledLayout } from "./progress-graph-victory/layout";
+import ProgressGraphVictoryChart from "./progress-graph-victory/ProgressGraphVictoryChart";
+import { useProgressGraphVictoryAnimation } from "./progress-graph-victory/useProgressGraphVictoryAnimation";
 
 interface PlanRevealStepProps {
   planName: string;
@@ -150,150 +154,49 @@ const PLAN_META: Record<
 };
 
 const ProjectionGraph: React.FC = () => {
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+  const isCompactScreen = screenWidth < 390 || screenHeight < 880;
+  const horizontalPadding = isCompactScreen ? 12 : 16;
+  const maxCardWidth = isCompactScreen ? 332 : 352;
+  const cardWidth = Math.max(
+      Math.min(screenWidth - horizontalPadding * 2 - 8, maxCardWidth),
+      288,
+  );
+  const cardHeight = cardWidth * (isCompactScreen ? 0.87 : 0.9);
+  const scale = cardWidth / 320;
+  const chartHeight = cardHeight * (isCompactScreen ? 0.68 : 0.72);
+  const baseLayout = getScaledLayout({
+      scale,
+      cardWidth,
+      cardHeight,
+      chartHeight,
+      isCompact: isCompactScreen,
+  });
+  const layout = {
+      ...baseLayout,
+      chartContainerStyle: {
+          ...baseLayout.chartContainerStyle,
+          position: "relative" as const,
+          left: 0,
+          right: 0,
+          top: 0,
+          marginTop: 16,
+          marginBottom: 16,
+      }
+  };
+  const animationState = useProgressGraphVictoryAnimation();
+
   return (
-    <View style={{ marginTop: 10 }}>
-      <Svg width="100%" height={148} viewBox="0 0 320 140">
-        <Defs>
-          <SvgLinearGradient id="planProjectionGradient" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0%" stopColor="#7E9874" stopOpacity="0.5" />
-            <Stop offset="100%" stopColor="#7E9874" stopOpacity="0" />
-          </SvgLinearGradient>
-        </Defs>
-
-        <SvgText
-          x="6"
-          y="22"
-          fill="#7D8D7B"
-          fontSize="10"
-          fontFamily="GeistMedium"
-        >
-          High
-        </SvgText>
-        <SvgText
-          x="6"
-          y="120"
-          fill="#7D8D7B"
-          fontSize="10"
-          fontFamily="GeistMedium"
-        >
-          Low
-        </SvgText>
-
-        <Line
-          x1="35"
-          y1="20"
-          x2="305"
-          y2="20"
-          stroke="#E5EDE1"
-          strokeWidth="1"
-          strokeDasharray="2 3"
-        />
-        <Line
-          x1="35"
-          y1="60"
-          x2="305"
-          y2="60"
-          stroke="#E5EDE1"
-          strokeWidth="1"
-          strokeDasharray="2 3"
-        />
-        <Line
-          x1="35"
-          y1="100"
-          x2="305"
-          y2="100"
-          stroke="#E5EDE1"
-          strokeWidth="1"
-          strokeDasharray="2 3"
-        />
-
-        <Path
-          d="M 35 95 L 305 92"
-          fill="none"
-          stroke="#D3E0CD"
-          strokeWidth="2.5"
-          strokeDasharray="4 4"
-        />
-        <Path
-          d="M 35 100 Q 80 95 110 85 T 180 60 T 250 35 L 305 22 L 305 120 L 35 120 Z"
-          fill="url(#planProjectionGradient)"
-        />
-        <Path
-          d="M 35 100 Q 80 95 110 85 T 180 60 T 250 35 L 305 22"
-          fill="none"
-          stroke="#5F7F58"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-
-        <Circle cx="35" cy="100" r="4" fill="#5F7F58" stroke="#FFFFFF" strokeWidth="2.5" />
-        <Circle cx="110" cy="85" r="4" fill="#5F7F58" stroke="#FFFFFF" strokeWidth="2.5" />
-        <Circle cx="180" cy="60" r="4" fill="#5F7F58" stroke="#FFFFFF" strokeWidth="2.5" />
-        <Circle cx="250" cy="35" r="4" fill="#5F7F58" stroke="#FFFFFF" strokeWidth="2.5" />
-        <Circle cx="305" cy="22" r="5" fill="#D4A943" stroke="#FFFFFF" strokeWidth="3" />
-
-        <SvgText
-          x="35"
-          y="135"
-          textAnchor="start"
-          fill="#7D8D7B"
-          fontSize="10"
-          fontFamily="GeistMedium"
-        >
-          Day 1
-        </SvgText>
-        <SvgText
-          x="110"
-          y="135"
-          textAnchor="middle"
-          fill="#7D8D7B"
-          fontSize="10"
-          fontFamily="GeistMedium"
-        >
-          7
-        </SvgText>
-        <SvgText
-          x="180"
-          y="135"
-          textAnchor="middle"
-          fill="#7D8D7B"
-          fontSize="10"
-          fontFamily="GeistMedium"
-        >
-          14
-        </SvgText>
-        <SvgText
-          x="250"
-          y="135"
-          textAnchor="middle"
-          fill="#7D8D7B"
-          fontSize="10"
-          fontFamily="GeistMedium"
-        >
-          21
-        </SvgText>
-        <SvgText
-          x="305"
-          y="135"
-          textAnchor="end"
-          fill="#7D8D7B"
-          fontSize="10"
-          fontFamily="GeistMedium"
-        >
-          Day 30
-        </SvgText>
-
-        <SvgText
-          x="305"
-          y="14"
-          textAnchor="end"
-          fill="#29452A"
-          fontSize="12"
-          fontFamily="FrauncesSemiBold"
-        >
-          +62%
-        </SvgText>
-      </Svg>
+    <View>
+      <ProgressGraphVictoryChart
+        comparisonDashOpacity={animationState.comparisonDashOpacity}
+        comparisonDotOpacity={animationState.comparisonDotOpacity}
+        comparisonProjectionEnd={animationState.comparisonProjectionEnd}
+        endDotOpacity={animationState.endDotOpacity}
+        happyProjectionEnd={animationState.happyProjectionEnd}
+        layout={layout}
+        startDotOpacity={animationState.startDotOpacity}
+      />
 
       <View
         style={{
@@ -395,13 +298,41 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
         </Text>
       </Animated.View>
 
-      <Animated.View entering={FadeIn.duration(180).delay(160)}>
+      <Animated.View
+        entering={FadeIn.duration(180).delay(160)}
+        className="mt-4 rounded-[20px] border-2 border-sage-200 bg-cream px-[18px] py-5"
+      >
+        <Text
+          style={{ fontFamily: "GeistBold" }}
+          className="text-[11px] uppercase tracking-[0.1em] text-terracotta"
+        >
+          📈 What people like you report
+        </Text>
+        <Text
+          style={{ fontFamily: "FrauncesRegular" }}
+          className="mt-1.5 text-[17px] leading-[1.35] text-ink"
+        >
+          Your projected{" "}
+          <Text
+            style={{
+              fontFamily: "FrauncesRegularItalic",
+              color: "#5F7F58",
+            }}
+          >
+            mood clarity
+          </Text>{" "}
+          over 30 days
+        </Text>
+        <ProjectionGraph />
+      </Animated.View>
+
+      <Animated.View entering={FadeIn.duration(180).delay(240)}>
         <LinearGradient
           colors={["#44633F", "#29452A"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
-            marginTop: 16,
+            marginTop: 12,
             overflow: "hidden",
             borderRadius: 24,
             borderCurve: "continuous",
@@ -452,34 +383,6 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             ))}
           </View>
         </LinearGradient>
-      </Animated.View>
-
-      <Animated.View
-        entering={FadeIn.duration(180).delay(240)}
-        className="mt-3 rounded-[20px] border-2 border-sage-200 bg-cream px-[18px] py-5"
-      >
-        <Text
-          style={{ fontFamily: "GeistBold" }}
-          className="text-[11px] uppercase tracking-[0.1em] text-terracotta"
-        >
-          📈 What people like you report
-        </Text>
-        <Text
-          style={{ fontFamily: "FrauncesRegular" }}
-          className="mt-1.5 text-[17px] leading-[1.35] text-ink"
-        >
-          Your projected{" "}
-          <Text
-            style={{
-              fontFamily: "FrauncesRegularItalic",
-              color: "#5F7F58",
-            }}
-          >
-            mood clarity
-          </Text>{" "}
-          over 30 days
-        </Text>
-        <ProjectionGraph />
       </Animated.View>
 
       <Animated.View entering={FadeIn.duration(180).delay(320)}>

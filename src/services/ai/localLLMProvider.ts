@@ -93,6 +93,11 @@ function normalizeItems<T>(
       return remapped as T;
     }
 
+    // Hallucinated string array: if it's a string but we expect an object with one key
+    if (typeof item === 'string' && requiredKeys.length === 1) {
+      return { [requiredKeys[0]]: item } as T;
+    }
+
     return item as T;
   });
 }

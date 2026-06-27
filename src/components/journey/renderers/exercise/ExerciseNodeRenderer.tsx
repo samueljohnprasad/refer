@@ -533,7 +533,6 @@ export default function ExerciseNodeRenderer({
             onPrimaryPress={showingSummary ? handleComplete : handleNext}
             primaryDisabled={showingSummary ? isCompleting : !canGoNext}
             primaryLoading={showingSummary ? isCompleting : false}
-            scrollable
             className="flex-1"
         >
             <View className="flex-1 px-3 mt-4">

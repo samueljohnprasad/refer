@@ -1,0 +1,54 @@
+diff --git a/node_modules/react-native-beautiful-timeline/build/dist/Timeline.js b/node_modules/react-native-beautiful-timeline/build/dist/Timeline.js
+index 9a17e24..efafdd0 100644
+--- a/node_modules/react-native-beautiful-timeline/build/dist/Timeline.js
++++ b/node_modules/react-native-beautiful-timeline/build/dist/Timeline.js
+@@ -1,5 +1,5 @@
+ import React from "react";
+-import { SafeAreaView, FlatList } from "react-native";
++import { View, FlatList } from "react-native";
+ import Item from "./components/Item/Item";
+ /**
+  * ? Local Imports
+@@ -10,9 +10,9 @@ const Timeline = ({ data, timelineStyle, ...rest }) => {
+         const isLastMember = index === data.length - 1;
+         return (<Item {...rest} data={item} list={item.data} isLastMember={isLastMember}/>);
+     };
+-    return (<SafeAreaView style={[styles.container, timelineStyle]}>
++    return (<View style={[styles.container, timelineStyle]}>
+       <FlatList data={data} style={styles.listStyle} contentInset={styles.contentInset} keyExtractor={(item, index) => index.toString()} contentContainerStyle={styles.contentContainerStyle} renderItem={({ item, index }) => renderItem(item, index)} {...rest}/>
+-    </SafeAreaView>);
++    </View>);
+ };
+ export default Timeline;
+ //# sourceMappingURL=Timeline.js.map
+\ No newline at end of file
+diff --git a/node_modules/react-native-beautiful-timeline/build/dist/components/Card/Card.js b/node_modules/react-native-beautiful-timeline/build/dist/components/Card/Card.js
+index 7fd4c08..38374a3 100644
+--- a/node_modules/react-native-beautiful-timeline/build/dist/components/Card/Card.js
++++ b/node_modules/react-native-beautiful-timeline/build/dist/components/Card/Card.js
+@@ -1,5 +1,5 @@
+ import * as React from "react";
+-import { View, Text } from "react-native";
++import { View, Text, TouchableOpacity } from "react-native";
+ import moment from "moment";
+ import Androw from "react-native-androw";
+ /**
+@@ -8,7 +8,7 @@ import Androw from "react-native-androw";
+ import styles from "./Card.style";
+ const Card = ({ isCard = true, data, titleTextStyle, subtitleTextStyle, dateTextStyle, dateFormat = "DD ddd, HH:mm", }) => {
+     const { title, subtitle, date } = data;
+-    return (<Androw style={[
++    return (<TouchableOpacity activeOpacity={0.7} onPress={data.onPress}><Androw style={[
+             styles.container,
+             styles.shadowStyle,
+             isCard && {
+@@ -35,7 +35,7 @@ const Card = ({ isCard = true, data, titleTextStyle, subtitleTextStyle, dateText
+         ]}>
+         {moment(date).format(dateFormat)}
+       </Text>
+-    </Androw>);
++    </Androw></TouchableOpacity>);
+ };
+ export default Card;
+ //# sourceMappingURL=Card.js.map
+\ No newline at end of file

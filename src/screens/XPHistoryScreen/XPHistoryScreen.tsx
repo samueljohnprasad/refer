@@ -21,6 +21,7 @@ import { useHeaderHeight } from "expo-router/react-navigation";
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    // backgroundColor: "#F7F7F8",
   },
   loadingScreen: {
     alignItems: "center",
@@ -70,7 +71,6 @@ export const XPHistoryScreen: React.FC = () => {
   if (isLoading) {
     return (
       <SafeAreaView
-        className="happy-brand-screen flex-1 items-center justify-center"
         style={[styles.screen, styles.loadingScreen]}
       >
         <ActivityIndicator size="large" color={SAGE[500]} />
@@ -83,7 +83,6 @@ export const XPHistoryScreen: React.FC = () => {
 
   return (
     <View
-      className="happy-brand-screen flex-1"
       style={[styles.screen]}
     >
       <XPHistoryTimeline

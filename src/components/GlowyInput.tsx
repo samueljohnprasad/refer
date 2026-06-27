@@ -6,12 +6,17 @@ import {
   vec,
 } from "@shopify/react-native-skia";
 import {
-  Add01Icon,
   AudioWave01Icon,
-  Mic01Icon,
-  Search01Icon,
   Tick01Icon,
+  StopCircleIcon,
 } from "@hugeicons/core-free-icons";
+import {
+  SAGE,
+  BRAND_SURFACE,
+  INK,
+  INK_MUTED,
+  BRAND_BORDER,
+} from "../../lib/tokens";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { useEffect, useState } from "react";
 import {
@@ -22,6 +27,7 @@ import {
   TextInput,
   TextInputSubmitEditingEvent,
   View,
+  ActivityIndicator,
 } from "react-native";
 import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
 import Animated, {
@@ -30,6 +36,8 @@ import Animated, {
   useDerivedValue,
   useSharedValue,
   withTiming,
+  withRepeat,
+  withDelay,
 } from "react-native-reanimated";
 
 const canvasPadding = 50;
@@ -37,14 +45,14 @@ const borderRadius = 25;
 const glowHeightExpansion = 10;
 
 const glowColors = [
-  "rgba(74, 222, 128, 0.4)",
-  "rgba(34, 197, 94, 0.1)",
-  "rgba(74, 222, 128, 0.4)",
+  SAGE[200],
+  SAGE[50],
+  SAGE[200],
 ];
 const glowGradientColors = [...glowColors];
 const positions = [0, 0.5, 1];
 
-const travelingColors = ["transparent", "#4ADE80", "#22C55E", "transparent"];
+const travelingColors = ["transparent", SAGE[400], SAGE[500], "transparent"];
 const travelingPositions = [0.3, 0.75, 0.4, 1];
 
 export interface InputMessage {
@@ -57,7 +65,44 @@ interface GlowyInputProps {
   handleSendMessage: ({ message }: { message: InputMessage }) => void;
   handleSubmitEditing: (e: TextInputSubmitEditingEvent) => void;
   placeholder?: string;
+  onWavePress?: () => void;
+  isRecording?: boolean;
+  isTranscribing?: boolean;
 }
+
+const WaveBar = ({ delay }: { delay: number }) => {
+  const height = useSharedValue(4);
+
+  useEffect(() => {
+    height.value = withDelay(
+      delay,
+      withRepeat(
+        withTiming(12, {
+          duration: 400 + Math.random() * 200,
+          easing: Easing.inOut(Easing.ease),
+        }),
+        -1,
+        true
+      )
+    );
+  }, [delay, height]);
+
+  const style = useAnimatedStyle(() => ({ height: height.value }));
+
+  return (
+    <Animated.View
+      style={[
+        {
+          width: 2.5,
+          backgroundColor: INK,
+          borderRadius: 2,
+          marginHorizontal: 1,
+        },
+        style,
+      ]}
+    />
+  );
+};
 
 function GlowyInput({
   message,
@@ -65,6 +110,9 @@ function GlowyInput({
   handleSubmitEditing,
   handleSendMessage,
   placeholder,
+  onWavePress,
+  isRecording,
+  isTranscribing,
 }: GlowyInputProps) {
   const [dimensions, setDimensions] = useState<{
     width: number;
@@ -116,7 +164,7 @@ function GlowyInput({
     useReanimatedKeyboardAnimation();
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: keyboardHeight.value }],
+    // transform: [{ translateY: keyboardHeight.value }],
   }));
 
   const footerStyle = useAnimatedStyle(() => ({
@@ -214,7 +262,7 @@ function GlowyInput({
             value={message}
             onChangeText={setMessage}
             placeholder={placeholder || "Ask anything..."}
-            placeholderTextColor="#666"
+            placeholderTextColor={INK_MUTED}
             onSubmitEditing={handleSubmitEditing}
             returnKeyType="send"
             multiline
@@ -222,17 +270,14 @@ function GlowyInput({
 
           <View style={styles.footerContainer}>
             <Animated.View style={[styles.footer, footerStyle]}>
-              <Pressable style={styles.actionButton}>
-                <Text style={styles.actionButtonText}>EN</Text>
-              </Pressable>
-
+              <View style={{ flex: 1 }} />
               <Pressable
                 disabled={!message?.trim()}
                 onPress={onSend}
                 style={({ pressed }) => [
                   styles.sendButton,
                   {
-                    backgroundColor: message?.trim() ? "#4ADE80" : "#333",
+                    backgroundColor: message?.trim() ? SAGE[500] : BRAND_BORDER,
                     opacity: pressed ? 0.8 : 1,
                   },
                 ]}
@@ -240,7 +285,7 @@ function GlowyInput({
                 <HugeiconsIcon
                   icon={Tick01Icon}
                   size={18}
-                  color={message?.trim() ? "#000" : "#666"}
+                  color={message?.trim() ? "#fff" : INK_MUTED}
                   strokeWidth={3}
                 />
               </Pressable>
@@ -250,24 +295,29 @@ function GlowyInput({
               style={[styles.footer, styles.absoluteFooter, initialFooterStyle]}
             >
               <View style={styles.leftActions}>
-                <Pressable style={styles.iconButton}>
-                  <HugeiconsIcon icon={Add01Icon} size={18} color="#ccc" />
-                </Pressable>
-                <Pressable style={styles.iconButton}>
-                  <HugeiconsIcon icon={Search01Icon} size={18} color="#ccc" />
-                </Pressable>
               </View>
 
               <View style={styles.rightActions}>
-                <Pressable style={styles.iconButton}>
-                  <HugeiconsIcon icon={Mic01Icon} size={18} color="#ccc" />
-                </Pressable>
-                <Pressable style={styles.waveButton}>
-                  <HugeiconsIcon
-                    icon={AudioWave01Icon}
-                    size={18}
-                    color="#000"
-                  />
+                <Pressable
+                  style={styles.waveButton}
+                  onPress={onWavePress}
+                  disabled={isTranscribing}
+                >
+                  {isTranscribing ? (
+                    <ActivityIndicator size="small" color={INK} />
+                  ) : isRecording ? (
+                    <View style={{ flexDirection: "row", alignItems: "center", height: 16 }}>
+                      {[0, 150, 75, 200].map((delay, index) => (
+                        <WaveBar key={index} delay={delay} />
+                      ))}
+                    </View>
+                  ) : (
+                    <HugeiconsIcon
+                      icon={AudioWave01Icon}
+                      size={18}
+                      color={INK}
+                    />
+                  )}
                 </Pressable>
               </View>
             </Animated.View>
@@ -281,7 +331,7 @@ function GlowyInput({
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     paddingBottom: 20,
     backgroundColor: "transparent",
   },
@@ -290,7 +340,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   inputContainer: {
-    backgroundColor: "#222427",
+    backgroundColor: BRAND_SURFACE,
     borderRadius: borderRadius,
     paddingHorizontal: 15,
     paddingTop: 12,
@@ -301,7 +351,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#fff",
+    color: INK,
     textAlignVertical: "top",
     paddingTop: 0,
   },
@@ -343,7 +393,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#FACC15",
+    backgroundColor: SAGE[200],
     justifyContent: "center",
     alignItems: "center",
   },

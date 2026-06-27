@@ -9,6 +9,7 @@ import { View, TextInput } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { INK_MUTED } from "@/lib/tokens";
 import { RendererSectionCard } from "../RendererFrame";
+import GlowyInput from "@/src/components/GlowyInput";
 
 // ============================================================================
 // Types
@@ -55,20 +56,13 @@ export default function ExerciseInputText({
                     {prompt}
                 </Text>
 
-                <View className="rounded-[24px] bg-sage-50 p-4">
-                    <TextInput
-                        value={value}
-                        onChangeText={onChange}
-                        placeholder={placeholder ?? "Start writing here..."}
-                        placeholderTextColor={INK_MUTED}
-                        multiline
-                        textAlignVertical="top"
-                        className="happy-font-body-medium text-[15px] leading-[22px] text-ink"
-                        style={{ minHeight: 150 }}
-                        accessibilityLabel={prompt}
-                        accessibilityHint="Type your response"
-                    />
-                </View>
+                <GlowyInput
+                    message={value}
+                    setMessage={onChange}
+                    handleSendMessage={() => {}}
+                    handleSubmitEditing={() => {}}
+                    placeholder={placeholder ?? "Start writing here..."}
+                />
             </RendererSectionCard>
 
             {/* Character count + encouragement */}

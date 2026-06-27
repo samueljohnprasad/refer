@@ -18,6 +18,9 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { Text } from "@/src/components/ui/Text";
+import { Host, Button as SwiftUIButton } from "@expo/ui/swift-ui";
+import { buttonStyle, labelStyle, controlSize, tint } from "@expo/ui/swift-ui/modifiers";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { useRouter } from "expo-router";
 import { useNavigation } from "expo-router/react-navigation";
 import { useExerciseFlow } from "@/src/hooks/useExerciseFlow";
@@ -104,10 +107,21 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
     );
   }
 
+  const { entry: existingEntry, isLoading: isLoadingEntry } =
+    useSingleExerciseEntry(entryId ?? null);
+
+  if (isLoadingEntry && entryId) {
+    return (
+      <SafeAreaView className="flex-1 justify-center items-center bg-white">
+        <Text className="text-base text-slate-400">Loading...</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <ResolvedExerciseFlowScreen
       config={config}
-      entryId={entryId}
+      existingEntry={existingEntry}
       readOnly={readOnly}
     />
   );
@@ -116,19 +130,19 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
 import { SAGE, OTTER_BLUE, PARROT_ORANGE, MACAW_PURPLE, BRAND_SURFACE } from "@/lib/tokens";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
+import { CheckmarkCircle01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { useXPOptional } from "@/src/context/XPContext";
 import { XPActionType } from "@/src/types/xp";
 
 interface ResolvedExerciseFlowScreenProps {
   config: ExerciseConfig<any>;
-  entryId?: string;
+  existingEntry?: any;
   readOnly: boolean;
 }
 
 const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   config,
-  entryId,
+  existingEntry,
   readOnly,
 }) => {
   const router = useRouter();
@@ -150,12 +164,8 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
     }
   }, [config.category]);
 
-  // ─── Resume: load existing entry if entryId provided ──────────────
-  const { entry: existingEntry, isLoading: isLoadingEntry } =
-    useSingleExerciseEntry(entryId ?? null);
-
   // ─── Flow state ───────────────────────────────────────────────────
-  const flow = useExerciseFlow(config as ExerciseConfig<any>, existingEntry);
+  const flow = useExerciseFlow(config as ExerciseConfig<any>, existingEntry, readOnly);
 
   // ─── Mutation ─────────────────────────────────────────────────────
   const { save, isSaving } = useExerciseMutation();
@@ -192,7 +202,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
         onPress: async () => {
           try {
             const payload = flow.getSavePayload("in_progress");
-            await save(payload, entryId);
+            await save(payload, existingEntry?.id);
             exitScreen();
           } catch (err) {
             Alert.alert("Save failed", "Please try again.");
@@ -209,12 +219,12 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
         },
       },
     ]);
-  }, [readOnly, flow, entryId, save, exitScreen]);
+  }, [readOnly, flow, existingEntry, save, exitScreen]);
 
   const handleSave = useCallback(async () => {
     try {
       const payload = flow.getSavePayload("completed");
-      await save(payload, entryId);
+      await save(payload, existingEntry?.id);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       
       if (!existingEntry || existingEntry.status !== "completed") {
@@ -227,7 +237,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
     } catch (err) {
       Alert.alert("Save failed", "Please try again.");
     }
-  }, [flow, entryId, save, existingEntry, config.title, xp, exitScreen]);
+  }, [flow, existingEntry, save, config.title, xp, exitScreen]);
 
   // ─── Android hardware back button ─────────────────────────────────
   React.useEffect(() => {
@@ -287,61 +297,78 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   );
 
   // ─── Guards ───────────────────────────────────────────────────────
-  if (isLoadingEntry && entryId) {
-    return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-white">
-        <Text className="text-base text-slate-400">Loading...</Text>
-      </SafeAreaView>
-    );
-  }
+  // (Loading is now handled by the parent component)
 
   const pct = Math.round(flow.progress * 100);
   const primaryLabel = currentStep?.nextLabel || (isFinalStep ? "Finish" : "Continue");
+  
+  // In readOnly mode, the primary button is always "Done" and just closes the screen
   const onPrimaryPress = readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext;
 
   return (
     <LessonScreen
       className="flex-1"
       style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
+      hideHeader={currentStep?.hideHeader || readOnly}
+      hideFooter={currentStep?.hideFooter || readOnly}
+      progress={flow.progress}
+      onClose={handleClose}
+      backButtonVariant="close-icon"
+      primaryLabel={primaryLabel}
+      onPrimaryPress={onPrimaryPress}
+      primaryDisabled={!flow.isCurrentStepValid || isSaving}
+      primaryLoading={isSaving}
+      primaryRightIcon={
+        isFinalStep && !isSaving ? (
+          <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={BRAND_SURFACE} strokeWidth={2} />
+        ) : undefined
+      }
+      secondaryLabel={isFinalStep ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
+      onSecondaryPress={flow.canGoBack ? flow.goBack : undefined}
     >
-      {!currentStep?.hideHeader && (
-        <LessonScreen.ProgressHeader
-          progress={flow.progress}
-          onClose={flow.canGoBack ? flow.goBack : handleClose}
-          backButtonVariant={flow.canGoBack ? "arrow" : "close-icon"}
-        />
+      {readOnly && (
+        <SafeAreaView className="absolute top-0 left-0 z-50" pointerEvents="box-none">
+          <View className="m-5 mt-2">
+            {isLiquidGlassAvailable() ? (
+              <Host matchContents>
+                <SwiftUIButton
+                  onPress={handleClose}
+                  label="Close"
+                  modifiers={[
+                    labelStyle('iconOnly'),
+                    buttonStyle('glassProminent'),
+                    controlSize('regular'),
+                    tint("#1E293B")
+                  ]}
+                  systemImage="xmark"
+                />
+              </Host>
+            ) : (
+              <Pressable
+                onPress={handleClose}
+                className="h-10 w-10 items-center justify-center rounded-full bg-slate-100 active:opacity-70"
+                accessibilityLabel="Close"
+                accessibilityRole="button"
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={22} color="#64748B" strokeWidth={2.5} />
+              </Pressable>
+            )}
+          </View>
+        </SafeAreaView>
       )}
 
       <AnimatedStepContainer
         stepIndex={flow.currentStepIndex}
         className="flex-1"
       >
-        <LessonScreen.Content hasHeader={!currentStep?.hideHeader} hasFooter={!currentStep?.hideFooter}>
-          {StepComponent ? (
-            <StepComponent {...stepProps} />
-          ) : (
-            <View className="flex-1 justify-center items-center">
-              <Text className="text-slate-400">Unknown step</Text>
-            </View>
-          )}
-        </LessonScreen.Content>
+        {StepComponent ? (
+          <StepComponent {...stepProps} />
+        ) : (
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-slate-400">Unknown step</Text>
+          </View>
+        )}
       </AnimatedStepContainer>
-
-      {!currentStep?.hideFooter && onPrimaryPress && (
-        <LessonScreen.ActionFooter
-          primaryLabel={readOnly && isFinalStep ? "Done" : primaryLabel}
-          onPrimaryPress={onPrimaryPress}
-          primaryDisabled={!flow.isCurrentStepValid || isSaving}
-          primaryLoading={isSaving}
-          primaryRightIcon={
-            isFinalStep && !isSaving ? (
-              <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={BRAND_SURFACE} strokeWidth={2} />
-            ) : undefined
-          }
-          secondaryLabel={isFinalStep && !readOnly ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
-          onSecondaryPress={flow.canGoBack ? flow.goBack : undefined}
-        />
-      )}
     </LessonScreen>
   );
 };
