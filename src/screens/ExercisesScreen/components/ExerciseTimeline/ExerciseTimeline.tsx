@@ -38,19 +38,15 @@ interface ExerciseTimelineProps {
   readonly onPressItem: (item: HistoryLogItem) => void;
   /** Optional header above timeline */
   readonly header?: React.ReactElement;
-  /** Extra top padding (e.g. for transparent navigation headers) */
-  readonly contentPaddingTop?: number;
 }
 
 const ExerciseTimeline: React.FC<ExerciseTimelineProps> = React.memo(
-  ({ onPressItem, header, contentPaddingTop }) => {
+  ({ onPressItem, header }) => {
     const { sections, isLoadingMore, fetchNextPage } =
       useExerciseTimeline(onPressItem);
 
     const renderItem = useCallback(
-      (item: ExerciseTimelineItem) => (
-        <ExerciseTimelineCard item={item} />
-      ),
+      (item: ExerciseTimelineItem) => <ExerciseTimelineCard item={item} />,
       [],
     );
 
@@ -62,7 +58,6 @@ const ExerciseTimeline: React.FC<ExerciseTimelineProps> = React.memo(
         isLoadingMore={isLoadingMore}
         ListHeaderComponent={header}
         ListEmptyComponent={<EmptyState />}
-        contentPaddingTop={contentPaddingTop}
       />
     );
   },

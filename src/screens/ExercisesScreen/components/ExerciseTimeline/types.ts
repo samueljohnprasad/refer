@@ -23,6 +23,16 @@ export interface ExerciseTimelineItem extends TimelineItemData {
   readonly ratingLabel?: string;
   /** Whether higher = better for this exercise's rating */
   readonly invertScale?: boolean;
+  /** Short text preview shown without expanding (e.g. automatic thought) */
+  readonly previewText?: string;
+  /** Additional text shown when card is expanded (e.g. balanced thought) */
+  readonly expandedText?: string;
+  /** Tags shown when expanded (e.g. cognitive distortions) */
+  readonly tags?: string[];
+  /** Optional array of gratitude items */
+  readonly gratitudeEntries?: string[];
+  /** Optional array of emotions felt */
+  readonly emotions?: Array<{ emotion: string; intensity: number }>;
   /** Navigation callback */
   readonly onPress: () => void;
 }

@@ -68,6 +68,8 @@ interface GlowyInputProps {
   onWavePress?: () => void;
   isRecording?: boolean;
   isTranscribing?: boolean;
+  submitIcon?: any;
+  alwaysShowVoice?: boolean;
 }
 
 const WaveBar = ({ delay }: { delay: number }) => {
@@ -113,6 +115,8 @@ function GlowyInput({
   onWavePress,
   isRecording,
   isTranscribing,
+  submitIcon,
+  alwaysShowVoice,
 }: GlowyInputProps) {
   const [dimensions, setDimensions] = useState<{
     width: number;
@@ -269,58 +273,107 @@ function GlowyInput({
           />
 
           <View style={styles.footerContainer}>
-            <Animated.View style={[styles.footer, footerStyle]}>
-              <View style={{ flex: 1 }} />
-              <Pressable
-                disabled={!message?.trim()}
-                onPress={onSend}
-                style={({ pressed }) => [
-                  styles.sendButton,
-                  {
-                    backgroundColor: message?.trim() ? SAGE[500] : BRAND_BORDER,
-                    opacity: pressed ? 0.8 : 1,
-                  },
-                ]}
-              >
-                <HugeiconsIcon
-                  icon={Tick01Icon}
-                  size={18}
-                  color={message?.trim() ? "#fff" : INK_MUTED}
-                  strokeWidth={3}
-                />
-              </Pressable>
-            </Animated.View>
-
-            <Animated.View
-              style={[styles.footer, styles.absoluteFooter, initialFooterStyle]}
-            >
-              <View style={styles.leftActions}>
+            {alwaysShowVoice ? (
+              <View style={styles.footer}>
+                <View style={styles.leftActions} />
+                <View style={styles.rightActions}>
+                  <Pressable
+                    style={styles.waveButton}
+                    onPress={onWavePress}
+                    disabled={isTranscribing}
+                  >
+                    {isTranscribing ? (
+                      <ActivityIndicator size="small" color={INK} />
+                    ) : isRecording ? (
+                      <View style={{ flexDirection: "row", alignItems: "center", height: 16 }}>
+                        {[0, 150, 75, 200].map((delay, index) => (
+                          <WaveBar key={index} delay={delay} />
+                        ))}
+                      </View>
+                    ) : (
+                      <HugeiconsIcon
+                        icon={AudioWave01Icon}
+                        size={18}
+                        color={INK}
+                      />
+                    )}
+                  </Pressable>
+                  {message?.trim() ? (
+                    <Pressable
+                      disabled={!message?.trim()}
+                      onPress={onSend}
+                      style={({ pressed }) => [
+                        styles.sendButton,
+                        {
+                          backgroundColor: SAGE[500],
+                          opacity: pressed ? 0.8 : 1,
+                        },
+                      ]}
+                    >
+                      <HugeiconsIcon
+                        icon={submitIcon || Tick01Icon}
+                        size={18}
+                        color="#fff"
+                        strokeWidth={3}
+                      />
+                    </Pressable>
+                  ) : null}
+                </View>
               </View>
-
-              <View style={styles.rightActions}>
-                <Pressable
-                  style={styles.waveButton}
-                  onPress={onWavePress}
-                  disabled={isTranscribing}
-                >
-                  {isTranscribing ? (
-                    <ActivityIndicator size="small" color={INK} />
-                  ) : isRecording ? (
-                    <View style={{ flexDirection: "row", alignItems: "center", height: 16 }}>
-                      {[0, 150, 75, 200].map((delay, index) => (
-                        <WaveBar key={index} delay={delay} />
-                      ))}
-                    </View>
-                  ) : (
+            ) : (
+              <>
+                <Animated.View style={[styles.footer, footerStyle]}>
+                  <View style={{ flex: 1 }} />
+                  <Pressable
+                    disabled={!message?.trim()}
+                    onPress={onSend}
+                    style={({ pressed }) => [
+                      styles.sendButton,
+                      {
+                        backgroundColor: message?.trim() ? SAGE[500] : BRAND_BORDER,
+                        opacity: pressed ? 0.8 : 1,
+                      },
+                    ]}
+                  >
                     <HugeiconsIcon
-                      icon={AudioWave01Icon}
+                      icon={submitIcon || Tick01Icon}
                       size={18}
-                      color={INK}
+                      color={message?.trim() ? "#fff" : INK_MUTED}
+                      strokeWidth={3}
                     />
-                  )}
-                </Pressable>
-              </View>
-            </Animated.View>
+                  </Pressable>
+                </Animated.View>
+
+                <Animated.View
+                  style={[styles.footer, styles.absoluteFooter, initialFooterStyle]}
+                >
+                  <View style={styles.leftActions} />
+                  <View style={styles.rightActions}>
+                    <Pressable
+                      style={styles.waveButton}
+                      onPress={onWavePress}
+                      disabled={isTranscribing}
+                    >
+                      {isTranscribing ? (
+                        <ActivityIndicator size="small" color={INK} />
+                      ) : isRecording ? (
+                        <View style={{ flexDirection: "row", alignItems: "center", height: 16 }}>
+                          {[0, 150, 75, 200].map((delay, index) => (
+                            <WaveBar key={index} delay={delay} />
+                          ))}
+                        </View>
+                      ) : (
+                        <HugeiconsIcon
+                          icon={AudioWave01Icon}
+                          size={18}
+                          color={INK}
+                        />
+                      )}
+                    </Pressable>
+                  </View>
+                </Animated.View>
+              </>
+            )}
           </View>
         </View>
       </Animated.View>

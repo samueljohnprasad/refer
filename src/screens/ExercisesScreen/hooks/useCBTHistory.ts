@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/src/network/auth/supabase";
 import { useAuth } from "@/src/context/AuthContext";
 import type { ExerciseType } from "@/src/types/exerciseFlow";
@@ -19,7 +19,7 @@ export function useCBTHistory() {
   const { user } = useAuth();
   const PAGE_SIZE = 20;
 
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({
     queryKey: ["cbt_history", user?.id],
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => {

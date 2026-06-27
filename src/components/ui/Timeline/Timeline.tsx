@@ -17,13 +17,10 @@
  */
 
 import React, { useCallback, useMemo } from "react";
-import {
-  View,
-  ActivityIndicator,
-  StyleSheet,
-} from "react-native";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { LegendList } from "@legendapp/list";
 import { useHeaderHeight } from "expo-router/react-navigation";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SAGE } from "@/lib/tokens";
 import { TimelineSectionHeader } from "./TimelineSectionHeader";
 import { TimelineDot } from "./TimelineDot";
@@ -53,11 +50,10 @@ function TimelineInner<T extends TimelineItemData>({
   isLoadingMore = false,
   ListHeaderComponent,
   ListEmptyComponent,
-  contentPaddingTop,
   backgroundColor = "#F7F7F8",
 }: TimelineProps<T>): React.ReactElement {
   const headerHeight = useHeaderHeight();
-  const topPad: number = contentPaddingTop ?? headerHeight + 24;
+  const insets = useSafeAreaInsets();
 
   // Flatten sections for LegendList which expects a 1D array
   const flattenedData = useMemo(() => {
@@ -83,50 +79,48 @@ function TimelineInner<T extends TimelineItemData>({
   // ── Render a single item row ──────────────────────────────────────────
 
   const renderRow = useCallback(
-    ({ item: d }: { item: typeof flattenedData[0] }) => {
-      const { item, section, index, isVeryFirst, isLastSection, isVeryLast } = d;
+    ({ item: d }: { item: (typeof flattenedData)[0] }) => {
+      const { item, section, index, isVeryFirst, isLastSection, isVeryLast } =
+        d;
       const isFirstItemInSection: boolean = index === 0;
 
       return (
         <View style={styles.row}>
           {/* ── Date Column (Left) ────────────────────────────────── */}
           <View style={styles.dateColumn}>
-            {isFirstItemInSection && <TimelineSectionHeader date={section.date} />}
+            {isFirstItemInSection && (
+              <TimelineSectionHeader date={section.date} />
+            )}
           </View>
 
           {/* ── Stem Column ────────────────────────────────────────── */}
           <View style={styles.stemColumn}>
             {/* The dotted line */}
-            {!(isLastSection && index > 0) && (
-              <View
+            {!(isVeryFirst && isVeryLast) && (
+              <TimelineStemLine
+                flex={true}
                 style={{
-                  position: "absolute",
-                  top: isVeryFirst ? 24 : 0,
-                  bottom: isLastSection ? undefined : 0,
-                  height: isLastSection ? (isVeryFirst ? 0 : 24) : undefined,
-                  left: 0,
-                  right: 0,
-                  alignItems: "center",
+                  marginTop: isVeryFirst ? 14 : 0,
+                  marginBottom: isVeryLast ? 24 : 0,
                 }}
-              >
-                {(!isLastSection || !isVeryFirst) && (
-                  <TimelineStemLine hidden={false} flex={true} />
-                )}
-              </View>
+              />
             )}
 
             {/* The Dot */}
             {isFirstItemInSection && (
-              <View style={[styles.absoluteDot, { backgroundColor, borderRadius: 10 }]}>
+              <View
+                style={[
+                  styles.absoluteDot,
+                  { backgroundColor, borderRadius: 10 },
+                ]}
+              >
                 <TimelineDot status={item.status} />
               </View>
             )}
           </View>
 
           {/* ── Card Column ────────────────────────────────────────── */}
-          <View style={styles.cardColumn}>
-            {renderItem(item, index)}
-          </View>
+          <View style={styles.cardColumn}>{renderItem(item, index)}</View>
         </View>
       );
     },
@@ -135,7 +129,10 @@ function TimelineInner<T extends TimelineItemData>({
 
   // ── Key extractor ─────────────────────────────────────────────────────
 
-  const keyExtractor = useCallback((d: typeof flattenedData[0]) => d.item.id, []);
+  const keyExtractor = useCallback(
+    (d: (typeof flattenedData)[0]) => d.item.id,
+    [],
+  );
 
   return (
     <LegendList
@@ -145,14 +142,18 @@ function TimelineInner<T extends TimelineItemData>({
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
       estimatedItemSize={120} // good guess for average card height
-      ListHeaderComponent={ListHeaderComponent}
+      ListHeaderComponent={
+        <>
+          <View style={{ height: Math.max(0, headerHeight - insets.top + 16) }} />
+          {ListHeaderComponent}
+        </>
+      }
       ListEmptyComponent={ListEmptyComponent}
       ListFooterComponent={<LoadingFooter visible={isLoadingMore} />}
       contentContainerStyle={[
         styles.contentContainer,
-        { paddingTop: topPad },
       ]}
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={true}
       contentInsetAdjustmentBehavior="automatic"
     />
   );

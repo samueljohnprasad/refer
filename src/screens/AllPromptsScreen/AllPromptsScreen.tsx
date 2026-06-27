@@ -21,7 +21,7 @@ import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useJournalLimit } from "@/hooks/useJournalLimit";
 
 // Extended prompts list with more options with gorgeous, premium pastel tones
-const ALL_PROMPTS: QuickJournalPrompt[] = [
+export const ALL_PROMPTS: QuickJournalPrompt[] = [
   {
     id: "1",
     title: "Pause & reflect",

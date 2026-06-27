@@ -33,6 +33,7 @@ export function createDynamicSummaryStep(
     onBack,
     isSaving,
     readOnly,
+    onNavigateDeeper,
   }) => {
     const router = useRouter();
     const { saveCard } = useCopingCards();
@@ -56,13 +57,17 @@ export function createDynamicSummaryStep(
 
     const handleNavigateToExercise = useCallback(
       (type: ExerciseType) => {
-        onNext();
-        router.push({
-          pathname: "/tabs/screens/exercise-flow",
-          params: { type },
-        });
+        if (onNavigateDeeper) {
+          onNavigateDeeper(type);
+        } else {
+          onNext();
+          router.push({
+            pathname: "/tabs/screens/exercise-flow",
+            params: { type },
+          });
+        }
       },
-      [onNext, router],
+      [onNext, onNavigateDeeper, router],
     );
 
     const handleSaveCopingCard = useCallback(async () => {

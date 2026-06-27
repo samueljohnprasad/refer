@@ -239,6 +239,30 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
     }
   }, [flow, existingEntry, save, config.title, xp, exitScreen]);
 
+  const handleNavigateDeeper = useCallback(async (type: ExerciseType) => {
+    try {
+      // 1. Save the current exercise
+      const payload = flow.getSavePayload("completed");
+      await save(payload, existingEntry?.id);
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      
+      if (!existingEntry || existingEntry.status !== "completed") {
+        xp?.awardXP(XPActionType.EXERCISE_COMPLETE, {
+          customDescription: config.title || "Exercise completed",
+        });
+      }
+
+      // 2. Set exit flag so beforeRemove doesn't intercept if needed, 
+      // though router.replace will trigger beforeRemove.
+      isConfirmedExitRef.current = true;
+      
+      // 3. Navigate to the next exercise
+      router.replace({ pathname: "/tabs/screens/exercise-flow", params: { type } });
+    } catch (err) {
+      Alert.alert("Save failed", "Please try again.");
+    }
+  }, [flow, existingEntry, save, config.title, xp, router]);
+
   // ─── Android hardware back button ─────────────────────────────────
   React.useEffect(() => {
     const sub = BackHandler.addEventListener("hardwareBackPress", () => {
@@ -272,6 +296,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       onNext: readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext,
       onBack: flow.goBack,
       onClose: handleClose,
+      onNavigateDeeper: handleNavigateDeeper,
       canGoBack: flow.canGoBack,
       isValid: flow.isCurrentStepValid,
       progress: flow.progress,
@@ -292,6 +317,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       readOnly,
       handleClose,
       handleSave,
+      handleNavigateDeeper,
       isFinalStep,
     ],
   );

@@ -1,16 +1,16 @@
-import React from "react";
-import { View, Text } from "react-native";
-import { PencilEdit01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react-native";
+import React, { useState, useCallback } from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { Card } from "@/src/components/ui/Card";
-import { SAGE } from "@/lib/tokens";
+import { SAGE, INK_MUTED } from "@/lib/tokens";
+import { format } from "date-fns";
+import { useInterval } from "@/src/hooks/useInterval";
+import type { QuickJournalPrompt } from "@/src/screens/DiscoveryScreen/QuickJournalSection";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 interface FeaturedPromptCardProps {
-  category?: string;
-  xpReward?: number;
-  prompt: string;
-  emoji?: string;
-  onPress: () => void;
+  prompts: QuickJournalPrompt[];
+  onPress: (prompt: QuickJournalPrompt) => void;
 }
 
 /**
@@ -18,43 +18,71 @@ interface FeaturedPromptCardProps {
  * Accessible, scalable typography, high contrast focus
  */
 export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
-  category = "Journaling",
-  prompt,
+  prompts,
   onPress,
 }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const cyclePrompt = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % prompts.length);
+  }, [prompts.length]);
+
+  // Rotate every 1 minute
+  useInterval(cyclePrompt, 60000);
+
+  const currentPrompt = prompts[activeIndex];
+  const currentDateStr = format(new Date(), "MMMM d");
+
+  if (!currentPrompt || prompts.length === 0) return null;
+
   return (
     <Card
       variant="tile"
       radius="xl"
-      onPress={onPress}
+      onPress={() => onPress(currentPrompt)}
       showDepth={false}
       haptic="light"
-      contentClassName="p-5"
-      accessibilityLabel={`Take a moment to write. Featured Prompt: ${prompt}.`}
+      contentClassName="pt-5 px-5 pb-0 overflow-hidden min-h-[220px]"
+      accessibilityLabel={`Take a moment to write. Featured Prompt: ${currentPrompt.description}.`}
       accessibilityHint="Opens the journal recorder for this prompt"
     >
-      <View className="mb-4 flex-row items-center justify-between">
-        <View className="h-11 w-11 items-center justify-center rounded-[18px] border border-sage-100 bg-sage-50">
-          <HugeiconsIcon icon={PencilEdit01Icon} size={22} color={SAGE[600]} />
+      <View className="mb-6 flex-row items-center justify-between z-10">
+        <View className="flex-row items-center gap-1">
+          <Text className="happy-font-body-bold text-[14px] text-ink-muted">
+            Journal • {currentDateStr}
+          </Text>
+          <Feather name="chevron-down" size={14} color={INK_MUTED} />
         </View>
-        <View className="happy-brand-status-chip px-3 py-1.5">
-          <Text className="happy-brand-eyebrow text-[11px]">{category}</Text>
+        <View className="flex-row items-center gap-5">
+          <Feather name="menu" size={20} color={SAGE[700]} />
+          <TouchableOpacity 
+            onPress={cyclePrompt}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            accessibilityLabel="Show next prompt"
+            accessibilityRole="button"
+          >
+            <Feather name="refresh-cw" size={18} color={SAGE[700]} />
+          </TouchableOpacity>
         </View>
       </View>
 
-      <Text
-        className="happy-font-heading-bold mb-8 text-[30px] leading-tight tracking-tight text-ink"
+      <Animated.Text
+        key={currentPrompt.id}
+        entering={FadeIn.duration(400)}
+        exiting={FadeOut.duration(200)}
+        className="happy-font-heading-bold text-[36px] leading-[1.1] tracking-tight text-ink z-10 w-[65%] pb-12"
         minimumFontScale={0.8}
         adjustsFontSizeToFit
       >
-        {prompt}
-      </Text>
+        {currentPrompt.description}
+      </Animated.Text>
 
-      <View className="mt-auto h-14 flex-row items-center justify-center rounded-[22px] bg-sage-50">
-        <HugeiconsIcon icon={PencilEdit01Icon} size={19} color={SAGE[700]} />
-        <Text className="happy-font-body-bold ml-2.5 text-[16px] tracking-tight text-ink">
-          Start writing
-        </Text>
+      {/* Mascot Image positioned absolutely at the bottom right */}
+      <View className="absolute -bottom-2 -right-4 opacity-100 z-0 pointer-events-none">
+        <Image 
+          source={require('@/assets/images/panda/panda-happy.png')}
+          style={{ width: 140, height: 140, resizeMode: "contain" }}
+        />
       </View>
     </Card>
   );

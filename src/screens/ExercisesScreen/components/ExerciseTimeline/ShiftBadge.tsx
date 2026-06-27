@@ -21,9 +21,9 @@ interface ShiftBadgeProps {
   /** Human label like "Distress", "Calm", "Anxiety" */
   readonly label: string;
   /** Rating before the exercise */
-  readonly before: number;
+  readonly before?: number;
   /** Rating after the exercise */
-  readonly after: number;
+  readonly after?: number;
   /** When true, higher after = improvement (e.g. Calm) */
   readonly invertScale?: boolean;
 }
@@ -38,17 +38,18 @@ function isImprovement(
 
 const ShiftBadge: React.FC<ShiftBadgeProps> = React.memo(
   ({ label, before, after, invertScale = false }) => {
-    const improved: boolean = isImprovement(before, after, invertScale);
+    const hasBoth = before !== undefined && after !== undefined;
+    const improved: boolean = hasBoth ? isImprovement(before!, after!, invertScale) : false;
 
     return (
       <View
         style={[
           styles.pill,
-          improved ? styles.pillImproved : styles.pillNeutral,
+          hasBoth && improved ? styles.pillImproved : styles.pillNeutral,
         ]}
       >
         {/* Arrow icon */}
-        {Platform.OS === "ios" ? (
+        {hasBoth && Platform.OS === "ios" ? (
           <SymbolView
             name={
               improved
@@ -60,22 +61,22 @@ const ShiftBadge: React.FC<ShiftBadgeProps> = React.memo(
             weight="semibold"
             style={styles.icon}
           />
-        ) : (
+        ) : hasBoth ? (
           <Feather
             name={improved ? "trending-down" : "arrow-right"}
             size={9}
             color={improved ? SAGE[600] : "#A67C00"}
           />
-        )}
+        ) : null}
 
         {/* Label + values */}
         <Text
           style={[
             styles.text,
-            improved ? styles.textImproved : styles.textNeutral,
+            hasBoth && improved ? styles.textImproved : styles.textNeutral,
           ]}
         >
-          {label} {before} → {after}
+          {hasBoth ? `${label} ${before} → ${after}` : `${label}: ${before ?? after}`}
         </Text>
       </View>
     );

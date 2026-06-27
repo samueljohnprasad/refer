@@ -138,6 +138,7 @@ export function ABCSummaryStep({
   onBack,
   isSaving,
   readOnly,
+  onNavigateDeeper,
 }: StepProps<ABCAnalysisResponse>): React.JSX.Element {
   const router = useRouter();
   const link = EXERCISE_LINKING_MAP["abc_analysis"];
@@ -182,10 +183,14 @@ export function ABCSummaryStep({
 
   const handleNavigate = useCallback(
     (type: ExerciseType) => {
-      onNext();
-      router.push({ pathname: "/tabs/screens/exercise-flow", params: { type } });
+      if (onNavigateDeeper) {
+        onNavigateDeeper(type);
+      } else {
+        onNext();
+        router.push({ pathname: "/tabs/screens/exercise-flow", params: { type } });
+      }
     },
-    [onNext, router],
+    [onNext, onNavigateDeeper, router],
   );
 
   // ── Render ────────────────────────────────────────────────────────────────

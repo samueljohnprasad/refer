@@ -139,6 +139,7 @@ export function GratitudeReframeSummary({
   onBack,
   isSaving,
   readOnly,
+  onNavigateDeeper,
 }: StepProps<GratitudeReframeResponse>): React.JSX.Element {
   const router = useRouter();
   // Using another exercise link if appropriate, or a hardcoded one for Gratitude
@@ -191,10 +192,14 @@ export function GratitudeReframeSummary({
 
   const handleNavigate = useCallback(
     (type: ExerciseType) => {
-      onNext();
-      router.push({ pathname: "/tabs/screens/exercise-flow", params: { type } });
+      if (onNavigateDeeper) {
+        onNavigateDeeper(type);
+      } else {
+        onNext();
+        router.push({ pathname: "/tabs/screens/exercise-flow", params: { type } });
+      }
     },
-    [onNext, router],
+    [onNext, onNavigateDeeper, router],
   );
 
   // ── Render ────────────────────────────────────────────────────────────────

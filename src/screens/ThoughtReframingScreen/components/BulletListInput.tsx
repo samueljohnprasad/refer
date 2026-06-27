@@ -6,6 +6,7 @@ import { Cancel01Icon, Add01Icon, Mic01Icon, StopIcon } from '@hugeicons/core-fr
 import useAudioRecording from '@/hooks/useAudioRecording';
 import { useTranscribeAudio } from '@/hooks/useTranscribeAudio';
 import * as Haptics from 'expo-haptics';
+import GlowyInput from '@/src/components/GlowyInput';
 
 interface BulletListInputProps {
   items: string[];
@@ -74,55 +75,18 @@ export const BulletListInput: React.FC<BulletListInputProps> = React.memo(
           </View>
         ))}
 
-        <View className={`flex-row items-center bg-white rounded-xl border overflow-hidden ${isRecording ? 'border-red-200' : 'border-slate-100'}`}>
-          <TextInput
-            value={inputValue}
-            onChangeText={setInputValue}
-            placeholder={isRecording ? 'Listening...' : placeholder}
-            placeholderTextColor="#94A3B8"
-            onSubmitEditing={handleAdd}
-            returnKeyType="done"
-            maxLength={200}
-            editable={!isTranscribing}
-            className="flex-1 px-4 py-3 text-sm text-slate-700"
-          />
-
-          {/* Voice button */}
-          <Pressable
-            onPress={handleToggleRecording}
-            disabled={isTranscribing}
-            className={`h-10 w-10 items-center justify-center rounded-xl mr-1 ${
-              isRecording ? 'bg-red-50' : 'bg-slate-50'
-            }`}
-          >
-            {isTranscribing ? (
-              <ActivityIndicator size="small" color="#3B82F6" />
-            ) : (
-              <HugeiconsIcon
-                icon={isRecording ? StopIcon : Mic01Icon}
-                size={18}
-                color={isRecording ? '#EF4444' : '#64748B'}
-              />
-            )}
-          </Pressable>
-
-          {/* Add button */}
-          {!isRecording && (
-            <Pressable
-              onPress={handleAdd}
-              disabled={!canAdd || isTranscribing}
-              className={`h-10 w-10 mr-1 rounded-xl items-center justify-center ${
-                canAdd ? 'bg-blue-500 active:bg-blue-600' : 'bg-slate-100'
-              }`}
-            >
-              <HugeiconsIcon
-                icon={Add01Icon}
-                size={16}
-                color={canAdd ? '#ffffff' : '#CBD5E1'}
-              />
-            </Pressable>
-          )}
-        </View>
+        <GlowyInput
+          message={inputValue}
+          setMessage={setInputValue}
+          placeholder={placeholder}
+          handleSendMessage={handleAdd}
+          handleSubmitEditing={handleAdd}
+          onWavePress={handleToggleRecording}
+          isRecording={isRecording}
+          isTranscribing={isTranscribing}
+          submitIcon={Add01Icon}
+          alwaysShowVoice={true}
+        />
 
         {maxItems && (
           <Text className="text-xs text-slate-400 mt-2 text-right">

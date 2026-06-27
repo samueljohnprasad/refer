@@ -34,6 +34,7 @@ import {
   QuickJournalPrompt,
   QuickJournalSection,
 } from "../DiscoveryScreen/QuickJournalSection";
+import { ALL_PROMPTS } from "../AllPromptsScreen/AllPromptsScreen";
 import { recorderOpenAtom } from "../DiscoveryScreen/helpers";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { useAtom, useSetAtom } from "jotai";
@@ -367,19 +368,9 @@ export default function JournalCalendarScreen() {
               <Text className="happy-brand-eyebrow">Daily Reflection</Text>
             </View>
             <FeaturedPromptCard
-              prompt="What's making you smile today?"
-              xpReward={XP_REWARDS[XPActionType.JOURNAL_ENTRY]}
-              emoji="✨"
-              onPress={() =>
-                handleQuickJournalPress({
-                  id: "featured_apple",
-                  title: "Reflections",
-                  description: "What's making you smile today?",
-                  category: "Gratitude",
-                  emoji: "✨",
-                  bgColor: SAGE[50],
-                  categoryColor: SAGE[600],
-                })
+              prompts={ALL_PROMPTS}
+              onPress={(prompt) =>
+                handleQuickJournalPress(prompt)
               }
             />
           </Animated.View>

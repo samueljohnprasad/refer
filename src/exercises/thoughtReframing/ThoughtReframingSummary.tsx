@@ -145,7 +145,7 @@ function getShiftLabel(pre: number, post: number): string {
 
 export const ThoughtReframingSummary: React.FC<
   StepProps<ThoughtReframingResponse>
-> = ({ response, onNext, onBack, isSaving, readOnly }) => {
+> = ({ response, onNext, onBack, isSaving, readOnly, onNavigateDeeper }) => {
   const router = useRouter();
   const { saveCard } = useCopingCards();
   const [cardSaved, setCardSaved] = useState<boolean>(false);
@@ -206,10 +206,15 @@ export const ThoughtReframingSummary: React.FC<
 
   const handleNavigateDeeper = useCallback(
     (type: ExerciseType) => {
-      onNext();
-      router.push({ pathname: "/tabs/screens/exercise-flow", params: { type } });
+      if (onNavigateDeeper) {
+        onNavigateDeeper(type);
+      } else {
+        // Fallback for previews or standalone mode
+        onNext();
+        router.push({ pathname: "/tabs/screens/exercise-flow", params: { type } });
+      }
     },
-    [onNext, router],
+    [onNext, onNavigateDeeper, router],
   );
 
   // ── Render ─────────────────────────────────────────────────────────────────

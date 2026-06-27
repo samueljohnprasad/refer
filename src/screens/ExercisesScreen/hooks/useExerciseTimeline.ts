@@ -60,24 +60,74 @@ function extractRatings(
   const before = response[config.beforeKey];
   const after = response[config.afterKey];
 
-  // Only include ratings when both are valid numbers
-  if (typeof before !== "number" || typeof after !== "number") {
+  // Only include ratings when at least one is a valid number
+  if (typeof before !== "number" && typeof after !== "number") {
     return {};
   }
 
   return {
-    beforeRating: before,
-    afterRating: after,
+    beforeRating: typeof before === "number" ? before : undefined,
+    afterRating: typeof after === "number" ? after : undefined,
     ratingLabel: config.label,
     invertScale: config.invertScale,
   };
+}
+
+function extractTimelinePreview(
+  exerciseType: ExerciseType,
+  response?: Record<string, any>,
+): {
+  previewText?: string;
+  expandedText?: string;
+  tags?: string[];
+  gratitudeEntries?: string[];
+  emotions?: Array<{ emotion: string; intensity: number }>;
+} {
+  if (!response) return {};
+
+  switch (exerciseType) {
+    case "thought_catcher":
+      return {
+        previewText: response.automaticThought,
+        expandedText: response.balancedThought,
+      };
+    case "thought_reframing":
+      return {
+        previewText: response.automaticThought,
+        expandedText: response.balancedThought,
+        tags: Array.isArray(response.selectedDistortions)
+          ? response.selectedDistortions
+          : undefined,
+        emotions: Array.isArray(response.emotions)
+          ? response.emotions.slice(0, 3) // Top 3 emotions
+          : undefined,
+      };
+    case "abc_analysis":
+      return {
+        previewText: response.activatingEvent,
+        expandedText: response.alternativeBelief,
+        emotions: Array.isArray(response.consequenceEmotions)
+          ? response.consequenceEmotions.slice(0, 3)
+          : undefined,
+      };
+    case "gratitude_reframe":
+      return {
+        previewText: Array.isArray(response.gratitudeEntries) && response.gratitudeEntries.length > 0 
+          ? "I am grateful for..."
+          : undefined,
+        gratitudeEntries: Array.isArray(response.gratitudeEntries)
+          ? response.gratitudeEntries
+          : undefined,
+      };
+    default:
+      return {};
+  }
 }
 
 // ─── Hook ───────────────────────────────────────────────────────────────
 
 interface UseExerciseTimelineReturn {
   readonly sections: TimelineSection<ExerciseTimelineItem>[];
-  readonly isLoading: boolean;
   readonly isLoadingMore: boolean;
   readonly fetchNextPage: () => void;
   readonly hasNextPage: boolean;
@@ -88,7 +138,6 @@ export function useExerciseTimeline(
 ): UseExerciseTimelineReturn {
   const {
     data,
-    isLoading,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
@@ -128,15 +177,17 @@ export function useExerciseTimeline(
       const config = getExerciseConfig(exerciseType);
       const categoryMeta = config ? getCategoryMeta(config.category) : null;
       const ratings = extractRatings(exerciseType, item.response);
+      const previewData = extractTimelinePreview(exerciseType, item.response);
 
       const enriched: ExerciseTimelineItem = {
         id: item.id,
         date: dayjs(item.date).valueOf(),
         status: normaliseStatus(item.status),
         exerciseType,
-        title: config?.title ?? item.title ?? "Exercise",
+        title: item.title ?? config?.title ?? "Exercise",
         categoryLabel: categoryMeta?.label ?? "Exercise",
         ...ratings,
+        ...previewData,
         onPress: makeOnPress(item),
       };
 
@@ -157,7 +208,6 @@ export function useExerciseTimeline(
 
   return {
     sections,
-    isLoading,
     isLoadingMore: isFetchingNextPage,
     fetchNextPage,
     hasNextPage: hasNextPage ?? false,

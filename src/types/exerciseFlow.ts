@@ -177,6 +177,8 @@ export interface StepProps<T = Record<string, any>> {
   onBack: () => void;
   /** Close / exit the exercise */
   onClose: () => void;
+  /** Navigate to a deeper related exercise (saves current and redirects) */
+  onNavigateDeeper?: (type: ExerciseType) => void;
   /** Whether we can go back */
   canGoBack: boolean;
   /** Whether the current step passes validation */

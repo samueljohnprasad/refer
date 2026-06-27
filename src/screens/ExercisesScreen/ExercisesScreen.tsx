@@ -4,6 +4,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  Suspense,
   type ReactElement,
 } from "react";
 import {
@@ -72,6 +73,7 @@ import {
 import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
 import { RecommendedForYouCard } from "@/src/components/insights/RecommendedForYouCard";
 import { CBTHistoryTimeline } from "./components/CBTHistoryTimeline";
+import { TimelineSkeleton } from "../../../src/components/ui/Timeline/TimelineSkeleton";
 import { ExerciseTimeline } from "./components/ExerciseTimeline";
 import { Card } from "@/src/components/ui/Card";
 import { GOLD, INK_MUTED, SAGE, OTTER_BLUE, MACAW_PURPLE } from "@/lib/tokens";
@@ -677,20 +679,7 @@ function getContextualEyebrow(): string {
 export default function ExercisesScreen(): ReactElement {
   const [activeTab, setActiveTab] = useState<TabKey>("discover");
   const params = useLocalSearchParams<{ tab?: string }>();
-  const {
-    data: historyData,
-    isLoading: isLoadingHistory,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useCBTHistory();
 
-  const history = useMemo(() => {
-    if (!historyData) return [];
-    return historyData.pages
-      .flatMap((page) => page.data)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [historyData]);
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
   const reducedMotion = useReducedMotion();
   const headerHeight = useHeaderHeight();
@@ -805,7 +794,10 @@ export default function ExercisesScreen(): ReactElement {
                               size={16}
                               color="#C89400"
                             />
-                            <Text variant="chip" className="ml-1.5 text-ink-soft">
+                            <Text
+                              variant="chip"
+                              className="ml-1.5 text-ink-soft"
+                            >
                               {completedCount} done
                             </Text>
                           </View>
@@ -830,10 +822,7 @@ export default function ExercisesScreen(): ReactElement {
                     </View>
                   </View>
 
-                  <Animated.View
-                    style={tabPillStyle}
-                    className="w-full"
-                  >
+                  <Animated.View style={tabPillStyle} className="w-full">
                     <Host style={{ width: "100%", height: 36 }}>
                       <Picker
                         modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
@@ -888,12 +877,9 @@ export default function ExercisesScreen(): ReactElement {
           )}
         </ScrollView>
       ) : (
-        <View style={nutrieStyles.screenBg}>
-            <ExerciseTimeline
-              onPressItem={handleLogPress}
-              contentPaddingTop={headerHeight - insets.top + 16}
-            />
-        </View>
+        <Suspense fallback={<TimelineSkeleton />}>
+          <ExerciseTimeline onPressItem={handleLogPress} />
+        </Suspense>
       )}
     </>
   );
@@ -903,7 +889,8 @@ export default function ExercisesScreen(): ReactElement {
 const nutrieStyles = StyleSheet.create({
   screenBg: {
     flex: 1,
-    backgroundColor: "#F7F7F8",
+    // backgroundColor: "#F7F7F8",
+    backgroundColor: "transparent",
   },
   // Stat Cards
   statRow: {
