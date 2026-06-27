@@ -72,6 +72,7 @@ import {
 import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
 import { RecommendedForYouCard } from "@/src/components/insights/RecommendedForYouCard";
 import { CBTHistoryTimeline } from "./components/CBTHistoryTimeline";
+import { ExerciseTimeline } from "./components/ExerciseTimeline";
 import { Card } from "@/src/components/ui/Card";
 import { GOLD, INK_MUTED, SAGE, OTTER_BLUE, MACAW_PURPLE } from "@/lib/tokens";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
@@ -888,38 +889,10 @@ export default function ExercisesScreen(): ReactElement {
         </ScrollView>
       ) : (
         <View style={nutrieStyles.screenBg}>
-          {isLoadingHistory ? (
-            <ScrollView
-              contentContainerStyle={{
-                paddingTop: headerHeight - insets.top + 16,
-              }}
-            >
-              <LoadingHistoryState />
-            </ScrollView>
-          ) : history.length === 0 ? (
-            <ScrollView
-              contentContainerStyle={{
-                paddingTop: headerHeight - insets.top + 16,
-              }}
-            >
-              <EmptyExerciseLogState />
-            </ScrollView>
-          ) : (
-            <CBTHistoryTimeline
-              entries={history}
-              isLoadingMore={isFetchingNextPage}
-              onEndReached={() => {
-                if (hasNextPage && !isFetchingNextPage) {
-                  fetchNextPage();
-                }
-              }}
-              contentPaddingTop={headerHeight - insets.top + 16}
+            <ExerciseTimeline
               onPressItem={handleLogPress}
+              contentPaddingTop={headerHeight - insets.top + 16}
             />
-            // <View className="flex-1 bg-amber-500">
-            //   <Text>History</Text>
-            // </View>
-          )}
         </View>
       )}
     </>

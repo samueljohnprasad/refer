@@ -12,6 +12,7 @@ export interface HistoryLogItem {
   title: string;
   status: string;
   icon?: string;
+  response?: Record<string, any>;
 }
 
 export function useCBTHistory() {
@@ -91,6 +92,7 @@ export function useCBTHistory() {
           title: cfg?.title ?? item.exercise_type,
           status: item.status || "in_progress",
           icon: cfg?.icon,
+          response: item.response as Record<string, any> | undefined,
         };
       });
 
