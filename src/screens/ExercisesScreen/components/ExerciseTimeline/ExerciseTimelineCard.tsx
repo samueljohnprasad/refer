@@ -69,7 +69,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
       ],
     }));
 
-    const handlePress = useCallback(() => {
+    const handlePress = useCallback((e: any) => {
       if (
         item.expandedText ||
         item.tags?.length ||
@@ -78,7 +78,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
       ) {
         setIsExpanded((prev) => !prev);
       } else {
-        item.onPress();
+        item.onPress(e);
       }
     }, [item, isExpanded]);
 

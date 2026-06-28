@@ -34,5 +34,5 @@ export interface ExerciseTimelineItem extends TimelineItemData {
   /** Optional array of emotions felt */
   readonly emotions?: Array<{ emotion: string; intensity: number }>;
   /** Navigation callback */
-  readonly onPress: () => void;
+  readonly onPress: (e?: any) => void;
 }

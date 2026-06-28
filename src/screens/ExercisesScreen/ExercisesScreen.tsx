@@ -84,6 +84,8 @@ import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
 import { GlassView } from "expo-glass-effect";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
+import { useCircularRevealNavigate } from "@/src/hooks/useCircularRevealNavigate";
+import { Href } from "expo-router";
 
 type TabKey = "discover" | "log";
 const TAB_KEYS = ["discover", "log"] as const;
@@ -735,31 +737,44 @@ export default function ExercisesScreen(): ReactElement {
     [],
   );
 
-  const handleLogPress = useCallback((item: HistoryLogItem): void => {
+  const navigateWithReveal = useCircularRevealNavigate();
+
+  const handleLogPress = useCallback((item: HistoryLogItem, e?: any): void => {
     if (item.type === "unified" && item.exerciseType) {
-      router.push(
-        buildExerciseRoute(item.exerciseType, {
-          entryId: item.id,
-          readOnly: item.status === "completed",
-        }) as never,
-      );
+      const config = getExerciseConfig(item.exerciseType);
+      const color = config ? getCategoryBadgeTheme(config.category).bg : "#E8FBF0";
+      const route = buildExerciseRoute(item.exerciseType, {
+        entryId: item.id,
+        readOnly: item.status === "completed",
+      });
+      if (e) {
+        navigateWithReveal(e, route as Href<string>, color);
+      } else {
+        router.push(route as never);
+      }
       return;
     }
 
     if (item.type === "catcher") {
-      router.push(`/tabs/screens/thought-checker?id=${item.id}` as never);
+      const route = `/tabs/screens/thought-checker?id=${item.id}`;
+      if (e) navigateWithReveal(e, route as Href<string>, "#E8FBF0");
+      else router.push(route as never);
       return;
     }
 
     if (item.type === "reframing") {
-      router.push(`/tabs/screens/thought-reframing?id=${item.id}` as never);
+      const route = `/tabs/screens/thought-reframing?id=${item.id}`;
+      if (e) navigateWithReveal(e, route as Href<string>, "#E8FBF0");
+      else router.push(route as never);
       return;
     }
 
     if (item.type === "gratitude") {
-      router.push(`/tabs/screens/gratitude-reframe?id=${item.id}` as never);
+      const route = `/tabs/screens/gratitude-reframe?id=${item.id}`;
+      if (e) navigateWithReveal(e, route as Href<string>, "#E8FBF0");
+      else router.push(route as never);
     }
-  }, []);
+  }, [navigateWithReveal]);
   return (
     <>
       <Stack.Screen

@@ -133,21 +133,21 @@ interface UseExerciseTimelineReturn {
   readonly hasNextPage: boolean;
 }
 
-export function useExerciseTimeline(
-  onPressItem: (item: HistoryLogItem) => void,
-): UseExerciseTimelineReturn {
-  const {
-    data,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-  } = useCBTHistory();
-
-  // Stable press handler factory
-  const makeOnPress = useCallback(
-    (entry: HistoryLogItem) => () => onPressItem(entry),
-    [onPressItem],
-  );
+  export function useExerciseTimeline(
+    onPressItem: (item: HistoryLogItem, e?: any) => void,
+  ): UseExerciseTimelineReturn {
+    const {
+      data,
+      isFetchingNextPage,
+      fetchNextPage,
+      hasNextPage,
+    } = useCBTHistory();
+  
+    // Stable press handler factory
+    const makeOnPress = useCallback(
+      (entry: HistoryLogItem) => (e?: any) => onPressItem(entry, e),
+      [onPressItem],
+    );
 
   const sections = useMemo<TimelineSection<ExerciseTimelineItem>[]>(() => {
     if (!data?.pages) return [];
