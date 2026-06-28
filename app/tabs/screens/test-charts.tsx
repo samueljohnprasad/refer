@@ -24,6 +24,8 @@ import { AnimatedCountText } from "@/src/animations/animated-count-text";
 import { ThemeCanvasAnimation } from "@/src/animations/theme-canvas-animation";
 import { AddToCart } from "@/src/animations/add-to-cart";
 import { SharedTransitions } from "@/src/animations/shared-transition";
+import { useCircularRevealNavigate } from "@/src/hooks/useCircularRevealNavigate";
+import { TouchableOpacity } from "react-native";
 
 const mockEmotionData = [
   { emotion: "Joy", score: 85, count: 5 },
@@ -45,12 +47,22 @@ const mockLifeDomainData = [
 
 export default function TestChartsScreen() {
   const [message, setMessage] = useState("");
+  const navigateWithReveal = useCircularRevealNavigate();
 
   return (
     <View style={{ flex: 1, backgroundColor: "#F9FAFB" }}>
       <Stack.Screen options={{ title: "Test Charts & UI", headerBackTitle: "Back" }} />
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
         
+        <TouchableOpacity 
+          onPress={(e) => navigateWithReveal(e, '/tabs/screens/reveal-destination', '#4ECDC4')}
+          style={{ padding: 16, backgroundColor: '#4ECDC4', borderRadius: 12, marginBottom: 32, alignItems: 'center' }}
+        >
+          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>
+            Tap Me: Test Circular Reveal Transition
+          </Text>
+        </TouchableOpacity>
+
         <Text variant="h2" className="mb-4 mt-2 text-gray-800">Flux Chart</Text>
         <View style={{ height: 500, borderRadius: 24, overflow: 'hidden', borderWidth: 1, borderColor: '#E5E7EB' }}>
           {/* We wrap the full screen in a fixed height container so it doesn't expand infinitely */}

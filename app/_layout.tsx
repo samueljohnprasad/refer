@@ -20,6 +20,7 @@ import { HapticManager } from "@/lib/haptics/HapticManager";
 import RevenueCatProvider from "@/src/context/RevenueCatProvider";
 import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
 import { FloatingHappyAssistant } from "@/src/components/happy-assistant/FloatingHappyAssistant";
+import { TransitionOverlay } from "@/src/components/TransitionOverlay";
 import {
   CormorantGaramond_300Light,
   CormorantGaramond_400Regular,
@@ -198,11 +199,12 @@ function RootLayoutNav() {
                               <RevenueCatProvider>
                                 <ThemeProvider value={DefaultTheme}>
                                   <KeyboardProvider>
-                                    <BottomSheetModalProvider>
-                                      <Slot />
-                                      <AnonymousPurchaseClaimPrompt />
-                                      <FloatingHappyAssistant />
-                                    </BottomSheetModalProvider>
+                                      <BottomSheetModalProvider>
+                                        <Slot />
+                                        <AnonymousPurchaseClaimPrompt />
+                                        <FloatingHappyAssistant />
+                                        <TransitionOverlay />
+                                      </BottomSheetModalProvider>
                                   </KeyboardProvider>
                                 </ThemeProvider>
                               </RevenueCatProvider>

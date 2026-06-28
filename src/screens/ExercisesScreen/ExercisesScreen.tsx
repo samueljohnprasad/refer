@@ -83,6 +83,7 @@ import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
 import { GlassView } from "expo-glass-effect";
 import { useHeaderHeight } from "expo-router/react-navigation";
+import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
 
 type TabKey = "discover" | "log";
 const TAB_KEYS = ["discover", "log"] as const;
@@ -223,9 +224,14 @@ const ExerciseCard = memo(function ExerciseCard({
   }, [exercise, onPress]);
 
   return (
-    <Pressable
-      onPress={handlePress}
-      style={({ pressed }) => [
+    <CircularRevealWrapper 
+      href={buildExerciseRoute(exercise.type)} 
+      color={badgeTheme.bg}
+      duration={800}
+    >
+      <Pressable
+        onPress={handlePress}
+        style={({ pressed }) => [
         nutrieStyles.exerciseCard,
         pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] },
       ]}
@@ -311,6 +317,7 @@ const ExerciseCard = memo(function ExerciseCard({
         </View>
       </View>
     </Pressable>
+    </CircularRevealWrapper>
   );
 });
 
@@ -708,7 +715,8 @@ export default function ExercisesScreen(): ReactElement {
   const xp = useXPOptional();
 
   const handleExercisePress = useCallback((exercise: ExerciseConfig<any>) => {
-    router.push(buildExerciseRoute(exercise.type) as never);
+    // Analytics or other logic can go here.
+    // Routing is handled by the CircularRevealWrapper in ExerciseCard.
   }, []);
 
   const handleTabPress = useCallback((tab: TabKey): void => {

@@ -221,7 +221,7 @@ export default function AppLayout() {
           headerShown: false,
           title: "Exercise",
           freezeOnBlur: true,
-          animation: "slide_from_bottom",
+          animation: "fade",
         }}
       />
     </Stack>

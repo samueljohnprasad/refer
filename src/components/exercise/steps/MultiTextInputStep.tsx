@@ -8,7 +8,7 @@ import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import { SuggestionCards, type SuggestionItem } from "@/src/components/exercise/SuggestionCards";
 import type { StepProps, AISuggestionItem } from "@/src/types/exerciseFlow";
-
+import GlowyInput from "@/src/components/GlowyInput";
 interface MultiTextInputStepProps extends StepProps {
   title: string;
   subtitle: string;
@@ -142,31 +142,14 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
 
         {/* Input row */}
         {!readOnly && items.length < maxItems && (
-          <View className="flex-row items-center mt-2">
-            <TextInput
-              value={draft}
-              onChangeText={setDraft}
-              onSubmitEditing={addItem}
+          <View className="mt-2" style={{ zIndex: 10 }}>
+            <GlowyInput
+              message={draft}
+              setMessage={setDraft}
+              handleSendMessage={addItem}
+              handleSubmitEditing={addItem as any}
               placeholder={placeholder}
-              placeholderTextColor="#94A3B8"
-              maxLength={maxLength}
-              returnKeyType="done"
-              accessibilityLabel="Add item"
-              className="flex-1 text-sm text-slate-800 bg-white rounded-xl p-3 mr-2"
-              style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
             />
-            <Pressable
-              onPress={addItem}
-              disabled={!draft.trim()}
-              accessibilityRole="button"
-              accessibilityLabel="Add"
-              className="h-11 w-11 rounded-xl items-center justify-center"
-              style={{
-                backgroundColor: draft.trim() ? "#58CC02" : "#E2E8F0",
-              }}
-            >
-              <Text className="text-white font-bold text-lg">+</Text>
-            </Pressable>
           </View>
         )}
 
