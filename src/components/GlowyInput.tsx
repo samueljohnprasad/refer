@@ -70,6 +70,7 @@ interface GlowyInputProps {
   isTranscribing?: boolean;
   submitIcon?: any;
   alwaysShowVoice?: boolean;
+  clearOnSubmit?: boolean;
 }
 
 const WaveBar = ({ delay }: { delay: number }) => {
@@ -117,6 +118,7 @@ function GlowyInput({
   isTranscribing,
   submitIcon,
   alwaysShowVoice,
+  clearOnSubmit = true,
 }: GlowyInputProps) {
   const [dimensions, setDimensions] = useState<{
     width: number;
@@ -160,7 +162,9 @@ function GlowyInput({
   const onSend = () => {
     if (message.trim()) {
       handleSendMessage({ message: { text: message } });
-      setMessage("");
+      if (clearOnSubmit) {
+        setMessage("");
+      }
     }
   };
 

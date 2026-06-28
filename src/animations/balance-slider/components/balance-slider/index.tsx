@@ -90,10 +90,18 @@ export const BalanceSlider: React.FC<BalanceSliderProps> = ({
       // + withSpring is used to add spring animation to the slider
       x.value = withSpring(event.x + pickerWidth / 2, {
         overshootClamping: true,
+      }, (finished) => {
+        if (finished) {
+          runOnJS(onChangeWrapper)(
+            clamp((x.value - pickerWidth / 2) / width, 0, 1)
+          );
+        }
       });
     })
     .onUpdate(event => {
       x.value = event.x + pickerWidth / 2;
+    })
+    .onFinalize(() => {
       runOnJS(onChangeWrapper)(xPercentage.value);
     });
 
@@ -183,8 +191,15 @@ export const BalanceSlider: React.FC<BalanceSliderProps> = ({
             style={{
               width: pickerWidth / 4,
               height: '80%',
-              backgroundColor: 'white',
+              backgroundColor: '#FFFFFF',
               borderRadius: 50,
+              borderWidth: 1,
+              borderColor: '#CBD5E1', // Slate 300 border for crisp definition
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.15,
+              shadowRadius: 4,
+              elevation: 3,
             }}
           />
         </Animated.View>

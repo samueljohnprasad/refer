@@ -7,6 +7,7 @@ import { createDynamicSummaryStep } from "@/src/components/exercise/steps/create
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
+import { BalanceSliderStep } from "@/src/components/exercise/steps/BalanceSliderStep";
 import { AITextInputStep } from "@/src/components/exercise/steps/AITextInputStep";
 
 const INITIAL: DecatastrophizingResponse = {
@@ -94,15 +95,16 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
       },
       {
         id: "probability",
-        component: createStep(SliderStep, {
+        component: createStep(BalanceSliderStep, {
           title: "Probability",
           subtitle: "Realistically, how likely is this?",
           fieldKey: "probability",
-          min: 0,
-          max: 100,
-          minLabel: "Impossible",
-          maxLabel: "Certain",
-          unit: "%",
+          leftLabel: "Impossible",
+          rightLabel: "Certain",
+          colors: {
+            left: { box: "#F1F5F9", label: "#475569", percentage: "#1E293B" }, // Slate 100, 600, 800
+            right: { box: "#FFE4E6", label: "#E11D48", percentage: "#9F1239" }, // Rose 100, 600, 800
+          },
           psychoeducationText:
             "Anxiety inflates probability estimates. Explicitly rating likelihood activates your rational brain and deflates the fear.",
         }),

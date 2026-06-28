@@ -26,6 +26,7 @@ interface BalanceSliderStepProps extends StepProps {
   rightPercentageLimitBeforeShift?: number;
   sliderHeight?: number;
   psychoeducationText?: string;
+  valueScale?: number; // Defaults to 100 so state saves as 0-100
 }
 
 const DEFAULT_COLORS = {
@@ -35,9 +36,9 @@ const DEFAULT_COLORS = {
     percentage: "#1E293B", // Slate 800
   },
   right: {
-    box: "#ECFDF5", // Emerald 50
+    box: "#D1FAE5", // Emerald 100
     label: "#059669", // Emerald 600
-    percentage: "#064E3B", // Emerald 900
+    percentage: "#065F46", // Emerald 800
   },
 };
 
@@ -63,14 +64,16 @@ export const BalanceSliderStep: React.FC<BalanceSliderStepProps> = React.memo(
     sliderHeight = 60,
     isSaving,
     psychoeducationText,
+    valueScale = 100,
   }) => {
     const { width: screenWidth } = useWindowDimensions();
     // Assuming standard padding of 24 on each side for the container
     const PADDING_HORIZONTAL = 24;
     const sliderWidth = screenWidth - PADDING_HORIZONTAL * 2;
 
-    const value: number =
-      (response as Record<string, any>)[fieldKey] ?? 0.5;
+    // Get the saved value (e.g. 50) and convert it to 0-1 for the component
+    const savedValue = (response as Record<string, any>)[fieldKey];
+    const value: number = savedValue !== undefined ? savedValue / valueScale : 0.5;
 
     return (
       <StepLayout
@@ -97,7 +100,7 @@ export const BalanceSliderStep: React.FC<BalanceSliderStepProps> = React.memo(
               colors={colors}
               initialPercentage={value}
               onChange={({ leftPercentage }) => {
-                onUpdate({ [fieldKey]: leftPercentage } as any);
+                onUpdate({ [fieldKey]: Math.round(leftPercentage * valueScale) } as any);
               }}
               leftPercentageLimitBeforeShift={leftPercentageLimitBeforeShift}
               rightPercentageLimitBeforeShift={rightPercentageLimitBeforeShift}

@@ -33,6 +33,7 @@ import type {
 } from "@/src/types/exerciseFlow";
 import { useSingleExerciseEntry } from "@/src/hooks/useSingleExerciseEntry";
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
+import { SharedElement } from "@/src/components/ui/SharedTransition";
 
 // ─── Animated step transition wrapper ────────────────────────────────────────
 
@@ -332,9 +333,10 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const onPrimaryPress = readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext;
 
   return (
-    <LessonScreen
-      className="flex-1"
-      style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
+    <SharedElement.Content delay={150} style={{ flex: 1 }}>
+      <LessonScreen
+        className="flex-1"
+        style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
       hideHeader={currentStep?.hideHeader || readOnly}
       hideFooter={currentStep?.hideFooter || readOnly}
       progress={flow.progress}
@@ -394,8 +396,9 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
             <Text className="text-slate-400">Unknown step</Text>
           </View>
         )}
-      </AnimatedStepContainer>
-    </LessonScreen>
+        </AnimatedStepContainer>
+      </LessonScreen>
+    </SharedElement.Content>
   );
 };
 

@@ -23,12 +23,16 @@ export const useCircularRevealNavigate = () => {
       color,
       duration,
       onComplete: () => {
-        // Once the Skia canvas fills the screen, perform the actual navigation
-        // Note: Expo Router's push doesn't support disabling animations via options dynamically here, 
-        // but because the Skia overlay covers the screen, it masks the native transition!
-        router.push(href as any);
+        // Animation finished (you can add cleanup here if needed)
       }
     });
+
+    // Fire the router push after exactly half of the duration time
+    // This allows the circle to expand enough to cover the screen before the native transition starts
+    const transitionDuration = duration || 400; // default to 400 if not provided
+    setTimeout(() => {
+      router.push(href as any);
+    }, transitionDuration / 2);
   };
 
   return navigateWithReveal;

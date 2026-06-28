@@ -10,7 +10,8 @@ import { SAGE } from "@/lib/tokens";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
-import { VoiceTextInput } from "@/src/screens/ThoughtReframingScreen/components/VoiceTextInput";
+import GlowyInput from "@/src/components/GlowyInput";
+import { Keyboard } from "react-native";
 import { SuggestionCards, type SuggestionItem } from "@/src/components/exercise/SuggestionCards";
 import type { StepProps, AISuggestionItem } from "@/src/types/exerciseFlow";
 
@@ -131,15 +132,19 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
             />
           )}
 
-          <VoiceTextInput
-            value={value}
-            onChangeText={(text) => onUpdate({ [fieldKey]: text } as any)}
-            editable={!readOnly}
-            placeholder={placeholder}
-            maxLength={maxLength}
-            showCharCount
-            minHeight={140}
-          />
+          <View className="mt-2" style={{ zIndex: 10 }}>
+            <GlowyInput
+              message={value}
+              setMessage={(text) => onUpdate({ [fieldKey]: text } as any)}
+              handleSendMessage={() => {
+                Keyboard.dismiss();
+                if (value.trim().length > 0) onNext();
+              }}
+              handleSubmitEditing={() => Keyboard.dismiss()}
+              placeholder={placeholder}
+              clearOnSubmit={false}
+            />
+          </View>
         </FadeInItem>
       </StepLayout>
     );

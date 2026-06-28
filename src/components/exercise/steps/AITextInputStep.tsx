@@ -1,6 +1,7 @@
 import React from "react";
-import { View, TextInput, Pressable, ActivityIndicator } from "react-native";
-import { Text } from "@/components/ui/text";
+import { View, Pressable, ActivityIndicator, Keyboard } from "react-native";
+import { Text } from "@/src/components/ui/Text";
+import GlowyInput from "@/src/components/GlowyInput";
 import { StepProps } from "@/src/types/exerciseFlow";
 import { StepLayout } from ".";
 
@@ -101,18 +102,19 @@ export const AITextInputStep: React.FC<AITextInputStepProps> = React.memo(
         )}
 
         {/* Manual input */}
-        <TextInput
-          value={value}
-          onChangeText={(text) => onUpdate({ [fieldKey]: text } as any)}
-          placeholder={placeholder}
-          placeholderTextColor="#94A3B8"
-          maxLength={maxLength}
-          multiline
-          textAlignVertical="top"
-          accessibilityLabel={title}
-          className="text-base text-slate-800 bg-slate-50 rounded-2xl p-4 min-h-[100px]"
-          style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
-        />
+        <View className="mt-2" style={{ zIndex: 10 }}>
+          <GlowyInput
+            message={value}
+            setMessage={(text) => onUpdate({ [fieldKey]: text } as any)}
+            handleSendMessage={() => {
+              Keyboard.dismiss();
+              if (value.trim().length > 0) onNext();
+            }}
+            handleSubmitEditing={() => Keyboard.dismiss()}
+            placeholder={placeholder}
+            clearOnSubmit={false}
+          />
+        </View>
         {maxLength && (
           <Text className="text-xs text-slate-400 text-right mt-1">
             {value.length}/{maxLength}
