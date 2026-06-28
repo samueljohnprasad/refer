@@ -6979,6 +6979,11 @@ react-native-skia-apple-tvos@147.1.0:
   resolved "https://registry.npmjs.org/react-native-skia-apple-tvos/-/react-native-skia-apple-tvos-147.1.0.tgz"
   integrity sha512-b+4vILXHPu++t8H41PHLBVsTab2LPqwXNdzgdScyl4+Cu8Ta34aUQW3T469cB0ogAMPdu//KV00w4YVpDZoRUQ==
 
+react-native-skia-gesture@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.npmjs.org/react-native-skia-gesture/-/react-native-skia-gesture-0.4.0.tgz"
+  integrity sha512-uCd5i8DFkHmGAJqbVwUBaoLoLwvrO3q+yydCQHMM8w71qoD7Wy1IbeOQhIcP3vGwTW09bP4KNGeJfr/ZoW9CvQ==
+
 react-native-svg-transformer@^1.5.3:
   version "1.5.3"
   resolved "https://registry.npmjs.org/react-native-svg-transformer/-/react-native-svg-transformer-1.5.3.tgz"

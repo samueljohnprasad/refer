@@ -125,6 +125,7 @@
     "react-native-reanimated": "4.3.1",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "4.25.2",
+    "react-native-skia-gesture": "^0.4.0",
     "react-native-svg": "15.15.4",
     "react-native-timeline-flatlist": "^1.0.0",
     "react-native-version-check": "^3.5.0",
