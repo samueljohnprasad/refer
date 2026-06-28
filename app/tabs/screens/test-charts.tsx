@@ -7,6 +7,7 @@ import { Text } from "@/src/components/ui/Text";
 import { FluxChartScreen } from "@/src/screens/FluxChartScreen/FluxChartScreen";
 import { NutrieScreen } from "@/src/screens/NutrieScreen/NutrieScreen";
 import GlowyInput from "@/src/components/GlowyInput";
+import { ExclusionTabs } from "@/src/animations/exclusion-tabs";
 
 const mockEmotionData = [
   { emotion: "Joy", score: 85, count: 5 },
@@ -82,6 +83,13 @@ export default function TestChartsScreen() {
             }}
             placeholder="Test the glowy input..."
           />
+        </View>
+
+        <View style={{ height: 32 }} />
+
+        <Text variant="h2" className="mb-4 mt-2 text-gray-800">Exclusion Tabs</Text>
+        <View style={{ height: 200, borderRadius: 24, overflow: 'hidden', borderWidth: 1, borderColor: '#E5E7EB' }}>
+          <ExclusionTabs />
         </View>
 
       </ScrollView>
