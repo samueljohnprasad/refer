@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,8 @@ import * as Haptics from "expo-haptics";
 
 import { XPHistorySummary } from "./components/XPHistorySummary";
 import { XPHistoryTimeline } from "./components/XPHistoryTimeline";
+import { XPWeeklyChart } from "./components/XPWeeklyChart";
+import { generateXPChartData } from "./utils/chartUtils";
 import { useHeaderHeight } from "expo-router/react-navigation";
 
 const styles = StyleSheet.create({
@@ -34,6 +36,10 @@ export const XPHistoryScreen: React.FC = () => {
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const headerHeight = useHeaderHeight();
+
+  const { data: chartData, weekLabels } = useMemo(() => {
+    return generateXPChartData(history, 4); // 4 weeks of history
+  }, [history]);
 
   useEffect(() => {
     const loadInitial = async () => {
@@ -83,11 +89,16 @@ export const XPHistoryScreen: React.FC = () => {
 
   return (
     <View
-      style={[styles.screen]}
+      style={[styles.screen, { paddingTop: headerHeight }]}
     >
       <XPHistoryTimeline
         entries={history}
-        header={<XPHistorySummary totalXP={totalXP} todayXP={todayXP} />}
+        header={
+          <View>
+            <XPHistorySummary totalXP={totalXP} todayXP={todayXP} />
+            <XPWeeklyChart weeklyData={chartData} weekLabels={weekLabels} />
+          </View>
+        }
         isLoadingMore={isLoadingMore}
         onEndReached={handleLoadMore}
       />
