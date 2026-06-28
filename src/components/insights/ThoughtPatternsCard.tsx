@@ -56,8 +56,8 @@ function LockedCard({ onUnlock }: { onUnlock: () => void }) {
   return (
     <Pressable
       onPress={onUnlock}
+      className="happy-brand-card rounded-[24px] p-5"
       style={({ pressed }) => [
-        nutrieStyles.card,
         pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] }
       ]}
     >
