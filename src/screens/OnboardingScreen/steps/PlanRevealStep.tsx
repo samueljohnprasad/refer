@@ -16,11 +16,12 @@ import Svg, {
 
 import { PLAN_STATS } from "../constants";
 import { MotivationAnswer } from "../types";
-import TestimonialCard from "../components/TestimonialCard";
+import { StackedCarousel } from "../../../animations/stacked-carousel";
 import { useWindowDimensions } from "react-native";
 import { getScaledLayout } from "./progress-graph-victory/layout";
 import ProgressGraphVictoryChart from "./progress-graph-victory/ProgressGraphVictoryChart";
 import { useProgressGraphVictoryAnimation } from "./progress-graph-victory/useProgressGraphVictoryAnimation";
+import TestimonialCard from "../components/TestimonialCard";
 
 interface PlanRevealStepProps {
   planName: string;

@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
-import TestimonialCard from "../components/TestimonialCard";
+import { StackedCarousel } from "../../../animations/stacked-carousel";
 import { MotivationAnswer } from "../types";
 import { MOTIVATION_OPTIONS } from "../constants";
 import { useHeaderHeight } from "expo-router/react-navigation";
@@ -89,13 +89,7 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
         entering={FadeIn.duration(180).delay(PROOF_ENTER_DELAY_MS)}
         className="mt-5"
       >
-        <TestimonialCard
-          initial="M"
-          name="Maya"
-          age={32}
-          quote="I'd downloaded 6 anxiety apps before this. Happy is the first one I actually opened on day 8."
-          tone="sage"
-        />
+        <StackedCarousel />
       </Animated.View>
     </ScrollView>
   );

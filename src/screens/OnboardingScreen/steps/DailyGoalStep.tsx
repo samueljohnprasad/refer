@@ -4,7 +4,7 @@ import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import GoalCard from "../components/GoalCard";
-import TestimonialCard from "../components/TestimonialCard";
+import { StackedCarousel } from "../../../animations/stacked-carousel";
 import { DailyGoalMinutes, MotivationAnswer } from "../types";
 import { DAILY_GOAL_CARDS, DAILY_GOAL_CONTEXT } from "../constants";
 
@@ -28,7 +28,7 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingBottom: 24,
+        paddingBottom: 104,
         paddingTop: headerHeight - insets.top,
       }}
       contentInsetAdjustmentBehavior="automatic"
@@ -55,19 +55,6 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
         </Text>
       </Animated.View>
 
-      <Animated.View
-        entering={FadeIn.duration(180).delay(180)}
-        className="mt-5"
-      >
-        <TestimonialCard
-          initial={ctx.testimonial.initial}
-          tone={ctx.testimonial.tone}
-          quote={ctx.testimonial.quote}
-          name={ctx.testimonial.name}
-          age={ctx.testimonial.age}
-        />
-      </Animated.View>
-
       <View className="mt-5 gap-2.5">
         {DAILY_GOAL_CARDS.map((config, index) => (
           <GoalCard
@@ -79,6 +66,9 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
           />
         ))}
       </View>
+      <Animated.View entering={FadeIn.duration(180).delay(180)}>
+        <StackedCarousel />
+      </Animated.View>
     </ScrollView>
   );
 };

@@ -7,9 +7,10 @@ import MochiMascot from '../components/MochiMascot';
 import PricingTierCard from '../components/PricingTierCard';
 import TactileButton from '../components/TactileButton';
 import DiscountInterceptModal from '../components/DiscountInterceptModal';
-import TestimonialCard from '../components/TestimonialCard';
+import { StackedCarousel } from '../../../animations/stacked-carousel';
 import { PricingTier } from '../types';
 import { PRICING_PLANS, PAYWALL_BENEFITS } from '../constants';
+import TestimonialCard from '../components/TestimonialCard';
 
 interface SoftPaywallStepProps {
   selectedTier?: PricingTier;
