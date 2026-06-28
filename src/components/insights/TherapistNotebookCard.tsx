@@ -21,7 +21,6 @@ import {
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { SAGE, INK_MUTED } from "@/lib/tokens";
 import dayjs from "dayjs";
-import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 if (
   Platform.OS === "android" &&
@@ -36,20 +35,16 @@ function LockedNotebookCard({ onUnlock }: { onUnlock: () => void }) {
   return (
     <Pressable
       onPress={onUnlock}
-      style={({ pressed }) => [
-        nutrieStyles.card,
-        pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] },
-        { marginBottom: 16 }
-      ]}
+      className="happy-brand-card rounded-[24px] p-5 mb-4 active:scale-95 active:opacity-90 transition-transform duration-200"
     >
       <View className="flex-row items-center gap-2 mb-2">
         <Text className="text-[16px]">📓</Text>
         <HugeiconsIcon icon={LockIcon} size={14} color={INK_MUTED} />
-        <Text style={nutrieStyles.sectionTitle} className="mb-0">
+        <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3" className="mb-0">
           Therapist's Notebook
         </Text>
-        <View style={[nutrieStyles.inlinePill, { backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
-          <Text style={[nutrieStyles.inlinePillText, { color: "#7E22CE" }]}>PRO</Text>
+        <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
+          <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>PRO</Text>
         </View>
       </View>
       <Text className="text-[12px] text-ink-muted leading-relaxed">
@@ -182,15 +177,15 @@ export function TherapistNotebookCard() {
   };
 
   return (
-    <View style={[nutrieStyles.card, { marginBottom: 16 }]}>
+    <View className="happy-brand-card rounded-[24px] p-5 mb-4">
       <Pressable onPress={toggleExpand} className="active:opacity-80">
         <View className="flex-row items-center gap-2 mb-1">
           <Text className="text-[16px]">📓</Text>
-          <Text style={nutrieStyles.sectionTitle} className="mb-0">
+          <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3" className="mb-0">
             Therapist's Notebook
           </Text>
-          <View style={[nutrieStyles.inlinePill, { backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
-            <Text style={[nutrieStyles.inlinePillText, { color: "#7E22CE" }]}>PRO</Text>
+          <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
+            <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>PRO</Text>
           </View>
           <View className="flex-1" />
           <HugeiconsIcon

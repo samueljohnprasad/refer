@@ -10,7 +10,6 @@ import {
 } from "@/src/hooks/insights/useBeliefDecay";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { SAGE, GOLD, INK_MUTED, BRAND_BORDER_STRONG } from "@/lib/tokens";
-import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 // ─── Mini dot chart ──────────────────────────────────────────────────────────
 
@@ -73,7 +72,7 @@ function BeliefRow({ cluster }: { cluster: BeliefCluster }) {
           { backgroundColor: badgeColor.bg, borderColor: badgeColor.border, marginTop: 4, alignSelf: "flex-start" }
         ]}
       >
-        <Text style={[nutrieStyles.inlinePillText, { color: badgeColor.text }]}>
+        <Text className="text-[11px] font-semibold" style={[{ color: badgeColor.text }]}>
           {badgeText}
         </Text>
       </View>
@@ -90,19 +89,15 @@ function LockedBeliefCard({ onUnlock }: { onUnlock: () => void }) {
   return (
     <Pressable
       onPress={onUnlock}
-      style={({ pressed }) => [
-        nutrieStyles.card,
-        pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] },
-        { marginBottom: 16 }
-      ]}
+      className="happy-brand-card rounded-[24px] p-5 mb-4 active:scale-95 active:opacity-90 transition-transform duration-200"
     >
       <View className="flex-row items-center gap-2 mb-2">
         <HugeiconsIcon icon={LockIcon} size={16} color={INK_MUTED} />
         <Text className="happy-font-body-bold text-[14px] text-ink">
           Belief Tracker
         </Text>
-        <View style={[nutrieStyles.inlinePill, { backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
-          <Text style={[nutrieStyles.inlinePillText, { color: "#7E22CE" }]}>PRO</Text>
+        <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
+          <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>PRO</Text>
         </View>
       </View>
       <Text className="text-[12px] text-ink-muted leading-relaxed">
@@ -126,13 +121,13 @@ export function BeliefDecayCard() {
   if (isLoading || !data || data.clusters.length === 0) return null;
 
   return (
-    <View style={[nutrieStyles.card, { marginBottom: 16 }]}>
+    <View className="happy-brand-card rounded-[24px] p-5 mb-4">
       <View className="flex-row items-center gap-2 mb-1">
-        <Text style={nutrieStyles.sectionTitle} className="mb-0">
+        <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3" className="mb-0">
           Belief Tracker
         </Text>
-        <View style={[nutrieStyles.inlinePill, { backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
-          <Text style={[nutrieStyles.inlinePillText, { color: "#7E22CE" }]}>PRO</Text>
+        <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
+          <Text className="text-[11px] font-semibold" style={[{ color: "#7E22CE" }]}>PRO</Text>
         </View>
       </View>
       <Text className="text-[12px] text-ink-muted mb-2">

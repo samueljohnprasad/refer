@@ -9,7 +9,7 @@ interface SectionProps {
 
 export function Section({ title, children }: SectionProps) {
   return (
-    <View className="px-5 mt-8">
+    <View className="px-5 mb-12">
       <Text className="happy-brand-eyebrow mb-3">{title}</Text>
       <View className="happy-brand-card rounded-2xl p-4">{children}</View>
     </View>

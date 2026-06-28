@@ -88,13 +88,13 @@ function extractTimelinePreview(
   switch (exerciseType) {
     case "thought_catcher":
       return {
-        previewText: response.automaticThought,
-        expandedText: response.balancedThought,
+        previewText: response.balancedThought,
+        expandedText: response.automaticThought,
       };
     case "thought_reframing":
       return {
-        previewText: response.automaticThought,
-        expandedText: response.balancedThought,
+        previewText: response.balancedThought,
+        expandedText: response.automaticThought,
         tags: Array.isArray(response.selectedDistortions)
           ? response.selectedDistortions
           : undefined,
@@ -104,8 +104,8 @@ function extractTimelinePreview(
       };
     case "abc_analysis":
       return {
-        previewText: response.activatingEvent,
-        expandedText: response.alternativeBelief,
+        previewText: response.alternativeBelief,
+        expandedText: response.activatingEvent,
         emotions: Array.isArray(response.consequenceEmotions)
           ? response.consequenceEmotions.slice(0, 3)
           : undefined,

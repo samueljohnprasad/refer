@@ -1,5 +1,6 @@
 import React from "react";
 import { Text } from "@/components/ui/text";
+import { SAGE } from "@/lib/tokens";
 import { HorizontalBarChart } from "@/src/screens/InsightsScreen/components/HorizontalBarChart";
 import { TrendLine } from "@/src/screens/InsightsScreen/components/TrendLine";
 import { DISTORTION_LABELS } from "@/src/constants/insights";
@@ -10,7 +11,7 @@ import type { DeepDiveConfig, DeepDiveComputedData } from "./types";
 export const cbtConfig: DeepDiveConfig = {
   category: "cbt_core",
   title: "CBT Patterns",
-  color: "#5a7a56",
+  color: SAGE[500],
   exerciseTypes: ["thought_reframing", "thought_catcher"],
   fieldMappings: [],
   statPills: [
@@ -135,7 +136,7 @@ export const cbtConfig: DeepDiveConfig = {
           <>
             <TrendLine
               data={trend.map((d) => ({ label: d.week, value: d.avgShift }))}
-              color="#5a7a56"
+              color={SAGE[500]}
             />
             <Text className="happy-font-body text-[11px] text-ink-muted mt-2">
               Higher = emotions decreased more after reframing
@@ -156,7 +157,7 @@ export const cbtConfig: DeepDiveConfig = {
               label: d.name.charAt(0).toUpperCase() + d.name.slice(1),
               value: d.count,
             }))}
-            barColor="#7a9272"
+            barColor={SAGE[400]}
           />
         );
       },

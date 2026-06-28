@@ -11,7 +11,6 @@ import {
 } from "@/src/hooks/insights/useSkillProgression";
 import { SAGE, GOLD, INK_MUTED } from "@/lib/tokens";
 import { EXERCISE_LABELS } from "@/src/constants/insights";
-import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 // ─── Mini Sparkline ──────────────────────────────────────────────────────────
 
@@ -85,8 +84,8 @@ function TrendBadge({
   }[trend];
 
   return (
-    <View style={[nutrieStyles.inlinePill, { backgroundColor: config.bg, borderColor: config.border }]}>
-      <Text style={[nutrieStyles.inlinePillText, { color: config.color }]}>
+    <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: config.bg, borderColor: config.border }]}>
+      <Text className="text-[11px] font-semibold" style={[{ color: config.color }]}>
         {config.text}
       </Text>
     </View>
@@ -149,8 +148,8 @@ export function SkillProgressionCard() {
   if (activeTrends.length === 0) return null;
 
   return (
-    <View style={nutrieStyles.card}>
-      <Text style={nutrieStyles.sectionTitle}>
+    <View className="happy-brand-card rounded-[24px] p-5">
+      <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3">
         Your Skills
       </Text>
       <Text className="text-[12px] text-ink-muted mb-2">

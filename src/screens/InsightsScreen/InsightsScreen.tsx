@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { View, ScrollView, Pressable, StyleSheet } from "react-native";
+import { View, ScrollView, Pressable } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,7 +17,6 @@ import {
   type TimeRange,
   type CategorySummary,
 } from "@/src/hooks/insights/useInsightsOverview";
-import { ActivityHeatmap } from "./components/ActivityHeatmap";
 import { TimeRangeSelector } from "./components/TimeRangeSelector";
 import { WeeklySummaryCard } from "@/src/components/insights/WeeklySummaryCard";
 import { ThoughtPatternsCard } from "@/src/components/insights/ThoughtPatternsCard";
@@ -99,7 +98,7 @@ export default function InsightsScreen() {
     <>
       {HeaderComponent}
       <ScrollView
-        style={nutrieStyles.screenBg}
+        className="flex-1 happy-brand-screen"
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ paddingBottom: 128, paddingTop: 110 }}
@@ -139,12 +138,9 @@ export default function InsightsScreen() {
         <Animated.View entering={FadeInDown.duration(400).delay(700)} className="px-4 mt-4">
           <ThoughtPatternsCard />
         </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(750)} className="px-4 mt-6">
-          <Text style={nutrieStyles.sectionTitle}>Activity</Text>
-          <ActivityHeatmap data={data.heatmap} />
-        </Animated.View>
+
         <Animated.View entering={FadeInDown.duration(400).delay(800)} className="px-4 mt-8">
-          <Text style={nutrieStyles.sectionTitle}>Categories</Text>
+          <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3">Categories</Text>
           <View className="flex-row flex-wrap gap-3">
             {data.categories.map((cat) => (
               <CategoryCard key={cat.category} summary={cat} />
@@ -190,11 +186,11 @@ function StatsRow({
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <View style={nutrieStyles.statCard}>
-      <Text style={nutrieStyles.statValue}>
+    <View className="happy-brand-card flex-1 min-w-[90px] rounded-[24px] p-4 items-center">
+      <Text className="happy-font-heading-bold text-[26px] tracking-tight text-ink">
         {value}
       </Text>
-      <Text style={nutrieStyles.statLabel}>
+      <Text className="happy-font-body-bold text-[10px] uppercase tracking-[0.5px] text-ink-muted mt-1">
         {label}
       </Text>
     </View>
@@ -214,24 +210,22 @@ function CategoryCard({ summary }: { summary: CategorySummary }) {
   return (
     <Pressable
       onPress={handlePress}
-      style={({ pressed }) => [
-        nutrieStyles.categoryCard,
-        pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] }
-      ]}
+      className="happy-brand-card flex-1 min-w-[45%] rounded-[24px] p-4 active:scale-95 active:opacity-90 transition-transform duration-200"
     >
       <View
-        style={[nutrieStyles.categoryIconWell, { backgroundColor: bgColor }]}
+        className="h-12 w-12 rounded-[20px] items-center justify-center mb-3"
+        style={{ backgroundColor: bgColor }}
       >
         <HugeiconsIcon icon={icon} size={24} color="#2a3f2a" />
       </View>
-      <Text style={nutrieStyles.categoryLabel}>
+      <Text className="happy-font-heading-bold text-base tracking-tight text-ink">
         {summary.label}
       </Text>
-      <Text style={nutrieStyles.categorySessions}>
+      <Text className="happy-font-body-medium text-[13px] text-ink-muted mt-0.5">
         {summary.count > 0 ? `${summary.count} sessions` : "Not started"}
       </Text>
       {summary.count > 0 && summary.topStat && (
-        <Text style={nutrieStyles.categoryTopStat}>
+        <Text className="happy-font-body-bold text-[12px] text-[#22C55E] mt-1.5">
           {summary.topStat}
         </Text>
       )}
@@ -294,112 +288,4 @@ function EmptyState() {
   );
 }
 
-// ─── Nutrie-style Stylesheet ──────────────────────────────────────────────────
-export const nutrieStyles = StyleSheet.create({
-  screenBg: {
-    flex: 1,
-    backgroundColor: "#F7F7F8",
-  },
-  card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.03)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.04,
-    shadowRadius: 12,
-    elevation: 2,
-  },
-  inlinePill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 10,
-    backgroundColor: "#F4F4F5",
-    borderWidth: 1,
-    borderColor: "#E0E0E2",
-  },
-  inlinePillText: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#8E8E93",
-  },
-  statCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.03)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.04,
-    shadowRadius: 12,
-    elevation: 2,
-    alignItems: "center",
-    minWidth: 90,
-  },
-  statValue: {
-    fontSize: 26,
-    fontWeight: "800",
-    color: "#1C1C1E",
-    letterSpacing: -0.5,
-  },
-  statLabel: {
-    fontSize: 10,
-    fontWeight: "700",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-    color: "#8E8E93",
-    marginTop: 4,
-  },
-  categoryCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    padding: 16,
-    flex: 1,
-    minWidth: "45%",
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.03)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.04,
-    shadowRadius: 12,
-    elevation: 2,
-  },
-  categoryIconWell: {
-    height: 48,
-    width: 48,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 12,
-  },
-  categoryLabel: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#1C1C1E",
-    letterSpacing: -0.2,
-  },
-  categorySessions: {
-    fontSize: 13,
-    color: "#8E8E93",
-    marginTop: 2,
-  },
-  categoryTopStat: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#22C55E",
-    marginTop: 6,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#1C1C1E",
-    marginBottom: 12,
-    letterSpacing: -0.2,
-  }
-});
+

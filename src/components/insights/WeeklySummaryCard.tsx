@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { useWeeklyCBTSummary } from "@/src/hooks/insights/useWeeklyCBTSummary";
-import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 export function WeeklySummaryCard() {
   const { data, isLoading } = useWeeklyCBTSummary();
@@ -12,8 +11,8 @@ export function WeeklySummaryCard() {
   const changeText = formatChange(data.weekOverWeekChange);
 
   return (
-    <View style={nutrieStyles.card}>
-      <Text style={nutrieStyles.sectionTitle}>
+    <View className="happy-brand-card rounded-[24px] p-5">
+      <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3">
         This Week
       </Text>
       <View className="flex-row items-baseline gap-2 mb-2">
@@ -24,8 +23,8 @@ export function WeeklySummaryCard() {
           session{data.thisWeekCount !== 1 ? "s" : ""}
         </Text>
         {changeText && (
-          <View style={[nutrieStyles.inlinePill, { backgroundColor: "#E8FBF0", borderColor: "#A7F3D0" }]}>
-            <Text style={[nutrieStyles.inlinePillText, { color: "#166534" }]}>
+          <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#E8FBF0", borderColor: "#A7F3D0" }]}>
+            <Text className="text-[11px] font-semibold" style={[{ color: "#166534" }]}>
               {changeText}
             </Text>
           </View>

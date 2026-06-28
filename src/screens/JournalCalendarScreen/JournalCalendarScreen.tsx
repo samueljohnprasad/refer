@@ -95,7 +95,7 @@ const TopBar = React.memo<{
             modifiers={[
               buttonStyle("bordered"),
               controlSize("regular"),
-              tint(GOLD),
+              tint(INK),
             ]}
           />
         </Host>
@@ -135,7 +135,7 @@ const TopBar = React.memo<{
         accessibilityLabel="View achievements"
       >
         <Animated.View style={medalStyle}>
-          <HugeiconsIcon icon={Medal01Icon} size={18} color={GOLD} />
+          <HugeiconsIcon icon={Medal01Icon} size={18} color={INK} />
         </Animated.View>
         <Text className="happy-font-body-bold text-[14px] text-ink-soft">
           Awards

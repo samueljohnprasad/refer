@@ -38,7 +38,7 @@ export function DeepDiveLayout({
       <View className="px-5 pt-4 pb-2 flex-row items-center justify-between">
         <View className="flex-row items-center gap-3">
           <Pressable onPress={() => router.back()} hitSlop={12}>
-            <Text className="text-lg text-ink-muted">←</Text>
+            <Text className="text-lg text-ink-soft">←</Text>
           </Pressable>
           <Text className="happy-font-heading-bold text-[22px] text-ink">
             {title}

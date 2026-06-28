@@ -4,7 +4,6 @@ import { Text } from "@/src/components/ui/Text";
 import { useInsightNarrative } from "@/src/hooks/insights/useInsightNarrative";
 import { SAGE } from "@/lib/tokens";
 import dayjs from "dayjs";
-import { nutrieStyles } from "@/src/screens/InsightsScreen/InsightsScreen";
 
 export function InsightNarrativeCard() {
   const { data, isLoading } = useInsightNarrative();
