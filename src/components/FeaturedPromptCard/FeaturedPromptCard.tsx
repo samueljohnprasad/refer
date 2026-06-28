@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Card } from "@/src/components/ui/Card";
-import { SAGE, INK_MUTED } from "@/lib/tokens";
+import { SAGE, INK_MUTED, INK } from "@/lib/tokens";
+import { StaggeredText, type StaggeredTextRef } from "@/src/animations/everybody-can-cook/components/staggered-text";
 import { format } from "date-fns";
 import { useInterval } from "@/src/hooks/useInterval";
 import type { QuickJournalPrompt } from "@/src/screens/DiscoveryScreen/QuickJournalSection";
@@ -32,6 +33,13 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
 
   const currentPrompt = prompts[activeIndex];
   const currentDateStr = format(new Date(), "MMMM d");
+
+  const textRef = useRef<StaggeredTextRef>(null);
+
+  useEffect(() => {
+    textRef.current?.reset();
+    textRef.current?.animate();
+  }, [currentPrompt?.id]);
 
   if (!currentPrompt || prompts.length === 0) return null;
 
@@ -66,16 +74,19 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         </View>
       </View>
 
-      <Animated.Text
-        key={currentPrompt.id}
-        entering={FadeIn.duration(400)}
-        exiting={FadeOut.duration(200)}
-        className="happy-font-heading-bold text-[36px] leading-[1.1] tracking-tight text-ink z-10 w-[65%] pb-12"
-        minimumFontScale={0.8}
-        adjustsFontSizeToFit
-      >
-        {currentPrompt.description}
-      </Animated.Text>
+      <View className="z-10 w-[70%] pb-12" key={currentPrompt.id}>
+        <StaggeredText
+          ref={textRef}
+          text={currentPrompt.description}
+          fontSize={36}
+          textStyle={{
+            fontFamily: "FrauncesBold",
+            color: INK,
+            letterSpacing: -0.5,
+            lineHeight: 39.6,
+          }}
+        />
+      </View>
 
       {/* Mascot Image positioned absolutely at the bottom right */}
       <View className="absolute -bottom-2 -right-4 opacity-100 z-0 pointer-events-none">
