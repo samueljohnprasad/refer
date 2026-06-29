@@ -36,6 +36,7 @@ function LockedNotebookCard({ onUnlock }: { onUnlock: () => void }) {
     <Pressable
       onPress={onUnlock}
       className="happy-brand-card rounded-[24px] p-5 mb-4 active:scale-95 active:opacity-90 transition-transform duration-200"
+      style={{ backgroundColor: "#FFFFFF" }}
     >
       <View className="flex-row items-center gap-2 mb-2">
         <Text className="text-[16px]">📓</Text>
@@ -177,7 +178,7 @@ export function TherapistNotebookCard() {
   };
 
   return (
-    <View className="happy-brand-card rounded-[24px] p-5 mb-4">
+    <View className="happy-brand-card rounded-[24px] p-5 mb-4" style={{ backgroundColor: "#FFFFFF" }}>
       <Pressable onPress={toggleExpand} className="active:opacity-80">
         <View className="flex-row items-center gap-2 mb-1">
           <Text className="text-[16px]">📓</Text>

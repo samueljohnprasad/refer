@@ -14,7 +14,7 @@ export function ThoughtPatternsCard() {
 
   if (isLoading) {
     return (
-      <View className="happy-brand-card rounded-[24px] p-5">
+      <View className="happy-brand-card rounded-[24px] p-5" style={{ backgroundColor: "#FFFFFF" }}>
         <Text className="happy-brand-eyebrow">Analyzing patterns...</Text>
       </View>
     );
@@ -23,7 +23,7 @@ export function ThoughtPatternsCard() {
   if (!data) return null;
 
   return (
-    <View className="happy-brand-card rounded-[24px] p-5">
+    <View className="happy-brand-card rounded-[24px] p-5" style={{ backgroundColor: "#FFFFFF" }}>
       <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3">
         Your Thought Patterns
       </Text>
@@ -58,6 +58,7 @@ function LockedCard({ onUnlock }: { onUnlock: () => void }) {
       onPress={onUnlock}
       className="happy-brand-card rounded-[24px] p-5"
       style={({ pressed }) => [
+        { backgroundColor: "#FFFFFF" },
         pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] }
       ]}
     >

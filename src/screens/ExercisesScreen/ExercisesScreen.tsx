@@ -71,7 +71,6 @@ import {
   type HistoryLogItem,
 } from "./hooks/useCBTHistory";
 import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
-import { RecommendedForYouCard } from "@/src/components/insights/RecommendedForYouCard";
 import { CBTHistoryTimeline } from "./components/CBTHistoryTimeline";
 import { TimelineSkeleton } from "../../../src/components/ui/Timeline/TimelineSkeleton";
 import { ExerciseTimeline } from "./components/ExerciseTimeline";
@@ -878,7 +877,6 @@ export default function ExercisesScreen(): ReactElement {
           }}
           showsVerticalScrollIndicator={false}
         >
-          <RecommendedForYouCard />
           <SuggestedExerciseCard />
           {exerciseGroups.length === 0 ? (
             <EmptyDiscoverState />

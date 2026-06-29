@@ -134,7 +134,7 @@ interface NodeShellContentProps {
   /** Whether press is enabled */
   isInteractive: boolean;
   /** Press callback */
-  onPress: () => void;
+  onPress: (e?: any) => void;
 }
 
 function NodeShellContent({
@@ -263,7 +263,7 @@ export interface ConfigDrivenNodeProps {
   /** Theme key from the parent unit to adapt the node color */
   colorThemeKey: string;
   /** Press handler */
-  onPress: (node: PathNodeData) => void;
+  onPress: (node: PathNodeData, e?: any, color?: string) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -348,12 +348,12 @@ function ConfigDrivenNodeInner({
     prevStatusRef.current = node.status;
   }, [node.status, isCompleted, popScale, reducedMotion]);
 
-  const handlePress = (): void => {
+  const handlePress = (e?: any): void => {
     if (!isInteractive) return;
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(
       () => { },
     );
-    onPress(node);
+    onPress(node, e, colorConfig.fill);
   };
 
   // Progress ring dimensions and segmentation

@@ -43,7 +43,7 @@ import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
 export interface ChestNodeProps {
   node: PathNodeData;
   position: NodePosition;
-  onPress: (node: PathNodeData) => void;
+  onPress: (node: PathNodeData, e?: any, color?: string) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -103,11 +103,11 @@ function ChestNode({
   }));
 
   // ── Press handler ──
-  const handlePress = useCallback((): void => {
+  const handlePress = useCallback((e?: any): void => {
     if (!isInteractive) return;
 
     if (reducedMotion) {
-      onPress(node);
+      onPress(node, e, bodyColor);
       return;
     }
 
@@ -119,11 +119,11 @@ function ChestNode({
       withTiming(3, { duration: d }),
       withTiming(0, { duration: d }, (finished) => {
         if (finished) {
-          runOnJS(onPress)(node);
+          runOnJS(onPress)(node, e, bodyColor);
         }
       }),
     );
-  }, [isInteractive, shakeX, reducedMotion, onPress, node]);
+  }, [isInteractive, shakeX, reducedMotion, onPress, node, bodyColor]);
 
   // Colors based on locked state
   const bodyColor: string = isLocked ? CHEST_COLORS.locked : CHEST_COLORS.body;

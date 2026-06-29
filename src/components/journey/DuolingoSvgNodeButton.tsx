@@ -12,7 +12,7 @@ import Svg, { ClipPath, Defs, Ellipse, G, Rect } from "react-native-svg";
 
 export type DuolingoSvgNodeButtonProps = {
   size: number;
-  onPress: () => void;
+  onPress: (e?: any) => void;
   disabled?: boolean;
   faceColor: string;
   rimColor: string;

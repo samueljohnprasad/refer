@@ -46,7 +46,7 @@ export interface JourneyNodeCellProps {
   /** Index of the currently active node (for path coloring) */
   activeGlobalIndex: number;
   /** Node press handler */
-  onNodePress: (node: PathNodeData) => void;
+  onNodePress: (node: PathNodeData, e?: any, color?: string) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -122,8 +122,8 @@ function JourneyNodeCellInner({
 
   // Stable press handler
   const handlePress = useCallback(
-    (node: PathNodeData): void => {
-      onNodePress(node);
+    (node: PathNodeData, e?: any, color?: string): void => {
+      onNodePress(node, e, color);
     },
     [onNodePress],
   );

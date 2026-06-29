@@ -44,7 +44,7 @@ export interface AnimatedNodeButtonProps {
     /** 3D shadow layer color (should be a darker shade of backgroundColor) */
     shadowColor: string;
     /** Press callback */
-    onPress: () => void;
+    onPress: (e?: any) => void;
     /** Whether press is disabled */
     disabled?: boolean;
     /** Haptic intensity on press-in. Default: 'medium' */
@@ -125,7 +125,7 @@ function AnimatedNodeButtonInner({
         pressY.value = withSpring(0, SPRING_DUOLINGO_PRESS);
     }, [disabled, reducedMotion, pressY]);
 
-    const handlePress = useCallback((): void => {
+    const handlePress = useCallback((e?: any): void => {
         if (disabled) return;
 
         // Double-tap guard
@@ -133,7 +133,7 @@ function AnimatedNodeButtonInner({
         pressLock.current = true;
 
         try {
-            onPress();
+            onPress(e);
         } finally {
             setTimeout(() => {
                 pressLock.current = false;

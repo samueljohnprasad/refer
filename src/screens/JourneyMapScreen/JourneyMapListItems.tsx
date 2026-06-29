@@ -20,7 +20,7 @@ export const JOURNEY_VIEWABILITY_CONFIG = {
 type JourneyMapListItemProps = {
   activeGlobalIndex: number;
   item: JourneyFlashListItem;
-  onNodePress: (node: PathNodeData) => void;
+  onNodePress: (node: PathNodeData, e?: any, color?: string) => void;
 };
 
 export const JourneyMapListItem = React.memo(function JourneyMapListItem({

@@ -167,7 +167,7 @@ export function NodeContentModal({
   return (
     <Modal
       visible={visible}
-      animationType="slide"
+      animationType="fade"
       presentationStyle="fullScreen"
       onRequestClose={handleDismiss}
     >

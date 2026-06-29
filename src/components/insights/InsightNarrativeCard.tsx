@@ -14,10 +14,8 @@ export function InsightNarrativeCard() {
 
   return (
     <View
-      style={[
-        nutrieStyles.card,
-        { backgroundColor: SAGE[50], borderColor: SAGE[200], marginBottom: 16 }
-      ]}
+      className="happy-brand-card rounded-[24px]"
+      style={{ backgroundColor: "#FFFFFF", marginBottom: 16, padding: 20 }}
     >
       <View className="flex-row items-center gap-1.5 mb-3">
         <Text className="text-[13px]">✨</Text>

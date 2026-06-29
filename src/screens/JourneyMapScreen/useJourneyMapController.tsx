@@ -3,8 +3,10 @@ import type { Dispatch, RefObject, SetStateAction } from "react";
 import type { LegendListRef, ViewToken } from "@legendapp/list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
+import { useSetAtom } from "jotai";
 
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
+import { startTransitionAtom } from "@/src/store/transitionStore";
 import {
   setActiveNodeModal,
   setPreviewSection,
@@ -133,8 +135,10 @@ export function useJourneyMapController(
     [onViewableItemsChanged, updateScrollHintFromViewableItems],
   );
 
+  const startTransition = useSetAtom(startTransitionAtom);
+
   const handleNodePress = useCallback(
-    (node: PathNodeData): void => {
+    (node: PathNodeData, e?: any, color?: string): void => {
       if (node.status === "locked") {
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
         toast.show({
@@ -148,9 +152,22 @@ export function useJourneyMapController(
         return;
       }
 
-      dispatch(setActiveNodeModal({ courseId, nodeId: node.id }));
+      if (e && e.nativeEvent) {
+        const { pageX, pageY } = e.nativeEvent;
+        startTransition({
+          cx: pageX,
+          cy: pageY,
+          color: color || (node.status === "active" ? "#58CC02" : "#FFFFFF"),
+        });
+        // Wait half of the transition duration (400ms / 2) before showing the modal
+        setTimeout(() => {
+          dispatch(setActiveNodeModal({ courseId, nodeId: node.id }));
+        }, 200);
+      } else {
+        dispatch(setActiveNodeModal({ courseId, nodeId: node.id }));
+      }
     },
-    [courseId, dispatch, toast],
+    [courseId, dispatch, toast, startTransition],
   );
 
   const handleOpenSections = useCallback((): void => {

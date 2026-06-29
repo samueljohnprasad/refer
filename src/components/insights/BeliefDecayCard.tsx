@@ -90,6 +90,7 @@ function LockedBeliefCard({ onUnlock }: { onUnlock: () => void }) {
     <Pressable
       onPress={onUnlock}
       className="happy-brand-card rounded-[24px] p-5 mb-4 active:scale-95 active:opacity-90 transition-transform duration-200"
+      style={{ backgroundColor: "#FFFFFF" }}
     >
       <View className="flex-row items-center gap-2 mb-2">
         <HugeiconsIcon icon={LockIcon} size={16} color={INK_MUTED} />
@@ -121,7 +122,7 @@ export function BeliefDecayCard() {
   if (isLoading || !data || data.clusters.length === 0) return null;
 
   return (
-    <View className="happy-brand-card rounded-[24px] p-5 mb-4">
+    <View className="happy-brand-card rounded-[24px] p-5 mb-4" style={{ backgroundColor: "#FFFFFF" }}>
       <View className="flex-row items-center gap-2 mb-1">
         <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3" className="mb-0">
           Belief Tracker

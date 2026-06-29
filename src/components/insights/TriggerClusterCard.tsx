@@ -82,7 +82,7 @@ export function TriggerClusterCard() {
   if (isLoading || !data || data.clusters.length === 0) return null;
 
   return (
-    <View className="happy-brand-card rounded-[24px] p-5">
+    <View className="happy-brand-card rounded-[24px] p-5" style={{ backgroundColor: "#FFFFFF" }}>
       <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3">
         Your Pattern
       </Text>

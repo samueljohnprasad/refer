@@ -18,7 +18,7 @@ import {
   type CategorySummary,
 } from "@/src/hooks/insights/useInsightsOverview";
 import { TimeRangeSelector } from "./components/TimeRangeSelector";
-import { WeeklySummaryCard } from "@/src/components/insights/WeeklySummaryCard";
+import { CBTPracticeScoreCard } from "@/src/components/insights/CBTPracticeScoreCard";
 import { ThoughtPatternsCard } from "@/src/components/insights/ThoughtPatternsCard";
 import { PersonalEffectivenessCard } from "@/src/components/insights/PersonalEffectivenessCard";
 import { SkillProgressionCard } from "@/src/components/insights/SkillProgressionCard";
@@ -103,19 +103,12 @@ export default function InsightsScreen() {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ paddingBottom: 128, paddingTop: 110 }}
       >
-        <Animated.View entering={FadeInDown.duration(400).delay(100)}>
-          <StatsRow
-            total={data.totalExercises}
-            avgShift={data.avgEmotionShift}
-            streak={data.currentStreak}
-            successRate={data.reframeSuccessRate}
-          />
-        </Animated.View>
+
         <Animated.View entering={FadeInDown.duration(400).delay(200)} className="px-4 mt-5">
           <InsightNarrativeCard />
         </Animated.View>
         <Animated.View entering={FadeInDown.duration(400).delay(300)} className="px-4 mt-4">
-          <WeeklySummaryCard />
+          <CBTPracticeScoreCard />
         </Animated.View>
         <Animated.View entering={FadeInDown.duration(400).delay(400)} className="px-4 mt-4">
           <SkillProgressionCard />
@@ -152,50 +145,7 @@ export default function InsightsScreen() {
   );
 }
 
-function StatsRow({
-  total,
-  avgShift,
-  streak,
-  successRate,
-}: {
-  total: number;
-  avgShift: number | null;
-  streak: number;
-  successRate: number | null;
-}) {
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ paddingHorizontal: 20, gap: 12 }}
-      className="mt-4"
-    >
-      <StatCard label="Exercises" value={String(total)} />
-      <StatCard
-        label="Avg Shift"
-        value={avgShift !== null ? `−${avgShift.toFixed(1)}` : "—"}
-      />
-      <StatCard label="Streak" value={streak > 0 ? `${streak}d` : "—"} />
-      <StatCard
-        label="Success"
-        value={successRate !== null ? `${Math.round(successRate * 100)}%` : "—"}
-      />
-    </ScrollView>
-  );
-}
 
-function StatCard({ label, value }: { label: string; value: string }) {
-  return (
-    <View className="happy-brand-card flex-1 min-w-[90px] rounded-[24px] p-4 items-center">
-      <Text className="happy-font-heading-bold text-[26px] tracking-tight text-ink">
-        {value}
-      </Text>
-      <Text className="happy-font-body-bold text-[10px] uppercase tracking-[0.5px] text-ink-muted mt-1">
-        {label}
-      </Text>
-    </View>
-  );
-}
 
 function CategoryCard({ summary }: { summary: CategorySummary }) {
   const icon = CATEGORY_ICONS[summary.category];
@@ -211,6 +161,7 @@ function CategoryCard({ summary }: { summary: CategorySummary }) {
     <Pressable
       onPress={handlePress}
       className="happy-brand-card flex-1 min-w-[45%] rounded-[24px] p-4 active:scale-95 active:opacity-90 transition-transform duration-200"
+      style={{ backgroundColor: "#FFFFFF" }}
     >
       <View
         className="h-12 w-12 rounded-[20px] items-center justify-center mb-3"
@@ -239,7 +190,7 @@ function TemporalPatternRow() {
 
   return (
     <View className="px-5 mt-4">
-      <View className="happy-brand-card rounded-2xl p-4 flex-row flex-wrap gap-3">
+      <View className="happy-brand-card rounded-2xl p-4 flex-row flex-wrap gap-3" style={{ backgroundColor: "#FFFFFF" }}>
         {data.timeOfDay && (
           <View className="flex-row items-center gap-1.5">
             <Text className="text-[13px]">🕙</Text>
