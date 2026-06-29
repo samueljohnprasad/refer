@@ -9,7 +9,14 @@ import { useExerciseRecommendation } from "@/src/hooks/insights/useExerciseRecom
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { SAGE } from "@/lib/tokens";
 import { CircularRevealWrapper } from "@/src/components/CircularRevealWrapper";
-import { getCategoryBadgeTheme } from "@/src/data/exerciseIconRegistry";
+import { ExerciseCategory } from "@/src/types/exerciseFlow";
+
+const CATEGORY_BG_COLORS: Record<ExerciseCategory, string> = {
+  cbt_core: "#E8FBF0",
+  mindfulness: "#E4F6FC",
+  anxiety: "#FFEDE8",
+  overthinking: "#F0EDFF",
+};
 
 export const SuggestedExerciseCard: React.FC = React.memo(() => {
   const recommendation = useExerciseRecommendation();
@@ -21,13 +28,13 @@ export const SuggestedExerciseCard: React.FC = React.memo(() => {
 
   const icon = getExerciseIcon(recommendation.exerciseType);
 
-  const badgeTheme = getCategoryBadgeTheme(config.category);
+  const badgeThemeBg = CATEGORY_BG_COLORS[config.category] ?? "#E8FBF0";
   const route = `/tabs/screens/exercise-flow?type=${encodeURIComponent(recommendation.exerciseType)}`;
 
   return (
     <View className="mb-6">
       <Text className="happy-brand-eyebrow mb-3 px-1">Suggested for you</Text>
-      <CircularRevealWrapper href={route} color={badgeTheme.bg} duration={800}>
+      <CircularRevealWrapper href={route} color={badgeThemeBg} duration={800}>
         <PressableScale
           scale={0.98}
           hapticStyle="light"

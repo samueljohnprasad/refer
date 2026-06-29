@@ -17,7 +17,7 @@ const { width, height } = Dimensions.get('window');
 const MAX_RADIUS = Math.sqrt(width * width + height * height);
 
 export const TransitionOverlay = () => {
-  const { isActive, cx, cy, color, duration, onComplete } = useAtomValue(transitionAtom);
+  const { isActive, cx, cy, color, duration, isReversing, onComplete } = useAtomValue(transitionAtom);
   const endTransition = useSetAtom(endTransitionAtom);
 
   const radius = useSharedValue(0);
@@ -27,37 +27,58 @@ export const TransitionOverlay = () => {
     if (isActive) {
       const activeDuration = duration || 400;
 
-      // Animate the opacity so it fades in
-      opacity.value = withTiming(1, { duration: activeDuration / 2 });
-      
-      // Animate the circle growing to fill the screen
-      radius.value = withTiming(
-        MAX_RADIUS,
-        { duration: activeDuration, easing: Easing.inOut(Easing.ease) },
-        (finished) => {
-          if (finished) {
-            // Once the screen is filled, trigger the actual navigation
-            if (onComplete) {
-              runOnJS(onComplete)();
+      if (isReversing) {
+        // Start fully opaque and full screen
+        opacity.value = 1;
+        radius.value = MAX_RADIUS;
+        
+        // Shrink the circle down to 0
+        radius.value = withTiming(
+          0,
+          { duration: activeDuration, easing: Easing.inOut(Easing.ease) },
+          (finished) => {
+            if (finished) {
+              if (onComplete) runOnJS(onComplete)();
+              
+              // Fade out instantly since the circle is already 0 radius
+              opacity.value = 0;
+              runOnJS(endTransition)();
             }
-            
-            // Wait slightly for the new screen to render behind it, 
-            // then fade the overlay out
-            opacity.value = withDelay(
-              150, 
-              withTiming(0, { duration: 300 }, (finishedFade) => {
-                if (finishedFade) {
-                  // Reset state so it's ready for the next transition
-                  runOnJS(endTransition)();
-                  radius.value = 0;
-                }
-              })
-            );
           }
-        }
-      );
+        );
+      } else {
+        // Animate the opacity so it fades in
+        opacity.value = withTiming(1, { duration: activeDuration / 2 });
+        
+        // Animate the circle growing to fill the screen
+        radius.value = withTiming(
+          MAX_RADIUS,
+          { duration: activeDuration, easing: Easing.inOut(Easing.ease) },
+          (finished) => {
+            if (finished) {
+              // Once the screen is filled, trigger the actual navigation
+              if (onComplete) {
+                runOnJS(onComplete)();
+              }
+              
+              // Wait slightly for the new screen to render behind it, 
+              // then fade the overlay out
+              opacity.value = withDelay(
+                150, 
+                withTiming(0, { duration: 300 }, (finishedFade) => {
+                  if (finishedFade) {
+                    // Reset state so it's ready for the next transition
+                    runOnJS(endTransition)();
+                    radius.value = 0;
+                  }
+                })
+              );
+            }
+          }
+        );
+      }
     }
-  }, [isActive, onComplete, endTransition, opacity, radius]);
+  }, [isActive, isReversing, onComplete, endTransition, opacity, radius]);
 
   const clipPath = useDerivedValue(() => {
     const path = Skia.Path.Make();

@@ -15,6 +15,8 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { AiGenerativeIcon, File01Icon } from "@hugeicons/core-free-icons";
 
 import { useAppSelector, useAppDispatch } from "@/src/store/hooks";
+import { useAtomValue, useSetAtom } from "jotai";
+import { startTransitionAtom, lastTransitionInfoAtom } from "@/src/store/transitionStore";
 import {
   optimisticSetNodeStatus,
   setActiveNodeModal,
@@ -126,9 +128,23 @@ export function NodeContentModal({
   const displayNode = isClosing ? cachedNodeRef.current : node;
   const displayContent = isClosing ? cachedContentRef.current : adaptedContent;
 
+  const lastTransitionInfo = useAtomValue(lastTransitionInfoAtom);
+  const startTransition = useSetAtom(startTransitionAtom);
+
   const handleDismiss = useCallback(() => {
-    dispatch(setActiveNodeModal({ courseId, nodeId: null }));
-  }, [courseId, dispatch]);
+    if (lastTransitionInfo) {
+      startTransition({
+        isReversing: true,
+        cx: lastTransitionInfo.cx,
+        cy: lastTransitionInfo.cy,
+        color: lastTransitionInfo.color,
+      });
+      // The fade animation of the Modal takes ~300ms, which aligns perfectly with the shrinking circle
+      dispatch(setActiveNodeModal({ courseId, nodeId: null }));
+    } else {
+      dispatch(setActiveNodeModal({ courseId, nodeId: null }));
+    }
+  }, [courseId, dispatch, lastTransitionInfo, startTransition]);
 
   const handleComplete = useCallback(
     async (_responseData: NodeResponseData) => {
@@ -152,14 +168,14 @@ export function NodeContentModal({
           dispatch(setCourseProgress(progressResult.data));
         }
 
-        dispatch(setActiveNodeModal({ courseId, nodeId: null }));
+        handleDismiss();
       } catch {
         // Keep modal open on error
       } finally {
         setIsCompleting(false);
       }
     },
-    [activeNodeId, courseId, completeNode, dispatch, isCompleting],
+    [activeNodeId, courseId, completeNode, dispatch, isCompleting, handleDismiss],
   );
 
   const visible = activeNodeId !== null;
