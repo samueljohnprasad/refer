@@ -1,0 +1,305 @@
+# Section 4: Sleep Mindset — Exercise Mapping (l26-l31)
+# Sleep anxiety, cognitive defusion, catastrophizing, identity, resilience
+
+lesson:
+  id: l26
+  title: "The Sleep Effort Trap"
+  duration_minutes: 10
+  target_accuracy: 0.85
+  emotional_arc: [warmup, introduce, challenge, peak, cooldown]
+
+  exercises:
+    - id: l26_e1
+      type: "learn_cards"
+      phase: "warmup"
+      duration_seconds: 45
+      cards:
+        - text: "Sleep effort paradox: The harder you try to sleep, the more awake you become."
+          visual_key: "effort_paradox_paradox"
+        - text: "WHY: Trying hard = threat signal. Your brain floods adrenaline, muscles tense. The pressure backfires."
+          visual_key: "hyperarousal_loop"
+        - text: "This is why stimulus control works: when you can't sleep, you GET UP. You stop trying. Your body calms."
+          visual_key: "stimulus_control_reset"
+      note: "Introduce sleep_effort_paradox and sleep_anxiety. Connect back to stimulus control."
+
+    - id: l26_e2
+      type: "multiple_choice"
+      phase: "introduce"
+      concept: "sleep_effort_paradox"
+      scaffold_level: 2
+      difficulty: 0.15
+      duration_seconds: 20
+      prompt: "What does your brain interpret when you lie in bed thinking 'I MUST sleep, it's 2am'?"
+      options:
+        - text: "A threat — adrenaline floods, muscles tense"
+          correct: true
+        - text: "A calm signal — 'it's time to rest'"
+          correct: false
+        - text: "Nothing — thoughts don't affect sleep"
+          correct: false
+      feedback_correct: "Right. Your brain enters fight-or-flight. The pressure to sleep actually keeps you awake."
+      feedback_incorrect: "Actually, that thought is a threat signal. Your brain interprets 'I MUST sleep' as 'something is wrong.'"
+      note: "Recognizes how effort creates hyperarousal."
+
+    - id: l26_e3
+      type: "scenario"
+      phase: "challenge"
+      concept: "sleep_effort_paradox"
+      scaffold_level: 5
+      difficulty: 0.28
+      duration_seconds: 60
+      scenario: "You have a big presentation tomorrow. At 11pm you're trying SO HARD to fall asleep. 'I need 8 hours, it's already 11pm, I only have 8 hours left...' You're more awake than ever."
+      question: "What's happening?"
+      options:
+        - text: "Sleep effort paradox. Trying hard = threat = adrenaline = wakefulness. You're caught in a cycle."
+          correct: true
+          feedback: "Yes. The night you NEED sleep most is exactly when this happens. The solution: stop trying. Get up, do something calm until genuinely sleepy, then return. This is stimulus control."
+        - text: "You're just anxious and need to try harder"
+          correct: false
+          feedback: "Trying harder makes it worse. You need to flip the approach: stop trying, get up, break the cycle."
+        - text: "You have insomnia and something is broken"
+          correct: false
+          feedback: "Nothing is broken. This is a normal response to sleep pressure + threat perception. The cycle is learned; it can be unlearned with stimulus control."
+      note: "Real-world high-stakes scenario. User recognizes effort trap in their own experience."
+
+    - id: l26_e4
+      type: "free_text"
+      phase: "peak"
+      duration_seconds: 60
+      prompt: "Describe a night when you tried really hard to fall asleep. What was that like? Then: What could you have done instead (get up, 4-7-8 breathing, body scan, etc.)?"
+      min_words: 30
+      max_words: 150
+      is_scored: false
+      note: "Personal reflection. User recognizes their own effort trap and imagines alternative response."
+
+    - id: l26_e5
+      type: "mood_check"
+      phase: "cooldown"
+      duration_seconds: 15
+      prompt: "Does this 'effort paradox' explain some of your 2-3am awake nights?"
+      scale: 5
+      labels: ["Not at all", "Slightly", "Somewhat", "Very much", "Yes, exactly"]
+      note: "Validation of user experience. Builds motivation for mindset shift."
+
+  completion_reward:
+    xp: 15
+    bonus_xp_if_accuracy_above_85: 5
+  next_lesson_teaser: "Tomorrow: Watching Your Thoughts — how to stop fighting racing thoughts and let them pass like clouds."
+
+---
+
+lesson:
+  id: l27
+  title: "Watching Your Thoughts"
+  duration_minutes: 11
+  target_accuracy: 0.80
+  emotional_arc: [warmup, introduce, challenge, peak, consolidate, cooldown]
+
+  exercises:
+    - id: l27_e1
+      type: "learn_cards"
+      phase: "warmup"
+      duration_seconds: 45
+      cards:
+        - text: "Cognitive defusion = observing thoughts without fighting them. When 'I'll never sleep' arises, notice it like a cloud passing."
+          visual_key: "thoughts_as_clouds"
+        - text: "WHY: Fighting thoughts = more thoughts (white bear effect). Observing without judgment breaks the struggle."
+          visual_key: "white_bear_paradox"
+        - text: "Goal: STOP FIGHTING thoughts, not stop having them. Thoughts at 2am are normal. The STRUGGLE keeps you awake."
+          visual_key: "struggle_vs_thought"
+      note: "Introduce cognitive_defusion. Emphasize non-suppression (which worsens hyperarousal)."
+
+    - id: l27_e2
+      type: "true_false"
+      phase: "introduce"
+      concept: "cognitive_defusion"
+      scaffold_level: 2
+      difficulty: 0.15
+      duration_seconds: 25
+      statement: "The goal of cognitive defusion is to stop having racing thoughts at night."
+      correct: false
+      explanation: "False. The goal is to stop STRUGGLING with the thoughts. Racing thoughts at 2am are normal. The struggle — trying to suppress them, fighting them — is what keeps you awake."
+      note: "Critical misconception. Prevent users from accidentally suppressing (which worsens hyperarousal)."
+
+    - id: l27_e3
+      type: "scenario"
+      phase: "challenge"
+      concept: "cognitive_defusion"
+      scaffold_level: 5
+      difficulty: 0.25
+      duration_seconds: 50
+      scenario: "At 2am: 'I'll never sleep. I'm broken. I'll ruin tomorrow.' You notice the thought and immediately fight it: 'No, stop thinking that. I will NOT catastrophize.' This makes the thoughts louder."
+      question: "What's a cognitive defusion response?"
+      options:
+        - text: "'There's the catastrophizing thought. It's just a thought, not a prediction. I notice it and let it pass like a cloud.'"
+          correct: true
+          feedback: "Exactly. You're observing without fighting. Your brain calms because there's no battle."
+        - text: "'Stop! I won't think that!'"
+          correct: false
+          feedback: "That's fighting the thought. Fighting creates more thoughts. Observe instead of resist."
+        - text: "Try to think happy thoughts instead"
+          correct: false
+          feedback: "That's still struggling to control your thoughts. Just notice the catastrophizing thought, let it be, and move on."
+      note: "Application. User practices mental stance shift."
+
+    - id: l27_e4
+      type: "guided_journal"
+      phase: "peak"
+      concept: "cognitive_defusion"
+      scaffold_level: 5
+      duration_seconds: 90
+      prompt: "Write a racing thought you have at night. Then write a cognitive defusion response to it."
+      sub_prompts:
+        - "Racing thought: (e.g., 'I'll never sleep, I'm broken')"
+        - "Cognitive defusion response: (e.g., 'There's the catastrophizing thought. It's just a thought, not a prediction.')"
+        - "How does reframing it as 'just a thought' change how it feels?"
+      min_words: 30
+      max_words: 150
+      is_scored: false
+      note: "Hands-on practice. User creates personal defusion response."
+
+    - id: l27_e5
+      type: "multiple_choice"
+      phase: "consolidate"
+      concept: "cognitive_defusion"
+      scaffold_level: 3
+      difficulty: 0.15
+      duration_seconds: 20
+      prompt: "The 'clouds passing' metaphor means:"
+      options:
+        - text: "Observe your thoughts without judgment, let them pass naturally without fighting"
+          correct: true
+        - text: "Make your thoughts disappear immediately"
+          correct: false
+        - text: "Think about something else instead"
+          correct: false
+      feedback_correct: "Right. Observation, not suppression. Not fighting, not replacing."
+      note: "Clarify defusion vs. suppression."
+
+    - id: l27_e6
+      type: "mood_check"
+      phase: "cooldown"
+      duration_seconds: 15
+      prompt: "Does this 'watching thoughts' approach feel possible for you?"
+      scale: 5
+      labels: ["No, too hard", "Seems difficult", "Maybe possible", "Probably yes", "Yes, I can try it"]
+      note: "Feasibility and motivation check."
+
+  completion_reward:
+    xp: 16
+    bonus_xp_if_accuracy_above_80: 5
+    variable_reward_roll: true
+  next_lesson_teaser: "Tomorrow: Rewriting the Disaster Story — when catastrophizing thoughts feel true, how to reality-check them."
+
+---
+
+lesson:
+  id: l28
+  title: "Rewriting the Disaster Story"
+  duration_minutes: 12
+  target_accuracy: 0.78
+  emotional_arc: [warmup, introduce, challenge, peak, consolidate, cooldown]
+
+  exercises:
+    - id: l28_e1
+      type: "learn_cards"
+      phase: "warmup"
+      duration_seconds: 50
+      cards:
+        - text: "Sleep catastrophizing: 'If I don't sleep, I'll ruin tomorrow and everything will collapse.'"
+          visual_key: "catastrophic_spiral"
+        - text: "Your brain is trying to prepare for danger. But this rehearsal = anxiety = wakefulness (the trap)."
+          visual_key: "catastrophe_loop"
+        - text: "Reality: You'll be tired but functional. You've had bad nights before and survived."
+          visual_key: "realistic_outcome"
+      note: "Introduce sleep_catastrophizing and reality-checking approach."
+
+    - id: l28_e2
+      type: "true_false"
+      phase: "introduce"
+      concept: "sleep_catastrophizing"
+      scaffold_level: 2
+      difficulty: 0.15
+      duration_seconds: 25
+      statement: "If you don't sleep tonight, you will definitely ruin everything tomorrow."
+      correct: false
+      explanation: "False. You'll be tired, maybe foggy, but still functional. Most people survive bad nights regularly. Your brain is catastrophizing to prepare for 'danger,' but the actual consequence is much milder."
+      note: "Misconception: catastrophe is inevitable. Reality: mild functional decline."
+
+    - id: l28_e3
+      type: "scenario"
+      phase: "challenge"
+      concept: "sleep_catastrophizing"
+      scaffold_level: 5
+      difficulty: 0.28
+      duration_seconds: 60
+      scenario: "At 3am: 'It's 3am and I have a presentation at 9am. If I don't sleep I'll mess it up. My career is over.'"
+      question: "How would you reality-check this catastrophe?"
+      options:
+        - text: "Evidence for: I'll be tired. Evidence against: I've done presentations tired before and they went okay. Realistic thought: 'I'll be tired but I'll get through it.'"
+          correct: true
+          feedback: "Exactly. You're using CBT-I thought records. Most catastrophes never materialize as imagined."
+        - text: "The catastrophe is probably true"
+          correct: false
+          feedback: "Catastrophizing feels true because your brain is in threat mode. But reality-checking usually shows the outcome is much milder."
+        - text: "Just accept the catastrophe and give up"
+          correct: false
+          feedback: "That reinforces the cycle. Instead, reality-check the thought. You'll likely be okay."
+      note: "Application of thought records."
+
+    - id: l28_e4
+      type: "guided_journal"
+      phase: "peak"
+      concept: "sleep_catastrophizing"
+      scaffold_level: 5
+      duration_seconds: 120
+      prompt: "CBT-I Thought Record: Use this template on your most common sleep catastrophe."
+      sub_prompts:
+        - "Catastrophic thought: (e.g., 'If I don't sleep, I'll ruin my presentation')"
+        - "Evidence FOR this thought: (what scares you?)"
+        - "Evidence AGAINST: (Have you survived tired nights? What actually happens?)"
+        - "More realistic thought: (Usually milder than catastrophe, e.g., 'I'll be tired but functional')"
+      min_words: 40
+      max_words: 200
+      is_scored: false
+      note: "Hands-on thought record. User applies CBT-I on personal catastrophe."
+
+    - id: l28_e5
+      type: "multiple_choice"
+      phase: "consolidate"
+      concept: "sleep_catastrophizing"
+      scaffold_level: 3
+      difficulty: 0.18
+      duration_seconds: 25
+      prompt: "The most common sleep catastrophe is:"
+      options:
+        - text: "'If I don't sleep, I'll ruin tomorrow' (very common, rarely true)"
+          correct: true
+        - text: "'I'll never sleep again'"
+          correct: false
+        - text: "'Insomnia is permanent'"
+          correct: false
+      feedback_correct: "Yes. That's the one to reality-check first. Evidence usually shows you'll be tired but okay."
+      note: "Primer for personal use."
+
+    - id: l28_e6
+      type: "mood_check"
+      phase: "cooldown"
+      duration_seconds: 15
+      prompt: "After reality-checking catastrophes, how do you feel about bad sleep nights?"
+      scale: 5
+      labels: ["Still terrified", "Less worried", "Neutral", "Hopeful", "Much more confident"]
+      note: "Efficacy measure."
+
+  completion_reward:
+    xp: 17
+    bonus_xp_if_accuracy_above_78: 5
+    variable_reward_roll: true
+  next_lesson_teaser: "Tomorrow: Your Sleep Story — shifting from 'I'm an insomniac' to 'I'm resilient.'"
+
+---
+
+# Lessons l29-l31 (Sleep Identity, Building Resilience, Course Finale)
+# l29: Sleep Identity → learn_cards + multiple_choice + scenario (how to talk about yourself) + free_text (what's your new identity?)
+# l30: Building Resilience → learn_cards + scenario (3am bad night post-course) + guided practice (create recovery toolkit) + free_text
+# l31: Course Finale → celebration + final commitment exercise (write personal sleep manifesto) + final mood_check + badge "Quiet Mind"

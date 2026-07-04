@@ -1,0 +1,208 @@
+# Section 2: Calm the Body — Exercise Mapping (l10-l18)
+# Breathing techniques + body relaxation
+
+lesson:
+  id: l10
+  title: "Your Nervous System at Night"
+  duration_minutes: 9
+  target_accuracy: 0.90
+  emotional_arc: [warmup, introduce, challenge, cooldown]
+
+  exercises:
+    - id: l10_e1
+      type: "learn_cards"
+      phase: "warmup"
+      duration_seconds: 40
+      scaffold_level: 1
+      cards:
+        - text: "Your nervous system has two modes: ON (fight-or-flight, alert) and OFF (rest-and-digest, calm)."
+          visual_key: "nervous_system_on_off"
+        - text: "At night, you need OFF. But stress, caffeine, and screens keep it ON — that's hyperarousal."
+          visual_key: "sympathetic_vs_parasympathetic"
+        - text: "This section teaches you to flip the switch: from wired to calm."
+          visual_key: "switch_metaphor"
+      note: "Bridge from disruptors (S1) to solutions (breathing). Passive intro to parasympathetic activation."
+
+    - id: l10_e2
+      type: "multiple_choice"
+      phase: "introduce"
+      concept: "stress_response_basics"
+      scaffold_level: 2
+      difficulty: 0.15
+      duration_seconds: 25
+      prompt: "When your sympathetic nervous system is active (ON), what happens?"
+      options:
+        - text: "Adrenaline floods, muscles tense, adenosine gets blocked — you stay wired"
+          correct: true
+        - text: "Your body relaxes and prepares for sleep"
+          correct: false
+        - text: "Nothing — it's just a name, no real effect"
+          correct: false
+      feedback_correct: "Right. That's why trying to sleep when stressed doesn't work — your nervous system is in fight-or-flight mode."
+      feedback_incorrect: "Actually, sympathetic = alert mode. Adrenaline floods, muscles tense. That's the opposite of sleep."
+      note: "Recognizes stress_response_basics. Sets up why breathing/body techniques are needed."
+
+    - id: l10_e3
+      type: "scenario"
+      phase: "challenge"
+      concept: "stress_response_basics"
+      scaffold_level: 5
+      difficulty: 0.22
+      duration_seconds: 45
+      scenario: "You're lying in bed at 11pm. Work stress from the day is replaying. Your heart is racing, jaw is clenched, you feel wired."
+      question: "Which nervous system mode are you in?"
+      options:
+        - text: "Sympathetic (ON) — fight-or-flight mode. I need to flip this OFF before I can sleep."
+          correct: true
+          feedback: "Exactly. Your nervous system got the signal 'we're in danger' from the stress. You need to send it a new signal: 'we're safe, calm down.'"
+        - text: "Parasympathetic (OFF) — I'm already in sleep mode"
+          correct: false
+          feedback: "Not yet. If you were in OFF mode, your heart wouldn't be racing and your jaw wouldn't be clenched. You need to activate parasympathetic."
+        - text: "Both at the same time"
+          correct: false
+          feedback: "Your nervous system can't be in both modes at once. Right now you're in sympathetic (ON). The next section teaches you to shift to parasympathetic (OFF)."
+      note: "Application to personal sleep anxiety. User recognizes their own hyperarousal."
+
+    - id: l10_e4
+      type: "free_text"
+      phase: "cooldown"
+      duration_seconds: 50
+      prompt: "When was the last time you felt 'wired' at bedtime? What was happening?"
+      min_words: 5
+      max_words: 100
+      is_scored: false
+      note: "Personal reflection. User connects stress_response_basics to their own sleep struggle."
+
+    - id: l10_e5
+      type: "mood_check"
+      phase: "cooldown"
+      duration_seconds: 15
+      prompt: "Does understanding 'nervous system ON/OFF' make your sleep struggle clearer?"
+      scale: 5
+      labels: ["Not at all", "A little", "Somewhat", "Very much", "Crystal clear"]
+      note: "Baseline for understanding nervous system model."
+
+  completion_reward:
+    xp: 14
+    bonus_xp_if_accuracy_above_90: 4
+  next_lesson_teaser: "Tomorrow: Learn your first nervous system OFF switch — the Belly Breath. Works in 2 minutes, anytime."
+
+---
+
+lesson:
+  id: l11
+  title: "The Belly Breath"
+  duration_minutes: 10
+  target_accuracy: 0.85
+  emotional_arc: [warmup, introduce, challenge, peak, consolidate, cooldown]
+
+  exercises:
+    - id: l11_e1
+      type: "multiple_choice"
+      phase: "warmup"
+      concept: "stress_response_basics"
+      scaffold_level: 3
+      difficulty: 0.15
+      duration_seconds: 20
+      prompt: "Which nervous system mode tells your body 'we're safe, calm down'?"
+      options:
+        - text: "Parasympathetic (OFF)"
+          correct: true
+        - text: "Sympathetic (ON)"
+          correct: false
+      feedback_correct: "Right. Parasympathetic is the calm mode. This section teaches you how to activate it."
+      note: "Recall of l10. Sets up why belly breathing activates parasympathetic."
+
+    - id: l11_e2
+      type: "learn_cards"
+      phase: "introduce"
+      concept: "belly_breathing"
+      scaffold_level: 1
+      duration_seconds: 50
+      cards:
+        - text: "Belly breathing = slow, deep breaths that expand your belly (not your chest)."
+          visual_key: "diaphragmatic_breath"
+        - text: "Your vagus nerve senses slow breathing and tells your body 'we're safe.' Adrenaline drops."
+          visual_key: "vagus_nerve_diagram"
+        - text: "Technique: Breathe in for 4 counts (belly expands). Out for 6 counts (longer exhale = more calming)."
+          visual_key: "4_6_breath_count"
+      note: "Introduce belly_breathing with passive learning. WHAT + WHY + HOW."
+
+    - id: l11_e3
+      type: "true_false"
+      phase: "challenge"
+      concept: "belly_breathing"
+      scaffold_level: 3
+      difficulty: 0.20
+      duration_seconds: 25
+      statement: "Chest breathing (shallow, fast) tells your nervous system the same thing as belly breathing (slow, deep)."
+      correct: false
+      explanation: "False. Chest breathing signals 'we're under threat' (panic response). Belly breathing signals 'we're safe.' The rhythm and depth matter."
+      note: "Misconception correction. Prevents users from confusing breathing types."
+
+    - id: l11_e4
+      type: "guided_journal"
+      phase: "peak"
+      concept: "belly_breathing"
+      scaffold_level: 5
+      difficulty: 0.28
+      duration_seconds: 120
+      prompt: "Try 1 minute of belly breathing right now. Inhale 4, exhale 6. Do it 5 times."
+      sub_prompts:
+        - "Before: How does your body feel? (Tense, racing heart, calm, other?)"
+        - "During: What did you notice?"
+        - "After: How do you feel now compared to before?"
+      min_words: 30
+      max_words: 200
+      mood_before: true
+      mood_after: true
+      tags: ["belly_breathing", "nervous_system_reset"]
+      note: "Hands-on practice. User experiences parasympathetic shift directly."
+
+    - id: l11_e5
+      type: "multiple_choice"
+      phase: "consolidate"
+      concept: "belly_breathing"
+      scaffold_level: 3
+      difficulty: 0.18
+      duration_seconds: 25
+      prompt: "Which is the best use case for belly breathing?"
+      options:
+        - text: "Anytime you want to calm down — at your desk, stuck in traffic, or lying awake"
+          correct: true
+        - text: "Only at bedtime, before sleep"
+          correct: false
+        - text: "Only during panic attacks"
+          correct: false
+      feedback_correct: "Exactly. General-purpose calming. Use it whenever you need to flip from ON to OFF."
+      note: "Use-case clarity. Prevents users from thinking this is sleep-specific."
+
+    - id: l11_e6
+      type: "learn_cards"
+      phase: "cooldown"
+      duration_seconds: 30
+      cards:
+        - text: "You just learned belly breathing. It's your go-to nervous system reset — anytime, anywhere. Next: Box Breathing for acute stress."
+          visual_key: "celebration_subtle"
+      note: "Summary + teaser for l12."
+
+  completion_reward:
+    xp: 16
+    bonus_xp_if_accuracy_above_85: 5
+    variable_reward_roll: true
+  next_lesson_teaser: "Tomorrow: Box Breathing — used by Navy SEALs for acute stress. When panic hits, this works in 1 minute."
+
+---
+
+# Section 2 continued: l12-l14 (Box Breathing, 4-7-8, Comparison)
+# l12: Box Breathing (4-4-4-4) → learn_cards + multiple_choice + true_false + guided practice + consolidate
+# l13: 4-7-8 breathing → learn_cards + scenario + guided journal (in-bed practice) + slider rating + mood_check
+# l14: Comparing 3 techniques → matching (technique to use case) + scenario (which to use) + free_text user choice
+
+---
+
+# Section 2 body relaxation: l15-l18
+# l15: Body Scan Basics → learn_cards + multiple_choice + misconception correction (not trying to relax)
+# l16: PMR (Progressive Muscle Relaxation) → learn_cards + guided practice + true_false (tension-release contrast)
+# l17: When to use each → scenario (choose body scan or PMR) + matching (situation to technique)
+# l18: Checkpoint → quick review of all 8 techniques (breathing + body), user picks favorites, badge "Body Calm"

@@ -1,0 +1,518 @@
+course:
+  id: sleep-reset
+  title: "Sleep Reset"
+  tagline: "Reclaim your nights, one small shift at a time"
+  domain: sleep_wellness
+  target_audience: "Adults struggling with sleep onset, quality, or restless nights"
+
+  # Design Principles Reference: See psychology-principles.md for full justification
+  principles_applied:
+    - "Spacing Effect (#2): Review intervals N+1, +3, +7, +14, +30"
+    - "Desirable Difficulties (#5): Target 80% accuracy, not 100%"
+    - "Flow State (#7): Difficulty calibrated per user, 75-85% accuracy"
+    - "Loss Aversion (#8): Streak notifications use loss framing after day 7"
+    - "Variable Rewards (#9): Bonuses avg every 3 lessons, range 1-5"
+    - "Self-Efficacy (#12): First lesson >95% success rate"
+    - "Cognitive Load (#19): Max 2 new concepts per session"
+    - "Identity Habits (#17): Badges named for identity ('Sleep Scientist')"
+    - "Embodied Cognition (#26): Body-relaxation lessons include guided practice"
+    - "Streaks as Anchors (#50): Prominent streak counter, daily cue"
+    - "Microlearning Atomization (#42): Each lesson = 1 concept, 5-15 min"
+    - "Immediate Feedback (#41): Exercise feedback <500ms, mastery delayed"
+
+  total_duration_weeks: 8
+  sessions_per_week: 5
+  session_duration_minutes: [5, 15]
+
+  starting_difficulty: 0.15
+  ending_difficulty: 0.70
+  target_accuracy: 0.80
+  max_new_concepts_per_session: 2  # Principle #19: Cognitive Load
+
+  streak_enabled: true  # Principle #50: Habit anchor
+  variable_reward_frequency: 3  # Principle #9: Variable rewards
+  checkpoint_frequency: 5
+  review_ratio: 0.30
+  spacing_multiplier: 2.0
+
+  total_lessons: 32
+
+  # Spaced repetition schedule — concept: [lessons where it reappears as review]
+  # Pattern: introduced at lesson N → review at N+1, N+3, N+7, N+14, N+21, N+30
+  spaced_repetition_schedule:
+    sleep_architecture:             [2, 4, 6, 9, 13]
+    sleep_cycles:                   [3, 5, 9, 13, 18]
+    sleep_composition:              [4, 6, 9, 14]
+    circadian_rhythm:               [5, 6, 12, 17]
+    sleep_pressure:                 [6, 8, 14, 21]
+    caffeine_sleep:                 [7, 9, 16, 22]
+    alcohol_sleep:                  [8, 10, 17, 23]
+    light_stress_disruptors:        [9, 11, 19, 25]
+    stress_response_basics:         [11, 14, 15, 22]
+    belly_breathing:                [11, 12, 15, 20]
+    box_breathing:                  [12, 13, 15, 21, 32]
+    breathing_478:                  [13, 14, 18, 23]
+    breathing_comparison:           [14, 16, 20]
+    body_scan:                      [15, 19, 24, 32]
+    progressive_muscle_relaxation:  [16, 20, 25, 32]
+    body_relaxation_choice:         [17, 21, 26]
+    wind_down_window:               [19, 21, 22, 32]
+    light_and_sleep:                [20, 22, 25]
+    sleep_environment:              [21, 22, 27]
+    stimulus_control:               [23, 25, 32]
+    sleep_restriction_basics:       [23, 26, 32]
+    worry_dump:                     [24, 26, 28]
+    pre_sleep_journaling:           [25, 27, 29]
+    sleep_anxiety:                  [26, 27, 32]
+    sleep_effort_paradox:           [26, 28]
+    cognitive_defusion:             [27, 28, 32]
+    sleep_catastrophizing:          [28, 32]
+    sleep_identity:                 [30, 32]
+    relapse_resilience:             [31, 32]
+    building_resilience:            [31, 32]
+
+  # ─────────────────────────────────────────────
+  sections:
+
+    # ══════════════════════════════════════════
+    - id: s1_sleep_science
+      title: "How Sleep Actually Works"
+      narrative_hook: "You can't fix what you don't understand. Let's demystify the engine."
+      position: 1
+      difficulty_range: [0.15, 0.35]
+
+      objectives:
+        remember: "Name the four sleep stages and understand: early sleep is deep sleep; late sleep is dream sleep. Why this matters for your 3am waking."
+        understand: "Explain your circadian rhythm as your body's 24-hour clock with a 'wake maintenance zone' that peaks at bedtime then drops. Why alcohol disrupts the second half of the night specifically."
+        apply: "Identify your own top sleep disruptors from a personal audit and understand the mechanism behind each one"
+
+      concepts_introduced:
+        - sleep_architecture  # WHAT: Your sleep has 4 stages — N1, N2, N3 (slow-wave/deep), REM (dream sleep). WHY: Early cycles are N3-heavy (deep); late cycles are REM-heavy (dreams). Understanding this explains why 3am waking feels different from 10pm waking.
+        - sleep_cycles        # WHAT: Each cycle lasts 70-100 min (first) then 90-120 min (later). Not uniform 90min. WHY: N3 may disappear entirely from late cycles. At 3am your brain is in dream mode — that's why "just close your eyes" doesn't work like it does at 11pm.
+        - circadian_rhythm    # WHAT: Your internal 24-hour clock. Peaks in alertness near bedtime (the "wake maintenance zone"), then sharply drops around 11pm. WHY: Consistent wake time anchors this better than bedtime because it resets your clock daily. That peak-then-drop is why you feel wired at 10pm then crash by 11pm.
+        - sleep_pressure      # WHAT: Adenosine builds through the day (Process S). Your circadian rhythm adds a "wake push" (Process C). Sleep happens when pressure is HIGH and circadian alert drops LOW. WHY: Both matter. Naps drain pressure; late nights confuse the clock. Missing both signals = insomnia.
+        - sleep_disruptors    # WHAT: Caffeine (~5-6 hrs half-life), brightness/light, stress, alcohol (helps onset but destroys second-half REM), irregular wake times. WHY each one: Caffeine lingers in your system; light tricks melatonin into thinking it's daytime; stress floods adrenaline; alcohol = REM rebound after it wears off (~4-5 hrs); irregular wake times = your clock stays confused.
+
+      badge_on_complete: "Sleep Scientist"
+
+      units:
+
+        - id: u1_1_sleep_mechanics
+          title: "Your Brain at Night"
+          position: 1
+          lessons:
+            - id: l1
+              title: "Welcome to Sleep School"
+              type: introduction
+              duration_minutes: 5
+              new_concepts: [sleep_architecture]
+              review_concepts: []
+              note: "First lesson — >95% success rate. WHAT: Sleep has 4 stages. N1, N2 = light; N3 = deep (slow-wave); REM = dream sleep. WHY: Most people confuse deep sleep with dream sleep — they're opposite. Deep sleep is when your body repairs; dream sleep is when your brain is nearly as active as awake. CONCRETE: 'You need BOTH. Early night is deep sleep heavy. Late night is dream sleep heavy. That's why they feel different.' Sets identity: 'I'm someone who understands sleep, not just suffers it.'"
+              research_sources:
+                - title: "Sleep Stages and Architecture"
+                  source: "Institute of Medicine (National Academies Press), Sleep Disorders and Sleep Deprivation"
+                  url: "https://www.ncbi.nlm.nih.gov/books/NBK19956/"
+                  key_finding: "N3 (slow-wave sleep) dominates the first third of the night; REM sleep longest in the final third"
+
+            - id: l2
+              title: "The 90-Minute Cycle"
+              type: practice
+              duration_minutes: 9
+              new_concepts: [sleep_cycles]
+              review_concepts: [sleep_architecture]
+              note: "WHAT: Each sleep cycle lasts 70-100 min (first), then 90-120 min (later). Not uniform 90min. N3 may disappear entirely from late cycles. WHY: Your brain recycles through the stages — deep sleep early when you need recovery; dream sleep late when restoration is complete. CONCRETE: 'Fall asleep at 11pm → 3am you're in dream mode (late REM cycle) → 5am you're in final REM cycle. At 3am you feel trapped; at 5am same thing but earlier.' This explains why 3am waking feels different from 10pm — you're not in the same stage of sleep. ANCHOR TO PROBLEM: 'I woke at 3am and can't get back' = late-cycle REM disruption (brain in dream mode), not a sleep-onset issue. Different problem, different fix."
+              research_sources:
+                - title: "Sleep Stages and Architecture"
+                  source: "Institute of Medicine (National Academies Press), Sleep Disorders and Sleep Deprivation"
+                  url: "https://www.ncbi.nlm.nih.gov/books/NBK19956/"
+                  key_finding: "First NREM-REM cycle averages 70-100 minutes; later cycles are 90-120 minutes. N3 may disappear from later cycles."
+
+            - id: l3
+              title: "Your Internal Clock"
+              type: practice
+              duration_minutes: 10
+              new_concepts: [circadian_rhythm]
+              review_concepts: [sleep_architecture, sleep_cycles]
+              note: "WHAT: Your circadian rhythm is a 24-hour internal clock. It creates a 'wake maintenance zone' — a period of peak alertness around your normal bedtime. WHY: This zone *peaks* near bedtime (say 10pm), then *sharply drops* after (say 11pm). That peak-drop is why you feel wired at 10pm but crash by 11pm — not willpower, just biology. Consistent WAKE TIME resets this clock better than bedtime because it's the anchor your body trusts. CONCRETE: 'If you wake at 7am every day, your clock learns 7am = reset. It builds deep sleep pressure through the day. By 11pm, your alertness zone has dropped and pressure is high — sleep is easy. If you wake at 9am on weekends, your clock gets confused.' Lead with highest-leverage habit BEFORE disruptors."
+              research_sources:
+                - title: "Sleep Stages and Architecture"
+                  source: "Institute of Medicine (National Academies Press), Sleep Disorders and Sleep Deprivation"
+                  url: "https://www.ncbi.nlm.nih.gov/books/NBK19956/"
+                  key_finding: "Circadian clock (Process C) shows wake-promoting drive that peaks in the evening (wake maintenance zone) then declines at sleep time"
+                - title: "The Two-Process Model of Sleep Regulation"
+                  source: "Borbély & Achermann, Sleep Medicine Reviews, 2005"
+                  url: "https://pubmed.ncbi.nlm.nih.gov/"
+                  key_finding: "Process S (adenosine-driven sleep pressure) and Process C (circadian oscillator) interact to determine sleep timing"
+
+            - id: l4
+              title: "Early vs Late Sleep"
+              type: practice
+              duration_minutes: 9
+              new_concepts: [sleep_composition]
+              review_concepts: [sleep_architecture, sleep_cycles, circadian_rhythm]
+              note: "Deep dive into cycle composition. WHAT: Early cycles = 50-70% N3 (deep), 20% REM. Late cycles = 10% N3, 50-60% REM. Why this matters. CONCRETE: 'If you sleep 8 hours, first 4 hours = mostly deep. Last 4 hours = mostly dreams. This is why waking at 4am feels different from 7am — you're in a different sleep state.' Consolidates understanding of cycles before moving to pressure/disruptors."
+
+        - id: u1_2_sleep_disruptors
+          title: "What's Stealing Your Sleep"
+          position: 2
+          lessons:
+            - id: l5
+              title: "The Sleep Pressure System"
+              type: practice
+              duration_minutes: 10
+              new_concepts: [sleep_pressure]
+              review_concepts: [circadian_rhythm]
+              note: "WHAT (two-process model): Sleep = HIGH pressure + LOW circadian alert. Pressure = adenosine buildup (Process S). Circadian alert = your clock's wake push (Process C). CONCRETE: 'You build adenosine all day like water in a tank. By 11pm the tank is full (high pressure) AND your circadian alert has dropped (low alert). Those two together = sleep. Miss either = insomnia.'"
+              research_sources:
+                - title: "The Two-Process Model of Sleep Regulation"
+                  source: "Borbély & Achermann, Sleep Medicine Reviews, 2005"
+                  url: "https://pubmed.ncbi.nlm.nih.gov/"
+                  key_finding: "Process S (adenosine-driven sleep pressure) and Process C (circadian oscillator) interact to determine sleep timing"
+
+            - id: l6
+              title: "Caffeine: The Pressure Blocker"
+              type: practice
+              duration_minutes: 10
+              new_concepts: [caffeine_sleep]
+              review_concepts: [sleep_pressure]
+              note: "WHAT: Caffeine blocks adenosine receptors (~5-6 hrs half-life, varies by genetics). WHY: If your pressure tank is full at 11pm but caffeine from 3pm coffee is still blocking adenosine receptors, your brain doesn't *feel* the pressure — so you can't sleep even though you're exhausted. CONCRETE: '2pm coffee taken at face value is gone by 8pm, but your body still feels 30-50% of it. Late-afternoon coffee is why you're wired at 11pm.' Genetic variation: some people clear caffeine in 3 hours, others in 7 hours."
+              research_sources:
+                - title: "Caffeine Pharmacology and Clinical Effects"
+                  source: "Fredholm et al., Handbook of Experimental Pharmacology, 2011"
+                  url: "https://pubmed.ncbi.nlm.nih.gov/"
+                  key_finding: "Caffeine half-life 5-6 hours average; CYP1A2 genetic variants cause 2-3x variation (range 3-7 hours)"
+
+            - id: l7
+              title: "Alcohol: The Sleep Saboteur"
+              type: practice
+              duration_minutes: 10
+              new_concepts: [alcohol_sleep]
+              review_concepts: [sleep_cycles, sleep_pressure]
+              note: "WHAT: Alcohol helps onset (acts like sleeping pill) but destroys second-half REM (~4-5 hrs post-dose). WHY: Alcohol metabolite (acetaldehyde) causes REM rebound when BAC drops. At high doses, second-half sleep is fragmented. At low doses, effect is dose-dependent (may not disrupt). CONCRETE: 'One drink at 6pm: helps you fall asleep at 9pm, but wakes you at 1-2am with fragmented REM. Three drinks: sleep onset is easy, but you wake at midnight fragmented and groggy. One beer at 10pm: minimal second-half effect.' FRAME: 'Dose matters. Even "one glass of wine" disrupts sleep for many people.'"
+              research_sources:
+                - title: "Alcohol and Sleep I: Effects on Normal Sleep"
+                  source: "Roehrs & Roth, Alcohol Research & Health, 2001"
+                  url: "https://pubmed.ncbi.nlm.nih.gov/9728312/"
+                  key_finding: "Ethanol initially improves sleep onset but suppresses REM in first half and causes REM rebound/disruption in second half (dose-dependent)"
+                - title: "Alcohol's Effect on Sleep in Individuals with Alcohol Use Disorder"
+                  source: "Ebrahim et al., Alcoholism: Clinical and Experimental Research, 2013"
+                  url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4484401/"
+                  key_finding: "Meta-analysis: alcohol improves sleep onset but second-half disruption is clearest at high doses; low-dose effect variable"
+
+            - id: l8
+              title: "Light, Stress & Irregular Wake Times"
+              type: practice
+              duration_minutes: 10
+              new_concepts: [light_stress_disruptors]
+              review_concepts: [sleep_pressure, circadian_rhythm]
+              note: "Three more disruptors: Brightness (tricks melatonin via melanopsin). Stress (floods adrenaline, overrides pressure). Irregular wake times (clock stays confused). CONCRETE: 'Bright screen at 10pm tells your brain it's 10am (melatonin blocked). Stressful email at 8pm floods adrenaline (pressure masked). Sleeping 7am Mon-Fri, 10am Sat-Sun (3-hour drift) keeps your clock disoriented all week.'"
+
+            - id: l9
+              title: "Sleep Science Checkpoint"
+              type: checkpoint
+              duration_minutes: 10
+              new_concepts: []
+              review_concepts: [sleep_architecture, sleep_cycles, circadian_rhythm, sleep_pressure, caffeine_sleep, alcohol_sleep, light_stress_disruptors]
+              note: "Checkpoint — difficulty drops. Pure review, no new concepts. Badge awarded: Sleep Scientist. EXERCISE: Personal disruptor audit. User identifies their own top 3 sleep disruptors from this section and explains the mechanism (WHAT + WHY) for each one. Must include at least one from {caffeine, alcohol, light/stress, irregular wake}. Example: 'Alcohol helps me fall asleep but wakes me at 3-4am because REM rebound disruption.' This tests understanding (not just recall) of sleep science."
+
+    # ══════════════════════════════════════════
+    - id: s2_calm_the_body
+      title: "Calm the Body"
+      narrative_hook: "Your nervous system learned to stay on guard. Now we teach it to stand down."
+      position: 2
+      difficulty_range: [0.30, 0.60]
+
+      objectives:
+        remember: "Name three breathing techniques and the specific use case for each"
+        understand: "Explain how slow breathing activates the parasympathetic system"
+        apply: "Complete a full body scan and PMR exercise independently"
+        analyze: "Identify which technique fits your personal tension pattern"
+
+      concepts_introduced:
+        - stress_response_basics          # sympathetic vs parasympathetic
+        - belly_breathing                 # diaphragmatic; use case: general-purpose
+        - box_breathing                   # 4-4-4-4; use case: acute daytime stress
+        - breathing_478                   # 4-7-8 (long exhale); use case: sleep onset
+        - breathing_comparison            # when to use each (not interchangeable)
+        - body_scan                       # somatic awareness check-in — awareness ONLY
+        - progressive_muscle_relaxation   # deliberate tension-and-release; awareness + action
+        - body_relaxation_choice          # user chooses which fits them
+
+      badge_on_complete: "Body Calm"
+
+      units:
+
+        - id: u2_1_breathing
+          title: "Breathing as a Switch"
+          position: 1
+          lessons:
+            - id: l10
+              title: "Your Nervous System at Night"
+              type: introduction
+              duration_minutes: 9
+              new_concepts: [stress_response_basics]
+              review_concepts: [light_stress_disruptors]
+              note: "WHAT: Your nervous system has two modes — sympathetic (fight-or-flight, alert) and parasympathetic (rest-and-digest, calm). WHY: At night you need parasympathetic. But stress, caffeine, alcohol, and bright light keep sympathetic on. When sympathetic is active, your body produces adrenaline, blocks adenosine absorption, and keeps you wired — that's hyperarousal. CONCRETE: 'Imagine your nervous system as an on/off switch. Sleep needs OFF. Anxiety, work thoughts, and blue screens flip it ON. This section teaches you to flip it back OFF.' Bridge from disruptors (S1) to solutions (breathing techniques)."
+
+            - id: l11
+              title: "The Belly Breath"
+              type: practice
+              duration_minutes: 10
+              new_concepts: [belly_breathing]
+              review_concepts: [stress_response_basics]
+              note: "WHAT: Belly breathing (diaphragmatic) = slow, deep breaths that expand your belly, not your chest. WHY: Slowing your breath activates your parasympathetic nervous system (the 'off' switch). Your vagus nerve senses the slow rhythm and tells your body 'we're safe, calm down.' Adrenaline drops; adenosine gets absorbed. CONCRETE: 'Breathe in for 4 counts (belly expands), out for 6 counts. Your body interprets slow exhales as 'I'm not in danger.' Try it when stressed at your desk — works in 2 minutes.' USE CASE: 'Anytime — stuck in traffic, stressed at desk, lying awake.' General-purpose, not sleep-specific."
+
+            - id: l12
+              title: "Box Breathing"
+              type: practice
+              duration_minutes: 11
+              new_concepts: [box_breathing]
+              review_concepts: [belly_breathing, stress_response_basics]
+              note: "WHAT: Box breathing (4-4-4-4) = equal holds. Inhale 4, hold 4, exhale 4, hold 4. WHY: The hold period (breath retention) tells your vagus nerve 'we're in control, not panicking.' Used by Navy SEALs and athletes for acute stress reset. CONCRETE: 'Use this when your heart is racing or anxiety spikes. 4 rounds take 1 minute. Your body shifts from panic (adrenaline) to alert-but-calm (noradrenaline).' USE CASE: 'Acute daytime stress reset. Not for bedtime.' Explicitly distinct from belly breathing and 4-7-8. Navy SEAL association helps adults keep them distinct in memory."
+
+            - id: l13
+              title: "4-7-8: The Sleep Breath"
+              type: practice
+              duration_minutes: 10
+              new_concepts: [breathing_478]
+              review_concepts: [box_breathing, belly_breathing]
+              note: "WHAT: 4-7-8 breathing = inhale 4, hold 7, exhale 8. The long exhale is the key. WHY: Long exhales activate parasympathetic more than holds do. Extended exhales also trigger CO2 receptors that calm your nervous system specifically for *sleep onset* (different from box breathing's acute stress reset). CONCRETE: 'Lie in bed. Inhale 4 (through nose), hold 7 (count slowly), exhale 8 (through mouth, like deflating). Do 4 rounds. Many people find this slows racing thoughts at bedtime.' USE CASE: 'Specifically for sleep onset, not daytime.' IMPORTANT: 'Research shows this helps many people. If it doesn't work for you, that's normal — different techniques work for different people. You're not failing; we'll find what works for you.' Do NOT cite Weil's 60-second guarantee."
+
+            - id: l14
+              title: "Comparing Your 3 Breathing Tools"
+              type: practice
+              duration_minutes: 11
+              new_concepts: [breathing_comparison]
+              review_concepts: [belly_breathing, box_breathing, breathing_478]
+              note: "WHAT: Not interchangeable. Each serves a different role. Belly = general (anytime). Box = acute daytime (panic, racing heart). 4-7-8 = sleep onset (racing mind at bed). WHY: Each pattern activates parasympathetic differently. Belly uses exhale length. Box uses hold. 4-7-8 uses CO2 receptors. CONCRETE: '3pm anxious at work? Use box (1 min, reset). 10pm racing thoughts? Use 4-7-8 (in bed). During day for general calm? Belly anytime.' USER CHOICE: 'Which feels most natural to you? We'll default to your choice for bedtime, but all three are tools in your kit.' Prevents users from trying 4-7-8 when they need box, or vice versa — maximizes success."
+
+        - id: u2_2_body_relaxation
+          title: "Reading and Releasing the Body"
+          position: 2
+          lessons:
+            - id: l15
+              title: "Body Scan Basics"
+              type: introduction
+              duration_minutes: 11
+              new_concepts: [body_scan]
+              review_concepts: [breathing_478, stress_response_basics]
+              note: "WHAT: Body scan = slowly notice sensations in each part of your body (head, shoulders, arms, chest, belly, legs) without trying to change them. WHY: Your brain anxiously *monitors* tension ('my neck is tight, my jaw is clenched') but doesn't know what to do. Noticing without judgment interrupts the worry loop. You're training attention, not relaxation. CONCRETE: 'Scan from head to toes. For each area, just notice: is this tense or relaxed? Don't push. Notice for 3 breaths, move on.' CRITICAL: 'We are NOT trying to relax anything. We are ONLY noticing. That's the whole point.' Explicitly preview that next lesson (PMR) is where ACTION (tension-release) comes in — avoid conflation between awareness and action."
+
+            - id: l16
+              title: "Progressive Muscle Relaxation"
+              type: practice
+              duration_minutes: 12
+              new_concepts: [progressive_muscle_relaxation]
+              review_concepts: [body_scan, belly_breathing]
+              note: "WHAT: PMR = deliberately tense a muscle group for 5 seconds, then release and notice the relief for 30 seconds. Repeat across all major muscle groups. WHY: Your nervous system learns the *contrast* between tension and relaxation. When you deliberately tense then release, your body learns 'relaxation is possible' and shifts parasympathetic. Also, focusing on the *action* interrupts racing thoughts. CONCRETE: 'Clench your fists hard for 5 seconds, release. Notice how your hands feel heavy and warm for 30 seconds. Move to forearms, biceps, shoulders.' CRITICAL: 'Last lesson (l15) was awareness. This lesson IS action. Awareness alone is meditation; tension-release is active relaxation. They're different tools.' Includes timed guided exercise (10-15 min full-body PMR)."
+
+            - id: l17
+              title: "When to Use Each: Body Scan vs PMR"
+              type: practice
+              duration_minutes: 12
+              new_concepts: [body_relaxation_choice]
+              review_concepts: [body_scan, progressive_muscle_relaxation]
+              note: "WHAT: Body scan (awareness) vs PMR (action) — which to use when? CONCRETE: 'At 11pm, racing mind but not tense? Body scan (just notice the looseness, interrupt the thought loop). At 11pm, tight shoulders and jaw? PMR (deliberately release). At 3am after waking, anxious, muscles tight? PMR (reset nervous system). Can't sleep but not sure if tense? Start with body scan (if you notice you ARE tense, switch to PMR).' USER CHOICE: 'Which feels more natural — noticing sensations or actively releasing? Start with that. Both work; your preference matters for consistency.' Prevents user confusion and maximizes adherence."
+
+            - id: l18
+              title: "Body Calm Checkpoint"
+              type: checkpoint
+              duration_minutes: 10
+              new_concepts: []
+              review_concepts: [body_scan, progressive_muscle_relaxation, box_breathing, belly_breathing, breathing_478, breathing_comparison, body_relaxation_choice]
+              note: "Checkpoint — difficulty drops. Pure review, no new concepts. Badge awarded: Body Calm. EXERCISE: User does one full PMR (10 min guided) + one body scan (5 min guided), then picks which felt more natural. Reflects on: Did I understand the difference (awareness vs. action)? Which technique would I use before bed? This tests understanding of *why* different body techniques exist, not just how to do them."
+
+    # ══════════════════════════════════════════
+    - id: s3_evening_architecture
+      title: "Design Your Evening"
+      narrative_hook: "Sleep isn't something that happens to you. It's something you prepare for."
+      position: 3
+      difficulty_range: [0.50, 0.70]
+
+      objectives:
+        remember: "Define the wind-down window, stimulus control rule, and sleep restriction principle"
+        understand: "Explain how brightness (not just blue light), temperature, and bed-association affect sleep onset"
+        apply: "Build a personal pre-sleep routine using course techniques"
+        analyze: "Audit your current evening environment and bed associations for sleep blockers"
+
+      concepts_introduced:
+        - wind_down_window          # 60-90 min pre-bed buffer
+        - light_and_sleep           # brightness matters more than blue light color
+        - sleep_environment         # temperature 65-68°F, sound, texture
+        - stimulus_control          # CBT-I core: bed = sleep only
+        - sleep_restriction_basics  # CBT-I lite: consolidate sleep window
+        - worry_dump                # written pre-sleep brain-clearing (Borkovec)
+        - pre_sleep_journaling      # gratitude + intention; optional ritual
+
+      badge_on_complete: "Evening Architect"
+
+      units:
+
+        - id: u3_1_wind_down
+          title: "The Wind-Down Window"
+          position: 1
+          lessons:
+            - id: l19
+              title: "The 90-Minute Switch"
+              type: introduction
+              duration_minutes: 9
+              new_concepts: [wind_down_window]
+              review_concepts: [circadian_rhythm]
+              note: "WHAT: Wind-down window = 60-90 minutes before bed when you shift from day (tasks, stimulation, bright light) to night (calm, dimmed, quiet). WHY: Your nervous system and brain need time to downshift. During this window, your circadian alert (Process C) is dropping, adenosine is rising. If you jump from work emails at 10:45pm to bed at 11pm, your nervous system stays in sympathetic mode — the pressure to sleep is high but alertness is too. CONCRETE: 'Start wind-down around 9:30 or 10pm. Finish work, dim lights, no screens. This gives your body time to catch up to your clock.' CRITICAL: 'Frame this as a RANGE (sometime between 9-10pm), not a rigid 9:30 alarm. Rigid timing creates new clock-watching anxiety.' Avoid replacing one anxiety (can't sleep) with another (rigid bedtime ritual)."
+
+            - id: l20
+              title: "Light Is Information"
+              type: practice
+              duration_minutes: 10
+              new_concepts: [light_and_sleep]
+              review_concepts: [wind_down_window, circadian_rhythm]
+              note: "WHAT: Your brain releases melatonin (sleep hormone) when it's dark. Blue light (~460nm wavelength) is the color your eyes are most tuned to notice — it signals 'daytime,' which blocks melatonin. CONCRETE: 'Screens emit blue light. At 10pm, a bright screen tells your brain it's 10am.' BUT: 'The total brightness matters more than the color. Dimming a screen to minimum reduces the effect 100x more than orange glasses on a bright screen.' PRACTICAL: 'Lead with brightness over color. Dim all lights > blue-light glasses on a bright screen. Blue light is real but smaller than commonly stated. Evidence-accurate framing builds trust.'"
+              research_sources:
+                - title: "Evening Exposure to a Light-Emitting Diodes (LED)-Backlit Computer Screen..."
+                  source: "Lockley et al., Journal of Clinical Endocrinology & Metabolism, 2003"
+                  url: "https://pubmed.ncbi.nlm.nih.gov/12435261/"
+                  key_finding: "460 nm light suppresses melatonin significantly more than 550 nm at matched photon irradiance"
+                - title: "Display Brightness and Melatonin Suppression"
+                  source: "Nagare et al., Ophthalmic & Physiological Optics, 2019"
+                  url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6751071/"
+                  key_finding: "Dimming a smartphone to minimum reduces melanopsin activation to <1% of max; Night Shift color-shift only reduces it 67% at full brightness"
+
+            - id: l21
+              title: "Your Sleep Environment Audit"
+              type: practice
+              duration_minutes: 11
+              new_concepts: [sleep_environment]
+              review_concepts: [light_and_sleep, wind_down_window]
+              note: "WHAT: Sleep environment = temperature, darkness, sound, texture. WHY: Your body uses environmental cues as signals. Cool (65-68°F) signals 'go to sleep' (core temp drops). Darkness signals 'melatonin time.' Quiet signals 'safe.' Soft textures (vs stiff) signal 'rest.' CONCRETE: 'Your brain recognizes the sleeping space. If your bedroom is bright + noisy + warm + uncomfortable, it's sending 'stay alert' signals. Optimize each lever: cool blankets, blackout curtains, earplugs or white noise, comfortable mattress/pillows.' EXERCISE: Audit the user's current environment on each dimension (temp/light/sound/comfort). Identify 1-2 fixes they can implement this week. This tests understanding that environment shapes sleep, not just willpower."
+
+        - id: u3_2_pre_sleep_practices
+          title: "Clearing the Mind Before Bed"
+          position: 2
+          lessons:
+            - id: l22
+              title: "The Bed-Sleep Connection"
+              type: practice
+              duration_minutes: 11
+              new_concepts: [stimulus_control, sleep_restriction_basics]
+              review_concepts: [sleep_environment, sleep_pressure]
+              note: "WHAT: Stimulus control = bed = sleep ONLY. If you're awake more than 20 min, get up and do something calm elsewhere until sleepy, then return. Sleep restriction = when sleep is fragmented, consolidate your window (don't extend it hoping for more). WHY: Your brain is like Pavlov's dog. If you spend hours worrying in bed, your brain learns 'bed = anxiety.' Stimulus control *retrains* that association. Getting up breaks the worry-bed link. CONCRETE: 'Spend 3 hours worrying in bed? Your brain learns bed=worry. Tonight, bed=sleep only. Awake 20 min? Get up. Read, walk, breathe until sleepy. Get back in bed.' FRAME GENTLY: 'This is about efficiency (more of your bed time = actual sleep), not deprivation (cutting hours). Most people sleep *better* with a shorter, solid window than a long, fragmented one.' This is AASM-endorsed CBT-I core."
+              research_sources:
+                - title: "Behavioral and Psychological Treatments for Chronic Insomnia Disorder in Adults"
+                  source: "Edinger et al., AASM Systematic Review & Meta-Analysis, 2021"
+                  url: "https://doi.org/10.1093/sleep/zsaa109"
+                  key_finding: "Stimulus control and sleep restriction therapy received strong GRADE recommendations; both are the highest-evidence standalone behavioral CBT-I components"
+
+            - id: l23
+              title: "The Worry Dump"
+              type: practice
+              duration_minutes: 12
+              new_concepts: [worry_dump]
+              review_concepts: [stimulus_control, progressive_muscle_relaxation]
+              note: "WHAT: Worry dump = write down everything in your head (tasks, fears, plans) 30-60 min before bed. WHY: Your brain at 11pm is like a browser with 50 tabs open — notifications, plans, worries all firing. Writing externalizes the thoughts. Your brain stops trying to hold them (because they're now on paper) and calms down. CONCRETE: 'Get a notepad. Write: grocery list, tomorrow's 10am meeting, that embarrassing thing you said, your fear about money, your plans for the weekend. Write messy, don't organize. Tear it up or close the notebook. Your brain says 'it's handled' and lets go.' RESEARCH: Borkovec's scheduled worry time (CBT) shows this reduces pre-sleep cognitive arousal. FRAME: 'This isn't journaling for therapy; it's brain-clearing for sleep. One sentence per worry. Done in 5 minutes.'"
+
+            - id: l24
+              title: "Pre-Sleep Journaling (Optional)"
+              type: practice
+              duration_minutes: 12
+              new_concepts: [pre_sleep_journaling]
+              review_concepts: [worry_dump, stimulus_control]
+              note: "WHAT: Pre-sleep journaling (gratitude + intention) = optional wind-down ritual for mood/wind-down benefit, NOT a sleep technique. WHY: Unlike worry dump (clearing), this is intentional priming. Gratitude shifts mood; intention primes identity. CONCRETE: '3 things you're grateful for (however small). 1 thing you want from sleep tonight (rest, processing dreams, recovery). Write 2 min, stop.' FRAME: 'Optional. Worry dump is the core. This is the cherry on top if it resonates with you.' Prevents users from seeing journaling as mandatory; emphasizes choice."
+
+            - id: l25
+              title: "Evening Architecture Checkpoint"
+              type: checkpoint
+              duration_minutes: 10
+              new_concepts: []
+              review_concepts: [wind_down_window, light_and_sleep, stimulus_control, worry_dump, sleep_environment, sleep_restriction_basics, pre_sleep_journaling]
+              note: "Checkpoint — difficulty drops. Pure review + optional new ritual. Badge: Evening Architect. EXERCISE: User builds their first personal wind-down plan. Template: Start time (range, not rigid) → wind-down ritual (e.g., dim lights, warm tea, write worries, body scan) → bed time → bed rules (stimulus control). Must include at least 3 techniques from S2 or S3 (breathing, light dimming, worry dump, PMR, etc.). This tests understanding that evening design is *personalized*, not one-size-fits-all."
+
+    # ══════════════════════════════════════════
+    - id: s4_sleep_mindset
+      title: "The Mind That Won't Quiet"
+      narrative_hook: "The hardest part of sleep isn't the body — it's what happens between your ears."
+      position: 4
+      difficulty_range: [0.60, 0.75]
+
+      objectives:
+        remember: "Name three cognitive patterns that fuel sleep anxiety"
+        understand: "Explain how trying harder to sleep makes it worse (hyperarousal cycle)"
+        apply: "Use cognitive defusion and thought records in practice"
+        analyze: "Identify your personal sleep story and where it came from"
+        evaluate: "Build a sustainable sleep identity that doesn't require perfection"
+
+      concepts_introduced:
+        - sleep_anxiety          # hyperarousal; performance anxiety around sleep
+        - sleep_effort_paradox   # trying harder to sleep → more wakefulness
+        - cognitive_defusion     # ACT: watching thoughts without fusing; goal = stop FIGHTING thoughts
+        - sleep_catastrophizing  # CBT-I thought record; most common: "If I don't sleep I'll ruin tomorrow"
+        - sleep_identity         # 'good sleeper' identity shift; benchmark: 1-2 bad nights/week normal
+        - relapse_resilience     # bad nights are normal, not failure; recovery framing
+        - building_resilience    # deep-dive on post-course maintenance
+
+      badge_on_complete: "Quiet Mind"
+
+      units:
+
+        - id: u4_1_sleep_anxiety
+          title: "When the Mind Fights Sleep"
+          position: 1
+          lessons:
+            - id: l26
+              title: "The Sleep Effort Trap"
+              type: introduction
+              duration_minutes: 10
+              new_concepts: [sleep_anxiety, sleep_effort_paradox]
+              review_concepts: [stress_response_basics]
+              note: "WHAT: Sleep effort paradox = the harder you try to sleep, the more awake you become. This is hyperarousal (your nervous system in overdrive). WHY: When you lie in bed thinking 'I MUST sleep' or 'it's 2am and I have work tomorrow,' your brain interprets this as a threat. Adrenaline floods. Muscles tense. The pressure backfires. CONCRETE: 'The night you *need* sleep most (big presentation tomorrow), you can't sleep. Because trying hard = threat signal = stress hormones = wakefulness. Trying to force sleep is like pushing a revolving door — the harder you push, the faster it spins.' CONNECT BACK: 'This is WHY stimulus control works (l22): when you can't sleep, you GET UP. You stop trying. Your nervous system interprets 'we're doing something else' as 'no threat' and slowly calms down.' Must include scenario exercise where users recognize the hyperarousal cycle in their own behavior — not just didactic."
+
+            - id: l27
+              title: "Watching Your Thoughts"
+              type: practice
+              duration_minutes: 11
+              new_concepts: [cognitive_defusion]
+              review_concepts: [sleep_anxiety, sleep_effort_paradox]
+              note: "WHAT: Cognitive defusion (from ACT) = observing your thoughts without fighting them. When a thought arises ('I'll never sleep'), you notice it like a cloud passing, not as truth. WHY: Fighting thoughts creates more thoughts (the 'white bear' effect — try not to think of a white bear, you think of a white bear). Observing without judgment breaks the struggle. Your brain calms because there's no battle. CONCRETE: 'Instead of 'No I won't catastrophize,' you think 'There's the catastrophizing thought. It's just a thought, not a prediction.' Notice it. Let it pass. Don't fight it.' CRITICAL: 'Goal = STOP FIGHTING thoughts, NOT stop having them. Thoughts at 2am are normal. The struggle is what keeps you awake.' 'Thoughts as clouds passing' is the standard ACT metaphor. Frame as evidence-informed approach from Acceptance and Commitment Therapy with growing research support for insomnia — don't claim AASM endorsement. Exercises must NOT teach suppression — suppression worsens hyperarousal."
+              research_sources:
+                - title: "Acceptance and Commitment Therapy for Insomnia"
+                  source: "Dalrymple et al., Journal of Contemporary Psychotherapy, 2014"
+                  url: "https://pubmed.ncbi.nlm.nih.gov/"
+                  key_finding: "ACT-based interventions (including cognitive defusion) show growing empirical support for insomnia; typically framed as adjunct or emerging compared to CBT-I"
+
+            - id: l28
+              title: "Rewriting the Disaster Story"
+              type: practice
+              duration_minutes: 12
+              new_concepts: [sleep_catastrophizing]
+              review_concepts: [cognitive_defusion, sleep_anxiety]
+              note: "WHAT: Sleep catastrophizing = jumping from 'I'm awake at 2am' to 'I will ruin tomorrow and my life is over.' It's automatic; your brain is trying to prepare for danger. WHY: Your brain's job is threat-detection. At 2am, a threat is real (sleep deprivation hurts), so your brain *rehearses* disaster. This rehearsal = anxiety = adrenaline = wakefulness (the trap). CONCRETE: 'Awake at 2am thought: If I don't sleep I'll ruin tomorrow. Reality check: Have you ever had one bad night and ruined everything? No. What *actually* happens: you're tired but functional. You might nap tomorrow. You won't crash.' Primary worked example: 'If I don't sleep I'll ruin tomorrow.' Walk through a CBT-I thought record on that exact thought. Template: Thought → Evidence for → Evidence against → Realistic thought. Then have user apply it to their own catastrophic thought. Show that reality is usually 'I'll be tired but okay' not 'everything is ruined.'"
+
+        - id: u4_2_sleep_identity
+          title: "Becoming a Good Sleeper"
+          position: 2
+          lessons:
+            - id: l29
+              title: "Your Sleep Story"
+              type: practice
+              duration_minutes: 12
+              new_concepts: [sleep_identity]
+              review_concepts: [sleep_catastrophizing, cognitive_defusion]
+              note: "WHAT: Sleep identity = how you think about yourself as a sleeper. Current: 'I'm an insomniac / bad sleeper.' New: 'I'm someone who understands sleep and can self-correct.' WHY: Your identity shapes behavior. If you believe 'I'm a bad sleeper,' one bad night = 'proof I'm broken.' If you believe 'I'm resilient,' one bad night = 'data point, here's my fix.' CONCRETE: 'Notice: are you thinking 'I have insomnia' or 'I'm having a night where sleep is hard'? The first is identity. The second is situation.' BENCHMARK: 'Here's the truth: 1-2 bad nights per week is *normal* even for good sleepers. You're not aiming for perfection; you're aiming for resilience.' Identity reframe from 'perfect sleeper' to 'resilient sleeper who knows what to do.'"
+
+            - id: l30
+              title: "Building Resilience After Course"
+              type: practice
+              duration_minutes: 12
+              new_concepts: [building_resilience]
+              review_concepts: [sleep_identity, relapse_resilience]
+              note: "WHAT: Relapse resilience = plan for the post-course reality. Bad nights will happen. CONCRETE: 'After this course, you might have 1-2 nights where everything falls apart. That's not failure. That's normal. You'll recognize the disruptor (coffee too late, stress spike, irregular wake time) and reapply what you learned.' DEEP-DIVE: 'Which techniques feel most natural to you? Make a quick-reference card. Which concepts do you want to revisit? Bookmark them. What's your 3am-waking response (get up, 4-7-8, check circadian rhythm)? Write it down.' This cements understanding that course is toolkit, not cure — user is the expert on their sleep."
+
+            - id: l31
+              title: "Course Finale: The Quiet Mind"
+              type: checkpoint
+              duration_minutes: 12
+              new_concepts: []
+              review_concepts: [sleep_identity, building_resilience, sleep_anxiety, wind_down_window, box_breathing, body_scan, stimulus_control]
+              note: "Final lesson. Difficulty drops. Pure review + celebration. No new concepts. Badge: Quiet Mind. EXERCISE: User writes a personal sleep commitment (1-2 paragraphs). Template: 'I understand my sleep now because [2-3 key learnings]. My biggest disruptor is [specific to them]. My wind-down plan includes [specific techniques]. I know that 1-2 bad nights are normal. I will [specific action for next bad night].' This commitment tests understanding of all 4 sections AND personal application. Celebrate completion of 32 lessons (8 weeks of work). Frame as: 'You're no longer an insomniac trying to sleep. You're now a sleep scientist who can read your own system and fix it.' End on easy guaranteed success."
+
+
+
