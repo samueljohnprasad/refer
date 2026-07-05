@@ -1,6 +1,8 @@
 import React, { type ReactNode, type ReactElement } from "react";
 import {
   View,
+  Text,
+  StyleSheet,
   type ViewProps,
   type ScrollViewProps,
   type StyleProp,
@@ -79,6 +81,8 @@ interface ActionFooterProps {
   style?: StyleProp<ViewStyle>;
   /** Custom className for the footer container. */
   className?: string;
+  /** Status of the action footer */
+  status?: "default" | "success" | "error";
 }
 
 interface LessonScreenProps
@@ -206,10 +210,35 @@ const ActionFooter: React.FC<ActionFooterProps> = ({
   variant = "solid",
   style,
   className,
+  status = "default",
 }) => {
+  const isSuccess = status === "success";
+  const isError = status === "error";
+
   return (
-    <ScreenLayout.Footer variant={variant} style={style} className={className}>
+    <ScreenLayout.Footer 
+      variant={variant} 
+      style={style} 
+      className={`${className || ""} ${isSuccess ? "bg-green-100" : isError ? "bg-red-100" : "bg-white"}`}
+    >
       <View className="w-full gap-1">
+        {isSuccess && (
+          <View className="flex-row items-center mb-4 ml-1">
+            <View className="w-8 h-8 rounded-full bg-green-500 items-center justify-center mr-3">
+              <Text className="text-white font-bold text-lg">✓</Text>
+            </View>
+            <Text className="text-green-600 font-bold text-xl">Awesome!</Text>
+          </View>
+        )}
+        {isError && (
+          <View className="flex-row items-center mb-4 ml-1">
+            <View className="w-8 h-8 rounded-full bg-red-500 items-center justify-center mr-3">
+              <Text className="text-white font-bold text-lg">✗</Text>
+            </View>
+            <Text className="text-red-500 font-bold text-xl">Incorrect</Text>
+          </View>
+        )}
+
         <Button
           label={primaryLabel}
           onPress={onPrimaryPress}
@@ -217,6 +246,7 @@ const ActionFooter: React.FC<ActionFooterProps> = ({
           loading={primaryLoading}
           leftIcon={primaryLeftIcon}
           rightIcon={primaryRightIcon}
+          className={isSuccess ? "bg-green-500 border-green-600" : isError ? "bg-red-500 border-red-600" : ""}
           variant="primary"
           fullWidth
         />
@@ -283,8 +313,12 @@ const LessonScreen = ({
   secondaryDisabled,
   footerVariant,
   footerStyle,
+  status,
   ...props
 }: LessonScreenProps) => {
+  const flattenedStyle = StyleSheet.flatten(props.style) || {};
+  const screenBg = flattenedStyle.backgroundColor;
+
   return (
     <ScreenLayout className={className} {...props}>
       {!hideHeader && (
@@ -298,7 +332,7 @@ const LessonScreen = ({
           progressHeight={progressHeight}
           iconColor={iconColor}
           trailingLabelColor={trailingLabelColor}
-          style={headerStyle}
+          style={[headerStyle, screenBg ? { backgroundColor: screenBg } : undefined]}
         />
       )}
       <Content hasHeader={!hideHeader} hasFooter={!hideFooter}>
@@ -317,6 +351,7 @@ const LessonScreen = ({
           secondaryDisabled={secondaryDisabled}
           variant={footerVariant}
           style={footerStyle}
+          status={status}
         />
       )}
     </ScreenLayout>
