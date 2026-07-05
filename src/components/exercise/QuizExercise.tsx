@@ -26,10 +26,10 @@ export const QuizExercise: React.FC<ExerciseComponentProps<QuizPayload>> = ({
   return (
     <View className="flex-1 p-6 justify-center">
       <Text className="text-2xl font-bold text-slate-800 mb-8">
-        {payload.data.question}
+        {payload.content.question}
       </Text>
       
-      {payload.data.options.map((option, index) => {
+      {payload.content.options.map((option, index) => {
         const isSelected = selectedIndex === index;
         return (
           <TouchableOpacity 

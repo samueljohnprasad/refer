@@ -15,10 +15,10 @@ export const ConceptExercise: React.FC<ExerciseComponentProps<ConceptPayload>> =
   return (
     <View className="flex-1 p-6 justify-center">
       <Text className="text-3xl font-bold text-slate-800 mb-4">
-        {payload.data.title}
+        {payload.content.title}
       </Text>
       <Text className="text-lg text-slate-600 leading-relaxed">
-        {payload.data.content}
+        {payload.content.content}
       </Text>
     </View>
   );

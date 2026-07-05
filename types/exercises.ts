@@ -7,7 +7,7 @@ export interface BaseExercisePayload {
 
 export interface ConceptPayload extends BaseExercisePayload {
   type: 'concept';
-  data: {
+  content: {
     title: string;
     content: string;
   };
@@ -15,7 +15,7 @@ export interface ConceptPayload extends BaseExercisePayload {
 
 export interface QuizPayload extends BaseExercisePayload {
   type: 'quiz';
-  data: {
+  content: {
     question: string;
     options: string[];
     correctIndex: number;
@@ -24,7 +24,7 @@ export interface QuizPayload extends BaseExercisePayload {
 
 export interface BuilderPayload extends BaseExercisePayload {
   type: 'builder';
-  data: {
+  content: {
     prompt: string;
     initialCode: string;
   };
