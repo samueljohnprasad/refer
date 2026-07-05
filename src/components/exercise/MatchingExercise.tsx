@@ -51,8 +51,61 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // We will add interaction handlers here...
+  const updateMatches = (newMatches: Record<number, number>) => {
+    setMatches(newMatches);
+    const ready = pairs.length > 0 && Object.keys(newMatches).length === pairs.length;
+    onInteraction({ matches: newMatches }, ready);
+  };
 
+  const handleLeftPress = (index: number) => {
+    // If it's already matched, unmatch it
+    if (matches[index] !== undefined) {
+      const newMatches = { ...matches };
+      delete newMatches[index];
+      updateMatches(newMatches);
+      setSelectedLeft(null);
+      return;
+    }
+
+    if (selectedRight !== null) {
+      // Pair them!
+      const newMatches = { ...matches, [index]: selectedRight };
+      updateMatches(newMatches);
+      setSelectedLeft(null);
+      setSelectedRight(null);
+    } else {
+      setSelectedLeft(index === selectedLeft ? null : index);
+    }
+  };
+
+  const handleRightPress = (index: number) => {
+    // Find if this right item is already matched
+    const matchedLeftIndex = Object.keys(matches).find(k => matches[Number(k)] === index);
+    if (matchedLeftIndex !== undefined) {
+      const newMatches = { ...matches };
+      delete newMatches[Number(matchedLeftIndex)];
+      updateMatches(newMatches);
+      setSelectedRight(null);
+      return;
+    }
+
+    if (selectedLeft !== null) {
+      // Pair them!
+      const newMatches = { ...matches, [selectedLeft]: index };
+      updateMatches(newMatches);
+      setSelectedLeft(null);
+      setSelectedRight(null);
+    } else {
+      setSelectedRight(index === selectedRight ? null : index);
+    }
+  };
+
+  // Helper to get match sequence number (1-based)
+  const getMatchNumber = (leftIndex: number) => {
+    const keys = Object.keys(matches).map(Number).sort();
+    const pos = keys.indexOf(leftIndex);
+    return pos >= 0 ? pos + 1 : null;
+  };
   return (
     <ScrollView className="flex-1 p-6" showsVerticalScrollIndicator={false}>
        <Text>Matching Exercise Setup</Text>
