@@ -35,7 +35,7 @@ export const TrueFalseExercise = ({ payload, savedResponse, onInteraction }: any
           </View>
           <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-slate-200 relative">
             <View 
-              className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200" 
+              className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200 rounded-bl-[4px]" 
               style={{ transform: [{ rotate: '45deg' }] }} 
             />
             <Text variant="body" color="ink" className="leading-relaxed text-lg font-medium">
