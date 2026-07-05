@@ -1,26 +1,41 @@
-import React, { useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView } from 'react-native';
+import { Text } from '@/src/components/ui/Text';
+import { Mascot } from '@/src/components/ui/Mascot';
+import { Card } from '@/src/components/ui/Card';
 
-export const MatchingExercise = ({ payload, onInteraction }: any) => {
-  // Auto-complete placeholder for testing
+type Pair = { left: string; right: string };
+
+export const MatchingExercise = ({ payload, savedResponse, onInteraction }: any) => {
+  const { prompt, pairs = [] } = payload.content || {};
+
+  // State
+  const [shuffledRights, setShuffledRights] = useState<Pair[]>([]);
+  const [selectedLeft, setSelectedLeft] = useState<number | null>(null);
+  const [selectedRight, setSelectedRight] = useState<number | null>(null);
+  // Matches: map of leftIndex -> rightIndex
+  const [matches, setMatches] = useState<Record<number, number>>(savedResponse?.matches || {});
+
+  // Shuffle right items on mount
   useEffect(() => {
-    // Uncomment below if you want auto-advance on mount for testing
-    // onInteraction(true); 
+    const shuffled = [...pairs].sort(() => Math.random() - 0.5);
+    setShuffledRights(shuffled);
+  }, []);
+  
+  // Validation check
+  const isReady = Object.keys(matches).length === pairs.length;
+
+  useEffect(() => {
+    if (savedResponse?.matches) {
+      onInteraction({ matches: savedResponse.matches }, Object.keys(savedResponse.matches).length === pairs.length);
+    }
   }, []);
 
+  // We will add interaction handlers here...
+
   return (
-    <ScrollView className="flex-1 p-6">
-      <View className="bg-slate-100 p-6 rounded-2xl border border-slate-200 mt-10">
-        <Text className="text-2xl font-bold text-slate-800 mb-2">
-          Matching Exercise
-        </Text>
-        <Text className="text-sm text-slate-500 mb-4">
-          Type: {payload.type}
-        </Text>
-        <Text className="text-base text-slate-700 font-mono bg-white p-4 rounded-xl border border-slate-200">
-          {JSON.stringify(payload.content, null, 2)}
-        </Text>
-      </View>
+    <ScrollView className="flex-1 p-6" showsVerticalScrollIndicator={false}>
+       <Text>Matching Exercise Setup</Text>
     </ScrollView>
   );
 };
