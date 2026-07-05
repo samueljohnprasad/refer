@@ -304,14 +304,21 @@ function JourneyNodeCellInner({
         </RevealPath>
       )}
 
-      <RevealNode index={item.globalIndex}>
+      <RevealNode 
+        index={item.globalIndex}
+        style={{
+          position: "absolute",
+          left: nodePosition.x - halfSize,
+          top: nodePosition.y - halfSize,
+          width: size,
+          height: size,
+        }}
+      >
         <View
-          className="absolute items-center justify-center"
+          className="items-center justify-center"
           style={{
-            left: nodePosition.x - halfSize,
-            top: nodePosition.y - halfSize,
-            width: size,
-            height: size,
+            width: "100%",
+            height: "100%",
           }}
         >
           <BouncingTooltip

@@ -11,8 +11,10 @@ export function RevealPath({ children, index }: { children: React.ReactNode; ind
   const progress = useSharedValue<number>(0);
 
   useEffect(() => {
+    progress.value = 0;
+    const cappedIndex = Math.min(index, 12);
     progress.value = withDelay(
-      400 + index * 100, // Stagger based on index
+      400 + cappedIndex * 100, // Stagger based on capped index
       withTiming(1, {
         duration: 1150,
         easing: Easing.bezier(0.45, 0, 0.25, 1),

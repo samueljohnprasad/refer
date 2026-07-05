@@ -19,7 +19,7 @@ export function RevealTopBar({ children }: { children: React.ReactNode }): React
         easing: Easing.bezier(0.33, 1, 0.68, 1),
       })
     );
-  }, []);
+  }, [progress]);
 
   const animatedStyle = useAnimatedStyle(() => {
     const translateY = -24 * (1 - progress.value);

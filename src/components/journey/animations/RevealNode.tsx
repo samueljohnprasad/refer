@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import type { StyleProp, ViewStyle } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,12 +8,14 @@ import Animated, {
   withDelay,
 } from "react-native-reanimated";
 
-export function RevealNode({ children, index }: { children: React.ReactNode; index: number }): React.ReactElement {
+export function RevealNode({ children, index, style }: { children: React.ReactNode; index: number; style?: StyleProp<ViewStyle> }): React.ReactElement {
   const progress = useSharedValue<number>(0);
 
   useEffect(() => {
+    progress.value = 0;
+    const cappedIndex = Math.min(index, 12);
     progress.value = withDelay(
-      300 + index * 100, // Stagger based on index
+      300 + cappedIndex * 100, // Stagger based on capped index
       withTiming(1, {
         duration: 1000,
         easing: Easing.bezier(0.33, 1, 0.68, 1),
@@ -31,5 +34,5 @@ export function RevealNode({ children, index }: { children: React.ReactNode; ind
     };
   });
 
-  return <Animated.View style={animatedStyle}>{children}</Animated.View>;
+  return <Animated.View style={[style, animatedStyle]}>{children}</Animated.View>;
 }

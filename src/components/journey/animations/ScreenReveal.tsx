@@ -14,7 +14,7 @@ export function ScreenReveal({ children }: { children: React.ReactNode }): React
       duration: 1050,
       easing: Easing.bezier(0.33, 1, 0.68, 1),
     });
-  }, []);
+  }, [progress]);
 
   const animatedStyle = useAnimatedStyle(() => {
     const scale = 0.955 + progress.value * (1 - 0.955);
