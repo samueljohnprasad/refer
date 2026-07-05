@@ -42,13 +42,14 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
   }, [pairs]);
   
   // Validation check
-  const isReady = Object.keys(matches).length === pairs.length;
+  const isReady = pairs.length > 0 && Object.keys(matches).length === pairs.length;
 
   useEffect(() => {
     if (savedResponse?.matches) {
-      onInteraction({ matches: savedResponse.matches }, Object.keys(savedResponse.matches).length === pairs.length);
+      onInteraction({ matches: savedResponse.matches }, pairs.length > 0 && Object.keys(savedResponse.matches).length === pairs.length);
     }
-  }, [savedResponse?.matches, onInteraction, pairs.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // We will add interaction handlers here...
 
