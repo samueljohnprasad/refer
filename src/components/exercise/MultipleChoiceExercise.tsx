@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
+import { Card } from '@/src/components/ui/Card';
 
 export const MultipleChoiceExercise = ({ payload, onInteraction }: any) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -50,18 +51,16 @@ export const MultipleChoiceExercise = ({ payload, onInteraction }: any) => {
         {options?.map((opt: any) => {
           const isSelected = selectedId === opt.id;
           return (
-            <TouchableOpacity
+            <Card
               key={opt.id}
-              activeOpacity={0.7}
+              variant={isSelected ? 'answer-selected' : 'answer'}
               onPress={() => handleSelect(opt)}
-              className={`p-5 rounded-2xl border-2 border-b-4 items-center justify-center bg-white ${
-                isSelected ? 'border-sky-400 border-b-sky-500 bg-sky-50' : 'border-slate-200 border-b-slate-300'
-              }`}
+              contentClassName="items-center justify-center p-1"
             >
-              <Text className={`text-lg font-medium ${isSelected ? 'text-sky-600' : 'text-slate-600'}`}>
+              <Text className={`text-lg font-medium ${isSelected ? 'text-sage-700' : 'text-slate-600'}`}>
                 {opt.text}
               </Text>
-            </TouchableOpacity>
+            </Card>
           );
         })}
       </View>

@@ -247,8 +247,7 @@ const ActionFooter: React.FC<ActionFooterProps> = ({
           loading={primaryLoading}
           leftIcon={primaryLeftIcon}
           rightIcon={primaryRightIcon}
-          className={isSuccess ? "bg-green-500 border-green-600" : isError ? "bg-red-500 border-red-600" : ""}
-          variant="primary"
+          variant={isError ? "danger" : "primary"}
           fullWidth
         />
 
