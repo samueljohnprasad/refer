@@ -55,7 +55,7 @@ export const MultipleChoiceExercise = ({ payload, onInteraction }: any) => {
               key={opt.id}
               variant={isSelected ? 'answer-selected' : 'answer'}
               onPress={() => handleSelect(opt)}
-              contentClassName="items-center justify-center p-1"
+              contentClassName="items-center justify-center p-4"
             >
               <Text className={`text-lg font-medium ${isSelected ? 'text-sage-700' : 'text-slate-600'}`}>
                 {opt.text}
