@@ -36,7 +36,6 @@ const ACTIVE_ICON_MAP: Record<string, NodeIcon> = {
 };
 
 function resolveIcon(nodeType: NodeType, status: NodeStatus): NodeIcon {
-  if (status === NodeStatus.LOCKED) return NodeIcon.LOCK;
   if (status === NodeStatus.COMPLETED) {
     return COMPLETED_ICON_MAP[nodeType] ?? NodeIcon.CHECKMARK;
   }
@@ -99,7 +98,7 @@ export function buildNodeItem(
       : buildSegmentD(acc.prevX, position.x, cellHeight);
 
   // Derive visual properties from server-provided type + status
-  const icon = resolveIcon(node.type, node.status);
+  const icon = node.icon ?? resolveIcon(node.type, node.status);
   const label = node.status === NodeStatus.ACTIVE ? "START" : undefined;
   const progress =
     node.status === NodeStatus.ACTIVE

@@ -158,6 +158,7 @@ export function useJourneyMapController(
           cx: pageX,
           cy: pageY,
           color: color || (node.status === "active" ? "#58CC02" : "#FFFFFF"),
+          onComplete: () => {},
         });
         // Wait half of the transition duration (400ms / 2) before routing
         setTimeout(() => {

@@ -136,6 +136,8 @@ export interface Node {
   orderIndex: number;
   /** Estimated minutes to complete */
   estimatedMins: number;
+  /** Explicit icon override (e.g., book, checkpoint, chest) */
+  icon?: string;
   newConcepts?: string[];
   reviewConcepts?: string[];
   prerequisites?: string[];

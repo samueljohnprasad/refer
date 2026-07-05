@@ -25,6 +25,7 @@ import {
   findCurrentNodeIdInCourse,
   resolveNodeVisualStatus,
 } from "@/src/lib/journey/journeyProgress";
+import { resolveNodeIcon } from "@/src/lib/journey/mentalHealthNodeMapping";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -200,7 +201,7 @@ function createPathNodeData(
     index: globalIndex,
     type: node.type as UnitPathNode["type"],
     status: toJourneyNodeStatus(visualStatus),
-    icon: DEFAULT_NODE_ICON,
+    icon: node.icon || resolveNodeIcon(node.type),
     taskId: node.contentId ?? node.id,
     rewards: [],
   };
@@ -231,7 +232,7 @@ function createJourneyNodeItem(
     taskId: node.contentId ?? node.id,
     taskType: node.type,
     type: node.type as JourneyNode["type"],
-    icon: DEFAULT_NODE_ICON,
+    icon: node.icon || resolveNodeIcon(node.type),
     rewards: [],
     unitId: node.unitId,
     prevX: segmentStartX,

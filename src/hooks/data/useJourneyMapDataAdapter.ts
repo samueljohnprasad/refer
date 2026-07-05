@@ -134,7 +134,7 @@ function toPathNodeData(
         index,
         type: mapping.nodeType,
         status,
-        icon: status === NodeStatus.LOCKED ? NodeIcon.LOCK : mapping.nodeIcon,
+        icon: mapping.nodeIcon,
         progress: status === NodeStatus.ACTIVE ? 0 : undefined,
         label: node.title ?? mapping.label,
         taskId: node.taskId,
@@ -278,12 +278,15 @@ export function useJourneyMapDataAdapter(
 
             const unitId: string = `unit_${section.id}`;
 
-            // Build UnitData
             const unitData: UnitData = {
                 id: unitId,
+                sectionId: section.id,
+                sectionNumber: section.sectionNumber,
+                globalUnitNumber: section.sectionNumber,
                 unitNumber: section.sectionNumber,
                 title: section.title,
                 description: section.description,
+                iconKey: 'unit-icon',
                 colorScheme,
                 nodes: pathNodes,
                 mascotPlacements: [],
@@ -292,7 +295,6 @@ export function useJourneyMapDataAdapter(
             // Build UnitConfig
             const divider: UnitDividerConfig = {
                 title: section.title,
-                showJumpHere: section.sectionNumber > 1,
             };
 
             const unitConfig: UnitConfig = {

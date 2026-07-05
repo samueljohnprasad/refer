@@ -22,9 +22,15 @@ export enum NodeType {
 export enum NodeIcon {
   STAR = "star",
   LOCK = "lock",
-  CHECKMARK = "checkmark",
+  CHECKMARK = "checkmark", // Keep for backwards compat
+  CHECKPOINT = "checkpoint",
   BOOK = "book",
   CHEST = "chest",
+  JOURNAL = "journal",
+  QUIZ = "quiz",
+  MOOD_CHECK = "mood_check",
+  PRACTICE = "practice",
+  BRAIN = "brain",
 }
 
 /** Types of rewards earned from journey nodes */
