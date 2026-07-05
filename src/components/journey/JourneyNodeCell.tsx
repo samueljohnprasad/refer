@@ -32,6 +32,8 @@ import { DuolingoSvgNodeButton } from "./DuolingoSvgNodeButton";
 import { darkenHex } from "@/src/utils/colorUtils";
 import { getHugeicon } from "@/src/data/journey/hugeiconsRegistry";
 import { useJourneySettings, useColorTheme } from "@/src/context/JourneyConfigContext";
+import { RevealNode } from "@/src/components/journey/animations/RevealNode";
+import { RevealPath } from "@/src/components/journey/animations/RevealPath";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -41,7 +43,7 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const NODE_VERTICAL_POSITION_RATIO = 0.85;
 const ICON_COLOR_ACTIVE = "#FFFFFF";
-const ICON_COLOR_LOCKED = "#FFFFFF";
+const ICON_COLOR_LOCKED = "#94A3B8";
 const HUGEICON_SIZE_RATIO = 0.6;
 
 // ---------------------------------------------------------------------------
@@ -179,7 +181,7 @@ function JourneyNodeCellInner({
 
   // ── Node Visuals via Simple Switch ──
   let faceColor = "#E2E8F0";
-  let iconName = "lock";
+  let iconName = item.icon || "star";
   let isInteractive = false;
   let showProgressRing = false;
   let showTooltip = false;
@@ -187,7 +189,7 @@ function JourneyNodeCellInner({
   switch (item.status) {
     case NodeStatus.COMPLETED:
       faceColor = theme.pathCompletedColor || "#34d399";
-      iconName = item.icon || "checkmark-circle-02";
+      iconName = item.icon || "checkpoint";
       isInteractive = true;
       break;
     case NodeStatus.ACTIVE:
@@ -200,7 +202,7 @@ function JourneyNodeCellInner({
     case NodeStatus.LOCKED:
     default:
       faceColor = "#CBD5E1";
-      iconName = "lock-key";
+      iconName = item.icon || "star";
       isInteractive = false;
       break;
   }
@@ -271,90 +273,94 @@ function JourneyNodeCellInner({
       }}
     >
       {item.segmentD.length > 0 && (
-        <Svg
-          width={screenWidth}
-          height={item.cellHeight}
-          style={{ position: "absolute", top: 0, left: 0 }}
-          pointerEvents="none"
-        >
-          <Path
-            d={item.segmentD}
-            stroke={segmentColor}
-            strokeWidth={pathStrokeWidth}
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          {isProgressSegment && (
-            <AnimatedPath
+        <RevealPath index={item.globalIndex}>
+          <Svg
+            width={screenWidth}
+            height={item.cellHeight}
+            style={{ position: "absolute", top: 0, left: 0 }}
+            pointerEvents="none"
+          >
+            <Path
               d={item.segmentD}
-              stroke="rgba(255, 255, 255, 0.4)"
-              strokeWidth={pathStrokeWidth * 0.5}
+              stroke={segmentColor}
+              strokeWidth={pathStrokeWidth}
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeDasharray="10 10"
-              animatedProps={animatedPathProps}
             />
-          )}
-        </Svg>
+            {isProgressSegment && (
+              <AnimatedPath
+                d={item.segmentD}
+                stroke="rgba(255, 255, 255, 0.4)"
+                strokeWidth={pathStrokeWidth * 0.5}
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray="10 10"
+                animatedProps={animatedPathProps}
+              />
+            )}
+          </Svg>
+        </RevealPath>
       )}
 
-      <View
-        className="absolute items-center justify-center"
-        style={{
-          left: nodePosition.x - halfSize,
-          top: nodePosition.y - halfSize,
-          width: size,
-          height: size,
-        }}
-      >
-        <BouncingTooltip
-          label={showTooltip ? item.label : undefined}
-          accentColor={faceColor}
-        />
+      <RevealNode index={item.globalIndex}>
+        <View
+          className="absolute items-center justify-center"
+          style={{
+            left: nodePosition.x - halfSize,
+            top: nodePosition.y - halfSize,
+            width: size,
+            height: size,
+          }}
+        >
+          <BouncingTooltip
+            label={showTooltip ? item.label : undefined}
+            accentColor={faceColor}
+          />
 
-        {showProgressRing && (
-          <View
-            className="absolute items-center justify-center"
-            style={{ width: ringSize, height: ringSize, left: ringOffset, top: ringOffset }}
-          >
-            <AnimatedCircularProgress
-              size={ringSize}
-              width={settings.progressRingStroke}
-              fill={progressPercent}
-              tintColor={theme.pathActiveColor || faceColor}
-              backgroundColor="#E2E8F0"
-              rotation={0}
-              lineCap="round"
-              dashedBackground={dashedConfig}
-              dashedTint={dashedConfig}
-            />
-          </View>
-        )}
+          {showProgressRing && (
+            <View
+              className="absolute items-center justify-center"
+              style={{ width: ringSize, height: ringSize, left: ringOffset, top: ringOffset }}
+            >
+              <AnimatedCircularProgress
+                size={ringSize}
+                width={settings.progressRingStroke}
+                fill={progressPercent}
+                tintColor={theme.pathActiveColor || faceColor}
+                backgroundColor="#E2E8F0"
+                rotation={0}
+                lineCap="round"
+                dashedBackground={dashedConfig}
+                dashedTint={dashedConfig}
+              />
+            </View>
+          )}
 
-        <Animated.View style={[item.status === NodeStatus.ACTIVE ? activeScaleStyle : undefined]}>
-          <Animated.View style={item.status === NodeStatus.ACTIVE ? glowStyle : undefined}>
-            <DuolingoSvgNodeButton
-              size={size}
-              onPress={handlePress}
-              disabled={!isInteractive}
-              faceColor={faceColor}
-              rimColor={rimColor}
-              icon={
-                <HugeiconsIcon
-                  icon={iconObj}
-                  size={hugeiconSize}
-                  color={iconColor}
-                  strokeWidth={1.8}
-                />
-              }
-              iconSize={hugeiconSize}
-              accessibilityLabel={`${item.label} ${item.status}`}
-            />
+          <Animated.View style={[item.status === NodeStatus.ACTIVE ? activeScaleStyle : undefined]}>
+            <Animated.View style={item.status === NodeStatus.ACTIVE ? glowStyle : undefined}>
+              <DuolingoSvgNodeButton
+                size={size}
+                onPress={handlePress}
+                disabled={!isInteractive}
+                faceColor={faceColor}
+                rimColor={rimColor}
+                icon={
+                  <HugeiconsIcon
+                    icon={iconObj}
+                    size={hugeiconSize}
+                    color={iconColor}
+                    strokeWidth={1.5}
+                  />
+                }
+                iconSize={hugeiconSize}
+                accessibilityLabel={`${item.label} ${item.status}`}
+              />
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
-      </View>
+        </View>
+      </RevealNode>
     </Animated.View>
   );
 }

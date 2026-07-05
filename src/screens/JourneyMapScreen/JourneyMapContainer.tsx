@@ -12,6 +12,8 @@ import { useFocusTunneling } from "@/src/hooks/ui/useFocusTunneling";
 import { AmbientTapDust } from "@/src/components/ui/AmbientTapDust";
 import { GlassView } from "expo-glass-effect";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { ScreenReveal } from "@/src/components/journey/animations/ScreenReveal";
+import { RevealTopBar } from "@/src/components/journey/animations/RevealTopBar";
 
 import CourseCatalogSheet from "@/src/components/journey/CourseCatalogSheet";
 import { HomeMainButton } from "@/src/components/journey/home-main-button";
@@ -106,7 +108,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
               }}
             >
               <SafeAreaView edges={["top"]}>
-                <View>
+                <RevealTopBar>
                   <DuolingoHeader
                     stats={STUB_STATS}
                     enrolledCourses={enrolledCourses}
@@ -123,17 +125,19 @@ export default function JourneyMapContainer(): React.JSX.Element {
                     rimColor={controller.headerState.rimColor}
                     unitIconKey={controller.headerState.iconKey}
                   />
-                </View>
+                </RevealTopBar>
               </SafeAreaView>
             </GlassView>
           ),
         }}
       />
-      <AmbientTapDust>
-        <Animated.View className="flex-1 bg-brand-canvas" style={animatedStyle}>
-          <JourneyMapFlashList courseId={courseId} controller={controller} />
-        </Animated.View>
-      </AmbientTapDust>
+      <ScreenReveal>
+        <AmbientTapDust>
+          <Animated.View className="flex-1 bg-brand-canvas" style={animatedStyle}>
+            <JourneyMapFlashList courseId={courseId} controller={controller} />
+          </Animated.View>
+        </AmbientTapDust>
+      </ScreenReveal>
       <CourseCatalogSheet
         isPresented={isCourseCatalogPresented}
         activeCourseId={courseId}
