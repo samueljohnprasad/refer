@@ -41,7 +41,14 @@ export const LearnCardsExercise = ({ payload, onInteraction }: any) => {
   }
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 pt-4">
+      {/* Exercise Title (like the Duolingo "Read and respond") */}
+      <View className="px-6 mb-6">
+        <Text variant="h2" color="ink" className="font-bold">
+          {payload.title || "Read and learn"}
+        </Text>
+      </View>
+
       <ScrollView
         horizontal
         pagingEnabled
@@ -54,28 +61,37 @@ export const LearnCardsExercise = ({ payload, onInteraction }: any) => {
           <View 
             key={index} 
             style={{ width }} 
-            className="flex-1 justify-center items-center px-6 pt-4 pb-2"
+            className="flex-row items-start px-6"
           >
-            {/* Visual Container (Using Mascot instead of image url for now) */}
-            <View className="bg-brand-surface rounded-3xl p-6 shadow-sm border border-brand-border/60 mb-8 items-center justify-center min-h-[200px] w-full max-w-[300px]">
-              <Mascot state="panda-happy" size={120} />
+            {/* Mascot on the left */}
+            <View className="mr-5 mt-2 z-10">
+              <Mascot state="panda-happy" size={80} />
             </View>
             
-            {/* Text Content */}
-            <Text variant="h3" color="ink" className="text-center leading-relaxed">
-              {card.text}
-            </Text>
+            {/* Speech Bubble on the right */}
+            <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-brand-border/60 shadow-sm relative">
+              {/* Pointer Triangle - overlapping the left border */}
+              <View 
+                className="absolute -left-[11px] top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-brand-border/60" 
+                style={{ transform: [{ rotate: '45deg' }] }} 
+              />
+              
+              {/* Text Content */}
+              <Text variant="body" color="ink" className="leading-[32px] text-[17px] font-medium tracking-wide">
+                {card.text}
+              </Text>
+            </View>
           </View>
         ))}
       </ScrollView>
 
       {/* Pagination Dots */}
-      <View className="flex-row justify-center items-center pb-8 pt-4">
+      <View className="flex-row justify-center items-center pb-12 pt-6">
         {cards.map((_: any, index: number) => (
           <View
             key={index}
             className={`h-2.5 rounded-full mx-1.5 transition-all duration-300 ${
-              index === activeIndex ? "w-6 bg-sage-500" : "w-2.5 bg-brand-border/80"
+              index === activeIndex ? "w-8 bg-sage-500" : "w-3 bg-brand-border/80"
             }`}
           />
         ))}
