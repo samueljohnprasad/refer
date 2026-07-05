@@ -8,7 +8,6 @@ import type { JourneyFlashListItem, PathNodeData } from "@/src/types/journey";
 import BottomSheetWithRNContent from "@/src/components/BottomSheetWithRNContent";
 import { SectionOverviewSheet } from "@/src/components/journey/SectionOverviewSheet";
 import ScrollToActiveButton from "@/src/components/journey/ScrollToActiveButton";
-import { NodeContentModal } from "./NodeContentModal";
 import {
   ESTIMATED_ITEM_SIZE,
   JOURNEY_VIEWABILITY_CONFIG,
@@ -125,8 +124,6 @@ function JourneyMapFlashListInner({
           />
         </BottomSheetWithRNContent>
       ) : null}
-
-      <NodeContentModal courseId={courseId} />
     </>
   );
 }

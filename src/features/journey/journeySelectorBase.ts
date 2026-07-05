@@ -21,6 +21,9 @@ export const selectUnitEntities = (state: RootState) =>
 export const selectNodeEntities = (state: RootState) =>
   selectJourneyState(state).nodes.entities;
 
+export const selectExerciseEntities = (state: RootState) =>
+  selectJourneyState(state).exercises.entities;
+
 export const selectSectionsByCourseIndex = (state: RootState) =>
   selectJourneyState(state).sectionsByCourse;
 
@@ -29,6 +32,9 @@ export const selectUnitsBySectionIndex = (state: RootState) =>
 
 export const selectNodesByUnitIndex = (state: RootState) =>
   selectJourneyState(state).nodesByUnit;
+
+export const selectExercisesByNodeIndex = (state: RootState) =>
+  selectJourneyState(state).exercisesByNode;
 
 export const selectCourseProgressMap = (state: RootState) =>
   selectJourneyState(state).courseProgress;

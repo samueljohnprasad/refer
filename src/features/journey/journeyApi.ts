@@ -18,12 +18,20 @@ import type {
   CourseCatalogListItem,
   CourseStatus,
 } from "@/src/types/journeyV5";
+import type { ExercisePayload } from "@/types/exercises";
 import { callEdgeFunction, EDGE_FUNCTION_URLS } from "@/src/lib/supabase/edgeFunctions";
+
+import catalogData from "@/src/data/mock/course-catalog.json";
+import sleepResetData from "@/src/data/mock/sleep-reset.json";
+import { sleepResetFlatData } from "@/src/data/mock/sleep-reset-flat";
+
+// Toggle this to use the mock JSON data instead of the backend
+const USE_MOCK = true;
 
 export const journeyApi = createApi({
   reducerPath: "journeyApi",
   baseQuery: fakeBaseQuery(),
-  tagTypes: ["CourseTree", "CourseProgress", "EnrolledCourses"],
+  tagTypes: ["CourseTree", "CourseProgress", "EnrolledCourses", "NodeExercises"],
 
   endpoints: (builder) => ({
     // ── READ: enrolled course ids ───────────────────────────────────────────
@@ -34,6 +42,10 @@ export const journeyApi = createApi({
     getEnrolledCourseIds: builder.query<string[], void>({
       providesTags: ["EnrolledCourses"],
       queryFn: async () => {
+        if (USE_MOCK) {
+          return { data: ["sleep-reset"] };
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { data, error } = await (supabase as any)
           .from("user_course_progress")
@@ -58,6 +70,19 @@ export const journeyApi = createApi({
     getEnrolledCourses: builder.query<EnrolledCourseListItem[], void>({
       providesTags: ["EnrolledCourses"],
       queryFn: async () => {
+        if (USE_MOCK) {
+          return {
+            data: catalogData.filter((c) => c.id === "sleep-reset").map((c) => ({
+              ...c,
+              iconUrl: c.icon_url,
+              colorHex: c.color_hex,
+              orderIndex: c.order_index,
+              status: "in_progress",
+              startedAt: new Date().toISOString(),
+            })) as EnrolledCourseListItem[],
+          };
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { data: progressRows, error: progressError } = await (supabase as any)
           .from("user_course_progress")
@@ -137,6 +162,17 @@ export const journeyApi = createApi({
      */
     getCourseCatalog: builder.query<CourseCatalogListItem[], void>({
       queryFn: async () => {
+        if (USE_MOCK) {
+          return {
+            data: catalogData.map((c) => ({
+              ...c,
+              iconUrl: c.icon_url,
+              colorHex: c.color_hex,
+              orderIndex: c.order_index,
+            })) as CourseCatalogListItem[],
+          };
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { data, error } = await (supabase as any)
           .from("courses")
@@ -176,6 +212,9 @@ export const journeyApi = createApi({
     getCourseTree: builder.query<GetCourseTreeResponse, string>({
       providesTags: (_, __, courseId) => [{ type: "CourseTree", id: courseId }],
       queryFn: async (courseId) => {
+        if (USE_MOCK) {
+          return { data: sleepResetFlatData };
+        }
         try {
           const data = await callEdgeFunction<
             { courseId: string },
@@ -198,6 +237,20 @@ export const journeyApi = createApi({
         { type: "CourseProgress", id: courseId },
       ],
       queryFn: async (courseId) => {
+        if (USE_MOCK) {
+          return {
+            data: {
+              courseProgress: {
+                userId: "mock",
+                courseId,
+                status: "in_progress",
+                startedAt: new Date().toISOString(),
+                completedAt: null,
+              },
+              nodeProgressMap: {},
+            },
+          };
+        }
         try {
           const data = await callEdgeFunction<
             { courseId: string },
@@ -221,6 +274,15 @@ export const journeyApi = createApi({
         "EnrolledCourses",
       ],
       queryFn: async (courseId) => {
+        if (USE_MOCK) {
+          return {
+            data: {
+              courseProgressId: "mock",
+              firstNodeId: "n1",
+              alreadyStarted: true,
+            },
+          };
+        }
         try {
           const data = await callEdgeFunction<
             { courseId: string },
@@ -243,6 +305,17 @@ export const journeyApi = createApi({
         { type: "CourseProgress", id: courseId },
       ],
       queryFn: async ({ nodeId, courseId }) => {
+        if (USE_MOCK) {
+          return {
+            data: {
+              nodeId,
+              nextNodeId: null, // simplified mock
+              unitCompleted: false,
+              sectionCompleted: false,
+              courseCompleted: false,
+            },
+          };
+        }
         try {
           const data = await callEdgeFunction<
             CompleteNodeArgs,

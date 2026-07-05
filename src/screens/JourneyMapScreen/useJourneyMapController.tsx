@@ -4,11 +4,11 @@ import type { LegendListRef, ViewToken } from "@legendapp/list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { useSetAtom } from "jotai";
+import { router } from "expo-router";
 
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import { startTransitionAtom } from "@/src/store/transitionStore";
 import {
-  setActiveNodeModal,
   setPreviewSection,
 } from "@/src/features/journey/journeySlice";
 import {
@@ -159,12 +159,12 @@ export function useJourneyMapController(
           cy: pageY,
           color: color || (node.status === "active" ? "#58CC02" : "#FFFFFF"),
         });
-        // Wait half of the transition duration (400ms / 2) before showing the modal
+        // Wait half of the transition duration (400ms / 2) before routing
         setTimeout(() => {
-          dispatch(setActiveNodeModal({ courseId, nodeId: node.id }));
+          router.push(`/tabs/screens/journey-flow?courseId=${courseId}&nodeId=${node.id}`);
         }, 200);
       } else {
-        dispatch(setActiveNodeModal({ courseId, nodeId: node.id }));
+        router.push(`/tabs/screens/journey-flow?courseId=${courseId}&nodeId=${node.id}`);
       }
     },
     [courseId, dispatch, toast, startTransition],

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "sleep-reset",
+    "title": "Sleep Reset",
+    "description": "Fix your sleep schedule and wake up feeling refreshed. Learn evidence-based techniques to fall asleep faster and stay asleep.",
+    "icon_url": "moon", 
+    "color_hex": "#4B5563",
+    "order_index": 0,
+    "is_published": true
+  },
+  {
+    "id": "mindful-morning",
+    "title": "Mindful Morning",
+    "description": "Start your day with clarity and intention. A 7-day journey to build a morning routine that sets you up for success.",
+    "icon_url": "sun",
+    "color_hex": "#F59E0B",
+    "order_index": 1,
+    "is_published": true
+  }
+]

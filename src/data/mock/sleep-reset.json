@@ -46,7 +46,7 @@
                     "position": 1,
                     "nodes": [
                         {
-                            "id": "n1",
+                            "id": "u1_1_sleep_mechanics-n1",
                             "type": "lesson",
                             "title": "Welcome to Sleep School",
                             "duration_minutes": 5,
@@ -216,10 +216,11 @@
                                     "media": null,
                                     "tags": []
                                 }
-                            ]
+                            ],
+                            "content_id": "u1_1_sleep_mechanics-n1"
                         },
                         {
-                            "id": "n2",
+                            "id": "u1_1_sleep_mechanics-n2",
                             "type": "lesson",
                             "title": "The 90-Minute Cycle",
                             "duration_minutes": 9,
@@ -473,10 +474,11 @@
                                     "media": null,
                                     "tags": []
                                 }
-                            ]
+                            ],
+                            "content_id": "u1_1_sleep_mechanics-n2"
                         },
                         {
-                            "id": "n3",
+                            "id": "u1_1_sleep_mechanics-n3",
                             "type": "lesson",
                             "title": "Your Internal Clock",
                             "duration_minutes": 10,
@@ -671,10 +673,11 @@
                                     "media": null,
                                     "tags": []
                                 }
-                            ]
+                            ],
+                            "content_id": "u1_1_sleep_mechanics-n3"
                         },
                         {
-                            "id": "n4",
+                            "id": "u1_1_sleep_mechanics-n4",
                             "type": "lesson",
                             "title": "Early vs Late Sleep",
                             "duration_minutes": 9,
@@ -833,7 +836,8 @@
                                     "media": null,
                                     "tags": []
                                 }
-                            ]
+                            ],
+                            "content_id": "u1_1_sleep_mechanics-n4"
                         }
                     ]
                 },
@@ -843,7 +847,7 @@
                     "position": 2,
                     "nodes": [
                         {
-                            "id": "n1",
+                            "id": "u1_2_sleep_disruptors-n1",
                             "type": "lesson",
                             "title": "The Sleep Pressure System",
                             "duration_minutes": 10,
@@ -1032,10 +1036,11 @@
                                     "media": null,
                                     "tags": []
                                 }
-                            ]
+                            ],
+                            "content_id": "u1_2_sleep_disruptors-n1"
                         },
                         {
-                            "id": "n2",
+                            "id": "u1_2_sleep_disruptors-n2",
                             "type": "lesson",
                             "title": "Caffeine: The Pressure Blocker",
                             "duration_minutes": 10,
@@ -1215,10 +1220,11 @@
                                     "media": null,
                                     "tags": []
                                 }
-                            ]
+                            ],
+                            "content_id": "u1_2_sleep_disruptors-n2"
                         },
                         {
-                            "id": "n3",
+                            "id": "u1_2_sleep_disruptors-n3",
                             "type": "lesson",
                             "title": "Alcohol: The Sleep Saboteur",
                             "duration_minutes": 10,
@@ -1412,10 +1418,11 @@
                                     "media": null,
                                     "tags": []
                                 }
-                            ]
+                            ],
+                            "content_id": "u1_2_sleep_disruptors-n3"
                         },
                         {
-                            "id": "n4",
+                            "id": "u1_2_sleep_disruptors-n4",
                             "type": "lesson",
                             "title": "Light, Stress & Irregular Wake Times",
                             "duration_minutes": 10,
@@ -1570,10 +1577,11 @@
                                     "media": null,
                                     "tags": []
                                 }
-                            ]
+                            ],
+                            "content_id": "u1_2_sleep_disruptors-n4"
                         },
                         {
-                            "id": "n5",
+                            "id": "u1_2_sleep_disruptors-n5",
                             "type": "checkpoint",
                             "title": "Sleep Science Checkpoint",
                             "duration_minutes": 10,
@@ -1692,14 +1700,16 @@
                                 }
                             ],
                             "badge_id": "unknown_badge",
-                            "xp_reward": 150
+                            "xp_reward": 150,
+                            "content_id": "u1_2_sleep_disruptors-n5"
                         },
                         {
-                            "id": "n6_claim",
-                            "type": "claim_reward",
+                            "id": "u1_2_sleep_disruptors-n6_claim",
+                            "type": "chest",
                             "badge_id": "unknown_badge",
                             "xp_reward": 150,
-                            "title": "Claim: unknown_badge"
+                            "title": "Claim: unknown_badge",
+                            "content_id": "u1_2_sleep_disruptors-n6_claim"
                         }
                     ]
                 }

@@ -23,6 +23,8 @@ import {
   selectCourseEntities,
   selectCourseIdParam,
   selectCourseProgressMap,
+  selectExerciseEntities,
+  selectExercisesByNodeIndex,
   selectLoadedCoursesMap,
   selectLoadingCoursesMap,
   selectNodeEntities,
@@ -141,6 +143,19 @@ export const selectNodesForUnit = createSelector(
     nodeIds
       .map((id) => entities[id])
       .filter((n): n is NonNullable<typeof n> => n !== undefined),
+);
+
+export const selectExerciseIdsForNode = createSelector(
+  [selectExercisesByNodeIndex, selectNodeIdParam],
+  (exercisesByNode, nodeId): string[] => exercisesByNode[nodeId] ?? [],
+);
+
+export const selectExercisesForNode = createSelector(
+  [selectExerciseIdsForNode, selectExerciseEntities],
+  (exerciseIds, entities) =>
+    exerciseIds
+      .map((id) => entities[id])
+      .filter((e): e is NonNullable<typeof e> => e !== undefined),
 );
 
 // ── Status selectors ──────────────────────────────────────────────────────────

@@ -17,6 +17,7 @@ import type {
   UserNodeProgress,
   GetCourseTreeResponse,
   GetCourseProgressResponse,
+  Exercise,
 } from "@/src/types/journeyV5";
 
 // ── Entity adapters ───────────────────────────────────────────────────────────
@@ -25,6 +26,7 @@ const coursesAdapter = createEntityAdapter<Course>();
 const sectionsAdapter = createEntityAdapter<Section>();
 const unitsAdapter = createEntityAdapter<Unit>();
 const nodesAdapter = createEntityAdapter<Node>();
+const exercisesAdapter = createEntityAdapter<Exercise>();
 
 // ── State shape ───────────────────────────────────────────────────────────────
 
@@ -34,11 +36,13 @@ export interface JourneyState {
   sections: ReturnType<typeof sectionsAdapter.getInitialState>;
   units: ReturnType<typeof unitsAdapter.getInitialState>;
   nodes: ReturnType<typeof nodesAdapter.getInitialState>;
+  exercises: ReturnType<typeof exercisesAdapter.getInitialState>;
 
   // Relationship indexes — O(1) parent→children lookup (ordered)
   sectionsByCourse: Record<string, string[]>;
   unitsBySection: Record<string, string[]>;
   nodesByUnit: Record<string, string[]>;
+  exercisesByNode: Record<string, string[]>;
 
   // Progress — flat maps keyed by entity id
   courseProgress: Record<string, UserCourseProgress>;
@@ -59,10 +63,12 @@ const initialState: JourneyState = {
   sections: sectionsAdapter.getInitialState(),
   units: unitsAdapter.getInitialState(),
   nodes: nodesAdapter.getInitialState(),
+  exercises: exercisesAdapter.getInitialState(),
 
   sectionsByCourse: {},
   unitsBySection: {},
   nodesByUnit: {},
+  exercisesByNode: {},
 
   courseProgress: {},
   nodeProgress: {},
@@ -89,13 +95,15 @@ const journeySlice = createSlice({
      * Marks the course as loaded and removes it from loadingCourses.
      */
     setCourseTree(state, action: PayloadAction<GetCourseTreeResponse>) {
-      const { course, sections, units, nodes } = action.payload;
+      const { course, sections, units, nodes, exercises } = action.payload;
 
       // Upsert into entity stores (additive — multi-course sharing one flat store)
       coursesAdapter.upsertOne(state.courses, course);
       sectionsAdapter.upsertMany(state.sections, sections);
       unitsAdapter.upsertMany(state.units, units);
       nodesAdapter.upsertMany(state.nodes, nodes);
+      exercisesAdapter.upsertMany(state.exercises, exercises);
+
 
       // Build sectionsByCourse index
       state.sectionsByCourse[course.id] = [...sections]
@@ -117,6 +125,15 @@ const journeySlice = createSlice({
           .sort((a, b) => a.orderIndex - b.orderIndex)
           .map((n) => n.id);
       }
+
+
+      for (const node of nodes) {
+        state.exercisesByNode[node.id] = exercises
+          .filter((e) => e.nodeId === node.id)
+          .sort((a, b) => a.orderIndex - b.orderIndex)
+          .map((e) => e.id);
+      }
+
 
       // Mark as loaded
       state.loadedCourses[course.id] = true;

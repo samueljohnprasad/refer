@@ -53,6 +53,13 @@ export interface Course {
   orderIndex: number;
   /** Only published courses are served by get-course-tree */
   isPublished: boolean;
+  /** Subject area */
+  domain?: string;
+  targetAudience?: string;
+  totalLessons?: number;
+  totalDurationWeeks?: number;
+  sessionsPerWeek?: number;
+  sessionDurationMinutes?: number[];
 }
 
 export interface EnrolledCourseListItem {
@@ -92,6 +99,11 @@ export interface Section {
   title: string;
   /** Sort order within the course */
   orderIndex: number;
+  narrativeHook?: string;
+  badgeOnComplete?: string;
+  difficultyRange?: [number, number];
+  objectives?: Record<string, string>;
+  conceptsIntroduced?: string[];
 }
 
 export interface Unit {
@@ -124,6 +136,9 @@ export interface Node {
   orderIndex: number;
   /** Estimated minutes to complete */
   estimatedMins: number;
+  newConcepts?: string[];
+  reviewConcepts?: string[];
+  prerequisites?: string[];
 }
 
 export interface CourseJourneyPreviewSection {
@@ -169,11 +184,27 @@ export interface UserNodeProgress {
 
 // ── Edge Function response shapes ────────────────────────────────────────────
 
+export interface Exercise {
+  id: string;
+  nodeId: string;
+  orderIndex: number;
+  type: string;
+  phase?: string;
+  durationSeconds?: number;
+  scaffoldLevel?: number;
+  difficulty?: number | null;
+  isScored?: boolean;
+  concept?: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  content?: Record<string, any>;
+}
+
 export interface GetCourseTreeResponse {
   course: Course;
   sections: Section[];
   units: Unit[];
   nodes: Node[];
+  exercises: Exercise[];
 }
 
 export interface GetCourseProgressResponse {
