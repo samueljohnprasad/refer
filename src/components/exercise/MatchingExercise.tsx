@@ -21,7 +21,7 @@ interface MatchingExerciseProps {
   onInteraction: (response: { matches: Record<number, number> }, isReady: boolean) => void;
 }
 
-export const MatchingExercise = ({ payload, savedResponse, onInteraction }: MatchingExerciseProps) => {
+export const MatchingExercise = ({ payload, savedResponse, onInteraction }: MatchingExerciseProps): React.ReactElement => {
   const { prompt, pairs = EMPTY_PAIRS } = payload.content || {};
 
   // State
@@ -46,7 +46,7 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
 
   useEffect(() => {
     if (savedResponse?.matches) {
-      onInteraction({ matches: savedResponse.matches }, pairs.length > 0 && Object.keys(savedResponse.matches).length === pairs.length);
+      onInteraction({ matches: savedResponse.matches }, isReady);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
