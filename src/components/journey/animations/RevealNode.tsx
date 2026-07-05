@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import Animated, {
   useSharedValue,
@@ -11,16 +11,23 @@ import Animated, {
 export function RevealNode({ children, index, style }: { children: React.ReactNode; index: number; style?: StyleProp<ViewStyle> }): React.ReactElement {
   const progress = useSharedValue<number>(0);
 
+  const hasAnimated = useRef(false);
+
   useEffect(() => {
-    progress.value = 0;
-    const cappedIndex = Math.min(index, 12);
-    progress.value = withDelay(
-      300 + cappedIndex * 100, // Stagger based on capped index
-      withTiming(1, {
-        duration: 1000,
-        easing: Easing.bezier(0.33, 1, 0.68, 1),
-      })
-    );
+    if (!hasAnimated.current) {
+      progress.value = 0;
+      const cappedIndex = Math.min(index, 12);
+      progress.value = withDelay(
+        300 + cappedIndex * 100, // Stagger based on capped index
+        withTiming(1, {
+          duration: 1000,
+          easing: Easing.bezier(0.33, 1, 0.68, 1),
+        })
+      );
+      hasAnimated.current = true;
+    } else {
+      progress.value = 1;
+    }
   }, [index, progress]);
 
   const animatedStyle = useAnimatedStyle(() => {
