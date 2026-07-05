@@ -7,7 +7,7 @@ import { ExerciseRegistry } from './ExerciseRegistry';
 interface ExerciseRendererProps {
   payload: Exercise;
   savedResponse?: any;
-  onInteraction: (response: any) => void;
+  onInteraction: (response: any, isReady?: boolean) => void;
 }
 
 export const ExerciseRenderer: React.FC<ExerciseRendererProps> = ({ 

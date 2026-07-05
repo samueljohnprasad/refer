@@ -86,9 +86,9 @@ export const NodeEngine: React.FC<NodeEngineProps> = ({
         key={currentExercise.id} 
         payload={currentExercise} 
         savedResponse={currentSavedResponse}
-        onInteraction={(response) => {
+        onInteraction={(response, isReady = true) => {
           setCurrentResponse(response);
-          setIsCurrentExerciseReady(true);
+          setIsCurrentExerciseReady(isReady);
         }} 
       />
     </LessonScreen>
