@@ -24,12 +24,14 @@ export const NodeEngine: React.FC<NodeEngineProps> = ({
   // Track if the current exercise has received valid input
   const [isCurrentExerciseReady, setIsCurrentExerciseReady] = useState(false);
   const [currentResponse, setCurrentResponse] = useState<any>(null);
+  const [checkStatus, setCheckStatus] = useState<"idle" | "success" | "error">("idle");
 
   const currentExercise = exercises[currentIndex];
   const currentSavedResponse = localResponses[currentExercise?.id];
 
   // Whenever the exercise changes, reset the readiness state (unless there's a saved response)
   useEffect(() => {
+    setCheckStatus("idle");
     if (currentSavedResponse !== undefined) {
       setIsCurrentExerciseReady(true);
       setCurrentResponse(currentSavedResponse);
@@ -40,6 +42,16 @@ export const NodeEngine: React.FC<NodeEngineProps> = ({
   }, [currentIndex, currentSavedResponse]);
 
   const handleContinuePress = () => {
+    // If scored and we haven't checked yet
+    if (currentExercise.isScored && checkStatus === "idle") {
+      if (currentResponse?.isCorrect) {
+        setCheckStatus("success");
+      } else {
+        setCheckStatus("error");
+      }
+      return;
+    }
+
     // 1. Save the response
     const newResponses = {
       ...localResponses,
@@ -61,9 +73,14 @@ export const NodeEngine: React.FC<NodeEngineProps> = ({
     <LessonScreen
       progress={(currentIndex + 1) / exercises.length}
       onClose={onClose || (() => onNodeComplete(localResponses))}
-      primaryLabel={currentIndex === exercises.length - 1 ? "Finish" : "Continue"}
+      primaryLabel={
+        currentExercise.isScored && checkStatus === "idle"
+          ? "Check"
+          : (currentIndex === exercises.length - 1 ? "Finish" : "Continue")
+      }
       primaryDisabled={!isCurrentExerciseReady}
       onPrimaryPress={handleContinuePress}
+      status={checkStatus}
     >
       <ExerciseRenderer 
         key={currentExercise.id} 
