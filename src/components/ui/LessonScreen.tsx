@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ScreenLayout } from "@/src/components/ui/ScreenLayout";
 import { LessonHeader } from "@/src/components/ui/LessonHeader";
 import { Button } from "@/src/components/ui/Button";
+import { Feather } from "@expo/vector-icons";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -219,21 +220,21 @@ const ActionFooter: React.FC<ActionFooterProps> = ({
     <ScreenLayout.Footer 
       variant={variant} 
       style={style} 
-      className={`${className || ""} ${isSuccess ? "bg-green-100" : isError ? "bg-red-100" : "bg-white"}`}
+      className={`${className || ""} ${isSuccess ? "bg-green-100 border-t border-green-200" : isError ? "bg-red-100 border-t border-red-200" : "bg-white border-t border-slate-100"}`}
     >
       <View className="w-full gap-1">
         {isSuccess && (
-          <View className="flex-row items-center mb-4 ml-1">
-            <View className="w-8 h-8 rounded-full bg-green-500 items-center justify-center mr-3">
-              <Text className="text-white font-bold text-lg">✓</Text>
+          <View className="flex-row items-center mb-4">
+            <View className="w-8 h-8 rounded-full bg-green-500 items-center justify-center mr-4">
+              <Feather name="check" size={20} color="white" />
             </View>
             <Text className="text-green-600 font-bold text-xl">Awesome!</Text>
           </View>
         )}
         {isError && (
-          <View className="flex-row items-center mb-4 ml-1">
-            <View className="w-8 h-8 rounded-full bg-red-500 items-center justify-center mr-3">
-              <Text className="text-white font-bold text-lg">✗</Text>
+          <View className="flex-row items-center mb-4">
+            <View className="w-8 h-8 rounded-full bg-red-500 items-center justify-center mr-4">
+              <Feather name="x" size={20} color="white" />
             </View>
             <Text className="text-red-500 font-bold text-xl">Incorrect</Text>
           </View>

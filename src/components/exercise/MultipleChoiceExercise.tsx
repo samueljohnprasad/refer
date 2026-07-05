@@ -26,12 +26,12 @@ export const MultipleChoiceExercise = ({ payload, onInteraction }: any) => {
       </View>
 
       <View className="flex-row items-start mb-6">
-        <View className="mr-5 mt-2 z-10">
+        <View className="mr-4 mt-2 z-10">
           <Mascot state="panda-happy" size={80} />
         </View>
-        <View className="flex-1 bg-white rounded-3xl p-5 border-2 border-slate-200 relative">
+        <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-slate-200 relative">
           <View 
-            className="absolute -left-[11px] top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200" 
+            className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200" 
             style={{ transform: [{ rotate: '45deg' }] }} 
           />
           <Text variant="body" color="ink" className="leading-relaxed text-lg font-medium">
@@ -41,7 +41,7 @@ export const MultipleChoiceExercise = ({ payload, onInteraction }: any) => {
       </View>
 
       {subPrompt && (
-        <Text className="text-slate-500 font-bold text-lg mb-6 tracking-wide">
+        <Text className="text-slate-500 font-bold text-lg mb-4 tracking-wide">
           {subPrompt}
         </Text>
       )}
@@ -54,8 +54,8 @@ export const MultipleChoiceExercise = ({ payload, onInteraction }: any) => {
               key={opt.id}
               activeOpacity={0.7}
               onPress={() => handleSelect(opt)}
-              className={`p-5 rounded-2xl border-2 items-center justify-center bg-white ${
-                isSelected ? 'border-sky-400 bg-sky-50' : 'border-slate-200'
+              className={`p-5 rounded-2xl border-2 border-b-4 items-center justify-center bg-white ${
+                isSelected ? 'border-sky-400 border-b-sky-500 bg-sky-50' : 'border-slate-200 border-b-slate-300'
               }`}
             >
               <Text className={`text-lg font-medium ${isSelected ? 'text-sky-600' : 'text-slate-600'}`}>
