@@ -4,6 +4,33 @@ import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
 import { Card } from '@/src/components/ui/Card';
 
+interface MatchCardProps {
+  text: string;
+  isSelected: boolean;
+  isMatched: boolean;
+  matchNumber: number | null;
+  onPress: () => void;
+}
+
+const MatchCard = ({ text, isSelected, isMatched, matchNumber, onPress }: MatchCardProps) => (
+  <Card
+    variant={isSelected ? 'answer-selected' : isMatched ? 'secondary' : 'answer'}
+    onPress={onPress}
+    contentClassName="p-4 relative min-h-[100px] justify-center"
+    accessibilityLabel={`${text}. ${isSelected ? 'Selected' : isMatched ? `Matched as pair ${matchNumber}` : 'Unmatched'}`}
+  >
+    <Text className={`text-sm font-medium ${isMatched ? 'text-slate-500' : 'text-slate-700'}`}>
+      {text}
+    </Text>
+    {isMatched && (
+      <View className="absolute -top-2 -right-2 w-6 h-6 bg-sage-500 rounded-full items-center justify-center border-2 border-white">
+        <Text className="text-white text-xs font-bold">{matchNumber}</Text>
+      </View>
+    )}
+  </Card>
+);
+
+
 type Pair = { left: string; right: string };
 
 const EMPTY_PAIRS: Pair[] = [];
@@ -123,8 +150,7 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
           </View>
           <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-slate-200 relative">
             <View 
-              className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200 rounded-bl-[4px]" 
-              style={{ transform: [{ rotate: '45deg' }] }} 
+              className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200 rounded-bl-[4px] rotate-45" 
             />
             <Text variant="body" color="ink" className="leading-relaxed text-base font-medium">
               {prompt}
@@ -136,56 +162,33 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
       <View className="flex-row gap-4 pb-12">
         {/* Left Column */}
         <View className="flex-1 flex-col gap-4">
-          {pairs.map((pair: Pair, index: number) => {
-            const isSelected = selectedLeft === index;
-            const matchNumber = getMatchNumber(index);
-            const isMatched = matchNumber !== null;
-
-            return (
-              <Card
-                key={`left-${index}`}
-                variant={isSelected ? 'answer-selected' : isMatched ? 'secondary' : 'answer'}
-                onPress={() => handleLeftPress(index)}
-                contentClassName="p-4 relative min-h-[100px] justify-center"
-              >
-                <Text className={`text-sm font-medium ${isMatched ? 'text-slate-500' : 'text-slate-700'}`}>
-                  {pair.left}
-                </Text>
-                {isMatched && (
-                  <View className="absolute -top-2 -right-2 w-6 h-6 bg-sage-500 rounded-full items-center justify-center border-2 border-white">
-                    <Text className="text-white text-xs font-bold">{matchNumber}</Text>
-                  </View>
-                )}
-              </Card>
-            );
-          })}
+          {pairs.map((pair: Pair, index: number) => (
+            <MatchCard
+              key={`left-${index}`}
+              text={pair.left}
+              isSelected={selectedLeft === index}
+              isMatched={getMatchNumber(index) !== null}
+              matchNumber={getMatchNumber(index)}
+              onPress={() => handleLeftPress(index)}
+            />
+          ))}
         </View>
 
         {/* Right Column */}
         <View className="flex-1 flex-col gap-4">
           {shuffledRights.map((pair: Pair, index: number) => {
-            const isSelected = selectedRight === index;
-            // Find if this right item is matched to any left item
             const matchedLeftIndex = Object.keys(matches).find(k => matches[Number(k)] === index);
             const isMatched = matchedLeftIndex !== undefined;
-            const matchNumber = isMatched ? getMatchNumber(Number(matchedLeftIndex)) : null;
-
+            
             return (
-              <Card
+              <MatchCard
                 key={`right-${index}`}
-                variant={isSelected ? 'answer-selected' : isMatched ? 'secondary' : 'answer'}
+                text={pair.right}
+                isSelected={selectedRight === index}
+                isMatched={isMatched}
+                matchNumber={isMatched ? getMatchNumber(Number(matchedLeftIndex)) : null}
                 onPress={() => handleRightPress(index)}
-                contentClassName="p-4 relative min-h-[100px] justify-center"
-              >
-                <Text className={`text-sm font-medium ${isMatched ? 'text-slate-500' : 'text-slate-700'}`}>
-                  {pair.right}
-                </Text>
-                {isMatched && (
-                  <View className="absolute -top-2 -right-2 w-6 h-6 bg-sage-500 rounded-full items-center justify-center border-2 border-white">
-                    <Text className="text-white text-xs font-bold">{matchNumber}</Text>
-                  </View>
-                )}
-              </Card>
+              />
             );
           })}
         </View>
