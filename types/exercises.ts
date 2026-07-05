@@ -1,4 +1,17 @@
-export type ExerciseType = 'concept' | 'quiz' | 'builder';
+export type ExerciseType = 
+  | 'concept' 
+  | 'quiz' 
+  | 'builder'
+  | 'free_text'
+  | 'guided_response'
+  | 'learn_cards'
+  | 'matching'
+  | 'multiple_choice'
+  | 'ordering'
+  | 'rating_check'
+  | 'scenario'
+  | 'slider_rating'
+  | 'true_false';
 
 export interface BaseExercisePayload {
   id: string; // The UUID of the exercise

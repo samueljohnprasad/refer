@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { ExercisePayload } from '../../../types/exercises';
+import { ExerciseType } from '../../../types/exercises';
+import { Exercise } from '@/src/types/journeyV5';
 import { ExerciseRegistry } from './ExerciseRegistry';
 
 interface ExerciseRendererProps {
-  payload: ExercisePayload;
+  payload: Exercise;
   savedResponse?: any;
   onInteraction: (response: any) => void;
 }
@@ -14,7 +15,7 @@ export const ExerciseRenderer: React.FC<ExerciseRendererProps> = ({
   savedResponse,
   onInteraction 
 }) => {
-  const Component = ExerciseRegistry[payload.type];
+  const Component = ExerciseRegistry[payload.type as ExerciseType];
 
   if (!Component) {
     return (
@@ -31,7 +32,7 @@ export const ExerciseRenderer: React.FC<ExerciseRendererProps> = ({
 
   return (
     <Component 
-      payload={payload} 
+      payload={payload as any} 
       savedResponse={savedResponse}
       onInteraction={onInteraction} 
     />
