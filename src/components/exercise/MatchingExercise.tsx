@@ -46,7 +46,8 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
 
   useEffect(() => {
     if (savedResponse?.matches) {
-      onInteraction({ matches: savedResponse.matches }, isReady);
+      const isReadyOnLoad = pairs.length > 0 && Object.keys(savedResponse.matches).length === pairs.length;
+      onInteraction({ matches: savedResponse.matches }, isReadyOnLoad);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -102,7 +103,7 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
 
   // Helper to get match sequence number (1-based)
   const getMatchNumber = (leftIndex: number) => {
-    const keys = Object.keys(matches).map(Number).sort();
+    const keys = Object.keys(matches).map(Number).sort((a, b) => a - b);
     const pos = keys.indexOf(leftIndex);
     return pos >= 0 ? pos + 1 : null;
   };
