@@ -306,6 +306,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     "concept": "sleep_architecture",
     "content": {
       "prompt": "Your brain has 4 sleep stages. Which description matches 'deep sleep' (N3)?",
+      "subPrompt": "Select the best answer...",
       "options": [
         {
           "id": "a",
