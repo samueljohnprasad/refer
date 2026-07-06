@@ -82,6 +82,7 @@ function JourneyMapFlashListInner({
         <JourneyMapLoadingState />
       ) : flashListData.length > 0 ? (
         <AnimatedLegendList<JourneyFlashListItem>
+          style={{ flex: 1 }}
           key={listKey}
           ref={legendListRef}
           data={flashListData}

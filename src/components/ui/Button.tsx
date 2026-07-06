@@ -105,7 +105,7 @@ const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
 
 // ─── Size config ─────────────────────────────────────────────────────────────
 
-type Size = "sm" | "md" | "lg" | "xl";
+type Size = "sm" | "md" | "lg" | "xl" | "option";
 
 interface SizeConfig {
   height: number;
@@ -120,6 +120,7 @@ const SIZES: Record<Size, SizeConfig> = {
   md: { height: 48, radius: 22, pressDepth: 4, labelSize: 16, defaultWidth: 150 },
   lg: { height: 56, radius: 22, pressDepth: 4, labelSize: 17, defaultWidth: 200 },
   xl: { height: 80, radius: 40, pressDepth: 6, labelSize: 20, defaultWidth: 80 },
+  option: { height: 52, radius: 12, pressDepth: 4, labelSize: 16, defaultWidth: 300 },
 };
 
 // ─── Props ───────────────────────────────────────────────────────────────────

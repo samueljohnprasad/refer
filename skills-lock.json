@@ -191,10 +191,10 @@
       "computedHash": "426dcf33f23419643f2aab71e2253e1a5b5684a808fabb8a4ad135e489ed7a0f"
     },
     "frontend-design": {
-      "source": "miospotdevteam/claude-control",
+      "source": "anthropics/skills",
       "sourceType": "github",
-      "skillPath": "look-before-you-leap/skills/frontend-design/SKILL.md",
-      "computedHash": "279a5d1356b20fb7d679ad7647023330a556a87dd01e249931658ebd085315be"
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336"
     },
     "game-design": {
       "source": "omer-metin/skills-for-antigravity",

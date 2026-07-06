@@ -26,6 +26,8 @@ import Animated, {
   withTiming,
   withSpring,
   interpolate,
+  FadeIn,
+  FadeOut,
 } from "react-native-reanimated";
 
 import {
@@ -402,9 +404,7 @@ function CourseCatalogSheetContent({
   };
 
   return (
-    <View className="flex-1 happy-brand-screen">
-      <View className="w-12 h-1 bg-sage-200/80 rounded-full self-center mt-3 mb-1" />
-
+    <View className="flex-1 happy-brand-screen" style={{ paddingTop: Math.max(insets.top, 12) }}>
       <View className="flex-row items-center justify-between px-5 pt-2 pb-1">
         <View className="h-11 w-11" />
         <Pressable onPress={onClose} className="h-11 w-11 items-center justify-center rounded-[22px] border-2 border-b-4 border-sage-100 border-b-sage-200 bg-warm-white">
@@ -468,33 +468,33 @@ export default function CourseCatalogSheet(
 
   return (
     <FullWindowOverlay>
-      <View className="absolute inset-0">
-        {/* Instant static dark backdrop with press to close */}
-        <Pressable
-          className="absolute inset-0 bg-black/40"
-          onPress={props.onClose}
-        />
-        {/* Rounded top sheet drawer overlay positioned at top: 60 */}
-        <View
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            top: 60,
-            borderTopLeftRadius: 32,
-            borderTopRightRadius: 32,
-            backgroundColor: "#F8FAF7", // Sage canvas
-            shadowColor: "#2B3A22",
-            shadowOffset: { width: 0, height: -4 },
-            shadowOpacity: 0.12,
-            shadowRadius: 16,
-            elevation: 24,
-            overflow: "hidden",
-          }}
-        >
-          <CourseCatalogSheetContent {...props} onClose={props.onClose} />
-        </View>
+      <View style={{ flex: 1 }}>
+        <Animated.View className="absolute inset-0">
+          {/* Instant static dark backdrop with press to close */}
+          <Pressable
+            className="absolute inset-0 bg-black/40"
+            onPress={props.onClose}
+          />
+          {/* Rounded top sheet drawer overlay positioned at top: 60 */}
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              top: 0,
+              backgroundColor: "#F8FAF7", // Sage canvas
+              shadowColor: "#2B3A22",
+              shadowOffset: { width: 0, height: -4 },
+              shadowOpacity: 0.12,
+              shadowRadius: 16,
+              elevation: 24,
+              overflow: "hidden",
+            }}
+          >
+            <CourseCatalogSheetContent {...props} onClose={props.onClose} />
+          </View>
+        </Animated.View>
       </View>
     </FullWindowOverlay>
   );

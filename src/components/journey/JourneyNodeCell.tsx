@@ -273,7 +273,6 @@ function JourneyNodeCellInner({
       }}
     >
       {item.segmentD.length > 0 && (
-        <RevealPath index={item.globalIndex}>
           <Svg
             width={screenWidth}
             height={item.cellHeight}
@@ -301,11 +300,9 @@ function JourneyNodeCellInner({
               />
             )}
           </Svg>
-        </RevealPath>
       )}
 
-      <RevealNode 
-        index={item.globalIndex}
+      <View
         style={{
           position: "absolute",
           left: nodePosition.x - halfSize,
@@ -313,14 +310,8 @@ function JourneyNodeCellInner({
           width: size,
           height: size,
         }}
+        className="items-center justify-center"
       >
-        <View
-          className="items-center justify-center"
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        >
           <BouncingTooltip
             label={showTooltip ? item.label : undefined}
             accentColor={faceColor}
@@ -366,8 +357,7 @@ function JourneyNodeCellInner({
               />
             </Animated.View>
           </Animated.View>
-        </View>
-      </RevealNode>
+      </View>
     </Animated.View>
   );
 }

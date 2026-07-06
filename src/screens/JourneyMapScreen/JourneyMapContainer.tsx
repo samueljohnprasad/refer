@@ -108,36 +108,34 @@ export default function JourneyMapContainer(): React.JSX.Element {
               }}
             >
               <SafeAreaView edges={["top"]}>
-                <RevealTopBar>
-                  <DuolingoHeader
-                    stats={STUB_STATS}
-                    enrolledCourses={enrolledCourses}
-                    activeCourseId={courseId}
-                    activeCourseSummary={activeCourseSummary}
-                    onAddCoursePress={() => setIsCourseCatalogPresented(true)}
-                    onCourseSelect={setActiveCourseId}
-                  />
-                  <HomeMainButton
-                    onPress={controller.handleOpenSections}
-                    unitLabel={controller.headerState.label}
-                    unitTitle={controller.headerState.title}
-                    faceColor={controller.headerState.faceColor}
-                    rimColor={controller.headerState.rimColor}
-                    unitIconKey={controller.headerState.iconKey}
-                  />
-                </RevealTopBar>
+                <DuolingoHeader
+                  stats={STUB_STATS}
+                  enrolledCourses={enrolledCourses}
+                  activeCourseId={courseId}
+                  activeCourseSummary={activeCourseSummary}
+                  onAddCoursePress={() => setIsCourseCatalogPresented(true)}
+                  onCourseSelect={setActiveCourseId}
+                />
+                <HomeMainButton
+                  onPress={controller.handleOpenSections}
+                  unitLabel={controller.headerState.label}
+                  unitTitle={controller.headerState.title}
+                  faceColor={controller.headerState.faceColor}
+                  rimColor={controller.headerState.rimColor}
+                  unitIconKey={controller.headerState.iconKey}
+                />
               </SafeAreaView>
             </GlassView>
           ),
         }}
       />
-      <ScreenReveal>
+      <>
         <AmbientTapDust>
           <Animated.View className="flex-1 bg-brand-canvas" style={animatedStyle}>
             <JourneyMapFlashList courseId={courseId} controller={controller} />
           </Animated.View>
         </AmbientTapDust>
-      </ScreenReveal>
+      </>
       <CourseCatalogSheet
         isPresented={isCourseCatalogPresented}
         activeCourseId={courseId}
