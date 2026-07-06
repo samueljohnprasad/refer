@@ -6,7 +6,21 @@ import { Text } from "@/src/components/ui/Text";
 import { Mascot } from "@/src/components/ui/Mascot";
 import { OrganicSpeechTail } from "@/src/components/ui/OrganicSpeechTail";
 
-export const LearnCardsExercise = ({ payload, onInteraction }: any) => {
+export interface Card {
+  text: string;
+}
+
+export interface LearnCardsExerciseProps {
+  payload: {
+    title?: string;
+    content?: {
+      cards?: Card[];
+    };
+  };
+  onInteraction: (ready: boolean) => void;
+}
+
+export const LearnCardsExercise = ({ payload, onInteraction }: LearnCardsExerciseProps) => {
   const cards = payload?.content?.cards || [];
   const [visibleCards, setVisibleCards] = useState(1);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -28,10 +42,7 @@ export const LearnCardsExercise = ({ payload, onInteraction }: any) => {
         onInteraction(true);
       }
 
-      // Scroll to bottom so new message is visible
-      setTimeout(() => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-      }, 100);
+
     }
   };
 
@@ -59,8 +70,9 @@ export const LearnCardsExercise = ({ payload, onInteraction }: any) => {
         className="flex-1 px-6"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
+        onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
       >
-        {cards.slice(0, visibleCards).map((card: any, index: number) => {
+        {cards.slice(0, visibleCards).map((card: Card, index: number) => {
           const isLastInSequence = index === visibleCards - 1;
           
           return (
@@ -102,6 +114,8 @@ export const LearnCardsExercise = ({ payload, onInteraction }: any) => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={handleNext}
+            accessibilityRole="button"
+            accessibilityLabel="Continue to next card"
             className="bg-brand-primary/10 border border-brand-primary/20 px-6 py-3 rounded-full flex-row items-center shadow-sm backdrop-blur-md"
           >
             <Text className="text-brand-primary font-bold text-[15px]">
