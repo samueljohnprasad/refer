@@ -170,34 +170,68 @@ const CourseAccordionCard = React.memo(function CourseAccordionCard({
   });
 
   return (
-    <View className="mb-4 bg-white rounded-[24px] shadow-sm shadow-slate-200/50 overflow-hidden">
+    <View className="mb-4 bg-white rounded-[24px] border border-slate-100 shadow-sm shadow-slate-200/40 overflow-hidden">
       <Pressable 
         onPress={() => onToggle(course.id)}
         className="flex-row items-center justify-between p-5"
-        style={isExpanded ? { backgroundColor: `${courseAccentColor}10` } : {}}
+        style={isExpanded ? { backgroundColor: `${courseAccentColor}08` } : {}}
       >
-        <View className="flex-row items-center gap-4">
+        <View className="flex-row items-center gap-4 flex-1">
           <View className="h-12 w-12 items-center justify-center rounded-[14px]" style={{ backgroundColor: `${courseAccentColor}1A` }}>
             {course.iconUrl ? (
               <Image source={course.iconUrl} className="h-8 w-8 rounded-lg" cachePolicy="memory-disk" contentFit="contain" />
             ) : (
-              <RNText className="happy-font-heading text-lg" style={{ color: courseAccentColor }}>
+              <RNText className="happy-font-heading text-[20px]" style={{ color: courseAccentColor }}>
                 {getCourseMonogram(course.title)}
               </RNText>
             )}
           </View>
-          <View>
-            <Text variant="h3" className="font-bold text-ink">{course.title}</Text>
+          <View className="flex-1">
+            <Text variant="body-bold" className="text-[17px] text-ink">{course.title}</Text>
             {isEnrolled && (
               <Text variant="chip" color="sage" className="uppercase tracking-[0.4px] text-[10px] mt-1">Enrolled</Text>
             )}
           </View>
         </View>
-        <Animated.View style={animatedChevronStyle}>
-          <HugeiconsIcon icon={Cancel01Icon} size={20} color="#94A3B8" /> {/* Placeholder for chevron, using Cancel icon temporarily or any valid Hugeicon you have, ideally ChevronDownIcon but fallback to Text if none */}
-          <Text className="text-slate-400 font-bold ml-2">v</Text>
+        <Animated.View style={animatedChevronStyle} className="px-2">
+          <Text className="text-slate-400 font-bold text-lg">v</Text> 
         </Animated.View>
       </Pressable>
+
+      {isExpanded && (
+        <View className="p-5 pt-0 border-t border-slate-100/50" style={{ backgroundColor: `${courseAccentColor}04` }}>
+          <Text variant="body" className="text-[15px] leading-[22px] text-ink-soft mt-4 mb-3">
+            {course.description || "A guided journey you can start today."}
+          </Text>
+          
+          <Text variant="caption-muted" className="text-[13px] font-medium mb-6">
+            {preview?.unitCount ?? "—"} Units • {preview?.nodeCount ?? "—"} Lessons • {preview ? formatEstimatedDuration(preview.estimatedMinutes) : "—"}
+          </Text>
+
+          {isPreviewLoading ? (
+            <View className="py-4 items-center justify-center">
+              <ActivityIndicator color={courseAccentColor} />
+            </View>
+          ) : preview ? (
+            <View className="gap-3 mb-6">
+              {preview.sections.map((section) => (
+                <CoursePreviewSectionRow
+                  key={section.id}
+                  accentColor={resolveSectionPreviewAccentColor(section.orderIndex)}
+                  section={section}
+                />
+              ))}
+            </View>
+          ) : null}
+
+          <Button
+            label={isEnrolled ? "Open Journey" : isStartingCourse ? "Enrolling..." : "Enroll in Course"}
+            loading={isStartingCourse && !isEnrolled}
+            onPress={() => onEnroll(course.id)}
+            className="mt-2"
+          />
+        </View>
+      )}
     </View>
   );
 });
