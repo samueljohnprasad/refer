@@ -903,9 +903,26 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
-    "id": "l3_e3",
+    "id": "l3_e2b",
     "nodeId": "u1_1_sleep_mechanics-n3",
     "orderIndex": 2,
+    "type": "true_false",
+    "phase": "introduce",
+    "durationSeconds": 20,
+    "scaffoldLevel": 2,
+    "difficulty": 0.15,
+    "isScored": true,
+    "concept": "circadian_rhythm",
+    "content": {
+      "statement": "Your circadian rhythm only operates when it's dark outside.",
+      "correct": false,
+      "explanation": "False! It's a 24-hour internal clock that runs continuously, controlling alertness during the day too."
+    }
+  },
+  {
+    "id": "l3_e3",
+    "nodeId": "u1_1_sleep_mechanics-n3",
+    "orderIndex": 3,
     "type": "scenario",
     "phase": "challenge",
     "durationSeconds": 45,
@@ -939,9 +956,28 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
+    "id": "l3_e3b",
+    "nodeId": "u1_1_sleep_mechanics-n3",
+    "orderIndex": 4,
+    "type": "matching",
+    "phase": "challenge",
+    "durationSeconds": 45,
+    "scaffoldLevel": 3,
+    "difficulty": 0.2,
+    "isScored": true,
+    "concept": "circadian_rhythm",
+    "content": {
+      "prompt": "Match the event to what it does to your clock.",
+      "pairs": [
+        { "left": "Consistent Morning Wake Time", "right": "Anchors the 24-hr clock" },
+        { "left": "Sleeping in 3 hours on Sunday", "right": "Drifts the clock and causes grogginess" }
+      ]
+    }
+  },
+  {
     "id": "l3_e4",
     "nodeId": "u1_1_sleep_mechanics-n3",
-    "orderIndex": 3,
+    "orderIndex": 5,
     "type": "guided_response",
     "phase": "peak",
     "durationSeconds": 90,
@@ -962,9 +998,26 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
+    "id": "l3_e4b",
+    "nodeId": "u1_1_sleep_mechanics-n3",
+    "orderIndex": 6,
+    "type": "true_false",
+    "phase": "consolidate",
+    "durationSeconds": 20,
+    "scaffoldLevel": 2,
+    "difficulty": 0.1,
+    "isScored": true,
+    "concept": "circadian_rhythm",
+    "content": {
+      "statement": "Sleeping in on weekends is a great way to catch up on sleep without confusing your body.",
+      "correct": false,
+      "explanation": "Actually, sleeping in shifts your 'wake anchor', confusing your clock and making Monday morning miserable."
+    }
+  },
+  {
     "id": "l3_e5",
     "nodeId": "u1_1_sleep_mechanics-n3",
-    "orderIndex": 4,
+    "orderIndex": 7,
     "type": "multiple_choice",
     "phase": "consolidate",
     "durationSeconds": 20,
@@ -995,9 +1048,53 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
+    "id": "l3_e5b",
+    "nodeId": "u1_1_sleep_mechanics-n3",
+    "orderIndex": 8,
+    "type": "multiple_choice",
+    "phase": "consolidate",
+    "durationSeconds": 25,
+    "scaffoldLevel": 4,
+    "difficulty": 0.2,
+    "isScored": true,
+    "concept": "circadian_rhythm",
+    "content": {
+      "prompt": "When does your alertness naturally drop the sharpest?",
+      "options": [
+        { "id": "a", "text": "Right after the wake maintenance zone (bedtime)", "correct": true },
+        { "id": "b", "text": "First thing in the morning", "correct": false },
+        { "id": "c", "text": "Mid-afternoon", "correct": false }
+      ],
+      "feedback_correct": "Right! Your clock spikes alertness right before bed, then drops it sharply so you can sleep.",
+      "feedback_incorrect": "Not quite. The sharpest drop happens right around bedtime."
+    }
+  },
+  {
+    "id": "l3_e5c",
+    "nodeId": "u1_1_sleep_mechanics-n3",
+    "orderIndex": 9,
+    "type": "guided_response",
+    "phase": "consolidate",
+    "durationSeconds": 30,
+    "scaffoldLevel": 3,
+    "difficulty": 0.25,
+    "isScored": true,
+    "concept": "circadian_rhythm",
+    "content": {
+      "prompt": "Complete the rule:",
+      "template": "To fix your clock, keep your {1} consistent, even on {2}.",
+      "options": [
+        { "id": "opt_1", "text": "wake time", "target": "1" },
+        { "id": "opt_2", "text": "weekends", "target": "2" }
+      ],
+      "feedback_correct": "Spot on. Consistency is everything.",
+      "feedback_incorrect": "Remember, WAKE TIME is the anchor, and weekends are usually when we mess it up!"
+    }
+  },
+  {
     "id": "l3_e6",
     "nodeId": "u1_1_sleep_mechanics-n3",
-    "orderIndex": 5,
+    "orderIndex": 10,
     "type": "rating_check",
     "phase": "cooldown",
     "durationSeconds": 15,
