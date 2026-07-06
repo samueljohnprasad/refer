@@ -5,10 +5,16 @@ import { Mascot } from '@/src/components/ui/Mascot';
 import { MoodSlider } from '@/src/components/ui/MoodSlider';
 import { GuidedResponsePayload } from '../../../types/exercises';
 
+interface GuidedResponseState {
+  text: string;
+  moodBefore: number | null;
+  moodAfter: number | null;
+}
+
 interface GuidedResponseExerciseProps {
   payload: GuidedResponsePayload & { title?: string };
-  savedResponse?: any;
-  onInteraction: (response: any, isReady: boolean) => void;
+  savedResponse?: GuidedResponseState;
+  onInteraction: (response: GuidedResponseState, isReady: boolean) => void;
 }
 
 export const GuidedResponseExercise: React.FC<GuidedResponseExerciseProps> = ({ 
