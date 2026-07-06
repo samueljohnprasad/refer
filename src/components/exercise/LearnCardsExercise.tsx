@@ -1,101 +1,115 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { View, ScrollView, useWindowDimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { Text } from '@/src/components/ui/Text';
-import { Mascot } from '@/src/components/ui/Mascot';
+import React, { useState, useRef, useEffect } from "react";
+import { View, ScrollView, TouchableOpacity } from "react-native";
+import Animated, { FadeInUp, FadeIn } from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
+import { Text } from "@/src/components/ui/Text";
+import { Mascot } from "@/src/components/ui/Mascot";
+import { OrganicSpeechTail } from "@/src/components/ui/OrganicSpeechTail";
 
 export const LearnCardsExercise = ({ payload, onInteraction }: any) => {
-  const { width } = useWindowDimensions();
-  const [activeIndex, setActiveIndex] = useState(0);
-  
-  // Ensure we safely read cards array
   const cards = payload?.content?.cards || [];
-  
-  // If there's only one card, unlock the next button immediately
+  const [visibleCards, setVisibleCards] = useState(1);
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  // Auto-unlock if there's only one card
   useEffect(() => {
     if (cards.length <= 1) {
       onInteraction(true);
     }
   }, [cards.length, onInteraction]);
-  
-  const handleScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    // Calculate current index based on scroll position
-    const offsetX = e.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / width);
-    
-    if (index !== activeIndex) {
-      setActiveIndex(index);
+
+  const handleNext = () => {
+    if (visibleCards < cards.length) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      setVisibleCards((prev) => prev + 1);
       
-      // If we've reached the last card, notify parent that exercise is "ready" to continue
-      if (index === cards.length - 1) {
+      // Unlock continue button on last card
+      if (visibleCards + 1 === cards.length) {
         onInteraction(true);
       }
+
+      // Scroll to bottom so new message is visible
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
     }
-  }, [activeIndex, width, cards.length, onInteraction]);
+  };
 
   if (cards.length === 0) {
     return (
       <View className="flex-1 justify-center items-center p-6">
-        <Text variant="body" color="soft">No cards available.</Text>
+        <Text variant="body" color="soft">
+          No cards available.
+        </Text>
       </View>
     );
   }
 
   return (
     <View className="flex-1 pt-4">
-      {/* Exercise Title (like the Duolingo "Read and respond") */}
-      <View className="px-6 mb-6">
+      {/* Title */}
+      <View className="px-6 mb-4">
         <Text variant="h2" color="ink" className="font-bold">
           {payload.title || "Read and learn"}
         </Text>
       </View>
 
       <ScrollView
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        className="flex-1"
+        ref={scrollViewRef}
+        className="flex-1 px-6"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
       >
-        {cards.map((card: any, index: number) => (
-          <View 
-            key={index} 
-            style={{ width }} 
-            className="flex-row items-start px-6"
-          >
-            {/* Mascot on the left */}
-            <View className="mr-5 mt-2 z-10">
-              <Mascot state="panda-happy" size={80} />
-            </View>
-            
-            {/* Speech Bubble on the right */}
-            <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-brand-border/60 shadow-sm relative">
-              {/* Pointer Triangle - overlapping the left border */}
-              <View 
-                className="absolute -left-[11px] top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-brand-border/60" 
-                style={{ transform: [{ rotate: '45deg' }] }} 
-              />
-              
-              {/* Text Content */}
-              <Text variant="body" color="ink" className="leading-[32px] text-[17px] font-medium tracking-wide">
-                {card.text}
-              </Text>
-            </View>
-          </View>
-        ))}
+        {cards.slice(0, visibleCards).map((card: any, index: number) => {
+          const isLastInSequence = index === visibleCards - 1;
+          
+          return (
+            <Animated.View
+              key={index}
+              entering={FadeInUp.springify().damping(20).stiffness(200)}
+              className="flex-row items-end mb-4"
+            >
+              {/* Mascot - Only show on the last message in a sequence to stack cleanly */}
+              <View className="w-16 mr-3 z-10 items-center justify-end pb-2">
+                {isLastInSequence ? (
+                  <Mascot state="panda-happy" size={56} />
+                ) : null}
+              </View>
+
+              {/* Chat Bubble */}
+              <View className="flex-1 bg-white rounded-3xl p-5 border-2 border-brand-border/60 shadow-sm relative">
+                {isLastInSequence && <OrganicSpeechTail />}
+
+                <Text
+                  variant="body"
+                  color="ink"
+                  className="leading-[28px] text-[16px] font-medium tracking-wide"
+                >
+                  {card.text}
+                </Text>
+              </View>
+            </Animated.View>
+          );
+        })}
       </ScrollView>
 
-      {/* Pagination Dots */}
-      <View className="flex-row justify-center items-center pb-12 pt-6">
-        {cards.map((_: any, index: number) => (
-          <View
-            key={index}
-            className={`h-2.5 rounded-full mx-1.5 transition-all duration-300 ${
-              index === activeIndex ? "w-8 bg-sage-500" : "w-3 bg-brand-border/80"
-            }`}
-          />
-        ))}
-      </View>
+      {/* Floating Action to Progress */}
+      {visibleCards < cards.length && (
+        <Animated.View 
+          entering={FadeIn.delay(300)}
+          className="absolute bottom-6 left-0 right-0 items-center"
+        >
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={handleNext}
+            className="bg-brand-primary/10 border border-brand-primary/20 px-6 py-3 rounded-full flex-row items-center shadow-sm backdrop-blur-md"
+          >
+            <Text className="text-brand-primary font-bold text-[15px]">
+              Tap to continue
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
+      )}
     </View>
   );
 };
