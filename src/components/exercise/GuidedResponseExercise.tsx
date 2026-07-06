@@ -3,8 +3,19 @@ import { View, ScrollView, TextInput } from 'react-native';
 import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
 import { MoodSlider } from '@/src/components/ui/MoodSlider';
+import { GuidedResponsePayload } from '../../../types/exercises';
 
-export const GuidedResponseExercise = ({ payload, savedResponse, onInteraction }: any) => {
+interface GuidedResponseExerciseProps {
+  payload: GuidedResponsePayload & { title?: string };
+  savedResponse?: any;
+  onInteraction: (response: any, isReady: boolean) => void;
+}
+
+export const GuidedResponseExercise: React.FC<GuidedResponseExerciseProps> = ({ 
+  payload, 
+  savedResponse, 
+  onInteraction 
+}) => {
   const { 
     prompt, 
     sub_prompts = [], 
