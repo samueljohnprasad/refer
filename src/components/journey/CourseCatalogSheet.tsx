@@ -13,7 +13,7 @@ import {
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import { Cancel01Icon, ArrowDown01Icon } from "@hugeicons/core-free-icons";
 import { FullWindowOverlay } from "react-native-screens";
 import { Card } from "@/src/components/ui/Card";
 import { Button } from "@/src/components/ui/Button";
@@ -169,14 +169,14 @@ const CourseAccordionCard = React.memo(function CourseAccordionCard({
   });
 
   return (
-    <View className="mb-4 bg-white rounded-[24px] border border-slate-100 shadow-sm shadow-slate-200/40 overflow-hidden">
+    <View className="mb-4 bg-white rounded-[24px] border-2 border-b-4 border-slate-100 shadow-sm shadow-slate-200/20 overflow-hidden">
       <Pressable 
         onPress={() => onToggle(course.id)}
         className="flex-row items-center justify-between p-5"
         style={isExpanded ? { backgroundColor: `${courseAccentColor}08` } : {}}
       >
         <View className="flex-row items-center gap-4 flex-1">
-          <View className="h-12 w-12 items-center justify-center rounded-[14px]" style={{ backgroundColor: `${courseAccentColor}1A` }}>
+          <View className="h-14 w-14 items-center justify-center rounded-[18px]" style={{ backgroundColor: `${courseAccentColor}1A` }}>
             {course.iconUrl ? (
               <Image source={course.iconUrl} className="h-8 w-8 rounded-lg" cachePolicy="memory-disk" contentFit="contain" />
             ) : (
@@ -193,7 +193,7 @@ const CourseAccordionCard = React.memo(function CourseAccordionCard({
           </View>
         </View>
         <Animated.View style={animatedChevronStyle} className="px-2">
-          <Text className="text-slate-400 font-bold text-lg">v</Text> 
+          <HugeiconsIcon icon={ArrowDown01Icon} size={20} color="#94A3B8" strokeWidth={2.5} />
         </Animated.View>
       </Pressable>
 
@@ -208,11 +208,11 @@ const CourseAccordionCard = React.memo(function CourseAccordionCard({
           </Text>
 
           {isPreviewLoading ? (
-            <View className="py-4 items-center justify-center">
+            <View className="py-8 items-center justify-center">
               <ActivityIndicator color={courseAccentColor} />
             </View>
           ) : preview ? (
-            <View className="gap-3 mb-6">
+            <View className="bg-slate-50/50 rounded-2xl p-4 mb-6 border border-slate-100 gap-1">
               {preview.sections.map((section) => (
                 <CoursePreviewSectionRow
                   key={section.id}
@@ -243,80 +243,32 @@ const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
   const hiddenUnitCount = Math.max(section.unitCount - visibleUnitSegments, 0);
 
   return (
-    <Card
-      variant="tile"
-      radius="xl"
-      showDepth={false}
-      contentClassName="p-0 overflow-hidden"
-    >
-      {/* Accent border strip on the left edge */}
+    <View className="flex-row items-center gap-4 py-3 border-b border-slate-200/40 last:border-b-0">
       <View
-        className="absolute bottom-0 left-0 top-0 w-2 z-10"
-        style={{ backgroundColor: accentColor }}
-      />
-
-      <View className="p-4 pl-6 gap-3">
-        <View className="flex-row items-start gap-3">
-          <View
-            className="h-12 w-12 items-center justify-center rounded-2xl"
-            style={{ backgroundColor: `${accentColor}1A` }}
-          >
-            <RNText
-              className="happy-font-body-bold text-[18px]"
-              style={{ color: accentColor }}
-            >
-              {section.orderIndex}
-            </RNText>
-          </View>
-
-          <View className="flex-1 gap-1">
-            <Text
-              variant="body-bold"
-              className="text-[18px] leading-[23px] text-ink"
-              numberOfLines={2}
-            >
-              {section.title}
-            </Text>
-            <Text variant="caption-muted" className="uppercase tracking-[0.8px]">
-              Section {section.orderIndex}
-            </Text>
-          </View>
-        </View>
-
-        <View className="flex-row flex-wrap gap-2">
-          <View className="happy-brand-status-chip px-3 py-1.5">
-            <Text variant="chip" color="soft">
-              {formatPreviewCount(section.unitCount, "unit")}
-            </Text>
-          </View>
-          <View className="happy-brand-status-chip px-3 py-1.5">
-            <Text variant="chip" color="soft">
-              {formatPreviewCount(section.nodeCount, "lesson")}
-            </Text>
-          </View>
-        </View>
-
-        <View className="flex-row items-center gap-1.5">
-          {Array.from({ length: visibleUnitSegments }).map((_, index) => (
-            <View
-              key={`${section.id}-${index}`}
-              className="h-2.5 flex-1 rounded-full"
-              style={{
-                backgroundColor:
-                  index === 0 ? accentColor : `${accentColor}33`,
-              }}
-            />
-          ))}
-          {hiddenUnitCount > 0 ? (
-            <View className="happy-brand-status-chip px-2.5 py-1">
-              <Text variant="chip" color="muted" className="text-[11px]">
-                +{hiddenUnitCount}
-              </Text>
-            </View>
-          ) : null}
-        </View>
+        className="h-12 w-12 items-center justify-center rounded-[14px]"
+        style={{ backgroundColor: `${accentColor}1A` }}
+      >
+        <RNText
+          className="happy-font-heading text-[18px]"
+          style={{ color: accentColor }}
+        >
+          {section.orderIndex}
+        </RNText>
       </View>
-    </Card>
+
+      <View className="flex-1 gap-1">
+        <Text
+          variant="body-bold"
+          className="text-[16px] leading-[20px] text-ink"
+          numberOfLines={1}
+        >
+          {section.title}
+        </Text>
+        <Text variant="caption-muted" className="text-[13px]">
+          {formatPreviewCount(section.unitCount, "unit")} • {formatPreviewCount(section.nodeCount, "lesson")}
+        </Text>
+      </View>
+    </View>
   );
 });
 
@@ -384,7 +336,7 @@ function CourseCatalogSheetContent({
     setSelectedCourseId(prev => prev === id ? null : id);
   }, []);
 
-  const handlePrimaryActionPress = async (courseId: string) => {
+  const handlePrimaryActionPress = useCallback(async (courseId: string) => {
     const course = catalogCourses.find((c) => c.id === courseId);
     if (!course) {
       return;
@@ -401,7 +353,20 @@ function CourseCatalogSheetContent({
     } catch (error) {
       Alert.alert("Unable to open course", getErrorMessage(error));
     }
-  };
+  }, [catalogCourses, enrolledCourseIds, startCourse, onCourseSelect, onClose]);
+
+  const renderCourseItem = useCallback(({ item }: { item: CourseCatalogListItem }) => (
+    <CourseAccordionCard
+      course={item}
+      isExpanded={item.id === selectedCourseId}
+      isEnrolled={enrolledCourseIds.has(item.id)}
+      onToggle={handleToggle}
+      preview={item.id === selectedCourseId ? preview : null}
+      isPreviewLoading={item.id === selectedCourseId ? isPreviewLoading : false}
+      isStartingCourse={isStartingCourse && item.id === selectedCourseId}
+      onEnroll={handlePrimaryActionPress}
+    />
+  ), [selectedCourseId, enrolledCourseIds, handleToggle, preview, isPreviewLoading, isStartingCourse, handlePrimaryActionPress]);
 
   return (
     <View className="flex-1 happy-brand-screen" style={{ paddingTop: Math.max(insets.top, 12) }}>
@@ -428,18 +393,7 @@ function CourseCatalogSheetContent({
               </Text>
             </View>
           }
-          renderItem={({ item }) => (
-            <CourseAccordionCard
-              course={item}
-              isExpanded={item.id === selectedCourseId}
-              isEnrolled={enrolledCourseIds.has(item.id)}
-              onToggle={handleToggle}
-              preview={item.id === selectedCourseId ? preview : null}
-              isPreviewLoading={item.id === selectedCourseId ? isPreviewLoading : false}
-              isStartingCourse={isStartingCourse && item.id === selectedCourseId}
-              onEnroll={handlePrimaryActionPress}
-            />
-          )}
+          renderItem={renderCourseItem}
           ListEmptyComponent={
             isCatalogLoading ? (
               <View className="py-12 items-center justify-center">

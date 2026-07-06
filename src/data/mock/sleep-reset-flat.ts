@@ -294,9 +294,26 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
-    "id": "l1_e2",
+    "id": "l1_e1b",
     "nodeId": "u1_1_sleep_mechanics-n1",
     "orderIndex": 1,
+    "type": "true_false",
+    "phase": "introduce",
+    "durationSeconds": 20,
+    "scaffoldLevel": 2,
+    "difficulty": 0.15,
+    "isScored": true,
+    "concept": "sleep_architecture",
+    "content": {
+      "statement": "Your body repairs muscles and bone during REM (dream) sleep.",
+      "correct": false,
+      "explanation": "Physical repair happens during N3 Deep Sleep, not REM!"
+    }
+  },
+  {
+    "id": "l1_e2",
+    "nodeId": "u1_1_sleep_mechanics-n1",
+    "orderIndex": 2,
     "type": "multiple_choice",
     "phase": "introduce",
     "durationSeconds": 20,
@@ -333,9 +350,28 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
+    "id": "l1_e2b",
+    "nodeId": "u1_1_sleep_mechanics-n1",
+    "orderIndex": 3,
+    "type": "matching",
+    "phase": "challenge",
+    "durationSeconds": 45,
+    "scaffoldLevel": 3,
+    "difficulty": 0.2,
+    "isScored": true,
+    "concept": "sleep_architecture",
+    "content": {
+      "prompt": "Match the time of night to its primary sleep stage.",
+      "pairs": [
+        { "left": "Early Night", "right": "Mostly Deep Sleep (N3)" },
+        { "left": "Late Night", "right": "Mostly Dreams (REM)" }
+      ]
+    }
+  },
+  {
     "id": "l1_e3",
     "nodeId": "u1_1_sleep_mechanics-n1",
-    "orderIndex": 2,
+    "orderIndex": 4,
     "type": "scenario",
     "phase": "challenge",
     "durationSeconds": 40,
@@ -374,9 +410,70 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
+    "id": "l1_e3b",
+    "nodeId": "u1_1_sleep_mechanics-n1",
+    "orderIndex": 5,
+    "type": "multiple_choice",
+    "phase": "consolidate",
+    "durationSeconds": 25,
+    "scaffoldLevel": 4,
+    "difficulty": 0.2,
+    "isScored": true,
+    "concept": "sleep_architecture",
+    "content": {
+      "prompt": "If you wake up at 4am, what sleep stage were you most likely just in?",
+      "options": [
+        { "id": "a", "text": "REM (dream sleep)", "correct": true },
+        { "id": "b", "text": "N3 (deep sleep)", "correct": false },
+        { "id": "c", "text": "Light sleep", "correct": false }
+      ],
+      "feedback_correct": "Right! REM cycles get longer later in the night.",
+      "feedback_incorrect": "Not quite. Deep sleep (N3) happens early. By 4am, you are mostly experiencing REM."
+    }
+  },
+  {
+    "id": "l1_e4a",
+    "nodeId": "u1_1_sleep_mechanics-n1",
+    "orderIndex": 6,
+    "type": "guided_response",
+    "phase": "consolidate",
+    "durationSeconds": 30,
+    "scaffoldLevel": 3,
+    "difficulty": 0.25,
+    "isScored": true,
+    "concept": "sleep_architecture",
+    "content": {
+      "prompt": "Complete the rule of thumb:",
+      "template": "Early sleep is for {1}, late sleep is for {2}.",
+      "options": [
+        { "id": "opt_1", "text": "physical repair", "target": "1" },
+        { "id": "opt_2", "text": "dreams", "target": "2" }
+      ],
+      "feedback_correct": "Exactly! The first half of the night repairs the body, the second half repairs the mind.",
+      "feedback_incorrect": "Remember: Body first (deep sleep), Mind second (REM)."
+    }
+  },
+  {
+    "id": "l1_e4b",
+    "nodeId": "u1_1_sleep_mechanics-n1",
+    "orderIndex": 7,
+    "type": "true_false",
+    "phase": "consolidate",
+    "durationSeconds": 20,
+    "scaffoldLevel": 2,
+    "difficulty": 0.1,
+    "isScored": true,
+    "concept": "sleep_architecture",
+    "content": {
+      "statement": "Waking up from a vivid dream at 5am means your sleep architecture is broken.",
+      "correct": false,
+      "explanation": "It's completely normal! You are naturally in a heavy REM phase at 5am."
+    }
+  },
+  {
     "id": "l1_e4",
     "nodeId": "u1_1_sleep_mechanics-n1",
-    "orderIndex": 3,
+    "orderIndex": 8,
     "type": "free_text",
     "phase": "cooldown",
     "durationSeconds": 45,
@@ -394,7 +491,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
   {
     "id": "l1_e5",
     "nodeId": "u1_1_sleep_mechanics-n1",
-    "orderIndex": 4,
+    "orderIndex": 9,
     "type": "rating_check",
     "phase": "cooldown",
     "durationSeconds": 15,
@@ -658,22 +755,23 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     "scaffoldLevel": 3,
     "difficulty": 0.15,
     "isScored": true,
-    "concept": "sleep_architecture",
+    "concept": "sleep_cycles",
     "content": {
-      "prompt": "Which happens at the END of the day when you're ready for sleep?",
+      "prompt": "Review: Which sleep stage happens mostly in the later half of the night (like 4am)?",
       "options": [
         {
           "id": "a",
-          "text": "Your circadian alertness zone DROPS sharply",
+          "text": "REM (dream sleep)",
           "correct": true
         },
         {
           "id": "b",
-          "text": "Your circadian alertness zone PEAKS",
+          "text": "N3 (deep sleep)",
           "correct": false
         }
       ],
-      "feedback_correct": "Right. Peak alertness is around bedtime; then it drops fast, making sleep possible."
+      "feedback_correct": "Right! Later sleep cycles are longer and packed with REM (dream) sleep.",
+      "feedback_incorrect": "Not quite. Deep sleep (N3) happens early. The later half of the night is mostly REM (dreams)."
     }
   },
   {

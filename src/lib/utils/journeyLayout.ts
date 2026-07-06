@@ -20,7 +20,8 @@ import type {
   Node,
   UserNodeProgress,
 } from "@/src/types/journeyV5";
-import { PATH_LAYOUT, DIVIDER_LAYOUT, UNIT_GRADIENTS } from "@/src/data/journey/constants";
+import { PATH_LAYOUT, DIVIDER_LAYOUT } from "@/src/data/journey/constants";
+import { DEFAULT_JOURNEY_CONFIG } from "@/src/data/journey/journeyConfig";
 import {
   findCurrentNodeIdInCourse,
   resolveNodeVisualStatus,
@@ -132,7 +133,8 @@ function createDividerItem(
   previousNodeGlobalIndex: number | undefined,
   colorThemeKey: string,
 ): JourneyDividerItem {
-  const accentColor = UNIT_GRADIENTS[colorThemeKey]?.[0];
+  const theme = DEFAULT_JOURNEY_CONFIG.colorThemes[colorThemeKey] ?? DEFAULT_JOURNEY_CONFIG.colorThemes.green;
+  const accentColor = theme.headerGradient[1];
   return {
     id: `divider-${unit.id}`,
     itemType: "divider",

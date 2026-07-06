@@ -1,6 +1,5 @@
 import { DEFAULT_JOURNEY_CONFIG } from "@/src/data/journey";
 
-const DEFAULT_UNIT_GRADIENT = ["#4CAF50", "#388E3C"] as const;
 
 type RenderedSectionHeader = {
   orderIndex: number;

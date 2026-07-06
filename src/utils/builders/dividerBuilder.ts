@@ -16,7 +16,7 @@ import type { JourneyDividerItem } from "@/src/types/journey";
 import type { LayoutAccumulator, BuilderContext } from "./types";
 import { DIVIDER_CELL_HEIGHT } from "./types";
 import { buildDividerSegmentD } from "./segmentPath";
-import { UNIT_GRADIENTS } from "@/src/data/journey/constants";
+import { DEFAULT_JOURNEY_CONFIG } from "@/src/data/journey/journeyConfig";
 
 function createLegacyDividerItem(
   unit: UnitData,
@@ -62,7 +62,7 @@ export function buildDividerItem(
     unit,
     acc.prevX,
     acc.globalIndex - 1,
-    UNIT_GRADIENTS[unit.colorScheme]?.[0],
+    DEFAULT_JOURNEY_CONFIG.colorThemes[unit.colorScheme]?.headerGradient[1] ?? DEFAULT_JOURNEY_CONFIG.colorThemes.green.headerGradient[1],
   );
 
   return {
