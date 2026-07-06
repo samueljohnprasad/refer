@@ -52,11 +52,15 @@ type CourseCatalogSheetProps = {
   onCourseSelect?: (courseId: string) => void;
 };
 
-type CourseCardProps = {
+type CourseAccordionCardProps = {
   course: CourseCatalogListItem;
-  isSelected: boolean;
+  isExpanded: boolean;
   isEnrolled: boolean;
-  onPress: (courseId: string) => void;
+  onToggle: (courseId: string) => void;
+  preview: ReturnType<typeof buildCourseJourneyPreview> | null;
+  isPreviewLoading: boolean;
+  isStartingCourse: boolean;
+  onEnroll: (courseId: string) => void;
 };
 
 type CoursePreviewSectionRowProps = {
@@ -134,73 +138,67 @@ function getErrorMessage(error: unknown): string {
   return "Something went wrong while opening this course.";
 }
 
-const CourseCard = React.memo(function CourseCard({
+const CourseAccordionCard = React.memo(function CourseAccordionCard({
   course,
-  isSelected,
+  isExpanded,
   isEnrolled,
-  onPress,
-}: CourseCardProps): React.JSX.Element {
+  onToggle,
+  preview,
+  isPreviewLoading,
+  isStartingCourse,
+  onEnroll,
+}: CourseAccordionCardProps): React.JSX.Element {
   const courseAccentColor = resolveCourseAccentColor(course.colorHex);
+  
+  // Reanimated shared values
+  const expansionProgress = useSharedValue(isExpanded ? 1 : 0);
+
+  useEffect(() => {
+    expansionProgress.value = withSpring(isExpanded ? 1 : 0, {
+      damping: 20,
+      stiffness: 150,
+      mass: 0.8,
+    });
+  }, [isExpanded, expansionProgress]);
+
+  const animatedChevronStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { rotate: `${interpolate(expansionProgress.value, [0, 1], [0, 180])}deg` }
+      ],
+    };
+  });
 
   return (
-    <Pressable
-      className="w-[116px] items-center gap-2"
-      onPress={() => onPress(course.id)}
-      accessibilityRole="button"
-      accessibilityLabel={`Preview ${course.title}`}
-    >
-      <Card
-        variant="tile"
-        radius="xl"
-        showDepth={true}
-        className="h-[78px] w-[92px]"
-        contentClassName="items-center justify-center h-full w-full"
-        faceStyle={{
-          borderColor: isSelected ? courseAccentColor : SAGE[100],
-          backgroundColor: isSelected ? `${courseAccentColor}12` : BRAND_SURFACE,
-        }}
-        style={{
-          shadowColor: isSelected ? courseAccentColor : "transparent",
-        }}
+    <View className="mb-4 bg-white rounded-[24px] shadow-sm shadow-slate-200/50 overflow-hidden">
+      <Pressable 
+        onPress={() => onToggle(course.id)}
+        className="flex-row items-center justify-between p-5"
+        style={isExpanded ? { backgroundColor: `${courseAccentColor}10` } : {}}
       >
-        {course.iconUrl ? (
-          <Image
-            source={course.iconUrl}
-            className="h-[46px] w-[46px] rounded-[14px]"
-            cachePolicy="memory-disk"
-            contentFit="contain"
-            transition={150}
-          />
-        ) : (
-          <RNText
-            className="happy-font-title-bold text-[30px]"
-            style={{ color: courseAccentColor }}
-          >
-            {getCourseMonogram(course.title)}
-          </RNText>
-        )}
-      </Card>
-
-      <Text
-        variant="caption"
-        numberOfLines={1}
-        className={`w-full text-center text-[15px] ${isSelected ? "text-sage-700 happy-font-body-bold" : "text-ink-muted"}`}
-      >
-        {course.title}
-      </Text>
-
-      {isEnrolled ? (
-        <View className="rounded-full bg-sage-100 px-3 py-[5px]">
-          <Text
-            variant="chip"
-            color="sage"
-            className="uppercase tracking-[0.4px]"
-          >
-            Enrolled
-          </Text>
+        <View className="flex-row items-center gap-4">
+          <View className="h-12 w-12 items-center justify-center rounded-[14px]" style={{ backgroundColor: `${courseAccentColor}1A` }}>
+            {course.iconUrl ? (
+              <Image source={course.iconUrl} className="h-8 w-8 rounded-lg" cachePolicy="memory-disk" contentFit="contain" />
+            ) : (
+              <RNText className="happy-font-heading text-lg" style={{ color: courseAccentColor }}>
+                {getCourseMonogram(course.title)}
+              </RNText>
+            )}
+          </View>
+          <View>
+            <Text variant="h3" className="font-bold text-ink">{course.title}</Text>
+            {isEnrolled && (
+              <Text variant="chip" color="sage" className="uppercase tracking-[0.4px] text-[10px] mt-1">Enrolled</Text>
+            )}
+          </View>
         </View>
-      ) : null}
-    </Pressable>
+        <Animated.View style={animatedChevronStyle}>
+          <HugeiconsIcon icon={Cancel01Icon} size={20} color="#94A3B8" /> {/* Placeholder for chevron, using Cancel icon temporarily or any valid Hugeicon you have, ideally ChevronDownIcon but fallback to Text if none */}
+          <Text className="text-slate-400 font-bold ml-2">v</Text>
+        </Animated.View>
+      </Pressable>
+    </View>
   );
 });
 
@@ -463,11 +461,15 @@ function CourseCatalogSheetContent({
             contentContainerClassName="gap-4 px-5"
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
-              <CourseCard
+              <CourseAccordionCard
                 course={item}
-                isSelected={item.id === selectedCourseId}
+                isExpanded={item.id === selectedCourseId}
                 isEnrolled={enrolledCourseIds.has(item.id)}
-                onPress={handleCoursePress}
+                onToggle={handleCoursePress}
+                preview={item.id === selectedCourseId ? preview : null}
+                isPreviewLoading={item.id === selectedCourseId ? isPreviewLoading : false}
+                isStartingCourse={item.id === selectedCourseId ? isStartingCourse : false}
+                onEnroll={handlePrimaryActionPress}
               />
             )}
             ListEmptyComponent={
