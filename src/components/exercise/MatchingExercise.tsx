@@ -72,61 +72,43 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
     setUnmatchedOptions(options);
   }, [pairs, savedResponse]);
 
-  const updateMatches = (newMatches: Record<number, number>) => {
-    setMatches(newMatches);
-    const ready = pairs.length > 0 && Object.keys(newMatches).length === pairs.length;
-    onInteraction({ matches: newMatches }, ready);
-  };
+  const handleOptionPress = (option: OptionItem) => {
+    if (isProcessing || unmatchedConcepts.length === 0) return;
+    
+    const activeConcept = unmatchedConcepts[0];
+    setIsProcessing(true);
 
-  const handleLeftPress = (index: number) => {
-    // If it's already matched, unmatch it
-    if (matches[index] !== undefined) {
-      const newMatches = { ...matches };
-      delete newMatches[index];
-      updateMatches(newMatches);
-      setSelectedLeft(null);
-      return;
-    }
-
-    if (selectedRight !== null) {
-      // Pair them!
-      const newMatches = { ...matches, [index]: selectedRight };
-      updateMatches(newMatches);
-      setSelectedLeft(null);
-      setSelectedRight(null);
+    if (option.pairIndex === activeConcept.pairIndex) {
+      // Correct match
+      setMatchedId(option.id);
+      
+      setTimeout(() => {
+        const newMatches = { ...matches, [activeConcept.pairIndex]: option.pairIndex };
+        setMatches(newMatches);
+        
+        const nextConcepts = unmatchedConcepts.slice(1);
+        const nextOptions = unmatchedOptions.filter(o => o.id !== option.id);
+        
+        setUnmatchedConcepts(nextConcepts);
+        setUnmatchedOptions(nextOptions);
+        setMatchedId(null);
+        setIsProcessing(false);
+        
+        const isReady = nextConcepts.length === 0;
+        onInteraction({ matches: newMatches }, isReady);
+      }, 500);
     } else {
-      setSelectedLeft(index === selectedLeft ? null : index);
+      // Incorrect match
+      setSelectedWrongId(option.id);
+      setTimeout(() => {
+        setSelectedWrongId(null);
+        setIsProcessing(false);
+      }, 500);
     }
   };
 
-  const handleRightPress = (index: number) => {
-    // Find if this right item is already matched
-    const matchedLeftIndex = Object.keys(matches).find(k => matches[Number(k)] === index);
-    if (matchedLeftIndex !== undefined) {
-      const newMatches = { ...matches };
-      delete newMatches[Number(matchedLeftIndex)];
-      updateMatches(newMatches);
-      setSelectedRight(null);
-      return;
-    }
+  const activeConcept = unmatchedConcepts[0];
 
-    if (selectedLeft !== null) {
-      // Pair them!
-      const newMatches = { ...matches, [selectedLeft]: index };
-      updateMatches(newMatches);
-      setSelectedLeft(null);
-      setSelectedRight(null);
-    } else {
-      setSelectedRight(index === selectedRight ? null : index);
-    }
-  };
-
-  // Helper to get match sequence number (1-based)
-  const getMatchNumber = (leftIndex: number) => {
-    const keys = Object.keys(matches).map(Number).sort((a, b) => a - b);
-    const pos = keys.indexOf(leftIndex);
-    return pos >= 0 ? pos + 1 : null;
-  };
   return (
     <ScrollView className="flex-1 p-6" showsVerticalScrollIndicator={false}>
       <View className="mb-6">
@@ -151,40 +133,52 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
         </View>
       )}
 
-      <View className="flex-row gap-4 pb-12">
-        {/* Left Column */}
-        <View className="flex-1 flex-col gap-4">
-          {pairs.map((pair: Pair, index: number) => (
-            <MatchCard
-              key={`left-${index}`}
-              text={pair.left}
-              isSelected={selectedLeft === index}
-              isMatched={getMatchNumber(index) !== null}
-              matchNumber={getMatchNumber(index)}
-              onPress={() => handleLeftPress(index)}
-            />
-          ))}
-        </View>
+      {activeConcept ? (
+        <View className="pb-12">
+          {/* Active Concept Banner */}
+          <View className="mb-6 bg-slate-100 border-2 border-slate-300 rounded-2xl p-5 items-center">
+            <Text variant="body" className="font-bold text-center text-slate-800 text-lg">
+              {activeConcept.text}
+            </Text>
+          </View>
 
-        {/* Right Column */}
-        <View className="flex-1 flex-col gap-4">
-          {shuffledRights.map((pair: Pair, index: number) => {
-            const matchedLeftIndex = Object.keys(matches).find(k => matches[Number(k)] === index);
-            const isMatched = matchedLeftIndex !== undefined;
-            
-            return (
-              <MatchCard
-                key={`right-${index}`}
-                text={pair.right}
-                isSelected={selectedRight === index}
-                isMatched={isMatched}
-                matchNumber={isMatched ? getMatchNumber(Number(matchedLeftIndex)) : null}
-                onPress={() => handleRightPress(index)}
-              />
-            );
-          })}
+          {/* Options List */}
+          <View className="flex-col gap-4">
+            {unmatchedOptions.map((option) => {
+              const isMatched = matchedId === option.id;
+              const isWrong = selectedWrongId === option.id;
+              
+              // We'll map visually via existing variants. 'answer-selected' (green/sage) for match, 
+              // and standard 'answer' for neutral. For wrong, we can just use a slightly different border
+              // or let standard handle it for now since we have safe failure.
+              
+              let variant: 'answer' | 'answer-selected' = 'answer';
+              if (isMatched) variant = 'answer-selected';
+              
+              return (
+                <Card
+                  key={option.id}
+                  variant={variant}
+                  onPress={() => handleOptionPress(option)}
+                  disabled={isProcessing}
+                  contentClassName="p-4 min-h-[80px] justify-center"
+                  className={isWrong ? 'opacity-70' : ''}
+                >
+                  <Text className="text-sm font-medium text-slate-700 text-center">
+                    {option.text}
+                  </Text>
+                </Card>
+              );
+            })}
+          </View>
         </View>
-      </View>
+      ) : (
+        <View className="pb-12 items-center justify-center py-10">
+          <Text variant="h3" color="ink" className="text-center font-bold">
+            All matched!
+          </Text>
+        </View>
+      )}
     </ScrollView>
   );
 };
