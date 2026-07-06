@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
-import Animated, { FadeInUp, FadeIn } from "react-native-reanimated";
+import Animated, { FadeInUp, FadeIn, Easing } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { Text } from "@/src/components/ui/Text";
 import { Mascot } from "@/src/components/ui/Mascot";
@@ -72,7 +72,7 @@ export const LearnCardsExercise = ({ payload, onInteraction }: LearnCardsExercis
           return (
             <Animated.View
               key={card.id || `card-${index}`}
-              entering={FadeInUp.springify().damping(20).stiffness(200)}
+              entering={FadeInUp.duration(400).easing(Easing.out(Easing.quad))}
               className="flex-row items-end mb-4"
             >
               {/* Mascot - Only show on the last message in a sequence to stack cleanly */}
