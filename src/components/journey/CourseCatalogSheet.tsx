@@ -68,10 +68,6 @@ type CoursePreviewSectionRowProps = {
   section: CourseJourneyPreviewSection;
 };
 
-type CourseMetricCardProps = {
-  value: string | number;
-  label: string;
-};
 
 const SECTION_PREVIEW_ACCENTS = [
   "#5F7F58",
@@ -233,40 +229,6 @@ const CourseAccordionCard = React.memo(function CourseAccordionCard({
         </View>
       )}
     </View>
-  );
-});
-
-const CourseMetricCard = React.memo(function CourseMetricCard({
-  value,
-  label,
-}: CourseMetricCardProps): React.JSX.Element {
-  return (
-    <Card
-      variant="tile"
-      radius="md"
-      showDepth={false}
-      className="min-h-[70px] flex-1"
-      contentClassName="items-center justify-center gap-1 p-2"
-    >
-      <Text
-        variant="body-bold"
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.82}
-        className="w-full text-center text-[19px]"
-      >
-        {value}
-      </Text>
-      <Text
-        variant="body"
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.62}
-        className="w-full text-center text-[11px]"
-      >
-        {label}
-      </Text>
-    </Card>
   );
 });
 
@@ -450,204 +412,56 @@ function CourseCatalogSheetContent({
 
   return (
     <View className="flex-1 happy-brand-screen">
-      {/* Centered grab handle affordance */}
       <View className="w-12 h-1 bg-sage-200/80 rounded-full self-center mt-3 mb-1" />
 
-      <View
-        className="flex-row items-center justify-between happy-brand-screen px-5 pt-2 pb-1"
-      >
+      <View className="flex-row items-center justify-between px-5 pt-2 pb-1">
         <View className="h-11 w-11" />
-        <Pressable
-          onPress={onClose}
-          className="h-11 w-11 items-center justify-center rounded-[22px] border-2 border-b-4 border-sage-100 border-b-sage-200 bg-warm-white"
-          accessibilityRole="button"
-          accessibilityLabel="Close journey explorer"
-        >
+        <Pressable onPress={onClose} className="h-11 w-11 items-center justify-center rounded-[22px] border-2 border-b-4 border-sage-100 border-b-sage-200 bg-warm-white">
           <HugeiconsIcon icon={Cancel01Icon} size={20} color={SAGE[600]} />
         </Pressable>
       </View>
 
-      <View
-        className="flex-1 happy-brand-screen"
-        style={{ paddingBottom: Math.max(insets.bottom, 20) }}
-      >
-        <ScrollView
+      <View className="flex-1" style={{ paddingBottom: Math.max(insets.bottom, 20) }}>
+        <FlatList
+          data={catalogCourses}
+          keyExtractor={(item) => item.id}
+          contentContainerClassName="px-5 pb-28 pt-2"
           showsVerticalScrollIndicator={false}
-          contentContainerClassName="gap-[22px] pb-28 pt-5"
-        >
-          <View className="gap-2.5 px-5">
-            <Text className="happy-brand-eyebrow">
-              Find Your Next Path
-            </Text>
-            <Text className="happy-font-heading text-[34px] leading-[38px] text-ink">
-              Explore Journeys
-            </Text>
-            <Text className="happy-font-body text-base leading-[23px] text-ink-soft">
-              Browse every published course, preview the path, and enroll when
-              you are ready.
-            </Text>
-          </View>
-
-          <FlatList
-            horizontal
-            data={catalogCourses}
-            keyExtractor={(item) => item.id}
-            contentContainerClassName="gap-4 px-5"
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <CourseAccordionCard
-                course={item}
-                isExpanded={item.id === selectedCourseId}
-                isEnrolled={enrolledCourseIds.has(item.id)}
-                onToggle={handleCoursePress}
-                preview={item.id === selectedCourseId ? preview : null}
-                isPreviewLoading={item.id === selectedCourseId ? isPreviewLoading : false}
-                isStartingCourse={item.id === selectedCourseId ? isStartingCourse : false}
-                onEnroll={handlePrimaryActionPress}
-              />
-            )}
-            ListEmptyComponent={
-              isCatalogLoading ? (
-                <View className="min-h-[92px] min-w-[240px] items-center justify-center px-5">
-                  <ActivityIndicator color={interactionColor} />
-                </View>
-              ) : (
-                <View className="min-h-[92px] min-w-[240px] items-center justify-center px-5">
-                  <Text variant="body" className="text-center text-[15px]">
-                    No published courses are available yet.
-                  </Text>
-                </View>
-              )
-            }
-          />
-
-          {selectedCourse ? (
-            <View className="mx-5 gap-5">
-              <Card
-                variant="tile"
-                radius="xl"
-                showDepth={false}
-                contentClassName="p-5 gap-5"
-              >
-                <View className="flex-row items-center gap-4">
-                  <View
-                    className="h-[86px] w-[86px] items-center justify-center rounded-[24px]"
-                    style={{ backgroundColor: `${courseAccentColor}18` }}
-                  >
-                    <View className="happy-brand-pressed-card-selected h-[68px] w-[68px] items-center justify-center rounded-[20px]">
-                      {selectedCourse.iconUrl ? (
-                        <Image
-                          source={selectedCourse.iconUrl}
-                          className="h-11 w-11 rounded-2xl"
-                          cachePolicy="memory-disk"
-                          contentFit="contain"
-                          transition={150}
-                        />
-                      ) : (
-                        <RNText
-                          className="happy-font-heading text-[32px]"
-                          style={{ color: courseAccentColor }}
-                        >
-                          {getCourseMonogram(selectedCourse.title)}
-                        </RNText>
-                      )}
-                    </View>
-                  </View>
-
-                  <View className="flex-1 gap-2">
-                    <View className="happy-brand-soft-chip self-start px-3 py-1">
-                      <Text variant="chip" color="sage" className="uppercase tracking-[0.8px] text-[11px]">
-                        {isSelectedCourseEnrolled ? "Enrolled" : "New journey"}
-                      </Text>
-                    </View>
-                    <Text variant="h1">
-                      {selectedCourse.title}
-                    </Text>
-                    <Text variant="body" className="text-[15px] leading-[22px]">
-                      {selectedCourse.description ||
-                        "A guided journey you can start today."}
-                    </Text>
-                  </View>
-                </View>
-
-                <View className="flex-row gap-2.5">
-                  <CourseMetricCard
-                    value={preview?.sectionCount ?? "—"}
-                    label="Sections"
-                  />
-                  <CourseMetricCard
-                    value={preview?.unitCount ?? "—"}
-                    label="Units"
-                  />
-                  <CourseMetricCard
-                    value={preview?.nodeCount ?? "—"}
-                    label="Lessons"
-                  />
-                  <CourseMetricCard
-                    value={
-                      preview
-                        ? formatEstimatedDuration(preview.estimatedMinutes)
-                        : "—"
-                    }
-                    label="Time"
-                  />
-                </View>
-              </Card>
-
-              <View className="gap-3">
-                <View className="flex-row items-center justify-between gap-3 px-1">
-                  <View>
-                    <Text variant="h2">
-                      Journey Preview
-                    </Text>
-                    <Text variant="body" color="soft" className="text-sm">
-                      The path you will move through
-                    </Text>
-                  </View>
-                  <View className="happy-brand-status-chip px-3 py-1.5">
-                    <Text variant="chip" color="sage" className="uppercase tracking-[0.7px]">
-                      {isSelectedCourseEnrolled ? "In progress" : "Ready"}
-                    </Text>
-                  </View>
-                </View>
-
-                {isPreviewLoading ? (
-                  <View className="min-h-[132px] items-center justify-center gap-2.5 rounded-[24px] bg-warm-white">
-                    <ActivityIndicator color={interactionColor} />
-                    <Text variant="body" color="soft" className="text-sm">
-                      Loading journey preview...
-                    </Text>
-                  </View>
-                ) : isPreviewError ? (
-                  <View className="min-h-[132px] items-center justify-center gap-2.5 rounded-[24px] bg-warm-white px-6">
-                    <Text variant="body" className="text-center text-[15px]">
-                      Unable to load this course preview right now.
-                    </Text>
-                  </View>
-                ) : (
-                  <View className="gap-3">
-                    {preview?.sections.map((section) => (
-                      <CoursePreviewSectionRow
-                        key={section.id}
-                        accentColor={resolveSectionPreviewAccentColor(
-                          section.orderIndex,
-                        )}
-                        section={section}
-                      />
-                    ))}
-                  </View>
-                )}
-              </View>
+          ListHeaderComponent={
+            <View className="gap-2 px-1 mb-8">
+              <Text className="happy-font-heading text-[36px] leading-[40px] text-ink">
+                Explore Journeys
+              </Text>
+              <Text className="happy-font-body text-base leading-[23px] text-ink-soft">
+                Browse every published course, preview the path, and enroll when you are ready.
+              </Text>
             </View>
-          ) : null}
-        </ScrollView>
-
-        <Button
-          label={primaryButtonLabel}
-          disabled={!selectedCourse}
-          loading={isStartingCourse}
-          onPress={handlePrimaryActionPress}
-          className="mx-5 mt-4"
+          }
+          renderItem={({ item }) => (
+            <CourseAccordionCard
+              course={item}
+              isExpanded={item.id === selectedCourseId}
+              isEnrolled={enrolledCourseIds.has(item.id)}
+              onToggle={(id) => setSelectedCourseId(id === selectedCourseId ? null : id)}
+              preview={item.id === selectedCourseId ? preview : null}
+              isPreviewLoading={item.id === selectedCourseId ? isPreviewLoading : false}
+              isStartingCourse={isStartingCourse && item.id === selectedCourseId}
+              onEnroll={handlePrimaryActionPress}
+            />
+          )}
+          ListEmptyComponent={
+            isCatalogLoading ? (
+              <View className="py-12 items-center justify-center">
+                <ActivityIndicator color={interactionColor} />
+              </View>
+            ) : (
+              <View className="py-12 items-center justify-center">
+                <Text variant="body" className="text-center text-[15px] text-ink-muted">
+                  No published courses are available yet.
+                </Text>
+              </View>
+            )
+          }
         />
       </View>
     </View>
