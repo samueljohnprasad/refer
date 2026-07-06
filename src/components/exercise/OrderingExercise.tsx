@@ -3,6 +3,7 @@ import { View, ScrollView } from 'react-native';
 import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
 import { Card } from '@/src/components/ui/Card';
+import { OptionButton } from '@/src/components/ui/OptionButton';
 
 export const OrderingExercise = ({ payload, savedResponse, onInteraction }: any) => {
   const { prompt, items = [], correct_order = [] } = payload.content || {};
@@ -80,28 +81,26 @@ export const OrderingExercise = ({ payload, savedResponse, onInteraction }: any)
           const displayNum = isSelected ? orderIndex + 1 : "";
 
           return (
-            <Card
+            <OptionButton
               key={item.id}
-              variant={isSelected ? 'answer-selected' : 'answer'}
+              label={item.text}
+              isSelected={isSelected}
               onPress={() => handleSelect(item.id)}
-              contentClassName="flex-row items-center p-4"
-            >
-              <View 
-                className={`w-8 h-8 rounded-full items-center justify-center mr-4 ${
-                  isSelected 
-                    ? 'bg-sage-600' 
-                    : 'bg-slate-50 border-2 border-slate-200 border-dashed'
-                }`}
-              >
-                <Text className={`font-bold ${isSelected ? 'text-white' : 'text-transparent'}`}>
-                  {displayNum}
-                </Text>
-              </View>
-              
-              <Text className={`flex-1 text-lg font-medium ${isSelected ? 'text-sage-800' : 'text-slate-600'}`}>
-                {item.text}
-              </Text>
-            </Card>
+              alignText="left"
+              prefix={
+                <View 
+                  className={`w-8 h-8 rounded-full items-center justify-center ${
+                    isSelected 
+                      ? 'bg-[#0A7DB8]' 
+                      : 'bg-white border-2 border-slate-300 border-dashed'
+                  }`}
+                >
+                  <Text className={`font-bold ${isSelected ? 'text-white' : 'text-transparent'}`}>
+                    {displayNum}
+                  </Text>
+                </View>
+              }
+            />
           );
         })}
       </View>

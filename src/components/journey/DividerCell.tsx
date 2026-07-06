@@ -102,19 +102,8 @@ export function DividerCell({
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
+            strokeDasharray="0 28"
           />
-          {isConnectorActive && (
-            <AnimatedPath
-              d={item.segmentD}
-              stroke="rgba(255, 255, 255, 0.4)"
-              strokeWidth={pathStrokeWidth * 0.5}
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeDasharray="12 16"
-              animatedProps={animatedPathProps}
-            />
-          )}
         </Svg>
       ) : null}
       <View

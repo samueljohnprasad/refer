@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import { QuizPayload, ExerciseComponentProps } from '../../../types/exercises';
+import { OptionButton } from '@/src/components/ui/OptionButton';
 
 export const QuizExercise: React.FC<ExerciseComponentProps<QuizPayload>> = ({ 
   payload, 
@@ -29,29 +30,19 @@ export const QuizExercise: React.FC<ExerciseComponentProps<QuizPayload>> = ({
         {payload.content.question}
       </Text>
       
-      {payload.content.options.map((option, index) => {
-        const isSelected = selectedIndex === index;
-        return (
-          <TouchableOpacity 
-            key={index}
-            className={`p-4 rounded-xl border-2 mb-3 flex-row items-center justify-between ${
-              isSelected 
-                ? 'border-blue-500 bg-blue-50' 
-                : 'border-slate-200 bg-white'
-            }`}
-            onPress={() => handleSelect(index)}
-          >
-            <Text className={`text-lg flex-1 ${isSelected ? 'text-blue-700 font-bold' : 'text-slate-600'}`}>
-              {option}
-            </Text>
-            {isSelected && (
-              <View className="w-6 h-6 rounded-full bg-blue-500 items-center justify-center ml-4">
-                <Text className="text-white text-xs font-bold">✓</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        );
-      })}
+      <View className="gap-3">
+        {payload.content.options.map((option, index) => {
+          const isSelected = selectedIndex === index;
+          return (
+            <OptionButton
+              key={index}
+              label={option}
+              isSelected={isSelected}
+              onPress={() => handleSelect(index)}
+            />
+          );
+        })}
+      </View>
     </View>
   );
 };

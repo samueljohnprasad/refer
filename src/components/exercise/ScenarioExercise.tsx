@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, ScrollView } from 'react-native';
 import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
-import { Card } from '@/src/components/ui/Card';
+import { OptionButton } from '@/src/components/ui/OptionButton';
 
 export const ScenarioExercise = ({ payload, onInteraction }: any) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -51,20 +51,16 @@ export const ScenarioExercise = ({ payload, onInteraction }: any) => {
         </View>
       )}
 
-      <View className="gap-4 pb-12">
+      <View className="gap-3 pb-12">
         {options?.map((opt: any) => {
           const isSelected = selectedId === opt.id;
           return (
-            <Card
+            <OptionButton
               key={opt.id}
-              variant={isSelected ? 'answer-selected' : 'answer'}
+              label={opt.text}
+              isSelected={isSelected}
               onPress={() => handleSelect(opt)}
-              contentClassName="items-center justify-center p-4"
-            >
-              <Text className={`text-lg font-medium ${isSelected ? 'text-sage-700' : 'text-slate-600'}`}>
-                {opt.text}
-              </Text>
-            </Card>
+            />
           );
         })}
       </View>

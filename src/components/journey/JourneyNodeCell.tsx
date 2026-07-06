@@ -42,8 +42,6 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 // ---------------------------------------------------------------------------
 
 const NODE_VERTICAL_POSITION_RATIO = 0.85;
-const ICON_COLOR_ACTIVE = "#FFFFFF";
-const ICON_COLOR_LOCKED = "#94A3B8";
 const HUGEICON_SIZE_RATIO = 0.6;
 
 // ---------------------------------------------------------------------------
@@ -188,15 +186,14 @@ function JourneyNodeCellInner({
 
   switch (item.status) {
     case NodeStatus.COMPLETED:
-      faceColor = theme.pathCompletedColor || "#34d399";
+      faceColor = theme.headerGradient[1];
       iconName = item.icon || "checkpoint";
       isInteractive = true;
       break;
     case NodeStatus.ACTIVE:
-      faceColor = theme.pathActiveColor || "#3b82f6";
+      faceColor = theme.headerGradient[1];
       iconName = item.icon || "star";
       isInteractive = true;
-      showProgressRing = true;
       showTooltip = true;
       break;
     case NodeStatus.LOCKED:
@@ -208,7 +205,7 @@ function JourneyNodeCellInner({
   }
 
   const rimColor = darkenHex(faceColor, 0.22);
-  const iconColor = isInteractive ? ICON_COLOR_ACTIVE : ICON_COLOR_LOCKED;
+  const iconColor = darkenHex(faceColor, 0.55); // Tone-on-tone icon color
   const size = settings.defaultNodeSize;
   const hugeiconSize = size * HUGEICON_SIZE_RATIO;
   const halfSize = size / 2;
@@ -286,19 +283,9 @@ function JourneyNodeCellInner({
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
+              strokeDasharray="0 28"
             />
-            {isProgressSegment && (
-              <AnimatedPath
-                d={item.segmentD}
-                stroke="rgba(255, 255, 255, 0.4)"
-                strokeWidth={pathStrokeWidth * 0.5}
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeDasharray="10 10"
-                animatedProps={animatedPathProps}
-              />
-            )}
+            {/* Removed the translucent dashed overlay that created the 'rope' stitching */}
           </Svg>
       )}
 
@@ -349,7 +336,8 @@ function JourneyNodeCellInner({
                     icon={iconObj}
                     size={hugeiconSize}
                     color={iconColor}
-                    strokeWidth={1.5}
+                    strokeWidth={2.5}
+                    variant="solid"
                   />
                 }
                 iconSize={hugeiconSize}

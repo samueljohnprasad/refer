@@ -13,7 +13,7 @@ import { Text } from "@/components/ui/text";
 import { LinearGradient } from "expo-linear-gradient";
 import { UnitData } from "@/src/types/journey/unit";
 import { JourneyStats } from "@/src/types/journey/state";
-import { UNIT_GRADIENTS } from "@/src/data/journey/constants";
+import { DEFAULT_JOURNEY_CONFIG } from "@/src/data/journey";
 
 
 // ---------------------------------------------------------------------------
@@ -55,8 +55,8 @@ function StatBadge({ icon, value, label }: StatBadgeProps): React.JSX.Element {
 // ---------------------------------------------------------------------------
 
 function JourneyHeader({ unit, stats }: JourneyHeaderProps): React.JSX.Element {
-  const gradientColors =
-    UNIT_GRADIENTS[unit.colorScheme] ?? UNIT_GRADIENTS.green;
+  const theme = DEFAULT_JOURNEY_CONFIG.colorThemes[unit.colorScheme] ?? DEFAULT_JOURNEY_CONFIG.colorThemes.green;
+  const gradientColors = theme.headerGradient;
 
   return (
     <LinearGradient

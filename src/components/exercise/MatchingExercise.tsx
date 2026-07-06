@@ -3,6 +3,7 @@ import { View, ScrollView } from 'react-native';
 import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
 import { Card } from '@/src/components/ui/Card';
+import { OptionButton } from '@/src/components/ui/OptionButton';
 
 type Pair = { left: string; right: string };
 
@@ -172,19 +173,14 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
               }
               
               return (
-                <Card
+                <OptionButton
                   key={option.id}
-                  variant={variant}
+                  label={option.text}
+                  isSelected={isMatched}
                   onPress={() => handleOptionPress(option)}
                   disabled={isProcessing}
-                  accessibilityLabel={accessibilityLabel}
-                  contentClassName="p-4 min-h-[80px] justify-center"
                   className={isWrong ? 'opacity-70' : ''}
-                >
-                  <Text className="text-sm font-medium text-slate-700 text-center">
-                    {option.text}
-                  </Text>
-                </Card>
+                />
               );
             })}
           </View>

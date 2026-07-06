@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Brainstorming: Journey Map Sheet</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f8fafc;
+    color: #334155;
+    padding: 2rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .option {
+    background: white;
+    border-radius: 32px;
+    padding: 24px;
+    width: 320px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.2s ease;
+  }
+  .option:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  }
+  .option[data-selected="true"] {
+    border-color: #38bdf8;
+  }
+  
+  /* Mock UI Base */
+  .mock-header {
+    margin-bottom: 24px;
+  }
+  .mock-subtitle {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #5F7F58;
+    margin-bottom: 4px;
+  }
+  .mock-title {
+    font-size: 24px;
+    font-weight: 800;
+    font-family: Georgia, serif;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+
+  /* Option 1: Floating 3D */
+  .opt1-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 8px 0 #e2e8f0;
+    padding: 20px;
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .opt1-card.expanded {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    box-shadow: 0 8px 0 #bbf7d0;
+  }
+  .opt1-pill {
+    background: white;
+    border: 2px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 8px 12px;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 4px 0 #bbf7d0;
+    margin-right: 8px;
+    margin-bottom: 12px;
+  }
+  .opt1-progress {
+    height: 12px;
+    background: #dcfce7;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .opt1-progress-fill {
+    height: 100%;
+    background: #22c55e;
+    width: 30%;
+    border-radius: 6px;
+  }
+
+  /* Option 2: Minimal Magazine */
+  .opt2-card {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 24px 0;
+  }
+  .opt2-title {
+    font-size: 28px;
+    font-family: Georgia, serif;
+    font-weight: normal;
+    color: #0f172a;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .opt2-list {
+    margin-top: 16px;
+    padding-left: 16px;
+    border-left: 2px solid #22c55e;
+  }
+  .opt2-item {
+    font-size: 14px;
+    color: #475569;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .opt2-progress {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    margin-top: 24px;
+  }
+
+  /* Option 3: The Tactile Folder */
+  .opt3-card {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 4px;
+    margin-bottom: 16px;
+  }
+  .opt3-header {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .opt3-expanded-content {
+    padding: 16px 12px;
+  }
+  .opt3-unit-row {
+    background: white;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+</style>
+</head>
+<body>
+
+  <!-- Option 1 -->
+  <div class="option" onclick="toggleSelect(this)">
+    <h2>1. The 3D Playful Card</h2>
+    <p style="font-size:14px; color:#64748b; margin-bottom:24px;">Uses thick chunky borders, bold drop shadows, and pill buttons that feel clickable like physical keys. Very Duolingo-esque.</p>
+    
+    <div class="mock-header">
+      <div class="mock-subtitle">Journey Map</div>
+      <div class="mock-title">Sleep Reset</div>
+    </div>
+
+    <div class="opt1-card expanded">
+      <div style="font-size:18px; font-weight:bold; font-family:Georgia, serif; margin-bottom: 4px;">How Sleep Actually Works</div>
+      <div style="font-size:11px; font-weight:bold; color:#16a34a; letter-spacing:0.5px; margin-bottom: 16px;">SECTION 1 • 2 UNITS</div>
+      
+      <div>
+        <div class="opt1-pill">📖 Unit 1</div>
+        <div class="opt1-pill">📖 Unit 2</div>
+      </div>
+
+      <div style="font-size:11px; font-weight:bold; color:#16a34a; margin-bottom:6px;">0/10 COMPLETE</div>
+      <div class="opt1-progress"><div class="opt1-progress-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Option 2 -->
+  <div class="option" onclick="toggleSelect(this)">
+    <h2>2. The Minimal Magazine</h2>
+    <p style="font-size:14px; color:#64748b; margin-bottom:24px;">Strips away all borders and boxes. Relies on elegant typography, whitespace, and a clean editorial flow.</p>
+    
+    <div class="mock-header">
+      <div class="mock-subtitle">Journey Map</div>
+      <div class="mock-title">Sleep Reset</div>
+    </div>
+
+    <div class="opt2-card">
+      <div class="opt2-title">How Sleep<br>Actually Works</div>
+      <div style="font-size:12px; color:#64748b; margin-bottom: 8px;">SECTION 1 • 2 UNITS</div>
+      
+      <div class="opt2-list">
+        <div class="opt2-item">
+          <div style="width:24px;height:24px;background:#f1f5f9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:10px;">1</div>
+          The science of resting
+        </div>
+        <div class="opt2-item">
+          <div style="width:24px;height:24px;background:#f1f5f9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:10px;">2</div>
+          Circadian rhythms
+        </div>
+      </div>
+
+      <div class="opt2-progress">0/10 COMPLETE</div>
+    </div>
+  </div>
+
+  <!-- Option 3 -->
+  <div class="option" onclick="toggleSelect(this)">
+    <h2>3. The Tactile Folder</h2>
+    <p style="font-size:14px; color:#64748b; margin-bottom:24px;">The card looks like a soft container. Expanding it reveals stacked unit rows inside, like pulling files from a folder.</p>
+    
+    <div class="mock-header">
+      <div class="mock-subtitle">Journey Map</div>
+      <div class="mock-title">Sleep Reset</div>
+    </div>
+
+    <div class="opt3-card">
+      <div class="opt3-header">
+        <div style="font-size:18px; font-weight:bold; font-family:Georgia, serif;">How Sleep Actually Works</div>
+        <div style="font-size:12px; color:#64748b; margin-top:4px;">Section 1 • 2 Units</div>
+      </div>
+      <div class="opt3-expanded-content">
+        <div class="opt3-unit-row">
+          <div style="font-size:14px; font-weight:600;">Unit 1</div>
+          <div style="font-size:18px; color:#cbd5e1;">&rarr;</div>
+        </div>
+        <div class="opt3-unit-row">
+          <div style="font-size:14px; font-weight:600;">Unit 2</div>
+          <div style="font-size:18px; color:#cbd5e1;">&rarr;</div>
+        </div>
+        <div style="margin-top:16px; font-size:12px; font-weight:500; color:#94a3b8; text-align:center;">
+          0/10 complete
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSelect(el) {
+      document.querySelectorAll('.option').forEach(opt => opt.dataset.selected = 'false');
+      el.dataset.selected = 'true';
+    }
+  </script>
+</body>
+</html>

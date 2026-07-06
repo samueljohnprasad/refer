@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
 import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
-import { Card } from '@/src/components/ui/Card';
+import { OptionButton } from '@/src/components/ui/OptionButton';
 
 export const TrueFalseExercise = ({ payload, savedResponse, onInteraction }: any) => {
   const { statement, correct } = payload.content || {};
@@ -47,27 +47,19 @@ export const TrueFalseExercise = ({ payload, savedResponse, onInteraction }: any
 
       <View className="flex-row gap-4 pb-12">
         <View className="flex-1">
-          <Card
-            variant={selectedValue === true ? 'answer-selected' : 'answer'}
+          <OptionButton
+            label="True"
+            isSelected={selectedValue === true}
             onPress={() => handleSelect(true)}
-            contentClassName="items-center justify-center py-8"
-          >
-            <Text className={`text-xl font-bold ${selectedValue === true ? 'text-sage-700' : 'text-slate-600'}`}>
-              True
-            </Text>
-          </Card>
+          />
         </View>
         
         <View className="flex-1">
-          <Card
-            variant={selectedValue === false ? 'answer-selected' : 'answer'}
+          <OptionButton
+            label="False"
+            isSelected={selectedValue === false}
             onPress={() => handleSelect(false)}
-            contentClassName="items-center justify-center py-8"
-          >
-            <Text className={`text-xl font-bold ${selectedValue === false ? 'text-sage-700' : 'text-slate-600'}`}>
-              False
-            </Text>
-          </Card>
+          />
         </View>
       </View>
     </ScrollView>

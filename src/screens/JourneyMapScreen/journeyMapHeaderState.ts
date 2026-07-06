@@ -1,4 +1,4 @@
-import { UNIT_GRADIENTS } from "@/src/data/journey/constants";
+import { DEFAULT_JOURNEY_CONFIG } from "@/src/data/journey";
 
 const DEFAULT_UNIT_GRADIENT = ["#4CAF50", "#388E3C"] as const;
 
@@ -25,9 +25,9 @@ export function getJourneyMapHeaderState(
   renderedSection: RenderedSectionHeader,
   renderedUnit: RenderedUnitHeader,
 ): JourneyMapHeaderState {
-  const [faceColor, rimColor] =
-    UNIT_GRADIENTS[renderedUnit?.colorThemeKey ?? "green"] ??
-    DEFAULT_UNIT_GRADIENT;
+  const themeKey = renderedUnit?.colorThemeKey ?? "green";
+  const theme = DEFAULT_JOURNEY_CONFIG.colorThemes[themeKey] ?? DEFAULT_JOURNEY_CONFIG.colorThemes.green;
+  const [faceColor, rimColor] = theme.headerGradient;
 
   return {
     faceColor,

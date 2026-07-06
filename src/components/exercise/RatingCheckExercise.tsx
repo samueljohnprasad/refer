@@ -3,6 +3,7 @@ import { View, ScrollView, TextInput } from 'react-native';
 import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
 import { Card } from '@/src/components/ui/Card';
+import { OptionButton } from '@/src/components/ui/OptionButton';
 
 export const RatingCheckExercise = ({ payload, savedResponse, onInteraction }: any) => {
   const { prompt, scale = 5, labels = [], note_enabled } = payload.content || {};
@@ -57,22 +58,18 @@ export const RatingCheckExercise = ({ payload, savedResponse, onInteraction }: a
         </View>
       )}
 
-      <View className="gap-4 mb-8">
+      <View className="gap-3 mb-8">
         {scaleOptions.map((value, idx) => {
           const isSelected = selectedIndex === value;
           const labelText = labels[idx] ? labels[idx] : `Level ${value}`;
           
           return (
-            <Card
+            <OptionButton
               key={value}
-              variant={isSelected ? 'answer-selected' : 'answer'}
+              label={labelText}
+              isSelected={isSelected}
               onPress={() => handleSelect(value)}
-              contentClassName="items-center justify-center p-4"
-            >
-              <Text className={`text-lg font-medium ${isSelected ? 'text-sage-700' : 'text-slate-600'}`}>
-                {labelText}
-              </Text>
-            </Card>
+            />
           );
         })}
       </View>
