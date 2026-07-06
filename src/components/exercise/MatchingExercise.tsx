@@ -72,44 +72,61 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
     setUnmatchedOptions(options);
   }, [pairs, savedResponse]);
 
-  const updateMatches = (newMatchedIndices: Set<number>) => {
-    setMatchedIndices(newMatchedIndices);
-    
-    // Construct the matches record (mapping pairIndex -> pairIndex)
-    const matchesRecord: Record<number, number> = {};
-    newMatchedIndices.forEach(index => {
-      matchesRecord[index] = index;
-    });
-
-    const isReady = pairs.length > 0 && newMatchedIndices.size === pairs.length;
-    onInteraction({ matches: matchesRecord }, isReady);
+  const updateMatches = (newMatches: Record<number, number>) => {
+    setMatches(newMatches);
+    const ready = pairs.length > 0 && Object.keys(newMatches).length === pairs.length;
+    onInteraction({ matches: newMatches }, ready);
   };
 
-  const handleTilePress = (tile: Tile) => {
-    if (matchedIndices.has(tile.pairIndex)) return;
+  const handleLeftPress = (index: number) => {
+    // If it's already matched, unmatch it
+    if (matches[index] !== undefined) {
+      const newMatches = { ...matches };
+      delete newMatches[index];
+      updateMatches(newMatches);
+      setSelectedLeft(null);
+      return;
+    }
 
-    if (selectedTileId === null) {
-      // First selection
-      setSelectedTileId(tile.id);
-    } else if (selectedTileId === tile.id) {
-      // Deselect
-      setSelectedTileId(null);
+    if (selectedRight !== null) {
+      // Pair them!
+      const newMatches = { ...matches, [index]: selectedRight };
+      updateMatches(newMatches);
+      setSelectedLeft(null);
+      setSelectedRight(null);
     } else {
-      // Second selection, check for match
-      const selectedTile = tiles.find(t => t.id === selectedTileId);
-      if (selectedTile && selectedTile.pairIndex === tile.pairIndex) {
-        // Match!
-        const newMatchedIndices = new Set(matchedIndices);
-        newMatchedIndices.add(tile.pairIndex);
-        updateMatches(newMatchedIndices);
-        setSelectedTileId(null);
-      } else {
-        // Mismatch - just switch selection to the new tile (or could show error state)
-        setSelectedTileId(tile.id);
-      }
+      setSelectedLeft(index === selectedLeft ? null : index);
     }
   };
 
+  const handleRightPress = (index: number) => {
+    // Find if this right item is already matched
+    const matchedLeftIndex = Object.keys(matches).find(k => matches[Number(k)] === index);
+    if (matchedLeftIndex !== undefined) {
+      const newMatches = { ...matches };
+      delete newMatches[Number(matchedLeftIndex)];
+      updateMatches(newMatches);
+      setSelectedRight(null);
+      return;
+    }
+
+    if (selectedLeft !== null) {
+      // Pair them!
+      const newMatches = { ...matches, [selectedLeft]: index };
+      updateMatches(newMatches);
+      setSelectedLeft(null);
+      setSelectedRight(null);
+    } else {
+      setSelectedRight(index === selectedRight ? null : index);
+    }
+  };
+
+  // Helper to get match sequence number (1-based)
+  const getMatchNumber = (leftIndex: number) => {
+    const keys = Object.keys(matches).map(Number).sort((a, b) => a - b);
+    const pos = keys.indexOf(leftIndex);
+    return pos >= 0 ? pos + 1 : null;
+  };
   return (
     <ScrollView className="flex-1 p-6" showsVerticalScrollIndicator={false}>
       <View className="mb-6">
@@ -134,16 +151,39 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
         </View>
       )}
 
-      <View className="flex-row flex-wrap justify-between pb-12">
-        {tiles.map((tile) => (
-          <MatchCard
-            key={tile.id}
-            text={tile.text}
-            isSelected={selectedTileId === tile.id}
-            isMatched={matchedIndices.has(tile.pairIndex)}
-            onPress={() => handleTilePress(tile)}
-          />
-        ))}
+      <View className="flex-row gap-4 pb-12">
+        {/* Left Column */}
+        <View className="flex-1 flex-col gap-4">
+          {pairs.map((pair: Pair, index: number) => (
+            <MatchCard
+              key={`left-${index}`}
+              text={pair.left}
+              isSelected={selectedLeft === index}
+              isMatched={getMatchNumber(index) !== null}
+              matchNumber={getMatchNumber(index)}
+              onPress={() => handleLeftPress(index)}
+            />
+          ))}
+        </View>
+
+        {/* Right Column */}
+        <View className="flex-1 flex-col gap-4">
+          {shuffledRights.map((pair: Pair, index: number) => {
+            const matchedLeftIndex = Object.keys(matches).find(k => matches[Number(k)] === index);
+            const isMatched = matchedLeftIndex !== undefined;
+            
+            return (
+              <MatchCard
+                key={`right-${index}`}
+                text={pair.right}
+                isSelected={selectedRight === index}
+                isMatched={isMatched}
+                matchNumber={isMatched ? getMatchNumber(Number(matchedLeftIndex)) : null}
+                onPress={() => handleRightPress(index)}
+              />
+            );
+          })}
+        </View>
       </View>
     </ScrollView>
   );
