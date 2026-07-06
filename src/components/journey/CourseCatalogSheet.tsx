@@ -8,6 +8,7 @@ import {
   useWindowDimensions,
   View,
   Text as RNText,
+  LayoutAnimation,
 } from "react-native";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -361,9 +362,6 @@ function CourseCatalogSheetContent({
     selectedCourseId,
   ]);
 
-  const selectedCourse =
-    catalogCourses.find((course) => course.id === selectedCourseId) ?? null;
-
   const {
     data: selectedCourseTree,
     isFetching: isPreviewLoading,
@@ -377,38 +375,31 @@ function CourseCatalogSheetContent({
   const preview =
     selectedCourseTree ? buildCourseJourneyPreview(selectedCourseTree) : null;
 
-  const isSelectedCourseEnrolled = selectedCourse
-    ? enrolledCourseIds.has(selectedCourse.id)
-    : false;
-  const courseAccentColor = resolveCourseAccentColor(selectedCourse?.colorHex);
   const interactionColor = SAGE[500];
 
-  const handleCoursePress = useCallback((courseId: string) => {
-    setSelectedCourseId(courseId);
+  const handleToggle = useCallback((id: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+    setSelectedCourseId(prev => prev === id ? null : id);
   }, []);
 
-  const handlePrimaryActionPress = async () => {
-    if (!selectedCourse) {
+  const handlePrimaryActionPress = async (courseId: string) => {
+    const course = catalogCourses.find((c) => c.id === courseId);
+    if (!course) {
       return;
     }
+    const isEnrolled = enrolledCourseIds.has(courseId);
 
     try {
-      if (!isSelectedCourseEnrolled) {
-        await startCourse(selectedCourse.id).unwrap();
+      if (!isEnrolled) {
+        await startCourse(courseId).unwrap();
       }
 
-      onCourseSelect?.(selectedCourse.id);
+      onCourseSelect?.(courseId);
       onClose();
     } catch (error) {
       Alert.alert("Unable to open course", getErrorMessage(error));
     }
   };
-
-  const primaryButtonLabel = isSelectedCourseEnrolled
-    ? "Open Journey"
-    : isStartingCourse
-      ? "Enrolling..."
-      : "Enroll in Course";
 
   return (
     <View className="flex-1 happy-brand-screen">
@@ -442,7 +433,7 @@ function CourseCatalogSheetContent({
               course={item}
               isExpanded={item.id === selectedCourseId}
               isEnrolled={enrolledCourseIds.has(item.id)}
-              onToggle={(id) => setSelectedCourseId(id === selectedCourseId ? null : id)}
+              onToggle={handleToggle}
               preview={item.id === selectedCourseId ? preview : null}
               isPreviewLoading={item.id === selectedCourseId ? isPreviewLoading : false}
               isStartingCourse={isStartingCourse && item.id === selectedCourseId}
