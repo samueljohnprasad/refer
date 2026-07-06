@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, ScrollView } from 'react-native';
 import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
@@ -31,12 +31,21 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
   // State
   const [unmatchedConcepts, setUnmatchedConcepts] = useState<ConceptItem[]>([]);
   const [unmatchedOptions, setUnmatchedOptions] = useState<OptionItem[]>([]);
-  const [matches, setMatches] = useState<Record<number, number>>({});
+  const [matches, setMatches] = useState<Record<number, number>>(savedResponse?.matches || {});
   
   // Feedback state
   const [selectedWrongId, setSelectedWrongId] = useState<string | null>(null);
   const [matchedId, setMatchedId] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   // Initialize and shuffle options on mount
   useEffect(() => {
@@ -45,7 +54,6 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
     let initialMatches: Record<number, number> = {};
     if (savedResponse?.matches) {
       initialMatches = savedResponse.matches;
-      setMatches(initialMatches);
       
       const isReadyOnLoad = Object.keys(initialMatches).length === pairs.length;
       onInteraction({ matches: initialMatches }, isReadyOnLoad);
@@ -70,7 +78,8 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
 
     setUnmatchedConcepts(concepts);
     setUnmatchedOptions(options);
-  }, [pairs, savedResponse]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pairs]);
 
   const handleOptionPress = (option: OptionItem) => {
     if (isProcessing || unmatchedConcepts.length === 0) return;
@@ -82,7 +91,7 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
       // Correct match
       setMatchedId(option.id);
       
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         const newMatches = { ...matches, [activeConcept.pairIndex]: option.pairIndex };
         setMatches(newMatches);
         
@@ -100,7 +109,7 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
     } else {
       // Incorrect match
       setSelectedWrongId(option.id);
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setSelectedWrongId(null);
         setIsProcessing(false);
       }, 500);
@@ -155,12 +164,20 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
               let variant: 'answer' | 'answer-selected' = 'answer';
               if (isMatched) variant = 'answer-selected';
               
+              let accessibilityLabel = option.text;
+              if (isMatched) {
+                accessibilityLabel = `${option.text}, matched`;
+              } else if (isWrong) {
+                accessibilityLabel = `${option.text}, incorrect match`;
+              }
+              
               return (
                 <Card
                   key={option.id}
                   variant={variant}
                   onPress={() => handleOptionPress(option)}
                   disabled={isProcessing}
+                  accessibilityLabel={accessibilityLabel}
                   contentClassName="p-4 min-h-[80px] justify-center"
                   className={isWrong ? 'opacity-70' : ''}
                 >
