@@ -7,6 +7,7 @@ import { Mascot } from "@/src/components/ui/Mascot";
 import { OrganicSpeechTail } from "@/src/components/ui/OrganicSpeechTail";
 
 export interface Card {
+  id?: string;
   text: string;
 }
 
@@ -25,25 +26,18 @@ export const LearnCardsExercise = ({ payload, onInteraction }: LearnCardsExercis
   const [visibleCards, setVisibleCards] = useState(1);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // Auto-unlock if there's only one card
+  // Auto-unlock when all cards are revealed or if no cards
   useEffect(() => {
-    if (cards.length <= 1) {
+    if (cards.length > 0 && visibleCards >= cards.length) {
+      onInteraction(true);
+    } else if (cards.length === 0) {
       onInteraction(true);
     }
-  }, [cards.length, onInteraction]);
+  }, [visibleCards, cards.length, onInteraction]);
 
   const handleNext = () => {
-    if (visibleCards < cards.length) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      setVisibleCards((prev) => prev + 1);
-      
-      // Unlock continue button on last card
-      if (visibleCards + 1 === cards.length) {
-        onInteraction(true);
-      }
-
-
-    }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setVisibleCards((prev) => Math.min(prev + 1, cards.length));
   };
 
   if (cards.length === 0) {
@@ -77,7 +71,7 @@ export const LearnCardsExercise = ({ payload, onInteraction }: LearnCardsExercis
           
           return (
             <Animated.View
-              key={index}
+              key={card.id || `card-${index}`}
               entering={FadeInUp.springify().damping(20).stiffness(200)}
               className="flex-row items-end mb-4"
             >
