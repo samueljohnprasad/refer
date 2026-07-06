@@ -579,9 +579,26 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
-    "id": "l2_e3",
+    "id": "l2_e2b",
     "nodeId": "u1_1_sleep_mechanics-n2",
     "orderIndex": 2,
+    "type": "true_false",
+    "phase": "introduce",
+    "durationSeconds": 20,
+    "scaffoldLevel": 2,
+    "difficulty": 0.15,
+    "isScored": true,
+    "concept": "sleep_cycles",
+    "content": {
+      "statement": "The first sleep cycle of the night is typically the longest.",
+      "correct": false,
+      "explanation": "Actually, the first cycle is usually the shortest (70-100 mins). Later cycles get longer!"
+    }
+  },
+  {
+    "id": "l2_e3",
+    "nodeId": "u1_1_sleep_mechanics-n2",
+    "orderIndex": 3,
     "type": "ordering",
     "phase": "challenge",
     "durationSeconds": 50,
@@ -619,9 +636,28 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
+    "id": "l2_e3b",
+    "nodeId": "u1_1_sleep_mechanics-n2",
+    "orderIndex": 4,
+    "type": "matching",
+    "phase": "challenge",
+    "durationSeconds": 45,
+    "scaffoldLevel": 3,
+    "difficulty": 0.2,
+    "isScored": true,
+    "concept": "sleep_cycles",
+    "content": {
+      "prompt": "Match the cycle stage to its characteristics.",
+      "pairs": [
+        { "left": "First few cycles", "right": "Shorter, heavily Deep Sleep" },
+        { "left": "Last few cycles", "right": "Longer, heavily REM" }
+      ]
+    }
+  },
+  {
     "id": "l2_e4",
     "nodeId": "u1_1_sleep_mechanics-n2",
-    "orderIndex": 3,
+    "orderIndex": 5,
     "type": "true_false",
     "phase": "challenge",
     "durationSeconds": 30,
@@ -636,9 +672,31 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
+    "id": "l2_e4b",
+    "nodeId": "u1_1_sleep_mechanics-n2",
+    "orderIndex": 6,
+    "type": "multiple_choice",
+    "phase": "consolidate",
+    "durationSeconds": 25,
+    "scaffoldLevel": 4,
+    "difficulty": 0.2,
+    "isScored": true,
+    "concept": "sleep_cycles",
+    "content": {
+      "prompt": "How many sleep cycles does a typical person go through in a full night?",
+      "options": [
+        { "id": "a", "text": "4 to 5 cycles", "correct": true },
+        { "id": "b", "text": "1 to 2 cycles", "correct": false },
+        { "id": "c", "text": "8 to 10 cycles", "correct": false }
+      ],
+      "feedback_correct": "Correct! Each cycle is roughly 90-120 minutes, adding up to a full night.",
+      "feedback_incorrect": "Not quite. Think about 90 minute chunks over 7-8 hours (4-5 cycles)."
+    }
+  },
+  {
     "id": "l2_e5",
     "nodeId": "u1_1_sleep_mechanics-n2",
-    "orderIndex": 4,
+    "orderIndex": 7,
     "type": "guided_response",
     "phase": "peak",
     "durationSeconds": 90,
@@ -665,9 +723,26 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
+    "id": "l2_e5b",
+    "nodeId": "u1_1_sleep_mechanics-n2",
+    "orderIndex": 8,
+    "type": "true_false",
+    "phase": "consolidate",
+    "durationSeconds": 20,
+    "scaffoldLevel": 2,
+    "difficulty": 0.1,
+    "isScored": true,
+    "concept": "sleep_cycles",
+    "content": {
+      "statement": "It is completely abnormal to briefly wake up between sleep cycles.",
+      "correct": false,
+      "explanation": "Brief awakenings between cycles are 100% normal and biological. Most people just forget them!"
+    }
+  },
+  {
     "id": "l2_e6",
     "nodeId": "u1_1_sleep_mechanics-n2",
-    "orderIndex": 5,
+    "orderIndex": 9,
     "type": "multiple_choice",
     "phase": "consolidate",
     "durationSeconds": 25,
@@ -699,9 +774,31 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
     }
   },
   {
+    "id": "l2_e6b",
+    "nodeId": "u1_1_sleep_mechanics-n2",
+    "orderIndex": 10,
+    "type": "guided_response",
+    "phase": "consolidate",
+    "durationSeconds": 30,
+    "scaffoldLevel": 3,
+    "difficulty": 0.25,
+    "isScored": true,
+    "concept": "sleep_cycles",
+    "content": {
+      "prompt": "Complete the sentence:",
+      "template": "Later sleep cycles have much more {1} sleep, which is why we remember {2} right before waking.",
+      "options": [
+        { "id": "opt_1", "text": "REM", "target": "1" },
+        { "id": "opt_2", "text": "dreams", "target": "2" }
+      ],
+      "feedback_correct": "Exactly! That's why morning sleep feels so active.",
+      "feedback_incorrect": "Remember, the end of the night is packed with REM (dream) sleep."
+    }
+  },
+  {
     "id": "l2_e7",
     "nodeId": "u1_1_sleep_mechanics-n2",
-    "orderIndex": 6,
+    "orderIndex": 11,
     "type": "slider_rating",
     "phase": "cooldown",
     "durationSeconds": 15,
@@ -725,7 +822,7 @@ export const sleepResetFlatData: GetCourseTreeResponse = {
   {
     "id": "l2_e8",
     "nodeId": "u1_1_sleep_mechanics-n2",
-    "orderIndex": 7,
+    "orderIndex": 12,
     "type": "learn_cards",
     "phase": "cooldown",
     "durationSeconds": 30,
