@@ -3,6 +3,7 @@ import {
   Pressable,
   ScrollView,
   Text,
+  TextInput,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -14,6 +15,7 @@ import Animated, {
   useSharedValue,
   useAnimatedProps,
   withTiming,
+  withSpring,
   Easing,
 } from "react-native-reanimated";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
@@ -31,6 +33,7 @@ import {
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 const PALETTE = {
   warmWhite: "#FFFFFF",
@@ -155,6 +158,21 @@ const HeaderOverlayContent = ({
   const sectionNumber = activeCourseSummary?.activeSectionNumber ?? 1;
   const sectionCount = activeCourseSummary?.sectionCount ?? 0;
   const progressPercent = formatProgressPercent(progress);
+
+  const animatedProgressNumber = useSharedValue(0);
+
+  React.useEffect(() => {
+    animatedProgressNumber.value = withTiming(progress, {
+      duration: 1500,
+      easing: Easing.out(Easing.cubic),
+    });
+  }, [progress]);
+
+  const animatedProgressTextProps = useAnimatedProps(() => {
+    return {
+      text: `${Math.round(animatedProgressNumber.value * 100)}%`,
+    } as any;
+  });
 
   return (
     <Animated.View
@@ -302,12 +320,20 @@ const HeaderOverlayContent = ({
               >
                 {completedNodes} of {totalNodes} sessions completed
               </Text>
-              <Text
-                className="text-sm text-sage-600"
-                style={{ fontFamily: FONTS.bodyBold }}
-              >
-                {progressPercent}
-              </Text>
+              <AnimatedTextInput
+                editable={false}
+                animatedProps={animatedProgressTextProps}
+                className="text-sm"
+                style={{
+                  fontFamily: FONTS.bodyBold,
+                  padding: 0,
+                  margin: 0,
+                  color: PALETTE.sage600,
+                  borderWidth: 0,
+                  textAlign: "right",
+                  minWidth: 40,
+                }}
+              />
             </View>
 
             <View className="w-full">

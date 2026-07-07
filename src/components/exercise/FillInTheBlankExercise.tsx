@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
@@ -22,7 +22,7 @@ export const FillInTheBlankExercise: React.FC<FillInTheBlankExerciseProps> = ({
   const [activeTarget, setActiveTarget] = useState<string | null>(null);
 
   // Extract targets from the template
-  const parseTemplate = () => {
+  const { parts, targets } = useMemo(() => {
     if (!template) return { parts: [], targets: [] };
     const parts = template.split(/(\{\d+\})/g);
     const targets: string[] = [];
@@ -33,9 +33,7 @@ export const FillInTheBlankExercise: React.FC<FillInTheBlankExerciseProps> = ({
       }
     });
     return { parts, targets };
-  };
-
-  const { parts, targets } = parseTemplate();
+  }, [template]);
 
   // Initialize active target to the first unfilled one
   useEffect(() => {

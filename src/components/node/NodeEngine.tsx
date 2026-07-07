@@ -21,25 +21,16 @@ export const NodeEngine: React.FC<NodeEngineProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [localResponses, setLocalResponses] = useState<Record<string, any>>(initialSavedResponses);
   
+  const initialExercise = exercises[0];
+  const initialSavedResponse = initialSavedResponses[initialExercise?.id];
+
   // Track if the current exercise has received valid input
-  const [isCurrentExerciseReady, setIsCurrentExerciseReady] = useState(false);
-  const [currentResponse, setCurrentResponse] = useState<any>(null);
+  const [isCurrentExerciseReady, setIsCurrentExerciseReady] = useState(initialSavedResponse !== undefined);
+  const [currentResponse, setCurrentResponse] = useState<any>(initialSavedResponse !== undefined ? initialSavedResponse : null);
   const [checkStatus, setCheckStatus] = useState<"idle" | "success" | "error">("idle");
 
   const currentExercise = exercises[currentIndex];
   const currentSavedResponse = localResponses[currentExercise?.id];
-
-  // Whenever the exercise changes, reset the readiness state (unless there's a saved response)
-  useEffect(() => {
-    setCheckStatus("idle");
-    if (currentSavedResponse !== undefined) {
-      setIsCurrentExerciseReady(true);
-      setCurrentResponse(currentSavedResponse);
-    } else {
-      setIsCurrentExerciseReady(false);
-      setCurrentResponse(null);
-    }
-  }, [currentIndex, currentSavedResponse]);
 
   const handleContinuePress = () => {
     // If scored and we haven't checked yet
@@ -61,13 +52,31 @@ export const NodeEngine: React.FC<NodeEngineProps> = ({
 
     // 2. Advance or complete
     if (currentIndex < exercises.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      const nextIndex = currentIndex + 1;
+      const nextExercise = exercises[nextIndex];
+      const nextSavedResponse = newResponses[nextExercise.id];
+      
+      setCurrentIndex(nextIndex);
+      setCheckStatus("idle");
+      
+      if (nextSavedResponse !== undefined) {
+        setIsCurrentExerciseReady(true);
+        setCurrentResponse(nextSavedResponse);
+      } else {
+        setIsCurrentExerciseReady(false);
+        setCurrentResponse(null);
+      }
     } else {
       onNodeComplete(newResponses);
     }
   };
 
   if (exercises.length === 0) return null;
+
+  const handleInteraction = React.useCallback((response: any, isReady = true) => {
+    setCurrentResponse(response);
+    setIsCurrentExerciseReady(isReady);
+  }, []);
 
   return (
     <LessonScreen
@@ -86,10 +95,7 @@ export const NodeEngine: React.FC<NodeEngineProps> = ({
         key={currentExercise.id} 
         payload={currentExercise} 
         savedResponse={currentSavedResponse}
-        onInteraction={(response, isReady = true) => {
-          setCurrentResponse(response);
-          setIsCurrentExerciseReady(isReady);
-        }} 
+        onInteraction={handleInteraction} 
       />
     </LessonScreen>
   );
