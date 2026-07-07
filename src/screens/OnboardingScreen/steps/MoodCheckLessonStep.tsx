@@ -39,13 +39,13 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           Day 1 — Lesson 1 of 2
         </Text>
         <Text
-          style={{ fontFamily: "FrauncesRegular" }}
+          style={{ fontFamily: "CormorantRegular" }}
           className="mt-3 text-center text-[28px] leading-[1.08] text-ink"
         >
           Naming the{" "}
           <Text
             style={{
-              fontFamily: "FrauncesRegularItalic",
+              fontFamily: "CormorantRegularItalic",
               color: "#5F7F58",
             }}
           >
@@ -71,13 +71,13 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           📖 The Concept
         </Text>
         <Text
-          style={{ fontFamily: "FrauncesRegular" }}
+          style={{ fontFamily: "CormorantRegular" }}
           className="mt-3 text-[15px] leading-[1.55] text-ink"
         >
           When you put a feeling into{" "}
           <Text
             style={{
-              fontFamily: "FrauncesSemiBoldItalic",
+              fontFamily: "CormorantSemiBoldItalic",
               color: "#29452A",
             }}
           >
@@ -87,7 +87,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           {"\n\n"}Researchers call it{" "}
           <Text
             style={{
-              fontFamily: "FrauncesSemiBoldItalic",
+              fontFamily: "CormorantSemiBoldItalic",
               color: "#29452A",
             }}
           >
@@ -96,7 +96,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           — the intensity drops by roughly{" "}
           <Text
             style={{
-              fontFamily: "FrauncesSemiBoldItalic",
+              fontFamily: "CormorantSemiBoldItalic",
               color: "#29452A",
             }}
           >
@@ -177,13 +177,13 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           ✏️ Now: name yours
         </Text>
         <Text
-          style={{ fontFamily: "FrauncesRegular" }}
+          style={{ fontFamily: "CormorantRegular" }}
           className="mt-2 text-[22px] leading-[1.3] text-ink"
         >
           How are you,{" "}
           <Text
             style={{
-              fontFamily: "FrauncesRegularItalic",
+              fontFamily: "CormorantRegularItalic",
               color: "#5F7F58",
             }}
           >

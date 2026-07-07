@@ -107,6 +107,7 @@ function DuolingoSvgNodeButtonInner({
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       accessibilityRole="button"
+      accessibilityState={{ disabled }}
       accessibilityLabel={accessibilityLabel}
       style={containerStyle}
     >

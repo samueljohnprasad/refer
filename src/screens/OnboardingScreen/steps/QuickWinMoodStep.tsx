@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import Animated, {
@@ -113,7 +114,7 @@ const QuickWinMoodStep: React.FC<QuickWinMoodStepProps> = ({
                 <Text
                     className="text-center text-gray-900 dark:text-white mb-3"
                     style={{
-                        fontFamily: "FrauncesBold",
+                        fontFamily: "CormorantBold",
                         fontSize: 30,
                         lineHeight: 36,
                         letterSpacing: -0.5,

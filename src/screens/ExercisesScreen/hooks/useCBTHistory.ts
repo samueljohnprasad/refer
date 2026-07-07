@@ -104,7 +104,6 @@ export function useCBTHistory() {
       };
     },
     getNextPageParam: (lastPage) => lastPage.nextPage,
-    enabled: !!user?.id,
   });
 }
 

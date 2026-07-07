@@ -79,13 +79,13 @@ const GuestSignUpSheet = forwardRef<BottomSheetModal | null, GuestSignUpSheetPro
                         >
                             Sign up to keep going
                         </Text>
-                        <Text className="text-ink-soft text-[15px] leading-6 mb-5">
+                        <Text className="text-ink-soft text-base leading-6 mb-5">
                             You've completed{' '}
-                            <Text className="text-purple-600 font-semibold">
+                            <Text className="text-ink font-semibold">
                                 {completedCount} {completedCount === 1 ? 'node' : 'nodes'}
                             </Text>{' '}
                             and earned{' '}
-                            <Text className="text-purple-600 font-semibold">
+                            <Text className="text-ink font-semibold">
                                 {guestProgress.tempXP} IP
                             </Text>
                             . Create a free account to save your progress and unlock the rest of your journey.
@@ -95,7 +95,7 @@ const GuestSignUpSheet = forwardRef<BottomSheetModal | null, GuestSignUpSheetPro
                         {completedCount > 0 && (
                             <View className="flex-row items-center gap-2 bg-purple-50 rounded-2xl px-4 py-3 mb-5">
                                 <HugeiconsIcon icon={SparklesIcon} size={18} color="#7B61FF" />
-                                <Text className="text-purple-700 text-sm font-semibold">
+                                <Text className="text-ink text-sm font-semibold">
                                     {completedCount} {completedCount === 1 ? 'lesson' : 'lessons'} · {guestProgress.tempXP} Insight Points saved
                                 </Text>
                             </View>

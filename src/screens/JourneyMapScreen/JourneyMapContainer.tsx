@@ -12,15 +12,10 @@ import { useFocusTunneling } from "@/src/hooks/ui/useFocusTunneling";
 import { AmbientTapDust } from "@/src/components/ui/AmbientTapDust";
 import { GlassView } from "expo-glass-effect";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
-import { ScreenReveal } from "@/src/components/journey/animations/ScreenReveal";
-import { RevealTopBar } from "@/src/components/journey/animations/RevealTopBar";
 
 import CourseCatalogSheet from "@/src/components/journey/CourseCatalogSheet";
 import { HomeMainButton } from "@/src/components/journey/home-main-button";
-import {
-  DuolingoHeader,
-  DuolingoHeaderStats,
-} from "@/src/components/journey/DuolingoHeader";
+import { DuolingoHeader } from "@/src/components/journey/DuolingoHeader";
 import { useGetEnrolledCoursesQuery } from "@/src/features/journey/journeyApi";
 import {
   selectCourseHeaderSummaryForCourse,
@@ -32,15 +27,8 @@ import JourneyMapFlashList from "./JourneyMapFlashList";
 import { useActiveCourse } from "@/hooks/journey/useActiveCourse";
 import { useJourneyMap } from "@/hooks/journey/useJourneyMap";
 import { useJourneyMapController } from "./useJourneyMapController";
-
-// ── Stub stats — replace with real user stats hook when available ─────────────
-
-const STUB_STATS: DuolingoHeaderStats = {
-  streak: 0,
-  gems: 0,
-  hearts: 5,
-  xp: 0,
-};
+import { useStreak } from "@/src/hooks/useStreak";
+import { useInsightPoints } from "@/src/hooks/useInsightPoints";
 
 /**
  * Journey Map container. Entry point for the journeys tab.
@@ -68,6 +56,16 @@ export default function JourneyMapContainer(): React.JSX.Element {
   const controller = useJourneyMapController(courseId || "");
   const animatedStyle = useFocusTunneling(isModalOpen);
 
+  const { currentStreak } = useStreak();
+  const { totalIP } = useInsightPoints();
+
+  const userStats = {
+    streak: currentStreak,
+    gems: 0, // TODO: Wire up actual gems when available
+    hearts: 5, // TODO: Wire up actual hearts when available
+    xp: totalIP,
+  };
+
   if (!courseId || (isLoading && !isLoaded)) {
     return <JourneyLoadingSkeleton />;
   }
@@ -79,19 +77,6 @@ export default function JourneyMapContainer(): React.JSX.Element {
           headerShown: true,
           headerTransparent: true,
           headerShadowVisible: false,
-          // headerBackground: () => (
-          //   <GlassView
-          //     glassEffectStyle="regular"
-          //     style={{
-          //       flex: 1,
-          //       borderBottomWidth: 10,
-          //       borderBottomColor: "red",
-          //       shadowOpacity: 0,
-          //       shadowRadius: 0,
-          //       elevation: 0,
-          //     }}
-          //   />
-          // ),
           header: () => (
             <GlassView
               glassEffectStyle="regular"
@@ -101,15 +86,12 @@ export default function JourneyMapContainer(): React.JSX.Element {
                 elevation: 0,
                 shadowOpacity: 0,
                 shadowRadius: 0,
-                shadowColor: "transparent", // IMPORTANT
-
-                // fixes iOS separator artifacts
-                overflow: "hidden",
+                shadowColor: "transparent",
               }}
             >
               <SafeAreaView edges={["top"]}>
                 <DuolingoHeader
-                  stats={STUB_STATS}
+                  stats={userStats}
                   enrolledCourses={enrolledCourses}
                   activeCourseId={courseId}
                   activeCourseSummary={activeCourseSummary}
@@ -131,7 +113,10 @@ export default function JourneyMapContainer(): React.JSX.Element {
       />
       <>
         <AmbientTapDust>
-          <Animated.View className="flex-1 bg-brand-canvas" style={animatedStyle}>
+          <Animated.View
+            className="flex-1 bg-brand-canvas"
+            style={animatedStyle}
+          >
             <JourneyMapFlashList courseId={courseId} controller={controller} />
           </Animated.View>
         </AmbientTapDust>

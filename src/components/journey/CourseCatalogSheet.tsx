@@ -1,14 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   Pressable,
   ScrollView,
   useWindowDimensions,
   View,
   Text as RNText,
-  LayoutAnimation,
 } from "react-native";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -28,6 +32,9 @@ import Animated, {
   interpolate,
   FadeIn,
   FadeOut,
+  SlideInDown,
+  SlideOutDown,
+  LinearTransition,
 } from "react-native-reanimated";
 
 import {
@@ -41,10 +48,7 @@ import type {
   CourseJourneyPreviewSection,
   EnrolledCourseListItem,
 } from "@/src/types/journeyV5";
-import {
-  getCourseMonogram,
-  resolveCourseAccentColor,
-} from "./courseVisuals";
+import { getCourseMonogram, resolveCourseAccentColor } from "./courseVisuals";
 import { SAGE, BRAND_SURFACE } from "@/lib/tokens";
 
 type CourseCatalogSheetProps = {
@@ -60,9 +64,8 @@ type CourseAccordionCardProps = {
   isExpanded: boolean;
   isEnrolled: boolean;
   onToggle: (courseId: string) => void;
-  preview: ReturnType<typeof buildCourseJourneyPreview> | null;
-  isPreviewLoading: boolean;
   isStartingCourse: boolean;
+  enrollmentError?: string | null;
   onEnroll: (courseId: string) => void;
 };
 
@@ -70,14 +73,6 @@ type CoursePreviewSectionRowProps = {
   accentColor: string;
   section: CourseJourneyPreviewSection;
 };
-
-
-const SECTION_PREVIEW_ACCENTS = [
-  "#5F7F58",
-  "#1F7A70",
-  "#C56A3A",
-  "#7A6754",
-] as const;
 
 function resolveInitialCourseId(
   courses: CourseCatalogListItem[],
@@ -116,12 +111,6 @@ function formatPreviewCount(value: number, singularLabel: string): string {
   return `${value} ${value === 1 ? singularLabel : `${singularLabel}s`}`;
 }
 
-function resolveSectionPreviewAccentColor(sectionOrderIndex: number): string {
-  return SECTION_PREVIEW_ACCENTS[
-    (Math.max(sectionOrderIndex, 1) - 1) % SECTION_PREVIEW_ACCENTS.length
-  ];
-}
-
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
@@ -142,96 +131,171 @@ const CourseAccordionCard = React.memo(function CourseAccordionCard({
   isExpanded,
   isEnrolled,
   onToggle,
-  preview,
-  isPreviewLoading,
   isStartingCourse,
+  enrollmentError,
   onEnroll,
 }: CourseAccordionCardProps): React.JSX.Element {
   const courseAccentColor = resolveCourseAccentColor(course.colorHex);
-  
+
+  const { data: selectedCourseTree, isFetching: isPreviewLoading } =
+    useGetCourseTreeQuery(course.id, {
+      skip: !isExpanded,
+    });
+
+  const preview = useMemo(
+    () =>
+      selectedCourseTree ? buildCourseJourneyPreview(selectedCourseTree) : null,
+    [selectedCourseTree],
+  );
+
   // Reanimated shared values
   const expansionProgress = useSharedValue(isExpanded ? 1 : 0);
 
   useEffect(() => {
-    expansionProgress.value = withSpring(isExpanded ? 1 : 0, {
-      damping: 20,
-      stiffness: 150,
-      mass: 0.8,
+    expansionProgress.value = withTiming(isExpanded ? 1 : 0, {
+      duration: 350,
+      easing: Easing.out(Easing.exp),
     });
   }, [isExpanded, expansionProgress]);
 
   const animatedChevronStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { rotate: `${interpolate(expansionProgress.value, [0, 1], [0, 180])}deg` }
+        {
+          rotate: `${interpolate(expansionProgress.value, [0, 1], [0, 180])}deg`,
+        },
       ],
     };
   });
 
   return (
-    <View className="mb-4 bg-white rounded-[24px] border-2 border-b-4 border-slate-100 shadow-sm shadow-slate-200/20 overflow-hidden">
-      <Pressable 
+    <Animated.View
+      layout={LinearTransition.duration(350).easing(Easing.out(Easing.exp))}
+      className="mb-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm shadow-slate-200/20 overflow-hidden"
+    >
+      <Pressable
         onPress={() => onToggle(course.id)}
         className="flex-row items-center justify-between p-5"
         style={isExpanded ? { backgroundColor: `${courseAccentColor}08` } : {}}
       >
         <View className="flex-row items-center gap-4 flex-1">
-          <View className="h-14 w-14 items-center justify-center rounded-[18px]" style={{ backgroundColor: `${courseAccentColor}1A` }}>
+          <View
+            className="h-14 w-14 items-center justify-center rounded-[18px]"
+            style={{ backgroundColor: `${courseAccentColor}1A` }}
+          >
             {course.iconUrl ? (
-              <Image source={course.iconUrl} className="h-8 w-8 rounded-lg" cachePolicy="memory-disk" contentFit="contain" />
+              <Image
+                source={course.iconUrl}
+                className="h-8 w-8 rounded-lg"
+                cachePolicy="memory-disk"
+                contentFit="contain"
+              />
             ) : (
-              <RNText className="happy-font-heading text-[20px]" style={{ color: courseAccentColor }}>
+              <RNText
+                className="happy-font-heading text-xl"
+                style={{ color: courseAccentColor }}
+              >
                 {getCourseMonogram(course.title)}
               </RNText>
             )}
           </View>
           <View className="flex-1">
-            <Text variant="body-bold" className="text-[17px] text-ink">{course.title}</Text>
+            <Text variant="body-bold" className="text-base text-ink">
+              {course.title}
+            </Text>
             {isEnrolled && (
-              <Text variant="chip" color="sage" className="uppercase tracking-[0.4px] text-[10px] mt-1">Enrolled</Text>
+              <Text
+                variant="chip"
+                color="sage"
+                className="uppercase tracking-wider text-xs mt-1"
+              >
+                Enrolled
+              </Text>
             )}
           </View>
         </View>
         <Animated.View style={animatedChevronStyle} className="px-2">
-          <HugeiconsIcon icon={ArrowDown01Icon} size={20} color="#94A3B8" strokeWidth={2.5} />
+          <HugeiconsIcon
+            icon={ArrowDown01Icon}
+            size={20}
+            color="#94A3B8"
+            strokeWidth={2.5}
+          />
         </Animated.View>
       </Pressable>
 
       {isExpanded && (
-        <View className="p-5 pt-0 border-t border-slate-100/50" style={{ backgroundColor: `${courseAccentColor}04` }}>
-          <Text variant="body" className="text-[15px] leading-[22px] text-ink-soft mt-4 mb-3">
+        <View
+          className="p-5 pt-0 border-t border-slate-100/50"
+          style={{ backgroundColor: `${courseAccentColor}04` }}
+        >
+          <Text
+            variant="body"
+            className="text-base leading-relaxed text-ink-soft mt-4 mb-3"
+          >
             {course.description || "A guided journey you can start today."}
           </Text>
-          
-          <Text variant="caption-muted" className="text-[13px] font-medium mb-6">
-            {preview?.unitCount ?? "—"} Units • {preview?.nodeCount ?? "—"} Lessons • {preview ? formatEstimatedDuration(preview.estimatedMinutes) : "—"}
+
+          <Text variant="caption-muted" className="text-sm font-medium mb-6">
+            {preview?.unitCount ?? "—"} Units • {preview?.nodeCount ?? "—"}{" "}
+            Lessons •{" "}
+            {preview ? formatEstimatedDuration(preview.estimatedMinutes) : "—"}
           </Text>
 
           {isPreviewLoading ? (
-            <View className="py-8 items-center justify-center">
-              <ActivityIndicator color={courseAccentColor} />
+            <View className="bg-slate-50/50 rounded-2xl p-4 mb-6 border border-slate-100 gap-3 animate-pulse">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <View
+                  key={i}
+                  className="flex-row items-center gap-4 py-3 border-b border-slate-200/40 last:border-b-0"
+                >
+                  <View className="h-12 w-12 rounded-[14px] bg-slate-200/50" />
+                  <View className="flex-1 gap-2">
+                    <View className="h-4 w-2/3 rounded bg-slate-200/60" />
+                    <View className="h-3 w-1/3 rounded bg-slate-100" />
+                  </View>
+                </View>
+              ))}
             </View>
           ) : preview ? (
             <View className="bg-slate-50/50 rounded-2xl p-4 mb-6 border border-slate-100 gap-1">
               {preview.sections.map((section) => (
                 <CoursePreviewSectionRow
                   key={section.id}
-                  accentColor={resolveSectionPreviewAccentColor(section.orderIndex)}
+                  accentColor={courseAccentColor}
                   section={section}
                 />
               ))}
             </View>
           ) : null}
 
+          {enrollmentError && (
+            <Animated.View
+              entering={FadeIn}
+              exiting={FadeOut}
+              className="bg-red-50/50 p-3 rounded-xl border border-red-100/50 mb-3 items-center"
+            >
+              <Text variant="caption" className="text-red-700 font-medium">
+                {enrollmentError}
+              </Text>
+            </Animated.View>
+          )}
+
           <Button
-            label={isEnrolled ? "Open Journey" : isStartingCourse ? "Enrolling..." : "Enroll in Course"}
+            label={
+              isEnrolled
+                ? "Open Journey"
+                : isStartingCourse
+                  ? "Enrolling..."
+                  : "Enroll in Course"
+            }
             loading={isStartingCourse && !isEnrolled}
             onPress={() => onEnroll(course.id)}
             className="mt-2"
           />
         </View>
       )}
-    </View>
+    </Animated.View>
   );
 });
 
@@ -249,7 +313,7 @@ const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
         style={{ backgroundColor: `${accentColor}1A` }}
       >
         <RNText
-          className="happy-font-heading text-[18px]"
+          className="happy-font-heading text-lg"
           style={{ color: accentColor }}
         >
           {section.orderIndex}
@@ -259,20 +323,37 @@ const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
       <View className="flex-1 gap-1">
         <Text
           variant="body-bold"
-          className="text-[16px] leading-[20px] text-ink"
+          className="text-base leading-snug text-ink"
           numberOfLines={1}
         >
           {section.title}
         </Text>
-        <Text variant="caption-muted" className="text-[13px]">
-          {formatPreviewCount(section.unitCount, "unit")} • {formatPreviewCount(section.nodeCount, "lesson")}
+        <Text variant="caption-muted" className="text-sm">
+          {formatPreviewCount(section.unitCount, "unit")} •{" "}
+          {formatPreviewCount(section.nodeCount, "lesson")}
         </Text>
+
+        {/* Visual density map for unit segments */}
+        <View className="flex-row items-center gap-1 mt-1">
+          {Array.from({ length: visibleUnitSegments }).map((_, i) => (
+            <View
+              key={i}
+              className="h-1.5 flex-1 max-w-[24px] rounded-full opacity-50"
+              style={{ backgroundColor: accentColor }}
+            />
+          ))}
+          {hiddenUnitCount > 0 && (
+            <Text className="text-[10px] font-bold tracking-widest text-ink-muted ml-1">
+              +{hiddenUnitCount}
+            </Text>
+          )}
+        </View>
       </View>
     </View>
   );
 });
 
-function CourseCatalogSheetContent({
+export function CourseCatalogSheetContent({
   activeCourseId,
   enrolledCourses,
   isPresented,
@@ -280,7 +361,11 @@ function CourseCatalogSheetContent({
   onCourseSelect,
 }: CourseCatalogSheetProps): React.JSX.Element {
   const insets = useSafeAreaInsets();
-  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const listRef = useRef<FlatList>(null);
+  const [expandedCourseIds, setExpandedCourseIds] = useState<Set<string>>(
+    new Set(),
+  );
+  const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
 
   const { data: catalogCourses = [], isFetching: isCatalogLoading } =
     useGetCourseCatalogQuery(undefined, {
@@ -298,98 +383,148 @@ function CourseCatalogSheetContent({
       return;
     }
 
-    const selectedCourseStillExists = catalogCourses.some(
-      (course) => course.id === selectedCourseId,
+    const hasValidExpanded = Array.from(expandedCourseIds).some((id) =>
+      catalogCourses.some((c) => c.id === id),
     );
-    if (selectedCourseStillExists) {
+    if (hasValidExpanded) {
       return;
     }
 
-    setSelectedCourseId(
-      resolveInitialCourseId(catalogCourses, enrolledCourseIds, activeCourseId),
+    const initialId = resolveInitialCourseId(
+      catalogCourses,
+      enrolledCourseIds,
+      activeCourseId,
     );
+    if (initialId) {
+      setExpandedCourseIds(new Set([initialId]));
+    }
   }, [
     activeCourseId,
     catalogCourses,
     enrolledCourseIds,
     isPresented,
-    selectedCourseId,
+    expandedCourseIds,
   ]);
 
-  const {
-    data: selectedCourseTree,
-    isFetching: isPreviewLoading,
-    isError: isPreviewError,
-  } = useGetCourseTreeQuery(selectedCourseId ?? "", {
-    skip: !isPresented || !selectedCourseId,
-  });
-
-  const [startCourse, { isLoading: isStartingCourse }] = useStartCourseMutation();
-
-  const preview =
-    selectedCourseTree ? buildCourseJourneyPreview(selectedCourseTree) : null;
+  const [startCourse, { isLoading: isStartingCourse }] =
+    useStartCourseMutation();
 
   const interactionColor = SAGE[500];
 
-  const handleToggle = useCallback((id: string) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    setSelectedCourseId(prev => prev === id ? null : id);
-  }, []);
+  const handleToggle = useCallback(
+    (id: string) => {
+      setExpandedCourseIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) {
+          next.delete(id);
+        } else {
+          next.add(id);
 
-  const handlePrimaryActionPress = useCallback(async (courseId: string) => {
-    const course = catalogCourses.find((c) => c.id === courseId);
-    if (!course) {
-      return;
-    }
-    const isEnrolled = enrolledCourseIds.has(courseId);
+          const idx = catalogCourses.findIndex((c) => c.id === id);
+          if (idx !== -1 && listRef.current) {
+            setTimeout(() => {
+              listRef.current?.scrollToIndex({
+                index: idx,
+                animated: true,
+                viewPosition: 0,
+              });
+            }, 150);
+          }
+        }
+        return next;
+      });
+      setEnrollmentError(null);
+    },
+    [catalogCourses],
+  );
 
-    try {
-      if (!isEnrolled) {
-        await startCourse(courseId).unwrap();
+  const handlePrimaryActionPress = useCallback(
+    async (courseId: string) => {
+      setEnrollmentError(null);
+      const course = catalogCourses.find((c) => c.id === courseId);
+      if (!course) {
+        return;
       }
+      const isEnrolled = enrolledCourseIds.has(courseId);
 
-      onCourseSelect?.(courseId);
-      onClose();
-    } catch (error) {
-      Alert.alert("Unable to open course", getErrorMessage(error));
-    }
-  }, [catalogCourses, enrolledCourseIds, startCourse, onCourseSelect, onClose]);
+      try {
+        if (!isEnrolled) {
+          await startCourse(courseId).unwrap();
+        }
 
-  const renderCourseItem = useCallback(({ item }: { item: CourseCatalogListItem }) => (
-    <CourseAccordionCard
-      course={item}
-      isExpanded={item.id === selectedCourseId}
-      isEnrolled={enrolledCourseIds.has(item.id)}
-      onToggle={handleToggle}
-      preview={item.id === selectedCourseId ? preview : null}
-      isPreviewLoading={item.id === selectedCourseId ? isPreviewLoading : false}
-      isStartingCourse={isStartingCourse && item.id === selectedCourseId}
-      onEnroll={handlePrimaryActionPress}
-    />
-  ), [selectedCourseId, enrolledCourseIds, handleToggle, preview, isPreviewLoading, isStartingCourse, handlePrimaryActionPress]);
+        onCourseSelect?.(courseId);
+        onClose();
+      } catch (error) {
+        setEnrollmentError(getErrorMessage(error));
+      }
+    },
+    [catalogCourses, enrolledCourseIds, startCourse, onCourseSelect, onClose],
+  );
+
+  const renderCourseItem = useCallback(
+    ({ item }: { item: CourseCatalogListItem }) => (
+      <CourseAccordionCard
+        course={item}
+        isExpanded={expandedCourseIds.has(item.id)}
+        isEnrolled={enrolledCourseIds.has(item.id)}
+        onToggle={handleToggle}
+        isStartingCourse={isStartingCourse && expandedCourseIds.has(item.id)}
+        enrollmentError={
+          expandedCourseIds.has(item.id) ? enrollmentError : null
+        }
+        onEnroll={handlePrimaryActionPress}
+      />
+    ),
+    [
+      expandedCourseIds,
+      enrolledCourseIds,
+      handleToggle,
+      isStartingCourse,
+      enrollmentError,
+      handlePrimaryActionPress,
+    ],
+  );
 
   return (
-    <View className="flex-1 happy-brand-screen" style={{ paddingTop: Math.max(insets.top, 12) }}>
+    <View
+      className="flex-1 happy-brand-screen"
+      style={{ paddingTop: Math.max(insets.top, 12) }}
+    >
       <View className="flex-row items-center justify-between px-5 pt-2 pb-1">
         <View className="h-11 w-11" />
-        <Pressable onPress={onClose} className="h-11 w-11 items-center justify-center rounded-[22px] border-2 border-b-4 border-sage-100 border-b-sage-200 bg-warm-white">
+        <Pressable
+          onPress={onClose}
+          className="h-11 w-11 items-center justify-center rounded-full border border-sage-100 shadow-sm bg-warm-white"
+        >
           <HugeiconsIcon icon={Cancel01Icon} size={20} color={SAGE[600]} />
         </Pressable>
       </View>
 
-      <View className="flex-1" style={{ paddingBottom: Math.max(insets.bottom, 20) }}>
+      <View className="flex-1">
         <FlatList
+          ref={listRef}
           data={catalogCourses}
           keyExtractor={(item) => item.id}
           contentContainerClassName="px-5 pb-28 pt-2"
           showsVerticalScrollIndicator={false}
+          onScrollToIndexFailed={(info) => {
+            const wait = new Promise((resolve) => setTimeout(resolve, 500));
+            wait.then(() => {
+              listRef.current?.scrollToIndex({
+                index: info.index,
+                animated: true,
+                viewPosition: 0,
+              });
+            });
+          }}
           ListHeaderComponent={
             <View className="gap-2 px-1 mb-8">
-              <Text className="happy-font-heading text-[36px] leading-[40px] text-ink">
+              <Text className="happy-font-heading text-4xl leading-10 text-ink">
                 Explore Journeys
               </Text>
-              <Text className="happy-font-body text-base leading-[23px] text-ink-soft">
-                Browse every published course, preview the path, and enroll when you are ready.
+              <Text className="happy-font-body text-base leading-relaxed text-ink-soft">
+                Browse every published course, preview the path, and enroll when
+                you are ready.
               </Text>
             </View>
           }
@@ -401,7 +536,10 @@ function CourseCatalogSheetContent({
               </View>
             ) : (
               <View className="py-12 items-center justify-center">
-                <Text variant="body" className="text-center text-[15px] text-ink-muted">
+                <Text
+                  variant="body"
+                  className="text-center text-base text-ink-muted"
+                >
                   No published courses are available yet.
                 </Text>
               </View>
@@ -416,39 +554,68 @@ function CourseCatalogSheetContent({
 export default function CourseCatalogSheet(
   props: CourseCatalogSheetProps,
 ): React.JSX.Element | null {
-  if (!props.isPresented) {
+  const [shouldRender, setShouldRender] = useState(props.isPresented);
+
+  useEffect(() => {
+    if (props.isPresented) {
+      setShouldRender(true);
+    } else {
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+      }, 250);
+      return () => clearTimeout(timer);
+    }
+  }, [props.isPresented]);
+
+  if (!shouldRender) {
     return null;
   }
 
   return (
     <FullWindowOverlay>
-      <View style={{ flex: 1 }}>
-        <Animated.View className="absolute inset-0">
-          {/* Instant static dark backdrop with press to close */}
-          <Pressable
-            className="absolute inset-0 bg-black/40"
-            onPress={props.onClose}
-          />
-          {/* Rounded top sheet drawer overlay positioned at top: 60 */}
-          <View
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              top: 0,
-              backgroundColor: "#F8FAF7", // Sage canvas
-              shadowColor: "#2B3A22",
-              shadowOffset: { width: 0, height: -4 },
-              shadowOpacity: 0.12,
-              shadowRadius: 16,
-              elevation: 24,
-              overflow: "hidden",
-            }}
-          >
-            <CourseCatalogSheetContent {...props} onClose={props.onClose} />
-          </View>
-        </Animated.View>
+      <View
+        style={{ flex: 1 }}
+        pointerEvents={props.isPresented ? "auto" : "none"}
+      >
+        {props.isPresented && (
+          <>
+            <Animated.View
+              entering={FadeIn.duration(300).easing(Easing.out(Easing.cubic))}
+              exiting={FadeOut.duration(200)}
+              className="absolute inset-0"
+            >
+              <Pressable
+                className="absolute inset-0 bg-black/40"
+                onPress={props.onClose}
+              />
+            </Animated.View>
+
+            <Animated.View
+              entering={SlideInDown.duration(400).easing(
+                Easing.out(Easing.exp),
+              )}
+              exiting={SlideOutDown.duration(250).easing(
+                Easing.in(Easing.cubic),
+              )}
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                top: 0,
+                backgroundColor: "#F8FAF7", // Sage canvas
+                shadowColor: "#2B3A22",
+                shadowOffset: { width: 0, height: -4 },
+                shadowOpacity: 0.12,
+                shadowRadius: 16,
+                elevation: 24,
+                overflow: "hidden",
+              }}
+            >
+              <CourseCatalogSheetContent {...props} onClose={props.onClose} />
+            </Animated.View>
+          </>
+        )}
       </View>
     </FullWindowOverlay>
   );

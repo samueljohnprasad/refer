@@ -7,10 +7,14 @@ import {
   View,
 } from "react-native";
 import { Image } from "expo-image";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Path, Defs, RadialGradient, Rect, Stop, Mask } from "react-native-svg";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
+  useSharedValue,
+  useAnimatedProps,
+  withTiming,
+  Easing,
 } from "react-native-reanimated";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -26,6 +30,7 @@ import {
 } from "./courseVisuals";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
+const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 const PALETTE = {
   warmWhite: "#FFFFFF",
@@ -39,7 +44,7 @@ const FONTS = {
   body: "GeistRegular",
   bodyMedium: "GeistMedium",
   bodyBold: "GeistBold",
-  heading: "FrauncesSemiBold",
+  heading: "CormorantSemiBold",
 } as const;
 
 type HeaderOverlayContentProps = {
@@ -122,6 +127,25 @@ const HeaderOverlayContent = ({
   }));
 
   const courses = enrolledCourses ?? [];
+  const activeCourse = courses.find((c) => c.id === activeCourseId);
+  const courseAccentColor = activeCourse
+    ? resolveCourseAccentColor(activeCourse.colorHex)
+    : PALETTE.sage300;
+
+  const animatedColor = useSharedValue(courseAccentColor);
+
+  React.useEffect(() => {
+    animatedColor.value = withTiming(courseAccentColor, {
+      duration: 1000,
+      easing: Easing.out(Easing.exp),
+    });
+  }, [courseAccentColor]);
+
+  const animatedRectProps = useAnimatedProps(() => {
+    return {
+      fill: animatedColor.value,
+    };
+  });
   const progress = activeCourseSummary
     ? activeCourseSummary.completedNodes /
       Math.max(activeCourseSummary.totalNodes, 1)
@@ -137,6 +161,26 @@ const HeaderOverlayContent = ({
       className="w-full happy-brand-screen pb-4 rounded-b-[32px]"
       style={animatedStyle}
     >
+      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }} className="overflow-hidden rounded-b-[32px]">
+        <Svg width="100%" height="100%">
+          <Defs>
+            <RadialGradient id="glowGrad" cx="100%" cy="0%" r="100%">
+              <Stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+              <Stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+            </RadialGradient>
+            <Mask id="glowMask">
+              <Rect width="100%" height="100%" fill="url(#glowGrad)" />
+            </Mask>
+          </Defs>
+          <AnimatedRect 
+            width="100%" 
+            height="100%" 
+            opacity={0.10} 
+            animatedProps={animatedRectProps} 
+            mask="url(#glowMask)" 
+          />
+        </Svg>
+      </View>
       <Svg
         width={width}
         height={16}
@@ -174,7 +218,7 @@ const HeaderOverlayContent = ({
               >
                 <CourseAvatar course={course} isActive={isActive} />
                 <Text
-                  className={`w-full text-center text-[15px] ${
+                  className={`w-full text-center text-base ${
                     isActive ? "text-ink" : "text-ink-muted"
                   }`}
                   style={{ fontFamily: FONTS.bodyBold }}
@@ -185,7 +229,7 @@ const HeaderOverlayContent = ({
                 {isActive ? (
                   <View className="happy-brand-status-chip px-3 py-1">
                     <Text
-                      className="text-[10px] uppercase tracking-[0.8px] text-sage-600"
+                      className="text-xs uppercase tracking-widest text-sage-600"
                       style={{ fontFamily: FONTS.bodyBold }}
                     >
                       Active
@@ -199,7 +243,7 @@ const HeaderOverlayContent = ({
           {courses.length === 0 ? (
             <View className="min-h-[104px] justify-center px-3">
               <Text
-                className="text-[15px] text-ink-muted"
+                className="text-base text-ink-muted"
                 style={{ fontFamily: FONTS.body }}
               >
                 No enrolled courses yet.
@@ -212,7 +256,7 @@ const HeaderOverlayContent = ({
             onPress={onAddCoursePress}
           >
             <Card
-              variant="dashed"
+              variant="tile"
               radius="xl"
               showDepth={false}
               className="h-[78px] w-[92px]"
@@ -227,7 +271,7 @@ const HeaderOverlayContent = ({
               </View>
             </Card>
             <Text
-              className="w-full text-center text-[15px] text-ink-muted"
+              className="w-full text-center text-base text-ink"
               style={{ fontFamily: FONTS.bodyBold }}
             >
               Add course
@@ -235,56 +279,31 @@ const HeaderOverlayContent = ({
           </Pressable>
         </ScrollView>
 
-        <Card
-          variant="tile"
-          radius="xl"
-          showDepth={false}
-          className="mt-5 w-full"
-          contentClassName="p-5 gap-5"
+        <View
+          className="mt-6 w-full px-1 gap-3"
         >
           <View className="flex-row items-start justify-between gap-4">
-            <View className="flex-1 gap-1.5">
+            <View className="flex-1 gap-1">
               <Text
-                className="text-xs uppercase tracking-[1px] text-sage-500"
-                style={{ fontFamily: FONTS.bodyBold }}
-              >
-                Current program
-              </Text>
-              <Text
-                className="text-[25px] leading-[30px] text-ink"
+                className="text-3xl leading-tight text-ink"
                 style={{ fontFamily: FONTS.heading }}
                 numberOfLines={2}
               >
                 {activeCourseSummary?.title ?? "Course"}
               </Text>
             </View>
-
-            <View className="happy-brand-score-badge items-end px-4 py-3">
-              <Text
-                className="text-[28px] leading-[30px] text-ink"
-                style={{ fontFamily: FONTS.bodyBold }}
-              >
-                {completedNodes}
-              </Text>
-              <Text
-                className="text-xs uppercase tracking-[0.8px] text-sage-600"
-                style={{ fontFamily: FONTS.bodyBold }}
-              >
-                of {totalNodes}
-              </Text>
-            </View>
           </View>
 
-          <View className="gap-2.5">
+          <View className="gap-2.5 mt-1">
             <View className="flex-row items-center justify-between">
               <Text
-                className="text-[14px] text-ink-soft"
+                className="text-sm text-ink"
                 style={{ fontFamily: FONTS.bodyMedium }}
               >
-                Journey progress
+                {completedNodes} of {totalNodes} sessions completed
               </Text>
               <Text
-                className="text-[14px] text-sage-600"
+                className="text-sm text-sage-600"
                 style={{ fontFamily: FONTS.bodyBold }}
               >
                 {progressPercent}
@@ -294,24 +313,24 @@ const HeaderOverlayContent = ({
             <View className="w-full">
               <StageProgressBar
                 progress={progress}
-                height={16}
+                height={12}
                 trackColor={PALETTE.sage100}
                 fillColor={PALETTE.sage500}
-                showGlow={true}
+                showGlow={false}
               />
             </View>
           </View>
 
-          <View className="flex-row items-center justify-between gap-3 border-t border-sage-100 pt-4">
+          <View className="flex-row items-center justify-between gap-3 mt-4">
             <View>
               <Text
-                className="text-[14px] text-ink-muted"
+                className="text-sm text-ink-muted"
                 style={{ fontFamily: FONTS.bodyMedium }}
               >
                 Current section
               </Text>
               <Text
-                className="text-[18px] text-ink"
+                className="text-lg text-ink"
                 style={{ fontFamily: FONTS.bodyBold }}
               >
                 {sectionNumber} of {sectionCount}
@@ -320,15 +339,20 @@ const HeaderOverlayContent = ({
 
             {/* <View className="happy-brand-status-chip px-4 py-2">
               <Text
-                className="text-xs uppercase tracking-[0.8px] text-sage-600"
+                className="text-xs uppercase tracking-widest text-sage-600"
                 style={{ fontFamily: FONTS.bodyBold }}
               >
                 Details
               </Text>
             </View> */}
           </View>
-        </Card>
+        </View>
       </View>
+
+      <View 
+        className="h-1.5 w-12 rounded-full mt-4 self-center" 
+        style={{ backgroundColor: PALETTE.sage300, opacity: 0.5 }} 
+      />
     </Animated.View>
   );
 };

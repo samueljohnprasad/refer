@@ -46,12 +46,12 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
     >
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text
-          style={{ fontFamily: "FrauncesSemiBold" }}
+          style={{ fontFamily: "CormorantSemiBold" }}
           className="mt-2 text-[30px] leading-[1.1] text-ink"
         >
           {questionMain}
           <Text
-            style={{ fontFamily: "FrauncesMedium" }}
+            style={{ fontFamily: "CormorantMedium" }}
             className="italic text-sage-500"
           >
             {questionItalic}?

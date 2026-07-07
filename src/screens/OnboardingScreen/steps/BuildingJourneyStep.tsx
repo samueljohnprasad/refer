@@ -23,7 +23,7 @@ const BuildingJourneyStep: React.FC<BuildingJourneyStepProps> = ({
         className="mt-6 items-center"
       >
         <Text
-          style={{ fontFamily: "FrauncesSemiBold" }}
+          style={{ fontFamily: "CormorantSemiBold" }}
           className="text-center text-2xl text-ink"
         >
           Building your journey...

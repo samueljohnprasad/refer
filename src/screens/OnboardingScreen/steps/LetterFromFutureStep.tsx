@@ -49,7 +49,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingTop: 8,
+      contentContainerStyle={{
         paddingBottom: 156,
         paddingHorizontal: 24, paddingTop: headerHeight - insets.top }}
       contentInsetAdjustmentBehavior="automatic"
@@ -91,7 +91,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
         <Text
           style={{
             marginTop: 18,
-            fontFamily: "FrauncesRegular",
+            fontFamily: "CormorantRegular",
             fontSize: 28,
             lineHeight: 33,
             textAlign: "center",
@@ -101,7 +101,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           A letter from{" "}
           <Text
             style={{
-              fontFamily: "FrauncesRegularItalic",
+              fontFamily: "CormorantRegularItalic",
               color: "#5F7F58",
             }}
           >
@@ -183,7 +183,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             >
               <Text
                 style={{
-                  fontFamily: "FrauncesBold",
+                  fontFamily: "CormorantBold",
                   fontSize: 16,
                   color: "#FFFFFF",
                   fontStyle: "italic",
@@ -210,7 +210,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           <Text
             style={{
               marginTop: 14,
-              fontFamily: "FrauncesRegular",
+              fontFamily: "CormorantRegular",
               fontSize: 18,
               lineHeight: 22,
               color: "#142414",
@@ -222,7 +222,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           <View style={{ marginTop: 14 }}>
             <Text
               style={{
-                fontFamily: "FrauncesRegular",
+                fontFamily: "CormorantRegular",
                 fontSize: 14,
                 lineHeight: 23,
                 color: "#4F604F",
@@ -233,7 +233,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
               <Text
                 style={{
                   color: "#44633F",
-                  fontFamily: "FrauncesSemiBold",
+                  fontFamily: "CormorantSemiBold",
                 }}
               >
                 five minutes ago.
@@ -243,7 +243,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             <Text
               style={{
                 marginTop: 12,
-                fontFamily: "FrauncesRegular",
+                fontFamily: "CormorantRegular",
                 fontSize: 14,
                 lineHeight: 23,
                 color: "#4F604F",
@@ -255,7 +255,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             <Text
               style={{
                 marginTop: 12,
-                fontFamily: "FrauncesRegular",
+                fontFamily: "CormorantRegular",
                 fontSize: 14,
                 lineHeight: 23,
                 color: "#4F604F",
@@ -266,7 +266,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
               <Text
                 style={{
                   color: "#44633F",
-                  fontFamily: "FrauncesSemiBold",
+                  fontFamily: "CormorantSemiBold",
                 }}
               >
                 And it didn&apos;t get bigger.
@@ -275,7 +275,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             <Text
               style={{
                 marginTop: 12,
-                fontFamily: "FrauncesRegular",
+                fontFamily: "CormorantRegular",
                 fontSize: 14,
                 lineHeight: 23,
                 color: "#4F604F",
@@ -286,7 +286,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             <Text
               style={{
                 marginTop: 12,
-                fontFamily: "FrauncesRegular",
+                fontFamily: "CormorantRegular",
                 fontSize: 14,
                 lineHeight: 23,
                 color: "#4F604F",
@@ -298,7 +298,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             <Text
               style={{
                 marginTop: 12,
-                fontFamily: "FrauncesRegular",
+                fontFamily: "CormorantRegular",
                 fontSize: 14,
                 lineHeight: 23,
                 color: "#4F604F",
@@ -308,7 +308,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
               <Text
                 style={{
                   color: "#44633F",
-                  fontFamily: "FrauncesSemiBold",
+                  fontFamily: "CormorantSemiBold",
                 }}
               >
                 We&apos;re not the same person anymore.
@@ -326,7 +326,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           <View style={{ marginTop: 12, alignItems: "flex-end" }}>
             <Text
               style={{
-                fontFamily: "FrauncesRegularItalic",
+                fontFamily: "CormorantRegularItalic",
                 fontSize: 18,
                 lineHeight: 22,
                 color: "#C8694B",
@@ -364,7 +364,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
         <Text
           style={{
             flex: 1,
-            fontFamily: "FrauncesMediumItalic",
+            fontFamily: "CormorantMediumItalic",
             fontSize: 13,
             lineHeight: 18,
             color: "#4F604F",

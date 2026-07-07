@@ -77,7 +77,6 @@ function JourneyMapFlashListInner({
 
   return (
     <>
-
       {!isLoaded ? (
         <JourneyMapLoadingState />
       ) : flashListData.length > 0 ? (

@@ -32,10 +32,10 @@ export default function JourneyStepScreen({
         </View>
 
         <View className="mt-5 w-full max-w-[296px] items-center px-2 phone:mt-7 phone:max-w-[320px] phone:px-3 phablet:mt-9 phablet:max-w-[344px] phablet:px-4">
-          <Text className="text-center font-extrabold tracking-[-1.25px] text-[#171717] text-[42px] leading-[46px] phone:text-[50px] phone:leading-[54px] phone:tracking-[-1.5px] phablet:text-[56px] phablet:leading-[60px] phablet:tracking-[-1.8px]">
+          <Text className="text-center font-extrabold tracking-tight text-[#171717] text-4xl leading-tight phone:text-5xl phone:leading-none phone:tracking-tight phablet:text-6xl phablet:leading-none phablet:tracking-tight">
             {content.title}
           </Text>
-          <Text className="mt-2 text-center font-normal text-[#A3A3A3] text-[18px] leading-[26px] phone:mt-3 phone:text-[21px] phone:leading-[29px] phablet:mt-4 phablet:text-[23px] phablet:leading-[32px]">
+          <Text className="mt-2 text-center font-normal text-[#A3A3A3] text-lg leading-normal phone:mt-3 phone:text-xl phone:leading-relaxed phablet:mt-4 phablet:text-2xl phablet:leading-loose">
             {content.subtitle}
           </Text>
         </View>

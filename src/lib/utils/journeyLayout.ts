@@ -203,7 +203,7 @@ function createPathNodeData(
     index: globalIndex,
     type: node.type as UnitPathNode["type"],
     status: toJourneyNodeStatus(visualStatus),
-    icon: node.icon || resolveNodeIcon(node.type),
+    icon: (node.icon as any) || resolveNodeIcon(node.type),
     taskId: node.contentId ?? node.id,
     rewards: [],
   };
@@ -234,7 +234,7 @@ function createJourneyNodeItem(
     taskId: node.contentId ?? node.id,
     taskType: node.type,
     type: node.type as JourneyNode["type"],
-    icon: node.icon || resolveNodeIcon(node.type),
+    icon: (node.icon as any) || resolveNodeIcon(node.type),
     rewards: [],
     unitId: node.unitId,
     prevX: segmentStartX,

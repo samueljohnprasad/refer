@@ -209,7 +209,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                     <RNText
                       className="text-[52px] z-10 mt-5 text-center text-brand-surface"
                       style={{
-                        fontFamily: "FrauncesBold",
+                        fontFamily: "CormorantBold",
                         textShadowColor: "rgba(0,0,0,0.45)",
                         textShadowOffset: { width: 0, height: 2 },
                         textShadowRadius: 6,
@@ -223,7 +223,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                   <RNText
                     className="text-[22px] leading-[26px] mt-2 text-center"
                     style={{
-                      fontFamily: "FrauncesSemiBold",
+                      fontFamily: "CormorantSemiBold",
                       color: PARROT_ORANGE,
                     }}
                   >

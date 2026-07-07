@@ -80,7 +80,7 @@ export const NodeEngine: React.FC<NodeEngineProps> = ({
       }
       primaryDisabled={!isCurrentExerciseReady}
       onPrimaryPress={handleContinuePress}
-      status={checkStatus}
+      status={checkStatus === "idle" ? "default" : checkStatus}
     >
       <ExerciseRenderer 
         key={currentExercise.id} 

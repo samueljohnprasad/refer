@@ -51,13 +51,13 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           <MochiMascot expression="notes" size={92} animate={false} />
         </View>
         <Text
-          style={{ fontFamily: "FrauncesRegular" }}
+          style={{ fontFamily: "CormorantRegular" }}
           className="text-[24px] leading-[1.15] text-ink"
         >
           Here&apos;s what I noticed about{" "}
           <Text
             style={{
-              fontFamily: "FrauncesRegularItalic",
+              fontFamily: "CormorantRegularItalic",
               color: "#5F7F58",
             }}
           >
@@ -80,13 +80,13 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           </Text>
         </View>
         <Text
-          style={{ fontFamily: "FrauncesRegularItalic" }}
+          style={{ fontFamily: "CormorantRegularItalic" }}
           className="text-[16px] leading-[1.5] text-ink"
         >
           You named{" "}
           <Text
             style={{
-              fontFamily: "FrauncesSemiBoldItalic",
+              fontFamily: "CormorantSemiBoldItalic",
               color: "#29452A",
             }}
           >
@@ -95,7 +95,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           — and that gives us something specific to work with. The{" "}
           <Text
             style={{
-              fontFamily: "FrauncesSemiBoldItalic",
+              fontFamily: "CormorantSemiBoldItalic",
               color: "#29452A",
             }}
           >
@@ -105,7 +105,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           you the most relief. Most people in your shoes find{" "}
           <Text
             style={{
-              fontFamily: "FrauncesSemiBoldItalic",
+              fontFamily: "CormorantSemiBoldItalic",
               color: "#29452A",
             }}
           >
@@ -126,13 +126,13 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           CBT Exercise — Try this
         </Text>
         <Text
-          style={{ fontFamily: "FrauncesRegular" }}
+          style={{ fontFamily: "CormorantRegular" }}
           className="mt-3 text-[18px] leading-[1.35] text-ink"
         >
           When the {feelingLabel} hits, try the{" "}
           <Text
             style={{
-              fontFamily: "FrauncesSemiBold",
+              fontFamily: "CormorantSemiBold",
               color: "#5F7F58",
             }}
           >

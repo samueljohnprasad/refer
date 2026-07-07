@@ -141,7 +141,7 @@ function QuestionCard({
                                 </View>
                                 <View className="flex-1">
                                     <Text
-                                        className={`text-base font-bold ${isSelected ? "text-purple-700" : "text-ink"
+                                        className={`text-base font-bold ${isSelected ? "text-ink" : "text-ink"
                                             }`}
                                     >
                                         {option.label}
@@ -251,7 +251,7 @@ export default function JourneyOnboardingScreen({
                         accessibilityRole="button"
                         accessibilityLabel="Skip quiz and browse all journeys"
                     >
-                        <Text className="text-sm font-medium text-purple-500">
+                        <Text className="text-sm font-medium text-ink">
                             Skip — browse all journeys
                         </Text>
                     </Pressable>
@@ -295,7 +295,7 @@ export default function JourneyOnboardingScreen({
                         accessibilityRole="button"
                         accessibilityLabel="Skip quiz"
                     >
-                        <Text className="text-sm font-medium text-purple-500">Skip</Text>
+                        <Text className="text-sm font-medium text-ink">Skip</Text>
                     </Pressable>
                 </View>
 

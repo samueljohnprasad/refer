@@ -305,40 +305,41 @@
    ═══════════════════════════════════════════════════════════════════════════
 
    Two type families:
-     Fraunces  Expressive serif. Screen titles, large headings, hero text.
-               Available weights: Regular, Medium, SemiBold, Bold + italics.
+     Cormorant  Expressive serif. Screen titles, large headings, hero text.
+               Available weights: Regular, Medium, SemiBold, Bold (with Italics).
+
      Geist     Clean sans-serif. All body copy, labels, UI text.
                Available weights: Regular, Medium, SemiBold, Bold.
 
-   Pairing rule: Fraunces for display moments, Geist for everything else.
+   Pairing rule: Cormorant for display moments, Geist for everything else.
    Do not mix weights arbitrarily — use the named utilities below.          */
 
 @utility happy-font-heading {
-  font-family: "FrauncesSemiBold";
+  font-family: "CormorantSemiBold";
 }
 
 @utility happy-font-heading-bold {
-  font-family: "FrauncesBold";
+  font-family: "CormorantBold";
 }
 
 @utility happy-font-heading-medium {
-  font-family: "FrauncesMedium";
+  font-family: "CormorantMedium";
 }
 
 @utility happy-font-heading-regular {
-  font-family: "FrauncesRegular";
+  font-family: "CormorantRegular";
 }
 
 @utility happy-font-heading-italic {
-  font-family: "FrauncesRegularItalic";
+  font-family: "CormorantRegularItalic";
 }
 
 @utility happy-font-heading-semibold-italic {
-  font-family: "FrauncesSemiBoldItalic";
+  font-family: "CormorantSemiBoldItalic";
 }
 
 @utility happy-font-heading-medium-italic {
-  font-family: "FrauncesMediumItalic";
+  font-family: "CormorantMediumItalic";
 }
 
 @utility happy-font-body {

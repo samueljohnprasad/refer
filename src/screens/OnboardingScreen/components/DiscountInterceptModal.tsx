@@ -35,7 +35,7 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
               Wait — one more thing
             </Text>
             <Text
-              style={{ fontFamily: "FrauncesSemiBold" }}
+              style={{ fontFamily: "CormorantSemiBold" }}
               className="mt-2 text-center text-2xl text-ink"
             >
               Try Happy Plus for $4.99
@@ -51,7 +51,7 @@ const DiscountInterceptModal: React.FC<DiscountInterceptModalProps> = ({
           <View className="mt-5 rounded-2xl bg-sage-50 p-4">
             <View className="flex-row items-center justify-between">
               <Text
-                style={{ fontFamily: "FrauncesSemiBold" }}
+                style={{ fontFamily: "CormorantSemiBold" }}
                 className="text-xl text-sage-700"
               >
                 $4.99

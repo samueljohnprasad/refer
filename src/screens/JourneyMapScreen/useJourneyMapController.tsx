@@ -4,13 +4,11 @@ import type { LegendListRef, ViewToken } from "@legendapp/list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { useSetAtom } from "jotai";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
 import { startTransitionAtom } from "@/src/store/transitionStore";
-import {
-  setPreviewSection,
-} from "@/src/features/journey/journeySlice";
+import { setPreviewSection } from "@/src/features/journey/journeySlice";
 import {
   selectCourse,
   selectCurrentSectionIdForCourse,
@@ -64,6 +62,7 @@ export function useJourneyMapController(
 ): JourneyMapController {
   const legendListRef = useRef<LegendListRef | null>(null);
   const [isSectionSheetOpen, setIsSectionSheetOpen] = useState(false);
+  const isRoutingRef = useRef(false);
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const toast = useToast();
@@ -107,9 +106,18 @@ export function useJourneyMapController(
     dispatch(setPreviewSection({ courseId, sectionId: null }));
   }, [courseId, dispatch, previewSection, previewSectionId]);
 
+
+
   const handleFocusCurrentProgress = useCallback((): void => {
     dispatch(setPreviewSection({ courseId, sectionId: null }));
   }, [courseId, dispatch]);
+
+  // Reset routing lock when screen regains focus
+  useFocusEffect(
+    useCallback(() => {
+      isRoutingRef.current = false;
+    }, []),
+  );
 
   const {
     activeNodeInitialScrollIndex,
@@ -139,18 +147,24 @@ export function useJourneyMapController(
 
   const handleNodePress = useCallback(
     (node: PathNodeData, e?: any, color?: string): void => {
+      if (isRoutingRef.current) return;
+
       if (node.status === "locked") {
-        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+        void Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Warning,
+        );
         toast.show({
           placement: "top",
           render: ({ id }) => (
             <Toast nativeID={id} action="warning">
-              <ToastTitle>Complete earlier activities first.</ToastTitle>
+              <ToastTitle>Keep going! This will unlock soon.</ToastTitle>
             </Toast>
           ),
         });
         return;
       }
+
+      isRoutingRef.current = true;
 
       if (e && e.nativeEvent) {
         const { pageX, pageY } = e.nativeEvent;
@@ -158,14 +172,16 @@ export function useJourneyMapController(
           cx: pageX,
           cy: pageY,
           color: color || (node.status === "active" ? "#58CC02" : "#FFFFFF"),
-          onComplete: () => {},
+          onComplete: () => {
+            router.push(
+              `/tabs/screens/journey-flow?courseId=${courseId}&nodeId=${node.id}`,
+            );
+          },
         });
-        // Wait half of the transition duration (400ms / 2) before routing
-        setTimeout(() => {
-          router.push(`/tabs/screens/journey-flow?courseId=${courseId}&nodeId=${node.id}`);
-        }, 200);
       } else {
-        router.push(`/tabs/screens/journey-flow?courseId=${courseId}&nodeId=${node.id}`);
+        router.push(
+          `/tabs/screens/journey-flow?courseId=${courseId}&nodeId=${node.id}`,
+        );
       }
     },
     [courseId, dispatch, toast, startTransition],

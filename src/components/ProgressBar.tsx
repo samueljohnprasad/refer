@@ -124,7 +124,7 @@ export const ProgressBar = ({
 
 const styles = StyleSheet.create({
   valueContainer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: "center",
     justifyContent: "center",
   },

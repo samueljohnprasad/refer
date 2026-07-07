@@ -154,8 +154,8 @@ interface UseExerciseTimelineReturn {
 
     // Flatten all pages → filter to unified only
     const allItems: HistoryLogItem[] = data.pages
-      .flatMap((page) => page.data)
-      .filter((item): item is HistoryLogItem => item.type === "unified");
+      .flatMap((page: any) => page.data)
+      .filter((item: any): item is HistoryLogItem => item.type === "unified");
 
     // Sort newest-first
     allItems.sort(

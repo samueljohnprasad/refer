@@ -116,7 +116,7 @@ function BouncingTooltip({ label, accentColor }: { label?: string; accentColor: 
           isInteractive
         >
           <Text
-            className="text-[13px] font-extrabold tracking-widest"
+            className="text-sm font-extrabold tracking-widest"
             style={{ color: accentColor }}
             numberOfLines={1}
           >
@@ -337,7 +337,6 @@ function JourneyNodeCellInner({
                     size={hugeiconSize}
                     color={iconColor}
                     strokeWidth={2.5}
-                    variant="solid"
                   />
                 }
                 iconSize={hugeiconSize}

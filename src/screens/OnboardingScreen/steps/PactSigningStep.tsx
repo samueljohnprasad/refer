@@ -50,13 +50,13 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
               Step 6 of 6 — Final commitment
             </Text>
             <Text
-              style={{ fontFamily: "FrauncesSemiBold" }}
+              style={{ fontFamily: "CormorantSemiBold" }}
               className="mt-3 text-center text-[30px] leading-[1.05] text-ink"
             >
               A small{" "}
               <Text
                 style={{
-                  fontFamily: "FrauncesRegularItalic",
+                  fontFamily: "CormorantRegularItalic",
                   color: "#5F7F58",
                 }}
               >
@@ -71,14 +71,14 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
             className="mt-4 w-full rounded-[24px] border-2 border-sage-100 bg-warm-white px-6 py-7"
           >
             <Text
-              style={{ fontFamily: "FrauncesRegularItalic" }}
+              style={{ fontFamily: "CormorantRegularItalic" }}
               className="text-left text-[16px] leading-[25px] text-ink"
             >
               For the next 7 days, I&apos;ll show up for myself — even if
               it&apos;s just for {dailyGoal} minutes.
             </Text>
             <Text
-              style={{ fontFamily: "FrauncesRegularItalic" }}
+              style={{ fontFamily: "CormorantRegularItalic" }}
               className="mt-7 text-left text-[16px] leading-[25px] text-ink"
             >
               I&apos;ll be honest. I&apos;ll be patient. I&apos;m worth the
@@ -106,7 +106,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                 Signed
               </Text>
               <Text
-                style={{ fontFamily: "FrauncesRegularItalic" }}
+                style={{ fontFamily: "CormorantRegularItalic" }}
                 className="mt-1 text-[22px] tracking-[-0.01em] text-sage-600"
               >
                 — You, today

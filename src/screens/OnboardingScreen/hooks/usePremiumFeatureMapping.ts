@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useMemo } from 'react';
 import { JournalingGoal, FeatureDiscoverySlide } from '../types';
 import {

@@ -80,7 +80,7 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
           text={currentPrompt.description}
           fontSize={30}
           textStyle={{
-            fontFamily: "FrauncesBold",
+            fontFamily: "CormorantBold",
             color: INK,
             letterSpacing: -0.5,
             lineHeight: 34,

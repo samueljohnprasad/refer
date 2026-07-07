@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import * as Haptics from "expo-haptics";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView } from "react-native";
@@ -22,6 +23,7 @@ import { getScaledLayout } from "./progress-graph-victory/layout";
 import ProgressGraphVictoryChart from "./progress-graph-victory/ProgressGraphVictoryChart";
 import { useProgressGraphVictoryAnimation } from "./progress-graph-victory/useProgressGraphVictoryAnimation";
 import TestimonialCard from "../components/TestimonialCard";
+import ConfettiBurst from "../components/ConfettiBurst";
 
 interface PlanRevealStepProps {
   planName: string;
@@ -269,6 +271,14 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
   const planMeta = PLAN_META[motivation];
   const displayPlanName = planName.endsWith(".") ? planName : `${planName}.`;
 
+  useEffect(() => {
+    // Slight delay to align with the animation sequence
+    const timer = setTimeout(() => {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -277,20 +287,25 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
       className="flex-1 px-6 pt-4"
     >
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
+        <View className="flex-row items-center">
+          <Text
+            style={{ fontFamily: "GeistSemiBold" }}
+            className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta"
+          >
+            Built for you ✨
+          </Text>
+          <View className="absolute left-[120px] top-[-10px] z-10">
+            <ConfettiBurst />
+          </View>
+        </View>
         <Text
-          style={{ fontFamily: "GeistSemiBold" }}
-          className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta"
-        >
-          Built for you ✨
-        </Text>
-        <Text
-          style={{ fontFamily: "FrauncesRegular" }}
+          style={{ fontFamily: "CormorantRegular" }}
           className="mt-3 text-[28px] leading-[1.08] text-ink"
         >
           Your first journey:{"\n"}
           <Text
             style={{
-              fontFamily: "FrauncesRegularItalic",
+              fontFamily: "CormorantRegularItalic",
               color: "#5F7F58",
             }}
           >
@@ -310,13 +325,13 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           📈 What people like you report
         </Text>
         <Text
-          style={{ fontFamily: "FrauncesRegular" }}
+          style={{ fontFamily: "CormorantRegular" }}
           className="mt-1.5 text-[17px] leading-[1.35] text-ink"
         >
           Your projected{" "}
           <Text
             style={{
-              fontFamily: "FrauncesRegularItalic",
+              fontFamily: "CormorantRegularItalic",
               color: "#5F7F58",
             }}
           >
@@ -359,7 +374,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             7-Day Foundation Journey
           </Text>
           <Text
-            style={{ fontFamily: "FrauncesRegular" }}
+            style={{ fontFamily: "CormorantRegular" }}
             className="mt-2 text-[26px] leading-[1.15] text-white"
           >
             {planMeta.subtitle}
@@ -369,7 +384,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             {PLAN_STATS.map((stat) => (
               <View key={stat.label} className="mb-4 w-1/2 pr-3">
                 <Text
-                  style={{ fontFamily: "FrauncesSemiBold" }}
+                  style={{ fontFamily: "CormorantSemiBold" }}
                   className="text-2xl text-gold"
                 >
                   {stat.value}
@@ -429,7 +444,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             </Text>
           </View>
           <Text
-            style={{ fontFamily: "FrauncesRegular" }}
+            style={{ fontFamily: "CormorantRegular" }}
             className="mt-4 text-[16px] leading-[1.3] text-white"
           >
             Mochi learns your patterns & reflects them back.

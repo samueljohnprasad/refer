@@ -82,7 +82,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
         <View className="items-center justify-center pr-6 min-w-[75px]">
           <Text
             className="text-[46px] leading-tight tracking-tighter"
-            style={{ fontFamily: "FrauncesBold", color: "#2B3A22" }}
+            style={{ fontFamily: "CormorantBold", color: "#2B3A22" }}
           >
             {isLoading ? "-" : currentStreak}
           </Text>

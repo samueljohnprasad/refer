@@ -53,13 +53,13 @@ export const HomeMainButton = ({
         }}
       >
         <Text
-          style={{ fontFamily: "FrauncesRegular" }}
+          style={{ fontFamily: "CormorantRegular" }}
           className="text-sm text-white/80"
         >
           {unitLabel}
         </Text>
         <Text
-          style={{ fontFamily: "FrauncesSemiBold" }}
+          style={{ fontFamily: "CormorantSemiBold" }}
           className="text-[18px] text-white"
         >
           {unitTitle}

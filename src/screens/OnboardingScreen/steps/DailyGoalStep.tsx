@@ -36,12 +36,12 @@ const DailyGoalStep: React.FC<DailyGoalStepProps> = ({
     >
       <Animated.View entering={FadeIn.duration(180).delay(80)}>
         <Text
-          style={{ fontFamily: "FrauncesRegular" }}
+          style={{ fontFamily: "CormorantRegular" }}
           className="mt-2 text-[30px] leading-[1.1] text-ink"
         >
           {headlineMain}
           <Text
-            style={{ fontFamily: "FrauncesRegularItalic" }}
+            style={{ fontFamily: "CormorantRegularItalic" }}
             className="italic text-sage-500"
           >
             {headlineItalic}?

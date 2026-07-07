@@ -29,13 +29,13 @@ const MascotGreetingStep: React.FC = () => {
 
         <View className="mt-6 w-full">
           <SpeechBubble delay={SPEECH_BUBBLE_DELAY_MS}>
-            <Text style={{ fontFamily: "FrauncesSemiBold" }}>
+            <Text style={{ fontFamily: "CormorantSemiBold" }}>
               Hi, I&apos;m Mochi.
             </Text>
             {"\n"}
             I&apos;m a panda. I&apos;m soft. I&apos;m patient. I&apos;ll be your
             companion on this journey — just{" "}
-            <Text style={{ fontFamily: "FrauncesSemiBold" }}>
+            <Text style={{ fontFamily: "CormorantSemiBold" }}>
               6 quick questions
             </Text>{" "}
             before your first lesson.
@@ -47,7 +47,7 @@ const MascotGreetingStep: React.FC = () => {
           className="mt-8 items-center px-4"
         >
           <Text
-            style={{ fontFamily: "FrauncesMedium" }}
+            style={{ fontFamily: "CormorantMedium" }}
             className="text-center text-[13px] italic leading-5 text-ink-soft"
           >
             "The smallest practice, done daily, is more powerful than the

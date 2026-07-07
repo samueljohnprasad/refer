@@ -27,7 +27,7 @@ const JourneyMapStep: React.FC<JourneyMapStepProps> = ({
         <View className="flex-row items-center justify-between">
           <View>
             <Text
-              style={{ fontFamily: "FrauncesSemiBold" }}
+              style={{ fontFamily: "CormorantSemiBold" }}
               className="text-[22px] text-ink"
             >
               Your journey

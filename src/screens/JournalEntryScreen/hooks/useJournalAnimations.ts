@@ -23,13 +23,13 @@ interface UseJournalAnimationsProps {
 }
 
 interface AnimatedStyles {
-  backIconStyle: Record<string, unknown>;
-  closeIconStyle: Record<string, unknown>;
-  singleEmojiStyle: Record<string, unknown>;
-  emojiRowStyle: Record<string, unknown>;
-  summaryStyle: Record<string, unknown>;
-  moodCardStyle: Record<string, unknown>;
-  insightsChevronStyle: Record<string, unknown>;
+  backIconStyle: any;
+  closeIconStyle: any;
+  singleEmojiStyle: any;
+  emojiRowStyle: any;
+  summaryStyle: any;
+  moodCardStyle: any;
+  insightsChevronStyle: any;
 }
 
 interface UseJournalAnimationsReturn {

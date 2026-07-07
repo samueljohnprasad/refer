@@ -7,25 +7,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Card } from "@/src/components/ui/Card";
 import { Text } from "@/src/components/ui/Text";
 import { PressableScale } from "@/src/components/ui/PressableScale";
-import JourneyUnitIcon from "@/src/components/journey/JourneyUnitIcon";
 import StageProgressBar from "@/src/components/ui/StageProgressBar";
 import type { SectionOverviewItem } from "@/src/types/journey/sectionMap";
 
-const PALETTE = {
-  cream: "#FFFFFF",
-  warmWhite: "#FFFFFF",
-  sage50: "#F8FBF6",
-  sage100: "#E5EDE1",
-  sage200: "#D3E0CD",
-  sage300: "#ABC0A2",
-  sage500: "#5F7F58",
-  sage600: "#44633F",
-  sage700: "#29452A",
-  ink: "#142414",
-  inkSoft: "#4F604F",
-  inkMuted: "#7D8D7B",
-} as const;
-
+import { SAGE } from "@/lib/tokens";
 export interface SectionOverviewSheetProps {
   sections: SectionOverviewItem[];
   onPreviewSection: (sectionId: string) => void;
@@ -50,6 +35,7 @@ function SectionCard({
 
   // Resolve standard Card variant based on section state
   const cardVariant = section.isCurrent ? "answer-selected" : "answer";
+  const lockStatusStr = !section.isUnlocked ? "Locked" : isComplete ? "Completed" : "Available";
 
   return (
     <Card
@@ -57,63 +43,44 @@ function SectionCard({
       radius="xl"
       onPress={() => onPress(section.id)}
       disabled={false}
+      accessibilityLabel={`${section.title}, ${unitRangeLabel}. Status: ${lockStatusStr}.`}
+      accessibilityState={{ disabled: !section.isUnlocked }}
       className={`mb-4 ${section.isUnlocked ? "opacity-100" : "opacity-80"}`}
       contentClassName="gap-4 p-5"
     >
       <View className="flex-row items-start justify-between gap-3">
         <View className="flex-1 gap-1 pr-1">
-          <Text variant="h2" className="text-[25px] leading-8 text-ink">
+          <Text variant="h2" className="text-2xl leading-8 text-ink" numberOfLines={2} adjustsFontSizeToFit>
             {section.title}
           </Text>
-          <Text variant="overline" color="muted" className="text-xs uppercase tracking-[1px]">
+          <Text variant="overline" color="muted" className="text-xs uppercase tracking-widest">
             {unitRangeLabel}
           </Text>
         </View>
 
         {section.isCurrent ? (
           <View className="rounded-full bg-sage-500 px-3 py-1">
-            <Text variant="chip" color="surface" className="text-[10px] uppercase tracking-[1px]">
+            <Text variant="chip" color="surface" className="text-xs uppercase tracking-widest">
               Current
             </Text>
           </View>
         ) : isComplete ? (
           <View className="rounded-full bg-sage-100 px-3 py-1">
-            <Text variant="chip" color="sage" className="text-[10px] uppercase tracking-[1px]">
+            <Text variant="chip" color="sage" className="text-xs uppercase tracking-widest">
               Done
             </Text>
           </View>
         ) : null}
       </View>
 
-      {section.unitTitles.length > 0 ? (
-        <View className="flex-row flex-wrap gap-2">
-          {section.unitTitles.map((unitTitle, index) => (
-            <View
-              key={`${section.id}-${unitTitle}-${index}`}
-              className="flex-row items-center rounded-full bg-brand-canvas px-3 py-1.5"
-              style={{ borderWidth: 1, borderColor: "rgba(213, 228, 207, 0.7)" }}
-            >
-              <JourneyUnitIcon
-                iconKey={section.unitIconKeys[index]}
-                size={13}
-                color={PALETTE.sage600}
-                backgroundColor={PALETTE.cream}
-              />
-              <Text variant="chip" color="soft" className="ml-1.5">
-                Unit {index + 1}
-              </Text>
-            </View>
-          ))}
-        </View>
-      ) : null}
 
       <View className="gap-2 mt-1">
         <StageProgressBar
           progress={section.progressPercent}
           height={8}
           showGlow={section.isCurrent}
-          fillColor={section.isCurrent ? PALETTE.sage500 : PALETTE.sage300}
-          trackColor="#E5EAE2"
+          fillColor={section.isCurrent ? SAGE[500] : SAGE[300]}
+          trackColor={SAGE[100]}
         />
 
         <View className="flex-row items-center justify-between mt-1">
@@ -124,10 +91,10 @@ function SectionCard({
           {!section.isCurrent ? (
             <View className="flex-row items-center gap-1.5">
               {!section.isUnlocked && (
-                <HugeiconsIcon icon={LockIcon} size={14} color={PALETTE.sage500} />
+                <HugeiconsIcon icon={LockIcon} size={14} color={SAGE[500]} />
               )}
-              <Text variant="label-bold" color="sage" className="text-xs uppercase tracking-[0.8px]">
-                Preview →
+              <Text variant="label-bold" color="sage" className="text-xs uppercase tracking-widest">
+                {!section.isUnlocked ? "Unlock" : isComplete ? "Review" : "Enter"} →
               </Text>
             </View>
           ) : null}
@@ -147,25 +114,22 @@ export function SectionOverviewSheet({
   const handlePreviewAndClose = useCallback(
     (sectionId: string): void => {
       onPreviewSection(sectionId);
+      onClose();
     },
-    [onPreviewSection],
+    [onPreviewSection, onClose],
   );
 
   return (
     <View className="flex-1 happy-brand-screen">
       <View
-        className="flex-row items-start justify-between happy-brand-screen px-6 pb-5"
-        style={{
-          paddingTop: Math.max(18, insets.top),
-          borderBottomWidth: 1,
-          borderBottomColor: "#E5EDE1",
-        }}
+        className="flex-row items-start justify-between happy-brand-screen border-b border-sage-100 px-6 pb-5"
+        style={{ paddingTop: Math.max(18, insets.top) }}
       >
         <View className="flex-1 pr-4">
           <Text variant="eyebrow">
             Journey Map
           </Text>
-          <Text variant="display" className="text-[30px] leading-[34px] text-ink">
+          <Text variant="display" className="text-3xl leading-snug text-ink" numberOfLines={2} adjustsFontSizeToFit>
             {journeyTitle}
           </Text>
           <Text variant="body" color="muted" className="mt-1 text-base">
@@ -180,11 +144,8 @@ export function SectionOverviewSheet({
           accessibilityRole="button"
           accessibilityLabel="Close sections"
         >
-          <View
-            className="w-9 h-9 rounded-full items-center justify-center"
-            style={{ backgroundColor: "#EAF0E7" }}
-          >
-            <HugeiconsIcon icon={Cancel01Icon} size={18} color="#5F7F58" />
+          <View className="w-9 h-9 rounded-full items-center justify-center bg-sage-pill">
+            <HugeiconsIcon icon={Cancel01Icon} size={18} color={SAGE[500]} />
           </View>
         </PressableScale>
       </View>

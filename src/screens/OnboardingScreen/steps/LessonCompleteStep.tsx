@@ -40,13 +40,13 @@ const LessonCompleteStep: React.FC = () => {
           className="mt-5 items-center"
         >
           <Text
-            style={{ fontFamily: "FrauncesRegular" }}
+            style={{ fontFamily: "CormorantRegular" }}
             className="text-center text-[28px] leading-[1.08] text-ink"
           >
             You did it.{" "}
             <Text
               style={{
-                fontFamily: "FrauncesRegularItalic",
+                fontFamily: "CormorantRegularItalic",
                 color: "#5F7F58",
               }}
             >
@@ -59,7 +59,7 @@ const LessonCompleteStep: React.FC = () => {
           >
             <Text
               style={{
-                fontFamily: "FrauncesRegularItalic",
+                fontFamily: "CormorantRegularItalic",
                 color: "#5F7F58",
               }}
             >
@@ -75,7 +75,7 @@ const LessonCompleteStep: React.FC = () => {
             className="flex-1 items-center rounded-[14px] border-2 border-sage-100 bg-warm-white px-2 py-4"
           >
             <Text
-              style={{ fontFamily: "FrauncesSemiBold" }}
+              style={{ fontFamily: "CormorantSemiBold" }}
               className="text-[22px] text-sage-600"
             >
               +20
@@ -102,7 +102,7 @@ const LessonCompleteStep: React.FC = () => {
               }}
             >
               <Text
-                style={{ fontFamily: "FrauncesSemiBold" }}
+                style={{ fontFamily: "CormorantSemiBold" }}
                 className="text-[22px] text-white"
               >
                 🔥 1
@@ -121,7 +121,7 @@ const LessonCompleteStep: React.FC = () => {
             className="flex-1 items-center rounded-[14px] border-2 border-sage-100 bg-warm-white px-2 py-4"
           >
             <Text
-              style={{ fontFamily: "FrauncesSemiBold" }}
+              style={{ fontFamily: "CormorantSemiBold" }}
               className="text-[22px] text-sage-600"
             >
               7%

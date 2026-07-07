@@ -54,12 +54,12 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
 
       <Animated.Text
         entering={FadeIn.duration(180).delay(TITLE_ENTER_DELAY_MS)}
-        style={{ fontFamily: "FrauncesSemiBold" }}
+        style={{ fontFamily: "CormorantSemiBold" }}
         className="mt-2 text-[30px] leading-[1.1] text-ink"
       >
         What brings you here,{" "}
         <Text
-          style={{ fontFamily: "FrauncesMedium" }}
+          style={{ fontFamily: "CormorantMedium" }}
           className="italic text-sage-500"
         >
           friend?

@@ -276,7 +276,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
         {/* Processing phase text */}
         <Text
           style={{
-            fontFamily: "FrauncesBold",
+            fontFamily: "CormorantBold",
             color: INK,
             fontSize: 28,
             textAlign: "center",

@@ -7,7 +7,7 @@ import { tv, type VariantProps } from "@/lib/tv";
  *
  * Variant guide
  * ─────────────
- * display        Largest voice. 36px bold Fraunces. One instance per screen max.
+ * display        Largest voice. 36px bold Cormorant. One instance per screen max.
  *                Lesson-complete headline, streak milestone number, onboarding hero.
  *
  * h1             Screen title. 28px. Anchors the user spatially — every major screen
@@ -57,7 +57,7 @@ import { tv, type VariantProps } from "@/lib/tv";
  *                XP labels, duration labels, filter counts — anything inside a
  *                rounded-full container. Inherits ink-soft by default.
  *
- * counter        36px bold Fraunces with tabular numerals. Streak count, XP total,
+ * counter        36px bold Cormorant with tabular numerals. Streak count, XP total,
  *                hearts remaining. Tabular numerals prevent layout shift during
  *                count-up animations. Pair with eyebrow above and caption below.
  *
@@ -74,7 +74,7 @@ const textTv = tv({
   base: "",
   variants: {
     variant: {
-      // ── Heading family (Fraunces) ──────────────────────────────────────────
+      // ── Heading family (Cormorant) ──────────────────────────────────────────
       // §3 Display — 36px, -0.02em tracking, one instance per screen max
       display:
         "happy-font-heading-bold text-[36px] leading-[39px] tracking-[-0.02em] text-ink",

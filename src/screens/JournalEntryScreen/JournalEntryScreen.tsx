@@ -207,7 +207,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
           {entry?.journal_ai_insights && (
             <AIInsightsSection
               aiInsights={entry.journal_ai_insights.aiInsights ?? null}
-              colorScheme={colorScheme}
+              colorScheme={colorScheme as any}
               energyLevel={entry.journal_ai_insights.energyLevel}
               stressLevel={entry.journal_ai_insights.stressLevel}
               sleepQuality={entry.journal_ai_insights.sleepQuality}

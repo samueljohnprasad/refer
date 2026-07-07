@@ -136,7 +136,7 @@ export default function SignUpPromptModal({
                     {/* Progress summary */}
                     <View className="flex-row justify-center gap-6 mb-6">
                         <View className="items-center">
-                            <Text className="text-2xl font-bold text-violet-600">
+                            <Text className="text-2xl font-bold text-ink">
                                 {completedNodes}
                             </Text>
                             <Text className="text-xs text-ink-muted">
@@ -145,7 +145,7 @@ export default function SignUpPromptModal({
                         </View>
                         <View className="w-px bg-slate-200" />
                         <View className="items-center">
-                            <Text className="text-2xl font-bold text-amber-600">
+                            <Text className="text-2xl font-bold text-ink">
                                 {guestXP}
                             </Text>
                             <Text className="text-xs text-ink-muted">IP earned</Text>

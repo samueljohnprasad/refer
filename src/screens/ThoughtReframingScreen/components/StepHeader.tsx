@@ -17,7 +17,7 @@ export const StepHeader: React.FC<StepHeaderProps> = React.memo(
   ({ title, subtitle }) => {
     return (
       <View className="mb-6 w-full">
-        {/* Title — premium Fraunces display serif */}
+        {/* Title — premium Cormorant display serif */}
         <Text variant="h1" className="mb-1.5 leading-snug">
           {title}
         </Text>

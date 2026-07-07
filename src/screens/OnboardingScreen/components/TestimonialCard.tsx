@@ -52,7 +52,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
             className="h-9 w-9 items-center justify-center rounded-full"
           >
             <Text
-              style={{ fontFamily: "FrauncesBold", color: colors.text }}
+              style={{ fontFamily: "CormorantBold", color: colors.text }}
               className="text-[14px]"
             >
               {initial}
@@ -93,7 +93,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
       {/* Editorial Italic Quote Text */}
       <View className="relative pl-1">
         <Text
-          style={{ fontFamily: "FrauncesRegularItalic" }}
+          style={{ fontFamily: "CormorantRegularItalic" }}
           className="text-[14px] leading-[1.6] text-ink-soft"
         >
           {quote}

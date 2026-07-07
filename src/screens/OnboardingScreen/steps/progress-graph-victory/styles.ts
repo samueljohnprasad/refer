@@ -14,7 +14,7 @@ export const progressGraphVictoryStyles = StyleSheet.create({
     },
     title: {
         color: COLORS.text,
-        fontFamily: "FrauncesBold",
+        fontFamily: "CormorantBold",
         fontSize: 30,
         lineHeight: 36,
         letterSpacing: -0.5,

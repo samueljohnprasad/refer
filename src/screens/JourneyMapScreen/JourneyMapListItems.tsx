@@ -72,8 +72,10 @@ export function JourneyMapEmptyState(): React.JSX.Element {
     <View className="flex-1 items-center justify-center px-8 pb-16">
       <MochiMascot expression="concentrating" size={100} delay={0} />
       <Text
-        style={{ fontFamily: "FrauncesSemiBold" }}
+        style={{ fontFamily: "CormorantSemiBold" }}
         className="mt-5 text-center text-[24px] leading-tight text-ink"
+        adjustsFontSizeToFit
+        numberOfLines={2}
       >
         Your journey is being prepared
       </Text>

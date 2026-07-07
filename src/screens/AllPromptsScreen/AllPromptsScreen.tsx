@@ -141,7 +141,7 @@ const PromptCard: React.FC<PromptCardProps> = React.memo(
       >
         <View className="flex-1">
           <Text
-            style={{ fontFamily: "FrauncesSemiBold" }}
+            style={{ fontFamily: "CormorantSemiBold" }}
             className="text-[16px] text-ink mb-1.5"
             numberOfLines={1}
           >

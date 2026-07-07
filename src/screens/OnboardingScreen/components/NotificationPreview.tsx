@@ -10,7 +10,7 @@ const NotificationPreview: React.FC<NotificationPreviewProps> = ({ time }) => {
     <View className="flex-row items-start gap-2.5 rounded-[14px] border border-sage-100 bg-white/90 px-3.5 py-3">
       <View className="h-8 w-8 items-center justify-center rounded-lg bg-sage-500">
         <Text
-          style={{ fontFamily: "FrauncesBold" }}
+          style={{ fontFamily: "CormorantBold" }}
           className="text-sm text-white"
         >
           H

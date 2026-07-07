@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Text, View, ActivityIndicator } from "react-native";
+import * as Haptics from "expo-haptics";
 import Animated, {
   FadeIn,
   useSharedValue,
@@ -21,6 +22,12 @@ const LoadingTaskRow: React.FC<LoadingTaskRowProps> = ({
   index,
 }) => {
   const rowOpacity = useSharedValue(0.5);
+
+  useEffect(() => {
+    if (completed) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  }, [completed]);
 
   useEffect(() => {
     rowOpacity.value = withTiming(completed || inProgress ? 1 : 0.55, {

@@ -2,7 +2,7 @@ import * as QueryParams from "expo-auth-session/build/QueryParams";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
 import { supabase } from "./supabase";
-import { Router } from "expo-router";
+import { router } from "expo-router";
 import type { Session } from "@supabase/supabase-js";
 
 WebBrowser.maybeCompleteAuthSession(); // required for web only
@@ -139,7 +139,7 @@ export const signInWithGoogleOAuth = async (): Promise<Session | null> => {
 
 // Accept an optional Expo Router instance so we can programmatically
 // navigate after the OAuth flow completes.
-const performOAuth = async ({ router }: { router: Router }) => {
+const performOAuth = async ({ router }: { router: any }) => {
   try {
     await signInWithGoogleOAuth();
     // Navigate to tabs layout after successful login

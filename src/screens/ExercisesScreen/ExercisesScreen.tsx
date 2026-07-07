@@ -1026,7 +1026,7 @@ export default function ExercisesScreen(): ReactElement {
         readOnly: item.status === "completed",
       });
       if (e) {
-        navigateWithReveal(e, route as Href<string>, color);
+        navigateWithReveal(e, route as any, color);
       } else {
         router.push(route as never);
       }
@@ -1035,21 +1035,21 @@ export default function ExercisesScreen(): ReactElement {
 
     if (item.type === "catcher") {
       const route = `/tabs/screens/thought-checker?id=${item.id}`;
-      if (e) navigateWithReveal(e, route as Href<string>, "#E8FBF0");
+      if (e) navigateWithReveal(e, route as any, "#E8FBF0");
       else router.push(route as never);
       return;
     }
 
     if (item.type === "reframing") {
       const route = `/tabs/screens/thought-reframing?id=${item.id}`;
-      if (e) navigateWithReveal(e, route as Href<string>, "#E8FBF0");
+      if (e) navigateWithReveal(e, route as any, "#E8FBF0");
       else router.push(route as never);
       return;
     }
 
     if (item.type === "gratitude") {
       const route = `/tabs/screens/gratitude-reframe?id=${item.id}`;
-      if (e) navigateWithReveal(e, route as Href<string>, "#E8FBF0");
+      if (e) navigateWithReveal(e, route as any, "#E8FBF0");
       else router.push(route as never);
     }
   }, [navigateWithReveal]);

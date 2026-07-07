@@ -31,7 +31,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
         >
           <View className="flex-row items-center gap-1.5 justify-center">
             <Text
-              style={{ fontFamily: "FrauncesSemiBold" }}
+              style={{ fontFamily: "CormorantSemiBold" }}
               className="text-[28px] text-ink"
             >
               Welcome to the Grove
@@ -52,7 +52,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
             Up next · Tomorrow
           </Text>
           <Text
-            style={{ fontFamily: "FrauncesMedium" }}
+            style={{ fontFamily: "CormorantMedium" }}
             className="mt-2 text-lg text-ink"
           >
             Day 2: The Thought Spiral
@@ -64,7 +64,7 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
 
         <Animated.Text
           entering={FadeIn.duration(180).delay(320)}
-          style={{ fontFamily: "FrauncesMedium" }}
+          style={{ fontFamily: "CormorantMedium" }}
           className="mt-6 text-center text-sm italic text-ink-soft"
         >
           Until tomorrow, friend.{"\n"}

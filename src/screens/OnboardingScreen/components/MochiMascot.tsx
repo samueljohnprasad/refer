@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Image, ImageSourcePropType } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated, { 
+  FadeIn, 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withRepeat, 
+  withSequence, 
+  withTiming, 
+  Easing 
+} from "react-native-reanimated";
 import { MochiExpression } from "../types";
 
 /* eslint-disable @typescript-eslint/no-require-imports */
@@ -26,10 +34,29 @@ const MochiMascot: React.FC<MochiMascotProps> = ({
   animate = true,
   delay = 0,
 }) => {
+  const translateY = useSharedValue(0);
+
+  useEffect(() => {
+    if (animate) {
+      translateY.value = withRepeat(
+        withSequence(
+          withTiming(-4, { duration: 1500, easing: Easing.inOut(Easing.sin) }),
+          withTiming(0, { duration: 1500, easing: Easing.inOut(Easing.sin) })
+        ),
+        -1,
+        true
+      );
+    }
+  }, [animate]);
+
+  const floatingStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
+
   return (
     <Animated.View
       entering={animate ? FadeIn.delay(delay).duration(220) : undefined}
-      style={{ width: size, height: size }}
+      style={[{ width: size, height: size }, floatingStyle]}
       className="items-center justify-center"
     >
       <Image

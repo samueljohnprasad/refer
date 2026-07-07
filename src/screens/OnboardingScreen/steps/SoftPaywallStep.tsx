@@ -72,12 +72,12 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           </View>
           <MochiMascot expression="happy" size={100} delay={200} />
           <Text
-            style={{ fontFamily: 'FrauncesSemiBold' }}
+            style={{ fontFamily: 'CormorantSemiBold' }}
             className="mt-3 text-center text-[26px] leading-[1.15] tracking-[-0.02em] text-ink"
           >
             Become someone who doesn&apos;t run from{' '}
             <Text
-              style={{ fontFamily: 'FrauncesRegularItalic', color: '#5F7F58' }}
+              style={{ fontFamily: 'CormorantRegularItalic', color: '#5F7F58' }}
             >
               how they feel.
             </Text>
@@ -117,7 +117,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
                 <View className="flex-1 flex-row items-center gap-3 opacity-90">
                   <View className="h-8 w-8 items-center justify-center rounded-lg bg-sage-100">
                     <Text
-                      style={{ fontFamily: 'FrauncesSemiBold' }}
+                      style={{ fontFamily: 'CormorantSemiBold' }}
                       className="text-sm text-ink-muted"
                     >
                       {lesson.day}
@@ -157,7 +157,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
               </View>
             ))}
           <Text
-            style={{ fontFamily: 'FrauncesRegularItalic' }}
+            style={{ fontFamily: 'CormorantRegularItalic' }}
             className="mt-2 text-center text-[13px] text-ink-muted"
           >
             Continue your journey or restart from Day 1.
@@ -196,7 +196,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           className="mt-5 flex-row items-center justify-center gap-3.5 border-t border-sage-100 pt-3"
         >
           <View className="items-center">
-            <Text style={{ fontFamily: 'FrauncesSemiBold' }} className="text-base text-sage-600">
+            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
               3 in 4
             </Text>
             <Text className="text-[9px] uppercase tracking-wide text-ink-muted">
@@ -204,13 +204,13 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
             </Text>
           </View>
           <View className="items-center">
-            <Text style={{ fontFamily: 'FrauncesSemiBold' }} className="text-base text-sage-600">
+            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
               ★ 4.9
             </Text>
             <Text className="text-[9px] uppercase tracking-wide text-ink-muted">12k reviews</Text>
           </View>
           <View className="items-center">
-            <Text style={{ fontFamily: 'FrauncesSemiBold' }} className="text-base text-sage-600">
+            <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
               220k
             </Text>
             <Text className="text-[9px] uppercase tracking-wide text-ink-muted">in the Grove</Text>
