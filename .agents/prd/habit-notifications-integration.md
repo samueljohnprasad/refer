@@ -1,3 +1,6 @@
+https://www.remoteopenclaw.com/skills/nexu-io/open-design/impeccable-design-polish
+
+
 # Habit Notifications Integration Guide
 
 ## Overview

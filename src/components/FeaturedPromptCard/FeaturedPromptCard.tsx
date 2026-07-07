@@ -74,16 +74,16 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
         </View>
       </View>
 
-      <View className="z-10 w-[70%] pb-12" key={currentPrompt.id}>
+      <View className="z-10 pr-[120px] pb-12" key={currentPrompt.id}>
         <StaggeredText
           ref={textRef}
           text={currentPrompt.description}
-          fontSize={36}
+          fontSize={30}
           textStyle={{
             fontFamily: "FrauncesBold",
             color: INK,
             letterSpacing: -0.5,
-            lineHeight: 39.6,
+            lineHeight: 34,
           }}
         />
       </View>

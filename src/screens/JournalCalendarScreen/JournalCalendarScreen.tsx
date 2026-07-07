@@ -11,7 +11,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { endOfWeek, startOfWeek } from "date-fns";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
-import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
+
 
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -30,10 +30,7 @@ import { useStreakTracker } from "@/hooks/data/useStreakTracker";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { Card } from "@/src/components/ui/Card";
 
-import {
-  QuickJournalPrompt,
-  QuickJournalSection,
-} from "../DiscoveryScreen/QuickJournalSection";
+import { QuickJournalPrompt } from "../DiscoveryScreen/QuickJournalSection";
 import { ALL_PROMPTS } from "../AllPromptsScreen/AllPromptsScreen";
 import { recorderOpenAtom } from "../DiscoveryScreen/helpers";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
@@ -172,7 +169,7 @@ const Greeting = React.memo<{
   const greeting = useMemo(() => getGreeting(new Date().getHours()), []);
 
   return (
-    <View className="mt-1">
+    <View>
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-2.5 flex-1 pr-2">
           <Text
@@ -234,7 +231,6 @@ export default function JournalCalendarScreen() {
   const { setPrompt } = useJournalEntry();
 
   // State declarations moved above callbacks that reference them
-  const [shouldLoadChart, setShouldLoadChart] = useState(false);
   const [showStreakModal, setShowStreakModal] = useState(false);
 
   const handleAchievementsPress = useCallback(() => {
@@ -251,18 +247,14 @@ export default function JournalCalendarScreen() {
     [setPrompt, setStartRecording, setRecorderOpen],
   );
 
-  const handleSeeAllPrompts = useCallback(() => {
-    router.push("/tabs/screens/all-prompts");
-  }, []);
+
 
   // Memoize date calculations to prevent recalculation on every render
-  const { startOfWeekDate, endOfWeekDate, selectedEmotionDate } =
+  const { selectedEmotionDate } =
     useMemo(() => {
       const today = new Date();
       return {
         selectedEmotionDate: today,
-        startOfWeekDate: startOfWeek(today, { weekStartsOn: 0 }),
-        endOfWeekDate: endOfWeek(today, { weekStartsOn: 0 }),
       };
     }, []);
 
@@ -276,12 +268,7 @@ export default function JournalCalendarScreen() {
   );
 
   useEffect(() => {
-    // Delay chart loading to improve initial render performance
-    const timer = setTimeout(() => {
-      setShouldLoadChart(true);
-    }, 100); // Load after 100ms
-
-    return () => clearTimeout(timer);
+    return () => {};
   }, []);
 
   useEffect(() => {
@@ -365,7 +352,7 @@ export default function JournalCalendarScreen() {
             )}
           >
             <View className="mb-3 px-1">
-              <Text className="happy-brand-eyebrow">Daily Reflection</Text>
+              <Text className="happy-font-body-bold text-[15px] text-ink-muted">Daily reflection</Text>
             </View>
             <FeaturedPromptCard
               prompts={ALL_PROMPTS}
@@ -374,6 +361,8 @@ export default function JournalCalendarScreen() {
               }
             />
           </Animated.View>
+
+
 
           {/* ── GROUP 3: Track — entrance animation index 3 ── */}
           <Animated.View
@@ -389,103 +378,29 @@ export default function JournalCalendarScreen() {
             />
           </Animated.View>
 
-          {/* Mood Chart — same group as emotion logger, tighter spacing */}
-          <Animated.View
-            className="mt-6"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 4,
-            )}
-          >
-            {shouldLoadChart ? (
-              <WeeklyMoodChart
-                startDate={startOfWeekDate}
-                endDate={endOfWeekDate}
-                title="Mood Trends"
-              />
-            ) : (
-              <View className="mb-4">
-                <Text className="happy-brand-eyebrow mb-3 px-1">
-                  Mood Trends
-                </Text>
-                <ShimmerSkeleton height={240} />
-              </View>
-            )}
-          </Animated.View>
 
-          {/* Pattern Insight Nudge — entrance animation index 5 */}
+
+          {/* Pattern Insight Nudge — entrance animation index 4 */}
           <Animated.View
             className="mt-8"
             entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 5,
+              STAGGER_DELAY_MS * 4,
             )}
           >
             <InsightNudgeCard />
           </Animated.View>
 
-          {/* Apple Intelligence — entrance animation index 5.5 */}
+          {/* ── GROUP 4: Progress — entrance animation index 5 ── */}
           <Animated.View
-            className="mt-6"
+            className="mt-10 mb-6"
             entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 5.5,
-            )}
-          >
-            <PressableScale
-              onPress={() => router.push("/tabs/screens/apple-intelligence")}
-              scale={0.97}
-              hapticStyle="light"
-              accessibilityRole="button"
-              accessibilityLabel="Open Apple Intelligence"
-            >
-              <Card variant="tile" radius="xl" haptic="none">
-                <View className="flex-row items-center gap-4 p-4">
-                  <View
-                    className="w-12 h-12 rounded-2xl items-center justify-center"
-                    style={{ backgroundColor: SAGE[50] }}
-                  >
-                    <Text className="text-[24px]">🧠</Text>
-                  </View>
-                  <View className="flex-1">
-                    <Text
-                      className="happy-font-body-bold text-[15px]"
-                      style={{ color: INK }}
-                    >
-                      Apple Intelligence
-                    </Text>
-                    <Text
-                      className="happy-font-body text-[13px] mt-0.5"
-                      style={{ color: INK_SOFT }}
-                    >
-                      On-device AI · Private & secure
-                    </Text>
-                  </View>
-                  <Text style={{ color: INK_MUTED, fontSize: 18 }}>›</Text>
-                </View>
-              </Card>
-            </PressableScale>
-          </Animated.View>
-
-          {/* ── GROUP 4: Progress — entrance animation index 6 ── */}
-          <Animated.View
-            className="mt-10"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 6,
+              STAGGER_DELAY_MS * 5,
             )}
           >
             <ChallengesSection showDepth={false} maxItems={3} />
           </Animated.View>
 
-          {/* Quick Journal — same group as journaling, tighter spacing */}
-          <Animated.View
-            className="mt-8 mb-6"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 7,
-            )}
-          >
-            <QuickJournalSection
-              onCardPress={handleQuickJournalPress}
-              onSeeAllPress={handleSeeAllPrompts}
-            />
-          </Animated.View>
+
         </View>
       </ScrollView>
 

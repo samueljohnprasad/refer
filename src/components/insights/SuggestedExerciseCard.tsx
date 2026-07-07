@@ -32,17 +32,16 @@ export const SuggestedExerciseCard: React.FC = React.memo(() => {
   const route = `/tabs/screens/exercise-flow?type=${encodeURIComponent(recommendation.exerciseType)}`;
 
   return (
-    <View className="mb-6">
-      <Text className="happy-brand-eyebrow mb-3 px-1">Suggested for you</Text>
+    <View className="mb-6 mt-2">
       <CircularRevealWrapper href={route} color={badgeThemeBg} duration={800}>
         <PressableScale
           scale={0.98}
           hapticStyle="light"
-          className="rounded-[30px]"
+          className="rounded-2xl"
           accessibilityRole="button"
           accessibilityLabel={`Start ${config.title}. ${recommendation.reason}`}
         >
-          <View className="happy-brand-pressed-card-selected rounded-[30px] px-4 py-4">
+          <View className="happy-brand-pressed-card-selected rounded-2xl px-4 py-4">
             <View className="flex-row items-center gap-3">
               <View className="h-12 w-12 items-center justify-center rounded-[18px] border border-sage-100 bg-warm-white">
                 <HugeiconsIcon icon={icon} size={24} color={SAGE[600]} />

@@ -158,8 +158,8 @@ export const QuickJournalSection: React.FC<QuickJournalSectionProps> =
         {/* Header */}
         <View className="mb-3 min-h-[44px] flex-row items-center justify-between px-1">
           <View className="flex-row items-center gap-2">
-            <Text className="happy-brand-eyebrow text-[11px]">
-              Quick Journal
+            <Text className="happy-font-body-bold text-[15px] text-ink-muted">
+              Quick journal
             </Text>
           </View>
           <PressableScale

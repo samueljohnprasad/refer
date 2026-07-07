@@ -24,6 +24,7 @@ import {
   Share01Icon,
   Download02Icon,
   StarIcon,
+  Brain01Icon,
 } from "@hugeicons/core-free-icons";
 
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
@@ -138,6 +139,16 @@ export default React.memo(function SettingsScreen() {
           <OnboardingChecklist />
 
           <SettingsSection title="Account & Preferences">
+            <SettingsItem
+              icon={Brain01Icon}
+              tone="sage"
+              title="Apple Intelligence"
+              subtitle="On-device AI · Private & secure"
+              onPress={() => {
+                Haptics.selectionAsync();
+                router.push("/tabs/screens/apple-intelligence");
+              }}
+            />
             <SettingsItem
               icon={Notification01Icon}
               tone="sage"

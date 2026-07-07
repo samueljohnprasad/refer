@@ -14,6 +14,7 @@ import { RatingCheckExercise } from './RatingCheckExercise';
 import { ScenarioExercise } from './ScenarioExercise';
 import { SliderRatingExercise } from './SliderRatingExercise';
 import { TrueFalseExercise } from './TrueFalseExercise';
+import { FillInTheBlankExercise } from './FillInTheBlankExercise';
 
 export const ExerciseRegistry: Record<ExerciseType, ComponentType<any>> = {
   concept: ConceptExercise,
@@ -29,4 +30,5 @@ export const ExerciseRegistry: Record<ExerciseType, ComponentType<any>> = {
   scenario: ScenarioExercise,
   slider_rating: SliderRatingExercise,
   true_false: TrueFalseExercise,
+  fill_in_the_blank: FillInTheBlankExercise,
 };

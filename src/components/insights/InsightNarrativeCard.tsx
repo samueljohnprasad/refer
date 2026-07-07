@@ -13,23 +13,16 @@ export function InsightNarrativeCard() {
   const updatedLabel = dayjs(data.generatedAt).format("MMM D");
 
   return (
-    <View
-      className="happy-brand-card rounded-[24px]"
-      style={{ backgroundColor: "#FFFFFF", marginBottom: 16, padding: 20 }}
-    >
-      <View className="flex-row items-center gap-1.5 mb-3">
-        <Text className="text-[13px]">✨</Text>
+    <View className="px-2 mb-6">
+      <View className="flex-row items-center gap-1.5 mb-2">
+        <Text className="text-[14px]">✨</Text>
         <Text className="text-[12px] font-bold text-sage-700 uppercase tracking-wider">
-          Your Insight
+          AI INSIGHT
         </Text>
       </View>
 
-      <Text className="text-[15px] text-ink leading-relaxed font-medium">
+      <Text className="happy-font-heading text-[22px] text-ink leading-snug">
         {data.narrative}
-      </Text>
-
-      <Text className="text-[11px] text-sage-500 mt-3">
-        Updated {updatedLabel}
       </Text>
     </View>
   );

@@ -3,6 +3,8 @@ import { TrendLine } from "@/src/screens/InsightsScreen/components/TrendLine";
 import { BigStat } from "@/src/screens/InsightsScreen/components/BigStat";
 import { average } from "@/src/utils/insights";
 import { getTimeRangeDays } from "@/src/utils/insights/timeRange";
+import { SkillProgressionCard } from "@/src/components/insights/SkillProgressionCard";
+import { TherapistNotebookCard } from "@/src/components/insights/TherapistNotebookCard";
 import type { DeepDiveConfig, DeepDiveComputedData } from "./types";
 
 export const mindfulnessConfig: DeepDiveConfig = {
@@ -79,6 +81,16 @@ export const mindfulnessConfig: DeepDiveConfig = {
           />
         );
       },
+    },
+    {
+      key: "skill-progression",
+      title: "Skill Progression",
+      render: () => <SkillProgressionCard />,
+    },
+    {
+      key: "therapist-notebook",
+      title: "Therapist Notebook",
+      render: () => <TherapistNotebookCard />,
     },
   ],
 };

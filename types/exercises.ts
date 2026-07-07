@@ -11,7 +11,8 @@ export type ExerciseType =
   | 'rating_check'
   | 'scenario'
   | 'slider_rating'
-  | 'true_false';
+  | 'true_false'
+  | 'fill_in_the_blank';
 
 export interface BaseExercisePayload {
   id: string; // The UUID of the exercise
@@ -53,6 +54,7 @@ export interface RatingCheckPayload extends BaseExercisePayload { type: 'rating_
 export interface ScenarioPayload extends BaseExercisePayload { type: 'scenario'; content: any; }
 export interface SliderRatingPayload extends BaseExercisePayload { type: 'slider_rating'; content: any; }
 export interface TrueFalsePayload extends BaseExercisePayload { type: 'true_false'; content: any; }
+export interface FillInTheBlankPayload extends BaseExercisePayload { type: 'fill_in_the_blank'; content: any; }
 
 export type ExercisePayload = 
   | ConceptPayload 
@@ -67,7 +69,8 @@ export type ExercisePayload =
   | RatingCheckPayload
   | ScenarioPayload
   | SliderRatingPayload
-  | TrueFalsePayload;
+  | TrueFalsePayload
+  | FillInTheBlankPayload;
 
 export interface ExerciseComponentProps<T extends ExercisePayload> {
   payload: T;

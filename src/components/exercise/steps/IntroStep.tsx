@@ -44,7 +44,7 @@ export const IntroStep: React.FC<IntroStepProps> = React.memo(
           </FadeInItem>
 
           <FadeInItem index={3}>
-            <View className="bg-sage-pill rounded-full px-4 py-1.5 mb-4 flex-row items-center">
+            <View className="bg-transparent rounded-full px-4 py-1.5 mb-4 flex-row items-center">
               <HugeiconsIcon
                 icon={Timer01Icon}
                 size={14}
@@ -58,17 +58,36 @@ export const IntroStep: React.FC<IntroStepProps> = React.memo(
           </FadeInItem>
 
           {bulletPoints && bulletPoints.length > 0 && (
-            <View className="w-full">
-              {bulletPoints.map((point: string, i: number) => (
-                <FadeInItem key={i} index={4 + i} delayPerItem={60}>
-                  <View className="flex-row items-center mb-2 px-4 py-3 bg-brand-surface border border-brand-border/60 rounded-2xl shadow-sm">
-                    <View className="w-2 h-2 rounded-full bg-sage-500 mr-3.5" />
-                    <Text variant="body-bold" color="ink" className="flex-1 leading-normal text-[14px]">
-                      {point}
-                    </Text>
-                  </View>
-                </FadeInItem>
-              ))}
+            <View className="w-full mt-4 px-10">
+              {bulletPoints.map((point: string, i: number) => {
+                const isLast = i === bulletPoints.length - 1;
+                return (
+                  <FadeInItem key={i} index={4 + i} delayPerItem={90}>
+                    <View className="flex-row items-start">
+                      {/* Timeline column */}
+                      <View className="items-center mr-5">
+                        {/* Node */}
+                        <View className="w-6 h-6 rounded-full bg-sage-100 border-2 border-sage-500 items-center justify-center z-10 mt-0.5">
+                          <Text variant="chip" className="text-[10px] font-bold text-sage-800" style={{ lineHeight: 12 }}>
+                            {i + 1}
+                          </Text>
+                        </View>
+                        {/* Connecting Line */}
+                        {!isLast && (
+                          <View className="w-px h-8 bg-sage-200 mt-1.5 mb-1.5" />
+                        )}
+                      </View>
+                      
+                      {/* Content column */}
+                      <View className="flex-1 pb-2">
+                        <Text variant="body-bold" color="ink" className="leading-relaxed text-[15px] mt-0.5">
+                          {point}
+                        </Text>
+                      </View>
+                    </View>
+                  </FadeInItem>
+                );
+              })}
             </View>
           )}
       </View>

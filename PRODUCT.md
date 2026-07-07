@@ -1,0 +1,32 @@
+# Product
+
+## Register
+
+product
+
+## Users
+People seeking accessible, effective mental health and CBT exercises. They are often stressed or anxious and need a calm, premium, and trustworthy environment.
+
+## Product Purpose
+To provide structured therapeutic exercises (CBT, mindfulness, anxiety relief) in a highly polished, editorial-quality mobile app format.
+
+## Brand Personality
+Premium, editorial, confident, calm, intentional. (Think Calm or Headspace).
+
+## Anti-references
+- AI-generated UI slop
+- Ghost cards (border + wide drop shadow simultaneously)
+- Arbitrary corner radii (32px+ for cards)
+- Generic gradient backgrounds
+- Eyebrow tropes (tracked out all-caps text on every section)
+- Monotonous, unvaried card stacks
+
+## Design Principles
+- Typographic hierarchy over decorative elements (modular scale 1.25)
+- Clear structural layout rhythm (Hero, Shelf, List)
+- Restraint and purpose in styling (no decorative borders or dropshadows unless physically justified)
+- Crisp, mathematically sound component sizing
+
+## Accessibility & Inclusion
+- High contrast requirements for text on tinted backgrounds.
+- Large tap targets for mobile usability.

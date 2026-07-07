@@ -4,6 +4,9 @@ import { SAGE } from "@/lib/tokens";
 import { HorizontalBarChart } from "@/src/screens/InsightsScreen/components/HorizontalBarChart";
 import { TrendLine } from "@/src/screens/InsightsScreen/components/TrendLine";
 import { DISTORTION_LABELS } from "@/src/constants/insights";
+import { CBTPracticeScoreCard } from "@/src/components/insights/CBTPracticeScoreCard";
+import { ThoughtPatternsCard } from "@/src/components/insights/ThoughtPatternsCard";
+import { BeliefDecayCard } from "@/src/components/insights/BeliefDecayCard";
 import { average, countBy } from "@/src/utils/insights";
 import { getWeekKey } from "@/src/utils/insights/timeRange";
 import type { DeepDiveConfig, DeepDiveComputedData } from "./types";
@@ -161,6 +164,21 @@ export const cbtConfig: DeepDiveConfig = {
           />
         );
       },
+    },
+    {
+      key: "cbt-practice-score",
+      title: "Practice Score",
+      render: () => <CBTPracticeScoreCard />,
+    },
+    {
+      key: "thought-patterns",
+      title: "Thought Patterns",
+      render: () => <ThoughtPatternsCard />,
+    },
+    {
+      key: "belief-decay",
+      title: "Belief Decay",
+      render: () => <BeliefDecayCard />,
     },
   ],
 };

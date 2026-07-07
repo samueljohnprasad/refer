@@ -199,12 +199,12 @@ function RootLayoutNav() {
                               <RevenueCatProvider>
                                 <ThemeProvider value={DefaultTheme}>
                                   <KeyboardProvider>
-                                      <BottomSheetModalProvider>
-                                        <Slot />
-                                        <AnonymousPurchaseClaimPrompt />
-                                        <FloatingHappyAssistant />
-                                        <TransitionOverlay />
-                                      </BottomSheetModalProvider>
+                                        <BottomSheetModalProvider>
+                                          <Slot />
+                                          <AnonymousPurchaseClaimPrompt />
+                                          <FloatingHappyAssistant />
+                                          <TransitionOverlay />
+                                        </BottomSheetModalProvider>
                                   </KeyboardProvider>
                                 </ThemeProvider>
                               </RevenueCatProvider>

@@ -4,6 +4,8 @@ import { HorizontalBarChart } from "@/src/screens/InsightsScreen/components/Hori
 import { TrendLine } from "@/src/screens/InsightsScreen/components/TrendLine";
 import { EXERCISE_LABELS } from "@/src/constants/insights";
 import { average } from "@/src/utils/insights";
+import { PersonalEffectivenessCard } from "@/src/components/insights/PersonalEffectivenessCard";
+import { TriggerClusterCard } from "@/src/components/insights/TriggerClusterCard";
 import type { DeepDiveConfig, DeepDiveComputedData } from "./types";
 import type { ExerciseType } from "@/src/types/exerciseFlow";
 
@@ -114,6 +116,16 @@ export const anxietyConfig: DeepDiveConfig = {
           </>
         );
       },
+    },
+    {
+      key: "personal-effectiveness",
+      title: "Exercise Effectiveness",
+      render: () => <PersonalEffectivenessCard />,
+    },
+    {
+      key: "trigger-clusters",
+      title: "Trigger Clusters",
+      render: () => <TriggerClusterCard />,
     },
   ],
 };

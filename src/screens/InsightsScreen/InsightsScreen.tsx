@@ -1,5 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { View, ScrollView, Pressable } from "react-native";
+import { startOfWeek, endOfWeek } from "date-fns";
+import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,7 +12,7 @@ import {
   Brain01Icon,
   Yoga01Icon,
   WindPower01Icon,
-  ArrowLeft01Icon,
+  ArrowRight01Icon,
 } from "@hugeicons/core-free-icons";
 import {
   useInsightsOverview,
@@ -18,15 +20,7 @@ import {
   type CategorySummary,
 } from "@/src/hooks/insights/useInsightsOverview";
 import { TimeRangeSelector } from "./components/TimeRangeSelector";
-import { CBTPracticeScoreCard } from "@/src/components/insights/CBTPracticeScoreCard";
-import { ThoughtPatternsCard } from "@/src/components/insights/ThoughtPatternsCard";
-import { PersonalEffectivenessCard } from "@/src/components/insights/PersonalEffectivenessCard";
-import { SkillProgressionCard } from "@/src/components/insights/SkillProgressionCard";
-import { TriggerClusterCard } from "@/src/components/insights/TriggerClusterCard";
-import { BeliefDecayCard } from "@/src/components/insights/BeliefDecayCard";
 import { InsightNarrativeCard } from "@/src/components/insights/InsightNarrativeCard";
-import { TherapistNotebookCard } from "@/src/components/insights/TherapistNotebookCard";
-import { useTemporalPatterns } from "@/src/hooks/insights/useTemporalPatterns";
 import type { ExerciseCategory } from "@/src/types/exerciseFlow";
 
 const CATEGORY_ICONS = {
@@ -53,6 +47,14 @@ const CATEGORY_ROUTES: Record<ExerciseCategory, string> = {
 export default function InsightsScreen() {
   const [timeRange, setTimeRange] = useState<TimeRange>("30d");
   const { data, isLoading } = useInsightsOverview(timeRange);
+
+  const { startOfWeekDate, endOfWeekDate } = useMemo(() => {
+    const today = new Date();
+    return {
+      startOfWeekDate: startOfWeek(today, { weekStartsOn: 0 }),
+      endOfWeekDate: endOfWeek(today, { weekStartsOn: 0 }),
+    };
+  }, []);
 
   const HeaderComponent = (
     <Stack.Screen
@@ -107,36 +109,20 @@ export default function InsightsScreen() {
         <Animated.View entering={FadeInDown.duration(400).delay(200)} className="px-4 mt-5">
           <InsightNarrativeCard />
         </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(300)} className="px-4 mt-4">
-          <CBTPracticeScoreCard />
+        <Animated.View entering={FadeInDown.duration(400).delay(250)} className="mt-4">
+          <WeeklyMoodChart
+            startDate={startOfWeekDate}
+            endDate={endOfWeekDate}
+            title="Mood Trends"
+          />
         </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(400)} className="px-4 mt-4">
-          <SkillProgressionCard />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(450)}>
-          <TemporalPatternRow />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(500)} className="px-4 mt-4">
-          <PersonalEffectivenessCard />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(550)} className="px-4 mt-4">
-          <TriggerClusterCard />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(600)} className="px-4 mt-4">
-          <BeliefDecayCard />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(650)} className="px-4 mt-4">
-          <TherapistNotebookCard />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(700)} className="px-4 mt-4">
-          <ThoughtPatternsCard />
-        </Animated.View>
-
         <Animated.View entering={FadeInDown.duration(400).delay(800)} className="px-4 mt-8">
-          <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3">Categories</Text>
-          <View className="flex-row flex-wrap gap-3">
+          <Text className="text-[12px] font-bold text-sage-700 uppercase tracking-wider mb-4 ml-2">
+            DEEP DIVES
+          </Text>
+          <View className="gap-2">
             {data.categories.map((cat) => (
-              <CategoryCard key={cat.category} summary={cat} />
+              <CategoryListRow key={cat.category} summary={cat} />
             ))}
           </View>
         </Animated.View>
@@ -147,70 +133,39 @@ export default function InsightsScreen() {
 
 
 
-function CategoryCard({ summary }: { summary: CategorySummary }) {
+function CategoryListRow({ summary }: { summary: CategorySummary }) {
   const icon = CATEGORY_ICONS[summary.category];
   const bgColor = CATEGORY_COLORS[summary.category];
 
   const handlePress = useCallback(() => {
-    if (summary.count > 0) {
-      router.push(CATEGORY_ROUTES[summary.category] as never);
-    }
-  }, [summary.category, summary.count]);
+    router.push(CATEGORY_ROUTES[summary.category] as never);
+  }, [summary.category]);
 
   return (
     <Pressable
       onPress={handlePress}
-      className="happy-brand-card flex-1 min-w-[45%] rounded-[24px] p-4 active:scale-95 active:opacity-90 transition-transform duration-200"
-      style={{ backgroundColor: "#FFFFFF" }}
+      className="flex-row items-center p-3 rounded-2xl active:bg-sage-50 transition-colors"
     >
       <View
-        className="h-12 w-12 rounded-[20px] items-center justify-center mb-3"
+        className="h-12 w-12 rounded-[16px] items-center justify-center mr-4"
         style={{ backgroundColor: bgColor }}
       >
-        <HugeiconsIcon icon={icon} size={24} color="#2a3f2a" />
+        <HugeiconsIcon icon={icon} size={22} color="#2a3f2a" />
       </View>
-      <Text className="happy-font-heading-bold text-base tracking-tight text-ink">
-        {summary.label}
-      </Text>
-      <Text className="happy-font-body-medium text-[13px] text-ink-muted mt-0.5">
-        {summary.count > 0 ? `${summary.count} sessions` : "Not started"}
-      </Text>
-      {summary.count > 0 && summary.topStat && (
-        <Text className="happy-font-body-bold text-[12px] text-[#22C55E] mt-1.5">
-          {summary.topStat}
+      <View className="flex-1">
+        <Text className="happy-font-heading-bold text-[17px] tracking-tight text-ink mb-0.5">
+          {summary.label}
         </Text>
-      )}
+        <Text className="happy-font-body text-[14px] text-ink-muted">
+          {summary.count > 0 ? `${summary.count} sessions` : "Not started"}
+          {summary.count > 0 && summary.topStat ? ` • ${summary.topStat}` : ""}
+        </Text>
+      </View>
+      <HugeiconsIcon icon={ArrowRight01Icon} size={20} color="#94a3b8" />
     </Pressable>
   );
 }
 
-function TemporalPatternRow() {
-  const { data } = useTemporalPatterns();
-  if (!data) return null;
-
-  return (
-    <View className="px-5 mt-4">
-      <View className="happy-brand-card rounded-2xl p-4 flex-row flex-wrap gap-3" style={{ backgroundColor: "#FFFFFF" }}>
-        {data.timeOfDay && (
-          <View className="flex-row items-center gap-1.5">
-            <Text className="text-[13px]">🕙</Text>
-            <Text className="happy-font-body-medium text-[12px] text-ink-soft">
-              {data.timeOfDay.label}
-            </Text>
-          </View>
-        )}
-        {data.dayOfWeek && (
-          <View className="flex-row items-center gap-1.5">
-            <Text className="text-[13px]">📅</Text>
-            <Text className="happy-font-body-medium text-[12px] text-ink-soft">
-              {data.dayOfWeek.label}
-            </Text>
-          </View>
-        )}
-      </View>
-    </View>
-  );
-}
 
 function EmptyState() {
   const handlePress = useCallback(() => {

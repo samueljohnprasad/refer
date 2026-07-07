@@ -91,17 +91,14 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         <SectionHeader title="Journal Entries" icon={NoteIcon} />
         <View className="gap-3">
           {[1, 2, 3].map((i) => (
-            <Card
+            <View
               key={i}
-              variant="tile"
-              radius="xl"
-              showDepth={true}
-              contentClassName="p-4"
+              className="py-4 border-b border-sage-100/50"
             >
-              <View className="h-4 bg-sage-100 rounded mb-2 w-3/4" />
-              <View className="h-3 bg-sage-100 rounded mb-2 w-1/2" />
-              <View className="h-3 bg-sage-100 rounded w-full" />
-            </Card>
+              <View className="h-4 bg-sage-100/50 rounded mb-3 w-2/3" />
+              <View className="h-3 bg-sage-100/50 rounded mb-2 w-full" />
+              <View className="h-3 bg-sage-100/50 rounded w-4/5" />
+            </View>
           ))}
         </View>
       </View>
@@ -122,6 +119,8 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
     return (
       <EmptyState
         mascotState="panda-notes"
+        title="What's on your mind today?"
+        description="Write down your thoughts or record an audio note. A safe space just for you."
         buttonText="Start Journaling"
         onButtonPress={() => router.push("/tabs/(tabs)/record")}
         buttonIcon={Mic01Icon}
@@ -224,15 +223,12 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
   );
 
   return (
-    <Card
-      variant="tile"
-      radius="xl"
-      showDepth={true}
+    <Pressable
       onPress={() => onPress(entry)}
-      contentClassName="p-4"
+      className="py-4 border-b border-sage-100/50"
     >
-      {/* Header */}
-      <View className="flex-row items-start justify-between mb-3">
+      {/* Header & Metadata */}
+      <View className="flex-row items-start justify-between mb-2">
         <View className="flex-1">
           <Text variant="body-bold" className="mb-1">
             {entry.title}
@@ -265,82 +261,30 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
           </View>
         </View>
 
-        <View className="items-end justify-center mb-1">
-          <Image
-            source={emotions[entry.moods?.main_mood as Emotion]}
-            className="w-6 h-6 opacity-60"
-            alt={entry.moods?.main_mood || "-"}
-            progressiveRenderingEnabled={true}
-          />
+        <View className="flex-row items-center gap-1">
+          {isBookmarked && (
+            <HugeiconsIcon
+              icon={Bookmark02Icon}
+              size={16}
+              fill={GOLD}
+              color={GOLD}
+            />
+          )}
+          {entry.moods?.main_mood && (
+            <Image
+              source={emotions[entry.moods.main_mood as Emotion]}
+              className="w-5 h-5 opacity-80"
+              alt={entry.moods.main_mood}
+              progressiveRenderingEnabled={true}
+            />
+          )}
         </View>
       </View>
 
       {/* Excerpt */}
-      <Text variant="label" color="soft" className="leading-5 mb-3">
-        {entry.transcripts?.substring(0, 100) + "..."}
+      <Text variant="body" color="soft" className="leading-5" numberOfLines={2}>
+        {entry.transcripts || "No content"}
       </Text>
-
-      {/* Emotion Tags */}
-      <View className="flex-row flex-wrap mb-3">
-        {(feelings || []).map((emotion, idx) => (
-          <View
-            key={`${emotion}-${idx}`}
-            className="bg-sage-50 border border-sage-100 rounded-full px-2 py-1 mr-2 mb-1"
-          >
-            <Text variant="chip" className="capitalize">
-              {emotion.emoji} {emotion.name}
-            </Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Footer */}
-      <View className="flex-row items-center justify-between pt-2 border-t border-sage-100">
-        <View className="flex-row items-center gap-2">
-          {entry.moods?.main_mood && (
-            <Text variant="chip" color="muted" className="capitalize">
-              {entry.moods?.main_mood} mood
-            </Text>
-          )}
-        </View>
-        <View className="flex-row items-center gap-2 ">
-          {showActions && (
-            <>
-              <Pressable
-                onPress={handleBookmarkPress}
-                className="w-9 h-9 items-center justify-center active:opacity-70"
-                accessibilityLabel={
-                  isBookmarked ? "Remove bookmark" : "Bookmark"
-                }
-                disabled={isBookmarking}
-              >
-                {isBookmarking ? (
-                  <ActivityIndicator size="small" color={GOLD} />
-                ) : (
-                  <HugeiconsIcon
-                    icon={Bookmark02Icon}
-                    size={18}
-                    fill={isBookmarked ? GOLD : SAGE[200]}
-                    color={isBookmarked ? GOLD : SAGE[200]}
-                  />
-                )}
-              </Pressable>
-
-              <Pressable
-                onPress={handleDeletePress}
-                className="w-9 h-9 items-center justify-center active:opacity-70"
-                accessibilityLabel="Delete journal"
-              >
-                <HugeiconsIcon
-                  icon={Delete02Icon}
-                  size={18}
-                  color={INK_MUTED}
-                />
-              </Pressable>
-            </>
-          )}
-        </View>
-      </View>
-    </Card>
+    </Pressable>
   );
 });

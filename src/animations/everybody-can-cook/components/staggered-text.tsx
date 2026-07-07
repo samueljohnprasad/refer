@@ -103,41 +103,54 @@ export const StaggeredText = forwardRef(
       },
     }));
 
+    let globalIndex = 0;
+
     return (
       <View style={[styles.container, containerStyle]}>
-        {text.split('').map((char, index) => {
-          // Create a delayed progress value for each character
-          // eslint-disable-next-line react-hooks/rules-of-hooks
-          const delayedProgress = useDerivedValue(() => {
-            'worklet';
-
-            if (progress.value === 0 && !enableReverse) {
-              return 0;
-            }
-
-            // Calculate delay based on character index
-            const delayMs = index * 60 + delay;
-            return withDelay(
-              delayMs,
-              withTiming(progress.value, {
-                duration: 500,
-                // Smooth easing curve for natural animation
-                // https://www.easing.dev/in-out-quad
-                easing: Easing.bezier(0.455, 0.03, 0.515, 0.955),
-              }),
-            );
-          }, []);
+        {text.split(' ').map((word, wordIndex, arr) => {
+          const isLastWord = wordIndex === arr.length - 1;
+          const characters = isLastWord ? word.split('') : [...word.split(''), ' '];
 
           return (
-            <StaggeredDigit
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-expect-error
-              key={index}
-              digit={char}
-              progress={delayedProgress}
-              fontSize={fontSize}
-              textStyle={textStyle}
-            />
+            <View key={wordIndex} style={{ flexDirection: 'row' }}>
+              {characters.map((char, charIndex) => {
+                const index = globalIndex++;
+                
+                // Create a delayed progress value for each character
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                const delayedProgress = useDerivedValue(() => {
+                  'worklet';
+
+                  if (progress.value === 0 && !enableReverse) {
+                    return 0;
+                  }
+
+                  // Calculate delay based on character index
+                  const delayMs = index * 60 + delay;
+                  return withDelay(
+                    delayMs,
+                    withTiming(progress.value, {
+                      duration: 500,
+                      // Smooth easing curve for natural animation
+                      // https://www.easing.dev/in-out-quad
+                      easing: Easing.bezier(0.455, 0.03, 0.515, 0.955),
+                    }),
+                  );
+                }, []);
+
+                return (
+                  <StaggeredDigit
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    key={`${wordIndex}-${charIndex}`}
+                    digit={char}
+                    progress={delayedProgress}
+                    fontSize={fontSize}
+                    textStyle={textStyle}
+                  />
+                );
+              })}
+            </View>
           );
         })}
       </View>

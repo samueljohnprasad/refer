@@ -72,11 +72,11 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
           accessibilityLabel="Toggle challenges list"
         >
           <View className="flex-row items-center gap-2">
-            <Text className="happy-brand-eyebrow text-[11px]">
-              Daily Challenges
+            <Text className="happy-font-body-bold text-[15px] text-ink-muted">
+              Daily challenges
             </Text>
-            <Text className="happy-font-body-bold text-[11px] uppercase tracking-wider text-ink-muted">
-              {completedCount} OF {totalCount}
+            <Text className="happy-font-body-medium text-[13px] text-ink-muted">
+              {completedCount} of {totalCount}
             </Text>
           </View>
         </PressableScale>

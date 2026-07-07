@@ -166,7 +166,7 @@ export const EmotionLogger: React.FC<EmotionLoggerProps> = React.memo(
     return (
       <View className="gap-2">
         <View className="flex-row items-center justify-between px-1 mb-2">
-          <Text variant="eyebrow">Daily Mood Log</Text>
+          <Text className="happy-font-body-bold text-[15px] text-ink-muted">Daily mood log</Text>
         </View>
 
         <Card

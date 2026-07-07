@@ -62,7 +62,7 @@ export default function TabLayout() {
       blurEffect="systemUltraThinMaterialLight"
       disableTransparentOnScrollEdge
       minimizeBehavior="onScrollDown"
-      indicatorColor="rgba(229, 229, 229, 0.52)"
+      indicatorColor="transparent"
       rippleColor="rgba(93, 126, 87, 0.12)"
       labelStyle={{
         color: INK_MUTED,

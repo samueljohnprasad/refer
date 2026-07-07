@@ -1202,7 +1202,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
             {headerTitle}
           </Text>
         </View>
-        <Card variant="tile" radius="xl" haptic="none" contentClassName="p-4">
+        <View className="p-2">
           <View className="gap-3 py-4">
             <Skeleton height={12} width="40%" />
             <Skeleton height={160} radius={12} />
@@ -1214,7 +1214,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
               <Skeleton height={10} width="15%" />
             </View>
           </View>
-        </Card>
+        </View>
       </View>
     );
   }
@@ -1226,15 +1226,9 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
             {headerTitle}
           </Text>
         </View>
-        <Card
-          showDepth={false}
-          variant="tile"
-          radius="xl"
-          haptic="none"
-          contentClassName="p-4"
-        >
+        <View className="p-4 rounded-xl bg-red-50">
           <Text className="text-red-500">Failed to load mood data.</Text>
-        </Card>
+        </View>
       </View>
     );
   }
@@ -1247,13 +1241,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
         </Text>
       </View>
 
-      <Card
-        showDepth={false}
-        variant="tile"
-        radius="xl"
-        haptic="none"
-        contentClassName="px-0 py-4"
-      >
+      <View className="py-2">
         {/* Tab Header */}
         <View className="px-4 mb-4">
           <TabSelector activeTab={activeTab} onTabChange={setActiveTab} />
@@ -1406,7 +1394,7 @@ export const WeeklyMoodChart: React.FC<WeeklyMoodChartProps> = ({
             ))}
           </View>
         )}
-      </Card>
+      </View>
     </View>
   );
 };

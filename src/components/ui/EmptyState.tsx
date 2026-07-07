@@ -1,5 +1,6 @@
 import React from "react";
 import { View } from "react-native";
+import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Mascot, MascotState } from "./Mascot";
 import { Button } from "@/src/components/ui/Button";
@@ -10,6 +11,8 @@ interface EmptyStateProps {
   buttonText: string;
   onButtonPress: () => void;
   buttonIcon?: any;
+  title?: string;
+  description?: string;
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
@@ -17,13 +20,28 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   buttonText,
   onButtonPress,
   buttonIcon,
+  title,
+  description,
 }) => {
   return (
-    <View className="items-center pt-36 pb-12">
-      <View className="h-44 w-44 items-center justify-center rounded-[44px] border-0">
+    <View className="flex-1 items-center justify-center py-12 min-h-[400px]">
+      <View className="h-44 w-44 items-center justify-center rounded-[44px] border-0 mb-4">
         <Mascot state={mascotState} size={156} />
       </View>
-      <View className="mt-7 px-12 self-stretch">
+      
+      {title && (
+        <Text className="happy-font-heading-bold text-xl text-ink text-center mb-2 px-6">
+          {title}
+        </Text>
+      )}
+      
+      {description && (
+        <Text className="happy-font-body text-sm text-ink-muted text-center px-10 mb-8 leading-relaxed">
+          {description}
+        </Text>
+      )}
+
+      <View className="px-12 self-stretch w-full max-w-sm">
         <Button
           label={buttonText}
           variant="primary"
