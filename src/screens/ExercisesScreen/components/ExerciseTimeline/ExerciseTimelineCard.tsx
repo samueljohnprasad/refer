@@ -37,8 +37,37 @@ import { SAGE, INK_MUTED } from "@/lib/tokens";
 import { ShiftBadge } from "./ShiftBadge";
 import type { ExerciseTimelineItem } from "./types";
 import { Feather } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+const AnimatedEmotionBar: React.FC<{
+  emotion: string;
+  intensity: number;
+}> = React.memo(({ emotion, intensity }) => {
+  const widthVal = useSharedValue(0);
+
+  React.useEffect(() => {
+    widthVal.value = withTiming((intensity / 10) * 100, {
+      duration: 600,
+      easing: Easing.out(Easing.cubic),
+    });
+  }, [intensity, widthVal]);
+
+  const fillStyle = useAnimatedStyle(() => ({
+    width: `${widthVal.value}%`,
+  }));
+
+  return (
+    <View style={styles.emotionBarRow}>
+      <Text style={styles.emotionText}>{emotion}</Text>
+      <View style={styles.emotionBarBg}>
+        <Animated.View style={[styles.emotionBarFill, fillStyle]} />
+      </View>
+      <Text style={styles.emotionIntensity}>{intensity}/10</Text>
+    </View>
+  );
+});
 
 interface ExerciseTimelineCardProps {
   readonly item: ExerciseTimelineItem;
@@ -64,12 +93,16 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
     const chevronStyle = useAnimatedStyle(() => ({
       transform: [
         {
-          rotate: withTiming(isExpanded ? "180deg" : "0deg", { duration: 300 }),
+          rotate: withTiming(isExpanded ? "180deg" : "0deg", {
+            duration: 260,
+            easing: Easing.out(Easing.cubic),
+          }),
         },
       ],
     }));
 
     const handlePress = useCallback((e: any) => {
+      Haptics.selectionAsync();
       if (
         item.expandedText ||
         item.tags?.length ||
@@ -80,7 +113,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
       } else {
         item.onPress(e);
       }
-    }, [item, isExpanded]);
+    }, [item]);
 
     const hasShift: boolean =
       (item.beforeRating !== undefined || item.afterRating !== undefined) &&
@@ -130,34 +163,27 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               style={styles.expandedContent}
               layout={LinearTransition.duration(300).easing(Easing.bezier(0.25, 0.1, 0.25, 1))}
             >
-              {item.previewText && (
+              {item.previewText && (!item.gratitudeEntries || item.gratitudeEntries.length === 0) && (
                 <View style={styles.previewContainer}>
-                  <Text style={styles.previewLabel}>Situation / Thought</Text>
+                  <Text style={styles.previewLabel}>
+                    {item.previewLabel || "Situation / Thought"}
+                  </Text>
                   <Text style={styles.previewTextExpanded}>
-                    "{item.previewText}"
+                    {item.previewText}
                   </Text>
                 </View>
               )}
 
-              {/* Emotions */}
+              {/* Emotions with Smooth Reveal Animation */}
               {item.emotions && item.emotions.length > 0 && (
                 <View style={styles.emotionsContainer}>
                   <Text style={styles.sectionLabel}>Emotions</Text>
-                  {item.emotions.map((e, idx) => (
-                    <View key={idx} style={styles.emotionBarRow}>
-                      <Text style={styles.emotionText}>{e.emotion}</Text>
-                      <View style={styles.emotionBarBg}>
-                        <View
-                          style={[
-                            styles.emotionBarFill,
-                            { width: `${(e.intensity / 10) * 100}%` },
-                          ]}
-                        />
-                      </View>
-                      <Text style={styles.emotionIntensity}>
-                        {e.intensity}/10
-                      </Text>
-                    </View>
+                  {item.emotions.map((e: { emotion: string; intensity: number }, idx: number) => (
+                    <AnimatedEmotionBar
+                      key={idx}
+                      emotion={e.emotion}
+                      intensity={e.intensity}
+                    />
                   ))}
                 </View>
               )}
@@ -167,7 +193,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
                 <View style={styles.tagsSection}>
                   <Text style={styles.sectionLabel}>Cognitive Distortions</Text>
                   <View style={styles.tagsContainer}>
-                    {item.tags.map((tag) => (
+                    {item.tags.map((tag: string) => (
                       <View key={tag} style={styles.tag}>
                         <Text style={styles.tagText}>{tag}</Text>
                       </View>
@@ -179,7 +205,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               {/* Gratitude Entries */}
               {item.gratitudeEntries && item.gratitudeEntries.length > 0 && (
                 <View style={styles.gratitudeContainer}>
-                  {item.gratitudeEntries.map((entry, idx) => (
+                  {item.gratitudeEntries.map((entry: string, idx: number) => (
                     <View key={idx} style={styles.gratitudeRow}>
                       <Feather
                         name="heart"
@@ -196,7 +222,9 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               {/* Balanced Thought / Alternative Belief */}
               {item.expandedText && (
                 <View style={styles.balancedThoughtContainer}>
-                  <Text style={styles.sectionLabel}>Reframed Perspective</Text>
+                  <Text style={styles.sectionLabel}>
+                    {item.expandedLabel || "Reframed Perspective"}
+                  </Text>
                   <Text style={styles.expandedText}>{item.expandedText}</Text>
                 </View>
               )}
@@ -204,29 +232,33 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               <Pressable
                 style={styles.viewDetailsButton}
                 onPress={item.onPress}
+                accessibilityRole="button"
+                accessibilityLabel={`Open full details for ${item.title} logged on ${format(new Date(item.date), "MMM d")}`}
               >
                 <Text style={styles.viewDetailsText}>
-                  View Full Entry &rarr;
+                  Open Full Entry &rarr;
                 </Text>
               </Pressable>
             </Animated.View>
           )}
 
-          {/* Shift badge (conditional) */}
-          {hasShift && (
-            <View style={styles.badgeRow}>
+          {/* Footer row with ShiftBadge & Timestamp inside the card */}
+          <View style={styles.cardFooter}>
+            {hasShift ? (
               <ShiftBadge
                 label={item.ratingLabel!}
                 before={item.beforeRating!}
                 after={item.afterRating!}
                 invertScale={item.invertScale}
               />
-            </View>
-          )}
+            ) : (
+              <View />
+            )}
+            <Text style={styles.timestamp}>
+              {format(new Date(item.date), "EEE, h:mm a")}
+            </Text>
+          </View>
         </AnimatedPressable>
-        <Text style={styles.timestamp}>
-          {format(new Date(item.date), "dd EEE, HH:mm")}
-        </Text>
       </View>
     );
   },
@@ -267,14 +299,19 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     marginTop: 2,
   },
+  cardFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 12,
+  },
   badgeRow: {
     marginTop: 8,
   },
   timestamp: {
     fontFamily: "Nunito-Medium",
-    fontSize: 8,
-    color: "#C7C7CC",
-    marginTop: 6,
+    fontSize: 11,
+    color: "#636366",
     letterSpacing: 0.2,
   },
   headerRow: {
@@ -364,10 +401,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   emotionsContainer: {
-    marginBottom: 16,
-    backgroundColor: "rgba(0,0,0,0.02)",
-    padding: 10,
-    borderRadius: 8,
+    marginBottom: 14,
   },
   emotionBarRow: {
     flexDirection: "row",
@@ -404,10 +438,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   gratitudeContainer: {
-    marginBottom: 16,
-    backgroundColor: SAGE[50],
-    padding: 12,
-    borderRadius: 8,
+    marginBottom: 14,
     gap: 8,
   },
   gratitudeRow: {

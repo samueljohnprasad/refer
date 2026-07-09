@@ -23,6 +23,10 @@ export interface ExerciseTimelineItem extends TimelineItemData {
   readonly ratingLabel?: string;
   /** Whether higher = better for this exercise's rating */
   readonly invertScale?: boolean;
+  /** Custom section label for preview text (e.g. "Negative Automatic Thought") */
+  readonly previewLabel?: string;
+  /** Custom section label for expanded text (e.g. "Balanced Reframe") */
+  readonly expandedLabel?: string;
   /** Short text preview shown without expanding (e.g. automatic thought) */
   readonly previewText?: string;
   /** Additional text shown when card is expanded (e.g. balanced thought) */

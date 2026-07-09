@@ -83,46 +83,58 @@ function BouncingTooltip({ label, accentColor }: { label?: string; accentColor: 
   return (
     <Animated.View
       className="absolute z-10 items-center justify-center"
-      style={[{ top: -46, width: 120 }]}
+      style={[{ top: -46, width: 200, alignSelf: 'center' }]}
       pointerEvents="auto"
       accessibilityRole="text"
       accessibilityLabel={`Current task: ${label}`}
     >
       <View
         style={{
-          shadowColor: "#000",
+          shadowColor: accentColor,
           shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.12,
-          shadowRadius: 10,
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
           elevation: 5,
           alignItems: "center",
         }}
       >
         <View
-          className="absolute -bottom-1.5 w-3.5 h-3.5 overflow-hidden"
-          style={{ transform: [{ rotate: "45deg" }], borderRadius: 2 }}
-        >
-          <GlassView glassEffectStyle="regular" style={{ flex: 1 }} />
-        </View>
+          className="absolute -bottom-1 w-3 h-3"
+          style={{ transform: [{ rotate: "45deg" }], backgroundColor: accentColor, opacity: 0.75, borderRadius: 2 }}
+        />
 
-        <GlassView 
-          glassEffectStyle="clear" 
-          style={{ 
-            borderRadius: 14, 
-            paddingHorizontal: 16, 
-            paddingVertical: 8,
-            overflow: "hidden", 
+        <View
+          style={{
+            borderRadius: 14,
+            overflow: "hidden",
           }}
-          isInteractive
         >
-          <Text
-            className="text-sm font-extrabold tracking-widest"
-            style={{ color: accentColor }}
-            numberOfLines={1}
+          <View
+            style={{
+              backgroundColor: accentColor,
+              opacity: 0.75,
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+            }}
+          />
+          <GlassView 
+            glassEffectStyle="clear"
+            style={{ 
+              borderRadius: 14, 
+              paddingHorizontal: 16, 
+              paddingVertical: 8,
+            }}
           >
-            {label}
-          </Text>
-        </GlassView>
+            <Text
+              variant="body-bold"
+              className="text-ink text-[13px]"
+              numberOfLines={1}
+            >
+              {label}
+            </Text>
+          </GlassView>
+        </View>
       </View>
     </Animated.View>
   );
@@ -237,18 +249,6 @@ function JourneyNodeCellInner({
     return { transform: [{ scale }] };
   });
 
-  const glowStyle = useAnimatedStyle(() => {
-    const shadowOpacity = interpolate(animProgress.value, [0, 1], [0.3, 0.5]);
-    const shadowRadius = interpolate(animProgress.value, [0, 1], [8, 12]);
-    return {
-      shadowColor: faceColor,
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity,
-      shadowRadius,
-      elevation: 8,
-    };
-  });
-
   const ringSize = size + settings.progressRingGap * 2 + settings.progressRingStroke * 2;
   const ringOffset = -(ringSize - size) / 2;
   const ringRadius = (ringSize - settings.progressRingStroke) / 2;
@@ -324,25 +324,23 @@ function JourneyNodeCellInner({
           )}
 
           <Animated.View style={[item.status === NodeStatus.ACTIVE ? activeScaleStyle : undefined]}>
-            <Animated.View style={item.status === NodeStatus.ACTIVE ? glowStyle : undefined}>
-              <DuolingoSvgNodeButton
-                size={size}
-                onPress={handlePress}
-                disabled={!isInteractive}
-                faceColor={faceColor}
-                rimColor={rimColor}
-                icon={
-                  <HugeiconsIcon
-                    icon={iconObj}
-                    size={hugeiconSize}
-                    color={iconColor}
-                    strokeWidth={2.5}
-                  />
-                }
-                iconSize={hugeiconSize}
-                accessibilityLabel={`${item.label} ${item.status}`}
-              />
-            </Animated.View>
+            <DuolingoSvgNodeButton
+              size={size}
+              onPress={handlePress}
+              disabled={!isInteractive}
+              faceColor={faceColor}
+              rimColor={rimColor}
+              icon={
+                <HugeiconsIcon
+                  icon={iconObj}
+                  size={hugeiconSize}
+                  color={iconColor}
+                  strokeWidth={2.5}
+                />
+              }
+              iconSize={hugeiconSize}
+              accessibilityLabel={`${item.label} ${item.status}`}
+            />
           </Animated.View>
       </View>
     </Animated.View>

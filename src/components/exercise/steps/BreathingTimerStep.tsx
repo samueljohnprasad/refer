@@ -146,7 +146,7 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
     }, [isRunning, completed]);
 
     const circleSize =
-      pattern.visual === "square" ? "rounded-2xl" : "rounded-full";
+      pattern.visual === "square" ? "rounded-xl" : "rounded-full";
 
     return (
       <StepLayout
@@ -164,7 +164,7 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
         <View className="flex-1 justify-center items-center">
           {/* Animated breathing visual */}
           <Animated.View
-            className={`w-52 h-52 ${circleSize} items-center justify-center mb-8 border-4`}
+            className={`w-52 h-52 ${circleSize} items-center justify-center mb-8 border`}
             style={{
               backgroundColor: completed
                 ? "#D1FAE5"

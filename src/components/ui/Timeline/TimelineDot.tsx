@@ -31,19 +31,20 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(95, 127, 88, 0.15)", // SAGE[600] with 15% opacity
   },
   haloNeutral: {
-    backgroundColor: "rgba(0, 0, 0, 0.05)",
+    backgroundColor: "transparent",
   },
   inner: {
     width: 12,
     height: 12,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: "#FFFFFF",
   },
   innerCompleted: {
     backgroundColor: SAGE[600],
+    borderColor: "#FFFFFF",
   },
   innerNeutral: {
-    backgroundColor: "#E5E5EA",
+    backgroundColor: "transparent",
+    borderColor: "#C7C7CC",
   },
 });

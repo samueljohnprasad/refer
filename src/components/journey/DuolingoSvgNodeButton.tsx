@@ -77,14 +77,14 @@ function DuolingoSvgNodeButtonInner({
       width: size,
       height: size,
       opacity: 1, // Rely on config locked colors instead of cheap transparency
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.1,
-      shadowRadius: 6,
+      shadowColor: faceColor,
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.25,
+      shadowRadius: 12,
       elevation: 4,
       borderRadius: size / 2,
     }),
-    [size],
+    [size, faceColor],
   );
 
   /** Spring config for the node press-release — quick rebound */

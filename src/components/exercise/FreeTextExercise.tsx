@@ -38,11 +38,7 @@ export const FreeTextExercise = ({ payload, savedResponse, onInteraction }: any)
           <View className="mr-4 mt-2 z-10">
             <Mascot state="panda-happy" size={80} />
           </View>
-          <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-slate-200 relative">
-            <View 
-              className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200 rounded-bl-[4px]" 
-              style={{ transform: [{ rotate: '45deg' }] }} 
-            />
+          <View className="flex-1 pt-4 relative">
             <Text variant="body" color="ink" className="leading-relaxed text-lg font-medium">
               {prompt}
             </Text>
@@ -50,18 +46,18 @@ export const FreeTextExercise = ({ payload, savedResponse, onInteraction }: any)
         </View>
       )}
 
-      <View className="bg-white border-2 border-slate-200 rounded-3xl p-4 mb-12 shadow-sm shadow-slate-100">
+      <View className="bg-white border border-slate-200 rounded-xl p-4 mb-12 shadow-sm shadow-slate-100">
         <TextInput
           className="text-lg text-slate-800 leading-relaxed min-h-[160px]"
           multiline
           placeholder={placeholder || "Type your answer here..."}
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor="#475569"
           value={text}
           onChangeText={handleChange}
           style={{ textAlignVertical: 'top' }}
         />
         <View className="flex-row justify-end mt-2">
-          <Text className={`text-sm font-medium ${wordCount < min_words || wordCount > max_words ? 'text-rose-500' : 'text-slate-400'}`}>
+          <Text className={`text-sm font-medium ${wordCount < min_words || wordCount > max_words ? 'text-rose-600' : 'text-slate-400'}`}>
             {wordCount} / {max_words} words {min_words > 0 && `(min ${min_words})`}
           </Text>
         </View>

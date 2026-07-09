@@ -38,7 +38,7 @@ export const MultipleChoiceExercise = ({ payload, onInteraction }: any) => {
         <View className="mr-4 mt-2 z-10">
           <Mascot state="panda-happy" size={76} />
         </View>
-        <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-brand-border/60 shadow-sm relative">
+        <View className="flex-1 bg-white rounded-xl p-6 border border-brand-border/60 shadow-sm relative">
           <OrganicSpeechTail />
           
           <Text variant="body" color="ink" className="leading-[32px] text-[17px] font-medium tracking-wide">

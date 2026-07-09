@@ -178,6 +178,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
         title: "Reality Check",
         subtitle: "Is this thought actually true?",
         fieldKey: "isTrue",
+        autoAdvance: true,
         options: [
           { value: "YES", label: "Yes", iconKey: "check" },
           { value: "NOT SURE", label: "Not Sure", iconKey: "question" },
@@ -190,13 +191,19 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
     },
     {
       id: "balanced_thought",
-      component: createStep(TextInputStep, {
+      component: createStep(TextInputStep, (props) => ({
         title: "Balanced Thought",
         subtitle: "Rewrite the thought in a more balanced way.",
         fieldKey: "balancedThought",
         placeholder:
           "e.g. The meeting could be about many things, not just me...",
-      }),
+        referenceQuote: props.response?.automaticThought
+          ? {
+              label: "Automatic thought you caught",
+              text: props.response.automaticThought,
+            }
+          : undefined,
+      })),
       label: "Write a balanced thought",
       validate: (r) => (r.balancedThought ?? "").trim().length >= 1,
       optional: true,
@@ -220,7 +227,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
     },
     {
       id: "post_intensity",
-      component: createStep(SliderStep, {
+      component: createStep(SliderStep, (props) => ({
         title: "Thought Intensity Now",
         subtitle: "How strongly do you believe this thought after checking it?",
         fieldKey: "postIntensity",
@@ -229,7 +236,9 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
         minLabel: "Not at all",
         maxLabel: "Completely",
         unit: "%",
-      }),
+        anchorValue: props.response?.intensity,
+        anchorLabel: "Initial distress",
+      })),
       label: "How intense is the thought now?",
       validate: () => true,
       optional: true,

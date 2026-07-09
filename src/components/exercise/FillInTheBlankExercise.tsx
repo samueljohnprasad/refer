@@ -106,10 +106,7 @@ export const FillInTheBlankExercise: React.FC<FillInTheBlankExerciseProps> = ({
           <View className="mr-4 mt-2 z-10">
             <Mascot state="panda-happy" size={80} />
           </View>
-          <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-slate-200 relative">
-            <View 
-              className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200 rounded-bl-[4px] rotate-45" 
-            />
+          <View className="flex-1 pt-4 relative">
             <Text variant="body" color="ink" className="leading-relaxed text-base font-medium">
               {prompt}
             </Text>
@@ -118,7 +115,7 @@ export const FillInTheBlankExercise: React.FC<FillInTheBlankExerciseProps> = ({
       )}
 
       {/* Sentence rendering with blanks */}
-      <View className="bg-slate-50 border-2 border-slate-200 rounded-2xl p-6 mb-8 flex-row flex-wrap items-center">
+      <View className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8 flex-row flex-wrap items-center">
         {parts.map((part: string, index: number) => {
           const match = part.match(/\{(\d+)\}/);
           if (match) {
@@ -132,9 +129,9 @@ export const FillInTheBlankExercise: React.FC<FillInTheBlankExerciseProps> = ({
                 key={`slot-${index}`}
                 onPress={() => handleSlotPress(targetId)}
                 activeOpacity={0.7}
-                className={`mx-1 px-4 py-2 rounded-xl border-b-4 
+                className={`mx-1 px-4 py-2 rounded-xl border-b 
                   ${filledOption ? 'bg-sky-100 border-sky-300' : 
-                    isActive ? 'bg-white border-sky-400 shadow-sm shadow-sky-100 border-2 border-b-4' : 'bg-slate-200 border-slate-300'}
+                    isActive ? 'bg-white border-sky-400 shadow-sm shadow-sky-100 border border-b' : 'bg-slate-200 border-slate-300'}
                 `}
               >
                 <Text className={`font-bold ${filledOption ? 'text-sky-700' : isActive ? 'text-sky-600' : 'text-slate-400'}`}>
@@ -159,7 +156,7 @@ export const FillInTheBlankExercise: React.FC<FillInTheBlankExerciseProps> = ({
             key={option.id}
             onPress={() => handleOptionPress(option.id)}
             activeOpacity={0.7}
-            className="bg-white border-2 border-b-4 border-slate-200 rounded-2xl px-6 py-3"
+            className="bg-white border border-b border-slate-200 rounded-xl px-6 py-3"
           >
             <Text className="text-slate-700 font-bold text-base">
               {option.text}

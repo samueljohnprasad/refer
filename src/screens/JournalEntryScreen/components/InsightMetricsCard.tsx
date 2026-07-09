@@ -2,15 +2,13 @@ import React from "react";
 import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Feather } from "@expo/vector-icons";
-import Svg, { Circle } from "react-native-svg";
 
 interface MetricItemProps {
   value: number;
-  maxValue: number;
   label: string;
   icon: keyof typeof Feather.glyphMap;
-  color: string;
-  bgColor: string;
+  descriptor: string;
+  accentColor: string;
 }
 
 interface InsightMetricsCardProps {
@@ -19,91 +17,73 @@ interface InsightMetricsCardProps {
   sleepQuality: number | null;
 }
 
-/**
- * Circular progress indicator for a single metric
- */
-const CircularProgress: React.FC<{
-  value: number;
-  maxValue: number;
-  color: string;
-  size?: number;
-  strokeWidth?: number;
-}> = ({ value, maxValue, color, size = 56, strokeWidth = 5 }) => {
-  const radius: number = (size - strokeWidth) / 2;
-  const circumference: number = 2 * Math.PI * radius;
-  const progress: number = Math.min(value / maxValue, 1);
-  const strokeDashoffset: number = circumference * (1 - progress);
+function getEnergyDescriptor(value: number): { descriptor: string; color: string } {
+  if (value >= 4) return { descriptor: "Vibrant", color: "#D97706" };
+  if (value === 3) return { descriptor: "Balanced", color: "#B45309" };
+  return { descriptor: "Resting", color: "#78350F" };
+}
 
-  return (
-    <View 
-      className="items-center justify-center"
-      accessible={true}
-      accessibilityRole="image"
-      accessibilityLabel={`Score: ${value} out of ${maxValue}`}
-    >
-      <Svg width={size} height={size}>
-        {/* Background circle */}
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="rgba(0,0,0,0.05)"
-          strokeWidth={strokeWidth}
-          fill="transparent"
-        />
-        {/* Progress circle */}
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke={color}
-          strokeWidth={strokeWidth}
-          fill="transparent"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        />
-      </Svg>
-      <View className="absolute items-center justify-center">
-        <Text variant="chip" className="font-bold text-ink text-[11px] leading-[11px] -mt-0.5">
-          {value}/{maxValue}
-        </Text>
-      </View>
-    </View>
-  );
-};
+function getStressDescriptor(value: number): { descriptor: string; color: string } {
+  if (value >= 4) return { descriptor: "High Load", color: "#B45309" };
+  if (value === 3) return { descriptor: "Moderate", color: "#92400E" };
+  return { descriptor: "Calm", color: "#15803D" };
+}
 
-/**
- * Single metric item with icon, progress, and label
- */
-const MetricItem: React.FC<MetricItemProps> = ({
+function getSleepDescriptor(value: number): { descriptor: string; color: string } {
+  if (value >= 4) return { descriptor: "Restful", color: "#6D28D9" };
+  if (value === 3) return { descriptor: "Steady", color: "#5B21B6" };
+  return { descriptor: "Light", color: "#4C1D95" };
+}
+
+const VitalityItem: React.FC<MetricItemProps> = ({
   value,
-  maxValue,
   label,
   icon,
-  color,
+  descriptor,
+  accentColor,
 }) => {
   return (
-    <View className="items-center flex-1">
-      <View
-        className="w-16 h-16 rounded-2xl items-center justify-center mb-2"
-        style={{ backgroundColor: "transparent" }}
-      >
-        <CircularProgress value={value} maxValue={maxValue} color={color} />
+    <View
+      className="flex-1 py-1.5 px-2"
+      accessible={true}
+      accessibilityRole="text"
+      accessibilityLabel={`${label}: ${descriptor}`}
+    >
+      <View className="flex-row items-center justify-between mb-2">
+        <View className="flex-row items-center">
+          <Feather name={icon} size={14} color={accentColor} />
+          <Text variant="caption" className="ml-1.5 font-medium text-ink-soft">
+            {label}
+          </Text>
+        </View>
       </View>
-      <View className="flex-row items-center">
-        <Feather name={icon} size={13} color={color} />
-        <Text variant="caption" className="ml-1 font-semibold text-ink-soft">
-          {label}
-        </Text>
+
+      <Text variant="body-bold" className="text-[14px] text-ink mb-2">
+        {descriptor}
+      </Text>
+
+      {/* Subtle 5-pip qualitative spectrum bar */}
+      <View className="flex-row gap-1 items-center">
+        {[1, 2, 3, 4, 5].map((step) => {
+          const isActive = step <= value;
+          return (
+            <View
+              key={step}
+              className="flex-1 h-1.5 rounded-full"
+              style={{
+                backgroundColor: isActive ? accentColor : "rgba(0, 0, 0, 0.08)",
+                opacity: isActive ? 0.85 : 1,
+              }}
+            />
+          );
+        })}
       </View>
     </View>
   );
 };
 
 /**
- * Card displaying energy, stress, and sleep metrics
+ * Card displaying qualitative vitality reflections (Energy, Stress, Sleep)
  */
 export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
   ({ energyLevel, stressLevel, sleepQuality }) => {
@@ -112,44 +92,47 @@ export const InsightMetricsCard: React.FC<InsightMetricsCardProps> = React.memo(
 
     if (!hasData) return null;
 
+    const energyInfo = energyLevel !== null ? getEnergyDescriptor(energyLevel) : null;
+    const stressInfo = stressLevel !== null ? getStressDescriptor(stressLevel) : null;
+    const sleepInfo = sleepQuality !== null ? getSleepDescriptor(sleepQuality) : null;
+
     return (
-      <View className="bg-white/40 rounded-xl p-4 mb-4 border border-sage-100/60 shadow-sm">
-        <View className="flex-row items-center mb-4">
-          <Feather name="activity" size={15} color="#767676" />
-          <Text variant="body-bold" className="ml-2 text-[15px]">
-            Wellness Metrics
-          </Text>
+      <View className="mb-3">
+        <View className="flex-row items-center justify-between mb-3.5">
+          <View className="flex-row items-center">
+            <Feather name="activity" size={15} color="#5C6B5E" />
+            <Text variant="body-bold" className="ml-2 text-[15px] text-ink">
+              Vitality & Balance
+            </Text>
+          </View>
         </View>
 
-        <View className="flex-row justify-around">
-          {energyLevel !== null && (
-            <MetricItem
+        <View className="flex-row -mx-1">
+          {energyLevel !== null && energyInfo && (
+            <VitalityItem
               value={energyLevel}
-              maxValue={5}
               label="Energy"
               icon="zap"
-              color="#F59E0B"
-              bgColor="transparent"
+              descriptor={energyInfo.descriptor}
+              accentColor={energyInfo.color}
             />
           )}
-          {stressLevel !== null && (
-            <MetricItem
+          {stressLevel !== null && stressInfo && (
+            <VitalityItem
               value={stressLevel}
-              maxValue={5}
               label="Stress"
               icon="wind"
-              color="#EF4444"
-              bgColor="transparent"
+              descriptor={stressInfo.descriptor}
+              accentColor={stressInfo.color}
             />
           )}
-          {sleepQuality !== null && (
-            <MetricItem
+          {sleepQuality !== null && sleepInfo && (
+            <VitalityItem
               value={sleepQuality}
-              maxValue={5}
               label="Sleep"
               icon="moon"
-              color="#8B5CF6"
-              bgColor="transparent"
+              descriptor={sleepInfo.descriptor}
+              accentColor={sleepInfo.color}
             />
           )}
         </View>

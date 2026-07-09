@@ -359,13 +359,13 @@ function DiscoveryScreen() {
         </View>
 
         {/* Prompt card */}
-        <View style={cardShadowStyle} className="rounded-[32px] flex-1">
+        <View style={cardShadowStyle} className="rounded-2xl flex-1">
           <LinearGradient
             colors={SAGE_DISCOVERY_GRADIENT}
             start={GRADIENT_START}
             end={GRADIENT_END}
             style={{
-              borderRadius: 32,
+              borderRadius: 16,
               padding: 24,
               overflow: "hidden",
               minHeight: 620,
@@ -534,7 +534,7 @@ function DiscoveryScreen() {
             onPress={handleCloseCalendar}
           >
             <Pressable
-              className="bg-white rounded-3xl p-4 w-full shadow-lg"
+              className="bg-white rounded-2xl p-4 w-full shadow-lg"
               onPress={(e) => e.stopPropagation()}
             >
               <View className="flex-row justify-between items-center mb-4">

@@ -21,7 +21,7 @@ export const ValidationMessage: React.FC<ValidationMessageProps> = ({
 
   return (
     <FadeInItem index={0} className={className}>
-      <View className="rounded-2xl p-4 mb-4 flex-row items-start bg-sage-50 border border-sage-200/50">
+      <View className="rounded-xl p-4 mb-4 flex-row items-start bg-sage-50 border border-sage-200/50">
         <View className="h-8 w-8 rounded-xl bg-sage-100 items-center justify-center mr-3 mt-0.5 shrink-0">
           <HugeiconsIcon
             icon={Leaf01Icon}

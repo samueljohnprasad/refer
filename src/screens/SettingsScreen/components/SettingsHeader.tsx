@@ -92,7 +92,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
               void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
               void presentPaywall();
             }}
-            className="bg-sage-400 border-b-4 border-b-sage-500 overflow-hidden rounded-full px-4 py-1.5"
+            className="bg-sage-400 rounded-full px-4 py-1.5 border border-sage-500/20"
           >
             <Text className="happy-font-body-bold text-[15px] text-brand-surface">
               Upgrade

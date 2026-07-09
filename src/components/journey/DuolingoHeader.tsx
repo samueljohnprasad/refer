@@ -188,7 +188,7 @@ export const DuolingoHeader = ({
 
   return (
     <View
-      className="flex-row items-center justify-between gap-2 px-6 pb-3 pt-2.5"
+      className="flex-row items-center justify-between gap-2 px-5 pb-3 pt-2.5"
       onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
     >
       {buttons.map((button) => (

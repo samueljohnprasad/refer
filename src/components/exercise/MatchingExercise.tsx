@@ -132,10 +132,7 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
           <View className="mr-4 mt-2 z-10">
             <Mascot state="panda-happy" size={80} />
           </View>
-          <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-slate-200 relative">
-            <View 
-              className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200 rounded-bl-[4px] rotate-45" 
-            />
+          <View className="flex-1 pt-4 relative">
             <Text variant="body" color="ink" className="leading-relaxed text-base font-medium">
               {prompt}
             </Text>
@@ -146,7 +143,7 @@ export const MatchingExercise = ({ payload, savedResponse, onInteraction }: Matc
       {activeConcept ? (
         <View className="pb-12">
           {/* Active Concept Banner */}
-          <View className="mb-6 bg-slate-100 border-2 border-slate-300 rounded-2xl p-5 items-center">
+          <View className="mb-6 bg-slate-100 border border-slate-300 rounded-xl p-5 items-center">
             <Text variant="body" className="font-bold text-center text-slate-800 text-lg">
               {activeConcept.text}
             </Text>

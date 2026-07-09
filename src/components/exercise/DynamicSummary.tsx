@@ -201,7 +201,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
         {/* Before / After score bars — animated */}
         {hasScores && (
           <Animated.View
-            className="mx-1 rounded-2xl p-4 mb-4 border border-sage-200/50"
+            className="mx-1 rounded-xl p-4 mb-4 border border-sage-200/50"
             style={[{ backgroundColor: SAGE[50] }, contentStyle]}
           >
             <View className="flex-row gap-4 mb-3">
@@ -236,7 +236,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
         <Animated.View style={contentStyle}>
           {keyTakeaway && keyTakeaway.trim().length > 0 && (
             <View
-              className="mx-1 rounded-2xl p-4 mb-4 border border-sage-200/60"
+              className="mx-1 rounded-xl p-4 mb-4 border border-sage-200/60"
               style={{ backgroundColor: BRAND_SURFACE }}
             >
               <Text
@@ -291,7 +291,7 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
                 onPress={() => onNavigateToExercise(nextExerciseType)}
                 accessibilityRole="button"
                 accessibilityLabel={nextExerciseLabel}
-                className="mx-1 flex-row items-center justify-between rounded-2xl px-4 py-3.5 mb-4 active:opacity-70 border border-sage-200/50"
+                className="mx-1 flex-row items-center justify-between rounded-xl px-4 py-3.5 mb-4 active:opacity-70 border border-sage-200/50"
                 style={{ backgroundColor: SAGE[50] }}
               >
                 <View className="flex-1 mr-3">

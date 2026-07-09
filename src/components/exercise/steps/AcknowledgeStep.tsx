@@ -52,7 +52,7 @@ export const AcknowledgeStep: React.FC<AcknowledgeStepProps> = React.memo(
           <PsychoeducationCard content={psychoeducationText ?? ""} />
 
           <View
-            className="bg-slate-50 rounded-2xl p-5 mb-6"
+            className="bg-slate-50 rounded-xl p-5 mb-6"
             style={{ borderWidth: 1, borderColor: "#E2E8F0" }}
           >
             <Text className="text-sm text-slate-700 leading-relaxed">

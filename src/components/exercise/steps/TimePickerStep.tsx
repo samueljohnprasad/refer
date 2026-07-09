@@ -90,7 +90,7 @@ export const TimePickerStep: React.FC<TimePickerStepProps> = React.memo(
           placeholder="e.g., 10:30 PM or Tomorrow 3pm"
           placeholderTextColor="#94A3B8"
           accessibilityLabel={title}
-          className="text-base text-slate-800 bg-slate-50 rounded-2xl p-4"
+          className="text-base text-slate-800 bg-slate-50 rounded-xl p-4"
           style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
         />
       </StepLayout>

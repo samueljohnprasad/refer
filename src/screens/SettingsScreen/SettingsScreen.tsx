@@ -7,6 +7,7 @@ import {
   useWindowDimensions,
   Pressable,
 } from "react-native";
+import * as Application from "expo-application";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
@@ -25,6 +26,7 @@ import {
   Download02Icon,
   StarIcon,
   Brain01Icon,
+  Settings01Icon,
 } from "@hugeicons/core-free-icons";
 
 import NameEditScreen from "../NameEditScreen/NameEditScreen";
@@ -41,14 +43,12 @@ import { useSettingsModals } from "./hooks/useSettingsModals";
 import { useSettingsBulkImport } from "./hooks/useSettingsBulkImport";
 import { useSettingsAnimation } from "./hooks/useSettingsAnimation";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
-import { SettingsHeader } from "./components/SettingsHeader";
-import OnboardingChecklist from "@/src/components/onboarding/OnboardingChecklist";
 import PostTrialDiscountBanner from "@/src/components/premium/PostTrialDiscountBanner";
 import SignInBottomSheet from "@/src/components/SignInBottomSheet";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { PremiumStatusCard } from "./components/PremiumStatusCard";
 
-export default React.memo(function SettingsScreen() {
+export default function SettingsScreen() {
   const router = useRouter();
   const { height: windowHeight } = useWindowDimensions();
   const signInSheetRef = React.useRef<BottomSheetModal>(null);
@@ -135,10 +135,7 @@ export default React.memo(function SettingsScreen() {
           {/* Post-trial 30% discount banner */}
           <PostTrialDiscountBanner />
 
-          {/* Onboarding checklist for new users */}
-          <OnboardingChecklist />
-
-          <SettingsSection title="Account & Preferences">
+          <SettingsSection title="Preferences">
             <SettingsItem
               icon={Brain01Icon}
               tone="sage"
@@ -160,7 +157,7 @@ export default React.memo(function SettingsScreen() {
               }}
             />
             <SettingsItem
-              icon={ShieldUserIcon}
+              icon={Settings01Icon}
               tone="sage"
               title="Notification Settings"
               subtitle="Control alerts and quiet hours"
@@ -169,18 +166,26 @@ export default React.memo(function SettingsScreen() {
                 router.push("/tabs/screens/notification-preferences");
               }}
             />
+          </SettingsSection>
+
+          <SettingsSection title="Account">
             <SettingsItem
               icon={UserIcon}
               tone="terracotta"
               title="Edit Name"
               onPress={() => handlePress("edit-name")}
+              showArrow={false}
             />
             <SettingsItem
               icon={Copy01Icon}
               tone="sage"
               title="Copy User ID"
               onPress={handleCopyUserId}
+              showArrow={false}
             />
+          </SettingsSection>
+
+          <SettingsSection title="Community & Support">
             <SettingsItem
               icon={MessageOutgoing01Icon}
               tone="sage"
@@ -206,7 +211,7 @@ export default React.memo(function SettingsScreen() {
               tone="gold"
               title="Write a Review"
               onPress={handleRateUs}
-              isLast={true}
+              showArrow={false}
             />
           </SettingsSection>
 
@@ -227,31 +232,13 @@ export default React.memo(function SettingsScreen() {
               icon={AlertSquareIcon}
               tone="gold"
               title="App Info"
-              subtitle="Version 1.0.0 (Build 1)"
+              subtitle={`Version ${Application.nativeApplicationVersion || "1.0.0"} (Build ${Application.nativeBuildVersion || "1"})`}
               onPress={() => {}}
               showArrow={false}
             />
-            <SettingsItem
-              icon={Download02Icon}
-              tone="sage"
-              title="Bulk Import Journals"
-              subtitle="Import sample data"
-              onPress={() => {
-                Haptics.selectionAsync();
-                setShowImportModal(true);
-              }}
-            />
-            <SettingsItem
-              icon={Delete02Icon}
-              tone="danger"
-              title="Erase Personal Data"
-              subtitle="Permanently delete all data"
-              onPress={() => {
-                Haptics.selectionAsync();
-                setShowEraseDataModal(true);
-              }}
-              danger={true}
-            />
+          </SettingsSection>
+
+          <SettingsSection title="Account Management">
             {shouldShowSignIn ? (
               <SettingsItem
                 icon={Login02Icon}
@@ -262,7 +249,7 @@ export default React.memo(function SettingsScreen() {
                   Haptics.selectionAsync();
                   signInSheetRef.current?.present();
                 }}
-                isLast={true}
+                showArrow={false}
               />
             ) : (
               <SettingsItem
@@ -271,35 +258,59 @@ export default React.memo(function SettingsScreen() {
                 title="Sign Out"
                 subtitle="Sign out of your account"
                 onPress={() => setIsSignoutOPen(true)}
-                isLast={true}
+                showArrow={false}
               />
             )}
+            <SettingsItem
+              icon={Delete02Icon}
+              tone="danger"
+              title="Erase Personal Data"
+              subtitle="Permanently delete all data"
+              onPress={() => {
+                Haptics.selectionAsync();
+                setShowEraseDataModal(true);
+              }}
+              danger={true}
+              showArrow={false}
+            />
           </SettingsSection>
 
           {/* Developer Section for Testing */}
-          <SettingsSection title="Developer">
-            <SettingsItem
-              icon={AlertSquareIcon}
-              tone="gold"
-              title="Active AI Model"
-              subtitle="Configure local LLM"
-              onPress={() => {
-                Haptics.selectionAsync();
-                router.push("/tabs/screens/active-model" as any);
-              }}
-            />
-            <SettingsItem
-              icon={StarIcon}
-              tone="gold"
-              title="Test Graph Components"
-              subtitle="View mock graph and UI components"
-              onPress={() => {
-                Haptics.selectionAsync();
-                router.push("/tabs/screens/test-charts" as any);
-              }}
-              isLast={true}
-            />
-          </SettingsSection>
+          {__DEV__ && (
+            <SettingsSection title="Developer">
+              <SettingsItem
+                icon={Download02Icon}
+                tone="sage"
+                title="Bulk Import Journals"
+                subtitle="Import sample data"
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  setShowImportModal(true);
+                }}
+                showArrow={false}
+              />
+              <SettingsItem
+                icon={AlertSquareIcon}
+                tone="gold"
+                title="Active AI Model"
+                subtitle="Configure local LLM"
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  router.push("/tabs/screens/active-model" as any);
+                }}
+              />
+              <SettingsItem
+                icon={StarIcon}
+                tone="gold"
+                title="Test Graph Components"
+                subtitle="View mock graph and UI components"
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  router.push("/tabs/screens/test-charts" as any);
+                }}
+              />
+            </SettingsSection>
+          )}
         </Animated.ScrollView>
       </View>
 
@@ -344,4 +355,4 @@ export default React.memo(function SettingsScreen() {
       <SignInBottomSheet ref={signInSheetRef} onSuccess={() => {}} />
     </View>
   );
-});
+}

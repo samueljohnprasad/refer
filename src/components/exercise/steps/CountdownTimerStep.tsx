@@ -110,7 +110,7 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
         <View className="flex-1 justify-center items-center">
           {/* Circular timer display */}
           <View
-            className="w-48 h-48 rounded-full items-center justify-center mb-8 border-4"
+            className="w-48 h-48 rounded-full items-center justify-center mb-8 border"
             style={{
               backgroundColor: completed ? "#D1FAE5" : "#F8FAFC",
               borderColor: completed ? "#10B981" : "#E2E8F0",
@@ -152,7 +152,7 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
               onPress={handleTap}
               accessibilityRole="button"
               accessibilityLabel="Tap when mind wanders"
-              className="bg-slate-100 active:bg-slate-200 rounded-xl px-6 py-3 mb-4 border-b-2 border-slate-200"
+              className="bg-slate-100 active:bg-slate-200 rounded-xl px-6 py-3 mb-4 border-b border-slate-200"
             >
               <Text variant="body-bold" className="text-sm text-slate-700">
                 Tap here (

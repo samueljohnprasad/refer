@@ -20,6 +20,8 @@ interface SliderStepProps extends StepProps {
   unit?: string;
   showValue?: boolean;
   psychoeducationText?: string;
+  anchorValue?: number;
+  anchorLabel?: string;
 }
 
 export const SliderStep: React.FC<SliderStepProps> = React.memo(
@@ -45,6 +47,8 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
     showValue = true,
     isSaving,
     psychoeducationText,
+    anchorValue,
+    anchorLabel,
   }) => {
     const value: number =
       (response as Record<string, any>)[fieldKey] ??
@@ -68,14 +72,26 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
         <View className="flex-1 justify-center px-2">
           {showValue && (
             <FadeInItem index={0}>
-              <Text
-                variant="counter"
-                color="sage"
-                className="text-6xl text-center mb-10 happy-font-heading-bold"
-              >
-                {value}
-                {unit}
-              </Text>
+              <View className="items-center mb-10">
+                <Text
+                  variant="counter"
+                  color="sage"
+                  className="text-6xl text-center happy-font-heading-bold"
+                >
+                  {value}
+                  {unit}
+                </Text>
+                {typeof anchorValue === "number" && (
+                  <View className="mt-2.5 px-3.5 py-1.5 rounded-full bg-sage-100/80 border border-sage-200">
+                    <Text className="text-xs font-semibold text-sage-800">
+                      {anchorLabel ?? "Before"}: {anchorValue}{unit}
+                      {value < anchorValue
+                        ? `  (↓ ${anchorValue - value}${unit})`
+                        : ""}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </FadeInItem>
           )}
 
@@ -87,7 +103,7 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
               value={value}
               onValueChange={(v: number) => onUpdate({ [fieldKey]: v } as any)}
               minimumTrackTintColor={SAGE[500]}
-              maximumTrackTintColor="#E5E5E5"
+              maximumTrackTintColor={SAGE[200]}
               thumbTintColor={SAGE[500]}
               accessibilityLabel={title}
               accessibilityValue={{ min, max, now: value }}

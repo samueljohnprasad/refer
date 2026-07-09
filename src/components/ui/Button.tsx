@@ -35,6 +35,7 @@ interface VariantConfig {
   labelColor: string;
   disabledFaceColor: string;
   disabledRimColor: string;
+  disabledLabelColor?: string;
 }
 
 const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
@@ -42,8 +43,9 @@ const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
     faceColor: SAGE[500],
     rimColor: SAGE[700],
     labelColor: BRAND_SURFACE,
-    disabledFaceColor: SAGE[200],
-    disabledRimColor: SAGE[300],
+    disabledFaceColor: "#F1F5F9",
+    disabledRimColor: "#E2E8F0",
+    disabledLabelColor: "#94A3B8",
   },
   secondary: {
     faceColor: BRAND_SURFACE,
@@ -225,7 +227,9 @@ export function Button({
   const config = VARIANTS[variant];
   const faceColor = isDisabled ? config.disabledFaceColor : config.faceColor;
   const rimColor = isDisabled ? config.disabledRimColor : config.rimColor;
-  const labelColor = isDisabled ? `${config.labelColor}80` : config.labelColor;
+  const labelColor = isDisabled 
+    ? (config.disabledLabelColor ?? `${config.labelColor}80`)
+    : config.labelColor;
   const radius = variant === "pill" ? 9999 : sizeConfig.radius;
 
   return (

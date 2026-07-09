@@ -62,7 +62,7 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
           />
         </Pressable>
       ) : (
-        <View className="rounded-2xl p-4 bg-sage-50 border border-sage-200/50">
+        <View className="rounded-xl p-4 bg-sage-50 border border-sage-200/50">
           <View className="flex-row items-start">
             <View className="h-7 w-7 rounded-lg bg-sage-100 items-center justify-center mr-3 mt-0.5 shrink-0">
               <HugeiconsIcon

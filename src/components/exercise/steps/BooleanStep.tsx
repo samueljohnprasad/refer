@@ -92,7 +92,7 @@ export const BooleanStep: React.FC<BooleanStepProps> = React.memo(
                 accessibilityRole="radio"
                 accessibilityState={{ selected: isSelected }}
                 accessibilityLabel={opt.label}
-                className="h-16 rounded-2xl flex-row items-center justify-center active:opacity-90"
+                className="h-16 rounded-xl flex-row items-center justify-center active:opacity-90"
                 style={{
                   backgroundColor: isSelected ? "#F0FFF0" : "#F8FAFC",
                   borderWidth: 2,

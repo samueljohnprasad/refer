@@ -86,8 +86,10 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
               />
               <Text
                 variant="caption"
-                className={`mt-1 font-semibold ${
-                  selectedMood === mood.id ? "text-ink" : "text-ink-muted"
+                className={`mt-1.5 text-[11px] ${
+                  selectedMood === mood.id
+                    ? "font-bold text-ink scale-105"
+                    : "font-medium text-ink-soft opacity-70"
                 }`}
               >
                 {mood.label}

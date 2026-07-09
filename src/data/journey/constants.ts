@@ -64,7 +64,7 @@ export const DIVIDER_LAYOUT = {
   /** Gap between the title pill and adjacent line */
   titleGap: 12,
   /** Maximum width of the title pill as a fraction of screen width */
-  titleMaxWidthRatio: 0.52,
+  titleMaxWidthRatio: 0.75,
   /** Minimum visible line width on either side of the title */
   minLineWidth: 24,
   /** Background behind the title pill */

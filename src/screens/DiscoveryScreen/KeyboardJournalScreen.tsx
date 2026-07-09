@@ -181,9 +181,8 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               </Pressable>
             </View>
 
-            {/* Text Input */}
             <View
-              className="happy-brand-card flex-1 rounded-[28px] p-5"
+              className="happy-brand-card flex-1 rounded-2xl p-5"
               style={{ minHeight: 200 }}
             >
               <TextInput
@@ -214,7 +213,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             <View className="mb-4 items-center">
               <Text className="text-ink-muted text-sm happy-font-body-medium">
                 {journalText.length}{" "}
-                <Text className="text-sage-400 text-sm">/7000</Text>
+                <Text className="text-sage-500 text-sm">/7000</Text>
               </Text>
             </View>
 
@@ -282,7 +281,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             onPress={handleCloseCalendar}
           >
             <Pressable
-              className="bg-white rounded-3xl p-4 w-full border-2 border-sage-100"
+              className="bg-white rounded-2xl p-4 w-full border-2 border-sage-100"
               onPress={(e) => e.stopPropagation()}
             >
               <View className="flex-row justify-between items-center mb-4">

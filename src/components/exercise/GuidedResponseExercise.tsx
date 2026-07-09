@@ -88,11 +88,7 @@ export const GuidedResponseExercise: React.FC<GuidedResponseExerciseProps> = ({
           <View className="mr-4 mt-2 z-10">
             <Mascot state="panda-happy" size={80} />
           </View>
-          <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-slate-200 relative">
-            <View 
-              className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200 rounded-bl-[4px]" 
-              style={{ transform: [{ rotate: '45deg' }] }} 
-            />
+          <View className="flex-1 pt-4 relative">
             <Text variant="body" color="ink" className="leading-relaxed text-lg font-medium">
               {prompt}
             </Text>
@@ -101,14 +97,14 @@ export const GuidedResponseExercise: React.FC<GuidedResponseExerciseProps> = ({
       )}
 
       {mood_before && (
-        <View className="mb-8 bg-white p-6 rounded-3xl border-2 border-slate-100 shadow-sm shadow-slate-50 items-center">
+        <View className="mb-8 bg-white p-6 rounded-xl border border-slate-100 shadow-sm shadow-slate-50 items-center">
           <Text className="text-slate-500 font-bold mb-4 text-xs uppercase tracking-wider text-center">How are you feeling before writing?</Text>
           <MoodSlider value={moodBefore} onChange={handleMoodBefore} />
         </View>
       )}
 
       {sub_prompts.length > 0 && (
-        <View className="bg-white border-2 border-slate-200 rounded-3xl p-6 mb-6 shadow-sm shadow-slate-50">
+        <View className="bg-white border border-slate-200 rounded-xl p-6 mb-6 shadow-sm shadow-slate-50">
           <Text className="font-bold text-slate-500 mb-4 uppercase tracking-wider text-xs">
             Try to cover these points:
           </Text>
@@ -123,12 +119,12 @@ export const GuidedResponseExercise: React.FC<GuidedResponseExerciseProps> = ({
         </View>
       )}
 
-      <View className={`bg-white border-2 rounded-3xl p-5 mb-6 ${isFocused ? 'border-sky-500 shadow-md shadow-sky-100' : 'border-slate-200 shadow-sm shadow-slate-100'}`}>
+      <View className={`bg-white border rounded-xl p-5 mb-6 ${isFocused ? 'border-sky-500 shadow-md shadow-sky-100' : 'border-slate-200 shadow-sm shadow-slate-100'}`}>
         <TextInput
           className="text-lg text-slate-800 leading-relaxed min-h-[160px]"
           multiline
           placeholder="Start writing here..."
-          placeholderTextColor="#94a3b8"
+          placeholderTextColor="#475569"
           value={text}
           onChangeText={handleTextChange}
           onFocus={() => setIsFocused(true)}
@@ -145,7 +141,7 @@ export const GuidedResponseExercise: React.FC<GuidedResponseExerciseProps> = ({
       </View>
 
       {mood_after && (
-        <View className="mb-12 bg-white p-6 rounded-3xl border-2 border-slate-100 shadow-sm shadow-slate-50 items-center">
+        <View className="mb-12 bg-white p-6 rounded-xl border border-slate-100 shadow-sm shadow-slate-50 items-center">
           <Text className="text-slate-500 font-bold mb-4 text-xs uppercase tracking-wider text-center">How are you feeling now?</Text>
           <MoodSlider value={moodAfter} onChange={handleMoodAfter} />
         </View>

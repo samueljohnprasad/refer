@@ -26,6 +26,7 @@ interface TextInputStepProps extends StepProps {
   psychoeducationText?: string;
   suggestions?: SuggestionItem[];
   suggestionsTitle?: string;
+  referenceQuote?: { label?: string; text: string };
 }
 
 export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
@@ -54,6 +55,7 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
     suggestions,
     suggestionsTitle,
     readOnly,
+    referenceQuote,
   }) => {
     const dispatch = useAppDispatch();
     const value: string = (response as Record<string, any>)[fieldKey] ?? "";
@@ -84,9 +86,22 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
       >
         <PsychoeducationCard content={psychoeducationText ?? ""} />
 
+        {referenceQuote && (
+          <FadeInItem index={0}>
+            <View className="rounded-xl p-4 mb-4 bg-sage-50/80 border border-sage-200/60 shadow-sm">
+              <Text className="text-xs font-semibold uppercase tracking-wider text-sage-600 mb-1">
+                {referenceQuote.label ?? "Caught Thought"}
+              </Text>
+              <Text className="text-base font-medium text-slate-800 italic leading-relaxed">
+                “{referenceQuote.text}”
+              </Text>
+            </View>
+          </FadeInItem>
+        )}
+
         {tipText && (
           <FadeInItem index={0}>
-            <View className="rounded-2xl p-4 mb-5 flex-row items-start bg-sage-pill border border-sage-200/50">
+            <View className="rounded-xl p-4 mb-5 flex-row items-start bg-sage-pill border border-sage-200/50">
               <View className="h-8.5 w-8.5 rounded-xl bg-sage-50 items-center justify-center mr-3 mt-0.5 shadow-sm">
                 <HugeiconsIcon
                   icon={Idea01Icon}
@@ -117,20 +132,22 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
             />
           )}
 
-          {(isAiLoading || (aiSuggestions && aiSuggestions.length > 0)) && (
-            <SuggestionCards
-              title="Tap a suggestion to use it"
-              suggestions={aiSuggestions?.map((s: AISuggestionItem) => ({
-                label: s.text,
-                emoji: s.emoji,
-                rationale: s.rationale,
-              })) || []}
-              isLoading={isAiLoading}
-              loadingMessage={aiLoadingMessage}
-              onSelect={(text) => onUpdate({ [fieldKey]: text } as any)}
-              currentValue={value}
-            />
-          )}
+          <View className={isAiLoading ? "min-h-[96px] justify-center" : ""}>
+            {(isAiLoading || (aiSuggestions && aiSuggestions.length > 0)) && (
+              <SuggestionCards
+                title="Tap a suggestion to use it"
+                suggestions={aiSuggestions?.map((s: AISuggestionItem) => ({
+                  label: s.text,
+                  emoji: s.emoji,
+                  rationale: s.rationale,
+                })) || []}
+                isLoading={isAiLoading}
+                loadingMessage={aiLoadingMessage}
+                onSelect={(text) => onUpdate({ [fieldKey]: text } as any)}
+                currentValue={value}
+              />
+            )}
+          </View>
 
           <View className="mt-2" style={{ zIndex: 10 }}>
             <GlowyInput

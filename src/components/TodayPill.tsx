@@ -48,14 +48,14 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
           {
             position: "absolute",
             right: 0,
-            bottom: -16,
+            bottom: 6,
             zIndex: 100,
             backgroundColor,
           },
           containerStyle,
           animatedStyle,
         ]}
-        className="flex-row items-center rounded-l-2xl px-2 py-1"
+        className="flex-row items-center rounded-l-full px-2.5 py-1 border border-r-0 border-sage-200/60 shadow-xs"
         pointerEvents={pointerEvents}
       >
         <Pressable

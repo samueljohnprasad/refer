@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, TextInput } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { Text } from "@/src/components/ui/Text";
 
 interface FeelingsSectionProps {
@@ -43,18 +44,13 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
     }
   };
 
+  if (!isEditing && feelings.length === 0) {
+    return null;
+  }
+
   return (
-    <View className="mb-6">
-      <Text variant="eyebrow" className="mb-2">FEELINGS</Text>
-      
+    <View className="mt-2 mb-6">
       <View className="flex-row flex-wrap gap-2">
-        {feelings.length === 0 && !isEditing && (
-          <View className="flex-1 rounded-[20px] border-2 border-dashed border-sage-200 bg-white/20 px-4 py-3.5 items-center justify-center">
-            <Text variant="body" color="muted" className="italic text-[14px]">
-              No feelings logged yet
-            </Text>
-          </View>
-        )}
 
         {feelings.map((feeling, index) => (
           <View
@@ -72,12 +68,13 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
             {isEditing && (
               <TouchableOpacity
                 onPress={() => onRemoveFeeling(index)}
-                className="ml-2 w-4.5 h-4.5 rounded-full bg-cardinal-red/10 items-center justify-center"
+                className="ml-2 w-5 h-5 rounded-full bg-sage-200/60 items-center justify-center"
+                hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                 activeOpacity={0.7}
                 accessibilityRole="button"
                 accessibilityLabel={`Remove ${feeling}`}
               >
-                <Text variant="caption" className="text-cardinal-red font-bold text-[10px] leading-[10px] -mt-0.5">−</Text>
+                <Feather name="x" size={11} color="#4A5568" />
               </TouchableOpacity>
             )}
           </View>
@@ -86,7 +83,7 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
         {isEditing && !isAdding && (
           <TouchableOpacity
             onPress={() => setIsAdding(true)}
-            className="flex-row items-center px-3.5 py-1.5 rounded-full bg-white/80 border border-sage-100/60 shadow-sm"
+            className="flex-row items-center px-3.5 py-1.5 rounded-full bg-white/75 border border-sage-300/60"
             activeOpacity={0.7}
             accessibilityRole="button"
             accessibilityLabel="Add feeling"

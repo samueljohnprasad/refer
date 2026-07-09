@@ -77,6 +77,8 @@ function extractTimelinePreview(
   exerciseType: ExerciseType,
   response?: Record<string, any>,
 ): {
+  previewLabel?: string;
+  expandedLabel?: string;
   previewText?: string;
   expandedText?: string;
   tags?: string[];
@@ -88,13 +90,17 @@ function extractTimelinePreview(
   switch (exerciseType) {
     case "thought_catcher":
       return {
-        previewText: response.balancedThought,
-        expandedText: response.automaticThought,
+        previewLabel: "Automatic Thought",
+        expandedLabel: "Balanced Reframe",
+        previewText: response.automaticThought ?? response.thought ?? response.situation,
+        expandedText: response.balancedThought ?? response.reframe,
       };
     case "thought_reframing":
       return {
-        previewText: response.balancedThought,
-        expandedText: response.automaticThought,
+        previewLabel: "Initial Thought",
+        expandedLabel: "Cognitive Reframe",
+        previewText: response.automaticThought ?? response.situation,
+        expandedText: response.balancedThought ?? response.reframedThought,
         tags: Array.isArray(response.selectedDistortions)
           ? response.selectedDistortions
           : undefined,
@@ -104,14 +110,18 @@ function extractTimelinePreview(
       };
     case "abc_analysis":
       return {
-        previewText: response.alternativeBelief,
-        expandedText: response.activatingEvent,
+        previewLabel: "Activating Event (A)",
+        expandedLabel: "Alternative Belief & Outcome",
+        previewText: response.activatingEvent,
+        expandedText: response.alternativeBelief,
         emotions: Array.isArray(response.consequenceEmotions)
           ? response.consequenceEmotions.slice(0, 3)
           : undefined,
       };
     case "gratitude_reframe":
       return {
+        previewLabel: "Gratitude Entries",
+        expandedLabel: "Reframed Perspective",
         previewText: Array.isArray(response.gratitudeEntries) && response.gratitudeEntries.length > 0 
           ? "I am grateful for..."
           : undefined,

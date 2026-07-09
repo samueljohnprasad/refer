@@ -109,6 +109,10 @@ export default function AIInsightsScreen() {
   const generateSummary = useGenerateWeeklySummary();
   const { height } = useWindowDimensions();
   const previousWeek = subWeeks(new Date(), 1);
+  const prevWeekStart = startOfWeek(previousWeek);
+  const prevWeekEnd = endOfWeek(previousWeek);
+  const prevWeekRangeLabel = `${format(prevWeekStart, "MMM dd")} – ${format(prevWeekEnd, "MMM dd, yyyy")}`;
+
   const weeklySummary = cachedSummary?.weekly_summary;
   const recommendations = cachedSummary?.recommendations;
   const growthInsights = cachedSummary?.growth_insights;
@@ -121,6 +125,9 @@ export default function AIInsightsScreen() {
 
   const totalJournalCount = journalStats?.totalCount ?? 0;
   const overallAverageMood = journalStats?.averageMood ?? null;
+  const formattedMood = overallAverageMood
+    ? `${overallAverageMood.toFixed(1)} / 5`
+    : "N/A";
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -129,6 +136,11 @@ export default function AIInsightsScreen() {
   };
 
   const handleGenerateSummary = async () => {
+    if (totalJournalCount === 0) {
+      alert("Please log at least one journal entry to generate AI Insights.");
+      return;
+    }
+
     if (shouldShowPaywall) {
       await presentPaywall();
       return;
@@ -211,7 +223,7 @@ export default function AIInsightsScreen() {
                       <Text className="text-xl font-bold text-white">
                         {isLoadingStats
                           ? "-"
-                          : overallAverageMood?.toFixed(1) || "N/A"}
+                          : formattedMood}
                       </Text>
                       <Text className="text-[11px] text-white opacity-90">
                         Overall Mood
@@ -276,10 +288,8 @@ export default function AIInsightsScreen() {
               </View>
               <View className="w-px h-14 bg-white/20" />
               <View className="items-center">
-                <Text className="text-[40px] font-extrabold text-white leading-tight">
-                  {isLoadingStats
-                    ? "-"
-                    : overallAverageMood?.toFixed(1) || "N/A"}
+                <Text className="text-[34px] font-extrabold text-white leading-tight">
+                  {isLoadingStats ? "-" : formattedMood}
                 </Text>
                 <Text className="text-sm text-white/90 mt-2 font-medium">
                   Overall Mood
@@ -294,35 +304,34 @@ export default function AIInsightsScreen() {
           <View className="flex-row justify-between items-center mb-5">
             <View className="flex-row items-center gap-2">
               <HugeiconsIcon icon={Target03Icon} size={24} color="#7B61FF" />
-              <Text className="text-[22px] font-extrabold text-[#0F172A] tracking-wide font-cormorantBold">
+              <Text className="text-[22px] font-extrabold text-[#0F172A] tracking-normal font-cormorantBold">
                 AI Insights for Previous Week
               </Text>
             </View>
           </View>
 
           {!loadingCached && !cachedSummary && (
-            <View className="bg-white rounded-3xl overflow-hidden items-center">
+            <View className="bg-white rounded-3xl overflow-hidden items-center shadow-sm">
               <Image
                 source={weeklyAnalysis}
-                style={{ width: "100%", height: 300 }}
+                style={{ width: "100%", height: 240 }}
                 resizeMode="cover"
-                className="p-4 rounded-3xl"
               />
-              <View className="px-10 pb-10">
+              <View className="px-8 pt-6 pb-8">
                 <Text className="text-[28px] font-cormorantBold text-[#0F172A] mb-3 text-center leading-tight">
                   No AI Summary Yet
                 </Text>
-                <Text className="text-[16px] text-[#64748B] text-center mb-6 leading-7 font-jakartaMedium">
+                <Text className="text-[15px] text-[#64748B] text-center mb-6 leading-6 font-jakartaMedium">
                   Generate personalized AI insights for the week of{"\n"}
                   <Text className="font-jakartaBold text-[#475569]">
-                    {format(previousWeek, "MMM dd, yyyy")}
+                    {prevWeekRangeLabel}
                   </Text>
                 </Text>
               </View>
 
               <View className="w-full px-6 pb-6">
                 <TouchableOpacity
-                  className="rounded-2xl overflow-hidden w-full"
+                  className="rounded-2xl overflow-hidden w-full active:opacity-90"
                   onPress={handleGenerateSummary}
                   disabled={isGenerating}
                 >
@@ -332,24 +341,22 @@ export default function AIInsightsScreen() {
                     }
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                    className="flex-row items-center justify-center py-4 gap-2"
-                    style={{
-                      paddingVertical: 16,
-                      gap: 8,
-                      flexDirection: "row",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
+                    className="flex-row items-center justify-center py-4 px-6 gap-2"
                   >
-                    {isGenerating && (
+                    {isGenerating ? (
                       <ActivityIndicator size="small" color="#FFF" />
-                    )}
-                    {!isGenerating && (
-                      <Feather name="zap" size={20} color="#FFF" />
+                    ) : (
+                      <Feather
+                        name={shouldShowPaywall ? "lock" : "zap"}
+                        size={18}
+                        color="#FFF"
+                      />
                     )}
                     <Text className="text-base font-bold text-white font-jakarta">
                       {isGenerating
                         ? "Generating..."
+                        : shouldShowPaywall
+                        ? "Unlock AI Insights (PRO)"
                         : "Get AI Insights for Past Week"}
                     </Text>
                   </LinearGradient>

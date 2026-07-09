@@ -292,7 +292,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             style={{ fontFamily: "GeistSemiBold" }}
             className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta"
           >
-            Built for you ✨
+            Built for you
           </Text>
           <View className="absolute left-[120px] top-[-10px] z-10">
             <ConfettiBurst />
@@ -316,17 +316,17 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
 
       <Animated.View
         entering={FadeIn.duration(180).delay(160)}
-        className="mt-4 rounded-[20px] border-2 border-sage-200 bg-cream px-[18px] py-5"
+        className="mt-4 rounded-2xl border-2 border-sage-200 bg-cream px-[18px] py-5"
       >
         <Text
-          style={{ fontFamily: "GeistBold" }}
-          className="text-[11px] uppercase tracking-[0.1em] text-terracotta"
+          style={{ fontFamily: "CormorantSemiBold" }}
+          className="mb-2 text-[20px] leading-[1.3] text-ink"
         >
-          📈 What people like you report
+          Projected path
         </Text>
         <Text
           style={{ fontFamily: "CormorantRegular" }}
-          className="mt-1.5 text-[17px] leading-[1.35] text-ink"
+          className="text-[17px] leading-[1.35] text-ink"
         >
           Your projected{" "}
           <Text
@@ -350,7 +350,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           style={{
             marginTop: 12,
             overflow: "hidden",
-            borderRadius: 24,
+            borderRadius: 16,
             borderCurve: "continuous",
             paddingHorizontal: 24,
             paddingVertical: 28,
@@ -368,8 +368,8 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             }}
           />
           <Text
-            style={{ fontFamily: "GeistBold" }}
-            className="text-[11px] uppercase tracking-[0.15em] text-gold"
+            style={{ fontFamily: "GeistMedium" }}
+            className="text-[15px] text-gold/90"
           >
             7-Day Foundation Journey
           </Text>
@@ -432,15 +432,15 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
               borderRadius: 999,
               borderCurve: "continuous",
               backgroundColor: "#D4A943",
-              paddingHorizontal: 12,
-              paddingVertical: 6,
+              paddingHorizontal: 10,
+              paddingVertical: 4,
             }}
           >
             <Text
-              style={{ fontFamily: "GeistBold" }}
-              className="text-[10px] uppercase tracking-[0.1em] text-sage-700"
+              style={{ fontFamily: "GeistSemiBold" }}
+              className="text-[12px] text-sage-800"
             >
-              ✨ New · AI Companion
+              New · AI Companion
             </Text>
           </View>
           <Text
@@ -471,10 +471,10 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
 
       <Animated.View entering={FadeIn.duration(180).delay(480)} className="mt-5">
         <Text
-          style={{ fontFamily: "GeistBold" }}
-          className="mb-3 text-[11px] uppercase tracking-[0.12em] text-sage-500"
+          style={{ fontFamily: "CormorantSemiBold" }}
+          className="mb-4 text-[22px] text-ink"
         >
-          What you&apos;ll learn
+          What you'll learn
         </Text>
         <View className="gap-2.5">
           {planMeta.learnItems.map((item) => (

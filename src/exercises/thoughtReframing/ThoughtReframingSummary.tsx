@@ -134,9 +134,10 @@ function Divider() {
 
 function getShiftLabel(pre: number, post: number): string {
   const drop = pre - post;
-  if (drop <= 0) return "You sat with a difficult thought. That takes courage.";
+  if (drop < 0) return "It's normal for distress to increase when facing hard thoughts. You sat with it, and that takes courage.";
+  if (drop === 0) return "You sat with a difficult thought. That takes courage.";
   const pct = pre > 0 ? Math.round((drop / pre) * 100) : 0;
-  if (pct >= 50) return `Belief dropped ${pct}% — your rational mind got louder.`;
+  if (pct >= 50) return `Distress dropped ${pct}% — your rational mind got louder.`;
   if (pct >= 20) return `A real shift. Small drops build new patterns over time.`;
   return "Progress is rarely linear. Showing up is what counts.";
 }
@@ -232,17 +233,66 @@ export const ThoughtReframingSummary: React.FC<
           </Text>
           <Text
             variant="body"
-            className="text-center mt-1 text-[15px] leading-snug"
+            className="text-center mt-1 text-[15px] leading-snug text-ink-soft"
           >
             Here's everything you worked through
           </Text>
         </Animated.View>
       </View>
 
-      {/* ── Card — all sections grouped ────────────────────────────── */}
-      <FadeUp delay={300}>
+      {/* ── 7. Balanced Thought Hero Card (Climactic Outcome) ──────────── */}
+      {!!response.balancedThought?.trim() && (
+        <FadeUp delay={300}>
+          <View
+            className="rounded-3xl p-5 mx-1 mb-6 border border-sage-200/80"
+            style={{ backgroundColor: SAGE[50] }}
+          >
+            <Text
+              variant="label-bold"
+              className="text-[13px] text-sage-800 mb-2"
+            >
+              Your balanced thought
+            </Text>
+            <Text
+              variant="body-bold"
+              className="text-[16px] leading-relaxed text-ink mb-4"
+            >
+              {response.balancedThought}
+            </Text>
+
+            {!readOnly && (
+              <Pressable
+                onPress={cardSaved ? undefined : handleSaveCopingCard}
+                disabled={cardSaved}
+                accessibilityRole="button"
+                accessibilityLabel={cardSaved ? "Saved" : "Save as coping card"}
+                className="flex-row items-center self-start gap-1.5 rounded-full px-4 py-2 active:opacity-70"
+                style={{
+                  backgroundColor: cardSaved ? SAGE[100] : SAGE.pill,
+                }}
+              >
+                <HugeiconsIcon
+                  icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
+                  size={14}
+                  color={SAGE[600]}
+                  strokeWidth={2}
+                />
+                <Text
+                  variant="label-bold"
+                  className="text-[13px] text-sage-700"
+                >
+                  {cardSaved ? "Saved" : "Save as coping card"}
+                </Text>
+              </Pressable>
+            )}
+          </View>
+        </FadeUp>
+      )}
+
+      {/* ── Reflection Context Card ──────────────────────────────── */}
+      <FadeUp delay={450}>
         <View
-          className="rounded-3xl overflow-hidden mx-1"
+          className="rounded-3xl overflow-hidden mx-1 mb-4"
           style={{
             backgroundColor: BRAND_SURFACE,
             borderWidth: 1.5,
@@ -252,7 +302,10 @@ export const ThoughtReframingSummary: React.FC<
           {/* ── 1. What happened ───────────────────────────── */}
           {!!response.situation?.trim() && (
             <View className="px-4 py-4">
-              <Text variant="overline" className="mb-1.5">
+              <Text
+                variant="label-bold"
+                className="text-[13px] text-ink-soft mb-1.5"
+              >
                 What happened
               </Text>
               <Text
@@ -271,11 +324,14 @@ export const ThoughtReframingSummary: React.FC<
           {/* ── 2. Automatic thought ───────────────────────── */}
           {!!response.automaticThought?.trim() && (
             <View className="px-4 py-4">
-              <Text variant="overline" className="mb-1.5">
+              <Text
+                variant="label-bold"
+                className="text-[13px] text-ink-soft mb-1.5"
+              >
                 Automatic thought
               </Text>
               <View
-                className="rounded-xl px-3.5 py-3"
+                className="rounded-2xl px-4 py-3.5"
                 style={{ backgroundColor: "#FFF7F5" }}
               >
                 <Text
@@ -288,51 +344,51 @@ export const ThoughtReframingSummary: React.FC<
             </View>
           )}
 
-          {/* ── Belief scores ──────────────────────────────── */}
+          {/* ── Belief shift delta ─────────────────────────── */}
           {hasScores && (
             <>
               <Divider />
               <View className="px-4 py-4">
-                <Text variant="overline" className="mb-3">
-                  Belief intensity
+                <Text
+                  variant="label-bold"
+                  className="text-[13px] text-ink-soft mb-2.5"
+                >
+                  How your distress changed
                 </Text>
-                <View className="gap-3">
-                  <View>
-                    <View className="flex-row justify-between mb-1.5">
-                      <Text variant="label" className="text-ink-soft text-[13px]">
+                <View className="flex-row items-center justify-between bg-white/90 border border-brand-border/70 rounded-2xl p-3.5">
+                  <View className="flex-row items-center gap-3.5">
+                    <View>
+                      <Text variant="caption" className="text-ink-soft">
                         Before
                       </Text>
-                      <Text variant="label-bold" className="text-[13px]">
+                      <Text variant="body-bold" className="text-ink mt-0.5 text-[22px]">
                         {preScore}%
                       </Text>
                     </View>
-                    <ScoreBar
-                      value={preScore}
-                      max={100}
-                      fillColor="#FFCBBB"
-                      delay={600}
-                    />
-                  </View>
-                  <View>
-                    <View className="flex-row justify-between mb-1.5">
-                      <Text variant="label" className="text-ink-soft text-[13px]">
+                    <Text className="text-ink-soft font-bold text-base">→</Text>
+                    <View>
+                      <Text variant="caption" className="text-ink-soft">
                         After
                       </Text>
-                      <Text variant="label-bold" className="text-[13px]">
+                      <Text variant="body-bold" className={`mt-0.5 text-[22px] ${preScore - postScore! >= 0 ? 'text-sage-700' : 'text-ink'}`}>
                         {postScore}%
                       </Text>
                     </View>
-                    <ScoreBar
-                      value={postScore!}
-                      max={100}
-                      fillColor={SAGE[400]}
-                      delay={900}
-                    />
+                  </View>
+                  <View className={`px-3 py-1.5 rounded-full ${preScore - postScore! >= 0 ? 'bg-sage-100/90' : 'bg-gray-100'}`}>
+                    <Text
+                      variant="label-bold"
+                      className={`text-[12px] ${preScore - postScore! >= 0 ? 'text-sage-800' : 'text-ink-soft'}`}
+                    >
+                      {preScore - postScore! >= 0
+                        ? `-${preScore - postScore!}% distress`
+                        : `+${postScore! - preScore}% distress`}
+                    </Text>
                   </View>
                 </View>
                 <Text
                   variant="caption"
-                  className="mt-3 text-ink-soft leading-relaxed"
+                  className="mt-2.5 text-ink-soft leading-relaxed"
                 >
                   {getShiftLabel(preScore, postScore!)}
                 </Text>
@@ -345,7 +401,10 @@ export const ThoughtReframingSummary: React.FC<
             <>
               <Divider />
               <View className="px-4 py-4">
-                <Text variant="overline" className="mb-2.5">
+                <Text
+                  variant="label-bold"
+                  className="text-[13px] text-ink-soft mb-2.5"
+                >
                   How you felt
                 </Text>
                 <View className="flex-row flex-wrap gap-2">
@@ -375,17 +434,16 @@ export const ThoughtReframingSummary: React.FC<
             <>
               <Divider />
               <View className="px-4 py-4">
-                <Text variant="overline" className="mb-2.5">
+                <Text
+                  variant="label-bold"
+                  className="text-[13px] text-ink-soft mb-2.5"
+                >
                   Thinking traps spotted
                 </Text>
-                <View className="gap-2">
+                <View className="gap-3">
                   {distortions.map((d: any, i: number) => (
-                    <View
-                      key={i}
-                      className="flex-row items-start rounded-xl px-3 py-2.5"
-                      style={{ backgroundColor: "#F8F8F8" }}
-                    >
-                      <Text className="text-[16px] mr-2.5 mt-0.5">{d.icon}</Text>
+                    <View key={i} className="flex-row items-start py-0.5">
+                      <Text className="text-[17px] mr-3 mt-0.5">{d.icon}</Text>
                       <View className="flex-1">
                         <Text variant="label-bold" className="text-[13.5px] text-ink">
                           {d.label}
@@ -410,15 +468,18 @@ export const ThoughtReframingSummary: React.FC<
             <>
               <Divider />
               <View className="px-4 py-4">
-                <Text variant="overline" className="mb-3">
+                <Text
+                  variant="label-bold"
+                  className="text-[13px] text-ink-soft mb-3"
+                >
                   Evidence reviewed
                 </Text>
                 {/* For */}
                 {response.evidenceFor?.length > 0 && (
                   <View className="mb-3">
-                    <Text
-                      variant="caption"
-                      className="text-[11px] font-bold uppercase tracking-widest mb-2"
+                     <Text
+                      variant="label-bold"
+                      className="text-[12px] mb-2"
                       style={{ color: "#D97706" }}
                     >
                       Supported it
@@ -445,9 +506,9 @@ export const ThoughtReframingSummary: React.FC<
                 {/* Against */}
                 {response.evidenceAgainst?.length > 0 && (
                   <View>
-                    <Text
-                      variant="caption"
-                      className="text-[11px] font-bold uppercase tracking-widest mb-2"
+                     <Text
+                      variant="label-bold"
+                      className="text-[12px] mb-2"
                       style={{ color: SAGE[600] }}
                     >
                       Challenged it
@@ -471,53 +532,6 @@ export const ThoughtReframingSummary: React.FC<
               </View>
             </>
           )}
-
-          {/* ── 7. Balanced thought ────────────────────────── */}
-          {!!response.balancedThought?.trim() && (
-            <>
-              <Divider />
-              <View
-                className="px-4 py-4"
-                style={{ backgroundColor: SAGE[50] }}
-              >
-                <Text variant="overline" className="mb-2">
-                  Your balanced thought
-                </Text>
-                <Text
-                  variant="body-bold"
-                  className="text-[15px] leading-relaxed text-ink mb-3"
-                >
-                  {response.balancedThought}
-                </Text>
-
-                {!readOnly && (
-                  <Pressable
-                    onPress={cardSaved ? undefined : handleSaveCopingCard}
-                    disabled={cardSaved}
-                    accessibilityRole="button"
-                    accessibilityLabel={cardSaved ? "Saved" : "Save as coping card"}
-                    className="flex-row items-center self-start gap-1.5 rounded-full px-3.5 py-2 active:opacity-70"
-                    style={{
-                      backgroundColor: cardSaved ? SAGE[100] : SAGE.pill,
-                    }}
-                  >
-                    <HugeiconsIcon
-                      icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
-                      size={13}
-                      color={SAGE[600]}
-                      strokeWidth={2}
-                    />
-                    <Text
-                      variant="label-bold"
-                      className="text-[13px] text-sage-700"
-                    >
-                      {cardSaved ? "Saved" : "Save as coping card"}
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
-            </>
-          )}
         </View>
       </FadeUp>
 
@@ -536,8 +550,8 @@ export const ThoughtReframingSummary: React.FC<
             }}
           >
             <View className="flex-1 mr-3">
-              <Text variant="overline" className="mb-0.5">
-                Want to go deeper?
+              <Text variant="caption" className="text-sage-600 font-semibold mb-0.5">
+                Next recommended step
               </Text>
               <Text
                 variant="label-bold"
@@ -554,6 +568,25 @@ export const ThoughtReframingSummary: React.FC<
               strokeWidth={2.5}
             />
           </Pressable>
+        </FadeUp>
+      )}
+
+      {/* ── Done button ───────────────────────────────────────────── */}
+      {!readOnly && (
+        <FadeUp delay={600}>
+          <View className="mt-6 mb-8 mx-1">
+            <Pressable
+              onPress={onNext}
+              accessibilityRole="button"
+              accessibilityLabel="Done"
+              className="w-full rounded-2xl py-4 items-center justify-center active:opacity-80"
+              style={{ backgroundColor: INK_SOFT }}
+            >
+              <Text variant="label-bold" className="text-white text-[16px]">
+                Done
+              </Text>
+            </Pressable>
+          </View>
         </FadeUp>
       )}
     </View>

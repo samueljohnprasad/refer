@@ -21,6 +21,7 @@ import {
 } from "@/src/hooks/insights/useInsightsOverview";
 import { TimeRangeSelector } from "./components/TimeRangeSelector";
 import { InsightNarrativeCard } from "@/src/components/insights/InsightNarrativeCard";
+import { InsightNudgeCard } from "@/src/components/insights/InsightNudgeCard";
 import type { ExerciseCategory } from "@/src/types/exerciseFlow";
 
 const CATEGORY_ICONS = {
@@ -109,7 +110,10 @@ export default function InsightsScreen() {
         <Animated.View entering={FadeInDown.duration(400).delay(200)} className="px-4 mt-5">
           <InsightNarrativeCard />
         </Animated.View>
-        <Animated.View entering={FadeInDown.duration(400).delay(250)} className="mt-4">
+        <Animated.View entering={FadeInDown.duration(400).delay(250)} className="px-4 mt-4">
+          <InsightNudgeCard />
+        </Animated.View>
+        <Animated.View entering={FadeInDown.duration(400).delay(300)} className="mt-4">
           <WeeklyMoodChart
             startDate={startOfWeekDate}
             endDate={endOfWeekDate}

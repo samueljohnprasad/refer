@@ -61,11 +61,7 @@ export const OrderingExercise = ({ payload, savedResponse, onInteraction }: any)
           <View className="mr-4 mt-2 z-10">
             <Mascot state="panda-happy" size={80} />
           </View>
-          <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-slate-200 relative">
-            <View 
-              className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200 rounded-bl-[4px]" 
-              style={{ transform: [{ rotate: '45deg' }] }} 
-            />
+          <View className="flex-1 pt-4 relative">
             <Text variant="body" color="ink" className="leading-relaxed text-lg font-medium">
               {prompt}
               <Text className="text-slate-400 text-base mt-2">{'\n'}(Tap them in order)</Text>
@@ -92,7 +88,7 @@ export const OrderingExercise = ({ payload, savedResponse, onInteraction }: any)
                   className={`w-8 h-8 rounded-full items-center justify-center ${
                     isSelected 
                       ? 'bg-[#0A7DB8]' 
-                      : 'bg-white border-2 border-slate-300 border-dashed'
+                      : 'bg-white border border-slate-300 border-dashed'
                   }`}
                 >
                   <Text className={`font-bold ${isSelected ? 'text-white' : 'text-transparent'}`}>

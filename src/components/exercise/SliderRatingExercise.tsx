@@ -42,11 +42,7 @@ export const SliderRatingExercise = ({ payload, savedResponse, onInteraction }: 
           <View className="mr-4 mt-2 z-10">
             <Mascot state="panda-happy" size={80} />
           </View>
-          <View className="flex-1 bg-white rounded-3xl p-6 border-2 border-slate-200 relative">
-            <View 
-              className="absolute -left-3 top-10 w-5 h-5 bg-white border-l-2 border-b-2 border-slate-200 rounded-bl-[4px]" 
-              style={{ transform: [{ rotate: '45deg' }] }} 
-            />
+          <View className="flex-1 pt-4 relative">
             <Text variant="body" color="ink" className="leading-relaxed text-lg font-medium">
               {prompt}
             </Text>
@@ -54,7 +50,7 @@ export const SliderRatingExercise = ({ payload, savedResponse, onInteraction }: 
         </View>
       )}
 
-      <View className="bg-white p-6 rounded-3xl border-2 border-slate-200 shadow-sm shadow-slate-100 mb-12">
+      <View className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm shadow-slate-100 mb-12">
         <Text className="text-center text-3xl font-bold text-sage-600 mb-2">
           {value}
         </Text>

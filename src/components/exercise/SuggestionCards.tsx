@@ -17,6 +17,7 @@ export function SuggestionCards({
   onSelect,
   isLoading,
   loadingMessage,
+  readOnly,
 }: {
   title: string;
   suggestions: SuggestionItem[];
@@ -24,6 +25,7 @@ export function SuggestionCards({
   onSelect: (value: string) => void;
   isLoading?: boolean;
   loadingMessage?: string;
+  readOnly?: boolean;
 }) {
   if (isLoading) {
     return (
@@ -58,7 +60,7 @@ export function SuggestionCards({
           <Card
             key={`${s.label || ""}-${index}`}
             variant={isSelected ? "answer-selected" : "answer"}
-            onPress={() => onSelect(s.label)}
+            onPress={readOnly ? undefined : () => onSelect(s.label)}
             className="mb-3"
             contentClassName="flex-row items-center p-4"
             accessibilityState={{ selected: isSelected }}

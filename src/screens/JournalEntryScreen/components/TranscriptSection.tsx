@@ -21,27 +21,30 @@ export const TranscriptSection = React.memo<TranscriptSectionProps>(({
 
   return (
     <View className="mb-6">
-      <Text variant="eyebrow" className="mb-2">
-        TRANSCRIPT ({wordCount} {wordCount === 1 ? "word" : "words"})
-      </Text>
-      
       {isEditing ? (
-        <TextInput
-          value={text}
-          onChangeText={onTextChange}
-          multiline
-          numberOfLines={6}
-          placeholder="Write your thoughts..."
-          placeholderTextColor="rgba(107, 107, 107, 0.5)"
-          className="text-ink text-base leading-6 bg-white border border-sage-100 rounded-xl p-4 min-h-[152px] shadow-sm"
-          textAlignVertical="top"
-          accessibilityLabel="Journal transcript editor"
-        />
+        <View>
+          <TextInput
+            value={text}
+            onChangeText={onTextChange}
+            multiline
+            numberOfLines={6}
+            placeholder="Write your thoughts..."
+            placeholderTextColor="rgba(107, 107, 107, 0.5)"
+            className="text-ink text-base leading-6 bg-white/95 border border-sage-200/70 rounded-2xl p-4 min-h-[160px]"
+            textAlignVertical="top"
+            accessibilityLabel="Journal transcript editor"
+          />
+          <View className="flex-row justify-end mt-1.5 px-1">
+            <Text variant="caption" className="text-ink-muted">
+              {wordCount} {wordCount === 1 ? "word" : "words"}
+            </Text>
+          </View>
+        </View>
       ) : (
-        <View className="bg-white/60 border border-white/85 rounded-2xl p-5 shadow-sm">
-          <Text 
+        <View className="py-2">
+          <Text
             variant="body"
-            className="text-ink text-[17px] leading-[26px]"
+            className="text-ink text-[17px] leading-[28px]"
             accessibilityRole="text"
             accessibilityLabel={`Transcript: ${text}`}
           >

@@ -27,7 +27,16 @@ import {
   BookmarkAdd01Icon,
   BookmarkCheck01Icon,
 } from "@hugeicons/core-free-icons";
-import { SAGE, BRAND_SURFACE } from "@/lib/tokens";
+import {
+  SAGE,
+  BRAND_SURFACE,
+  TERRACOTTA,
+  TERRACOTTA_TINT,
+  GOLD_TINT,
+  PARROT_ORANGE,
+  BRAND_BORDER,
+  TERRACOTTA_LIGHT,
+} from "@/lib/tokens";
 import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import type {
@@ -74,11 +83,13 @@ function ScoreBar({
   max,
   fillColor,
   delay,
+  label = "Belief score",
 }: {
   value: number;
   max: number;
   fillColor: string;
   delay: number;
+  label?: string;
 }) {
   const progress = useSharedValue(0);
 
@@ -90,7 +101,7 @@ function ScoreBar({
         easing: Easing.out(Easing.cubic),
       }),
     );
-  }, []);
+  }, [delay, max, progress, value]);
 
   const barStyle = useAnimatedStyle(() => ({
     width: `${progress.value * 100}%`,
@@ -99,7 +110,9 @@ function ScoreBar({
   return (
     <View
       className="w-full h-2 rounded-full overflow-hidden"
-      style={{ backgroundColor: "#EBEBEB" }}
+      style={{ backgroundColor: BRAND_BORDER }}
+      accessibilityRole="progressbar"
+      accessibilityLabel={`${label}: ${value} out of ${max}`}
     >
       <Animated.View
         className="h-full rounded-full"
@@ -112,7 +125,7 @@ function ScoreBar({
 // ─── Thin divider ─────────────────────────────────────────────────────────────
 
 function Divider() {
-  return <View style={{ height: 1, backgroundColor: "#F0F0F0" }} />;
+  return <View style={{ height: 1, backgroundColor: SAGE[100] }} />;
 }
 
 // ─── Reality-check pill ──────────────────────────────────────────────────────
@@ -121,8 +134,8 @@ const REALITY_CONFIG: Record<
   string,
   { label: string; bg: string; color: string }
 > = {
-  YES: { label: "Yes, it felt true", bg: "#FFF1F0", color: "#D93025" },
-  "NOT SURE": { label: "Not sure", bg: "#FFFBEB", color: "#B45309" },
+  YES: { label: "Yes, it felt true", bg: TERRACOTTA_TINT, color: TERRACOTTA },
+  "NOT SURE": { label: "Not sure", bg: GOLD_TINT, color: PARROT_ORANGE },
   NO: { label: "No, it wasn't true", bg: SAGE[50], color: SAGE[700] },
 };
 
@@ -262,7 +275,7 @@ export const ThoughtCatcherSummary: React.FC<
                 </Text>
                 <View
                   className="rounded-xl px-3.5 py-3"
-                  style={{ backgroundColor: "#FFF7F5" }}
+                  style={{ backgroundColor: SAGE[50] }}
                 >
                   <Text
                     variant="body-bold"
@@ -296,7 +309,7 @@ export const ThoughtCatcherSummary: React.FC<
                     <ScoreBar
                       value={preScore}
                       max={100}
-                      fillColor="#FFCBBB"
+                      fillColor={TERRACOTTA_LIGHT}
                       delay={600}
                     />
                   </View>
@@ -317,7 +330,11 @@ export const ThoughtCatcherSummary: React.FC<
                     />
                   </View>
                 </View>
-                <Text variant="caption" className="mt-3 text-ink-soft leading-relaxed">
+                <Text
+                  variant="caption"
+                  className="mt-3 text-ink-soft leading-relaxed"
+                  accessibilityLiveRegion="polite"
+                >
                   {getShiftLabel(preScore, postScore!)}
                 </Text>
               </View>
@@ -375,7 +392,7 @@ export const ThoughtCatcherSummary: React.FC<
                       cardSaved ? "Saved" : "Save as coping card"
                     }
                     accessibilityState={{ disabled: cardSaved }}
-                    className="flex-row items-center self-start gap-1.5 rounded-full px-3.5 py-2 active:opacity-70"
+                    className="flex-row items-center self-start gap-1.5 rounded-full px-4 py-2.5 min-h-[44px] active:opacity-70"
                     style={{
                       backgroundColor: cardSaved ? SAGE[100] : SAGE.pill,
                     }}

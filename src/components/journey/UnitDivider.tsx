@@ -87,12 +87,8 @@ function UnitDivider({
           }}
         >
           <Text
-            style={{
-              fontFamily: "GeistMedium",
-              color: DIVIDER_LAYOUT.titleTextColor,
-              letterSpacing: -0.1,
-            }}
-            className="text-[13px] text-center"
+            variant="label-bold"
+            className="text-ink text-center"
             numberOfLines={1}
             accessibilityRole="header"
           >

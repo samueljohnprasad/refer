@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from "react";
-import { ScrollView, KeyboardAvoidingView, Platform, View } from "react-native";
+import { ScrollView, KeyboardAvoidingView, Platform, View, Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
 import { useSaveJournal } from "@/hooks/post/useSaveJournal";
+import { useJournalOperations } from "@/hooks/journals/useJournalOperations";
 import { JournalEntryScreenProps } from "./types";
 import { JournalEntry } from "@/hooks/data/types";
 import { useJournalEdit } from "./hooks";
@@ -25,6 +26,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
 }: JournalEntryScreenProps) => {
   const toast = useToast();
   const { saveJournal, saving } = useSaveJournal();
+  const { deleteJournal } = useJournalOperations();
   const { top, bottom } = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const MOOD_GRADIENTS: { [key: string]: string[] } = {
@@ -91,6 +93,40 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
     handleCloseEdit(onClose);
   }, [handleCloseEdit, onClose]);
 
+  const handleDeleteEntry = useCallback((): void => {
+    if (!entry?.id) return;
+    Alert.alert(
+      "Delete Reflection",
+      "Are you sure you want to delete this journal entry? This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async (): Promise<void> => {
+            try {
+              await deleteJournal({
+                journalId: entry.id,
+                selectedDate: entry.selected_date ? new Date(entry.selected_date) : new Date(),
+              });
+              toast.show({
+                placement: "top",
+                render: ({ id }: { id: string }) => (
+                  <Toast nativeID={id} variant="solid" action="success">
+                    <ToastTitle>Entry deleted</ToastTitle>
+                  </Toast>
+                ),
+              });
+              handleClose();
+            } catch (error) {
+              console.error("Error deleting entry:", error);
+            }
+          },
+        },
+      ]
+    );
+  }, [entry, deleteJournal, toast, handleClose]);
+
   const handleContinue = useCallback(async (): Promise<void> => {
     try {
       if (!insights) return;
@@ -113,15 +149,16 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
           : null,
       } as JournalEntry;
 
-      if (!journalText) {
+      if (!journalText.trim()) {
         toast.show({
           placement: "top",
           render: ({ id }) => (
-            <Toast nativeID={id} variant="solid" action="success">
-              <ToastTitle>Enter the Journal </ToastTitle>
+            <Toast nativeID={id} variant="solid" action="warning">
+              <ToastTitle>Please enter journal text before saving</ToastTitle>
             </Toast>
           ),
         });
+        return;
       }
 
       await saveJournal(updatedInsights);
@@ -168,6 +205,9 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
           onClose={handleClose}
           onEdit={handleEdit}
           onDone={handleDone}
+          onSave={handleContinue}
+          saving={saving}
+          onDelete={handleDeleteEntry}
         />
 
         {isEditing && (
@@ -204,7 +244,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
             isEditing={isEditing}
             onTextChange={setJournalText}
           />
-          {entry?.journal_ai_insights && (
+          {!isEditing && entry?.journal_ai_insights && (
             <AIInsightsSection
               aiInsights={entry.journal_ai_insights.aiInsights ?? null}
               colorScheme={colorScheme as any}
@@ -223,12 +263,6 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
             />
           )}
         </ScrollView>
-
-        <ContinueButton
-          onPress={handleContinue}
-          loading={saving}
-          isEditing={isEditing}
-        />
       </KeyboardAvoidingView>
     </LinearGradient>
     // </SafeAreaView>

@@ -18,7 +18,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Stack, router } from "expo-router";
 import { GlassView } from "expo-glass-effect";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
-import { ChallengesSection } from "@/src/components/Challenges";
 import { FeaturedPromptCard } from "@/src/components/FeaturedPromptCard";
 import { Settings02Icon, Medal01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -37,7 +36,6 @@ import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
 import { XP_REWARDS, XPActionType } from "@/src/types/xp";
-import { InsightNudgeCard } from "@/src/components/insights/InsightNudgeCard";
 import { GOLD, SAGE, INK, INK_SOFT, INK_MUTED } from "@/lib/tokens";
 
 // Re-export for backward compat from other files that import from here.
@@ -313,20 +311,17 @@ export default function JournalCalendarScreen() {
         contentContainerStyle={{ paddingTop: insets.top, paddingBottom: 112 }}
       >
         <View className="px-5 pb-12 pt-4">
-          {/* Greeting — entrance animation index 0 */}
-          <Animated.View entering={FadeInDown.duration(ENTRANCE_DURATION_MS)}>
+          <View>
             <Greeting
               displayName={userProfile?.displayName}
               isLoading={isLoadingProfile}
             />
-          </Animated.View>
+          </View>
 
-          {/* Streak Widget — entrance animation index 1 */}
+          {/* Streak Widget */}
           <Animated.View
             className="mt-6"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 1,
-            )}
+            entering={FadeInDown.duration(400).springify()}
           >
             <WeeklyStreakWidget
               showDepth={false}
@@ -345,12 +340,7 @@ export default function JournalCalendarScreen() {
           </Animated.View>
 
           {/* GROUP 2: Journal */}
-          <Animated.View
-            className="mt-10"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 2,
-            )}
-          >
+          <View className="mt-10">
             <View className="mb-3 px-1">
               <Text className="happy-font-body-bold text-[15px] text-ink-muted">Daily reflection</Text>
             </View>
@@ -360,45 +350,18 @@ export default function JournalCalendarScreen() {
                 handleQuickJournalPress(prompt)
               }
             />
-          </Animated.View>
+          </View>
 
 
 
-          {/* ── GROUP 3: Track — entrance animation index 3 ── */}
-          <Animated.View
-            className="mt-10"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 3,
-            )}
-          >
+          {/* ── GROUP 3: Track ── */}
+          <View className="mt-10">
             <EmotionLogger
               selectedDate={selectedEmotionDate}
               onEmotionLogged={handleEmotionLogged}
               showDepth={false}
             />
-          </Animated.View>
-
-
-
-          {/* Pattern Insight Nudge — entrance animation index 4 */}
-          <Animated.View
-            className="mt-8"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 4,
-            )}
-          >
-            <InsightNudgeCard />
-          </Animated.View>
-
-          {/* ── GROUP 4: Progress — entrance animation index 5 ── */}
-          <Animated.View
-            className="mt-10 mb-6"
-            entering={FadeInDown.duration(ENTRANCE_DURATION_MS).delay(
-              STAGGER_DELAY_MS * 5,
-            )}
-          >
-            <ChallengesSection showDepth={false} maxItems={3} />
-          </Animated.View>
+          </View>
 
 
         </View>

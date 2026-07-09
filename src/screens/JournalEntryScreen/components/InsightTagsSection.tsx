@@ -22,16 +22,14 @@ export const InsightTagsSection: React.FC<InsightTagsSectionProps> = React.memo(
     if (!items || items.length === 0) return null;
 
     return (
-      <View
-        className={`rounded-2xl p-4 mb-4 ${bgColor}`}
-      >
-        <View className="flex-row items-center mb-3">
+      <View className="mb-5">
+        <View className="flex-row items-center mb-2.5">
           <View
-            className={`w-8 h-8 rounded-xl items-center justify-center mr-2 bg-white border border-brand-border shadow-sm`}
+            className="w-7 h-7 rounded-lg items-center justify-center mr-2.5 bg-white border border-brand-border/60"
           >
-            <Feather name={icon} size={15} className={iconColor} />
+            <Feather name={icon} size={14} className={iconColor} />
           </View>
-          <Text variant="label-bold" className="text-ink">
+          <Text variant="label-bold" className="text-ink text-[14px]">
             {title}
           </Text>
         </View>

@@ -30,8 +30,10 @@ import Animated, {
   withSpring,
   withDelay,
   FadeInDown,
+  FadeOutUp,
   Easing,
 } from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
 import Svg, { Circle } from "react-native-svg";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
 import {
@@ -258,7 +260,7 @@ const ExerciseCard = memo(function ExerciseCard({
         </View>
 
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={nutrieStyles.exerciseTitle} numberOfLines={1}>
+          <Text style={nutrieStyles.exerciseTitle} numberOfLines={2}>
             {exercise.title}
           </Text>
           <Text
@@ -330,8 +332,8 @@ const ExerciseCard = memo(function ExerciseCard({
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CAROUSEL_GAP = 12;
 const CAROUSEL_PEEK = 20;
-// Fit exactly 2.5 cards across the screen for clear scroll affordance
-const SHELF_CARD_WIDTH = (SCREEN_WIDTH - CAROUSEL_PEEK * 2 - CAROUSEL_GAP * 2) / 2.5;
+// Fit ~1.85 cards across the screen so exercise titles wrap cleanly on 2 lines
+const SHELF_CARD_WIDTH = (SCREEN_WIDTH - CAROUSEL_PEEK * 2 - CAROUSEL_GAP * 2) / 1.85;
 
 interface LayoutCardProps {
   exercise: ExerciseConfig<any>;
@@ -426,7 +428,7 @@ const ExerciseShelfCard = memo(function ExerciseShelfCard({
         >
           <HugeiconsIcon icon={icon} size={24} color={badgeTheme.iconColor} />
         </View>
-        <Text style={nutrieStyles.exerciseTitle} numberOfLines={1}>
+        <Text style={nutrieStyles.exerciseTitle} numberOfLines={2}>
           {exercise.title}
         </Text>
         <Text style={[nutrieStyles.exerciseSubtitle, { fontSize: 13, lineHeight: 18 }]} numberOfLines={2}>
@@ -921,18 +923,18 @@ function EmptyDiscoverState(): ReactElement {
     >
       <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-sage-50">
         <Text
-          className="text-[40px]"
-          accessibilityLabel="Exercise illustration"
+          className="text-[36px]"
+          accessibilityLabel="Guided reflection icon"
           accessibilityRole="image"
         >
-          🏋️
+          🌱
         </Text>
       </View>
       <Text variant="h3" className="mb-2 text-center">
-        No exercises yet
+        Start your first guided reflection
       </Text>
       <Text variant="body" className="text-center">
-        Exercises will appear here as they become available.
+        Choose a CBT exercise above to catch negative thoughts, reframe anxiety, or practice mindfulness.
       </Text>
     </View>
   );
@@ -941,7 +943,7 @@ function EmptyDiscoverState(): ReactElement {
 function LoadingHistoryState(): ReactElement {
   return (
     <View className="items-center py-12">
-      <Text variant="caption-muted">Loading history...</Text>
+      <Text variant="caption-muted">Retrieving your reflection history...</Text>
     </View>
   );
 }
@@ -950,13 +952,13 @@ function EmptyExerciseLogState(): ReactElement {
   return (
     <View className="items-center justify-center px-8 py-16">
       <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-sage-50">
-        <Text className="text-[40px]">📚</Text>
+        <Text className="text-[36px]">📖</Text>
       </View>
       <Text variant="h3" className="mb-2 text-center">
-        Your exercise journal
+        No reflections logged yet
       </Text>
       <Text variant="body" className="text-center">
-        Complete your first exercise to see it here.
+        Your CBT timeline tracks shifts in distress, mood, and anxiety over time. Complete an exercise from Discover to record your first entry.
       </Text>
     </View>
   );
@@ -965,6 +967,7 @@ function EmptyExerciseLogState(): ReactElement {
 
 export default function ExercisesScreen(): ReactElement {
   const [activeTab, setActiveTab] = useState<TabKey>("discover");
+  const [showMilestoneToast, setShowMilestoneToast] = useState(false);
   const params = useLocalSearchParams<{ tab?: string }>();
 
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
@@ -1079,26 +1082,40 @@ export default function ExercisesScreen(): ReactElement {
                   <View className="mb-5">
                     <View className="flex-row items-center justify-between pt-2">
                       <Text
-                        variant="display"
-                        className="text-[32px] leading-[38px] tracking-tight font-bold"
+                        variant="body-bold"
+                        className="text-[32px] leading-[38px] tracking-tight"
                       >
                         Exercises
                       </Text>
                       <View className="flex-row items-center gap-3">
                         {completedCount > 0 ? (
-                          <View className="flex-row items-center justify-center rounded-full bg-transparent px-3 py-1.5">
+                          <Pressable
+                            onPress={() => {
+                              Haptics.impactAsync(
+                                Haptics.ImpactFeedbackStyle.Medium,
+                              );
+                              setShowMilestoneToast(true);
+                              setTimeout(
+                                () => setShowMilestoneToast(false),
+                                3500,
+                              );
+                            }}
+                            accessibilityRole="button"
+                            accessibilityLabel={`${completedCount} exercises completed. Tap to view milestone message.`}
+                            className="flex-row items-center justify-center rounded-full bg-sage-50/80 px-3 py-1.5 active:scale-95"
+                          >
                             <HugeiconsIcon
                               icon={ZapIcon}
                               size={16}
-                              color={INK_MUTED}
+                              color={SAGE[600]}
                             />
                             <Text
                               variant="chip"
-                              className="ml-1.5 text-ink-muted"
+                              className="ml-1.5 font-nunito-bold text-sage-700"
                             >
                               {completedCount} done
                             </Text>
-                          </View>
+                          </Pressable>
                         ) : null}
                         <Pressable
                           onPress={() =>
@@ -1142,14 +1159,52 @@ export default function ExercisesScreen(): ReactElement {
           ),
         }}
       />
+      {showMilestoneToast && (
+        <Animated.View
+          entering={FadeInDown.duration(300)}
+          exiting={FadeOutUp.duration(250)}
+          style={{
+            position: "absolute",
+            top: headerHeight + 8,
+            left: 20,
+            right: 20,
+            zIndex: 100,
+            backgroundColor: "#EAF0EA",
+            borderColor: "#C5D8C5",
+            borderWidth: 1,
+            borderRadius: 14,
+            paddingVertical: 10,
+            paddingHorizontal: 14,
+            flexDirection: "row",
+            alignItems: "center",
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.08,
+            shadowRadius: 10,
+            elevation: 4,
+          }}
+        >
+          <Text style={{ fontSize: 16, marginRight: 8 }}>✨</Text>
+          <Text
+            style={{
+              fontFamily: "Nunito-SemiBold",
+              fontSize: 13,
+              color: "#2C4A2E",
+              flex: 1,
+            }}
+          >
+            {completedCount} mindful exercises logged! Consistency compounds over time.
+          </Text>
+        </Animated.View>
+      )}
       {activeTab === "discover" ? (
         <ScrollView
           style={nutrieStyles.screenBg}
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={{
             paddingTop: headerHeight - insets.top + 16,
-            paddingBottom: 128,
-            paddingHorizontal: 16,
+            paddingBottom: 160,
+            paddingHorizontal: 20,
           }}
           showsVerticalScrollIndicator={false}
         >
@@ -1257,8 +1312,8 @@ const nutrieStyles = StyleSheet.create({
   sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
-    paddingHorizontal: 4,
+    marginBottom: 10,
+    paddingHorizontal: 0,
     gap: 8,
   },
   categoryBadge: {
@@ -1285,11 +1340,11 @@ const nutrieStyles = StyleSheet.create({
     fontWeight: "700",
   },
   sectionDescription: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#636366",
-    marginBottom: 20,
-    paddingHorizontal: 8,
-    lineHeight: 24,
+    marginBottom: 16,
+    paddingHorizontal: 0,
+    lineHeight: 22,
   },
   // Exercise Card
   exerciseCard: {
@@ -1313,6 +1368,7 @@ const nutrieStyles = StyleSheet.create({
     fontWeight: "800",
     color: "#1C1C1E",
     letterSpacing: -0.4,
+    lineHeight: 22,
     marginBottom: 4,
   },
   exerciseSubtitle: {
@@ -1368,7 +1424,7 @@ const nutrieStyles = StyleSheet.create({
   },
   logDate: {
     fontSize: 12,
-    color: "#8E8E93",
+    color: "#636366",
     fontWeight: "500",
   },
   logTitle: {

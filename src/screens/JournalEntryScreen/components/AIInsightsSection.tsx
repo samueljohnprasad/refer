@@ -81,7 +81,7 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
     if (!hasAnyData) return null;
 
     return (
-      <View className="bg-white/70 rounded-2xl p-5 mb-8 border border-brand-border shadow-sm">
+      <View className="bg-white/85 rounded-2xl p-5 mb-8 border border-brand-border">
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel="Toggle AI Insights"
@@ -165,16 +165,10 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
               />
             )}
 
-            {/* AI Summary Text */}
+            {/* AI Synthesis Narrative */}
             {aiInsights && (
-              <View className="bg-macaw-purple-tint/30 rounded-xl p-4 mt-3 border border-macaw-purple/10">
-                <View className="flex-row items-center mb-2 gap-2">
-                  <Feather name="message-circle" size={15} color="#CE82FF" />
-                  <Text variant="label-bold" className="text-macaw-purple">
-                    Summary
-                  </Text>
-                </View>
-                <Text variant="body" className="text-ink text-[15px] leading-[22px]">
+              <View className="mt-2 pt-3.5 border-t border-brand-border/30">
+                <Text variant="body" className="text-ink text-[15px] leading-[24px]">
                   {aiInsights}
                 </Text>
               </View>

@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { View, ActivityIndicator } from "react-native";
+import React, { useMemo, useEffect, useCallback } from "react";
+import { View, ActivityIndicator, Platform } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -62,12 +62,27 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
       return [];
     }, [aiSuggestions]);
 
-    const handleSelect = (value: string) => {
-      onUpdate({ [fieldKey]: value } as any);
-      if (autoAdvance) {
-        setTimeout(onNext, 300);
-      }
-    };
+    const handleSelect = useCallback(
+      (value: string) => {
+        onUpdate({ [fieldKey]: value } as any);
+        if (autoAdvance) {
+          setTimeout(onNext, 300);
+        }
+      },
+      [autoAdvance, fieldKey, onNext, onUpdate],
+    );
+
+    useEffect(() => {
+      if (Platform.OS !== "web" || typeof window === "undefined") return;
+      const handleKeyDown = (e: KeyboardEvent) => {
+        const num = parseInt(e.key, 10);
+        if (!isNaN(num) && num >= 1 && num <= options.length) {
+          handleSelect(options[num - 1].value);
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [handleSelect, options]);
 
     return (
       <StepLayout
@@ -85,14 +100,16 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
       >
         <PsychoeducationCard content={psychoeducationText ?? ""} />
 
-        {isAiLoading && (
-          <View className="flex-row items-center mb-4">
-            <ActivityIndicator size="small" color="#94A3B8" />
-            <Text className="text-[11px] text-slate-400 ml-2 uppercase tracking-wider">
-              Finding personalized options…
-            </Text>
-          </View>
-        )}
+        <View className={isAiLoading ? "min-h-[36px] justify-center mb-4" : ""}>
+          {isAiLoading && (
+            <View className="flex-row items-center">
+              <ActivityIndicator size="small" color={SAGE[400]} />
+              <Text className="text-[11px] text-slate-400 ml-2 uppercase tracking-wider">
+                Finding personalized options…
+              </Text>
+            </View>
+          )}
+        </View>
 
         <View className="gap-3 w-full">
           {options.map((opt, i) => {
@@ -108,7 +125,7 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
                   radius="xl"
                   onPress={() => handleSelect(opt.value)}
                   className="mb-1"
-                  contentClassName="flex-row items-center justify-between p-4.5"
+                  contentClassName="flex-row items-center justify-between p-4.5 min-h-[52px]"
                 >
                   {resolvedIcon ? (
                     <View className="mr-3.5 h-10 w-10 items-center justify-center rounded-xl bg-sage-50">
@@ -150,7 +167,7 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
                         </Text>
                       </View>
                     ) : (
-                      <View className="w-6 h-6 rounded-full border-2 border-brand-border bg-brand-surface" />
+                      <View className="w-6 h-6 rounded-full border border-brand-border bg-brand-surface" />
                     )}
                   </View>
                 </Card>
@@ -208,7 +225,7 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
                               </Text>
                             </View>
                           ) : (
-                            <View className="w-6 h-6 rounded-full border-2 border-brand-border bg-brand-surface" />
+                            <View className="w-6 h-6 rounded-full border border-brand-border bg-brand-surface" />
                           )}
                         </View>
                       </Card>

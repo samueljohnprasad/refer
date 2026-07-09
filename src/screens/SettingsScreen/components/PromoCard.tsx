@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { Card } from "@/src/components/ui/Card";
-import { Button } from "@/src/components/ui/Button";
+import { View, Text, Pressable } from "react-native";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { GOLD } from "@/lib/tokens";
 
 interface PromoCardProps {
   onLayout: (event: any) => void;
@@ -13,45 +14,28 @@ export const PromoCard: React.FC<PromoCardProps> = ({
   onPromoPress,
 }) => {
   return (
-    <Card
-      variant="tile"
-      radius="xl"
+    <Pressable
       onPress={onPromoPress}
       onLayout={onLayout}
-      className="mb-5"
-      contentClassName="p-5"
-      accessibilityLabel="Upgrade to Pro. AI Insights, Weekly Summaries, Advanced Dashboard, Longer Recordings, and more."
-      accessibilityHint="Double tap to upgrade to Pro"
+      className="flex-row items-center bg-gold/15 rounded-xl px-4 py-3 mb-5 border border-gold/30 active:bg-gold/25"
+      accessibilityRole="button"
+      accessibilityLabel="Upgrade to Pro. AI Insights, summaries & more"
     >
-      {/* Top-row spark emoji icon for visual personality */}
-      <View className="flex-row items-center gap-2 mb-2">
-        <Text className="text-lg">✨</Text>
-        <Text className="happy-brand-eyebrow">
-          Pro
+      <Text className="text-xl mr-3">✨</Text>
+      <View className="flex-1">
+        <Text className="happy-font-body-bold text-[15px] text-ink">
+          Unlock All Features
+        </Text>
+        <Text className="happy-font-body-medium text-[13px] text-ink-muted">
+          AI Insights, summaries & more
         </Text>
       </View>
-
-      {/* Title uses system sans-serif */}
-      <Text className="happy-font-body-bold text-[22px] text-ink mb-2">
-        Unlock All Features
-      </Text>
-
-      {/* Feature list as single clean string */}
-      <Text className="happy-font-body-medium text-ink-muted text-[15px] leading-6 mb-5">
-        AI Insights, Weekly Summaries, Advanced Dashboard, Longer Recordings,
-        and more.
-      </Text>
-
-      {/* Wrap in View to prevent stretching full-width */}
-      <View className="items-start">
-        <Button
-          label="Upgrade to Pro →"
-          variant="primary"
-          size="md"
-          fullWidth={false}
-          onPress={onPromoPress}
-        />
-      </View>
-    </Card>
+      <HugeiconsIcon
+        icon={ArrowRight01Icon}
+        size={18}
+        color={GOLD}
+        strokeWidth={2}
+      />
+    </Pressable>
   );
 };

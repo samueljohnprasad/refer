@@ -105,15 +105,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
     );
   }
 
-  const ctaButton = (
-    <TouchableOpacity
-      onPress={() => router.push("/tabs/(tabs)/record")}
-      className="happy-brand-primary-cta p-2 rounded-xl"
-      activeOpacity={0.7}
-    >
-      <HugeiconsIcon icon={Mic01Icon} size={18} color={BRAND_SURFACE} />
-    </TouchableOpacity>
-  );
+
 
   if (entries.length === 0) {
     return (
@@ -134,7 +126,6 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         title="Journal Entries"
         icon={NoteIcon}
         count={entries.length}
-        rightElement={ctaButton}
       />
 
       <LegendList
@@ -214,14 +205,6 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
     [onBookmark, entry, isBookmarked],
   );
 
-  const handleDeletePress = useCallback(
-    (e: { stopPropagation: () => void }) => {
-      e.stopPropagation();
-      onDelete?.(entry);
-    },
-    [onDelete, entry],
-  );
-
   return (
     <Pressable
       onPress={() => onPress(entry)}
@@ -261,7 +244,7 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
           </View>
         </View>
 
-        <View className="flex-row items-center gap-1">
+        <View className="flex-row items-center gap-2">
           {isBookmarked && (
             <HugeiconsIcon
               icon={Bookmark02Icon}
@@ -271,20 +254,24 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
             />
           )}
           {entry.moods?.main_mood && (
-            <Image
-              source={emotions[entry.moods.main_mood as Emotion]}
-              className="w-5 h-5 opacity-80"
-              alt={entry.moods.main_mood}
-              progressiveRenderingEnabled={true}
-            />
+            <View className="flex-row items-center justify-center w-7 h-7 rounded-full bg-sage-100/60 border border-sage-200/40">
+              <Image
+                source={emotions[entry.moods.main_mood as Emotion]}
+                className="w-4 h-4"
+                alt={entry.moods.main_mood}
+                progressiveRenderingEnabled={true}
+              />
+            </View>
           )}
         </View>
       </View>
 
       {/* Excerpt */}
-      <Text variant="body" color="soft" className="leading-5" numberOfLines={2}>
-        {entry.transcripts || "No content"}
-      </Text>
+      {!!entry.transcripts && entry.transcripts.trim().length > 0 && (
+        <Text variant="body" color="soft" className="leading-5 mt-1" numberOfLines={2}>
+          {entry.transcripts.trim()}
+        </Text>
+      )}
     </Pressable>
   );
 });
