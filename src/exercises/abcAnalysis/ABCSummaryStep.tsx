@@ -23,6 +23,7 @@ import Animated, {
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { Text } from "@/src/components/ui/Text";
+import { Mascot } from "@/src/components/ui/Mascot";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   BookmarkAdd01Icon,
@@ -196,35 +197,85 @@ export function ABCSummaryStep({
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 pb-32">
       {/* Header */}
-      <View className="items-center pt-2 pb-6">
+      <View className="items-start pt-2 pb-6 px-1">
         <Animated.View style={mascotStyle}>
-          <Text className="text-[64px]" accessible={false}>🧩</Text>
+          <Mascot state="panda-happy" size={72} />
         </Animated.View>
-        <Animated.View style={headerStyle} className="items-center mt-2">
-          <Text variant="h1" className="text-center tracking-[-0.5px]">
+        <Animated.View style={headerStyle} className="items-start mt-3">
+          <Text variant="h1" className="text-left tracking-tight">
             ABC complete
           </Text>
-          <Text variant="body" className="text-center mt-1 text-[15px] leading-snug">
+          <Text variant="body" className="text-left mt-1 text-base leading-snug text-ink-soft">
             Here's the full chain you worked through
           </Text>
         </Animated.View>
       </View>
 
-      {/* Main card */}
-      <FadeUp delay={300}>
-        <View
-          className="rounded-3xl overflow-hidden mx-1"
-          style={{ backgroundColor: BRAND_SURFACE, borderWidth: 1.5, borderColor: "#EBEBEB" }}
-        >
+      {/* ── Climactic Outcome (Hero Card) ──────────── */}
+      {(!!response.alternativeBelief?.trim() || !!response.newConsequence?.trim()) && (
+        <FadeUp delay={300}>
+          <View
+            className="rounded-3xl p-5 mx-1 mb-6 border border-sage-200/80"
+            style={{ backgroundColor: SAGE[50] }}
+          >
+            {!!response.alternativeBelief?.trim() && (
+              <View className="mb-4">
+                <Text variant="label-bold" className="text-sm text-sage-800 mb-2">
+                  Alternative belief
+                </Text>
+                <Text variant="body-bold" className="text-base leading-relaxed text-ink">
+                  {response.alternativeBelief}
+                </Text>
+              </View>
+            )}
+
+            {!!response.newConsequence?.trim() && (
+              <View className="mb-5">
+                <Text variant="label-bold" className="text-sm text-sage-800 mb-2">
+                  New consequence
+                </Text>
+                <Text variant="body-bold" className="text-base leading-relaxed text-ink">
+                  {response.newConsequence}
+                </Text>
+              </View>
+            )}
+
+            {!readOnly && !!response.alternativeBelief?.trim() && (
+              <Pressable
+                onPress={cardSaved ? undefined : handleSave}
+                disabled={cardSaved}
+                accessibilityRole="button"
+                accessibilityLabel={cardSaved ? "Saved" : "Save as coping card"}
+                className="flex-row items-center self-start gap-1.5 rounded-full px-4 py-2 active:opacity-70"
+                style={{ backgroundColor: cardSaved ? SAGE[100] : SAGE.pill }}
+              >
+                <HugeiconsIcon
+                  icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
+                  size={14}
+                  color={SAGE[600]}
+                  strokeWidth={2}
+                />
+                <Text variant="label-bold" className="text-sm text-sage-700">
+                  {cardSaved ? "Saved" : "Save as coping card"}
+                </Text>
+              </Pressable>
+            )}
+          </View>
+        </FadeUp>
+      )}
+
+      {/* ── Reflection Context ──────────────────────────────── */}
+      <FadeUp delay={450}>
+        <View className="mx-2 mb-4 gap-10">
           {/* A — Activating Event */}
           {!!response.activatingEvent?.trim() && (
-            <View className="px-4 py-4">
-              <Text variant="overline" className="mb-1.5">
-                A — Activating event
+            <View>
+              <Text variant="label" className="text-sm font-semibold text-ink-soft mb-1.5">
+                What happened
               </Text>
-              <Text variant="body" className="text-[15px] leading-relaxed text-ink">
+              <Text variant="body" className="text-base leading-relaxed text-ink">
                 {response.activatingEvent}
               </Text>
             </View>
@@ -232,155 +283,128 @@ export function ABCSummaryStep({
 
           {/* B — Belief */}
           {!!response.belief?.trim() && (
-            <>
-              <Divider />
-              <View className="px-4 py-4">
-                <Text variant="overline" className="mb-1.5">
-                  B — Belief
+            <View>
+              <Text variant="label" className="text-sm font-semibold text-ink-soft mb-1.5">
+                Your belief
+              </Text>
+              <View className="pl-3 py-1 border-l-2" style={{ borderColor: "#FFCBBB" }}>
+                <Text variant="body-bold" className="text-base leading-relaxed text-ink italic">
+                  "{response.belief}"
                 </Text>
-                <View className="rounded-xl px-3.5 py-3" style={{ backgroundColor: "#FFF7F5" }}>
-                  <Text variant="body-bold" className="text-[15px] leading-relaxed text-ink">
-                    "{response.belief}"
-                  </Text>
-                </View>
               </View>
-            </>
+            </View>
           )}
 
           {/* C — Consequence */}
           {(!!response.consequenceEmotion?.trim() || !!response.consequenceBehavior?.trim()) && (
-            <>
-              <Divider />
-              <View className="px-4 py-4">
-                <Text variant="overline" className="mb-2.5">
-                  C — Consequence
-                </Text>
-                <View className="gap-2">
-                  {!!response.consequenceEmotion?.trim() && (
-                    <View className="flex-row items-start">
-                      <Text variant="label" className="text-ink-soft text-[13px] w-16 mt-0.5">
-                        Emotion
-                      </Text>
-                      <Text variant="body" className="text-[14px] text-ink flex-1 leading-relaxed">
-                        {response.consequenceEmotion}
-                      </Text>
-                    </View>
-                  )}
-                  {!!response.consequenceBehavior?.trim() && (
-                    <View className="flex-row items-start">
-                      <Text variant="label" className="text-ink-soft text-[13px] w-16 mt-0.5">
-                        Behavior
-                      </Text>
-                      <Text variant="body" className="text-[14px] text-ink flex-1 leading-relaxed">
-                        {response.consequenceBehavior}
-                      </Text>
-                    </View>
-                  )}
-                </View>
+            <View>
+              <Text variant="label" className="text-sm font-semibold text-ink-soft mb-2.5">
+                The consequence
+              </Text>
+              <View className="gap-3">
+                {!!response.consequenceEmotion?.trim() && (
+                  <View className="flex-row items-start">
+                    <Text variant="label" className="text-ink-soft text-sm w-20 mt-0.5">
+                      Emotion
+                    </Text>
+                    <Text variant="body" className="text-base leading-relaxed text-ink flex-1">
+                      {response.consequenceEmotion}
+                    </Text>
+                  </View>
+                )}
+                {!!response.consequenceBehavior?.trim() && (
+                  <View className="flex-row items-start">
+                    <Text variant="label" className="text-ink-soft text-sm w-20 mt-0.5">
+                      Behavior
+                    </Text>
+                    <Text variant="body" className="text-base leading-relaxed text-ink flex-1">
+                      {response.consequenceBehavior}
+                    </Text>
+                  </View>
+                )}
               </View>
-            </>
+            </View>
           )}
 
           {/* Emotional intensity before/after */}
           {hasScores && (
-            <>
-              <Divider />
-              <View className="px-4 py-4">
-                <Text variant="overline" className="mb-3">
-                  Emotional intensity
-                </Text>
-                <View className="gap-3">
+            <View>
+              <Text variant="label" className="text-sm font-semibold text-ink-soft mb-2.5">
+                Emotional intensity
+              </Text>
+              <View className="flex-row items-center justify-between mt-1">
+                <View className="flex-row items-center gap-3.5">
                   <View>
-                    <View className="flex-row justify-between mb-1.5">
-                      <Text variant="label" className="text-ink-soft text-[13px]">Before</Text>
-                      <Text variant="label-bold" className="text-[13px]">{preScore}/10</Text>
-                    </View>
-                    <ScoreBar value={preScore} max={10} fillColor="#FFCBBB" delay={600} />
+                    <Text variant="caption" className="text-ink-soft">
+                      Before
+                    </Text>
+                    <Text variant="display" className="text-ink mt-0 text-3xl tracking-tight">
+                      {preScore}/10
+                    </Text>
                   </View>
+                  <Text className="text-ink-soft font-medium text-lg mx-1">→</Text>
                   <View>
-                    <View className="flex-row justify-between mb-1.5">
-                      <Text variant="label" className="text-ink-soft text-[13px]">After</Text>
-                      <Text variant="label-bold" className="text-[13px]">{postScore}/10</Text>
-                    </View>
-                    <ScoreBar value={postScore!} max={10} fillColor={SAGE[400]} delay={900} />
+                    <Text variant="caption" className="text-ink-soft">
+                      After
+                    </Text>
+                    <Text variant="display" className={`mt-0 text-3xl tracking-tight ${preScore - postScore! >= 0 ? 'text-sage-700' : 'text-ink'}`}>
+                      {postScore}/10
+                    </Text>
                   </View>
                 </View>
-                <Text variant="caption" className="mt-3 text-ink-soft leading-relaxed">
-                  {getShiftLabel(preScore, postScore!)}
-                </Text>
-              </View>
-            </>
-          )}
-
-          {/* B′ — Alternative Belief */}
-          {!!response.alternativeBelief?.trim() && (
-            <>
-              <Divider />
-              <View className="px-4 py-4">
-                <Text variant="overline" className="mb-1.5">
-                  B′ — Alternative belief
-                </Text>
-                <Text variant="body" className="text-[15px] leading-relaxed text-ink">
-                  {response.alternativeBelief}
-                </Text>
-              </View>
-            </>
-          )}
-
-          {/* C′ — New Consequence (hero section) */}
-          {!!response.newConsequence?.trim() && (
-            <>
-              <Divider />
-              <View className="px-4 py-4" style={{ backgroundColor: SAGE[50] }}>
-                <Text variant="overline" className="mb-2">
-                  C′ — New consequence
-                </Text>
-                <Text variant="body-bold" className="text-[15px] leading-relaxed text-ink mb-3">
-                  {response.newConsequence}
-                </Text>
-                {!readOnly && !!response.alternativeBelief?.trim() && (
-                  <Pressable
-                    onPress={cardSaved ? undefined : handleSave}
-                    disabled={cardSaved}
-                    accessibilityRole="button"
-                    accessibilityLabel={cardSaved ? "Saved" : "Save as coping card"}
-                    className="flex-row items-center self-start gap-1.5 rounded-full px-3.5 py-2 active:opacity-70"
-                    style={{ backgroundColor: cardSaved ? SAGE[100] : SAGE.pill }}
+                <View className={`px-3 py-1.5 rounded-full ${preScore - postScore! >= 0 ? 'bg-sage-100/90' : 'bg-gray-100'}`}>
+                  <Text
+                    variant="label-bold"
+                    className={`text-xs ${preScore - postScore! >= 0 ? 'text-sage-800' : 'text-ink-soft'}`}
                   >
-                    <HugeiconsIcon
-                      icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
-                      size={13}
-                      color={SAGE[600]}
-                      strokeWidth={2}
-                    />
-                    <Text variant="label-bold" className="text-[13px] text-sage-700">
-                      {cardSaved ? "Saved" : "Save as coping card"}
-                    </Text>
-                  </Pressable>
-                )}
+                    {preScore - postScore! >= 0
+                      ? `-${preScore - postScore!} intensity`
+                      : `+${postScore! - preScore} intensity`}
+                  </Text>
+                </View>
               </View>
-            </>
+              <Text variant="caption" className="mt-3 text-ink-soft leading-relaxed">
+                {getShiftLabel(preScore, postScore!)}
+              </Text>
+            </View>
           )}
         </View>
       </FadeUp>
 
       {/* Go deeper */}
       {link && !readOnly && (
-        <FadeUp delay={500}>
+        <FadeUp delay={550}>
           <Pressable
             onPress={() => handleNavigate(link.exerciseType)}
             accessibilityRole="button"
             accessibilityLabel={link.label}
             className="flex-row items-center justify-between rounded-2xl px-4 py-3.5 mx-1 mt-3 active:opacity-70"
-            style={{ backgroundColor: SAGE[50], borderWidth: 1.5, borderColor: SAGE[100] }}
+            style={{ backgroundColor: SAGE[50], borderWidth: 1, borderColor: SAGE[100] }}
           >
             <View className="flex-1 mr-3">
-              <Text variant="overline" className="mb-0.5">Want to go deeper?</Text>
+              <Text variant="caption" className="text-sage-600 font-semibold mb-0.5">
+                Keep the momentum going
+              </Text>
               <Text variant="label-bold" className="text-[14px]" style={{ color: SAGE[700] }}>
                 {link.label}
               </Text>
             </View>
             <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={SAGE[500]} strokeWidth={2.5} />
+          </Pressable>
+        </FadeUp>
+      )}
+
+      {/* Edit Entry */}
+      {!readOnly && (
+        <FadeUp delay={600}>
+          <Pressable
+            onPress={onBack}
+            accessibilityRole="button"
+            className="mt-6 items-center"
+          >
+            <Text variant="label-bold" className="text-[14px] text-ink-soft">
+              Wait, I want to edit this
+            </Text>
           </Pressable>
         </FadeUp>
       )}

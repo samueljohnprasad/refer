@@ -338,11 +338,11 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
         className="flex-1"
         style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
       hideHeader={currentStep?.hideHeader || readOnly}
-      hideFooter={currentStep?.hideFooter || readOnly}
+      hideFooter={currentStep?.hideFooter}
       progress={flow.progress}
       onClose={handleClose}
       backButtonVariant="close-icon"
-      primaryLabel={primaryLabel}
+      primaryLabel={readOnly ? "Done" : primaryLabel}
       onPrimaryPress={onPrimaryPress}
       primaryDisabled={!flow.isCurrentStepValid || isSaving}
       primaryLoading={isSaving}
@@ -351,39 +351,10 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
           <HugeiconsIcon icon={CheckmarkCircle01Icon} size={20} color={BRAND_SURFACE} strokeWidth={2} />
         ) : undefined
       }
-      secondaryLabel={isFinalStep ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
+      secondaryLabel={readOnly ? undefined : isFinalStep ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
       onSecondaryPress={flow.canGoBack ? flow.goBack : undefined}
     >
-      {readOnly && (
-        <SafeAreaView className="absolute top-0 left-0 z-50" pointerEvents="box-none">
-          <View className="m-5 mt-2">
-            {isLiquidGlassAvailable() ? (
-              <Host matchContents>
-                <SwiftUIButton
-                  onPress={handleClose}
-                  label="Close"
-                  modifiers={[
-                    labelStyle('iconOnly'),
-                    buttonStyle('glassProminent'),
-                    controlSize('regular'),
-                    tint("#1E293B")
-                  ]}
-                  systemImage="xmark"
-                />
-              </Host>
-            ) : (
-              <Pressable
-                onPress={handleClose}
-                className="h-10 w-10 items-center justify-center rounded-full bg-slate-100 active:opacity-70"
-                accessibilityLabel="Close"
-                accessibilityRole="button"
-              >
-                <HugeiconsIcon icon={Cancel01Icon} size={22} color="#64748B" strokeWidth={2.5} />
-              </Pressable>
-            )}
-          </View>
-        </SafeAreaView>
-      )}
+
 
       <AnimatedStepContainer
         stepIndex={flow.currentStepIndex}

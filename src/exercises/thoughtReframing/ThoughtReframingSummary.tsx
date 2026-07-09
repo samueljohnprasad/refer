@@ -9,6 +9,7 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { View, Pressable } from "react-native";
 import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -148,6 +149,7 @@ export const ThoughtReframingSummary: React.FC<
   StepProps<ThoughtReframingResponse>
 > = ({ response, onNext, onBack, isSaving, readOnly, onNavigateDeeper }) => {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { saveCard } = useCopingCards();
   const [cardSaved, setCardSaved] = useState<boolean>(false);
   const link = EXERCISE_LINKING_MAP["thought_reframing"];
@@ -221,19 +223,19 @@ export const ThoughtReframingSummary: React.FC<
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 pb-32" style={{ paddingTop: Math.max(insets.top, 16) }}>
       {/* ── Header ─────────────────────────────────────────────────── */}
-      <View className="items-center pt-2 pb-6">
+      <View className="items-start pt-2 pb-6 px-1">
         <Animated.View style={mascotStyle}>
           <Mascot state="panda-happy" size={72} />
         </Animated.View>
-        <Animated.View style={headerStyle} className="items-center mt-3">
-          <Text variant="h1" className="text-center tracking-[-0.5px]">
+        <Animated.View style={headerStyle} className="items-start mt-3">
+          <Text variant="h1" className="text-left tracking-tight">
             Thought reframed
           </Text>
           <Text
             variant="body"
-            className="text-center mt-1 text-[15px] leading-snug text-ink-soft"
+            className="text-left mt-1 text-base leading-snug text-ink-soft"
           >
             Here's everything you worked through
           </Text>
@@ -249,13 +251,13 @@ export const ThoughtReframingSummary: React.FC<
           >
             <Text
               variant="label-bold"
-              className="text-[13px] text-sage-800 mb-2"
+              className="text-sm text-sage-800 mb-2"
             >
               Your balanced thought
             </Text>
             <Text
               variant="body-bold"
-              className="text-[16px] leading-relaxed text-ink mb-4"
+              className="text-base leading-relaxed text-ink mb-4"
             >
               {response.balancedThought}
             </Text>
@@ -279,7 +281,7 @@ export const ThoughtReframingSummary: React.FC<
                 />
                 <Text
                   variant="label-bold"
-                  className="text-[13px] text-sage-700"
+                  className="text-sm text-sage-700"
                 >
                   {cardSaved ? "Saved" : "Save as coping card"}
                 </Text>
@@ -291,52 +293,40 @@ export const ThoughtReframingSummary: React.FC<
 
       {/* ── Reflection Context Card ──────────────────────────────── */}
       <FadeUp delay={450}>
-        <View
-          className="rounded-3xl overflow-hidden mx-1 mb-4"
-          style={{
-            backgroundColor: BRAND_SURFACE,
-            borderWidth: 1.5,
-            borderColor: "#EBEBEB",
-          }}
-        >
+        <View className="mx-2 mb-4 gap-10">
           {/* ── 1. What happened ───────────────────────────── */}
           {!!response.situation?.trim() && (
-            <View className="px-4 py-4">
+            <View >
               <Text
-                variant="label-bold"
-                className="text-[13px] text-ink-soft mb-1.5"
+                variant="label"
+                className="text-sm font-semibold text-ink-soft mb-1.5"
               >
                 What happened
               </Text>
               <Text
                 variant="body"
-                className="text-[15px] leading-relaxed text-ink"
+                className="text-base leading-relaxed text-ink"
               >
                 {response.situation}
               </Text>
             </View>
           )}
 
-          {!!response.situation?.trim() && !!response.automaticThought?.trim() && (
-            <Divider />
-          )}
+          
 
           {/* ── 2. Automatic thought ───────────────────────── */}
           {!!response.automaticThought?.trim() && (
-            <View className="px-4 py-4">
+            <View >
               <Text
-                variant="label-bold"
-                className="text-[13px] text-ink-soft mb-1.5"
+                variant="label"
+                className="text-sm font-semibold text-ink-soft mb-1.5"
               >
                 Automatic thought
               </Text>
-              <View
-                className="rounded-2xl px-4 py-3.5"
-                style={{ backgroundColor: "#FFF7F5" }}
-              >
+              <View className="pl-3 py-1 border-l-2" style={{ borderColor: TERRACOTTA_TINT }}>
                 <Text
                   variant="body-bold"
-                  className="text-[15px] leading-relaxed text-ink"
+                  className="text-base leading-relaxed text-ink italic"
                 >
                   "{response.automaticThought}"
                 </Text>
@@ -347,30 +337,29 @@ export const ThoughtReframingSummary: React.FC<
           {/* ── Belief shift delta ─────────────────────────── */}
           {hasScores && (
             <>
-              <Divider />
-              <View className="px-4 py-4">
+              <View >
                 <Text
-                  variant="label-bold"
-                  className="text-[13px] text-ink-soft mb-2.5"
+                  variant="label"
+                  className="text-sm font-semibold text-ink-soft mb-2.5"
                 >
                   How your distress changed
                 </Text>
-                <View className="flex-row items-center justify-between bg-white/90 border border-brand-border/70 rounded-2xl p-3.5">
+                <View className="flex-row items-center justify-between mt-1">
                   <View className="flex-row items-center gap-3.5">
                     <View>
                       <Text variant="caption" className="text-ink-soft">
                         Before
                       </Text>
-                      <Text variant="body-bold" className="text-ink mt-0.5 text-[22px]">
+                      <Text variant="display" className="text-ink mt-0 text-3xl tracking-tight">
                         {preScore}%
                       </Text>
                     </View>
-                    <Text className="text-ink-soft font-bold text-base">→</Text>
+                    <Text className="text-ink-soft font-medium text-lg mx-1">→</Text>
                     <View>
                       <Text variant="caption" className="text-ink-soft">
                         After
                       </Text>
-                      <Text variant="body-bold" className={`mt-0.5 text-[22px] ${preScore - postScore! >= 0 ? 'text-sage-700' : 'text-ink'}`}>
+                      <Text variant="display" className={`mt-0 text-3xl tracking-tight ${preScore - postScore! >= 0 ? 'text-sage-700' : 'text-ink'}`}>
                         {postScore}%
                       </Text>
                     </View>
@@ -378,7 +367,7 @@ export const ThoughtReframingSummary: React.FC<
                   <View className={`px-3 py-1.5 rounded-full ${preScore - postScore! >= 0 ? 'bg-sage-100/90' : 'bg-gray-100'}`}>
                     <Text
                       variant="label-bold"
-                      className={`text-[12px] ${preScore - postScore! >= 0 ? 'text-sage-800' : 'text-ink-soft'}`}
+                      className={`text-xs ${preScore - postScore! >= 0 ? 'text-sage-800' : 'text-ink-soft'}`}
                     >
                       {preScore - postScore! >= 0
                         ? `-${preScore - postScore!}% distress`
@@ -399,30 +388,29 @@ export const ThoughtReframingSummary: React.FC<
           {/* ── 3. Emotions felt ───────────────────────────── */}
           {emotions.length > 0 && (
             <>
-              <Divider />
-              <View className="px-4 py-4">
+              <View >
                 <Text
-                  variant="label-bold"
-                  className="text-[13px] text-ink-soft mb-2.5"
+                  variant="label"
+                  className="text-sm font-semibold text-ink-soft mb-2.5"
                 >
                   How you felt
                 </Text>
                 <View className="flex-row flex-wrap gap-2">
                   {emotions.map((emotion: any, i: number) => (
-                    <View
-                      key={i}
-                      className="flex-row items-center rounded-full px-3 py-1.5"
-                      style={{ backgroundColor: emotion.bgColor ?? "#F5F5F5" }}
-                    >
-                      <Text className="text-[13px] mr-1.5">{emotion.emoji}</Text>
-                      <Text
-                        variant="label-bold"
-                        className="text-[13px]"
-                        style={{ color: emotion.color }}
+                    <FadeUp key={i} delay={550 + i * 60}>
+                      <View
+                        className="flex-row items-center rounded-full px-3 py-1.5 border border-gray-200"
+                        style={{ backgroundColor: "transparent" }}
                       >
-                        {emotion.label}
-                      </Text>
-                    </View>
+                        <Text className="text-sm mr-1.5">{emotion.emoji}</Text>
+                        <Text
+                          variant="label-bold"
+                          className="text-sm text-ink-soft"
+                        >
+                          {emotion.label}
+                        </Text>
+                      </View>
+                    </FadeUp>
                   ))}
                 </View>
               </View>
@@ -432,25 +420,24 @@ export const ThoughtReframingSummary: React.FC<
           {/* ── 4. Thinking traps ──────────────────────────── */}
           {distortions.length > 0 && (
             <>
-              <Divider />
-              <View className="px-4 py-4">
+              <View >
                 <Text
-                  variant="label-bold"
-                  className="text-[13px] text-ink-soft mb-2.5"
+                  variant="label"
+                  className="text-sm font-semibold text-ink-soft mb-2.5"
                 >
                   Thinking traps spotted
                 </Text>
                 <View className="gap-3">
                   {distortions.map((d: any, i: number) => (
                     <View key={i} className="flex-row items-start py-0.5">
-                      <Text className="text-[17px] mr-3 mt-0.5">{d.icon}</Text>
-                      <View className="flex-1">
-                        <Text variant="label-bold" className="text-[13.5px] text-ink">
+                      <Text className="text-lg mr-3 mt-0.5">{d.icon}</Text>
+                      <View className="flex-1 justify-center">
+                        <Text variant="label-bold" className="text-sm text-ink">
                           {d.label}
                         </Text>
                         <Text
                           variant="caption"
-                          className="text-[12px] text-ink-soft mt-0.5 leading-snug"
+                          className="text-xs text-ink-soft mt-0.5 leading-snug"
                         >
                           {d.description}
                         </Text>
@@ -466,11 +453,10 @@ export const ThoughtReframingSummary: React.FC<
           {(response.evidenceFor?.length > 0 ||
             response.evidenceAgainst?.length > 0) && (
             <>
-              <Divider />
-              <View className="px-4 py-4">
+              <View >
                 <Text
-                  variant="label-bold"
-                  className="text-[13px] text-ink-soft mb-3"
+                  variant="label"
+                  className="text-sm font-semibold text-ink-soft mb-3"
                 >
                   Evidence reviewed
                 </Text>
@@ -479,10 +465,10 @@ export const ThoughtReframingSummary: React.FC<
                   <View className="mb-3">
                      <Text
                       variant="label-bold"
-                      className="text-[12px] mb-2"
+                      className="text-xs mb-2"
                       style={{ color: "#D97706" }}
                     >
-                      Supported it
+                      Evidence supporting the thought
                     </Text>
                     {response.evidenceFor.map((item: string, i: number) => (
                       <View
@@ -495,7 +481,7 @@ export const ThoughtReframingSummary: React.FC<
                         />
                         <Text
                           variant="body"
-                          className="text-[14px] text-ink flex-1 leading-relaxed"
+                          className="text-sm text-ink flex-1 leading-relaxed"
                         >
                           {item}
                         </Text>
@@ -508,10 +494,10 @@ export const ThoughtReframingSummary: React.FC<
                   <View>
                      <Text
                       variant="label-bold"
-                      className="text-[12px] mb-2"
+                      className="text-xs mb-2"
                       style={{ color: SAGE[600] }}
                     >
-                      Challenged it
+                      Evidence against the thought
                     </Text>
                     {response.evidenceAgainst.map((item: string, i: number) => (
                       <View key={i} className="flex-row items-start mb-1.5">
@@ -521,7 +507,7 @@ export const ThoughtReframingSummary: React.FC<
                         />
                         <Text
                           variant="body"
-                          className="text-[14px] text-ink flex-1 leading-relaxed"
+                          className="text-sm text-ink flex-1 leading-relaxed"
                         >
                           {item}
                         </Text>
@@ -545,17 +531,17 @@ export const ThoughtReframingSummary: React.FC<
             className="flex-row items-center justify-between rounded-2xl px-4 py-3.5 mx-1 mt-3 active:opacity-70"
             style={{
               backgroundColor: SAGE[50],
-              borderWidth: 1.5,
+              borderWidth: 1,
               borderColor: SAGE[100],
             }}
           >
             <View className="flex-1 mr-3">
               <Text variant="caption" className="text-sage-600 font-semibold mb-0.5">
-                Next recommended step
+                Keep the momentum going
               </Text>
               <Text
                 variant="label-bold"
-                className="text-[14px]"
+                className="text-sm"
                 style={{ color: SAGE[700] }}
               >
                 {link.label}
@@ -571,24 +557,7 @@ export const ThoughtReframingSummary: React.FC<
         </FadeUp>
       )}
 
-      {/* ── Done button ───────────────────────────────────────────── */}
-      {!readOnly && (
-        <FadeUp delay={600}>
-          <View className="mt-6 mb-8 mx-1">
-            <Pressable
-              onPress={onNext}
-              accessibilityRole="button"
-              accessibilityLabel="Done"
-              className="w-full rounded-2xl py-4 items-center justify-center active:opacity-80"
-              style={{ backgroundColor: INK_SOFT }}
-            >
-              <Text variant="label-bold" className="text-white text-[16px]">
-                Done
-              </Text>
-            </Pressable>
-          </View>
-        </FadeUp>
-      )}
+      
     </View>
   );
 };
