@@ -30,7 +30,7 @@ const Bar: React.FC<BarProps> = ({ maxHeight, minHeight, width, progress, letter
     const backgroundColor = interpolateColor(
       animatedProgress.value,
       [0, 1],
-      ['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 1)']
+      ['#E5E7EB', '#637A65']
     );
 
     return { height, backgroundColor };
@@ -143,12 +143,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   weekLabel: {
-    color: '#8E8E93', 
+    color: '#1F2937', 
     fontFamily: 'happy-font-body-medium',
     fontSize: 14,
   },
   label: {
-    color: '#8E8E93',
+    color: '#1F2937',
     textAlign: 'center',
     marginTop: 8,
     fontFamily: 'happy-font-body-medium',

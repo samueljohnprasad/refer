@@ -9,7 +9,7 @@
 import React from "react";
 import { View } from "react-native";
 import { GlassView } from "expo-glass-effect";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { DIVIDER_LAYOUT } from "@/src/data/journey/constants";
 
 // ---------------------------------------------------------------------------

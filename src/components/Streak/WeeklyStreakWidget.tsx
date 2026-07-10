@@ -27,38 +27,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
 }) => {
   const { streakData, isLoading } = useStreakTracker();
 
-  // Create an infinite heartbeat pulse for the most recent active day
-  const heartbeatScale = useSharedValue(1);
-  const heartbeatOpacity = useSharedValue(0);
-
-  React.useEffect(() => {
-    heartbeatScale.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 0 }),
-        withTiming(1.6, { duration: 1200, easing: Easing.out(Easing.quad) }),
-        withTiming(1, { duration: 0 }),
-        withDelay(2000, withTiming(1, { duration: 0 }))
-      ),
-      -1,
-      false
-    );
-
-    heartbeatOpacity.value = withRepeat(
-      withSequence(
-        withTiming(0.4, { duration: 0 }),
-        withTiming(0, { duration: 1200, easing: Easing.out(Easing.quad) }),
-        withTiming(0, { duration: 0 }),
-        withDelay(2000, withTiming(0, { duration: 0 }))
-      ),
-      -1,
-      false
-    );
-  }, []);
-
-  const pulseStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: heartbeatScale.value }],
-    opacity: heartbeatOpacity.value,
-  }));
+  // Heartbeat pulse animation removed per user request
 
   const currentStreak = streakData.currentStreak || 0;
   
@@ -140,21 +109,6 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
                 <View
                   className="w-8 h-8 items-center justify-center z-10"
                 >
-                  {i === mostRecentCompletedIndex && (
-                    <Animated.View
-                      style={[
-                        {
-                          position: "absolute",
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: 16,
-                          backgroundColor: GOLD,
-                        },
-                        pulseStyle,
-                      ]}
-                      pointerEvents="none"
-                    />
-                  )}
                   {isCompleted ? (
                     <AnimatedFireIcon width={28} height={28} />
                   ) : (

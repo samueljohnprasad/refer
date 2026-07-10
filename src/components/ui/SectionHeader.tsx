@@ -31,8 +31,8 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
         </View>
         <Text variant="h2">{title}</Text>
         {count !== undefined && (
-          <View className="ml-2 rounded-full bg-sage-pill px-2.5 py-1">
-            <Text variant="chip" color="sage">
+          <View className="ml-2 rounded-full bg-sage-pill px-2.5 py-1.5">
+            <Text variant="chip" className="text-sage-700">
               {count}
             </Text>
           </View>

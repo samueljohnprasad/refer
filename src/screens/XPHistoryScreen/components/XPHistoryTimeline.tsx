@@ -20,7 +20,7 @@ const XPHistoryTimelineEmptyState: React.FC = React.memo(() => (
       <Mascot state="panda-notes" size={54} />
     </View>
     <Text className="happy-font-heading-bold mt-4 text-lg text-ink">
-      No XP earned yet
+      No Insights earned yet
     </Text>
     <Text className="happy-font-body-medium mt-1 text-center text-sm leading-5 text-ink-muted">
       Complete a journal, exercise, or habit to start building momentum.
@@ -53,7 +53,7 @@ const transformHistoryToTimeline = (entries: XPHistoryEntry[]) => {
     }
     grouped.get(dayTimestamp)!.push({
       title: entry.description || XP_ACTION_LABELS[entry.action],
-      subtitle: `+${entry.amount} XP`,
+      subtitle: `+${entry.amount} Insights`,
       date: dayjs(entry.timestamp).valueOf(), // pass timestamp for inner dates
     });
   });
@@ -95,7 +95,7 @@ export const XPHistoryTimeline: React.FC<XPHistoryTimelineProps> = React.memo(
             ListFooterComponent: (
               <XPHistoryTimelineFooter isLoadingMore={isLoadingMore} />
             ),
-            contentContainerStyle: { width: "100%" },
+            contentContainerStyle: { width: "100%", paddingBottom: 120 },
           } as any)}
         />
       </View>

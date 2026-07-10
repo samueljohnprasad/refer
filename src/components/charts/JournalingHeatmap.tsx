@@ -170,7 +170,7 @@ export const JournalingHeatmap: React.FC<JournalingHeatmapProps> = ({
             </Text>
           </View>
           <View className="items-end">
-            <Text className="text-3xl font-extrabold text-violet-600">
+            <Text className="text-3xl font-extrabold text-[#166534]">
               {stats.consistency}%
             </Text>
             <Text className="text-xs text-gray-500">Consistency</Text>

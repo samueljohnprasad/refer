@@ -34,6 +34,12 @@
       "sourceType": "github",
       "computedHash": "2cb0ed52299b00b06017a5a59a378fcfb1827e5a0c8d7bd7982b23f60c09adcb"
     },
+    "animation-vocabulary": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "skillPath": "skills/animation-vocabulary/SKILL.md",
+      "computedHash": "39319fc9a33c15be08666b3685f58666f042ff36bb902b7814c0834a5ba99df4"
+    },
     "anti-ai-slop": {
       "source": "d-oit/do-web-doc-resolver",
       "sourceType": "github",
@@ -45,9 +51,10 @@
       "computedHash": "d964f328784a7aa2b8288d64a95e933412576e4a79a8017ca9a34e1de2e89242"
     },
     "apple-design": {
-      "source": "dickwu/apple-design-skill",
+      "source": "emilkowalski/skills",
       "sourceType": "github",
-      "computedHash": "8ef2407bb66c759c110a55102e26646795fdcf67e6d8a49f035ee2d25afcd91b"
+      "skillPath": "skills/apple-design/SKILL.md",
+      "computedHash": "8b94db67cb9edaad5f1501010804caa610131f1d2dfda0a27664b2e858deade3"
     },
     "apple-ui-designer": {
       "source": "heyman333/atelier-ui",
@@ -142,6 +149,12 @@
       "sourceType": "github",
       "skillPath": "skills/dogfood/SKILL.md",
       "computedHash": "7c14b806787e7793e7b0846c310f66430ffca06bd16c5848c29f09f2fd9dbe65"
+    },
+    "emil-design-eng": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "skillPath": "skills/emil-design-eng/SKILL.md",
+      "computedHash": "8bdf9e4e6de7a4969147bf4828a4ad2c5aacd9fba4b690b250a85e0467ca387d"
     },
     "engineering-discipline": {
       "source": "miospotdevteam/claude-control",
@@ -364,6 +377,12 @@
       "sourceType": "github",
       "skillPath": "skills/retention-engagement/SKILL.md",
       "computedHash": "9cdc088da6027459f96fab8e9b41df463519526d228e9b4ad28ea171e1513b44"
+    },
+    "review-animations": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "skillPath": "skills/review-animations/SKILL.md",
+      "computedHash": "ca04aaa0a815f05e0910ded8fedbfbdfe0acdec8f52dfbb88277890070d134d4"
     },
     "skill-writer": {
       "source": "pytorch/pytorch",

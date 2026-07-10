@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { View, Pressable } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import * as Haptics from "expo-haptics";
 import Animated, { 
   useAnimatedStyle, 
@@ -66,16 +66,16 @@ export const HomeMainButton = ({
         style={[
           {
             borderRadius: 20,
-            borderBottomWidth: 5,
+            borderBottomWidth: 3,
             shadowColor: "#000",
-            shadowOffset: { width: 0, height: 6 },
-            shadowOpacity: 0.12,
-            shadowRadius: 16,
-            elevation: 8,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.08,
+            shadowRadius: 12,
+            elevation: 4,
           },
           animatedStyle,
         ]}
-        className="flex-row items-center justify-between px-6 py-6"
+        className="flex-row items-center justify-between px-5 py-4"
       >
         <View className="flex-1 mr-4">
           <Text
@@ -85,7 +85,7 @@ export const HomeMainButton = ({
             {unitLabel}
           </Text>
           <Text
-            variant="h2"
+            variant="h3"
             className="!text-white"
             numberOfLines={2}
           >
@@ -93,7 +93,7 @@ export const HomeMainButton = ({
           </Text>
         </View>
         <View 
-          className="w-12 h-12 items-center justify-center rounded-full"
+          className="w-12 h-12 items-center justify-center rounded-full mr-2"
           style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
         >
           <JourneyUnitIcon iconKey={unitIconKey} size={24} color="#FFFFFF" />

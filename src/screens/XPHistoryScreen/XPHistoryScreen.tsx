@@ -10,7 +10,7 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { useXP } from "@/src/context/XPContext";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { SAGE } from "@/lib/tokens";
 import * as Haptics from "expo-haptics";
 
@@ -18,12 +18,11 @@ import { XPHistorySummary } from "./components/XPHistorySummary";
 import { XPHistoryTimeline } from "./components/XPHistoryTimeline";
 import { XPWeeklyChart } from "./components/XPWeeklyChart";
 import { generateXPChartData } from "./utils/chartUtils";
-import { useHeaderHeight } from "expo-router/react-navigation";
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    // backgroundColor: "#F7F7F8",
+    backgroundColor: "#F7F7F8",
   },
   loadingScreen: {
     alignItems: "center",
@@ -35,7 +34,6 @@ export const XPHistoryScreen: React.FC = () => {
   const { totalXP, todayXP, getXPHistory, history, isLoading } = useXP();
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const headerHeight = useHeaderHeight();
 
   const { data: chartData, weekLabels } = useMemo(() => {
     return generateXPChartData(history, 4); // 4 weeks of history
@@ -88,9 +86,15 @@ export const XPHistoryScreen: React.FC = () => {
   }
 
   return (
-    <View
-      style={[styles.screen, { paddingTop: headerHeight }]}
-    >
+    <View style={styles.screen}>
+      <Stack.Screen
+        options={{
+          title: "Insights",
+          headerStyle: { backgroundColor: "#F7F7F8" },
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
+        }}
+      />
       <XPHistoryTimeline
         entries={history}
         header={

@@ -24,7 +24,7 @@ import { GlassView } from "expo-glass-effect";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import type { JourneyNode, PathNodeData, NodePosition } from "@/src/types/journey";
 import { NodeStatus } from "@/src/types/journey";
 import { useHighContrast } from "@/src/hooks/useHighContrast";

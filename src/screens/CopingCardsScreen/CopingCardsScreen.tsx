@@ -1,23 +1,27 @@
 import React, { useState, useCallback } from "react";
-import { View, ScrollView, Pressable, ActivityIndicator } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, FlatList, Pressable, ActivityIndicator } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, Stack } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft01Icon, BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
-import { SAGE, INK, BRAND_CANVAS } from "@/lib/tokens";
+import { SAGE, INK, BRAND_CANVAS, BRAND_BORDER_STRONG } from "@/lib/tokens";
 import { CopingCardItem } from "./CopingCardItem";
 import { useHeaderHeight } from "expo-router/react-navigation";
 
+import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
+
 export const CopingCardsScreen: React.FC = () => {
   const router = useRouter();
-  const [showArchived, setShowArchived] = useState(false);
+  const [viewMode, setViewMode] = useState<"active" | "archived">("active");
+  const [toastConfig, setToastConfig] = useState<{ id: string; visible: boolean } | null>(null);
   const headerHeight = useHeaderHeight();
+  const { bottom: safeBottom } = useSafeAreaInsets();
 
-  const { cards, isLoading, toggleStar, archiveCard, unarchiveCard } =
-    useCopingCards(showArchived);
+  const { cards, isLoading, isError, refetch, toggleStar, archiveCard, unarchiveCard } =
+    useCopingCards(true); // Fetch all to allow instant switching
 
   const handleToggleStar = useCallback(
     async (id: string) => {
@@ -31,9 +35,21 @@ export const CopingCardsScreen: React.FC = () => {
     async (id: string) => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       await archiveCard(id);
+      
+      // Show toast
+      setToastConfig({ id, visible: true });
+      setTimeout(() => setToastConfig((p) => (p?.id === id ? null : p)), 4000);
     },
     [archiveCard],
   );
+
+  const handleUndoArchive = useCallback(async () => {
+    if (toastConfig) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      await unarchiveCard(toastConfig.id);
+      setToastConfig(null);
+    }
+  }, [toastConfig, unarchiveCard]);
 
   const handleUnarchive = useCallback(
     async (id: string) => {
@@ -43,8 +59,9 @@ export const CopingCardsScreen: React.FC = () => {
     [unarchiveCard],
   );
 
-  const activeCards = showArchived ? cards.filter((c) => !c.archived) : cards;
-  const archivedCards = showArchived ? cards.filter((c) => c.archived) : [];
+  const activeCards = cards.filter((c) => !c.archived);
+  const archivedCards = cards.filter((c) => c.archived);
+  const currentData = viewMode === "active" ? activeCards : archivedCards;
 
   return (
     <SafeAreaView
@@ -60,7 +77,9 @@ export const CopingCardsScreen: React.FC = () => {
         }}
       />
 
-      <ScrollView
+      <FlatList
+        data={currentData}
+        keyExtractor={(item) => item.id}
         className="flex-1 px-5"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -68,62 +87,93 @@ export const CopingCardsScreen: React.FC = () => {
           paddingBottom: 40,
           paddingTop: headerHeight + 8,
         }}
-      >
-        {isLoading ? (
-          <View className="flex-1 items-center justify-center pt-20">
-            <ActivityIndicator size="large" color={SAGE[500]} />
-          </View>
-        ) : activeCards.length === 0 && !showArchived ? (
-          <EmptyState />
-        ) : (
-          <>
-            {activeCards.map((card) => (
-              <CopingCardItem
-                key={card.id}
-                card={card}
-                onToggleStar={() => handleToggleStar(card.id)}
-                onArchive={() => handleArchive(card.id)}
-              />
-            ))}
-
-            {/* Archived section */}
-            {showArchived && archivedCards.length > 0 && (
-              <>
-                <View className="flex-row items-center gap-2 mb-4 mt-2">
-                  <View className="flex-1 h-px bg-brand-border" />
-                  <Text className="text-[12px] font-bold text-ink-muted uppercase tracking-wider">
-                    Archived
-                  </Text>
-                  <View className="flex-1 h-px bg-brand-border" />
-                </View>
-                {archivedCards.map((card) => (
-                  <View key={card.id} className="opacity-60">
-                    <CopingCardItem
-                      card={card}
-                      onToggleStar={() => handleToggleStar(card.id)}
-                      onArchive={() => handleUnarchive(card.id)}
-                    />
-                  </View>
-                ))}
-              </>
-            )}
-
-            {/* Show/hide archived toggle */}
-            <Pressable
-              onPress={() => setShowArchived((p) => !p)}
-              accessibilityRole="button"
-              accessibilityLabel={
-                showArchived ? "Hide archived" : "Show archived"
-              }
-              className="items-center py-3 mt-2 active:opacity-60"
-            >
-              <Text className="text-[13px] font-semibold text-sage-600">
-                {showArchived ? "Hide archived" : "Show archived"}
+        ListEmptyComponent={
+          isLoading ? (
+            <View className="flex-1 items-center justify-center pt-20">
+              <ActivityIndicator size="large" color={SAGE[500]} />
+            </View>
+          ) : isError ? (
+            <View className="flex-1 items-center justify-center pt-20 px-5">
+              <Text variant="h3" className="text-center text-ink font-semibold mb-2">
+                Failed to load your coping cards
               </Text>
-            </Pressable>
-          </>
+              <Pressable
+                onPress={refetch}
+                hitSlop={12}
+                className="px-6 py-3 bg-sage-100 rounded-full mt-2 active:opacity-80"
+              >
+                <Text className="text-sage-700 font-bold">Try again</Text>
+              </Pressable>
+            </View>
+          ) : activeCards.length === 0 && archivedCards.length === 0 ? (
+            <EmptyState />
+          ) : viewMode === "archived" && archivedCards.length === 0 ? (
+            <View className="flex-1 items-center justify-center pt-20 px-5">
+              <Text className="text-center text-ink-muted text-[15px]">No archived cards</Text>
+            </View>
+          ) : null
+        }
+        ListHeaderComponent={
+          !isLoading && !isError && (activeCards.length > 0 || archivedCards.length > 0) ? (
+            <View className="flex-row p-1 bg-brand-surface rounded-xl mb-6 self-start border" style={{ borderColor: BRAND_BORDER_STRONG }}>
+              <Pressable
+                onPress={() => setViewMode("active")}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: viewMode === "active" }}
+                className={`px-5 py-2 rounded-lg ${viewMode === "active" ? "bg-white" : "bg-transparent"}`}
+              >
+                <Text className={`text-[13px] font-bold tracking-wide ${viewMode === "active" ? "text-ink" : "text-ink-muted"}`}>
+                  Active
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setViewMode("archived")}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: viewMode === "archived" }}
+                className={`px-5 py-2 rounded-lg ${viewMode === "archived" ? "bg-white" : "bg-transparent"}`}
+              >
+                <Text className={`text-[13px] font-bold tracking-wide ${viewMode === "archived" ? "text-ink" : "text-ink-muted"}`}>
+                  Archived
+                </Text>
+              </Pressable>
+            </View>
+          ) : null
+        }
+        renderItem={({ item }) => (
+          <View className={item.archived ? "opacity-60" : ""}>
+            <CopingCardItem
+              card={item}
+              onToggleStar={() => handleToggleStar(item.id)}
+              onArchive={() =>
+                item.archived
+                  ? handleUnarchive(item.id)
+                  : handleArchive(item.id)
+              }
+            />
+          </View>
         )}
-      </ScrollView>
+      />
+
+      {/* Toast Notification */}
+      {toastConfig && (
+        <Animated.View
+          entering={FadeInDown.duration(300).springify()}
+          exiting={FadeOutDown.duration(200)}
+          className="absolute left-5 right-5 bg-ink rounded-xl px-5 py-4 flex-row items-center justify-between"
+          style={{ 
+            bottom: Math.max(safeBottom, 20) + 20,
+            shadowColor: "#000", 
+            shadowOpacity: 0.2, 
+            shadowRadius: 8, 
+            shadowOffset: { width: 0, height: 4 } 
+          }}
+        >
+          <Text className="text-white font-semibold">Card archived</Text>
+          <Pressable onPress={handleUndoArchive} hitSlop={12} className="active:opacity-60">
+            <Text className="text-sage-300 font-bold uppercase tracking-wider text-[13px]">Undo</Text>
+          </Pressable>
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 };

@@ -3,7 +3,7 @@ import { Text, View, StyleSheet } from "react-native";
 import { Calendar03Icon, StarsIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 
-import { GOLD, TERRACOTTA } from "@/lib/tokens";
+import { GOLD, SAGE } from "@/lib/tokens";
 import { LevelProgressBar } from "@/src/components/Level";
 
 interface XPHistorySummaryProps {
@@ -15,74 +15,62 @@ interface XPMetricCardProps {
   icon: React.ReactNode;
   label: string;
   value: string;
+  isZeroState?: boolean;
 }
 
-const XPMetricCard: React.FC<XPMetricCardProps> = ({ icon, label, value }) => (
-  <View style={styles.statCard}>
-    <View className="happy-brand-soft-chip h-10 w-10 items-center justify-center mb-3">
-      {icon}
+const XPMetricCard: React.FC<XPMetricCardProps> = ({ icon, label, value, isZeroState }) => (
+  <View className="flex-1 py-2">
+    <View className="mb-2 flex-row items-center gap-2">
+      <View className="bg-sage-50 h-8 w-8 rounded-full items-center justify-center">
+        {icon}
+      </View>
+      <Text className="happy-font-body-medium text-[14px] text-gray-800">
+        {label}
+      </Text>
     </View>
-    <Text style={styles.statValue}>
-      {value}
+    <Text className={`happy-font-body-bold text-[32px] ${isZeroState ? 'text-ink-muted' : 'text-ink'}`}>
+      {isZeroState ? "-" : value}
     </Text>
-    <Text className="happy-font-body-medium text-[13px] text-ink-muted mt-0.5">
-      {label}
-    </Text>
+    {isZeroState && (
+      <Text className="happy-font-body-medium text-[11px] text-ink-muted mt-1 leading-tight">
+        Ready for a reflection?
+      </Text>
+    )}
   </View>
 );
 
 export const XPHistorySummary: React.FC<XPHistorySummaryProps> = React.memo(
   ({ totalXP, todayXP }) => (
-    <View className="pb-6 pr-8">
+    <View className="pb-6 px-4">
       <View className="mt-1">
         <LevelProgressBar showBadge={true} compact={false} />
       </View>
 
-      <View className="mt-4 flex-row gap-3">
+      <View className="mt-6 flex-row gap-4 px-2 border-b border-sage-100 pb-6">
         <XPMetricCard
-          icon={<HugeiconsIcon icon={StarsIcon} size={24} color={GOLD} />}
-          label="Total XP"
+          icon={<HugeiconsIcon icon={StarsIcon} size={16} color={GOLD} />}
+          label="Total Insights"
           value={totalXP.toLocaleString()}
         />
         <XPMetricCard
           icon={
             <HugeiconsIcon
               icon={Calendar03Icon}
-              size={22}
-              color={TERRACOTTA}
+              size={16}
+              color={SAGE[500]}
             />
           }
           label="Today"
           value={`+${todayXP}`}
+          isZeroState={todayXP === 0}
         />
       </View>
 
-      <Text className="happy-brand-eyebrow mt-8">Recent XP</Text>
+      <Text className="happy-font-heading-bold text-[22px] text-ink mt-8 ml-2">Recent Insights</Text>
     </View>
   )
 );
 
 XPHistorySummary.displayName = "XPHistorySummary";
 
-const styles = StyleSheet.create({
-  statCard: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.03)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.04,
-    shadowRadius: 12,
-    elevation: 2,
-    alignItems: "center",
-  },
-  statValue: {
-    fontSize: 26,
-    fontWeight: "800",
-    color: "#1C1C1E",
-    letterSpacing: -0.5,
-  },
-});
+const styles = StyleSheet.create({});

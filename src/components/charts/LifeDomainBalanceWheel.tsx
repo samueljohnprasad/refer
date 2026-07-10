@@ -347,7 +347,7 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
         <Text variant="label-bold" className="mb-2">
           Next Month Prediction
         </Text>
-        <View className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-3">
+        <View className="bg-sage-50 rounded-lg p-3">
           <View className="flex-row flex-wrap">
             {predictions.map((pred, i) => (
               <View key={i} className="flex-row items-center mr-4 mb-2">

@@ -37,7 +37,7 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
           height={8}
           className="flex-1"
         />
-        <Text className="happy-font-body-medium text-xs text-ink-muted">
+        <Text className="happy-font-body-medium text-xs text-gray-800">
           {isMaxLevel ? "MAX" : `${progress}%`}
         </Text>
       </View>
@@ -51,11 +51,10 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
       showDepth={false}
       contentClassName="p-4"
     >
-      {/* Header with Level Badge */}
       <View className="flex-row items-center justify-between mb-3">
         {showBadge && <LevelBadge level={currentLevel} size="md" />}
-        <Text className="happy-font-body-medium text-sm text-ink-muted">
-          {totalXP} XP total
+        <Text className="happy-font-body-medium text-sm text-gray-800">
+          {totalXP} Insights total
         </Text>
       </View>
 
@@ -68,14 +67,14 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
 
       {/* Progress Text */}
       <View className="flex-row justify-between">
-        <Text className="happy-font-body-medium text-xs text-ink-muted">
+        <Text className="happy-font-body-medium text-xs text-gray-800">
           {isMaxLevel
             ? "Max level reached!"
-            : `${currentXP} / ${requiredXP} XP`}
+            : `${currentXP} / ${requiredXP} Insights`}
         </Text>
         {nextLevel && (
-          <Text className="happy-font-body-medium text-xs text-ink-muted">
-            Next: {nextLevel.icon} {nextLevel.name}
+          <Text className="happy-font-body-medium text-xs text-gray-800">
+            Next: {nextLevel.name}
           </Text>
         )}
       </View>

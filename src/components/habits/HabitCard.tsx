@@ -67,7 +67,8 @@ export const HabitCard: React.FC<HabitCardProps> = ({
   // Format time for display
   const formatTime = (time: string): string => {
     try {
-      const parsed = parse(time, "HH:mm", new Date());
+      const timeWithoutSeconds = time.split(":").slice(0, 2).join(":");
+      const parsed = parse(timeWithoutSeconds, "HH:mm", new Date());
       return format(parsed, "h:mm a");
     } catch {
       return time;
@@ -80,6 +81,10 @@ export const HabitCard: React.FC<HabitCardProps> = ({
       case "daily":
         return "Daily";
       case "weekly":
+        if (habit.repeatDays && habit.repeatDays.length > 0) {
+          const daysMap = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+          return `Weekly (${habit.repeatDays.map(d => daysMap[d]).join(", ")})`;
+        }
         return "Weekly";
       case "monthly":
         return "Monthly";
@@ -109,32 +114,36 @@ export const HabitCard: React.FC<HabitCardProps> = ({
           </View>
 
           {/* Content */}
-          <View className="flex-1" style={{ opacity: habit.isCompleted ? 0.45 : 1 }}>
+          <View className="flex-1">
             {/* Habit Name */}
             <Text
-              className={`happy-font-body-bold text-[16px] ${habit.isCompleted
-                  ? "text-ink-muted"
-                  : "text-ink"
+              className={`happy-font-body-bold text-[16px] text-ink ${habit.isCompleted
+                  ? "line-through opacity-60"
+                  : ""
                 }`}
             >
               {habit.name}
             </Text>
 
             {/* Metadata Row */}
-            <View className="flex-row items-center mt-0.5">
-              {/* Repeat Badge */}
-              <View className="flex-row items-center">
-                <HugeiconsIcon icon={RepeatIcon} size={12} color={INK_MUTED} />
-                <Text className="happy-font-body-medium ml-1 text-xs text-ink-muted">
-                  {getRepeatLabel()}
-                </Text>
-              </View>
+            <View className="flex-row items-center mt-0.5 gap-3">
+              {!habit.isCompleted && (
+                <>
+                  {/* Repeat Badge */}
+                  <View className="flex-row items-center">
+                    <HugeiconsIcon icon={RepeatIcon} size={12} color={INK_MUTED} />
+                    <Text className="happy-font-body-medium ml-1 text-xs text-ink-muted">
+                      {getRepeatLabel()}
+                    </Text>
+                  </View>
 
-              {/* Time Badge */}
-              {habit.scheduledTime && (
-                <Text className="happy-font-body-medium ml-3 text-xs text-ink-muted">
-                  {formatTime(habit.scheduledTime)}
-                </Text>
+                  {/* Time Badge */}
+                  {habit.scheduledTime && (
+                    <Text className="happy-font-body-medium text-xs text-ink-muted">
+                      {formatTime(habit.scheduledTime)}
+                    </Text>
+                  )}
+                </>
               )}
 
               {/* Streak Badge */}

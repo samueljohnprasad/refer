@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { Feather } from "@expo/vector-icons";
 import { View, Alert } from "react-native";
 import { recorderOpenAtom } from "./helpers";
 import { useAtom } from "jotai";
@@ -43,7 +44,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
       {/* Dynamic button panel */}
       <HStack className="justify-center items-center gap-10 h-24 w-full">
         {/* Cancel Button Slot */}
-        {isPaused ? (
+        {!isRecording ? (
           <Button
             label=""
             variant="secondary"
@@ -51,28 +52,32 @@ const MicControlView: React.FC<MicControlViewProps> = ({
             width={56}
             fullWidth={false}
             leftIcon={
-              <HugeiconsIcon
-                icon={Cancel01Icon}
+              <Feather
+                name={isPaused ? "trash-2" : "x"}
                 size={22}
                 color={INK_SOFT}
               />
             }
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              Alert.alert(
-                "Discard recording?",
-                "This will permanently delete your current audio and cannot be undone.",
-                [
-                  { text: "Keep Recording", style: "cancel" },
-                  {
-                    text: "Discard",
-                    style: "destructive",
-                    onPress: () => {
-                      handleDiscard();
+              if (isPaused) {
+                Alert.alert(
+                  "Discard recording?",
+                  "This will permanently delete your current audio and cannot be undone.",
+                  [
+                    { text: "Keep Recording", style: "cancel" },
+                    {
+                      text: "Discard",
+                      style: "destructive",
+                      onPress: () => {
+                        handleDiscard();
+                      },
                     },
-                  },
-                ]
-              );
+                  ]
+                );
+              } else {
+                handleDiscard();
+              }
             }}
           />
         ) : (

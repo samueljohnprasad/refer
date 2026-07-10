@@ -148,6 +148,7 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
           >
             <RNHostView>
               <View
+                style={{ paddingBottom }}
                 className="flex-1 px-5 pt-6 bg-brand-surface"
               >
                 {/* Header info */}
@@ -156,15 +157,15 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                     <RNText style={{ fontSize: 28 }}>{habit.icon}</RNText>
                   </View>
                   <Text
-                    variant="h3"
-                    className="text-2xl font-bold text-ink text-center leading-8"
+                    variant="body-bold"
+                    className="text-2xl text-center leading-8"
                   >
                     {habit.name}
                   </Text>
                   {habit.description && (
                     <Text
                       variant="body"
-                      className="text-[14px] leading-5 text-ink-soft text-center mt-1"
+                      className="text-ink-soft text-center mt-1"
                     >
                       {habit.description}
                     </Text>
@@ -180,57 +181,53 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                   <View className="mb-4">
                     <Text
                       variant="label"
-                      className="happy-brand-eyebrow mb-2 text-[11px] text-ink-soft"
+                      className="happy-brand-eyebrow mb-2 text-ink-soft"
                     >
                       TIME
                     </Text>
-                    <View className="flex-row gap-3">
+                    <View className="flex-row rounded-full bg-sage-50 border border-sage-100 p-1">
                       <PressableScale
                         onPress={() => handleTimeOptionChange("anytime")}
-                        className={`flex-1 rounded-[16px] border ${
+                        className={`flex-1 rounded-full py-2.5 items-center justify-center ${
                           timeOption === "anytime"
-                            ? "bg-sage-pill border-sage-200"
-                            : "bg-brand-surface-soft border-sage-100"
+                            ? "bg-white shadow-sm border border-black/5"
+                            : ""
                         }`}
                       >
-                        <View className="py-3.5 items-center justify-center">
-                          <Text
-                            className={`happy-font-body-bold text-[15px] ${
-                              timeOption === "anytime"
-                                ? "text-sage-700"
-                                : "text-ink-soft"
-                            }`}
-                          >
-                            Anytime
-                          </Text>
-                        </View>
+                        <Text
+                          className={`happy-font-body-bold text-[15px] ${
+                            timeOption === "anytime"
+                              ? "text-ink"
+                              : "text-ink-soft"
+                          }`}
+                        >
+                          Anytime
+                        </Text>
                       </PressableScale>
 
                       <PressableScale
                         onPress={() => handleTimeOptionChange("at_time")}
-                        className={`flex-1 rounded-[16px] border ${
+                        className={`flex-1 rounded-full py-2.5 items-center justify-center ${
                           timeOption === "at_time"
-                            ? "bg-sage-pill border-sage-200"
-                            : "bg-brand-surface-soft border-sage-100"
+                            ? "bg-white shadow-sm border border-black/5"
+                            : ""
                         }`}
                       >
-                        <View className="py-3.5 items-center justify-center">
-                          <Text
-                            className={`happy-font-body-bold text-[15px] ${
-                              timeOption === "at_time"
-                                ? "text-sage-700"
-                                : "text-ink-soft"
-                            }`}
-                          >
-                            At time
-                          </Text>
-                        </View>
+                        <Text
+                          className={`happy-font-body-bold text-[15px] ${
+                            timeOption === "at_time"
+                              ? "text-ink"
+                              : "text-ink-soft"
+                          }`}
+                        >
+                          At time
+                        </Text>
                       </PressableScale>
                     </View>
                   </View>
 
                   {/* Settings Card */}
-                  <Card variant="tile" radius="xl" showDepth={false} className="mb-5 border border-sage-100">
+                  <Card variant="tile" radius="xl" showDepth={false} className="mb-5">
                     <View className="divide-y divide-sage-100/50">
                       {/* Date Picker Trigger */}
                       <PressableScale
@@ -238,14 +235,15 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                           setShowDatePickerSheet(true);
                         }}
-                        className="flex-row items-center justify-between px-4 py-4"
                       >
-                        <Text className="happy-font-body-medium text-base text-ink-soft">
-                          Date
-                        </Text>
-                        <Text className="happy-font-body-bold text-base text-ink">
-                          {format(startDate, "MMM dd, yyyy")}
-                        </Text>
+                        <View className="flex-row items-center justify-between px-4 py-4 w-full">
+                          <Text className="happy-font-body-medium text-base text-ink-soft">
+                            Date
+                          </Text>
+                          <Text className="happy-font-body-bold text-base text-ink">
+                            {format(startDate, "MMM dd, yyyy")}
+                          </Text>
+                        </View>
                       </PressableScale>
 
                       {/* Time and Duration Sub-fields if At Time is active */}
@@ -284,16 +282,17 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                           setShowRepeatModal(true);
                         }}
-                        className="flex-row items-center justify-between px-4 py-4"
                       >
-                        <Text className="happy-font-body-medium text-base text-ink-soft">
-                          Repeat
-                        </Text>
-                        <Text className="happy-font-body-bold text-base text-ink capitalize">
-                          {repeatPattern === "weekly"
-                            ? "Weekly on Thursday"
-                            : repeatPattern}
-                        </Text>
+                        <View className="flex-row items-center justify-between px-4 py-4 w-full">
+                          <Text className="happy-font-body-medium text-base text-ink-soft">
+                            Repeat
+                          </Text>
+                          <Text className="happy-font-body-bold text-base text-ink capitalize">
+                            {repeatPattern === "weekly"
+                              ? "Weekly on Thursday"
+                              : repeatPattern}
+                          </Text>
+                        </View>
                       </PressableScale>
 
                       {/* End Repeat */}
@@ -328,7 +327,7 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                   <View className="mb-6">
                     <Text
                       variant="label"
-                      className="happy-brand-eyebrow mb-2 text-[11px] text-ink-soft"
+                      className="happy-brand-eyebrow mb-2 text-ink-soft"
                     >
                       NOTES
                     </Text>
@@ -340,7 +339,7 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                       multiline
                       numberOfLines={4}
                       textAlignVertical="top"
-                      className="happy-font-body-medium rounded-[22px] border-2 border-sage-100 bg-brand-surface-soft p-4 text-[15px] leading-6 text-ink min-h-[100px]"
+                      className="happy-font-body-medium rounded-[22px] border border-sage-100 bg-brand-surface-soft p-4 text-base leading-6 text-ink min-h-[96px]"
                     />
                   </View>
 

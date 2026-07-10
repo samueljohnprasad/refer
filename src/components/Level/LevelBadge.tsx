@@ -1,6 +1,14 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { LevelTier } from "@/src/types/levels";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { 
+  SproutIcon, 
+  BrainIcon, 
+  Target01Icon, 
+  StarsIcon, 
+  Medal01Icon 
+} from "@hugeicons/core-free-icons";
 
 interface LevelBadgeProps {
   level: LevelTier;
@@ -25,12 +33,23 @@ export const LevelBadge: React.FC<LevelBadgeProps> = ({
 
   const styles = sizeStyles[size];
 
+  const getLevelIcon = (levelNum: number) => {
+    switch (levelNum) {
+      case 1: return SproutIcon;
+      case 2: return BrainIcon;
+      case 3: return Target01Icon;
+      case 4: return StarsIcon;
+      case 5: return Medal01Icon;
+      default: return StarsIcon;
+    }
+  };
+
   return (
     <View
       className={`flex-row items-center ${styles.padding} rounded-full`}
       style={{ backgroundColor: level.color + "30" }}
     >
-      <Text style={{ fontSize: styles.icon }}>{level.icon}</Text>
+      <HugeiconsIcon icon={getLevelIcon(level.level)} size={styles.icon} color={level.color} />
       {showName && (
         <Text
           className={`${styles.text} font-semibold ml-1`}

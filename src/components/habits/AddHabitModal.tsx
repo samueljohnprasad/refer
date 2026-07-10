@@ -179,24 +179,29 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
             >
               <View
                 style={{ paddingBottom }}
-                className="flex-1 px-5 pt-6 bg-brand-surface"
+                className="flex-1 px-5 pt-8 bg-brand-surface"
               >
                 {/* Header */}
-                <Text
-                  variant="h3"
-                  className="mb-1 text-[28px] font-bold text-ink leading-8"
-                >
+                <Text variant="body-bold" className="text-2xl mb-1">
                   Add a Habit
                 </Text>
-                <Text
-                  variant="body"
-                  className="mb-5 text-[15px] leading-6 text-ink-soft"
-                >
+                <Text variant="body" className="mb-5">
                   Pick a gentle preset, or create one that fits your routine.
                 </Text>
 
                 {!showCustomForm ? (
                   <>
+                    {/* Custom Habit Button */}
+                    <View className="mb-4">
+                      <Button
+                        label="Create Custom Habit"
+                        variant="secondary"
+                        onPress={() => setShowCustomForm(true)}
+                        leftIcon={
+                          <HugeiconsIcon icon={Add01Icon} size={20} color={INK_MUTED} />
+                        }
+                      />
+                    </View>
                     {/* Preset Habits */}
                     <ScrollView
                       showsVerticalScrollIndicator={false}
@@ -211,7 +216,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
                             key={preset.name}
                             variant="tile"
                             radius="xl"
-                            showDepth={true}
+                            showDepth={false}
                             onPress={() => handlePresetSelect(preset)}
                             disabled={loading}
                             className="mb-3"
@@ -228,21 +233,12 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
                                 </RNText>
                               </View>
                               <View className="min-w-0 flex-1">
-                                <View className="mb-1 flex-row items-center">
-                                  <Text
-                                    className="happy-font-body-bold flex-1 text-[16px] leading-5 text-ink"
-                                    numberOfLines={1}
-                                  >
+                                <View className="mb-0.5 flex-row items-center">
+                                  <Text variant="body-bold" className="flex-1" numberOfLines={1}>
                                     {preset.name}
                                   </Text>
-                                  <View
-                                    className={`ml-2 h-2.5 w-2.5 rounded-full ${tone.chipClassName}`}
-                                  />
                                 </View>
-                                <Text
-                                  className="happy-font-body-medium text-[14px] leading-5 text-ink-soft"
-                                  numberOfLines={2}
-                                >
+                                <Text variant="caption" numberOfLines={2}>
                                   {preset.description}
                                 </Text>
                               </View>
@@ -251,34 +247,20 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
                         );
                       })}
                     </ScrollView>
-
-                    {/* Custom Habit Button */}
-                    <View className="pt-2">
-                      <Button
-                        label="Create Custom Habit"
-                        variant="primary"
-                        size="lg"
-                        onPress={() => setShowCustomForm(true)}
-                        leftIcon={
-                          <HugeiconsIcon icon={Add01Icon} size={20} color="#FFFFFF" />
-                        }
-                      />
-                    </View>
                   </>
                 ) : (
                   <>
                     {/* Custom Habit Form */}
                     <ScrollView
                       showsVerticalScrollIndicator={false}
+                      keyboardShouldPersistTaps="handled"
+                      keyboardDismissMode="on-drag"
                       className="flex-1"
                       contentContainerStyle={{ paddingBottom: 16 }}
                     >
                       <View className="mb-4">
-                        <Text
-                          variant="label"
-                          className="happy-brand-eyebrow mb-2 text-[11px] text-ink-soft"
-                        >
-                          Habit Name *
+                        <Text variant="label" className="text-ink-muted font-medium mb-1.5">
+                          Habit name *
                         </Text>
                         <TextInput
                           value={habitName}
@@ -286,18 +268,24 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
                           placeholder="e.g., Morning stretch routine"
                           placeholderTextColor={INK_MUTED}
                           maxLength={50}
-                          className="happy-font-body-medium rounded-[22px] border-2 border-sage-100 bg-brand-surface-soft px-4 py-3 text-[15px] leading-6 text-ink"
+                          className="happy-font-body-medium rounded-xl border border-sage-100 bg-brand-surface-soft px-4 py-3 text-[17px] text-ink"
                         />
-                        <Text className="happy-font-body-medium mt-1 text-xs text-ink-soft">
-                          {habitName.length}/50
-                        </Text>
+                        <View className="flex-row items-center justify-between mt-1.5">
+                          {habitName.length === 0 ? (
+                            <Text variant="caption" className="text-ink-muted">
+                              Give your habit a name to get started
+                            </Text>
+                          ) : (
+                            <Text variant="caption" className="text-transparent"> </Text>
+                          )}
+                          <Text variant="caption-muted">
+                            {habitName.length}/50
+                          </Text>
+                        </View>
                       </View>
 
                       <View className="mb-6">
-                        <Text
-                          variant="label"
-                          className="happy-brand-eyebrow mb-2 text-[11px] text-ink-soft"
-                        >
+                        <Text variant="label" className="text-ink-muted font-medium mb-1.5">
                           Why is this important to you?
                         </Text>
                         <TextInput
@@ -309,11 +297,20 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
                           multiline
                           numberOfLines={3}
                           textAlignVertical="top"
-                          className="happy-font-body-medium min-h-[96px] rounded-[22px] border-2 border-sage-100 bg-brand-surface-soft px-4 py-3 text-[15px] leading-6 text-ink"
+                          className="happy-font-body-medium min-h-[96px] rounded-xl border border-sage-100 bg-brand-surface-soft px-4 py-3 text-[17px] text-ink"
                         />
-                        <Text className="happy-font-body-medium mt-1 text-xs text-ink-soft">
-                          {habitDescription.length}/200
-                        </Text>
+                        <View className="flex-row items-center justify-between mt-1.5">
+                          {habitName.length > 0 && habitDescription.length === 0 ? (
+                            <Text variant="caption" className="text-ink-muted flex-1 mr-4" numberOfLines={1}>
+                              Why do you want to {habitName.toLowerCase()}?
+                            </Text>
+                          ) : (
+                            <Text variant="caption" className="text-transparent flex-1"> </Text>
+                          )}
+                          <Text variant="caption-muted">
+                            {habitDescription.length}/200
+                          </Text>
+                        </View>
                       </View>
                     </ScrollView>
 

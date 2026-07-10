@@ -375,11 +375,11 @@ const NODE_VARIANT_REGISTRY: Record<string, NodeVariantConfig> = {
 const COLOR_THEME_REGISTRY: Record<string, ColorThemeConfig> = {
   green: {
     key: "green",
-    headerGradient: ["#7E9F76", "#6C8C65"],
+    headerGradient: ["#90B494", "#749678"],
     headerTextColor: "#FFFFFF",
-    pathActiveColor: "#7E9F76",
-    dividerColor: "#8DAA86",
-    jumpButtonColor: "#6C8C65",
+    pathActiveColor: "#90B494",
+    dividerColor: "#90B494",
+    jumpButtonColor: "#749678",
   },
   blue: {
     key: "blue",

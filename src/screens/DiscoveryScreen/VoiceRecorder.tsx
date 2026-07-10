@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
-import MindfulGradient from "./MindfulGradient";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import MicControlContainer from "./MicControlContainer";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
@@ -36,8 +35,14 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
   }, []);
 
+  const lastShuffleTime = useRef(0);
+
   const handleShufflePrompt = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const now = Date.now();
+    if (now - lastShuffleTime.current > 300) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      lastShuffleTime.current = now;
+    }
     rotation.value = withSpring(rotation.value + 360, { damping: 20, stiffness: 100, overshootClamping: true });
     shufflePrompt();
   }, [shufflePrompt, rotation]);
@@ -127,29 +132,15 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
   const isPaused = recordingCurrentState === "paused";
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#F8FAF7" }}>
+    <View className="flex-1 bg-sage-50">
       <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
-        <MindfulGradient position={"top"} isSpeaking={isRecording} />
 
         <View className="flex-1 justify-between px-6 py-6">
           {/* Top Header Row */}
-          <View className="flex-row justify-between items-center h-12">
-            <TouchableOpacity
-              onPress={handleCloseRecorder}
-              className="p-2.5 rounded-full bg-sage-pill shadow-sm active:opacity-80"
-              activeOpacity={0.7}
-              accessibilityRole="button"
-              accessibilityLabel="Close voice recorder"
-            >
-              <Feather name="x" size={20} color={INK_SOFT} />
-            </TouchableOpacity>
-
+          <View className="items-center justify-center h-12">
             <Text className="text-ink-soft text-sm happy-font-body-semibold">
               {formattedDateTime(selectedDate)}
             </Text>
-
-            {/* Hidden layout balancer */}
-            <View className="w-11 h-11" />
           </View>
 
           {/* Center Section: Prompt Text & Shuffle */}
@@ -160,13 +151,13 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
             
             <TouchableOpacity
               onPress={handleShufflePrompt}
-              className="px-4 py-2 bg-sage-pill rounded-full flex-row items-center gap-2 shadow-sm active:opacity-80"
+              className="py-2 flex-row items-center gap-2 active:opacity-60"
               activeOpacity={0.7}
             >
               <Animated.View style={rotateStyle}>
-                <HugeiconsIcon icon={ReloadIcon} size={14} color={SAGE[600]} />
+                <HugeiconsIcon icon={ReloadIcon} size={16} color={INK_SOFT} />
               </Animated.View>
-              <Text className="text-sage-600 text-xs happy-font-body-bold">
+              <Text className="text-ink-soft text-sm happy-font-body-semibold">
                 Shuffle prompt
               </Text>
             </TouchableOpacity>
@@ -175,16 +166,16 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
           {/* Bottom Section: Timer Display and Controls */}
           <View className="items-center gap-6 pb-4">
             <View className="items-center">
-              <Text className="text-ink text-5xl tracking-tight happy-font-body-bold">
+              <Text className="text-ink-soft text-5xl tracking-tight happy-font-body-bold">
                 {formatTime(totalDuration)}
               </Text>
               {isRecording && (
-                <Text className="text-emerald-600 text-[11px] tracking-widest mt-1.5 happy-font-body-bold uppercase">
+                <Text className="text-emerald-600 text-sm mt-3 happy-font-body-semibold">
                   Recording...
                 </Text>
               )}
               {isPaused && (
-                <Text className="text-amber-600 text-[11px] tracking-widest mt-1.5 happy-font-body-bold uppercase">
+                <Text className="text-ink-soft text-sm mt-3 happy-font-body-semibold">
                   Paused
                 </Text>
               )}

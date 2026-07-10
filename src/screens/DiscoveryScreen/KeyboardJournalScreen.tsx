@@ -2,6 +2,7 @@ import React, {
   useState,
   useCallback,
   useEffect,
+  useRef,
 } from "react";
 import {
   View,
@@ -13,6 +14,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Keyboard,
+  Switch,
 } from "react-native";
 import {
   SafeAreaView,
@@ -54,6 +56,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const [localSelectedDate, setLocalSelectedDate] = useAtom(
     selectedDateDiscoveryAtom
   );
+  const scrollViewRef = useRef<ScrollView>(null);
   const [realtimeResult, setRealtimeResult] = useState<string>("");
   const [isRealtimeActive, setIsRealtimeActive] = useState(false);
   const [enableAIInsights, setEnableAIInsights] = useState<boolean>(true);
@@ -114,6 +117,10 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
   const isSubmitDisabled = journalText.trim().length === 0;
 
+  const MAX_LENGTH = 7000;
+  const MAX_PROGRESS_WIDTH = 30;
+  const progressWidth = Math.max(4, Math.min(MAX_PROGRESS_WIDTH, (journalText.length / MAX_LENGTH) * MAX_PROGRESS_WIDTH));
+
   return (
     <>
       <View className="flex-1 bg-white" style={{ flex: 1, paddingTop: insets.top }}>
@@ -131,7 +138,9 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                 Keyboard.dismiss();
                 onClose();
               }}
-              className="p-2 -ml-2 rounded-full"
+              accessibilityLabel="Cancel journal entry"
+              accessibilityRole="button"
+              className="p-2 -ml-2 rounded-full w-10 h-10 items-center justify-center"
               style={({ pressed }) => ({
                 opacity: pressed ? 0.7 : 1,
               })}
@@ -141,6 +150,8 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
 
             <Pressable
               onPress={handleDatePress}
+              accessibilityLabel={`Date: ${formattedDate}. Tap to change.`}
+              accessibilityRole="button"
               className="rounded-full bg-sage-pill px-4 py-2"
             >
               <Text className="text-sage-600 text-sm happy-font-body-bold">
@@ -148,11 +159,23 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               </Text>
             </Pressable>
 
-            <View className="w-8" />
+            <Pressable
+              disabled={isRealtimeActive}
+              onPress={() => setEnableAIInsights(!enableAIInsights)}
+              accessibilityLabel={enableAIInsights ? "Disable AI Insights" : "Enable AI Insights"}
+              accessibilityRole="button"
+              className={`p-2 -mr-2 rounded-full w-10 h-10 items-center justify-center ${enableAIInsights ? 'bg-sage-100' : ''}`}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.7 : 1,
+              })}
+            >
+              <HugeiconsIcon icon={SparklesIcon} size={20} color={enableAIInsights ? SAGE[600] : INK_MUTED} />
+            </Pressable>
           </View>
 
           {/* Content */}
           <ScrollView
+            ref={scrollViewRef}
             className="flex-1 px-6"
             style={{ flex: 1 }}
             showsVerticalScrollIndicator={false}
@@ -166,6 +189,8 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               </Text>
               <Pressable
                 onPress={handleShufflePrompt}
+                accessibilityLabel="Shuffle writing prompt"
+                accessibilityRole="button"
                 className="p-2"
                 style={({ pressed }) => ({
                   opacity: pressed ? 0.7 : 1,
@@ -182,25 +207,34 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             </View>
 
             <View
-              className="happy-brand-card flex-1 rounded-2xl p-5"
+              className="happy-brand-card flex-1 rounded-2xl p-5 relative"
               style={{ minHeight: 200 }}
             >
               <TextInput
                 focusable
-                maxLength={7000}
+                maxLength={MAX_LENGTH}
                 value={journalText + realtimeResult}
                 onChangeText={setJournalText}
                 placeholder="Start by answering the prompt, or write anything on your mind."
                 placeholderTextColor={INK_MUTED}
                 multiline
                 textAlignVertical="top"
-                className="text-ink text-[17px] leading-7 happy-font-body"
+                className="text-ink text-[17px] leading-7 happy-font-body pb-6"
                 style={{
                   flex: 1,
                   minHeight: 140,
                 }}
                 autoFocus
               />
+              <View className="absolute bottom-4 right-4 flex-row items-center gap-1.5">
+                <View 
+                  className="rounded-full h-1.5 bg-sage-400" 
+                  style={{ width: progressWidth }} 
+                />
+                <Text className="text-sage-600 text-[10px] happy-font-body-semibold">
+                  {journalText.length}/{MAX_LENGTH / 1000}k
+                </Text>
+              </View>
             </View>
           </ScrollView>
 
@@ -209,14 +243,6 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
             className="px-6 pt-4 bg-white border-t border-sage-100"
             style={{ paddingBottom: 24}}
           >
-            {/* XP Counter */}
-            <View className="mb-4 items-center">
-              <Text className="text-ink-muted text-sm happy-font-body-medium">
-                {journalText.length}{" "}
-                <Text className="text-sage-500 text-sm">/7000</Text>
-              </Text>
-            </View>
-
             {/* Action Buttons */}
             <View className="flex-row items-center justify-between gap-3">
               <WhisperUI
@@ -224,29 +250,21 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                   setRealtimeResult(text);
                 }}
                 onStop={() => {
-                  setJournalText((prev) => prev + " \n " + realtimeResult);
+                  setJournalText((prev) => {
+                    const trimmedPrev = prev.trim();
+                    const trimmedResult = realtimeResult.trim();
+                    if (!trimmedPrev) return trimmedResult;
+                    if (!trimmedResult) return trimmedPrev;
+                    return trimmedPrev + "\n\n" + trimmedResult;
+                  });
                   setRealtimeResult("");
+                  setTimeout(() => {
+                    scrollViewRef.current?.scrollToEnd({ animated: true });
+                  }, 100);
                 }}
                 isRealtimeActive={isRealtimeActive}
                 setIsRealtimeActive={setIsRealtimeActive}
               />
-
-              <View className="flex-row items-center gap-3">
-                <Button
-                  disabled={isRealtimeActive}
-                  onPress={() => setEnableAIInsights(!enableAIInsights)}
-                  variant={enableAIInsights ? "primary" : "secondary"}
-                  size="lg"
-                  width={56}
-                  fullWidth={false}
-                  leftIcon={
-                    <HugeiconsIcon
-                      icon={SparklesIcon}
-                      size={22}
-                      color={enableAIInsights ? BRAND_SURFACE : INK_SOFT}
-                    />
-                  }
-                />
 
                 <Button
                   disabled={isSubmitDisabled || isRealtimeActive}
@@ -255,11 +273,11 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                   size="lg"
                   width={56}
                   fullWidth={false}
+                  accessibilityLabel="Submit journal entry"
                   leftIcon={
                     <HugeiconsIcon icon={Tick01Icon} size={22} color={BRAND_SURFACE} />
                   }
                 />
-              </View>
             </View>
           </View>
         </KeyboardAvoidingView>
@@ -279,6 +297,8 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           <Pressable
             className="flex-1 bg-black/50 px-2 justify-center items-center"
             onPress={handleCloseCalendar}
+            accessibilityLabel="Dismiss calendar"
+            accessibilityRole="button"
           >
             <Pressable
               className="bg-white rounded-2xl p-4 w-full border-2 border-sage-100"
@@ -291,6 +311,8 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                   </Text>
                   <Pressable
                     onPress={handleTodayPress}
+                    accessibilityLabel="Jump to today"
+                    accessibilityRole="button"
                     className="bg-sage-pill px-3 py-1.5 rounded-full"
                   >
                     <Text className="text-sage-600 text-xs happy-font-body-semibold">
@@ -298,7 +320,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
                     </Text>
                   </Pressable>
                 </View>
-                <Pressable onPress={handleCloseCalendar} className="p-2">
+                <Pressable onPress={handleCloseCalendar} accessibilityLabel="Close calendar" accessibilityRole="button" className="p-2">
                   <HugeiconsIcon icon={Cancel01Icon} size={24} color={INK_SOFT} />
                 </Pressable>
               </View>

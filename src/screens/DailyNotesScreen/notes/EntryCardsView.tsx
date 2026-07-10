@@ -21,7 +21,7 @@ import { SectionHeader } from "@/src/components/ui/SectionHeader";
 import { FeelingsType } from "@/src/network/genAi";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
-  Bookmark02Icon,
+  BookmarkCheck01Icon,
   Delete02Icon,
   NoteIcon,
   Mic01Icon,
@@ -135,7 +135,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
         ListFooterComponent={ListFooterComponent}
-        contentContainerStyle={{ gap: 12 }}
+        contentContainerStyle={{ gap: 12, paddingBottom: 100 }}
         keyExtractor={(item: JournalEntry) => item.id ? item.id.toString() : Math.random().toString()}
         renderItem={({ item: entry, index }: { item: JournalEntry, index: number }) => (
           <View key={entry.id}>
@@ -218,7 +218,7 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
           </Text>
           <View className="flex-row items-center">
             {entry.selected_date && (
-              <Text variant="caption-muted">
+              <Text variant="caption">
                 {format(new Date(entry.selected_date), "h:mm a")}
               </Text>
             )}
@@ -229,14 +229,14 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
               color={INK_MUTED}
             />
             {!!entry.duration_seconds && (
-              <Text variant="caption-muted" className="ml-1">
+              <Text variant="caption" className="ml-1">
                 {getDuration(entry.duration_seconds)}
               </Text>
             )}
             {!!entry.words_count && (
               <>
                 <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
-                <Text variant="caption-muted">
+                <Text variant="caption">
                   {entry.words_count} words
                 </Text>
               </>
@@ -247,10 +247,10 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
         <View className="flex-row items-center gap-2">
           {isBookmarked && (
             <HugeiconsIcon
-              icon={Bookmark02Icon}
+              icon={BookmarkCheck01Icon}
               size={16}
-              fill={GOLD}
-              color={GOLD}
+              fill={SAGE[600]}
+              color={SAGE[600]}
             />
           )}
           {entry.moods?.main_mood && (

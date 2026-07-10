@@ -153,9 +153,14 @@ export default function AppLayout() {
           headerShown: true,
           title: "XP History",
           freezeOnBlur: true,
-          headerBackTitle: "Achievements",
+          headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
-          headerTransparent: true,
+          headerStyle: { backgroundColor: "#FFFFFF" },
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            fontFamily: "happy-font-heading-bold",
+            fontSize: 20,
+          },
         }}
       />
       <Stack.Screen

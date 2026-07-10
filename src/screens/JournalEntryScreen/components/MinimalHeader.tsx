@@ -3,6 +3,8 @@ import { View, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { isToday, isYesterday, format } from "date-fns";
 import { Text } from "@/src/components/ui/Text";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Bookmark02Icon, BookmarkCheck01Icon, BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
 
 interface MinimalHeaderProps {
   isEditing: boolean;
@@ -13,6 +15,9 @@ interface MinimalHeaderProps {
   saving?: boolean;
   onDelete?: () => void;
   date?: string | null;
+  isBookmarked?: boolean | null;
+  onBookmark?: () => void;
+  bookmarking?: boolean;
 }
 
 const getRelativeDayTitle = (dateStr?: string | null): string => {
@@ -45,6 +50,9 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
     saving = false,
     onDelete,
     date,
+    isBookmarked,
+    onBookmark,
+    bookmarking = false,
   }: MinimalHeaderProps) => {
     return (
       <View className="flex-row items-center justify-between px-4 py-4 mb-4">
@@ -79,6 +87,24 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
               accessibilityLabel="Delete entry"
             >
               <Feather name="trash-2" size={16} color="#EF4444" />
+            </TouchableOpacity>
+          )}
+
+          {!isEditing && onBookmark && (
+            <TouchableOpacity
+              onPress={onBookmark}
+              disabled={bookmarking}
+              className="w-10 h-10 items-center justify-center rounded-full"
+              activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+            >
+              <HugeiconsIcon
+                icon={isBookmarked ? BookmarkCheck01Icon : BookmarkAdd01Icon}
+                size={22}
+                color={isBookmarked ? "#4F6354" : "#1C1C1E"} // roughly sage-700 vs ink
+                variant={isBookmarked ? "solid" : "stroke"}
+              />
             </TouchableOpacity>
           )}
 

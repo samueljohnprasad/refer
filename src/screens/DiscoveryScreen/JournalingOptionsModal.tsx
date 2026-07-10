@@ -58,24 +58,10 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
             ]}
           >
             <RNHostView>
-              <View className="flex-1">
-                <ScrollView
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{
-                    paddingBottom: 24,
-                    paddingHorizontal: 20,
-                    paddingTop: 16,
-                  }}
-                >
+              <View className="flex-1" accessibilityViewIsModal={true}>
+                <View className="border-b border-brand-border/40 px-5 pb-2 pt-4">
                   {/* Header */}
-                  <View className="mb-6 items-center">
-                    <View className="mb-4 h-16 w-16 items-center justify-center rounded-2xl bg-sage-50">
-                      <HugeiconsIcon
-                        icon={BookOpen01Icon}
-                        size={32}
-                        color={SAGE[600]}
-                      />
-                    </View>
+                  <View className="mb-8 items-center">
                     <Text variant="display" className="text-center">
                       Journaling Options
                     </Text>
@@ -83,11 +69,13 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
 
                   {/* Free Write Option */}
                   <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="Free Write: Write without a prompt"
                     onPress={() => {
                       onSelectPrompt("Free Write");
                       onClose();
                     }}
-                    className="mb-6 flex-row items-center rounded-3xl border-2 border-brand-border bg-brand-surface p-5"
+                    className="mb-6 flex-row items-center p-2 active:opacity-70"
                   >
                     <View className="mr-4 h-12 w-12 items-center justify-center rounded-[18px] bg-sage-50">
                       <HugeiconsIcon
@@ -106,11 +94,13 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
 
                   {/* Scan Journal Option */}
                   <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="Import Handwritten Entry: Capture handwritten entries"
                     onPress={() => {
                       onScanJournal?.();
                       onClose();
                     }}
-                    className="mb-4 flex-row items-center rounded-3xl border-2 border-brand-border bg-brand-surface p-5"
+                    className="mb-6 flex-row items-center p-2 active:opacity-70"
                   >
                     <View className="mr-4 h-12 w-12 items-center justify-center rounded-[18px] bg-sage-50">
                       <HugeiconsIcon
@@ -120,30 +110,34 @@ export const JournalingOptionsModal: React.FC<JournalingOptionsModalProps> = ({
                       />
                     </View>
                     <View className="flex-1">
-                      <Text variant="body-bold">Scan Journal Page</Text>
+                      <Text variant="body-bold">Import Handwritten Entry</Text>
                       <Text variant="body" color="soft">
                         Capture handwritten entries
                       </Text>
                     </View>
                   </Pressable>
+                </View>
 
-                  <Text variant="eyebrow" className="mb-4 ml-1">
-                    Or select a Prompt
-                  </Text>
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  contentContainerClassName="px-5 pb-6 pt-4"
+                >
 
                   {allPrompts.map((prompt, index) => {
                     const isSelected = prompt === currentPrompt;
                     return (
                       <Pressable
                         key={index}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Prompt: ${prompt}${isSelected ? ", selected" : ""}`}
                         onPress={() => {
                           onSelectPrompt(prompt);
                           onClose();
                         }}
-                        className={`mb-3 flex-row items-center rounded-2xl border-2 p-5 ${
+                        className={`mb-3 flex-row items-center rounded-2xl p-5 active:opacity-70 ${
                           isSelected
-                            ? "border-sage-600 bg-sage-500"
-                            : "border-brand-border bg-brand-surface"
+                            ? "bg-sage-500"
+                            : ""
                         }`}
                       >
                         <Text

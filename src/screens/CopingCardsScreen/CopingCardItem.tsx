@@ -60,6 +60,7 @@ interface CopingCardItemProps {
 export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
   ({ card, onToggleStar, onArchive }) => {
     const [expanded, setExpanded] = useState(false);
+    const [isTruncated, setIsTruncated] = useState(false);
     const emoji = EXERCISE_EMOJI[card.exercise_type] ?? "💡";
     const exerciseLabel =
       EXERCISE_LABEL[card.exercise_type] ?? card.exercise_type;
@@ -67,14 +68,23 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
 
     const handleToggleExpand = useCallback(() => setExpanded((p) => !p), []);
 
+    const handleTextLayout = useCallback(
+      (e: any) => {
+        if (!expanded) {
+          setIsTruncated(e.nativeEvent.lines.length >= MAX_LINES_COLLAPSED);
+        }
+      },
+      [expanded]
+    );
+
     return (
       <View
         className="rounded-2xl mb-4 bg-brand-surface"
         style={{
           borderWidth: 2,
           borderColor: card.starred ? SAGE[300] : BRAND_BORDER_STRONG,
-          borderBottomWidth: card.starred ? 4 : 4,
-          borderBottomColor: card.starred ? SAGE[400] : "#D5D5D5",
+          borderBottomWidth: 4,
+          borderBottomColor: card.starred ? SAGE[400] : BRAND_BORDER_STRONG,
         }}
       >
         {/* Header row */}
@@ -97,9 +107,8 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
           )}
         </View>
 
-        {/* Reframe label */}
         <View className="px-4 pb-1">
-          <Text className="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-1">
+          <Text className="text-[11px] font-bold text-ink-muted uppercase tracking-widest mb-1">
             {card.reframe_label}
           </Text>
         </View>
@@ -112,27 +121,32 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
           <Text
             className="text-[16px] text-ink leading-relaxed"
             numberOfLines={expanded ? undefined : MAX_LINES_COLLAPSED}
+            onTextLayout={handleTextLayout}
           >
             {card.reframe_text}
           </Text>
-          {!expanded && card.reframe_text.length > 140 && (
+          {!expanded && isTruncated && (
             <Text className="text-[13px] font-semibold text-sage-600 mt-1">
               Read more
+            </Text>
+          )}
+          {expanded && isTruncated && (
+            <Text className="text-[13px] font-semibold text-sage-600 mt-1">
+              Show less
             </Text>
           )}
         </Pressable>
 
         {/* Action row */}
         <View
-          className="flex-row items-center px-4 py-3 border-t"
+          className="flex-row items-center px-4 py-1 border-t"
           style={{ borderTopColor: BRAND_BORDER_STRONG }}
         >
           <Pressable
             onPress={onToggleStar}
             accessibilityRole="button"
             accessibilityLabel={card.starred ? "Unstar" : "Star"}
-            hitSlop={8}
-            className="flex-row items-center gap-1.5 active:opacity-60 mr-5"
+            className="flex-row items-center gap-1.5 active:opacity-60 mr-2 pr-4 min-h-[44px]"
           >
             <HugeiconsIcon
               icon={card.starred ? BookmarkCheck01Icon : BookmarkAdd01Icon}
@@ -151,9 +165,8 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
           <Pressable
             onPress={onArchive}
             accessibilityRole="button"
-            accessibilityLabel="Archive"
-            hitSlop={8}
-            className="flex-row items-center gap-1.5 active:opacity-60"
+            accessibilityLabel={card.archived ? "Restore" : "Archive"}
+            className="flex-row items-center gap-1.5 active:opacity-60 px-2 min-h-[44px]"
           >
             <HugeiconsIcon
               icon={Archive01Icon}
@@ -162,7 +175,7 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
               strokeWidth={2}
             />
             <Text className="text-[13px] font-semibold text-ink-muted">
-              Archive
+              {card.archived ? "Restore" : "Archive"}
             </Text>
           </Pressable>
         </View>

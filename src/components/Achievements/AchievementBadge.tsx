@@ -2,8 +2,7 @@ import React from "react";
 import { View, Text, Pressable, Image } from "react-native";
 import type { Achievement } from "@/src/types/achievements";
 // FIX #28: Removed unused Svg and Polygon imports (dead code)
-import { Grayscale } from "react-native-color-matrix-image-filters";
-
+import { SAGE, INK_MUTED } from "@/lib/tokens";
 interface AchievementBadgeProps {
   achievement: Achievement;
   isUnlocked: boolean;
@@ -68,71 +67,46 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
       ]}
     >
       {/* Badge Image */}
-      <View
-        className="relative items-center justify-center"
-        style={{ width: styles.hex, height: styles.hex }}
-      >
-        <View className="absolute items-center justify-center">
-          {achievement.imageAsset ? (
-            <Grayscale amount={isUnlocked ? 0 : 1}>
-              <Image
-                source={achievement.imageAsset.unlocked}
+          <View 
+            className="items-center justify-center rounded-full border bg-white"
+            style={{ 
+              width: styles.hex * 0.75, 
+              height: styles.hex * 0.75,
+              borderColor: isUnlocked ? SAGE[200] : "#E5E7EB",
+              backgroundColor: isUnlocked ? "#F4F7F4" : "#F9FAFB",
+              shadowColor: isUnlocked ? SAGE[600] : "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: isUnlocked ? 0.04 : 0.02,
+              shadowRadius: 4,
+              elevation: 1,
+            }}
+          >
+            {isNumberIcon ? (
+              <Text
+                className="font-bold"
                 style={{
-                  width: styles.hex,
-                  height: styles.hex,
-                  opacity: isUnlocked ? 1 : 0.45,
+                  fontSize: styles.icon,
+                  color: isUnlocked ? SAGE[600] : "#4B5563",
                 }}
-                resizeMode="contain"
-              />
-            </Grayscale>
-          ) : isNumberIcon ? (
-            <Text
-              className="font-bold"
-              style={{
-                fontSize: styles.icon,
-                // FIX #31: Locked number icon: use gray-500 not gray-400 for better contrast
-                color: isUnlocked ? "#7B61FF" : "#6B7280",
-              }}
-            >
-              {achievement.icon}
-            </Text>
-          ) : (
-            <Text
-              style={{
-                fontSize: styles.icon,
-                opacity: isUnlocked ? 1 : 0.45,
-              }}
-            >
-              {achievement.icon}
-            </Text>
-          )}
-
-          {/* XP badge — amber tint, only when unlocked */}
-          {isUnlocked && (
-            <View
-              className="absolute -bottom-1 px-1 py-0.5 rounded-full border border-amber-100"
-              style={{
-                backgroundColor: "#FEF3C7",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: 0.05,
-                shadowRadius: 2,
-                elevation: 1,
-                zIndex: 1,
-              }}
-            >
-              <Text className="text-[10px] font-bold text-amber-700" numberOfLines={1}>
-                +{achievement.xpBonus} XP
+              >
+                {achievement.icon}
               </Text>
-            </View>
-          )}
-        </View>
-      </View>
+            ) : (
+              <Text
+                style={{
+                  fontSize: styles.icon,
+                  opacity: isUnlocked ? 1 : 0.5,
+                }}
+              >
+                {achievement.icon}
+              </Text>
+            )}
+          </View>
 
       {/* Badge Name */}
       <Text
         className={`${styles.nameSize} happy-font-body-bold text-center mt-1.5 ${
-          isUnlocked ? "text-ink" : "text-ink-muted"
+          isUnlocked ? "text-ink" : "text-gray-600"
         }`}
         numberOfLines={2}
       >
@@ -167,7 +141,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
             <Text
               className={`happy-font-body-semibold text-[11px] text-center ${
                 showProgressBar ? "mt-0.5" : ""
-              } ${isUnlocked ? "text-sage-600" : "text-ink-muted"}`}
+              } ${isUnlocked ? "text-sage-600" : "text-gray-600"}`}
             >
               {displayedProgress}/{target}
             </Text>

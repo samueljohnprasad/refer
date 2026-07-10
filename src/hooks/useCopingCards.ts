@@ -23,6 +23,8 @@ export interface UseCopingCardsReturn {
   toggleStar: (id: string) => Promise<void>;
   archiveCard: (id: string) => Promise<void>;
   unarchiveCard: (id: string) => Promise<void>;
+  isError: boolean;
+  refetch: () => void;
 }
 
 // ─── Hook ────────────────────────────────────────────────────────────────────
@@ -212,5 +214,7 @@ export const useCopingCards = (
     toggleStar,
     archiveCard,
     unarchiveCard,
+    isError: query.isError,
+    refetch: query.refetch,
   };
 };

@@ -19,6 +19,7 @@ import {
 import { Enums } from "@/database.types";
 import { useColorScheme } from "react-native";
 import { FeelingsType } from "@/src/network/genAi";
+import * as Haptics from "expo-haptics";
 
 const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   insights,
@@ -26,7 +27,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
 }: JournalEntryScreenProps) => {
   const toast = useToast();
   const { saveJournal, saving } = useSaveJournal();
-  const { deleteJournal } = useJournalOperations();
+  const { deleteJournal, toggleBookmark, bookmarking } = useJournalOperations();
   const { top, bottom } = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const MOOD_GRADIENTS: { [key: string]: string[] } = {
@@ -48,6 +49,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   const [selectedMood, setSelectedMood] = useState<Enums<"mood">>(
     entry?.moods?.main_mood || "great"
   );
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(entry?.is_bookmarked ?? false);
 
   const {
     isEditing,
@@ -208,6 +210,34 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
           onSave={handleContinue}
           saving={saving}
           onDelete={handleDeleteEntry}
+          isBookmarked={isBookmarked}
+          onBookmark={async () => {
+            if (entry?.id) {
+              const newStatus = !isBookmarked;
+              setIsBookmarked(newStatus);
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              
+              toast.show({
+                placement: "top",
+                render: ({ id }) => (
+                  <Toast nativeID={id} variant="solid" action="success">
+                    <ToastTitle>{newStatus ? "Entry bookmarked" : "Bookmark removed"}</ToastTitle>
+                  </Toast>
+                ),
+              });
+
+              try {
+                await toggleBookmark({
+                  journalId: entry.id,
+                  selectedDate: entry.selected_date ? new Date(entry.selected_date) : new Date(),
+                  isBookmarked: !newStatus,
+                });
+              } catch (e) {
+                setIsBookmarked(!newStatus);
+              }
+            }
+          }}
+          bookmarking={bookmarking}
         />
 
         {isEditing && (

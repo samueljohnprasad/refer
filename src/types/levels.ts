@@ -6,7 +6,6 @@
 export interface LevelTier {
   level: number;
   name: string;
-  icon: string;
   minXP: number;
   maxXP: number;
   color: string;
@@ -16,7 +15,6 @@ export const LEVEL_TIERS: LevelTier[] = [
   {
     level: 1,
     name: "Beginner",
-    icon: "🌱",
     minXP: 0,
     maxXP: 100,
     color: "#86EFAC",
@@ -24,7 +22,6 @@ export const LEVEL_TIERS: LevelTier[] = [
   {
     level: 2,
     name: "Mindful",
-    icon: "🧘",
     minXP: 101,
     maxXP: 500,
     color: "#93C5FD",
@@ -32,7 +29,6 @@ export const LEVEL_TIERS: LevelTier[] = [
   {
     level: 3,
     name: "Balanced",
-    icon: "⚖️",
     minXP: 501,
     maxXP: 1500,
     color: "#C4B5FD",
@@ -40,7 +36,6 @@ export const LEVEL_TIERS: LevelTier[] = [
   {
     level: 4,
     name: "Enlightened",
-    icon: "✨",
     minXP: 1501,
     maxXP: 3000,
     color: "#FDE047",
@@ -48,7 +43,6 @@ export const LEVEL_TIERS: LevelTier[] = [
   {
     level: 5,
     name: "Zen Master",
-    icon: "🏆",
     minXP: 3001,
     maxXP: Infinity,
     color: "#F472B6",

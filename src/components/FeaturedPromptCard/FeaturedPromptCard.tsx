@@ -54,24 +54,15 @@ export const FeaturedPromptCard: React.FC<FeaturedPromptCardProps> = ({
       accessibilityLabel={`Take a moment to write. Featured Prompt: ${currentPrompt.description}.`}
       accessibilityHint="Opens the journal recorder for this prompt"
     >
-      <View className="mb-6 flex-row items-center justify-between z-10">
-        <View className="flex-row items-center gap-1">
-          <Text className="happy-font-body-bold text-[14px] text-ink-muted">
-            Journal • {currentDateStr}
-          </Text>
-          <Feather name="chevron-down" size={14} color={INK_MUTED} />
-        </View>
-        <View className="flex-row items-center gap-5">
-          <Feather name="menu" size={20} color={SAGE[700]} />
-          <TouchableOpacity 
-            onPress={cyclePrompt}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            accessibilityLabel="Show next prompt"
-            accessibilityRole="button"
-          >
-            <Feather name="refresh-cw" size={18} color={SAGE[700]} />
-          </TouchableOpacity>
-        </View>
+      <View className="mb-6 flex-row items-center justify-end z-10">
+        <TouchableOpacity 
+          onPress={cyclePrompt}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          accessibilityLabel="Show next prompt"
+          accessibilityRole="button"
+        >
+          <Feather name="refresh-cw" size={18} color={SAGE[700]} />
+        </TouchableOpacity>
       </View>
 
       <View className="z-10 pr-[120px] pb-12" key={currentPrompt.id}>

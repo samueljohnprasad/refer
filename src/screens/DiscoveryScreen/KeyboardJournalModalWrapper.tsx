@@ -52,6 +52,7 @@ const KeyboardJournalModalWrapper: React.FC = () => {
             setInsights(insights);
             setStepper(2);
           }}
+          onCancel={onClose}
         />
       )}
       {stepper === 2 && (

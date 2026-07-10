@@ -149,25 +149,24 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   );
 
   return (
-    <View style={{ paddingBottom: 80 }}>
+    <View className="pb-48">
       {/* Header - Only show when not empty */}
       {habitsWithStatus.length > 0 && (
         <SectionHeader
-          title="Daily Habits"
+          title="Your Habits"
           icon={Tick01Icon}
           count={totalCount > 0 ? `${completedCount}/${totalCount}` : undefined}
           className="mb-4"
           rightElement={
             <>
-              <XPBadge amount={XP_REWARDS[XPActionType.HABIT_COMPLETION]} />
               <SvgAppButton
                 onPress={handleAddHabitPress}
-                width={46}
+                width={42}
                 height={42}
                 color={SAGE[500]}
                 backgroundColor={SAGE[700]}
-                leftRadius={16}
-                rightRadius={16}
+                leftRadius={21}
+                rightRadius={21}
                 pressDepth={4}
               >
                 <View className="flex-1 items-center justify-center">
@@ -201,21 +200,15 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
               style={SECTION_SHADOW}
             >
               {/* Category Header */}
-              <View className="border-b border-sage-100 px-4 py-3.5">
-                <View className="flex-row items-center">
-                  <View className="mr-3 h-11 w-11 items-center justify-center rounded-full bg-sage-50">
-                    <Text className="text-xl">
-                      {TIME_CATEGORY_CONFIG[category].emoji}
-                    </Text>
-                  </View>
-                  <View className="flex-1">
-                    <Text className="happy-font-body-bold text-[15px] text-ink">
-                      {TIME_CATEGORY_CONFIG[category].label}
-                    </Text>
-                    <Text className="happy-font-body-medium text-[13px] text-ink-muted">
-                      {TIME_CATEGORY_CONFIG[category].range}
-                    </Text>
-                  </View>
+              <View className="border-b border-sage-100 px-5 py-3 bg-sage-50/40">
+                <View className="flex-row items-center gap-2">
+                  <Text className="text-base">{TIME_CATEGORY_CONFIG[category].emoji}</Text>
+                  <Text className="happy-font-body-bold text-[11px] uppercase tracking-wider text-ink-muted">
+                    {TIME_CATEGORY_CONFIG[category].label}
+                  </Text>
+                  <Text className="happy-font-body-medium text-[11px] text-ink-muted ml-auto">
+                    {TIME_CATEGORY_CONFIG[category].range}
+                  </Text>
                 </View>
               </View>
 

@@ -55,11 +55,13 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [step, setStep] = useState<ProcessingStep>("idle");
   const [extractedText, setExtractedText] = useState<string>("");
+  const [extractedInsights, setExtractedInsights] = useState<InsightsType | null>(null);
 
   const resetState = useCallback((): void => {
     setImageUri(null);
     setStep("idle");
     setExtractedText("");
+    setExtractedInsights(null);
   }, []);
 
   const handleClose = useCallback((): void => {
@@ -149,13 +151,8 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
           isAudio: false,
         });
 
+        setExtractedInsights(insights);
         setStep("done");
-
-        // Pass insights back to parent
-        setTimeout(() => {
-          onInsightsReady(insights, text);
-          handleClose();
-        }, 500);
       } catch (error) {
         console.error("Processing error:", error);
         setStep("error");
@@ -194,43 +191,26 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
         >
           <Group
             modifiers={[
-              presentationDetents([{ fraction: 0.85 }]),
+              presentationDetents(imageUri ? [{ fraction: 0.85 }] : [{ fraction: 0.45 }]),
               presentationDragIndicator("visible"),
             ]}
           >
             <RNHostView>
-              <View
-                style={{ flex: 1, paddingBottom: 24, paddingHorizontal: 20 }}
-              >
+              <View className="flex-1 px-5 pb-6">
                 {/* Header */}
                 <View className="flex-row items-center justify-between mb-6 pt-5">
-                  <View className="flex-row items-center">
-                    <View className="w-12 h-12 rounded-[18px] bg-sage-50 items-center justify-center">
-                      <Feather name="camera" size={22} color={SAGE[600]} />
-                    </View>
-                    <Text variant="h2" className="ml-3">
-                      Scan Journal
-                    </Text>
-                  </View>
-                  <TouchableOpacity onPress={handleClose} className="p-2">
-                    <Feather name="x" size={26} color={INK_SOFT} />
-                  </TouchableOpacity>
+                  <Text variant="display">Scan Journal</Text>
                 </View>
 
                 {/* Content */}
                 <View className="flex-1">
                   {!imageUri ? (
-                    // Capture prompt
-                    <View className="flex-1 items-center justify-center">
-                      <View className="happy-mascot-stage w-40 h-40 rounded-[44px] bg-sage-50 border-0 items-center justify-center mb-7">
-                        <Feather name="camera" size={54} color={SAGE[600]} />
-                      </View>
-                      <Text variant="h1" className="text-center mb-3">
+                    <View className="flex-1 justify-center px-4">
+                      <Text variant="h1" className="text-center mb-4">
                         Capture Your Journal Page
                       </Text>
-                      <Text variant="body" color="muted" className="text-center px-8 mb-8">
-                        Take a photo of your handwritten or printed journal to extract
-                        text and get AI insights
+                      <Text variant="body" color="muted" className="text-center mb-10">
+                        Capture your handwritten or printed pages.
                       </Text>
                       <Button
                         label="Open Camera"
@@ -257,44 +237,54 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
                           className="w-full h-full"
                           resizeMode="contain"
                         />
-                        {/* Processing overlay */}
-                        {step !== "idle" && step !== "done" && (
-                          <View className="absolute inset-0 bg-black/50 items-center justify-center">
-                            <View className="bg-white rounded-[28px] p-6 items-center mx-8 border border-brand-border">
-                              <ActivityIndicator size="large" color={SAGE[500]} />
-                              <Text variant="body-bold" className="mt-4 text-center">
-                                {STEP_MESSAGES[step]}
-                              </Text>
-                              {step === "extracting" && (
-                                <Text variant="caption" color="muted" className="mt-2 text-center">
-                                  Reading handwritten text...
+                        {step !== "idle" && (
+                          <View className="absolute inset-0 bg-sage-50/85 items-center justify-center">
+                            {step === "done" ? (
+                              <View className="items-center px-8">
+                                <View className="w-16 h-16 rounded-full bg-sage-200 items-center justify-center mb-4">
+                                  <Feather name="check" size={32} color={SAGE[600]} />
+                                </View>
+                                <Text variant="h2" className="text-center mb-2">Ready</Text>
+                                <Text variant="body" color="soft" className="text-center mb-8">
+                                  Your insights have been successfully generated.
                                 </Text>
-                              )}
-                              {step === "analyzing" && (
-                                <Text variant="caption" color="muted" className="mt-2 text-center">
-                                  Creating personalized insights...
+                                <Button 
+                                  label="View Insights" 
+                                  variant="primary" 
+                                  onPress={() => {
+                                    if (extractedInsights) {
+                                      onInsightsReady(extractedInsights, extractedText);
+                                      handleClose();
+                                    }
+                                  }} 
+                                />
+                              </View>
+                            ) : (
+                              <View className="items-center w-full">
+                                <ActivityIndicator size="large" color={SAGE[600]} />
+                                <Text variant="body-bold" className="mt-6 text-center">
+                                  {STEP_MESSAGES[step]}
                                 </Text>
-                              )}
-                            </View>
+                                {step === "extracting" && (
+                                  <Text variant="body" color="soft" className="mt-2 text-center px-8">
+                                    Reading handwritten text...
+                                  </Text>
+                                )}
+                                {step === "analyzing" && (
+                                  <Text variant="body" color="soft" className="mt-2 text-center px-8">
+                                    Creating personalized insights...
+                                  </Text>
+                                )}
+                                <TouchableOpacity onPress={handleClose} className="mt-10 px-6 py-3 rounded-full bg-sage-200/50">
+                                  <Text variant="body-bold" color="ink">Cancel Processing</Text>
+                                </TouchableOpacity>
+                              </View>
+                            )}
                           </View>
                         )}
                       </View>
 
-                      {/* Extracted text preview */}
-                      {extractedText && step === "analyzing" && (
-                        <View className="bg-sage-50 rounded-2xl p-4 mb-4 max-h-32 border border-brand-border">
-                          <Text variant="eyebrow" className="mb-1">
-                            Extracted Text:
-                          </Text>
-                          <Text
-                            variant="caption"
-                            color="soft"
-                            numberOfLines={4}
-                          >
-                            {extractedText}
-                          </Text>
-                        </View>
-                      )}
+
 
                       {/* Action buttons */}
                       {step === "error" && (

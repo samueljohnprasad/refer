@@ -78,7 +78,7 @@ export const BookmarkedJournalsBottomSheet: React.FC<
                       <Text className="happy-font-heading-bold text-[30px] leading-9 text-ink">
                         Bookmarked Journals
                       </Text>
-                      <Text className="happy-font-body-medium text-[15px] text-ink-muted">
+                      <Text className="happy-font-body-medium text-[15px] text-ink/80">
                         {totalCount || 0} entries saved
                       </Text>
                     </View>

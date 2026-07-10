@@ -5,6 +5,7 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
+  Pressable,
   StyleSheet,
 } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -248,17 +249,15 @@ const StatCard: React.FC<StatCardProps> = ({
   accessibilityHint,
   onPress,
 }) => (
-  <Card
-    variant="tile"
-    radius="lg"
+  <Pressable
     onPress={onPress}
-    showDepth={true}
     disabled={!onPress}
-    className="mb-3"
-    contentClassName="p-4"
+    className="mb-4"
+    accessibilityRole="button"
     accessibilityLabel={accessibilityLabel ?? `${label}: ${value}. ${subtext}`}
     accessibilityHint={accessibilityHint}
   >
+    <View className="px-4 py-3 rounded-[16px] bg-brand-surface-soft border border-brand-border">
     <View className="flex-row items-center justify-between mb-1.5">
       <View className="flex-row items-center gap-2.5">
         {icon}
@@ -303,7 +302,8 @@ const StatCard: React.FC<StatCardProps> = ({
         </Text>
       </View>
     )}
-  </Card>
+  </View>
+</Pressable>
 );
 
 /** Shown when the achievements list is empty after loading. */
@@ -417,30 +417,15 @@ export const AchievementsScreen: React.FC = () => {
     <>
       <Stack.Screen
         options={{
-          headerRight: () => (
-            <TouchableOpacity
-              activeOpacity={0.75}
-              onPress={() => router.push("/tabs/screens/xp-history")}
-              className="happy-brand-status-chip flex-row items-center px-2.5 py-1.5"
-            >
-              <HugeiconsIcon
-                icon={StarsIcon}
-                size={16}
-                color={GOLD}
-                strokeWidth={2}
-              />
-              <Text className="happy-font-body-bold ml-1 text-sm text-ink">
-                {totalXP.toLocaleString()}
-              </Text>
-            </TouchableOpacity>
-          ),
+          headerShown: false,
         }}
       />
       <SafeAreaView
         className="happy-brand-screen flex-1"
         style={styles.screen}
-        edges={["left", "right"]}
+        edges={["left", "right", "top"]}
       >
+        <TopBar totalXP={totalXP} />
         <ScrollView
           ref={scrollViewRef}
           className="flex-1"
@@ -452,7 +437,7 @@ export const AchievementsScreen: React.FC = () => {
         >
           {/* ── Your Progress ── */}
           <View className="px-4 pt-3 pb-2">
-            <Text className="happy-brand-eyebrow mb-3">Your Progress</Text>
+            <Text className="happy-font-heading-bold text-[20px] text-ink mb-4">Your Progress</Text>
 
             <StatCard
               icon={
@@ -476,14 +461,14 @@ export const AchievementsScreen: React.FC = () => {
               icon={
                 <IconBubble
                   icon={StarsIcon}
-                  color={GOLD}
-                  bg={hexToRgba(GOLD, 0.14)}
+                  color="#8B6213"
+                  bg="#FDF6E3"
                 />
               }
-              label="XP from Badges"
+              label="Badge XP"
               value={`${totalXPEarned}`}
               subtext="XP earned from all unlocked badges"
-              color={GOLD}
+              color="#8B6213"
               accessibilityLabel={`XP earned from badges: ${totalXPEarned} points`}
               accessibilityHint="Opens XP history."
               onPress={handleXPHistoryPress}
@@ -497,7 +482,7 @@ export const AchievementsScreen: React.FC = () => {
                   bg={SAGE.selected}
                 />
               }
-              label="Categories Mastered"
+              label="Category Mastery"
               value={`${masteredCategoryCount}/5`}
               subtext="Complete all badges in a category"
               color={SAGE[600]}
@@ -514,7 +499,7 @@ export const AchievementsScreen: React.FC = () => {
               allBadgesOffsetY.current = event.nativeEvent.layout.y;
             }}
           >
-            <Text className="happy-brand-eyebrow">All Badges</Text>
+            <Text className="happy-font-heading-bold text-[20px] text-ink">All Badges</Text>
           </View>
 
           {/* Empty state */}
@@ -568,12 +553,7 @@ export const AchievementsScreen: React.FC = () => {
                     </View>
                   </View>
 
-                  <Card
-                    variant="tile"
-                    radius="lg"
-                    showDepth={false}
-                    contentClassName="px-2.5 py-3"
-                  >
+                  <View className="px-2.5 py-3">
                     <View className="flex-row flex-wrap">
                       {categoryAchievements.map((item) => (
                         <View
@@ -595,15 +575,17 @@ export const AchievementsScreen: React.FC = () => {
                         </View>
                       ))}
                     </View>
-                  </Card>
+                  </View>
                 </View>
               );
             },
           )}
 
+
+
           {/* Motivational footer */}
           {hasAchievements && unlockedCount < totalCount && (
-            <View className="px-4 items-center">
+            <View className="px-4 items-center mt-2">
               <Text className="happy-font-body-medium text-ink-muted text-xs text-center">
                 {totalCount - unlockedCount} badge
                 {totalCount - unlockedCount !== 1 ? "s" : ""} away from a full
