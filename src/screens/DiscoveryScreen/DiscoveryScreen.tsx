@@ -43,7 +43,7 @@ import { useUserProfile } from "@/hooks/data/useUserProfile";
 import { format } from "date-fns";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   AiMicIcon,
@@ -58,12 +58,17 @@ import { useJournalLimit } from "@/hooks/useJournalLimit";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
-import { Button, Host } from "@expo/ui/swift-ui";
+import { Button, Host, BottomSheet, Group, RNHostView, DatePicker as SwiftUIDateTimePicker, VStack, Text as SUIText } from "@expo/ui/swift-ui";
 import {
   foregroundStyle,
   buttonStyle,
   controlSize,
   labelStyle,
+  presentationDetents,
+  presentationDragIndicator,
+  datePickerStyle,
+  font,
+  padding,
 } from "@expo/ui/swift-ui/modifiers";
 import { CARD_SHADOW, ELEVATED_SHADOW } from "@/constants/shadows";
 import { Mascot } from "@/src/components/ui/Mascot";
@@ -76,11 +81,9 @@ import {
 } from "@/lib/tokens";
 
 // Static imports to avoid Metro bundler React.lazy chunk resolution crashes
-import VoiceRecorderModalWrapper from "./VoiceRecorderModalWrapper";
-import KeyboardJournalModalWrapper from "./KeyboardJournalModalWrapper";
 import { JournalingOptionsModal } from "./JournalingOptionsModal";
 import ImageJournalModal from "./ImageJournalModal";
-import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
+
 import { ConfigurableGlassMenu, type GlassMenuConfig } from "@/src/components/ui/ConfigurableGlassMenu";
 
 const GRADIENT_START = { x: 0, y: 0 } as const;
@@ -248,8 +251,7 @@ const Illustration = React.memo(() => (
 Illustration.displayName = "Illustration";
 
 function DiscoveryScreen() {
-  const [, setRecorderOpen] = useAtom(recorderOpenAtom);
-  const [, setKeyboardJournalOpen] = useAtom(keyboardJournalOpenAtom);
+  const router = useRouter();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const { date } = useLocalSearchParams<{ date: string }>();
   const [selectedDate, setSelectedDate] = useAtom(selectedDateDiscoveryAtom);
@@ -286,16 +288,16 @@ function DiscoveryScreen() {
       presentPaywall();
       return;
     }
-    setRecorderOpen(true);
-  }, [shouldShowPaywall, presentPaywall, setRecorderOpen]);
+    router.push("/tabs/screens/voice-recorder");
+  }, [shouldShowPaywall, presentPaywall, router]);
 
   const handleKeyboardPress = useCallback(() => {
     if (shouldShowPaywall) {
       presentPaywall();
       return;
     }
-    setKeyboardJournalOpen(true);
-  }, [shouldShowPaywall, presentPaywall, setKeyboardJournalOpen]);
+    router.push("/tabs/screens/keyboard-recorder");
+  }, [shouldShowPaywall, presentPaywall, router]);
 
   const handleDatePress = useCallback(() => {
     setIsCalendarVisible(true);
@@ -508,8 +510,7 @@ function DiscoveryScreen() {
         </View>
 
         <SuspensLoader>
-          <VoiceRecorderModalWrapper />
-          <KeyboardJournalModalWrapper />
+          <ImageJournalModal />
           <JournalingOptionsModal
             visible={isOptionsVisible}
             onClose={() => setIsOptionsVisible(false)}
@@ -528,56 +529,48 @@ function DiscoveryScreen() {
       </ScrollView>
 
       {/* Calendar Modal */}
-      <Modal
-        visible={isCalendarVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={handleCloseCalendar}
-        className="flex-1 h-full w-full"
-      >
-        <AnimatedBlurView
-          intensity={40}
-          className="flex-1 h-full w-full justify-center items-center"
+      <Host>
+        <BottomSheet
+          isPresented={isCalendarVisible}
+          onIsPresentedChange={(val) => {
+            if (!val) {
+              handleCloseCalendar();
+            }
+          }}
         >
-          <Pressable
-            className="flex-1 px-2 w-full justify-center items-center"
-            onPress={handleCloseCalendar}
+          <Group
+            modifiers={[
+              presentationDetents(["medium"]),
+              presentationDragIndicator("visible"),
+            ]}
           >
-            <Pressable
-              className="bg-white rounded-2xl p-4 w-full shadow-lg"
-              onPress={(e) => e.stopPropagation()}
+            <VStack
+              alignment="leading"
+              spacing={16}
+              modifiers={[padding(24)]}
             >
-              <View className="flex-row justify-between items-center mb-4">
-                <View className="flex-row items-center gap-3">
-                  <Text className="text-ink text-xl happy-font-body-bold">
-                    Select Date
-                  </Text>
-                  <Pressable
-                    onPress={handleTodayPress}
-                    className="bg-sage-pill px-3 py-1.5 rounded-full"
-                  >
-                    <Text className="text-sage-600 text-xs happy-font-body-semibold">
-                      Today
-                    </Text>
-                  </Pressable>
-                </View>
-                <Pressable onPress={handleCloseCalendar} className="p-2">
-                  <Feather name="x" size={24} color={INK_SOFT} />
-                </Pressable>
-              </View>
-              <SuspensLoader>
-                <CalendarPicker
-                  selectedDate={selectedDate}
-                  onDateSelect={handleDateSelect}
-                  visible={isCalendarVisible}
-                  moodMap={undefined}
-                  showMoodBadges={false}
-                />
-              </SuspensLoader>
-            </Pressable>
-          </Pressable>
-        </AnimatedBlurView>
-      </Modal>
+              <SUIText
+                modifiers={[
+                  font({ weight: "bold", size: 20 }),
+                  foregroundStyle("#1C1C1E"),
+                ]}
+              >
+                Select Date
+              </SUIText>
+              <SwiftUIDateTimePicker
+                onDateChange={(date: Date) => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  handleDateSelect(date);
+                }}
+                displayedComponents={["date"]}
+                title="Select Date"
+                selection={selectedDate}
+                modifiers={[datePickerStyle("graphical")]}
+              />
+            </VStack>
+          </Group>
+        </BottomSheet>
+      </Host>
     </SafeAreaView>
   );
 }

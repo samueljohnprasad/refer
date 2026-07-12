@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/components/ui/Text";
 import { HorizontalBarChart } from "@/src/screens/InsightsScreen/components/HorizontalBarChart";
 import { TrendLine } from "@/src/screens/InsightsScreen/components/TrendLine";
 import { EXERCISE_LABELS } from "@/src/constants/insights";

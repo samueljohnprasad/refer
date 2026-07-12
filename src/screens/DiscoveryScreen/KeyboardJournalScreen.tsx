@@ -27,13 +27,16 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
+import { Stack } from "expo-router";
+
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtom } from "jotai";
 import WhisperUI from "@/src/components/ui/swiftui";
 import * as Haptics from "expo-haptics";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { Host, RNHostView, DatePicker as SwiftUIDateTimePicker, Button as SUIButton, Toggle as SUIToggle, Menu as SUIMenu, Text as SUIText } from "@expo/ui/swift-ui";
+import { datePickerStyle, font, foregroundStyle, labelStyle, buttonStyle, controlSize, tint, toggleStyle, labelsHidden } from "@expo/ui/swift-ui/modifiers";
 import {
   Cancel01Icon,
   Tick01Icon,
@@ -61,7 +64,6 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const [isRealtimeActive, setIsRealtimeActive] = useState(false);
   const [enableAIInsights, setEnableAIInsights] = useState<boolean>(true);
 
-  const [isCalendarVisible, setIsCalendarVisible] = useState<boolean>(false);
   const { currentPrompt, shufflePrompt } = useJournalEntry();
   const rotation = useSharedValue(0);
   const insets = useSafeAreaInsets();
@@ -79,18 +81,8 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
     };
   });
 
-  const handleDatePress = useCallback(() => {
-    Keyboard.dismiss();
-    setIsCalendarVisible(true);
-  }, []);
-
   const handleDateSelect = useCallback((date: Date) => {
     setLocalSelectedDate(date);
-    setIsCalendarVisible(false);
-  }, []);
-
-  const handleCloseCalendar = useCallback(() => {
-    setIsCalendarVisible(false);
   }, []);
 
   const handleTodayPress = useCallback(() => {
@@ -131,46 +123,60 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
         >
           {/* Date Header - Centered and Clickable */}
-          <View className="flex-row justify-between items-center border-b border-sage-100 px-6 pb-4 pt-4">
-            <Pressable
-              disabled={isRealtimeActive}
-              onPress={() => {
-                Keyboard.dismiss();
-                onClose();
-              }}
-              accessibilityLabel="Cancel journal entry"
-              accessibilityRole="button"
-              className="p-2 -ml-2 rounded-full w-10 h-10 items-center justify-center"
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.7 : 1,
-              })}
-            >
-              <HugeiconsIcon icon={Cancel01Icon} size={22} color={INK_SOFT} />
-            </Pressable>
+          <View className="flex-row justify-between items-center px-4 pb-2 pt-2">
+            <Host matchContents style={{ width: 44, height: 44 }}>
+              <SUIButton
+                label="Cancel"
+                systemImage="xmark"
+                onPress={() => {
+                  if (isRealtimeActive) return;
+                  Keyboard.dismiss();
+                  onClose();
+                }}
+                modifiers={[
+                  labelStyle("iconOnly"),
+                  buttonStyle("glass"),
+                  controlSize("large"),
+                  tint(INK_SOFT),
+                ]}
+              />
+            </Host>
 
-            <Pressable
-              onPress={handleDatePress}
-              accessibilityLabel={`Date: ${formattedDate}. Tap to change.`}
-              accessibilityRole="button"
-              className="rounded-full bg-sage-pill px-4 py-2"
-            >
-              <Text className="text-sage-600 text-sm happy-font-body-bold">
-                {formattedDate}
-              </Text>
-            </Pressable>
+            <Host matchContents style={{ height: 40, width: 150, justifyContent: "center", alignItems: "center" }}>
+              <SwiftUIDateTimePicker
+                selection={localSelectedDate}
+                onDateChange={(date: Date) => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  handleDateSelect(date);
+                }}
+                displayedComponents={["date"]}
+                modifiers={[datePickerStyle("compact")]}
+              />
+            </Host>
 
-            <Pressable
-              disabled={isRealtimeActive}
-              onPress={() => setEnableAIInsights(!enableAIInsights)}
-              accessibilityLabel={enableAIInsights ? "Disable AI Insights" : "Enable AI Insights"}
-              accessibilityRole="button"
-              className={`p-2 -mr-2 rounded-full w-10 h-10 items-center justify-center ${enableAIInsights ? 'bg-sage-100' : ''}`}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.7 : 1,
-              })}
-            >
-              <HugeiconsIcon icon={SparklesIcon} size={20} color={enableAIInsights ? SAGE[600] : INK_MUTED} />
-            </Pressable>
+            <Host matchContents style={{ height: 44, justifyContent: "center" }}>
+              <SUIMenu
+                label="Options"
+                systemImage="line.3.horizontal.decrease"
+                modifiers={[
+                  labelStyle("iconOnly"),
+                  buttonStyle("glass"),
+                  controlSize("large"),
+                  tint(INK_SOFT),
+                ]}
+              >
+                <SUIToggle
+                  isOn={enableAIInsights}
+                  onIsOnChange={(isOn: boolean) => {
+                    if (isRealtimeActive) return;
+                    setEnableAIInsights(isOn);
+                  }}
+                >
+                  <SUIText>AI Insights</SUIText>
+                  <SUIText>Generate AI analysis</SUIText>
+                </SUIToggle>
+              </SUIMenu>
+            </Host>
           </View>
 
           {/* Content */}
@@ -282,59 +288,6 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
           </View>
         </KeyboardAvoidingView>
       </View>
-
-      {/* Calendar Modal */}
-      < Modal
-        visible={isCalendarVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={handleCloseCalendar}
-      >
-        <AnimatedBlurView
-          intensity={40}
-          className="flex-1 justify-center items-center"
-        >
-          <Pressable
-            className="flex-1 bg-black/50 px-2 justify-center items-center"
-            onPress={handleCloseCalendar}
-            accessibilityLabel="Dismiss calendar"
-            accessibilityRole="button"
-          >
-            <Pressable
-              className="bg-white rounded-2xl p-4 w-full border-2 border-sage-100"
-              onPress={(e) => e.stopPropagation()}
-            >
-              <View className="flex-row justify-between items-center mb-4">
-                <View className="flex-row items-center gap-3">
-                  <Text className="text-ink text-xl happy-font-body-bold">
-                    Select Date
-                  </Text>
-                  <Pressable
-                    onPress={handleTodayPress}
-                    accessibilityLabel="Jump to today"
-                    accessibilityRole="button"
-                    className="bg-sage-pill px-3 py-1.5 rounded-full"
-                  >
-                    <Text className="text-sage-600 text-xs happy-font-body-semibold">
-                      Today
-                    </Text>
-                  </Pressable>
-                </View>
-                <Pressable onPress={handleCloseCalendar} accessibilityLabel="Close calendar" accessibilityRole="button" className="p-2">
-                  <HugeiconsIcon icon={Cancel01Icon} size={24} color={INK_SOFT} />
-                </Pressable>
-              </View>
-              <CalendarPicker
-                selectedDate={localSelectedDate}
-                onDateSelect={handleDateSelect}
-                visible={isCalendarVisible}
-                moodMap={undefined}
-                showMoodBadges={false}
-              />
-            </Pressable>
-          </Pressable>
-        </AnimatedBlurView>
-      </Modal >
     </>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Pressable } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";

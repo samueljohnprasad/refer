@@ -8,7 +8,7 @@
 
 import React, { forwardRef, useCallback, useMemo } from "react";
 import { View } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import {
   BottomSheetModal,
   BottomSheetView,

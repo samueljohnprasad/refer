@@ -55,109 +55,7 @@ const getGreeting = (hour: number): string => {
 const STAGGER_DELAY_MS = 60 as const;
 const ENTRANCE_DURATION_MS = 300 as const;
 
-import { Platform } from "react-native";
-import { Host, Button } from "@expo/ui/swift-ui";
-import { buttonStyle, tint, controlSize, labelStyle } from "@expo/ui/swift-ui/modifiers";
-
-// Memoized TopBar component
-const TopBar = React.memo<{
-  onAchievementsPress: () => void;
-}>(({ onAchievementsPress }) => {
-  const handleSettingsPress = useCallback(() => {
-    router.push("/tabs/screens/settings");
-  }, []);
-
-  const gearRotation = useSharedValue(0);
-  const medalRotation = useSharedValue(0);
-
-  const gearStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${gearRotation.value}deg` }],
-  }));
-
-  const medalStyle = useAnimatedStyle(() => ({
-    transform: [{ rotateZ: `${medalRotation.value}deg` }],
-  }));
-
-  if (Platform.OS === "ios") {
-    return (
-      <View className="flex-row items-center justify-between px-5 pb-2 pt-1">
-        <Host style={{ width: 120, height: 44 }}>
-          <Button
-            label="Awards"
-            
-            systemImage="rosette"
-            onPress={onAchievementsPress}
-            modifiers={[
-              buttonStyle("bordered"),
-              controlSize("regular"),
-              tint(INK),
-            ]}
-          />
-        </Host>
-
-        <Host style={{ width: 44, height: 44 }}>
-          <Button
-            label="Settings"
-            systemImage="gearshape.fill"
-            onPress={handleSettingsPress}
-            modifiers={[
-              labelStyle("iconOnly"),
-              buttonStyle("borderless"),
-              controlSize("large"),
-              tint(SAGE[600]),
-            ]}
-          />
-        </Host>
-      </View>
-    );
-  }
-
-  // Fallback for Android/Web
-  return (
-    <View className="flex-row items-center justify-between px-5 pb-2">
-      <PressableScale
-        onPress={onAchievementsPress}
-        onPressIn={() => {
-          medalRotation.value = withSpring(15, { damping: 20, stiffness: 100, overshootClamping: true });
-        }}
-        onPressOut={() => {
-          medalRotation.value = withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true });
-        }}
-        className="happy-brand-soft-chip h-12 flex-row items-center justify-center gap-2 px-4"
-        scale={0.96}
-        hapticStyle="light"
-        accessibilityRole="button"
-        accessibilityLabel="View achievements"
-      >
-        <Animated.View style={medalStyle}>
-          <HugeiconsIcon icon={Medal01Icon} size={18} color={INK} />
-        </Animated.View>
-        <Text className="happy-font-body-bold text-[14px] text-ink-soft">
-          Awards
-        </Text>
-      </PressableScale>
-
-      <PressableScale
-        className="w-11 h-11 items-center justify-center -mr-2"
-        onPress={handleSettingsPress}
-        onPressIn={() => {
-          gearRotation.value = withSpring(45, { damping: 20, stiffness: 100, overshootClamping: true });
-        }}
-        onPressOut={() => {
-          gearRotation.value = withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true });
-        }}
-        scale={0.9}
-        hapticStyle="light"
-        accessibilityRole="button"
-        accessibilityLabel="Open settings"
-      >
-        <Animated.View style={gearStyle}>
-          <HugeiconsIcon icon={Settings02Icon} color={SAGE[600]} size={23} />
-        </Animated.View>
-      </PressableScale>
-    </View>
-  );
-});
+// Custom TopBar replaced by Stack.Toolbar natively
 
 // Memoized Greeting component with XP display
 const Greeting = React.memo<{
@@ -235,12 +133,15 @@ export default function JournalCalendarScreen() {
     router.push("/tabs/screens/achievements");
   }, []);
 
+  const handleSettingsPress = useCallback(() => {
+    router.push("/tabs/screens/settings");
+  }, []);
+
   const handleQuickJournalPress = useCallback(
     (prompt: QuickJournalPrompt) => {
       setPrompt(prompt.description);
       setStartRecording(true);
-      setRecorderOpen(true);
-      router.push("/tabs/(tabs)/record");
+      router.push("/tabs/screens/voice-recorder");
     },
     [setPrompt, setStartRecording, setRecorderOpen],
   );
@@ -278,28 +179,30 @@ export default function JournalCalendarScreen() {
       <Stack.Screen
         options={{
           headerShown: true,
-          headerTransparent: true,
-          headerShadowVisible: false,
-          header: () => (
-            <GlassView
-              glassEffectStyle="regular"
-              // isInteractive={true}
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: "rgba(255, 255, 255, 0.1)",
-                elevation: 0,
-                shadowOpacity: 0,
-                shadowRadius: 0,
-                overflow: "hidden",
-              }}
-            >
-              <SafeAreaView edges={["top"]}>
-                <TopBar onAchievementsPress={handleAchievementsPress} />
-              </SafeAreaView>
-            </GlassView>
-          ),
+          headerTitle: "",
         }}
       />
+      <Stack.Header
+        transparent
+        style={{
+          backgroundColor: 'transparent',
+          color: INK,
+          shadowColor: 'transparent',
+        }}
+      />
+      <Stack.Toolbar placement="right" tintColor={INK}>
+        <Stack.Toolbar.Button
+          icon="rosette"
+          title="Awards"
+          tintColor={INK}
+          onPress={handleAchievementsPress}
+        />
+        <Stack.Toolbar.Button
+          icon="gearshape.fill"
+          tintColor={SAGE[600]}
+          onPress={handleSettingsPress}
+        />
+      </Stack.Toolbar>
       <ScrollView
         className="flex-1 happy-brand-screen"
         removeClippedSubviews={true}

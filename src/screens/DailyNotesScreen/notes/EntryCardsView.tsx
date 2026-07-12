@@ -30,7 +30,8 @@ import { useAtom } from "jotai";
 import { DeleteJournal, selectedDateAtom } from "../atoms";
 import { getDuration } from "@/src/utils/date";
 import { ConfirmationModal } from "@/src/components/modals/ConfirmationModal";
-import { useRouter } from "expo-router";
+import { useRouter, Link } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { BRAND_SURFACE, GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
 import { Card } from "@/src/components/ui/Card";
@@ -202,6 +203,14 @@ interface EntryCardProps {
   isBookmarking?: boolean;
 }
 
+const MOOD_GRADIENTS: { [key: string]: string[] } = {
+  terrible: ["#FEE2E2", "#FED7D7"],
+  bad: ["#FED7AA", "#FEF3C7"],
+  fine: ["#FEF3C7", "#FEFCE8"],
+  good: ["#DCFCE7", "#F0FDF4"],
+  great: ["#DBEAFE", "#EFF6FF"],
+};
+
 const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
   entry,
   onPress,
@@ -216,6 +225,8 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
 
   // Get bookmark status from entry
   const isBookmarked: boolean = entry.is_bookmarked || false;
+  
+  const currentGradient = MOOD_GRADIENTS[entry.moods?.main_mood || "great"];
 
   const handleBookmarkPress = useCallback(
     (e: { stopPropagation: () => void }): void => {
@@ -234,104 +245,117 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
   );
 
   return (
-    <Pressable
-      onPress={() => onPress(entry)}
-      accessibilityRole="button"
-      accessibilityLabel={`Journal entry: ${entry.title || "Untitled Entry"}, created at ${entry.selected_date ? format(new Date(entry.selected_date), "h:mm a") : ""}`}
-      accessibilityHint="Double tap to open journal entry details"
-      className="py-4 border-b border-sage-100/50"
-    >
-      {/* Header & Metadata */}
-      <View className="flex-row items-start justify-between mb-2">
-        <View className="flex-1 mr-2">
-          <Text variant="body-bold" className="mb-1">
-            {entry.title || "Untitled Entry"}
-          </Text>
-          <View className="flex-row items-center flex-wrap">
-            {entry.selected_date && (
-              <Text variant="caption">
-                {format(new Date(entry.selected_date), "h:mm a")}
-              </Text>
-            )}
-            <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
-            <HugeiconsIcon
-              size={12}
-              icon={getEntryTypeIcon(entry.input_type)}
-              color={INK_MUTED}
-            />
-            {!!entry.duration_seconds && (
-              <Text variant="caption" className="ml-1">
-                {getDuration(entry.duration_seconds)}
-              </Text>
-            )}
-            {!!entry.words_count && (
-              <>
-                <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
-                <Text variant="caption">
-                  {entry.words_count} words
+    <Link href={{ pathname: "/tabs/screens/journal-entry", params: { id: entry.id } }} asChild>
+      <Link.Trigger>
+        <Pressable
+          onPress={() => onPress(entry)}
+          accessibilityRole="button"
+          accessibilityLabel={`Journal entry: ${entry.title || "Untitled Entry"}, created at ${entry.selected_date ? format(new Date(entry.selected_date), "h:mm a") : ""}`}
+          accessibilityHint="Double tap to open journal entry details"
+          className="mb-3"
+        >
+          <Link.AppleZoom>
+            <LinearGradient
+              colors={currentGradient as [string, string, ...string[]]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{ padding: 16, borderRadius: 20, overflow: "hidden" }}
+            >
+              {/* Header & Metadata */}
+              <View className="flex-row items-start justify-between mb-2">
+                <View className="flex-1 mr-2">
+                  <Text variant="body-bold" className="mb-1">
+                    {entry.title || "Untitled Entry"}
+                  </Text>
+                  <View className="flex-row items-center flex-wrap">
+                    {entry.selected_date && (
+                      <Text variant="caption">
+                        {format(new Date(entry.selected_date), "h:mm a")}
+                      </Text>
+                    )}
+                    <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
+                    <HugeiconsIcon
+                      size={12}
+                      icon={getEntryTypeIcon(entry.input_type)}
+                      color={INK_MUTED}
+                    />
+                    {!!entry.duration_seconds && (
+                      <Text variant="caption" className="ml-1">
+                        {getDuration(entry.duration_seconds)}
+                      </Text>
+                    )}
+                    {!!entry.words_count && (
+                      <>
+                        <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
+                        <Text variant="caption">
+                          {entry.words_count} words
+                        </Text>
+                      </>
+                    )}
+                  </View>
+                </View>
+
+                <View className="flex-row items-center gap-1.5">
+                  {showActions && onBookmark && (
+                    <TouchableOpacity
+                      onPress={handleBookmarkPress}
+                      disabled={isBookmarking}
+                      accessibilityRole="button"
+                      accessibilityLabel={isBookmarked ? "Remove bookmark" : "Bookmark entry"}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      className="p-1.5 rounded-full"
+                    >
+                      {isBookmarking ? (
+                        <ActivityIndicator size="small" color={SAGE[600]} />
+                      ) : (
+                        <HugeiconsIcon
+                          icon={BookmarkCheck01Icon}
+                          size={18}
+                          color={isBookmarked ? SAGE[600] : INK_MUTED}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  )}
+
+                  {showActions && onDelete && (
+                    <TouchableOpacity
+                      onPress={handleDeletePress}
+                      accessibilityRole="button"
+                      accessibilityLabel="Delete journal entry"
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      className="p-1.5 rounded-full"
+                    >
+                      <HugeiconsIcon
+                        icon={Delete02Icon}
+                        size={18}
+                        color={INK_MUTED}
+                      />
+                    </TouchableOpacity>
+                  )}
+
+                  {entry.moods?.main_mood && (
+                    <View className="flex-row items-center justify-center w-7 h-7 rounded-full bg-sage-100/60 border border-sage-200/40 ml-1">
+                      <Image
+                        source={emotions[entry.moods.main_mood as Emotion]}
+                        className="w-4 h-4"
+                        alt={entry.moods.main_mood}
+                        progressiveRenderingEnabled={true}
+                      />
+                    </View>
+                  )}
+                </View>
+              </View>
+
+              {/* Excerpt */}
+              {!!entry.transcripts && entry.transcripts.trim().length > 0 && (
+                <Text variant="body" color="soft" className="leading-5 mt-1" numberOfLines={2}>
+                  {entry.transcripts.trim()}
                 </Text>
-              </>
-            )}
-          </View>
-        </View>
-
-        <View className="flex-row items-center gap-1.5">
-          {showActions && onBookmark && (
-            <TouchableOpacity
-              onPress={handleBookmarkPress}
-              disabled={isBookmarking}
-              accessibilityRole="button"
-              accessibilityLabel={isBookmarked ? "Remove bookmark" : "Bookmark entry"}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              className="p-1.5 rounded-full"
-            >
-              {isBookmarking ? (
-                <ActivityIndicator size="small" color={SAGE[600]} />
-              ) : (
-                <HugeiconsIcon
-                  icon={BookmarkCheck01Icon}
-                  size={18}
-                  color={isBookmarked ? SAGE[600] : INK_MUTED}
-                />
               )}
-            </TouchableOpacity>
-          )}
-
-          {showActions && onDelete && (
-            <TouchableOpacity
-              onPress={handleDeletePress}
-              accessibilityRole="button"
-              accessibilityLabel="Delete journal entry"
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              className="p-1.5 rounded-full"
-            >
-              <HugeiconsIcon
-                icon={Delete02Icon}
-                size={18}
-                color={INK_MUTED}
-              />
-            </TouchableOpacity>
-          )}
-
-          {entry.moods?.main_mood && (
-            <View className="flex-row items-center justify-center w-7 h-7 rounded-full bg-sage-100/60 border border-sage-200/40 ml-1">
-              <Image
-                source={emotions[entry.moods.main_mood as Emotion]}
-                className="w-4 h-4"
-                alt={entry.moods.main_mood}
-                progressiveRenderingEnabled={true}
-              />
-            </View>
-          )}
-        </View>
-      </View>
-
-      {/* Excerpt */}
-      {!!entry.transcripts && entry.transcripts.trim().length > 0 && (
-        <Text variant="body" color="soft" className="leading-5 mt-1" numberOfLines={2}>
-          {entry.transcripts.trim()}
-        </Text>
-      )}
-    </Pressable>
+            </LinearGradient>
+          </Link.AppleZoom>
+        </Pressable>
+      </Link.Trigger>
+    </Link>
   );
 });

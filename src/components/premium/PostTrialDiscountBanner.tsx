@@ -41,7 +41,7 @@ const PostTrialDiscountBanner: React.FC<PostTrialDiscountBannerProps> = ({
         variant="tile"
         radius="xl"
         showDepth={true}
-        className="mb-5"
+        className="mx-5 mb-5"
         contentClassName="p-5 bg-sage-50"
       >
         <View className="rounded-[24px] border border-sage-100 bg-brand-surface p-5">

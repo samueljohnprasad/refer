@@ -11,7 +11,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 
-import { Text } from "@/components/ui/text";
+import { Text } from "@/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { SAGE } from "@/lib/tokens";
 import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";

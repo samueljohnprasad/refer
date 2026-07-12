@@ -14,7 +14,7 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 
 export type ScrollToActiveButtonDirection = "up" | "down";
 export type ScrollToActiveButtonMode = "direction" | "focus";

@@ -11,9 +11,15 @@ import { enableScreens } from "react-native-screens";
 enableScreens(true);
 
 import { Stack } from "expo-router";
-import { GlassView } from "expo-glass-effect";
+import { isLiquidGlassAvailable, GlassView } from "expo-glass-effect";
+import { useCSSVariable } from "uniwind";
+
+const GLASS = isLiquidGlassAvailable();
 
 export default function AppLayout() {
+  const appForeground = useCSSVariable("--app-foreground") as string;
+  const appBackground = useCSSVariable("--app-background") as string;
+
   return (
     <Stack
       screenOptions={{
@@ -30,6 +36,22 @@ export default function AppLayout() {
           headerBackButtonDisplayMode: "minimal",
           animation: "slide_from_right",
           headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="screens/name-edit"
+        options={{
+          presentation: "modal",
+          headerShown: true,
+          title: "Profile",
+          headerTransparent: GLASS,
+          headerLargeTitleShadowVisible: false,
+          headerBackButtonDisplayMode: GLASS ? "minimal" : "default",
+          headerTintColor: appForeground,
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: appBackground,
+          },
         }}
       />
 
@@ -221,11 +243,49 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="screens/journey-flow"
+        options={{
+          headerShown: false,
+          presentation: "fullScreenModal",
+          title: "Journey Flow",
+          freezeOnBlur: true,
+          animation: "fade",
+        }}
+      />
+      <Stack.Screen
         name="screens/exercise-flow"
         options={{
           headerShown: false,
           title: "Exercise",
           freezeOnBlur: true,
+          animation: "fade",
+        }}
+      />
+      <Stack.Screen
+        name="screens/journal-entry"
+        options={{
+          headerShown: true,
+          title: "Journal Entry",
+          freezeOnBlur: true,
+          headerBackButtonDisplayMode: "minimal",
+          animation: "fade",
+        }}
+      />
+      <Stack.Screen
+        name="screens/voice-recorder"
+        options={{
+          headerShown: false,
+          presentation: "fullScreenModal",
+          title: "Voice Recorder",
+          animation: "fade",
+        }}
+      />
+      <Stack.Screen
+        name="screens/keyboard-recorder"
+        options={{
+          headerShown: false,
+          presentation: "fullScreenModal",
+          title: "Keyboard Recorder",
           animation: "fade",
         }}
       />

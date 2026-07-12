@@ -109,7 +109,7 @@ interface LessonScreenProps
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 import { GlassView } from "expo-glass-effect";
-import { Stack } from "expo-router";
+import { Stack, Link } from "expo-router";
 
 /**
  * Fixed top bar with close/back navigation, animated progress bar, and

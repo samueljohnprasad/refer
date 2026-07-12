@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/components/ui/Text";
 import { HorizontalBarChart } from "@/src/screens/InsightsScreen/components/HorizontalBarChart";
 import { BigStat } from "@/src/screens/InsightsScreen/components/BigStat";
 import { TRIGGER_LABELS } from "@/src/constants/insights";

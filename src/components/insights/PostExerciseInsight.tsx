@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import type { ExerciseType } from "@/src/types/exerciseFlow";
 import { usePostExerciseInsight } from "@/src/hooks/insights";
 

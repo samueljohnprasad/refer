@@ -48,110 +48,7 @@ import {
   labelStyle,
 } from "@expo/ui/swift-ui/modifiers";
 
-// ─── TopBar ──────────────────────────────────────────────────────────────────
-const TopBar = React.memo<{
-  totalXP: number;
-}>(({ totalXP }) => {
-  if (Platform.OS === "ios") {
-    return (
-      <View className="flex-row items-center px-4 pt-2 pb-2">
-        <Host style={{ width: 44, height: 44 }}>
-          <Button
-            label="Back"
-            systemImage="arrow.left"
-            onPress={() => router.back()}
-            modifiers={[
-              labelStyle("iconOnly"),
-              buttonStyle("glass"),
-              controlSize("large"),
-              tint(SAGE[600]),
-            ]}
-          />
-        </Host>
 
-        <View className="flex-1 min-w-0 ml-3">
-          <Text
-            className="happy-font-heading-bold text-[24px] text-ink leading-tight"
-            numberOfLines={1}
-          >
-            Achievements
-          </Text>
-          <Text
-            className="happy-font-body-medium text-[13px] text-ink-muted"
-            numberOfLines={1}
-          >
-            Earn badges as you practice
-          </Text>
-        </View>
-
-        <Host style={{ width: 80, height: 44 }}>
-          <Button
-            label={totalXP.toLocaleString()}
-            systemImage="sparkles"
-            onPress={() => router.push("/tabs/screens/xp-history")}
-            modifiers={[
-              buttonStyle("glass"),
-              controlSize("regular"),
-              tint(GOLD),
-            ]}
-          />
-        </Host>
-      </View>
-    );
-  }
-
-  return (
-    <View className="flex-row items-center px-4 pt-2 pb-4">
-      <TouchableOpacity
-        onPress={() => router.back()}
-        className="happy-brand-soft-chip w-11 h-11 items-center justify-center mr-3"
-        accessibilityRole="button"
-        accessibilityLabel="Go back"
-      >
-        <HugeiconsIcon
-          icon={ArrowLeft02Icon}
-          size={20}
-          color={SAGE[600]}
-          strokeWidth={2}
-        />
-      </TouchableOpacity>
-      <View className="flex-1 flex-row items-center gap-2.5">
-        <View className="flex-1 min-w-0">
-          <Text
-            className="happy-font-heading-bold text-[24px] text-ink leading-tight"
-            numberOfLines={1}
-          >
-            Achievements
-          </Text>
-          <Text
-            className="happy-font-body-medium text-[13px] text-ink-muted"
-            numberOfLines={1}
-          >
-            Earn badges as you practice
-          </Text>
-        </View>
-      </View>
-
-      <View className="flex-row items-center gap-2">
-        <TouchableOpacity
-          activeOpacity={0.75}
-          onPress={() => router.push("/tabs/screens/xp-history")}
-          className="happy-brand-status-chip flex-row items-center px-2.5 py-1.5"
-        >
-          <HugeiconsIcon
-            icon={StarsIcon}
-            size={16}
-            color={GOLD}
-            strokeWidth={2}
-          />
-          <Text className="happy-font-body-bold ml-1 text-sm text-ink">
-            {totalXP.toLocaleString()}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-});
 
 // ─── Utility ────────────────────────────────────────────────────────────────
 /** Convert a 6-digit hex color to rgba() for safe cross-platform tinting. */
@@ -408,24 +305,47 @@ export const AchievementsScreen: React.FC = () => {
     [],
   );
 
+  const headerElements = (
+    <>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          title: "Achievements",
+          headerLargeTitle: true,
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: "transparent" },
+          headerLargeTitleStyle: { fontFamily: "Outfit-Bold" },
+          headerTitleStyle: { fontFamily: "Outfit-Bold" },
+        }}
+      />
+      <Stack.Toolbar placement="left">
+        <Stack.Toolbar.Button icon="chevron.backward" onPress={() => router.back()} tintColor={SAGE[600]} />
+      </Stack.Toolbar>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button icon="sparkles" onPress={() => router.push("/tabs/screens/xp-history")} tintColor={GOLD} />
+      </Stack.Toolbar>
+    </>
+  );
+
   // ── Loading ──
   if (isLoading) {
-    return <AchievementsSkeleton />;
+    return (
+      <>
+        {headerElements}
+        <AchievementsSkeleton />
+      </>
+    );
   }
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-      />
+      {headerElements}
+      
       <SafeAreaView
         className="happy-brand-screen flex-1"
         style={styles.screen}
-        edges={["left", "right", "top"]}
+        edges={["left", "right"]}
       >
-        <TopBar totalXP={totalXP} />
         <ScrollView
           ref={scrollViewRef}
           className="flex-1"

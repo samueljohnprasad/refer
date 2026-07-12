@@ -13,7 +13,7 @@
 
 import React, { useCallback, useState } from "react";
 import { View, Pressable, ScrollView } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 

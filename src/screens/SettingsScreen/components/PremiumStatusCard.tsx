@@ -46,7 +46,7 @@ export const PremiumStatusCard: React.FC<PremiumStatusCardProps> = ({
       variant="tile"
       radius="xl"
       showDepth={true}
-      className="mb-5"
+      className="mx-5 mb-5"
       contentClassName="p-4"
     >
       <View className="flex-row items-center gap-3">

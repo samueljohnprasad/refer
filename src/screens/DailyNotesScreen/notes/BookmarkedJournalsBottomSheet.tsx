@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { View, Modal, ActivityIndicator } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/components/ui/Text";
 import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
 import { Feather } from "@expo/vector-icons";
 import { EntryCardsView } from "./EntryCardsView";

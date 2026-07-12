@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { bad, fine, good, great, terrible } from "@/assets/emojis";
-import { Image } from "@/components/ui/image";
+import { Image } from "@/src/components/tw";
 import { Text } from "@/components/Themed";
 import { PressableOpacity } from "pressto";
 import { HugeiconsIcon } from "@hugeicons/react-native";

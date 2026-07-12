@@ -62,6 +62,7 @@ function JourneyMapFlashListInner({
       return (
         <JourneyMapListItem
           item={item}
+          courseId={courseId}
           activeGlobalIndex={activeGlobalIndex}
           onNodePress={handleNodePress}
         />

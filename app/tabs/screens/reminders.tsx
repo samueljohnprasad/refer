@@ -3,7 +3,7 @@ import { View, TouchableOpacity } from "react-native";
 import { Stack, useRouter, useNavigation } from "expo-router";
 import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/components/ui/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import useNotifications from "@/hooks/data/useNotifications";

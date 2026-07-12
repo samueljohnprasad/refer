@@ -17,9 +17,30 @@ import {
   AIInsightsSection,
 } from "./components";
 import { Enums } from "@/database.types";
-import { useColorScheme } from "react-native";
+import { useColorScheme, Share } from "react-native";
 import { FeelingsType } from "@/src/network/genAi";
 import * as Haptics from "expo-haptics";
+import { Stack, Link } from "expo-router";
+import { INK } from "@/lib/tokens";
+import { useHeaderHeight } from "expo-router/react-navigation";
+import { format, isToday, isYesterday } from "date-fns";
+import { TouchableOpacity, Text } from "react-native";
+
+const getRelativeDayTitle = (dateStr?: string | null): string => {
+  if (!dateStr) return "Today";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "Today";
+  if (isToday(d)) return "Today";
+  if (isYesterday(d)) return "Yesterday";
+  return format(d, "EEEE, MMM d");
+};
+
+const getFormattedTime = (dateStr?: string | null): string => {
+  if (!dateStr) return "Reflection";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "Reflection";
+  return format(d, "h:mm a");
+};
 
 const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   insights,
@@ -46,6 +67,8 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
     JSON.stringify(entry?.journal_ai_insights, null, 2)
   );
 
+  const headerHeight = useHeaderHeight();
+  
   const [selectedMood, setSelectedMood] = useState<Enums<"mood">>(
     entry?.moods?.main_mood || "great"
   );
@@ -189,70 +212,101 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   const currentGradient = MOOD_GRADIENTS[selectedMood] || MOOD_GRADIENTS.great;
 
   return (
-    // <SafeAreaView className="flex-1">
-    <LinearGradient
-      colors={currentGradient as [string, string, ...string[]]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      className="flex-1"
-      style={{ flex: 1, paddingTop: top, paddingBottom: bottom }}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
-      >
-        <MinimalHeader
-          date={entry?.selected_date}
-          isEditing={isEditing}
-          onClose={handleClose}
-          onEdit={handleEdit}
-          onDone={handleDone}
-          onSave={handleContinue}
-          saving={saving}
-          onDelete={handleDeleteEntry}
-          isBookmarked={isBookmarked}
-          onBookmark={async () => {
-            if (entry?.id) {
-              const newStatus = !isBookmarked;
-              setIsBookmarked(newStatus);
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              
-              toast.show({
-                placement: "top",
-                render: ({ id }) => (
-                  <Toast nativeID={id} variant="solid" action="success">
-                    <ToastTitle>{newStatus ? "Entry bookmarked" : "Bookmark removed"}</ToastTitle>
-                  </Toast>
-                ),
-              });
-
-              try {
-                await toggleBookmark({
-                  journalId: entry.id,
-                  selectedDate: entry.selected_date ? new Date(entry.selected_date) : new Date(),
-                  isBookmarked: !newStatus,
-                });
-              } catch (e) {
-                setIsBookmarked(!newStatus);
-              }
-            }
-          }}
-          bookmarking={bookmarking}
-        />
-
-        {isEditing && (
-          <MoodSelector
-            selectedMood={selectedMood}
-            onSelectMood={setSelectedMood}
+    <>
+      <Stack.Title style={{ color: INK }}>
+        {entry?.selected_date ? `${getRelativeDayTitle(entry.selected_date)} at ${getFormattedTime(entry.selected_date)}` : ""}
+      </Stack.Title>
+      <Stack.Header
+        transparent
+        style={{ backgroundColor: "transparent", color: INK, shadowColor: "transparent" }}
+      />
+      {isEditing ? (
+        <Stack.Toolbar placement="right" tintColor={INK}>
+          <Stack.Toolbar.Button
+            icon="checkmark"
+            tintColor={INK}
+            onPress={handleContinue}
           />
-        )}
+        </Stack.Toolbar>
+      ) : (
+        <Stack.Toolbar placement="right" tintColor={INK}>
+          <Stack.Toolbar.Button
+            icon={isBookmarked ? "bookmark.fill" : "bookmark"}
+            tintColor={INK}
+            onPress={async () => {
+              if (entry?.id) {
+                const newStatus = !isBookmarked;
+                setIsBookmarked(newStatus);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                
+                toast.show({
+                  placement: "top",
+                  render: ({ id }) => (
+                    <Toast nativeID={id} variant="solid" action="success">
+                      <ToastTitle>{newStatus ? "Entry bookmarked" : "Bookmark removed"}</ToastTitle>
+                    </Toast>
+                  ),
+                });
 
+                try {
+                  await toggleBookmark({
+                    journalId: entry.id,
+                    selectedDate: entry.selected_date ? new Date(entry.selected_date) : new Date(),
+                    isBookmarked: !newStatus,
+                  });
+                } catch (e) {
+                  setIsBookmarked(!newStatus);
+                }
+              }
+            }}
+          />
+          <Stack.Toolbar.Button
+            icon="square.and.arrow.up"
+            tintColor={INK}
+            onPress={() => Share.share({ message: entry?.transcripts || "" })}
+          />
+          <Stack.Toolbar.Menu icon="ellipsis.circle" tintColor={INK}>
+            <Stack.Toolbar.MenuAction
+              icon="pencil"
+              onPress={handleEdit}
+            >
+              Edit Entry
+            </Stack.Toolbar.MenuAction>
+            <Stack.Toolbar.MenuAction
+              icon="trash"
+              destructive
+              onPress={handleDeleteEntry}
+            >
+              Delete Entry
+            </Stack.Toolbar.MenuAction>
+          </Stack.Toolbar.Menu>
+        </Stack.Toolbar>
+      )}
+
+      <Link.AppleZoomTarget>
+      <LinearGradient
+        colors={currentGradient as [string, string, ...string[]]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        className="flex-1"
+        style={{ flex: 1, paddingTop: top, paddingBottom: bottom }}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          className="flex-1"
+        >
         <ScrollView
           className="flex-1 px-4"
           showsVerticalScrollIndicator={false}
           bounces={true}
-          contentContainerStyle={{ paddingBottom: isEditing ? 120 : 64 }}
+          contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: isEditing ? 120 : 64 }}
         >
+          {isEditing && (
+            <MoodSelector
+              selectedMood={selectedMood}
+              onSelectMood={setSelectedMood}
+            />
+          )}
           {!isEditing && (
             <MoodSelector
               selectedMood={selectedMood}
@@ -299,8 +353,9 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
           )}
         </ScrollView>
       </KeyboardAvoidingView>
-    </LinearGradient>
-    // </SafeAreaView>
+      </LinearGradient>
+      </Link.AppleZoomTarget>
+    </>
   );
 };
 

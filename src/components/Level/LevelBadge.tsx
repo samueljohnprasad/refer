@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { LevelTier } from "@/src/types/levels";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { 
-  SproutIcon, 
+  Plant01Icon, 
   BrainIcon, 
   Target01Icon, 
   StarsIcon, 
@@ -15,6 +15,17 @@ interface LevelBadgeProps {
   size?: "sm" | "md" | "lg";
   showName?: boolean;
 }
+
+export const getLevelIcon = (levelNum: number) => {
+  switch (levelNum) {
+    case 1: return Plant01Icon;
+    case 2: return BrainIcon;
+    case 3: return Target01Icon;
+    case 4: return StarsIcon;
+    case 5: return Medal01Icon;
+    default: return StarsIcon;
+  }
+};
 
 /**
  * Compact badge showing level icon and optionally name
@@ -33,16 +44,7 @@ export const LevelBadge: React.FC<LevelBadgeProps> = ({
 
   const styles = sizeStyles[size];
 
-  const getLevelIcon = (levelNum: number) => {
-    switch (levelNum) {
-      case 1: return SproutIcon;
-      case 2: return BrainIcon;
-      case 3: return Target01Icon;
-      case 4: return StarsIcon;
-      case 5: return Medal01Icon;
-      default: return StarsIcon;
-    }
-  };
+
 
   return (
     <View

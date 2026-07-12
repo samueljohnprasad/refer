@@ -122,8 +122,7 @@ export function SectionOverviewSheet({
   return (
     <View className="flex-1 happy-brand-screen">
       <View
-        className="flex-row items-start justify-between happy-brand-screen border-b border-sage-100 px-6 pb-5"
-        style={{ paddingTop: Math.max(18, insets.top) }}
+        className="flex-row items-start justify-between happy-brand-screen border-b border-sage-100 px-6 pt-5 pb-5"
       >
         <View className="flex-1 pr-4">
           <Text variant="eyebrow">

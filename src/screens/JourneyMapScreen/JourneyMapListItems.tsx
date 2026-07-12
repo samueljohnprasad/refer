@@ -20,12 +20,14 @@ export const JOURNEY_VIEWABILITY_CONFIG = {
 type JourneyMapListItemProps = {
   activeGlobalIndex: number;
   item: JourneyFlashListItem;
+  courseId: string;
   onNodePress: (node: PathNodeData, e?: any, color?: string) => void;
 };
 
 export const JourneyMapListItem = React.memo(function JourneyMapListItem({
   activeGlobalIndex,
   item,
+  courseId,
   onNodePress,
 }: JourneyMapListItemProps): React.JSX.Element {
   switch (item.itemType) {
@@ -33,6 +35,7 @@ export const JourneyMapListItem = React.memo(function JourneyMapListItem({
       return (
         <JourneyNodeCell
           item={item}
+          courseId={courseId}
           screenWidth={SCREEN_WIDTH}
           activeGlobalIndex={activeGlobalIndex}
           onNodePress={onNodePress}

@@ -15,7 +15,7 @@ import ReanimatedModule, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import {
   VictoryAxis,
   VictoryChart,

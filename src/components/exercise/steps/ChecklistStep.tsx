@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Pressable, TextInput } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import type { StepProps } from "@/src/types/exerciseFlow";
 

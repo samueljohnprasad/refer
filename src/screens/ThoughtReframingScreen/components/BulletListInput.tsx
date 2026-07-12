@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { View, Pressable, TextInput, ActivityIndicator } from 'react-native';
-import { Text } from '@/components/ui/text';
+import { Text } from '@/components/ui/Text';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { Cancel01Icon, Add01Icon, Mic01Icon, StopIcon } from '@hugeicons/core-free-icons';
 import useAudioRecording from '@/hooks/useAudioRecording';

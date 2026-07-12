@@ -40,9 +40,22 @@ import {
   foregroundStyle,
   buttonBorderShape,
 } from "@expo/ui/swift-ui/modifiers";
+
+import { useState, useMemo } from "react";
+import { ChatProvider } from "@/src/components/chat/chat-context";
+import { PromptInputBody, PromptInputTextarea, PromptInputSubmit } from "@/src/components/chat/prompt-input";
+import { GlassContainer } from "expo-glass-effect";
+
 import { useAuth } from "@/src/context/AuthContext";
 import { useSupportMessages } from "@/hooks/data/useSupportMessages";
-import { BRAND_SURFACE, BRAND_CANVAS, INK, INK_MUTED, SAGE, DANGER } from "@/lib/tokens";
+import {
+  BRAND_SURFACE,
+  BRAND_CANVAS,
+  INK,
+  INK_MUTED,
+  SAGE,
+  DANGER,
+} from "@/lib/tokens";
 
 interface SupportChatScreenProps {
   onClose?: () => void;
@@ -55,6 +68,21 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
 
   const { messages, isLoading, sendMessage, loadMore, hasMore } =
     useSupportMessages();
+
+  
+  const [input, setInput] = useState("");
+  const chatContextValue = useMemo(() => ({
+    messages: [],
+    input,
+    setInput,
+    isGenerating: isLoading,
+    onSend: () => {
+      if (!input.trim()) return;
+      sendMessage(input.trim());
+      setInput("");
+    },
+    streamingStore: null as any,
+  }), [input, isLoading, sendMessage]);
 
   const onSend = useCallback(
     async (newMessages: IMessage[] = []) => {
@@ -195,57 +223,30 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
     />
   );
 
-  // Custom input toolbar
+  
   const renderInputToolbar = (props: any) => (
-    <InputToolbar
-      {...props}
-      containerStyle={{
+    <View
+      style={{
+        paddingHorizontal: 12,
+        paddingTop: 8,
+        paddingBottom: Math.max(insets.bottom, 12),
         backgroundColor: BRAND_SURFACE,
-        borderTopWidth: 1,
-        borderTopColor: SAGE[100],
-        paddingHorizontal: 8,
-        paddingTop: 4,
-        paddingBottom: Math.max(insets.bottom, 4),
-      }}
-    />
-  );
-
-  // Custom composer
-  const renderComposer = (props: any) => (
-    <Composer
-      {...props}
-      textInputStyle={{
-        backgroundColor: BRAND_CANVAS,
-        borderRadius: 20,
-        paddingHorizontal: 16,
-        paddingTop: 10,
-        paddingBottom: 10,
-        marginRight: 8,
-        fontSize: 16,
-        lineHeight: 20,
-        fontFamily: "GeistRegular",
-        color: INK,
-      }}
-      placeholder="Type a message..."
-      placeholderTextColor={INK_MUTED}
-    />
-  );
-
-  // Custom send button
-  const renderSend = (props: any) => (
-    <Send
-      {...props}
-      containerStyle={{
-        justifyContent: "center",
-        alignItems: "center",
-        marginRight: 8,
-        marginBottom: 4,
       }}
     >
-      <View className="w-10 h-10 rounded-full bg-sage-500 items-center justify-center">
-        <HugeiconsIcon icon={Sent02Icon} size={20} color={BRAND_SURFACE} />
-      </View>
-    </Send>
+      <GlassContainer
+        style={{
+          flexDirection: "row",
+          gap: 10,
+          alignItems: "flex-end",
+        }}
+        spacing={8}
+      >
+        <PromptInputBody>
+          <PromptInputTextarea placeholder="Type a message..." />
+          <PromptInputSubmit />
+        </PromptInputBody>
+      </GlassContainer>
+    </View>
   );
 
   // If you have a tab bar, include its height
@@ -261,7 +262,8 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
           paddingTop: headerHeight,
         }}
       >
-        <GiftedChat
+        <ChatProvider value={chatContextValue}>
+          <GiftedChat
           messages={messages}
           onSend={(messages) => onSend(messages)}
           loadEarlierMessagesProps={{
@@ -280,8 +282,24 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
           renderDay={renderDay}
           renderTime={renderTime}
           renderInputToolbar={renderInputToolbar}
-          renderComposer={renderComposer}
-          renderSend={renderSend}
+          quickReplyStyle={{
+            backgroundColor: SAGE.pill,
+            borderColor: SAGE[500],
+            borderWidth: 1,
+            borderRadius: 16,
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+            marginTop: 8,
+            marginRight: 8,
+            marginBottom: 8,
+          }}
+          quickReplyTextStyle={{
+            color: SAGE[800],
+            fontFamily: "GeistMedium",
+            fontSize: 14,
+          }}
+          
+          
           listProps={{
             onEndReached: () => loadMore(),
             onEndReachedThreshold: 0.5,
@@ -291,6 +309,7 @@ const SupportChatScreen: React.FC<SupportChatScreenProps> = ({ onClose }) => {
           }}
           keyboardAvoidingViewProps={{ keyboardVerticalOffset }}
         />
+        </ChatProvider>
       </View>
     </View>
   );

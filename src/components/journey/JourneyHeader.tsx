@@ -9,7 +9,7 @@
 import React from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { LinearGradient } from "expo-linear-gradient";
 import { UnitData } from "@/src/types/journey/unit";
 import { JourneyStats } from "@/src/types/journey/state";

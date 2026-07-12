@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Pressable } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useThoughtPatterns } from "@/src/hooks/insights/useThoughtPatterns";
 

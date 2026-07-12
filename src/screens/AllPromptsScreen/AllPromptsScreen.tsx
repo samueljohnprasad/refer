@@ -205,11 +205,7 @@ export default function AllPromptsScreen() {
       }
       setPrompt(prompt.description);
       setStartRecording(true);
-      setRecorderOpen(true);
-      router.back();
-      setTimeout(() => {
-        router.push("/tabs/(tabs)/record");
-      }, 100);
+      router.push("/tabs/screens/voice-recorder");
     },
     [
       shouldShowPaywall,

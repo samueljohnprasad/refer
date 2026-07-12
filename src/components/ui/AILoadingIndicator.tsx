@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import { Text } from '@/components/ui/text';
+import { Text } from '@/src/components/ui/Text';
 
 interface AILoadingIndicatorProps {
   readonly isGenerating: boolean;

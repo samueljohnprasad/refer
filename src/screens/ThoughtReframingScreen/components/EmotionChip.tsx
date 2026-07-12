@@ -1,6 +1,6 @@
 import React from "react";
 import { Pressable, View } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/components/ui/Text";
 import type { EmotionOption } from "../data/emotions";
 
 interface EmotionChipProps {

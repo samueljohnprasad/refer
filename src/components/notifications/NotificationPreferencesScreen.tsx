@@ -7,7 +7,9 @@ import {
   Switch,
   ActivityIndicator,
 } from "react-native";
-import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
+import { SAGE } from "@/lib/tokens";
+import { Bell, Flame, Smile, CheckCircle2, Trophy } from "lucide-react-native";
+import type { LucideIcon } from "lucide-react-native";
 
 export default function NotificationPreferencesScreen() {
   const { settings, isLoading, updateSettings, isUpdating } =
@@ -29,14 +31,16 @@ export default function NotificationPreferencesScreen() {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
-      className="flex-1 happy-brand-screen px-5"
+      className="flex-1 bg-background text-foreground"
+      contentContainerClassName="pb-10"
     >
-      <Text className="happy-font-heading-bold text-[30px] text-ink mb-6">
+      <Text className="text-[30px] font-bold text-foreground px-5 mb-6 pt-4">
         Notification Preferences
       </Text>
 
       {/* Master toggle */}
       <SettingRow
+        icon={Bell}
         title="Push Notifications"
         description="Receive personalized reminders to journal, track mood, and maintain streaks"
         value={settings.push_enabled}
@@ -46,12 +50,12 @@ export default function NotificationPreferencesScreen() {
 
       {settings.push_enabled && (
         <>
-          <View className="h-px bg-sage-100 my-4" />
-          <Text className="happy-font-body-bold text-lg text-ink mb-3">
-            Notification Types
-          </Text>
+          <View className="h-px bg-border mx-5 mt-4" />
+          
+          <SectionHeader title="Notification Types" />
 
           <SettingRow
+            icon={Flame}
             title="Streak Reminders"
             description="Get notified when your journal streak is at risk"
             value={settings.streak_reminders}
@@ -60,6 +64,7 @@ export default function NotificationPreferencesScreen() {
           />
 
           <SettingRow
+            icon={Smile}
             title="Mood Check-ins"
             description="Daily reminders to log your mood"
             value={settings.mood_reminders}
@@ -68,6 +73,7 @@ export default function NotificationPreferencesScreen() {
           />
 
           <SettingRow
+            icon={CheckCircle2}
             title="Habit Reminders"
             description="Reminders for your active habits"
             value={settings.habit_reminders}
@@ -76,6 +82,7 @@ export default function NotificationPreferencesScreen() {
           />
 
           <SettingRow
+            icon={Trophy}
             title="Achievement Nudges"
             description="Get notified when you're close to unlocking an achievement"
             value={settings.achievement_reminders}
@@ -83,12 +90,13 @@ export default function NotificationPreferencesScreen() {
             disabled={isUpdating}
           />
 
-          <View className="h-px bg-sage-100 my-4" />
-          <Text className="happy-font-body-medium text-sm text-ink-muted mb-2">
+          <View className="h-px bg-border mx-5 mt-6 mb-4" />
+          
+          <Text className="text-[14px] text-foreground px-5 mb-1 font-medium">
             Quiet hours: {settings.quiet_hours_start}:00 -{" "}
             {settings.quiet_hours_end}:00
           </Text>
-          <Text className="happy-font-body-medium text-sm text-ink-muted mb-8">
+          <Text className="text-[13px] text-muted-foreground px-5 leading-snug">
             Max {settings.max_per_day} notification per day. We use AI to find
             the best time to send you notifications based on your usage
             patterns.
@@ -99,13 +107,23 @@ export default function NotificationPreferencesScreen() {
   );
 }
 
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <Text className="text-[15px] font-semibold text-foreground px-5 pt-6 pb-2">
+      {title}
+    </Text>
+  );
+}
+
 function SettingRow({
+  icon: Icon,
   title,
   description,
   value,
   onToggle,
   disabled,
 }: {
+  icon?: LucideIcon;
   title: string;
   description: string;
   value: boolean;
@@ -113,10 +131,11 @@ function SettingRow({
   disabled: boolean;
 }) {
   return (
-    <View className="happy-brand-card mb-3 flex-row items-center justify-between rounded-[24px] p-4">
-      <View className="flex-1 mr-4">
-        <Text className="happy-font-body-bold text-base text-ink">{title}</Text>
-        <Text className="happy-font-body-medium text-sm text-ink-muted mt-0.5">
+    <View className="flex-row items-center px-5 py-3.5 gap-4">
+      {Icon && <Icon size={24} color="var(--app-foreground)" strokeWidth={1.75} />}
+      <View className="flex-1 gap-0.5">
+        <Text className="text-[17px] text-foreground">{title}</Text>
+        <Text className="text-[13px] text-muted-foreground leading-snug">
           {description}
         </Text>
       </View>
@@ -124,8 +143,6 @@ function SettingRow({
         value={value}
         onValueChange={onToggle}
         disabled={disabled}
-        trackColor={{ false: SAGE[100], true: SAGE[500] }}
-        thumbColor={BRAND_SURFACE}
       />
     </View>
   );

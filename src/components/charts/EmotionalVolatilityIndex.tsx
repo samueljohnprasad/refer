@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
-import { Tooltip, TooltipContent, TooltipText } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipText } from "@/src/components/ui/tooltip";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { CartesianChart, Line, Area } from "victory-native-v4";

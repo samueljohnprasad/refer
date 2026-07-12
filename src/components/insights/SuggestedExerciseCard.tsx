@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { router } from "expo-router";
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";

@@ -103,7 +103,7 @@ export default function SettingsScreen() {
     <View className="flex-1 bg-offwhite">
       <View className="flex-1 px-0 relative ">
         <Animated.ScrollView
-          contentContainerClassName="flex-grow px-4"
+          contentContainerClassName="flex-grow"
           contentContainerStyle={{
             paddingBottom: 48,
             paddingTop: 10,
@@ -138,7 +138,6 @@ export default function SettingsScreen() {
           <SettingsSection title="Preferences">
             <SettingsItem
               icon={Brain01Icon}
-              tone="sage"
               title="Apple Intelligence"
               subtitle="On-device AI · Private & secure"
               onPress={() => {
@@ -148,7 +147,6 @@ export default function SettingsScreen() {
             />
             <SettingsItem
               icon={Notification01Icon}
-              tone="sage"
               title="Daily Reminders"
               subtitle="Customize multiple reminders"
               onPress={() => {
@@ -158,7 +156,6 @@ export default function SettingsScreen() {
             />
             <SettingsItem
               icon={Settings01Icon}
-              tone="sage"
               title="Notification Settings"
               subtitle="Control alerts and quiet hours"
               onPress={() => {
@@ -171,14 +168,12 @@ export default function SettingsScreen() {
           <SettingsSection title="Account">
             <SettingsItem
               icon={UserIcon}
-              tone="terracotta"
               title="Edit Name"
               onPress={() => handlePress("edit-name")}
               showArrow={false}
             />
             <SettingsItem
               icon={Copy01Icon}
-              tone="sage"
               title="Copy User ID"
               onPress={handleCopyUserId}
               showArrow={false}
@@ -188,7 +183,6 @@ export default function SettingsScreen() {
           <SettingsSection title="Community & Support">
             <SettingsItem
               icon={MessageOutgoing01Icon}
-              tone="sage"
               title="Support Chat"
               subtitle="Chat with our support team"
               onPress={() => {
@@ -198,7 +192,6 @@ export default function SettingsScreen() {
             />
             <SettingsItem
               icon={Share01Icon}
-              tone="gold"
               title="Share App"
               subtitle="Tell your friends about us"
               onPress={() => {
@@ -208,7 +201,6 @@ export default function SettingsScreen() {
             />
             <SettingsItem
               icon={StarIcon}
-              tone="gold"
               title="Write a Review"
               onPress={handleRateUs}
               showArrow={false}
@@ -218,19 +210,16 @@ export default function SettingsScreen() {
           <SettingsSection title="Legal & App">
             <SettingsItem
               icon={File01Icon}
-              tone="sage"
               title="Terms of Use"
               onPress={handleTermsOfUse}
             />
             <SettingsItem
               icon={ShieldUserIcon}
-              tone="sage"
               title="Privacy Policy"
               onPress={handlePrivacyPolicy}
             />
             <SettingsItem
               icon={AlertSquareIcon}
-              tone="gold"
               title="App Info"
               subtitle={`Version ${Application.nativeApplicationVersion || "1.0.0"} (Build ${Application.nativeBuildVersion || "1"})`}
               onPress={() => {}}
@@ -242,7 +231,6 @@ export default function SettingsScreen() {
             {shouldShowSignIn ? (
               <SettingsItem
                 icon={Login02Icon}
-                tone="sage"
                 title="Sign In"
                 subtitle="Save your progress and Premium"
                 onPress={() => {
@@ -254,7 +242,6 @@ export default function SettingsScreen() {
             ) : (
               <SettingsItem
                 icon={Logout02Icon}
-                tone="danger"
                 title="Sign Out"
                 subtitle="Sign out of your account"
                 onPress={() => setIsSignoutOPen(true)}
@@ -263,7 +250,6 @@ export default function SettingsScreen() {
             )}
             <SettingsItem
               icon={Delete02Icon}
-              tone="danger"
               title="Erase Personal Data"
               subtitle="Permanently delete all data"
               onPress={() => {
@@ -280,7 +266,6 @@ export default function SettingsScreen() {
             <SettingsSection title="Developer">
               <SettingsItem
                 icon={Download02Icon}
-                tone="sage"
                 title="Bulk Import Journals"
                 subtitle="Import sample data"
                 onPress={() => {
@@ -291,7 +276,6 @@ export default function SettingsScreen() {
               />
               <SettingsItem
                 icon={AlertSquareIcon}
-                tone="gold"
                 title="Active AI Model"
                 subtitle="Configure local LLM"
                 onPress={() => {
@@ -301,7 +285,6 @@ export default function SettingsScreen() {
               />
               <SettingsItem
                 icon={StarIcon}
-                tone="gold"
                 title="Test Graph Components"
                 subtitle="View mock graph and UI components"
                 onPress={() => {
@@ -316,7 +299,7 @@ export default function SettingsScreen() {
 
       <Modal
         animationType="slide"
-        transparent={true}
+        presentationStyle="pageSheet"
         visible={showModal.showModal}
       >
         <NameEditScreen

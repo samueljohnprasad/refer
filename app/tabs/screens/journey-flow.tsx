@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
+import { Stack, router, useLocalSearchParams, Link } from "expo-router";
 import { useAtomValue, useSetAtom } from "jotai";
 
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
@@ -97,11 +97,14 @@ export default function JourneyFlowRoute() {
   if (!nodeId) return null;
 
   return (
-    <NodeEngine
-      nodeId={nodeId}
-      exercises={exercises}
-      onNodeComplete={handleComplete}
-      onClose={handleDismiss}
-    />
+    <>
+      <Stack.Screen options={{ presentation: 'fullScreenModal', headerShown: false, animation: 'fade' }} />
+      <NodeEngine
+        nodeId={nodeId}
+        exercises={exercises}
+        onNodeComplete={handleComplete}
+        onClose={handleDismiss}
+      />
+    </>
   );
 }

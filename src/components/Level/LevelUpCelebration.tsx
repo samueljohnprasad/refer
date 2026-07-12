@@ -10,6 +10,8 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import { LevelTier } from "@/src/types/levels";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { getLevelIcon } from "./LevelBadge";
 import * as Haptics from "expo-haptics";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -113,7 +115,7 @@ export const LevelUpCelebration: React.FC<LevelUpCelebrationProps> = ({
             style={[iconStyle, { backgroundColor: newLevel.color + "30" }]}
             className="w-24 h-24 rounded-full items-center justify-center mb-4"
           >
-            <Text style={{ fontSize: 48 }}>{newLevel.icon}</Text>
+            <HugeiconsIcon icon={getLevelIcon(newLevel.level)} size={48} color={newLevel.color} />
           </Animated.View>
 
           {/* Title */}

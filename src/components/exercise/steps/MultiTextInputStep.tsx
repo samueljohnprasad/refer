@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAppDispatch } from "@/src/store/hooks";
 import { setAssistantMessage } from "@/src/store/slices/happyAssistantSlice";
 import { View, TextInput, Pressable, ActivityIndicator } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";

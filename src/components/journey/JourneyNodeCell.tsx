@@ -23,6 +23,7 @@ import * as Haptics from "expo-haptics";
 import { GlassView } from "expo-glass-effect";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { Link } from "expo-router";
 
 import { Text } from "@/src/components/ui/Text";
 import type { JourneyNode, PathNodeData, NodePosition } from "@/src/types/journey";
@@ -50,6 +51,7 @@ const HUGEICON_SIZE_RATIO = 0.6;
 
 export interface JourneyNodeCellProps {
   item: JourneyNode;
+  courseId: string;
   screenWidth: number;
   activeGlobalIndex: number;
   onNodePress: (node: PathNodeData, e?: any, color?: string) => void;
@@ -146,6 +148,7 @@ function BouncingTooltip({ label, accentColor }: { label?: string; accentColor: 
 
 function JourneyNodeCellInner({
   item,
+  courseId,
   screenWidth,
   activeGlobalIndex,
   onNodePress,
@@ -323,24 +326,53 @@ function JourneyNodeCellInner({
             </View>
           )}
 
-          <Animated.View style={[item.status === NodeStatus.ACTIVE ? activeScaleStyle : undefined]}>
-            <DuolingoSvgNodeButton
-              size={size}
-              onPress={handlePress}
-              disabled={!isInteractive}
-              faceColor={faceColor}
-              rimColor={rimColor}
-              icon={
-                <HugeiconsIcon
-                  icon={iconObj}
-                  size={hugeiconSize}
-                  color={iconColor}
-                  strokeWidth={2.5}
-                />
-              }
-              iconSize={hugeiconSize}
-              accessibilityLabel={`${item.label} ${item.status}`}
-            />
+          <Animated.View style={item.status === NodeStatus.ACTIVE ? activeScaleStyle : undefined}>
+            {isInteractive ? (
+              <Link
+                href={{ pathname: "/tabs/screens/journey-flow", params: { courseId, nodeId: item.id } }}
+                asChild
+              >
+                <Link.Trigger>
+                  <Link.AppleZoom>
+                    <DuolingoSvgNodeButton
+                      size={size}
+                      onPress={handlePress}
+                      disabled={!isInteractive}
+                      faceColor={faceColor}
+                      rimColor={rimColor}
+                      icon={
+                        <HugeiconsIcon
+                          icon={iconObj}
+                          size={hugeiconSize}
+                          color={iconColor}
+                          strokeWidth={2.5}
+                        />
+                      }
+                      iconSize={hugeiconSize}
+                      accessibilityLabel={`${item.label} ${item.status}`}
+                    />
+                  </Link.AppleZoom>
+                </Link.Trigger>
+              </Link>
+            ) : (
+              <DuolingoSvgNodeButton
+                size={size}
+                onPress={handlePress}
+                disabled={!isInteractive}
+                faceColor={faceColor}
+                rimColor={rimColor}
+                icon={
+                  <HugeiconsIcon
+                    icon={iconObj}
+                    size={hugeiconSize}
+                    color={iconColor}
+                    strokeWidth={2.5}
+                  />
+                }
+                iconSize={hugeiconSize}
+                accessibilityLabel={`${item.label} ${item.status}`}
+              />
+            )}
           </Animated.View>
       </View>
     </Animated.View>

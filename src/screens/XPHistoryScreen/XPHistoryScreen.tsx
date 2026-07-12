@@ -92,9 +92,16 @@ export const XPHistoryScreen: React.FC = () => {
           title: "Insights",
           headerStyle: { backgroundColor: "#F7F7F8" },
           headerShadowVisible: false,
-          headerBackTitleVisible: false,
+          headerBackVisible: false,
         }}
       />
+      <Stack.Toolbar placement="left">
+        <Stack.Toolbar.Button
+          icon="chevron.backward"
+          onPress={handleBackPress}
+          separateBackground
+        />
+      </Stack.Toolbar>
       <XPHistoryTimeline
         entries={history}
         header={

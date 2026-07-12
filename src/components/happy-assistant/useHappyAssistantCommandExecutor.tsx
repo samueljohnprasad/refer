@@ -100,13 +100,11 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
         signInSheetRef.current?.present();
       },
       [HappyAssistantCommandEnum.VoiceJournal]: () => {
-        router.push(HAPPY_ASSISTANT_ROUTES.record as never);
         setStartRecording(true);
-        setRecorderOpen(true);
+        router.push("/tabs/screens/voice-recorder");
       },
       [HappyAssistantCommandEnum.KeyboardJournal]: () => {
-        router.push(HAPPY_ASSISTANT_ROUTES.record as never);
-        setKeyboardJournalOpen(true);
+        router.push("/tabs/screens/keyboard-recorder");
       },
       [HappyAssistantCommandEnum.MoodCheck]: () => {
         setMoodSheetVisible(true);

@@ -1,16 +1,17 @@
 import React, { useState, useCallback, memo } from "react";
+import { useSetAtom } from "jotai";
+import { useRouter } from "expo-router";
+import { selectedJournalEntryAtom } from "@/src/atoms/journalEntryAtom";
 import { useMentalHealthData } from "@/hooks/data/useMentalHealthData";
 import { View } from "@/components/ui/view";
 import { Text } from "@/components/Themed";
 import { Button } from "@/src/components/ui/Button";
 import { Mascot } from "@/src/components/ui/Mascot";
 import { EntryCardsView } from "./EntryCardsView";
-import BlurModal from "@/src/components/BlurModal";
 import { JournalEntry } from "@/hooks/data/types";
 import { useJournalOperations } from "@/hooks/journals/useJournalOperations";
 import SuspensLoader from "@/src/components/SuspensLoader";
 
-import JournalEntryScreen from "../../JournalEntryScreen/JournalEntryScreen";
 import { BookmarkedJournalsBottomSheet } from "./BookmarkedJournalsBottomSheet";
 
 interface MentalHealthProfileContainerProps {
@@ -23,8 +24,8 @@ interface MentalHealthProfileContainerProps {
 const MentalHealthProfileContainerComponent: React.FC<
   MentalHealthProfileContainerProps
 > = ({ selectedDate, showBookmarksModal, setShowBookmarksModal }) => {
-  const [selectedEntry, setSelectedEntry] = useState<JournalEntry>();
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const router = useRouter();
+  const setSelectedJournalEntry = useSetAtom(selectedJournalEntryAtom);
   const [bookmarkingId, setBookmarkingId] = useState<number | null>(null);
 
   const { toggleBookmark } = useJournalOperations();
@@ -38,9 +39,9 @@ const MentalHealthProfileContainerComponent: React.FC<
   } = useMentalHealthData(selectedDate);
 
   const handleEntryPress = useCallback((entry: JournalEntry): void => {
-    setSelectedEntry(entry);
-    setIsModalVisible(true);
-  }, []);
+    setSelectedJournalEntry(entry);
+    // Routing is now handled declaratively by EntryCard's <Link>
+  }, [setSelectedJournalEntry]);
 
   // Handle bookmark toggle
   const handleBookmarkToggle = useCallback(
@@ -66,18 +67,15 @@ const MentalHealthProfileContainerComponent: React.FC<
   // Memoize callbacks to prevent re-renders
   const handleRefetch = useCallback(() => refetch(), [refetch]);
 
-  const handleCloseModal = useCallback(() => setIsModalVisible(false), []);
-
   const handleCloseBookmarks = useCallback(
     () => setShowBookmarksModal(false),
     [setShowBookmarksModal]
   );
 
   const handleBookmarkEntryPress = useCallback((entry: JournalEntry) => {
-    setSelectedEntry(entry);
-    // Keep bookmarks modal open so user can browse multiple entries
-    setIsModalVisible(true);
-  }, []);
+    setSelectedJournalEntry(entry);
+    // Routing is now handled declaratively by EntryCard's <Link>
+  }, [setSelectedJournalEntry]);
 
   if ((!insightsResponse && !mentalHealthLoading) || isError) {
     return (
@@ -119,15 +117,6 @@ const MentalHealthProfileContainerComponent: React.FC<
         onRefresh={handleRefetch}
         bookmarkingId={bookmarkingId}
       />
-
-      <BlurModal visible={isModalVisible}>
-        <SuspensLoader>
-          <JournalEntryScreen
-            insights={selectedEntry}
-            onClose={handleCloseModal}
-          />
-        </SuspensLoader>
-      </BlurModal>
 
       {showBookmarksModal && (
         <SuspensLoader>

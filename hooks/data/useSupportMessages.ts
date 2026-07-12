@@ -23,33 +23,35 @@ const createDailySupportPrompt = (): IMessage => {
   const today = new Date();
   return {
     _id: "daily-prompt-" + today.toDateString(),
-    text: `Hello! 👋 We're here to assist you.
-
-How can we help improve your experience today?
-
-❓ GENERAL QUERIES
-Questions about features or how things work?
-
-✨ FEATURE REQUESTS
-Have a great idea for the app? We'd love to hear it!
-
-🐞 BUG REPORTS
-Found an issue? Please tell us what happened.
-
-🔐 ACCOUNT & DATA
-Need help with your profile, subscription, or privacy?
-
-❤️ FEEDBACK
-Any other thoughts or suggestions?
-
-Drop us a message below!`,
+    text: `Hello! 👋 We're here to assist you.\n\nHow can we help improve your experience today?`,
     createdAt: today,
     user: {
       _id: 900043,
       name: "Support",
     },
     is_support: true,
+    quickReplies: {
+      type: 'radio',
+      keepIt: true,
+      values: [
+        { title: 'General Queries', value: 'General Queries' },
+        { title: 'Feature Requests', value: 'Feature Requests' },
+        { title: 'Bug Reports', value: 'Bug Reports' },
+        { title: 'Account & Data', value: 'Account & Data' },
+        { title: 'Feedback', value: 'Feedback' },
+      ],
+    },
   } as IMessage;
+};
+
+
+const uniqueMessages = (msgs: IMessage[]) => {
+  const seen = new Set();
+  return msgs.filter(msg => {
+    if (seen.has(msg._id)) return false;
+    seen.add(msg._id);
+    return true;
+  });
 };
 
 export const useSupportMessages = () => {
@@ -122,10 +124,10 @@ export const useSupportMessages = () => {
 
       // If no messages from today, add the daily prompt
       if (!isLastMessageToday) {
-        return setMessages([createDailySupportPrompt(), ...giftedMessages]);
+        return setMessages(uniqueMessages([createDailySupportPrompt(), ...giftedMessages]));
       }
 
-      setMessages(giftedMessages);
+      setMessages(uniqueMessages(giftedMessages));
     } catch (err) {
       setError(err as Error);
       console.error("Error fetching support messages:", err);
@@ -176,10 +178,7 @@ export const useSupportMessages = () => {
       }
 
       if (giftedMessages.length > 0) {
-        return setMessages((prevMessages) => [
-          ...prevMessages,
-          ...giftedMessages,
-        ]);
+        return setMessages((prevMessages) => uniqueMessages([...prevMessages, ...giftedMessages]));
       }
       setHasMore(false);
     } catch (err) {
@@ -217,7 +216,7 @@ export const useSupportMessages = () => {
 
       if (data) {
         const newMessage = convertToGiftedChatMessage(data);
-        setMessages((prevMessages) => [newMessage, ...prevMessages]);
+        setMessages((prevMessages) => uniqueMessages([newMessage, ...prevMessages]));
       }
     } catch (err) {
       console.error("Error sending support message:", err);
@@ -270,7 +269,7 @@ export const useSupportMessages = () => {
           const giftedMessage = convertToGiftedChatMessage(newMessage);
           setMessages((prev) => {
             if (prev.some((msg) => msg._id === giftedMessage._id)) return prev;
-            return [giftedMessage, ...prev];
+            return uniqueMessages([giftedMessage, ...prev]);
           });
         }
       )

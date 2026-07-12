@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/components/ui/Text";
 import { SAGE } from "@/lib/tokens";
 import { HorizontalBarChart } from "@/src/screens/InsightsScreen/components/HorizontalBarChart";
 import { TrendLine } from "@/src/screens/InsightsScreen/components/TrendLine";

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Pressable } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/components/ui/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { TimeRangeSelector } from "./TimeRangeSelector";

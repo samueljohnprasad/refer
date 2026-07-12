@@ -13,7 +13,7 @@
 
 import React, { useEffect } from "react";
 import { View, Pressable } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import type { JourneyStats } from "@/src/types/journey/state";
 import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
 import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";

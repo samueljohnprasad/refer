@@ -26,6 +26,7 @@ const NotificationsUI: React.FC = () => {
     openEdit,
     closeEdit,
     handleConfirm,
+    handleTimeChange,
     toggleSelected,
   } = useReminderConfig(DEFAULT_REMINDERS);
 
@@ -34,16 +35,15 @@ const NotificationsUI: React.FC = () => {
     // FIX #2: Removed justify-center items-center — those break ScrollView layout
     <View className="flex-1 bg-offwhite">
       <ScrollView
-        className="flex-1 px-4"
+        className="flex-1"
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
-        // FIX #3: Proper bottom padding so last card isn't clipped by home indicator
         contentContainerStyle={{ paddingBottom: 48 }}
       >
         <NotificationHeader />
 
         {/* Reminder Cards */}
-        <View className="mt-4">
+        <View className="border-y border-border/50 bg-background mt-2">
           {items.map((item, index) => {
             const isSelected = cfg[item.id]?.enabled;
             return (
@@ -53,24 +53,14 @@ const NotificationsUI: React.FC = () => {
                 index={index}
                 isSelected={isSelected}
                 onToggle={() => toggleSelected(item.id)}
-                onEditTime={() => openEdit(item.id)}
+                onTimeChange={(hour, minute) => handleTimeChange(item.id, hour, minute)}
+                isLast={index === items.length - 1}
               />
             );
           })}
         </View>
       </ScrollView>
 
-      {/* Time Picker Modal */}
-      <TimePickerModal
-        visible={!!editingId}
-        initial={{
-          hour: currentEditingItem?.hour ?? 9,
-          minute: currentEditingItem?.minute ?? 0,
-        }}
-        minuteStep={1}
-        onCancel={closeEdit}
-        onConfirm={handleConfirm}
-      />
     </View>
   );
 };

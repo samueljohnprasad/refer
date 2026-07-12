@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { Card } from "@/src/components/ui/Card";
 
 interface SettingsSectionProps {
   title?: string;
@@ -12,19 +11,13 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
   title,
 }) => {
   return (
-    <View className="mb-5">
+    <View className="mb-10">
       {title && (
-        <Text className="happy-brand-eyebrow px-1 mb-2">
+        <Text className="text-[13px] font-medium text-muted-foreground uppercase tracking-wider mb-2 ml-5">
           {title}
         </Text>
       )}
-      <Card
-        variant="tile"
-        radius="lg"
-        showDepth={false}
-        className="border border-sage-100"
-        contentClassName="p-0 overflow-hidden"
-      >
+      <View>
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
             return React.cloneElement(child as React.ReactElement<any>, {
@@ -33,7 +26,7 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
           }
           return child;
         })}
-      </Card>
+      </View>
     </View>
   );
 };

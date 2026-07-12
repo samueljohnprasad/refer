@@ -164,25 +164,8 @@ export function useJourneyMapController(
         return;
       }
 
-      isRoutingRef.current = true;
-
-      if (e && e.nativeEvent) {
-        const { pageX, pageY } = e.nativeEvent;
-        startTransition({
-          cx: pageX,
-          cy: pageY,
-          color: color || (node.status === "active" ? "#58CC02" : "#FFFFFF"),
-          onComplete: () => {
-            router.push(
-              `/tabs/screens/journey-flow?courseId=${courseId}&nodeId=${node.id}`,
-            );
-          },
-        });
-      } else {
-        router.push(
-          `/tabs/screens/journey-flow?courseId=${courseId}&nodeId=${node.id}`,
-        );
-      }
+      // Routing for active/completed nodes is now handled declaratively by <Link> in JourneyNodeCell
+      return;
     },
     [courseId, dispatch, toast, startTransition],
   );

@@ -1,33 +1,8 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { DANGER, GOLD, SAGE, TERRACOTTA } from "@/lib/tokens";
-
-type SettingsItemTone = "sage" | "gold" | "terracotta" | "danger";
-
-const toneStyles: Record<
-  SettingsItemTone,
-  { iconColor: string; iconBgClassName: string }
-> = {
-  sage: {
-    iconColor: SAGE[600],
-    iconBgClassName: "bg-sage-pill",
-  },
-  gold: {
-    iconColor: GOLD,
-    iconBgClassName: "bg-gold/15",
-  },
-  terracotta: {
-    iconColor: TERRACOTTA,
-    iconBgClassName: "bg-terracotta/15",
-  },
-  danger: {
-    iconColor: DANGER,
-    iconBgClassName: "bg-destructive/10",
-  },
-};
 
 interface SettingsItemProps {
   icon: any;
@@ -37,7 +12,6 @@ interface SettingsItemProps {
   showArrow?: boolean;
   isLast?: boolean;
   danger?: boolean;
-  tone?: SettingsItemTone;
 }
 
 export const SettingsItem: React.FC<SettingsItemProps> = ({
@@ -48,57 +22,49 @@ export const SettingsItem: React.FC<SettingsItemProps> = ({
   showArrow = true,
   isLast = false,
   danger = false,
-  tone = "sage",
 }) => {
   const handlePress = () => {
     Haptics.selectionAsync();
     onPress();
   };
-  const resolvedTone = danger ? toneStyles.danger : toneStyles[tone];
 
   return (
     <Pressable
-      className={`min-h-[64px] flex-row items-center px-4 py-3.5 active:bg-sage-100/50 ${
-        !isLast ? "border-b border-sage-100" : ""
-      }`}
+      className="active:bg-muted/50 bg-background"
       onPress={handlePress}
       accessibilityRole="button"
       accessibilityLabel={subtitle ? `${title}. ${subtitle}` : title}
     >
-      <View
-        className={`mr-3.5 h-11 w-11 items-center justify-center rounded-[18px] ${resolvedTone.iconBgClassName}`}
-      >
+      <View className="flex-row items-center pl-5 gap-4">
         <HugeiconsIcon
           icon={icon}
-          size={21}
-          color={resolvedTone.iconColor}
-          strokeWidth={1.8}
+          size={22}
+          color={danger ? "#EF4444" : "var(--app-foreground)"}
         />
-      </View>
-
-      <View className="flex-1">
-        <Text
-          className={`happy-font-body-bold text-[17px] leading-5 ${
-            danger ? "text-destructive" : "text-ink"
+        <View
+          className={`flex-1 flex-row items-center py-3.5 pr-5 ${
+            !isLast ? "border-b border-border/50" : ""
           }`}
         >
-          {title}
-        </Text>
-        {subtitle && (
-          <Text className="happy-font-body-medium mt-0.5 text-[14px] text-ink-muted">
-            {subtitle}
-          </Text>
-        )}
+          <View className="flex-1">
+            <Text
+              className={`text-[17px] ${
+                danger ? "text-red-500" : "text-foreground"
+              }`}
+            >
+              {title}
+            </Text>
+            {subtitle && (
+              <Text className="text-[15px] text-muted-foreground mt-0.5">
+                {subtitle}
+              </Text>
+            )}
+          </View>
+          {showArrow && !danger && (
+            <Feather name="chevron-right" size={16} color="#A1A1AA" />
+          )}
+        </View>
       </View>
-
-      {showArrow && (
-        <HugeiconsIcon
-          icon={ArrowRight01Icon}
-          size={18}
-          color={SAGE[300]}
-          strokeWidth={2}
-        />
-      )}
     </Pressable>
   );
 };

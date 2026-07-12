@@ -19,6 +19,7 @@ type UseReminderConfigReturn = {
   openEdit: (id: string) => void;
   closeEdit: () => void;
   handleConfirm: (time: { hour: number; minute: number }) => void;
+  handleTimeChange: (id: string, hour: number, minute: number) => void;
   toggleSelected: (id: string) => Promise<void>;
 };
 
@@ -122,6 +123,29 @@ export const useReminderConfig = (
     setCfg(nextCfg);
   };
 
+  const handleTimeChange = (id: string, hour: number, minute: number) => {
+    const it = items.find((x) => x.id === id) ?? null;
+    
+    // Update UI
+    setItems((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, hour, minute } : p))
+    );
+
+    // Update config
+    const nextCfg: RemindersConfig = {
+      ...cfg,
+      [id]: {
+        ...(cfg[id] ?? {}),
+        hour,
+        minute,
+        title: it?.title ?? cfg[id]?.title,
+        body: it?.notificationBody ?? cfg[id]?.body,
+        enabled: cfg[id]?.enabled ?? false,
+      },
+    };
+    setCfg(nextCfg);
+  };
+
   /**
    * Toggle reminder on/off
    */
@@ -181,6 +205,7 @@ export const useReminderConfig = (
     openEdit,
     closeEdit,
     handleConfirm,
+    handleTimeChange,
     toggleSelected,
   };
 };

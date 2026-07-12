@@ -17,7 +17,7 @@ export const PromoCard: React.FC<PromoCardProps> = ({
     <Pressable
       onPress={onPromoPress}
       onLayout={onLayout}
-      className="flex-row items-center bg-gold/15 rounded-xl px-4 py-3 mb-5 border border-gold/30 active:bg-gold/25"
+      className="flex-row items-center bg-gold/15 rounded-xl px-4 py-3 mb-5 mx-5 border border-gold/30 active:bg-gold/25"
       accessibilityRole="button"
       accessibilityLabel="Upgrade to Pro. AI Insights, summaries & more"
     >

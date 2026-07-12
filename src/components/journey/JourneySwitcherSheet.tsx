@@ -14,7 +14,7 @@
 
 import React, { useMemo, useCallback, useRef, useEffect } from "react";
 import { View, Pressable } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { Feather } from "@expo/vector-icons";
 import {
     BottomSheetModal,

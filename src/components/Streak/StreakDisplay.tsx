@@ -6,12 +6,10 @@ import {
   StarIcon,
   Tick02Icon,
   Fire02Icon,
-  Alert02Icon,
 } from "@hugeicons/core-free-icons";
 import { useStreakTracker } from "@/hooks/data/useStreakTracker";
 import { useReviewPrompt } from "@/src/hooks/useReviewPrompt";
-import LottieView from "lottie-react-native";
-import { fireryLove } from "@/assets/lottie";
+
 import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
 import {
   presentationDetents,
@@ -20,7 +18,7 @@ import {
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { Button } from "@/src/components/ui/Button";
-import { GOLD, PARROT_ORANGE, SAGE } from "@/lib/tokens";
+import { GOLD, PARROT_ORANGE, SAGE, INK, INK_MUTED } from "@/lib/tokens";
 import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
 import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
 
@@ -102,7 +100,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
   visible,
   onClose,
 }) => {
-  const { streakData, isLoading, useStreakFreeze } = useStreakTracker();
+  const { streakData, isLoading } = useStreakTracker();
 
   useEffect(() => {
     if (visible && streakData.currentStreak > 0) {
@@ -115,36 +113,6 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
     currentStreak: streakData.currentStreak,
     enabled: true,
   });
-
-  const handleUseFreeze = async (): Promise<void> => {
-    if (streakData.streakFreezeCount <= 0) {
-      Alert.alert(
-        "No rest days left",
-        "You've used all your rest days this period. Keep showing up and you'll earn more!",
-      );
-      return;
-    }
-
-    Alert.alert(
-      "Take a rest day?",
-      `You have ${streakData.streakFreezeCount} rest day${streakData.streakFreezeCount === 1 ? "" : "s"} available. Using one keeps your streak safe while you take a break.`,
-      [
-        { text: "Not now", style: "cancel" },
-        {
-          text: "Take rest day",
-          onPress: async () => {
-            const success = await useStreakFreeze();
-            if (success) {
-              Alert.alert(
-                "Rest day saved ✓",
-                "Your streak is safe. Rest well — you've earned it.",
-              );
-            }
-          },
-        },
-      ],
-    );
-  };
 
   const handleShare = async (): Promise<void> => {
     try {
@@ -185,46 +153,28 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
           >
             <RNHostView>
               <View className="flex-1 happy-brand-screen items-center px-6 pt-4 pb-8">
-                {/* ── Fire Lottie + streak number ────────────────────── */}
-                <View className="items-center mb-6">
-                  <View
-                    style={{
-                      width: 180,
-                      height: 180,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <LottieView
-                      source={fireryLove}
-                      autoPlay
-                      loop
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        position: "absolute",
-                      }}
-                    />
-                    {/* Streak number overlaid on the lottie flame */}
+                {/* ── Minimal Streak Hero ───────────────────────────── */}
+                <View className="items-center mb-6 mt-4">
+                  <View className="mb-2 w-16 h-16 rounded-full items-center justify-center bg-orange-50">
+                    <HugeiconsIcon icon={Fire02Icon} size={40} color={PARROT_ORANGE} variant="solid" />
+                  </View>
+                  <View className="flex-row items-baseline">
                     <RNText
-                      className="text-[52px] z-10 mt-5 text-center text-brand-surface"
+                      className="text-[64px] leading-[72px]"
                       style={{
-                        fontFamily: "CormorantBold",
-                        textShadowColor: "rgba(0,0,0,0.45)",
-                        textShadowOffset: { width: 0, height: 2 },
-                        textShadowRadius: 6,
+                        fontFamily: "GeistMedium",
+                        color: INK,
+                        letterSpacing: -2,
                       }}
                     >
                       {streakData.currentStreak}
                     </RNText>
                   </View>
-
-                  {/* "day streak!" label — parrot-orange matches the flame */}
                   <RNText
-                    className="text-[22px] leading-[26px] mt-2 text-center"
+                    className="text-[18px] mt-1 text-center"
                     style={{
-                      fontFamily: "CormorantSemiBold",
-                      color: PARROT_ORANGE,
+                      fontFamily: "GeistRegular",
+                      color: INK_MUTED,
                     }}
                   >
                     day streak!
@@ -269,53 +219,25 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                     </RNText>
                   )}
 
-                  {/* ── Stat row: Longest | Freezes ─────────────────── */}
-                  <View className="flex-row justify-between mt-4 pt-4 border-t border-brand-border">
-                    {/* Longest streak */}
-                    <View className="items-center flex-1">
-                      <Text variant="caption" color="muted">
-                        Longest
-                      </Text>
-                      <View className="flex-row items-center mt-1 gap-1">
-                        <HugeiconsIcon
-                          icon={Fire02Icon}
-                          size={16}
-                          color={PARROT_ORANGE}
-                        />
-                        <Text variant="h3">
-                          {String(streakData.longestStreak)}
-                        </Text>
-                      </View>
-                    </View>
-
-                    {/* Vertical divider */}
-                    <View className="w-px bg-brand-border" />
-
-                    {/* Streak freezes — tappable */}
-                    <Button
-                      variant="ghost"
-                      label={`❄️  ${streakData.streakFreezeCount}`}
-                      size="sm"
-                      fullWidth={false}
-                      className="flex-1"
-                      onPress={handleUseFreeze}
-                    />
-                  </View>
-
-                  {/* Gentle streak reminder */}
-                  {streakData.isStreakAtRisk && (
-                    <View className="bg-sage-pill rounded-xl p-3 mt-4 flex-row items-center gap-2">
+                  {/* ── Stat row: Longest ─────────────────── */}
+                  <View className="items-center mt-4 pt-4 border-t border-brand-border">
+                    <Text variant="caption" color="muted">
+                      Longest
+                    </Text>
+                    <View className="flex-row items-center mt-1 gap-1">
                       <HugeiconsIcon
-                        icon={Alert02Icon}
-                        size={20}
-                        color={SAGE[500]}
+                        icon={Fire02Icon}
+                        size={16}
+                        color={PARROT_ORANGE}
                       />
-                      <Text variant="caption" className="flex-1 text-sage-700">
-                        A quick check-in today would keep your streak going. No
-                        pressure though — rest days exist for a reason.
-                      </Text>
+                      <RNText
+                        className="happy-font-body-bold text-[17px] mt-[1px]"
+                        style={{ color: INK }}
+                      >
+                        {String(streakData.longestStreak)}
+                      </RNText>
                     </View>
-                  )}
+                  </View>
                 </Card>
 
                 {/* ── Action buttons ─────────────────────────────────── */}
@@ -329,7 +251,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                       <HugeiconsIcon
                         icon={Share01Icon}
                         size={20}
-                        color={GOLD}
+                        color={INK}
                       />
                     }
                   />

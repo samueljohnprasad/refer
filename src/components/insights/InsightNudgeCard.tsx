@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import { router } from "expo-router";
 import { useInsightNudge } from "@/src/hooks/insights/useInsightNudge";
 import { Card } from "@/src/components/ui/Card";

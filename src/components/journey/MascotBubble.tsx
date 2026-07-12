@@ -13,7 +13,7 @@
 import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 import { Image } from "expo-image";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import Animated from "react-native-reanimated";
 
 import { PressableScale } from "@/src/components/ui/PressableScale";

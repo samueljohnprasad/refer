@@ -3,7 +3,7 @@ import { View, ScrollView, Pressable } from "react-native";
 import { startOfWeek, endOfWeek } from "date-fns";
 import WeeklyMoodChart from "@/src/components/WeeklyMoodChart";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/components/ui/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Stack } from "expo-router";
 import { HugeiconsIcon } from "@hugeicons/react-native";

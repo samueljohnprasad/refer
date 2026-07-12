@@ -10,7 +10,7 @@
 
 import React, { useCallback, useEffect } from "react";
 import { View } from "react-native";
-import { Text } from "@/components/ui/text";
+import { Text } from "@/src/components/ui/Text";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
