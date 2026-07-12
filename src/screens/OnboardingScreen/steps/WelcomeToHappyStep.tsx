@@ -22,54 +22,63 @@ const WelcomeToHappyStep: React.FC<WelcomeToHappyStepProps> = ({
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6"
     >
-      <View className="flex-1 items-center justify-center">
+      <View className="flex-1 items-center justify-center py-4">
         <MochiMascot expression="peaceful" size={160} delay={40} />
 
         <Animated.View
-          entering={FadeIn.duration(180).delay(120)}
+          entering={FadeIn.duration(200).delay(120)}
           className="mt-6 items-center"
         >
-          <View className="flex-row items-center gap-1.5 justify-center">
-            <Text
-              style={{ fontFamily: "CormorantSemiBold" }}
-              className="text-[28px] text-ink"
-            >
-              Welcome to the Grove
-            </Text>
-            <HugeiconsIcon icon={WellnessIcon} size={24} color="#5F7F58" />
-          </View>
-          <Text className="mt-3 text-center text-sm leading-relaxed text-ink-soft">
-            Your journey begins now. {dailyGoal} minutes a day.{"\n"}Mochi will
-            be here every step.
+          <Text
+            style={{ fontFamily: "CormorantSemiBold" }}
+            className="text-center text-[30px] leading-tight text-ink"
+          >
+            Welcome to the Grove
+          </Text>
+          <Text className="mt-2.5 text-center text-sm leading-relaxed text-ink-soft">
+            Your sanctuary begins now. {dailyGoal} minutes a day.{"\n"}
+            Mochi will be here with you every step.
           </Text>
         </Animated.View>
 
         <Animated.View
-          entering={FadeIn.duration(180).delay(220)}
-          className="mt-6 w-full rounded-2xl border border-sage-100 bg-warm-white p-5"
+          entering={FadeIn.duration(200).delay(220)}
+          className="mt-7 w-full rounded-2xl border border-sage-200/80 bg-sage-50/50 p-5 shadow-sm shadow-sage-900/5"
         >
-          <Text className="text-xs font-bold uppercase tracking-wider text-sage-500">
-            Up next · Tomorrow
+          <View className="flex-row items-center justify-between">
+            <View className="flex-row items-center gap-1.5">
+              <HugeiconsIcon icon={WellnessIcon} size={16} color="#5F7F58" />
+              <Text className="text-xs font-semibold tracking-wide text-sage-700">
+                Today&apos;s session
+              </Text>
+            </View>
+            <View className="rounded-full bg-sage-100/80 px-2.5 py-0.5">
+              <Text className="text-[11px] font-medium text-sage-700">
+                Day 1
+              </Text>
+            </View>
+          </View>
+
+          <Text className="mt-2.5 text-base font-semibold text-ink">
+            Entering the Grove
           </Text>
-          <Text
-            style={{ fontFamily: "CormorantMedium" }}
-            className="mt-2 text-lg text-ink"
-          >
-            Day 2: The Thought Spiral
-          </Text>
-          <Text className="mt-1 text-xs text-ink-muted">
+          <Text className="mt-1 text-xs font-medium text-ink-soft">
             {planName} · {dailyGoal} min
           </Text>
         </Animated.View>
 
-        <Animated.Text
-          entering={FadeIn.duration(180).delay(320)}
-          style={{ fontFamily: "CormorantMedium" }}
-          className="mt-6 text-center text-sm italic text-ink-soft"
+        <Animated.View
+          entering={FadeIn.duration(200).delay(320)}
+          className="mt-6 w-full rounded-xl border border-sage-100/70 bg-warm-white/90 px-4 py-3.5"
         >
-          Until tomorrow, friend.{"\n"}
-          <Text className="not-italic">— Mochi</Text>
-        </Animated.Text>
+          <Text className="text-center text-xs font-medium leading-relaxed text-ink-soft">
+            &ldquo;Consistency matters more than perfection. Even a brief pause
+            changes your trajectory.&rdquo;
+          </Text>
+          <Text className="mt-1.5 text-center text-[11px] font-semibold tracking-wide text-sage-600">
+            — MOCHI
+          </Text>
+        </Animated.View>
       </View>
     </ScrollView>
   );

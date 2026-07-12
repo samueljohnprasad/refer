@@ -50,7 +50,7 @@ const SpeechBubble: React.FC<SpeechBubbleProps> = ({
     >
       <Animated.View
         style={triangleStyle}
-        className="absolute -top-2.5 left-8 h-4 w-4 rotate-45 border-l-2 border-t-2 border-sage-200 bg-warm-white"
+        className="absolute -top-2.5 left-1/2 -ml-2 h-4 w-4 rotate-45 border-l-2 border-t-2 border-sage-200 bg-warm-white"
       />
       <Text
         className="happy-font-heading-regular text-[17px] leading-[1.4] text-ink"

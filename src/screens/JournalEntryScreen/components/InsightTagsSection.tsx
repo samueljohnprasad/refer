@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ScrollView } from "react-native";
+import { View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Text } from "@/src/components/ui/Text";
 
@@ -34,11 +34,7 @@ export const InsightTagsSection: React.FC<InsightTagsSectionProps> = React.memo(
           </Text>
         </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingRight: 16 }}
-        >
+        <View>
           <View className="flex-row flex-wrap gap-2">
             {items.map((item: string, index: number) => (
               <View
@@ -54,7 +50,7 @@ export const InsightTagsSection: React.FC<InsightTagsSectionProps> = React.memo(
               </View>
             ))}
           </View>
-        </ScrollView>
+        </View>
       </View>
     );
   }

@@ -18,8 +18,16 @@ import { InsightTagsSection, INSIGHT_TAG_CONFIGS } from "./InsightTagsSection";
 import { Text } from "@/src/components/ui/Text";
 
 /**
- * Enhanced AI insights section with metrics and tag cards
- * Collapsible section with animated chevron
+ * AI Insights section — restructured so the resonant reflection leads.
+ *
+ * Information hierarchy:
+ * 1. Hero reflection (aiInsights) — what the AI noticed, specific and personal
+ * 2. Cognitive pattern — gentle CBT pattern identification (only when present)
+ * 3. Strength spotlight — specific strength demonstrated (only when present)
+ * 4. CBT exercise bridge — recommended exercise + why it fits
+ * 5. Vitality & Balance — metrics (sleep only when explicitly mentioned)
+ * 6. Tag chips — achievements, goals, worries, triggers, coping, symptoms
+ * 7. Next journal prompt — forward-looking question to drive return visit
  */
 export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
   ({
@@ -34,6 +42,11 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
     triggers,
     copingStrategies,
     physicalSymptoms,
+    cognitivePattern,
+    suggestedExerciseName,
+    suggestedExercise,
+    nextJournalPrompt,
+    strengthSpotlight,
   }: AIInsightsSectionProps) => {
     const [isInsightsOpen, setIsInsightsOpen] = React.useState<boolean>(true);
     const insightsOpen = useSharedValue<number>(1);
@@ -67,21 +80,28 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
       Boolean(goals && goals.length > 0) ||
       Boolean(triggers && triggers.length > 0) ||
       Boolean(copingStrategies && copingStrategies.length > 0) ||
-      Boolean(physicalSymptoms && physicalSymptoms.length > 0);
-
-    console.log(
-      "DEBUG - Achievements:",
-      achievements,
-      "Worries:",
-      worries,
-      "Triggers:",
-      triggers
-    );
+      Boolean(physicalSymptoms && physicalSymptoms.length > 0) ||
+      Boolean(cognitivePattern) ||
+      Boolean(suggestedExerciseName) ||
+      Boolean(nextJournalPrompt) ||
+      Boolean(strengthSpotlight);
 
     if (!hasAnyData) return null;
 
+    const hasCBTBridge = Boolean(suggestedExerciseName && suggestedExercise);
+    const hasMetrics =
+      energyLevel !== null || stressLevel !== null || sleepQuality !== null;
+    const hasTagData =
+      Boolean(achievements && achievements.length > 0) ||
+      Boolean(goals && goals.length > 0) ||
+      Boolean(worries && worries.length > 0) ||
+      Boolean(triggers && triggers.length > 0) ||
+      Boolean(copingStrategies && copingStrategies.length > 0) ||
+      Boolean(physicalSymptoms && physicalSymptoms.length > 0);
+
     return (
       <View className="bg-white/85 rounded-2xl p-5 mb-8 border border-brand-border">
+        {/* ── Header ── */}
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel="Toggle AI Insights"
@@ -92,10 +112,10 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
         >
           <View className="flex-row items-center">
             <View className="w-8 h-8 rounded-xl bg-macaw-purple-tint border border-macaw-purple/20 items-center justify-center">
-              <Feather name="cpu" size={16} color="#CE82FF" />
+              <Text className="text-[16px]">✨</Text>
             </View>
             <Text variant="h3" className="ml-3">
-              AI Insights
+              What I noticed
             </Text>
           </View>
           <Animated.View style={insightsChevronStyle} className="p-1">
@@ -115,14 +135,109 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
             exiting={FadeOut.duration(150)}
             layout={Layout.springify().damping(20).stiffness(180)}
           >
-            {/* Wellness Metrics Card */}
+            {/* ── 1. Hero: AI Reflection ── */}
+            {aiInsights && (
+              <View className="bg-white/70 rounded-xl p-4 mb-4 border border-brand-border/30">
+                <Text
+                  variant="body"
+                  className="text-ink text-[15px] leading-[26px]"
+                >
+                  {aiInsights}
+                </Text>
+              </View>
+            )}
+
+            {/* ── 2. Cognitive Pattern (CBT) ── */}
+            {cognitivePattern && (
+              <View className="flex-row items-start mb-3 bg-macaw-purple-tint/50 rounded-xl p-3.5 border border-macaw-purple/10">
+                <Feather
+                  name="layers"
+                  size={14}
+                  color="#CE82FF"
+                  style={{ marginTop: 2 }}
+                />
+                <Text
+                  variant="body"
+                  className="ml-2.5 text-ink-soft text-[13px] leading-[20px] flex-1"
+                >
+                  {cognitivePattern}
+                </Text>
+              </View>
+            )}
+
+            {/* ── 3. Strength Spotlight ── */}
+            {strengthSpotlight && (
+              <View className="flex-row items-start mb-3 bg-gold-tint/60 rounded-xl p-3.5 border border-gold/10">
+                <Feather
+                  name="star"
+                  size={14}
+                  color="#D97706"
+                  style={{ marginTop: 2 }}
+                />
+                <Text
+                  variant="body"
+                  className="ml-2.5 text-ink text-[13px] leading-[20px] flex-1"
+                >
+                  {strengthSpotlight}
+                </Text>
+              </View>
+            )}
+
+            {/* ── 4. CBT Exercise Bridge ── */}
+            {hasCBTBridge && (
+              <View className="mb-4 bg-sage-50 rounded-xl p-4 border border-sage-100/60">
+                <View className="flex-row items-center mb-2">
+                  <Feather name="book-open" size={14} color="#4A7C59" />
+                  <Text
+                    variant="label-bold"
+                    className="ml-2 text-[12px] uppercase tracking-wide"
+                    style={{ color: "#4A7C59" }}
+                  >
+                    Try this exercise
+                  </Text>
+                </View>
+                <Text
+                  variant="body-bold"
+                  className="text-ink text-[15px] mb-1"
+                >
+                  {suggestedExerciseName}
+                </Text>
+                <Text
+                  variant="body"
+                  className="text-ink-soft text-[13px] leading-[19px]"
+                >
+                  {suggestedExercise}
+                </Text>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  className="mt-3 flex-row items-center self-start"
+                  accessibilityRole="button"
+                  accessibilityLabel={`Open ${suggestedExerciseName} exercise`}
+                >
+                  <Text
+                    className="text-[13px] font-semibold mr-1"
+                    style={{ color: "#4A7C59" }}
+                  >
+                    Open exercise
+                  </Text>
+                  <Feather name="arrow-right" size={13} color="#4A7C59" />
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* ── Divider before supporting data ── */}
+            {(hasMetrics || hasTagData) && (
+              <View className="border-t border-brand-border/30 mb-4" />
+            )}
+
+            {/* ── 5. Vitality Metrics (sleep only when explicitly mentioned) ── */}
             <InsightMetricsCard
               energyLevel={energyLevel ?? null}
               stressLevel={stressLevel ?? null}
               sleepQuality={sleepQuality ?? null}
             />
 
-            {/* Tag Sections */}
+            {/* ── 6. Tag Sections ── */}
             {achievements && achievements.length > 0 && (
               <InsightTagsSection
                 {...INSIGHT_TAG_CONFIGS.achievements}
@@ -165,11 +280,24 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
               />
             )}
 
-            {/* AI Synthesis Narrative */}
-            {aiInsights && (
-              <View className="mt-2 pt-3.5 border-t border-brand-border/30">
-                <Text variant="body" className="text-ink text-[15px] leading-[24px]">
-                  {aiInsights}
+            {/* ── 7. Next Journal Prompt (return-visit hook) ── */}
+            {nextJournalPrompt && (
+              <View className="mt-3 pt-3.5 border-t border-brand-border/30">
+                <View className="flex-row items-center mb-2">
+                  <Feather name="edit-3" size={13} color="#888" />
+                  <Text
+                    variant="caption"
+                    className="ml-1.5 text-ink-soft text-[12px] uppercase tracking-wide"
+                  >
+                    Next time, try exploring
+                  </Text>
+                </View>
+                <Text
+                  variant="body"
+                  className="text-ink text-[14px] leading-[22px]"
+                  style={{ fontStyle: "italic" }}
+                >
+                  "{nextJournalPrompt}"
                 </Text>
               </View>
             )}

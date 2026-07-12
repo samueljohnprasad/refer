@@ -50,8 +50,10 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingBottom: 156,
-        paddingHorizontal: 24, paddingTop: headerHeight - insets.top }}
+        paddingBottom: 220,
+        paddingHorizontal: 24,
+        paddingTop: Math.max(16, headerHeight - insets.top + 8),
+      }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1"
     >
@@ -61,27 +63,26 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
       >
         <View
           style={{
-            alignSelf: "stretch",
+            alignSelf: "center",
             borderRadius: 999,
             borderCurve: "continuous",
-            backgroundColor: "#D4A943",
-            paddingHorizontal: 18,
-            paddingVertical: 10,
+            backgroundColor: "#F2F6EF",
+            borderColor: "#D8E5D4",
+            borderWidth: 1,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
             gap: 6,
           }}
         >
-          <HugeiconsIcon icon={Mail01Icon} size={13} color="#29452A" />
+          <HugeiconsIcon icon={Mail01Icon} size={14} color="#4A6A45" />
           <Text
             style={{
-              fontFamily: "GeistBold",
-              color: "#29452A",
-              fontSize: 11,
-              fontWeight: "800",
-              letterSpacing: 1.8,
-              textTransform: "uppercase",
+              fontFamily: "GeistSemiBold",
+              color: "#375234",
+              fontSize: 12,
+              letterSpacing: 0.3,
             }}
           >
             Something arrived for you
@@ -90,10 +91,10 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
 
         <Text
           style={{
-            marginTop: 18,
+            marginTop: 16,
             fontFamily: "CormorantRegular",
-            fontSize: 28,
-            lineHeight: 33,
+            fontSize: 30,
+            lineHeight: 35,
             textAlign: "center",
             color: "#142414",
           }}
@@ -112,8 +113,8 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           style={{
             marginTop: 6,
             fontFamily: "GeistRegular",
-            fontSize: 15,
-            lineHeight: 21,
+            fontSize: 14,
+            lineHeight: 20,
             textAlign: "center",
             color: "#4F604F",
           }}
@@ -125,7 +126,7 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
       <Animated.View
         entering={FadeIn.duration(180).delay(160)}
         style={{
-          marginTop: 18,
+          marginTop: 20,
           overflow: "hidden",
           borderRadius: 24,
           borderCurve: "continuous",
@@ -136,10 +137,10 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
         }}
       >
         <LinearGradient
-            colors={["#FFFFFF", "#F8FBF6"]}
+          colors={["#FFFFFF", "#F8FBF6"]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
-          style={{ paddingHorizontal: 22, paddingTop: 24, paddingBottom: 20 }}
+          style={{ paddingHorizontal: 22, paddingTop: 24, paddingBottom: 22 }}
         >
           <LinearGradient
             colors={["transparent", "#E5EDE1", "#D3E0CD", "#E5EDE1", "transparent"]}
@@ -162,8 +163,8 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
               right: 18,
               top: 18,
               transform: [{ rotate: "-8deg" }],
-              width: 58,
-              height: 58,
+              width: 54,
+              height: 54,
               borderRadius: 999,
               borderCurve: "continuous",
               overflow: "hidden",
@@ -197,11 +198,11 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
           <Text
             style={{
               fontFamily: "GeistMedium",
-              paddingRight: 60,
-              color: "#7D8D7B",
-              fontSize: 11,
-              fontWeight: "500",
-              letterSpacing: 0.5,
+              paddingRight: 64,
+              color: "#6C7D6A",
+              fontSize: 11.5,
+              fontWeight: "600",
+              letterSpacing: 0.4,
             }}
           >
             {futureLetterMeta.dateLabel}
@@ -209,30 +210,30 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
 
           <Text
             style={{
-              marginTop: 14,
+              marginTop: 12,
               fontFamily: "CormorantRegular",
-              fontSize: 18,
-              lineHeight: 22,
+              fontSize: 20,
+              lineHeight: 25,
               color: "#142414",
             }}
           >
             Hey, friend —
           </Text>
 
-          <View style={{ marginTop: 14 }}>
+          <View style={{ marginTop: 10 }}>
             <Text
               style={{
                 fontFamily: "CormorantRegular",
-                fontSize: 14,
-                lineHeight: 23,
-                color: "#4F604F",
+                fontSize: 16,
+                lineHeight: 24,
+                color: "#243324",
               }}
             >
               I&apos;m writing from a {futureLetterMeta.weekdayLower}{" "}
               {futureLetterMeta.moment}. I closed Happy{" "}
               <Text
                 style={{
-                  color: "#44633F",
+                  color: "#3A5636",
                   fontFamily: "CormorantSemiBold",
                 }}
               >
@@ -242,11 +243,11 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             </Text>
             <Text
               style={{
-                marginTop: 12,
+                marginTop: 10,
                 fontFamily: "CormorantRegular",
-                fontSize: 14,
-                lineHeight: 23,
-                color: "#4F604F",
+                fontSize: 16,
+                lineHeight: 24,
+                color: "#243324",
               }}
             >
               I won&apos;t lie to you. The noise didn&apos;t stop. Some mornings
@@ -254,18 +255,18 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             </Text>
             <Text
               style={{
-                marginTop: 12,
+                marginTop: 10,
                 fontFamily: "CormorantRegular",
-                fontSize: 14,
-                lineHeight: 23,
-                color: "#4F604F",
+                fontSize: 16,
+                lineHeight: 24,
+                color: "#243324",
               }}
             >
               But yesterday, when the spiral started — I caught it. I named it.
               I sat with it for thirty seconds.{" "}
               <Text
                 style={{
-                  color: "#44633F",
+                  color: "#3A5636",
                   fontFamily: "CormorantSemiBold",
                 }}
               >
@@ -274,22 +275,22 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             </Text>
             <Text
               style={{
-                marginTop: 12,
+                marginTop: 10,
                 fontFamily: "CormorantRegular",
-                fontSize: 14,
-                lineHeight: 23,
-                color: "#4F604F",
+                fontSize: 16,
+                lineHeight: 24,
+                color: "#243324",
               }}
             >
               Thirty days ago, that wasn&apos;t possible.
             </Text>
             <Text
               style={{
-                marginTop: 12,
+                marginTop: 10,
                 fontFamily: "CormorantRegular",
-                fontSize: 14,
-                lineHeight: 23,
-                color: "#4F604F",
+                fontSize: 16,
+                lineHeight: 24,
+                color: "#243324",
               }}
             >
               You showed up today. Five minutes. Just like you said you would,
@@ -297,17 +298,17 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             </Text>
             <Text
               style={{
-                marginTop: 12,
+                marginTop: 10,
                 fontFamily: "CormorantRegular",
-                fontSize: 14,
-                lineHeight: 23,
-                color: "#4F604F",
+                fontSize: 16,
+                lineHeight: 24,
+                color: "#243324",
               }}
             >
               Keep going.{" "}
               <Text
                 style={{
-                  color: "#44633F",
+                  color: "#3A5636",
                   fontFamily: "CormorantSemiBold",
                 }}
               >
@@ -320,15 +321,15 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             colors={["transparent", "#D3E0CD", "transparent"]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
-            style={{ marginTop: 16, height: 1 }}
+            style={{ marginTop: 14, height: 1 }}
           />
 
-          <View style={{ marginTop: 12, alignItems: "flex-end" }}>
+          <View style={{ marginTop: 10, alignItems: "flex-end" }}>
             <Text
               style={{
                 fontFamily: "CormorantRegularItalic",
-                fontSize: 18,
-                lineHeight: 22,
+                fontSize: 19,
+                lineHeight: 23,
                 color: "#C8694B",
               }}
             >
@@ -336,11 +337,11 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
             </Text>
             <Text
               style={{
-                marginTop: 2,
-                fontFamily: "GeistRegular",
-                fontSize: 11,
-                lineHeight: 15,
-                color: "#7D8D7B",
+                marginTop: 3,
+                fontFamily: "GeistMedium",
+                fontSize: 11.5,
+                lineHeight: 16,
+                color: "#6C7D6A",
                 letterSpacing: 0.3,
               }}
             >
@@ -353,21 +354,27 @@ const LetterFromFutureStep: React.FC<LetterFromFutureStepProps> = ({
       <Animated.View
         entering={FadeIn.duration(180).delay(260)}
         style={{
-          marginTop: 6,
-          marginBottom: 4,
+          marginTop: 16,
+          marginBottom: 8,
+          borderRadius: 16,
+          borderWidth: 1,
+          borderColor: "#E3ECE0",
+          backgroundColor: "#FAFCF9",
+          paddingHorizontal: 14,
+          paddingVertical: 12,
           flexDirection: "row",
           alignItems: "center",
-          gap: 10,
+          gap: 12,
         }}
       >
-        <MochiMascot expression="notes" size={60} animate={false} />
+        <MochiMascot expression="notes" size={54} animate={false} />
         <Text
           style={{
             flex: 1,
-            fontFamily: "CormorantMediumItalic",
-            fontSize: 13,
-            lineHeight: 18,
-            color: "#4F604F",
+            fontFamily: "GeistMedium",
+            fontSize: 13.5,
+            lineHeight: 19,
+            color: "#3A4B3A",
           }}
         >
           Hold onto this. Some days you&apos;ll need to remember who you&apos;re

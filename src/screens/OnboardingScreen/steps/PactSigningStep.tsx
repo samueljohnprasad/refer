@@ -36,28 +36,26 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 24, flexGrow: 1, paddingTop: headerHeight - insets.top }}
         contentInsetAdjustmentBehavior="automatic"
-        className="flex-1 px-6 pt-3"
+        className="flex-1 px-6"
       >
         <View className="flex-1">
-          <Animated.View
-            entering={FadeIn.duration(180).delay(80)}
-            className="items-center"
+          <Animated.Text
+            entering={FadeIn.duration(160).delay(80)}
+            className="text-xs font-semibold uppercase tracking-widest text-sage-500"
           >
-            <Text
-              style={{ fontFamily: "GeistSemiBold" }}
-              className="text-center text-xs font-semibold uppercase tracking-[0.12em] text-sage-500"
-            >
-              Step 6 of 6 — Final commitment
-            </Text>
+            Step 6 of 6
+          </Animated.Text>
+
+          <Animated.View entering={FadeIn.duration(180).delay(140)}>
             <Text
               style={{ fontFamily: "CormorantSemiBold" }}
-              className="mt-3 text-center text-[30px] leading-[1.05] text-ink"
+              className="mt-2 text-[30px] leading-[1.1] text-ink"
             >
               A small{" "}
               <Text
                 style={{
                   fontFamily: "CormorantRegularItalic",
-                  color: "#5F7F58",
+                  color: SAGE[500],
                 }}
               >
                 pact.
@@ -68,67 +66,64 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
           <Animated.View
             entering={FadeIn.duration(180).delay(160)}
             style={{ borderCurve: "continuous" }}
-            className="mt-4 w-full rounded-[24px] border-2 border-sage-100 bg-warm-white px-6 py-7"
+            className="mt-5 w-full rounded-[24px] border-2 border-sage-100 bg-warm-white px-6 py-7"
           >
             <Text
-              style={{ fontFamily: "CormorantRegularItalic" }}
-              className="text-left text-[16px] leading-[25px] text-ink"
+              style={{ fontFamily: "CormorantMedium" }}
+              className="text-left text-[18px] leading-[26px] text-ink"
             >
               For the next 7 days, I&apos;ll show up for myself — even if
               it&apos;s just for {dailyGoal} minutes.
             </Text>
             <Text
-              style={{ fontFamily: "CormorantRegularItalic" }}
-              className="mt-7 text-left text-[16px] leading-[25px] text-ink"
+              style={{ fontFamily: "CormorantMedium" }}
+              className="mt-6 text-left text-[18px] leading-[26px] text-ink"
             >
               I&apos;ll be honest. I&apos;ll be patient. I&apos;m worth the
               effort.
             </Text>
 
-            <View className="mt-[18px] items-center pt-4">
-              <View className="mb-6 w-full flex-row justify-between">
-                {DIVIDER_SEGMENTS.map((segment) => (
-                  <View
-                    key={segment}
-                    style={{
-                      width: 8,
-                      height: 1,
-                      backgroundColor: "#E5EDE1",
-                      opacity: 0.9,
-                    }}
-                  />
-                ))}
+            <View className="mt-7 pt-2">
+              <View
+                style={{
+                  width: "100%",
+                  height: 1,
+                  borderTopWidth: 1,
+                  borderColor: SAGE[200],
+                  borderStyle: "dashed",
+                  opacity: 0.8,
+                }}
+              />
+              <View className="mt-5 flex-row items-baseline justify-between">
+                <Text
+                  style={{ fontFamily: "GeistMedium" }}
+                  className="text-[11px] uppercase tracking-[0.1em] text-ink-muted"
+                >
+                  Signed
+                </Text>
+                <Text
+                  style={{ fontFamily: "CormorantRegularItalic" }}
+                  className="text-[22px] tracking-[-0.01em] text-sage-600"
+                >
+                  — You, today
+                </Text>
               </View>
-              <Text
-                style={{ fontFamily: "GeistMedium" }}
-                className="text-[11px] uppercase tracking-[0.1em] text-ink-muted"
-              >
-                Signed
-              </Text>
-              <Text
-                style={{ fontFamily: "CormorantRegularItalic" }}
-                className="mt-1 text-[22px] tracking-[-0.01em] text-sage-600"
-              >
-                — You, today
-              </Text>
             </View>
           </Animated.View>
-
-          <Animated.Text
-            entering={FadeIn.duration(180).delay(240)}
-            style={{ fontFamily: "GeistRegular" }}
-            className="mt-8 text-center text-[13px] text-ink-muted"
-          >
-            Hold to make it official.
-          </Animated.Text>
         </View>
       </ScrollView>
 
       <Animated.View
         entering={FadeIn.duration(180).delay(300)}
-        className="px-6 pb-8 pt-4 bg-transparent"
+        className="px-6 pb-8 pt-2 bg-transparent"
         style={{ paddingBottom: Math.max(insets.bottom + 8, 32) }}
       >
+        <Text
+          style={{ fontFamily: "GeistRegular" }}
+          className="mb-3 text-center text-[13px] text-ink-muted"
+        >
+          Hold to make it official.
+        </Text>
         <SvgAppButton
           width="100%"
           height={56}
@@ -158,6 +153,8 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
               top: 0,
               bottom: 0,
               width: "100%",
+              borderRadius: 22,
+              overflow: "hidden",
             }}
           >
             <Animated.View
@@ -167,7 +164,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
                   left: 0,
                   top: 0,
                   bottom: 0,
-                  backgroundColor: "#29452A",
+                  backgroundColor: SAGE[700],
                 },
                 commitFillStyle,
               ]}
@@ -180,7 +177,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
             {committed
               ? "Pact sealed"
               : isHolding
-                ? "Keep holding..."
+                ? "Sealing pact..."
                 : "Hold to commit"}
           </Text>
         </SvgAppButton>

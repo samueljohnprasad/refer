@@ -56,21 +56,21 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 32 }}
         contentInsetAdjustmentBehavior="automatic"
-        className="flex-1 px-6 pt-4"
+        className="flex-1 px-6 pt-2"
       >
         <Animated.View
           entering={FadeIn.duration(180).delay(80)}
-          className="items-center pt-4"
+          className="items-center pt-1"
         >
-          <View className="mb-3 flex-row items-center gap-1.5 rounded-full bg-sage-700 px-3.5 py-1.5">
+          <View className="mb-2 flex-row items-center gap-1.5 rounded-full border border-sage-200 bg-sage-50 px-3.5 py-1.5">
             <Text
-              style={{ fontFamily: 'GeistBold' }}
-              className="text-[11px] uppercase tracking-[0.1em] text-gold"
+              style={{ fontFamily: 'GeistSemiBold' }}
+              className="text-[12px] text-sage-800"
             >
-              ⭐ App of the Day
+              App of the Day
             </Text>
           </View>
-          <MochiMascot expression="happy" size={100} delay={200} />
+          <MochiMascot expression="happy" size={84} delay={200} />
           <Text
             style={{ fontFamily: 'CormorantSemiBold' }}
             className="mt-3 text-center text-[26px] leading-[1.15] tracking-[-0.02em] text-ink"
@@ -90,7 +90,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           </Text>
         </Animated.View>
 
-        <Animated.View entering={FadeIn.duration(180).delay(160)} className="mt-5 gap-2">
+        <Animated.View entering={FadeIn.duration(180).delay(160)} className="mt-3.5 gap-2">
           {PAYWALL_BENEFITS.map((benefit) => (
             <View key={benefit} className="flex-row items-center gap-2.5">
               <View className="h-[22px] w-[22px] items-center justify-center rounded-full bg-sage-500">
@@ -101,18 +101,18 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           ))}
         </Animated.View>
 
-        <Animated.View entering={FadeIn.duration(180).delay(220)} className="mt-5">
+        <Animated.View entering={FadeIn.duration(180).delay(220)} className="mt-3.5">
           <Text
-            style={{ fontFamily: 'GeistBold' }}
-            className="mb-2.5 text-xs uppercase tracking-[0.05em] text-sage-700"
+            style={{ fontFamily: 'GeistSemiBold' }}
+            className="mb-2.5 text-[13px] text-sage-800"
           >
-            🔒 Your next 3 lessons (locked without Plus)
+            Your next 3 lessons (locked without Plus)
           </Text>
           {LOCKED_LESSONS.map((lesson) => (
               <View
                 key={lesson.day}
                 style={{ borderCurve: 'continuous' }}
-                className="relative mb-2 flex-row items-center gap-3 overflow-hidden rounded-xl border border-sage-100 bg-warm-white px-3.5 py-3"
+                className="relative mb-1.5 flex-row items-center gap-3 overflow-hidden rounded-xl border border-sage-100 bg-warm-white px-3 py-2.5"
               >
                 <View className="flex-1 flex-row items-center gap-3 opacity-90">
                   <View className="h-8 w-8 items-center justify-center rounded-lg bg-sage-100">
@@ -164,7 +164,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
           </Text>
         </Animated.View>
 
-        <View className="mt-5 gap-2.5">
+        <View className="mt-3.5 gap-2.5">
           {PRICING_PLANS.map((plan) => (
             <PricingTierCard
               key={plan.tier}
@@ -185,7 +185,7 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
         </Animated.View>
 
         <View className="mt-5">
-          <TactileButton label="START FREE TRIAL" onPress={onStartTrial} />
+          <TactileButton label="Start my 7-day free trial" onPress={onStartTrial} />
           <Pressable onPress={handleContinueFree} className="mt-3 items-center py-2">
             <Text className="text-sm text-ink-muted">Continue with free</Text>
           </Pressable>
@@ -193,13 +193,13 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
 
         <Animated.View
           entering={FadeIn.duration(180).delay(360)}
-          className="mt-5 flex-row items-center justify-center gap-3.5 border-t border-sage-100 pt-3"
+          className="mt-5 flex-row items-center justify-center gap-4 border-t border-sage-100 pt-3"
         >
           <View className="items-center">
             <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
               3 in 4
             </Text>
-            <Text className="text-[9px] uppercase tracking-wide text-ink-muted">
+            <Text style={{ fontFamily: 'GeistMedium' }} className="text-[11.5px] text-ink-soft">
               sleep better by Day 14
             </Text>
           </View>
@@ -207,13 +207,13 @@ const SoftPaywallStep: React.FC<SoftPaywallStepProps> = ({
             <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
               ★ 4.9
             </Text>
-            <Text className="text-[9px] uppercase tracking-wide text-ink-muted">12k reviews</Text>
+            <Text style={{ fontFamily: 'GeistMedium' }} className="text-[11.5px] text-ink-soft">12k reviews</Text>
           </View>
           <View className="items-center">
             <Text style={{ fontFamily: 'CormorantSemiBold' }} className="text-base text-sage-600">
               220k
             </Text>
-            <Text className="text-[9px] uppercase tracking-wide text-ink-muted">in the Grove</Text>
+            <Text style={{ fontFamily: 'GeistMedium' }} className="text-[11.5px] text-ink-soft">in the Grove</Text>
           </View>
         </Animated.View>
 

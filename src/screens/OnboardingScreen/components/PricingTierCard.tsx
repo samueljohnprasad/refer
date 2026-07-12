@@ -73,9 +73,10 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
       className="relative rounded-2xl border-2 px-4 py-3.5"
     >
       {plan.badge && (
-        <View className="absolute -top-2.5 right-3 rounded-full bg-gold px-3 py-1">
+        <View className="absolute -top-2.5 right-3 rounded-full bg-gold px-3 py-0.5 shadow-sm">
           <Text
-            className="happy-font-body-bold text-[10px] font-extrabold uppercase tracking-[0.08em] text-sage-700"
+            style={{ fontFamily: 'GeistSemiBold' }}
+            className="text-[11.5px] tracking-[0.01em] text-sage-900"
           >
             {plan.badge}
           </Text>
@@ -100,7 +101,8 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
                 {plan.savings ? (
                   <View className="rounded bg-terracotta px-1.5 py-0.5">
                     <Text
-                      className="happy-font-body-bold text-[10px] uppercase tracking-[0.02em] text-white"
+                      style={{ fontFamily: 'GeistSemiBold' }}
+                      className="text-[10.5px] tracking-[0.01em] text-white"
                     >
                       {plan.savings}
                     </Text>

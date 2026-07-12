@@ -24,12 +24,23 @@ export const useHoldToCommit = (
   const [isHolding, setIsHolding] = useState(false);
   const [committed, setCommitted] = useState(false);
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tickTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const clearAllTimers = useCallback(() => {
+    if (holdTimerRef.current) {
+      clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
+    tickTimersRef.current.forEach((timer) => clearTimeout(timer));
+    tickTimersRef.current = [];
+  }, []);
 
   const handleComplete = useCallback(() => {
+    clearAllTimers();
     setCommitted(true);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     onCommit();
-  }, [onCommit]);
+  }, [clearAllTimers, onCommit]);
 
   const onPressIn = useCallback(() => {
     if (committed) return;
@@ -41,6 +52,15 @@ export const useHoldToCommit = (
       easing: Easing.linear,
     });
 
+    tickTimersRef.current = [
+      setTimeout(() => {
+        Haptics.selectionAsync();
+      }, 500),
+      setTimeout(() => {
+        Haptics.selectionAsync();
+      }, 1000),
+    ];
+
     holdTimerRef.current = setTimeout(() => {
       runOnJS(handleComplete)();
     }, HOLD_DURATION_MS);
@@ -49,14 +69,10 @@ export const useHoldToCommit = (
   const onPressOut = useCallback(() => {
     if (committed) return;
     setIsHolding(false);
-
-    if (holdTimerRef.current) {
-      clearTimeout(holdTimerRef.current);
-      holdTimerRef.current = null;
-    }
+    clearAllTimers();
 
     progress.value = withTiming(0, { duration: 200 });
-  }, [committed, progress]);
+  }, [committed, progress, clearAllTimers]);
 
   return { progress, isHolding, committed, onPressIn, onPressOut };
 };

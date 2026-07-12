@@ -87,17 +87,29 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
   if (isLoading) {
     return (
-      <View className="gap-4">
+      <View
+        className="gap-4"
+        accessibilityRole="progressbar"
+        accessibilityLabel="Loading journal entries"
+        accessibilityState={{ busy: true }}
+      >
         <SectionHeader title="Journal Entries" icon={NoteIcon} />
         <View className="gap-3">
           {[1, 2, 3].map((i) => (
             <View
               key={i}
-              className="py-4 border-b border-sage-100/50"
+              className="py-4 border-b border-sage-200/40"
             >
-              <View className="h-4 bg-sage-100/50 rounded mb-3 w-2/3" />
-              <View className="h-3 bg-sage-100/50 rounded mb-2 w-full" />
-              <View className="h-3 bg-sage-100/50 rounded w-4/5" />
+              <View className="flex-row items-center justify-between mb-3">
+                <View className="h-5 bg-sage-200/60 rounded-md w-1/2" />
+                <View className="flex-row items-center gap-2">
+                  <View className="w-6 h-6 rounded-full bg-sage-200/60" />
+                  <View className="w-7 h-7 rounded-full bg-sage-200/60" />
+                </View>
+              </View>
+              <View className="h-3 bg-sage-200/50 rounded-md mb-2 w-1/3" />
+              <View className="h-4 bg-sage-200/50 rounded-md mb-1.5 w-full" />
+              <View className="h-4 bg-sage-200/40 rounded-md w-4/5" />
             </View>
           ))}
         </View>
@@ -136,9 +148,17 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         onEndReachedThreshold={0.5}
         ListFooterComponent={ListFooterComponent}
         contentContainerStyle={{ gap: 12, paddingBottom: 100 }}
-        keyExtractor={(item: JournalEntry) => item.id ? item.id.toString() : Math.random().toString()}
+        keyExtractor={(item: JournalEntry, index: number) =>
+          item.id != null ? item.id.toString() : `${item.selected_date || "entry"}-${index}`
+        }
         renderItem={({ item: entry, index }: { item: JournalEntry, index: number }) => (
-          <View key={entry.id}>
+          <View
+            key={
+              entry.id != null
+                ? entry.id.toString()
+                : `${entry.selected_date || "entry"}-${index}`
+            }
+          >
             {showDateHeaders && (
               <Text variant="label" color="muted" className="mb-2">
                 {entry.selected_date
@@ -205,18 +225,29 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
     [onBookmark, entry, isBookmarked],
   );
 
+  const handleDeletePress = useCallback(
+    (e: { stopPropagation: () => void }): void => {
+      e.stopPropagation();
+      onDelete?.(entry);
+    },
+    [onDelete, entry],
+  );
+
   return (
     <Pressable
       onPress={() => onPress(entry)}
+      accessibilityRole="button"
+      accessibilityLabel={`Journal entry: ${entry.title || "Untitled Entry"}, created at ${entry.selected_date ? format(new Date(entry.selected_date), "h:mm a") : ""}`}
+      accessibilityHint="Double tap to open journal entry details"
       className="py-4 border-b border-sage-100/50"
     >
       {/* Header & Metadata */}
       <View className="flex-row items-start justify-between mb-2">
-        <View className="flex-1">
+        <View className="flex-1 mr-2">
           <Text variant="body-bold" className="mb-1">
-            {entry.title}
+            {entry.title || "Untitled Entry"}
           </Text>
-          <View className="flex-row items-center">
+          <View className="flex-row items-center flex-wrap">
             {entry.selected_date && (
               <Text variant="caption">
                 {format(new Date(entry.selected_date), "h:mm a")}
@@ -244,17 +275,46 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
           </View>
         </View>
 
-        <View className="flex-row items-center gap-2">
-          {isBookmarked && (
-            <HugeiconsIcon
-              icon={BookmarkCheck01Icon}
-              size={16}
-              fill={SAGE[600]}
-              color={SAGE[600]}
-            />
+        <View className="flex-row items-center gap-1.5">
+          {showActions && onBookmark && (
+            <TouchableOpacity
+              onPress={handleBookmarkPress}
+              disabled={isBookmarking}
+              accessibilityRole="button"
+              accessibilityLabel={isBookmarked ? "Remove bookmark" : "Bookmark entry"}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              className="p-1.5 rounded-full"
+            >
+              {isBookmarking ? (
+                <ActivityIndicator size="small" color={SAGE[600]} />
+              ) : (
+                <HugeiconsIcon
+                  icon={BookmarkCheck01Icon}
+                  size={18}
+                  color={isBookmarked ? SAGE[600] : INK_MUTED}
+                />
+              )}
+            </TouchableOpacity>
           )}
+
+          {showActions && onDelete && (
+            <TouchableOpacity
+              onPress={handleDeletePress}
+              accessibilityRole="button"
+              accessibilityLabel="Delete journal entry"
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              className="p-1.5 rounded-full"
+            >
+              <HugeiconsIcon
+                icon={Delete02Icon}
+                size={18}
+                color={INK_MUTED}
+              />
+            </TouchableOpacity>
+          )}
+
           {entry.moods?.main_mood && (
-            <View className="flex-row items-center justify-center w-7 h-7 rounded-full bg-sage-100/60 border border-sage-200/40">
+            <View className="flex-row items-center justify-center w-7 h-7 rounded-full bg-sage-100/60 border border-sage-200/40 ml-1">
               <Image
                 source={emotions[entry.moods.main_mood as Emotion]}
                 className="w-4 h-4"

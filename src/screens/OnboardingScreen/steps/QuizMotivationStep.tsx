@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 import { Text, View, ScrollView } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import OptionCard from "../components/OptionCard";
-import { StackedCarousel } from "../../../animations/stacked-carousel";
 import { MotivationAnswer } from "../types";
 import { MOTIVATION_OPTIONS } from "../constants";
 import { useHeaderHeight } from "expo-router/react-navigation";
@@ -11,7 +10,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const STEP_LABEL_ENTER_DELAY_MS = 80;
 const TITLE_ENTER_DELAY_MS = 140;
 const DESCRIPTION_ENTER_DELAY_MS = 220;
-const PROOF_ENTER_DELAY_MS = 360;
 
 interface QuizMotivationStepProps {
   selected?: MotivationAnswer;
@@ -84,13 +82,6 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
           />
         ))}
       </View>
-
-      <Animated.View
-        entering={FadeIn.duration(180).delay(PROOF_ENTER_DELAY_MS)}
-        className="mt-5"
-      >
-        <StackedCarousel />
-      </Animated.View>
     </ScrollView>
   );
 };

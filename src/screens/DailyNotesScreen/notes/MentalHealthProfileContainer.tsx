@@ -2,10 +2,8 @@ import React, { useState, useCallback, memo } from "react";
 import { useMentalHealthData } from "@/hooks/data/useMentalHealthData";
 import { View } from "@/components/ui/view";
 import { Text } from "@/components/Themed";
-import { Button, ButtonText } from "@/components/ui/button";
-import { Center } from "@/components/ui/center";
-import { VStack } from "@/components/ui/vstack";
-import { Icon, AlertCircleIcon } from "@/components/ui/icon";
+import { Button } from "@/src/components/ui/Button";
+import { Mascot } from "@/src/components/ui/Mascot";
 import { EntryCardsView } from "./EntryCardsView";
 import BlurModal from "@/src/components/BlurModal";
 import { JournalEntry } from "@/hooks/data/types";
@@ -34,6 +32,8 @@ const MentalHealthProfileContainerComponent: React.FC<
   const {
     data: insightsResponse,
     isLoading: mentalHealthLoading,
+    isRefetching,
+    isError,
     refetch,
   } = useMentalHealthData(selectedDate);
 
@@ -55,6 +55,7 @@ const MentalHealthProfileContainerComponent: React.FC<
         });
         // React Query will automatically update the cache
       } catch (error) {
+        console.error("Failed to toggle bookmark:", error);
       } finally {
         setBookmarkingId(null);
       }
@@ -78,25 +79,32 @@ const MentalHealthProfileContainerComponent: React.FC<
     setIsModalVisible(true);
   }, []);
 
-  if (!insightsResponse && !mentalHealthLoading) {
+  if ((!insightsResponse && !mentalHealthLoading) || isError) {
     return (
-      <View className="p-4 flex-1">
-        <Center className="h-64">
-          <VStack space="md" className="items-center">
-            <Icon as={AlertCircleIcon} className="text-ink-muted h-12 w-12 opacity-60" />
-            <Text className="happy-font-body-medium text-ink-muted text-center px-8">
-              Unable to load mental health data. Please try again.
-            </Text>
-            <Button
-              onPress={handleRefetch}
-              className="happy-brand-primary-cta rounded-full"
-            >
-              <ButtonText className="happy-font-body-bold text-white">
-                Retry
-              </ButtonText>
-            </Button>
-          </VStack>
-        </Center>
+      <View
+        className="p-6 flex-1 items-center justify-center min-h-[420px]"
+        accessibilityRole="alert"
+        accessibilityLiveRegion="polite"
+      >
+        <View className="h-44 w-44 items-center justify-center rounded-[44px] mb-4">
+          <Mascot state="panda-pillow-hug" size={156} />
+        </View>
+        <Text className="happy-font-heading-bold text-xl text-ink text-center mb-2 px-6">
+          Taking a momentary pause
+        </Text>
+        <Text className="happy-font-body text-sm text-ink-muted text-center px-8 mb-8 leading-relaxed">
+          We couldn't reach your journal entries right now. Don't worry—your notes are safely saved on your device.
+        </Text>
+        <View className="px-12 self-stretch w-full max-w-sm">
+          <Button
+            label="Try Reconnecting"
+            variant="primary"
+            size="lg"
+            onPress={handleRefetch}
+            loading={isRefetching || mentalHealthLoading}
+            accessibilityLabel="Try Reconnecting to load journal entries"
+          />
+        </View>
       </View>
     );
   }

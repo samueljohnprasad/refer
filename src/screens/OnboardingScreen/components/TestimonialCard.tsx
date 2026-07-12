@@ -77,7 +77,11 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
         </View>
 
         {/* Rating Stars using native Hugeicons */}
-        <View className="flex-row gap-0.5">
+        <View
+          accessible={true}
+          accessibilityLabel="5 out of 5 stars"
+          className="flex-row gap-0.5"
+        >
           {[...Array(5)].map((_, i) => (
             <HugeiconsIcon
               key={i}
@@ -94,7 +98,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
       <View className="relative pl-1">
         <Text
           style={{ fontFamily: "CormorantRegularItalic" }}
-          className="text-[14px] leading-[1.6] text-ink-soft"
+          className="text-[16px] leading-[1.55] text-ink-soft"
         >
           {quote}
         </Text>

@@ -1,10 +1,11 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { isToday, isYesterday, format } from "date-fns";
 import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Bookmark02Icon, BookmarkCheck01Icon, BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
+import { JournalTitleMenu } from "./JournalTitleMenu";
 
 interface MinimalHeaderProps {
   isEditing: boolean;
@@ -68,12 +69,24 @@ export const MinimalHeader = React.memo<MinimalHeaderProps>(
           <Feather name="x" size={24} className="text-ink" />
         </TouchableOpacity>
 
-        {/* Date/Time */}
+        {/* Date/Time or Native iOS Menu */}
         <View className="flex-1 items-center">
-          <Text variant="body-bold">{getRelativeDayTitle(date)}</Text>
-          <Text variant="caption" className="mt-0.5 text-ink-muted">
-            {getFormattedTime(date)}
-          </Text>
+          {Platform.OS === "ios" ? (
+            <JournalTitleMenu
+              title={getRelativeDayTitle(date)}
+              subtitle={getFormattedTime(date)}
+              isBookmarked={isBookmarked}
+              onBookmark={onBookmark}
+              onDelete={onDelete}
+            />
+          ) : (
+            <>
+              <Text variant="body-bold">{getRelativeDayTitle(date)}</Text>
+              <Text variant="caption" className="mt-0.5 text-ink-muted">
+                {getFormattedTime(date)}
+              </Text>
+            </>
+          )}
         </View>
 
         {/* Action buttons */}

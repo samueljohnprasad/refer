@@ -29,10 +29,16 @@ export type InsightsType = {
   triggers: string[] | null; // Identified mood triggers (positive or negative)
   copingStrategies: string[] | null; // Coping mechanisms used
   physicalSymptoms: string[] | null; // Physical health mentions
-  sleepQuality: number | null; // 1-5: Sleep quality if mentioned
+  sleepQuality: number | null; // 1-5: Sleep quality — null if not explicitly mentioned
   goals: string[] | null; // Goals or intentions mentioned
   worries: string[] | null; // Recurring worries or anxieties
   achievements: string[] | null; // Wins and accomplishments
+  // New CBT-informed insight fields
+  cognitivePattern: string | null; // Gentle identification of a CBT thinking pattern
+  suggestedExerciseName: string | null; // Name of the most relevant CBT exercise
+  suggestedExercise: string | null; // One sentence on why this exercise fits
+  nextJournalPrompt: string | null; // Open question to explore in the next entry
+  strengthSpotlight: string | null; // Specific strength demonstrated in the entry
 };
 
 const ai = new GoogleGenAI({

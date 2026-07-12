@@ -290,6 +290,11 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
                 (entry.journal_ai_insights as any)["physical-symptoms"] ||
                 entry.journal_ai_insights.physicalSymptoms
               }
+              cognitivePattern={entry.journal_ai_insights.cognitivePattern}
+              suggestedExerciseName={entry.journal_ai_insights.suggestedExerciseName}
+              suggestedExercise={entry.journal_ai_insights.suggestedExercise}
+              nextJournalPrompt={entry.journal_ai_insights.nextJournalPrompt}
+              strengthSpotlight={entry.journal_ai_insights.strengthSpotlight}
             />
           )}
         </ScrollView>

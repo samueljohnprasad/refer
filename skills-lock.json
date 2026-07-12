@@ -71,6 +71,12 @@
       "sourceType": "github",
       "computedHash": "7ed51f00b3422d549d18912748caa85278b17f7b78da43b242ea7ce7a0c8766c"
     },
+    "brandkit": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/brandkit/SKILL.md",
+      "computedHash": "b63012f3c3d21197e0185d3e9cc7ec40c589fb10e0b5a32a561739de31aa3f20"
+    },
     "building-native-ui": {
       "source": "expo/skills",
       "sourceType": "github",
@@ -138,6 +144,18 @@
       "source": "mluev/design-philosophy-skill",
       "sourceType": "github",
       "computedHash": "68dbe485e48d9a9655cb9cd158d1d7a240b73fffd702e5c8e2e56d5df02e7cd2"
+    },
+    "design-taste-frontend": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "computedHash": "6d838b246d0e35d0b53f4f23f98ba7a1dd561937e64f7d0c7553b0928e376c3e"
+    },
+    "design-taste-frontend-v1": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill-v1/SKILL.md",
+      "computedHash": "d704ab912c4d0ca954ffa858983da755ae4cd5cad9ba22554db5557382f5bd34"
     },
     "designer": {
       "source": "tim-hub/role-based-skills",
@@ -215,6 +233,12 @@
       "skillPath": "skills/frontend-design/SKILL.md",
       "computedHash": "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336"
     },
+    "full-output-enforcement": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/output-skill/SKILL.md",
+      "computedHash": "26bd29ce4c5e02c7666b2d503609bf466bd32290822e91f0e984147048dbb924"
+    },
     "game-design": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
@@ -236,6 +260,12 @@
       "skillPath": "skills/gamification-loops/SKILL.md",
       "computedHash": "5c6d90890a2bb618ded9387244dd9d146c2d9f56933208875942038601d489b6"
     },
+    "gpt-taste": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/gpt-tasteskill/SKILL.md",
+      "computedHash": "cc8f0c601d8240a124e1d11634351a2be7b8a72fd807c75e5b6bf7afcd5ddee0"
+    },
     "growth-loops": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
@@ -246,10 +276,40 @@
       "sourceType": "github",
       "computedHash": "4185c50f4c271d62ca9d6605c7f580ee7c1fcabba3ee5f28fd499c49436fbd95"
     },
+    "high-end-visual-design": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/soft-skill/SKILL.md",
+      "computedHash": "7db385e4c5370e5a7fca9704a1361b056e4504ea6a03924bb86f33a4f00b5c73"
+    },
     "icon-design": {
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
       "computedHash": "2f62173457084a6b47aee605763fdb53f03236535e98639bfa0c7b052fb7e43f"
+    },
+    "image-to-code": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/image-to-code-skill/SKILL.md",
+      "computedHash": "58517b03b2a01f4c9ba65861559d03df931400871bbc200978c975b24bb92c73"
+    },
+    "imagegen-frontend-mobile": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/imagegen-frontend-mobile/SKILL.md",
+      "computedHash": "9ab7f4f6ce66a3cff02bbf5894e5bd5af50bf5d6ef0adffdc88e8fab772fe44f"
+    },
+    "imagegen-frontend-web": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/imagegen-frontend-web/SKILL.md",
+      "computedHash": "65f5ae59fa317567809438310b1c54f78cd133426deb43e4d3d4ca4c8f541628"
+    },
+    "industrial-brutalist-ui": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/brutalist-skill/SKILL.md",
+      "computedHash": "8fc355c4aadb7d29c53ca28bc41be3cd6eea765d121e3737c4dc2d0f90a8effa"
     },
     "jotai": {
       "source": "vercel-labs/json-render",
@@ -270,6 +330,60 @@
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
       "computedHash": "da43f154ff8928688a01027349b57b98ce18e6365b1eff3e5279bc0158e87c24"
+    },
+    "layers-conceptual-model": {
+      "source": "jamiemill/layers-skills",
+      "sourceType": "github",
+      "skillPath": "skills/layers-conceptual-model/SKILL.md",
+      "computedHash": "25d5a8abd3d4d6c5ff101de4faac54c77bb0376cd3f7b00a26885d720da4cd91"
+    },
+    "layers-domain": {
+      "source": "jamiemill/layers-skills",
+      "sourceType": "github",
+      "skillPath": "skills/layers-domain/SKILL.md",
+      "computedHash": "3807bc1403019134adb29084710bc29d5e997d1ecbd81d2cce3204fd29d9595e"
+    },
+    "layers-interaction-flow": {
+      "source": "jamiemill/layers-skills",
+      "sourceType": "github",
+      "skillPath": "skills/layers-interaction-flow/SKILL.md",
+      "computedHash": "33ec33d33c6ae1da090e1f48d91c157d8da7c286c87df230278a12f3b506133d"
+    },
+    "layers-intro": {
+      "source": "jamiemill/layers-skills",
+      "sourceType": "github",
+      "skillPath": "skills/layers-intro/SKILL.md",
+      "computedHash": "7e78e5b687444da74374295945a168494d3f7d99fefb0383f765cce7fb675515"
+    },
+    "layers-observed-behaviour": {
+      "source": "jamiemill/layers-skills",
+      "sourceType": "github",
+      "skillPath": "skills/layers-observed-behaviour/SKILL.md",
+      "computedHash": "197f93800b42cd8db86ff26f10e99289e04ea83d788591259a8e3c9f0e574e24"
+    },
+    "layers-orient": {
+      "source": "jamiemill/layers-skills",
+      "sourceType": "github",
+      "skillPath": "skills/layers-orient/SKILL.md",
+      "computedHash": "9b694c6a280973e9b1a8b9c7c8b5c5ff7b9895451f3aa0326e3d36fcb1e155bb"
+    },
+    "layers-product-strategy": {
+      "source": "jamiemill/layers-skills",
+      "sourceType": "github",
+      "skillPath": "skills/layers-product-strategy/SKILL.md",
+      "computedHash": "f93121c630f6070747c04fb067c2016c4ea26d8211f1f55ee9decd51af942813"
+    },
+    "layers-surface": {
+      "source": "jamiemill/layers-skills",
+      "sourceType": "github",
+      "skillPath": "skills/layers-surface/SKILL.md",
+      "computedHash": "a5bb1d766321608ba0fd673ccf72125748f7a2c6d89d6d1c15b18c210b380cb7"
+    },
+    "layers-user-needs": {
+      "source": "jamiemill/layers-skills",
+      "sourceType": "github",
+      "skillPath": "skills/layers-user-needs/SKILL.md",
+      "computedHash": "7e24f45ec9bddb89c0c4ba9b629407173f34dcbad6f3185362a2a0d6b41bc114"
     },
     "level-design": {
       "source": "omer-metin/skills-for-antigravity",
@@ -297,6 +411,12 @@
       "sourceType": "github",
       "skillPath": "microinteractions/SKILL.md",
       "computedHash": "875eca02a058bca5467850587d6c7aed62f3de1cd9f509f52c95253ec267b518"
+    },
+    "minimalist-ui": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/minimalist-skill/SKILL.md",
+      "computedHash": "08873a3131d3be27bef9bf3304b310b16b44ca6e3561aebe532797be3443f6bd"
     },
     "mobile-app-ui-design": {
       "source": "ceorkm/mobile-app-ui-design",
@@ -355,6 +475,12 @@
       "source": "omer-metin/skills-for-antigravity",
       "sourceType": "github",
       "computedHash": "93bbf5d75f0e6e39e9c3fd296be16221da5e01b1ad18a1442ae2ce8326eb2fbc"
+    },
+    "redesign-existing-projects": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/redesign-skill/SKILL.md",
+      "computedHash": "b405eee0e0e80fc243f731d9aa368bca307e356db7e6157d27101d369dac6726"
     },
     "refactor-code": {
       "source": "BrOrlandi/my-claude-skills",

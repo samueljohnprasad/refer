@@ -16,6 +16,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons, Feather, Entypo } from "@expo/vector-icons";
 import { Box } from "@/components/ui/box";
+import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
 import { useAtom, useSetAtom } from "jotai";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, {
@@ -80,6 +81,7 @@ import KeyboardJournalModalWrapper from "./KeyboardJournalModalWrapper";
 import { JournalingOptionsModal } from "./JournalingOptionsModal";
 import ImageJournalModal from "./ImageJournalModal";
 import { CalendarPicker } from "../DailyNotesScreen/CalendarPicker";
+import { ConfigurableGlassMenu, type GlassMenuConfig } from "@/src/components/ui/ConfigurableGlassMenu";
 
 const GRADIENT_START = { x: 0, y: 0 } as const;
 const GRADIENT_END = { x: 1, y: 1 } as const;
@@ -91,17 +93,28 @@ interface DiscoveryHeaderProps {
 }
 
 const DiscoveryHeader = React.memo<DiscoveryHeaderProps>(
-  ({ currentStreak, isLoading }) => (
-    <View className="flex-row items-center justify-between my-1.5">
-      <View className="flex-row items-center"></View>
-      <View className="flex-row items-center gap-1.5">
-        <Text className="text-bee-yellow text-lg font-extrabold">
-          {isLoading ? "—" : currentStreak}
-        </Text>
-        <MaterialCommunityIcons name="fire" size={22} color={GOLD} />
+  ({ currentStreak, isLoading }) => {
+    const isStreakActive = currentStreak > 0;
+    const FireIcon = isStreakActive ? AnimatedFireIcon : GrayFireIcon;
+
+    return (
+      <View className="flex-row items-center justify-between my-1.5">
+        <View className="flex-row items-center"></View>
+        <View className="flex-row items-center gap-1.5">
+          <Text
+            className={
+              isStreakActive
+                ? "text-gold text-lg font-extrabold"
+                : "text-ink-muted text-lg font-extrabold"
+            }
+          >
+            {isLoading ? "—" : currentStreak}
+          </Text>
+          <FireIcon width={24} height={24} />
+        </View>
       </View>
-    </View>
-  ),
+    );
+  },
 );
 
 DiscoveryHeader.displayName = "DiscoveryHeader";
@@ -109,14 +122,14 @@ DiscoveryHeader.displayName = "DiscoveryHeader";
 interface PromptCardContentProps {
   selectedDate: Date;
   onDatePress: () => void;
+  onTodayPress: () => void;
   prompt: string;
   onShufflePrompt: () => void;
   onOpenOptions: () => void;
 }
 
 const PromptCardContent = React.memo<PromptCardContentProps>(
-  ({ selectedDate, onDatePress, prompt, onShufflePrompt, onOpenOptions }) => {
-    const rotation = useSharedValue(0);
+  ({ selectedDate, onDatePress, onTodayPress, prompt, onShufflePrompt, onOpenOptions }) => {
     const reducedMotion = useReducedMotion();
 
     // Cross-fade prompt text when it changes
@@ -163,60 +176,56 @@ const PromptCardContent = React.memo<PromptCardContentProps>(
       [selectedDate],
     );
 
-    const handleShuffle = useCallback(() => {
-      rotation.value = withSpring(rotation.value + 360, {
-        damping: 20,
-        stiffness: 100,
-        overshootClamping: true,
-      });
-      onShufflePrompt();
-    }, [onShufflePrompt, rotation]);
-
-    const rotateStyle = useAnimatedStyle(() => {
+    const menuConfig: GlassMenuConfig = useMemo(() => {
       return {
-        transform: [{ rotate: `${rotation.value}deg` }],
+        title: `Journal · ${formattedDate}`,
+        showChevron: true,
+        controlSize: "regular",
+        sections: [
+          {
+            items: [
+              {
+                type: "button",
+                id: "change-date",
+                label: "Select Date",
+                systemImage: "calendar",
+                onPress: onDatePress,
+              },
+              {
+                type: "button",
+                id: "today",
+                label: "Go to Today",
+                systemImage: "calendar.badge.clock",
+                onPress: onTodayPress,
+              },
+              {
+                type: "button",
+                id: "shuffle-prompt",
+                label: "Shuffle Prompt",
+                systemImage: "arrow.triangle.2.circlepath",
+                onPress: onShufflePrompt,
+              },
+              {
+                type: "button",
+                id: "browse-prompts",
+                label: "Browse All Prompts",
+                systemImage: "list.bullet",
+                onPress: onOpenOptions,
+              },
+            ],
+          },
+        ],
       };
-    });
+    }, [formattedDate, onDatePress, onTodayPress, onShufflePrompt, onOpenOptions]);
 
     return (
       <Box>
-        <View className="flex-row justify-between items-center">
-          <Pressable
-            onPress={onDatePress}
-            className="flex-row items-center justify-center gap-1"
-          >
-            <Text className="happy-font-body-bold text-ink-muted">
-              Journal · {formattedDate}
-            </Text>
-            <View className="flex-col items-center p-0 m-0">
-              <Entypo
-                className=" p-0 m-0"
-                name="chevron-small-up"
-                size={12}
-                color={INK_SOFT}
-              />
-              <Entypo
-                className="p-0 m-0"
-                name="chevron-small-down"
-                size={12}
-                color={INK_SOFT}
-              />
-            </View>
-          </Pressable>
-          <View className="flex-row items-center gap-1">
-            <Pressable onPress={onOpenOptions} className="p-2">
-              <HugeiconsIcon icon={ListViewIcon} size={22} color={SAGE[600]} />
-            </Pressable>
-            <Pressable onPress={handleShuffle} className="p-2">
-              <Animated.View style={rotateStyle}>
-                <HugeiconsIcon icon={ReloadIcon} size={22} color={SAGE[600]} />
-              </Animated.View>
-            </Pressable>
-          </View>
+        <View className="flex-row justify-between items-center -ml-2 -mt-1">
+          <ConfigurableGlassMenu config={menuConfig} />
         </View>
         <Animated.Text
           style={promptAnimStyle}
-          className="mt-4 text-ink text-[42px] leading-[50px] tracking-tight happy-font-heading-bold"
+          className="mt-2 text-ink text-[42px] leading-[50px] tracking-tight happy-font-heading-bold"
         >
           {displayedPrompt}
         </Animated.Text>
@@ -378,6 +387,7 @@ function DiscoveryScreen() {
             <PromptCardContent
               selectedDate={selectedDate}
               onDatePress={handleDatePress}
+              onTodayPress={handleTodayPress}
               prompt={currentPrompt}
               onShufflePrompt={shufflePrompt}
               onOpenOptions={() => setIsOptionsVisible(true)}

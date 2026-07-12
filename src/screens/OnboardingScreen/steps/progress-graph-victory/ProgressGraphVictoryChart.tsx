@@ -149,7 +149,12 @@ const ProgressGraphVictoryChart: React.FC<ProgressGraphVictoryChartProps> = ({
     );
 
     return (
-        <View style={[styles.chartContainer, layout.chartContainerStyle]}>
+        <View
+            accessible={true}
+            accessibilityRole="image"
+            accessibilityLabel="Projected 30-day clarity growth chart comparing progress with Happy versus without journaling"
+            style={[styles.chartContainer, layout.chartContainerStyle]}
+        >
             <View style={[styles.axisVertical, layout.axisVerticalStyle]} />
             <View style={[styles.axisHorizontal, layout.axisHorizontalStyle]} />
 

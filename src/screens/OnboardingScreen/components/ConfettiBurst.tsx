@@ -86,6 +86,9 @@ const Particle: React.FC<{
 const ConfettiBurst: React.FC = () => {
   return (
     <View
+      pointerEvents="none"
+      accessibilityElementsHidden={true}
+      importantForAccessibility="no"
       className="absolute items-center justify-center"
       style={{ width: 200, height: 200 }}
     >

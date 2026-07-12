@@ -60,6 +60,8 @@ const MochiMascot: React.FC<MochiMascotProps> = ({
       className="items-center justify-center"
     >
       <Image
+        accessible={true}
+        accessibilityLabel={`Mochi the panda ${expression}`}
         source={MASCOT_IMAGES[expression]}
         style={{ width: size * 0.9, height: size * 0.9 }}
         resizeMode="contain"

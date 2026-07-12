@@ -88,6 +88,9 @@ function OptionCardInner<T extends string>({
         variant={isSelected ? "answer-selected" : "answer"}
         radius="lg"
         onPress={onSelect}
+        accessibilityRole="radio"
+        accessibilityState={{ selected: isSelected }}
+        accessibilityLabel={`${option.title}, ${option.subtitle}`}
         className="w-full"
         contentClassName="flex-row items-center gap-3.5 px-[18px] py-[18px]"
         showDepth={true}
@@ -112,7 +115,7 @@ function OptionCardInner<T extends string>({
             {option.title}
           </Text>
           <Text
-            className="happy-font-body text-xs text-ink-muted"
+            className="happy-font-body text-xs text-ink-soft"
           >
             {option.subtitle}
           </Text>

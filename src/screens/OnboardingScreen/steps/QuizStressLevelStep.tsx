@@ -27,7 +27,7 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
   const handleSelect = useCallback(
     (id: StressLevel) => {
       onSelect(id);
-      setTimeout(onAdvance, 220);
+      setTimeout(onAdvance, 400);
     },
     [onSelect, onAdvance],
   );
@@ -44,7 +44,14 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6"
     >
-      <Animated.View entering={FadeIn.duration(180).delay(80)}>
+      <Animated.Text
+        entering={FadeIn.duration(160).delay(80)}
+        className="text-xs font-semibold uppercase tracking-widest text-sage-500"
+      >
+        Step 2 of 7
+      </Animated.Text>
+
+      <Animated.View entering={FadeIn.duration(180).delay(140)}>
         <Text
           style={{ fontFamily: "CormorantSemiBold" }}
           className="mt-2 text-[30px] leading-[1.1] text-ink"

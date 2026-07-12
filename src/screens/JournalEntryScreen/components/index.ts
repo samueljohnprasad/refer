@@ -16,3 +16,4 @@ export { FeelingsSection } from "./FeelingsSection";
 export { PhotosSection } from "./PhotosSection";
 export { TranscriptSection } from "./TranscriptSection";
 export { ContinueButton } from "./ContinueButton";
+export { JournalTitleMenu } from "./JournalTitleMenu";

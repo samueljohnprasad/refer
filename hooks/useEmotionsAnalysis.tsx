@@ -85,6 +85,12 @@ const useEmotionsAnalysis = ({
         triggers: insights.triggers,
         worries: insights.worries,
         journal_entry_id: -1,
+        // New CBT-informed insight fields (available immediately, not yet persisted to DB)
+        cognitivePattern: insights.cognitivePattern ?? null,
+        suggestedExerciseName: insights.suggestedExerciseName ?? null,
+        suggestedExercise: insights.suggestedExercise ?? null,
+        nextJournalPrompt: insights.nextJournalPrompt ?? null,
+        strengthSpotlight: insights.strengthSpotlight ?? null,
       },
       moods: {
         main_mood: insights.mainEmoji,

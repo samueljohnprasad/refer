@@ -67,6 +67,12 @@ export interface AIInsightsSectionProps {
   triggers?: string[] | null;
   copingStrategies?: string[] | null;
   physicalSymptoms?: string[] | null;
+  // New CBT-informed insight props
+  cognitivePattern?: string | null;
+  suggestedExerciseName?: string | null;
+  suggestedExercise?: string | null;
+  nextJournalPrompt?: string | null;
+  strengthSpotlight?: string | null;
 }
 
 export interface SaveButtonProps {

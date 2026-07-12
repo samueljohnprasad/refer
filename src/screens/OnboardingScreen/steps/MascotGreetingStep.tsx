@@ -6,9 +6,9 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import MochiMascot from "../components/MochiMascot";
 import SpeechBubble from "../components/SpeechBubble";
 
-const MASCOT_ENTER_DELAY_MS = 40;
-const SPEECH_BUBBLE_DELAY_MS = 180;
-const QUOTE_ENTER_DELAY_MS = 420;
+const MASCOT_ENTER_DELAY_MS = 0;
+const SPEECH_BUBBLE_DELAY_MS = 80;
+const QUOTE_ENTER_DELAY_MS = 160;
 
 const MascotGreetingStep: React.FC = () => {
   const headerHeight = useHeaderHeight();
@@ -20,38 +20,40 @@ const MascotGreetingStep: React.FC = () => {
       contentContainerStyle={{ paddingBottom: 24, flexGrow: 1, paddingTop: headerHeight - insets.top }}
       className="flex-1 px-6"
     >
-      <View className="flex-1 items-center justify-center pt-8">
-        <MochiMascot
-          expression="waving"
-          size={160}
-          delay={MASCOT_ENTER_DELAY_MS}
-        />
+      <View className="flex-1 justify-between py-6">
+        <View className="items-center justify-center pt-4">
+          <MochiMascot
+            expression="waving"
+            size={160}
+            delay={MASCOT_ENTER_DELAY_MS}
+          />
 
-        <View className="mt-6 w-full">
-          <SpeechBubble delay={SPEECH_BUBBLE_DELAY_MS}>
-            <Text style={{ fontFamily: "CormorantSemiBold" }}>
-              Hi, I&apos;m Mochi.
-            </Text>
-            {"\n"}
-            I&apos;m a panda. I&apos;m soft. I&apos;m patient. I&apos;ll be your
-            companion on this journey — just{" "}
-            <Text style={{ fontFamily: "CormorantSemiBold" }}>
-              6 quick questions
-            </Text>{" "}
-            before your first lesson.
-          </SpeechBubble>
+          <View className="mt-6 w-full">
+            <SpeechBubble delay={SPEECH_BUBBLE_DELAY_MS}>
+              <Text className="happy-font-heading-bold text-[18px] text-ink">
+                Hi, I&apos;m Mochi.
+              </Text>
+              {"\n"}
+              I&apos;m a panda. I&apos;m soft. I&apos;m patient. I&apos;ll be your
+              companion on this journey — just{" "}
+              <Text className="happy-font-heading-bold text-ink">
+                6 quick questions
+              </Text>{" "}
+              before your first lesson.
+            </SpeechBubble>
+          </View>
         </View>
 
         <Animated.View
-          entering={FadeIn.duration(180).delay(QUOTE_ENTER_DELAY_MS)}
-          className="mt-8 items-center px-4"
+          entering={FadeIn.duration(200).delay(QUOTE_ENTER_DELAY_MS)}
+          className="mt-8 w-full rounded-2xl border border-sage-200/70 bg-sage-50/40 px-5 py-4"
         >
           <Text
-            style={{ fontFamily: "CormorantMedium" }}
-            className="text-center text-[13px] italic leading-5 text-ink-soft"
+            style={{ fontFamily: "CormorantSemiBold" }}
+            className="text-center text-[15px] italic leading-6 text-ink"
           >
-            "The smallest practice, done daily, is more powerful than the
-            biggest one done once."
+            &ldquo;The smallest practice, done daily, is more powerful than the
+            biggest one done once.&rdquo;
           </Text>
         </Animated.View>
       </View>

@@ -96,6 +96,7 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
     case "plan_reveal":
       return {
         visible: true,
+        showBackButton: true,
         trailingLabel: "YOUR PLAN",
         trailingLabelColor: "#7D8D7B",
         trailingLabelTracking: 0.6,
@@ -496,7 +497,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
               <View
                 style={[
                   StyleSheet.absoluteFill,
-                  { backgroundColor: containerBackgroundColor, opacity: 0.85 },
+                  { backgroundColor: containerBackgroundColor, opacity: 0.97 },
                 ]}
               />
               <LessonHeader
