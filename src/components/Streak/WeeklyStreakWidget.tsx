@@ -71,39 +71,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
 
             return (
               <View key={i} className="flex-1 items-center relative py-1">
-                {/* Center-aligned Connection Pill BGs */}
-                {isCompleted && (
-                  <View
-                    style={{
-                      position: "absolute",
-                      top: 14, // Center vertically relative to 32px height circle (32/2 - 4/2 = 14px)
-                      left: 0,
-                      right: 0,
-                      height: 4,
-                      flexDirection: "row",
-                      zIndex: 0,
-                    }}
-                  >
-                    <View
-                      style={{
-                        flex: 1,
-                        height: "100%",
-                        backgroundColor: isPrevCompleted
-                          ? "rgba(255, 217, 0, 0.45)"
-                          : "transparent",
-                      }}
-                    />
-                    <View
-                      style={{
-                        flex: 1,
-                        height: "100%",
-                        backgroundColor: isNextCompleted
-                          ? "rgba(255, 217, 0, 0.45)"
-                          : "transparent",
-                      }}
-                    />
-                  </View>
-                )}
+                {/* Center-aligned Connection Pill BGs removed per user request */}
 
                 {/* Day Icon */}
                 <View

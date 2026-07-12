@@ -524,7 +524,7 @@ const DailyNotesHeader = React.memo(
             >
               <GestureDetector gesture={gesture}>
                 <View
-                  className="min-h-[44px] justify-center px-8"
+                  className="min-h-[44px] justify-center px-8 hidden"
                   accessibilityRole="adjustable"
                   accessibilityLabel="Calendar drag handle"
                 >
