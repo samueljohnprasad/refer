@@ -1,0 +1,471 @@
+version: "1.0"
+
+feature:
+  name: "Hierarchical AI Reflection Pipeline"
+  purpose: >
+    Efficiently generate AI-powered reflections across Journal, Daily,
+    Weekly, and Monthly timelines while minimizing LLM token usage and
+    preserving meaningful context.
+
+---
+design_principles:
+  - AI should only generate insights where it adds meaningful value.
+  - Never repeatedly summarize raw user data.
+  - Every summarization level should consume the previous level.
+  - Every level answers a different question.
+  - Preserve narrative instead of only compressing text.
+  - Store structured memory in addition to human-readable summaries.
+  - Optimize for scalability and low inference cost.
+---
+pipeline:
+  level_0:
+    name: "Raw User Data"
+
+    description: >
+      Source of truth generated directly by user actions.
+
+    sources:
+      journals:
+        - title
+        - content
+        - timestamp
+
+      habits:
+        - completed habits
+        - skipped habits
+        - completion percentage
+
+      meals:
+        - food recognition
+        - calories
+        - nutrition
+        - meal timestamps
+
+      cbt:
+        - exercise type
+        - user responses
+        - completion timestamp
+---
+level_1:
+  name: "Journal AI Insight"
+
+  trigger: Immediately after journal completion.
+
+  objective: Understand one journal entry.
+
+  inputs:
+    - Journal content
+
+  outputs:
+    human_summary:
+      description: >
+        Readable AI insight shown immediately after journal completion.
+
+    structured_memory:
+      description: >
+        Machine-friendly metadata extracted from the journal.
+
+      example:
+        emotions:
+          - anxious
+          - hopeful
+
+        themes:
+          - work
+          - family
+
+        stressors:
+          - deadlines
+
+        positive_topics:
+          - gratitude
+
+        coping_methods:
+          - breathing
+
+        emotional_shift:
+          - anxious_to_calm
+
+        confidence: medium
+
+notes:
+  - No AI insight generated for habits.
+  - No AI insight generated for meals.
+  - No AI insight generated for CBT.
+  - Journal is currently the only feature receiving immediate AI feedback.
+
+---
+level_2:
+  name: "Daily Reflection"
+
+  trigger: End of day
+    or
+    First application launch on the next day.
+
+  objective: Tell the story of one day.
+
+  consumes:
+    ai:
+      - Journal AI insights
+
+    raw_data:
+      - Habit statistics
+      - Meal statistics
+      - CBT activity
+
+  does_not_read:
+    - Raw journal text
+
+  answers:
+    - What happened today?
+    - Which themes appeared?
+    - What changed compared with recent days?
+    - What is worth noticing?
+
+  outputs:
+    human_summary:
+      shown_in_timeline: true
+
+    structured_memory:
+      date:
+
+      themes:
+
+      dominant_emotions:
+
+      habit_consistency:
+
+      meal_consistency:
+
+      cbt_completed:
+
+      journal_count:
+
+      observations:
+
+      notable_events:
+
+      comparison_to_recent_days:
+
+      confidence:
+
+example:
+  human_summary: >
+    Today's journal focused on work-related stress. You also completed
+    a thought reframing exercise and maintained most of your planned
+    habits. Compared with recent days, work was mentioned more often.
+
+---
+level_3:
+  name: "Weekly Reflection"
+
+  trigger: End of week
+
+  objective: Discover recurring themes.
+
+  consumes:
+    - Daily human summaries
+    - Daily structured memory
+
+  does_not_read:
+    - Raw journals
+    - Individual CBT responses
+    - Meal logs
+    - Habit events
+
+  answers:
+    - Which themes kept returning?
+    - Which routines stayed consistent?
+    - Which observations repeated?
+    - What patterns are emerging?
+
+  outputs:
+    human_summary:
+
+    structured_memory:
+      recurring_themes:
+
+      recurring_stressors:
+
+      recurring_positive_topics:
+
+      routine_patterns:
+
+      emerging_patterns:
+
+      observations:
+
+      confidence:
+
+example:
+  human_summary: >
+    Work remained the most common topic this week. Journaling stayed
+    consistent despite several stressful days. Thought reframing was
+    completed on multiple occasions following work-related reflections.
+
+---
+level_4:
+  name: "Monthly Reflection"
+
+  trigger: End of month
+
+  objective: Describe the chapter of the user's life.
+
+  consumes:
+    - Weekly human summaries
+    - Weekly structured memory
+
+  does_not_read:
+    - Daily summaries
+    - Raw journals
+    - Raw CBT responses
+    - Habit logs
+    - Meal logs
+
+  answers:
+    - What defined this month?
+    - Which themes evolved?
+    - What long-term patterns appeared?
+    - What story does this month tell?
+
+  outputs:
+    human_summary:
+
+    structured_memory:
+      dominant_monthly_themes:
+
+      recurring_patterns:
+
+      life_events:
+
+      long_term_observations:
+
+      confidence:
+
+example:
+  human_summary: >
+    Early this month, journal entries centered around uncertainty at
+    work. During later weeks, gratitude and confidence appeared more
+    frequently. Meal logging became more consistent while evening
+    routines became less structured.
+
+---
+information_flow:
+  hierarchy: Raw User Events
+    ↓
+
+    Journal Insight
+    ↓
+
+    Daily Reflection
+    ↓
+
+    Weekly Reflection
+    ↓
+
+    Monthly Reflection
+
+principle: Every level summarizes only the previous level instead of re-reading
+  all historical user data.
+
+---
+why_this_architecture:
+  benefits:
+    - Lower LLM token usage
+    - Faster response generation
+    - Predictable AI cost
+    - Easier caching
+    - Better scalability
+    - Consistent historical summaries
+    - Reduced hallucination risk
+---
+why_daily_is_special:
+  explanation: >
+    Daily Reflection is the first layer where information from multiple
+    wellness modules comes together.
+
+  combines:
+    - Journal insights
+    - Habit statistics
+    - Meal tracking
+    - CBT completion
+
+  reason: >
+    Interesting observations emerge only after combining multiple
+    activities into a single narrative.
+
+example:
+  journal: "Today was overwhelming."
+
+  habits: Walking completed
+
+  cbt: Thought reframing completed
+
+  daily_summary: >
+    Although today's journal expressed overwhelm, you maintained your
+    walking habit and completed a thought reframing exercise, showing
+    continued engagement with your wellbeing.
+
+---
+journal_handling:
+  multiple_journals_per_day:
+    supported: true
+
+    behavior: >
+      Daily Reflection should combine all journal insights and describe
+      the emotional progression across the day instead of selecting only
+      one journal.
+
+example:
+  morning: Excited
+
+  afternoon: Stressed after meeting
+
+  evening: Feeling calmer
+
+  daily_summary: >
+    Today's reflections began with optimism, shifted toward work-related
+    stress during the afternoon, and ended with a calmer perspective.
+
+---
+structured_memory:
+  purpose: >
+    AI-readable memory that enables efficient aggregation without
+    repeatedly analyzing natural-language summaries.
+
+example:
+  themes:
+    - work
+    - gratitude
+
+  emotions:
+    - anxious
+    - hopeful
+
+  stressors:
+    - deadlines
+
+  habit_consistency: medium
+
+  meal_consistency: high
+
+  cbt_completed: true
+
+  notable_events:
+    - presentation
+
+  observations:
+    - work mentioned frequently
+
+---
+human_summary:
+  purpose: >
+    User-facing reflection written in natural language.
+
+  characteristics:
+    - Easy to read
+    - Reflective
+    - Compassionate
+    - Non-judgmental
+    - Narrative
+---
+structured_memory_vs_summary:
+  human_summary:
+    optimized_for: Users
+
+  structured_memory:
+    optimized_for: AI aggregation
+---
+storage_strategy:
+  recommendation:
+    generate_once: true
+
+    persist_forever: true
+
+    never_regenerate_historical_summaries: true
+
+reason:
+  - Historical consistency
+  - Lower inference cost
+  - Faster timeline loading
+  - Stable AI outputs
+
+---
+future_memory_layers:
+  short_term_memory:
+    duration: Daily
+      Weekly
+      Monthly
+
+    used_for: Timeline summaries
+
+  long_term_memory:
+    duration: Persistent
+
+    purpose: Build personalized understanding of the user over months.
+
+    examples:
+      - User frequently worries before presentations.
+      - Morning walks often coincide with calmer reflections.
+      - Weekends disrupt routines.
+      - Family interactions are consistently positive.
+
+notes: >
+  Long-term memory evolves slowly and is independent of daily or
+  weekly summarization.
+
+---
+important_design_decisions:
+  generate_ai_after:
+    journal: true
+
+    habit: false
+
+    meal: false
+
+    cbt: false
+
+  include_in_daily_summary:
+    journal: true
+
+    habit: true
+
+    meal: true
+
+    cbt: true
+---
+philosophy:
+  journal_ai: "Understand one reflection."
+
+  daily_ai: "Understand one day."
+
+  weekly_ai: "Understand recurring patterns."
+
+  monthly_ai: "Understand one chapter of the user's life."
+---
+anti_patterns:
+  avoid:
+    - Re-reading months of journals.
+    - Re-processing every CBT response.
+    - Summarizing summaries without adding new value.
+    - Compressing until all reflections become generic.
+    - Losing emotional progression across time.
+---
+success_criteria:
+  technical:
+    - Constant AI cost growth.
+    - Efficient context windows.
+    - Minimal token consumption.
+    - Cached historical reflections.
+
+  product:
+    - Timeline feels personal.
+    - Users recognize recurring patterns.
+    - Reflections remain meaningful at every level.
+    - Monthly summaries read like life chapters rather than analytics reports.
+---
+final_principle: >
+  Each level of the hierarchy should answer a fundamentally different
+  question. The goal is not to repeatedly compress information, but to
+  progressively transform raw events into meaningful understanding while
+  preserving the user's personal story.

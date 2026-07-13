@@ -1,0 +1,285 @@
+version: "1.0"
+
+document:
+  name: architecture.yaml
+  title: AI Reflection Engine
+  description: >
+    Production architecture for hierarchical AI reflections using
+    Expo, Supabase Edge Functions and Gemini.
+
+system:
+  frontend:
+    framework: Expo
+    responsibilities:
+      - Journal UI
+      - Habit Tracker
+      - Meal Tracker
+      - CBT Exercises
+      - Timeline
+      - AI Reflection Cards
+
+  backend:
+    platform: Supabase
+    services:
+      - PostgreSQL
+      - Auth
+      - Storage
+      - Edge Functions
+      - Cron Jobs
+
+  ai:
+    provider: Gemini
+    models:
+      fast: gemini-2.5-flash
+      reasoning: gemini-2.5-pro
+
+architecture_principles:
+  - Database is the source of truth.
+  - AI never owns business logic.
+  - Every reflection is generated exactly once.
+  - Summaries are immutable.
+  - User personalization is optional context.
+  - Business rules are deterministic.
+  - AI only generates narrative and observations.
+  - Historical summaries are never regenerated.
+  - Every response is schema validated.
+
+reflection_hierarchy:
+  journal:
+    input:
+      - journal
+    output:
+      - journal_ai
+
+  daily:
+    input:
+      - journal_ai
+      - habits
+      - meals
+      - cbt
+      - user_personalization
+    output:
+      - daily_ai
+
+  weekly:
+    input:
+      - daily_ai
+      - user_personalization
+    output:
+      - weekly_ai
+
+  monthly:
+    input:
+      - weekly_ai
+      - user_personalization
+    output:
+      - monthly_ai
+
+pipeline:
+  steps:
+    - Data Loader
+    - Context Assembler
+    - Rule Engine
+    - Prompt Builder
+    - Gemini
+    - Response Validator
+    - Persistence
+
+components:
+  data_loader:
+    responsibility:
+      - Read journals
+      - Read journal summaries
+      - Read habits
+      - Read meals
+      - Read CBT
+      - Read user personalization
+
+  context_assembler:
+    responsibility:
+      - Remove unnecessary fields
+      - Aggregate statistics
+      - Merge journal summaries
+      - Merge CBT summaries
+      - Merge meal statistics
+      - Merge habit statistics
+      - Merge personalization
+      - Build compact AI context
+    output: context_object
+
+  rule_engine:
+    responsibility:
+      - Calculate completion rates
+      - Calculate comparisons
+      - Remove empty modules
+      - Apply business rules
+      - Prevent unsupported conclusions
+    deterministic:
+      - date calculations
+      - percentages
+      - counts
+      - comparisons
+
+  prompt_builder:
+    responsibility:
+      - Load prompt template
+      - Inject context
+      - Inject schema
+      - Inject output examples
+
+  gemini:
+    responsibility:
+      - Generate summary
+      - Generate observations
+      - Generate structured memory
+      - Generate personalized section
+
+  validator:
+    library: Zod
+    validates:
+      - JSON
+      - Required fields
+      - Types
+      - Enums
+
+  persistence:
+    responsibility:
+      - Save reflection
+      - Save structured memory
+      - Save AI metadata
+      - Save versions
+
+context_objects:
+  journal:
+    contains:
+      - journal
+
+  daily:
+    contains:
+      - journal_summaries
+      - habit_statistics
+      - meal_statistics
+      - cbt_statistics
+      - user_personalization
+
+  weekly:
+    contains:
+      - daily_summaries
+      - weekly_statistics
+      - user_personalization
+
+  monthly:
+    contains:
+      - weekly_summaries
+      - monthly_statistics
+      - user_personalization
+
+user_personalization:
+  optional: true
+  modules:
+    reflection_questions:
+      description: >
+        Questions the user wants AI to observe over time.
+      examples:
+        - Am I handling work stress better?
+        - How is my confidence changing?
+
+    life_context:
+      description: >
+        Current situations affecting interpretation.
+      examples:
+        - Started a new job
+        - Preparing for exams
+        - Caring for a parent
+
+    important_values:
+      description: >
+        Values important to the user.
+      examples:
+        - Family
+        - Health
+        - Career
+        - Learning
+
+response:
+  summary:
+    description: >
+      Primary reflection.
+
+  highlights:
+    description: >
+      Important observations.
+
+  patterns:
+    description: >
+      Recurring themes.
+
+  comparison:
+    description: >
+      Previous period comparison.
+
+  personalized_reflection:
+    optional: true
+    contains:
+      title: ""
+      observations: []
+      supporting_evidence: []
+      confidence: null
+
+timeline:
+  daily:
+    sections:
+      - Summary
+      - Highlights
+      - Patterns
+      - Comparison
+      - Personalized Reflection
+
+  weekly:
+    sections:
+      - Summary
+      - Weekly Patterns
+      - Comparison
+      - Personalized Reflection
+
+  monthly:
+    sections:
+      - Summary
+      - Monthly Story
+      - Long-term Patterns
+      - Personalized Reflection
+
+fallbacks:
+  no_personalization:
+    action: Hide personalized section
+
+  no_journal:
+    action: Continue using habits, meals and CBT
+
+  insufficient_data:
+    action: Explain limited evidence
+
+future:
+  semantic_search:
+    enabled: true
+
+  embeddings:
+    enabled: true
+
+  ai_chat:
+    enabled: true
+
+  ai_coach:
+    enabled: true
+
+versioning:
+  track:
+    - model
+    - prompt_version
+    - schema_version
+
+final_principle: >
+  Every reflection is generated through a single AI request.
+  The Context Assembler prepares a compact, deterministic context,
+  the Rule Engine applies business logic, and Gemini generates one
+  evidence-based reflection with an optional personalized section.

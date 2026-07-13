@@ -1,0 +1,278 @@
+---
+version: "1.0"
+
+document:
+  name: ai-memory.yaml
+
+  title: AI Memory Architecture
+
+  description: >
+    Defines how the AI stores, retrieves and evolves memory across
+    journal, daily, weekly and monthly reflections.
+
+principles:
+  - Business data is the source of truth.
+  - AI memory never replaces raw user data.
+  - Memory is hierarchical.
+  - Memory is evidence-based.
+  - User personalization is explicit.
+  - Memory is append-only.
+  - Historical memories are immutable.
+  - Retrieval should minimize token usage.
+
+memory_layers:
+  structured_memory:
+    description: >
+      AI-generated structured observations extracted from reflections.
+
+  reflection_memory:
+    description: >
+      Hierarchical summaries that build upon previous summaries.
+
+  personalization_memory:
+    description: >
+      User-provided context used to personalize reflections.
+
+  semantic_memory:
+    description: >
+      Future embedding-based retrieval layer.
+
+reflection_hierarchy:
+  journal:
+    produces:
+      summary:
+
+      structured_memory:
+
+  daily:
+    consumes:
+      - journal summaries
+      - habits
+      - meals
+      - cbt
+      - user personalization
+
+    produces:
+      summary:
+
+      structured_memory:
+
+  weekly:
+    consumes:
+      - daily summaries
+      - user personalization
+
+    produces:
+      summary:
+
+      structured_memory:
+
+  monthly:
+    consumes:
+      - weekly summaries
+      - user personalization
+
+    produces:
+      summary:
+
+      structured_memory:
+
+structured_memory:
+  schema:
+    themes:
+      description: >
+        Recurring discussion topics.
+
+    emotions:
+      description: >
+        Emotions explicitly expressed by the user.
+
+    stressors:
+      description: >
+        Situations repeatedly associated with stress.
+
+    positive_topics:
+      description: >
+        Topics consistently associated with positive experiences.
+
+    coping_strategies:
+      description: >
+        Healthy behaviours mentioned by the user.
+
+    recurring_patterns:
+      description: >
+        Behavioural patterns observed from available evidence.
+
+    notable_events:
+      description: >
+        Important events that may influence future reflections.
+
+    observations:
+      description: >
+        Neutral evidence-based observations.
+
+    emotional_arc:
+      description: >
+        Overall emotional direction for the reflection period.
+
+    confidence:
+      description: >
+        AI confidence based on available evidence.
+
+personalization_memory:
+  optional: true
+
+  modules:
+    reflection_questions:
+      description: >
+        Questions the user wants the AI to observe over time.
+
+      examples:
+        - Am I handling work stress better?
+
+        - Am I becoming more confident?
+
+    life_context:
+      description: >
+        Current situations affecting interpretation.
+
+      examples:
+        - Started a new job
+
+        - Preparing for exams
+
+        - Caring for a parent
+
+    important_values:
+      description: >
+        Values important to the user.
+
+      examples:
+        - Family
+
+        - Health
+
+        - Learning
+
+        - Career
+
+reflection_memory:
+  journal:
+    stores:
+      - summary
+      - structured_memory
+
+  daily:
+    stores:
+      - summary
+      - structured_memory
+      - personalized_reflection
+
+  weekly:
+    stores:
+      - summary
+      - structured_memory
+      - personalized_reflection
+
+  monthly:
+    stores:
+      - summary
+      - structured_memory
+      - personalized_reflection
+
+retrieval_strategy:
+  journal:
+    source:
+      - raw journal
+
+  daily:
+    source:
+      - journal summaries
+      - habits
+      - meals
+      - cbt
+      - user personalization
+
+  weekly:
+    source:
+      - daily summaries
+      - daily structured memory
+      - user personalization
+
+  monthly:
+    source:
+      - weekly summaries
+      - weekly structured memory
+      - user personalization
+
+token_optimization:
+  strategy:
+    - Never reload raw journals after journal AI generation.
+    - Weekly reflections use daily summaries only.
+    - Monthly reflections use weekly summaries only.
+    - Load personalization only when available.
+    - Send compact structured context to Gemini.
+
+memory_lifecycle:
+  create:
+    - Journal completion
+    - Daily reflection generation
+    - Weekly reflection generation
+    - Monthly reflection generation
+
+  update:
+    - User personalization changes
+
+  immutable:
+    - Journal summaries
+    - Daily summaries
+    - Weekly summaries
+    - Monthly summaries
+
+future_memory:
+  embeddings:
+    enabled: true
+
+    sources:
+      - journal summaries
+      - daily summaries
+      - weekly summaries
+      - monthly summaries
+
+  semantic_search:
+    enabled: true
+
+  ai_chat:
+    retrieval:
+      - semantic search
+      - structured memory
+      - user personalization
+
+memory_rules:
+  always:
+    - Store evidence, not assumptions.
+    - Prefer structured data over raw text.
+    - Preserve historical summaries.
+    - Keep personalization separate from observations.
+    - Mention uncertainty when evidence is limited.
+
+  never:
+    - Rewrite historical memories.
+    - Infer unsupported emotions.
+    - Diagnose mental health conditions.
+    - Treat personalization as factual evidence.
+
+future_extensions:
+  phase_2:
+    - Vector search
+    - AI Coach
+    - AI Chat
+    - Memory ranking
+    - Memory decay
+    - Reflection recommendations
+
+final_principle: >
+  Memory exists to provide continuity, not certainty. Every stored
+  memory must originate from user data or AI summaries grounded in
+  evidence. Personalization enriches reflections but never overrides
+  factual observations or historical records.

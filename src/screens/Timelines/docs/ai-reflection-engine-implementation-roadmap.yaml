@@ -1,0 +1,252 @@
+---
+version: "1.0"
+
+document:
+  name: "AI Reflection Engine Implementation Roadmap"
+  description: >
+    End-to-end implementation roadmap for the AI Reflection Engine.
+
+project:
+  frontend:
+    framework: Expo
+    language: TypeScript
+
+  backend:
+    platform: Supabase
+    runtime: Edge Functions
+
+  database:
+    engine: PostgreSQL
+
+  ai:
+    provider: Gemini
+
+principles:
+  - Build infrastructure before AI features.
+  - Keep business logic deterministic.
+  - Generate AI only when necessary.
+  - Store AI outputs permanently.
+  - Reuse summaries instead of reprocessing raw data.
+  - Every AI response should produce both a human summary and structured memory.
+
+phases:
+  - id: phase_0
+    name: AI Infrastructure
+    priority: critical
+    estimated_duration: "2-3 days"
+
+    objectives:
+      - Create Gemini client
+      - Create Prompt Loader
+      - Create Prompt Builder
+      - Create Context Builder
+      - Create Zod Validator
+      - Create AI service wrapper
+
+    deliverables:
+      - ai_client
+      - prompt_loader
+      - prompt_builder
+      - context_builder
+      - validator
+      - ai_service
+
+    status: pending
+
+  - id: phase_1
+    name: Database Design
+    priority: critical
+    estimated_duration: "2 days"
+
+    objectives:
+      - Design AI tables
+      - Design structured memory
+      - Add versioning fields
+
+    tables:
+      - journals
+      - journal_ai
+      - daily_ai
+      - weekly_ai
+      - monthly_ai
+      - user_memory
+
+    status: pending
+
+  - id: phase_2
+    name: Journal AI
+    priority: critical
+    estimated_duration: "3 days"
+
+    trigger:
+      event: journal_completed
+
+    inputs:
+      - journal
+
+    outputs:
+      - human_summary
+      - structured_memory
+      - confidence
+      - prompt_version
+
+    status: pending
+
+  - id: phase_3
+    name: Daily Reflection
+    estimated_duration: "3 days"
+
+    trigger:
+      event: daily_generation
+
+    inputs:
+      - journal_ai
+      - habits
+      - meals
+      - cbt
+
+    outputs:
+      - daily_summary
+      - structured_memory
+
+    status: pending
+
+  - id: phase_4
+    name: Weekly Reflection
+    estimated_duration: "2 days"
+
+    inputs:
+      - daily_summaries
+      - daily_structured_memory
+
+    outputs:
+      - weekly_summary
+      - structured_memory
+
+    status: pending
+
+  - id: phase_5
+    name: Monthly Reflection
+    estimated_duration: "1 day"
+
+    inputs:
+      - weekly_summaries
+      - weekly_structured_memory
+
+    outputs:
+      - monthly_summary
+      - structured_memory
+
+    status: pending
+
+  - id: phase_6
+    name: Timeline UI
+    estimated_duration: "4 days"
+
+    screens:
+      - Daily
+      - Weekly
+      - Monthly
+
+    status: pending
+
+  - id: phase_7
+    name: Long-Term Memory
+    priority: future
+
+    objectives:
+      - Build persistent user memory
+      - Store recurring themes
+      - Store recurring stressors
+      - Store helpful habits
+
+    status: future
+
+  - id: phase_8
+    name: Embeddings
+    priority: future
+
+    provider: Gemini
+    storage: pgvector
+
+    generate_for:
+      - journal
+      - daily_summary
+      - weekly_summary
+      - monthly_summary
+
+    skip:
+      - habits
+      - meals
+      - calories
+      - cbt_completion
+
+    status: future
+
+  - id: phase_9
+    name: Semantic Search
+    priority: future
+
+    features:
+      - similar_journals
+      - similar_days
+      - search_by_theme
+      - search_by_emotion
+
+    status: future
+
+  - id: phase_10
+    name: Pattern Discovery
+    priority: future
+
+    features:
+      - recurring_patterns
+      - recurring_stressors
+      - helpful_habits
+      - long_term_insights
+
+    status: future
+
+folder_structure:
+  backend:
+    ai:
+      - client.ts
+      - context-builder.ts
+      - prompt-builder.ts
+      - prompt-loader.ts
+      - validator.ts
+      - types.ts
+
+    prompts:
+      - journal.md
+      - daily.md
+      - weekly.md
+      - monthly.md
+      - pattern-discovery.md
+
+success_criteria:
+  technical:
+    - reusable_ai_platform
+    - prompt_versioning
+    - zod_validation
+    - cached_ai_outputs
+    - structured_memory
+
+  product:
+    - meaningful_timeline
+    - personalized_reflections
+    - scalable_architecture
+    - low_ai_cost
+
+future_features:
+  - conversational_ai
+  - ai_coach
+  - semantic_memory
+  - retrieval_augmented_generation
+  - personalized_recommendations
+
+final_principle: >
+  Build the AI Reflection Engine as a reusable platform.
+  Every future AI feature should reuse the same context builder,
+  prompt builder, validator, structured memory, and storage model
+  rather than implementing new AI pipelines.

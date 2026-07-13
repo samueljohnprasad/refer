@@ -1,0 +1,275 @@
+---
+version: "2.0"
+
+document:
+  name: implementation-roadmap.yaml
+
+  title: AI Reflection Engine Roadmap
+
+  status: Planning
+
+project:
+  objective: >
+    Build a scalable AI reflection system that transforms user activity
+    into meaningful daily, weekly and monthly reflections while keeping
+    AI costs low through hierarchical summarization.
+
+guiding_principles:
+  - Build deterministic systems before AI.
+  - Generate each reflection only once.
+  - Never regenerate historical reflections.
+  - Prefer summaries over raw data.
+  - Keep AI stateless.
+  - Inject personalization as optional context.
+  - Validate every AI response.
+  - Version prompts and schemas.
+
+phases:
+  - id: PHASE_1
+
+    name: Foundation
+
+    goal: Prepare the project.
+
+    deliverables:
+      - Database schema
+      - Supabase migrations
+      - Edge Function structure
+      - Zod validation
+      - Environment configuration
+
+    status: pending
+
+  - id: PHASE_2
+
+    name: Journal AI
+
+    goal: Generate AI immediately after journal completion.
+
+    dependencies:
+      - PHASE_1
+
+    tasks:
+      - Build Journal Edge Function
+      - Context Assembler (Journal)
+      - Journal prompt
+      - Structured memory generation
+      - Save journal_ai
+      - Validate JSON
+
+    output:
+      - Journal AI Summary
+      - Structured Memory
+
+  - id: PHASE_3
+
+    name: Daily Reflection
+
+    goal: Generate one daily reflection.
+
+    dependencies:
+      - PHASE_2
+
+    tasks:
+      - Load journal summaries
+      - Load habits
+      - Load meals
+      - Load CBT
+      - Load personalization
+      - Build Daily Context Assembler
+      - Daily Rule Engine
+      - Daily Prompt Builder
+      - Generate Daily AI
+      - Validate response
+      - Store reflection
+
+    output:
+      - Daily Reflection
+      - Personalized Reflection (optional)
+      - Structured Memory
+
+  - id: PHASE_4
+
+    name: Weekly Reflection
+
+    goal: Aggregate daily summaries.
+
+    dependencies:
+      - PHASE_3
+
+    tasks:
+      - Load daily reflections
+      - Load personalization
+      - Weekly Context Assembler
+      - Weekly Rule Engine
+      - Weekly Prompt Builder
+      - Generate Weekly AI
+      - Store reflection
+
+    output:
+      - Weekly Reflection
+      - Weekly Structured Memory
+
+  - id: PHASE_5
+
+    name: Monthly Reflection
+
+    goal: Aggregate weekly summaries.
+
+    dependencies:
+      - PHASE_4
+
+    tasks:
+      - Load weekly reflections
+      - Load personalization
+      - Monthly Context Assembler
+      - Monthly Rule Engine
+      - Monthly Prompt Builder
+      - Generate Monthly AI
+      - Store reflection
+
+    output:
+      - Monthly Reflection
+      - Monthly Structured Memory
+
+  - id: PHASE_6
+
+    name: Timeline UI
+
+    goal: Display reflections.
+
+    dependencies:
+      - PHASE_5
+
+    tasks:
+      - Daily timeline
+      - Weekly timeline
+      - Monthly timeline
+      - Reflection cards
+      - Personalized section
+      - Empty states
+      - Loading states
+
+  - id: PHASE_7
+
+    name: User Personalization
+
+    goal: Allow users to customize reflection context.
+
+    dependencies:
+      - PHASE_6
+
+    tasks:
+      - Reflection questions
+      - Life context
+      - Important values
+      - Personalization editor
+      - Inject personalization into prompts
+
+    output:
+      - Personalized Reflection Section
+
+  - id: PHASE_8
+
+    name: Prompt Management
+
+    goal: Modularize prompts.
+
+    dependencies:
+      - PHASE_7
+
+    tasks:
+      - Shared prompt modules
+      - Task prompts
+      - Prompt Builder
+      - Prompt versioning
+      - Prompt testing
+
+  - id: PHASE_9
+
+    name: Reliability
+
+    goal: Production readiness.
+
+    dependencies:
+      - PHASE_8
+
+    tasks:
+      - Retry handling
+      - Logging
+      - Monitoring
+      - Error tracking
+      - Cost tracking
+      - Token monitoring
+      - Performance metrics
+
+  - id: PHASE_10
+
+    name: AI Memory
+
+    goal: Improve long-term context.
+
+    dependencies:
+      - PHASE_9
+
+    tasks:
+      - Memory optimization
+      - Memory cleanup
+      - Retrieval helpers
+      - Context compression
+
+future:
+  phase_11:
+    name: Semantic Search
+
+    tasks:
+      - pgvector
+      - Embeddings
+      - Similarity search
+      - Memory retrieval
+
+  phase_12:
+    name: AI Chat
+
+    tasks:
+      - Reflection chat
+      - Memory retrieval
+      - Timeline references
+      - Follow-up questions
+
+  phase_13:
+    name: AI Coach
+
+    tasks:
+      - Goal suggestions
+      - Reflection recommendations
+      - Habit suggestions
+      - Personalized coaching
+
+quality_gates:
+  after_each_phase:
+    - Unit tests
+    - Integration tests
+    - Prompt validation
+    - JSON schema validation
+    - Cost review
+
+success_metrics:
+  engineering:
+    - Reflection success rate > 99%
+    - Valid JSON responses > 99%
+    - Prompt version tracked
+    - Schema version tracked
+
+  product:
+    - Daily reflections generated
+    - Weekly reflections generated
+    - Monthly reflections generated
+    - Timeline engagement
+    - Personalization adoption
+
+final_principle: >
+  Build the AI Reflection Engine incrementally.
+  Complete one stable layer before introducing the next.
+  Every phase should be independently deployable,
+  testable and extensible.

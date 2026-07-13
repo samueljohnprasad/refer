@@ -1,0 +1,444 @@
+version: "1.0"
+feature:
+  name: "AI Timeline"
+  codename: "Life Story Timeline"
+  status: "Ideation"
+
+vision: >
+  Build an AI-powered timeline that helps users understand the story of
+  their wellbeing over time. The goal is not to judge, score, diagnose,
+  or determine whether a user is living a "good" or "bad" life. Instead,
+  the timeline should help users observe patterns, remember important
+  moments, and recognize relationships between their behaviors,
+  emotions, routines, and reflections.
+
+problem_statement:
+  current_state:
+    - Journal exists independently.
+    - Habit tracker exists independently.
+    - Meal tracker exists independently.
+    - CBT exercises exist independently.
+    - Users can record information but cannot understand the relationship
+      between different parts of their wellbeing.
+
+  user_problem:
+    - Users forget how they felt a week ago.
+    - Users cannot identify what helps them.
+    - Users cannot recognize recurring stressors.
+    - Users cannot connect habits with emotional wellbeing.
+    - Users see isolated data instead of a meaningful story.
+
+product_goal:
+  primary_goal: >
+    Transform fragmented wellness data into meaningful reflections.
+
+  secondary_goals:
+    - Help users notice patterns.
+    - Encourage reflection.
+    - Improve long-term engagement.
+    - Make AI feel like a thoughtful companion rather than a scoring engine.
+
+  explicitly_not_the_goal:
+    - Diagnose mental health.
+    - Judge users.
+    - Predict mental illness.
+    - Replace therapists.
+    - Tell users they are succeeding or failing.
+    - Assign a "life score."
+
+core_principle:
+  title: "Observe, Don't Judge"
+
+  explanation: >
+    The AI should describe observations instead of making judgments.
+
+  bad_examples:
+    - "You had a bad day."
+    - "You are getting worse."
+    - "Your mental health declined."
+    - "You failed your routine."
+    - "You are happier than yesterday."
+    - "You are recovering."
+
+  good_examples:
+    - "Today's journal mentioned work stress more often than usual."
+    - "You completed fewer habits than your recent average."
+    - "Despite a stressful day, you continued journaling."
+    - "Thought reframing appeared after a stressful journal entry."
+    - "Your routines were less consistent today."
+    - "Gratitude appeared more frequently this week."
+
+timeline_levels:
+  daily:
+    objective: >
+      Help users understand today's story.
+
+    inputs:
+      - Journal
+      - Meals
+      - Habit completion
+      - CBT exercises
+      - Mood check-in (future)
+      - Sleep (future)
+      - Other wellness signals (future)
+
+    output_sections:
+      - title: "What Happened"
+        description: >
+          Simple factual recap.
+
+      - title: "Themes"
+        description: >
+          Emotional and contextual themes extracted from journals and CBT.
+
+      - title: "Changes"
+        description: >
+          Comparison against the user's recent baseline.
+
+      - title: "Something Worth Noticing"
+        description: >
+          Interesting observation without judgment.
+
+example_daily:
+  date: "Monday"
+
+  what_happened:
+    - Journal completed
+    - Meals logged
+    - Habit completion: 4/6
+    - Thought reframing completed
+
+  themes:
+    - Work stress
+    - Low energy
+    - Gratitude
+
+  changes:
+    - More work-related stress than last week.
+    - Habit completion stayed consistent.
+
+  observation: >
+    Even on a stressful day, you completed your reflection and
+    thought reframing exercise.
+
+weekly:
+  objective: >
+    Help users understand recurring themes.
+
+  summarize:
+    - Daily AI summaries
+    - Journals
+    - Habit trends
+    - Meal trends
+    - CBT activity
+
+  output:
+    - Major themes
+    - Recurring stressors
+    - Positive moments
+    - Behavioral consistency
+    - Interesting correlations
+
+example_weekly:
+  summary: >
+    Work remained the dominant source of stress this week.
+    Despite this, journaling stayed consistent and thought
+    reframing exercises were completed on three separate days.
+
+monthly:
+  objective: >
+    Tell the story of the month rather than summarize statistics.
+
+example_monthly:
+  summary: >
+    Early in the month, journal entries focused on uncertainty
+    around work. During the final two weeks, entries increasingly
+    mentioned confidence and gratitude. Meal tracking became more
+    consistent while evening habits became less regular.
+
+comparison_strategy:
+  compare_against:
+    - Yesterday
+    - Last 7 days
+    - Last 30 days
+    - Previous week
+    - Previous month
+
+  never_compare:
+    - Other users
+    - Population averages
+    - Generic wellness benchmarks
+
+important_design_decision:
+  do_not_measure:
+    - Good day
+    - Bad day
+    - Successful day
+    - Failed day
+
+  instead_measure:
+    - Changes
+    - Patterns
+    - Themes
+    - Consistency
+    - Relationships
+    - Reflection
+
+behavior_vs_wellbeing:
+  principle: >
+    Behaviors do not directly indicate wellbeing.
+
+  examples:
+    - scenario: >
+        User completed every habit.
+
+      reality: >
+        They may still have experienced one of the hardest days
+        emotionally.
+
+    - scenario: >
+        User skipped every habit.
+
+      reality: >
+        They may have finally processed difficult emotions through
+        journaling and experienced meaningful personal growth.
+
+    - conclusion: >
+        Never infer emotional wellbeing solely from completed tasks.
+
+pattern_discovery:
+  unlock_after: "Approximately 30 days"
+
+  purpose: >
+    Discover personalized patterns instead of generic advice.
+
+  examples:
+    helps_you:
+      - Morning walks often coincide with calmer journal entries.
+      - Journaling before bed is associated with lower stress the next day.
+      - Completing thought reframing frequently follows difficult workdays.
+
+    worth_watching:
+      - Weekend routines appear less structured.
+      - Meal logging decreases during busy work weeks.
+      - Gratitude appears more often after exercise.
+
+daily_ai_prompt_objective:
+  answer_questions:
+    - What happened today?
+
+    - What themes appeared?
+
+    - What changed compared to recent patterns?
+
+    - What seems worth noticing?
+
+language_guidelines:
+  preferred_words:
+    - appears
+    - seems
+    - often
+    - may
+    - compared with
+    - recently
+    - noticeable
+    - consistent
+    - pattern
+    - reflection
+
+  avoid_words:
+    - failed
+    - success
+    - healthier
+    - unhealthy
+    - worse
+    - better
+    - mentally stronger
+    - recovering
+    - improving
+    - declining
+
+tone:
+  personality:
+    - Curious
+    - Calm
+    - Compassionate
+    - Neutral
+    - Reflective
+
+  never_be:
+    - Judgmental
+    - Dramatic
+    - Diagnostic
+    - Authoritative
+    - Alarmist
+
+future_personalization:
+  optional_daily_check_in:
+    question: >
+      How would you describe today overall?
+
+    options:
+      - Very Difficult
+      - Difficult
+      - Neutral
+      - Good
+      - Great
+
+  purpose: >
+    Allow the AI to learn which behaviors actually correlate with
+    positive days for each individual user.
+
+future_learning:
+  after_90_days:
+    examples:
+      user_a:
+        happiest_days:
+          - Morning walk
+          - Evening journal
+          - Family time
+
+      user_b:
+        happiest_days:
+          - Consistent meals
+          - Productive workdays
+          - No work meetings
+
+      user_c:
+        difficult_days:
+          - Family conflict
+          - Poor sleep
+          - Skipped breakfast
+
+    principle: >
+      Learn from the user's own history instead of applying generic
+      wellness assumptions.
+
+data_pipeline:
+  daily:
+    inputs:
+      - Journal
+      - Habits
+      - Meals
+      - CBT
+      - Future mood check-in
+
+    output:
+      - Daily AI Summary
+
+  weekly:
+    inputs:
+      - Daily summaries
+
+    output:
+      - Weekly AI Summary
+
+  monthly:
+    inputs:
+      - Weekly summaries
+
+    output:
+      - Monthly AI Summary
+
+storage_strategy:
+  recommendation:
+    - Generate once.
+    - Store permanently.
+    - Never regenerate historical summaries automatically.
+
+  reasons:
+    - Lower AI costs.
+    - Consistent user experience.
+    - Stable historical records.
+
+edge_cases:
+  insufficient_data:
+    response: >
+      Continue logging your activities. As more information becomes
+      available, your timeline will become more personalized.
+
+  no_journal:
+    behavior: >
+      Generate insights using habits, meals and CBT only.
+
+  journal_only:
+    behavior: >
+      Focus reflections on emotional themes rather than habits.
+
+  habits_only:
+    behavior: >
+      Describe routines without making assumptions about emotions.
+
+  cbt_only:
+    behavior: >
+      Mention completed exercises without interpreting therapeutic
+      outcomes.
+
+examples:
+  example_1:
+    title: "Stressful Workday"
+
+    summary: >
+      Today's journal focused on work-related stress. You completed
+      a thought reframing exercise afterward and maintained most of
+      your planned habits. Compared with recent entries, work was
+      mentioned more frequently than usual.
+
+  example_2:
+    title: "Quiet Day"
+
+    summary: >
+      Today included fewer logged activities than usual. You still
+      took time to reflect through journaling. Recent entries suggest
+      quieter days often involve shorter reflections.
+
+  example_3:
+    title: "Busy Weekend"
+
+    summary: >
+      Meal logging and habits were less consistent over the weekend,
+      while your journal focused more on spending time with friends
+      and family. Similar weekend patterns have appeared previously.
+
+  example_4:
+    title: "Recovery Without Judgement"
+
+    summary: >
+      Several routines were skipped today, yet you completed a journal
+      describing a difficult personal experience. Rather than focusing
+      on routine consistency, today reflects time spent processing an
+      important event.
+
+non_goals:
+  - Mental health diagnosis
+  - Crisis detection (handled separately)
+  - Medical advice
+  - Therapy replacement
+  - Predicting depression
+  - Assigning wellness scores
+  - Ranking users
+  - Comparing users
+
+success_metrics:
+  product:
+    - Increased journal retention
+    - Increased weekly active users
+    - Increased return visits to Timeline
+    - Increased long-term engagement
+
+  qualitative:
+    - Users feel understood.
+    - Users discover new personal patterns.
+    - Users revisit old reflections.
+    - Users trust AI observations.
+
+north_star:
+  statement: >
+    The AI Timeline should help users understand the story of their
+    wellbeing, not judge the quality of their life.
+
+final_philosophy: >
+  The timeline is not a report card.
+  It is a reflective companion.
+  Every insight should help users notice something meaningful about
+  themselves without deciding whether they are doing well or poorly.

@@ -1,0 +1,555 @@
+version: "1.0"
+
+document:
+  name: "AI Infrastructure & Technology Decisions"
+  purpose: >
+    Define the recommended technology stack, libraries,
+    architectural patterns, and implementation guidelines
+    for the AI Reflection Pipeline.
+
+###########################################################
+# Overall Stack
+###########################################################
+
+stack:
+
+  frontend:
+    framework: Expo
+    language: TypeScript
+
+  backend:
+    platform: Supabase
+
+  runtime:
+    Edge Functions
+
+  database:
+    PostgreSQL
+
+  ai:
+    provider: Gemini
+
+###########################################################
+# Core Philosophy
+###########################################################
+
+principles:
+
+  - Keep architecture simple.
+  - Avoid unnecessary AI frameworks.
+  - Prefer deterministic code over AI whenever possible.
+  - AI should only generate language, not business logic.
+  - Store structured knowledge instead of repeatedly asking AI.
+  - Minimize token usage.
+  - Cache AI outputs permanently.
+
+###########################################################
+# Recommended Libraries
+###########################################################
+
+libraries:
+
+  required:
+
+    - name: "@supabase/supabase-js"
+      purpose:
+        - Database access
+        - Authentication
+        - Storage
+        - Edge Functions
+
+    - name: "zod"
+      priority: Critical
+      purpose:
+        - Validate every Gemini response
+        - Runtime schema validation
+        - Prevent malformed AI outputs
+
+    - name: "date-fns"
+      priority: High
+      purpose:
+        - Timeline calculations
+        - Week boundaries
+        - Monthly calculations
+        - Date formatting
+
+    - name: "lodash"
+      priority: Medium
+      purpose:
+        - Grouping
+        - Counting
+        - Aggregations
+        - Sorting
+
+###########################################################
+# Optional Libraries
+###########################################################
+
+optional:
+
+  vector_search:
+
+    - name: "@langchain/pgvector"
+
+      usage:
+        - Supabase pgvector wrapper
+        - Similarity search
+        - Embedding retrieval
+
+      avoid_using:
+        - Agents
+        - Chains
+        - Memory
+        - Workflow Engine
+
+      reason:
+        >
+        Only use LangChain as a convenient vector
+        retrieval layer.
+
+###########################################################
+# Libraries intentionally avoided
+###########################################################
+
+avoid:
+
+  - LangGraph
+  - CrewAI
+  - AutoGen
+  - Multi-agent frameworks
+  - Pinecone
+  - Weaviate
+  - Qdrant
+
+reason:
+  >
+  The application is an AI reflection system,
+  not an autonomous agent platform.
+
+###########################################################
+# Prompt Management
+###########################################################
+
+prompts:
+
+  recommendation:
+    Store prompts as files.
+
+  folder:
+
+    prompts/
+
+      journal.md
+
+      daily.md
+
+      weekly.md
+
+      monthly.md
+
+      pattern_discovery.md
+
+  benefits:
+
+    - Version control
+    - Easier editing
+    - Easier A/B testing
+    - Cleaner code
+
+###########################################################
+# Prompt Builder
+###########################################################
+
+prompt_builder:
+
+  purpose:
+    Build prompts programmatically.
+
+  flow:
+
+    Context
+
+      ↓
+
+    Instructions
+
+      ↓
+
+    Output Schema
+
+      ↓
+
+    Examples
+
+      ↓
+
+    Gemini
+
+###########################################################
+# Context Builder
+###########################################################
+
+context_builder:
+
+  description:
+    >
+    Gemini never receives raw database rows.
+    Every AI request is first converted into a
+    compact context package.
+
+  flow:
+
+    Database
+
+      ↓
+
+    Context Builder
+
+      ↓
+
+    Gemini
+
+###########################################################
+# Context Package
+###########################################################
+
+context_package:
+
+  today:
+
+    journals:
+
+      count:
+
+      summaries:
+
+    habits:
+
+      completed:
+
+      total:
+
+    meals:
+
+      calories:
+
+      consistency:
+
+    cbt:
+
+      completed:
+
+      count:
+
+  comparison:
+
+    previous_day:
+
+    previous_week:
+
+  long_term_memory:
+
+    recurring_topics:
+
+    recurring_stressors:
+
+    helpful_patterns:
+
+###########################################################
+# AI Response Validation
+###########################################################
+
+validation:
+
+  every_response:
+
+    validate_using:
+      Zod
+
+    reject_if:
+
+      - Missing fields
+      - Wrong data types
+      - Invalid JSON
+
+###########################################################
+# Facts vs AI
+###########################################################
+
+storage:
+
+  facts:
+
+    generated_by:
+      Application
+
+    examples:
+
+      habit_completion:
+
+      calories:
+
+      journal_count:
+
+      cbt_count:
+
+  ai:
+
+    generated_by:
+      Gemini
+
+    examples:
+
+      summary:
+
+      themes:
+
+      observations:
+
+      emotions:
+
+###########################################################
+# Structured AI Memory
+###########################################################
+
+structured_memory:
+
+  purpose:
+    >
+    AI-readable metadata used for future
+    summarization.
+
+  fields:
+
+    themes:
+
+    emotions:
+
+    stressors:
+
+    positive_topics:
+
+    observations:
+
+    confidence:
+
+###########################################################
+# Embeddings
+###########################################################
+
+embeddings:
+
+  provider:
+    Gemini Embeddings
+
+  storage:
+    pgvector
+
+  generate_for:
+
+    - Journal
+    - Daily Summary
+    - Weekly Summary
+    - Monthly Summary
+
+  do_not_generate_for:
+
+    - Habit completion
+    - Calories
+    - CBT completion
+    - Checkbox events
+
+reason:
+  >
+  Embeddings should represent meaningful text,
+  not numerical events. Supabase's pgvector
+  is sufficient for semantic search without
+  introducing a separate vector database.
+  :contentReference[oaicite:0]{index=0}
+
+###########################################################
+# Future Semantic Search
+###########################################################
+
+semantic_search:
+
+  examples:
+
+    - Show similar journals.
+
+    - Have I felt like this before?
+
+    - Find previous work-related stress.
+
+    - Show gratitude-related entries.
+
+###########################################################
+# Long-Term Memory
+###########################################################
+
+long_term_memory:
+
+  purpose:
+    Persistent AI understanding.
+
+  examples:
+
+    recurring_topics:
+
+      - Work
+
+      - Sleep
+
+    recurring_stressors:
+
+      - Presentations
+
+      - Deadlines
+
+    helpful_patterns:
+
+      - Walking
+
+      - Journaling
+
+###########################################################
+# Prompt Optimization
+###########################################################
+
+optimization:
+
+  keep_constant:
+
+    - Instructions
+    - Examples
+    - JSON Schema
+
+  dynamic:
+
+    - User Context
+    - Today's Data
+
+reason:
+  >
+  Keeping a stable prompt prefix enables Gemini's
+  prompt caching mechanisms to reduce repeated
+  input processing and cost where applicable.
+  :contentReference[oaicite:1]{index=1}
+
+###########################################################
+# Rule Engine
+###########################################################
+
+rule_engine:
+
+  description:
+    Simple deterministic preprocessing before AI.
+
+  examples:
+
+    - If no journal exists, don't mention journaling.
+
+    - If CBT wasn't completed, don't discuss CBT.
+
+    - If meals weren't logged, omit nutrition.
+
+reason:
+  >
+  AI should never reason about missing data.
+
+###########################################################
+# Versioning
+###########################################################
+
+versioning:
+
+  every_ai_output:
+
+    version:
+
+    prompt_version:
+
+    model:
+
+reason:
+  >
+  Future prompt improvements should not invalidate
+  historical summaries.
+
+###########################################################
+# Development Priorities
+###########################################################
+
+priority:
+
+  phase_1:
+
+    - Zod
+    - Prompt Builder
+    - Context Builder
+    - Structured Memory
+
+  phase_2:
+
+    - pgvector
+    - Semantic Search
+    - Long-Term Memory
+
+  phase_3:
+
+    - Pattern Discovery
+    - Personalized AI
+    - Memory Retrieval
+
+###########################################################
+# Architecture Summary
+###########################################################
+
+pipeline:
+
+  User Activity
+
+      ↓
+
+  Database
+
+      ↓
+
+  Context Builder
+
+      ↓
+
+  Rule Engine
+
+      ↓
+
+  Prompt Builder
+
+      ↓
+
+  Gemini
+
+      ↓
+
+  Zod Validation
+
+      ↓
+
+  Store
+
+      ├── Human Summary
+      ├── Structured Memory
+      ├── Facts
+      ├── Version
+      └── Embedding
+
+###########################################################
+# Final Philosophy
+###########################################################
+
+final_principle: >
+  AI should be responsible only for generating
+  natural language and extracting high-level
+  observations. Business logic, aggregation,
+  calculations, comparisons, and data retrieval
+  should remain deterministic within the application.

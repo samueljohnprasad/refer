@@ -1,0 +1,344 @@
+---
+version: "2.0"
+
+document:
+  name: prd.yaml
+
+  title: AI Reflection Timeline
+
+  owner: Product Team
+
+  status: Draft
+
+feature:
+  name: AI Reflection Timeline
+
+vision: >
+  Help users understand their wellness journey through supportive,
+  evidence-based AI reflections generated from journals, habits,
+  meals and CBT activities.
+
+problem:
+  statement: >
+    Users create valuable wellness data every day but struggle to
+    recognize meaningful patterns, progress and recurring themes
+    across longer periods.
+
+solution:
+  overview: >
+    Generate hierarchical AI reflections that summarize user activity
+    at journal, daily, weekly and monthly levels while minimizing AI
+    cost through summary-based aggregation.
+
+goals:
+  user:
+    - Understand daily wellbeing.
+    - Discover recurring patterns.
+    - Reflect on long-term changes.
+    - Receive supportive AI observations.
+    - Explore personally meaningful questions.
+
+  business:
+    - Increase journal retention.
+    - Increase timeline engagement.
+    - Improve perceived AI quality.
+    - Create foundation for premium AI features.
+
+non_goals:
+  - Diagnose mental health conditions.
+  - Replace therapy.
+  - Predict future wellbeing.
+  - Rank users.
+  - Generate wellness scores.
+  - Judge user behaviour.
+
+supported_inputs:
+  - Journals
+  - Habits
+  - Meals
+  - CBT Exercises
+
+reflection_hierarchy:
+  journal:
+    trigger: Journal completion
+
+    generates:
+      - Journal AI Summary
+
+      - Structured Memory
+
+  daily:
+    trigger: Daily scheduled generation
+
+    consumes:
+      - Journal AI Summaries
+      - Habit Statistics
+      - Meal Statistics
+      - CBT Statistics
+      - User Personalization
+
+    generates:
+      - Daily Reflection
+
+      - Structured Memory
+
+  weekly:
+    consumes:
+      - Daily Reflections
+      - User Personalization
+
+    generates:
+      - Weekly Reflection
+
+      - Structured Memory
+
+  monthly:
+    consumes:
+      - Weekly Reflections
+      - User Personalization
+
+    generates:
+      - Monthly Reflection
+
+      - Structured Memory
+
+timeline:
+  tabs:
+    - Daily
+    - Weekly
+    - Monthly
+
+reflection_card:
+  daily:
+    sections:
+      - Summary
+      - Highlights
+      - Patterns
+      - Comparison
+      - Personalized Reflection
+
+  weekly:
+    sections:
+      - Summary
+      - Weekly Patterns
+      - Comparison
+      - Personalized Reflection
+
+  monthly:
+    sections:
+      - Summary
+      - Long-term Patterns
+      - Comparison
+      - Personalized Reflection
+
+user_personalization:
+  enabled: true
+
+  optional: true
+
+  objective: >
+    Allow users to tell the AI what matters most to them without
+    changing the main reflection.
+
+  supported:
+    reflection_questions:
+      description: >
+        Questions the user wants AI to observe over time.
+
+      examples:
+        - Am I handling work stress better?
+
+        - How is my confidence changing?
+
+        - Am I improving my sleep?
+
+    life_context:
+      description: >
+        Current situations affecting interpretation.
+
+      examples:
+        - Started a new job
+
+        - Preparing for exams
+
+        - Caring for a family member
+
+    important_values:
+      description: >
+        Values important to the user.
+
+      examples:
+        - Health
+
+        - Family
+
+        - Learning
+
+        - Career
+
+personalized_reflection:
+  optional: true
+
+  appears_inside:
+    - Daily Reflection
+    - Weekly Reflection
+    - Monthly Reflection
+
+  contains:
+    - Title
+    - Observations
+    - Supporting Evidence
+    - Confidence
+
+  rules:
+    - Never replace the main reflection.
+    - Never dominate the timeline.
+    - Only use available evidence.
+    - Mention uncertainty when evidence is limited.
+
+comparison:
+  supported:
+    daily: previous_day
+
+    weekly: previous_week
+
+    monthly: previous_month
+
+comparison_rules:
+  allowed:
+    - Describe differences.
+    - Mention recurring themes.
+    - Highlight consistency.
+    - Explain uncertainty.
+
+  forbidden:
+    - Better than yesterday.
+    - Worse than last week.
+    - Success score.
+    - Failure score.
+    - Mental health diagnosis.
+
+ai_principles:
+  always:
+    - Supportive
+    - Compassionate
+    - Evidence-based
+    - Neutral
+    - Honest about uncertainty
+
+  never:
+    - Judge users
+    - Shame users
+    - Invent facts
+    - Infer unsupported emotions
+    - Diagnose conditions
+
+writing_style:
+  preferred:
+    - Reflective
+    - Calm
+    - Curious
+    - Encouraging
+
+  avoid:
+    - Clinical language
+    - Absolute statements
+    - Fear-based language
+    - Toxic positivity
+
+examples:
+  good:
+    - >
+      Work appeared in several reflections this week. Compared with
+      last week, your descriptions contained slightly less urgency,
+      although more observations are needed before identifying a trend.
+
+    - >
+      Gratitude appeared repeatedly this month, suggesting that
+      positive moments were consistently noticed.
+
+    - >
+      Meal logging was limited this week, so nutritional observations
+      are based on incomplete information.
+
+  bad:
+    - >
+      You are happier now.
+
+    - >
+      You are mentally healthier.
+
+    - >
+      You failed your habits.
+
+    - >
+      You are becoming successful.
+
+edge_cases:
+  no_journal:
+    action: Continue using habits, meals and CBT.
+
+  no_meals:
+    action: Skip nutrition observations.
+
+  no_cbt:
+    action: Skip CBT observations.
+
+  insufficient_data:
+    action: Explain that evidence is limited.
+
+technical_requirements:
+  - One AI generation per reflection.
+  - Historical reflections are immutable.
+  - Weekly reflections consume daily summaries only.
+  - Monthly reflections consume weekly summaries only.
+  - Structured JSON responses.
+  - Prompt version tracking.
+  - Schema version tracking.
+  - Model version tracking.
+
+success_metrics:
+  product:
+    - Daily timeline usage.
+    - Weekly timeline usage.
+    - Monthly timeline usage.
+    - Journal completion rate.
+    - Personalization adoption.
+
+  engineering:
+    - Reflection generation success >99%.
+    - JSON validation success >99%.
+    - Cached summaries reused.
+    - Reduced AI token consumption.
+
+future_scope:
+  phase_2:
+    - AI Chat
+    - Semantic Search
+    - Vector Embeddings
+    - AI Coach
+    - Reflection Recommendations
+
+acceptance_criteria:
+  - Journal AI generates after journal completion.
+  - Daily reflections consume journal summaries.
+  - Weekly reflections consume daily reflections.
+  - Monthly reflections consume weekly reflections.
+  - Personalized reflection appears only when configured.
+  - AI outputs pass schema validation.
+  - Historical summaries remain immutable.
+
+definition_of_done:
+  - Database complete.
+  - Edge Functions complete.
+  - Prompt library complete.
+  - Timeline UI complete.
+  - Reflection hierarchy operational.
+  - AI validation operational.
+
+final_principle: >
+  The AI Reflection Timeline exists to help users understand their
+  journey rather than evaluate it. Every reflection must remain
+  grounded in evidence, acknowledge uncertainty, and encourage
+  thoughtful self-reflection instead of assigning scores, labels
+  or judgments.

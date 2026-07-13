@@ -1,0 +1,406 @@
+version: "2.0"
+
+database:
+  provider: Supabase
+
+  engine: PostgreSQL
+
+extensions:
+  enabled:
+    - pgcrypto
+    - uuid-ossp
+
+  future:
+    - vector
+    - pg_jsonschema
+
+principles:
+  - Business data is the source of truth.
+  - AI summaries are immutable.
+  - Summaries are generated hierarchically.
+  - AI metadata is stored separately from business data.
+  - User personalization is optional context.
+  - Personalization never changes the core reflection.
+  - Known fields are relational.
+  - Flexible AI metadata is JSONB.
+
+tables:
+  journals:
+    description: Raw journal entries.
+
+    primary_key: id
+
+    columns:
+      id:
+        type: uuid
+
+      user_id:
+        type: uuid
+
+      title:
+        type: text
+        nullable: true
+
+      content:
+        type: text
+
+      created_at:
+        type: timestamptz
+
+      updated_at:
+        type: timestamptz
+
+    indexes:
+      - user_id
+      - created_at
+
+  journal_ai:
+    description: Journal insight generated immediately after journal completion.
+
+    primary_key: id
+
+    columns:
+      id:
+        type: uuid
+
+      journal_id:
+        type: uuid
+
+      user_id:
+        type: uuid
+
+      summary:
+        type: text
+
+      primary_theme:
+        type: text
+
+      primary_emotion:
+        type: text
+
+      confidence:
+        type: numeric
+
+      structured_memory:
+        type: jsonb
+
+      model:
+        type: text
+
+      prompt_version:
+        type: text
+
+      schema_version:
+        type: text
+
+      created_at:
+        type: timestamptz
+
+    indexes:
+      - journal_id
+      - user_id
+      - primary_theme
+      - primary_emotion
+
+  daily_ai:
+    description: Daily AI reflection.
+
+    primary_key: id
+
+    columns:
+      id:
+        type: uuid
+
+      user_id:
+        type: uuid
+
+      reflection_date:
+        type: date
+
+      summary:
+        type: text
+
+      primary_theme:
+        type: text
+
+      primary_emotion:
+        type: text
+
+      journal_count:
+        type: integer
+
+      habit_completion_rate:
+        type: numeric
+
+      meal_logged:
+        type: boolean
+
+      cbt_completed:
+        type: boolean
+
+      personalized_reflection:
+        type: jsonb
+        nullable: true
+
+      structured_memory:
+        type: jsonb
+
+      confidence:
+        type: numeric
+
+      model:
+        type: text
+
+      prompt_version:
+        type: text
+
+      schema_version:
+        type: text
+
+      created_at:
+        type: timestamptz
+
+    unique_constraints:
+      - user_id
+      - reflection_date
+
+  weekly_ai:
+    primary_key: id
+
+    columns:
+      id:
+        type: uuid
+
+      user_id:
+        type: uuid
+
+      week_start:
+        type: date
+
+      week_end:
+        type: date
+
+      summary:
+        type: text
+
+      primary_theme:
+        type: text
+
+      primary_emotion:
+        type: text
+
+      personalized_reflection:
+        type: jsonb
+        nullable: true
+
+      structured_memory:
+        type: jsonb
+
+      confidence:
+        type: numeric
+
+      model:
+        type: text
+
+      prompt_version:
+        type: text
+
+      schema_version:
+        type: text
+
+      created_at:
+        type: timestamptz
+
+  monthly_ai:
+    primary_key: id
+
+    columns:
+      id:
+        type: uuid
+
+      user_id:
+        type: uuid
+
+      year:
+        type: integer
+
+      month:
+        type: integer
+
+      summary:
+        type: text
+
+      primary_theme:
+        type: text
+
+      primary_emotion:
+        type: text
+
+      personalized_reflection:
+        type: jsonb
+        nullable: true
+
+      structured_memory:
+        type: jsonb
+
+      confidence:
+        type: numeric
+
+      model:
+        type: text
+
+      prompt_version:
+        type: text
+
+      schema_version:
+        type: text
+
+      created_at:
+        type: timestamptz
+
+  user_personalization:
+    description: >
+      Optional personalization supplied by the user.
+      Used only as additional AI context.
+
+    primary_key: id
+
+    columns:
+      id:
+        type: uuid
+
+      user_id:
+        type: uuid
+
+      reflection_questions:
+        type: jsonb
+
+      life_context:
+        type: jsonb
+
+      important_values:
+        type: jsonb
+
+      preferences:
+        type: jsonb
+
+      updated_at:
+        type: timestamptz
+
+    example:
+      reflection_questions:
+        - "Am I handling work stress better?"
+
+        - "How is my confidence improving?"
+
+      life_context:
+        - "Started a new job"
+
+        - "Preparing for exams"
+
+      important_values:
+        - Health
+
+        - Family
+
+        - Career
+
+structured_memory:
+  themes:
+
+  emotions:
+
+  stressors:
+
+  positive_topics:
+
+  observations:
+
+  notable_events:
+
+  emotional_arc:
+
+  metadata:
+
+personalized_reflection_schema:
+  title:
+    type: string
+
+  observations:
+    type: array
+
+  evidence:
+    type: array
+
+  confidence:
+    type: string
+
+  available:
+    type: boolean
+
+generation_pipeline:
+  journal:
+    input:
+      - journal
+
+    output:
+      - journal_ai
+
+  daily:
+    input:
+      - journal_ai
+      - habits
+      - meals
+      - cbt
+      - user_personalization
+
+    output:
+      - daily_ai
+
+  weekly:
+    input:
+      - daily_ai
+      - user_personalization
+
+    output:
+      - weekly_ai
+
+  monthly:
+    input:
+      - weekly_ai
+      - user_personalization
+
+    output:
+      - monthly_ai
+
+future:
+  semantic_search:
+    enabled: true
+
+  embeddings:
+    table: embeddings
+
+    source:
+      - journal_ai
+
+      - daily_ai
+
+      - weekly_ai
+
+      - monthly_ai
+
+database_rules:
+  - Never regenerate historical summaries.
+  - Never overwrite AI output.
+  - Personalization is optional.
+  - Missing personalization must never affect AI generation.
+  - Personalized reflections are evidence-based.
+  - Avoid unsupported conclusions.
+  - Version every prompt.
+  - Version every schema.
+
+final_principle: >
+  Every reflection has one AI generation. User personalization
+  is injected as optional context and produces an additional
+  personalized section within the same reflection rather than
+  creating a separate AI pipeline.
