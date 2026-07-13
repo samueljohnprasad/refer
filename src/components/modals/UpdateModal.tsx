@@ -48,7 +48,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
   const sheetRef = useRef<BottomSheetModal>(null);
 
   const closeHandler = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     onDismiss?.();
     sheetRef.current?.close();
   }, [onDismiss]);

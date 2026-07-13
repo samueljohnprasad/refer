@@ -52,7 +52,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
   }));
 
   const handleCardPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     onPress();
   };
 
@@ -99,26 +99,23 @@ export const HabitCard: React.FC<HabitCardProps> = ({
     <View>
       <Pressable
         onPress={handleCardPress}
-        className={`py-4 ${!isLast ? "border-b border-sage-100" : ""}`}
+        className="py-3"
         style={({ pressed }) => ({
           opacity: pressed ? 0.7 : 1,
         })}
       >
         <View className="flex-row items-center">
           {/* Emoji Icon */}
-          <View
-            className={`mr-3 h-12 w-12 items-center justify-center rounded-[18px] ${habit.isCompleted ? "bg-sage-pill" : "bg-sage-50"
-              }`}
-          >
-            <Text style={{ fontSize: 20 }}>{habit.icon || "✓"}</Text>
+          <View className="mr-3 h-10 w-10 items-center justify-center">
+            <Text style={{ fontSize: 22, opacity: habit.isCompleted ? 0.5 : 1 }}>{habit.icon || "✓"}</Text>
           </View>
 
           {/* Content */}
           <View className="flex-1">
             {/* Habit Name */}
             <Text
-              className={`happy-font-body-bold text-[16px] text-ink ${habit.isCompleted
-                  ? "line-through opacity-60"
+              className={`happy-font-body-bold text-[17px] text-ink ${habit.isCompleted
+                  ? "opacity-50 line-through"
                   : ""
                 }`}
             >
@@ -126,9 +123,7 @@ export const HabitCard: React.FC<HabitCardProps> = ({
             </Text>
 
             {/* Metadata Row */}
-            <View className="flex-row items-center mt-0.5 gap-3">
-              {!habit.isCompleted && (
-                <>
+            <View className="flex-row items-center mt-0.5 gap-3 h-[16px]">
                   {/* Repeat Badge */}
                   <View className="flex-row items-center">
                     <HugeiconsIcon icon={RepeatIcon} size={12} color={INK_MUTED} />
@@ -137,14 +132,12 @@ export const HabitCard: React.FC<HabitCardProps> = ({
                     </Text>
                   </View>
 
-                  {/* Time Badge */}
-                  {habit.scheduledTime && (
+                  {/* Time Badge (hide if completed so streak takes focus) */}
+                  {habit.scheduledTime && !habit.isCompleted && (
                     <Text className="happy-font-body-medium text-xs text-ink-muted">
                       {formatTime(habit.scheduledTime)}
                     </Text>
                   )}
-                </>
-              )}
 
               {/* Streak Badge */}
               <StreakBadge currentStreak={habit.currentStreak || 0} />
@@ -157,17 +150,17 @@ export const HabitCard: React.FC<HabitCardProps> = ({
             className="ml-3 relative w-11 h-11 items-center justify-center"
           >
             <View
-              className="w-7 h-7 rounded-full border-2 items-center justify-center z-10"
+              className="w-6 h-6 rounded-full border items-center justify-center z-10"
               style={{
-                borderColor: habit.isCompleted ? SAGE[500] : SAGE[200],
+                borderColor: habit.isCompleted ? SAGE[400] : SAGE[200],
                 backgroundColor: habit.isCompleted
-                  ? SAGE[500]
+                  ? SAGE[50]
                   : TRANSPARENT,
               }}
             >
               <Animated.Text
-                className="text-white text-sm font-bold"
-                style={checkmarkAnimatedStyle}
+                className="text-xs"
+                style={[{ color: SAGE[600] }, checkmarkAnimatedStyle]}
               >
                 ✓
               </Animated.Text>

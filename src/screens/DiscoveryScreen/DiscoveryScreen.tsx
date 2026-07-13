@@ -559,7 +559,7 @@ function DiscoveryScreen() {
               </SUIText>
               <SwiftUIDateTimePicker
                 onDateChange={(date: Date) => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  Haptics.selectionAsync();
                   handleDateSelect(date);
                 }}
                 displayedComponents={["date"]}

@@ -44,7 +44,7 @@ export const EraseDataConfirmationModal: React.FC<
 
   const handleClose = (): void => {
     if (isDeleting) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     onClose();
   };
 

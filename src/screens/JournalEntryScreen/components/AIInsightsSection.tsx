@@ -100,7 +100,7 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
       Boolean(physicalSymptoms && physicalSymptoms.length > 0);
 
     return (
-      <View className="bg-white/85 rounded-2xl p-5 mb-8 border border-brand-border">
+      <View className="mb-8 mt-4 px-1">
         {/* ── Header ── */}
         <TouchableOpacity
           accessibilityRole="button"
@@ -133,14 +133,12 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
           <Animated.View
             entering={FadeIn.duration(200)}
             exiting={FadeOut.duration(150)}
-            layout={Layout.springify().damping(20).stiffness(180)}
           >
             {/* ── 1. Hero: AI Reflection ── */}
             {aiInsights && (
-              <View className="bg-white/70 rounded-xl p-4 mb-4 border border-brand-border/30">
+              <View className="mb-6 mt-2">
                 <Text
-                  variant="body"
-                  className="text-ink text-[15px] leading-[26px]"
+                  className="text-ink text-[16px] leading-[26px]"
                 >
                   {aiInsights}
                 </Text>
@@ -149,16 +147,16 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
 
             {/* ── 2. Cognitive Pattern (CBT) ── */}
             {cognitivePattern && (
-              <View className="flex-row items-start mb-3 bg-macaw-purple-tint/50 rounded-xl p-3.5 border border-macaw-purple/10">
-                <Feather
-                  name="layers"
-                  size={14}
-                  color="#CE82FF"
-                  style={{ marginTop: 2 }}
-                />
+              <View className="flex-row items-start mb-4">
+                <View className="w-7 h-7 rounded-full bg-macaw-purple-tint/30 items-center justify-center mr-3 mt-0.5">
+                  <Feather
+                    name="layers"
+                    size={13}
+                    color="#CE82FF"
+                  />
+                </View>
                 <Text
-                  variant="body"
-                  className="ml-2.5 text-ink-soft text-[13px] leading-[20px] flex-1"
+                  className="text-ink text-[15px] leading-[24px] flex-1"
                 >
                   {cognitivePattern}
                 </Text>
@@ -167,16 +165,16 @@ export const AIInsightsSection = React.memo<AIInsightsSectionProps>(
 
             {/* ── 3. Strength Spotlight ── */}
             {strengthSpotlight && (
-              <View className="flex-row items-start mb-3 bg-gold-tint/60 rounded-xl p-3.5 border border-gold/10">
-                <Feather
-                  name="star"
-                  size={14}
-                  color="#D97706"
-                  style={{ marginTop: 2 }}
-                />
+              <View className="flex-row items-start mb-6">
+                <View className="w-7 h-7 rounded-full bg-gold-tint/40 items-center justify-center mr-3 mt-0.5">
+                  <Feather
+                    name="star"
+                    size={13}
+                    color="#D97706"
+                  />
+                </View>
                 <Text
-                  variant="body"
-                  className="ml-2.5 text-ink text-[13px] leading-[20px] flex-1"
+                  className="text-ink text-[15px] leading-[24px] flex-1"
                 >
                   {strengthSpotlight}
                 </Text>

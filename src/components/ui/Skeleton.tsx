@@ -42,7 +42,7 @@ export function Skeleton({
     return (
         <Animated.View
             style={[style, { width: width as any, height, borderRadius: radius }]}
-            className={`bg-sage-100 ${className || ""}`}
+            className={`bg-sage-200 ${className || ""}`}
         />
     );
 }

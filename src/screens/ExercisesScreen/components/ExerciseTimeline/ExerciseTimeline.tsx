@@ -13,22 +13,28 @@ import { ExerciseTimelineCard } from "./ExerciseTimelineCard";
 import { useExerciseTimeline } from "../../hooks/useExerciseTimeline";
 import type { ExerciseTimelineItem } from "./types";
 import type { HistoryLogItem } from "../../hooks/useCBTHistory";
+import { Button } from "@/src/components/ui/Button";
+import { useRouter } from "expo-router";
 
 // ─── Empty State ────────────────────────────────────────────────────────
 
-const EmptyState: React.FC = React.memo(() => (
-  <View className="items-center justify-center px-8 py-20">
-    <View className="mb-4 h-20 w-20 items-center justify-center rounded-[28px] bg-sage-50">
-      <Text className="text-[40px]">📚</Text>
+const EmptyState: React.FC = React.memo(() => {
+  const router = useRouter();
+  return (
+    <View className="items-center justify-center px-8 py-24">
+      <Text className="happy-font-heading-bold text-2xl text-ink">
+        A space for your thoughts
+      </Text>
+      <Text className="happy-font-body-medium mt-3 mb-8 text-center text-base leading-relaxed text-ink-muted">
+        Your completed reflections and exercises will live here.
+      </Text>
+      <Button
+        label="Explore Exercises"
+        onPress={() => router.push("/")}
+      />
     </View>
-    <Text className="happy-font-heading-bold mt-4 text-lg text-ink">
-      Your exercise journal
-    </Text>
-    <Text className="happy-font-body-medium mt-1 text-center text-sm leading-5 text-ink-muted">
-      Complete your first exercise to see it here.
-    </Text>
-  </View>
-));
+  );
+});
 EmptyState.displayName = "ExerciseTimelineEmpty";
 
 // ─── Component ──────────────────────────────────────────────────────────

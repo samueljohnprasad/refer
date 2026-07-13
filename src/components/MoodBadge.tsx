@@ -73,7 +73,7 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
         }.`}
         accessibilityState={{ selected: active, disabled }}
       >
-        <View className={`items-center justify-center ${!active ? 'opacity-50' : ''}`} style={containerStyle}>
+        <View className={`items-center justify-center ${!active ? 'opacity-100' : ''}`} style={containerStyle}>
           <View
             style={{
               width: diameter,

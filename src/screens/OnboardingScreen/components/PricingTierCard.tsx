@@ -56,7 +56,7 @@ const PricingTierCard: React.FC<PricingTierCardProps> = ({
   };
 
   const handlePress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     onSelect();
   };
 

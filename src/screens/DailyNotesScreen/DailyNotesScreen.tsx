@@ -8,10 +8,9 @@ import {
   useState,
   type ReactElement,
 } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, Pressable } from "react-native";
 import { Stack } from "expo-router";
-import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
-import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
+import { Text } from "@/src/components/ui/Text";
 import {
   format,
   addDays,
@@ -47,6 +46,9 @@ import SuspensLoader from "@/src/components/SuspensLoader";
 import { HabitsSection } from "@/src/components/habits/HabitsSection";
 import CalorieTrackerScreen from "../CalorieTrackerScreen/CalorieTrackerScreen";
 import { SAGE } from "@/lib/tokens";
+import { useMentalHealthData } from "@/hooks/data/useMentalHealthData";
+import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
+import { pickerStyle, tag, badge } from "@expo/ui/swift-ui/modifiers";
 
 // Static imports to avoid Metro bundler React.lazy chunk resolution crashes
 import { MentalHealthProfileContainer } from "./notes/MentalHealthProfileContainer";
@@ -82,6 +84,10 @@ function DailyNotesScreenComponent(): ReactElement {
 
   // Tab filter state
   const [tabFilter, setTabFilter] = useState<TabFilter>("journal");
+
+  // Fetch journal entries to get the count
+  const { data: insightsResponse } = useMentalHealthData(selectedDate);
+  const journalCount = insightsResponse?.length || 0;
 
   // State for current week view (independent of selected date)
   const [currentWeekView, setCurrentWeekView] = useAtom(currentWeekViewAtom);
@@ -180,7 +186,11 @@ function DailyNotesScreenComponent(): ReactElement {
               // Fade back in with spring motion
               contentOpacity.set(withTiming(1, { duration: 250 }));
               contentTranslateX.set(
-                withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true }),
+                withSpring(0, {
+                  damping: 20,
+                  stiffness: 100,
+                  overshootClamping: true,
+                }),
               );
             }
           },
@@ -256,19 +266,35 @@ function DailyNotesScreenComponent(): ReactElement {
 
           // Smoother, less bouncy spring animation
           contentTranslateX.set(
-            withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true }),
+            withSpring(0, {
+              damping: 20,
+              stiffness: 100,
+              overshootClamping: true,
+            }),
           );
           contentOpacity.set(
-            withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
+            withSpring(1, {
+              damping: 20,
+              stiffness: 100,
+              overshootClamping: true,
+            }),
           );
           contentScale.set(
-            withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }),
+            withSpring(1, {
+              damping: 20,
+              stiffness: 100,
+              overshootClamping: true,
+            }),
           );
         })
         .onFinalize(() => {
           "worklet";
           contentTranslateX.set(
-            withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true }),
+            withSpring(0, {
+              damping: 20,
+              stiffness: 100,
+              overshootClamping: true,
+            }),
           );
           contentOpacity.set(withSpring(1));
           contentScale.set(withSpring(1));
@@ -309,7 +335,7 @@ function DailyNotesScreenComponent(): ReactElement {
   const handleFilterSelectionChange = useCallback(
     (selection: unknown): void => {
       if (!isTabFilterLabel(selection)) return;
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      Haptics.selectionAsync();
       setTabFilter(TAB_FILTER_BY_LABEL[selection]);
     },
     [],
@@ -344,23 +370,38 @@ function DailyNotesScreenComponent(): ReactElement {
               showsVerticalScrollIndicator={false}
             >
               {/* Tab Picker */}
-              <View className="px-4 pb-3 pt-4">
-                <View className="">
-                  <Host style={{ width: "100%", height: 32 }}>
-                    <Picker
-                      modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
-                      label="View"
-                      selection={TAB_FILTER_LABEL_BY_FILTER[tabFilter]}
-                      onSelectionChange={handleFilterSelectionChange}
+              <View className="px-4 pt-4 pb-4">
+                <Host matchContents>
+                  <Picker
+                    selection={tabFilter}
+                    onSelectionChange={(newSelection) => {
+                      if (typeof newSelection === "string") {
+                        Haptics.selectionAsync();
+                        setTabFilter(newSelection as TabFilter);
+                      }
+                    }}
+                    modifiers={[pickerStyle("segmented")]}
+                  >
+                    <SwiftUIText
+                      modifiers={[
+                        tag("journal"),
+                        badge(
+                          journalCount > 0 ? String(journalCount) : undefined,
+                        ),
+                      ]}
                     >
-                      {TAB_FILTER_OPTIONS.map((option) => (
-                        <SwiftUIText key={option} modifiers={[tag(option)]}>
-                          {option}
-                        </SwiftUIText>
-                      ))}
-                    </Picker>
-                  </Host>
-                </View>
+                      Journal
+                    </SwiftUIText>
+
+                    <SwiftUIText modifiers={[tag("calories")]}>
+                      Calories
+                    </SwiftUIText>
+
+                    <SwiftUIText modifiers={[tag("habits")]}>
+                      Habits
+                    </SwiftUIText>
+                  </Picker>
+                </Host>
               </View>
 
               {/* Unified Animated Container for Swipe Transitions */}
@@ -370,21 +411,36 @@ function DailyNotesScreenComponent(): ReactElement {
               >
                 {/* Calorie Tracker Widget */}
                 {tabFilter === "calories" ? (
-                  <Animated.View entering={FadeIn.duration(500).easing(Easing.bezier(0.4, 0.0, 0.2, 1))} className="flex-1 pt-4">
+                  <Animated.View
+                    entering={FadeIn.duration(500).easing(
+                      Easing.bezier(0.4, 0.0, 0.2, 1),
+                    )}
+                    className="flex-1 pt-4"
+                  >
                     <CalorieTrackerScreen selectedDate={selectedDate} />
                   </Animated.View>
                 ) : null}
 
                 {/* Habits Section */}
                 {tabFilter === "habits" ? (
-                  <Animated.View entering={FadeIn.duration(500).easing(Easing.bezier(0.4, 0.0, 0.2, 1))} className="flex-1 pt-4">
+                  <Animated.View
+                    entering={FadeIn.duration(500).easing(
+                      Easing.bezier(0.4, 0.0, 0.2, 1),
+                    )}
+                    className="flex-1 pt-4"
+                  >
                     <HabitsSection selectedDate={selectedDate} />
                   </Animated.View>
                 ) : null}
 
                 {/* Journal Section */}
                 {tabFilter === "journal" ? (
-                  <Animated.View entering={FadeIn.duration(500).easing(Easing.bezier(0.4, 0.0, 0.2, 1))} className="min-h-[520px] flex-1">
+                  <Animated.View
+                    entering={FadeIn.duration(500).easing(
+                      Easing.bezier(0.4, 0.0, 0.2, 1),
+                    )}
+                    className="min-h-[520px] flex-1"
+                  >
                     {mentalHealthContent}
                   </Animated.View>
                 ) : null}

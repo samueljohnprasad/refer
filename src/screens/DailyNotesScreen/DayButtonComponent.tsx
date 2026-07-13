@@ -6,6 +6,7 @@ import {
   BRAND_SURFACE_SOFT,
   INK,
   INK_MUTED,
+  INK_SOFT,
   SAGE,
   SAGE_OVERLAY,
   TRANSPARENT,
@@ -39,15 +40,11 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
 
   const getTextColor = () => {
     if (disabled) return SAGE_OVERLAY.disabled;
-    if (isSelected) return SAGE[600];
+    if (isSelected || isToday) return SAGE[600];
     return INK;
   };
 
-  const backgroundColor = isSelected
-    ? TRANSPARENT
-    : isToday && !isSelected
-    ? BRAND_SURFACE_SOFT
-    : TRANSPARENT;
+  const backgroundColor = TRANSPARENT;
 
   return (
     <Pressable
@@ -70,9 +67,11 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
             className="happy-font-body-bold text-[10px] uppercase tracking-widest mb-1"
             style={{
               color: disabled
-                ? SAGE_OVERLAY.disabled
-                : INK_MUTED,
-              opacity: isSelected || disabled ? 1 : 0.78,
+                ? INK_MUTED
+                : isSelected
+                ? SAGE[600]
+                : INK,
+              opacity: isSelected || disabled ? 1 : 0.75,
             }}
           >
             {dayName}
@@ -83,7 +82,7 @@ const DayButtonComponent: React.FC<DayButtonProps> = ({
             }`}
             style={{
               color: getTextColor(),
-              opacity: isSelected || disabled ? 1 : 0.92,
+              opacity: isSelected || disabled ? 1 : 0.9,
             }}
           >
             {format(day, "d")}

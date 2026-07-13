@@ -37,7 +37,7 @@ export const LearnCardsExercise = ({ payload, onInteraction }: LearnCardsExercis
   }, [visibleCards, cards.length, onInteraction]);
 
   const handleNext = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     setVisibleCards((prev) => Math.min(prev + 1, cards.length));
   };
 

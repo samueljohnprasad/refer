@@ -35,6 +35,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { BRAND_SURFACE, GOLD, INK_MUTED, SAGE } from "@/lib/tokens";
 import { Card } from "@/src/components/ui/Card";
+import { JournalTabSkeleton } from "./JournalSkeletons";
 
 interface EntryCardsViewProps {
   entries: JournalEntry[];
@@ -87,35 +88,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
   );
 
   if (isLoading) {
-    return (
-      <View
-        className="gap-4"
-        accessibilityRole="progressbar"
-        accessibilityLabel="Loading journal entries"
-        accessibilityState={{ busy: true }}
-      >
-        <SectionHeader title="Journal Entries" icon={NoteIcon} />
-        <View className="gap-3">
-          {[1, 2, 3].map((i) => (
-            <View
-              key={i}
-              className="py-4 border-b border-sage-200/40"
-            >
-              <View className="flex-row items-center justify-between mb-3">
-                <View className="h-5 bg-sage-200/60 rounded-md w-1/2" />
-                <View className="flex-row items-center gap-2">
-                  <View className="w-6 h-6 rounded-full bg-sage-200/60" />
-                  <View className="w-7 h-7 rounded-full bg-sage-200/60" />
-                </View>
-              </View>
-              <View className="h-3 bg-sage-200/50 rounded-md mb-2 w-1/3" />
-              <View className="h-4 bg-sage-200/50 rounded-md mb-1.5 w-full" />
-              <View className="h-4 bg-sage-200/40 rounded-md w-4/5" />
-            </View>
-          ))}
-        </View>
-      </View>
-    );
+    return <JournalTabSkeleton />;
   }
 
 
@@ -124,23 +97,20 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
     return (
       <EmptyState
         mascotState="panda-notes"
-        title="What's on your mind today?"
-        description="Write down your thoughts or record an audio note. A safe space just for you."
-        buttonText="Start Journaling"
+        title="What's on your mind?"
+        description="A private space to capture your thoughts."
+        buttonText="Record Voice"
         onButtonPress={() => router.push("/tabs/(tabs)/record")}
         buttonIcon={Mic01Icon}
+        secondaryButtonText="Write Text"
+        onSecondaryButtonPress={() => router.push("/tabs/screens/keyboard-recorder")}
+        secondaryButtonIcon={NoteIcon}
       />
     );
   }
 
   return (
     <View className="gap-4 flex-1">
-      <SectionHeader
-        title="Journal Entries"
-        icon={NoteIcon}
-        count={entries.length}
-      />
-
       <LegendList
         data={entries}
         estimatedItemSize={200}
@@ -262,86 +232,34 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
               style={{ padding: 16, borderRadius: 20, overflow: "hidden" }}
             >
               {/* Header & Metadata */}
-              <View className="flex-row items-start justify-between mb-2">
-                <View className="flex-1 mr-2">
-                  <Text variant="body-bold" className="mb-1">
-                    {entry.title || "Untitled Entry"}
-                  </Text>
-                  <View className="flex-row items-center flex-wrap">
-                    {entry.selected_date && (
+              <View className="mb-2">
+                <Text variant="body-bold" className="mb-1">
+                  {entry.title || "Untitled Entry"}
+                </Text>
+                <View className="flex-row items-center flex-wrap">
+                  {entry.selected_date && (
+                    <Text variant="caption">
+                      {format(new Date(entry.selected_date), "h:mm a")}
+                    </Text>
+                  )}
+                  <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
+                  <HugeiconsIcon
+                    size={12}
+                    icon={getEntryTypeIcon(entry.input_type)}
+                    color={INK_MUTED}
+                  />
+                  {!!entry.duration_seconds && (
+                    <Text variant="caption" className="ml-1">
+                      {getDuration(entry.duration_seconds)}
+                    </Text>
+                  )}
+                  {!!entry.words_count && (
+                    <>
+                      <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
                       <Text variant="caption">
-                        {format(new Date(entry.selected_date), "h:mm a")}
+                        {entry.words_count} words
                       </Text>
-                    )}
-                    <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
-                    <HugeiconsIcon
-                      size={12}
-                      icon={getEntryTypeIcon(entry.input_type)}
-                      color={INK_MUTED}
-                    />
-                    {!!entry.duration_seconds && (
-                      <Text variant="caption" className="ml-1">
-                        {getDuration(entry.duration_seconds)}
-                      </Text>
-                    )}
-                    {!!entry.words_count && (
-                      <>
-                        <View className="w-1 h-1 bg-sage-200 rounded-full mx-2" />
-                        <Text variant="caption">
-                          {entry.words_count} words
-                        </Text>
-                      </>
-                    )}
-                  </View>
-                </View>
-
-                <View className="flex-row items-center gap-1.5">
-                  {showActions && onBookmark && (
-                    <TouchableOpacity
-                      onPress={handleBookmarkPress}
-                      disabled={isBookmarking}
-                      accessibilityRole="button"
-                      accessibilityLabel={isBookmarked ? "Remove bookmark" : "Bookmark entry"}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      className="p-1.5 rounded-full"
-                    >
-                      {isBookmarking ? (
-                        <ActivityIndicator size="small" color={SAGE[600]} />
-                      ) : (
-                        <HugeiconsIcon
-                          icon={BookmarkCheck01Icon}
-                          size={18}
-                          color={isBookmarked ? SAGE[600] : INK_MUTED}
-                        />
-                      )}
-                    </TouchableOpacity>
-                  )}
-
-                  {showActions && onDelete && (
-                    <TouchableOpacity
-                      onPress={handleDeletePress}
-                      accessibilityRole="button"
-                      accessibilityLabel="Delete journal entry"
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      className="p-1.5 rounded-full"
-                    >
-                      <HugeiconsIcon
-                        icon={Delete02Icon}
-                        size={18}
-                        color={INK_MUTED}
-                      />
-                    </TouchableOpacity>
-                  )}
-
-                  {entry.moods?.main_mood && (
-                    <View className="flex-row items-center justify-center w-7 h-7 rounded-full bg-sage-100/60 border border-sage-200/40 ml-1">
-                      <Image
-                        source={emotions[entry.moods.main_mood as Emotion]}
-                        className="w-4 h-4"
-                        alt={entry.moods.main_mood}
-                        progressiveRenderingEnabled={true}
-                      />
-                    </View>
+                    </>
                   )}
                 </View>
               </View>

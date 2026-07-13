@@ -8,11 +8,16 @@ import { BRAND_SURFACE } from "@/lib/tokens";
 
 interface EmptyStateProps {
   mascotState: MascotState;
-  buttonText: string;
-  onButtonPress: () => void;
+  buttonText?: string;
+  onButtonPress?: () => void;
   buttonIcon?: any;
+  buttonLoading?: boolean;
   title?: string;
   description?: string;
+  secondaryButtonText?: string;
+  onSecondaryButtonPress?: () => void;
+  secondaryButtonIcon?: any;
+  secondaryButtonLoading?: boolean;
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
@@ -20,8 +25,13 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   buttonText,
   onButtonPress,
   buttonIcon,
+  buttonLoading,
   title,
   description,
+  secondaryButtonText,
+  onSecondaryButtonPress,
+  secondaryButtonIcon,
+  secondaryButtonLoading,
 }) => {
   return (
     <View className="flex-1 items-center justify-center py-12 min-h-[400px]">
@@ -30,29 +40,61 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       </View>
       
       {title && (
-        <Text className="happy-font-heading-bold text-xl text-ink text-center mb-2 px-6">
+        <Text variant="h1" className="text-center mb-3 px-6">
           {title}
         </Text>
       )}
       
       {description && (
-        <Text className="happy-font-body text-sm text-ink-muted text-center px-10 mb-8 leading-relaxed">
+        <Text variant="body" color="ink" className="text-center px-8 mb-8 opacity-80">
           {description}
         </Text>
       )}
 
-      <View className="px-12 self-stretch w-full max-w-sm">
-        <Button
-          label={buttonText}
-          variant="primary"
-          size="lg"
-          onPress={onButtonPress}
-          leftIcon={
-            buttonIcon ? (
-              <HugeiconsIcon icon={buttonIcon} size={18} color={BRAND_SURFACE} />
-            ) : undefined
-          }
-        />
+      <View className="px-8 self-stretch w-full max-w-sm flex-row gap-3 justify-center">
+        {secondaryButtonText && onSecondaryButtonPress ? (
+          <>
+            <Button
+              label={buttonText}
+              variant="primary"
+              size="lg"
+              className="flex-1"
+              onPress={onButtonPress}
+              loading={buttonLoading}
+              leftIcon={
+                buttonIcon ? (
+                  <HugeiconsIcon icon={buttonIcon} size={18} color="white" />
+                ) : undefined
+              }
+            />
+            <Button
+              label={secondaryButtonText}
+              variant="secondary"
+              size="lg"
+              className="flex-1"
+              onPress={onSecondaryButtonPress}
+              loading={secondaryButtonLoading}
+              leftIcon={
+                secondaryButtonIcon ? (
+                  <HugeiconsIcon icon={secondaryButtonIcon} size={18} color="#0F172A" />
+                ) : undefined
+              }
+            />
+          </>
+        ) : (
+          <Button
+            label={buttonText}
+            variant="primary"
+            size="lg"
+            className="w-full"
+            onPress={onButtonPress}
+            leftIcon={
+              buttonIcon ? (
+                <HugeiconsIcon icon={buttonIcon} size={18} color={BRAND_SURFACE} />
+              ) : undefined
+            }
+          />
+        )}
       </View>
     </View>
   );

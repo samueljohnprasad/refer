@@ -42,7 +42,7 @@ interface PressableScaleProps extends Omit<PressableProps, 'style'> {
 
 const HAPTIC_MAP: Record<HapticStyle, () => Promise<void>> = {
   none: () => Promise.resolve(),
-  light: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light),
+  light: () => Haptics.selectionAsync(),
   medium: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium),
   heavy: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy),
 };

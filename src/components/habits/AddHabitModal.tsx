@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Text as RNText,
+  Pressable,
 } from "react-native";
 import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
 import {
@@ -74,34 +75,7 @@ const PRESET_HABITS: PresetHabit[] = [
   },
 ];
 
-type PresetHabitTone = {
-  iconBgClassName: string;
-  iconBorderClassName: string;
-  chipClassName: string;
-};
 
-const PRESET_TONES: Record<PresetHabit["category"], PresetHabitTone> = {
-  health: {
-    iconBgClassName: "bg-otter-blue-tint",
-    iconBorderClassName: "border-otter-blue/30",
-    chipClassName: "bg-otter-blue",
-  },
-  productivity: {
-    iconBgClassName: "bg-gold-tint",
-    iconBorderClassName: "border-gold/30",
-    chipClassName: "bg-gold",
-  },
-  selfcare: {
-    iconBgClassName: "bg-macaw-purple-tint",
-    iconBorderClassName: "border-macaw-purple/30",
-    chipClassName: "bg-macaw-purple",
-  },
-  mindfulness: {
-    iconBgClassName: "bg-sage-selected",
-    iconBorderClassName: "border-sage-200",
-    chipClassName: "bg-sage-500",
-  },
-};
 
 interface AddHabitModalProps {
   visible: boolean;
@@ -122,7 +96,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
 
   const handleClose = () => {
     if (loading) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     onClose();
   };
 
@@ -182,68 +156,60 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
                 className="flex-1 px-5 pt-8 bg-brand-surface"
               >
                 {/* Header */}
-                <Text variant="body-bold" className="text-2xl mb-1">
+                <RNText className="happy-font-heading-bold text-3xl mb-2 text-ink">
                   Add a Habit
-                </Text>
-                <Text variant="body" className="mb-5">
+                </RNText>
+                <RNText className="happy-font-body text-[16px] mb-6 text-ink-muted leading-relaxed">
                   Pick a gentle preset, or create one that fits your routine.
-                </Text>
+                </RNText>
 
                 {!showCustomForm ? (
                   <>
-                    {/* Custom Habit Button */}
-                    <View className="mb-4">
-                      <Button
-                        label="Create Custom Habit"
-                        variant="secondary"
-                        onPress={() => setShowCustomForm(true)}
-                        leftIcon={
-                          <HugeiconsIcon icon={Add01Icon} size={20} color={INK_MUTED} />
-                        }
-                      />
-                    </View>
-                    {/* Preset Habits */}
                     <ScrollView
                       showsVerticalScrollIndicator={false}
                       className="flex-1"
                       contentContainerStyle={{ paddingBottom: 16 }}
                     >
-                      {PRESET_HABITS.map((preset) => {
-                        const tone = PRESET_TONES[preset.category];
+                      {/* Custom Habit Button */}
+                      <Pressable
+                        onPress={() => setShowCustomForm(true)}
+                        className="py-4 border-b border-sage-100 flex-row items-center"
+                        style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                      >
+                        <View className="h-10 w-10 mr-3 items-center justify-center rounded-full bg-sage-50">
+                          <HugeiconsIcon icon={Add01Icon} size={20} color={INK_MUTED} />
+                        </View>
+                        <RNText className="happy-font-body-bold text-[17px] text-ink">
+                          Create Custom Habit
+                        </RNText>
+                      </Pressable>
 
+                      {/* Preset Habits */}
+                      {PRESET_HABITS.map((preset) => {
                         return (
-                          <Card
+                          <Pressable
                             key={preset.name}
-                            variant="tile"
-                            radius="xl"
-                            showDepth={false}
                             onPress={() => handlePresetSelect(preset)}
                             disabled={loading}
-                            className="mb-3"
-                            contentClassName="px-4 py-4"
+                            className="py-4 border-b border-sage-100 flex-row items-center"
+                            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
                             accessibilityRole="button"
                             accessibilityLabel={`Add habit: ${preset.name}. ${preset.description}`}
                           >
-                            <View className="flex-row items-center">
-                              <View
-                                className={`mr-3 h-12 w-12 items-center justify-center rounded-[18px] border ${tone.iconBorderClassName} ${tone.iconBgClassName}`}
-                              >
-                                <RNText style={{ fontSize: 23 }}>
-                                  {preset.icon}
-                                </RNText>
-                              </View>
-                              <View className="min-w-0 flex-1">
-                                <View className="mb-0.5 flex-row items-center">
-                                  <Text variant="body-bold" className="flex-1" numberOfLines={1}>
-                                    {preset.name}
-                                  </Text>
-                                </View>
-                                <Text variant="caption" numberOfLines={2}>
-                                  {preset.description}
-                                </Text>
-                              </View>
+                            <View className="mr-4 h-10 w-10 items-center justify-center">
+                              <RNText style={{ fontSize: 24 }}>
+                                {preset.icon}
+                              </RNText>
                             </View>
-                          </Card>
+                            <View className="min-w-0 flex-1">
+                              <RNText className="happy-font-body-bold text-[17px] text-ink mb-1" numberOfLines={1}>
+                                {preset.name}
+                              </RNText>
+                              <RNText className="happy-font-body-medium text-[14px] text-ink-muted" numberOfLines={2}>
+                                {preset.description}
+                              </RNText>
+                            </View>
+                          </Pressable>
                         );
                       })}
                     </ScrollView>

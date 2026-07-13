@@ -50,7 +50,7 @@ const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
   secondary: {
     faceColor: BRAND_SURFACE,
     rimColor: BRAND_BORDER_STRONG,
-    labelColor: INK_SOFT,
+    labelColor: INK,
     disabledFaceColor: "#F7F7F7",
     disabledRimColor: "#E5E5E5",
   },
@@ -167,7 +167,7 @@ export function Button({
   const handlePressIn = () => {
     if (isDisabled) return;
     if (haptic === "light")
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      Haptics.selectionAsync();
     if (haptic === "medium")
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };

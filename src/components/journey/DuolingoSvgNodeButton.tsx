@@ -92,7 +92,7 @@ function DuolingoSvgNodeButtonInner({
 
   const handlePressIn = useCallback(() => {
     if (disabled) return;
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    void Haptics.selectionAsync();
     cy.value = withTiming(FACE_PRESSED_CY, { duration: 80 });
   }, [cy, disabled]);
 

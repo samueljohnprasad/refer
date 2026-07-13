@@ -81,7 +81,7 @@ export default function SpotlightTooltip({
             overlayOpacity.value = withTiming(1, { duration: 300 });
             tooltipScale.value = withDelay(200, withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true }));
             tooltipOpacity.value = withDelay(200, withTiming(1, { duration: 250 }));
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            Haptics.selectionAsync();
         } else {
             overlayOpacity.value = withTiming(0, { duration: 200 });
             tooltipScale.value = 0.8;

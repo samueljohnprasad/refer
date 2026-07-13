@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import type { ViewToken } from "@legendapp/list";
 import type {
   JourneyFlashListItem,
@@ -30,6 +30,7 @@ function getFirstVisibleNode(
 
 export function useVisibleUnit({ units }: UseVisibleUnitProps) {
   const [visibleUnitId, setVisibleUnitId] = useState<string | null>(null);
+  const lastHapticTime = useRef<number>(0);
 
   const onViewableItemsChanged = useCallback(
     ({
@@ -45,7 +46,11 @@ export function useVisibleUnit({ units }: UseVisibleUnitProps) {
 
       if (hasVisibleUnit && targetUnitId !== visibleUnitId) {
         if (visibleUnitId !== null) {
-          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          const now = Date.now();
+          if (now - lastHapticTime.current > 300) {
+            void Haptics.selectionAsync();
+            lastHapticTime.current = now;
+          }
         }
         setVisibleUnitId(targetUnitId);
       }

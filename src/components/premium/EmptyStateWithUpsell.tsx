@@ -29,7 +29,7 @@ const EmptyStateWithUpsell: React.FC<EmptyStateWithUpsellProps> = ({
     const { hasPro, presentPaywall } = useRevenueCat();
 
     const handlePrimaryCta = (): void => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        Haptics.selectionAsync();
         onPrimaryCta();
     };
 

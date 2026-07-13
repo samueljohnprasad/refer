@@ -237,7 +237,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
               if (entry?.id) {
                 const newStatus = !isBookmarked;
                 setIsBookmarked(newStatus);
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                Haptics.selectionAsync();
                 
                 toast.show({
                   placement: "top",

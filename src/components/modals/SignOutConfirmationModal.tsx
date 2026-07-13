@@ -34,7 +34,7 @@ export const SignOutConfirmationModal: React.FC<
 
   const handleCloseCancel = (): void => {
     if (isLoading) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     handleClose();
   };
 

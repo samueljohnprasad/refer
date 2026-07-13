@@ -48,7 +48,7 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
       if (now - lastTapRef.current < DEBOUNCE_MS) return;
       lastTapRef.current = now;
       Keyboard.dismiss();
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+      Haptics.selectionAsync().catch(() => {});
       onNext();
     }, [onNext]);
 

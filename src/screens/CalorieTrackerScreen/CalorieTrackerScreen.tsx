@@ -12,7 +12,7 @@ import {
   Camera01Icon,
   Image01Icon,
   Settings02Icon,
-  ArrowLeft01Icon,
+  ArrowRight01Icon,
   AppleIcon,
 } from "@hugeicons/core-free-icons";
 
@@ -21,11 +21,14 @@ import { XPBadge } from "@/src/components/XP";
 import { XPActionType, XP_REWARDS } from "@/src/types/xp";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { HStack } from "@/components/ui/hstack";
+import { Button } from "@/src/components/ui/Button";
+import { CalorieSummarySkeleton, MealEntrySkeleton } from "./components/CalorieSkeletons";
 
 import { useCalorieTrackerScreen } from "./hooks/useCalorieTrackerScreen";
 import { MealEntryCard } from "./components/MealEntryCard";
 import { HealthScoreModal } from "./components/HealthScoreModal";
 import { MicronutrientSheet } from "./components/MicronutrientSheet";
+import { Mascot } from "@/src/components/ui/Mascot";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -37,21 +40,12 @@ interface CalorieTrackerScreenProps {
 // ─── Sub-views ────────────────────────────────────────────────────────────────
 
 const AnalyzingBanner: React.FC = () => (
-  <View
-    className="bg-white rounded-2xl px-6 py-7 mb-4 items-center"
-    style={{
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.04,
-      shadowRadius: 8,
-      elevation: 1,
-    }}
-  >
-    <ActivityIndicator size="large" color="#7B61FF" />
-    <Text className="text-gray-600 mt-3 text-center">
+  <View className="bg-white rounded-2xl px-6 py-7 mb-4 items-center shadow-sm border border-gray-100">
+    <ActivityIndicator size="large" color="#4B5563" />
+    <Text className="text-gray-800 font-medium mt-4 text-center">
       Analyzing your food...
     </Text>
-    <Text className="text-gray-400 text-sm mt-1 text-center">
+    <Text className="text-gray-500 text-sm mt-1 text-center">
       AI is identifying nutritional information
     </Text>
   </View>
@@ -78,23 +72,32 @@ interface SuccessBannerProps {
   itemCount: number;
   totalCalories: number;
   onDone: () => void;
+  onUndo?: () => void;
 }
 const SuccessBanner: React.FC<SuccessBannerProps> = ({
   itemCount,
   totalCalories,
   onDone,
+  onUndo,
 }) => (
   <View className="bg-green-50 rounded-2xl p-4 mb-4 border border-green-100">
     <HStack className="justify-between items-center mb-2">
-      <Text className="text-green-700 font-semibold">
+      <Text className="text-green-800 font-semibold">
         ✓ Food Added Successfully!
       </Text>
-      <TouchableOpacity onPress={onDone}>
-        <Text className="text-green-600 font-medium">Done</Text>
-      </TouchableOpacity>
+      <HStack space="md">
+        {onUndo && (
+          <TouchableOpacity onPress={onUndo}>
+            <Text className="text-green-700 font-medium opacity-70">Undo</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity onPress={onDone}>
+          <Text className="text-green-700 font-medium">Done</Text>
+        </TouchableOpacity>
+      </HStack>
     </HStack>
-    <Text className="text-green-600 text-sm">
-      {itemCount} item(s) • {totalCalories} calories
+    <Text className="text-green-600 text-sm mt-1">
+      {itemCount} item{itemCount !== 1 ? "s" : ""} • {totalCalories} calories logged to your daily goal.
     </Text>
   </View>
 );
@@ -129,7 +132,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
 
   return (
     <View className="flex-1">
-      <View className="pb-[100px]">
+      <View className="pb-12">
         {/* Header - Only show when not empty */}
         {calorieEntries.length > 0 && (
           <SectionHeader
@@ -139,23 +142,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
               dailySummary.mealCount > 0 ? dailySummary.mealCount : undefined
             }
             rightElement={
-              <>
-                <XPBadge amount={XP_REWARDS[XPActionType.CALORIE_LOG]} />
-                <TouchableOpacity
-                  onPress={takePhoto}
-                  className="bg-gray-800 p-2 rounded-xl"
-                  activeOpacity={0.7}
-                >
-                  <HugeiconsIcon icon={Camera01Icon} size={18} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={pickImage}
-                  className="bg-gray-800 p-2 rounded-xl"
-                  activeOpacity={0.7}
-                >
-                  <HugeiconsIcon icon={Image01Icon} size={18} color="white" />
-                </TouchableOpacity>
-              </>
+              <XPBadge amount={XP_REWARDS[XPActionType.CALORIE_LOG]} />
             }
           />
         )}
@@ -170,19 +157,39 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
             itemCount={analysisResult.foods.length}
             totalCalories={analysisResult.totalCalories}
             onDone={resetCapture}
+            onUndo={() => {
+              resetCapture();
+              if (calorieEntries.length > 0) {
+                handleDeleteEntry(calorieEntries[0].id);
+              }
+            }}
           />
         )}
 
         {/* Meal Entries */}
         <View>
           {isLoading ? (
-            <ActivityIndicator size="small" color="#7B61FF" />
+            <View className="gap-6 w-full">
+              <CalorieSummarySkeleton />
+              <View className="px-4">
+                <View className="h-6 w-32 bg-gray-100 rounded mb-4" />
+                <MealEntrySkeleton />
+                <MealEntrySkeleton />
+              </View>
+            </View>
           ) : calorieEntries.length === 0 ? (
             <EmptyState
               mascotState="panda-confused-thinking"
-              buttonText="Log Meal"
+              title="Ready to log?"
+              description="Snap a photo of your meal to instantly track calories and macros."
+              buttonText="Take Photo"
               onButtonPress={takePhoto}
               buttonIcon={Camera01Icon}
+              buttonLoading={isAnalyzing || isLoading}
+              secondaryButtonText="Upload Photo"
+              onSecondaryButtonPress={pickImage}
+              secondaryButtonIcon={Image01Icon}
+              secondaryButtonLoading={isAnalyzing || isLoading}
             />
           ) : (
             <View className="mt-4 mb-4">
@@ -199,27 +206,32 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
                   filterTrackedMicronutrients={filterTrackedMicronutrients}
                 />
               ))}
+              
+              <View className="mt-6 flex-row gap-3">
+                <Button
+                  label="Camera"
+                  variant="primary"
+                  size="lg"
+                  className="flex-1"
+                  leftIcon={<HugeiconsIcon icon={Camera01Icon} size={20} color="white" />}
+                  onPress={takePhoto}
+                  loading={isAnalyzing || isLoading}
+                />
+                <Button
+                  label="Upload"
+                  variant="secondary"
+                  size="lg"
+                  className="flex-1"
+                  leftIcon={<HugeiconsIcon icon={Image01Icon} size={20} color="#4B5563" />}
+                  onPress={pickImage}
+                  loading={isAnalyzing || isLoading}
+                />
+              </View>
             </View>
           )}
         </View>
 
-        {/* Micronutrient tracking CTA */}
-        <TouchableOpacity
-          onPress={() => router.push("/tabs/screens/micronutrient-tracking")}
-          className="flex-row items-center justify-between py-3 px-1 mb-2"
-          activeOpacity={0.6}
-          accessibilityLabel="Track micronutrients"
-        >
-          <HStack className="items-center" space="sm">
-            <HugeiconsIcon icon={Settings02Icon} size={18} color="#9CA3AF" />
-          </HStack>
-          <HugeiconsIcon
-            icon={ArrowLeft01Icon}
-            size={16}
-            color="#D1D5DB"
-            style={{ transform: [{ rotate: "180deg" }] }}
-          />
-        </TouchableOpacity>
+        {/* Removed Micronutrient CTA as requested */}
       </View>
 
       {/* Modals */}

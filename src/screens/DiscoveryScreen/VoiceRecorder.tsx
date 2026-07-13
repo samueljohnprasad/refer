@@ -40,7 +40,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
   const handleShufflePrompt = useCallback(() => {
     const now = Date.now();
     if (now - lastShuffleTime.current > 300) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      Haptics.selectionAsync();
       lastShuffleTime.current = now;
     }
     rotation.value = withSpring(rotation.value + 360, { damping: 20, stiffness: 100, overshootClamping: true });
@@ -187,7 +187,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
               isStopped={isStopped}
               durationSeconds={recorderState.durationMillis / 1000}
               onToggleRecord={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                Haptics.selectionAsync();
                 if (isRecording) {
                   return handlePauseRecording();
                 }

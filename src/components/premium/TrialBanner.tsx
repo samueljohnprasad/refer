@@ -30,7 +30,7 @@ const TrialBanner: React.FC<TrialBannerProps> = ({ trialStartDate, onUpgrade }) 
     const isUrgent: boolean = daysRemaining <= 2;
 
     const handlePress = (): void => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        Haptics.selectionAsync();
         onUpgrade();
     };
 

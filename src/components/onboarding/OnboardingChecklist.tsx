@@ -68,7 +68,7 @@ const OnboardingChecklist: React.FC = () => {
     };
 
     const handleDismiss = (): void => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        Haptics.selectionAsync();
         dismissChecklist();
     };
 

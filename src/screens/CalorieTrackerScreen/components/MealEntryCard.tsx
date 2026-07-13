@@ -14,13 +14,7 @@ import { FoodItem } from './FoodItem';
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
-const CARD_SHADOW = {
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.04,
-  shadowRadius: 8,
-  elevation: 1,
-} as const;
+
 
 const MEAL_TYPE_COLORS: Record<string, { bg: string; text: string }> = {
   breakfast: { bg: 'bg-gray-100', text: 'text-gray-700' },
@@ -77,10 +71,7 @@ export const MealEntryCard: React.FC<MealEntryCardProps> = memo(function MealEnt
 
   return (
     <View
-      className="bg-white rounded-2xl p-4 mb-3"
-      style={CARD_SHADOW}
-      shouldRasterizeIOS
-      renderToHardwareTextureAndroid
+      className="bg-white rounded-2xl p-4 mb-3 border border-gray-100"
     >
       {/* Header Row */}
       <HStack className="justify-between items-center mb-3">

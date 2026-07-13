@@ -10,7 +10,7 @@ export const MultipleChoiceExercise = ({ payload, onInteraction }: any) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const handleSelect = (option: any) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     
     setSelectedId(option.id);
     onInteraction({

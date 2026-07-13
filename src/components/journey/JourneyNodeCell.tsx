@@ -228,7 +228,7 @@ function JourneyNodeCellInner({
   const handlePress = useCallback(
     (e?: any) => {
       if (!isInteractive) return;
-      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+      void Haptics.selectionAsync().catch(() => {});
       onNodePress(pathNodeData, e, faceColor);
     },
     [isInteractive, onNodePress, pathNodeData, faceColor]

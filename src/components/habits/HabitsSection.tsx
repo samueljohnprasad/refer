@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from "react";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, Pressable } from "react-native";
 import { isFuture } from "date-fns";
 import { useHabits } from "@/hooks/data/useHabits";
 import { useHabitCompletions } from "@/hooks/data/useHabitCompletions";
 import { useHabitStreaks } from "@/src/hooks/data/useHabitStreaks";
 
 import { HabitCard } from "@/src/components/habits/HabitCard";
-import { SvgAppButton } from "@/src/components/journey/svg-app-button";
 import { EmptyState } from "@/src/components/ui/EmptyState";
+import { HabitCategorySkeleton } from "@/src/components/habits/HabitSkeletons";
 import { AddHabitModal } from "@/src/components/habits/AddHabitModal";
 import { HabitDetailsModal } from "@/src/components/habits/HabitDetailsModal";
 import {
@@ -32,14 +32,6 @@ import { XPActionType, XP_REWARDS } from "@/src/types/xp";
 import { SectionHeader } from "@/src/components/ui/SectionHeader";
 import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
 
-/** Shared subtle card shadow — matches white Happy Sage surfaces. */
-const SECTION_SHADOW = {
-  shadowColor: SAGE[600],
-  shadowOffset: { width: 0, height: 8 },
-  shadowOpacity: 0.06,
-  shadowRadius: 18,
-  elevation: 2,
-} as const;
 
 interface HabitsSectionProps {
   selectedDate: Date;
@@ -52,8 +44,8 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
 
-  const { habits, createHabit, updateHabit, deleteHabit } = useHabits();
-  const { toggleHabitCompletion, getHabitsWithStatus } =
+  const { habits, loading: habitsLoading, createHabit, updateHabit, deleteHabit } = useHabits();
+  const { toggleHabitCompletion, getHabitsWithStatus, loading: completionsLoading } =
     useHabitCompletions(selectedDate);
   const { streaks, refetchStreaks } = useHabitStreaks();
 
@@ -126,7 +118,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   };
 
   const handleAddHabitPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     setAddModalVisible(true);
   };
 
@@ -150,71 +142,35 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
   return (
     <View className="pb-48">
-      {/* Header - Only show when not empty */}
-      {habitsWithStatus.length > 0 && (
-        <SectionHeader
-          title="Your Habits"
-          icon={Tick01Icon}
-          count={totalCount > 0 ? `${completedCount}/${totalCount}` : undefined}
-          className="mb-4"
-          rightElement={
-            <>
-              <SvgAppButton
-                onPress={handleAddHabitPress}
-                width={42}
-                height={42}
-                color={SAGE[500]}
-                backgroundColor={SAGE[700]}
-                leftRadius={21}
-                rightRadius={21}
-                pressDepth={4}
-              >
-                <View className="flex-1 items-center justify-center">
-                  <HugeiconsIcon
-                    icon={Add01Icon}
-                    size={20}
-                    color={BRAND_SURFACE}
-                  />
-                </View>
-              </SvgAppButton>
-            </>
-          }
-        />
-      )}
-
-      {/* Empty State */}
-      {habitsWithStatus.length === 0 ? (
+      {habitsLoading || completionsLoading ? (
+        <>
+          <HabitCategorySkeleton />
+          <HabitCategorySkeleton />
+        </>
+      ) : habitsWithStatus.length === 0 ? (
         <EmptyState
           mascotState="panda-yet-sleep-pillow"
+          title="Build Better Habits"
+          description="Build healthy routines with daily tracking and streaks."
           buttonText="Add Habit"
           onButtonPress={() => setAddModalVisible(true)}
           buttonIcon={Add01Icon}
         />
       ) : (
         <>
-          {/* Category Cards */}
-          {activeCategories.map((category) => (
-            <View
-              key={category}
-              className="happy-brand-card mb-5 overflow-hidden rounded-[26px]"
-              style={SECTION_SHADOW}
-            >
+          {/* Category Sections */}
+          {activeCategories.map((category, i) => (
+            <View key={category} className={i > 0 ? "mt-4" : ""}>
               {/* Category Header */}
-              <View className="border-b border-sage-100 px-5 py-3 bg-sage-50/40">
-                <View className="flex-row items-center gap-2">
-                  <Text className="text-base">{TIME_CATEGORY_CONFIG[category].emoji}</Text>
-                  <Text className="happy-font-body-bold text-[11px] uppercase tracking-wider text-ink-muted">
-                    {TIME_CATEGORY_CONFIG[category].label}
-                  </Text>
-                  <Text className="happy-font-body-medium text-[11px] text-ink-muted ml-auto">
-                    {TIME_CATEGORY_CONFIG[category].range}
-                  </Text>
-                </View>
+              <View className="px-5 mb-2 mt-2">
+                <Text className="happy-font-body-bold text-[14px] text-ink-muted">
+                  {TIME_CATEGORY_CONFIG[category].label}
+                </Text>
               </View>
 
-              {/* Habits List - Clean flat layout */}
-              <View className="px-4">
-                {categorizedHabits[category].map((habit, index) => (
+              {/* Habits List */}
+              <View className="px-5">
+                {categorizedHabits[category].map((habit) => (
                   <HabitCard
                     key={habit.id}
                     habit={habit}
@@ -226,12 +182,25 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
                         habit.name,
                       )
                     }
-                    isLast={index === categorizedHabits[category].length - 1}
                   />
                 ))}
-            </View>
+              </View>
             </View>
           ))}
+
+          {/* Add Habit Button */}
+          <Pressable
+            onPress={handleAddHabitPress}
+            className="flex-row items-center px-5 mt-2 py-3"
+            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          >
+            <View className="h-10 w-10 items-center justify-center rounded-full bg-sage-50 mr-3">
+              <HugeiconsIcon icon={Add01Icon} size={18} color={SAGE[600]} />
+            </View>
+            <Text className="happy-font-body-bold text-[16px] text-sage-700">
+              Add Habit
+            </Text>
+          </Pressable>
         </>
       )}
 

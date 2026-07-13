@@ -146,7 +146,7 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
               <SwiftUIDateTimePicker
                 selection={localSelectedDate}
                 onDateChange={(date: Date) => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  Haptics.selectionAsync();
                   handleDateSelect(date);
                 }}
                 displayedComponents={["date"]}

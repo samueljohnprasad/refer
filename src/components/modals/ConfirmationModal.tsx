@@ -59,7 +59,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   }, [deleteJournal, deleteEntry.selectedDate, onDelete, deleteEntry]);
 
   const handleCancel = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     onDismiss?.();
   };
 

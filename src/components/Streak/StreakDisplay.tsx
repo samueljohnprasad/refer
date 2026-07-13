@@ -21,6 +21,7 @@ import { Button } from "@/src/components/ui/Button";
 import { GOLD, PARROT_ORANGE, SAGE, INK, INK_MUTED } from "@/lib/tokens";
 import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
 import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
+import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -37,7 +38,6 @@ const DAYS_OF_WEEK: string[] = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-/** Day label row — active days rendered in bee-yellow */
 const WeekDayLabels: React.FC<{ weeklyProgress: boolean[] }> = React.memo(
   ({ weeklyProgress }) => (
     <View className="flex-row justify-between mb-4">
@@ -46,7 +46,7 @@ const WeekDayLabels: React.FC<{ weeklyProgress: boolean[] }> = React.memo(
           key={day}
           variant="label-bold"
           className={`w-9 text-center ${
-            weeklyProgress[index] ? "text-bee-yellow" : "text-ink-muted"
+            weeklyProgress[index] ? "text-ink" : "text-ink-muted"
           }`}
         >
           {day}
@@ -67,25 +67,10 @@ const WeekProgressCircles: React.FC<{ weeklyProgress: boolean[] }> = React.memo(
           className="items-center justify-center"
           style={{ width: 36, height: 36 }}
         >
-          {index === 6 ? (
-            <View
-              className="w-9 h-9 rounded-full items-center justify-center"
-              style={{ backgroundColor: completed ? GOLD : "#E5E5E5" }}
-            >
-              <HugeiconsIcon icon={StarIcon} size={20} color="white" />
-            </View>
-          ) : completed ? (
-            <View
-              className="w-9 h-9 rounded-full items-center justify-center"
-              style={{ backgroundColor: GOLD }}
-            >
-              <HugeiconsIcon icon={Tick02Icon} size={20} color="white" />
-            </View>
+          {completed ? (
+            <AnimatedFireIcon width={28} height={28} />
           ) : (
-            <View
-              className="w-9 h-9 rounded-full"
-              style={{ backgroundColor: "#E5E5E5" }}
-            />
+            <GrayFireIcon width={24} height={24} />
           )}
         </View>
       ))}
@@ -147,48 +132,34 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
         >
           <Group
             modifiers={[
-              presentationDetents([{ fraction: 0.88 }]),
+              presentationDetents([{ fraction: 0.55 }]),
               presentationDragIndicator("visible"),
             ]}
           >
             <RNHostView>
               <View className="flex-1 happy-brand-screen items-center px-6 pt-4 pb-8">
-                {/* ── Minimal Streak Hero ───────────────────────────── */}
-                <View className="items-center mb-6 mt-4">
-                  <View className="mb-2 w-16 h-16 rounded-full items-center justify-center bg-orange-50">
-                    <HugeiconsIcon icon={Fire02Icon} size={40} color={PARROT_ORANGE} variant="solid" />
-                  </View>
-                  <View className="flex-row items-baseline">
-                    <RNText
-                      className="text-[64px] leading-[72px]"
-                      style={{
-                        fontFamily: "GeistMedium",
-                        color: INK,
-                        letterSpacing: -2,
-                      }}
-                    >
-                      {streakData.currentStreak}
-                    </RNText>
-                  </View>
+                {/* ── Typographic Streak Hero ───────────────────────────── */}
+                <View className="items-center mb-10 mt-6 px-4">
                   <RNText
-                    className="text-[18px] mt-1 text-center"
-                    style={{
-                      fontFamily: "GeistRegular",
-                      color: INK_MUTED,
-                    }}
+                    className="happy-font-heading-bold text-[36px] leading-[44px] text-center"
+                    style={{ color: INK }}
                   >
-                    day streak!
+                    You're on a{" "}
+                    <RNText style={{ color: PARROT_ORANGE }}>
+                      {streakData.currentStreak}-day
+                    </RNText>{" "}
+                    streak
+                  </RNText>
+                  <RNText
+                    className="happy-font-body-medium text-[16px] leading-[24px] text-center mt-2"
+                    style={{ color: INK_MUTED }}
+                  >
+                    Keep showing up. You're building a habit that matters.
                   </RNText>
                 </View>
 
-                {/* ── Weekly calendar card ───────────────────────────── */}
-                <Card
-                  variant="tile"
-                  radius="xl"
-                  showDepth={false}
-                  className="w-full mb-6"
-                  contentClassName="p-6"
-                >
+                {/* ── Weekly calendar ───────────────────────────── */}
+                <View className="w-full px-2 mb-10">
                   <WeekDayLabels weeklyProgress={streakData.weeklyProgress} />
                   <WeekProgressCircles
                     weeklyProgress={streakData.weeklyProgress}
@@ -199,7 +170,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                     <Text
                       variant="body"
                       color="soft"
-                      className="text-center mt-4"
+                      className="text-center mt-6"
                     >
                       You're halfway to your{" "}
                       <RNText
@@ -212,36 +183,16 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                   )}
                   {isPerfectWeek && (
                     <RNText
-                      className="happy-font-body-bold text-[17px] leading-[22px] text-center mt-4"
+                      className="happy-font-body-bold text-[17px] leading-[22px] text-center mt-6"
                       style={{ color: PARROT_ORANGE }}
                     >
                       🎉 Perfect week achieved!
                     </RNText>
                   )}
-
-                  {/* ── Stat row: Longest ─────────────────── */}
-                  <View className="items-center mt-4 pt-4 border-t border-brand-border">
-                    <Text variant="caption" color="muted">
-                      Longest
-                    </Text>
-                    <View className="flex-row items-center mt-1 gap-1">
-                      <HugeiconsIcon
-                        icon={Fire02Icon}
-                        size={16}
-                        color={PARROT_ORANGE}
-                      />
-                      <RNText
-                        className="happy-font-body-bold text-[17px] mt-[1px]"
-                        style={{ color: INK }}
-                      >
-                        {String(streakData.longestStreak)}
-                      </RNText>
-                    </View>
-                  </View>
-                </Card>
+                </View>
 
                 {/* ── Action buttons ─────────────────────────────────── */}
-                <View className="w-full gap-3">
+                <View className="w-full gap-3 mt-auto">
                   {/* Share — ghost with sage icon */}
                   <Button
                     variant="ghost"
@@ -254,13 +205,6 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                         color={INK}
                       />
                     }
-                  />
-
-                  {/* Continue — primary brand CTA */}
-                  <Button
-                    variant="primary"
-                    label="Continue"
-                    onPress={onClose}
                   />
                 </View>
               </View>

@@ -71,7 +71,7 @@ const EmojiButton: React.FC<{
   }));
 
   const handlePress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     emojiScale.value = withSequence(
       withTiming(1.03, { duration: 110 }),
       withTiming(1, { duration: 140 }),

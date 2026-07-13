@@ -5,7 +5,7 @@ const isNative = Platform.OS === "ios" || Platform.OS === "android";
 
 export function lightImpact() {
   if (!isNative) return;
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+  Haptics.selectionAsync().catch(() => {});
 }
 
 export function selection() {

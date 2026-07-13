@@ -26,7 +26,7 @@ export const RepeatOptionsModal: React.FC<RepeatOptionsModalProps> = ({
   onClose,
 }) => {
   const handleSelect = (pattern: RepeatPattern) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     onSelect(pattern);
     onClose();
   };

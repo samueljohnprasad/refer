@@ -25,7 +25,7 @@ const LoadingTaskRow: React.FC<LoadingTaskRowProps> = ({
 
   useEffect(() => {
     if (completed) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      Haptics.selectionAsync();
     }
   }, [completed]);
 

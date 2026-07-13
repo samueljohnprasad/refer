@@ -155,12 +155,15 @@ const AnimatedButton = forwardRef<View, AnimatedButtonProps>((props, ref) => {
 
     const doHaptic = useCallback(async () => {
         try {
-            const map: Record<HapticStyle, Haptics.ImpactFeedbackStyle> = {
-                Light: Haptics.ImpactFeedbackStyle.Light,
-                Medium: Haptics.ImpactFeedbackStyle.Medium,
-                Heavy: Haptics.ImpactFeedbackStyle.Heavy,
-            };
-            await Haptics.impactAsync(map[hapticStyle] ?? Haptics.ImpactFeedbackStyle.Light);
+            if (hapticStyle === "Light") {
+                await Haptics.selectionAsync();
+            } else if (hapticStyle === "Medium") {
+                await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            } else if (hapticStyle === "Heavy") {
+                await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+            } else {
+                await Haptics.selectionAsync();
+            }
         } catch {
             // no-op if not supported
         }

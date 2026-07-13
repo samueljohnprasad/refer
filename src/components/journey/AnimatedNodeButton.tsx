@@ -67,7 +67,7 @@ export interface AnimatedNodeButtonProps {
 
 const HAPTIC_MAP: Record<NodeHapticStyle, () => Promise<void>> = {
     none: () => Promise.resolve(),
-    light: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light),
+    light: () => Haptics.selectionAsync(),
     medium: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium),
     heavy: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy),
 };

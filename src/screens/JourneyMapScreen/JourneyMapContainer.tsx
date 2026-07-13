@@ -87,6 +87,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
                 shadowOpacity: 0,
                 shadowRadius: 0,
                 shadowColor: "transparent",
+                overflow: "hidden",
               }}
             >
               <SafeAreaView edges={["top"]}>

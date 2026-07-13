@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import * as Haptics from "expo-haptics";
@@ -30,17 +30,7 @@ export const HomeMainButton = ({
   unitIconKey,
   onPress,
 }: HomeMainButtonProps) => {
-  const isFirstMount = useRef(true);
   const scale = useSharedValue(1);
-
-  useEffect(() => {
-    if (isFirstMount.current) {
-      isFirstMount.current = false;
-      return;
-    }
-    // Provide a nice light haptic click when the user scrolls into a new section
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  }, [faceColor]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -60,18 +50,13 @@ export const HomeMainButton = ({
           scale.value = withSpring(1, { damping: 20, stiffness: 400 });
         }}
         onPress={() => {
-          void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          void Haptics.selectionAsync();
           onPress();
         }}
         style={[
           {
             borderRadius: 20,
             borderBottomWidth: 3,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.08,
-            shadowRadius: 12,
-            elevation: 4,
           },
           animatedStyle,
         ]}

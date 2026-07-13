@@ -40,7 +40,7 @@ export function FloatingHappyAssistant(): ReactElement {
 
   const handleCommandPress = useCallback(
     (command: HappyAssistantCommand): void => {
-      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(
+      void Haptics.selectionAsync().catch(
         () => {},
       );
       dispatch(requestCommand(command));

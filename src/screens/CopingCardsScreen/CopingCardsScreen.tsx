@@ -25,7 +25,7 @@ export const CopingCardsScreen: React.FC = () => {
 
   const handleToggleStar = useCallback(
     async (id: string) => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      Haptics.selectionAsync();
       await toggleStar(id);
     },
     [toggleStar],
@@ -45,7 +45,7 @@ export const CopingCardsScreen: React.FC = () => {
 
   const handleUndoArchive = useCallback(async () => {
     if (toastConfig) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      Haptics.selectionAsync();
       await unarchiveCard(toastConfig.id);
       setToastConfig(null);
     }
@@ -53,7 +53,7 @@ export const CopingCardsScreen: React.FC = () => {
 
   const handleUnarchive = useCallback(
     async (id: string) => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      Haptics.selectionAsync();
       await unarchiveCard(id);
     },
     [unarchiveCard],

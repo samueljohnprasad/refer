@@ -6,47 +6,32 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { SPRING_DUOLINGO_PRESS, SPRING_BOUNCY } from "@/src/utils/motionTokens";
+import { SPRING_BOUNCY } from "@/src/utils/motionTokens";
 import { useReducedMotion } from "@/src/hooks/useReducedMotion";
-import { BRAND_BORDER_STRONG, SAGE } from "@/lib/tokens";
 
 // ─── Variant config ───────────────────────────────────────────────────────────
-// Each variant defines the face border, shadow colour, and shadow depth.
-// The face uses a uniform border — depth comes only from the shadow layer.
 
 type Variant = "tile" | "answer" | "answer-selected" | "word-bank" | "dashed";
 
 interface VariantConfig {
   faceClass: string;
-  shadowColor: string;
-  shadowDepth: number;
 }
 
 const VARIANTS: Record<Variant, VariantConfig> = {
   tile: {
-    faceClass: "border-2 border-brand-border bg-brand-surface",
-    shadowColor: BRAND_BORDER_STRONG,
-    shadowDepth: 3,
+    faceClass: "bg-white shadow-sm border border-gray-100/50",
   },
   answer: {
-    faceClass: "border-2 border-brand-border bg-brand-surface",
-    shadowColor: BRAND_BORDER_STRONG,
-    shadowDepth: 4,
+    faceClass: "bg-white shadow-sm border border-gray-100/50",
   },
   "answer-selected": {
-    faceClass: "border-2 border-sage-500 bg-sage-selected",
-    shadowColor: SAGE[500],
-    shadowDepth: 4,
+    faceClass: "bg-sage-50 border border-sage-200",
   },
   "word-bank": {
-    faceClass: "border-2 border-brand-border bg-brand-surface rounded-full",
-    shadowColor: BRAND_BORDER_STRONG,
-    shadowDepth: 3,
+    faceClass: "bg-white shadow-sm border border-gray-100/50 rounded-full",
   },
   dashed: {
-    faceClass: "border-2 border-dashed border-sage-200 bg-brand-surface",
-    shadowColor: "transparent",
-    shadowDepth: 0,
+    faceClass: "border-2 border-dashed border-sage-200 bg-brand-surface shadow-none",
   },
 };
 
@@ -69,7 +54,7 @@ interface CardProps extends ViewProps {
   radius?: Radius;
   onPress?: () => void;
   haptic?: "none" | "light" | "medium";
-  showDepth?: boolean;
+  showDepth?: boolean; // Kept for backwards compatibility but ignored visually
   disabled?: boolean;
   className?: string;
   contentClassName?: string;
@@ -78,6 +63,7 @@ interface CardProps extends ViewProps {
 }
 
 const DOUBLE_TAP_GUARD_MS = 250;
+const PRESS_SCALE = 0.98;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -97,35 +83,35 @@ export function Card({
 }: CardProps) {
   const config = VARIANTS[variant];
   const radiusClass = RADIUS_CLASS[radius];
-  const shadowDepth = showDepth ? config.shadowDepth : 0;
   const isInteractive = Boolean(onPress) && !disabled;
-  const isSelected = variant === "answer-selected";
 
   const reducedMotion = useReducedMotion();
-  const pressY = useSharedValue(0);
-  const selectionScale = useSharedValue(1);
+  const scale = useSharedValue(1);
+  const opacity = useSharedValue(1);
   const pressLock = useRef(false);
-  const wasSelectedRef = useRef(isSelected);
 
   const animatedFaceStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: pressY.value }],
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
   }));
 
   const handlePressIn = useCallback(() => {
     if (!isInteractive || reducedMotion) return;
-    pressY.value = withSpring(shadowDepth, SPRING_DUOLINGO_PRESS);
+    scale.value = withSpring(PRESS_SCALE, SPRING_BOUNCY);
+    opacity.value = withSpring(0.95, SPRING_BOUNCY);
 
     if (haptic === "light") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      Haptics.selectionAsync();
     } else if (haptic === "medium") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
-  }, [isInteractive, reducedMotion, pressY, shadowDepth, haptic]);
+  }, [isInteractive, reducedMotion, scale, opacity, haptic]);
 
   const handlePressOut = useCallback(() => {
     if (!isInteractive || reducedMotion) return;
-    pressY.value = withSpring(0, SPRING_DUOLINGO_PRESS);
-  }, [isInteractive, reducedMotion, pressY]);
+    scale.value = withSpring(1, SPRING_BOUNCY);
+    opacity.value = withSpring(1, SPRING_BOUNCY);
+  }, [isInteractive, reducedMotion, scale, opacity]);
 
   const handlePress = useCallback(() => {
     if (!isInteractive || pressLock.current) return;
@@ -145,36 +131,18 @@ export function Card({
   const paddingClass = hasPadding ? "" : "p-4";
 
   const cardLayers = (
-    <>
-      {showDepth ? (
-        <View
-          pointerEvents="none"
-          style={{
-            position: "absolute",
-            top: shadowDepth,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: config.shadowColor,
-          }}
-          className={radiusClass}
-        />
-      ) : null}
-
-      {/* Face — springs down into shadow on press */}
-      <Animated.View
-        style={[animatedFaceStyle, faceStyle]}
-        className={`${config.faceClass} ${radiusClass}`}
-      >
-        <View className={`${paddingClass} ${contentClassName}`}>
-          {children}
-        </View>
-      </Animated.View>
-    </>
+    <Animated.View
+      style={[animatedFaceStyle, faceStyle]}
+      className={`${config.faceClass} ${radiusClass}`}
+    >
+      <View className={`${paddingClass} ${contentClassName}`}>
+        {children}
+      </View>
+    </Animated.View>
   );
 
   const containerStyle = [
-    { position: "relative", paddingBottom: shadowDepth } as const,
+    { position: "relative" } as const,
     style,
   ];
 

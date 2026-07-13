@@ -392,11 +392,11 @@ const DailyNotesHeader = React.memo(
                 </Pressable>
 
                 <Animated.View 
-                  style={titleAndBookmarkStyle} 
-                  className="flex-row items-center justify-center flex-1"
-                  pointerEvents={isExpanded ? "none" : "auto"}
+                  style={[titleAndBookmarkStyle, { position: 'absolute', left: 100, right: 100, top: 0, bottom: 0, zIndex: -1 }]} 
+                  className="flex-row items-center justify-center pointer-events-none"
+                  pointerEvents="none"
                 >
-                  <Text variant="h1" className="text-[30px] text-center">
+                  <Text variant="h1" className="text-[28px] text-center" adjustsFontSizeToFit numberOfLines={1} minimumFontScale={0.7}>
                     {currentMonthView || ""}
                   </Text>
                 </Animated.View>
@@ -406,6 +406,7 @@ const DailyNotesHeader = React.memo(
                   className="flex-row items-center gap-1"
                   pointerEvents={isExpanded ? "none" : "auto"}
                 >
+                  <TodayPill visible={showTodayPill} onPress={handleGoToToday} offsetX={0} />
                   <Pressable
                     className="min-h-[44px] min-w-[44px] justify-center items-center rounded-full"
                     onPress={handleBookmarkPressInternal}
@@ -426,7 +427,7 @@ const DailyNotesHeader = React.memo(
               </View>
             </Animated.View>
             {/* Week View */}
-            <View className="px-4 pb-5 w-full relative" {...panHandlers}>
+            <View className="px-4 pb-4 w-full relative" {...panHandlers}>
               <Animated.View
                 className="flex-row w-full"
                 style={[weekHeaderAnimatedStyle]}
@@ -466,7 +467,7 @@ const DailyNotesHeader = React.memo(
                   )}
 
                   {weekDaysData.map((dayData, index) => (
-                    <View className="flex-1 gap-2 mb-2" key={dayData.dayStr}>
+                    <View className="flex-1 gap-1 mb-3" key={dayData.dayStr}>
                       <DayButton
                         day={dayData.day}
                         dayName={dayData.dayName}
@@ -515,8 +516,6 @@ const DailyNotesHeader = React.memo(
                 </SuspensLoader>
               </Animated.View>
             )}
-            {/* Today tag - animated reusable component */}
-            <TodayPill visible={showTodayPill} onPress={handleGoToToday} />
             {/* Drag handle for calendar expansion */}
             <View
               className="absolute bottom-2 left-0 right-0 items-center z-10"

@@ -59,7 +59,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
               />
             }
             onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              Haptics.selectionAsync();
               if (isPaused) {
                 Alert.alert(
                   "Discard recording?",
@@ -108,7 +108,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
             )
           }
           onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            Haptics.selectionAsync();
             onToggleRecord();
           }}
           accessibilityLabel={isRecording ? "Pause recording" : "Start recording"}

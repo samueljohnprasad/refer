@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, Switch, ScrollView, Text as RNText } from "react-native";
-import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
+import { View, TextInput, Switch, ScrollView, KeyboardAvoidingView, Platform, Text as RNText } from "react-native";
+import { Host, BottomSheet, Group, RNHostView, DatePicker as SwiftUIDateTimePicker, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import {
   presentationDetents,
   presentationDragIndicator,
+  pickerStyle,
+  tag,
 } from "@expo/ui/swift-ui/modifiers";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -16,7 +18,7 @@ import {
 import * as Haptics from "expo-haptics";
 import { format } from "date-fns";
 import { RepeatOptionsModal } from "./RepeatOptionsModal";
-import { DatePicker as SwiftUIDateTimePicker } from "@expo/ui/swift-ui";
+
 import { Button } from "@/src/components/ui/Button";
 import { Card } from "@/src/components/ui/Card";
 import { Text } from "@/src/components/ui/Text";
@@ -88,12 +90,12 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
   if (!habit) return null;
 
   const handleClose = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     onClose();
   };
 
   const handleTimeOptionChange = (option: TimeOption) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     setTimeOption(option);
   };
 
@@ -147,100 +149,66 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
             ]}
           >
             <RNHostView>
-              <View
-                style={{ paddingBottom }}
-                className="flex-1 px-5 pt-6 bg-brand-surface"
+              <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                className="flex-1"
               >
-                {/* Header info */}
-                <View className="items-center pb-4 border-b border-sage-100 w-full">
-                  <View className="w-14 h-14 rounded-[20px] bg-sage-50 border border-sage-100 items-center justify-center mb-2">
-                    <RNText style={{ fontSize: 28 }}>{habit.icon}</RNText>
-                  </View>
-                  <Text
-                    variant="body-bold"
-                    className="text-2xl text-center leading-8"
-                  >
-                    {habit.name}
-                  </Text>
-                  {habit.description && (
-                    <Text
-                      variant="body"
-                      className="text-ink-soft text-center mt-1"
-                    >
-                      {habit.description}
-                    </Text>
-                  )}
-                </View>
-
-                <ScrollView
-                  className="flex-1 mt-4"
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{ paddingBottom: paddingBottom + 40 }}
+                <View
+                  style={{ paddingBottom }}
+                  className="flex-1 bg-[#F2F2F7]"
                 >
-                  {/* Time Segment Options */}
-                  <View className="mb-4">
-                    <Text
-                      variant="label"
-                      className="happy-brand-eyebrow mb-2 text-ink-soft"
-                    >
-                      TIME
-                    </Text>
-                    <View className="flex-row rounded-full bg-sage-50 border border-sage-100 p-1">
-                      <PressableScale
-                        onPress={() => handleTimeOptionChange("anytime")}
-                        className={`flex-1 rounded-full py-2.5 items-center justify-center ${
-                          timeOption === "anytime"
-                            ? "bg-white shadow-sm border border-black/5"
-                            : ""
-                        }`}
-                      >
-                        <Text
-                          className={`happy-font-body-bold text-[15px] ${
-                            timeOption === "anytime"
-                              ? "text-ink"
-                              : "text-ink-soft"
-                          }`}
-                        >
-                          Anytime
-                        </Text>
-                      </PressableScale>
-
-                      <PressableScale
-                        onPress={() => handleTimeOptionChange("at_time")}
-                        className={`flex-1 rounded-full py-2.5 items-center justify-center ${
-                          timeOption === "at_time"
-                            ? "bg-white shadow-sm border border-black/5"
-                            : ""
-                        }`}
-                      >
-                        <Text
-                          className={`happy-font-body-bold text-[15px] ${
-                            timeOption === "at_time"
-                              ? "text-ink"
-                              : "text-ink-soft"
-                          }`}
-                        >
-                          At time
-                        </Text>
-                      </PressableScale>
+                <ScrollView
+                  className="flex-1"
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ paddingBottom: paddingBottom + 40, paddingTop: 24, paddingHorizontal: 16 }}
+                >
+                  {/* Header info */}
+                  <View className="items-center pb-8 w-full">
+                    <View className="mb-3">
+                      <RNText style={{ fontSize: 48 }}>{habit.icon || "✨"}</RNText>
                     </View>
+                    <Text
+                      className="text-[22px] font-bold text-center text-black tracking-tight"
+                    >
+                      {habit.name}
+                    </Text>
+                    {habit.description && (
+                      <Text
+                        className="text-[15px] text-gray-500 text-center mt-1"
+                      >
+                        {habit.description}
+                      </Text>
+                    )}
                   </View>
 
-                  {/* Settings Card */}
-                  <Card variant="tile" radius="xl" showDepth={false} className="mb-5">
-                    <View className="divide-y divide-sage-100/50">
+                  {/* Time Segment Options */}
+                  <View className="mb-6 h-[32px] items-center">
+                    <Host matchContents>
+                      <Picker
+                        selection={timeOption}
+                        onSelectionChange={(selection: any) => handleTimeOptionChange(selection)}
+                        modifiers={[pickerStyle("segmented")]}
+                      >
+                        <SwiftUIText modifiers={[tag("anytime")]}>Anytime</SwiftUIText>
+                        <SwiftUIText modifiers={[tag("at_time")]}>At time</SwiftUIText>
+                      </Picker>
+                    </Host>
+                  </View>
+
+                  {/* Settings List */}
+                  <View className="mb-6 bg-white rounded-[10px] overflow-hidden">
                       {/* Date Picker Trigger */}
                       <PressableScale
                         onPress={() => {
-                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          Haptics.selectionAsync();
                           setShowDatePickerSheet(true);
                         }}
                       >
-                        <View className="flex-row items-center justify-between px-4 py-4 w-full">
-                          <Text className="happy-font-body-medium text-base text-ink-soft">
+                        <View className="flex-row items-center justify-between py-3 px-4 border-b border-gray-100 w-full bg-white">
+                          <Text className="text-[17px] text-black">
                             Date
                           </Text>
-                          <Text className="happy-font-body-bold text-base text-ink">
+                          <Text className="text-[17px] text-gray-500">
                             {format(startDate, "MMM dd, yyyy")}
                           </Text>
                         </View>
@@ -249,13 +217,11 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                       {/* Time and Duration Sub-fields if At Time is active */}
                       {timeOption === "at_time" && (
                         <>
-                          <View className="px-4 py-3 bg-brand-surface-soft/40">
+                          <View className="py-2 border-b border-gray-100 px-4 bg-white">
                             <Host matchContents>
                               <SwiftUIDateTimePicker
                                 onDateChange={(date: Date) => {
-                                  Haptics.impactAsync(
-                                    Haptics.ImpactFeedbackStyle.Light,
-                                  );
+                                  Haptics.selectionAsync();
                                   setScheduledTime(date);
                                 }}
                                 displayedComponents={["hourAndMinute"]}
@@ -265,11 +231,11 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                             </Host>
                           </View>
 
-                          <View className="flex-row items-center justify-between px-4 py-4">
-                            <Text className="happy-font-body-medium text-base text-ink-soft">
+                          <View className="flex-row items-center justify-between py-3 px-4 border-b border-gray-100 bg-white">
+                            <Text className="text-[17px] text-black">
                               Duration
                             </Text>
-                            <Text className="happy-font-body-bold text-base text-ink">
+                            <Text className="text-[17px] text-gray-500">
                               {durationMinutes} mins
                             </Text>
                           </View>
@@ -279,15 +245,15 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                       {/* Repeat Trigger */}
                       <PressableScale
                         onPress={() => {
-                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          Haptics.selectionAsync();
                           setShowRepeatModal(true);
                         }}
                       >
-                        <View className="flex-row items-center justify-between px-4 py-4 w-full">
-                          <Text className="happy-font-body-medium text-base text-ink-soft">
+                        <View className="flex-row items-center justify-between py-3 px-4 border-b border-gray-100 w-full bg-white">
+                          <Text className="text-[17px] text-black">
                             Repeat
                           </Text>
-                          <Text className="happy-font-body-bold text-base text-ink capitalize">
+                          <Text className="text-[17px] text-gray-500 capitalize">
                             {repeatPattern === "weekly"
                               ? "Weekly on Thursday"
                               : repeatPattern}
@@ -296,90 +262,80 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                       </PressableScale>
 
                       {/* End Repeat */}
-                      <View className="flex-row items-center justify-between px-4 py-4">
-                        <Text className="happy-font-body-medium text-base text-ink-soft">
+                      <View className="flex-row items-center justify-between py-3 px-4 border-b border-gray-100 bg-white">
+                        <Text className="text-[17px] text-black">
                           End Repeat
                         </Text>
-                        <Text className="happy-font-body-bold text-base text-ink capitalize">
+                        <Text className="text-[17px] text-gray-500 capitalize">
                           {endRepeatOption}
                         </Text>
                       </View>
 
                       {/* Reminder Switch */}
-                      <View className="flex-row items-center justify-between px-4 py-4">
-                        <Text className="happy-font-body-medium text-base text-ink-soft">
+                      <View className="flex-row items-center justify-between py-2 px-4 bg-white">
+                        <Text className="text-[17px] text-black">
                           Reminder
                         </Text>
                         <Switch
                           value={reminderEnabled}
                           onValueChange={(value) => {
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            Haptics.selectionAsync();
                             setReminderEnabled(value);
                           }}
-                          trackColor={{ false: "#E5E7EB", true: SAGE[500] }}
+                          trackColor={{ false: "#E5E7EB", true: "#34C759" }}
                           thumbColor="#FFFFFF"
                         />
                       </View>
-                    </View>
-                  </Card>
+                  </View>
 
                   {/* Notes Section */}
-                  <View className="mb-6">
-                    <Text
-                      variant="label"
-                      className="happy-brand-eyebrow mb-2 text-ink-soft"
-                    >
-                      NOTES
-                    </Text>
+                  <View className="mb-8">
                     <TextInput
                       value={notes}
                       onChangeText={setNotes}
                       placeholder="Add notes about this habit..."
-                      placeholderTextColor={INK_MUTED}
+                      placeholderTextColor="#6B7280"
                       multiline
                       numberOfLines={4}
                       textAlignVertical="top"
-                      className="happy-font-body-medium rounded-[22px] border border-sage-100 bg-brand-surface-soft p-4 text-base leading-6 text-ink min-h-[96px]"
+                      className="bg-white rounded-[10px] p-4 text-[17px] leading-6 text-black min-h-[100px]"
                     />
                   </View>
 
                   {/* Action Buttons */}
-                  <View className="flex-row gap-3 mb-2">
-                    <View className="flex-1">
-                      <Button
-                        label={isCompleted ? "Mark Incomplete" : "✓ Complete"}
-                        variant={isCompleted ? "secondary" : "primary"}
-                        size="lg"
-                        onPress={handleToggle}
-                      />
-                    </View>
-                    <View className="flex-1">
-                      <Button
-                        label="Save"
-                        variant="primary"
-                        size="lg"
-                        onPress={handleSave}
-                      />
-                    </View>
+                  <View className="gap-3 mb-6">
+                    <Button
+                      label="Save Changes"
+                      variant="primary"
+                      size="lg"
+                      onPress={handleSave}
+                    />
+                    <Button
+                      label={isCompleted ? "Mark Incomplete" : "✓ Complete Habit"}
+                      variant="ghost"
+                      size="lg"
+                      onPress={handleToggle}
+                    />
                   </View>
 
                   {/* Delete Button */}
-                  <View className="mt-2 w-full">
-                    <Button
-                      label="Delete Habit"
-                      variant="danger"
-                      size="lg"
-                      onPress={async () => {
-                        Haptics.notificationAsync(
-                          Haptics.NotificationFeedbackType.Warning,
-                        );
-                        await onDelete(habit.id);
-                        onClose();
-                      }}
-                    />
-                  </View>
+                  <PressableScale
+                    onPress={async () => {
+                      Haptics.notificationAsync(
+                        Haptics.NotificationFeedbackType.Warning,
+                      );
+                      await onDelete(habit.id);
+                      onClose();
+                    }}
+                  >
+                    <View className="bg-white rounded-[10px] py-3.5 w-full items-center justify-center">
+                      <Text className="text-[17px] text-red-500 font-semibold">Delete Habit</Text>
+                    </View>
+                  </PressableScale>
+
                 </ScrollView>
               </View>
+              </KeyboardAvoidingView>
             </RNHostView>
           </Group>
         </BottomSheet>

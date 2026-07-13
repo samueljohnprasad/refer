@@ -171,7 +171,7 @@ const CourseAccordionCard = React.memo(function CourseAccordionCard({
   return (
     <Animated.View
       layout={LinearTransition.duration(350).easing(Easing.out(Easing.exp))}
-      className="mb-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm shadow-slate-200/20 overflow-hidden"
+      className="mb-4 bg-white rounded-2xl shadow-sm shadow-slate-200/20 overflow-hidden"
     >
       <Pressable
         onPress={() => onToggle(course.id)}
@@ -180,19 +180,19 @@ const CourseAccordionCard = React.memo(function CourseAccordionCard({
       >
         <View className="flex-row items-center gap-4 flex-1">
           <View
-            className="h-14 w-14 items-center justify-center rounded-[18px]"
+            className="h-10 w-10 items-center justify-center rounded-[12px]"
             style={{ backgroundColor: `${courseAccentColor}1A` }}
           >
             {course.iconUrl ? (
               <Image
                 source={course.iconUrl}
-                className="h-8 w-8 rounded-lg"
+                className="h-5 w-5 rounded-md"
                 cachePolicy="memory-disk"
                 contentFit="contain"
               />
             ) : (
               <RNText
-                className="happy-font-heading text-xl"
+                className="happy-font-heading text-lg"
                 style={{ color: courseAccentColor }}
               >
                 {getCourseMonogram(course.title)}
@@ -243,13 +243,13 @@ const CourseAccordionCard = React.memo(function CourseAccordionCard({
           </Text>
 
           {isPreviewLoading ? (
-            <View className="bg-slate-50/50 rounded-2xl p-4 mb-6 border border-slate-100 gap-3 animate-pulse">
+            <View className="mb-6 gap-3 animate-pulse px-1">
               {Array.from({ length: 3 }).map((_, i) => (
                 <View
                   key={i}
                   className="flex-row items-center gap-4 py-3 border-b border-slate-200/40 last:border-b-0"
                 >
-                  <View className="h-12 w-12 rounded-[14px] bg-slate-200/50" />
+                  <View className="h-10 w-10 rounded-[12px] bg-slate-200/50" />
                   <View className="flex-1 gap-2">
                     <View className="h-4 w-2/3 rounded bg-slate-200/60" />
                     <View className="h-3 w-1/3 rounded bg-slate-100" />
@@ -258,7 +258,7 @@ const CourseAccordionCard = React.memo(function CourseAccordionCard({
               ))}
             </View>
           ) : preview ? (
-            <View className="bg-slate-50/50 rounded-2xl p-4 mb-6 border border-slate-100 gap-1">
+            <View className="mb-6 gap-1 px-1">
               {preview.sections.map((section) => (
                 <CoursePreviewSectionRow
                   key={section.id}
@@ -309,11 +309,11 @@ const CoursePreviewSectionRow = React.memo(function CoursePreviewSectionRow({
   return (
     <View className="flex-row items-center gap-4 py-3 border-b border-slate-200/40 last:border-b-0">
       <View
-        className="h-12 w-12 items-center justify-center rounded-[14px]"
+        className="h-10 w-10 items-center justify-center rounded-[12px]"
         style={{ backgroundColor: `${accentColor}1A` }}
       >
         <RNText
-          className="happy-font-heading text-lg"
+          className="happy-font-heading text-base"
           style={{ color: accentColor }}
         >
           {section.orderIndex}
@@ -494,7 +494,7 @@ export function CourseCatalogSheetContent({
         <View className="h-11 w-11" />
         <Pressable
           onPress={onClose}
-          className="h-11 w-11 items-center justify-center rounded-full border border-sage-100 shadow-sm bg-warm-white"
+          className="h-11 w-11 items-center justify-center rounded-full bg-slate-100/80"
         >
           <HugeiconsIcon icon={Cancel01Icon} size={20} color={SAGE[600]} />
         </Pressable>
@@ -518,7 +518,7 @@ export function CourseCatalogSheetContent({
             });
           }}
           ListHeaderComponent={
-            <View className="gap-2 px-1 mb-8">
+            <View className="gap-2 px-1 mb-12">
               <Text className="happy-font-heading text-4xl leading-10 text-ink">
                 Explore Journeys
               </Text>

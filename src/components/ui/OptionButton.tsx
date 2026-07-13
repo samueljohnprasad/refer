@@ -33,7 +33,7 @@ export const OptionButton = ({
   const labelColor = isSelected ? '#0A7DB8' : INK_SOFT;
 
   const handlePressIn = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.selectionAsync();
     pressY.value = withTiming(4, { duration: 20 });
   };
 

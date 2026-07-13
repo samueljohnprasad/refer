@@ -95,10 +95,10 @@ export function useMentalHealthNodePress(
                         break;
                     }
                     if (REVIEWABLE_TYPES.has(templateNode.nodeType)) {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        Haptics.selectionAsync();
                         setActiveModal({ templateNode, isReview: true });
                     } else {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        Haptics.selectionAsync();
                         setToastMessage('✅ Already completed');
                     }
                     break;

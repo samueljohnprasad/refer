@@ -46,16 +46,12 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
       <Animated.View
         style={[
           {
-            position: "absolute",
-            right: 0,
-            bottom: 6,
-            zIndex: 100,
             backgroundColor,
           },
           containerStyle,
           animatedStyle,
         ]}
-        className="flex-row items-center rounded-l-full px-2.5 py-1 border border-r-0 border-sage-200/60 shadow-xs"
+        className="flex-row items-center rounded-full px-2 py-0.5 border border-sage-200/60 shadow-xs"
         pointerEvents={pointerEvents}
       >
         <Pressable
@@ -63,15 +59,15 @@ export const TodayPill: React.FC<TodayPillProps> = React.memo(
           accessibilityRole="button"
           accessibilityLabel={label}
           accessibilityHint="Returns view to the current day"
-          className="flex-row items-center gap-1"
+          className="flex-row items-center gap-0.5"
         >
           <MaterialCommunityIcons
             name="chevron-left"
-            size={18}
+            size={16}
             color={textColor}
           />
           <Text
-            className="happy-font-body-medium text-sm"
+            className="happy-font-body-medium text-[13px]"
             style={{ color: textColor }}
           >
             {label}

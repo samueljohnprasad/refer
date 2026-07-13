@@ -161,7 +161,7 @@ export default function JournalCalendarScreen() {
   const handleEmotionLogged = useCallback(
     (emotionScore: number, updated: boolean) => {
       refetchStreak();
-      setShowStreakModal(updated);
+      setShowStreakModal(true);
     },
     [refetchStreak, setShowStreakModal],
   );
@@ -211,7 +211,7 @@ export default function JournalCalendarScreen() {
         scrollEventThrottle={16}
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingTop: insets.top, paddingBottom: 112 }}
+        contentContainerStyle={{ paddingBottom: 112 }}
       >
         <View className="px-5 pb-12 pt-4">
           <View>
