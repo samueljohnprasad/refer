@@ -1,19 +1,17 @@
 weekly_insights:
-  - week: 2026-W28
+  - week: "2026-W28"
 
-    start_date: 2026-07-06
+    start_date: "2026-07-06"
 
-    end_date: 2026-07-12
+    end_date: "2026-07-12"
 
     generated_at: "2026-07-12T23:59:00Z"
 
     input_summary:
       daily_reflections: 5
-
       journals: 6
-
       habits_completed: 6
-
+      meals_logged: 12
       cbt_completed: 2
 
     reflection:
@@ -28,96 +26,162 @@ weekly_insights:
         an additional sense of balance, reminding you that wellbeing extends
         beyond work alone.
 
-      highlights:
-        - Successfully completed the first week in a new job.
-        - Gradually became more confident in workplace responsibilities.
-        - Morning walks emerged as a consistent positive routine.
-        - CBT exercises helped challenge self-critical thinking.
-        - Family time provided emotional recovery and perspective.
+      frequently_observed_patterns:
+        - Work remained the most common topic throughout the week.
+        - Morning Walk was the most consistent daily routine.
+        - Meal tracking remained regular.
+        - Family appeared as a recurring positive part of your reflections.
+        - CBT exercises were used during emotionally challenging situations.
 
-      recurring_patterns:
-        - Work remained the central life theme throughout the week.
-        - Self-criticism gradually became more balanced through reflection.
-        - Healthy routines appeared alongside improved emotional regulation.
-        - Confidence grew through repeated positive experiences instead of one single event.
-        - Balance became increasingly important by the end of the week.
+      frequently_mentioned_positive_experiences:
+        - Receiving encouraging feedback at work.
+        - Feeling more comfortable with daily responsibilities.
+        - Spending quality time with family.
+        - Maintaining healthy routines.
+        - Sleeping better toward the end of the week.
+
+      frequently_mentioned_challenges:
+        - Adjusting to a new workplace.
+        - Carrying work thoughts into personal time.
+        - Feeling uncertain before unfamiliar situations.
+        - Managing expectations of yourself.
+
+      changes_observed_over_time:
+        - Early reflections focused on adapting to work.
+        - Later reflections described more familiarity with daily routines.
+        - Sleep-related reflections became more positive later in the week.
+        - Journals gradually shifted from anticipating challenges to reflecting on completed experiences.
+
+      patterns_worth_noticing:
+        - observation: >
+            On days when your morning routine was more consistent,
+            your journal entries more often described feeling calmer
+            by the end of the day.
+
+          supporting_evidence:
+            - This pattern appeared across several recorded days.
+            - Those days included Morning Walk and positive end-of-day reflections.
+
+          explanation: >
+            Your recorded activities suggest that consistent morning routines
+            often appeared alongside calmer daily reflections. This describes
+            an observed association rather than a cause-and-effect relationship.
+
+          confidence: 0.91
+
+        - observation: >
+            As work-related uncertainty appeared less frequently,
+            your reflections increasingly mentioned family, personal time
+            and everyday moments outside work.
+
+          supporting_evidence:
+            - Early journals focused mainly on work.
+            - Later journals included more reflections about family and personal life.
+
+          explanation: >
+            The topics in your journals gradually became more balanced across
+            different parts of your life during the week.
+
+          confidence: 0.94
+
+        - observation: >
+            After completing CBT exercises, later reflections often described
+            viewing the same situations with a more balanced perspective.
+
+          supporting_evidence:
+            - Two CBT exercises were completed.
+            - Follow-up journal entries contained less self-critical language.
+
+          explanation: >
+            The relationship was observed by comparing reflections written
+            before and after CBT exercises.
+
+          confidence: 0.89
+
+        - observation: >
+            Days where several healthy routines were completed together
+            were also the days where your reflections most often described
+            feeling mentally clear and organized.
+
+          supporting_evidence:
+            - Morning Walk, meal tracking and meditation appeared together.
+            - Those entries frequently described productive or satisfying days.
+
+          explanation: >
+            Multiple healthy routines tended to appear alongside positive
+            descriptions of the day.
+
+          confidence: 0.86
+
+      evidence_from_recorded_activities:
+        recurring_topics:
+          - Work
+          - Family
+          - Sleep
+          - Personal reflection
+          - Daily routines
+
+        recurring_habits:
+          - Morning Walk
+          - Meditation
+
+        recurring_cbt:
+          - Thought Catcher
+          - ABC Analysis
+
+        recurring_meals:
+          - Breakfast logging
+          - Lunch logging
+          - Dinner logging
 
       comparison:
         available: false
 
         summary: >
-          This is the first recorded weekly reflection, so no comparison with
-          a previous week is available.
+          This is your first weekly reflection, so there is no previous week
+          available for comparison.
 
-      personalized_reflection: null
+      personalized_reflection:
+        enabled: false
 
-      evidence:
-        dominant_themes:
-          - Career Transition
-          - Confidence
-          - Stress Management
-          - Work-Life Balance
+        focus_area: null
 
-        recurring_emotions:
-          - Nervous
-          - Hopeful
-          - Calm
-          - Proud
-          - Grateful
+        reflection: null
 
-        recurring_stressors:
-          - New job
-          - Performance expectations
-          - Deadlines
+      next_week_reflection:
+        generated_by_ai:
+          title: Continue Exploring
 
-        recurring_positive_factors:
-          - Morning Walk
-          - Positive manager feedback
-          - Family support
-          - CBT reflection
+          suggestions:
+            - Notice whether your morning routine continues to appear alongside calmer reflections.
+            - Observe how your work experiences influence the topics you choose to journal about.
+            - Continue reflecting after emotionally challenging situations.
+            - Keep noticing what routines are present on days that feel particularly satisfying.
 
-        recurring_coping_strategies:
-          - Morning Walk
-          - Thought Reframing
-          - Evidence-based thinking
-          - Spending time with family
+        user_focus:
+          enabled: false
+
+          focus_area: null
+
+          reflection: null
 
       structured_memory:
         primary_themes:
           - Career Transition
-          - Confidence Growth
-          - Emotional Regulation
-          - Healthy Routines
-          - Work-Life Balance
+          - Daily Routine
+          - Family
+          - Reflection
+          - Healthy Habits
 
-        dominant_emotions:
-          - Hopeful
-          - Calm
-          - Proud
-
-        long_term_patterns:
-          - Confidence increased progressively during the week.
-          - Workplace uncertainty gradually decreased.
-          - Morning walks became an emerging routine.
-          - Self-reflection became more balanced after CBT exercises.
-          - Positive workplace experiences reinforced self-confidence.
-
-        major_milestones:
+        notable_events:
           - Started a new job.
-          - Received positive recognition from manager.
-          - Completed first CBT exercises.
-          - Recognized importance of work-life balance.
+          - Received positive workplace feedback.
+          - Completed multiple CBT exercises.
+          - Established a more consistent Morning Walk routine.
 
-        observations:
-          - Most stress originated from internal expectations rather than external criticism.
-          - Emotional recovery improved as healthy routines became more consistent.
-          - Positive experiences accumulated across the week instead of occurring as isolated events.
-          - Family interactions provided meaningful emotional recovery near the end of the week.
+        timeline_summary:
+          - The week began with uncertainty around work.
+          - Daily routines became more established as the week progressed.
+          - Reflections gradually expanded beyond work into family and personal life.
 
-        emotional_arc: >
-          The week began with uncertainty and self-doubt surrounding a new
-          job, gradually shifted toward confidence and emotional stability,
-          and concluded with a stronger sense of balance supported by family
-          connection and healthier routines.
-
-        confidence: 0.99
+        confidence: 0.98
