@@ -1,0 +1,320 @@
+week_1:
+
+  monday:
+    date: 2026-07-06
+
+    habits:
+
+      completed:
+        - Morning Walk
+
+      missed:
+        - Meditation
+        - Read 20 Minutes
+
+    meals:
+
+      - meal: Breakfast
+        description: Oatmeal with banana and almonds
+        estimated_calories: 420
+
+      - meal: Lunch
+        description: Grilled chicken, rice and vegetables
+        estimated_calories: 680
+
+      - meal: Dinner
+        description: Vegetable wrap and yogurt
+        estimated_calories: 540
+
+      total_calories: 1640
+
+    cbt: []
+
+  tuesday:
+    date: 2026-07-07
+
+    habits:
+
+      completed: []
+
+      missed:
+        - Morning Walk
+        - Meditation
+        - Read 20 Minutes
+
+    meals:
+
+      - meal: Lunch
+        description: Office cafeteria meal
+        estimated_calories: 760
+
+      - meal: Dinner
+        description: Pizza
+        estimated_calories: 850
+
+      total_calories: 1610
+
+    cbt:
+
+      - exercise: Thought Catcher
+
+        situation: Thinking about conversations at work.
+
+        automatic_thought: >
+          Everyone probably thinks I wasn't good enough.
+
+        emotion:
+          anxiety: 75
+
+        evidence_for:
+          - I made a few mistakes.
+
+        evidence_against:
+          - Nobody criticized me.
+          - Manager was friendly.
+
+        balanced_thought: >
+          I'm still learning and there isn't evidence that people judged me.
+
+week_1:
+
+  thursday:
+    date: 2026-07-09
+
+    habits:
+
+      completed:
+        - Morning Walk
+        - Read 20 Minutes
+
+      missed:
+        - Meditation
+
+    meals:
+
+      - meal: Breakfast
+        description: Eggs and whole wheat toast
+        estimated_calories: 450
+
+      - meal: Lunch
+        description: Rice, dal and vegetables
+        estimated_calories: 650
+
+      - meal: Snack
+        description: Apple
+        estimated_calories: 100
+
+      - meal: Dinner
+        description: Grilled fish and salad
+        estimated_calories: 520
+
+      total_calories: 1720
+
+    cbt:
+
+      - exercise: Thought Reframing
+
+        original_thought: >
+          I only succeeded because I got lucky.
+
+        reframed_thought: >
+          I prepared well and earned the appreciation.
+
+  friday:
+    date: 2026-07-10
+
+    habits:
+
+      completed:
+        - Morning Walk
+        - Meditation
+
+      missed:
+        - Read 20 Minutes
+
+    meals:
+
+      - meal: Breakfast
+        description: Greek yogurt and berries
+        estimated_calories: 360
+
+      - meal: Lunch
+        description: Chicken salad
+        estimated_calories: 590
+
+      - meal: Dinner
+        description: Homemade curry and rice
+        estimated_calories: 720
+
+      total_calories: 1670
+
+    cbt: []
+
+  sunday:
+    date: 2026-07-12
+
+    habits:
+
+      completed:
+        - Morning Walk
+
+      missed: []
+
+    meals:
+
+      - meal: Lunch
+        description: Family lunch
+        estimated_calories: 840
+
+      - meal: Dinner
+        description: Family dinner
+        estimated_calories: 920
+
+      total_calories: 1760
+
+    cbt: []
+
+week_2:
+
+  monday:
+    date: 2026-07-13
+
+    habits:
+
+      completed:
+        - Morning Walk
+        - Meditation
+
+      missed: []
+
+    meals:
+
+      - meal: Breakfast
+        description: Oats and fruit
+        estimated_calories: 390
+
+      - meal: Lunch
+        description: Chicken rice bowl
+        estimated_calories: 640
+
+      - meal: Dinner
+        description: Paneer with vegetables
+        estimated_calories: 610
+
+      total_calories: 1640
+
+    cbt: []
+
+  tuesday:
+    date: 2026-07-14
+
+    habits:
+
+      completed:
+        - Morning Walk
+        - Meditation
+        - Read 20 Minutes
+
+      missed: []
+
+    meals:
+
+      - meal: Breakfast
+        description: Smoothie
+        estimated_calories: 330
+
+      - meal: Lunch
+        description: Quinoa salad
+        estimated_calories: 590
+
+      - meal: Dinner
+        description: Salmon with vegetables
+        estimated_calories: 650
+
+      total_calories: 1570
+
+    cbt:
+
+      - exercise: ABC Analysis
+
+        activating_event: >
+          Received constructive feedback.
+
+        belief: >
+          I'm failing at this job.
+
+        consequence:
+          emotion: Disappointed
+
+        alternative_belief: >
+          Feedback is helping me improve.
+
+        new_emotion:
+          confidence: 60
+
+  thursday:
+    date: 2026-07-16
+
+    habits:
+
+      completed:
+        - Morning Walk
+        - Meditation
+        - Read 20 Minutes
+
+      missed: []
+
+    meals:
+
+      - meal: Breakfast
+        description: Omelette
+        estimated_calories: 410
+
+      - meal: Lunch
+        description: Chicken wrap
+        estimated_calories: 610
+
+      - meal: Dinner
+        description: Stir-fried vegetables with tofu
+        estimated_calories: 580
+
+      total_calories: 1600
+
+    cbt:
+
+      - exercise: Success Reflection
+
+        reflection: >
+          I volunteered even though I felt nervous.
+
+        learning: >
+          Action reduced anxiety more than avoidance.
+
+  saturday:
+    date: 2026-07-18
+
+    habits:
+
+      completed:
+        - Morning Walk
+
+      missed:
+        - Meditation
+
+    meals:
+
+      - meal: Breakfast
+        description: Coffee and pancakes
+        estimated_calories: 540
+
+      - meal: Lunch
+        description: Pasta
+        estimated_calories: 760
+
+      - meal: Dinner
+        description: Soup and bread
+        estimated_calories: 430
+
+      total_calories: 1730
+
+    cbt: []

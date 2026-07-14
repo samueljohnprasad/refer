@@ -1,0 +1,590 @@
+week_1:
+  monday:
+    date: 2026-07-06
+
+    journals:
+      - id: journal_001
+
+        time: "08:15"
+
+        title: First day at the new job
+
+        content: >
+          Today was my first day at the new company. I felt nervous walking
+          into the office because everyone already seemed to know each other.
+          My manager was welcoming, but I kept worrying that I wouldn't meet
+          expectations. Overall it went better than I expected.
+
+        ai_insights:
+          reflection:
+            user_summary: >
+              Your first day at your new job brought understandable nervousness
+              about fitting in and meeting expectations. Although you started
+              the day feeling uncertain, positive interactions with your manager
+              helped you finish the day feeling more reassured.
+
+            key_takeaways:
+              - Started a new job.
+              - Felt anxious about first impressions.
+              - Received a welcoming response from the manager.
+              - Ended the day more optimistic than expected.
+
+          structured_memory:
+            themes:
+              - New Job
+              - Career
+              - Self Confidence
+
+            emotions:
+              - Nervous
+              - Hopeful
+
+            stressors:
+              - Meeting expectations
+              - Entering a new environment
+
+            positive_topics:
+              - Welcoming manager
+              - Positive first impression
+
+            coping_strategies: []
+
+            observations:
+              - User worried about performance despite no negative feedback.
+              - User recognized that reality was more positive than anticipated.
+
+            notable_events:
+              - First day at a new company.
+
+            emotional_arc: >
+              Began the day anxious and uncertain, ending with cautious optimism.
+
+            confidence: 0.97
+
+  tuesday:
+    date: 2026-07-07
+
+    journals:
+      - id: journal_002
+
+        time: "21:10"
+
+        title: Couldn't stop thinking about work
+
+        content: >
+          I kept replaying conversations from work in my head tonight.
+          I know nobody criticized me, but I still felt like I could have
+          done better. I slept later than usual because of overthinking.
+
+        ai_insights:
+          reflection:
+            user_summary: >
+              Thoughts about work continued well into the evening, making it
+              difficult to relax. Much of the worry came from your own
+              self-evaluation rather than from anything others actually said.
+
+            key_takeaways:
+              - Replayed work conversations repeatedly.
+              - Experienced self-critical thinking.
+              - Overthinking affected sleep.
+              - No evidence of external criticism.
+
+          structured_memory:
+            themes:
+              - Work
+              - Overthinking
+              - Sleep
+
+            emotions:
+              - Anxious
+              - Self-critical
+
+            stressors:
+              - Internal performance expectations
+
+            positive_topics: []
+
+            coping_strategies: []
+
+            observations:
+              - User experienced repetitive thoughts after work.
+              - Sleep was delayed due to overthinking.
+              - Concerns were internally generated rather than externally triggered.
+
+            notable_events: []
+
+            emotional_arc: >
+              Anxiety remained elevated throughout the evening with little relief.
+
+            confidence: 0.98
+
+  thursday:
+    date: 2026-07-09
+
+    journals:
+      - id: journal_003
+
+        time: "07:45"
+
+        title: Morning walk helped
+
+        content: >
+          I decided to wake up early and go for a walk before work.
+          Surprisingly I felt calmer throughout the day. I still had some
+          stressful meetings but didn't panic as much.
+
+        ai_insights:
+          reflection:
+            user_summary: >
+              Starting the morning with a walk appeared to help you stay calmer
+              throughout the day. While stressful meetings still occurred, your
+              response to them felt more balanced than before.
+
+            key_takeaways:
+              - Introduced a morning walk.
+              - Felt calmer during work.
+              - Stressful meetings still happened.
+              - Managed stress better than expected.
+
+          structured_memory:
+            themes:
+              - Exercise
+              - Stress Management
+              - Work
+
+            emotions:
+              - Calm
+              - Encouraged
+
+            stressors:
+              - Work meetings
+
+            positive_topics:
+              - Morning routine
+              - Walking
+
+            coping_strategies:
+              - Morning walk
+
+            observations:
+              - User connected physical activity with improved emotional regulation.
+              - Stressful situations remained but emotional response was less intense.
+
+            notable_events:
+              - Established a new morning routine.
+
+            emotional_arc: >
+              Maintained steadier emotions despite work-related stress.
+
+            confidence: 0.98
+      - id: journal_004
+
+        time: "22:00"
+
+        title: Proud of myself today
+
+        content: >
+          My manager appreciated the document I prepared. I usually dismiss
+          compliments but today I allowed myself to enjoy it. That felt nice.
+
+        ai_insights:
+          reflection:
+            user_summary: >
+              Positive feedback from your manager became an opportunity to
+              acknowledge your own effort instead of immediately dismissing it.
+              This reflects a small but meaningful shift in how you respond to
+              praise.
+
+            key_takeaways:
+              - Received appreciation from manager.
+              - Accepted a compliment instead of dismissing it.
+              - Experienced pride in completed work.
+              - Confidence increased.
+
+          structured_memory:
+            themes:
+              - Confidence
+              - Career Growth
+              - Self Acceptance
+
+            emotions:
+              - Proud
+              - Appreciative
+
+            stressors: []
+
+            positive_topics:
+              - Recognition
+              - Accomplishment
+
+            coping_strategies:
+              - Acknowledging achievements
+
+            observations:
+              - User consciously accepted positive feedback.
+              - Recognition contributed to increased confidence.
+
+            notable_events:
+              - Manager praised completed work.
+
+            emotional_arc: >
+              Confidence strengthened through positive reinforcement.
+
+            confidence: 0.99
+
+  friday:
+    date: 2026-07-10
+
+    journals:
+      - id: journal_005
+
+        time: "20:30"
+
+        title: Exhausted but satisfied
+
+        content: >
+          It was a busy day with many deadlines. I'm tired, but I finished
+          everything I planned. I think I'm slowly understanding my role.
+
+        ai_insights:
+          reflection:
+            user_summary: >
+              Although today was demanding, completing your planned work left
+              you feeling satisfied. You also noticed growing familiarity with
+              your responsibilities, suggesting you're gradually adapting to
+              your new role.
+
+            key_takeaways:
+              - Busy day with multiple deadlines.
+              - Completed planned work.
+              - Felt physically tired.
+              - Increasing confidence in role.
+
+          structured_memory:
+            themes:
+              - Career
+              - Adaptation
+              - Productivity
+
+            emotions:
+              - Tired
+              - Satisfied
+
+            stressors:
+              - Deadlines
+
+            positive_topics:
+              - Task completion
+              - Learning role
+
+            coping_strategies:
+              - Staying organized
+
+            observations:
+              - User completed planned tasks despite workload.
+              - User expressed growing familiarity with responsibilities.
+
+            notable_events: []
+
+            emotional_arc: >
+              Fatigue was balanced by a sense of accomplishment.
+
+            confidence: 0.98
+
+  sunday:
+    date: 2026-07-12
+
+    journals:
+      - id: journal_006
+
+        time: "19:15"
+
+        title: Family dinner
+
+        content: >
+          Had dinner with my parents tonight. Talking with them reminded me
+          that work isn't everything. I felt relaxed and laughed a lot.
+
+        ai_insights:
+          reflection:
+            user_summary: >
+              Spending time with your family helped you disconnect from work
+              and reminded you of the importance of balance. The evening felt
+              relaxed, enjoyable and emotionally refreshing.
+
+            key_takeaways:
+              - Spent quality time with family.
+              - Shifted attention away from work.
+              - Felt relaxed and joyful.
+              - Recognized the importance of balance.
+
+          structured_memory:
+            themes:
+              - Family
+              - Work-Life Balance
+              - Relationships
+
+            emotions:
+              - Relaxed
+              - Happy
+              - Grateful
+
+            stressors: []
+
+            positive_topics:
+              - Family support
+              - Laughter
+              - Connection
+
+            coping_strategies:
+              - Spending time with family
+
+            observations:
+              - Family interactions improved emotional wellbeing.
+              - User reflected on balancing work with personal life.
+
+            notable_events:
+              - Family dinner.
+
+            emotional_arc: >
+              Shifted from work-focused thinking to relaxation and connection.
+
+            confidence: 0.99
+week_2:
+  monday:
+    date: 2026-07-13
+
+    journals:
+      - id: journal_007
+
+        time: "08:00"
+
+        title: Better start to the week
+
+        content: >
+          I noticed I wasn't as anxious this morning. I still felt some
+          pressure before work, but it wasn't overwhelming. My morning walk
+          has become a routine.
+
+        ai_insights:
+          reflection:
+            user_summary: >
+              Compared with earlier in the week, you noticed less anxiety
+              before work. Your morning walk appears to have become a
+              consistent routine that may be helping you begin the day in
+              a calmer state.
+
+            key_takeaways:
+              - Morning anxiety felt lower.
+              - Morning walks became a routine.
+              - Work pressure still existed but felt manageable.
+              - Recognized positive personal progress.
+
+          structured_memory:
+            themes:
+              - Work
+              - Routine
+              - Stress Management
+
+            emotions:
+              - Calm
+              - Hopeful
+
+            stressors:
+              - Work pressure
+
+            positive_topics:
+              - Morning routine
+              - Walking
+
+            coping_strategies:
+              - Morning walks
+
+            observations:
+              - User noticed reduced anxiety compared with previous entries.
+              - Morning walks have become a consistent habit.
+
+            notable_events:
+              - Walking became part of daily routine.
+
+            emotional_arc: >
+              Began the week feeling steadier and more emotionally balanced.
+
+            confidence: 0.98
+
+  tuesday:
+    date: 2026-07-14
+
+    journals:
+      - id: journal_008
+
+        time: "13:00"
+
+        title: Difficult feedback
+
+        content: >
+          I received constructive feedback on one task. At first I felt
+          disappointed, but later I realized it wasn't personal. I used to
+          take feedback much more negatively.
+
+        ai_insights:
+          reflection:
+            user_summary: >
+              Receiving constructive feedback initially felt disappointing,
+              but after reflecting you were able to view it as an opportunity
+              to improve instead of taking it personally.
+
+            key_takeaways:
+              - Received constructive feedback.
+              - Initial disappointment faded.
+              - Responded more calmly than in the past.
+              - Recognized personal growth.
+
+          structured_memory:
+            themes:
+              - Career Growth
+              - Self Reflection
+              - Confidence
+
+            emotions:
+              - Disappointed
+              - Reflective
+              - Encouraged
+
+            stressors:
+              - Constructive feedback
+
+            positive_topics:
+              - Personal growth
+              - Learning
+
+            coping_strategies:
+              - Cognitive reframing
+
+            observations:
+              - User compared current reaction with previous behaviour.
+              - User demonstrated improved emotional regulation.
+
+            notable_events:
+              - Received constructive workplace feedback.
+
+            emotional_arc: >
+              Shifted from disappointment toward acceptance and learning.
+
+            confidence: 0.99
+
+      - id: journal_009
+
+        time: "22:15"
+
+        title: Sleep is improving
+
+        content: >
+          I've slept much better over the last few nights. I think walking
+          every morning and reducing late-night phone use is helping.
+
+        ai_insights:
+          reflection:
+            user_summary: >
+              You observed noticeable improvements in your sleep and connected
+              those improvements to healthier habits that you've been
+              maintaining consistently.
+
+            key_takeaways:
+              - Sleep quality improved.
+              - Morning walks remained consistent.
+              - Reduced late-night phone use.
+              - Connected habits with better wellbeing.
+
+          structured_memory:
+            themes:
+              - Sleep
+              - Healthy Habits
+              - Exercise
+
+            emotions:
+              - Optimistic
+              - Rested
+
+            stressors: []
+
+            positive_topics:
+              - Better sleep
+              - Morning walks
+              - Reduced screen time
+
+            coping_strategies:
+              - Walking
+              - Limiting phone usage before bed
+
+            observations:
+              - User linked behaviour changes with improved sleep.
+              - Healthy routines are becoming more consistent.
+
+            notable_events: []
+
+            emotional_arc: >
+              Reflected positively on sustained healthy routines.
+
+            confidence: 0.99
+
+  thursday:
+    date: 2026-07-16
+
+    journals:
+      - id: journal_010
+
+        time: "18:45"
+
+        title: Small win
+
+        content: >
+          I volunteered to present during today's meeting. I was nervous,
+          but once I started talking everything went smoothly. I felt more
+          confident afterward.
+
+        ai_insights:
+          reflection:
+            user_summary: >
+              Choosing to present despite feeling nervous became a meaningful
+              confidence-building experience. Completing the presentation
+              successfully reinforced your belief in your own abilities.
+
+            key_takeaways:
+              - Volunteered to present.
+              - Felt nervous initially.
+              - Presentation went well.
+              - Confidence increased afterward.
+
+          structured_memory:
+            themes:
+              - Confidence
+              - Career
+              - Personal Growth
+
+            emotions:
+              - Nervous
+              - Proud
+              - Confident
+
+            stressors:
+              - Public speaking
+
+            positive_topics:
+              - Successful presentation
+              - Confidence
+
+            coping_strategies:
+              - Facing fears directly
+
+            observations:
+              - User willingly stepped outside their comfort zone.
+              - Positive experience reinforced self-confidence.
+
+            notable_events:
+              - Presented during a work meeting.
+
+            emotional_arc: >
+              Nervousness transformed into confidence after completing the task.
+
+            confidence: 0.99

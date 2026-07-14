@@ -1,0 +1,574 @@
+daily_insights:
+  - date: 2026-07-06
+
+    period: daily
+
+    generated_at: "2026-07-06T23:59:00Z"
+
+    input_summary:
+      journals: 1
+
+      habits_completed: 1
+
+      habits_missed: 2
+
+      meals_logged: 3
+
+      cbt_completed: 0
+
+    reflection:
+      summary: >
+        Today marked the beginning of a significant life transition with
+        your first day at a new job. Although you started the day feeling
+        nervous about fitting in and meeting expectations, positive
+        interactions helped reduce some of that uncertainty. Completing a
+        morning walk before work also reflected an intention to care for
+        yourself during a stressful change.
+
+      highlights:
+        - Successfully completed your first day at a new job.
+        - Positive interaction with your manager helped ease initial anxiety.
+        - Maintained your Morning Walk habit.
+        - Logged all meals today.
+
+      patterns:
+        - Career changes are currently a major focus.
+        - Much of today's stress came from uncertainty rather than negative experiences.
+        - You were able to recognize positive outcomes instead of focusing only on worries.
+
+      comparison:
+        available: false
+
+        summary: >
+          This is your first recorded daily reflection, so no comparison
+          with a previous day is available.
+
+      personalized_reflection: null
+
+      evidence:
+        journals:
+          - Started a new job.
+          - Felt nervous entering a new environment.
+          - Manager was welcoming.
+          - Day ended better than expected.
+
+        habits:
+          completed:
+            - Morning Walk
+
+          missed:
+            - Meditation
+            - Read 20 Minutes
+
+        meals:
+          total_calories: 1640
+
+          observations:
+            - Three meals were logged.
+
+        cbt:
+          completed: false
+
+      structured_memory:
+        primary_themes:
+          - New Job
+          - Career Transition
+          - Self Confidence
+
+        dominant_emotions:
+          - Nervous
+          - Hopeful
+
+        stressors:
+          - Meeting expectations
+          - New environment
+
+        positive_factors:
+          - Welcoming manager
+          - Morning walk
+          - Healthy meal logging
+
+        coping_strategies:
+          - Morning Walk
+
+        notable_events:
+          - First day at a new company.
+
+        observations:
+          - Initial anxiety reduced as the day progressed.
+          - Positive experiences outweighed anticipated concerns.
+          - User demonstrated willingness to establish healthy routines during a major transition.
+
+        emotional_arc: >
+          Began the day feeling uncertain and nervous, but gradually became
+          more reassured after positive workplace interactions.
+
+        confidence: 0.98
+  - date: 2026-07-07
+
+    period: daily
+
+    generated_at: "2026-07-07T23:59:00Z"
+
+    input_summary:
+      journals: 1
+
+      habits_completed: 0
+
+      habits_missed: 3
+
+      meals_logged: 2
+
+      cbt_completed: 1
+
+    reflection:
+      summary: >
+        Work remained the primary focus today, but unlike yesterday's
+        uncertainty about a new environment, today's challenge came from
+        continuing to replay workplace interactions after work. The Thought
+        Catcher exercise helped examine those worries and highlighted that
+        your concerns were driven more by self-criticism than by evidence.
+        Although your evening was mentally exhausting, you took a meaningful
+        step toward understanding your thinking patterns.
+
+      highlights:
+        - Completed a Thought Catcher CBT exercise.
+        - Identified that worries were not supported by external criticism.
+        - Reflected on automatic negative thoughts.
+        - Logged meals despite a busy workday.
+
+      patterns:
+        - Work continues to be the dominant theme.
+        - Self-imposed expectations are creating more stress than external events.
+        - CBT introduced evidence-based reflection into your routine.
+        - Healthy habits were less consistent today.
+
+      comparison:
+        available: true
+
+        compared_to: 2026-07-06
+
+        summary: >
+          Yesterday's concerns centered on entering a new workplace, while
+          today the focus shifted toward evaluating your own performance.
+          Although anxiety remained present, today's CBT exercise provided
+          additional insight into those thoughts, creating an opportunity
+          for healthier reflection.
+
+      personalized_reflection: null
+
+      evidence:
+        journals:
+          - Replayed work conversations repeatedly.
+          - Sleep was delayed because of overthinking.
+          - No one directly criticized the user.
+
+        habits:
+          completed: []
+
+          missed:
+            - Morning Walk
+            - Meditation
+            - Read 20 Minutes
+
+        meals:
+          total_calories: 1610
+
+          observations:
+            - Two meals were logged.
+
+        cbt:
+          completed: true
+
+          exercises:
+            - Thought Catcher
+
+          observations:
+            - Automatic thoughts were identified.
+            - Evidence against the negative belief was documented.
+            - Balanced alternative thought was created.
+
+      structured_memory:
+        primary_themes:
+          - Work
+          - Overthinking
+          - Self Reflection
+
+        dominant_emotions:
+          - Anxious
+          - Self-critical
+
+        stressors:
+          - Internal performance expectations
+          - Rumination after work
+
+        positive_factors:
+          - CBT completion
+          - Ability to challenge automatic thoughts
+
+        coping_strategies:
+          - Thought Catcher
+          - Evidence-based reflection
+
+        notable_events:
+          - Completed first CBT exercise.
+
+        observations:
+          - Anxiety persisted after work despite no evidence of external criticism.
+          - User demonstrated willingness to examine thinking patterns.
+          - Habit completion decreased compared with the previous day.
+          - CBT provided evidence that challenged negative assumptions.
+
+        emotional_arc: >
+          The day began with lingering concern about work, intensified into
+          evening overthinking, but ended with greater awareness after
+          completing a CBT exercise.
+
+        confidence: 0.99
+  - date: 2026-07-09
+
+    period: daily
+
+    generated_at: "2026-07-09T23:59:00Z"
+
+    input_summary:
+      journals: 2
+
+      habits_completed: 2
+
+      habits_missed: 1
+
+      meals_logged: 4
+
+      cbt_completed: 1
+
+    reflection:
+      summary: >
+        Today showed several encouraging moments that built upon your earlier
+        experiences this week. Beginning the morning with a walk appeared to
+        help you stay calmer during stressful meetings, while receiving
+        appreciation from your manager strengthened your confidence. Completing
+        a CBT exercise also reflected a willingness to challenge unhelpful
+        thoughts rather than dismiss your achievements.
+
+      highlights:
+        - Morning walk helped you remain calmer during work.
+        - Your manager appreciated your work.
+        - You consciously accepted positive feedback.
+        - Completed a Thought Reframing CBT exercise.
+        - Logged all meals today.
+
+      patterns:
+        - Healthy routines are beginning to support emotional wellbeing.
+        - Confidence is increasing through positive workplace experiences.
+        - You are becoming more willing to recognize your own achievements.
+        - CBT continues to reinforce healthier thinking patterns.
+
+      comparison:
+        available: true
+
+        compared_to: 2026-07-07
+
+        summary: >
+          Compared with the previous reflection, today's focus shifted from
+          overthinking work interactions to recognizing positive experiences.
+          While work remained an important part of the day, your emotional
+          response appeared more balanced and supported by healthy routines.
+
+      personalized_reflection: null
+
+      evidence:
+        journals:
+          - Morning walk reduced stress during work.
+          - Manager praised completed work.
+          - User accepted compliments instead of dismissing them.
+
+        habits:
+          completed:
+            - Morning Walk
+            - Read 20 Minutes
+
+          missed:
+            - Meditation
+
+        meals:
+          total_calories: 1720
+
+          observations:
+            - Four meals were logged.
+            - Meals were logged consistently throughout the day.
+
+        cbt:
+          completed: true
+
+          exercises:
+            - Thought Reframing
+
+          observations:
+            - User reframed a self-critical belief.
+            - Recognition was attributed to preparation rather than luck.
+
+      structured_memory:
+        primary_themes:
+          - Confidence
+          - Career Growth
+          - Stress Management
+
+        dominant_emotions:
+          - Calm
+          - Proud
+          - Encouraged
+
+        stressors:
+          - Work meetings
+
+        positive_factors:
+          - Morning Walk
+          - Positive workplace feedback
+          - CBT reframing
+          - Healthy meal logging
+
+        coping_strategies:
+          - Morning Walk
+          - Thought Reframing
+          - Accepting compliments
+
+        notable_events:
+          - Received appreciation from manager.
+          - Established a successful morning routine.
+
+        observations:
+          - Positive reinforcement contributed to higher confidence.
+          - User connected physical activity with reduced stress.
+          - User demonstrated healthier interpretation of success.
+          - Multiple positive experiences occurred within the same day.
+
+        emotional_arc: >
+          The day began with calm preparation, remained steady through work
+          challenges, and ended with increased confidence and appreciation for
+          personal achievements.
+
+        confidence: 0.99
+  - date: 2026-07-10
+
+    period: daily
+
+    generated_at: "2026-07-10T23:59:00Z"
+
+    input_summary:
+      journals: 1
+
+      habits_completed: 2
+
+      habits_missed: 1
+
+      meals_logged: 3
+
+      cbt_completed: 0
+
+    reflection:
+      summary: >
+        Today was demanding but rewarding. Although your workload was
+        heavy and you ended the day feeling physically tired, completing
+        everything you planned reinforced your growing confidence in your
+        new role. Your healthy routines also remained fairly consistent,
+        suggesting you're beginning to build stability alongside workplace
+        responsibilities.
+
+      highlights:
+        - Completed all planned work despite multiple deadlines.
+        - Continued your Morning Walk habit.
+        - Completed Meditation.
+        - Expressed growing confidence in understanding your role.
+        - Logged all meals for the day.
+
+      patterns:
+        - Confidence continues to build through successful work experiences.
+        - Healthy habits are becoming more consistent.
+        - Stress is increasingly related to workload rather than uncertainty.
+        - Productivity remained high despite fatigue.
+
+      comparison:
+        available: true
+
+        compared_to: 2026-07-09
+
+        summary: >
+          Yesterday's confidence came primarily from external recognition,
+          while today's confidence was built through completing challenging
+          work and recognizing your own progress. Positive momentum appears
+          to be continuing across consecutive days.
+
+      personalized_reflection: null
+
+      evidence:
+        journals:
+          - Busy day with several deadlines.
+          - Completed planned work.
+          - Felt tired but satisfied.
+          - Recognized improving understanding of job responsibilities.
+
+        habits:
+          completed:
+            - Morning Walk
+            - Meditation
+
+          missed:
+            - Read 20 Minutes
+
+        meals:
+          total_calories: 1670
+
+          observations:
+            - Three meals were logged.
+            - Meal logging remained consistent.
+
+        cbt:
+          completed: false
+
+      structured_memory:
+        primary_themes:
+          - Career Growth
+          - Productivity
+          - Adaptation
+
+        dominant_emotions:
+          - Tired
+          - Satisfied
+          - Confident
+
+        stressors:
+          - Workload
+          - Deadlines
+
+        positive_factors:
+          - Task completion
+          - Morning Walk
+          - Meditation
+          - Growing job familiarity
+
+        coping_strategies:
+          - Maintaining healthy routines
+          - Completing planned tasks
+
+        notable_events:
+          - Successfully handled a demanding workload.
+
+        observations:
+          - User demonstrated increasing confidence in their new role.
+          - Fatigue was accompanied by a sense of accomplishment rather than discouragement.
+          - Healthy routines continued despite workplace demands.
+          - Adaptation to the new work environment appears to be progressing.
+
+        emotional_arc: >
+          The day involved sustained effort and physical fatigue, but ended
+          with satisfaction, confidence and a stronger sense of capability.
+
+        confidence: 0.99
+  - date: 2026-07-12
+
+    period: daily
+
+    generated_at: "2026-07-12T23:59:00Z"
+
+    input_summary:
+      journals: 1
+
+      habits_completed: 1
+
+      habits_missed: 0
+
+      meals_logged: 2
+
+      cbt_completed: 0
+
+    reflection:
+      summary: >
+        Today shifted your attention away from work and toward personal
+        relationships. Spending meaningful time with your family helped you
+        relax and reminded you that work is only one part of your life.
+        Compared with the busy end of last week, today felt slower,
+        emotionally lighter and more balanced.
+
+      highlights:
+        - Enjoyed quality time with family.
+        - Reflected on the importance of work-life balance.
+        - Continued your Morning Walk habit.
+        - Logged family meals.
+
+      patterns:
+        - Family continues to be a positive source of emotional support.
+        - Work was less dominant in today's reflections.
+        - Healthy routines are becoming more sustainable.
+        - Balance appears to be improving alongside work adaptation.
+
+      comparison:
+        available: true
+
+        compared_to: 2026-07-10
+
+        summary: >
+          The previous reflection focused on productivity and adapting to
+          workplace responsibilities. Today's reflection instead emphasized
+          recovery, relationships and emotional wellbeing. This suggests a
+          healthier balance between work and personal life.
+
+      personalized_reflection: null
+
+      evidence:
+        journals:
+          - Spent time with parents.
+          - Felt relaxed and laughed frequently.
+          - Reflected that work is not everything.
+
+        habits:
+          completed:
+            - Morning Walk
+
+          missed: []
+
+        meals:
+          total_calories: 1760
+
+          observations:
+            - Family lunch and dinner were logged.
+
+        cbt:
+          completed: false
+
+      structured_memory:
+        primary_themes:
+          - Family
+          - Work-Life Balance
+          - Relationships
+
+        dominant_emotions:
+          - Relaxed
+          - Happy
+          - Grateful
+
+        stressors: []
+
+        positive_factors:
+          - Family connection
+          - Shared meals
+          - Morning Walk
+
+        coping_strategies:
+          - Spending time with family
+
+        notable_events:
+          - Family dinner.
+          - Reflection on balancing work and personal life.
+
+        observations:
+          - Family interactions had a positive impact on emotional wellbeing.
+          - User intentionally shifted focus away from work.
+          - Emotional state appeared calmer than earlier reflections.
+          - A sense of balance emerged without evidence of workplace stress.
+
+        emotional_arc: >
+          The day remained emotionally steady, moving from relaxation to
+          gratitude and reinforcing the importance of personal connections.
+
+        confidence: 0.99

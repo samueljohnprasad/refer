@@ -1,0 +1,144 @@
+monthly_insights:
+  - month: "2026-07"
+
+    start_date: 2026-07-01
+
+    end_date: 2026-07-31
+
+    generated_at: "2026-07-31T23:59:00Z"
+
+    input_summary:
+      weekly_reflections: 2
+
+      journals: 10
+
+      habits_completed: 15
+
+      cbt_completed: 4
+
+    reflection:
+      summary: >
+        Across the recorded weeks, your reflections frequently centered on
+        adjusting to a new job while maintaining personal wellbeing.
+        Earlier entries focused more on uncertainty and workplace
+        experiences, while later entries more often described established
+        routines, positive work experiences and time spent outside of work.
+        Rather than representing individual moments, this summary reflects
+        the recurring themes that appeared throughout the month.
+
+      observations:
+        recurring_topics:
+          - Work and career
+          - Daily routines
+          - Sleep
+          - Family
+          - Personal reflection
+          - Confidence during new experiences
+
+        recurring_positive_experiences:
+          - Receiving positive workplace feedback.
+          - Spending time with family.
+          - Completing Morning Walk regularly.
+          - Recording meals consistently.
+          - Completing CBT exercises during challenging situations.
+
+        recurring_challenges:
+          - Adjusting to a new workplace.
+          - Thinking repeatedly about work after hours.
+          - High personal expectations.
+          - Occasional uncertainty before unfamiliar situations.
+
+        recurring_routines:
+          - Morning Walk appeared consistently across both weeks.
+          - Meal logging remained consistent.
+          - Reflection through journaling continued across the month.
+          - CBT exercises were completed on several challenging days.
+
+        changes_over_time:
+          - Early reflections described uncertainty about work.
+          - Later reflections more frequently mentioned familiarity with work.
+          - Sleep was mentioned as improving in later entries.
+          - Later entries contained more examples of voluntarily taking on new challenges.
+          - Family and work-life balance appeared more often toward the end of the timeline.
+
+      comparison:
+        available: false
+
+        summary: >
+          This is the first monthly reflection, so there is no previous
+          month available for comparison.
+
+      personalized_reflection:
+        enabled: false
+
+        focus_area: null
+
+        reflection: null
+
+        supporting_observations: []
+
+      next_month_focus:
+        generated_by_ai:
+          title: Areas Worth Continuing to Observe
+
+          why: >
+            These suggestions are based on recurring patterns recorded
+            throughout the month rather than predictions about future
+            outcomes.
+
+          suggestions:
+            - Notice whether your Morning Walk continues to appear in your reflections.
+            - Observe how workplace experiences influence your mood over time.
+            - Continue recording sleep-related observations when they feel relevant.
+            - Reflect after particularly stressful or rewarding workdays.
+            - Continue using CBT exercises when you notice recurring thought patterns.
+
+        user_focus:
+          enabled: false
+
+          focus_area: null
+
+          reflection: null
+
+      structured_memory:
+        primary_themes:
+          - Career Transition
+          - Daily Routine
+          - Healthy Habits
+          - Work-Life Balance
+          - Reflection
+
+        recurring_emotions_observed:
+          - Nervous
+          - Calm
+          - Hopeful
+          - Proud
+          - Grateful
+
+        recurring_stressors:
+          - New workplace
+          - Workload
+          - Performance expectations
+
+        recurring_supports:
+          - Morning Walk
+          - Meditation
+          - CBT exercises
+          - Family
+          - Positive workplace feedback
+
+        notable_events:
+          - Started a new job.
+          - Received positive workplace feedback.
+          - Completed multiple CBT exercises.
+          - Volunteered to present during a meeting.
+          - Reported improved sleep in later entries.
+
+        timeline_observations:
+          - Work was the most frequently discussed topic throughout the month.
+          - Healthy routines appeared consistently across both weeks.
+          - Family-related reflections appeared alongside discussions of work-life balance.
+          - Later entries contained more references to established routines than earlier entries.
+          - Several reflections connected daily habits with how the day was experienced.
+
+        confidence: 0.99

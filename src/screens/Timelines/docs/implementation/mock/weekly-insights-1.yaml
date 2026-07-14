@@ -1,0 +1,123 @@
+weekly_insights:
+  - week: 2026-W28
+
+    start_date: 2026-07-06
+
+    end_date: 2026-07-12
+
+    generated_at: "2026-07-12T23:59:00Z"
+
+    input_summary:
+      daily_reflections: 5
+
+      journals: 6
+
+      habits_completed: 6
+
+      cbt_completed: 2
+
+    reflection:
+      summary: >
+        This week was largely defined by adapting to a new chapter in your
+        professional life. Early in the week, much of your attention was
+        directed toward uncertainty, self-evaluation and learning a new
+        environment. As the week progressed, several experiences—including
+        positive workplace feedback, consistent morning walks and CBT
+        exercises—appeared to support greater confidence and emotional
+        stability. By the end of the week, spending time with family brought
+        an additional sense of balance, reminding you that wellbeing extends
+        beyond work alone.
+
+      highlights:
+        - Successfully completed the first week in a new job.
+        - Gradually became more confident in workplace responsibilities.
+        - Morning walks emerged as a consistent positive routine.
+        - CBT exercises helped challenge self-critical thinking.
+        - Family time provided emotional recovery and perspective.
+
+      recurring_patterns:
+        - Work remained the central life theme throughout the week.
+        - Self-criticism gradually became more balanced through reflection.
+        - Healthy routines appeared alongside improved emotional regulation.
+        - Confidence grew through repeated positive experiences instead of one single event.
+        - Balance became increasingly important by the end of the week.
+
+      comparison:
+        available: false
+
+        summary: >
+          This is the first recorded weekly reflection, so no comparison with
+          a previous week is available.
+
+      personalized_reflection: null
+
+      evidence:
+        dominant_themes:
+          - Career Transition
+          - Confidence
+          - Stress Management
+          - Work-Life Balance
+
+        recurring_emotions:
+          - Nervous
+          - Hopeful
+          - Calm
+          - Proud
+          - Grateful
+
+        recurring_stressors:
+          - New job
+          - Performance expectations
+          - Deadlines
+
+        recurring_positive_factors:
+          - Morning Walk
+          - Positive manager feedback
+          - Family support
+          - CBT reflection
+
+        recurring_coping_strategies:
+          - Morning Walk
+          - Thought Reframing
+          - Evidence-based thinking
+          - Spending time with family
+
+      structured_memory:
+        primary_themes:
+          - Career Transition
+          - Confidence Growth
+          - Emotional Regulation
+          - Healthy Routines
+          - Work-Life Balance
+
+        dominant_emotions:
+          - Hopeful
+          - Calm
+          - Proud
+
+        long_term_patterns:
+          - Confidence increased progressively during the week.
+          - Workplace uncertainty gradually decreased.
+          - Morning walks became an emerging routine.
+          - Self-reflection became more balanced after CBT exercises.
+          - Positive workplace experiences reinforced self-confidence.
+
+        major_milestones:
+          - Started a new job.
+          - Received positive recognition from manager.
+          - Completed first CBT exercises.
+          - Recognized importance of work-life balance.
+
+        observations:
+          - Most stress originated from internal expectations rather than external criticism.
+          - Emotional recovery improved as healthy routines became more consistent.
+          - Positive experiences accumulated across the week instead of occurring as isolated events.
+          - Family interactions provided meaningful emotional recovery near the end of the week.
+
+        emotional_arc: >
+          The week began with uncertainty and self-doubt surrounding a new
+          job, gradually shifted toward confidence and emotional stability,
+          and concluded with a stronger sense of balance supported by family
+          connection and healthier routines.
+
+        confidence: 0.99

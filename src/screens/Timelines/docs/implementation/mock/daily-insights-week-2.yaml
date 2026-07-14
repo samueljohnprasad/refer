@@ -1,0 +1,469 @@
+daily_insights:
+  - date: 2026-07-13
+
+    period: daily
+
+    generated_at: "2026-07-13T23:59:00Z"
+
+    input_summary:
+      journals: 1
+
+      habits_completed: 2
+
+      habits_missed: 0
+
+      meals_logged: 3
+
+      cbt_completed: 0
+
+    reflection:
+      summary: >
+        Today marked a positive start to the new week. Compared with last
+        week's first few days, you noticed less anxiety before work and
+        recognized that your morning walk has become a consistent habit.
+        Although work pressure still existed, it felt much more manageable.
+        This suggests that healthy routines established last week are
+        beginning to support your emotional wellbeing in a sustainable way.
+
+      highlights:
+        - Started the week feeling noticeably calmer.
+        - Morning Walk has become a regular habit.
+        - Completed both Morning Walk and Meditation.
+        - Logged all meals today.
+        - Recognized your own progress compared with last week.
+
+      patterns:
+        - Morning routines are becoming automatic.
+        - Work remains important but no longer dominates your emotions.
+        - Anxiety before work has reduced compared with earlier reflections.
+        - Consistency is beginning to replace motivation.
+
+      comparison:
+        available: true
+
+        compared_to: 2026-07-12
+
+        summary: >
+          Yesterday focused on family connection and emotional recovery.
+          Today carried that sense of balance into your workday. Rather than
+          returning to high anxiety, you entered the week with greater
+          confidence and emotional stability.
+
+      personalized_reflection: null
+
+      evidence:
+        journals:
+          - Morning anxiety was lower than before.
+          - Morning walks have become routine.
+          - Work pressure felt manageable.
+
+        habits:
+          completed:
+            - Morning Walk
+            - Meditation
+
+          missed: []
+
+        meals:
+          total_calories: 1640
+
+          observations:
+            - Three meals were logged consistently.
+
+        cbt:
+          completed: false
+
+      structured_memory:
+        primary_themes:
+          - Healthy Routine
+          - Stress Management
+          - Career Adaptation
+
+        dominant_emotions:
+          - Calm
+          - Hopeful
+          - Confident
+
+        stressors:
+          - Normal work pressure
+
+        positive_factors:
+          - Morning Walk
+          - Meditation
+          - Consistent routines
+          - Improved emotional stability
+
+        coping_strategies:
+          - Morning Walk
+          - Meditation
+
+        notable_events:
+          - Morning walk became an established habit.
+
+        observations:
+          - User independently recognized progress from previous week.
+          - Healthy routines are becoming sustainable habits.
+          - Emotional regulation appears more stable than earlier reflections.
+          - Work-related anxiety has noticeably reduced.
+
+        emotional_arc: >
+          Began the week feeling calm and prepared, maintained emotional
+          stability throughout the workday, and ended with confidence that
+          existing routines are making a positive difference.
+
+        confidence: 0.99
+  - date: 2026-07-14
+
+    period: daily
+
+    generated_at: "2026-07-14T23:59:00Z"
+
+    input_summary:
+      journals: 2
+
+      habits_completed: 3
+
+      habits_missed: 0
+
+      meals_logged: 3
+
+      cbt_completed: 1
+
+    reflection:
+      summary: >
+        Today demonstrated meaningful emotional growth. Although receiving
+        constructive feedback initially felt discouraging, you were able to
+        pause, reflect and eventually interpret it as an opportunity to
+        improve rather than as a personal failure. You also noticed that your
+        sleep has been improving, and you connected this improvement to
+        consistent healthy habits such as morning walks and reducing late-night
+        phone use. Overall, today reflected both healthier thinking patterns
+        and growing confidence in your ability to handle workplace challenges.
+
+      highlights:
+        - Responded constructively to workplace feedback.
+        - Completed an ABC Analysis CBT exercise.
+        - Recognized improvements in sleep quality.
+        - Completed all planned habits.
+        - Connected healthy routines with improved wellbeing.
+
+      patterns:
+        - Emotional reactions are becoming more balanced.
+        - Healthy habits are producing noticeable long-term benefits.
+        - Self-reflection is shifting toward learning rather than self-criticism.
+        - Confidence continues to grow through repeated positive experiences.
+
+      comparison:
+        available: true
+
+        compared_to: 2026-07-13
+
+        summary: >
+          Yesterday highlighted the return of consistent routines. Today built
+          upon that foundation by demonstrating emotional resilience during a
+          challenging situation. Rather than simply feeling calmer, you actively
+          applied a healthier way of interpreting difficult experiences.
+
+      personalized_reflection: null
+
+      evidence:
+        journals:
+          - Received constructive feedback.
+          - Reframed feedback as an opportunity to improve.
+          - Sleep quality has improved.
+          - Morning walks and reduced phone use may be contributing to better sleep.
+
+        habits:
+          completed:
+            - Morning Walk
+            - Meditation
+            - Read 20 Minutes
+
+          missed: []
+
+        meals:
+          total_calories: 1570
+
+          observations:
+            - Three meals logged consistently.
+            - Balanced calorie intake throughout the day.
+
+        cbt:
+          completed: true
+
+          exercises:
+            - ABC Analysis
+
+          observations:
+            - Challenged an unhelpful belief.
+            - Developed a healthier alternative perspective.
+            - Reduced emotional impact through cognitive reframing.
+
+      structured_memory:
+        primary_themes:
+          - Emotional Resilience
+          - Career Growth
+          - Healthy Habits
+          - Sleep
+
+        dominant_emotions:
+          - Reflective
+          - Encouraged
+          - Confident
+
+        stressors:
+          - Constructive workplace feedback
+
+        positive_factors:
+          - ABC Analysis
+          - Morning Walk
+          - Meditation
+          - Reading
+          - Improved sleep
+          - Consistent routines
+
+        coping_strategies:
+          - Cognitive reframing
+          - ABC Analysis
+          - Morning Walk
+          - Reduced evening screen time
+
+        notable_events:
+          - Successfully processed constructive feedback.
+          - Recognized sustained improvement in sleep quality.
+
+        observations:
+          - User demonstrated greater emotional maturity than earlier in the timeline.
+          - Healthy routines are producing benefits that extend beyond physical health.
+          - CBT techniques are becoming integrated into everyday thinking.
+          - Confidence increasingly comes from personal growth rather than external validation.
+
+        emotional_arc: >
+          Initial disappointment gradually shifted into acceptance,
+          self-reflection and confidence, ending the day with optimism and a
+          stronger belief in continued personal growth.
+
+        confidence: 0.99
+  - date: 2026-07-16
+
+    period: daily
+
+    generated_at: "2026-07-16T23:59:00Z"
+
+    input_summary:
+      journals: 1
+
+      habits_completed: 3
+
+      habits_missed: 0
+
+      meals_logged: 3
+
+      cbt_completed: 1
+
+    reflection:
+      summary: >
+        Today reflected a meaningful step outside your comfort zone. Although
+        you felt nervous before presenting during a meeting, you chose to do it
+        anyway and discovered that the experience went much better than
+        expected. Combined with your consistent healthy routines and your
+        reflection on the experience afterward, today reinforced growing
+        confidence in your own abilities.
+
+      highlights:
+        - Volunteered to present during a work meeting.
+        - Successfully completed the presentation.
+        - Completed a Success Reflection CBT exercise.
+        - Maintained all planned habits.
+        - Continued consistent meal logging.
+
+      patterns:
+        - Confidence is increasingly built through action rather than reassurance.
+        - Healthy routines continue to provide a stable foundation.
+        - You are becoming more willing to step outside your comfort zone.
+        - Reflection after success is strengthening self-confidence.
+
+      comparison:
+        available: true
+
+        compared_to: 2026-07-14
+
+        summary: >
+          The previous reflection focused on responding constructively to
+          feedback. Today demonstrated another stage of growth by actively
+          seeking a challenge rather than simply responding to one. This
+          suggests increasing confidence and willingness to embrace discomfort.
+
+      personalized_reflection: null
+
+      evidence:
+        journals:
+          - Volunteered to present.
+          - Presentation was successful.
+          - Confidence increased afterward.
+
+        habits:
+          completed:
+            - Morning Walk
+            - Meditation
+            - Read 20 Minutes
+
+          missed: []
+
+        meals:
+          total_calories: 1600
+
+          observations:
+            - Three meals were logged consistently.
+
+        cbt:
+          completed: true
+
+          exercises:
+            - Success Reflection
+
+          observations:
+            - Reflected on a successful experience.
+            - Identified that taking action reduced anxiety.
+            - Reinforced confidence through evidence.
+
+      structured_memory:
+        primary_themes:
+          - Confidence
+          - Personal Growth
+          - Career Development
+
+        dominant_emotions:
+          - Nervous
+          - Proud
+          - Confident
+
+        stressors:
+          - Public speaking
+
+        positive_factors:
+          - Successful presentation
+          - Success Reflection
+          - Morning Walk
+          - Meditation
+          - Reading
+
+        coping_strategies:
+          - Facing fears directly
+          - Success Reflection
+          - Maintaining daily routines
+
+        notable_events:
+          - Volunteered to present in a meeting.
+          - Successfully completed the presentation.
+
+        observations:
+          - User intentionally chose a challenging situation.
+          - Confidence is increasingly supported by direct experience.
+          - Healthy routines remained highly consistent.
+          - Reflection reinforced evidence of personal capability.
+
+        emotional_arc: >
+          The day began with understandable nervousness, transitioned into
+          focused action during the presentation, and concluded with pride,
+          confidence and a stronger willingness to embrace future challenges.
+
+        confidence: 0.99
+  - date: 2026-07-18
+
+    period: daily
+
+    generated_at: "2026-07-18T23:59:00Z"
+
+    input_summary:
+      journals: 0
+
+      habits_completed: 1
+
+      habits_missed: 1
+
+      meals_logged: 3
+
+      cbt_completed: 0
+
+    reflection:
+      summary: >
+        Today was a relatively quiet day with limited activity recorded.
+        While there wasn't enough information to understand your thoughts or
+        emotions in depth, you continued your Morning Walk habit and logged
+        your meals. Rather than drawing conclusions about your wellbeing,
+        today's reflection simply captures the routines that remained
+        consistent.
+
+      highlights:
+        - Completed your Morning Walk.
+        - Logged all meals today.
+        - Maintained at least one healthy routine.
+
+      patterns:
+        - Morning Walk continues to be your most consistent habit.
+        - Today's data primarily reflects routine tracking rather than emotional reflection.
+        - Limited inputs make it difficult to identify broader emotional patterns.
+
+      comparison:
+        available: true
+
+        compared_to: 2026-07-16
+
+        summary: >
+          Compared with the previous reflection, today contained much less
+          information. The earlier reflection focused on personal growth and
+          confidence, whereas today's data mainly reflects maintenance of
+          existing routines. This isn't necessarily a setback—it simply means
+          there is less evidence available for deeper reflection.
+
+      personalized_reflection: null
+
+      evidence:
+        journals: []
+
+        habits:
+          completed:
+            - Morning Walk
+
+          missed:
+            - Meditation
+
+        meals:
+          total_calories: 1730
+
+          observations:
+            - Breakfast, lunch and dinner were logged.
+
+        cbt:
+          completed: false
+
+      structured_memory:
+        primary_themes:
+          - Healthy Routine
+          - Consistency
+
+        dominant_emotions: []
+
+        stressors: []
+
+        positive_factors:
+          - Morning Walk
+          - Meal tracking
+
+        coping_strategies:
+          - Morning Walk
+
+        notable_events: []
+
+        observations:
+          - No journal was recorded today.
+          - No CBT exercise was completed.
+          - Routine tracking remained consistent despite limited reflection data.
+          - Insufficient evidence to infer emotional changes.
+
+        emotional_arc: >
+          No clear emotional progression could be determined because today's
+          inputs focused on routine tracking rather than personal reflection.
+
+        confidence: 0.96

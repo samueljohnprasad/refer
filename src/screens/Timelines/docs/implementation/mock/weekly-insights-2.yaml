@@ -1,0 +1,131 @@
+- week: 2026-W29
+
+  start_date: 2026-07-13
+
+  end_date: 2026-07-19
+
+  generated_at: "2026-07-19T23:59:00Z"
+
+  input_summary:
+    daily_reflections: 4
+
+    journals: 4
+
+    habits_completed: 9
+
+    cbt_completed: 2
+
+  reflection:
+    summary: >
+      This week reflected continued personal growth built upon the
+      foundations established previously. Rather than simply adapting to
+      your new work environment, you demonstrated greater emotional
+      resilience, healthier daily routines and increased confidence when
+      facing challenges. Consistent habits, improved sleep and thoughtful
+      self-reflection all contributed to a steadier emotional state. By the
+      end of the week, you appeared more willing to step outside your
+      comfort zone while maintaining balance through sustainable routines.
+
+    highlights:
+      - Morning Walk became a well-established daily habit.
+      - Successfully handled constructive workplace feedback.
+      - Sleep quality improved through healthier routines.
+      - Volunteered to present during a meeting.
+      - Maintained strong habit consistency throughout the week.
+
+    recurring_patterns:
+      - Confidence increasingly comes from personal experiences rather than external validation.
+      - Healthy routines are becoming automatic.
+      - Emotional regulation continues to improve.
+      - CBT techniques are being applied naturally in daily situations.
+      - Work remains important but no longer dominates emotional wellbeing.
+
+    comparison:
+      available: true
+
+      compared_to: 2026-W28
+
+      summary: >
+        Compared with last week, your focus shifted from adapting to a new
+        workplace toward building confidence within it. Earlier reflections
+        emphasized uncertainty and self-doubt, whereas this week highlighted
+        resilience, improved sleep, healthier routines and willingness to
+        embrace new challenges. Emotional stability also appeared more
+        consistent throughout the week.
+
+    personalized_reflection: null
+
+    evidence:
+      dominant_themes:
+        - Confidence
+        - Healthy Habits
+        - Career Growth
+        - Emotional Resilience
+        - Sleep
+
+      recurring_emotions:
+        - Calm
+        - Confident
+        - Hopeful
+        - Proud
+
+      recurring_stressors:
+        - Workplace feedback
+        - Public speaking
+        - Normal work pressure
+
+      recurring_positive_factors:
+        - Morning Walk
+        - Meditation
+        - Reading
+        - Better sleep
+        - CBT exercises
+        - Consistent routines
+
+      recurring_coping_strategies:
+        - Morning Walk
+        - ABC Analysis
+        - Success Reflection
+        - Cognitive reframing
+        - Healthy sleep habits
+
+    structured_memory:
+      primary_themes:
+        - Emotional Resilience
+        - Confidence Growth
+        - Healthy Lifestyle
+        - Career Development
+
+      dominant_emotions:
+        - Calm
+        - Confident
+        - Proud
+
+      long_term_patterns:
+        - Morning Walk has become a sustainable habit.
+        - Healthy routines are improving overall wellbeing.
+        - Sleep quality improved through behavioural changes.
+        - Confidence continues to increase after real-world successes.
+        - Emotional reactions are becoming more balanced.
+        - User is increasingly willing to face uncomfortable situations.
+
+      major_milestones:
+        - Successfully processed constructive workplace feedback.
+        - Recognized measurable improvement in sleep.
+        - Volunteered to present during a meeting.
+        - Established multiple consistent healthy habits.
+
+      observations:
+        - Confidence is now supported by repeated successful experiences rather than isolated events.
+        - Behavioural consistency appears stronger than in the previous week.
+        - Healthy routines have become part of the user's lifestyle rather than occasional actions.
+        - Emotional resilience continues to improve across different situations.
+        - Limited data on the final recorded day prevented unnecessary assumptions, demonstrating appropriate confidence calibration.
+
+      emotional_arc: >
+        The week began with calm consistency, progressed through meaningful
+        personal growth while handling workplace challenges, and concluded
+        with increased confidence, stronger routines and greater willingness
+        to embrace future challenges.
+
+      confidence: 0.99
