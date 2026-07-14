@@ -1,22 +1,21 @@
 monthly_insights:
   - month: "2026-07"
 
-    start_date: 2026-07-01
+    start_date: "2026-07-01"
 
-    end_date: 2026-07-31
+    end_date: "2026-07-31"
 
     generated_at: "2026-07-31T23:59:00Z"
 
     input_summary:
       weekly_reflections: 2
-
       journals: 10
-
       habits_completed: 15
-
+      meals_logged: 25
       cbt_completed: 4
 
     reflection:
+      summary: >
       summary: >
         Across the recorded weeks, your reflections frequently centered on
         adjusting to a new job while maintaining personal wellbeing.
@@ -26,47 +25,129 @@ monthly_insights:
         Rather than representing individual moments, this summary reflects
         the recurring themes that appeared throughout the month.
 
-      observations:
+      defining_themes:
+        - Adjusting to a new chapter at work.
+        - Building sustainable daily routines.
+        - Creating healthier boundaries between work and personal life.
+        - Using reflection to better understand challenging situations.
+        - Finding balance through consistent habits.
+
+      frequently_observed_patterns:
+        - Work remained an important part of your reflections, although its emotional intensity reduced over time.
+        - Morning routines became increasingly consistent.
+        - Family appeared more frequently during the second half of the month.
+        - Journaling remained consistent even on emotionally challenging days.
+        - CBT exercises were used intentionally when difficult situations arose.
+
+      frequently_mentioned_positive_experiences:
+        - Feeling increasingly comfortable in your workplace.
+        - Spending meaningful time with family.
+        - Experiencing better sleep on several occasions.
+        - Feeling satisfied after maintaining healthy routines.
+        - Completing responsibilities with greater confidence.
+
+      frequently_mentioned_challenges:
+        - Navigating uncertainty during the first week.
+        - Managing personal expectations.
+        - Balancing work responsibilities with personal life.
+        - Maintaining routines during busy periods.
+
+      changes_observed_over_time:
+        - Early reflections centered on adapting to a new work environment.
+        - Mid-month reflections became more balanced between work and personal life.
+        - Later reflections described everyday experiences rather than anticipating future challenges.
+        - Healthy routines shifted from being intentional goals to becoming normal parts of the day.
+        - Family and wellbeing became more prominent topics toward the end of the month.
+
+      insights:
+        - observation: >
+            As your morning routine became more consistent, your reflections
+            increasingly described calmer evenings, better sleep and a greater
+            sense of balance during the day.
+
+          supporting_evidence:
+            - This relationship appeared across both weekly reflections.
+            - Morning Walk remained one of the most consistent habits.
+            - Positive sleep-related reflections became more common later in the month.
+
+          explanation: >
+            Across multiple weeks, consistent morning routines repeatedly
+            appeared alongside reflections describing calmer and more balanced
+            days. This represents an observed relationship rather than evidence
+            that one caused the other.
+
+          confidence: 0.95
+
+        - observation: >
+            As work became more familiar, your attention naturally expanded
+            toward family, personal wellbeing and everyday experiences outside
+            of work.
+
+          supporting_evidence:
+            - Week 1 reflections focused primarily on workplace adjustment.
+            - Week 2 reflections discussed a broader range of life experiences.
+            - Family and personal activities appeared more frequently later in the month.
+
+          explanation: >
+            The overall focus of your reflections gradually broadened across the
+            month instead of remaining centered on work.
+
+          confidence: 0.97
+
+        - observation: >
+            When emotionally demanding situations were reflected on using CBT,
+            later journal entries often described those situations with more
+            perspective and less self-critical language.
+
+          supporting_evidence:
+            - Multiple CBT exercises were followed by reflective journal entries.
+            - Similar language patterns appeared across both weeks.
+
+          explanation: >
+            The relationship appeared consistently enough across the month to
+            suggest a recurring pattern in how situations were described.
+
+          confidence: 0.91
+
+        - observation: >
+            Days where several healthy routines appeared together were often
+            remembered as the most satisfying or balanced days in your journal.
+
+          supporting_evidence:
+            - Morning Walk, meal tracking and meditation frequently appeared together.
+            - Those days commonly included positive reflections about the overall day.
+
+          explanation: >
+            Rather than any single activity standing out, combinations of
+            healthy routines frequently appeared alongside positive reflections.
+
+          confidence: 0.89
+
+      evidence_from_recorded_activities:
         recurring_topics:
-          - Work and career
+          - Work
+          - Family
           - Daily routines
           - Sleep
-          - Family
-          - Personal reflection
-          - Confidence during new experiences
+          - Personal wellbeing
 
-        recurring_positive_experiences:
-          - Receiving positive workplace feedback.
-          - Spending time with family.
-          - Completing Morning Walk regularly.
-          - Recording meals consistently.
-          - Completing CBT exercises during challenging situations.
+        recurring_habits:
+          - Morning Walk
+          - Meditation
+          - Meal tracking
 
-        recurring_challenges:
-          - Adjusting to a new workplace.
-          - Thinking repeatedly about work after hours.
-          - High personal expectations.
-          - Occasional uncertainty before unfamiliar situations.
-
-        recurring_routines:
-          - Morning Walk appeared consistently across both weeks.
-          - Meal logging remained consistent.
-          - Reflection through journaling continued across the month.
-          - CBT exercises were completed on several challenging days.
-
-        changes_over_time:
-          - Early reflections described uncertainty about work.
-          - Later reflections more frequently mentioned familiarity with work.
-          - Sleep was mentioned as improving in later entries.
-          - Later entries contained more examples of voluntarily taking on new challenges.
-          - Family and work-life balance appeared more often toward the end of the timeline.
+        recurring_cbt:
+          - Thought Catcher
+          - Thought Reframing
+          - ABC Analysis
+          - Success Reflection
 
       comparison:
         available: false
 
         summary: >
-          This is the first monthly reflection, so there is no previous
-          month available for comparison.
+          This is your first monthly reflection, so there is no previous month
+          available for comparison.
 
       personalized_reflection:
         enabled: false
@@ -75,23 +156,16 @@ monthly_insights:
 
         reflection: null
 
-        supporting_observations: []
-
-      next_month_focus:
+      next_month_reflection:
         generated_by_ai:
-          title: Areas Worth Continuing to Observe
-
-          why: >
-            These suggestions are based on recurring patterns recorded
-            throughout the month rather than predictions about future
-            outcomes.
+          title: Continue Exploring
 
           suggestions:
-            - Notice whether your Morning Walk continues to appear in your reflections.
-            - Observe how workplace experiences influence your mood over time.
-            - Continue recording sleep-related observations when they feel relevant.
-            - Reflect after particularly stressful or rewarding workdays.
-            - Continue using CBT exercises when you notice recurring thought patterns.
+            - Notice whether your morning routine continues to appear alongside days that feel balanced.
+            - Observe which experiences naturally replace work as your most discussed journal topics.
+            - Continue reflecting after meaningful moments, not only difficult ones.
+            - Pay attention to combinations of routines that consistently appear on satisfying days.
+            - Look for new relationships that emerge as your routines evolve.
 
         user_focus:
           enabled: false
@@ -104,41 +178,21 @@ monthly_insights:
         primary_themes:
           - Career Transition
           - Daily Routine
-          - Healthy Habits
           - Work-Life Balance
-          - Reflection
-
-        recurring_emotions_observed:
-          - Nervous
-          - Calm
-          - Hopeful
-          - Proud
-          - Grateful
-
-        recurring_stressors:
-          - New workplace
-          - Workload
-          - Performance expectations
-
-        recurring_supports:
-          - Morning Walk
-          - Meditation
-          - CBT exercises
           - Family
-          - Positive workplace feedback
+          - Reflection
 
         notable_events:
           - Started a new job.
-          - Received positive workplace feedback.
+          - Received encouraging workplace feedback.
+          - Established a consistent Morning Walk routine.
           - Completed multiple CBT exercises.
-          - Volunteered to present during a meeting.
-          - Reported improved sleep in later entries.
+          - Reported improved sleep later in the month.
 
-        timeline_observations:
-          - Work was the most frequently discussed topic throughout the month.
-          - Healthy routines appeared consistently across both weeks.
-          - Family-related reflections appeared alongside discussions of work-life balance.
-          - Later entries contained more references to established routines than earlier entries.
-          - Several reflections connected daily habits with how the day was experienced.
+        timeline_summary:
+          - The month began with adapting to change.
+          - Stable routines gradually became part of everyday life.
+          - Reflections expanded from work toward a broader view of life.
+          - Family and wellbeing became increasingly present across later reflections.
 
         confidence: 0.99

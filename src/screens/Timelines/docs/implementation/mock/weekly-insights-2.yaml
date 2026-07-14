@@ -1,22 +1,21 @@
-- week: 2026-W29
+weekly_insights:
+  - week: "2026-W29"
 
-  start_date: 2026-07-13
+    start_date: "2026-07-13"
 
-  end_date: 2026-07-19
+    end_date: "2026-07-19"
 
-  generated_at: "2026-07-19T23:59:00Z"
+    generated_at: "2026-07-19T23:59:00Z"
 
-  input_summary:
-    daily_reflections: 4
+    input_summary:
+      daily_reflections: 5
+      journals: 4
+      habits_completed: 9
+      meals_logged: 13
+      cbt_completed: 2
 
-    journals: 4
-
-    habits_completed: 9
-
-    cbt_completed: 2
-
-  reflection:
-    summary: >
+    reflection:
+      summary: >
       This week reflected continued personal growth built upon the
       foundations established previously. Rather than simply adapting to
       your new work environment, you demonstrated greater emotional
@@ -26,24 +25,118 @@
       end of the week, you appeared more willing to step outside your
       comfort zone while maintaining balance through sustainable routines.
 
-    highlights:
-      - Morning Walk became a well-established daily habit.
-      - Successfully handled constructive workplace feedback.
-      - Sleep quality improved through healthier routines.
-      - Volunteered to present during a meeting.
-      - Maintained strong habit consistency throughout the week.
+      frequently_observed_patterns:
+        - Work became a smaller part of your reflections compared with the previous week.
+        - Personal routines appeared more consistently throughout the week.
+        - Family and personal wellbeing appeared more frequently in your journals.
+        - Healthy routines remained consistent across most recorded days.
+        - Reflections became more balanced between work and personal life.
 
-    recurring_patterns:
-      - Confidence increasingly comes from personal experiences rather than external validation.
-      - Healthy routines are becoming automatic.
-      - Emotional regulation continues to improve.
-      - CBT techniques are being applied naturally in daily situations.
-      - Work remains important but no longer dominates emotional wellbeing.
+      frequently_mentioned_positive_experiences:
+        - Feeling more confident in familiar situations.
+        - Spending quality time with family.
+        - Feeling refreshed after restful sleep.
+        - Completing routines without feeling pressured.
+        - Enjoying small everyday moments.
 
-    comparison:
-      available: true
+      frequently_mentioned_challenges:
+        - Occasional self-doubt before unfamiliar responsibilities.
+        - Finding uninterrupted personal time during busy workdays.
+        - Maintaining routines on demanding days.
 
-      compared_to: 2026-W28
+      changes_observed_over_time:
+        - Work shifted from being the main focus to becoming one part of a broader daily life.
+        - Journals increasingly included reflections about personal wellbeing in addition to work.
+        - Healthy routines appeared more naturally rather than being described as goals.
+        - Reflections became more descriptive of daily experiences than of future concerns.
+
+      patterns_worth_noticing:
+        - observation: >
+            On days where your daily routines remained consistent,
+            your reflections more often described feeling mentally
+            settled and less preoccupied by work.
+
+          supporting_evidence:
+            - This pattern appeared across several recorded days.
+            - Consistent routines and calmer reflections frequently appeared together.
+
+          explanation: >
+            Your recorded activities suggest that stable daily routines
+            often coincided with reflections describing greater mental
+            ease. This is an observed association rather than evidence
+            that one caused the other.
+
+          confidence: 0.93
+
+        - observation: >
+            As work occupied less space in your reflections,
+            you naturally wrote more about family, rest and everyday
+            experiences outside work.
+
+          supporting_evidence:
+            - Later journal entries included a wider variety of life topics.
+            - Family and personal moments appeared more frequently than in the previous week.
+
+          explanation: >
+            The balance of topics in your reflections broadened over the
+            course of the week, suggesting attention expanded beyond work.
+
+          confidence: 0.95
+
+        - observation: >
+            Reflections written after completing CBT exercises often
+            described situations with more curiosity and less self-criticism.
+
+          supporting_evidence:
+            - CBT exercises were followed by journal entries using more balanced language.
+            - Similar thought patterns appeared across multiple reflections.
+
+          explanation: >
+            The language used after CBT exercises differed from earlier
+            reflections, indicating a change in how situations were
+            described rather than a change in the situations themselves.
+
+          confidence: 0.90
+
+        - observation: >
+            Better sleep and consistent routines frequently appeared
+            alongside reflections describing greater patience in both
+            work and family interactions.
+
+          supporting_evidence:
+            - Better sleep was mentioned on multiple days.
+            - Those entries also described more positive daily interactions.
+
+          explanation: >
+            These observations repeatedly appeared together across the
+            week's recorded entries.
+
+          confidence: 0.88
+
+      evidence_from_recorded_activities:
+        recurring_topics:
+          - Work
+          - Family
+          - Sleep
+          - Daily routines
+          - Personal wellbeing
+
+        recurring_habits:
+          - Morning Walk
+          - Meditation
+          - Hydration
+
+        recurring_cbt:
+          - Thought Reframing
+          - Success Reflection
+
+        recurring_meals:
+          - Breakfast logging
+          - Lunch logging
+          - Dinner logging
+
+      comparison:
+        available: true
 
       summary: >
         Compared with last week, your focus shifted from adapting to a new
@@ -53,79 +146,49 @@
         embrace new challenges. Emotional stability also appeared more
         consistent throughout the week.
 
-    personalized_reflection: null
+      personalized_reflection:
+        enabled: false
 
-    evidence:
-      dominant_themes:
-        - Confidence
-        - Healthy Habits
-        - Career Growth
-        - Emotional Resilience
-        - Sleep
+        focus_area: null
 
-      recurring_emotions:
-        - Calm
-        - Confident
-        - Hopeful
-        - Proud
+        reflection: null
 
-      recurring_stressors:
-        - Workplace feedback
-        - Public speaking
-        - Normal work pressure
+      next_week_reflection:
+        generated_by_ai:
+          title: Continue Exploring
 
-      recurring_positive_factors:
-        - Morning Walk
-        - Meditation
-        - Reading
-        - Better sleep
-        - CBT exercises
-        - Consistent routines
+          suggestions:
+            - Notice which routines consistently appear on days that feel mentally settled.
+            - Observe whether work continues to share space with other meaningful parts of your life.
+            - Keep reflecting after emotionally significant moments, whether positive or challenging.
+            - Pay attention to how sleep, routines and daily interactions appear together over time.
 
-      recurring_coping_strategies:
-        - Morning Walk
-        - ABC Analysis
-        - Success Reflection
-        - Cognitive reframing
-        - Healthy sleep habits
+        user_focus:
+          enabled: false
 
-    structured_memory:
-      primary_themes:
-        - Emotional Resilience
-        - Confidence Growth
-        - Healthy Lifestyle
-        - Career Development
+          focus_area: null
 
-      dominant_emotions:
-        - Calm
-        - Confident
-        - Proud
+          reflection: null
 
-      long_term_patterns:
-        - Morning Walk has become a sustainable habit.
-        - Healthy routines are improving overall wellbeing.
-        - Sleep quality improved through behavioural changes.
-        - Confidence continues to increase after real-world successes.
-        - Emotional reactions are becoming more balanced.
-        - User is increasingly willing to face uncomfortable situations.
+      structured_memory:
+        primary_themes:
+          - Work-Life Balance
+          - Daily Routine
+          - Family
+          - Reflection
+          - Personal Wellbeing
 
-      major_milestones:
-        - Successfully processed constructive workplace feedback.
-        - Recognized measurable improvement in sleep.
-        - Volunteered to present during a meeting.
-        - Established multiple consistent healthy habits.
+        notable_events:
+          - Became more comfortable with work responsibilities.
+          - Continued a consistent Morning Walk routine.
+          - Completed CBT exercises during challenging situations.
+          - Reported improved sleep on multiple occasions.
+          - Spent more quality time with family.
 
-      observations:
-        - Confidence is now supported by repeated successful experiences rather than isolated events.
-        - Behavioural consistency appears stronger than in the previous week.
-        - Healthy routines have become part of the user's lifestyle rather than occasional actions.
-        - Emotional resilience continues to improve across different situations.
-        - Limited data on the final recorded day prevented unnecessary assumptions, demonstrating appropriate confidence calibration.
+        timeline_summary:
+          - Work became less dominant in reflections than the previous week.
+          - Personal routines remained consistent across most recorded days.
+          - Family and wellbeing became increasingly visible throughout the week.
+          - Reflections expanded beyond immediate work experiences into everyday life.
 
-      emotional_arc: >
-        The week began with calm consistency, progressed through meaningful
-        personal growth while handling workplace challenges, and concluded
-        with increased confidence, stronger routines and greater willingness
-        to embrace future challenges.
-
-      confidence: 0.99
+        confidence: 0.99
