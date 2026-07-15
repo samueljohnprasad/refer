@@ -1239,7 +1239,7 @@ export default function ExercisesScreen(): ReactElement {
           )}
         </ScrollView>
       ) : (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: "#F9FAFB" }}>
           <Suspense fallback={<TimelineSkeleton />}>
             <ExerciseTimeline onPressItem={handleLogPress} />
           </Suspense>

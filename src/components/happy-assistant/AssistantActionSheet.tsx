@@ -14,7 +14,6 @@ import {
 } from "@/src/store/slices/happyAssistantSlice";
 import type { HappyAssistantActionDescriptor } from "./types";
 import { INK_SOFT, SAGE } from "@/lib/tokens";
-import { Card } from "@/src/components/ui/Card";
 import { Text } from "@/src/components/ui/Text";
 
 interface AssistantActionSheetProps {
@@ -38,9 +37,17 @@ export function AssistantActionSheet({
   return (
     <View className="flex-1 px-5 pt-8">
       <View className="mb-4 flex-row items-center gap-3">
-        <View className="h-14 w-14 items-center justify-center rounded-2xl">
+        <Pressable
+          className="h-14 w-14 items-center justify-center rounded-2xl active:opacity-80"
+          onPress={() => {
+            void Haptics.selectionAsync();
+            onCommandPress(HappyAssistantCommandEnum.GoHome);
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Go to Home Screen"
+        >
           <Mascot state="panda-happy" size={46} />
-        </View>
+        </Pressable>
         <View className="flex-1">
           <Text
             variant="body-bold"
@@ -92,57 +99,43 @@ const AssistantActionRow = memo(function AssistantActionRow({
 
   if (isPrimary) {
     return (
-      <Card
-        variant="tile"
-        radius="lg"
-        showDepth={true}
+      <Pressable
         onPress={handlePress}
-        className="mb-1.5"
-        contentClassName="min-h-[72px] flex-row items-center px-4 py-3.5 bg-white border border-white/60 rounded-2xl"
+        className="min-h-[64px] flex-row items-center px-4 py-3 rounded-2xl bg-white/60 active:bg-white"
         accessibilityRole="button"
         accessibilityLabel={action.label}
         accessibilityHint={action.description}
       >
-        <View className="mr-3 h-11 w-11 items-center justify-center rounded-2xl bg-sage-100">
-          <HugeiconsIcon icon={action.icon} size={22} color={SAGE[600]} />
+        <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-sage-100">
+          <HugeiconsIcon icon={action.icon} size={20} color={SAGE[600]} />
         </View>
         <View className="flex-1">
-          <View className="flex-row items-center gap-2">
-            <Text variant="body-bold" className="text-[16px]">
-              {action.label}
-            </Text>
-            <View className="rounded-full bg-sage-pill px-2 py-0.5">
-              <Text
-                variant="body-bold"
-                className="text-[10px] tracking-wide text-sage-700"
-              >
-                RECOMMENDED
-              </Text>
-            </View>
-          </View>
+          <Text variant="body-bold" className="text-[15px]">
+            {action.label}
+          </Text>
           <Text
             variant="body"
             color="muted"
-            className="mt-0.5 text-[14px] leading-4"
+            className="mt-0.5 text-[13px] leading-4"
             numberOfLines={1}
           >
             {action.description}
           </Text>
         </View>
-        <HugeiconsIcon icon={ArrowRight01Icon} size={20} color={SAGE[400]} />
-      </Card>
+        <HugeiconsIcon icon={ArrowRight01Icon} size={18} color={SAGE[400]} />
+      </Pressable>
     );
   }
 
   return (
     <Pressable
       onPress={handlePress}
-      className="mb-1.5 min-h-[64px] flex-row items-center px-4 py-3 rounded-2xl active:bg-sage-100/40"
+      className="min-h-[64px] flex-row items-center px-4 py-3 rounded-2xl bg-white/60 active:bg-white"
       accessibilityRole="button"
       accessibilityLabel={action.label}
       accessibilityHint={action.description}
     >
-      <View className="mr-3 h-10 w-10 items-center justify-center rounded-2xl bg-white/50">
+      <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-white/50">
         <HugeiconsIcon icon={action.icon} size={20} color={INK_SOFT} />
       </View>
       <View className="flex-1">

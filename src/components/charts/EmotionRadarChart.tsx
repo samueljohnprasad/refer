@@ -94,17 +94,11 @@ export const EmotionRadarChart: React.FC<EmotionRadarChartProps> = ({
   // No data state
   if (!data || data?.length === 0) {
     return (
-      <Card variant="tile">
-        <View className="items-center justify-center py-20">
-          <Text className="text-6xl mb-4">📊</Text>
-          <Text variant="h3" className="mb-2">
-            No Emotion Data Yet
-          </Text>
-          <Text variant="body" className="text-center px-4">
-            Start journaling this week to see your emotional balance insights
-          </Text>
-        </View>
-      </Card>
+      <View className="py-8 items-center justify-center">
+        <Text variant="caption-muted" className="text-center font-medium">
+          No emotion data yet.{"\n"}Start journaling this week to see insights.
+        </Text>
+      </View>
     );
   }
 

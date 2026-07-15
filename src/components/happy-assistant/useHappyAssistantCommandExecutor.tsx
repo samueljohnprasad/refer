@@ -137,6 +137,9 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
       [HappyAssistantCommandEnum.ContinueJourney]: () => {
         router.push(HAPPY_ASSISTANT_ROUTES.journeys as never);
       },
+      [HappyAssistantCommandEnum.GoHome]: () => {
+        router.push("/tabs/(tabs)/home" as never);
+      },
       [HappyAssistantCommandEnum.OpenSettings]: () => {
         router.push(HAPPY_ASSISTANT_ROUTES.settings as never);
       },

@@ -145,7 +145,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
             </View>
             {hasAccordion && (
               <Animated.View style={[styles.chevron, chevronStyle]}>
-                <Feather name="chevron-down" size={20} color={INK_MUTED} />
+                <Feather name="chevron-down" size={20} color={"#C7C7CC"} />
               </Animated.View>
             )}
           </View>
@@ -165,11 +165,9 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
             >
               {item.previewText && (!item.gratitudeEntries || item.gratitudeEntries.length === 0) && (
                 <View style={styles.previewContainer}>
-                  <Text style={styles.previewLabel}>
-                    {item.previewLabel || "Situation / Thought"}
-                  </Text>
+                  {/* Label removed in distill pass */}
                   <Text style={styles.previewTextExpanded}>
-                    {item.previewText}
+                    "{item.previewText}"
                   </Text>
                 </View>
               )}
@@ -191,14 +189,10 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               {/* Cognitive Distortions */}
               {item.tags && item.tags.length > 0 && (
                 <View style={styles.tagsSection}>
-                  <Text style={styles.sectionLabel}>Cognitive Distortions</Text>
-                  <View style={styles.tagsContainer}>
-                    {item.tags.map((tag: string) => (
-                      <View key={tag} style={styles.tag}>
-                        <Text style={styles.tagText}>{tag}</Text>
-                      </View>
-                    ))}
-                  </View>
+                  <Text style={styles.inlineTagsText}>
+                    <Text style={{ color: "#8E8E93" }}>Distortions: </Text>
+                    {item.tags.map((tag: string) => tag.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')).join(', ')}
+                  </Text>
                 </View>
               )}
 
@@ -222,9 +216,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
               {/* Balanced Thought / Alternative Belief */}
               {item.expandedText && (
                 <View style={styles.balancedThoughtContainer}>
-                  <Text style={styles.sectionLabel}>
-                    {item.expandedLabel || "Reframed Perspective"}
-                  </Text>
+                  {/* Label removed in distill pass */}
                   <Text style={styles.expandedText}>{item.expandedText}</Text>
                 </View>
               )}
@@ -236,7 +228,7 @@ const ExerciseTimelineCard: React.FC<ExerciseTimelineCardProps> = React.memo(
                 accessibilityLabel={`Open full details for ${item.title} logged on ${format(new Date(item.date), "MMM d")}`}
               >
                 <Text style={styles.viewDetailsText}>
-                  Open Full Entry &rarr;
+                  Open entry
                 </Text>
               </Pressable>
             </Animated.View>
@@ -273,18 +265,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    // Multi-layer shadow for premium depth
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.06,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.04)",
   },
   title: {
     fontFamily: "Nunito-Bold",
@@ -329,7 +311,7 @@ const styles = StyleSheet.create({
   previewText: {
     fontFamily: "Nunito-Italic",
     fontSize: 13,
-    color: INK_MUTED,
+    color: "#48484A", // Darkened for better contrast
     marginTop: 8,
     lineHeight: 18,
   },
@@ -340,17 +322,17 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   previewTextExpanded: {
-    fontFamily: "Nunito-Italic",
-    fontSize: 13,
-    color: INK_MUTED,
-    marginBottom: 8,
-    lineHeight: 18,
+    fontFamily: "Nunito-Medium",
+    fontSize: 14,
+    color: "#2C2C2E", // Darker for better legibility
+    marginBottom: 0,
+    lineHeight: 20,
   },
   expandedText: {
     fontFamily: "Nunito-Medium",
-    fontSize: 13,
-    color: "#48484A",
-    lineHeight: 18,
+    fontSize: 14,
+    color: "#2C2C2E",
+    lineHeight: 20,
   },
   tagsContainer: {
     flexDirection: "row",
@@ -370,34 +352,35 @@ const styles = StyleSheet.create({
     color: SAGE[800],
   },
   viewDetailsButton: {
-    marginTop: 12,
-    paddingVertical: 8,
+    marginTop: 6,
+    paddingVertical: 2,
     alignItems: "flex-start",
   },
   viewDetailsText: {
     fontFamily: "Nunito-SemiBold",
     fontSize: 13,
-    color: SAGE[600],
+    color: "#8E8E93",
+  },
+  inlineTagsText: {
+    fontFamily: "Nunito-Medium",
+    fontSize: 13,
+    color: "#48484A", // Slightly muted to distinguish from thoughts
   },
 
   // New Rich Section Styles
   previewContainer: {
-    marginBottom: 16,
+    marginBottom: 10,
   },
   sectionLabel: {
     fontFamily: "Nunito-Bold",
-    fontSize: 11,
-    color: SAGE[500],
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
+    fontSize: 14,
+    color: "#2C2C2E",
     marginBottom: 6,
   },
   previewLabel: {
     fontFamily: "Nunito-Bold",
-    fontSize: 11,
-    color: INK_MUTED,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
+    fontSize: 14,
+    color: "#2C2C2E",
     marginBottom: 4,
   },
   emotionsContainer: {
@@ -435,7 +418,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   tagsSection: {
-    marginBottom: 12,
+    marginBottom: 10,
   },
   gratitudeContainer: {
     marginBottom: 14,
@@ -457,10 +440,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   balancedThoughtContainer: {
-    backgroundColor: "#F4F5F4", // More subtle sage tint, Apple-like
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 8,
-    // Removed the heavy left border for a cleaner, modern look
+    marginBottom: 2,
   },
 });

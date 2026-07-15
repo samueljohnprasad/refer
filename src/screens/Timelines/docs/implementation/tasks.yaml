@@ -1,0 +1,80 @@
+tasks:
+  - id: t1
+    name: "Setup Supabase AI Foundation"
+    phase: "phase_0"
+    status: "in-progress" # Backend folders created
+    subtasks:
+      - "Implement Gemini API client wrapper (client.ts)"
+      - "Create AI service and reflection engine (ai-service.ts, reflection-engine.ts)"
+      - "Build Zod response validators (validator.ts)"
+      - "Set up context builder for aggregation (context-builder.ts)"
+      - "Implement prompt loader and builder for markdown templates"
+
+  - id: t2
+    name: "Database Schema & Tables"
+    phase: "phase_1"
+    status: "todo"
+    subtasks:
+      - "Create journal_ai table"
+      - "Create daily_ai table"
+      - "Create weekly_ai table"
+      - "Create monthly_ai table"
+      - "Create ai_memory table"
+      - "Deploy migrations"
+
+  - id: t3
+    name: "Journal Reflection Engine"
+    phase: "phase_2"
+    status: "todo"
+    subtasks:
+      - "Listen for journal_completed events"
+      - "Generate reflections & structured memory"
+      - "Store outputs with prompt_version tracking"
+
+  - id: t4
+    name: "Daily Reflection API & On-Demand Engine"
+    phase: "phase_3_and_7"
+    status: "todo"
+    subtasks:
+      - "Implement GET /timeline/daily"
+      - "Implement POST /timeline/daily/{date}/generate-ai"
+      - "Build daily prompt incorporating habits, meals, CBT, and journals"
+      - "Save daily_ai summaries to DB"
+
+  - id: t5
+    name: "Weekly & Monthly Reflection Engines"
+    phase: "phase_4_and_5"
+    status: "todo"
+    subtasks:
+      - "Implement Weekly Reflection using daily_ai summaries"
+      - "Implement Monthly Reflection using weekly_ai summaries"
+      - "Develop GET /timeline/weekly and GET /timeline/monthly APIs"
+
+  - id: t6
+    name: "Frontend: Timeline UI"
+    phase: "phase_8"
+    status: "todo"
+    subtasks:
+      - "t6.1: Setup API Hooks (useDailyTimeline & useGenerateInsight)"
+      - "t6.2: Build Base UI Components (TimelineShimmer, InsightCardWrapper)"
+      - "t6.3: Build State Components (DailyInsightCard, GenerateInsightCard)"
+      - "t6.4: Scaffold TimelinesScreen & DaysTimelineTab with FlatList"
+      - "t6.5: Wire up 'Generate' button to mutation & cache update"
+
+  - id: t7
+    name: "AI Memory & Scheduler"
+    phase: "phase_6_and_9"
+    status: "todo"
+    subtasks:
+      - "Set up idempotency locks to prevent duplicate generation"
+      - "Create cron tasks for end-of-day, end-of-week, end-of-month (if fully automated)"
+      - "Store recurring themes and routines in ai_memory"
+
+  - id: t8
+    name: "Embeddings & Semantic Search (Future)"
+    phase: "phase_10_and_11"
+    status: "future"
+    subtasks:
+      - "Configure pgvector in Supabase"
+      - "Generate embeddings for completed reflections"
+      - "Implement semantic search across journals and themes"

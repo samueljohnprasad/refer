@@ -4,9 +4,10 @@ import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { LifeDomainScore } from "@/src/network/genAi";
 import { View } from "@/components/Themed";
-import { Pressable } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { Pressable, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { LinearGradient } from "expo-linear-gradient";
 import { SkiaRadarChart, RadarDataPoint } from "./SkiaRadarChart";
 
 interface LifeDomainBalanceWheelProps {
@@ -151,19 +152,11 @@ export const LifeDomainBalanceWheel: React.FC<LifeDomainBalanceWheelProps> = ({
 
   if (!data || data.length === 0) {
     return (
-      <Card variant="tile">
-        <View className="items-center py-8">
-          <View className="w-16 h-16 bg-purple-100 rounded-full items-center justify-center mb-4">
-            <MaterialIcons name="donut-large" size={32} color="#7B61FF" />
-          </View>
-          <Text variant="h3" className="mb-2">
-            No Balance Data Yet
-          </Text>
-          <Text variant="body" className="text-center text-gray-500">
-            Journal about different life areas to see your balance wheel
-          </Text>
-        </View>
-      </Card>
+      <View className="py-8 items-center justify-center">
+        <Text variant="caption-muted" className="text-center font-medium">
+          No balance data yet.{"\n"}Journal about different life areas to see your wheel.
+        </Text>
+      </View>
     );
   }
 

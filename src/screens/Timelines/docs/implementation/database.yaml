@@ -72,12 +72,6 @@ tables:
       summary:
         type: text
 
-      primary_theme:
-        type: text
-
-      primary_emotion:
-        type: text
-
       confidence:
         type: numeric
 
@@ -126,18 +120,6 @@ tables:
       primary_emotion:
         type: text
 
-      journal_count:
-        type: integer
-
-      habit_completion_rate:
-        type: numeric
-
-      meal_logged:
-        type: boolean
-
-      cbt_completed:
-        type: boolean
-
       personalized_reflection:
         type: jsonb
         nullable: true
@@ -174,11 +156,11 @@ tables:
       user_id:
         type: uuid
 
-      week_start:
-        type: date
+      year:
+        type: integer
 
-      week_end:
-        type: date
+      week_number:
+        type: integer
 
       summary:
         type: text

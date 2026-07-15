@@ -109,7 +109,7 @@ function DailyNotesScreenComponent(): ReactElement {
   }, [currentWeekView, setCalenderVisibleDates]);
 
   // Bottom sheet ref for AI insights
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const bottomSheetRef = useRef<import("@/src/components/ai/AIInsightsModalBottomSheet").AIInsightsModalRef>(null);
 
   useEffect(() => {
     if (!openAIInsights) return;

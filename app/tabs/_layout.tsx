@@ -39,6 +39,14 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="screens/timelines"
+        options={{
+          headerShown: true, // Needed so the component can inject its custom headerTitle
+          animation: "slide_from_right",
+          freezeOnBlur: true,
+        }}
+      />
+      <Stack.Screen
         name="screens/name-edit"
         options={{
           presentation: "modal",

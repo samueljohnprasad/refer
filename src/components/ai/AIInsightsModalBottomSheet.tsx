@@ -1,19 +1,18 @@
-import React, { forwardRef, useMemo } from "react";
-import { View, Pressable } from "react-native";
-import {
-  BottomSheetModal,
-  BottomSheetScrollView,
-  BottomSheetBackdrop,
-} from "@gorhom/bottom-sheet";
-import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
+import { View, Modal, SafeAreaView, ScrollView } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Cancel01Icon, SparklesIcon } from "@hugeicons/core-free-icons";
+import { Cancel01Icon, ChartHistogramIcon } from "@hugeicons/core-free-icons";
 import { Text } from "@/src/components/ui/Text";
 import { Button } from "@/src/components/ui/Button";
 import SuspensLoader from "@/src/components/SuspensLoader";
 
 // Static imports to avoid Metro bundler React.lazy chunk resolution crashes
 import WeekyScreenAIWrapper from "@/src/screens/DailyNotesScreen/components/WeekyScreenAIWrapper";
+
+export interface AIInsightsModalRef {
+  present: () => void;
+  dismiss: () => void;
+}
 
 interface AIInsightsModalBottomSheetProps {
   weekStart: string;
@@ -22,85 +21,78 @@ interface AIInsightsModalBottomSheetProps {
 }
 
 /**
- * Presentational bottom sheet component for displaying AI weekly insights
- * Uses Gorhom BottomSheetModal to appear above bottom tabs
+ * Presentational full-screen modal component for displaying weekly insights
+ * Refactored from BottomSheet to a dedicated native modal for better UX
  */
 export const AIInsightsModalBottomSheet = forwardRef<
-  BottomSheetModal,
+  AIInsightsModalRef,
   AIInsightsModalBottomSheetProps
 >(({ weekStart, weekEnd, onClose }, ref) => {
-  const snapPoints = useMemo(() => ["90%"], []);
+  const [visible, setVisible] = useState(false);
 
-  const renderBackdrop = React.useCallback(
-    (props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        opacity={0.5}
-      />
-    ),
-    []
-  );
+  useImperativeHandle(ref, () => ({
+    present: () => setVisible(true),
+    dismiss: () => {
+      setVisible(false);
+    },
+  }));
+
+  const handleClose = () => {
+    setVisible(false);
+    onClose?.();
+  };
 
   return (
-    <BottomSheetModal
-      ref={ref}
-      snapPoints={snapPoints}
-      enablePanDownToClose={true}
-      onDismiss={onClose}
-      backgroundStyle={{
-        backgroundColor: "#FFFFFF",
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-      }}
-      handleIndicatorStyle={{
-        backgroundColor: "#D1D5DB",
-        width: 40,
-        height: 5,
-      }}
-      backdropComponent={renderBackdrop}
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+      onRequestClose={handleClose}
     >
-      {/* Header */}
-      <View className="flex-row justify-between items-start px-5 pb-4 pt-2 border-b border-gray-100">
-        <View className="flex-1 flex-row items-center gap-2">
-          <View className="w-10 h-10 rounded-full bg-purple-50 items-center justify-center">
-            <HugeiconsIcon icon={SparklesIcon} size={20} color="#7B61FF" />
+      <View className="flex-1 bg-brand-surface">
+        <SafeAreaView className="flex-1">
+          {/* Header */}
+          <View className="flex-row justify-between items-start px-5 pb-4 pt-4 border-b border-brand-border/20">
+            <View className="flex-1 flex-row items-center gap-3">
+              <View className="w-10 h-10 rounded-full bg-brand-surface-raised items-center justify-center border border-brand-border/30">
+                <HugeiconsIcon icon={ChartHistogramIcon} size={20} color="#374151" className="text-brand-ink" />
+              </View>
+              <View className="flex-1">
+                <Text variant="h2">
+                  Weekly Insights
+                </Text>
+                <Text variant="caption-muted" className="mt-0.5">
+                  {weekStart} - {weekEnd}
+                </Text>
+              </View>
+            </View>
+            <Button
+              variant="ghost"
+              size="sm"
+              onPress={handleClose}
+              fullWidth={false}
+              width={44}
+              leftIcon={<HugeiconsIcon icon={Cancel01Icon} size={24} color="#6B7280" className="text-brand-ink-muted" />}
+            />
           </View>
-          <View className="flex-1">
-            <Text variant="h2">
-              AI Weekly Insights
-            </Text>
-            <Text variant="caption-muted" className="mt-0.5">
-              {weekStart} - {weekEnd}
-            </Text>
-          </View>
-        </View>
-        <Button
-          variant="ghost"
-          size="sm"
-          onPress={onClose}
-          fullWidth={false}
-          width={44}
-          leftIcon={<HugeiconsIcon icon={Cancel01Icon} size={24} color="#6B7280" />}
-        />
-      </View>
 
-      {/* Content */}
-      <BottomSheetScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingHorizontal: 20,
-          paddingTop: 20,
-          paddingBottom: 100,
-          minHeight: 600,
-        }}
-      >
-        <SuspensLoader>
-          <WeekyScreenAIWrapper />
-        </SuspensLoader>
-      </BottomSheetScrollView>
-    </BottomSheetModal>
+          {/* Content */}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 20,
+              paddingTop: 20,
+              paddingBottom: 100,
+              minHeight: 600,
+            }}
+          >
+            <SuspensLoader>
+              <WeekyScreenAIWrapper />
+            </SuspensLoader>
+          </ScrollView>
+        </SafeAreaView>
+      </View>
+    </Modal>
   );
 });
 

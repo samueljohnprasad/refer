@@ -17,7 +17,7 @@
  */
 
 import React, { useCallback, useMemo } from "react";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import { LegendList } from "@legendapp/list";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -33,7 +33,7 @@ const LoadingFooter: React.FC<{ visible: boolean }> = React.memo(
   ({ visible }) => {
     if (!visible) return null;
     return (
-      <View style={styles.footer}>
+      <View className="py-4 items-center">
         <ActivityIndicator size="small" color={SAGE[500]} />
       </View>
     );
@@ -50,7 +50,7 @@ function TimelineInner<T extends TimelineItemData>({
   isLoadingMore = false,
   ListHeaderComponent,
   ListEmptyComponent,
-  backgroundColor = "#F7F7F8",
+  mode = "days",
 }: TimelineProps<T>): React.ReactElement {
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
@@ -85,46 +85,34 @@ function TimelineInner<T extends TimelineItemData>({
       const isFirstItemInSection: boolean = index === 0;
 
       return (
-        <View style={styles.row}>
-          {/* ── Date Column (Left) ────────────────────────────────── */}
-          <View style={styles.dateColumn}>
-            {isFirstItemInSection && (
-              <TimelineSectionHeader date={section.date} />
-            )}
-          </View>
-
+        <View className="flex-row items-stretch">
           {/* ── Stem Column ────────────────────────────────────────── */}
-          <View style={styles.stemColumn}>
+          <View className="w-[68px] items-center relative">
             {/* The dotted line */}
             {!(isVeryFirst && isVeryLast) && (
               <TimelineStemLine
                 flex={true}
                 style={{
-                  marginTop: isVeryFirst ? 14 : 0,
+                  marginTop: isVeryFirst ? 0 : 0,
                   marginBottom: isVeryLast ? 24 : 0,
                 }}
               />
             )}
 
-            {/* The Dot */}
+            {/* The Date Badge */}
             {isFirstItemInSection && (
-              <View
-                style={[
-                  styles.absoluteDot,
-                  { backgroundColor, borderRadius: 10 },
-                ]}
-              >
-                <TimelineDot status={item.status} />
+              <View className="absolute top-0 rounded-2xl py-0.5 bg-[#F9FAFB] dark:bg-black w-full items-center">
+                <TimelineSectionHeader date={section.date} title={section.title} mode={mode} />
               </View>
             )}
           </View>
 
           {/* ── Card Column ────────────────────────────────────────── */}
-          <View style={styles.cardColumn}>{renderItem(item, index)}</View>
+          <View className="flex-1 pl-4 pb-6">{renderItem(item, index)}</View>
         </View>
       );
     },
-    [renderItem, backgroundColor],
+    [renderItem],
   );
 
   // ── Key extractor ─────────────────────────────────────────────────────
@@ -150,10 +138,8 @@ function TimelineInner<T extends TimelineItemData>({
       }
       ListEmptyComponent={ListEmptyComponent}
       ListFooterComponent={<LoadingFooter visible={isLoadingMore} />}
-      contentContainerStyle={[
-        styles.contentContainer,
-      ]}
-      showsVerticalScrollIndicator={true}
+      contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 16 }}
+      showsVerticalScrollIndicator={false}
       contentInsetAdjustmentBehavior="automatic"
     />
   );
@@ -162,51 +148,5 @@ function TimelineInner<T extends TimelineItemData>({
 const Timeline = React.memo(TimelineInner) as typeof TimelineInner;
 export { Timeline };
 
-// ─── Styles ─────────────────────────────────────────────────────────────
-
 const STEM_WIDTH = 44;
 const STEM_LINE_COLOR = "rgba(0, 0, 0, 0.12)";
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    paddingBottom: 120,
-    paddingHorizontal: 16,
-  },
-
-  // ── Row (date + stem + card) ─────────────────────────────────────────
-  row: {
-    flexDirection: "row",
-    alignItems: "stretch",
-  },
-
-  // ── Date column ──────────────────────────────────────────────────────
-  dateColumn: {
-    width: 44,
-    alignItems: "center",
-    paddingTop: 14, // align with card vertically
-  },
-
-  // ── Stem column ──────────────────────────────────────────────────────
-  stemColumn: {
-    width: 24,
-    alignItems: "center",
-    position: "relative",
-  },
-  absoluteDot: {
-    position: "absolute",
-    top: 14, // align with date text
-  },
-
-  // ── Card column ──────────────────────────────────────────────────────
-  cardColumn: {
-    flex: 1,
-    paddingLeft: 16,
-    paddingBottom: 24, // spacing between items
-  },
-
-  // ── Footer ───────────────────────────────────────────────────────────
-  footer: {
-    paddingVertical: 16,
-    alignItems: "center",
-  },
-});

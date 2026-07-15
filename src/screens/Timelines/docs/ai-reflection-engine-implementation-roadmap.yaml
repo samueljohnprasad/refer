@@ -1,10 +1,12 @@
 ---
-version: "1.0"
+version: "2.0"
 
 document:
   name: "AI Reflection Engine Implementation Roadmap"
   description: >
     End-to-end implementation roadmap for the AI Reflection Engine.
+    The system generates hierarchical reflections (Journal → Daily → Weekly → Monthly)
+    while minimizing AI cost through reusable summaries and structured memory.
 
 project:
   frontend:
@@ -24,44 +26,56 @@ project:
 principles:
   - Build infrastructure before AI features.
   - Keep business logic deterministic.
-  - Generate AI only when necessary.
-  - Store AI outputs permanently.
-  - Reuse summaries instead of reprocessing raw data.
-  - Every AI response should produce both a human summary and structured memory.
+  - Generate AI only when required.
+  - Never regenerate existing reflections unless explicitly requested.
+  - Store every AI output permanently.
+  - Build higher-level reflections from lower-level summaries.
+  - Store both human-readable reflections and structured memory.
+  - AI should observe patterns, not judge the user.
+  - AI should describe associations rather than claim causation.
 
 phases:
   - id: phase_0
-    name: AI Infrastructure
+
+    name: AI Foundation
+
     priority: critical
+
     estimated_duration: "2-3 days"
 
     objectives:
       - Create Gemini client
-      - Create Prompt Loader
-      - Create Prompt Builder
-      - Create Context Builder
-      - Create Zod Validator
       - Create AI service wrapper
+      - Create prompt loader
+      - Create prompt builder
+      - Create context builder
+      - Create response validator
+      - Create prompt version manager
 
     deliverables:
       - ai_client
+      - ai_service
       - prompt_loader
       - prompt_builder
       - context_builder
       - validator
-      - ai_service
+      - prompt_versioning
 
     status: pending
 
   - id: phase_1
-    name: Database Design
+
+    name: Database Foundation
+
     priority: critical
+
     estimated_duration: "2 days"
 
     objectives:
-      - Design AI tables
-      - Design structured memory
-      - Add versioning fields
+      - Create AI reflection tables
+      - Create structured memory tables
+      - Add prompt version tracking
+      - Add AI metadata fields
 
     tables:
       - journals
@@ -69,13 +83,16 @@ phases:
       - daily_ai
       - weekly_ai
       - monthly_ai
-      - user_memory
+      - ai_memory
 
     status: pending
 
   - id: phase_2
-    name: Journal AI
+
+    name: Journal Reflection Engine
+
     priority: critical
+
     estimated_duration: "3 days"
 
     trigger:
@@ -85,7 +102,7 @@ phases:
       - journal
 
     outputs:
-      - human_summary
+      - reflection
       - structured_memory
       - confidence
       - prompt_version
@@ -93,11 +110,13 @@ phases:
     status: pending
 
   - id: phase_3
-    name: Daily Reflection
+
+    name: Daily Reflection Engine
+
     estimated_duration: "3 days"
 
     trigger:
-      event: daily_generation
+      event: end_of_day
 
     inputs:
       - journal_ai
@@ -106,104 +125,171 @@ phases:
       - cbt
 
     outputs:
-      - daily_summary
+      - daily_reflection
       - structured_memory
 
     status: pending
 
   - id: phase_4
-    name: Weekly Reflection
+
+    name: Weekly Reflection Engine
+
     estimated_duration: "2 days"
 
+    trigger:
+      event: end_of_week
+
     inputs:
-      - daily_summaries
+      - daily_reflections
       - daily_structured_memory
 
     outputs:
-      - weekly_summary
+      - weekly_reflection
+      - observed_patterns
+      - insights
       - structured_memory
 
     status: pending
 
   - id: phase_5
-    name: Monthly Reflection
-    estimated_duration: "1 day"
+
+    name: Monthly Reflection Engine
+
+    estimated_duration: "2 days"
+
+    trigger:
+      event: end_of_month
 
     inputs:
-      - weekly_summaries
+      - weekly_reflections
       - weekly_structured_memory
 
     outputs:
-      - monthly_summary
+      - monthly_reflection
+      - defining_themes
+      - insights
       - structured_memory
 
     status: pending
 
   - id: phase_6
-    name: Timeline UI
-    estimated_duration: "4 days"
 
-    screens:
-      - Daily
-      - Weekly
-      - Monthly
+    name: AI Scheduler
+
+    estimated_duration: "1 day"
+
+    responsibilities:
+      - Schedule daily reflections
+      - Schedule weekly reflections
+      - Schedule monthly reflections
+      - Prevent duplicate generation
+      - Retry failed generations
 
     status: pending
 
   - id: phase_7
-    name: Long-Term Memory
-    priority: future
 
-    objectives:
-      - Build persistent user memory
-      - Store recurring themes
-      - Store recurring stressors
-      - Store helpful habits
+    name: Timeline APIs
 
-    status: future
+    estimated_duration: "2 days"
+
+    apis:
+      - Get Daily Timeline
+      - Get Weekly Timeline
+      - Get Monthly Timeline
+      - Get Reflection Details
+      - Refresh Reflection
+
+    status: pending
 
   - id: phase_8
+
+    name: Timeline UI
+
+    estimated_duration: "4 days"
+
+    screens:
+      - Daily Timeline
+      - Weekly Timeline
+      - Monthly Timeline
+      - Reflection Details
+
+    features:
+      - Reflection cards
+      - Expandable insights
+      - Previous period comparison
+      - Personalized reflection section
+
+    status: pending
+
+  - id: phase_9
+
+    name: AI Memory
+
+    priority: medium
+
+    estimated_duration: "2 days"
+
+    objectives:
+      - Store recurring themes
+      - Store recurring routines
+      - Store recurring challenges
+      - Store recurring positive experiences
+      - Store important life events
+
+    status: pending
+
+  - id: phase_10
+
     name: Embeddings
-    priority: future
+
+    priority: medium
 
     provider: Gemini
+
     storage: pgvector
 
     generate_for:
       - journal
-      - daily_summary
-      - weekly_summary
-      - monthly_summary
+      - journal_ai
+      - daily_ai
+      - weekly_ai
+      - monthly_ai
 
     skip:
-      - habits
       - meals
+      - habits
       - calories
       - cbt_completion
 
     status: future
 
-  - id: phase_9
+  - id: phase_11
+
     name: Semantic Search
+
     priority: future
 
     features:
-      - similar_journals
-      - similar_days
-      - search_by_theme
-      - search_by_emotion
+      - Similar journals
+      - Similar reflections
+      - Search by topic
+      - Search by emotion
+      - Search by life event
 
     status: future
 
-  - id: phase_10
-    name: Pattern Discovery
+  - id: phase_12
+
+    name: AI Chat
+
     priority: future
 
     features:
-      - recurring_patterns
-      - recurring_stressors
-      - helpful_habits
-      - long_term_insights
+      - Timeline-aware chat
+      - Memory retrieval
+      - Reflection discussion
+      - Context-aware answers
 
     status: future
 
@@ -211,10 +297,13 @@ folder_structure:
   backend:
     ai:
       - client.ts
+      - ai-service.ts
       - context-builder.ts
       - prompt-builder.ts
       - prompt-loader.ts
       - validator.ts
+      - scheduler.ts
+      - reflection-engine.ts
       - types.ts
 
     prompts:
@@ -222,7 +311,13 @@ folder_structure:
       - daily.md
       - weekly.md
       - monthly.md
-      - pattern-discovery.md
+
+    services:
+      - journal.service.ts
+      - daily.service.ts
+      - weekly.service.ts
+      - monthly.service.ts
+      - timeline.service.ts
 
 success_criteria:
   technical:
@@ -230,23 +325,31 @@ success_criteria:
     - prompt_versioning
     - zod_validation
     - cached_ai_outputs
+    - hierarchical_reflections
     - structured_memory
+    - deterministic_generation
 
   product:
     - meaningful_timeline
     - personalized_reflections
-    - scalable_architecture
+    - pattern_discovery
     - low_ai_cost
+    - scalable_architecture
 
 future_features:
-  - conversational_ai
-  - ai_coach
-  - semantic_memory
-  - retrieval_augmented_generation
-  - personalized_recommendations
+  - AI Coach
+  - Conversational AI
+  - Semantic Memory
+  - Retrieval Augmented Generation
+  - Personalized Recommendations
+  - Smart Reflection Reminders
+  - Yearly Reflection
+  - Life Chapters
+  - Relationship Discovery Across Months
 
 final_principle: >
-  Build the AI Reflection Engine as a reusable platform.
-  Every future AI feature should reuse the same context builder,
-  prompt builder, validator, structured memory, and storage model
-  rather than implementing new AI pipelines.
+  Build the AI Reflection Engine as a reusable platform rather than a
+  collection of isolated AI features. Every future AI capability should
+  reuse the same context builder, prompt builder, validator, structured
+  memory, scheduling system and storage model, ensuring consistency,
+  scalability and low operational cost.

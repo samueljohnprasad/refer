@@ -49,6 +49,6 @@ export interface TimelineProps<T extends TimelineItemData> {
   readonly ListEmptyComponent?: React.ReactElement;
   /** Extra top padding (e.g. for transparent headers) */
   readonly contentPaddingTop?: number;
-  /** Background color used to mask the stem line behind date headers (default: #F7F7F8) */
-  readonly backgroundColor?: string;
+  /** Format mode for the left gutter date badge */
+  readonly mode?: "days" | "weeks" | "months";
 }

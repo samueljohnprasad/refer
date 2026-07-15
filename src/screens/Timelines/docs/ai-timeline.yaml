@@ -1,16 +1,20 @@
-version: "1.0"
+version: "2.0"
+
 feature:
-  name: "AI Timeline"
+  name: "AI Reflection Timeline"
   codename: "Life Story Timeline"
-  status: "Ideation"
+  status: "Design"
 
 vision: >
-  Build an AI-powered timeline that helps users understand the story of
-  their wellbeing over time. The goal is not to judge, score, diagnose,
-  or determine whether a user is living a "good" or "bad" life. Instead,
-  the timeline should help users observe patterns, remember important
-  moments, and recognize relationships between their behaviors,
-  emotions, routines, and reflections.
+  Build an AI-powered reflection timeline that helps users understand
+  the evolving story of their wellbeing over time.
+
+  Instead of judging, scoring or diagnosing, the AI helps users
+  discover patterns, recurring themes and meaningful relationships
+  across journals, habits, meals, CBT exercises and future wellness
+  signals.
+
+  The AI acts as a reflective companion rather than an evaluator.
 
 problem_statement:
   current_state:
@@ -18,151 +22,150 @@ problem_statement:
     - Habit tracker exists independently.
     - Meal tracker exists independently.
     - CBT exercises exist independently.
-    - Users can record information but cannot understand the relationship
-      between different parts of their wellbeing.
+    - Users collect valuable data but cannot understand how different parts of their life connect.
 
   user_problem:
-    - Users forget how they felt a week ago.
-    - Users cannot identify what helps them.
-    - Users cannot recognize recurring stressors.
-    - Users cannot connect habits with emotional wellbeing.
-    - Users see isolated data instead of a meaningful story.
+    - Users forget how they felt days or weeks ago.
+    - Users cannot easily identify recurring stressors.
+    - Users struggle to discover which routines appear alongside better days.
+    - Users only see isolated events instead of a larger story.
+    - Valuable personal insights remain hidden across many entries.
 
 product_goal:
   primary_goal: >
-    Transform fragmented wellness data into meaningful reflections.
+    Transform fragmented wellness activities into meaningful,
+    evidence-based reflections.
 
   secondary_goals:
-    - Help users notice patterns.
-    - Encourage reflection.
+    - Help users discover recurring patterns.
+    - Connect multiple dimensions of wellbeing.
+    - Encourage self-reflection.
     - Improve long-term engagement.
-    - Make AI feel like a thoughtful companion rather than a scoring engine.
+    - Help users remember meaningful moments.
+    - Make AI feel like a thoughtful companion.
 
   explicitly_not_the_goal:
     - Diagnose mental health.
-    - Judge users.
-    - Predict mental illness.
     - Replace therapists.
-    - Tell users they are succeeding or failing.
-    - Assign a "life score."
+    - Predict depression.
+    - Judge users.
+    - Compare users.
+    - Assign wellness scores.
+    - Decide whether a day was good or bad.
 
 core_principle:
   title: "Observe, Don't Judge"
 
   explanation: >
-    The AI should describe observations instead of making judgments.
+    AI should describe observations supported by recorded evidence.
+    It should never evaluate the user's wellbeing or assign meaning
+    that is not supported by their own data.
 
-  bad_examples:
+  avoid:
     - "You had a bad day."
     - "You are getting worse."
-    - "Your mental health declined."
+    - "You recovered."
     - "You failed your routine."
-    - "You are happier than yesterday."
-    - "You are recovering."
+    - "Your mental health declined."
 
-  good_examples:
-    - "Today's journal mentioned work stress more often than usual."
-    - "You completed fewer habits than your recent average."
-    - "Despite a stressful day, you continued journaling."
-    - "Thought reframing appeared after a stressful journal entry."
-    - "Your routines were less consistent today."
-    - "Gratitude appeared more frequently this week."
+  prefer:
+    - "Work appeared more frequently in today's journal."
+    - "Morning routines were less consistent this week."
+    - "Family appeared more often during the second half of the month."
+    - "CBT exercises frequently followed stressful journal entries."
+    - "Several calmer reflections appeared after consistent morning routines."
 
 timeline_levels:
   daily:
     objective: >
-      Help users understand today's story.
+      Help users understand today's recorded experiences.
+
+    ai_role: >
+      Summarize today's activities, identify themes,
+      compare against recent history and surface one or two
+      observations worth reflecting on.
 
     inputs:
       - Journal
       - Meals
-      - Habit completion
-      - CBT exercises
-      - Mood check-in (future)
-      - Sleep (future)
-      - Other wellness signals (future)
+      - Habits
+      - CBT
 
     output_sections:
-      - title: "What Happened"
-        description: >
-          Simple factual recap.
+      - What Happened
+      - Themes
+      - Changes
+      - Insight
 
-      - title: "Themes"
-        description: >
-          Emotional and contextual themes extracted from journals and CBT.
+  weekly:
+    objective: >
+      Discover recurring patterns across multiple days.
 
-      - title: "Changes"
-        description: >
-          Comparison against the user's recent baseline.
+    inputs:
+      - Daily AI summaries
 
-      - title: "Something Worth Noticing"
-        description: >
-          Interesting observation without judgment.
+    output_sections:
+      - Reflection Summary
+      - Frequently Observed Patterns
+      - Frequently Mentioned Positive Experiences
+      - Frequently Mentioned Challenges
+      - Changes Observed Over Time
+      - Insights
+      - Evidence From Recorded Activities
+      - Personalized Reflection
+      - Next Week Reflection
 
-example_daily:
-  date: "Monday"
+  monthly:
+    objective: >
+      Tell the story of the month rather than summarize statistics.
 
-  what_happened:
-    - Journal completed
-    - Meals logged
-    - Habit completion: 4/6
-    - Thought reframing completed
+    inputs:
+      - Weekly AI summaries
 
-  themes:
-    - Work stress
-    - Low energy
-    - Gratitude
+    output_sections:
+      - Month In One Sentence
+      - Reflection Summary
+      - Defining Themes
+      - Frequently Observed Patterns
+      - Changes Observed Over Time
+      - Insights
+      - Evidence From Recorded Activities
+      - Personalized Reflection
+      - Next Month Reflection
 
-  changes:
-    - More work-related stress than last week.
-    - Habit completion stayed consistent.
+insights:
+  description: >
+    Insights are the signature feature of the AI Reflection Timeline.
+    They connect multiple recorded activities to surface meaningful
+    relationships that may not be obvious from individual entries.
 
-  observation: >
-    Even on a stressful day, you completed your reflection and
-    thought reframing exercise.
+  rules:
+    - Must be supported by recorded evidence.
+    - Prefer connecting two or more dimensions.
+    - Never imply causation.
+    - Never diagnose.
+    - Never speculate.
+    - Return zero insights if insufficient evidence exists.
 
-weekly:
-  objective: >
-    Help users understand recurring themes.
+  example:
+    observation: >
+      During weeks where your morning routine stayed
+      consistent, your journal entries more often
+      described calmer evenings.
 
-  summarize:
-    - Daily AI summaries
-    - Journals
-    - Habit trends
-    - Meal trends
-    - CBT activity
-
-  output:
-    - Major themes
-    - Recurring stressors
-    - Positive moments
-    - Behavioral consistency
-    - Interesting correlations
-
-example_weekly:
-  summary: >
-    Work remained the dominant source of stress this week.
-    Despite this, journaling stayed consistent and thought
-    reframing exercises were completed on three separate days.
-
-monthly:
-  objective: >
-    Tell the story of the month rather than summarize statistics.
-
-example_monthly:
-  summary: >
-    Early in the month, journal entries focused on uncertainty
-    around work. During the final two weeks, entries increasingly
-    mentioned confidence and gratitude. Meal tracking became more
-    consistent while evening habits became less regular.
+    explanation: >
+      This relationship appeared repeatedly across
+      multiple recorded days. It represents an
+      observed association rather than evidence
+      that one caused the other.
 
 comparison_strategy:
   compare_against:
     - Yesterday
     - Last 7 days
-    - Last 30 days
     - Previous week
     - Previous month
+    - Last 30 days
 
   never_compare:
     - Other users
@@ -170,68 +173,53 @@ comparison_strategy:
     - Generic wellness benchmarks
 
 important_design_decision:
-  do_not_measure:
+  never_measure:
     - Good day
     - Bad day
     - Successful day
     - Failed day
+    - Healthy person
+    - Unhealthy person
 
   instead_measure:
-    - Changes
     - Patterns
+    - Changes
     - Themes
-    - Consistency
     - Relationships
     - Reflection
+    - Consistency
 
 behavior_vs_wellbeing:
   principle: >
-    Behaviors do not directly indicate wellbeing.
+    Behaviors alone do not indicate wellbeing.
 
   examples:
-    - scenario: >
-        User completed every habit.
+    - Completing every habit does not necessarily
+      mean the user felt emotionally well.
 
-      reality: >
-        They may still have experienced one of the hardest days
-        emotionally.
+    - Skipping every habit does not necessarily
+      mean the user had a bad day.
 
-    - scenario: >
-        User skipped every habit.
-
-      reality: >
-        They may have finally processed difficult emotions through
-        journaling and experienced meaningful personal growth.
-
-    - conclusion: >
-        Never infer emotional wellbeing solely from completed tasks.
-
-pattern_discovery:
-  unlock_after: "Approximately 30 days"
+    - Journaling about difficult emotions may
+      represent meaningful reflection rather than
+      poor wellbeing.
 
   purpose: >
-    Discover personalized patterns instead of generic advice.
+    Discover personalized patterns unique to the
+    individual user.
 
   examples:
-    helps_you:
-      - Morning walks often coincide with calmer journal entries.
-      - Journaling before bed is associated with lower stress the next day.
-      - Completing thought reframing frequently follows difficult workdays.
-
-    worth_watching:
-      - Weekend routines appear less structured.
-      - Meal logging decreases during busy work weeks.
-      - Gratitude appears more often after exercise.
+    - Morning walks frequently appeared alongside calmer reflections.
+    - Journaling before bed often preceded less stressful mornings.
+    - CBT exercises commonly followed work-related journal entries.
+    - Family appeared more frequently after quieter weekends.
 
 daily_ai_prompt_objective:
   answer_questions:
     - What happened today?
-
     - What themes appeared?
-
-    - What changed compared to recent patterns?
-
-    - What seems worth noticing?
+    - What changed compared with recent days?
+    - What is worth noticing today?
 
 language_guidelines:
   preferred_words:
@@ -239,24 +227,24 @@ language_guidelines:
     - seems
     - often
     - may
-    - compared with
     - recently
-    - noticeable
-    - consistent
     - pattern
+    - relationship
+    - observation
     - reflection
+    - compared with
 
   avoid_words:
     - failed
-    - success
+    - recovering
     - healthier
     - unhealthy
+    - improving
+    - declining
+    - success
     - worse
     - better
     - mentally stronger
-    - recovering
-    - improving
-    - declining
 
 tone:
   personality:
@@ -268,51 +256,21 @@ tone:
 
   never_be:
     - Judgmental
-    - Dramatic
     - Diagnostic
-    - Authoritative
+    - Dramatic
     - Alarmist
+    - Authoritative
 
-future_personalization:
-  optional_daily_check_in:
-    question: >
-      How would you describe today overall?
+evidence_philosophy:
+  principle: >
+    Every insight must be explainable using the user's
+    own recorded activities.
 
-    options:
-      - Very Difficult
-      - Difficult
-      - Neutral
-      - Good
-      - Great
-
-  purpose: >
-    Allow the AI to learn which behaviors actually correlate with
-    positive days for each individual user.
-
-future_learning:
-  after_90_days:
-    examples:
-      user_a:
-        happiest_days:
-          - Morning walk
-          - Evening journal
-          - Family time
-
-      user_b:
-        happiest_days:
-          - Consistent meals
-          - Productive workdays
-          - No work meetings
-
-      user_c:
-        difficult_days:
-          - Family conflict
-          - Poor sleep
-          - Skipped breakfast
-
-    principle: >
-      Learn from the user's own history instead of applying generic
-      wellness assumptions.
+  requirements:
+    - Never invent relationships.
+    - Never overstate weak evidence.
+    - Prefer one strong insight over many weak ones.
+    - Confidence reflects evidence strength, not certainty.
 
 data_pipeline:
   daily:
@@ -321,24 +279,23 @@ data_pipeline:
       - Habits
       - Meals
       - CBT
-      - Future mood check-in
 
     output:
       - Daily AI Summary
 
   weekly:
     inputs:
-      - Daily summaries
+      - Daily AI Summaries
 
     output:
-      - Weekly AI Summary
+      - Weekly Reflection
 
   monthly:
     inputs:
-      - Weekly summaries
+      - Weekly Reflections
 
     output:
-      - Monthly AI Summary
+      - Monthly Reflection
 
 storage_strategy:
   recommendation:
@@ -347,98 +304,67 @@ storage_strategy:
     - Never regenerate historical summaries automatically.
 
   reasons:
-    - Lower AI costs.
+    - Lower AI cost.
     - Consistent user experience.
-    - Stable historical records.
+    - Stable historical timeline.
 
 edge_cases:
   insufficient_data:
     response: >
-      Continue logging your activities. As more information becomes
-      available, your timeline will become more personalized.
+      Continue recording your experiences.
+      As more information becomes available,
+      reflections will become increasingly personalized.
 
   no_journal:
     behavior: >
-      Generate insights using habits, meals and CBT only.
-
-  journal_only:
-    behavior: >
-      Focus reflections on emotional themes rather than habits.
+      Generate reflections using habits,
+      meals and CBT only.
 
   habits_only:
     behavior: >
-      Describe routines without making assumptions about emotions.
+      Describe routines without inferring emotions.
 
   cbt_only:
     behavior: >
-      Mention completed exercises without interpreting therapeutic
-      outcomes.
-
-examples:
-  example_1:
-    title: "Stressful Workday"
-
-    summary: >
-      Today's journal focused on work-related stress. You completed
-      a thought reframing exercise afterward and maintained most of
-      your planned habits. Compared with recent entries, work was
-      mentioned more frequently than usual.
-
-  example_2:
-    title: "Quiet Day"
-
-    summary: >
-      Today included fewer logged activities than usual. You still
-      took time to reflect through journaling. Recent entries suggest
-      quieter days often involve shorter reflections.
-
-  example_3:
-    title: "Busy Weekend"
-
-    summary: >
-      Meal logging and habits were less consistent over the weekend,
-      while your journal focused more on spending time with friends
-      and family. Similar weekend patterns have appeared previously.
-
-  example_4:
-    title: "Recovery Without Judgement"
-
-    summary: >
-      Several routines were skipped today, yet you completed a journal
-      describing a difficult personal experience. Rather than focusing
-      on routine consistency, today reflects time spent processing an
-      important event.
+      Mention completed exercises without
+      interpreting therapeutic outcomes.
 
 non_goals:
-  - Mental health diagnosis
-  - Crisis detection (handled separately)
-  - Medical advice
   - Therapy replacement
+  - Mental health diagnosis
+  - Medical advice
   - Predicting depression
-  - Assigning wellness scores
-  - Ranking users
+  - Wellness scores
+  - User ranking
   - Comparing users
 
 success_metrics:
   product:
     - Increased journal retention
-    - Increased weekly active users
-    - Increased return visits to Timeline
-    - Increased long-term engagement
+    - Increased weekly engagement
+    - Increased timeline visits
+    - Increased monthly retention
 
   qualitative:
-    - Users feel understood.
-    - Users discover new personal patterns.
-    - Users revisit old reflections.
+    - Users discover meaningful patterns.
+    - Users revisit previous reflections.
     - Users trust AI observations.
+    - Users feel understood rather than judged.
 
 north_star:
   statement: >
-    The AI Timeline should help users understand the story of their
-    wellbeing, not judge the quality of their life.
+    Help users understand the story of their
+    wellbeing through evidence-based reflection,
+    not evaluation.
 
 final_philosophy: >
-  The timeline is not a report card.
+
+  The AI Reflection Timeline is not a report card.
+
   It is a reflective companion.
-  Every insight should help users notice something meaningful about
-  themselves without deciding whether they are doing well or poorly.
+
+  Every reflection should help users notice
+  something meaningful about themselves,
+  grounded in their own recorded experiences,
+  without deciding whether they are doing
+  well or poorly.

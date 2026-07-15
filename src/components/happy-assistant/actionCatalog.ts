@@ -196,7 +196,7 @@ export const ASSISTANT_CONTEXT_CONFIG = {
     actionIds: [
       HappyAssistantActionIdEnum.VoiceJournal,
       HappyAssistantActionIdEnum.TryBreathing,
-      HappyAssistantActionIdEnum.OpenSettings,
+      HappyAssistantActionIdEnum.MoodCheck,
     ],
   },
 } satisfies Record<HappyAssistantContext, AssistantContextConfig>;

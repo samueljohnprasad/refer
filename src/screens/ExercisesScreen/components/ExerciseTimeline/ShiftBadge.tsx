@@ -57,15 +57,15 @@ const ShiftBadge: React.FC<ShiftBadgeProps> = React.memo(
                 : ("arrow.right" as any)
             }
             size={9}
-            tintColor={improved ? SAGE[600] : "#A67C00"}
+            tintColor={improved ? "#4A6B43" : "#636366"}
             weight="semibold"
             style={styles.icon}
           />
         ) : hasBoth ? (
           <Feather
-            name={improved ? "trending-down" : "arrow-right"}
-            size={9}
-            color={improved ? SAGE[600] : "#A67C00"}
+            name={improved ? "trending-down" : "minus"}
+            size={10}
+            color={improved ? "#4A6B43" : "#636366"}
           />
         ) : null}
 
@@ -92,15 +92,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 4,
     paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
+    paddingVertical: 0,
+    borderRadius: 0,
     alignSelf: "flex-start",
   },
   pillImproved: {
-    backgroundColor: "rgba(95, 127, 88, 0.10)",
+    backgroundColor: "transparent",
   },
   pillNeutral: {
-    backgroundColor: "rgba(198, 148, 0, 0.08)",
+    backgroundColor: "transparent",
   },
   icon: {
     width: 10,
@@ -112,9 +112,9 @@ const styles = StyleSheet.create({
     lineHeight: 14,
   },
   textImproved: {
-    color: SAGE[600],
+    color: "#4A6B43", // Deeper, more sophisticated sage green
   },
   textNeutral: {
-    color: "#A67C00",
+    color: "#636366", // Neutral gray instead of warning yellow
   },
 });

@@ -137,6 +137,10 @@ export default function JournalCalendarScreen() {
     router.push("/tabs/screens/settings");
   }, []);
 
+  const handleTimelinePress = useCallback(() => {
+    router.push("/tabs/screens/timelines");
+  }, []);
+
   const handleQuickJournalPress = useCallback(
     (prompt: QuickJournalPrompt) => {
       setPrompt(prompt.description);
@@ -191,6 +195,12 @@ export default function JournalCalendarScreen() {
         }}
       />
       <Stack.Toolbar placement="right" tintColor={INK}>
+        <Stack.Toolbar.Button
+          icon="chart.bar.doc.horizontal"
+          title="Timeline"
+          tintColor={INK}
+          onPress={handleTimelinePress}
+        />
         <Stack.Toolbar.Button
           icon="rosette"
           title="Awards"

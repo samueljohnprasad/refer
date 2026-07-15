@@ -4,9 +4,7 @@ Generate
 
 Summary
 
-Primary themes
 
-Primary emotions
 
 Structured memory
 

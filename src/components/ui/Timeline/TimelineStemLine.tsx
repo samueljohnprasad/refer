@@ -18,7 +18,7 @@ interface TimelineStemLineProps {
   readonly style?: StyleProp<ViewStyle>;
 }
 
-const STEM_LINE_COLOR = "rgba(0, 0, 0, 0.12)";
+const STEM_LINE_COLOR = "rgba(0, 0, 0, 0.10)";
 
 const TimelineStemLine: React.FC<TimelineStemLineProps> = React.memo(
   ({ hidden = false, flex = false, style }) => {

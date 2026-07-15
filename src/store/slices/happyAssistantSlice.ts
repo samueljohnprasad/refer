@@ -14,6 +14,7 @@ export enum HappyAssistantCommandEnum {
   ContinueJourney = "continue_journey",
   RestorePurchases = "restore_purchases",
   Support = "support",
+  GoHome = "go_home",
 }
 
 export type HappyAssistantCommand = `${HappyAssistantCommandEnum}`;

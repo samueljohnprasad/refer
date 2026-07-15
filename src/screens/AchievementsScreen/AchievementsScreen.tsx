@@ -149,20 +149,25 @@ const StatCard: React.FC<StatCardProps> = ({
   <Pressable
     onPress={onPress}
     disabled={!onPress}
-    className="mb-4"
+    className="mb-1"
     accessibilityRole="button"
     accessibilityLabel={accessibilityLabel ?? `${label}: ${value}. ${subtext}`}
     accessibilityHint={accessibilityHint}
   >
-    <View className="px-4 py-3 rounded-[16px] bg-brand-surface-soft border border-brand-border">
-    <View className="flex-row items-center justify-between mb-1.5">
-      <View className="flex-row items-center gap-2.5">
+    <View className="px-2 py-3">
+    <View className="flex-row items-center justify-between mb-0.5">
+      <View className="flex-row items-center gap-3">
         {icon}
-        <Text className="happy-font-body-bold text-sm text-ink">{label}</Text>
+        <View>
+          <Text className="happy-font-body-bold text-[15px] text-ink">{label}</Text>
+          <Text className="happy-font-body-medium text-xs text-ink-muted mt-0.5">
+            {subtext}
+          </Text>
+        </View>
       </View>
-      <View className="flex-row items-center gap-1">
+      <View className="flex-row items-center gap-1.5">
         <Text
-          className="happy-font-heading-bold text-[28px] tracking-tight"
+          className="happy-font-body-bold text-[24px] tracking-tight"
           style={{ color }}
         >
           {value}
@@ -177,26 +182,12 @@ const StatCard: React.FC<StatCardProps> = ({
         ) : null}
       </View>
     </View>
-    <Text className="happy-font-body-medium text-[11px] text-ink-muted mb-2 ml-11">
-      {subtext}
-    </Text>
     {progressCounts !== undefined && (
-      <View>
+      <View className="mt-2 ml-12 pr-1">
         <RewardsOwnedProgress
           ownedCount={progressCounts.current}
           totalCount={progressCounts.total}
         />
-        <Text
-          className="happy-font-body-semibold text-[10px] mt-1 text-right"
-          style={{ color }}
-        >
-          {Math.round(
-            progressCounts.total > 0
-              ? (progressCounts.current / progressCounts.total) * 100
-              : 0,
-          )}
-          %
-        </Text>
       </View>
     )}
   </View>
@@ -316,11 +307,9 @@ export const AchievementsScreen: React.FC = () => {
           headerStyle: { backgroundColor: "transparent" },
           headerLargeTitleStyle: { fontFamily: "Outfit-Bold" },
           headerTitleStyle: { fontFamily: "Outfit-Bold" },
+          headerTintColor: SAGE[600],
         }}
       />
-      <Stack.Toolbar placement="left">
-        <Stack.Toolbar.Button icon="chevron.backward" onPress={() => router.back()} tintColor={SAGE[600]} />
-      </Stack.Toolbar>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button icon="sparkles" onPress={() => router.push("/tabs/screens/xp-history")} tintColor={GOLD} />
       </Stack.Toolbar>
@@ -356,70 +345,33 @@ export const AchievementsScreen: React.FC = () => {
           accessibilityLabel="Achievements scroll view"
         >
           {/* ── Your Progress ── */}
-          <View className="px-4 pt-3 pb-2">
-            <Text className="happy-font-heading-bold text-[20px] text-ink mb-4">Your Progress</Text>
+          <View className="px-5 pt-2 pb-6 flex-row justify-between">
+            <View>
+              <Text className="happy-font-body-bold text-[32px] text-ink tracking-tight mb-0.5">
+                {unlockedCount}
+              </Text>
+              <Text className="happy-font-body-medium text-[13px] text-ink-muted">
+                Badges
+              </Text>
+            </View>
 
-            <StatCard
-              icon={
-                <IconBubble
-                  icon={Medal01Icon}
-                  color={SAGE[500]}
-                  bg={SAGE.pill}
-                />
-              }
-              label="Badges Unlocked"
-              value={String(unlockedCount)}
-              subtext={`${unlockedCount} of ${totalCount} badges collected`}
-              color={SAGE[500]}
-              progressCounts={{ current: unlockedCount, total: totalCount }}
-              accessibilityLabel={`Badges unlocked: ${unlockedCount} of ${totalCount}. ${Math.round(overallProgress)}% complete.`}
-              accessibilityHint="Scrolls to all badge categories."
-              onPress={handleScrollToBadges}
-            />
+            <View>
+              <Text className="happy-font-body-bold text-[32px] text-ink tracking-tight mb-0.5" style={{ color: "#8B6213" }}>
+                {totalXPEarned}
+              </Text>
+              <Text className="happy-font-body-medium text-[13px] text-ink-muted">
+                XP Earned
+              </Text>
+            </View>
 
-            <StatCard
-              icon={
-                <IconBubble
-                  icon={StarsIcon}
-                  color="#8B6213"
-                  bg="#FDF6E3"
-                />
-              }
-              label="Badge XP"
-              value={`${totalXPEarned}`}
-              subtext="XP earned from all unlocked badges"
-              color="#8B6213"
-              accessibilityLabel={`XP earned from badges: ${totalXPEarned} points`}
-              accessibilityHint="Opens XP history."
-              onPress={handleXPHistoryPress}
-            />
-
-            <StatCard
-              icon={
-                <IconBubble
-                  icon={CheckmarkCircle02Icon}
-                  color={SAGE[600]}
-                  bg={SAGE.selected}
-                />
-              }
-              label="Category Mastery"
-              value={`${masteredCategoryCount}/5`}
-              subtext="Complete all badges in a category"
-              color={SAGE[600]}
-              accessibilityLabel={`Categories mastered: ${masteredCategoryCount} of 5`}
-              accessibilityHint="Scrolls to all badge categories."
-              onPress={handleScrollToBadges}
-            />
-          </View>
-
-          {/* ── All Badges ── */}
-          <View
-            className="px-4 mt-4 mb-3"
-            onLayout={(event) => {
-              allBadgesOffsetY.current = event.nativeEvent.layout.y;
-            }}
-          >
-            <Text className="happy-font-heading-bold text-[20px] text-ink">All Badges</Text>
+            <View>
+              <Text className="happy-font-body-bold text-[32px] text-ink tracking-tight mb-0.5" style={{ color: SAGE[600] }}>
+                {masteredCategoryCount}<Text className="text-[20px] text-ink-muted/50">/5</Text>
+              </Text>
+              <Text className="happy-font-body-medium text-[13px] text-ink-muted">
+                Mastery
+              </Text>
+            </View>
           </View>
 
           {/* Empty state */}
@@ -449,8 +401,8 @@ export const AchievementsScreen: React.FC = () => {
                         icon={categoryIcon}
                         color={color}
                         bg={bg}
-                        size={46}
-                        iconSize={21}
+                        size={40}
+                        iconSize={20}
                       />
                       <Text
                         className="happy-font-body-bold text-[17px] text-ink"
@@ -460,20 +412,17 @@ export const AchievementsScreen: React.FC = () => {
                       </Text>
                     </View>
 
-                    <View
-                      className="happy-brand-status-chip rounded-full px-3 py-1.5"
-                      style={{ backgroundColor: bg }}
-                    >
+                    <View className="px-1">
                       <Text
                         className="happy-font-body-bold text-sm"
-                        style={{ color }}
+                        style={{ color: "rgba(0,0,0,0.3)" }}
                       >
                         {categoryUnlocked}/{categoryAchievements.length}
                       </Text>
                     </View>
                   </View>
 
-                  <View className="px-2.5 py-3">
+                  <View className="py-2 mb-4">
                     <View className="flex-row flex-wrap">
                       {categoryAchievements.map((item) => (
                         <View

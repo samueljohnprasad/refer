@@ -147,20 +147,11 @@ export const EmotionalVolatilityIndex: React.FC<
 
   if (!data || data.length === 0) {
     return (
-      <Card variant="tile">
-        <View className="items-center py-8">
-          <View className="w-16 h-16 bg-purple-100 rounded-full items-center justify-center mb-4">
-            <Feather name="activity" size={32} color="#7B61FF" />
-          </View>
-          <Text variant="h3" className="mb-2">
-            No Volatility Data Yet
-          </Text>
-          <Text variant="body" className="text-center">
-            Start journaling consistently to see your emotional stability
-            patterns
-          </Text>
-        </View>
-      </Card>
+      <View className="py-8 items-center justify-center">
+        <Text variant="caption-muted" className="text-center font-medium">
+          No volatility data yet.{"\n"}Start journaling consistently to see patterns.
+        </Text>
+      </View>
     );
   }
 
