@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Share, Alert, Modal, Text as RNText } from "react-native";
+import { View, Share, Alert, Modal, Text as RNText, StyleSheet } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   Share01Icon,
@@ -14,6 +14,7 @@ import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
 import {
   presentationDetents,
   presentationDragIndicator,
+  presentationBackground,
 } from "@expo/ui/swift-ui/modifiers";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
@@ -21,7 +22,8 @@ import { Button } from "@/src/components/ui/Button";
 import { GOLD, PARROT_ORANGE, SAGE, INK, INK_MUTED } from "@/lib/tokens";
 import { triggerIfEnabledSync } from "@/lib/haptics/hapticUtils";
 import { HAPTIC_INTENSITIES } from "@/lib/haptics/hapticConfig";
-import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
+import { LinearGradient } from "expo-linear-gradient";
+import { AnimatedEmberIcon } from "@/src/components/ui/AnimatedStatIcon";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -57,25 +59,31 @@ const WeekDayLabels: React.FC<{ weeklyProgress: boolean[] }> = React.memo(
 );
 WeekDayLabels.displayName = "WeekDayLabels";
 
-/** Day progress circles — filled for completed, star for last day */
 const WeekProgressCircles: React.FC<{ weeklyProgress: boolean[] }> = React.memo(
-  ({ weeklyProgress }) => (
-    <View className="flex-row justify-between items-center">
-      {weeklyProgress.map((completed, index) => (
-        <View
-          key={index}
-          className="items-center justify-center"
-          style={{ width: 36, height: 36 }}
-        >
-          {completed ? (
-            <AnimatedFireIcon width={28} height={28} />
-          ) : (
-            <GrayFireIcon width={24} height={24} />
-          )}
-        </View>
-      ))}
-    </View>
-  ),
+  ({ weeklyProgress }) => {
+    // Find the last completed day to set as "today" for the breathing effect
+    const lastCompletedIndex = weeklyProgress.lastIndexOf(true);
+    
+    return (
+      <View className="flex-row justify-between items-center">
+        {weeklyProgress.map((completed, index) => (
+          <View
+            key={index}
+            className="items-center justify-center"
+            style={{ width: 36, height: 36 }}
+          >
+            <AnimatedEmberIcon
+              width={completed ? 28 : 24}
+              height={completed ? 28 : 24}
+              delayMs={150 + index * 120} // Staggered entry
+              isToday={completed && index === lastCompletedIndex}
+              isGray={!completed}
+            />
+          </View>
+        ))}
+      </View>
+    );
+  }
 );
 WeekProgressCircles.displayName = "WeekProgressCircles";
 
@@ -88,10 +96,33 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
   const { streakData, isLoading } = useStreakTracker();
 
   useEffect(() => {
-    if (visible && streakData.currentStreak > 0) {
-      void triggerIfEnabledSync("heartbeat", HAPTIC_INTENSITIES.HEARTBEAT);
-    }
-  }, [visible, streakData.currentStreak]);
+    if (!visible || streakData.currentStreak === 0) return;
+
+    // Initial heartbeat on open
+    void triggerIfEnabledSync("heartbeat", HAPTIC_INTENSITIES.HEARTBEAT);
+
+    const lastCompletedIndex = streakData.weeklyProgress.lastIndexOf(true);
+    if (lastCompletedIndex === -1) return;
+
+    // Calculate exactly when the final ember finishes its entrance animation
+    // delayMs = 150 + index * 120
+    // entry duration = 600ms
+    const entryFinishTime = 150 + lastCompletedIndex * 120 + 600;
+
+    let interval: NodeJS.Timeout;
+    const timeout = setTimeout(() => {
+      // The breathing loop (1800ms inhale, 1800ms exhale) starts here.
+      // We trigger a soft heartbeat haptic exactly at the peak of each inhale/exhale (every 1800ms).
+      interval = setInterval(() => {
+        void triggerIfEnabledSync("breath", HAPTIC_INTENSITIES.WHISPER_SUBTLE);
+      }, 1800);
+    }, entryFinishTime);
+
+    return () => {
+      clearTimeout(timeout);
+      if (interval) clearInterval(interval);
+    };
+  }, [visible, streakData.currentStreak, streakData.weeklyProgress]);
 
   // Trigger review prompt at 1-day streak milestone
   useReviewPrompt({
@@ -123,7 +154,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <Host>
+      <Host colorScheme="light" style={StyleSheet.absoluteFill}>
         <BottomSheet
           isPresented={visible}
           onIsPresentedChange={(val: boolean) => {
@@ -134,10 +165,18 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
             modifiers={[
               presentationDetents([{ fraction: 0.55 }]),
               presentationDragIndicator("visible"),
+              presentationBackground("#FFFFFF"),
             ]}
           >
             <RNHostView>
-              <View className="flex-1 happy-brand-screen items-center px-6 pt-4 pb-8">
+              <View className="flex-1 happy-brand-screen items-center px-6 pt-4 pb-8 overflow-hidden">
+                <LinearGradient
+                  colors={["rgba(255,150,0,0.12)", "transparent"]}
+                  style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 250 }}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                />
+                
                 {/* ── Typographic Streak Hero ───────────────────────────── */}
                 <View className="items-center mb-10 mt-6 px-4">
                   <RNText
@@ -145,7 +184,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                     style={{ color: INK }}
                   >
                     You're on a{" "}
-                    <RNText style={{ color: PARROT_ORANGE }}>
+                    <RNText style={{ color: PARROT_ORANGE, textShadowColor: 'rgba(255,150,0,0.3)', textShadowOffset: {width: 0, height: 4}, textShadowRadius: 12 }}>
                       {streakData.currentStreak}-day
                     </RNText>{" "}
                     streak

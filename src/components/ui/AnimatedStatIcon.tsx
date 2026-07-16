@@ -113,3 +113,83 @@ export const GrayFireIcon = (props: { width?: number; height?: number; color?: s
     <Path d="M18.5 18.5451C19.3 17.3451 20.5 15.7118 21 15.0451C21.1666 14.7118 21.7 14.2451 22.5 15.0451C23.5 16.0451 24.5 18.0451 25 18.5451C25.5 19.0451 26 21.0451 25 22.5451C24 24.0451 22.5 24.5451 21.5 24.5451C20.5 24.5451 19 23.5451 18.5 22.5451C18 21.5451 17.5 20.0451 18.5 18.5451Z" fill="#CBD5E1" />
   </Svg>
 );
+
+import { View } from "react-native";
+import { useAnimatedStyle } from "react-native-reanimated";
+
+export const AnimatedEmberIcon = ({
+  width = 28,
+  height = 28,
+  delayMs = 0,
+  isToday = false,
+  isGray = false,
+}: {
+  width?: number;
+  height?: number;
+  delayMs?: number;
+  isToday?: boolean;
+  isGray?: boolean;
+}) => {
+  const opacity = useSharedValue(0);
+  const scale = useSharedValue(0.6);
+
+  useEffect(() => {
+    opacity.value = withDelay(delayMs, withTiming(1, { duration: 500, easing: Easing.out(Easing.cubic) }));
+    scale.value = withDelay(delayMs, withTiming(1, { duration: 600, easing: Easing.out(Easing.back(1.5)) }, (finished) => {
+      if (finished && isToday && !isGray) {
+        // Continuous gentle breathing
+        opacity.value = withRepeat(
+          withTiming(0.75, { duration: 1800, easing: Easing.inOut(Easing.ease) }),
+          -1,
+          true
+        );
+        scale.value = withRepeat(
+          withTiming(1.06, { duration: 1800, easing: Easing.inOut(Easing.ease) }),
+          -1,
+          true
+        );
+      }
+    }));
+  }, [delayMs, isToday, isGray]);
+
+  const style = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
+  }));
+
+  const shadowStyle = useAnimatedStyle(() => {
+    if (!isToday || isGray) return { opacity: 0 };
+    return {
+      opacity: opacity.value * 0.4,
+      transform: [{ scale: scale.value * 1.6 }],
+    };
+  });
+
+  return (
+    <View style={{ width, height, alignItems: 'center', justifyContent: 'center' }}>
+      {/* Background ambient glow for today's ember */}
+      {isToday && !isGray && (
+        <Animated.View
+          style={[
+            {
+              position: 'absolute',
+              width: width * 0.8,
+              height: height * 0.8,
+              backgroundColor: '#FF9600',
+              borderRadius: width / 2,
+              shadowColor: '#FF9600',
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 1,
+              shadowRadius: 8,
+              elevation: 4,
+            },
+            shadowStyle
+          ]}
+        />
+      )}
+      <Animated.View style={style}>
+        {isGray ? <GrayFireIcon width={width} height={height} /> : <AnimatedFireIcon width={width} height={height} />}
+      </Animated.View>
+    </View>
+  );
+};

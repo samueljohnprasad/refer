@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -20,6 +21,7 @@ import {
   BarChartIcon,
   CheckmarkCircle02Icon,
   Coins01Icon,
+  InformationCircleIcon,
 } from "@hugeicons/core-free-icons";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -48,8 +50,6 @@ import {
   labelStyle,
 } from "@expo/ui/swift-ui/modifiers";
 
-
-
 // ─── Utility ────────────────────────────────────────────────────────────────
 /** Convert a 6-digit hex color to rgba() for safe cross-platform tinting. */
 const hexToRgba = (hex: string, alpha: number): string => {
@@ -61,6 +61,8 @@ const hexToRgba = (hex: string, alpha: number): string => {
 };
 
 // ─── Category config ─────────────────────────────────────────────────────────
+import { BADGE_COLORS } from "@/src/types/achievements";
+
 const CATEGORY_CONFIG: Record<
   AchievementCategory,
   { label: string; icon: any; color: string; bg: string }
@@ -68,32 +70,32 @@ const CATEGORY_CONFIG: Record<
   journaling: {
     label: "Journaling",
     icon: NoteIcon,
-    color: SAGE[500],
-    bg: hexToRgba(SAGE[500], 0.12),
+    color: BADGE_COLORS.journaling,
+    bg: hexToRgba(BADGE_COLORS.journaling, 0.15),
   },
   streaks: {
     label: "Streaks",
     icon: Fire02Icon,
-    color: TERRACOTTA,
-    bg: hexToRgba(TERRACOTTA, 0.12),
+    color: BADGE_COLORS.streaks,
+    bg: hexToRgba(BADGE_COLORS.streaks, 0.15),
   },
   habits: {
     label: "Habits",
     icon: TaskDone01Icon,
-    color: SAGE[400],
-    bg: hexToRgba(SAGE[400], 0.14),
+    color: BADGE_COLORS.habits,
+    bg: hexToRgba(BADGE_COLORS.habits, 0.15),
   },
   wellness: {
     label: "Wellness",
     icon: StarsIcon,
-    color: SAGE[600],
-    bg: hexToRgba(SAGE[600], 0.1),
+    color: BADGE_COLORS.wellness,
+    bg: hexToRgba(BADGE_COLORS.wellness, 0.15),
   },
   tracking: {
     label: "Tracking",
     icon: BarChartIcon,
-    color: GOLD,
-    bg: hexToRgba(GOLD, 0.14),
+    color: BADGE_COLORS.tracking,
+    bg: hexToRgba(BADGE_COLORS.tracking, 0.15),
   },
 };
 
@@ -155,43 +157,45 @@ const StatCard: React.FC<StatCardProps> = ({
     accessibilityHint={accessibilityHint}
   >
     <View className="px-2 py-3">
-    <View className="flex-row items-center justify-between mb-0.5">
-      <View className="flex-row items-center gap-3">
-        {icon}
-        <View>
-          <Text className="happy-font-body-bold text-[15px] text-ink">{label}</Text>
-          <Text className="happy-font-body-medium text-xs text-ink-muted mt-0.5">
-            {subtext}
+      <View className="flex-row items-center justify-between mb-0.5">
+        <View className="flex-row items-center gap-3">
+          {icon}
+          <View>
+            <Text className="happy-font-body-bold text-[15px] text-ink">
+              {label}
+            </Text>
+            <Text className="happy-font-body-medium text-xs text-ink-muted mt-0.5">
+              {subtext}
+            </Text>
+          </View>
+        </View>
+        <View className="flex-row items-center gap-1.5">
+          <Text
+            className="happy-font-body-bold text-[24px] tracking-tight"
+            style={{ color }}
+          >
+            {value}
           </Text>
+          {onPress ? (
+            <HugeiconsIcon
+              icon={ArrowRight02Icon}
+              size={18}
+              color={color}
+              strokeWidth={2}
+            />
+          ) : null}
         </View>
       </View>
-      <View className="flex-row items-center gap-1.5">
-        <Text
-          className="happy-font-body-bold text-[24px] tracking-tight"
-          style={{ color }}
-        >
-          {value}
-        </Text>
-        {onPress ? (
-          <HugeiconsIcon
-            icon={ArrowRight02Icon}
-            size={18}
-            color={color}
-            strokeWidth={2}
+      {progressCounts !== undefined && (
+        <View className="mt-2 ml-12 pr-1">
+          <RewardsOwnedProgress
+            ownedCount={progressCounts.current}
+            totalCount={progressCounts.total}
           />
-        ) : null}
-      </View>
+        </View>
+      )}
     </View>
-    {progressCounts !== undefined && (
-      <View className="mt-2 ml-12 pr-1">
-        <RewardsOwnedProgress
-          ownedCount={progressCounts.current}
-          totalCount={progressCounts.total}
-        />
-      </View>
-    )}
-  </View>
-</Pressable>
+  </Pressable>
 );
 
 /** Shown when the achievements list is empty after loading. */
@@ -302,16 +306,20 @@ export const AchievementsScreen: React.FC = () => {
         options={{
           headerShown: true,
           title: "Achievements",
-          headerLargeTitle: true,
           headerShadowVisible: false,
           headerStyle: { backgroundColor: "transparent" },
           headerLargeTitleStyle: { fontFamily: "Outfit-Bold" },
           headerTitleStyle: { fontFamily: "Outfit-Bold" },
           headerTintColor: SAGE[600],
+          headerBackButtonDisplayMode: "minimal",
         }}
       />
       <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button icon="sparkles" onPress={() => router.push("/tabs/screens/xp-history")} tintColor={GOLD} />
+        <Stack.Toolbar.Button
+          icon="sparkles"
+          onPress={() => router.push("/tabs/screens/xp-history")}
+          tintColor={GOLD}
+        />
       </Stack.Toolbar>
     </>
   );
@@ -329,7 +337,7 @@ export const AchievementsScreen: React.FC = () => {
   return (
     <>
       {headerElements}
-      
+
       <SafeAreaView
         className="happy-brand-screen flex-1"
         style={styles.screen}
@@ -345,32 +353,79 @@ export const AchievementsScreen: React.FC = () => {
           accessibilityLabel="Achievements scroll view"
         >
           {/* ── Your Progress ── */}
-          <View className="px-5 pt-2 pb-6 flex-row justify-between">
-            <View>
-              <Text className="happy-font-body-bold text-[32px] text-ink tracking-tight mb-0.5">
+          <View className="px-5 pt-4 pb-8 items-center">
+            {/* Primary Stat */}
+            <View className="items-center mb-6">
+              <Text className="happy-font-body-bold text-[48px] text-ink tracking-tight">
                 {unlockedCount}
               </Text>
-              <Text className="happy-font-body-medium text-[13px] text-ink-muted">
-                Badges
+              <Text className="happy-font-body-medium text-[15px] text-ink-muted">
+                Badges Unlocked
               </Text>
             </View>
 
-            <View>
-              <Text className="happy-font-body-bold text-[32px] text-ink tracking-tight mb-0.5" style={{ color: "#8B6213" }}>
-                {totalXPEarned}
-              </Text>
-              <Text className="happy-font-body-medium text-[13px] text-ink-muted">
-                XP Earned
-              </Text>
-            </View>
+            {/* Secondary Stats */}
+            <View className="flex-row items-center justify-center gap-6 w-full px-4">
+              <TouchableOpacity
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  Alert.alert(
+                    "XP Earned",
+                    "You earn XP (Experience Points) by completing journaling exercises and unlocking badges. Keep writing to grow!",
+                  );
+                }}
+                className="flex-row items-center gap-2 bg-gray-50 px-4 py-2.5 rounded-2xl flex-1 justify-center"
+              >
+                <View>
+                  <Text
+                    className="happy-font-body-bold text-[18px] text-center"
+                    style={{ color: "#8B6213" }}
+                  >
+                    {totalXPEarned}
+                  </Text>
+                  <View className="flex-row items-center gap-1 mt-0.5">
+                    <Text className="happy-font-body-medium text-[12px] text-ink-muted">
+                      XP Earned
+                    </Text>
+                    <HugeiconsIcon
+                      icon={InformationCircleIcon}
+                      size={12}
+                      color="#9CA3AF"
+                    />
+                  </View>
+                </View>
+              </TouchableOpacity>
 
-            <View>
-              <Text className="happy-font-body-bold text-[32px] text-ink tracking-tight mb-0.5" style={{ color: SAGE[600] }}>
-                {masteredCategoryCount}<Text className="text-[20px] text-ink-muted/50">/5</Text>
-              </Text>
-              <Text className="happy-font-body-medium text-[13px] text-ink-muted">
-                Mastery
-              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  Alert.alert(
+                    "Mastery",
+                    "Mastery shows how many categories you have fully completed. Unlock all badges in a category to master it!",
+                  );
+                }}
+                className="flex-row items-center gap-2 bg-gray-50 px-4 py-2.5 rounded-2xl flex-1 justify-center"
+              >
+                <View>
+                  <Text
+                    className="happy-font-body-bold text-[18px] text-center"
+                    style={{ color: SAGE[600] }}
+                  >
+                    {masteredCategoryCount}
+                    <Text className="text-[14px] text-ink-muted/50">/5</Text>
+                  </Text>
+                  <View className="flex-row items-center gap-1 mt-0.5">
+                    <Text className="happy-font-body-medium text-[12px] text-ink-muted">
+                      Mastery
+                    </Text>
+                    <HugeiconsIcon
+                      icon={InformationCircleIcon}
+                      size={12}
+                      color="#9CA3AF"
+                    />
+                  </View>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -411,15 +466,6 @@ export const AchievementsScreen: React.FC = () => {
                         {label}
                       </Text>
                     </View>
-
-                    <View className="px-1">
-                      <Text
-                        className="happy-font-body-bold text-sm"
-                        style={{ color: "rgba(0,0,0,0.3)" }}
-                      >
-                        {categoryUnlocked}/{categoryAchievements.length}
-                      </Text>
-                    </View>
                   </View>
 
                   <View className="py-2 mb-4">
@@ -438,7 +484,7 @@ export const AchievementsScreen: React.FC = () => {
                             showDescription={false}
                             showProgressBar={false}
                             showProgressText={true}
-                            showUnlockedProgress={true}
+                            showUnlockedProgress={false}
                             size="md"
                           />
                         </View>
@@ -449,8 +495,6 @@ export const AchievementsScreen: React.FC = () => {
               );
             },
           )}
-
-
 
           {/* Motivational footer */}
           {hasAchievements && unlockedCount < totalCount && (

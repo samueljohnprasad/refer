@@ -57,7 +57,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
     if (isVisible) {
       sheetRef.current?.present();
     } else {
-      closeHandler();
+      sheetRef.current?.close();
     }
   }, [isVisible]);
 
@@ -90,7 +90,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
   }, [appStoreUrl, closeHandler]);
 
   return (
-    <ShortBottomModal ref={sheetRef} snapPoints={["45%"]}>
+    <ShortBottomModal ref={sheetRef} snapPoints={["45%"]} onDismiss={onDismiss}>
       <VStack
         className="flex-1 px-5 pt-1 items-center justify-between pb-6"
         space="sm"

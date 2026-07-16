@@ -101,19 +101,18 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
 
         {tipText && (
           <FadeInItem index={0}>
-            <View className="rounded-xl p-4 mb-5 flex-row items-start bg-sage-pill border border-sage-200/50">
-              <View className="h-8.5 w-8.5 rounded-xl bg-sage-50 items-center justify-center mr-3 mt-0.5 shadow-sm">
+            <View className="mb-6 flex-row items-start px-1">
+              <View className="mr-3 mt-[2px] opacity-60">
                 <HugeiconsIcon
                   icon={Idea01Icon}
                   size={18}
-                  color={SAGE[500]}
-                  strokeWidth={2}
+                  color={SAGE[600]}
+                  strokeWidth={1.5}
                 />
               </View>
               <Text
                 variant="body"
-                color="soft"
-                className="text-[14.5px] leading-relaxed flex-1 font-medium text-sage-800"
+                className="text-[14.5px] leading-relaxed flex-1 text-ink-soft"
               >
                 {tipText}
               </Text>
@@ -121,10 +120,10 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
           </FadeInItem>
         )}
 
-        <FadeInItem index={tipText ? 1 : 0} className="flex-1">
+        <FadeInItem index={tipText ? 1 : 0}>
           {suggestions && suggestions.length > 0 && (
             <SuggestionCards
-              title={suggestionsTitle || "Quick picks"}
+              title={suggestionsTitle || ""}
               suggestions={suggestions}
               currentValue={value}
               onSelect={(text) => onUpdate({ [fieldKey]: text } as any)}
@@ -135,7 +134,7 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
           <View className={isAiLoading ? "min-h-[96px] justify-center" : ""}>
             {(isAiLoading || (aiSuggestions && aiSuggestions.length > 0)) && (
               <SuggestionCards
-                title="Tap a suggestion to use it"
+                title=""
                 suggestions={aiSuggestions?.map((s: AISuggestionItem) => ({
                   label: s.text,
                   emoji: s.emoji,

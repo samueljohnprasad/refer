@@ -358,7 +358,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
 
       <AnimatedStepContainer
         stepIndex={flow.currentStepIndex}
-        className="flex-1"
+        className="pb-4"
       >
         {StepComponent ? (
           <StepComponent {...stepProps} />

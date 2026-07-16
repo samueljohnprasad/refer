@@ -7,6 +7,7 @@ import SuspensLoader from "@/src/components/SuspensLoader";
 import KeyboardJournalScreen from "@/src/screens/DiscoveryScreen/KeyboardJournalScreen";
 import JournalEntryScreen from "@/src/screens/JournalEntryScreen/JournalEntryScreen";
 import EmotionAnalysisLoadingScreen from "@/src/screens/DiscoveryScreen/EmotionAnalysisLoadingScreen";
+import Animated, { FadeIn, FadeOut, Easing } from "react-native-reanimated";
 
 export default function KeyboardRecorderScreen() {
   const router = useRouter();
@@ -33,26 +34,44 @@ export default function KeyboardRecorderScreen() {
       />
       <SuspensLoader>
         {stepper === 0 && (
-          <KeyboardJournalScreen
-            onClose={onClose}
-            onStop={(text) => {
-              setJournalText(text);
-              setStepper(1);
-            }}
-          />
+          <Animated.View 
+            entering={FadeIn.duration(250).easing(Easing.out(Easing.ease))}
+            exiting={FadeOut.duration(200).easing(Easing.out(Easing.ease))}
+            style={{ flex: 1 }}
+          >
+            <KeyboardJournalScreen
+              onClose={onClose}
+              onStop={(text) => {
+                setJournalText(text);
+                setStepper(1);
+              }}
+            />
+          </Animated.View>
         )}
         {stepper === 1 && journalText && (
-          <EmotionAnalysisLoadingScreen
-            journalText={journalText}
-            onAnalysisCompleted={({ insights }) => {
-              setInsights(insights);
-              setStepper(2);
-            }}
-            onCancel={onClose}
-          />
+          <Animated.View 
+            entering={FadeIn.duration(250).easing(Easing.out(Easing.ease))}
+            exiting={FadeOut.duration(200).easing(Easing.out(Easing.ease))}
+            style={{ flex: 1 }}
+          >
+            <EmotionAnalysisLoadingScreen
+              journalText={journalText}
+              onAnalysisCompleted={({ insights }) => {
+                setInsights(insights);
+                setStepper(2);
+              }}
+              onCancel={onClose}
+            />
+          </Animated.View>
         )}
         {stepper === 2 && (
-          <JournalEntryScreen insights={insights} onClose={onClose} />
+          <Animated.View 
+            entering={FadeIn.duration(250).easing(Easing.out(Easing.ease))}
+            exiting={FadeOut.duration(200).easing(Easing.out(Easing.ease))}
+            style={{ flex: 1 }}
+          >
+            <JournalEntryScreen insights={insights} onClose={onClose} />
+          </Animated.View>
         )}
       </SuspensLoader>
     </View>

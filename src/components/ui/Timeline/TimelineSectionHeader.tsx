@@ -17,7 +17,7 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
         const monthStr = dayjs(date).format("MMM").toUpperCase();
         const yearStr = dayjs(date).format("YYYY");
         return (
-          <View className="items-center">
+          <View className="items-center px-2 py-1">
             <Text style={{ fontFamily: "Nunito-Bold", color: "#1A1A1A", fontSize: 13 }}>{monthStr}</Text>
             <Text style={{ fontFamily: "Nunito-SemiBold", color: SAGE[500], fontSize: 10, letterSpacing: 1.2 }}>{yearStr}</Text>
           </View>
@@ -35,7 +35,7 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
           // Cross-month: "JUN 29 - JUL 5"
           const [start, end] = dateRange.split(" - ");
           return (
-            <View className="items-center">
+            <View className="items-center px-2 py-1">
               <Text style={{ fontFamily: "Nunito-Bold", color: "#1A1A1A", fontSize: 10, textAlign: 'center' }}>{start}</Text>
               <Text style={{ fontFamily: "Nunito-Bold", color: "#1A1A1A", fontSize: 10, textAlign: 'center' }}>{end}</Text>
               <Text style={{ fontFamily: "Nunito-SemiBold", color: SAGE[500], fontSize: 9, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
@@ -47,7 +47,7 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
           const month = dateRange.substring(0, spaceIdx);
           const days = dateRange.substring(spaceIdx + 1);
           return (
-            <View className="items-center">
+            <View className="items-center px-2 py-1">
               <Text style={{ fontFamily: "Nunito-Bold", color: "#1A1A1A", fontSize: 11, textAlign: 'center' }}>{month}</Text>
               <Text style={{ fontFamily: "Nunito-Bold", color: "#1A1A1A", fontSize: 11, textAlign: 'center' }}>{days}</Text>
               <Text style={{ fontFamily: "Nunito-SemiBold", color: SAGE[500], fontSize: 9, letterSpacing: 1.2, marginTop: 2 }}>{yearStr}</Text>
@@ -77,7 +77,7 @@ export const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = React
     }
 
     return (
-      <View className="items-center px-1">
+      <View className="items-center px-2 py-1">
         {prefix}
       </View>
     );

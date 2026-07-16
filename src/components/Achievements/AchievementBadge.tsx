@@ -2,7 +2,25 @@ import React from "react";
 import { View, Text, Pressable, Image } from "react-native";
 import type { Achievement } from "@/src/types/achievements";
 // FIX #28: Removed unused Svg and Polygon imports (dead code)
-import { SAGE, INK_MUTED } from "@/lib/tokens";
+import { INK_MUTED } from "@/lib/tokens";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+
+// Helper to tint achievement colors for badge backgrounds
+const hexToRgba = (hex: string, alpha: number): string => {
+  const sanitized = hex.replace("#", "");
+  const r = parseInt(sanitized.substring(0, 2), 16);
+  const g = parseInt(sanitized.substring(2, 4), 16);
+  const b = parseInt(sanitized.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+import { 
+  Medal01Icon,
+  NoteIcon,
+  Fire02Icon,
+  TaskDone01Icon,
+  StarsIcon,
+  BarChartIcon
+} from "@hugeicons/core-free-icons";
 interface AchievementBadgeProps {
   achievement: Achievement;
   isUnlocked: boolean;
@@ -37,6 +55,14 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
     lg: { hex: 100, icon: 32, nameSize: "text-sm", tileWidth: 128 },
   };
 
+  const categoryIcons: Record<string, any> = {
+    journaling: NoteIcon,
+    streaks: Fire02Icon,
+    habits: TaskDone01Icon,
+    wellness: StarsIcon,
+    tracking: BarChartIcon,
+  };
+
   const styles = sizeStyles[size];
   const target = achievement.condition.target;
   // FIX #29: Clamp progress to minimum of 0 to prevent negative values
@@ -67,41 +93,47 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
       ]}
     >
       {/* Badge Image */}
-          <View 
-            className="items-center justify-center rounded-full border bg-white"
-            style={{ 
-              width: styles.hex * 0.75, 
-              height: styles.hex * 0.75,
-              borderColor: isUnlocked ? SAGE[200] : "#E5E7EB",
-              backgroundColor: isUnlocked ? "#F4F7F4" : "#F9FAFB",
-              shadowColor: isUnlocked ? SAGE[600] : "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: isUnlocked ? 0.04 : 0.02,
-              shadowRadius: 4,
-              elevation: 1,
-            }}
-          >
-            {isNumberIcon ? (
-              <Text
-                className="font-bold"
-                style={{
-                  fontSize: styles.icon,
-                  color: isUnlocked ? SAGE[600] : "#4B5563",
-                }}
-              >
-                {achievement.icon}
-              </Text>
-            ) : (
-              <Text
-                style={{
-                  fontSize: styles.icon,
-                  opacity: isUnlocked ? 1 : 0.5,
-                }}
-              >
-                {achievement.icon}
-              </Text>
-            )}
-          </View>
+      {achievement.imageAsset ? (
+        <View style={{ opacity: isUnlocked ? 1 : 0.5 }}>
+          <Image
+            source={achievement.imageAsset.unlocked}
+            style={{ width: styles.hex, height: styles.hex }}
+            resizeMode="contain"
+          />
+        </View>
+      ) : (
+        <View 
+          className="items-center justify-center rounded-full border bg-white"
+          style={{ 
+            width: styles.hex * 0.75, 
+            height: styles.hex * 0.75,
+            borderColor: isUnlocked ? hexToRgba(achievement.color, 0.4) : "#E5E7EB",
+            backgroundColor: isUnlocked ? hexToRgba(achievement.color, 0.1) : "#F9FAFB",
+            shadowColor: isUnlocked ? achievement.color : "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: isUnlocked ? 0.04 : 0.02,
+            shadowRadius: 4,
+            elevation: 1,
+          }}
+        >
+          {isNumberIcon ? (
+            <HugeiconsIcon
+              icon={categoryIcons[achievement.category] || Medal01Icon}
+              size={styles.icon}
+              color={isUnlocked ? achievement.color : "#9CA3AF"}
+            />
+          ) : (
+            <Text
+              style={{
+                fontSize: styles.icon,
+                opacity: isUnlocked ? 1 : 0.5,
+              }}
+            >
+              {achievement.icon}
+            </Text>
+          )}
+        </View>
+      )}
 
       {/* Badge Name */}
       <Text
@@ -141,7 +173,8 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
             <Text
               className={`happy-font-body-semibold text-[11px] text-center ${
                 showProgressBar ? "mt-0.5" : ""
-              } ${isUnlocked ? "text-sage-600" : "text-gray-600"}`}
+              }`}
+              style={{ color: isUnlocked ? achievement.color : "#9CA3AF" }}
             >
               {displayedProgress}/{target}
             </Text>

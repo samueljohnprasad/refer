@@ -22,7 +22,17 @@ import {
   SAGE,
   SAGE_OVERLAY,
   TRANSPARENT,
+  PARROT_ORANGE,
 } from "@/lib/tokens";
+
+/** Human-readable mood scale shown as a legend below the calendar grid. */
+const MOOD_LEGEND = [
+  { score: 1, label: "Terrible" },
+  { score: 2, label: "Bad" },
+  { score: 3, label: "Okay" },
+  { score: 4, label: "Good" },
+  { score: 5, label: "Great" },
+] as const;
 
 // Constants outside component to prevent recreation
 const WEEKDAY_LABELS = [
@@ -131,7 +141,7 @@ const DayCell = React.memo<DayCellProps>(
         onPress={onPress}
         disabled={disabled}
         accessibilityRole="button"
-        accessibilityLabel={`${dayLabel}, ${isTodayDate ? "today" : ""}`}
+        accessibilityLabel={`${dayLabel}${isTodayDate ? ", today" : ""}`}
         accessibilityState={{ selected: isSelected, disabled }}
       >
         <View className={containerClassName} style={containerStyle}>
@@ -142,8 +152,13 @@ const DayCell = React.memo<DayCellProps>(
             <View className={moodClassName}>
               <MoodBadge
                 disabled={disabled}
-                moodscore={Math.round(mood || 0)}
-                size={16}
+                moodscore={mood !== undefined ? Math.round(mood) : undefined}
+                // 22px fills the cell without cramping the date number,
+                // and meets the visual size needed for recognisable emoji.
+                size={22}
+                // Press handling is owned by the parent Pressable (full-cell
+                // target), so the badge itself is display-only.
+                displayOnly
               />
             </View>
           )}
@@ -229,6 +244,9 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
 
     const cellStyle = useMemo(() => {
       const numberOfRows = days.length / 7;
+      // 5-row months get slightly shorter cells (0.86) so the calendar
+      // height stays compact; 6-row months use squarer cells (1.05) to
+      // prevent the grid from becoming too tall on smaller screens.
       const aspectRatio = numberOfRows === 5 ? 0.86 : 1.05;
       return {
         width: "14.285%" as DimensionValue,
@@ -241,50 +259,74 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
       return daysData.map((dayData) => () => onDateSelect(dayData.day));
     }, [daysData, onDateSelect]);
 
+    // Determines whether the calendar is showing the current month — used to
+    // conditionally show the "Today" jump affordance.
+    const isViewingCurrentMonth = useMemo(
+      () => isSameMonth(currentMonth, new Date()),
+      [currentMonth]
+    );
+
     return (
       <View className="px-2">
-        {/* Month header with title centered, arrows on right */}
-        <View className="flex-row justify-between items-center mb-3 py-2 ml-4">
-          <View />
-          <Text variant="h1" color="ink">
-            {monthTitle}
-          </Text>
+        {/*
+          Month header: back-arrow (left) · title (center) · forward-arrow (right)
+          Matches universal calendar convention so navigation direction is obvious.
+        */}
+        <View className="flex-row items-center mb-3 py-2">
+          {/* Back arrow — left edge */}
+          <Pressable
+            className="h-10 w-10 items-center justify-center rounded-full bg-sage-50"
+            onPress={goToPreviousMonth}
+            accessibilityRole="button"
+            accessibilityLabel="Previous month"
+            accessibilityHint="Navigates calendar to the previous month"
+          >
+            <HugeiconsIcon
+              icon={ArrowLeft01Icon}
+              size={20}
+              color={SAGE[600]}
+              strokeWidth={2}
+            />
+          </Pressable>
 
-          <View className="flex-row items-center gap-2 justify-end">
-            <Pressable
-              className="h-10 w-10 items-center justify-center rounded-full bg-sage-50"
-              onPress={goToPreviousMonth}
-              accessibilityRole="button"
-              accessibilityLabel="Previous Month"
-              accessibilityHint="Navigates calendar to the previous month"
-            >
-              <HugeiconsIcon
-                icon={ArrowLeft01Icon}
-                size={20}
-                color={SAGE[600]}
-                strokeWidth={2}
-              />
-            </Pressable>
-            <Pressable
-              className="h-10 w-10 items-center justify-center rounded-full bg-sage-50"
-              onPress={goToNextMonth}
-              disabled={!canGoNextMonth}
-              accessibilityRole="button"
-              accessibilityLabel="Next Month"
-              accessibilityHint="Navigates calendar to the next month"
-            >
-              <HugeiconsIcon
-                icon={ArrowRight01Icon}
-                size={20}
-                color={
-                  canGoNextMonth
-                    ? SAGE[600]
-                    : SAGE[200]
-                }
-                strokeWidth={2}
-              />
-            </Pressable>
+          {/* Month title — centered, with optional Today jump button */}
+          <View className="flex-1 items-center">
+            <Text variant="h1" color="ink">
+              {monthTitle}
+            </Text>
+            {!isViewingCurrentMonth && (
+              <Pressable
+                onPress={() => goToDate(new Date())}
+                accessibilityRole="button"
+                accessibilityLabel="Jump to today"
+                hitSlop={{ top: 8, bottom: 8, left: 12, right: 12 }}
+              >
+                <Text
+                  variant="label"
+                  style={{ color: PARROT_ORANGE, marginTop: 2 }}
+                >
+                  Today
+                </Text>
+              </Pressable>
+            )}
           </View>
+
+          {/* Forward arrow — right edge; grayed when at current month */}
+          <Pressable
+            className="h-10 w-10 items-center justify-center rounded-full bg-sage-50"
+            onPress={goToNextMonth}
+            disabled={!canGoNextMonth}
+            accessibilityRole="button"
+            accessibilityLabel="Next month"
+            accessibilityHint="Navigates calendar to the next month"
+          >
+            <HugeiconsIcon
+              icon={ArrowRight01Icon}
+              size={20}
+              color={canGoNextMonth ? SAGE[600] : SAGE[200]}
+              strokeWidth={2}
+            />
+          </Pressable>
         </View>
 
         <WeekDayHeader />
@@ -305,6 +347,35 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
             />
           ))}
         </View>
+
+        {/* Mood scale legend — 5-emoji row with labels so the scale is always
+            visible without requiring prior knowledge of the 1–5 system. */}
+        {showMoodBadges && (
+          <View
+            className="flex-row justify-between mt-4 px-1"
+            accessibilityElementsHidden={true}
+            importantForAccessibility="no"
+          >
+            {MOOD_LEGEND.map(({ score, label }) => (
+              <View key={score} className="items-center gap-0.5" style={{ flex: 1 }}>
+                <MoodBadge
+                  moodscore={score}
+                  size={14}
+                  disabled={false}
+                  displayOnly
+                />
+                <Text
+                  variant="overline"
+                  color="muted"
+                  style={{ fontSize: 9 }}
+                  numberOfLines={1}
+                >
+                  {label}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
       </View>
     );
   }

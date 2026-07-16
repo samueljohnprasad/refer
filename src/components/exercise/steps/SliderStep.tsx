@@ -50,9 +50,16 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
     anchorValue,
     anchorLabel,
   }) => {
-    const value: number =
+    let value: number =
       (response as Record<string, any>)[fieldKey] ??
       Math.round((min + max) / 2);
+      
+    // Scale down legacy 0-100 data to the new bounds
+    if (value > max && max <= 10) {
+      value = Math.round((value / 100) * max);
+    }
+    // Final safety clamp
+    value = Math.min(Math.max(value, min), max);
 
     return (
       <StepLayout
@@ -74,9 +81,8 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
             <FadeInItem index={0}>
               <View className="items-center mb-10">
                 <Text
-                  variant="counter"
-                  color="sage"
-                  className="text-6xl text-center happy-font-heading-bold"
+                  variant="h1"
+                  className="text-5xl text-center tabular-nums font-bold"
                 >
                   {value}
                   {unit}
@@ -111,18 +117,10 @@ export const SliderStep: React.FC<SliderStepProps> = React.memo(
             />
 
             <View className="flex-row justify-between mt-3 px-1">
-              <Text
-                variant="caption-muted"
-                color="soft"
-                className="font-semibold"
-              >
+              <Text variant="caption-muted">
                 {minLabel}
               </Text>
-              <Text
-                variant="caption-muted"
-                color="soft"
-                className="font-semibold"
-              >
+              <Text variant="caption-muted">
                 {maxLabel}
               </Text>
             </View>

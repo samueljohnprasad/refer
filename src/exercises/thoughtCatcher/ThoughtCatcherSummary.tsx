@@ -241,15 +241,12 @@ export const ThoughtCatcherSummary: React.FC<
           {!!response.situation?.trim() && (
             <View className="px-2">
               <Text
-                variant="label"
-                className="text-sm font-semibold text-ink-soft mb-1.5"
+                variant="caption-muted"
+                className="text-sm mb-1"
               >
-                What happened
+                Situation
               </Text>
-              <View
-                className="pl-4 py-1 border-l-2"
-                style={{ borderColor: SAGE[200] }}
-              >
+              <View className="mt-1">
                 <Text
                   variant="display"
                   className="text-lg tracking-tight leading-relaxed text-ink"
@@ -264,15 +261,12 @@ export const ThoughtCatcherSummary: React.FC<
           {!!response.automaticThought?.trim() && (
             <View className="px-2">
               <Text
-                variant="label"
-                className="text-sm font-semibold text-ink-soft mb-1.5"
+                variant="caption-muted"
+                className="text-sm mb-1"
               >
                 Automatic thought
               </Text>
-              <View
-                className="pl-4 py-1 border-l-2"
-                style={{ borderColor: SAGE[200] }}
-              >
+              <View className="mt-1">
                 <Text
                   variant="display"
                   className="text-lg tracking-tight leading-relaxed text-ink"
@@ -287,8 +281,8 @@ export const ThoughtCatcherSummary: React.FC<
           {hasScores && (
             <View className="px-2">
               <Text
-                variant="label"
-                className="text-sm font-semibold text-ink-soft mb-3"
+                variant="caption-muted"
+                className="text-sm mb-3"
               >
                 Belief intensity
               </Text>
@@ -299,12 +293,12 @@ export const ThoughtCatcherSummary: React.FC<
                       Before
                     </Text>
                     <Text variant="label-bold" className="text-[13px]">
-                      {preScore}%
+                      {preScore}
                     </Text>
                   </View>
                   <ScoreBar
                     value={preScore}
-                    max={100}
+                    max={10}
                     fillColor={TERRACOTTA_LIGHT}
                     delay={600}
                   />
@@ -315,12 +309,12 @@ export const ThoughtCatcherSummary: React.FC<
                       After
                     </Text>
                     <Text variant="label-bold" className="text-[13px]">
-                      {postScore}%
+                      {postScore}
                     </Text>
                   </View>
                   <ScoreBar
                     value={postScore!}
-                    max={100}
+                    max={10}
                     fillColor={SAGE[400]}
                     delay={900}
                   />
@@ -340,8 +334,8 @@ export const ThoughtCatcherSummary: React.FC<
           {realityConfig && (
             <View className="px-2">
               <Text
-                variant="label"
-                className="text-sm font-semibold text-ink-soft mb-2"
+                variant="caption-muted"
+                className="text-sm mb-2"
               >
                 Reality check
               </Text>
@@ -364,15 +358,12 @@ export const ThoughtCatcherSummary: React.FC<
           {hasBalancedThought && (
             <View className="px-2">
               <Text
-                variant="label"
-                className="text-sm font-semibold text-ink-soft mb-1.5"
+                variant="caption-muted"
+                className="text-sm mb-1"
               >
                 Balanced thought
               </Text>
-              <View
-                className="pl-4 py-1 border-l-2 mb-4"
-                style={{ borderColor: SAGE[200] }}
-              >
+              <View className="mt-1 mb-4">
                 <Text
                   variant="display"
                   className="text-lg tracking-tight leading-relaxed text-ink"
@@ -423,30 +414,19 @@ export const ThoughtCatcherSummary: React.FC<
             onPress={() => handleNavigateDeeper(link.exerciseType)}
             accessibilityRole="button"
             accessibilityLabel={link.label}
-            className="flex-row items-center justify-between rounded-2xl px-4 py-3.5 mx-1 mt-3 active:opacity-70"
-            style={{
-              backgroundColor: SAGE[50],
-              borderWidth: 1.5,
-              borderColor: SAGE[100],
-            }}
+            className="flex-row items-center justify-center gap-2 py-3 mt-4 mx-2 active:opacity-70"
           >
-            <View className="flex-1 mr-3">
-              <Text variant="overline" className="mb-0.5">
-                Want to go deeper?
-              </Text>
-              <Text
-                variant="label-bold"
-                className="text-[14px]"
-                style={{ color: SAGE[700] }}
-              >
-                {link.label}
-              </Text>
-            </View>
+            <Text
+              variant="label-bold"
+              className="text-[14px] text-sage-600"
+            >
+              Go deeper: {link.label}
+            </Text>
             <HugeiconsIcon
               icon={ArrowRight01Icon}
-              size={18}
+              size={16}
               color={SAGE[500]}
-              strokeWidth={2.5}
+              strokeWidth={2}
             />
           </Pressable>
         </FadeUp>

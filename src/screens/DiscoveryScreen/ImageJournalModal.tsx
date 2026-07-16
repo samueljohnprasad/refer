@@ -198,20 +198,17 @@ export const ImageJournalModal: React.FC<ImageJournalModalProps> = ({
             <RNHostView>
               <View className="flex-1 px-5 pb-6">
                 {/* Header */}
-                <View className="flex-row items-center justify-between mb-6 pt-5">
-                  <Text variant="display">Scan Journal</Text>
+                <View className="mb-8 pt-5">
+                  <Text variant="display" className="mb-2">Scan Journal</Text>
+                  <Text variant="body" color="muted">
+                    Capture your handwritten or printed pages.
+                  </Text>
                 </View>
 
                 {/* Content */}
                 <View className="flex-1">
                   {!imageUri ? (
-                    <View className="flex-1 justify-center px-4">
-                      <Text variant="h1" className="text-center mb-4">
-                        Capture Your Journal Page
-                      </Text>
-                      <Text variant="body" color="muted" className="text-center mb-10">
-                        Capture your handwritten or printed pages.
-                      </Text>
+                    <View className="flex-1 justify-center pb-12">
                       <Button
                         label="Open Camera"
                         variant="primary"

@@ -7,23 +7,40 @@ import {
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import { bad, fine, good, great, terrible } from "@/assets/emojis";
 import { Image } from "@/src/components/tw";
-import { Text } from "@/components/Themed";
 import { PressableOpacity } from "pressto";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Add01Icon } from "@hugeicons/core-free-icons";
+import { SAGE } from "@/lib/tokens";
 
 export type MoodBadgeProps = {
   moodscore?: number;
-  active?: boolean; // highlighted ring for selected day
-  size?: number; // diameter of badge
+  /** Whether this badge is the currently-selected / active day */
+  active?: boolean;
+  /** Diameter of the badge image/icon */
+  size?: number;
+  /** @deprecated - unused in CalendarPicker; will be removed in a future release */
   containerStyle?: StyleProp<ViewStyle>;
   onPress?: () => void;
   disabled: boolean;
+  /**
+   * When true the badge is purely visual — press handling is owned
+   * by the parent DayCell, so the inner PressableOpacity is a no-op.
+   * This lets the parent provide a full-cell 44pt touch target.
+   */
+  displayOnly?: boolean;
+};
+
+/** Human-readable label for each mood score (used in accessibilityLabel). */
+const MOOD_SCORE_LABELS: Record<number, string> = {
+  1: "Terrible",
+  2: "Bad",
+  3: "Okay",
+  4: "Good",
+  5: "Great",
 };
 
 const moodEmojiMap = {
@@ -35,14 +52,15 @@ const moodEmojiMap = {
 };
 
 export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
-  ({ moodscore, size = 32, containerStyle, onPress, disabled, active = true }) => {
+  ({ moodscore, size = 32, onPress, disabled, active = true, displayOnly = false }) => {
     const diameter = size;
     const radius = diameter / 2;
     const moodEmoji = moodscore
       ? moodEmojiMap[moodscore as keyof typeof moodEmojiMap]
       : null;
 
-    const plusScale = useSharedValue(1);
+    const moodLabel = moodscore ? MOOD_SCORE_LABELS[moodscore] ?? String(moodscore) : "Not set";
+
     const plusRotation = useSharedValue(active ? 0 : -360);
 
     React.useEffect(() => {
@@ -57,56 +75,65 @@ export const MoodBadge: React.FC<MoodBadgeProps> = React.memo(
     }, [active, moodEmoji, plusRotation]);
 
     const plusAnimatedStyle = useAnimatedStyle(() => ({
-      transform: [
-        { scale: plusScale.value },
-        { rotate: `${plusRotation.value}deg` }
-      ]
+      transform: [{ rotate: `${plusRotation.value}deg` }],
     }));
+
+    // --- Render core badge content (display-only, no press handling here) ---
+    const badgeContent = (
+      <View
+        style={{ width: diameter, height: diameter, borderRadius: radius }}
+        className={`items-center justify-center ${disabled ? "opacity-30" : ""}`}
+      >
+        {moodEmoji ? (
+          <Image
+            source={moodEmoji}
+            alt={moodLabel}
+            style={{ width: diameter, height: diameter }}
+            width={diameter}
+            height={diameter}
+            progressiveRenderingEnabled={true}
+          />
+        ) : (
+          // Empty-slot affordance: dotted ring with + inside
+          <View
+            style={{
+              width: diameter,
+              height: diameter,
+              borderRadius: radius,
+              borderWidth: 1.5,
+              borderColor: SAGE[300],
+              borderStyle: "dashed",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Animated.View style={[plusAnimatedStyle, { width: diameter * 0.55, height: diameter * 0.55, justifyContent: "center", alignItems: "center" }]}>
+              <HugeiconsIcon
+                icon={Add01Icon}
+                size={Math.max(10, diameter * 0.5)}
+                color={SAGE[400]}
+                strokeWidth={2}
+              />
+            </Animated.View>
+          </View>
+        )}
+      </View>
+    );
+
+    // When the parent DayCell owns the press, skip the inner PressableOpacity
+    if (displayOnly) {
+      return badgeContent;
+    }
 
     return (
       <PressableOpacity
         style={{ width: diameter, height: diameter }}
         onPress={disabled ? undefined : onPress}
         accessibilityRole="button"
-        accessibilityLabel={`Mood is ${
-          moodscore ? Object.entries(moodEmojiMap).find(([key, val]) => val === moodEmoji)?.[0] : "Not set"
-        }.`}
+        accessibilityLabel={`Mood: ${moodLabel}`}
         accessibilityState={{ selected: active, disabled }}
       >
-        <View className={`items-center justify-center ${!active ? 'opacity-100' : ''}`} style={containerStyle}>
-          <View
-            style={{
-              width: diameter,
-              height: diameter,
-              borderRadius: radius,
-            }}
-            className={`items-center justify-center ${disabled ? "opacity-30" : ""}`}
-          >
-            {moodEmoji && (
-              <Image
-                source={moodEmoji}
-                alt={"moodEmoji"}
-                style={{
-                  width: diameter,
-                  height: diameter,
-                }}
-                width={diameter}
-                height={diameter}
-                progressiveRenderingEnabled={true}
-              />
-            )}
-            {!moodEmoji && (
-              <Animated.View style={[plusAnimatedStyle, { width: 16, height: 16, justifyContent: 'center', alignItems: 'center' }]}>
-                <HugeiconsIcon
-                  icon={Add01Icon}
-                  size={16}
-                  color="#64748B"
-                  strokeWidth={2}
-                />
-              </Animated.View>
-            )}
-          </View>
-        </View>
+        {badgeContent}
       </PressableOpacity>
     );
   }

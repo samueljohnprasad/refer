@@ -16,7 +16,6 @@ import { useUserProfile } from "@/hooks/data/useUserProfile";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Stack, router } from "expo-router";
-import { GlassView } from "expo-glass-effect";
 import { EmotionLogger } from "@/src/components/EmotionLogger";
 import { FeaturedPromptCard } from "@/src/components/FeaturedPromptCard";
 import { Settings02Icon, Medal01Icon } from "@hugeicons/core-free-icons";
@@ -69,7 +68,7 @@ const Greeting = React.memo<{
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-2.5 flex-1 pr-2">
           <Text
-            className="happy-font-body-bold text-[30px] tracking-tight text-ink"
+            className="text-[28px] font-semibold tracking-tight text-ink"
             numberOfLines={1}
             adjustsFontSizeToFit
           >
@@ -238,24 +237,14 @@ export default function JournalCalendarScreen() {
           >
             <WeeklyStreakWidget
               showDepth={false}
-              onPress={() =>
-                handleQuickJournalPress({
-                  id: "initial_streak",
-                  title: "Daily Log",
-                  description: "Recording today's journey",
-                  category: "Personal",
-                  emoji: "✍️",
-                  bgColor: SAGE[50],
-                  categoryColor: SAGE[600],
-                })
-              }
+              onPress={() => router.push("/tabs/screens/xp-history")}
             />
           </Animated.View>
 
           {/* GROUP 2: Journal */}
           <View className="mt-10">
             <View className="mb-3 px-1">
-              <Text className="happy-font-body-bold text-[15px] text-ink-muted">Daily reflection</Text>
+              <Text className="text-[14px] font-medium tracking-wide text-ink-muted uppercase">Daily reflection</Text>
             </View>
             <FeaturedPromptCard
               prompts={ALL_PROMPTS}

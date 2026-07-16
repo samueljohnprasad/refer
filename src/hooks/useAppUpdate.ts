@@ -33,16 +33,23 @@ export function useAppUpdate(
     try {
       setIsChecking(true);
       const current = VersionCheck.getCurrentVersion();
-      const latest = await VersionCheck.getLatestVersion();
+      const latest = await VersionCheck.getLatestVersion({
+        packageName: "com.samuelprasad.happy",
+        ignoreErrors: true,
+      });
 
       setCurrentVersion(current);
       setLatestVersion(latest);
 
-      const updateNeeded = await VersionCheck.needUpdate();
+      const updateNeeded = await VersionCheck.needUpdate({
+        currentVersion: current,
+        latestVersion: latest,
+      });
 
-      if (updateNeeded.isNeeded) {
+      if (updateNeeded?.isNeeded) {
         setShowUpdateModal(true);
       }
+      // If we are in dev and want to force test it, we could do something here, but let's stick to the real logic.
     } catch (error) {
       console.error("Error checking for updates:", error);
     } finally {

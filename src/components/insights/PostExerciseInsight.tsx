@@ -19,7 +19,7 @@ export const PostExerciseInsight: React.FC<PostExerciseInsightProps> =
   React.memo(({ exerciseType, response }) => {
     const insight = usePostExerciseInsight(exerciseType, response);
 
-    if (!insight) return null;
+    return null; // Disabled per user request
 
     const style = TONE_STYLES[insight.tone];
 

@@ -63,7 +63,6 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
 
     return (
       <Pressable
-        className="flex-1"
         onPress={Keyboard.dismiss}
         accessible={false}
       >
@@ -74,7 +73,7 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
           stepNumber={stepIndex + 1}
           totalSteps={totalSteps}
         />
-        <View className="flex-1">{children}</View>
+        <View className="pb-4">{children}</View>
       </Pressable>
     );
   },

@@ -220,7 +220,15 @@ const ActionFooter: React.FC<ActionFooterProps> = ({
     <ScreenLayout.Footer 
       variant={variant} 
       style={style} 
-      className={`${className || ""} ${isSuccess ? "bg-green-100 border-t border-green-200" : isError ? "bg-red-100 border-t border-red-200" : "bg-white border-t border-slate-100"}`}
+      className={`${className || ""} ${
+        isSuccess 
+          ? "bg-green-100 border-t border-green-200" 
+          : isError 
+          ? "bg-red-100 border-t border-red-200" 
+          : variant === "transparent"
+          ? "bg-transparent border-t-0"
+          : "bg-white border-t border-slate-100"
+      }`}
     >
       <View className="w-full gap-1">
         {isSuccess && (
@@ -350,7 +358,10 @@ const LessonScreen = ({
           onSecondaryPress={onSecondaryPress}
           secondaryDisabled={secondaryDisabled}
           variant={footerVariant}
-          style={footerStyle}
+          style={[
+            footerStyle,
+            screenBg ? { backgroundColor: screenBg, borderTopWidth: 0 } : undefined,
+          ]}
           status={status}
         />
       )}

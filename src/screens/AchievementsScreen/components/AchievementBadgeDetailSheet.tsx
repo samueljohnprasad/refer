@@ -18,6 +18,7 @@ import {
   type PresentationDetent,
   presentationDetents,
   presentationDragIndicator,
+  presentationBackground,
 } from "@expo/ui/swift-ui/modifiers";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -48,15 +49,6 @@ interface AchievementBadgeDetailSheetProps {
   onIsPresentedChange: (isPresented: boolean) => void;
 }
 
-const CONDITION_LABELS: Record<AchievementConditionType, string> = {
-  calorie_streak: "Calorie tracking streak",
-  habit_perfect_days: "Perfect habit days",
-  journal_count: "Journal entries",
-  mood_variety: "Different moods logged",
-  prompt_count: "Wellness prompts completed",
-  streak_days: "Daily streak",
-  voice_journal_count: "Voice journals recorded",
-};
 
 const DEFAULT_DETENT: PresentationDetent = { fraction: 0.72 };
 const SHEET_DETENTS: PresentationDetent[] = [DEFAULT_DETENT, "large"];
@@ -118,27 +110,7 @@ const BadgeArtwork: React.FC<{ item: AchievementProgressItem }> = ({
   );
 };
 
-const DetailMetric: React.FC<{
-  icon: any;
-  label: string;
-  value: string;
-  color?: string;
-}> = ({ icon, label, value, color = SAGE[600] }) => (
-  <View className="happy-brand-status-chip flex-1 rounded-[18px] px-3 py-3">
-    <View className="mb-1 flex-row items-center gap-1.5">
-      <HugeiconsIcon icon={icon} size={15} color={color} strokeWidth={2} />
-      <Text className="happy-font-body-bold text-[11px] text-ink-muted">
-        {label}
-      </Text>
-    </View>
-    <Text
-      className="happy-font-body-bold text-[15px] text-ink"
-      numberOfLines={1}
-    >
-      {value}
-    </Text>
-  </View>
-);
+
 
 export const AchievementBadgeDetailSheet: React.FC<
   AchievementBadgeDetailSheetProps
@@ -158,7 +130,6 @@ export const AchievementBadgeDetailSheet: React.FC<
   const { achievement, isUnlocked, progressPercent } = item;
   const progress = Math.min(Math.max(progressPercent, 0), 100);
   const unlockDate = getUnlockDateText(item.unlockedAt);
-  const conditionLabel = CONDITION_LABELS[achievement.condition.type];
 
   return (
     <Host colorScheme="light" style={StyleSheet.absoluteFill}>
@@ -173,6 +144,7 @@ export const AchievementBadgeDetailSheet: React.FC<
               onSelectionChange: setSelectedDetent,
             }),
             presentationDragIndicator("visible"),
+            presentationBackground("#FFFFFF"),
           ]}
         >
           <RNHostView>
@@ -188,16 +160,6 @@ export const AchievementBadgeDetailSheet: React.FC<
                       {achievement.name}
                     </Text>
                   </View>
-                  <Pressable
-                    accessibilityLabel="Close badge details"
-                    accessibilityRole="button"
-                    className="happy-brand-soft-chip rounded-full px-3 py-2 active:opacity-80"
-                    onPress={() => onIsPresentedChange(false)}
-                  >
-                    <Text className="happy-font-body-bold text-xs text-sage-600">
-                      Close
-                    </Text>
-                  </Pressable>
                 </View>
               </View>
 
@@ -236,62 +198,69 @@ export const AchievementBadgeDetailSheet: React.FC<
                   </View>
                 </View>
 
-                <View className="happy-brand-card mt-4 rounded-[26px] p-4">
-                  <Text className="happy-font-heading-bold text-[22px] leading-7 text-ink">
-                    {achievement.name}
-                  </Text>
-                  <Text className="happy-font-body-medium mt-2 text-[14px] leading-6 text-ink-muted">
+                <View className="mt-6 px-4">
+                  <Text className="happy-font-body-medium text-[16px] leading-6 text-ink text-center">
                     {achievement.description}
                   </Text>
 
-                  <View className="mt-4">
-                    <View className="mb-2 flex-row items-center justify-between">
-                      <Text className="happy-font-body-bold text-sm text-ink">
-                        Progress
-                      </Text>
-                      <Text className="happy-font-body-bold text-sm text-ink">
-                        {getProgressText(item)}
+                  {isUnlocked ? (
+                    unlockDate ? (
+                      <View className="mt-2">
+                        <Text className="happy-font-body-medium text-[13px] text-ink-muted text-center">
+                          Unlocked on {unlockDate}
+                        </Text>
+                      </View>
+                    ) : null
+                  ) : (
+                    <View className="mt-6">
+                      <View className="mb-2 flex-row items-center justify-between">
+                        <Text className="happy-font-body-bold text-sm text-ink">
+                          Progress
+                        </Text>
+                        <Text className="happy-font-body-bold text-sm text-ink">
+                          {getProgressText(item)}
+                        </Text>
+                      </View>
+                      <View className="h-2.5 overflow-hidden rounded-full bg-sage-100">
+                        <View
+                          className="h-full rounded-full"
+                          style={{
+                            backgroundColor: achievement.color,
+                            width: `${progress}%`,
+                          }}
+                        />
+                      </View>
+                    </View>
+                  )}
+                </View>
+
+                <View className="mt-8 flex-row justify-center gap-12 border-t border-sage-100/60 pt-6">
+                  <View className="items-center">
+                    <View className="mb-1.5 flex-row items-center gap-1.5">
+                      <HugeiconsIcon icon={StarsIcon} size={14} color={GOLD} strokeWidth={2.5} />
+                      <Text className="happy-font-body-bold text-[11px] text-ink-muted uppercase tracking-wider">
+                        Reward
                       </Text>
                     </View>
-                    <View className="h-2.5 overflow-hidden rounded-full bg-sage-100">
-                      <View
-                        className="h-full rounded-full"
-                        style={{
-                          backgroundColor: achievement.color,
-                          width: `${progress}%`,
-                        }}
-                      />
+                    <Text className="happy-font-heading-bold text-[18px] text-ink">
+                      +{achievement.xpBonus} XP
+                    </Text>
+                  </View>
+
+                  <View className="items-center">
+                    <View className="mb-1.5 flex-row items-center gap-1.5">
+                      <HugeiconsIcon icon={BarChartIcon} size={14} color={achievement.color} strokeWidth={2.5} />
+                      <Text className="happy-font-body-bold text-[11px] text-ink-muted uppercase tracking-wider">
+                        Tier
+                      </Text>
                     </View>
+                    <Text className="happy-font-heading-bold text-[18px] text-ink">
+                      Tier {achievement.tier}
+                    </Text>
                   </View>
                 </View>
 
-                <View className="mt-3 flex-row gap-3">
-                  <DetailMetric
-                    icon={StarsIcon}
-                    label="Reward"
-                    value={`+${achievement.xpBonus} XP`}
-                    color={GOLD}
-                  />
-                  <DetailMetric
-                    icon={BarChartIcon}
-                    label="Tier"
-                    value={`Tier ${achievement.tier}`}
-                    color={achievement.color}
-                  />
-                </View>
 
-                <View className="happy-brand-card mt-3 rounded-[24px] p-4">
-                  <Text className="happy-brand-eyebrow mb-2">
-                    Requirement
-                  </Text>
-                  <Text className="happy-font-body-bold text-[15px] text-ink">
-                    {conditionLabel}
-                  </Text>
-                  <Text className="happy-font-body-medium mt-1 text-[13px] leading-5 text-ink-muted">
-                    Reach {achievement.condition.target} to unlock this badge.
-                    {unlockDate ? ` Unlocked on ${unlockDate}.` : ""}
-                  </Text>
-                </View>
 
                 <View style={styles.bottomSpacer} />
               </ScrollView>
@@ -321,5 +290,7 @@ const styles = StyleSheet.create({
   sheet: {
     backgroundColor: "#FFFFFF",
     flex: 1,
+    height: "100%",
+    width: "100%",
   },
 });

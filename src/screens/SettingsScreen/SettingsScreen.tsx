@@ -8,6 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import * as Application from "expo-application";
+import Constants from "expo-constants";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
@@ -221,7 +222,7 @@ export default function SettingsScreen() {
             <SettingsItem
               icon={AlertSquareIcon}
               title="App Info"
-              subtitle={`Version ${Application.nativeApplicationVersion || "1.0.0"} (Build ${Application.nativeBuildVersion || "1"})`}
+              subtitle={`Version ${Application.nativeApplicationVersion || "1.0.0"} (Build ${Application.nativeBuildVersion !== "1" ? Application.nativeBuildVersion : (Constants.expoConfig?.ios?.buildNumber || Constants.expoConfig?.android?.versionCode || "1")})`}
               onPress={() => {}}
               showArrow={false}
             />

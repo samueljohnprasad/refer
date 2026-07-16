@@ -480,7 +480,7 @@ const DailyNotesHeader = React.memo(
                       <View className="flex-1 items-center mb-1">
                         <MoodBadge
                           disabled={dayData.disabled}
-                          moodscore={Math.round(dayData.mood || 0)}
+                          moodscore={dayData.mood !== undefined ? Math.round(dayData.mood) : undefined}
                           active={dayData.isSelectedDay}
                           size={24}
                           onPress={() => onEmojiPress(dayData.day, dayData.mood)}

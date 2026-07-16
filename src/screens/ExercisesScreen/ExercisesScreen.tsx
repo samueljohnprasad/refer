@@ -1089,20 +1089,9 @@ export default function ExercisesScreen(): ReactElement {
                       </Text>
                       <View className="flex-row items-center gap-3">
                         {completedCount > 0 ? (
-                          <Pressable
-                            onPress={() => {
-                              Haptics.impactAsync(
-                                Haptics.ImpactFeedbackStyle.Medium,
-                              );
-                              setShowMilestoneToast(true);
-                              setTimeout(
-                                () => setShowMilestoneToast(false),
-                                3500,
-                              );
-                            }}
-                            accessibilityRole="button"
-                            accessibilityLabel={`${completedCount} exercises completed. Tap to view milestone message.`}
-                            className="flex-row items-center justify-center rounded-full bg-sage-50/80 px-3 py-1.5 active:scale-95"
+                          <View
+                            accessibilityLabel={`${completedCount} exercises completed.`}
+                            className="flex-row items-center justify-center rounded-full bg-sage-50/80 px-3 py-1.5"
                           >
                             <HugeiconsIcon
                               icon={ZapIcon}
@@ -1113,9 +1102,9 @@ export default function ExercisesScreen(): ReactElement {
                               variant="chip"
                               className="ml-1.5 font-nunito-bold text-sage-700"
                             >
-                              {completedCount} done
+                              {completedCount}
                             </Text>
-                          </Pressable>
+                          </View>
                         ) : null}
                         <Pressable
                           onPress={() =>

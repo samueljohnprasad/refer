@@ -90,7 +90,8 @@ export const XPHistoryScreen: React.FC = () => {
       <Stack.Screen
         options={{
           title: "Insights",
-          headerStyle: { backgroundColor: "#F7F7F8" },
+          headerStyle: { backgroundColor: "transparent" },
+          headerTransparent: true,
           headerShadowVisible: false,
           headerBackVisible: false,
         }}

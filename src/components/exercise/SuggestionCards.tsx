@@ -4,6 +4,8 @@ import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { SAGE } from "@/lib/tokens";
+import { Pressable } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 export interface SuggestionItem {
   label: string;
@@ -30,14 +32,16 @@ export function SuggestionCards({
   if (isLoading) {
     return (
       <View className="mb-6">
-        <Text className="text-xs font-extrabold text-ink-muted uppercase tracking-wider mb-3">
-          {loadingMessage || "Generating suggestions..."}
-        </Text>
+        {loadingMessage ? (
+          <Text variant="body-bold" color="muted" className="mb-3">
+            {loadingMessage}
+          </Text>
+        ) : null}
         {Array.from({ length: 3 }).map((_, index) => (
-          <Card key={`skeleton-${index}`} variant="answer" className="mb-3" contentClassName="flex-row items-center p-4">
-            <Skeleton height={36} width={36} radius={12} className="mr-3" />
+          <View key={`skeleton-${index}`} className="flex-row items-center p-4 mb-2 rounded-[16px] bg-white/40 border border-sage-200/20">
+            <Skeleton height={24} width={24} radius={12} className="mr-3" />
             <Skeleton height={16} width="70%" />
-          </Card>
+          </View>
         ))}
       </View>
     );
@@ -49,42 +53,41 @@ export function SuggestionCards({
 
   return (
     <View className="mb-6">
-      <Text className="text-xs font-extrabold text-ink-muted uppercase tracking-wider mb-3">
-        {title}
-      </Text>
+      {title ? (
+        <Text variant="body-bold" color="muted" className="mb-3">
+          {title}
+        </Text>
+      ) : null}
       {suggestions.map((s, index: number) => {
         const isSelected = Array.isArray(currentValue)
           ? currentValue.includes(s.label)
           : currentValue === s.label;
         return (
-          <Card
+          <Pressable
             key={`${s.label || ""}-${index}`}
-            variant={isSelected ? "answer-selected" : "answer"}
             onPress={readOnly ? undefined : () => onSelect(s.label)}
-            className="mb-3"
-            contentClassName="flex-row items-center p-4"
+            className={`flex-row items-start p-4 mb-3 rounded-[16px] border ${isSelected ? 'bg-sage-50 border-sage-300/60' : 'bg-transparent border-sage-200/40 active:bg-sage-50/50'}`}
             accessibilityState={{ selected: isSelected }}
           >
             {s.emoji && (
-              <View className="h-9 w-9 rounded-xl bg-slate-100 items-center justify-center mr-3">
-                <Text className="text-lg">{s.emoji}</Text>
-              </View>
+              <Text className="text-[20px] mr-3 mt-[1px]">{s.emoji}</Text>
             )}
             <Text
-              className="text-[15px] font-bold flex-1"
-              style={{ color: isSelected ? SAGE[700] : "#334155" }}
+              className="text-[15.5px] flex-1 leading-relaxed pr-2"
+              style={{ color: isSelected ? SAGE[900] : SAGE[800], fontWeight: isSelected ? "500" : "400" }}
             >
               {s.label}
             </Text>
-            {isSelected && (
-              <View
-                className="h-6 w-6 rounded-full items-center justify-center ml-2"
-                style={{ backgroundColor: SAGE[500] }}
-              >
-                <Text className="text-white text-xs font-extrabold">✓</Text>
+            {isSelected ? (
+              <View className="mt-0.5">
+                <Feather name="check" size={18} color={SAGE[600]} />
+              </View>
+            ) : (
+              <View className="mt-0.5 opacity-40">
+                <Feather name="plus" size={18} color={SAGE[500]} />
               </View>
             )}
-          </Card>
+          </Pressable>
         );
       })}
     </View>

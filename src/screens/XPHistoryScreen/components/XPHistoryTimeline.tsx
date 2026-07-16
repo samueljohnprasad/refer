@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import Timeline from "react-native-beautiful-timeline";
+import { View, Text } from "react-native";
 import dayjs from "dayjs";
-import { SAGE } from "@/lib/tokens";
 import { Mascot } from "@/src/components/ui/Mascot";
 import { XP_ACTION_LABELS, XPHistoryEntry } from "@/src/types/xp";
+import { Timeline } from "@/src/components/ui/Timeline";
+import type { TimelineItemData, TimelineSection } from "@/src/components/ui/Timeline/types";
 
 interface XPHistoryTimelineProps {
   entries: XPHistoryEntry[];
@@ -12,6 +12,11 @@ interface XPHistoryTimelineProps {
   isLoadingMore: boolean;
   onEndReached: () => void;
   contentPaddingTop?: number;
+}
+
+interface XPItem extends TimelineItemData {
+  title: string;
+  subtitle: string;
 }
 
 const XPHistoryTimelineEmptyState: React.FC = React.memo(() => (
@@ -30,20 +35,8 @@ const XPHistoryTimelineEmptyState: React.FC = React.memo(() => (
 
 XPHistoryTimelineEmptyState.displayName = "XPHistoryTimelineEmptyState";
 
-const XPHistoryTimelineFooter: React.FC<{ isLoadingMore: boolean }> = ({
-  isLoadingMore,
-}) => {
-  if (!isLoadingMore) return null;
-
-  return (
-    <View className="py-4">
-      <ActivityIndicator size="small" color={SAGE[500]} />
-    </View>
-  );
-};
-
-const transformHistoryToTimeline = (entries: XPHistoryEntry[]) => {
-  const grouped = new Map<number, any[]>();
+const transformHistoryToTimeline = (entries: XPHistoryEntry[]): TimelineSection<XPItem>[] => {
+  const grouped = new Map<number, XPItem[]>();
 
   entries.forEach((entry) => {
     // Group by start of day timestamp (number)
@@ -51,17 +44,56 @@ const transformHistoryToTimeline = (entries: XPHistoryEntry[]) => {
     if (!grouped.has(dayTimestamp)) {
       grouped.set(dayTimestamp, []);
     }
-    grouped.get(dayTimestamp)!.push({
-      title: entry.description || XP_ACTION_LABELS[entry.action],
+    
+    let title = XP_ACTION_LABELS[entry.action];
+    if (entry.description) {
+      title = entry.description.includes("Completed:") || entry.description.includes("logged:") 
+        ? entry.description 
+        : `Completed: ${entry.description}`;
+    } else {
+      title = `${title}`;
+    }
+
+    const currentDayItems = grouped.get(dayTimestamp)!;
+    
+    currentDayItems.push({
+      id: entry.id,
+      title,
       subtitle: `+${entry.amount} Insights`,
-      date: dayjs(entry.timestamp).valueOf(), // pass timestamp for inner dates
-    });
+      date: dayjs(entry.timestamp).valueOf(),
+      status: "completed",
+    } as XPItem);
   });
 
   return Array.from(grouped.entries()).map(([date, data]) => ({
     date,
+    title: dayjs(date).format("D MMM"), 
     data,
   }));
+};
+
+const renderXPItem = (item: XPItem) => {
+  return (
+    <View className="mb-4">
+      <View className="py-2 flex-row justify-between items-start">
+        <View className="flex-1 pr-4">
+          <Text className="happy-font-body-bold text-[#2C2C2E] text-[15px] leading-5">
+            {item.title}
+          </Text>
+          <View className="flex-row mt-1.5">
+            <View className="bg-[#166534]/10 rounded-full px-2 py-0.5 border border-[#166534]/20 flex-row items-center">
+              <Text className="happy-font-body-bold text-[#166534] text-[12px] tracking-wide">
+                {item.subtitle.toUpperCase()}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <Text className="happy-font-body-medium text-gray-500 text-[11px] mt-0.5 uppercase">
+          {dayjs(item.date).format("h:mm a")}
+        </Text>
+      </View>
+    </View>
+  );
 };
 
 export const XPHistoryTimeline: React.FC<XPHistoryTimelineProps> = React.memo(
@@ -72,79 +104,17 @@ export const XPHistoryTimeline: React.FC<XPHistoryTimelineProps> = React.memo(
     );
 
     return (
-      <View style={[styles.timeline, { paddingTop: contentPaddingTop }]}>
-        <Timeline
-          data={timelineData}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={0.5}
-          timelineStyle={styles.timelineStyleOverride}
-          dashColor="rgba(0, 0, 0, 0.15)"
-          dashThickness={2}
-          dashGap={4}
-          dashLength={4}
-          dayTextStyle={styles.dayText}
-          monthTextStyle={styles.monthText}
-          innerContainer={styles.pointInner}
-          outerContainer={styles.pointOuter}
-          titleTextStyle={styles.titleText}
-          subtitleTextStyle={styles.subtitleText}
-          dateTextStyle={styles.dateText}
-          {...({
-            ListHeaderComponent: header,
-            ListEmptyComponent: <XPHistoryTimelineEmptyState />,
-            ListFooterComponent: (
-              <XPHistoryTimelineFooter isLoadingMore={isLoadingMore} />
-            ),
-            contentContainerStyle: { width: "100%", paddingBottom: 120 },
-          } as any)}
-        />
-      </View>
+      <Timeline
+        sections={timelineData}
+        renderItem={renderXPItem}
+        onEndReached={onEndReached}
+        isLoadingMore={isLoadingMore}
+        ListHeaderComponent={header}
+        ListEmptyComponent={<XPHistoryTimelineEmptyState />}
+        contentPaddingTop={contentPaddingTop}
+      />
     );
-  },
+  }
 );
 
 XPHistoryTimeline.displayName = "XPHistoryTimeline";
-
-const styles = StyleSheet.create({
-  timeline: {
-    flex: 1,
-  },
-  timelineStyleOverride: {
-    backgroundColor: "transparent",
-    marginHorizontal: 0,
-  },
-  dayText: {
-    fontFamily: "Nunito-Bold",
-    color: "#2C2C2E", // ink
-    fontSize: 16,
-  },
-  monthText: {
-    fontFamily: "Nunito-Bold",
-    color: "#8E8E93", // ink-muted
-    fontSize: 10,
-  },
-  pointInner: {
-    backgroundColor: "#166534", // SAGE
-    shadowColor: "#166534",
-  },
-  pointOuter: {
-    borderColor: "rgba(22, 101, 52, 0.1)",
-    backgroundColor: "rgba(22, 101, 52, 0.05)",
-  },
-  titleText: {
-    fontFamily: "Nunito-Bold",
-    color: "#2C2C2E",
-    fontSize: 14,
-  },
-  subtitleText: {
-    fontFamily: "Nunito-Bold",
-    color: "#166534", // SAGE text color for XP
-    fontSize: 12,
-    marginTop: 2,
-  },
-  dateText: {
-    fontFamily: "Nunito-SemiBold",
-    color: "#8E8E93",
-    fontSize: 11,
-  },
-});

@@ -49,7 +49,7 @@ export const LevelBadge: React.FC<LevelBadgeProps> = ({
   return (
     <View
       className={`flex-row items-center ${styles.padding} rounded-full`}
-      style={{ backgroundColor: level.color + "30" }}
+      style={{ backgroundColor: level.color + "1A" }}
     >
       <HugeiconsIcon icon={getLevelIcon(level.level)} size={styles.icon} color={level.color} />
       {showName && (

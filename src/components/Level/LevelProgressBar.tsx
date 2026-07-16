@@ -8,6 +8,7 @@ import StageProgressBar from "@/src/components/ui/StageProgressBar";
 interface LevelProgressBarProps {
   showBadge?: boolean;
   compact?: boolean;
+  flat?: boolean;
 }
 
 /**
@@ -17,6 +18,7 @@ interface LevelProgressBarProps {
 export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
   showBadge = true,
   compact = false,
+  flat = false,
 }) => {
   const {
     currentLevel,
@@ -44,18 +46,18 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
     );
   }
 
-  return (
-    <Card
-      variant="tile"
-      radius="lg"
-      showDepth={false}
-      contentClassName="p-4"
-    >
-      <View className="flex-row items-center justify-between mb-3">
+  const content = (
+    <>
+      <View className="flex-row items-center justify-between mb-4">
         {showBadge && <LevelBadge level={currentLevel} size="md" />}
-        <Text className="happy-font-body-medium text-sm text-gray-800">
-          {totalXP} Insights total
-        </Text>
+        <View className="flex-row items-baseline gap-1.5">
+          <Text className="happy-font-body-bold text-3xl text-ink">
+            {totalXP}
+          </Text>
+          <Text className="happy-font-body-medium text-sm text-ink-muted">
+            Insights total
+          </Text>
+        </View>
       </View>
 
       {/* Progress Bar */}
@@ -78,6 +80,21 @@ export const LevelProgressBar: React.FC<LevelProgressBarProps> = ({
           </Text>
         )}
       </View>
+    </>
+  );
+
+  if (flat) {
+    return <View className="py-2">{content}</View>;
+  }
+
+  return (
+    <Card
+      variant="tile"
+      radius="lg"
+      showDepth={false}
+      contentClassName="p-4"
+    >
+      {content}
     </Card>
   );
 };

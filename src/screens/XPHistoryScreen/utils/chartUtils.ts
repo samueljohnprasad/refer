@@ -1,4 +1,4 @@
-import { format, startOfWeek, differenceInCalendarDays, subWeeks, addDays } from 'date-fns';
+import { format, startOfWeek, differenceInCalendarDays, subWeeks, addDays, isToday as isDateToday } from 'date-fns';
 import { XPHistoryEntry } from '@/src/types/xp';
 
 export interface ChartDayData {
@@ -8,6 +8,7 @@ export interface ChartDayData {
   value: number; // 0.0 to 1.0
   dateString: string;
   totalXP: number; // For tooltip/display
+  isToday: boolean;
 }
 
 const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -31,7 +32,8 @@ export const generateXPChartData = (history: XPHistoryEntry[], numWeeks = 4) => 
         dayIndex,
         value: 0,
         dateString: format(dayDate, 'd MMMM'),
-        totalXP: 0
+        totalXP: 0,
+        isToday: isDateToday(dayDate),
       };
     })
   );

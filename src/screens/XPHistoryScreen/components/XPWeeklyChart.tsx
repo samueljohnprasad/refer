@@ -20,28 +20,34 @@ interface BarProps {
   width: number;
   progress: SharedValue<number>;
   letter: string;
+  isToday?: boolean;
 }
 
-const Bar: React.FC<BarProps> = ({ maxHeight, minHeight, width, progress, letter }) => {
+const Bar: React.FC<BarProps> = ({ maxHeight, minHeight, width, progress, letter, isToday }) => {
   const animatedProgress = useDerivedValue(() => withTiming(progress.value), [progress]);
 
   const rAnimatedStyle = useAnimatedStyle(() => {
     const height = interpolate(animatedProgress.value, [0, 1], [minHeight, maxHeight]);
+    
+    // Highlight the current day using a more saturated brand color (e.g. SAGE[600]) and darker gray when empty
+    const startColor = isToday ? '#D1D5DB' : '#E5E7EB'; 
+    const endColor = isToday ? '#166534' : '#637A65';
+
     const backgroundColor = interpolateColor(
       animatedProgress.value,
       [0, 1],
-      ['#E5E7EB', '#637A65']
+      [startColor, endColor]
     );
 
     return { height, backgroundColor };
-  }, []);
+  }, [isToday]);
 
   return (
-    <View>
+    <View style={styles.barWrapper}>
       <Animated.View
         style={[{ width, borderRadius: 10, borderCurve: 'continuous' }, rAnimatedStyle]}
       />
-      <Text style={styles.label}>{letter}</Text>
+      <Text style={[styles.label, isToday && styles.todayLabel]}>{letter}</Text>
     </View>
   );
 };
@@ -50,6 +56,7 @@ const AnimatedWeeklyBar = ({ data, width, height, index, internalPaddingHorizont
   const barWidth = (width - internalPaddingHorizontal * 2 - gap * 6) / 7;
   const letter = useMemo(() => data.value[index]?.day || '', [data, index]);
   const progress = useDerivedValue(() => data.value[index]?.value || 0, [data, index]);
+  const isToday = useMemo(() => data.value[index]?.isToday || false, [data, index]);
 
   return (
     <Bar
@@ -59,6 +66,7 @@ const AnimatedWeeklyBar = ({ data, width, height, index, internalPaddingHorizont
       minHeight={height / 5}
       width={barWidth}
       progress={progress}
+      isToday={isToday}
     />
   );
 };
@@ -102,8 +110,7 @@ export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDay
 
   return (
     <View style={styles.container}>
-      <WeeklyChart width={windowWidth} height={150} data={animatedData} />
-      <View style={{ height: 60, width: windowWidth }}>
+      <View style={{ height: 32, width: windowWidth, zIndex: 1 }}>
         <Animated.FlatList
           ref={animatedRef}
           horizontal
@@ -123,6 +130,9 @@ export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDay
           )}
         />
       </View>
+      <View style={{ marginTop: 8 }}>
+        <WeeklyChart width={windowWidth} height={150} data={animatedData} />
+      </View>
     </View>
   );
 };
@@ -130,7 +140,9 @@ export const XPWeeklyChart = ({ weeklyData, weekLabels }: { weeklyData: ChartDay
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingVertical: 24,
+    marginBottom: 64,
+    paddingTop: 32,
+    paddingBottom: 8,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
@@ -140,7 +152,8 @@ const styles = StyleSheet.create({
   },
   labelContainer: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    paddingLeft: 32,
   },
   weekLabel: {
     color: '#1F2937', 

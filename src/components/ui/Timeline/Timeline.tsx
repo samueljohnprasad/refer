@@ -83,6 +83,7 @@ function TimelineInner<T extends TimelineItemData>({
       const { item, section, index, isVeryFirst, isLastSection, isVeryLast } =
         d;
       const isFirstItemInSection: boolean = index === 0;
+      const isLastItemInSection: boolean = index === section.data.length - 1;
 
       return (
         <View className="flex-row items-stretch">
@@ -93,15 +94,15 @@ function TimelineInner<T extends TimelineItemData>({
               <TimelineStemLine
                 flex={true}
                 style={{
-                  marginTop: isVeryFirst ? 0 : 0,
-                  marginBottom: isVeryLast ? 24 : 0,
+                  marginTop: isFirstItemInSection ? 48 : 0,
+                  marginBottom: isVeryLast ? 24 : (isLastItemInSection ? 12 : 0),
                 }}
               />
             )}
 
             {/* The Date Badge */}
             {isFirstItemInSection && (
-              <View className="absolute top-0 rounded-2xl py-0.5 bg-[#F9FAFB] dark:bg-black w-full items-center">
+              <View className="absolute top-0 pt-2 w-full items-center">
                 <TimelineSectionHeader date={section.date} title={section.title} mode={mode} />
               </View>
             )}

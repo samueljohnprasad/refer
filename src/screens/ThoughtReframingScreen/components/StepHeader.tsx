@@ -22,8 +22,8 @@ export const StepHeader: React.FC<StepHeaderProps> = React.memo(
           {title}
         </Text>
 
-        {/* Subtitle — body Geist */}
-        <Text variant="body" color="soft" className="leading-relaxed text-[15px]">
+        {/* Subtitle */}
+        <Text variant="h3" className="leading-relaxed text-[17px] opacity-90">
           {subtitle}
         </Text>
       </View>
