@@ -84,8 +84,10 @@ export function hasSelectedABCEmotion(value: string): boolean {
 }
 
 export function getABCEmotionDisplayLabels(value: string): string {
-  const normalizedLabels = emotionSelectionStorage
-    .deserialize(value)
+  const normalizedLabels = value
+    .split(",")
+    .map((emotion) => emotion.trim())
+    .filter(Boolean)
     .map((emotion) => normalizeABCEmotion(emotion)?.label ?? emotion);
 
   if (normalizedLabels.length > 0) {
@@ -141,6 +143,13 @@ export function ABCBeliefStep(
 export function ABCConsequenceEmotionStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
+  const fallbackValueText =
+    stepProps.response.consequenceEmotion.trim() &&
+    emotionSelectionStorage.deserialize(stepProps.response.consequenceEmotion)
+      .length === 0
+      ? stepProps.response.consequenceEmotion.trim()
+      : undefined;
+
   return (
     <MultiChoiceStep
       {...stepProps}
@@ -151,6 +160,7 @@ export function ABCConsequenceEmotionStep(
       maxSelections={3}
       layoutVariant="cbt_reflection"
       selectionStorageAdapter={emotionSelectionStorage}
+      fallbackValueText={fallbackValueText}
     />
   );
 }

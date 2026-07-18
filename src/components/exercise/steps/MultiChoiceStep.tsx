@@ -32,6 +32,9 @@ interface MultiChoiceStepProps extends StepProps {
   layoutVariant?: "default" | "cbt_reflection";
   showStepCount?: boolean;
   selectionStorageAdapter?: SelectionStorageAdapter;
+  nextLabel?: string;
+  readOnlyNextLabel?: string;
+  fallbackValueText?: string;
 }
 
 export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
@@ -55,6 +58,9 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
     layoutVariant = "default",
     showStepCount = true,
     selectionStorageAdapter,
+    nextLabel,
+    readOnlyNextLabel = "Done",
+    fallbackValueText,
     readOnly,
     onClose,
   }) => {
@@ -98,7 +104,9 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
         canGoBack={canGoBack}
         isValid={isValid || Boolean(readOnly)}
         onBack={onBack}
+        onClose={onClose}
         onNext={readOnly ? onClose : onNext}
+        nextLabel={readOnly ? readOnlyNextLabel : nextLabel}
         isLoading={isSaving}
         showStepCount={showStepCount}
         scrollable
@@ -178,15 +186,27 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
           })}
         </View>
 
-        <Text
-          className={
-            isCbtReflection
-              ? "text-xs text-sage-700 mt-3"
-              : "text-xs text-slate-400 mt-3"
-          }
-        >
-          {selected.length}/{maxSelections} selected
-        </Text>
+        {fallbackValueText ? (
+          <Text
+            className={
+              isCbtReflection
+                ? "text-xs text-sage-700 mt-3"
+                : "text-xs text-slate-400 mt-3"
+            }
+          >
+            Saved answer: {fallbackValueText}
+          </Text>
+        ) : (
+          <Text
+            className={
+              isCbtReflection
+                ? "text-xs text-sage-700 mt-3"
+                : "text-xs text-slate-400 mt-3"
+            }
+          >
+            {selected.length}/{maxSelections} selected
+          </Text>
+        )}
       </StepLayout>
     );
   },
