@@ -53,14 +53,26 @@ const ABC_EMOTION_OPTIONS: MultiChoiceOption[] = EMOTION_OPTIONS.filter(
   emoji: emotion.emoji,
 }));
 
+const emotionOptionByNormalizedValue = new Map(
+  ABC_EMOTION_OPTIONS.flatMap((option) => [
+    [option.value.toLocaleLowerCase(), option],
+    [option.label.toLocaleLowerCase(), option],
+  ]),
+);
+
+function normalizeABCEmotion(value: string): MultiChoiceOption | undefined {
+  return emotionOptionByNormalizedValue.get(value.trim().toLocaleLowerCase());
+}
+
 const emotionSelectionStorage = {
   deserialize(value: unknown): string[] {
     if (typeof value !== "string") return [];
 
     return value
       .split(",")
-      .map((emotion) => emotion.trim())
-      .filter(Boolean);
+      .map(normalizeABCEmotion)
+      .filter((emotion): emotion is MultiChoiceOption => Boolean(emotion))
+      .map((emotion) => emotion.value);
   },
   serialize(values: string[]): string {
     return values.join(", ");
@@ -68,13 +80,14 @@ const emotionSelectionStorage = {
 };
 
 export function hasSelectedABCEmotion(value: string): boolean {
-  const visibleEmotionValues = new Set(
-    ABC_EMOTION_OPTIONS.map((option) => option.value),
-  );
+  return emotionSelectionStorage.deserialize(value).length > 0;
+}
 
+export function getABCEmotionDisplayLabels(value: string): string {
   return emotionSelectionStorage
     .deserialize(value)
-    .some((emotion) => visibleEmotionValues.has(emotion));
+    .map((emotion) => normalizeABCEmotion(emotion)?.label ?? emotion)
+    .join(", ");
 }
 
 const SHARED_TEXT_STEP_PROPS = {
@@ -95,6 +108,7 @@ export function ABCActivatingEventStep(
       title="What happened?"
       subtitle="Start with the moment, not what it meant."
       tipText="Write what a camera could have seen or heard."
+      tipIcon="camera"
       fieldKey="activatingEvent"
       placeholder="Describe what happened..."
       suggestions={EVENT_SUGGESTIONS}

@@ -17,6 +17,7 @@ import { Text } from "@/src/components/ui/Text";
 import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { DANGER, SAGE } from "@/lib/tokens";
+import { getABCEmotionDisplayLabels } from "./customSteps";
 import type {
   ABCAnalysisResponse,
   ExerciseType,
@@ -139,7 +140,10 @@ export function ABCSummaryStep({
     () => [
       { label: "What happened", value: response.activatingEvent },
       { label: "Automatic thought", value: response.belief, tone: "serif" },
-      { label: "How you felt", value: response.consequenceEmotion },
+      {
+        label: "How you felt",
+        value: getABCEmotionDisplayLabels(response.consequenceEmotion),
+      },
       { label: "What you did next", value: response.consequenceBehavior },
       {
         label: "More balanced thought",

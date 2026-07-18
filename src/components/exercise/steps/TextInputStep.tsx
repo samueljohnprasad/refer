@@ -27,6 +27,7 @@ interface TextInputStepProps extends StepProps {
   placeholder?: string;
   maxLength?: number;
   tipText?: string;
+  tipIcon?: React.ComponentProps<typeof Feather>["name"];
   validationMessage?: string;
   psychoeducationText?: string;
   suggestions?: SuggestionItem[];
@@ -59,6 +60,7 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
     placeholder = "Type here...",
     maxLength = 500,
     tipText,
+    tipIcon,
     isSaving,
     validationMessage,
     psychoeducationText,
@@ -215,9 +217,11 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
         {tipText && (
           <FadeInItem index={referenceQuote ? 2 : 1}>
             <View className="mb-4 flex-row items-start border-t border-sage-100/70 px-1 pt-3">
-              <View className="mr-3 mt-[2px]">
-                <Feather name="camera" size={15} color={SAGE[600]} />
-              </View>
+              {tipIcon ? (
+                <View className="mr-3 mt-[2px]">
+                  <Feather name={tipIcon} size={15} color={SAGE[600]} />
+                </View>
+              ) : null}
               <Text
                 variant="caption"
                 className="text-[13px] leading-[19px] flex-1 text-sage-800"

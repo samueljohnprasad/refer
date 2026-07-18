@@ -180,7 +180,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       validate: (r) => r.newConsequence.trim().length >= 1,
       ai: {
         promptBuilder: (r) =>
-          `You are a CBT therapist assistant. Based on this alternative belief:\n"${r.alternativeBelief}"\n\nGenerate 3 likely new positive emotional or behavioral consequences the user might experience. Keep them in the first person ("I would..."), brief (1 sentence).`,
+          `You are a CBT therapist assistant. Based on this alternative belief:\n"${r.alternativeBelief}"\n\nGenerate 3 grounded ways the user's feelings or actions might change. Keep them in the first person ("I might..."), brief (1 sentence).`,
         responseSchema: {
           type: "array",
           items: {
@@ -190,7 +190,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
           },
         },
         maxResults: 3,
-        aiLoadingMessage: "Visualizing new outcomes...",
+        aiLoadingMessage: "Considering what might change...",
       },
     },
     {
