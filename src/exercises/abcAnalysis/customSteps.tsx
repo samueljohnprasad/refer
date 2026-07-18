@@ -6,6 +6,7 @@ import {
 } from "react-native";
 
 import { Text } from "@/components/ui/Text";
+import { Card } from "@/src/components/ui/Card";
 import { SAGE } from "@/lib/tokens";
 import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
 import type {
