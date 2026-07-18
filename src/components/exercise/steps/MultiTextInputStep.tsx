@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "@/src/store/hooks";
 import { setAssistantMessage } from "@/src/store/slices/happyAssistantSlice";
 import { View } from "react-native";
@@ -6,6 +6,7 @@ import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import { SuggestionCards, type SuggestionItem } from "@/src/components/exercise/SuggestionCards";
+import { ReflectionDisclosure } from "@/src/components/exercise/ReflectionStepSections";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { ExerciseTextComposer } from "@/src/components/exercise/ExerciseTextComposer";
 interface MultiTextInputStepProps extends StepProps {
@@ -18,6 +19,11 @@ interface MultiTextInputStepProps extends StepProps {
   maxLength?: number;
   validationMessage?: string;
   psychoeducationText?: string;
+  composerMinHeight?: number;
+  showStepCount?: boolean;
+  suggestionsTitle?: string;
+  suggestionsHelperText?: string;
+  suggestionsCollapsedByDefault?: boolean;
 }
 
 export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
@@ -41,13 +47,26 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     isSaving,
     validationMessage,
     psychoeducationText,
+    composerMinHeight: configuredComposerMinHeight,
+    showStepCount = true,
+    suggestionsTitle,
+    suggestionsHelperText,
+    suggestionsCollapsedByDefault = true,
     aiSuggestions,
     isAiLoading,
     aiLoadingMessage,
     readOnly,
   }) => {
     const dispatch = useAppDispatch();
-    const items: string[] = (response as Record<string, any>)[fieldKey] ?? [];
+    const responseRecord = response as Record<string, unknown>;
+    const responseItems = responseRecord[fieldKey];
+    const items = Array.isArray(responseItems)
+      ? responseItems.filter((item): item is string => typeof item === "string")
+      : [];
+    const composerMinHeight = configuredComposerMinHeight ?? 100;
+    const [showSuggestions, setShowSuggestions] = useState(
+      !suggestionsCollapsedByDefault,
+    );
 
     useEffect(() => {
       if (validationMessage && items.length > 0) {
@@ -62,28 +81,33 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     const addItem = (item: string) => {
       const trimmed = item.trim();
       if (!trimmed || items.length >= maxItems) return;
-      onUpdate({ [fieldKey]: [...items, trimmed] } as any);
+      onUpdate({ [fieldKey]: [...items, trimmed] } as Partial<typeof response>);
     };
 
     const removeItem = (index: number) => {
-      onUpdate({ [fieldKey]: items.filter((_, i) => i !== index) } as any);
+      onUpdate({
+        [fieldKey]: items.filter((_, i) => i !== index),
+      } as Partial<typeof response>);
     };
 
     const handleSuggestionSelect = (text: string) => {
       if (items.includes(text)) {
-        onUpdate({ [fieldKey]: items.filter((i) => i !== text) } as any);
+        onUpdate({
+          [fieldKey]: items.filter((item) => item !== text),
+        } as Partial<typeof response>);
       } else {
         if (items.length >= maxItems) return;
-        onUpdate({ [fieldKey]: [...items, text] } as any);
+        onUpdate({ [fieldKey]: [...items, text] } as Partial<typeof response>);
       }
     };
 
     const mappedSuggestions: SuggestionItem[] = (aiSuggestions || []).map(
-      (s: any) => ({
-        label: s.text || s.label,
-        emoji: s.emoji,
-      })
+      (suggestion) => ({
+        label: suggestion.text,
+        emoji: suggestion.emoji,
+      }),
     );
+    const hasSuggestions = isAiLoading || mappedSuggestions.length > 0;
 
     return (
       <StepLayout
@@ -97,22 +121,11 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
         onBack={onBack}
         onNext={onNext}
         isLoading={isSaving}
+        showStepCount={showStepCount}
         scrollable
       >
         <PsychoeducationCard content={psychoeducationText ?? ""} />
 
-        {!readOnly && (isAiLoading || mappedSuggestions.length > 0) && (
-          <SuggestionCards
-            title="AI Suggestions"
-            suggestions={mappedSuggestions}
-            currentValue={items}
-            onSelect={handleSuggestionSelect}
-            isLoading={isAiLoading}
-            loadingMessage={aiLoadingMessage}
-          />
-        )}
-
-        {/* Existing items */}
         {(items.length > 0 || !readOnly) && (
           <View className="mt-2" style={{ zIndex: 10 }}>
             <ExerciseTextComposer
@@ -123,15 +136,34 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
               placeholder={placeholder}
               maxItems={maxItems}
               readOnly={readOnly || items.length >= maxItems}
-              glow
+              minHeight={composerMinHeight}
             />
           </View>
         )}
 
-        <Text className="text-xs text-slate-400 mt-2">
-          {items.length}/{maxItems} items
-          {minItems > 0 ? ` (min ${minItems})` : ""}
+        <Text variant="caption" className="mt-2 text-ink-soft">
+          {items.length}/{maxItems} items{minItems > 0 ? ` (min ${minItems})` : ""}
         </Text>
+
+        {!readOnly && hasSuggestions ? (
+          <ReflectionDisclosure
+            expanded={showSuggestions}
+            onToggle={() => setShowSuggestions((current) => !current)}
+            title={suggestionsTitle ?? "Need an example?"}
+          >
+            <SuggestionCards
+              title=""
+              helperText={
+                suggestionsHelperText ?? "Use only if it fits. Make the words yours."
+              }
+              suggestions={mappedSuggestions}
+              currentValue={items}
+              onSelect={handleSuggestionSelect}
+              isLoading={isAiLoading}
+              loadingMessage={aiLoadingMessage}
+            />
+          </ReflectionDisclosure>
+        ) : null}
       </StepLayout>
     );
   },
