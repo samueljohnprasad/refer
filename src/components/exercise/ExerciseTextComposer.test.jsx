@@ -70,4 +70,57 @@ describe("ExerciseTextComposer", () => {
     expect(typeof removeButton.props.onPress).toBe("function");
     expect(removeButton.props.disabled).not.toBe(true);
   });
+
+  it("adds a list item on submit editing", () => {
+    const onAdd = jest.fn();
+    let renderer;
+
+    act(() => {
+      renderer = TestRenderer.create(
+        <ExerciseTextComposer
+          mode="list"
+          items={[]}
+          onAdd={onAdd}
+          onRemove={jest.fn()}
+        />,
+      );
+    });
+
+    const input = renderer.root.findByType(TextInput);
+    act(() => {
+      input.props.onChangeText("Typed item");
+    });
+    act(() => {
+      input.props.onSubmitEditing();
+    });
+
+    expect(onAdd).toHaveBeenCalledWith("Typed item");
+  });
+
+  it("enforces maxLength for list item input", () => {
+    let renderer;
+
+    act(() => {
+      renderer = TestRenderer.create(
+        <ExerciseTextComposer
+          mode="list"
+          items={[]}
+          onAdd={jest.fn()}
+          onRemove={jest.fn()}
+          maxLength={5}
+        />,
+      );
+    });
+
+    const input = renderer.root.findByType(TextInput);
+    act(() => {
+      input.props.onChangeText("Hello");
+    });
+    expect(renderer.root.findByType(TextInput).props.value).toBe("Hello");
+
+    act(() => {
+      input.props.onChangeText("Hello!");
+    });
+    expect(renderer.root.findByType(TextInput).props.value).toBe("Hello");
+  });
 });

@@ -503,6 +503,7 @@ function ListComposer(props: ListComposerProps) {
     onAdd,
     onRemove,
     maxItems,
+    maxLength,
     placeholder = "Type or use voice...",
     readOnly = false,
     addLabel = "Add",
@@ -598,11 +599,15 @@ function ListComposer(props: ListComposerProps) {
         <>
           <ComposerShell
             value={value}
-            onChange={setValue}
+            onChange={(nextValue) => {
+              if (!maxLength || nextValue.length <= maxLength) {
+                setValue(nextValue);
+              }
+            }}
             placeholder={isRecording ? "Listening..." : placeholder}
             minHeight={minHeight}
             glow={glow}
-            onSubmitEditing={() => undefined}
+            onSubmitEditing={() => commitValue(value)}
             isRecording={isRecording}
             isTranscribing={isTranscribing}
             footer={

@@ -102,15 +102,11 @@ export default function TestChartsScreen() {
           <ExerciseTextComposer
             value={message}
             onChange={setMessage}
-            onSubmit={() => {
-              console.log("Sent:", message);
-            }}
             onSubmitEditing={() => {
               console.log("Submitted:", message);
               setMessage("");
             }}
             placeholder="Test the glowy input..."
-            showSubmit
             glow
           />
         </View>
