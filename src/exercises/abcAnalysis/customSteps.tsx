@@ -1,213 +1,93 @@
 import React from "react";
-import {
-  ActivityIndicator,
-  TextInput,
-  View,
-} from "react-native";
 
-import { Text } from "@/components/ui/Text";
-import { Card } from "@/src/components/ui/Card";
-import { SAGE } from "@/lib/tokens";
-import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
+import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
+import {
+  MultiChoiceStep,
+  type MultiChoiceOption,
+} from "@/src/components/exercise/steps/MultiChoiceStep";
 import type {
   ABCAnalysisResponse,
   StepProps,
 } from "@/src/types/exerciseFlow";
-import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
-
-import { SuggestionCards, SuggestionItem } from "@/src/components/exercise/SuggestionCards";
+import { EMOTION_OPTIONS } from "@/src/screens/ThoughtReframingScreen/data/emotions";
+import type { SuggestionItem } from "@/src/components/exercise/SuggestionCards";
 
 const EVENT_SUGGESTIONS: SuggestionItem[] = [
-  { label: "I got difficult feedback", emoji: "🗣️" },
-  { label: "Someone seemed distant", emoji: "📱" },
-  { label: "My plans changed suddenly", emoji: "📆" },
+  { label: "My manager gave me difficult feedback.", emoji: "🗣️" },
+  { label: "I sent a message and did not get a reply.", emoji: "📱" },
+  { label: "My plans changed at the last minute.", emoji: "📆" },
 ];
 
 const BELIEF_SUGGESTIONS: SuggestionItem[] = [
-  { label: "I always mess things up", emoji: "😣" },
-  { label: "They must be upset with me", emoji: "😟" },
-  { label: "I can't handle this", emoji: "😰" },
-];
-
-const EMOTION_SUGGESTIONS: SuggestionItem[] = [
-  { label: "Anxious", emoji: "😬" },
-  { label: "Sad", emoji: "😔" },
-  { label: "Frustrated", emoji: "😤" },
+  { label: "I always mess things up.", emoji: "😣" },
+  { label: "They must be upset with me.", emoji: "😟" },
+  { label: "I cannot handle this.", emoji: "😰" },
 ];
 
 const BEHAVIOR_SUGGESTIONS: SuggestionItem[] = [
-  { label: "I shut down", emoji: "🫥" },
-  { label: "I avoided it", emoji: "🏃" },
-  { label: "I kept replaying it", emoji: "🔁" },
+  { label: "I shut down and stopped replying.", emoji: "🫥" },
+  { label: "I avoided dealing with it.", emoji: "🏃" },
+  { label: "I kept replaying it in my mind.", emoji: "🔁" },
+];
+
+const BALANCED_THOUGHT_SUGGESTIONS: SuggestionItem[] = [
+  { label: "This is hard, but one moment does not define me.", emoji: "🌿" },
+  { label: "I do not know the full story yet.", emoji: "🧭" },
+  { label: "I can take this one useful step at a time.", emoji: "👣" },
 ];
 
 const NEW_CONSEQUENCE_SUGGESTIONS: SuggestionItem[] = [
-  { label: "I'd feel calmer and respond more clearly", emoji: "🌤️" },
-  { label: "I'd pause instead of spiraling", emoji: "⏸️" },
-  { label: "I'd take one useful next step", emoji: "✅" },
+  { label: "I might feel calmer and respond more clearly.", emoji: "🌤️" },
+  { label: "I might pause instead of spiraling.", emoji: "⏸️" },
+  { label: "I might take one useful next step.", emoji: "✅" },
 ];
 
-import { StepLayout } from "@/src/components/exercise/steps/StepLayout";
+const ABC_EMOTION_OPTIONS: MultiChoiceOption[] = EMOTION_OPTIONS.filter(
+  (emotion) =>
+    ["anxious", "sad", "angry", "frustrated", "overwhelmed", "lonely"].includes(
+      emotion.name,
+    ),
+).map((emotion) => ({
+  value: emotion.name,
+  label: emotion.label,
+  emoji: emotion.emoji,
+}));
 
-function TextQuestionStep({
-  title,
-  subtitle,
-  placeholder,
-  value,
-  onChange,
-  helper,
-  suggestionTitle,
-  suggestions,
-  stepProps,
-  validationMessage,
-  psychoeducationText,
-}: {
-  title: string;
-  subtitle?: string;
-  placeholder: string;
-  value: string;
-  onChange: (value: string) => void;
-  helper?: string;
-  suggestionTitle: string;
-  suggestions: SuggestionItem[];
-  stepProps: StepProps<ABCAnalysisResponse>;
-  validationMessage?: string;
-  psychoeducationText?: string;
-}): React.JSX.Element {
-  const {
-    onNext,
-    onBack,
-    onClose,
-    canGoBack,
-    isValid,
-    progress,
-    stepIndex,
-    totalSteps,
-    readOnly,
-    aiSuggestions,
-    isAiLoading,
-  } = stepProps;
+const emotionSelectionStorage = {
+  deserialize(value: unknown): string[] {
+    if (typeof value !== "string") return [];
 
-  const combinedSuggestions = React.useMemo<SuggestionItem[]>(() => {
-    if (aiSuggestions && aiSuggestions.length > 0) {
-      const uniqueLabels = new Set<string>();
-      const result: SuggestionItem[] = [];
-      for (const s of (aiSuggestions as Array<{ text?: string; label?: string }>)) {
-        const txt = s?.text || s?.label;
-        if (txt && typeof txt === "string" && txt.trim()) {
-          const normalized = txt.trim();
-          if (!uniqueLabels.has(normalized)) {
-            uniqueLabels.add(normalized);
-            result.push({
-              label: normalized,
-              emoji: "✨",
-            });
-          }
-        }
-      }
-      if (result.length > 0) {
-        return result;
-      }
-    }
-    return suggestions;
-  }, [aiSuggestions, suggestions]);
+    return value
+      .split(",")
+      .map((emotion) => emotion.trim())
+      .filter(Boolean);
+  },
+  serialize(values: string[]): string {
+    return values.join(", ");
+  },
+};
 
-  return (
-    <StepLayout
-      title={title}
-      subtitle={subtitle ?? ""}
-      progress={progress}
-      stepIndex={stepIndex}
-      totalSteps={totalSteps}
-      canGoBack={canGoBack}
-      isValid={isValid || !!readOnly}
-      onBack={onBack}
-      onNext={readOnly ? onClose : onNext}
-      onClose={onClose}
-      nextLabel={readOnly ? "Done" : "Continue"}
-      scrollable
-    >
-      <View className="px-1">
-        <ValidationMessage
-          message={validationMessage ?? ""}
-          visible={!!validationMessage && value.trim().length > 0}
-        />
-
-        <PsychoeducationCard content={psychoeducationText ?? ""} />
-
-        {helper ? (
-          <View
-            className="rounded-2xl p-3.5 mb-6 flex-row items-start"
-            style={{
-              backgroundColor: "#EFF6FF",
-              borderWidth: 2,
-              borderColor: "#BFDBFE",
-            }}
-          >
-            <View className="h-8 w-8 rounded-lg bg-blue-100 items-center justify-center mr-3 mt-0.5">
-              <Text className="text-base">💡</Text>
-            </View>
-            <Text className="text-sm text-blue-800 leading-relaxed flex-1 font-medium">
-              {helper}
-            </Text>
-          </View>
-        ) : null}
-
-        <TextInput
-          placeholder={placeholder}
-          value={value}
-          onChangeText={onChange}
-          autoFocus={!readOnly}
-          editable={!readOnly}
-          multiline
-          className="bg-white rounded-2xl p-4 text-base text-slate-700 mb-6"
-          style={{
-            borderWidth: 2,
-            borderColor: "#E2E8F0",
-            minHeight: 112,
-            textAlignVertical: "top",
-            opacity: readOnly ? 0.7 : 1,
-          }}
-          placeholderTextColor="#94A3B8"
-        />
-
-        {isAiLoading && (
-          <View className="flex-row items-center mb-4">
-            <ActivityIndicator size="small" color="#64748B" />
-            <Text className="text-[11px] text-slate-500 ml-2 uppercase tracking-wider">
-              Generating ideas…
-            </Text>
-          </View>
-        )}
-
-        {!readOnly && (!isAiLoading) ? (
-          <SuggestionCards
-            title={aiSuggestions?.length ? "AI Suggestions" : suggestionTitle}
-            suggestions={combinedSuggestions}
-            currentValue={value}
-            onSelect={onChange}
-          />
-        ) : null}
-      </View>
-    </StepLayout>
-  );
-}
+const SHARED_TEXT_STEP_PROPS = {
+  showVoice: true,
+  alwaysShowVoice: true,
+  composerGlow: false,
+  showExamplesInitially: true,
+  suggestionsTitle: "Example starters",
+} as const;
 
 export function ABCActivatingEventStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
   return (
-    <TextQuestionStep
+    <TextInputStep
+      {...stepProps}
+      {...SHARED_TEXT_STEP_PROPS}
       title="What happened?"
-      subtitle="Start with the activating event, just the facts."
-      placeholder="Describe the triggering event..."
-      value={stepProps.response.activatingEvent}
-      onChange={(value) => stepProps.onUpdate({ activatingEvent: value })}
-      helper="Keep this part observable and concrete, like a camera could have seen it."
-      suggestionTitle="Quick picks"
+      subtitle="Start with the moment, not what it meant."
+      tipText="Write what a camera could have seen or heard."
+      fieldKey="activatingEvent"
+      placeholder="Describe what happened..."
       suggestions={EVENT_SUGGESTIONS}
-      stepProps={stepProps}
-      validationMessage="That's the raw event. Now let's look at the story your mind told about it."
     />
   );
 }
@@ -216,18 +96,15 @@ export function ABCBeliefStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
   return (
-    <TextQuestionStep
-      title="What did you tell yourself?"
-      subtitle="This is the belief or interpretation you gave the event."
-      placeholder="The thought or belief was..."
-      value={stepProps.response.belief}
-      onChange={(value) => stepProps.onUpdate({ belief: value })}
-      helper="This is the meaning your mind made, not necessarily the only truth."
-      suggestionTitle="Common beliefs"
+    <TextInputStep
+      {...stepProps}
+      {...SHARED_TEXT_STEP_PROPS}
+      title="Automatic thought"
+      subtitle="Write the sentence your mind added."
+      tipText="Do not make it fair yet. Just catch it."
+      fieldKey="belief"
+      placeholder="The thought was..."
       suggestions={BELIEF_SUGGESTIONS}
-      stepProps={stepProps}
-      validationMessage="That belief makes sense given how things felt in that moment."
-      psychoeducationText="The same event can trigger completely different emotions depending on the belief attached to it. Beliefs are changeable."
     />
   );
 }
@@ -236,15 +113,15 @@ export function ABCConsequenceEmotionStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
   return (
-    <TextQuestionStep
+    <MultiChoiceStep
+      {...stepProps}
       title="How did you feel?"
-      subtitle="Name the feeling that followed the thought."
-      placeholder="I felt..."
-      value={stepProps.response.consequenceEmotion}
-      onChange={(value) => stepProps.onUpdate({ consequenceEmotion: value })}
-      suggestionTitle="Quick emotions"
-      suggestions={EMOTION_SUGGESTIONS}
-      stepProps={stepProps}
+      subtitle="Name the emotion that followed the thought."
+      fieldKey="consequenceEmotion"
+      options={ABC_EMOTION_OPTIONS}
+      maxSelections={3}
+      layoutVariant="cbt_reflection"
+      selectionStorageAdapter={emotionSelectionStorage}
     />
   );
 }
@@ -253,152 +130,36 @@ export function ABCConsequenceBehaviorStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
   return (
-    <TextQuestionStep
+    <TextInputStep
+      {...stepProps}
+      {...SHARED_TEXT_STEP_PROPS}
       title="What did you do next?"
-      subtitle="Name the reaction that followed the feeling."
+      subtitle="Name the reaction that followed."
+      tipText="What did you do, avoid, say, or repeat?"
+      fieldKey="consequenceBehavior"
       placeholder="I responded by..."
-      value={stepProps.response.consequenceBehavior}
-      onChange={(value) => stepProps.onUpdate({ consequenceBehavior: value })}
-      suggestionTitle="Common reactions"
       suggestions={BEHAVIOR_SUGGESTIONS}
-      stepProps={stepProps}
     />
   );
 }
 
-export function ABCAlternativeBeliefStep({
-  response,
-  onUpdate,
-  onNext,
-  onBack,
-  onClose,
-  canGoBack,
-  isValid,
-  progress,
-  stepIndex,
-  aiSuggestions,
-  isAiLoading,
-  readOnly,
-  totalSteps,
-}: StepProps<ABCAnalysisResponse>): React.JSX.Element {
-  const suggestions = (aiSuggestions ?? []) as Array<{
-    text?: string;
-    rationale?: string;
-  }>;
-
+export function ABCAlternativeBeliefStep(
+  stepProps: StepProps<ABCAnalysisResponse>,
+): React.JSX.Element {
   return (
-    <StepLayout
-      title="What's a more balanced belief?"
-      subtitle="Keep it believable, kind, and grounded in the facts."
-      progress={progress}
-      stepIndex={stepIndex}
-      totalSteps={totalSteps}
-      canGoBack={canGoBack}
-      isValid={isValid || !!readOnly}
-      onBack={onBack}
-      onNext={readOnly ? onClose : onNext}
-      onClose={onClose}
-      nextLabel={readOnly ? "Done" : "Continue"}
-      isLoading={isAiLoading}
-      scrollable
-    >
-      <View className="px-1">
-        <PsychoeducationCard content="A balanced belief doesn't have to be positive. It just needs to be more accurate and less absolute than the original." />
-
-        <View
-          className="rounded-2xl p-3.5 mb-6 flex-row items-start"
-          style={{
-            backgroundColor: "#EFF6FF",
-            borderWidth: 2,
-            borderColor: "#BFDBFE",
-          }}
-        >
-          <View className="h-8 w-8 rounded-lg bg-blue-100 items-center justify-center mr-3 mt-0.5">
-            <Text className="text-base">🧭</Text>
-          </View>
-          <Text className="text-sm text-blue-800 leading-relaxed flex-1 font-medium">
-            A balanced belief doesn't have to be super positive. It just needs
-            to be more fair and accurate.
-          </Text>
-        </View>
-
-        <TextInput
-          placeholder="A more balanced belief could be..."
-          value={response.alternativeBelief}
-          onChangeText={(value) => onUpdate({ alternativeBelief: value })}
-          autoFocus={!readOnly}
-          editable={!readOnly}
-          multiline
-          className="bg-white rounded-2xl p-4 text-base text-slate-700 mb-6"
-          style={{
-            borderWidth: 2,
-            borderColor: "#E2E8F0",
-            minHeight: 112,
-            textAlignVertical: "top",
-            opacity: readOnly ? 0.7 : 1,
-          }}
-          placeholderTextColor="#94A3B8"
-        />
-
-        {!readOnly ? (
-          <>
-            <View className="flex-row items-center justify-between mb-3">
-              <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
-                Reframe ideas
-              </Text>
-              {isAiLoading ? (
-                <View className="flex-row items-center">
-                  <ActivityIndicator size="small" color="#94A3B8" />
-                  <Text className="text-xs font-bold text-slate-400 ml-2">
-                    Thinking...
-                  </Text>
-                </View>
-              ) : null}
-            </View>
-
-            <View className="gap-y-3 mb-8">
-              {suggestions.map((suggestion, index) => {
-                const isSelected = response.alternativeBelief === suggestion.text;
-                return (
-                  <Card
-                    key={`${suggestion.text ?? "suggestion"}-${index}`}
-                    variant={isSelected ? "answer-selected" : "answer"}
-                    onPress={() => onUpdate({ alternativeBelief: suggestion.text ?? "" })}
-                    className="mb-3"
-                    contentClassName="p-4"
-                    accessibilityState={{ selected: isSelected }}
-                  >
-                    <View className="flex-row items-start">
-                      <View className="flex-1">
-                        <Text
-                          className="text-[15px] font-bold mb-1.5"
-                          style={{ color: isSelected ? SAGE[700] : "#334155" }}
-                        >
-                          {suggestion.text}
-                        </Text>
-                        {suggestion.rationale ? (
-                          <Text className="text-sm text-slate-500 leading-relaxed">
-                            {suggestion.rationale}
-                          </Text>
-                        ) : null}
-                      </View>
-                      {isSelected && (
-                        <View
-                          className="h-6 w-6 rounded-full items-center justify-center ml-3 mt-0.5"
-                          style={{ backgroundColor: SAGE[500] }}
-                        >
-                          <Text className="text-white text-xs font-extrabold">✓</Text>
-                        </View>
-                      )}
-                    </View>
-                  </Card>
-                );
-              })}
-            </View>
-          </>
-        ) : null}
-      </View>
-    </StepLayout>
+    <TextInputStep
+      {...stepProps}
+      {...SHARED_TEXT_STEP_PROPS}
+      title="More balanced thought"
+      subtitle="Write a fairer version that still feels believable."
+      fieldKey="alternativeBelief"
+      placeholder="A fairer thought could be..."
+      suggestions={BALANCED_THOUGHT_SUGGESTIONS}
+      referenceQuote={{
+        label: "Automatic thought",
+        text: stepProps.response.belief,
+      }}
+    />
   );
 }
 
@@ -406,16 +167,14 @@ export function ABCNewConsequenceStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
   return (
-    <TextQuestionStep
-      title="What changes with the new belief?"
-      subtitle="Imagine how you'd feel or act if you believed the reframe."
-      placeholder="With that belief, I would..."
-      value={stepProps.response.newConsequence}
-      onChange={(value) => stepProps.onUpdate({ newConsequence: value })}
-      helper="You're not promising perfection here, just a more helpful direction."
-      suggestionTitle="Possible shifts"
+    <TextInputStep
+      {...stepProps}
+      {...SHARED_TEXT_STEP_PROPS}
+      title="What might change now?"
+      subtitle="If you held that thought, what might feel or go differently?"
+      fieldKey="newConsequence"
+      placeholder="With that thought, I might..."
       suggestions={NEW_CONSEQUENCE_SUGGESTIONS}
-      stepProps={stepProps}
     />
   );
 }

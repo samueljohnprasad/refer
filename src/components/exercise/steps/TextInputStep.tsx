@@ -39,6 +39,7 @@ interface TextInputStepProps extends StepProps {
   showStepCount?: boolean;
   composerGlow?: boolean;
   alwaysShowVoice?: boolean;
+  showExamplesInitially?: boolean;
 }
 
 export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
@@ -75,12 +76,13 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
     showStepCount = true,
     composerGlow = false,
     alwaysShowVoice = false,
+    showExamplesInitially = false,
   }) => {
     const dispatch = useAppDispatch();
     const responseRecord = response as Record<string, unknown>;
     const rawValue = responseRecord[fieldKey];
     const value = typeof rawValue === "string" ? rawValue : "";
-    const [showExamples, setShowExamples] = useState(false);
+    const [showExamples, setShowExamples] = useState(showExamplesInitially);
     const [voiceError, setVoiceError] = useState<string | null>(null);
     const { recordingCurrentState, record, stopRecording } = useAudioRecording();
     const { transcribeAudio, isTranscribing } = useTranscribeAudio();

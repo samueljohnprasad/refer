@@ -6,14 +6,20 @@ import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
+import { SAGE } from "@/lib/tokens";
 
-interface MultiChoiceOption {
+export interface MultiChoiceOption {
   value: string;
   label: string;
   /** Icon key resolved via contentIconRegistry */
   iconKey?: string;
   /** @deprecated Use iconKey instead */
   emoji?: string;
+}
+
+interface SelectionStorageAdapter {
+  deserialize: (value: unknown) => string[];
+  serialize: (values: string[]) => unknown;
 }
 
 interface MultiChoiceStepProps extends StepProps {
@@ -23,6 +29,9 @@ interface MultiChoiceStepProps extends StepProps {
   options: MultiChoiceOption[];
   maxSelections?: number;
   psychoeducationText?: string;
+  layoutVariant?: "default" | "cbt_reflection";
+  showStepCount?: boolean;
+  selectionStorageAdapter?: SelectionStorageAdapter;
 }
 
 export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
@@ -43,17 +52,38 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
     maxSelections = 5,
     isSaving,
     psychoeducationText,
+    layoutVariant = "default",
+    showStepCount = true,
+    selectionStorageAdapter,
+    readOnly,
+    onClose,
   }) => {
-    const selected: string[] =
-      (response as Record<string, any>)[fieldKey] ?? [];
+    const responseRecord = response as Record<string, unknown>;
+    const storedValue = responseRecord[fieldKey];
+    const selected = selectionStorageAdapter
+      ? selectionStorageAdapter.deserialize(storedValue)
+      : Array.isArray(storedValue)
+        ? storedValue.filter((value): value is string => typeof value === "string")
+        : [];
     const atLimit = selected.length >= maxSelections;
+    const isCbtReflection = layoutVariant === "cbt_reflection";
 
     const toggle = (value: string) => {
-      if (selected.includes(value)) {
-        onUpdate({ [fieldKey]: selected.filter((v) => v !== value) } as any);
-      } else if (!atLimit) {
-        onUpdate({ [fieldKey]: [...selected, value] } as any);
-      }
+      if (readOnly) return;
+
+      const nextSelected = selected.includes(value)
+        ? selected.filter((selectedValue) => selectedValue !== value)
+        : atLimit
+          ? selected
+          : [...selected, value];
+
+      if (nextSelected === selected) return;
+
+      const nextValue = selectionStorageAdapter
+        ? selectionStorageAdapter.serialize(nextSelected)
+        : nextSelected;
+
+      onUpdate({ [fieldKey]: nextValue });
     };
 
     return (
@@ -64,10 +94,11 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
         stepIndex={stepIndex}
         totalSteps={totalSteps}
         canGoBack={canGoBack}
-        isValid={isValid}
+        isValid={isValid || Boolean(readOnly)}
         onBack={onBack}
-        onNext={onNext}
+        onNext={readOnly ? onClose : onNext}
         isLoading={isSaving}
+        showStepCount={showStepCount}
         scrollable
       >
         <PsychoeducationCard content={psychoeducationText ?? ""} />
@@ -80,20 +111,30 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
               <Pressable
                 key={opt.value}
                 onPress={() => toggle(opt.value)}
-                disabled={isDisabled}
+                disabled={isDisabled || readOnly}
                 accessibilityRole="checkbox"
                 accessibilityState={{ checked: isSelected }}
                 accessibilityLabel={opt.label}
-                className="rounded-xl px-4 py-2.5 flex-row items-center"
+                className="rounded-xl px-4 py-3 flex-row items-center"
                 style={{
-                  backgroundColor: isSelected
-                    ? "#58CC02"
-                    : isDisabled
-                      ? "#F1F5F9"
-                      : "#F8FAFC",
+                  backgroundColor: isCbtReflection
+                    ? isSelected
+                      ? SAGE.selected
+                      : "#FFFFFF"
+                    : isSelected
+                      ? "#58CC02"
+                      : isDisabled
+                        ? "#F1F5F9"
+                        : "#F8FAFC",
                   borderWidth: 2,
-                  borderColor: isSelected ? "#58CC02" : "#E2E8F0",
-                  opacity: isDisabled ? 0.5 : 1,
+                  borderColor: isCbtReflection
+                    ? isSelected
+                      ? SAGE[400]
+                      : SAGE[200]
+                    : isSelected
+                      ? "#58CC02"
+                      : "#E2E8F0",
+                  opacity: isDisabled || readOnly ? 0.5 : 1,
                 }}
               >
                 {opt.iconKey && getContentIcon(opt.iconKey) ? (
@@ -101,7 +142,15 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
                     <HugeiconsIcon
                       icon={getContentIcon(opt.iconKey)!}
                       size={16}
-                      color={isSelected ? "#FFFFFF" : "#475569"}
+                      color={
+                        isCbtReflection
+                          ? isSelected
+                            ? SAGE[700]
+                            : SAGE[600]
+                          : isSelected
+                            ? "#FFFFFF"
+                            : "#475569"
+                      }
                       strokeWidth={1.6}
                     />
                   </View>
@@ -109,8 +158,16 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
                   <Text className="mr-1.5">{opt.emoji}</Text>
                 ) : null}
                 <Text
-                  className="text-sm font-bold"
-                  style={{ color: isSelected ? "#FFFFFF" : "#475569" }}
+                  className="text-sm font-semibold"
+                  style={{
+                    color: isCbtReflection
+                      ? isSelected
+                        ? SAGE[700]
+                        : "#334155"
+                      : isSelected
+                        ? "#FFFFFF"
+                        : "#475569",
+                  }}
                 >
                   {opt.label}
                 </Text>
@@ -119,7 +176,13 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
           })}
         </View>
 
-        <Text className="text-xs text-slate-400 mt-3">
+        <Text
+          className={
+            isCbtReflection
+              ? "text-xs text-sage-700 mt-3"
+              : "text-xs text-slate-400 mt-3"
+          }
+        >
           {selected.length}/{maxSelections} selected
         </Text>
       </StepLayout>
