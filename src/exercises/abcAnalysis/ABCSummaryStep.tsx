@@ -173,7 +173,7 @@ export function ABCSummaryStep({
       await saveCard({
         exercise_type: "abc_analysis",
         reframe_text: response.alternativeBelief,
-        reframe_label: "Alternative belief",
+        reframe_label: "More balanced thought",
       });
       setCardSaved(true);
       void Haptics.notificationAsync(
