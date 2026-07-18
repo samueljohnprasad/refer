@@ -1,14 +1,27 @@
 import { useAuth } from "@/src/context/AuthContext";
-import { RemindersConfig } from "@/src/components/lib/notification-reminders";
+import type { RemindersConfig } from "@/src/components/lib/notification-reminders";
+import type { Database } from "@/database.types";
 import { supabase } from "@/src/network/auth/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback } from "react";
-import { OnBoardingFormData } from "@/src/components/steps/src/types";
+import type { OnboardingFormData } from "@/src/screens/OnboardingScreen/types";
 import { useStartCourseMutation } from "@/src/features/journey/journeyApi";
 import { MOTIVATION_COURSE_MAP } from "@/src/screens/OnboardingScreen/constants";
-import { MotivationAnswer } from "@/src/screens/OnboardingScreen/types";
+import type { MotivationAnswer } from "@/src/screens/OnboardingScreen/types";
 
 export const ONBOARDING_KEY = "onboarding_completed";
+
+type CompleteOnboardingData = Pick<
+  OnboardingFormData,
+  "motivation" | "notificationTime"
+> & {
+  cfg: RemindersConfig;
+  reminderEnabled: boolean;
+  name?: string;
+  reasons?: MotivationAnswer[];
+  ageRange?: Database["public"]["Enums"]["age_range_enum"];
+  gender?: Database["public"]["Enums"]["gender_enum"];
+};
 
 export const useCompleteOnboarding = () => {
   const { user } = useAuth();
@@ -16,10 +29,7 @@ export const useCompleteOnboarding = () => {
 
   const markCompleted = useCallback(
     async (
-      onBoardingData: OnBoardingFormData & {
-        cfg: RemindersConfig;
-        motivation?: MotivationAnswer;
-      },
+      onBoardingData: CompleteOnboardingData,
     ): Promise<void> => {
       if (!user) return;
 
@@ -27,7 +37,7 @@ export const useCompleteOnboarding = () => {
         {
           user_id: user.id,
           remainders: onBoardingData.cfg,
-          daily_reminder_enabled: true,
+          daily_reminder_enabled: onBoardingData.reminderEnabled,
         },
         { onConflict: "user_id" },
       );
@@ -55,13 +65,14 @@ export const useCompleteOnboarding = () => {
         MOTIVATION_COURSE_MAP[onBoardingData.motivation ?? "anxiety"].courseId;
       await startCourse(courseId)
         .unwrap()
-        .catch(() => {
-          // Non-fatal — useActiveCourse will auto-enroll on first journey tab visit
+        .catch((error: unknown) => {
+          console.warn("[Onboarding] Course enrollment deferred:", error);
+          // Non-fatal: useActiveCourse will auto-enroll on first journey tab visit.
         });
 
       await AsyncStorage.setItem(ONBOARDING_KEY, "true");
     },
-    [startCourse],
+    [startCourse, user],
   );
 
   return { markCompleted };

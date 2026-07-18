@@ -6,7 +6,7 @@ import { LifeDomainBalanceWheel } from "@/src/components/charts/LifeDomainBalanc
 import { Text } from "@/src/components/ui/Text";
 import { FluxChartScreen } from "@/src/screens/FluxChartScreen/FluxChartScreen";
 import { NutrieScreen } from "@/src/screens/NutrieScreen/NutrieScreen";
-import GlowyInput from "@/src/components/GlowyInput";
+import { ExerciseTextComposer } from "@/src/components/exercise/ExerciseTextComposer";
 import { ExclusionTabs } from "@/src/animations/exclusion-tabs";
 import { IMessageStack } from "@/src/animations/imessage-stack";
 import { MotionBlur } from "@/src/animations/motion-blur";
@@ -97,19 +97,21 @@ export default function TestChartsScreen() {
 
         <View style={{ height: 32 }} />
 
-        <Text variant="h2" className="mb-4 mt-2 text-gray-800">Glowy Input Component</Text>
+        <Text variant="h2" className="mb-4 mt-2 text-gray-800">Exercise Composer</Text>
         <View style={{ backgroundColor: '#1A1A2E', paddingVertical: 40, borderRadius: 24, overflow: 'hidden' }}>
-          <GlowyInput 
-            message={message}
-            setMessage={setMessage}
-            handleSendMessage={() => {
+          <ExerciseTextComposer
+            value={message}
+            onChange={setMessage}
+            onSubmit={() => {
               console.log("Sent:", message);
             }}
-            handleSubmitEditing={() => {
+            onSubmitEditing={() => {
               console.log("Submitted:", message);
               setMessage("");
             }}
             placeholder="Test the glowy input..."
+            showSubmit
+            glow
           />
         </View>
 

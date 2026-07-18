@@ -3,8 +3,10 @@ import type {
   ThoughtCatcherResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createSummaryStep } from "@/src/components/exercise/steps/createSummaryStep";
-import { ThoughtCatcherSummary } from "./ThoughtCatcherSummary";
+import {
+  ThoughtCatcherCheckpointSummary,
+  ThoughtCatcherSummary,
+} from "./ThoughtCatcherSummary";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
@@ -13,22 +15,19 @@ import { ChoiceStep } from "@/src/components/exercise/steps/ChoiceStep";
 export const THOUGHT_CATCHER_INITIAL: ThoughtCatcherResponse = {
   situation: "",
   automaticThought: "",
-  intensity: 50,
+  intensity: 5,
   postIntensity: undefined,
   isTrue: null,
   balancedThought: "",
 };
 
-const CatcherSummary = createSummaryStep<ThoughtCatcherResponse>(
-  [
-    { label: "Situation", key: "situation" },
-    { label: "Automatic Thought", key: "automaticThought" },
-    { label: "Intensity", key: "intensity" },
-  ],
-  { title: "Thought Caught!", exerciseType: "thought_catcher" },
-);
-
-
+function normalizeBeliefScore(value: number | undefined): number | undefined {
+  if (typeof value !== "number") return undefined;
+  if (value > 10) {
+    return Math.min(Math.max(Math.round(value / 10), 0), 10);
+  }
+  return Math.min(Math.max(Math.round(value), 0), 10);
+}
 
 export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
   type: "thought_catcher",
@@ -38,9 +37,24 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
   icon: "thought_catcher",
   duration: "3-5 min",
   xp: 10,
-  backgroundColor: "#F8FAF7",
-  schemaVersion: 2,
+  backgroundColor: "#fff",
+  schemaVersion: 4,
   initialResponse: THOUGHT_CATCHER_INITIAL,
+  migrate: (old, fromVersion) => {
+    const migrated = {
+      ...THOUGHT_CATCHER_INITIAL,
+      ...old,
+    };
+
+    if (fromVersion < 4) {
+      migrated.intensity =
+        normalizeBeliefScore(migrated.intensity) ??
+        THOUGHT_CATCHER_INITIAL.intensity;
+      migrated.postIntensity = normalizeBeliefScore(migrated.postIntensity);
+    }
+
+    return migrated;
+  },
 
   steps: [
     {
@@ -66,12 +80,18 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
     {
       id: "situation",
       component: createStep(TextInputStep, {
-        title: "The Situation",
-        subtitle: "What was happening when the thought appeared?",
+        title: "What happened?",
+        subtitle: "Start with the moment, not what it meant.",
         fieldKey: "situation",
-        placeholder: "e.g. I was at work and my boss called a meeting...",
+        placeholder: "What happened...",
+        composerMinHeight: 100,
+        requirementText: "Write a few words to continue.",
+        statusText: "This stays with what happened.",
+        showVoice: true,
+        alwaysShowVoice: true,
+        showStepCount: false,
         tipText:
-          "Describe the event as factually as possible: who, what, where, when.",
+          "Write what a camera could have seen or heard.",
         validationMessage:
           "That sounds like it was a lot. Let's look at this thought together.",
       }),
@@ -96,9 +116,9 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
              const hashB = (b.charCodeAt(0) * seed) % 1;
              return hashA - hashB;
           });
-          const randomThemes = shuffledThemes.slice(0, 3);
+          const randomThemes = shuffledThemes.slice(0, 2);
           
-          return `You are a CBT therapist assistant. Generate 3 distinct, relatable stressful situations someone might want to analyze using CBT. Theme 1: ${randomThemes[0]}. Theme 2: ${randomThemes[1]}. Theme 3: ${randomThemes[2]}. Make them highly specific, highly varied, and completely different every time (Random seed: ${seed}). Keep each concise (1 short sentence) and written in the first person. Provide a relevant emoji for each.`;
+          return `You are a CBT therapist assistant helping someone describe a real stressful situation for a CBT thought record. Generate 2 grounded examples. Theme 1: ${randomThemes[0]}. Theme 2: ${randomThemes[1]}. Each example must be plausible, emotionally specific, and observable by a camera or witness. Avoid absurd object-buying/object-seeing scenarios. Keep each example to one concise first-person sentence. Provide a relevant emoji for each.`;
         },
         responseSchema: {
           type: "array",
@@ -111,18 +131,24 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
             required: ["text", "emoji"],
           },
         },
-        maxResults: 3,
+        maxResults: 2,
         aiLoadingMessage: "Finding relatable situations...",
       },
     },
     {
       id: "automatic_thought",
       component: createStep(TextInputStep, {
-        title: "Automatic Thought",
-        subtitle: "What went through your mind?",
+        title: "Automatic thought",
+        subtitle: "Write the sentence your mind added.",
         fieldKey: "automaticThought",
-        placeholder: "e.g. I'm going to get fired...",
-        tipText: "Write the exact thought, even if it sounds irrational.",
+        placeholder: "The thought that showed up",
+        composerMinHeight: 100,
+        requirementText: "Write a few words to continue.",
+        statusText: "Enough to check.",
+        showVoice: true,
+        alwaysShowVoice: true,
+        showStepCount: false,
+        tipText: "Keep the thought raw. You will test it next.",
         validationMessage:
           "It takes courage to write that down. Let's see what's really going on.",
       }),
@@ -149,23 +175,27 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
     },
     {
       id: "intensity",
-      component: createStep(SliderStep, {
-        title: "Thought Intensity",
-        subtitle: "How strongly do you believe this thought right now?",
+      component: createStep(SliderStep, (props) => ({
+        title: "How believable does it feel?",
+        subtitle: "",
         fieldKey: "intensity",
-        min: 1,
+        contextText: props.response?.automaticThought,
+        min: 0,
         max: 10,
-        minLabel: "Not at all",
+        minLabel: "Not true",
+        midLabel: "Partly",
         maxLabel: "Completely",
-        unit: "",
-      }),
-      label: "How intense is this thought?",
+        unit: "/10",
+        showStepCount: false,
+      })),
+      label: "How true does the thought feel?",
       validate: () => true,
+      nextLabel: "Use this for now",
     },
     {
       id: "catcher_summary",
-      component: CatcherSummary,
-      label: "Summary",
+      component: ThoughtCatcherCheckpointSummary,
+      label: "Checkpoint summary",
       validate: () => true,
       next: (r) => {
         if (r.isTrue !== null && r.isTrue !== undefined) return "is_true";
@@ -179,6 +209,8 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
         subtitle: "Is this thought actually true?",
         fieldKey: "isTrue",
         autoAdvance: true,
+        showStepCount: false,
+        layoutVariant: "cbt_reflection" as const,
         options: [
           { value: "YES", label: "Yes", iconKey: "check" },
           { value: "NOT SURE", label: "Not Sure", iconKey: "question" },
@@ -195,8 +227,13 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
         title: "Balanced Thought",
         subtitle: "Rewrite the thought in a more balanced way.",
         fieldKey: "balancedThought",
-        placeholder:
-          "e.g. The meeting could be about many things, not just me...",
+        placeholder: "Write a fairer version of the thought.",
+        composerMinHeight: 100,
+        requirementText: "Add or revise your response to continue.",
+        statusText: "This is enough to carry forward.",
+        showVoice: true,
+        alwaysShowVoice: true,
+        showStepCount: false,
         referenceQuote: props.response?.automaticThought
           ? {
               label: "Automatic thought you caught",
@@ -228,19 +265,22 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
     {
       id: "post_intensity",
       component: createStep(SliderStep, (props) => ({
-        title: "Thought Intensity Now",
-        subtitle: "How strongly do you believe this thought after checking it?",
+        title: "How believable does it feel now?",
+        subtitle: "",
         fieldKey: "postIntensity",
-        min: 1,
+        contextText: props.response?.automaticThought,
+        min: 0,
         max: 10,
-        minLabel: "Not at all",
+        minLabel: "Not true",
+        midLabel: "Partly",
         maxLabel: "Completely",
-        anchorValue: props.response?.intensity,
-        anchorLabel: "Initial distress",
+        unit: "/10",
+        showStepCount: false,
       })),
-      label: "How intense is the thought now?",
+      label: "How true does the thought feel now?",
       validate: () => true,
       optional: true,
+      nextLabel: "Use this for now",
     },
     {
       id: "checker_summary",

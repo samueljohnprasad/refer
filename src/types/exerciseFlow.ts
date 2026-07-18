@@ -195,6 +195,8 @@ export interface StepProps<T = Record<string, any>> {
   isAiLoading?: boolean;
   /** Loading message to show when AI is generating */
   aiLoadingMessage?: string;
+  /** Non-blocking AI suggestion error for the active step */
+  aiError?: string | null;
   /** Whether the exercise is saving */
   isSaving?: boolean;
   /** Whether this is a read-only view (completed entry) */

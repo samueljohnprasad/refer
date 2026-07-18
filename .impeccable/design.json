@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-17T00:00:00.000Z",
+  "source": "DESIGN.md",
+  "extensions": {
+    "colorMeta": {
+      "sage-50": {
+        "hex": "#f8fbf6",
+        "role": "gentle instructional tint",
+        "usage": "Use for calm notes, selected states, and low-emphasis therapy scaffolding."
+      },
+      "sage-500": {
+        "hex": "#5f7f58",
+        "role": "primary action",
+        "usage": "Use for primary CTAs, progress, and committed selection."
+      },
+      "sage-700": {
+        "hex": "#29452a",
+        "role": "deep action rim",
+        "usage": "Use for tactile button depth, emphasized labels, and strong borders."
+      },
+      "canvas": {
+        "hex": "#F8FAF7",
+        "role": "screen background",
+        "usage": "Use as the quiet app canvas behind structured surfaces."
+      },
+      "surface": {
+        "hex": "#ffffff",
+        "role": "writing surface",
+        "usage": "Use for inputs, cards, sheets, and main content panels."
+      },
+      "ink": {
+        "hex": "#142414",
+        "role": "primary text",
+        "usage": "Use for body copy, labels, headings, and validation text."
+      },
+      "danger": {
+        "hex": "#e7000b",
+        "role": "error state",
+        "usage": "Use only for destructive actions or clear error feedback."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "family": "Cormorant Garamond",
+        "size": "36px",
+        "lineHeight": "39px",
+        "tracking": "-0.02em",
+        "usage": "Reflective completion headings and rare emotional emphasis."
+      },
+      "headline": {
+        "family": "Cormorant Garamond",
+        "size": "28px",
+        "lineHeight": "32px",
+        "tracking": "-0.01em",
+        "usage": "Primary exercise screen titles."
+      },
+      "body": {
+        "family": "Geist",
+        "size": "17px",
+        "lineHeight": "24px",
+        "tracking": "normal",
+        "usage": "Main product copy and entered user text."
+      },
+      "label": {
+        "family": "Geist",
+        "size": "14px",
+        "lineHeight": "20px",
+        "tracking": "normal",
+        "usage": "Buttons, labels, validation, and compact instructions."
+      },
+      "caption": {
+        "family": "Geist",
+        "size": "13px",
+        "lineHeight": "19px",
+        "tracking": "0.01em",
+        "usage": "Secondary helper text and metadata."
+      }
+    },
+    "shadows": {
+      "focus-glow": {
+        "value": "0 0 0 3px rgba(95, 127, 88, 0.08)",
+        "usage": "Quiet focus ring for inputs and selectable controls."
+      },
+      "cta-depth": {
+        "value": "0 4px 0 #29452a",
+        "usage": "Physical rim for primary button press depth."
+      }
+    },
+    "motion": {
+      "state-transition": {
+        "duration": "150-250ms",
+        "easing": "ease-out",
+        "usage": "Use for state changes, reveals, disabled transitions, and validation."
+      },
+      "press-feedback": {
+        "duration": "80-140ms",
+        "easing": "ease-out",
+        "usage": "Use for button compression, chip selection, and tactile card taps."
+      },
+      "reducedMotion": "Use opacity or instant state changes. Do not gate content on motion."
+    },
+    "breakpoints": {
+      "mobile": "0px",
+      "tablet": "768px"
+    },
+    "components": {
+      "PrimaryButton": {
+        "className": "ds-btn-primary",
+        "description": "Sage fill, white label, deep sage rim, 56px default height, pill radius, tactile press state.",
+        "states": [
+          "default",
+          "pressed",
+          "focused",
+          "disabled",
+          "loading"
+        ]
+      },
+      "SecondaryButton": {
+        "className": "ds-btn-secondary",
+        "description": "White surface, crisp border, ink label, and no decorative shadow.",
+        "states": [
+          "default",
+          "pressed",
+          "focused",
+          "disabled"
+        ]
+      },
+      "TextInput": {
+        "className": "ds-text-input",
+        "description": "White writing surface with sage border, 20px radius, readable placeholder, and optional voice affordance.",
+        "states": [
+          "empty",
+          "focused",
+          "valid",
+          "error",
+          "disabled"
+        ]
+      },
+      "GuidanceNote": {
+        "className": "ds-guidance-note",
+        "description": "Sage-tinted instructional box with concise copy and no assistant branding.",
+        "states": [
+          "default"
+        ]
+      },
+      "SuggestionRow": {
+        "className": "ds-suggestion-row",
+        "description": "Optional starting point row with plain text and a compact Use action.",
+        "states": [
+          "default",
+          "pressed",
+          "used"
+        ]
+      },
+      "ValidationNote": {
+        "className": "ds-validation-note",
+        "description": "Inline feedback that explains quality or readiness, not just length.",
+        "states": [
+          "neutral",
+          "success",
+          "error"
+        ]
+      }
+    },
+    "narrative": {
+      "northStar": "The Quiet Therapy Notebook",
+      "overview": "A restrained CBT product UI where the user's own words lead and optional support stays secondary.",
+      "keyCharacteristics": [
+        "sage-toned structure",
+        "white writing surfaces",
+        "dark botanical ink",
+        "editorial headings used sparingly",
+        "tactile primary actions"
+      ],
+      "rules": [
+        "Put the primary input before suggestions on vulnerable exercise steps.",
+        "Use AI suggestions as optional starting points, not the visual hero.",
+        "Use Cormorant for reflective hierarchy, never for controls.",
+        "Keep validation specific to task quality.",
+        "Require privacy-aware context for voice controls."
+      ],
+      "dos": [
+        "Lead with user agency.",
+        "Keep therapeutic copy short and concrete.",
+        "Use tonal layering before elevation.",
+        "Make all interactive states explicit."
+      ],
+      "donts": [
+        "Do not use ghost cards.",
+        "Do not use generic gradients.",
+        "Do not over-round cards or inputs.",
+        "Do not use sparkles or assistant decoration for suggestions.",
+        "Do not prime users with harsh thoughts before they write."
+      ]
+    }
+  }
+}

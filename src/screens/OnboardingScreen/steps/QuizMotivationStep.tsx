@@ -45,9 +45,9 @@ const QuizMotivationStep: React.FC<QuizMotivationStepProps> = ({
     >
       <Animated.Text
         entering={FadeIn.duration(160).delay(STEP_LABEL_ENTER_DELAY_MS)}
-        className="text-xs font-semibold uppercase tracking-widest text-sage-500"
+        className="text-xs font-semibold text-sage-600"
       >
-        Step 1 of 7
+        Start with what feels most true
       </Animated.Text>
 
       <Animated.Text

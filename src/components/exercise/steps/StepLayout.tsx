@@ -22,6 +22,7 @@ interface StepLayoutProps {
   children: React.ReactNode;
   /** If true, wraps children in a ScrollView */
   scrollable?: boolean;
+  showStepCount?: boolean;
 }
 
 export const StepLayout: React.FC<StepLayoutProps> = React.memo(
@@ -40,6 +41,7 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
     isLoading,
     children,
     scrollable = false,
+    showStepCount = true,
   }) => {
     const lastTapRef = useRef(0);
 
@@ -72,6 +74,7 @@ export const StepLayout: React.FC<StepLayoutProps> = React.memo(
           progress={progress}
           stepNumber={stepIndex + 1}
           totalSteps={totalSteps}
+          showStepCount={showStepCount}
         />
         <View className="pb-4">{children}</View>
       </Pressable>

@@ -1044,7 +1044,10 @@ export default function ExercisesScreen(): ReactElement {
     }
 
     if (item.type === "reframing") {
-      const route = `/tabs/screens/thought-reframing?id=${item.id}`;
+      const route = buildExerciseRoute("thought_reframing", {
+        entryId: item.id,
+        readOnly: item.status === "completed",
+      });
       if (e) navigateWithReveal(e, route as any, "#E8FBF0");
       else router.push(route as never);
       return;

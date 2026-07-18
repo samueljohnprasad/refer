@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import {
-  Text,
   View,
-  TouchableOpacity,
   useWindowDimensions,
   StyleSheet,
 } from "react-native";
@@ -44,11 +42,8 @@ import JourneyMapStep from "./steps/JourneyMapStep";
 import LetterFromFutureStep from "./steps/LetterFromFutureStep";
 import SoftPaywallStep from "./steps/SoftPaywallStep";
 import WelcomeToHappyStep from "./steps/WelcomeToHappyStep";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
-import { SafeHeaderWrapper } from "@/src/components/ui/SafeHeaderWrapper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import type { RemindersConfig } from "@/src/components/lib/notification-reminders";
 
 interface OnboardingScreenProps {
   onComplete: () => Promise<void>;
@@ -75,29 +70,57 @@ const STEP_ENTER_DURATION_MS = 200;
 const STEP_ENTER_TRAVEL_PX = 18;
 const LESSON_PROGRESS_FILL = "#5f7f58";
 const HEADER_ICON_COLOR = "#4F604F";
+const REMINDER_CONFIG_BY_TIME = {
+  morning: { hour: 8, minute: 0 },
+  afternoon: { hour: 13, minute: 0 },
+  evening: { hour: 19, minute: 0 },
+} as const;
+
+const buildReminderConfig = (
+  time: keyof typeof REMINDER_CONFIG_BY_TIME | undefined,
+): RemindersConfig => {
+  if (!time) return {};
+
+  const reminderTime = REMINDER_CONFIG_BY_TIME[time];
+  return {
+    "1": {
+      ...reminderTime,
+      enabled: true,
+      title: "A gentle check-in",
+      body: "Take a few minutes to notice what you are carrying.",
+    },
+  };
+};
 
 const getHeaderConfig = (stepName: string): HeaderConfig => {
   switch (stepName) {
     case "welcome":
     case "building_journey":
     case "lesson_complete":
-    case "journey_map":
     case "soft_paywall":
     case "welcome_to_happy":
       return { visible: false };
+    case "journey_map":
+      return {
+        visible: true,
+        trailingLabel: "YOUR COURSE",
+        trailingLabelColor: "#7D8D7B",
+        trailingLabelTracking: 0.6,
+        trailingLabelAlignment: "end",
+      };
     case "mascot_greeting":
-      return { visible: true, showBackButton: true, progress: 0.13 };
+      return { visible: true, showBackButton: true, progress: 0.15 };
     case "quiz_motivation":
-      return { visible: true, showBackButton: true, progress: 0.25 };
+      return { visible: true, showBackButton: true, progress: 0.18 };
     case "quiz_stress_level":
-      return { visible: true, showBackButton: true, progress: 0.38 };
+      return { visible: true, showBackButton: true, progress: 0.32 };
     case "daily_goal":
       return { visible: true, showBackButton: true, progress: 0.5 };
     case "plan_reveal":
       return {
         visible: true,
         showBackButton: true,
-        trailingLabel: "YOUR PLAN",
+        trailingLabel: "YOUR COURSE",
         trailingLabelColor: "#7D8D7B",
         trailingLabelTracking: 0.6,
         trailingLabelAlignment: "end",
@@ -109,7 +132,7 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
         visible: true,
         showBackButton: true,
         backButtonVariant: "close",
-        progress: 0.25,
+        progress: 0.5,
         progressFillColor: LESSON_PROGRESS_FILL,
         trailingLabel: "+10 XP",
         trailingLabelColor: LESSON_PROGRESS_FILL,
@@ -117,7 +140,7 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
     case "ai_insight":
       return {
         visible: true,
-        progress: 0.5,
+        progress: 0.82,
         progressFillColor: LESSON_PROGRESS_FILL,
         trailingLabel: "+10 XP",
         trailingLabelColor: LESSON_PROGRESS_FILL,
@@ -132,7 +155,7 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
         trailingLabelAlignment: "center",
       };
     case "notification_permission":
-      return { visible: true, progress: 1 };
+      return { visible: true, progress: 0.88 };
     default:
       return { visible: false };
   }
@@ -294,7 +317,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         await markCompleted({
           name: "",
           reasons: formData.motivation ? [formData.motivation] : [],
-          cfg: {} as never,
+          cfg: buildReminderConfig(formData.notificationTime),
+          reminderEnabled: formData.notificationTime !== undefined,
           motivation: formData.motivation,
         });
         await onComplete();
@@ -558,14 +582,5 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     </ScreenLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  welcomeFooter: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-});
 
 export default React.memo(OnboardingScreen);

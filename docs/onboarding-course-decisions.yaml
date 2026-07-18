@@ -1,0 +1,547 @@
+document:
+  id: "happy-onboarding-course-decisions"
+  title: "Happy onboarding and course integration decision record"
+  version: "1.0.0"
+  status: "active"
+  created_at: "2026-07-18"
+  last_updated_at: "2026-07-18"
+  owner: "Happy product and engineering"
+  purpose: >-
+    Preserve the product, learning, content, UX, safety, analytics, and
+    implementation decisions behind the onboarding flow so future changes can
+    be evaluated against the original reasoning.
+  update_policy:
+    - "Do not delete superseded decisions; mark them superseded and link the replacement decision ID."
+    - "Update implementation_status when code, content, analytics, or validation changes."
+    - "Record evidence from user testing before changing a decision from hypothesis to validated."
+    - "Use ISO 8601 dates and stable decision IDs."
+
+context:
+  product: "Happy"
+  platform: "Expo Router React Native mobile app"
+  audience: >-
+    People seeking calm, accessible mental health education and guided practice,
+    including people who may be stressed, anxious, low in mood, overwhelmed, or
+    unfamiliar with CBT.
+  product_goal: >-
+    Help people learn evidence-informed mental health skills through structured,
+    approachable courses and apply those skills through guided exercises.
+  experience_goal: >-
+    Feel like a quiet, trustworthy therapy notebook with a clear learning path,
+    not a generic wellness content library or an AI-first assistant.
+  design_register: "product"
+  design_direction:
+    - "Premium, editorial, calm, intentional, and trustworthy."
+    - "Sage, white, and dark botanical ink with restrained semantic accents."
+    - "Cormorant for reflective titles and completion moments."
+    - "Geist for instructions, labels, controls, and operational text."
+    - "Use tonal hierarchy before borders and shadows."
+
+core_model:
+  decision_id: "ONB-001"
+  status: "accepted"
+  decision: >-
+    The personalized journey map is the primary course frame. CBT exercises are
+    practices contained inside lessons on that course, not a competing top-level
+    onboarding concept.
+  hierarchy:
+    - level: "course"
+      user_meaning: "The outcome-oriented path I am following over time."
+      onboarding_representation: "Personalized course title and visible journey map."
+    - level: "day_or_unit"
+      user_meaning: "A manageable milestone in the course."
+      onboarding_representation: "A node on the seven-day course map."
+    - level: "lesson"
+      user_meaning: "A short learning session with one clear skill."
+      onboarding_representation: "Day 1, Lesson 1: Naming the feeling."
+    - level: "exercise"
+      user_meaning: "A guided action that applies the lesson."
+      onboarding_representation: "Mood naming and a grounding tool."
+  why:
+    - >-
+      The business and educational goal is mental health learning. A course
+      gives users continuity, progression, and a reason to return.
+    - >-
+      Exercises alone can feel like an unstructured toolbox. Users may complete
+      one activity without understanding what they are learning or what comes next.
+    - >-
+      A map makes progress and future value visible, while a first exercise proves
+      that the course is practical rather than passive reading.
+    - >-
+      This matches Duolingo's useful structural principle: show a linear path,
+      then let the learner immediately complete a small piece of it.
+  rejected_alternatives:
+    - option: "Make CBT exercises the primary onboarding destination"
+      reason: >-
+        Strong for immediate utility but weak for curriculum identity, sequencing,
+        retention, and the promise of sustained education.
+    - option: "Show only the journey map and postpone practice"
+      reason: >-
+        Creates a promise without evidence. Users do not experience the quality or
+        emotional usefulness of a lesson before onboarding ends.
+    - option: "Present courses and CBT exercises as equal choices"
+      reason: >-
+        Forces a taxonomy decision onto a stressed first-time user and weakens the
+        mental model that exercises belong inside a learning sequence.
+
+activation_strategy:
+  decision_id: "ONB-002"
+  status: "accepted"
+  aha_moment: >-
+    I have a course made for the goal I selected, I can see where it is taking me,
+    and I have already learned and applied one small skill.
+  activation_event: "Complete the first guided lesson after viewing the course map."
+  activation_components:
+    - "Personal relevance from motivation and intensity answers."
+    - "Visible course path with a clear starting node."
+    - "Brief psychoeducation that names one useful concept."
+    - "Immediate low-pressure practice with no wrong answer."
+    - "Completion feedback tied to course progress."
+    - "A clear next step after onboarding."
+  time_to_value_target:
+    target: "First lesson starts within approximately two minutes of opening onboarding."
+    rationale: >-
+      Users may arrive with low attention, anxiety, or emotional fatigue. Every
+      passive screen must earn its place by improving relevance or comprehension.
+
+onboarding_flow:
+  decision_id: "ONB-003"
+  status: "accepted"
+  sequence:
+    - order: 1
+      step: "welcome"
+      purpose: "Set a calm expectation and begin with one clear action."
+      primary_cta: "LET'S BEGIN"
+    - order: 2
+      step: "quiz_motivation"
+      purpose: "Identify the user's desired outcome and select the course theme."
+      interaction: "Single choice with automatic advance."
+    - order: 3
+      step: "quiz_stress_level"
+      purpose: "Estimate an appropriate tone and pace without diagnosing the user."
+      interaction: "Single choice with automatic advance."
+    - order: 4
+      step: "building_journey"
+      purpose: "Provide brief transition feedback while deriving the personalized course."
+      behavior: "Auto advance. Keep duration short."
+    - order: 5
+      step: "plan_reveal"
+      purpose: "Name the selected course, expected duration, and learning promise."
+      primary_cta: "VIEW MY COURSE"
+    - order: 6
+      step: "journey_map"
+      purpose: "Make the course structure and immediate starting point visible."
+      primary_cta: "START LESSON 1"
+    - order: 7
+      step: "mood_check_lesson"
+      purpose: "Teach affect labeling and let the user practice naming a feeling."
+      completion_rule: "A feeling must be selected."
+    - order: 8
+      step: "ai_insight"
+      purpose: "Connect the skill to daily context and introduce a grounding tool."
+      content_priority: "Learning and reflection first; AI branding is secondary."
+    - order: 9
+      step: "lesson_complete"
+      purpose: "Confirm genuine progress and connect the result back to the course."
+      progress_signals:
+        - "1 / 14 lessons"
+        - "+20 XP"
+        - "Day 1 complete"
+    - order: 10
+      step: "notification_permission"
+      purpose: "Offer a return cue after value has been demonstrated."
+      behavior: "Optional and skippable; continue requires a selected time."
+    - order: 11
+      step: "welcome_to_happy"
+      purpose: "Hand the user into the main product with course continuity."
+      primary_cta: "Begin Day 1"
+  flow_principles:
+    - "Personalize before presenting a course."
+    - "Show the course before asking the user to begin a lesson."
+    - "Demonstrate learning value before asking for reminders or payment."
+    - "Teach one concept at a time."
+    - "Keep the path linear during onboarding; do not ask users to choose among courses."
+    - "Every screen must either improve relevance, explain structure, or deliver value."
+
+removed_or_deferred_steps:
+  decision_id: "ONB-004"
+  status: "accepted"
+  items:
+    - step: "mascot_greeting"
+      state: "removed_from_active_flow"
+      reason: >-
+        A second welcome is ceremony before value. The mascot may support tone inside
+        useful screens but should not require a dedicated onboarding step.
+    - step: "daily_goal"
+      state: "deferred"
+      reason: >-
+        Asking for a daily commitment before the user experiences a lesson is premature.
+        A meaningful schedule can be requested after the first lesson or during return setup.
+      reconsider_when: "The selected duration directly changes lesson scheduling or reminders."
+    - step: "pact_signing"
+      state: "deferred"
+      reason: >-
+        A commitment ritual before demonstrated value adds emotional pressure and length.
+        Commitment is more credible after the user understands what they are committing to.
+      reconsider_when: "Retention evidence shows voluntary post-lesson commitment improves return."
+    - step: "letter_from_future"
+      state: "removed_from_active_flow"
+      reason: >-
+        It predicts emotional transformation before trust is earned and delays product use.
+        It may be more appropriate as a later milestone reward based on real user progress.
+    - step: "soft_paywall"
+      state: "removed_from_active_flow"
+      reason: >-
+        Monetization before the user completes a real lesson interrupts activation and makes
+        the course promise feel transactional. Paywall timing should follow demonstrated value.
+      reconsider_when: "A tested post-value monetization moment and entitlement model are defined."
+    - step: "journey_map"
+      state: "restored_and_repositioned"
+      reason: >-
+        It is necessary for the course-first mental model. It now appears immediately after
+        plan reveal and immediately before Lesson 1.
+
+course_map_decisions:
+  decision_id: "ONB-005"
+  status: "accepted"
+  content:
+    title_pattern: "Your first course"
+    duration_badge: "7 days"
+    explanation: "Each day pairs a short lesson with a guided CBT practice."
+    orientation: "Start here. Later lessons unlock as you progress."
+  visual_behavior:
+    - "Use one linear path; no branches during onboarding."
+    - "Mark the first node as current and future nodes as locked."
+    - "Use course-specific labels derived from the selected motivation."
+    - "Reserve the primary footer action for starting Lesson 1."
+    - "Provide enough bottom scroll clearance so the fixed CTA does not cover nodes."
+  why:
+    - "A visible path creates endowed progress and reduces uncertainty about what happens next."
+    - "Locked future nodes communicate sequence without requiring explanatory text."
+    - "Course-specific titles make personalization concrete rather than merely claimed."
+
+first_lesson_decisions:
+  decision_id: "ONB-006"
+  status: "accepted_with_follow_up"
+  learning_objective: >-
+    The learner can name their present feeling and understand that labeling an emotion
+    may create enough distance to choose a response.
+  lesson_shape:
+    - phase: "learn"
+      content: "Brief explanation of affect labeling."
+    - phase: "practice"
+      content: "Select the feeling that best matches the present moment."
+    - phase: "apply"
+      content: "Connect the skill to a likely time of day and review 5-4-3-2-1 grounding."
+    - phase: "complete"
+      content: "Show course progress, XP, and Day 1 completion."
+  instructional_rules:
+    - "First interaction should be highly likely to succeed."
+    - "Personal reflections do not have correct or incorrect answers."
+    - "Use plain language before naming clinical or academic terminology."
+    - "Separate education from claims of diagnosis or treatment."
+    - "End with capability and a reusable tool, not with fear or loss framing."
+  follow_up_needed:
+    - >-
+      The current apply phase teaches 5-4-3-2-1 but does not yet require an interactive
+      guided grounding action. A future iteration should test whether one guided step
+      improves comprehension without making onboarding too long.
+    - >-
+      Reconcile the displayed 14-lesson total with the seven visible day nodes and the
+      production course schema so progress numbers always represent real persisted data.
+
+content_and_safety:
+  decision_id: "ONB-007"
+  status: "accepted"
+  principles:
+    - "The product provides psychoeducation and guided self-help, not diagnosis or emergency care."
+    - "Do not promise a specific emotional outcome for an individual."
+    - "Use cautious evidence language such as 'may help' or 'has been associated with'."
+    - "Do not invent personal patterns from one onboarding answer."
+    - "Label generated or inferred insight honestly when AI is used."
+    - "Avoid shame, coercion, or harsh streak-loss framing for vulnerable users."
+    - "Treat mood data as sensitive product data, not a decorative engagement input."
+  copy_changes:
+    - previous: "The intensity drops by roughly 40%, on average."
+      replacement: "It helps create a little distance between you and the emotion."
+      reason: "Remove an overly precise generalized outcome claim from onboarding copy."
+    - previous: "Here's what I noticed about you."
+      replacement: "Now connect the skill to your day."
+      reason: "Avoid presenting a shallow inference as deep personal understanding."
+    - previous: "AI Insight"
+      replacement: "Your reflection"
+      reason: "Keep the learner and the course skill primary; AI is supporting infrastructure."
+    - previous: "Naming an emotion reduces its intensity..."
+      replacement: "Putting feelings into words has been associated with reduced emotional reactivity."
+      reason: "Use appropriately qualified research language."
+  escalation_requirement: >-
+    Crisis, self-harm, abuse, or severe symptom content requires a separately designed safety
+    pathway and must not be handled only through normal course progression or generic AI copy.
+
+personalization:
+  decision_id: "ONB-008"
+  status: "accepted_as_initial_model"
+  inputs:
+    motivation:
+      role: "Select the first course theme."
+      values:
+        anxiety: "Quieting the Storm"
+        mood: "Finding Light Again"
+        stress: "Steady Under Pressure"
+        self_understanding: "Coming Home to Yourself"
+        sleep: "The Gentle Wind-Down"
+    stress_level:
+      role: "Inform tone and eventual pacing."
+      current_limit: "Currently collected but not yet used to alter curriculum difficulty."
+  constraints:
+    - "Personalization claims must match actual behavior in code."
+    - "Do not call a course personalized only because its title changes."
+    - "Future personalization should change pacing, examples, lesson order, or support level."
+    - "Do not infer a medical condition from motivation or intensity answers."
+
+gamification:
+  decision_id: "ONB-009"
+  status: "accepted_with_constraints"
+  retained:
+    - "Visible linear progress."
+    - "XP after meaningful completion."
+    - "A clear current node and future unlocks."
+    - "A next-step cue after completion."
+  constrained:
+    - "Do not award a streak before a lesson is completed."
+    - "Do not let XP become more visually important than the learned skill."
+    - "Do not punish missed days or imply that progress is lost."
+    - "Rewards must follow real actions, not passive screen views."
+  reason: >-
+    Duolingo's path clarity and immediate feedback support learning, but mental health
+    products require gentler motivation and must avoid shame-based loss aversion.
+
+monetization:
+  decision_id: "ONB-010"
+  status: "deferred"
+  current_decision: "No soft paywall in the active pre-value onboarding flow."
+  principles:
+    - "First prove educational quality with one complete lesson."
+    - "Explain what remains available for free and what premium unlocks."
+    - "Do not block crisis or safety resources behind payment."
+    - "Do not use fabricated urgency, false scarcity, or emotional vulnerability to sell."
+  open_question: >-
+    Determine whether the best monetization moment is after Lesson 1, after a multi-day
+    checkpoint, or when the user selects premium course content.
+
+reminders_and_retention:
+  decision_id: "ONB-011"
+  status: "accepted"
+  decision: "Ask for reminder timing only after the first lesson is complete."
+  options:
+    morning: "08:00"
+    afternoon: "13:00"
+    evening: "19:00"
+  behavior:
+    - "Reminder setup is skippable."
+    - "The primary save action remains disabled until a time is selected."
+    - "Persist daily_reminder_enabled according to whether a reminder time was selected."
+    - "Use calm, specific reminder copy rather than streak-threat language."
+  why:
+    - "The request follows demonstrated value and therefore has context."
+    - "Optional timing respects notification consent and reduces pressure."
+
+visual_and_interaction_rules:
+  decision_id: "ONB-012"
+  status: "accepted"
+  rules:
+    - "Use the existing canvas token #F8FAF7 for onboarding background."
+    - "Keep tap targets large and stable across safe-area sizes."
+    - "Use short 150-250 ms state transitions; motion communicates progression."
+    - "Do not use decorative gradients, sparkle branding, or ghost-card stacks as defaults."
+    - "Do not cover scroll content with fixed transparent footers."
+    - "Do not use Cormorant for buttons, labels, or dense instructional controls."
+    - "Use readable body contrast; muted text cannot become pale decoration."
+    - "Keep course and lesson vocabulary consistent across headers, CTAs, progress, and home."
+
+analytics_and_measurement:
+  decision_id: "ONB-013"
+  status: "planned"
+  funnel_events:
+    - "onboarding_started"
+    - "motivation_selected"
+    - "stress_level_selected"
+    - "course_revealed"
+    - "course_map_viewed"
+    - "lesson_1_started"
+    - "lesson_1_practice_completed"
+    - "lesson_1_completed"
+    - "reminder_saved"
+    - "reminder_skipped"
+    - "onboarding_completed"
+    - "day_2_started"
+  primary_metrics:
+    - metric: "activation_rate"
+      definition: "Users completing Lesson 1 divided by users starting onboarding."
+    - metric: "time_to_first_lesson"
+      definition: "Elapsed time from onboarding start to Lesson 1 start."
+    - metric: "time_to_first_value"
+      definition: "Elapsed time from onboarding start to Lesson 1 completion."
+    - metric: "day_2_return_rate"
+      definition: "Activated users who begin the next course lesson within the intended window."
+  diagnostic_metrics:
+    - "Drop-off by onboarding step."
+    - "Course-map-to-lesson-start conversion."
+    - "Lesson-start-to-lesson-complete conversion."
+    - "Reminder opt-in and skip rates."
+    - "Completion rate by motivation and stress level."
+    - "Median and p90 completion time by device size."
+  guardrail_metrics:
+    - "Back or close rate during the first lesson."
+    - "Notification disable rate after onboarding."
+    - "Support reports about misleading personalization or clinical claims."
+    - "Accessibility failures and text truncation by viewport."
+  experiment_rules:
+    - "Change one major onboarding concept per experiment."
+    - "Do not optimize only for completion if Day 2 return or trust declines."
+    - "Segment results by new anonymous users and authenticated users."
+
+implementation_tracking:
+  decision_id: "ONB-014"
+  status: "in_progress"
+  implemented:
+    - file: "src/screens/OnboardingScreen/constants.ts"
+      changes:
+        - "Active flow shortened and reorganized."
+        - "Journey map restored after plan reveal."
+        - "Course-oriented CTA labels added."
+        - "Reminder validation and skip behavior configured."
+    - file: "src/screens/OnboardingScreen/OnboardingScreen.tsx"
+      changes:
+        - "Course-map header treatment added."
+        - "Lesson progress values adjusted."
+        - "Reminder configuration derived from selected time."
+    - file: "src/screens/OnboardingScreen/steps/PlanRevealStep.tsx"
+      changes:
+        - "Journey language changed to course language."
+    - file: "src/screens/OnboardingScreen/steps/JourneyMapStep.tsx"
+      changes:
+        - "Course title, duration, lesson-plus-practice explanation, and start guidance added."
+        - "Footer and header scroll clearance added."
+        - "Premature streak badge removed."
+    - file: "src/screens/OnboardingScreen/steps/MoodCheckLessonStep.tsx"
+      changes:
+        - "Lesson framing clarified."
+        - "Unsupported precise outcome copy removed."
+    - file: "src/screens/OnboardingScreen/steps/AIInsightStep.tsx"
+      changes:
+        - "Learner reflection and CBT tool made primary."
+        - "Overstated personalization and outcome language reduced."
+    - file: "src/screens/OnboardingScreen/steps/LessonCompleteStep.tsx"
+      changes:
+        - "Completion feedback tied to course progress."
+    - file: "hooks/data/useCompleteOnboarding.ts"
+      changes:
+        - "Reminder enabled state persisted from actual onboarding choice."
+        - "Personalized course enrollment retained."
+  not_yet_implemented:
+    - "Interactive guided practice for the 5-4-3-2-1 tool."
+    - "Persisted Lesson 1 completion in the production course-progress model."
+    - "Dynamic pacing based on stress level."
+    - "Production reconciliation of seven days, fourteen lessons, and map nodes."
+    - "Complete analytics event coverage listed in ONB-013."
+    - "Tested post-value monetization placement."
+    - "Dedicated crisis and high-risk content pathway."
+  verification:
+    static:
+      diff_check: "passed"
+      onboarding_type_errors: "none observed"
+      full_repo_typecheck: >-
+        Fails because of existing unrelated TypeScript errors outside the onboarding files.
+    visual:
+      status: "deferred_by_user"
+      reason: "User chose to inspect the updated UI later."
+      next_scope:
+        - "Course reveal to course map transition."
+        - "Map content and fixed CTA at small and large iPhone sizes."
+        - "Lesson copy wrapping and progress header."
+        - "Completion metrics and reminder skip path."
+
+risks:
+  - id: "RISK-001"
+    severity: "high"
+    risk: "Displayed course progress may not match persisted backend curriculum data."
+    mitigation: "Derive totals and node state from one production course model before release."
+  - id: "RISK-002"
+    severity: "high"
+    risk: "Mental health claims or AI personalization may overstate what the app knows."
+    mitigation: "Require content review and qualified language for all educational claims."
+  - id: "RISK-003"
+    severity: "medium"
+    risk: "Plan reveal plus course map may add passive friction before Lesson 1."
+    mitigation: "Measure course-map conversion and simplify plan reveal if time to value worsens."
+  - id: "RISK-004"
+    severity: "medium"
+    risk: "The first lesson may feel like reading rather than active course learning."
+    mitigation: "Prototype one short guided application step and compare completion and comprehension."
+  - id: "RISK-005"
+    severity: "medium"
+    risk: "Users may confuse day, lesson, node, journey, and course terminology."
+    mitigation: "Standardize the hierarchy and audit every user-facing label."
+  - id: "RISK-006"
+    severity: "low"
+    risk: "A fixed footer may hide lower journey nodes on compact screens."
+    mitigation: "Keep explicit bottom clearance and verify representative device sizes."
+
+open_questions:
+  - id: "Q-001"
+    question: "Is the foundation course seven lessons, fourteen lessons, or fourteen exercises?"
+    blocks_release: true
+    owner: "Product and curriculum"
+  - id: "Q-002"
+    question: "What exact persisted event marks Lesson 1 complete and unlocks the next node?"
+    blocks_release: true
+    owner: "Engineering"
+  - id: "Q-003"
+    question: "Should the first grounding tool be demonstrated interactively during onboarding?"
+    blocks_release: false
+    owner: "Product and curriculum"
+  - id: "Q-004"
+    question: "When should users see premium conversion after receiving first value?"
+    blocks_release: false
+    owner: "Product and growth"
+  - id: "Q-005"
+    question: "Which content claims require clinical review and source documentation?"
+    blocks_release: true
+    owner: "Clinical content"
+  - id: "Q-006"
+    question: "How should course pacing adapt for users selecting heavy or overwhelming intensity?"
+    blocks_release: false
+    owner: "Curriculum and safety"
+
+release_criteria:
+  product:
+    - "A new user can explain that Happy offers courses containing lessons and exercises."
+    - "The selected course visibly reflects the user's motivation answer."
+    - "The user completes one real learning interaction before onboarding ends."
+    - "Removed commitment and monetization steps do not reappear before first value."
+  content:
+    - "All clinical or research claims are qualified and source-reviewed."
+    - "No copy implies diagnosis, guaranteed improvement, or deep inference from minimal data."
+    - "Course, day, lesson, and exercise terminology is internally consistent."
+  engineering:
+    - "Course totals and progress are derived from production data."
+    - "Lesson completion persists and unlocks the correct next node."
+    - "Reminder skip and save paths persist correct preference state."
+    - "No onboarding-specific TypeScript, runtime, or navigation errors remain."
+  design:
+    - "No CTA covers course-map content on supported devices."
+    - "Text remains readable and does not truncate at accessibility sizes."
+    - "Back, close, skip, disabled, and loading states are clear."
+    - "Motion is short, purposeful, and does not delay action."
+  measurement:
+    - "Activation and Day 2 return events are available and validated."
+    - "Step-level drop-off can be analyzed without collecting unnecessary sensitive text."
+
+change_log:
+  - date: "2026-07-18"
+    version: "1.0.0"
+    summary: >-
+      Established course-first onboarding model, restored journey map before Lesson 1,
+      positioned CBT exercises inside the course, documented removed steps, and recorded
+      safety, analytics, implementation, risk, and release decisions.

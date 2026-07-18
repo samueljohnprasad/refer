@@ -138,7 +138,7 @@ const ProgressHeader: React.FC<ProgressHeaderProps> = ({
         header: () => (
           <GlassView
             glassEffectStyle="regular"
-            tintColor="#FFFFFF10"
+            tintColor="#FFFFFF"
             className="pb-2 overflow-hidden"
             style={[
               {
@@ -148,7 +148,7 @@ const ProgressHeader: React.FC<ProgressHeaderProps> = ({
                 shadowOpacity: 0,
                 shadowRadius: 0,
                 shadowColor: "transparent", // IMPORTANT
-
+                backgroundColor: "#FFFFFF",
                 overflow: "hidden",
               },
               style,

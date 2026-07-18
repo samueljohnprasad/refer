@@ -6,21 +6,14 @@ import {
   Pressable,
   Alert,
   BackHandler,
-  Text as RNText,
 } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  withSpring,
-  withDelay,
-  runOnJS,
   Easing,
 } from "react-native-reanimated";
 import { Text } from "@/src/components/ui/Text";
-import { Host, Button as SwiftUIButton } from "@expo/ui/swift-ui";
-import { buttonStyle, labelStyle, controlSize, tint } from "@expo/ui/swift-ui/modifiers";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { useRouter } from "expo-router";
 import { useNavigation } from "expo-router/react-navigation";
 import { useExerciseFlow } from "@/src/hooks/useExerciseFlow";
@@ -129,9 +122,9 @@ export const ExerciseFlowScreen: React.FC<ExerciseFlowScreenProps> = ({
 };
 
 import { LessonScreen } from "@/src/components/ui/LessonScreen";
-import { SAGE, OTTER_BLUE, PARROT_ORANGE, MACAW_PURPLE, BRAND_SURFACE } from "@/lib/tokens";
+import { BRAND_SURFACE } from "@/lib/tokens";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { CheckmarkCircle01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
 import { useXPOptional } from "@/src/context/XPContext";
 import { XPActionType } from "@/src/types/xp";
 
@@ -149,21 +142,6 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const router = useRouter();
   const exerciseType = config.type;
   const isConfirmedExitRef = useRef(false);
-
-  // Dynamic category-based accent color mapping matching design philosophy
-  const accentColor = useMemo(() => {
-    switch (config.category) {
-      case "mindfulness":
-        return OTTER_BLUE;
-      case "anxiety":
-        return PARROT_ORANGE;
-      case "overthinking":
-        return MACAW_PURPLE;
-      case "cbt_core":
-      default:
-        return SAGE[500];
-    }
-  }, [config.category]);
 
   // ─── Flow state ───────────────────────────────────────────────────
   const flow = useExerciseFlow(config as ExerciseConfig<any>, existingEntry, readOnly);
@@ -290,6 +268,22 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
 
   // ─── Step rendering ───────────────────────────────────────────────
   const StepComponent = currentStep?.component;
+  const countableStepMeta = useMemo(() => {
+    const countableSteps = config.steps.filter((step) => !step.excludeFromProgress);
+    const countableStepIndex = countableSteps.findIndex(
+      (step) => step.id === currentStep?.id,
+    );
+
+    if (countableStepIndex < 0 || countableSteps.length === 0) {
+      return null;
+    }
+
+    return {
+      stepIndex: countableStepIndex,
+      totalSteps: countableSteps.length,
+    };
+  }, [config.steps, currentStep?.id]);
+
   const stepProps: StepProps<any> = useMemo(
     () => ({
       response: flow.response,
@@ -301,11 +295,12 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       canGoBack: flow.canGoBack,
       isValid: flow.isCurrentStepValid,
       progress: flow.progress,
-      stepIndex: flow.currentStepIndex,
-      totalSteps: flow.totalSteps,
+      stepIndex: countableStepMeta?.stepIndex ?? flow.currentStepIndex,
+      totalSteps: countableStepMeta?.totalSteps ?? flow.totalSteps,
       aiSuggestions: ai.suggestions,
       isAiLoading: ai.isLoading,
       aiLoadingMessage: ai.loadingMessage,
+      aiError: ai.error,
       isSaving,
       readOnly,
     }),
@@ -314,12 +309,14 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       ai.suggestions,
       ai.isLoading,
       ai.loadingMessage,
+      ai.error,
       isSaving,
       readOnly,
       handleClose,
       handleSave,
       handleNavigateDeeper,
       isFinalStep,
+      countableStepMeta,
     ],
   );
 

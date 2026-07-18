@@ -43,9 +43,9 @@ const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
     faceColor: SAGE[500],
     rimColor: SAGE[700],
     labelColor: BRAND_SURFACE,
-    disabledFaceColor: "#F1F5F9",
-    disabledRimColor: "#E2E8F0",
-    disabledLabelColor: "#94A3B8",
+    disabledFaceColor: "#F3F6FA",
+    disabledRimColor: "#E9EEF5",
+    disabledLabelColor: "#64748B",
   },
   secondary: {
     faceColor: BRAND_SURFACE,

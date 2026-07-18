@@ -46,9 +46,9 @@ const QuizStressLevelStep: React.FC<QuizStressLevelStepProps> = ({
     >
       <Animated.Text
         entering={FadeIn.duration(160).delay(80)}
-        className="text-xs font-semibold uppercase tracking-widest text-sage-500"
+        className="text-xs font-semibold text-sage-600"
       >
-        Step 2 of 7
+        Set the pace
       </Animated.Text>
 
       <Animated.View entering={FadeIn.duration(180).delay(140)}>

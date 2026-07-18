@@ -100,8 +100,10 @@ const styles = StyleSheet.create({
     borderCurve: "continuous",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(172, 172, 172, 0.35)",
-    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.22)",
+    backgroundColor: "rgba(255, 255, 255, 0.66)",
+    borderWidth: 1,
+    borderColor: "rgba(95, 127, 88, 0.16)",
+    boxShadow: "0 3px 8px rgba(20, 36, 20, 0.12)",
   },
   button: {
     width: ASSISTANT_BUTTON_INNER_SIZE,
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(145, 145, 145, 0.58)",
+    backgroundColor: "rgba(255, 255, 255, 0.72)",
   },
   mascotShell: {
     width: ASSISTANT_BUTTON_INNER_SIZE,

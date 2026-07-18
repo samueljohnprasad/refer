@@ -79,9 +79,9 @@ const LessonCompleteStep: React.FC = () => {
               style={{ fontFamily: "GeistMedium" }}
               className="text-sage-700"
             >
-              You showed up. That&apos;s the whole thing.
+              You learned a skill and used it right away.
             </Text>{" "}
-            Five minutes, just like you said.
+            You can return to it whenever feelings are hard to name.
           </Text>
         </Animated.View>
 
@@ -91,13 +91,35 @@ const LessonCompleteStep: React.FC = () => {
             entering={FadeIn.duration(180).delay(260)}
             accessible={true}
             accessibilityRole="summary"
-            accessibilityLabel="20 XP earned"
+            accessibilityLabel="1 of 14 lessons complete"
             style={{ borderCurve: "continuous" }}
             className="flex-1 items-center justify-center rounded-[18px] border-2 border-sage-100 bg-warm-white px-2 py-4 shadow-sm"
           >
             <Text
               style={{ fontFamily: "GeistBold" }}
               className="text-[22px] tracking-tight text-sage-600"
+            >
+              1 / 14
+            </Text>
+            <Text
+              style={{ fontFamily: "GeistSemiBold" }}
+              className="mt-1 text-center text-[11px] uppercase tracking-[0.07em] text-ink-muted"
+            >
+              Lessons
+            </Text>
+          </Animated.View>
+
+          <Animated.View
+            entering={FadeIn.duration(180).delay(320)}
+            accessible={true}
+            accessibilityRole="summary"
+            accessibilityLabel="20 XP earned"
+            style={{ borderCurve: "continuous" }}
+            className="flex-1 items-center justify-center rounded-[18px] border-2 border-terracotta/25 bg-warm-white px-2 py-4 shadow-sm"
+          >
+            <Text
+              style={{ fontFamily: "GeistBold" }}
+              className="text-[22px] tracking-tight text-terracotta"
             >
               +20
             </Text>
@@ -110,32 +132,10 @@ const LessonCompleteStep: React.FC = () => {
           </Animated.View>
 
           <Animated.View
-            entering={FadeIn.duration(180).delay(320)}
-            accessible={true}
-            accessibilityRole="summary"
-            accessibilityLabel="1 day streak"
-            style={{ borderCurve: "continuous" }}
-            className="flex-1 items-center justify-center rounded-[18px] border-2 border-terracotta/25 bg-warm-white px-2 py-4 shadow-sm"
-          >
-            <Text
-              style={{ fontFamily: "GeistBold" }}
-              className="text-[22px] tracking-tight text-terracotta"
-            >
-              🔥 1
-            </Text>
-            <Text
-              style={{ fontFamily: "GeistSemiBold" }}
-              className="mt-1 text-center text-[11px] uppercase tracking-[0.07em] text-ink-muted"
-            >
-              Day Streak
-            </Text>
-          </Animated.View>
-
-          <Animated.View
             entering={FadeIn.duration(180).delay(380)}
             accessible={true}
             accessibilityRole="summary"
-            accessibilityLabel="7 percent toolkit unlocked"
+            accessibilityLabel="Day 1 complete"
             style={{ borderCurve: "continuous" }}
             className="flex-1 items-center justify-center rounded-[18px] border-2 border-sage-100 bg-warm-white px-2 py-4 shadow-sm"
           >
@@ -143,13 +143,13 @@ const LessonCompleteStep: React.FC = () => {
               style={{ fontFamily: "GeistBold" }}
               className="text-[22px] tracking-tight text-sage-600"
             >
-              7%
+              Day 1
             </Text>
             <Text
               style={{ fontFamily: "GeistSemiBold" }}
               className="mt-1 text-center text-[11px] uppercase tracking-[0.07em] text-ink-muted"
             >
-              Toolkit
+              Complete
             </Text>
           </Animated.View>
         </View>
@@ -159,4 +159,3 @@ const LessonCompleteStep: React.FC = () => {
 };
 
 export default React.memo(LessonCompleteStep);
-

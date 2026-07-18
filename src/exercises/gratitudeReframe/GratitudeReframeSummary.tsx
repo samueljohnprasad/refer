@@ -127,7 +127,7 @@ function Divider() {
 function getShiftLabel(pre: number, post: number): string {
   const drop = post - pre;
   if (drop <= 0) return "Not every reflection brings a shift, but the practice itself builds resilience.";
-  if (drop >= 20) return "A significant shift. Noticing the good is a powerful tool.";
+  if (drop >= 2) return "A significant shift. Noticing the good is a powerful tool.";
   return "Even a subtle lift in mood shows the value of shifting perspective.";
 }
 
@@ -148,8 +148,8 @@ export function GratitudeReframeSummary({
   const { saveCard } = useCopingCards();
   const [cardSaved, setCardSaved] = useState<boolean>(false);
 
-  const preScore = response.moodIntensity ?? 50;
-  const postScore = response.finalMoodIntensity ?? 50;
+  const preScore = response.moodIntensity ?? 5;
+  const postScore = response.finalMoodIntensity ?? 5;
   const hasScores = response.finalMoodIntensity !== undefined;
   
   const promptLabel = response.selectedPrompt ? PROMPT_MAP[response.selectedPrompt] || "Reflection" : "Reflection";
@@ -279,16 +279,16 @@ export function GratitudeReframeSummary({
                   <View>
                     <View className="flex-row justify-between mb-1.5">
                       <Text variant="label" className="text-ink-soft text-[13px]">Before</Text>
-                      <Text variant="label-bold" className="text-[13px]">{preScore}%</Text>
+                      <Text variant="label-bold" className="text-[13px]">{preScore}/10</Text>
                     </View>
-                    <ScoreBar value={preScore} max={100} fillColor="#FFCBBB" delay={600} />
+                    <ScoreBar value={preScore} max={10} fillColor="#FFCBBB" delay={600} />
                   </View>
                   <View>
                     <View className="flex-row justify-between mb-1.5">
                       <Text variant="label" className="text-ink-soft text-[13px]">After</Text>
-                      <Text variant="label-bold" className="text-[13px]">{postScore}%</Text>
+                      <Text variant="label-bold" className="text-[13px]">{postScore}/10</Text>
                     </View>
-                    <ScoreBar value={postScore} max={100} fillColor={SAGE[400]} delay={900} />
+                    <ScoreBar value={postScore} max={10} fillColor={SAGE[400]} delay={900} />
                   </View>
                 </View>
                 <Text variant="caption" className="mt-3 text-ink-soft leading-relaxed">

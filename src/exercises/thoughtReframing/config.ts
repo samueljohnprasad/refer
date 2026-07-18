@@ -24,9 +24,17 @@ export const THOUGHT_REFRAMING_INITIAL: ThoughtReframingResponse = {
   evidenceFor: [],
   evidenceAgainst: [],
   balancedThought: "",
-  intensity: 50,
+  intensity: 5,
   postIntensity: undefined,
 };
+
+function normalizeBeliefScore(value: number | undefined): number | undefined {
+  if (typeof value !== "number") return undefined;
+  if (value > 10) {
+    return Math.min(Math.max(Math.round(value / 10), 0), 10);
+  }
+  return Math.min(Math.max(Math.round(value), 0), 10);
+}
 
 export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
   {
@@ -38,17 +46,26 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
     duration: "10-15 min",
     xp: 15,
     backgroundColor: "#fff",
-    schemaVersion: 2,
+    schemaVersion: 4,
     initialResponse: THOUGHT_REFRAMING_INITIAL,
     migrate: (old, fromVersion) => {
+      const migrated = {
+        ...THOUGHT_REFRAMING_INITIAL,
+        ...old,
+      };
+
       if (fromVersion < 2) {
-        return {
-          ...THOUGHT_REFRAMING_INITIAL,
-          ...old,
-          postIntensity: undefined,
-        };
+        migrated.postIntensity = undefined;
       }
-      return old;
+
+      if (fromVersion < 4) {
+        migrated.intensity =
+          normalizeBeliefScore(migrated.intensity) ??
+          THOUGHT_REFRAMING_INITIAL.intensity;
+        migrated.postIntensity = normalizeBeliefScore(migrated.postIntensity);
+      }
+
+      return migrated;
     },
 
     steps: [
@@ -57,13 +74,14 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         component: createStep(IntroStep, {
           title: "Thought Reframing",
           subtitle:
-            "Challenge negative thinking patterns and build healthier perspectives.",
+            "Challenge negative thinking and find a more balanced perspective on your situation.",
           exerciseType: "thought_reframing",
           duration: "10-15 min",
+          mascotState: "panda-happy" as const,
           bulletPoints: [
             "Describe the triggering situation",
             "Catch your automatic thought",
-            "Identify cognitive distortions",
+            "Notice thought patterns",
             "Weigh the evidence for and against",
             "Create a balanced thought",
           ],
@@ -72,7 +90,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         validate: () => true,
         excludeFromProgress: true,
         hideHeader: true,
-        nextLabel: "Let's Go",
+        nextLabel: "Begin Exercise",
       },
       {
         id: "situation",
@@ -81,7 +99,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         validate: (r) => r.situation.trim().length >= 5,
         ai: {
           promptBuilder: (r, context) =>
-            `You are a CBT therapist assistant. Generate 3 common, relatable everyday situations that often trigger negative automatic thoughts or anxiety. Keep them brief (1 sentence), realistic, and in the first person ("I...").\n\nRandom seed: ${context?.seed ?? Math.random()}`,
+            `You are a CBT therapist assistant. Generate 3 common, relatable everyday situations for the first step of a CBT thought record. Each item must be an observable fact a camera could capture or a calendar/message log could verify. Do NOT include emotions, interpretations, predictions, or phrases like "I feel", "I'm scared", "bad day", "they dislike me", or "this will go wrong". Keep each item brief, realistic, and in the first person.\n\nGood examples:\n- "I have a doctor appointment at 3 PM."\n- "I sent a message and have not received a reply yet."\n- "My manager gave me feedback this morning."\n\nRandom seed: ${context?.seed ?? Math.random()}`,
           responseSchema: {
             type: "array",
             items: {
@@ -91,7 +109,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
-          aiLoadingMessage: "Finding relatable situations...",
+          aiLoadingMessage: "Finding factual examples...",
         },
       },
       {
@@ -111,23 +129,27 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
-          aiLoadingMessage: "Listening to your thoughts...",
+          aiLoadingMessage: "Finding possible thoughts...",
         },
       },
       {
         id: "intensity",
-        component: createStep(SliderStep, {
-          title: "Thought Intensity",
-          subtitle: "How strongly do you believe this thought right now?",
+        component: createStep(SliderStep, (props) => ({
+          title: "How believable does it feel?",
+          subtitle: "",
           fieldKey: "intensity",
-          min: 1,
+          contextText: props.response?.automaticThought,
+          min: 0,
           max: 10,
-          minLabel: "Not at all",
+          minLabel: "Not true",
+          midLabel: "Partly",
           maxLabel: "Completely",
-          unit: "",
-        }),
-        label: "How strongly do you believe this thought?",
+          unit: "/10",
+          showStepCount: false,
+        })),
+        label: "Rate how true the thought feels",
         validate: () => true,
+        nextLabel: "Use this for now",
       },
       {
         id: "emotions",
@@ -163,17 +185,17 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
-          aiLoadingMessage: "Analyzing emotions...",
+          aiLoadingMessage: "Noticing possible emotions...",
         },
       },
       {
         id: "distortions",
         component: TRDistortionsStep,
-        label: "Identify cognitive distortions (max 2)",
+        label: "Notice thought patterns (max 2)",
         validate: (r) => r.selectedDistortions.length >= 1,
         ai: {
           promptBuilder: (r) =>
-            `You are a CBT therapist assistant. Given the situation and automatic thought below, identify which cognitive distortions are present.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nIdentify up to 2 cognitive distortions from this list ONLY:\nall_or_nothing, catastrophizing, mind_reading, overgeneralizing, personalizing, filtering, should_statements, fortune_telling, emotional_reasoning, labeling\n\nFor each, provide the key, a confidence score (0-1), and a brief explanation. CRITICAL: Write the explanation addressing the user directly in the second person (e.g., "You might be assuming..."). Do NOT use clinical third-person language like "The individual is...".`,
+            `You are a CBT therapist assistant. Given the situation and automatic thought below, identify which cognitive distortions are present.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nIdentify up to 2 cognitive distortions from this list ONLY:\nall_or_nothing, catastrophizing, mind_reading, overgeneralizing, personalizing, filtering, should_statements, fortune_telling, emotional_reasoning, labeling\n\nFor each, provide the key, a confidence score (0-1), and one explanation sentence of no more than 28 words. Address the user directly in the second person (e.g., "You might be assuming..."). Do NOT use clinical third-person language like "The individual is...".`,
           responseSchema: {
             type: "array",
             items: {
@@ -201,7 +223,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 2,
-          aiLoadingMessage: "Identifying thought patterns...",
+          aiLoadingMessage: "Looking for possible patterns...",
         },
       },
       {
@@ -211,7 +233,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         validate: () => true,
         ai: {
           promptBuilder: (r) =>
-            `You are a CBT therapist assistant. Given the situation and automatic thought below, identify some likely "evidence" the user might think supports this thought. Even if flawed, what facts might they be pointing to?\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nProvide 3 plausible pieces of evidence FOR the thought. Keep them brief.`,
+            `You are a CBT therapist assistant. Given the situation and automatic thought below, identify objective facts that could genuinely support why the thought feels believable. Do not invent motives, predictions, or mind-reading. Keep each item concrete, brief, and grounded in something the user could actually point to.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nProvide 3 short factual fragments, each no more than 10 words, that could support the thought. No explanations.`,
           responseSchema: {
             type: "array",
             items: {
@@ -221,7 +243,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
-          aiLoadingMessage: "Finding evidence...",
+          aiLoadingMessage: "Finding possible evidence...",
         },
       },
       {
@@ -231,7 +253,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
         validate: () => true,
         ai: {
           promptBuilder: (r) =>
-            `You are a CBT therapist assistant. Given the situation and automatic thought below, identify objective evidence AGAINST this thought. What facts contradict it?\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nProvide 3 plausible pieces of counter-evidence. Keep them objective and brief.`,
+            `You are a CBT therapist assistant. Given the situation and automatic thought below, identify objective evidence AGAINST this thought. What facts contradict it?\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nProvide 3 short factual fragments, each no more than 10 words, that could weaken the thought. No explanations.`,
           responseSchema: {
             type: "array",
             items: {
@@ -241,7 +263,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
-          aiLoadingMessage: "Challenging the thought...",
+          aiLoadingMessage: "Finding counter-evidence...",
         },
       },
       {
@@ -259,7 +281,7 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
               r.evidenceAgainst.length > 0
                 ? r.evidenceAgainst.map((e, i) => `${i + 1}. ${e}`).join("\n")
                 : "None provided";
-            return `You are a CBT therapist assistant. Help the user reframe their automatic thought into a more balanced perspective.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nEvidence supporting the thought:\n${ef}\n\nEvidence against the thought:\n${ea}\n\nGenerate 3 alternative balanced thoughts. Each should be realistic, based on evidence, written in first person, and concise (1-2 sentences). For each, provide a brief rationale. CRITICAL: Write the rationale addressing the user directly in the second person (e.g., "This reminds you that..."). Do NOT use third-person language.`;
+            return `You are a CBT therapist assistant. Help the user reframe their automatic thought into a more balanced perspective.\n\nSituation: "${r.situation}"\nAutomatic thought: "${r.automaticThought}"\n\nEvidence supporting the thought:\n${ef}\n\nEvidence against the thought:\n${ea}\n\nGenerate 3 alternative balanced thoughts. Each must be meaningfully different from the automatic thought, realistic, based on the evidence, written in first person, and concise (1-2 sentences). Do not repeat, lightly paraphrase, validate, or intensify the automatic thought. Each option must acknowledge uncertainty or include at least one concrete counterpoint from the evidence against it. For each, provide a brief rationale. CRITICAL: Write the rationale addressing the user directly in the second person (e.g., "This reminds you that..."). Do NOT use third-person language.`;
           },
           responseSchema: {
             type: "array",
@@ -273,26 +295,27 @@ export const thoughtReframingConfig: ExerciseConfig<ThoughtReframingResponse> =
             },
           },
           maxResults: 3,
-          aiLoadingMessage: "Reframing with Sage...",
+          aiLoadingMessage: "Building balanced options...",
         },
       },
       {
         id: "re_evaluate",
-        component: createStep(SliderStep, {
-          title: "Re-evaluate",
-          subtitle:
-            "After reframing, how much do you believe the original thought?",
+        component: createStep(SliderStep, (props) => ({
+          title: "How believable does it feel now?",
+          subtitle: "",
           fieldKey: "postIntensity",
-          psychoeducationText:
-            "After reframing, your belief score often drops. That shift is real — it means your rational mind just got louder.",
+          contextText: props.response?.automaticThought,
           min: 0,
-          max: 100,
-          minLabel: "Not at all",
+          max: 10,
+          minLabel: "Not true",
+          midLabel: "Partly",
           maxLabel: "Completely",
-          unit: "%",
-        }),
+          unit: "/10",
+          showStepCount: false,
+        })),
         label: "Re-evaluate your belief",
         validate: () => true,
+        nextLabel: "Use this for now",
       },
       {
         id: "summary",

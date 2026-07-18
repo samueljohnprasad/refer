@@ -213,16 +213,6 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
-        name="screens/thought-reframing"
-        options={{
-          headerShown: true,
-          title: "Thought Reframing",
-          freezeOnBlur: true,
-          headerBackButtonDisplayMode: "minimal",
-          animation: "slide_from_right",
-        }}
-      />
-      <Stack.Screen
         name="screens/gratitude-reframe"
         options={{
           headerShown: true,

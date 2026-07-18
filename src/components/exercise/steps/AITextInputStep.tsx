@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Pressable, ActivityIndicator, Keyboard } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import GlowyInput from "@/src/components/GlowyInput";
+import { ExerciseTextComposer } from "@/src/components/exercise/ExerciseTextComposer";
 import { StepProps } from "@/src/types/exerciseFlow";
 import { StepLayout } from ".";
 
@@ -103,16 +103,13 @@ export const AITextInputStep: React.FC<AITextInputStepProps> = React.memo(
 
         {/* Manual input */}
         <View className="mt-2" style={{ zIndex: 10 }}>
-          <GlowyInput
-            message={value}
-            setMessage={(text) => onUpdate({ [fieldKey]: text } as any)}
-            handleSendMessage={() => {
-              Keyboard.dismiss();
-              if (value.trim().length > 0) onNext();
-            }}
-            handleSubmitEditing={() => Keyboard.dismiss()}
+          <ExerciseTextComposer
+            value={value}
+            onChange={(text) => onUpdate({ [fieldKey]: text } as any)}
+            onSubmitEditing={() => Keyboard.dismiss()}
             placeholder={placeholder}
-            clearOnSubmit={false}
+            maxLength={maxLength}
+            glow
           />
         </View>
         {maxLength && (

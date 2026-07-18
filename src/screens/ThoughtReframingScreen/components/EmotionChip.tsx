@@ -1,6 +1,8 @@
 import React from "react";
-import { Pressable, View } from "react-native";
+import { Pressable } from "react-native";
 import { Text } from "@/components/ui/Text";
+import { SAGE, BRAND_BORDER, BRAND_SURFACE, INK } from "@/lib/tokens";
+import { Feather } from "@expo/vector-icons";
 import type { EmotionOption } from "../data/emotions";
 
 interface EmotionChipProps {
@@ -12,48 +14,47 @@ interface EmotionChipProps {
   /** Called when intensity changes */
   onIntensityChange?: (value: number) => void;
   disabled?: boolean;
+  locked?: boolean;
 }
 
-const SELECTED_BORDER = "#58CC02";
-const SELECTED_BG = "#F0FFF0";
-
 export const EmotionChip: React.FC<EmotionChipProps> = React.memo(
-  ({ emotion, isSelected, onToggle, disabled = false }) => {
+  ({
+    emotion,
+    isSelected,
+    onToggle,
+    disabled = false,
+    locked = false,
+  }) => {
+    const isDisabled = locked || (disabled && !isSelected);
+
     return (
       <Pressable
         onPress={onToggle}
-        disabled={disabled && !isSelected}
+        disabled={isDisabled}
         accessibilityRole="checkbox"
-        accessibilityState={{ checked: isSelected }}
+        accessibilityState={{ checked: isSelected, disabled: isDisabled }}
         accessibilityLabel={`${emotion.label} emotion`}
-        className={`rounded-2xl px-4 py-3.5 flex-row items-center mr-2 mb-2.5 border-2 ${disabled && !isSelected ? "opacity-40" : ""
-          } active:opacity-80`}
-        style={{
-          borderColor: isSelected ? SELECTED_BORDER : "#E2E8F0",
-          backgroundColor: isSelected ? SELECTED_BG : "#FFFFFF",
-          shadowColor: isSelected ? SELECTED_BORDER : "transparent",
-          shadowOffset: { width: 0, height: isSelected ? 2 : 0 },
-          shadowOpacity: isSelected ? 0.2 : 0,
-          shadowRadius: 0,
-          elevation: isSelected ? 2 : 0,
+        className={`w-full rounded-lg border px-3 flex-row items-center ${
+          isDisabled ? "opacity-45" : ""
+        }`}
+        style={({ pressed }) => ({
+          borderColor: isSelected ? SAGE[500] : BRAND_BORDER,
+          backgroundColor: isSelected ? SAGE.selected : BRAND_SURFACE,
           minHeight: 48,
-        }}
+          opacity: pressed ? 0.72 : 1,
+        })}
       >
-        <Text className="text-xl mr-2">{emotion.emoji}</Text>
+        <Text className="mr-2 text-[17px] leading-[20px]">{emotion.emoji}</Text>
         <Text
-          className={`text-[15px] font-bold ${isSelected ? "text-green-800" : "text-slate-700"
-            }`}
+          className="flex-1 text-[15px] font-medium"
+          style={{ color: isSelected ? SAGE[800] : INK }}
+          numberOfLines={1}
         >
           {emotion.label}
         </Text>
-        {isSelected && (
-          <View
-            className="ml-auto h-5 w-5 rounded-full items-center justify-center"
-            style={{ backgroundColor: SELECTED_BORDER }}
-          >
-            <Text className="text-white text-xs font-extrabold">✓</Text>
-          </View>
-        )}
+        {isSelected ? (
+          <Feather name="check" size={16} color={SAGE[700]} />
+        ) : null}
       </Pressable>
     );
   },

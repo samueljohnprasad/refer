@@ -1,11 +1,11 @@
 import React, { useMemo, useEffect, useCallback } from "react";
-import { View, ActivityIndicator, Platform } from "react-native";
+import { View, ActivityIndicator, Platform, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
-import { SAGE, INK_SOFT } from "@/lib/tokens";
+import { BRAND_BORDER, INK, INK_SOFT, SAGE } from "@/lib/tokens";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import type { StepProps } from "@/src/types/exerciseFlow";
@@ -25,6 +25,8 @@ interface ChoiceStepProps extends StepProps {
   options: ChoiceOption[];
   autoAdvance?: boolean;
   psychoeducationText?: string;
+  showStepCount?: boolean;
+  layoutVariant?: "default" | "cbt_reflection";
 }
 
 export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
@@ -47,6 +49,8 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
     psychoeducationText,
     aiSuggestions,
     isAiLoading,
+    showStepCount = true,
+    layoutVariant = "default",
   }) => {
     const selected = (response as Record<string, any>)[fieldKey];
 
@@ -97,6 +101,7 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
         onNext={onNext}
         isLoading={isSaving}
         scrollable
+        showStepCount={showStepCount}
       >
         <PsychoeducationCard content={psychoeducationText ?? ""} />
 
@@ -117,6 +122,63 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
             const resolvedIcon = opt.iconKey
               ? getContentIcon(opt.iconKey)
               : null;
+
+            if (layoutVariant === "cbt_reflection") {
+              return (
+                <FadeInItem key={opt.value} index={i} delayPerItem={40}>
+                  <Pressable
+                    onPress={() => handleSelect(opt.value)}
+                    className="mb-1 min-h-[84px] flex-row items-center rounded-[24px] border px-5 py-4 active:opacity-80"
+                    style={{
+                      backgroundColor: isSelected ? SAGE[50] : "#FFFFFF",
+                      borderColor: isSelected ? SAGE[200] : BRAND_BORDER,
+                    }}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityLabel={opt.label}
+                  >
+                    {resolvedIcon ? (
+                      <View className="mr-4 h-11 w-11 items-center justify-center rounded-full bg-sage-50">
+                        <HugeiconsIcon
+                          icon={resolvedIcon}
+                          size={20}
+                          color={isSelected ? SAGE[700] : INK_SOFT}
+                          strokeWidth={2}
+                        />
+                      </View>
+                    ) : opt.emoji ? (
+                      <Text className="mr-4 text-2xl">{opt.emoji}</Text>
+                    ) : null}
+
+                    <Text
+                      variant="body-bold"
+                      className="flex-1 text-[17px] leading-[22px]"
+                      style={{ color: isSelected ? INK : INK_SOFT }}
+                    >
+                      {opt.label}
+                    </Text>
+
+                    <View
+                      className="ml-4 h-7 w-7 items-center justify-center rounded-full border"
+                      style={{
+                        backgroundColor: isSelected ? SAGE[500] : "#FFFFFF",
+                        borderColor: isSelected ? SAGE[600] : BRAND_BORDER,
+                      }}
+                    >
+                      {isSelected ? (
+                        <Text
+                          variant="chip"
+                          color="surface"
+                          className="text-[11px] leading-none"
+                        >
+                          ✓
+                        </Text>
+                      ) : null}
+                    </View>
+                  </Pressable>
+                </FadeInItem>
+              );
+            }
 
             return (
               <FadeInItem key={opt.value} index={i} delayPerItem={40}>

@@ -36,7 +36,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           style={{ fontFamily: "GeistSemiBold" }}
           className="text-center text-xs font-semibold uppercase tracking-[0.12em] text-sage-500"
         >
-          Day 1 — Lesson 1 of 2
+          Day 1 · Lesson 1
         </Text>
         <Text
           style={{ fontFamily: "CormorantRegular" }}
@@ -56,7 +56,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           style={{ fontFamily: "GeistRegular" }}
           className="mt-2 text-center text-[15px] leading-[1.45] text-ink-soft"
         >
-          A 30-second lesson, then we&apos;ll try it.
+          Learn one skill, then practice it in under two minutes.
         </Text>
       </Animated.View>
 
@@ -83,8 +83,8 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           >
             specific words
           </Text>
-          , your thinking brain takes over and your fear brain quiets down.
-          {"\n\n"}Researchers call it{" "}
+          , it can become easier to pause and choose what to do next.
+          {"\n\n"}This skill is called{" "}
           <Text
             style={{
               fontFamily: "CormorantSemiBoldItalic",
@@ -93,16 +93,7 @@ const MoodCheckLessonStep: React.FC<MoodCheckLessonStepProps> = ({
           >
             affect labeling
           </Text>{" "}
-          — the intensity drops by roughly{" "}
-          <Text
-            style={{
-              fontFamily: "CormorantSemiBoldItalic",
-              color: "#29452A",
-            }}
-          >
-            40%
-          </Text>
-          , on average.
+          . It helps create a little distance between you and the emotion.
         </Text>
 
         <View

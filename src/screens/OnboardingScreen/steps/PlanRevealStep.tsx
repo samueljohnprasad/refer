@@ -292,7 +292,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             style={{ fontFamily: "GeistSemiBold" }}
             className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta"
           >
-            Built for you
+            Built around your goal
           </Text>
           <View className="ml-2 -mt-1 z-10">
             <ConfettiBurst />
@@ -302,7 +302,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           style={{ fontFamily: "CormorantRegular" }}
           className="mt-3 text-[28px] leading-[1.08] text-ink"
         >
-          Your first journey:{"\n"}
+          Your first course:{"\n"}
           <Text
             style={{
               fontFamily: "CormorantRegularItalic",
@@ -343,7 +343,7 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
             style={{ fontFamily: "GeistMedium" }}
             className="text-[15px] text-gold/90"
           >
-            7-Day Foundation Journey
+            7-Day Foundation Course
           </Text>
           <Text
             style={{ fontFamily: "CormorantRegular" }}

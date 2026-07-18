@@ -42,4 +42,8 @@ yarn-error.*
 *.tsbuildinfo
 .env.local
 
+# Superdesign local draft artifacts
+.superdesign/tmp/
+.temp/plan-mode/
+
 .env.local

@@ -8,7 +8,7 @@ import MochiMascot from "../components/MochiMascot";
 import { FEELINGS } from "../constants";
 import { FeelingEmoji, StressTiming } from "../types";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { SparklesIcon, Book01Icon } from "@hugeicons/core-free-icons";
+import { Book01Icon } from "@hugeicons/core-free-icons";
 
 interface AIInsightStepProps {
   feeling?: FeelingEmoji;
@@ -54,31 +54,28 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           style={{ fontFamily: "CormorantRegular" }}
           className="text-[24px] leading-[1.15] text-ink"
         >
-          Here&apos;s what I noticed about{" "}
+          Now connect the skill to{" "}
           <Text
             style={{
               fontFamily: "CormorantRegularItalic",
               color: "#5F7F58",
             }}
           >
-            you.
+            your day.
           </Text>
         </Text>
       </Animated.View>
 
       <Animated.View
         entering={FadeIn.duration(180).delay(160)}
-        className="mt-4 rounded-[20px] border-2 border-gold bg-cream px-5 py-5"
+        className="mt-4 rounded-[20px] bg-sage-100 px-5 py-5"
       >
-        <View className="flex-row items-center gap-1.5 mb-2">
-          <HugeiconsIcon icon={SparklesIcon} size={14} color="#D97706" />
-          <Text
-            style={{ fontFamily: "GeistBold" }}
-            className="text-[11px] uppercase tracking-[0.1em] text-terracotta"
-          >
-            AI Insight
-          </Text>
-        </View>
+        <Text
+          style={{ fontFamily: "GeistSemiBold" }}
+          className="mb-2 text-[13px] text-sage-700"
+        >
+          Your reflection
+        </Text>
         <Text
           style={{ fontFamily: "CormorantRegularItalic" }}
           className="text-[16px] leading-[1.5] text-ink"
@@ -92,7 +89,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           >
             feeling {feelingLabel}
           </Text>{" "}
-          — and that gives us something specific to work with. The{" "}
+          — that gives you something specific to work with. The{" "}
           <Text
             style={{
               fontFamily: "CormorantSemiBoldItalic",
@@ -100,9 +97,8 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
             }}
           >
             {timingLabel}
-          </Text>
-          , the heaviest stretch of your day, may be where this practice gives
-          you the most relief. Most people in your shoes find{" "}
+          </Text>{" "}
+          may be a useful time to pause and name what is present. Try a short{" "}
           <Text
             style={{
               fontFamily: "CormorantSemiBoldItalic",
@@ -111,7 +107,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           >
             {timeWindow} reflection
           </Text>{" "}
-          the highest-leverage time.
+          and notice whether it helps you respond with more choice.
         </Text>
       </Animated.View>
 
@@ -123,7 +119,7 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
           style={{ fontFamily: "GeistBold" }}
           className="text-[12px] uppercase tracking-[0.1em] text-sage-500"
         >
-          CBT Exercise — Try this
+          Your first CBT tool
         </Text>
         <Text
           style={{ fontFamily: "CormorantRegular" }}
@@ -180,8 +176,8 @@ const AIInsightStep: React.FC<AIInsightStepProps> = ({ feeling, timing }) => {
             >
               Research:
             </Text>{" "}
-            Naming an emotion reduces its intensity by activating the prefrontal
-            cortex while quieting the amygdala.{" "}
+            Putting feelings into words has been associated with reduced
+            emotional reactivity.{" "}
             <Text style={{ fontFamily: "GeistMedium" }}>
               Lieberman et al., UCLA (2007)
             </Text>

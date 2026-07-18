@@ -1,438 +1,249 @@
-/**
- * ThoughtCatcherSummary
- *
- * Professional reflective summary for the Thought Catcher exercise.
- * Shows the full journey: situation → automatic thought → intensity shift →
- * reality check → balanced thought — in one clean, cohesive card.
- */
-
-import React, { useState, useCallback, useEffect } from "react";
-import { View, Pressable } from "react-native";
-import { useRouter } from "expo-router";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withDelay,
-  withTiming,
-  Easing,
-  interpolate,
-} from "react-native-reanimated";
+import React, { useCallback, useMemo, useState } from "react";
+import { Pressable, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { Text } from "@/src/components/ui/Text";
-import { Mascot } from "@/src/components/ui/Mascot";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   ArrowRight01Icon,
   BookmarkAdd01Icon,
   BookmarkCheck01Icon,
 } from "@hugeicons/core-free-icons";
-import {
-  SAGE,
-  BRAND_SURFACE,
-  TERRACOTTA,
-  TERRACOTTA_TINT,
-  GOLD_TINT,
-  PARROT_ORANGE,
-  BRAND_BORDER,
-  TERRACOTTA_LIGHT,
-} from "@/lib/tokens";
-import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
+
+import { ThoughtRecordRecap } from "@/src/components/exercise/ThoughtRecordRecap";
+import { Text } from "@/src/components/ui/Text";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
+import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
+import { DANGER, SAGE } from "@/lib/tokens";
 import type {
-  ThoughtCatcherResponse,
-  StepProps,
   ExerciseType,
+  StepProps,
+  ThoughtCatcherResponse,
 } from "@/src/types/exerciseFlow";
 
-// ─── Staggered fade-up ───────────────────────────────────────────────────────
+const REALITY_LABELS: Record<NonNullable<ThoughtCatcherResponse["isTrue"]>, string> =
+  {
+    YES: "Yes, it still feels true",
+    "NOT SURE": "Not sure yet",
+    NO: "No, it does not fully hold up",
+  };
 
-function FadeUp({
-  delay,
-  children,
-}: {
-  delay: number;
-  children: React.ReactNode;
-}) {
-  const opacity = useSharedValue(0);
-  const ty = useSharedValue(12);
+function getShiftCopy(pre: number, post: number): string {
+  const change = pre - post;
 
-  useEffect(() => {
-    opacity.value = withDelay(
-      delay,
-      withTiming(1, { duration: 400, easing: Easing.out(Easing.quad) }),
-    );
-    ty.value = withDelay(
-      delay,
-      withTiming(0, { duration: 400, easing: Easing.out(Easing.quad) }),
-    );
-  }, []);
+  if (change < 0) {
+    return "The thought feels stronger right now. Looking at it still counts.";
+  }
 
-  const style = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ translateY: ty.value }],
-  }));
+  if (change === 0) {
+    return "The score stayed steady, but you still paused and checked it.";
+  }
 
-  return <Animated.View style={style}>{children}</Animated.View>;
+  if (change >= 4) {
+    return "The thought feels meaningfully less believable now.";
+  }
+
+  return "Even a small shift matters. You made room for another view.";
 }
 
-// ─── Animated score bar ──────────────────────────────────────────────────────
-
-function ScoreBar({
-  value,
-  max,
-  fillColor,
-  delay,
-  label = "Belief score",
+function FollowupLink({
+  label,
+  onPress,
 }: {
-  value: number;
-  max: number;
-  fillColor: string;
-  delay: number;
-  label?: string;
+  label: string;
+  onPress: () => void;
 }) {
-  const progress = useSharedValue(0);
-
-  useEffect(() => {
-    progress.value = withDelay(
-      delay,
-      withTiming(Math.min(Math.max(value / max, 0), 1), {
-        duration: 900,
-        easing: Easing.out(Easing.cubic),
-      }),
-    );
-  }, [delay, max, progress, value]);
-
-  const barStyle = useAnimatedStyle(() => ({
-    width: `${progress.value * 100}%`,
-  }));
-
   return (
-    <View
-      className="w-full h-2 rounded-full overflow-hidden"
-      style={{ backgroundColor: BRAND_BORDER }}
-      accessibilityRole="progressbar"
-      accessibilityLabel={`${label}: ${value} out of ${max}`}
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      className="min-h-11 flex-row items-center justify-center py-2 active:opacity-70"
     >
-      <Animated.View
-        className="h-full rounded-full"
-        style={[{ backgroundColor: fillColor }, barStyle]}
+      <Text
+        style={{ fontFamily: "GeistSemiBold", color: SAGE[600] }}
+        className="text-[14px] leading-[20px]"
+      >
+        {label}
+      </Text>
+      <HugeiconsIcon
+        icon={ArrowRight01Icon}
+        size={16}
+        color={SAGE[500]}
+        strokeWidth={2}
       />
+    </Pressable>
+  );
+}
+
+function SaveCopingCardAction({
+  cardSaved,
+  isSavingCard,
+  onPress,
+  error,
+}: {
+  cardSaved: boolean;
+  isSavingCard: boolean;
+  onPress: () => void;
+  error: string | null;
+}) {
+  return (
+    <View>
+      <Pressable
+        onPress={onPress}
+        disabled={cardSaved || isSavingCard}
+        accessibilityRole="button"
+        accessibilityLabel={
+          cardSaved
+            ? "Saved to coping cards"
+            : isSavingCard
+              ? "Saving coping card"
+              : "Save as coping card"
+        }
+        accessibilityState={{
+          disabled: cardSaved || isSavingCard,
+          busy: isSavingCard,
+        }}
+        className="mt-5 min-h-11 flex-row items-center self-start py-2 active:opacity-60"
+      >
+        <HugeiconsIcon
+          icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
+          size={18}
+          color={SAGE[700]}
+          strokeWidth={2}
+        />
+        <Text
+          style={{ fontFamily: "GeistSemiBold", color: SAGE[700] }}
+          className="ml-2 text-[14px] leading-[20px]"
+        >
+          {cardSaved
+            ? "Saved to coping cards"
+            : isSavingCard
+              ? "Saving..."
+              : "Save for a difficult moment"}
+        </Text>
+      </Pressable>
+
+      {error ? (
+        <Text
+          style={{ fontFamily: "GeistMedium", color: DANGER }}
+          className="mt-2 text-[13px] leading-[18px]"
+        >
+          {error}
+        </Text>
+      ) : null}
     </View>
   );
 }
 
-// ─── Reality-check pill ──────────────────────────────────────────────────────
-
-const REALITY_CONFIG: Record<
-  string,
-  { label: string; bg: string; color: string }
-> = {
-  YES: { label: "Yes, it felt true", bg: TERRACOTTA_TINT, color: TERRACOTTA },
-  "NOT SURE": { label: "Not sure", bg: GOLD_TINT, color: "#8C5E0A" },
-  NO: { label: "No, it wasn't true", bg: SAGE[50], color: SAGE[700] },
+export const ThoughtCatcherCheckpointSummary: React.FC<
+  StepProps<ThoughtCatcherResponse>
+> = ({ response }) => {
+  return (
+    <ThoughtRecordRecap
+      title="Thought caught"
+      subtitle="Here is what you have so far."
+      showMascot={false}
+      situation={response.situation}
+      automaticThought={response.automaticThought}
+      preScore={response.intensity}
+      scoreLabel="Belief intensity"
+    />
+  );
 };
-
-// ─── Insight copy ─────────────────────────────────────────────────────────────
-
-function getShiftLabel(pre: number, post: number): string {
-  const drop = pre - post;
-  if (drop <= 0) return "You sat with a difficult thought. That takes courage.";
-  const pct = pre > 0 ? Math.round((drop / pre) * 100) : 0;
-  if (pct >= 50) return `Belief dropped ${pct}% — your rational mind stepped in.`;
-  if (pct >= 20) return "A real shift. Small drops build new thought patterns over time.";
-  return "Progress is rarely linear. Showing up is what counts.";
-}
-
-// ─── Main component ──────────────────────────────────────────────────────────
 
 export const ThoughtCatcherSummary: React.FC<
   StepProps<ThoughtCatcherResponse>
-> = ({ response, onNext, readOnly, onNavigateDeeper }) => {
-  const router = useRouter();
+> = ({ response, readOnly, onNavigateDeeper }) => {
   const { saveCard } = useCopingCards();
-  const [cardSaved, setCardSaved] = useState<boolean>(false);
+  const [cardSaved, setCardSaved] = useState(false);
+  const [isSavingCard, setIsSavingCard] = useState(false);
+  const [cardSaveError, setCardSaveError] = useState<string | null>(null);
+
   const link = EXERCISE_LINKING_MAP["thought_catcher"];
-
-  const preScore = response.intensity ?? 0;
-  const postScore = response.postIntensity ?? null;
-  const hasScores = postScore !== null && postScore !== undefined;
-  const hasBalancedThought = !!response.balancedThought?.trim();
-  const realityConfig =
-    response.isTrue && REALITY_CONFIG[response.isTrue]
-      ? REALITY_CONFIG[response.isTrue]
-      : null;
-
-  // ── Header animation ──────────────────────────────────────────────────────
-
-  const mascotScale = useSharedValue(0.7);
-  const headerOpacity = useSharedValue(0);
-
-  useEffect(() => {
-    mascotScale.value = withSpring(1, { damping: 14, stiffness: 120 });
-    headerOpacity.value = withDelay(160, withTiming(1, { duration: 350 }));
-  }, []);
-
-  const mascotStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: mascotScale.value }],
-  }));
-
-  const headerStyle = useAnimatedStyle(() => ({
-    opacity: headerOpacity.value,
-    transform: [
-      { translateY: interpolate(headerOpacity.value, [0, 1], [8, 0]) },
-    ],
-  }));
-
-  // ── Handlers ─────────────────────────────────────────────────────────────
+  const realityCheckLabel = response.isTrue ? REALITY_LABELS[response.isTrue] : undefined;
+  const scoreDetail =
+    typeof response.postIntensity === "number"
+      ? getShiftCopy(response.intensity, response.postIntensity)
+      : undefined;
 
   const handleSaveCopingCard = useCallback(async () => {
-    if (cardSaved || !response.balancedThought?.trim()) return;
-    await saveCard({
-      exercise_type: "thought_catcher",
-      reframe_text: response.balancedThought,
-      reframe_label: "Balanced thought",
-    });
-    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    setCardSaved(true);
-  }, [cardSaved, response.balancedThought, saveCard]);
+    if (cardSaved || isSavingCard || !response.balancedThought?.trim()) return;
+
+    setIsSavingCard(true);
+    setCardSaveError(null);
+
+    try {
+      await saveCard({
+        exercise_type: "thought_catcher",
+        reframe_text: response.balancedThought,
+        reframe_label: "Balanced thought",
+      });
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setCardSaved(true);
+    } catch {
+      setCardSaveError("Could not save this coping card. Try again.");
+    } finally {
+      setIsSavingCard(false);
+    }
+  }, [cardSaved, isSavingCard, response.balancedThought, saveCard]);
 
   const handleNavigateDeeper = useCallback(
     (type: ExerciseType) => {
-      if (onNavigateDeeper) {
-        onNavigateDeeper(type);
-      } else {
-        onNext();
-        router.push({
-          pathname: "/tabs/screens/exercise-flow",
-          params: { type },
-        });
-      }
+      onNavigateDeeper?.(type);
     },
-    [onNext, onNavigateDeeper, router],
+    [onNavigateDeeper],
   );
 
-  // ── Render ────────────────────────────────────────────────────────────────
+  const highlightAction = useMemo(() => {
+    if (readOnly || !response.balancedThought?.trim()) return undefined;
+
+    return (
+      <SaveCopingCardAction
+        cardSaved={cardSaved}
+        isSavingCard={isSavingCard}
+        onPress={handleSaveCopingCard}
+        error={cardSaveError}
+      />
+    );
+  }, [
+    cardSaved,
+    cardSaveError,
+    handleSaveCopingCard,
+    isSavingCard,
+    readOnly,
+    response.balancedThought,
+  ]);
+
+  const afterTimeline = useMemo(() => {
+    if (!link || readOnly || !onNavigateDeeper) return undefined;
+
+    return (
+      <FollowupLink
+        label={`Go deeper: ${link.label}`}
+        onPress={() => handleNavigateDeeper(link.exerciseType)}
+      />
+    );
+  }, [handleNavigateDeeper, link, onNavigateDeeper, readOnly]);
 
   return (
-    <View className="flex-1">
-      {/* ── Header ─────────────────────────────────────────────────── */}
-      <View className="items-center pt-2 pb-6">
-        <Animated.View style={mascotStyle}>
-          <Mascot state="panda-happy" size={72} />
-        </Animated.View>
-        <Animated.View style={headerStyle} className="items-center mt-3">
-          <Text variant="h1" className="text-center tracking-[-0.5px]">
-            Thought checked
-          </Text>
-          <Text
-            variant="body"
-            className="text-center mt-1 text-[15px] leading-snug"
-          >
-            Here's what you worked through
-          </Text>
-        </Animated.View>
-      </View>
-
-      {/* ── Main content flow ──────────────────────────────────────── */}
-      <FadeUp delay={300}>
-        <View className="gap-8 mx-4">
-          {/* 1. Situation */}
-          {!!response.situation?.trim() && (
-            <View className="px-2">
-              <Text
-                variant="caption-muted"
-                className="text-sm mb-1"
-              >
-                Situation
-              </Text>
-              <View className="mt-1">
-                <Text
-                  variant="display"
-                  className="text-lg tracking-tight leading-relaxed text-ink"
-                >
-                  {response.situation}
-                </Text>
-              </View>
-            </View>
-          )}
-
-          {/* 2. Automatic thought */}
-          {!!response.automaticThought?.trim() && (
-            <View className="px-2">
-              <Text
-                variant="caption-muted"
-                className="text-sm mb-1"
-              >
-                Automatic thought
-              </Text>
-              <View className="mt-1">
-                <Text
-                  variant="display"
-                  className="text-lg tracking-tight leading-relaxed text-ink"
-                >
-                  "{response.automaticThought}"
-                </Text>
-              </View>
-            </View>
-          )}
-
-          {/* 3. Belief scores */}
-          {hasScores && (
-            <View className="px-2">
-              <Text
-                variant="caption-muted"
-                className="text-sm mb-3"
-              >
-                Belief intensity
-              </Text>
-              <View className="gap-3">
-                <View>
-                  <View className="flex-row justify-between mb-1.5">
-                    <Text variant="label" className="text-ink-soft text-[13px]">
-                      Before
-                    </Text>
-                    <Text variant="label-bold" className="text-[13px]">
-                      {preScore}
-                    </Text>
-                  </View>
-                  <ScoreBar
-                    value={preScore}
-                    max={10}
-                    fillColor={TERRACOTTA_LIGHT}
-                    delay={600}
-                  />
-                </View>
-                <View>
-                  <View className="flex-row justify-between mb-1.5">
-                    <Text variant="label" className="text-ink-soft text-[13px]">
-                      After
-                    </Text>
-                    <Text variant="label-bold" className="text-[13px]">
-                      {postScore}
-                    </Text>
-                  </View>
-                  <ScoreBar
-                    value={postScore!}
-                    max={10}
-                    fillColor={SAGE[400]}
-                    delay={900}
-                  />
-                </View>
-              </View>
-              <Text
-                variant="caption"
-                className="mt-3 text-ink-soft leading-relaxed"
-                accessibilityLiveRegion="polite"
-              >
-                {getShiftLabel(preScore, postScore!)}
-              </Text>
-            </View>
-          )}
-
-          {/* 4. Reality check */}
-          {realityConfig && (
-            <View className="px-2">
-              <Text
-                variant="caption-muted"
-                className="text-sm mb-2"
-              >
-                Reality check
-              </Text>
-              <View
-                className="self-start rounded-full px-4 py-2"
-                style={{ backgroundColor: realityConfig.bg }}
-              >
-                <Text
-                  variant="label-bold"
-                  className="text-[13px]"
-                  style={{ color: realityConfig.color }}
-                >
-                  {realityConfig.label}
-                </Text>
-              </View>
-            </View>
-          )}
-
-          {/* 5. Balanced thought */}
-          {hasBalancedThought && (
-            <View className="px-2">
-              <Text
-                variant="caption-muted"
-                className="text-sm mb-1"
-              >
-                Balanced thought
-              </Text>
-              <View className="mt-1 mb-4">
-                <Text
-                  variant="display"
-                  className="text-lg tracking-tight leading-relaxed text-ink"
-                >
-                  {response.balancedThought}
-                </Text>
-              </View>
-
-              {!readOnly && (
-                <Pressable
-                  onPress={cardSaved ? undefined : handleSaveCopingCard}
-                  disabled={cardSaved}
-                  accessibilityRole="button"
-                  accessibilityLabel={
-                    cardSaved ? "Saved" : "Save as coping card"
-                  }
-                  accessibilityState={{ disabled: cardSaved }}
-                  className="flex-row items-center self-start gap-1.5 rounded-full px-4 py-2.5 min-h-[44px] active:opacity-70"
-                  style={{
-                    backgroundColor: cardSaved ? SAGE[100] : SAGE.pill,
-                  }}
-                >
-                  <HugeiconsIcon
-                    icon={
-                      cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon
-                    }
-                    size={13}
-                    color={SAGE[600]}
-                    strokeWidth={2}
-                  />
-                  <Text
-                    variant="label-bold"
-                    className="text-[13px] text-sage-700"
-                  >
-                    {cardSaved ? "Saved" : "Save as coping card"}
-                  </Text>
-                </Pressable>
-              )}
-            </View>
-          )}
-        </View>
-      </FadeUp>
-
-      {/* ── Go deeper row ─────────────────────────────────────────── */}
-      {link && !readOnly && (
-        <FadeUp delay={500}>
-          <Pressable
-            onPress={() => handleNavigateDeeper(link.exerciseType)}
-            accessibilityRole="button"
-            accessibilityLabel={link.label}
-            className="flex-row items-center justify-center gap-2 py-3 mt-4 mx-2 active:opacity-70"
-          >
-            <Text
-              variant="label-bold"
-              className="text-[14px] text-sage-600"
-            >
-              Go deeper: {link.label}
-            </Text>
-            <HugeiconsIcon
-              icon={ArrowRight01Icon}
-              size={16}
-              color={SAGE[500]}
-              strokeWidth={2}
-            />
-          </Pressable>
-        </FadeUp>
-      )}
-    </View>
+    <ThoughtRecordRecap
+      title="Thought checked"
+      subtitle="Here is what you worked through."
+      showMascot={false}
+      highlightLabel="The thought you are carrying forward"
+      highlightText={response.balancedThought}
+      highlightAction={highlightAction}
+      situation={response.situation}
+      automaticThought={response.automaticThought}
+      preScore={response.intensity}
+      postScore={response.postIntensity}
+      scoreLabel="Belief intensity"
+      scoreDetail={scoreDetail}
+      realityCheckLabel={realityCheckLabel}
+      balancedThought={response.balancedThought}
+      afterTimeline={afterTimeline}
+    />
   );
 };
 
+ThoughtCatcherCheckpointSummary.displayName = "ThoughtCatcherCheckpointSummary";
 ThoughtCatcherSummary.displayName = "ThoughtCatcherSummary";

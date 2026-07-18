@@ -1,0 +1,801 @@
+# Theme
+
+## Global theme and font classes
+
+## `global.css`
+
+```css
+@import "tailwindcss";
+@import "uniwind";
+
+@theme {
+  --breakpoint-phone: 390px;
+  --breakpoint-phablet: 430px;
+}
+
+/* ─── UniWind theme variants ──────────────────────────────────────────────────
+   Switched at runtime via Uniwind.setTheme('light' | 'dark' | 'system').
+   These are the generic Gluestack/shadcn-compatible tokens — used by UI
+   primitives (Button, Input, Card, etc.) but NOT by the happy-brand system.
+   Do not use these for custom brand components; use the brand tokens below. */
+@layer theme {
+  :where(.light, .light *) {
+    --primary: 23 23 23;
+    --primary-foreground: 250 250 250;
+    --card: 255 255 255;
+    --secondary: 245 245 245;
+    --secondary-foreground: 23 23 23;
+    --background: 255 255 255;
+    --popover: 255 255 255;
+    --popover-foreground: 10 10 10;
+    --muted: 245 245 245;
+    --muted-foreground: 115 115 115;
+    --destructive: 231 0 11;
+    --foreground: 10 10 10;
+    --border: 229 229 229;
+    --input: 229 229 229;
+    --ring: 212 212 212;
+    --accent: 247 247 247;
+    --accent-foreground: 52 52 52;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not(:where(.light, .light *, .dark, .dark *)) {
+      --primary: 23 23 23;
+      --primary-foreground: 250 250 250;
+      --card: 255 255 255;
+      --secondary: 245 245 245;
+      --secondary-foreground: 23 23 23;
+      --background: 255 255 255;
+      --popover: 255 255 255;
+      --popover-foreground: 10 10 10;
+      --muted: 245 245 245;
+      --muted-foreground: 115 115 115;
+      --destructive: 231 0 11;
+      --foreground: 10 10 10;
+      --border: 229 229 229;
+      --input: 229 229 229;
+      --ring: 212 212 212;
+      --accent: 247 247 247;
+      --accent-foreground: 52 52 52;
+    }
+  }
+
+  :where(.dark, .dark *) {
+    --primary: 255 245 245;
+    --primary-foreground: 23 23 23;
+    --card: 23 23 23;
+    --secondary: 38 38 38;
+    --secondary-foreground: 250 250 250;
+    --background: 10 10 10;
+    --popover: 23 23 23;
+    --popover-foreground: 250 250 250;
+    --muted: 38 38 38;
+    --muted-foreground: 161 161 161;
+    --destructive: 255 100 103;
+    --foreground: 250 250 250;
+    --border: 46 46 46;
+    --input: 46 46 46;
+    --accent: 38 38 38;
+    --accent-foreground: 250 250 250;
+    --ring: 115 115 115;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not(:where(.light, .light *, .dark, .dark *)) {
+      --primary: 255 245 245;
+      --primary-foreground: 23 23 23;
+      --card: 23 23 23;
+      --secondary: 38 38 38;
+      --secondary-foreground: 250 250 250;
+      --background: 10 10 10;
+      --popover: 23 23 23;
+      --popover-foreground: 250 250 250;
+      --muted: 38 38 38;
+      --muted-foreground: 161 161 161;
+      --destructive: 255 100 103;
+      --foreground: 250 250 250;
+      --border: 46 46 46;
+      --input: 46 46 46;
+      --accent: 38 38 38;
+      --accent-foreground: 250 250 250;
+      --ring: 115 115 115;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HAPPY BRAND DESIGN SYSTEM
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Architecture: neutral base + intentional sage accents.
+   The app is built on a white canvas. Sage green appears only where it
+   communicates something: active states, primary icons, CTAs, brand moments.
+   Structural elements (borders, secondary text) are neutral so the sage
+   accents remain meaningful.
+
+   Colour roles
+   ────────────
+   Sage     Brand identity. Active states, primary icons, CTAs, eyebrows.
+   Gold     Achievement. XP, streaks, rewards — premium moments only.
+   Ink      Text. Dark green-black heading → neutral body → neutral muted.
+   Terracotta  Warning / error / destructive actions.
+   Borders  Neutral warm-grey — recede behind content, never compete with sage.
+
+   DO NOT use raw Tailwind gray-* / slate-* in brand components.
+   Map all text to the three ink tokens, all card borders to brand-border. */
+
+@theme inline {
+  /* ── Gluestack token bridge ──────────────────────────────────────────── */
+  --color-primary: rgb(var(--primary));
+  --color-primary-foreground: rgb(var(--primary-foreground));
+  --color-card: rgb(var(--card));
+  --color-secondary: rgb(var(--secondary));
+  --color-secondary-foreground: rgb(var(--secondary-foreground));
+  --color-background: rgb(var(--background));
+  --color-popover: rgb(var(--popover));
+  --color-popover-foreground: rgb(var(--popover-foreground));
+  --color-muted: rgb(var(--muted));
+  --color-muted-foreground: rgb(var(--muted-foreground));
+  --color-destructive: rgb(var(--destructive));
+  --color-foreground: rgb(var(--foreground));
+  --color-border: rgb(var(--border));
+  --color-input: rgb(var(--input));
+  --color-ring: rgb(var(--ring));
+  --color-accent: rgb(var(--accent));
+  --color-accent-foreground: rgb(var(--accent-foreground));
+
+  /* ── Sage palette ────────────────────────────────────────────────────────
+     Full scale from near-white tint to near-black.
+     Usage guide:
+       sage-50  / sage-100  Background tints, icon wells, inactive chips
+       sage-200 / sage-300  Decorative borders on selected surfaces, dividers
+       sage-400 / sage-500  Mid-weight: eyebrow text, progress fills
+       sage-600             Primary icon colour, brand text accents
+       sage-700             CTA bottom-border shadow, pressed CTA
+       sage-800             Heavy headings (rare)
+       sage-selected        Selected card background (tinted white-green)
+       sage-pill            Status badge background                          */
+  --color-sage-50: #f8fbf6;
+  --color-sage-100: #e5ede1;
+  --color-sage-200: #d3e0cd;
+  --color-sage-300: #abc0a2;
+  --color-sage-400: #7e9874;
+  --color-sage-500: #5f7f58;
+  --color-sage-600: #44633f;
+  --color-sage-700: #29452a;
+  --color-sage-800: #152714;
+  --color-sage-selected: #f2f8ef;
+  --color-sage-pill: #edf5e9;
+
+  /* ── Surfaces ────────────────────────────────────────────────────────────
+     brand-canvas   #F8FAF7  Screen root background — sage whisper. Cards
+                             (brand-surface #FFFFFF) sit on this and float.
+                             The 2% luminance delta is the premium depth signal.
+     brand-surface  #FFFFFF  Card and panel face — pure white. Always on top
+                             of brand-canvas. Never use as a screen background.
+     brand-surface-soft      Icon wells, secondary card tints — use sparingly.*/
+  --color-brand-canvas: #f8faf7;
+  --color-brand-surface: #ffffff;
+  --color-brand-surface-soft: #f7f7f7;
+  --color-mascot-stage: #ffffff;
+  --color-cream: #ffffff;
+  --color-cream-raised: #f7f7f7;
+  --color-warm-white: #ffffff;
+  --color-offwhite: #ffffff;
+
+  /* ── Accent palette ──────────────────────────────────────────────────────
+     Duolingo exact values adopted directly (non-sage colours).
+
+     Cardinal Red  Error, warning, destructive, "can't afford" states.
+                   Duolingo #FF4B4B / #FF9090 border / #FFDFE0 tint.
+     Bee Yellow    Gamification only: XP badges, streak indicators, rewards.
+                   Duolingo #FFD900 / #FFF5D6 tint. Reserve for achievement
+                   moments — overuse kills the premium feel.
+     Otter Blue    Correct-answer state, info banners.
+                   Duolingo #1CB0F6 / #DDF4FF tint.
+     Macaw Purple  Super / premium surfaces only.
+                   Duolingo #CE82FF / #F0DEFF tint.
+     Parrot Orange Rare rewards, bonus moments.
+                   Duolingo #FF9600 / #FEEDE0 tint.                        */
+  --color-cardinal-red: #ff4b4b;
+  --color-cardinal-red-border: #ff9090;
+  --color-cardinal-red-tint: #ffdfe0;
+  --color-bee-yellow: #ffd900;
+  --color-bee-yellow-tint: #fff5d6;
+  --color-otter-blue: #1cb0f6;
+  --color-otter-blue-tint: #ddf4ff;
+  --color-macaw-purple: #ce82ff;
+  --color-macaw-purple-tint: #f0deff;
+  --color-parrot-orange: #ff9600;
+  --color-parrot-orange-tint: #feede0;
+
+  /* Aliases — keep terracotta/gold names so existing code keeps working    */
+  --color-terracotta: #ff4b4b;
+  --color-terracotta-light: #ff9090;
+  --color-terracotta-tint: #ffdfe0;
+  --color-gold: #ffd900;
+  --color-gold-tint: #fff5d6;
+
+  /* ── Ink text scale ──────────────────────────────────────────────────────
+     Three levels. Use the correct level — mixing them randomly destroys
+     typographic hierarchy.
+
+     ink         #142414  Dark green-black. Screen titles, card headings,
+                          primary labels. Our custom sage ink — kept as-is.
+     ink-soft    #767676  Body copy, descriptions, secondary labels.
+                          Darkened from Duolingo #777777 → 4.54:1 on white
+                          (WCAG AA compliant; #777777 was 4.48:1, 0.02 short).
+     ink-muted   #AFAFAF  Timestamps, metadata, captions, inactive labels.
+                          2.19:1 on white — decorative / non-essential only.
+                          Never use for text that must be readable (errors,
+                          instructions, interactive labels). Use ink-soft for
+                          anything the user needs to read.
+
+     NEVER use text-gray-* or text-slate-* in brand components.
+     Map: gray-900/800 → text-ink, gray-700/600 → text-ink-soft,
+          gray-500/400/300 → text-ink-muted. Same for slate-*.            */
+  --color-ink: #142414;
+  --color-ink-soft: #767676;
+  --color-ink-muted: #afafaf;
+
+  /* ── Structural borders ──────────────────────────────────────────────────
+     All card and panel borders use these neutral tokens — NOT sage-100/200.
+     Neutral borders recede behind content; sage borders on selected/active
+     states then feel deliberate.
+
+     brand-border        #E5E5E5  Duolingo Wolf Grey 300. Default card edge,
+                                  panel outline, divider.
+     brand-border-strong #AFAFAF  Duolingo Wolf Grey 200. Bottom-border shadow
+                                  on raised/tactile cards — darker bottom
+                                  creates the 3D depth illusion.
+
+     NEVER use border-gray-100, border-gray-200, border-slate-* for cards.
+     Sage borders are only correct on selected / active states:
+       happy-brand-card-selected, happy-brand-pressed-card-selected.       */
+  --color-brand-border: #e5e5e5;
+  --color-brand-border-strong: #afafaf;
+
+  /* ── Duolingo colour equivalence ────────────────────────────────────────
+     How our tokens map to Duolingo's reference palette.
+     Cross-reference: docs/research/duolingo-design-system.md §4
+
+     Duolingo token    Value     →  Our token              Status
+     ──────────────────────────────────────────────────────────────────
+     Duo Green    #58CC02   →  sage-500    #5f7f58       SWAPPED (brand)
+     Duo Grn Dark #58A700   →  sage-700    #29452a       SWAPPED (brand)
+     Duo Dark     #1F1F1F   →  ink         #142414       SWAPPED (brand)
+     Wolf Grey 1  #F7F7F7   →  brand-surface-soft        ADOPTED directly
+     Wolf Grey 2  #AFAFAF   →  ink-muted + border-strong ADOPTED directly
+     Wolf Grey 3  #E5E5E5   →  brand-border              ADOPTED directly
+     Wolf Grey 4  #777777   →  ink-soft (darkened to #767676 for AA)
+     Feather Wht  #FFFFFF   →  brand-surface (card face)  ADOPTED directly
+     —            #F8FAF7   →  brand-canvas (screen bg)  CUSTOM (premium canvas)
+     Cardinal Red #FF4B4B   →  terracotta + cardinal-red ADOPTED directly
+     Bee Yellow   #FFD900   →  gold + bee-yellow         ADOPTED directly
+     Otter Blue   #1CB0F6   →  otter-blue                ADOPTED directly
+     Macaw Purple #CE82FF   →  macaw-purple              ADOPTED directly
+     Parrot Orange #FF9600  →  parrot-orange             ADOPTED directly
+     ──────────────────────────────────────────────────────────────────
+     Only the three sage tokens are custom. Everything else is Duolingo
+     verbatim so the neutral canvas is identical.                           */
+
+  /* ── Border radius scale ─────────────────────────────────────────────────
+     Prefer the happy-brand utility classes (which bake in the right radius)
+     over applying radius manually. When you do need a raw value, pick from
+     this scale — don't invent one-off pixel values.                        */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-icon-well: 18px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-full: 9999px;
+
+  /* ── Legacy semantic palette (avoid in new code) ─────────────────────────
+     These theme-* tokens predate the brand system. Prefer the brand tokens
+     above. They remain here for backward compat with older components.     */
+  --color-theme-background-primary: #ffffff;
+  --color-theme-background-secondary: #f7f7f7;
+  --color-theme-background-card: #ffffff;
+  --color-theme-text-primary: #142414;
+  --color-theme-text-secondary: #767676;
+  --color-theme-border: #e5e5e5;
+  --color-theme-purple-light: #eee9ff;
+  --color-theme-purple-primary: #7b61ff;
+  --color-theme-purple-deep: #5f46e8;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Two type families:
+     Cormorant  Expressive serif. Screen titles, large headings, hero text.
+               Available weights: Regular, Medium, SemiBold, Bold (with Italics).
+
+     Geist     Clean sans-serif. All body copy, labels, UI text.
+               Available weights: Regular, Medium, SemiBold, Bold.
+
+   Pairing rule: Cormorant for display moments, Geist for everything else.
+   Do not mix weights arbitrarily — use the named utilities below.          */
+
+@utility happy-font-heading {
+  font-family: "CormorantSemiBold";
+}
+
+@utility happy-font-heading-bold {
+  font-family: "CormorantBold";
+}
+
+@utility happy-font-heading-medium {
+  font-family: "CormorantMedium";
+}
+
+@utility happy-font-heading-regular {
+  font-family: "CormorantRegular";
+}
+
+@utility happy-font-heading-italic {
+  font-family: "CormorantRegularItalic";
+}
+
+@utility happy-font-heading-semibold-italic {
+  font-family: "CormorantSemiBoldItalic";
+}
+
+@utility happy-font-heading-medium-italic {
+  font-family: "CormorantMediumItalic";
+}
+
+@utility happy-font-body {
+  font-family: "GeistRegular";
+}
+
+@utility happy-font-body-medium {
+  font-family: "GeistMedium";
+}
+
+@utility happy-font-body-semibold {
+  font-family: "GeistSemiBold";
+}
+
+@utility happy-font-body-bold {
+  font-family: "GeistBold";
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SURFACE UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Depth system: cards simulate elevation with a thick bottom border instead
+   of a box-shadow. This is lighter, crisper, and works without blur.
+
+   Hierarchy (pick the right level for the context):
+
+   happy-brand-screen          Screen root background. Wrap every screen's
+                               outermost View. bg-brand-canvas (#f8faf7 — sage whisper, cards float).
+
+   happy-brand-card            Flat card. Static info — no press affordance.
+                               Use for settings rows, stat panels, list items
+                               that aren't tappable.
+
+   happy-brand-card-strong     Flat card with a slightly heavier border edge.
+                               Use when the card needs more visual weight
+                               against a tinted background.
+
+   happy-brand-card-selected   Active/selected state of a flat card.
+                               Sage border + sage-tinted background signals
+                               the user's selection.
+
+   happy-brand-raised-panel    Hero / prominent panel. border-b-[6px] gives
+                               the deepest depth. Use for the main widget on
+                               a screen (streak widget, emotion logger, etc.).
+
+   happy-brand-preview-tile    Interactive card with press affordance.
+                               border-b-[5px]. Use for exercise cards,
+                               challenge tiles, quick-journal cards — any
+                               PressableScale that acts like a button.
+
+   happy-brand-pressed-card    Tactile card. Thinner border-b-4, for items
+                               inside a list that are individually pressable.
+
+   happy-brand-pressed-card-selected  Active version of pressed-card.
+                               Sage border signals selection/completion.
+
+   NOTE: Always combine these with a rounded-* class. The utility does not
+   set border-radius — it only handles border and background.               */
+
+@utility happy-brand-screen {
+  @apply bg-brand-canvas;
+}
+
+@utility happy-brand-card {
+  @apply border-2 border-brand-border bg-brand-surface;
+}
+
+@utility happy-brand-card-strong {
+  @apply border-2 border-brand-border-strong bg-brand-surface;
+}
+
+@utility happy-brand-card-selected {
+  @apply border-2 border-sage-500 bg-sage-selected;
+}
+
+@utility happy-brand-raised-panel {
+  @apply border-2 border-b-[6px] border-brand-border border-b-brand-border-strong bg-brand-surface;
+}
+
+@utility happy-brand-preview-tile {
+  @apply border-2 border-b-[5px] border-brand-border border-b-brand-border-strong bg-brand-surface;
+}
+
+@utility happy-brand-pressed-card {
+  @apply border-2 border-b-4 border-brand-border border-b-brand-border-strong bg-brand-surface;
+}
+
+@utility happy-brand-pressed-card-selected {
+  @apply border-2 border-b-4 border-sage-500 border-b-sage-600 bg-sage-selected;
+}
+
+@utility happy-brand-metric-card {
+  @apply bg-brand-surface-soft;
+}
+
+@utility happy-brand-surface {
+  @apply bg-brand-surface;
+}
+
+@utility happy-brand-surface-soft {
+  @apply bg-brand-surface-soft;
+}
+
+/* ── Mascot stage ────────────────────────────────────────────────────────── */
+@utility happy-mascot-stage {
+  @apply border-2 border-brand-border bg-mascot-stage;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CHIP & BADGE UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════
+
+   happy-brand-soft-chip     Pill-shaped container. Uses sage-50 tint.
+                             For: tag clouds, filter pills, info chips,
+                             the Awards button in the home TopBar.
+
+   happy-brand-status-chip   Pill for status labels (exercise counts, step
+                             indicators). Uses sage-pill — slightly greener
+                             than soft-chip to signal "active/tracked".
+
+   happy-brand-score-badge   Rounded rectangle badge for scores and grades.
+                             Uses sage-selected background.                  */
+
+@utility happy-brand-soft-chip {
+  @apply rounded-full bg-sage-50;
+}
+
+@utility happy-brand-status-chip {
+  @apply rounded-full bg-sage-pill;
+}
+
+@utility happy-brand-score-badge {
+  @apply rounded-[22px] bg-sage-selected;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TEXT STYLE UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════
+
+   happy-brand-eyebrow   ALL-CAPS section label. sage-500 colour makes it
+                         a deliberate sage accent moment — the one place
+                         green text is expected in body layout.
+                         Size: set per-usage (text-xs is the default).
+                         Example: "DAILY REFLECTION", "YOUR PATTERN".
+
+   happy-brand-copy      Inline prose text style. ink-soft colour.
+
+   happy-brand-secondary-cta-text  The dismiss/skip/secondary action below
+                                   a primary CTA button.                    */
+
+@utility happy-brand-eyebrow {
+  @apply text-xs font-bold uppercase tracking-widest text-sage-500;
+}
+
+@utility happy-brand-copy {
+  @apply text-ink-soft;
+}
+
+@utility happy-brand-secondary-cta-text {
+  @apply text-sm font-medium text-ink-muted;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CTA UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════
+
+   The primary CTA uses the same thick-bottom-border depth trick as cards.
+   sage-500 fill + sage-700 bottom border gives a tactile pressed look.
+
+   happy-brand-primary-cta           Active state. Pair with text-white or
+                                     text-brand-surface for label text.
+   happy-brand-primary-cta-disabled  Visually greyed out. Pair with a
+                                     pointer-events-none wrapper.           */
+
+@utility happy-brand-primary-cta {
+  @apply border-b-4 border-b-sage-700 bg-sage-500;
+}
+
+@utility happy-brand-primary-cta-disabled {
+  @apply border-b-4 border-b-sage-300 bg-sage-200;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SECONDARY CTA UTILITY
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Maps to Duolingo's ghost/secondary button (§7.4).
+   Neutral depth border signals pressability without competing with the
+   primary CTA. Always pair with a primary CTA — never use standalone.
+   Label text: text-ink-soft (never ink — that implies primary).           */
+
+@utility happy-brand-secondary-cta {
+  @apply border-2 border-b-4 border-brand-border border-b-brand-border-strong bg-brand-surface;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANSWER STATE UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Correct/incorrect feedback states for exercise cards and choice items.
+
+   Maps Duolingo's feedback system to our palette:
+     Correct:   Duo DDF4FF/84D8FF  →  sage-selected / sage-300/sage-400
+     Incorrect: Duo FFDFE0/FF9090  →  terracotta-tint / terracotta-light/terracotta
+
+   happy-brand-card-correct    Sage-tinted. Use for correct answers,
+                               completed steps, success confirmation.
+   happy-brand-card-incorrect  Terracotta-tinted. Use for wrong answers,
+                               error states, failed validation.
+
+   Both use the same depth structure as happy-brand-pressed-card.          */
+
+@utility happy-brand-card-correct {
+  @apply border-2 border-b-4 border-sage-300 border-b-sage-400 bg-sage-selected;
+}
+
+@utility happy-brand-card-incorrect {
+  @apply border-2 border-b-4 border-terracotta-light border-b-terracotta bg-terracotta-tint;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROGRESS BAR UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Maps to Duolingo's progress bar (§9):
+     Track: Wolf Grey 3 #E5E5E5  →  brand-border #e8eaeb
+     Fill:  Duo Green  #58CC02   →  sage-500 #5f7f58
+
+   Apply spring-ease to fill-width animations for the Duolingo overshoot
+   feel (ease-out with slight overshoot, ~400ms).                          */
+
+@utility happy-brand-progress-track {
+  @apply rounded-full bg-brand-border;
+}
+
+@utility happy-brand-progress-fill {
+  @apply rounded-full bg-sage-500;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPTY STATE CARD
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Dashed border universally reads as "slot awaiting content." No border-b
+   depth — flat appearance communicates "not a pressable action."
+   Maps to Duolingo's empty state card pattern (§8.10).                    */
+
+@utility happy-brand-empty-state {
+  @apply border-2 border-dashed border-brand-border bg-brand-surface-soft;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK MODE — BRAND TOKEN OVERRIDES (groundwork, not yet active)
+   ═══════════════════════════════════════════════════════════════════════════
+
+   Sage-tinted near-black surfaces. Not pure grey — retains brand warmth.
+   To activate: uncomment the @media block below and test all screens.
+
+   @media (prefers-color-scheme: dark) {
+     :root {
+       --color-brand-canvas: #0f1a0f;
+       --color-brand-surface: #1a2a1a;
+       --color-brand-surface-soft: #142414;
+       --color-brand-border: #2a3a2a;
+       --color-brand-border-strong: #3a4a3a;
+       --color-ink: #f0f5f0;
+       --color-ink-soft: #a0b0a0;
+       --color-ink-muted: #5a6a5a;
+       --color-sage-50: #1a2a1a;
+       --color-sage-100: #2a3a2a;
+       --color-sage-selected: #1a2f1a;
+       --color-sage-pill: #1a2a1a;
+     }
+   }
+   ═══════════════════════════════════════════════════════════════════════════ */
+```
+
+## Raw React Native tokens
+
+## `lib/tokens.ts`
+
+```ts
+/**
+ * TypeScript Design Token Constants
+ *
+ * Mirrors values defined in global.css @theme inline.
+ * Use for icon color props, LinearGradient arrays, SVG fills —
+ * anywhere a raw hex/number is required outside className.
+ */
+
+// ─── Sage Palette ───────────────────────────────────────────────────────
+export const SAGE = {
+  50: "#f8fbf6",
+  100: "#e5ede1",
+  200: "#d3e0cd",
+  300: "#abc0a2",
+  400: "#7e9874",
+  500: "#5f7f58",
+  600: "#44633f",
+  700: "#29452a",
+  800: "#152714",
+  selected: "#f2f8ef",
+  pill: "#edf5e9",
+} as const;
+
+export const SAGE_RECORDING_GRADIENT = [
+  SAGE[500],
+  SAGE[300],
+  SAGE[200],
+  SAGE.selected,
+  "#ffffff",
+] as const;
+
+export const SAGE_LOADING_GRADIENT = ["#ffffff", "#f8fbf6", "#f2f8ef"] as const;
+
+export const SAGE_OVERLAY = {
+  clear: "transparent",
+  disabled: "rgba(20, 36, 20, 0.32)",
+  faint: "rgba(95, 127, 88, 0.08)",
+  soft: "rgba(171, 192, 162, 0.14)",
+  mist: "rgba(211, 224, 205, 0.18)",
+  whisper: "rgba(95, 127, 88, 0.06)",
+  whiteTint: "rgba(255, 255, 255, 0.2)",
+} as const;
+
+export const TRANSPARENT = SAGE_OVERLAY.clear;
+
+// ─── Brand Surfaces ─────────────────────────────────────────────────────
+// brand-canvas: screen background — sage whisper, cards float above it
+// brand-surface: card/panel face — pure white
+export const BRAND_CANVAS = "#F8FAF7" as const;
+export const BRAND_SURFACE = "#ffffff" as const;
+export const BRAND_SURFACE_SOFT = "#F7F7F7" as const;
+export const MASCOT_STAGE = "#ffffff" as const;
+// Legacy aliases — prefer BRAND_CANVAS / BRAND_SURFACE in new code
+export const CREAM = "#ffffff" as const;
+export const CREAM_RAISED = "#F7F7F7" as const;
+export const WARM_WHITE = "#ffffff" as const;
+// Duolingo Cardinal Red — adopted directly
+export const TERRACOTTA = "#FF4B4B" as const;
+export const TERRACOTTA_LIGHT = "#FF9090" as const;
+export const TERRACOTTA_TINT = "#FFDFE0" as const;
+// Duolingo Bee Yellow — adopted directly
+export const GOLD = "#FFD900" as const;
+export const GOLD_TINT = "#FFF5D6" as const;
+// Duolingo Otter Blue — adopted directly
+export const OTTER_BLUE = "#1CB0F6" as const;
+export const OTTER_BLUE_TINT = "#DDF4FF" as const;
+// Duolingo Macaw Purple — adopted directly
+export const MACAW_PURPLE = "#CE82FF" as const;
+export const MACAW_PURPLE_TINT = "#F0DEFF" as const;
+// Duolingo Parrot Orange — adopted directly
+export const PARROT_ORANGE = "#FF9600" as const;
+export const PARROT_ORANGE_TINT = "#FEEDE0" as const;
+export const DANGER = "#e7000b" as const;
+export const INK = "#142414" as const;
+// Duolingo Wolf Grey 400 / Wolf Grey 200 — adopted directly
+export const INK_SOFT = "#767676" as const;
+export const INK_MUTED = "#AFAFAF" as const;
+export const OFFWHITE = "#ffffff" as const;
+// Duolingo Wolf Grey 300 / Wolf Grey 200 — adopted directly
+export const BRAND_BORDER = "#E5E5E5" as const;
+export const BRAND_BORDER_STRONG = "#E5E5E5" as const;
+export const SAGE_DISCOVERY_GRADIENT = [
+  BRAND_SURFACE,
+  BRAND_SURFACE_SOFT,
+] as const;
+
+// ─── App Semantic Theme ─────────────────────────────────────────────────
+export const THEME = {
+  backgroundPrimary: "#F8FAF7",  // screen canvas — sage whisper
+  backgroundSecondary: "#F7F7F7",
+  backgroundCard: "#ffffff",     // card face — pure white
+  textPrimary: "#142414",
+  textSecondary: "#767676",
+  border: "#E5E5E5",
+  purpleLight: "#F0DEFF",
+  purplePrimary: "#CE82FF",
+  purpleDeep: "#9B59B6",
+} as const;
+
+// ─── Light/Dark Resolved Tokens ─────────────────────────────────────────
+export const LIGHT_TOKENS = {
+  primary: "#171717",
+  primaryForeground: "#fafafa",
+  card: "#ffffff",
+  secondary: "#f5f5f5",
+  secondaryForeground: "#171717",
+  background: "#ffffff",
+  foreground: "#0a0a0a",
+  muted: "#f5f5f5",
+  mutedForeground: "#737373",
+  destructive: "#e7000b",
+  border: "#e5e5e5",
+  input: "#e5e5e5",
+  ring: "#d4d4d4",
+  accent: "#f7f7f7",
+  accentForeground: "#343434",
+} as const;
+
+export const DARK_TOKENS = {
+  primary: "#fff5f5",
+  primaryForeground: "#171717",
+  card: "#171717",
+  secondary: "#262626",
+  secondaryForeground: "#fafafa",
+  background: "#0a0a0a",
+  foreground: "#fafafa",
+  muted: "#262626",
+  mutedForeground: "#a1a1a1",
+  destructive: "#ff6467",
+  border: "#2e2e2e",
+  input: "#2e2e2e",
+  ring: "#737373",
+  accent: "#262626",
+  accentForeground: "#fafafa",
+} as const;
+
+export type ThemeTokens = {
+  readonly [K in keyof typeof LIGHT_TOKENS]: string;
+};
+
+// ─── Brand Dark Mode Tokens (groundwork — not yet active) ───────────────
+// Sage-tinted dark surfaces: near-black with a green cast, not pure grey.
+// When dark mode ships, these replace the light brand tokens.
+export const BRAND_DARK = {
+  canvas: "#0f1a0f",           // screen background — sage-tinted near-black
+  surface: "#1a2a1a",          // card face — slightly lifted from canvas
+  surfaceSoft: "#142414",      // icon wells, secondary surfaces
+  border: "#2a3a2a",           // card edges — sage-tinted dark grey
+  borderStrong: "#3a4a3a",     // shadow layer on 3D cards
+  ink: "#f0f5f0",              // primary text — warm white
+  inkSoft: "#a0b0a0",          // secondary text — sage-tinted mid
+  inkMuted: "#5a6a5a",         // decorative text — sage-tinted dark
+  tooltip: "#1a2a1a",          // tooltip/popover background
+} as const;
+
+// ─── Border Radius (numeric px values) ──────────────────────────────────
+export const RADIUS = {
+  none: 0,
+  sm: 4,
+  md: 8,
+  lg: 12,
+  xl: 16,
+  "icon-well": 18,  // icon well squares — used on h-12/h-14 icon containers
+  "2xl": 20,
+  "3xl": 24,
+  full: 9999,
+} as const;
+```
+
