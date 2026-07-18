@@ -1,33 +1,18 @@
 import React from "react";
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
   TextInput,
   View,
 } from "react-native";
-import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Cancel01Icon } from "@hugeicons/core-free-icons";
 
 import { Text } from "@/components/ui/Text";
-import { Card } from "@/src/components/ui/Card";
 import { SAGE } from "@/lib/tokens";
 import { ValidationMessage } from "@/src/components/exercise/ValidationMessage";
-import { DynamicSummary } from "@/src/components/exercise/DynamicSummary";
-import { useRouter } from "expo-router";
 import type {
   ABCAnalysisResponse,
-  ExerciseType,
   StepProps,
 } from "@/src/types/exerciseFlow";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
-import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
-
-const ACCENT = "#58CC02";
-const PROMPT_STEP_COUNT = 5;
-const XP_EARNED = 15;
 
 import { SuggestionCards, SuggestionItem } from "@/src/components/exercise/SuggestionCards";
 

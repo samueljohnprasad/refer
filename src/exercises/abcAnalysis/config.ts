@@ -75,7 +75,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
     {
       id: "activating_event",
       component: ABCActivatingEventStep,
-      label: "Activating Event",
+      label: "What happened?",
       validate: (r) => r.activatingEvent.trim().length >= 1,
       ai: {
         promptBuilder: (r, context) => {
