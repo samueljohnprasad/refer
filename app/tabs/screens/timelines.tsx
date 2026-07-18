@@ -1,8 +1,22 @@
 import React, { useState } from "react";
 import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
-import { Host, Picker, Text as SwiftUIText, BottomSheet } from "@expo/ui/swift-ui";
-import { pickerStyle, tag, tint, presentationDetents, presentationDragIndicator } from "@expo/ui/swift-ui/modifiers";
+import {
+  Host,
+  Picker,
+  Text as SwiftUIText,
+  BottomSheet,
+  Group,
+  RNHostView,
+} from "@expo/ui/swift-ui";
+import {
+  pickerStyle,
+  tag,
+  tint,
+  presentationDetents,
+  presentationDragIndicator,
+} from "@expo/ui/swift-ui/modifiers";
 import { SAGE } from "@/lib/tokens";
 import { IMessageStack } from "@/src/animations/imessage-stack";
 
@@ -55,23 +69,45 @@ export default function TimelinesScreen() {
         }}
       />
       <View className="flex-1">
-        {activeTab === "days" && <DaysTimelineTab onOpenModal={handleOpenModal} />}
-        {activeTab === "weeks" && <WeeksTimelineTab onOpenModal={handleOpenModal} />}
-        {activeTab === "months" && <MonthsTimelineTab onOpenModal={handleOpenModal} />}
+        {activeTab === "days" && (
+          <DaysTimelineTab onOpenModal={handleOpenModal} />
+        )}
+        {activeTab === "weeks" && (
+          <WeeksTimelineTab onOpenModal={handleOpenModal} />
+        )}
+        {activeTab === "months" && (
+          <MonthsTimelineTab onOpenModal={handleOpenModal} />
+        )}
       </View>
 
       <Host>
         <BottomSheet
           isPresented={isStackModalOpen}
-          onIsPresentedChange={setIsStackModalOpen}
-          modifiers={[
-            presentationDetents(["medium", "large"]),
-            presentationDragIndicator("visible"),
-          ]}
+          onIsPresentedChange={(val) => {
+            if (!val) setIsStackModalOpen(false);
+          }}
         >
-          <View style={{ flex: 1, backgroundColor: "transparent", justifyContent: "center", alignItems: "center" }}>
-            <IMessageStack />
-          </View>
+          <Group
+            modifiers={[
+              presentationDetents(["medium"]),
+              presentationDragIndicator("visible"),
+            ]}
+          >
+            <RNHostView>
+              <SafeAreaView
+                edges={["bottom"]}
+                style={{
+                  flex: 1,
+                  width: "100%",
+                  backgroundColor: "transparent",
+                }}
+              >
+                <View className="flex-1 justify-center bg-transparent w-full py-4">
+                  <IMessageStack />
+                </View>
+              </SafeAreaView>
+            </RNHostView>
+          </Group>
         </BottomSheet>
       </Host>
     </View>
