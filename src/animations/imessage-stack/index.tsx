@@ -131,7 +131,8 @@ export const IMessageStack = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    width: '100%',
+    backgroundColor: 'transparent',
     justifyContent: 'center',
   },
 });

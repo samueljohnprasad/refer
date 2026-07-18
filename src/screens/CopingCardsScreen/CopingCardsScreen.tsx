@@ -227,9 +227,9 @@ export const CopingCardsScreen: React.FC = () => {
             <RNHostView>
               <SafeAreaView
                 edges={["bottom"]}
-                style={{ flex: 1, backgroundColor: "transparent" }}
+                style={{ flex: 1, width: "100%", backgroundColor: "transparent" }}
               >
-                <View className="flex-1 items-center justify-center bg-transparent py-4">
+                <View className="flex-1 justify-center bg-transparent w-full py-4">
                   <IMessageStack />
                 </View>
               </SafeAreaView>
