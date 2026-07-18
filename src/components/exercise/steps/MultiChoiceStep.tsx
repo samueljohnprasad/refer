@@ -60,11 +60,13 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
   }) => {
     const responseRecord = response as Record<string, unknown>;
     const storedValue = responseRecord[fieldKey];
-    const selected = selectionStorageAdapter
+    const storedSelections = selectionStorageAdapter
       ? selectionStorageAdapter.deserialize(storedValue)
       : Array.isArray(storedValue)
         ? storedValue.filter((value): value is string => typeof value === "string")
         : [];
+    const optionValues = new Set(options.map((option) => option.value));
+    const selected = storedSelections.filter((value) => optionValues.has(value));
     const atLimit = selected.length >= maxSelections;
     const isCbtReflection = layoutVariant === "cbt_reflection";
 

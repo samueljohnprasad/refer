@@ -9,6 +9,7 @@ import {
   ABCConsequenceBehaviorStep,
   ABCConsequenceEmotionStep,
   ABCNewConsequenceStep,
+  hasSelectedABCEmotion,
 } from "./customSteps";
 import { ABCSummaryStep } from "./ABCSummaryStep";
 import { createStep } from "@/src/components/exercise/steps/createStep";
@@ -30,7 +31,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
   type: "abc_analysis",
   category: "cbt_core",
   title: "ABC Analysis",
-  subtitle: "Understand the link between events, beliefs, and consequences",
+  subtitle: "See how a moment, a thought, and a reaction connect.",
   icon: "abc_analysis",
   duration: "7-10 min",
   xp: 15,
@@ -120,28 +121,14 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
           },
         },
         maxResults: 3,
-        aiLoadingMessage: "Identifying core beliefs...",
+        aiLoadingMessage: "Finding possible thoughts...",
       },
     },
     {
       id: "consequence_emotion",
       component: ABCConsequenceEmotionStep,
       label: "How did you feel?",
-      validate: (r) => r.consequenceEmotion.trim().length >= 1,
-      ai: {
-        promptBuilder: (r) =>
-          `You are a CBT therapist assistant. Based on this belief:\n"${r.belief}"\n\nGenerate 3 likely emotions the user might have felt. Return emotions only. Keep them brief.`,
-        responseSchema: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: { text: { type: "string" } },
-            required: ["text"],
-          },
-        },
-        maxResults: 3,
-        aiLoadingMessage: "Analyzing emotional impact...",
-      },
+      validate: (r) => hasSelectedABCEmotion(r.consequenceEmotion),
     },
     {
       id: "consequence_behavior",
@@ -224,6 +211,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       id: "summary",
       component: ABCSummaryStep,
       label: "Summary",
+      nextLabel: "Complete",
       validate: () => true,
       excludeFromProgress: true,
     },

@@ -67,6 +67,16 @@ const emotionSelectionStorage = {
   },
 };
 
+export function hasSelectedABCEmotion(value: string): boolean {
+  const visibleEmotionValues = new Set(
+    ABC_EMOTION_OPTIONS.map((option) => option.value),
+  );
+
+  return emotionSelectionStorage
+    .deserialize(value)
+    .some((emotion) => visibleEmotionValues.has(emotion));
+}
+
 const SHARED_TEXT_STEP_PROPS = {
   showVoice: true,
   alwaysShowVoice: true,
