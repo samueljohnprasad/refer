@@ -15,8 +15,8 @@ type CardProps = {
 
 const { width: WindowWidth } = Dimensions.get('window');
 
-export const CARD_WIDTH = WindowWidth / 3;
-export const CARD_HEIGHT = (CARD_WIDTH / 3) * 4;
+export const CARD_WIDTH = WindowWidth / 2.4;
+export const CARD_HEIGHT = CARD_WIDTH * 1.65;
 
 // The trick behind this animation is a very aggressive interpolation of the scroll offset.
 // We use a ScrollView to drive the animation, and we interpolate
