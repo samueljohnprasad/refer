@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 
 import {
+  ReflectionBulletList,
   ReflectionScoreShift,
   ReflectionTimeline,
   ReflectionTimelineItem,
@@ -9,6 +10,12 @@ import {
 import { Mascot, type MascotState } from "@/src/components/ui/Mascot";
 import { Text } from "@/src/components/ui/Text";
 import { INK, INK_SOFT, SAGE } from "@/lib/tokens";
+
+export type RecapSection = {
+  label: string;
+  value: string | string[];
+  tone?: "default" | "serif" | "muted";
+};
 
 interface ThoughtRecordRecapProps {
   title: string;
@@ -26,6 +33,7 @@ interface ThoughtRecordRecapProps {
   scoreDetail?: string;
   realityCheckLabel?: string;
   balancedThought?: string;
+  sections?: readonly RecapSection[];
   afterTimeline?: React.ReactNode;
 }
 
@@ -72,6 +80,44 @@ function RealityPill({
   );
 }
 
+function RecapSectionContent({
+  section,
+}: {
+  section: RecapSection;
+}) {
+  const items = Array.isArray(section.value)
+    ? section.value.filter((item) => item.trim())
+    : [];
+
+  if (items.length > 0) {
+    return (
+      <ReflectionBulletList
+        items={items}
+        textColor={section.tone === "muted" ? INK_SOFT : INK}
+      />
+    );
+  }
+
+  if (typeof section.value !== "string" || !section.value.trim()) {
+    return null;
+  }
+
+  const style =
+    section.tone === "serif"
+      ? { fontFamily: "CormorantMedium", color: INK }
+      : { fontFamily: "GeistRegular", color: section.tone === "muted" ? INK_SOFT : INK };
+  const className =
+    section.tone === "serif"
+      ? "text-[22px] leading-[30px]"
+      : "text-[16px] leading-[24px]";
+
+  return (
+    <Text style={style} className={className}>
+      {section.value.trim()}
+    </Text>
+  );
+}
+
 export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
   ({
     title,
@@ -89,6 +135,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
     scoreDetail,
     realityCheckLabel,
     balancedThought,
+    sections,
     afterTimeline,
   }) => {
     const hasSituation = Boolean(situation?.trim());
@@ -97,12 +144,19 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
     const hasShift = hasScore && typeof postScore === "number";
     const hasReality = Boolean(realityCheckLabel);
     const hasBalancedThought = Boolean(balancedThought?.trim());
-    const hasTimeline =
-      hasSituation ||
-      hasAutomaticThought ||
-      hasScore ||
-      hasReality ||
-      hasBalancedThought;
+    const recordSections = (sections ?? []).filter((section) =>
+      Array.isArray(section.value)
+        ? section.value.some((item) => item.trim())
+        : section.value.trim(),
+    );
+    const hasThoughtRecordTimeline =
+      recordSections.length === 0 &&
+      (hasSituation ||
+        hasAutomaticThought ||
+        hasScore ||
+        hasReality ||
+        hasBalancedThought);
+    const hasTimeline = recordSections.length > 0 || hasThoughtRecordTimeline;
 
     return (
       <View className="flex-1 px-3" style={{ paddingBottom: 40 }}>
@@ -152,7 +206,17 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
         {hasTimeline ? (
           <View className="mt-7">
             <ReflectionTimeline>
-              {hasSituation ? (
+              {recordSections.map((section, index) => (
+                <ReflectionTimelineItem
+                  key={section.label}
+                  label={section.label}
+                  isLast={index === recordSections.length - 1}
+                >
+                  <RecapSectionContent section={section} />
+                </ReflectionTimelineItem>
+              ))}
+
+              {hasThoughtRecordTimeline && hasSituation ? (
                 <ReflectionTimelineItem
                   label="What happened"
                   isLast={
@@ -171,7 +235,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
                 </ReflectionTimelineItem>
               ) : null}
 
-              {hasAutomaticThought ? (
+              {hasThoughtRecordTimeline && hasAutomaticThought ? (
                 <ReflectionTimelineItem
                   label="Automatic thought"
                   isLast={!hasScore && !hasReality && !hasBalancedThought}
@@ -185,7 +249,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
                 </ReflectionTimelineItem>
               ) : null}
 
-              {hasScore ? (
+              {hasThoughtRecordTimeline && hasScore ? (
                 <ReflectionTimelineItem
                   label={scoreLabel}
                   isLast={!hasReality && !hasBalancedThought}
@@ -203,7 +267,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
                 </ReflectionTimelineItem>
               ) : null}
 
-              {hasReality ? (
+              {hasThoughtRecordTimeline && hasReality ? (
                 <ReflectionTimelineItem
                   label="Reality check"
                   isLast={!hasBalancedThought}
@@ -212,7 +276,7 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
                 </ReflectionTimelineItem>
               ) : null}
 
-              {hasBalancedThought ? (
+              {hasThoughtRecordTimeline && hasBalancedThought ? (
                 <ReflectionTimelineItem label="Balanced thought" isLast>
                   <Text
                     style={{ fontFamily: "GeistRegular", color: INK }}

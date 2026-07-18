@@ -17,6 +17,7 @@ interface ReflectionTimelineItemProps {
 interface ReflectionBulletListProps {
   items: readonly string[];
   accentColor?: string;
+  textColor?: string;
 }
 
 interface ReflectionScoreShiftProps {
@@ -66,6 +67,7 @@ export function ReflectionTimelineItem({
 export function ReflectionBulletList({
   items,
   accentColor = SAGE[600],
+  textColor = INK_SOFT,
 }: ReflectionBulletListProps) {
   return (
     <View className="gap-2.5">
@@ -76,7 +78,7 @@ export function ReflectionBulletList({
             style={{ backgroundColor: accentColor }}
           />
           <Text
-            style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
+            style={{ fontFamily: "GeistRegular", color: textColor }}
             className="flex-1 text-[15px] leading-[22px]"
           >
             {item}

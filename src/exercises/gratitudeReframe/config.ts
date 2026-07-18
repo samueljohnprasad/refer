@@ -193,6 +193,7 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
         id: "summary",
         component: GratitudeReframeSummary as any,
         label: "Summary",
+        nextLabel: "Complete",
         validate: () => true,
         excludeFromProgress: true,
       },
