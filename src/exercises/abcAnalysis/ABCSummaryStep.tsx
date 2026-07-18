@@ -127,6 +127,7 @@ function getIntensityShiftCopy(pre: number, post: number): string {
 export function ABCSummaryStep({
   response,
   onNext,
+  onBack,
   readOnly,
   onNavigateDeeper,
 }: StepProps<ABCAnalysisResponse>): React.JSX.Element {
@@ -209,6 +210,22 @@ export function ABCSummaryStep({
     return (
       <View>
         {!readOnly ? (
+          <Pressable
+            onPress={onBack}
+            accessibilityRole="button"
+            accessibilityLabel="Edit answers"
+            className="min-h-11 self-start py-2 active:opacity-60"
+          >
+            <Text
+              style={{ fontFamily: "GeistSemiBold", color: SAGE[600] }}
+              className="text-[14px] leading-[20px]"
+            >
+              Edit answers
+            </Text>
+          </Pressable>
+        ) : null}
+
+        {!readOnly ? (
           <SaveCopingCardAction
             cardSaved={cardSaved}
             isSavingCard={isSavingCard}
@@ -231,6 +248,7 @@ export function ABCSummaryStep({
     handleNavigateDeeper,
     handleSaveCopingCard,
     isSavingCard,
+    onBack,
     readOnly,
   ]);
 

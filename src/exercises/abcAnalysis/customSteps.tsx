@@ -84,10 +84,15 @@ export function hasSelectedABCEmotion(value: string): boolean {
 }
 
 export function getABCEmotionDisplayLabels(value: string): string {
-  return emotionSelectionStorage
+  const normalizedLabels = emotionSelectionStorage
     .deserialize(value)
-    .map((emotion) => normalizeABCEmotion(emotion)?.label ?? emotion)
-    .join(", ");
+    .map((emotion) => normalizeABCEmotion(emotion)?.label ?? emotion);
+
+  if (normalizedLabels.length > 0) {
+    return normalizedLabels.join(", ");
+  }
+
+  return value.trim();
 }
 
 const SHARED_TEXT_STEP_PROPS = {
