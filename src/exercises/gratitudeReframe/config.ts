@@ -120,20 +120,17 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
           options: [
             {
               value: "people",
-              label: "Someone who helped me",
-              description: "A person who showed up for you.",
+              label: "A person who showed up for me",
               iconKey: "people",
             },
             {
               value: "growth",
-              label: "Something steady in my life",
-              description: "Support you can rely on.",
+              label: "Something steady that supports me",
               iconKey: "growth",
             },
             {
               value: "simple",
-              label: "A small moment that helped today",
-              description: "A real moment that gave you something.",
+              label: "A small moment that helped me today",
               iconKey: "simple_joy",
             },
           ],
@@ -174,23 +171,6 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
         validate: (r) =>
           r.gratitudeEntries.length >= 1 &&
           r.gratitudeEntries.some((e) => e.trim().length >= 3),
-        ai: {
-          promptBuilder: (r) =>
-            `You are a gratitude journaling assistant. The user is reflecting on the prompt category "${r.selectedPrompt}". \n\nGenerate 3 distinct, specific, and realistic gratitude examples they could use for inspiration. Keep them short (1-2 sentences). Return as an array of objects with 'label' (the example text) and 'emoji'.`,
-          responseSchema: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                label: { type: "string" },
-                emoji: { type: "string" },
-              },
-              required: ["label", "emoji"],
-            },
-          },
-          maxResults: 3,
-          aiLoadingMessage: "Finding gratitude examples...",
-        },
       },
       {
         id: "reevaluate",
