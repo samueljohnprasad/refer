@@ -8,6 +8,7 @@ import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { ChoiceStep } from "@/src/components/exercise/steps/ChoiceStep";
 import { MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
+import { GRATITUDE_REFRAME_PROMPTS } from "./promptMetadata";
 
 export const GRATITUDE_REFRAME_INITIAL: GratitudeReframeResponse = {
   currentMood: null,
@@ -16,32 +17,6 @@ export const GRATITUDE_REFRAME_INITIAL: GratitudeReframeResponse = {
   gratitudeEntries: [],
   finalMoodIntensity: 5,
 };
-
-export const GRATITUDE_REFRAME_PROMPTS = [
-  {
-    value: "people",
-    label: "A person who showed up for me",
-    iconKey: "people",
-  },
-  {
-    value: "growth",
-    label: "Something steady that supports me",
-    iconKey: "growth",
-  },
-  {
-    value: "simple",
-    label: "A small moment that helped me today",
-    iconKey: "simple_joy",
-  },
-] as const;
-
-export function getGratitudePromptLabel(selectedPrompt: string): string {
-  return (
-    GRATITUDE_REFRAME_PROMPTS.find(
-      (prompt) => prompt.value === selectedPrompt,
-    )?.label ?? selectedPrompt
-  );
-}
 
 function normalizeMoodScore(value: number | undefined): number | undefined {
   if (typeof value !== "number") return undefined;

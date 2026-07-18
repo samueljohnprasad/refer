@@ -16,7 +16,7 @@ import { Text } from "@/src/components/ui/Text";
 import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { DANGER, INK_SOFT, SAGE } from "@/lib/tokens";
-import { getGratitudePromptLabel } from "./config";
+import { getGratitudePromptLabel } from "./promptMetadata";
 import type {
   GratitudeReframeResponse,
   StepProps,
@@ -171,8 +171,10 @@ export function GratitudeReframeSummary({
         reframe_text: response.gratitudeEntries.join("\n"),
         reframe_label: "Gratitude reflection",
       });
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setCardSaved(true);
+      void Haptics.notificationAsync(
+        Haptics.NotificationFeedbackType.Success,
+      ).catch(() => undefined);
     } catch {
       setCardSaveError("Could not save this coping card. Try again.");
     } finally {

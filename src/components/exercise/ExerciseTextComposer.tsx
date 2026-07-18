@@ -520,11 +520,12 @@ function ListComposer(props: ListComposerProps) {
   const { transcribeAudio, isTranscribing } = useTranscribeAudio();
 
   const isRecording = recordingCurrentState === "recording";
-  const canAdd = value.trim().length > 0 && (!maxItems || items.length < maxItems);
+  const hasReachedMaxItems = maxItems !== undefined && items.length >= maxItems;
+  const canAdd = value.trim().length > 0 && !hasReachedMaxItems;
 
   const commitValue = (nextValue: string) => {
     const normalized = nextValue.trim();
-    if (!normalized || (maxItems && items.length >= maxItems)) return;
+    if (!normalized || hasReachedMaxItems) return;
     onAdd(normalized);
     setValue("");
     setVoiceError(null);
@@ -593,7 +594,7 @@ function ListComposer(props: ListComposerProps) {
         </View>
       ) : null}
 
-      {!readOnly ? (
+      {!readOnly && !hasReachedMaxItems ? (
         <>
           <ComposerShell
             value={value}
