@@ -4,6 +4,8 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { useRouter, Stack } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { Text } from "@/src/components/ui/Text";
+import { Host, Picker, Text as SwiftUIText, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
+import { pickerStyle, tag, tint, presentationDetents, presentationDragIndicator } from "@expo/ui/swift-ui/modifiers";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft01Icon, BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
@@ -12,11 +14,18 @@ import { CopingCardItem } from "./CopingCardItem";
 import { useHeaderHeight } from "expo-router/react-navigation";
 
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
+import { IMessageStack } from "@/src/animations/imessage-stack";
 
 export const CopingCardsScreen: React.FC = () => {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<"active" | "archived">("active");
-  const [toastConfig, setToastConfig] = useState<{ id: string; visible: boolean } | null>(null);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [toastConfig, setToastConfig] = useState<{
+    id: string;
+    visible: boolean;
+    message?: string;
+    isRestore?: boolean;
+  } | null>(null);
   const headerHeight = useHeaderHeight();
   const { bottom: safeBottom } = useSafeAreaInsets();
 
@@ -37,14 +46,14 @@ export const CopingCardsScreen: React.FC = () => {
       await archiveCard(id);
       
       // Show toast
-      setToastConfig({ id, visible: true });
+      setToastConfig({ id, visible: true, message: "Card archived", isRestore: false });
       setTimeout(() => setToastConfig((p) => (p?.id === id ? null : p)), 4000);
     },
     [archiveCard],
   );
 
   const handleUndoArchive = useCallback(async () => {
-    if (toastConfig) {
+    if (toastConfig && !toastConfig.isRestore) {
       Haptics.selectionAsync();
       await unarchiveCard(toastConfig.id);
       setToastConfig(null);
@@ -53,8 +62,11 @@ export const CopingCardsScreen: React.FC = () => {
 
   const handleUnarchive = useCallback(
     async (id: string) => {
-      Haptics.selectionAsync();
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       await unarchiveCard(id);
+
+      setToastConfig({ id, visible: true, message: "Card restored to Active", isRestore: true });
+      setTimeout(() => setToastConfig((p) => (p?.id === id ? null : p)), 4000);
     },
     [unarchiveCard],
   );
@@ -65,12 +77,16 @@ export const CopingCardsScreen: React.FC = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: BRAND_CANVAS }}
+      style={{ flex: 1, backgroundColor: "#ffffff" }}
       edges={["bottom", "left", "right"]}
     >
       <Stack.Screen
         options={{
-          title: "My Coping Cards",
+          headerTitle: () => (
+            <Text variant="h2" className="text-ink">
+              My Coping Cards
+            </Text>
+          ),
           headerShown: true,
           headerBackButtonDisplayMode: "minimal",
           headerTransparent: true,
@@ -115,32 +131,55 @@ export const CopingCardsScreen: React.FC = () => {
         }
         ListHeaderComponent={
           !isLoading && !isError && (activeCards.length > 0 || archivedCards.length > 0) ? (
-            <View className="flex-row p-1 bg-brand-surface rounded-xl mb-6 self-start border" style={{ borderColor: BRAND_BORDER_STRONG }}>
-              <Pressable
-                onPress={() => setViewMode("active")}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: viewMode === "active" }}
-                className={`px-5 py-2 rounded-lg ${viewMode === "active" ? "bg-white" : "bg-transparent"}`}
-              >
-                <Text className={`text-[13px] font-bold tracking-wide ${viewMode === "active" ? "text-ink" : "text-ink-muted"}`}>
-                  Active
-                </Text>
-              </Pressable>
-              <Pressable
-                onPress={() => setViewMode("archived")}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: viewMode === "archived" }}
-                className={`px-5 py-2 rounded-lg ${viewMode === "archived" ? "bg-white" : "bg-transparent"}`}
-              >
-                <Text className={`text-[13px] font-bold tracking-wide ${viewMode === "archived" ? "text-ink" : "text-ink-muted"}`}>
-                  Archived
-                </Text>
-              </Pressable>
+            <View className="mb-5">
+              <View className="self-start mb-4">
+                <Host style={{ width: 210, height: 32 }}>
+                  <Picker
+                    modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                    selection={viewMode === "active" ? "Active" : "Archived"}
+                    onSelectionChange={(selection) => {
+                      if (typeof selection === "string") {
+                        if (selection === "Active") setViewMode("active");
+                        if (selection === "Archived") setViewMode("archived");
+                      }
+                    }}
+                  >
+                    <SwiftUIText modifiers={[tag("Active")]}>Active</SwiftUIText>
+                    <SwiftUIText modifiers={[tag("Archived")]}>Archived</SwiftUIText>
+                  </Picker>
+                </Host>
+              </View>
+
+              {viewMode === "active" && activeCards.length > 0 && (
+                <Pressable
+                  onPress={() => setIsReviewOpen(true)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Start flashcard review session"
+                  className="bg-sage-100/70 border border-sage-300/80 rounded-2xl p-4 mb-1 flex-row items-center justify-between active:opacity-85"
+                >
+                  <View className="flex-row items-center gap-3.5 flex-1 mr-2">
+                    <View className="w-11 h-11 rounded-full bg-sage-200/80 items-center justify-center">
+                      <Text className="text-[20px]">✨</Text>
+                    </View>
+                    <View className="flex-1">
+                      <Text variant="body-bold" className="text-ink text-[16px] mb-0.5">
+                        Review Reframes ({activeCards.length})
+                      </Text>
+                      <Text variant="caption" className="text-ink-soft text-[13px]">
+                        Practice your balanced thoughts in flashcard mode
+                      </Text>
+                    </View>
+                  </View>
+                  <View className="bg-sage-600 px-4 py-2.5 rounded-xl">
+                    <Text className="text-white font-semibold text-[13px]">Start</Text>
+                  </View>
+                </Pressable>
+              )}
             </View>
           ) : null
         }
         renderItem={({ item }) => (
-          <View className={item.archived ? "opacity-60" : ""}>
+          <View>
             <CopingCardItem
               card={item}
               onToggleStar={() => handleToggleStar(item.id)}
@@ -168,12 +207,44 @@ export const CopingCardsScreen: React.FC = () => {
             shadowOffset: { width: 0, height: 4 } 
           }}
         >
-          <Text className="text-white font-semibold">Card archived</Text>
-          <Pressable onPress={handleUndoArchive} hitSlop={12} className="active:opacity-60">
-            <Text className="text-sage-300 font-bold uppercase tracking-wider text-[13px]">Undo</Text>
-          </Pressable>
+          <Text className="text-white font-semibold">
+            {toastConfig.message || "Card archived"}
+          </Text>
+          {!toastConfig.isRestore && (
+            <Pressable onPress={handleUndoArchive} hitSlop={12} className="active:opacity-60">
+              <Text className="text-sage-300 font-bold uppercase tracking-wider text-[13px]">Undo</Text>
+            </Pressable>
+          )}
         </Animated.View>
       )}
+
+      {/* Short Flashcard Review Modal with IMessageStack Demo */}
+      <Host>
+        <BottomSheet
+          isPresented={isReviewOpen}
+          onIsPresentedChange={(val) => {
+            if (!val) setIsReviewOpen(false);
+          }}
+        >
+          <Group
+            modifiers={[
+              presentationDetents(["medium", "large"]),
+              presentationDragIndicator("visible"),
+            ]}
+          >
+            <RNHostView>
+              <SafeAreaView
+                edges={["bottom"]}
+                style={{ flex: 1, backgroundColor: "transparent" }}
+              >
+                <View className="flex-1 items-center justify-center bg-transparent py-4">
+                  <IMessageStack />
+                </View>
+              </SafeAreaView>
+            </RNHostView>
+          </Group>
+        </BottomSheet>
+      </Host>
     </SafeAreaView>
   );
 };
@@ -190,8 +261,8 @@ function EmptyState() {
         />
       </View>
       <Text
-        variant="h2"
-        className="text-[20px] font-extrabold text-ink text-center mb-2"
+        variant="h3"
+        className="text-[18px] font-bold text-ink text-center mb-2"
       >
         No coping cards yet
       </Text>
