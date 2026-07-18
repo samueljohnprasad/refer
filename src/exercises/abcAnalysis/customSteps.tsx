@@ -246,124 +246,37 @@ export function ABCBeliefStep(
   );
 }
 
-export function ABCConsequenceStep({
-  response,
-  onUpdate,
-  onNext,
-  onBack,
-  onClose,
-  canGoBack,
-  isValid,
-  progress,
-  stepIndex,
-  readOnly,
-  totalSteps,
-  aiSuggestions,
-  isAiLoading,
-}: StepProps<ABCAnalysisResponse>): React.JSX.Element {
-  const combinedEmotions = React.useMemo(() => {
-    if (aiSuggestions && aiSuggestions.length > 0) {
-      const result: SuggestionItem[] = [];
-      for (const s of (aiSuggestions as Array<{ emotion?: string }>)) {
-        if (s?.emotion?.trim()) {
-          result.push({ label: s.emotion.trim(), emoji: "✨" });
-        }
-      }
-      if (result.length > 0) return result;
-    }
-    return EMOTION_SUGGESTIONS;
-  }, [aiSuggestions]);
-
-  const combinedBehaviors = React.useMemo(() => {
-    if (aiSuggestions && aiSuggestions.length > 0) {
-      const result: SuggestionItem[] = [];
-      for (const s of (aiSuggestions as Array<{ behavior?: string }>)) {
-        if (s?.behavior?.trim()) {
-          result.push({ label: s.behavior.trim(), emoji: "✨" });
-        }
-      }
-      if (result.length > 0) return result;
-    }
-    return BEHAVIOR_SUGGESTIONS;
-  }, [aiSuggestions]);
+export function ABCConsequenceEmotionStep(
+  stepProps: StepProps<ABCAnalysisResponse>,
+): React.JSX.Element {
   return (
-    <StepLayout
-      title="What happened next?"
-      subtitle="Name the feeling and what you did right after that belief."
-      progress={progress}
-      stepIndex={stepIndex}
-      totalSteps={totalSteps}
-      canGoBack={canGoBack}
-      isValid={isValid || !!readOnly}
-      onBack={onBack}
-      onNext={readOnly ? onClose : onNext}
-      onClose={onClose}
-      nextLabel={readOnly ? "Done" : "Continue"}
-      scrollable
-    >
-      <View className="px-1">
-        <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">
-          Emotion
-        </Text>
-        <TextInput
-          placeholder="I felt..."
-          value={response.consequenceEmotion}
-          onChangeText={(value) => onUpdate({ consequenceEmotion: value })}
-          autoFocus={!readOnly}
-          editable={!readOnly}
-          className="bg-white rounded-2xl p-4 text-base text-slate-700 mb-4"
-          style={{ borderWidth: 2, borderColor: "#E2E8F0", minHeight: 52 }}
-          placeholderTextColor="#94A3B8"
-        />
+    <TextQuestionStep
+      title="How did you feel?"
+      subtitle="Name the feeling that followed the thought."
+      placeholder="I felt..."
+      value={stepProps.response.consequenceEmotion}
+      onChange={(value) => stepProps.onUpdate({ consequenceEmotion: value })}
+      suggestionTitle="Quick emotions"
+      suggestions={EMOTION_SUGGESTIONS}
+      stepProps={stepProps}
+    />
+  );
+}
 
-        {isAiLoading && (
-          <View className="flex-row items-center mb-4">
-            <ActivityIndicator size="small" color="#64748B" />
-            <Text className="text-[11px] text-slate-500 ml-2 uppercase tracking-wider">
-              Generating ideas…
-            </Text>
-          </View>
-        )}
-
-        {!readOnly && (!isAiLoading) ? (
-          <SuggestionCards
-            title={aiSuggestions?.length ? "AI Emotion Suggestions" : "Quick emotions"}
-            suggestions={combinedEmotions}
-            currentValue={response.consequenceEmotion}
-            onSelect={(value) => onUpdate({ consequenceEmotion: value })}
-          />
-        ) : null}
-
-        <Text className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2 mt-4">
-          Behavior
-        </Text>
-        <TextInput
-          placeholder="I responded by..."
-          value={response.consequenceBehavior}
-          onChangeText={(value) => onUpdate({ consequenceBehavior: value })}
-          editable={!readOnly}
-          multiline
-          className="bg-white rounded-2xl p-4 text-base text-slate-700 mb-4"
-          style={{
-            borderWidth: 2,
-            borderColor: "#E2E8F0",
-            minHeight: 96,
-            textAlignVertical: "top",
-            opacity: readOnly ? 0.7 : 1,
-          }}
-          placeholderTextColor="#94A3B8"
-        />
-
-        {!readOnly && (!isAiLoading) ? (
-          <SuggestionCards
-            title={aiSuggestions?.length ? "AI Behavior Suggestions" : "Common reactions"}
-            suggestions={combinedBehaviors}
-            currentValue={response.consequenceBehavior}
-            onSelect={(value) => onUpdate({ consequenceBehavior: value })}
-          />
-        ) : null}
-      </View>
-    </StepLayout>
+export function ABCConsequenceBehaviorStep(
+  stepProps: StepProps<ABCAnalysisResponse>,
+): React.JSX.Element {
+  return (
+    <TextQuestionStep
+      title="What did you do next?"
+      subtitle="Name the reaction that followed the feeling."
+      placeholder="I responded by..."
+      value={stepProps.response.consequenceBehavior}
+      onChange={(value) => stepProps.onUpdate({ consequenceBehavior: value })}
+      suggestionTitle="Common reactions"
+      suggestions={BEHAVIOR_SUGGESTIONS}
+      stepProps={stepProps}
+    />
   );
 }
 
@@ -520,4 +433,3 @@ export function ABCNewConsequenceStep(
     />
   );
 }
-

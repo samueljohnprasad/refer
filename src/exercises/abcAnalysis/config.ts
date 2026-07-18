@@ -6,7 +6,8 @@ import {
   ABCActivatingEventStep,
   ABCAlternativeBeliefStep,
   ABCBeliefStep,
-  ABCConsequenceStep,
+  ABCConsequenceBehaviorStep,
+  ABCConsequenceEmotionStep,
   ABCNewConsequenceStep,
 } from "./customSteps";
 import { ABCSummaryStep } from "./ABCSummaryStep";
@@ -42,15 +43,15 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       id: "intro",
       component: createStep(IntroStep, {
         title: "ABC Analysis",
-        subtitle:
-          "Understand the link between events, beliefs, and consequences.",
+        subtitle: "See how a moment, a thought, and a reaction connect.",
         exerciseType: "abc_analysis",
         duration: "7-10 min",
         bulletPoints: [
-          "Describe an activating event",
-          "Identify your automatic beliefs",
-          "Recognize emotional consequences",
-          "Challenge and replace negative beliefs",
+          "Name what happened",
+          "Catch the automatic thought",
+          "Notice the feeling and reaction",
+          "Try a more balanced thought",
+          "See what might change",
         ],
       }),
       label: "Welcome",
@@ -60,15 +61,15 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
     {
       id: "pre_emotional_intensity",
       component: createStep(SliderStep, {
-        title: "Before We Start",
-        subtitle: "How intense are your emotions about this event?",
+        title: "How intense does it feel?",
+        subtitle: "Before you unpack it, where is it right now?",
         fieldKey: "preEmotionalIntensity",
-        min: 1,
+        min: 0,
         max: 10,
         minLabel: "Mild",
         maxLabel: "Very intense",
       }),
-      label: "How intense are your emotions? (1-10)",
+      label: "How intense does it feel? (0-10)",
       validate: () => true,
     },
     {
@@ -105,7 +106,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
     {
       id: "belief",
       component: ABCBeliefStep,
-      label: "What did you tell yourself?",
+      label: "Automatic thought",
       validate: (r) => r.belief.trim().length >= 1,
       ai: {
         promptBuilder: (r) =>
@@ -123,21 +124,19 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       },
     },
     {
-      id: "consequence",
-      component: ABCConsequenceStep,
-      label: "Consequence (emotion + behavior)",
-      validate: (r) =>
-        r.consequenceEmotion.trim().length >= 1 &&
-        r.consequenceBehavior.trim().length >= 1,
+      id: "consequence_emotion",
+      component: ABCConsequenceEmotionStep,
+      label: "How did you feel?",
+      validate: (r) => r.consequenceEmotion.trim().length >= 1,
       ai: {
         promptBuilder: (r) =>
-          `You are a CBT therapist assistant. Based on this belief:\n"${r.belief}"\n\nGenerate 3 likely emotional and behavioral consequences the user might have experienced. Keep them brief.`,
+          `You are a CBT therapist assistant. Based on this belief:\n"${r.belief}"\n\nGenerate 3 likely emotions the user might have felt. Return emotions only. Keep them brief.`,
         responseSchema: {
           type: "array",
           items: {
             type: "object",
-            properties: { emotion: { type: "string" }, behavior: { type: "string" } },
-            required: ["emotion", "behavior"],
+            properties: { text: { type: "string" } },
+            required: ["text"],
           },
         },
         maxResults: 3,
@@ -145,9 +144,29 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
       },
     },
     {
+      id: "consequence_behavior",
+      component: ABCConsequenceBehaviorStep,
+      label: "What did you do next?",
+      validate: (r) => r.consequenceBehavior.trim().length >= 1,
+      ai: {
+        promptBuilder: (r) =>
+          `You are a CBT therapist assistant. Based on this belief:\n"${r.belief}"\n\nGenerate 3 likely reactions or behaviors the user might have had. Return reactions or behaviors only. Keep them brief.`,
+        responseSchema: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: { text: { type: "string" } },
+            required: ["text"],
+          },
+        },
+        maxResults: 3,
+        aiLoadingMessage: "Considering likely reactions...",
+      },
+    },
+    {
       id: "alternative_belief",
       component: ABCAlternativeBeliefStep,
-      label: "Alternative belief",
+      label: "More balanced thought",
       validate: (r) => r.alternativeBelief.trim().length >= 1,
       ai: {
         promptBuilder: (r) =>
@@ -170,7 +189,7 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
     {
       id: "new_consequence",
       component: ABCNewConsequenceStep,
-      label: "Predicted new consequence",
+      label: "What might change now?",
       validate: (r) => r.newConsequence.trim().length >= 1,
       ai: {
         promptBuilder: (r) =>
@@ -190,15 +209,15 @@ export const abcAnalysisConfig: ExerciseConfig<ABCAnalysisResponse> = {
     {
       id: "post_emotional_intensity",
       component: createStep(SliderStep, {
-        title: "After Reframing",
-        subtitle: "How intense are your emotions now?",
+        title: "How intense does it feel now?",
+        subtitle: "After looking at the chain, where is it now?",
         fieldKey: "postEmotionalIntensity",
-        min: 1,
+        min: 0,
         max: 10,
         minLabel: "Mild",
         maxLabel: "Very intense",
       }),
-      label: "How intense are your emotions now? (1-10)",
+      label: "How intense does it feel now? (0-10)",
       validate: () => true,
     },
     {
