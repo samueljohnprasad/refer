@@ -17,6 +17,32 @@ export const GRATITUDE_REFRAME_INITIAL: GratitudeReframeResponse = {
   finalMoodIntensity: 5,
 };
 
+export const GRATITUDE_REFRAME_PROMPTS = [
+  {
+    value: "people",
+    label: "A person who showed up for me",
+    iconKey: "people",
+  },
+  {
+    value: "growth",
+    label: "Something steady that supports me",
+    iconKey: "growth",
+  },
+  {
+    value: "simple",
+    label: "A small moment that helped me today",
+    iconKey: "simple_joy",
+  },
+] as const;
+
+export function getGratitudePromptLabel(selectedPrompt: string): string {
+  return (
+    GRATITUDE_REFRAME_PROMPTS.find(
+      (prompt) => prompt.value === selectedPrompt,
+    )?.label ?? selectedPrompt
+  );
+}
+
 function normalizeMoodScore(value: number | undefined): number | undefined {
   if (typeof value !== "number") return undefined;
   if (value > 10) return Math.min(Math.max(Math.round(value / 10), 0), 10);
@@ -117,23 +143,7 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
           fieldKey: "selectedPrompt",
           layoutVariant: "cbt_reflection" as const,
           showStepCount: false,
-          options: [
-            {
-              value: "people",
-              label: "A person who showed up for me",
-              iconKey: "people",
-            },
-            {
-              value: "growth",
-              label: "Something steady that supports me",
-              iconKey: "growth",
-            },
-            {
-              value: "simple",
-              label: "A small moment that helped me today",
-              iconKey: "simple_joy",
-            },
-          ],
+          options: [...GRATITUDE_REFRAME_PROMPTS],
         }),
         label: "Choose a gratitude prompt",
         validate: (r) => r.selectedPrompt.length > 0,

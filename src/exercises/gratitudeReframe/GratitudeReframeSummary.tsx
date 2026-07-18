@@ -16,23 +16,23 @@ import { Text } from "@/src/components/ui/Text";
 import { EXERCISE_LINKING_MAP } from "@/src/data/exerciseLinkingMap";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
 import { DANGER, INK_SOFT, SAGE } from "@/lib/tokens";
+import { getGratitudePromptLabel } from "./config";
 import type {
   GratitudeReframeResponse,
   StepProps,
 } from "@/src/types/exerciseFlow";
 
-const PROMPT_MAP: Record<string, string> = {
-  people: "Someone who helped me recently",
-  growth: "Something I learned this week",
-  simple: "A small thing that made me smile",
-};
-
-function getShiftInterpretation(pre: number, post: number): string {
-  if (post > pre) return "Your mood lifted after naming what mattered.";
+export function getMoodShiftInterpretation(
+  pre: number,
+  post: number,
+): string {
   if (post === pre) {
     return "The feeling did not move much, but the record still matters.";
   }
-  return "The feeling stayed heavy. Naming support is still useful.";
+
+  return post > pre
+    ? "Your mood intensity felt stronger after naming what mattered."
+    : "Your mood intensity eased after naming what mattered.";
 }
 
 function SaveCopingCardAction({
@@ -136,7 +136,7 @@ export function GratitudeReframeSummary({
   const [cardSaveError, setCardSaveError] = useState<string | null>(null);
 
   const promptLabel = response.selectedPrompt
-    ? (PROMPT_MAP[response.selectedPrompt] ?? "Reflection")
+    ? getGratitudePromptLabel(response.selectedPrompt)
     : "Reflection";
   const sections = useMemo<readonly RecapSection[]>(
     () => [
@@ -189,7 +189,7 @@ export function GratitudeReframeSummary({
           style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
           className="text-[14px] leading-[20px]"
         >
-          {getShiftInterpretation(
+          {getMoodShiftInterpretation(
             response.moodIntensity,
             response.finalMoodIntensity,
           )}

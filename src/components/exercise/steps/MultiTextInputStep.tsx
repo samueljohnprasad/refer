@@ -135,7 +135,7 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
               onRemove={removeItem}
               placeholder={placeholder}
               maxItems={maxItems}
-              readOnly={readOnly || items.length >= maxItems}
+              readOnly={readOnly}
               minHeight={composerMinHeight}
             />
           </View>
