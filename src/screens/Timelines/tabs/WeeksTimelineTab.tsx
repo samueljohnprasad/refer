@@ -64,7 +64,11 @@ const MOCK_TIMELINE_DATA = [
   }
 ];
 
-export const WeeksTimelineTab = () => {
+export interface TimelineTabProps {
+  onOpenModal?: () => void;
+}
+
+export const WeeksTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const [page, setPage] = useState(1);
   const { data, isLoading, isFetching, isError } = useGetWeeklyTimelineQuery({ page, pageSize: 10 });
   const [generateInsight] = useGenerateWeeklyInsightMutation();
@@ -137,7 +141,7 @@ export const WeeksTimelineTab = () => {
     
     if (item.aiInsight) {
       // Reusing DailyInsightCard as the structure is currently identical
-      return <DailyInsightCard insight={item.aiInsight} />;
+      return <DailyInsightCard insight={item.aiInsight} onPress={onOpenModal} />;
     }
     
     return (

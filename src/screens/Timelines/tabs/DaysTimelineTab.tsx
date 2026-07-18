@@ -256,7 +256,11 @@ const MOCK_TIMELINE_DATA = [
   }
 ];
 
-export const DaysTimelineTab = () => {
+export interface TimelineTabProps {
+  onOpenModal?: () => void;
+}
+
+export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const [page, setPage] = useState(1);
   const { data, isLoading, isFetching, isError } = useGetDailyTimelineQuery({ page, pageSize: 10 });
   const [generateInsight] = useGenerateDailyInsightMutation();
@@ -312,7 +316,7 @@ export const DaysTimelineTab = () => {
     }
     
     if (item.aiInsight) {
-      return <DailyInsightCard insight={item.aiInsight} />;
+      return <DailyInsightCard insight={item.aiInsight} onPress={onOpenModal} />;
     }
     
     return <GenerateInsightCard onPress={() => handleGenerate(item.originalDateString)} />;
