@@ -31,8 +31,8 @@ export function getMoodShiftInterpretation(
   }
 
   return post > pre
-    ? "Your mood intensity felt stronger after naming what mattered."
-    : "Your mood intensity eased after naming what mattered.";
+    ? "Your mood intensity was higher after naming what mattered."
+    : "Your mood intensity was lower after naming what mattered.";
 }
 
 function SaveCopingCardAction({

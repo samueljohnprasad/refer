@@ -48,12 +48,12 @@ describe("GratitudeReframeSummary", () => {
     Haptics.notificationAsync.mockReset();
   });
 
-  it("describes lower intensity as easing", () => {
-    expect(getMoodShiftInterpretation(8, 4)).toContain("eased");
+  it("describes lower intensity neutrally", () => {
+    expect(getMoodShiftInterpretation(8, 4)).toContain("was lower");
   });
 
-  it("describes higher intensity as stronger", () => {
-    expect(getMoodShiftInterpretation(4, 8)).toContain("stronger");
+  it("describes higher intensity neutrally", () => {
+    expect(getMoodShiftInterpretation(4, 8)).toContain("was higher");
   });
 
   it("keeps unchanged intensity neutral", () => {

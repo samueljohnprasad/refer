@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   LayoutChangeEvent,
@@ -137,6 +137,8 @@ function ComposerShell({
   footer,
   isRecording = false,
   isTranscribing = false,
+  maxLength,
+  submitBehavior,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -149,6 +151,8 @@ function ComposerShell({
   footer?: React.ReactNode;
   isRecording?: boolean;
   isTranscribing?: boolean;
+  maxLength?: number;
+  submitBehavior?: "submit" | "newline";
 }) {
   const [isFocused, setIsFocused] = useState(false);
   const [dimensions, setDimensions] = useState<{
@@ -283,6 +287,8 @@ function ComposerShell({
             multiline
             editable={!readOnly && !isTranscribing}
             blurOnSubmit={blurOnSubmit}
+            maxLength={maxLength}
+            submitBehavior={submitBehavior}
           />
           {footer ? <View style={styles.footerContainer}>{footer}</View> : null}
         </View>
@@ -517,8 +523,10 @@ function ListComposer(props: ListComposerProps) {
   } = props;
   const [value, setValue] = useState("");
   const [voiceError, setVoiceError] = useState<string | null>(null);
-  const { recordingCurrentState, record, stopRecording } = useAudioRecording();
+  const { recordedStatus, recordingCurrentState, record, stopRecording } =
+    useAudioRecording();
   const { transcribeAudio, isTranscribing } = useTranscribeAudio();
+  const processedRecordingUrlRef = useRef<string | null>(null);
 
   const isRecording = recordingCurrentState === "recording";
   const hasReachedMaxItems = maxItems !== undefined && items.length >= maxItems;
@@ -526,11 +534,47 @@ function ListComposer(props: ListComposerProps) {
 
   const commitValue = (nextValue: string) => {
     const normalized = nextValue.trim();
-    if (!normalized || hasReachedMaxItems) return;
-    onAdd(normalized);
+    const boundedValue =
+      typeof maxLength === "number" ? normalized.slice(0, maxLength) : normalized;
+    if (!boundedValue || hasReachedMaxItems) return;
+    onAdd(boundedValue);
     setValue("");
     setVoiceError(null);
   };
+
+  useEffect(() => {
+    const uri = recordedStatus?.url;
+    if (
+      !recordedStatus?.isFinished ||
+      !uri ||
+      processedRecordingUrlRef.current === uri
+    ) {
+      return;
+    }
+
+    processedRecordingUrlRef.current = uri;
+    let cancelled = false;
+
+    const transcribeFinishedRecording = async () => {
+      try {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        const result = await transcribeAudio(uri);
+        if (!cancelled && result?.transcript) {
+          commitValue(result.transcript);
+        }
+      } catch {
+        if (!cancelled) {
+          setVoiceError("Voice note unavailable. You can type this item instead.");
+        }
+      }
+    };
+
+    void transcribeFinishedRecording();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [recordedStatus, transcribeAudio]);
 
   const handleToggleRecording = async () => {
     setVoiceError(null);
@@ -540,6 +584,7 @@ function ListComposer(props: ListComposerProps) {
         const recorderState = await stopRecording();
         const uri = recorderState?.url;
         if (uri) {
+          processedRecordingUrlRef.current = uri;
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           const result = await transcribeAudio(uri);
           if (result?.transcript) {
@@ -595,7 +640,7 @@ function ListComposer(props: ListComposerProps) {
         </View>
       ) : null}
 
-      {!readOnly && !hasReachedMaxItems ? (
+      {!readOnly && (!hasReachedMaxItems || isRecording || isTranscribing) ? (
         <>
           <ComposerShell
             value={value}
@@ -610,11 +655,13 @@ function ListComposer(props: ListComposerProps) {
             onSubmitEditing={() => commitValue(value)}
             isRecording={isRecording}
             isTranscribing={isTranscribing}
+            maxLength={maxLength}
+            submitBehavior="submit"
             footer={
               <View style={styles.footer}>
                 <Pressable
                   onPress={handleToggleRecording}
-                  disabled={isTranscribing}
+                  disabled={isTranscribing || (hasReachedMaxItems && !isRecording)}
                   accessibilityRole="button"
                   accessibilityLabel={
                     isRecording ? "Stop recording item" : "Start voice input"
@@ -643,16 +690,16 @@ function ListComposer(props: ListComposerProps) {
 
                 <Pressable
                   onPress={() => commitValue(value)}
-                  disabled={!canAdd}
+                  disabled={!canAdd || isRecording}
                   accessibilityRole="button"
                   accessibilityLabel="Add item"
-                  accessibilityState={{ disabled: !canAdd }}
+                  accessibilityState={{ disabled: !canAdd || isRecording }}
                   style={({ pressed }) => [
                     styles.inlineActionButton,
                     {
-                      backgroundColor: canAdd ? SAGE[500] : SAGE[50],
-                      borderColor: canAdd ? SAGE[500] : SAGE[100],
-                      opacity: canAdd ? 1 : 0.62,
+                      backgroundColor: canAdd && !isRecording ? SAGE[500] : SAGE[50],
+                      borderColor: canAdd && !isRecording ? SAGE[500] : SAGE[100],
+                      opacity: canAdd && !isRecording ? 1 : 0.62,
                     },
                     pressed && styles.pressed,
                   ]}
@@ -660,12 +707,14 @@ function ListComposer(props: ListComposerProps) {
                   <HugeiconsIcon
                     icon={Add01Icon}
                     size={18}
-                    color={canAdd ? BRAND_SURFACE : SAGE[500]}
+                    color={canAdd && !isRecording ? BRAND_SURFACE : SAGE[500]}
                     strokeWidth={2}
                   />
                   <Text
                     className="ml-2 text-[14px] font-bold"
-                    style={{ color: canAdd ? BRAND_SURFACE : SAGE[500] }}
+                    style={{
+                      color: canAdd && !isRecording ? BRAND_SURFACE : SAGE[500],
+                    }}
                   >
                     {addLabel}
                   </Text>

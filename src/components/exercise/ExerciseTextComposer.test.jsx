@@ -87,6 +87,7 @@ describe("ExerciseTextComposer", () => {
     });
 
     const input = renderer.root.findByType(TextInput);
+    expect(input.props.submitBehavior).toBe("submit");
     act(() => {
       input.props.onChangeText("Typed item");
     });
@@ -113,6 +114,7 @@ describe("ExerciseTextComposer", () => {
     });
 
     const input = renderer.root.findByType(TextInput);
+    expect(input.props.maxLength).toBe(5);
     act(() => {
       input.props.onChangeText("Hello");
     });
