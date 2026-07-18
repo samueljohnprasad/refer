@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { View, ScrollView, Text } from "react-native";
+import { View } from "react-native";
 import { Stack } from "expo-router";
-import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
-import { pickerStyle, tag, tint } from "@expo/ui/swift-ui/modifiers";
+import { Host, Picker, Text as SwiftUIText, BottomSheet } from "@expo/ui/swift-ui";
+import { pickerStyle, tag, tint, presentationDetents, presentationDragIndicator } from "@expo/ui/swift-ui/modifiers";
 import { SAGE } from "@/lib/tokens";
+import { IMessageStack } from "@/src/animations/imessage-stack";
 
 import { DaysTimelineTab } from "@/src/screens/Timelines/tabs/DaysTimelineTab";
 import { WeeksTimelineTab } from "@/src/screens/Timelines/tabs/WeeksTimelineTab";
@@ -13,6 +14,7 @@ export default function TimelinesScreen() {
   const [activeTab, setActiveTab] = useState<"days" | "weeks" | "months">(
     "days",
   );
+  const [isStackModalOpen, setIsStackModalOpen] = useState(false);
 
   const handleSelectionChange = (selection: unknown) => {
     if (typeof selection === "string") {
@@ -24,6 +26,10 @@ export default function TimelinesScreen() {
 
   const selectedLabel =
     activeTab === "days" ? "Days" : activeTab === "weeks" ? "Weeks" : "Months";
+
+  const handleOpenModal = () => {
+    setIsStackModalOpen(true);
+  };
 
   return (
     <View className="flex-1 bg-brand-surface">
@@ -49,10 +55,25 @@ export default function TimelinesScreen() {
         }}
       />
       <View className="flex-1">
-        {activeTab === "days" && <DaysTimelineTab />}
-        {activeTab === "weeks" && <WeeksTimelineTab />}
-        {activeTab === "months" && <MonthsTimelineTab />}
+        {activeTab === "days" && <DaysTimelineTab onOpenModal={handleOpenModal} />}
+        {activeTab === "weeks" && <WeeksTimelineTab onOpenModal={handleOpenModal} />}
+        {activeTab === "months" && <MonthsTimelineTab onOpenModal={handleOpenModal} />}
       </View>
+
+      <Host>
+        <BottomSheet
+          isPresented={isStackModalOpen}
+          onIsPresentedChange={setIsStackModalOpen}
+          modifiers={[
+            presentationDetents(["medium", "large"]),
+            presentationDragIndicator("visible"),
+          ]}
+        >
+          <View style={{ flex: 1, backgroundColor: "transparent", justifyContent: "center", alignItems: "center" }}>
+            <IMessageStack />
+          </View>
+        </BottomSheet>
+      </Host>
     </View>
   );
 }
