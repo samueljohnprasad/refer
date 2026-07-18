@@ -210,11 +210,28 @@ export const ThoughtRecordRecap: React.FC<ThoughtRecordRecapProps> = React.memo(
                 <ReflectionTimelineItem
                   key={section.label}
                   label={section.label}
-                  isLast={index === recordSections.length - 1}
+                  isLast={
+                    index === recordSections.length - 1 && !hasScore
+                  }
                 >
                   <RecapSectionContent section={section} />
                 </ReflectionTimelineItem>
               ))}
+
+              {recordSections.length > 0 && hasScore ? (
+                <ReflectionTimelineItem label={scoreLabel} isLast>
+                  {hasShift ? (
+                    <ReflectionScoreShift
+                      before={preScore!}
+                      after={postScore!}
+                      label="Checked again"
+                      detail={scoreDetail}
+                    />
+                  ) : (
+                    <ScoreSnapshot score={preScore!} />
+                  )}
+                </ReflectionTimelineItem>
+              ) : null}
 
               {hasThoughtRecordTimeline && hasSituation ? (
                 <ReflectionTimelineItem
