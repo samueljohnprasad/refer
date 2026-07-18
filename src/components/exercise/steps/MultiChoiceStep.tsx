@@ -125,7 +125,9 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
                 accessibilityRole="checkbox"
                 accessibilityState={{ checked: isSelected }}
                 accessibilityLabel={opt.label}
-                className="rounded-xl px-4 py-3 flex-row items-center"
+                className={`rounded-xl flex-row items-center ${
+                  isCbtReflection ? "px-4 py-3" : "px-4 py-2.5"
+                }`}
                 style={{
                   backgroundColor: isCbtReflection
                     ? isSelected
@@ -168,7 +170,7 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
                   <Text className="mr-1.5">{opt.emoji}</Text>
                 ) : null}
                 <Text
-                  className="text-sm font-semibold"
+                  className={isCbtReflection ? "text-sm font-semibold" : "text-sm font-bold"}
                   style={{
                     color: isCbtReflection
                       ? isSelected
@@ -187,15 +189,26 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
         </View>
 
         {fallbackValueText ? (
-          <Text
-            className={
-              isCbtReflection
-                ? "text-xs text-sage-700 mt-3"
-                : "text-xs text-slate-400 mt-3"
-            }
-          >
-            Saved answer: {fallbackValueText}
-          </Text>
+          <View className="mt-3 gap-1.5">
+            <Text
+              className={
+                isCbtReflection
+                  ? "text-xs text-sage-700"
+                  : "text-xs text-slate-400"
+              }
+            >
+              {selected.length}/{maxSelections} selected
+            </Text>
+            <Text
+              className={
+                isCbtReflection
+                  ? "text-xs text-sage-700"
+                  : "text-xs text-slate-400"
+              }
+            >
+              Saved answer also includes: {fallbackValueText}
+            </Text>
+          </View>
         ) : (
           <Text
             className={

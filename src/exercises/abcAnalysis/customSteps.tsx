@@ -64,30 +64,52 @@ function normalizeABCEmotion(value: string): MultiChoiceOption | undefined {
   return emotionOptionByNormalizedValue.get(value.trim().toLocaleLowerCase());
 }
 
-const emotionSelectionStorage = {
-  deserialize(value: unknown): string[] {
-    if (typeof value !== "string") return [];
+function splitABCEmotionTokens(value: unknown): string[] {
+  if (typeof value !== "string") return [];
 
-    return value
-      .split(",")
-      .map(normalizeABCEmotion)
-      .filter((emotion): emotion is MultiChoiceOption => Boolean(emotion))
-      .map((emotion) => emotion.value);
-  },
-  serialize(values: string[]): string {
-    return values.join(", ");
-  },
-};
+  return value
+    .split(",")
+    .map((emotion) => emotion.trim())
+    .filter(Boolean);
+}
+
+function getABCEmotionTokenState(value: unknown) {
+  const tokens = splitABCEmotionTokens(value);
+  const recognized: string[] = [];
+  const unrecognized: string[] = [];
+
+  tokens.forEach((token) => {
+    const normalized = normalizeABCEmotion(token);
+    if (normalized) {
+      recognized.push(normalized.value);
+      return;
+    }
+
+    unrecognized.push(token);
+  });
+
+  return { recognized, unrecognized };
+}
+
+function createEmotionSelectionStorage(value: string) {
+  const { unrecognized } = getABCEmotionTokenState(value);
+
+  return {
+    deserialize(rawValue: unknown): string[] {
+      return getABCEmotionTokenState(rawValue).recognized;
+    },
+    serialize(values: string[]): string {
+      return [...values, ...unrecognized].join(", ");
+    },
+  };
+}
 
 export function hasSelectedABCEmotion(value: string): boolean {
-  return emotionSelectionStorage.deserialize(value).length > 0;
+  return splitABCEmotionTokens(value).length > 0;
 }
 
 export function getABCEmotionDisplayLabels(value: string): string {
-  const normalizedLabels = value
-    .split(",")
-    .map((emotion) => emotion.trim())
-    .filter(Boolean)
+  const normalizedLabels = splitABCEmotionTokens(value)
     .map((emotion) => normalizeABCEmotion(emotion)?.label ?? emotion);
 
   if (normalizedLabels.length > 0) {
@@ -143,12 +165,13 @@ export function ABCBeliefStep(
 export function ABCConsequenceEmotionStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
-  const fallbackValueText =
-    stepProps.response.consequenceEmotion.trim() &&
-    emotionSelectionStorage.deserialize(stepProps.response.consequenceEmotion)
-      .length === 0
-      ? stepProps.response.consequenceEmotion.trim()
-      : undefined;
+  const emotionSelectionStorage = createEmotionSelectionStorage(
+    stepProps.response.consequenceEmotion,
+  );
+  const { unrecognized } = getABCEmotionTokenState(
+    stepProps.response.consequenceEmotion,
+  );
+  const fallbackValueText = unrecognized.join(", ");
 
   return (
     <MultiChoiceStep
