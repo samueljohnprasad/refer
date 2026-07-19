@@ -111,44 +111,76 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
 
   return (
     <View className="gap-4 flex-1">
-      <LegendList
-        data={entries}
-        estimatedItemSize={200}
-        scrollEnabled={scrollEnabled}
-        onEndReached={onEndReached}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={ListFooterComponent}
-        contentContainerStyle={{ gap: 12, paddingBottom: 100 }}
-        keyExtractor={(item: JournalEntry, index: number) =>
-          item.id != null ? item.id.toString() : `${item.selected_date || "entry"}-${index}`
-        }
-        renderItem={({ item: entry, index }: { item: JournalEntry, index: number }) => (
-          <View
-            key={
-              entry.id != null
-                ? entry.id.toString()
-                : `${entry.selected_date || "entry"}-${index}`
-            }
-          >
-            {showDateHeaders && (
-              <Text variant="label" color="muted" className="mb-2">
-                {entry.selected_date
-                  ? `${format(parseISO(entry.selected_date), "MMM d, yyyy")} · ${format(parseISO(entry.selected_date), "EEE")}`
-                  : "No Date"}
-              </Text>
-            )}
-            <EntryCard
-              onDelete={deleteHandler}
-              entry={entry}
-              onPress={onEntryPress}
-              onBookmark={onBookmark}
-              showActions={showActions}
-              index={index}
-              isBookmarking={bookmarkingId === entry.id}
-            />
-          </View>
-        )}
-      />
+      {scrollEnabled ? (
+        <LegendList
+          data={entries}
+          estimatedItemSize={200}
+          scrollEnabled={scrollEnabled}
+          onEndReached={onEndReached}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={ListFooterComponent}
+          contentContainerStyle={{ gap: 12, paddingBottom: 100 }}
+          keyExtractor={(item: JournalEntry, index: number) =>
+            item.id != null ? item.id.toString() : `${item.selected_date || "entry"}-${index}`
+          }
+          renderItem={({ item: entry, index }: { item: JournalEntry, index: number }) => (
+            <View
+              key={
+                entry.id != null
+                  ? entry.id.toString()
+                  : `${entry.selected_date || "entry"}-${index}`
+              }
+            >
+              {showDateHeaders && (
+                <Text variant="label" color="muted" className="mb-2">
+                  {entry.selected_date
+                    ? `${format(parseISO(entry.selected_date), "MMM d, yyyy")} · ${format(parseISO(entry.selected_date), "EEE")}`
+                    : "No Date"}
+                </Text>
+              )}
+              <EntryCard
+                onDelete={deleteHandler}
+                entry={entry}
+                onPress={onEntryPress}
+                onBookmark={onBookmark}
+                showActions={showActions}
+                index={index}
+                isBookmarking={bookmarkingId === entry.id}
+              />
+            </View>
+          )}
+        />
+      ) : (
+        <View style={{ gap: 12, paddingBottom: 100 }}>
+          {entries.map((entry, index) => (
+            <View
+              key={
+                entry.id != null
+                  ? entry.id.toString()
+                  : `${entry.selected_date || "entry"}-${index}`
+              }
+            >
+              {showDateHeaders && (
+                <Text variant="label" color="muted" className="mb-2">
+                  {entry.selected_date
+                    ? `${format(parseISO(entry.selected_date), "MMM d, yyyy")} · ${format(parseISO(entry.selected_date), "EEE")}`
+                    : "No Date"}
+                </Text>
+              )}
+              <EntryCard
+                onDelete={deleteHandler}
+                entry={entry}
+                onPress={onEntryPress}
+                onBookmark={onBookmark}
+                showActions={showActions}
+                index={index}
+                isBookmarking={bookmarkingId === entry.id}
+              />
+            </View>
+          ))}
+          {ListFooterComponent}
+        </View>
+      )}
       <ConfirmationModal
         deleteEntry={deleteEntry}
         onDismiss={onDismiss}
