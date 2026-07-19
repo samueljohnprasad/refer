@@ -64,7 +64,7 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
     );
 
     return (
-      <View className="py-5">
+      <View className="py-5 px-5">
         {/* Quiet metadata header */}
         <View className="flex-row items-center justify-between mb-3.5">
           <View className="flex-row items-center gap-1.5">
