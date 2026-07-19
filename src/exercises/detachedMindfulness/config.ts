@@ -5,7 +5,7 @@ import type {
 import { createStep } from "@/src/components/exercise/steps/createStep";
 import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
-import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
+import {MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import { AcknowledgeStep } from "@/src/components/exercise/steps/AcknowledgeStep";
 import { CountdownTimerStep } from "@/src/components/exercise/steps/CountdownTimerStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
@@ -14,7 +14,7 @@ import { ChoiceStep } from "@/src/components/exercise/steps/ChoiceStep";
 const INITIAL: DetachedMindfulnessResponse = {
   observedThought: "",
   preRating: 5,
-  labelConfirmed: false,
+  labeledThought: "",
   attentionShiftCompleted: false,
   checkInRating: 5,
   repeatOrContinue: null,
@@ -69,7 +69,8 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
       },
       {
         id: "observe_thought",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+          maxItems: 1,
           title: "Notice a Thought",
           subtitle: "Write down a thought that keeps showing up.",
           fieldKey: "observedThought",
@@ -101,18 +102,17 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
       },
       {
         id: "label_it",
-        component: createStep(AcknowledgeStep, {
+        component: createStep(MultiTextInputStep, {
+          maxItems: 1,
           title: "Label It",
           subtitle: "Say to yourself:",
-          fieldKey: "labelConfirmed",
-          body: '"I notice I am having the thought that..."',
-          buttonLabel: "I've labeled it",
+          fieldKey: "labeledThought",
+          placeholder: '"I notice I am having the thought that..."',
           psychoeducationText:
             "Labelling a thought as 'a thought' weakens its grip. The thought doesn't change — your relationship to it does.",
         }),
         label: 'Label it: "I notice I am having the thought that..."',
-        validate: (r) => r.labelConfirmed,
-        hideFooter: true,
+        validate: (r) => r.labeledThought.trim().length >= 1,
       },
       {
         id: "attention_shift",

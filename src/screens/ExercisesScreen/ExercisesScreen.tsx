@@ -75,7 +75,7 @@ import {
   useCompletedExercisesCount,
   type HistoryLogItem,
 } from "./hooks/useCBTHistory";
-import { SuggestedExerciseCard } from "@/src/components/insights/SuggestedExerciseCard";
+import { useExerciseRecommendation } from "@/src/hooks/insights/useExerciseRecommendation";
 import { CBTHistoryTimeline } from "./components/CBTHistoryTimeline";
 import { TimelineSkeleton } from "../../../src/components/ui/Timeline/TimelineSkeleton";
 import { ExerciseTimeline } from "./components/ExerciseTimeline";
@@ -338,11 +338,13 @@ const SHELF_CARD_WIDTH = (SCREEN_WIDTH - CAROUSEL_PEEK * 2 - CAROUSEL_GAP * 2) /
 interface LayoutCardProps {
   exercise: ExerciseConfig<any>;
   onPress: (exercise: ExerciseConfig<any>) => void;
+  customSubtitle?: string;
 }
 
 const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
   exercise,
   onPress,
+  customSubtitle,
 }: LayoutCardProps): ReactElement {
   const icon = getExerciseIcon(exercise.type);
   const badgeTheme = getCategoryBadgeTheme(exercise.category);
@@ -384,7 +386,7 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
           {exercise.title}
         </Text>
         <Text style={[nutrieStyles.exerciseSubtitle, { color: "rgba(0,0,0,0.6)" }]} numberOfLines={2}>
-          {exercise.subtitle}
+          {customSubtitle ?? exercise.subtitle}
         </Text>
       </Pressable>
     </CircularRevealWrapper>
@@ -969,6 +971,7 @@ export default function ExercisesScreen(): ReactElement {
   const [activeTab, setActiveTab] = useState<TabKey>("discover");
   const [showMilestoneToast, setShowMilestoneToast] = useState(false);
   const params = useLocalSearchParams<{ tab?: string }>();
+  const recommendation = useExerciseRecommendation();
 
   const exerciseGroups = useMemo(() => getExercisesGrouped(), []);
   const reducedMotion = useReducedMotion();
@@ -1201,7 +1204,13 @@ export default function ExercisesScreen(): ReactElement {
           }}
           showsVerticalScrollIndicator={false}
         >
-          <SuggestedExerciseCard />
+          {recommendation && getExerciseConfig(recommendation.exerciseType) ? (
+            <FeaturedExerciseHero
+              exercise={getExerciseConfig(recommendation.exerciseType)!}
+              onPress={handleExercisePress}
+              customSubtitle={recommendation.reason}
+            />
+          ) : null}
           {exerciseGroups.length === 0 ? (
             <EmptyDiscoverState />
           ) : (

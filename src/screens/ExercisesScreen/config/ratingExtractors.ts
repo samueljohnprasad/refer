@@ -79,16 +79,6 @@ export const RATING_EXTRACTOR_MAP: Partial<
   },
 
   // ── Anxiety ─────────────────────────────────────────────────────────
-  worry_time: {
-    label: "Anxiety",
-    beforeKey: "preAnxietyRating",
-    afterKey: "postAnxietyRating",
-  },
-  fear_ladder: {
-    label: "Anxiety",
-    beforeKey: "anxietyBefore",
-    afterKey: "anxietyAfter",
-  },
   decatastrophizing: {
     label: "Anxiety",
     beforeKey: "anxietyBefore",
@@ -101,11 +91,6 @@ export const RATING_EXTRACTOR_MAP: Partial<
   },
 
   // ── Overthinking ────────────────────────────────────────────────────
-  recognizing_rumination: {
-    label: "Rumination",
-    beforeKey: "preRating",
-    afterKey: "postRating",
-  },
   detached_mindfulness: {
     label: "Distress",
     beforeKey: "preRating",

@@ -3,12 +3,11 @@ import type {
   DecatastrophizingResponse,
 } from "@/src/types/exerciseFlow";
 import { createStep } from "@/src/components/exercise/steps/createStep";
-import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
+import { DecatastrophizingSummary } from "./DecatastrophizingSummary";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
-import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
+import {MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { BalanceSliderStep } from "@/src/components/exercise/steps/BalanceSliderStep";
-import { AITextInputStep } from "@/src/components/exercise/steps/AITextInputStep";
 
 const INITIAL: DecatastrophizingResponse = {
   fearedCatastrophe: "",
@@ -82,7 +81,8 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
       },
       {
         id: "feared_catastrophe",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+        maxItems: 1,
           title: "The Fear",
           subtitle: "What catastrophe are you imagining?",
           fieldKey: "fearedCatastrophe",
@@ -113,7 +113,8 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
       },
       {
         id: "coping_plan",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+        maxItems: 1,
           title: "Coping Plan",
           subtitle: "If it did happen, how could you cope?",
           fieldKey: "copingPlan",
@@ -126,7 +127,7 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
       },
       {
         id: "most_likely_outcome",
-        component: createStep(AITextInputStep, {
+        component: createStep(MultiTextInputStep, {
           title: "Most Likely Outcome",
           subtitle: "What is most likely to actually happen?",
           fieldKey: "mostLikelyOutcome",
@@ -151,13 +152,12 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
       },
       {
         id: "perspective_1_week",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+        maxItems: 1,
           title: "In One Week",
           subtitle: "How will this situation look in 7 days?",
           fieldKey: "perspective1Week",
           placeholder: "In a week, this will probably...",
-          tipText:
-            "Most feared outcomes feel less urgent after just a few days.",
           validationMessage: "That's a useful perspective shift. Keep going.",
           psychoeducationText:
             "Anxiety narrows your time horizon to right now. Zooming out reveals that most threats shrink with time.",
@@ -167,7 +167,8 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
       },
       {
         id: "perspective_1_month",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+        maxItems: 1,
           title: "In One Month",
           subtitle: "What else will have happened by then?",
           fieldKey: "perspective1Month",
@@ -179,7 +180,8 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
       },
       {
         id: "perspective_1_year",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+        maxItems: 1,
           title: "In One Year",
           subtitle: "How much will this matter in the bigger picture?",
           fieldKey: "perspective1Year",
@@ -205,20 +207,11 @@ export const decatastrophizingConfig: ExerciseConfig<DecatastrophizingResponse> 
       },
       {
         id: "summary",
-        component: createDynamicSummaryStep({
-          title: "Fear put in perspective!",
-          celebrationEmoji: "🔭",
-          exerciseType: "decatastrophizing",
-          preScoreKey: "anxietyBefore",
-          postScoreKey: "anxietyAfter",
-          scoreLabel: "Anxiety level",
-          scoreMax: 10,
-          keyTakeawayKey: "copingPlan",
-          keyTakeawayLabel: "Your coping plan",
-        }),
+        component: DecatastrophizingSummary,
         label: "Summary",
         validate: () => true,
         excludeFromProgress: true,
+        hideHeader: true,
       },
     ],
   };

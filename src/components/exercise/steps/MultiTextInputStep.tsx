@@ -24,6 +24,17 @@ interface MultiTextInputStepProps extends StepProps {
   suggestionsTitle?: string;
   suggestionsHelperText?: string;
   suggestionsCollapsedByDefault?: boolean;
+  tipText?: string;
+  tipIcon?: string;
+  showVoice?: boolean;
+  alwaysShowVoice?: boolean;
+  composerGlow?: boolean;
+  showExamplesInitially?: boolean;
+  referenceQuote?: {
+    label: string;
+    text: string;
+  };
+  suggestions?: SuggestionItem[];
 }
 
 export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
@@ -57,13 +68,25 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     aiLoadingMessage,
     readOnly,
     autoFocus = true,
+    tipText,
+    tipIcon,
+    showVoice,
+    alwaysShowVoice,
+    composerGlow,
+    showExamplesInitially,
+    referenceQuote,
+    suggestions,
   }) => {
     const dispatch = useAppDispatch();
     const responseRecord = response as Record<string, unknown>;
     const responseItems = responseRecord[fieldKey];
+    
+    const isStringMode = typeof responseItems === "string";
+
     const items = Array.isArray(responseItems)
       ? responseItems.filter((item): item is string => typeof item === "string")
-      : [];
+      : (isStringMode && responseItems.trim() !== "" ? [responseItems] : []);
+
     const composerMinHeight = configuredComposerMinHeight ?? 100;
     const [showSuggestions, setShowSuggestions] = useState(
       !suggestionsCollapsedByDefault,
@@ -79,35 +102,55 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
         dispatch(setAssistantMessage(null));
       };
     }, [validationMessage, items.length, dispatch]);
+
     const addItem = (item: string) => {
       const trimmed = item.trim();
-      if (!trimmed || items.length >= maxItems) return;
-      onUpdate({ [fieldKey]: [...items, trimmed] } as Partial<typeof response>);
-    };
-
-    const removeItem = (index: number) => {
-      onUpdate({
-        [fieldKey]: items.filter((_, i) => i !== index),
-      } as Partial<typeof response>);
-    };
-
-    const handleSuggestionSelect = (text: string) => {
-      if (items.includes(text)) {
-        onUpdate({
-          [fieldKey]: items.filter((item) => item !== text),
-        } as Partial<typeof response>);
+      if (!trimmed) return;
+      
+      if (isStringMode || maxItems === 1) {
+        onUpdate({ [fieldKey]: trimmed } as Partial<typeof response>);
       } else {
         if (items.length >= maxItems) return;
-        onUpdate({ [fieldKey]: [...items, text] } as Partial<typeof response>);
+        onUpdate({ [fieldKey]: [...items, trimmed] } as Partial<typeof response>);
       }
     };
 
-    const mappedSuggestions: SuggestionItem[] = (aiSuggestions || []).map(
-      (suggestion) => ({
+    const removeItem = (index: number) => {
+      if (isStringMode || maxItems === 1) {
+        onUpdate({ [fieldKey]: "" } as Partial<typeof response>);
+      } else {
+        onUpdate({
+          [fieldKey]: items.filter((_, i) => i !== index),
+        } as Partial<typeof response>);
+      }
+    };
+
+    const handleSuggestionSelect = (text: string) => {
+      if (isStringMode || maxItems === 1) {
+        if (items.includes(text)) {
+          onUpdate({ [fieldKey]: "" } as Partial<typeof response>);
+        } else {
+          onUpdate({ [fieldKey]: text } as Partial<typeof response>);
+        }
+      } else {
+        if (items.includes(text)) {
+          onUpdate({
+            [fieldKey]: items.filter((item) => item !== text),
+          } as Partial<typeof response>);
+        } else {
+          if (items.length >= maxItems) return;
+          onUpdate({ [fieldKey]: [...items, text] } as Partial<typeof response>);
+        }
+      }
+    };
+
+    const mappedSuggestions: SuggestionItem[] = [
+      ...(suggestions || []),
+      ...(aiSuggestions || []).map((suggestion) => ({
         label: suggestion.text,
         emoji: suggestion.emoji,
-      }),
-    );
+      })),
+    ];
     const hasSuggestions = isAiLoading || mappedSuggestions.length > 0;
 
     return (
@@ -125,7 +168,12 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
         showStepCount={showStepCount}
         scrollable
       >
-        <PsychoeducationCard content={psychoeducationText ?? ""} />
+        {psychoeducationText ? (
+          <PsychoeducationCard content={psychoeducationText} />
+        ) : null}
+        {tipText ? (
+          <PsychoeducationCard content={tipText} />
+        ) : null}
 
         {(items.length > 0 || !readOnly) && (
           <View className="mt-2" style={{ zIndex: 10 }}>
@@ -144,9 +192,11 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
           </View>
         )}
 
-        <Text variant="caption" className="mt-2 text-ink-soft">
-          {items.length}/{maxItems} items{minItems > 0 ? ` (min ${minItems})` : ""}
-        </Text>
+        {maxItems > 1 && (
+          <Text variant="caption" className="mt-2 text-ink-soft">
+            {items.length}/{maxItems} items{minItems > 0 ? ` (min ${minItems})` : ""}
+          </Text>
+        )}
 
         {!readOnly && hasSuggestions ? (
           <ReflectionDisclosure

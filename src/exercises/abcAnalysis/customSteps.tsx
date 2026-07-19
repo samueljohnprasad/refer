@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { Text } from "@/components/ui/Text";
 import { StepLayout } from "@/src/components/exercise/steps/StepLayout";
-import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
+import {MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import type {
   ABCAnalysisResponse,
   StepProps,
@@ -129,7 +129,7 @@ export function ABCActivatingEventStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
   return (
-    <TextInputStep
+    <MultiTextInputStep maxItems={1} 
       {...stepProps}
       {...SHARED_TEXT_STEP_PROPS}
       title="What happened?"
@@ -147,7 +147,7 @@ export function ABCBeliefStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
   return (
-    <TextInputStep
+    <MultiTextInputStep maxItems={1} 
       {...stepProps}
       {...SHARED_TEXT_STEP_PROPS}
       title="Automatic thought"
@@ -259,7 +259,7 @@ export function ABCConsequenceBehaviorStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
   return (
-    <TextInputStep
+    <MultiTextInputStep maxItems={1} 
       {...stepProps}
       {...SHARED_TEXT_STEP_PROPS}
       title="What did you do next?"
@@ -276,7 +276,7 @@ export function ABCAlternativeBeliefStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
   return (
-    <TextInputStep
+    <MultiTextInputStep maxItems={1} 
       {...stepProps}
       {...SHARED_TEXT_STEP_PROPS}
       title="More balanced thought"
@@ -296,7 +296,7 @@ export function ABCNewConsequenceStep(
   stepProps: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
   return (
-    <TextInputStep
+    <MultiTextInputStep maxItems={1} 
       {...stepProps}
       {...SHARED_TEXT_STEP_PROPS}
       title="What might change now?"

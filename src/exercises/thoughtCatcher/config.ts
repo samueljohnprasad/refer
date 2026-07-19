@@ -8,7 +8,7 @@ import {
   ThoughtCatcherSummary,
 } from "./ThoughtCatcherSummary";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
-import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
+import {MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { ChoiceStep } from "@/src/components/exercise/steps/ChoiceStep";
 
@@ -79,7 +79,8 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
     },
     {
       id: "situation",
-      component: createStep(TextInputStep, {
+      component: createStep(MultiTextInputStep, {
+        maxItems: 1,
         title: "What happened?",
         subtitle: "Start with the moment, not what it meant.",
         fieldKey: "situation",
@@ -137,7 +138,8 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
     },
     {
       id: "automatic_thought",
-      component: createStep(TextInputStep, {
+      component: createStep(MultiTextInputStep, {
+        maxItems: 1,
         title: "Automatic thought",
         subtitle: "Write the sentence your mind added.",
         fieldKey: "automaticThought",
@@ -223,7 +225,7 @@ export const thoughtCatcherConfig: ExerciseConfig<ThoughtCatcherResponse> = {
     },
     {
       id: "balanced_thought",
-      component: createStep(TextInputStep, (props) => ({
+      component: createStep(MultiTextInputStep, (props) => ({
         title: "Balanced Thought",
         subtitle: "Rewrite the thought in a more balanced way.",
         fieldKey: "balancedThought",

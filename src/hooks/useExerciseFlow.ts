@@ -108,8 +108,10 @@ export function useExerciseFlow<T extends Record<string, any>>(
     const currentCountableIndex = countableSteps.findIndex(
       (s) => s.id === currentStepDef.id,
     );
-    if (currentCountableIndex < 0) return currentStepIndex / (steps.length - 1);
-    return currentCountableIndex / (countableSteps.length - 1);
+    if (currentCountableIndex < 0) {
+      return Math.max(0.08, currentStepIndex / (steps.length - 1));
+    }
+    return Math.max(0.08, currentCountableIndex / (countableSteps.length - 1));
   }, [steps, currentStepIndex, currentStepDef]);
 
   const canGoBack = readOnly ? false : currentStepIndex > 0;

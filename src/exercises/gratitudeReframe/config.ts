@@ -143,6 +143,7 @@ export const gratitudeReframeConfig: ExerciseConfig<GratitudeReframeResponse> =
       {
         id: "reflection",
         component: createStep(MultiTextInputStep, {
+        
           title: "Gratitude items",
           subtitle: "Write real things that mattered, even if they were small.",
           fieldKey: "gratitudeEntries",

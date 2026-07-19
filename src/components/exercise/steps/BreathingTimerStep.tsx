@@ -164,18 +164,14 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
         <View className="flex-1 justify-center items-center">
           {/* Animated breathing visual */}
           <Animated.View
-            className={`w-52 h-52 ${circleSize} items-center justify-center mb-8 border`}
+            className={`w-52 h-52 ${circleSize} items-center justify-center mb-8 border ${
+              completed
+                ? "bg-sage-100 border-sage-500"
+                : isRunning
+                  ? "bg-blue-50 border-blue-300"
+                  : "bg-brand-surface border-brand-border"
+            }`}
             style={{
-              backgroundColor: completed
-                ? "#D1FAE5"
-                : isRunning
-                  ? "#DDF4FF"
-                  : "#F8FAFC",
-              borderColor: completed
-                ? "#10B981"
-                : isRunning
-                  ? "#84D8FF"
-                  : "#E2E8F0",
               transform: [{ scale: scaleAnim }],
             }}
           >

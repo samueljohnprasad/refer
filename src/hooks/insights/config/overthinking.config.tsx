@@ -1,9 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import { Text } from "@/components/ui/Text";
-import { HorizontalBarChart } from "@/src/screens/InsightsScreen/components/HorizontalBarChart";
 import { BigStat } from "@/src/screens/InsightsScreen/components/BigStat";
-import { TRIGGER_LABELS } from "@/src/constants/insights";
 import type { DeepDiveConfig, DeepDiveComputedData } from "./types";
 
 export const overthinkingConfig: DeepDiveConfig = {
@@ -11,12 +9,6 @@ export const overthinkingConfig: DeepDiveConfig = {
   title: "Overthinking",
   color: "#5a7a56",
   fieldMappings: [
-    {
-      exerciseType: "recognizing_rumination",
-      preField: "preRating",
-      postField: "postRating",
-      direction: "pre_minus_post",
-    },
     {
       exerciseType: "detached_mindfulness",
       preField: "preRating",
@@ -47,21 +39,7 @@ export const overthinkingConfig: DeepDiveConfig = {
     },
   ],
   customAggregator: (entries) => {
-    const triggerCounts: Record<string, number> = {};
-    for (const entry of entries) {
-      if (entry.exercise_type === "recognizing_rumination") {
-        const theme = entry.response?.theme;
-        if (typeof theme === "string" && theme) {
-          triggerCounts[theme] = (triggerCounts[theme] || 0) + 1;
-        }
-      }
-    }
-    const ruminationTriggers = Object.entries(triggerCounts)
-      .map(([key, count]) => ({
-        trigger: TRIGGER_LABELS[key] || key.replace(/_/g, " "),
-        count,
-      }))
-      .sort((a, b) => b.count - a.count);
+    const ruminationTriggers: { trigger: string; count: number }[] = [];
 
     const detachmentCount = entries.filter(
       (e) => e.exercise_type === "detached_mindfulness",
@@ -73,23 +51,6 @@ export const overthinkingConfig: DeepDiveConfig = {
     return { ruminationTriggers, detachmentCount, attentionTrainingCount };
   },
   sections: [
-    {
-      key: "triggers",
-      title: "Rumination Triggers",
-      render: (data: DeepDiveComputedData) => {
-        const triggers = data.custom.ruminationTriggers as {
-          trigger: string;
-          count: number;
-        }[];
-        if (!triggers?.length) return null;
-        return (
-          <HorizontalBarChart
-            data={triggers.map((t) => ({ label: t.trigger, value: t.count }))}
-            barColor="#5a7a56"
-          />
-        );
-      },
-    },
     {
       key: "progress",
       title: "Your Progress",

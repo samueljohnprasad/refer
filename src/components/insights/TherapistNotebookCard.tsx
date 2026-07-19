@@ -41,7 +41,7 @@ function LockedNotebookCard({ onUnlock }: { onUnlock: () => void }) {
       <View className="flex-row items-center gap-2 mb-2">
         <Text className="text-[16px]">📓</Text>
         <HugeiconsIcon icon={LockIcon} size={14} color={INK_MUTED} />
-        <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3" className="mb-0">
+        <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-0">
           Therapist's Notebook
         </Text>
         <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>
@@ -182,7 +182,7 @@ export function TherapistNotebookCard() {
       <Pressable onPress={toggleExpand} className="active:opacity-80">
         <View className="flex-row items-center gap-2 mb-1">
           <Text className="text-[16px]">📓</Text>
-          <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3" className="mb-0">
+          <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-0">
             Therapist's Notebook
           </Text>
           <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>

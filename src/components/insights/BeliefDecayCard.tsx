@@ -124,7 +124,7 @@ export function BeliefDecayCard() {
   return (
     <View className="happy-brand-card rounded-[24px] p-5 mb-4" style={{ backgroundColor: "#FFFFFF" }}>
       <View className="flex-row items-center gap-2 mb-1">
-        <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3" className="mb-0">
+        <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-0">
           Belief Tracker
         </Text>
         <View className="flex-row items-center gap-1 px-2 py-1 rounded-[10px] border" style={[{ backgroundColor: "#F3E8FF", borderColor: "#D8B4FE" }]}>

@@ -1,20 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  LayoutChangeEvent,
   Pressable,
   StyleSheet,
   TextInput,
   TextInputSubmitEditingEvent,
   View,
 } from "react-native";
-import {
-  BlurMask,
-  Canvas,
-  RoundedRect,
-  SweepGradient,
-  vec,
-} from "@shopify/react-native-skia";
 import { Feather } from "@expo/vector-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -26,13 +18,11 @@ import {
 import Animated, {
   Easing,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
   withDelay,
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
-import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
 import * as Haptics from "expo-haptics";
 
 import useAudioRecording from "@/hooks/useAudioRecording";
@@ -59,9 +49,9 @@ type BaseComposerProps = {
   requirementVisible?: boolean;
   statusText?: string;
   statusVisible?: boolean;
-  glow?: boolean;
   readOnly?: boolean;
   autoFocus?: boolean;
+  glow?: boolean;
 };
 
 type SingleComposerProps = BaseComposerProps & {
@@ -158,51 +148,16 @@ function ComposerShell({
   autoFocus?: boolean;
 }) {
   const [isFocused, setIsFocused] = useState(false);
-  const [dimensions, setDimensions] = useState<{
-    width: number;
-    height: number;
-  } | null>(null);
-
-  const onLayout = (e: LayoutChangeEvent) => {
-    const { width, height } = e.nativeEvent.layout;
-    setDimensions({ width, height });
-  };
-
-  const rotation = useSharedValue(0);
-  const rotationSlow = useSharedValue(0);
-  const blurIntensity = useSharedValue(20);
+  const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    if (!glow) return;
-
-    const finalValue = 1e6;
-    const durationFast = (finalValue / (Math.PI * 2)) * 4000;
-    rotation.value = withTiming(finalValue, {
-      duration: durationFast,
-      easing: Easing.linear,
-    });
-
-    const durationSlow = (finalValue / (Math.PI * 2)) * 75000;
-    rotationSlow.value = withTiming(finalValue, {
-      duration: durationSlow,
-      easing: Easing.linear,
-    });
-  }, [glow, rotation, rotationSlow]);
-
-  const animatedRotation = useDerivedValue(() => {
-    "worklet";
-    return [{ rotate: rotation.value % (Math.PI * 2) }];
-  });
-
-  const animatedRotationSlow = useDerivedValue(() => {
-    "worklet";
-    return [{ rotate: rotationSlow.value % (Math.PI * 2) }];
-  });
-
-  const { progress: keyboardProgress } = useReanimatedKeyboardAnimation();
-
-  const strokeWidthTraveling = useDerivedValue(() => keyboardProgress.value * 1.8);
-  const strokeWidthGlow = useDerivedValue(() => keyboardProgress.value * 8);
+    if (autoFocus && !readOnly && !isTranscribing) {
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 450); // delay focus to avoid keyboard rising during screen transition
+      return () => clearTimeout(timer);
+    }
+  }, [autoFocus, readOnly, isTranscribing]);
 
   return (
     <View style={styles.container}>
@@ -212,72 +167,11 @@ function ComposerShell({
           isFocused && styles.inputWrapperFocused,
           isRecording && styles.inputWrapperRecording,
         ]}
-        onLayout={onLayout}
       >
-        {glow && dimensions ? (
-          <Canvas
-            style={{
-              position: "absolute",
-              top: -canvasPadding,
-              left: -canvasPadding,
-              width: dimensions.width + canvasPadding * 2,
-              height: dimensions.height + canvasPadding * 2,
-            }}
-          >
-            <RoundedRect
-              x={canvasPadding}
-              y={canvasPadding - glowHeightExpansion / 2}
-              width={dimensions.width}
-              height={dimensions.height + glowHeightExpansion}
-              r={borderRadius}
-              opacity={keyboardProgress}
-              strokeWidth={strokeWidthGlow}
-            >
-              <SweepGradient
-                transform={animatedRotationSlow}
-                origin={vec(
-                  canvasPadding + dimensions.width / 2,
-                  canvasPadding + dimensions.height / 2,
-                )}
-                c={vec(
-                  canvasPadding + dimensions.width / 2,
-                  canvasPadding + dimensions.height / 2,
-                )}
-                colors={glowGradientColors}
-                positions={glowPositions}
-              />
-              <BlurMask blur={blurIntensity} />
-            </RoundedRect>
-
-            <RoundedRect
-              x={canvasPadding}
-              y={canvasPadding}
-              width={dimensions.width}
-              height={dimensions.height}
-              r={borderRadius}
-              style="stroke"
-              opacity={keyboardProgress}
-              strokeWidth={strokeWidthTraveling}
-            >
-              <SweepGradient
-                transform={animatedRotation}
-                origin={vec(
-                  canvasPadding + dimensions.width / 2,
-                  canvasPadding + dimensions.height / 2,
-                )}
-                c={vec(
-                  canvasPadding + dimensions.width / 2,
-                  canvasPadding + dimensions.height / 2,
-                )}
-                colors={travelingColors}
-                positions={travelingPositions}
-              />
-            </RoundedRect>
-          </Canvas>
-        ) : null}
 
         <View style={styles.inputContainer}>
           <TextInput
+            ref={inputRef}
             style={[styles.input, { minHeight }]}
             value={value}
             onChangeText={onChange}
@@ -289,7 +183,7 @@ function ComposerShell({
             returnKeyType="send"
             multiline
             editable={!readOnly && !isTranscribing}
-            autoFocus={!readOnly && autoFocus}
+            autoFocus={false}
             blurOnSubmit={blurOnSubmit}
             maxLength={maxLength}
             submitBehavior={submitBehavior}
@@ -525,7 +419,6 @@ function ListComposer(props: ListComposerProps) {
     requirementVisible,
     statusText,
     statusVisible,
-    glow = false,
     autoFocus = true,
   } = props;
   const [value, setValue] = useState("");
@@ -658,7 +551,6 @@ function ListComposer(props: ListComposerProps) {
             }}
             placeholder={isRecording ? "Listening..." : placeholder}
             minHeight={minHeight}
-            glow={glow}
             autoFocus={autoFocus}
             onSubmitEditing={() => commitValue(value)}
             isRecording={isRecording}

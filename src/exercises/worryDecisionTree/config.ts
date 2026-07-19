@@ -5,9 +5,10 @@ import type {
 import { createStep } from "@/src/components/exercise/steps/createStep";
 import { createDynamicSummaryStep } from "@/src/components/exercise/steps/createDynamicSummaryStep";
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
-import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
-import { BooleanStep } from "@/src/components/exercise/steps/BooleanStep";
+import {MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
+import { ChoiceStep } from "@/src/components/exercise/steps/ChoiceStep";
+import { WorryTreeSummaryStep } from "./components/WorryTreeSummaryStep";
 
 const INITIAL: WorryDecisionTreeResponse = {
   worry: "",
@@ -67,7 +68,8 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
       },
       {
         id: "write_worry",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+        maxItems: 1,
           title: "Your Worry",
           subtitle: "Describe the worry that's on your mind.",
           fieldKey: "worry",
@@ -80,14 +82,25 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
       },
       {
         id: "can_I_act",
-        component: createStep(BooleanStep, {
+        component: createStep(ChoiceStep, {
           title: "Can You Act?",
           subtitle: "Is there something you can actually do about this worry?",
           fieldKey: "canAct",
-          yesLabel: "Yes, I can act",
-          noLabel: "No, I can't control this",
-          yesIconKey: "check",
-          noIconKey: "no",
+          options: [
+            {
+              value: "yes",
+              label: "I can act on this",
+              description: "This is within my control",
+              emoji: "🌱",
+            },
+            {
+              value: "no",
+              label: "I cannot control this",
+              description: "It's out of my hands",
+              emoji: "🍃",
+            }
+          ],
+          layoutVariant: "cbt_reflection" as const,
           psychoeducationText:
             "Around 80% of worries are about things outside our control. Sorting them is the first step to letting them go.",
         }),
@@ -98,7 +111,8 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
       },
       {
         id: "action_plan",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+        maxItems: 1,
           title: "Action Plan",
           subtitle: "What can you do about this?",
           fieldKey: "actionPlan",
@@ -110,7 +124,8 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
       },
       {
         id: "schedule_action",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+        maxItems: 1,
           title: "Schedule It",
           subtitle: "When will you take this action?",
           fieldKey: "scheduledAction",
@@ -122,7 +137,8 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
       },
       {
         id: "acceptance_exercise",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+        maxItems: 1,
           title: "Acceptance",
           subtitle: "Write an acceptance statement for this worry.",
           fieldKey: "acceptanceExercise",
@@ -148,16 +164,9 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
       },
       {
         id: "summary",
-        component: createDynamicSummaryStep({
-          title: "Worry processed!",
-          celebrationEmoji: "🌳",
-          exerciseType: "worry_decision_tree",
-          preScoreKey: "preAnxietyRating",
-          postScoreKey: "postAnxietyRating",
-          scoreLabel: "Anxiety level",
-          scoreMax: 10,
-          keyTakeawayKey: "actionPlan",
-          keyTakeawayLabel: "Your action plan",
+        component: createStep(WorryTreeSummaryStep, {
+          title: "Worry Processed",
+          subtitle: "Here is the path you took.",
         }),
         label: "Summary",
         validate: () => true,

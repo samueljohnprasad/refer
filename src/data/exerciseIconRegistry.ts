@@ -69,12 +69,9 @@ export const EXERCISE_ICON_REGISTRY: Record<ExerciseType, HugeIconObject> = {
   body_scan_pmr: SmileIcon,
   mindful_breathing_1min: Timer01Icon,
   // Anxiety
-  worry_time: WorryIcon,
-  fear_ladder: Road01Icon,
   decatastrophizing: CloudIcon,
   worry_decision_tree: PathIcon,
   // Overthinking
-  recognizing_rumination: EyeIcon,
   detached_mindfulness: Leaf01Icon,
   attention_training: HeadphonesIcon,
 };

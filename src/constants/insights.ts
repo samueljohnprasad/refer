@@ -40,11 +40,6 @@ export const PRE_POST_FIELDS: Partial<Record<ExerciseType, PrePostField>> = {
     post: "presenceRating",
     direction: "post_minus_pre",
   },
-  worry_time: {
-    pre: "preAnxietyRating",
-    post: "postAnxietyRating",
-    direction: "pre_minus_post",
-  },
   worry_decision_tree: {
     pre: "preAnxietyRating",
     post: "postAnxietyRating",
@@ -53,16 +48,6 @@ export const PRE_POST_FIELDS: Partial<Record<ExerciseType, PrePostField>> = {
   decatastrophizing: {
     pre: "anxietyBefore",
     post: "anxietyAfter",
-    direction: "pre_minus_post",
-  },
-  fear_ladder: {
-    pre: "anxietyBefore",
-    post: "anxietyAfter",
-    direction: "pre_minus_post",
-  },
-  recognizing_rumination: {
-    pre: "preRating",
-    post: "postRating",
     direction: "pre_minus_post",
   },
   detached_mindfulness: {
@@ -112,8 +97,6 @@ export const TRIGGER_LABELS: Record<string, string> = {
 };
 
 export const EXERCISE_LABELS: Partial<Record<ExerciseType, string>> = {
-  worry_time: "Worry Time",
-  fear_ladder: "Fear Ladder",
   decatastrophizing: "Decatastrophizing",
   worry_decision_tree: "Decision Tree",
   thought_reframing: "Thought Reframing",
@@ -123,7 +106,6 @@ export const EXERCISE_LABELS: Partial<Record<ExerciseType, string>> = {
   body_scan_pmr: "Body Scan",
   grounding_54321: "5-4-3-2-1 Grounding",
   mindful_breathing_1min: "Mindful Breathing",
-  recognizing_rumination: "Recognizing Rumination",
   detached_mindfulness: "Detached Mindfulness",
   attention_training: "Attention Training",
   abc_analysis: "ABC Analysis",

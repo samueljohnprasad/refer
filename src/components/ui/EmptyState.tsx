@@ -18,6 +18,7 @@ interface EmptyStateProps {
   onSecondaryButtonPress?: () => void;
   secondaryButtonIcon?: any;
   secondaryButtonLoading?: boolean;
+  containerClassName?: string;
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
@@ -32,9 +33,10 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   onSecondaryButtonPress,
   secondaryButtonIcon,
   secondaryButtonLoading,
+  containerClassName = "",
 }) => {
   return (
-    <View className="flex-1 items-center justify-center py-12 min-h-[400px]">
+    <View className={`flex-1 items-center justify-center py-12 min-h-[400px] ${containerClassName}`}>
       <View className="h-44 w-44 items-center justify-center rounded-[44px] border-0 mb-4">
         <Mascot state={mascotState} size={156} />
       </View>

@@ -23,25 +23,9 @@ export const EXERCISE_LINKING_MAP: Partial<Record<ExerciseType, ExerciseLink>> =
       exerciseType: "thought_reframing",
       label: "Challenge further → Thought Reframing",
     },
-    decatastrophizing: {
-      exerciseType: "fear_ladder",
-      label: "Face it gradually → Fear Ladder",
-    },
-    worry_time: {
-      exerciseType: "worry_decision_tree",
-      label: "Sort each worry → Worry Decision Tree",
-    },
     worry_decision_tree: {
       exerciseType: "detached_mindfulness",
       label: "Let it go → Detached Mindfulness",
-    },
-    fear_ladder: {
-      exerciseType: "decatastrophizing",
-      label: "Challenge the outcome → Decatastrophizing",
-    },
-    recognizing_rumination: {
-      exerciseType: "attention_training",
-      label: "Train your focus → Attention Training",
     },
     detached_mindfulness: {
       exerciseType: "attention_training",

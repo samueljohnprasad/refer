@@ -13,12 +13,8 @@ export const EXERCISE_CATEGORY_MAP: Record<ExerciseType, ExerciseCategory> = {
   body_scan_pmr: "mindfulness",
   mindful_breathing_1min: "mindfulness",
   // Anxiety
-  worry_time: "anxiety",
-  fear_ladder: "anxiety",
   decatastrophizing: "anxiety",
   worry_decision_tree: "anxiety",
-  // Overthinking
-  recognizing_rumination: "overthinking",
   detached_mindfulness: "overthinking",
   attention_training: "overthinking",
 };

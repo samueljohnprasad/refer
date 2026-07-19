@@ -26,7 +26,7 @@ import type {
 } from "@/src/types/exerciseFlow";
 import { useSingleExerciseEntry } from "@/src/hooks/useSingleExerciseEntry";
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
-import { SharedElement } from "@/src/components/ui/SharedTransition";
+
 
 // ─── Animated step transition wrapper ────────────────────────────────────────
 
@@ -332,10 +332,9 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const onPrimaryPress = readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext;
 
   return (
-    <SharedElement.Content delay={150} style={{ flex: 1 }}>
-      <LessonScreen
-        className="flex-1"
-        style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
+    <LessonScreen
+      className="flex-1"
+      style={{ backgroundColor: config.backgroundColor ?? "#FFFFFF" }}
       hideHeader={currentStep?.hideHeader || readOnly}
       hideFooter={currentStep?.hideFooter}
       progress={flow.progress}
@@ -353,8 +352,6 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       secondaryLabel={readOnly ? undefined : isFinalStep ? (currentStep?.secondaryLabel || "Edit answers") : (flow.canGoBack ? "Back" : undefined)}
       onSecondaryPress={flow.canGoBack ? flow.goBack : undefined}
     >
-
-
       <AnimatedStepContainer
         stepIndex={flow.currentStepIndex}
         className="pb-4"
@@ -366,9 +363,8 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
             <Text className="text-slate-400">Unknown step</Text>
           </View>
         )}
-        </AnimatedStepContainer>
-      </LessonScreen>
-    </SharedElement.Content>
+      </AnimatedStepContainer>
+    </LessonScreen>
   );
 };
 

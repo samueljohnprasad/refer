@@ -67,6 +67,7 @@ export const grounding54321Config: ExerciseConfig<Grounding54321Response> = {
     {
       id: "see_5",
       component: createStep(MultiTextInputStep, {
+        
         title: "5 Things You See",
         subtitle: "Look around and name 5 things you can see right now.",
         fieldKey: "see",
@@ -80,6 +81,7 @@ export const grounding54321Config: ExerciseConfig<Grounding54321Response> = {
     {
       id: "touch_4",
       component: createStep(MultiTextInputStep, {
+        
         title: "4 Things You Can Touch",
         subtitle: "Reach out and name 4 things you can feel.",
         fieldKey: "touch",
@@ -93,6 +95,7 @@ export const grounding54321Config: ExerciseConfig<Grounding54321Response> = {
     {
       id: "hear_3",
       component: createStep(MultiTextInputStep, {
+        
         title: "3 Things You Hear",
         subtitle: "Listen carefully and name 3 sounds.",
         fieldKey: "hear",
@@ -106,6 +109,7 @@ export const grounding54321Config: ExerciseConfig<Grounding54321Response> = {
     {
       id: "smell_2",
       component: createStep(MultiTextInputStep, {
+        
         title: "2 Things You Smell",
         subtitle: "Notice 2 scents around you.",
         fieldKey: "smell",
@@ -119,12 +123,12 @@ export const grounding54321Config: ExerciseConfig<Grounding54321Response> = {
     {
       id: "taste_1",
       component: createStep(MultiTextInputStep, {
+        
         title: "1 Thing You Taste",
         subtitle: "Notice one taste in your mouth.",
         fieldKey: "taste",
         placeholder: "I can taste...",
         minItems: 1,
-        maxItems: 1,
       }),
       label: "Name 1 thing you can taste",
       validate: (r) => r.taste.length >= 1,

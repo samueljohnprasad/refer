@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
+import { Button } from "@/src/components/ui/Button";
 import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
@@ -52,37 +53,24 @@ export const AcknowledgeStep: React.FC<AcknowledgeStepProps> = React.memo(
           <PsychoeducationCard content={psychoeducationText ?? ""} />
 
           <View
-            className="bg-slate-50 rounded-xl p-5 mb-6"
-            style={{ borderWidth: 1, borderColor: "#E2E8F0" }}
+            className="bg-brand-surface rounded-2xl p-6 mb-8 border border-brand-border"
           >
-            <Text className="text-sm text-slate-700 leading-relaxed">
+            <Text className="text-base text-ink leading-relaxed font-medium text-center">
               {body}
             </Text>
           </View>
 
-          <Pressable
+          <Button
+            label={acknowledged ? `✓  ${buttonLabel}` : buttonLabel}
             onPress={() => {
               onUpdate({ [fieldKey]: true } as any);
-              setTimeout(onNext, 200);
+              setTimeout(onNext, 400);
             }}
             disabled={acknowledged}
-            accessibilityRole="button"
-            accessibilityLabel={buttonLabel}
-            className="h-12 rounded-xl items-center justify-center active:opacity-90"
-            style={{
-              backgroundColor: acknowledged ? "#D1FAE5" : "#F8FAFC",
-              borderWidth: 2,
-              borderColor: acknowledged ? "#58CC02" : "#E2E8F0",
-            }}
-          >
-            <Text
-              className="text-sm font-bold"
-              style={{ color: acknowledged ? "#15803D" : "#475569" }}
-            >
-              {acknowledged ? "✓ " : ""}
-              {buttonLabel}
-            </Text>
-          </Pressable>
+            variant={acknowledged ? "correct" : "primary"}
+            size="lg"
+            fullWidth
+          />
         </View>
       </StepLayout>
     );

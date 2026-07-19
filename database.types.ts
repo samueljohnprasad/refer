@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       ai_weekly_summaries: {
@@ -190,6 +215,53 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coping_cards: {
+        Row: {
+          archived: boolean
+          created_at: string
+          exercise_entry_id: string | null
+          exercise_type: string
+          id: string
+          original_thought: string | null
+          reframe_label: string
+          reframe_text: string
+          starred: boolean
+          user_id: string
+        }
+        Insert: {
+          archived?: boolean
+          created_at?: string
+          exercise_entry_id?: string | null
+          exercise_type: string
+          id?: string
+          original_thought?: string | null
+          reframe_label?: string
+          reframe_text: string
+          starred?: boolean
+          user_id: string
+        }
+        Update: {
+          archived?: boolean
+          created_at?: string
+          exercise_entry_id?: string | null
+          exercise_type?: string
+          id?: string
+          original_thought?: string | null
+          reframe_label?: string
+          reframe_text?: string
+          starred?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coping_cards_exercise_entry_id_fkey"
+            columns: ["exercise_entry_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_entries"
             referencedColumns: ["id"]
           },
         ]
@@ -2526,6 +2598,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       age_range_enum: ["18_24", "25_34", "35_44", "45_54", "55_64", "65+"],

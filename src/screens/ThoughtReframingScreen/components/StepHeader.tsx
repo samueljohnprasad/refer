@@ -4,7 +4,7 @@ import { Text } from "@/src/components/ui/Text";
 
 interface StepHeaderProps {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   progress?: number;
   stepNumber?: number;
   totalSteps?: number;
@@ -14,21 +14,9 @@ interface StepHeaderProps {
 }
 
 export const StepHeader: React.FC<StepHeaderProps> = React.memo(
-  ({ title, subtitle, stepNumber, totalSteps, showStepCount = true }) => {
-    const hasStepCount =
-      showStepCount &&
-      typeof stepNumber === "number" &&
-      typeof totalSteps === "number" &&
-      totalSteps > 0;
-
+  ({ title, subtitle }) => {
     return (
       <View className="mb-5 w-full">
-        {hasStepCount ? (
-          <Text variant="caption" className="mb-2 text-sage-700">
-            Step {stepNumber} of {totalSteps}
-          </Text>
-        ) : null}
-
         <Text variant="h1" className="mb-1.5 leading-snug">
           {title}
         </Text>

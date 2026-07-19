@@ -1,6 +1,5 @@
 export { StepLayout } from "./StepLayout";
 export { IntroStep } from "./IntroStep";
-export { TextInputStep } from "./TextInputStep";
 export { SliderStep } from "./SliderStep";
 export { MultiTextInputStep } from "./MultiTextInputStep";
 export { ChoiceStep } from "./ChoiceStep";
@@ -11,7 +10,6 @@ export { CountdownTimerStep } from "./CountdownTimerStep";
 export { BreathingTimerStep } from "./BreathingTimerStep";
 export { ChecklistStep } from "./ChecklistStep";
 export { TimePickerStep } from "./TimePickerStep";
-export { AITextInputStep } from "./AITextInputStep";
 export { SummaryStep } from "./SummaryStep";
 export { RecordMapStep } from "./RecordMapStep";
 export { MultiFieldStep } from "./MultiFieldStep";

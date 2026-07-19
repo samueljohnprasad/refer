@@ -16,11 +16,8 @@ import { breathing478Config } from "@/src/exercises/breathing478/config";
 import { grounding54321Config } from "@/src/exercises/grounding54321/config";
 import { bodyScanPMRConfig } from "@/src/exercises/bodyScanPMR/config";
 import { mindfulBreathing1MinConfig } from "@/src/exercises/mindfulBreathing1Min/config";
-import { worryTimeConfig } from "@/src/exercises/worryTime/config";
-import { fearLadderConfig } from "@/src/exercises/fearLadder/config";
 import { decatastrophizingConfig } from "@/src/exercises/decatastrophizing/config";
 import { worryDecisionTreeConfig } from "@/src/exercises/worryDecisionTree/config";
-import { recognizingRuminationConfig } from "@/src/exercises/recognizingRumination/config";
 import { detachedMindfulnessConfig } from "@/src/exercises/detachedMindfulness/config";
 import { attentionTrainingConfig } from "@/src/exercises/attentionTraining/config";
 
@@ -39,12 +36,9 @@ const ALL_CONFIGS: ExerciseConfig<any>[] = [
   bodyScanPMRConfig,
   mindfulBreathing1MinConfig,
   // Anxiety
-  worryTimeConfig,
-  fearLadderConfig,
   decatastrophizingConfig,
   worryDecisionTreeConfig,
   // Overthinking
-  recognizingRuminationConfig,
   detachedMindfulnessConfig,
   attentionTrainingConfig,
 ];

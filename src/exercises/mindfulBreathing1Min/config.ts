@@ -7,7 +7,7 @@ import { createDynamicSummaryStep } from "@/src/components/exercise/steps/create
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { CountdownTimerStep } from "@/src/components/exercise/steps/CountdownTimerStep";
-import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
+import {MultiTextInputStep } from "@/src/components/exercise/steps/MultiTextInputStep";
 
 const INITIAL: MindfulBreathing1MinResponse = {
   preRating: 5,
@@ -85,7 +85,8 @@ export const mindfulBreathing1MinConfig: ExerciseConfig<MindfulBreathing1MinResp
       },
       {
         id: "wander_count_reflection",
-        component: createStep(TextInputStep, {
+        component: createStep(MultiTextInputStep, {
+        maxItems: 1,
           title: "Reflection",
           subtitle: "What did you notice during the exercise?",
           fieldKey: "reflection",

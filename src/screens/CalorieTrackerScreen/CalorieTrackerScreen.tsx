@@ -190,6 +190,7 @@ const CalorieTrackerScreen: React.FC<CalorieTrackerScreenProps> = ({
               onSecondaryButtonPress={pickImage}
               secondaryButtonIcon={Image01Icon}
               secondaryButtonLoading={isAnalyzing || isLoading}
+              containerClassName="pb-[120px]"
             />
           ) : (
             <View className="mt-4 mb-4">

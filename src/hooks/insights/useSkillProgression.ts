@@ -17,17 +17,14 @@ const SKILL_EXERCISE_MAP: Record<SkillCategory, ExerciseType[]> = {
   reframing: ["thought_catcher", "thought_reframing", "abc_analysis"],
   breathing: ["box_breathing", "breathing_478", "mindful_breathing_1min"],
   exposure: [
-    "fear_ladder",
     "decatastrophizing",
     "worry_decision_tree",
-    "worry_time",
   ],
   mindfulness: [
     "grounding_54321",
     "body_scan_pmr",
     "detached_mindfulness",
     "attention_training",
-    "recognizing_rumination",
   ],
 };
 

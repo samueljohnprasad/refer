@@ -40,13 +40,10 @@ export type ExerciseType =
   | "grounding_54321"
   | "body_scan_pmr"
   | "mindful_breathing_1min"
-  // Anxiety (4)
-  | "worry_time"
-  | "fear_ladder"
+  // Anxiety
   | "decatastrophizing"
   | "worry_decision_tree"
   // Overthinking (4)
-  | "recognizing_rumination"
   | "detached_mindfulness"
   | "attention_training";
 
@@ -392,27 +389,7 @@ export interface MindfulBreathing1MinResponse {
 
 // ── Anxiety ─────────────────────────────────────────────────────────────────
 
-export interface WorryTimeResponse {
-  worryTimeSlot: string;
-  worries: string[];
-  resolvedWorries: string[];
-  actionPlans: Record<string, string>;
-  actionOrAcceptStatement: string;
-  reflection: string;
-  preAnxietyRating: number;
-  postAnxietyRating: number;
-}
 
-export interface FearLadderResponse {
-  fears: string[];
-  rankedFears: { fear: string; rating: number }[];
-  firstRung: string;
-  exposurePlan: string;
-  anxietyBefore: number;
-  anxietyDuring: number;
-  anxietyAfter: number;
-  habituationInsight: string;
-}
 
 export interface DecatastrophizingResponse {
   fearedCatastrophe: string;
@@ -438,21 +415,10 @@ export interface WorryDecisionTreeResponse {
 
 // ── Overthinking ────────────────────────────────────────────────────────────
 
-export interface RecognizingRuminationResponse {
-  currentThoughtLoop: string;
-  theme: string;
-  ruminationTrigger: string;
-  timeSpent: string;
-  interruptTechnique: string;
-  interruptCompleted: boolean;
-  preRating: number;
-  postRating: number;
-}
-
 export interface DetachedMindfulnessResponse {
   observedThought: string;
   preRating: number;
-  labelConfirmed: boolean;
+  labeledThought: string;
   attentionShiftCompleted: boolean;
   checkInRating: number;
   repeatOrContinue: "repeat" | "continue" | null;
@@ -481,11 +447,8 @@ export type ExerciseResponseMap = {
   grounding_54321: Grounding54321Response;
   body_scan_pmr: BodyScanPMRResponse;
   mindful_breathing_1min: MindfulBreathing1MinResponse;
-  worry_time: WorryTimeResponse;
-  fear_ladder: FearLadderResponse;
   decatastrophizing: DecatastrophizingResponse;
   worry_decision_tree: WorryDecisionTreeResponse;
-  recognizing_rumination: RecognizingRuminationResponse;
   detached_mindfulness: DetachedMindfulnessResponse;
   attention_training: AttentionTrainingResponse;
 };

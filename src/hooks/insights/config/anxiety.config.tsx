@@ -15,21 +15,9 @@ export const anxietyConfig: DeepDiveConfig = {
   color: "#c8694b",
   fieldMappings: [
     {
-      exerciseType: "worry_time",
-      preField: "preAnxietyRating",
-      postField: "postAnxietyRating",
-      direction: "pre_minus_post",
-    },
-    {
       exerciseType: "worry_decision_tree",
       preField: "preAnxietyRating",
       postField: "postAnxietyRating",
-      direction: "pre_minus_post",
-    },
-    {
-      exerciseType: "fear_ladder",
-      preField: "anxietyBefore",
-      postField: "anxietyAfter",
       direction: "pre_minus_post",
     },
     {

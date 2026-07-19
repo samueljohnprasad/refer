@@ -2,6 +2,7 @@ import React from "react";
 import { View, TextInput } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
+import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
 
 interface FieldDef {
@@ -16,6 +17,7 @@ interface MultiFieldStepProps extends StepProps {
   title: string;
   subtitle: string;
   fields: FieldDef[];
+  psychoeducationText?: string;
 }
 
 export const MultiFieldStep: React.FC<MultiFieldStepProps> = React.memo(
@@ -35,6 +37,7 @@ export const MultiFieldStep: React.FC<MultiFieldStepProps> = React.memo(
     isSaving,
     readOnly,
     autoFocus = true,
+    psychoeducationText,
   }) => {
     return (
       <StepLayout
@@ -50,6 +53,10 @@ export const MultiFieldStep: React.FC<MultiFieldStepProps> = React.memo(
         isLoading={isSaving}
         scrollable
       >
+        {psychoeducationText ? (
+          <PsychoeducationCard content={psychoeducationText} />
+        ) : null}
+        
         {fields.map((field, index) => {
           const value = (response as Record<string, any>)[field.key] ?? "";
           return (

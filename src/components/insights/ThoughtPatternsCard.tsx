@@ -64,7 +64,7 @@ function LockedCard({ onUnlock }: { onUnlock: () => void }) {
     >
       <View className="flex-row items-center gap-2 mb-1">
         <Text className="text-[14px]">🔒</Text>
-        <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3" className="mb-0">
+        <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-0">
           Thought Patterns
         </Text>
       </View>

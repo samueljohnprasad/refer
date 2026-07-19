@@ -105,6 +105,7 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
         secondaryButtonText="Write Text"
         onSecondaryButtonPress={() => router.push("/tabs/screens/keyboard-recorder")}
         secondaryButtonIcon={NoteIcon}
+        containerClassName="pb-[120px]"
       />
     );
   }
