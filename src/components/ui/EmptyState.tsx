@@ -51,14 +51,14 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         </Text>
       )}
 
-      <View className="px-8 self-stretch w-full max-w-sm flex-row gap-3 justify-center">
+      <View className="px-8 self-stretch w-full max-w-sm flex-col gap-3 justify-center">
         {secondaryButtonText && onSecondaryButtonPress ? (
           <>
             <Button
               label={buttonText}
               variant="primary"
               size="lg"
-              className="flex-1"
+              className="w-full"
               onPress={onButtonPress}
               loading={buttonLoading}
               leftIcon={
@@ -71,7 +71,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
               label={secondaryButtonText}
               variant="secondary"
               size="lg"
-              className="flex-1"
+              className="w-full"
               onPress={onSecondaryButtonPress}
               loading={secondaryButtonLoading}
               leftIcon={
