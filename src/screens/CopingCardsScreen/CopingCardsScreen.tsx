@@ -101,28 +101,28 @@ export const CopingCardsScreen: React.FC = () => {
         }}
       />
 
+        {!isLoading &&
+        !isError &&
+        (activeCards.length > 0 || archivedCards.length > 0) ? (
+          <View className="px-5 mb-1" style={{ paddingTop: headerHeight + 8 }}>
+            <Host style={{ height: 32, width: 220 }}>
+              <Picker
+                modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                selection={viewMode === "active" ? "Active" : "Archived"}
+                onSelectionChange={(selection) => {
+                  if (selection === "Active") setViewMode("active");
+                  if (selection === "Archived") setViewMode("archived");
+                }}
+              >
+                <SwiftUIText modifiers={[tag("Active")]}>Active</SwiftUIText>
+                <SwiftUIText modifiers={[tag("Archived")]}>Archived</SwiftUIText>
+              </Picker>
+            </Host>
+          </View>
+        ) : null}
+
       <Host style={{ flex: 1 }}>
         <List modifiers={[listStyle("inset")]}>
-          {!isLoading &&
-          !isError &&
-          (activeCards.length > 0 || archivedCards.length > 0) ? (
-            <Section>
-              <HStack>
-                <Picker
-                  modifiers={[pickerStyle("segmented"), tint(SAGE[600]), frame({ width: 220 })]}
-                  selection={viewMode === "active" ? "Active" : "Archived"}
-                  onSelectionChange={(selection) => {
-                    if (selection === "Active") setViewMode("active");
-                    if (selection === "Archived") setViewMode("archived");
-                  }}
-                >
-                  <SwiftUIText modifiers={[tag("Active")]}>Active</SwiftUIText>
-                  <SwiftUIText modifiers={[tag("Archived")]}>Archived</SwiftUIText>
-                </Picker>
-                <Spacer />
-              </HStack>
-            </Section>
-          ) : null}
 
           {isLoading ? (
             <RNHostView matchContents>
