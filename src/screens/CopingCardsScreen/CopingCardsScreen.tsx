@@ -144,13 +144,21 @@ export const CopingCardsScreen: React.FC = () => {
                 >
                   <RNHostView matchContents>
                     <View className="py-5 px-5">
-                      <View className="flex-row items-center mb-3.5 gap-1.5">
-                        <Skeleton width={15} height={15} radius={4} />
-                        <Skeleton width={80} height={12} radius={4} />
+                      {/* Quiet metadata header skeleton */}
+                      <View className="flex-row items-center justify-between mb-3.5">
+                        <View className="flex-row items-center gap-1.5">
+                          <Skeleton width={15} height={15} radius={4} />
+                          <Skeleton width={80} height={12} radius={4} />
+                        </View>
+                        <Skeleton width={40} height={12} radius={4} />
                       </View>
-                      <Skeleton width="60%" height={24} radius={6} className="mb-2.5" />
-                      <Skeleton width="90%" height={14} radius={4} className="mb-1.5" />
-                      <Skeleton width="75%" height={14} radius={4} />
+                      
+                      {/* Reframe text hero skeleton (simulating ~3 lines of text) */}
+                      <View className="gap-2.5 mt-1">
+                        <Skeleton width="100%" height={16} radius={4} />
+                        <Skeleton width="90%" height={16} radius={4} />
+                        <Skeleton width="70%" height={16} radius={4} />
+                      </View>
                     </View>
                   </RNHostView>
                 </SwipeActions>

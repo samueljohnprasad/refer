@@ -53,6 +53,16 @@ export const useStreakTracker = (): UseStreakTrackerReturn => {
         .gte("day", weekStart)
         .lte("day", weekEnd);
 
+      const weekStartIso = dayjs().startOf("week").toISOString();
+      const weekEndIso = dayjs().endOf("week").toISOString();
+
+      const { data: weeklyJournals } = await supabase
+        .from("journal_records")
+        .select("selected_date")
+        .eq("user_id", user.id)
+        .gte("selected_date", weekStartIso)
+        .lte("selected_date", weekEndIso);
+
       // Map found entries to boolean array
       const weeklyProgress: boolean[] = [
         false,
@@ -67,6 +77,13 @@ export const useStreakTracker = (): UseStreakTrackerReturn => {
       weeklyMoods?.forEach((mood) => {
         if (mood.day) {
           const dayIndex = dayjs(mood.day).day();
+          weeklyProgress[dayIndex] = true;
+        }
+      });
+
+      weeklyJournals?.forEach((journal) => {
+        if (journal.selected_date) {
+          const dayIndex = dayjs(journal.selected_date).day();
           weeklyProgress[dayIndex] = true;
         }
       });
