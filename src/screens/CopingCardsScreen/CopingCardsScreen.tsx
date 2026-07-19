@@ -6,6 +6,7 @@ import {
 } from "react-native-safe-area-context";
 import { useRouter, Stack } from "expo-router";
 import * as Haptics from "expo-haptics";
+import { Skeleton } from "@/src/components/ui/Skeleton";
 import { Text } from "@/src/components/ui/Text";
 import { Host, BottomSheet, Group, RNHostView, Picker, Text as SwiftUIText, List, Section, SwipeActions, Button, HStack, Spacer } from "@expo/ui/swift-ui";
 import {
@@ -135,11 +136,26 @@ export const CopingCardsScreen: React.FC = () => {
         <List modifiers={[listStyle("inset")]}>
 
           {isLoading ? (
-            <RNHostView matchContents>
-              <View className="flex-1 items-center justify-center pt-20">
-                <ActivityIndicator size="large" color={SAGE[500]} />
-              </View>
-            </RNHostView>
+            <>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <SwipeActions
+                  key={i}
+                  modifiers={[listRowBackground("#ffffff")] as any}
+                >
+                  <RNHostView matchContents>
+                    <View className="py-5 px-5">
+                      <View className="flex-row items-center mb-3.5 gap-1.5">
+                        <Skeleton width={15} height={15} radius={4} />
+                        <Skeleton width={80} height={12} radius={4} />
+                      </View>
+                      <Skeleton width="60%" height={24} radius={6} className="mb-2.5" />
+                      <Skeleton width="90%" height={14} radius={4} className="mb-1.5" />
+                      <Skeleton width="75%" height={14} radius={4} />
+                    </View>
+                  </RNHostView>
+                </SwipeActions>
+              ))}
+            </>
           ) : isError ? (
             <RNHostView matchContents>
               <View className="flex-1 items-center justify-center pt-20 px-5">
