@@ -23,12 +23,10 @@ import { CopingCardItem } from "./CopingCardItem";
 import { useHeaderHeight } from "expo-router/react-navigation";
 
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
-import { IMessageStack } from "@/src/animations/imessage-stack";
 
 export const CopingCardsScreen: React.FC = () => {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<"active" | "archived">("active");
-  const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [toastConfig, setToastConfig] = useState<{
     id: string;
     visible: boolean;
@@ -162,42 +160,6 @@ export const CopingCardsScreen: React.FC = () => {
                   </Picker>
                 </Host>
               </View>
-
-              {/* Quiet, calm invitation full-width row instead of a card */}
-              {viewMode === "active" && activeCards.length > 0 && (
-                <Pressable
-                  onPress={() => setIsReviewOpen(true)}
-                  accessibilityRole="button"
-                  accessibilityLabel="Start flashcard review session"
-                  className="bg-sage-50 border-y border-sage-200/60 py-4 px-6 mb-2 flex-row items-center justify-between active:opacity-85"
-                >
-                  <View className="flex-row items-center gap-3.5 flex-1 mr-3">
-                    <View className="w-10 h-10 rounded-full bg-white items-center justify-center shadow-sm shadow-black/[0.05]">
-                      <Text className="text-[17px]">✨</Text>
-                    </View>
-                    <View className="flex-1">
-                      <Text
-                        variant="label"
-                        className="text-ink text-[15px] font-semibold mb-0.5"
-                      >
-                        Review Reframes
-                      </Text>
-                      <Text
-                        variant="caption"
-                        className="text-ink-soft text-[13px]"
-                      >
-                        Practice your balanced thoughts in flashcard mode
-                      </Text>
-                    </View>
-                  </View>
-                  <View className="flex-row items-center gap-1.5 bg-white px-3.5 py-2 rounded-xl shadow-sm shadow-black/[0.05]">
-                    <Text className="text-sage-700 font-semibold text-[13px]">
-                      Start
-                    </Text>
-                    <Text className="text-sage-700 text-[13px] font-bold">→</Text>
-                  </View>
-                </Pressable>
-              )}
             </View>
           ) : null
         }
@@ -242,38 +204,6 @@ export const CopingCardsScreen: React.FC = () => {
           </Pressable>
         </Animated.View>
       )}
-
-      {/* Short Flashcard Review Modal with IMessageStack Demo */}
-      <Host>
-        <BottomSheet
-          isPresented={isReviewOpen}
-          onIsPresentedChange={(val) => {
-            if (!val) setIsReviewOpen(false);
-          }}
-        >
-          <Group
-            modifiers={[
-              presentationDetents(["medium"]),
-              presentationDragIndicator("visible"),
-            ]}
-          >
-            <RNHostView>
-              <SafeAreaView
-                edges={["bottom"]}
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  backgroundColor: "transparent",
-                }}
-              >
-                <View className="flex-1 justify-center bg-transparent w-full py-4">
-                  <IMessageStack />
-                </View>
-              </SafeAreaView>
-            </RNHostView>
-          </Group>
-        </BottomSheet>
-      </Host>
     </SafeAreaView>
   );
 };

@@ -11,25 +11,7 @@ import {
 import { SAGE, INK, INK_SOFT, INK_MUTED, BRAND_BORDER_STRONG } from "@/lib/tokens";
 import type { CopingCard } from "@/src/types/exerciseFlow";
 import dayjs from "dayjs";
-
-const EXERCISE_EMOJI: Record<string, string> = {
-  thought_catcher: "🧠",
-  thought_reframing: "✨",
-  gratitude_reframe: "🌿",
-  abc_analysis: "🧩",
-  decatastrophizing: "🔭",
-  worry_time: "📋",
-  fear_ladder: "🪜",
-  worry_decision_tree: "🌳",
-  recognizing_rumination: "🔓",
-  detached_mindfulness: "☁️",
-  attention_training: "🎯",
-  box_breathing: "🌬️",
-  breathing_478: "🌊",
-  grounding_54321: "🌱",
-  body_scan_pmr: "💆",
-  mindful_breathing_1min: "🍃",
-};
+import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
 
 const EXERCISE_LABEL: Record<string, string> = {
   thought_catcher: "Thought Catcher",
@@ -62,7 +44,7 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
   ({ card, onToggleStar, onArchive }) => {
     const [expanded, setExpanded] = useState(false);
     const [isTruncated, setIsTruncated] = useState(false);
-    const emoji = EXERCISE_EMOJI[card.exercise_type] ?? "💡";
+    const exerciseIcon = getExerciseIcon(card.exercise_type);
     const exerciseLabel =
       EXERCISE_LABEL[card.exercise_type] ?? card.exercise_type;
     const dateLabel = dayjs(card.created_at).format("MMM D");
@@ -98,7 +80,7 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
         {/* Quiet metadata header */}
         <View className="flex-row items-center justify-between mb-3.5">
           <View className="flex-row items-center gap-1.5">
-            <Text className="text-[13px]">{emoji}</Text>
+            <HugeiconsIcon icon={exerciseIcon} size={14} color={INK_SOFT} />
             <Text className="text-[12px] font-semibold text-ink-soft tracking-wide">
               {exerciseLabel}
             </Text>
@@ -140,7 +122,7 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
         </Pressable>
 
         {/* Quiet icon-only footer */}
-        <View className="mt-5 pt-3 border-t border-black/[0.04] flex-row items-center justify-between">
+        <View className="mt-4 flex-row items-center justify-between">
           <Text className="text-[12px] font-medium text-ink-muted">
             {card.starred ? "Starred" : ""}
           </Text>
