@@ -32,6 +32,8 @@ type SvgAppButtonProps = {
   backgroundColor?: string;
   leftRadius?: number;
   rightRadius?: number;
+  faceStrokeColor?: string;
+  faceStrokeWidth?: number;
   strokeLeftWidth?: number;
   strokeLeftPressedWidth?: number;
   strokeLeftColor?: string;
@@ -84,6 +86,8 @@ export const SvgAppButton = ({
   backgroundColor = "#A568CC",
   leftRadius = 13,
   rightRadius = 13,
+  faceStrokeColor = "transparent",
+  faceStrokeWidth = 0,
   strokeLeftWidth = 0,
   strokeLeftPressedWidth,
   strokeLeftColor = "transparent",
@@ -217,7 +221,12 @@ export const SvgAppButton = ({
                 </ClipPath>
               </Defs>
 
-              <Path d={facePath} fill={color} />
+              <Path 
+                d={facePath} 
+                fill={color} 
+                stroke={faceStrokeColor}
+                strokeWidth={faceStrokeWidth}
+              />
 
               {Math.max(strokeLeftWidth, leftStrokeTarget) > 0 ? (
                 <AnimatedPath

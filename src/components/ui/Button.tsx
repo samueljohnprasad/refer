@@ -36,6 +36,8 @@ interface VariantConfig {
   disabledFaceColor: string;
   disabledRimColor: string;
   disabledLabelColor?: string;
+  faceStrokeColor?: string;
+  faceStrokeWidth?: number;
 }
 
 const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
@@ -51,6 +53,8 @@ const VARIANTS: Record<Exclude<Variant, "ghost">, VariantConfig> = {
     faceColor: BRAND_SURFACE,
     rimColor: BRAND_BORDER_STRONG,
     labelColor: INK,
+    faceStrokeColor: BRAND_BORDER_STRONG,
+    faceStrokeWidth: 4,
     disabledFaceColor: "#F7F7F7",
     disabledRimColor: "#E5E5E5",
   },
@@ -251,6 +255,8 @@ export function Button({
         backgroundColor={rimColor}
         leftRadius={radius}
         rightRadius={radius}
+        faceStrokeColor={config.faceStrokeColor}
+        faceStrokeWidth={config.faceStrokeWidth}
         pressDepth={sizeConfig.pressDepth}
         onPress={handlePress}
         onPressIn={handlePressIn}
