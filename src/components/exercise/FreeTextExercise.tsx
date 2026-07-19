@@ -3,7 +3,7 @@ import { View, ScrollView, TextInput } from 'react-native';
 import { Text } from '@/src/components/ui/Text';
 import { Mascot } from '@/src/components/ui/Mascot';
 
-export const FreeTextExercise = ({ payload, savedResponse, onInteraction }: any) => {
+export const FreeTextExercise = ({ payload, savedResponse, onInteraction, autoFocus = true }: any) => {
   const { prompt, placeholder, min_words = 1, max_words = 100 } = payload.content || {};
   const [text, setText] = useState(savedResponse?.text || "");
 
@@ -55,6 +55,7 @@ export const FreeTextExercise = ({ payload, savedResponse, onInteraction }: any)
           value={text}
           onChangeText={handleChange}
           style={{ textAlignVertical: 'top' }}
+          autoFocus={autoFocus}
         />
         <View className="flex-row justify-end mt-2">
           <Text className={`text-sm font-medium ${wordCount < min_words || wordCount > max_words ? 'text-rose-600' : 'text-slate-400'}`}>

@@ -79,6 +79,7 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
     composerGlow = false,
     alwaysShowVoice = false,
     showExamplesInitially = false,
+    autoFocus = true,
   }) => {
     const dispatch = useAppDispatch();
     const responseRecord = response as Record<string, unknown>;
@@ -204,6 +205,8 @@ export const TextInputStep: React.FC<TextInputStepProps> = React.memo(
               showVoice={!readOnly && showVoice}
               alwaysShowVoice={alwaysShowVoice}
               glow={composerGlow}
+              readOnly={readOnly}
+              autoFocus={autoFocus}
             />
           </View>
         </FadeInItem>

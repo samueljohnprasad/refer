@@ -5,7 +5,7 @@ import { Mascot } from '@/src/components/ui/Mascot';
 import { Card } from '@/src/components/ui/Card';
 import { OptionButton } from '@/src/components/ui/OptionButton';
 
-export const RatingCheckExercise = ({ payload, savedResponse, onInteraction }: any) => {
+export const RatingCheckExercise = ({ payload, savedResponse, onInteraction, autoFocus }: any) => {
   const { prompt, scale = 5, labels = [], note_enabled } = payload.content || {};
   const [selectedIndex, setSelectedIndex] = useState<number | null>(savedResponse?.rating ?? null);
   const [note, setNote] = useState(savedResponse?.note || "");
@@ -84,6 +84,7 @@ export const RatingCheckExercise = ({ payload, savedResponse, onInteraction }: a
               value={note}
               onChangeText={handleNoteChange}
               style={{ textAlignVertical: 'top' }}
+              autoFocus={Boolean(autoFocus && note_enabled)}
             />
           </View>
         </View>

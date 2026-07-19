@@ -1060,23 +1060,24 @@ export default function ExercisesScreen(): ReactElement {
     }
   }, [navigateWithReveal]);
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <Stack.Screen
         options={{
           headerTransparent: true,
           headerShown: true,
-          // headerBlurEffect: "systemUltraThinMaterialLight",
           headerShadowVisible: false,
+          // headerStyle: { backgroundColor: "#FFFFFF" },
           header: () => (
             <GlassView
               glassEffectStyle="regular"
+              // tintColor="#FFFFFF"
               style={{
+                // backgroundColor: "#FFFFFF",
                 borderBottomWidth: 0,
                 elevation: 0,
                 shadowOpacity: 0,
                 shadowRadius: 0,
                 shadowColor: "transparent", // IMPORTANT
-
                 overflow: "hidden",
               }}
             >
@@ -1231,13 +1232,13 @@ export default function ExercisesScreen(): ReactElement {
           )}
         </ScrollView>
       ) : (
-        <View style={{ flex: 1, backgroundColor: "#F9FAFB" }}>
+        <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
           <Suspense fallback={<TimelineSkeleton />}>
             <ExerciseTimeline onPressItem={handleLogPress} />
           </Suspense>
         </View>
       )}
-    </>
+    </View>
   );
 }
 
@@ -1245,8 +1246,7 @@ export default function ExercisesScreen(): ReactElement {
 const nutrieStyles = StyleSheet.create({
   screenBg: {
     flex: 1,
-    // backgroundColor: "#F7F7F8",
-    backgroundColor: "transparent",
+    backgroundColor: "#FFFFFF",
   },
   // Stat Cards
   statRow: {

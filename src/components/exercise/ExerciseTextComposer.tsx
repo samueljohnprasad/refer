@@ -61,6 +61,7 @@ type BaseComposerProps = {
   statusVisible?: boolean;
   glow?: boolean;
   readOnly?: boolean;
+  autoFocus?: boolean;
 };
 
 type SingleComposerProps = BaseComposerProps & {
@@ -139,6 +140,7 @@ function ComposerShell({
   isTranscribing = false,
   maxLength,
   submitBehavior,
+  autoFocus = true,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -153,6 +155,7 @@ function ComposerShell({
   isTranscribing?: boolean;
   maxLength?: number;
   submitBehavior?: "submit" | "newline";
+  autoFocus?: boolean;
 }) {
   const [isFocused, setIsFocused] = useState(false);
   const [dimensions, setDimensions] = useState<{
@@ -286,6 +289,7 @@ function ComposerShell({
             returnKeyType="send"
             multiline
             editable={!readOnly && !isTranscribing}
+            autoFocus={!readOnly && autoFocus}
             blurOnSubmit={blurOnSubmit}
             maxLength={maxLength}
             submitBehavior={submitBehavior}
@@ -385,6 +389,7 @@ function SingleComposer(props: SingleComposerProps) {
     blurOnSubmit = true,
     glow = false,
     readOnly = false,
+    autoFocus = true,
   } = props;
 
   const footer = useMemo(() => {
@@ -447,6 +452,7 @@ function SingleComposer(props: SingleComposerProps) {
         minHeight={minHeight}
         glow={glow}
         readOnly={readOnly}
+        autoFocus={autoFocus}
         blurOnSubmit={blurOnSubmit}
         onSubmitEditing={onSubmitEditing}
         footer={footer}
@@ -520,6 +526,7 @@ function ListComposer(props: ListComposerProps) {
     statusText,
     statusVisible,
     glow = false,
+    autoFocus = true,
   } = props;
   const [value, setValue] = useState("");
   const [voiceError, setVoiceError] = useState<string | null>(null);
@@ -652,6 +659,7 @@ function ListComposer(props: ListComposerProps) {
             placeholder={isRecording ? "Listening..." : placeholder}
             minHeight={minHeight}
             glow={glow}
+            autoFocus={autoFocus}
             onSubmitEditing={() => commitValue(value)}
             isRecording={isRecording}
             isTranscribing={isTranscribing}

@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { View } from "react-native";
 
+import { Text } from "@/components/ui/Text";
+import { StepLayout } from "@/src/components/exercise/steps/StepLayout";
 import { TextInputStep } from "@/src/components/exercise/steps/TextInputStep";
-import {
-  MultiChoiceStep,
-  type MultiChoiceOption,
-} from "@/src/components/exercise/steps/MultiChoiceStep";
 import type {
   ABCAnalysisResponse,
   StepProps,
 } from "@/src/types/exerciseFlow";
+import { EmotionChip } from "@/src/screens/ThoughtReframingScreen/components/EmotionChip";
 import { EMOTION_OPTIONS } from "@/src/screens/ThoughtReframingScreen/data/emotions";
+import type { EmotionName } from "@/src/screens/ThoughtReframingScreen/types";
 import type { SuggestionItem } from "@/src/components/exercise/SuggestionCards";
 
 const EVENT_SUGGESTIONS: SuggestionItem[] = [
@@ -42,25 +43,21 @@ const NEW_CONSEQUENCE_SUGGESTIONS: SuggestionItem[] = [
   { label: "I might take one useful next step.", emoji: "✅" },
 ];
 
-const ABC_EMOTION_OPTIONS: MultiChoiceOption[] = EMOTION_OPTIONS.filter(
+const ABC_EMOTION_OPTIONS = EMOTION_OPTIONS.filter(
   (emotion) =>
     ["anxious", "sad", "angry", "frustrated", "overwhelmed", "lonely"].includes(
       emotion.name,
     ),
-).map((emotion) => ({
-  value: emotion.name,
-  label: emotion.label,
-  emoji: emotion.emoji,
-}));
+);
 
 const emotionOptionByNormalizedValue = new Map(
   ABC_EMOTION_OPTIONS.flatMap((option) => [
-    [option.value.toLocaleLowerCase(), option],
+    [option.name.toLocaleLowerCase(), option],
     [option.label.toLocaleLowerCase(), option],
   ]),
 );
 
-function normalizeABCEmotion(value: string): MultiChoiceOption | undefined {
+function normalizeABCEmotion(value: string) {
   return emotionOptionByNormalizedValue.get(value.trim().toLocaleLowerCase());
 }
 
@@ -81,7 +78,7 @@ function getABCEmotionTokenState(value: unknown) {
   tokens.forEach((token) => {
     const normalized = normalizeABCEmotion(token);
     if (normalized) {
-      recognized.push(normalized.value);
+      recognized.push(normalized.name);
       return;
     }
 
@@ -125,6 +122,7 @@ const SHARED_TEXT_STEP_PROPS = {
   composerGlow: false,
   showExamplesInitially: true,
   suggestionsTitle: "Example starters",
+  showStepCount: false,
 } as const;
 
 export function ABCActivatingEventStep(
@@ -163,28 +161,97 @@ export function ABCBeliefStep(
 }
 
 export function ABCConsequenceEmotionStep(
-  stepProps: StepProps<ABCAnalysisResponse>,
+  {
+    response,
+    onUpdate,
+    onNext,
+    onBack,
+    canGoBack,
+    isValid,
+    progress,
+    stepIndex,
+    totalSteps,
+    isSaving,
+    readOnly,
+    onClose,
+  }: StepProps<ABCAnalysisResponse>,
 ): React.JSX.Element {
-  const emotionSelectionStorage = createEmotionSelectionStorage(
-    stepProps.response.consequenceEmotion,
+  const MAX_EMOTIONS = 3;
+  const selectedEmotions = useMemo(
+    () => getABCEmotionTokenState(response.consequenceEmotion).recognized,
+    [response.consequenceEmotion],
   );
-  const { unrecognized } = getABCEmotionTokenState(
-    stepProps.response.consequenceEmotion,
+  const selectedNames = useMemo(
+    () => new Set(selectedEmotions),
+    [selectedEmotions],
   );
-  const fallbackValueText = unrecognized.join(", ");
+  const atLimit = selectedEmotions.length >= MAX_EMOTIONS;
+
+  const handleToggle = (name: EmotionName) => {
+    const nextSelected = selectedNames.has(name)
+      ? selectedEmotions.filter((emotion) => emotion !== name)
+      : atLimit
+        ? selectedEmotions
+        : [...selectedEmotions, name];
+
+    if (nextSelected === selectedEmotions) return;
+
+    const nextValue = createEmotionSelectionStorage(
+      response.consequenceEmotion,
+    ).serialize(nextSelected);
+
+    onUpdate({ consequenceEmotion: nextValue });
+  };
 
   return (
-    <MultiChoiceStep
-      {...stepProps}
+    <StepLayout
       title="How did you feel?"
-      subtitle="Name the emotion that followed the thought."
-      fieldKey="consequenceEmotion"
-      options={ABC_EMOTION_OPTIONS}
-      maxSelections={3}
-      layoutVariant="cbt_reflection"
-      selectionStorageAdapter={emotionSelectionStorage}
-      fallbackValueText={fallbackValueText}
-    />
+      subtitle="Choose what feels closest."
+      progress={progress}
+      stepIndex={stepIndex}
+      totalSteps={totalSteps}
+      canGoBack={canGoBack}
+      isValid={isValid}
+      onBack={onBack}
+      onClose={onClose}
+      onNext={onNext}
+      isLoading={isSaving}
+      showStepCount={false}
+      scrollable
+    >
+      <View className="mb-4 flex-row items-center justify-between">
+        <Text className="text-[14px] leading-[20px] text-ink-soft">
+          Pick up to {MAX_EMOTIONS}
+        </Text>
+        <Text
+          className={
+            selectedEmotions.length > 0
+              ? "text-[13px] leading-[19px] text-sage-700"
+              : "text-[13px] leading-[19px] text-ink-muted"
+          }
+          accessibilityLabel={`${selectedEmotions.length} of ${MAX_EMOTIONS} emotions selected`}
+        >
+          {selectedEmotions.length}/{MAX_EMOTIONS} selected
+        </Text>
+      </View>
+
+      <View className="-mx-1 mb-4 flex-row flex-wrap">
+        {ABC_EMOTION_OPTIONS.map((emotion) => {
+          const isSelected = selectedNames.has(emotion.name);
+          return (
+            <View key={emotion.name} className="w-1/2 px-1 pb-2">
+              <EmotionChip
+                emotion={emotion}
+                isSelected={isSelected}
+                onToggle={() => !readOnly && handleToggle(emotion.name)}
+                disabled={atLimit && !isSelected}
+                locked={readOnly}
+              />
+            </View>
+          );
+        })}
+      </View>
+    </StepLayout>
   );
 }
 

@@ -15,12 +15,14 @@ interface GuidedResponseExerciseProps {
   payload: GuidedResponsePayload & { title?: string };
   savedResponse?: GuidedResponseState;
   onInteraction: (response: GuidedResponseState, isReady: boolean) => void;
+  autoFocus?: boolean;
 }
 
 export const GuidedResponseExercise: React.FC<GuidedResponseExerciseProps> = ({ 
   payload, 
   savedResponse, 
-  onInteraction 
+  onInteraction,
+  autoFocus = true,
 }) => {
   const { 
     prompt, 
@@ -130,6 +132,7 @@ export const GuidedResponseExercise: React.FC<GuidedResponseExerciseProps> = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           style={{ textAlignVertical: 'top' }}
+          autoFocus={autoFocus}
         />
         <View className="flex-row justify-end mt-4">
           <View className={`px-3 py-1 rounded-full ${wordCount < min_words || wordCount > max_words ? 'bg-rose-100' : 'bg-slate-100'}`}>

@@ -303,6 +303,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       aiError: ai.error,
       isSaving,
       readOnly,
+      autoFocus: currentStep?.autoFocus ?? !readOnly,
     }),
     [
       flow,
@@ -317,6 +318,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       handleNavigateDeeper,
       isFinalStep,
       countableStepMeta,
+      currentStep?.autoFocus,
     ],
   );
 

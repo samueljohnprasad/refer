@@ -19,7 +19,13 @@ export function createStep<Extra extends Record<string, any>>(
   const Wrapped: React.FC<StepProps<any>> = (stepProps) => {
     const resolvedProps =
       typeof extraProps === "function" ? extraProps(stepProps) : extraProps;
-    return <Component {...(stepProps as any)} {...resolvedProps} />;
+    return (
+      <Component
+        autoFocus={stepProps.autoFocus ?? true}
+        {...(stepProps as any)}
+        {...resolvedProps}
+      />
+    );
   };
   Wrapped.displayName = `Step(${(Component as any).displayName ?? "Anonymous"})`;
   return React.memo(Wrapped) as React.ComponentType<StepProps<any>>;

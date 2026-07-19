@@ -115,7 +115,7 @@ export default function JourneyMapContainer(): React.JSX.Element {
       <>
         <AmbientTapDust>
           <Animated.View
-            className="flex-1 bg-brand-canvas"
+            className="flex-1 bg-white"
             style={animatedStyle}
           >
             <JourneyMapFlashList courseId={courseId} controller={controller} />

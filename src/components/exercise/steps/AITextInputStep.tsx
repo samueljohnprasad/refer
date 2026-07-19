@@ -32,6 +32,8 @@ export const AITextInputStep: React.FC<AITextInputStepProps> = React.memo(
     aiSuggestions = [],
     isAiLoading = false,
     isSaving,
+    readOnly,
+    autoFocus = true,
   }) => {
     const value = (response as Record<string, any>)[fieldKey] ?? "";
 
@@ -110,6 +112,8 @@ export const AITextInputStep: React.FC<AITextInputStepProps> = React.memo(
             placeholder={placeholder}
             maxLength={maxLength}
             glow
+            readOnly={readOnly}
+            autoFocus={autoFocus}
           />
         </View>
         {maxLength && (

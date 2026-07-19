@@ -7,6 +7,7 @@ import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCa
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
 import { SAGE } from "@/lib/tokens";
+import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 export interface MultiChoiceOption {
   value: string;
@@ -120,7 +121,11 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
             return (
               <Pressable
                 key={opt.value}
-                onPress={() => toggle(opt.value)}
+                onPress={() => {
+                  if (isDisabled || readOnly) return;
+                  triggerSelectionHaptic();
+                  toggle(opt.value);
+                }}
                 disabled={isDisabled || readOnly}
                 accessibilityRole="checkbox"
                 accessibilityState={{ checked: isSelected }}

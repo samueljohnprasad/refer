@@ -213,7 +213,7 @@ export default function JournalCalendarScreen() {
         />
       </Stack.Toolbar>
       <ScrollView
-        className="flex-1 happy-brand-screen"
+        className="flex-1 bg-white"
         removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}

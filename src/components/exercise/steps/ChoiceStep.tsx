@@ -9,6 +9,7 @@ import { BRAND_BORDER, INK, INK_SOFT, SAGE } from "@/lib/tokens";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import type { StepProps } from "@/src/types/exerciseFlow";
+import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 interface ChoiceOption {
   value: string;
@@ -127,7 +128,10 @@ export const ChoiceStep: React.FC<ChoiceStepProps> = React.memo(
               return (
                 <FadeInItem key={opt.value} index={i} delayPerItem={40}>
                   <Pressable
-                    onPress={() => handleSelect(opt.value)}
+                    onPress={() => {
+                      triggerSelectionHaptic();
+                      handleSelect(opt.value);
+                    }}
                     className="mb-1 min-h-[84px] flex-row items-center rounded-[24px] border px-5 py-4 active:opacity-80"
                     style={{
                       backgroundColor: isSelected ? SAGE[50] : "#FFFFFF",

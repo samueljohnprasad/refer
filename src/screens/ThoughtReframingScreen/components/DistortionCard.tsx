@@ -4,6 +4,7 @@ import { Text } from "@/src/components/ui/Text";
 import { Feather } from "@expo/vector-icons";
 import { BRAND_BORDER, BRAND_SURFACE, SAGE } from "@/lib/tokens";
 import type { CognitiveDistortion } from "../types";
+import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 interface DistortionCardProps {
   distortion: CognitiveDistortion;
@@ -25,7 +26,11 @@ export const DistortionCard: React.FC<DistortionCardProps> = React.memo(
 
     return (
       <Pressable
-        onPress={onToggle}
+        onPress={() => {
+          if (isDisabled) return;
+          triggerSelectionHaptic();
+          onToggle();
+        }}
         disabled={isDisabled}
         accessibilityRole="checkbox"
         accessibilityLabel={`${distortion.label} thinking pattern`}

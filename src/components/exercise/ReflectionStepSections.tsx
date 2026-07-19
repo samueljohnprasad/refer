@@ -4,6 +4,7 @@ import { Feather } from "@expo/vector-icons";
 
 import { Text } from "@/src/components/ui/Text";
 import { BRAND_BORDER, INK, SAGE } from "@/lib/tokens";
+import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 export function ReflectionContextBlock({
   label,
@@ -64,7 +65,10 @@ export function ReflectionDisclosure({
   return (
     <View className="mt-3">
       <Pressable
-        onPress={onToggle}
+        onPress={() => {
+          triggerSelectionHaptic();
+          onToggle();
+        }}
         accessibilityRole="button"
         accessibilityLabel={expanded ? "Hide examples" : "Show optional examples"}
         accessibilityState={{ expanded }}

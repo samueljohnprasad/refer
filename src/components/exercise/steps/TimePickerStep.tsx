@@ -28,6 +28,8 @@ export const TimePickerStep: React.FC<TimePickerStepProps> = React.memo(
     fieldKey,
     presets,
     isSaving,
+    readOnly,
+    autoFocus = true,
   }) => {
     const value = (response as Record<string, any>)[fieldKey] ?? "";
     const [customValue, setCustomValue] = useState(value);
@@ -92,6 +94,8 @@ export const TimePickerStep: React.FC<TimePickerStepProps> = React.memo(
           accessibilityLabel={title}
           className="text-base text-slate-800 bg-slate-50 rounded-xl p-4"
           style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
+          editable={!readOnly}
+          autoFocus={!readOnly && autoFocus && (!presets || presets.length === 0)}
         />
       </StepLayout>
     );

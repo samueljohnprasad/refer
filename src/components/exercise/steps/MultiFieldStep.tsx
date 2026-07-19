@@ -33,6 +33,8 @@ export const MultiFieldStep: React.FC<MultiFieldStepProps> = React.memo(
     subtitle,
     fields,
     isSaving,
+    readOnly,
+    autoFocus = true,
   }) => {
     return (
       <StepLayout
@@ -48,7 +50,7 @@ export const MultiFieldStep: React.FC<MultiFieldStepProps> = React.memo(
         isLoading={isSaving}
         scrollable
       >
-        {fields.map((field) => {
+        {fields.map((field, index) => {
           const value = (response as Record<string, any>)[field.key] ?? "";
           return (
             <View key={field.key} className="mb-4">
@@ -66,6 +68,8 @@ export const MultiFieldStep: React.FC<MultiFieldStepProps> = React.memo(
                 accessibilityLabel={field.label}
                 className="text-sm text-slate-800 bg-slate-50 rounded-xl p-3 min-h-[60px]"
                 style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
+                editable={!readOnly}
+                autoFocus={!readOnly && autoFocus && index === 0}
               />
             </View>
           );

@@ -4,6 +4,7 @@ import { Text } from "@/src/components/ui/Text";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { SAGE } from "@/lib/tokens";
 import { Feather } from "@expo/vector-icons";
+import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 export interface SuggestionItem {
   label: string;
@@ -81,7 +82,14 @@ export function SuggestionCards({
         return (
           <Pressable
             key={`${s.label || ""}-${index}`}
-            onPress={readOnly ? undefined : () => onSelect(s.label)}
+            onPress={
+              readOnly
+                ? undefined
+                : () => {
+                    triggerSelectionHaptic();
+                    onSelect(s.label);
+                  }
+            }
             accessibilityRole="button"
             accessibilityLabel={`${actionLabel}: ${s.label}`}
             accessibilityState={{ selected: isSelected }}

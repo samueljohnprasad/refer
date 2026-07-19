@@ -201,6 +201,8 @@ export interface StepProps<T = Record<string, any>> {
   isSaving?: boolean;
   /** Whether this is a read-only view (completed entry) */
   readOnly?: boolean;
+  /** Whether input fields inside this step should auto-focus */
+  autoFocus?: boolean;
 }
 
 // ─── Step Definition — describes a single step in an exercise config ────────
@@ -235,6 +237,8 @@ export interface ExerciseStepDef<T = Record<string, any>> {
   hideHeader?: boolean;
   /** Hide the action footer for this step (default: false) */
   hideFooter?: boolean;
+  /** Whether input fields in this step should get auto-focused (defaults to true for input steps) */
+  autoFocus?: boolean;
 }
 
 // ─── Exercise Config — the full definition of an exercise ───────────────────

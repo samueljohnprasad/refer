@@ -494,6 +494,13 @@
       "sourceType": "github",
       "computedHash": "12d044e45979b2a77dc4bf398dfad67880bf1c83734a55f3e40a5fa76e8ac440"
     },
+    "project-graveyard": {
+      "source": "Shubhamsaboo/awesome-llm-apps",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "agent_skills/project-graveyard/SKILL.md",
+      "computedHash": "871f25c245973b4c6b8ca25b37b4934fdab2a14cd4a6021a88cf3991c6cee3a8"
+    },
     "react-concurrent": {
       "source": "claude-dev-suite/claude-dev-suite",
       "sourceType": "github",
@@ -590,6 +597,12 @@
       "source": "ecocee/skills",
       "sourceType": "github",
       "computedHash": "2cd83130ba699f391d5251f2bb471db0cdbbe35efdcd2e053a6254e8075c5e72"
+    },
+    "superdesign": {
+      "source": "superdesigndev/superdesign-skill",
+      "sourceType": "github",
+      "skillPath": "skills/superdesign/SKILL.md",
+      "computedHash": "120b1ad1978d076ae636286e77496a95703120af93bacebab5e1d727d5386bdb"
     },
     "svg-art": {
       "source": "miospotdevteam/claude-control",

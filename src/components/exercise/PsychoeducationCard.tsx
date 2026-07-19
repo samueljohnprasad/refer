@@ -14,6 +14,7 @@ import {
   ArrowUp01Icon,
 } from "@hugeicons/core-free-icons";
 import { SAGE } from "@/lib/tokens";
+import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 if (
   Platform.OS === "android" &&
@@ -35,6 +36,7 @@ export const PsychoeducationCard: React.FC<PsychoeducationCardProps> = ({
 
   const toggle = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    triggerSelectionHaptic();
     setExpanded((prev) => !prev);
   }, []);
 

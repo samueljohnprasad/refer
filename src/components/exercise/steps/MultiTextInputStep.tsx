@@ -56,6 +56,7 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
     isAiLoading,
     aiLoadingMessage,
     readOnly,
+    autoFocus = true,
   }) => {
     const dispatch = useAppDispatch();
     const responseRecord = response as Record<string, unknown>;
@@ -138,6 +139,7 @@ export const MultiTextInputStep: React.FC<MultiTextInputStepProps> = React.memo(
               maxLength={maxLength}
               readOnly={readOnly}
               minHeight={composerMinHeight}
+              autoFocus={autoFocus}
             />
           </View>
         )}

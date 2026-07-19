@@ -3,6 +3,7 @@ import { View, Pressable, TextInput } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import type { StepProps } from "@/src/types/exerciseFlow";
+import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 interface ChecklistItem {
   label: string;
@@ -36,11 +37,14 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
     allowCustom = true,
     minChecked = 1,
     isSaving,
+    readOnly,
+    autoFocus = true,
   }) => {
     const checked: string[] = (response as Record<string, any>)[fieldKey] ?? [];
     const [customDraft, setCustomDraft] = useState("");
 
     const toggle = (value: string) => {
+      triggerSelectionHaptic();
       if (checked.includes(value)) {
         onUpdate({ [fieldKey]: checked.filter((v) => v !== value) } as any);
       } else {
@@ -51,6 +55,7 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
     const addCustom = () => {
       const trimmed = customDraft.trim();
       if (!trimmed) return;
+      triggerSelectionHaptic();
       onUpdate({ [fieldKey]: [...checked, trimmed] } as any);
       setCustomDraft("");
     };
@@ -115,6 +120,8 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
               accessibilityLabel="Add custom checklist item"
               className="flex-1 text-sm text-slate-800 bg-white rounded-xl p-3 mr-2"
               style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
+              editable={!readOnly}
+              autoFocus={!readOnly && autoFocus && presetItems.length === 0}
             />
             <Pressable
               onPress={addCustom}

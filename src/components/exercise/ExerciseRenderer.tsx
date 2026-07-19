@@ -35,6 +35,7 @@ export const ExerciseRenderer: React.FC<ExerciseRendererProps> = ({
       payload={payload as any} 
       savedResponse={savedResponse}
       onInteraction={onInteraction} 
+      autoFocus={(payload as any).autoFocus ?? true}
     />
   );
 };

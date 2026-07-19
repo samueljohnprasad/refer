@@ -6,6 +6,7 @@ import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
+import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 interface BooleanStepProps extends StepProps {
   title: string;
@@ -52,6 +53,7 @@ export const BooleanStep: React.FC<BooleanStepProps> = React.memo(
     const value = (response as Record<string, any>)[fieldKey];
 
     const handleSelect = (val: boolean | string) => {
+      triggerSelectionHaptic();
       onUpdate({ [fieldKey]: val } as any);
       if (autoAdvance) {
         setTimeout(onNext, 300);

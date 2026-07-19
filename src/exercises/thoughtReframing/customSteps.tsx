@@ -25,6 +25,7 @@ import {
   ReflectionHint,
 } from "@/src/components/exercise/ReflectionStepSections";
 import { ExerciseTextComposer } from "@/src/components/exercise/ExerciseTextComposer";
+import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 import { Feather } from "@expo/vector-icons";
 
 // ── Reused legacy components ─────────────────────────────────────────────────
@@ -159,7 +160,14 @@ function ExampleDetailRow({
       </Text>
 
       <Pressable
-        onPress={onUse ? () => onUse(thought) : undefined}
+        onPress={
+          onUse
+            ? () => {
+                triggerSelectionHaptic();
+                onUse(thought);
+              }
+            : undefined
+        }
         disabled={!onUse}
         accessibilityRole={onUse ? "button" : undefined}
         accessibilityLabel={onUse ? `Use example thought: ${thought}` : undefined}
@@ -229,7 +237,10 @@ function MoreOptionsButton({
 
   return (
     <Pressable
-      onPress={onToggle}
+      onPress={() => {
+        triggerSelectionHaptic();
+        onToggle();
+      }}
       accessibilityRole="button"
       accessibilityLabel={
         expanded ? `Hide extra ${label}` : `Show ${hiddenCount} more ${label}`
@@ -835,6 +846,7 @@ export function TRDistortionsStep({
   };
 
   const handleTogglePatternHelp = () => {
+    triggerSelectionHaptic();
     if (showPatternHelp) {
       setExpandedExplanationKey(null);
     }
@@ -966,7 +978,10 @@ export function TRDistortionsStep({
                       </Text>
                     </View>
                     <Pressable
-                      onPress={() => handleToggle(key)}
+                      onPress={() => {
+                        triggerSelectionHaptic();
+                        handleToggle(key);
+                      }}
                       disabled={isUseDisabled}
                       accessibilityRole="checkbox"
                       accessibilityLabel={`${
@@ -994,9 +1009,12 @@ export function TRDistortionsStep({
                     <View className="ml-8 mt-2">
                       <Pressable
                         onPress={() =>
-                          setExpandedExplanationKey((current) =>
-                            current === distortion.key ? null : distortion.key,
-                          )
+                          {
+                            triggerSelectionHaptic();
+                            setExpandedExplanationKey((current) =>
+                              current === distortion.key ? null : distortion.key,
+                            );
+                          }
                         }
                         accessibilityRole="button"
                         accessibilityLabel={`${
@@ -1485,7 +1503,10 @@ export function TRBalancedThoughtStep({
           style={{ borderTopWidth: 1, borderTopColor: BRAND_BORDER }}
         >
           <Pressable
-            onPress={() => setShowBalancedOptions((current) => !current)}
+            onPress={() => {
+              triggerSelectionHaptic();
+              setShowBalancedOptions((current) => !current);
+            }}
             accessibilityRole="button"
             accessibilityLabel={
               showBalancedOptions

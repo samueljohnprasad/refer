@@ -4,6 +4,7 @@ import { Text } from "@/components/ui/Text";
 import { SAGE, BRAND_BORDER, BRAND_SURFACE, INK } from "@/lib/tokens";
 import { Feather } from "@expo/vector-icons";
 import type { EmotionOption } from "../data/emotions";
+import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 interface EmotionChipProps {
   emotion: EmotionOption;
@@ -29,7 +30,11 @@ export const EmotionChip: React.FC<EmotionChipProps> = React.memo(
 
     return (
       <Pressable
-        onPress={onToggle}
+        onPress={() => {
+          if (isDisabled) return;
+          triggerSelectionHaptic();
+          onToggle();
+        }}
         disabled={isDisabled}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: isSelected, disabled: isDisabled }}
