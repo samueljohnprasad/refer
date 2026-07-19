@@ -36,7 +36,18 @@ export function TimelineSkeleton() {
 
           {/* Card Column */}
           <View style={styles.cardColumn}>
-            <SkeletonCard lines={3} className="bg-white border-0 shadow-sm" />
+            <View style={styles.cardSkeleton}>
+              <View style={styles.headerRow}>
+                <View style={styles.headerTextContainer}>
+                  <Skeleton height={14} width="55%" radius={4} className="mb-2" />
+                  <Skeleton height={12} width="35%" radius={4} />
+                </View>
+              </View>
+              <View style={styles.cardFooterSkeleton}>
+                <Skeleton height={24} width={70} radius={12} />
+                <Skeleton height={11} width="25%" radius={4} />
+              </View>
+            </View>
           </View>
         </View>
       ))}
@@ -78,5 +89,28 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 16,
     paddingBottom: 24,
+  },
+  cardSkeleton: {
+    backgroundColor: "#ffffff",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.04)",
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+  },
+  headerTextContainer: {
+    flex: 1,
+    paddingRight: 8,
+  },
+  cardFooterSkeleton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 16,
   },
 });
