@@ -371,7 +371,7 @@ function DailyNotesScreenComponent(): ReactElement {
             >
               {/* Tab Picker */}
               <View className="px-4 pt-4 pb-4">
-                <Host matchContents>
+                <Host style={{ height: 32, width: "100%" }}>
                   <Picker
                     selection={tabFilter}
                     onSelectionChange={(newSelection) => {
@@ -439,7 +439,7 @@ function DailyNotesScreenComponent(): ReactElement {
                     entering={FadeIn.duration(500).easing(
                       Easing.bezier(0.4, 0.0, 0.2, 1),
                     )}
-                    className="min-h-[520px] flex-1"
+                    className="flex-1"
                   >
                     {mentalHealthContent}
                   </Animated.View>
