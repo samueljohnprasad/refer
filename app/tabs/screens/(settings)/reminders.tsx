@@ -53,9 +53,13 @@ const RemindersScreen = () => {
             headerTitle: "Daily Reminders",
             headerTransparent: true,
             headerBackButtonDisplayMode: "minimal",
+            headerLeft: () => null,
             headerBackground: () => <GlassView glassEffectStyle="clear" style={{ flex: 1 }} />,
           }}
         />
+        <Stack.Toolbar placement="left">
+          <Stack.Toolbar.Button icon="chevron.left" onPress={handleBack} />
+        </Stack.Toolbar>
         <View className="flex-1 w-full">
           <NotificationsUI />
         </View>

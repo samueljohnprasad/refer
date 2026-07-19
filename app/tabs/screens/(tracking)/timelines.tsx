@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import {
   Host,
   Picker,
@@ -25,6 +25,7 @@ import { WeeksTimelineTab } from "@/src/screens/Timelines/tabs/WeeksTimelineTab"
 import { MonthsTimelineTab } from "@/src/screens/Timelines/tabs/MonthsTimelineTab";
 
 export default function TimelinesScreen() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"days" | "weeks" | "months">(
     "days",
   );
@@ -51,6 +52,7 @@ export default function TimelinesScreen() {
         options={{
           headerTransparent: true,
           headerBackButtonDisplayMode: "minimal",
+          headerLeft: () => null,
           headerTitle: () => (
             <View className="items-center justify-center pt-2">
               <Host style={{ width: 220, height: 32 }}>
@@ -68,6 +70,9 @@ export default function TimelinesScreen() {
           ),
         }}
       />
+      <Stack.Toolbar placement="left">
+        <Stack.Toolbar.Button icon="chevron.left" onPress={() => router.back()} />
+      </Stack.Toolbar>
       <View className="flex-1">
         {activeTab === "days" && (
           <DaysTimelineTab onOpenModal={handleOpenModal} />

@@ -312,8 +312,12 @@ export const AchievementsScreen: React.FC = () => {
           headerTitleStyle: { fontFamily: "Outfit-Bold" },
           headerTintColor: SAGE[600],
           headerBackButtonDisplayMode: "minimal",
+          headerLeft: () => null,
         }}
       />
+      <Stack.Toolbar placement="left">
+        <Stack.Toolbar.Button icon="chevron.left" onPress={() => router.back()} />
+      </Stack.Toolbar>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
           icon="sparkles"

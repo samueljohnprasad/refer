@@ -138,16 +138,16 @@ export default function RootLayout() {
         const category = data.category as string;
         switch (category) {
           case "mood_check_in":
-            expoRouter.push("/(tabs)/mood" as any);
+            expoRouter.push("/tabs/(tabs)/home" as any);
             break;
           case "habit_reminder":
-            expoRouter.push("/(tabs)/habits" as any);
+            expoRouter.push("/tabs/(tabs)/home" as any);
             break;
           case "weekly_insight":
-            expoRouter.push("/(tabs)/insights" as any);
+            expoRouter.push("/tabs/screens/insights" as any);
             break;
           default:
-            expoRouter.push("/(tabs)/journal" as any);
+            expoRouter.push("/tabs/(tabs)/record" as any);
             break;
         }
       },

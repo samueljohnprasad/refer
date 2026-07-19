@@ -220,6 +220,10 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
         transparent
         style={{ backgroundColor: "transparent", color: INK, shadowColor: "transparent" }}
       />
+      <Stack.Screen options={{ headerLeft: () => null }} />
+      <Stack.Toolbar placement="left" tintColor={INK}>
+        <Stack.Toolbar.Button icon="chevron.left" tintColor={INK} onPress={handleClose} />
+      </Stack.Toolbar>
       {isEditing ? (
         <Stack.Toolbar placement="right" tintColor={INK}>
           <Stack.Toolbar.Button

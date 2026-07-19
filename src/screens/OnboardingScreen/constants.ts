@@ -553,21 +553,21 @@ export const DEFAULT_CHECKLIST_ITEMS: readonly OnboardingChecklistItem[] = [
     id: "first_mood",
     label: "Log your first mood",
     completed: false,
-    route: "/(tabs)/home",
+    route: "/tabs/(tabs)/home",
     xpReward: 20,
   },
   {
     id: "first_journal",
     label: "Write your first journal entry",
     completed: false,
-    route: "/(tabs)/record",
+    route: "/tabs/(tabs)/record",
     xpReward: 30,
   },
   {
     id: "first_cbt",
     label: "Try a CBT exercise",
     completed: false,
-    route: "/(tabs)/exercises",
+    route: "/tabs/(tabs)/exercises",
     xpReward: 25,
   },
   {
@@ -581,7 +581,7 @@ export const DEFAULT_CHECKLIST_ITEMS: readonly OnboardingChecklistItem[] = [
     id: "first_habit",
     label: "Create your first habit",
     completed: false,
-    route: "/(tabs)/home",
+    route: "/tabs/(tabs)/home",
     xpReward: 20,
   },
 ];

@@ -90,7 +90,7 @@ const EmptyState: React.FC = React.memo(() => {
       </Text>
       <Button
         label="Explore Exercises"
-        onPress={() => router.push("/")}
+        onPress={() => router.push("/tabs/(tabs)/exercises" as never)}
       />
     </View>
   );

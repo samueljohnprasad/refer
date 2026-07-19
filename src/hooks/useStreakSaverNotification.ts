@@ -119,7 +119,7 @@ export function handleStreakNotificationResponse(
 ): void {
   const data = response.notification.request.content.data;
   if (data?.type === "streak_saver") {
-    router.push("/(tabs)/screens/journey-map" as never);
+    router.push("/tabs/screens/journey-map" as never);
   }
 }
 

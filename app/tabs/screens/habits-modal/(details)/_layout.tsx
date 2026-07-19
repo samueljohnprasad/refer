@@ -6,7 +6,7 @@ import { useCSSVariable } from "uniwind";
 const GLASS = isLiquidGlassAvailable();
 const IS_ANDROID = process.env.EXPO_OS === "android";
 
-export default function HabitsModalLayout() {
+export default function HabitDetailsGroupLayout() {
   const router = useRouter();
   const appForeground = useCSSVariable("--app-foreground") as string;
   const appBackground = useCSSVariable("--app-background") as string;
@@ -29,18 +29,6 @@ export default function HabitsModalLayout() {
         },
       }}
     >
-      <Stack.Screen
-        name="add"
-        options={{
-          title: "Add a Habit",
-          headerLeft: () => null,
-        }}
-      >
-        <Stack.Toolbar placement="left">
-          <Stack.Toolbar.Button icon="xmark" onPress={() => router.back()} />
-        </Stack.Toolbar>
-      </Stack.Screen>
-
       <Stack.Screen
         name="details"
         options={{

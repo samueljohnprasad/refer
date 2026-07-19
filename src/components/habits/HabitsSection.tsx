@@ -46,7 +46,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   const handleHabitPress = (habitId: string) => {
     Haptics.selectionAsync();
     router.push({
-      pathname: "/tabs/habits-modal/details",
+      pathname: "/tabs/screens/habits-modal/details",
       params: { habitId, selectedDate: selectedDate.toISOString() },
     } as never);
   };
@@ -63,7 +63,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
 
   const handleAddHabitPress = () => {
     Haptics.selectionAsync();
-    router.push("/tabs/habits-modal/add" as never);
+    router.push("/tabs/screens/habits-modal/add" as never);
   };
 
   const completedCount = habitsWithStatus.filter((h) => h.isCompleted).length;
@@ -93,7 +93,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           title="Build Better Habits"
           description="Build healthy routines with daily tracking and streaks."
           buttonText="Add Habit"
-          onButtonPress={() => router.push("/tabs/habits-modal/add" as never)}
+          onButtonPress={() => router.push("/tabs/screens/habits-modal/add" as never)}
           buttonIcon={Add01Icon}
         />
       ) : (

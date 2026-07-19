@@ -142,7 +142,7 @@ export default function HabitAddScreen(): React.JSX.Element {
       await handleHabitCreated(created);
       setLoading(false);
       router.replace({
-        pathname: "/tabs/habits-modal/details",
+        pathname: "/tabs/screens/habits-modal/details",
         params: { habitId: created.id },
       } as never);
     } else {
@@ -168,7 +168,7 @@ export default function HabitAddScreen(): React.JSX.Element {
       setHabitDescription("");
       setShowCustomForm(false);
       router.replace({
-        pathname: "/tabs/habits-modal/details",
+        pathname: "/tabs/screens/habits-modal/details",
         params: { habitId: created.id },
       } as never);
     } else {

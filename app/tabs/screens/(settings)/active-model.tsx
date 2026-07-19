@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { Text } from '@/src/components/ui/Text';
 import { LOCAL_MODELS } from '@/src/constants/models';
 import { useLocalModelSetting } from '@/src/hooks/useLocalModelSetting';
@@ -9,6 +9,7 @@ import { Tick01Icon } from '@hugeicons/core-free-icons';
 import * as Haptics from 'expo-haptics';
 
 export default function ActiveModelScreen() {
+  const router = useRouter();
   const { modelUrl, setModel, isLoading } = useLocalModelSetting();
 
   const handleSelectModel = async (url: string) => {
@@ -40,7 +41,10 @@ export default function ActiveModelScreen() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: 'Active AI Model', headerBackTitle: 'Back' }} />
+      <Stack.Screen options={{ title: 'Active AI Model', headerBackTitle: 'Back', headerLeft: () => null }} />
+      <Stack.Toolbar placement="left">
+        <Stack.Toolbar.Button icon="chevron.left" onPress={() => router.back()} />
+      </Stack.Toolbar>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text variant="body" className="mb-6 text-gray-500">
           Select the local AI model to use when Apple Intelligence is unavailable or FORCE_LOCAL_LLM is enabled.
