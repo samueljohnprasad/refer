@@ -17,6 +17,7 @@ import {
   listStyle,
   frame,
   listRowBackground,
+  listRowSeparator,
 } from "@expo/ui/swift-ui/modifiers";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
@@ -104,7 +105,7 @@ export const CopingCardsScreen: React.FC = () => {
         {!isLoading &&
         !isError &&
         (activeCards.length > 0 || archivedCards.length > 0) ? (
-          <View className="px-5 mb-1" style={{ paddingTop: headerHeight + 8 }}>
+          <View className="px-5 mb-4" style={{ paddingTop: headerHeight + 8 }}>
             <Host style={{ height: 32, width: 220 }}>
               <Picker
                 modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
@@ -162,16 +163,25 @@ export const CopingCardsScreen: React.FC = () => {
             </RNHostView>
           ) : null}
 
-          {currentData.map((item) => (
-            <SwipeActions
-              key={item.id}
-              modifiers={[
-                listRowBackground(
-                  item.archived ? "#F9FAF9" : item.starred ? SAGE[50] : "#ffffff"
-                )
-              ]}
-            >
-              <SwipeActions.Actions edge="trailing" allowsFullSwipe={true}>
+          {currentData.map((item, index) => {
+            const isFirst = index === 0;
+            const isLast = index === currentData.length - 1;
+            
+            const rowModifiers = [
+              listRowBackground(
+                item.archived ? "#F9FAF9" : item.starred ? SAGE[50] : "#ffffff"
+              )
+            ];
+            
+            if (isFirst) rowModifiers.push(listRowSeparator("hidden", "top"));
+            if (isLast) rowModifiers.push(listRowSeparator("hidden", "bottom"));
+
+            return (
+              <SwipeActions
+                key={item.id}
+                modifiers={rowModifiers as any}
+              >
+                <SwipeActions.Actions edge="trailing" allowsFullSwipe={true}>
                 <Button
                   onPress={() =>
                     item.archived
@@ -200,7 +210,8 @@ export const CopingCardsScreen: React.FC = () => {
                 </View>
               </RNHostView>
             </SwipeActions>
-          ))}
+            );
+          })}
         </List>
       </Host>
 
