@@ -1,7 +1,7 @@
 import React, { type ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { SvgAppButton } from "@/src/components/journey/svg-app-button";
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import {
   SAGE,
   BRAND_BORDER_STRONG,
@@ -16,6 +16,8 @@ import {
 } from "@/lib/tokens";
 
 // ─── Variant config ──────────────────────────────────────────────────────────
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type Variant =
   | "primary"
@@ -168,18 +170,28 @@ export function Button({
   const sizeConfig = SIZES[size];
   const isDisabled = disabled || loading;
 
+  const pressY = useSharedValue(0);
+
   const handlePressIn = () => {
     if (isDisabled) return;
-    if (haptic === "light")
-      Haptics.selectionAsync();
-    if (haptic === "medium")
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (haptic === "light") Haptics.selectionAsync();
+    if (haptic === "medium") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    pressY.value = withTiming(sizeConfig.pressDepth, { duration: 20 });
+  };
+
+  const handlePressOut = () => {
+    if (isDisabled) return;
+    pressY.value = withSpring(0, { damping: 20, stiffness: 100, overshootClamping: true });
   };
 
   const handlePress = () => {
     if (isDisabled) return;
     onPress?.();
   };
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: pressY.value }],
+  }));
 
   const isFlexGrow = className.includes("flex-1") || className.includes("flex-grow") || className.includes("flex-shrink");
   const shouldBeFullWidth = fullWidth || isFlexGrow;
@@ -248,30 +260,45 @@ export function Button({
       }}
       className={className}
     >
-      <SvgAppButton
-        width={computedWidth}
-        height={sizeConfig.height}
-        color={faceColor}
-        backgroundColor={rimColor}
-        leftRadius={radius}
-        rightRadius={radius}
-        faceStrokeColor={config.faceStrokeColor}
-        faceStrokeWidth={config.faceStrokeWidth}
-        pressDepth={sizeConfig.pressDepth}
+      {/* Rim (Shadow Base) */}
+      <View
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: sizeConfig.pressDepth,
+          height: sizeConfig.height,
+          backgroundColor: rimColor,
+          borderRadius: radius,
+        }}
+      />
+      
+      {/* 3D Face */}
+      <AnimatedPressable
         onPress={handlePress}
         onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         disabled={isDisabled}
-        contentContainerStyle={{
-          justifyContent: "center",
-          alignItems: "center",
-        }}
+        style={[
+          {
+            height: sizeConfig.height,
+            backgroundColor: faceColor,
+            borderRadius: radius,
+            borderColor: config.faceStrokeColor || rimColor,
+            borderWidth: config.faceStrokeWidth ? config.faceStrokeWidth / 2 : 1, // Optional face border
+            justifyContent: "center",
+            alignItems: "center",
+          },
+          !config.faceStrokeWidth && {
+            borderWidth: 0, // No border for primary/other buttons if not specified
+          },
+          animatedStyle,
+        ]}
       >
         {loading ? (
           <ActivityIndicator size="small" color={labelColor} />
         ) : label ? (
-          <View
-            style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-          >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             {leftIcon}
             <Text
               style={{
@@ -288,7 +315,7 @@ export function Button({
         ) : (
           leftIcon ?? rightIcon
         )}
-      </SvgAppButton>
+      </AnimatedPressable>
     </View>
   );
 }
