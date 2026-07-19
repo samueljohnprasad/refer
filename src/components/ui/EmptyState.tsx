@@ -76,7 +76,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
               loading={secondaryButtonLoading}
               leftIcon={
                 secondaryButtonIcon ? (
-                  <HugeiconsIcon icon={secondaryButtonIcon} size={18} color="#0F172A" />
+                  <HugeiconsIcon icon={secondaryButtonIcon} size={18} color="#142414" />
                 ) : undefined
               }
             />
