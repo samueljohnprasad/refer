@@ -8,6 +8,7 @@ import { useRouter, Stack } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { Skeleton } from "@/src/components/ui/Skeleton";
 import { Text } from "@/src/components/ui/Text";
+import { CopingCardShimmer } from "./CopingCardShimmer";
 import { Host, BottomSheet, Group, RNHostView, Picker, Text as SwiftUIText, List, Section, SwipeActions, Button, HStack, Spacer } from "@expo/ui/swift-ui";
 import {
   presentationDetents,
@@ -143,23 +144,7 @@ export const CopingCardsScreen: React.FC = () => {
                   modifiers={[listRowBackground("#ffffff")] as any}
                 >
                   <RNHostView matchContents>
-                    <View className="py-5 px-5">
-                      {/* Quiet metadata header skeleton */}
-                      <View className="flex-row items-center justify-between mb-3.5">
-                        <View className="flex-row items-center gap-1.5">
-                          <Skeleton width={15} height={15} radius={4} />
-                          <Skeleton width={80} height={12} radius={4} />
-                        </View>
-                        <Skeleton width={40} height={12} radius={4} />
-                      </View>
-                      
-                      {/* Reframe text hero skeleton (simulating ~3 lines of text) */}
-                      <View className="gap-2.5 mt-1">
-                        <Skeleton width="100%" height={16} radius={4} />
-                        <Skeleton width="90%" height={16} radius={4} />
-                        <Skeleton width="70%" height={16} radius={4} />
-                      </View>
-                    </View>
+                    <CopingCardShimmer />
                   </RNHostView>
                 </SwipeActions>
               ))}
