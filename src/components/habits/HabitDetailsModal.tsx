@@ -1,6 +1,15 @@
+/**
+ * HabitDetailsModal
+ *
+ * iOS-native settings-style bottom sheet for viewing / editing a habit's
+ * scheduling details.  Uses the shared SettingsRow primitives for a
+ * consistent, flat-list layout — modeled after the grok-voice-demo
+ * (settings) screens.
+ */
+
 import React, { useState, useEffect } from "react";
-import { View, TextInput, Switch, ScrollView, KeyboardAvoidingView, Platform, Text as RNText } from "react-native";
-import { Host, BottomSheet, Group, RNHostView, DatePicker as SwiftUIDateTimePicker, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
+import { View, TextInput, ScrollView, Text as RNText } from "react-native";
+import { Host, BottomSheet, Group, RNHostView, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import {
   presentationDetents,
   presentationDragIndicator,
@@ -17,13 +26,48 @@ import {
 } from "@/src/types/habits";
 import * as Haptics from "expo-haptics";
 import { format } from "date-fns";
-import { RepeatOptionsModal } from "./RepeatOptionsModal";
-
 import { Button } from "@/src/components/ui/Button";
-import { Card } from "@/src/components/ui/Card";
 import { Text } from "@/src/components/ui/Text";
 import { PressableScale } from "@/src/components/ui/PressableScale";
-import { INK_MUTED, SAGE } from "@/lib/tokens";
+import {
+  SettingsToggleRow,
+  SettingsPickerRow,
+  SettingsDateRow,
+  SectionDivider,
+} from "./SettingsRow";
+
+// ─── Option Data ────────────────────────────────────────────────────
+
+const DURATION_OPTIONS = [
+  { value: "5", label: "5 mins" },
+  { value: "10", label: "10 mins" },
+  { value: "15", label: "15 mins" },
+  { value: "30", label: "30 mins" },
+  { value: "45", label: "45 mins" },
+  { value: "60", label: "1 hour" },
+  { value: "90", label: "1.5 hours" },
+  { value: "120", label: "2 hours" },
+];
+
+const REPEAT_OPTIONS = [
+  { value: "never", label: "Never" },
+  { value: "daily", label: "Daily" },
+  { value: "weekly", label: "Weekly" },
+  { value: "monthly", label: "Monthly" },
+];
+
+const END_REPEAT_OPTIONS = [
+  { value: "never", label: "Never" },
+  { value: "on_date", label: "On Date" },
+  { value: "after_count", label: "After Count" },
+];
+
+const COUNT_OPTIONS = Array.from({ length: 30 }, (_, i) => ({
+  value: (i + 1).toString(),
+  label: `${i + 1} ${i === 0 ? "time" : "times"}`,
+}));
+
+// ─── Props ──────────────────────────────────────────────────────────
 
 interface HabitDetailsModalProps {
   visible: boolean;
@@ -42,6 +86,8 @@ interface HabitDetailsModalProps {
   isCompleted: boolean;
 }
 
+// ─── Component ──────────────────────────────────────────────────────
+
 export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
   visible,
   onClose,
@@ -51,21 +97,29 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
   onDelete,
   isCompleted,
 }) => {
+  // ── Local state ─────────────────────────────────────────────────
   const [timeOption, setTimeOption] = useState<TimeOption>("anytime");
   const [scheduledTime, setScheduledTime] = useState<Date>(new Date());
-  const [durationMinutes, setDurationMinutes] = useState(30);
+  const [durationMinutes, setDurationMinutes] = useState<number>(30);
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [repeatPattern, setRepeatPattern] = useState<RepeatPattern>("daily");
   const [endRepeatOption, setEndRepeatOption] =
     useState<EndRepeatOption>("never");
-  const [reminderEnabled, setReminderEnabled] = useState(false);
-  const [notes, setNotes] = useState("");
+  const [endRepeatDate, setEndRepeatDate] = useState<Date>(new Date());
+  const [endRepeatCount, setEndRepeatCount] = useState<number>(10);
+  const [reminderEnabled, setReminderEnabled] = useState<boolean>(true);
+  const [notes, setNotes] = useState<string>("");
 
-  const [showRepeatModal, setShowRepeatModal] = useState(false);
-  const [showDatePickerSheet, setShowDatePickerSheet] = useState(false);
   const insets = useSafeAreaInsets();
 
-  // Sync state when habit changes
+  // Keep end date ≥ start date
+  useEffect(() => {
+    if (endRepeatDate < startDate) {
+      setEndRepeatDate(startDate);
+    }
+  }, [startDate, endRepeatDate]);
+
+  // Sync when habit prop changes
   useEffect(() => {
     if (habit) {
       setTimeOption(habit.timeOption || "anytime");
@@ -73,7 +127,11 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
       setStartDate(new Date(habit.startDate || new Date()));
       setRepeatPattern(habit.repeatPattern || "daily");
       setEndRepeatOption(habit.endRepeatOption || "never");
-      setReminderEnabled(habit.reminderEnabled || false);
+      setEndRepeatDate(
+        habit.endRepeatDate ? new Date(habit.endRepeatDate) : new Date(),
+      );
+      setEndRepeatCount(habit.endRepeatCount || 10);
+      setReminderEnabled(habit.reminderEnabled ?? true);
       setNotes(habit.notes || "");
 
       if (habit.scheduledTime) {
@@ -89,17 +147,19 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
 
   if (!habit) return null;
 
-  const handleClose = () => {
+  // ── Handlers ────────────────────────────────────────────────────
+
+  const handleClose = (): void => {
     Haptics.selectionAsync();
     onClose();
   };
 
-  const handleTimeOptionChange = (option: TimeOption) => {
+  const handleTimeOptionChange = (option: TimeOption): void => {
     Haptics.selectionAsync();
     setTimeOption(option);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (): Promise<void> => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     const schedulingData: HabitSchedulingData = {
@@ -111,8 +171,12 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
       repeatPattern,
       repeatDays: repeatPattern === "weekly" ? [4] : undefined,
       endRepeatOption,
-      endRepeatDate: undefined,
-      endRepeatCount: undefined,
+      endRepeatDate:
+        endRepeatOption === "on_date"
+          ? format(endRepeatDate, "yyyy-MM-dd")
+          : undefined,
+      endRepeatCount:
+        endRepeatOption === "after_count" ? endRepeatCount : undefined,
       reminderEnabled,
       reminderTime: reminderEnabled
         ? format(scheduledTime, "HH:mm")
@@ -124,12 +188,14 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
     onClose();
   };
 
-  const handleToggle = async () => {
+  const handleToggle = async (): Promise<void> => {
     await onToggleCompletion(habit.id, isCompleted, habit.name);
     onClose();
   };
 
-  const paddingBottom = Math.max(insets.bottom, 24) + 8;
+  const paddingBottom: number = Math.max(insets.bottom, 24) + 8;
+
+  // ── Render ──────────────────────────────────────────────────────
 
   return (
     <>
@@ -137,9 +203,7 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
         <BottomSheet
           isPresented={visible}
           onIsPresentedChange={(val) => {
-            if (!val) {
-              handleClose();
-            }
+            if (!val) handleClose();
           }}
         >
           <Group
@@ -149,147 +213,165 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
             ]}
           >
             <RNHostView>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                className="flex-1"
-              >
-                <View
-                  style={{ paddingBottom }}
-                  className="flex-1 bg-[#F2F2F7]"
-                >
+              <View className="flex-1 bg-[#F2F2F7]">
                 <ScrollView
                   className="flex-1"
                   showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{ paddingBottom: paddingBottom + 40, paddingTop: 24, paddingHorizontal: 16 }}
+                  contentContainerStyle={{
+                    paddingBottom: paddingBottom + 80,
+                    paddingTop: 24,
+                  }}
                 >
-                  {/* Header info */}
-                  <View className="items-center pb-8 w-full">
+                  {/* ─── Header ──────────────────────────── */}
+                  <View className="items-center pb-6 w-full">
                     <View className="mb-3">
-                      <RNText style={{ fontSize: 48 }}>{habit.icon || "✨"}</RNText>
+                      <RNText style={{ fontSize: 48 }}>
+                        {habit.icon || "✨"}
+                      </RNText>
                     </View>
-                    <Text
-                      className="text-[22px] font-bold text-center text-black tracking-tight"
-                    >
+                    <Text className="text-[22px] font-bold text-center text-black tracking-tight">
                       {habit.name}
                     </Text>
                     {habit.description && (
-                      <Text
-                        className="text-[15px] text-gray-500 text-center mt-1"
-                      >
+                      <Text className="text-[15px] text-gray-500 text-center mt-1">
                         {habit.description}
                       </Text>
                     )}
                   </View>
 
-                  {/* Time Segment Options */}
-                  <View className="mb-6 h-[32px] items-center">
+                  {/* ─── Time Segment ────────────────────── */}
+                  <View className="mb-4 h-[32px] items-center mx-5">
                     <Host matchContents>
                       <Picker
                         selection={timeOption}
-                        onSelectionChange={(selection: any) => handleTimeOptionChange(selection)}
+                        onSelectionChange={(sel: string) =>
+                          handleTimeOptionChange(sel as TimeOption)
+                        }
                         modifiers={[pickerStyle("segmented")]}
                       >
-                        <SwiftUIText modifiers={[tag("anytime")]}>Anytime</SwiftUIText>
-                        <SwiftUIText modifiers={[tag("at_time")]}>At time</SwiftUIText>
+                        <SwiftUIText modifiers={[tag("anytime")]}>
+                          Anytime
+                        </SwiftUIText>
+                        <SwiftUIText modifiers={[tag("at_time")]}>
+                          At time
+                        </SwiftUIText>
                       </Picker>
                     </Host>
                   </View>
 
-                  {/* Settings List */}
-                  <View className="mb-6 bg-white rounded-[10px] overflow-hidden">
-                      {/* Date Picker Trigger */}
-                      <PressableScale
-                        onPress={() => {
-                          Haptics.selectionAsync();
-                          setShowDatePickerSheet(true);
-                        }}
-                      >
-                        <View className="flex-row items-center justify-between py-3 px-4 border-b border-gray-100 w-full bg-white">
-                          <Text className="text-[17px] text-black">
-                            Date
-                          </Text>
-                          <Text className="text-[17px] text-gray-500">
-                            {format(startDate, "MMM dd, yyyy")}
-                          </Text>
-                        </View>
-                      </PressableScale>
+                  {/* ─── Schedule Section ────────────────── */}
+                  <View className="bg-white rounded-[10px] mx-4 overflow-hidden mb-6">
+                    {/* Start Date */}
+                    <SettingsDateRow
+                      label="Date"
+                      selection={startDate}
+                      onDateChange={(date: Date) => {
+                        Haptics.selectionAsync();
+                        setStartDate(date);
+                      }}
+                      displayedComponents={["date"]}
+                    />
+                    <SectionDivider />
 
-                      {/* Time and Duration Sub-fields if At Time is active */}
-                      {timeOption === "at_time" && (
-                        <>
-                          <View className="py-2 border-b border-gray-100 px-4 bg-white">
-                            <Host matchContents>
-                              <SwiftUIDateTimePicker
-                                onDateChange={(date: Date) => {
-                                  Haptics.selectionAsync();
-                                  setScheduledTime(date);
-                                }}
-                                displayedComponents={["hourAndMinute"]}
-                                title="Select Time"
-                                selection={scheduledTime}
-                              />
-                            </Host>
-                          </View>
-
-                          <View className="flex-row items-center justify-between py-3 px-4 border-b border-gray-100 bg-white">
-                            <Text className="text-[17px] text-black">
-                              Duration
-                            </Text>
-                            <Text className="text-[17px] text-gray-500">
-                              {durationMinutes} mins
-                            </Text>
-                          </View>
-                        </>
-                      )}
-
-                      {/* Repeat Trigger */}
-                      <PressableScale
-                        onPress={() => {
-                          Haptics.selectionAsync();
-                          setShowRepeatModal(true);
-                        }}
-                      >
-                        <View className="flex-row items-center justify-between py-3 px-4 border-b border-gray-100 w-full bg-white">
-                          <Text className="text-[17px] text-black">
-                            Repeat
-                          </Text>
-                          <Text className="text-[17px] text-gray-500 capitalize">
-                            {repeatPattern === "weekly"
-                              ? "Weekly on Thursday"
-                              : repeatPattern}
-                          </Text>
-                        </View>
-                      </PressableScale>
-
-                      {/* End Repeat */}
-                      <View className="flex-row items-center justify-between py-3 px-4 border-b border-gray-100 bg-white">
-                        <Text className="text-[17px] text-black">
-                          End Repeat
-                        </Text>
-                        <Text className="text-[17px] text-gray-500 capitalize">
-                          {endRepeatOption}
-                        </Text>
-                      </View>
-
-                      {/* Reminder Switch */}
-                      <View className="flex-row items-center justify-between py-2 px-4 bg-white">
-                        <Text className="text-[17px] text-black">
-                          Reminder
-                        </Text>
-                        <Switch
-                          value={reminderEnabled}
-                          onValueChange={(value) => {
+                    {/* Time & Duration — only when "At time" */}
+                    {timeOption === "at_time" && (
+                      <>
+                        <SettingsDateRow
+                          label="Time"
+                          selection={scheduledTime}
+                          onDateChange={(date: Date) => {
                             Haptics.selectionAsync();
-                            setReminderEnabled(value);
+                            setScheduledTime(date);
                           }}
-                          trackColor={{ false: "#E5E7EB", true: "#34C759" }}
-                          thumbColor="#FFFFFF"
+                          displayedComponents={["hourAndMinute"]}
                         />
-                      </View>
+                        <SectionDivider />
+
+                        <SettingsPickerRow
+                          label="Duration"
+                          selection={durationMinutes.toString()}
+                          options={DURATION_OPTIONS}
+                          onSelectionChange={(val: string) => {
+                            Haptics.selectionAsync();
+                            setDurationMinutes(parseInt(val, 10));
+                          }}
+                        />
+                        <SectionDivider />
+                      </>
+                    )}
+
+                    {/* Repeat */}
+                    <SettingsPickerRow
+                      label="Repeat"
+                      selection={repeatPattern}
+                      options={REPEAT_OPTIONS}
+                      onSelectionChange={(val: string) => {
+                        Haptics.selectionAsync();
+                        setRepeatPattern(val as RepeatPattern);
+                      }}
+                    />
+                    <SectionDivider />
+
+                    {/* End Repeat */}
+                    <SettingsPickerRow
+                      label="End Repeat"
+                      selection={endRepeatOption}
+                      options={END_REPEAT_OPTIONS}
+                      onSelectionChange={(val: string) => {
+                        Haptics.selectionAsync();
+                        setEndRepeatOption(val as EndRepeatOption);
+                      }}
+                    />
+
+                    {/* On Date sub-field */}
+                    {endRepeatOption === "on_date" && (
+                      <>
+                        <SectionDivider />
+                        <SettingsDateRow
+                          label="End Date"
+                          selection={endRepeatDate}
+                          onDateChange={(date: Date) => {
+                            Haptics.selectionAsync();
+                            setEndRepeatDate(date);
+                          }}
+                          displayedComponents={["date"]}
+                          range={{ start: startDate }}
+                          style="wheel"
+                        />
+                      </>
+                    )}
+
+                    {/* After Count sub-field */}
+                    {endRepeatOption === "after_count" && (
+                      <>
+                        <SectionDivider />
+                        <SettingsPickerRow
+                          label="After"
+                          selection={endRepeatCount.toString()}
+                          options={COUNT_OPTIONS}
+                          onSelectionChange={(val: string) => {
+                            Haptics.selectionAsync();
+                            setEndRepeatCount(parseInt(val, 10));
+                          }}
+                        />
+                      </>
+                    )}
                   </View>
 
-                  {/* Notes Section */}
-                  <View className="mb-8">
+                  {/* ─── Reminder Section ────────────────── */}
+                  <View className="bg-white rounded-[10px] mx-4 overflow-hidden mb-6">
+                    <SettingsToggleRow
+                      label="Reminder"
+                      value={reminderEnabled}
+                      onValueChange={(val: boolean) => {
+                        Haptics.selectionAsync();
+                        setReminderEnabled(val);
+                      }}
+                    />
+                  </View>
+
+                  {/* ─── Notes ───────────────────────────── */}
+                  <View className="mx-4 mb-8">
                     <TextInput
                       value={notes}
                       onChangeText={setNotes}
@@ -302,8 +384,8 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                     />
                   </View>
 
-                  {/* Action Buttons */}
-                  <View className="gap-3 mb-6">
+                  {/* ─── Actions ─────────────────────────── */}
+                  <View className="gap-3 mb-6 mx-4">
                     <Button
                       label="Save Changes"
                       variant="primary"
@@ -311,14 +393,16 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                       onPress={handleSave}
                     />
                     <Button
-                      label={isCompleted ? "Mark Incomplete" : "✓ Complete Habit"}
+                      label={
+                        isCompleted ? "Mark Incomplete" : "✓ Complete Habit"
+                      }
                       variant="ghost"
                       size="lg"
                       onPress={handleToggle}
                     />
                   </View>
 
-                  {/* Delete Button */}
+                  {/* ─── Delete ──────────────────────────── */}
                   <PressableScale
                     onPress={async () => {
                       Haptics.notificationAsync(
@@ -328,66 +412,18 @@ export const HabitDetailsModal: React.FC<HabitDetailsModalProps> = ({
                       onClose();
                     }}
                   >
-                    <View className="bg-white rounded-[10px] py-3.5 w-full items-center justify-center">
-                      <Text className="text-[17px] text-red-500 font-semibold">Delete Habit</Text>
+                    <View className="bg-white rounded-[10px] py-3.5 mx-4 items-center justify-center">
+                      <Text className="text-[17px] text-red-500 font-semibold">
+                        Delete Habit
+                      </Text>
                     </View>
                   </PressableScale>
-
                 </ScrollView>
               </View>
-              </KeyboardAvoidingView>
             </RNHostView>
           </Group>
         </BottomSheet>
       </Host>
-
-      {/* Date Picker Sheet Modal */}
-      <Host>
-        <BottomSheet
-          isPresented={showDatePickerSheet}
-          onIsPresentedChange={(val) => {
-            if (!val) {
-              setShowDatePickerSheet(false);
-            }
-          }}
-        >
-          <Group
-            modifiers={[
-              presentationDetents([{ height: 420 }]),
-              presentationDragIndicator("visible"),
-            ]}
-          >
-            <RNHostView>
-              <View className="flex-1 px-6 pt-6 pb-8 bg-brand-surface">
-                <Text variant="h3" className="text-xl font-bold text-ink mb-4">
-                  Select Date
-                </Text>
-                <View>
-                  <Host matchContents>
-                    <SwiftUIDateTimePicker
-                      onDateChange={(date: Date) => {
-                        setStartDate(date);
-                        setShowDatePickerSheet(false);
-                      }}
-                      displayedComponents={["date"]}
-                      title="Select Date"
-                      selection={startDate}
-                    />
-                  </Host>
-                </View>
-              </View>
-            </RNHostView>
-          </Group>
-        </BottomSheet>
-      </Host>
-
-      {/* Repeat Options Modal */}
-      <RepeatOptionsModal
-        visible={showRepeatModal}
-        selectedPattern={repeatPattern}
-        onSelect={setRepeatPattern}
-        onClose={() => setShowRepeatModal(false)}
-      />
     </>
   );
 };

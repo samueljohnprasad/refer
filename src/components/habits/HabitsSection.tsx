@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from "react";
-import { View, Text, Alert, Pressable } from "react-native";
+import React, { useMemo } from "react";
+import { View, Text, Pressable } from "react-native";
+import { useRouter } from "expo-router";
 import { isFuture } from "date-fns";
 import { useHabits } from "@/hooks/data/useHabits";
 import { useHabitCompletions } from "@/hooks/data/useHabitCompletions";
@@ -8,29 +9,16 @@ import { useHabitStreaks } from "@/src/hooks/data/useHabitStreaks";
 import { HabitCard } from "@/src/components/habits/HabitCard";
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { HabitCategorySkeleton } from "@/src/components/habits/HabitSkeletons";
-import { AddHabitModal } from "@/src/components/habits/AddHabitModal";
-import { HabitDetailsModal } from "@/src/components/habits/HabitDetailsModal";
-import {
-  CreateHabitFormData,
-  HabitSchedulingData,
-  Habit,
-} from "@/src/types/habits";
+import { Habit } from "@/src/types/habits";
 import { HugeiconsIcon } from "@hugeicons/react-native";
-import { Add01Icon, Tick01Icon } from "@hugeicons/core-free-icons";
+import { Add01Icon } from "@hugeicons/core-free-icons";
 import * as Haptics from "expo-haptics";
-import {
-  handleHabitCreated,
-  handleHabitUpdated,
-} from "@/src/utils/habitNotificationHandlers";
 import {
   categorizeHabits,
   getActiveCategories,
   TIME_CATEGORY_CONFIG,
 } from "@/src/utils/habitCategories";
-import { XPBadge } from "@/src/components/XP";
-import { XPActionType, XP_REWARDS } from "@/src/types/xp";
-import { SectionHeader } from "@/src/components/ui/SectionHeader";
-import { BRAND_SURFACE, SAGE } from "@/lib/tokens";
+import { SAGE } from "@/lib/tokens";
 
 
 interface HabitsSectionProps {
@@ -40,11 +28,9 @@ interface HabitsSectionProps {
 export const HabitsSection: React.FC<HabitsSectionProps> = ({
   selectedDate,
 }) => {
-  const [addModalVisible, setAddModalVisible] = useState(false);
-  const [detailsModalVisible, setDetailsModalVisible] = useState(false);
-  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
+  const router = useRouter();
 
-  const { habits, loading: habitsLoading, createHabit, updateHabit, deleteHabit } = useHabits();
+  const { habits, loading: habitsLoading } = useHabits();
   const { toggleHabitCompletion, getHabitsWithStatus, loading: completionsLoading } =
     useHabitCompletions(selectedDate);
   const { streaks, refetchStreaks } = useHabitStreaks();
@@ -57,40 +43,12 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     longestStreak: streaks[h.id]?.longestStreak || 0,
   }));
 
-  const handleCreateHabit = async (formData: CreateHabitFormData) => {
-    const created = await createHabit(formData);
-    if (created) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      // Schedule notification if reminder is enabled
-      await handleHabitCreated(created);
-    }
-  };
-
   const handleHabitPress = (habitId: string) => {
-    const habit = habits.find((h) => h.id === habitId);
-    if (habit) {
-      setSelectedHabit(habit);
-      setDetailsModalVisible(true);
-    }
-  };
-
-  const handleSaveScheduling = async (
-    habitId: string,
-    schedulingData: HabitSchedulingData,
-  ) => {
-    // Update habit with scheduling data
-    await updateHabit(habitId, schedulingData);
-
-    // Update notifications based on new scheduling data
-    const updatedHabit = habits.find((h) => h.id === habitId);
-    if (updatedHabit) {
-      await handleHabitUpdated({
-        ...updatedHabit,
-        ...schedulingData,
-      });
-    }
-
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    Haptics.selectionAsync();
+    router.push({
+      pathname: "/tabs/habits-modal/details",
+      params: { habitId, selectedDate: selectedDate.toISOString() },
+    } as never);
   };
 
   const handleToggleCompletion = async (
@@ -98,36 +56,18 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
     isCompleted: boolean,
     habitName: string,
   ) => {
-    // Prevent completion for future dates
-    if (isFuture(selectedDate)) {
-      Alert.alert(
-        "Cannot complete habit",
-        "You cannot mark habits as complete for future dates.",
-      );
-      return;
-    }
-
+    if (isFuture(selectedDate)) return;
     await toggleHabitCompletion(habitId, isCompleted, habitName);
     refetchStreaks();
   };
 
-  const handleDeleteHabit = async (habitId: string) => {
-    await deleteHabit(habitId);
-    setSelectedHabit(null);
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-  };
-
   const handleAddHabitPress = () => {
     Haptics.selectionAsync();
-    setAddModalVisible(true);
+    router.push("/tabs/habits-modal/add" as never);
   };
 
   const completedCount = habitsWithStatus.filter((h) => h.isCompleted).length;
   const totalCount = habitsWithStatus.length;
-
-  const selectedHabitWithStatus = selectedHabit
-    ? habitsWithStatus.find((h) => h.id === selectedHabit.id)
-    : null;
 
   // Categorize habits by time of day
   const categorizedHabits = useMemo(
@@ -153,7 +93,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           title="Build Better Habits"
           description="Build healthy routines with daily tracking and streaks."
           buttonText="Add Habit"
-          onButtonPress={() => setAddModalVisible(true)}
+          onButtonPress={() => router.push("/tabs/habits-modal/add" as never)}
           buttonIcon={Add01Icon}
         />
       ) : (
@@ -204,23 +144,6 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
         </>
       )}
 
-      {/* Add Habit Modal */}
-      {addModalVisible && <AddHabitModal
-        visible={addModalVisible}
-        onClose={() => setAddModalVisible(false)}
-        onSubmit={handleCreateHabit}
-      />}
-
-      {/* Habit Details Modal */}
-      {detailsModalVisible && <HabitDetailsModal
-        visible={detailsModalVisible}
-        onClose={() => setDetailsModalVisible(false)}
-        habit={selectedHabit}
-        isCompleted={selectedHabitWithStatus?.isCompleted || false}
-        onSave={handleSaveScheduling}
-        onToggleCompletion={handleToggleCompletion}
-        onDelete={handleDeleteHabit}
-      />}
     </View>
   );
 };

@@ -10,20 +10,26 @@ export const unstable_settings = {
 import { enableScreens } from "react-native-screens";
 enableScreens(true);
 
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { isLiquidGlassAvailable, GlassView } from "expo-glass-effect";
 import { useCSSVariable } from "uniwind";
+import { useSystemBackgroundColor } from "@/src/utils/useSystemBackgroundColor";
 
 const GLASS = isLiquidGlassAvailable();
+const IS_ANDROID = process.env.EXPO_OS === "android";
 
 export default function AppLayout() {
+  const router = useRouter();
   const appForeground = useCSSVariable("--app-foreground") as string;
   const appBackground = useCSSVariable("--app-background") as string;
+  useSystemBackgroundColor();
 
   return (
     <Stack
       screenOptions={{
-        animation: "none",
+        contentStyle: {
+          backgroundColor: appBackground,
+        },
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -56,10 +62,24 @@ export default function AppLayout() {
           headerLargeTitleShadowVisible: false,
           headerBackButtonDisplayMode: GLASS ? "minimal" : "default",
           headerTintColor: appForeground,
-          headerShadowVisible: false,
-          headerStyle: {
+          headerShadowVisible: IS_ANDROID ? false : undefined,
+          headerStyle: IS_ANDROID
+            ? {
+                backgroundColor: appBackground,
+              }
+            : undefined,
+          contentStyle: {
             backgroundColor: appBackground,
           },
+        }}
+      />
+
+      <Stack.Screen
+        name="habits-modal"
+        options={{
+          presentation: "modal",
+          headerShown: false,
+          animation: "default",
         }}
       />
 

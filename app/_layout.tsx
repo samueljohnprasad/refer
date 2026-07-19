@@ -16,6 +16,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import * as Notifications from "expo-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HapticManager } from "@/lib/haptics/HapticManager";
+import { useSystemBackgroundColor } from "@/src/utils/useSystemBackgroundColor";
 
 import RevenueCatProvider from "@/src/context/RevenueCatProvider";
 import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
@@ -184,6 +185,7 @@ function RootLayoutNav() {
                             style={StyleSheet.absoluteFill}
                           >
                             <GluestackUIProvider mode={APP_COLOR_MODE}>
+                              <SystemBackgroundIntegration />
                               <RevenueCatProvider>
                                 <ThemeProvider value={DefaultTheme}>
                                   <KeyboardProvider>
@@ -213,5 +215,9 @@ function RootLayoutNav() {
 }
 function NotificationIntegration() {
   usePushNotificationSetup();
+  return null;
+}
+function SystemBackgroundIntegration() {
+  useSystemBackgroundColor();
   return null;
 }

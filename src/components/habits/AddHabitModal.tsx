@@ -1,10 +1,16 @@
+/**
+ * AddHabitModal
+ *
+ * iOS-native bottom sheet for adding a new habit — either from a preset
+ * list or via a custom form.  Layout follows the same flat settings-row
+ * pattern as the rest of the habit modals.
+ */
+
 import React, { useState } from "react";
 import {
   View,
   TextInput,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
   Text as RNText,
   Pressable,
 } from "react-native";
@@ -18,12 +24,13 @@ import { CreateHabitFormData, PresetHabit } from "@/src/types/habits";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Add01Icon, Tick01Icon } from "@hugeicons/core-free-icons";
 import { INK_MUTED } from "@/lib/tokens";
-import { Card } from "@/src/components/ui/Card";
 import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
 import * as Haptics from "expo-haptics";
+import { SectionDivider } from "./SettingsRow";
 
-// Preset habits from PRD
+// ─── Presets ────────────────────────────────────────────────────────
+
 const PRESET_HABITS: PresetHabit[] = [
   {
     name: "Drink 8 glasses of water",
@@ -75,7 +82,45 @@ const PRESET_HABITS: PresetHabit[] = [
   },
 ];
 
+// ─── Sub-components ─────────────────────────────────────────────────
 
+interface PresetRowProps {
+  preset: PresetHabit;
+  onPress: () => void;
+  disabled: boolean;
+}
+
+function PresetRow({ preset, onPress, disabled }: PresetRowProps): React.JSX.Element {
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled}
+      className="flex-row items-center px-5 py-3.5 active:bg-gray-50"
+      accessibilityRole="button"
+      accessibilityLabel={`Add habit: ${preset.name}. ${preset.description}`}
+    >
+      <View className="mr-4 h-10 w-10 items-center justify-center">
+        <RNText style={{ fontSize: 24 }}>{preset.icon}</RNText>
+      </View>
+      <View className="min-w-0 flex-1">
+        <RNText
+          className="text-[17px] font-semibold text-black mb-0.5"
+          numberOfLines={1}
+        >
+          {preset.name}
+        </RNText>
+        <RNText
+          className="text-[14px] text-gray-500"
+          numberOfLines={2}
+        >
+          {preset.description}
+        </RNText>
+      </View>
+    </Pressable>
+  );
+}
+
+// ─── Props ──────────────────────────────────────────────────────────
 
 interface AddHabitModalProps {
   visible: boolean;
@@ -83,24 +128,26 @@ interface AddHabitModalProps {
   onSubmit: (formData: CreateHabitFormData) => Promise<void>;
 }
 
+// ─── Component ──────────────────────────────────────────────────────
+
 export const AddHabitModal: React.FC<AddHabitModalProps> = ({
   visible,
   onClose,
   onSubmit,
 }) => {
-  const [showCustomForm, setShowCustomForm] = useState(false);
-  const [habitName, setHabitName] = useState("");
-  const [habitDescription, setHabitDescription] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [showCustomForm, setShowCustomForm] = useState<boolean>(false);
+  const [habitName, setHabitName] = useState<string>("");
+  const [habitDescription, setHabitDescription] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const insets = useSafeAreaInsets();
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     if (loading) return;
     Haptics.selectionAsync();
     onClose();
   };
 
-  const handlePresetSelect = async (preset: PresetHabit) => {
+  const handlePresetSelect = async (preset: PresetHabit): Promise<void> => {
     setLoading(true);
     await onSubmit({
       name: preset.name,
@@ -111,7 +158,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
     onClose();
   };
 
-  const handleCustomSubmit = async () => {
+  const handleCustomSubmit = async (): Promise<void> => {
     if (!habitName.trim()) return;
 
     setLoading(true);
@@ -121,23 +168,20 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
     });
     setLoading(false);
 
-    // Reset form and close
     setHabitName("");
     setHabitDescription("");
     setShowCustomForm(false);
     onClose();
   };
 
-  const paddingBottom = Math.max(insets.bottom, 24) + 8;
+  const paddingBottom: number = Math.max(insets.bottom, 24) + 8;
 
   return (
     <Host>
       <BottomSheet
         isPresented={visible}
         onIsPresentedChange={(val) => {
-          if (!val) {
-            handleClose();
-          }
+          if (!val) handleClose();
         }}
       >
         <Group
@@ -147,170 +191,191 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
           ]}
         >
           <RNHostView>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-              className="flex-1"
-            >
-              <View
-                style={{ paddingBottom }}
-                className="flex-1 px-5 pt-8 bg-brand-surface"
-              >
-                {/* Header */}
+            <View className="flex-1 bg-[#F2F2F7]">
+              {/* ─── Header ────────────────────────────── */}
+              <View className="px-5 pt-8 pb-2">
                 <RNText className="happy-font-heading-bold text-3xl mb-2 text-ink">
                   Add a Habit
                 </RNText>
-                <RNText className="happy-font-body text-[16px] mb-6 text-ink-muted leading-relaxed">
+                <RNText className="happy-font-body text-[16px] text-ink-muted leading-relaxed">
                   Pick a gentle preset, or create one that fits your routine.
                 </RNText>
+              </View>
 
-                {!showCustomForm ? (
-                  <>
-                    <ScrollView
-                      showsVerticalScrollIndicator={false}
-                      className="flex-1"
-                      contentContainerStyle={{ paddingBottom: 16 }}
-                    >
-                      {/* Custom Habit Button */}
-                      <Pressable
-                        onPress={() => setShowCustomForm(true)}
-                        className="py-4 border-b border-sage-100 flex-row items-center"
-                        style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              {!showCustomForm ? (
+                /* ─── Preset List ────────────────────── */
+                <ScrollView
+                  className="flex-1"
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{
+                    paddingBottom: paddingBottom + 40,
+                    paddingTop: 8,
+                  }}
+                >
+                  {/* Custom Habit Row */}
+                  <Pressable
+                    onPress={() => setShowCustomForm(true)}
+                    className="flex-row items-center px-5 py-3.5 active:bg-gray-50"
+                  >
+                    <View className="h-10 w-10 mr-4 items-center justify-center rounded-full bg-gray-100">
+                      <HugeiconsIcon
+                        icon={Add01Icon}
+                        size={20}
+                        color={INK_MUTED}
+                      />
+                    </View>
+                    <RNText className="text-[17px] font-semibold text-black">
+                      Create Custom Habit
+                    </RNText>
+                  </Pressable>
+
+                  <SectionDivider />
+
+                  {/* Presets */}
+                  {PRESET_HABITS.map((preset, index) => (
+                    <React.Fragment key={preset.name}>
+                      <PresetRow
+                        preset={preset}
+                        onPress={() => handlePresetSelect(preset)}
+                        disabled={loading}
+                      />
+                      {index < PRESET_HABITS.length - 1 && <SectionDivider />}
+                    </React.Fragment>
+                  ))}
+                </ScrollView>
+              ) : (
+                /* ─── Custom Form ────────────────────── */
+                <View className="flex-1 px-5">
+                  <ScrollView
+                    className="flex-1"
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="on-drag"
+                    contentContainerStyle={{
+                      paddingBottom: paddingBottom + 40,
+                      paddingTop: 16,
+                    }}
+                  >
+                    {/* Name */}
+                    <View className="mb-4">
+                      <Text
+                        variant="label"
+                        className="text-ink-muted font-medium mb-1.5"
                       >
-                        <View className="h-10 w-10 mr-3 items-center justify-center rounded-full bg-sage-50">
-                          <HugeiconsIcon icon={Add01Icon} size={20} color={INK_MUTED} />
-                        </View>
-                        <RNText className="happy-font-body-bold text-[17px] text-ink">
-                          Create Custom Habit
-                        </RNText>
-                      </Pressable>
-
-                      {/* Preset Habits */}
-                      {PRESET_HABITS.map((preset) => {
-                        return (
-                          <Pressable
-                            key={preset.name}
-                            onPress={() => handlePresetSelect(preset)}
-                            disabled={loading}
-                            className="py-4 border-b border-sage-100 flex-row items-center"
-                            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-                            accessibilityRole="button"
-                            accessibilityLabel={`Add habit: ${preset.name}. ${preset.description}`}
+                        Habit name *
+                      </Text>
+                      <TextInput
+                        value={habitName}
+                        onChangeText={setHabitName}
+                        placeholder="e.g., Morning stretch routine"
+                        placeholderTextColor={INK_MUTED}
+                        maxLength={50}
+                        className="rounded-xl bg-white px-4 py-3 text-[17px] text-black"
+                      />
+                      <View className="flex-row items-center justify-between mt-1.5">
+                        {habitName.length === 0 ? (
+                          <Text
+                            variant="caption"
+                            className="text-ink-muted"
                           >
-                            <View className="mr-4 h-10 w-10 items-center justify-center">
-                              <RNText style={{ fontSize: 24 }}>
-                                {preset.icon}
-                              </RNText>
-                            </View>
-                            <View className="min-w-0 flex-1">
-                              <RNText className="happy-font-body-bold text-[17px] text-ink mb-1" numberOfLines={1}>
-                                {preset.name}
-                              </RNText>
-                              <RNText className="happy-font-body-medium text-[14px] text-ink-muted" numberOfLines={2}>
-                                {preset.description}
-                              </RNText>
-                            </View>
-                          </Pressable>
-                        );
-                      })}
-                    </ScrollView>
-                  </>
-                ) : (
-                  <>
-                    {/* Custom Habit Form */}
-                    <ScrollView
-                      showsVerticalScrollIndicator={false}
-                      keyboardShouldPersistTaps="handled"
-                      keyboardDismissMode="on-drag"
-                      className="flex-1"
-                      contentContainerStyle={{ paddingBottom: 16 }}
-                    >
-                      <View className="mb-4">
-                        <Text variant="label" className="text-ink-muted font-medium mb-1.5">
-                          Habit name *
-                        </Text>
-                        <TextInput
-                          value={habitName}
-                          onChangeText={setHabitName}
-                          placeholder="e.g., Morning stretch routine"
-                          placeholderTextColor={INK_MUTED}
-                          maxLength={50}
-                          className="happy-font-body-medium rounded-xl border border-sage-100 bg-brand-surface-soft px-4 py-3 text-[17px] text-ink"
-                        />
-                        <View className="flex-row items-center justify-between mt-1.5">
-                          {habitName.length === 0 ? (
-                            <Text variant="caption" className="text-ink-muted">
-                              Give your habit a name to get started
-                            </Text>
-                          ) : (
-                            <Text variant="caption" className="text-transparent"> </Text>
-                          )}
-                          <Text variant="caption-muted">
-                            {habitName.length}/50
+                            Give your habit a name to get started
                           </Text>
-                        </View>
-                      </View>
-
-                      <View className="mb-6">
-                        <Text variant="label" className="text-ink-muted font-medium mb-1.5">
-                          Why is this important to you?
-                        </Text>
-                        <TextInput
-                          value={habitDescription}
-                          onChangeText={setHabitDescription}
-                          placeholder="To feel more energized and focused..."
-                          placeholderTextColor={INK_MUTED}
-                          maxLength={200}
-                          multiline
-                          numberOfLines={3}
-                          textAlignVertical="top"
-                          className="happy-font-body-medium min-h-[96px] rounded-xl border border-sage-100 bg-brand-surface-soft px-4 py-3 text-[17px] text-ink"
-                        />
-                        <View className="flex-row items-center justify-between mt-1.5">
-                          {habitName.length > 0 && habitDescription.length === 0 ? (
-                            <Text variant="caption" className="text-ink-muted flex-1 mr-4" numberOfLines={1}>
-                              Why do you want to {habitName.toLowerCase()}?
-                            </Text>
-                          ) : (
-                            <Text variant="caption" className="text-transparent flex-1"> </Text>
-                          )}
-                          <Text variant="caption-muted">
-                            {habitDescription.length}/200
+                        ) : (
+                          <Text
+                            variant="caption"
+                            className="text-transparent"
+                          >
+                            {" "}
                           </Text>
-                        </View>
-                      </View>
-                    </ScrollView>
-
-                    {/* Action Buttons */}
-                    <View className="flex-row gap-3 pt-2">
-                      <View className="flex-1">
-                        <Button
-                          label="Back"
-                          variant="secondary"
-                          size="lg"
-                          onPress={() => {
-                            setShowCustomForm(false);
-                            setHabitName("");
-                            setHabitDescription("");
-                          }}
-                        />
-                      </View>
-                      <View className="flex-1">
-                        <Button
-                          label="Create Habit"
-                          variant="primary"
-                          size="lg"
-                          disabled={!habitName.trim() || loading}
-                          onPress={handleCustomSubmit}
-                          leftIcon={
-                            <HugeiconsIcon icon={Tick01Icon} size={20} color="#FFFFFF" />
-                          }
-                        />
+                        )}
+                        <Text variant="caption-muted">
+                          {habitName.length}/50
+                        </Text>
                       </View>
                     </View>
-                  </>
-                )}
-              </View>
-            </KeyboardAvoidingView>
+
+                    {/* Description */}
+                    <View className="mb-6">
+                      <Text
+                        variant="label"
+                        className="text-ink-muted font-medium mb-1.5"
+                      >
+                        Why is this important to you?
+                      </Text>
+                      <TextInput
+                        value={habitDescription}
+                        onChangeText={setHabitDescription}
+                        placeholder="To feel more energized and focused..."
+                        placeholderTextColor={INK_MUTED}
+                        maxLength={200}
+                        multiline
+                        numberOfLines={3}
+                        textAlignVertical="top"
+                        className="min-h-[96px] rounded-xl bg-white px-4 py-3 text-[17px] text-black"
+                      />
+                      <View className="flex-row items-center justify-between mt-1.5">
+                        {habitName.length > 0 &&
+                        habitDescription.length === 0 ? (
+                          <Text
+                            variant="caption"
+                            className="text-ink-muted flex-1 mr-4"
+                            numberOfLines={1}
+                          >
+                            Why do you want to{" "}
+                            {habitName.toLowerCase()}?
+                          </Text>
+                        ) : (
+                          <Text
+                            variant="caption"
+                            className="text-transparent flex-1"
+                          >
+                            {" "}
+                          </Text>
+                        )}
+                        <Text variant="caption-muted">
+                          {habitDescription.length}/200
+                        </Text>
+                      </View>
+                    </View>
+                  </ScrollView>
+
+                  {/* Action Buttons */}
+                  <View
+                    className="flex-row gap-3 pt-2"
+                    style={{ paddingBottom }}
+                  >
+                    <View className="flex-1">
+                      <Button
+                        label="Back"
+                        variant="secondary"
+                        size="lg"
+                        onPress={() => {
+                          setShowCustomForm(false);
+                          setHabitName("");
+                          setHabitDescription("");
+                        }}
+                      />
+                    </View>
+                    <View className="flex-1">
+                      <Button
+                        label="Create Habit"
+                        variant="primary"
+                        size="lg"
+                        disabled={!habitName.trim() || loading}
+                        onPress={handleCustomSubmit}
+                        leftIcon={
+                          <HugeiconsIcon
+                            icon={Tick01Icon}
+                            size={20}
+                            color="#FFFFFF"
+                          />
+                        }
+                      />
+                    </View>
+                  </View>
+                </View>
+              )}
+            </View>
           </RNHostView>
         </Group>
       </BottomSheet>
