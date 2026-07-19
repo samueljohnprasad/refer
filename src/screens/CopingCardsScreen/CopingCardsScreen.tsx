@@ -7,15 +7,18 @@ import {
 import { useRouter, Stack } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { Text } from "@/src/components/ui/Text";
-import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
+import { Host, BottomSheet, Group, RNHostView, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
 import {
   presentationDetents,
   presentationDragIndicator,
+  pickerStyle,
+  tag,
+  tint,
 } from "@expo/ui/swift-ui/modifiers";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
 import { useCopingCards } from "@/src/hooks/useCopingCards";
-import { SAGE, BRAND_CANVAS } from "@/lib/tokens";
+import { SAGE, BRAND_SURFACE } from "@/lib/tokens";
 import { CopingCardItem } from "./CopingCardItem";
 import { useHeaderHeight } from "expo-router/react-navigation";
 
@@ -85,7 +88,7 @@ export const CopingCardsScreen: React.FC = () => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: BRAND_CANVAS }}
+      style={{ flex: 1, backgroundColor: BRAND_SURFACE }}
       edges={["bottom", "left", "right"]}
     >
       <Stack.Screen
@@ -143,50 +146,21 @@ export const CopingCardsScreen: React.FC = () => {
           !isError &&
           (activeCards.length > 0 || archivedCards.length > 0) ? (
             <View className="mb-4">
-              {/* Subtle and quiet text tabs instead of loud capsule */}
-              <View className="flex-row items-center border-b border-black/[0.06] mb-5 pb-2 px-1">
-                <Pressable
-                  onPress={() => setViewMode("active")}
-                  accessibilityRole="tab"
-                  accessibilityState={{ selected: viewMode === "active" }}
-                  hitSlop={12}
-                  className={`mr-8 pb-2 border-b-2 ${
-                    viewMode === "active"
-                      ? "border-sage-700"
-                      : "border-transparent"
-                  }`}
-                >
-                  <Text
-                    className={`text-[15px] font-semibold tracking-wide ${
-                      viewMode === "active" ? "text-ink" : "text-ink-muted"
-                    }`}
+              {/* Native SwiftUI segmented picker for tabs */}
+              <View className="items-center mb-6 mt-2">
+                <Host style={{ width: 200, height: 32 }}>
+                  <Picker
+                    modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
+                    selection={viewMode === "active" ? "Active" : "Archived"}
+                    onSelectionChange={(selection) => {
+                      if (selection === "Active") setViewMode("active");
+                      if (selection === "Archived") setViewMode("archived");
+                    }}
                   >
-                    Active{" "}
-                    {activeCards.length > 0 ? `(${activeCards.length})` : ""}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => setViewMode("archived")}
-                  accessibilityRole="tab"
-                  accessibilityState={{ selected: viewMode === "archived" }}
-                  hitSlop={12}
-                  className={`pb-2 border-b-2 ${
-                    viewMode === "archived"
-                      ? "border-sage-700"
-                      : "border-transparent"
-                  }`}
-                >
-                  <Text
-                    className={`text-[15px] font-semibold tracking-wide ${
-                      viewMode === "archived" ? "text-ink" : "text-ink-muted"
-                    }`}
-                  >
-                    Archived{" "}
-                    {archivedCards.length > 0
-                      ? `(${archivedCards.length})`
-                      : ""}
-                  </Text>
-                </Pressable>
+                    <SwiftUIText modifiers={[tag("Active")]}>Active</SwiftUIText>
+                    <SwiftUIText modifiers={[tag("Archived")]}>Archived</SwiftUIText>
+                  </Picker>
+                </Host>
               </View>
 
               {/* Quiet, calm invitation card instead of loud promotional banner */}
