@@ -85,19 +85,14 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
 
     return (
       <View
-        className="rounded-2xl mb-4 p-6"
+        className="py-6 px-6 border-b"
         style={{
           backgroundColor: card.archived
             ? "#F9FAF9"
             : card.starred
               ? SAGE[50]
               : "#ffffff",
-          borderWidth: 1,
-          borderColor: card.starred ? SAGE[300] : "rgba(0, 0, 0, 0.05)",
-          shadowColor: "#000",
-          shadowOpacity: 0.02,
-          shadowRadius: 8,
-          shadowOffset: { width: 0, height: 2 },
+          borderColor: card.starred ? SAGE[200] : "rgba(0, 0, 0, 0.06)",
         }}
       >
         {/* Quiet metadata header */}

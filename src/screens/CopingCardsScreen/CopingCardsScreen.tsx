@@ -103,7 +103,7 @@ export const CopingCardsScreen: React.FC = () => {
       <FlatList
         data={currentData}
         keyExtractor={(item) => item.id}
-        className="flex-1 px-5"
+        className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           flexGrow: 1,
@@ -145,7 +145,7 @@ export const CopingCardsScreen: React.FC = () => {
           !isLoading &&
           !isError &&
           (activeCards.length > 0 || archivedCards.length > 0) ? (
-            <View className="mb-4">
+            <View className="mb-2">
               {/* Native SwiftUI segmented picker for tabs */}
               <View className="items-center mb-6 mt-2">
                 <Host style={{ width: 200, height: 32 }}>
@@ -163,16 +163,16 @@ export const CopingCardsScreen: React.FC = () => {
                 </Host>
               </View>
 
-              {/* Quiet, calm invitation card instead of loud promotional banner */}
+              {/* Quiet, calm invitation full-width row instead of a card */}
               {viewMode === "active" && activeCards.length > 0 && (
                 <Pressable
                   onPress={() => setIsReviewOpen(true)}
                   accessibilityRole="button"
                   accessibilityLabel="Start flashcard review session"
-                  className="bg-white rounded-2xl p-4 mb-3 border border-sage-200/60 flex-row items-center justify-between active:opacity-85 shadow-sm shadow-black/[0.015]"
+                  className="bg-sage-50 border-y border-sage-200/60 py-4 px-6 mb-2 flex-row items-center justify-between active:opacity-85"
                 >
                   <View className="flex-row items-center gap-3.5 flex-1 mr-3">
-                    <View className="w-10 h-10 rounded-xl bg-sage-50 items-center justify-center border border-sage-200/40">
+                    <View className="w-10 h-10 rounded-full bg-white items-center justify-center shadow-sm shadow-black/[0.05]">
                       <Text className="text-[17px]">✨</Text>
                     </View>
                     <View className="flex-1">
@@ -190,7 +190,7 @@ export const CopingCardsScreen: React.FC = () => {
                       </Text>
                     </View>
                   </View>
-                  <View className="flex-row items-center gap-1.5 bg-sage-50 px-3.5 py-2 rounded-xl border border-sage-200/50">
+                  <View className="flex-row items-center gap-1.5 bg-white px-3.5 py-2 rounded-xl shadow-sm shadow-black/[0.05]">
                     <Text className="text-sage-700 font-semibold text-[13px]">
                       Start
                     </Text>
