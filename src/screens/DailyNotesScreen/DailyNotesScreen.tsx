@@ -109,7 +109,10 @@ function DailyNotesScreenComponent(): ReactElement {
   }, [currentWeekView, setCalenderVisibleDates]);
 
   // Bottom sheet ref for AI insights
-  const bottomSheetRef = useRef<import("@/src/components/ai/AIInsightsModalBottomSheet").AIInsightsModalRef>(null);
+  const bottomSheetRef =
+    useRef<
+      import("@/src/components/ai/AIInsightsModalBottomSheet").AIInsightsModalRef
+    >(null);
 
   useEffect(() => {
     if (!openAIInsights) return;
@@ -370,8 +373,8 @@ function DailyNotesScreenComponent(): ReactElement {
               showsVerticalScrollIndicator={false}
             >
               {/* Tab Picker */}
-              <View className="px-4 pt-4 pb-4">
-                <Host style={{ height: 32, width: "100%" }}>
+              <View className="px-4 pt-4 pb-4 items-start">
+                <Host style={{ height: 32, width: 280 }}>
                   <Picker
                     selection={tabFilter}
                     onSelectionChange={(newSelection) => {
