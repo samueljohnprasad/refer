@@ -36,10 +36,11 @@ const MAX_LINES_COLLAPSED = 5;
 
 interface CopingCardItemProps {
   card: CopingCard;
+  onPress?: () => void;
 }
 
 export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
-  ({ card }) => {
+  ({ card, onPress }) => {
     const [expanded, setExpanded] = useState(false);
     const [isTruncated, setIsTruncated] = useState(false);
     const exerciseIcon = getExerciseIcon(card.exercise_type);
@@ -87,7 +88,7 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
 
         {/* Reframe text hero */}
         <Pressable
-          onPress={handleToggleExpand}
+          onPress={onPress || handleToggleExpand}
           className="active:opacity-85"
         >
           <Text

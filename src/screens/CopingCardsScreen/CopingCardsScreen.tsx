@@ -19,6 +19,7 @@ import {
   frame,
   listRowBackground,
   listRowSeparator,
+  listSectionSpacing,
 } from "@expo/ui/swift-ui/modifiers";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
@@ -133,27 +134,28 @@ export const CopingCardsScreen: React.FC = () => {
         ) : null}
 
       <Host style={{ flex: 1 }}>
-        <List modifiers={[listStyle("inset")]}>
+        <List modifiers={[listStyle("insetGrouped"), listSectionSpacing(12)]}>
 
           {isLoading ? (
             <>
               {Array.from({ length: 5 }).map((_, i) => (
-                <SwipeActions
-                  key={i}
-                  modifiers={[listRowBackground("#ffffff")] as any}
-                >
-                  <RNHostView matchContents>
-                    <View className="py-5 px-5">
-                      <View className="flex-row items-center mb-3.5 gap-1.5">
-                        <Skeleton width={15} height={15} radius={4} />
-                        <Skeleton width={80} height={12} radius={4} />
+                <Section key={i}>
+                  <SwipeActions
+                    modifiers={[listRowBackground("#ffffff")] as any}
+                  >
+                    <RNHostView matchContents>
+                      <View className="py-5 px-5">
+                        <View className="flex-row items-center mb-3.5 gap-1.5">
+                          <Skeleton width={15} height={15} radius={4} />
+                          <Skeleton width={80} height={12} radius={4} />
+                        </View>
+                        <Skeleton width="60%" height={24} radius={6} className="mb-2.5" />
+                        <Skeleton width="90%" height={14} radius={4} className="mb-1.5" />
+                        <Skeleton width="75%" height={14} radius={4} />
                       </View>
-                      <Skeleton width="60%" height={24} radius={6} className="mb-2.5" />
-                      <Skeleton width="90%" height={14} radius={4} className="mb-1.5" />
-                      <Skeleton width="75%" height={14} radius={4} />
-                    </View>
-                  </RNHostView>
-                </SwipeActions>
+                    </RNHostView>
+                  </SwipeActions>
+                </Section>
               ))}
             </>
           ) : isError ? (
@@ -189,58 +191,52 @@ export const CopingCardsScreen: React.FC = () => {
           ) : null}
 
           {currentData.map((item, index) => {
-            const isFirst = index === 0;
-            const isLast = index === currentData.length - 1;
-            
             const rowModifiers = [
               listRowBackground(
                 item.archived ? "#F9FAF9" : item.starred ? SAGE[50] : "#ffffff"
               )
             ];
-            
-            if (isFirst) rowModifiers.push(listRowSeparator("hidden", "top"));
-            if (isLast) rowModifiers.push(listRowSeparator("hidden", "bottom"));
 
             return (
-              <SwipeActions
-                key={item.id}
-                modifiers={rowModifiers as any}
-              >
-                <SwipeActions.Actions edge="trailing" allowsFullSwipe={true}>
-                  <Button
-                    role="destructive"
-                    onPress={() => handleDelete(item.id)}
-                    systemImage="trash.fill"
-                    label="Delete"
-                  />
-                  <Button
-                    onPress={() =>
-                      item.archived
-                        ? handleUnarchive(item.id)
-                        : handleArchive(item.id)
-                    }
-                    modifiers={[tint(item.archived ? SAGE[600] : "#F87171")]}
-                    systemImage={item.archived ? "tray.and.arrow.up.fill" : "archivebox.fill"}
-                    label={item.archived ? "Restore" : "Archive"}
-                  />
-                </SwipeActions.Actions>
-                <SwipeActions.Actions edge="leading" allowsFullSwipe={true}>
-                <Button
-                  onPress={() => handleToggleStar(item.id)}
-                  modifiers={[tint(SAGE[400])]}
-                  systemImage={item.starred ? "star.slash.fill" : "star.fill"}
-                  label={item.starred ? "Unstar" : "Star"}
-                />
-              </SwipeActions.Actions>
-
-              <RNHostView matchContents>
-                <View className={item.archived ? "opacity-60" : ""}>
-                  <CopingCardItem
-                    card={item}
-                  />
-                </View>
-              </RNHostView>
-            </SwipeActions>
+              <Section key={item.id}>
+                <SwipeActions
+                  modifiers={rowModifiers as any}
+                >
+                  <SwipeActions.Actions edge="trailing" allowsFullSwipe={true}>
+                    <Button
+                      role="destructive"
+                      onPress={() => handleDelete(item.id)}
+                      systemImage="trash.fill"
+                      label="Delete"
+                    />
+                    <Button
+                      onPress={() =>
+                        item.archived
+                          ? handleUnarchive(item.id)
+                          : handleArchive(item.id)
+                      }
+                      modifiers={[tint(item.archived ? SAGE[600] : "#F87171")]}
+                      systemImage={item.archived ? "tray.and.arrow.up.fill" : "archivebox.fill"}
+                      label={item.archived ? "Restore" : "Archive"}
+                    />
+                  </SwipeActions.Actions>
+                  <SwipeActions.Actions edge="leading" allowsFullSwipe={true}>
+                    <Button
+                      onPress={() => handleToggleStar(item.id)}
+                      modifiers={[tint(SAGE[400])]}
+                      systemImage={item.starred ? "star.slash.fill" : "star.fill"}
+                      label={item.starred ? "Unstar" : "Star"}
+                    />
+                  </SwipeActions.Actions>
+                  <RNHostView matchContents>
+                    <View className={item.archived ? "opacity-60 flex-1" : "flex-1"}>
+                      <CopingCardItem
+                        card={item}
+                      />
+                    </View>
+                  </RNHostView>
+                </SwipeActions>
+              </Section>
             );
           })}
         </List>
