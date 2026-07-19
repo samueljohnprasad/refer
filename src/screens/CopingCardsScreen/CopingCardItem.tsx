@@ -36,12 +36,10 @@ const MAX_LINES_COLLAPSED = 5;
 
 interface CopingCardItemProps {
   card: CopingCard;
-  onToggleStar: () => void;
-  onArchive: () => void;
 }
 
 export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
-  ({ card, onToggleStar, onArchive }) => {
+  ({ card }) => {
     const [expanded, setExpanded] = useState(false);
     const [isTruncated, setIsTruncated] = useState(false);
     const exerciseIcon = getExerciseIcon(card.exercise_type);
@@ -66,20 +64,11 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
     );
 
     return (
-      <View
-        className="py-5"
-        style={{
-          backgroundColor: card.archived
-            ? "#F9FAF9"
-            : card.starred
-              ? SAGE[50]
-              : "transparent",
-        }}
-      >
+      <View className="py-5">
         {/* Quiet metadata header */}
         <View className="flex-row items-center justify-between mb-3.5">
           <View className="flex-row items-center gap-1.5">
-            <HugeiconsIcon icon={exerciseIcon} size={14} color={INK_SOFT} />
+            <HugeiconsIcon icon={exerciseIcon} size={15} color={INK_SOFT} strokeWidth={1.8} />
             <Text className="text-[12px] font-semibold text-ink-soft tracking-wide">
               {exerciseLabel}
             </Text>
@@ -120,43 +109,6 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
           )}
         </Pressable>
 
-        {/* Quiet icon-only footer */}
-        <View className="mt-4 flex-row items-center justify-between">
-          <Text className="text-[12px] font-medium text-ink-muted">
-            {card.starred ? "Starred" : ""}
-          </Text>
-          <View className="flex-row items-center gap-4">
-            <Pressable
-              onPress={onToggleStar}
-              hitSlop={12}
-              accessibilityRole="button"
-              accessibilityLabel={card.starred ? "Unstar card" : "Star card"}
-              className="active:opacity-60 p-1.5 rounded-full"
-            >
-              <HugeiconsIcon
-                icon={card.starred ? BookmarkCheck01Icon : BookmarkAdd01Icon}
-                size={20}
-                color={card.starred ? SAGE[600] : INK_MUTED}
-                strokeWidth={card.starred ? 2.2 : 1.8}
-              />
-            </Pressable>
-
-            <Pressable
-              onPress={onArchive}
-              hitSlop={12}
-              accessibilityRole="button"
-              accessibilityLabel={card.archived ? "Restore card" : "Archive card"}
-              className="active:opacity-60 p-1.5 rounded-full"
-            >
-              <HugeiconsIcon
-                icon={Archive01Icon}
-                size={20}
-                color={INK_MUTED}
-                strokeWidth={1.8}
-              />
-            </Pressable>
-          </View>
-        </View>
       </View>
     );
   },

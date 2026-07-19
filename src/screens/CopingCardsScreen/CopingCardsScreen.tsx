@@ -7,7 +7,7 @@ import {
 import { useRouter, Stack } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { Text } from "@/src/components/ui/Text";
-import { Host, BottomSheet, Group, RNHostView, Picker, Text as SwiftUIText, List, Section } from "@expo/ui/swift-ui";
+import { Host, BottomSheet, Group, RNHostView, Picker, Text as SwiftUIText, List, Section, SwipeActions, Button, HStack, Spacer } from "@expo/ui/swift-ui";
 import {
   presentationDetents,
   presentationDragIndicator,
@@ -15,6 +15,8 @@ import {
   tag,
   tint,
   listStyle,
+  frame,
+  listRowBackground,
 } from "@expo/ui/swift-ui/modifiers";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { BookmarkAdd01Icon } from "@hugeicons/core-free-icons";
@@ -105,17 +107,20 @@ export const CopingCardsScreen: React.FC = () => {
           !isError &&
           (activeCards.length > 0 || archivedCards.length > 0) ? (
             <Section>
-              <Picker
-                modifiers={[pickerStyle("segmented"), tint(SAGE[600])]}
-                selection={viewMode === "active" ? "Active" : "Archived"}
-                onSelectionChange={(selection) => {
-                  if (selection === "Active") setViewMode("active");
-                  if (selection === "Archived") setViewMode("archived");
-                }}
-              >
-                <SwiftUIText modifiers={[tag("Active")]}>Active</SwiftUIText>
-                <SwiftUIText modifiers={[tag("Archived")]}>Archived</SwiftUIText>
-              </Picker>
+              <HStack>
+                <Picker
+                  modifiers={[pickerStyle("segmented"), tint(SAGE[600]), frame({ width: 220 })]}
+                  selection={viewMode === "active" ? "Active" : "Archived"}
+                  onSelectionChange={(selection) => {
+                    if (selection === "Active") setViewMode("active");
+                    if (selection === "Archived") setViewMode("archived");
+                  }}
+                >
+                  <SwiftUIText modifiers={[tag("Active")]}>Active</SwiftUIText>
+                  <SwiftUIText modifiers={[tag("Archived")]}>Archived</SwiftUIText>
+                </Picker>
+                <Spacer />
+              </HStack>
             </Section>
           ) : null}
 
@@ -158,19 +163,43 @@ export const CopingCardsScreen: React.FC = () => {
           ) : null}
 
           {currentData.map((item) => (
-            <RNHostView key={item.id} matchContents>
-              <View className={item.archived ? "opacity-60" : ""}>
-                <CopingCardItem
-                  card={item}
-                  onToggleStar={() => handleToggleStar(item.id)}
-                  onArchive={() =>
+            <SwipeActions
+              key={item.id}
+              modifiers={[
+                listRowBackground(
+                  item.archived ? "#F9FAF9" : item.starred ? SAGE[50] : "#ffffff"
+                )
+              ]}
+            >
+              <SwipeActions.Actions edge="trailing" allowsFullSwipe={true}>
+                <Button
+                  onPress={() =>
                     item.archived
                       ? handleUnarchive(item.id)
                       : handleArchive(item.id)
                   }
+                  modifiers={[tint(item.archived ? SAGE[600] : "#F87171")]}
+                  systemImage={item.archived ? "tray.and.arrow.up.fill" : "archivebox.fill"}
+                  label={item.archived ? "Restore" : "Archive"}
                 />
-              </View>
-            </RNHostView>
+              </SwipeActions.Actions>
+              <SwipeActions.Actions edge="leading" allowsFullSwipe={true}>
+                <Button
+                  onPress={() => handleToggleStar(item.id)}
+                  modifiers={[tint(SAGE[400])]}
+                  systemImage={item.starred ? "star.slash.fill" : "star.fill"}
+                  label={item.starred ? "Unstar" : "Star"}
+                />
+              </SwipeActions.Actions>
+
+              <RNHostView matchContents>
+                <View className={item.archived ? "opacity-60" : ""}>
+                  <CopingCardItem
+                    card={item}
+                  />
+                </View>
+              </RNHostView>
+            </SwipeActions>
           ))}
         </List>
       </Host>
