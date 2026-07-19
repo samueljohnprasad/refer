@@ -23,6 +23,7 @@ export interface UseCopingCardsReturn {
   toggleStar: (id: string) => Promise<void>;
   archiveCard: (id: string) => Promise<void>;
   unarchiveCard: (id: string) => Promise<void>;
+  deleteCard: (id: string) => Promise<void>;
   isError: boolean;
   refetch: () => void;
 }
@@ -185,6 +186,42 @@ export const useCopingCards = (
     },
   });
 
+  // ── Delete ────────────────────────────────────────────────────────────────
+
+  const deleteMutation = useMutation<
+    void,
+    Error,
+    string,
+    { previous: CopingCard[] }
+  >({
+    mutationFn: async (id): Promise<void> => {
+      const { error } = await supabase
+        .from("coping_cards" as any)
+        .delete()
+        .eq("id", id)
+        .eq("user_id", user?.id);
+
+      if (error) throw error;
+    },
+    onMutate: async (id): Promise<{ previous: CopingCard[] }> => {
+      await queryClient.cancelQueries({ queryKey: qk });
+      const previous = queryClient.getQueryData<CopingCard[]>(qk) ?? [];
+      queryClient.setQueryData<CopingCard[]>(
+        qk,
+        previous.filter((c) => c.id !== id),
+      );
+      return { previous };
+    },
+    onError: (_err, _id, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData<CopingCard[]>(qk, context.previous);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: qk });
+    },
+  });
+
   // ── Stable callbacks ──────────────────────────────────────────────────────
 
   const saveCard = useCallback(
@@ -207,6 +244,11 @@ export const useCopingCards = (
     [archiveMutation],
   );
 
+  const deleteCard = useCallback(
+    (id: string) => deleteMutation.mutateAsync(id),
+    [deleteMutation],
+  );
+
   return {
     cards: query.data ?? [],
     isLoading: query.isLoading,
@@ -214,6 +256,7 @@ export const useCopingCards = (
     toggleStar,
     archiveCard,
     unarchiveCard,
+    deleteCard,
     isError: query.isError,
     refetch: query.refetch,
   };

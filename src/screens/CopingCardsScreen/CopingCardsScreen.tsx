@@ -46,6 +46,7 @@ export const CopingCardsScreen: React.FC = () => {
     toggleStar,
     archiveCard,
     unarchiveCard,
+    deleteCard,
   } = useCopingCards(true); // Fetch all to allow instant switching
 
   const handleToggleStar = useCallback(
@@ -82,6 +83,14 @@ export const CopingCardsScreen: React.FC = () => {
       await unarchiveCard(id);
     },
     [unarchiveCard],
+  );
+
+  const handleDelete = useCallback(
+    async (id: string) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      await deleteCard(id);
+    },
+    [deleteCard],
   );
 
   const activeCards = cards.filter((c) => !c.archived);
@@ -182,18 +191,24 @@ export const CopingCardsScreen: React.FC = () => {
                 modifiers={rowModifiers as any}
               >
                 <SwipeActions.Actions edge="trailing" allowsFullSwipe={true}>
-                <Button
-                  onPress={() =>
-                    item.archived
-                      ? handleUnarchive(item.id)
-                      : handleArchive(item.id)
-                  }
-                  modifiers={[tint(item.archived ? SAGE[600] : "#F87171")]}
-                  systemImage={item.archived ? "tray.and.arrow.up.fill" : "archivebox.fill"}
-                  label={item.archived ? "Restore" : "Archive"}
-                />
-              </SwipeActions.Actions>
-              <SwipeActions.Actions edge="leading" allowsFullSwipe={true}>
+                  <Button
+                    role="destructive"
+                    onPress={() => handleDelete(item.id)}
+                    systemImage="trash.fill"
+                    label="Delete"
+                  />
+                  <Button
+                    onPress={() =>
+                      item.archived
+                        ? handleUnarchive(item.id)
+                        : handleArchive(item.id)
+                    }
+                    modifiers={[tint(item.archived ? SAGE[600] : "#F87171")]}
+                    systemImage={item.archived ? "tray.and.arrow.up.fill" : "archivebox.fill"}
+                    label={item.archived ? "Restore" : "Archive"}
+                  />
+                </SwipeActions.Actions>
+                <SwipeActions.Actions edge="leading" allowsFullSwipe={true}>
                 <Button
                   onPress={() => handleToggleStar(item.id)}
                   modifiers={[tint(SAGE[400])]}
