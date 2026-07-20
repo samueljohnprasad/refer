@@ -1,8 +1,5 @@
 import React, { ReactNode } from 'react';
 import { View, Text } from 'react-native';
-// Assuming date-fns is installed for parsing, or fallback to simple parsing
-// We'll use a simple generic fallback if it's strictly YYYY-MM-DD
-// But native JS Date handles YYYY-MM-DD perfectly.
 
 interface InsightCardWrapperProps {
   date: string;

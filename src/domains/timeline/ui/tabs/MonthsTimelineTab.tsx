@@ -1,54 +1,31 @@
 import React, { useState, useMemo } from 'react';
 import { View, Alert } from 'react-native';
 import { Timeline } from '@/src/components/ui/Timeline/Timeline';
-import { useGetDailyTimelineQuery, useGenerateDailyInsightMutation } from '@/src/store/api/timelineApi';
+import { useMonthlyTimeline } from '../../data/timeline.queries';
+import { useGenerateMonthlyInsight } from '../../data/timeline.mutations';
 import { TimelineShimmer } from '../components/TimelineShimmer';
 import { DailyInsightCard } from '../components/DailyInsightCard';
 import { GenerateInsightCard } from '../components/GenerateInsightCard';
 import * as Haptics from 'expo-haptics';
-import type { TimelineItemData, TimelineSection } from '@/src/components/ui/Timeline/types';
+import type { TimelineSection } from '@/src/components/ui/Timeline/types';
+import type { MonthlyTimelineItem, TimelineTabProps } from '../../model/timeline.types';
+import { MOCK_MONTHS_TIMELINE_DATA } from './mockData';
 
-interface DailyTimelineItem extends TimelineItemData {
-  originalDateString: string;
-  aiInsight: {
-    id?: string;
-    user_id?: string;
-    reflection_date?: string;
-    summary: string;
-    personalized_reflection?: any;
-    structured_memory?: any;
-    confidence?: number;
-    created_at?: string;
-    input_tokens?: number;
-    output_tokens?: number;
-    total_tokens?: number;
-  } | null;
-}
-
-import { MOCK_DAYS_TIMELINE_DATA } from './mockData';
-
-export interface TimelineTabProps {
-  onOpenModal?: () => void;
-}
-
-export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
+export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isFetching, isError } = useGetDailyTimelineQuery({ page, pageSize: 10 });
-  const [generateInsight] = useGenerateDailyInsightMutation();
+  const { data, isLoading, isError } = useMonthlyTimeline({ page, pageSize: 10 });
+  const { mutateAsync: generateInsight } = useGenerateMonthlyInsight();
   
-  // Track which dates are actively being generated so we can show a Shimmer gracefully
   const [generatingDates, setGeneratingDates] = useState<Set<string>>(new Set());
 
   const handleGenerate = async (date: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     
-    // Optimistically set loading state for this specific card
     setGeneratingDates(prev => new Set(prev).add(date));
     
     try {
-      await generateInsight({ date }).unwrap();
+      await generateInsight({ date });
     } catch (e) {
-      // Intentionally swallowing error log for production
       Alert.alert("Generation Failed", "Could not generate insight. Please try again later.");
     } finally {
       setGeneratingDates(prev => {
@@ -59,14 +36,18 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     }
   };
 
-  // Use mock data if the API fails for local UI testing
-  const displayData = isError || !data?.data ? MOCK_DAYS_TIMELINE_DATA : data.data;
+  const displayData = isError || !data?.data ? MOCK_MONTHS_TIMELINE_DATA : data.data;
 
-  const sections: TimelineSection<DailyTimelineItem>[] = useMemo(() => {
+  const sections: TimelineSection<MonthlyTimelineItem>[] = useMemo(() => {
     return displayData.map((item: any) => {
-      const ms = new Date(item.date).getTime();
+      const year = parseInt(item.date.substring(0, 4));
+      const month = parseInt(item.date.substring(5, 7));
+      const ms = new Date(year, month - 1, 1).getTime();
+      
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      
       return {
-        title: item.date,
+        title: `${monthNames[month - 1]} ${year}`,
         date: ms,
         data: [{
           id: item.date,
@@ -79,7 +60,7 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     });
   }, [displayData]);
 
-  const renderTimelineItem = (item: DailyTimelineItem) => {
+  const renderTimelineItem = (item: MonthlyTimelineItem) => {
     const isGenerating = generatingDates.has(item.originalDateString);
 
     if (isGenerating) {
@@ -90,7 +71,13 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
       return <DailyInsightCard insight={item.aiInsight} onPress={onOpenModal} />;
     }
     
-    return <GenerateInsightCard onPress={() => handleGenerate(item.originalDateString)} />;
+    return (
+      <GenerateInsightCard 
+        title="Generate Monthly Insight" 
+        subtitle="Tap to reflect on this month" 
+        onPress={() => handleGenerate(item.originalDateString)} 
+      />
+    );
   };
 
   if (isLoading && page === 1) {
@@ -105,9 +92,8 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     <Timeline
       sections={sections}
       renderItem={renderTimelineItem}
-      onEndReached={() => {
-        // Increment page when reaching bottom for infinite scroll
-      }}
+      mode="months"
+      onEndReached={() => {}}
     />
   );
 };

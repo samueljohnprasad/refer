@@ -1,31 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { View, Alert } from 'react-native';
 import { Timeline } from '@/src/components/ui/Timeline/Timeline';
-import { useGetMonthlyTimelineQuery, useGenerateMonthlyInsightMutation } from '@/src/store/api/timelineApi';
+import { useWeeklyTimeline } from '../../data/timeline.queries';
+import { useGenerateWeeklyInsight } from '../../data/timeline.mutations';
 import { TimelineShimmer } from '../components/TimelineShimmer';
 import { DailyInsightCard } from '../components/DailyInsightCard';
 import { GenerateInsightCard } from '../components/GenerateInsightCard';
 import * as Haptics from 'expo-haptics';
-import type { TimelineItemData, TimelineSection } from '@/src/components/ui/Timeline/types';
+import type { TimelineSection } from '@/src/components/ui/Timeline/types';
+import type { WeeklyTimelineItem, TimelineTabProps } from '../../model/timeline.types';
+import { MOCK_WEEKS_TIMELINE_DATA } from './mockData';
 
-interface MonthlyTimelineItem extends TimelineItemData {
-  originalDateString: string;
-  aiInsight: {
-    id?: string;
-    summary: string;
-  } | null;
-}
-
-import { MOCK_MONTHS_TIMELINE_DATA } from './mockData';
-
-export interface TimelineTabProps {
-  onOpenModal?: () => void;
-}
-
-export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
+export const WeeksTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isFetching, isError } = useGetMonthlyTimelineQuery({ page, pageSize: 10 });
-  const [generateInsight] = useGenerateMonthlyInsightMutation();
+  const { data, isLoading, isError } = useWeeklyTimeline({ page, pageSize: 10 });
+  const { mutateAsync: generateInsight } = useGenerateWeeklyInsight();
   
   const [generatingDates, setGeneratingDates] = useState<Set<string>>(new Set());
 
@@ -35,7 +24,7 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     setGeneratingDates(prev => new Set(prev).add(date));
     
     try {
-      await generateInsight({ date }).unwrap();
+      await generateInsight({ date });
     } catch (e) {
       Alert.alert("Generation Failed", "Could not generate insight. Please try again later.");
     } finally {
@@ -47,18 +36,32 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     }
   };
 
-  const displayData = isError || !data?.data ? MOCK_MONTHS_TIMELINE_DATA : data.data;
+  const displayData = isError || !data?.data ? MOCK_WEEKS_TIMELINE_DATA : data.data;
 
-  const sections: TimelineSection<MonthlyTimelineItem>[] = useMemo(() => {
+  const sections: TimelineSection<WeeklyTimelineItem>[] = useMemo(() => {
     return displayData.map((item: any) => {
       const year = parseInt(item.date.substring(0, 4));
-      const month = parseInt(item.date.substring(5, 7));
-      const ms = new Date(year, month - 1, 1).getTime();
+      const week = parseInt(item.date.substring(6));
+      const ms = new Date(year, 0, 1 + (week - 1) * 7).getTime();
       
-      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      let title = `W${week} ${year}`;
+      if (item.start_date && item.end_date) {
+        const sDate = new Date(item.start_date);
+        const eDate = new Date(item.end_date);
+        const sMonth = sDate.toLocaleString('default', { month: 'short' }).toUpperCase();
+        const eMonth = eDate.toLocaleString('default', { month: 'short' }).toUpperCase();
+        const sDay = sDate.getDate();
+        const eDay = eDate.getDate();
+        
+        if (sMonth === eMonth) {
+          title = `${sMonth} ${sDay}-${eDay}, ${year}`;
+        } else {
+          title = `${sMonth} ${sDay} - ${eMonth} ${eDay}, ${year}`;
+        }
+      }
       
       return {
-        title: `${monthNames[month - 1]} ${year}`,
+        title,
         date: ms,
         data: [{
           id: item.date,
@@ -71,7 +74,7 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     });
   }, [displayData]);
 
-  const renderTimelineItem = (item: MonthlyTimelineItem) => {
+  const renderTimelineItem = (item: WeeklyTimelineItem) => {
     const isGenerating = generatingDates.has(item.originalDateString);
 
     if (isGenerating) {
@@ -79,14 +82,13 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     }
     
     if (item.aiInsight) {
-      // Reusing DailyInsightCard as the structure is currently identical
       return <DailyInsightCard insight={item.aiInsight} onPress={onOpenModal} />;
     }
     
     return (
       <GenerateInsightCard 
-        title="Generate Monthly Insight" 
-        subtitle="Tap to reflect on this month" 
+        title="Generate Weekly Insight" 
+        subtitle="Tap to reflect on this week" 
         onPress={() => handleGenerate(item.originalDateString)} 
       />
     );
@@ -104,7 +106,7 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     <Timeline
       sections={sections}
       renderItem={renderTimelineItem}
-      mode="months"
+      mode="weeks"
       onEndReached={() => {}}
     />
   );

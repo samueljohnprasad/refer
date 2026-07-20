@@ -20,9 +20,9 @@ import {
 import { SAGE } from "@/lib/tokens";
 import { IMessageStack } from "@/src/animations/imessage-stack";
 
-import { DaysTimelineTab } from "@/src/screens/Timelines/tabs/DaysTimelineTab";
-import { WeeksTimelineTab } from "@/src/screens/Timelines/tabs/WeeksTimelineTab";
-import { MonthsTimelineTab } from "@/src/screens/Timelines/tabs/MonthsTimelineTab";
+import { DaysTimelineTab } from "@/src/domains/timeline/ui/tabs/DaysTimelineTab";
+import { WeeksTimelineTab } from "@/src/domains/timeline/ui/tabs/WeeksTimelineTab";
+import { MonthsTimelineTab } from "@/src/domains/timeline/ui/tabs/MonthsTimelineTab";
 
 export default function TimelinesScreen() {
   const router = useRouter();

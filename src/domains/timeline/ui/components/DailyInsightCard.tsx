@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
+import type { AiInsight } from '../../model/timeline.types';
 
 interface DailyInsightCardProps {
   insight: {

@@ -5,17 +5,17 @@ import { configureStore } from "@reduxjs/toolkit";
 import journeyReducer from "@/src/features/journey/journeySlice";
 import { journeyApi } from "@/src/features/journey/journeyApi";
 import happyAssistantReducer from "@/src/store/slices/happyAssistantSlice";
-import { timelineApi } from "@/src/store/api/timelineApi";
+import { timelineReducer } from "@/src/domains/timeline/state/timeline.slice";
 
 export const store = configureStore({
   reducer: {
     journey: journeyReducer,
     happyAssistant: happyAssistantReducer,
+    timeline: timelineReducer,
     [journeyApi.reducerPath]: journeyApi.reducer,
-    [timelineApi.reducerPath]: timelineApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(journeyApi.middleware, timelineApi.middleware),
+    getDefaultMiddleware().concat(journeyApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
