@@ -25,6 +25,7 @@ import { SectionDivider } from "@/src/components/habits/SettingsRow";
 import { useHabits } from "@/hooks/data/useHabits";
 import { handleHabitCreated } from "@/src/utils/habitNotificationHandlers";
 import { useCSSVariable } from "uniwind";
+import { HabitIcon } from "@/src/utils/habitIconMapper";
 
 // ─── Presets ────────────────────────────────────────────────────────
 
@@ -97,7 +98,7 @@ function PresetRow({ preset, onPress, disabled }: PresetRowProps): React.JSX.Ele
       accessibilityLabel={`Add habit: ${preset.name}. ${preset.description}`}
     >
       <View className="mr-4 h-10 w-10 items-center justify-center">
-        <RNText style={{ fontSize: 24 }}>{preset.icon}</RNText>
+        <HabitIcon icon={preset.icon} size={24} />
       </View>
       <View className="min-w-0 flex-1">
         <RNText

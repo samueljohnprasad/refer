@@ -88,8 +88,8 @@ export default function TabLayout() {
         <Label>Exercises</Label>
         <Icon
           sf={{
-            default: "doc.text", // inactive
-            selected: "doc.text.fill", // active
+            default: "doc.text",
+            selected: "doc.text.fill",
           }}
         />
       </NativeTabs.Trigger>
@@ -97,8 +97,8 @@ export default function TabLayout() {
         <Label>Home</Label>
         <Icon
           sf={{
-            default: "house", // inactive
-            selected: "house.fill", // active
+            default: "house",
+            selected: "house.fill",
           }}
         />
       </NativeTabs.Trigger>
@@ -106,8 +106,8 @@ export default function TabLayout() {
         <Label>Journal</Label>
         <Icon
           sf={{
-            default: "book.closed", // inactive
-            selected: "book.closed.fill", // active
+            default: "book.closed",
+            selected: "book.closed.fill",
           }}
         />
       </NativeTabs.Trigger>
@@ -115,16 +115,16 @@ export default function TabLayout() {
         <Label>Record</Label>
         <Icon
           sf={{
-            default: "mic", // inactive
-            selected: "mic.fill", // active
+            default: "mic",
+            selected: "mic.fill",
           }}
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="journeys" role="search">
         <Icon
           sf={{
-            default: "map", // inactive
-            selected: "map.fill", // active
+            default: "map",
+            selected: "map.fill",
           }}
         />
         <Label>Journeys</Label>

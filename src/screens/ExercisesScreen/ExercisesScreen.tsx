@@ -45,6 +45,7 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
 import { LegendList } from "@legendapp/list";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
 import {
   ArrowRight01Icon,
   BookmarkAdd01Icon,
@@ -252,8 +253,8 @@ const ExerciseCard = memo(function ExerciseCard({
             featured && { width: 56, height: 56 },
           ]}
         >
-          <HugeiconsIcon
-            icon={icon}
+          <ExerciseIcon
+            type={exercise.type}
             size={featured ? 28 : 24}
             color={badgeTheme.iconColor}
           />
@@ -368,7 +369,7 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
         ]}
       >
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
-          <HugeiconsIcon icon={icon} size={28} color={badgeTheme.iconColor} />
+          <ExerciseIcon type={exercise.type} size={28} color={badgeTheme.iconColor} />
           <View style={{ flex: 1 }} />
           <View style={[nutrieStyles.inlinePill, { backgroundColor: "transparent", borderWidth: 0 }]}>
             {Platform.OS === "ios" ? (
@@ -428,7 +429,7 @@ const ExerciseShelfCard = memo(function ExerciseShelfCard({
         <View
           style={{ marginBottom: 12, height: 40, justifyContent: "center" }}
         >
-          <HugeiconsIcon icon={icon} size={24} color={badgeTheme.iconColor} />
+          <ExerciseIcon type={exercise.type} size={24} color={badgeTheme.iconColor} />
         </View>
         <Text style={nutrieStyles.exerciseTitle} numberOfLines={2}>
           {exercise.title}
@@ -473,7 +474,7 @@ const CompactExerciseRow = memo(function CompactExerciseRow({
             { backgroundColor: "transparent", width: 40, height: 40, borderRadius: 10, marginRight: 12 },
           ]}
         >
-          <HugeiconsIcon icon={icon} size={20} color={badgeTheme.iconColor} />
+          <ExerciseIcon type={exercise.type} size={20} color={badgeTheme.iconColor} />
         </View>
         
         <View style={{ flex: 1, minWidth: 0, justifyContent: "center" }}>
@@ -753,11 +754,16 @@ function getLogPresentation(item: HistoryLogItem) {
   if (item.type === "unified" && item.exerciseType) {
     const config = getExerciseConfig(item.exerciseType);
     const categoryMeta = config ? getCategoryMeta(config.category) : null;
+    const badgeTheme = config ? getCategoryBadgeTheme(config.category) : { iconColor: "#8E8E93" };
 
     return {
       heading: categoryMeta?.label ?? "Exercise",
       title: config?.title ?? item.title ?? "Exercise",
-      icon: config ? getExerciseIcon(config.type) : Brain01Icon,
+      icon: config ? (
+        <ExerciseIcon type={config.type} size={22} color={badgeTheme.iconColor} />
+      ) : (
+        <HugeiconsIcon icon={Brain01Icon} size={22} color={badgeTheme.iconColor} />
+      ),
     };
   }
 
@@ -765,7 +771,7 @@ function getLogPresentation(item: HistoryLogItem) {
     return {
       heading: LEGACY_LOG_META.catcher.label,
       title: item.title?.trim() || "Untitled Session",
-      icon: LEGACY_LOG_META.catcher.icon,
+      icon: <HugeiconsIcon icon={LEGACY_LOG_META.catcher.icon} size={22} color="#8E8E93" />,
     };
   }
 
@@ -773,14 +779,14 @@ function getLogPresentation(item: HistoryLogItem) {
     return {
       heading: LEGACY_LOG_META.reframing.label,
       title: item.title?.trim() || "Untitled Session",
-      icon: LEGACY_LOG_META.reframing.icon,
+      icon: <HugeiconsIcon icon={LEGACY_LOG_META.reframing.icon} size={22} color="#8E8E93" />,
     };
   }
 
   return {
     heading: LEGACY_LOG_META.gratitude.label,
     title: item.title?.trim() || "Untitled Session",
-    icon: LEGACY_LOG_META.gratitude.icon,
+    icon: <HugeiconsIcon icon={LEGACY_LOG_META.gratitude.icon} size={22} color="#8E8E93" />,
   };
 }
 
@@ -818,11 +824,7 @@ const LogCard = memo(function LogCard({
             { backgroundColor: isComplete ? "#E8FBF0" : "#F4F4F5" },
           ]}
         >
-          <HugeiconsIcon
-            icon={presentation.icon}
-            size={22}
-            color={isComplete ? "#22C55E" : "#8E8E93"}
-          />
+          {presentation.icon}
         </View>
 
         <View style={{ flex: 1, minWidth: 0 }}>

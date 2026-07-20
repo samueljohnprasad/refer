@@ -30,6 +30,8 @@ import {
   EndRepeatOption,
 } from "@/src/types/habits";
 import * as Haptics from "expo-haptics";
+import { formatTime } from "@/src/utils/dateUtils";
+import { HabitIcon } from "@/src/utils/habitIconMapper";
 import { format } from "date-fns";
 import { Button } from "@/src/components/ui/Button";
 import { Text } from "@/src/components/ui/Text";
@@ -229,7 +231,7 @@ export default function HabitDetailsScreen(): React.JSX.Element | null {
         {/* ─── Header ──────────────────────────── */}
         <View className="items-center py-6 w-full">
           <View className="mb-3">
-            <RNText style={{ fontSize: 48 }}>{habit.icon || "✨"}</RNText>
+            <HabitIcon icon={habit.icon} size={48} />
           </View>
           <Text className="text-[22px] font-bold text-center text-black tracking-tight">
             {habit.name}

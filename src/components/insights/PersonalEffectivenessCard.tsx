@@ -10,6 +10,7 @@ import {
 } from "@/src/hooks/insights/usePersonalEffectiveness";
 import { SAGE, INK_MUTED } from "@/lib/tokens";
 import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
+import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
@@ -21,7 +22,6 @@ function EffectivenessRow({
   rank: number;
 }) {
   const router = useRouter();
-  const icon = getExerciseIcon(score.exerciseType);
 
   return (
     <Pressable
@@ -36,11 +36,9 @@ function EffectivenessRow({
       className="flex-row items-center py-3 active:opacity-70"
     >
       <Text className="text-lg w-8">{MEDALS[rank] ?? `${rank + 1}.`}</Text>
-      {icon && (
-        <View className="h-9 w-9 rounded-xl bg-sage-50 items-center justify-center mr-3">
-          <HugeiconsIcon icon={icon} size={18} color={SAGE[600]} />
-        </View>
-      )}
+      <View className="h-9 w-9 rounded-xl bg-sage-50 items-center justify-center mr-3">
+        <ExerciseIcon type={score.exerciseType} size={18} color={SAGE[600]} />
+      </View>
       <View className="flex-1 min-w-0">
         <Text className="text-[15px] font-bold text-ink" numberOfLines={1}>
           {score.exerciseLabel}
@@ -67,7 +65,10 @@ export function PersonalEffectivenessCard() {
   const top3 = data.ranked.slice(0, 3);
 
   return (
-    <View className="happy-brand-card rounded-[24px] p-5" style={{ backgroundColor: "#FFFFFF" }}>
+    <View
+      className="happy-brand-card rounded-[24px] p-5"
+      style={{ backgroundColor: "#FFFFFF" }}
+    >
       <Text className="happy-font-heading-bold text-[18px] tracking-tight text-ink mb-3">
         Best Tools for You
       </Text>

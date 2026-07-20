@@ -6,6 +6,7 @@ import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
 import { usePersonalEffectiveness } from "@/src/hooks/insights/usePersonalEffectiveness";
 import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
+import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
 import { SAGE, BRAND_SURFACE } from "@/lib/tokens";
 import { Card } from "@/src/components/ui/Card";
 
@@ -16,7 +17,6 @@ export function RecommendedForYouCard() {
   if (!data?.bestOverall) return null;
 
   const best = data.bestOverall;
-  const icon = getExerciseIcon(best.exerciseType);
 
   return (
     <Card
@@ -37,12 +37,10 @@ export function RecommendedForYouCard() {
         Recommended for you
       </Text>
 
-      <View className="flex-row items-center">
-        {icon && (
-          <View className="h-12 w-12 rounded-icon-well bg-sage-50 items-center justify-center mr-3 border border-sage-100">
-            <HugeiconsIcon icon={icon} size={24} color={SAGE[600]} />
-          </View>
-        )}
+        <View className="flex-row items-center">
+        <View className="h-12 w-12 rounded-icon-well bg-sage-50 items-center justify-center mr-3 border border-sage-100">
+          <ExerciseIcon type={best.exerciseType} size={24} color={SAGE[600]} />
+        </View>
 
         <View className="flex-1 min-w-0">
           <Text

@@ -16,53 +16,7 @@ interface WeeklyTimelineItem extends TimelineItemData {
   } | null;
 }
 
-const MOCK_TIMELINE_DATA = [
-  {
-    date: '2026-W28',
-    start_date: '2026-07-06',
-    end_date: '2026-07-12',
-    aiInsight: {
-      id: 'w1',
-      summary: "This week was largely defined by adapting to a new chapter in your professional life. Early in the week, much of your attention was directed toward uncertainty and learning a new environment. As the week progressed, positive workplace feedback, consistent morning walks, and CBT exercises appeared to support greater confidence and emotional stability. By the end of the week, spending time with family brought an additional sense of balance."
-    }
-  },
-  {
-    date: '2026-W27',
-    start_date: '2026-06-29',
-    end_date: '2026-07-05',
-    aiInsight: null
-  },
-  {
-    date: '2026-W26',
-    start_date: '2026-06-22',
-    end_date: '2026-06-28',
-    aiInsight: {
-      id: 'w2',
-      summary: "Last week centered heavily around preparation and closing out old commitments. You consistently logged meals and maintained a high level of physical activity, which seemed to buffer against the stress of wrapping up ongoing projects. Weekends provided much-needed unstructured rest, emphasizing the importance of disconnecting completely before a new week begins."
-    }
-  },
-  {
-    date: '2026-W25',
-    start_date: '2026-06-15',
-    end_date: '2026-06-21',
-    aiInsight: null
-  },
-  {
-    date: '2026-W24',
-    start_date: '2026-06-08',
-    end_date: '2026-06-14',
-    aiInsight: {
-      id: 'w3',
-      summary: "This week showed a clear pattern of high productivity early on followed by creative burnout by Thursday. Recognizing this cycle, you successfully leaned into your coping strategy of weekend nature walks, which effectively reset your mental state. Moving forward, pacing yourself earlier in the week might prevent this mid-week crash."
-    }
-  },
-  {
-    date: '2026-W23',
-    start_date: '2026-06-01',
-    end_date: '2026-06-07',
-    aiInsight: null
-  }
-];
+import { MOCK_WEEKS_TIMELINE_DATA } from './mockData';
 
 export interface TimelineTabProps {
   onOpenModal?: () => void;
@@ -93,7 +47,7 @@ export const WeeksTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     }
   };
 
-  const displayData = isError || !data?.data ? MOCK_TIMELINE_DATA : data.data;
+  const displayData = isError || !data?.data ? MOCK_WEEKS_TIMELINE_DATA : data.data;
 
   const sections: TimelineSection<WeeklyTimelineItem>[] = useMemo(() => {
     return displayData.map((item: any) => {

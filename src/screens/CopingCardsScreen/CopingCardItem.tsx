@@ -12,6 +12,7 @@ import { SAGE, INK, INK_SOFT, INK_MUTED, BRAND_BORDER_STRONG } from "@/lib/token
 import type { CopingCard } from "@/src/types/exerciseFlow";
 import dayjs from "dayjs";
 import { getExerciseIcon } from "@/src/data/exerciseIconRegistry";
+import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
 
 const EXERCISE_LABEL: Record<string, string> = {
   thought_catcher: "Thought Catcher",
@@ -42,7 +43,6 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
   ({ card }) => {
     const [expanded, setExpanded] = useState(false);
     const [isTruncated, setIsTruncated] = useState(false);
-    const exerciseIcon = getExerciseIcon(card.exercise_type);
     const exerciseLabel =
       EXERCISE_LABEL[card.exercise_type] ?? card.exercise_type;
     const dateLabel = dayjs(card.created_at).format("MMM D");
@@ -68,7 +68,7 @@ export const CopingCardItem: React.FC<CopingCardItemProps> = React.memo(
         {/* Quiet metadata header */}
         <View className="flex-row items-center justify-between mb-3.5">
           <View className="flex-row items-center gap-1.5">
-            <HugeiconsIcon icon={exerciseIcon} size={15} color={INK_SOFT} strokeWidth={1.8} />
+            <ExerciseIcon type={card.exercise_type} size={15} color={INK_SOFT} />
             <Text className="text-[12px] font-semibold text-ink-soft tracking-wide">
               {exerciseLabel}
             </Text>

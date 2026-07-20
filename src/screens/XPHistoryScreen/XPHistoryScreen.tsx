@@ -89,7 +89,7 @@ export const XPHistoryScreen: React.FC = () => {
     <View style={styles.screen}>
       <Stack.Screen
         options={{
-          title: "Insights",
+          title: "Progression",
           headerStyle: { backgroundColor: "transparent" },
           headerTransparent: true,
           headerShadowVisible: false,

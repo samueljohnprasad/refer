@@ -4,6 +4,7 @@ import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { Button } from "@/src/components/ui/Button";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { ExerciseIcon } from "@/src/components/exercise/ExerciseIcon";
 import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
 import { getExerciseIcon, getCategoryTint } from "@/src/data/exerciseIconRegistry";
 import { getExerciseConfig } from "@/src/data/exerciseRegistry";
@@ -59,12 +60,11 @@ export const SummaryStep: React.FC<SummaryStepProps> = React.memo(
               <View
                 className={`h-16 w-16 rounded-full items-center justify-center mb-3.5 shadow-sm ${tint.iconBg}`}
               >
-                <HugeiconsIcon
-                  icon={iconObj}
-                  size={30}
-                  color={tint.iconColor}
-                  strokeWidth={2}
-                />
+                {exerciseType ? (
+                  <ExerciseIcon type={exerciseType as ExerciseType} size={32} color={tint.iconColor} />
+                ) : (
+                  <HugeiconsIcon icon={iconObj} size={32} color={tint.iconColor} strokeWidth={2} />
+                )}
               </View>
             </FadeInItem>
             <FadeInItem index={1}>

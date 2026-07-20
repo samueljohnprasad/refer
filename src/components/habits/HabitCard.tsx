@@ -15,6 +15,7 @@ import { format, parse } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { RepeatIcon } from "@hugeicons/core-free-icons";
 import { INK_MUTED, SAGE, TRANSPARENT } from "@/lib/tokens";
+import { HabitIcon } from "@/src/utils/habitIconMapper";
 
 interface HabitCardProps {
   habit: HabitWithStatus;
@@ -105,9 +106,9 @@ export const HabitCard: React.FC<HabitCardProps> = ({
         })}
       >
         <View className="flex-row items-center">
-          {/* Emoji Icon */}
+          {/* SF Symbol / Emoji Icon */}
           <View className="mr-3 h-10 w-10 items-center justify-center">
-            <Text style={{ fontSize: 22, opacity: habit.isCompleted ? 0.5 : 1 }}>{habit.icon || "✓"}</Text>
+            <HabitIcon icon={habit.icon} size={24} opacity={habit.isCompleted ? 0.5 : 1} />
           </View>
 
           {/* Content */}

@@ -44,7 +44,6 @@ import DailyNotesHeader from "./DailyNotesHeader";
 import { formateDate_y_m_d } from "@/src/utils/date";
 import SuspensLoader from "@/src/components/SuspensLoader";
 import { HabitsSection } from "@/src/components/habits/HabitsSection";
-import CalorieTrackerScreen from "../CalorieTrackerScreen/CalorieTrackerScreen";
 import { SAGE } from "@/lib/tokens";
 import { useMentalHealthData } from "@/hooks/data/useMentalHealthData";
 import { Host, Picker, Text as SwiftUIText } from "@expo/ui/swift-ui";
@@ -54,18 +53,16 @@ import { pickerStyle, tag, badge } from "@expo/ui/swift-ui/modifiers";
 import { MentalHealthProfileContainer } from "./notes/MentalHealthProfileContainer";
 import { AIInsightsModalBottomSheet } from "@/src/components/ai/AIInsightsModalBottomSheet";
 
-const TAB_FILTER_OPTIONS = ["Journal", "Calories", "Habits"] as const;
-type TabFilter = "habits" | "journal" | "calories";
+const TAB_FILTER_OPTIONS = ["Journal", "Habits"] as const;
+type TabFilter = "habits" | "journal";
 type TabFilterLabel = (typeof TAB_FILTER_OPTIONS)[number];
 
 const TAB_FILTER_BY_LABEL: Record<TabFilterLabel, TabFilter> = {
   Journal: "journal",
-  Calories: "calories",
   Habits: "habits",
 };
 const TAB_FILTER_LABEL_BY_FILTER: Record<TabFilter, TabFilterLabel> = {
   journal: "Journal",
-  calories: "Calories",
   habits: "Habits",
 };
 
@@ -396,10 +393,6 @@ function DailyNotesScreenComponent(): ReactElement {
                       Journal
                     </SwiftUIText>
 
-                    <SwiftUIText modifiers={[tag("calories")]}>
-                      Calories
-                    </SwiftUIText>
-
                     <SwiftUIText modifiers={[tag("habits")]}>
                       Habits
                     </SwiftUIText>
@@ -412,17 +405,7 @@ function DailyNotesScreenComponent(): ReactElement {
                 className="flex-1 px-4 pb-8"
                 style={contentAnimatedStyle}
               >
-                {/* Calorie Tracker Widget */}
-                {tabFilter === "calories" ? (
-                  <Animated.View
-                    entering={FadeIn.duration(500).easing(
-                      Easing.bezier(0.4, 0.0, 0.2, 1),
-                    )}
-                    className="flex-1 pt-4"
-                  >
-                    <CalorieTrackerScreen selectedDate={selectedDate} />
-                  </Animated.View>
-                ) : null}
+
 
                 {/* Habits Section */}
                 {tabFilter === "habits" ? (
