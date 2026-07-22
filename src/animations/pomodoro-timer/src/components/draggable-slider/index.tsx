@@ -1,9 +1,10 @@
 import React, { useImperativeHandle } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
   interpolate,
+  runOnJS,
   useAnimatedReaction,
   useDerivedValue,
   useSharedValue,
@@ -15,9 +16,6 @@ import { useTimer } from './hooks/useTimer';
 import type { DraggableSliderProps } from './types';
 import { TickLine } from './components/tick-line';
 
-const { height: WindowHeight } = Dimensions.get('window');
-const radius = 280;
-
 export type CircularDraggableSliderRefType = {
   resetTimer: () => void;
   runTimer: (to: number) => void;
@@ -27,19 +25,6 @@ export type CircularDraggableSliderRefType = {
 // This one was really challening :)
 // The idea is to use a custom pan gesture handler to handle the drag event and update the progress value accordingly.
 // Once the user drags, the progress gets converted to radians and then to seconds.
-
-// To map the translation to an angle I've used the interpolate function.
-// Here's the idea.
-// Let's imagine that you don't see a circle but a straight line | | | | | | | | | | |
-// What's the distance between two ticks? It's the straight line length divided by the amount of ticks.
-// But actually the straight line length is our diameter of the circle, so it's 2 * PI * radius.
-// const distanceBetweenTwoTicks = diameter / linesAmount; -> 2 * PI * radius / linesAmount
-
-// Once we have this knowledge we can remap the progress value to radians.
-// ->
-// inputRange: [0, listWidth]
-// outputRange: [0, 2 * Math.PI]
-// I have added an offset in the actual code to rotate the circle by 90 degrees at the very beginning
 
 export const CircularDraggableSlider = React.forwardRef<
   CircularDraggableSliderRefType,
@@ -57,9 +42,12 @@ export const CircularDraggableSlider = React.forwardRef<
       lineColor = '#c6c6c6',
       bigLineColor = '#c6c6c6',
       onCompletion,
+      radius = 280,
+      containerMode = 'fullscreen',
     },
     ref,
   ) => {
+    const { height: WindowHeight } = useWindowDimensions();
     const progress = useSharedValue(0);
     const previousProgress = useSharedValue(0);
 
@@ -129,13 +117,13 @@ export const CircularDraggableSlider = React.forwardRef<
           (radiants - offset) / distanceBetweenTwoTicksRad,
         );
         if (onProgressChange) {
-          onProgressChange(amountOfSeconds);
+          runOnJS(onProgressChange)(amountOfSeconds);
         }
       },
     );
 
     return (
-      <View style={styles.container}>
+      <View style={containerMode === 'inline' ? [styles.inlineContainer, { width: radius * 2, height: radius * 2 }] : styles.container}>
         <View
           pointerEvents="none"
           style={[
@@ -145,7 +133,7 @@ export const CircularDraggableSlider = React.forwardRef<
               alignItems: 'center',
               height: radius * 2,
               width: radius * 2,
-              transform: [
+              transform: containerMode === 'inline' ? [] : [
                 {
                   translateY: WindowHeight / 2 - radius / 2,
                 },
@@ -187,10 +175,9 @@ export const CircularDraggableSlider = React.forwardRef<
         <GestureDetector gesture={panGesture}>
           <Animated.View
             style={[
-              {
-                height: WindowHeight / 2,
-              },
-              styles.timer,
+              containerMode === 'inline'
+                ? { width: radius * 2, height: radius * 2, position: 'absolute' }
+                : { height: WindowHeight / 2, ...styles.timer },
             ]}
           />
         </GestureDetector>
@@ -206,6 +193,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  inlineContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    alignSelf: 'center',
   },
   timer: {
     position: 'absolute',

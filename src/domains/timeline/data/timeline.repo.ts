@@ -26,9 +26,9 @@ export const timelineRepo = {
     return { data: res.data };
   },
 
-  async generateWeeklyInsight(date: string): Promise<{ data: any }> {
+  async generateWeeklyInsight(week_index: number, year: number): Promise<{ data: any }> {
     const { data, error } = await supabase.functions.invoke('generate-weekly-ai', {
-      body: { date },
+      body: { week_index, year },
     });
     if (error) throw error;
     return { data };

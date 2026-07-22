@@ -7,6 +7,7 @@ import { createDynamicSummaryStep } from "@/src/components/exercise/steps/create
 import { IntroStep } from "@/src/components/exercise/steps/IntroStep";
 import { SliderStep } from "@/src/components/exercise/steps/SliderStep";
 import { ChecklistStep } from "@/src/components/exercise/steps/ChecklistStep";
+import { PMRCircularTimerStep } from "@/src/components/exercise/steps/PMRCircularTimerStep";
 
 const INITIAL: BodyScanPMRResponse = {
   preTensionRating: 5,
@@ -60,23 +61,63 @@ export const bodyScanPMRConfig: ExerciseConfig<BodyScanPMRResponse> = {
     },
     {
       id: "guided_body_scan",
-      component: createStep(ChecklistStep, {
-        title: "Body Scan",
-        subtitle: "Tense and release each area. Check off when done.",
+      component: createStep(PMRCircularTimerStep, {
+        title: "Guided Body Scan & PMR",
+        subtitle: "Tense each muscle group for 5s using the circular timer, then release.",
         fieldKey: "completedAreas",
-        presetItems: [
-          { label: "Forehead & Scalp", value: "forehead" },
-          { label: "Jaw & Face", value: "jaw" },
-          { label: "Neck & Shoulders", value: "neck" },
-          { label: "Arms & Hands", value: "arms" },
-          { label: "Chest & Upper Back", value: "chest" },
-          { label: "Stomach & Lower Back", value: "stomach" },
-          { label: "Hips & Glutes", value: "hips" },
-          { label: "Legs & Feet", value: "legs" },
+        areas: [
+          {
+            label: "Forehead & Scalp",
+            value: "forehead",
+            instruction: "Raise eyebrows high and wrinkle your forehead tightly. Feel the tension across your scalp, then release completely.",
+            defaultDurationSec: 5,
+          },
+          {
+            label: "Jaw & Face",
+            value: "jaw",
+            instruction: "Clench your jaw gently and scrunch all facial muscles tightly around your eyes and nose, then let go.",
+            defaultDurationSec: 5,
+          },
+          {
+            label: "Neck & Shoulders",
+            value: "neck",
+            instruction: "Raise shoulders high toward your ears while pulling your neck firmly back, hold, then release.",
+            defaultDurationSec: 5,
+          },
+          {
+            label: "Arms & Hands",
+            value: "arms",
+            instruction: "Make tight fists and curl your wrists to flex both biceps and forearms firmly, then release.",
+            defaultDurationSec: 5,
+          },
+          {
+            label: "Chest & Upper Back",
+            value: "chest",
+            instruction: "Take a deep breath, hold it, and pull shoulder blades back while tightening your chest, then breathe out and relax.",
+            defaultDurationSec: 5,
+          },
+          {
+            label: "Stomach & Lower Back",
+            value: "stomach",
+            instruction: "Tighten your abdominal muscles firmly as if bracing for an impact while arching slightly, then let go.",
+            defaultDurationSec: 5,
+          },
+          {
+            label: "Hips & Glutes",
+            value: "hips",
+            instruction: "Squeeze your buttocks and hip muscles together firmly, notice the tightness, then release.",
+            defaultDurationSec: 5,
+          },
+          {
+            label: "Legs & Feet",
+            value: "legs",
+            instruction: "Point toes upward toward your shins, tensing your thighs and calf muscles firmly, then let go completely.",
+            defaultDurationSec: 5,
+          },
         ],
-        minChecked: 5,
+        minCompleted: 5,
       }),
-      label: "Body scan",
+      label: "Body scan timer",
       validate: (r) => r.completedAreas.length >= 5,
     },
     {

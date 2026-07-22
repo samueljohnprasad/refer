@@ -1,6 +1,7 @@
 import React from "react";
 import { Platform, View } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { SymbolView } from "expo-symbols";
 import { getExerciseIcon, getCategoryIcon } from "@/src/data/exerciseIconRegistry";
 
 const EXERCISE_TO_SFSYMBOL: Record<string, string> = {
@@ -55,25 +56,36 @@ interface ExerciseIconProps {
 export function ExerciseIcon({ type, category, size = 24, color = "black", animated = false }: ExerciseIconProps) {
   const sfSymbol = (type && EXERCISE_TO_SFSYMBOL[type]) || (category && CATEGORY_TO_SFSYMBOL[category]);
   
-  if (Platform.OS === "ios" && SwiftUIImage && SwiftUIHost && sfSymbol) {
-    const modifiers = animated && symbolEffect ? [
-      symbolEffect({ effect: 'bounce', options: { direction: 'up', speed: 1.2 } })
-    ] : [];
+  if (Platform.OS === "ios" && sfSymbol) {
+    const sfSize = Math.max(12, Math.round(size * 0.75));
 
-    // SFSymbols have intrinsic padding, but in some layouts they appear too large
-    // We scale them down to 0.70 to make them even smaller
-    const sfSize = Math.round(size * 0.70);
+    if (animated && SwiftUIImage && SwiftUIHost) {
+      const modifiers = symbolEffect ? [
+        symbolEffect({ effect: 'bounce', options: { direction: 'up', speed: 1.2 } })
+      ] : [];
+
+      return (
+        <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+          <SwiftUIHost matchContents style={{ width: sfSize, height: sfSize }}>
+            <SwiftUIImage 
+              systemName={sfSymbol} 
+              size={sfSize} 
+              color={color} 
+              modifiers={modifiers}
+            />
+          </SwiftUIHost>
+        </View>
+      );
+    }
 
     return (
       <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-        <SwiftUIHost matchContents>
-          <SwiftUIImage 
-            systemName={sfSymbol} 
-            size={sfSize} 
-            color={color} 
-            modifiers={modifiers}
-          />
-        </SwiftUIHost>
+        <SymbolView
+          name={sfSymbol as any}
+          size={sfSize}
+          tintColor={color}
+          style={{ width: sfSize, height: sfSize }}
+        />
       </View>
     );
   }

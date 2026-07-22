@@ -5,13 +5,17 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { transcribeAudio } from "./translates.ts";
-import { getInsights } from "./genai.ts";
+import { JournalService } from "../_shared/reflection-engine/services/journal.service.ts";
 import { auth } from "./auth.ts";
 
 type JournalEntry = {
   isAudio: boolean;
   journal: string;
-  selectedDate: string;
+  selectedDate?: string;
+  inputType?: string;
+  title?: string;
+  durationSeconds?: number;
+  wordsCount?: number;
 };
 
 async function parseJson<T>(req: Request): Promise<T> {
@@ -30,7 +34,6 @@ Deno.serve(async (req: Request) => {
     const token = authHeader.replace("Bearer ", "");
     const supabase = auth(token);
 
-    // 3) Get user
     const {
       data: { user },
       error: userError,
@@ -43,30 +46,32 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // 4) Parse request body
     const body = await parseJson<JournalEntry>(req);
-    const { isAudio, journal } = body;
+    const { isAudio, journal, selectedDate, inputType, title, durationSeconds, wordsCount } = body;
 
-    // 5) Transcribe audio
     console.log("Starting transcription...");
+    //@ts-ignore
+    const apiKey = Deno.env.get("GEMINI_API_KEY") || "";
+    if (!apiKey && isAudio) {
+      console.warn("No GEMINI_API_KEY found in environment!");
+    }
+    
     const transcripts = await transcribeAudio(
-      "AIzaSyBJX6jaVX6bI4M19dQEGq10OXIo-4AxgOU",
+      apiKey,
       journal,
       isAudio
     );
-    //  const { error, data } = await supabase.from("test").upsert({
-    //     data: { transcripts, journal, isAudio  },
-    //   });
-    const { error: insightsError, insights } = await getInsights(
-      transcripts.join(" ")
-    );
 
-    if (insightsError) {
-      return new Response(JSON.stringify({ error: insightsError }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+    const journalService = new JournalService(supabase);
+    const insights = await journalService.processJournalCompleted({
+      userId: user.id,
+      content: transcripts.join(" "),
+      selectedDate,
+      inputType,
+      title,
+      durationSeconds,
+      wordsCount,
+    });
 
     return new Response(JSON.stringify(insights), {
       status: 200,
@@ -83,15 +88,3 @@ Deno.serve(async (req: Request) => {
     );
   }
 });
-
-/* To invoke locally:
-
-  1. Run `supabase start` (see: https://supabase.com/docs/reference/cli/supabase-start)
-  2. Make an HTTP request:
-
-  curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/save-journal-ai-insights' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
-    --header 'Content-Type: application/json' \
-    --data '{"name":"Functions"}'
-
-*/

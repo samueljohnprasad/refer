@@ -17,7 +17,7 @@ export function useGenerateWeeklyInsight() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ date }: { date: string }) => timelineRepo.generateWeeklyInsight(date),
+    mutationFn: ({ week_index, year }: { week_index: number; year: number }) => timelineRepo.generateWeeklyInsight(week_index, year),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: timelineKeys.all });
     },

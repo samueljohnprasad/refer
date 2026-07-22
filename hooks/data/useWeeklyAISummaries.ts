@@ -28,6 +28,7 @@ type WeeklyAISummaryRecord = {
   user_id: string;
   year: number;
   week_number: number;
+  week_index?: number | null;
   week_start: string;
   week_end: string;
   recommendations: AIRecommendation[] | null;
@@ -95,7 +96,7 @@ export const useWeeklyAISummary = (
       if (!user?.id) throw new Error("Not authenticated");
 
       const { data, error } = await supabase
-        .from("ai_weekly_summaries")
+        .from("weekly_ai")
         .select("*")
         .eq("user_id", user.id)
         .eq("year", year)
@@ -167,16 +168,14 @@ export const useGenerateWeeklySummary = () => {
         ]);
 
       const { data, error } = await supabase
-        .from("ai_weekly_summaries")
+        .from("weekly_ai")
         .upsert({
           user_id: user.id,
           year,
           week_number: weekNumber,
-          week_start: format(weekStart, "yyyy-MM-dd"),
-          week_end: format(weekEnd, "yyyy-MM-dd"),
-          recommendations,
-          weekly_summary: weeklySummary,
-          growth_insights: growthInsights,
+          summary: typeof weeklySummary === 'string' ? weeklySummary : (weeklySummary as any)?.summary || JSON.stringify(weeklySummary),
+          personalized_reflection: recommendations,
+          structured_memory: growthInsights,
         })
         .select()
         .single();

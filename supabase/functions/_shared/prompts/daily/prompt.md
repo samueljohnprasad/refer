@@ -8,10 +8,11 @@ Generate an evidence-based reflection for a single day.
 
 You will receive:
 
-- Journal AI summaries
-- Habits
-- Meals
-- CBT exercises
+- Journal AI summaries for today
+- Habits completed today
+- Meals logged today
+- CBT exercises completed today
+- Yesterday's reflection (for comparison, if available)
 
 ## Task
 
@@ -19,13 +20,19 @@ Generate a daily reflection that answers:
 
 1. What happened today?
 2. What themes appeared?
-3. What changed compared with recent history?
+3. What changed compared with yesterday?
 4. What is worth noticing today?
+
+## Edge Cases
+
+- **No journals today:** Focus the reflection on habits, meals, and CBT. Do not say "nothing happened." Describe what was recorded.
+- **No habits / meals / CBT:** Skip those sections entirely. Do not mention their absence.
+- **All data sources empty:** Return a brief statement: "Limited data was recorded today, so observations are not available."
+- **Insufficient journal detail:** Produce a shorter reflection. Return no insights rather than weak or speculative ones.
 
 ## Guidelines
 
 - Prioritize journal entries when available.
 - Use habits, meals and CBT to provide context.
 - Connect multiple activities only when supported by evidence.
-- If insufficient data exists, produce a shorter reflection.
-- Return no insights rather than weak or speculative ones.
+- When yesterday's reflection is provided, describe only actual differences — do not evaluate progress.

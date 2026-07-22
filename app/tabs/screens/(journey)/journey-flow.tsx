@@ -6,9 +6,9 @@ import { useAtomValue, useSetAtom } from "jotai";
 
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { startTransitionAtom, lastTransitionInfoAtom } from "@/src/store/transitionStore";
-import { journeyApi } from "@/src/features/journey/journeyApi";
-import { optimisticSetNodeStatus, setCourseProgress } from "@/src/features/journey/journeySlice";
-import { selectNode, selectExercisesForNode } from "@/src/features/journey/journeySelectors";
+import { journeyApi } from "@/src/domains/journey/data/journeyApi";
+import { optimisticSetNodeStatus, setCourseProgress } from "@/src/domains/journey/state/journeySlice";
+import { selectNode, selectExercisesForNode } from "@/src/domains/journey/state/journeySelectors";
 import { Skeleton, SkeletonCard } from "@/src/components/ui/Skeleton";
 import { NodeEngine } from "@/src/components/node/NodeEngine";
 

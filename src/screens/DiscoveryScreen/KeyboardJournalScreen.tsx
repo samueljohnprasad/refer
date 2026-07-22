@@ -47,12 +47,14 @@ import { Button } from "@/src/components/ui/Button";
 import { BRAND_SURFACE, INK_MUTED, INK_SOFT, SAGE } from "@/lib/tokens";
 
 interface KeyboardJournalScreenProps {
-  onSubmit: (text: string, enableAIInsights: boolean) => void;
+  onSubmit?: (text: string, enableAIInsights?: boolean) => void;
+  onStop?: (text: string, enableAIInsights?: boolean) => void;
   onClose: () => void;
 }
 
 const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   onSubmit,
+  onStop,
   onClose,
 }) => {
   const [journalText, setJournalText] = useState<string>("");
@@ -103,9 +105,12 @@ const KeyboardJournalScreen: React.FC<KeyboardJournalScreenProps> = ({
   const handleSubmit = useCallback(() => {
     Keyboard.dismiss();
     if (journalText.trim().length > 0) {
-      onSubmit(journalText.substring(0, 7000), enableAIInsights);
+      const handler = onSubmit || onStop;
+      if (handler) {
+        handler(journalText.substring(0, 7000), enableAIInsights);
+      }
     }
-  }, [journalText, enableAIInsights, onSubmit]);
+  }, [journalText, enableAIInsights, onSubmit, onStop]);
 
   const isSubmitDisabled = journalText.trim().length === 0;
 

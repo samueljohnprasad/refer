@@ -3,6 +3,7 @@ import { View, Pressable, TextInput } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import type { StepProps } from "@/src/types/exerciseFlow";
+import { SAGE, BRAND_BORDER, BRAND_SURFACE, INK, INK_MUTED } from "@/lib/tokens";
 
 interface TimePickerStepProps extends StepProps {
   title: string;
@@ -69,14 +70,14 @@ export const TimePickerStep: React.FC<TimePickerStepProps> = React.memo(
                   accessibilityState={{ selected }}
                   className="rounded-xl px-4 py-3"
                   style={{
-                    backgroundColor: selected ? "#F0FFF0" : "#F8FAFC",
+                    backgroundColor: selected ? SAGE.selected : BRAND_SURFACE,
                     borderWidth: 2,
-                    borderColor: selected ? "#58CC02" : "#E2E8F0",
+                    borderColor: selected ? SAGE[500] : BRAND_BORDER,
                   }}
                 >
                   <Text
                     className="text-sm font-medium"
-                    style={{ color: selected ? "#15803D" : "#475569" }}
+                    style={{ color: selected ? SAGE[700] : INK }}
                   >
                     {preset.label}
                   </Text>
@@ -90,10 +91,10 @@ export const TimePickerStep: React.FC<TimePickerStepProps> = React.memo(
           value={customValue}
           onChangeText={handleCustom}
           placeholder="e.g., 10:30 PM or Tomorrow 3pm"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor={INK_MUTED}
           accessibilityLabel={title}
-          className="text-base text-slate-800 bg-slate-50 rounded-xl p-4"
-          style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
+          className="text-base text-ink bg-white rounded-xl p-4"
+          style={{ borderWidth: 2, borderColor: BRAND_BORDER }}
           editable={!readOnly}
           autoFocus={!readOnly && autoFocus && (!presets || presets.length === 0)}
         />

@@ -102,7 +102,7 @@
    ═══════════════════════════════════════════════════════════════════════════
 
    Architecture: neutral base + intentional sage accents.
-   The app is built on a white canvas. Sage green appears only where it
+   The app is built on a sage-cream canvas. Sage green appears only where it
    communicates something: active states, primary icons, CTAs, brand moments.
    Structural elements (borders, secondary text) are neutral so the sage
    accents remain meaningful.
@@ -114,6 +114,11 @@
    Ink      Text. Dark green-black heading → neutral body → neutral muted.
    Terracotta  Warning / error / destructive actions.
    Borders  Neutral warm-grey — recede behind content, never compete with sage.
+
+   CRITICAL RULE: Light tinted backgrounds MUST use dark text.
+   Bright accent colours on matching tints fail WCAG AA.
+   Example: #ff4b4b on #ffdfe0 = 2.65:1 (unreadable).
+   Always pair tint bg with its matching *-dark text token.
 
    DO NOT use raw Tailwind gray-* / slate-* in brand components.
    Map all text to the three ink tokens, all card borders to brand-border. */
@@ -177,20 +182,12 @@
   --color-warm-white: #ffffff;
   --color-offwhite: #ffffff;
 
-  /* ── Accent palette ──────────────────────────────────────────────────────
-     Duolingo exact values adopted directly (non-sage colours).
-
-     Cardinal Red  Error, warning, destructive, "can't afford" states.
-                   Duolingo #FF4B4B / #FF9090 border / #FFDFE0 tint.
-     Bee Yellow    Gamification only: XP badges, streak indicators, rewards.
-                   Duolingo #FFD900 / #FFF5D6 tint. Reserve for achievement
-                   moments — overuse kills the premium feel.
+  /* ── Accent palette (Duolingo values) ───────────────────────────────────
+     Cardinal Red  Error, warning, destructive.
+     Bee Yellow    Gamification: XP badges, streaks, rewards.
      Otter Blue    Correct-answer state, info banners.
-                   Duolingo #1CB0F6 / #DDF4FF tint.
-     Macaw Purple  Super / premium surfaces only.
-                   Duolingo #CE82FF / #F0DEFF tint.
-     Parrot Orange Rare rewards, bonus moments.
-                   Duolingo #FF9600 / #FEEDE0 tint.                        */
+     Macaw Purple  Super / premium surfaces.
+     Parrot Orange Rare rewards, bonus moments.                           */
   --color-cardinal-red: #ff4b4b;
   --color-cardinal-red-border: #ff9090;
   --color-cardinal-red-tint: #ffdfe0;
@@ -210,73 +207,56 @@
   --color-gold: #ffd900;
   --color-gold-tint: #fff5d6;
 
-  /* ── Ink text scale ──────────────────────────────────────────────────────
-     Three levels. Use the correct level — mixing them randomly destroys
-     typographic hierarchy.
+  /* ── Semantic text colours (MANDATORY for tinted backgrounds) ───────────
+     Light tinted backgrounds MUST use these dark text variants.
+     Never use the bright accent colour as text on its matching tint.
 
+     Verified contrast ratios on their matching tints:
+       sage-dark:      7.00:1 on sage-selected
+       cardinal-dark:  5.75:1 on cardinal-red-tint
+       otter-dark:     7.56:1 on otter-blue-tint
+       bee-dark:       8.77:1 on bee-yellow-tint
+       macaw-dark:     6.15:1 on macaw-purple-tint
+       parrot-dark:    5.06:1 on parrot-orange-tint                       */
+  --color-sage-dark: #1b5e20;
+  --color-cardinal-dark: #b71c1c;
+  --color-otter-dark: #0d47a1;
+  --color-bee-dark: #5d4037;
+  --color-macaw-dark: #4a148c;
+  --color-parrot-dark: #e65100;
+
+  /* ── Ink text scale ──────────────────────────────────────────────────────
      ink         #142414  Dark green-black. Screen titles, card headings,
-                          primary labels. Our custom sage ink — kept as-is.
-     ink-soft    #767676  Body copy, descriptions, secondary labels.
-                          Darkened from Duolingo #777777 → 4.54:1 on white
-                          (WCAG AA compliant; #777777 was 4.48:1, 0.02 short).
+                          primary labels.
+     ink-soft    #6B6B6B  Body copy, descriptions, secondary labels.
+                          4.72:1 on brand-canvas (#f8faf7) — WCAG AA.
+                          4.59:1 on sage-selected — WCAG AA.
+                          5.08:1 on white — WCAG AA.
+                          (Previous value #767676 failed on cream at 4.33:1)
      ink-muted   #AFAFAF  Timestamps, metadata, captions, inactive labels.
                           2.19:1 on white — decorative / non-essential only.
-                          Never use for text that must be readable (errors,
-                          instructions, interactive labels). Use ink-soft for
-                          anything the user needs to read.
+                          Never use for readable text or interactive labels.
 
-     NEVER use text-gray-* or text-slate-* in brand components.
-     Map: gray-900/800 → text-ink, gray-700/600 → text-ink-soft,
-          gray-500/400/300 → text-ink-muted. Same for slate-*.            */
+     NEVER use text-gray-* or text-slate-* in brand components.            */
   --color-ink: #142414;
-  --color-ink-soft: #767676;
+  --color-ink-soft: #6b6b6b;
   --color-ink-muted: #afafaf;
 
   /* ── Structural borders ──────────────────────────────────────────────────
-     All card and panel borders use these neutral tokens — NOT sage-100/200.
-     Neutral borders recede behind content; sage borders on selected/active
-     states then feel deliberate.
+     brand-border        #E5E5E5  Default card edge, panel outline, divider.
+     brand-border-strong #999999  Bottom-border shadow on raised cards.
 
-     brand-border        #E5E5E5  Duolingo Wolf Grey 300. Default card edge,
-                                  panel outline, divider.
-     brand-border-strong #AFAFAF  Duolingo Wolf Grey 200. Bottom-border shadow
-                                  on raised/tactile cards — darker bottom
-                                  creates the 3D depth illusion.
+     NOTE: brand-border-strong was darkened from #AFAFAF → #999999 to
+     improve visibility on white card surfaces (2.85:1 vs 2.19:1).
 
      NEVER use border-gray-100, border-gray-200, border-slate-* for cards.
-     Sage borders are only correct on selected / active states:
-       happy-brand-card-selected, happy-brand-pressed-card-selected.       */
+     Sage borders are only correct on selected / active states.            */
   --color-brand-border: #e5e5e5;
-  --color-brand-border-strong: #afafaf;
-
-  /* ── Duolingo colour equivalence ────────────────────────────────────────
-     How our tokens map to Duolingo's reference palette.
-     Cross-reference: docs/research/duolingo-design-system.md §4
-
-     Duolingo token    Value     →  Our token              Status
-     ──────────────────────────────────────────────────────────────────
-     Duo Green    #58CC02   →  sage-500    #5f7f58       SWAPPED (brand)
-     Duo Grn Dark #58A700   →  sage-700    #29452a       SWAPPED (brand)
-     Duo Dark     #1F1F1F   →  ink         #142414       SWAPPED (brand)
-     Wolf Grey 1  #F7F7F7   →  brand-surface-soft        ADOPTED directly
-     Wolf Grey 2  #AFAFAF   →  ink-muted + border-strong ADOPTED directly
-     Wolf Grey 3  #E5E5E5   →  brand-border              ADOPTED directly
-     Wolf Grey 4  #777777   →  ink-soft (darkened to #767676 for AA)
-     Feather Wht  #FFFFFF   →  brand-surface (card face)  ADOPTED directly
-     —            #F8FAF7   →  brand-canvas (screen bg)  CUSTOM (premium canvas)
-     Cardinal Red #FF4B4B   →  terracotta + cardinal-red ADOPTED directly
-     Bee Yellow   #FFD900   →  gold + bee-yellow         ADOPTED directly
-     Otter Blue   #1CB0F6   →  otter-blue                ADOPTED directly
-     Macaw Purple #CE82FF   →  macaw-purple              ADOPTED directly
-     Parrot Orange #FF9600  →  parrot-orange             ADOPTED directly
-     ──────────────────────────────────────────────────────────────────
-     Only the three sage tokens are custom. Everything else is Duolingo
-     verbatim so the neutral canvas is identical.                           */
+  --color-brand-border-strong: #999999;
 
   /* ── Border radius scale ─────────────────────────────────────────────────
      Prefer the happy-brand utility classes (which bake in the right radius)
-     over applying radius manually. When you do need a raw value, pick from
-     this scale — don't invent one-off pixel values.                        */
+     over applying radius manually.                                         */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
@@ -293,7 +273,7 @@
   --color-theme-background-secondary: #f7f7f7;
   --color-theme-background-card: #ffffff;
   --color-theme-text-primary: #142414;
-  --color-theme-text-secondary: #767676;
+  --color-theme-text-secondary: #6b6b6b;
   --color-theme-border: #e5e5e5;
   --color-theme-purple-light: #eee9ff;
   --color-theme-purple-primary: #7b61ff;
@@ -306,13 +286,9 @@
 
    Two type families:
      Cormorant  Expressive serif. Screen titles, large headings, hero text.
-               Available weights: Regular, Medium, SemiBold, Bold (with Italics).
-
      Geist     Clean sans-serif. All body copy, labels, UI text.
-               Available weights: Regular, Medium, SemiBold, Bold.
 
-   Pairing rule: Cormorant for display moments, Geist for everything else.
-   Do not mix weights arbitrarily — use the named utilities below.          */
+   Pairing rule: Cormorant for display moments, Geist for everything else. */
 
 @utility happy-font-heading {
   font-family: "CormorantSemiBold";
@@ -365,40 +341,17 @@
    Depth system: cards simulate elevation with a thick bottom border instead
    of a box-shadow. This is lighter, crisper, and works without blur.
 
-   Hierarchy (pick the right level for the context):
-
-   happy-brand-screen          Screen root background. Wrap every screen's
-                               outermost View. bg-brand-canvas (#f8faf7 — sage whisper, cards float).
-
+   Hierarchy:
+   happy-brand-screen          Screen root background. bg-brand-canvas (#f8faf7).
    happy-brand-card            Flat card. Static info — no press affordance.
-                               Use for settings rows, stat panels, list items
-                               that aren't tappable.
-
-   happy-brand-card-strong     Flat card with a slightly heavier border edge.
-                               Use when the card needs more visual weight
-                               against a tinted background.
-
-   happy-brand-card-selected   Active/selected state of a flat card.
-                               Sage border + sage-tinted background signals
-                               the user's selection.
-
-   happy-brand-raised-panel    Hero / prominent panel. border-b-[6px] gives
-                               the deepest depth. Use for the main widget on
-                               a screen (streak widget, emotion logger, etc.).
-
-   happy-brand-preview-tile    Interactive card with press affordance.
-                               border-b-[5px]. Use for exercise cards,
-                               challenge tiles, quick-journal cards — any
-                               PressableScale that acts like a button.
-
-   happy-brand-pressed-card    Tactile card. Thinner border-b-4, for items
-                               inside a list that are individually pressable.
-
+   happy-brand-card-strong     Flat card with heavier border edge.
+   happy-brand-card-selected   Active/selected state. Sage border + sage tint.
+   happy-brand-raised-panel    Hero / prominent panel. Deepest depth (6px).
+   happy-brand-preview-tile    Interactive card with press affordance (5px).
+   happy-brand-pressed-card    Tactile card for list items (4px).
    happy-brand-pressed-card-selected  Active version of pressed-card.
-                               Sage border signals selection/completion.
 
-   NOTE: Always combine these with a rounded-* class. The utility does not
-   set border-radius — it only handles border and background.               */
+   NOTE: Always combine these with a rounded-* class.                       */
 
 @utility happy-brand-screen {
   @apply bg-brand-canvas;
@@ -453,43 +406,37 @@
    CHIP & BADGE UTILITIES
    ═══════════════════════════════════════════════════════════════════════════
 
-   happy-brand-soft-chip     Pill-shaped container. Uses sage-50 tint.
-                             For: tag clouds, filter pills, info chips,
-                             the Awards button in the home TopBar.
+   All chip/badge utilities enforce their own text colour.
+   Do NOT override with text-white — white on these sage tints is ~1:1
+   contrast (completely invisible).
 
-   happy-brand-status-chip   Pill for status labels (exercise counts, step
-                             indicators). Uses sage-pill — slightly greener
-                             than soft-chip to signal "active/tracked".
-
-   happy-brand-score-badge   Rounded rectangle badge for scores and grades.
-                             Uses sage-selected background.                  */
+   happy-brand-soft-chip     Pill-shaped container. sage-50 tint + ink text.
+   happy-brand-status-chip   Status label pill. sage-pill + sage-dark text.
+   happy-brand-score-badge   Score badge. sage-selected + sage-dark text.   */
 
 @utility happy-brand-soft-chip {
-  @apply rounded-full bg-sage-50;
+  @apply rounded-full bg-sage-50 text-ink;
 }
 
 @utility happy-brand-status-chip {
-  @apply rounded-full bg-sage-pill;
+  @apply rounded-full bg-sage-pill text-sage-dark;
 }
 
 @utility happy-brand-score-badge {
-  @apply rounded-[22px] bg-sage-selected;
+  @apply rounded-[22px] bg-sage-selected text-sage-dark;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    TEXT STYLE UTILITIES
    ═══════════════════════════════════════════════════════════════════════════
 
-   happy-brand-eyebrow   ALL-CAPS section label. sage-500 colour makes it
-                         a deliberate sage accent moment — the one place
-                         green text is expected in body layout.
-                         Size: set per-usage (text-xs is the default).
-                         Example: "DAILY REFLECTION", "YOUR PATTERN".
+   happy-brand-eyebrow   ALL-CAPS section label. sage-500 colour.
+                         On brand-canvas: 4.29:1 — borderline.
+                         Always pair with text-xs or larger, bold weight.
+                         For smaller text, use sage-600 instead.
 
    happy-brand-copy      Inline prose text style. ink-soft colour.
-
-   happy-brand-secondary-cta-text  The dismiss/skip/secondary action below
-                                   a primary CTA button.                    */
+   happy-brand-secondary-cta-text  Dismiss/skip/secondary action text.       */
 
 @utility happy-brand-eyebrow {
   @apply text-xs font-bold uppercase tracking-widest text-sage-500;
@@ -509,11 +456,11 @@
 
    The primary CTA uses the same thick-bottom-border depth trick as cards.
    sage-500 fill + sage-700 bottom border gives a tactile pressed look.
+   White text on sage-500 is 4.50:1 on white cards — the minimum for WCAG AA.
+   Do not use smaller than 16pt font on primary CTAs.
 
-   happy-brand-primary-cta           Active state. Pair with text-white or
-                                     text-brand-surface for label text.
-   happy-brand-primary-cta-disabled  Visually greyed out. Pair with a
-                                     pointer-events-none wrapper.           */
+   happy-brand-primary-cta           Active state. Pair with text-white.
+   happy-brand-primary-cta-disabled  Visually greyed out.                  */
 
 @utility happy-brand-primary-cta {
   @apply border-b-4 border-b-sage-700 bg-sage-500;
@@ -527,7 +474,7 @@
    SECONDARY CTA UTILITY
    ═══════════════════════════════════════════════════════════════════════════
 
-   Maps to Duolingo's ghost/secondary button (§7.4).
+   Maps to Duolingo's ghost/secondary button.
    Neutral depth border signals pressability without competing with the
    primary CTA. Always pair with a primary CTA — never use standalone.
    Label text: text-ink-soft (never ink — that implies primary).           */
@@ -542,35 +489,26 @@
 
    Correct/incorrect feedback states for exercise cards and choice items.
 
-   Maps Duolingo's feedback system to our palette:
-     Correct:   Duo DDF4FF/84D8FF  →  sage-selected / sage-300/sage-400
-     Incorrect: Duo FFDFE0/FF9090  →  terracotta-tint / terracotta-light/terracotta
-
-   happy-brand-card-correct    Sage-tinted. Use for correct answers,
-                               completed steps, success confirmation.
-   happy-brand-card-incorrect  Terracotta-tinted. Use for wrong answers,
-                               error states, failed validation.
+   happy-brand-card-correct    Sage-tinted. Text: sage-dark (NOT sage-500).
+   happy-brand-card-incorrect  Terracotta-tinted. Text: cardinal-dark
+                               (NOT cardinal-red).
 
    Both use the same depth structure as happy-brand-pressed-card.          */
 
 @utility happy-brand-card-correct {
-  @apply border-2 border-b-4 border-sage-300 border-b-sage-400 bg-sage-selected;
+  @apply border-2 border-b-4 border-sage-300 border-b-sage-400 bg-sage-selected text-sage-dark;
 }
 
 @utility happy-brand-card-incorrect {
-  @apply border-2 border-b-4 border-terracotta-light border-b-terracotta bg-terracotta-tint;
+  @apply border-2 border-b-4 border-terracotta-light border-b-terracotta bg-terracotta-tint text-cardinal-dark;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    PROGRESS BAR UTILITIES
    ═══════════════════════════════════════════════════════════════════════════
 
-   Maps to Duolingo's progress bar (§9):
-     Track: Wolf Grey 3 #E5E5E5  →  brand-border #e8eaeb
-     Fill:  Duo Green  #58CC02   →  sage-500 #5f7f58
-
-   Apply spring-ease to fill-width animations for the Duolingo overshoot
-   feel (ease-out with slight overshoot, ~400ms).                          */
+   Track: brand-border (#e5e5e5)
+   Fill:  sage-500 (#5f7f58) — 4.50:1 on white, minimum AA               */
 
 @utility happy-brand-progress-track {
   @apply rounded-full bg-brand-border;
@@ -585,8 +523,7 @@
    ═══════════════════════════════════════════════════════════════════════════
 
    Dashed border universally reads as "slot awaiting content." No border-b
-   depth — flat appearance communicates "not a pressable action."
-   Maps to Duolingo's empty state card pattern (§8.10).                    */
+   depth — flat appearance communicates "not a pressable action."          */
 
 @utility happy-brand-empty-state {
   @apply border-2 border-dashed border-brand-border bg-brand-surface-soft;

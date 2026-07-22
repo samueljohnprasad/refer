@@ -6,6 +6,7 @@ import Animated, {
   cancelAnimation,
   clamp,
   interpolate,
+  runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
   useDerivedValue,
@@ -101,7 +102,7 @@ export const DraggableSlider: React.FC<DraggableSliderProps> = ({
         [ScreenWidth / 2, -progressWidth.value + ScreenWidth / 2],
         [0, 1],
       );
-      if (onProgressChange) onProgressChange(progress);
+      if (onProgressChange) runOnJS(onProgressChange)(progress);
     },
   );
 

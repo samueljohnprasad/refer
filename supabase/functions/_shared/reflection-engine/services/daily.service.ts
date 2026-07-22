@@ -1,8 +1,33 @@
+import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { reflectionEngine } from "../ai/reflection-engine.ts";
 import { contextBuilder } from "../ai/context-builder.ts";
 
+interface JournalAI {
+  reflection: string;
+}
+
+interface Habit {
+  name: string;
+  completed: boolean;
+}
+
+interface Meal {
+  food: string;
+  calories: number;
+  time: string;
+}
+
+interface CBT {
+  type: string;
+  reflection: string;
+}
+
+interface DailyAIRecord {
+  summary: string;
+}
+
 export class DailyService {
-  constructor(private supabase: any) {}
+  constructor(private supabase: SupabaseClient) {}
 
   /**
    * Generates and saves a Daily Reflection.
@@ -10,18 +35,25 @@ export class DailyService {
   public async generateAndSaveDailyReflection(
     userId: string,
     date: string, // YYYY-MM-DD format
-  ): Promise<any> {
+  ): Promise<unknown> {
     try {
       console.log(
         `Starting Daily AI reflection for user: ${userId} on date: ${date}`,
       );
 
-      // 1. Fetch data from DB
+      // Compute yesterday's date for comparison
+      const currentDate = new Date(date);
+      const yesterday = new Date(currentDate);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+      // 1. Fetch data from DB (parallel)
       const [
         { data: journalAIs },
         { data: habits },
         { data: meals },
         { data: cbt },
+        { data: priorDaily },
       ] = await Promise.all([
         this.supabase
           .from("journal_ai")
@@ -32,15 +64,24 @@ export class DailyService {
         this.supabase.from("habits").select("*").eq("user_id", userId).eq("date", date),
         this.supabase.from("meals").select("*").eq("user_id", userId).eq("date", date),
         this.supabase.from("cbt_logs").select("*").eq("user_id", userId).eq("date", date),
+        this.supabase
+          .from("daily_ai")
+          .select("summary")
+          .eq("user_id", userId)
+          .eq("reflection_date", yesterdayStr)
+          .maybeSingle(),
       ]);
+
+      const priorReflection = (priorDaily as DailyAIRecord | null)?.summary;
 
       // 2. Build the context string
       const context = contextBuilder.buildDailyContext(
         date,
-        journalAIs || [],
-        habits || [],
-        meals || [],
-        cbt || [],
+        (journalAIs || []) as JournalAI[],
+        (habits || []) as Habit[],
+        (meals || []) as Meal[],
+        (cbt || []) as CBT[],
+        priorReflection,
       );
 
       // 3. Generate Reflection via AI Engine

@@ -6,7 +6,7 @@ import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
-import { SAGE } from "@/lib/tokens";
+import { SAGE, BRAND_BORDER, BRAND_SURFACE, INK, INK_SOFT } from "@/lib/tokens";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
 
 export interface MultiChoiceOption {
@@ -134,23 +134,9 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
                   isCbtReflection ? "px-4 py-3" : "px-4 py-2.5"
                 }`}
                 style={{
-                  backgroundColor: isCbtReflection
-                    ? isSelected
-                      ? SAGE.selected
-                      : "#FFFFFF"
-                    : isSelected
-                      ? "#58CC02"
-                      : isDisabled
-                        ? "#F1F5F9"
-                        : "#F8FAFC",
+                  backgroundColor: isSelected ? SAGE.selected : BRAND_SURFACE,
                   borderWidth: 2,
-                  borderColor: isCbtReflection
-                    ? isSelected
-                      ? SAGE[400]
-                      : SAGE[200]
-                    : isSelected
-                      ? "#58CC02"
-                      : "#E2E8F0",
+                  borderColor: isSelected ? SAGE[500] : BRAND_BORDER,
                   opacity: isDisabled || readOnly ? 0.5 : 1,
                 }}
               >
@@ -159,15 +145,7 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
                     <HugeiconsIcon
                       icon={getContentIcon(opt.iconKey)!}
                       size={16}
-                      color={
-                        isCbtReflection
-                          ? isSelected
-                            ? SAGE[700]
-                            : SAGE[600]
-                          : isSelected
-                            ? "#FFFFFF"
-                            : "#475569"
-                      }
+                      color={isSelected ? SAGE[700] : INK_SOFT}
                       strokeWidth={1.6}
                     />
                   </View>
@@ -177,13 +155,7 @@ export const MultiChoiceStep: React.FC<MultiChoiceStepProps> = React.memo(
                 <Text
                   className={isCbtReflection ? "text-sm font-semibold" : "text-sm font-bold"}
                   style={{
-                    color: isCbtReflection
-                      ? isSelected
-                        ? SAGE[700]
-                        : "#334155"
-                      : isSelected
-                        ? "#FFFFFF"
-                        : "#475569",
+                    color: isSelected ? SAGE[700] : INK,
                   }}
                 >
                   {opt.label}

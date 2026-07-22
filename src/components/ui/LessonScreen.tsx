@@ -222,21 +222,21 @@ const ActionFooter: React.FC<ActionFooterProps> = ({
       style={style} 
       className={`${className || ""} ${
         isSuccess 
-          ? "bg-green-100 border-t border-green-200" 
+          ? "bg-sage-selected border-t border-sage-200" 
           : isError 
           ? "bg-red-100 border-t border-red-200" 
           : variant === "transparent"
           ? "bg-transparent border-t-0"
-          : "bg-white border-t border-slate-100"
+          : "bg-white border-t border-brand-border"
       }`}
     >
       <View className="w-full gap-1">
         {isSuccess && (
           <View className="flex-row items-center mb-4">
-            <View className="w-8 h-8 rounded-full bg-green-500 items-center justify-center mr-4">
+            <View className="w-8 h-8 rounded-full bg-sage-500 items-center justify-center mr-4">
               <Feather name="check" size={20} color="white" />
             </View>
-            <Text className="text-green-600 font-bold text-xl">Awesome!</Text>
+            <Text className="text-sage-700 font-bold text-xl">Awesome!</Text>
           </View>
         )}
         {isError && (

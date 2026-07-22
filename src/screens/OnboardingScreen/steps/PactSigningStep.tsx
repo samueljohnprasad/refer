@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { Text, View, ScrollView, Pressable } from "react-native";
 import Animated, { FadeIn, useAnimatedStyle, interpolate } from "react-native-reanimated";
-import { SvgAppButton } from "@/src/components/journey/svg-app-button";
+import { SvgAppButton } from "@/src/domains/journey/ui/components/svg-app-button";
 import { SAGE } from "@/lib/tokens";
 import { useHoldToCommit } from "../hooks/useHoldToCommit";
 import { DailyGoalMinutes } from "../types";

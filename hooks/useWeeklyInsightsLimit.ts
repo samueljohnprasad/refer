@@ -29,7 +29,7 @@ export const useWeeklyInsightsLimit = (): UseWeeklyInsightsLimitReturn => {
       if (!user?.id) return 0;
 
       const { count, error } = await supabase
-        .from("ai_weekly_summaries")
+        .from("weekly_ai")
         .select("*", { count: "exact", head: true })
         .eq("user_id", user.id);
 

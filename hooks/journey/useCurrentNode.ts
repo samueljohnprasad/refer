@@ -3,7 +3,7 @@
 // Thin selector wrapper. "Current node" is a UI concept; it is not stored in the DB.
 
 import { useAppSelector } from "@/src/store/hooks";
-import { selectCurrentNodeForCourse } from "@/src/features/journey/journeySelectors";
+import { selectCurrentNodeForCourse } from "@/src/domains/journey/state/journeySelectors";
 import type { Node } from "@/src/types/journeyV5";
 
 /**

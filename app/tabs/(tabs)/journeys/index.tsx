@@ -2,7 +2,7 @@
 // Journeys tab entry point. Delegates entirely to JourneyMapContainer.
 
 import React from "react";
-import JourneyMapContainer from "@/src/screens/JourneyMapScreen/JourneyMapContainer";
+import JourneyMapContainer from "@/src/domains/journey/ui/JourneyMapContainer";
 
 export default function JourneysTab(): React.JSX.Element {
   return <JourneyMapContainer />;

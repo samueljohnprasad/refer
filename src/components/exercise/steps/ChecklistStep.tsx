@@ -4,6 +4,7 @@ import { Text } from "@/src/components/ui/Text";
 import { StepLayout } from "./StepLayout";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
+import { SAGE, BRAND_BORDER, INK, INK_MUTED, BRAND_SURFACE } from "@/lib/tokens";
 
 interface ChecklistItem {
   label: string;
@@ -34,27 +35,28 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
     subtitle,
     fieldKey,
     presetItems = [],
-    allowCustom = true,
+    allowCustom = false,
     minChecked = 1,
     isSaving,
     readOnly,
-    autoFocus = true,
+    autoFocus,
   }) => {
     const checked: string[] = (response as Record<string, any>)[fieldKey] ?? [];
     const [customDraft, setCustomDraft] = useState("");
 
     const toggle = (value: string) => {
+      if (readOnly) return;
       triggerSelectionHaptic();
-      if (checked.includes(value)) {
-        onUpdate({ [fieldKey]: checked.filter((v) => v !== value) } as any);
-      } else {
-        onUpdate({ [fieldKey]: [...checked, value] } as any);
-      }
+      const next = checked.includes(value)
+        ? checked.filter((v) => v !== value)
+        : [...checked, value];
+      onUpdate({ [fieldKey]: next } as any);
     };
 
     const addCustom = () => {
+      if (readOnly) return;
       const trimmed = customDraft.trim();
-      if (!trimmed) return;
+      if (!trimmed || checked.includes(trimmed)) return;
       triggerSelectionHaptic();
       onUpdate({ [fieldKey]: [...checked, trimmed] } as any);
       setCustomDraft("");
@@ -83,15 +85,19 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
               accessibilityRole="checkbox"
               accessibilityState={{ checked: isChecked }}
               accessibilityLabel={item.label}
-              className="flex-row items-center py-3 px-2"
-              style={{ borderBottomWidth: 1, borderBottomColor: "#F1F5F9" }}
+              className="flex-row items-center py-3 px-3 mb-1 rounded-xl"
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: BRAND_BORDER,
+                backgroundColor: isChecked ? SAGE.selected : "transparent",
+              }}
             >
               <View
                 className="w-6 h-6 rounded-lg items-center justify-center mr-3"
                 style={{
-                  backgroundColor: isChecked ? "#58CC02" : "#F8FAFC",
+                  backgroundColor: isChecked ? SAGE[500] : BRAND_SURFACE,
                   borderWidth: 2,
-                  borderColor: isChecked ? "#58CC02" : "#E2E8F0",
+                  borderColor: isChecked ? SAGE[500] : BRAND_BORDER,
                 }}
               >
                 {isChecked && (
@@ -100,7 +106,7 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
               </View>
               <Text
                 className="text-sm flex-1"
-                style={{ color: isChecked ? "#15803D" : "#475569" }}
+                style={{ color: isChecked ? SAGE[700] : INK }}
               >
                 {item.label}
               </Text>
@@ -115,11 +121,11 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
               onChangeText={setCustomDraft}
               onSubmitEditing={addCustom}
               placeholder="Add custom item..."
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor={INK_MUTED}
               returnKeyType="done"
               accessibilityLabel="Add custom checklist item"
-              className="flex-1 text-sm text-slate-800 bg-white rounded-xl p-3 mr-2"
-              style={{ borderWidth: 2, borderColor: "#E2E8F0" }}
+              className="flex-1 text-sm text-ink bg-white rounded-xl p-3 mr-2"
+              style={{ borderWidth: 2, borderColor: BRAND_BORDER }}
               editable={!readOnly}
               autoFocus={!readOnly && autoFocus && presetItems.length === 0}
             />
@@ -129,7 +135,7 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
               accessibilityRole="button"
               className="h-11 w-11 rounded-xl items-center justify-center"
               style={{
-                backgroundColor: customDraft.trim() ? "#58CC02" : "#E2E8F0",
+                backgroundColor: customDraft.trim() ? SAGE[500] : BRAND_BORDER,
               }}
             >
               <Text className="text-white font-bold text-lg">+</Text>
@@ -137,7 +143,7 @@ export const ChecklistStep: React.FC<ChecklistStepProps> = React.memo(
           </View>
         )}
 
-        <Text className="text-xs text-slate-400 mt-2">
+        <Text className="text-xs text-ink-muted mt-2">
           {checked.length} checked{minChecked > 0 ? ` (min ${minChecked})` : ""}
         </Text>
       </StepLayout>

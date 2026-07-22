@@ -5,7 +5,7 @@
 
 import { useMemo } from "react";
 import { useAppSelector } from "@/src/store/hooks";
-import { makeSelectJourneyLayoutForCourse } from "@/src/features/journey/journeyLayoutSelectors";
+import { makeSelectJourneyLayoutForCourse } from "@/src/domains/journey/state/journeyLayoutSelectors";
 import type { JourneyLayoutResult } from "@/src/lib/utils/journeyLayout";
 
 /**

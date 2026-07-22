@@ -41,6 +41,10 @@ export default function KeyboardRecorderScreen() {
           >
             <KeyboardJournalScreen
               onClose={onClose}
+              onSubmit={(text) => {
+                setJournalText(text);
+                setStepper(1);
+              }}
               onStop={(text) => {
                 setJournalText(text);
                 setStepper(1);

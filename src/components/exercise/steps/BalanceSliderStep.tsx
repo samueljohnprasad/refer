@@ -5,6 +5,7 @@ import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCa
 import { FadeInItem } from "@/src/components/ui/FadeInItem";
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { BalanceSlider } from "@/src/animations/balance-slider/components/balance-slider";
+import { SAGE, INK, INK_SOFT, BRAND_SURFACE_SOFT } from "@/lib/tokens";
 
 interface ColorScheme {
   box: string;
@@ -31,14 +32,14 @@ interface BalanceSliderStepProps extends StepProps {
 
 const DEFAULT_COLORS = {
   left: {
-    box: "#F1F5F9", // Slate 100
-    label: "#475569", // Slate 600
-    percentage: "#1E293B", // Slate 800
+    box: BRAND_SURFACE_SOFT,
+    label: INK_SOFT,
+    percentage: INK,
   },
   right: {
-    box: "#D1FAE5", // Emerald 100
-    label: "#059669", // Emerald 600
-    percentage: "#065F46", // Emerald 800
+    box: SAGE.selected,
+    label: SAGE[600],
+    percentage: SAGE[700],
   },
 };
 

@@ -8,11 +8,9 @@ CREATE TABLE journal_ai (
   summary text NOT NULL,
   confidence numeric,
   structured_memory jsonb,
-  prompt_version text,
   created_at timestamptz DEFAULT now(),
   input_tokens integer,
   output_tokens integer,
-  total_tokens integer
 );
 CREATE INDEX idx_journal_ai_journal_id ON journal_ai(journal_id);
 CREATE INDEX idx_journal_ai_user_id ON journal_ai(user_id);
@@ -29,7 +27,6 @@ CREATE TABLE daily_ai (
   created_at timestamptz DEFAULT now(),
   input_tokens integer,
   output_tokens integer,
-  total_tokens integer,
   UNIQUE(user_id, reflection_date)
 );
 
@@ -46,7 +43,6 @@ CREATE TABLE weekly_ai (
   created_at timestamptz DEFAULT now(),
   input_tokens integer,
   output_tokens integer,
-  total_tokens integer,
   UNIQUE(user_id, year, week_number)
 );
 
@@ -62,17 +58,5 @@ CREATE TABLE monthly_ai (
   confidence numeric,
   input_tokens integer,
   output_tokens integer,
-  total_tokens integer,
   created_at timestamptz DEFAULT now()
-);
-
--- 5. user_personalization
-CREATE TABLE user_personalization (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id uuid NOT NULL,
-  focus_areas jsonb,
-  life_context jsonb,
-  important_values jsonb,
-  preferences jsonb,
-  updated_at timestamptz DEFAULT now()
 );

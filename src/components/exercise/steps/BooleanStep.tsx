@@ -7,6 +7,7 @@ import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCa
 import type { StepProps } from "@/src/types/exerciseFlow";
 import { getContentIcon } from "@/src/data/contentIconRegistry";
 import { triggerSelectionHaptic } from "@/src/components/exercise/selectionHaptics";
+import { SAGE, BRAND_BORDER, BRAND_SURFACE, INK, INK_SOFT } from "@/lib/tokens";
 
 interface BooleanStepProps extends StepProps {
   title: string;
@@ -96,16 +97,16 @@ export const BooleanStep: React.FC<BooleanStepProps> = React.memo(
                 accessibilityLabel={opt.label}
                 className="h-16 rounded-xl flex-row items-center justify-center active:opacity-90"
                 style={{
-                  backgroundColor: isSelected ? "#F0FFF0" : "#F8FAFC",
+                  backgroundColor: isSelected ? SAGE.selected : BRAND_SURFACE,
                   borderWidth: 2,
-                  borderColor: isSelected ? "#58CC02" : "#E2E8F0",
+                  borderColor: isSelected ? SAGE[500] : BRAND_BORDER,
                 }}
               >
                 {opt.iconKey && getContentIcon(opt.iconKey) ? (
                   <HugeiconsIcon
                     icon={getContentIcon(opt.iconKey)!}
                     size={20}
-                    color={isSelected ? "#15803D" : "#475569"}
+                    color={isSelected ? SAGE[700] : INK_SOFT}
                     strokeWidth={1.6}
                   />
                 ) : (
@@ -114,7 +115,7 @@ export const BooleanStep: React.FC<BooleanStepProps> = React.memo(
                 <View className="w-3" />
                 <Text
                   className="text-lg font-bold"
-                  style={{ color: isSelected ? "#15803D" : "#1E293B" }}
+                  style={{ color: isSelected ? SAGE[700] : INK }}
                 >
                   {opt.label}
                 </Text>

@@ -7,7 +7,7 @@ import {
   selectCourseProgressPct,
   selectCourseProgressForCourse,
   selectCurrentNodeForCourse,
-} from "@/src/features/journey/journeySelectors";
+} from "@/src/domains/journey/state/journeySelectors";
 import type { CourseStatus, Node } from "@/src/types/journeyV5";
 
 export interface UseCourseProgressResult {

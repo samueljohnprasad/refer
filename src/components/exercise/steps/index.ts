@@ -13,4 +13,5 @@ export { TimePickerStep } from "./TimePickerStep";
 export { SummaryStep } from "./SummaryStep";
 export { RecordMapStep } from "./RecordMapStep";
 export { MultiFieldStep } from "./MultiFieldStep";
+export { PMRCircularTimerStep } from "./PMRCircularTimerStep";
 export { createStep } from "./createStep";

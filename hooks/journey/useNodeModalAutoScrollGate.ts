@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { JOURNEY } from "@/src/lib/constants/journey";
-import { selectActiveNodeModalIdForCourse } from "@/src/features/journey/journeySelectors";
+import { selectActiveNodeModalIdForCourse } from "@/src/domains/journey/state/journeySelectors";
 import { useAppSelector } from "@/src/store/hooks";
 
 const AUTO_SCROLL_RESUME_DELAY_MS = JOURNEY.SCROLL_TO_NODE_DELAY_MS;

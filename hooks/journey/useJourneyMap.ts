@@ -10,13 +10,13 @@ import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import {
   selectIsCourseLoaded,
   selectIsCourseLoading,
-} from "@/src/features/journey/journeySelectors";
+} from "@/src/domains/journey/state/journeySelectors";
 import {
   setCourseTree,
   setCourseProgress,
   setLoadingCourse,
-} from "@/src/features/journey/journeySlice";
-import { journeyApi } from "@/src/features/journey/journeyApi";
+} from "@/src/domains/journey/state/journeySlice";
+import { journeyApi } from "@/src/domains/journey/data/journeyApi";
 
 export interface UseJourneyMapResult {
   /** True while the course tree and progress are being fetched for the first time. */

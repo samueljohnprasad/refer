@@ -36,11 +36,15 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
+.env*
+*.env
+supabase/functions/.env
 .env*.local
 
 # typescript
 *.tsbuildinfo
-.env.local
+
 
 # Superdesign local draft artifacts
 .superdesign/tmp/

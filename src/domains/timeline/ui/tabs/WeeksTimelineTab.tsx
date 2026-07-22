@@ -24,7 +24,9 @@ export const WeeksTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     setGeneratingDates(prev => new Set(prev).add(date));
     
     try {
-      await generateInsight({ date });
+      const year = parseInt(date.substring(0, 4), 10);
+      const week_index = parseInt(date.substring(6), 10);
+      await generateInsight({ week_index, year });
     } catch (e) {
       Alert.alert("Generation Failed", "Could not generate insight. Please try again later.");
     } finally {

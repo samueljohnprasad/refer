@@ -3,6 +3,9 @@
 ## Project Overview
 
 talk like caveman
+use ponytail mode (`/ponytail:ponytail` full mode — minimal code, YAGNI, no boilerplate, `// ponytail:` comments)
+use impeccable skill (`impeccable` — distinctive high-end design intelligence for all UI/UX work)
+use graphify skill (`graphify` — query/path/explain graph before raw grep/exploration, run `graphify update .` after edits)
 
 Happy is an Expo Router React Native app for calm CBT journaling and mental health exercises. The product direction is premium, editorial, calm, and trustworthy. Read `PRODUCT.md` and `DESIGN.md` before making user-facing UI changes.
 

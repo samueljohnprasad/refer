@@ -13,7 +13,16 @@ export interface JournalReflectionResult {
   reflection: string;
   structured_memory: AIStructuredMemory;
   confidence: number;
+  moodScore?: number;
+  mainEmoji?: string;
+  energyLevel?: number;
+  stressLevel?: number;
+  cognitivePattern?: string;
+  strengthSpotlight?: string;
+  nextJournalPrompt?: string;
 }
+
+
 
 export interface DailyReflectionResult {
   daily_reflection: string;
@@ -38,9 +47,11 @@ export interface MonthlyReflectionResult {
 export interface DailyContext {
   date: string;
   journalReflections: string[];
-  habits: any[];
-  meals: any[];
-  cbt: any[];
+  habits: { name: string; completed: boolean }[];
+  meals: { food: string; calories: number; time: string }[];
+  cbt: { type: string; reflection: string }[];
+  /** Yesterday's reflection text, if available. */
+  priorReflection?: string;
 }
 
 export interface WeeklyContext {
@@ -48,10 +59,14 @@ export interface WeeklyContext {
   endDate: string;
   dailyReflections: string[];
   dailyMemories: AIStructuredMemory[];
+  /** Last week's reflection text, if available. */
+  priorReflection?: string;
 }
 
 export interface MonthlyContext {
   monthYear: string;
   weeklyReflections: string[];
   weeklyMemories: AIStructuredMemory[];
+  /** Last month's reflection text, if available. */
+  priorReflection?: string;
 }

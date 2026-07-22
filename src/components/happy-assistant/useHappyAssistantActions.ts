@@ -4,7 +4,7 @@ import { usePathname } from "expo-router";
 import { useAuth } from "@/src/context/AuthContext";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import { useCBTHistory } from "@/src/screens/ExercisesScreen/hooks/useCBTHistory";
-import { selectTotalCompletedCount } from "@/src/features/journey/journeySelectors";
+import { selectTotalCompletedCount } from "@/src/domains/journey/state/journeySelectors";
 import { useAppSelector } from "@/src/store/hooks";
 import { resolveHappyAssistantActions } from "./assistantResolver";
 import { getLatestIncompleteExercise } from "./assistantHistory";

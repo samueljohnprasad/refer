@@ -19,4 +19,8 @@ export type DraggableSliderProps = {
   // Optional: The color of the big lines (default is #c6c6c6)
   bigLineColor?: string;
   onCompletion?: () => void;
+  // Optional: Custom radius of the circular slider (defaults to 280)
+  radius?: number;
+  // Optional: Display mode (`fullscreen` covers screen with translateY offset, `inline` fits inside a parent View)
+  containerMode?: 'fullscreen' | 'inline';
 };

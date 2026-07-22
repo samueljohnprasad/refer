@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from "react";
 
-import { useGetEnrolledCourseIdsQuery } from "@/src/features/journey/journeyApi";
-import { selectActiveCourseId } from "@/src/features/journey/journeySelectors";
-import { setActiveCourse } from "@/src/features/journey/journeySlice";
+import { useGetEnrolledCourseIdsQuery } from "@/src/domains/journey/data/journeyApi";
+import { selectActiveCourseId } from "@/src/domains/journey/state/journeySelectors";
+import { setActiveCourse } from "@/src/domains/journey/state/journeySlice";
 import { JOURNEY } from "@/src/lib/constants/journey";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 

@@ -1,0 +1,148 @@
+import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { reflectionEngine } from "../ai/reflection-engine.ts";
+import { contextBuilder } from "../ai/context-builder.ts";
+import { AIStructuredMemory } from "../ai/types.ts";
+
+interface WeeklySummaryRecord {
+  weekly_summary: {
+    summary?: string;
+    structured_memory?: AIStructuredMemory;
+  } | null;
+}
+
+interface MonthlyAIRecord {
+  summary: string;
+}
+
+/**
+ * Computes the first day of the previous month for the given YYYY-MM.
+ */
+function priorMonthFirstDay(monthYear: string): string {
+  const [year, month] = monthYear.split("-").map(Number);
+  const prior = new Date(year, month - 2, 1); // month is 1-based; month-2 = previous month
+  const y = prior.getFullYear();
+  const m = String(prior.getMonth() + 1).padStart(2, "0");
+  const d = String(prior.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/**
+ * Computes the last day of the previous month.
+ */
+function priorMonthLastDay(monthYear: string): string {
+  const [year, month] = monthYear.split("-").map(Number);
+  const prior = new Date(year, month - 1, 0); // day 0 of current month = last day of previous month
+  const y = prior.getFullYear();
+  const m = String(prior.getMonth() + 1).padStart(2, "0");
+  const d = String(prior.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/**
+ * Computes the first and last day of a month given "YYYY-MM".
+ */
+function monthBounds(monthYear: string): { firstDay: string; lastDay: string } {
+  const [year, month] = monthYear.split("-").map(Number);
+  const first = new Date(year, month - 1, 1);
+  const last = new Date(year, month, 0);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return {
+    firstDay: `${year}-${pad(month)}-${pad(first.getDate())}`,
+    lastDay: `${year}-${pad(month)}-${pad(last.getDate())}`,
+  };
+}
+
+export class MonthlyService {
+  constructor(private supabase: SupabaseClient) {}
+
+  /**
+   * Generates and saves a Monthly Reflection.
+   */
+  public async generateAndSaveMonthlyReflection(
+    userId: string,
+    monthYear: string, // "YYYY-MM" format
+  ): Promise<unknown> {
+    try {
+      console.log(
+        `Starting Monthly AI reflection for user: ${userId} month: ${monthYear}`,
+      );
+
+      const { firstDay, lastDay } = monthBounds(monthYear);
+      const priorFirst = priorMonthFirstDay(monthYear);
+      const priorLast = priorMonthLastDay(monthYear);
+
+      // 1. Fetch weekly summaries for the month + prior month summary for comparison
+      const [
+        { data: weeklyRecords },
+        { data: priorMonthly },
+      ] = await Promise.all([
+        this.supabase
+          .from("weekly_ai")
+          .select("summary, structured_memory")
+          .eq("user_id", userId)
+          .eq("year", parseInt(monthStr.slice(0, 4), 10)),
+        this.supabase
+          .from("monthly_ai")
+          .select("summary")
+          .eq("user_id", userId)
+          .eq("year", parseInt(priorFirst.slice(0, 4), 10))
+          .eq("month", parseInt(priorFirst.slice(5, 7), 10))
+          .maybeSingle(),
+      ]);
+
+      const weeklyReflections: string[] = [];
+      const weeklyMemories: AIStructuredMemory[] = [];
+
+      (weeklyRecords || []).forEach(record => {
+        if (record.summary) {
+          weeklyReflections.push(record.summary);
+        }
+        if (record.structured_memory) {
+          weeklyMemories.push(record.structured_memory as AIStructuredMemory);
+        }
+      });
+
+      const priorReflection = (priorMonthly as MonthlyAIRecord | null)?.summary;
+
+      // 2. Build context
+      const context = contextBuilder.buildMonthlyContext(
+        monthYear,
+        weeklyReflections,
+        weeklyMemories,
+        priorReflection,
+      );
+
+      // 3. Generate Reflection via AI Engine
+      const aiResult = await reflectionEngine.generateMonthlyReflection(context);
+
+      // 4. Save to monthly_ai table per migration
+      const yr = parseInt(monthStr.slice(0, 4), 10);
+      const mo = parseInt(monthStr.slice(5, 7), 10);
+      const { data, error } = await this.supabase
+        .from("monthly_ai")
+        .upsert(
+          {
+            user_id: userId,
+            year: yr,
+            month: mo,
+            summary: aiResult.monthly_reflection,
+            personalized_reflection: aiResult.insights,
+            structured_memory: aiResult.structured_memory,
+          },
+          { onConflict: "user_id, year, month" },
+        )
+        .select()
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      console.log(`Successfully saved Monthly AI reflection for ${monthYear}`);
+      return data;
+    } catch (error) {
+      console.error(`Error processing monthly reflection for ${monthYear}:`, error);
+      throw error;
+    }
+  }
+}

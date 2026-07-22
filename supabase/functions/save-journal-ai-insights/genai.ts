@@ -1,6 +1,8 @@
 // @ts-ignore
 import { GoogleGenAI } from "https://esm.sh/@google/genai@1.24.0";
 
+// whole file is deprecated , dont use anywhere
+
 export type FeelingsType = {
   name: string;
   emoji: string;

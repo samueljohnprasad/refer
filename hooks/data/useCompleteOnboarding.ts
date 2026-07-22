@@ -5,7 +5,7 @@ import { supabase } from "@/src/network/auth/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback } from "react";
 import type { OnboardingFormData } from "@/src/screens/OnboardingScreen/types";
-import { useStartCourseMutation } from "@/src/features/journey/journeyApi";
+import { useStartCourseMutation } from "@/src/domains/journey/data/journeyApi";
 import { MOTIVATION_COURSE_MAP } from "@/src/screens/OnboardingScreen/constants";
 import type { MotivationAnswer } from "@/src/screens/OnboardingScreen/types";
 

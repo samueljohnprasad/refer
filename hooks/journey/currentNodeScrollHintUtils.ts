@@ -3,7 +3,7 @@ import type { ViewToken } from "@legendapp/list";
 import type {
   ScrollToActiveButtonDirection,
   ScrollToActiveButtonMode,
-} from "@/src/components/journey/ScrollToActiveButton";
+} from "@/src/domains/journey/ui/components/ScrollToActiveButton";
 import type { JourneyFlashListItem } from "@/src/types/journey";
 
 export const ACTIVE_NODE_VIEW_POSITION = 0.35;

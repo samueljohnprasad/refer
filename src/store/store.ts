@@ -2,8 +2,8 @@
 // Redux store with normalized journey state + RTK Query middleware.
 
 import { configureStore } from "@reduxjs/toolkit";
-import journeyReducer from "@/src/features/journey/journeySlice";
-import { journeyApi } from "@/src/features/journey/journeyApi";
+import journeyReducer from "@/src/domains/journey/state/journeySlice";
+import { journeyApi } from "@/src/domains/journey/data/journeyApi";
 import happyAssistantReducer from "@/src/store/slices/happyAssistantSlice";
 import { timelineReducer } from "@/src/domains/timeline/state/timeline.slice";
 

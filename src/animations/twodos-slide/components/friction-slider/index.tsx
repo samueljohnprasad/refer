@@ -6,6 +6,7 @@ import Animated, {
   Extrapolation,
   cancelAnimation,
   interpolate,
+  runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
   useDerivedValue,
@@ -81,18 +82,12 @@ export const FrictionSlider: React.FC<FrictionSliderProps> = ({
     () => realProgress.value,
     (curr, prev) => {
       if (prev !== curr) {
-        onProgressChange?.({
-          // The clampedProgress is the one that will be used to update the Path
-          // And it needs to ignore the re-bound effect
-          // The realProgress is fully binded to the spring animation effect
-          // And we need it to update the square rotation
-          // If you look closely, if we slide a lot and then we leave the finger
-          // The square will rotate a bit more to the right or left depending on the direction
-          // But the path is not affected by this effect.
-          // That's why we have two different progress values
-          clampedProgress: clampedProgress.value,
-          realProgress: realProgress.value,
-        });
+        if (onProgressChange) {
+          runOnJS(onProgressChange)({
+            clampedProgress: clampedProgress.value,
+            realProgress: realProgress.value,
+          });
+        }
       }
     },
   );
