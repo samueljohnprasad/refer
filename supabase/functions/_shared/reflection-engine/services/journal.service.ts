@@ -29,10 +29,12 @@ export class JournalService {
       wordsCount,
     } = input;
 
-    console.log(`Generating AI reflection for user: ${userId}`);
+    console.log(`Generating AI reflection for user: ${userId}. Content length: ${content.length}`);
 
     // 1. Generate Reflection via AI Engine
+    console.log("Calling reflectionEngine.generateJournalReflection...");
     const aiResult = await reflectionEngine.generateJournalReflection(content);
+    console.log("AI result received:", JSON.stringify(aiResult).substring(0, 200) + "...");
 
     // 2. Insert journal_records row with AI fields merged in
     const { data, error } = await this.supabase

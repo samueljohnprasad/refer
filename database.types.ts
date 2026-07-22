@@ -39,210 +39,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      daily_ai: {
-        Row: {
-          confidence: number | null
-          created_at: string | null
-          id: string
-          input_tokens: number | null
-          output_tokens: number | null
-          personalized_reflection: Json | null
-          reflection_date: string
-          structured_memory: Json | null
-          summary: string
-          total_tokens: number | null
-          user_id: string
-        }
-        Insert: {
-          confidence?: number | null
-          created_at?: string | null
-          id?: string
-          input_tokens?: number | null
-          output_tokens?: number | null
-          personalized_reflection?: Json | null
-          reflection_date: string
-          structured_memory?: Json | null
-          summary: string
-          total_tokens?: number | null
-          user_id: string
-        }
-        Update: {
-          confidence?: number | null
-          created_at?: string | null
-          id?: string
-          input_tokens?: number | null
-          output_tokens?: number | null
-          personalized_reflection?: Json | null
-          reflection_date?: string
-          structured_memory?: Json | null
-          summary?: string
-          total_tokens?: number | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      journal_ai: {
-        Row: {
-          confidence: number | null
-          created_at: string | null
-          id: string
-          input_tokens: number | null
-          journal_id: string
-          output_tokens: number | null
-          prompt_version: string | null
-          structured_memory: Json | null
-          summary: string
-          total_tokens: number | null
-          user_id: string
-        }
-        Insert: {
-          confidence?: number | null
-          created_at?: string | null
-          id?: string
-          input_tokens?: number | null
-          journal_id: string
-          output_tokens?: number | null
-          prompt_version?: string | null
-          structured_memory?: Json | null
-          summary: string
-          total_tokens?: number | null
-          user_id: string
-        }
-        Update: {
-          confidence?: number | null
-          created_at?: string | null
-          id?: string
-          input_tokens?: number | null
-          journal_id?: string
-          output_tokens?: number | null
-          prompt_version?: string | null
-          structured_memory?: Json | null
-          summary?: string
-          total_tokens?: number | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      monthly_ai: {
-        Row: {
-          confidence: number | null
-          created_at: string | null
-          id: string
-          input_tokens: number | null
-          month: number
-          output_tokens: number | null
-          personalized_reflection: Json | null
-          structured_memory: Json | null
-          summary: string
-          total_tokens: number | null
-          user_id: string
-          year: number
-        }
-        Insert: {
-          confidence?: number | null
-          created_at?: string | null
-          id?: string
-          input_tokens?: number | null
-          month: number
-          output_tokens?: number | null
-          personalized_reflection?: Json | null
-          structured_memory?: Json | null
-          summary: string
-          total_tokens?: number | null
-          user_id: string
-          year: number
-        }
-        Update: {
-          confidence?: number | null
-          created_at?: string | null
-          id?: string
-          input_tokens?: number | null
-          month?: number
-          output_tokens?: number | null
-          personalized_reflection?: Json | null
-          structured_memory?: Json | null
-          summary?: string
-          total_tokens?: number | null
-          user_id?: string
-          year?: number
-        }
-        Relationships: []
-      }
-      user_personalization: {
-        Row: {
-          focus_areas: Json | null
-          id: string
-          important_values: Json | null
-          life_context: Json | null
-          preferences: Json | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          focus_areas?: Json | null
-          id?: string
-          important_values?: Json | null
-          life_context?: Json | null
-          preferences?: Json | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          focus_areas?: Json | null
-          id?: string
-          important_values?: Json | null
-          life_context?: Json | null
-          preferences?: Json | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      weekly_ai: {
-        Row: {
-          confidence: number | null
-          created_at: string | null
-          id: string
-          input_tokens: number | null
-          output_tokens: number | null
-          personalized_reflection: Json | null
-          structured_memory: Json | null
-          summary: string
-          total_tokens: number | null
-          user_id: string
-          week_number: number
-          year: number
-        }
-        Insert: {
-          confidence?: number | null
-          created_at?: string | null
-          id?: string
-          input_tokens?: number | null
-          output_tokens?: number | null
-          personalized_reflection?: Json | null
-          structured_memory?: Json | null
-          summary: string
-          total_tokens?: number | null
-          user_id: string
-          week_number: number
-          year: number
-        }
-        Update: {
-          confidence?: number | null
-          created_at?: string | null
-          id?: string
-          input_tokens?: number | null
-          output_tokens?: number | null
-          personalized_reflection?: Json | null
-          structured_memory?: Json | null
-          summary?: string
-          total_tokens?: number | null
-          user_id?: string
-          week_number?: number
-          year?: number
-        }
-        Relationships: []
-      }
       ai_weekly_summaries: {
         Row: {
           generated_at: string | null
@@ -251,7 +47,6 @@ export type Database = {
           recommendations: Json | null
           user_id: string
           week_end: string
-          week_index: number | null
           week_number: number
           week_start: string
           weekly_summary: Json | null
@@ -264,7 +59,6 @@ export type Database = {
           recommendations?: Json | null
           user_id: string
           week_end: string
-          week_index?: number | null
           week_number: number
           week_start: string
           weekly_summary?: Json | null
@@ -277,7 +71,6 @@ export type Database = {
           recommendations?: Json | null
           user_id?: string
           week_end?: string
-          week_index?: number | null
           week_number?: number
           week_start?: string
           weekly_summary?: Json | null
@@ -503,6 +296,45 @@ export type Database = {
           is_published?: boolean
           order_index?: number
           title?: string
+        }
+        Relationships: []
+      }
+      daily_ai: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          id: string
+          input_tokens: number | null
+          output_tokens: number | null
+          personalized_reflection: Json | null
+          reflection_date: string
+          structured_memory: Json | null
+          summary: string
+          user_id: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          input_tokens?: number | null
+          output_tokens?: number | null
+          personalized_reflection?: Json | null
+          reflection_date: string
+          structured_memory?: Json | null
+          summary: string
+          user_id: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          input_tokens?: number | null
+          output_tokens?: number | null
+          personalized_reflection?: Json | null
+          reflection_date?: string
+          structured_memory?: Json | null
+          summary?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -861,6 +693,42 @@ export type Database = {
           },
         ]
       }
+      journal_ai: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          id: string
+          input_tokens: number | null
+          journal_id: string
+          output_tokens: number | null
+          structured_memory: Json | null
+          summary: string
+          user_id: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          input_tokens?: number | null
+          journal_id: string
+          output_tokens?: number | null
+          structured_memory?: Json | null
+          summary: string
+          user_id: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          input_tokens?: number | null
+          journal_id?: string
+          output_tokens?: number | null
+          structured_memory?: Json | null
+          summary?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       journal_ai_insights: {
         Row: {
           achievements: string[] | null
@@ -932,33 +800,6 @@ export type Database = {
           transcripts: string | null
           user_id: string | null
           words_count: number | null
-          // AI reflection columns
-          ai_summary: string | null
-          ai_confidence: number | null
-          ai_structured_memory: Json | null
-          enriched_transcript: string | null
-          mood_score: number | null
-          main_emoji: string | null
-          feelings: Json | null
-          energy_level: number | null
-          stress_level: number | null
-          sleep_quality: number | null
-          social_connection: number | null
-          triggers: string[] | null
-          coping_strategies: string[] | null
-          physical_symptoms: string[] | null
-          goals: string[] | null
-          worries: string[] | null
-          achievements: string[] | null
-          growth_areas: string[] | null
-          positive_insights: string[] | null
-          suggested_tags: string[] | null
-          ai_insights: string | null
-          cognitive_pattern: string | null
-          suggested_exercise_name: string | null
-          suggested_exercise: string | null
-          next_journal_prompt: string | null
-          strength_spotlight: string | null
         }
         Insert: {
           bookmarked_at?: string | null
@@ -971,33 +812,6 @@ export type Database = {
           transcripts?: string | null
           user_id?: string | null
           words_count?: number | null
-          // AI reflection columns
-          ai_summary?: string | null
-          ai_confidence?: number | null
-          ai_structured_memory?: Json | null
-          enriched_transcript?: string | null
-          mood_score?: number | null
-          main_emoji?: string | null
-          feelings?: Json | null
-          energy_level?: number | null
-          stress_level?: number | null
-          sleep_quality?: number | null
-          social_connection?: number | null
-          triggers?: string[] | null
-          coping_strategies?: string[] | null
-          physical_symptoms?: string[] | null
-          goals?: string[] | null
-          worries?: string[] | null
-          achievements?: string[] | null
-          growth_areas?: string[] | null
-          positive_insights?: string[] | null
-          suggested_tags?: string[] | null
-          ai_insights?: string | null
-          cognitive_pattern?: string | null
-          suggested_exercise_name?: string | null
-          suggested_exercise?: string | null
-          next_journal_prompt?: string | null
-          strength_spotlight?: string | null
         }
         Update: {
           bookmarked_at?: string | null
@@ -1010,33 +824,6 @@ export type Database = {
           transcripts?: string | null
           user_id?: string | null
           words_count?: number | null
-          // AI reflection columns
-          ai_summary?: string | null
-          ai_confidence?: number | null
-          ai_structured_memory?: Json | null
-          enriched_transcript?: string | null
-          mood_score?: number | null
-          main_emoji?: string | null
-          feelings?: Json | null
-          energy_level?: number | null
-          stress_level?: number | null
-          sleep_quality?: number | null
-          social_connection?: number | null
-          triggers?: string[] | null
-          coping_strategies?: string[] | null
-          physical_symptoms?: string[] | null
-          goals?: string[] | null
-          worries?: string[] | null
-          achievements?: string[] | null
-          growth_areas?: string[] | null
-          positive_insights?: string[] | null
-          suggested_tags?: string[] | null
-          ai_insights?: string | null
-          cognitive_pattern?: string | null
-          suggested_exercise_name?: string | null
-          suggested_exercise?: string | null
-          next_journal_prompt?: string | null
-          strength_spotlight?: string | null
         }
         Relationships: [
           {
@@ -1299,6 +1086,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      monthly_ai: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          id: string
+          input_tokens: number | null
+          month: number
+          output_tokens: number | null
+          personalized_reflection: Json | null
+          structured_memory: Json | null
+          summary: string
+          user_id: string
+          year: number
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          input_tokens?: number | null
+          month: number
+          output_tokens?: number | null
+          personalized_reflection?: Json | null
+          structured_memory?: Json | null
+          summary: string
+          user_id: string
+          year: number
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          input_tokens?: number | null
+          month?: number
+          output_tokens?: number | null
+          personalized_reflection?: Json | null
+          structured_memory?: Json | null
+          summary?: string
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
       }
       moods: {
         Row: {
@@ -2668,6 +2497,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      weekly_ai: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          id: string
+          input_tokens: number | null
+          output_tokens: number | null
+          personalized_reflection: Json | null
+          structured_memory: Json | null
+          summary: string
+          user_id: string
+          week_number: number
+          year: number
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          input_tokens?: number | null
+          output_tokens?: number | null
+          personalized_reflection?: Json | null
+          structured_memory?: Json | null
+          summary: string
+          user_id: string
+          week_number: number
+          year: number
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          input_tokens?: number | null
+          output_tokens?: number | null
+          personalized_reflection?: Json | null
+          structured_memory?: Json | null
+          summary?: string
+          user_id?: string
+          week_number?: number
+          year?: number
+        }
+        Relationships: []
       }
       xp_history: {
         Row: {

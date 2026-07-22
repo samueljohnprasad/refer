@@ -16,7 +16,9 @@ export class ReflectionEngine {
   
   public async generateJournalReflection(journalContent: string): Promise<JournalReflectionResult> {
     const template = await promptLoader.loadPrompt("journal");
+    console.log("Template loaded:", template.substring(0, 50) + "...");
     const prompt = promptBuilder.buildJournalPrompt(template, journalContent);
+    console.log("Built prompt (first 100 chars):", prompt.substring(0, 100).replace(/\n/g, "\\n") + "...");
     return await aiService.generateJournalReflection(prompt);
   }
 

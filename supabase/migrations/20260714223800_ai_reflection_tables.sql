@@ -10,7 +10,7 @@ CREATE TABLE journal_ai (
   structured_memory jsonb,
   created_at timestamptz DEFAULT now(),
   input_tokens integer,
-  output_tokens integer,
+  output_tokens integer
 );
 CREATE INDEX idx_journal_ai_journal_id ON journal_ai(journal_id);
 CREATE INDEX idx_journal_ai_user_id ON journal_ai(user_id);

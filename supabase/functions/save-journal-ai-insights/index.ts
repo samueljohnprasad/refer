@@ -62,16 +62,34 @@ Deno.serve(async (req: Request) => {
       isAudio
     );
 
+    console.log("Transcribe results:", JSON.stringify(transcripts));
+
+    const content = transcripts.join(" ").trim();
+    console.log("Combined content length:", content.length, "Content:", content.substring(0, 100) + "...");
+    
+    if (!content) {
+      // ponytail: block empty entries early
+      console.warn("Blocked empty journal entry.");
+      return new Response(
+        JSON.stringify({ error: "No content provided or speech detected" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("Initializing JournalService...");
     const journalService = new JournalService(supabase);
+    
+    console.log("Calling processJournalCompleted...");
     const insights = await journalService.processJournalCompleted({
       userId: user.id,
-      content: transcripts.join(" "),
+      content,
       selectedDate,
       inputType,
       title,
       durationSeconds,
       wordsCount,
     });
+    console.log("Finished processJournalCompleted, insights:", JSON.stringify(insights));
 
     return new Response(JSON.stringify(insights), {
       status: 200,

@@ -36,3 +36,11 @@ Generate a daily reflection that answers:
 - Use habits, meals and CBT to provide context.
 - Connect multiple activities only when supported by evidence.
 - When yesterday's reflection is provided, describe only actual differences — do not evaluate progress.
+
+## Tone
+
+- Use short paragraphs (2-4 sentences).
+- Use present tense when describing today's observations.
+- Keep the voice immediate and grounded — as if gently reviewing the day together.
+- One or two strong observations are enough.
+- When habits, meals, or CBT are mentioned, connect them to journals only when directly supported.

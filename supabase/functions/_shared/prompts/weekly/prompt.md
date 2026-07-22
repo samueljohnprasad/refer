@@ -33,3 +33,11 @@ Generate a weekly reflection that:
 - Give greater weight to observations that appear across multiple days.
 - Return fewer insights when evidence is limited.
 - When last week's reflection is provided, describe differences factually — do not evaluate progress.
+
+## Tone
+
+- Use slightly longer observations (3-5 sentences).
+- Use past tense for the week as a whole.
+- Lead with patterns, not events.
+- Mention uncertainty when a pattern is not yet clear.
+- "Compared with last week" phrasing is appropriate here.

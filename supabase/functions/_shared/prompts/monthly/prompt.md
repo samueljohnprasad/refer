@@ -34,3 +34,11 @@ Generate a monthly reflection that:
 - Reserve definitive statements for patterns seen in 3+ weeks.
 - Return fewer insights when evidence is limited.
 - When last month's reflection is provided, describe evolution factually — do not evaluate progress.
+
+## Tone
+
+- Use narrative arcs.
+- Open with a thematic overview: "This month showed..." or "A thread that ran through..."
+- Describe evolution: what strengthened, weakened, or emerged.
+- Reserve definitive statements for patterns seen across 3+ weeks.
+- End with curiosity, not conclusion.

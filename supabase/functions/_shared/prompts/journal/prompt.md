@@ -10,6 +10,10 @@ You will receive:
 
 - One journal entry
 
+<journal>
+{{JOURNAL}}
+</journal>
+
 ## Task
 
 Generate:
