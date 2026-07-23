@@ -7,7 +7,7 @@ export const timelineRepo = {
       method: 'GET',
     });
     if (res.error) throw res.error;
-    return { data: res.data };
+    return { data: res.data.data || [] };
   },
 
   async generateDailyInsight(date: string): Promise<{ data: any }> {
@@ -23,7 +23,7 @@ export const timelineRepo = {
       method: 'GET',
     });
     if (res.error) throw res.error;
-    return { data: res.data };
+    return { data: res.data.data || [] };
   },
 
   async generateWeeklyInsight(week_index: number, year: number): Promise<{ data: any }> {
@@ -39,7 +39,7 @@ export const timelineRepo = {
       method: 'GET',
     });
     if (res.error) throw res.error;
-    return { data: res.data };
+    return { data: res.data.data || [] };
   },
 
   async generateMonthlyInsight(date: string): Promise<{ data: any }> {

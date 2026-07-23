@@ -47,9 +47,9 @@ Deno.serve(async (req: Request) => {
     const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
     const offset = (page - 1) * pageSize;
     
-    console.log(`[get-timeline-daily] User: ${user.id} | Page: ${page}, PageSize: ${pageSize}, Offset: ${offset}`);
+    console.log(`[get-timeline-weekly] User: ${user.id} | Page: ${page}, PageSize: ${pageSize}, Offset: ${offset}`);
 
-    // 1. Fetch paginated journals to determine the days we are looking at
+    // 1. Fetch paginated journals to determine the weeks we are looking at
     const { data: journals, error: journalsError } = await supabaseClient
       .from('journal_records')
       .select('id, selected_date, title')
@@ -59,56 +59,85 @@ Deno.serve(async (req: Request) => {
 
     if (journalsError) throw journalsError;
     
-    console.log(`[get-timeline-daily] Found ${journals?.length || 0} journals in range.`);
+    console.log(`[get-timeline-weekly] Found ${journals?.length || 0} journals in range.`);
 
-    // Extract unique dates from the fetched journals
-    const uniqueDates = Array.from(
-      new Set(journals?.map((j) => j.selected_date ? j.selected_date.split('T')[0] : ''))
-    ).filter(d => d !== '');
-
-    // 2. Fetch AI Insights ONLY for those specific dates
-    let aiInsights: any[] = [];
-    if (uniqueDates.length > 0) {
-      console.log(`[get-timeline-daily] Fetching daily_ai for dates:`, uniqueDates);
-      
-      const { data, error: aiError } = await supabaseClient
-        .from('daily_ai')
-        .select('*')
-        .eq('user_id', user.id)
-        .in('reflection_date', uniqueDates);
-
-      if (aiError) throw aiError;
-      aiInsights = data || [];
-      console.log(`[get-timeline-daily] Found ${aiInsights.length} ai insights.`);
-    } else {
-      console.log(`[get-timeline-daily] No unique dates to fetch ai insights for.`);
+    function getISOWeekInfo(dateString: string) {
+      const date = new Date(dateString);
+      const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+      const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
+      return { year: d.getUTCFullYear(), week: weekNo };
     }
 
-    // Build the timeline array mapped by date
+    // Extract unique weeks from the fetched journals
+    const uniqueWeeks = new Map<string, { year: number, week: number }>();
+    
+    journals?.forEach(j => {
+      if (!j.selected_date) return;
+      const { year, week } = getISOWeekInfo(j.selected_date);
+      const weekKey = `${year}-W${week < 10 ? '0' + week : week}`;
+      if (!uniqueWeeks.has(weekKey)) {
+        uniqueWeeks.set(weekKey, { year, week });
+      }
+    });
+
+    const uniqueWeekKeys = Array.from(uniqueWeeks.keys());
+
+    // 2. Fetch AI Insights ONLY for those specific weeks
+    let aiInsights: any[] = [];
+    if (uniqueWeekKeys.length > 0) {
+      console.log(`[get-timeline-weekly] Fetching weekly_ai for weeks:`, uniqueWeekKeys);
+      
+      // Since we can't easily query by a list of (year, week) tuples, we can query by the years and then filter in memory
+      const years = Array.from(new Set(Array.from(uniqueWeeks.values()).map(w => w.year)));
+      
+      const { data, error: aiError } = await supabaseClient
+        .from('weekly_ai')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('year', years);
+
+      if (aiError) throw aiError;
+      
+      // Filter the data to only include the weeks we asked for
+      aiInsights = (data || []).filter(insight => {
+        const weekKey = `${insight.year}-W${insight.week_number < 10 ? '0' + insight.week_number : insight.week_number}`;
+        return uniqueWeeks.has(weekKey);
+      });
+      console.log(`[get-timeline-weekly] Found ${aiInsights.length} ai insights.`);
+    } else {
+      console.log(`[get-timeline-weekly] No unique weeks to fetch ai insights for.`);
+    }
+
+    // Build the timeline array mapped by week
     const timelineMap = new Map<string, any>();
     
-    // Seed the map with the unique dates
-    uniqueDates.forEach((date) => {
-      timelineMap.set(date, {
-        date: date,
-        originalDateString: date,
+    // Seed the map with the unique weeks
+    uniqueWeeks.forEach((val, weekKey) => {
+      timelineMap.set(weekKey, {
+        date: weekKey,
+        originalDateString: weekKey,
         aiInsight: null // Will be populated if exists
       });
     });
 
     // Populate AI insights
     aiInsights.forEach((insight) => {
-      if (timelineMap.has(insight.reflection_date)) {
-        timelineMap.get(insight.reflection_date).aiInsight = insight;
+      const weekKey = `${insight.year}-W${insight.week_number < 10 ? '0' + insight.week_number : insight.week_number}`;
+      if (timelineMap.has(weekKey)) {
+        timelineMap.get(weekKey).aiInsight = insight;
       }
     });
 
     // Convert map to sorted array (newest first)
-    const timeline = Array.from(timelineMap.values()).sort((a, b) => 
-      new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    const timeline = Array.from(timelineMap.values()).sort((a, b) => {
+      // Sort by weekKey descending (e.g. 2026-W30 > 2026-W29)
+      return b.date.localeCompare(a.date);
+    });
     
-    console.log(`[get-timeline-daily] Returning ${timeline.length} timeline entries.`);
+    console.log(`[get-timeline-weekly] Returning ${timeline.length} timeline entries.`);
 
     return new Response(
       JSON.stringify({ success: true, data: timeline }),

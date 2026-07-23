@@ -90,9 +90,35 @@ export const useStreakTracker = (): UseStreakTrackerReturn => {
 
       const lastEntryDate = profile?.last_journal_date || null;
 
+      let currentStreak = profile?.current_streak || 0;
+      
+      // Fallback: If DB says 0 but user has logged today or yesterday, calculate streak from this week's progress
+      if (currentStreak === 0) {
+        let fallbackStreak = 0;
+        const todayIndex = dayjs().day();
+        let index = todayIndex;
+        
+        if (weeklyProgress[index]) {
+          fallbackStreak++;
+          index--;
+          while (index >= 0 && weeklyProgress[index]) {
+            fallbackStreak++;
+            index--;
+          }
+        } else if (todayIndex > 0 && weeklyProgress[todayIndex - 1]) {
+          fallbackStreak++;
+          index = todayIndex - 2;
+          while (index >= 0 && weeklyProgress[index]) {
+            fallbackStreak++;
+            index--;
+          }
+        }
+        currentStreak = fallbackStreak;
+      }
+
       setStreakData({
-        currentStreak: profile?.current_streak || 0,
-        longestStreak: profile?.longest_streak || 0,
+        currentStreak: currentStreak,
+        longestStreak: Math.max(profile?.longest_streak || 0, currentStreak),
         lastEntryDate,
         weeklyProgress,
       });

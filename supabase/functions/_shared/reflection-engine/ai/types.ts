@@ -13,6 +13,7 @@ export interface JournalReflectionResult {
   reflection: string;
   structured_memory: AIStructuredMemory;
   confidence: number;
+  title?: string;
   moodScore?: number;
   mainEmoji?: string;
   energyLevel?: number;

@@ -7,13 +7,14 @@ import { TimelineShimmer } from '../components/TimelineShimmer';
 import { DailyInsightCard } from '../components/DailyInsightCard';
 import { GenerateInsightCard } from '../components/GenerateInsightCard';
 import * as Haptics from 'expo-haptics';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import type { TimelineSection } from '@/src/components/ui/Timeline/types';
 import type { MonthlyTimelineItem, TimelineTabProps } from '../../model/timeline.types';
 import { MOCK_MONTHS_TIMELINE_DATA } from './mockData';
 
 export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
-  const [page, setPage] = useState(1);
-  const { data, isLoading, isError } = useMonthlyTimeline({ page, pageSize: 10 });
+  const headerHeight = useHeaderHeight();
+  const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useMonthlyTimeline({ pageSize: 10 });
   const { mutateAsync: generateInsight } = useGenerateMonthlyInsight();
   
   const [generatingDates, setGeneratingDates] = useState<Set<string>>(new Set());
@@ -36,7 +37,7 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     }
   };
 
-  const displayData = isError || !data?.data ? MOCK_MONTHS_TIMELINE_DATA : data.data;
+  const displayData = data?.pages ? data.pages.flatMap(p => p.data) : (isError ? MOCK_MONTHS_TIMELINE_DATA : []);
 
   const sections: TimelineSection<MonthlyTimelineItem>[] = useMemo(() => {
     return displayData.map((item: any) => {
@@ -80,9 +81,9 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     );
   };
 
-  if (isLoading && page === 1) {
+  if (isLoading) {
     return (
-      <View className="px-4 py-6">
+      <View className="px-4 py-6" style={{ paddingTop: headerHeight + 16 }}>
         <TimelineShimmer />
       </View>
     );
@@ -93,7 +94,12 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
       sections={sections}
       renderItem={renderTimelineItem}
       mode="months"
-      onEndReached={() => {}}
+      isLoadingMore={isFetchingNextPage}
+      onEndReached={() => {
+        if (hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      }}
     />
   );
 };

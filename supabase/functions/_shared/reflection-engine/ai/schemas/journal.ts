@@ -22,6 +22,10 @@ export const journalReflectionSchema = {
       description:
         "Overall mood score between 1 (very negative) and 5 (very positive).",
     },
+    title: {
+      type: "string",
+      description: "A short, meaningful title for this journal entry (maximum 5 words).",
+    },
   },
-  required: ["reflection", "structured_memory", "confidence", "moodScore"],
+  required: ["reflection", "structured_memory", "confidence", "moodScore", "title"],
 };

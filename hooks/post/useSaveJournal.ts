@@ -40,6 +40,47 @@ export const useSaveJournal = () => {
       }
 
       setSaving(true);
+      const formattedDate: string = formateDate_y_m_d(selectedDate);
+      const queryKey = ["journals_data", user.id, formattedDate];
+      const moodScore = getMoodScore(input.moods?.main_mood);
+
+      await queryClient.cancelQueries({ queryKey });
+      const previousJournals = queryClient.getQueryData<JournalEntry[]>(queryKey);
+      
+      const previousDailyMoods = queryClient.getQueriesData<Map<string, number>>({
+        queryKey: ["daily-moods", user.id],
+      });
+
+      const optimisticJournal = {
+        ...input,
+        id: input.id || Date.now(),
+        user_id: user.id,
+        selected_date: selectedDate.toISOString(),
+        words_count: countWords(input.transcripts || ""),
+      } as JournalEntry;
+
+      queryClient.setQueryData<JournalEntry[]>(queryKey, (old) => {
+        if (!old) return [optimisticJournal];
+        const existingIndex = old.findIndex(j => j.id === optimisticJournal.id);
+        if (existingIndex >= 0) {
+          const newArr = [...old];
+          newArr[existingIndex] = { ...newArr[existingIndex], ...optimisticJournal };
+          return newArr;
+        }
+        return [...old, optimisticJournal];
+      });
+
+      if (moodScore !== null && moodScore !== undefined) {
+        queryClient.setQueriesData<Map<string, number>>({
+          queryKey: ["daily-moods", user.id],
+        }, (oldMap) => {
+          if (!oldMap) return oldMap;
+          const newMap = new Map(oldMap);
+          newMap.set(formattedDate, Math.round(moodScore));
+          return newMap;
+        });
+      }
+
       try {
         const journalRow: Insert<"journal_records"> = {
           id: input.id,
@@ -113,18 +154,24 @@ export const useSaveJournal = () => {
         // Update journal count challenge
         challenges?.updateProgress("journal_count");
 
-        const formattedDate: string = formateDate_y_m_d(selectedDate);
-
-        await queryClient.invalidateQueries({
-          queryKey: ["journals_data", user?.id, formattedDate],
-        });
+        await queryClient.invalidateQueries({ queryKey });
 
         // Invalidate mood-related queries
         await queryClient.invalidateQueries({
-          queryKey: ["moods"],
+          queryKey: ["daily-moods"],
+          refetchType: "active",
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ["daily-moods-intervals"],
           refetchType: "active",
         });
       } catch (error) {
+        if (previousJournals) {
+          queryClient.setQueryData(queryKey, previousJournals);
+        }
+        previousDailyMoods.forEach(([key, data]) => {
+          queryClient.setQueryData(key, data);
+        });
         throw error;
       } finally {
         setSaving(false);

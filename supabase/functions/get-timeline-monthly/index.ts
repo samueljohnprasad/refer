@@ -47,9 +47,9 @@ Deno.serve(async (req: Request) => {
     const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
     const offset = (page - 1) * pageSize;
     
-    console.log(`[get-timeline-daily] User: ${user.id} | Page: ${page}, PageSize: ${pageSize}, Offset: ${offset}`);
+    console.log(`[get-timeline-monthly] User: ${user.id} | Page: ${page}, PageSize: ${pageSize}, Offset: ${offset}`);
 
-    // 1. Fetch paginated journals to determine the days we are looking at
+    // 1. Fetch paginated journals to determine the months we are looking at
     const { data: journals, error: journalsError } = await supabaseClient
       .from('journal_records')
       .select('id, selected_date, title')
@@ -59,56 +59,75 @@ Deno.serve(async (req: Request) => {
 
     if (journalsError) throw journalsError;
     
-    console.log(`[get-timeline-daily] Found ${journals?.length || 0} journals in range.`);
+    console.log(`[get-timeline-monthly] Found ${journals?.length || 0} journals in range.`);
 
-    // Extract unique dates from the fetched journals
-    const uniqueDates = Array.from(
-      new Set(journals?.map((j) => j.selected_date ? j.selected_date.split('T')[0] : ''))
-    ).filter(d => d !== '');
+    // Extract unique months from the fetched journals
+    const uniqueMonths = new Map<string, { year: number, month: number }>();
+    
+    journals?.forEach(j => {
+      if (!j.selected_date) return;
+      const date = new Date(j.selected_date);
+      const year = date.getUTCFullYear();
+      const month = date.getUTCMonth() + 1;
+      const monthKey = `${year}-${month < 10 ? '0' + month : month}`;
+      if (!uniqueMonths.has(monthKey)) {
+        uniqueMonths.set(monthKey, { year, month });
+      }
+    });
 
-    // 2. Fetch AI Insights ONLY for those specific dates
+    const uniqueMonthKeys = Array.from(uniqueMonths.keys());
+
+    // 2. Fetch AI Insights ONLY for those specific months
     let aiInsights: any[] = [];
-    if (uniqueDates.length > 0) {
-      console.log(`[get-timeline-daily] Fetching daily_ai for dates:`, uniqueDates);
+    if (uniqueMonthKeys.length > 0) {
+      console.log(`[get-timeline-monthly] Fetching monthly_ai for months:`, uniqueMonthKeys);
+      
+      const years = Array.from(new Set(Array.from(uniqueMonths.values()).map(m => m.year)));
       
       const { data, error: aiError } = await supabaseClient
-        .from('daily_ai')
+        .from('monthly_ai')
         .select('*')
         .eq('user_id', user.id)
-        .in('reflection_date', uniqueDates);
+        .in('year', years);
 
       if (aiError) throw aiError;
-      aiInsights = data || [];
-      console.log(`[get-timeline-daily] Found ${aiInsights.length} ai insights.`);
+      
+      // Filter the data to only include the months we asked for
+      aiInsights = (data || []).filter(insight => {
+        const monthKey = `${insight.year}-${insight.month < 10 ? '0' + insight.month : insight.month}`;
+        return uniqueMonths.has(monthKey);
+      });
+      console.log(`[get-timeline-monthly] Found ${aiInsights.length} ai insights.`);
     } else {
-      console.log(`[get-timeline-daily] No unique dates to fetch ai insights for.`);
+      console.log(`[get-timeline-monthly] No unique months to fetch ai insights for.`);
     }
 
-    // Build the timeline array mapped by date
+    // Build the timeline array mapped by month
     const timelineMap = new Map<string, any>();
     
-    // Seed the map with the unique dates
-    uniqueDates.forEach((date) => {
-      timelineMap.set(date, {
-        date: date,
-        originalDateString: date,
+    // Seed the map with the unique months
+    uniqueMonths.forEach((val, monthKey) => {
+      timelineMap.set(monthKey, {
+        date: monthKey,
+        originalDateString: monthKey,
         aiInsight: null // Will be populated if exists
       });
     });
 
     // Populate AI insights
     aiInsights.forEach((insight) => {
-      if (timelineMap.has(insight.reflection_date)) {
-        timelineMap.get(insight.reflection_date).aiInsight = insight;
+      const monthKey = `${insight.year}-${insight.month < 10 ? '0' + insight.month : insight.month}`;
+      if (timelineMap.has(monthKey)) {
+        timelineMap.get(monthKey).aiInsight = insight;
       }
     });
 
     // Convert map to sorted array (newest first)
-    const timeline = Array.from(timelineMap.values()).sort((a, b) => 
-      new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    const timeline = Array.from(timelineMap.values()).sort((a, b) => {
+      return b.date.localeCompare(a.date);
+    });
     
-    console.log(`[get-timeline-daily] Returning ${timeline.length} timeline entries.`);
+    console.log(`[get-timeline-monthly] Returning ${timeline.length} timeline entries.`);
 
     return new Response(
       JSON.stringify({ success: true, data: timeline }),

@@ -24,24 +24,13 @@ export const useMentalHealthData = (selectedDate: Date) => {
         .from("journal_records")
         .select(
           `*,
-          journal_ai_insights(
+          journal_ai(
             id,
-            journal_entry_id,
-            created_at,
-            aiInsights,
-            feelings,
-            energyLevel,
-            stressLevel,
-            sleepQuality,
-            achievements,
-            worries,
-            goals,
-            triggers,
-            copingStrategies,
-            "physical-symptoms"
+            summary,
+            structured_memory
           ),
           moods(*)
-          `
+          `,
         )
         .eq("user_id", user.id)
         .gte("selected_date", start)
@@ -49,8 +38,12 @@ export const useMentalHealthData = (selectedDate: Date) => {
         .order("selected_date", { ascending: true });
 
       if (dateColErr) {
+        console.log("dataaaaaaaaa", dateColErr);
+
         throw dateColErr;
       }
+
+      console.log("dataaaaaaaaa", data);
 
       if (!data) {
         return [];

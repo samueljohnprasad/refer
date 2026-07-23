@@ -7,13 +7,14 @@ import { TimelineShimmer } from '../components/TimelineShimmer';
 import { DailyInsightCard } from '../components/DailyInsightCard';
 import { GenerateInsightCard } from '../components/GenerateInsightCard';
 import * as Haptics from 'expo-haptics';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import type { TimelineSection } from '@/src/components/ui/Timeline/types';
 import type { DailyTimelineItem, TimelineTabProps } from '../../model/timeline.types';
 import { MOCK_DAYS_TIMELINE_DATA } from './mockData';
 
 export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
-  const [page, setPage] = useState(1);
-  const { data, isLoading, isError } = useDailyTimeline({ page, pageSize: 10 });
+  const headerHeight = useHeaderHeight();
+  const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useDailyTimeline({ pageSize: 10 });
   const { mutateAsync: generateInsight } = useGenerateDailyInsight();
   
   // Track which dates are actively being generated so we can show a Shimmer gracefully
@@ -39,8 +40,7 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     }
   };
 
-  // Use mock data if the API fails for local UI testing
-  const displayData = isError || !data?.data ? MOCK_DAYS_TIMELINE_DATA : data.data;
+  const displayData = data?.pages ? data.pages.flatMap(p => p.data) : [];
 
   const sections: TimelineSection<DailyTimelineItem>[] = useMemo(() => {
     return displayData.map((item: any) => {
@@ -73,9 +73,9 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     return <GenerateInsightCard onPress={() => handleGenerate(item.originalDateString)} />;
   };
 
-  if (isLoading && page === 1) {
+  if (isLoading) {
     return (
-      <View className="px-4 py-6">
+      <View className="px-4 py-6" style={{ paddingTop: headerHeight + 16 }}>
         <TimelineShimmer />
       </View>
     );
@@ -85,8 +85,11 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     <Timeline
       sections={sections}
       renderItem={renderTimelineItem}
+      isLoadingMore={isFetchingNextPage}
       onEndReached={() => {
-        // Increment page when reaching bottom for infinite scroll
+        if (hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
       }}
     />
   );

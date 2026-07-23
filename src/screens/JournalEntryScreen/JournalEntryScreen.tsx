@@ -332,6 +332,26 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
             isEditing={isEditing}
             onTextChange={setJournalText}
           />
+
+          {!isEditing && (() => {
+            const aiData = Array.isArray(entry?.journal_ai) ? entry.journal_ai[0] : entry?.journal_ai;
+            if (aiData?.summary) {
+              return (
+                <View className="mt-8 mb-4">
+                  <Text style={{ fontFamily: "CormorantGaramond-SemiBold", fontSize: 22, color: INK, marginBottom: 12 }}>
+                    AI Summary
+                  </Text>
+                  <View className="bg-white/40 p-5 rounded-3xl" style={{ borderWidth: 1, borderColor: "rgba(0,0,0,0.03)" }}>
+                    <Text style={{ fontFamily: "Geist-Regular", fontSize: 16, color: INK, opacity: 0.85, lineHeight: 24 }}>
+                      {aiData.summary}
+                    </Text>
+                  </View>
+                </View>
+              );
+            }
+            return null;
+          })()}
+
           {!isEditing && entry?.journal_ai_insights && (
             <AIInsightsSection
               aiInsights={entry.journal_ai_insights.aiInsights ?? null}
