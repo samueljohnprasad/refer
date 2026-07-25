@@ -99,6 +99,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: { type: "journal_count", target: 10 },
     color: "#60A5FA", // Lighter blue
     tier: 2,
+    imageAsset: {
+      unlocked: require("@/assets/achievements/getting-started.png"),
+    },
   },
   {
     id: "journal_25",
