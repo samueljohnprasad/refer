@@ -1,6 +1,7 @@
 import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { reflectionEngine } from "../ai/reflection-engine.ts";
 import { contextBuilder } from "../ai/context-builder.ts";
+import { getUserUtcDateRange } from "../../timezone.ts";
 
 interface JournalAI {
   summary: string;
@@ -47,9 +48,9 @@ export class DailyService {
       yesterday.setDate(yesterday.getDate() - 1);
       const yesterdayStr = yesterday.toISOString().split("T")[0];
 
-      // Define reusable date range for queries
-      const startOfDay = `${date}T00:00:00Z`;
-      const endOfDay = `${date}T23:59:59Z`;
+      // Calculate exact local start and end of day converted to UTC timestamps using shared timezone helper // ponytail: reusable timezone boundary logic
+      const { startOfDay, endOfDay, timezone } = await getUserUtcDateRange(this.supabase, userId, date);
+      console.log(`[daily.service] Using date boundaries for tz ${timezone}: ${startOfDay} to ${endOfDay}`);
 
       // 1. Fetch data from DB (parallel)
       const [
@@ -67,15 +68,17 @@ export class DailyService {
           .gte("selected_date", startOfDay)
           .lte("selected_date", endOfDay),
         this.supabase
-          .from("habits")
-          .select("*")
+          .from("habit_completions")
+          .select("completed_at, habits(name)")
           .eq("user_id", userId)
-          .eq("date", date),
+          .gte("completed_at", startOfDay)
+          .lte("completed_at", endOfDay),
         this.supabase
-          .from("meals")
-          .select("*")
+          .from("calorie_entries")
+          .select("foods, total_calories, meal_type, selected_date")
           .eq("user_id", userId)
-          .eq("date", date),
+          .gte("selected_date", startOfDay)
+          .lte("selected_date", endOfDay),
         this.supabase
           .from("exercise_entries")
           .select("*")
@@ -130,6 +133,15 @@ export class DailyService {
       });
 
       // 2. Build the context string
+      const dailyHabits = (habits || []).map(
+        // @ts-ignore - Supabase join typing // ponytail: handle habit completion join mapping
+        (h: any) => ({ name: h.habits?.name || "Unknown Habit", completed: true, timestamp: h.completed_at })
+      );
+      const dailyMeals = (meals || []).map(
+        // ponytail: map calorie entries to daily meals context
+        (m: any) => ({ food: m.foods, calories: m.total_calories, meal_type: m.meal_type, time: m.selected_date, timestamp: m.selected_date })
+      );
+
       const formattedMoods = (moods || []).map((m: any) => {
         // Extract time (HH:MM) from the ISO selected_date string
         let timeString = null;
@@ -147,8 +159,8 @@ export class DailyService {
       const context = contextBuilder.buildDailyContext(
         date,
         (journalAIs || []) as JournalAI[],
-        (habits || []) as Habit[],
-        (meals || []) as Meal[],
+        dailyHabits as any,
+        dailyMeals as any,
         cbtContext,
         formattedMoods,
         priorReflection,
