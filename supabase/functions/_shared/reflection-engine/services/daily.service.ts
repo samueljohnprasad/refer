@@ -154,28 +154,25 @@ export class DailyService {
       }
 
       // 2. Build the context string
+      const formatLocalTime = (isoString: string | null) => {
+        if (!isoString) return null;
+        return new Date(isoString).toLocaleTimeString("en-US", { timeZone: timezone, hour: "numeric", minute: "2-digit", hour12: true });
+      };
+
       const dailyHabits: Habit[] = (habits || []).map(
         // @ts-ignore - Supabase join typing // ponytail: handle habit completion join mapping
-        (h) => ({ name: h.habits?.name || "Unknown Habit", completed: true, timestamp: h.completed_at })
+        (h) => ({ name: h.habits?.name || "Unknown Habit", completed: true, timestamp: formatLocalTime(h.completed_at) })
       );
       const dailyMeals: Meal[] = (meals || []).map(
         // ponytail: map calorie entries to daily meals context
-        (m) => ({ food: m.foods, calories: m.total_calories, meal_type: m.meal_type, time: m.selected_date, timestamp: m.selected_date })
+        (m) => ({ food: m.foods, calories: m.total_calories, meal_type: m.meal_type, time: formatLocalTime(m.selected_date) as string, timestamp: formatLocalTime(m.selected_date) })
       );
 
-      const formattedMoods = (moods || []).map((m: any) => {
-        // Extract time (HH:MM) from the ISO selected_date string
-        let timeString = null;
-        if (m.selected_date) {
-          const dt = new Date(m.selected_date);
-          timeString = dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-        }
-        return {
-          main_mood: m.main_mood,
-          mood_score: m.mood_score,
-          time: timeString
-        };
-      });
+      const formattedMoods = (moods || []).map((m: any) => ({
+        main_mood: m.main_mood,
+        mood_score: m.mood_score,
+        time: formatLocalTime(m.selected_date)
+      }));
 
       const context = contextBuilder.buildDailyContext(
         date,
