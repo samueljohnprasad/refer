@@ -2,6 +2,10 @@ import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { reflectionEngine } from "../ai/reflection-engine.ts";
 import { contextBuilder } from "../ai/context-builder.ts";
 import { AIStructuredMemory } from "../ai/types.ts";
+import { WeeklyService } from "./weekly.service.ts";
+import { getUserTimezone } from "../../timezone.ts";
+import { toZonedTime, format as formatTz } from "npm:date-fns-tz@^3.0.0";
+import { format, getWeek, eachWeekOfInterval } from "npm:date-fns@^4.1.0";
 
 interface WeeklySummaryRecord {
   weekly_summary: {
@@ -95,14 +99,67 @@ export class MonthlyService {
         hasPriorMonthly: !!priorMonthly
       });
 
+      // ponytail: missing weekly auto-recovery with timezone-aware today cap
+      // Calculate Timezone-Aware Today
+      const userTimezone = await getUserTimezone(this.supabase, userId);
+      const today = formatTz(toZonedTime(new Date(), userTimezone), "yyyy-MM-dd");
+      
+      const capDate = lastDay < today ? lastDay : today;
+
+      // Identify missing weeks
+      const targetYearInt = parseInt(monthYear.slice(0, 4), 10);
+      const existingWeeks = new Set((weeklyRecords || []).map((w: any) => w.week_number));
+      
+      const missingWeeks: number[] = [];
+      let intervalWeeks: Date[] = [];
+      
+      if (firstDay <= capDate) {
+        intervalWeeks = eachWeekOfInterval({
+          start: new Date(`${firstDay}T00:00:00.000Z`),
+          end: new Date(`${capDate}T00:00:00.000Z`)
+        });
+      }
+      
+      for (const d of intervalWeeks) {
+        const wk = getWeek(d);
+        if (!existingWeeks.has(wk)) {
+          missingWeeks.push(wk);
+        }
+      }
+
+      // Parallel generate missing weeklies
+      let finalWeeklyRecords = weeklyRecords || [];
+      
+      if (missingWeeks.length > 0) {
+        console.log(`[monthly.service] Generating missing weekly insights for weeks:`, missingWeeks);
+        const weeklyService = new WeeklyService(this.supabase);
+        
+        await Promise.all(
+          missingWeeks.map(wk => 
+            weeklyService.generateAndSaveWeeklyReflection(userId, wk, targetYearInt)
+              .catch(err => console.error(`Failed to generate weekly AI for week ${wk}:`, err))
+          )
+        );
+
+        // Refetch after generation
+        const { data: refreshedWeeklyAIs } = await this.supabase
+          .from("weekly_ai")
+          .select("week_number, summary, structured_memory")
+          .eq("user_id", userId)
+          .eq("year", targetYearInt);
+          
+        if (refreshedWeeklyAIs) {
+          finalWeeklyRecords = refreshedWeeklyAIs;
+        }
+      }
+
       const weeklyReflections: string[] = [];
       const weeklyMemories: AIStructuredMemory[] = [];
       
       const targetMonthStr = monthYear.slice(5, 7);
       const targetMonthInt = parseInt(targetMonthStr, 10);
-      const targetYearInt = parseInt(monthYear.slice(0, 4), 10);
 
-      (weeklyRecords || []).forEach(record => {
+      finalWeeklyRecords.forEach(record => {
         // Approximate month check: week_number * 7 days.
         const weekDate = new Date(Date.UTC(targetYearInt, 0, 4 + (record.week_number - 1) * 7));
         if (weekDate.getUTCMonth() + 1 === targetMonthInt) {
