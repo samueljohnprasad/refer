@@ -15,16 +15,18 @@ import type { JourneyMapViewModel, JourneyMapActions } from "./hooks/useJourneyM
 export interface JourneyMapViewProps {
   model: JourneyMapViewModel;
   actions: JourneyMapActions;
+  isOnboarding?: boolean;
 }
 
 /**
- * Presentational component for the Journey Map.
- * Strictly stateless regarding business logic and data fetching.
- * Receives all data and actions purely via props from the Container/ViewModel.
+ * Presentational View component for the Journey Map.
+ * Renders the UI based entirely on the provided view model state and actions.
+ * Contains no internal state or data fetching logic.
  */
 export const JourneyMapView = React.memo(function JourneyMapView({
   model,
   actions,
+  isOnboarding,
 }: JourneyMapViewProps): React.JSX.Element {
   if (model.isPreparing) {
     return <JourneyLoadingSkeleton />;
@@ -67,14 +69,16 @@ export const JourneyMapView = React.memo(function JourneyMapView({
               }}
             >
               <SafeAreaView edges={["top"]}>
-                <DuolingoHeader
-                  stats={userStats}
-                  enrolledCourses={enrolledCourses}
-                  activeCourseId={courseId}
-                  activeCourseSummary={activeCourseSummary}
-                  onAddCoursePress={onAddCoursePress}
-                  onCourseSelect={setActiveCourseId}
-                />
+                {!isOnboarding && (
+                  <DuolingoHeader
+                    stats={userStats}
+                    enrolledCourses={enrolledCourses}
+                    activeCourseId={courseId}
+                    activeCourseSummary={activeCourseSummary}
+                    onAddCoursePress={onAddCoursePress}
+                    onCourseSelect={setActiveCourseId}
+                  />
+                )}
                 <HomeMainButton
                   onPress={controller.handleOpenSections}
                   unitLabel={controller.headerState.label}

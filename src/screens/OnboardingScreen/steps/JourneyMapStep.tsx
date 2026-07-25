@@ -49,7 +49,7 @@ const JourneyMapStep: React.FC<JourneyMapStepProps> = ({
               style={{ fontFamily: "GeistSemiBold" }}
               className="text-xs text-sage-700"
             >
-              {course.durationDays} days
+              {course.durationLessons} lessons
             </Text>
           </View>
         </View>
@@ -57,8 +57,9 @@ const JourneyMapStep: React.FC<JourneyMapStepProps> = ({
           style={{ fontFamily: "GeistRegular" }}
           className="mt-3 text-[15px] leading-[22px] text-ink-soft"
         >
-          {course.tagline} Each day pairs a short lesson with a guided CBT
+          {course.tagline} Each lesson pairs a short concept with a guided CBT
           practice.
+          {/* ponytail: courses structure displays lessons instead of days */}
         </Text>
       </Animated.View>
 

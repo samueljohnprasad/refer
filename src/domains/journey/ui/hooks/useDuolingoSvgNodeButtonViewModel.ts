@@ -3,6 +3,7 @@ import * as Haptics from "expo-haptics";
 import {
   interpolate,
   useAnimatedProps,
+  useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
@@ -67,6 +68,10 @@ export function useDuolingoSvgNodeButtonViewModel({
     transform: [{ translateY: cy.value - FACE_BASE_CY }],
   }));
 
+  const iconAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: cy.value - FACE_BASE_CY }],
+  }));
+
   const containerStyle = useMemo(
     () => ({
       width: size,
@@ -102,6 +107,7 @@ export function useDuolingoSvgNodeButtonViewModel({
     outerCircleAnimatedProps,
     glossAnimatedProps,
     iconFollowFaceProps,
+    iconAnimatedStyle,
     containerStyle,
     handlePressIn,
     handlePressOut,

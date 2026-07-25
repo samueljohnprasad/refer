@@ -1,14 +1,12 @@
 import React from "react";
-import { View, Pressable } from "react-native";
+import { View } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import Animated from "react-native-reanimated";
+import { Card } from "@/src/components/ui/Card";
 import { JourneyUnitIcon } from "./JourneyUnitIcon";
 import {
   useHomeMainButtonViewModel,
   type HomeMainButtonProps,
 } from "../hooks/useHomeMainButtonViewModel";
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface HomeMainButtonViewProps
   extends ReturnType<typeof useHomeMainButtonViewModel>,
@@ -19,9 +17,8 @@ export interface HomeMainButtonViewProps
  * Strictly contains JSX code without internal hooks.
  */
 export const HomeMainButtonView = React.memo(function HomeMainButtonView({
-  animatedStyle,
-  handlePressIn,
-  handlePressOut,
+  faceStyle,
+  rimStyle,
   handlePress,
   unitLabel,
   unitTitle,
@@ -29,18 +26,14 @@ export const HomeMainButtonView = React.memo(function HomeMainButtonView({
 }: HomeMainButtonViewProps): React.JSX.Element {
   return (
     <View className="px-5 w-full max-w-[420px] self-center my-2">
-      <AnimatedPressable
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
+      <Card
         onPress={handlePress}
-        style={[
-          {
-            borderRadius: 20,
-            borderBottomWidth: 3,
-          },
-          animatedStyle,
-        ]}
-        className="flex-row items-center justify-between px-5 py-4"
+        faceStyle={faceStyle}
+        rimStyle={rimStyle}
+        variant="solid"
+        radius="lg"
+        className="w-full"
+        contentClassName="flex-row items-center justify-between px-5 py-4"
       >
         <View className="flex-1 mr-4">
           <Text variant="eyebrow" className="mb-1 opacity-90 !text-white">
@@ -56,7 +49,7 @@ export const HomeMainButtonView = React.memo(function HomeMainButtonView({
         >
           <JourneyUnitIcon iconKey={unitIconKey} size={24} color="#FFFFFF" />
         </View>
-      </AnimatedPressable>
+      </Card>
     </View>
   );
 });

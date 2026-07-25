@@ -17,7 +17,10 @@ import {
   Dimensions,
   FlatList,
 } from "react-native";
-import { useRecentExercises, trackRecentExercise } from "@/src/hooks/useRecentExercises";
+import {
+  useRecentExercises,
+  trackRecentExercise,
+} from "@/src/hooks/useRecentExercises";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
 import Animated, {
@@ -219,122 +222,14 @@ interface ExerciseCardProps {
   featured?: boolean;
 }
 
-const ExerciseCard = memo(function ExerciseCard({
-  exercise,
-  onPress,
-  featured = false,
-}: ExerciseCardProps): ReactElement {
-  const icon = getExerciseIcon(exercise.type);
-  const badgeTheme = getCategoryBadgeTheme(exercise.category);
-  const handlePress = useCallback((): void => {
-    onPress(exercise);
-  }, [exercise, onPress]);
-
-  return (
-    <CircularRevealWrapper 
-      href={buildExerciseRoute(exercise.type)} 
-      color={badgeTheme.bg}
-      duration={800}
-    >
-      <Pressable
-        onPress={handlePress}
-        style={({ pressed }) => [
-        nutrieStyles.exerciseCard,
-        pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] },
-      ]}
-      accessibilityLabel={`${exercise.title}: ${exercise.subtitle}. Duration: ${exercise.duration}.`}
-      accessibilityRole="button"
-    >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
-        <View
-          style={[
-            nutrieStyles.exerciseIconWell,
-            { backgroundColor: badgeTheme.bg },
-            featured && { width: 56, height: 56 },
-          ]}
-        >
-          <ExerciseIcon
-            type={exercise.type}
-            size={featured ? 28 : 24}
-            color={badgeTheme.iconColor}
-          />
-        </View>
-
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={nutrieStyles.exerciseTitle} numberOfLines={2}>
-            {exercise.title}
-          </Text>
-          <Text
-            style={nutrieStyles.exerciseSubtitle}
-            numberOfLines={featured ? 3 : 2}
-          >
-            {exercise.subtitle}
-          </Text>
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 8,
-              marginTop: 10,
-            }}
-          >
-            <View style={nutrieStyles.inlinePill}>
-              {Platform.OS === "ios" ? (
-                <SymbolView
-                  name={"clock" as any}
-                  size={11}
-                  tintColor="#636366"
-                  weight="medium"
-                  style={{ width: 13, height: 13 }}
-                />
-              ) : (
-                <Feather name="clock" size={11} color="#636366" />
-              )}
-              <Text style={nutrieStyles.inlinePillText}>
-                {exercise.duration}
-              </Text>
-            </View>
-            <View
-              style={[
-                nutrieStyles.inlinePill,
-                { backgroundColor: "#FFF5D6", borderColor: "#F5E6B8" },
-              ]}
-            >
-              {Platform.OS === "ios" ? (
-                <SymbolView
-                  name={"bolt.fill" as any}
-                  size={11}
-                  tintColor="#C89400"
-                  weight="medium"
-                  style={{ width: 13, height: 13 }}
-                />
-              ) : (
-                <Feather name="zap" size={11} color="#C89400" />
-              )}
-              <Text style={[nutrieStyles.inlinePillText, { color: "#A67C00" }]}>
-                +{exercise.xp} XP
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={nutrieStyles.arrowWell}>
-          <HugeiconsIcon icon={ArrowRight01Icon} size={14} color="#C4C4CC" />
-        </View>
-      </View>
-    </Pressable>
-    </CircularRevealWrapper>
-  );
-});
-
 // ─── NEW EDITORIAL LAYOUT COMPONENTS ───────────────────────────────────────
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CAROUSEL_GAP = 12;
 const CAROUSEL_PEEK = 20;
 // Fit ~1.85 cards across the screen so exercise titles wrap cleanly on 2 lines
-const SHELF_CARD_WIDTH = (SCREEN_WIDTH - CAROUSEL_PEEK * 2 - CAROUSEL_GAP * 2) / 1.85;
+const SHELF_CARD_WIDTH =
+  (SCREEN_WIDTH - CAROUSEL_PEEK * 2 - CAROUSEL_GAP * 2) / 1.85;
 
 interface LayoutCardProps {
   exercise: ExerciseConfig<any>;
@@ -349,10 +244,10 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
 }: LayoutCardProps): ReactElement {
   const icon = getExerciseIcon(exercise.type);
   const badgeTheme = getCategoryBadgeTheme(exercise.category);
-  
+
   return (
-    <CircularRevealWrapper 
-      href={buildExerciseRoute(exercise.type)} 
+    <CircularRevealWrapper
+      href={buildExerciseRoute(exercise.type)}
       color={badgeTheme.bg}
       duration={800}
     >
@@ -368,25 +263,57 @@ const FeaturedExerciseHero = memo(function FeaturedExerciseHero({
           pressed && { opacity: 0.92, transform: [{ scale: 0.985 }] },
         ]}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
-          <ExerciseIcon type={exercise.type} size={28} color={badgeTheme.iconColor} />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 16,
+          }}
+        >
+          <ExerciseIcon
+            type={exercise.type}
+            size={28}
+            color={badgeTheme.iconColor}
+          />
           <View style={{ flex: 1 }} />
-          <View style={[nutrieStyles.inlinePill, { backgroundColor: "transparent", borderWidth: 0 }]}>
+          <View
+            style={[
+              nutrieStyles.inlinePill,
+              { backgroundColor: "transparent", borderWidth: 0 },
+            ]}
+          >
             {Platform.OS === "ios" ? (
-              <SymbolView name={"clock" as any} size={11} tintColor={badgeTheme.iconColor} />
+              <SymbolView
+                name={"clock" as any}
+                size={11}
+                tintColor={badgeTheme.iconColor}
+              />
             ) : (
               <Feather name="clock" size={11} color={badgeTheme.iconColor} />
             )}
-            <Text style={[nutrieStyles.inlinePillText, { color: badgeTheme.iconColor, fontWeight: "600" }]}>
+            <Text
+              style={[
+                nutrieStyles.inlinePillText,
+                { color: badgeTheme.iconColor, fontWeight: "600" },
+              ]}
+            >
               {exercise.duration}
             </Text>
           </View>
         </View>
 
-        <Text style={[nutrieStyles.exerciseTitle, { fontSize: 20, marginBottom: 4 }]}>
+        <Text
+          style={[
+            nutrieStyles.exerciseTitle,
+            { fontSize: 20, marginBottom: 4 },
+          ]}
+        >
           {exercise.title}
         </Text>
-        <Text style={[nutrieStyles.exerciseSubtitle, { color: "rgba(0,0,0,0.6)" }]} numberOfLines={2}>
+        <Text
+          style={[nutrieStyles.exerciseSubtitle, { color: "rgba(0,0,0,0.6)" }]}
+          numberOfLines={2}
+        >
           {customSubtitle ?? exercise.subtitle}
         </Text>
       </Pressable>
@@ -400,10 +327,10 @@ const ExerciseShelfCard = memo(function ExerciseShelfCard({
 }: LayoutCardProps): ReactElement {
   const icon = getExerciseIcon(exercise.type);
   const badgeTheme = getCategoryBadgeTheme(exercise.category);
-  
+
   return (
-    <CircularRevealWrapper 
-      href={buildExerciseRoute(exercise.type)} 
+    <CircularRevealWrapper
+      href={buildExerciseRoute(exercise.type)}
       color={badgeTheme.bg}
       duration={800}
     >
@@ -429,12 +356,22 @@ const ExerciseShelfCard = memo(function ExerciseShelfCard({
         <View
           style={{ marginBottom: 12, height: 40, justifyContent: "center" }}
         >
-          <ExerciseIcon type={exercise.type} size={24} color={badgeTheme.iconColor} />
+          <ExerciseIcon
+            type={exercise.type}
+            size={24}
+            color={badgeTheme.iconColor}
+          />
         </View>
         <Text style={nutrieStyles.exerciseTitle} numberOfLines={2}>
           {exercise.title}
         </Text>
-        <Text style={[nutrieStyles.exerciseSubtitle, { fontSize: 13, lineHeight: 18 }]} numberOfLines={2}>
+        <Text
+          style={[
+            nutrieStyles.exerciseSubtitle,
+            { fontSize: 13, lineHeight: 18 },
+          ]}
+          numberOfLines={2}
+        >
           {exercise.subtitle}
         </Text>
       </Pressable>
@@ -448,10 +385,10 @@ const CompactExerciseRow = memo(function CompactExerciseRow({
 }: LayoutCardProps): ReactElement {
   const icon = getExerciseIcon(exercise.type);
   const badgeTheme = getCategoryBadgeTheme(exercise.category);
-  
+
   return (
-    <CircularRevealWrapper 
-      href={buildExerciseRoute(exercise.type)} 
+    <CircularRevealWrapper
+      href={buildExerciseRoute(exercise.type)}
       color={badgeTheme.bg}
       duration={800}
     >
@@ -471,21 +408,37 @@ const CompactExerciseRow = memo(function CompactExerciseRow({
         <View
           style={[
             nutrieStyles.exerciseIconWell,
-            { backgroundColor: "transparent", width: 40, height: 40, borderRadius: 10, marginRight: 12 },
+            {
+              backgroundColor: "transparent",
+              width: 40,
+              height: 40,
+              borderRadius: 10,
+              marginRight: 12,
+            },
           ]}
         >
-          <ExerciseIcon type={exercise.type} size={20} color={badgeTheme.iconColor} />
+          <ExerciseIcon
+            type={exercise.type}
+            size={20}
+            color={badgeTheme.iconColor}
+          />
         </View>
-        
+
         <View style={{ flex: 1, minWidth: 0, justifyContent: "center" }}>
-          <Text style={[nutrieStyles.exerciseTitle, { marginBottom: 0 }]} numberOfLines={1}>
+          <Text
+            style={[nutrieStyles.exerciseTitle, { marginBottom: 0 }]}
+            numberOfLines={1}
+          >
             {exercise.title}
           </Text>
-          <Text style={[nutrieStyles.exerciseSubtitle, { fontSize: 13 }]} numberOfLines={1}>
+          <Text
+            style={[nutrieStyles.exerciseSubtitle, { fontSize: 13 }]}
+            numberOfLines={1}
+          >
             {exercise.duration} • +{exercise.xp} XP
           </Text>
         </View>
-        
+
         <HugeiconsIcon icon={ArrowRight01Icon} size={16} color="#C4C4CC" />
       </Pressable>
     </CircularRevealWrapper>
@@ -507,7 +460,10 @@ function JumpBackInShelf({
   // Map IDs to actual exercise config objects
   // Pad with defaults if fewer than 2 recent exercises
   const defaultIds = ["breathing-box", "pmr"];
-  const displayIds = Array.from(new Set([...recentIds, ...defaultIds])).slice(0, 2);
+  const displayIds = Array.from(new Set([...recentIds, ...defaultIds])).slice(
+    0,
+    2,
+  );
 
   const items = displayIds
     .map((id) => exercises.find((ex) => ex.type === id))
@@ -622,7 +578,10 @@ const DiscoverSection = memo(function DiscoverSection({
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: CAROUSEL_GAP, paddingHorizontal: CAROUSEL_PEEK }}
+            contentContainerStyle={{
+              gap: CAROUSEL_GAP,
+              paddingHorizontal: CAROUSEL_PEEK,
+            }}
             snapToInterval={SHELF_CARD_WIDTH + CAROUSEL_GAP}
             decelerationRate="fast"
           >
@@ -718,15 +677,25 @@ function getLogPresentation(item: HistoryLogItem) {
   if (item.type === "unified" && item.exerciseType) {
     const config = getExerciseConfig(item.exerciseType);
     const categoryMeta = config ? getCategoryMeta(config.category) : null;
-    const badgeTheme = config ? getCategoryBadgeTheme(config.category) : { iconColor: "#8E8E93" };
+    const badgeTheme = config
+      ? getCategoryBadgeTheme(config.category)
+      : { iconColor: "#8E8E93" };
 
     return {
       heading: categoryMeta?.label ?? "Exercise",
       title: config?.title ?? item.title ?? "Exercise",
       icon: config ? (
-        <ExerciseIcon type={config.type} size={22} color={badgeTheme.iconColor} />
+        <ExerciseIcon
+          type={config.type}
+          size={22}
+          color={badgeTheme.iconColor}
+        />
       ) : (
-        <HugeiconsIcon icon={Brain01Icon} size={22} color={badgeTheme.iconColor} />
+        <HugeiconsIcon
+          icon={Brain01Icon}
+          size={22}
+          color={badgeTheme.iconColor}
+        />
       ),
     };
   }
@@ -735,7 +704,13 @@ function getLogPresentation(item: HistoryLogItem) {
     return {
       heading: LEGACY_LOG_META.catcher.label,
       title: item.title?.trim() || "Untitled Session",
-      icon: <HugeiconsIcon icon={LEGACY_LOG_META.catcher.icon} size={22} color="#8E8E93" />,
+      icon: (
+        <HugeiconsIcon
+          icon={LEGACY_LOG_META.catcher.icon}
+          size={22}
+          color="#8E8E93"
+        />
+      ),
     };
   }
 
@@ -743,14 +718,26 @@ function getLogPresentation(item: HistoryLogItem) {
     return {
       heading: LEGACY_LOG_META.reframing.label,
       title: item.title?.trim() || "Untitled Session",
-      icon: <HugeiconsIcon icon={LEGACY_LOG_META.reframing.icon} size={22} color="#8E8E93" />,
+      icon: (
+        <HugeiconsIcon
+          icon={LEGACY_LOG_META.reframing.icon}
+          size={22}
+          color="#8E8E93"
+        />
+      ),
     };
   }
 
   return {
     heading: LEGACY_LOG_META.gratitude.label,
     title: item.title?.trim() || "Untitled Session",
-    icon: <HugeiconsIcon icon={LEGACY_LOG_META.gratitude.icon} size={22} color="#8E8E93" />,
+    icon: (
+      <HugeiconsIcon
+        icon={LEGACY_LOG_META.gratitude.icon}
+        size={22}
+        color="#8E8E93"
+      />
+    ),
   };
 }
 
@@ -902,7 +889,8 @@ function EmptyDiscoverState(): ReactElement {
         Start your first guided reflection
       </Text>
       <Text variant="body" className="text-center">
-        Choose a CBT exercise above to catch negative thoughts, reframe anxiety, or practice mindfulness.
+        Choose a CBT exercise above to catch negative thoughts, reframe anxiety,
+        or practice mindfulness.
       </Text>
     </View>
   );
@@ -926,12 +914,12 @@ function EmptyExerciseLogState(): ReactElement {
         No reflections logged yet
       </Text>
       <Text variant="body" className="text-center">
-        Your CBT timeline tracks shifts in distress, mood, and anxiety over time. Complete an exercise from Discover to record your first entry.
+        Your CBT timeline tracks shifts in distress, mood, and anxiety over
+        time. Complete an exercise from Discover to record your first entry.
       </Text>
     </View>
   );
 }
-
 
 export default function ExercisesScreen(): ReactElement {
   const [activeTab, setActiveTab] = useState<TabKey>("discover");
@@ -988,45 +976,50 @@ export default function ExercisesScreen(): ReactElement {
 
   const navigateWithReveal = useCircularRevealNavigate();
 
-  const handleLogPress = useCallback((item: HistoryLogItem, e?: any): void => {
-    if (item.type === "unified" && item.exerciseType) {
-      const config = getExerciseConfig(item.exerciseType);
-      const color = config ? getCategoryBadgeTheme(config.category).bg : "#E8FBF0";
-      const route = buildExerciseRoute(item.exerciseType, {
-        entryId: item.id,
-        readOnly: item.status === "completed",
-      });
-      if (e) {
-        navigateWithReveal(e, route as any, color);
-      } else {
-        router.push(route as never);
+  const handleLogPress = useCallback(
+    (item: HistoryLogItem, e?: any): void => {
+      if (item.type === "unified" && item.exerciseType) {
+        const config = getExerciseConfig(item.exerciseType);
+        const color = config
+          ? getCategoryBadgeTheme(config.category).bg
+          : "#E8FBF0";
+        const route = buildExerciseRoute(item.exerciseType, {
+          entryId: item.id,
+          readOnly: item.status === "completed",
+        });
+        if (e) {
+          navigateWithReveal(e, route as any, color);
+        } else {
+          router.push(route as never);
+        }
+        return;
       }
-      return;
-    }
 
-    if (item.type === "catcher") {
-      const route = `/tabs/screens/thought-checker?id=${item.id}`;
-      if (e) navigateWithReveal(e, route as any, "#E8FBF0");
-      else router.push(route as never);
-      return;
-    }
+      if (item.type === "catcher") {
+        const route = `/tabs/screens/thought-checker?id=${item.id}`;
+        if (e) navigateWithReveal(e, route as any, "#E8FBF0");
+        else router.push(route as never);
+        return;
+      }
 
-    if (item.type === "reframing") {
-      const route = buildExerciseRoute("thought_reframing", {
-        entryId: item.id,
-        readOnly: item.status === "completed",
-      });
-      if (e) navigateWithReveal(e, route as any, "#E8FBF0");
-      else router.push(route as never);
-      return;
-    }
+      if (item.type === "reframing") {
+        const route = buildExerciseRoute("thought_reframing", {
+          entryId: item.id,
+          readOnly: item.status === "completed",
+        });
+        if (e) navigateWithReveal(e, route as any, "#E8FBF0");
+        else router.push(route as never);
+        return;
+      }
 
-    if (item.type === "gratitude") {
-      const route = `/tabs/screens/gratitude-reframe?id=${item.id}`;
-      if (e) navigateWithReveal(e, route as any, "#E8FBF0");
-      else router.push(route as never);
-    }
-  }, [navigateWithReveal]);
+      if (item.type === "gratitude") {
+        const route = `/tabs/screens/gratitude-reframe?id=${item.id}`;
+        if (e) navigateWithReveal(e, route as any, "#E8FBF0");
+        else router.push(route as never);
+      }
+    },
+    [navigateWithReveal],
+  );
   return (
     <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <Stack.Screen
@@ -1154,7 +1147,8 @@ export default function ExercisesScreen(): ReactElement {
               flex: 1,
             }}
           >
-            {completedCount} mindful exercises logged! Consistency compounds over time.
+            {completedCount} mindful exercises logged! Consistency compounds
+            over time.
           </Text>
         </Animated.View>
       )}

@@ -91,7 +91,14 @@ export function useJourneyNodeCellViewModel({
 
   const pathNodeData = toPathNodeData(item);
 
+  const ICON_COLORS: Record<NodeStatus, string> = {
+    [NodeStatus.ACTIVE]: "#FFFFFF",
+    [NodeStatus.COMPLETED]: "#FFFFFF",
+    [NodeStatus.LOCKED]: "#94A3B8",
+  };
+
   let faceColor = "#E2E8F0";
+  let iconColor = ICON_COLORS[item.status] ?? "#94A3B8";
   let iconName = item.icon || "star";
   let isInteractive = false;
   let showProgressRing = false;
@@ -118,7 +125,6 @@ export function useJourneyNodeCellViewModel({
   }
 
   const rimColor = darkenHex(faceColor, 0.22);
-  const iconColor = darkenHex(faceColor, 0.55);
   const size = settings.defaultNodeSize;
   const hugeiconSize = size * HUGEICON_SIZE_RATIO;
   const halfSize = size / 2;

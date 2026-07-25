@@ -7,7 +7,6 @@ import { useSetAtom } from "jotai";
 import { router, useFocusEffect } from "expo-router";
 
 import { useToast } from "heroui-native";
-import { startTransitionAtom } from "@/src/store/transitionStore";
 import { setPreviewSection } from "@/src/domains/journey/state/journeySlice";
 import {
   selectCourse,
@@ -141,8 +140,6 @@ export function useJourneyMapController(
     [onViewableItemsChanged, updateScrollHintFromViewableItems],
   );
 
-  const startTransition = useSetAtom(startTransitionAtom);
-
   const handleNodePress = useCallback(
     (node: PathNodeData, e?: any, color?: string): void => {
       if (isRoutingRef.current) return;
@@ -162,7 +159,7 @@ export function useJourneyMapController(
       // Routing for active/completed nodes is handled declaratively by <Link> in JourneyNodeCell
       return;
     },
-    [courseId, dispatch, toast, startTransition],
+    [courseId, dispatch, toast],
   );
 
   const handleOpenSections = useCallback((): void => {

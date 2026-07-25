@@ -7,7 +7,37 @@ import JourneyMapView from "./JourneyMapView";
  * Handles state management, data fetching, hooks, and transforms via useJourneyMapViewModel.
  * Passes pure model data and action handlers to JourneyMapView without extra markup.
  */
-export default function JourneyMapContainer(): React.JSX.Element {
+export interface JourneyMapContainerProps {
+  isOnboarding?: boolean;
+  onComplete?: () => void;
+}
+
+export default function JourneyMapContainer({
+  isOnboarding,
+  onComplete,
+}: JourneyMapContainerProps): React.JSX.Element {
   const { model, actions } = useJourneyMapViewModel();
-  return <JourneyMapView model={model} actions={actions} />;
+
+  const prevIndexRef = React.useRef(model.controller.activeGlobalIndex);
+
+  React.useEffect(() => {
+    const prev = prevIndexRef.current;
+    const current = model.controller.activeGlobalIndex;
+    
+    // Auto-advance only if the user actually completed a lesson while on this screen
+    // (i.e. the active node index increased).
+    if (isOnboarding && onComplete && current > 0 && current > prev) {
+      onComplete();
+    }
+    
+    prevIndexRef.current = current;
+  }, [isOnboarding, onComplete, model.controller.activeGlobalIndex]);
+
+  return (
+    <JourneyMapView
+      model={model}
+      actions={actions}
+      isOnboarding={isOnboarding}
+    />
+  );
 }

@@ -3,7 +3,7 @@ import { View } from "react-native";
 import Animated from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
 import { GlassView } from "expo-glass-effect";
-import { HugeiconsIcon } from "@hugeicons/react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Link } from "expo-router";
 import { Text } from "@/src/components/ui/Text";
@@ -13,6 +13,27 @@ import {
   useJourneyNodeCellViewModel,
   type JourneyNodeCellProps,
 } from "../hooks/useJourneyNodeCellViewModel";
+
+const FONTAWESOME_MAP: Record<string, string> = {
+  star: "star",
+  checkpoint: "check-circle",
+  chest: "box",
+  microphone: "microphone",
+  video: "video",
+  gamepad: "gamepad",
+  headphones: "headphones",
+  book: "book",
+  brain: "brain",
+  journal: "book-open",
+  quiz: "question-circle",
+  heart: "heart",
+  mood_check: "smile",
+  story: "comments",
+  practice: "redo",
+  challenge: "shield-alt",
+  boss: "skull",
+  lock: "lock",
+};
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -90,8 +111,9 @@ function BouncingTooltip({
   );
 }
 
-export interface JourneyNodeCellViewProps
-  extends ReturnType<typeof useJourneyNodeCellViewModel> {}
+export interface JourneyNodeCellViewProps extends ReturnType<
+  typeof useJourneyNodeCellViewModel
+> {}
 
 /**
  * Presentational View component for JourneyNodeCell.
@@ -212,11 +234,10 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
                     faceColor={faceColor}
                     rimColor={rimColor}
                     icon={
-                      <HugeiconsIcon
-                        icon={iconObj}
-                        size={hugeiconSize}
+                      <FontAwesome5
+                        name={FONTAWESOME_MAP[item.icon || "star"] ?? "star"}
+                        size={hugeiconSize * 0.6}
                         color={iconColor}
-                        strokeWidth={2.5}
                       />
                     }
                     iconSize={hugeiconSize}
@@ -233,11 +254,10 @@ export const JourneyNodeCellView = React.memo(function JourneyNodeCellView({
               faceColor={faceColor}
               rimColor={rimColor}
               icon={
-                <HugeiconsIcon
-                  icon={iconObj}
-                  size={hugeiconSize}
+                <FontAwesome5
+                  name={FONTAWESOME_MAP[item.icon || "star"] ?? "star"}
+                  size={hugeiconSize * 0.6}
                   color={iconColor}
-                  strokeWidth={2.5}
                 />
               }
               iconSize={hugeiconSize}

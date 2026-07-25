@@ -156,18 +156,6 @@ export const SectionOverviewSheetView = React.memo(
               {sections.length} {sections.length === 1 ? "section" : "sections"}
             </Text>
           </View>
-
-          <PressableScale
-            onPress={onClose}
-            scale={0.9}
-            hapticStyle="light"
-            accessibilityRole="button"
-            accessibilityLabel="Close sections"
-          >
-            <View className="w-9 h-9 rounded-full items-center justify-center bg-sage-pill">
-              <HugeiconsIcon icon={Cancel01Icon} size={18} color={SAGE[500]} />
-            </View>
-          </PressableScale>
         </View>
 
         <ScrollView

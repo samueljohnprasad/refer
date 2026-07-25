@@ -3,6 +3,7 @@ import { BottomSheet, Group, Host, RNHostView } from "@expo/ui/swift-ui";
 import {
   presentationDetents,
   presentationDragIndicator,
+  presentationBackground,
 } from "@expo/ui/swift-ui/modifiers";
 
 export default function BottomSheetWithRNContent({
@@ -25,6 +26,7 @@ export default function BottomSheetWithRNContent({
             modifiers={[
               presentationDetents(["medium", "large"]),
               presentationDragIndicator("visible"),
+              presentationBackground("#F8FAF7"),
             ]}
           >
             <RNHostView>

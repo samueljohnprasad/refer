@@ -38,6 +38,7 @@ export const DuolingoSvgNodeButtonView = React.memo(
     outerCircleAnimatedProps,
     glossAnimatedProps,
     iconFollowFaceProps,
+    iconAnimatedStyle,
     containerStyle,
     handlePressIn,
     handlePressOut,
@@ -109,17 +110,24 @@ export const DuolingoSvgNodeButtonView = React.memo(
               transform={`rotate(-45 ${BUTTON_CENTER_X} ${FACE_BASE_CY})`}
             />
           </AnimatedGroup>
-
-          <AnimatedGroup animatedProps={iconFollowFaceProps}>
-            <G transform={`translate(${BUTTON_CENTER_X} ${FACE_BASE_CY})`}>
-              <G
-                transform={`translate(${-centeredIconOffset} ${-centeredIconOffset})`}
-              >
-                {icon}
-              </G>
-            </G>
-          </AnimatedGroup>
         </Svg>
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: "16%", // Nudge it up slightly to match the 3D face center
+              justifyContent: "center",
+              alignItems: "center",
+            },
+            iconAnimatedStyle,
+          ]}
+        >
+          {icon}
+        </Animated.View>
       </Pressable>
     );
   },

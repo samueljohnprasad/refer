@@ -88,19 +88,17 @@ export const JourneyMapListView = React.memo(function JourneyMapListView({
         onPress={handleScrollHintPress}
       />
 
-      {isSectionSheetOpen ? (
-        <BottomSheetWithRNContent
-          isPresented={isSectionSheetOpen}
-          setIsPresented={setIsSectionSheetOpen}
-        >
-          <SectionOverviewSheet
-            sections={sectionOverviewItems}
-            onPreviewSection={handleSelectSection}
-            onClose={() => setIsSectionSheetOpen(false)}
-            journeyTitle={courseTitle}
-          />
-        </BottomSheetWithRNContent>
-      ) : null}
+      <BottomSheetWithRNContent
+        isPresented={isSectionSheetOpen}
+        setIsPresented={setIsSectionSheetOpen}
+      >
+        <SectionOverviewSheet
+          sections={sectionOverviewItems}
+          onPreviewSection={handleSelectSection}
+          onClose={() => setIsSectionSheetOpen(false)}
+          journeyTitle={courseTitle}
+        />
+      </BottomSheetWithRNContent>
     </>
   );
 });

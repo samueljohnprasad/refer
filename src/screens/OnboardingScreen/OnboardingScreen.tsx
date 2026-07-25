@@ -39,7 +39,7 @@ import MoodCheckLessonStep from "./steps/MoodCheckLessonStep";
 import AIInsightStep from "./steps/AIInsightStep";
 import LessonCompleteStep from "./steps/LessonCompleteStep";
 import NotificationPermissionStep from "./steps/NotificationPermissionStep";
-import JourneyMapStep from "./steps/JourneyMapStep";
+import JourneyMapContainer from "@/src/domains/journey/ui/JourneyMapContainer";
 import LetterFromFutureStep from "./steps/LetterFromFutureStep";
 import SoftPaywallStep from "./steps/SoftPaywallStep";
 import WelcomeToHappyStep from "./steps/WelcomeToHappyStep";
@@ -458,7 +458,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           />
         );
       case "journey_map":
-        return <JourneyMapStep motivation={formData.motivation} />;
+        return <JourneyMapContainer isOnboarding={true} />;
       case "letter_from_future":
         return (
           <LetterFromFutureStep
