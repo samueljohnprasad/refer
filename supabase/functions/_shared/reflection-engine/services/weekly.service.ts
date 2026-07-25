@@ -39,8 +39,6 @@ export class WeeklyService {
         `Starting Weekly AI reflection for user: ${userId} week_index: ${week_index} year: ${year} (${startDate} to ${endDate})`,
       );
 
-      const priorStart = format(subWeeks(new Date(`${startDate}T00:00:00.000Z`), 1), "yyyy-MM-dd");
-      const priorEnd = format(subWeeks(new Date(`${endDate}T00:00:00.000Z`), 1), "yyyy-MM-dd");
 
       // 1. Fetch daily reflections for the week + prior week summary for comparison
       let [
@@ -113,7 +111,7 @@ export class WeeklyService {
 
       const dailyReflections = (dailyAIs || [] as DailyAIRecord[]).map(d => d.summary);
       const dailyMemories = (dailyAIs || [] as DailyAIRecord[]).map(d => d.structured_memory);
-      const priorReflection = (priorWeekly as WeeklySummaryRecord | null)?.summary || null;
+      const priorReflection = (priorWeekly as WeeklySummaryRecord | null)?.summary || undefined;
 
       // 2. Build context
       const context = contextBuilder.buildWeeklyContext(
