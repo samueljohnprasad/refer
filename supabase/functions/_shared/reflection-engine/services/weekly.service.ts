@@ -2,10 +2,12 @@ import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { reflectionEngine } from "../ai/reflection-engine.ts";
 import { contextBuilder } from "../ai/context-builder.ts";
 import { AIStructuredMemory } from "../ai/types.ts";
+import { DailyService } from "./daily.service.ts";
 
 interface DailyAIRecord {
   summary: string;
   structured_memory: AIStructuredMemory;
+  reflection_date: string;
 }
 
 interface WeeklySummaryRecord {
@@ -48,13 +50,13 @@ export class WeeklyService {
       const priorEnd = priorWeekStart(endDate);
 
       // 1. Fetch daily reflections for the week + prior week summary for comparison
-      const [
+      let [
         { data: dailyAIs },
         { data: priorWeekly },
       ] = await Promise.all([
         this.supabase
           .from("daily_ai")
-          .select("summary, structured_memory")
+          .select("summary, structured_memory, reflection_date")
           .eq("user_id", userId)
           .gte("reflection_date", startDate)
           .lte("reflection_date", endDate)
@@ -67,6 +69,47 @@ export class WeeklyService {
           .eq("week_number", week_index - 1)
           .maybeSingle(),
       ]);
+
+      // ponytail: auto-generate missing daily insights before weekly reflection calculation
+      const existingDates = new Set((dailyAIs || []).map((d: DailyAIRecord) => d.reflection_date));
+      
+      const today = new Date().toISOString().split("T")[0];
+      const capDate = endDate < today ? endDate : today;
+      
+      const missingDates: string[] = [];
+      let currentDate = new Date(`${startDate}T00:00:00.000Z`);
+      const cap = new Date(`${capDate}T00:00:00.000Z`);
+      
+      while (currentDate <= cap) {
+        const dStr = currentDate.toISOString().split("T")[0];
+        if (!existingDates.has(dStr)) {
+          missingDates.push(dStr);
+        }
+        currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+      }
+
+      if (missingDates.length > 0) {
+        console.log(`[weekly.service] Generating missing daily insights for:`, missingDates);
+        const dailyService = new DailyService(this.supabase);
+        await Promise.all(
+          missingDates.map(date => 
+            dailyService.generateAndSaveDailyReflection(userId, date)
+              .catch(err => console.error(`Failed to generate daily AI for ${date}:`, err))
+          )
+        );
+
+        const { data: refreshedDailyAIs } = await this.supabase
+          .from("daily_ai")
+          .select("summary, structured_memory, reflection_date")
+          .eq("user_id", userId)
+          .gte("reflection_date", startDate)
+          .lte("reflection_date", endDate)
+          .order("reflection_date", { ascending: true });
+          
+        if (refreshedDailyAIs) {
+          dailyAIs = refreshedDailyAIs;
+        }
+      }
 
       console.log(`[weekly.service] Fetched data for ${startDate} to ${endDate}:`, {
         dailyCount: dailyAIs?.length || 0,
