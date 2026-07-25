@@ -69,10 +69,14 @@ export class WeeklyService {
       const capDate = endDate < today ? endDate : today;
       
       const missingDates: string[] = [];
-      const intervalDates = eachDayOfInterval({
-        start: new Date(`${startDate}T00:00:00.000Z`),
-        end: new Date(`${capDate}T00:00:00.000Z`)
-      });
+      let intervalDates: Date[] = [];
+      
+      if (startDate <= capDate) {
+        intervalDates = eachDayOfInterval({
+          start: new Date(`${startDate}T00:00:00.000Z`),
+          end: new Date(`${capDate}T00:00:00.000Z`)
+        });
+      }
       
       for (const d of intervalDates) {
         const dStr = format(d, "yyyy-MM-dd");
