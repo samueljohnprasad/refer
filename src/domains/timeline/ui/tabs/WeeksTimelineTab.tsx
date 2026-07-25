@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { View, Alert } from 'react-native';
+import { setWeek, setYear, startOfWeek, endOfWeek } from 'date-fns';
 import { Timeline } from '@/src/components/ui/Timeline/Timeline';
 import { useWeeklyTimeline } from '../../data/timeline.queries';
 import { useGenerateWeeklyInsight } from '../../data/timeline.mutations';
@@ -46,13 +47,9 @@ export const WeeksTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
       const year = parseInt(item.date.substring(0, 4));
       const week = parseInt(item.date.substring(6));
       
-      const jan4 = new Date(year, 0, 4);
-      let jan4Day = jan4.getDay();
-      if (jan4Day === 0) jan4Day = 7;
-      const startOfWeek1 = new Date(year, 0, 4 - (jan4Day - 1));
-      
-      const sDate = new Date(startOfWeek1.getTime() + (week - 1) * 7 * 86400000);
-      const eDate = new Date(sDate.getTime() + 6 * 86400000);
+      const baseDate = setWeek(setYear(new Date(year, 0, 1), year), week);
+      const sDate = startOfWeek(baseDate);
+      const eDate = endOfWeek(baseDate);
       
       const ms = sDate.getTime();
       
