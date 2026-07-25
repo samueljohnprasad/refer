@@ -23,6 +23,7 @@ import RevenueCatProvider from "@/src/context/RevenueCatProvider";
 import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
 import { FloatingHappyAssistant } from "@/src/components/happy-assistant/FloatingHappyAssistant";
 import { TransitionOverlay } from "@/src/components/TransitionOverlay";
+import { UpdateAvailableBanner } from "@/src/components/UpdateAvailableBanner";
 import {
   CormorantGaramond_300Light,
   CormorantGaramond_400Regular,
@@ -46,6 +47,7 @@ import { LevelProvider } from "@/src/context/LevelContext";
 import { AchievementProvider } from "@/src/context/AchievementContext";
 import { RewardsProvider } from "@/src/context/RewardsContext";
 import { ChallengesProvider } from "@/src/context/ChallengesContext";
+import { StreakModalProvider } from "@/src/context/StreakModalContext";
 import {
   trackNotificationOpened,
   trackNotificationReceived,
@@ -189,10 +191,13 @@ function RootLayoutNav() {
                                   <ThemeProvider value={DefaultTheme}>
                                     <KeyboardProvider>
                                       <BottomSheetModalProvider>
-                                        <Slot />
-                                        <AnonymousPurchaseClaimPrompt />
-                                        <FloatingHappyAssistant />
-                                        <TransitionOverlay />
+                                        <StreakModalProvider>
+                                          <UpdateAvailableBanner />
+                                          <Slot />
+                                          <AnonymousPurchaseClaimPrompt />
+                                          <FloatingHappyAssistant />
+                                          <TransitionOverlay />
+                                        </StreakModalProvider>
                                       </BottomSheetModalProvider>
                                     </KeyboardProvider>
                                   </ThemeProvider>
