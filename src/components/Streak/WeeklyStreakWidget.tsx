@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Fire02Icon } from "@hugeicons/core-free-icons";
-import { useStreakTracker } from "@/hooks/data/useStreakTracker";
+import { useStreak } from "@/src/hooks/useStreak";
 import { Card } from "@/src/components/ui/Card";
 import { AnimatedFireIcon, GrayFireIcon } from "@/src/components/ui/AnimatedStatIcon";
 import { GOLD, SAGE } from "@/lib/tokens";
@@ -25,14 +25,16 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
   onPress,
   showDepth = true,
 }) => {
-  const { streakData, isLoading } = useStreakTracker();
+  const { currentStreak, weeklyProgress, isLoading } = useStreak();
+  const streakData = React.useMemo(
+    () => ({ currentStreak, weeklyProgress }),
+    [currentStreak, weeklyProgress]
+  );
 
   // Heartbeat pulse animation removed per user request
 
-  const currentStreak = streakData.currentStreak || 0;
-  
   // Find the index of the most recently completed day
-  const mostRecentCompletedIndex = [...streakData.weeklyProgress].findLastIndex(Boolean);
+  const mostRecentCompletedIndex = [...streakData.weeklyProgress.days].findLastIndex(Boolean);
 
   const labels = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -51,13 +53,13 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
         <View className="items-center justify-center pr-6 min-w-[75px]">
           <Text
             className="text-[46px] leading-tight tracking-tighter"
-            style={{ fontFamily: "CormorantBold", color: "#2B3A22" }}
+            style={{ fontFamily: "GeistBold", color: SAGE[700], fontVariant: ["lining-nums"] }}
           >
             {isLoading ? "-" : currentStreak}
           </Text>
           <Text
             className="text-[10px] tracking-[1.5px] uppercase mt-1"
-            style={{ fontFamily: "GeistBold", color: "#5F7F58" }}
+            style={{ fontFamily: "GeistBold", color: SAGE[500] }}
           >
             STREAK
           </Text>
@@ -65,9 +67,9 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
 
         {/* Right Weekly Grid */}
         <View className="flex-1 flex-row items-center justify-between">
-          {streakData.weeklyProgress.map((isCompleted, i) => {
-            const isPrevCompleted = i > 0 && streakData.weeklyProgress[i - 1];
-            const isNextCompleted = i < 6 && streakData.weeklyProgress[i + 1];
+          {streakData.weeklyProgress.days.map((isCompleted, i) => {
+            const isPrevCompleted = i > 0 && streakData.weeklyProgress.days[i - 1];
+            const isNextCompleted = i < 6 && streakData.weeklyProgress.days[i + 1];
 
             return (
               <View key={i} className="flex-1 items-center relative py-1">
@@ -88,7 +90,7 @@ export const WeeklyStreakWidget: React.FC<WeeklyStreakWidgetProps> = ({
                   className="text-[10px] mt-2"
                   style={{
                     fontFamily: isCompleted ? "GeistBold" : "GeistMedium",
-                    color: isCompleted ? "#2B3A22" : "#8A9F82",
+                    color: isCompleted ? SAGE[700] : SAGE[400],
                   }}
                 >
                   {labels[i]}

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Text, View, Platform } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   CheckmarkCircle02Icon,
@@ -8,6 +8,18 @@ import {
 import type { CustomerInfo } from "react-native-purchases";
 import { GOLD, SAGE } from "@/lib/tokens";
 import { Card } from "@/src/components/ui/Card";
+
+let SwiftUIImage: any = null;
+let SwiftUIHost: any = null;
+if (Platform.OS === "ios") {
+  try {
+    const swiftui = require("@expo/ui/swift-ui");
+    SwiftUIImage = swiftui.Image;
+    SwiftUIHost = swiftui.Host;
+  } catch (e) {
+    // Fallback if not available
+  }
+}
 
 interface PremiumStatusCardProps {
   customerInfo: CustomerInfo | null;
@@ -51,12 +63,22 @@ export const PremiumStatusCard: React.FC<PremiumStatusCardProps> = ({
     >
       <View className="flex-row items-center gap-3">
         <View className="h-12 w-12 items-center justify-center rounded-[18px] bg-gold/15">
-          <HugeiconsIcon
-            icon={CrownIcon}
-            size={25}
-            color={GOLD}
-            strokeWidth={1.8}
-          />
+          {Platform.OS === "ios" && SwiftUIImage && SwiftUIHost ? (
+            <SwiftUIHost matchContents>
+              <SwiftUIImage
+                systemName="crown.fill"
+                size={22}
+                color="#EAB308"
+              />
+            </SwiftUIHost>
+          ) : (
+            <HugeiconsIcon
+              icon={CrownIcon}
+              size={25}
+              color={GOLD}
+              strokeWidth={1.8}
+            />
+          )}
         </View>
 
         <View className="flex-1">

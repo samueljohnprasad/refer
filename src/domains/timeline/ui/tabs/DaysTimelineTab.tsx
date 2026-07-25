@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { View, Alert } from 'react-native';
+import { View } from 'react-native';
+import { useToast } from 'heroui-native';
+import { showAppToast } from '@/src/lib/showToast';
 import { Timeline } from '@/src/components/ui/Timeline/Timeline';
 import { useDailyTimeline } from '../../data/timeline.queries';
 import { useGenerateDailyInsight } from '../../data/timeline.mutations';
@@ -14,6 +16,7 @@ import { MOCK_DAYS_TIMELINE_DATA } from './mockData';
 
 export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const headerHeight = useHeaderHeight();
+  const { toast } = useToast();
   const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useDailyTimeline({ pageSize: 10 });
   const { mutateAsync: generateInsight } = useGenerateDailyInsight();
   
@@ -29,8 +32,11 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     try {
       await generateInsight({ date });
     } catch (e) {
-      // Intentionally swallowing error log for production
-      Alert.alert("Generation Failed", "Could not generate insight. Please try again later.");
+      showAppToast(toast, {
+        variant: 'danger',
+        title: 'Generation Failed',
+        description: 'Could not generate insight. Please try again later.',
+      });
     } finally {
       setGeneratingDates(prev => {
         const next = new Set(prev);

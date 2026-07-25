@@ -1,26 +1,19 @@
-import React, { useEffect } from "react";
-import { View, ScrollView, Pressable } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withDelay,
-  withTiming,
-  Easing,
-  interpolate,
-} from "react-native-reanimated";
+import React from "react";
+import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import { Button } from "@/src/components/ui/Button";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
   ArrowRight01Icon,
   BookmarkAdd01Icon,
   BookmarkCheck01Icon,
-  CheckmarkCircle01Icon,
 } from "@hugeicons/core-free-icons";
-import { SAGE, INK_SOFT, TERRACOTTA_TINT, BRAND_SURFACE } from "@/lib/tokens";
+import { SAGE, INK, INK_SOFT } from "@/lib/tokens";
+import {
+  ReflectionTimeline,
+  ReflectionTimelineItem,
+  ReflectionScoreShift,
+} from "@/src/components/exercise/ReflectionTimeline";
 import type { ExerciseType } from "@/src/types/exerciseFlow";
-
 
 interface DynamicSummaryProps {
   title: string;
@@ -40,91 +33,49 @@ interface DynamicSummaryProps {
   onEdit?: () => void;
   isSaving?: boolean;
   readOnly?: boolean;
-  /** Optional extra content rendered below the takeaway card */
   children?: React.ReactNode;
 }
 
-function getInsightMessage(
-  pre: number,
-  post: number,
-  scoreLabel: string,
-): string {
-  const drop = pre - post;
-  const pct = pre > 0 ? Math.round((drop / pre) * 100) : 0;
-
-  if (drop > 0 && pct >= 50) {
-    return `Your ${scoreLabel.toLowerCase()} dropped by ${pct}%. That's your rational mind at work.`;
-  }
-  if (drop > 0 && pct >= 20) {
-    return `A real shift. Every small drop builds a new pattern over time.`;
-  }
-  if (drop > 0) {
-    return `Change is often gradual. Showing up is what matters most.`;
-  }
-  if (drop === 0) {
-    return `Sometimes naming something difficult is enough for today.`;
-  }
-  return `Sometimes looking at hard things closely makes them feel bigger first. It gets easier.`;
-}
-
-function AnimatedScoreBar({
-  label,
-  value,
-  max,
-  color,
-  delay = 0,
-}: {
+function getShiftCopy(pre: number, post: number): {
   label: string;
-  value: number;
-  max: number;
+  detail: string;
   color: string;
-  delay?: number;
-}) {
-  const pct = Math.min(Math.max(value / max, 0), 1);
-  const barProgress = useSharedValue(0);
+} {
+  const change = pre - post;
 
-  useEffect(() => {
-    barProgress.value = withDelay(
-      delay,
-      withTiming(pct, { duration: 800, easing: Easing.out(Easing.cubic) }),
-    );
-  }, [pct, delay]);
+  if (change < 0) {
+    return {
+      label: `${Math.abs(change)} point${Math.abs(change) === 1 ? "" : "s"} stronger`,
+      detail:
+        "Looking closely can sometimes make a difficult feeling sharper before it settles.",
+      color: INK,
+    };
+  }
 
-  const barStyle = useAnimatedStyle(() => ({
-    width: `${barProgress.value * 100}%`,
-  }));
+  if (change === 0) {
+    return {
+      label: "No score change",
+      detail:
+        "Sometimes naming something difficult is enough for today.",
+      color: INK,
+    };
+  }
 
-  return (
-    <View className="flex-1 items-center">
-      <Text
-        variant="caption-muted"
-        className="text-[11px] font-bold uppercase tracking-wider mb-2"
-      >
-        {label}
-      </Text>
-      <View className="w-full h-3 rounded-full bg-brand-border overflow-hidden mb-1.5">
-        <Animated.View
-          className="h-full rounded-full"
-          style={[{ backgroundColor: color }, barStyle]}
-        />
-      </View>
-      <Text variant="h3" className="text-[22px] font-extrabold text-ink">
-        {value}
-        <Text variant="caption-muted" className="text-[13px]">
-          /{max}
-        </Text>
-      </Text>
-    </View>
-  );
+  return {
+    label: `${change} point${change === 1 ? "" : "s"} lighter`,
+    detail:
+      change >= 4
+        ? "The feeling became meaningfully less intense after you practiced."
+        : "Even a small shift matters. You made room for a more balanced state.",
+    color: SAGE[700],
+  };
 }
 
 export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
   title,
-  celebrationEmoji = "✨",
   preScore,
   postScore,
   scoreLabel = "Intensity",
-  scoreMax = 10,
   keyTakeaway,
   keyTakeawayLabel = "Your takeaway",
   nextExerciseType,
@@ -132,9 +83,6 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
   onSaveCopingCard,
   cardSaved = false,
   onNavigateToExercise,
-  onComplete,
-  onEdit,
-  isSaving,
   readOnly,
   children,
 }) => {
@@ -144,180 +92,144 @@ export const DynamicSummary: React.FC<DynamicSummaryProps> = ({
     preScore !== null &&
     postScore !== null;
 
-  const insightMessage = hasScores
-    ? getInsightMessage(preScore!, postScore!, scoreLabel)
-    : null;
-
-  // ── Mount animations ─────────────────────────────────────────────────────
-  const emojiScale = useSharedValue(0);
-  const titleOpacity = useSharedValue(0);
-  const contentOpacity = useSharedValue(0);
-
-  useEffect(() => {
-    emojiScale.value = withSpring(1, { damping: 20, stiffness: 100, overshootClamping: true });
-    titleOpacity.value = withDelay(200, withTiming(1, { duration: 400 }));
-    contentOpacity.value = withDelay(500, withTiming(1, { duration: 500 }));
-  }, []);
-
-  const emojiStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: emojiScale.value }],
-    opacity: interpolate(emojiScale.value, [0, 0.5, 1], [0, 0.8, 1]),
-  }));
-
-  const titleStyle = useAnimatedStyle(() => ({
-    opacity: titleOpacity.value,
-    transform: [
-      { translateY: interpolate(titleOpacity.value, [0, 1], [10, 0]) },
-    ],
-  }));
-
-  const contentStyle = useAnimatedStyle(() => ({
-    opacity: contentOpacity.value,
-  }));
+  const shift = hasScores ? getShiftCopy(preScore!, postScore!) : null;
 
   return (
-    <View className="flex-1 pb-10">
-      <View className="flex-1 px-1">
-        {/* Header — animated */}
-        <View className="items-center pt-6 pb-4 px-2">
-          <Animated.View
-            className="h-24 w-24 rounded-full items-center justify-center mb-5 bg-sage-50"
-            style={emojiStyle}
+    <View className="px-3" style={{ paddingBottom: 40 }}>
+      <View className="pb-6 pt-2">
+        <Text
+          style={{ fontFamily: "CormorantSemiBold", color: INK }}
+          className="text-[34px] leading-[37px] tracking-[-0.01em]"
+        >
+          {title}
+        </Text>
+        <Text
+          style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
+          className="mt-2 max-w-[330px] text-[15px] leading-[22px]"
+        >
+          You took a moment to check in with yourself.
+        </Text>
+      </View>
+
+      {keyTakeaway?.trim() ? (
+        <View
+          className="py-8 mb-6"
+          style={{
+            marginHorizontal: -28,
+            paddingHorizontal: 28,
+            backgroundColor: SAGE[50],
+          }}
+        >
+          <Text
+            style={{ fontFamily: "GeistMedium", color: SAGE[600] }}
+            className="text-[13px] leading-[18px]"
           >
-            <Text className="text-[52px]" accessible={false}>
-              {celebrationEmoji}
-            </Text>
-          </Animated.View>
-          <Animated.View style={titleStyle}>
-            <Text
-              variant="h2"
-              className="text-[26px] font-extrabold text-ink text-center mb-1"
+            {keyTakeawayLabel}
+          </Text>
+          <Text
+            accessibilityRole="summary"
+            style={{ fontFamily: "CormorantMedium", color: INK }}
+            className="mt-1.5 text-[25px] leading-[33px]"
+          >
+            {keyTakeaway}
+          </Text>
+
+          {!readOnly && onSaveCopingCard ? (
+            <Pressable
+              onPress={cardSaved ? undefined : onSaveCopingCard}
+              disabled={cardSaved}
+              accessibilityRole="button"
+              accessibilityLabel={
+                cardSaved ? "Saved to coping cards" : "Save as coping card"
+              }
+              accessibilityState={{
+                disabled: cardSaved,
+              }}
+              className="mt-5 min-h-11 flex-row items-center self-start py-2 active:opacity-60"
             >
-              {title}
-            </Text>
-          </Animated.View>
+              <HugeiconsIcon
+                icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
+                size={18}
+                color={SAGE[700]}
+                strokeWidth={2}
+              />
+              <Text
+                style={{ fontFamily: "GeistSemiBold", color: SAGE[700] }}
+                className="ml-2 text-[14px] leading-[20px]"
+              >
+                {cardSaved
+                  ? "Saved to coping cards"
+                  : "Save for a difficult moment"}
+              </Text>
+            </Pressable>
+          ) : null}
         </View>
+      ) : null}
 
-        {/* Before / After score bars — animated */}
-        {hasScores && (
-          <Animated.View
-            className="mx-1 rounded-xl p-4 mb-4 border border-sage-200/50"
-            style={[{ backgroundColor: SAGE[50] }, contentStyle]}
-          >
-            <View className="flex-row gap-4 mb-3">
-              <AnimatedScoreBar
-                label="Before"
-                value={preScore!}
-                max={scoreMax}
-                color={TERRACOTTA_TINT}
-                delay={600}
-              />
-              <View className="w-px bg-brand-border self-stretch" />
-              <AnimatedScoreBar
-                label="After"
-                value={postScore!}
-                max={scoreMax}
-                color={SAGE[400]}
-                delay={900}
-              />
-            </View>
-            {insightMessage && (
-              <Text
-                variant="body"
-                className="text-[13.5px] text-sage-700 font-medium text-center leading-relaxed"
+      {(hasScores || children || nextExerciseType) ? (
+        <View className="mt-2">
+          <ReflectionTimeline>
+            {hasScores && shift ? (
+              <ReflectionTimelineItem
+                label={scoreLabel}
+                isLast={!children && !nextExerciseType}
               >
-                {insightMessage}
-              </Text>
-            )}
-          </Animated.View>
-        )}
+                <ReflectionScoreShift
+                  before={preScore!}
+                  after={postScore!}
+                  label={shift.label}
+                  detail={shift.detail}
+                  accentColor={shift.color}
+                />
+              </ReflectionTimelineItem>
+            ) : null}
+            
+            {children ? (
+              <ReflectionTimelineItem
+                label="Insights"
+                isLast={!nextExerciseType}
+              >
+                {children}
+              </ReflectionTimelineItem>
+            ) : null}
 
-        {/* Key takeaway card — fades in with content */}
-        <Animated.View style={contentStyle}>
-          {keyTakeaway && keyTakeaway.trim().length > 0 && (
-            <View
-              className="mx-1 rounded-xl p-4 mb-4 border border-sage-200/60"
-              style={{ backgroundColor: BRAND_SURFACE }}
-            >
-              <Text
-                variant="caption-muted"
-                className="text-[11px] font-bold uppercase tracking-wider mb-2"
+            {nextExerciseType && nextExerciseLabel && onNavigateToExercise && !readOnly ? (
+              <ReflectionTimelineItem
+                label="Want to go deeper?"
+                isLast={true}
               >
-                {keyTakeawayLabel}
-              </Text>
-              <Text
-                variant="body"
-                className="text-[15px] text-ink leading-relaxed mb-3"
-              >
-                {keyTakeaway}
-              </Text>
-              {onSaveCopingCard && !readOnly && (
                 <Pressable
-                  onPress={cardSaved ? undefined : onSaveCopingCard}
-                  disabled={cardSaved}
+                  onPress={() => onNavigateToExercise(nextExerciseType)}
                   accessibilityRole="button"
-                  accessibilityLabel={
-                    cardSaved ? "Saved" : "Save as coping card"
-                  }
-                  accessibilityState={{ disabled: cardSaved }}
-                  className="flex-row items-center self-start gap-1.5 px-3 py-2 rounded-full active:opacity-70"
-                  style={{
-                    backgroundColor: cardSaved ? SAGE[100] : SAGE.pill,
-                  }}
+                  accessibilityLabel={nextExerciseLabel}
+                  className="flex-row items-center justify-between rounded-xl px-4 py-3.5 mt-1 active:opacity-70 border border-sage-200/50"
+                  style={{ backgroundColor: SAGE[50] }}
                 >
+                  <Text
+                    style={{ fontFamily: "GeistSemiBold", color: SAGE[700] }}
+                    className="text-[14px] leading-[20px]"
+                  >
+                    Apply it → {nextExerciseLabel}
+                  </Text>
                   <HugeiconsIcon
-                    icon={cardSaved ? BookmarkCheck01Icon : BookmarkAdd01Icon}
-                    size={14}
-                    color={SAGE[600]}
+                    icon={ArrowRight01Icon}
+                    size={18}
+                    color={SAGE[500]}
                     strokeWidth={2}
                   />
-                  <Text className="text-[13px] font-bold text-sage-700">
-                    {cardSaved ? "Saved ✓" : "Save as coping card"}
-                  </Text>
                 </Pressable>
-              )}
-            </View>
-          )}
+              </ReflectionTimelineItem>
+            ) : null}
+          </ReflectionTimeline>
+        </View>
+      ) : null}
 
-          {/* Exercise-specific extra content */}
-          {children}
-
-          {/* Next exercise suggestion */}
-          {nextExerciseType &&
-            nextExerciseLabel &&
-            onNavigateToExercise &&
-            !readOnly && (
-              <Pressable
-                onPress={() => onNavigateToExercise(nextExerciseType)}
-                accessibilityRole="button"
-                accessibilityLabel={nextExerciseLabel}
-                className="mx-1 flex-row items-center justify-between rounded-xl px-4 py-3.5 mb-4 active:opacity-70 border border-sage-200/50"
-                style={{ backgroundColor: SAGE[50] }}
-              >
-                <View className="flex-1 mr-3">
-                  <Text
-                    variant="caption-muted"
-                    className="text-[11px] font-bold uppercase tracking-wider mb-0.5"
-                  >
-                    Want to go deeper?
-                  </Text>
-                  <Text
-                    variant="body"
-                    className="text-[14px] font-bold text-sage-700"
-                  >
-                    {nextExerciseLabel}
-                  </Text>
-                </View>
-                <HugeiconsIcon
-                  icon={ArrowRight01Icon}
-                  size={18}
-                  color={SAGE[500]}
-                  strokeWidth={2}
-                />
-              </Pressable>
-            )}
-        </Animated.View>
-      </View>
+      <Text
+        style={{ fontFamily: "GeistRegular", color: INK_SOFT }}
+        className="mb-2 mt-10 px-5 text-center text-[13px] leading-[20px]"
+      >
+        Completing saves this to your history.
+      </Text>
     </View>
   );
 };

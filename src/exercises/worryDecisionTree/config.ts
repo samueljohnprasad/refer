@@ -25,7 +25,7 @@ export const worryDecisionTreeConfig: ExerciseConfig<WorryDecisionTreeResponse> 
     type: "worry_decision_tree",
     category: "anxiety",
     title: "Worry Decision Tree",
-    subtitle: "Act on it or accept it — decide and move on",
+    subtitle: "Act on it or accept it · decide and move on",
     icon: "worry_decision_tree",
     duration: "5-7 min",
     xp: 10,

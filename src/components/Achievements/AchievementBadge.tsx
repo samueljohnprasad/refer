@@ -83,8 +83,8 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
       accessibilityRole={onPress ? "button" : "image"}
       accessibilityLabel={
         isUnlocked
-          ? `${achievement.name} — Unlocked. +${achievement.xpBonus} XP.`
-          : `${achievement.name} — Locked. Progress: ${progress} of ${target}.`
+          ? `${achievement.name} · Unlocked. +${achievement.xpBonus} XP.`
+          : `${achievement.name} · Locked. Progress: ${progress} of ${target}.`
       }
       accessibilityState={{ selected: isUnlocked }}
       className="items-center mb-3"

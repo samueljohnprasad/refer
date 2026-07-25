@@ -59,7 +59,7 @@ export function usePostExerciseInsight(
       const avgShift = computeAvgShift(entries, exerciseType);
       const detail =
         avgShift !== null
-          ? `Your average shift is ${avgShift.toFixed(1)} points — ${shift > avgShift ? "this session was above average!" : "building the habit matters most."}`
+          ? `Your average shift is ${avgShift.toFixed(1)} points · ${shift > avgShift ? "this session was above average!" : "building the habit matters most."}`
           : null;
 
       return {
@@ -89,7 +89,7 @@ export function usePostExerciseInsight(
     }
 
     return {
-      message: "First one done — that's the hardest part.",
+      message: "First one done · that's the hardest part.",
       detail: "You've taken the most important step: starting.",
       tone: "celebrating" as const,
     };
@@ -173,10 +173,10 @@ function extractThoughtTexts(
 
     if (entry.exercise_type === "thought_reframing") {
       const parts = [r.situation, r.automaticThought].filter(Boolean);
-      if (parts.length > 0) texts.push(parts.join(" — "));
+      if (parts.length > 0) texts.push(parts.join(" · "));
     } else if (entry.exercise_type === "thought_catcher") {
       const parts = [r.situation, r.automaticThought].filter(Boolean);
-      if (parts.length > 0) texts.push(parts.join(" — "));
+      if (parts.length > 0) texts.push(parts.join(" · "));
     } else if (entry.exercise_type === "decatastrophizing") {
       if (r.worstCase) texts.push(r.worstCase);
     } else if (entry.exercise_type === "worry_time") {

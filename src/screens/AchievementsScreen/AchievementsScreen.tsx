@@ -308,8 +308,8 @@ export const AchievementsScreen: React.FC = () => {
           title: "Achievements",
           headerShadowVisible: false,
           headerStyle: { backgroundColor: "transparent" },
-          headerLargeTitleStyle: { fontFamily: "Outfit-Bold" },
-          headerTitleStyle: { fontFamily: "Outfit-Bold" },
+          headerLargeTitleStyle: { fontFamily: "GeistBold" },
+          headerTitleStyle: { fontFamily: "GeistBold" },
           headerTintColor: SAGE[600],
           headerBackButtonDisplayMode: "minimal",
           headerLeft: () => null,
@@ -383,7 +383,7 @@ export const AchievementsScreen: React.FC = () => {
                 <View>
                   <Text
                     className="happy-font-body-bold text-[18px] text-center"
-                    style={{ color: "#8B6213" }}
+                    style={{ color: SAGE[700] }}
                   >
                     {totalXPEarned}
                   </Text>

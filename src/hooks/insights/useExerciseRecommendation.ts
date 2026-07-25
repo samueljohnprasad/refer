@@ -71,7 +71,7 @@ export function useExerciseRecommendation(): ExerciseRecommendation | null {
       const best = effectiveness.bestOverall;
       return {
         exerciseType: best.exerciseType,
-        reason: `Works best for you — drops intensity by ${best.avgDrop} per session.`,
+        reason: `Works best for you · drops intensity by ${best.avgDrop} per session.`,
       };
     }
 
@@ -86,7 +86,7 @@ export function useExerciseRecommendation(): ExerciseRecommendation | null {
       return {
         exerciseType: "decatastrophizing",
         reason:
-          "Your top thinking trap is catastrophizing — this targets it directly.",
+          "Your top thinking trap is catastrophizing · this targets it directly.",
       };
     }
 
@@ -99,7 +99,7 @@ export function useExerciseRecommendation(): ExerciseRecommendation | null {
       return {
         exerciseType: "thought_reframing",
         reason:
-          "Go deeper on your thoughts — try reframing what you've caught.",
+          "Go deeper on your thoughts · try reframing what you've caught.",
       };
     }
 
@@ -131,7 +131,7 @@ export function useExerciseRecommendation(): ExerciseRecommendation | null {
         return {
           exerciseType: "grounding_54321",
           reason:
-            "Your anxiety levels have been high — grounding can help fast.",
+            "Your anxiety levels have been high · grounding can help fast.",
         };
       }
     }
@@ -142,7 +142,7 @@ export function useExerciseRecommendation(): ExerciseRecommendation | null {
     if (typesInCategory.length > 0) {
       return {
         exerciseType: typesInCategory[0],
-        reason: `You haven't explored ${CATEGORY_LABELS[leastCategory].toLowerCase()} much — give it a try.`,
+        reason: `You haven't explored ${CATEGORY_LABELS[leastCategory].toLowerCase()} much · give it a try.`,
       };
     }
 

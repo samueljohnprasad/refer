@@ -12,6 +12,8 @@ import {
   XP_ACTION_LABELS,
 } from "@/src/types/xp";
 
+import { notifyFirstLogOfDay } from "@/src/context/StreakModalContext";
+
 interface XPGain {
   id: string;
   amount: number;
@@ -242,6 +244,9 @@ export const useXPSystem = (): UseXPSystemReturn => {
       }, RECENT_GAIN_DISPLAY_DURATION);
 
       timeoutRefs.current.set(gainId, timeoutId);
+
+      // Trigger first log of the day streak modal popup
+      void notifyFirstLogOfDay();
 
       // Sync to Supabase in background
       if (user?.id) {

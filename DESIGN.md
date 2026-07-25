@@ -24,34 +24,34 @@ colors:
   macaw-purple: "#CE82FF"
 typography:
   display:
-    fontFamily: "Cormorant Garamond, Georgia, serif"
+    fontFamily: "Cormorant, CormorantGaramond, CormorantRegular, CormorantMedium, CormorantSemiBold, CormorantBold, Georgia, serif"
     fontSize: "36px"
     fontWeight: 700
     lineHeight: "39px"
     letterSpacing: "-0.02em"
   headline:
-    fontFamily: "Cormorant Garamond, Georgia, serif"
+    fontFamily: "Cormorant, CormorantGaramond, CormorantRegular, CormorantMedium, CormorantSemiBold, CormorantBold, Georgia, serif"
     fontSize: "28px"
     fontWeight: 400
     lineHeight: "32px"
     letterSpacing: "-0.01em"
   title:
-    fontFamily: "Cormorant Garamond, Georgia, serif"
+    fontFamily: "Cormorant, CormorantGaramond, CormorantRegular, CormorantMedium, CormorantSemiBold, CormorantBold, Georgia, serif"
     fontSize: "22px"
     fontWeight: 400
     lineHeight: "26px"
   body:
-    fontFamily: "Geist, system-ui, sans-serif"
+    fontFamily: "Geist, GeistRegular, GeistMedium, GeistSemiBold, GeistBold, system-ui, sans-serif"
     fontSize: "17px"
     fontWeight: 400
     lineHeight: "24px"
   label:
-    fontFamily: "Geist, system-ui, sans-serif"
+    fontFamily: "Geist, GeistRegular, GeistMedium, GeistSemiBold, GeistBold, system-ui, sans-serif"
     fontSize: "14px"
     fontWeight: 600
     lineHeight: "20px"
   caption:
-    fontFamily: "Geist, system-ui, sans-serif"
+    fontFamily: "Geist, GeistRegular, GeistMedium, GeistSemiBold, GeistBold, system-ui, sans-serif"
     fontSize: "13px"
     fontWeight: 500
     lineHeight: "19px"

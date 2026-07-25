@@ -81,7 +81,7 @@ export function useInsightNudge(): InsightNudge | null {
         );
         if (daysSince >= 3) {
           return {
-            message: "It's been a few days — ready to pick back up?",
+            message: "It's been a few days · ready to pick back up?",
             detail: "Even one exercise keeps the momentum going.",
             tone: "encouraging" as const,
             ctaLabel: "Start an exercise",
@@ -112,7 +112,7 @@ export function useInsightNudge(): InsightNudge | null {
     const weekCount = stats.completedThisWeek;
     if (weekCount >= 3) {
       return {
-        message: `${weekCount} exercises this week — you're on a roll.`,
+        message: `${weekCount} exercises this week · you're on a roll.`,
         detail: "Each one strengthens your mental toolkit.",
         tone: "encouraging" as const,
         ctaLabel: "See your patterns",

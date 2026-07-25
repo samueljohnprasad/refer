@@ -130,7 +130,15 @@ function extractTimelinePreview(
           : undefined,
       };
     default:
-      return {};
+      return {
+        previewLabel: response?.automaticThought ? "Automatic Thought" : undefined,
+        expandedLabel: (response?.balancedThought || response?.reframe || response?.reframedThought) ? "Balanced Reframe" : undefined,
+        previewText: response?.automaticThought ?? response?.thought ?? response?.situation ?? response?.text,
+        expandedText: response?.balancedThought ?? response?.reframe ?? response?.reframedThought,
+        tags: Array.isArray(response?.selectedDistortions)
+          ? response.selectedDistortions
+          : undefined,
+      };
   }
 }
 

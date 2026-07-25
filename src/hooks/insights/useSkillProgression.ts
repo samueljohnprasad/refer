@@ -109,7 +109,7 @@ function generateMessage(
 ): string {
   switch (trend) {
     case "improving":
-      return `Your ${skill.toLowerCase()} is getting stronger — each session cuts deeper.`;
+      return `Your ${skill.toLowerCase()} is getting stronger · each session cuts deeper.`;
     case "declining":
       return `This area needs a different approach. Try a different technique.`;
     case "stable":

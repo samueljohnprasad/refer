@@ -24,7 +24,7 @@ import { usePostHog } from "posthog-react-native";
 import { UpdateModal } from "@/src/components/modals";
 import { useAppUpdate } from "@/src/hooks/useAppUpdate";
 import { StreakDisplay, WeeklyStreakWidget } from "@/src/components/Streak";
-import { useStreakTracker } from "@/hooks/data/useStreakTracker";
+import { useStreak } from "@/src/hooks/useStreak";
 import { PressableScale } from "@/src/components/ui/PressableScale";
 import { Card } from "@/src/components/ui/Card";
 
@@ -116,7 +116,7 @@ export default function JournalCalendarScreen() {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const posthog = usePostHog();
 
-  const { refetch: refetchStreak } = useStreakTracker();
+  const { refetch: refetchStreak } = useStreak();
 
   const { showUpdateModal, currentVersion, latestVersion, hideModal } =
     useAppUpdate({ autoCheck: true });

@@ -117,7 +117,7 @@ export const MASCOT_MESSAGES: readonly string[] = [
   "One step at a time.",
   "Every session counts.",
   "You're doing great.",
-  "Keep going — you've got this.",
+  "Keep going · you've got this.",
   "Each step builds on the last.",
   "You're showing up. That matters.",
   "Nice work today.",

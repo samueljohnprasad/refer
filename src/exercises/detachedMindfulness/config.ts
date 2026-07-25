@@ -109,7 +109,7 @@ export const detachedMindfulnessConfig: ExerciseConfig<DetachedMindfulnessRespon
           fieldKey: "labeledThought",
           placeholder: '"I notice I am having the thought that..."',
           psychoeducationText:
-            "Labelling a thought as 'a thought' weakens its grip. The thought doesn't change — your relationship to it does.",
+            "Labelling a thought as 'a thought' weakens its grip. The thought doesn't change · your relationship to it does.",
         }),
         label: 'Label it: "I notice I am having the thought that..."',
         validate: (r) => r.labeledThought.trim().length >= 1,

@@ -69,19 +69,14 @@ export const BookmarkedJournalsBottomSheet: React.FC<
             <RNHostView>
               <View className="flex-1">
                 {/* Header */}
-                <View className="flex-row items-center justify-between border-b border-sage-100 px-6 py-6 pt-5">
-                  <View className="flex-row items-center gap-3">
-                    <View className="h-12 w-12 items-center justify-center rounded-full bg-sage-50">
-                      <Feather name="bookmark" size={22} color={SAGE[600]} />
-                    </View>
-                    <View>
-                      <Text className="happy-font-heading-bold text-[30px] leading-9 text-ink">
-                        Bookmarked Journals
-                      </Text>
-                      <Text className="happy-font-body-medium text-[15px] text-ink/80">
-                        {totalCount || 0} entries saved
-                      </Text>
-                    </View>
+                <View className="flex-row items-center justify-between border-b border-sage-100 px-6 pb-6 pt-8">
+                  <View>
+                    <Text className="happy-font-heading-bold text-[28px] leading-8 text-ink tracking-tight">
+                      Pinned Notes
+                    </Text>
+                    <Text className="happy-font-body-medium text-[17px] text-ink-muted mt-1">
+                      {totalCount || 0} entries saved
+                    </Text>
                   </View>
                 </View>
 
@@ -109,7 +104,7 @@ export const BookmarkedJournalsBottomSheet: React.FC<
                               <>
                                 <View className="mb-3 h-px w-full bg-sage-100" />
                                 <Text className="happy-font-body-medium text-sm text-ink-muted">
-                                  All {totalCount} bookmarked journals loaded
+                                  All {totalCount} pinned notes loaded
                                 </Text>
                               </>
                             ) : null}
@@ -118,16 +113,16 @@ export const BookmarkedJournalsBottomSheet: React.FC<
                       />
                     </View>
                   ) : (
-                    <View className="items-center justify-center py-20">
-                      <View className="mb-5 h-24 w-24 items-center justify-center rounded-[30px] bg-sage-50">
-                        <Feather name="bookmark" size={42} color={INK_MUTED} />
+                    <View className="items-center justify-center py-24">
+                      <View className="mb-6">
+                        <Feather name="bookmark" size={32} color={INK_MUTED} />
                       </View>
-                      <Text className="happy-font-body-bold mb-2 text-[20px] text-ink">
-                        No Bookmarked Journals
+                      <Text className="happy-font-heading-bold mb-3 text-[22px] text-ink">
+                        No Pinned Notes
                       </Text>
-                      <Text className="happy-font-body-medium px-8 text-center text-[15px] leading-6 text-ink-muted">
+                      <Text className="happy-font-body-medium px-8 text-center text-[17px] leading-6 text-ink-muted">
                         Tap the bookmark icon on any journal entry to save it here for
-                        quick access
+                        quick access.
                       </Text>
                     </View>
                   )}

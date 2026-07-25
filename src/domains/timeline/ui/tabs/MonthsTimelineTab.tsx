@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { View, Alert } from 'react-native';
+import { View } from 'react-native';
+import { useToast } from 'heroui-native';
+import { showAppToast } from '@/src/lib/showToast';
 import { Timeline } from '@/src/components/ui/Timeline/Timeline';
 import { useMonthlyTimeline } from '../../data/timeline.queries';
 import { useGenerateMonthlyInsight } from '../../data/timeline.mutations';
@@ -14,6 +16,7 @@ import type { MonthlyTimelineItem, TimelineTabProps } from '../../model/timeline
 
 export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const headerHeight = useHeaderHeight();
+  const { toast } = useToast();
   const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useMonthlyTimeline({ pageSize: 10 });
   const { mutateAsync: generateInsight } = useGenerateMonthlyInsight();
   
@@ -29,7 +32,11 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
       const month = parseInt(date.substring(5, 7), 10);
       await generateInsight({ month, year });
     } catch (e) {
-      Alert.alert("Generation Failed", "Could not generate insight. Please try again later.");
+      showAppToast(toast, {
+        variant: 'danger',
+        title: 'Generation Failed',
+        description: 'Could not generate insight. Please try again later.',
+      });
     } finally {
       setGeneratingDates(prev => {
         const next = new Set(prev);

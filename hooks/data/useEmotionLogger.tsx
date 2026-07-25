@@ -11,7 +11,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, Platform } from "react-native";
 import { ExtensionStorage } from "@bacons/apple-targets";
 import { useToast } from "heroui-native";
-import { useDailyStreak } from "./useDailyStreak";
 
 type MoodEnum = Database["public"]["Enums"]["mood"];
 
@@ -121,7 +120,6 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
   const queryClient = useQueryClient();
   const dateStr = format(selectedDate, "yyyy-MM-dd");
   const { toast } = useToast();
-  const { logStreakIfNeeded } = useDailyStreak();
 
   const COOLDOWN_MS: number = 30 * 60 * 1000; // 30 minutes
   const lastLogKey = "lastLogKey";
@@ -223,8 +221,7 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
       }
       try {
         await logEmotionMutation.mutateAsync(emotionId);
-        const log = await logStreakIfNeeded();
-        onSuccess?.(log.updated);
+        onSuccess?.(true);
       } catch (error) {
         console.error("Failed to log emotion:", error);
       }

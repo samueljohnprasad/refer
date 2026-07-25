@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { View, Alert } from 'react-native';
+import { View } from 'react-native';
+import { useToast } from 'heroui-native';
+import { showAppToast } from '@/src/lib/showToast';
 import { setWeek, setYear, startOfWeek, endOfWeek } from 'date-fns';
 import { Timeline } from '@/src/components/ui/Timeline/Timeline';
 import { useWeeklyTimeline } from '../../data/timeline.queries';
@@ -15,6 +17,7 @@ import type { WeeklyTimelineItem, TimelineTabProps } from '../../model/timeline.
 
 export const WeeksTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const headerHeight = useHeaderHeight();
+  const { toast } = useToast();
   const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } = useWeeklyTimeline({ pageSize: 10 });
   const { mutateAsync: generateInsight } = useGenerateWeeklyInsight();
   
@@ -30,7 +33,11 @@ export const WeeksTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
       const week_index = parseInt(date.substring(6), 10);
       await generateInsight({ week_index, year });
     } catch (e) {
-      Alert.alert("Generation Failed", "Could not generate insight. Please try again later.");
+      showAppToast(toast, {
+        variant: 'danger',
+        title: 'Generation Failed',
+        description: 'Could not generate insight. Please try again later.',
+      });
     } finally {
       setGeneratingDates(prev => {
         const next = new Set(prev);

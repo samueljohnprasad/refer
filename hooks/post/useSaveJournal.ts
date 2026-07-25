@@ -9,7 +9,6 @@ import { Insert } from "@/types/types";
 import { formateDate_y_m_d } from "../../src/utils/date";
 import { JournalEntry } from "../data/types";
 import { getMoodScore } from "@/src/utils/mood";
-import { useDailyStreak } from "../data/useDailyStreak";
 import { countWords } from "@/src/utils/textUtils";
 import { useXPOptional } from "@/src/context/XPContext";
 import { XPActionType } from "@/src/types/xp";
@@ -28,7 +27,6 @@ export const useSaveJournal = () => {
   const [saving, setSaving] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
-  const { logStreakIfNeeded } = useDailyStreak();
   const xp = useXPOptional();
   const { earnCoinsForAction } = useRewardsContext();
   const challenges = useChallengesOptional();
@@ -134,9 +132,6 @@ export const useSaveJournal = () => {
           .select()
           .single();
         if (moodError) throw moodError;
-
-        // Update streak when journal is saved
-        await logStreakIfNeeded();
 
         // Award XP based on input type
         if (input.input_type === "voice") {

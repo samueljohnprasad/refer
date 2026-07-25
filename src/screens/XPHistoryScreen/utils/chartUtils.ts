@@ -11,14 +11,14 @@ export interface ChartDayData {
   isToday: boolean;
 }
 
-const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 export const generateXPChartData = (history: XPHistoryEntry[], numWeeks = 4) => {
-  // 1. Find the start of the week for numWeeks ago
+  // 1. Find the start of the week for numWeeks ago (Sunday start)
   // e.g., if numWeeks = 4, we want data for the past 4 weeks including current week
   // The first week (weekIndex 0) should be 3 weeks ago, last week (weekIndex 3) is current week
   const today = new Date();
-  const currentWeekStart = startOfWeek(today, { weekStartsOn: 1 });
+  const currentWeekStart = startOfWeek(today, { weekStartsOn: 0 });
   
   const startDate = subWeeks(currentWeekStart, numWeeks - 1);
   

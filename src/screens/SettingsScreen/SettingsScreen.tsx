@@ -140,15 +140,6 @@ export default function SettingsScreen() {
 
           <SettingsSection title="Preferences">
             <SettingsItem
-              icon={Brain01Icon}
-              title="Apple Intelligence"
-              subtitle="On-device AI · Private & secure"
-              onPress={() => {
-                Haptics.selectionAsync();
-                router.push("/tabs/screens/apple-intelligence");
-              }}
-            />
-            <SettingsItem
               icon={Notification01Icon}
               title="Daily Reminders"
               subtitle="Customize multiple reminders"
@@ -224,7 +215,7 @@ export default function SettingsScreen() {
             <SettingsItem
               icon={AlertSquareIcon}
               title="App Info"
-              subtitle={`Version ${Application.nativeApplicationVersion || "1.0.0"} (Build ${Application.nativeBuildVersion !== "1" ? Application.nativeBuildVersion : (Constants.expoConfig?.ios?.buildNumber || Constants.expoConfig?.android?.versionCode || "1")})`}
+              subtitle={`Version ${Application.nativeApplicationVersion || "1.0.0"}`}
               onPress={() => {}}
               showArrow={false}
             />
@@ -267,6 +258,15 @@ export default function SettingsScreen() {
           {/* Developer Section for Testing */}
           {__DEV__ && (
             <SettingsSection title="Developer">
+              <SettingsItem
+                icon={Brain01Icon}
+                title="Apple Intelligence"
+                subtitle="On-device AI · Private & secure"
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  router.push("/tabs/screens/apple-intelligence");
+                }}
+              />
               <SettingsItem
                 icon={Download02Icon}
                 title="Bulk Import Journals"

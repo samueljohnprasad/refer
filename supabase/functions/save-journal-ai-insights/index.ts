@@ -51,9 +51,9 @@ Deno.serve(async (req: Request) => {
 
     console.log("Starting transcription...");
     //@ts-ignore
-    const apiKey = Deno.env.get("GEMINI_API_KEY") || "";
+    const apiKey = Deno.env.get("EXPO_PUBLIC_GEMINI_API_KEY") || "";
     if (!apiKey && isAudio) {
-      console.warn("No GEMINI_API_KEY found in environment!");
+      console.warn("No EXPO_PUBLIC_GEMINI_API_KEY found in environment!");
     }
 
     const transcripts = await transcribeAudio(apiKey, journal, isAudio);

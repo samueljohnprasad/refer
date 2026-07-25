@@ -40,6 +40,7 @@ import {
   selectedDateDiscoveryAtom,
 } from "./helpers";
 import { useUserProfile } from "@/hooks/data/useUserProfile";
+import { useStreak } from "@/src/hooks/useStreak";
 import { format } from "date-fns";
 import { AnimatedBlurView } from "@/src/components/AnimatedLinearGradient";
 import { useJournalEntry } from "@/hooks/useJournalEntry";
@@ -281,7 +282,7 @@ function DiscoveryScreen() {
     return () => clearInterval(interval);
   }, [shufflePrompt]);
 
-  const currentStreak = userProfile?.currentStreak ?? 0;
+  const { currentStreak, isLoading: isStreakLoading } = useStreak();
 
   const handleOpenRecorder = useCallback(() => {
     if (shouldShowPaywall) {
@@ -364,7 +365,7 @@ function DiscoveryScreen() {
         <View>
           <DiscoveryHeader
             currentStreak={currentStreak}
-            isLoading={isLoadingProfile}
+            isLoading={isLoadingProfile || isStreakLoading}
           />
           {/* <ProgressBar progress={74} /> */}
         </View>

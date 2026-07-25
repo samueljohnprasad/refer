@@ -57,7 +57,7 @@ function BeliefRow({ cluster }: { cluster: BeliefCluster }) {
     cluster.trend === "weakening"
       ? `↓ Lost ${cluster.decayPercentage}% of its grip`
       : cluster.trend === "stuck"
-        ? "Persistent — try a new angle"
+        ? "Persistent · try a new angle"
         : "Steady";
 
   return (

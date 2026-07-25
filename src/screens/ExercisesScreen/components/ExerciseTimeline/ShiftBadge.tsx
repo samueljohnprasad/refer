@@ -15,7 +15,7 @@ import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
-import { SAGE } from "@/lib/tokens";
+import { SAGE, INK_SOFT } from "@/lib/tokens";
 
 interface ShiftBadgeProps {
   /** Human label like "Distress", "Calm", "Anxiety" */
@@ -41,12 +41,18 @@ const ShiftBadge: React.FC<ShiftBadgeProps> = React.memo(
     const hasBoth = before !== undefined && after !== undefined;
     const improved: boolean = hasBoth ? isImprovement(before!, after!, invertScale) : false;
 
+    const accessibleText = hasBoth
+      ? `${label} shifted from ${before} to ${after}`
+      : `${label}: ${before ?? after}`;
+
     return (
       <View
         style={[
           styles.pill,
           hasBoth && improved ? styles.pillImproved : styles.pillNeutral,
         ]}
+        accessibilityRole="text"
+        accessibilityLabel={accessibleText}
       >
         {/* Arrow icon */}
         {hasBoth && Platform.OS === "ios" ? (
@@ -57,7 +63,7 @@ const ShiftBadge: React.FC<ShiftBadgeProps> = React.memo(
                 : ("arrow.right" as any)
             }
             size={9}
-            tintColor={improved ? "#4A6B43" : "#636366"}
+            tintColor={improved ? SAGE[700] : INK_SOFT}
             weight="semibold"
             style={styles.icon}
           />
@@ -65,7 +71,7 @@ const ShiftBadge: React.FC<ShiftBadgeProps> = React.memo(
           <Feather
             name={improved ? "trending-down" : "minus"}
             size={10}
-            color={improved ? "#4A6B43" : "#636366"}
+            color={improved ? SAGE[700] : INK_SOFT}
           />
         ) : null}
 
@@ -107,14 +113,14 @@ const styles = StyleSheet.create({
     height: 10,
   },
   text: {
-    fontFamily: "Nunito-Bold",
+    fontFamily: "GeistSemiBold",
     fontSize: 11,
     lineHeight: 14,
   },
   textImproved: {
-    color: "#4A6B43", // Deeper, more sophisticated sage green
+    color: SAGE[700],
   },
   textNeutral: {
-    color: "#636366", // Neutral gray instead of warning yellow
+    color: INK_SOFT,
   },
 });

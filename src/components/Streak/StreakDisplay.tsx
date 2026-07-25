@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { View, Share, Alert, Modal, Text as RNText, StyleSheet } from "react-native";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import {
@@ -7,7 +7,7 @@ import {
   Tick02Icon,
   Fire02Icon,
 } from "@hugeicons/core-free-icons";
-import { useStreakTracker } from "@/hooks/data/useStreakTracker";
+import { useStreak } from "@/src/hooks/useStreak";
 import { useReviewPrompt } from "@/src/hooks/useReviewPrompt";
 
 import { Host, BottomSheet, Group, RNHostView } from "@expo/ui/swift-ui";
@@ -93,7 +93,11 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
   visible,
   onClose,
 }) => {
-  const { streakData, isLoading } = useStreakTracker();
+  const { currentStreak, longestStreak, weeklyProgress, isLoading } = useStreak();
+  const streakData = useMemo(
+    () => ({ currentStreak, longestStreak, weeklyProgress }),
+    [currentStreak, longestStreak, weeklyProgress]
+  );
 
   useEffect(() => {
     if (!visible || streakData.currentStreak === 0) return;
@@ -101,7 +105,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
     // Initial heartbeat on open
     void triggerIfEnabledSync("heartbeat", HAPTIC_INTENSITIES.HEARTBEAT);
 
-    const lastCompletedIndex = streakData.weeklyProgress.lastIndexOf(true);
+    const lastCompletedIndex = streakData.weeklyProgress.days.lastIndexOf(true);
     if (lastCompletedIndex === -1) return;
 
     // Calculate exactly when the final ember finishes its entrance animation
@@ -140,7 +144,7 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
     }
   };
 
-  const completedDays = streakData.weeklyProgress.filter(Boolean).length;
+  const completedDays = streakData.weeklyProgress.activeDays;
   const isHalfwayToWeek = completedDays >= 3 && completedDays < 7;
   const isPerfectWeek = completedDays === 7;
 
@@ -181,10 +185,19 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
                 <View className="items-center mb-10 mt-6 px-4">
                   <RNText
                     className="happy-font-heading-bold text-[36px] leading-[44px] text-center"
-                    style={{ color: INK }}
+                    style={{ color: INK, fontVariant: ["lining-nums"] }}
                   >
                     You're on a{" "}
-                    <RNText style={{ color: PARROT_ORANGE, textShadowColor: 'rgba(255,150,0,0.3)', textShadowOffset: {width: 0, height: 4}, textShadowRadius: 12 }}>
+                    <RNText
+                      style={{
+                        color: PARROT_ORANGE,
+                        fontFamily: "GeistBold",
+                        fontVariant: ["lining-nums"],
+                        textShadowColor: "rgba(255,150,0,0.3)",
+                        textShadowOffset: { width: 0, height: 4 },
+                        textShadowRadius: 12,
+                      }}
+                    >
                       {streakData.currentStreak}-day
                     </RNText>{" "}
                     streak
@@ -199,10 +212,12 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
 
                 {/* ── Weekly calendar ───────────────────────────── */}
                 <View className="w-full px-2 mb-10">
-                  <WeekDayLabels weeklyProgress={streakData.weeklyProgress} />
-                  <WeekProgressCircles
-                    weeklyProgress={streakData.weeklyProgress}
-                  />
+                  <WeekDayLabels weeklyProgress={streakData.weeklyProgress.days} />
+                  <View className="mt-2">
+                    <WeekProgressCircles
+                      weeklyProgress={streakData.weeklyProgress.days}
+                    />
+                  </View>
 
                   {/* Progress message */}
                   {isHalfwayToWeek && !isPerfectWeek && (

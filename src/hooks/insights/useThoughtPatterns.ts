@@ -58,10 +58,10 @@ function extractThoughtTexts(
 
     if (entry.exercise_type === "thought_reframing") {
       const parts = [r.situation, r.automaticThought].filter(Boolean);
-      if (parts.length > 0) texts.push(parts.join(" — "));
+      if (parts.length > 0) texts.push(parts.join(" · "));
     } else if (entry.exercise_type === "thought_catcher") {
       const parts = [r.situation, r.automaticThought].filter(Boolean);
-      if (parts.length > 0) texts.push(parts.join(" — "));
+      if (parts.length > 0) texts.push(parts.join(" · "));
     } else if (entry.exercise_type === "recognizing_rumination") {
       if (r.ruminativeThought) texts.push(r.ruminativeThought);
     } else if (entry.exercise_type === "decatastrophizing") {

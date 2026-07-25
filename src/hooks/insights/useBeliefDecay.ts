@@ -113,7 +113,7 @@ function generateBeliefMessage(
     case "weakening":
       return `"${name}" has lost ${Math.abs(decayPct)}% of its grip. Your challenges are working.`;
     case "stuck":
-      return `"${name}" is persistent. That's common — try a different technique or angle.`;
+      return `"${name}" is persistent. That's common · try a different technique or angle.`;
     case "stable":
       return `"${name}" is steady. Consistent practice will shift it over time.`;
   }

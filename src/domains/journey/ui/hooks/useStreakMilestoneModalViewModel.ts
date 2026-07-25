@@ -30,7 +30,7 @@ export interface MilestoneInfo {
 export const MILESTONE_CONFIG: Record<number, MilestoneInfo> = {
   3: {
     title: "3-Day Streak!",
-    reward: "You're building a habit — keep it up!",
+    reward: "You're building a habit · keep it up!",
     emoji: "🔥",
     confettiCount: 16,
   },
@@ -42,7 +42,7 @@ export const MILESTONE_CONFIG: Record<number, MilestoneInfo> = {
   },
   14: {
     title: "2-Week Streak!",
-    reward: "Two weeks strong — incredible consistency!",
+    reward: "Two weeks strong · incredible consistency!",
     emoji: "🔥",
     confettiCount: 28,
   },
@@ -54,7 +54,7 @@ export const MILESTONE_CONFIG: Record<number, MilestoneInfo> = {
   },
   60: {
     title: "60-Day Streak!",
-    reward: "Two months of daily growth — remarkable!",
+    reward: "Two months of daily growth · remarkable!",
     emoji: "⭐",
     confettiCount: 36,
   },
@@ -66,7 +66,7 @@ export const MILESTONE_CONFIG: Record<number, MilestoneInfo> = {
   },
   365: {
     title: "365-Day Streak!",
-    reward: "One full year — you're truly extraordinary! 🌟",
+    reward: "One full year · you're truly extraordinary! 🌟",
     emoji: "👑",
     confettiCount: 50,
   },

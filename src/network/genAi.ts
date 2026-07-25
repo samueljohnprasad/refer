@@ -42,7 +42,7 @@ export type InsightsType = {
 };
 
 const ai = new GoogleGenAI({
-  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY_SECONDARY!,
+  apiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY!,
 });
 
 export type AIRecommendation = {

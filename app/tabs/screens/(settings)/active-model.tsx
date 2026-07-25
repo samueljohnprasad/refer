@@ -12,6 +12,10 @@ export default function ActiveModelScreen() {
   const router = useRouter();
   const { modelUrl, setModel, isLoading } = useLocalModelSetting();
 
+  if (!__DEV__) {
+    return null;
+  }
+
   const handleSelectModel = async (url: string) => {
     Haptics.selectionAsync();
     await setModel(url);

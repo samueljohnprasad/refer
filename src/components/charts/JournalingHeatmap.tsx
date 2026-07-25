@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { format, startOfWeek, addDays, subWeeks, differenceInWeeks, isSameDay, differenceInCalendarDays } from 'date-fns';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
+import { useStreak } from "@/src/hooks/useStreak";
 
 interface JournalEntry {
   date: string; // YYYY-MM-DD
@@ -112,14 +113,16 @@ export const JournalingHeatmap: React.FC<JournalingHeatmapProps> = ({
     return weeks;
   }, [journalData, weeksToShow]);
 
+  const { currentStreak: realStreak, longestStreak: realLongest } = useStreak();
+
   // Calculate stats
   const stats = useMemo(() => {
     const totalDays = weeksToShow * 7;
     const activeDays = journalData.length;
     const totalWords = journalData.reduce((sum, d) => sum + d.wordCount, 0);
     const totalEntries = journalData.reduce((sum, d) => sum + d.entriesCount, 0);
-    const currentStreak = calculateCurrentStreak(journalData);
-    const longestStreak = calculateLongestStreak(journalData);
+    const currentStreak = realStreak || calculateCurrentStreak(journalData);
+    const longestStreak = realLongest || calculateLongestStreak(journalData);
     
     return {
       consistency: ((activeDays / totalDays) * 100).toFixed(0),
@@ -129,7 +132,7 @@ export const JournalingHeatmap: React.FC<JournalingHeatmapProps> = ({
       longestStreak,
       activeDays
     };
-  }, [journalData, weeksToShow]);
+  }, [journalData, weeksToShow, realStreak, realLongest]);
 
   const handleDayPress = (day: DayData) => {
     setSelectedDay(day.date);

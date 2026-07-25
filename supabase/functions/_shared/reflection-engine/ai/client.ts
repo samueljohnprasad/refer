@@ -5,9 +5,9 @@ export class GeminiClient {
 
   private getAI(): GoogleGenerativeAI {
     if (!this.ai) {
-      const apiKey = Deno.env.get("GEMINI_API_KEY");
+      const apiKey = Deno.env.get("EXPO_PUBLIC_GEMINI_API_KEY");
       if (!apiKey) {
-        throw new Error("GEMINI_API_KEY environment variable is missing.");
+        throw new Error("EXPO_PUBLIC_GEMINI_API_KEY environment variable is missing.");
       }
       this.ai = new GoogleGenerativeAI(apiKey);
     }
