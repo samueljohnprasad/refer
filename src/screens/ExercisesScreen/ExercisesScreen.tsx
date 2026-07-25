@@ -17,7 +17,7 @@ import {
   Dimensions,
   FlatList,
 } from "react-native";
-import Sortable, { type SortableGridRenderItem } from "react-native-sortables";
+import { useRecentExercises, trackRecentExercise } from "@/src/hooks/useRecentExercises";
 import { SymbolView } from "expo-symbols";
 import { Feather } from "@expo/vector-icons";
 import Animated, {
@@ -494,91 +494,55 @@ const CompactExerciseRow = memo(function CompactExerciseRow({
 
 // ─── END NEW LAYOUT COMPONENTS ──────────────────────────────────────────────
 
-const MAX_FAVOURITES = 5;
-
-function PinnedFavoritesShelf({
+// ponytail: recent exercises shelf replacing pinned favorites
+function JumpBackInShelf({
   exercises,
   onPress,
 }: {
   exercises: ExerciseConfig<any>[];
   onPress: (exercise: ExerciseConfig<any>) => void;
 }) {
-  // Start with 2 favorites for demonstration purposes
-  const [items, setItems] = useState<ExerciseConfig<any>[]>(() => exercises.slice(0, 2));
-  
-  const emptySlots = Math.max(0, MAX_FAVOURITES - items.length);
-  const gridWidth = items.length * SHELF_CARD_WIDTH + Math.max(0, items.length - 1) * CAROUSEL_GAP;
+  const { recentIds } = useRecentExercises();
 
-  const renderItem = useCallback<SortableGridRenderItem<ExerciseConfig<any>>>(
-    ({ item }) => (
-      <View style={{ width: SHELF_CARD_WIDTH }}>
-        <ExerciseShelfCard exercise={item} onPress={onPress} />
-      </View>
-    ),
-    [onPress]
-  );
+  // Map IDs to actual exercise config objects
+  // If no recents, default to box breathing and PMR
+  const defaultIds = ["breathing-box", "pmr"];
+  const displayIds = recentIds.length > 0 ? recentIds.slice(0, 2) : defaultIds;
+
+  const items = displayIds
+    .map((id) => exercises.find((ex) => ex.type === id))
+    .filter(Boolean) as ExerciseConfig<any>[];
 
   return (
     <View style={{ marginBottom: 40 }}>
       <View style={[nutrieStyles.sectionHeader, { paddingTop: 16 }]}>
-        <View style={[nutrieStyles.categoryBadge, { backgroundColor: "transparent", paddingHorizontal: 0 }]}>
+        <View
+          style={[
+            nutrieStyles.categoryBadge,
+            { backgroundColor: "transparent", paddingHorizontal: 0 },
+          ]}
+        >
           <Text style={[nutrieStyles.categoryBadgeText, { color: INK_MUTED }]}>
-            Pinned Favorites
+            Jump Back In
           </Text>
         </View>
       </View>
-      <Text style={nutrieStyles.sectionDescription}>
-        Long-press and drag to reorder your top exercises.
-      </Text>
 
-      <View style={{ marginHorizontal: -CAROUSEL_PEEK }}>
+      <View style={{ marginHorizontal: -CAROUSEL_PEEK, marginTop: 12 }}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: CAROUSEL_GAP, paddingHorizontal: CAROUSEL_PEEK }}
+          contentContainerStyle={{
+            gap: CAROUSEL_GAP,
+            paddingHorizontal: CAROUSEL_PEEK,
+          }}
           snapToInterval={SHELF_CARD_WIDTH + CAROUSEL_GAP}
           decelerationRate="fast"
         >
-          {items.length > 0 && (
-            <View style={{ width: gridWidth }}>
-              <Sortable.Grid
-                columns={items.length}
-                data={items}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.type}
-                columnGap={CAROUSEL_GAP}
-                rowGap={CAROUSEL_GAP}
-                sortEnabled={true}
-                onDragEnd={({ data }) => setItems(data)}
-                hapticsEnabled
-                activeItemScale={1.05}
-              />
+          {items.map((item) => (
+            <View key={item.type} style={{ width: SHELF_CARD_WIDTH }}>
+              <ExerciseShelfCard exercise={item} onPress={onPress} />
             </View>
-          )}
-
-          {Array.from({ length: emptySlots }).map((_, index) => (
-            <Pressable
-              key={`empty-${index}`}
-              style={({ pressed }) => [
-                {
-                  width: SHELF_CARD_WIDTH,
-                  height: 140,
-                  borderRadius: 12,
-                  borderWidth: 1.5,
-                  borderColor: "rgba(0,0,0,0.08)",
-                  borderStyle: "dashed",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "rgba(0,0,0,0.01)",
-                },
-                pressed && { opacity: 0.6 },
-              ]}
-            >
-              <Feather name="plus" size={24} color="rgba(0,0,0,0.3)" />
-              <Text style={{ marginTop: 8, fontSize: 13, color: "rgba(0,0,0,0.4)", fontWeight: "500" }}>
-                Add exercise
-              </Text>
-            </Pressable>
           ))}
         </ScrollView>
       </View>
@@ -1003,8 +967,7 @@ export default function ExercisesScreen(): ReactElement {
   const xp = useXPOptional();
 
   const handleExercisePress = useCallback((exercise: ExerciseConfig<any>) => {
-    // Analytics or other logic can go here.
-    // Routing is handled by the CircularRevealWrapper in ExerciseCard.
+    trackRecentExercise(exercise.type);
   }, []);
 
   const handleTabPress = useCallback((tab: TabKey): void => {
@@ -1217,9 +1180,9 @@ export default function ExercisesScreen(): ReactElement {
             <EmptyDiscoverState />
           ) : (
             <>
-              {/* Insert the Medley-style Pinned Favorites at the very top */}
+              {/* Insert Jump Back In shelf at the very top */}
               <Animated.View entering={FadeInDown.duration(400).delay(100)}>
-                <PinnedFavoritesShelf
+                <JumpBackInShelf
                   exercises={exerciseGroups.flatMap((g) => g.exercises)}
                   onPress={handleExercisePress}
                 />
