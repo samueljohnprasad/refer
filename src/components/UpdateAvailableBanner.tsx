@@ -10,28 +10,21 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { SparklesIcon } from "@hugeicons/core-free-icons";
 
 export const UpdateAvailableBanner: React.FC = () => {
-  let isUpdateAvailable = false;
-  let isUpdatePending = false;
-
-  try {
-    const updates = Updates.useUpdates();
-    isUpdateAvailable = !!updates?.isUpdateAvailable;
-    isUpdatePending = !!updates?.isUpdatePending;
-  } catch (e) {
-    // Unsupported in Expo Go or unlinked dev environment
-  }
-
+  const [showBanner, setShowBanner] = useState(false);
   const [isReloading, setIsReloading] = useState(false);
 
-  // Auto-check for updates silently when app loads in production/preview
+  // Auto-check and listen for updates silently when app loads
   useEffect(() => {
     if (__DEV__) return;
+    
+    // 1. Active check on mount
     async function checkOTA() {
       try {
         if (typeof Updates.checkForUpdateAsync === "function") {
           const update = await Updates.checkForUpdateAsync();
           if (update.isAvailable) {
             await Updates.fetchUpdateAsync();
+            setShowBanner(true);
           }
         }
       } catch (e) {
@@ -39,9 +32,25 @@ export const UpdateAvailableBanner: React.FC = () => {
       }
     }
     checkOTA();
-  }, []);
 
-  const showBanner = isUpdateAvailable || isUpdatePending;
+    // 2. Passive listener for background/push updates
+    let subscription: any;
+    try {
+      if (typeof Updates.addListener === "function") {
+        subscription = Updates.addListener((event) => {
+          if (event.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
+            setShowBanner(true);
+          }
+        });
+      }
+    } catch (e) {
+      // Catch native module errors if any
+    }
+    
+    return () => {
+      if (subscription?.remove) subscription.remove();
+    };
+  }, []);
 
   if (!showBanner) return null;
 
