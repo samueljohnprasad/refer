@@ -2,12 +2,19 @@
 import React, { useEffect, useState } from "react";
 import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
-import * as Updates from "expo-updates";
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HapticManager } from "@/lib/haptics/HapticManager";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { SparklesIcon } from "@hugeicons/core-free-icons";
+
+// Safely require expo-updates to prevent native module crashes in Expo Go
+let Updates: any;
+try {
+  Updates = require("expo-updates");
+} catch (e) {
+  // Ignored in Expo Go
+}
 
 export const UpdateAvailableBanner: React.FC = () => {
   const [showBanner, setShowBanner] = useState(false);
@@ -15,7 +22,7 @@ export const UpdateAvailableBanner: React.FC = () => {
 
   // Auto-check and listen for updates silently when app loads
   useEffect(() => {
-    if (__DEV__) return;
+    if (__DEV__ || !Updates) return;
     
     // 1. Active check on mount
     async function checkOTA() {
@@ -37,7 +44,7 @@ export const UpdateAvailableBanner: React.FC = () => {
     let subscription: any;
     try {
       if (typeof Updates.addListener === "function") {
-        subscription = Updates.addListener((event) => {
+        subscription = Updates.addListener((event: any) => {
           if (event.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
             setShowBanner(true);
           }
@@ -58,7 +65,7 @@ export const UpdateAvailableBanner: React.FC = () => {
     try {
       setIsReloading(true);
       HapticManager.triggerSystem("notificationSuccess");
-      if (typeof Updates.reloadAsync === "function") {
+      if (Updates && typeof Updates.reloadAsync === "function") {
         await Updates.reloadAsync();
       }
     } catch (e) {
@@ -96,4 +103,3 @@ export const UpdateAvailableBanner: React.FC = () => {
 };
 
 export default UpdateAvailableBanner;
-
