@@ -105,6 +105,7 @@
     "expo-status-bar": "~56.0.4",
     "expo-store-review": "~56.0.3",
     "expo-system-ui": "~56.0.5",
+    "expo-updates": "~56.0.23",
     "expo-web-browser": "~56.0.5",
     "fix": "^0.0.6",
     "heroui-native": "^1.0.6",
