@@ -121,6 +121,38 @@ export class DailyService {
         hasPriorDaily: !!priorDaily
       });
 
+      // ponytail: if completely empty day, skip AI call and return generic response
+      if (
+        (journalAIs?.length || 0) === 0 &&
+        (habits?.length || 0) === 0 &&
+        (meals?.length || 0) === 0 &&
+        cbtContext.length === 0 &&
+        (moods?.length || 0) === 0
+      ) {
+        console.log(`[daily.service] No data for ${date}, skipping AI generation.`);
+        const emptyResult = {
+          daily_reflection: "No entries recorded for this day.",
+          structured_memory: {}
+        };
+
+        const { data, error } = await this.supabase
+          .from("daily_ai")
+          .upsert(
+            {
+              user_id: userId,
+              reflection_date: date,
+              summary: emptyResult.daily_reflection,
+              structured_memory: emptyResult.structured_memory,
+            },
+            { onConflict: "user_id, reflection_date" },
+          )
+          .select()
+          .single();
+
+        if (error) throw error;
+        return data;
+      }
+
       // 2. Build the context string
       const dailyHabits: Habit[] = (habits || []).map(
         // @ts-ignore - Supabase join typing // ponytail: handle habit completion join mapping
