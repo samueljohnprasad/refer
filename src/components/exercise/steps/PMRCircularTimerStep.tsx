@@ -1,15 +1,11 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { View, Pressable, ScrollView } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
 import { Text } from "@/src/components/ui/Text";
-import { Button } from "@/src/components/ui/Button";
 import { StepLayout } from "./StepLayout";
-import { CircularDraggableSlider } from "@/src/animations/pomodoro-timer/src/components/draggable-slider";
-import type { CircularDraggableSliderRefType } from "@/src/animations/pomodoro-timer/src/components/draggable-slider";
-import { AnimatedCount } from "@/src/animations/pomodoro-timer/src/components/animated-count/animated-count";
+import { CircularProgressTimer } from "@/src/components/ui/CircularProgressTimer";
 import type { StepProps } from "@/src/types/exerciseFlow";
-import { SAGE, BRAND_BORDER, INK, INK_MUTED } from "@/lib/tokens";
+import { SAGE, INK, INK_MUTED } from "@/lib/tokens";
 
 export interface PMRAreaConfig {
   value: string;
@@ -49,15 +45,25 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
     const [isRunning, setIsRunning] = useState(false);
 
     const currentArea = areas[currentIndex] || areas[0];
-    const defaultSec = currentArea.defaultDurationSec ?? 5;
+    const durationSec = currentArea.defaultDurationSec ?? 5;
+    const durationMs = durationSec * 1000;
 
-    const animatedNumber = useSharedValue(defaultSec);
-    const circularSliderRef = useRef<CircularDraggableSliderRefType>(null);
+    const [remainingMs, setRemainingMs] = useState(durationMs);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const remainingRef = useRef(durationMs);
 
     const completedList: string[] = Array.isArray((response as any)[fieldKey])
       ? (response as any)[fieldKey]
       : [];
     const isCurrentCompleted = completedList.includes(currentArea.value);
+
+    // Reset remaining time when current area changes
+    useEffect(() => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      const newDuration = (areas[currentIndex]?.defaultDurationSec ?? 5) * 1000;
+      setRemainingMs(newDuration);
+      remainingRef.current = newDuration;
+    }, [currentIndex, areas]);
 
     const markCurrentCompleted = useCallback(() => {
       if (!isCurrentCompleted) {
@@ -67,64 +73,74 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
       }
     }, [isCurrentCompleted, onUpdate, fieldKey, completedList, currentArea.value]);
 
-    const handleStartTimer = useCallback(() => {
-      if (isRunning) {
-        circularSliderRef.current?.stopTimer();
-        setIsRunning(false);
-        return;
+    useEffect(() => {
+      if (isRunning && remainingRef.current > 0) {
+        intervalRef.current = setInterval(() => {
+          remainingRef.current -= 100;
+          if (remainingRef.current <= 0) {
+            remainingRef.current = 0;
+            clearInterval(intervalRef.current!);
+            setIsRunning(false);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+            markCurrentCompleted();
+          }
+          setRemainingMs(remainingRef.current);
+        }, 100);
       }
-      Haptics.selectionAsync().catch(() => {});
-      setIsRunning(true);
-      const targetDuration = animatedNumber.value > 0 ? animatedNumber.value : defaultSec;
-      circularSliderRef.current?.runTimer(targetDuration);
-    }, [isRunning, animatedNumber, defaultSec]);
+      return () => {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+      };
+    }, [isRunning, markCurrentCompleted]);
 
-    const handleTimerCompletion = useCallback(() => {
-      setIsRunning(false);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-      markCurrentCompleted();
-    }, [markCurrentCompleted]);
+    const handleToggleTimer = useCallback(() => {
+      if (isRunning) {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        setIsRunning(false);
+      } else {
+        Haptics.selectionAsync().catch(() => {});
+        if (remainingRef.current <= 0) {
+          remainingRef.current = durationMs;
+          setRemainingMs(durationMs);
+        }
+        setIsRunning(true);
+      }
+    }, [isRunning, durationMs]);
 
     const handleNextArea = useCallback(() => {
       Haptics.selectionAsync().catch(() => {});
-      if (isRunning) {
-        circularSliderRef.current?.stopTimer();
-        setIsRunning(false);
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
       if (currentIndex < areas.length - 1) {
         setCurrentIndex(currentIndex + 1);
-        animatedNumber.value = areas[currentIndex + 1].defaultDurationSec ?? 5;
-        circularSliderRef.current?.resetTimer();
+        setIsRunning(true);
       } else {
+        setIsRunning(false);
         onNext();
       }
-    }, [isRunning, currentIndex, areas, animatedNumber, onNext]);
+    }, [currentIndex, areas.length, onNext]);
 
     const handleSkipCurrent = useCallback(() => {
-      if (isRunning) {
-        circularSliderRef.current?.stopTimer();
-        setIsRunning(false);
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      setIsRunning(false);
+      remainingRef.current = 0;
+      setRemainingMs(0);
       markCurrentCompleted();
       if (currentIndex < areas.length - 1) {
         setCurrentIndex(currentIndex + 1);
-        animatedNumber.value = areas[currentIndex + 1].defaultDurationSec ?? 5;
-        circularSliderRef.current?.resetTimer();
       }
-    }, [isRunning, markCurrentCompleted, currentIndex, areas, animatedNumber]);
+    }, [currentIndex, areas.length, markCurrentCompleted]);
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (setPrimaryOverride) {
         if (!isRunning && !isCurrentCompleted) {
           setPrimaryOverride({
             label: "Start Timer",
-            action: handleStartTimer,
+            action: handleToggleTimer,
             disabled: false,
           });
         } else if (isRunning) {
           setPrimaryOverride({
-            label: "Stop Timer",
-            action: handleStartTimer,
+            label: "Pause Timer",
+            action: handleToggleTimer,
             disabled: false,
           });
         } else if (isCurrentCompleted) {
@@ -135,7 +151,10 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
           });
         }
       }
-    }, [isRunning, isCurrentCompleted, handleStartTimer, handleNextArea, onNext, currentIndex, areas.length, setPrimaryOverride]);
+    }, [isRunning, isCurrentCompleted, handleToggleTimer, handleNextArea, onNext, currentIndex, areas.length, setPrimaryOverride]);
+
+    const timerProgress = Math.max(0, Math.min(1, 1 - remainingMs / durationMs));
+    const secondsDisplay = Math.ceil(remainingMs / 1000);
 
     return (
       <StepLayout
@@ -164,13 +183,9 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
                 <Pressable
                   key={area.value}
                   onPress={() => {
-                    if (isRunning) {
-                      circularSliderRef.current?.stopTimer();
-                      setIsRunning(false);
-                    }
+                    if (intervalRef.current) clearInterval(intervalRef.current);
+                    setIsRunning(false);
                     setCurrentIndex(idx);
-                    animatedNumber.value = area.defaultDurationSec ?? 5;
-                    circularSliderRef.current?.resetTimer();
                   }}
                   className={`px-3.5 py-2 rounded-full border flex-row items-center space-x-1.5 ${
                     active
@@ -208,38 +223,24 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
           </Text>
         </View>
 
-        {/* Circular Draggable Timer Zone */}
-        <View className="items-center justify-center my-6 h-[300px]">
-          <CircularDraggableSlider
-            ref={circularSliderRef}
-            radius={130}
-            containerMode="inline"
-            linesAmount={120}
-            maxLineHeight={24}
-            minLineHeight={16}
-            bigLineIndexOffset={10}
-            indicatorColor={SAGE[500]}
-            lineColor={BRAND_BORDER}
-            bigLineColor={SAGE[300]}
-            onProgressChange={(seconds) => {
-              animatedNumber.value = seconds;
-            }}
-            onCompletion={handleTimerCompletion}
-          />
-          <View className="absolute items-center justify-center pointer-events-none">
-            <AnimatedCount
-              count={animatedNumber}
-              maxDigits={2}
-              fontSize={44}
-              textDigitHeight={54}
-              textDigitWidth={28}
-              color={INK}
-              gradientAccentColor="#FFFFFF"
-            />
-            <Text variant="caption" className="text-xs text-ink-muted mt-1 uppercase tracking-wider font-semibold">
-              {isRunning ? "Tensing..." : "Seconds (Drag to set)"}
-            </Text>
-          </View>
+        {/* Skia Circular Progress Timer */}
+        <View className="items-center justify-center my-6 h-[260px]">
+          <CircularProgressTimer
+            progress={timerProgress}
+            size={210}
+            strokeWidth={8}
+            color={SAGE[500]}
+            trackColor="rgba(0,0,0,0.06)"
+          >
+            <View className="items-center justify-center">
+              <Text className="font-bold text-5xl text-ink tracking-tight">
+                {secondsDisplay}
+              </Text>
+              <Text variant="caption" className="text-xs text-ink-muted mt-2 uppercase tracking-widest font-semibold">
+                {isRunning ? "Tensing Muscles..." : isCurrentCompleted ? "Released!" : "Seconds"}
+              </Text>
+            </View>
+          </CircularProgressTimer>
         </View>
 
         {/* Controls */}
