@@ -49,7 +49,7 @@ export const MoodSelector = React.memo<MoodSelectorProps>(
             accessibilityLabel={`Journal entry titled ${title || "Daily Reflections"}. Mood is ${currentMood.label}.`}
           >
             <View className="flex-row items-center gap-3.5">
-              <View className="h-13 w-13 items-center justify-center rounded-[18px] bg-white/60 border border-white/80 shadow-sm">
+              <View className="h-13 w-13 items-center justify-center rounded-[18px] bg-white border border-sage-200">
                 <Image
                   source={EMOTION_IMAGES[currentMood.id as EmotionType]}
                   className="w-9 h-9"

@@ -33,11 +33,13 @@ export const useCompleteOnboarding = () => {
     ): Promise<void> => {
       if (!user) return;
 
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
       const { error } = await supabase.from("user_preferences").upsert(
         {
           user_id: user.id,
           remainders: onBoardingData.cfg,
           daily_reminder_enabled: onBoardingData.reminderEnabled,
+          timezone,
         },
         { onConflict: "user_id" },
       );

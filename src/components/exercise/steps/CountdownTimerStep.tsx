@@ -4,6 +4,7 @@ import { Text } from "@/src/components/ui/Text";
 import { Button } from "@/src/components/ui/Button";
 import { StepLayout } from "./StepLayout";
 import { PsychoeducationCard } from "@/src/components/exercise/PsychoeducationCard";
+import { CircularProgressTimer } from "@/src/components/ui/CircularProgressTimer";
 import type { StepProps, TimerStepConfig } from "@/src/types/exerciseFlow";
 
 interface CountdownTimerStepProps extends StepProps {
@@ -125,40 +126,39 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
         <PsychoeducationCard content={psychoeducationText ?? ""} />
 
         <View className="flex-1 justify-center items-center">
-          {/* Circular timer display */}
-          <Pressable
-            onPress={!isRunning && !completed ? startTimer : undefined}
-            className={`w-52 h-52 rounded-full items-center justify-center mb-10 border ${
-              completed
-                ? "bg-sage-100 border-sage-500"
-                : isRunning
-                  ? "bg-blue-50 border-blue-300"
-                  : "bg-brand-surface border-brand-border active:opacity-70"
-            }`}
-          >
-            {completed ? (
-              <Text variant="display" className="text-sage-600 text-5xl">
-                ✓
-              </Text>
-            ) : (
-              <Text
-                variant="counter"
-                className="text-ink text-[48px] font-bold"
+          {/* Circular timer display with Skia fill */}
+          <View className="mb-10">
+            <CircularProgressTimer 
+              progress={completed ? 1 : progressPct} 
+              size={208}
+              color="#5f7f58" // sage-500
+              trackColor={completed ? "transparent" : "#E5E5E5"}
+            >
+              <Pressable
+                onPress={!isRunning && !completed ? startTimer : undefined}
+                className={`w-48 h-48 rounded-full items-center justify-center ${
+                  completed
+                    ? "bg-sage-100"
+                    : isRunning
+                      ? "bg-blue-50"
+                      : "bg-brand-surface active:opacity-70"
+                }`}
               >
-                {minutes}:{seconds.toString().padStart(2, "0")}
-              </Text>
-            )}
-          </Pressable>
-
-          {/* Timer progress bar */}
-          {isRunning && (
-            <View className="w-full h-3 bg-brand-border/60 rounded-full overflow-hidden mb-6">
-              <View
-                className="h-full rounded-full bg-sage-500"
-                style={{ width: `${progressPct * 100}%` }}
-              />
-            </View>
-          )}
+                {completed ? (
+                  <Text variant="display" className="text-sage-600 text-5xl">
+                    ✓
+                  </Text>
+                ) : (
+                  <Text
+                    variant="counter"
+                    className="text-ink text-[48px] font-bold"
+                  >
+                    {minutes}:{seconds.toString().padStart(2, "0")}
+                  </Text>
+                )}
+              </Pressable>
+            </CircularProgressTimer>
+          </View>
 
           {timerConfig.label && isRunning && (
             <Text variant="body" className="text-sm text-center mb-4">

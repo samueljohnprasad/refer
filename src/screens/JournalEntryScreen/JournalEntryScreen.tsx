@@ -21,7 +21,7 @@ import { useColorScheme, Share } from "react-native";
 import { FeelingsType } from "@/src/network/genAi";
 import * as Haptics from "expo-haptics";
 import { Stack, Link } from "expo-router";
-import { INK } from "@/lib/tokens";
+import { INK, BRAND_BORDER } from "@/lib/tokens";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { format, isToday, isYesterday } from "date-fns";
 import { TouchableOpacity, Text } from "react-native";
@@ -324,10 +324,10 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
               return (
                 <View className="mt-8 mb-4">
                   <Text style={{ fontFamily: "CormorantGaramond-SemiBold", fontSize: 22, color: INK, marginBottom: 12 }}>
-                    AI Summary
+                    Reflection
                   </Text>
-                  <View className="bg-white/40 p-5 rounded-3xl" style={{ borderWidth: 1, borderColor: "rgba(0,0,0,0.03)" }}>
-                    <Text style={{ fontFamily: "Geist-Regular", fontSize: 16, color: INK, opacity: 0.85, lineHeight: 24 }}>
+                  <View className="bg-white p-5 rounded-2xl" style={{ borderWidth: 1, borderColor: BRAND_BORDER }}>
+                    <Text style={{ fontFamily: "Geist-Regular", fontSize: 16, color: INK, lineHeight: 24 }}>
                       {aiData.summary}
                     </Text>
                   </View>
