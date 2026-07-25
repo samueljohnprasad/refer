@@ -1,12 +1,13 @@
 // ponytail: minimal expo-updates in-app banner for seamless OTA reloads
 import React, { useEffect, useState } from "react";
-import { View, Pressable, Platform } from "react-native";
+import { View, Pressable } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import * as Updates from "expo-updates";
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SparklesIcon } from "react-native-heroicons/solid";
 import { HapticManager } from "@/lib/haptics/HapticManager";
+import { HugeiconsIcon } from "@hugeicons/react-native";
+import { SparklesIcon } from "@hugeicons/core-free-icons";
 
 export const UpdateAvailableBanner: React.FC = () => {
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
@@ -35,7 +36,7 @@ export const UpdateAvailableBanner: React.FC = () => {
   const handleReload = async () => {
     try {
       setIsReloading(true);
-      void HapticManager.triggerImpact("heavy");
+      HapticManager.triggerSystem("notificationSuccess");
       await Updates.reloadAsync();
     } catch (e) {
       setIsReloading(false);
@@ -51,7 +52,7 @@ export const UpdateAvailableBanner: React.FC = () => {
       <SafeAreaView edges={["top"]} className="w-full">
         <View className="flex-row items-center justify-between px-5 py-2.5">
           <View className="flex-row items-center gap-2">
-            <SparklesIcon size={18} color="#FFFFFF" />
+            <HugeiconsIcon icon={SparklesIcon} size={18} color="#FFFFFF" />
             <Text className="happy-font-body-medium text-[15px] font-semibold text-white">
               Update available
             </Text>
