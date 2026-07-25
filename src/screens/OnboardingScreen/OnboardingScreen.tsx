@@ -24,6 +24,7 @@ import { ONBOARDING_STEPS } from "./constants";
 import { ScreenLayout } from "@/src/components/ui/ScreenLayout";
 
 import { LessonHeader } from "@/src/components/ui/LessonHeader";
+import { SymbolImage } from "@/src/components/symbol-image";
 import TactileButton from "./components/TactileButton";
 
 import WelcomeStep from "./steps/WelcomeStep";
@@ -565,6 +566,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
               }
               onPress={handleContinue}
               disabled={isContinueDisabled}
+              rightIcon={<SymbolImage name="arrow.up" size={18} tintColor="#FFFFFF" />}
             />
             {currentStepConfig.canSkip && (
               <TactileButton
