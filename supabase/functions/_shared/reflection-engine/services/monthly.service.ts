@@ -110,7 +110,7 @@ export class MonthlyService {
       const targetYearInt = parseInt(monthYear.slice(0, 4), 10);
       const existingWeeks = new Set((weeklyRecords || []).map((w: any) => w.week_number));
       
-      const missingWeeks: number[] = [];
+      const missingWeeksSet = new Set<number>();
       let intervalWeeks: Date[] = [];
       
       if (firstDay <= capDate) {
@@ -123,9 +123,10 @@ export class MonthlyService {
       for (const d of intervalWeeks) {
         const wk = getWeek(d);
         if (!existingWeeks.has(wk)) {
-          missingWeeks.push(wk);
+          missingWeeksSet.add(wk);
         }
       }
+      const missingWeeks = Array.from(missingWeeksSet);
 
       // Parallel generate missing weeklies
       let finalWeeklyRecords = weeklyRecords || [];
@@ -184,11 +185,30 @@ export class MonthlyService {
 
       console.log(`[monthly.service] Built context:`, JSON.stringify(context, null, 2));
 
-      // 3. Generate Reflection via AI Engine
-      console.log(`[monthly.service] Calling Gemini...`);
-      const aiResult = await reflectionEngine.generateMonthlyReflection(context);
+      // ponytail: EMPTY MONTH PROTECTION - bypass Gemini API call if no meaningful weekly data
+      const hasMeaningfulData = weeklyReflections.some(ref => 
+        ref && !ref.toLowerCase().includes("no entries recorded")
+      );
 
-      console.log(`[monthly.service] Gemini Output:`, JSON.stringify(aiResult, null, 2));
+      let aiResult;
+      
+      if (!hasMeaningfulData || weeklyReflections.length === 0) {
+        console.log(`[monthly.service] No meaningful weekly data found. Bypassing Gemini API to save costs.`);
+        aiResult = {
+          monthly_reflection: "No entries recorded for this month.",
+          insights: ["No data available to generate insights."],
+          structured_memory: {
+            core_beliefs: [],
+            recurring_themes: [],
+            unresolved_tensions: []
+          }
+        };
+      } else {
+        // 3. Generate Reflection via AI Engine
+        console.log(`[monthly.service] Calling Gemini...`);
+        aiResult = await reflectionEngine.generateMonthlyReflection(context);
+        console.log(`[monthly.service] Gemini Output:`, JSON.stringify(aiResult, null, 2));
+      }
 
       // 4. Save to monthly_ai table per migration
       const yr = parseInt(monthYear.slice(0, 4), 10);
