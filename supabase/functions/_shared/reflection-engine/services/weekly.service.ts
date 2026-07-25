@@ -3,6 +3,8 @@ import { reflectionEngine } from "../ai/reflection-engine.ts";
 import { contextBuilder } from "../ai/context-builder.ts";
 import { AIStructuredMemory } from "../ai/types.ts";
 import { DailyService } from "./daily.service.ts";
+import { toZonedTime, format } from "npm:date-fns-tz@^3.0.0";
+import { getUserTimezone } from "../../timezone.ts";
 
 interface DailyAIRecord {
   summary: string;
@@ -73,7 +75,8 @@ export class WeeklyService {
       // ponytail: auto-generate missing daily insights before weekly reflection calculation
       const existingDates = new Set((dailyAIs || []).map((d: DailyAIRecord) => d.reflection_date));
       
-      const today = new Date().toISOString().split("T")[0];
+      const userTimezone = await getUserTimezone(this.supabase, userId);
+      const today = format(toZonedTime(new Date(), userTimezone), "yyyy-MM-dd");
       const capDate = endDate < today ? endDate : today;
       
       const missingDates: string[] = [];
