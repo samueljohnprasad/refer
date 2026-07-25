@@ -4,15 +4,18 @@ interface JournalAI {
   summary: string;
 }
 
-interface Habit {
+export interface Habit {
   name: string;
   completed: boolean;
+  timestamp?: string | null;
 }
 
-interface Meal {
+export interface Meal {
   food: string;
   calories: number;
   time: string;
+  meal_type?: string | null;
+  timestamp?: string | null;
 }
 
 interface CBT {
@@ -42,8 +45,8 @@ export class ContextBuilder {
     return {
       date,
       journalReflections: journalAIs.map(j => j.summary),
-      habits: habits.map(h => ({ name: h.name, completed: h.completed })),
-      meals: meals.map(m => ({ food: m.food, calories: m.calories, time: m.time })),
+      habits: habits.map(h => ({ name: h.name, completed: h.completed, timestamp: h.timestamp })),
+      meals: meals.map(m => ({ food: m.food, calories: m.calories, time: m.time, meal_type: m.meal_type, timestamp: m.timestamp })),
       cbt: cbt.map(c => ({ type: c.type, reflection: c.reflection })),
       moods: moods.map(m => ({ main_mood: m.main_mood, mood_score: m.mood_score, time: m.time })),
       priorReflection,

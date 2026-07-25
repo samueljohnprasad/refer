@@ -1,21 +1,10 @@
 import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { reflectionEngine } from "../ai/reflection-engine.ts";
-import { contextBuilder } from "../ai/context-builder.ts";
+import { contextBuilder, Habit, Meal } from "../ai/context-builder.ts";
 import { getUserUtcDateRange } from "../../timezone.ts";
 
 interface JournalAI {
   summary: string;
-}
-
-interface Habit {
-  name: string;
-  completed: boolean;
-}
-
-interface Meal {
-  food: string;
-  calories: number;
-  time: string;
 }
 
 interface CBT {
@@ -133,13 +122,13 @@ export class DailyService {
       });
 
       // 2. Build the context string
-      const dailyHabits = (habits || []).map(
+      const dailyHabits: Habit[] = (habits || []).map(
         // @ts-ignore - Supabase join typing // ponytail: handle habit completion join mapping
-        (h: any) => ({ name: h.habits?.name || "Unknown Habit", completed: true, timestamp: h.completed_at })
+        (h) => ({ name: h.habits?.name || "Unknown Habit", completed: true, timestamp: h.completed_at })
       );
-      const dailyMeals = (meals || []).map(
+      const dailyMeals: Meal[] = (meals || []).map(
         // ponytail: map calorie entries to daily meals context
-        (m: any) => ({ food: m.foods, calories: m.total_calories, meal_type: m.meal_type, time: m.selected_date, timestamp: m.selected_date })
+        (m) => ({ food: m.foods, calories: m.total_calories, meal_type: m.meal_type, time: m.selected_date, timestamp: m.selected_date })
       );
 
       const formattedMoods = (moods || []).map((m: any) => {
@@ -159,8 +148,8 @@ export class DailyService {
       const context = contextBuilder.buildDailyContext(
         date,
         (journalAIs || []) as JournalAI[],
-        dailyHabits as any,
-        dailyMeals as any,
+        dailyHabits,
+        dailyMeals,
         cbtContext,
         formattedMoods,
         priorReflection,
