@@ -566,7 +566,11 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
               }
               onPress={handleContinue}
               disabled={isContinueDisabled}
-              rightIcon={<SymbolImage name="arrow.up" size={18} tintColor="#FFFFFF" />}
+              rightIcon={
+                currentStepConfig.name === "welcome" ? (
+                  <SymbolImage name="arrow.up" size={18} tintColor="#FFFFFF" />
+                ) : undefined
+              }
             />
             {currentStepConfig.canSkip && (
               <TactileButton
