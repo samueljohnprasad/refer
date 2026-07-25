@@ -10,22 +10,14 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { SparklesIcon } from "@hugeicons/core-free-icons";
 
 export const UpdateAvailableBanner: React.FC = () => {
-  // Catch hook natively throwing in missing environments
-  let updatesCtx = { isUpdateAvailable: false, isUpdatePending: false };
-  try {
-    updatesCtx = Updates.useUpdates();
-  } catch (e) {
-    // Missing native module
-  }
-
-  const { isUpdateAvailable, isUpdatePending } = updatesCtx;
+  const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
   const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     // Auto-reload once successfully downloaded
     if (isUpdatePending) {
       HapticManager.triggerSystem("notificationSuccess");
-      Updates.reloadAsync().catch(() => {});
+      Updates.reloadAsync();
     }
   }, [isUpdatePending]);
 
@@ -33,11 +25,8 @@ export const UpdateAvailableBanner: React.FC = () => {
 
   const handleDownload = async () => {
     setIsDownloading(true);
-    try {
-      await Updates.fetchUpdateAsync();
-    } catch (e) {
-      setIsDownloading(false);
-    }
+    await Updates.fetchUpdateAsync();
+    setIsDownloading(false);
   };
 
   return (
