@@ -23,7 +23,7 @@ import RevenueCatProvider from "@/src/context/RevenueCatProvider";
 import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
 import { FloatingHappyAssistant } from "@/src/components/happy-assistant/FloatingHappyAssistant";
 import { TransitionOverlay } from "@/src/components/TransitionOverlay";
-import { UpdateAvailableBanner } from "@/src/components/UpdateAvailableBanner";
+import UpdateAvailableBanner from "@/src/components/UpdateAvailableBanner";
 import {
   CormorantGaramond_300Light,
   CormorantGaramond_400Regular,
