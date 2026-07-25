@@ -505,9 +505,9 @@ function JumpBackInShelf({
   const { recentIds } = useRecentExercises();
 
   // Map IDs to actual exercise config objects
-  // If no recents, default to box breathing and PMR
+  // Pad with defaults if fewer than 2 recent exercises
   const defaultIds = ["breathing-box", "pmr"];
-  const displayIds = recentIds.length > 0 ? recentIds.slice(0, 2) : defaultIds;
+  const displayIds = Array.from(new Set([...recentIds, ...defaultIds])).slice(0, 2);
 
   const items = displayIds
     .map((id) => exercises.find((ex) => ex.type === id))

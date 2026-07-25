@@ -1,5 +1,6 @@
 // ponytail: simple async storage list for recent exercises (max 5)
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = '@recent_exercises';
@@ -24,25 +25,27 @@ export const trackRecentExercise = async (exerciseId: string): Promise<void> => 
 };
 
 /**
- * Hook to read recent exercise IDs from storage on mount
+ * Hook to read recent exercise IDs from storage on screen focus
  */
 export const useRecentExercises = (): { recentIds: string[] } => {
   const [recentIds, setRecentIds] = useState<string[]>([]);
 
-  useEffect(() => {
-    const fetchRecent = async (): Promise<void> => {
-      try {
-        const json = await AsyncStorage.getItem(STORAGE_KEY);
-        if (json) {
-          setRecentIds(JSON.parse(json));
+  useFocusEffect(
+    useCallback(() => {
+      const fetchRecent = async (): Promise<void> => {
+        try {
+          const json = await AsyncStorage.getItem(STORAGE_KEY);
+          if (json) {
+            setRecentIds(JSON.parse(json));
+          }
+        } catch (error) {
+          console.error('Failed to fetch recent exercises:', error);
         }
-      } catch (error) {
-        console.error('Failed to fetch recent exercises:', error);
-      }
-    };
-    
-    fetchRecent();
-  }, []);
+      };
+      
+      fetchRecent();
+    }, [])
+  );
 
   return { recentIds };
 };
