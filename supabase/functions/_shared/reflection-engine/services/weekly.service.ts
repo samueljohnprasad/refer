@@ -3,7 +3,8 @@ import { reflectionEngine } from "../ai/reflection-engine.ts";
 import { contextBuilder } from "../ai/context-builder.ts";
 import { AIStructuredMemory } from "../ai/types.ts";
 import { DailyService } from "./daily.service.ts";
-import { toZonedTime, format } from "npm:date-fns-tz@^3.0.0";
+import { toZonedTime, format as formatTz } from "npm:date-fns-tz@^3.0.0";
+import { format, setWeek, setYear, startOfWeek, endOfWeek, subWeeks, eachDayOfInterval } from "npm:date-fns@^4.1.0";
 import { getUserTimezone } from "../../timezone.ts";
 
 interface DailyAIRecord {
@@ -14,15 +15,6 @@ interface DailyAIRecord {
 
 interface WeeklySummaryRecord {
   summary: string;
-}
-
-/**
- * Computes the date 7 days before the given date string.
- */
-function priorWeekStart(dateStr: string): string {
-  const d = new Date(dateStr);
-  d.setDate(d.getDate() - 7);
-  return d.toISOString().split("T")[0];
 }
 
 export class WeeklyService {
@@ -36,11 +28,10 @@ export class WeeklyService {
     week_index: number, // strictly numeric week number (e.g. 28)
     year: number,       // strictly numeric year (e.g. 2026)
   ): Promise<unknown> {
-    // ponytail: derive Monday-Sunday dates from numeric year and week_index
-    const d = new Date(Date.UTC(year, 0, 4 + (week_index - 1) * 7));
-    d.setUTCDate(d.getUTCDate() - (d.getUTCDay() || 7) + 1);
-    const startDate = d.toISOString().slice(0, 10);
-    const endDate = new Date(d.getTime() + 5184e5).toISOString().slice(0, 10);
+    // ponytail: derive Sunday-Saturday dates using date-fns
+    const baseDate = setWeek(setYear(new Date(Date.UTC(year, 0, 1)), year), week_index);
+    const startDate = format(startOfWeek(baseDate), "yyyy-MM-dd");
+    const endDate = format(endOfWeek(baseDate), "yyyy-MM-dd");
 
     try {
 
@@ -48,8 +39,8 @@ export class WeeklyService {
         `Starting Weekly AI reflection for user: ${userId} week_index: ${week_index} year: ${year} (${startDate} to ${endDate})`,
       );
 
-      const priorStart = priorWeekStart(startDate);
-      const priorEnd = priorWeekStart(endDate);
+      const priorStart = format(subWeeks(new Date(`${startDate}T00:00:00.000Z`), 1), "yyyy-MM-dd");
+      const priorEnd = format(subWeeks(new Date(`${endDate}T00:00:00.000Z`), 1), "yyyy-MM-dd");
 
       // 1. Fetch daily reflections for the week + prior week summary for comparison
       let [
@@ -76,19 +67,20 @@ export class WeeklyService {
       const existingDates = new Set((dailyAIs || []).map((d: DailyAIRecord) => d.reflection_date));
       
       const userTimezone = await getUserTimezone(this.supabase, userId);
-      const today = format(toZonedTime(new Date(), userTimezone), "yyyy-MM-dd");
+      const today = formatTz(toZonedTime(new Date(), userTimezone), "yyyy-MM-dd");
       const capDate = endDate < today ? endDate : today;
       
       const missingDates: string[] = [];
-      let currentDate = new Date(`${startDate}T00:00:00.000Z`);
-      const cap = new Date(`${capDate}T00:00:00.000Z`);
+      const intervalDates = eachDayOfInterval({
+        start: new Date(`${startDate}T00:00:00.000Z`),
+        end: new Date(`${capDate}T00:00:00.000Z`)
+      });
       
-      while (currentDate <= cap) {
-        const dStr = currentDate.toISOString().split("T")[0];
+      for (const d of intervalDates) {
+        const dStr = format(d, "yyyy-MM-dd");
         if (!existingDates.has(dStr)) {
           missingDates.push(dStr);
         }
-        currentDate.setUTCDate(currentDate.getUTCDate() + 1);
       }
 
       if (missingDates.length > 0) {
