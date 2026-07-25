@@ -10,12 +10,7 @@ dayjs.extend(duration);
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, Platform } from "react-native";
 import { ExtensionStorage } from "@bacons/apple-targets";
-import {
-  Toast,
-  ToastDescription,
-  ToastTitle,
-  useToast,
-} from "@/components/ui/toast";
+import { useToast } from "heroui-native";
 import { useDailyStreak } from "./useDailyStreak";
 
 type MoodEnum = Database["public"]["Enums"]["mood"];
@@ -125,7 +120,7 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const dateStr = format(selectedDate, "yyyy-MM-dd");
-  const toast = useToast();
+  const { toast } = useToast();
   const { logStreakIfNeeded } = useDailyStreak();
 
   const COOLDOWN_MS: number = 30 * 60 * 1000; // 30 minutes
@@ -220,12 +215,9 @@ export function useEmotionLogger(selectedDate: Date = new Date()) {
 
         toast.show({
           placement: "top",
-          render: ({ id }) => (
-            <Toast nativeID={id} variant="solid" action="warning">
-              <ToastTitle>Please wait</ToastTitle>
-              <ToastDescription>{`You can log another mood in ${timeLeft}.`}</ToastDescription>
-            </Toast>
-          ),
+          variant: "warning",
+          label: "Please wait",
+          description: `You can log another mood in ${timeLeft}.`,
         });
         return;
       }

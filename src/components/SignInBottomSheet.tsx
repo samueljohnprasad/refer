@@ -1,6 +1,6 @@
 import { View, Modal } from "react-native";
 import { useRouter } from "expo-router";
-import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
+import { useToast } from "heroui-native";
 import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
 import { useAuth, type AuthProviderId } from "@/src/context/AuthContext";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
@@ -42,7 +42,7 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
   showSkipButton = false,
 }, ref) => {
   const router = useRouter();
-  const toast = useToast();
+  const { toast } = useToast();
   const {
     session,
     isAnonymous,
@@ -86,23 +86,17 @@ export default forwardRef<SignInBottomSheetHandle, SignInBottomSheetProps>(({
 
   const showError = (message: string): void => {
     toast.show({
-      placement: "bottom right",
-      render: ({ id }) => (
-        <Toast nativeID={id} variant="solid" action="error">
-          <ToastTitle>{message}</ToastTitle>
-        </Toast>
-      ),
+      placement: "bottom",
+      variant: "danger",
+      label: message,
     });
   };
 
   const showSuccess = (message: string): void => {
     toast.show({
-      placement: "bottom right",
-      render: ({ id }) => (
-        <Toast nativeID={id} variant="solid" action="success">
-          <ToastTitle>{message}</ToastTitle>
-        </Toast>
-      ),
+      placement: "bottom",
+      variant: "success",
+      label: message,
     });
   };
 

@@ -84,6 +84,14 @@ ${outputSchema}
 ${language}
 
 ${levelPrompt}
+
+### CONTEXT DATA
+\`\`\`json
+{{CONTEXT}}
+\`\`\`
+
+### PRIOR REFLECTION
+{{PRIOR_REFLECTION}}
 `.trim();
 
     promptCache.set(level, assembled);

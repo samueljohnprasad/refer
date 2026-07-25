@@ -142,9 +142,25 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const router = useRouter();
   const exerciseType = config.type;
   const isConfirmedExitRef = useRef(false);
-
   // ─── Flow state ───────────────────────────────────────────────────
   const flow = useExerciseFlow(config as ExerciseConfig<any>, existingEntry, readOnly);
+
+  const [primaryOverrideState, setPrimaryOverrideState] = React.useState<{
+    stepIndex: number;
+    override: { label: string; action: () => void; disabled: boolean } | null;
+  } | null>(null);
+
+  const setPrimaryOverride = React.useCallback(
+    (override: { label: string; action: () => void; disabled: boolean } | null) => {
+      setPrimaryOverrideState({ stepIndex: flow.currentStepIndex, override });
+    },
+    [flow.currentStepIndex]
+  );
+
+  const primaryOverride =
+    primaryOverrideState?.stepIndex === flow.currentStepIndex
+      ? primaryOverrideState.override
+      : null;
 
   // ─── Mutation ─────────────────────────────────────────────────────
   const { save, isSaving } = useExerciseMutation();
@@ -304,6 +320,7 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       isSaving,
       readOnly,
       autoFocus: currentStep?.autoFocus ?? !readOnly,
+      setPrimaryOverride,
     }),
     [
       flow,
@@ -329,7 +346,11 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
   const primaryLabel = currentStep?.nextLabel || (isFinalStep ? "Finish" : "Continue");
   
   // In readOnly mode, the primary button is always "Done" and just closes the screen
-  const onPrimaryPress = readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext;
+  const defaultPrimaryPress = readOnly ? handleClose : isFinalStep ? handleSave : flow.goNext;
+  
+  const finalPrimaryLabel = primaryOverride ? primaryOverride.label : (readOnly ? "Done" : primaryLabel);
+  const finalPrimaryPress = primaryOverride ? primaryOverride.action : defaultPrimaryPress;
+  const finalPrimaryDisabled = primaryOverride ? primaryOverride.disabled : (!flow.isCurrentStepValid || isSaving);
 
   return (
     <LessonScreen
@@ -340,9 +361,9 @@ const ResolvedExerciseFlowScreen: React.FC<ResolvedExerciseFlowScreenProps> = ({
       progress={flow.progress}
       onClose={handleClose}
       backButtonVariant="close-icon"
-      primaryLabel={readOnly ? "Done" : primaryLabel}
-      onPrimaryPress={onPrimaryPress}
-      primaryDisabled={!flow.isCurrentStepValid || isSaving}
+      primaryLabel={finalPrimaryLabel}
+      onPrimaryPress={finalPrimaryPress}
+      primaryDisabled={finalPrimaryDisabled}
       primaryLoading={isSaving}
       primaryRightIcon={
         isFinalStep && !isSaving ? (

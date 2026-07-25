@@ -112,6 +112,9 @@ export const CopingCardsScreen: React.FC = () => {
           headerTransparent: true,
         }}
       />
+      <Stack.Toolbar placement="left">
+        <Stack.Toolbar.Button icon="chevron.left" onPress={() => router.back()} />
+      </Stack.Toolbar>
 
         {!isLoading &&
         !isError &&

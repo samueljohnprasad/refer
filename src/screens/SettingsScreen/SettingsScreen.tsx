@@ -12,6 +12,7 @@ import Constants from "expo-constants";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
+import { useToast } from "heroui-native";
 import {
   AlertSquareIcon,
   Delete02Icon,
@@ -55,6 +56,7 @@ export default function SettingsScreen() {
   const signInSheetRef = React.useRef<BottomSheetModal>(null);
   const { customerInfo, hasPro, isLoadingRevenueCat, presentPaywall } =
     useRevenueCat();
+  const { toast } = useToast();
 
   const {
     isSignoutOPen,
@@ -121,7 +123,7 @@ export default function SettingsScreen() {
           {/* Promo Card */}
           {!hasPro && (
             <PromoCard
-              onPromoPress={presentPaywall}
+              onPromoPress={() => router.push("/paywall")}
               onLayout={(e) => setUpgradeY(e.nativeEvent.layout.y)}
             />
           )}
@@ -292,6 +294,20 @@ export default function SettingsScreen() {
                   Haptics.selectionAsync();
                   router.push("/tabs/screens/test-charts" as any);
                 }}
+              />
+              <SettingsItem
+                icon={Notification01Icon}
+                title="Test Toast Notifications"
+                subtitle="Trigger a sample toast"
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  toast.show({
+                    variant: "success",
+                    label: "Toast is working!",
+                    description: "If you see this, the toast provider is correctly configured.",
+                  });
+                }}
+                showArrow={false}
               />
             </SettingsSection>
           )}

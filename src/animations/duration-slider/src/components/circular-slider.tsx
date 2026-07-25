@@ -61,7 +61,7 @@ export const CircularSlider: React.FC<CircularSliderProps> = ({
     let theta = Math.atan2(y, x) + initialAngleRad;
     if (theta < 0) theta += 2 * Math.PI;
     return theta / (2 * Math.PI);
-  }, [translateX.value, translateY.value]);
+  });
 
   // Create circle path for clipping
   const circlePath = useMemo(() => {
@@ -73,16 +73,16 @@ export const CircularSlider: React.FC<CircularSliderProps> = ({
   // Calculate and format the current value
   const animatedValue = useDerivedValue(() => {
     return Math.min(Math.round(progress.value * maxVal) + minVal, maxVal);
-  }, [progress.value]);
+  });
 
   const currentTextValue = useDerivedValue(() => {
     return animatedValue.value.toString();
-  }, [animatedValue.value]);
+  });
 
   // Calculate text position
   const textPositionX = useDerivedValue(() => {
     return cx - font.measureText(currentTextValue.value).width / 2 - 2;
-  }, [font, cx]);
+  });
 
   // Trigger onValueChange callback when value changes
   useAnimatedReaction(

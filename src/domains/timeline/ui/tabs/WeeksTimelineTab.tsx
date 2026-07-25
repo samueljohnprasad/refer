@@ -10,7 +10,7 @@ import * as Haptics from 'expo-haptics';
 import { useHeaderHeight } from 'expo-router/react-navigation';
 import type { TimelineSection } from '@/src/components/ui/Timeline/types';
 import type { WeeklyTimelineItem, TimelineTabProps } from '../../model/timeline.types';
-import { MOCK_WEEKS_TIMELINE_DATA } from './mockData';
+
 
 export const WeeksTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const headerHeight = useHeaderHeight();
@@ -39,28 +39,33 @@ export const WeeksTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     }
   };
 
-  const displayData = data?.pages ? data.pages.flatMap(p => p.data) : (isError ? MOCK_WEEKS_TIMELINE_DATA : []);
+  const displayData = data?.pages ? data.pages.flatMap(p => p.data) : [];
 
   const sections: TimelineSection<WeeklyTimelineItem>[] = useMemo(() => {
     return displayData.map((item: any) => {
       const year = parseInt(item.date.substring(0, 4));
       const week = parseInt(item.date.substring(6));
-      const ms = new Date(year, 0, 1 + (week - 1) * 7).getTime();
+      
+      const jan4 = new Date(year, 0, 4);
+      let jan4Day = jan4.getDay();
+      if (jan4Day === 0) jan4Day = 7;
+      const startOfWeek1 = new Date(year, 0, 4 - (jan4Day - 1));
+      
+      const sDate = new Date(startOfWeek1.getTime() + (week - 1) * 7 * 86400000);
+      const eDate = new Date(sDate.getTime() + 6 * 86400000);
+      
+      const ms = sDate.getTime();
+      
+      const sMonth = sDate.toLocaleString('default', { month: 'short' }).toUpperCase();
+      const eMonth = eDate.toLocaleString('default', { month: 'short' }).toUpperCase();
+      const sDay = sDate.getDate();
+      const eDay = eDate.getDate();
       
       let title = `W${week} ${year}`;
-      if (item.start_date && item.end_date) {
-        const sDate = new Date(item.start_date);
-        const eDate = new Date(item.end_date);
-        const sMonth = sDate.toLocaleString('default', { month: 'short' }).toUpperCase();
-        const eMonth = eDate.toLocaleString('default', { month: 'short' }).toUpperCase();
-        const sDay = sDate.getDate();
-        const eDay = eDate.getDate();
-        
-        if (sMonth === eMonth) {
-          title = `${sMonth} ${sDay}-${eDay}, ${year}`;
-        } else {
-          title = `${sMonth} ${sDay} - ${eMonth} ${eDay}, ${year}`;
-        }
+      if (sMonth === eMonth) {
+        title = `${sMonth} ${sDay}-${eDay}, ${year}`;
+      } else {
+        title = `${sMonth} ${sDay} - ${eMonth} ${eDay}, ${year}`;
       }
       
       return {

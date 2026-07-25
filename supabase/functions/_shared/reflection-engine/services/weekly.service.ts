@@ -9,7 +9,7 @@ interface DailyAIRecord {
 }
 
 interface WeeklySummaryRecord {
-  weekly_summary: { summary?: string } | null;
+  summary: string;
 }
 
 /**
@@ -32,12 +32,13 @@ export class WeeklyService {
     week_index: number, // strictly numeric week number (e.g. 28)
     year: number,       // strictly numeric year (e.g. 2026)
   ): Promise<unknown> {
+    // ponytail: derive Monday-Sunday dates from numeric year and week_index
+    const d = new Date(Date.UTC(year, 0, 4 + (week_index - 1) * 7));
+    d.setUTCDate(d.getUTCDate() - (d.getUTCDay() || 7) + 1);
+    const startDate = d.toISOString().slice(0, 10);
+    const endDate = new Date(d.getTime() + 5184e5).toISOString().slice(0, 10);
+
     try {
-      // ponytail: derive Monday-Sunday dates from numeric year and week_index
-      const d = new Date(Date.UTC(year, 0, 4 + (week_index - 1) * 7));
-      d.setUTCDate(d.getUTCDate() - (d.getUTCDay() || 7) + 1);
-      const startDate = d.toISOString().slice(0, 10);
-      const endDate = new Date(d.getTime() + 5184e5).toISOString().slice(0, 10);
 
       console.log(
         `Starting Weekly AI reflection for user: ${userId} week_index: ${week_index} year: ${year} (${startDate} to ${endDate})`,
@@ -67,6 +68,11 @@ export class WeeklyService {
           .maybeSingle(),
       ]);
 
+      console.log(`[weekly.service] Fetched data for ${startDate} to ${endDate}:`, {
+        dailyCount: dailyAIs?.length || 0,
+        hasPriorWeekly: !!priorWeekly
+      });
+
       const dailyReflections = (dailyAIs || [] as DailyAIRecord[]).map(d => d.summary);
       const dailyMemories = (dailyAIs || [] as DailyAIRecord[]).map(d => d.structured_memory);
       const priorReflection = (priorWeekly as WeeklySummaryRecord | null)?.summary || null;
@@ -80,8 +86,13 @@ export class WeeklyService {
         priorReflection,
       );
 
+      console.log(`[weekly.service] Built context:`, JSON.stringify(context, null, 2));
+
       // 3. Generate Reflection via AI Engine
+      console.log(`[weekly.service] Calling Gemini...`);
       const aiResult = await reflectionEngine.generateWeeklyReflection(context);
+
+      console.log(`[weekly.service] Gemini Output:`, JSON.stringify(aiResult, null, 2));
 
       // 4. Save to weekly_ai table (per 20260714223800_ai_reflection_tables.sql)
       const { data, error } = await this.supabase

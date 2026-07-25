@@ -7,8 +7,7 @@ export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(tabs)",
 };
-import { enableScreens } from "react-native-screens";
-enableScreens(true);
+
 
 import { Stack, useRouter } from "expo-router";
 import { isLiquidGlassAvailable, GlassView } from "expo-glass-effect";
@@ -44,7 +43,7 @@ export default function AppLayout() {
       <Stack.Screen name="screens/(settings)" options={{ headerShown: false }} />
       <Stack.Screen name="screens/(recording)" options={{ headerShown: false }} />
       <Stack.Screen name="screens/(journey)" options={{ headerShown: false }} />
-      <Stack.Screen name="screens/(exercises)" options={{ headerShown: false }} />
+      <Stack.Screen name="screens/(exercises)" options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="screens/(gamification)" options={{ headerShown: false }} />
       <Stack.Screen name="screens/(tracking)" options={{ headerShown: false }} />
       <Stack.Screen name="screens/(onboarding)" options={{ headerShown: false }} />

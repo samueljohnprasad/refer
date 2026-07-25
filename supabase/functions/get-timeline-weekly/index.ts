@@ -47,51 +47,50 @@ Deno.serve(async (req: Request) => {
     const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
     const offset = (page - 1) * pageSize;
     
-    console.log(`[get-timeline-weekly] User: ${user.id} | Page: ${page}, PageSize: ${pageSize}, Offset: ${offset}`);
+    console.log(`[get-timeline-weekly] === START REQUEST ===`);
+    console.log(`[get-timeline-weekly] Params -> User: ${user.id} | Page: ${page} | PageSize: ${pageSize} | Offset: ${offset}`);
 
-    // 1. Fetch paginated journals to determine the weeks we are looking at
-    const { data: journals, error: journalsError } = await supabaseClient
-      .from('journal_records')
-      .select('id, selected_date, title')
-      .eq('user_id', user.id)
-      .order('selected_date', { ascending: false })
-      .range(offset, offset + pageSize - 1);
+    // 1. Fetch paginated unique journal weeks using RPC
+    console.log(`[get-timeline-weekly] Executing RPC 'get_unique_journal_weeks' with offset ${offset}, limit ${pageSize}...`);
+    const { data: allWeeks, error: weeksError } = await supabaseClient
+      .rpc('get_unique_journal_weeks', {
+        p_user_id: user.id,
+        p_limit: pageSize,
+        p_offset: offset
+      });
 
-    if (journalsError) throw journalsError;
-    
-    console.log(`[get-timeline-weekly] Found ${journals?.length || 0} journals in range.`);
-
-    function getISOWeekInfo(dateString: string) {
-      const date = new Date(dateString);
-      const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-      const dayNum = d.getUTCDay() || 7;
-      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-      const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
-      return { year: d.getUTCFullYear(), week: weekNo };
+    if (weeksError) {
+      console.error(`[get-timeline-weekly] RPC Error:`, weeksError);
+      throw weeksError;
     }
+    
+    // Check if we hit the limit to determine hasMore
+    const hasMore = (allWeeks || []).length === pageSize;
+    
+    console.log(`[get-timeline-weekly] RPC returned ${(allWeeks || []).length} rows. hasMore set to: ${hasMore}`);
+    console.log(`[get-timeline-weekly] Raw RPC data:`, JSON.stringify(allWeeks));
 
-    // Extract unique weeks from the fetched journals
+    // Extract unique weeks from the fetched data
     const uniqueWeeks = new Map<string, { year: number, week: number }>();
     
-    journals?.forEach(j => {
-      if (!j.selected_date) return;
-      const { year, week } = getISOWeekInfo(j.selected_date);
+    (allWeeks || []).forEach((w: any) => {
+      const year = w.iso_year;
+      const week = w.iso_week;
       const weekKey = `${year}-W${week < 10 ? '0' + week : week}`;
-      if (!uniqueWeeks.has(weekKey)) {
-        uniqueWeeks.set(weekKey, { year, week });
-      }
+      uniqueWeeks.set(weekKey, { year, week });
     });
 
     const uniqueWeekKeys = Array.from(uniqueWeeks.keys());
+    console.log(`[get-timeline-weekly] Parsed unique week keys:`, JSON.stringify(uniqueWeekKeys));
 
     // 2. Fetch AI Insights ONLY for those specific weeks
     let aiInsights: any[] = [];
     if (uniqueWeekKeys.length > 0) {
-      console.log(`[get-timeline-weekly] Fetching weekly_ai for weeks:`, uniqueWeekKeys);
+      console.log(`[get-timeline-weekly] Fetching weekly_ai table for weeks:`, uniqueWeekKeys);
       
       // Since we can't easily query by a list of (year, week) tuples, we can query by the years and then filter in memory
       const years = Array.from(new Set(Array.from(uniqueWeeks.values()).map(w => w.year)));
+      console.log(`[get-timeline-weekly] Querying weekly_ai for years in:`, years);
       
       const { data, error: aiError } = await supabaseClient
         .from('weekly_ai')
@@ -99,16 +98,22 @@ Deno.serve(async (req: Request) => {
         .eq('user_id', user.id)
         .in('year', years);
 
-      if (aiError) throw aiError;
+      if (aiError) {
+        console.error(`[get-timeline-weekly] weekly_ai query error:`, aiError);
+        throw aiError;
+      }
+      
+      console.log(`[get-timeline-weekly] Raw weekly_ai rows fetched: ${data?.length || 0}`);
       
       // Filter the data to only include the weeks we asked for
       aiInsights = (data || []).filter(insight => {
         const weekKey = `${insight.year}-W${insight.week_number < 10 ? '0' + insight.week_number : insight.week_number}`;
         return uniqueWeeks.has(weekKey);
       });
-      console.log(`[get-timeline-weekly] Found ${aiInsights.length} ai insights.`);
+      console.log(`[get-timeline-weekly] Filtered to ${aiInsights.length} relevant ai insights matching our unique weeks.`);
+      console.log(`[get-timeline-weekly] Matching AI insights mapping:`, JSON.stringify(aiInsights.map(a => `${a.year}-W${a.week_number}`)));
     } else {
-      console.log(`[get-timeline-weekly] No unique weeks to fetch ai insights for.`);
+      console.log(`[get-timeline-weekly] No unique weeks to fetch ai insights for. Skipping query.`);
     }
 
     // Build the timeline array mapped by week
@@ -124,12 +129,16 @@ Deno.serve(async (req: Request) => {
     });
 
     // Populate AI insights
+    let populatedCount = 0;
     aiInsights.forEach((insight) => {
       const weekKey = `${insight.year}-W${insight.week_number < 10 ? '0' + insight.week_number : insight.week_number}`;
       if (timelineMap.has(weekKey)) {
         timelineMap.get(weekKey).aiInsight = insight;
+        populatedCount++;
       }
     });
+    
+    console.log(`[get-timeline-weekly] Populated ${populatedCount} timeline entries with AI insights.`);
 
     // Convert map to sorted array (newest first)
     const timeline = Array.from(timelineMap.values()).sort((a, b) => {
@@ -137,10 +146,14 @@ Deno.serve(async (req: Request) => {
       return b.date.localeCompare(a.date);
     });
     
-    console.log(`[get-timeline-weekly] Returning ${timeline.length} timeline entries.`);
+    console.log(`[get-timeline-weekly] === END REQUEST === Returning ${timeline.length} sorted timeline entries.`);
 
     return new Response(
-      JSON.stringify({ success: true, data: timeline }),
+      JSON.stringify({ 
+        success: true, 
+        data: timeline,
+        hasMore: hasMore
+      }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     );
   } catch (error: any) {

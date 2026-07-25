@@ -9,12 +9,7 @@ import { recorderOpenAtom } from "@/src/screens/DiscoveryScreen/helpers";
 import { useAtom } from "jotai";
 import { JournalEntry } from "./data/types";
 import { getAudioDuration } from "@/src/utils/date";
-import {
-  useToast,
-  Toast,
-  ToastTitle,
-  ToastDescription,
-} from "@/components/ui/toast";
+import { useToast } from "heroui-native";
 
 export type AnalysisCompletedType = {
   insights: JournalEntry;
@@ -39,7 +34,7 @@ const useEmotionsAnalysis = ({
   onAnalysisError,
 }: UseEmotionsAnalysisProps) => {
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
-  const toast = useToast();
+  const { toast } = useToast();
 
   const [processingPhase, setProcessingPhase] = React.useState<ProcessingPhase>(
     ProcessingPhase.TRANSCRIBING
@@ -135,16 +130,9 @@ const useEmotionsAnalysis = ({
           // Show toast notification
           toast.show({
             placement: "top",
-            render: ({ id }) => (
-              <Toast nativeID={id} variant="solid" action="error">
-                <ToastTitle>
-                  {error.isNetworkError
-                    ? "Connection Error"
-                    : "Processing Error"}
-                </ToastTitle>
-                <ToastDescription>{error.message}</ToastDescription>
-              </Toast>
-            ),
+            variant: "danger",
+            label: error.isNetworkError ? "Connection Error" : "Processing Error",
+            description: error.message,
           });
         } else {
           // Handle unexpected errors
@@ -160,12 +148,9 @@ const useEmotionsAnalysis = ({
 
           toast.show({
             placement: "top",
-            render: ({ id }) => (
-              <Toast nativeID={id} variant="solid" action="error">
-                <ToastTitle>Error</ToastTitle>
-                <ToastDescription>{errorMessage}</ToastDescription>
-              </Toast>
-            ),
+            variant: "danger",
+            label: "Error",
+            description: errorMessage,
           });
         }
       }

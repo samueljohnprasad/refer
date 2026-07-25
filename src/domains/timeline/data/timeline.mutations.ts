@@ -28,7 +28,7 @@ export function useGenerateMonthlyInsight() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ date }: { date: string }) => timelineRepo.generateMonthlyInsight(date),
+    mutationFn: ({ month, year }: { month: number; year: number }) => timelineRepo.generateMonthlyInsight(month, year),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: timelineKeys.all });
     },

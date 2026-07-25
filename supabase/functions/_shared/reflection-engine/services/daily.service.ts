@@ -3,7 +3,7 @@ import { reflectionEngine } from "../ai/reflection-engine.ts";
 import { contextBuilder } from "../ai/context-builder.ts";
 
 interface JournalAI {
-  reflection: string;
+  summary: string;
 }
 
 interface Habit {
@@ -47,23 +47,47 @@ export class DailyService {
       yesterday.setDate(yesterday.getDate() - 1);
       const yesterdayStr = yesterday.toISOString().split("T")[0];
 
+      // Define reusable date range for queries
+      const startOfDay = `${date}T00:00:00Z`;
+      const endOfDay = `${date}T23:59:59Z`;
+
       // 1. Fetch data from DB (parallel)
       const [
-        { data: journalAIs },
+        { data: journalRecords },
         { data: habits },
         { data: meals },
-        { data: cbt },
+        { data: exercises },
+        { data: moods },
         { data: priorDaily },
       ] = await Promise.all([
         this.supabase
-          .from("journal_ai")
+          .from("journal_records")
+          .select("id")
+          .eq("user_id", userId)
+          .gte("selected_date", startOfDay)
+          .lte("selected_date", endOfDay),
+        this.supabase
+          .from("habits")
           .select("*")
           .eq("user_id", userId)
-          .gte("created_at", `${date}T00:00:00Z`)
-          .lte("created_at", `${date}T23:59:59Z`),
-        this.supabase.from("habits").select("*").eq("user_id", userId).eq("date", date),
-        this.supabase.from("meals").select("*").eq("user_id", userId).eq("date", date),
-        this.supabase.from("cbt_logs").select("*").eq("user_id", userId).eq("date", date),
+          .eq("date", date),
+        this.supabase
+          .from("meals")
+          .select("*")
+          .eq("user_id", userId)
+          .eq("date", date),
+        this.supabase
+          .from("exercise_entries")
+          .select("*")
+          .eq("user_id", userId)
+          .gte("created_at", startOfDay)
+          .lte("created_at", endOfDay),
+        this.supabase
+          .from("moods")
+          .select("main_mood, mood_score, selected_date")
+          .eq("user_id", userId)
+          .gte("selected_date", startOfDay)
+          .lte("selected_date", endOfDay),
         this.supabase
           .from("daily_ai")
           .select("summary")
@@ -72,20 +96,71 @@ export class DailyService {
           .maybeSingle(),
       ]);
 
+
       const priorReflection = (priorDaily as DailyAIRecord | null)?.summary;
 
+      // Combine all exercise types into the CBT context array
+      const cbtContext: CBT[] = [
+        ...(exercises || []).map((c: any) => ({ type: c.exercise_type, reflection: JSON.stringify(c.response) })),
+      ];
+
+      // 1.5 Fetch journal AI insights using the journal record IDs
+      let journalAIs: any[] = [];
+      const journalIds = (journalRecords || []).map((j: any) => j.id);
+      if (journalIds.length > 0) {
+        const { data: aiData, error: aiError } = await this.supabase
+          .from("journal_ai")
+          .select("*")
+          .in("journal_id", journalIds);
+        
+        if (aiError) {
+          console.error("Error fetching journal_ai:", aiError);
+        } else {
+          journalAIs = aiData || [];
+        }
+      }
+
+      console.log(`[daily.service] Fetched data for ${date}:`, {
+        journalCount: journalAIs?.length || 0,
+        habitsCount: habits?.length || 0,
+        mealsCount: meals?.length || 0,
+        cbtCount: cbtContext.length,
+        moodsCount: moods?.length || 0,
+        hasPriorDaily: !!priorDaily
+      });
+
       // 2. Build the context string
+      const formattedMoods = (moods || []).map((m: any) => {
+        // Extract time (HH:MM) from the ISO selected_date string
+        let timeString = null;
+        if (m.selected_date) {
+          const dt = new Date(m.selected_date);
+          timeString = dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+        }
+        return {
+          main_mood: m.main_mood,
+          mood_score: m.mood_score,
+          time: timeString
+        };
+      });
+
       const context = contextBuilder.buildDailyContext(
         date,
         (journalAIs || []) as JournalAI[],
         (habits || []) as Habit[],
         (meals || []) as Meal[],
-        (cbt || []) as CBT[],
+        cbtContext,
+        formattedMoods,
         priorReflection,
       );
 
+      console.log(`[daily.service] Built context for ${date}:`, JSON.stringify(context, null, 2));
+
       // 3. Generate Reflection via AI Engine
+      console.log(`[daily.service] Calling Gemini for ${date}...`);
       const aiResult = await reflectionEngine.generateDailyReflection(context);
+      
+      console.log(`[daily.service] Gemini Output for ${date}:`, JSON.stringify(aiResult, null, 2));
 
       // 4. Save to daily_ai table
       const { data, error } = await this.supabase

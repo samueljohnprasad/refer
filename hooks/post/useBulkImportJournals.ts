@@ -61,23 +61,19 @@ export const useBulkImportJournals = () => {
           }
 
           // 2. Create AI insights
-          const aiInsights: Insert<"journal_ai_insights"> = {
-            journal_entry_id: journalData.id,
-            aiInsights: entryData.aiInsights,
-            feelings: entryData.feelings,
-            energyLevel:
-              entryData.energyLevel || Math.floor(Math.random() * 5) + 1,
-            stressLevel:
-              entryData.stressLevel || Math.floor(Math.random() * 5) + 1,
-            triggers: entryData.triggers || [],
-            worries: entryData.worries || [],
-            achievements: entryData.achievements || [],
-            sleepQuality:
-              entryData.sleepQuality || Math.floor(Math.random() * 5) + 1,
+          const aiInsights: Insert<"journal_ai"> = {
+            user_id: user.id,
+            journal_id: journalData.id,
+            summary: entryData.aiInsights || "Sample summary",
+            structured_memory: {
+              emotions: entryData.feelings || [],
+              challenges: [...(entryData.worries || []), ...(entryData.triggers || [])],
+              positive_experiences: entryData.achievements || [],
+            }
           };
 
           const { error: insightsError } = await supabase
-            .from("journal_ai_insights")
+            .from("journal_ai")
             .insert(aiInsights);
 
           if (insightsError) {

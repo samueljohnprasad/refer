@@ -31,47 +31,7 @@ export function useCBTHistory() {
       let legacyItems: HistoryLogItem[] = [];
 
       if (pageParam === 0) {
-        const [catcherRes, reframingRes, gratitudeRes] = await Promise.all([
-          supabase
-            .from("thought_catcher_entries" as any)
-            .select("id, created_at, situation, status")
-            .eq("user_id", user.id)
-            .order("created_at", { ascending: false }),
-          supabase
-            .from("thought_reframing_entries" as any)
-            .select("id, created_at, situation, completed, status")
-            .eq("user_id", user.id)
-            .order("created_at", { ascending: false }),
-          supabase
-            .from("gratitude_entries" as any)
-            .select("id, created_at, selected_prompt, completed, status")
-            .eq("user_id", user.id)
-            .order("created_at", { ascending: false }),
-        ]);
-
-        legacyItems = [
-          ...((catcherRes.data as any[]) || []).map((item) => ({
-            type: "catcher" as const,
-            id: item.id,
-            date: item.created_at,
-            title: item.situation || "Unknown situation",
-            status: item.status || "started",
-          })),
-          ...((reframingRes.data as any[]) || []).map((item) => ({
-            type: "reframing" as const,
-            id: item.id,
-            date: item.created_at,
-            title: item.situation || "Unknown situation",
-            status: item.completed ? "completed" : item.status || "started",
-          })),
-          ...((gratitudeRes.data as any[]) || []).map((item) => ({
-            type: "gratitude" as const,
-            id: item.id,
-            date: item.created_at,
-            title: item.selected_prompt || "Gratitude Reframe",
-            status: item.completed ? "completed" : item.status || "started",
-          })),
-        ];
+        // legacyItems = [];
       }
 
       // Fetch from unified exercise_entries table
@@ -115,22 +75,7 @@ export function useCompletedExercisesCount() {
     queryFn: async () => {
       if (!user) return 0;
 
-      const [catcherRes, reframingRes, gratitudeRes, unifiedRes] = await Promise.all([
-        supabase
-          .from("thought_catcher_entries" as any)
-          .select("id", { count: "exact", head: true })
-          .eq("user_id", user.id)
-          .in("status", ["completed", "summary", "checker_completed"]),
-        supabase
-          .from("thought_reframing_entries" as any)
-          .select("id", { count: "exact", head: true })
-          .eq("user_id", user.id)
-          .or("completed.eq.true,status.in.(completed,summary,checker_completed)"),
-        supabase
-          .from("gratitude_entries" as any)
-          .select("id", { count: "exact", head: true })
-          .eq("user_id", user.id)
-          .or("completed.eq.true,status.in.(completed,summary,checker_completed)"),
+      const [unifiedRes] = await Promise.all([
         supabase
           .from("exercise_entries" as any)
           .select("id", { count: "exact", head: true })
@@ -138,12 +83,7 @@ export function useCompletedExercisesCount() {
           .in("status", ["completed", "summary", "checker_completed"]),
       ]);
 
-      return (
-        (catcherRes.count || 0) +
-        (reframingRes.count || 0) +
-        (gratitudeRes.count || 0) +
-        (unifiedRes.count || 0)
-      );
+      return unifiedRes.count || 0;
     },
     enabled: !!user?.id,
   });

@@ -40,6 +40,7 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
     pattern,
     completedFieldKey,
     isSaving,
+    setPrimaryOverride,
   }) => {
     const [isRunning, setIsRunning] = useState(false);
     const [currentRound, setCurrentRound] = useState(0);
@@ -61,6 +62,24 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
       });
       return () => scaleAnim.removeListener(id);
     }, [scaleAnim, haptic.setProgress]);
+
+    const startTimer = useCallback(() => setIsRunning(true), []);
+
+    useEffect(() => {
+      if (setPrimaryOverride) {
+        if (!isRunning && !completed) {
+          setPrimaryOverride({ label: "Start", action: startTimer, disabled: false });
+        } else if (isRunning) {
+          setPrimaryOverride({ 
+            label: "Running...", 
+            action: () => {}, 
+            disabled: true 
+          });
+        } else {
+          setPrimaryOverride(null);
+        }
+      }
+    }, [isRunning, completed, startTimer, setPrimaryOverride]);
 
     useEffect(() => {
       if (isRunning) {
@@ -209,17 +228,6 @@ export const BreathingTimerStep: React.FC<BreathingTimerStepProps> = React.memo(
             >
               Round {currentRound + 1} of {pattern.rounds}
             </Text>
-          )}
-
-          {/* Start button */}
-          {!isRunning && !completed && (
-            <Button
-              label="Start Breathing"
-              onPress={() => setIsRunning(true)}
-              variant="primary"
-              size="lg"
-              fullWidth={true}
-            />
           )}
         </View>
       </StepLayout>

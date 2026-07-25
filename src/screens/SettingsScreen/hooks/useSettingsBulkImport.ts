@@ -20,8 +20,8 @@ export const useSettingsBulkImport = () => {
       await bulkImport(importStartDate, count);
       Alert.alert("Success", `Successfully imported ${count} journal entries!`);
       setShowImportModal(false);
-    } catch (error) {
-      Alert.alert("Error", `Failed to import journals: ${error}`);
+    } catch (error: any) {
+      Alert.alert("Error", `Failed to import journals: ${error?.message || JSON.stringify(error)}`);
     }
   };
 

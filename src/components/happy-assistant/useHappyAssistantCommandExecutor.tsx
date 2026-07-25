@@ -11,7 +11,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useSetAtom } from "jotai";
 import type { CustomerInfo } from "react-native-purchases";
 
-import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
+import { useToast } from "heroui-native";
 import { useRevenueCat } from "@/src/context/RevenueCatProvider";
 import {
   openAIInsightsAtom,
@@ -64,7 +64,7 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
   const { restorePurchases } = useRevenueCat();
   const { data: historyData } = useCBTHistory();
   const history = useMemo(() => historyData?.pages.flatMap((p) => p.data) || [], [historyData]);
-  const toast = useToast();
+  const { toast } = useToast();
 
   const latestIncompleteExercise = useMemo(
     () => getLatestIncompleteExercise(history),
@@ -77,12 +77,9 @@ export function useHappyAssistantCommandExecutor(): UseHappyAssistantCommandExec
       action: AssistantToastAction = "success",
     ): void => {
       toast.show({
-        placement: "bottom right",
-        render: ({ id }) => (
-          <Toast nativeID={id} variant="solid" action={action}>
-            <ToastTitle>{message}</ToastTitle>
-          </Toast>
-        ),
+        placement: "bottom",
+        variant: action === "error" ? "danger" : action === "info" ? "default" : "success",
+        label: message,
       });
     },
     [toast],

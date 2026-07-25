@@ -14,20 +14,26 @@ serve(async (req) => {
   }
 
   try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      throw new Error("Missing or invalid Authorization header");
+    }
+    const token = authHeader.replace("Bearer ", "");
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
+          headers: { Authorization: `Bearer ${token}` },
         },
       }
     );
 
     // Get the user from the authorization header
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError || !user) {
-      throw new Error("Unauthorized request");
+      throw new Error("Unauthorized request: " + userError?.message);
     }
 
     // ponytail: strictly require numeric week_index and year from FE, no fallbacks

@@ -58,7 +58,7 @@ export const Picker: React.FC<PickerProps> = ({
     const x = translateX.value - cx;
     const y = translateY.value - cy;
     return normalizeAngle(Math.atan2(y, x));
-  }, [translateX.value, translateY.value]);
+  });
 
   // Create the path for the outer picker circle
   const pickerPath = useDerivedValue(() => {
@@ -69,7 +69,7 @@ export const Picker: React.FC<PickerProps> = ({
       strokeWidth / 2,
     );
     return path;
-  }, [cx, radius, strokeWidth, theta.value]);
+  });
 
   // Create the path for the inner picker circle
   const internalPickerPath = useDerivedValue(() => {
@@ -80,7 +80,7 @@ export const Picker: React.FC<PickerProps> = ({
       strokeWidth / 2 - 10,
     );
     return path;
-  }, [cx, radius, strokeWidth, theta.value]);
+  });
 
   return (
     <Group>

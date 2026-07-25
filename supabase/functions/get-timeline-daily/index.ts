@@ -49,22 +49,23 @@ Deno.serve(async (req: Request) => {
     
     console.log(`[get-timeline-daily] User: ${user.id} | Page: ${page}, PageSize: ${pageSize}, Offset: ${offset}`);
 
-    // 1. Fetch paginated journals to determine the days we are looking at
-    const { data: journals, error: journalsError } = await supabaseClient
-      .from('journal_records')
-      .select('id, selected_date, title')
-      .eq('user_id', user.id)
-      .order('selected_date', { ascending: false })
-      .range(offset, offset + pageSize - 1);
+    // 1. Fetch paginated unique journal dates using RPC
+    const { data: allJournals, error: journalsError } = await supabaseClient
+      .rpc('get_unique_journal_dates', {
+        p_user_id: user.id,
+        p_limit: pageSize,
+        p_offset: offset
+      });
 
     if (journalsError) throw journalsError;
     
-    console.log(`[get-timeline-daily] Found ${journals?.length || 0} journals in range.`);
-
-    // Extract unique dates from the fetched journals
-    const uniqueDates = Array.from(
-      new Set(journals?.map((j) => j.selected_date ? j.selected_date.split('T')[0] : ''))
-    ).filter(d => d !== '');
+    // Extract unique dates from the RPC result
+    const uniqueDates = (allJournals || []).map((j: any) => j.selected_date);
+    
+    // Check if we hit the limit to determine hasMore
+    const hasMore = uniqueDates.length === pageSize;
+    
+    console.log(`[get-timeline-daily] Found ${uniqueDates.length} unique dates from RPC for this page.`);
 
     // 2. Fetch AI Insights ONLY for those specific dates
     let aiInsights: any[] = [];
@@ -111,7 +112,11 @@ Deno.serve(async (req: Request) => {
     console.log(`[get-timeline-daily] Returning ${timeline.length} timeline entries.`);
 
     return new Response(
-      JSON.stringify({ success: true, data: timeline }),
+      JSON.stringify({ 
+        success: true, 
+        data: timeline,
+        hasMore: hasMore
+      }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     );
   } catch (error: any) {

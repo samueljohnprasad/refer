@@ -8,7 +8,7 @@ import {
 } from "expo-audio";
 import React, { useEffect, useState } from "react";
 import { Alert, Linking, Platform } from "react-native";
-import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
+import { useToast } from "heroui-native";
 import { recorderOpenAtom } from "@/src/screens/DiscoveryScreen/helpers";
 import { useAtom } from "jotai";
 type recordStatus = "recording" | "paused" | "stopped" | "initial";
@@ -34,7 +34,7 @@ const useAudioRecording = () => {
   );
   const recorderState = useAudioRecorderState(audioRecorder);
 
-  const toast = useToast();
+  const { toast } = useToast();
 
   // Configure audio session on mount
   useEffect(() => {
@@ -101,13 +101,8 @@ const useAudioRecording = () => {
       console.error("Recording error:", error);
       toast.show({
         placement: "top",
-        render: ({ id }) => (
-          <Toast nativeID={id} variant="solid" action="error">
-            <ToastTitle>
-              Failed to start recording. Please try again.
-            </ToastTitle>
-          </Toast>
-        ),
+        variant: "danger",
+        label: "Failed to start recording. Please try again.",
       });
     }
   };

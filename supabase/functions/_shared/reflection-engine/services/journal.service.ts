@@ -147,6 +147,14 @@ export class JournalService {
             .eq("id", userId);
         }
       }
+
+      // ponytail: Unify streaks by also calling the journey streak RPC
+      // so doing a journal counts towards the global app streak
+      const { error: rpcError } = await this.supabase.rpc('update_user_streak');
+      if (rpcError) {
+        console.error("Error updating user_streaks via RPC:", rpcError);
+      }
+
     } catch (e) {
       console.error("Error updating streak in profile:", e);
     }

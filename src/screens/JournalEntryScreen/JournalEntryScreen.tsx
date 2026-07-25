@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { ScrollView, KeyboardAvoidingView, Platform, View, Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
+import { useToast } from "heroui-native";
 import { useSaveJournal } from "@/hooks/post/useSaveJournal";
 import { useJournalOperations } from "@/hooks/journals/useJournalOperations";
 import { JournalEntryScreenProps } from "./types";
@@ -46,7 +46,7 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
   insights,
   onClose,
 }: JournalEntryScreenProps) => {
-  const toast = useToast();
+  const { toast } = useToast();
   const { saveJournal, saving } = useSaveJournal();
   const { deleteJournal, toggleBookmark, bookmarking } = useJournalOperations();
   const { top, bottom } = useSafeAreaInsets();
@@ -136,11 +136,8 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
               });
               toast.show({
                 placement: "top",
-                render: ({ id }: { id: string }) => (
-                  <Toast nativeID={id} variant="solid" action="success">
-                    <ToastTitle>Entry deleted</ToastTitle>
-                  </Toast>
-                ),
+                variant: "success",
+                label: "Entry deleted",
               });
               handleClose();
             } catch (error) {
@@ -177,11 +174,8 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
       if (!journalText.trim()) {
         toast.show({
           placement: "top",
-          render: ({ id }) => (
-            <Toast nativeID={id} variant="solid" action="warning">
-              <ToastTitle>Please enter journal text before saving</ToastTitle>
-            </Toast>
-          ),
+          variant: "warning",
+          label: "Please enter journal text before saving",
         });
         return;
       }
@@ -190,21 +184,15 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
 
       toast.show({
         placement: "top",
-        render: ({ id }) => (
-          <Toast nativeID={id} variant="solid" action="success">
-            <ToastTitle>Journal saved successfully</ToastTitle>
-          </Toast>
-        ),
+        variant: "success",
+        label: "Journal saved successfully",
       });
       onClose?.();
     } catch (error) {
       toast.show({
         placement: "bottom",
-        render: ({ id }) => (
-          <Toast nativeID={id} variant="solid" action="error">
-            <ToastTitle>Failed to save journal</ToastTitle>
-          </Toast>
-        ),
+        variant: "danger",
+        label: "Failed to save journal",
       });
     }
   }, [saveJournal, insights, journalText, selectedMood, tags, toast, onClose]);
@@ -245,11 +233,8 @@ const JournalEntryScreen: React.FC<JournalEntryScreenProps> = ({
                 
                 toast.show({
                   placement: "top",
-                  render: ({ id }) => (
-                    <Toast nativeID={id} variant="solid" action="success">
-                      <ToastTitle>{newStatus ? "Entry bookmarked" : "Bookmark removed"}</ToastTitle>
-                    </Toast>
-                  ),
+                  variant: "success",
+                  label: newStatus ? "Entry bookmarked" : "Bookmark removed",
                 });
 
                 try {

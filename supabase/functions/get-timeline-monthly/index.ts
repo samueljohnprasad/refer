@@ -47,42 +47,49 @@ Deno.serve(async (req: Request) => {
     const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
     const offset = (page - 1) * pageSize;
     
-    console.log(`[get-timeline-monthly] User: ${user.id} | Page: ${page}, PageSize: ${pageSize}, Offset: ${offset}`);
+    console.log(`[get-timeline-monthly] === START REQUEST ===`);
+    console.log(`[get-timeline-monthly] Params -> User: ${user.id} | Page: ${page} | PageSize: ${pageSize} | Offset: ${offset}`);
 
-    // 1. Fetch paginated journals to determine the months we are looking at
-    const { data: journals, error: journalsError } = await supabaseClient
-      .from('journal_records')
-      .select('id, selected_date, title')
-      .eq('user_id', user.id)
-      .order('selected_date', { ascending: false })
-      .range(offset, offset + pageSize - 1);
+    // 1. Fetch paginated unique journal months using RPC
+    console.log(`[get-timeline-monthly] Executing RPC 'get_unique_journal_months' with offset ${offset}, limit ${pageSize}...`);
+    const { data: allMonths, error: monthsError } = await supabaseClient
+      .rpc('get_unique_journal_months', {
+        p_user_id: user.id,
+        p_limit: pageSize,
+        p_offset: offset
+      });
 
-    if (journalsError) throw journalsError;
+    if (monthsError) {
+      console.error(`[get-timeline-monthly] RPC Error:`, monthsError);
+      throw monthsError;
+    }
     
-    console.log(`[get-timeline-monthly] Found ${journals?.length || 0} journals in range.`);
+    // Check if we hit the limit to determine hasMore
+    const hasMore = (allMonths || []).length === pageSize;
+    
+    console.log(`[get-timeline-monthly] RPC returned ${(allMonths || []).length} rows. hasMore set to: ${hasMore}`);
+    console.log(`[get-timeline-monthly] Raw RPC data:`, JSON.stringify(allMonths));
 
-    // Extract unique months from the fetched journals
+    // Extract unique months from the fetched data
     const uniqueMonths = new Map<string, { year: number, month: number }>();
     
-    journals?.forEach(j => {
-      if (!j.selected_date) return;
-      const date = new Date(j.selected_date);
-      const year = date.getUTCFullYear();
-      const month = date.getUTCMonth() + 1;
+    (allMonths || []).forEach((m: any) => {
+      const year = m.year_num;
+      const month = m.month_num;
       const monthKey = `${year}-${month < 10 ? '0' + month : month}`;
-      if (!uniqueMonths.has(monthKey)) {
-        uniqueMonths.set(monthKey, { year, month });
-      }
+      uniqueMonths.set(monthKey, { year, month });
     });
 
     const uniqueMonthKeys = Array.from(uniqueMonths.keys());
+    console.log(`[get-timeline-monthly] Parsed unique month keys:`, JSON.stringify(uniqueMonthKeys));
 
     // 2. Fetch AI Insights ONLY for those specific months
     let aiInsights: any[] = [];
     if (uniqueMonthKeys.length > 0) {
-      console.log(`[get-timeline-monthly] Fetching monthly_ai for months:`, uniqueMonthKeys);
+      console.log(`[get-timeline-monthly] Fetching monthly_ai table for months:`, uniqueMonthKeys);
       
       const years = Array.from(new Set(Array.from(uniqueMonths.values()).map(m => m.year)));
+      console.log(`[get-timeline-monthly] Querying monthly_ai for years in:`, years);
       
       const { data, error: aiError } = await supabaseClient
         .from('monthly_ai')
@@ -90,16 +97,22 @@ Deno.serve(async (req: Request) => {
         .eq('user_id', user.id)
         .in('year', years);
 
-      if (aiError) throw aiError;
+      if (aiError) {
+        console.error(`[get-timeline-monthly] monthly_ai query error:`, aiError);
+        throw aiError;
+      }
+      
+      console.log(`[get-timeline-monthly] Raw monthly_ai rows fetched: ${data?.length || 0}`);
       
       // Filter the data to only include the months we asked for
       aiInsights = (data || []).filter(insight => {
         const monthKey = `${insight.year}-${insight.month < 10 ? '0' + insight.month : insight.month}`;
         return uniqueMonths.has(monthKey);
       });
-      console.log(`[get-timeline-monthly] Found ${aiInsights.length} ai insights.`);
+      console.log(`[get-timeline-monthly] Filtered to ${aiInsights.length} relevant ai insights matching our unique months.`);
+      console.log(`[get-timeline-monthly] Matching AI insights mapping:`, JSON.stringify(aiInsights.map(a => `${a.year}-${a.month}`)));
     } else {
-      console.log(`[get-timeline-monthly] No unique months to fetch ai insights for.`);
+      console.log(`[get-timeline-monthly] No unique months to fetch ai insights for. Skipping query.`);
     }
 
     // Build the timeline array mapped by month
@@ -115,22 +128,30 @@ Deno.serve(async (req: Request) => {
     });
 
     // Populate AI insights
+    let populatedCount = 0;
     aiInsights.forEach((insight) => {
       const monthKey = `${insight.year}-${insight.month < 10 ? '0' + insight.month : insight.month}`;
       if (timelineMap.has(monthKey)) {
         timelineMap.get(monthKey).aiInsight = insight;
+        populatedCount++;
       }
     });
+    
+    console.log(`[get-timeline-monthly] Populated ${populatedCount} timeline entries with AI insights.`);
 
     // Convert map to sorted array (newest first)
     const timeline = Array.from(timelineMap.values()).sort((a, b) => {
       return b.date.localeCompare(a.date);
     });
     
-    console.log(`[get-timeline-monthly] Returning ${timeline.length} timeline entries.`);
+    console.log(`[get-timeline-monthly] === END REQUEST === Returning ${timeline.length} sorted timeline entries.`);
 
     return new Response(
-      JSON.stringify({ success: true, data: timeline }),
+      JSON.stringify({ 
+        success: true, 
+        data: timeline,
+        hasMore: hasMore
+      }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     );
   } catch (error: any) {

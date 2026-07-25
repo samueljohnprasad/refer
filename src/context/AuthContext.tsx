@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Linking from "expo-linking";
-import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
+import { useToast } from "heroui-native";
 import { supabase } from "../network/auth/supabase";
 import {
   AuthFlowCancelledError,
@@ -200,7 +200,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [accountConflict, setAccountConflict] =
     useState<AccountConflict | null>(null);
-  const toast = useToast();
+  const { toast } = useToast();
 
   const ensureProfileForUser = async (nextUser: User): Promise<void> => {
     const { error: profileError } = await supabase
@@ -305,12 +305,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             migrateGuestProgress(session.user.id).catch(console.error);
 
             toast.show({
-              placement: "bottom right",
-              render: ({ id }) => (
-                <Toast nativeID={id} variant="solid" action="success">
-                  <ToastTitle>Signed in successfully!</ToastTitle>
-                </Toast>
-              ),
+              placement: "bottom",
+              variant: "success",
+              label: "Signed in successfully!",
             });
           }, 0);
         }

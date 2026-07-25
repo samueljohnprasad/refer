@@ -43,6 +43,7 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
     fieldKey,
     areas,
     minCompleted = 5,
+    setPrimaryOverride,
   }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
@@ -111,6 +112,30 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
         circularSliderRef.current?.resetTimer();
       }
     }, [isRunning, markCurrentCompleted, currentIndex, areas, animatedNumber]);
+
+    React.useEffect(() => {
+      if (setPrimaryOverride) {
+        if (!isRunning && !isCurrentCompleted) {
+          setPrimaryOverride({
+            label: "Start Timer",
+            action: handleStartTimer,
+            disabled: false,
+          });
+        } else if (isRunning) {
+          setPrimaryOverride({
+            label: "Stop Timer",
+            action: handleStartTimer,
+            disabled: false,
+          });
+        } else if (isCurrentCompleted) {
+          setPrimaryOverride({
+            label: currentIndex < areas.length - 1 ? "Next Area" : "Finish",
+            action: currentIndex < areas.length - 1 ? handleNextArea : onNext,
+            disabled: false,
+          });
+        }
+      }
+    }, [isRunning, isCurrentCompleted, handleStartTimer, handleNextArea, onNext, currentIndex, areas.length, setPrimaryOverride]);
 
     return (
       <StepLayout
@@ -219,24 +244,10 @@ export const PMRCircularTimerStep: React.FC<PMRCircularTimerStepProps> = React.m
 
         {/* Controls */}
         <View className="mt-2 space-y-3">
-          <Button
-            label={
-              isRunning
-                ? "Stop Timer"
-                : isCurrentCompleted
-                ? "Timer Finished — Run Again"
-                : `Start ${animatedNumber.value || defaultSec}s Tension Timer`
-            }
-            onPress={handleStartTimer}
-            variant={isRunning ? "secondary" : "primary"}
-            size="lg"
-            fullWidth
-          />
-
           <View className="flex-row items-center justify-between pt-2">
             <Pressable onPress={handleSkipCurrent} className="py-2 px-3">
               <Text className="text-xs font-medium text-ink-muted underline">
-                {isCurrentCompleted ? "Next Area →" : "Skip Timer & Mark Released"}
+                {isCurrentCompleted ? "Run Timer Again" : "Skip Timer & Mark Released"}
               </Text>
             </Pressable>
 

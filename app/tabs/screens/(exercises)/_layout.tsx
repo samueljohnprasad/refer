@@ -36,6 +36,7 @@ export default function ExercisesGroupLayout() {
         options={{
           headerShown: false,
           title: "CBT Step Preview",
+          animation: "fade",
         }}
       />
     </Stack>

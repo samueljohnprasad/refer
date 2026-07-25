@@ -34,6 +34,7 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
     tapCountFieldKey,
     isSaving,
     psychoeducationText,
+    setPrimaryOverride,
   }) => {
     const [remaining, setRemaining] = useState(timerConfig.durationMs);
     const [isRunning, setIsRunning] = useState(false);
@@ -71,14 +72,6 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
 
     const startTimer = useCallback(() => setIsRunning(true), []);
 
-    const handleTap = useCallback(() => {
-      if (tapCountFieldKey && isRunning) {
-        const current =
-          (response as Record<string, any>)[tapCountFieldKey] ?? 0;
-        onUpdate({ [tapCountFieldKey]: current + 1 } as any);
-      }
-    }, [tapCountFieldKey, isRunning, response, onUpdate]);
-
     const handleSkip = useCallback(() => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       remainingRef.current = 0;
@@ -86,6 +79,30 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
       setRemaining(0);
       onUpdate({ [completedFieldKey]: true } as any);
     }, [completedFieldKey, onUpdate]);
+
+    useEffect(() => {
+      if (setPrimaryOverride) {
+        if (!isRunning && !completed) {
+          setPrimaryOverride({ label: "Start Timer", action: startTimer, disabled: false });
+        } else if (isRunning) {
+          setPrimaryOverride({ 
+            label: timerConfig.skippable ? "Skip" : "Running...", 
+            action: timerConfig.skippable ? handleSkip : () => {}, 
+            disabled: !timerConfig.skippable 
+          });
+        } else {
+          setPrimaryOverride(null); // use default when completed
+        }
+      }
+    }, [isRunning, completed, startTimer, timerConfig.skippable, handleSkip, setPrimaryOverride]);
+
+    const handleTap = useCallback(() => {
+      if (tapCountFieldKey && isRunning) {
+        const current =
+          (response as Record<string, any>)[tapCountFieldKey] ?? 0;
+        onUpdate({ [tapCountFieldKey]: current + 1 } as any);
+      }
+    }, [tapCountFieldKey, isRunning, response, onUpdate]);
 
     const totalSec = Math.ceil(remaining / 1000);
     const minutes = Math.floor(totalSec / 60);
@@ -109,13 +126,14 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
 
         <View className="flex-1 justify-center items-center">
           {/* Circular timer display */}
-          <View
+          <Pressable
+            onPress={!isRunning && !completed ? startTimer : undefined}
             className={`w-52 h-52 rounded-full items-center justify-center mb-10 border ${
               completed
                 ? "bg-sage-100 border-sage-500"
                 : isRunning
                   ? "bg-blue-50 border-blue-300"
-                  : "bg-brand-surface border-brand-border"
+                  : "bg-brand-surface border-brand-border active:opacity-70"
             }`}
           >
             {completed ? (
@@ -130,7 +148,7 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
                 {minutes}:{seconds.toString().padStart(2, "0")}
               </Text>
             )}
-          </View>
+          </Pressable>
 
           {/* Timer progress bar */}
           {isRunning && (
@@ -158,28 +176,6 @@ export const CountdownTimerStep: React.FC<CountdownTimerStepProps> = React.memo(
               size="option"
               className="mb-4"
             />
-          )}
-
-          {/* Start / Skip buttons */}
-          {!isRunning && !completed && (
-            <Button
-              label="Start"
-              onPress={startTimer}
-              variant="primary"
-              size="lg"
-              fullWidth={true}
-            />
-          )}
-
-          {isRunning && timerConfig.skippable && (
-            <Pressable
-              onPress={handleSkip}
-              accessibilityRole="button"
-              accessibilityLabel="Skip timer"
-              className="mt-2"
-            >
-              <Text className="text-sm font-medium text-slate-400">Skip</Text>
-            </Pressable>
           )}
         </View>
       </StepLayout>

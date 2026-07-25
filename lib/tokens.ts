@@ -46,7 +46,7 @@ export const TRANSPARENT = SAGE_OVERLAY.clear;
 // ─── Brand Surfaces ─────────────────────────────────────────────────────
 // brand-canvas: screen background — sage whisper, cards float above it
 // brand-surface: card/panel face — pure white
-export const BRAND_CANVAS = "#F8FAF7" as const;
+export const BRAND_CANVAS = "#FFFFFF" as const;
 export const BRAND_SURFACE = "#ffffff" as const;
 export const BRAND_SURFACE_SOFT = "#F7F7F7" as const;
 export const MASCOT_STAGE = "#ffffff" as const;

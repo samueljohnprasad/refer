@@ -12,6 +12,7 @@ import Animated, {
   useSharedValue,
   withSpring,
   withTiming,
+  useAnimatedProps,
 } from 'react-native-reanimated';
 
 type AnimatedDigitProps = {
@@ -163,9 +164,15 @@ const AnimatedDigit: React.FC<AnimatedDigitProps> = React.memo(
       return withTiming(isChanging.value ? 1 : 0);
     }, []);
 
-    const blurIntensity = useDerivedValue<number | undefined>(() => {
+    const blurIntensity = useDerivedValue<number>(() => {
       return isChangingProgress.value * 17;
     }, []);
+
+    const animatedBlurProps = useAnimatedProps(() => {
+      return {
+        intensity: blurIntensity.value,
+      };
+    });
 
     return (
       <Animated.View
@@ -186,7 +193,7 @@ const AnimatedDigit: React.FC<AnimatedDigitProps> = React.memo(
                 zIndex: 10,
               },
             ]}
-            intensity={blurIntensity}
+            animatedProps={animatedBlurProps}
           />
         )}
         <LinearGradient

@@ -8,7 +8,7 @@ export function useDailyTimeline({ pageSize }: { pageSize: number }) {
     queryFn: ({ pageParam }) => timelineRepo.getDailyTimeline(pageParam as number, pageSize),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage.data || lastPage.data.length < pageSize) return undefined;
+      if (!lastPage.hasMore) return undefined;
       return allPages.length + 1;
     },
     staleTime: 60_000,
@@ -21,7 +21,7 @@ export function useWeeklyTimeline({ pageSize }: { pageSize: number }) {
     queryFn: ({ pageParam }) => timelineRepo.getWeeklyTimeline(pageParam as number, pageSize),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage.data || lastPage.data.length < pageSize) return undefined;
+      if (!lastPage.hasMore) return undefined;
       return allPages.length + 1;
     },
     staleTime: 60_000,
@@ -34,7 +34,7 @@ export function useMonthlyTimeline({ pageSize }: { pageSize: number }) {
     queryFn: ({ pageParam }) => timelineRepo.getMonthlyTimeline(pageParam as number, pageSize),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage.data || lastPage.data.length < pageSize) return undefined;
+      if (!lastPage.hasMore) return undefined;
       return allPages.length + 1;
     },
     staleTime: 60_000,

@@ -90,7 +90,7 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
             android_ripple={{ color: SAGE[700] }}
             onPress={() => {
               void Haptics.selectionAsync().catch(() => {});
-              void presentPaywall();
+              router.push('/paywall');
             }}
             className="bg-sage-400 rounded-full px-4 py-1.5 border border-sage-500/20"
           >

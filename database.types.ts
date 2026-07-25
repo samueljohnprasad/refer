@@ -362,42 +362,6 @@ export type Database = {
         }
         Relationships: []
       }
-      delete_users: {
-        Row: {
-          "Created at": string | null
-          created_at: string
-          "Display name": string | null
-          Email: string | null
-          id: number
-          "Last sign in at": string | null
-          Phone: string | null
-          Providers: string | null
-          UID: string | null
-        }
-        Insert: {
-          "Created at"?: string | null
-          created_at?: string
-          "Display name"?: string | null
-          Email?: string | null
-          id?: number
-          "Last sign in at"?: string | null
-          Phone?: string | null
-          Providers?: string | null
-          UID?: string | null
-        }
-        Update: {
-          "Created at"?: string | null
-          created_at?: string
-          "Display name"?: string | null
-          Email?: string | null
-          id?: number
-          "Last sign in at"?: string | null
-          Phone?: string | null
-          Providers?: string | null
-          UID?: string | null
-        }
-        Relationships: []
-      }
       exercise_contents: {
         Row: {
           created_at: string
@@ -476,51 +440,6 @@ export type Database = {
           status?: string
           step_index?: number
           step_timings?: Json
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      gratitude_entries: {
-        Row: {
-          completed: boolean
-          created_at: string | null
-          current_mood: string
-          final_intensity: number
-          gratitude_entries: Json
-          id: string
-          initial_intensity: number
-          selected_date: string
-          selected_prompt: string
-          status: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          completed?: boolean
-          created_at?: string | null
-          current_mood: string
-          final_intensity: number
-          gratitude_entries?: Json
-          id?: string
-          initial_intensity: number
-          selected_date?: string
-          selected_prompt: string
-          status?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          completed?: boolean
-          created_at?: string | null
-          current_mood?: string
-          final_intensity?: number
-          gratitude_entries?: Json
-          id?: string
-          initial_intensity?: number
-          selected_date?: string
-          selected_prompt?: string
-          status?: string
           updated_at?: string
           user_id?: string
         }
@@ -699,7 +618,7 @@ export type Database = {
           created_at: string | null
           id: string
           input_tokens: number | null
-          journal_id: string
+          journal_id: number
           output_tokens: number | null
           structured_memory: Json | null
           summary: string
@@ -710,7 +629,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           input_tokens?: number | null
-          journal_id: string
+          journal_id: number
           output_tokens?: number | null
           structured_memory?: Json | null
           summary: string
@@ -721,68 +640,17 @@ export type Database = {
           created_at?: string | null
           id?: string
           input_tokens?: number | null
-          journal_id?: string
+          journal_id?: number
           output_tokens?: number | null
           structured_memory?: Json | null
           summary?: string
           user_id?: string
         }
-        Relationships: []
-      }
-      journal_ai_insights: {
-        Row: {
-          achievements: string[] | null
-          aiInsights: string | null
-          copingStrategies: string[] | null
-          created_at: string
-          energyLevel: number | null
-          feelings: Json | null
-          goals: string[] | null
-          id: number
-          journal_entry_id: number
-          "physical-symptoms": string[] | null
-          sleepQuality: number | null
-          stressLevel: number | null
-          triggers: string[] | null
-          worries: string[] | null
-        }
-        Insert: {
-          achievements?: string[] | null
-          aiInsights?: string | null
-          copingStrategies?: string[] | null
-          created_at?: string
-          energyLevel?: number | null
-          feelings?: Json | null
-          goals?: string[] | null
-          id?: number
-          journal_entry_id: number
-          "physical-symptoms"?: string[] | null
-          sleepQuality?: number | null
-          stressLevel?: number | null
-          triggers?: string[] | null
-          worries?: string[] | null
-        }
-        Update: {
-          achievements?: string[] | null
-          aiInsights?: string | null
-          copingStrategies?: string[] | null
-          created_at?: string
-          energyLevel?: number | null
-          feelings?: Json | null
-          goals?: string[] | null
-          id?: number
-          journal_entry_id?: number
-          "physical-symptoms"?: string[] | null
-          sleepQuality?: number | null
-          stressLevel?: number | null
-          triggers?: string[] | null
-          worries?: string[] | null
-        }
         Relationships: [
           {
-            foreignKeyName: "journal_ai_insights_journal_entry_id_fkey"
-            columns: ["journal_entry_id"]
-            isOneToOne: true
+            foreignKeyName: "fk_journal_ai_journal_records"
+            columns: ["journal_id"]
+            isOneToOne: false
             referencedRelation: "journal_records"
             referencedColumns: ["id"]
           },
@@ -1352,33 +1220,6 @@ export type Database = {
         }
         Relationships: []
       }
-      onboarding_events: {
-        Row: {
-          action: string
-          created_at: string | null
-          id: string
-          metadata: Json | null
-          step_name: string
-          user_id: string | null
-        }
-        Insert: {
-          action: string
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          step_name: string
-          user_id?: string | null
-        }
-        Update: {
-          action?: string
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          step_name?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       practice_contents: {
         Row: {
           created_at: string
@@ -1521,35 +1362,6 @@ export type Database = {
           },
         ]
       }
-      quiz_contents: {
-        Row: {
-          created_at: string
-          id: string
-          node_id: string
-          questions: Json
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          node_id: string
-          questions?: Json
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          node_id?: string
-          questions?: Json
-        }
-        Relationships: [
-          {
-            foreignKeyName: "quiz_contents_node_id_fkey"
-            columns: ["node_id"]
-            isOneToOne: false
-            referencedRelation: "nodes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       sections: {
         Row: {
           course_id: string
@@ -1647,99 +1459,6 @@ export type Database = {
         Update: {
           data?: Json
           id?: number
-        }
-        Relationships: []
-      }
-      thought_catcher_entries: {
-        Row: {
-          automatic_thought: string
-          balanced_thought: string | null
-          created_at: string
-          id: string
-          intensity: number
-          is_true: string | null
-          selected_date: string
-          situation: string
-          status: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          automatic_thought: string
-          balanced_thought?: string | null
-          created_at?: string
-          id?: string
-          intensity: number
-          is_true?: string | null
-          selected_date: string
-          situation: string
-          status?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          automatic_thought?: string
-          balanced_thought?: string | null
-          created_at?: string
-          id?: string
-          intensity?: number
-          is_true?: string | null
-          selected_date?: string
-          situation?: string
-          status?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      thought_reframing_entries: {
-        Row: {
-          automatic_thought: string
-          balanced_thought: string | null
-          cognitive_distortions: Json | null
-          completed: boolean | null
-          created_at: string
-          emotions: Json | null
-          evidence_against: Json | null
-          evidence_for: Json | null
-          id: string
-          selected_date: string
-          situation: string
-          status: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          automatic_thought: string
-          balanced_thought?: string | null
-          cognitive_distortions?: Json | null
-          completed?: boolean | null
-          created_at?: string
-          emotions?: Json | null
-          evidence_against?: Json | null
-          evidence_for?: Json | null
-          id?: string
-          selected_date?: string
-          situation: string
-          status?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          automatic_thought?: string
-          balanced_thought?: string | null
-          cognitive_distortions?: Json | null
-          completed?: boolean | null
-          created_at?: string
-          emotions?: Json | null
-          evidence_against?: Json | null
-          evidence_for?: Json | null
-          id?: string
-          selected_date?: string
-          situation?: string
-          status?: string
-          updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }

@@ -6,13 +6,13 @@ import * as Clipboard from "expo-clipboard";
 import { useAuth } from "@/src/context/AuthContext";
 import { useDeleteUser } from "@/hooks/useDeleteUser";
 import { useQueryClient } from "@tanstack/react-query";
-import { useToast, Toast, ToastTitle } from "@/components/ui/toast";
+import { useToast } from "heroui-native";
 
 export const useSettingsModals = () => {
   const [isSignoutOPen, setIsSignoutOPen] = useState(false);
   const { signOut, isSigningOut, user, isAnonymous } = useAuth();
   const queryClient = useQueryClient();
-  const toast = useToast();
+  const { toast } = useToast();
   const shouldShowSignIn = !user || isAnonymous;
 
   const [showModal, setShowModal] = useState({
@@ -75,13 +75,8 @@ export const useSettingsModals = () => {
       await Clipboard.setStringAsync(user.id);
       toast.show({
         placement: "top",
-        render: ({ id }) => {
-          return (
-            <Toast nativeID={id} variant="solid" action="success">
-              <ToastTitle>User ID copied to clipboard</ToastTitle>
-            </Toast>
-          );
-        },
+        variant: "success",
+        label: "User ID copied to clipboard",
       });
     }
   };

@@ -9,9 +9,7 @@ import ScrollToActiveButton from "../ScrollToActiveButton";
 import { JourneyMapEmptyState, JourneyMapLoadingState } from "../JourneyMapListItems";
 import type { JourneyMapListViewModel, JourneyMapListActions } from "../../hooks/useJourneyMapListViewModel";
 
-const AnimatedLegendList = Animated.createAnimatedComponent(
-  LegendList,
-) as typeof LegendList;
+
 
 export interface JourneyMapListViewProps {
   model: JourneyMapListViewModel;
@@ -59,7 +57,7 @@ export const JourneyMapListView = React.memo(function JourneyMapListView({
       {!isLoaded ? (
         <JourneyMapLoadingState />
       ) : flashListData.length > 0 ? (
-        <AnimatedLegendList<JourneyFlashListItem>
+        <LegendList<JourneyFlashListItem>
           style={{ flex: 1 }}
           key={listKey}
           ref={legendListRef}

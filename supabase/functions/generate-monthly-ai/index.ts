@@ -1,4 +1,4 @@
-alsoimport { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { MonthlyService } from "../_shared/reflection-engine/services/monthly.service.ts";
 
@@ -14,25 +14,33 @@ serve(async (req) => {
   }
 
   try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      throw new Error("Missing or invalid Authorization header");
+    }
+    const token = authHeader.replace("Bearer ", "");
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
+          headers: { Authorization: `Bearer ${token}` },
         },
       }
     );
 
     // Get the user from the authorization header
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError || !user) {
-      throw new Error("Unauthorized request");
+      throw new Error("Unauthorized request: " + userError?.message);
     }
 
     // ponytail: accept monthYear or slice 'YYYY-MM' from date
-    const { monthYear, date } = await req.json();
-    const targetMonth = monthYear ?? (typeof date === 'string' ? date.slice(0, 7) : null);
+    const { month, year, monthYear, date } = await req.json();
+    const targetMonth = month && year 
+      ? `${year}-${String(month).padStart(2, '0')}`
+      : monthYear ?? (typeof date === 'string' ? date.slice(0, 7) : null);
 
     if (!targetMonth) {
       throw new Error("Missing 'monthYear' or 'date' in request body.");

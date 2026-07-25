@@ -78,9 +78,9 @@ export class MonthlyService {
       ] = await Promise.all([
         this.supabase
           .from("weekly_ai")
-          .select("summary, structured_memory")
+          .select("week_number, summary, structured_memory")
           .eq("user_id", userId)
-          .eq("year", parseInt(monthStr.slice(0, 4), 10)),
+          .eq("year", parseInt(monthYear.slice(0, 4), 10)),
         this.supabase
           .from("monthly_ai")
           .select("summary")
@@ -90,15 +90,28 @@ export class MonthlyService {
           .maybeSingle(),
       ]);
 
+      console.log(`[monthly.service] Fetched data for ${monthYear}:`, {
+        weeklyCount: weeklyRecords?.length || 0,
+        hasPriorMonthly: !!priorMonthly
+      });
+
       const weeklyReflections: string[] = [];
       const weeklyMemories: AIStructuredMemory[] = [];
+      
+      const targetMonthStr = monthYear.slice(5, 7);
+      const targetMonthInt = parseInt(targetMonthStr, 10);
+      const targetYearInt = parseInt(monthYear.slice(0, 4), 10);
 
       (weeklyRecords || []).forEach(record => {
-        if (record.summary) {
-          weeklyReflections.push(record.summary);
-        }
-        if (record.structured_memory) {
-          weeklyMemories.push(record.structured_memory as AIStructuredMemory);
+        // Approximate month check: week_number * 7 days.
+        const weekDate = new Date(Date.UTC(targetYearInt, 0, 4 + (record.week_number - 1) * 7));
+        if (weekDate.getUTCMonth() + 1 === targetMonthInt) {
+          if (record.summary) {
+            weeklyReflections.push(record.summary);
+          }
+          if (record.structured_memory) {
+            weeklyMemories.push(record.structured_memory as AIStructuredMemory);
+          }
         }
       });
 
@@ -112,12 +125,17 @@ export class MonthlyService {
         priorReflection,
       );
 
+      console.log(`[monthly.service] Built context:`, JSON.stringify(context, null, 2));
+
       // 3. Generate Reflection via AI Engine
+      console.log(`[monthly.service] Calling Gemini...`);
       const aiResult = await reflectionEngine.generateMonthlyReflection(context);
 
+      console.log(`[monthly.service] Gemini Output:`, JSON.stringify(aiResult, null, 2));
+
       // 4. Save to monthly_ai table per migration
-      const yr = parseInt(monthStr.slice(0, 4), 10);
-      const mo = parseInt(monthStr.slice(5, 7), 10);
+      const yr = parseInt(monthYear.slice(0, 4), 10);
+      const mo = parseInt(monthYear.slice(5, 7), 10);
       const { data, error } = await this.supabase
         .from("monthly_ai")
         .upsert(

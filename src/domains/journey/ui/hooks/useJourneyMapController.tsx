@@ -6,7 +6,7 @@ import * as Haptics from "expo-haptics";
 import { useSetAtom } from "jotai";
 import { router, useFocusEffect } from "expo-router";
 
-import { Toast, ToastTitle, useToast } from "@/components/ui/toast";
+import { useToast } from "heroui-native";
 import { startTransitionAtom } from "@/src/store/transitionStore";
 import { setPreviewSection } from "@/src/domains/journey/state/journeySlice";
 import {
@@ -65,7 +65,7 @@ export function useJourneyMapController(
   const isRoutingRef = useRef(false);
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
-  const toast = useToast();
+  const { toast } = useToast();
 
   const currentSectionId = useAppSelector((state) =>
     selectCurrentSectionIdForCourse(state, courseId),
@@ -153,11 +153,8 @@ export function useJourneyMapController(
         );
         toast.show({
           placement: "top",
-          render: ({ id }) => (
-            <Toast nativeID={id} action="warning">
-              <ToastTitle>Keep going! This will unlock soon.</ToastTitle>
-            </Toast>
-          ),
+          variant: "warning",
+          label: "Keep going! This will unlock soon.",
         });
         return;
       }

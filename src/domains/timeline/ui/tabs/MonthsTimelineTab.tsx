@@ -10,7 +10,7 @@ import * as Haptics from 'expo-haptics';
 import { useHeaderHeight } from 'expo-router/react-navigation';
 import type { TimelineSection } from '@/src/components/ui/Timeline/types';
 import type { MonthlyTimelineItem, TimelineTabProps } from '../../model/timeline.types';
-import { MOCK_MONTHS_TIMELINE_DATA } from './mockData';
+
 
 export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
   const headerHeight = useHeaderHeight();
@@ -25,7 +25,9 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     setGeneratingDates(prev => new Set(prev).add(date));
     
     try {
-      await generateInsight({ date });
+      const year = parseInt(date.substring(0, 4), 10);
+      const month = parseInt(date.substring(5, 7), 10);
+      await generateInsight({ month, year });
     } catch (e) {
       Alert.alert("Generation Failed", "Could not generate insight. Please try again later.");
     } finally {
@@ -37,7 +39,7 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
     }
   };
 
-  const displayData = data?.pages ? data.pages.flatMap(p => p.data) : (isError ? MOCK_MONTHS_TIMELINE_DATA : []);
+  const displayData = data?.pages ? data.pages.flatMap(p => p.data) : [];
 
   const sections: TimelineSection<MonthlyTimelineItem>[] = useMemo(() => {
     return displayData.map((item: any) => {

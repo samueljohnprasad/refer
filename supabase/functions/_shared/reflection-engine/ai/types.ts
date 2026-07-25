@@ -51,6 +51,7 @@ export interface DailyContext {
   habits: { name: string; completed: boolean }[];
   meals: { food: string; calories: number; time: string }[];
   cbt: { type: string; reflection: string }[];
+  moods: { main_mood: string | null; mood_score: number | null; time: string | null }[];
   /** Yesterday's reflection text, if available. */
   priorReflection?: string;
 }

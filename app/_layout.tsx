@@ -17,6 +17,7 @@ import * as Notifications from "expo-notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HapticManager } from "@/lib/haptics/HapticManager";
 import { useSystemBackgroundColor } from "@/src/utils/useSystemBackgroundColor";
+import { HeroUINativeProvider } from "heroui-native";
 
 import RevenueCatProvider from "@/src/context/RevenueCatProvider";
 import AnonymousPurchaseClaimPrompt from "@/src/components/premium/AnonymousPurchaseClaimPrompt";
@@ -161,7 +162,6 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-
       <ReduxProvider>
         <PostHogProvider
           apiKey="phc_3A3cPPqkAbVXBfiskxZlaOcORt0AxADK0sNMgz0I7oU"
@@ -170,47 +170,46 @@ function RootLayoutNav() {
           }}
         >
           <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-              <NotificationIntegration />
-              <XPProvider>
-                <LevelProvider>
-                  <RewardsProvider>
-                    <AchievementProvider>
-                      <ChallengesProvider>
-                        <PressablesConfig
-                          globalHandlers={globalPressableHandlers}
-                          animationType="spring"
-                        >
-                          <GestureHandlerRootView
-                            style={StyleSheet.absoluteFill}
-                          >
-                            <GluestackUIProvider mode={APP_COLOR_MODE}>
-                              <SystemBackgroundIntegration />
-                              <RevenueCatProvider>
-                                <ThemeProvider value={DefaultTheme}>
-                                  <KeyboardProvider>
-                                        <BottomSheetModalProvider>
-                                          <Slot />
-                                          <AnonymousPurchaseClaimPrompt />
-                                          <FloatingHappyAssistant />
-                                          <TransitionOverlay />
-                                        </BottomSheetModalProvider>
-                                  </KeyboardProvider>
-                                </ThemeProvider>
-                              </RevenueCatProvider>
-                            </GluestackUIProvider>
-                          </GestureHandlerRootView>
-                        </PressablesConfig>
-                      </ChallengesProvider>
-                    </AchievementProvider>
-                  </RewardsProvider>
-                </LevelProvider>
-              </XPProvider>
-            </AuthProvider>
+            <GestureHandlerRootView style={StyleSheet.absoluteFill}>
+              <HeroUINativeProvider>
+                <AuthProvider>
+                  <NotificationIntegration />
+                  <XPProvider>
+                    <LevelProvider>
+                      <RewardsProvider>
+                        <AchievementProvider>
+                          <ChallengesProvider>
+                            <PressablesConfig
+                              globalHandlers={globalPressableHandlers}
+                              animationType="spring"
+                            >
+                              <GluestackUIProvider mode={APP_COLOR_MODE}>
+                                <SystemBackgroundIntegration />
+                                <RevenueCatProvider>
+                                  <ThemeProvider value={DefaultTheme}>
+                                    <KeyboardProvider>
+                                      <BottomSheetModalProvider>
+                                        <Slot />
+                                        <AnonymousPurchaseClaimPrompt />
+                                        <FloatingHappyAssistant />
+                                        <TransitionOverlay />
+                                      </BottomSheetModalProvider>
+                                    </KeyboardProvider>
+                                  </ThemeProvider>
+                                </RevenueCatProvider>
+                              </GluestackUIProvider>
+                            </PressablesConfig>
+                          </ChallengesProvider>
+                        </AchievementProvider>
+                      </RewardsProvider>
+                    </LevelProvider>
+                  </XPProvider>
+                </AuthProvider>
+              </HeroUINativeProvider>
+            </GestureHandlerRootView>
           </QueryClientProvider>
         </PostHogProvider>
       </ReduxProvider>
-
   );
 }
 function NotificationIntegration() {

@@ -200,6 +200,8 @@ export interface StepProps<T = Record<string, any>> {
   readOnly?: boolean;
   /** Whether input fields inside this step should auto-focus */
   autoFocus?: boolean;
+  /** Allow step to override the primary action button in the footer */
+  setPrimaryOverride?: (override: { label: string; action: () => void; disabled: boolean } | null) => void;
 }
 
 // ─── Step Definition — describes a single step in an exercise config ────────
