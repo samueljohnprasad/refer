@@ -10,7 +10,17 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { SparklesIcon } from "@hugeicons/core-free-icons";
 
 export const UpdateAvailableBanner: React.FC = () => {
-  const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
+  let isUpdateAvailable = false;
+  let isUpdatePending = false;
+
+  try {
+    const updates = Updates.useUpdates();
+    isUpdateAvailable = !!updates?.isUpdateAvailable;
+    isUpdatePending = !!updates?.isUpdatePending;
+  } catch (e) {
+    // Unsupported in Expo Go or unlinked dev environment
+  }
+
   const [isReloading, setIsReloading] = useState(false);
 
   // Auto-check for updates silently when app loads in production/preview
@@ -18,9 +28,11 @@ export const UpdateAvailableBanner: React.FC = () => {
     if (__DEV__) return;
     async function checkOTA() {
       try {
-        const update = await Updates.checkForUpdateAsync();
-        if (update.isAvailable) {
-          await Updates.fetchUpdateAsync();
+        if (typeof Updates.checkForUpdateAsync === "function") {
+          const update = await Updates.checkForUpdateAsync();
+          if (update.isAvailable) {
+            await Updates.fetchUpdateAsync();
+          }
         }
       } catch (e) {
         // Silently catch network/dev errors
@@ -37,7 +49,9 @@ export const UpdateAvailableBanner: React.FC = () => {
     try {
       setIsReloading(true);
       HapticManager.triggerSystem("notificationSuccess");
-      await Updates.reloadAsync();
+      if (typeof Updates.reloadAsync === "function") {
+        await Updates.reloadAsync();
+      }
     } catch (e) {
       setIsReloading(false);
     }
@@ -71,3 +85,6 @@ export const UpdateAvailableBanner: React.FC = () => {
     </Animated.View>
   );
 };
+
+export default UpdateAvailableBanner;
+
