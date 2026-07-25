@@ -1,3 +1,4 @@
+// npx supabase functions deploy fetch-enrolled-journeys --no-verify-jwt
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 //@ts-ignore

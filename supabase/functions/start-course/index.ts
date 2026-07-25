@@ -1,3 +1,4 @@
+// npx supabase functions deploy start-course --no-verify-jwt
 // start-course/index.ts
 // Creates user_course_progress for a course.
 // Idempotent — safe to call multiple times. Returns existing state if already started.

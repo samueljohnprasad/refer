@@ -1,3 +1,4 @@
+// npx supabase functions deploy complete-journey-node --no-verify-jwt
 /**
  * complete-journey-node — Deno Edge Function
  *

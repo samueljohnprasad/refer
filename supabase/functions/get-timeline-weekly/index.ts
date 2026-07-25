@@ -1,3 +1,4 @@
+// npx supabase functions deploy get-timeline-weekly --no-verify-jwt
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 

@@ -1,3 +1,4 @@
+// npx supabase functions deploy get-course-tree --no-verify-jwt
 // get-course-tree/index.ts
 // Returns the full content tree for a course: course + sections + units + nodes.
 // Replaces 4 client sub-queries with a single Edge Function round trip.

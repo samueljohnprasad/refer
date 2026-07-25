@@ -1,3 +1,4 @@
+// npx supabase functions deploy get-course-progress --no-verify-jwt
 // get-course-progress/index.ts
 // Returns courseProgress row + nodeProgressMap (keyed by nodeId) for a course.
 // Builds the map server-side so the client gets O(1) lookups rather than an array to scan.

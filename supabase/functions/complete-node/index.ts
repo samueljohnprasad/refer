@@ -1,3 +1,4 @@
+// npx supabase functions deploy complete-node --no-verify-jwt
 // complete-node/index.ts
 // Marks a node as completed and resolves the next node in sequence.
 // No attempt tracking or scoring — simple Done-button completion.
