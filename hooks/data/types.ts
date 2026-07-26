@@ -25,8 +25,7 @@ export type JournalAIInsightsExtended = {
 };
 
 export type JournalEntry = Tables<"journal_records"> & {
-  journal_ai_insights: JournalAIInsightsExtended | null;
   journal_ai?: Tables<"journal_ai"> | null;
-  moods: Tables<"moods"> | null;
+  moods?: Tables<"moods"> | null;
 };
 

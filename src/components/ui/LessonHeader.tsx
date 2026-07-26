@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity, Text as RNText, StyleSheet, StyleProp, ViewStyle } from "react-native";
-import StageProgressBar from "@/src/components/ui/StageProgressBar";
+import { AnimatedProgressBar } from "@/src/components/progress";
+import { SAGE, GOLD_TINT } from "@/lib/tokens";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { ArrowLeft02Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 
@@ -78,11 +79,14 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
 
       <View className="flex-1">
         {typeof progress === "number" ? (
-          <StageProgressBar
+          <AnimatedProgressBar
             progress={progress}
-            fillColor={progressFillColor}
+            useGradient={true}
+            gradientColors={[GOLD_TINT, SAGE[500]]}
+            pulsate={false}
             trackColor={progressTrackColor}
             height={progressHeight}
+            progressColor={progressFillColor}
           />
         ) : null}
       </View>

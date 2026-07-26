@@ -18,6 +18,9 @@ import useAudioRecording from "@/hooks/useAudioRecording";
 import * as Haptics from "expo-haptics";
 import { SAGE, INK_SOFT } from "@/lib/tokens";
 import { Feather } from "@expo/vector-icons";
+import { createLogger } from "@/src/lib/logger";
+
+const log = createLogger("VoiceRecorder");
 
 interface VoiceRecorderProps {
   onStop: (uri: string, enableAIInsights: boolean) => void;
@@ -33,6 +36,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
 
   useEffect(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    log.info("VoiceRecorder mounted");
   }, []);
 
   const lastShuffleTime = useRef(0);
@@ -45,6 +49,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
     }
     rotation.value = withSpring(rotation.value + 360, { damping: 20, stiffness: 100, overshootClamping: true });
     shufflePrompt();
+    log.debug("Prompt shuffled");
   }, [shufflePrompt, rotation]);
 
   const rotateStyle = useAnimatedStyle(() => {
@@ -69,6 +74,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
       recordingCurrentState === "recording" ||
       recordingCurrentState === "paused"
     ) {
+      log.info("Stopping audio recording...", { totalDuration });
       const pathState = await stopRecording();
       if (!pathState?.url) return;
       onStop(pathState.url, enableAIInsights);
@@ -77,6 +83,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
 
   const handlePauseRecording = async () => {
     if (recordingCurrentState === "recording") {
+      log.info("Pausing audio recording...");
       await pauseRecording();
     }
   };
@@ -86,6 +93,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
       recordingCurrentState === "initial" ||
       recordingCurrentState === "paused"
     ) {
+      log.info("Starting audio recording...");
       await record();
     }
   };

@@ -14,6 +14,9 @@ import { useXPOptional } from "@/src/context/XPContext";
 import { XPActionType } from "@/src/types/xp";
 import { useRewardsContext } from "@/src/context/RewardsContext";
 import { useChallengesOptional } from "@/src/context/ChallengesContext";
+import { createLogger } from "@/src/lib/logger";
+
+const log = createLogger("SaveJournal");
 
 export interface JournalEntryRow extends InsightsType {
   id: string;
@@ -34,9 +37,11 @@ export const useSaveJournal = () => {
   const saveJournal = useCallback(
     async (input: JournalEntry): Promise<void> => {
       if (!user?.id) {
+        log.warn("saveJournal called while not authenticated");
         throw new Error("Not authenticated");
       }
 
+      log.info("Saving journal entry...", { inputType: input.input_type, title: input.title });
       setSaving(true);
       const formattedDate: string = formateDate_y_m_d(selectedDate);
       const queryKey = ["journals_data", user.id, formattedDate];
@@ -98,24 +103,7 @@ export const useSaveJournal = () => {
           .single();
         if (journalError) throw journalError;
 
-        const aiInsights: Insert<"journal_ai_insights"> = {
-          journal_entry_id: journalData.id,
-          aiInsights: input.journal_ai_insights?.aiInsights,
-          feelings: input.journal_ai_insights?.feelings,
-          energyLevel: input.journal_ai_insights?.energyLevel,
-          stressLevel: input.journal_ai_insights?.stressLevel,
-          triggers: input.journal_ai_insights?.triggers,
-          worries: input.journal_ai_insights?.worries,
-          achievements: input.journal_ai_insights?.achievements,
-          sleepQuality: input.journal_ai_insights?.sleepQuality,
-        };
 
-        const { data: insightsData, error: insightsError } = await supabase
-          .from("journal_ai_insights")
-          .upsert(aiInsights, { onConflict: "journal_entry_id" })
-          .select()
-          .single();
-        if (insightsError) throw insightsError;
 
         const mood: Insert<"moods"> = {
           user_id: user.id,
@@ -177,7 +165,7 @@ export const useSaveJournal = () => {
         setSaving(false);
       }
     },
-    [user?.id, queryClient, selectedDate, logStreakIfNeeded],
+    [user?.id, queryClient, selectedDate, xp, earnCoinsForAction, challenges],
   );
 
   const saveJournalQuick = useCallback(
@@ -196,7 +184,6 @@ export const useSaveJournal = () => {
         moods: {
           main_mood: "fine",
         },
-        journal_ai_insights: null,
         words_count: countWords(text),
       };
 

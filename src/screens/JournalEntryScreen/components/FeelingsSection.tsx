@@ -44,7 +44,9 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
     }
   };
 
-  if (!isEditing && feelings.length === 0) {
+  const safeFeelings = (feelings || []).filter(Boolean);
+
+  if (!isEditing && safeFeelings.length === 0) {
     return null;
   }
 
@@ -52,7 +54,7 @@ export const FeelingsSection = React.memo<FeelingsSectionProps>(({
     <View className="mt-2 mb-6">
       <View className="flex-row flex-wrap gap-2">
 
-        {feelings.map((feeling, index) => (
+        {safeFeelings.map((feeling, index) => (
           <View
             key={index}
             className={`flex-row items-center px-3.5 py-1.5 rounded-full border ${

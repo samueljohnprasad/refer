@@ -273,9 +273,9 @@ export const CalendarPicker: React.FC<CalendarPickerProps> = React.memo(
           Matches universal calendar convention so navigation direction is obvious.
         */}
         <View className="flex-row items-center mb-3 py-2">
-          {/* Back arrow — left edge */}
+          {/* Back arrow — offset by ml-10 to prevent overlap with top-left close (X) icon */}
           <Pressable
-            className="h-10 w-10 items-center justify-center rounded-full bg-sage-50"
+            className="h-10 w-10 items-center justify-center rounded-full bg-sage-50 ml-10"
             onPress={goToPreviousMonth}
             accessibilityRole="button"
             accessibilityLabel="Previous month"

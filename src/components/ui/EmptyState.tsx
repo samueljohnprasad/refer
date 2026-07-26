@@ -4,7 +4,8 @@ import { Text } from "@/src/components/ui/Text";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Mascot, MascotState } from "./Mascot";
 import { Button } from "@/src/components/ui/Button";
-import { BRAND_SURFACE } from "@/lib/tokens";
+import { BRAND_SURFACE, INK, SAGE } from "@/lib/tokens";
+import { StaggeredText } from "@/src/components/staggered-text";
 
 interface EmptyStateProps {
   mascotState: MascotState;
@@ -12,7 +13,7 @@ interface EmptyStateProps {
   onButtonPress?: () => void;
   buttonIcon?: any;
   buttonLoading?: boolean;
-  title?: string;
+  title?: string | string[];
   description?: string;
   secondaryButtonText?: string;
   onSecondaryButtonPress?: () => void;
@@ -35,18 +36,44 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   secondaryButtonLoading,
   containerClassName = "",
 }) => {
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const titles = Array.isArray(title) ? title : title ? [title] : [];
+
+  React.useEffect(() => {
+    if (titles.length > 1) {
+      const interval = setInterval(() => {
+        setActiveIndex((prev) => (prev + 1) % titles.length);
+      }, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [titles.length]);
+
   return (
-    <View className={`flex-1 items-center justify-center py-8 min-h-[400px] ${containerClassName}`}>
+    <View
+      className={`flex-1 items-center justify-center py-8 min-h-[400px] ${containerClassName}`}
+    >
       <View className="mb-8 items-center justify-center">
         <Mascot state={mascotState} size={140} />
       </View>
-      
-      {title && (
-        <Text variant="h1" className="text-center mb-2 px-6">
-          {title}
-        </Text>
+
+      {titles.length > 0 && (
+        <View className="mb-2 w-full justify-center items-center h-[40px]">
+          <StaggeredText
+            texts={titles}
+            activeIndex={activeIndex}
+            fontSize={28}
+            color={SAGE[700]}
+            fontPath={require("@expo-google-fonts/cormorant-garamond/600SemiBold/CormorantGaramond_600SemiBold.ttf")}
+            staggerFrom="leading"
+            height={40}
+            animationConfig={{
+              duration: 800,
+              characterDelay: 30,
+            }}
+          />
+        </View>
       )}
-      
+
       {description && (
         <Text variant="body" color="soft" className="text-center px-8 mb-8">
           {description}
@@ -65,7 +92,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
               loading={buttonLoading}
               leftIcon={
                 buttonIcon ? (
-                  <HugeiconsIcon icon={buttonIcon} size={18} color={BRAND_SURFACE} />
+                  <HugeiconsIcon
+                    icon={buttonIcon}
+                    size={18}
+                    color={BRAND_SURFACE}
+                  />
                 ) : undefined
               }
             />
@@ -78,7 +109,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
               loading={secondaryButtonLoading}
               leftIcon={
                 secondaryButtonIcon ? (
-                  <HugeiconsIcon icon={secondaryButtonIcon} size={18} color="#142414" />
+                  <HugeiconsIcon
+                    icon={secondaryButtonIcon}
+                    size={18}
+                    color="#142414"
+                  />
                 ) : undefined
               }
             />
@@ -92,7 +127,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             onPress={onButtonPress}
             leftIcon={
               buttonIcon ? (
-                <HugeiconsIcon icon={buttonIcon} size={18} color={BRAND_SURFACE} />
+                <HugeiconsIcon
+                  icon={buttonIcon}
+                  size={18}
+                  color={BRAND_SURFACE}
+                />
               ) : undefined
             }
           />

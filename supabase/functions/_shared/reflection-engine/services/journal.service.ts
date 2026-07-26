@@ -160,6 +160,17 @@ export class JournalService {
     }
 
     console.log(`Saved journal record id: ${data.id}, journal_ai, and moods`);
-    return data;
+    return {
+      ...data,
+      journal_ai: {
+        summary: aiResult.reflection,
+        confidence: aiResult.confidence,
+        structured_memory: aiResult.structured_memory,
+      },
+      moods: {
+        main_mood: getMoodEnum(score),
+        mood_score: score,
+      },
+    };
   }
 }

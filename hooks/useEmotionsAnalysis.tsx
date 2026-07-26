@@ -10,6 +10,9 @@ import { useAtom } from "jotai";
 import { JournalEntry } from "./data/types";
 import { getAudioDuration } from "@/src/utils/date";
 import { useToast } from "heroui-native";
+import { createLogger } from "@/src/lib/logger";
+
+const log = createLogger("EmotionAnalysis");
 
 export type AnalysisCompletedType = {
   insights: JournalEntry;
@@ -52,10 +55,13 @@ const useEmotionsAnalysis = ({
   };
 
   const uploadAndTranscribe = async (): Promise<JournalEntry | null> => {
+    log.info("Starting journal upload & transcription...", { isAudio: !!uri });
+
     const journalEntry: string | undefined = uri
       ? getBase64Audio(uri)
       : journalText;
     if (!journalEntry) {
+      log.warn("No journal content provided to uploadAndTranscribe");
       throw new Error("No journal content provided");
     }
 
@@ -65,33 +71,22 @@ const useEmotionsAnalysis = ({
     });
 
     const duration: number = uri ? await getAudioDuration(uri) : 0;
-    const journalEntryData: JournalEntry = {
-      duration_seconds: Math.round(duration),
-      input_type: uri ? "voice" : "typing",
-      title: insights.title,
-      transcripts: insights.enrichedTranscript,
-      journal_ai_insights: {
-        achievements: insights.achievements,
-        aiInsights: insights.aiInsights,
-        energyLevel: insights.energyLevel,
-        feelings: insights.feelings,
-        sleepQuality: insights.sleepQuality,
-        stressLevel: insights.stressLevel,
-        triggers: insights.triggers,
-        worries: insights.worries,
-        journal_entry_id: -1,
-        // New CBT-informed insight fields (available immediately, not yet persisted to DB)
-        cognitivePattern: insights.cognitivePattern ?? null,
-        suggestedExerciseName: insights.suggestedExerciseName ?? null,
-        suggestedExercise: insights.suggestedExercise ?? null,
-        nextJournalPrompt: insights.nextJournalPrompt ?? null,
-        strengthSpotlight: insights.strengthSpotlight ?? null,
-      },
-      moods: {
-        main_mood: insights.mainEmoji,
-      },
+    const rawAi = (insights as any)?.journal_ai;
+    const summaryText =
+      rawAi?.summary ||
+      (insights as any)?.summary ||
+      (insights as any)?.reflection ||
+      null;
+
+    const formattedEntry: JournalEntry = {
+      ...(insights as any),
+      duration_seconds: (insights as any)?.duration_seconds ?? Math.round(duration),
+      transcripts: (insights as any)?.transcripts || (insights as any)?.enrichedTranscript || journalText || "",
+      journal_ai: (insights as any)?.journal_ai || (summaryText ? { summary: summaryText } : null),
     };
-    return journalEntryData;
+
+    log.debug("Successfully formatted AI journal entry", { id: formattedEntry.id, title: formattedEntry.title });
+    return formattedEntry;
   };
 
   useEffect(() => {
@@ -113,8 +108,10 @@ const useEmotionsAnalysis = ({
         setProcessingPhase(ProcessingPhase.FINALIZING);
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
+        log.info("Emotion analysis pipeline finished successfully");
         onAnalysisCompleted({ insights });
       } catch (error) {
+        log.error("Error in emotion analysis pipeline", error);
         // Close the recorder
         setRecorderOpen(false);
 

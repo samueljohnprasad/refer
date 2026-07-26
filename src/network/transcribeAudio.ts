@@ -1,5 +1,8 @@
 import { supabase } from "./auth/supabase";
 import { InsightsType } from "./genAi";
+import { createLogger } from "@/src/lib/logger";
+
+const log = createLogger("AudioTranscription");
 
 interface CallMyFunctionParams {
   journal: string;
@@ -21,6 +24,7 @@ export async function callMyFunction({
   journal,
   isAudio,
 }: CallMyFunctionParams): Promise<InsightsType> {
+  log.info("Invoking save-journal-ai-insights edge function...", { isAudio, length: journal.length });
   try {
     const { data, error } = await supabase.functions.invoke<InsightsType>(
       "save-journal-ai-insights",
@@ -30,6 +34,7 @@ export async function callMyFunction({
     );
 
     if (error) {
+      log.error("Edge function returned error", error);
       const errorMessage = error.message || "Unknown error occurred";
       const isNetworkError =
         errorMessage.includes("Network request failed") ||
@@ -45,13 +50,16 @@ export async function callMyFunction({
     }
 
     if (!data) {
+      log.error("Edge function returned empty response data");
       throw new EdgeFunctionError(
         "No data received from AI processing. Please try again."
       );
     }
 
+    log.info("Edge function response received successfully", { title: data.title });
     return data;
   } catch (err) {
+    log.error("Failed to invoke save-journal-ai-insights edge function", err);
     // Re-throw EdgeFunctionError
     if (err instanceof EdgeFunctionError) {
       throw err;

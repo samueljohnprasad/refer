@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { Text } from "@/src/components/ui/Text";
 import { Card } from "@/src/components/ui/Card";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -13,6 +13,7 @@ import type {
   WeeklySummary,
   GrowthInsight,
 } from "@/src/network/genAi";
+import { GrainyGradient } from "@/src/components/grainy-gradient";
 
 interface AIInsightsContentProps {
   loading?: boolean;
@@ -37,10 +38,15 @@ export const AIInsightsContent: React.FC<AIInsightsContentProps> = ({
 }) => {
   if (loading) {
     return (
-      <View className="py-12 items-center">
-        <ActivityIndicator size="large" color="#7B61FF" />
-        <Text variant="body" color="muted" className="mt-4">
-          Loading insights...
+      <View className="py-24 items-center justify-center overflow-hidden rounded-3xl mb-6 border border-purple-100">
+        <GrainyGradient 
+          style={StyleSheet.absoluteFill} 
+          colors={["#5b0bb5", "#7c3aed", "#fb923c"]}
+          speed={2.0}
+        />
+        <ActivityIndicator size="large" color="#FFFFFF" />
+        <Text variant="body" style={{ color: "white", marginTop: 16, fontWeight: "500" }}>
+          Generating insights...
         </Text>
       </View>
     );

@@ -53,14 +53,8 @@ const fetchWeekEntries = async (userId: string, weekStart: Date) => {
     transcripts,
     duration_seconds,
     selected_date,
-    journal_ai_insights (
-      feelings,
-      energyLevel,
-      stressLevel,
-      triggers,
-      worries,
-      achievements,
-      sleepQuality
+    journal_ai (
+      summary
     ),
     moods(main_mood)
   `

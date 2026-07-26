@@ -61,22 +61,7 @@ export const useBookmarkedJournals = (): UseBookmarkedJournalsReturn => {
           .from("journal_records")
           .select(
             `*,
-            journal_ai_insights(
-              id,
-              journal_entry_id,
-              created_at,
-              aiInsights,
-              feelings,
-              energyLevel,
-              stressLevel,
-              sleepQuality,
-              achievements,
-              worries,
-              goals,
-              triggers,
-              copingStrategies,
-              "physical-symptoms"
-            ),
+            journal_ai(*),
             moods(*)
             `
           )

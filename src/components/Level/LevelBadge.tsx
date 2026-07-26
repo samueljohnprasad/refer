@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { LevelTier } from "@/src/types/levels";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { 
@@ -9,6 +9,8 @@ import {
   StarsIcon, 
   Medal01Icon 
 } from "@hugeicons/core-free-icons";
+import { SymbolView } from "expo-symbols";
+import type { SFSymbol } from "sf-symbols-typescript";
 
 interface LevelBadgeProps {
   level: LevelTier;
@@ -23,12 +25,33 @@ export const getLevelIcon = (levelNum: number) => {
     case 3: return Target01Icon;
     case 4: return StarsIcon;
     case 5: return Medal01Icon;
+    case 6: return BrainIcon;
+    case 7: return Target01Icon;
+    case 8: return Plant01Icon;
+    case 9: return StarsIcon;
+    case 10: return Medal01Icon;
     default: return StarsIcon;
   }
 };
 
+export const getLevelSFSymbol = (levelNum: number): SFSymbol => {
+  switch (levelNum) {
+    case 1: return "leaf.fill";
+    case 2: return "brain.head.profile";
+    case 3: return "target";
+    case 4: return "sparkles";
+    case 5: return "medal.fill";
+    case 6: return "book.fill";
+    case 7: return "eye.circle.fill";
+    case 8: return "wind";
+    case 9: return "sun.max.fill";
+    case 10: return "infinity.circle.fill";
+    default: return "star.fill";
+  }
+};
+
 /**
- * Compact badge showing level icon and optionally name
+ * Compact badge showing native SF Symbol icon via expo-symbols on iOS and optionally name
  * For use in headers and profile displays
  */
 export const LevelBadge: React.FC<LevelBadgeProps> = ({
@@ -44,17 +67,37 @@ export const LevelBadge: React.FC<LevelBadgeProps> = ({
 
   const styles = sizeStyles[size];
 
+  const renderIcon = () => {
+    if (Platform.OS === "ios") {
+      return (
+        <SymbolView
+          name={getLevelSFSymbol(level.level)}
+          size={styles.icon}
+          tintColor={level.color}
+          weight="semibold"
+          style={{ width: styles.icon, height: styles.icon }}
+        />
+      );
+    }
 
+    return (
+      <HugeiconsIcon
+        icon={getLevelIcon(level.level)}
+        size={styles.icon}
+        color={level.color}
+      />
+    );
+  };
 
   return (
     <View
       className={`flex-row items-center ${styles.padding} rounded-full`}
       style={{ backgroundColor: level.color + "1A" }}
     >
-      <HugeiconsIcon icon={getLevelIcon(level.level)} size={styles.icon} color={level.color} />
+      {renderIcon()}
       {showName && (
         <Text
-          className={`${styles.text} font-semibold ml-1`}
+          className={`${styles.text} font-semibold ml-1.5`}
           style={{ color: level.color }}
         >
           {level.name}

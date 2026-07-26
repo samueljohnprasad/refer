@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient as ExpoLinearGradient } from "expo-linear-gradient";
+import { GrainyGradient } from "@/src/components/grainy-gradient";
 import useEmotionsAnalysis, {
   AnalysisCompletedType,
 } from "@/hooks/useEmotionsAnalysis";
@@ -32,48 +33,46 @@ interface EmotionAnalysisLoadingScreenProps {
   onCancel?: () => void;
 }
 
-
-
 // Progress dots with pulse & scale animations
 const ProgressDots = () => {
   const dots = [0, 1, 2];
-  
+
   return (
     <View style={{ flexDirection: "row", marginTop: 32, gap: 10 }}>
       {dots.map((index) => {
         const opacity = useSharedValue(0.3);
         const scale = useSharedValue(1);
-        
+
         useEffect(() => {
           opacity.value = withDelay(
             index * 250,
             withRepeat(
               withSequence(
                 withTiming(1, { duration: 600 }),
-                withTiming(0.3, { duration: 600 })
+                withTiming(0.3, { duration: 600 }),
               ),
               -1,
-              true
-            )
+              true,
+            ),
           );
           scale.value = withDelay(
             index * 250,
             withRepeat(
               withSequence(
                 withTiming(1.3, { duration: 600 }),
-                withTiming(1, { duration: 600 })
+                withTiming(1, { duration: 600 }),
               ),
               -1,
-              true
-            )
+              true,
+            ),
           );
         }, []);
-        
+
         const animatedStyle = useAnimatedStyle(() => ({
           opacity: opacity.value,
           transform: [{ scale: scale.value }],
         }));
-        
+
         return (
           <Animated.View
             key={index}
@@ -82,7 +81,7 @@ const ProgressDots = () => {
                 width: 9,
                 height: 9,
                 borderRadius: 4.5,
-                backgroundColor: SAGE[500],
+                backgroundColor: "#FFFFFF",
               },
               animatedStyle,
             ]}
@@ -102,13 +101,16 @@ const EmotionAnalysisLoadingScreen: React.FC<
     uri: recordingUri,
     journalText,
     onAnalysisCompleted,
+    onAnalysisError: () => {
+      onCancel?.();
+    },
   });
 
   return (
     <View style={{ flex: 1, backgroundColor: BRAND_SURFACE }}>
-      {/* Subtle gradient background */}
-      <ExpoLinearGradient
-        colors={SAGE_LOADING_GRADIENT}
+      {/* Vibrant Grainy Gradient Background */}
+      <GrainyGradient
+        colors={["#E11D48", "#7C3AED", "#4F46E5", "#F97316", "#EC4899"]}
         style={{
           position: "absolute",
           top: 0,
@@ -119,22 +121,31 @@ const EmotionAnalysisLoadingScreen: React.FC<
       />
 
       {/* Cancel Button */}
-      <SafeAreaView edges={["top"]} style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 }}>
-        <View style={{ flexDirection: "row", justifyContent: "flex-end", padding: 24 }}>
+      <SafeAreaView
+        edges={["top"]}
+        style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            padding: 24,
+          }}
+        >
           {onCancel && (
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={onCancel}
               style={{
                 width: 40,
                 height: 40,
                 borderRadius: 20,
-                backgroundColor: "rgba(255,255,255,0.5)",
+                backgroundColor: "rgba(255,255,255,0.2)",
                 justifyContent: "center",
                 alignItems: "center",
               }}
               accessibilityLabel="Cancel analysis"
             >
-              <Feather name="x" size={20} color={INK_SOFT} />
+              <Feather name="x" size={20} color="#FFFFFF" />
             </TouchableOpacity>
           )}
         </View>
@@ -153,7 +164,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
         <Text
           style={{
             fontFamily: "GeistMedium",
-            color: SAGE[600],
+            color: "rgba(255, 255, 255, 0.8)",
             fontSize: 14,
             textAlign: "center",
           }}
@@ -165,11 +176,11 @@ const EmotionAnalysisLoadingScreen: React.FC<
         <Text
           style={{
             fontFamily: "CormorantBold",
-            color: INK,
-            fontSize: 28,
+            color: "#FFFFFF",
+            fontSize: 32,
             textAlign: "center",
             marginTop: 18,
-            lineHeight: 36,
+            lineHeight: 40,
           }}
         >
           {processingPhase}
@@ -182,7 +193,7 @@ const EmotionAnalysisLoadingScreen: React.FC<
         <Text
           style={{
             fontFamily: "GeistMedium",
-            color: INK_SOFT,
+            color: "rgba(255, 255, 255, 0.85)",
             fontSize: 15,
             textAlign: "center",
             marginTop: 28,

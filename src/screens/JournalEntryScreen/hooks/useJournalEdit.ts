@@ -31,7 +31,7 @@ export const useJournalEdit = ({
   initialText,
 }: UseJournalEditProps): UseJournalEditReturn => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [tags, setTags] = useState<FeelingsType[]>(initialTags);
+  const [tags, setTags] = useState<FeelingsType[]>(initialTags || []);
   const [journalText, setJournalText] = useState<string>(initialText);
   const [backupState, setBackupState] = useState<BackupState>({
     tags: [],

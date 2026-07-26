@@ -23,7 +23,7 @@ export default function JournalEntryRoute() {
         setLoading(true);
         const { data, error } = await supabase
           .from("journal_entries")
-          .select("*, journal_ai_insights!left(*)")
+          .select("*, journal_ai!left(*)")
           .eq("id", id)
           .single();
           

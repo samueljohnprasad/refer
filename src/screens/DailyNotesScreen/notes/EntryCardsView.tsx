@@ -97,7 +97,11 @@ export const EntryCardsView: React.FC<EntryCardsViewProps> = ({
     return (
       <EmptyState
         mascotState="panda-notes"
-        title="What's on your mind?"
+        title={[
+          "What's on your mind?",
+          "Capture a quick thought",
+          "Reflect on your day"
+        ]}
         description="A private space to capture your thoughts."
         buttonText="Record Voice"
         onButtonPress={() => router.push("/tabs/(tabs)/record")}
@@ -223,8 +227,7 @@ const EntryCard: React.FC<EntryCardProps> = memo(function EntryCard({
   index,
   isBookmarking = false,
 }) {
-  const feelings: FeelingsType[] = entry.journal_ai_insights
-    ?.feelings as FeelingsType[];
+  const feelings: FeelingsType[] = (entry as any).feelings || [];
 
   // Get bookmark status from entry
   const isBookmarked: boolean = entry.is_bookmarked || false;

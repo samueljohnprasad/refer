@@ -89,7 +89,11 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
       ) : habitsWithStatus.length === 0 ? (
         <EmptyState
           mascotState="panda-yet-sleep-pillow"
-          title="Build Better Habits"
+          title={[
+            "Build Better Habits",
+            "Track Daily Progress",
+            "Stay Consistent"
+          ]}
           description="Build healthy routines with daily tracking and streaks."
           buttonText="Add Habit"
           onButtonPress={() => router.push("/tabs/screens/habits-modal/add" as never)}
