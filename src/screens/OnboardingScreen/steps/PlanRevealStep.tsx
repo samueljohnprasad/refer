@@ -453,50 +453,6 @@ const PlanRevealStep: React.FC<PlanRevealStepProps> = ({
           tone="sky"
         />
       </Animated.View>
-
-      <Animated.View entering={FadeIn.duration(180).delay(480)} className="mt-6">
-        <Text
-          style={{ fontFamily: "CormorantSemiBold" }}
-          className="mb-4 text-[22px] text-ink"
-        >
-          What you'll learn
-        </Text>
-        <View className="relative pl-1">
-          {/* Vertical connecting line */}
-          <View className="absolute bottom-4 left-[19px] top-4 w-0.5 bg-sage-200" />
-          <View className="gap-5">
-            {planMeta.learnItems.map((item) => (
-              <View
-                key={item.step}
-                className="flex-row items-start gap-3.5"
-              >
-                <View className="z-10 h-8 w-8 items-center justify-center rounded-full bg-sage-500 shadow-sm">
-                  <Text
-                    style={{ fontFamily: "GeistBold" }}
-                    className="text-xs text-white"
-                  >
-                    {item.step}
-                  </Text>
-                </View>
-                <View className="flex-1 pt-0.5">
-                  <Text
-                    style={{ fontFamily: "GeistSemiBold" }}
-                    className="text-[15px] text-ink"
-                  >
-                    {item.title}
-                  </Text>
-                  <Text
-                    style={{ fontFamily: "GeistRegular" }}
-                    className="mt-0.5 text-[13px] text-ink-muted"
-                  >
-                    {item.subtitle}
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        </View>
-      </Animated.View>
     </ScrollView>
   );
 };

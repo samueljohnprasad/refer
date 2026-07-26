@@ -36,19 +36,19 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   containerClassName = "",
 }) => {
   return (
-    <View className={`flex-1 items-center justify-center py-12 min-h-[400px] ${containerClassName}`}>
-      <View className="h-44 w-44 items-center justify-center rounded-[44px] border-0 mb-4">
-        <Mascot state={mascotState} size={156} />
+    <View className={`flex-1 items-center justify-center py-8 min-h-[400px] ${containerClassName}`}>
+      <View className="mb-8 items-center justify-center">
+        <Mascot state={mascotState} size={140} />
       </View>
       
       {title && (
-        <Text variant="h1" className="text-center mb-3 px-6">
+        <Text variant="h1" className="text-center mb-2 px-6">
           {title}
         </Text>
       )}
       
       {description && (
-        <Text variant="body" color="ink" className="text-center px-8 mb-8 opacity-80">
+        <Text variant="body" color="soft" className="text-center px-8 mb-8">
           {description}
         </Text>
       )}
@@ -65,7 +65,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
               loading={buttonLoading}
               leftIcon={
                 buttonIcon ? (
-                  <HugeiconsIcon icon={buttonIcon} size={18} color="white" />
+                  <HugeiconsIcon icon={buttonIcon} size={18} color={BRAND_SURFACE} />
                 ) : undefined
               }
             />

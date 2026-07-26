@@ -459,7 +459,7 @@ function JumpBackInShelf({
 
   // Map IDs to actual exercise config objects
   // Pad with defaults if fewer than 2 recent exercises
-  const defaultIds = ["breathing-box", "pmr"];
+  const defaultIds = ["thought_catcher", "thought_reframing"];
   const displayIds = Array.from(new Set([...recentIds, ...defaultIds])).slice(
     0,
     2,

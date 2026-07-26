@@ -40,7 +40,6 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   const habitsWithStatusAndStreaks = habitsWithStatus.map((h) => ({
     ...h,
     currentStreak: streaks[h.id]?.currentStreak || 0,
-    longestStreak: streaks[h.id]?.longestStreak || 0,
   }));
 
   const handleHabitPress = (habitId: string) => {
@@ -81,7 +80,7 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
   );
 
   return (
-    <View className="pb-48">
+    <View className={habitsWithStatus.length === 0 && !habitsLoading && !completionsLoading ? "flex-1" : "pb-48"}>
       {habitsLoading || completionsLoading ? (
         <>
           <HabitCategorySkeleton />
@@ -143,7 +142,6 @@ export const HabitsSection: React.FC<HabitsSectionProps> = ({
           </Pressable>
         </>
       )}
-
     </View>
   );
 };

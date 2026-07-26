@@ -69,7 +69,6 @@ export interface HabitWithStatus extends Habit {
   isCompleted: boolean;
   completionId?: string;
   currentStreak?: number;
-  longestStreak?: number;
 }
 
 // Preset habit template
@@ -108,6 +107,5 @@ export interface HabitSchedulingData {
 export interface HabitStreak {
   habitId: string;
   currentStreak: number;
-  longestStreak: number;
   lastCompletedDate?: string;
 }

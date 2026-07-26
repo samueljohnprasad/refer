@@ -35,14 +35,12 @@ import DailyGoalStep from "./steps/DailyGoalStep";
 import PactSigningStep from "./steps/PactSigningStep";
 import BuildingJourneyStep from "./steps/BuildingJourneyStep";
 import PlanRevealStep from "./steps/PlanRevealStep";
-import MoodCheckLessonStep from "./steps/MoodCheckLessonStep";
-import AIInsightStep from "./steps/AIInsightStep";
 import LessonCompleteStep from "./steps/LessonCompleteStep";
 import NotificationPermissionStep from "./steps/NotificationPermissionStep";
 import JourneyMapContainer from "@/src/domains/journey/ui/JourneyMapContainer";
 import LetterFromFutureStep from "./steps/LetterFromFutureStep";
-import SoftPaywallStep from "./steps/SoftPaywallStep";
 import WelcomeToHappyStep from "./steps/WelcomeToHappyStep";
+import RevenueCatUI from "react-native-purchases-ui";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { RemindersConfig } from "@/src/components/lib/notification-reminders";
 
@@ -128,24 +126,6 @@ const getHeaderConfig = (stepName: string): HeaderConfig => {
       };
     case "pact_signing":
       return { visible: true, showBackButton: true, progress: 0.6 };
-    case "mood_check_lesson":
-      return {
-        visible: true,
-        showBackButton: true,
-        backButtonVariant: "close",
-        progress: 0.5,
-        progressFillColor: LESSON_PROGRESS_FILL,
-        trailingLabel: "+10 XP",
-        trailingLabelColor: LESSON_PROGRESS_FILL,
-      };
-    case "ai_insight":
-      return {
-        visible: true,
-        progress: 0.82,
-        progressFillColor: LESSON_PROGRESS_FILL,
-        trailingLabel: "+10 XP",
-        trailingLabelColor: LESSON_PROGRESS_FILL,
-      };
     case "letter_from_future":
       return {
         visible: true,
@@ -274,6 +254,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     analytics.trackStepViewed(currentStep, currentStepIndex);
   }, [currentStepIndex]);
 
+
+
   useEffect(() => {
     if (!showContinueButton) {
       setIsStepActionReady(false);
@@ -361,25 +343,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     setTimeout(goNext, 1200);
   }, [updatePactSigned, goNext]);
 
-  const handlePaywallTrial = useCallback(async () => {
-    if (loading) return;
 
-    try {
-      setLoading(true);
-      const purchased = await presentPaywall();
-      if (!purchased) return;
-
-      updateTrialStarted(true);
-      goNext();
-    } finally {
-      setLoading(false);
-    }
-  }, [goNext, loading, presentPaywall, updateTrialStarted]);
-
-  const handlePaywallFree = useCallback(() => {
-    updateTrialStarted(false);
-    goNext();
-  }, [updateTrialStarted, goNext]);
 
   const isContinueDisabled =
     !canContinue ||
@@ -433,20 +397,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
             motivation={formData.motivation}
           />
         );
-      case "mood_check_lesson":
-        return (
-          <MoodCheckLessonStep
-            selected={formData.selectedFeeling}
-            onSelect={updateFeeling}
-          />
-        );
-      case "ai_insight":
-        return (
-          <AIInsightStep
-            feeling={formData.selectedFeeling}
-            timing={formData.stressTiming}
-          />
-        );
       case "lesson_complete":
         return <LessonCompleteStep />;
       case "notification_permission":
@@ -458,7 +408,9 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
           />
         );
       case "journey_map":
-        return <JourneyMapContainer isOnboarding={true} />;
+        return (
+          <JourneyMapContainer isOnboarding={true} onComplete={goNext} />
+        );
       case "letter_from_future":
         return (
           <LetterFromFutureStep
@@ -468,11 +420,20 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         );
       case "soft_paywall":
         return (
-          <SoftPaywallStep
-            selectedTier={formData.selectedPricingTier}
-            onSelectTier={updatePricingTier}
-            onStartTrial={handlePaywallTrial}
-            onContinueFree={handlePaywallFree}
+          <RevenueCatUI.Paywall
+            options={{ displayCloseButton: true }}
+            onPurchaseCompleted={() => {
+              updateTrialStarted(true);
+              goNext();
+            }}
+            onRestoreCompleted={() => {
+              updateTrialStarted(true);
+              goNext();
+            }}
+            onDismiss={() => {
+              updateTrialStarted(false);
+              goNext();
+            }}
           />
         );
       case "welcome_to_happy":

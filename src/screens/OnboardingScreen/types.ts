@@ -10,8 +10,6 @@ export type OnboardingStepName =
   | "building_journey"
   | "plan_reveal"
   | "journey_step_preview"
-  | "mood_check_lesson"
-  | "ai_insight"
   | "lesson_complete"
   | "cbt_step_preview"
   | "notification_permission"

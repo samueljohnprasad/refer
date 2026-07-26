@@ -160,6 +160,11 @@ export const useSaveJournal = () => {
           queryKey: ["daily-moods-intervals"],
           refetchType: "active",
         });
+
+        // Invalidate streak query
+        if (user?.id) {
+          await queryClient.invalidateQueries({ queryKey: ["streak", user.id] });
+        }
       } catch (error) {
         if (previousJournals) {
           queryClient.setQueryData(queryKey, previousJournals);

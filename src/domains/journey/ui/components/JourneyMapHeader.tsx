@@ -32,8 +32,6 @@ export interface JourneyMapHeaderProps {
     completedNodes: number;
     /** Current streak days */
     streakDays: number;
-    /** Streak freezes available */
-    streakFreezes: number;
     /** Whether streak is at risk */
     streakAtRisk: boolean;
     /** Total Insight Points */
@@ -61,7 +59,6 @@ function JourneyMapHeaderInner({
     totalNodes,
     completedNodes,
     streakDays,
-    streakFreezes,
     streakAtRisk,
     totalIP,
     recentGains,
@@ -101,7 +98,6 @@ function JourneyMapHeaderInner({
                 {/* Streak (compact) */}
                 <StreakBanner
                     currentStreak={streakDays}
-                    freezesAvailable={streakFreezes}
                     isAtRisk={streakAtRisk}
                     compact
                     onPress={onStreakPress}

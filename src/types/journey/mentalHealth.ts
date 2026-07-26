@@ -429,9 +429,7 @@ export type NodeResponseData =
 export interface UserStreak {
   userId: string;
   currentStreak: number;
-  longestStreak: number;
   lastActivityDate: string;
-  streakFreezesAvailable: number;
   restDaysUsedThisWeek: number;
   weekStartDate: string;
   updatedAt: string;
@@ -440,10 +438,8 @@ export interface UserStreak {
 /** Response from the `update_user_streak()` RPC */
 export interface UpdateStreakResponse {
   currentStreak: number;
-  longestStreak: number;
   streakChanged: boolean;
   milestone: number;
-  freezesAvailable: number;
 }
 
 /** Streak milestone thresholds */

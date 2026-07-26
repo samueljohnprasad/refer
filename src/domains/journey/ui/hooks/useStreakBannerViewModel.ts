@@ -9,7 +9,6 @@ import {
 
 export interface StreakBannerProps {
   currentStreak: number;
-  freezesAvailable: number;
   isAtRisk: boolean;
   compact?: boolean;
   onPress?: () => void;
@@ -45,7 +44,6 @@ export function useAnimatedFlameViewModel(animate: boolean) {
 
 export function useStreakBannerViewModel({
   currentStreak,
-  freezesAvailable,
   isAtRisk,
   compact = false,
   onPress,
@@ -57,7 +55,6 @@ export function useStreakBannerViewModel({
     isHighStreak,
     hasStreak,
     currentStreak,
-    freezesAvailable,
     isAtRisk,
     compact,
     onPress,

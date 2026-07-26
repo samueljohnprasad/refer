@@ -15,18 +15,28 @@
  * - Weekly progress tracking
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import dayjs from 'dayjs';
+import { useCallback, useMemo } from 'react';
+import {
+  format,
+  getHours,
+  startOfWeek,
+  startOfDay,
+  addDays,
+  isAfter,
+  differenceInDays,
+  isSameDay,
+  getDay,
+  parseISO
+} from 'date-fns';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import type {
     UserStreak,
-    UpdateStreakResponse,
 } from '@/src/types/journey/mentalHealth';
 import { STREAK_MILESTONES } from '@/src/types/journey/mentalHealth';
 import { useAuth } from '@/src/context/AuthContext';
 import {
     fetchUserStreak,
-    updateStreak as updateStreakApi,
 } from '@/src/lib/api/mentalHealthJourneyApi';
 import { supabase } from '@/src/network/auth/supabase';
 
@@ -60,10 +70,6 @@ export interface UseStreakReturn {
     streak: UserStreak | null;
     /** Current streak count (convenience) */
     currentStreak: number;
-    /** Longest streak count (convenience) */
-    longestStreak: number;
-    /** Available streak freezes */
-    freezesAvailable: number;
     /** Whether the streak is at risk (no activity today, past 6 PM) */
     isAtRisk: boolean;
     /** Whether the user has been active today */
@@ -78,12 +84,6 @@ export interface UseStreakReturn {
     isLoading: boolean;
     /** Error message */
     error: string | null;
-    /** Update streak (called by useNodeCompletion, but can be called directly) */
-    updateStreak: () => Promise<UpdateStreakResponse | null>;
-    /** Manually consume a streak freeze */
-    useStreakFreeze: () => Promise<boolean>;
-    /** Check if streak is at risk right now */
-    checkStreakStatus: () => boolean;
     /** Refresh streak data from DB */
     refetch: () => Promise<void>;
 }
@@ -104,28 +104,23 @@ const db = supabase as any;
 
 export function useStreak(): UseStreakReturn {
     const { user } = useAuth();
-    const [streak, setStreak] = useState<UserStreak | null>(null);
-    const [activityDates, setActivityDates] = useState<Set<string>>(new Set());
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const queryClient = useQueryClient();
 
-    // ── Fetch streak data ──
-    const loadStreak = useCallback(async (): Promise<void> => {
-        if (!user?.id) {
-            setIsLoading(false);
-            return;
-        }
-
-        try {
-            setIsLoading(true);
-            setError(null);
+    const {
+        data,
+        isLoading,
+        error: queryError,
+        refetch,
+    } = useQuery({
+        queryKey: ['streak', user?.id],
+        queryFn: async () => {
+            if (!user?.id) return { streak: null, activityDates: new Set<string>() };
 
             // 1. Fetch user_streaks table row
+            let streakData: UserStreak | null = null;
             const res = await fetchUserStreak();
             if (res.success && res.data) {
-                setStreak(res.data);
-            } else if (!res.success) {
-                setError(res.error ?? 'Failed to fetch streak');
+                streakData = res.data;
             }
 
             // 2. Query xp_history ONLY to get actual user activity dates since beginning
@@ -139,26 +134,22 @@ export function useStreak(): UseStreakReturn {
             const datesSet = new Set<string>();
             if (xpData && Array.isArray(xpData)) {
                 xpData.forEach((e: { created_at?: string }) => {
-                    if (e.created_at) datesSet.add(dayjs(e.created_at).format('YYYY-MM-DD'));
+                    if (e.created_at) datesSet.add(format(new Date(e.created_at), 'yyyy-MM-dd'));
                 });
             }
-            setActivityDates(datesSet);
-        } catch (err) {
-            console.error('[useStreak] loadStreak error:', err);
-            setError(err instanceof Error ? err.message : 'Unknown error');
-        } finally {
-            setIsLoading(false);
-        }
-    }, [user?.id]);
 
-    // ── Auto-load on mount / user change ──
-    useEffect(() => {
-        loadStreak();
-    }, [loadStreak]);
+            return { streak: streakData, activityDates: datesSet };
+        },
+        enabled: !!user?.id,
+    });
+
+    const streak = data?.streak ?? null;
+    const activityDates = data?.activityDates ?? new Set<string>();
+    const error = queryError ? (queryError instanceof Error ? queryError.message : 'Unknown error') : null;
 
     // ── Derived: is active today ──
     const isActiveToday: boolean = useMemo(() => {
-        const today: string = dayjs().format('YYYY-MM-DD');
+        const today: string = format(new Date(), 'yyyy-MM-dd');
         if (activityDates.has(today)) return true;
         if (!streak) return false;
         return streak.lastActivityDate === today;
@@ -174,21 +165,21 @@ export function useStreak(): UseStreakReturn {
     // ── Derived: is at risk ──
     const isAtRisk: boolean = useMemo(() => {
         if (isActiveToday || computedStreakCount === 0) return false;
-        const currentHour: number = dayjs().hour();
+        const currentHour: number = getHours(new Date());
         return currentHour >= AT_RISK_HOUR;
     }, [isActiveToday, computedStreakCount]);
 
     // ── Derived: weekly progress ──
     const weeklyProgress: WeeklyProgress = useMemo(() => {
-        const today = dayjs();
-        const weekStart = today.startOf('week'); // Sunday in dayjs default (0=Sun)
+        const today = startOfDay(new Date());
+        const weekStart = startOfWeek(today, { weekStartsOn: 0 }); // Sunday as first day
         const days: boolean[] = [false, false, false, false, false, false, false];
 
         // 1. Mark days with recorded activity in exercise_entries
         for (let i = 0; i < 7; i++) {
-            const day = weekStart.add(i, 'day');
-            if (day.isAfter(today, 'day')) break;
-            const dateStr = day.format('YYYY-MM-DD');
+            const day = addDays(weekStart, i);
+            if (isAfter(day, today)) break;
+            const dateStr = format(day, 'yyyy-MM-dd');
             if (activityDates.has(dateStr)) {
                 days[i] = true;
             }
@@ -196,19 +187,19 @@ export function useStreak(): UseStreakReturn {
 
         // 2. Mark days covered by streak table if present
         if (streak && streak.currentStreak > 0) {
-            const lastActive = dayjs(streak.lastActivityDate);
+            const lastActive = parseISO(streak.lastActivityDate);
             for (let i = 0; i < 7; i++) {
-                const day = weekStart.add(i, 'day');
-                if (day.isAfter(today, 'day')) break;
-                const daysBack: number = today.diff(day, 'day');
-                if (daysBack < streak.currentStreak || day.isSame(lastActive, 'day')) {
+                const day = addDays(weekStart, i);
+                if (isAfter(day, today)) break;
+                const daysBack: number = differenceInDays(today, day);
+                if (daysBack < streak.currentStreak || isSameDay(day, lastActive)) {
                     days[i] = true;
                 }
             }
         }
 
         const activeDays: number = days.filter(Boolean).length;
-        const todayIndex: number = today.day();
+        const todayIndex: number = getDay(today);
         const perfectWeekPossible: boolean = days.slice(0, todayIndex).every(Boolean);
 
         return { days, activeDays, perfectWeekPossible };
@@ -230,61 +221,9 @@ export function useStreak(): UseStreakReturn {
         return milestones.find((m: StreakMilestone) => !m.reached) ?? null;
     }, [milestones]);
 
-    // ── Action: update streak ──
-    const handleUpdateStreak = useCallback(async (): Promise<UpdateStreakResponse | null> => {
-        try {
-            const res = await updateStreakApi();
-            if (res.success && res.data) {
-                await loadStreak();
-                return res.data;
-            }
-            console.warn('[useStreak] updateStreak failed:', res.error);
-            return null;
-        } catch (err) {
-            console.error('[useStreak] updateStreak error:', err);
-            return null;
-        }
-    }, [loadStreak]);
-
-    // ── Action: use streak freeze ──
-    const useStreakFreeze = useCallback(async (): Promise<boolean> => {
-        if (!user?.id || !streak || streak.streakFreezesAvailable <= 0) {
-            return false;
-        }
-
-        try {
-            const { error: updateError } = await db
-                .from('user_streaks')
-                .update({
-                    streak_freezes_available: streak.streakFreezesAvailable - 1,
-                    last_activity_date: dayjs().format('YYYY-MM-DD'),
-                })
-                .eq('user_id', user.id);
-
-            if (updateError) {
-                console.error('[useStreak] useStreakFreeze error:', updateError.message);
-                return false;
-            }
-
-            await loadStreak();
-            return true;
-        } catch (err) {
-            console.error('[useStreak] useStreakFreeze error:', err);
-            return false;
-        }
-    }, [user?.id, streak, loadStreak]);
-
-    // ── Action: check streak status (synchronous) ──
-    const checkStreakStatus = useCallback((): boolean => {
-        if (isActiveToday || computedStreakCount === 0) return false;
-        return dayjs().hour() >= AT_RISK_HOUR;
-    }, [isActiveToday, computedStreakCount]);
-
     return {
         streak,
         currentStreak: computedStreakCount,
-        longestStreak: Math.max(streak?.longestStreak ?? 0, computedStreakCount),
-        freezesAvailable: streak?.streakFreezesAvailable ?? 0,
         isAtRisk,
         isActiveToday,
         weeklyProgress,
@@ -292,9 +231,6 @@ export function useStreak(): UseStreakReturn {
         milestones,
         isLoading,
         error,
-        updateStreak: handleUpdateStreak,
-        useStreakFreeze,
-        checkStreakStatus,
-        refetch: loadStreak,
+        refetch: async () => { await refetch(); },
     };
 }

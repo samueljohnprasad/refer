@@ -93,10 +93,10 @@ export const StreakDisplay: React.FC<StreakDisplayProps> = ({
   visible,
   onClose,
 }) => {
-  const { currentStreak, longestStreak, weeklyProgress, isLoading } = useStreak();
+  const { currentStreak, weeklyProgress, isLoading } = useStreak();
   const streakData = useMemo(
-    () => ({ currentStreak, longestStreak, weeklyProgress }),
-    [currentStreak, longestStreak, weeklyProgress]
+    () => ({ currentStreak, weeklyProgress }),
+    [currentStreak, weeklyProgress]
   );
 
   useEffect(() => {

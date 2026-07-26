@@ -11,7 +11,6 @@ import {
 
 export interface StreakInfo {
   currentStreak: number;
-  longestStreak: number;
 }
 
 export const useHabitStreaks = () => {
@@ -65,8 +64,6 @@ export const useHabitStreaks = () => {
         uniqueDates.sort((a, b) => b.getTime() - a.getTime());
 
         let currentStreak = 0;
-        let longestStreak = 0;
-        let tempStreak = 0;
 
         // Calculate current streak
         // Check if completed today or yesterday to start the streak
@@ -94,25 +91,7 @@ export const useHabitStreaks = () => {
           }
         }
 
-        // Calculate longest streak
-        if (uniqueDates.length > 0) {
-          tempStreak = 1;
-          longestStreak = 1;
-          for (let i = 0; i < uniqueDates.length - 1; i++) {
-            const currentDate = uniqueDates[i];
-            const nextDate = uniqueDates[i + 1]; // Older date
-            const diff = differenceInDays(currentDate, nextDate);
-
-            if (diff === 1) {
-              tempStreak++;
-            } else {
-              tempStreak = 1;
-            }
-            longestStreak = Math.max(longestStreak, tempStreak);
-          }
-        }
-
-        result[habitId] = { currentStreak, longestStreak };
+        result[habitId] = { currentStreak };
       });
 
       setStreaks(result);

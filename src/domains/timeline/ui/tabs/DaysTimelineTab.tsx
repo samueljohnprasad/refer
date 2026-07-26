@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { useToast } from 'heroui-native';
 import { showAppToast } from '@/src/lib/showToast';
 import { Timeline } from '@/src/components/ui/Timeline/Timeline';
@@ -48,8 +48,11 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
 
   const displayData = data?.pages ? data.pages.flatMap(p => p.data) : [];
 
+  const isTimelineEmpty = displayData.length === 0;
+  const actualDataToDisplay = isTimelineEmpty ? MOCK_DAYS_TIMELINE_DATA : displayData;
+
   const sections: TimelineSection<DailyTimelineItem>[] = useMemo(() => {
-    return displayData.map((item: any) => {
+    return actualDataToDisplay.map((item: any) => {
       const ms = new Date(item.date).getTime();
       return {
         title: item.date,
@@ -63,7 +66,19 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
         }]
       };
     });
-  }, [displayData]);
+  }, [actualDataToDisplay]);
+
+  const renderHeader = () => {
+    if (!isTimelineEmpty) return null;
+    return (
+      <View className="px-6 pb-6 pt-2 items-center opacity-80">
+        <Text className="text-center text-[15px] leading-6 tracking-[0.2px] text-[#767676]" style={{ fontFamily: 'Geist-Regular' }}>
+          <Text style={{ fontFamily: 'Geist-Medium', color: '#142414' }}>Sample Data</Text>
+          {'\n'}Your insights will look like this once generated.
+        </Text>
+      </View>
+    );
+  };
 
   const renderTimelineItem = (item: DailyTimelineItem) => {
     const isGenerating = generatingDates.has(item.originalDateString);
@@ -92,8 +107,9 @@ export const DaysTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
       sections={sections}
       renderItem={renderTimelineItem}
       isLoadingMore={isFetchingNextPage}
+      ListHeaderComponent={renderHeader()}
       onEndReached={() => {
-        if (hasNextPage && !isFetchingNextPage) {
+        if (hasNextPage && !isFetchingNextPage && !isTimelineEmpty) {
           fetchNextPage();
         }
       }}

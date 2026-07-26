@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { useToast } from 'heroui-native';
 import { showAppToast } from '@/src/lib/showToast';
 import { Timeline } from '@/src/components/ui/Timeline/Timeline';
@@ -12,6 +12,8 @@ import * as Haptics from 'expo-haptics';
 import { useHeaderHeight } from 'expo-router/react-navigation';
 import type { TimelineSection } from '@/src/components/ui/Timeline/types';
 import type { MonthlyTimelineItem, TimelineTabProps } from '../../model/timeline.types';
+import { MOCK_MONTHS_TIMELINE_DATA } from './mockData';
+
 
 
 export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
@@ -48,8 +50,11 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
 
   const displayData = data?.pages ? data.pages.flatMap(p => p.data) : [];
 
+  const isTimelineEmpty = displayData.length === 0;
+  const actualDataToDisplay = isTimelineEmpty ? MOCK_MONTHS_TIMELINE_DATA : displayData;
+
   const sections: TimelineSection<MonthlyTimelineItem>[] = useMemo(() => {
-    return displayData.map((item: any) => {
+    return actualDataToDisplay.map((item: any) => {
       const year = parseInt(item.date.substring(0, 4));
       const month = parseInt(item.date.substring(5, 7));
       const ms = new Date(year, month - 1, 1).getTime();
@@ -68,7 +73,19 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
         }]
       };
     });
-  }, [displayData]);
+  }, [actualDataToDisplay]);
+
+  const renderHeader = () => {
+    if (!isTimelineEmpty) return null;
+    return (
+      <View className="px-6 pb-6 pt-2 items-center opacity-80">
+        <Text className="text-center text-[15px] leading-6 tracking-[0.2px] text-[#767676]" style={{ fontFamily: 'Geist-Regular' }}>
+          <Text style={{ fontFamily: 'Geist-Medium', color: '#142414' }}>Sample Data</Text>
+          {'\n'}Your insights will look like this once generated.
+        </Text>
+      </View>
+    );
+  };
 
   const renderTimelineItem = (item: MonthlyTimelineItem) => {
     const isGenerating = generatingDates.has(item.originalDateString);
@@ -104,8 +121,9 @@ export const MonthsTimelineTab = ({ onOpenModal }: TimelineTabProps) => {
       renderItem={renderTimelineItem}
       mode="months"
       isLoadingMore={isFetchingNextPage}
+      ListHeaderComponent={renderHeader()}
       onEndReached={() => {
-        if (hasNextPage && !isFetchingNextPage) {
+        if (hasNextPage && !isFetchingNextPage && !isTimelineEmpty) {
           fetchNextPage();
         }
       }}

@@ -49,7 +49,6 @@ export const StreakBannerView = React.memo(function StreakBannerView({
   isHighStreak,
   hasStreak,
   currentStreak,
-  freezesAvailable,
   isAtRisk,
   compact,
   onPress,
@@ -70,9 +69,6 @@ export const StreakBannerView = React.memo(function StreakBannerView({
         >
           {currentStreak}
         </Text>
-        {freezesAvailable > 0 ? (
-          <Text className="text-xs">❄️{freezesAvailable}</Text>
-        ) : null}
       </Pressable>
     );
   }
@@ -120,15 +116,6 @@ export const StreakBannerView = React.memo(function StreakBannerView({
       {isAtRisk && hasStreak ? (
         <View className="bg-sage-pill px-1.5 py-0.5 rounded-full mr-1">
           <Text className="text-xs">🌿</Text>
-        </View>
-      ) : null}
-
-      {freezesAvailable > 0 ? (
-        <View className="bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full flex-row items-center gap-0.5">
-          <Text className="text-xs">❄️</Text>
-          <Text className="text-xs font-bold text-blue-600">
-            {freezesAvailable}
-          </Text>
         </View>
       ) : null}
     </Pressable>

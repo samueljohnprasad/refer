@@ -113,7 +113,7 @@ export const JournalingHeatmap: React.FC<JournalingHeatmapProps> = ({
     return weeks;
   }, [journalData, weeksToShow]);
 
-  const { currentStreak: realStreak, longestStreak: realLongest } = useStreak();
+  const { currentStreak: realStreak } = useStreak();
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -122,17 +122,15 @@ export const JournalingHeatmap: React.FC<JournalingHeatmapProps> = ({
     const totalWords = journalData.reduce((sum, d) => sum + d.wordCount, 0);
     const totalEntries = journalData.reduce((sum, d) => sum + d.entriesCount, 0);
     const currentStreak = realStreak || calculateCurrentStreak(journalData);
-    const longestStreak = realLongest || calculateLongestStreak(journalData);
     
     return {
       consistency: ((activeDays / totalDays) * 100).toFixed(0),
       totalEntries,
       averageWords: activeDays > 0 ? Math.floor(totalWords / activeDays) : 0,
       currentStreak,
-      longestStreak,
       activeDays
     };
-  }, [journalData, weeksToShow, realStreak, realLongest]);
+  }, [journalData, weeksToShow, realStreak]);
 
   const handleDayPress = (day: DayData) => {
     setSelectedDay(day.date);
@@ -188,13 +186,7 @@ export const JournalingHeatmap: React.FC<JournalingHeatmapProps> = ({
             </Text>
             <Text className="text-xs text-gray-500 mt-1">Current Streak</Text>
           </View>
-          <View className="w-px bg-gray-200" />
-          <View className="items-center flex-1">
-            <Text className="text-xl font-bold text-gray-800">
-              {stats.longestStreak}
-            </Text>
-            <Text className="text-xs text-gray-500 mt-1">Best Streak</Text>
-          </View>
+
           <View className="w-px bg-gray-200" />
           <View className="items-center flex-1">
             <Text className="text-xl font-bold text-gray-800">
@@ -331,31 +323,6 @@ function calculateCurrentStreak(entries: JournalEntry[]): number {
   return streak;
 }
 
-function calculateLongestStreak(entries: JournalEntry[]): number {
-  if (entries.length === 0) return 0;
-  
-  const sortedEntries = [...entries].sort((a, b) => 
-    new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
-  
-  let maxStreak = 1;
-  let currentStreak = 1;
-  
-  for (let i = 1; i < sortedEntries.length; i++) {
-    const prevDate = new Date(sortedEntries[i - 1].date);
-    const currDate = new Date(sortedEntries[i].date);
-    const daysDiff = differenceInCalendarDays(currDate, prevDate);
-    
-    if (daysDiff === 1) {
-      currentStreak++;
-      maxStreak = Math.max(maxStreak, currentStreak);
-    } else {
-      currentStreak = 1;
-    }
-  }
-  
-  return maxStreak;
-}
 
 function subDays(date: Date, days: number): Date {
   const result = new Date(date);

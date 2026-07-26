@@ -16,7 +16,6 @@ export type ApiResponse<T> =
   | { data: null | T; success: false; error: string };
 import type {
   UserStreak,
-  UpdateStreakResponse,
   IPLedgerEntry,
   IPTotals,
   IPSource,
@@ -60,9 +59,7 @@ export async function fetchUserStreak(): Promise<
     const streak: UserStreak = {
       userId: data.user_id as string,
       currentStreak: data.current_streak as number,
-      longestStreak: data.longest_streak as number,
       lastActivityDate: data.last_activity_date as string,
-      streakFreezesAvailable: data.streak_freezes_available as number,
       restDaysUsedThisWeek: data.rest_days_used_this_week as number,
       weekStartDate: data.week_start_date as string,
       updatedAt: data.updated_at as string,
@@ -79,31 +76,6 @@ export async function fetchUserStreak(): Promise<
   }
 }
 
-/**
- * Update the user's streak via the atomic RPC function.
- * Should be called on every node completion.
- */
-export async function updateStreak(): Promise<
-  ApiResponse<UpdateStreakResponse | null>
-> {
-  try {
-    const { data, error } = await supabase.rpc("update_user_streak");
-
-    if (error) {
-      log.error("updateStreak RPC error", error.message);
-      return { data: null, success: false, error: error.message };
-    }
-
-    return { data: data as unknown as UpdateStreakResponse, success: true };
-  } catch (err) {
-    log.error("updateStreak exception", err);
-    return {
-      data: null,
-      success: false,
-      error: err instanceof Error ? err.message : "Unknown error",
-    };
-  }
-}
 
 // ============================================================================
 // Insight Points API

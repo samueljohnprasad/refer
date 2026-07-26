@@ -72,7 +72,7 @@ const PactSigningStep: React.FC<PactSigningStepProps> = ({
               style={{ fontFamily: "CormorantMedium" }}
               className="text-left text-[18px] leading-[26px] text-ink"
             >
-              For the next 7 days, I&apos;ll show up for myself — even if
+              For the next 7 days, I&apos;ll show up for myself, even if
               it&apos;s just for {dailyGoal} minutes.
             </Text>
             <Text

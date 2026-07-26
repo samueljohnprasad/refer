@@ -14,14 +14,15 @@ const LessonCompleteStep: React.FC = () => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingBottom: 28,
-        paddingTop: headerHeight - insets.top,
+        paddingBottom: 160,
+        paddingTop: headerHeight - insets.top + 32,
         flexGrow: 1,
+        justifyContent: "center",
       }}
       contentInsetAdjustmentBehavior="automatic"
       className="flex-1 px-6"
     >
-      <View className="flex-1 justify-between py-2">
+      <View className="items-center gap-10 py-2">
         {/* 1. Hero Mascot & Milestone Badge */}
         <View className="items-center">
           <MochiMascot expression="celebrating" size={168} delay={40} />
@@ -54,7 +55,7 @@ const LessonCompleteStep: React.FC = () => {
         {/* 2. Affirmation Narrative */}
         <Animated.View
           entering={FadeIn.duration(180).delay(180)}
-          className="my-6 items-center px-2"
+          className="items-center px-2"
         >
           <Text
             style={{ fontFamily: "CormorantSemiBold" }}
@@ -86,7 +87,7 @@ const LessonCompleteStep: React.FC = () => {
         </Animated.View>
 
         {/* 3. Balanced Stat Shelf */}
-        <View className="mt-2 w-full flex-row gap-3">
+        <View className="w-full flex-row gap-3 pt-6">
           <Animated.View
             entering={FadeIn.duration(180).delay(260)}
             accessible={true}
