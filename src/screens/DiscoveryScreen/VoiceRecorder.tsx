@@ -98,6 +98,22 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
     }
   };
 
+  const handleDiscardRecording = useCallback(async () => {
+    log.info("Discarding audio recording...");
+    try {
+      if (
+        recordingCurrentState === "recording" ||
+        recordingCurrentState === "paused"
+      ) {
+        await stopRecording();
+      }
+    } catch (error) {
+      log.error("Error discarding recording:", error);
+    } finally {
+      onClose();
+    }
+  }, [recordingCurrentState, stopRecording, onClose]);
+
   useEffect(() => {
     if (startRecording) {
       handleStartRecording();
@@ -126,7 +142,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
             style: "destructive",
             onPress: () => {
               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-              onClose();
+              handleDiscardRecording();
             },
           },
         ]
@@ -134,7 +150,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
     } else {
       onClose();
     }
-  }, [totalDuration, onClose]);
+  }, [totalDuration, handleDiscardRecording, onClose]);
 
   const isRecording = recordingCurrentState === "recording";
   const isPaused = recordingCurrentState === "paused";
@@ -202,6 +218,7 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
                 return handleStartRecording();
               }}
               onStop={handleStopRecording}
+              onDiscard={handleDiscardRecording}
             />
           </View>
         </View>

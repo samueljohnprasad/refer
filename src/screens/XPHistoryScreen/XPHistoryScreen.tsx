@@ -18,6 +18,7 @@ import { XPHistorySummary } from "./components/XPHistorySummary";
 import { XPHistoryTimeline } from "./components/XPHistoryTimeline";
 import { XPWeeklyChart } from "./components/XPWeeklyChart";
 import { generateXPChartData } from "./utils/chartUtils";
+import { SplitView } from "@/src/components/split-view";
 
 const styles = StyleSheet.create({
   screen: {
@@ -103,16 +104,31 @@ export const XPHistoryScreen: React.FC = () => {
           separateBackground
         />
       </Stack.Toolbar>
-      <XPHistoryTimeline
-        entries={history}
-        header={
-          <View>
+      <SplitView
+        topContent={
+          <View style={{ paddingTop: 60, paddingHorizontal: 16 }}>
             <XPHistorySummary totalXP={totalXP} todayXP={todayXP} />
             <XPWeeklyChart weeklyData={chartData} weekLabels={weekLabels} />
           </View>
         }
-        isLoadingMore={isLoadingMore}
-        onEndReached={handleLoadMore}
+        bottomContent={
+          <XPHistoryTimeline
+            entries={history}
+            header={<View />}
+            isLoadingMore={isLoadingMore}
+            onEndReached={handleLoadMore}
+            contentPaddingTop={16}
+          />
+        }
+        initialTopSectionHeight={500}
+        minSectionHeight={100}
+        maxTopSectionHeight={700}
+        velocityThreshold={500}
+        springConfig={{ damping: 20, stiffness: 200, mass: 1 }}
+        containerBackgroundColor="#FFFFFF"
+        sectionBackgroundColor="#FFFFFF"
+        dividerBackgroundColor="#F7F7F8"
+        dragHandleColor="#D1D1D6"
       />
     </View>
   );

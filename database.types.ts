@@ -1362,6 +1362,35 @@ export type Database = {
           },
         ]
       }
+      quiz_contents: {
+        Row: {
+          created_at: string
+          id: string
+          node_id: string
+          questions: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          node_id: string
+          questions?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          node_id?: string
+          questions?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_contents_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: true
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sections: {
         Row: {
           course_id: string
@@ -2332,6 +2361,19 @@ export type Database = {
       get_section_units: {
         Args: { p_section_number: number; p_slug: string }
         Returns: Json
+      }
+      get_unique_journal_dates: {
+        Args: { p_limit: number; p_offset: number; p_user_id: string }
+        Returns: {
+          selected_date: string
+        }[]
+      }
+      get_unique_journal_weeks: {
+        Args: { p_limit: number; p_offset: number; p_user_id: string }
+        Returns: {
+          iso_week: number
+          iso_year: number
+        }[]
       }
       get_user_journey_progress: {
         Args: { p_journey_id: string }

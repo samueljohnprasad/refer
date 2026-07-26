@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { ConfettiExplosion } from "@/src/components/animations/ConfettiExplosion";
 import { StreakBadge } from "@/src/components/habits/StreakBadge";
+import { Checkbox } from "@/src/components/check-box";
 import * as Haptics from "expo-haptics";
 import { format, parse } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react-native";
@@ -31,26 +32,17 @@ export const HabitCard: React.FC<HabitCardProps> = ({
   isLast = false,
 }) => {
   const [showConfetti, setShowConfetti] = React.useState(false);
-  const checkScale = useSharedValue(habit.isCompleted ? 1 : 0);
   const isFirstRender = React.useRef(true);
 
-  // Update animation when completion status changes
+  // Trigger confetti on completion
   React.useEffect(() => {
     if (habit.isCompleted) {
-      checkScale.value = withTiming(1, { duration: 200 });
       if (!isFirstRender.current) {
         setShowConfetti(true);
       }
-    } else {
-      checkScale.value = withTiming(0, { duration: 200 });
     }
     isFirstRender.current = false;
   }, [habit.isCompleted]);
-
-  const checkmarkAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: checkScale.value,
-    transform: [{ scale: checkScale.value }],
-  }));
 
   const handleCardPress = () => {
     Haptics.selectionAsync();
@@ -150,21 +142,14 @@ export const HabitCard: React.FC<HabitCardProps> = ({
             onPress={handleCheckboxPress}
             className="ml-3 relative w-11 h-11 items-center justify-center"
           >
-            <View
-              className="w-6 h-6 rounded-full border items-center justify-center z-10"
-              style={{
-                borderColor: habit.isCompleted ? SAGE[400] : SAGE[200],
-                backgroundColor: habit.isCompleted
-                  ? SAGE[50]
-                  : TRANSPARENT,
-              }}
-            >
-              <Animated.Text
-                className="text-xs"
-                style={[{ color: SAGE[600] }, checkmarkAnimatedStyle]}
-              >
-                ✓
-              </Animated.Text>
+            <View className="z-10">
+              <Checkbox
+                checked={habit.isCompleted}
+                checkmarkColor={SAGE[600]}
+                size={28}
+                showBorder={true}
+                stroke={5}
+              />
             </View>
 
             <View

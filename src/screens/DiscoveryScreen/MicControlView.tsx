@@ -22,6 +22,7 @@ export interface MicControlViewProps {
   durationSeconds: number;
   onToggleRecord: () => void;
   onStop: () => void;
+  onDiscard?: () => void;
   isStopped: boolean;
 }
 
@@ -30,6 +31,7 @@ const MicControlView: React.FC<MicControlViewProps> = ({
   isPaused,
   onToggleRecord,
   onStop,
+  onDiscard,
 }) => {
   const [, setRecorderOpen] = useAtom(recorderOpenAtom);
 
@@ -37,7 +39,8 @@ const MicControlView: React.FC<MicControlViewProps> = ({
     // Heavy haptic for destructive action (discard recording)
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     setRecorderOpen(false);
-  }, [setRecorderOpen]);
+    onDiscard?.();
+  }, [setRecorderOpen, onDiscard]);
 
   return (
     <View className="w-full items-center justify-center">

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/src/network/auth/supabase";
 import { useAuth } from "@/src/context/AuthContext";
 import { useXP } from "@/src/context/XPContext";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Achievement,
   UserAchievement,
@@ -50,10 +51,8 @@ export const useAchievements = (): UseAchievementsReturn => {
   const { user } = useAuth();
   const { awardXP } = useXP();
   const { stats: userStats, isLoading: statsLoading } = useUserStats();
-  const [unlockedAchievements, setUnlockedAchievements] = useState<
-    UserAchievement[]
-  >([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const queryClient = useQueryClient();
+  
   const [currentStats, setCurrentStats] = useState<UserStats>({
     journalCount: 0,
     streakDays: 0,
@@ -65,16 +64,15 @@ export const useAchievements = (): UseAchievementsReturn => {
   });
   const { earnCoins } = useRewardsContext();
 
-  // Fetch unlocked achievements from Supabase
-  const fetchUnlockedAchievements = useCallback(async (): Promise<void> => {
-    if (!user?.id) {
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      // Cast to any until migration is run and types are regenerated
+  const {
+    data: unlockedAchievements = [],
+    isLoading: isUnlockedLoading,
+    refetch: refetchUnlockedAchievements,
+  } = useQuery({
+    queryKey: ["unlocked_achievements", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      
       const { data, error } = await supabase
         .from("user_achievements" as any)
         .select("*")
@@ -90,37 +88,27 @@ export const useAchievements = (): UseAchievementsReturn => {
         xp_awarded: number;
       }
 
-      const mapped: UserAchievement[] = (
-        (data || []) as unknown as AchievementRow[]
-      ).map((row) => ({
+      return ((data || []) as unknown as AchievementRow[]).map((row) => ({
         id: row.id,
         achievementId: row.achievement_id,
         unlockedAt: row.unlocked_at,
         xpAwarded: row.xp_awarded,
       }));
-
-      setUnlockedAchievements(mapped);
-    } catch (error) {
-      console.error("Error fetching achievements:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.id]);
-
-  useEffect(() => {
-    fetchUnlockedAchievements();
-  }, [fetchUnlockedAchievements]);
+    },
+    enabled: !!user?.id,
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
 
   // Auto-sync stats from useUserStats and check for new achievements
   useEffect(() => {
     if (!statsLoading && userStats) {
       setCurrentStats(userStats);
       // Only check achievements if we have fetched unlocked achievements
-      if (!isLoading && unlockedAchievements !== undefined) {
+      if (!isUnlockedLoading) {
         checkAndUnlockAchievements(userStats);
       }
     }
-  }, [userStats, statsLoading, isLoading]);
+  }, [userStats, statsLoading, isUnlockedLoading]);
 
   // Get progress value for a condition type
   const getProgressForCondition = useCallback(
@@ -178,7 +166,7 @@ export const useAchievements = (): UseAchievementsReturn => {
         const coinReward = getCoinRewardForAchievementTier(achievement.tier);
         await earnCoins(coinReward, `Achievement: ${achievement.name}`);
 
-        // Update local state
+        // Update local state in React Query cache
         const newUnlock: UserAchievement = {
           id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
           achievementId: achievement.id,
@@ -186,14 +174,18 @@ export const useAchievements = (): UseAchievementsReturn => {
           xpAwarded: achievement.xpBonus,
         };
 
-        setUnlockedAchievements((prev) => [newUnlock, ...prev]);
+        queryClient.setQueryData<UserAchievement[]>(
+          ["unlocked_achievements", user.id],
+          (old = []) => [newUnlock, ...old]
+        );
+
         return true;
       } catch (error) {
         console.error("Error unlocking achievement:", error);
         return false;
       }
     },
-    [user?.id, awardXP],
+    [user?.id, awardXP, queryClient, earnCoins],
   );
 
   // Check and unlock achievements based on current stats
@@ -262,9 +254,11 @@ export const useAchievements = (): UseAchievementsReturn => {
   return {
     achievements,
     unlockedAchievements,
-    isLoading: isLoading || statsLoading,
+    isLoading: isUnlockedLoading || statsLoading,
     checkAndUnlockAchievements,
     getAchievementProgress,
-    refetch: fetchUnlockedAchievements,
+    refetch: async () => {
+      await refetchUnlockedAchievements();
+    },
   };
 };

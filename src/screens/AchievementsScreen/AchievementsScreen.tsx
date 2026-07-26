@@ -28,6 +28,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useAchievements } from "@/hooks/data/useAchievements";
 import { AchievementCategory, ACHIEVEMENTS } from "@/src/types/achievements";
+import { AnimatedScrollView } from "@/src/components/parallax-header/components/AnimatedScrollView";
 import { useXP } from "@/src/context/XPContext";
 import { useRewardsContext } from "@/src/context/RewardsContext";
 import { AchievementBadge } from "@/src/components/Achievements";
@@ -347,170 +348,177 @@ export const AchievementsScreen: React.FC = () => {
         style={styles.screen}
         edges={["left", "right"]}
       >
-        <ScrollView
-          ref={scrollViewRef}
+        <AnimatedScrollView
+          ref={scrollViewRef as any}
           className="flex-1"
           style={styles.scroll}
           showsVerticalScrollIndicator={false}
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={[styles.scrollContent]}
           accessibilityLabel="Achievements scroll view"
-        >
-          {/* ── Your Progress ── */}
-          <View className="px-5 pt-4 pb-8 items-center">
-            {/* Primary Stat */}
-            <View className="items-center mb-6">
-              <Text className="happy-font-body-bold text-[48px] text-ink tracking-tight">
-                {unlockedCount}
-              </Text>
-              <Text className="happy-font-body-medium text-[15px] text-ink-muted">
-                Badges Unlocked
-              </Text>
-            </View>
+          headerMaxHeight={320}
+          topBarHeight={insets.top + 44}
+          HeaderComponent={
+            <View 
+              className="px-5 pb-8 items-center h-full justify-end"
+              style={{ paddingTop: insets.top + 60 }}
+            >
+              {/* Primary Stat */}
+              <View className="items-center mb-6">
+                <Text className="happy-font-body-bold text-[48px] text-ink tracking-tight">
+                  {unlockedCount}
+                </Text>
+                <Text className="happy-font-body-medium text-[15px] text-ink-muted">
+                  Badges Unlocked
+                </Text>
+              </View>
 
-            {/* Secondary Stats */}
-            <View className="flex-row items-center justify-center gap-6 w-full px-4">
-              <TouchableOpacity
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  Alert.alert(
-                    "XP Earned",
-                    "You earn XP (Experience Points) by completing journaling exercises and unlocking badges. Keep writing to grow!",
-                  );
-                }}
-                className="flex-row items-center gap-2 bg-gray-50 px-4 py-2.5 rounded-2xl flex-1 justify-center"
-              >
-                <View>
-                  <Text
-                    className="happy-font-body-bold text-[18px] text-center"
-                    style={{ color: SAGE[700] }}
-                  >
-                    {totalXPEarned}
-                  </Text>
-                  <View className="flex-row items-center gap-1 mt-0.5">
-                    <Text className="happy-font-body-medium text-[12px] text-ink-muted">
-                      XP Earned
+              {/* Secondary Stats */}
+              <View className="flex-row items-center justify-center gap-6 w-full px-4">
+                <TouchableOpacity
+                  onPress={() => {
+                    Haptics.selectionAsync();
+                    Alert.alert(
+                      "XP Earned",
+                      "You earn XP (Experience Points) by completing journaling exercises and unlocking badges. Keep writing to grow!",
+                    );
+                  }}
+                  className="flex-row items-center gap-2 bg-gray-50 px-4 py-2.5 rounded-2xl flex-1 justify-center"
+                >
+                  <View>
+                    <Text
+                      className="happy-font-body-bold text-[18px] text-center"
+                      style={{ color: SAGE[700] }}
+                    >
+                      {totalXPEarned}
                     </Text>
-                    <HugeiconsIcon
-                      icon={InformationCircleIcon}
-                      size={12}
-                      color="#9CA3AF"
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  Alert.alert(
-                    "Mastery",
-                    "Mastery shows how many categories you have fully completed. Unlock all badges in a category to master it!",
-                  );
-                }}
-                className="flex-row items-center gap-2 bg-gray-50 px-4 py-2.5 rounded-2xl flex-1 justify-center"
-              >
-                <View>
-                  <Text
-                    className="happy-font-body-bold text-[18px] text-center"
-                    style={{ color: SAGE[600] }}
-                  >
-                    {masteredCategoryCount}
-                    <Text className="text-[14px] text-ink-muted/50">/5</Text>
-                  </Text>
-                  <View className="flex-row items-center gap-1 mt-0.5">
-                    <Text className="happy-font-body-medium text-[12px] text-ink-muted">
-                      Mastery
-                    </Text>
-                    <HugeiconsIcon
-                      icon={InformationCircleIcon}
-                      size={12}
-                      color="#9CA3AF"
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Empty state */}
-          {!hasAchievements && <EmptyState />}
-
-          {/* Achievement Categories */}
-          {(Object.keys(CATEGORY_CONFIG) as AchievementCategory[]).map(
-            (category) => {
-              const categoryAchievements = getAchievementsByCategory(category);
-              if (categoryAchievements.length === 0) return null;
-
-              const {
-                label,
-                icon: categoryIcon,
-                color,
-                bg,
-              } = CATEGORY_CONFIG[category];
-              const categoryUnlocked = categoryAchievements.filter(
-                (a) => a.isUnlocked,
-              ).length;
-
-              return (
-                <View key={category} className="mb-6 px-4">
-                  <View className="mb-2.5 flex-row items-center justify-between">
-                    <View className="min-w-0 flex-1 flex-row items-center gap-3">
-                      <IconBubble
-                        icon={categoryIcon}
-                        color={color}
-                        bg={bg}
-                        size={40}
-                        iconSize={20}
-                      />
-                      <Text
-                        className="happy-font-body-bold text-[17px] text-ink"
-                        numberOfLines={1}
-                      >
-                        {label}
+                    <View className="flex-row items-center gap-1 mt-0.5">
+                      <Text className="happy-font-body-medium text-[12px] text-ink-muted">
+                        XP Earned
                       </Text>
+                      <HugeiconsIcon
+                        icon={InformationCircleIcon}
+                        size={12}
+                        color="#9CA3AF"
+                      />
                     </View>
                   </View>
+                </TouchableOpacity>
 
-                  <View className="py-2 mb-4">
-                    <View className="flex-row flex-wrap">
-                      {categoryAchievements.map((item) => (
-                        <View
-                          key={item.achievement.id}
-                          className="items-center"
-                          style={{ width: "33.333%", paddingVertical: 6 }}
-                        >
-                          <AchievementBadge
-                            achievement={item.achievement}
-                            currentProgress={item.currentProgress}
-                            isUnlocked={item.isUnlocked}
-                            onPress={() => handleBadgePress(item)}
-                            showDescription={false}
-                            showProgressBar={false}
-                            showProgressText={true}
-                            showUnlockedProgress={false}
-                            size="md"
-                          />
-                        </View>
-                      ))}
+                <TouchableOpacity
+                  onPress={() => {
+                    Haptics.selectionAsync();
+                    Alert.alert(
+                      "Mastery",
+                      "Mastery shows how many categories you have fully completed. Unlock all badges in a category to master it!",
+                    );
+                  }}
+                  className="flex-row items-center gap-2 bg-gray-50 px-4 py-2.5 rounded-2xl flex-1 justify-center"
+                >
+                  <View>
+                    <Text
+                      className="happy-font-body-bold text-[18px] text-center"
+                      style={{ color: SAGE[600] }}
+                    >
+                      {masteredCategoryCount}
+                      <Text className="text-[14px] text-ink-muted/50">/5</Text>
+                    </Text>
+                    <View className="flex-row items-center gap-1 mt-0.5">
+                      <Text className="happy-font-body-medium text-[12px] text-ink-muted">
+                        Mastery
+                      </Text>
+                      <HugeiconsIcon
+                        icon={InformationCircleIcon}
+                        size={12}
+                        color="#9CA3AF"
+                      />
                     </View>
                   </View>
-                </View>
-              );
-            },
-          )}
-
-          {/* Motivational footer */}
-          {hasAchievements && unlockedCount < totalCount && (
-            <View className="px-4 items-center mt-2">
-              <Text className="happy-font-body-medium text-ink-muted text-xs text-center">
-                {totalCount - unlockedCount} badge
-                {totalCount - unlockedCount !== 1 ? "s" : ""} away from a full
-                collection
-              </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          )}
-        </ScrollView>
+          }
+        >
+          <View style={{ backgroundColor: "#FDFDF9" }} className="pt-6 pb-20">
+            {/* Empty state */}
+            {!hasAchievements && <EmptyState />}
+
+            {/* Achievement Categories */}
+            {(Object.keys(CATEGORY_CONFIG) as AchievementCategory[]).map(
+              (category) => {
+                const categoryAchievements = getAchievementsByCategory(category);
+                if (categoryAchievements.length === 0) return null;
+
+                const {
+                  label,
+                  icon: categoryIcon,
+                  color,
+                  bg,
+                } = CATEGORY_CONFIG[category];
+                const categoryUnlocked = categoryAchievements.filter(
+                  (a) => a.isUnlocked,
+                ).length;
+
+                return (
+                  <View key={category} className="mb-6 px-4">
+                    <View className="mb-2.5 flex-row items-center justify-between">
+                      <View className="min-w-0 flex-1 flex-row items-center gap-3">
+                        <IconBubble
+                          icon={categoryIcon}
+                          color={color}
+                          bg={bg}
+                          size={40}
+                          iconSize={20}
+                        />
+                        <Text
+                          className="happy-font-body-bold text-[17px] text-ink"
+                          numberOfLines={1}
+                        >
+                          {label}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View className="py-2 mb-4">
+                      <View className="flex-row flex-wrap">
+                        {categoryAchievements.map((item) => (
+                          <View
+                            key={item.achievement.id}
+                            className="items-center"
+                            style={{ width: "33.333%", paddingVertical: 6 }}
+                          >
+                            <AchievementBadge
+                              achievement={item.achievement}
+                              currentProgress={item.currentProgress}
+                              isUnlocked={item.isUnlocked}
+                              onPress={() => handleBadgePress(item)}
+                              showDescription={false}
+                              showProgressBar={false}
+                              showProgressText={true}
+                              showUnlockedProgress={false}
+                              size="md"
+                            />
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  </View>
+                );
+              },
+            )}
+
+            {/* Motivational footer */}
+            {hasAchievements && unlockedCount < totalCount && (
+              <View className="px-4 items-center mt-2">
+                <Text className="happy-font-body-medium text-ink-muted text-xs text-center">
+                  {totalCount - unlockedCount} badge
+                  {totalCount - unlockedCount !== 1 ? "s" : ""} away from a full
+                  collection
+                </Text>
+              </View>
+            )}
+          </View>
+        </AnimatedScrollView>
 
         <AchievementBadgeDetailSheet
           isPresented={selectedAchievement !== null}

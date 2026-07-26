@@ -8,6 +8,7 @@ export interface MicControlProps {
   durationSeconds: number;
   onToggleRecord: () => void;
   onStop: () => void;
+  onDiscard?: () => void;
   isStopped: boolean;
 }
 
@@ -17,6 +18,7 @@ const MicControlContainer: React.FC<MicControlProps> = ({
   durationSeconds,
   onToggleRecord,
   onStop,
+  onDiscard,
   isStopped,
 }) => {
   return (
@@ -28,6 +30,7 @@ const MicControlContainer: React.FC<MicControlProps> = ({
         durationSeconds={durationSeconds}
         onToggleRecord={onToggleRecord}
         onStop={onStop}
+        onDiscard={onDiscard}
       />
     </BottomSheet>
   );

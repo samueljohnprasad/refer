@@ -38,12 +38,8 @@ export const useMentalHealthData = (selectedDate: Date) => {
         .order("selected_date", { ascending: true });
 
       if (dateColErr) {
-        console.log("dataaaaaaaaa", dateColErr);
-
         throw dateColErr;
       }
-
-      console.log("dataaaaaaaaa", data);
 
       if (!data) {
         return [];

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { ScrollView, KeyboardAvoidingView, Platform, View, Alert } from "react-native";
+import { ScrollView, KeyboardAvoidingView, Platform, View, Alert, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useToast } from "heroui-native";

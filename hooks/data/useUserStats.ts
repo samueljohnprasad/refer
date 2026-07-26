@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/src/network/auth/supabase";
 import { useAuth } from "@/src/context/AuthContext";
 import type { UserStats } from "./useAchievements";
@@ -6,34 +6,32 @@ import type { UserStats } from "./useAchievements";
 interface UseUserStatsReturn {
   stats: UserStats;
   isLoading: boolean;
-  refetch: () => Promise<void>;
+  refetch: () => Promise<any>;
 }
+
+const defaultStats: UserStats = {
+  journalCount: 0,
+  streakDays: 0,
+  moodVariety: 0,
+  promptCount: 0,
+  calorieStreakDays: 0,
+  habitPerfectDays: 0,
+  voiceJournalCount: 0,
+};
 
 /**
  * Hook to fetch all user statistics needed for achievement tracking
  */
 export const useUserStats = (): UseUserStatsReturn => {
   const { user } = useAuth();
-  const [stats, setStats] = useState<UserStats>({
-    journalCount: 0,
-    streakDays: 0,
-    moodVariety: 0,
-    promptCount: 0,
-    calorieStreakDays: 0,
-    habitPerfectDays: 0,
-    voiceJournalCount: 0,
-  });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchStats = useCallback(async (): Promise<void> => {
-    if (!user?.id) {
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-
+  const { data: stats = defaultStats, isLoading, refetch } = useQuery({
+    queryKey: ["user_stats", user?.id],
+    queryFn: async (): Promise<UserStats> => {
+      if (!user?.id) {
+        return defaultStats;
+      }
+      
       // Fetch journal count from journal_records
       const { count: journalCount } = await supabase
         .from("journal_records")
@@ -96,7 +94,7 @@ export const useUserStats = (): UseUserStatsReturn => {
         ) || [],
       );
 
-      setStats({
+      return {
         journalCount: journalCount || 0,
         streakDays: profile?.current_streak || 0,
         moodVariety: uniqueMoods.size,
@@ -104,21 +102,15 @@ export const useUserStats = (): UseUserStatsReturn => {
         calorieStreakDays: uniqueCalorieDays.size,
         habitPerfectDays: completedHabitDays.size,
         voiceJournalCount: voiceJournalCount || 0,
-      });
-    } catch (error) {
-      console.error("Error fetching user stats:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.id]);
-
-  useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
+      };
+    },
+    enabled: !!user?.id,
+    staleTime: 1000 * 60 * 30, // 30 minutes
+  });
 
   return {
     stats,
     isLoading,
-    refetch: fetchStats,
+    refetch,
   };
 };
