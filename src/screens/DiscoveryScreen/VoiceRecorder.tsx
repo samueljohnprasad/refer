@@ -7,6 +7,8 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withRepeat,
+  withTiming,
 } from "react-native-reanimated";
 import { selectedDateDiscoveryAtom } from "./helpers";
 import { useAtom, useAtomValue } from "jotai";
@@ -16,9 +18,11 @@ import { HugeiconsIcon } from "@hugeicons/react-native";
 import { startRecordingAtom } from "../DailyNotesScreen/atoms";
 import useAudioRecording from "@/hooks/useAudioRecording";
 import * as Haptics from "expo-haptics";
-import { SAGE, INK_SOFT } from "@/lib/tokens";
+import { SAGE, INK_SOFT, INK } from "@/lib/tokens";
 import { Feather } from "@expo/vector-icons";
 import { createLogger } from "@/src/lib/logger";
+import { StaggeredText, type StaggeredTextRef } from "@/src/animations/everybody-can-cook/components/staggered-text";
+import { useInterval } from "@/src/hooks/useInterval";
 
 const log = createLogger("VoiceRecorder");
 
@@ -27,12 +31,38 @@ interface VoiceRecorderProps {
   onClose: () => void;
 }
 
+const RecordingStatus = () => {
+  const opacity = useSharedValue(0.4);
+  useEffect(() => {
+    opacity.value = withRepeat(withTiming(1, { duration: 1000 }), -1, true);
+  }, []);
+  
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
+  return (
+    <View className="flex-row items-center justify-center mt-3 gap-2">
+      <Animated.View style={[{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#059669' }, animatedStyle]} />
+      <Text className="text-emerald-600 text-sm happy-font-body-semibold">
+        Recording
+      </Text>
+    </View>
+  );
+};
+
 const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
   const { currentPrompt, shufflePrompt } = useJournalEntry();
   const rotation = useSharedValue(0);
   const selectedDate = useAtomValue(selectedDateDiscoveryAtom);
   const [startRecording, setStartRecording] = useAtom(startRecordingAtom);
   const [enableAIInsights] = useState<boolean>(true);
+  const textRef = useRef<StaggeredTextRef>(null);
+
+  useEffect(() => {
+    textRef.current?.reset();
+    textRef.current?.animate();
+  }, [currentPrompt]);
 
   useEffect(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -66,6 +96,15 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
     stopRecording,
     totalDuration,
   } = useAudioRecording();
+
+  useInterval(
+    () => {
+      if (recordingCurrentState === "initial" && totalDuration === 0) {
+        handleShufflePrompt();
+      }
+    },
+    30000
+  );
 
   const isStopped = recordingCurrentState === "stopped";
 
@@ -169,9 +208,22 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
 
           {/* Center Section: Prompt Text & Shuffle */}
           <View className="flex-1 justify-center items-center py-8">
-            <Text className="text-ink text-center text-[28px] leading-[36px] happy-font-heading-bold px-4 mb-5">
-              {currentPrompt}
-            </Text>
+            <View key={currentPrompt} className="px-4 mb-5 w-full">
+              <StaggeredText
+                ref={textRef}
+                text={currentPrompt}
+                fontSize={28}
+                textStyle={{
+                  fontFamily: "CormorantBold",
+                  color: INK,
+                  lineHeight: 36,
+                  textAlign: "center"
+                }}
+                containerStyle={{
+                  justifyContent: 'center',
+                }}
+              />
+            </View>
             
             <TouchableOpacity
               onPress={handleShufflePrompt}
@@ -190,14 +242,13 @@ const VoiceRecorder = ({ onStop, onClose }: VoiceRecorderProps) => {
           {/* Bottom Section: Timer Display and Controls */}
           <View className="items-center gap-6 pb-4">
             <View className="items-center">
-              <Text className="text-ink-soft text-5xl tracking-tight happy-font-body-bold">
+              <Text 
+                className="text-ink-soft text-5xl tracking-tight happy-font-body-bold"
+                style={{ fontVariant: ['tabular-nums'] }}
+              >
                 {formatTime(totalDuration)}
               </Text>
-              {isRecording && (
-                <Text className="text-emerald-600 text-sm mt-3 happy-font-body-semibold">
-                  Recording...
-                </Text>
-              )}
+              {isRecording && <RecordingStatus />}
               {isPaused && (
                 <Text className="text-ink-soft text-sm mt-3 happy-font-body-semibold">
                   Paused
