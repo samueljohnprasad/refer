@@ -4,7 +4,12 @@
 
 Every exercise type available for course generation, with cognitive mode, scaffolding level, and usage guidelines.
 
-**Principle Justification**: Each exercise type is grounded in the 50 Psychology Principles (see `references/psychology-principles.md`). Citations indicate which learning science principles justify each type's use, timing, and difficulty calibration.
+Treat catalog as design options, not mandatory inventory. Select types by the
+learner action needed. Do not add interactions only for variety.
+
+Principle labels point to possible rationale in
+`references/psychology-principles.md`; they do not prove that a type, timing, or
+difficulty works in every context.
 
 ---
 

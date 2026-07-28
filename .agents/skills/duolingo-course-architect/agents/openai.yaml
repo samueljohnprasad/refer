@@ -1,0 +1,4 @@
+interface:
+  display_name: "Duolingo Course Architect"
+  short_description: "Design motivating, evidence-aware microlearning"
+  default_prompt: "Use $duolingo-course-architect to design an implementation-ready microlearning course."

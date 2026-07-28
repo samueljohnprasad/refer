@@ -1,16 +1,27 @@
 # Psychology Principles Reference
 
-## Source of Truth for Design Decisions
+## Research leads and design hypotheses
 
-Every design choice in a gamified micro-learning course should be grounded in one of these principles. When generating content, cite the principle that justifies the design.
+Use this reference to find candidate explanations and testable design
+hypotheses. It is not a source of truth, systematic review, or substitute for
+checking primary research. Verify citations and effect-size claims before
+presenting them as facts. Do not force every design choice to map to a named
+principle.
 
 ### How to Use This Reference
 
 **For Course Authors:**
 
-- When designing a lesson, ask: "Which principle justifies this exercise type / difficulty / feedback?"
-- When choosing between two approaches, consult the matrix to find which principle applies and which approach better aligns.
-- When reviewing designs, flag choices that lack a principle justification — they're likely unnecessary complexity.
+- When designing a lesson, ask what learner behavior and evidence support the
+  choice.
+- When choosing between approaches, use relevant principles to form hypotheses,
+  then check fit, accessibility, ethics, and available evidence.
+- When reviewing designs, remove features without a clear learner or product
+  purpose.
+
+Quantified examples below are starting assumptions from this legacy reference.
+Do not repeat percentages, multipliers, or universal thresholds without current
+source verification.
 
 **Examples of Principle-Grounded Design Decisions:**
 

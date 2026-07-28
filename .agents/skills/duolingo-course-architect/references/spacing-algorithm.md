@@ -6,7 +6,10 @@
 
 ## 1. Core Algorithm (Simplified Half-Life Regression)
 
-Based on Duolingo's published research (Settles & Meeder, ACL 2016) and the SM-2 algorithm family.
+Inspired by Duolingo's published research (Settles & Meeder, ACL 2016) and the
+SM-2 algorithm family. The fixed intervals below are a product heuristic, not a
+direct reproduction of either model. Tune them using learner data and course
+cadence.
 
 ### Concept: Memory Half-Life
 
