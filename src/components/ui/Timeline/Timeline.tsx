@@ -142,6 +142,7 @@ function TimelineInner<T extends TimelineItemData>({
       contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 16 }}
       showsVerticalScrollIndicator={false}
       contentInsetAdjustmentBehavior="automatic"
+      scrollEventThrottle={16}
     />
   );
 }

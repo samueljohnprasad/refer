@@ -28,3 +28,6 @@ This document contains a quick reference for commonly used CLI commands in this 
 
 ## AI Agent Helpers
 - **Update Graphify Knowledge Graph:** `graphify update .` (Run this after making code changes)
+
+
+codex --yolo

@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/src/network/auth/supabase";
 import { useAuth } from "@/src/context/AuthContext";
 import {
@@ -9,269 +10,231 @@ import {
 } from "@/src/types/habits";
 import { handleHabitDeleted } from "@/src/utils/habitNotificationHandlers";
 
+const HABITS_QUERY_KEY = "habits";
+
+// ponytail: react-query habit fetcher with 5m cache
+async function fetchHabitsApi(userId: string): Promise<Habit[]> {
+  const { data, error: fetchError } = await supabase
+    .from("habits")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  if (fetchError) throw fetchError;
+
+  return (data || []).map((dbHabit: DbHabit) => ({
+    id: dbHabit.id,
+    userId: dbHabit.user_id,
+    name: dbHabit.name,
+    description: dbHabit.description || undefined,
+    icon: dbHabit.icon || "check-circle",
+    color: dbHabit.color || "#7B61FF",
+    createdAt: dbHabit.created_at || new Date().toISOString(),
+    isActive: dbHabit.is_active ?? true,
+    sortOrder: dbHabit.sort_order || 0,
+    timeOption: (dbHabit.time_option as Habit["timeOption"]) || "anytime",
+    scheduledTime: dbHabit.scheduled_time || undefined,
+    durationMinutes: dbHabit.duration_minutes || undefined,
+    startDate: dbHabit.start_date || new Date().toISOString().split("T")[0],
+    repeatPattern: (dbHabit.repeat_pattern as Habit["repeatPattern"]) || "daily",
+    repeatDays: dbHabit.repeat_days || undefined,
+    endRepeatOption: (dbHabit.end_repeat_option as Habit["endRepeatOption"]) || "never",
+    endRepeatDate: dbHabit.end_repeat_date || undefined,
+    endRepeatCount: dbHabit.end_repeat_count || undefined,
+    reminderEnabled: dbHabit.reminder_enabled || false,
+    reminderTime: dbHabit.reminder_time || undefined,
+    notes: dbHabit.notes || undefined,
+  }));
+}
+
 export const useHabits = () => {
   const { session } = useAuth();
-  const [habits, setHabits] = useState<Habit[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const userId = session?.user?.id;
+  const queryClient = useQueryClient();
 
-  // Fetch all active habits for the current user
-  const fetchHabits = useCallback(async () => {
-    if (!session?.user?.id) {
-      setHabits([]);
-      setLoading(false);
-      return;
-    }
+  const {
+    data: habits = [],
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery<Habit[]>({
+    queryKey: [HABITS_QUERY_KEY, userId],
+    queryFn: () => fetchHabitsApi(userId!),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+  });
 
-    try {
-      setLoading(true);
-      setError(null);
+  const createMutation = useMutation({
+    mutationFn: async (formData: CreateHabitFormData): Promise<Habit> => {
+      if (!userId) throw new Error("User not authenticated");
 
-      const { data, error: fetchError } = await supabase
+      const { data: existingHabits } = await supabase
         .from("habits")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .eq("is_active", true)
-        .order("sort_order", { ascending: true });
+        .select("sort_order")
+        .eq("user_id", userId)
+        .order("sort_order", { ascending: false })
+        .limit(1);
 
-      if (fetchError) throw fetchError;
+      const nextSortOrder =
+        existingHabits && existingHabits.length > 0
+          ? (existingHabits[0].sort_order || 0) + 1
+          : 0;
 
-      // Transform database format to application format
-      const transformedHabits: Habit[] = (data || []).map(
-        (dbHabit: DbHabit) => ({
-          id: dbHabit.id,
-          userId: dbHabit.user_id,
-          name: dbHabit.name,
-          description: dbHabit.description || undefined,
-          icon: dbHabit.icon || "check-circle",
-          color: dbHabit.color || "#7B61FF",
-          createdAt: dbHabit.created_at || new Date().toISOString(),
-          isActive: dbHabit.is_active ?? true,
-          sortOrder: dbHabit.sort_order || 0,
+      const newHabit: DbHabitInsert = {
+        user_id: userId,
+        name: formData.name,
+        description: formData.description || null,
+        icon: formData.icon || "check-circle",
+        color: formData.color || "#7B61FF",
+        sort_order: nextSortOrder,
+        is_active: true,
+      };
 
-          // Scheduling fields
-          timeOption: (dbHabit.time_option as any) || "anytime",
-          scheduledTime: dbHabit.scheduled_time || undefined,
-          durationMinutes: dbHabit.duration_minutes || undefined,
-          startDate:
-            dbHabit.start_date || new Date().toISOString().split("T")[0],
+      const { data, error: insertError } = await supabase
+        .from("habits")
+        .insert(newHabit)
+        .select()
+        .single();
 
-          // Repeat pattern
-          repeatPattern: (dbHabit.repeat_pattern as any) || "daily",
-          repeatDays: dbHabit.repeat_days || undefined,
+      if (insertError) throw insertError;
 
-          // End repeat
-          endRepeatOption: (dbHabit.end_repeat_option as any) || "never",
-          endRepeatDate: dbHabit.end_repeat_date || undefined,
-          endRepeatCount: dbHabit.end_repeat_count || undefined,
+      return {
+        id: data.id,
+        userId: data.user_id,
+        name: data.name,
+        description: data.description || undefined,
+        icon: data.icon || "check-circle",
+        color: data.color || "#7B61FF",
+        createdAt: data.created_at || new Date().toISOString(),
+        isActive: data.is_active ?? true,
+        sortOrder: data.sort_order || 0,
+        timeOption: (data.time_option as Habit["timeOption"]) || "anytime",
+        scheduledTime: data.scheduled_time || undefined,
+        durationMinutes: data.duration_minutes || undefined,
+        startDate: data.start_date || new Date().toISOString().split("T")[0],
+        repeatPattern: (data.repeat_pattern as Habit["repeatPattern"]) || "daily",
+        repeatDays: data.repeat_days || undefined,
+        endRepeatOption: (data.end_repeat_option as Habit["endRepeatOption"]) || "never",
+        endRepeatDate: data.end_repeat_date || undefined,
+        endRepeatCount: data.end_repeat_count || undefined,
+        reminderEnabled: data.reminder_enabled || false,
+        reminderTime: data.reminder_time || undefined,
+        notes: data.notes || undefined,
+      };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [HABITS_QUERY_KEY, userId] });
+    },
+  });
 
-          // Reminder
-          reminderEnabled: dbHabit.reminder_enabled || false,
-          reminderTime: dbHabit.reminder_time || undefined,
+  const deleteMutation = useMutation({
+    mutationFn: async (habitId: string): Promise<boolean> => {
+      if (!userId) throw new Error("User not authenticated");
 
-          // Notes
-          notes: dbHabit.notes || undefined,
+      const { error: deleteError } = await supabase
+        .from("habits")
+        .delete()
+        .eq("id", habitId)
+        .eq("user_id", userId);
+
+      if (deleteError) throw deleteError;
+
+      await handleHabitDeleted(habitId);
+      return true;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [HABITS_QUERY_KEY, userId] });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({
+      habitId,
+      updates,
+    }: {
+      habitId: string;
+      updates: Partial<CreateHabitFormData> & Record<string, unknown>;
+    }): Promise<boolean> => {
+      if (!userId) throw new Error("User not authenticated");
+
+      const { error: updateError } = await supabase
+        .from("habits")
+        .update({
+          name: updates.name,
+          description: updates.description || null,
+          icon: updates.icon,
+          color: updates.color,
+          time_option: updates.timeOption,
+          scheduled_time: updates.scheduledTime,
+          duration_minutes: updates.durationMinutes,
+          start_date: updates.startDate,
+          repeat_pattern: updates.repeatPattern,
+          repeat_days: updates.repeatDays,
+          end_repeat_option: updates.endRepeatOption,
+          end_repeat_date: updates.endRepeatDate,
+          end_repeat_count: updates.endRepeatCount,
+          reminder_enabled: updates.reminderEnabled,
+          reminder_time: updates.reminderTime,
+          notes: updates.notes,
         })
-      );
+        .eq("id", habitId)
+        .eq("user_id", userId);
 
-      setHabits(transformedHabits);
-    } catch (err) {
-      console.error("Error fetching habits:", err);
-      setError(err instanceof Error ? err.message : "Failed to fetch habits");
-    } finally {
-      setLoading(false);
-    }
-  }, [session?.user?.id]);
+      if (updateError) throw updateError;
+      return true;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [HABITS_QUERY_KEY, userId] });
+    },
+  });
 
-  // Create a new habit
   const createHabit = useCallback(
     async (formData: CreateHabitFormData): Promise<Habit | null> => {
-      if (!session?.user?.id) {
-        setError("User not authenticated");
-        return null;
-      }
-
       try {
-        setError(null);
-
-        // Get max sort_order for proper ordering
-        const { data: existingHabits } = await supabase
-          .from("habits")
-          .select("sort_order")
-          .eq("user_id", session.user.id)
-          .order("sort_order", { ascending: false })
-          .limit(1);
-
-        const nextSortOrder =
-          existingHabits && existingHabits.length > 0
-            ? (existingHabits[0].sort_order || 0) + 1
-            : 0;
-
-        const newHabit: DbHabitInsert = {
-          user_id: session.user.id,
-          name: formData.name,
-          description: formData.description || null,
-          icon: formData.icon || "check-circle",
-          color: formData.color || "#7B61FF",
-          sort_order: nextSortOrder,
-          is_active: true,
-        };
-
-        const { data, error: insertError } = await supabase
-          .from("habits")
-          .insert(newHabit)
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-
-        const createdHabit: Habit = {
-          id: data.id,
-          userId: data.user_id,
-          name: data.name,
-          description: data.description || undefined,
-          icon: data.icon || "check-circle",
-          color: data.color || "#7B61FF",
-          createdAt: data.created_at || new Date().toISOString(),
-          isActive: data.is_active ?? true,
-          sortOrder: data.sort_order || 0,
-
-          // Scheduling fields with defaults
-          timeOption: (data.time_option as any) || "anytime",
-          scheduledTime: data.scheduled_time || undefined,
-          durationMinutes: data.duration_minutes || undefined,
-          startDate: data.start_date || new Date().toISOString().split("T")[0],
-
-          // Repeat pattern
-          repeatPattern: (data.repeat_pattern as any) || "daily",
-          repeatDays: data.repeat_days || undefined,
-
-          // End repeat
-          endRepeatOption: (data.end_repeat_option as any) || "never",
-          endRepeatDate: data.end_repeat_date || undefined,
-          endRepeatCount: data.end_repeat_count || undefined,
-
-          // Reminder
-          reminderEnabled: data.reminder_enabled || false,
-          reminderTime: data.reminder_time || undefined,
-
-          // Notes
-          notes: data.notes || undefined,
-        };
-
-        // Update local state
-        setHabits((prev) => [...prev, createdHabit]);
-
-        return createdHabit;
+        return await createMutation.mutateAsync(formData);
       } catch (err) {
         console.error("Error creating habit:", err);
-        setError(err instanceof Error ? err.message : "Failed to create habit");
         return null;
       }
     },
-    [session?.user?.id]
+    [createMutation]
   );
 
-  // Delete a habit
   const deleteHabit = useCallback(
     async (habitId: string): Promise<boolean> => {
-      if (!session?.user?.id) {
-        setError("User not authenticated");
-        return false;
-      }
-
       try {
-        setError(null);
-
-        const { error: deleteError } = await supabase
-          .from("habits")
-          .delete()
-          .eq("id", habitId)
-          .eq("user_id", session.user.id);
-
-        if (deleteError) throw deleteError;
-
-        // Cancel any scheduled notifications for this habit
-        await handleHabitDeleted(habitId);
-
-        // Update local state
-        setHabits((prev) => prev.filter((habit) => habit.id !== habitId));
-
-        return true;
+        return await deleteMutation.mutateAsync(habitId);
       } catch (err) {
         console.error("Error deleting habit:", err);
-        setError(err instanceof Error ? err.message : "Failed to delete habit");
         return false;
       }
     },
-    [session?.user?.id]
+    [deleteMutation]
   );
 
-  // Update habit
   const updateHabit = useCallback(
     async (
       habitId: string,
-      updates: Partial<CreateHabitFormData> | any
+      updates: Partial<CreateHabitFormData> & Record<string, unknown>
     ): Promise<boolean> => {
-      if (!session?.user?.id) {
-        setError("User not authenticated");
-        return false;
-      }
-
       try {
-        setError(null);
-
-        const { error: updateError } = await supabase
-          .from("habits")
-          .update({
-            name: updates.name,
-            description: updates.description || null,
-            icon: updates.icon,
-            color: updates.color,
-            // Scheduling fields
-            time_option: updates.timeOption,
-            scheduled_time: updates.scheduledTime,
-            duration_minutes: updates.durationMinutes,
-            start_date: updates.startDate,
-            repeat_pattern: updates.repeatPattern,
-            repeat_days: updates.repeatDays,
-            end_repeat_option: updates.endRepeatOption,
-            end_repeat_date: updates.endRepeatDate,
-            end_repeat_count: updates.endRepeatCount,
-            reminder_enabled: updates.reminderEnabled,
-            reminder_time: updates.reminderTime,
-            notes: updates.notes,
-          })
-          .eq("id", habitId)
-          .eq("user_id", session.user.id);
-
-        if (updateError) throw updateError;
-
-        // Refresh habits
-        await fetchHabits();
-
-        return true;
+        return await updateMutation.mutateAsync({ habitId, updates });
       } catch (err) {
         console.error("Error updating habit:", err);
-        setError(err instanceof Error ? err.message : "Failed to update habit");
         return false;
       }
     },
-    [session?.user?.id, fetchHabits]
+    [updateMutation]
   );
-
-  // Load habits on mount and when user changes
-  useEffect(() => {
-    fetchHabits();
-  }, [fetchHabits]);
 
   return {
     habits,
     loading,
-    error,
+    error: error ? (error instanceof Error ? error.message : "Failed to fetch habits") : null,
     createHabit,
     deleteHabit,
     updateHabit,
-    refetch: fetchHabits,
+    refetch,
   };
 };

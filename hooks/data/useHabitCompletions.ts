@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/src/network/auth/supabase";
 import { useAuth } from "@/src/context/AuthContext";
 import {
@@ -11,10 +12,8 @@ import {
   format,
   getDay,
   getDate,
-  getMonth,
   isSameDay,
   parseISO,
-  isAfter,
   isBefore,
 } from "date-fns";
 import { useXPOptional } from "@/src/context/XPContext";
@@ -22,171 +21,138 @@ import { XPActionType } from "@/src/types/xp";
 import { useRewardsContext } from "@/src/context/RewardsContext";
 import { useChallengesOptional } from "@/src/context/ChallengesContext";
 
+const HABIT_COMPLETIONS_QUERY_KEY = "habit_completions";
+const HABIT_STREAKS_QUERY_KEY = "habit_streaks";
+
+// ponytail: react-query completion fetcher per date
+async function fetchCompletionsApi(userId: string, dateString: string): Promise<HabitCompletion[]> {
+  const { data, error: fetchError } = await supabase
+    .from("habit_completions")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("completed_date", dateString);
+
+  if (fetchError) throw fetchError;
+
+  return (data || []).map((dbCompletion: DbHabitCompletion) => ({
+    id: dbCompletion.id,
+    habitId: dbCompletion.habit_id,
+    userId: dbCompletion.user_id,
+    completedDate: dbCompletion.completed_date,
+    completedAt: dbCompletion.completed_at,
+  }));
+}
+
 export const useHabitCompletions = (selectedDate: Date) => {
   const { session } = useAuth();
-  const [completions, setCompletions] = useState<HabitCompletion[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
+  const userId = session?.user?.id;
   const dateString = format(selectedDate, "yyyy-MM-dd");
+  const queryClient = useQueryClient();
+
   const xp = useXPOptional();
   const { earnCoinsForAction } = useRewardsContext();
   const challenges = useChallengesOptional();
 
-  // Fetch completions for a specific date
-  const fetchCompletions = useCallback(async () => {
-    if (!session?.user?.id) {
-      setCompletions([]);
-      return;
-    }
+  // ponytail: cached with react-query for fast habit status updates across days
+  const {
+    data: completions = [],
+    isLoading: loading,
+    error,
+    refetch,
+  } = useQuery<HabitCompletion[]>({
+    queryKey: [HABIT_COMPLETIONS_QUERY_KEY, userId, dateString],
+    queryFn: () => fetchCompletionsApi(userId!, dateString),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+  });
 
-    try {
-      setLoading(true);
-      setError(null);
+  const completeMutation = useMutation({
+    mutationFn: async ({ habitId }: { habitId: string; habitName: string }): Promise<boolean> => {
+      if (!userId) throw new Error("User not authenticated");
 
-      const { data, error: fetchError } = await supabase
+      const { error: insertError } = await supabase
         .from("habit_completions")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .eq("completed_date", dateString);
+        .insert({
+          habit_id: habitId,
+          user_id: userId,
+          completed_date: dateString,
+        })
+        .select()
+        .single();
 
-      if (fetchError) throw fetchError;
-
-      const transformedCompletions: HabitCompletion[] = (data || []).map(
-        (dbCompletion: DbHabitCompletion) => ({
-          id: dbCompletion.id,
-          habitId: dbCompletion.habit_id,
-          userId: dbCompletion.user_id,
-          completedDate: dbCompletion.completed_date,
-          completedAt: dbCompletion.completed_at,
-        }),
-      );
-
-      setCompletions(transformedCompletions);
-    } catch (err) {
-      console.error("Error fetching completions:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch completions",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [session?.user?.id, dateString]);
-
-  // Complete a habit
-  const completeHabit = useCallback(
-    async (habitId: string, habitName: string): Promise<boolean> => {
-      if (!session?.user?.id) {
-        setError("User not authenticated");
-        return false;
-      }
-
-      try {
-        setError(null);
-
-        const { data, error: insertError } = await supabase
-          .from("habit_completions")
-          .insert({
-            habit_id: habitId,
-            user_id: session.user.id,
-            completed_date: dateString,
-          })
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-
-        // Add to local state
-        const newCompletion: HabitCompletion = {
-          id: data.id,
-          habitId: data.habit_id,
-          userId: data.user_id,
-          completedDate: data.completed_date,
-          completedAt: data.completed_at,
-        };
-
-        setCompletions((prev) => [...prev, newCompletion]);
-
-        // Award XP for habit completion with custom description
-        xp?.awardXP(XPActionType.HABIT_COMPLETION, {
-          customDescription: `Completed: ${habitName}`,
-        });
-        // Earn coins for habit completion
-        earnCoinsForAction("HABIT_COMPLETE");
-        // Update habit challenge
-        challenges?.updateProgress("habit_count");
-
-        return true;
-      } catch (err: any) {
-        // Handle duplicate key error (already completed) gracefully
-        if (err?.code === "23505") {
-          console.log("Habit already completed, ignoring duplicate check.");
-
-          // Ensure it's in local state if not already (optimistic update backup)
-          // We can't rely on `data` here since insert failed,
-          // but we know it's completed for the current user/date/habitId.
-          // Since we don't have the `id` of the existing row, we can just skip adding to state
-          // assuming it's already there or will be fetched.
-          // Or simpler: just return true.
+      if (insertError) {
+        if ((insertError as any)?.code === "23505") {
           return true;
         }
+        throw insertError;
+      }
+      return true;
+    },
+    onSuccess: (_, { habitId, habitName }) => {
+      xp?.awardXP(XPActionType.HABIT_COMPLETION, {
+        customDescription: `Completed: ${habitName}`,
+      });
+      earnCoinsForAction("HABIT_COMPLETE");
+      challenges?.updateProgress("habit_count");
 
+      queryClient.invalidateQueries({ queryKey: [HABIT_COMPLETIONS_QUERY_KEY, userId] });
+      queryClient.invalidateQueries({ queryKey: [HABIT_STREAKS_QUERY_KEY, userId] });
+    },
+  });
+
+  const uncompleteMutation = useMutation({
+    mutationFn: async ({ habitId }: { habitId: string; habitName: string }): Promise<boolean> => {
+      if (!userId) throw new Error("User not authenticated");
+
+      const { error: deleteError } = await supabase
+        .from("habit_completions")
+        .delete()
+        .eq("habit_id", habitId)
+        .eq("user_id", userId)
+        .eq("completed_date", dateString);
+
+      if (deleteError) throw deleteError;
+      return true;
+    },
+    onSuccess: (_, { habitName }) => {
+      xp?.removeXP(XPActionType.HABIT_COMPLETION, {
+        customDescription: `Uncompleted: ${habitName}`,
+      });
+
+      queryClient.invalidateQueries({ queryKey: [HABIT_COMPLETIONS_QUERY_KEY, userId] });
+      queryClient.invalidateQueries({ queryKey: [HABIT_STREAKS_QUERY_KEY, userId] });
+    },
+  });
+
+  const completeHabit = useCallback(
+    async (habitId: string, habitName: string): Promise<boolean> => {
+      try {
+        return await completeMutation.mutateAsync({ habitId, habitName });
+      } catch (err) {
         console.error("Error completing habit:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to complete habit",
-        );
         return false;
       }
     },
-    [session?.user?.id, dateString],
+    [completeMutation]
   );
 
-  // Uncomplete a habit
   const uncompleteHabit = useCallback(
     async (habitId: string, habitName: string): Promise<boolean> => {
-      if (!session?.user?.id) {
-        setError("User not authenticated");
-        return false;
-      }
-
       try {
-        setError(null);
-
-        const { error: deleteError } = await supabase
-          .from("habit_completions")
-          .delete()
-          .eq("habit_id", habitId)
-          .eq("user_id", session.user.id)
-          .eq("completed_date", dateString);
-
-        if (deleteError) throw deleteError;
-
-        // Remove from local state
-        setCompletions((prev) => prev.filter((c) => c.habitId !== habitId));
-
-        // Remove XP for habit completion
-        xp?.removeXP(XPActionType.HABIT_COMPLETION, {
-          customDescription: `Uncompleted: ${habitName}`,
-        });
-
-        return true;
+        return await uncompleteMutation.mutateAsync({ habitId, habitName });
       } catch (err) {
         console.error("Error uncompleting habit:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to uncomplete habit",
-        );
         return false;
       }
     },
-    [session?.user?.id, dateString],
+    [uncompleteMutation]
   );
 
-  // Toggle habit completion
   const toggleHabitCompletion = useCallback(
     async (
       habitId: string,
       isCompleted: boolean,
-      habitName: string,
+      habitName: string
     ): Promise<boolean> => {
       if (isCompleted) {
         return await uncompleteHabit(habitId, habitName);
@@ -194,33 +160,27 @@ export const useHabitCompletions = (selectedDate: Date) => {
         return await completeHabit(habitId, habitName);
       }
     },
-    [completeHabit, uncompleteHabit],
+    [completeHabit, uncompleteHabit]
   );
 
-  // Check if a habit should be shown on the selected date based on repeat pattern
   const isHabitScheduledForDate = useCallback(
     (habit: Habit): boolean => {
-      // Check if habit has started
       if (habit.startDate) {
         const startDate = parseISO(habit.startDate);
         if (isBefore(selectedDate, startDate)) {
-          return false; // Habit hasn't started yet
+          return false;
         }
       }
 
-      // Check repeat pattern
       switch (habit.repeatPattern) {
         case "daily":
-          return true; // Show every day
+          return true;
 
         case "weekly":
-          // Get day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
           const dayOfWeek = getDay(selectedDate);
-          // If repeatDays is set, check if today is in the list
           if (habit.repeatDays && habit.repeatDays.length > 0) {
             return habit.repeatDays.includes(dayOfWeek);
           }
-          // If no specific days set, show on the same day as start date
           if (habit.startDate) {
             const startDayOfWeek = getDay(parseISO(habit.startDate));
             return dayOfWeek === startDayOfWeek;
@@ -228,7 +188,6 @@ export const useHabitCompletions = (selectedDate: Date) => {
           return true;
 
         case "monthly":
-          // Show on the same day of the month as the start date
           if (habit.startDate) {
             const startDayOfMonth = getDate(parseISO(habit.startDate));
             return getDate(selectedDate) === startDayOfMonth;
@@ -236,7 +195,6 @@ export const useHabitCompletions = (selectedDate: Date) => {
           return true;
 
         case "never":
-          // One-time habit - only show on the start date
           if (habit.startDate) {
             return isSameDay(selectedDate, parseISO(habit.startDate));
           }
@@ -246,13 +204,11 @@ export const useHabitCompletions = (selectedDate: Date) => {
           return true;
       }
     },
-    [selectedDate],
+    [selectedDate]
   );
 
-  // Combine habits with their completion status (filtered by schedule)
   const getHabitsWithStatus = useCallback(
     (habits: Habit[]): HabitWithStatus[] => {
-      // Filter habits that are scheduled for the selected date
       const scheduledHabits = habits.filter(isHabitScheduledForDate);
 
       return scheduledHabits.map((habit) => {
@@ -264,22 +220,17 @@ export const useHabitCompletions = (selectedDate: Date) => {
         };
       });
     },
-    [completions, isHabitScheduledForDate],
+    [completions, isHabitScheduledForDate]
   );
-
-  // Load completions when date or user changes
-  useEffect(() => {
-    fetchCompletions();
-  }, [fetchCompletions]);
 
   return {
     completions,
     loading,
-    error,
+    error: error ? (error instanceof Error ? error.message : "Failed to fetch completions") : null,
     completeHabit,
     uncompleteHabit,
     toggleHabitCompletion,
     getHabitsWithStatus,
-    refetch: fetchCompletions,
+    refetch,
   };
 };

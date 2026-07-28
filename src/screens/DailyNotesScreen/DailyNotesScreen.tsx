@@ -358,96 +358,92 @@ function DailyNotesScreenComponent(): ReactElement {
   );
 
   return (
-    <View className="flex-1 bg-brand-surface">
-      <SafeAreaView edges={[]} style={{ flex: 1 }}>
-        <Stack.Screen options={screenOptions} />
-        <View className="flex-1 relative">
-          <GestureDetector gesture={contentPanGesture}>
-            <ScrollView
-              className="flex-1"
-              style={{ flex: 1 }}
-              contentContainerStyle={{ flexGrow: 1 }}
-              showsVerticalScrollIndicator={false}
+    <>
+      <Stack.Screen options={screenOptions} />
+      <ScrollView
+        className="flex-1 bg-brand-surface"
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 112 }}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        contentInsetAdjustmentBehavior="automatic"
+      >
+        {/* Tab Picker */}
+        <View className="px-4 pt-4 pb-4 items-start">
+          <Host style={{ height: 32, width: 280 }}>
+            <Picker
+              selection={tabFilter}
+              onSelectionChange={(newSelection) => {
+                if (typeof newSelection === "string") {
+                  Haptics.selectionAsync();
+                  setTabFilter(newSelection as TabFilter);
+                }
+              }}
+              modifiers={[pickerStyle("segmented")]}
             >
-              {/* Tab Picker */}
-              <View className="px-4 pt-4 pb-4 items-start">
-                <Host style={{ height: 32, width: 280 }}>
-                  <Picker
-                    selection={tabFilter}
-                    onSelectionChange={(newSelection) => {
-                      if (typeof newSelection === "string") {
-                        Haptics.selectionAsync();
-                        setTabFilter(newSelection as TabFilter);
-                      }
-                    }}
-                    modifiers={[pickerStyle("segmented")]}
-                  >
-                    <SwiftUIText
-                      modifiers={[
-                        tag("journal"),
-                        badge(
-                          journalCount > 0 ? String(journalCount) : undefined,
-                        ),
-                      ]}
-                    >
-                      Journal
-                    </SwiftUIText>
-
-                    <SwiftUIText modifiers={[tag("habits")]}>
-                      Habits
-                    </SwiftUIText>
-                  </Picker>
-                </Host>
-              </View>
-
-              {/* Unified Animated Container for Swipe Transitions */}
-              <Animated.View
-                className="flex-1 px-4 pb-8"
-                style={contentAnimatedStyle}
+              <SwiftUIText
+                modifiers={[
+                  tag("journal"),
+                  badge(
+                    journalCount > 0 ? String(journalCount) : undefined,
+                  ),
+                ]}
               >
+                Journal
+              </SwiftUIText>
 
-
-                {/* Habits Section */}
-                {tabFilter === "habits" ? (
-                  <Animated.View
-                    entering={FadeIn.duration(500).easing(
-                      Easing.bezier(0.4, 0.0, 0.2, 1),
-                    )}
-                    className="flex-1 pt-4"
-                  >
-                    <HabitsSection selectedDate={selectedDate} />
-                  </Animated.View>
-                ) : null}
-
-                {/* Journal Section */}
-                {tabFilter === "journal" ? (
-                  <Animated.View
-                    entering={FadeIn.duration(500).easing(
-                      Easing.bezier(0.4, 0.0, 0.2, 1),
-                    )}
-                    className="flex-1"
-                  >
-                    {mentalHealthContent}
-                  </Animated.View>
-                ) : null}
-              </Animated.View>
-            </ScrollView>
-          </GestureDetector>
+              <SwiftUIText modifiers={[tag("habits")]}>
+                Habits
+              </SwiftUIText>
+            </Picker>
+          </Host>
         </View>
 
-        {/* AI Insights Bottom Sheet */}
-        <SuspensLoader>
-          <AIInsightsModalBottomSheet
-            ref={bottomSheetRef}
-            weekStart={weekStartFormatted}
-            weekEnd={weekEndFormatted}
-            onClose={handleAIInsightsClose}
-          />
-        </SuspensLoader>
+        {/* Unified Animated Container for Swipe Transitions */}
+        <GestureDetector gesture={contentPanGesture}>
+          <Animated.View
+            className="flex-1 px-4 pb-8"
+            style={contentAnimatedStyle}
+          >
+            {/* Habits Section */}
+            {tabFilter === "habits" ? (
+              <Animated.View
+                entering={FadeIn.duration(500).easing(
+                  Easing.bezier(0.4, 0.0, 0.2, 1),
+                )}
+                className="flex-1 pt-4"
+              >
+                <HabitsSection selectedDate={selectedDate} />
+              </Animated.View>
+            ) : null}
 
-        {/* Calendar Modal */}
-      </SafeAreaView>
-    </View>
+            {/* Journal Section */}
+            {tabFilter === "journal" ? (
+              <Animated.View
+                entering={FadeIn.duration(500).easing(
+                  Easing.bezier(0.4, 0.0, 0.2, 1),
+                )}
+                className="flex-1"
+              >
+                {mentalHealthContent}
+              </Animated.View>
+            ) : null}
+          </Animated.View>
+        </GestureDetector>
+      </ScrollView>
+
+      {/* AI Insights Bottom Sheet */}
+      <SuspensLoader>
+        <AIInsightsModalBottomSheet
+          ref={bottomSheetRef}
+          weekStart={weekStartFormatted}
+          weekEnd={weekEndFormatted}
+          onClose={handleAIInsightsClose}
+        />
+      </SuspensLoader>
+
+      {/* Calendar Modal */}
+    </>
   );
 }
 

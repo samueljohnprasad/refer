@@ -1021,7 +1021,7 @@ export default function ExercisesScreen(): ReactElement {
     [navigateWithReveal],
   );
   return (
-    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <>
       <Stack.Screen
         options={{
           headerTransparent: true,
@@ -1156,6 +1156,7 @@ export default function ExercisesScreen(): ReactElement {
         <ScrollView
           style={nutrieStyles.screenBg}
           contentInsetAdjustmentBehavior="automatic"
+          scrollEventThrottle={16}
           contentContainerStyle={{
             paddingTop: headerHeight - insets.top + 16,
             paddingBottom: 160,
@@ -1206,7 +1207,7 @@ export default function ExercisesScreen(): ReactElement {
           </Suspense>
         </View>
       )}
-    </View>
+    </>
   );
 }
 
